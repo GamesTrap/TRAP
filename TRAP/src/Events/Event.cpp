@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "Event.h"
 
-std::string TRAP::Events::Event::ToString() const
+[[nodiscard]] std::string TRAP::Events::Event::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -10,7 +10,7 @@ std::string TRAP::Events::Event::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Events::Event::IsInCategory(const EventCategory category) const noexcept
+[[nodiscard]] bool TRAP::Events::Event::IsInCategory(const EventCategory category) const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

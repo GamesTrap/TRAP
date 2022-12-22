@@ -209,8 +209,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(const 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Get(const std::string& name,
-                                                                       const TextureType textureType)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Get(const std::string& name,
+                                                                                     const TextureType textureType)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -228,7 +228,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Get(const std
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Get2D(const std::string& name)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Get2D(const std::string& name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -237,7 +237,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Get2D(const s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::GetCube(const std::string& name)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::GetCube(const std::string& name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -246,7 +246,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::GetCube(const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Texture>>& TRAP::Graphics::TextureManager::GetTextures() noexcept
+[[nodiscard]] const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Texture>>& TRAP::Graphics::TextureManager::GetTextures() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -356,7 +356,7 @@ void TRAP::Graphics::TextureManager::ReloadAll()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::TextureManager::Exists(const std::string& name)
+[[nodiscard]] bool TRAP::Graphics::TextureManager::Exists(const std::string& name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -365,7 +365,7 @@ bool TRAP::Graphics::TextureManager::Exists(const std::string& name)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::TextureManager::ExistsPath(const std::filesystem::path& path)
+[[nodiscard]] bool TRAP::Graphics::TextureManager::ExistsPath(const std::filesystem::path& path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 

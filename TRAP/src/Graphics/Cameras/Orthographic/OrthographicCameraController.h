@@ -17,12 +17,12 @@ namespace TRAP::Graphics
 		/// Retrieve the width of the camera bounds.
 		/// </summary>
 		/// <returns>Width of the camera bounds.</returns>
-		float GetWidth() const noexcept;
+		[[nodiscard]] float GetWidth() const noexcept;
 		/// <summary>
 		/// Retrieve the height of the camera bounds.
 		/// </summary>
 		/// <returns>Height of the camera bounds.</returns>
-		float GetHeight() const noexcept;
+		[[nodiscard]] float GetHeight() const noexcept;
 	};
 
 	class OrthographicCameraController
@@ -88,18 +88,18 @@ namespace TRAP::Graphics
 		/// Retrieve the Orthographic/2D camera.
 		/// </summary>
 		/// <returns>Orthographic/2D camera.</returns>
-		OrthographicCamera& GetCamera() noexcept;
+		[[nodiscard]] OrthographicCamera& GetCamera() noexcept;
 		/// <summary>
 		/// Retrieve the Orthographic/2D camera.
 		/// </summary>
 		/// <returns>Orthographic/2D camera.</returns>
-		const OrthographicCamera& GetCamera() const noexcept;
+		[[nodiscard]] const OrthographicCamera& GetCamera() const noexcept;
 
 		/// <summary>
 		/// Retrieve the currently used translation/movement speed.
 		/// </summary>
 		/// <returns>Translation/movement speed.</returns>
-		float GetTranslationSpeed() const noexcept;
+		[[nodiscard]] float GetTranslationSpeed() const noexcept;
 		/// <summary>
 		/// Set the translation/movement speed.
 		/// </summary>
@@ -110,7 +110,7 @@ namespace TRAP::Graphics
 		/// Retrieve the currently used rotation speed.
 		/// </summary>
 		/// <returns>Rotation speed.</returns>
-		float GetRotationSpeed() const noexcept;
+		[[nodiscard]] float GetRotationSpeed() const noexcept;
 		/// <summary>
 		/// Set the rotation speed.
 		/// </summary>
@@ -121,7 +121,7 @@ namespace TRAP::Graphics
 		/// Retrieve the current zoom level.
 		/// </summary>
 		/// <returns>Zoom level.</returns>
-		float GetZoomLevel() const noexcept;
+		[[nodiscard]] float GetZoomLevel() const noexcept;
 		/// <summary>
 		/// Set the zoom level.
 		/// </summary>
@@ -132,7 +132,7 @@ namespace TRAP::Graphics
 		/// Retrieve the current camera bounds.
 		/// </summary>
 		/// <returns>Camera bounds.</returns>
-		const OrthographicCameraBounds& GetBounds() const noexcept;
+		[[nodiscard]] const OrthographicCameraBounds& GetBounds() const noexcept;
 
 	private:
 		/// <summary>

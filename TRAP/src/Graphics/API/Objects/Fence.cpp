@@ -3,7 +3,7 @@
 
 #include "Graphics/API/Vulkan/Objects/VulkanFence.h"
 
-TRAP::Ref<TRAP::Graphics::Fence> TRAP::Graphics::Fence::Create()
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Fence> TRAP::Graphics::Fence::Create()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -46,7 +46,7 @@ TRAP::Graphics::Fence::~Fence()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::Fence::IsSubmitted() const noexcept
+[[nodiscard]] bool TRAP::Graphics::Fence::IsSubmitted() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

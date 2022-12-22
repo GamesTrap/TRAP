@@ -129,28 +129,28 @@ namespace TRAP::Graphics
 		/// Retrieve the Renderer singleton.
 		/// </summary>
 		/// <returns>Renderer.</returns>
-		static RendererAPI* GetRenderer();
+		[[nodiscard]] static RendererAPI* GetRenderer();
 		/// <summary>
 		/// Retrieve the resource loader singleton.
 		/// </summary>
 		/// <returns>Resource loader.</returns>
-		static API::ResourceLoader* GetResourceLoader() noexcept;
+		[[nodiscard]] static API::ResourceLoader* GetResourceLoader() noexcept;
 
 		/// <summary>
 		/// Auto select a supported render API.
 		/// </summary>
 		/// <returns>Auto selected render API.</returns>
-		static RenderAPI AutoSelectRenderAPI();
+		[[nodiscard]] static RenderAPI AutoSelectRenderAPI();
 		/// <summary>
 		/// Check whether a render API is supported by the system.
 		/// </summary>
 		/// <returns>True if supported, false otherwise.</returns>
-		static bool IsSupported(RenderAPI api);
+		[[nodiscard]] static bool IsSupported(RenderAPI api);
 		/// <summary>
 		/// Retrieve the currently used render API.
 		/// </summary>
 		/// <returns>Currently used render API.</returns>
-		static RenderAPI GetRenderAPI() noexcept;
+		[[nodiscard]] static RenderAPI GetRenderAPI() noexcept;
 
 		/// <summary>
 		/// Set a new GPU to use.
@@ -165,7 +165,7 @@ namespace TRAP::Graphics
 		/// Note: This will return an empty UUID if no new GPU was set.
 		/// </summary>
 		/// <returns>UUID of the new GPU to use.</returns>
-		static std::array<uint8_t, 16> GetNewGPU() noexcept;
+		[[nodiscard]] static std::array<uint8_t, 16> GetNewGPU() noexcept;
 
 		/// <summary>
 		/// On post update function.
@@ -212,7 +212,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="window">Window to retrieve VSync for.</param>
 		/// <returns>True if VSync is enabled, false otherwise.</returns>
-		virtual bool GetVSync(const Window* const window) const = 0;
+		[[nodiscard]] virtual bool GetVSync(const Window* const window) const = 0;
 
 		/// <summary>
 		/// Set the FPS limit for NVIDIA-Reflex.
@@ -237,7 +237,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="window">Window to retrieve render scale from.</param>
 		/// <returns>Render scale (between 0.5f and 2.0f inclusive).</returns>
-		virtual float GetRenderScale(const Window* const window) const = 0;
+		[[nodiscard]] virtual float GetRenderScale(const Window* const window) const = 0;
 
 		/// <summary>
 		/// Set the clear color to be used by the given window.
@@ -631,7 +631,7 @@ namespace TRAP::Graphics
 		/// Retrieve the latency report from NVIDIA-Reflex.
 		/// </summary>
 		/// <returns>Latency report.</returns>
-		virtual NVLL_VK_LATENCY_RESULT_PARAMS ReflexGetLatency() const = 0;
+		[[nodiscard]] virtual NVLL_VK_LATENCY_RESULT_PARAMS ReflexGetLatency() const = 0;
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
 
 		/// <summary>
@@ -639,36 +639,36 @@ namespace TRAP::Graphics
 		/// Example title: "[Vulkan 1.3.0]".
 		/// </summary>
 		/// <returns>Renderer title.</returns>
-		virtual std::string GetTitle() const noexcept = 0;
+		[[nodiscard]] virtual std::string GetTitle() const noexcept = 0;
 
 		/// <summary>
 		/// Retrieve the currently used GPUs UUID.
 		/// </summary>
 		/// <returns>GPU's UUID.</returns>
-		virtual std::array<uint8_t, 16> GetCurrentGPUUUID() const noexcept = 0;
+		[[nodiscard]] virtual std::array<uint8_t, 16> GetCurrentGPUUUID() const noexcept = 0;
 		/// <summary>
 		/// Retrieve the name of the currently used GPU.
 		/// </summary>
 		/// <returns>GPU's name.</returns>
-		virtual std::string GetCurrentGPUName() const noexcept = 0;
+		[[nodiscard]] virtual std::string GetCurrentGPUName() const noexcept = 0;
 		/// <summary>
 		/// Retrieve the vendor of the currently used GPU.
 		/// </summary>
 		/// <returns>GPU vendor.</returns>
-		virtual GPUVendor GetCurrentGPUVendor() const noexcept = 0;
+		[[nodiscard]] virtual GPUVendor GetCurrentGPUVendor() const noexcept = 0;
 		/// <summary>
 		/// Retrieve a list of all supported GPUs.
 		/// The list contains the GPUs name and UUID.
 		/// </summary>
 		/// <returns>List of all supported GPUs.</returns>
-		virtual std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() const = 0;
+		[[nodiscard]] virtual std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() const = 0;
 
 		/// <summary>
 		/// Capture a screenshot of the last presented frame.
 		/// </summary>
 		/// <param name="window">Window to capture screenshot on.</param>
 		/// <returns>Captured screenshot as TRAP::Image on success, Black 1x1 TRAP::Image otherwise.</returns>
-		virtual TRAP::Scope<TRAP::Image> CaptureScreenshot(const Window* const window) const = 0;
+		[[nodiscard]] virtual TRAP::Scope<TRAP::Image> CaptureScreenshot(const Window* const window) const = 0;
 
 		/// <summary>
 		/// Resolve a MSAA render target to a non MSAA render target.
@@ -711,40 +711,40 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="window">Window to retrieve latency mode for.</param>
 		/// <returns>Used latency mode.</returns>
-		virtual LatencyMode GetLatencyMode(const Window* const window) const = 0;
+		[[nodiscard]] virtual LatencyMode GetLatencyMode(const Window* const window) const = 0;
 
 		/// <summary>
 		/// Retrieve the used descriptor pool.
 		/// </summary>
 		/// <returns>Descriptor pool.</returns>
-		static TRAP::Ref<TRAP::Graphics::DescriptorPool> GetDescriptorPool() noexcept;
+		[[nodiscard]] static TRAP::Ref<TRAP::Graphics::DescriptorPool> GetDescriptorPool() noexcept;
 		/// <summary>
 		/// Retrieve the used graphics queue.
 		/// </summary>
 		/// <returns>Graphics queue.</returns>
-		static TRAP::Ref<TRAP::Graphics::Queue> GetGraphicsQueue() noexcept;
+		[[nodiscard]] static TRAP::Ref<TRAP::Graphics::Queue> GetGraphicsQueue() noexcept;
 		/// <summary>
 		/// Retrieve the used compute queue.
 		/// </summary>
 		/// <returns>Compute queue.</returns>
-		static TRAP::Ref<TRAP::Graphics::Queue> GetComputeQueue() noexcept;
+		[[nodiscard]] static TRAP::Ref<TRAP::Graphics::Queue> GetComputeQueue() noexcept;
 		/// <summary>
 		/// Retrieve the used transfer queue.
 		/// </summary>
 		/// <returns>Transfer queue.</returns>
-		static TRAP::Ref<TRAP::Graphics::Queue> GetTransferQueue() noexcept;
+		[[nodiscard]] static TRAP::Ref<TRAP::Graphics::Queue> GetTransferQueue() noexcept;
 		/// <summary>
 		/// Retrieve the currently used graphics root signature of the given window.
 		/// </summary>
 		/// <param name="window">Window to retrieve the graphics root signature from.</param>
 		/// <returns>Graphics root signature.</returns>
-		static TRAP::Ref<TRAP::Graphics::RootSignature> GetGraphicsRootSignature(const Window* const window);
+		[[nodiscard]] static TRAP::Ref<TRAP::Graphics::RootSignature> GetGraphicsRootSignature(const Window* const window);
 		/// <summary>
 		/// Retrieve the currently used internal render resolution of the given window.
 		/// </summary>
 		/// <param name="window">Window to get internal render resolution from.</param>
 		/// <returns>Internal render resolution.</returns>
-		static TRAP::Math::Vec2ui GetInternalRenderResolution(const Window* window);
+		[[nodiscard]] static TRAP::Math::Vec2ui GetInternalRenderResolution(const Window* window);
 
 		/// <summary>
 		/// Start a render pass for the given window.
@@ -794,7 +794,7 @@ namespace TRAP::Graphics
 		/// Retrieve the currently used anisotropy level.
 		/// </summary>
 		/// <returns>Used anisotropy level.</returns>
-		static SampleCount GetAnisotropyLevel() noexcept;
+		[[nodiscard]] static SampleCount GetAnisotropyLevel() noexcept;
 
 		/// <summary>
 		/// Set the anisotropy level.
@@ -817,20 +817,20 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="window">Window to get frame time from.</param>
 		/// <returns>GPU Graphics frame time in milliseconds.</returns>
-		static float GetGPUGraphicsFrameTime(const Window* const window);
+		[[nodiscard]] static float GetGPUGraphicsFrameTime(const Window* const window);
 		/// <summary>
 		/// Retrieve the GPU side frame time for the compute queue.
 		/// </summary>
 		/// <param name="window">Window to get frame time from.</param>
 		/// <returns>GPU Compute frame time in milliseconds.</returns>
-		static float GetGPUComputeFrameTime(const Window* const window);
+		[[nodiscard]] static float GetGPUComputeFrameTime(const Window* const window);
 
 	//protected:
 		/// <summary>
 		/// Retrieve windows internal rendering data.
 		/// </summary>
 		/// <returns>Windows internal rendering data.</returns>
-		static PerWindowData& GetWindowData(const Window* const window);
+		[[nodiscard]] static PerWindowData& GetWindowData(const Window* const window);
 
 	public:
 		/// <summary>
@@ -855,7 +855,7 @@ namespace TRAP::Graphics
 		/// Note: The first call to this function will run the Vulkan capability tester.
 		/// </summary>
 		/// <returns>True if the system is Vulkan API capable, false otherwise.</returns>
-		static bool IsVulkanCapable();
+		[[nodiscard]] static bool IsVulkanCapable();
 
 		/// <summary>
 		/// Enum bit flag for the different wave operations.
@@ -2610,7 +2610,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="window">Window to retrieve image index from.</param>
 		/// <returns>Image index.</returns>
-		static uint32_t GetCurrentImageIndex(const TRAP::Window* const window);
+		[[nodiscard]] static uint32_t GetCurrentImageIndex(const TRAP::Window* const window);
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
 		//GPU crash dump tracker using Nsight Aftermath instrumentation

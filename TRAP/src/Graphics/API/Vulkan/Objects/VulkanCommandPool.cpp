@@ -53,7 +53,7 @@ TRAP::Graphics::API::VulkanCommandPool::~VulkanCommandPool()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkCommandPool TRAP::Graphics::API::VulkanCommandPool::GetVkCommandPool() const noexcept
+[[nodiscard]] VkCommandPool TRAP::Graphics::API::VulkanCommandPool::GetVkCommandPool() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -62,7 +62,7 @@ VkCommandPool TRAP::Graphics::API::VulkanCommandPool::GetVkCommandPool() const n
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::VulkanCommandPool::AllocateCommandBuffer(const bool secondary)
+[[nodiscard]] TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::VulkanCommandPool::AllocateCommandBuffer(const bool secondary)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

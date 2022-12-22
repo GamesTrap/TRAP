@@ -3562,3 +3562,7 @@ SITREP 12/20/2022|22w51a1
 SITREP 12/21/2022|22w51a2
     - Changed TRAP Engine version to 22w51a2(0.8.87)
     - Removed TRAP_ASSERTs which are already guaranteed to not get triggered ~>30 mins
+
+SITREP 12/22/2022|22w51a3
+    - Changed TRAP Engine version to 22w51a3(0.8.88)
+    - Added [[nodiscard]] attribute to lots of functions ~>120 mins

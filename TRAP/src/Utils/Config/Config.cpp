@@ -138,7 +138,7 @@ bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Config::HasChanged() const noexcept
+[[nodiscard]] bool TRAP::Utils::Config::HasChanged() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -162,7 +162,7 @@ void TRAP::Utils::Config::Print() const
 //This method parses a line from out format("key = value") into a std::pair<std::string, std::string>
 //containing the key and the value.
 //If the line is empty or a comment(starts with a '#') an empty pair is returned.
-std::pair<std::string, std::string> TRAP::Utils::Config::ParseLine(const std::string_view line) const
+[[nodiscard]] std::pair<std::string, std::string> TRAP::Utils::Config::ParseLine(const std::string_view line) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 

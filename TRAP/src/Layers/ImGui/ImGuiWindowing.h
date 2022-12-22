@@ -47,8 +47,8 @@ namespace TRAP::INTERNAL
 		/// <param name="installCallbacks">Whether to set ImGui callbacks or not.</param>
 		/// <param name="renderAPI">RenderAPI to be used by ImGui.</param>
 		/// <returns>True on successful initialization, false otherwise.</returns>
-		static bool Init(WindowingAPI::InternalWindow* window, bool installCallbacks,
-		                 Graphics::RenderAPI renderAPI);
+		[[nodiscard]] static bool Init(WindowingAPI::InternalWindow* window, bool installCallbacks,
+		                               Graphics::RenderAPI renderAPI);
 		/// <summary>
 		/// Shutdown the ImGui TRAP::INTERNAL::WindowingAPI interface.
 		/// </summary>
@@ -201,14 +201,14 @@ namespace TRAP::INTERNAL
 		/// Get the backend data provided by user.
 		/// </summary>
 		/// <returns>Pointer to backend data.</returns>
-		static ImGuiTRAPData* GetBackendData();
+		[[nodiscard]] static ImGuiTRAPData* GetBackendData();
 
 		/// <summary>
 		/// Get clipboard text.
 		/// </summary>
 		/// <param name="userData">Unused.</param>
 		/// <returns>Clipboard content.</returns>
-		static const char* GetClipboardText(void* userData);
+		[[nodiscard]] static const char* GetClipboardText(void* userData);
 		/// <summary>
 		/// Set the clipboard text.
 		/// </summary>
@@ -221,7 +221,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="key">Key to convert.</param>
 		/// <returns>Converted key.</returns>
-		static ImGuiKey KeyToImGuiKey(Input::Key key) noexcept;
+		[[nodiscard]] static ImGuiKey KeyToImGuiKey(Input::Key key) noexcept;
 
 		/// <summary>
 		/// Update modifier keys.
@@ -235,7 +235,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="key">Key to translate.</param>
 		/// <returns>Translated key.</returns>
-		static Input::Key TranslateUntranslateKey(Input::Key key);
+		[[nodiscard]] static Input::Key TranslateUntranslateKey(Input::Key key);
 
 		/// <summary>
 		/// Update the ImGui mouse data.
@@ -302,7 +302,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="viewport">Viewport to retrieve position for.</param>
 		/// <returns>Window position.</returns>
-		static ImVec2 GetWindowPos(ImGuiViewport* viewport);
+		[[nodiscard]] static ImVec2 GetWindowPos(ImGuiViewport* viewport);
 		/// <summary>
 		/// Set the position for the ImGui Window.
 		/// </summary>
@@ -314,7 +314,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="viewport">Viewport to retrieve size for.</param>
 		/// <returns>Window size.</returns>
-		static ImVec2 GetWindowSize(ImGuiViewport* viewport);
+		[[nodiscard]] static ImVec2 GetWindowSize(ImGuiViewport* viewport);
 		/// <summary>
 		/// Set the size for the ImGui Window.
 		/// </summary>
@@ -337,13 +337,13 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="viewport">Viewport to retrieve focus state for.</param>
 		/// <returns>Focus state.</returns>
-		static bool GetWindowFocus(ImGuiViewport* viewport);
+		[[nodiscard]] static bool GetWindowFocus(ImGuiViewport* viewport);
 		/// <summary>
 		/// Retrieve the ImGui Window minimization state.
 		/// </summary>
 		/// <param name="viewport">Viewport to retrieve minimization state for.</param>
 		/// <returns>Minimization state.</returns>
-		static bool GetWindowMinimized(ImGuiViewport* viewport);
+		[[nodiscard]] static bool GetWindowMinimized(ImGuiViewport* viewport);
 		/// <summary>
 		/// Set the alpha value for the ImGui Window.
 		/// </summary>
@@ -363,8 +363,8 @@ namespace TRAP::INTERNAL
 		/// <param name="vkAllocator">Vulkan allocator.</param>
 		/// <param name="outVkSurface">Output for Vulkan surface.</param>
 		/// <returns>Vulkan error code.</returns>
-		static int32_t CreateVkSurface(ImGuiViewport* viewport, const ImU64 vkInstance,
-		                               const void* vkAllocator, ImU64* outVkSurface);
+		[[nodiscard]] static int32_t CreateVkSurface(ImGuiViewport* viewport, const ImU64 vkInstance,
+		                                             const void* vkAllocator, ImU64* outVkSurface);
 
 		/// <summary>
 		/// Initialize the platform interface.

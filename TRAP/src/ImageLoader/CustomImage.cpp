@@ -3,7 +3,7 @@
 
 #include "Embed.h"
 
-const void* TRAP::INTERNAL::CustomImage::GetPixelData() const noexcept
+[[nodiscard]] const void* TRAP::INTERNAL::CustomImage::GetPixelData() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -18,7 +18,7 @@ const void* TRAP::INTERNAL::CustomImage::GetPixelData() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::INTERNAL::CustomImage::GetPixelDataSize() const noexcept
+[[nodiscard]] uint64_t TRAP::INTERNAL::CustomImage::GetPixelDataSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

@@ -17,7 +17,7 @@ namespace TRAP
 		ScriptableEntity& operator=(ScriptableEntity&&) noexcept = default;
 
 		template<typename T>
-		T& GetComponent()
+		[[nodiscard]] T& GetComponent()
 		{
 			return m_entity.GetComponent<T>();
 		}

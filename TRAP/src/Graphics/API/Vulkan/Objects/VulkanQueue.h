@@ -42,40 +42,40 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan queue handle.
 		/// </summary>
 		/// <returns>Vulkan queue handle.</returns>
-		VkQueue GetVkQueue() const noexcept;
+		[[nodiscard]] VkQueue GetVkQueue() const noexcept;
 		/// <summary>
 		/// Retrieve the queue family index.
 		/// </summary>
 		/// <returns>Queue family index.</returns>
-		uint8_t GetQueueFamilyIndex() const noexcept;
+		[[nodiscard]] uint8_t GetQueueFamilyIndex() const noexcept;
 		/// <summary>
 		/// Retrieve the queue index.
 		/// </summary>
 		/// <returns>Queue index.</returns>
-		uint8_t GetQueueIndex() const noexcept;
+		[[nodiscard]] uint8_t GetQueueIndex() const noexcept;
 		/// <summary>
 		/// Retrieve the queue type.
 		/// </summary>
 		/// <returns>Queue type.</returns>
-		RendererAPI::QueueType GetQueueType() const noexcept;
+		[[nodiscard]] RendererAPI::QueueType GetQueueType() const noexcept;
 		/// <summary>
 		/// Retrieve the queue flags.
 		/// Indicates capabilities of the queue.
 		/// </summary>
 		/// <returns>Queue flags.</returns>
-		uint32_t GetFlags() const noexcept;
+		[[nodiscard]] uint32_t GetFlags() const noexcept;
 		/// <summary>
 		/// Retrieve the number of nanoseconds required
 		/// for a timestamp to be incremented by 1.
 		/// </summary>
 		/// <returns>Nanoseconds per timestamp increment.</returns>
-		float GetTimestampPeriod() const noexcept;
+		[[nodiscard]] float GetTimestampPeriod() const noexcept;
 		/// <summary>
 		/// Retrieve the number of ticks per second
 		/// required to increment a timestamp by 1.
 		/// </summary>
 		/// <returns>Ticks per second.</returns>
-		double GetTimestampFrequency() const noexcept;
+		[[nodiscard]] double GetTimestampFrequency() const noexcept;
 
 		/// <summary>
 		/// Wait for the queue to finish all submitted commands.
@@ -93,7 +93,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="desc">Queue presentation description.</param>
 		/// <returns>Presentation status.</returns>
-		RendererAPI::PresentStatus Present(const RendererAPI::QueuePresentDesc& desc) const override;
+		[[nodiscard]] RendererAPI::PresentStatus Present(const RendererAPI::QueuePresentDesc& desc) const override;
 
 	private:
 		/// <summary>

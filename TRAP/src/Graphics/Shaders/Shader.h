@@ -70,42 +70,42 @@ namespace TRAP::Graphics
 		/// Retrieve the name of the shader.
 		/// </summary>
 		/// <returns>Name of the shader.</returns>
-		std::string GetName() const noexcept;
+		[[nodiscard]] std::string GetName() const noexcept;
 
 		/// <summary>
 		/// Retrieve the file path of the shader.
 		/// </summary>
 		/// <returns>File path of the shader.</returns>
-		std::filesystem::path GetFilePath() const noexcept;
+		[[nodiscard]] std::filesystem::path GetFilePath() const noexcept;
 
 		/// <summary>
 		/// Retrieve the shader stages of the shader.
 		/// <summary>
 		/// <returns>Shader stages of the shader.</returns>
-		RendererAPI::ShaderStage GetShaderStages() const noexcept;
+		[[nodiscard]] RendererAPI::ShaderStage GetShaderStages() const noexcept;
 
 		/// <summary>
 		/// Retrieve the used macros of the shader.
 		/// </summary>
 		/// <returns>Used macros.</returns>
-		const std::vector<Macro>& GetMacros() const noexcept;
+		[[nodiscard]] const std::vector<Macro>& GetMacros() const noexcept;
 
 		/// <summary>
 		/// Retrieve the root signature of the shader.
 		/// </summary>
 		/// <returns>Root signature of the shader.</returns>
-		TRAP::Ref<RootSignature> GetRootSignature() const noexcept;
+		[[nodiscard]] TRAP::Ref<RootSignature> GetRootSignature() const noexcept;
 		/// <summary>
 		/// Retrieve the descriptor sets of the shader.
 		/// </summary>
 		/// <returns>Descriptor sets of the shader.</returns>
-		const std::array<TRAP::Scope<DescriptorSet>, RendererAPI::MaxDescriptorSets>& GetDescriptorSets() const noexcept;
+		[[nodiscard]] const std::array<TRAP::Scope<DescriptorSet>, RendererAPI::MaxDescriptorSets>& GetDescriptorSets() const noexcept;
 
 		/// <summary>
 		/// Retrieve whether the shader is valid (i.e. loaded and compiled) or not.
 		/// </summary>
 		/// <returns>True if shader is valid, false otherwise.</returns>
-		bool IsShaderValid() const noexcept;
+		[[nodiscard]] bool IsShaderValid() const noexcept;
 
 		/// <summary>
 		/// Use shader for rendering on the given window.
@@ -176,7 +176,7 @@ namespace TRAP::Graphics
 		/// Retrieve the shaders thread count per work group.
 		/// </summary>
 		/// <returns>Shaders thread count per work group.</returns>
-		virtual const std::array<uint32_t, 3>& GetNumThreadsPerGroup() const noexcept = 0;
+		[[nodiscard]] virtual const std::array<uint32_t, 3>& GetNumThreadsPerGroup() const noexcept = 0;
 
 		/// <summary>
 		/// Create a shader from file.
@@ -185,8 +185,8 @@ namespace TRAP::Graphics
 		/// <param name="filePath">File path of the shader.</param>
 		/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
 		/// <returns>Loaded Shader on success, Fallback Shader otherwise.</returns>
-		static Ref<Shader> CreateFromFile(const std::string& name, const std::filesystem::path& filePath,
-		                                  const std::vector<Macro>* userMacros = nullptr);
+		[[nodiscard]] static Ref<Shader> CreateFromFile(const std::string& name, const std::filesystem::path& filePath,
+		                                                const std::vector<Macro>* userMacros = nullptr);
 		/// <summary>
 		/// Create a shader from file.
 		/// File name will be used as the shader name.
@@ -194,8 +194,8 @@ namespace TRAP::Graphics
 		/// <param name="filePath">File path of the shader.</param>
 		/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
 		/// <returns>Loaded Shader on success, Fallback Shader otherwise.</returns>
-		static Ref<Shader> CreateFromFile(const std::filesystem::path& filePath,
-		                                  const std::vector<Macro>* userMacros = nullptr);
+		[[nodiscard]] static Ref<Shader> CreateFromFile(const std::filesystem::path& filePath,
+		                                                const std::vector<Macro>* userMacros = nullptr);
 		/// <summary>
 		/// Create a shader from GLSL source.
 		/// </summary>
@@ -203,8 +203,8 @@ namespace TRAP::Graphics
 		/// <param name="glslSource">GLSL Source code.</param>
 		/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
 		/// <returns>Loaded Shader on success, Fallback Shader otherwise.</returns>
-		static Ref<Shader> CreateFromSource(const std::string& name, const std::string& glslSource,
-		                                    const std::vector<Macro>* userMacros = nullptr);
+		[[nodiscard]] static Ref<Shader> CreateFromSource(const std::string& name, const std::string& glslSource,
+		                                                  const std::vector<Macro>* userMacros = nullptr);
 
 		static std::array<std::string, 2> SupportedShaderFormatSuffixes;
 
@@ -233,7 +233,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="filePath">File path of the shader.</param>
 		/// <returns>True if file has SPIRV magic number, false otherwise.</returns>
-		static bool CheckSPIRVMagicNumber(const std::filesystem::path& filePath);
+		[[nodiscard]] static bool CheckSPIRVMagicNumber(const std::filesystem::path& filePath);
 
 		/// <summary>
 		/// Pre process GLSL source code.
@@ -249,10 +249,10 @@ namespace TRAP::Graphics
 		/// <param name="shaderStages">Output: Used shader stages.</param>
 		/// <param name="userMacros">Optional: User defined macros.</param>
 		/// <returns>True if pre processing was successful, false otherwise.</returns>
-		static bool PreProcessGLSL(const std::string& glslSource,
-		                           std::array<std::string, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& shaders,
-		                           RendererAPI::ShaderStage& shaderStages,
-								   const std::vector<Macro>* userMacros);
+		[[nodiscard]] static bool PreProcessGLSL(const std::string& glslSource,
+		                                         std::array<std::string, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& shaders,
+		                                         RendererAPI::ShaderStage& shaderStages,
+								                 const std::vector<Macro>* userMacros);
 		/// <summary>
 		/// Pre process GLSL for SPIRV conversion with glslang.
 		/// Creates glslang::TShader objects needed for SPIRV conversion.
@@ -261,22 +261,22 @@ namespace TRAP::Graphics
 		/// <param name="stage">Shader stages contained in the GLSL source code.</param>
 		/// <param name="preProcessedSource">Output: Pre processed GLSL source code.</param>
 		/// <returns>glslang::TShader object.</returns>
-		static TRAP::Scope<glslang::TShader> PreProcessGLSLForSPIRVConversion(const char* source,
-		                                                                 	  RendererAPI::ShaderStage stage,
-																		 	  std::string& preProcessedSource);
+		[[nodiscard]] static TRAP::Scope<glslang::TShader> PreProcessGLSLForSPIRVConversion(const char* source,
+		                                                                 	                RendererAPI::ShaderStage stage,
+																		 	                std::string& preProcessedSource);
 		/// <summary>
 		/// Parse a glslang::TShader object.
 		/// </summary>
 		/// <param name="shader">glslang::TShader object.</param>
 		/// <returns>True if parsing was successful, false otherwise.</returns>
-		static bool ParseGLSLang(glslang::TShader* shader);
+		[[nodiscard]] static bool ParseGLSLang(glslang::TShader* shader);
 		/// <summary>
 		/// Link a glslang::TShader to a glslang::TProgram object.
 		/// </summary>
 		/// <param name="shader">glslang::TShader object.</param>
 		/// <param name="program">glslang::TProgram object to link with.</param>
 		/// <returns>True if linking was successful, false otherwise.</returns>
-		static bool LinkGLSLang(glslang::TShader* shader, glslang::TProgram& program);
+		[[nodiscard]] static bool LinkGLSLang(glslang::TShader* shader, glslang::TProgram& program);
 		/// <summary>
 		/// Validate that the given shader stages are a valid combination.
 		///
@@ -287,35 +287,35 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="shaderStages">Shader stages to validate.</param>
 		/// <returns>True if validation was successful, false otherwise.</returns>
-		static bool ValidateShaderStages(const RendererAPI::ShaderStage& shaderStages);
+		[[nodiscard]] static bool ValidateShaderStages(const RendererAPI::ShaderStage& shaderStages);
 		/// <summary>
 		/// Convert GLSL shaders to SPIRV.
 		/// </summary>
 		/// <param name="shaders">GLSL shader(s) to convert.</param>
 		/// <param name="shaderStages">Shader stages contained in shaders parameter.</param>
 		/// <returns>RendererAPI::BinaryShaderDesc containing SPIRV binary data.</returns>
-		static RendererAPI::BinaryShaderDesc ConvertGLSLToSPIRV(const std::array<std::string, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& shaders,
-									                            const RendererAPI::ShaderStage& shaderStages);
+		[[nodiscard]] static RendererAPI::BinaryShaderDesc ConvertGLSLToSPIRV(const std::array<std::string, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& shaders,
+									                                          const RendererAPI::ShaderStage& shaderStages);
 		/// <summary>
 		/// Convert a glslang::TProgram object to SPIRV binary data.
 		/// </summary>
 		/// <param name="stage">Shader stage to convert.</param>
 		/// <param name="program">glslang::TProgram object to convert.</param>
 		/// <returns>SPIRV binary data on success, empty vector otherwise.</returns>
-		static std::vector<uint32_t> ConvertToSPIRV(RendererAPI::ShaderStage stage,
-		                                            glslang::TProgram& program);
+		[[nodiscard]] static std::vector<uint32_t> ConvertToSPIRV(RendererAPI::ShaderStage stage,
+		                                                          glslang::TProgram& program);
 		/// <summary>
 		/// Load SPIRV binary data into RendererAPI::BinaryShaderDesc.
 		/// </summary>
 		/// <param name="SPIRV">SPIRV binary data.</param>
 		/// <returns>RendererAPI::BinaryShaderDesc containing loaded SPIRV binary data.</returns>
-		static RendererAPI::BinaryShaderDesc LoadSPIRV(std::vector<uint32_t>& SPIRV);
+		[[nodiscard]] static RendererAPI::BinaryShaderDesc LoadSPIRV(std::vector<uint32_t>& SPIRV);
 		/// <summary>
 		/// Check if the ending of the given path is a supported shader file ending.
 		/// </summary>
 		/// <param name="filePath">File path to check.</param>
 		/// <returns>True if file ending is supported, false otherwise.</returns>
-		static bool IsFileEndingSupported(const std::filesystem::path& filePath);
+		[[nodiscard]] static bool IsFileEndingSupported(const std::filesystem::path& filePath);
 		/// <summary>
 		/// Shader pre initialization.
 		///
@@ -333,7 +333,7 @@ namespace TRAP::Graphics
 		/// True on successful pre initialization, false otherwise.
 		/// If false outFailShader may be filled with a fail shader.
 		/// </returns>
-		static bool PreInit(const std::string& name, const std::filesystem::path& filePath, const std::vector<Macro>* userMacros, RendererAPI::BinaryShaderDesc& outShaderDesc, Ref<Shader>& outFailShader);
+		[[nodiscard]] static bool PreInit(const std::string& name, const std::filesystem::path& filePath, const std::vector<Macro>* userMacros, RendererAPI::BinaryShaderDesc& outShaderDesc, Ref<Shader>& outFailShader);
 
 		static bool s_glslangInitialized;
 
@@ -346,7 +346,7 @@ namespace TRAP::Graphics
 			}
 		};
 
-		inline static constexpr TBuiltInResource GetDefaultTBuiltInResource() //TODO Set these values with VkPhysicalDevice limits or min spec limits?!
+		[[nodiscard]] inline static constexpr TBuiltInResource GetDefaultTBuiltInResource() //TODO Set these values with VkPhysicalDevice limits or min spec limits?!
 		{
 			return TBuiltInResource
 			{

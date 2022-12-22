@@ -13,7 +13,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="desc">Sampler description.</param>
 		/// <returns>Created sampler.</returns>
-		static TRAP::Ref<Sampler> Create(RendererAPI::SamplerDesc desc);
+		[[nodiscard]] static TRAP::Ref<Sampler> Create(RendererAPI::SamplerDesc desc);
 
 		/// <summary>
 		/// Destructor.
@@ -41,52 +41,52 @@ namespace TRAP::Graphics
 		/// Retrieve the minification filter of the sampler.
 		/// </summary>
 		/// <returns>Minification filter.</returns>
-		FilterType GetMinFilter() const noexcept;
+		[[nodiscard]] FilterType GetMinFilter() const noexcept;
 		/// <summary>
 		/// Retrieve the magnification filter of the sampler.
 		/// </summary>
 		/// <returns>Magnification filter.</returns>
-		FilterType GetMagFilter() const noexcept;
+		[[nodiscard]] FilterType GetMagFilter() const noexcept;
 		/// <summary>
 		/// Retrieve the mip map mode of the sampler.
 		/// </summary>
 		/// <returns>Mip map mode.</returns>
-		MipMapMode GetMipMapMode() const noexcept;
+		[[nodiscard]] MipMapMode GetMipMapMode() const noexcept;
 		/// <summary>
 		/// Retrieve the address mode of the U coordinate of the sampler.
 		/// </summary>
 		/// <returns>Address mode.</returns>
-		AddressMode GetAddressU() const noexcept;
+		[[nodiscard]] AddressMode GetAddressU() const noexcept;
 		/// <summary>
 		/// Retrieve the address mode of the V coordinate of the sampler.
 		/// </summary>
 		/// <returns>Address mode.</returns>
-		AddressMode GetAddressV() const noexcept;
+		[[nodiscard]] AddressMode GetAddressV() const noexcept;
 		/// <summary>
 		/// Retrieve the address mode of the W coordinate of the sampler.
 		/// </summary>
 		/// <returns>Address mode.</returns>
-		AddressMode GetAddressW() const noexcept;
+		[[nodiscard]] AddressMode GetAddressW() const noexcept;
 		/// <summary>
 		/// Retrieve the mip lod bias of the sampler.
 		/// </summary>
 		/// <returns>Address mode.</returns>
-		float GetMipLodBias() const noexcept;
+		[[nodiscard]] float GetMipLodBias() const noexcept;
 		/// <summary>
 		/// Retrieve the max anisotropy of the sampler.
 		/// </summary>
 		/// <returns>Max anisotropy.</returns>
-		float GetAnisotropyLevel() const noexcept;
+		[[nodiscard]] float GetAnisotropyLevel() const noexcept;
 		/// <summary>
 		/// Retrieve the compare function of the sampler.
 		/// </summary>
 		/// <returns>Compare function.</returns>
-		CompareMode GetCompareFunc() const noexcept;
+		[[nodiscard]] CompareMode GetCompareFunc() const noexcept;
 		/// <summary>
 		/// Retrieve whether the sampler uses the engines anisotropy level or not.
 		/// </summary>
 		/// <returns>True if engine set anisotropy level is used, false otherwise.</returns>
-		bool UsesEngineAnisotropyLevel() const noexcept;
+		[[nodiscard]] bool UsesEngineAnisotropyLevel() const noexcept;
 
 		/// <summary>
 		/// Clear all cached samplers.

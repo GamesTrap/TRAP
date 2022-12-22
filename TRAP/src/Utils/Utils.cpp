@@ -7,7 +7,7 @@
 #include "Application.h"
 #include "Utils/DynamicLoading/DynamicLoading.h"
 
-std::string TRAP::Utils::UUIDToString(const std::array<uint8_t, 16>& uuid)
+[[nodiscard]] std::string TRAP::Utils::UUIDToString(const std::array<uint8_t, 16>& uuid)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -40,7 +40,7 @@ std::string TRAP::Utils::UUIDToString(const std::array<uint8_t, 16>& uuid)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 16> TRAP::Utils::UUIDFromString(const std::string_view uuid)
+[[nodiscard]] std::array<uint8_t, 16> TRAP::Utils::UUIDFromString(const std::string_view uuid)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -98,7 +98,7 @@ std::array<uint8_t, 16> TRAP::Utils::UUIDFromString(const std::string_view uuid)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::Endian TRAP::Utils::GetEndian()
+[[nodiscard]] TRAP::Utils::Endian TRAP::Utils::GetEndian()
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -116,7 +116,7 @@ TRAP::Utils::Endian TRAP::Utils::GetEndian()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
+[[nodiscard]] const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -271,7 +271,7 @@ const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
+[[nodiscard]] TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -329,7 +329,7 @@ TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 
 static TRAP::Utils::NTDLL s_ntdll;
 
-BOOL TRAP::Utils::IsWindowsVersionOrGreaterWin32(const WORD major, const WORD minor, const WORD sp)
+[[nodiscard]] BOOL TRAP::Utils::IsWindowsVersionOrGreaterWin32(const WORD major, const WORD minor, const WORD sp)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -358,7 +358,7 @@ BOOL TRAP::Utils::IsWindowsVersionOrGreaterWin32(const WORD major, const WORD mi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-BOOL TRAP::Utils::IsWindows10BuildOrGreaterWin32(const WORD build)
+[[nodiscard]] BOOL TRAP::Utils::IsWindows10BuildOrGreaterWin32(const WORD build)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -387,7 +387,7 @@ BOOL TRAP::Utils::IsWindows10BuildOrGreaterWin32(const WORD build)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-BOOL TRAP::Utils::IsWindows11BuildOrGreaterWin32(const WORD build)
+[[nodiscard]] BOOL TRAP::Utils::IsWindows11BuildOrGreaterWin32(const WORD build)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -396,7 +396,7 @@ BOOL TRAP::Utils::IsWindows11BuildOrGreaterWin32(const WORD build)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-BOOL TRAP::Utils::IsWindows10Version1607OrGreaterWin32()
+[[nodiscard]] BOOL TRAP::Utils::IsWindows10Version1607OrGreaterWin32()
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -405,7 +405,7 @@ BOOL TRAP::Utils::IsWindows10Version1607OrGreaterWin32()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-BOOL TRAP::Utils::IsWindows10Version1703OrGreaterWin32()
+[[nodiscard]] BOOL TRAP::Utils::IsWindows10Version1703OrGreaterWin32()
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -414,7 +414,7 @@ BOOL TRAP::Utils::IsWindows10Version1703OrGreaterWin32()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-BOOL TRAP::Utils::IsWindows8Point1OrGreaterWin32()
+[[nodiscard]] BOOL TRAP::Utils::IsWindows8Point1OrGreaterWin32()
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -424,7 +424,7 @@ BOOL TRAP::Utils::IsWindows8Point1OrGreaterWin32()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-BOOL TRAP::Utils::IsWindows8OrGreaterWin32()
+[[nodiscard]] BOOL TRAP::Utils::IsWindows8OrGreaterWin32()
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -434,7 +434,7 @@ BOOL TRAP::Utils::IsWindows8OrGreaterWin32()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-BOOL TRAP::Utils::IsWindows7OrGreaterWin32()
+[[nodiscard]] BOOL TRAP::Utils::IsWindows7OrGreaterWin32()
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

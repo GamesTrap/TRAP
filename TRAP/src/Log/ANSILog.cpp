@@ -3,7 +3,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Log::IsColorTerminal()
+[[nodiscard]] bool TRAP::Log::IsColorTerminal()
 {
 	ZoneScoped;
 

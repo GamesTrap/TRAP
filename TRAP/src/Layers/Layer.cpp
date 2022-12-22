@@ -53,7 +53,7 @@ void TRAP::Layer::OnEvent(Events::Event& /*event*/)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Layer::GetName() const noexcept
+[[nodiscard]] std::string TRAP::Layer::GetName() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

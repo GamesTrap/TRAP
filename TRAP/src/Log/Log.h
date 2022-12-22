@@ -56,7 +56,7 @@ namespace TRAP
 		/// Get the current used file path for saving.
 		/// </summary>
 		/// <returns>File path.</returns>
-		const std::filesystem::path& GetFilePath() const noexcept;
+		[[nodiscard]] const std::filesystem::path& GetFilePath() const noexcept;
 		/// <summary>
 		/// Set the file path used for saving.
 		///
@@ -136,7 +136,7 @@ namespace TRAP
 		/// Get all saved log messages and their associated importance level.
 		/// </summary>
 		/// <returns>Messages with importance level.</returns>
-		const std::vector<std::pair<Level, std::string>>& GetBuffer() const noexcept;
+		[[nodiscard]] const std::vector<std::pair<Level, std::string>>& GetBuffer() const noexcept;
 
 		/// <summary>
 		/// Save all collected messages to file.
@@ -147,7 +147,7 @@ namespace TRAP
 		/// </summary>
 		void Clear() noexcept;
 
-		inline static constexpr auto WindowVersion =                        "[22w51a2]";
+		inline static constexpr auto WindowVersion =                        "[22w51a3]";
 		inline static constexpr auto WindowPrefix =                         "[Window] ";
 		inline static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		inline static constexpr auto ConfigPrefix =                         "[Config] ";
@@ -275,18 +275,18 @@ namespace TRAP
 		/// <summary>
 		/// Check whether the terminal supports ANSI color codes.
 		/// </summary>
-		static bool IsColorTerminal();
+		[[nodiscard]] static bool IsColorTerminal();
 #endif
 		/// <summary>
 		/// Get a time stamp with [HH:MM:SS] format.
 		/// </summary>
 		/// <returns>Time stamp as a string.</returns>
-		static std::string GetTimeStamp();
+		[[nodiscard]] static std::string GetTimeStamp();
 		/// <summary>
 		/// Get a date time stamp with YYYY-MM-DDTHH-MM-SS format.
 		/// </summary>
 		/// <returns>Time stamp as a string.</returns>
-		static std::string GetDateTimeStamp();
+		[[nodiscard]] static std::string GetDateTimeStamp();
 
 		std::vector<std::pair<Level, std::string>> m_buffer{};
 

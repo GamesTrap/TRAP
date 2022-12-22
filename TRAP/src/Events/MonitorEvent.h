@@ -21,13 +21,13 @@ namespace TRAP::Events
 		/// Retrieve the affected monitor.
 		/// </summary>
 		/// <returns>Monitor.</returns>
-		Monitor GetMonitor() const noexcept;
+		[[nodiscard]] Monitor GetMonitor() const noexcept;
 
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const noexcept override;
+		[[nodiscard]] EventCategory GetCategoryFlags() const noexcept override;
 
 	protected:
 		/// <summary>
@@ -93,23 +93,23 @@ namespace TRAP::Events
 		/// Get a string representation of the MonitorConnectEvent.
 		/// </summary>
 		/// <returns>String representation.</returns>
-		std::string ToString() const override;
+		[[nodiscard]] std::string ToString() const override;
 
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType() noexcept;
+		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const noexcept override;
+		[[nodiscard]] EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		std::string GetName() const override;
+		[[nodiscard]] std::string GetName() const override;
 	};
 
 	/// <summary>
@@ -149,23 +149,23 @@ namespace TRAP::Events
 		/// Get a string representation of the MonitorDisconnectEvent.
 		/// </summary>
 		/// <returns>String representation.</returns>
-		std::string ToString() const override;
+		[[nodiscard]] std::string ToString() const override;
 
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType() noexcept;
+		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const noexcept override;
+		[[nodiscard]] EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		std::string GetName() const override;
+		[[nodiscard]] std::string GetName() const override;
 	};
 }
 
@@ -185,7 +185,7 @@ constexpr TRAP::Events::MonitorConnectEvent::MonitorConnectEvent(const Monitor& 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::MonitorConnectEvent::GetStaticType() noexcept
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::MonitorConnectEvent::GetStaticType() noexcept
 {
 	return EventType::MonitorConnect;
 }
@@ -200,7 +200,7 @@ constexpr TRAP::Events::MonitorDisconnectEvent::MonitorDisconnectEvent(const Mon
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::MonitorDisconnectEvent::GetStaticType() noexcept
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::MonitorDisconnectEvent::GetStaticType() noexcept
 {
 	return EventType::MonitorDisconnect;
 }

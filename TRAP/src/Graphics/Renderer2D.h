@@ -178,18 +178,18 @@ namespace TRAP::Graphics
 			/// Retrieve the current total number of vertices.
 			/// </summary>
 			/// <returns>Total vertices count.</returns>
-			uint32_t GetTotalVertexCount() const noexcept;
+			[[nodiscard]] uint32_t GetTotalVertexCount() const noexcept;
 			/// <summary>
 			/// Retrieve the current total number of indices.
 			/// </summary>
 			/// <returns>Total indices count.</returns>
-			uint32_t GetTotalIndexCount() const noexcept;
+			[[nodiscard]] uint32_t GetTotalIndexCount() const noexcept;
 		};
 		/// <summary>
 		/// Retrieve the current Renderer2D statistics.
 		/// </summary>
 		/// <returns>Renderer2D statistics.</returns>
-		static Statistics GetStats() noexcept;
+		[[nodiscard]] static Statistics GetStats() noexcept;
 		/// <summary>
 		/// Reset the Renderer2D statistics.
 		/// </summary>

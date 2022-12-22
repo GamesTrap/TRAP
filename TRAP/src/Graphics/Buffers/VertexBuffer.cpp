@@ -5,8 +5,8 @@
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Buffer.h"
 
-TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(const float* const vertices, const uint64_t size,
-                                                                               const UpdateFrequency updateFrequency)
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(const float* const vertices, const uint64_t size,
+                                                                                             const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -15,8 +15,8 @@ TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(const uint64_t size,
-                                                                               const UpdateFrequency updateFrequency)
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(const uint64_t size,
+                                                                                             const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -42,7 +42,7 @@ TRAP::Graphics::VertexBuffer::~VertexBuffer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Graphics::VertexBufferLayout& TRAP::Graphics::VertexBuffer::GetLayout() const noexcept
+[[nodiscard]] const TRAP::Graphics::VertexBufferLayout& TRAP::Graphics::VertexBuffer::GetLayout() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -60,7 +60,7 @@ void TRAP::Graphics::VertexBuffer::SetLayout(const VertexBufferLayout& layout)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::Graphics::VertexBuffer::GetSize() const noexcept
+[[nodiscard]] uint64_t TRAP::Graphics::VertexBuffer::GetSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -69,7 +69,7 @@ uint64_t TRAP::Graphics::VertexBuffer::GetSize() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::VertexBuffer::GetCount() const noexcept
+[[nodiscard]] uint32_t TRAP::Graphics::VertexBuffer::GetCount() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -78,7 +78,7 @@ uint32_t TRAP::Graphics::VertexBuffer::GetCount() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::UpdateFrequency TRAP::Graphics::VertexBuffer::GetUpdateFrequency() const noexcept
+[[nodiscard]] TRAP::Graphics::UpdateFrequency TRAP::Graphics::VertexBuffer::GetUpdateFrequency() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -114,7 +114,7 @@ void TRAP::Graphics::VertexBuffer::SetData(const float* const data, const uint64
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::VertexBuffer::IsLoaded() const
+[[nodiscard]] bool TRAP::Graphics::VertexBuffer::IsLoaded() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -132,8 +132,8 @@ void TRAP::Graphics::VertexBuffer::AwaitLoading() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Init(const float* const vertices, const uint64_t size,
- 																		     const UpdateFrequency updateFrequency)
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Init(const float* const vertices, const uint64_t size,
+ 																		                   const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 

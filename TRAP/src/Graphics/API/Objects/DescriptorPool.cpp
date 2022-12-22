@@ -3,7 +3,7 @@
 
 #include "Graphics/API/Vulkan/Objects/VulkanDescriptorPool.h"
 
-TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::DescriptorPool::Create(const uint32_t numDescriptorSets)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::DescriptorPool::Create(const uint32_t numDescriptorSets)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -48,7 +48,7 @@ TRAP::Graphics::DescriptorPool::~DescriptorPool()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::DescriptorPool::GetDescriptorSetsNum() const noexcept
+[[nodiscard]] uint32_t TRAP::Graphics::DescriptorPool::GetDescriptorSetsNum() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

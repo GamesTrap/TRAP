@@ -71,7 +71,7 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Steam::IsInitialized() noexcept
+[[nodiscard]] bool TRAP::Utils::Steam::IsInitialized() noexcept
 {
 #ifdef USE_STEAMWORKS_SDK
     return steamInitialized;
@@ -84,154 +84,154 @@ bool TRAP::Utils::Steam::IsInitialized() noexcept
 
 #ifdef USE_STEAMWORKS_SDK
 
-ISteamApps* TRAP::Utils::Steam::GetSteamApps()
+[[nodiscard]] ISteamApps* TRAP::Utils::Steam::GetSteamApps()
 {
     return SteamApps();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ISteamFriends* TRAP::Utils::Steam::GetSteamFriends()
+[[nodiscard]] ISteamFriends* TRAP::Utils::Steam::GetSteamFriends()
 {
     return SteamFriends();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ISteamHTMLSurface* TRAP::Utils::Steam::GetSteamHTMLSurface()
+[[nodiscard]] ISteamHTMLSurface* TRAP::Utils::Steam::GetSteamHTMLSurface()
 {
     return SteamHTMLSurface();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ISteamHTTP* TRAP::Utils::Steam::GetSteamHTTP()
+[[nodiscard]] ISteamHTTP* TRAP::Utils::Steam::GetSteamHTTP()
 {
     return SteamHTTP();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ISteamInput* TRAP::Utils::Steam::GetSteamInput()
+[[nodiscard]] ISteamInput* TRAP::Utils::Steam::GetSteamInput()
 {
     return SteamInput();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ISteamInventory* TRAP::Utils::Steam::GetSteamInventory()
+[[nodiscard]] ISteamInventory* TRAP::Utils::Steam::GetSteamInventory()
 {
     return SteamInventory();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ISteamMatchmaking* TRAP::Utils::Steam::GetSteamMatchmaking()
+[[nodiscard]] ISteamMatchmaking* TRAP::Utils::Steam::GetSteamMatchmaking()
 {
     return SteamMatchmaking();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ISteamMatchmakingServers* TRAP::Utils::Steam::GetSteamMatchmakingServers()
+[[nodiscard]] ISteamMatchmakingServers* TRAP::Utils::Steam::GetSteamMatchmakingServers()
 {
     return SteamMatchmakingServers();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ISteamMusic* TRAP::Utils::Steam::GetSteamMusic()
+[[nodiscard]] ISteamMusic* TRAP::Utils::Steam::GetSteamMusic()
 {
     return SteamMusic();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ISteamMusicRemote* TRAP::Utils::Steam::GetSteamMusicRemote()
+[[nodiscard]] ISteamMusicRemote* TRAP::Utils::Steam::GetSteamMusicRemote()
 {
     return SteamMusicRemote();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ISteamNetworkingMessages* TRAP::Utils::Steam::GetSteamNetworkingMessages()
+[[nodiscard]] ISteamNetworkingMessages* TRAP::Utils::Steam::GetSteamNetworkingMessages()
 {
     return SteamNetworkingMessages();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ISteamNetworkingSockets* TRAP::Utils::Steam::GetSteamNetworkingSockets()
+[[nodiscard]] ISteamNetworkingSockets* TRAP::Utils::Steam::GetSteamNetworkingSockets()
 {
     return SteamNetworkingSockets();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ISteamNetworkingUtils* TRAP::Utils::Steam::GetSteamNetworkingUtils()
+[[nodiscard]] ISteamNetworkingUtils* TRAP::Utils::Steam::GetSteamNetworkingUtils()
 {
     return SteamNetworkingUtils();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ISteamParties* TRAP::Utils::Steam::GetSteamParties()
+[[nodiscard]] ISteamParties* TRAP::Utils::Steam::GetSteamParties()
 {
     return SteamParties();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ISteamRemotePlay* TRAP::Utils::Steam::GetSteamRemotePlay()
+[[nodiscard]] ISteamRemotePlay* TRAP::Utils::Steam::GetSteamRemotePlay()
 {
     return SteamRemotePlay();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ISteamRemoteStorage* TRAP::Utils::Steam::GetSteamRemoteStorage()
+[[nodiscard]] ISteamRemoteStorage* TRAP::Utils::Steam::GetSteamRemoteStorage()
 {
     return SteamRemoteStorage();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ISteamScreenshots* TRAP::Utils::Steam::GetSteamScreenshots()
+[[nodiscard]] ISteamScreenshots* TRAP::Utils::Steam::GetSteamScreenshots()
 {
     return SteamScreenshots();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ISteamUGC* TRAP::Utils::Steam::GetSteamUGC()
+[[nodiscard]] ISteamUGC* TRAP::Utils::Steam::GetSteamUGC()
 {
     return SteamUGC();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ISteamUser* TRAP::Utils::Steam::GetSteamUser()
+[[nodiscard]] ISteamUser* TRAP::Utils::Steam::GetSteamUser()
 {
     return SteamUser();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ISteamUserStats* TRAP::Utils::Steam::GetSteamUserStats()
+[[nodiscard]] ISteamUserStats* TRAP::Utils::Steam::GetSteamUserStats()
 {
     return SteamUserStats();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ISteamUtils* TRAP::Utils::Steam::GetSteamUtils()
+[[nodiscard]] ISteamUtils* TRAP::Utils::Steam::GetSteamUtils()
 {
     return SteamUtils();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ISteamVideo* TRAP::Utils::Steam::GetSteamVideo()
+[[nodiscard]] ISteamVideo* TRAP::Utils::Steam::GetSteamVideo()
 {
     return SteamVideo();
 }

@@ -100,24 +100,24 @@ namespace TRAP::Graphics::TextureManager
 	/// <param name="name">Name of texture to retrieve.</param>
 	/// <param name="textureType">Type of texture.</param>
 	/// <returns>Texture, Fallback texture if not found.</returns>
-	Ref<Texture> Get(const std::string& name, TextureType textureType);
+	[[nodiscard]] Ref<Texture> Get(const std::string& name, TextureType textureType);
 	/// <summary>
 	/// Retrieve a 2D texture from the TextureManager.
 	/// </summary>
 	/// <param name="name">Name of texture to retrieve.</param>
 	/// <returns>Texture, Fallback texture if not found.</returns>
-	Ref<Texture> Get2D(const std::string& name);
+	[[nodiscard]] Ref<Texture> Get2D(const std::string& name);
 	/// <summary>
 	/// Retrieve a cube texture from the TextureManager.
 	/// </summary>
 	/// <param name="name">Name of texture to retrieve.</param>
 	/// <returns>Texture, Fallback texture if not found.</returns>
-	Ref<Texture> GetCube(const std::string& name);
+	[[nodiscard]] Ref<Texture> GetCube(const std::string& name);
 	/// <summary>
 	/// Retrieve all loaded textures from the TextureManager.
 	/// </summary>
 	/// <returns>Map of all loaded textures.</returns>
-	const std::unordered_map<std::string, Ref<Texture>>& GetTextures() noexcept;
+	[[nodiscard]] const std::unordered_map<std::string, Ref<Texture>>& GetTextures() noexcept;
 	/// <summary>
 	/// Clear all textures from the TextureManager.
 	/// Except fallback textures.
@@ -152,13 +152,13 @@ namespace TRAP::Graphics::TextureManager
 	/// </summary>
 	/// <param name="name">Name of texture to check.</param>
 	/// <returns>True if texture exists, false otherwise.</returns>
-	bool Exists(const std::string& name);
+	[[nodiscard]] bool Exists(const std::string& name);
 	/// <summary>
 	/// Check whether a texture exists by path.
 	/// </summary>
 	/// <param name="path">Path of texture to check.</param>
 	/// <returns>True if texture exists, false otherwise.</returns>
-	bool ExistsPath(const std::filesystem::path& path);
+	[[nodiscard]] bool ExistsPath(const std::filesystem::path& path);
 
 	/// <summary>
 	/// Shutdown the TextureManager.

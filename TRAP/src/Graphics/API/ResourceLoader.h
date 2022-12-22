@@ -120,7 +120,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve whether all submitted resource loads and updates have been completed.
 		/// </summary>
 		/// <returns>True if all loads and updates have finished, false otherwise.</returns>
-		bool AllResourceLoadsCompleted() const noexcept;
+		[[nodiscard]] bool AllResourceLoadsCompleted() const noexcept;
 
 		//Blocks the calling thread until AllResourceLoadsCompleted() returns true.
 		//Note that if more resource loads or updates are submitted from a different thread
@@ -143,13 +143,13 @@ namespace TRAP::Graphics::API
 		/// Retrieve the last sync token which has finished loading or updating.
 		/// </summary>
 		/// <returns>Last value for which IsTokenCompleted(token) is guaranteed to return true.</returns>
-		SyncToken GetLastTokenCompleted() const noexcept;
+		[[nodiscard]] SyncToken GetLastTokenCompleted() const noexcept;
 		/// <summary>
 		/// Retrieve whether a sync token has finished loading or updating.
 		/// </summary>
 		/// <param name="token">Token to check.</param>
 		/// <returns>True if the token has finished, false otherwise.</returns>
-		bool IsTokenCompleted(const SyncToken* token) const;
+		[[nodiscard]] bool IsTokenCompleted(const SyncToken* token) const;
 		/// <summary>
 		/// Block the calling thread until IsTokenCompleted(token) for the provided token returns true.
 		/// </summary>
@@ -180,13 +180,13 @@ namespace TRAP::Graphics::API
 		/// Retrieve the row alignment for textures used by the GPU.
 		/// </summary>
 		/// <returns>Row alignment used by the GPU.</returns>
-		static uint64_t UtilGetTextureRowAlignment() noexcept;
+		[[nodiscard]] static uint64_t UtilGetTextureRowAlignment() noexcept;
 		/// <summary>
 		/// Retrieve the subresource alignment for textures used by the GPU.
 		/// </summary>
 		/// <param name="fmt">Format of the texture. Default: ImageFormat::Undefined.</param>
 		/// <returns>Subresource alignment used by the GPU.</returns>
-		static uint64_t UtilGetTextureSubresourceAlignment(TRAP::Graphics::API::ImageFormat fmt = TRAP::Graphics::API::ImageFormat::Undefined) noexcept;
+		[[nodiscard]] static uint64_t UtilGetTextureSubresourceAlignment(TRAP::Graphics::API::ImageFormat fmt = TRAP::Graphics::API::ImageFormat::Undefined) noexcept;
 		/// <summary>
 		///	Retrieve the total surface size of a texture.
 		/// </summary>
@@ -201,10 +201,10 @@ namespace TRAP::Graphics::API
 		/// <param name="baseArrayLayer">Base array layer of the texture.</param>
 		/// <param name="arrayLayers">Number of array layers of the texture.</param>
 		/// <returns>Total surface size of the texture.</returns>
-		static uint64_t UtilGetSurfaceSize(TRAP::Graphics::API::ImageFormat fmt, uint32_t width, uint32_t height,
-		                                   uint32_t depth, uint64_t rowStride, uint64_t sliceStride,
-										   uint32_t baseMipLevel, uint32_t mipLevels, uint32_t baseArrayLayer,
-										   uint32_t arrayLayers) noexcept;
+		[[nodiscard]] static uint64_t UtilGetSurfaceSize(TRAP::Graphics::API::ImageFormat fmt, uint32_t width, uint32_t height,
+		                                                 uint32_t depth, uint64_t rowStride, uint64_t sliceStride,
+										                 uint32_t baseMipLevel, uint32_t mipLevels, uint32_t baseArrayLayer,
+										                 uint32_t arrayLayers) noexcept;
 		/// <summary>
 		/// Retrieve information about a texture.
 		/// </summary>
@@ -215,15 +215,15 @@ namespace TRAP::Graphics::API
 		/// <param name="outRowBytes">Optional output for the number of bytes in a row of the texture.</param>
 		/// <param name="outNumRows">Optional output for the number of rows in the texture.</param>
 		/// <returns>True on successful retrieval, false otherwise.</returns>
-		static bool UtilGetSurfaceInfo(uint32_t width, uint32_t height, TRAP::Graphics::API::ImageFormat fmt,
-		                               uint64_t* outNumBytes, uint64_t* outRowBytes, uint64_t* outNumRows);
+		[[nodiscard]] static bool UtilGetSurfaceInfo(uint32_t width, uint32_t height, TRAP::Graphics::API::ImageFormat fmt,
+		                                             uint64_t* outNumBytes, uint64_t* outRowBytes, uint64_t* outNumRows);
 		/// <summary>
 		/// Allocate a new staging buffer.
 		/// </summary>
 		/// <param name="memoryRequirement">Required memory size.</param>
 		/// <param name="alignment">Memory alignment.</param>
 		/// <returns>Staging buffer information.</returns>
-		static RendererAPI::MappedMemoryRange AllocateUploadMemory(uint64_t memoryRequirement, uint32_t alignment);
+		[[nodiscard]] static RendererAPI::MappedMemoryRange AllocateUploadMemory(uint64_t memoryRequirement, uint32_t alignment);
 		/// <summary>
 		/// Queue a buffer barrier.
 		/// </summary>
@@ -271,7 +271,7 @@ namespace TRAP::Graphics::API
 		/// <param name="memoryRequirement">Required memory size.</param>
 		/// <param name="alignment">Memory alignment.</param>
 		/// <returns>Memory from pre-allocated staging buffer or temporary buffer.</returns>
-		RendererAPI::MappedMemoryRange AllocateStagingMemory(uint64_t memoryRequirement, uint32_t alignment);
+		[[nodiscard]] RendererAPI::MappedMemoryRange AllocateStagingMemory(uint64_t memoryRequirement, uint32_t alignment);
 		/// <summary>
 		/// Free all upload memory and temporary buffers.
 		/// </summary>
@@ -301,7 +301,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="activeSet">Copy engine resource set to acquire command buffer for.</param>
 		/// <returns>Acquired command buffer.</returns>
-		CommandBuffer* AcquireCmd(std::size_t activeSet);
+		[[nodiscard]] CommandBuffer* AcquireCmd(std::size_t activeSet);
 		/// <summary>
 		/// Resource loader thread.
 		/// Flush a copy engine resource set.
@@ -315,20 +315,20 @@ namespace TRAP::Graphics::API
 		/// Check whether there are tasks pending for the resource loader.
 		/// </summary>
 		/// <returns>True if there are tasks pending, false otherwise.</returns>
-		bool AreTasksAvailable() const noexcept;
+		[[nodiscard]] bool AreTasksAvailable() const noexcept;
 
 		/// <summary>
 		/// Determine the resources start state from a buffer description.
 		/// </summary>
 		/// <param name="desc">Buffer description.</param>
 		/// <returns>Determined start state of the buffer.</returns>
-		static constexpr RendererAPI::ResourceState UtilDetermineResourceStartState(const RendererAPI::BufferDesc& desc) noexcept;
+		[[nodiscard]] static constexpr RendererAPI::ResourceState UtilDetermineResourceStartState(const RendererAPI::BufferDesc& desc) noexcept;
 		/// <summary>
 		/// Determine the resources start state.
 		/// </summary>
 		/// <param name="uav">Is unordered access view.</param>
 		/// <returns>Determined start state of the buffer.</returns>
-		static constexpr RendererAPI::ResourceState UtilDetermineResourceStartState(bool uav) noexcept;
+		[[nodiscard]] static constexpr RendererAPI::ResourceState UtilDetermineResourceStartState(bool uav) noexcept;
 
 		/// <summary>
 		/// Generate mip maps for a texture.
@@ -360,8 +360,8 @@ namespace TRAP::Graphics::API
 		/// <param name="activeSet">Resource set to use.</param>
 		/// <param name="bufferUpdateDesc">Description of buffer update.</param>
 		/// <return>Result of upload.</return>
-		UploadFunctionResult UpdateBuffer(std::size_t activeSet,
-		                                  const RendererAPI::BufferUpdateDesc& bufferUpdateDesc);
+		[[nodiscard]] UploadFunctionResult UpdateBuffer(std::size_t activeSet,
+		                                                const RendererAPI::BufferUpdateDesc& bufferUpdateDesc);
 		/// <summary>
 		/// Update a texture with the specified resource set.
 		/// </summary>
@@ -369,15 +369,15 @@ namespace TRAP::Graphics::API
 		/// <param name="textureUpdateDesc">Description of texture update.</param>
 		/// <param name="images">Images to update.</param>
 		/// <return>Result of upload.</return>
-		UploadFunctionResult UpdateTexture(std::size_t activeSet, const TextureUpdateDescInternal& textureUpdateDesc,
-		                                   const std::array<const TRAP::Image*, 6>* images);
+		[[nodiscard]] UploadFunctionResult UpdateTexture(std::size_t activeSet, const TextureUpdateDescInternal& textureUpdateDesc,
+		                                                 const std::array<const TRAP::Image*, 6>* images);
 		/// <summary>
 		/// Load a texture with the specified resource set.
 		/// </summary>
 		/// <param name="activeSet">Resource set to use.</param>
 		/// <param name="textureUpdate">Texture update request.</param>
 		/// <return>Result of upload.</return>
-		UploadFunctionResult LoadTexture(std::size_t activeSet, UpdateRequest& textureUpdate);
+		[[nodiscard]] UploadFunctionResult LoadTexture(std::size_t activeSet, UpdateRequest& textureUpdate);
 
 		/// <summary>
 		/// Copy a texture to a buffer with the specified resource set.
@@ -385,7 +385,7 @@ namespace TRAP::Graphics::API
 		/// <param name="activeSet">Resource set to use.</param>
 		/// <param name="textureCopy">Texture copy request.</param>
 		/// <returns>Result of copy.</returns>
-		UploadFunctionResult CopyTexture(std::size_t activeSet, RendererAPI::TextureCopyDesc& textureCopy);
+		[[nodiscard]] UploadFunctionResult CopyTexture(std::size_t activeSet, RendererAPI::TextureCopyDesc& textureCopy);
 
 		RendererAPI::ResourceLoaderDesc m_desc;
 
@@ -484,7 +484,7 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::RendererAPI::ResourceState TRAP::Graphics::API::ResourceLoader::UtilDetermineResourceStartState(const RendererAPI::BufferDesc& desc) noexcept
+[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::ResourceState TRAP::Graphics::API::ResourceLoader::UtilDetermineResourceStartState(const RendererAPI::BufferDesc& desc) noexcept
 {
 	//Host visible (Upload Heap)
 	if (desc.MemoryUsage == RendererAPI::ResourceMemoryUsage::CPUOnly ||
@@ -516,7 +516,7 @@ constexpr TRAP::Graphics::RendererAPI::ResourceState TRAP::Graphics::API::Resour
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::RendererAPI::ResourceState TRAP::Graphics::API::ResourceLoader::UtilDetermineResourceStartState(const bool uav) noexcept
+[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::ResourceState TRAP::Graphics::API::ResourceLoader::UtilDetermineResourceStartState(const bool uav) noexcept
 {
 	if(uav)
 		return RendererAPI::ResourceState::UnorderedAccess;

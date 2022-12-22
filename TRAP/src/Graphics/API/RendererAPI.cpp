@@ -111,7 +111,7 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI* TRAP::Graphics::RendererAPI::GetRenderer()
+[[nodiscard]] TRAP::Graphics::RendererAPI* TRAP::Graphics::RendererAPI::GetRenderer()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -124,7 +124,7 @@ TRAP::Graphics::RendererAPI* TRAP::Graphics::RendererAPI::GetRenderer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ResourceLoader* TRAP::Graphics::RendererAPI::GetResourceLoader() noexcept
+[[nodiscard]] TRAP::Graphics::API::ResourceLoader* TRAP::Graphics::RendererAPI::GetResourceLoader() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -133,7 +133,7 @@ TRAP::Graphics::API::ResourceLoader* TRAP::Graphics::RendererAPI::GetResourceLoa
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
+[[nodiscard]] TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -162,7 +162,7 @@ TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::RendererAPI::IsSupported(const RenderAPI api)
+[[nodiscard]] bool TRAP::Graphics::RendererAPI::IsSupported(const RenderAPI api)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -174,7 +174,7 @@ bool TRAP::Graphics::RendererAPI::IsSupported(const RenderAPI api)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::GetRenderAPI() noexcept
+[[nodiscard]] TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::GetRenderAPI() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -190,7 +190,7 @@ void TRAP::Graphics::RendererAPI::SetNewGPU(std::array<uint8_t, 16> GPUUUID) noe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 16> TRAP::Graphics::RendererAPI::GetNewGPU() noexcept
+[[nodiscard]] std::array<uint8_t, 16> TRAP::Graphics::RendererAPI::GetNewGPU() noexcept
 {
 	return s_newGPUUUID;
 }
@@ -222,7 +222,7 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::GetDescriptorPool() noexcept
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::GetDescriptorPool() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -231,7 +231,7 @@ TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::GetDescri
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetGraphicsQueue() noexcept
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetGraphicsQueue() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -240,7 +240,7 @@ TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetGraphicsQueue()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetComputeQueue() noexcept
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetComputeQueue() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -249,7 +249,7 @@ TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetComputeQueue() 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetTransferQueue() noexcept
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetTransferQueue() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -258,7 +258,7 @@ TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetTransferQueue()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::PerWindowData& TRAP::Graphics::RendererAPI::GetWindowData(const Window* window)
+[[nodiscard]] TRAP::Graphics::RendererAPI::PerWindowData& TRAP::Graphics::RendererAPI::GetWindowData(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -270,7 +270,7 @@ TRAP::Graphics::RendererAPI::PerWindowData& TRAP::Graphics::RendererAPI::GetWind
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphicsRootSignature(const Window* window)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphicsRootSignature(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -285,7 +285,7 @@ TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphic
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Math::Vec2ui TRAP::Graphics::RendererAPI::GetInternalRenderResolution(const Window* window)
+[[nodiscard]] TRAP::Math::Vec2ui TRAP::Graphics::RendererAPI::GetInternalRenderResolution(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -468,7 +468,7 @@ void TRAP::Graphics::RendererAPI::SetAntiAliasing(const AntiAliasing antiAliasin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::RendererAPI::GetAnisotropyLevel() noexcept
+[[nodiscard]] TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::RendererAPI::GetAnisotropyLevel() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -500,7 +500,7 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::RendererAPI::GetGPUGraphicsFrameTime(const Window* window)
+[[nodiscard]] float TRAP::Graphics::RendererAPI::GetGPUGraphicsFrameTime(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -512,7 +512,7 @@ float TRAP::Graphics::RendererAPI::GetGPUGraphicsFrameTime(const Window* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::RendererAPI::GetGPUComputeFrameTime(const Window* window)
+[[nodiscard]] float TRAP::Graphics::RendererAPI::GetGPUComputeFrameTime(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -524,7 +524,7 @@ float TRAP::Graphics::RendererAPI::GetGPUComputeFrameTime(const Window* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
+[[nodiscard]] bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -675,7 +675,7 @@ TRAP::Graphics::RendererAPI::PerWindowData::~PerWindowData()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::RendererAPI::GetCurrentImageIndex(const TRAP::Window* const window)
+[[nodiscard]] uint32_t TRAP::Graphics::RendererAPI::GetCurrentImageIndex(const TRAP::Window* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

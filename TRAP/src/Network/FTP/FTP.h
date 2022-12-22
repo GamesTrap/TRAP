@@ -137,19 +137,19 @@ namespace TRAP::Network
 			/// equivalent to testing if the status code is < 400.
 			/// </summary>
 			/// <returns>True if the status is a success, false if it is a failure.</returns>
-			bool IsOK() const noexcept;
+			[[nodiscard]] bool IsOK() const noexcept;
 
 			/// <summary>
 			/// Get the status code of the response.
 			/// </summary>
 			/// <returns>Status code.</returns>
-			Status GetStatus() const noexcept;
+			[[nodiscard]] Status GetStatus() const noexcept;
 
 			/// <summary>
 			/// Get the full message contained in the response.
 			/// </summary>
 			/// <returns>The response message.</returns>
-			std::string GetMessage() const noexcept;
+			[[nodiscard]] std::string GetMessage() const noexcept;
 
 		private:
 			Status m_status; //Status code returned from the server
@@ -172,7 +172,7 @@ namespace TRAP::Network
 			/// Get the directory returned in the response.
 			/// </summary>
 			/// <returns>Directory name.</returns>
-			const std::filesystem::path& GetDirectory() const noexcept;
+			[[nodiscard]] const std::filesystem::path& GetDirectory() const noexcept;
 
 		private:
 			std::filesystem::path m_directory; //Directory extracted from the response message
@@ -195,7 +195,7 @@ namespace TRAP::Network
 			/// Return the array of directory/file names.
 			/// </summary>
 			/// <returns>Array containing the requested listing.</returns>
-			const std::vector<std::filesystem::path>& GetListing() const noexcept;
+			[[nodiscard]] const std::vector<std::filesystem::path>& GetListing() const noexcept;
 
 		private:
 			std::vector<std::filesystem::path> m_listing; //Directory/file names extracted from the data
@@ -294,7 +294,7 @@ namespace TRAP::Network
 		/// operations involving directories and/or filenames.
 		/// </summary>
 		/// <returns>Server response to the request.</returns>
-		[[nodiscard]] DirectoryResponse GetWorkingDirectory();
+		[[nodiscard]] [[nodiscard]] DirectoryResponse GetWorkingDirectory();
 
 		/// <summary>
 		/// Get the contents of the given directory.
@@ -306,7 +306,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="directory">Directory to list.</param>
 		/// <returns>Server response to the request.</returns>
-		[[nodiscard]] ListingResponse GetDirectoryListing(const std::filesystem::path& directory = "");
+		[[nodiscard]] [[nodiscard]] ListingResponse GetDirectoryListing(const std::filesystem::path& directory = "");
 
 		/// <summary>
 		/// Change the current working directory.
@@ -432,7 +432,7 @@ namespace TRAP::Network
 		/// SendCommand that expects a response.
 		/// </summary>
 		/// <returns>Server response to the request.</returns>
-		Response GetResponse();
+		[[nodiscard]] Response GetResponse();
 
 		/// <summary>
 		/// Utility class for exchanging data with the server on the data channel.

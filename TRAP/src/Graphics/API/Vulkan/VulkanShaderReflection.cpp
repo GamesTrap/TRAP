@@ -41,8 +41,8 @@ constexpr std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr bool FilterResource(const TRAP::Graphics::API::SPIRVTools::Resource& resource,
-                              const TRAP::Graphics::RendererAPI::ShaderStage currentStage) noexcept
+[[nodiscard]] constexpr bool FilterResource(const TRAP::Graphics::API::SPIRVTools::Resource& resource,
+                                            const TRAP::Graphics::RendererAPI::ShaderStage currentStage) noexcept
 {
 	bool filter = false;
 
@@ -65,8 +65,8 @@ constexpr bool FilterResource(const TRAP::Graphics::API::SPIRVTools::Resource& r
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkCreateShaderReflection(const std::vector<uint32_t>& shaderCode,
-                                                                                                      const RendererAPI::ShaderStage shaderStage)
+[[nodiscard]] TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkCreateShaderReflection(const std::vector<uint32_t>& shaderCode,
+                                                                                                                    const RendererAPI::ShaderStage shaderStage)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

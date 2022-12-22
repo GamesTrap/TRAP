@@ -81,91 +81,91 @@ namespace TRAP
 		/// Get the amount of all active windows.
 		/// </summary>
 		/// <returns>Total amount of active windows.</returns>
-		static uint32_t GetActiveWindows() noexcept;
+		[[nodiscard]] static uint32_t GetActiveWindows() noexcept;
 
 		/// <summary>
 		/// Get the current title of the window.
 		/// </summary>
 		/// <returns>Title of the window.</returns>
-		std::string GetTitle() const noexcept;
+		[[nodiscard]] std::string GetTitle() const noexcept;
 		/// <summary>
 		/// Get the current width of the window.
 		/// </summary>
 		/// <returns>Width of the window.</returns>
-		uint32_t GetWidth() const noexcept;
+		[[nodiscard]] uint32_t GetWidth() const noexcept;
 		/// <summary>
 		/// Get the current height of the window.
 		/// </summary>
 		/// <returns>Height of the window.</returns>
-		uint32_t GetHeight() const noexcept;
+		[[nodiscard]] uint32_t GetHeight() const noexcept;
 		/// <summary>
 		/// Get the current width and height of the window.
 		/// </summary>
 		/// <returns>Vec2ui containing the width and height of the window.</returns>
-		Math::Vec2ui GetSize() const noexcept;
+		[[nodiscard]] Math::Vec2ui GetSize() const noexcept;
 		/// <summary>
 		/// Get the current framebuffer width and height of the window.
 		/// </summary>
 		/// <returns>Vec2ui containing the framebuffer width and height of the window.</returns>
-		Math::Vec2ui GetFrameBufferSize() const;
+		[[nodiscard]] Math::Vec2ui GetFrameBufferSize() const;
 		/// <summary>
 		/// Get the current position of the window.
 		/// Retrieves the position, in screen coordinates, of the upper-left corner of the content area.
 		/// </summary>
 		/// <returns>Vec2i containing the position of the window.</returns>
-		Math::Vec2i GetPosition() const;
+		[[nodiscard]] Math::Vec2i GetPosition() const;
 		/// <summary>
 		/// Get the current refresh rate of the window.
 		/// </summary>
 		/// <returns>Refresh rate of the window.</returns>
-		double GetRefreshRate() const noexcept;
+		[[nodiscard]] double GetRefreshRate() const noexcept;
 		/// <summary>
 		/// Get the current display mode of the window.
 		/// </summary>
 		/// <returns>Display mode of the window.</returns>
-		DisplayMode GetDisplayMode() const noexcept;
+		[[nodiscard]] DisplayMode GetDisplayMode() const noexcept;
 		/// <summary>
 		/// Get the current monitor used by the window
 		/// (only for display modes fullscreen and borderless).
 		/// </summary>
 		/// <returns>Object of monitor class used by the window.</returns>
-		Monitor GetMonitor() const;
+		[[nodiscard]] Monitor GetMonitor() const;
 		/// <summary>
 		/// Get the current cursor mode of the window.
 		/// </summary>
 		/// <returns>Cursor mode of the window.</returns>
-		CursorMode GetCursorMode() const noexcept;
+		[[nodiscard]] CursorMode GetCursorMode() const noexcept;
 		/// <summary>
 		/// Get the current raw mouse input (false = off, true = on) usage of the window.
 		/// </summary>
 		/// <returns>Raw mouse input status of the window.</returns>
-		bool GetRawMouseInput() const noexcept;
+		[[nodiscard]] bool GetRawMouseInput() const noexcept;
 		/// <summary>
 		/// Get the ratio between the current DPI and the platforms DPI.
 		/// </summary>
 		/// <returns>Vec2 containing the x and y scale.</returns>
-		Math::Vec2 GetContentScale() const;
+		[[nodiscard]] Math::Vec2 GetContentScale() const;
 		/// <summary>
 		/// Get the current opacity of the window.
 		/// </summary>
 		/// <returns>Opacity of the window.</returns>
-		float GetOpacity() const;
+		[[nodiscard]] float GetOpacity() const;
 		/// <summary>
 		/// Get whether VSync is enabled or disabled.
 		/// </summary>
 		/// <returns>True if VSync is enabled, false otherwise.</returns>
-		bool GetVSync() const noexcept;
+		[[nodiscard]] bool GetVSync() const noexcept;
 		/// <summary>
 		/// Get the aspect ratio of the window.
 		/// </summary>
 		/// <returns>Aspect ratio of window framebuffer.</returns>
-		float GetAspectRatio() const;
+		[[nodiscard]] float GetAspectRatio() const;
 
 		/// <summary>
 		/// Get the internal handle of the window.
 		/// </summary>
 		/// <returns>Pointer to the internal window handle.</returns>
-		void* GetInternalWindow() const noexcept;
+		[[nodiscard]] void* GetInternalWindow() const noexcept;
 
 		/// <summary>
 		/// Set a new title for the window.
@@ -303,37 +303,37 @@ namespace TRAP
 		/// Query whether the window is maximized or not.
 		/// </summary>
 		/// <returns>Window maximization status.</returns>
-		bool IsMaximized() const;
+		[[nodiscard]] bool IsMaximized() const;
 		/// <summary>
 		/// Query whether the window is minimized or not.
 		/// </summary>
 		/// <returns>Window minimization status.</returns>
-		bool IsMinimized() const;
+		[[nodiscard]] bool IsMinimized() const;
 		/// <summary>
 		/// Query whether the window is resizable or not.
 		/// </summary>
 		/// <returns>Window resizable status.</returns>
-		bool IsResizable() const;
+		[[nodiscard]] bool IsResizable() const;
 		/// <summary>
 		/// Query whether the window is visible or not.
 		/// </summary>
 		/// <returns>Window visibility status.</returns>
-		bool IsVisible() const;
+		[[nodiscard]] bool IsVisible() const;
 		/// <summary>
 		/// Query whether the window is focused or not.
 		/// </summary>
 		/// <returns>Window focus status.</returns>
-		bool IsFocused() const;
+		[[nodiscard]] bool IsFocused() const;
 		/// <summary>
 		/// Query whether the window is decorated or not.
 		/// </summary>
 		/// <returns>Window decoration status.</returns>
-		bool IsDecorated() const;
+		[[nodiscard]] bool IsDecorated() const;
 		/// <summary>
 		/// Query whether the mouse is hovered on the window or not.
 		/// </summary>
 		/// <returns>Window mouse hover status.</returns>
-		bool IsHovered() const;
+		[[nodiscard]] bool IsHovered() const;
 
 		/// <summary>
 		/// Maximize the window.

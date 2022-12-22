@@ -13,7 +13,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="desc">Query pool description.</param>
 		/// <returns>Created query pool.</returns>
-		static TRAP::Ref<QueryPool> Create(const RendererAPI::QueryPoolDesc& desc);
+		[[nodiscard]] static TRAP::Ref<QueryPool> Create(const RendererAPI::QueryPoolDesc& desc);
 
 		/// <summary>
 		/// Destructor.

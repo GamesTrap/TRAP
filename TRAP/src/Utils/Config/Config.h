@@ -30,7 +30,7 @@ namespace TRAP::Utils
 		/// Check if config has changed after last load/save.
 		/// </summary>
 		/// <returns>True if config has changed, false otherwise.</returns>
-		bool HasChanged() const noexcept;
+		[[nodiscard]] bool HasChanged() const noexcept;
 
 		/// <summary>
 		/// Retrieve the value of a specific key in the config.
@@ -62,7 +62,7 @@ namespace TRAP::Utils
 		/// <param name="key">Key to get value from.</param>
 		/// <returns>Found value or default constructor for the given type.</returns>
 		template<typename T>
-		T Get(std::string_view key) const;
+		[[nodiscard]] T Get(std::string_view key) const;
 		/// <summary>
 		/// Retrieve the values of a specific key in the config.
 		/// </summary>
@@ -70,7 +70,7 @@ namespace TRAP::Utils
 		/// <param name="key">Key to get values from.</param>
 		/// <returns>Found values or default constructor for the given type.</returns>
 		template<typename T>
-		std::vector<T> GetVector(std::string_view key) const;
+		[[nodiscard]] std::vector<T> GetVector(std::string_view key) const;
 
 		/// <summary>
 		/// Set a value in the config.
@@ -102,7 +102,7 @@ namespace TRAP::Utils
 		/// </summary>
 		/// <param name="line">Line to parse.</param>
 		/// <returns>Pair of key and value.</returns>
-		std::pair<std::string, std::string> ParseLine(const std::string_view line) const;
+		[[nodiscard]] std::pair<std::string, std::string> ParseLine(const std::string_view line) const;
 
 		bool m_hasChanged;
 		std::vector<std::pair<std::string, std::string>> m_data;
@@ -154,7 +154,7 @@ void TRAP::Utils::Config::Get(const std::string_view key, std::vector<T>& value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-T TRAP::Utils::Config::Get(const std::string_view key) const
+[[nodiscard]] T TRAP::Utils::Config::Get(const std::string_view key) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -175,7 +175,7 @@ T TRAP::Utils::Config::Get(const std::string_view key) const
 //The values have to be separated by comma.
 //The vector is cleared before it it filled.
 template<typename T>
-std::vector<T> TRAP::Utils::Config::GetVector(const std::string_view key) const
+[[nodiscard]] std::vector<T> TRAP::Utils::Config::GetVector(const std::string_view key) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 

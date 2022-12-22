@@ -15,7 +15,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="desc">Render target description.</param>
 		/// <returns>Created render target.</returns>
-		static TRAP::Ref<RenderTarget> Create(const RendererAPI::RenderTargetDesc& desc);
+		[[nodiscard]] static TRAP::Ref<RenderTarget> Create(const RendererAPI::RenderTargetDesc& desc);
 
 		/// <summary>
 		/// Destructor.
@@ -43,68 +43,68 @@ namespace TRAP::Graphics
 		/// Retrieve the width of the render target.
 		/// </summary>
 		/// <returns>Render target width.</returns>
-		uint32_t GetWidth() const noexcept;
+		[[nodiscard]] uint32_t GetWidth() const noexcept;
 		/// <summary>
 		/// Retrieve the height of the render target.
 		/// </summary>
 		/// <returns>Render target height.</returns>
-		uint32_t GetHeight() const noexcept;
+		[[nodiscard]] uint32_t GetHeight() const noexcept;
 		/// <summary>
 		/// Retrieve the depth of the render target.
 		/// </summary>
 		/// <returns>Render target depth.</returns>
-		uint32_t GetDepth() const noexcept;
+		[[nodiscard]] uint32_t GetDepth() const noexcept;
 		/// <summary>
 		/// Retrieve the array size of the render target.
 		/// </summary>
 		/// <returns>Render target array size.</returns>
-		uint32_t GetArraySize() const noexcept;
+		[[nodiscard]] uint32_t GetArraySize() const noexcept;
 		/// <summary>
 		/// Retrieve the mip levels of the render target.
 		/// </summary>
 		/// <returns>Render target mip levels.</returns>
-		uint32_t GetMipLevels() const noexcept;
+		[[nodiscard]] uint32_t GetMipLevels() const noexcept;
 		/// <summary>
 		/// Retrieve the sample count of the render target.
 		/// </summary>
 		/// <returns>Render target sample count.</returns>
-		RendererAPI::SampleCount GetSampleCount() const noexcept;
+		[[nodiscard]] RendererAPI::SampleCount GetSampleCount() const noexcept;
 		/// <summary>
 		/// Retrieve the sample quality of the render target.
 		/// </summary>
 		/// <returns>Render target sample quality.</returns>
-		uint32_t GetSampleQuality() const noexcept;
+		[[nodiscard]] uint32_t GetSampleQuality() const noexcept;
 		/// <summary>
 		/// Retrieve the image format of the render target.
 		/// </summary>
 		/// <returns>Render target image format.</returns>
-		TRAP::Graphics::API::ImageFormat GetImageFormat() const noexcept;
+		[[nodiscard]] TRAP::Graphics::API::ImageFormat GetImageFormat() const noexcept;
 		/// <summary>
 		/// Retrieve the clear color of the render target.
 		/// </summary>
 		/// <returns>Render target clear color.</returns>
-		TRAP::Math::Vec4 GetClearColor() const noexcept;
+		[[nodiscard]] TRAP::Math::Vec4 GetClearColor() const noexcept;
 		/// <summary>
 		/// Retrieve the clear depth value of the render target.
 		/// </summary>
 		/// <returns>Render target clear depth value.</returns>
-		float GetClearDepth() const noexcept;
+		[[nodiscard]] float GetClearDepth() const noexcept;
 		/// <summary>
 		/// Retrieve the clear stencil value of the render target.
 		/// </summary>
 		/// <returns>Render target clear stencil value.</returns>
-		uint32_t GetClearStencil() const noexcept;
+		[[nodiscard]] uint32_t GetClearStencil() const noexcept;
 		/// <summary>
 		/// Retrieve the descriptor type of the render target.
 		/// </summary>
 		/// <returns>Render target descriptor type.</returns>
-		RendererAPI::DescriptorType GetDescriptorType() const noexcept;
+		[[nodiscard]] RendererAPI::DescriptorType GetDescriptorType() const noexcept;
 
 		/// <summary>
 		/// Retrieve the texture base of the render target.
 		/// </summary>
 		/// <returns>Render target texture base.</returns>
-		Ref<TRAP::Graphics::Texture> GetTexture() const noexcept;
+		[[nodiscard]] Ref<TRAP::Graphics::Texture> GetTexture() const noexcept;
 
 	protected:
 		/// <summary>

@@ -47,8 +47,8 @@ namespace TRAP
 
 		static TRAP::Ref<Scene> Copy(Ref<Scene> other);
 
-		Entity CreateEntity(const std::string& name = std::string());
-		Entity CreateEntityWithUID(Utils::UID uid, const std::string& name = std::string());
+		[[nodiscard]] Entity CreateEntity(const std::string& name = std::string());
+		[[nodiscard]] Entity CreateEntityWithUID(Utils::UID uid, const std::string& name = std::string());
 		void DestroyEntity(Entity entity);
 
 		void OnRuntimeStart();
@@ -62,10 +62,10 @@ namespace TRAP
 
 		void DuplicateEntity(Entity entity);
 
-		Entity GetPrimaryCameraEntity();
+		[[nodiscard]] Entity GetPrimaryCameraEntity();
 
 		template<typename... Components>
-		auto GetAllEntitiesWithComponents()
+		[[nodiscard]] auto GetAllEntitiesWithComponents()
 		{
 			return m_registry.view<Components...>();
 		}

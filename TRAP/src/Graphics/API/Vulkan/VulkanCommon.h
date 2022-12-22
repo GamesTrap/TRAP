@@ -63,107 +63,107 @@ namespace TRAP::Graphics::API
 	/// </summary>
 	/// <param name="queueType">QueueType to convert.</param>
 	/// <returns>Converted VkQueueFlags.</returns>
-	constexpr VkQueueFlags QueueTypeToVkQueueFlags(RendererAPI::QueueType queueType) noexcept;
+	[[nodiscard]] constexpr VkQueueFlags QueueTypeToVkQueueFlags(RendererAPI::QueueType queueType) noexcept;
 
 	/// <summary>
 	/// Convert the RendererAPI::SampleCount to VkSampleCountFlagBits.
 	/// </summary>
 	/// <param name="sampleCount">SampleCount to convert.</param>
 	/// <returns>Converted VkSampleCountFlagBits.</returns>
-	constexpr VkSampleCountFlagBits SampleCountToVkSampleCount(RendererAPI::SampleCount sampleCount) noexcept;
+	[[nodiscard]] constexpr VkSampleCountFlagBits SampleCountToVkSampleCount(RendererAPI::SampleCount sampleCount) noexcept;
 	/// <summary>
 	/// Convert the ImageFormat to VkFormat.
 	/// </summary>
 	/// <param name="imageFormat">ImageFormat to convert.</param>
 	/// <returns>Converted VkFormat.</returns>
-	constexpr VkFormat ImageFormatToVkFormat(TRAP::Graphics::API::ImageFormat imageFormat) noexcept;
+	[[nodiscard]] constexpr VkFormat ImageFormatToVkFormat(TRAP::Graphics::API::ImageFormat imageFormat) noexcept;
 	/// <summary>
 	/// Determine the aspect mask for an image.
 	/// </summary>
 	/// <param name="format">ImageFormat.</param>
 	/// <param name="includeStencilBit">Whether to include the stencil bit in the aspect mask.</param>
 	/// <returns>VkImageAspectFlags.</returns>
-	constexpr VkImageAspectFlags DetermineAspectMask(VkFormat format, bool includeStencilBit) noexcept;
+	[[nodiscard]] constexpr VkImageAspectFlags DetermineAspectMask(VkFormat format, bool includeStencilBit) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::DescriptorType to VkImageUsageFlags.
 	/// </summary>
 	/// <param name="type">DescriptorType to convert.</param>
 	/// <returns>Converted VkImageUsageFlags.</returns>
-	constexpr VkImageUsageFlags DescriptorTypeToVkImageUsage(RendererAPI::DescriptorType type) noexcept;
+	[[nodiscard]] constexpr VkImageUsageFlags DescriptorTypeToVkImageUsage(RendererAPI::DescriptorType type) noexcept;
 	/// <summary>
 	/// Convert the VkImageUsageFlags to VkFormatFeatureFlags.
 	/// </summary>
 	/// <param name="usage">VkImageUsageFlags to convert.</param>
 	/// <returns>Converted VkFormatFeatureFlags.</returns>
-	constexpr VkFormatFeatureFlags VkImageUsageToFormatFeatures(VkImageUsageFlags usage) noexcept;
+	[[nodiscard]] constexpr VkFormatFeatureFlags VkImageUsageToFormatFeatures(VkImageUsageFlags usage) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::DescriptorType to VkBufferUsage.
 	/// </summary>
 	/// <param name="usage">DescriptorType to convert.</param>
 	/// <param name="typed">Whether the buffer is a typed buffer.</param>
 	/// <returns>Converted VkBufferUsageFlags.</returns>
-	constexpr VkBufferUsageFlags DescriptorTypeToVkBufferUsage(RendererAPI::DescriptorType usage, bool typed) noexcept;
+	[[nodiscard]] constexpr VkBufferUsageFlags DescriptorTypeToVkBufferUsage(RendererAPI::DescriptorType usage, bool typed) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::FilterType to VkFilter.
 	/// </summary>
 	/// <param name="filter">FilterType to convert.</param>
 	/// <returns>Converted VkFilter.</returns>
-	constexpr VkFilter FilterTypeToVkFilter(RendererAPI::FilterType filter) noexcept;
+	[[nodiscard]] constexpr VkFilter FilterTypeToVkFilter(RendererAPI::FilterType filter) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::MipMapMode to VkSamplerMipmapMode.
 	/// </summary>
 	/// <param name="mipMapMode">MipMapMode to convert.</param>
 	/// <returns>Converted VkSamplerMipmapMode.</returns>
-	constexpr VkSamplerMipmapMode MipMapModeToVkMipMapMode(RendererAPI::MipMapMode mipMapMode) noexcept;
+	[[nodiscard]] constexpr VkSamplerMipmapMode MipMapModeToVkMipMapMode(RendererAPI::MipMapMode mipMapMode) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::AddressMode to VkSamplerAddressMode.
 	/// </summary>
 	/// <param name="addressMode">AddressMode to convert.</param>
 	/// <returns>Converted VkSamplerAddressMode.</returns>
-	constexpr VkSamplerAddressMode AddressModeToVkAddressMode(RendererAPI::AddressMode addressMode) noexcept;
+	[[nodiscard]] constexpr VkSamplerAddressMode AddressModeToVkAddressMode(RendererAPI::AddressMode addressMode) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::DescriptorType to VkDescriptorType.
 	/// </summary>
 	/// <param name="type">DescriptorType to convert.</param>
 	/// <returns>Converted VkDescriptorType.</returns>
-	constexpr VkDescriptorType DescriptorTypeToVkDescriptorType(RendererAPI::DescriptorType type) noexcept;
+	[[nodiscard]] constexpr VkDescriptorType DescriptorTypeToVkDescriptorType(RendererAPI::DescriptorType type) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::ShaderStage to VkShaderStageFlags.
 	/// </summary>
 	/// <param name="stages">ShaderStage(s) to convert.</param>
 	/// <returns>Converted VkShaderStageFlags.</returns>
-	constexpr VkShaderStageFlags ShaderStageToVkShaderStageFlags(RendererAPI::ShaderStage stages) noexcept;
+	[[nodiscard]] constexpr VkShaderStageFlags ShaderStageToVkShaderStageFlags(RendererAPI::ShaderStage stages) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::PipelineCacheFlags to VkPipelineCacheCreateFlags.
 	/// </summary>
 	/// <param name="flags">PipelineCacheFlag to convert.</param>
 	/// <returns>Converted VkPipelineCacheCreateFlags.</returns>
-	constexpr VkPipelineCacheCreateFlags PipelineCacheFlagsToVkPipelineCacheCreateFlags(RendererAPI::PipelineCacheFlags flags) noexcept;
+	[[nodiscard]] constexpr VkPipelineCacheCreateFlags PipelineCacheFlagsToVkPipelineCacheCreateFlags(RendererAPI::PipelineCacheFlags flags) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::ResourceState to VkAccessFlags.
 	/// </summary>
 	/// <param name="state">ResourceState to convert.</param>
 	/// <returns>Converted VkAccessFlags.</returns>
-	constexpr VkAccessFlags ResourceStateToVkAccessFlags(RendererAPI::ResourceState state) noexcept;
+	[[nodiscard]] constexpr VkAccessFlags ResourceStateToVkAccessFlags(RendererAPI::ResourceState state) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::ResourceState to VkImageLayout.
 	/// </summary>
 	/// <param name="usage">ResourceState to convert.</param>
 	/// <returns>Converted VkImageLayout.</returns>
-	constexpr VkImageLayout ResourceStateToVkImageLayout(RendererAPI::ResourceState usage) noexcept;
+	[[nodiscard]] constexpr VkImageLayout ResourceStateToVkImageLayout(RendererAPI::ResourceState usage) noexcept;
 	/// <summary>
 	/// Determine the VkPipelineStageFlags from VkAccessFlags and RendererAPI::QueueType.
 	/// </summary>
 	/// <param name="accessFlags">VkAccessFlags.</param>
 	/// <param name="queueType">QueueType.</param>
 	/// <returns>Determined VkPipelineStageFlags.</returns>
-	VkPipelineStageFlags DetermineVkPipelineStageFlags(VkAccessFlags accessFlags, RendererAPI::QueueType queueType) noexcept;
+	[[nodiscard]] VkPipelineStageFlags DetermineVkPipelineStageFlags(VkAccessFlags accessFlags, RendererAPI::QueueType queueType) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::QueryType to VkQueryType.
 	/// </summary>
 	/// <param name="type">QueryType to convert.</param>
 	/// <returns>Converted VkQueryType.</returns>
-	constexpr VkQueryType QueryTypeToVkQueryType(RendererAPI::QueryType type) noexcept;
+	[[nodiscard]] constexpr VkQueryType QueryTypeToVkQueryType(RendererAPI::QueryType type) noexcept;
 
 	/// <summary>
 	/// Utility to create the VkPipelineColorBlendStateCreateInfo struct from
@@ -172,22 +172,22 @@ namespace TRAP::Graphics::API
 	/// <param name="desc">BlendStateDesc.</param>
 	/// <param name="attachments">Color blend attachments.</param>
 	/// <returns>Created VkPipelineColorBlendStateCreateInfo.</returns>
-	VkPipelineColorBlendStateCreateInfo UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc,
-	                                                    std::vector<VkPipelineColorBlendAttachmentState>& attachments) ;
+	[[nodiscard]] VkPipelineColorBlendStateCreateInfo UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc,
+	                                                                  std::vector<VkPipelineColorBlendAttachmentState>& attachments) ;
 	/// <summary>
 	/// Utility to create the VkPipelineDepthStencilStateCreateInfo struct from
 	/// a RendererAPI::DepthStateDesc.
 	/// </summary>
 	/// <param name="desc">DepthStateDesc.</param>
 	/// <returns>Created VkPipelineDepthStencilStateCreateInfo.</returns>
-	VkPipelineDepthStencilStateCreateInfo UtilToDepthDesc(const RendererAPI::DepthStateDesc& desc);
+	[[nodiscard]] VkPipelineDepthStencilStateCreateInfo UtilToDepthDesc(const RendererAPI::DepthStateDesc& desc);
 	/// <summary>
 	/// Utility to create the VkPipelineRasterizationStateCreateInfo struct from
 	/// a RendererAPI::RasterizerStateDesc.
 	/// </summary>
 	/// <param name="desc">RasterizerStateDesc.</param>
 	/// <returns>Created VkPipelineRasterizationStateCreateInfo.</returns>
-	VkPipelineRasterizationStateCreateInfo UtilToRasterizerDesc(const RendererAPI::RasterizerStateDesc& desc);
+	[[nodiscard]] VkPipelineRasterizationStateCreateInfo UtilToRasterizerDesc(const RendererAPI::RasterizerStateDesc& desc);
 	/// <summary>
 	/// Utility to retrieve the planar image memory requirement for Vulkan.
 	/// </summary>
@@ -204,14 +204,14 @@ namespace TRAP::Graphics::API
 	/// </summary>
 	/// <param name="combiner">ShadingRateCombiner.</param>
 	/// <returns>Converted VkFragmentShadingRateCombinerOpKHR.</returns>
-	constexpr VkFragmentShadingRateCombinerOpKHR ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(const RendererAPI::ShadingRateCombiner& combiner);
+	[[nodiscard]] constexpr VkFragmentShadingRateCombinerOpKHR ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(const RendererAPI::ShadingRateCombiner& combiner);
 	/// <summary>
 	/// Utility to create the VkExtent2D (fragment size) from
 	/// a RendererAPI::ShadingRate.
 	/// </summary>
 	/// <param name="rate">ShadingRate.</param>
 	/// <returns>Converted VkExtent2D.</returns>
-	constexpr VkExtent2D ShadingRateToVkExtent2D(const RendererAPI::ShadingRate& rate);
+	[[nodiscard]] constexpr VkExtent2D ShadingRateToVkExtent2D(const RendererAPI::ShadingRate& rate);
 
 	/// <summary>
 	/// Retrieve the recommended swapchain format for Vulkan.
@@ -219,14 +219,14 @@ namespace TRAP::Graphics::API
 	/// <param name="HDR">True if HDR is desired.</param>
 	/// <param name="SRGB">True if SRGB is desired.</param>
 	/// <returns>Recommended swapchain format.</returns>
-	TRAP::Graphics::API::ImageFormat VulkanGetRecommendedSwapchainFormat(bool HDR, bool SRGB) noexcept;
+	[[nodiscard]] TRAP::Graphics::API::ImageFormat VulkanGetRecommendedSwapchainFormat(bool HDR, bool SRGB) noexcept;
 
 	/// <summary>
 	/// Convert the VkFormat to ImageFormat.
 	/// </summary>
 	/// <param name="format">VkFormat to convert.</param>
 	/// <returns>Converted ImageFormat.</returns>
-	constexpr TRAP::Graphics::API::ImageFormat ImageFormatFromVkFormat(VkFormat format) noexcept;
+	[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat ImageFormatFromVkFormat(VkFormat format) noexcept;
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	/// <summary>
@@ -515,7 +515,7 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkQueueFlags TRAP::Graphics::API::QueueTypeToVkQueueFlags(const RendererAPI::QueueType queueType) noexcept
+[[nodiscard]] constexpr VkQueueFlags TRAP::Graphics::API::QueueTypeToVkQueueFlags(const RendererAPI::QueueType queueType) noexcept
 {
 	switch(queueType)
 	{
@@ -536,7 +536,7 @@ constexpr VkQueueFlags TRAP::Graphics::API::QueueTypeToVkQueueFlags(const Render
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkSampleCountFlagBits TRAP::Graphics::API::SampleCountToVkSampleCount(const RendererAPI::SampleCount sampleCount) noexcept
+[[nodiscard]] constexpr VkSampleCountFlagBits TRAP::Graphics::API::SampleCountToVkSampleCount(const RendererAPI::SampleCount sampleCount) noexcept
 {
 	switch(sampleCount)
 	{
@@ -562,7 +562,7 @@ constexpr VkSampleCountFlagBits TRAP::Graphics::API::SampleCountToVkSampleCount(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkFormat TRAP::Graphics::API::ImageFormatToVkFormat(const TRAP::Graphics::API::ImageFormat imageFormat) noexcept
+[[nodiscard]] constexpr VkFormat TRAP::Graphics::API::ImageFormatToVkFormat(const TRAP::Graphics::API::ImageFormat imageFormat) noexcept
 {
 	switch(imageFormat)
 	{
@@ -737,7 +737,7 @@ constexpr VkFormat TRAP::Graphics::API::ImageFormatToVkFormat(const TRAP::Graphi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkImageAspectFlags TRAP::Graphics::API::DetermineAspectMask(const VkFormat format, const bool includeStencilBit) noexcept
+[[nodiscard]] constexpr VkImageAspectFlags TRAP::Graphics::API::DetermineAspectMask(const VkFormat format, const bool includeStencilBit) noexcept
 {
 	switch(format)
 	{
@@ -774,7 +774,7 @@ constexpr VkImageAspectFlags TRAP::Graphics::API::DetermineAspectMask(const VkFo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkImageUsageFlags TRAP::Graphics::API::DescriptorTypeToVkImageUsage(const RendererAPI::DescriptorType type) noexcept
+[[nodiscard]] constexpr VkImageUsageFlags TRAP::Graphics::API::DescriptorTypeToVkImageUsage(const RendererAPI::DescriptorType type) noexcept
 {
 	VkImageUsageFlags result = 0;
 
@@ -788,7 +788,7 @@ constexpr VkImageUsageFlags TRAP::Graphics::API::DescriptorTypeToVkImageUsage(co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkFormatFeatureFlags TRAP::Graphics::API::VkImageUsageToFormatFeatures(const VkImageUsageFlags usage) noexcept
+[[nodiscard]] constexpr VkFormatFeatureFlags TRAP::Graphics::API::VkImageUsageToFormatFeatures(const VkImageUsageFlags usage) noexcept
 {
 	VkFormatFeatureFlags result = 0;
 
@@ -806,8 +806,8 @@ constexpr VkFormatFeatureFlags TRAP::Graphics::API::VkImageUsageToFormatFeatures
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkBufferUsageFlags TRAP::Graphics::API::DescriptorTypeToVkBufferUsage(const RendererAPI::DescriptorType usage,
-                                                                                const bool typed) noexcept
+[[nodiscard]] constexpr VkBufferUsageFlags TRAP::Graphics::API::DescriptorTypeToVkBufferUsage(const RendererAPI::DescriptorType usage,
+                                                                                              const bool typed) noexcept
 {
 	VkBufferUsageFlags result = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 
@@ -847,7 +847,7 @@ constexpr VkBufferUsageFlags TRAP::Graphics::API::DescriptorTypeToVkBufferUsage(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkFilter TRAP::Graphics::API::FilterTypeToVkFilter(const RendererAPI::FilterType filter) noexcept
+[[nodiscard]] constexpr VkFilter TRAP::Graphics::API::FilterTypeToVkFilter(const RendererAPI::FilterType filter) noexcept
 {
 	switch(filter)
 	{
@@ -864,7 +864,7 @@ constexpr VkFilter TRAP::Graphics::API::FilterTypeToVkFilter(const RendererAPI::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkSamplerMipmapMode TRAP::Graphics::API::MipMapModeToVkMipMapMode(const RendererAPI::MipMapMode mipMapMode) noexcept
+[[nodiscard]] constexpr VkSamplerMipmapMode TRAP::Graphics::API::MipMapModeToVkMipMapMode(const RendererAPI::MipMapMode mipMapMode) noexcept
 {
 	switch (mipMapMode)
 	{
@@ -882,7 +882,7 @@ constexpr VkSamplerMipmapMode TRAP::Graphics::API::MipMapModeToVkMipMapMode(cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkSamplerAddressMode TRAP::Graphics::API::AddressModeToVkAddressMode(const RendererAPI::AddressMode addressMode) noexcept
+[[nodiscard]] constexpr VkSamplerAddressMode TRAP::Graphics::API::AddressModeToVkAddressMode(const RendererAPI::AddressMode addressMode) noexcept
 {
 	switch(addressMode)
 	{
@@ -905,7 +905,7 @@ constexpr VkSamplerAddressMode TRAP::Graphics::API::AddressModeToVkAddressMode(c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkDescriptorType TRAP::Graphics::API::DescriptorTypeToVkDescriptorType(const RendererAPI::DescriptorType type) noexcept
+[[nodiscard]] constexpr VkDescriptorType TRAP::Graphics::API::DescriptorTypeToVkDescriptorType(const RendererAPI::DescriptorType type) noexcept
 {
 	switch(type)
 	{
@@ -953,7 +953,7 @@ constexpr VkDescriptorType TRAP::Graphics::API::DescriptorTypeToVkDescriptorType
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkShaderStageFlags TRAP::Graphics::API::ShaderStageToVkShaderStageFlags(const RendererAPI::ShaderStage stages) noexcept
+[[nodiscard]] constexpr VkShaderStageFlags TRAP::Graphics::API::ShaderStageToVkShaderStageFlags(const RendererAPI::ShaderStage stages) noexcept
 {
 	VkShaderStageFlags res = 0;
 
@@ -984,7 +984,7 @@ constexpr VkShaderStageFlags TRAP::Graphics::API::ShaderStageToVkShaderStageFlag
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkPipelineCacheCreateFlags TRAP::Graphics::API::PipelineCacheFlagsToVkPipelineCacheCreateFlags(const RendererAPI::PipelineCacheFlags flags) noexcept
+[[nodiscard]] constexpr VkPipelineCacheCreateFlags TRAP::Graphics::API::PipelineCacheFlagsToVkPipelineCacheCreateFlags(const RendererAPI::PipelineCacheFlags flags) noexcept
 {
 	VkPipelineCacheCreateFlags ret = 0;
 
@@ -996,7 +996,7 @@ constexpr VkPipelineCacheCreateFlags TRAP::Graphics::API::PipelineCacheFlagsToVk
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkAccessFlags TRAP::Graphics::API::ResourceStateToVkAccessFlags(const RendererAPI::ResourceState state) noexcept
+[[nodiscard]] constexpr VkAccessFlags TRAP::Graphics::API::ResourceStateToVkAccessFlags(const RendererAPI::ResourceState state) noexcept
 {
 	VkAccessFlags ret = 0;
 
@@ -1030,7 +1030,7 @@ constexpr VkAccessFlags TRAP::Graphics::API::ResourceStateToVkAccessFlags(const 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkImageLayout TRAP::Graphics::API::ResourceStateToVkImageLayout(const RendererAPI::ResourceState usage) noexcept
+[[nodiscard]] constexpr VkImageLayout TRAP::Graphics::API::ResourceStateToVkImageLayout(const RendererAPI::ResourceState usage) noexcept
 {
 	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::CopySource))
 		return VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
@@ -1064,7 +1064,7 @@ constexpr VkImageLayout TRAP::Graphics::API::ResourceStateToVkImageLayout(const 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkQueryType TRAP::Graphics::API::QueryTypeToVkQueryType(const RendererAPI::QueryType type) noexcept
+[[nodiscard]] constexpr VkQueryType TRAP::Graphics::API::QueryTypeToVkQueryType(const RendererAPI::QueryType type) noexcept
 {
 	switch(type)
 	{
@@ -1085,7 +1085,7 @@ constexpr VkQueryType TRAP::Graphics::API::QueryTypeToVkQueryType(const Renderer
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::ImageFormatFromVkFormat(const VkFormat format) noexcept
+[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::ImageFormatFromVkFormat(const VkFormat format) noexcept
 {
 	switch(format)
 	{
@@ -1339,7 +1339,7 @@ constexpr TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::ImageFormatFromV
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkFragmentShadingRateCombinerOpKHR TRAP::Graphics::API::ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(const RendererAPI::ShadingRateCombiner& combiner)
+[[nodiscard]] constexpr VkFragmentShadingRateCombinerOpKHR TRAP::Graphics::API::ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(const RendererAPI::ShadingRateCombiner& combiner)
 {
 	switch(combiner)
 	{
@@ -1362,7 +1362,7 @@ constexpr VkFragmentShadingRateCombinerOpKHR TRAP::Graphics::API::ShadingRateCom
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkExtent2D TRAP::Graphics::API::ShadingRateToVkExtent2D(const RendererAPI::ShadingRate& rate)
+[[nodiscard]] constexpr VkExtent2D TRAP::Graphics::API::ShadingRateToVkExtent2D(const RendererAPI::ShadingRate& rate)
 {
 	switch(rate)
 	{

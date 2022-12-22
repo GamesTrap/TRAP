@@ -62,7 +62,7 @@ void TRAP::Network::Socket::SetBlocking(const bool blocking)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Network::Socket::IsBlocking() const noexcept
+[[nodiscard]] bool TRAP::Network::Socket::IsBlocking() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -71,7 +71,7 @@ bool TRAP::Network::Socket::IsBlocking() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::SocketHandle TRAP::Network::Socket::GetHandle() const noexcept
+[[nodiscard]] TRAP::Network::SocketHandle TRAP::Network::Socket::GetHandle() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

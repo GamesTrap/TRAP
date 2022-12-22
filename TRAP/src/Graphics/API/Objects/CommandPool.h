@@ -15,7 +15,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="desc">Command pool description.</param>
 		/// <returns>Created command pool.</returns>
-		static TRAP::Ref<CommandPool> Create(const RendererAPI::CommandPoolDesc& desc);
+		[[nodiscard]] static TRAP::Ref<CommandPool> Create(const RendererAPI::CommandPoolDesc& desc);
 
 		/// <summary>
 		/// Destructor.
@@ -44,7 +44,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="secondary">Should the command buffer be a secondary command buffer.</param>
 		///<returns>New command buffer.</returns>
-		virtual CommandBuffer* AllocateCommandBuffer(bool secondary) = 0;
+		[[nodiscard]] virtual CommandBuffer* AllocateCommandBuffer(bool secondary) = 0;
 		/// <summary>
 		/// Free a command buffer
 		/// </summary>

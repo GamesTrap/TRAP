@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "ControllerEvent.h"
 
-TRAP::Events::EventCategory TRAP::Events::ControllerEvent::GetCategoryFlags() const noexcept
+[[nodiscard]] TRAP::Events::EventCategory TRAP::Events::ControllerEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -28,7 +28,7 @@ TRAP::Events::ControllerConnectEvent::ControllerConnectEvent(const Input::Contro
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::ControllerConnectEvent::ToString() const
+[[nodiscard]] std::string TRAP::Events::ControllerConnectEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -37,7 +37,7 @@ std::string TRAP::Events::ControllerConnectEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::ControllerConnectEvent::GetEventType() const noexcept
+[[nodiscard]] TRAP::Events::EventType TRAP::Events::ControllerConnectEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -46,7 +46,7 @@ TRAP::Events::EventType TRAP::Events::ControllerConnectEvent::GetEventType() con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::ControllerConnectEvent::GetName() const
+[[nodiscard]] std::string TRAP::Events::ControllerConnectEvent::GetName() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -63,7 +63,7 @@ TRAP::Events::ControllerDisconnectEvent::ControllerDisconnectEvent(const Input::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::ControllerDisconnectEvent::ToString() const
+[[nodiscard]] std::string TRAP::Events::ControllerDisconnectEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -72,7 +72,7 @@ std::string TRAP::Events::ControllerDisconnectEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::ControllerDisconnectEvent::GetEventType() const noexcept
+[[nodiscard]] TRAP::Events::EventType TRAP::Events::ControllerDisconnectEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -81,7 +81,7 @@ TRAP::Events::EventType TRAP::Events::ControllerDisconnectEvent::GetEventType() 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::ControllerDisconnectEvent::GetName() const
+[[nodiscard]] std::string TRAP::Events::ControllerDisconnectEvent::GetName() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

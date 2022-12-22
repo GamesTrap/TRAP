@@ -171,30 +171,30 @@ namespace TRAP::Graphics::API::SPIRVTools
 		/// Reflect the compute shader work group size.
 		/// </summary>
 		/// <returns>Compute shader work group size.</returns>
-		std::array<uint32_t, 3> ReflectComputeShaderWorkGroupSize() const;
+		[[nodiscard]] std::array<uint32_t, 3> ReflectComputeShaderWorkGroupSize() const;
 		/// <summary>
 		/// Reflect tessellation control shader control point count.
 		/// </summary>
 		/// <returns>Tessellation control shader control point count.</returns>
-		uint32_t ReflectTessellationControlShaderControlPoint() const;
+		[[nodiscard]] uint32_t ReflectTessellationControlShaderControlPoint() const;
 
 		/// <summary>
 		/// Retrieve the shader resources.
 		/// </summary>
 		/// <returns>Shader resources.</returns>
-		const std::vector<Resource>& GetShaderResources() const noexcept;
+		[[nodiscard]] const std::vector<Resource>& GetShaderResources() const noexcept;
 
 		/// <summary>
 		/// Retrieve the uniform variables.
 		/// </summary>
 		/// <returns>Uniform variables.</returns>
-		const std::vector<Variable>& GetUniformVariables() const noexcept;
+		[[nodiscard]] const std::vector<Variable>& GetUniformVariables() const noexcept;
 
 		/// <summary>
 		/// Rertieve the name of the entry point.
 		/// </summary>
 		/// <returns>Name of entry point.</returns>
-		std::string GetEntryPoint() const noexcept;
+		[[nodiscard]] std::string GetEntryPoint() const noexcept;
 
 	private:
 		//This points to the internal compiler class

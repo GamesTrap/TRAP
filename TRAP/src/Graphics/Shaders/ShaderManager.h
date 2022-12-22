@@ -56,12 +56,12 @@ namespace TRAP::Graphics::ShaderManager
 	/// </summary>
 	/// <param name="name">Name of the shader to retrieve.</param>
 	/// <returns>Shader, Fallback shader if not found.</returns>
-	Ref<Shader> Get(const std::string& name);
+	[[nodiscard]] Ref<Shader> Get(const std::string& name);
 	/// <summary>
 	/// Retrieve all loaded shader from the ShaderManager.
 	/// </summary>
 	/// <returns>Map of all loaded shaders.</returns>
-	const std::unordered_map<std::string, Ref<Shader>>& GetShaders() noexcept;
+	[[nodiscard]] const std::unordered_map<std::string, Ref<Shader>>& GetShaders() noexcept;
 	/// <summary>
 	/// Clear all shaders from the ShaderManager.
 	/// Except fallback shaders.
@@ -96,13 +96,13 @@ namespace TRAP::Graphics::ShaderManager
 	/// </summary>
 	/// <param name="name">Name of shader to check.</param>
 	/// <returns>True if shader exists, false otherwise.</returns>
-	bool Exists(const std::string& name);
+	[[nodiscard]] bool Exists(const std::string& name);
 	/// <summary>
 	/// Check whether a shader exists by path.
 	/// </summary>
 	/// <param name="path">Path of shader to check.</param>
 	/// <returns>True if shader exists, false otherwise.</returns>
-	bool ExistsPath(const std::filesystem::path& path);
+	[[nodiscard]] bool ExistsPath(const std::filesystem::path& path);
 
 	/// <summary>
 	/// Shutdown the ShaderManager.

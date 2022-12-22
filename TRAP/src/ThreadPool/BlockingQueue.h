@@ -97,13 +97,13 @@ namespace TRAP
 		/// Check if queue is empty.
 		/// </summary>
 		/// <returns>True if queue is empty, false otherwise.</returns>
-		bool Empty() const noexcept;
+		[[nodiscard]] bool Empty() const noexcept;
 
 		/// <summary>
 		/// Retrieve the size of the queue.
 		/// </summary>
 		/// <returns>Queue size.</returns>
-		uint32_t Size() const noexcept;
+		[[nodiscard]] uint32_t Size() const noexcept;
 
 	private:
 		std::queue<T> m_queue{};
@@ -294,7 +294,7 @@ void TRAP::BlockingQueue<T>::Done() noexcept
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-bool TRAP::BlockingQueue<T>::Empty() const noexcept
+[[nodiscard]] bool TRAP::BlockingQueue<T>::Empty() const noexcept
 {
 	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -306,7 +306,7 @@ bool TRAP::BlockingQueue<T>::Empty() const noexcept
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-uint32_t TRAP::BlockingQueue<T>::Size() const noexcept
+[[nodiscard]] uint32_t TRAP::BlockingQueue<T>::Size() const noexcept
 {
 	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 

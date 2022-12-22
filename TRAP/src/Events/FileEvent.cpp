@@ -13,7 +13,7 @@ TRAP::Events::FileChangeEvent::FileChangeEvent(TRAP::FileSystem::FileStatus stat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::filesystem::path TRAP::Events::FileChangeEvent::GetPath() const noexcept
+[[nodiscard]] std::filesystem::path TRAP::Events::FileChangeEvent::GetPath() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -22,7 +22,7 @@ std::filesystem::path TRAP::Events::FileChangeEvent::GetPath() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::path> TRAP::Events::FileChangeEvent::GetOldName() const noexcept
+[[nodiscard]] std::optional<std::filesystem::path> TRAP::Events::FileChangeEvent::GetOldName() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -31,7 +31,7 @@ std::optional<std::filesystem::path> TRAP::Events::FileChangeEvent::GetOldName()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::FileChangeEvent::ToString() const
+[[nodiscard]] std::string TRAP::Events::FileChangeEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -41,7 +41,7 @@ std::string TRAP::Events::FileChangeEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetEventType() const noexcept
+[[nodiscard]] TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -50,7 +50,7 @@ TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetEventType() const noex
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::FileChangeEvent::GetName() const
+[[nodiscard]] std::string TRAP::Events::FileChangeEvent::GetName() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -59,7 +59,7 @@ std::string TRAP::Events::FileChangeEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::FileChangeEvent::GetCategoryFlags() const noexcept
+[[nodiscard]] TRAP::Events::EventCategory TRAP::Events::FileChangeEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

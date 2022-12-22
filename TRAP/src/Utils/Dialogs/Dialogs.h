@@ -16,10 +16,10 @@ namespace TRAP::Utils::Dialogs
 	/// </param>
 	/// <param name="allFiles">Whether to add a filter for "All Files (*.*)" or not.</param>
 	/// <returns>Physical path of the Dialog or empty string.</returns>
-	std::string SaveFile(const std::string& title,
-						 const std::string& defaultPathAndFile = "",
-						 const std::vector<std::pair<std::string, std::string>>& filterPatterns = {},
-						 bool allFiles = true);
+	[[nodiscard]] std::string SaveFile(const std::string& title,
+						               const std::string& defaultPathAndFile = "",
+						               const std::vector<std::pair<std::string, std::string>>& filterPatterns = {},
+						               bool allFiles = true);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -35,11 +35,11 @@ namespace TRAP::Utils::Dialogs
 	/// <param name="allowMultipleSelects">Whether to allow multiple file selections or not.</param>
 	/// <param name="allFiles">Whether to add a filter for "All Files (*.*)" or not.</param>
 	/// <returns>Physical path(s) of the dialog or empty string or vector.</returns>
-	std::vector<std::string> OpenFile(const std::string& title,
-									  const std::string& defaultPathAndFile = "",
-									  const std::vector<std::pair<std::string, std::string>>& filterPatterns = {},
-									  bool allowMultipleSelects = false,
-									  bool allFiles = true);
+	[[nodiscard]] std::vector<std::string> OpenFile(const std::string& title,
+									                const std::string& defaultPathAndFile = "",
+									                const std::vector<std::pair<std::string, std::string>>& filterPatterns = {},
+									                bool allowMultipleSelects = false,
+									                bool allFiles = true);
 
 	/// <summary>
 	/// Opens an open file dialog for a single file.
@@ -53,10 +53,10 @@ namespace TRAP::Utils::Dialogs
 	/// </param>
 	/// <param name="allFiles">Whether to add a filter for "All Files (*.*)" or not.</param>
 	/// <returns>Physical path of the dialog or empty string.</returns>
-	std::string OpenSingleFile(const std::string& title,
-							   const std::string& defaultPathAndFile = "",
-							   const std::vector<std::pair<std::string, std::string>>& filterPatterns = {},
-							   bool allFiles = true);
+	[[nodiscard]] std::string OpenSingleFile(const std::string& title,
+							                 const std::string& defaultPathAndFile = "",
+							                 const std::vector<std::pair<std::string, std::string>>& filterPatterns = {},
+							                 bool allFiles = true);
 
 	/// <summary>
 	/// Opens an open file dialog for multiple files.
@@ -70,10 +70,10 @@ namespace TRAP::Utils::Dialogs
 	/// </param>
 	/// <param name="allFiles">Whether to add a filter for "All Files (*.*)" or not.</param>
 	/// <returns>Physical path(s) of the dialog or empty vector.</returns>
-	std::vector<std::string> OpenMultipleFiles(const std::string& title,
-											   const std::string& defaultPathAndFile = "",
-											   const std::vector<std::pair<std::string, std::string>>& filterPatterns = {},
-											   bool allFiles = true);
+	[[nodiscard]] std::vector<std::string> OpenMultipleFiles(const std::string& title,
+											                 const std::string& defaultPathAndFile = "",
+											                 const std::vector<std::pair<std::string, std::string>>& filterPatterns = {},
+											                 bool allFiles = true);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -83,7 +83,7 @@ namespace TRAP::Utils::Dialogs
 	/// <param name="title">Title for the dialog.</param>
 	/// <param name="defaultPath">Sets a default path and file.</param>
 	/// <returns>Physical path of the select folder dialog or empty string.</returns>
-	std::string SelectFolder(const std::string& title, const std::string& defaultPath = "");
+	[[nodiscard]] std::string SelectFolder(const std::string& title, const std::string& defaultPath = "");
 
 	//-------------------------------------------------------------------------------------------------------------------//
 

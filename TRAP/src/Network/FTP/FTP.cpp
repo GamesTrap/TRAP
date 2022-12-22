@@ -68,7 +68,7 @@ TRAP::Network::FTP::Response::Response(const Status code, std::string message) n
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Network::FTP::Response::IsOK() const noexcept
+[[nodiscard]] bool TRAP::Network::FTP::Response::IsOK() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -77,7 +77,7 @@ bool TRAP::Network::FTP::Response::IsOK() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::FTP::Response::Status TRAP::Network::FTP::Response::GetStatus() const noexcept
+[[nodiscard]] TRAP::Network::FTP::Response::Status TRAP::Network::FTP::Response::GetStatus() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -86,7 +86,7 @@ TRAP::Network::FTP::Response::Status TRAP::Network::FTP::Response::GetStatus() c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Network::FTP::Response::GetMessage() const noexcept
+[[nodiscard]] std::string TRAP::Network::FTP::Response::GetMessage() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -111,7 +111,7 @@ TRAP::Network::FTP::DirectoryResponse::DirectoryResponse(const Response& respons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::filesystem::path& TRAP::Network::FTP::DirectoryResponse::GetDirectory() const noexcept
+[[nodiscard]] const std::filesystem::path& TRAP::Network::FTP::DirectoryResponse::GetDirectory() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -139,7 +139,7 @@ TRAP::Network::FTP::ListingResponse::ListingResponse(const Response& response, c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<std::filesystem::path>& TRAP::Network::FTP::ListingResponse::GetListing() const noexcept
+[[nodiscard]] const std::vector<std::filesystem::path>& TRAP::Network::FTP::ListingResponse::GetListing() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -217,7 +217,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::KeepAlive()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::FTP::DirectoryResponse TRAP::Network::FTP::GetWorkingDirectory()
+[[nodiscard]] TRAP::Network::FTP::DirectoryResponse TRAP::Network::FTP::GetWorkingDirectory()
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -226,7 +226,7 @@ TRAP::Network::FTP::DirectoryResponse TRAP::Network::FTP::GetWorkingDirectory()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::FTP::ListingResponse TRAP::Network::FTP::GetDirectoryListing(const std::filesystem::path& directory)
+[[nodiscard]] TRAP::Network::FTP::ListingResponse TRAP::Network::FTP::GetDirectoryListing(const std::filesystem::path& directory)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -437,7 +437,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::SendCommand(const std::string& 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::FTP::Response TRAP::Network::FTP::GetResponse()
+[[nodiscard]] TRAP::Network::FTP::Response TRAP::Network::FTP::GetResponse()
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 

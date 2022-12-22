@@ -54,7 +54,7 @@ void TRAP::Network::Packet::Append(const void* const data, const std::size_t siz
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::size_t TRAP::Network::Packet::GetReadPosition() const noexcept
+[[nodiscard]] std::size_t TRAP::Network::Packet::GetReadPosition() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -74,7 +74,7 @@ void TRAP::Network::Packet::Clear() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const void* TRAP::Network::Packet::GetData() const
+[[nodiscard]] const void* TRAP::Network::Packet::GetData() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -83,7 +83,7 @@ const void* TRAP::Network::Packet::GetData() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::size_t TRAP::Network::Packet::GetDataSize() const noexcept
+[[nodiscard]] std::size_t TRAP::Network::Packet::GetDataSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -92,7 +92,7 @@ std::size_t TRAP::Network::Packet::GetDataSize() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Network::Packet::EndOfPacket() const noexcept
+[[nodiscard]] bool TRAP::Network::Packet::EndOfPacket() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -568,7 +568,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::wstring_view
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Network::Packet::CheckSize(const std::size_t size) noexcept
+[[nodiscard]] bool TRAP::Network::Packet::CheckSize(const std::size_t size) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -579,7 +579,7 @@ bool TRAP::Network::Packet::CheckSize(const std::size_t size) noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const void* TRAP::Network::Packet::OnSend(std::size_t& size)
+[[nodiscard]] const void* TRAP::Network::Packet::OnSend(std::size_t& size)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 

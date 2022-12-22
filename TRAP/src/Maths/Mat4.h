@@ -132,18 +132,18 @@ namespace TRAP::Math
 		/// Retrieve the length of the matrix.
 		/// </summary>
 		/// <returns>Length.</returns>
-		static constexpr int32_t Length() noexcept;
+		[[nodiscard]] static constexpr int32_t Length() noexcept;
 
 		/// <summary>
 		/// Retrieve a column of the matrix.
 		/// </summary>
 		/// <param name="i">Column to retrieve.</param>
-		constexpr colType& operator[](int32_t i);
+		[[nodiscard]] constexpr colType& operator[](int32_t i);
 		/// <summary>
 		/// Retrieve a column of the matrix.
 		/// </summary>
 		/// <param name="i">Column to retrieve.</param>
-		constexpr const colType& operator[](int32_t i) const;
+		[[nodiscard]] constexpr const colType& operator[](int32_t i) const;
 
 		//Unary arithmetic operators
 		template<typename U>
@@ -171,7 +171,7 @@ namespace TRAP::Math
 		constexpr Mat<4, 4, T> operator++(int) noexcept;
 		constexpr Mat<4, 4, T> operator--(int) noexcept;
 
-		std::string ToString() const;
+		[[nodiscard]] std::string ToString() const;
 	};
 
 	//Unary operators
@@ -365,7 +365,7 @@ constexpr TRAP::Math::Mat<4, 4, T>::Mat(const Mat<3, 3, T>& x) noexcept
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-constexpr int TRAP::Math::Mat<4, 4, T>::Length() noexcept
+[[nodiscard]] constexpr int TRAP::Math::Mat<4, 4, T>::Length() noexcept
 {
 	return 4;
 }
@@ -374,7 +374,7 @@ constexpr int TRAP::Math::Mat<4, 4, T>::Length() noexcept
 //Accesses
 
 template<typename T>
-constexpr typename TRAP::Math::Mat<4, 4, T>::colType& TRAP::Math::Mat<4, 4, T>::operator[](const int32_t i)
+[[nodiscard]] constexpr typename TRAP::Math::Mat<4, 4, T>::colType& TRAP::Math::Mat<4, 4, T>::operator[](const int32_t i)
 {
 	TRAP_ASSERT(i < this->Length(), "Math::Mat<4, 4, T>::operator[]: Index out of range!");
 
@@ -382,7 +382,7 @@ constexpr typename TRAP::Math::Mat<4, 4, T>::colType& TRAP::Math::Mat<4, 4, T>::
 }
 
 template<typename T>
-constexpr const typename TRAP::Math::Mat<4, 4, T>::colType& TRAP::Math::Mat<4, 4, T>::operator[](const int32_t i) const
+[[nodiscard]] constexpr const typename TRAP::Math::Mat<4, 4, T>::colType& TRAP::Math::Mat<4, 4, T>::operator[](const int32_t i) const
 {
 	TRAP_ASSERT(i < this->Length(), "Math::Mat<4, 4, T>::operator[]: Index out of range!");
 
@@ -536,7 +536,7 @@ constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Mat<4, 4, T>::operator--(int) noe
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-std::string TRAP::Math::Mat<4, 4, T>::ToString() const
+[[nodiscard]] std::string TRAP::Math::Mat<4, 4, T>::ToString() const
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

@@ -24,7 +24,7 @@ namespace TRAP::Graphics
 		/// <param name="sprites">Sprites to be used by the animation.</param>
 		/// <param name="speed">Speed of the animation in seconds.</param>
 		/// <returns>Created SpriteAnimation.</returns>
-		static TRAP::Ref<SpriteAnimation> Create(std::string name, std::vector<TRAP::Ref<SubTexture2D>> sprites, float speed);
+		[[nodiscard]] static TRAP::Ref<SpriteAnimation> Create(std::string name, std::vector<TRAP::Ref<SubTexture2D>> sprites, float speed);
 
 		/// <summary>
 		/// Constructor.
@@ -66,13 +66,13 @@ namespace TRAP::Graphics
 		/// Retrieve all sprites used by the animation.
 		/// </summary>
 		/// <returns>List of sprites.</returns>
-		const std::vector<TRAP::Ref<SubTexture2D>>& GetAllSprites() const noexcept;
+		[[nodiscard]] const std::vector<TRAP::Ref<SubTexture2D>>& GetAllSprites() const noexcept;
 
 		/// <summary>
 		/// Retrieve the current sprite of the animation.
 		/// </summary>
 		/// <returns>Current sprite.</returns>
-		TRAP::Ref<SubTexture2D> GetCurrentSprite();
+		[[nodiscard]] TRAP::Ref<SubTexture2D> GetCurrentSprite();
 
 		/// <summary>
 		/// Set the animation speed.
@@ -84,7 +84,7 @@ namespace TRAP::Graphics
 		/// Retrieve the animation speed.
 		/// </summary>
 		/// <returns>Animation speed:</returns>
-		float GetSpeed() const noexcept;
+		[[nodiscard]] float GetSpeed() const noexcept;
 
 		/// <summary>
 		/// Play the animation.

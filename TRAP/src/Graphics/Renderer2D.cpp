@@ -93,7 +93,7 @@ namespace TRAP::Graphics
 			void ExtendBuffers(); //Extend buffers to allow for an additional draw call
 			uint32_t DrawBuffers(UniformBuffer* camera);
 
-			uint32_t GetTextureIndex(Ref<Texture> texture);
+			[[nodiscard]] uint32_t GetTextureIndex(Ref<Texture> texture);
 		} QuadData;
 
 		//-------------------------------------------------------------------------------------------------------------------//
@@ -402,7 +402,7 @@ uint32_t TRAP::Graphics::Renderer2DData::QuadData::DrawBuffers(UniformBuffer* ca
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Renderer2DData::QuadData::GetTextureIndex(Ref<Texture> texture)
+[[nodiscard]] uint32_t TRAP::Graphics::Renderer2DData::QuadData::GetTextureIndex(Ref<Texture> texture)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1076,7 +1076,7 @@ void TRAP::Graphics::Renderer2D::DrawRect(const TRAP::Math::Mat4& transform, con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Renderer2D::Statistics::GetTotalVertexCount() const noexcept
+[[nodiscard]] uint32_t TRAP::Graphics::Renderer2D::Statistics::GetTotalVertexCount() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1085,7 +1085,7 @@ uint32_t TRAP::Graphics::Renderer2D::Statistics::GetTotalVertexCount() const noe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Renderer2D::Statistics::GetTotalIndexCount() const noexcept
+[[nodiscard]] uint32_t TRAP::Graphics::Renderer2D::Statistics::GetTotalIndexCount() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1094,7 +1094,7 @@ uint32_t TRAP::Graphics::Renderer2D::Statistics::GetTotalIndexCount() const noex
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Renderer2D::Statistics TRAP::Graphics::Renderer2D::GetStats() noexcept
+[[nodiscard]] TRAP::Graphics::Renderer2D::Statistics TRAP::Graphics::Renderer2D::GetStats() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

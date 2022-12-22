@@ -2,7 +2,7 @@
 #define TRAP_STRING_INL
 
 template<typename T>
-T TRAP::Utils::String::ConvertToType(const std::string& input)
+[[nodiscard]] T TRAP::Utils::String::ConvertToType(const std::string& input)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -262,7 +262,7 @@ T TRAP::Utils::String::ConvertToType(const std::string& input)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-std::string TRAP::Utils::String::ConvertToString(T value)
+[[nodiscard]] std::string TRAP::Utils::String::ConvertToString(T value)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 

@@ -42,7 +42,7 @@ namespace TRAP::Graphics
 		/// Retrieve the projection matrix.
 		/// </summary>
 		/// <returns>Projection matrix.</returns>
-		const Math::Mat4& GetProjectionMatrix() const noexcept;
+		[[nodiscard]] const Math::Mat4& GetProjectionMatrix() const noexcept;
 
 	protected:
 		//Projection matrix, identity by default.

@@ -321,8 +321,8 @@ void TRAP::Graphics::API::VulkanSwapChain::DeInitSwapchain()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
-                                                                const TRAP::Ref<Fence>& fence) const
+[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
+                                                                              const TRAP::Ref<Fence>& fence) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -386,7 +386,7 @@ void TRAP::Graphics::API::VulkanSwapChain::ToggleVSync()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkSwapchainKHR TRAP::Graphics::API::VulkanSwapChain::GetVkSwapChain() const noexcept
+[[nodiscard]] VkSwapchainKHR TRAP::Graphics::API::VulkanSwapChain::GetVkSwapChain() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -395,7 +395,7 @@ VkSwapchainKHR TRAP::Graphics::API::VulkanSwapChain::GetVkSwapChain() const noex
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkQueue TRAP::Graphics::API::VulkanSwapChain::GetPresentVkQueue() const noexcept
+[[nodiscard]] VkQueue TRAP::Graphics::API::VulkanSwapChain::GetPresentVkQueue() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

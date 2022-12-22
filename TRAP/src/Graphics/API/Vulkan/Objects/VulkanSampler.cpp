@@ -33,7 +33,7 @@ TRAP::Graphics::API::VulkanSampler::~VulkanSampler()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkSampler TRAP::Graphics::API::VulkanSampler::GetVkSampler() const noexcept
+[[nodiscard]] VkSampler TRAP::Graphics::API::VulkanSampler::GetVkSampler() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

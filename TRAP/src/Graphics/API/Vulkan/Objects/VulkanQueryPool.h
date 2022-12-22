@@ -42,17 +42,17 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan query pool handle.
 		/// </summary>
 		/// <returns>Vulkan query pool handle</returns>
-		VkQueryPool GetVkQueryPool() const noexcept;
+		[[nodiscard]] VkQueryPool GetVkQueryPool() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan query type.
 		/// </summary>
 		/// <returns>Vulkan query type</returns>
-		VkQueryType GetVkQueryType() const noexcept;
+		[[nodiscard]] VkQueryType GetVkQueryType() const noexcept;
 		/// <summary>
 		/// Retrieve the number of queries managed by the pool.
 		/// </summary>
 		/// <returns>Number of queries</returns>
-		uint32_t GetCount() const noexcept;
+		[[nodiscard]] uint32_t GetCount() const noexcept;
 
 	private:
 		VkQueryPool m_vkQueryPool;

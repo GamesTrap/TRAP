@@ -19,7 +19,7 @@ namespace TRAP::Utils::DynamicLoading
     /// </summary>
     /// <param name="path">Path to the library.</param>
     /// <returns>Pointer to the loaded library.</returns>
-    void* LoadLibrary(std::string_view path);
+    [[nodiscard]] void* LoadLibrary(std::string_view path);
     /// <summary>
     /// Unloads a dynamic library from memory.
     /// </summary>
@@ -32,13 +32,13 @@ namespace TRAP::Utils::DynamicLoading
     /// <param name="name">Name of the function.</param>
     /// <returns>Pointer to the function.</returns>
     template<typename T>
-    T GetLibrarySymbol(void* module, const std::string_view name);
+    [[nodiscard]] T GetLibrarySymbol(void* module, const std::string_view name);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-inline T TRAP::Utils::DynamicLoading::GetLibrarySymbol([[maybe_unused]] void* module, [[maybe_unused]] const std::string_view name)
+[[nodiscard]] inline T TRAP::Utils::DynamicLoading::GetLibrarySymbol([[maybe_unused]] void* module, [[maybe_unused]] const std::string_view name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 

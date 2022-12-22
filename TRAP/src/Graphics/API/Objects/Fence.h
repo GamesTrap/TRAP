@@ -14,7 +14,7 @@ namespace TRAP::Graphics
 		/// Fence is not signaled.
 		/// </summary>
 		/// <returns>Created fence.</returns>
-		static TRAP::Ref<Fence> Create();
+		[[nodiscard]] static TRAP::Ref<Fence> Create();
 
 		/// <summary>
 		/// Destructor.
@@ -42,13 +42,13 @@ namespace TRAP::Graphics
 		/// Retrieve whether the Fence was submitted or not.
 		/// </summary>
 		/// <returns>True if Fence was submitted, false otherwise.</returns>
-		bool IsSubmitted() const noexcept;
+		[[nodiscard]] bool IsSubmitted() const noexcept;
 
 		/// <summary>
 		/// Retrieve the current status of the fence.
 		/// </summary>
 		/// <returns>Fence status.</returns>
-		virtual RendererAPI::FenceStatus GetStatus() = 0;
+		[[nodiscard]] virtual RendererAPI::FenceStatus GetStatus() = 0;
 		/// <summary>
 		/// Wait for the fence to be signaled.
 		///

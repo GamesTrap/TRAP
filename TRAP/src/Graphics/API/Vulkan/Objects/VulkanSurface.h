@@ -46,22 +46,22 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan surface handle.
 		/// </summary>
 		/// <returns>Vulkan surface handle.</returns>
-		VkSurfaceKHR GetVkSurface() const noexcept;
+		[[nodiscard]] VkSurfaceKHR GetVkSurface() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan surface capabilities.
 		/// </summary>
 		/// <returns>Vulkan surface capabilities.</returns>
-		VkSurfaceCapabilitiesKHR GetVkSurfaceCapabilities() const noexcept;
+		[[nodiscard]] VkSurfaceCapabilitiesKHR GetVkSurfaceCapabilities() const noexcept;
 		/// <summary>
 		/// Retrieve all formats supported by the surface.
 		/// </summary>
 		/// <returns>All formats supported by the surface.</returns>
-		const std::vector<VkSurfaceFormatKHR>& GetVkSurfaceFormats() const noexcept;
+		[[nodiscard]] const std::vector<VkSurfaceFormatKHR>& GetVkSurfaceFormats() const noexcept;
 		/// <summary>
 		/// Retrieve all present modes supported by the surface.
 		/// </summary>
 		/// <returns>All present modes supported by the surface.</returns>
-		const std::vector<VkPresentModeKHR>& GetVkSurfacePresentModes() const noexcept;
+		[[nodiscard]] const std::vector<VkPresentModeKHR>& GetVkSurfacePresentModes() const noexcept;
 
 	private:
 		VkSurfaceKHR m_surface;

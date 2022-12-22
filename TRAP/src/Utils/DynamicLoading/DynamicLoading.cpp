@@ -3,7 +3,7 @@
 
 #include "Utils/String/String.h"
 
-void* TRAP::Utils::DynamicLoading::LoadLibrary(const std::string_view path)
+[[nodiscard]] void* TRAP::Utils::DynamicLoading::LoadLibrary(const std::string_view path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 

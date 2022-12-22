@@ -65,12 +65,12 @@ namespace TRAP::Graphics::SpriteManager
 	/// </summary>
 	/// <param name="name">Name of sprite to retrieve.</param>
 	/// <returns>Sprite, nullptr if not found.</returns>
-	Ref<SubTexture2D> Get(const std::string& name);
+	[[nodiscard]] Ref<SubTexture2D> Get(const std::string& name);
 	/// <summary>
 	/// Retrieve all loaded sprites from the SpriteManager.
 	/// </summary>
 	/// <returns>Map of all loaded sprites.</returns>
-	const std::unordered_map<std::string, Ref<SubTexture2D>>& GetSprites() noexcept;
+	[[nodiscard]] const std::unordered_map<std::string, Ref<SubTexture2D>>& GetSprites() noexcept;
 	/// <summary>
 	/// Clear all sprites from the SpriteManager.
 	/// </summary>
@@ -106,13 +106,13 @@ namespace TRAP::Graphics::SpriteManager
 	/// </summary>
 	/// <param name="name">Name of sprite to check.</param>
 	/// <returns>True if sprite exists, false otherwise.</returns>
-	bool Exists(const std::string& name);
+	[[nodiscard]] bool Exists(const std::string& name);
 	/// <summary>
 	/// Check whether a sprite exists by path.
 	/// </summary>
 	/// <param name="path">Path of sprite to check.</param>
 	/// <returns>True if sprite exists, false otherwise.</returns>
-	bool ExistsPath(const std::filesystem::path& path);
+	[[nodiscard]] bool ExistsPath(const std::filesystem::path& path);
 }
 
 #endif /*TRAP_SPRITEMANAGER_H*/

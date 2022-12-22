@@ -146,7 +146,7 @@ namespace TRAP::Network
 			/// </summary>
 			/// <param name="field">Name of the field to test.</param>
 			/// <returns>True if the field exists, false otherwise.</returns>
-			bool HasField(const std::string& field) const;
+			[[nodiscard]] bool HasField(const std::string& field) const;
 
 			using FieldTable = std::map<std::string, std::string>;
 
@@ -217,7 +217,7 @@ namespace TRAP::Network
 			/// </summary>
 			/// <param name="field">Name of the field to get.</param>
 			/// <returns>Value of the field, or empty string if not found.</returns>
-			std::string GetField(const std::string& field) const;
+			[[nodiscard]] std::string GetField(const std::string& field) const;
 
 			/// <summary>
 			/// Get the response status code.
@@ -228,19 +228,19 @@ namespace TRAP::Network
 			/// enumeration).
 			/// </summary>
 			/// <returns>Status code of the response.</returns>
-			Status GetStatus() const noexcept;
+			[[nodiscard]] Status GetStatus() const noexcept;
 
 			/// <summary>
 			/// Get the major HTTP version number of the response.
 			/// </summary>
 			/// <returns>Major HTTP version number.</returns>
-			uint32_t GetMajorHTTPVersion() const noexcept;
+			[[nodiscard]] uint32_t GetMajorHTTPVersion() const noexcept;
 
 			/// <summary>
 			/// Get the minor HTTP version number of the response.
 			/// </summary>
 			/// <returns>Minor HTTP version number.</returns>
-			uint32_t GetMinorHTTPVersion() const noexcept;
+			[[nodiscard]] uint32_t GetMinorHTTPVersion() const noexcept;
 
 			/// <summary>
 			/// Get the body of the response.
@@ -252,7 +252,7 @@ namespace TRAP::Network
 			/// - an error message (in case of an error)
 			/// </summary>
 			/// <returns>The response body.</returns>
-			std::string GetBody() const noexcept;
+			[[nodiscard]] std::string GetBody() const noexcept;
 
 		private:
 			friend class HTTP;

@@ -13,7 +13,7 @@ namespace TRAP::Graphics
 		/// Create a new semaphore.
 		/// </summary>
 		/// <returns>Created semaphore.</returns>
-		static TRAP::Ref<Semaphore> Create();
+		[[nodiscard]] static TRAP::Ref<Semaphore> Create();
 
 		/// <summary>
 		/// Destructor.
@@ -41,7 +41,7 @@ namespace TRAP::Graphics
 		/// Is the semaphore signaled?
 		/// </summary>
 		/// <returns>True if the semaphore is signaled, false otherwise.</returns>
-		bool IsSignaled() const noexcept;
+		[[nodiscard]] bool IsSignaled() const noexcept;
 
 	protected:
 		/// <summary>

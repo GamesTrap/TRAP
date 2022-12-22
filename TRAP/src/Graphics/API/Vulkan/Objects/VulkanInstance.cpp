@@ -103,7 +103,7 @@ TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkInstance TRAP::Graphics::API::VulkanInstance::GetVkInstance() const noexcept
+[[nodiscard]] VkInstance TRAP::Graphics::API::VulkanInstance::GetVkInstance() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -112,7 +112,7 @@ VkInstance TRAP::Graphics::API::VulkanInstance::GetVkInstance() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<std::string>& TRAP::Graphics::API::VulkanInstance::GetUsedInstanceLayers() const noexcept
+[[nodiscard]] const std::vector<std::string>& TRAP::Graphics::API::VulkanInstance::GetUsedInstanceLayers() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -121,7 +121,7 @@ const std::vector<std::string>& TRAP::Graphics::API::VulkanInstance::GetUsedInst
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<std::string>& TRAP::Graphics::API::VulkanInstance::GetUsedInstanceExtensions() const noexcept
+[[nodiscard]] const std::vector<std::string>& TRAP::Graphics::API::VulkanInstance::GetUsedInstanceExtensions() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -130,7 +130,7 @@ const std::vector<std::string>& TRAP::Graphics::API::VulkanInstance::GetUsedInst
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanInstance::GetInstanceVersion()
+[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanInstance::GetInstanceVersion()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -142,7 +142,7 @@ uint32_t TRAP::Graphics::API::VulkanInstance::GetInstanceVersion()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<VkLayerProperties>& TRAP::Graphics::API::VulkanInstance::GetAvailableInstanceLayers()
+[[nodiscard]] const std::vector<VkLayerProperties>& TRAP::Graphics::API::VulkanInstance::GetAvailableInstanceLayers()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -154,7 +154,7 @@ const std::vector<VkLayerProperties>& TRAP::Graphics::API::VulkanInstance::GetAv
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<VkExtensionProperties>& TRAP::Graphics::API::VulkanInstance::GetAvailableInstanceExtensions()
+[[nodiscard]] const std::vector<VkExtensionProperties>& TRAP::Graphics::API::VulkanInstance::GetAvailableInstanceExtensions()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -166,7 +166,7 @@ const std::vector<VkExtensionProperties>& TRAP::Graphics::API::VulkanInstance::G
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::VulkanInstance::IsLayerSupported(const std::string_view layer)
+[[nodiscard]] bool TRAP::Graphics::API::VulkanInstance::IsLayerSupported(const std::string_view layer)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -195,7 +195,7 @@ bool TRAP::Graphics::API::VulkanInstance::IsLayerSupported(const std::string_vie
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::VulkanInstance::IsExtensionSupported(const std::string_view extension)
+[[nodiscard]] bool TRAP::Graphics::API::VulkanInstance::IsExtensionSupported(const std::string_view extension)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

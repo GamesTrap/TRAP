@@ -70,17 +70,17 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan shader module handles of each contained shader stage.
 		/// </summary>
 		/// <returns>Vulkan shader module handles.</returns>
-		const std::vector<VkShaderModule>& GetVkShaderModules() const noexcept;
+		[[nodiscard]] const std::vector<VkShaderModule>& GetVkShaderModules() const noexcept;
 		/// <summary>
 		/// Retrieve the reflection data of each contained shader stage.
 		/// </summary>
 		/// <returns>Shader reflection data.</returns>
-		TRAP::Ref<ShaderReflection::PipelineReflection> GetReflection() const noexcept;
+		[[nodiscard]] TRAP::Ref<ShaderReflection::PipelineReflection> GetReflection() const noexcept;
 		/// <summary>
 		/// Retrieve the entry point names used by each contained shader stage.
 		/// </summary>
 		/// <returns>Entry point names.</returns>
-		const std::vector<std::string>& GetEntryNames() const noexcept;
+		[[nodiscard]] const std::vector<std::string>& GetEntryNames() const noexcept;
 
 		/// <summary>
 		/// Use shader for rendering on the given window.
@@ -152,7 +152,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the shaders thread count per work group.
 		/// </summary>
 		/// <returns>Shaders thread count per work group.</returns>
-		const std::array<uint32_t, 3>& GetNumThreadsPerGroup() const noexcept override;
+		[[nodiscard]] const std::array<uint32_t, 3>& GetNumThreadsPerGroup() const noexcept override;
 
 	protected:
 		/// <summary>
@@ -193,7 +193,7 @@ namespace TRAP::Graphics::API
 		/// <param name="type">Descriptor type of the descriptor.</param>
 		/// <param name="size">Size of the descriptor.</param>
 		/// <returns>Descriptor's name if found, empty string otherwise.</returns>
-		std::string RetrieveDescriptorName(uint32_t set, uint32_t binding, RendererAPI::DescriptorType type, bool* outUAV = nullptr, uint64_t size = 1) const;
+		[[nodiscard]] std::string RetrieveDescriptorName(uint32_t set, uint32_t binding, RendererAPI::DescriptorType type, bool* outUAV = nullptr, uint64_t size = 1) const;
 
 		TRAP::Ref<VulkanDevice> m_device;
 

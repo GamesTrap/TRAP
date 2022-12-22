@@ -433,7 +433,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVVkImageView() const noexcept
+[[nodiscard]] VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVVkImageView() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -442,7 +442,7 @@ VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVVkImageView() const noexce
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVStencilVkImageView() const noexcept
+[[nodiscard]] VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVStencilVkImageView() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -451,7 +451,7 @@ VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVStencilVkImageView() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<VkImageView> &TRAP::Graphics::API::VulkanTexture::GetUAVVkImageViews() const noexcept
+[[nodiscard]] const std::vector<VkImageView> &TRAP::Graphics::API::VulkanTexture::GetUAVVkImageViews() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -460,7 +460,7 @@ const std::vector<VkImageView> &TRAP::Graphics::API::VulkanTexture::GetUAVVkImag
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkImage TRAP::Graphics::API::VulkanTexture::GetVkImage() const noexcept
+[[nodiscard]] VkImage TRAP::Graphics::API::VulkanTexture::GetVkImage() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -469,7 +469,7 @@ VkImage TRAP::Graphics::API::VulkanTexture::GetVkImage() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VmaAllocation TRAP::Graphics::API::VulkanTexture::GetVMAAllocation() const noexcept
+[[nodiscard]] VmaAllocation TRAP::Graphics::API::VulkanTexture::GetVMAAllocation() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -478,7 +478,7 @@ VmaAllocation TRAP::Graphics::API::VulkanTexture::GetVMAAllocation() const noexc
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::VulkanTexture::IsLazilyAllocated() const noexcept
+[[nodiscard]] bool TRAP::Graphics::API::VulkanTexture::IsLazilyAllocated() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -564,9 +564,9 @@ void TRAP::Graphics::API::VulkanTexture::PreInit()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanTexture::GetMemoryType(uint32_t typeBits,
-														   const VkPhysicalDeviceMemoryProperties &memProps,
-														   const VkMemoryPropertyFlags props, VkBool32* const memTypeFound)
+[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanTexture::GetMemoryType(uint32_t typeBits,
+														                 const VkPhysicalDeviceMemoryProperties &memProps,
+														                 const VkMemoryPropertyFlags props, VkBool32* const memTypeFound)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

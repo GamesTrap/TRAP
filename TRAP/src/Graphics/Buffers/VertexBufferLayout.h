@@ -24,7 +24,7 @@ namespace TRAP::Graphics
 	/// </summary>
 	/// <param name="type">Shader data type.</param>
 	/// <returns>Byte size of the shader data type.</returns>
-	constexpr uint32_t ShaderDataTypeSize(ShaderDataType type);
+	[[nodiscard]] constexpr uint32_t ShaderDataTypeSize(ShaderDataType type);
 
 	/// <summary>
 	/// Struct used to describe a single vertex attribute.
@@ -54,7 +54,7 @@ namespace TRAP::Graphics
 		/// Retrieve the component count of this vertex attribute.
 		/// </summary>
 		/// <returns>Component count of this vertex attribute.</returns>
-		uint32_t GetComponentCount() const;
+		[[nodiscard]] uint32_t GetComponentCount() const;
 	};
 
 	/// <summary>
@@ -77,17 +77,17 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Retrieve the total byte size of all vertex buffer elements used in this layout.
 		/// </summary>
-		uint32_t GetStride() const noexcept;
+		[[nodiscard]] uint32_t GetStride() const noexcept;
 		/// <summary>
 		/// Retrieve the vertex buffer elements described by this layout.
 		/// </summary>
 		/// <returns>Vertex buffer elements.</returns>
-		const std::vector<VertexBufferElement>& GetElements() const noexcept;
+		[[nodiscard]] const std::vector<VertexBufferElement>& GetElements() const noexcept;
 
-		std::vector<VertexBufferElement>::iterator begin() noexcept;
-		std::vector<VertexBufferElement>::iterator end() noexcept;
-		std::vector<VertexBufferElement>::const_iterator begin() const noexcept;
-		std::vector<VertexBufferElement>::const_iterator end() const noexcept;
+		[[nodiscard]] std::vector<VertexBufferElement>::iterator begin() noexcept;
+		[[nodiscard]] std::vector<VertexBufferElement>::iterator end() noexcept;
+		[[nodiscard]] std::vector<VertexBufferElement>::const_iterator begin() const noexcept;
+		[[nodiscard]] std::vector<VertexBufferElement>::const_iterator end() const noexcept;
 
 	private:
 		/// <summary>
@@ -102,7 +102,7 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t TRAP::Graphics::ShaderDataTypeSize(const ShaderDataType type)
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::ShaderDataTypeSize(const ShaderDataType type)
 {
 	switch (type)
 	{

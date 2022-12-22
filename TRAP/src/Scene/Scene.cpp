@@ -21,7 +21,7 @@
 	#pragma warning(pop)
 #endif
 
-static b2BodyType TRAPRigidbody2DTypeToBox2DBody(TRAP::Rigidbody2DComponent::BodyType bodyType)
+[[nodiscard]] static b2BodyType TRAPRigidbody2DTypeToBox2DBody(TRAP::Rigidbody2DComponent::BodyType bodyType)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -99,7 +99,7 @@ static void CopyComponentIfExists(TRAP::ComponentGroup<Component...>, TRAP::Enti
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Scene> TRAP::Scene::Copy(Ref<Scene> other)
+[[nodiscard]] TRAP::Ref<TRAP::Scene> TRAP::Scene::Copy(Ref<Scene> other)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -131,7 +131,7 @@ TRAP::Ref<TRAP::Scene> TRAP::Scene::Copy(Ref<Scene> other)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Entity TRAP::Scene::CreateEntity(const std::string& name)
+[[nodiscard]] TRAP::Entity TRAP::Scene::CreateEntity(const std::string& name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -140,7 +140,7 @@ TRAP::Entity TRAP::Scene::CreateEntity(const std::string& name)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Entity TRAP::Scene::CreateEntityWithUID(Utils::UID uid, const std::string& name)
+[[nodiscard]] TRAP::Entity TRAP::Scene::CreateEntityWithUID(Utils::UID uid, const std::string& name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -447,7 +447,7 @@ void TRAP::Scene::DuplicateEntity(Entity entity)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Entity TRAP::Scene::GetPrimaryCameraEntity()
+[[nodiscard]] TRAP::Entity TRAP::Scene::GetPrimaryCameraEntity()
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 

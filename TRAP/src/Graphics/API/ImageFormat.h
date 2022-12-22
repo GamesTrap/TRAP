@@ -279,7 +279,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>True if the format has only depth, false otherwise.</returns>
-    inline constexpr bool ImageFormatIsDepthOnly(const ImageFormat fmt) noexcept
+    [[nodiscard]] inline constexpr bool ImageFormatIsDepthOnly(const ImageFormat fmt) noexcept
     {
         switch (fmt)
         {
@@ -301,7 +301,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>True if the format has depth and stencil, false otherwise.</returns>
-    inline constexpr bool ImageFormatIsDepthAndStencil(const ImageFormat fmt) noexcept
+    [[nodiscard]] inline constexpr bool ImageFormatIsDepthAndStencil(const ImageFormat fmt) noexcept
     {
         switch (fmt)
         {
@@ -323,7 +323,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>True if the format has only stencil, false otherwise.</returns>
-    inline constexpr bool ImageFormatIsStencilOnly(const ImageFormat fmt) noexcept
+    [[nodiscard]] inline constexpr bool ImageFormatIsStencilOnly(const ImageFormat fmt) noexcept
     {
         switch(fmt)
         {
@@ -339,7 +339,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>True if the format has stencil, false otherwise.</returns>
-    inline constexpr bool ImageFormatHasStencil(const ImageFormat fmt) noexcept
+    [[nodiscard]] inline constexpr bool ImageFormatHasStencil(const ImageFormat fmt) noexcept
     {
         return ImageFormatIsStencilOnly(fmt) || ImageFormatIsDepthAndStencil(fmt);
     }
@@ -348,7 +348,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>Bit size of a single block.</returns>
-    inline constexpr uint32_t ImageFormatBitSizeOfBlock(const ImageFormat fmt) noexcept
+    [[nodiscard]] inline constexpr uint32_t ImageFormatBitSizeOfBlock(const ImageFormat fmt) noexcept
     {
         switch(fmt)
         {
@@ -527,7 +527,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>Pixel count.</returns>
-    inline constexpr uint32_t ImageFormatWidthOfBlock(const ImageFormat fmt) noexcept
+    [[nodiscard]] inline constexpr uint32_t ImageFormatWidthOfBlock(const ImageFormat fmt) noexcept
     {
         switch(fmt)
         {
@@ -606,7 +606,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>Pixel count.</returns>
-    inline constexpr uint32_t ImageFormatHeightOfBlock(const ImageFormat fmt) noexcept
+    [[nodiscard]] inline constexpr uint32_t ImageFormatHeightOfBlock(const ImageFormat fmt) noexcept
     {
         switch(fmt)
         {
@@ -681,7 +681,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>True if planar, false otherwise.</returns>
-    inline constexpr bool ImageFormatIsPlanar(const ImageFormat fmt) noexcept
+    [[nodiscard]] inline constexpr bool ImageFormatIsPlanar(const ImageFormat fmt) noexcept
     {
         switch(fmt)
         {
@@ -735,7 +735,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>Number of planes.</returns>
-    inline constexpr uint32_t ImageFormatNumOfPlanes(const ImageFormat fmt) noexcept
+    [[nodiscard]] inline constexpr uint32_t ImageFormatNumOfPlanes(const ImageFormat fmt) noexcept
     {
         switch(fmt)
         {
@@ -790,7 +790,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>True if single plane, false otherwise.</returns>
-    inline constexpr bool ImageFormatIsSinglePlane(const ImageFormat fmt) noexcept
+    [[nodiscard]] inline constexpr bool ImageFormatIsSinglePlane(const ImageFormat fmt) noexcept
     {
         return !ImageFormatIsPlanar(fmt) || ImageFormatNumOfPlanes(fmt) < 2;
     }
@@ -801,8 +801,8 @@ namespace TRAP::Graphics::API
     /// <param name="plane">Plane index.</param>
     /// <param name="width">Width of the image (plane 0).</param>
     /// <returns>Width of the plane.</returns>
-    inline constexpr uint32_t ImageFormatPlaneWidth(const ImageFormat fmt, const uint32_t plane,
-                                                    const uint32_t width) noexcept
+    [[nodiscard]] inline constexpr uint32_t ImageFormatPlaneWidth(const ImageFormat fmt, const uint32_t plane,
+                                                                  const uint32_t width) noexcept
     {
         if (plane == 0)
             return width;
@@ -851,8 +851,8 @@ namespace TRAP::Graphics::API
     /// <param name="plane">Plane index.</param>
     /// <param name="height">Height of the image (plane 0).</param>
     /// <returns>Height of the plane.</returns>
-    inline constexpr uint32_t ImageFormatPlaneHeight(const ImageFormat fmt, const uint32_t plane,
-                                                     const uint32_t height) noexcept
+    [[nodiscard]] inline constexpr uint32_t ImageFormatPlaneHeight(const ImageFormat fmt, const uint32_t plane,
+                                                                   const uint32_t height) noexcept
     {
         if (plane == 0)
             return height;
@@ -886,7 +886,7 @@ namespace TRAP::Graphics::API
     /// <param name="fmt">Image format.</param>
     /// <param name="plane">Plane index.</param>
     /// <returns>Plane size of a single block.</returns>
-    inline constexpr uint32_t ImageFormatPlaneSizeOfBlock(const ImageFormat fmt, const uint32_t plane) noexcept
+    [[nodiscard]] inline constexpr uint32_t ImageFormatPlaneSizeOfBlock(const ImageFormat fmt, const uint32_t plane) noexcept
     {
         switch(fmt)
         {
@@ -943,7 +943,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>True if the image format is a compressed format.</returns>
-    inline constexpr bool ImageFormatIsCompressed(const ImageFormat fmt) noexcept
+    [[nodiscard]] inline constexpr bool ImageFormatIsCompressed(const ImageFormat fmt) noexcept
     {
         switch(fmt)
         {
@@ -1082,7 +1082,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>Number of channels.</returns>
-    inline constexpr uint32_t ImageFormatChannelCount(const ImageFormat fmt) noexcept
+    [[nodiscard]] inline constexpr uint32_t ImageFormatChannelCount(const ImageFormat fmt) noexcept
     {
         switch(fmt)
         {
@@ -1190,7 +1190,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>True if the format stores floating point data.</returns>
-    inline constexpr bool ImageFormatIsFloat(const ImageFormat fmt) noexcept
+    [[nodiscard]] inline constexpr bool ImageFormatIsFloat(const ImageFormat fmt) noexcept
     {
         switch(fmt)
         {
@@ -1224,7 +1224,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>True if the format stores uint16_t data.</returns>
-    inline constexpr bool ImageFormatIsU16(const ImageFormat fmt) noexcept
+    [[nodiscard]] inline constexpr bool ImageFormatIsU16(const ImageFormat fmt) noexcept
     {
         switch(fmt)
         {

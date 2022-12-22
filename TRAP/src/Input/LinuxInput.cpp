@@ -43,7 +43,7 @@ TRAP::Input::ControllerLinuxLibrary TRAP::Input::s_linuxController{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::InitController()
+[[nodiscard]] bool TRAP::Input::InitController()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
@@ -195,7 +195,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInternal(Controller /*controller*/)
+[[nodiscard]] TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInternal(Controller /*controller*/)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -588,7 +588,7 @@ void TRAP::Input::UpdateControllerGUID(std::string&)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Input::GetKeyboardLayoutName()
+[[nodiscard]] std::string TRAP::Input::GetKeyboardLayoutName()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 

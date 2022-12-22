@@ -60,7 +60,7 @@ namespace TRAP::Network
 		/// If the socket is not bound to a port, this function returns 0.
 		/// </summary>
 		/// <returns>Port to which the socket is bound.</returns>
-		uint16_t GetLocalPort() const;
+		[[nodiscard]] uint16_t GetLocalPort() const;
 
 		/// <summary>
 		/// Bind the socket to a specific port.

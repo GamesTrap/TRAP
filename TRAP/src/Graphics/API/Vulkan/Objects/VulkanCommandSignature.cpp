@@ -53,7 +53,7 @@ TRAP::Graphics::API::VulkanCommandSignature::~VulkanCommandSignature()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::IndirectArgumentType TRAP::Graphics::API::VulkanCommandSignature::GetDrawType() const noexcept
+[[nodiscard]] TRAP::Graphics::RendererAPI::IndirectArgumentType TRAP::Graphics::API::VulkanCommandSignature::GetDrawType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -62,7 +62,7 @@ TRAP::Graphics::RendererAPI::IndirectArgumentType TRAP::Graphics::API::VulkanCom
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanCommandSignature::GetStride() const noexcept
+[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanCommandSignature::GetStride() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

@@ -14,7 +14,7 @@ TRAP::Events::TextureReloadEvent::TextureReloadEvent(TRAP::Ref<TRAP::Graphics::T
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Texture> TRAP::Events::TextureReloadEvent::GetTexture() const noexcept
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Events::TextureReloadEvent::GetTexture() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -23,7 +23,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Events::TextureReloadEvent::GetTexture(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::TextureReloadEvent::ToString() const
+[[nodiscard]] std::string TRAP::Events::TextureReloadEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -32,7 +32,7 @@ std::string TRAP::Events::TextureReloadEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::TextureReloadEvent::GetEventType() const noexcept
+[[nodiscard]] TRAP::Events::EventType TRAP::Events::TextureReloadEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -41,7 +41,7 @@ TRAP::Events::EventType TRAP::Events::TextureReloadEvent::GetEventType() const n
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::TextureReloadEvent::GetName() const
+[[nodiscard]] std::string TRAP::Events::TextureReloadEvent::GetName() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -50,7 +50,7 @@ std::string TRAP::Events::TextureReloadEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::TextureReloadEvent::GetCategoryFlags() const noexcept
+[[nodiscard]] TRAP::Events::EventCategory TRAP::Events::TextureReloadEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -71,7 +71,7 @@ TRAP::Events::ShaderReloadEvent::ShaderReloadEvent(TRAP::Ref<TRAP::Graphics::Sha
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Shader> TRAP::Events::ShaderReloadEvent::GetShader() const noexcept
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Events::ShaderReloadEvent::GetShader() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -80,7 +80,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Events::ShaderReloadEvent::GetShader() c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::ShaderReloadEvent::ToString() const
+[[nodiscard]] std::string TRAP::Events::ShaderReloadEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -89,7 +89,7 @@ std::string TRAP::Events::ShaderReloadEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::ShaderReloadEvent::GetEventType() const noexcept
+[[nodiscard]] TRAP::Events::EventType TRAP::Events::ShaderReloadEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -98,7 +98,7 @@ TRAP::Events::EventType TRAP::Events::ShaderReloadEvent::GetEventType() const no
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::ShaderReloadEvent::GetName() const
+[[nodiscard]] std::string TRAP::Events::ShaderReloadEvent::GetName() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -107,7 +107,7 @@ std::string TRAP::Events::ShaderReloadEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::ShaderReloadEvent::GetCategoryFlags() const noexcept
+[[nodiscard]] TRAP::Events::EventCategory TRAP::Events::ShaderReloadEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

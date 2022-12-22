@@ -19,7 +19,7 @@ void TRAP::Utils::Timer::Reset() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Utils::Timer::Elapsed() const
+[[nodiscard]] float TRAP::Utils::Timer::Elapsed() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -31,7 +31,7 @@ float TRAP::Utils::Timer::Elapsed() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Utils::Timer::ElapsedMilliseconds() const
+[[nodiscard]] float TRAP::Utils::Timer::ElapsedMilliseconds() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 

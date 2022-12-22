@@ -12,7 +12,7 @@ TRAP::Entity::Entity(const entt::entity handle, Scene* const scene) noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::UID TRAP::Entity::GetUID()
+[[nodiscard]] TRAP::Utils::UID TRAP::Entity::GetUID()
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -21,7 +21,7 @@ TRAP::Utils::UID TRAP::Entity::GetUID()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Entity::GetName()
+[[nodiscard]] const std::string& TRAP::Entity::GetName()
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

@@ -51,7 +51,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan memory allocator (VMA) allocator handle.
 		/// </summary>
 		/// <returns>VMA allocator handle.</returns>
-		VmaAllocator GetVMAAllocator() const noexcept;
+		[[nodiscard]] VmaAllocator GetVMAAllocator() const noexcept;
 
 	private:
 		VmaAllocator m_allocator;

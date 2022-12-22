@@ -108,14 +108,14 @@ enum class ProfileSystems
 	             Network | Scene | ThreadPool | Utils | Window | WindowingAPI | Verbose
 };
 
-constexpr bool operator&(const ProfileSystems lhs, const ProfileSystems rhs) noexcept
+[[nodiscard]] constexpr bool operator&(const ProfileSystems lhs, const ProfileSystems rhs) noexcept
 {
 	return static_cast<bool>(static_cast<std::underlying_type_t<ProfileSystems>>(lhs) &
 			                 static_cast<std::underlying_type_t<ProfileSystems>>(rhs));
 }
 
 //Set this macro to specify which systems should be profiled.
-constexpr ProfileSystems TRAP_PROFILE_SYSTEMS() noexcept
+[[nodiscard]] constexpr ProfileSystems TRAP_PROFILE_SYSTEMS() noexcept
 {
 	return ProfileSystems::All;
 }
@@ -133,7 +133,7 @@ constexpr ProfileSystems TRAP_PROFILE_SYSTEMS() noexcept
 /// <param name="minor">Minor version number.</param>
 /// <param name="patch">Patch version number.</param>
 /// <returns>Version number packed into a single uint32_t.</returns>
-uint32_t TRAP_MAKE_VERSION(const uint32_t major, const uint32_t minor, const uint32_t patch);
+[[nodiscard]] uint32_t TRAP_MAKE_VERSION(const uint32_t major, const uint32_t minor, const uint32_t patch);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -142,7 +142,7 @@ uint32_t TRAP_MAKE_VERSION(const uint32_t major, const uint32_t minor, const uin
 /// </summary>
 /// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
 /// <returns>Major version number.</returns>
-constexpr uint32_t TRAP_VERSION_MAJOR(const uint32_t version) noexcept
+[[nodiscard]] constexpr uint32_t TRAP_VERSION_MAJOR(const uint32_t version) noexcept
 {
 	return version >> 22u;
 }
@@ -154,7 +154,7 @@ constexpr uint32_t TRAP_VERSION_MAJOR(const uint32_t version) noexcept
 /// </summary>
 /// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
 /// <returns>Minor version number.</returns>
-constexpr uint32_t TRAP_VERSION_MINOR(const uint32_t version) noexcept
+[[nodiscard]] constexpr uint32_t TRAP_VERSION_MINOR(const uint32_t version) noexcept
 {
 	return version >> 12u;
 }
@@ -166,7 +166,7 @@ constexpr uint32_t TRAP_VERSION_MINOR(const uint32_t version) noexcept
 /// </summary>
 /// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
 /// <returns>Patch version number.</returns>
-constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version) noexcept
+[[nodiscard]] constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version) noexcept
 {
 	return version & 0xFFFu;
 }
@@ -176,7 +176,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version) noexcept
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-const uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 87);
+const uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 88);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -249,7 +249,7 @@ const uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 87);
 /// <param name="x">Amount to shift.</param>
 /// <returns>Shifted value.</returns>
 template <typename T>
-constexpr T BIT(const T x) noexcept
+[[nodiscard]] constexpr T BIT(const T x) noexcept
 {
 	return T(1) << x;
 }

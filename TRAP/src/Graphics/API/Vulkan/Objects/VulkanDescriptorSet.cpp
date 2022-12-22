@@ -34,7 +34,7 @@ TRAP::Graphics::API::VulkanDescriptorSet::VulkanDescriptorSet(TRAP::Ref<VulkanDe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<VkDescriptorSet>& TRAP::Graphics::API::VulkanDescriptorSet::GetVkDescriptorSets() const noexcept
+[[nodiscard]] const std::vector<VkDescriptorSet>& TRAP::Graphics::API::VulkanDescriptorSet::GetVkDescriptorSets() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -43,7 +43,7 @@ const std::vector<VkDescriptorSet>& TRAP::Graphics::API::VulkanDescriptorSet::Ge
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::API::VulkanRootSignature> TRAP::Graphics::API::VulkanDescriptorSet::GetRootSignature() const noexcept
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::API::VulkanRootSignature> TRAP::Graphics::API::VulkanDescriptorSet::GetRootSignature() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -52,7 +52,7 @@ TRAP::Ref<TRAP::Graphics::API::VulkanRootSignature> TRAP::Graphics::API::VulkanD
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency TRAP::Graphics::API::VulkanDescriptorSet::GetUpdateFrequency() const noexcept
+[[nodiscard]] TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency TRAP::Graphics::API::VulkanDescriptorSet::GetUpdateFrequency() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -62,7 +62,7 @@ TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency TRAP::Graphics::API::Vulk
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint8_t TRAP::Graphics::API::VulkanDescriptorSet::GetDynamicOffsetCount() const noexcept
+[[nodiscard]] uint8_t TRAP::Graphics::API::VulkanDescriptorSet::GetDynamicOffsetCount() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -71,7 +71,7 @@ uint8_t TRAP::Graphics::API::VulkanDescriptorSet::GetDynamicOffsetCount() const 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::Graphics::API::VulkanRenderer::SizeOffset> TRAP::Graphics::API::VulkanDescriptorSet::GetDynamicSizeOffsets() const noexcept
+[[nodiscard]] std::vector<TRAP::Graphics::API::VulkanRenderer::SizeOffset> TRAP::Graphics::API::VulkanDescriptorSet::GetDynamicSizeOffsets() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -80,7 +80,7 @@ std::vector<TRAP::Graphics::API::VulkanRenderer::SizeOffset> TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanDescriptorSet::GetMaxSets() const noexcept
+[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanDescriptorSet::GetMaxSets() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -89,7 +89,7 @@ uint32_t TRAP::Graphics::API::VulkanDescriptorSet::GetMaxSets() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanDescriptorSet::GetSet() const noexcept
+[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanDescriptorSet::GetSet() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

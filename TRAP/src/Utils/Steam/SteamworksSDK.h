@@ -43,140 +43,140 @@ namespace TRAP::Utils::Steam
     /// Check whether the Steamworks SDK is initialized or not.
     /// </summary>
     /// <returns>True if Steamworks SDK is initialized, false otherwise.</returns>
-    bool IsInitialized() noexcept;
+    [[nodiscard]] bool IsInitialized() noexcept;
 
 #ifdef USE_STEAMWORKS_SDK
     /// <summary>
     /// Retrieve the SteamApps interface.
     /// </summary>
     /// <returns>Pointer to the SteamApps interface.</returns>
-    ISteamApps* GetSteamApps();
+    [[nodiscard]] ISteamApps* GetSteamApps();
 
     /// <summary>
     /// Retrieve the SteamFriends interface.
     /// </summary>
     /// <returns>Pointer to the SteamFriends interface.</returns>
-    ISteamFriends* GetSteamFriends();
+    [[nodiscard]] ISteamFriends* GetSteamFriends();
 
     /// <summary>
     /// Retrieve the SteamHTMLSurface interface.
     /// </summary>
     /// <returns>Pointer to the SteamHTMLSurface interface.</returns>
-    ISteamHTMLSurface* GetSteamHTMLSurface();
+    [[nodiscard]] ISteamHTMLSurface* GetSteamHTMLSurface();
 
     /// <summary>
     /// Retrieve the SteamHTTP interface.
     /// </summary>
     /// <returns>Pointer to the SteamHTTP interface.</returns>
-    ISteamHTTP* GetSteamHTTP();
+    [[nodiscard]] ISteamHTTP* GetSteamHTTP();
 
     /// <summary>
     /// Retrieve the SteamInput interface.
     /// </summary>
     /// <returns>Pointer to the SteamInput interface.</returns>
-    ISteamInput* GetSteamInput();
+    [[nodiscard]] ISteamInput* GetSteamInput();
 
     /// <summary>
     /// Retrieve the SteamInventory interface.
     /// </summary>
     /// <returns>Pointer to the SteamInventory interface.</returns>
-    ISteamInventory* GetSteamInventory();
+    [[nodiscard]] ISteamInventory* GetSteamInventory();
 
     /// <summary>
     /// Retrieve the SteamMatchmaking interface.
     /// </summary>
     /// <returns>Pointer to the SteamMatchmaking interface.</returns>
-    ISteamMatchmaking* GetSteamMatchmaking();
+    [[nodiscard]] ISteamMatchmaking* GetSteamMatchmaking();
 
     /// <summary>
     /// Retrieve the SteamMatchmakingServers interface.
     /// </summary>
     /// <returns>Pointer to the SteamMatchmakingServers interface.</returns>
-    ISteamMatchmakingServers* GetSteamMatchmakingServers();
+    [[nodiscard]] ISteamMatchmakingServers* GetSteamMatchmakingServers();
 
     /// <summary>
     /// Retrieve the SteamMusic interface.
     /// </summary>
     /// <returns>Pointer to the SteamMusic interface.</returns>
-    ISteamMusic* GetSteamMusic();
+    [[nodiscard]] ISteamMusic* GetSteamMusic();
 
     /// <summary>
     /// Retrieve the SteamMusicRemote interface.
     /// </summary>
     /// <returns>Pointer to the SteamMusicRemote interface.</returns>
-    ISteamMusicRemote* GetSteamMusicRemote();
+    [[nodiscard]] ISteamMusicRemote* GetSteamMusicRemote();
 
     /// <summary>
     /// Retrieve the SteamNetworkingMessages interface.
     /// </summary>
     /// <returns>Pointer to the SteamNetworkingMessages interface.</returns>
-    ISteamNetworkingMessages* GetSteamNetworkingMessages();
+    [[nodiscard]] ISteamNetworkingMessages* GetSteamNetworkingMessages();
 
     /// <summary>
     /// Retrieve the SteamNetworkingSockets interface.
     /// </summary>
     /// <returns>Pointer to the SteamNetworkingSockets interface.</returns>
-    ISteamNetworkingSockets* GetSteamNetworkingSockets();
+    [[nodiscard]] ISteamNetworkingSockets* GetSteamNetworkingSockets();
 
     /// <summary>
     /// Retrieve the SteamNetworkingUtils interface.
     /// </summary>
     /// <returns>Pointer to the SteamNetworkingUtils interface.</returns>
-    ISteamNetworkingUtils* GetSteamNetworkingUtils();
+    [[nodiscard]] ISteamNetworkingUtils* GetSteamNetworkingUtils();
 
     /// <summary>
     /// Retrieve the SteamParties interface.
     /// </summary>
     /// <returns>Pointer to the SteamParties interface.</returns>
-    ISteamParties* GetSteamParties();
+    [[nodiscard]] ISteamParties* GetSteamParties();
 
     /// <summary>
     /// Retrieve the SteamRemotePlay interface.
     /// </summary>
     /// <returns>Pointer to the SteamRemotePlay interface.</returns>
-    ISteamRemotePlay* GetSteamRemotePlay();
+    [[nodiscard]] ISteamRemotePlay* GetSteamRemotePlay();
 
     /// <summary>
     /// Retrieve the SteamRemoteStorage interface.
     /// </summary>
     /// <returns>Pointer to the SteamRemoteStorage interface.</returns>
-    ISteamRemoteStorage* GetSteamRemoteStorage();
+    [[nodiscard]] ISteamRemoteStorage* GetSteamRemoteStorage();
 
     /// <summary>
     /// Retrieve the SteamScreenshots interface.
     /// </summary>
     /// <returns>Pointer to the SteamScreenshots interface.</returns>
-    ISteamScreenshots* GetSteamScreenshots();
+    [[nodiscard]] ISteamScreenshots* GetSteamScreenshots();
 
     /// <summary>
     /// Retrieve the SteamUGC interface.
     /// </summary>
     /// <returns>Pointer to the SteamUGC interface.</returns>
-    ISteamUGC* GetSteamUGC();
+    [[nodiscard]] ISteamUGC* GetSteamUGC();
 
     /// <summary>
     /// Retrieve the SteamUser interface.
     /// </summary>
     /// <returns>Pointer to the SteamUser interface.</returns>
-    ISteamUser* GetSteamUser();
+    [[nodiscard]] ISteamUser* GetSteamUser();
 
     /// <summary>
     /// Retrieve the SteamUserStats interface.
     /// </summary>
     /// <returns>Pointer to the SteamUserStats interface.</returns>
-    ISteamUserStats* GetSteamUserStats();
+    [[nodiscard]] ISteamUserStats* GetSteamUserStats();
 
     /// <summary>
     /// Retrieve the SteamUtils interface.
     /// </summary>
     /// <returns>Pointer to the SteamUtils interface.</returns>
-    ISteamUtils* GetSteamUtils();
+    [[nodiscard]] ISteamUtils* GetSteamUtils();
 
     /// <summary>
     /// Retrieve the SteamVideo interface.
     /// </summary>
     /// <returns>Pointer to the SteamVideo interface.</returns>
-    ISteamVideo* GetSteamVideo();
+    [[nodiscard]] ISteamVideo* GetSteamVideo();
 #endif
 }
 

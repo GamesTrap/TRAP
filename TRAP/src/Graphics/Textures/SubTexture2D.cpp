@@ -3,11 +3,11 @@
 
 #include "Texture.h"
 
-TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SubTexture2D::CreateFromCoords(std::string name,
-                                                                                       Ref<TRAP::Graphics::Texture> texture,
-                                                                                       const TRAP::Math::Vec2& coords,
-                                                                                       const TRAP::Math::Vec2& cellSize,
-                                                                                       const TRAP::Math::Vec2& spriteSize)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SubTexture2D::CreateFromCoords(std::string name,
+                                                                                                     Ref<TRAP::Graphics::Texture> texture,
+                                                                                                     const TRAP::Math::Vec2& coords,
+                                                                                                     const TRAP::Math::Vec2& cellSize,
+                                                                                                     const TRAP::Math::Vec2& spriteSize)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -30,11 +30,11 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SubTexture2D::CreateFrom
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SubTexture2D::CreateFromPixels(std::string name,
-                                                                                       Ref<TRAP::Graphics::Texture> texture,
-                                                                                       const TRAP::Math::Vec2& pixelPos,
-                                                                                       const TRAP::Math::Vec2& pixelSize,
-                                                                                       const TRAP::Math::Vec2& spriteSize)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SubTexture2D::CreateFromPixels(std::string name,
+                                                                                                     Ref<TRAP::Graphics::Texture> texture,
+                                                                                                     const TRAP::Math::Vec2& pixelPos,
+                                                                                                     const TRAP::Math::Vec2& pixelSize,
+                                                                                                     const TRAP::Math::Vec2& spriteSize)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -71,7 +71,7 @@ TRAP::Graphics::SubTexture2D::SubTexture2D(std::string name, Ref<TRAP::Graphics:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::SubTexture2D::GetTexture() const noexcept
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::SubTexture2D::GetTexture() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -80,7 +80,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::SubTexture2D::GetTexture() co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::array<TRAP::Math::Vec2, 4>& TRAP::Graphics::SubTexture2D::GetTexCoords() const noexcept
+[[nodiscard]] const std::array<TRAP::Math::Vec2, 4>& TRAP::Graphics::SubTexture2D::GetTexCoords() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -89,7 +89,7 @@ const std::array<TRAP::Math::Vec2, 4>& TRAP::Graphics::SubTexture2D::GetTexCoord
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Graphics::SubTexture2D::GetName() noexcept
+[[nodiscard]] std::string TRAP::Graphics::SubTexture2D::GetName() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -98,7 +98,7 @@ std::string TRAP::Graphics::SubTexture2D::GetName() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Graphics::SubTexture2D::GetName() const noexcept
+[[nodiscard]] const std::string& TRAP::Graphics::SubTexture2D::GetName() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

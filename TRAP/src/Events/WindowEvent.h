@@ -49,44 +49,44 @@ namespace TRAP::Events
 		/// Retrieve the new window width.
 		/// </summary>
 		/// <returns>Width.</returns>
-		constexpr uint32_t GetWidth() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetWidth() const noexcept;
 		/// <summary>
 		/// Retrieve the new window height.
 		/// </summary>
 		/// <returns>Height.</returns>
-		constexpr uint32_t GetHeight() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetHeight() const noexcept;
 		/// <summary>
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		constexpr TRAP::Window* GetWindow() const noexcept;
+		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
 		/// <summary>
 		/// Get a string representation of the WindowResizeEvent.
 		/// </summary>
 		/// <returns>String representation.</returns>
-		std::string ToString() const override;
+		[[nodiscard]] std::string ToString() const override;
 
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType() noexcept;
+		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const noexcept override;
+		[[nodiscard]] EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		std::string GetName() const override;
+		[[nodiscard]] std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const noexcept override;
+		[[nodiscard]] EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
 		uint32_t m_width, m_height;
@@ -129,34 +129,34 @@ namespace TRAP::Events
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		constexpr TRAP::Window* GetWindow() const noexcept;
+		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
 		/// <summary>
 		/// Get a string representation of the WindowMinimizeEvent.
 		/// </summary>
 		/// <returns>String representation.</returns>
-		std::string ToString() const override;
+		[[nodiscard]] std::string ToString() const override;
 
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType() noexcept;
+		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const noexcept override;
+		[[nodiscard]] EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		std::string GetName() const override;
+		[[nodiscard]] std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const noexcept override;
+		[[nodiscard]] EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
 		TRAP::Window* m_window;
@@ -198,33 +198,33 @@ namespace TRAP::Events
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		constexpr TRAP::Window* GetWindow() const noexcept;
+		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 		/// <summary>
 		/// Get a string representation of the WindowMaximizeEvent.
 		/// </summary>
 		/// <returns>String representation.</returns>
-		std::string ToString() const override;
+		[[nodiscard]] std::string ToString() const override;
 
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType() noexcept;
+		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const noexcept override;
+		[[nodiscard]] EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		std::string GetName() const override;
+		[[nodiscard]] std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const noexcept override;
+		[[nodiscard]] EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
 		TRAP::Window* m_window;
@@ -266,34 +266,34 @@ namespace TRAP::Events
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		constexpr TRAP::Window* GetWindow() const noexcept;
+		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
 		/// <summary>
 		/// Get a string representation of the WindowRestoreEvent.
 		/// </summary>
 		/// <returns>String representation.</returns>
-		std::string ToString() const override;
+		[[nodiscard]] std::string ToString() const override;
 
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType() noexcept;
+		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const noexcept override;
+		[[nodiscard]] EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		std::string GetName() const override;
+		[[nodiscard]] std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const noexcept override;
+		[[nodiscard]] EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
 		TRAP::Window* m_window;
@@ -335,34 +335,34 @@ namespace TRAP::Events
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		constexpr TRAP::Window* GetWindow() const noexcept;
+		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
 		/// <summary>
 		/// Get a string representation of the WindowCloseEvent.
 		/// </summary>
 		/// <returns>String representation.</returns>
-		std::string ToString() const override;
+		[[nodiscard]] std::string ToString() const override;
 
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType() noexcept;
+		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const noexcept override;
+		[[nodiscard]] EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		std::string GetName() const override;
+		[[nodiscard]] std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const noexcept override;
+		[[nodiscard]] EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
 		TRAP::Window* m_window;
@@ -406,49 +406,49 @@ namespace TRAP::Events
 		/// Retrieve the new window x position.
 		/// </summary>
 		/// <returns>Window x position.</returns>
-		constexpr int32_t GetX() const noexcept;
+		[[nodiscard]] constexpr int32_t GetX() const noexcept;
 		/// <summary>
 		/// Retrieve the new window y position.
 		/// </summary>
 		/// <returns>Window y position.</returns>
-		constexpr int32_t GetY() const noexcept;
+		[[nodiscard]] constexpr int32_t GetY() const noexcept;
 		/// <summary>
 		/// Retrieve the new window position.
 		/// </summary>
 		/// <returns>Window position</returns>
-		constexpr Math::Vec2i GetPosition() const noexcept;
+		[[nodiscard]] constexpr Math::Vec2i GetPosition() const noexcept;
 		/// <summary>
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		constexpr TRAP::Window* GetWindow() const noexcept;
+		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
 		/// <summary>
 		/// Get a string representation of the WindowMoveEvent.
 		/// </summary>
 		/// <returns>String representation.</returns>
-		std::string ToString() const override;
+		[[nodiscard]] std::string ToString() const override;
 
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType() noexcept;
+		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const noexcept override;
+		[[nodiscard]] EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		std::string GetName() const override;
+		[[nodiscard]] std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const noexcept override;
+		[[nodiscard]] EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
 		int32_t m_x, m_y;
@@ -491,34 +491,34 @@ namespace TRAP::Events
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		constexpr TRAP::Window* GetWindow() const noexcept;
+		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
 		/// <summary>
 		/// Get a string representation of the WindowFocusEvent.
 		/// </summary>
 		/// <returns>String representation.</returns>
-		std::string ToString() const override;
+		[[nodiscard]] std::string ToString() const override;
 
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType() noexcept;
+		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const noexcept override;
+		[[nodiscard]] EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		std::string GetName() const override;
+		[[nodiscard]] std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const noexcept override;
+		[[nodiscard]] EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
 		TRAP::Window* m_window;
@@ -560,34 +560,34 @@ namespace TRAP::Events
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		constexpr TRAP::Window* GetWindow() const noexcept;
+		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
 		/// <summary>
 		/// Get a string representation of the WindowLostFocusEvent.
 		/// </summary>
 		/// <returns>String representation.</returns>
-		std::string ToString() const override;
+		[[nodiscard]] std::string ToString() const override;
 
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType() noexcept;
+		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const noexcept override;
+		[[nodiscard]] EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		std::string GetName() const override;
+		[[nodiscard]] std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const noexcept override;
+		[[nodiscard]] EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
 		TRAP::Window* m_window;
@@ -630,39 +630,39 @@ namespace TRAP::Events
 		/// Retrieve the dropped paths.
 		/// </summary>
 		/// <returns>Vector of file or folder paths.</returns>
-		const std::vector<std::string>& GetPaths() const noexcept;
+		[[nodiscard]] const std::vector<std::string>& GetPaths() const noexcept;
 		/// <summary>
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		constexpr TRAP::Window* GetWindow() const noexcept;
+		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
 		/// <summary>
 		/// Get a string representation of the WindowDropEvent.
 		/// </summary>
 		/// <returns>String representation.</returns>
-		std::string ToString() const override;
+		[[nodiscard]] std::string ToString() const override;
 
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType() noexcept;
+		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const noexcept override;
+		[[nodiscard]] EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		std::string GetName() const override;
+		[[nodiscard]] std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const noexcept override;
+		[[nodiscard]] EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
 		std::vector<std::string> m_paths{};
@@ -707,49 +707,49 @@ namespace TRAP::Events
 		/// Retrieve the new x content scale.
 		/// </summary>
 		/// <returns>Window x content scale.</returns>
-		constexpr float GetXScale() const noexcept;
+		[[nodiscard]] constexpr float GetXScale() const noexcept;
 		/// <summary>
 		/// Retrieve the new y content scale.
 		/// </summary>
 		/// <returns>Window y content scale.</returns>
-		constexpr float GetYScale() const noexcept;
+		[[nodiscard]] constexpr float GetYScale() const noexcept;
 		/// <summary>
 		/// Retrieve the new content scale.
 		/// </summary>
 		/// <returns>Window content scale.</returns>
-		constexpr Math::Vec2 GetScale() const noexcept;
+		[[nodiscard]] constexpr Math::Vec2 GetScale() const noexcept;
 		/// <summary>
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		constexpr TRAP::Window* GetWindow() const noexcept;
+		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
 		/// <summary>
 		/// Get a string representation of the WindowContentScaleEvent.
 		/// </summary>
 		/// <returns>String representation.</returns>
-		std::string ToString() const override;
+		[[nodiscard]] std::string ToString() const override;
 
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType() noexcept;
+		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const noexcept override;
+		[[nodiscard]] EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		std::string GetName() const override;
+		[[nodiscard]] std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const noexcept override;
+		[[nodiscard]] EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
 		float m_XScale;
@@ -795,54 +795,54 @@ namespace TRAP::Events
 		/// Retrieve the new framebuffer width.
 		/// </summary>
 		/// <returns>Framebuffer width.</returns>
-		constexpr uint32_t GetWidth() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetWidth() const noexcept;
 		/// <summary>
 		/// Retrieve the new framebuffer height.
 		/// </summary>
 		/// <returns>Framebuffer height.</returns>
-		constexpr uint32_t GetHeight() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetHeight() const noexcept;
 		/// <summary>
 		/// Retrieve the new framebuffer size.
 		/// </summary>
 		/// <returns>Framebuffer size.</returns>
-		constexpr Math::Vec2ui GetSize() const noexcept;
+		[[nodiscard]] constexpr Math::Vec2ui GetSize() const noexcept;
 		/// <summary>
 		/// Retrieve the aspect ratio of the framebuffer.
 		/// </summary>
 		/// <returns>Aspect ratio.</returns>
-		constexpr float GetAspectRatio() const noexcept;
+		[[nodiscard]] constexpr float GetAspectRatio() const noexcept;
 		/// <summary>
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		constexpr TRAP::Window* GetWindow() const noexcept;
+		[[nodiscard]] constexpr TRAP::Window* GetWindow() const noexcept;
 
 		/// <summary>
 		/// Get a string representation of the FrameBufferResizeEvent.
 		/// </summary>
 		/// <returns>String representation.</returns>
-		std::string ToString() const override;
+		[[nodiscard]] std::string ToString() const override;
 
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType() noexcept;
+		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const noexcept override;
+		[[nodiscard]] EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		std::string GetName() const override;
+		[[nodiscard]] std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const noexcept override;
+		[[nodiscard]] EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
 		uint32_t m_width, m_height;
@@ -852,28 +852,28 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t TRAP::Events::WindowResizeEvent::GetWidth() const noexcept
+[[nodiscard]] constexpr uint32_t TRAP::Events::WindowResizeEvent::GetWidth() const noexcept
 {
 	return m_width;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t TRAP::Events::WindowResizeEvent::GetHeight() const noexcept
+[[nodiscard]] constexpr uint32_t TRAP::Events::WindowResizeEvent::GetHeight() const noexcept
 {
 	return m_height;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Window* TRAP::Events::WindowResizeEvent::GetWindow() const noexcept
+[[nodiscard]] constexpr TRAP::Window* TRAP::Events::WindowResizeEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::WindowResizeEvent::GetStaticType() noexcept
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::WindowResizeEvent::GetStaticType() noexcept
 {
 	return EventType::WindowResize;
 }
@@ -882,14 +882,14 @@ constexpr TRAP::Events::EventType TRAP::Events::WindowResizeEvent::GetStaticType
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Window* TRAP::Events::WindowMinimizeEvent::GetWindow() const noexcept
+[[nodiscard]] constexpr TRAP::Window* TRAP::Events::WindowMinimizeEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::WindowMinimizeEvent::GetStaticType() noexcept
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::WindowMinimizeEvent::GetStaticType() noexcept
 {
 	return EventType::WindowMinimize;
 }
@@ -898,14 +898,14 @@ constexpr TRAP::Events::EventType TRAP::Events::WindowMinimizeEvent::GetStaticTy
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Window* TRAP::Events::WindowMaximizeEvent::GetWindow() const noexcept
+[[nodiscard]] constexpr TRAP::Window* TRAP::Events::WindowMaximizeEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::WindowMaximizeEvent::GetStaticType() noexcept
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::WindowMaximizeEvent::GetStaticType() noexcept
 {
 	return EventType::WindowMaximize;
 }
@@ -914,14 +914,14 @@ constexpr TRAP::Events::EventType TRAP::Events::WindowMaximizeEvent::GetStaticTy
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Window* TRAP::Events::WindowRestoreEvent::GetWindow() const noexcept
+[[nodiscard]] constexpr TRAP::Window* TRAP::Events::WindowRestoreEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::WindowRestoreEvent::GetStaticType() noexcept
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::WindowRestoreEvent::GetStaticType() noexcept
 {
 	return EventType::WindowRestore;
 }
@@ -930,14 +930,14 @@ constexpr TRAP::Events::EventType TRAP::Events::WindowRestoreEvent::GetStaticTyp
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Window* TRAP::Events::WindowCloseEvent::GetWindow() const noexcept
+[[nodiscard]] constexpr TRAP::Window* TRAP::Events::WindowCloseEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::WindowCloseEvent::GetStaticType() noexcept
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::WindowCloseEvent::GetStaticType() noexcept
 {
 	return EventType::WindowClose;
 }
@@ -946,35 +946,35 @@ constexpr TRAP::Events::EventType TRAP::Events::WindowCloseEvent::GetStaticType(
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr int32_t TRAP::Events::WindowMoveEvent::GetX() const noexcept
+[[nodiscard]] constexpr int32_t TRAP::Events::WindowMoveEvent::GetX() const noexcept
 {
 	return m_x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr int32_t TRAP::Events::WindowMoveEvent::GetY() const noexcept
+[[nodiscard]] constexpr int32_t TRAP::Events::WindowMoveEvent::GetY() const noexcept
 {
 	return m_y;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Math::Vec2i TRAP::Events::WindowMoveEvent::GetPosition() const noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec2i TRAP::Events::WindowMoveEvent::GetPosition() const noexcept
 {
 	return {m_x, m_y};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Window* TRAP::Events::WindowMoveEvent::GetWindow() const noexcept
+[[nodiscard]] constexpr TRAP::Window* TRAP::Events::WindowMoveEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::WindowMoveEvent::GetStaticType() noexcept
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::WindowMoveEvent::GetStaticType() noexcept
 {
 	return EventType::WindowMove;
 }
@@ -983,14 +983,14 @@ constexpr TRAP::Events::EventType TRAP::Events::WindowMoveEvent::GetStaticType()
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Window* TRAP::Events::WindowFocusEvent::GetWindow() const noexcept
+[[nodiscard]] constexpr TRAP::Window* TRAP::Events::WindowFocusEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::WindowFocusEvent::GetStaticType() noexcept
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::WindowFocusEvent::GetStaticType() noexcept
 {
 	return EventType::WindowFocus;
 }
@@ -999,14 +999,14 @@ constexpr TRAP::Events::EventType TRAP::Events::WindowFocusEvent::GetStaticType(
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Window* TRAP::Events::WindowLostFocusEvent::GetWindow() const noexcept
+[[nodiscard]] constexpr TRAP::Window* TRAP::Events::WindowLostFocusEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::WindowLostFocusEvent::GetStaticType() noexcept
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::WindowLostFocusEvent::GetStaticType() noexcept
 {
 	return EventType::WindowLostFocus;
 }
@@ -1015,16 +1015,14 @@ constexpr TRAP::Events::EventType TRAP::Events::WindowLostFocusEvent::GetStaticT
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-constexpr TRAP::Window* TRAP::Events::WindowDropEvent::GetWindow() const noexcept
+[[nodiscard]] constexpr TRAP::Window* TRAP::Events::WindowDropEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::WindowDropEvent::GetStaticType() noexcept
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::WindowDropEvent::GetStaticType() noexcept
 {
 	return EventType::WindowDrop;
 }
@@ -1033,35 +1031,35 @@ constexpr TRAP::Events::EventType TRAP::Events::WindowDropEvent::GetStaticType()
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr float TRAP::Events::WindowContentScaleEvent::GetXScale() const noexcept
+[[nodiscard]] constexpr float TRAP::Events::WindowContentScaleEvent::GetXScale() const noexcept
 {
 	return m_XScale;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr float TRAP::Events::WindowContentScaleEvent::GetYScale() const noexcept
+[[nodiscard]] constexpr float TRAP::Events::WindowContentScaleEvent::GetYScale() const noexcept
 {
 	return m_YScale;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Math::Vec2 TRAP::Events::WindowContentScaleEvent::GetScale() const noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec2 TRAP::Events::WindowContentScaleEvent::GetScale() const noexcept
 {
 	return {m_XScale, m_YScale};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Window* TRAP::Events::WindowContentScaleEvent::GetWindow() const noexcept
+[[nodiscard]] constexpr TRAP::Window* TRAP::Events::WindowContentScaleEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::WindowContentScaleEvent::GetStaticType() noexcept
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::WindowContentScaleEvent::GetStaticType() noexcept
 {
 	return EventType::WindowContentScale;
 }
@@ -1070,42 +1068,42 @@ constexpr TRAP::Events::EventType TRAP::Events::WindowContentScaleEvent::GetStat
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t TRAP::Events::FrameBufferResizeEvent::GetWidth() const noexcept
+[[nodiscard]] constexpr uint32_t TRAP::Events::FrameBufferResizeEvent::GetWidth() const noexcept
 {
 	return m_width;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t TRAP::Events::FrameBufferResizeEvent::GetHeight() const noexcept
+[[nodiscard]] constexpr uint32_t TRAP::Events::FrameBufferResizeEvent::GetHeight() const noexcept
 {
 	return m_height;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Math::Vec2ui TRAP::Events::FrameBufferResizeEvent::GetSize() const noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec2ui TRAP::Events::FrameBufferResizeEvent::GetSize() const noexcept
 {
 	return {m_width, m_height};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr float TRAP::Events::FrameBufferResizeEvent::GetAspectRatio() const noexcept
+[[nodiscard]] constexpr float TRAP::Events::FrameBufferResizeEvent::GetAspectRatio() const noexcept
 {
 	return static_cast<float>(m_width) / static_cast<float>(m_height);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Window* TRAP::Events::FrameBufferResizeEvent::GetWindow() const noexcept
+[[nodiscard]] constexpr TRAP::Window* TRAP::Events::FrameBufferResizeEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::FrameBufferResizeEvent::GetStaticType() noexcept
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::FrameBufferResizeEvent::GetStaticType() noexcept
 {
 	return EventType::FrameBufferResize;
 }

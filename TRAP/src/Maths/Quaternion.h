@@ -126,13 +126,13 @@ namespace TRAP::Math
 		/// Retrieve the count of components of a quaternion.
 		/// </summary>
 		/// <returns>Count.</returns>
-		static constexpr int Length() noexcept;
+		[[nodiscard]] static constexpr int Length() noexcept;
 
 		//Component Access
-		constexpr T& operator[](int i);
-		constexpr const T& operator[](int i) const;
+		[[nodiscard]] constexpr T& operator[](int i);
+		[[nodiscard]] constexpr const T& operator[](int i) const;
 
-		std::string ToString() const;
+		[[nodiscard]] std::string ToString() const;
 	};
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -370,7 +370,7 @@ constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator/=(const U s) noex
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-constexpr int TRAP::Math::tQuat<T>::Length() noexcept
+[[nodiscard]] constexpr int TRAP::Math::tQuat<T>::Length() noexcept
 {
 	return 4;
 }
@@ -379,7 +379,7 @@ constexpr int TRAP::Math::tQuat<T>::Length() noexcept
 //Component Access
 
 template <typename T>
-constexpr T& TRAP::Math::tQuat<T>::operator[](const int i)
+[[nodiscard]] constexpr T& TRAP::Math::tQuat<T>::operator[](const int i)
 {
 	TRAP_ASSERT(i >= 0 && i < this->Length(), "Math::tQuat<T>::operator[]: Index out of range!");
 
@@ -389,7 +389,7 @@ constexpr T& TRAP::Math::tQuat<T>::operator[](const int i)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-constexpr const T& TRAP::Math::tQuat<T>::operator[](const int i) const
+[[nodiscard]] constexpr const T& TRAP::Math::tQuat<T>::operator[](const int i) const
 {
 	TRAP_ASSERT(i >= 0 && i < this->Length(), "Math::tQuat<T>::operator[]: Index out of range!");
 
@@ -399,7 +399,7 @@ constexpr const T& TRAP::Math::tQuat<T>::operator[](const int i) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-std::string TRAP::Math::tQuat<T>::ToString() const
+[[nodiscard]] std::string TRAP::Math::tQuat<T>::ToString() const
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

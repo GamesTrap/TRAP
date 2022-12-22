@@ -193,7 +193,7 @@ bool TRAP::Network::SocketSelector::Wait(const Utils::TimeStep timeout) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Network::SocketSelector::IsReady(Socket& socket) const
+[[nodiscard]] bool TRAP::Network::SocketSelector::IsReady(Socket& socket) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 

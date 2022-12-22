@@ -124,7 +124,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="socket">Socket to test.</param>
 		/// <returns>True if the socket is ready to read, false otherwise.</returns>
-		bool IsReady(Socket& socket) const;
+		[[nodiscard]] bool IsReady(Socket& socket) const;
 
 		/// <summary>
 		/// Overload of assignment operator.

@@ -100,7 +100,7 @@ TRAP::Graphics::API::VulkanMemoryAllocator::~VulkanMemoryAllocator()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VmaAllocator TRAP::Graphics::API::VulkanMemoryAllocator::GetVMAAllocator() const noexcept
+[[nodiscard]] VmaAllocator TRAP::Graphics::API::VulkanMemoryAllocator::GetVMAAllocator() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

@@ -274,7 +274,7 @@ void TRAP::Graphics::AftermathTracker::AftermathCall(const GFSDK_Aftermath_Resul
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-GFSDK_Aftermath_Result TRAP::Graphics::AftermathTracker::GetGPUCrashDumpStatus(GFSDK_Aftermath_CrashDump_Status* outStatus)
+[[nodiscard]] GFSDK_Aftermath_Result TRAP::Graphics::AftermathTracker::GetGPUCrashDumpStatus(GFSDK_Aftermath_CrashDump_Status* outStatus)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 

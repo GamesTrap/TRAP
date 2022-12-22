@@ -47,34 +47,34 @@ namespace TRAP::Events
 		/// Retrieve a pointer to the affected texture.
 		/// </summary>
 		/// <returns>Texture pointer.</returns>
-		TRAP::Ref<TRAP::Graphics::Texture> GetTexture() const noexcept;
+		[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> GetTexture() const noexcept;
 
 		/// <summary>
 		/// Get a string representation of the TextureReloadEvent.
 		/// </summary>
 		/// <returns>String representation.</returns>
-		std::string ToString() const override;
+		[[nodiscard]] std::string ToString() const override;
 
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType() noexcept;
+		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const noexcept override;
+		[[nodiscard]] EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		std::string GetName() const override;
+		[[nodiscard]] std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const noexcept override;
+		[[nodiscard]] EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
         TRAP::Ref<TRAP::Graphics::Texture> m_texture;
@@ -116,34 +116,34 @@ namespace TRAP::Events
 		/// Retrieve the affected shader.
 		/// </summary>
 		/// <returns>Shader.</returns>
-		TRAP::Ref<TRAP::Graphics::Shader> GetShader() const noexcept;
+		[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> GetShader() const noexcept;
 
 		/// <summary>
 		/// Get a string representation of the ShaderReloadEvent.
 		/// </summary>
 		/// <returns>String representation.</returns>
-		std::string ToString() const override;
+		[[nodiscard]] std::string ToString() const override;
 
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType() noexcept;
+		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const noexcept override;
+		[[nodiscard]] EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		std::string GetName() const override;
+		[[nodiscard]] std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const noexcept override;
+		[[nodiscard]] EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
         TRAP::Ref<TRAP::Graphics::Shader> m_shader;
@@ -152,7 +152,7 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::TextureReloadEvent::GetStaticType() noexcept
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::TextureReloadEvent::GetStaticType() noexcept
 {
 	return EventType::TextureReload;
 }
@@ -161,7 +161,7 @@ constexpr TRAP::Events::EventType TRAP::Events::TextureReloadEvent::GetStaticTyp
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::ShaderReloadEvent::GetStaticType() noexcept
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::ShaderReloadEvent::GetStaticType() noexcept
 {
 	return EventType::ShaderReload;
 }

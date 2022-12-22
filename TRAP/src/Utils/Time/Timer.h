@@ -25,12 +25,12 @@ namespace TRAP::Utils
 		/// Retrieve elapsed time in seconds.
 		/// </summary>
 		/// <returns>Elapsed time in seconds.</returns>
-		float Elapsed() const;
+		[[nodiscard]] float Elapsed() const;
 		/// <summary>
 		/// Retrieve elapsed time in milliseconds.
 		/// </summary>
 		/// <returns>Elapsed time in milliseconds.</returns>
-		float ElapsedMilliseconds() const;
+		[[nodiscard]] float ElapsedMilliseconds() const;
 
 	private:
 		std::chrono::time_point<std::chrono::high_resolution_clock> m_start;

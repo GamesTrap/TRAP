@@ -39,7 +39,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifdef TRAP_PLATFORM_LINUX
 
-sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(uint32_t address, uint16_t port)
+[[nodiscard]] sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(uint32_t address, uint16_t port)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -60,8 +60,8 @@ sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(uint32_t address,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array<uint8_t, 16>& address,
-                                                                uint16_t port)
+[[nodiscard]] sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array<uint8_t, 16>& address,
+                                                                              uint16_t port)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -79,7 +79,7 @@ sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::SocketHandle TRAP::INTERNAL::Network::SocketImpl::InvalidSocket() noexcept
+[[nodiscard]] TRAP::Network::SocketHandle TRAP::INTERNAL::Network::SocketImpl::InvalidSocket() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -133,7 +133,7 @@ void TRAP::INTERNAL::Network::SocketImpl::SetBlocking(const TRAP::Network::Socke
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::INTERNAL::Network::SocketImpl::GetErrorStatus() noexcept
+[[nodiscard]] TRAP::Network::Socket::Status TRAP::INTERNAL::Network::SocketImpl::GetErrorStatus() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

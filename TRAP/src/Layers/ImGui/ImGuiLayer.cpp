@@ -515,7 +515,7 @@ ImFont* ImGui::AddFontFromMemoryTTF(void* fontData, const int32_t fontSize, cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ImGui::IsInputEnabled()
+[[nodiscard]] bool ImGui::IsInputEnabled()
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

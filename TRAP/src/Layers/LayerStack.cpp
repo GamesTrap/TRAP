@@ -79,7 +79,7 @@ void TRAP::LayerStack::PopOverlay(Layer* const overlay)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::unique_ptr<TRAP::Layer>>::iterator TRAP::LayerStack::begin() noexcept
+[[nodiscard]] std::vector<std::unique_ptr<TRAP::Layer>>::iterator TRAP::LayerStack::begin() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -88,7 +88,7 @@ std::vector<std::unique_ptr<TRAP::Layer>>::iterator TRAP::LayerStack::begin() no
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::unique_ptr<TRAP::Layer>>::iterator TRAP::LayerStack::end() noexcept
+[[nodiscard]] std::vector<std::unique_ptr<TRAP::Layer>>::iterator TRAP::LayerStack::end() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -97,7 +97,7 @@ std::vector<std::unique_ptr<TRAP::Layer>>::iterator TRAP::LayerStack::end() noex
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::unique_ptr<TRAP::Layer>>::reverse_iterator TRAP::LayerStack::rbegin() noexcept
+[[nodiscard]] std::vector<std::unique_ptr<TRAP::Layer>>::reverse_iterator TRAP::LayerStack::rbegin() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -106,7 +106,7 @@ std::vector<std::unique_ptr<TRAP::Layer>>::reverse_iterator TRAP::LayerStack::rb
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::unique_ptr<TRAP::Layer>>::reverse_iterator TRAP::LayerStack::rend() noexcept
+[[nodiscard]] std::vector<std::unique_ptr<TRAP::Layer>>::reverse_iterator TRAP::LayerStack::rend() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -115,7 +115,7 @@ std::vector<std::unique_ptr<TRAP::Layer>>::reverse_iterator TRAP::LayerStack::re
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::unique_ptr<TRAP::Layer>>::const_iterator TRAP::LayerStack::begin() const noexcept
+[[nodiscard]] std::vector<std::unique_ptr<TRAP::Layer>>::const_iterator TRAP::LayerStack::begin() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -124,7 +124,7 @@ std::vector<std::unique_ptr<TRAP::Layer>>::const_iterator TRAP::LayerStack::begi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::unique_ptr<TRAP::Layer>>::const_iterator TRAP::LayerStack::end() const noexcept
+[[nodiscard]] std::vector<std::unique_ptr<TRAP::Layer>>::const_iterator TRAP::LayerStack::end() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -133,7 +133,7 @@ std::vector<std::unique_ptr<TRAP::Layer>>::const_iterator TRAP::LayerStack::end(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::unique_ptr<TRAP::Layer>>::const_reverse_iterator TRAP::LayerStack::rbegin() const noexcept
+[[nodiscard]] std::vector<std::unique_ptr<TRAP::Layer>>::const_reverse_iterator TRAP::LayerStack::rbegin() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -142,7 +142,7 @@ std::vector<std::unique_ptr<TRAP::Layer>>::const_reverse_iterator TRAP::LayerSta
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::unique_ptr<TRAP::Layer>>::const_reverse_iterator TRAP::LayerStack::rend() const noexcept
+[[nodiscard]] std::vector<std::unique_ptr<TRAP::Layer>>::const_reverse_iterator TRAP::LayerStack::rend() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

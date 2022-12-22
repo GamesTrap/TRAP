@@ -149,7 +149,7 @@ TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkBuffer TRAP::Graphics::API::VulkanBuffer::GetVkBuffer() const noexcept
+[[nodiscard]] VkBuffer TRAP::Graphics::API::VulkanBuffer::GetVkBuffer() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -158,7 +158,7 @@ VkBuffer TRAP::Graphics::API::VulkanBuffer::GetVkBuffer() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkBufferView TRAP::Graphics::API::VulkanBuffer::GetStorageTexelView() const noexcept
+[[nodiscard]] VkBufferView TRAP::Graphics::API::VulkanBuffer::GetStorageTexelView() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -167,7 +167,7 @@ VkBufferView TRAP::Graphics::API::VulkanBuffer::GetStorageTexelView() const noex
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkBufferView TRAP::Graphics::API::VulkanBuffer::GetUniformTexelView() const noexcept
+[[nodiscard]] VkBufferView TRAP::Graphics::API::VulkanBuffer::GetUniformTexelView() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -176,7 +176,7 @@ VkBufferView TRAP::Graphics::API::VulkanBuffer::GetUniformTexelView() const noex
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::Graphics::API::VulkanBuffer::GetOffset() const noexcept
+[[nodiscard]] uint64_t TRAP::Graphics::API::VulkanBuffer::GetOffset() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -185,7 +185,7 @@ uint64_t TRAP::Graphics::API::VulkanBuffer::GetOffset() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDeviceMemory TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemory() const
+[[nodiscard]] VkDeviceMemory TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemory() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -197,7 +197,7 @@ VkDeviceMemory TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemory() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemoryOffset() const
+[[nodiscard]] uint64_t TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemoryOffset() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -209,7 +209,7 @@ uint64_t TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemoryOffset() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::Graphics::API::VulkanBuffer::GetSize() const noexcept
+[[nodiscard]] uint64_t TRAP::Graphics::API::VulkanBuffer::GetSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -218,7 +218,7 @@ uint64_t TRAP::Graphics::API::VulkanBuffer::GetSize() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::API::VulkanBuffer::GetDescriptors() const noexcept
+[[nodiscard]] TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::API::VulkanBuffer::GetDescriptors() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -227,7 +227,7 @@ TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::API::VulkanBuffer::G
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::ResourceMemoryUsage TRAP::Graphics::API::VulkanBuffer::GetMemoryUsage() const noexcept
+[[nodiscard]] TRAP::Graphics::RendererAPI::ResourceMemoryUsage TRAP::Graphics::API::VulkanBuffer::GetMemoryUsage() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -236,7 +236,7 @@ TRAP::Graphics::RendererAPI::ResourceMemoryUsage TRAP::Graphics::API::VulkanBuff
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void* TRAP::Graphics::API::VulkanBuffer::GetCPUMappedAddress() const noexcept
+[[nodiscard]] void* TRAP::Graphics::API::VulkanBuffer::GetCPUMappedAddress() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

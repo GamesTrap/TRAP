@@ -497,7 +497,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the latency report from NVIDIA-Reflex.
 		/// </summary>
 		/// <returns>Latency report.</returns>
-		NVLL_VK_LATENCY_RESULT_PARAMS ReflexGetLatency() const override;
+		[[nodiscard]] NVLL_VK_LATENCY_RESULT_PARAMS ReflexGetLatency() const override;
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
 
 		/// <summary>
@@ -505,42 +505,42 @@ namespace TRAP::Graphics::API
 		/// Example title: "[Vulkan 1.3.0]".
 		/// </summary>
 		/// <returns>Renderer title.</returns>
-		std::string GetTitle() const noexcept override;
+		[[nodiscard]] std::string GetTitle() const noexcept override;
 		/// <summary>
 		/// Retrieve whether VSync is enabled or not for the given window.
 		/// </summary>
 		/// <param name="window">Window to retrieve VSync for.</param>
 		/// <returns>True if VSync is enabled, false otherwise.</returns>
-		bool GetVSync(const Window* const window) const override;
+		[[nodiscard]] bool GetVSync(const Window* const window) const override;
 
 		/// <summary>
 		/// Retrieve the currently used GPUs UUID.
 		/// </summary>
 		/// <returns>GPU's UUID.</returns>
-		std::array<uint8_t, 16> GetCurrentGPUUUID() const noexcept override;
+		[[nodiscard]] std::array<uint8_t, 16> GetCurrentGPUUUID() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the currently used GPU.
 		/// </summary>
 		/// <returns>GPU's name.</returns>
-		std::string GetCurrentGPUName() const noexcept override;
+		[[nodiscard]] std::string GetCurrentGPUName() const noexcept override;
 		/// <summary>
 		/// Retrieve the vendor of the currently used GPU.
 		/// </summary>
 		/// <returns>GPU vendor.</returns>
-		GPUVendor GetCurrentGPUVendor() const noexcept override;
+		[[nodiscard]] GPUVendor GetCurrentGPUVendor() const noexcept override;
 		/// <summary>
 		/// Retrieve a list of all supported GPUs.
 		/// The list contains the GPUs name and UUID.
 		/// </summary>
 		/// <returns>List of all supported GPUs.</returns>
-		std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() const override;
+		[[nodiscard]] std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() const override;
 
 		/// <summary>
 		/// Capture a screenshot of the last presented frame.
 		/// </summary>
 		/// <param name="window">Window to capture screenshot on.</param>
 		/// <returns>Captured screenshot as TRAP::Image on success, Black 1x1 TRAP::Image otherwise.</returns>
-		TRAP::Scope<TRAP::Image> CaptureScreenshot(const Window* const window) const override;
+		[[nodiscard]] TRAP::Scope<TRAP::Image> CaptureScreenshot(const Window* const window) const override;
 
 		/// <summary>
 		/// Resolve a MSAA render target to a non MSAA render target.
@@ -588,7 +588,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="window">Window to retrieve latency mode for.</param>
 		/// <returns>Used latency mode.</returns>
-		LatencyMode GetLatencyMode(const Window* const window) const override;
+		[[nodiscard]] LatencyMode GetLatencyMode(const Window* const window) const override;
 
 		/// <summary>
 		/// Initialize the internal rendering data of the given window.
@@ -759,28 +759,28 @@ namespace TRAP::Graphics::API
 		/// Retrieve the render pass hash map.
 		/// </summary>
 		/// <returns>Render pass hash map.</returns>
-		static RenderPassMap& GetRenderPassMap();
+		[[nodiscard]] static RenderPassMap& GetRenderPassMap();
 		/// <summary>
 		/// Retrieve the framebuffer hash map.
 		/// </summary>
 		/// <returns>Framebuffer hash map.</returns>
-		static FrameBufferMap& GetFrameBufferMap();
+		[[nodiscard]] static FrameBufferMap& GetFrameBufferMap();
 
 		/// <summary>
 		/// Retrieve the vulkan instance used by the renderer.
 		/// </summary>
 		/// <returns>Vulkan instance.</returns>
-		TRAP::Ref<VulkanInstance> GetInstance() const noexcept;
+		[[nodiscard]] TRAP::Ref<VulkanInstance> GetInstance() const noexcept;
 		/// <summary>
 		/// Retrieve the vulkan device used by the renderer.
 		/// </summary>
 		/// <returns>Vulkan device.</returns>
-		TRAP::Ref<VulkanDevice> GetDevice() const noexcept;
+		[[nodiscard]] TRAP::Ref<VulkanDevice> GetDevice() const noexcept;
 		/// <summary>
 		/// Retrieve the vulkan memory allocator used by the renderer.
 		/// </summary>
 		/// <returns>Vulkan memory allocator.</returns>
-		TRAP::Ref<VulkanMemoryAllocator> GetVMA() const noexcept;
+		[[nodiscard]] TRAP::Ref<VulkanMemoryAllocator> GetVMA() const noexcept;
 
 		/// <summary>
 		/// Utility to retrieve a pipeline.
@@ -789,7 +789,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="desc">Pipeline description.</param>
 		/// <returns>Pipeline.</returns>
-		static const TRAP::Ref<Pipeline>& GetPipeline(PipelineDesc& desc);
+		[[nodiscard]] static const TRAP::Ref<Pipeline>& GetPipeline(PipelineDesc& desc);
 
 	private:
 		/// <summary>
@@ -804,7 +804,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the list of instance layers to use.
 		/// </summary>
 		/// <returns>List of instance layers.</returns>
-		static std::vector<std::string> SetupInstanceLayers();
+		[[nodiscard]] static std::vector<std::string> SetupInstanceLayers();
 		/// <summary>
 		/// Retrieve the list of instance extensions to use.
 		///
@@ -814,7 +814,7 @@ namespace TRAP::Graphics::API
 		/// 4. VR extension(s) (if supported).
 		/// </summary>
 		/// <returns>List of instance extensions.</returns>
-		static std::vector<std::string> SetupInstanceExtensions();
+		[[nodiscard]] static std::vector<std::string> SetupInstanceExtensions();
 		/// <summary>
 		/// Retrieve the list of device extensions to use.
 		///
@@ -828,7 +828,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="physicalDevice">Physical device to use.</param>
 		/// <returns>List of device extensions.</returns>
-		static std::vector<std::string> SetupDeviceExtensions(VulkanPhysicalDevice* physicalDevice);
+		[[nodiscard]] static std::vector<std::string> SetupDeviceExtensions(VulkanPhysicalDevice* physicalDevice);
 
 		/// <summary>
 		/// Add the default resources to the renderer.
@@ -884,7 +884,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="type">Queue type to profile.</param>
 		/// <param name="p">Per window data to profile for.</param>
-		static float ResolveGPUFrameProfile(QueueType type, const PerWindowData* const p);
+		[[nodiscard]] static float ResolveGPUFrameProfile(QueueType type, const PerWindowData* const p);
 
 		std::string m_rendererTitle;
 

@@ -62,7 +62,7 @@ TRAP::Graphics::API::VulkanCommandBuffer::VulkanCommandBuffer(TRAP::Ref<VulkanDe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkCommandBuffer TRAP::Graphics::API::VulkanCommandBuffer::GetVkCommandBuffer() const noexcept
+[[nodiscard]] VkCommandBuffer TRAP::Graphics::API::VulkanCommandBuffer::GetVkCommandBuffer() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -71,7 +71,7 @@ VkCommandBuffer TRAP::Graphics::API::VulkanCommandBuffer::GetVkCommandBuffer() c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::QueueType TRAP::Graphics::API::VulkanCommandBuffer::GetQueueType() const
+[[nodiscard]] TRAP::Graphics::RendererAPI::QueueType TRAP::Graphics::API::VulkanCommandBuffer::GetQueueType() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -80,7 +80,7 @@ TRAP::Graphics::RendererAPI::QueueType TRAP::Graphics::API::VulkanCommandBuffer:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::VulkanCommandBuffer::IsSecondary() const noexcept
+[[nodiscard]] bool TRAP::Graphics::API::VulkanCommandBuffer::IsSecondary() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1510,7 +1510,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResolveImage(Ref<TRAP::Graphics::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkRenderPass TRAP::Graphics::API::VulkanCommandBuffer::GetActiveVkRenderPass() const noexcept
+[[nodiscard]] VkRenderPass TRAP::Graphics::API::VulkanCommandBuffer::GetActiveVkRenderPass() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

@@ -13,7 +13,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="desc">Queue description.</param>
 		/// <returns>Created queue.</returns>
-		static TRAP::Ref<Queue> Create(const RendererAPI::QueueDesc& desc);
+		[[nodiscard]] static TRAP::Ref<Queue> Create(const RendererAPI::QueueDesc& desc);
 
 		/// <summary>
 		/// Destructor.
@@ -53,7 +53,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="desc">Queue presentation description.</param>
 		/// <returns>Presentation status.</returns>
-		virtual RendererAPI::PresentStatus Present(const RendererAPI::QueuePresentDesc& desc) const = 0;
+		[[nodiscard]] virtual RendererAPI::PresentStatus Present(const RendererAPI::QueuePresentDesc& desc) const = 0;
 
 	protected:
 		/// <summary>

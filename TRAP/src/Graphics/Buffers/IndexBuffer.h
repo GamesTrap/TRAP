@@ -43,17 +43,17 @@ namespace TRAP::Graphics
 		/// Retrieve the count of indices inside this buffer.
 		/// </summary>
 		/// <returns>Count of indices.</returns>
-		uint32_t GetCount() const noexcept;
+		[[nodiscard]] uint32_t GetCount() const noexcept;
 		/// <summary>
 		/// Retrieve the total byte size of the buffer.
 		/// </summary>
 		/// <returns>Total buffer byte size.</returns>
-		uint64_t GetSize() const noexcept;
+		[[nodiscard]] uint64_t GetSize() const noexcept;
 		/// <summary>
 		/// Retrieve the update frequency used by this buffer.
 		/// </summary>
 		/// <returns>Update frequency.</returns>
-		UpdateFrequency GetUpdateFrequency() const noexcept;
+		[[nodiscard]] UpdateFrequency GetUpdateFrequency() const noexcept;
 
 		/// <summary>
 		/// Use this buffer for rendering on the given window.
@@ -80,7 +80,7 @@ namespace TRAP::Graphics
 		/// Check whether uploading data to the GPU has finished.
 		/// </summary>
 		/// <returns>True if uploading data to the GPU has finished.</returns>
-		bool IsLoaded() const;
+		[[nodiscard]] bool IsLoaded() const;
 		/// <summary>
 		/// Wait until uploading data to the GPU has finished.
 		/// </summary>
@@ -93,7 +93,7 @@ namespace TRAP::Graphics
 		/// <param name="size">Byte size of the data to upload.</param>
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New index buffer.</returns>
-		static Scope<IndexBuffer> Create(const uint16_t* indices, uint64_t size, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<IndexBuffer> Create(const uint16_t* indices, uint64_t size, UpdateFrequency updateFrequency);
 		/// <summary>
 		/// Create a new index buffer and set its data.
 		/// </summary>
@@ -101,14 +101,14 @@ namespace TRAP::Graphics
 		/// <param name="size">Byte size of the data to upload.</param>
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New index buffer.</returns>
-		static Scope<IndexBuffer> Create(const uint32_t* indices, uint64_t size, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<IndexBuffer> Create(const uint32_t* indices, uint64_t size, UpdateFrequency updateFrequency);
 		/// <summary>
 		/// Create a new index buffer and set its size.
 		/// </summary>
 		/// <param name="size">Byte size for the index buffer.</param>
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New index buffer.</returns>
-		static Scope<IndexBuffer> Create(uint64_t size, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<IndexBuffer> Create(uint64_t size, UpdateFrequency updateFrequency);
 
 	private:
 		/// <summary>
@@ -119,7 +119,7 @@ namespace TRAP::Graphics
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New index buffer.</returns>
 		template<typename T>
-		static TRAP::Scope<IndexBuffer> Init(const T* indices, const uint64_t size, const UpdateFrequency updateFrequency);
+		[[nodiscard]] static TRAP::Scope<IndexBuffer> Init(const T* indices, const uint64_t size, const UpdateFrequency updateFrequency);
 
 		/// <summary>
 		/// Set new index buffer data.
@@ -141,8 +141,8 @@ namespace TRAP::Graphics
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Init(const T* const indices, const uint64_t size,
-                                                                           const UpdateFrequency updateFrequency)
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Init(const T* const indices, const uint64_t size,
+                                                                                         const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 

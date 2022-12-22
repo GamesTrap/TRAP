@@ -69,7 +69,7 @@ void TRAP::Graphics::API::VulkanPipelineCache::Save(const std::filesystem::path&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineCache TRAP::Graphics::API::VulkanPipelineCache::GetVkPipelineCache() const noexcept
+[[nodiscard]] VkPipelineCache TRAP::Graphics::API::VulkanPipelineCache::GetVkPipelineCache() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

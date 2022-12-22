@@ -37,7 +37,7 @@ TRAP::Log::~Log()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::filesystem::path& TRAP::Log::GetFilePath() const noexcept
+[[nodiscard]] const std::filesystem::path& TRAP::Log::GetFilePath() const noexcept
 {
 	ZoneScoped;
 
@@ -64,7 +64,7 @@ void TRAP::Log::SetImportance(const Level level) noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<std::pair<TRAP::Log::Level, std::string>>& TRAP::Log::GetBuffer() const noexcept
+[[nodiscard]] const std::vector<std::pair<TRAP::Log::Level, std::string>>& TRAP::Log::GetBuffer() const noexcept
 {
 	ZoneScoped;
 
@@ -109,7 +109,7 @@ void TRAP::Log::Clear() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Log::GetTimeStamp()
+[[nodiscard]] std::string TRAP::Log::GetTimeStamp()
 {
 	ZoneScoped;
 
@@ -119,7 +119,7 @@ std::string TRAP::Log::GetTimeStamp()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Log::GetDateTimeStamp()
+[[nodiscard]] std::string TRAP::Log::GetDateTimeStamp()
 {
 	ZoneScoped;
 

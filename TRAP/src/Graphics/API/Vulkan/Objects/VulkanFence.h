@@ -44,13 +44,13 @@ namespace TRAP::Graphics::API
 		/// Retrieve the VkFence handle.
 		/// </summary>
 		/// <returns>VkFence handle.</returns>
-		VkFence GetVkFence() const noexcept;
+		[[nodiscard]] VkFence GetVkFence() const noexcept;
 
 		/// <summary>
 		/// Retrieve the current status of the fence.
 		/// </summary>
 		/// <returns>Fence status.</returns>
-		RendererAPI::FenceStatus GetStatus() override;
+		[[nodiscard]] RendererAPI::FenceStatus GetStatus() override;
 
 		/// <summary>
 		/// Wait for the fence to be signaled.

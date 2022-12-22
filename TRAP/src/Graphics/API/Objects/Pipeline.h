@@ -13,7 +13,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="desc">Pipeline description.</param>
 		/// <returns>Created pipeline.</returns>
-		static TRAP::Ref<Pipeline> Create(const RendererAPI::PipelineDesc& desc);
+		[[nodiscard]] static TRAP::Ref<Pipeline> Create(const RendererAPI::PipelineDesc& desc);
 
 		/// <summary>
 		/// Destructor.

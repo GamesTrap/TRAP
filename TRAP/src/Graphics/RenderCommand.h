@@ -121,7 +121,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="window">Window to get VSync state from. Default: Main Window.</param>
 		/// <returns>True if VSync is enabled, false otherwise.</returns>
-		static bool GetVSync(const Window* const window = TRAP::Application::GetWindow());
+		[[nodiscard]] static bool GetVSync(const Window* const window = TRAP::Application::GetWindow());
 
 		//Clear functions
 
@@ -292,7 +292,7 @@ namespace TRAP::Graphics
 		/// Retrieve the currently used anisotropy level.
 		/// </summary>
 		/// <returns>Used anisotropy level.</returns>
-		static SampleCount GetAnisotropyLevel() noexcept;
+		[[nodiscard]] static SampleCount GetAnisotropyLevel() noexcept;
 		/// <summary>
 		/// Set the anisotropy level.
 		/// A value of SampleCount::One effectively disables anisotropic filtering.
@@ -376,7 +376,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="window">Window to retrieve render scale from. Default: Main Window.</param>
 		/// <returns>Render scale (between 0.5f and 2.0f inclusive).</returns>
-		static float GetRenderScale(const Window* const window = TRAP::Application::GetWindow());
+		[[nodiscard]] static float GetRenderScale(const Window* const window = TRAP::Application::GetWindow());
 
 		//Drawing functions
 
@@ -547,7 +547,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="window">Window to take screenshot from. Default: Main Window.</param>
 		/// <returns>Captured screenshot.</returns>
-		static TRAP::Scope<TRAP::Image> CaptureScreenshot(const Window* const window = TRAP::Application::GetWindow());
+		[[nodiscard]] static TRAP::Scope<TRAP::Image> CaptureScreenshot(const Window* const window = TRAP::Application::GetWindow());
 
 		/// <summary>
 		/// Transition a texture from old layout to the new layout.
@@ -577,36 +577,36 @@ namespace TRAP::Graphics
 		/// Retrieve the CPU side frames per second.
 		/// </summary>
 		/// <returns>CPU frames per second.</returns>
-		static uint32_t GetCPUFPS();
+		[[nodiscard]] static uint32_t GetCPUFPS();
 		/// <summary>
 		/// Retrieve the GPU side frames per second.
 		/// </summary>
 		/// <param name="window">Window to get frames per second from.</param>
 		/// <returns>GPU frames per second.</returns>
-		static uint32_t GetGPUFPS(const Window* const window = TRAP::Application::GetWindow());
+		[[nodiscard]] static uint32_t GetGPUFPS(const Window* const window = TRAP::Application::GetWindow());
 		/// <summary>
 		/// Retrieve the CPU side frame time.
 		/// </summary>
 		/// <returns>CPU frame time in milliseconds.</returns>
-		static float GetCPUFrameTime();
+		[[nodiscard]] static float GetCPUFrameTime();
 		/// <summary>
 		/// Retrieve the GPU side frame time for the graphics queue.
 		/// </summary>
 		/// <param name="window">Window to get frame time from.</param>
 		/// <returns>GPU Graphics frame time in milliseconds.</returns>
-		static float GetGPUGraphicsFrameTime(const Window* const window = TRAP::Application::GetWindow());
+		[[nodiscard]] static float GetGPUGraphicsFrameTime(const Window* const window = TRAP::Application::GetWindow());
 		/// <summary>
 		/// Retrieve the GPU side frame time for the compute queue.
 		/// </summary>
 		/// <param name="window">Window to get frame time from.</param>
 		/// <returns>GPU Compute frame time in milliseconds.</returns>
-		static float GetGPUComputeFrameTime(const Window* const window = TRAP::Application::GetWindow());
+		[[nodiscard]] static float GetGPUComputeFrameTime(const Window* const window = TRAP::Application::GetWindow());
 
 		/// <summary>
 		/// Retrieve the name of the GPU that is currently used by the RendererAPI.
 		/// </summary>
 		/// <returns>GPU name.</returns>
-		static std::string GetGPUName();
+		[[nodiscard]] static std::string GetGPUName();
 
 		/// <summary>
 		/// Set the latency mode.
@@ -624,7 +624,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="window">Window to retrieve latency mode for.</param>
 		/// <returns>Used latency mode.</returns>
-		static LatencyMode GetLatencyMode(const Window* const window = TRAP::Application::GetWindow());
+		[[nodiscard]] static LatencyMode GetLatencyMode(const Window* const window = TRAP::Application::GetWindow());
 	};
 }
 

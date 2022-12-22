@@ -56,7 +56,7 @@ namespace TRAP
 		}
 
 		template<typename T>
-		T& GetComponent()
+		[[nodiscard]] T& GetComponent()
 		{
 			ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -66,7 +66,7 @@ namespace TRAP
 		}
 
 		template<typename T>
-		bool HasComponent()
+		[[nodiscard]] bool HasComponent()
 		{
 			ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -85,8 +85,8 @@ namespace TRAP
 			m_scene->m_registry.remove<T>(m_entityHandle);
 		}
 
-		Utils::UID GetUID();
-		const std::string& GetName();
+		[[nodiscard]] Utils::UID GetUID();
+		[[nodiscard]] const std::string& GetName();
 
 		operator bool() const noexcept;
 		operator uint32_t() const noexcept;

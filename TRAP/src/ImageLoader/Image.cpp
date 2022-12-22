@@ -37,7 +37,7 @@ TRAP::Image::Image() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Image::GetBitsPerPixel() const noexcept
+[[nodiscard]] uint32_t TRAP::Image::GetBitsPerPixel() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -46,7 +46,7 @@ uint32_t TRAP::Image::GetBitsPerPixel() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Image::GetBytesPerPixel() const noexcept
+[[nodiscard]] uint32_t TRAP::Image::GetBytesPerPixel() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -55,7 +55,7 @@ uint32_t TRAP::Image::GetBytesPerPixel() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Image::GetBitsPerChannel() const noexcept
+[[nodiscard]] uint32_t TRAP::Image::GetBitsPerChannel() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -64,7 +64,7 @@ uint32_t TRAP::Image::GetBitsPerChannel() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Image::GetBytesPerChannel() const noexcept
+[[nodiscard]] uint32_t TRAP::Image::GetBytesPerChannel() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -73,7 +73,7 @@ uint32_t TRAP::Image::GetBytesPerChannel() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Image::GetWidth() const noexcept
+[[nodiscard]] uint32_t TRAP::Image::GetWidth() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -82,7 +82,7 @@ uint32_t TRAP::Image::GetWidth() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Image::GetHeight() const noexcept
+[[nodiscard]] uint32_t TRAP::Image::GetHeight() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -91,7 +91,7 @@ uint32_t TRAP::Image::GetHeight() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Math::Vec2ui TRAP::Image::GetSize() const noexcept
+[[nodiscard]] TRAP::Math::Vec2ui TRAP::Image::GetSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -100,7 +100,7 @@ TRAP::Math::Vec2ui TRAP::Image::GetSize() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Image::HasAlphaChannel() const noexcept
+[[nodiscard]] bool TRAP::Image::HasAlphaChannel() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -109,7 +109,7 @@ bool TRAP::Image::HasAlphaChannel() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Image::IsImageGrayScale() const noexcept
+[[nodiscard]] bool TRAP::Image::IsImageGrayScale() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -118,7 +118,7 @@ bool TRAP::Image::IsImageGrayScale() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Image::IsImageColored() const noexcept
+[[nodiscard]] bool TRAP::Image::IsImageColored() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -127,7 +127,7 @@ bool TRAP::Image::IsImageColored() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Image::IsHDR() const noexcept
+[[nodiscard]] bool TRAP::Image::IsHDR() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -136,7 +136,7 @@ bool TRAP::Image::IsHDR() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Image::IsLDR() const noexcept
+[[nodiscard]] bool TRAP::Image::IsLDR() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -145,7 +145,7 @@ bool TRAP::Image::IsLDR() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::filesystem::path& TRAP::Image::GetFilePath() const noexcept
+[[nodiscard]] const std::filesystem::path& TRAP::Image::GetFilePath() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -154,7 +154,7 @@ const std::filesystem::path& TRAP::Image::GetFilePath() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Image::ColorFormat TRAP::Image::GetColorFormat() const noexcept
+[[nodiscard]] TRAP::Image::ColorFormat TRAP::Image::GetColorFormat() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -163,7 +163,7 @@ TRAP::Image::ColorFormat TRAP::Image::GetColorFormat() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::Image::ConvertBGR16ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
+[[nodiscard]] std::vector<uint8_t> TRAP::Image::ConvertBGR16ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -183,7 +183,7 @@ std::vector<uint8_t> TRAP::Image::ConvertBGR16ToRGB24(std::vector<uint8_t>& sour
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::Image::ConvertBGR24ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
+[[nodiscard]] std::vector<uint8_t> TRAP::Image::ConvertBGR24ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -195,7 +195,7 @@ std::vector<uint8_t> TRAP::Image::ConvertBGR24ToRGB24(std::vector<uint8_t>& sour
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::Image::ConvertBGRA32ToRGBA32(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
+[[nodiscard]] std::vector<uint8_t> TRAP::Image::ConvertBGRA32ToRGBA32(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -207,7 +207,7 @@ std::vector<uint8_t> TRAP::Image::ConvertBGRA32ToRGBA32(std::vector<uint8_t>& so
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::Image::DecodeBGRAMap(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height, const uint32_t channels, std::vector<uint8_t>& colorMap)
+[[nodiscard]] std::vector<uint8_t> TRAP::Image::DecodeBGRAMap(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height, const uint32_t channels, std::vector<uint8_t>& colorMap)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -247,7 +247,7 @@ std::vector<uint8_t> TRAP::Image::DecodeBGRAMap(std::vector<uint8_t>& source, co
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::filesystem::path& filepath)
+[[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::filesystem::path& filepath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -299,7 +299,7 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::filesystem::path& 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, ColorFormat format, const std::vector<uint8_t>& pixelData)
+[[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, ColorFormat format, const std::vector<uint8_t>& pixelData)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -308,7 +308,7 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t he
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, ColorFormat format, const std::vector<uint16_t>& pixelData)
+[[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, ColorFormat format, const std::vector<uint16_t>& pixelData)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -317,7 +317,7 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t he
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, ColorFormat format, const std::vector<float>& pixelData)
+[[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, ColorFormat format, const std::vector<float>& pixelData)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -326,7 +326,7 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t he
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Image> TRAP::Image::LoadFallback()
+[[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Image::LoadFallback()
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -335,7 +335,7 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFallback()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Image::IsSupportedImageFile(const std::filesystem::path& filepath)
+[[nodiscard]] bool TRAP::Image::IsSupportedImageFile(const std::filesystem::path& filepath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -353,7 +353,7 @@ bool TRAP::Image::IsSupportedImageFile(const std::filesystem::path& filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Image> TRAP::Image::FlipX(const Image* const img)
+[[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Image::FlipX(const Image* const img)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -390,7 +390,7 @@ TRAP::Scope<TRAP::Image> TRAP::Image::FlipX(const Image* const img)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Image> TRAP::Image::FlipY(const Image* const img)
+[[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Image::FlipY(const Image* const img)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -426,7 +426,7 @@ TRAP::Scope<TRAP::Image> TRAP::Image::FlipY(const Image* const img)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Image> TRAP::Image::ConvertRGBToRGBA(const Image* const img)
+[[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Image::ConvertRGBToRGBA(const Image* const img)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 

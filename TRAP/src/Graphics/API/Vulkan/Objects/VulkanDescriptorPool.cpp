@@ -86,7 +86,7 @@ void TRAP::Graphics::API::VulkanDescriptorPool::Reset()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDescriptorPool TRAP::Graphics::API::VulkanDescriptorPool::GetCurrentVkDescriptorPool() const noexcept
+[[nodiscard]] VkDescriptorPool TRAP::Graphics::API::VulkanDescriptorPool::GetCurrentVkDescriptorPool() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -95,7 +95,7 @@ VkDescriptorPool TRAP::Graphics::API::VulkanDescriptorPool::GetCurrentVkDescript
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<VkDescriptorPoolSize>& TRAP::Graphics::API::VulkanDescriptorPool::GetDescriptorPoolSizes() const noexcept
+[[nodiscard]] const std::vector<VkDescriptorPoolSize>& TRAP::Graphics::API::VulkanDescriptorPool::GetDescriptorPoolSizes() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -104,7 +104,7 @@ const std::vector<VkDescriptorPoolSize>& TRAP::Graphics::API::VulkanDescriptorPo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanDescriptorPool::GetUsedDescriptorSetsCount() const noexcept
+[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanDescriptorPool::GetUsedDescriptorSetsCount() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -113,7 +113,7 @@ uint32_t TRAP::Graphics::API::VulkanDescriptorPool::GetUsedDescriptorSetsCount()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::DescriptorSet> TRAP::Graphics::API::VulkanDescriptorPool::RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc)
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::DescriptorSet> TRAP::Graphics::API::VulkanDescriptorPool::RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -164,7 +164,7 @@ TRAP::Scope<TRAP::Graphics::DescriptorSet> TRAP::Graphics::API::VulkanDescriptor
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::RetrieveVkDescriptorSet(VkDescriptorSetLayout layout)
+[[nodiscard]] VkDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::RetrieveVkDescriptorSet(VkDescriptorSetLayout layout)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

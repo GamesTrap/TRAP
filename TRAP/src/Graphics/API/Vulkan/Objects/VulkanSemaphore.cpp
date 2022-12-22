@@ -39,7 +39,7 @@ TRAP::Graphics::API::VulkanSemaphore::~VulkanSemaphore()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkSemaphore TRAP::Graphics::API::VulkanSemaphore::GetVkSemaphore() const noexcept
+[[nodiscard]] VkSemaphore TRAP::Graphics::API::VulkanSemaphore::GetVkSemaphore() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

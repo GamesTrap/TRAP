@@ -62,7 +62,7 @@ namespace TRAP::Utils::Memory
 	/// <param name="source">Bytes to convert.</param>
 	/// <returns>Converted bytes.</returns>
 	template<typename T>
-	inline static T ConvertByte(const uint8_t* const source)
+	[[nodiscard]] inline static T ConvertByte(const uint8_t* const source)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

@@ -34,8 +34,8 @@ std::string TRAP::INTERNAL::ImGuiWindowing::s_clipboardText{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::ImGuiWindowing::Init(WindowingAPI::InternalWindow* const window, const bool installCallbacks,
-                                          const TRAP::Graphics::RenderAPI renderAPI)
+[[nodiscard]] bool TRAP::INTERNAL::ImGuiWindowing::Init(WindowingAPI::InternalWindow* const window, const bool installCallbacks,
+                                                        const TRAP::Graphics::RenderAPI renderAPI)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -423,7 +423,7 @@ void TRAP::INTERNAL::ImGuiWindowing::MonitorCallback(const WindowingAPI::Interna
 //Backend data stored in io.BackendPlatformUserData to allow support for multiple Dear ImGui context
 //It is STRONGLY preferred that you use docking branch with multi-viewports
 //(== single Dear ImGui context + multiple windows) instead of multiple Dear ImGui contexts.
-TRAP::INTERNAL::ImGuiWindowing::ImGuiTRAPData* TRAP::INTERNAL::ImGuiWindowing::GetBackendData()
+[[nodiscard]] TRAP::INTERNAL::ImGuiWindowing::ImGuiTRAPData* TRAP::INTERNAL::ImGuiWindowing::GetBackendData()
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -432,7 +432,7 @@ TRAP::INTERNAL::ImGuiWindowing::ImGuiTRAPData* TRAP::INTERNAL::ImGuiWindowing::G
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::INTERNAL::ImGuiWindowing::GetClipboardText(void* const /*userData*/)
+[[nodiscard]] const char* TRAP::INTERNAL::ImGuiWindowing::GetClipboardText(void* const /*userData*/)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -451,7 +451,7 @@ void TRAP::INTERNAL::ImGuiWindowing::SetClipboardText(void* const /*userData*/, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ImGuiKey TRAP::INTERNAL::ImGuiWindowing::KeyToImGuiKey(const TRAP::Input::Key key) noexcept
+[[nodiscard]] ImGuiKey TRAP::INTERNAL::ImGuiWindowing::KeyToImGuiKey(const TRAP::Input::Key key) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -587,7 +587,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateKeyModifiers(const WindowingAPI::Inte
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Input::Key TRAP::INTERNAL::ImGuiWindowing::TranslateUntranslateKey(TRAP::Input::Key key)
+[[nodiscard]] TRAP::Input::Key TRAP::INTERNAL::ImGuiWindowing::TranslateUntranslateKey(TRAP::Input::Key key)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -733,7 +733,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMouseCursor()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline constexpr float Saturate(const float v) noexcept
+[[nodiscard]] inline constexpr float Saturate(const float v) noexcept
 {
 	return v < 0.0f ? 0.0f : v > 1.0f ? 1.0f : v;
 }
@@ -977,7 +977,7 @@ void TRAP::INTERNAL::ImGuiWindowing::ShowWindow(ImGuiViewport* const viewport)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ImVec2 TRAP::INTERNAL::ImGuiWindowing::GetWindowPos(ImGuiViewport* const viewport)
+[[nodiscard]] ImVec2 TRAP::INTERNAL::ImGuiWindowing::GetWindowPos(ImGuiViewport* const viewport)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -1001,7 +1001,7 @@ void TRAP::INTERNAL::ImGuiWindowing::SetWindowPos(ImGuiViewport* const viewport,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ImVec2 TRAP::INTERNAL::ImGuiWindowing::GetWindowSize(ImGuiViewport* const viewport)
+[[nodiscard]] ImVec2 TRAP::INTERNAL::ImGuiWindowing::GetWindowSize(ImGuiViewport* const viewport)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -1049,7 +1049,7 @@ void TRAP::INTERNAL::ImGuiWindowing::SetWindowFocus(ImGuiViewport* const viewpor
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::ImGuiWindowing::GetWindowFocus(ImGuiViewport* const viewport)
+[[nodiscard]] bool TRAP::INTERNAL::ImGuiWindowing::GetWindowFocus(ImGuiViewport* const viewport)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -1060,7 +1060,7 @@ bool TRAP::INTERNAL::ImGuiWindowing::GetWindowFocus(ImGuiViewport* const viewpor
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::ImGuiWindowing::GetWindowMinimized(ImGuiViewport* const viewport)
+[[nodiscard]] bool TRAP::INTERNAL::ImGuiWindowing::GetWindowMinimized(ImGuiViewport* const viewport)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -1084,8 +1084,8 @@ void TRAP::INTERNAL::ImGuiWindowing::SetWindowAlpha(ImGuiViewport* const viewpor
 // Vulkan support (the Vulkan renderer needs to call a platform-side support function to create the surface)
 //--------------------------------------------------------------------------------------------------------
 
-int32_t TRAP::INTERNAL::ImGuiWindowing::CreateVkSurface(ImGuiViewport* const viewport, const ImU64 vkInstance,
-                                                        const void* vkAllocator, ImU64* const outVkSurface)
+[[nodiscard]] int32_t TRAP::INTERNAL::ImGuiWindowing::CreateVkSurface(ImGuiViewport* const viewport, const ImU64 vkInstance,
+                                                                      const void* vkAllocator, ImU64* const outVkSurface)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 

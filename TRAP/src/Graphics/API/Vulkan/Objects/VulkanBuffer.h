@@ -44,48 +44,48 @@ namespace TRAP::Graphics::API
 		/// Retrieve the VkBuffer handle.
 		/// </summary>
 		/// <returns>VkBuffer handle.</returns>
-		VkBuffer GetVkBuffer() const noexcept;
+		[[nodiscard]] VkBuffer GetVkBuffer() const noexcept;
 		/// <summary>
 		/// Retrieve the storage texel view.
 		/// </summary>
 		/// <returns>VkBufferView for storage texel.</returns>
-		VkBufferView GetStorageTexelView() const noexcept;
+		[[nodiscard]] VkBufferView GetStorageTexelView() const noexcept;
 		/// <summary>
 		/// Retrieve the uniform texel view.
 		/// </summary>
 		/// <returns>VkBufferView for uniform texel.</returns>
-		VkBufferView GetUniformTexelView() const noexcept;
+		[[nodiscard]] VkBufferView GetUniformTexelView() const noexcept;
 		/// <summary>
 		/// Retrieve the byte offset to the first element in the buffer.
 		/// </summary>
 		/// <returns>Byte offset to the first element in the buffer.</returns>
-		uint64_t GetOffset() const noexcept;
+		[[nodiscard]] uint64_t GetOffset() const noexcept;
 		/// <summary>
 		/// Retrieve the VkDeviceMemory handle.
 		/// </summary>
 		/// <returns>VkDeviceMemory handle.</returns>
-		VkDeviceMemory GetVkDeviceMemory() const;
+		[[nodiscard]] VkDeviceMemory GetVkDeviceMemory() const;
 		/// <summary>
 		/// Retrieve the VkDeviceMemory offset to the start of the buffer.
 		/// </summary>
 		/// <returns>VkDeviceMemory offset.</returns>
-		uint64_t GetVkDeviceMemoryOffset() const;
+		[[nodiscard]] uint64_t GetVkDeviceMemoryOffset() const;
 
 		/// <summary>
 		/// Retrieve the size of the buffer in bytes.
 		/// </summary>
 		/// <returns>Size of the buffer in bytes.</returns>
-		uint64_t GetSize() const noexcept override;
+		[[nodiscard]] uint64_t GetSize() const noexcept override;
 		/// <summary>
 		/// Retrieve the type of descriptor.
 		/// </summary>
 		/// <returns>Type of descriptor.</returns>
-		RendererAPI::DescriptorType GetDescriptors() const noexcept override;
+		[[nodiscard]] RendererAPI::DescriptorType GetDescriptors() const noexcept override;
 		/// <summary>
 		/// Retrieve the usage of the buffer memory.
 		/// </summary>
 		/// <returns>Usage of the buffer memory.</returns>
-		RendererAPI::ResourceMemoryUsage GetMemoryUsage() const noexcept override;
+		[[nodiscard]] RendererAPI::ResourceMemoryUsage GetMemoryUsage() const noexcept override;
 
 		/// <summary>
 		/// Retrieve the CPU mapped address of the buffer.
@@ -93,7 +93,7 @@ namespace TRAP::Graphics::API
 		/// Note: MapBuffer must be called before accessing the buffer on the CPU.
 		/// </summary>
 		/// <returns>CPU mapped address of the buffer.</returns>
-		void* GetCPUMappedAddress() const noexcept override;
+		[[nodiscard]] void* GetCPUMappedAddress() const noexcept override;
 
 		/// <summary>
 		/// Map a region of the buffer to the CPU.

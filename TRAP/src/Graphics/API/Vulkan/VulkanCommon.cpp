@@ -40,8 +40,8 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Determines pipeline stages involved for given accesses
-VkPipelineStageFlags TRAP::Graphics::API::DetermineVkPipelineStageFlags(const VkAccessFlags accessFlags,
-                                                                        const RendererAPI::QueueType queueType) noexcept
+[[nodiscard]] VkPipelineStageFlags TRAP::Graphics::API::DetermineVkPipelineStageFlags(const VkAccessFlags accessFlags,
+                                                                                      const RendererAPI::QueueType queueType) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -125,8 +125,8 @@ VkPipelineStageFlags TRAP::Graphics::API::DetermineVkPipelineStageFlags(const Vk
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc,
-	                                                                     std::vector<VkPipelineColorBlendAttachmentState>& attachments)
+[[nodiscard]] VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc,
+	                                                                                   std::vector<VkPipelineColorBlendAttachmentState>& attachments)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -180,7 +180,7 @@ VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const R
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineDepthStencilStateCreateInfo TRAP::Graphics::API::UtilToDepthDesc(const RendererAPI::DepthStateDesc& desc)
+[[nodiscard]] VkPipelineDepthStencilStateCreateInfo TRAP::Graphics::API::UtilToDepthDesc(const RendererAPI::DepthStateDesc& desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -228,7 +228,7 @@ VkPipelineDepthStencilStateCreateInfo TRAP::Graphics::API::UtilToDepthDesc(const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::UtilToRasterizerDesc(const RendererAPI::RasterizerStateDesc& desc)
+[[nodiscard]] VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::UtilToRasterizerDesc(const RendererAPI::RasterizerStateDesc& desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -295,8 +295,8 @@ void TRAP::Graphics::API::UtilGetPlanarVkImageMemoryRequirement(VkDevice device,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::VulkanGetRecommendedSwapchainFormat(const bool /*HDR*/,
-																						  const bool SRGB) noexcept
+[[nodiscard]] TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::VulkanGetRecommendedSwapchainFormat(const bool /*HDR*/,
+																						                const bool SRGB) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

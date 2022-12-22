@@ -12,13 +12,13 @@ namespace TRAP::Utils
 	/// </summary>
 	/// <param name="uuid">UUID.</param>
 	/// <returns>String representation of UUID.</returns>
-	std::string UUIDToString(const std::array<uint8_t, 16>& uuid);
+	[[nodiscard]] std::string UUIDToString(const std::array<uint8_t, 16>& uuid);
 	/// <summary>
 	/// Convert a string to a 16 byte long UUID.
 	/// </summary>
 	/// <param name="uuid">String representation of a 16 byte long UUID.</param>
 	/// <returns>16 byte long UUID.</returns>
-	std::array<uint8_t, 16> UUIDFromString(std::string_view uuid);
+	[[nodiscard]] std::array<uint8_t, 16> UUIDFromString(std::string_view uuid);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -51,7 +51,7 @@ namespace TRAP::Utils
 	/// Get the endianness of the system.
 	/// </summary>
 	/// <returns>TRAP::Utils::Endian::Little or TRAP::Utils::Endian::Big.</returns>
-	Endian GetEndian();
+	[[nodiscard]] Endian GetEndian();
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -70,7 +70,7 @@ namespace TRAP::Utils
 	/// Get information about the CPU that runs the engine.
 	/// </summary>
 	/// <returns>Constant reference to the TRAP::CPUInfo.</returns>
-	const CPUInfo& GetCPUInfo();
+	[[nodiscard]] const CPUInfo& GetCPUInfo();
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -93,7 +93,7 @@ namespace TRAP::Utils
 	/// TRAP::Application::LinuxWindowManager::Unknown(If window manager is unknown or system OS
 	/// is not Linux based Windows).
 	/// </returns>
-	LinuxWindowManager GetLinuxWindowManager();
+	[[nodiscard]] LinuxWindowManager GetLinuxWindowManager();
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -101,7 +101,7 @@ namespace TRAP::Utils
 	using BitCast = std::bit_cast;
 #else
 	template<typename From, typename To>
-	inline typename std::enable_if<std::integral_constant<bool, (sizeof(From) == sizeof(To)) &&
+	[[nodiscard]] inline typename std::enable_if<std::integral_constant<bool, (sizeof(From) == sizeof(To)) &&
 	                                                            std::is_trivially_copyable<From>::value &&
 																std::is_trivially_copyable<To>::value>::value, To>::type
 	BitCast(const From& from) noexcept
@@ -135,44 +135,44 @@ namespace TRAP::Utils
 	/// <param name="minor">Minor Windows version.</param>
 	/// <param name="sp">Service pack.</param>
 	/// <returns>Whether Windows version is given version or newer.</returns>
-	BOOL IsWindowsVersionOrGreaterWin32(const WORD major, const WORD minor, const WORD sp);
+	[[nodiscard]] BOOL IsWindowsVersionOrGreaterWin32(const WORD major, const WORD minor, const WORD sp);
 	/// <summary>
 	/// Checks whether we are on at least the specified build of Windows 10.
 	/// </summary>
 	/// <param name="build">Build number.</param>
 	/// <returns>Whether Windows 10 version is given build or newer.</returns>
-	BOOL IsWindows10BuildOrGreaterWin32(const WORD build);
+	[[nodiscard]] BOOL IsWindows10BuildOrGreaterWin32(const WORD build);
 	/// <summary>
 	/// Checks whether we are on at least the specified build of Windows 11.
 	/// </summary>
 	/// <param name="build">Build number.</param>
 	/// <returns>Whether Windows 11 version is given build or newer.</returns>
-	BOOL IsWindows11BuildOrGreaterWin32(const WORD build);
+	[[nodiscard]] BOOL IsWindows11BuildOrGreaterWin32(const WORD build);
 	/// <summary>
 	/// Checks whether we are on at least Windows 10 Anniversary Update.
 	/// </summary>
 	/// <returns>Whether Windows 10 Anniversary version or newer.</returns>
-	BOOL IsWindows10Version1607OrGreaterWin32();
+	[[nodiscard]] BOOL IsWindows10Version1607OrGreaterWin32();
 	/// <summary>
 	/// Checks whether we are on at least Windows 10 Creators Update.
 	/// </summary>
 	/// <returns>Whether Window 10 Creators version or newer.</returns>
-	BOOL IsWindows10Version1703OrGreaterWin32();
+	[[nodiscard]] BOOL IsWindows10Version1703OrGreaterWin32();
 	/// <summary>
 	/// Checks whether we are on at least Windows 8.1.
 	/// </summary>
 	/// <returns>Whether Windows 8.1 version or newer.</returns>
-	BOOL IsWindows8Point1OrGreaterWin32();
+	[[nodiscard]] BOOL IsWindows8Point1OrGreaterWin32();
 	/// <summary>
 	/// Checks whether we are on at least Windows 8.
 	/// </summary>
 	/// <returns>Whether Windows 8 version or newer.</returns>
-	BOOL IsWindows8OrGreaterWin32();
+	[[nodiscard]] BOOL IsWindows8OrGreaterWin32();
 	/// <summary>
 	/// Checks whether we are on at least Windows 7.
 	/// </summary>
 	/// <returns>Whether Windows 7 version or newer.</returns>
-	BOOL IsWindows7OrGreaterWin32();
+	[[nodiscard]] BOOL IsWindows7OrGreaterWin32();
 #endif
 
 }

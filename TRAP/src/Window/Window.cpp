@@ -85,7 +85,7 @@ void TRAP::Window::OnUpdate()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Window::GetActiveWindows() noexcept
+[[nodiscard]] uint32_t TRAP::Window::GetActiveWindows() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -94,7 +94,7 @@ uint32_t TRAP::Window::GetActiveWindows() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Window::GetTitle() const noexcept
+[[nodiscard]] std::string TRAP::Window::GetTitle() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -103,7 +103,7 @@ std::string TRAP::Window::GetTitle() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Window::GetWidth() const noexcept
+[[nodiscard]] uint32_t TRAP::Window::GetWidth() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -112,7 +112,7 @@ uint32_t TRAP::Window::GetWidth() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Window::GetHeight() const noexcept
+[[nodiscard]] uint32_t TRAP::Window::GetHeight() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -121,7 +121,7 @@ uint32_t TRAP::Window::GetHeight() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Math::Vec2ui TRAP::Window::GetSize() const noexcept
+[[nodiscard]] TRAP::Math::Vec2ui TRAP::Window::GetSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -130,7 +130,7 @@ TRAP::Math::Vec2ui TRAP::Window::GetSize() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Math::Vec2ui TRAP::Window::GetFrameBufferSize() const
+[[nodiscard]] TRAP::Math::Vec2ui TRAP::Window::GetFrameBufferSize() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
@@ -142,7 +142,7 @@ TRAP::Math::Vec2ui TRAP::Window::GetFrameBufferSize() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Math::Vec2i TRAP::Window::GetPosition() const
+[[nodiscard]] TRAP::Math::Vec2i TRAP::Window::GetPosition() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
@@ -155,7 +155,7 @@ TRAP::Math::Vec2i TRAP::Window::GetPosition() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-double TRAP::Window::GetRefreshRate() const noexcept
+[[nodiscard]] double TRAP::Window::GetRefreshRate() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -164,7 +164,7 @@ double TRAP::Window::GetRefreshRate() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Window::DisplayMode TRAP::Window::GetDisplayMode() const noexcept
+[[nodiscard]] TRAP::Window::DisplayMode TRAP::Window::GetDisplayMode() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -173,7 +173,7 @@ TRAP::Window::DisplayMode TRAP::Window::GetDisplayMode() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Monitor TRAP::Window::GetMonitor() const
+[[nodiscard]] TRAP::Monitor TRAP::Window::GetMonitor() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -182,7 +182,7 @@ TRAP::Monitor TRAP::Window::GetMonitor() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Window::CursorMode TRAP::Window::GetCursorMode() const noexcept
+[[nodiscard]] TRAP::Window::CursorMode TRAP::Window::GetCursorMode() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -191,7 +191,7 @@ TRAP::Window::CursorMode TRAP::Window::GetCursorMode() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Window::GetRawMouseInput() const noexcept
+[[nodiscard]] bool TRAP::Window::GetRawMouseInput() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -200,7 +200,7 @@ bool TRAP::Window::GetRawMouseInput() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Math::Vec2 TRAP::Window::GetContentScale() const
+[[nodiscard]] TRAP::Math::Vec2 TRAP::Window::GetContentScale() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
@@ -212,7 +212,7 @@ TRAP::Math::Vec2 TRAP::Window::GetContentScale() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Window::GetOpacity() const
+[[nodiscard]] float TRAP::Window::GetOpacity() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
@@ -221,7 +221,7 @@ float TRAP::Window::GetOpacity() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Window::GetVSync() const noexcept
+[[nodiscard]] bool TRAP::Window::GetVSync() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -230,7 +230,7 @@ bool TRAP::Window::GetVSync() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Window::GetAspectRatio() const
+[[nodiscard]] float TRAP::Window::GetAspectRatio() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -241,7 +241,7 @@ float TRAP::Window::GetAspectRatio() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void* TRAP::Window::GetInternalWindow() const noexcept
+[[nodiscard]] void* TRAP::Window::GetInternalWindow() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -784,7 +784,7 @@ void TRAP::Window::SetVSync(const bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Window::IsMaximized() const
+[[nodiscard]] bool TRAP::Window::IsMaximized() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
@@ -793,7 +793,7 @@ bool TRAP::Window::IsMaximized() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Window::IsMinimized() const
+[[nodiscard]] bool TRAP::Window::IsMinimized() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
@@ -802,7 +802,7 @@ bool TRAP::Window::IsMinimized() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Window::IsResizable() const
+[[nodiscard]] bool TRAP::Window::IsResizable() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
@@ -811,7 +811,7 @@ bool TRAP::Window::IsResizable() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Window::IsVisible() const
+[[nodiscard]] bool TRAP::Window::IsVisible() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
@@ -820,7 +820,7 @@ bool TRAP::Window::IsVisible() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Window::IsFocused() const
+[[nodiscard]] bool TRAP::Window::IsFocused() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
@@ -829,7 +829,7 @@ bool TRAP::Window::IsFocused() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Window::IsDecorated() const
+[[nodiscard]] bool TRAP::Window::IsDecorated() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
@@ -838,7 +838,7 @@ bool TRAP::Window::IsDecorated() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Window::IsHovered() const
+[[nodiscard]] bool TRAP::Window::IsHovered() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 

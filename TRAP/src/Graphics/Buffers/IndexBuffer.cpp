@@ -4,8 +4,8 @@
 #include "Graphics/API/Objects/Buffer.h"
 #include "VertexBufferLayout.h"
 
-TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const uint32_t* const indices, const uint64_t size,
-                                                                             const UpdateFrequency updateFrequency)
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const uint32_t* const indices, const uint64_t size,
+                                                                                           const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -14,8 +14,8 @@ TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const uint16_t* const indices, const uint64_t size,
-                                                                             const UpdateFrequency updateFrequency)
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const uint16_t* const indices, const uint64_t size,
+                                                                                           const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -24,8 +24,8 @@ TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const uint64_t size,
-                                                                             const UpdateFrequency updateFrequency)
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const uint64_t size,
+                                                                                           const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -51,7 +51,7 @@ TRAP::Graphics::IndexBuffer::~IndexBuffer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::IndexBuffer::GetCount() const noexcept
+[[nodiscard]] uint32_t TRAP::Graphics::IndexBuffer::GetCount() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -62,7 +62,7 @@ uint32_t TRAP::Graphics::IndexBuffer::GetCount() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::Graphics::IndexBuffer::GetSize() const noexcept
+[[nodiscard]] uint64_t TRAP::Graphics::IndexBuffer::GetSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -71,7 +71,7 @@ uint64_t TRAP::Graphics::IndexBuffer::GetSize() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::UpdateFrequency TRAP::Graphics::IndexBuffer::GetUpdateFrequency() const noexcept
+[[nodiscard]] TRAP::Graphics::UpdateFrequency TRAP::Graphics::IndexBuffer::GetUpdateFrequency() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -108,7 +108,7 @@ void TRAP::Graphics::IndexBuffer::Use(const Window* const window) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::IndexBuffer::IsLoaded() const
+[[nodiscard]] bool TRAP::Graphics::IndexBuffer::IsLoaded() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 

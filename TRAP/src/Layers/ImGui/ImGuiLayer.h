@@ -198,7 +198,7 @@ namespace ImGui
 	/// Retrieve whether ImGui input is enabled or not.
 	/// </summary>
 	/// <returns>True if input is enabled, false otherwise.</returns>
-	bool IsInputEnabled();
+	[[nodiscard]] bool IsInputEnabled();
 	/// <summary>
 	/// Enable or disable ImGui input.
 	/// </summary>

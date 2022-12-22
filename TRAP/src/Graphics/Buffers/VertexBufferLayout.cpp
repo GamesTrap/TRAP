@@ -10,7 +10,7 @@ TRAP::Graphics::VertexBufferElement::VertexBufferElement(const ShaderDataType ty
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::VertexBufferElement::GetComponentCount() const
+[[nodiscard]] uint32_t TRAP::Graphics::VertexBufferElement::GetComponentCount() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -46,7 +46,7 @@ TRAP::Graphics::VertexBufferLayout::VertexBufferLayout(const std::initializer_li
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::VertexBufferLayout::GetStride() const noexcept
+[[nodiscard]] uint32_t TRAP::Graphics::VertexBufferLayout::GetStride() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -55,7 +55,7 @@ uint32_t TRAP::Graphics::VertexBufferLayout::GetStride() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<TRAP::Graphics::VertexBufferElement>& TRAP::Graphics::VertexBufferLayout::GetElements() const noexcept
+[[nodiscard]] const std::vector<TRAP::Graphics::VertexBufferElement>& TRAP::Graphics::VertexBufferLayout::GetElements() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -64,7 +64,7 @@ const std::vector<TRAP::Graphics::VertexBufferElement>& TRAP::Graphics::VertexBu
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::Graphics::VertexBufferElement>::iterator TRAP::Graphics::VertexBufferLayout::begin() noexcept
+[[nodiscard]] std::vector<TRAP::Graphics::VertexBufferElement>::iterator TRAP::Graphics::VertexBufferLayout::begin() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -73,7 +73,7 @@ std::vector<TRAP::Graphics::VertexBufferElement>::iterator TRAP::Graphics::Verte
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::Graphics::VertexBufferElement>::iterator TRAP::Graphics::VertexBufferLayout::end() noexcept
+[[nodiscard]] std::vector<TRAP::Graphics::VertexBufferElement>::iterator TRAP::Graphics::VertexBufferLayout::end() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -82,7 +82,7 @@ std::vector<TRAP::Graphics::VertexBufferElement>::iterator TRAP::Graphics::Verte
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics::VertexBufferLayout::begin() const noexcept
+[[nodiscard]] std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics::VertexBufferLayout::begin() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -91,7 +91,7 @@ std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics::VertexBufferLayout::end() const noexcept
+[[nodiscard]] std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics::VertexBufferLayout::end() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

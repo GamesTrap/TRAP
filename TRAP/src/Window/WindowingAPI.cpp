@@ -41,7 +41,7 @@ TRAP::INTERNAL::WindowingAPI::Data TRAP::INTERNAL::WindowingAPI::s_Data{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::Init()
+[[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::Init()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -207,7 +207,7 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::INTERNAL::WindowingAPI::GetMonitorName(const InternalMonitor* const monitor)
+[[nodiscard]] std::string TRAP::INTERNAL::WindowingAPI::GetMonitorName(const InternalMonitor* const monitor)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -225,7 +225,7 @@ std::string TRAP::INTERNAL::WindowingAPI::GetMonitorName(const InternalMonitor* 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::INTERNAL::WindowingAPI::InternalMonitor* TRAP::INTERNAL::WindowingAPI::GetPrimaryMonitor()
+[[nodiscard]] TRAP::INTERNAL::WindowingAPI::InternalMonitor* TRAP::INTERNAL::WindowingAPI::GetPrimaryMonitor()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -243,7 +243,7 @@ TRAP::INTERNAL::WindowingAPI::InternalMonitor* TRAP::INTERNAL::WindowingAPI::Get
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::INTERNAL::WindowingAPI::InternalMonitor*> TRAP::INTERNAL::WindowingAPI::GetMonitors()
+[[nodiscard]] std::vector<TRAP::INTERNAL::WindowingAPI::InternalMonitor*> TRAP::INTERNAL::WindowingAPI::GetMonitors()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -265,7 +265,7 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalMonitor*> TRAP::INTERNAL::Wind
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::GetVideoMode(InternalMonitor* const monitor)
+[[nodiscard]] TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::GetVideoMode(InternalMonitor* const monitor)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -284,7 +284,7 @@ TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::Ge
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::GetVideoModes(InternalMonitor* const monitor)
+[[nodiscard]] std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::GetVideoModes(InternalMonitor* const monitor)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -307,10 +307,10 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::Win
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::WindowingAPI::CreateWindow(const uint32_t width,
-	                                                                                                 const uint32_t height,
-	                                                                                                 const std::string title,
-	                                                                                                 InternalMonitor* const monitor)
+[[nodiscard]] TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::WindowingAPI::CreateWindow(const uint32_t width,
+	                                                                                                               const uint32_t height,
+	                                                                                                               const std::string title,
+	                                                                                                               InternalMonitor* const monitor)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -516,9 +516,9 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(Scope<InternalCursor> cursor)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Creates a custom cursor.
-TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::WindowingAPI::CreateCursor(const Image* const image,
-	                                                                                                 const int32_t xHotspot,
-	                                                                                                 const int32_t yHotspot)
+[[nodiscard]] TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::WindowingAPI::CreateCursor(const Image* const image,
+	                                                                                                               const int32_t xHotspot,
+	                                                                                                               const int32_t yHotspot)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -595,7 +595,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::WindowingAPI::CreateStandardCursor(const CursorType& type)
+[[nodiscard]] TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::WindowingAPI::CreateStandardCursor(const CursorType& type)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -843,7 +843,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowOpacity(const InternalWindow* const 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the opacity of the whole window.
-float TRAP::INTERNAL::WindowingAPI::GetWindowOpacity(const InternalWindow* const window)
+[[nodiscard]] float TRAP::INTERNAL::WindowingAPI::GetWindowOpacity(const InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -948,7 +948,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowHint(InternalWindow* const window, c
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns an attribute of the specified window.
-bool TRAP::INTERNAL::WindowingAPI::GetWindowHint(const InternalWindow* const window, const Hint hint)
+[[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::GetWindowHint(const InternalWindow* const window, const Hint hint)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -1085,7 +1085,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowUserPointer(InternalWindow* const wi
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the user pointer of the specified window.
-void* TRAP::INTERNAL::WindowingAPI::GetWindowUserPointer(const InternalWindow* const window)
+[[nodiscard]] void* TRAP::INTERNAL::WindowingAPI::GetWindowUserPointer(const InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1422,7 +1422,7 @@ void TRAP::INTERNAL::WindowingAPI::SetDropCallback(InternalWindow* const window,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::INTERNAL::WindowingAPI::MonitorFunc TRAP::INTERNAL::WindowingAPI::GetMonitorCallback()
+[[nodiscard]] TRAP::INTERNAL::WindowingAPI::MonitorFunc TRAP::INTERNAL::WindowingAPI::GetMonitorCallback()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1432,7 +1432,7 @@ TRAP::INTERNAL::WindowingAPI::MonitorFunc TRAP::INTERNAL::WindowingAPI::GetMonit
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the position callback for the specified window.
-TRAP::INTERNAL::WindowingAPI::WindowPositionFunc TRAP::INTERNAL::WindowingAPI::GetWindowPosCallback(const InternalWindow* const window)
+[[nodiscard]] TRAP::INTERNAL::WindowingAPI::WindowPositionFunc TRAP::INTERNAL::WindowingAPI::GetWindowPosCallback(const InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1444,7 +1444,7 @@ TRAP::INTERNAL::WindowingAPI::WindowPositionFunc TRAP::INTERNAL::WindowingAPI::G
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the size callback for the specified window.
-TRAP::INTERNAL::WindowingAPI::WindowSizeFunc TRAP::INTERNAL::WindowingAPI::GetWindowSizeCallback(const InternalWindow* const window)
+[[nodiscard]] TRAP::INTERNAL::WindowingAPI::WindowSizeFunc TRAP::INTERNAL::WindowingAPI::GetWindowSizeCallback(const InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1456,7 +1456,7 @@ TRAP::INTERNAL::WindowingAPI::WindowSizeFunc TRAP::INTERNAL::WindowingAPI::GetWi
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the close callback for the specified window.
-TRAP::INTERNAL::WindowingAPI::WindowCloseFunc TRAP::INTERNAL::WindowingAPI::GetWindowCloseCallback(const InternalWindow* const window)
+[[nodiscard]] TRAP::INTERNAL::WindowingAPI::WindowCloseFunc TRAP::INTERNAL::WindowingAPI::GetWindowCloseCallback(const InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1468,7 +1468,7 @@ TRAP::INTERNAL::WindowingAPI::WindowCloseFunc TRAP::INTERNAL::WindowingAPI::GetW
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the focus callback for the specified window.
-TRAP::INTERNAL::WindowingAPI::WindowFocusFunc TRAP::INTERNAL::WindowingAPI::GetWindowFocusCallback(const InternalWindow* const window)
+[[nodiscard]] TRAP::INTERNAL::WindowingAPI::WindowFocusFunc TRAP::INTERNAL::WindowingAPI::GetWindowFocusCallback(const InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1480,7 +1480,7 @@ TRAP::INTERNAL::WindowingAPI::WindowFocusFunc TRAP::INTERNAL::WindowingAPI::GetW
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the framebuffer resize callback for the specified window.
-TRAP::INTERNAL::WindowingAPI::FrameBufferSizeFunc TRAP::INTERNAL::WindowingAPI::GetFrameBufferSizeCallback(const InternalWindow* const window)
+[[nodiscard]] TRAP::INTERNAL::WindowingAPI::FrameBufferSizeFunc TRAP::INTERNAL::WindowingAPI::GetFrameBufferSizeCallback(const InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1492,7 +1492,7 @@ TRAP::INTERNAL::WindowingAPI::FrameBufferSizeFunc TRAP::INTERNAL::WindowingAPI::
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the window content scale callback for the specified window.
-TRAP::INTERNAL::WindowingAPI::WindowContentScaleFunc TRAP::INTERNAL::WindowingAPI::GetWindowContentScaleCallback(const InternalWindow* const window)
+[[nodiscard]] TRAP::INTERNAL::WindowingAPI::WindowContentScaleFunc TRAP::INTERNAL::WindowingAPI::GetWindowContentScaleCallback(const InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1504,7 +1504,7 @@ TRAP::INTERNAL::WindowingAPI::WindowContentScaleFunc TRAP::INTERNAL::WindowingAP
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the key callback.
-TRAP::INTERNAL::WindowingAPI::KeyFunc TRAP::INTERNAL::WindowingAPI::GetKeyCallback(const InternalWindow* const window)
+[[nodiscard]] TRAP::INTERNAL::WindowingAPI::KeyFunc TRAP::INTERNAL::WindowingAPI::GetKeyCallback(const InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1516,7 +1516,7 @@ TRAP::INTERNAL::WindowingAPI::KeyFunc TRAP::INTERNAL::WindowingAPI::GetKeyCallba
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the Unicode character callback.
-TRAP::INTERNAL::WindowingAPI::CharFunc TRAP::INTERNAL::WindowingAPI::GetCharCallback(const InternalWindow* const window)
+[[nodiscard]] TRAP::INTERNAL::WindowingAPI::CharFunc TRAP::INTERNAL::WindowingAPI::GetCharCallback(const InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1528,7 +1528,7 @@ TRAP::INTERNAL::WindowingAPI::CharFunc TRAP::INTERNAL::WindowingAPI::GetCharCall
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the mouse button callback.
-TRAP::INTERNAL::WindowingAPI::MouseButtonFunc TRAP::INTERNAL::WindowingAPI::GetMouseButtonCallback(const InternalWindow* const window)
+[[nodiscard]] TRAP::INTERNAL::WindowingAPI::MouseButtonFunc TRAP::INTERNAL::WindowingAPI::GetMouseButtonCallback(const InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1540,7 +1540,7 @@ TRAP::INTERNAL::WindowingAPI::MouseButtonFunc TRAP::INTERNAL::WindowingAPI::GetM
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the cursor position callback.
-TRAP::INTERNAL::WindowingAPI::CursorPositionFunc TRAP::INTERNAL::WindowingAPI::GetCursorPosCallback(const InternalWindow* const window)
+[[nodiscard]] TRAP::INTERNAL::WindowingAPI::CursorPositionFunc TRAP::INTERNAL::WindowingAPI::GetCursorPosCallback(const InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1552,7 +1552,7 @@ TRAP::INTERNAL::WindowingAPI::CursorPositionFunc TRAP::INTERNAL::WindowingAPI::G
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the cursor enter callback.
-TRAP::INTERNAL::WindowingAPI::CursorEnterFunc TRAP::INTERNAL::WindowingAPI::GetCursorEnterCallback(const InternalWindow* const window)
+[[nodiscard]] TRAP::INTERNAL::WindowingAPI::CursorEnterFunc TRAP::INTERNAL::WindowingAPI::GetCursorEnterCallback(const InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1564,7 +1564,7 @@ TRAP::INTERNAL::WindowingAPI::CursorEnterFunc TRAP::INTERNAL::WindowingAPI::GetC
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the scroll callback.
-TRAP::INTERNAL::WindowingAPI::ScrollFunc TRAP::INTERNAL::WindowingAPI::GetScrollCallback(const InternalWindow* const window)
+[[nodiscard]] TRAP::INTERNAL::WindowingAPI::ScrollFunc TRAP::INTERNAL::WindowingAPI::GetScrollCallback(const InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1576,7 +1576,7 @@ TRAP::INTERNAL::WindowingAPI::ScrollFunc TRAP::INTERNAL::WindowingAPI::GetScroll
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the path drop callback.
-TRAP::INTERNAL::WindowingAPI::DropFunc TRAP::INTERNAL::WindowingAPI::GetDropCallback(const InternalWindow* const window)
+[[nodiscard]] TRAP::INTERNAL::WindowingAPI::DropFunc TRAP::INTERNAL::WindowingAPI::GetDropCallback(const InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1666,7 +1666,7 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorMode(InternalWindow* const window, c
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Retrieves the cursor mode for the specified window.
-TRAP::INTERNAL::WindowingAPI::CursorMode TRAP::INTERNAL::WindowingAPI::GetCursorMode(const InternalWindow* const window)
+[[nodiscard]] TRAP::INTERNAL::WindowingAPI::CursorMode TRAP::INTERNAL::WindowingAPI::GetCursorMode(const InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1680,7 +1680,7 @@ TRAP::INTERNAL::WindowingAPI::CursorMode TRAP::INTERNAL::WindowingAPI::GetCursor
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns whether raw mouse motion is supported.
-bool TRAP::INTERNAL::WindowingAPI::RawMouseMotionSupported()
+[[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::RawMouseMotionSupported()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -1721,7 +1721,7 @@ void TRAP::INTERNAL::WindowingAPI::SetRawMouseMotionMode(InternalWindow* const w
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Retrvieves the raw mouse motion mode for the specified window.
-bool TRAP::INTERNAL::WindowingAPI::GetRawMouseMotionMode(const InternalWindow* const window)
+[[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::GetRawMouseMotionMode(const InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1750,7 +1750,7 @@ void TRAP::INTERNAL::WindowingAPI::SetProgress(const InternalWindow* const windo
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the layout-specific name of the specified printable key.
-const char* TRAP::INTERNAL::WindowingAPI::GetKeyName(const Input::Key key, int32_t scanCode)
+[[nodiscard]] const char* TRAP::INTERNAL::WindowingAPI::GetKeyName(const Input::Key key, int32_t scanCode)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -1779,7 +1779,7 @@ const char* TRAP::INTERNAL::WindowingAPI::GetKeyName(const Input::Key key, int32
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the last reported state of a keyboard key for the specified window.
-TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetKey(const InternalWindow* const window, const Input::Key key)
+[[nodiscard]] TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetKey(const InternalWindow* const window, const Input::Key key)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1805,7 +1805,7 @@ TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetKey(const InternalWindow*
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the last reported state of a mouse button for the specified window.
-TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetMouseButton(const InternalWindow* const window, const Input::MouseButton button)
+[[nodiscard]] TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetMouseButton(const InternalWindow* const window, const Input::MouseButton button)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -2185,7 +2185,7 @@ void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string& string)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the contents of the clipboard as a string.
-std::string TRAP::INTERNAL::WindowingAPI::GetClipboardString()
+[[nodiscard]] std::string TRAP::INTERNAL::WindowingAPI::GetClipboardString()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2203,7 +2203,7 @@ std::string TRAP::INTERNAL::WindowingAPI::GetClipboardString()
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns whether the Vulkan loader and an ICD have been found.
-bool TRAP::INTERNAL::WindowingAPI::VulkanSupported()
+[[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::VulkanSupported()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2219,7 +2219,7 @@ bool TRAP::INTERNAL::WindowingAPI::VulkanSupported()
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the Vulkan instance extensions required by TRAP.
-std::array<std::string, 2> TRAP::INTERNAL::WindowingAPI::GetRequiredInstanceExtensions()
+[[nodiscard]] std::array<std::string, 2> TRAP::INTERNAL::WindowingAPI::GetRequiredInstanceExtensions()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2241,10 +2241,10 @@ std::array<std::string, 2> TRAP::INTERNAL::WindowingAPI::GetRequiredInstanceExte
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Creates a Vulkan surface for the specified window.
-VkResult TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(VkInstance instance,
-                                                           const InternalWindow* const window,
-                                                           const VkAllocationCallbacks* const allocator,
-                                                           VkSurfaceKHR& surface)
+[[nodiscard]] VkResult TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(VkInstance instance,
+                                                                         const InternalWindow* const window,
+                                                                         const VkAllocationCallbacks* const allocator,
+                                                                         VkSurfaceKHR& surface)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2271,7 +2271,7 @@ VkResult TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(VkInstance instance,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::INTERNAL::WindowingAPI::GetVulkanResultString(const VkResult result)
+[[nodiscard]] std::string TRAP::INTERNAL::WindowingAPI::GetVulkanResultString(const VkResult result)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -2663,7 +2663,7 @@ void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Retrieves the available modes for the specified monitor
-bool TRAP::INTERNAL::WindowingAPI::RefreshVideoModes(InternalMonitor* const monitor)
+[[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::RefreshVideoModes(InternalMonitor* const monitor)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2684,7 +2684,7 @@ bool TRAP::INTERNAL::WindowingAPI::RefreshVideoModes(InternalMonitor* const moni
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::InitVulkan(const uint32_t mode)
+[[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::InitVulkan(const uint32_t mode)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2751,7 +2751,7 @@ bool TRAP::INTERNAL::WindowingAPI::InitVulkan(const uint32_t mode)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Lexically compare video modes
-bool TRAP::INTERNAL::WindowingAPI::CompareVideoModes(const InternalVideoMode& fm, const InternalVideoMode& sm)
+[[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::CompareVideoModes(const InternalVideoMode& fm, const InternalVideoMode& sm)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -2778,7 +2778,7 @@ bool TRAP::INTERNAL::WindowingAPI::CompareVideoModes(const InternalVideoMode& fm
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::IsSameVideoMode(const InternalVideoMode& fm, const InternalVideoMode& sm)
+[[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::IsSameVideoMode(const InternalVideoMode& fm, const InternalVideoMode& sm)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -2815,8 +2815,8 @@ void TRAP::INTERNAL::WindowingAPI::SplitBPP(int32_t bpp, int32_t& red, int32_t& 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Chooses the video mode most closely matching the desired one
-TRAP::INTERNAL::WindowingAPI::InternalVideoMode* TRAP::INTERNAL::WindowingAPI::ChooseVideoMode(InternalMonitor* const monitor,
-                                                                                               const InternalVideoMode& desired)
+[[nodiscard]] TRAP::INTERNAL::WindowingAPI::InternalVideoMode* TRAP::INTERNAL::WindowingAPI::ChooseVideoMode(InternalMonitor* const monitor,
+                                                                                                             const InternalVideoMode& desired)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 

@@ -60,7 +60,7 @@ TRAP::Network::TCPSocket::TCPSocket() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint16_t TRAP::Network::TCPSocket::GetLocalPort() const
+[[nodiscard]] uint16_t TRAP::Network::TCPSocket::GetLocalPort() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -86,7 +86,7 @@ uint16_t TRAP::Network::TCPSocket::GetLocalPort() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::IPv4Address TRAP::Network::TCPSocket::GetRemoteAddress() const
+[[nodiscard]] TRAP::Network::IPv4Address TRAP::Network::TCPSocket::GetRemoteAddress() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -111,7 +111,7 @@ TRAP::Network::IPv4Address TRAP::Network::TCPSocket::GetRemoteAddress() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint16_t TRAP::Network::TCPSocket::GetRemotePort() const
+[[nodiscard]] uint16_t TRAP::Network::TCPSocket::GetRemotePort() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 

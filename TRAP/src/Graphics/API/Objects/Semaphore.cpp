@@ -3,7 +3,7 @@
 
 #include "Graphics/API/Vulkan/Objects/VulkanSemaphore.h"
 
-TRAP::Ref<TRAP::Graphics::Semaphore> TRAP::Graphics::Semaphore::Create()
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Semaphore> TRAP::Graphics::Semaphore::Create()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -46,7 +46,7 @@ TRAP::Graphics::Semaphore::~Semaphore()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::Semaphore::IsSignaled() const noexcept
+[[nodiscard]] bool TRAP::Graphics::Semaphore::IsSignaled() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

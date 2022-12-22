@@ -44,17 +44,17 @@ namespace TRAP::Graphics::API
 		/// Retrieve the render target's Vulkan image view.
 		/// </summary>
 		/// <returns>Vulkan image view.</returns>
-		VkImageView GetVkImageView() const noexcept;
+		[[nodiscard]] VkImageView GetVkImageView() const noexcept;
 		/// <summary>
 		/// Retrieve the render target's Vulkan image view slices.
 		/// </summary>
 		/// <returns>Vulkan image view slices.</returns>
-		const std::vector<VkImageView>& GetVkImageViewSlices() const noexcept;
+		[[nodiscard]] const std::vector<VkImageView>& GetVkImageViewSlices() const noexcept;
 		/// <summary>
 		/// Retrieve the render target's ID.
 		/// </summary>
 		/// <returns>Render target ID.</returns>
-		uint32_t GetID() const noexcept;
+		[[nodiscard]] uint32_t GetID() const noexcept;
 
 	private:
 		friend void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector<RendererAPI::BufferBarrier>* bufferBarriers,

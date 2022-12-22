@@ -42,7 +42,7 @@ void TRAP::FileSystem::FileWatcher::SetEventCallback(const EventCallbackFn& call
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::FileSystem::FileWatcher::EventCallbackFn TRAP::FileSystem::FileWatcher::GetEventCallback() const noexcept
+[[nodiscard]] TRAP::FileSystem::FileWatcher::EventCallbackFn TRAP::FileSystem::FileWatcher::GetEventCallback() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -173,7 +173,7 @@ void TRAP::FileSystem::FileWatcher::RemoveFolders(const std::vector<std::filesys
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::filesystem::path> TRAP::FileSystem::FileWatcher::GetFolders() const noexcept
+[[nodiscard]] std::vector<std::filesystem::path> TRAP::FileSystem::FileWatcher::GetFolders() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem) || (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

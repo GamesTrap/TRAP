@@ -70,7 +70,7 @@ namespace TRAP
 		/// Retrieve the transform calculated from current position, rotation and scale.
 		/// </summary>
 		/// <returns>Transform as Math::Mat4.</returns>
-		Math::Mat4 GetTransform() const noexcept
+		[[nodiscard]] Math::Mat4 GetTransform() const noexcept
 		{
 			if(Rotation.x != 0.0f || Rotation.y != 0.0f || Rotation.z != 0.0f)
 			{

@@ -44,7 +44,7 @@ TRAP::Network::TCPListenerIPv6::TCPListenerIPv6() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint16_t TRAP::Network::TCPListenerIPv6::GetLocalPort() const
+[[nodiscard]] uint16_t TRAP::Network::TCPListenerIPv6::GetLocalPort() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -69,7 +69,7 @@ uint16_t TRAP::Network::TCPListenerIPv6::GetLocalPort() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPListenerIPv6::Listen(const uint16_t port, const IPv6Address& address)
+[[nodiscard]] TRAP::Network::Socket::Status TRAP::Network::TCPListenerIPv6::Listen(const uint16_t port, const IPv6Address& address)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -115,7 +115,7 @@ void TRAP::Network::TCPListenerIPv6::Close()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPListenerIPv6::Accept(TCPSocketIPv6& socket) const
+[[nodiscard]] TRAP::Network::Socket::Status TRAP::Network::TCPListenerIPv6::Accept(TCPSocketIPv6& socket) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 

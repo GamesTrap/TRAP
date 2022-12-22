@@ -13,7 +13,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="numDescriptorSets">Max amount of descriptors sets to manage by the pool.</param>
 		/// <returns>Created descriptor pool.</returns>
-		static TRAP::Ref<DescriptorPool> Create(uint32_t numDescriptorSets);
+		[[nodiscard]] static TRAP::Ref<DescriptorPool> Create(uint32_t numDescriptorSets);
 
 		/// <summary>
 		/// Destructor.
@@ -47,14 +47,14 @@ namespace TRAP::Graphics
 		/// Max number of descriptor sets managed by the pool.
 		/// </summary>
 		/// <returns>
-		uint32_t GetDescriptorSetsNum() const noexcept;
+		[[nodiscard]] uint32_t GetDescriptorSetsNum() const noexcept;
 
 		/// <summary>
 		/// Retrieve a new descriptor set from description.
 		/// </summary>
 		/// <param name="desc">Descriptor set description.</param>
 		/// <returns>New descriptor set.</returns>
-		virtual TRAP::Scope<DescriptorSet> RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc) = 0;
+		[[nodiscard]] virtual TRAP::Scope<DescriptorSet> RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc) = 0;
 
 	protected:
 		/// <summary>

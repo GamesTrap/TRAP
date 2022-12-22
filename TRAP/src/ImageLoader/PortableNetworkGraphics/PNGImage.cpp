@@ -300,7 +300,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const void* TRAP::INTERNAL::PNGImage::GetPixelData() const noexcept
+[[nodiscard]] const void* TRAP::INTERNAL::PNGImage::GetPixelData() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -312,7 +312,7 @@ const void* TRAP::INTERNAL::PNGImage::GetPixelData() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::INTERNAL::PNGImage::GetPixelDataSize() const noexcept
+[[nodiscard]] uint64_t TRAP::INTERNAL::PNGImage::GetPixelDataSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -328,8 +328,8 @@ static const std::array<std::string, 11> UnusedChunks
 {
 	"cHRM", "gAMA", "iCCP", "hIST", "pHYs", "sPLT", "tIME", "iTXt", "tEXt", "zTXt", "eXIf"
 };
-bool TRAP::INTERNAL::PNGImage::ProcessChunk(NextChunk& nextChunk, std::ifstream& file, Data& data,
-                                            AlreadyLoaded& alreadyLoaded, const bool needSwap)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::ProcessChunk(NextChunk& nextChunk, std::ifstream& file, Data& data,
+                                                          AlreadyLoaded& alreadyLoaded, const bool needSwap)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -397,7 +397,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessChunk(NextChunk& nextChunk, std::ifstream&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::ProcessIHDR(std::ifstream& file, Data& data, const bool needSwap)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::ProcessIHDR(std::ifstream& file, Data& data, const bool needSwap)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -455,7 +455,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessIHDR(std::ifstream& file, Data& data, cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::ProcesssBIT(std::ifstream& file, const Data& data)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::ProcesssBIT(std::ifstream& file, const Data& data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -494,7 +494,7 @@ bool TRAP::INTERNAL::PNGImage::ProcesssBIT(std::ifstream& file, const Data& data
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::ProcesssRGB(std::ifstream& file)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::ProcesssRGB(std::ifstream& file)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -518,7 +518,7 @@ bool TRAP::INTERNAL::PNGImage::ProcesssRGB(std::ifstream& file)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::ProcessbKGD(std::ifstream& file, const Data& data)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::ProcessbKGD(std::ifstream& file, const Data& data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -553,7 +553,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessbKGD(std::ifstream& file, const Data& data
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t length, Data& data)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t length, Data& data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -647,7 +647,7 @@ bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t l
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::ProcessPLTE(std::ifstream& file, Data& data, const uint32_t length)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::ProcessPLTE(std::ifstream& file, Data& data, const uint32_t length)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -709,7 +709,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessPLTE(std::ifstream& file, Data& data, cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::ProcessIDAT(std::ifstream& file, Data& data, const uint32_t length)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::ProcessIDAT(std::ifstream& file, Data& data, const uint32_t length)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -741,7 +741,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessIDAT(std::ifstream& file, Data& data, cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::IHDRCheck(const IHDRChunk& ihdrChunk)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::IHDRCheck(const IHDRChunk& ihdrChunk)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -842,8 +842,8 @@ bool TRAP::INTERNAL::PNGImage::IHDRCheck(const IHDRChunk& ihdrChunk)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::DecompressData(const uint8_t* const source, const int sourceLength, uint8_t* destination,
-										      const int destinationLength)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::DecompressData(const uint8_t* const source, const int sourceLength, uint8_t* destination,
+										                    const int destinationLength)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -914,12 +914,12 @@ bool TRAP::INTERNAL::PNGImage::DecompressData(const uint8_t* const source, const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* const recon,
-	                                            const uint8_t* const scanline,
-	                                            const uint8_t* const precon,
-	                                            const std::size_t byteWidth,
-	                                            const uint8_t filterType,
-	                                            const std::size_t length)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* const recon,
+	                                                          const uint8_t* const scanline,
+	                                                          const uint8_t* const precon,
+	                                                          const std::size_t byteWidth,
+	                                                          const uint8_t filterType,
+	                                                          const std::size_t length)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -1103,9 +1103,9 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* const recon,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::UnFilter(uint8_t* const out, const uint8_t* const in,
-									    const uint32_t width, const uint32_t height,
-                                        const uint32_t bitsPerPixel)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::UnFilter(uint8_t* const out, const uint8_t* const in,
+									                  const uint32_t width, const uint32_t height,
+                                                      const uint32_t bitsPerPixel)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -1138,7 +1138,7 @@ bool TRAP::INTERNAL::PNGImage::UnFilter(uint8_t* const out, const uint8_t* const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint8_t TRAP::INTERNAL::PNGImage::PaethPredictor(uint16_t a, const uint16_t b, uint16_t c)
+[[nodiscard]] uint8_t TRAP::INTERNAL::PNGImage::PaethPredictor(uint16_t a, const uint16_t b, uint16_t c)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1158,8 +1158,8 @@ uint8_t TRAP::INTERNAL::PNGImage::PaethPredictor(uint16_t a, const uint16_t b, u
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::size_t TRAP::INTERNAL::PNGImage::GetRawSizeIDAT(const uint32_t width, const uint32_t height,
-                                                     const uint32_t bitsPerPixel)
+[[nodiscard]] std::size_t TRAP::INTERNAL::PNGImage::GetRawSizeIDAT(const uint32_t width, const uint32_t height,
+                                                                   const uint32_t bitsPerPixel)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1173,8 +1173,8 @@ std::size_t TRAP::INTERNAL::PNGImage::GetRawSizeIDAT(const uint32_t width, const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::size_t TRAP::INTERNAL::PNGImage::GetRawSize(const uint32_t width, const uint32_t height,
-                                                 const uint32_t bitsPerPixel)
+[[nodiscard]] std::size_t TRAP::INTERNAL::PNGImage::GetRawSize(const uint32_t width, const uint32_t height,
+                                                               const uint32_t bitsPerPixel)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1184,9 +1184,9 @@ std::size_t TRAP::INTERNAL::PNGImage::GetRawSize(const uint32_t width, const uin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::PostProcessScanlines(uint8_t* const out, uint8_t* const in, const uint32_t width,
-                                                    const uint32_t height, const uint32_t bitsPerPixel,
-													const uint8_t interlaceMethod)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::PostProcessScanlines(uint8_t* const out, uint8_t* const in, const uint32_t width,
+                                                                  const uint32_t height, const uint32_t bitsPerPixel,
+													              const uint8_t interlaceMethod)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -1313,7 +1313,7 @@ void TRAP::INTERNAL::PNGImage::Adam7DeInterlace(uint8_t* const out, const uint8_
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint16_t> TRAP::INTERNAL::PNGImage::ConvertTo2Byte(std::vector<uint8_t>& raw)
+[[nodiscard]] std::vector<uint16_t> TRAP::INTERNAL::PNGImage::ConvertTo2Byte(std::vector<uint8_t>& raw)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -1344,8 +1344,8 @@ std::vector<uint16_t> TRAP::INTERNAL::PNGImage::ConvertTo2Byte(std::vector<uint8
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::PNGImage::ResolveIndexed(std::vector<uint8_t>& raw, const uint32_t width,
-                                                              const uint32_t height, const Data& data)
+[[nodiscard]] std::vector<uint8_t> TRAP::INTERNAL::PNGImage::ResolveIndexed(std::vector<uint8_t>& raw, const uint32_t width,
+                                                                            const uint32_t height, const Data& data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 

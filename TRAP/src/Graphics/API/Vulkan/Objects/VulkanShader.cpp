@@ -118,7 +118,7 @@ TRAP::Graphics::API::VulkanShader::~VulkanShader()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<VkShaderModule>& TRAP::Graphics::API::VulkanShader::GetVkShaderModules() const noexcept
+[[nodiscard]] const std::vector<VkShaderModule>& TRAP::Graphics::API::VulkanShader::GetVkShaderModules() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -127,7 +127,7 @@ const std::vector<VkShaderModule>& TRAP::Graphics::API::VulkanShader::GetVkShade
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graphics::API::VulkanShader::GetReflection() const noexcept
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graphics::API::VulkanShader::GetReflection() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -136,7 +136,7 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<std::string>& TRAP::Graphics::API::VulkanShader::GetEntryNames() const noexcept
+[[nodiscard]] const std::vector<std::string>& TRAP::Graphics::API::VulkanShader::GetEntryNames() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -399,7 +399,7 @@ void TRAP::Graphics::API::VulkanShader::UseSSBO(const uint32_t set, const uint32
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::array<uint32_t, 3>& TRAP::Graphics::API::VulkanShader::GetNumThreadsPerGroup() const noexcept
+[[nodiscard]] const std::array<uint32_t, 3>& TRAP::Graphics::API::VulkanShader::GetNumThreadsPerGroup() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -689,10 +689,10 @@ void TRAP::Graphics::API::VulkanShader::UseBuffer(const uint32_t set, const uint
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Graphics::API::VulkanShader::RetrieveDescriptorName(const uint32_t set, const uint32_t binding,
-                                                                      const RendererAPI::DescriptorType type,
-																	  bool* const outUAV,
-																	  const uint64_t size) const
+[[nodiscard]] std::string TRAP::Graphics::API::VulkanShader::RetrieveDescriptorName(const uint32_t set, const uint32_t binding,
+                                                                                    const RendererAPI::DescriptorType type,
+																	                bool* const outUAV,
+																	                const uint64_t size) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

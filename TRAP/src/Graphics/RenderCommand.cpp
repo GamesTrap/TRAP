@@ -17,7 +17,7 @@ void TRAP::Graphics::RenderCommand::SetVSync(const bool vsync, const Window* con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::RenderCommand::GetVSync(const Window* const window)
+[[nodiscard]] bool TRAP::Graphics::RenderCommand::GetVSync(const Window* const window)
 {
 	return RendererAPI::GetRenderer()->GetVSync(window);
 }
@@ -199,7 +199,7 @@ void TRAP::Graphics::RenderCommand::SetAnisotropyLevel(const SampleCount anisotr
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::SampleCount TRAP::Graphics::RenderCommand::GetAnisotropyLevel() noexcept
+[[nodiscard]] TRAP::Graphics::SampleCount TRAP::Graphics::RenderCommand::GetAnisotropyLevel() noexcept
 {
 	return RendererAPI::GetAnisotropyLevel();
 }
@@ -262,7 +262,7 @@ void TRAP::Graphics::RenderCommand::SetRenderScale(const float scale, const Wind
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::RenderCommand::GetRenderScale(const Window* const window)
+[[nodiscard]] float TRAP::Graphics::RenderCommand::GetRenderScale(const Window* const window)
 {
 	return RendererAPI::GetRenderer()->GetRenderScale(window);
 }
@@ -430,7 +430,7 @@ void TRAP::Graphics::RenderCommand::RenderTargetBarriers(const std::vector<Rende
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Image> TRAP::Graphics::RenderCommand::CaptureScreenshot(const Window* const window)
+[[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Graphics::RenderCommand::CaptureScreenshot(const Window* const window)
 {
 	return RendererAPI::GetRenderer()->CaptureScreenshot(window);
 }
@@ -458,14 +458,14 @@ void TRAP::Graphics::RenderCommand::MSAAResolvePass(TRAP::Ref<RenderTarget> sour
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::RenderCommand::GetCPUFPS()
+[[nodiscard]] uint32_t TRAP::Graphics::RenderCommand::GetCPUFPS()
 {
 	return static_cast<uint32_t>(1000.0f / Application::GetCPUFrameTime());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::RenderCommand::GetGPUFPS(const Window* const window)
+[[nodiscard]] uint32_t TRAP::Graphics::RenderCommand::GetGPUFPS(const Window* const window)
 {
 	const float maxGPUFrameTime = TRAP::Math::Max(RendererAPI::GetGPUGraphicsFrameTime(window), RendererAPI::GetGPUComputeFrameTime(window));
 
@@ -474,28 +474,28 @@ uint32_t TRAP::Graphics::RenderCommand::GetGPUFPS(const Window* const window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::RenderCommand::GetCPUFrameTime()
+[[nodiscard]] float TRAP::Graphics::RenderCommand::GetCPUFrameTime()
 {
 	return Application::GetCPUFrameTime();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime(const Window* const window)
+[[nodiscard]] float TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime(const Window* const window)
 {
 	return RendererAPI::GetGPUGraphicsFrameTime(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime(const Window* const window)
+[[nodiscard]] float TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime(const Window* const window)
 {
 	return RendererAPI::GetGPUComputeFrameTime(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Graphics::RenderCommand::GetGPUName()
+[[nodiscard]] std::string TRAP::Graphics::RenderCommand::GetGPUName()
 {
 	return RendererAPI::GetRenderer()->GetCurrentGPUName();
 }
@@ -509,7 +509,7 @@ void TRAP::Graphics::RenderCommand::SetLatencyMode(const LatencyMode mode, const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::LatencyMode TRAP::Graphics::RenderCommand::GetLatencyMode(const Window* const window)
+[[nodiscard]] TRAP::Graphics::LatencyMode TRAP::Graphics::RenderCommand::GetLatencyMode(const Window* const window)
 {
 	return RendererAPI::GetRenderer()->GetLatencyMode(window);
 }

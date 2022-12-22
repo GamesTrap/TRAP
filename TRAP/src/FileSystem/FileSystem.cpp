@@ -10,8 +10,8 @@ bool OpenFolderInFileBrowser(const std::filesystem::path& p);
 bool OpenFileInFileBrowser(const std::filesystem::path& p);
 
 #ifdef TRAP_PLATFORM_LINUX
-std::optional<std::filesystem::path> GetHomeFolderPathLinux();
-std::optional<std::filesystem::path> GetDocumentsFolderPathLinux();
+[[nodiscard]] std::optional<std::filesystem::path> GetHomeFolderPathLinux();
+[[nodiscard]] std::optional<std::filesystem::path> GetDocumentsFolderPathLinux();
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -51,7 +51,7 @@ void TRAP::FileSystem::Init()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::vector<uint8_t>> TRAP::FileSystem::ReadFile(const std::filesystem::path& path)
+[[nodiscard]] std::optional<std::vector<uint8_t>> TRAP::FileSystem::ReadFile(const std::filesystem::path& path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -83,7 +83,7 @@ std::optional<std::vector<uint8_t>> TRAP::FileSystem::ReadFile(const std::filesy
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::string> TRAP::FileSystem::ReadTextFile(const std::filesystem::path& path)
+[[nodiscard]] std::optional<std::string> TRAP::FileSystem::ReadTextFile(const std::filesystem::path& path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -279,7 +279,7 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::Exists(const std::filesystem::path& path)
+[[nodiscard]] bool TRAP::FileSystem::Exists(const std::filesystem::path& path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -300,7 +300,7 @@ bool TRAP::FileSystem::Exists(const std::filesystem::path& path)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<uintmax_t> TRAP::FileSystem::GetSize(const std::filesystem::path& path, const bool recursive)
+[[nodiscard]] std::optional<uintmax_t> TRAP::FileSystem::GetSize(const std::filesystem::path& path, const bool recursive)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -419,7 +419,7 @@ std::optional<uintmax_t> TRAP::FileSystem::GetSize(const std::filesystem::path& 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::file_time_type> TRAP::FileSystem::GetLastWriteTime(const std::filesystem::path& path)
+[[nodiscard]] std::optional<std::filesystem::file_time_type> TRAP::FileSystem::GetLastWriteTime(const std::filesystem::path& path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -445,7 +445,7 @@ std::optional<std::filesystem::file_time_type> TRAP::FileSystem::GetLastWriteTim
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::string> TRAP::FileSystem::GetFileNameWithEnding(const std::filesystem::path& path)
+[[nodiscard]] std::optional<std::string> TRAP::FileSystem::GetFileNameWithEnding(const std::filesystem::path& path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -471,7 +471,7 @@ std::optional<std::string> TRAP::FileSystem::GetFileNameWithEnding(const std::fi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::string> TRAP::FileSystem::GetFileNameWithoutEnding(const std::filesystem::path& path)
+[[nodiscard]] std::optional<std::string> TRAP::FileSystem::GetFileNameWithoutEnding(const std::filesystem::path& path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -497,7 +497,7 @@ std::optional<std::string> TRAP::FileSystem::GetFileNameWithoutEnding(const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::string> TRAP::FileSystem::GetFileEnding(const std::filesystem::path& path)
+[[nodiscard]] std::optional<std::string> TRAP::FileSystem::GetFileEnding(const std::filesystem::path& path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -523,7 +523,7 @@ std::optional<std::string> TRAP::FileSystem::GetFileEnding(const std::filesystem
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::path> TRAP::FileSystem::GetFolderPath(const std::filesystem::path& filePath)
+[[nodiscard]] std::optional<std::filesystem::path> TRAP::FileSystem::GetFolderPath(const std::filesystem::path& filePath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -549,7 +549,7 @@ std::optional<std::filesystem::path> TRAP::FileSystem::GetFolderPath(const std::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::path> TRAP::FileSystem::GetTempFolderPath()
+[[nodiscard]] std::optional<std::filesystem::path> TRAP::FileSystem::GetTempFolderPath()
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -567,7 +567,7 @@ std::optional<std::filesystem::path> TRAP::FileSystem::GetTempFolderPath()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::path> TRAP::FileSystem::GetGameTempFolderPath()
+[[nodiscard]] std::optional<std::filesystem::path> TRAP::FileSystem::GetGameTempFolderPath()
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -580,7 +580,7 @@ std::optional<std::filesystem::path> TRAP::FileSystem::GetGameTempFolderPath()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::path> TRAP::FileSystem::GetCurrentFolderPath()
+[[nodiscard]] std::optional<std::filesystem::path> TRAP::FileSystem::GetCurrentFolderPath()
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -598,7 +598,7 @@ std::optional<std::filesystem::path> TRAP::FileSystem::GetCurrentFolderPath()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::path> TRAP::FileSystem::GetDocumentsFolderPath()
+[[nodiscard]] std::optional<std::filesystem::path> TRAP::FileSystem::GetDocumentsFolderPath()
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -633,7 +633,7 @@ std::optional<std::filesystem::path> TRAP::FileSystem::GetDocumentsFolderPath()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::path> TRAP::FileSystem::GetGameDocumentsFolderPath()
+[[nodiscard]] std::optional<std::filesystem::path> TRAP::FileSystem::GetGameDocumentsFolderPath()
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -646,7 +646,7 @@ std::optional<std::filesystem::path> TRAP::FileSystem::GetGameDocumentsFolderPat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::path> TRAP::FileSystem::GetGameLogFolderPath()
+[[nodiscard]] std::optional<std::filesystem::path> TRAP::FileSystem::GetGameLogFolderPath()
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -663,7 +663,7 @@ std::optional<std::filesystem::path> TRAP::FileSystem::GetGameLogFolderPath()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::IsEquivalent(const std::filesystem::path& p1, const std::filesystem::path& p2)
+[[nodiscard]] bool TRAP::FileSystem::IsEquivalent(const std::filesystem::path& p1, const std::filesystem::path& p2)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -685,7 +685,7 @@ bool TRAP::FileSystem::IsEquivalent(const std::filesystem::path& p1, const std::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::IsFolder(const std::filesystem::path& p)
+[[nodiscard]] bool TRAP::FileSystem::IsFolder(const std::filesystem::path& p)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -705,7 +705,7 @@ bool TRAP::FileSystem::IsFolder(const std::filesystem::path& p)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::IsFile(const std::filesystem::path& p)
+[[nodiscard]] bool TRAP::FileSystem::IsFile(const std::filesystem::path& p)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -725,7 +725,7 @@ bool TRAP::FileSystem::IsFile(const std::filesystem::path& p)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::IsEmpty(const std::filesystem::path& p)
+[[nodiscard]] bool TRAP::FileSystem::IsEmpty(const std::filesystem::path& p)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -745,7 +745,7 @@ bool TRAP::FileSystem::IsEmpty(const std::filesystem::path& p)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::IsAbsolute(const std::filesystem::path& p)
+[[nodiscard]] bool TRAP::FileSystem::IsAbsolute(const std::filesystem::path& p)
 {
     ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -768,7 +768,7 @@ bool TRAP::FileSystem::IsAbsolute(const std::filesystem::path& p)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::IsRelative(const std::filesystem::path& p)
+[[nodiscard]] bool TRAP::FileSystem::IsRelative(const std::filesystem::path& p)
 {
     ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -791,7 +791,7 @@ bool TRAP::FileSystem::IsRelative(const std::filesystem::path& p)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::path> TRAP::FileSystem::ToAbsolutePath(const std::filesystem::path& p)
+[[nodiscard]] std::optional<std::filesystem::path> TRAP::FileSystem::ToAbsolutePath(const std::filesystem::path& p)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -814,7 +814,7 @@ std::optional<std::filesystem::path> TRAP::FileSystem::ToAbsolutePath(const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::path> TRAP::FileSystem::ToRelativePath(const std::filesystem::path& p)
+[[nodiscard]] std::optional<std::filesystem::path> TRAP::FileSystem::ToRelativePath(const std::filesystem::path& p)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -1095,7 +1095,7 @@ bool OpenFileInFileBrowser(const std::filesystem::path& p)
 /// The home directory on success, empty optional.
 /// HOME environment is respected for non-root users if it exists.
 /// </returns>
-std::optional<std::filesystem::path> GetHomeFolderPathLinux()
+[[nodiscard]] std::optional<std::filesystem::path> GetHomeFolderPathLinux()
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -1154,7 +1154,7 @@ std::optional<std::filesystem::path> GetHomeFolderPathLinux()
 /// The document directory on success, empty optional otherwise.
 /// HOME environment is respected for non-root users if it exists.
 /// </returns>
-std::optional<std::filesystem::path> GetDocumentsFolderPathLinux()
+[[nodiscard]] std::optional<std::filesystem::path> GetDocumentsFolderPathLinux()
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 

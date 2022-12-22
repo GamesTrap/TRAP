@@ -319,7 +319,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const void* TRAP::INTERNAL::TGAImage::GetPixelData() const noexcept
+[[nodiscard]] const void* TRAP::INTERNAL::TGAImage::GetPixelData() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -328,7 +328,7 @@ const void* TRAP::INTERNAL::TGAImage::GetPixelData() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::INTERNAL::TGAImage::GetPixelDataSize() const noexcept
+[[nodiscard]] uint64_t TRAP::INTERNAL::TGAImage::GetPixelDataSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -337,9 +337,9 @@ uint64_t TRAP::INTERNAL::TGAImage::GetPixelDataSize() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEBGRAMap(std::vector<uint8_t>& source, const uint32_t width,
-                                                                const uint32_t height, const uint32_t channels,
-																std::vector<uint8_t>& colorMap)
+[[nodiscard]] std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEBGRAMap(std::vector<uint8_t>& source, const uint32_t width,
+                                                                              const uint32_t height, const uint32_t channels,
+																              std::vector<uint8_t>& colorMap)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -406,8 +406,8 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEBGRAMap(std::vector<uint
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEGrayScale(std::vector<uint8_t>& source,
-                                                                  const uint32_t width, const uint32_t height)
+[[nodiscard]] std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEGrayScale(std::vector<uint8_t>& source,
+                                                                                const uint32_t width, const uint32_t height)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -448,8 +448,8 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEGrayScale(std::vector<ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR16ToRGB24(std::vector<uint8_t>& source,
-                                                                      const uint32_t width, const uint32_t height)
+[[nodiscard]] std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR16ToRGB24(std::vector<uint8_t>& source,
+                                                                                    const uint32_t width, const uint32_t height)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -491,8 +491,8 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR16ToRGB24(std::vecto
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR24ToRGB24(std::vector<uint8_t>& source,
-                                                                      const uint32_t width, const uint32_t height)
+[[nodiscard]] std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR24ToRGB24(std::vector<uint8_t>& source,
+                                                                                    const uint32_t width, const uint32_t height)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -534,8 +534,8 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR24ToRGB24(std::vecto
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>& source,
-                                                                      const uint32_t width, const uint32_t height)
+[[nodiscard]] std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>& source,
+                                                                                    const uint32_t width, const uint32_t height)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 

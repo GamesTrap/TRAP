@@ -14,7 +14,8 @@ static constexpr std::array<uint64_t, 24> RC =
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<class T> T Rotatel64(const T x, const int64_t y)
+template<class T>
+[[nodiscard]] T Rotatel64(const T x, const int64_t y)
 {
     ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -130,7 +131,7 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const void* const data, uint64_t length)
+[[nodiscard]] std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const void* const data, uint64_t length)
 {
     ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -166,7 +167,7 @@ std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const void* const data, uint
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const std::string_view str)
+[[nodiscard]] std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const std::string_view str)
 {
     ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -175,7 +176,7 @@ std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const std::string_view str)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const void* const data, uint64_t length)
+[[nodiscard]] std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const void* const data, uint64_t length)
 {
     ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -211,7 +212,7 @@ std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const void* const data, uint
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const std::string_view str)
+[[nodiscard]] std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const std::string_view str)
 {
     ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

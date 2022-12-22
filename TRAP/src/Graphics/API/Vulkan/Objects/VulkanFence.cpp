@@ -40,7 +40,7 @@ TRAP::Graphics::API::VulkanFence::~VulkanFence()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkFence TRAP::Graphics::API::VulkanFence::GetVkFence() const noexcept
+[[nodiscard]] VkFence TRAP::Graphics::API::VulkanFence::GetVkFence() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -49,7 +49,7 @@ VkFence TRAP::Graphics::API::VulkanFence::GetVkFence() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::FenceStatus TRAP::Graphics::API::VulkanFence::GetStatus()
+[[nodiscard]] TRAP::Graphics::RendererAPI::FenceStatus TRAP::Graphics::API::VulkanFence::GetStatus()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

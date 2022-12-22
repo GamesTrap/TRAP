@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "Base.h"
 
-uint32_t TRAP_MAKE_VERSION(const uint32_t major, const uint32_t minor, const uint32_t patch)
+[[nodiscard]] uint32_t TRAP_MAKE_VERSION(const uint32_t major, const uint32_t minor, const uint32_t patch)
 {
 	TRAP_ASSERT(major < 1024 && "Major version number must be less than 1024.");
 	TRAP_ASSERT(minor < 1024 && "Minor version number must be less than 1024.");
@@ -13,7 +13,7 @@ uint32_t TRAP_MAKE_VERSION(const uint32_t major, const uint32_t minor, const uin
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef TRACY_ENABLE
-void* operator new(const std::size_t count)
+[[nodiscard]] void* operator new(const std::size_t count)
 {
     auto ptr = malloc(count);
 
@@ -26,7 +26,7 @@ void* operator new(const std::size_t count)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void* operator new[](const std::size_t count)
+[[nodiscard]] void* operator new[](const std::size_t count)
 {
     auto ptr = malloc(count);
 

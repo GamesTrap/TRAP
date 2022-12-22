@@ -30,7 +30,7 @@ TRAP::Graphics::Sampler::~Sampler()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(RendererAPI::SamplerDesc desc)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(RendererAPI::SamplerDesc desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -89,7 +89,7 @@ TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(RendererAPI::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::FilterType TRAP::Graphics::Sampler::GetMinFilter() const noexcept
+[[nodiscard]] TRAP::Graphics::FilterType TRAP::Graphics::Sampler::GetMinFilter() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -98,7 +98,7 @@ TRAP::Graphics::FilterType TRAP::Graphics::Sampler::GetMinFilter() const noexcep
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::FilterType TRAP::Graphics::Sampler::GetMagFilter() const noexcept
+[[nodiscard]] TRAP::Graphics::FilterType TRAP::Graphics::Sampler::GetMagFilter() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -107,7 +107,7 @@ TRAP::Graphics::FilterType TRAP::Graphics::Sampler::GetMagFilter() const noexcep
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::MipMapMode TRAP::Graphics::Sampler::GetMipMapMode() const noexcept
+[[nodiscard]] TRAP::Graphics::MipMapMode TRAP::Graphics::Sampler::GetMipMapMode() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -116,7 +116,7 @@ TRAP::Graphics::MipMapMode TRAP::Graphics::Sampler::GetMipMapMode() const noexce
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::AddressMode TRAP::Graphics::Sampler::GetAddressU() const noexcept
+[[nodiscard]] TRAP::Graphics::AddressMode TRAP::Graphics::Sampler::GetAddressU() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -125,7 +125,7 @@ TRAP::Graphics::AddressMode TRAP::Graphics::Sampler::GetAddressU() const noexcep
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::AddressMode TRAP::Graphics::Sampler::GetAddressV() const noexcept
+[[nodiscard]] TRAP::Graphics::AddressMode TRAP::Graphics::Sampler::GetAddressV() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -134,7 +134,7 @@ TRAP::Graphics::AddressMode TRAP::Graphics::Sampler::GetAddressV() const noexcep
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::AddressMode TRAP::Graphics::Sampler::GetAddressW() const noexcept
+[[nodiscard]] TRAP::Graphics::AddressMode TRAP::Graphics::Sampler::GetAddressW() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -143,7 +143,7 @@ TRAP::Graphics::AddressMode TRAP::Graphics::Sampler::GetAddressW() const noexcep
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::Sampler::GetMipLodBias() const noexcept
+[[nodiscard]] float TRAP::Graphics::Sampler::GetMipLodBias() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -152,7 +152,7 @@ float TRAP::Graphics::Sampler::GetMipLodBias() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::Sampler::GetAnisotropyLevel() const noexcept
+[[nodiscard]] float TRAP::Graphics::Sampler::GetAnisotropyLevel() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -164,7 +164,7 @@ float TRAP::Graphics::Sampler::GetAnisotropyLevel() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::CompareMode TRAP::Graphics::Sampler::GetCompareFunc() const noexcept
+[[nodiscard]] TRAP::Graphics::CompareMode TRAP::Graphics::Sampler::GetCompareFunc() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -173,7 +173,7 @@ TRAP::Graphics::CompareMode TRAP::Graphics::Sampler::GetCompareFunc() const noex
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::Sampler::UsesEngineAnisotropyLevel() const noexcept
+[[nodiscard]] bool TRAP::Graphics::Sampler::UsesEngineAnisotropyLevel() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

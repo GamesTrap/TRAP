@@ -21,7 +21,7 @@ TRAP::Graphics::RendererAPI::ResourceLoaderDesc TRAP::Graphics::API::ResourceLoa
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t MIP_REDUCE(const uint32_t size, const uint32_t mip) noexcept
+[[nodiscard]] constexpr uint32_t MIP_REDUCE(const uint32_t size, const uint32_t mip) noexcept
 {
 	return TRAP::Math::Max(1u, size >> mip);
 }
@@ -179,7 +179,7 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetTextureRowAlignment() noexcept
+[[nodiscard]] uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetTextureRowAlignment() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -188,7 +188,7 @@ uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetTextureRowAlignment() noexc
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetTextureSubresourceAlignment(const TRAP::Graphics::API::ImageFormat fmt) noexcept
+[[nodiscard]] uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetTextureSubresourceAlignment(const TRAP::Graphics::API::ImageFormat fmt) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -202,14 +202,14 @@ uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetTextureSubresourceAlignment
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceSize(const TRAP::Graphics::API::ImageFormat fmt,
-                                                                 const uint32_t width, const uint32_t height,
-																 const uint32_t depth, const uint64_t rowStride,
-																 const uint64_t sliceStride,
-																 const uint32_t baseMipLevel,
-																 const uint32_t mipLevels,
-																 const uint32_t baseArrayLayer,
-																 const uint32_t arrayLayers) noexcept
+[[nodiscard]] uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceSize(const TRAP::Graphics::API::ImageFormat fmt,
+                                                                               const uint32_t width, const uint32_t height,
+																               const uint32_t depth, const uint64_t rowStride,
+																               const uint64_t sliceStride,
+																               const uint32_t baseMipLevel,
+																               const uint32_t mipLevels,
+																               const uint32_t baseArrayLayer,
+																               const uint32_t arrayLayers) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -249,10 +249,10 @@ uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceSize(const TRAP::Gra
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceInfo(const uint32_t width, const uint32_t height,
-	                                                         const TRAP::Graphics::API::ImageFormat fmt,
-															 uint64_t* const outNumBytes, uint64_t* const outRowBytes,
-															 uint64_t* const outNumRows)
+[[nodiscard]] bool TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceInfo(const uint32_t width, const uint32_t height,
+	                                                                       const TRAP::Graphics::API::ImageFormat fmt,
+															               uint64_t* const outNumBytes, uint64_t* const outRowBytes,
+															               uint64_t* const outNumRows)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -597,7 +597,7 @@ void TRAP::Graphics::API::ResourceLoader::WaitForAllResourceLoads()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::SyncToken TRAP::Graphics::API::ResourceLoader::GetLastTokenCompleted() const noexcept
+[[nodiscard]] TRAP::Graphics::API::SyncToken TRAP::Graphics::API::ResourceLoader::GetLastTokenCompleted() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -606,7 +606,7 @@ TRAP::Graphics::API::SyncToken TRAP::Graphics::API::ResourceLoader::GetLastToken
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::ResourceLoader::IsTokenCompleted(const SyncToken* const token) const
+[[nodiscard]] bool TRAP::Graphics::API::ResourceLoader::IsTokenCompleted(const SyncToken* const token) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -628,8 +628,8 @@ void TRAP::Graphics::API::ResourceLoader::WaitForToken(const SyncToken* const to
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Return a new staging buffer
-TRAP::Graphics::RendererAPI::MappedMemoryRange TRAP::Graphics::API::ResourceLoader::AllocateUploadMemory(const uint64_t memoryRequirement,
-                                                                                                         const uint32_t alignment)
+[[nodiscard]] TRAP::Graphics::RendererAPI::MappedMemoryRange TRAP::Graphics::API::ResourceLoader::AllocateUploadMemory(const uint64_t memoryRequirement,
+                                                                                                                       const uint32_t alignment)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -803,8 +803,8 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureBarrier(TRAP::Graphics::Te
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Return memory from pre-allocated staging buffer or create a temporary buffer if the streamer ran out of memory
-TRAP::Graphics::RendererAPI::MappedMemoryRange TRAP::Graphics::API::ResourceLoader::AllocateStagingMemory(const uint64_t memoryRequirement,
-                                                                                                          const uint32_t alignment)
+[[nodiscard]] TRAP::Graphics::RendererAPI::MappedMemoryRange TRAP::Graphics::API::ResourceLoader::AllocateStagingMemory(const uint64_t memoryRequirement,
+                                                                                                                        const uint32_t alignment)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -945,7 +945,7 @@ void TRAP::Graphics::API::ResourceLoader::ResetCopyEngineSet(const std::size_t a
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::ResourceLoader::AcquireCmd(const std::size_t activeSet)
+[[nodiscard]] TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::ResourceLoader::AcquireCmd(const std::size_t activeSet)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -990,7 +990,7 @@ void TRAP::Graphics::API::ResourceLoader::StreamerFlush(const std::size_t active
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::ResourceLoader::AreTasksAvailable() const noexcept
+[[nodiscard]] bool TRAP::Graphics::API::ResourceLoader::AreTasksAvailable() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1071,8 +1071,8 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::UpdateBuffer(const std::size_t activeSet,
-																											const RendererAPI::BufferUpdateDesc& bufferUpdateDesc)
+[[nodiscard]] TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::UpdateBuffer(const std::size_t activeSet,
+																											              const RendererAPI::BufferUpdateDesc& bufferUpdateDesc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -1090,9 +1090,9 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::UpdateTexture(const std::size_t activeSet,
-																											 const TextureUpdateDescInternal& textureUpdateDesc,
-																											 const std::array<const TRAP::Image*, 6>* const images)
+[[nodiscard]] TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::UpdateTexture(const std::size_t activeSet,
+																											               const TextureUpdateDescInternal& textureUpdateDesc,
+																											               const std::array<const TRAP::Image*, 6>* const images)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -1216,8 +1216,8 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::LoadTexture(const std::size_t activeSet,
-																										   TRAP::Graphics::API::ResourceLoader::UpdateRequest& textureUpdate)
+[[nodiscard]] TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::LoadTexture(const std::size_t activeSet,
+																										                 TRAP::Graphics::API::ResourceLoader::UpdateRequest& textureUpdate)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -1530,8 +1530,8 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::CopyTexture(std::size_t activeSet,
-            																					           RendererAPI::TextureCopyDesc& textureCopy)
+[[nodiscard]] TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::CopyTexture(std::size_t activeSet,
+            																					                         RendererAPI::TextureCopyDesc& textureCopy)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 

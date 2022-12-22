@@ -126,7 +126,7 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const void* TRAP::INTERNAL::QOIImage::GetPixelData() const noexcept
+[[nodiscard]] const void* TRAP::INTERNAL::QOIImage::GetPixelData() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -135,7 +135,7 @@ const void* TRAP::INTERNAL::QOIImage::GetPixelData() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::INTERNAL::QOIImage::GetPixelDataSize() const noexcept
+[[nodiscard]] uint64_t TRAP::INTERNAL::QOIImage::GetPixelDataSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -161,7 +161,7 @@ constexpr uint8_t QOI_OP_RGBA  = 0xFF;
 
 constexpr uint8_t QOI_MASK_2   = 0xC0;
 
-constexpr uint32_t QOI_COLOR_HASH(const Pixel& p) noexcept
+[[nodiscard]] constexpr uint32_t QOI_COLOR_HASH(const Pixel& p) noexcept
 {
     return p.Red * 3 + p.Green * 5 + p.Blue * 7 + p.Alpha * 11;
 }

@@ -13,7 +13,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="desc">Command signature description.</param>
 		/// <returns>Created command signature.</returns>
-		static TRAP::Ref<CommandSignature> Create(const RendererAPI::CommandSignatureDesc& desc);
+		[[nodiscard]] static TRAP::Ref<CommandSignature> Create(const RendererAPI::CommandSignatureDesc& desc);
 
 		/// <summary>
 		/// Destructor.

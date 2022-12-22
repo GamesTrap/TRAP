@@ -4,7 +4,7 @@
 #include "Input/Input.h"
 #include "Events/WindowEvent.h"
 
-float TRAP::Graphics::OrthographicCameraBounds::GetWidth() const noexcept
+[[nodiscard]] float TRAP::Graphics::OrthographicCameraBounds::GetWidth() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -13,7 +13,7 @@ float TRAP::Graphics::OrthographicCameraBounds::GetWidth() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::OrthographicCameraBounds::GetHeight() const noexcept
+[[nodiscard]] float TRAP::Graphics::OrthographicCameraBounds::GetHeight() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -175,7 +175,7 @@ void TRAP::Graphics::OrthographicCameraController::OnResize(const float width, c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::OrthographicCamera& TRAP::Graphics::OrthographicCameraController::GetCamera() noexcept
+[[nodiscard]] TRAP::Graphics::OrthographicCamera& TRAP::Graphics::OrthographicCameraController::GetCamera() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -184,7 +184,7 @@ TRAP::Graphics::OrthographicCamera& TRAP::Graphics::OrthographicCameraController
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Graphics::OrthographicCamera& TRAP::Graphics::OrthographicCameraController::GetCamera() const noexcept
+[[nodiscard]] const TRAP::Graphics::OrthographicCamera& TRAP::Graphics::OrthographicCameraController::GetCamera() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -193,7 +193,7 @@ const TRAP::Graphics::OrthographicCamera& TRAP::Graphics::OrthographicCameraCont
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::OrthographicCameraController::GetTranslationSpeed() const noexcept
+[[nodiscard]] float TRAP::Graphics::OrthographicCameraController::GetTranslationSpeed() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -211,7 +211,7 @@ void TRAP::Graphics::OrthographicCameraController::SetTranslationSpeed(const flo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::OrthographicCameraController::GetRotationSpeed() const noexcept
+[[nodiscard]] float TRAP::Graphics::OrthographicCameraController::GetRotationSpeed() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -229,7 +229,7 @@ void TRAP::Graphics::OrthographicCameraController::SetRotationSpeed(const float 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::OrthographicCameraController::GetZoomLevel() const noexcept
+[[nodiscard]] float TRAP::Graphics::OrthographicCameraController::GetZoomLevel() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -251,7 +251,7 @@ void TRAP::Graphics::OrthographicCameraController::SetZoomLevel(const float zoom
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Graphics::OrthographicCameraBounds& TRAP::Graphics::OrthographicCameraController::GetBounds() const noexcept
+[[nodiscard]] const TRAP::Graphics::OrthographicCameraBounds& TRAP::Graphics::OrthographicCameraController::GetBounds() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

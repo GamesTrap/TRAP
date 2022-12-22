@@ -47,8 +47,8 @@ namespace TRAP::Graphics::API
 		/// <param name="signalSemaphore">Semaphore to signal when the image is ready to be presented.</param>
 		/// <param name="fence">Fence to wait for the image to be ready to be presented.</param>
 		/// <returns>Acuired image index.</returns>
-		uint32_t AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
-		                          const TRAP::Ref<Fence>& fence) const override;
+		[[nodiscard]] uint32_t AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
+		                                        const TRAP::Ref<Fence>& fence) const override;
 
 		/// <summary>
 		/// Toggle Vsync on and off.
@@ -59,12 +59,12 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan swap chain handle.
 		/// </summary>
 		/// <returns>Vulkan swap chain handle.</returns>
-		VkSwapchainKHR GetVkSwapChain() const noexcept;
+		[[nodiscard]] VkSwapchainKHR GetVkSwapChain() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan queue used for presentation.
 		/// </summary>
 		/// <returns>Vulkan queue used for presentation.</returns>
-		VkQueue GetPresentVkQueue() const noexcept;
+		[[nodiscard]] VkQueue GetPresentVkQueue() const noexcept;
 
 	private:
 		/// <summary>

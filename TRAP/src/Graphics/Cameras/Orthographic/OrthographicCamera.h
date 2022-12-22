@@ -36,7 +36,7 @@ namespace TRAP::Graphics
 		/// Retrieve the current camera position.
 		/// </summary>
 		/// <returns>Current camera position.</returns>
-		const Math::Vec3& GetPosition() const noexcept;
+		[[nodiscard]] const Math::Vec3& GetPosition() const noexcept;
 		/// <summary>
 		/// Set the camera position.
 		/// </summary>
@@ -47,7 +47,7 @@ namespace TRAP::Graphics
 		/// Retrieve the current camera rotation.
 		/// </summary>
 		/// <returns>Current camera rotation.</returns>
-		const Math::Vec3& GetRotation() const noexcept;
+		[[nodiscard]] const Math::Vec3& GetRotation() const noexcept;
 		/// <summary>
 		/// Set the camera rotation.
 		/// </summary>
@@ -58,12 +58,12 @@ namespace TRAP::Graphics
 		/// Retrieve the projection matrix.
 		/// </summary>
 		/// <returns>Projection matrix.</returns>
-		const Math::Mat4& GetProjectionMatrix() const noexcept;
+		[[nodiscard]] const Math::Mat4& GetProjectionMatrix() const noexcept;
 		/// <summary>
 		/// Retrieve the view matrix.
 		/// </summary>
 		/// <returns>View matrix.</returns>
-		const Math::Mat4& GetViewMatrix() const noexcept;
+		[[nodiscard]] const Math::Mat4& GetViewMatrix() const noexcept;
 
 	private:
 		/// <summary>

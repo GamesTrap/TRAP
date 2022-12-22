@@ -1,8 +1,8 @@
 #include "TRAPPCH.h"
 #include "ShaderReflection.h"
 
-constexpr bool ShaderResourceCmp(const TRAP::Graphics::API::ShaderReflection::ShaderResource& a,
-                                 const TRAP::Graphics::API::ShaderReflection::ShaderResource& b) noexcept
+[[nodiscard]] constexpr bool ShaderResourceCmp(const TRAP::Graphics::API::ShaderReflection::ShaderResource& a,
+                                               const TRAP::Graphics::API::ShaderReflection::ShaderResource& b) noexcept
 {
 	bool isSame = true;
 
@@ -15,8 +15,8 @@ constexpr bool ShaderResourceCmp(const TRAP::Graphics::API::ShaderReflection::Sh
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr bool ShaderVariableCmp(const TRAP::Graphics::API::ShaderReflection::ShaderVariable& a,
-                                 const TRAP::Graphics::API::ShaderReflection::ShaderVariable& b) noexcept
+[[nodiscard]] constexpr bool ShaderVariableCmp(const TRAP::Graphics::API::ShaderReflection::ShaderVariable& a,
+                                               const TRAP::Graphics::API::ShaderReflection::ShaderVariable& b) noexcept
 {
 	bool isSame = true;
 
@@ -35,7 +35,7 @@ constexpr bool ShaderVariableCmp(const TRAP::Graphics::API::ShaderReflection::Sh
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graphics::API::ShaderReflection::CreatePipelineReflection(
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graphics::API::ShaderReflection::CreatePipelineReflection(
 	const std::array<ShaderReflection, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& reflection,
 	const uint32_t stageCount)
 {

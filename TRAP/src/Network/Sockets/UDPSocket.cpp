@@ -42,7 +42,7 @@ TRAP::Network::UDPSocket::UDPSocket()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint16_t TRAP::Network::UDPSocket::GetLocalPort() const
+[[nodiscard]] uint16_t TRAP::Network::UDPSocket::GetLocalPort() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 

@@ -117,7 +117,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(const st
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Get(const std::string& name)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Get(const std::string& name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -133,7 +133,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Get(const std::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Shader>>& TRAP::Graphics::ShaderManager::GetShaders() noexcept
+[[nodiscard]] const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Shader>>& TRAP::Graphics::ShaderManager::GetShaders() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -224,7 +224,7 @@ void TRAP::Graphics::ShaderManager::ReloadAll()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::ShaderManager::Exists(const std::string& name)
+[[nodiscard]] bool TRAP::Graphics::ShaderManager::Exists(const std::string& name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -233,7 +233,7 @@ bool TRAP::Graphics::ShaderManager::Exists(const std::string& name)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::ShaderManager::ExistsPath(const std::filesystem::path& path)
+[[nodiscard]] bool TRAP::Graphics::ShaderManager::ExistsPath(const std::filesystem::path& path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 

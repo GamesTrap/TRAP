@@ -42,7 +42,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::InitController()
+[[nodiscard]] bool TRAP::Input::InitController()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
@@ -246,7 +246,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInternal(const Controller controller)
+[[nodiscard]] TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInternal(const Controller controller)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
@@ -589,7 +589,7 @@ bool TRAP::Input::SupportsXInput(const GUID* guid)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns a description fitting the specified XInput capabilities
-std::string TRAP::Input::GetDeviceDescription(const XINPUT_CAPABILITIES* xic)
+[[nodiscard]] std::string TRAP::Input::GetDeviceDescription(const XINPUT_CAPABILITIES* xic)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -623,7 +623,7 @@ std::string TRAP::Input::GetDeviceDescription(const XINPUT_CAPABILITIES* xic)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Lexically compare device objects
-int TRAP::Input::CompareControllerObjects(const void* first, const void* second)
+[[nodiscard]] int TRAP::Input::CompareControllerObjects(const void* first, const void* second)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -809,7 +809,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Input::GetKeyboardLayoutName()
+[[nodiscard]] std::string TRAP::Input::GetKeyboardLayoutName()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 

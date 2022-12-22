@@ -118,7 +118,7 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Get(const std::string& name)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Get(const std::string& name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -133,7 +133,7 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Get(const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::SubTexture2D>>& TRAP::Graphics::SpriteManager::GetSprites() noexcept
+[[nodiscard]] const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::SubTexture2D>>& TRAP::Graphics::SpriteManager::GetSprites() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -220,7 +220,7 @@ void TRAP::Graphics::SpriteManager::ReloadAll()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::SpriteManager::Exists(const std::string& name)
+[[nodiscard]] bool TRAP::Graphics::SpriteManager::Exists(const std::string& name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -229,7 +229,7 @@ bool TRAP::Graphics::SpriteManager::Exists(const std::string& name)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::SpriteManager::ExistsPath(const std::filesystem::path& path)
+[[nodiscard]] bool TRAP::Graphics::SpriteManager::ExistsPath(const std::filesystem::path& path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 

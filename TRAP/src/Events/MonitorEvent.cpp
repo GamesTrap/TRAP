@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "MonitorEvent.h"
 
-TRAP::Monitor TRAP::Events::MonitorEvent::GetMonitor() const noexcept
+[[nodiscard]] TRAP::Monitor TRAP::Events::MonitorEvent::GetMonitor() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -10,7 +10,7 @@ TRAP::Monitor TRAP::Events::MonitorEvent::GetMonitor() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::MonitorEvent::GetCategoryFlags() const noexcept
+[[nodiscard]] TRAP::Events::EventCategory TRAP::Events::MonitorEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -21,7 +21,7 @@ TRAP::Events::EventCategory TRAP::Events::MonitorEvent::GetCategoryFlags() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::MonitorConnectEvent::ToString() const
+[[nodiscard]] std::string TRAP::Events::MonitorConnectEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -30,7 +30,7 @@ std::string TRAP::Events::MonitorConnectEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::MonitorConnectEvent::GetEventType() const noexcept
+[[nodiscard]] TRAP::Events::EventType TRAP::Events::MonitorConnectEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -39,7 +39,7 @@ TRAP::Events::EventType TRAP::Events::MonitorConnectEvent::GetEventType() const 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::MonitorConnectEvent::GetName() const
+[[nodiscard]] std::string TRAP::Events::MonitorConnectEvent::GetName() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -48,7 +48,7 @@ std::string TRAP::Events::MonitorConnectEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::MonitorDisconnectEvent::ToString() const
+[[nodiscard]] std::string TRAP::Events::MonitorDisconnectEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -57,7 +57,7 @@ std::string TRAP::Events::MonitorDisconnectEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::MonitorDisconnectEvent::GetEventType() const noexcept
+[[nodiscard]] TRAP::Events::EventType TRAP::Events::MonitorDisconnectEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -66,7 +66,7 @@ TRAP::Events::EventType TRAP::Events::MonitorDisconnectEvent::GetEventType() con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::MonitorDisconnectEvent::GetName() const
+[[nodiscard]] std::string TRAP::Events::MonitorDisconnectEvent::GetName() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

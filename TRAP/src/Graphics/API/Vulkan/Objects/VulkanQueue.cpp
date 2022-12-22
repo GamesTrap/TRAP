@@ -73,7 +73,7 @@ TRAP::Graphics::API::VulkanQueue::~VulkanQueue()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkQueue TRAP::Graphics::API::VulkanQueue::GetVkQueue() const noexcept
+[[nodiscard]] VkQueue TRAP::Graphics::API::VulkanQueue::GetVkQueue() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -82,7 +82,7 @@ VkQueue TRAP::Graphics::API::VulkanQueue::GetVkQueue() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint8_t TRAP::Graphics::API::VulkanQueue::GetQueueFamilyIndex() const noexcept
+[[nodiscard]] uint8_t TRAP::Graphics::API::VulkanQueue::GetQueueFamilyIndex() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -91,7 +91,7 @@ uint8_t TRAP::Graphics::API::VulkanQueue::GetQueueFamilyIndex() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint8_t TRAP::Graphics::API::VulkanQueue::GetQueueIndex() const noexcept
+[[nodiscard]] uint8_t TRAP::Graphics::API::VulkanQueue::GetQueueIndex() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -100,7 +100,7 @@ uint8_t TRAP::Graphics::API::VulkanQueue::GetQueueIndex() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::QueueType TRAP::Graphics::API::VulkanQueue::GetQueueType() const noexcept
+[[nodiscard]] TRAP::Graphics::RendererAPI::QueueType TRAP::Graphics::API::VulkanQueue::GetQueueType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -109,7 +109,7 @@ TRAP::Graphics::RendererAPI::QueueType TRAP::Graphics::API::VulkanQueue::GetQueu
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanQueue::GetFlags() const noexcept
+[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanQueue::GetFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -118,7 +118,7 @@ uint32_t TRAP::Graphics::API::VulkanQueue::GetFlags() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::API::VulkanQueue::GetTimestampPeriod() const noexcept
+[[nodiscard]] float TRAP::Graphics::API::VulkanQueue::GetTimestampPeriod() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -127,7 +127,7 @@ float TRAP::Graphics::API::VulkanQueue::GetTimestampPeriod() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-double TRAP::Graphics::API::VulkanQueue::GetTimestampFrequency() const noexcept
+[[nodiscard]] double TRAP::Graphics::API::VulkanQueue::GetTimestampFrequency() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -206,7 +206,7 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Present(const RendererAPI::QueuePresentDesc& desc) const
+[[nodiscard]] TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Present(const RendererAPI::QueuePresentDesc& desc) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

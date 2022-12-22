@@ -487,7 +487,7 @@ TRAP::Graphics::API::VulkanRootSignature::~VulkanRootSignature()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::API::VulkanRootSignature::GetPipelineType() const noexcept
+[[nodiscard]] TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::API::VulkanRootSignature::GetPipelineType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -496,7 +496,7 @@ TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::API::VulkanRootSignatu
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineLayout TRAP::Graphics::API::VulkanRootSignature::GetVkPipelineLayout() const noexcept
+[[nodiscard]] VkPipelineLayout TRAP::Graphics::API::VulkanRootSignature::GetVkPipelineLayout() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -505,7 +505,7 @@ VkPipelineLayout TRAP::Graphics::API::VulkanRootSignature::GetVkPipelineLayout()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-auto TRAP::Graphics::API::VulkanRootSignature::GetVkDescriptorSetLayouts() const noexcept ->
+[[nodiscard]] auto TRAP::Graphics::API::VulkanRootSignature::GetVkDescriptorSetLayouts() const noexcept ->
 const std::array<VkDescriptorSetLayout, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -515,7 +515,7 @@ const std::array<VkDescriptorSetLayout, TRAP::Graphics::RendererAPI::MaxDescript
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-auto TRAP::Graphics::API::VulkanRootSignature::GetVkCumulativeDescriptorCounts() const noexcept ->
+[[nodiscard]] auto TRAP::Graphics::API::VulkanRootSignature::GetVkCumulativeDescriptorCounts() const noexcept ->
 	const std::array<uint32_t, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -525,7 +525,7 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetVkCumulativeDescriptorCounts()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-auto TRAP::Graphics::API::VulkanRootSignature::GetVkDescriptorCounts() const noexcept ->
+[[nodiscard]] auto TRAP::Graphics::API::VulkanRootSignature::GetVkDescriptorCounts() const noexcept ->
 	const std::array<uint16_t, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -535,7 +535,7 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetVkDescriptorCounts() const noe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-auto TRAP::Graphics::API::VulkanRootSignature::GetVkDynamicDescriptorCounts() const noexcept ->
+[[nodiscard]] auto TRAP::Graphics::API::VulkanRootSignature::GetVkDynamicDescriptorCounts() const noexcept ->
 	const std::array<uint8_t, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -545,7 +545,7 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetVkDynamicDescriptorCounts() co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-auto TRAP::Graphics::API::VulkanRootSignature::GetVkRayTracingDescriptorCounts() const noexcept ->
+[[nodiscard]] auto TRAP::Graphics::API::VulkanRootSignature::GetVkRayTracingDescriptorCounts() const noexcept ->
 	const std::array<uint8_t, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -555,7 +555,7 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetVkRayTracingDescriptorCounts()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplates() const noexcept ->
+[[nodiscard]] auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplates() const noexcept ->
 	const std::array<VkDescriptorUpdateTemplate, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -565,7 +565,7 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplates() const noexce
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-auto TRAP::Graphics::API::VulkanRootSignature::GetVkEmptyDescriptorSets() const noexcept ->
+[[nodiscard]] auto TRAP::Graphics::API::VulkanRootSignature::GetVkEmptyDescriptorSets() const noexcept ->
 	const std::array<VkDescriptorSet, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -575,7 +575,7 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetVkEmptyDescriptorSets() const 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplateData() const noexcept ->
+[[nodiscard]] auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplateData() const noexcept ->
 	const std::array<std::vector<TRAP::Graphics::API::VulkanRenderer::DescriptorUpdateData>,
 	                 TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
@@ -586,7 +586,7 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplateData() const noe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const char* const resName)
+[[nodiscard]] TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const char* const resName)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -599,7 +599,7 @@ TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSign
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const char* const resName) const
+[[nodiscard]] const TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const char* const resName) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -612,7 +612,7 @@ const TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanRootSignature::GetDescriptorCount() const noexcept
+[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanRootSignature::GetDescriptorCount() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -621,7 +621,7 @@ uint32_t TRAP::Graphics::API::VulkanRootSignature::GetDescriptorCount() const no
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<TRAP::Graphics::RendererAPI::DescriptorInfo>& TRAP::Graphics::API::VulkanRootSignature::GetDescriptors() const noexcept
+[[nodiscard]] const std::vector<TRAP::Graphics::RendererAPI::DescriptorInfo>& TRAP::Graphics::API::VulkanRootSignature::GetDescriptors() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -630,7 +630,7 @@ const std::vector<TRAP::Graphics::RendererAPI::DescriptorInfo>& TRAP::Graphics::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Graphics::API::VulkanRenderer::DescriptorIndexMap& TRAP::Graphics::API::VulkanRootSignature::GetDescriptorNameToIndexMap() const noexcept
+[[nodiscard]] const TRAP::Graphics::API::VulkanRenderer::DescriptorIndexMap& TRAP::Graphics::API::VulkanRootSignature::GetDescriptorNameToIndexMap() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

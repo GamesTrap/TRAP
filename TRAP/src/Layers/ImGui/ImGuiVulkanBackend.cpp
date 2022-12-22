@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2014-2021 Omar Cornut
+Copyright (c) 2014-2022 Omar Cornut
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -313,7 +313,7 @@ static constexpr std::array<uint32_t, 193> __glsl_shader_frag_spv =
 // Backend data stored in io.BackendRendererUserData to allow support for multiple Dear ImGui contexts
 // It is STRONGLY preferred that you use docking branch with multi-viewports (== single Dear ImGui context + multiple windows) instead of multiple Dear ImGui contexts.
 // FIXME: multi-context support is not tested and probably dysfunctional in this backend.
-static ImGui_ImplVulkan_Data* ImGui_ImplVulkan_GetBackendData()
+[[nodiscard]] static ImGui_ImplVulkan_Data* ImGui_ImplVulkan_GetBackendData()
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -322,7 +322,7 @@ static ImGui_ImplVulkan_Data* ImGui_ImplVulkan_GetBackendData()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-static uint32_t ImGui_ImplVulkan_MemoryType(VkMemoryPropertyFlags properties, uint32_t type_bits)
+[[nodiscard]] static uint32_t ImGui_ImplVulkan_MemoryType(VkMemoryPropertyFlags properties, uint32_t type_bits)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -1240,10 +1240,10 @@ void ImGui_ImplVulkan_SetMinImageCount(uint32_t min_image_count)
 // (The ImGui_ImplVulkanH_XXX functions do not interact with any of the state used by the regular ImGui_ImplVulkan_XXX functions)
 //-------------------------------------------------------------------------
 
-VkSurfaceFormatKHR ImGui_ImplVulkanH_SelectSurfaceFormat(VkPhysicalDevice physical_device, VkSurfaceKHR surface,
-                                                         const VkFormat* request_formats,
-                                                         int request_formats_count,
-                                                         VkColorSpaceKHR request_color_space)
+[[nodiscard]] VkSurfaceFormatKHR ImGui_ImplVulkanH_SelectSurfaceFormat(VkPhysicalDevice physical_device, VkSurfaceKHR surface,
+                                                                       const VkFormat* request_formats,
+                                                                       int request_formats_count,
+                                                                       VkColorSpaceKHR request_color_space)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -1295,9 +1295,9 @@ VkSurfaceFormatKHR ImGui_ImplVulkanH_SelectSurfaceFormat(VkPhysicalDevice physic
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPresentModeKHR ImGui_ImplVulkanH_SelectPresentMode(VkPhysicalDevice physical_device, VkSurfaceKHR surface,
-                                                     const VkPresentModeKHR* request_modes,
-                                                     int request_modes_count)
+[[nodiscard]] VkPresentModeKHR ImGui_ImplVulkanH_SelectPresentMode(VkPhysicalDevice physical_device, VkSurfaceKHR surface,
+                                                                   const VkPresentModeKHR* request_modes,
+                                                                   int request_modes_count)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -1378,7 +1378,7 @@ void ImGui_ImplVulkanH_CreateWindowCommandBuffers(VkPhysicalDevice physical_devi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int ImGui_ImplVulkanH_GetMinImageCountFromPresentMode(VkPresentModeKHR present_mode)
+[[nodiscard]] int ImGui_ImplVulkanH_GetMinImageCountFromPresentMode(VkPresentModeKHR present_mode)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1718,7 +1718,7 @@ struct VkDetails
 
 static std::unordered_map<void*, VkDetails> s_VulkanTextureCache;
 
-ImTextureID ImGui_ImplVulkan_AddTexture(VkSampler sampler, VkImageView imageView, VkImageLayout imageLayout)
+[[nodiscard]] ImTextureID ImGui_ImplVulkan_AddTexture(VkSampler sampler, VkImageView imageView, VkImageLayout imageLayout)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -1763,8 +1763,8 @@ ImTextureID ImGui_ImplVulkan_AddTexture(VkSampler sampler, VkImageView imageView
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ImTextureID ImGui_ImplVulkan_UpdateTextureInfo(VkDescriptorSet descriptorSet, VkSampler sampler,
-                                               VkImageView imageView, VkImageLayout imageLayout)
+[[nodiscard]] ImTextureID ImGui_ImplVulkan_UpdateTextureInfo(VkDescriptorSet descriptorSet, VkSampler sampler,
+                                                             VkImageView imageView, VkImageLayout imageLayout)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 

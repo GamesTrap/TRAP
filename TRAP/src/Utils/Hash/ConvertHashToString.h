@@ -24,7 +24,7 @@ namespace TRAP::Utils::Hash
 	/// <param name="hash">N-sized array of bytes.</param>
 	/// <returns>String representation of given hash.</returns>
 	template<std::size_t N>
-	std::string ConvertHashToString(const std::array<uint8_t, N>& hash)
+	[[nodiscard]] std::string ConvertHashToString(const std::array<uint8_t, N>& hash)
 	{
     	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 

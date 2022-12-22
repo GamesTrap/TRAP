@@ -19,7 +19,7 @@ namespace YAML
 	template<>
 	struct convert<TRAP::Math::Vec2>
 	{
-		static Node encode(const TRAP::Math::Vec2& rhs)
+		[[nodiscard]] static Node encode(const TRAP::Math::Vec2& rhs)
 		{
 			ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -30,7 +30,7 @@ namespace YAML
 			return node;
 		}
 
-		static bool decode(const Node& node, TRAP::Math::Vec2& rhs)
+		[[nodiscard]] static bool decode(const Node& node, TRAP::Math::Vec2& rhs)
 		{
 			ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -46,7 +46,7 @@ namespace YAML
 	template<>
 	struct convert<TRAP::Math::Vec3>
 	{
-		static Node encode(const TRAP::Math::Vec3& rhs)
+		[[nodiscard]] static Node encode(const TRAP::Math::Vec3& rhs)
 		{
 			ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -58,7 +58,7 @@ namespace YAML
 			return node;
 		}
 
-		static bool decode(const Node& node, TRAP::Math::Vec3& rhs)
+		[[nodiscard]] static bool decode(const Node& node, TRAP::Math::Vec3& rhs)
 		{
 			ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -75,7 +75,7 @@ namespace YAML
 	template<>
 	struct convert<TRAP::Math::Vec4>
 	{
-		static Node encode(const TRAP::Math::Vec4& rhs)
+		[[nodiscard]] static Node encode(const TRAP::Math::Vec4& rhs)
 		{
 			ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -88,7 +88,7 @@ namespace YAML
 			return node;
 		}
 
-		static bool decode(const Node& node, TRAP::Math::Vec4& rhs)
+		[[nodiscard]] static bool decode(const Node& node, TRAP::Math::Vec4& rhs)
 		{
 			ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

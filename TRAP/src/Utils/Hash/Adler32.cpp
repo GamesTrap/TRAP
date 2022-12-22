@@ -3,7 +3,7 @@
 
 #include "Utils/Memory.h"
 
-std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const void* const data, uint64_t length)
+[[nodiscard]] std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const void* const data, uint64_t length)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -37,7 +37,7 @@ std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const void* const data, uint64
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const std::string_view str)
+[[nodiscard]] std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const std::string_view str)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

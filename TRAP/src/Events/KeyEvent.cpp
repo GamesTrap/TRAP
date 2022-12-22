@@ -4,7 +4,7 @@
 #include "Utils/String/String.h"
 #include "Window/WindowingAPI.h"
 
-TRAP::Events::EventCategory TRAP::Events::KeyEvent::GetCategoryFlags() const noexcept
+[[nodiscard]] TRAP::Events::EventCategory TRAP::Events::KeyEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -26,7 +26,7 @@ TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, const uint32_t 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::KeyPressEvent::ToString() const
+[[nodiscard]] std::string TRAP::Events::KeyPressEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -38,7 +38,7 @@ std::string TRAP::Events::KeyPressEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::KeyPressEvent::GetEventType() const noexcept
+[[nodiscard]] TRAP::Events::EventType TRAP::Events::KeyPressEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -47,7 +47,7 @@ TRAP::Events::EventType TRAP::Events::KeyPressEvent::GetEventType() const noexce
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::KeyPressEvent::GetName() const
+[[nodiscard]] std::string TRAP::Events::KeyPressEvent::GetName() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -68,7 +68,7 @@ TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, TRAP::Windo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::KeyReleaseEvent::ToString() const
+[[nodiscard]] std::string TRAP::Events::KeyReleaseEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -79,7 +79,7 @@ std::string TRAP::Events::KeyReleaseEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::KeyReleaseEvent::GetEventType() const noexcept
+[[nodiscard]] TRAP::Events::EventType TRAP::Events::KeyReleaseEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -88,7 +88,7 @@ TRAP::Events::EventType TRAP::Events::KeyReleaseEvent::GetEventType() const noex
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::KeyReleaseEvent::GetName() const
+[[nodiscard]] std::string TRAP::Events::KeyReleaseEvent::GetName() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -109,7 +109,7 @@ TRAP::Events::KeyTypeEvent::KeyTypeEvent(const uint32_t codePoint, TRAP::Window*
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::KeyTypeEvent::ToString() const
+[[nodiscard]] std::string TRAP::Events::KeyTypeEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -118,7 +118,7 @@ std::string TRAP::Events::KeyTypeEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::KeyTypeEvent::GetEventType() const noexcept
+[[nodiscard]] TRAP::Events::EventType TRAP::Events::KeyTypeEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -127,7 +127,7 @@ TRAP::Events::EventType TRAP::Events::KeyTypeEvent::GetEventType() const noexcep
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::KeyTypeEvent::GetName() const
+[[nodiscard]] std::string TRAP::Events::KeyTypeEvent::GetName() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -136,7 +136,7 @@ std::string TRAP::Events::KeyTypeEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::KeyTypeEvent::GetCategoryFlags() const noexcept
+[[nodiscard]] TRAP::Events::EventCategory TRAP::Events::KeyTypeEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -153,7 +153,7 @@ TRAP::Events::KeyLayoutEvent::KeyLayoutEvent(std::string layout) noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::KeyLayoutEvent::GetLayout() const noexcept
+[[nodiscard]] std::string TRAP::Events::KeyLayoutEvent::GetLayout() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -162,7 +162,7 @@ std::string TRAP::Events::KeyLayoutEvent::GetLayout() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::KeyLayoutEvent::ToString() const
+[[nodiscard]] std::string TRAP::Events::KeyLayoutEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -171,7 +171,7 @@ std::string TRAP::Events::KeyLayoutEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::KeyLayoutEvent::GetEventType() const noexcept
+[[nodiscard]] TRAP::Events::EventType TRAP::Events::KeyLayoutEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -180,7 +180,7 @@ TRAP::Events::EventType TRAP::Events::KeyLayoutEvent::GetEventType() const noexc
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::KeyLayoutEvent::GetName() const
+[[nodiscard]] std::string TRAP::Events::KeyLayoutEvent::GetName() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -189,7 +189,7 @@ std::string TRAP::Events::KeyLayoutEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::KeyLayoutEvent::GetCategoryFlags() const noexcept
+[[nodiscard]] TRAP::Events::EventCategory TRAP::Events::KeyLayoutEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

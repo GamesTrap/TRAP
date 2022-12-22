@@ -91,7 +91,7 @@ void TRAP::Network::HTTP::Request::SetBody(std::string body)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Network::HTTP::Request::Prepare() const
+[[nodiscard]] std::string TRAP::Network::HTTP::Request::Prepare() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -145,7 +145,7 @@ std::string TRAP::Network::HTTP::Request::Prepare() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Network::HTTP::Request::HasField(const std::string& field) const
+[[nodiscard]] bool TRAP::Network::HTTP::Request::HasField(const std::string& field) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -164,7 +164,7 @@ TRAP::Network::HTTP::Response::Response() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Network::HTTP::Response::GetField(const std::string& field) const
+[[nodiscard]] std::string TRAP::Network::HTTP::Response::GetField(const std::string& field) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -177,7 +177,7 @@ std::string TRAP::Network::HTTP::Response::GetField(const std::string& field) co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::HTTP::Response::Status TRAP::Network::HTTP::Response::GetStatus() const noexcept
+[[nodiscard]] TRAP::Network::HTTP::Response::Status TRAP::Network::HTTP::Response::GetStatus() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -186,7 +186,7 @@ TRAP::Network::HTTP::Response::Status TRAP::Network::HTTP::Response::GetStatus()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Network::HTTP::Response::GetMajorHTTPVersion() const noexcept
+[[nodiscard]] uint32_t TRAP::Network::HTTP::Response::GetMajorHTTPVersion() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -195,7 +195,7 @@ uint32_t TRAP::Network::HTTP::Response::GetMajorHTTPVersion() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Network::HTTP::Response::GetMinorHTTPVersion() const noexcept
+[[nodiscard]] uint32_t TRAP::Network::HTTP::Response::GetMinorHTTPVersion() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -204,7 +204,7 @@ uint32_t TRAP::Network::HTTP::Response::GetMinorHTTPVersion() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Network::HTTP::Response::GetBody() const noexcept
+[[nodiscard]] std::string TRAP::Network::HTTP::Response::GetBody() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

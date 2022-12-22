@@ -105,7 +105,7 @@ void TRAP::ThreadPool::EnqueueWork(F&& f, Args&&... args)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename F, typename ... Args>
-auto TRAP::ThreadPool::EnqueueTask(F&& f, Args&&... args) -> std::future<std::invoke_result_t<F, Args...>>
+[[nodiscard]] auto TRAP::ThreadPool::EnqueueTask(F&& f, Args&&... args) -> std::future<std::invoke_result_t<F, Args...>>
 {
 	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 

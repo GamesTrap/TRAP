@@ -87,7 +87,7 @@ namespace TRAP::Network
 		/// The next read operation will read data from this position.
 		/// </summary>
 		/// <returns>The bytes offset of the current read position.</returns>
-		std::size_t GetReadPosition() const noexcept;
+		[[nodiscard]] std::size_t GetReadPosition() const noexcept;
 
 		/// <summary>
 		/// Clear the packet.
@@ -104,7 +104,7 @@ namespace TRAP::Network
 		/// The return pointer is nullptr if the packet is empty.
 		/// </summary>
 		/// <returns>Pointer to the data.</returns>
-		const void* GetData() const;
+		[[nodiscard]] const void* GetData() const;
 
 		/// <summary>
 		/// Get the size of the data contained in the packet.
@@ -113,7 +113,7 @@ namespace TRAP::Network
 		/// what GetData returns.
 		/// </summary>
 		/// <returns>Data size, in bytes.</returns>
-		std::size_t GetDataSize() const noexcept;
+		[[nodiscard]] std::size_t GetDataSize() const noexcept;
 
 		/// <summary>
 		/// Tell if the reading position has reached the
@@ -123,7 +123,7 @@ namespace TRAP::Network
 		/// left to be read, without actually reading it.
 		/// </summary>
 		/// <returns>True if all data was read, false otherwise.</returns>
-		bool EndOfPacket() const noexcept;
+		[[nodiscard]] bool EndOfPacket() const noexcept;
 
 	public:
 		/// <summary>
@@ -199,7 +199,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="size">Variable to fill with the size of data to send.</param>
 		/// <returns>Pointer to the array of bytes to send.</returns>
-		virtual const void* OnSend(std::size_t& size);
+		[[nodiscard]] virtual const void* OnSend(std::size_t& size);
 
 		/// <summary>
 		/// Called after the packet is received over the network.
@@ -234,7 +234,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="size">Size to check.</param>
 		/// <returns>True if size bytes can be read from the packet.</returns>
-		bool CheckSize(std::size_t size) noexcept;
+		[[nodiscard]] bool CheckSize(std::size_t size) noexcept;
 
 		std::vector<char> m_data; //Data stored in the packet
 		std::size_t m_readPos;    //Current reading position in the packet

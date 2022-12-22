@@ -25,12 +25,12 @@ namespace TRAP::Utils
 		/// Get time of the time step in seconds.
 		/// </summary>
 		/// <returns>Time in seconds.</returns>
-		constexpr float GetSeconds() const noexcept;
+		[[nodiscard]] constexpr float GetSeconds() const noexcept;
 		/// <summary>
 		/// Get time of the time step in milliseconds.
 		/// </summary>
 		/// <returns>Time in milliseconds.</returns>
-		constexpr float GetMilliseconds() const noexcept;
+		[[nodiscard]] constexpr float GetMilliseconds() const noexcept;
 
 	private:
 		float m_time;
@@ -52,14 +52,14 @@ constexpr TRAP::Utils::TimeStep::operator float() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr float TRAP::Utils::TimeStep::GetSeconds() const noexcept
+[[nodiscard]] constexpr float TRAP::Utils::TimeStep::GetSeconds() const noexcept
 {
 	return m_time;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr float TRAP::Utils::TimeStep::GetMilliseconds() const noexcept
+[[nodiscard]] constexpr float TRAP::Utils::TimeStep::GetMilliseconds() const noexcept
 {
 	return m_time * 1000.0f;
 }

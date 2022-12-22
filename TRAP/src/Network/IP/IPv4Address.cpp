@@ -74,7 +74,7 @@ TRAP::Network::IPv4Address::IPv4Address(const uint32_t address)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Network::IPv4Address::ToString() const
+[[nodiscard]] std::string TRAP::Network::IPv4Address::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -89,7 +89,7 @@ std::string TRAP::Network::IPv4Address::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Network::IPv4Address::ToInteger() const
+[[nodiscard]] uint32_t TRAP::Network::IPv4Address::ToInteger() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -103,7 +103,7 @@ uint32_t TRAP::Network::IPv4Address::ToInteger() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetLocalAddress()
+[[nodiscard]] TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetLocalAddress()
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -152,7 +152,7 @@ TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetLocalAddress()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetPublicAddress(const Utils::TimeStep timeout)
+[[nodiscard]] TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetPublicAddress(const Utils::TimeStep timeout)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 

@@ -42,12 +42,12 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan pipeline handle.
 		/// </summary>
 		/// <returns>Vulkan pipeline handle</returns>
-		VkPipeline GetVkPipeline() const noexcept;
+		[[nodiscard]] VkPipeline GetVkPipeline() const noexcept;
 		/// <summary>
 		/// Retrieve the pipeline type.
 		/// </summary>
 		/// <returns>Pipeline type</returns>
-		RendererAPI::PipelineType GetPipelineType() const noexcept;
+		[[nodiscard]] RendererAPI::PipelineType GetPipelineType() const noexcept;
 
 	private:
 		/// <summary>

@@ -89,11 +89,11 @@ namespace TRAP::Math
 		/// Retrieve the count of components of the vector.
 		/// </summary>
 		/// <returns>Count of components.</returns>
-		static constexpr int Length() noexcept;
+		[[nodiscard]] static constexpr int Length() noexcept;
 
 		//Comoponent accesses
-		constexpr T& operator[](int i);
-		constexpr const T& operator[](int i) const;
+		[[nodiscard]] constexpr T& operator[](int i);
+		[[nodiscard]] constexpr const T& operator[](int i) const;
 
 		//Unary arithmetic operators
 		constexpr Vec<3, T>& operator=(const Vec<3, T>& v) noexcept = default;
@@ -149,7 +149,7 @@ namespace TRAP::Math
 		template<typename U>
 		constexpr Vec<3, T>& operator>>=(const Vec<3, U> & v) noexcept;
 
-		std::string ToString() const;
+		[[nodiscard]] std::string ToString() const;
 	};
 
 	//Unary operators
@@ -348,7 +348,7 @@ constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<4, U>& v) noexcept
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-constexpr int TRAP::Math::Vec<3, T>::Length() noexcept
+[[nodiscard]] constexpr int TRAP::Math::Vec<3, T>::Length() noexcept
 {
 	return 3;
 }
@@ -357,7 +357,7 @@ constexpr int TRAP::Math::Vec<3, T>::Length() noexcept
 //Component accesses
 
 template<typename T>
-constexpr T& TRAP::Math::Vec<3, T>::operator[](const int i)
+[[nodiscard]] constexpr T& TRAP::Math::Vec<3, T>::operator[](const int i)
 {
 	TRAP_ASSERT(i >= 0 && i < this->Length(), "Math::Vec<3, T>::operator[]: Index out of range!");
 
@@ -377,7 +377,7 @@ constexpr T& TRAP::Math::Vec<3, T>::operator[](const int i)
 }
 
 template<typename T>
-constexpr const T& TRAP::Math::Vec<3, T>::operator[](const int i) const
+[[nodiscard]] constexpr const T& TRAP::Math::Vec<3, T>::operator[](const int i) const
 {
 	TRAP_ASSERT(i >= 0 && i < this->Length(), "Math::Vec<3, T>::operator[]: Index out of range!");
 
@@ -677,7 +677,7 @@ constexpr TRAP::Math::Vec<3, T>& TRAP::Math::Vec<3, T>::operator>>=(const Vec<3,
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-std::string TRAP::Math::Vec<3, T>::ToString() const
+[[nodiscard]] std::string TRAP::Math::Vec<3, T>::ToString() const
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

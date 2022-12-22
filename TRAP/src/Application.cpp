@@ -54,7 +54,7 @@ static BOOL WINAPI SIGINTHandlerRoutine(_In_ DWORD dwCtrlType)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #if defined(ENABLE_SINGLE_PROCESS_ONLY) && defined(TRAP_PLATFORM_LINUX)
-static bool CheckSingleProcessLinux()
+[[nodiscard]] static bool CheckSingleProcessLinux()
 {
 	ZoneScoped;
 
@@ -102,7 +102,7 @@ static bool CheckSingleProcessLinux()
 //-------------------------------------------------------------------------------------------------------------------//
 
 #if defined(ENABLE_SINGLE_PROCESS_ONLY) && defined(TRAP_PLATFORM_WINDOWS)
-static bool CheckSingleProcessWindows()
+[[nodiscard]] static bool CheckSingleProcessWindows()
 {
 	ZoneScoped;
 
@@ -652,7 +652,7 @@ void TRAP::Application::PushOverlay(std::unique_ptr<Layer> overlay)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Utils::Config& TRAP::Application::GetConfig()
+[[nodiscard]] const TRAP::Utils::Config& TRAP::Application::GetConfig()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -661,7 +661,7 @@ const TRAP::Utils::Config& TRAP::Application::GetConfig()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::LayerStack& TRAP::Application::GetLayerStack()
+[[nodiscard]] TRAP::LayerStack& TRAP::Application::GetLayerStack()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -670,7 +670,7 @@ TRAP::LayerStack& TRAP::Application::GetLayerStack()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::ImGuiLayer& TRAP::Application::GetImGuiLayer()
+[[nodiscard]] TRAP::ImGuiLayer& TRAP::Application::GetImGuiLayer()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -699,7 +699,7 @@ void TRAP::Application::SetFPSLimit(const uint32_t fps)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Application::GetFPSLimit()
+[[nodiscard]] uint32_t TRAP::Application::GetFPSLimit()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -708,7 +708,7 @@ uint32_t TRAP::Application::GetFPSLimit()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Application::GetCPUFrameTime()
+[[nodiscard]] float TRAP::Application::GetCPUFrameTime()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -717,7 +717,7 @@ float TRAP::Application::GetCPUFrameTime()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Application::GetTimeScale()
+[[nodiscard]] float TRAP::Application::GetTimeScale()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -726,7 +726,7 @@ float TRAP::Application::GetTimeScale()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Application::GetTickRate()
+[[nodiscard]] uint32_t TRAP::Application::GetTickRate()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -771,7 +771,7 @@ void TRAP::Application::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Window* TRAP::Application::GetWindow()
+[[nodiscard]] TRAP::Window* TRAP::Application::GetWindow()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -780,7 +780,7 @@ TRAP::Window* TRAP::Application::GetWindow()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::TimeStep TRAP::Application::GetTime()
+[[nodiscard]] TRAP::Utils::TimeStep TRAP::Application::GetTime()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -791,7 +791,7 @@ TRAP::Utils::TimeStep TRAP::Application::GetTime()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::ThreadPool& TRAP::Application::GetThreadPool()
+[[nodiscard]] TRAP::ThreadPool& TRAP::Application::GetThreadPool()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -809,7 +809,7 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Application::GetClipboardString()
+[[nodiscard]] std::string TRAP::Application::GetClipboardString()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -818,7 +818,7 @@ std::string TRAP::Application::GetClipboardString()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::thread::id TRAP::Application::GetMainThreadID()
+[[nodiscard]] std::thread::id TRAP::Application::GetMainThreadID()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -827,7 +827,7 @@ std::thread::id TRAP::Application::GetMainThreadID()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Application::GetGameName()
+[[nodiscard]] std::string TRAP::Application::GetGameName()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -836,7 +836,7 @@ std::string TRAP::Application::GetGameName()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::Application::GetGlobalCounter()
+[[nodiscard]] uint64_t TRAP::Application::GetGlobalCounter()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -845,7 +845,7 @@ uint64_t TRAP::Application::GetGlobalCounter()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::FileSystem::FileWatcher* TRAP::Application::GetHotReloadingFileWatcher()
+[[nodiscard]] TRAP::FileSystem::FileWatcher* TRAP::Application::GetHotReloadingFileWatcher()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -857,7 +857,7 @@ TRAP::FileSystem::FileWatcher* TRAP::Application::GetHotReloadingFileWatcher()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::IsHotReloadingEnabled()
+[[nodiscard]] bool TRAP::Application::IsHotReloadingEnabled()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

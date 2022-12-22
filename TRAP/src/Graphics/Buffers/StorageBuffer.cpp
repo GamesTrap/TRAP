@@ -8,8 +8,8 @@
 #include "Graphics/API/Objects/DescriptorSet.h"
 #include "Graphics/Shaders/Shader.h"
 
-TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create(const uint64_t size,
-																				 const UpdateFrequency updateFrequency)
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create(const uint64_t size,
+																				               const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -18,8 +18,8 @@ TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create(const void* const data, const uint64_t size,
-																				 const UpdateFrequency updateFrequency)
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create(const void* const data, const uint64_t size,
+																				               const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -47,7 +47,7 @@ TRAP::Graphics::StorageBuffer::~StorageBuffer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::Graphics::StorageBuffer::GetSize() const noexcept
+[[nodiscard]] uint64_t TRAP::Graphics::StorageBuffer::GetSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -56,7 +56,7 @@ uint64_t TRAP::Graphics::StorageBuffer::GetSize() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::UpdateFrequency TRAP::Graphics::StorageBuffer::GetUpdateFrequency() const noexcept
+[[nodiscard]] TRAP::Graphics::UpdateFrequency TRAP::Graphics::StorageBuffer::GetUpdateFrequency() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -65,7 +65,7 @@ TRAP::Graphics::UpdateFrequency TRAP::Graphics::StorageBuffer::GetUpdateFrequenc
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& TRAP::Graphics::StorageBuffer::GetSSBOs() const noexcept
+[[nodiscard]] const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& TRAP::Graphics::StorageBuffer::GetSSBOs() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -95,7 +95,7 @@ void TRAP::Graphics::StorageBuffer::SetData(const void* const data, const uint64
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::StorageBuffer::IsLoaded() const
+[[nodiscard]] bool TRAP::Graphics::StorageBuffer::IsLoaded() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -120,7 +120,7 @@ void TRAP::Graphics::StorageBuffer::AwaitLoading() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::Graphics::StorageBuffer::CalculateAlignedSize(const uint64_t byteSize) noexcept
+[[nodiscard]] uint64_t TRAP::Graphics::StorageBuffer::CalculateAlignedSize(const uint64_t byteSize) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -135,8 +135,8 @@ uint64_t TRAP::Graphics::StorageBuffer::CalculateAlignedSize(const uint64_t byte
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Init(const void* const data, const uint64_t size,
-																			   const UpdateFrequency updateFrequency)
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Init(const void* const data, const uint64_t size,
+																			                 const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 

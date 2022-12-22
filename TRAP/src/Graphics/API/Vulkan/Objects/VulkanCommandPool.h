@@ -44,14 +44,14 @@ namespace TRAP::Graphics::API
 		/// Retrieve the VkCommandPool handle.
 		/// </summary>
 		/// <returns>VkCommandPool handle.</returns>
-		VkCommandPool GetVkCommandPool() const noexcept;
+		[[nodiscard]] VkCommandPool GetVkCommandPool() const noexcept;
 
 		/// <summary>
 		/// Allocate a new command buffer.
 		/// </summary>
 		/// <param name="secondary">Should the command buffer be a secondary command buffer.</param>
 		///<returns>New command buffer.</returns>
-		CommandBuffer* AllocateCommandBuffer(bool secondary) override;
+		[[nodiscard]] CommandBuffer* AllocateCommandBuffer(bool secondary) override;
 		/// <summary>
 		/// Free a command buffer
 		/// </summary>

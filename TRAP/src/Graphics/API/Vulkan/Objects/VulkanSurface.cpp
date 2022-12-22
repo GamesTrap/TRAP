@@ -61,7 +61,7 @@ TRAP::Graphics::API::VulkanSurface::~VulkanSurface()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkSurfaceKHR TRAP::Graphics::API::VulkanSurface::GetVkSurface() const noexcept
+[[nodiscard]] VkSurfaceKHR TRAP::Graphics::API::VulkanSurface::GetVkSurface() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -70,7 +70,7 @@ VkSurfaceKHR TRAP::Graphics::API::VulkanSurface::GetVkSurface() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkSurfaceCapabilitiesKHR TRAP::Graphics::API::VulkanSurface::GetVkSurfaceCapabilities() const noexcept
+[[nodiscard]] VkSurfaceCapabilitiesKHR TRAP::Graphics::API::VulkanSurface::GetVkSurfaceCapabilities() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -79,7 +79,7 @@ VkSurfaceCapabilitiesKHR TRAP::Graphics::API::VulkanSurface::GetVkSurfaceCapabil
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<VkSurfaceFormatKHR>& TRAP::Graphics::API::VulkanSurface::GetVkSurfaceFormats() const noexcept
+[[nodiscard]] const std::vector<VkSurfaceFormatKHR>& TRAP::Graphics::API::VulkanSurface::GetVkSurfaceFormats() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -88,7 +88,7 @@ const std::vector<VkSurfaceFormatKHR>& TRAP::Graphics::API::VulkanSurface::GetVk
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<VkPresentModeKHR>& TRAP::Graphics::API::VulkanSurface::GetVkSurfacePresentModes() const noexcept
+[[nodiscard]] const std::vector<VkPresentModeKHR>& TRAP::Graphics::API::VulkanSurface::GetVkSurfacePresentModes() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

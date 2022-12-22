@@ -21,13 +21,13 @@ namespace TRAP::Events
 		/// Retrieve the affected controller.
 		/// </summary>
 		/// <returns>Controller.</returns>
-		constexpr Input::Controller GetController() const;
+		[[nodiscard]] constexpr Input::Controller GetController() const;
 
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const noexcept override;
+		[[nodiscard]] EventCategory GetCategoryFlags() const noexcept override;
 
 	protected:
 		/// <summary>
@@ -91,23 +91,23 @@ namespace TRAP::Events
 		/// Get a string representation of the ControllerConnectEvent.
 		/// </summary>
 		/// <returns>String representation.</returns>
-		std::string ToString() const override;
+		[[nodiscard]] std::string ToString() const override;
 
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType() noexcept;
+		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const noexcept override;
+		[[nodiscard]] EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		std::string GetName() const override;
+		[[nodiscard]] std::string GetName() const override;
 	};
 
 	/// <summary>
@@ -146,29 +146,29 @@ namespace TRAP::Events
 		/// Get a string representation of the ControllerDisconnectEvent.
 		/// </summary>
 		/// <returns>String representation.</returns>
-		std::string ToString() const override;
+		[[nodiscard]] std::string ToString() const override;
 
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType() noexcept;
+		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const noexcept override;
+		[[nodiscard]] EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		std::string GetName() const override;
+		[[nodiscard]] std::string GetName() const override;
 	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Input::Controller TRAP::Events::ControllerEvent::GetController() const
+[[nodiscard]] constexpr TRAP::Input::Controller TRAP::Events::ControllerEvent::GetController() const
 {
 	return m_controller;
 }
@@ -177,7 +177,7 @@ constexpr TRAP::Input::Controller TRAP::Events::ControllerEvent::GetController()
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::ControllerConnectEvent::GetStaticType() noexcept
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::ControllerConnectEvent::GetStaticType() noexcept
 {
 	return EventType::ControllerConnect;
 }
@@ -186,7 +186,7 @@ constexpr TRAP::Events::EventType TRAP::Events::ControllerConnectEvent::GetStati
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::ControllerDisconnectEvent::GetStaticType() noexcept
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::ControllerDisconnectEvent::GetStaticType() noexcept
 {
 	return EventType::ControlledDisconnect;
 }

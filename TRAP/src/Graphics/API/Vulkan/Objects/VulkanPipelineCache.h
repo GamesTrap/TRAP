@@ -57,7 +57,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan pipeline cache handle.
 		/// </summary>
 		/// <returns>Vulkan pipeline cache handle</returns>
-		VkPipelineCache GetVkPipelineCache() const noexcept;
+		[[nodiscard]] VkPipelineCache GetVkPipelineCache() const noexcept;
 
 	private:
 		VkPipelineCache m_cache;
