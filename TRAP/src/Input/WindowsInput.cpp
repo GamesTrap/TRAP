@@ -627,10 +627,10 @@ bool TRAP::Input::SupportsXInput(const GUID* guid)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if (first->Type != second->Type)
-		return first->Type < second->Type;
+	if (first.Type != second.Type)
+		return first.Type < second.Type;
 
-	return first->Offset < second->Offset;
+	return first.Offset < second.Offset;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
