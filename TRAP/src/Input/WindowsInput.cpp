@@ -623,17 +623,14 @@ bool TRAP::Input::SupportsXInput(const GUID* guid)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Lexically compare device objects
-[[nodiscard]] int TRAP::Input::CompareControllerObjects(const void* first, const void* second)
+[[nodiscard]] bool TRAP::Input::CompareControllerObjects(const Object& first, const Object& second)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	const Object* fo = static_cast<const Object*>(first);
-	const Object* so = static_cast<const Object*>(second);
+	if (first->Type != second->Type)
+		return first->Type < second->Type;
 
-	if (fo->Type != so->Type)
-		return fo->Type - so->Type;
-
-	return fo->Offset - so->Offset;
+	return first->Offset < second->Offset;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -745,7 +742,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 		return DIENUM_CONTINUE;
 	}
 
-	std::qsort(data.Objects.data(), data.ObjectCount, sizeof(Object), CompareControllerObjects);
+	std::sort(data.Objects.begin(), data.Objects.end(), CompareControllerObjects);
 
 	if (!WideCharToMultiByte(CP_UTF8, 0, deviceInstance->tszInstanceName, -1, name.data(),
 	                         static_cast<int32_t>(name.size()), nullptr, nullptr))

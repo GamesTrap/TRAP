@@ -771,6 +771,8 @@ namespace TRAP
 			IDirectInput8W* API = nullptr;
 		} inline static s_dinput8{};
 
+		struct Object;
+
 		//////////
 		//XInput//
 		//////////
@@ -828,7 +830,7 @@ namespace TRAP
 		/// <param name="first">First object.</param>
 		/// <param name="second">Second object.</param>
 		/// <returns>Difference between the two objects.</returns>
-		[[nodiscard]] static int CompareControllerObjects(const void* first, const void* second);
+		[[nodiscard]] static bool CompareControllerObjects(const Object& first, const Object& second);
 		/// <summary>
 		/// DirectInput device enumeration callback.
 		/// </summary>
