@@ -3573,3 +3573,4 @@ SITREP 12/232/2022|22w51b1
     - Changed TRAP Engine version to 22w51b1(0.8.89)
     - Made WindowingAPI sole owner of InternalWindows and InternalCursors ~<30 mins
     - Updated Controller mappings ~<5 mins
+    - Updated Vulkan loader ~<5 mins
