@@ -2748,8 +2748,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 			//      may post it to this one, for example Task Manager
 			//HACK: Treat WM_QUIT as a close on all windows
 
-			for(InternalWindow* win : s_Data.WindowList)
-				InputWindowCloseRequest(win);
+			for(const Scope<InternalWindow>& win : s_Data.WindowList)
+				InputWindowCloseRequest(win.get());
 		}
 		else
 		{

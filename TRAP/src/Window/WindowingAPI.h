@@ -660,8 +660,8 @@ namespace TRAP::INTERNAL
 				WindowConfig Window{};
 			} Hints;
 
-			std::forward_list<InternalWindow*> WindowList{};
-			std::forward_list<InternalCursor*> CursorList{};
+			std::forward_list<Scope<InternalWindow>> WindowList{};
+			std::forward_list<Scope<InternalCursor>> CursorList{};
 
 			std::vector<Scope<InternalMonitor>> Monitors{};
 
@@ -1283,7 +1283,7 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to destroy.</param>
-		static void DestroyWindow(Scope<InternalWindow> window);
+		static void DestroyWindow(InternalWindow* window);
 		/// <summary>
 		/// Resets all window hints to their default values.
 		///
@@ -1422,8 +1422,8 @@ namespace TRAP::INTERNAL
 		/// <param name="title">UTF-8 encoded title for the new window.</param>
 		/// <param name="monitor">Optional monitor to use for the new window.</param>
 		/// <returns>On success a new internal window, or nullptr if an error occurred.</returns>
-		[[nodiscard]] static Scope<InternalWindow> CreateWindow(uint32_t width, uint32_t height, std::string title,
-		                                                        InternalMonitor* monitor);
+		[[nodiscard]] static InternalWindow* CreateWindow(uint32_t width, uint32_t height, std::string title,
+		                                                  InternalMonitor* monitor);
 		/// <summary>
 		/// This function sets the value of the close flag of the specified window. This can be used
 		/// to override the user's attempt to close the window, or to signal that it should be closed.
@@ -1474,7 +1474,7 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="cursor">Internal cursor to be destroyed.</param>
-		static void DestroyCursor(Scope<InternalCursor> cursor);
+		static void DestroyCursor(InternalCursor* cursor);
 		/// <summary>
 		/// Creates a new custom cursor image that can be set for a window with SetCursor. The cursor can
 		/// be destroyed with DestroyCursor. Any remaining cursors are destroyed by WindowingAPI::Shutdown.
@@ -1490,7 +1490,7 @@ namespace TRAP::INTERNAL
 		/// <param name="xHotspot">Center x coordinate of the image.</param>
 		/// <param name="yHotspot">Center y coordinate of the image.</param>
 		/// <returns>On success new internal cursor, nullptr otherwise.</returns>
-		[[nodiscard]] static Scope<InternalCursor> CreateCursor(const Image* const image, int32_t xHotspot, int32_t yHotspot);
+		[[nodiscard]] static InternalCursor* CreateCursor(const Image* const image, int32_t xHotspot, int32_t yHotspot);
 		/// <summary>
 		/// Creates a cursor with a standard shape.
 		///
@@ -1499,7 +1499,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="type">Cursor type to get.</param>
 		/// <returns>On success new internal cursor, nullptr otherwise.</returns>
-		[[nodiscard]] static Scope<InternalCursor> CreateStandardCursor(const CursorType& type);
+		[[nodiscard]] static InternalCursor* CreateStandardCursor(const CursorType& type);
 		/// <summary>
 		/// This function sets the cursor image to be used when the cursor is over the content are of the
 		/// specified window. The set cursor will only be visible when the CursorMode of the window is

@@ -77,13 +77,13 @@ void TRAP::INTERNAL::WindowingAPI::Shutdown()
 	if (!s_Data.Initialized)
 		return;
 
-	s_Data.Callbacks.Monitor = nullptr;
+	s_Data.Callbacks = {};
 
-	for (auto& monitor : s_Data.Monitors)
-	{
-		if (monitor)
-			monitor.reset();
-	}
+	while(!s_Data.WindowList.empty())
+		DestroyWindow(s_Data.WindowList.front().get());
+
+	while(!s_Data.CursorList.empty())
+		DestroyCursor(s_Data.CursorList.front().get());
 
 	s_Data.Monitors.clear();
 
@@ -96,7 +96,7 @@ void TRAP::INTERNAL::WindowingAPI::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::DestroyWindow(Scope<InternalWindow> window)
+void TRAP::INTERNAL::WindowingAPI::DestroyWindow(InternalWindow* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -115,12 +115,13 @@ void TRAP::INTERNAL::WindowingAPI::DestroyWindow(Scope<InternalWindow> window)
 	//Clear all callbacks to avoid exposing a half torn-down window object
 	window->Callbacks = {};
 
-	PlatformDestroyWindow(window.get());
+	PlatformDestroyWindow(window);
 
 	//Unlink window from global linked list
-	s_Data.WindowList.remove(window.get());
-
-	window.reset();
+	s_Data.WindowList.remove_if([window](const Scope<InternalWindow>& winOwner)
+	{
+		return winOwner.get() == window;
+	});
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -307,10 +308,10 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::WindowingAPI::CreateWindow(const uint32_t width,
-	                                                                                                               const uint32_t height,
-	                                                                                                               const std::string title,
-	                                                                                                               InternalMonitor* const monitor)
+[[nodiscard]] TRAP::INTERNAL::WindowingAPI::InternalWindow* TRAP::INTERNAL::WindowingAPI::CreateWindow(const uint32_t width,
+	                                                                                                   const uint32_t height,
+	                                                                                                   const std::string title,
+	                                                                                                   InternalMonitor* const monitor)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -339,9 +340,8 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 	WNDConfig.Height = height;
 	WNDConfig.Title = std::move(title);
 
-	Scope<InternalWindow> window = MakeScope<InternalWindow>();
-
-	s_Data.WindowList.emplace_front(window.get());
+	s_Data.WindowList.push_front(MakeScope<InternalWindow>());
+	InternalWindow* window = s_Data.WindowList.front().get();
 
 	window->videoMode.Width = static_cast<int32_t>(width);
 	window->videoMode.Height = static_cast<int32_t>(height);
@@ -365,9 +365,9 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 	window->MaxHeight = -1;
 
 	//Open the actual window and create its context
-	if (!PlatformCreateWindow(window.get(), WNDConfig))
+	if (!PlatformCreateWindow(window, WNDConfig))
 	{
-		DestroyWindow(std::move(window));
+		DestroyWindow(window);
 		return nullptr;
 	}
 
@@ -483,7 +483,7 @@ void TRAP::INTERNAL::WindowingAPI::InputError(const Error code, const std::strin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::DestroyCursor(Scope<InternalCursor> cursor)
+void TRAP::INTERNAL::WindowingAPI::DestroyCursor(InternalCursor* cursor)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -499,32 +499,32 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(Scope<InternalCursor> cursor)
 		return;
 
 	//Make sure the cursor is not being used by any window
-	for(InternalWindow* const window : s_Data.WindowList)
+	for(const Scope<InternalWindow>& window : s_Data.WindowList)
 	{
-		if (window->Cursor == cursor.get())
-			SetCursor(window, nullptr);
+		if (window->Cursor == cursor)
+			SetCursor(window.get(), nullptr);
 	}
 
-	PlatformDestroyCursor(cursor.get());
+	PlatformDestroyCursor(cursor);
 
 	//Unlink window from global linked list
-	s_Data.CursorList.remove(cursor.get());
-
-	cursor.reset();
+	s_Data.CursorList.remove_if([cursor](const Scope<InternalCursor>& cursorOwner)
+	{
+		return cursorOwner.get() == cursor;
+	});
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Creates a custom cursor.
-[[nodiscard]] TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::WindowingAPI::CreateCursor(const Image* const image,
-	                                                                                                               const int32_t xHotspot,
-	                                                                                                               const int32_t yHotspot)
+[[nodiscard]] TRAP::INTERNAL::WindowingAPI::InternalCursor* TRAP::INTERNAL::WindowingAPI::CreateCursor(const Image* const image,
+	                                                                                                   const int32_t xHotspot,
+	                                                                                                   const int32_t yHotspot)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::CreateCursor(): must only be called from main thread");
-	Scope<InternalCursor> cursor;
 
 	if(!image)
 		return nullptr;
@@ -565,12 +565,12 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(Scope<InternalCursor> cursor)
 	{
 		const Scope<Image> iconImage = Image::ConvertRGBToRGBA(image);
 
-		cursor = MakeScope<InternalCursor>();
-		s_Data.CursorList.emplace_front(cursor.get());
+		s_Data.CursorList.push_front(MakeScope<InternalCursor>());
+		InternalCursor* cursor = s_Data.CursorList.front().get();
 
-		if(!PlatformCreateCursor(cursor.get(), iconImage.get(), xHotspot, yHotspot))
+		if(!PlatformCreateCursor(cursor, iconImage.get(), xHotspot, yHotspot))
 		{
-			DestroyCursor(std::move(cursor));
+			DestroyCursor(cursor);
 			return nullptr;
 		}
 
@@ -578,12 +578,12 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(Scope<InternalCursor> cursor)
 	}
 	if (image->GetColorFormat() == Image::ColorFormat::RGBA)
 	{
-		cursor = MakeScope<InternalCursor>();
-		s_Data.CursorList.emplace_front(cursor.get());
+		s_Data.CursorList.push_front(MakeScope<InternalCursor>());
+		InternalCursor* cursor = s_Data.CursorList.front().get();
 
-		if (!PlatformCreateCursor(cursor.get(), image, xHotspot, yHotspot))
+		if (!PlatformCreateCursor(cursor, image, xHotspot, yHotspot))
 		{
-			DestroyCursor(std::move(cursor));
+			DestroyCursor(cursor);
 			return nullptr;
 		}
 
@@ -595,7 +595,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(Scope<InternalCursor> cursor)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::WindowingAPI::CreateStandardCursor(const CursorType& type)
+[[nodiscard]] TRAP::INTERNAL::WindowingAPI::InternalCursor* TRAP::INTERNAL::WindowingAPI::CreateStandardCursor(const CursorType& type)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -607,13 +607,12 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(Scope<InternalCursor> cursor)
 		return nullptr;
 	}
 
-	Scope<InternalCursor> cursor = MakeScope<InternalCursor>();
+	s_Data.CursorList.push_front(MakeScope<InternalCursor>());
+	InternalCursor* cursor = s_Data.CursorList.front().get();
 
-	s_Data.CursorList.emplace_front(cursor.get());
-
-	if (!PlatformCreateStandardCursor(cursor.get(), type))
+	if (!PlatformCreateStandardCursor(cursor, type))
 	{
-		DestroyCursor(std::move(cursor));
+		DestroyCursor(cursor);
 		return nullptr;
 	}
 

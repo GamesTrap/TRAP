@@ -3568,3 +3568,7 @@ SITREP 12/22/2022|22w51a3
     - Added [[nodiscard]] attribute to lots of functions ~>120 mins
     - WindowsInput Replaced qsort with std::sort ~<10 mins
     - (Vulkan)Buffer/PipelineCache/RootSignature Made some function non-virtual ~<15 mins
+
+SITREP 12/232/2022|22w51b1
+    - Changed TRAP Engine version to 22w51b1(0.8.89)
+    - Made WindowingAPI sole owner of InternalWindows and InternalCursors ~<30 mins

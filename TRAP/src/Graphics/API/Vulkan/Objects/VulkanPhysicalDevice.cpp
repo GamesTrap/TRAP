@@ -142,12 +142,12 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	{
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Visible, false);
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Focused, false);
-		Scope<INTERNAL::WindowingAPI::InternalWindow> win = INTERNAL::WindowingAPI::CreateWindow(2, 2, "Vulkan Surface Tester", nullptr);
+		INTERNAL::WindowingAPI::InternalWindow* win = INTERNAL::WindowingAPI::CreateWindow(2, 2, "Vulkan Surface Tester", nullptr);
 		INTERNAL::WindowingAPI::DefaultWindowHints();
 		if (win)
 		{
 			VkSurfaceKHR surface = VK_NULL_HANDLE;
-			VkResult res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance->GetVkInstance(), win.get(), nullptr, surface);
+			VkResult res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance->GetVkInstance(), win, nullptr, surface);
 
 			if (surface != VK_NULL_HANDLE && res == VK_SUCCESS)
 			{
@@ -602,10 +602,10 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 #ifndef TRAP_HEADLESS_MODE
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Visible, false);
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Focused, false);
-		Scope<INTERNAL::WindowingAPI::InternalWindow> vulkanTestWindow = INTERNAL::WindowingAPI::CreateWindow(400,
-																											  400,
-																											  "TRAP Vulkan Surface Tester",
-																											  nullptr);
+		INTERNAL::WindowingAPI::InternalWindow* vulkanTestWindow = INTERNAL::WindowingAPI::CreateWindow(400,
+																									    400,
+																									    "TRAP Vulkan Surface Tester",
+																									    nullptr);
 		INTERNAL::WindowingAPI::DefaultWindowHints();
 		if (!vulkanTestWindow)
 		{
@@ -621,7 +621,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 #ifndef TRAP_HEADLESS_MODE
 		VkSurfaceKHR surface = VK_NULL_HANDLE;
 		VkResult res{};
-		VkCall(res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance, vulkanTestWindow.get(), nullptr,
+		VkCall(res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance, vulkanTestWindow, nullptr,
 																	   surface));
 		if (!surface || res != VK_SUCCESS)
 		{

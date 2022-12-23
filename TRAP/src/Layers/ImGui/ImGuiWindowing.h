@@ -62,7 +62,7 @@ namespace TRAP::INTERNAL
 		/// Note: This will make ImGui the owner of the cursor!
 		/// </summary>
 		/// <param name="cursor">Custom cursor to use.</param>
-		static void SetCustomCursor(Scope<WindowingAPI::InternalCursor>& cursor);
+		static void SetCustomCursor(WindowingAPI::InternalCursor* cursor);
 
 		/// <summary>
 		/// Install ImGui callbacks.
@@ -87,12 +87,12 @@ namespace TRAP::INTERNAL
 			Graphics::RenderAPI ClientAPI;
 			double Time;
 			const WindowingAPI::InternalWindow* MouseWindow;
-			std::array<TRAP::Scope<WindowingAPI::InternalCursor>, ImGuiMouseCursor_COUNT> MouseCursors;
+			std::array<WindowingAPI::InternalCursor*, ImGuiMouseCursor_COUNT> MouseCursors;
 			ImVec2 LastValidMousePos;
 			std::vector<const WindowingAPI::InternalWindow*> KeyOwnerWindows;
 			bool InstalledCallbacks;
 			bool WantUpdateMonitors;
- 			Scope<WindowingAPI::InternalCursor> CustomCursor;
+ 			WindowingAPI::InternalCursor* CustomCursor = nullptr;
 
 			//Chain WindowingAPI callbacks; our callbacks will call the user's previously installed callbacks, if any.
 			WindowingAPI::WindowFocusFunc PrevUserCallbackWindowFocus;
@@ -107,6 +107,7 @@ namespace TRAP::INTERNAL
 			ImGuiTRAPData()
 				: Window(nullptr), ClientAPI(Graphics::RenderAPI::NONE), Time(0.0), MouseWindow(nullptr),
 				  LastValidMousePos(0.0f, 0.0f), KeyOwnerWindows(), InstalledCallbacks(false), WantUpdateMonitors(false),
+				  CustomCursor(nullptr),
 				  PrevUserCallbackWindowFocus(nullptr), PrevUserCallbackCursorPos(nullptr), PrevUserCallbackCursorEnter(nullptr),
 				  PrevUserCallbackMouseButton(nullptr), PrevUserCallbackScroll(nullptr), PrevUserCallbackKey(nullptr),
 				  PrevUserCallbackChar(nullptr), PrevUserCallbackMonitor(nullptr)
@@ -120,8 +121,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		struct ImGuiViewportDataTRAP
 		{
-			Scope<WindowingAPI::InternalWindow> Window;
-			WindowingAPI::InternalWindow* WindowPtr;
+			WindowingAPI::InternalWindow* Window;
 			bool WindowOwned;
 			int32_t IgnoreWindowPosEventFrame;
 			int32_t IgnoreWindowSizeEventFrame;
@@ -130,7 +130,7 @@ namespace TRAP::INTERNAL
 			/// Constructor.
 			/// </summary>
 			ImGuiViewportDataTRAP() noexcept
-				: Window(nullptr), WindowPtr(nullptr), WindowOwned(false),
+				: Window(nullptr), WindowOwned(false),
 				  IgnoreWindowPosEventFrame(-1), IgnoreWindowSizeEventFrame(-1)
 			{}
 

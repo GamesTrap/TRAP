@@ -1009,8 +1009,8 @@ void TRAP::INTERNAL::WindowingAPI::InputMethodInstantiateCallback(Display*, XPoi
 		callback.client_data = nullptr;
 		s_Data.XLIB.SetIMValues(s_Data.IM, XNDestroyCallback, &callback, nullptr);
 
-		for(InternalWindow* const window  : s_Data.WindowList)
-			CreateInputContextX11(window);
+		for(const Scope<InternalWindow>& window  : s_Data.WindowList)
+			CreateInputContextX11(window.get());
 	}
 }
 
