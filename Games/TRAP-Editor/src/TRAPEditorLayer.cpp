@@ -785,7 +785,7 @@ void TRAPEditorLayer::UIToolbar()
 		const float size = ImGui::GetWindowHeight() - 4.0f;
 		TRAP::Ref<TRAP::Graphics::Texture> icon = m_sceneState == SceneState::Edit ? m_iconPlay : m_iconStop;
 		ImGui::SameLine((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
-		if(ImGui::ImageButton(icon, ImVec2(size, size), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f), 0))
+		if(ImGui::ImageButton(icon, ImVec2(size, size), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f)))
 		{
 			if(m_sceneState == SceneState::Edit)
 				OnScenePlay();

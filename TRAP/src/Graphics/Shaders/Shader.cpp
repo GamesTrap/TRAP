@@ -510,9 +510,10 @@ bool TRAP::Graphics::Shader::Reload()
 	shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
 	shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3);
 	glslang::TShader::ForbidIncluder includer;
-	static constexpr TBuiltInResource DefaultTBuiltInResource = GetDefaultTBuiltInResource();
 
-	if(!shader->preprocess(&DefaultTBuiltInResource, 460, ECoreProfile, true, true,
+	const TBuiltInResource* const DefaultTBuiltInResource = GetDefaultResources();
+
+	if(!shader->preprocess(DefaultTBuiltInResource, 460, ECoreProfile, true, true,
 		                   static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules),
 		                   &preProcessedSource, includer))
 	{
@@ -532,9 +533,9 @@ bool TRAP::Graphics::Shader::Reload()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	static constexpr TBuiltInResource DefaultTBuiltInResource = GetDefaultTBuiltInResource();
+	const TBuiltInResource* const DefaultTBuiltInResource = GetDefaultResources();
 
-	if(!shader->parse(&DefaultTBuiltInResource, 460, true,
+	if(!shader->parse(DefaultTBuiltInResource, 460, true,
 	                  static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
 	{
 		TP_ERROR(Log::ShaderGLSLPrefix, "Parsing failed: ");

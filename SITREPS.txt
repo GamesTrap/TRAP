@@ -3569,8 +3569,14 @@ SITREP 12/22/2022|22w51a3
     - WindowsInput Replaced qsort with std::sort ~<10 mins
     - (Vulkan)Buffer/PipelineCache/RootSignature Made some function non-virtual ~<15 mins
 
-SITREP 12/232/2022|22w51b1
+SITREP 12/23/2022|22w51b1
     - Changed TRAP Engine version to 22w51b1(0.8.89)
     - Made WindowingAPI sole owner of InternalWindows and InternalCursors ~<30 mins
     - Updated Controller mappings ~<5 mins
     - Updated Vulkan loader ~<5 mins
+    - Updated EnTT ~<5 mins
+    - Updated GLSLang ~<10 mins
+    - Updated ImGui ~<10 mins
+    - Updated SPIRV-Cross ~<5 mins
+    - Updated VulkanMemoryAllocator ~<5 mins
+    - Updated YAMLCpp ~<5 mins

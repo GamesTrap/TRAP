@@ -408,8 +408,8 @@ void ImGui::Image(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& size, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ImGui::ImageButton(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& size, const ImVec2& uv0,
-                        const ImVec2& uv1, int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col)
+bool ImGui::ImageButton(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& size,
+                        const ImVec2& uv0, const ImVec2& uv1, const ImVec4& bg_col, const ImVec4& tint_col)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -428,9 +428,7 @@ bool ImGui::ImageButton(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& 
 		TRAP::Utils::HashCombine(imgViewHash, imgView);
 		const ImGuiID imgViewID = static_cast<uint32_t>(imgViewHash);
 
-		return ImGui::ImageButtonEx(imgViewID, texID, size, uv0, uv1,
-		                            ImVec2(static_cast<float>(frame_padding),
-									static_cast<float>(frame_padding)), bg_col, tint_col);
+		return ImGui::ImageButtonEx(imgViewID, texID, size, uv0, uv1, bg_col, tint_col);
 	}
 
 	return false;
