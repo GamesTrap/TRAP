@@ -10,7 +10,7 @@
 /// <param name="minor">Minor version number.</param>
 /// <param name="patch">Patch version number.</param>
 /// <returns>Version number packed into a single uint32_t.</returns>
-constexpr uint32_t CONVERTTOSPIRV_MAKE_VERSION(const uint32_t major, const uint32_t minor, const uint32_t patch) noexcept
+[[nodiscard]] constexpr uint32_t CONVERTTOSPIRV_MAKE_VERSION(const uint32_t major, const uint32_t minor, const uint32_t patch) noexcept
 {
 	return major << 22 | minor << 12 | patch;
 }
@@ -22,7 +22,7 @@ constexpr uint32_t CONVERTTOSPIRV_MAKE_VERSION(const uint32_t major, const uint3
 /// </summary>
 /// <param name="version">Version number created with CONVERTTOSPIRV_MAKE_VERSION.</param>
 /// <returns>Major version number.</returns>
-constexpr uint32_t CONVERTTOSPIRV_VERSION_MAJOR(const uint32_t version) noexcept
+[[nodiscard]] constexpr uint32_t CONVERTTOSPIRV_VERSION_MAJOR(const uint32_t version) noexcept
 {
 	return version >> 22u;
 }
@@ -34,7 +34,7 @@ constexpr uint32_t CONVERTTOSPIRV_VERSION_MAJOR(const uint32_t version) noexcept
 /// </summary>
 /// <param name="version">Version number created with CONVERTTOSPIRV_MAKE_VERSION.</param>
 /// <returns>Minor version number.</returns>
-constexpr uint32_t CONVERTTOSPIRV_VERSION_MINOR(const uint32_t version) noexcept
+[[nodiscard]] constexpr uint32_t CONVERTTOSPIRV_VERSION_MINOR(const uint32_t version) noexcept
 {
 	return version >> 12u;
 }
@@ -46,7 +46,7 @@ constexpr uint32_t CONVERTTOSPIRV_VERSION_MINOR(const uint32_t version) noexcept
 /// </summary>
 /// <param name="version">Version number created with CONVERTTOSPIRV_MAKE_VERSION.</param>
 /// <returns>Patch version number.</returns>
-constexpr uint32_t CONVERTTOSPIRV_VERSION_PATCH(const uint32_t version) noexcept
+[[nodiscard]] constexpr uint32_t CONVERTTOSPIRV_VERSION_PATCH(const uint32_t version) noexcept
 {
 	return version & 0xFFFu;
 }

@@ -5,6 +5,7 @@
 
 #include "Application.h"
 #include "Embed.h"
+#include "Utils/Dialogs/Dialogs.h"
 #include "Window/WindowingAPI.h"
 #include "ImGuiWindowing.h"
 #include "Graphics/Textures/Texture.h"
@@ -134,7 +135,15 @@ void TRAP::ImGuiLayer::OnAttach()
 	const auto& winData = TRAP::Graphics::RendererAPI::GetWindowData(TRAP::Application::GetWindow());
 
 	TP_TRACE(Log::ImGuiPrefix, "Init...");
-	TRAP::INTERNAL::ImGuiWindowing::Init(window, true, Graphics::RendererAPI::GetRenderAPI());
+	if(!TRAP::INTERNAL::ImGuiWindowing::Init(window, true, Graphics::RendererAPI::GetRenderAPI()) || true)
+	{
+		Utils::Dialogs::ShowMsgBox("Failed to initialize ImGui", "Failed to initialize ImGui!\n"
+								   "Error code: 0x0013", Utils::Dialogs::Style::Error,
+								   Utils::Dialogs::Buttons::Quit);
+		TP_CRITICAL(Log::ImGuiPrefix, "Failed to initialize ImGui!");
+		TRAP::Application::Shutdown();
+	}
+
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
 		const TRAP::Graphics::API::VulkanRenderer* const renderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>

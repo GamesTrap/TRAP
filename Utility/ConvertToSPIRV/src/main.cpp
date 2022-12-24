@@ -6,8 +6,8 @@
 
 using namespace std::string_view_literals;
 
-bool CheckForParameters(int argc, char* argv[], std::filesystem::path& outOutputPath,
-                        std::vector<std::array<std::string, 2>>& outCustomMacros);
+[[nodiscard]] bool CheckForParameters(int argc, char* argv[], std::filesystem::path& outOutputPath,
+                                      std::vector<std::array<std::string, 2>>& outCustomMacros);
 void PrintUsage(const std::filesystem::path& programName);
 void PrintVersion();
 
@@ -46,8 +46,8 @@ int main(const int argc, char* argv[])
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool CheckForParameters(const int argc, char* argv[], std::filesystem::path& outOutputPath,
-                        std::vector<std::array<std::string, 2>>& outCustomMacros)
+[[nodiscard]] bool CheckForParameters(const int argc, char* argv[], std::filesystem::path& outOutputPath,
+                                      std::vector<std::array<std::string, 2>>& outCustomMacros)
 {
 	//Check for no parameters
 	if (argc < 2)

@@ -10,14 +10,14 @@
 #include <algorithm>
 
 template <typename T>
-constexpr T BIT(T x) noexcept
+[[nodiscard]] constexpr T BIT(T x) noexcept
 {
 	return T(1) << x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline bool FileOrFolderExists(const std::filesystem::path& path)
+[[nodiscard]] inline bool FileOrFolderExists(const std::filesystem::path& path)
 {
     if(path.empty())
         return false;
@@ -36,7 +36,7 @@ inline bool FileOrFolderExists(const std::filesystem::path& path)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline std::optional<std::string> ReadTextFile(const std::filesystem::path& filePath)
+[[nodiscard]] inline std::optional<std::string> ReadTextFile(const std::filesystem::path& filePath)
 {
     if(!FileOrFolderExists(filePath))
         return std::nullopt;
@@ -63,7 +63,7 @@ inline std::optional<std::string> ReadTextFile(const std::filesystem::path& file
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline std::vector<std::string> SplitString(const std::string& string, const std::string& delimiters)
+[[nodiscard]] inline std::vector<std::string> SplitString(const std::string& string, const std::string& delimiters)
 {
 	std::size_t start = 0;
 	std::size_t end = string.find_first_of(delimiters);
@@ -89,21 +89,21 @@ inline std::vector<std::string> SplitString(const std::string& string, const std
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline std::vector<std::string> GetLines(const std::string& string)
+[[nodiscard]] inline std::vector<std::string> GetLines(const std::string& string)
 {
 	return SplitString(string, "\n");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline bool StartsWith(const std::string_view string, const std::string_view start)
+[[nodiscard]] inline bool StartsWith(const std::string_view string, const std::string_view start)
 {
 	return string.substr(0, start.size()) == start;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline std::string GetSuffix(const std::string& name)
+[[nodiscard]] inline std::string GetSuffix(const std::string& name)
 {
 	const std::size_t pos = name.rfind('.');
 
@@ -112,7 +112,7 @@ inline std::string GetSuffix(const std::string& name)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline std::string ToLower(std::string string)
+[[nodiscard]] inline std::string ToLower(std::string string)
 {
     for(char& c : string)
         c = static_cast<char>(::tolower(c));

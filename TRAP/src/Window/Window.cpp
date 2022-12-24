@@ -1018,7 +1018,7 @@ void TRAP::Window::Init(const WindowProps& props)
 										 Utils::Dialogs::Buttons::Quit);
 		TRAP::Application::Shutdown();
 		TP_CRITICAL(Log::WindowPrefix, "Failed to create window");
-		exit(-1);
+		exit(0x0009);
 	}
 
 	INTERNAL::WindowingAPI::GetWindowSize(m_window, m_data.Width, m_data.Height);
@@ -1391,7 +1391,7 @@ void TRAP::Window::SetupEventCallbacks()
 			TP_ERROR(Log::WindowPrefix, "No monitor found!");
 			TP_ERROR(Log::WindowPrefix, "Error code: 0x000C");
 			TP_ERROR(Log::WindowPrefix, "Closing TRAP!");
-			exit(-1);
+			exit(0x000C);
 		}
 
 		if(!mon->Window)

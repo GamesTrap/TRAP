@@ -40,7 +40,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 								   Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::RendererVulkanPhysicalDevicePrefix, "Physical device creation failed!");
 		TRAP::Application::Shutdown();
-		exit(-1);
+		exit(0x0006);
 	}
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -429,7 +429,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 								   Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::RendererVulkanPrefix, "No Vulkan capable physical device was found!!");
 		TRAP::Application::Shutdown();
-		exit(-1);
+		exit(0x0007);
 	}
 
 	return s_availablePhysicalDeviceUUIDs;
@@ -499,7 +499,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 								   Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::RendererVulkanPrefix, "No Vulkan capable physical device was found!");
 		TRAP::Application::Shutdown();
-		exit(-1);
+		exit(0x0007);
 	}
 
 	return s_availablePhysicalDeviceUUIDs;

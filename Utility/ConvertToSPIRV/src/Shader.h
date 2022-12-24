@@ -118,7 +118,7 @@ inline static const std::unordered_map<ShaderStage, EShLanguage> ShaderStageToES
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline ShaderStage DetectShaderStage(const std::string_view identifyString)
+[[nodiscard]] inline ShaderStage DetectShaderStage(const std::string_view identifyString)
 {
     static const std::unordered_map<std::string, ShaderStage> stages
     {
@@ -145,14 +145,14 @@ inline ShaderStage DetectShaderStage(const std::string_view identifyString)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline bool FindEntryPoint(const std::string& shaderStr)
+[[nodiscard]] inline bool FindEntryPoint(const std::string& shaderStr)
 {
     return ToLower(shaderStr).find("main") != std::string::npos;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline bool ValidateShaderStages(const Shader& shader)
+[[nodiscard]] inline bool ValidateShaderStages(const Shader& shader)
 {
 	const ShaderStage stages = shader.Stages;
 
@@ -189,7 +189,7 @@ inline bool ValidateShaderStages(const Shader& shader)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline bool PreProcessGLSL(Shader& shader, const std::vector<std::array<std::string, 2>>& customMacros)
+[[nodiscard]] inline bool PreProcessGLSL(Shader& shader, const std::vector<std::array<std::string, 2>>& customMacros)
 {
 	ShaderStage currentShaderStage = ShaderStage::None;
 	const std::vector<std::string> lines = GetLines(shader.Source);
@@ -258,8 +258,8 @@ inline bool PreProcessGLSL(Shader& shader, const std::vector<std::array<std::str
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline std::unique_ptr<glslang::TShader> PreProcessGLSLForConversion(const char* source, const ShaderStage stage,
-                                                                     std::string& preProcessedSource)
+[[nodiscard]] inline std::unique_ptr<glslang::TShader> PreProcessGLSLForConversion(const char* source, const ShaderStage stage,
+                                                                                   std::string& preProcessedSource)
 {
 	std::unique_ptr<glslang::TShader> shader = nullptr;
 
@@ -292,7 +292,7 @@ inline std::unique_ptr<glslang::TShader> PreProcessGLSLForConversion(const char*
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline bool ParseGLSL(glslang::TShader* shader)
+[[nodiscard]] inline bool ParseGLSL(glslang::TShader* shader)
 {
 	const TBuiltInResource* const DefaultTBuiltInResource = GetDefaultResources();
 	if (!shader->parse(DefaultTBuiltInResource, 460, true,
@@ -310,7 +310,7 @@ inline bool ParseGLSL(glslang::TShader* shader)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline bool LinkGLSL(glslang::TShader* shader, glslang::TProgram& program)
+[[nodiscard]] inline bool LinkGLSL(glslang::TShader* shader, glslang::TProgram& program)
 {
 	if (shader)
 		program.addShader(shader);
@@ -329,8 +329,8 @@ inline bool LinkGLSL(glslang::TShader* shader, glslang::TProgram& program)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline std::vector<uint32_t> ConvertToSPIRV(glslang::TShader* shader, const ShaderStage stage,
-                                            glslang::TProgram& program)
+[[nodiscard]] inline std::vector<uint32_t> ConvertToSPIRV(glslang::TShader* shader, const ShaderStage stage,
+                                                          glslang::TProgram& program)
 {
 	std::vector<uint32_t> SPIRV{};
 
@@ -351,7 +351,7 @@ inline std::vector<uint32_t> ConvertToSPIRV(glslang::TShader* shader, const Shad
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline bool CompileGLSLToSPIRV(Shader& shader)
+[[nodiscard]] inline bool CompileGLSLToSPIRV(Shader& shader)
 {
 	if (!s_glslangInitialized)
 	{
@@ -398,7 +398,7 @@ inline bool CompileGLSLToSPIRV(Shader& shader)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline bool SaveSPIRV(Shader& shader, std::filesystem::path customOutput)
+[[nodiscard]] inline bool SaveSPIRV(Shader& shader, std::filesystem::path customOutput)
 {
     std::filesystem::path filePath{};
     if(!customOutput.empty())
@@ -447,7 +447,7 @@ inline bool SaveSPIRV(Shader& shader, std::filesystem::path customOutput)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline bool LoadShader(const std::filesystem::path& filePath, Shader& outShader)
+[[nodiscard]] inline bool LoadShader(const std::filesystem::path& filePath, Shader& outShader)
 {
 	if (!FileOrFolderExists(filePath))
 	{

@@ -67,7 +67,7 @@ void TRAP::Graphics::RendererAPI::Init(const std::string_view gameName, const Re
 								   Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::RendererPrefix, "Unsupported device!");
 		TRAP::Application::Shutdown();
-		exit(-1);
+		exit(0x0002);
 	}
 
 	s_Renderer->InitInternal(gameName);
@@ -153,7 +153,7 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 									 "Please check your GPU driver!\nError code: 0x000B", Utils::Dialogs::Style::Error,
 		Utils::Dialogs::Buttons::Quit);
 	TRAP::Application::Shutdown();
-	exit(-1);
+	exit(0x000B);
 #else
 	TP_WARN(Log::RendererPrefix, "Disabling RendererAPI, no compatible RenderAPI was found!");
 	return RenderAPI::NONE;

@@ -640,7 +640,7 @@ void TRAP::Graphics::API::ResourceLoader::WaitForToken(const SyncToken* const to
 	desc.Flags = RendererAPI::BufferCreationFlags::PersistentMap;
 	const TRAP::Ref<Buffer> buffer = Buffer::Create(desc);
 
-	return RendererAPI::MappedMemoryRange{static_cast<uint8_t*>(buffer->GetCPUMappedAddress()), std::move(buffer),
+	return RendererAPI::MappedMemoryRange{static_cast<uint8_t*>(buffer->GetCPUMappedAddress()), buffer,
 	                                      0, memoryRequirement };
 }
 
@@ -867,10 +867,11 @@ void TRAP::Graphics::API::ResourceLoader::SetupCopyEngine()
 	static constexpr uint64_t maxBlockSize = 32;
 	const uint64_t size = Math::Max(m_desc.BufferSize, maxBlockSize);
 
-	m_copyEngine.ResourceSets.reserve(m_desc.BufferCount);
+	m_copyEngine.ResourceSets.resize(m_desc.BufferCount);
 	for(uint32_t i = 0; i < m_desc.BufferCount; ++i)
 	{
-		CopyEngine::CopyResourceSet cpyResSet{};
+		auto& cpyResSet = m_copyEngine.ResourceSets[i];
+
 		cpyResSet.Fence = Fence::Create();
 		RendererAPI::CommandPoolDesc cmdPoolDesc{};
 		cmdPoolDesc.Queue = m_copyEngine.Queue;
@@ -879,8 +880,6 @@ void TRAP::Graphics::API::ResourceLoader::SetupCopyEngine()
 		cpyResSet.Cmd = cpyResSet.CommandPool->AllocateCommandBuffer(false);
 
 		cpyResSet.Buffer = AllocateUploadMemory(size, static_cast<uint32_t>(UtilGetTextureSubresourceAlignment())).Buffer;
-
-		m_copyEngine.ResourceSets.push_back(cpyResSet);
 	}
 
 	m_copyEngine.BufferSize = size;
@@ -894,7 +893,7 @@ void TRAP::Graphics::API::ResourceLoader::CleanupCopyEngine()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	for(uint32_t i = 0; i < m_copyEngine.BufferCount; ++i)
+	for(uint32_t i = 0+1; i < m_copyEngine.BufferCount; ++i)
 	{
 		CopyEngine::CopyResourceSet& resourceSet = m_copyEngine.ResourceSets[i];
 		resourceSet.Buffer.reset();

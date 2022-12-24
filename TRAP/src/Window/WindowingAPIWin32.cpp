@@ -98,7 +98,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 							   Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
 	TP_CRITICAL(Log::EngineWindowsPrefix, "Unsupported Windows version!");
 	TRAP::Application::Shutdown();
-	exit(-1);
+	exit(0x000A);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

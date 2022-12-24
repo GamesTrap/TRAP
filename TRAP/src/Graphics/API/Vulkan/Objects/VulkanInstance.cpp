@@ -84,7 +84,7 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appNa
 								   Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::RendererVulkanInstancePrefix, "Instance creation failed!");
 		TRAP::Application::Shutdown();
-		exit(-1);
+		exit(0x0005);
 	}
 }
 

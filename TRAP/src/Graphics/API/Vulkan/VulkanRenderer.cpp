@@ -2498,7 +2498,7 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 								   Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan surface extensions are unsupported!");
 		TRAP::Application::Shutdown();
-		exit(-1);
+		exit(0x0003);
 #endif
 	}
 	else
@@ -2565,7 +2565,7 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 								   Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan swapchain extension is unsupported!");
 		TRAP::Application::Shutdown();
-		exit(-1);
+		exit(0x0004);
 	}
 
 	//Vulkan 1.1 core

@@ -301,7 +301,7 @@
 									Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::EngineLinuxPrefix, "Unsupported window manager!");
 		TRAP::Application::Shutdown();
-		exit(-1);
+		exit(0x0008);
 #else
 		return LinuxWindowManager::Unknown;
 #endif
