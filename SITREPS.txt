@@ -3588,3 +3588,4 @@ SITREP 12/24/2022|22w51c1
     - ConvertToSPIRV Added nodiscard attribute where applicable ~<5 mins
     - ImGuiLayer Added engine termination if ImGuiWindowing::Init() failed ~<5 mins
     - exit() calls replaced -1 return code with the actual error code ~<5 mins
+    - ImGuiLayer Removed test code ~<5 mins

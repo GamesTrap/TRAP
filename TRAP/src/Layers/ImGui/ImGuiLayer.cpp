@@ -135,7 +135,7 @@ void TRAP::ImGuiLayer::OnAttach()
 	const auto& winData = TRAP::Graphics::RendererAPI::GetWindowData(TRAP::Application::GetWindow());
 
 	TP_TRACE(Log::ImGuiPrefix, "Init...");
-	if(!TRAP::INTERNAL::ImGuiWindowing::Init(window, true, Graphics::RendererAPI::GetRenderAPI()) || true)
+	if(!TRAP::INTERNAL::ImGuiWindowing::Init(window, true, Graphics::RendererAPI::GetRenderAPI()))
 	{
 		Utils::Dialogs::ShowMsgBox("Failed to initialize ImGui", "Failed to initialize ImGui!\n"
 								   "Error code: 0x0013", Utils::Dialogs::Style::Error,
