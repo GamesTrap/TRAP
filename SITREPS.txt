@@ -3584,3 +3584,4 @@ SITREP 12/23/2022|22w51b1
 SITREP 12/24/2022|22w51c1
     - Changed TRAP Engine version to 22w51c1(0.8.90)
     - Resolved GLSLang linker error ~<5 mins
+    - ConvertToSPIRV Fixed compiler error ~<5 mins
