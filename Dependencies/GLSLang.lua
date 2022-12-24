@@ -249,6 +249,11 @@ project "GLSLang-Default-Resource-Limits"
 
     links "GLSLang"
 
+    includedirs
+    {
+        "%{IncludeDir.GLSLANG}"
+    }
+
     filter "system:windows"
         defines
         {

@@ -3580,3 +3580,7 @@ SITREP 12/23/2022|22w51b1
     - Updated SPIRV-Cross ~<5 mins
     - Updated VulkanMemoryAllocator ~<5 mins
     - Updated YAMLCpp ~<5 mins
+
+SITREP 12/24/2022|22w51c1
+    - Changed TRAP Engine version to 22w51c1(0.8.90)
+    - Resolved GLSLang linker error ~<5 mins

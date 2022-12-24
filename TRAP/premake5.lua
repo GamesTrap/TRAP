@@ -21,7 +21,7 @@ project "TRAP"
 		"src/**.h",
 		"src/**.hpp",
 		"src/**.cpp",
-		"src/**.inl"
+		"src/**.inl",
 	}
 
 	--Exclude all folders in Platform, since not all platforms need all of these
@@ -71,7 +71,8 @@ project "TRAP"
 		"SPIRV-Cross-GLSL",
 		"SPIRV-Cross-HLSL",
 		"Box2D",
-		"TracyClient"
+		"TracyClient",
+		"GLSLang-Default-Resource-Limits"
 	}
 
 	defines "YAML_CPP_STATIC_DEFINE"
@@ -297,7 +298,8 @@ project "TRAP-Headless"
 		"SPIRV-Cross-GLSL",
 		"SPIRV-Cross-HLSL",
 		"Box2D",
-		"TracyClient"
+		"TracyClient",
+		"GLSLang-Default-Resource-Limits"
 	}
 
 	defines
