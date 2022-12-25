@@ -153,8 +153,36 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Block the calling thread until IsTokenCompleted(token) for the provided token returns true.
 		/// </summary>
-		/// <param name="token">Token to wait for.</param>
+		/// <param name="token">Token to wait for completion.</param>
 		void WaitForToken(const SyncToken* token);
+
+		//Allows clients to synchronize with the submission of copy commands (as opposed to their completion).
+		//This can reduce the wait time for client but requires using the Semaphore from GetLastSemaphoreCompleted()
+		//in a wait operation in a submit that uses the textures just updated.
+
+		/// <summary>
+		/// Retrieve the last sync token which has been submitted for copying.
+		/// </summary>
+		/// <returns>Last value for which IsTokenSubmitted(token) is guaranteed to return true.</returns>
+		[[nodiscard]] SyncToken GetLastTokenSubmitted() const noexcept;
+		/// <summary>
+		/// Retrieve whether a sync token has been submitted for copying.
+		/// </summary>
+		/// <param name="token">Token to check.</param>
+		/// <returns>True if the token has been submitted for copying, false otherwise.</returns>
+		[[nodiscard]] bool IsTokenSubmitted(const SyncToken* token) const;
+		/// <summary>
+		/// Block the calling thread until IsTokenSubmitted(token) for the provided token returns true.
+		/// </summary>
+		/// <param name="token">Token to wait for submission.</param>
+		void WaitForTokenSubmitted(const SyncToken* token);
+
+		/// <summary>
+		/// Retrieve the semaphore for the last copy operation that has been submitted.
+		/// Note: This can be nullptr if no operations have been executed.
+		/// </summary>
+		/// <returns>Semaphore for the last copy operation that has been submitted.</returns>
+		[[nodiscard]] TRAP::Ref<Semaphore> GetLastSemaphoreCompleted();
 
 	private:
 		struct TextureUpdateDescInternal
@@ -451,9 +479,12 @@ namespace TRAP::Graphics::API
 		std::vector<UpdateRequest> m_requestQueue;
 
 		std::atomic<uint64_t> m_tokenCompleted;
+		std::atomic<uint64_t> m_tokenSubmitted;
 		std::atomic<uint64_t> m_tokenCounter;
 
-		std::array<SyncToken, 3> m_currentTokenState;
+		TracyLockable(std::mutex, m_semaphoreMutex);
+
+		std::array<SyncToken, TRAP::Graphics::RendererAPI::ImageCount> m_currentTokenState;
 
 		struct CopyEngine
 		{
@@ -469,11 +500,14 @@ namespace TRAP::Graphics::API
 				//Buffers created in case we ran out of space in the original staging buffer
 				//Will be cleaned up after the fence for this set is complete
 				std::vector<TRAP::Ref<Graphics::Buffer>> TempBuffers;
+
+				TRAP::Ref<TRAP::Graphics::Semaphore> CopyCompletedSemaphore;
 			};
 			std::vector<CopyResourceSet> ResourceSets{};
 			uint64_t BufferSize{};
 			uint32_t BufferCount{};
 			bool IsRecording{};
+			TRAP::Ref<TRAP::Graphics::Semaphore> LastCompletedSemaphore;
 
 			//For reading back GPU generated textures, we need to ensure writes have completed before performing the copy.
 			std::vector<TRAP::Ref<Semaphore>> WaitSemaphores;

@@ -5,6 +5,7 @@
 #include "Objects/Buffer.h"
 #include "Objects/CommandBuffer.h"
 #include "Objects/CommandPool.h"
+#include "Objects/Semaphore.h"
 #include "Graphics/Textures/Texture.h"
 #include "Vulkan/VulkanRenderer.h"
 #include "Utils/String/String.h"
@@ -164,10 +165,29 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* con
 		}
 
 		if(completionMask != 0)
+		{
 			loader->StreamerFlush(loader->m_nextSet);
+			{
+				std::lock_guard lock(loader->m_semaphoreMutex);
+				auto& mutex = loader->m_semaphoreMutex;
+				LockMark(mutex);
+
+				loader->m_copyEngine.LastCompletedSemaphore = loader->m_copyEngine.ResourceSets[loader->m_nextSet].CopyCompletedSemaphore;
+			}
+		}
 
 		const SyncToken nextToken = Math::Max<SyncToken>(maxToken, loader->GetLastTokenCompleted());
 		loader->m_currentTokenState[loader->m_nextSet] = nextToken;
+
+		//Signal submitted tokens
+		{
+			std::lock_guard lock(loader->m_tokenMutex);
+			auto& mutex = loader->m_tokenMutex;
+			LockMark(mutex);
+
+			loader->m_tokenSubmitted = loader->m_currentTokenState[loader->m_nextSet];
+			loader->m_tokenCond.notify_all();
+		}
 	}
 
 	loader->StreamerFlush(loader->m_nextSet);
@@ -329,6 +349,7 @@ TRAP::Graphics::API::ResourceLoader::ResourceLoader(const RendererAPI::ResourceL
 	: m_desc(desc ? *desc : DefaultResourceLoaderDesc),
 	  m_run(true),
 	  m_tokenCompleted(0),
+	  m_tokenSubmitted(0),
 	  m_tokenCounter(0),
 	  m_currentTokenState(),
       m_nextSet()
@@ -627,6 +648,48 @@ void TRAP::Graphics::API::ResourceLoader::WaitForToken(const SyncToken* const to
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] TRAP::Graphics::API::SyncToken TRAP::Graphics::API::ResourceLoader::GetLastTokenSubmitted() const noexcept
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	return m_tokenSubmitted;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] bool TRAP::Graphics::API::ResourceLoader::IsTokenSubmitted(const SyncToken* token) const
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	return *token <= m_tokenSubmitted;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::ResourceLoader::WaitForTokenSubmitted(const SyncToken* token)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	std::unique_lock lock(m_tokenMutex);
+	LockMark(m_tokenMutex);
+	while (!IsTokenSubmitted(token))
+		m_tokenCond.wait(lock);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Semaphore> TRAP::Graphics::API::ResourceLoader::GetLastSemaphoreCompleted()
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	std::unique_lock lock(m_semaphoreMutex);
+	LockMark(m_semaphoreMutex);
+
+	return m_copyEngine.LastCompletedSemaphore;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 //Return a new staging buffer
 [[nodiscard]] TRAP::Graphics::RendererAPI::MappedMemoryRange TRAP::Graphics::API::ResourceLoader::AllocateUploadMemory(const uint64_t memoryRequirement,
                                                                                                                        const uint32_t alignment)
@@ -652,18 +715,18 @@ void TRAP::Graphics::API::ResourceLoader::QueueBufferBarrier(const TRAP::Ref<Buf
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	SyncToken t = 0;
+	SyncToken t{};
 	{
 		std::lock_guard lock(m_queueMutex);
 		LockMark(m_queueMutex);
 
-		t = m_tokenCounter + 1;
-		++m_tokenCounter;
+		t = m_tokenCounter.fetch_add(1) + 1;
 
 		m_requestQueue.emplace_back(UpdateRequest{ RendererAPI::BufferBarrier{buffer,
 		                                                                      RendererAPI::ResourceState::Undefined,
 																			  state} });
-		m_requestQueue.back().WaitIndex = t;
+		UpdateRequest& lastRequest = m_requestQueue.back();
+		lastRequest.WaitIndex = t;
 	}
 	m_queueCond.notify_one();
 
@@ -683,14 +746,14 @@ void TRAP::Graphics::API::ResourceLoader::QueueBufferUpdate(const RendererAPI::B
 		std::lock_guard lock(m_queueMutex);
 		LockMark(m_queueMutex);
 
-		t = m_tokenCounter + 1;
-		++m_tokenCounter;
+		t = m_tokenCounter.fetch_add(1) + 1;
 
 		m_requestQueue.emplace_back(UpdateRequest(desc));
-		m_requestQueue.back().WaitIndex = t;
-		m_requestQueue.back().UploadBuffer = (desc.Internal.MappedRange.Flags &
-		                                      static_cast<uint32_t>(MappedRangeFlag::TempBuffer)) ?
-											 desc.Internal.MappedRange.Buffer : nullptr;
+		UpdateRequest& lastRequest = m_requestQueue.back();
+		lastRequest.WaitIndex = t;
+		lastRequest.UploadBuffer = (desc.Internal.MappedRange.Flags &
+		                            static_cast<uint32_t>(MappedRangeFlag::TempBuffer)) ?
+									desc.Internal.MappedRange.Buffer : nullptr;
 	}
 	m_queueCond.notify_one();
 
@@ -710,11 +773,11 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureLoad(const RendererAPI::Te
 		std::lock_guard lock(m_queueMutex);
 		LockMark(m_queueMutex);
 
-		t = m_tokenCounter + 1;
-		++m_tokenCounter;
+		t = m_tokenCounter.fetch_add(1) + 1;
 
 		m_requestQueue.emplace_back(UpdateRequest(desc));
-		m_requestQueue.back().WaitIndex = t;
+		UpdateRequest& lastRequest = m_requestQueue.back();
+		lastRequest.WaitIndex = t;
 	}
 	m_queueCond.notify_one();
 
@@ -736,14 +799,14 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureUpdate(const TextureUpdate
 		std::lock_guard lock(m_queueMutex);
 		LockMark(m_queueMutex);
 
-		t = m_tokenCounter + 1;
-		++m_tokenCounter;
+		t = m_tokenCounter.fetch_add(1) + 1;
 
 		m_requestQueue.emplace_back(UpdateRequest(textureUpdate));
-		m_requestQueue.back().WaitIndex = t;
-		m_requestQueue.back().UploadBuffer = (textureUpdate.Range.Flags &
-		                                      static_cast<uint32_t>(MappedRangeFlag::TempBuffer) ?
-											 textureUpdate.Range.Buffer : nullptr);
+		UpdateRequest& lastRequest = m_requestQueue.back();
+		lastRequest.WaitIndex = t;
+		lastRequest.UploadBuffer = (textureUpdate.Range.Flags &
+		                            static_cast<uint32_t>(MappedRangeFlag::TempBuffer) ?
+									textureUpdate.Range.Buffer : nullptr);
 	}
 	m_queueCond.notify_one();
 
@@ -762,11 +825,11 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureCopy(const RendererAPI::Te
 		std::lock_guard lock(m_queueMutex);
 		LockMark(m_queueMutex);
 
-		t = m_tokenCounter + 1;
-		++m_tokenCounter;
+		t = m_tokenCounter.fetch_add(1) + 1;
 
 		m_requestQueue.emplace_back(UpdateRequest(desc));
-		m_requestQueue.back().WaitIndex = t;
+		UpdateRequest& lastRequest = m_requestQueue.back();
+		lastRequest.WaitIndex = t;
 	}
 	m_queueCond.notify_one();
 
@@ -786,13 +849,13 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureBarrier(TRAP::Graphics::Te
 		std::lock_guard lock(m_queueMutex);
 		LockMark(m_queueMutex);
 
-		t = m_tokenCounter + 1;
-		++m_tokenCounter;
+		t = m_tokenCounter.fetch_add(1) + 1;
 
 		m_requestQueue.emplace_back(UpdateRequest{ RendererAPI::TextureBarrier{texture,
 		                                                                       RendererAPI::ResourceState::Undefined,
 																			   state} });
-		m_requestQueue.back().WaitIndex = t;
+		UpdateRequest& lastRequest = m_requestQueue.back();
+		lastRequest.WaitIndex = t;
 	}
 	m_queueCond.notify_one();
 
@@ -822,7 +885,7 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureBarrier(TRAP::Graphics::Te
 		TRAP_ASSERT(buffer->GetCPUMappedAddress(), "ResourceLoader::AllocateStagingMemory(): CPU mapped address of buffer is nullptr!");
 		uint8_t* const dstData = static_cast<uint8_t*>(buffer->GetCPUMappedAddress()) + offset;
 		m_copyEngine.ResourceSets[m_nextSet].AllocatedSpace = offset + memoryRequirement;
-		return { dstData, std::move(buffer), offset, memoryRequirement };
+		return { dstData, buffer, offset, memoryRequirement };
 	}
 
 	if(m_copyEngine.BufferSize < memoryRequirement)
@@ -879,12 +942,15 @@ void TRAP::Graphics::API::ResourceLoader::SetupCopyEngine()
 
 		cpyResSet.Cmd = cpyResSet.CommandPool->AllocateCommandBuffer(false);
 
+		cpyResSet.CopyCompletedSemaphore = Semaphore::Create();
+
 		cpyResSet.Buffer = AllocateUploadMemory(size, static_cast<uint32_t>(UtilGetTextureSubresourceAlignment())).Buffer;
 	}
 
 	m_copyEngine.BufferSize = size;
 	m_copyEngine.BufferCount = m_desc.BufferCount;
 	m_copyEngine.IsRecording = false;
+	m_copyEngine.LastCompletedSemaphore = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -897,6 +963,8 @@ void TRAP::Graphics::API::ResourceLoader::CleanupCopyEngine()
 	{
 		CopyEngine::CopyResourceSet& resourceSet = m_copyEngine.ResourceSets[i];
 		resourceSet.Buffer.reset();
+
+		resourceSet.CopyCompletedSemaphore.reset();
 
 		resourceSet.CommandPool->FreeCommandBuffer(resourceSet.Cmd);
 		resourceSet.Cmd = nullptr;
@@ -911,6 +979,7 @@ void TRAP::Graphics::API::ResourceLoader::CleanupCopyEngine()
 	}
 
 	m_copyEngine.ResourceSets.clear();
+	m_copyEngine.WaitSemaphores.clear();
 
 	m_copyEngine.Queue.reset();
 }
@@ -973,6 +1042,7 @@ void TRAP::Graphics::API::ResourceLoader::StreamerFlush(const std::size_t active
 	RendererAPI::QueueSubmitDesc submitDesc{};
 	submitDesc.Cmds.push_back(resSet.Cmd);
 
+	submitDesc.SignalSemaphores.push_back(resSet.CopyCompletedSemaphore);
 	submitDesc.SignalFence = resSet.Fence;
 
 	if(!m_copyEngine.WaitSemaphores.empty())
