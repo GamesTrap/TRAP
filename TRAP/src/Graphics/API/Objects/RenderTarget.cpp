@@ -5,7 +5,7 @@
 #include "Graphics/API/Vulkan/Objects/VulkanRenderTarget.h"
 
 TRAP::Graphics::RenderTarget::RenderTarget()
-	: m_texture(nullptr), m_clearColor(), m_clearDepth(0.0f), m_clearStencil(0), m_arraySize(),
+	: m_texture(nullptr), m_clearValue(), m_arraySize(),
 	  m_depth(), m_width(), m_height(), m_descriptors(), m_mipLevels(), m_sampleQuality(), m_format(),
 	  m_sampleCount()
 {
@@ -121,29 +121,11 @@ TRAP::Graphics::RenderTarget::~RenderTarget()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Math::Vec4 TRAP::Graphics::RenderTarget::GetClearColor() const noexcept
+[[nodiscard]] TRAP::Graphics::RendererAPI::ClearValue TRAP::Graphics::RenderTarget::GetClearValue() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return m_clearColor;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] float TRAP::Graphics::RenderTarget::GetClearDepth() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_clearDepth;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] uint32_t TRAP::Graphics::RenderTarget::GetClearStencil() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_clearStencil;
+	return m_clearValue;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -1426,3 +1426,60 @@
 
 	return info;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] VkClearColorValue TRAP::Graphics::API::VulkanInits::ClearColorValue(const RendererAPI::Color& color,
+                                                                                  const ImageFormat format)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkClearColorValue clearColor{};
+
+	if(ImageFormatIsNormalized(format))
+	{
+		if(!ImageFormatIsSigned(format))
+		{
+			clearColor.float32[0] = TRAP::Math::Clamp(static_cast<float>(color.Red), 0.0f, 1.0f);
+			clearColor.float32[1] = TRAP::Math::Clamp(static_cast<float>(color.Green), 0.0f, 1.0f);
+			clearColor.float32[2] = TRAP::Math::Clamp(static_cast<float>(color.Blue), 0.0f, 1.0f);
+			clearColor.float32[3] = TRAP::Math::Clamp(static_cast<float>(color.Alpha), 0.0f, 1.0f);
+		}
+		else /*if(ImageFormatIsSigned(format))*/
+		{
+			clearColor.float32[0] = TRAP::Math::Clamp(static_cast<float>(color.Red), -1.0f, 1.0f);
+			clearColor.float32[1] = TRAP::Math::Clamp(static_cast<float>(color.Green), -1.0f, 1.0f);
+			clearColor.float32[2] = TRAP::Math::Clamp(static_cast<float>(color.Blue), -1.0f, 1.0f);
+			clearColor.float32[3] = TRAP::Math::Clamp(static_cast<float>(color.Alpha), -1.0f, 1.0f);
+		}
+	}
+	else /*if(!ImageFormatIsNormalized(format))*/
+	{
+		if(!ImageFormatIsFloat(format))
+		{
+			if(!ImageFormatIsSigned(format))
+			{
+				clearColor.uint32[0] = static_cast<uint32_t>(TRAP::Math::Round(color.Red));
+				clearColor.uint32[1] = static_cast<uint32_t>(TRAP::Math::Round(color.Green));
+				clearColor.uint32[2] = static_cast<uint32_t>(TRAP::Math::Round(color.Blue));
+				clearColor.uint32[3] = static_cast<uint32_t>(TRAP::Math::Round(color.Alpha));
+			}
+			else /*if(ImageFormatIsSigned(format))*/
+			{
+				clearColor.int32[0] = static_cast<int32_t>(TRAP::Math::Round(color.Red));
+				clearColor.int32[1] = static_cast<int32_t>(TRAP::Math::Round(color.Green));
+				clearColor.int32[2] = static_cast<int32_t>(TRAP::Math::Round(color.Blue));
+				clearColor.int32[3] = static_cast<int32_t>(TRAP::Math::Round(color.Alpha));
+			}
+		}
+		else
+		{
+			clearColor.float32[0] = static_cast<float>(color.Red);
+			clearColor.float32[1] = static_cast<float>(color.Green);
+			clearColor.float32[2] = static_cast<float>(color.Blue);
+			clearColor.float32[3] = static_cast<float>(color.Alpha);
+		}
+	}
+
+	return clearColor;
+}

@@ -136,7 +136,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="color">New clear color. Default: Very dark gray.</param>
 		/// <param name="window">Window to set clear color for. Default: Main Window.</param>
-		static void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }, const Window* const window = TRAP::Application::GetWindow());
+		static void SetClearColor(const RendererAPI::Color& color = { 0.1, 0.1, 0.1, 1.0 }, const Window* const window = TRAP::Application::GetWindow());
 		/// <summary>
 		/// Set the clear depth value for the given window.
 		/// </summary>

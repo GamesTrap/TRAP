@@ -80,6 +80,7 @@ namespace TRAP::Graphics
 		enum class QueueType;
 		enum class GPUVendor;
 		enum class LatencyMode;
+		struct Color;
 		struct LoadActionsDesc;
 		struct BufferBarrier;
 		struct TextureBarrier;
@@ -244,7 +245,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="color">New clear color.</param>
 		/// <param name="window">Window to set clear color for.</param>
-		virtual void SetClearColor(const Math::Vec4& color /*= { 0.1f, 0.1f, 0.1f, 1.0f }*/,
+		virtual void SetClearColor(const Color& color /*= { 0.1f, 0.1f, 0.1f, 1.0f }*/,
 		                           const Window* const window) const = 0;
 		/// <summary>
 		/// Set the clear depth value to be used by the given window.
@@ -1548,6 +1549,26 @@ namespace TRAP::Graphics
 			PerPrimitive = BIT(2)
 		};
 
+
+		struct Color
+		{
+			//Doubles are used because they are large enough to precisely
+			//hold 32-bit signed/unsigned integers and single-precision floats.
+
+			double Red;
+			double Green;
+			double Blue;
+			double Alpha;
+		};
+
+		struct DepthStencil
+		{
+			float Depth;
+			uint32_t Stencil;
+		};
+
+		using ClearValue = std::variant<Color, DepthStencil>;
+
 		/// <summary>
 		/// Description of a subresource.
 		/// Used to update a existing resource.
@@ -1586,9 +1607,7 @@ namespace TRAP::Graphics
 			//What state will the texture get created in
 			ResourceState StartState{};
 			//Optimized clear value (recommended to use the same value when clearing the renderTarget)
-			TRAP::Math::Vec4 ClearColor{};
-			float ClearDepth = 0.0f;
-			uint32_t ClearStencil = 0;
+			RendererAPI::ClearValue ClearValue{};
 			//The image quality level.
 			//The higher the quality, the lower the performance.
 			//The valid range is between 0 and the value appropriate for SampleCount
@@ -1628,9 +1647,7 @@ namespace TRAP::Graphics
 			//Image format
 			TRAP::Graphics::API::ImageFormat Format{};
 			//Optimized clear value (recommended to use the same value when clearing the renderTarget)
-			TRAP::Math::Vec4 ClearColor{};
-			float ClearDepth = 0.0f;
-			uint32_t ClearStencil = 0;
+			RendererAPI::ClearValue ClearValue{};
 			//What state will the texture get created in
 			ResourceState StartState{};
 			//Descriptor creation
@@ -2225,9 +2242,7 @@ namespace TRAP::Graphics
 			//Color format of the swapchain
 			TRAP::Graphics::API::ImageFormat ColorFormat{};
 			//Clear value
-			TRAP::Math::Vec4 ClearColor{};
-			float ClearDepth = 0.0f;
-			uint32_t ClearStencil = 0;
+			RendererAPI::ClearValue ClearValue{};
 			//Set whether swapchain will be presented using VSync
 			bool EnableVSync{};
 			//Anti aliasing sample count (1 = no AA)
@@ -2403,11 +2418,9 @@ namespace TRAP::Graphics
 			//Action to perform on the stencil attachment on load.
 			LoadActionType LoadActionStencil{};
 			//Clear color(s)
-			std::array<std::variant<TRAP::Math::Vec4, TRAP::Math::Vec4ui, TRAP::Math::Vec4i>, 8> ClearColorValues{};
-			//Clear depth value
-			float ClearDepth = 0.0f;
-			//Clear stencil value
-			uint32_t ClearStencil = 0;
+			std::array<RendererAPI::Color, 8> ClearColorValues{};
+			//Clear depth/stencil value
+			RendererAPI::DepthStencil ClearDepthStencil{};
 			//Action to perform on the color attachment(s) on store.
 			std::array<StoreActionType, 8> StoreActionsColor{};
 			//Action to perform on the depth attachment on store.
@@ -2688,9 +2701,8 @@ namespace TRAP::Graphics
 #endif
 			uint32_t CurrentSwapChainImageIndex;
 
-			TRAP::Math::Vec4 ClearColor{0.1f, 0.1f, 0.1f, 1.0f};
-			float ClearDepth = 0.0f;
-			uint32_t ClearStencil = 0;
+			RendererAPI::Color ClearColor{0.1, 0.1, 0.1, 1.0};
+			RendererAPI::DepthStencil ClearDepthStencil{0.0, 0};
 
 			bool CurrentVSync;
 			bool NewVSync;

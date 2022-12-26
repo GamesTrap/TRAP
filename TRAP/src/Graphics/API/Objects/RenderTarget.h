@@ -83,17 +83,7 @@ namespace TRAP::Graphics
 		/// Retrieve the clear color of the render target.
 		/// </summary>
 		/// <returns>Render target clear color.</returns>
-		[[nodiscard]] TRAP::Math::Vec4 GetClearColor() const noexcept;
-		/// <summary>
-		/// Retrieve the clear depth value of the render target.
-		/// </summary>
-		/// <returns>Render target clear depth value.</returns>
-		[[nodiscard]] float GetClearDepth() const noexcept;
-		/// <summary>
-		/// Retrieve the clear stencil value of the render target.
-		/// </summary>
-		/// <returns>Render target clear stencil value.</returns>
-		[[nodiscard]] uint32_t GetClearStencil() const noexcept;
+		[[nodiscard]] TRAP::Graphics::RendererAPI::ClearValue GetClearValue() const noexcept;
 		/// <summary>
 		/// Retrieve the descriptor type of the render target.
 		/// </summary>
@@ -114,9 +104,7 @@ namespace TRAP::Graphics
 
 		TRAP::Ref<TRAP::Graphics::Texture> m_texture;
 
-		TRAP::Math::Vec4 m_clearColor;
-		float m_clearDepth;
-		uint32_t m_clearStencil;
+		RendererAPI::ClearValue m_clearValue;
 		uint32_t m_arraySize;
 		uint32_t m_depth;
 		uint32_t m_width;

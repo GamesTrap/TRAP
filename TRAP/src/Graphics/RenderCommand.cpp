@@ -31,7 +31,7 @@ void TRAP::Graphics::RenderCommand::Clear(const ClearBuffer buffer, const Window
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetClearColor(const Math::Vec4& color, const Window* const window)
+void TRAP::Graphics::RenderCommand::SetClearColor(const RendererAPI::Color& color, const Window* const window)
 {
 	RendererAPI::GetRenderer()->SetClearColor(color, window);
 }

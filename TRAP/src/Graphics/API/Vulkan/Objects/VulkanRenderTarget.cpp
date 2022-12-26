@@ -30,9 +30,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	m_sampleCount = desc.SampleCount;
 	m_sampleQuality = desc.SampleQuality;
 	m_format = desc.Format;
-	m_clearColor = desc.ClearColor;
-	m_clearDepth = desc.ClearDepth;
-	m_clearStencil = desc.ClearStencil;
+	m_clearValue = desc.ClearValue;
 	m_descriptors = desc.Descriptors;
 
 	TRAP_ASSERT(m_device, "VulkanRenderTarget(): Vulkan Device is nullptr");
@@ -67,9 +65,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	textureDesc.SampleCount = desc.SampleCount;
 	textureDesc.SampleQuality = desc.SampleQuality;
 	textureDesc.Format = desc.Format;
-	textureDesc.ClearColor = desc.ClearColor;
-	textureDesc.ClearDepth = desc.ClearDepth;
-	textureDesc.ClearStencil = desc.ClearStencil;
+	textureDesc.ClearValue = desc.ClearValue;
 	textureDesc.NativeHandle = desc.NativeHandle;
 
 	if (!isDepth)

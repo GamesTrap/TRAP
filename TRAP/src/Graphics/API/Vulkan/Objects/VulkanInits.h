@@ -4,6 +4,9 @@
 #include "VulkanMemoryAllocator.h"
 #include <vulkan/vulkan_core.h>
 
+#include "Graphics/API/ImageFormat.h"
+#include "Graphics/API/RendererAPI.h"
+
 namespace TRAP::Graphics::API::VulkanInits
 {
 	/// <summary>
@@ -680,6 +683,10 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="memoryTypeIndex">Index of the memory type to allocate.</param>
 	/// <returns>VkMemoryAllocateInfo.</returns>
 	[[nodiscard]] VkMemoryAllocateInfo MemoryAllocateInfo(VkDeviceSize allocSize, uint32_t memoryTypeIndex) noexcept;
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	[[nodiscard]] VkClearColorValue ClearColorValue(const RendererAPI::Color& color, const ImageFormat format);
 }
 
 #endif /*TRAP_VULKANINITS_H*/

@@ -119,7 +119,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="color">New clear color.</param>
 		/// <param name="window">Window to set clear color for.</param>
-		void SetClearColor(const Math::Vec4& color, const Window* const window) const override;
+		void SetClearColor(const RendererAPI::Color& color, const Window* const window) const override;
 		/// <summary>
 		/// Set the clear depth value to be used by the given window.
 		/// </summary>

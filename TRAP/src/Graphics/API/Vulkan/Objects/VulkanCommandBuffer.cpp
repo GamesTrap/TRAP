@@ -422,37 +422,15 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		for(std::size_t i = 0; i < renderTargets.size(); ++i)
 		{
 			VkClearValue val{};
-			if(std::holds_alternative<TRAP::Math::Vec4>(loadActions->ClearColorValues[i]))
-			{
-				const TRAP::Math::Vec4 clearColor = std::get<TRAP::Math::Vec4>(loadActions->ClearColorValues[i]);
-				val.color.float32[0] = clearColor.x;
-				val.color.float32[1] = clearColor.y;
-				val.color.float32[2] = clearColor.z;
-				val.color.float32[3] = clearColor.w;
-			}
-			else if(std::holds_alternative<TRAP::Math::Vec4i>(loadActions->ClearColorValues[i]))
-			{
-				const TRAP::Math::Vec4i clearColor = std::get<TRAP::Math::Vec4i>(loadActions->ClearColorValues[i]);
-				val.color.int32[0] = clearColor.x;
-				val.color.int32[1] = clearColor.y;
-				val.color.int32[2] = clearColor.z;
-				val.color.int32[3] = clearColor.w;
-			}
-			else if(std::holds_alternative<TRAP::Math::Vec4ui>(loadActions->ClearColorValues[i]))
-			{
-				const TRAP::Math::Vec4ui clearColor = std::get<TRAP::Math::Vec4ui>(loadActions->ClearColorValues[i]);
-				val.color.uint32[0] = clearColor.x;
-				val.color.uint32[1] = clearColor.y;
-				val.color.uint32[2] = clearColor.z;
-				val.color.uint32[3] = clearColor.w;
-			}
+			val.color = VulkanInits::ClearColorValue(loadActions->ClearColorValues[i], renderTargets[i]->GetImageFormat());
+
 			clearValues.push_back(val);
 		}
 		if(depthStencil)
 		{
 			VkClearValue val{};
-			val.depthStencil = { loadActions->ClearDepth,
-			                     loadActions->ClearStencil };
+			val.depthStencil = { loadActions->ClearDepthStencil.Depth,
+			                     loadActions->ClearDepthStencil.Stencil };
 			clearValues.push_back(val);
 		}
 	}
@@ -1390,7 +1368,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetShadingRate(const RendererAPI:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const TRAP::Math::Vec4 color, const uint32_t width,
+void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const RendererAPI::Color& color, const uint32_t width,
 													 const uint32_t height) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -1408,7 +1386,15 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const TRAP::Math::Vec4 colo
 	VkClearAttachment attachment;
 	attachment.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 	attachment.colorAttachment = 0;
-	attachment.clearValue.color = {{color.x, color.y, color.z, color.w}};
+	attachment.clearValue.color =
+	{
+		{
+			static_cast<float>(color.Red),
+			static_cast<float>(color.Green),
+			static_cast<float>(color.Blue),
+			static_cast<float>(color.Alpha)
+		}
+	};
 
 	vkCmdClearAttachments(m_vkCommandBuffer, 1, &attachment, 1, &rect);
 }

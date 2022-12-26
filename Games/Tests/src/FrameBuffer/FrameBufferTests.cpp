@@ -69,7 +69,7 @@ void FrameBufferTests::OnAttach()
     desc.Depth = 1;
     desc.ArraySize = 1;
     desc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture;
-    desc.ClearColor = {0.0f, 0.0f, 0.0f, 1.0f};
+    desc.ClearValue = TRAP::Graphics::RendererAPI::Color{0.0, 0.0, 0.0, 1.0};
     desc.Format = TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM;
     desc.StartState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
     desc.SampleCount = m_MSAAEnabled ? aaSamples : TRAP::Graphics::SampleCount::One;

@@ -314,7 +314,7 @@ namespace TRAP::Graphics
 		/// <param name="color">Color to clear the color attachment with.</param>
 		/// <param name="width">Width of the area to clear.</param>
 		/// <param name="height">Height of the area to clear.</param>
-		virtual void Clear(TRAP::Math::Vec4 color, uint32_t width, uint32_t height) const = 0;
+		virtual void Clear(const RendererAPI::Color& color, uint32_t width, uint32_t height) const = 0;
 		/// <summary>
 		/// Clear the currently used depth and stencil attachment.
 		/// </summary>

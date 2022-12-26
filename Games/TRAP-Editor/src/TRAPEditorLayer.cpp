@@ -270,9 +270,9 @@ void TRAPEditorLayer::OnAttach()
 	m_renderTargetDesc.Format = TRAP::Graphics::API::ImageFormat::R32_SINT;
 	m_IDRenderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
 
-	m_renderTargetLoadActions.ClearColorValues[0] = TRAP::Math::Vec4{ 0.0f, 0.0f, 0.0f, 1.0f };
+	m_renderTargetLoadActions.ClearColorValues[0] = { 0.1, 0.1, 0.1, 1.0 };
 	m_renderTargetLoadActions.LoadActionsColor[0] = TRAP::Graphics::RendererAPI::LoadActionType::Clear;
-	m_renderTargetLoadActions.ClearColorValues[1] = TRAP::Math::Vec4i(-1, 0, 0, 0);
+	m_renderTargetLoadActions.ClearColorValues[1] = {-1.0, 0.0, 0.0, 0.0};
 	m_renderTargetLoadActions.LoadActionsColor[1] = TRAP::Graphics::RendererAPI::LoadActionType::Clear;
 
 	//Setup Mouse Picking Buffer

@@ -3593,3 +3593,11 @@ SITREP 12/24/2022|22w51c1
 SITREP 12/25/2022|22w51d1
     - Changed TRAP Engine version to 22w51d1(0.8.91)
     - Updated ResourceLoader ~<45 mins
+
+SITREP 12/26/2022|22w52a1
+    - Changed TRAP Engine version to 22w52a1(0.8.92)
+    - ImageFormat Added ImageFormatIsNormalized(), ImageFormatIsSigned() ~<10 mins
+    - RendererAPI Added type for ClearValue (color/depth and stencil) ~<5 mins
+    - Updated RendererAPI to use new ClearValue type ~<30 mins
+    - VulkanInits Added ClearColorValue() which converts clear color data to a specific image format ~<10 mins
+    - Updated TRAP-Editor and FrameBufferTests ~<5 mins

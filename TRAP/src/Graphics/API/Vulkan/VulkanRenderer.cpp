@@ -219,8 +219,7 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerWindowData* c
 	LoadActionsDesc loadActions{};
 	loadActions.LoadActionsColor[0] = LoadActionType::Clear;
 	loadActions.ClearColorValues[0] = p->ClearColor;
-	loadActions.ClearDepth = p->ClearDepth;
-	loadActions.ClearStencil = p->ClearStencil;
+	loadActions.ClearDepthStencil = p->ClearDepthStencil;
 	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({ bindRenderTarget }, nullptr, &loadActions, nullptr, nullptr,
 	                                                           std::numeric_limits<uint32_t>::max(),
 															   std::numeric_limits<uint32_t>::max(), std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).ShadingRateTexture);
@@ -400,9 +399,7 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerWindowData* const p)
 		swapChainDesc.Height = fbSize.y;
 		swapChainDesc.ImageCount = RendererAPI::ImageCount;
 		swapChainDesc.ColorFormat = SwapChain::GetRecommendedSwapchainFormat(true, false);
-		swapChainDesc.ClearColor = p->ClearColor;
-		swapChainDesc.ClearDepth = p->ClearDepth;
-		swapChainDesc.ClearStencil = p->ClearStencil;
+		swapChainDesc.ClearValue = p->ClearColor;
 		swapChainDesc.EnableVSync = p->CurrentVSync;
 		if(s_currentAntiAliasing == AntiAliasing::MSAA)
 			swapChainDesc.SampleCount = s_currentSampleCount;
@@ -678,7 +675,7 @@ float TRAP::Graphics::API::VulkanRenderer::GetRenderScale(const Window* const wi
 
 //------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const Math::Vec4& color, const Window* const window) const
+void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const RendererAPI::Color& color, const Window* const window) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -695,7 +692,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetClearDepth(const float depth, const
 
 	TRAP_ASSERT(window, "VulkanRenderer::SetClearDepth(): Window is nullptr!");
 
-	s_perWindowDataMap.at(window)->ClearDepth = depth;
+	s_perWindowDataMap.at(window)->ClearDepthStencil.Depth = depth;
 }
 
 //------------------------------------------------------------------------------------------------------------------//
@@ -706,7 +703,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetClearStencil(const uint32_t stencil
 
 	TRAP_ASSERT(window, "VulkanRenderer::SetClearStencil(): Window is nullptr!");
 
-	s_perWindowDataMap.at(window)->ClearStencil = stencil;
+	s_perWindowDataMap.at(window)->ClearDepthStencil.Stencil = stencil;
 }
 
 //------------------------------------------------------------------------------------------------------------------//
@@ -1108,28 +1105,25 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType,
 
 	if(static_cast<uint32_t>(clearType & ClearBufferType::Color) != 0)
 	{
-		data->GraphicCommandBuffers[data->ImageIndex]->Clear(data->ClearColor, renderTarget->GetWidth(),
-		                                                     renderTarget->GetHeight());
+		data->GraphicCommandBuffers[data->ImageIndex]->Clear(data->ClearColor, renderTarget->GetWidth(), renderTarget->GetHeight());
 	}
 
 	if(static_cast<uint32_t>(clearType & ClearBufferType::Depth_Stencil) != 0 &&
 	   TRAP::Graphics::API::ImageFormatIsDepthAndStencil(renderTarget->GetImageFormat()))
 	{
-		data->GraphicCommandBuffers[data->ImageIndex]->Clear(data->ClearDepth, data->ClearStencil,
+		data->GraphicCommandBuffers[data->ImageIndex]->Clear(data->ClearDepthStencil.Depth, data->ClearDepthStencil.Stencil,
 															 renderTarget->GetWidth(), renderTarget->GetHeight());
 	}
 	else if(static_cast<uint32_t>(clearType & ClearBufferType::Depth) != 0 &&
 	        (TRAP::Graphics::API::ImageFormatIsDepthAndStencil(renderTarget->GetImageFormat()) ||
 			 TRAP::Graphics::API::ImageFormatIsDepthOnly(renderTarget->GetImageFormat())))
 	{
-		data->GraphicCommandBuffers[data->ImageIndex]->Clear(data->ClearDepth, renderTarget->GetWidth(),
-															 renderTarget->GetHeight());
+		data->GraphicCommandBuffers[data->ImageIndex]->Clear(data->ClearDepthStencil.Depth, renderTarget->GetWidth(), renderTarget->GetHeight());
 	}
 	else if(static_cast<uint32_t>(clearType & ClearBufferType::Stencil) != 0 &&
 	        TRAP::Graphics::API::ImageFormatHasStencil(renderTarget->GetImageFormat()))
 	{
-		data->GraphicCommandBuffers[data->ImageIndex]->Clear(data->ClearStencil, renderTarget->GetWidth(),
-		 													 renderTarget->GetHeight());
+		data->GraphicCommandBuffers[data->ImageIndex]->Clear(data->ClearDepthStencil.Stencil, renderTarget->GetWidth(), renderTarget->GetHeight());
 	}
 }
 
@@ -2313,9 +2307,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* const window
 	swapChainDesc.ImageCount = RendererAPI::ImageCount;
 	swapChainDesc.ColorFormat = SwapChain::GetRecommendedSwapchainFormat(true, false);
 	swapChainDesc.EnableVSync = p->CurrentVSync;
-	swapChainDesc.ClearColor = p->ClearColor;
-	swapChainDesc.ClearDepth = p->ClearDepth;
-	swapChainDesc.ClearStencil = p->ClearStencil;
+	swapChainDesc.ClearValue = p->ClearColor;
 	swapChainDesc.SampleCount = SampleCount::One;
 	p->SwapChain = SwapChain::Create(swapChainDesc);
 
