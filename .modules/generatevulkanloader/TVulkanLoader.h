@@ -1,7 +1,7 @@
 /*
 volk
 
-Copyright (C) 2018-2019, by Arseny Kapoulkine (arseny.kapoulkine@gmail.com)
+Copyright (C) 2018-2023, by Arseny Kapoulkine (arseny.kapoulkine@gmail.com)
 Report bugs and download new versions at https://github.com/zeux/volk
 
 This library is distributed under the MIT License. See notice at the end of this file.

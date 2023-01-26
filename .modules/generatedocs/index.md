@@ -54,7 +54,7 @@ They are provided in the TRAP™ repository.
 - [ModernDialogs](https://github.com/GamesTrap/ModernDialogs)
 - [VulkanMemoryAllocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator)
 - [YAMLCpp](https://github.com/jbeder/yaml-cpp)
-- [SDL_gamecontrollerdb.h from SDL](https://github.com/libsdl-org/SDL/blob/main/src/joystick/SDL_gamecontrollerdb.h)
+- [SDL_GameControllerDB from gabomdq](https://github.com/gabomdq/SDL_GameControllerDB)
 - [Volk](https://github.com/zeux/volk)
 :::
 :::{tab} Additional

@@ -1,3 +1,13 @@
+/*
+Copyright (c) 2021, Dominic Szablewski - https://phoboslab.org
+SPDX-License-Identifier: MIT
+
+
+QOI - The "Quite OK Image" format for fast, lossless image compression
+
+Modified by Jan "GamesTrap" Schuerkamp
+*/
+
 #ifndef TRAP_QOIIMAGE_H
 #define TRAP_QOIIMAGE_H
 

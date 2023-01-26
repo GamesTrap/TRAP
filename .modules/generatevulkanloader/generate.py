@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# This file is part of volk library; see volk.h for version/license details
+# This file is part of volk library; see Licenses/Volk.LICENSE for license details
 # Modified by: Jan "GamesTrap" Schuerkamp
 
 from collections import OrderedDict

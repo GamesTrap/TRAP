@@ -1,3 +1,5 @@
+--For license see Licenses/SDL_GameControllerDB.LICENSE
+
 premake.modules.generatecontrollermappings = {}
 local m = premake.modules.generatecontrollermappings
 

@@ -1,4 +1,3 @@
-
 local p = premake
 
 p.modules.ecc = {}

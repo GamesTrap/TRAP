@@ -3601,3 +3601,6 @@ SITREP 12/26/2022|22w52a1
     - Updated RendererAPI to use new ClearValue type ~<30 mins
     - VulkanInits Added ClearColorValue() which converts clear color data to a specific image format ~<10 mins
     - Updated TRAP-Editor and FrameBufferTests ~<5 mins
+
+SITREP 01/26/2023|23w04a1
+    - Updated all licenses ~>10 mins
