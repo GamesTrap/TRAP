@@ -2,6 +2,7 @@ require "generatecontrollermappings"
 require "generatedocs"
 require "generatevulkanloader"
 require "ecc"
+require "vscode"
 
 workspace "TRAP"
 	architecture "x86_64"

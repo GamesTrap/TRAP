@@ -56,6 +56,7 @@ They are provided in the TRAP™ repository.
 - [YAMLCpp](https://github.com/jbeder/yaml-cpp)
 - [SDL_GameControllerDB from gabomdq](https://github.com/gabomdq/SDL_GameControllerDB)
 - [Volk](https://github.com/zeux/volk)
+- [Premake-VSCodeGen](https://github.com/GamesTrap/Premake-VSCodeGen)
 :::
 :::{tab} Additional
 The following libraries add additional features to TRAP™.  

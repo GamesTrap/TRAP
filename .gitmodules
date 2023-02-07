@@ -26,3 +26,6 @@
 [submodule "Dependencies/Tracy"]
 	path = Dependencies/Tracy
 	url = https://github.com/wolfpld/tracy.git
+[submodule ".modules/vscode"]
+	path = .modules/vscode
+	url = https://github.com/GamesTrap/Premake-VSCodeGen.git
