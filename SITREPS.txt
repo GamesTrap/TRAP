@@ -3604,3 +3604,7 @@ SITREP 12/26/2022|22w52a1
 
 SITREP 01/26/2023|23w04a1
     - Updated all licenses ~>10 mins
+
+SITREP 02/07/2023|23w06a1
+    - Removed Visual Studio 2017 support (preparation for C++20) ~<5 mins
+    - Removed unnecessary Linux Visual Studio project generation scripts ~<5 mins
