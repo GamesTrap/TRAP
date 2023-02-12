@@ -3615,3 +3615,5 @@ SITREP 02/12/2023|23w06a2
     - GitHub Action Docs workflow now runs when pushed on master branch ~<5 mins
     - Updated NVIDIA Nsight Aftermath support to 2022.2 ~<10 mins
     - Updated VulkanLoader to Vulkan API 1.3.240 ~<5 mins
+    - Updated ControllerMappings ~<5 mins
+    - Updated Box2D, GLSLang, SPIRV-Cross, Vulkan Memory Allocator ~<10 mins
