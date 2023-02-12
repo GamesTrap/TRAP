@@ -63,6 +63,18 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="cursor">Custom cursor to use.</param>
 		static void SetCustomCursor(WindowingAPI::InternalCursor* cursor);
+		/// <summary>
+		/// Set to true to enable chaining installed callbacks for all windows
+		/// (including secondary viewports created y backends or by user).
+		///
+		/// Note: This is false by default meaning we only chain callbacks for the main viewport.
+		///       We cannot set this to true by default because user callbacks code may not be testing
+		///       the window parameter of their callback.
+		///       If you set this to true your user callback code will need to make sure you are testing
+		///       the window parameter.
+		/// </summary>
+		/// <param name="chainForAllWindows">Whether to enable callback chaining or not.</param>
+		static void SetCallbacksChainForAllWindows(const bool chainForAllWindows);
 
 		/// <summary>
 		/// Install ImGui callbacks.
@@ -74,6 +86,13 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Window to restore callbacks for.</param>
 		static void RestoreCallbacks(WindowingAPI::InternalWindow* window);
+
+		/// <summary>
+		/// Check if the given window should chain callbacks.
+		/// </summary>
+		/// <param name="window">Window to check for chaining.</param>
+		/// <returns>True or false.</returns>
+		static bool ShouldChainCallback(const WindowingAPI::InternalWindow* const window);
 
 	private:
 		static std::string s_clipboardText;
@@ -91,6 +110,7 @@ namespace TRAP::INTERNAL
 			ImVec2 LastValidMousePos;
 			std::vector<const WindowingAPI::InternalWindow*> KeyOwnerWindows;
 			bool InstalledCallbacks;
+			bool CallbacksChainForAllWindows;
 			bool WantUpdateMonitors;
  			WindowingAPI::InternalCursor* CustomCursor = nullptr;
 
@@ -106,8 +126,8 @@ namespace TRAP::INTERNAL
 
 			ImGuiTRAPData()
 				: Window(nullptr), ClientAPI(Graphics::RenderAPI::NONE), Time(0.0), MouseWindow(nullptr),
-				  LastValidMousePos(0.0f, 0.0f), KeyOwnerWindows(), InstalledCallbacks(false), WantUpdateMonitors(false),
-				  CustomCursor(nullptr),
+				  LastValidMousePos(0.0f, 0.0f), KeyOwnerWindows(), InstalledCallbacks(false), CallbacksChainForAllWindows(false),
+				  WantUpdateMonitors(false), CustomCursor(nullptr),
 				  PrevUserCallbackWindowFocus(nullptr), PrevUserCallbackCursorPos(nullptr), PrevUserCallbackCursorEnter(nullptr),
 				  PrevUserCallbackMouseButton(nullptr), PrevUserCallbackScroll(nullptr), PrevUserCallbackKey(nullptr),
 				  PrevUserCallbackChar(nullptr), PrevUserCallbackMonitor(nullptr)
