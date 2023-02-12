@@ -129,9 +129,9 @@ void UnloadFunctions()
         AftermathInitialized = true;
 
         AftermathCall(AftermathEnableGPUCrashDumps(GFSDK_Aftermath_Version_API,
-                                                        GFSDK_Aftermath_GpuCrashDumpWatchedApiFlags_Vulkan,
-                                                        GFSDK_Aftermath_GpuCrashDumpFeatureFlags_Default,
-                                                        OnGPUCrashDump, nullptr, nullptr, nullptr));
+                                                   GFSDK_Aftermath_GpuCrashDumpWatchedApiFlags_Vulkan,
+                                                   GFSDK_Aftermath_GpuCrashDumpFeatureFlags_Default,
+                                                   OnGPUCrashDump, nullptr, nullptr, nullptr, nullptr));
     }
 
 #endif
@@ -274,7 +274,7 @@ void TRAP::Graphics::AftermathTracker::AftermathCall(const GFSDK_Aftermath_Resul
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] GFSDK_Aftermath_Result TRAP::Graphics::AftermathTracker::GetGPUCrashDumpStatus(GFSDK_Aftermath_CrashDump_Status* outStatus)
+[[nodiscard]] GFSDK_Aftermath_Result TRAP::Graphics::AftermathTracker::GetGPUCrashDumpStatus(GFSDK_Aftermath_CrashDump_Status& outStatus)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -283,6 +283,6 @@ void TRAP::Graphics::AftermathTracker::AftermathCall(const GFSDK_Aftermath_Resul
     if(!AftermathInitialized)
         return GFSDK_Aftermath_Result_FAIL_NotInitialized;
 
-    return AftermathGetGPUCrashDumpStatus(outStatus);
+    return AftermathGetGPUCrashDumpStatus(&outStatus);
 }
 #endif

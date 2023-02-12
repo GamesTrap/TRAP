@@ -3613,3 +3613,4 @@ SITREP 02/07/2023|23w06a1
 SITREP 02/12/2023|23w06a2
     - Changed TRAP Engine version to 23w06a2(0.8.93)
     - GitHub Action Docs workflow now runs when pushed on master branch ~<5 mins
+    - Updated NVIDIA Nsight Aftermath support to 2022.2 ~<10 mins
