@@ -6,13 +6,7 @@ local m = p.modules.ecc
 local workspace = p.workspace
 local project = p.project
 
-m._VERSION = "1.0.0-alpha"
-
-newoption {
-	trigger = "config",
-	value = "CFG",
-	description = "Select config for export compile_commands.json"
-}
+m._VERSION = "1.0.1"
 
 newaction {
 	trigger         = "ecc",
@@ -25,10 +19,6 @@ newaction {
 	valid_tools     = {
 		cc     = { "clang", "gcc" }
 	},
-
-	-- onStart = function()
-	-- 	p.indent("  ")
-	-- end,
 
 	execute = function()
 		m.onExecute()
@@ -120,10 +110,8 @@ end
 function m.onExecute()
 	print("Exporting compile_commands.json...")
 	for wks in p.global.eachWorkspace() do
-		print("Workspace " .. wks.name .. ":")
 		local cfgCmds = {}
 		for prj in workspace.eachproject(wks) do
-			print("    " .. prj.name)
 			local cfg = project.getconfig(prj, "Debug")
 			if not cfg then
 				error("No debug configuration for project '" .. prj.name .. "'")

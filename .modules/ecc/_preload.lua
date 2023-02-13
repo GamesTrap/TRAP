@@ -1,11 +1,5 @@
 local p = premake
 
-newoption {
-	trigger = "config",
-	value = "CFG",
-	description = "Select config for export compile_commands.json"
-}
-
 newaction {
 	trigger         = "ecc",
 	shortname       = "Export compile commands",

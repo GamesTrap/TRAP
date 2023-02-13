@@ -3619,8 +3619,11 @@ SITREP 02/12/2023|23w06a2
     - Updated Box2D, GLSLang, SPIRV-Cross, Vulkan Memory Allocator ~<10 mins
     - Updated ImGui submodule ~>10 mins
 
-SITREP 02/13/2023|23w06a3
-    - Changed TRAP Engine version to 23w06a3(0.8.94)
+SITREP 02/13/2023|23w07a3
+    - Changed TRAP Engine version to 23w07a3(0.8.94)
     - Updated documentation (index.md) ~<5 mins
     - WindowingAPIWin32 Windows now display black background during initialization ~<5 mins
     - WindowingAPIWin32 now disables accessibility keys if not in use while engine is running ~<10 mins
+
+SITREP 02/14/2023|23w07b1
+    - Updated compile_commands.json generator ~<5 mins
