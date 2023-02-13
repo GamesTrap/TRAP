@@ -3623,3 +3623,4 @@ SITREP 02/13/2023|23w06a3
     - Changed TRAP Engine version to 23w06a3(0.8.94)
     - Updated documentation (index.md) ~<5 mins
     - WindowingAPIWin32 Windows now display black background during initialization ~<5 mins
+    - WindowingAPIWin32 now disables accessibility keys if not in use while engine is running ~<10 mins

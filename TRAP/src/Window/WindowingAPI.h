@@ -708,6 +708,10 @@ namespace TRAP::INTERNAL
 			int32_t RawInputSize = 0;
 			UINT MouseTrailSize = 0;
 
+			STICKYKEYS UserStickyKeys{sizeof(STICKYKEYS), 0};
+			TOGGLEKEYS UserToggleKeys{sizeof(TOGGLEKEYS), 0};
+			FILTERKEYS UserFilterKeys{sizeof(FILTERKEYS), 0};
+
 			struct
 			{
 				HINSTANCE Instance = nullptr;
@@ -3945,6 +3949,11 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <returns>HInstance.</returns>
 		[[nodiscard]] static HINSTANCE GetWin32HInstance();
+		/// <summary>
+		/// Set the Accessibility Shortcut Keys state
+		/// </summary>
+		/// <param name="allowKeys">Disable or enable (restore) accessibility keys.</param>
+		static void SetAccessibilityShortcutKeys(const bool allowKeys);
 
 		friend bool TRAP::Input::InitController();
 		//----------//

@@ -2137,6 +2137,56 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::INTERNAL::WindowingAPI::SetAccessibilityShortcutKeys(const bool allowKeys)
+{
+	if(allowKeys)
+	{
+		//Restore to original state
+
+		STICKYKEYS sk = s_Data.UserStickyKeys;
+		TOGGLEKEYS tk = s_Data.UserToggleKeys;
+		FILTERKEYS fk = s_Data.UserFilterKeys;
+
+		SystemParametersInfo(SPI_SETSTICKYKEYS, sizeof(STICKYKEYS), &sk, 0);
+		SystemParametersInfo(SPI_SETTOGGLEKEYS, sizeof(TOGGLEKEYS), &tk, 0);
+		SystemParametersInfo(SPI_SETFILTERKEYS, sizeof(FILTERKEYS), &fk, 0);
+	}
+	else
+	{
+		//Disable accessibility shortcuts.
+		//If the accessibility feature is on, then leave the settings alone as its probably being usefully used
+
+		STICKYKEYS skOff = s_Data.UserStickyKeys;
+		if((skOff.dwFlags & SKF_STICKYKEYSON) == 0)
+		{
+			skOff.dwFlags &= ~SKF_HOTKEYACTIVE;
+			skOff.dwFlags &= ~SKF_CONFIRMHOTKEY;
+
+			SystemParametersInfo(SPI_SETSTICKYKEYS, sizeof(STICKYKEYS), &skOff, 0);
+		}
+
+		TOGGLEKEYS tkOff = s_Data.UserToggleKeys;
+		if((tkOff.dwFlags & TKF_TOGGLEKEYSON) == 0)
+		{
+			tkOff.dwFlags &= ~TKF_HOTKEYACTIVE;
+			tkOff.dwFlags &= ~TKF_CONFIRMHOTKEY;
+
+			SystemParametersInfo(SPI_SETTOGGLEKEYS, sizeof(TOGGLEKEYS), &tkOff, 0);
+		}
+
+		FILTERKEYS fkOff = s_Data.UserFilterKeys;
+		if((fkOff.dwFlags & FKF_FILTERKEYSON) == 0)
+		{
+			fkOff.dwFlags &= ~FKF_HOTKEYACTIVE;
+			fkOff.dwFlags &= ~FKF_CONFIRMHOTKEY;
+
+			SystemParametersInfo(SPI_SETFILTERKEYS, sizeof(FILTERKEYS), &fkOff, 0);
+		}
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
@@ -2153,6 +2203,13 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 		s_Data.SHCore.SetProcessDPIAwareness(Process_DPI_Awareness::Process_Per_Monitor_DPI_Aware); //Process per monitor DPI aware
 
 	s_Data.User32.SetProcessDPIAware();
+
+	//Store accessibility key states
+	SystemParametersInfo(SPI_GETSTICKYKEYS, sizeof(STICKYKEYS), &s_Data.UserStickyKeys, 0);
+	SystemParametersInfo(SPI_GETTOGGLEKEYS, sizeof(TOGGLEKEYS), &s_Data.UserToggleKeys, 0);
+	SystemParametersInfo(SPI_GETFILTERKEYS, sizeof(FILTERKEYS), &s_Data.UserFilterKeys, 0);
+
+	SetAccessibilityShortcutKeys(false);
 
 	if (!CreateHelperWindow())
 		return false;
@@ -2199,6 +2256,9 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindow(InternalWindow* window)
 void TRAP::INTERNAL::WindowingAPI::PlatformShutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+
+	//Restore accessibility key states
+	SetAccessibilityShortcutKeys(true);
 
 	if (s_Data.DeviceNotificationHandle)
 		UnregisterDeviceNotification(s_Data.DeviceNotificationHandle);
