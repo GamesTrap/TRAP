@@ -3627,3 +3627,4 @@ SITREP 02/13/2023|23w07a3
 
 SITREP 02/14/2023|23w07b1
     - Updated compile_commands.json generator ~<5 mins
+    - Updated Premake-VSCodeGen submodule ~<5 mins
