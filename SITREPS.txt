@@ -3618,3 +3618,6 @@ SITREP 02/12/2023|23w06a2
     - Updated ControllerMappings ~<5 mins
     - Updated Box2D, GLSLang, SPIRV-Cross, Vulkan Memory Allocator ~<10 mins
     - Updated ImGui submodule ~>10 mins
+
+SITREP 02/13/2023|23w06a3
+    - Updated documentation (index.md) ~<5 mins
