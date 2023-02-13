@@ -774,11 +774,6 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		return 0;
 	}
 
-	case WM_ERASEBKGND:
-	{
-		return TRUE;
-	}
-
 	case WM_NCACTIVATE:
 		[[fallthrough]];
 	case WM_NCPAINT:
@@ -1305,6 +1300,7 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScaleWin32(HMONITOR handle, 
 		wc.lpfnWndProc = WindowProc;
 		wc.hInstance = s_Data.Instance;
 		wc.hCursor = ::LoadCursorW(nullptr, IDC_ARROW);
+		wc.hbrBackground = static_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH));
 		wc.lpszClassName = L"TRAP";
 
 		//Load user-provided icon if available
