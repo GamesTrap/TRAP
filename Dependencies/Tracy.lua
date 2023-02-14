@@ -34,3 +34,67 @@ project "TracyClient"
         runtime "Release"
         optimize "Full"
         symbols "On"
+
+    filter "configurations:ASAN"
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=address",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=address",
+			"-static-libasan"
+		}
+
+	filter "configurations:UBSAN"
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=undefined",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=undefined",
+			"-static-libubsan"
+		}
+
+	filter "configurations:LSAN"
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=leak",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=leak"
+		}
+
+	filter "configurations:TSAN"
+		staticruntime "off"
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=thread",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=thread",
+			"-static-libtsan"
+		}

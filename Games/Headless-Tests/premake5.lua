@@ -15,7 +15,9 @@ project "Headless-Tests"
 	files
 	{
 		"src/**.h",
-		"src/**.cpp"
+		"src/**.cpp",
+
+		"%{wks.location}/Games/Sanitizer.cpp"
 	}
 
 	includedirs "%{wks.location}/TRAP/src"
@@ -101,3 +103,87 @@ project "Headless-Tests"
 		runtime "Release"
 		optimize "Full"
 		symbols "On"
+
+	filter "configurations:ASAN"
+		defines
+		{
+			"TRAP_RELWITHDEBINFO",
+			"TRAP_ASAN"
+		}
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=address",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=address",
+			"-static-libasan"
+		}
+
+	filter "configurations:UBSAN"
+		defines
+		{
+			"TRAP_RELWITHDEBINFO",
+			"TRAP_UBSAN"
+		}
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=undefined",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=undefined",
+			"-static-libubsan"
+		}
+
+	filter "configurations:LSAN"
+		defines
+		{
+			"TRAP_RELWITHDEBINFO",
+			"TRAP_LSAN"
+		}
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=leak",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=leak"
+		}
+
+	filter "configurations:TSAN"
+		staticruntime "off"
+		defines
+		{
+			"TRAP_RELWITHDEBINFO",
+			"TRAP_TSAN"
+		}
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=thread",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=thread",
+			"-static-libtsan"
+		}

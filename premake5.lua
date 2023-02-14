@@ -16,6 +16,15 @@ workspace "TRAP"
 		"Profiling"
 	}
 
+	filter "system:linux"
+		configurations
+		{
+			"ASan",
+			"UBSan",
+			"LSan",
+			-- "TSan" -- Not working, crashes in thread from libnvidia-glcore.so
+		}
+
 	flags "MultiProcessorCompile"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"

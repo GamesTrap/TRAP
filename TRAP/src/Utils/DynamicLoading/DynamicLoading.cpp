@@ -16,7 +16,15 @@
 	}
     return handle;
 #elif defined(TRAP_PLATFORM_LINUX)
-	void* handle = dlopen(path.data(), RTLD_LAZY | RTLD_LOCAL);
+
+#if defined(__SANITIZE_LEAK__) || __has_feature(leak_sanitizer) || defined(TRAP_LSAN)
+	//Workaround: This fixes false positives in LeakSanitizer
+	constexpr int32_t mode = RTLD_LAZY | RTLD_LOCAL | RTLD_NODELETE;
+#else
+	constexpr int32_t mode = RTLD_LAZY | RTLD_LOCAL;
+#endif
+
+	void* handle = dlopen(path.data(), mode);
 	if(!handle)
 	{
 		TP_ERROR(Log::UtilsPrefix, "Failed to load library: ", path);

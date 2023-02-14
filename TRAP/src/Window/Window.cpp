@@ -267,6 +267,17 @@ void TRAP::Window::SetTitle(const std::string& title)
 #ifdef TRAP_PLATFORM_LINUX
 		newTitle += "[" + Utils::String::ConvertToString(Utils::GetLinuxWindowManager()) + "]";
 #endif
+
+#if defined(__SANITIZE_ADDRESS__) || __has_feature(address_sanitizer) || defined(TRAP_ASAN)
+		newTitle += "[ASan]";
+#elif defined(__SANITIZE_UNDEFINED__) || __has_feature(undefined_sanitizer) || defined(TRAP_UBSAN)
+		newTitle += "[UBSan]";
+#elif defined(__SANITIZE_LEAK__) || __has_feature(leak_sanitizer) || defined(TRAP_LSAN)
+		newTitle += "[LSan]";
+#elif defined(__SANITIZE_MEMORY__) || __has_feature(memory_sanitizer) || defined(TRAP_MSAN)
+		newTitle += "[MSan]";
+#endif
+
 	//Add additional information to the given title for non release builds
 	INTERNAL::WindowingAPI::SetWindowTitle(m_window, newTitle);
 #else
