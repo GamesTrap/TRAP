@@ -3629,3 +3629,6 @@ SITREP 02/14/2023|23w07b1
     - Updated compile_commands.json generator ~<5 mins
     - Updated Premake-VSCodeGen submodule ~<5 mins
     - Added support for AddressSanitizer, UndefinedBehaviorSanitizer and LeakSanitizer on Linux ~>20 mins
+
+SITREP 02/17/2023|23w07b1
+    - Updated TRAP.gif animation ~<5 mins
