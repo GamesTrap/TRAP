@@ -1544,28 +1544,40 @@
 <h2>3rd Party Libraries used by TRAP™ Engine<a class="headerlink" href="#rd-party-libraries-used-by-trap-engine" title="Permalink to this heading">#</a></h2>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">Required</label><div class="tab-content docutils">
-<p>The following libraries are required to build TRAP™.
+<p>The following libraries/utilities are required to build TRAP™.
 They are provided in the TRAP™ repository.</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/GamesTrap/imgui">ImGui</a></p></li>
-<li><p><a class="reference external" href="https://vulkan.lunarg.com/sdk/home">VulkanSDK</a></p></li>
-<li><p><a class="reference external" href="https://github.com/GamesTrap/glslang">GLSLang</a></p></li>
-<li><p><a class="reference external" href="https://github.com/GamesTrap/SPIRV-Cross">SPIRV-Cross</a></p></li>
+<li><p><a class="reference external" href="https://github.com/erincatto/box2d">Box2D</a></p></li>
 <li><p><a class="reference external" href="https://github.com/skypjack/entt">Entt</a></p></li>
+<li><p><a class="reference external" href="https://github.com/glfw/glfw">GLFW</a> integrated as TRAP::INTERNAL::WindowingAPI</p></li>
+<li><p><a class="reference external" href="https://github.com/g-truc/glm">GLM</a> integrated as TRAP::Math</p></li>
+<li><p><a class="reference external" href="https://github.com/GamesTrap/glslang">GLSLang</a></p></li>
+<li><p><a class="reference external" href="https://github.com/GamesTrap/imgui">ImGui</a></p></li>
+<li><p><a class="reference external" href="https://github.com/CedricGuillemet/ImGuizmo">ImGuizmo</a></p></li>
+<li><p><a class="reference external" href="https://github.com/lvandeve/lodepng">LodePNG</a> integrated as TRAP::INTERNAL::PNGImage and TRAP::Utils::Decompress::Inflate()</p></li>
 <li><p><a class="reference external" href="https://github.com/GamesTrap/ModernDialogs">ModernDialogs</a></p></li>
-<li><p><a class="reference external" href="https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator">VulkanMemoryAllocator</a></p></li>
-<li><p><a class="reference external" href="https://github.com/jbeder/yaml-cpp">YAMLCpp</a></p></li>
-<li><p><a class="reference external" href="https://github.com/gabomdq/SDL_GameControllerDB">SDL_GameControllerDB from gabomdq</a></p></li>
-<li><p><a class="reference external" href="https://github.com/zeux/volk">Volk</a></p></li>
+<li><p><a class="reference external" href="https://github.com/sago007/PlatformFolders">PlatformFolders</a> partially integrated as part of TRAP::FileSystem</p></li>
+<li><p><a class="reference external" href="https://github.com/premake/premake-core">Premake</a> as build system</p></li>
 <li><p><a class="reference external" href="https://github.com/GamesTrap/Premake-VSCodeGen">Premake-VSCodeGen</a></p></li>
+<li><p><a class="reference external" href="https://github.com/phoboslab/qoi">Quite OK Image Format</a></p></li>
+<li><p><a class="reference external" href="https://github.com/gabomdq/SDL_GameControllerDB">SDL_GameControllerDB from gabomdq</a></p></li>
+<li><p><a class="reference external" href="https://github.com/SFML/SFML">SFML</a> partially used as part of TRAP::Network</p></li>
+<li><p><a class="reference external" href="https://github.com/GamesTrap/SPIRV-Cross">SPIRV-Cross</a></p></li>
+<li><p><a class="reference external" href="https://github.com/DeanoC/tiny_imageformat">TinyImageFormat</a> integrated as TRAP::Graphics::API::ImageFormat</p></li>
+<li><p><a class="reference external" href="https://github.com/wolfpld/tracy">Tracy</a> only client integration is used</p></li>
+<li><p><a class="reference external" href="https://github.com/zeux/volk">Volk</a> integrated as VulkanLoader</p></li>
+<li><p><a class="reference external" href="https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator">VulkanMemoryAllocator</a></p></li>
+<li><p><a class="reference external" href="https://vulkan.lunarg.com/sdk/home">VulkanSDK</a></p></li>
+<li><p><a class="reference external" href="https://github.com/jbeder/yaml-cpp">YAMLCpp</a></p></li>
 </ul>
 </div>
 <input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--2">Additional</label><div class="tab-content docutils">
 <p>The following libraries add additional features to TRAP™.</p>
 <p>The user is required to supply these. See the <a class="reference internal" href="pages/buildingtrap.html#additionallibraries"><span class="std std-ref">Additional libraries</span></a> section of the <a class="reference internal" href="pages/buildingtrap.html#buildingtrap"><span class="std std-ref">Building TRAP™</span></a> page for instructions.</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://discord.com/developers/docs/game-sdk/sdk-starter-guide">DiscordGameSDK</a></p></li>
+<li><p><a class="reference external" href="https://discord.com/developers/docs/game-sdk/sdk-starter-guide">Discord Game SDK</a></p></li>
 <li><p><a class="reference external" href="https://developer.nvidia.com/nsight-aftermath">NVIDIA® Nsight™ Aftermath SDK</a></p></li>
+<li><p><a class="reference external" href="https://developer.nvidia.com/performance-rendering-tools/reflex">NVIDIA® Reflex SDK</a></p></li>
 <li><p><a class="reference external" href="https://partner.steamgames.com/doc/sdk">Steamworks SDK</a></p></li>
 </ul>
 </div>

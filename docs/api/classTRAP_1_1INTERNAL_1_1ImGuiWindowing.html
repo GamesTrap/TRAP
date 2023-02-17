@@ -1571,6 +1571,18 @@
 </dd></dl>
 
 <dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8INTERNAL14ImGuiWindowing30SetCallbacksChainForAllWindowsEKb">
+<span id="_CPPv3N4TRAP8INTERNAL14ImGuiWindowing30SetCallbacksChainForAllWindowsEKb"></span><span id="_CPPv2N4TRAP8INTERNAL14ImGuiWindowing30SetCallbacksChainForAllWindowsEKb"></span><span id="TRAP::INTERNAL::ImGuiWindowing::SetCallbacksChainForAllWindows__bC"></span><span class="target" id="classTRAP_1_1INTERNAL_1_1ImGuiWindowing_1ad52f6f30c7651a6e63695aed08be282f"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SetCallbacksChainForAllWindows</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">chainForAllWindows</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP8INTERNAL14ImGuiWindowing30SetCallbacksChainForAllWindowsEKb" title="Permalink to this definition">#</a><br /></dt>
+<dd><p>Set to true to enable chaining installed callbacks for all windows (including secondary viewports created y backends or by user). </p>
+<p>Note: This is false by default meaning we only chain callbacks for the main viewport. We cannot set this to true by default because user callbacks code may not be testing the window parameter of their callback. If you set this to true your user callback code will need to make sure you are testing the window parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>chainForAllWindows</strong> – Whether to enable callback chaining or not.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8INTERNAL14ImGuiWindowing16InstallCallbacksEPN12WindowingAPI14InternalWindowE">
 <span id="_CPPv3N4TRAP8INTERNAL14ImGuiWindowing16InstallCallbacksEPN12WindowingAPI14InternalWindowE"></span><span id="_CPPv2N4TRAP8INTERNAL14ImGuiWindowing16InstallCallbacksEPN12WindowingAPI14InternalWindowE"></span><span id="TRAP::INTERNAL::ImGuiWindowing::InstallCallbacks__WindowingAPI::InternalWindowP"></span><span class="target" id="classTRAP_1_1INTERNAL_1_1ImGuiWindowing_1a55e464308fb75347131a0c733204b40d"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">InstallCallbacks</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="classTRAP_1_1INTERNAL_1_1WindowingAPI.html#_CPPv4N4TRAP8INTERNAL12WindowingAPIE" title="TRAP::INTERNAL::WindowingAPI"><span class="n"><span class="pre">WindowingAPI</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="classTRAP_1_1INTERNAL_1_1WindowingAPI.html#_CPPv4N4TRAP8INTERNAL12WindowingAPI14InternalWindowE" title="TRAP::INTERNAL::WindowingAPI::InternalWindow"><span class="n"><span class="pre">InternalWindow</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">window</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP8INTERNAL14ImGuiWindowing16InstallCallbacksEPN12WindowingAPI14InternalWindowE" title="Permalink to this definition">#</a><br /></dt>
 <dd><p>Install ImGui callbacks. </p>
@@ -1588,6 +1600,20 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>window</strong> – <a class="reference internal" href="classTRAP_1_1Window.html#classTRAP_1_1Window"><span class="std std-ref">Window</span></a> to restore callbacks for.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8INTERNAL14ImGuiWindowing19ShouldChainCallbackEPCKN12WindowingAPI14InternalWindowE">
+<span id="_CPPv3N4TRAP8INTERNAL14ImGuiWindowing19ShouldChainCallbackEPCKN12WindowingAPI14InternalWindowE"></span><span id="_CPPv2N4TRAP8INTERNAL14ImGuiWindowing19ShouldChainCallbackEPCKN12WindowingAPI14InternalWindowE"></span><span id="TRAP::INTERNAL::ImGuiWindowing::ShouldChainCallback__WindowingAPI::InternalWindowCPC"></span><span class="target" id="classTRAP_1_1INTERNAL_1_1ImGuiWindowing_1ad73ad9e85cfcdc10a2b89749e18ffd0f"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ShouldChainCallback</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="classTRAP_1_1INTERNAL_1_1WindowingAPI.html#_CPPv4N4TRAP8INTERNAL12WindowingAPIE" title="TRAP::INTERNAL::WindowingAPI"><span class="n"><span class="pre">WindowingAPI</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="classTRAP_1_1INTERNAL_1_1WindowingAPI.html#_CPPv4N4TRAP8INTERNAL12WindowingAPI14InternalWindowE" title="TRAP::INTERNAL::WindowingAPI::InternalWindow"><span class="n"><span class="pre">InternalWindow</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">window</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP8INTERNAL14ImGuiWindowing19ShouldChainCallbackEPCKN12WindowingAPI14InternalWindowE" title="Permalink to this definition">#</a><br /></dt>
+<dd><p>Check if the given window should chain callbacks. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>window</strong> – <a class="reference internal" href="classTRAP_1_1Window.html#classTRAP_1_1Window"><span class="std std-ref">Window</span></a> to check for chaining.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True or false.</p>
 </dd>
 </dl>
 </dd></dl>
