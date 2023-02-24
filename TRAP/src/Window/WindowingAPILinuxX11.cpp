@@ -2310,42 +2310,49 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdown()
 	{
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.XCB.Handle);
 		s_Data.XCB.Handle = nullptr;
+		s_Data.XCB = {};
 	}
 
 	if(s_Data.XCursor.Handle)
 	{
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.XCursor.Handle);
 		s_Data.XCursor.Handle = nullptr;
+		s_Data.XCursor = {};
 	}
 
 	if(s_Data.RandR.Handle)
 	{
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.RandR.Handle);
 		s_Data.RandR.Handle = nullptr;
+		s_Data.RandR = {};
 	}
 
 	if(s_Data.Xinerama.Handle)
 	{
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.Xinerama.Handle);
 		s_Data.Xinerama.Handle = nullptr;
+		s_Data.Xinerama = {};
 	}
 
 	if(s_Data.XRender.Handle)
 	{
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.XRender.Handle);
 		s_Data.XRender.Handle = nullptr;
+		s_Data.XRender = {};
 	}
 
 	if(s_Data.XI.Handle)
 	{
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.XI.Handle);
 		s_Data.XI.Handle = nullptr;
+		s_Data.XI = {};
 	}
 
 	if(s_Data.XLIB.Handle)
 	{
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.XLIB.Handle);
 		s_Data.XLIB.Handle = nullptr;
+		s_Data.XLIB = {};
 	}
 
 	if(s_Data.DBUS.Handle)
@@ -2359,6 +2366,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdown()
 
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.DBUS.Handle);
 		s_Data.DBUS.Handle = nullptr;
+		s_Data.DBUS = {};
 	}
 
 	if(s_Data.EmptyEventPipe[0] || s_Data.EmptyEventPipe[1])

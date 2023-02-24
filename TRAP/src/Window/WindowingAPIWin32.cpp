@@ -109,13 +109,25 @@ void TRAP::INTERNAL::WindowingAPI::FreeLibraries()
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	if (s_Data.User32.Instance)
+	{
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.User32.Instance);
+		s_Data.User32.Instance = nullptr;
+		s_Data.User32 = {};
+	}
 
 	if (s_Data.DWMAPI_.Instance)
+	{
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.DWMAPI_.Instance);
+		s_Data.DWMAPI_.Instance = nullptr;
+		s_Data.DWMAPI_ = {};
+	}
 
 	if (s_Data.SHCore.Instance)
+	{
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.SHCore.Instance);
+		s_Data.SHCore.Instance = nullptr;
+		s_Data.SHCore = {};
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2035,7 +2047,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	uint32_t modeIndex = 0, size = 0, count = 0;
-	std::vector<InternalVideoMode> result{};
+	std::vector<InternalVideoMode> result{ PlatformGetVideoMode(monitor) }; //HACK: Always return the current video mode
 
 	while(true)
 	{
@@ -2124,13 +2136,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 	}
 
 	result.shrink_to_fit();
-
-	if (!count)
-	{
-		//HACK: Report the current mode if no valid modes were found
-		result.resize(1);
-		result[0] = PlatformGetVideoMode(monitor);
-	}
 
 	return result;
 }
