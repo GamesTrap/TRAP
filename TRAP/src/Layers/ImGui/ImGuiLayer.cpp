@@ -437,9 +437,7 @@ bool ImGui::ImageButton(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& 
 		TRAP::Utils::HashCombine(imgViewHash, imgView);
 		const ImGuiID imgViewID = static_cast<uint32_t>(imgViewHash);
 
-		ImGuiStyle& style = ImGui::GetStyle();
-
-		return ImGui::ImageButtonEx(imgViewID, texID, size, uv0, uv1, style.FramePadding, bg_col, tint_col);
+		return ImGui::ImageButtonEx(imgViewID, texID, size, uv0, uv1, bg_col, tint_col);
 	}
 
 	return false;
