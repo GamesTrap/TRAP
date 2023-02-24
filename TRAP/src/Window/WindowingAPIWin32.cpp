@@ -81,6 +81,14 @@ Modified by: Jan "GamesTrap" Schuerkamp
 																													 "DwmSetWindowAttribute");
 	}
 
+	s_Data.UXTheme.Instance = static_cast<HINSTANCE>(TRAP::Utils::DynamicLoading::LoadLibrary("uxtheme.dll"));
+	if (s_Data.UXTheme.Instance)
+	{
+		s_Data.UXTheme.ShouldAppsUseDarkMode = reinterpret_cast<PFN_ShouldAppsUseDarkMode>(::GetProcAddress(static_cast<HMODULE>(s_Data.UXTheme.Instance), MAKEINTRESOURCEA(132)));
+		s_Data.UXTheme.SetPreferredAppMode = reinterpret_cast<PFN_SetPreferredAppMode>(::GetProcAddress(static_cast<HMODULE>(s_Data.UXTheme.Instance), MAKEINTRESOURCEA(135)));
+		s_Data.UXTheme.DarkModeAvailable = TRAP::Utils::IsWindows10BuildOrGreaterWin32(17763);
+	}
+
 	s_Data.SHCore.Instance = static_cast<HINSTANCE>(TRAP::Utils::DynamicLoading::LoadLibrary("shcore.dll"));
 	if (s_Data.SHCore.Instance)
 	{
@@ -120,6 +128,13 @@ void TRAP::INTERNAL::WindowingAPI::FreeLibraries()
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.DWMAPI_.Instance);
 		s_Data.DWMAPI_.Instance = nullptr;
 		s_Data.DWMAPI_ = {};
+	}
+
+	if (s_Data.UXTheme.Instance)
+	{
+		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.UXTheme.Instance);
+		s_Data.UXTheme.Instance = nullptr;
+		s_Data.UXTheme = {};
 	}
 
 	if (s_Data.SHCore.Instance)
@@ -802,6 +817,14 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		return 0;
 	}
 
+	case WM_THEMECHANGED:
+		[[fallthrough]];
+	case WM_SETTINGCHANGE:
+	{
+		UpdateTheme(windowPtr->Handle);
+		break;
+	}
+
 	case WM_GETDPISCALEDSIZE:
 	{
 		//Adjust the window size to keep the content area size constant
@@ -1251,6 +1274,37 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScaleWin32(HMONITOR handle, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//Update window theme (light/dark)
+void TRAP::INTERNAL::WindowingAPI::UpdateTheme(HWND hWnd)
+{
+	static constexpr DWORD DWMWA_USE_IMMERSIVE_DARK_MODE_UNOFFICIAL = 19;
+	static constexpr DWORD DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
+
+	if(s_Data.UXTheme.DarkModeAvailable && s_Data.UXTheme.ShouldAppsUseDarkMode)
+	{
+		HIGHCONTRASTW hc{};
+		hc.cbSize = sizeof(hc);
+		SystemParametersInfoW(SPI_GETHIGHCONTRAST, sizeof(hc), &hc, 0);
+
+		if (hc.dwFlags & HCF_HIGHCONTRASTON) //High contrast is on so do not set light/dark mode
+			return;
+
+		BOOL dark = 0; //Default to light mode
+
+		if (s_Data.UXTheme.ShouldAppsUseDarkMode()) //Use dark mode
+			dark = 1;
+
+		//Set dark/light mode (official way, Windows 10 build 18362 and later)
+		if(S_OK != s_Data.DWMAPI_.SetWindowAttribute(hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark, sizeof(dark)))
+		{
+			//Try again with undocumented method (pre Windows 10 build 18362)
+			s_Data.DWMAPI_.SetWindowAttribute(hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE_UNOFFICIAL, &dark, sizeof(dark));
+		}
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 //Returns the window style for the specified window
 [[nodiscard]] DWORD TRAP::INTERNAL::WindowingAPI::GetWindowStyle(const InternalWindow* window)
 {
@@ -1392,20 +1446,6 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScaleWin32(HMONITOR handle, 
 			s_Data.User32.ChangeWindowMessageFilterEx(window->Handle, window->TaskbarListMsgID, MSGFLT_ALLOW, nullptr);
 	}
 
-	if (Utils::IsWindows10BuildOrGreaterWin32(10240)) //First Windows 10 version
-	{
-		//Enable Immersive dark mode (using pre-official method)
-		static constexpr DWORD DWMWA_USE_IMMERSIVE_DARK_MODE_UNOFFICIAL = 19;
-		static constexpr BOOL useDarkMode = true;
-		s_Data.DWMAPI_.SetWindowAttribute(window->Handle, DWMWA_USE_IMMERSIVE_DARK_MODE_UNOFFICIAL, &useDarkMode, sizeof(useDarkMode));
-	}
-	else if (Utils::IsWindows11BuildOrGreaterWin32(22000)) //First Windows 11 version
-	{
-		//Enable Immersive dark mode (using official method)
-		static constexpr BOOL useDarkMode = true;
-		s_Data.DWMAPI_.SetWindowAttribute(window->Handle, DWMWA_USE_IMMERSIVE_DARK_MODE, &useDarkMode, sizeof(useDarkMode));
-	}
-
 	if (!window->Monitor)
 	{
 		RECT rect = { 0, 0, static_cast<LONG>(WNDConfig.Width), static_cast<LONG>(WNDConfig.Height) };
@@ -1449,6 +1489,8 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScaleWin32(HMONITOR handle, 
 	}
 
 	PlatformGetWindowSize(window, window->Width, window->Height);
+
+	UpdateTheme(window->Handle);
 
 	return true;
 }
@@ -2215,6 +2257,10 @@ void TRAP::INTERNAL::WindowingAPI::SetAccessibilityShortcutKeys(const bool allow
 	SystemParametersInfo(SPI_GETFILTERKEYS, sizeof(FILTERKEYS), &s_Data.UserFilterKeys, 0);
 
 	SetAccessibilityShortcutKeys(false);
+
+	//Enable dark mode support, prior to window creation
+	if(s_Data.UXTheme.SetPreferredAppMode)
+		s_Data.UXTheme.SetPreferredAppMode(PreferredAppMode::AllowDark);
 
 	if (!CreateHelperWindow())
 		return false;

@@ -3638,3 +3638,4 @@ SITREP 02/17/2023|23w07c1
 SITREP 02/24/2023|23w08a1
     - Changed TRAP Engine version to 23w08a1(0.8.96)
     - WindowingAPIWin32 PlatformGetVideoModes() now always returns the currently used video mode ~<5 mins
+    - WindowingAPIWin32 Updated dark/light mode handling ~>15 mins
