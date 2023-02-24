@@ -5,8 +5,6 @@
 #include <Core/Base.h>
 #include <Scene/Entity.h>
 
-#include "PropertiesPanel.h"
-
 namespace TRAP
 {
 	class SceneGraphPanel
@@ -18,12 +16,19 @@ namespace TRAP
 		void SetContext(const Ref<Scene>& context);
 
 		void OnImGuiRender();
+
+		void SetSelectedEntity(const Entity& entity);
+		Entity GetSelectedEntity() const;
+
 	private:
+		template<typename T>
+		void DisplayAddComponentEntry(const std::string& entryName);
+
 		void DrawEntityNode(Entity entity);
+		void DrawComponents(Entity entity);
 
 		Ref<Scene> m_context;
 		Entity m_selectionContext;
-		PropertiesPanel m_propertiesPanel;
 	};
 }
 

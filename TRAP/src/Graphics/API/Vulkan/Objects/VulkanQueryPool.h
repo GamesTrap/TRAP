@@ -24,35 +24,35 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanQueryPool(const VulkanQueryPool&) = default;
+		VulkanQueryPool(const VulkanQueryPool&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanQueryPool& operator=(const VulkanQueryPool&) = default;
+		VulkanQueryPool& operator=(const VulkanQueryPool&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanQueryPool(VulkanQueryPool&&) = default;
+		VulkanQueryPool(VulkanQueryPool&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanQueryPool& operator=(VulkanQueryPool&&) = default;
+		VulkanQueryPool& operator=(VulkanQueryPool&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the Vulkan query pool handle.
 		/// </summary>
 		/// <returns>Vulkan query pool handle</returns>
-		VkQueryPool GetVkQueryPool() const;
+		[[nodiscard]] VkQueryPool GetVkQueryPool() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan query type.
 		/// </summary>
 		/// <returns>Vulkan query type</returns>
-		VkQueryType GetVkQueryType() const;
+		[[nodiscard]] VkQueryType GetVkQueryType() const noexcept;
 		/// <summary>
 		/// Retrieve the number of queries managed by the pool.
 		/// </summary>
 		/// <returns>Number of queries</returns>
-		uint32_t GetCount() const;
+		[[nodiscard]] uint32_t GetCount() const noexcept;
 
 	private:
 		VkQueryPool m_vkQueryPool;

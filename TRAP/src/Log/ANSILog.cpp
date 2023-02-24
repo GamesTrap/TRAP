@@ -3,15 +3,17 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Log::IsColorTerminal() noexcept
+[[nodiscard]] bool TRAP::Log::IsColorTerminal()
 {
+	ZoneScoped;
+
 	static constexpr std::array<const char*, 14> Terms =
 	{
 		"ansi", "color", "console", "cygwin", "gnome",
 		"konsole", "kterm", "linux", "msys", "putty",
 		"rxvt", "screen", "vt100", "xterm"
 	};
-	const char* envP = std::getenv("TERM");
+	const char* const envP = std::getenv("TERM");
 	if (envP == nullptr)
 		return false;
 

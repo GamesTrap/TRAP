@@ -12,6 +12,8 @@
 #include <sstream>
 #include <filesystem>
 
+#include "Maths/Types.h"
+
 namespace TRAP
 {
 	/// <summary>
@@ -54,27 +56,39 @@ namespace TRAP
 		/// Get the current used file path for saving.
 		/// </summary>
 		/// <returns>File path.</returns>
-		const std::filesystem::path& GetFilePath() const;
+		[[nodiscard]] const std::filesystem::path& GetFilePath() const noexcept;
 		/// <summary>
 		/// Set the file path used for saving.
 		///
 		///	Logs files are always saved in the format: "<FileName>-YYYY-MM-DDTHH-MM-SS.<FileEnding>"
 		/// </summary>
 		/// <param name="filePath">File path.</param>
-		void SetFilePath(const std::filesystem::path& filePath);
+		void SetFilePath(const std::filesystem::path& filePath) noexcept;
 
 		/// <summary>
 		/// Importance levels.
 		/// </summary>
 		enum class Level
 		{
-			Trace,
-			Debug,
-			Info,
-			Warn,
-			Error,
-			Critical
+			None = 0x00,
+			Trace = 0x01,
+			Debug = 0x02,
+			Info = 0x04,
+			Warn = 0x08,
+			Error = 0x10,
+			Critical = 0x20
 		};
+
+		/// <summary>
+		/// Set the importance level for the log messages.
+		/// Messages that are blow the given importance level
+		/// won't be printed to the console.
+		///
+		/// Note: All messages are saved in the log file regardless
+		///       off the importance level.
+		/// </summary>
+		/// <param name="level">Importance level to use.</param>
+		void SetImportance(Level level) noexcept;
 
 		/// <summary>
 		/// Log a trace message.
@@ -122,7 +136,7 @@ namespace TRAP
 		/// Get all saved log messages and their associated importance level.
 		/// </summary>
 		/// <returns>Messages with importance level.</returns>
-		const std::vector<std::pair<Level, std::string>>& GetBuffer() const;
+		[[nodiscard]] const std::vector<std::pair<Level, std::string>>& GetBuffer() const noexcept;
 
 		/// <summary>
 		/// Save all collected messages to file.
@@ -131,9 +145,9 @@ namespace TRAP
 		/// <summary>
 		/// Clears all buffered messages.
 		/// </summary>
-		void Clear();
+		void Clear() noexcept;
 
-		inline static constexpr auto WindowVersion =                        "[22w32a1]";
+		inline static constexpr auto WindowVersion =                        "[23w07c1]";
 		inline static constexpr auto WindowPrefix =                         "[Window] ";
 		inline static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		inline static constexpr auto ConfigPrefix =                         "[Config] ";
@@ -146,6 +160,8 @@ namespace TRAP
 		inline static constexpr auto TextureManagerTexture2DPrefix =        "[TextureManager][Texture2D] ";
 		inline static constexpr auto TextureManagerTextureCubePrefix =      "[TextureManager][TextureCube] ";
 		inline static constexpr auto TexturePrefix =                        "[Texture] ";
+		inline static constexpr auto SpriteManagerPrefix =                  "[SpriteManager] ";
+		inline static constexpr auto SpriteAnimationPrefix =                "[SpriteAnimation] ";
 		inline static constexpr auto EngineLinuxPrefix =                    "[Engine][Linux] ";
 		inline static constexpr auto EngineLinuxX11Prefix =                 "[Engine][Linux][X11] ";
 		inline static constexpr auto EngineLinuxWaylandPrefix =             "[Engine][Linux][Wayland] ";
@@ -153,6 +169,7 @@ namespace TRAP
 		inline static constexpr auto FileSystemPrefix =                     "[FileSystem] ";
 		inline static constexpr auto FileWatcherWindowsPrefix =             "[FileWatcher][Windows] ";
 		inline static constexpr auto FileWatcherLinuxPrefix =               "[FileWatcher][Linux] ";
+		inline static constexpr auto FileWatcherPrefix =                    "[FileWatcher] ";
 		inline static constexpr auto InstrumentorPrefix =                   "[Instrumentor] ";
 		inline static constexpr auto LoggerPrefix =                         "[Logger] ";
 		inline static constexpr auto LayerStackPrefix =                     "[LayerStack] ";
@@ -193,6 +210,7 @@ namespace TRAP
 		inline static constexpr auto RendererSwapChainPrefix =              "[Renderer][SwapChain] ";
 		inline static constexpr auto RendererAftermathTrackerPrefix =       "[Renderer][AftermathTracker] ";
 		inline static constexpr auto RendererVulkanPrefix =                 "[Renderer][Vulkan] ";
+		inline static constexpr auto RendererVulkanReflexPrefix =           "[Renderer][Vulkan][Reflex] ";
 		inline static constexpr auto RendererVulkanDevicePrefix =           "[Renderer][Vulkan][Device] ";
 		inline static constexpr auto RendererVulkanPhysicalDevicePrefix =   "[Renderer][Vulkan][PhysicalDevice] ";
 		inline static constexpr auto RendererVulkanDescriptorPoolPrefix =   "[Renderer][Vulkan][DescriptorPool] ";
@@ -229,24 +247,26 @@ namespace TRAP
 		inline static constexpr auto NetworkSocketUnixPrefix =              "[Network][Socket][Unix] ";
 		inline static constexpr auto SceneSerializerPrefix =                "[SceneSerializer] ";
 		inline static constexpr auto DiscordGameSDKPrefix =                 "[Discord] ";
+		inline static constexpr auto SteamworksSDKPrefix =                  "[Steam] ";
 		inline static constexpr auto HotReloadingPrefix =                   "[HotReloading] ";
 		inline static constexpr auto UtilsStringPrefix =                    "[Utils][String] ";
+		inline static constexpr auto UtilsPrefix =                          "[Utils] ";
 
 #ifdef TRAP_PLATFORM_WINDOWS
 	private:
 		/// <summary>
 		/// Retrieves information about the specified console screen buffer.
 		/// </summary>
-		static void GetInfo();
+		static void GetInfo() noexcept;
 		/// <summary>
 		/// Set the new color for the following console output.
 		/// </summary>
 		/// <param name="wRGBI">New console color.</param>
-		static void SetColor(WORD wRGBI);
+		static void SetColor(WORD wRGBI) noexcept;
 		/// <summary>
 		/// Reset the console color to the default for the following output.
 		/// </summary>
-		static void ResetColor();
+		static void ResetColor() noexcept;
 
 		static HANDLE m_handleConsole;
 		static CONSOLE_SCREEN_BUFFER_INFO m_csbi;
@@ -255,28 +275,45 @@ namespace TRAP
 		/// <summary>
 		/// Check whether the terminal supports ANSI color codes.
 		/// </summary>
-		static bool IsColorTerminal() noexcept;
+		[[nodiscard]] static bool IsColorTerminal();
 #endif
 		/// <summary>
 		/// Get a time stamp with [HH:MM:SS] format.
 		/// </summary>
 		/// <returns>Time stamp as a string.</returns>
-		static std::string GetTimeStamp();
+		[[nodiscard]] static std::string GetTimeStamp();
 		/// <summary>
 		/// Get a date time stamp with YYYY-MM-DDTHH-MM-SS format.
 		/// </summary>
 		/// <returns>Time stamp as a string.</returns>
-		static std::string GetDateTimeStamp();
+		[[nodiscard]] static std::string GetDateTimeStamp();
 
 		std::vector<std::pair<Level, std::string>> m_buffer{};
 
 		std::mutex m_mtx;
 
 		std::filesystem::path m_path;
+
+		Level m_importance;
 	};
 
 	extern Log TRAPLog;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+static constexpr inline TRAP::Log::Level operator|(const TRAP::Log::Level a, const TRAP::Log::Level b) noexcept
+{
+	return static_cast<TRAP::Log::Level>(static_cast<std::underlying_type<TRAP::Log::Level>::type>(a) |
+		static_cast<std::underlying_type<TRAP::Log::Level>::type>(b));
+}
+static constexpr inline TRAP::Log::Level operator&(const TRAP::Log::Level a, const TRAP::Log::Level b) noexcept
+{
+	return static_cast<TRAP::Log::Level>(static_cast<std::underlying_type<TRAP::Log::Level>::type>(a) &
+		static_cast<std::underlying_type<TRAP::Log::Level>::type>(b));
+}
+static constexpr inline TRAP::Log::Level operator|=(TRAP::Log::Level& a, const TRAP::Log::Level b) noexcept { return a = (a | b); }
+static constexpr inline TRAP::Log::Level operator&=(TRAP::Log::Level& a, const TRAP::Log::Level b) noexcept { return a = (a & b); }
 
 //-------------------------------------------------------------------------------------------------------------------//
 

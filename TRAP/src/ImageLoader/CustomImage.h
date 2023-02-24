@@ -2,8 +2,6 @@
 #define TRAP_CUSTOMIMAGE_H
 
 #include "Image.h"
-#include "Embed.h"
-#include "Utils/Profiler/Instrumentor.h"
 
 namespace TRAP::INTERNAL
 {
@@ -24,19 +22,19 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		CustomImage(const CustomImage&) = default;
+		CustomImage(const CustomImage&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		CustomImage& operator=(const CustomImage&) = default;
+		CustomImage& operator=(const CustomImage&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		CustomImage(CustomImage&&) = default;
+		CustomImage(CustomImage&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		CustomImage& operator=(CustomImage&&) = default;
+		CustomImage& operator=(CustomImage&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -46,12 +44,12 @@ namespace TRAP::INTERNAL
 		/// Retrieve the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Constant pointer to the raw pixel data.</returns>
-		const void* GetPixelData() const override;
+		[[nodiscard]] const void* GetPixelData() const noexcept override;
 		/// <summary>
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		uint64_t GetPixelDataSize() const override;
+		[[nodiscard]] uint64_t GetPixelDataSize() const noexcept override;
 
 	private:
 		std::vector<uint8_t> m_data;
@@ -65,19 +63,19 @@ TRAP::INTERNAL::CustomImage::CustomImage(std::filesystem::path filepath, const u
                                          const ColorFormat format, std::vector<T> pixelData)
 	: m_data(), m_data2Byte(), m_dataHDR()
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	static_assert(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
 	              std::is_same<T, float>::value, "Invalid type!");
 
 	if (format == ColorFormat::NONE)
 	{
-		TRAP_ASSERT(false, "Invalid color format!");
+		TRAP_ASSERT(false, "CustomImage(): Invalid color format!");
 		return;
 	}
 	if (pixelData.empty())
 	{
-		TRAP_ASSERT(false, "Invalid pixel data provided!");
+		TRAP_ASSERT(false, "CustomImage(): Invalid pixel data provided!");
 		return;
 	}
 

@@ -13,30 +13,63 @@ TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc
 	  m_vkSamplerYcbcrConversion(),
 	  m_vkSamplerYcbcrConversionInfo()
 {
-	TRAP_ASSERT(m_device, "device is nullptr");
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+	TRAP_ASSERT(m_device, "VulkanSampler(): Vulkan Device is nullptr");
+
+	m_samplerDesc = desc;
+
+	Init();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::VulkanSampler::~VulkanSampler()
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	Shutdown();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] VkSampler TRAP::Graphics::API::VulkanSampler::GetVkSampler() const noexcept
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	return m_vkSampler;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanSampler::UpdateAnisotropy(const float anisotropy)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	m_samplerDesc.OverrideAnisotropyLevel = anisotropy;
+
+	Shutdown();
+	Init();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanSampler::Init()
+{
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSamplerPrefix, "Creating Sampler");
 #endif
 
-	m_samplerDesc = desc;
-
-	if(m_samplerDesc.MaxAnisotropy > RendererAPI::GPUSettings.MaxAnisotropy)
-	{
-		TP_ERROR(Log::RendererVulkanSamplerPrefix, "Sampler Anisotropy is greater than the maximum supported by the GPU! Clamping to GPU maximum");
-		m_samplerDesc.MaxAnisotropy = RendererAPI::GPUSettings.MaxAnisotropy;
-	}
-
 	//Default sampler lod values
 	//Used if not overriden by SetLogRange or not Linear mipmaps
 	float minSamplerLod = 0;
-	float maxSampledLod = desc.MipMapMode == RendererAPI::MipMapMode::Linear ? VK_LOD_CLAMP_NONE : 0;
+	float maxSampledLod = m_samplerDesc.MipMapMode == RendererAPI::MipMapMode::Linear ? VK_LOD_CLAMP_NONE : 0;
 
 	//User provided lods
-	if(desc.SetLodRange)
+	if(m_samplerDesc.SetLodRange)
 	{
-		minSamplerLod = desc.MinLod;
-		maxSampledLod = desc.MaxLod;
+		minSamplerLod = m_samplerDesc.MinLod;
+		maxSampledLod = m_samplerDesc.MaxLod;
 	}
 
 	VkSamplerCreateInfo info = VulkanInits::SamplerCreateInfo(FilterTypeToVkFilter(m_samplerDesc.MagFilter),
@@ -48,7 +81,7 @@ TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc
 		                                                      m_samplerDesc.MipLodBias,
 															  minSamplerLod,
 															  maxSampledLod,
-		                                                      m_samplerDesc.MaxAnisotropy,
+		                                                      m_samplerDesc.EnableAnisotropy ? m_samplerDesc.OverrideAnisotropyLevel : 0.0f,
 		                                                      VkComparisonFuncTranslator[static_cast<uint32_t>(m_samplerDesc.CompareFunc)]);
 
 	if(!TRAP::Graphics::API::ImageFormatIsPlanar(m_samplerDesc.SamplerConversionDesc.Format))
@@ -62,18 +95,16 @@ TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc
 
 	//Check format props
 	{
-		TRAP_ASSERT(VulkanRenderer::s_samplerYcbcrConversionExtension);
+		TRAP_ASSERT(VulkanRenderer::s_samplerYcbcrConversionExtension, "VulkanSampler(): Sampler YCbCr Conversion Extension is not supported by this device!");
 
-		VkFormatProperties formatProps{};
-		vkGetPhysicalDeviceFormatProperties(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(), format,
-											&formatProps);
+		const VkFormatProperties formatProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(format);
 		if(conversionDesc.ChromaOffsetX == RendererAPI::SampleLocation::Midpoint)
 		{
-			TRAP_ASSERT(formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_MIDPOINT_CHROMA_SAMPLES_BIT);
+			TRAP_ASSERT(formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_MIDPOINT_CHROMA_SAMPLES_BIT, "VulkanSampler(): Format does not support Midpoint Chroma Sampling!");
 		}
 		else if(conversionDesc.ChromaOffsetX == RendererAPI::SampleLocation::Cosited)
 		{
-			TRAP_ASSERT(formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_COSITED_CHROMA_SAMPLES_BIT);
+			TRAP_ASSERT(formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_COSITED_CHROMA_SAMPLES_BIT, "VulkanSampler(): Format does not support Cosited Chroma Sampling!");
 		}
 	}
 
@@ -99,14 +130,13 @@ TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc
 	info.pNext = &m_vkSamplerYcbcrConversionInfo;
 
 	VkCall(vkCreateSampler(m_device->GetVkDevice(), &info, nullptr, &m_vkSampler));
+	TRAP_ASSERT(m_vkSampler, "VulkanSampler(): Vulkan Sampler is nullptr!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanSampler::~VulkanSampler()
+void TRAP::Graphics::API::VulkanSampler::Shutdown()
 {
-	TRAP_ASSERT(m_vkSampler);
-
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSamplerPrefix, "Destroying Sampler");
 #endif
@@ -115,11 +145,4 @@ TRAP::Graphics::API::VulkanSampler::~VulkanSampler()
 
 	if(m_vkSamplerYcbcrConversion != VK_NULL_HANDLE)
 		vkDestroySamplerYcbcrConversion(m_device->GetVkDevice(), m_vkSamplerYcbcrConversion, nullptr);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-VkSampler TRAP::Graphics::API::VulkanSampler::GetVkSampler() const
-{
-	return m_vkSampler;
 }

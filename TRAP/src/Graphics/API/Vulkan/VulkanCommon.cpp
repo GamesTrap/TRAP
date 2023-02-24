@@ -12,6 +12,8 @@
 void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[maybe_unused]] const uint64_t handle,
 										  [[maybe_unused]] const VkObjectType type, [[maybe_unused]] const std::string_view name)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 #if defined(ENABLE_GRAPHICS_DEBUG)
 	if (VulkanRenderer::s_debugUtilsExtension)
 	{
@@ -38,9 +40,11 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Determines pipeline stages involved for given accesses
-VkPipelineStageFlags TRAP::Graphics::API::DetermineVkPipelineStageFlags(const VkAccessFlags accessFlags,
-                                                                        const RendererAPI::QueueType queueType)
+[[nodiscard]] VkPipelineStageFlags TRAP::Graphics::API::DetermineVkPipelineStageFlags(const VkAccessFlags accessFlags,
+                                                                                      const RendererAPI::QueueType queueType) noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	VkPipelineStageFlags flags = 0;
 
 	switch(queueType)
@@ -121,9 +125,11 @@ VkPipelineStageFlags TRAP::Graphics::API::DetermineVkPipelineStageFlags(const Vk
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc,
-	                                                                     std::vector<VkPipelineColorBlendAttachmentState>& attachments)
+[[nodiscard]] VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc,
+	                                                                                   std::vector<VkPipelineColorBlendAttachmentState>& attachments)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	int32_t blendDescIndex = 0;
 
 #ifdef ENABLE_GRAPHICS_DEBUG
@@ -131,12 +137,12 @@ VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const R
 	{
 		if(static_cast<uint32_t>(desc.RenderTargetMask) & (1 << i))
 		{
-			TRAP_ASSERT(desc.SrcFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS);
-			TRAP_ASSERT(desc.DstFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS);
-			TRAP_ASSERT(desc.SrcAlphaFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS);
-			TRAP_ASSERT(desc.DstAlphaFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS);
-			TRAP_ASSERT(desc.BlendModes[blendDescIndex] < RendererAPI::BlendMode::MAX_BLEND_MODES);
-			TRAP_ASSERT(desc.BlendAlphaModes[blendDescIndex] < RendererAPI::BlendMode::MAX_BLEND_MODES);
+			TRAP_ASSERT(desc.SrcFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS, "UtilToBlendDesc(): Invalid SrcFactor!");
+			TRAP_ASSERT(desc.DstFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS, "UtilToBlendDesc(): Invalid DstFactor!");
+			TRAP_ASSERT(desc.SrcAlphaFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS, "UtilToBlendDesc(): Invalid SrcAlphaFactor!");
+			TRAP_ASSERT(desc.DstAlphaFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS, "UtilToBlendDesc(): Invalid DstAlphaFactor!");
+			TRAP_ASSERT(desc.BlendModes[blendDescIndex] < RendererAPI::BlendMode::MAX_BLEND_MODES, "UtilToBlendDesc(): Invalid BlendMode!");
+			TRAP_ASSERT(desc.BlendAlphaModes[blendDescIndex] < RendererAPI::BlendMode::MAX_BLEND_MODES, "UtilToBlendDesc(): Invalid BlendAlphaMode!");
 		}
 
 		if (desc.IndependentBlend)
@@ -148,25 +154,22 @@ VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const R
 
 	for(int32_t i = 0; i < 8; ++i)
 	{
-		if (static_cast<uint32_t>(desc.RenderTargetMask) & (1 << i))
-		{
-			const VkBool32 blendEnable =
-			(
-				VkBlendConstantTranslator[static_cast<uint32_t>(desc.SrcFactors[blendDescIndex])] != VK_BLEND_FACTOR_ONE ||
-			    VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstFactors[blendDescIndex])] != VK_BLEND_FACTOR_ZERO ||
-			    VkBlendConstantTranslator[static_cast<uint32_t>(desc.SrcAlphaFactors[blendDescIndex])] != VK_BLEND_FACTOR_ONE ||
-			    VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstAlphaFactors[blendDescIndex])] != VK_BLEND_FACTOR_ZERO
-			);
+		const VkBool32 blendEnable =
+		(
+			VkBlendConstantTranslator[static_cast<uint32_t>(desc.SrcFactors[blendDescIndex])] != VK_BLEND_FACTOR_ONE ||
+			VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstFactors[blendDescIndex])] != VK_BLEND_FACTOR_ZERO ||
+			VkBlendConstantTranslator[static_cast<uint32_t>(desc.SrcAlphaFactors[blendDescIndex])] != VK_BLEND_FACTOR_ONE ||
+			VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstAlphaFactors[blendDescIndex])] != VK_BLEND_FACTOR_ZERO
+		);
 
-			attachments[i].blendEnable = blendEnable;
-			attachments[i].colorWriteMask = desc.Masks[blendDescIndex];
-			attachments[i].srcColorBlendFactor = VkBlendConstantTranslator[static_cast<uint32_t>(desc.SrcFactors[blendDescIndex])];
-			attachments[i].dstColorBlendFactor = VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstFactors[blendDescIndex])];
-			attachments[i].colorBlendOp = VkBlendOpTranslator[static_cast<uint32_t>(desc.BlendModes[blendDescIndex])];
-			attachments[i].srcAlphaBlendFactor = VkBlendConstantTranslator[static_cast<uint32_t>(desc.SrcAlphaFactors[blendDescIndex])];
-			attachments[i].dstAlphaBlendFactor = VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstAlphaFactors[blendDescIndex])];
-			attachments[i].alphaBlendOp = VkBlendOpTranslator[static_cast<uint32_t>(desc.BlendAlphaModes[blendDescIndex])];
-		}
+		attachments[i].blendEnable = blendEnable && (static_cast<uint32_t>(desc.RenderTargetMask) & (1 << i));
+		attachments[i].colorWriteMask = desc.Masks[blendDescIndex];
+		attachments[i].srcColorBlendFactor = VkBlendConstantTranslator[static_cast<uint32_t>(desc.SrcFactors[blendDescIndex])];
+		attachments[i].dstColorBlendFactor = VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstFactors[blendDescIndex])];
+		attachments[i].colorBlendOp = VkBlendOpTranslator[static_cast<uint32_t>(desc.BlendModes[blendDescIndex])];
+		attachments[i].srcAlphaBlendFactor = VkBlendConstantTranslator[static_cast<uint32_t>(desc.SrcAlphaFactors[blendDescIndex])];
+		attachments[i].dstAlphaBlendFactor = VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstAlphaFactors[blendDescIndex])];
+		attachments[i].alphaBlendOp = VkBlendOpTranslator[static_cast<uint32_t>(desc.BlendAlphaModes[blendDescIndex])];
 
 		if (desc.IndependentBlend)
 			++blendDescIndex;
@@ -177,17 +180,19 @@ VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const R
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineDepthStencilStateCreateInfo TRAP::Graphics::API::UtilToDepthDesc(const RendererAPI::DepthStateDesc& desc)
+[[nodiscard]] VkPipelineDepthStencilStateCreateInfo TRAP::Graphics::API::UtilToDepthDesc(const RendererAPI::DepthStateDesc& desc)
 {
-	TRAP_ASSERT(desc.DepthFunc < RendererAPI::CompareMode::MAX_COMPARE_MODES);
-	TRAP_ASSERT(desc.StencilFrontFunc < RendererAPI::CompareMode::MAX_COMPARE_MODES);
-	TRAP_ASSERT(desc.StencilFrontFail < RendererAPI::StencilOp::MAX_STENCIL_OPS);
-	TRAP_ASSERT(desc.DepthFrontFail < RendererAPI::StencilOp::MAX_STENCIL_OPS);
-	TRAP_ASSERT(desc.StencilFrontPass < RendererAPI::StencilOp::MAX_STENCIL_OPS);
-	TRAP_ASSERT(desc.StencilBackFunc < RendererAPI::CompareMode::MAX_COMPARE_MODES);
-	TRAP_ASSERT(desc.StencilBackFail < RendererAPI::StencilOp::MAX_STENCIL_OPS);
-	TRAP_ASSERT(desc.DepthBackFail < RendererAPI::StencilOp::MAX_STENCIL_OPS);
-	TRAP_ASSERT(desc.StencilBackPass < RendererAPI::StencilOp::MAX_STENCIL_OPS);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(desc.DepthFunc < RendererAPI::CompareMode::MAX_COMPARE_MODES, "UtilToDepthDesc(): Invalid DepthFunc!");
+	TRAP_ASSERT(desc.StencilFrontFunc < RendererAPI::CompareMode::MAX_COMPARE_MODES, "UtilToDepthDesc(): Invalid StencilFrontFunc!");
+	TRAP_ASSERT(desc.StencilFrontFail < RendererAPI::StencilOp::MAX_STENCIL_OPS, "UtilToDepthDesc(): Invalid StencilFrontFail!");
+	TRAP_ASSERT(desc.DepthFrontFail < RendererAPI::StencilOp::MAX_STENCIL_OPS, "UtilToDepthDesc(): Invalid DepthFrontFail!");
+	TRAP_ASSERT(desc.StencilFrontPass < RendererAPI::StencilOp::MAX_STENCIL_OPS, "UtilToDepthDesc(): Invalid StencilFrontPass!");
+	TRAP_ASSERT(desc.StencilBackFunc < RendererAPI::CompareMode::MAX_COMPARE_MODES, "UtilToDepthDesc(): Invalid StencilBackFunc!");
+	TRAP_ASSERT(desc.StencilBackFail < RendererAPI::StencilOp::MAX_STENCIL_OPS, "UtilToDepthDesc(): Invalid StencilBackFail!");
+	TRAP_ASSERT(desc.DepthBackFail < RendererAPI::StencilOp::MAX_STENCIL_OPS, "UtilToDepthDesc(): Invalid DepthBackFail!");
+	TRAP_ASSERT(desc.StencilBackPass < RendererAPI::StencilOp::MAX_STENCIL_OPS, "UtilToDepthDesc(): Invalid StencilBackPass!");
 
 	VkPipelineDepthStencilStateCreateInfo ds{};
 	ds.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
@@ -223,12 +228,12 @@ VkPipelineDepthStencilStateCreateInfo TRAP::Graphics::API::UtilToDepthDesc(const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::UtilToRasterizerDesc(const RendererAPI::RasterizerStateDesc& desc)
+[[nodiscard]] VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::UtilToRasterizerDesc(const RendererAPI::RasterizerStateDesc& desc)
 {
-	TRAP_ASSERT(desc.FillMode < RendererAPI::FillMode::MAX_FILL_MODES);
-	TRAP_ASSERT(desc.CullMode < RendererAPI::CullMode::MAX_CULL_MODES);
-	TRAP_ASSERT(desc.FrontFace == RendererAPI::FrontFace::CounterClockwise ||
-	            desc.FrontFace == RendererAPI::FrontFace::Clockwise);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(desc.FillMode < RendererAPI::FillMode::MAX_FILL_MODES, "UtilToRasterizerDesc(): Invalid FillMode!");
+	TRAP_ASSERT(desc.CullMode < RendererAPI::CullMode::MAX_CULL_MODES, "UtilToRasterizerDesc(): Invalid CullMode!");
 
 	VkPipelineRasterizationStateCreateInfo rs{};
 	rs.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
@@ -255,6 +260,8 @@ void TRAP::Graphics::API::UtilGetPlanarVkImageMemoryRequirement(VkDevice device,
                                                                 VkMemoryRequirements& memReq,
                                                                 std::vector<uint64_t>& planesOffsets)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	memReq = {};
 
 	VkImagePlaneMemoryRequirementsInfo imagePlaneMemReqInfo;
@@ -288,9 +295,11 @@ void TRAP::Graphics::API::UtilGetPlanarVkImageMemoryRequirement(VkDevice device,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::VulkanGetRecommendedSwapchainFormat(const bool /*HDR*/,
-																						  const bool SRGB)
+[[nodiscard]] TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::VulkanGetRecommendedSwapchainFormat(const bool /*HDR*/,
+																						                const bool SRGB) noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 #if !defined(TRAP_PLATFORM_ANDROID)
 	if(SRGB)
 		return TRAP::Graphics::API::ImageFormat::B8G8R8A8_SRGB;

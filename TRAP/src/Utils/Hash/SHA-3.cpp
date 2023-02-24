@@ -2,7 +2,7 @@
 #include "SHA-3.h"
 #include "TRAP_Assert.h"
 
-constexpr std::array<uint64_t, 24> RC =
+static constexpr std::array<uint64_t, 24> RC =
 {
 	0x0000000000000001, 0x0000000000008082, 0x800000000000808A, 0x8000000080008000,
 	0x000000000000808B, 0x0000000080000001, 0x8000000080008081, 0x8000000000008009,
@@ -14,11 +14,14 @@ constexpr std::array<uint64_t, 24> RC =
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<class T> T Rotatel64(const T x, const int64_t y)
+template<class T>
+[[nodiscard]] T Rotatel64(const T x, const int64_t y)
 {
-	static const uint32_t thisSize = sizeof(T) * 8;
-	static const uint32_t mask = thisSize - 1;
-	TRAP_ASSERT(y < thisSize);
+    ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	constexpr uint32_t thisSize = sizeof(T) * 8;
+	constexpr uint32_t mask = thisSize - 1;
+	TRAP_ASSERT(y < thisSize, "Rotatel64(): y must be less than the size of the type!");
 
 	return T((x << y) | (x >> (-y & mask)));
 }
@@ -27,6 +30,8 @@ template<class T> T Rotatel64(const T x, const int64_t y)
 
 void DoTransform(std::array<uint64_t, 25>& A)
 {
+    ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	for (uint32_t round = 0; round < 24; round++)
 	{
 		std::array<uint64_t, 5> c{};
@@ -109,8 +114,10 @@ void DoTransform(std::array<uint64_t, 25>& A)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void Transform(const void* mp, const uint64_t numBlks, std::array<uint64_t, 25>& A, const std::size_t rate)
+void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t, 25>& A, const std::size_t rate)
 {
+    ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	const std::size_t r = rate / 8;
 	const std::size_t r64 = rate / 64;
 	for(uint64_t blk = 0; blk < numBlks; blk++)
@@ -124,16 +131,18 @@ void Transform(const void* mp, const uint64_t numBlks, std::array<uint64_t, 25>&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const void* data, uint64_t length)
+[[nodiscard]] std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const void* const data, uint64_t length)
 {
-	constexpr std::size_t hs = 256;
-	constexpr std::size_t rate = 1600U - hs * 2;
+    ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
+	static constexpr std::size_t hs = 256;
+	static constexpr std::size_t rate = 1600U - hs * 2;
 	std::array<uint8_t, rate / 8> m{};
 	std::size_t pos = 0;
 	std::array<uint64_t, 25> A{};
 
 	const uint8_t* dataPtr = static_cast<const uint8_t*>(data);
-	constexpr std::size_t r = rate / 8;
+	static constexpr std::size_t r = rate / 8;
 	if(length >= r)
 	{
 		const std::size_t blocks = length / r;
@@ -158,23 +167,27 @@ std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const void* data, uint64_t l
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const std::string_view str)
+[[nodiscard]] std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const std::string_view str)
 {
+    ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return SHA3_256(str.data(), str.length());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const void* data, uint64_t length)
+[[nodiscard]] std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const void* const data, uint64_t length)
 {
-	constexpr std::size_t hs = 512;
-	constexpr std::size_t rate = 1600U - hs * 2;
+    ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
+	static constexpr std::size_t hs = 512;
+	static constexpr std::size_t rate = 1600U - hs * 2;
 	std::array<uint8_t, rate / 8> m{};
 	std::size_t pos = 0;
 	std::array<uint64_t, 25> A{};
 
 	const uint8_t* dataPtr = static_cast<const uint8_t*>(data);
-	constexpr std::size_t r = rate / 8;
+	static constexpr std::size_t r = rate / 8;
 	if (length >= r)
 	{
 		const std::size_t blocks = length / r;
@@ -199,7 +212,9 @@ std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const void* data, uint64_t l
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const std::string_view str)
+[[nodiscard]] std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const std::string_view str)
 {
+    ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return SHA3_512(str.data(), str.length());
 }

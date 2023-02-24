@@ -1,22 +1,28 @@
 /*
-LodePNG version 20220109
+LodePNG version 20221108
+
 Copyright (c) 2005-2022 Lode Vandevenne
+
 This software is provided 'as-is', without any express or implied
 warranty. In no event will the authors be held liable for any damages
 arising from the use of this software.
+
 Permission is granted to anyone to use this software for any purpose,
 including commercial applications, and to alter it and redistribute it
 freely, subject to the following restrictions:
+
     1. The origin of this software must not be misrepresented; you must not
     claim that you wrote the original software. If you use this software
     in a product, an acknowledgment in the product documentation would be
     appreciated but is not required.
+
     2. Altered source versions must be plainly marked as such, and must not be
     misrepresented as being the original software.
+
     3. This notice may not be removed or altered from any source
     distribution.
 
-Modified by: Jan "GamesTrap" Schuerkamp
+Modified by Jan "GamesTrap" Schuerkamp
 */
 
 #include "TRAPPCH.h"
@@ -24,9 +30,11 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "Maths/Math.h"
 
-TRAP::Utils::Decompress::INTERNAL::BitReader::BitReader(const uint8_t* data, const std::size_t size)
+TRAP::Utils::Decompress::INTERNAL::BitReader::BitReader(const uint8_t* const data, const std::size_t size)
 	: Data(data), Size(size), BitSize(0), BP(0), Buffer(0)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	std::size_t temp = 0;
 	if (MultiplyOverflow(size, 8u, BitSize))
 		Error = true;
@@ -36,30 +44,32 @@ TRAP::Utils::Decompress::INTERNAL::BitReader::BitReader(const uint8_t* data, con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits9(const std::size_t nBits)
+void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits9()
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	const std::size_t start = BP >> 3u;
 	const std::size_t size = Size;
 	if (start + 1u < size)
 	{
 		Buffer = static_cast<uint32_t>(Data[start + 0]) | (static_cast<uint32_t>(Data[start + 1] << 8u));
 		Buffer >>= (BP & 7u);
-
-		return true;
 	}
-
-	Buffer = 0;
-	if (start + 0u < size)
-		Buffer = Data[start + 0];
-	Buffer >>= (BP & 7u);
-
-	return BP + nBits < BitSize;
+	else
+	{
+		Buffer = 0;
+		if (start + 0u < size)
+			Buffer = Data[start + 0];
+		Buffer >>= (BP & 7u);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits17(const std::size_t nBits)
+void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits17()
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	const std::size_t start = BP >> 3u;
 	const std::size_t size = Size;
 	if (start + 2u < size)
@@ -67,24 +77,24 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits17(const std::size_
 		Buffer = static_cast<uint32_t>(Data[start + 0]) | (static_cast<uint32_t>(Data[start + 1]) << 8u) |
 		         (static_cast<uint32_t>(Data[start + 2]) << 16u);
 		Buffer >>= (BP & 7u);
-
-		return true;
 	}
-
-	Buffer = 0;
-	if (start + 0u < size)
-		Buffer |= Data[start + 0];
-	if (start + 1u < size)
-		Buffer |= (static_cast<uint32_t>(Data[start + 1]) << 8u);
-	Buffer >>= (BP & 7u);
-
-	return BP + nBits < BitSize;
+	else
+	{
+		Buffer = 0;
+		if (start + 0u < size)
+			Buffer |= Data[start + 0];
+		if (start + 1u < size)
+			Buffer |= (static_cast<uint32_t>(Data[start + 1]) << 8u);
+		Buffer >>= (BP & 7u);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits25(const std::size_t nBits)
+void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits25()
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	const std::size_t start = BP >> 3u;
 	const std::size_t size = Size;
 	if (start + 3u < size)
@@ -92,26 +102,26 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits25(const std::size_
 		Buffer = static_cast<uint32_t>(Data[start + 0]) | (static_cast<uint32_t>(Data[start + 1]) << 8u) |
 		         (static_cast<uint32_t>(Data[start + 2]) << 16u) | (static_cast<uint32_t>(Data[start + 3]) << 24u);
 		Buffer >>= (BP & 7u);
-
-		return true;
 	}
-
-	Buffer = 0;
-	if (start + 0u < size)
-		Buffer |= Data[start + 0];
-	if (start + 1u < size)
-		Buffer |= (static_cast<uint32_t>(Data[start + 1]) << 8u);
-	if (start + 2u < size)
-		Buffer |= (static_cast<uint32_t>(Data[start + 2]) << 16u);
-	Buffer >>= (BP & 7u);
-
-	return BP + nBits < BitSize;
+	else
+	{
+		Buffer = 0;
+		if (start + 0u < size)
+			Buffer |= Data[start + 0];
+		if (start + 1u < size)
+			Buffer |= (static_cast<uint32_t>(Data[start + 1]) << 8u);
+		if (start + 2u < size)
+			Buffer |= (static_cast<uint32_t>(Data[start + 2]) << 16u);
+		Buffer >>= (BP & 7u);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits32(const std::size_t nBits)
+void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits32()
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	const std::size_t start = BP >> 3u;
 	const std::size_t size = Size;
 	if (start + 4u < size)
@@ -120,29 +130,29 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits32(const std::size_
 		         (static_cast<uint32_t>(Data[start + 2]) << 16u) | (static_cast<uint32_t>(Data[start + 3]) << 24u);
 		Buffer >>= (BP & 7u);
 		Buffer |= ((static_cast<uint32_t>(Data[start + 4]) << 24u) << (8u - (BP & 7u)));
-
-		return true;
 	}
-
-	Buffer = 0;
-	if (start + 0u < size)
-		Buffer |= Data[start + 0];
-	if (start + 1u < size)
-		Buffer |= (static_cast<uint32_t>(Data[start + 1]) << 8u);
-	if (start + 2u < size)
-		Buffer |= (static_cast<uint32_t>(Data[start + 2]) << 16u);
-	if (start + 3u < size)
-		Buffer |= (static_cast<uint32_t>(Data[start + 3]) << 24u);
-	Buffer >>= (BP & 7u);
-
-	return BP + nBits < BitSize;
+	else
+	{
+		Buffer = 0;
+		if (start + 0u < size)
+			Buffer |= Data[start + 0];
+		if (start + 1u < size)
+			Buffer |= (static_cast<uint32_t>(Data[start + 1]) << 8u);
+		if (start + 2u < size)
+			Buffer |= (static_cast<uint32_t>(Data[start + 2]) << 16u);
+		if (start + 3u < size)
+			Buffer |= (static_cast<uint32_t>(Data[start + 3]) << 24u);
+		Buffer >>= (BP & 7u);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Must have enough bits available with EnsureBits
-uint32_t TRAP::Utils::Decompress::INTERNAL::BitReader::ReadBits(const std::size_t nBits)
+[[nodiscard]] uint32_t TRAP::Utils::Decompress::INTERNAL::BitReader::ReadBits(const std::size_t nBits)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	const uint32_t result = PeekBits(nBits);
 	AdvanceBits(nBits);
 
@@ -151,9 +161,11 @@ uint32_t TRAP::Utils::Decompress::INTERNAL::BitReader::ReadBits(const std::size_
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Decompress::INTERNAL::BitReader::GreaterOverflow(const std::size_t a, const std::size_t b,
-                                                                   const std::size_t c)
+[[nodiscard]] bool TRAP::Utils::Decompress::INTERNAL::BitReader::GreaterOverflow(const std::size_t a, const std::size_t b,
+                                                                                 const std::size_t c)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	std::size_t d = 0;
 	if (AddOverflow(a, b, d))
 		return true;
@@ -164,16 +176,20 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::GreaterOverflow(const std::si
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Get bits without advancing the bit pointer. Must have enough bits available with EnsureBits
-uint32_t TRAP::Utils::Decompress::INTERNAL::BitReader::PeekBits(const std::size_t nBits) const
+[[nodiscard]] uint32_t TRAP::Utils::Decompress::INTERNAL::BitReader::PeekBits(const std::size_t nBits) const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return Buffer & ((1u << nBits) - 1u);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Must have enough bits available with EnsureBits
-void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const std::size_t nBits)
+void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const std::size_t nBits) noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	Buffer >>= nBits;
 	BP += nBits;
 }
@@ -182,9 +198,11 @@ void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const std::size_t
 
 //Safely check if multiplying two integers will overflow(no undefined behavior, compiler removing the code, etc...)
 //and output result
-bool TRAP::Utils::Decompress::INTERNAL::BitReader::MultiplyOverflow(const std::size_t a, const std::size_t b,
-                                                                    std::size_t& result)
+[[nodiscard]] bool TRAP::Utils::Decompress::INTERNAL::BitReader::MultiplyOverflow(const std::size_t a, const std::size_t b,
+                                                                                  std::size_t& result) noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	result = a * b; //Unsigned multiplication is well defined and safe
 
 	return (a != 0 && result / a != b);
@@ -192,9 +210,11 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::MultiplyOverflow(const std::s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Decompress::INTERNAL::BitReader::AddOverflow(const std::size_t a, const std::size_t b,
-                                                               std::size_t& result)
+[[nodiscard]] bool TRAP::Utils::Decompress::INTERNAL::BitReader::AddOverflow(const std::size_t a, const std::size_t b,
+                                                                             std::size_t& result) noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	result = a + b; //Unsigned addition is well defined and safe
 
 	return result < a;
@@ -202,16 +222,19 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::AddOverflow(const std::size_t
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::Decompress::INTERNAL::HuffmanTree::HuffmanTree()
+TRAP::Utils::Decompress::INTERNAL::HuffmanTree::HuffmanTree() noexcept
 	: MaxBitLength(0), NumCodes(0)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Get the tree of a deflated block with fixed tree, as specified in the deflate specification
-bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateFixed(HuffmanTree& treeLL, HuffmanTree& treeD)
+[[nodiscard]] bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateFixed(HuffmanTree& treeLL, HuffmanTree& treeD)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	if (!treeLL.GenerateFixedLiteralLengthTree())
 		return false;
 
@@ -224,20 +247,20 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateFixed(Huffman
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Get the tree of a deflated block with dynamic tree, the tree itself is also Huffman compressed with a known tree
-bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(HuffmanTree& treeLL, HuffmanTree& treeD,
-                                                                           BitReader& reader)
+[[nodiscard]] bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(HuffmanTree& treeLL, HuffmanTree& treeD,
+                                                                                         BitReader& reader)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	//Make sure that length values that arent filled in will be 0, or a wrong tree will be generated
 	uint32_t n = 0, i = 0;
 
 	//See comments in deflateDynamic for explanation of the context and these variables, it is analogous
 	HuffmanTree treeCL; //The code tree for code length codes(the Huffman Tree for compressed Huffman Trees)
 
-	if(reader.BitSize - reader.BP < 14)
-		return false;
-
-	if (!reader.EnsureBits17(14))
+	if (reader.BitSize - reader.BP < 14)
 		return false; //Error: The bit pointer is or will go past memory
+	reader.EnsureBits17();
 
 	//Number of literal/length codes + 257.
 	//Unlike the spec, the value 257 is added to it here already
@@ -264,7 +287,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(Huffm
 		}
 		for(i = 0; i != HCLEN; ++i)
 		{
-			reader.EnsureBits9(3); //Out of bounds already checked above
+			reader.EnsureBits9(); //Out of bounds already checked above
 			bitLengthCL[CLCLOrder[i]] = reader.ReadBits(3);
 		}
 		for (i = HCLEN; i != NumCodeLengthCodes; ++i)
@@ -283,7 +306,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(Huffm
 		i = 0;
 		while(i < HLIT + HDIST)
 		{
-			reader.EnsureBits25(22); //Up to 15bits for Huffman code, up to 7 extra bits below
+			reader.EnsureBits25(); //Up to 15bits for Huffman code, up to 7 extra bits below
 			const uint32_t code = treeCL.DecodeSymbol(reader);
 			if(code <= 15) //A length code
 			{
@@ -404,8 +427,10 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(Huffm
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the code. The bit reader must already have been ensured at least 15bits
-uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::DecodeSymbol(BitReader& reader) const
+[[nodiscard]] uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::DecodeSymbol(BitReader& reader) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	const uint16_t code = static_cast<uint16_t>(reader.PeekBits(FirstBits));
 	const uint16_t l = TableLength[code];
 	uint16_t value = TableValue[code];
@@ -426,8 +451,10 @@ uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::DecodeSymbol(BitReader&
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Get the literal and length code of a deflated block with fixed tree, as per the deflate specification
-bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedLiteralLengthTree()
+[[nodiscard]] bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedLiteralLengthTree()
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	uint32_t i = 0;
 	//256 literals, the end code, some length codes, and 2 unused codes
 	std::array<uint32_t, NumDeflateCodeSymbols> bitLength{};
@@ -450,8 +477,10 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedLiteralLengthT
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Get the distance code tree of a deflated block with fixed tree, as specified in the deflate specification
-bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedDistanceTree()
+[[nodiscard]] bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedDistanceTree()
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	//The distance codes have their own symbols, 30 used, 2 unused
 	std::array<uint32_t, NumDistanceSymbols> bitLength{};
 
@@ -466,10 +495,12 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedDistanceTree()
 
 //Given the code lengths(as stored in the PNG file), generate the tree as defined by Deflate.
 //MaxBitLength is the maximum bits that a code in the tree can have.
-bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths(const uint32_t* bitLength,
-                                                                     const std::size_t numCodes,
-																	 const uint32_t maxBitLength)
+[[nodiscard]] bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths(const uint32_t* const bitLength,
+                                                                                   const std::size_t numCodes,
+																	               const uint32_t maxBitLength)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	Lengths.resize(numCodes);
 	for (uint32_t i = 0; i != numCodes; ++i)
 		Lengths[i] = bitLength[i];
@@ -481,8 +512,10 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths(const uint3
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths2()
+[[nodiscard]] bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths2()
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	uint32_t bits = 0;
 
 	Codes.resize(NumCodes);
@@ -511,8 +544,10 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths2()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
+[[nodiscard]] bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	static const uint32_t headSize = 1u << FirstBits; //Size of the first table
 	static const uint32_t mask = (1u << FirstBits) /*headSize*/ - 1u;
 	std::size_t i = 0; //Total table size
@@ -542,15 +577,15 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 	TableValue.resize(size);
 
 	//Fill in the first table for long symbols: Max prefix size and pointer to secondary tables
-	std::size_t pointer = headSize;
+	std::size_t ptr = headSize;
 	for(i = 0; i < headSize; ++i)
 	{
 		const uint32_t l = maxLengths[i];
 		if (l <= FirstBits)
 			continue;
 		TableLength[i] = static_cast<uint8_t>(l);
-		TableValue[i] = static_cast<uint16_t>(pointer);
-		pointer += static_cast<std::size_t>(1u) << (l - FirstBits);
+		TableValue[i] = static_cast<uint16_t>(ptr);
+		ptr += static_cast<std::size_t>(1u) << (l - FirstBits);
 	}
 
 	//Fill in the first table for short symbols, or secondary table for long symbols
@@ -558,11 +593,12 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 	for(i = 0; i < NumCodes; ++i)
 	{
 		const uint32_t l = Lengths[i];
+		if (l == 0)
+			continue;
+
 		const uint32_t symbol = Codes[i]; //The Huffman bit pattern. i itself is the value
 		//Reverse bits, because the Huffman bits are given in MSB first order but the bit reader reads LSB first
 		const uint32_t reverse = ReverseBits(symbol, l);
-		if (l == 0)
-			continue;
 
 		numPresent++;
 
@@ -642,8 +678,10 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::ReverseBits(const uint32_t bits, const uint32_t num)
+[[nodiscard]] uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::ReverseBits(const uint32_t bits, const uint32_t num) noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	uint32_t result = 0;
 	for (uint32_t i = 0; i < num; i++)
 		result |= ((bits >> (num - i - 1u)) & 1u) << i;
@@ -653,10 +691,10 @@ uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::ReverseBits(const uint3
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Decompress::INTERNAL::InflateNoCompression(std::vector<uint8_t>& out, std::size_t& pos,
-                                                             BitReader& reader)
+[[nodiscard]] bool TRAP::Utils::Decompress::INTERNAL::InflateNoCompression(std::vector<uint8_t>& out, std::size_t& pos,
+                                                                           BitReader& reader)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	const std::size_t size = reader.Size;
 
@@ -694,10 +732,10 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateNoCompression(std::vector<uint8_t
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>& out, std::size_t& pos,
-                                                            BitReader& reader, const uint32_t btype)
+[[nodiscard]] bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>& out, std::size_t& pos,
+                                                                          BitReader& reader, const uint32_t btype)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	HuffmanTree treeLL; //The Huffman tree for literal and length codes
 	HuffmanTree treeD; //The Huffman tree for distance codes
@@ -719,7 +757,7 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>
 		//Ensure enough bits for 2 huffman code reads (15 bits each): if the first is a literal,
 		//a second literal is read at once. This appears to be slightly faster, than ensuring 20
 		//bits here for 1 huffman symbol and the potential 5 extra bits for the length symbol.
-		reader.EnsureBits32(30);
+		reader.EnsureBits32();
 		uint32_t codeLL = treeLL.DecodeSymbol(reader);
 		if(codeLL <= 255)
 		{
@@ -746,12 +784,12 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>
 			if (numExtraBitsL != 0)
 			{
 				//Bits already ensured above
-				reader.EnsureBits25(5);
+				reader.EnsureBits25();
 				length += reader.ReadBits(numExtraBitsL);
 			}
 
 			//Part 3: Get Distance code
-			reader.EnsureBits32(28); //Up to 15 for the Huffman symbol, up to 13 for the extra bits
+			reader.EnsureBits32(); //Up to 15 for the Huffman symbol, up to 13 for the extra bits
 			const uint32_t codeD = treeD.DecodeSymbol(reader);
 			if(codeD > 29)
 			{
@@ -815,10 +853,10 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Decompress::Inflate(const uint8_t* source, const std::size_t sourceLength, uint8_t* destination,
-                                      const std::size_t destinationLength)
+[[nodiscard]] bool TRAP::Utils::Decompress::Inflate(const uint8_t* const source, const std::size_t sourceLength, uint8_t* const destination,
+                                                    const std::size_t destinationLength)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	std::vector<uint8_t> result(destinationLength, 0);
 
@@ -832,8 +870,7 @@ bool TRAP::Utils::Decompress::Inflate(const uint8_t* source, const std::size_t s
 	{
 		if(reader.BitSize - reader.BP < 3) //Error, bit pointer will jump past memory
 			return false;
-		if (!reader.EnsureBits9(3))
-			return false;
+		reader.EnsureBits9();
 		BFINAL = reader.ReadBits(1);
 		const uint32_t BTYPE = reader.ReadBits(2);
 

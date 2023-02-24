@@ -3032,10 +3032,630 @@ SITREP 08/07/2022|22w31c1
         - WindowingAPI Wayland Implemented DataOfferListener & DataDeviceListener functions ~<20 mins
 
 SITREP 08/08/2022|22w32a1
-    - Changed TRAP Engine version to 22w32a1(0.8.21)
+    - Changed TRAP Engine version to 22w32a1(0.8.20)
+    - Linux Enabled Xwayland support ~<5 mins
+    - Added macro to enable native Wayland support (disables use of Xwayland) ~<5 mins
     - Branch wayland:
         - WindowingAPI Wayland Implemented PointerListener functions ~<20 mins
         - WindowingAPI Wayland Implemented KeyboardListener functions ~<20 mins
         - WindowingAPI Wayland Implemented OutputListener functions ~<20 mins
         - WindowingAPI Wayland Implemented PlatformSetWindowMonitorWayland ~<20 mins
         - WindowingAPI Now uses Xwayland by default (Wayland is still experimental) ~<5 mins
+
+SITREP 08/09/2022|22w32a2
+    - Changed TRAP Engine version to 22w32a2(0.8.21)
+    - Docs Linux Added required wayland packages ~<5 mins
+    - Utils Renamed ByteSwap.h to Memory.h ~<5 mins
+    - Shader Removed Convert8To32() ~<5 mins
+    - Utils Memory Added SwapBytes function for iterators ~<5 mins
+    - Utils Memory Added ConvertByte function and ConvertBytes for iterators ~<20 mins
+
+SITREP 08/10/2022|22w32b1
+    - Changed TRAP Engine version to 22w32b1(0.8.22)
+    - Input Windows Fixed Xbox button press results hitting InputKey assert ~<5 mins
+    - Application Windows Fixed not calling Input::Init() ~<5 mins
+    - Renderer2D Added RendererAPI::ImageCount buffering ~<10 mins
+    - Renderer2D Fixed batch switching on texture slot exhaust ~<5 mins
+
+SITREP 08/11/2022|22w32c1
+    - ConvertToSPIRV Moved utilities into own file ~<10 mins
+    - ConvertToSPIRV Moved shader stuff into own file ~<10 mins
+    - ConvertToSPIRV Added support for custom output file names ~<10 mins
+    - ConvertToSPIRV Added support for custom macros ~<10 mins
+
+SITREP 08/11/2022|22w32c2
+    - Changed TRAP Engine version to 22w32c2(0.8.23)
+    - Shader now automatically detects correct endianess for SPIRV files ~<5 mins
+    - Tests Added SPIRVTest (to test if ConverToSPIRV utility works correctly) ~<20 mins
+    - ConvertToSPIRV Fixed MSVC compiler error ~<5 mins
+
+SITREP 08/13/2022|22w32c2
+    - Changed TRAP Engine version to 22w32c2(0.8.23)
+    - SHA2 Made some functions constexpr ~<5 mins
+    - HeadlessTests Added HashTests ~>20 mins
+
+SITREP 08/14/2022|22w32c3
+    - Changed TRAP Engine version to 22w32c3(0.8.24)
+    - ResourceLoader LoadTexture() Added support for already loaded images ~<20 mins
+    - Texture CreateFromImage() & CreateFromImages() now leverage the ResourceLoader ~<20 mins
+    - WindowingAPI Added WaitEvents() and PostEmptyEvent() functions ~<10 mins
+
+SITREP 08/15/2022|22w33a1
+    - Changed TRAP Engine version to 22w33a1(0.8.25)
+    - RendererAPI/VulkanRenderer now saves shading rate state in GraphicsPipelineDesc ~<10 mins
+    - VulkanInits Added PipelineFragmentShadingRateStateCreateInfo() ~<5 mins
+    - VulkanPipeline Now uses shading rate state from GraphicsPipelineDesc ~<10 mins
+    - VulkanRenderer SetShadingRate() Added additional safety checks ~<10 mins
+    - Tests Added VRSTests ~<15 mins
+
+SITREP 08/16/2022|22w33a2
+    - Changed TRAP Engine version to 22w33a2(0.8.26)
+    - ParticleSystem2D Added dynamic particle limit ~<15 mins
+    - Renderer2D Fixed TextureSlotIndex not being reset on BeginScene() ~<5 mins
+    - Added SubTexture2D to make sprite sheets usable ~<25 mins
+    - Renderer2D Added ability to use SubTexture2D ~<15 mins
+    - Sandbox2D Added a test sprite sheet ~<5 mins
+    - Sandbox2D now uses sprite sheets ~<5 mins
+    - SubTexture2D Added ability to create from pixel coordinates directly ~<15 mins
+    - SubTexture2D Added name to class ~<5 mins
+    - Added SpriteManager to manage SubTexture2D objects ~<20 mins
+    - Sandbox2D now uses SpriteManager ~<5 mins
+    - ShaderManager and Shader now use TRAP::Ref (updated all programs) ~>20 mins
+    - TextureManager and Texture now use TRAP::Ref (updated all programs) ~>30 mins
+    - AntiAliasingTests adjusted scaling of quads ~<5 mins
+
+SITREP 08/17/2022|22w33b1
+    - Changed TRAP Engine version to 22w33b1(0.8.27)
+    - Tests Added sprite sheets ~<5 mins
+    - Tests Added SpriteSheetTests ~<30 mins
+    - Renderer2D Fixed a crash while using nullptr SubTexture2D ~<5 mins
+
+SITREP 08/18/2022|22w33c1
+    - Changed TRAP Engine version to 22w33c1(0.8.28)
+    - Branch steamworks:
+        - Update premake scripts to support Steamworks SDK ~<20 mins
+        - Application Added optional AppID parameter to constructor ~<5 mins
+        - SteamworksSDK Initialization, Shutdown and callbacks are now handled in Application ~<10 mins
+        - SteamworksSDK exposed SDK interfaces via TRAP::Utils::Steam ~<15 mins
+    - Merged branch steamworks
+
+SITREP 08/19/2022|22w33c2
+    - Changed TRAP Engine version to 22w33c2(0.8.29)
+    - Added ImGuizmo to dependencies ~<5 mins
+    - Added ImGuizmo premake script ~<5 mins
+    - Updated all premake scripts to use ImGuizmo ~<5 mins
+    - Scene Added GetPrimaryCameraEntity() (only temporary) ~<5 mins
+    - Math Added matrix decompose function ~>15 mins
+    - TRAP-Editor SceneGraphPanel Added GetSelectedEntity() ~<5 mins
+    - TRAP-Editor Added support for gizmos >30 mins
+
+SITREP 08/21/2022|22w33d1
+    - Changed TRAP Engine version to 22w33d1(0.8.30)
+    - ImGuiLayer Added SetInputEnabled() & IsInputEnabled() ~<10 mins
+    - ImGuiWindowing Added ImGuiConfigFlags_NoMouse checks ~<10 mins
+    - Cameras Added EditorCamera (arcball/flycam styles) ~>25 mins
+    - Renderer2D Added support for EditorCamera ~<5 mins
+    - Scene splitted OnUpdate() into OnUpdateRuntime() & OnUpdateEditor() ~<10 mins
+    - TRAP-Editor Added EditorCamera support ~>20 mins
+    - TRAP-Editor Disabled culling ~<5 mins
+    - Updated ModernDialogs submodule (fixed scene saving) ~<5 mins
+
+SITREP 08/22/2022|22w34a1
+    - Changed TRAP Engine version to 22w34a1(0.8.31)
+    - RendererAPI Added TextureCopyDesc ~<10 mins
+    - CommandBuffer Added GPU to CPU texture copy support via CopySubresource function ~<30 mins
+    - ResourceLoader Added CopyResource (async GPU to CPU texture copy) ~<30 mins
+
+SITREP 08/23/2022|22w34a2
+    - Changed TRAP Engine version to 22w34a2(0.8.32)
+    - RendererAPI/VulkanCommandBuffer LoadActionsDesc Added support for int and uint values in ClearColorValues ~<5 mins
+    - VulkanRenderer Added support for multiple fragment render targets ~<10 mins
+    - VertexBufferLayout Added unsigned integer types to ShaderDataType ~<5 mins
+    - VulkanRenderer BindVertexBuffer Added support for integer formats ~<5 mins
+
+SITREP 08/24/2022|22w34b1
+    - Changed TRAP Engine version to 22w34b1(0.8.33)
+    - Fixed TRAPEditorLayer not compiling ~<5 mins
+    - TRAP-Editor SceneGraphPanel Added SetSelectedEntity() ~<5 mins
+    - Renderer2D Added DrawSprite() ~<10 mins
+    - Renderer2D Shader Added entity ID (used by mouse picking in TRAP-Editor) ~<10 mins
+    - Scene now uses Renderer2D::DrawSprite() ~<5 mins
+    - TRAP-Editor Added mouse picking (allows selection of entities from within the viewport) ~>30 mins
+
+SITREP 08/27/2022|22w34c1
+    - Changed TRAP Engine version to 22w34c1(0.8.34)
+    - Added sprite sheet animation support via SpriteAnimation ~<30 mins
+    - SpriteSheetTests Added two SpriteAnimations ~<15 mins
+    - Fixed gizmo usage when out of selected entity bounds ~<5 mins
+    - Log Added importance level for printing ~<10 mins
+
+SITREP 08/28/2022|22w34c2
+    - Updated Branding
+
+SITREP 08/30/2022|22w35a1
+    - Changed TRAP Engine version to 22w35a1(0.8.35)
+    - Log Fixed Trace level not working ~<5 mins
+    - Math Orthographic(), Frustum, Perspective, PerspectiveFoV now correctly use 0 to 1 clip values ~<15 mins
+    - EditorCamera/OrthographicCamera(Controller)/SceneCamera Flipped near and far planes ~<5 mins
+    - Implemented Reverse Z buffering (higher depth precision) ~<10 mins
+    - EditorCamera/SceneCamera now use infinite far clip plane ~<15 mins
+
+SITREP 09/01/2022|22w35a2
+    - Changed TRAP Engine version to 22w35a2(0.8.36)
+    - WindowingAPI Linux Added support for taskbar progress (KDE & Unity only) ~<40 mins
+
+SITREP 09/04/2022|22w35b1
+    - Changed TRAP Engine version to 22w35b1(0.8.37)
+    - Application/RendererAPI Renamed GetFrameTime() to GetCPUFrameTime() ~<5 mins
+    - Renderer2D Added missing VertexLayout value in ExtendBuffers() ~<5 mins
+    - RendererAPI Added support for GPU Graphics and Compute frame time querying ~>30 mins
+
+SITREP 09/06/2022|22w36a1
+    - Changed TRAP Engine version to 22w36a1(0.8.38)
+    - RendererAPI/VulkanPhysicalDevice Added querying for GPU vendor ~<20 mins
+    - Updated premake5 version ~<5 mins
+    - Updated all premake scripts ~>20 mins
+
+SITREP 09/07/2022|22w36a2
+    - Changed TRAP Engine version to 22w36a2(0.8.39)
+    - Branch NVReflex:
+        - Dependencies Added NVIDIA-Reflex folder ~<10 mins
+        - Premake scripts added optional NVIDIA-Reflex support ~<10 mins
+        - VulkanRenderer Added support for VK_KHR_timeline_semaphore ~<15 mins
+        - VulkanCommon Added VkReflexCall() for NVIDIA-Reflex error checking ~<10 mins
+        - VulkanDevice Added NVIDIA-Reflex initialization ~<15 mins
+        - RendererAPI/RenderCommand Added SetLatencyMode() to enable/disable NVIDIA-Reflex ~<20 mins
+        - RendererAPI/VulkanRenderer Added SetReflexFPSLimit() ~<15 mins
+
+SITREP 09/08/2022|22w36a3
+    - Changed TRAP Engine version to 22w36a3(0.8.40)
+    - Branch NVReflex:
+        - Application Moved FPSLimiter to start of Run() loop ~<5 mins
+        - VulkanInits Added SemaphoreWaitInfo() ~<5 mins
+        - RendererAPI/VulkanRenderer Added ReflexSleep() ~<20 mins
+        - Application now uses RendererAPI::ReflexSleep() for FPS limiting when NVIDIA Reflex is supported ~<5 mins
+        - RendererAPI/VulkanRenderer Added GetLatencyMode() ~<20 mins
+        - VulkanDevice now only enables NVIDIA Reflex if on Windows 10 or newer ~<5 mins
+        - Utils Added ConvertToString() & ConvertToType() overloads for RendererAPI::LatencyMode ~<5 mins
+        - Tests Added NVIDIAReflexTests ~<20 mins
+        - RendererAPI/VulkanRenderer Added ReflexMarker() ~<15 mins
+        - Added ReflexMarkers according to NVIDIA Reflex integration guide ~<15 mins
+        - RendererAPI/VulkanRenderer Added ReflexGetLatency() ~<15 mins
+        - NVIDIAReflexTests Added latency charts ~<25 mins
+        - Premake scripts added NVIDIA Reflex Stats include header ~<5 mins
+        - Added NVSTATS marker ~<10 mins
+
+SITREP 09/13/2022|22w37a1
+    - Changed TRAP Engine version to 22w37a1(0.8.41)
+    - Changed some for loop data types ~<10 mins
+    - RendererAPI Renamed Present() to Flush() ~<5 mins
+    - VulkanRenderer split presentation from EndGraphicRecording() ~<10 mins
+
+SITREP 09/15/2022|22w37a2
+    - Changed TRAP Engine version to 22w37a2(0.8.42)
+    - Cleaned up premake scripts ~<20 mins
+    - Removed Python dependency from GLSLang.lua script ~>15 mins
+
+SITREP 09/18/2022|22w37b1
+    - Changed TRAP Engine version to 22w37b1(0.8.43)
+    - Worked on const correctness for pointers ~>45 mins
+    - Moved some functions from TRAP::Graphics::Renderer to TRAP::Graphics::RenderCommand ~>30 mins
+    - Updated all programs ~<30 mins
+    - VulkanRenderer Fixed EndGPUFrameProfile() called while a RenderPass may still be active ~<10 mins
+
+SITREP 09/19/2022|22w38a1
+    - Changed TRAP Engine version to 22w38a1(0.8.44)
+    - Texture/ShaderManager made sure that fallback textures/shaders are still available after Clean() is called ~<15 mins
+    - ImGuiLayer/ImGuiVulkanBackend Added tracking of used descriptor sets and freeing them after RendererAPI::ImageCount frames ~<20 mins
+    - Texture/ShaderManager Fixed fallback textures/shaders not deleting on TRAP::Application destructor ~<5 mins
+    - ImGuiVulkanBackend Fixed ImGui_ImplVulkan_NewFrame() auto deduction failing ~<5 mins
+    - ImGuiVulkanBackend Reverted new tracking and freeing of used descriptor sets ~<10 mins
+    - ImGuiVulkanBackend Re-added caching of used descriptor sets ~<10 mins
+    - ImGuiVulkanBackend Added automatic creation of DescriptorPools when descriptor set allocation limit is reached ~<10 mins
+
+SITREP 09/20/2022|22w38a2
+    - Changed TRAP Engine version to 22w38a2(0.8.45)
+    - TRAP-Editor Added SceneState and play/pause button ~<20 mins
+    - FileSystem Added CopyFile() and CopyFolder() functions ~<30 mins
+    - TRAP-Editor Added automatic copying of default editor layout if no layout was found ~<10 mins
+    - TRAP-Editor Fixed MSVC compiler error ~<5 mins
+    - Updated WindowingAPIWin32 ~<10 mins
+    - Added UID class ~<15 mins
+    - UID Added missing operator implementation ~<5 mins
+    - Components Added UIDComponent ~<5 mins
+    - Entity Added GetUID() utility function ~<5 mins
+    - Scene Added CreateEntityWithUID() ~<5 mins
+    - SceneSerializer now loads and saves entity UIDs ~<5 mins
+    - TRAP-Editor PropertiesPanel now displays entity UID on name text field hover ~<5 mins
+    - Components Added templated type for multiple components ~<5 mins
+    - Entity Added GetName() utility function ~<5 mins
+    - Entity Added AddOrReplaceComponent() ~<5 mins
+    - Scene Added support for copying and duplicating of entities ~>20 mins
+    - Scene Added Copy() to copy scenes ~>10 mins
+    - TRAP-Editor now uses a copy of the scene to use for playing state, preserving the original scene ~<10 mins
+    - TRAP-Editor Merged PropertiesPanel into SceneGraphPanel ~<10 mins
+    - TRAP-Editor Added keyboard shortcuts for entity duplication/deletion ~<15 mins
+    - Added Box2D as submodule ~<5 mins
+    - Premake Added support for Box2D ~<5 mins
+    - Updated all premake scripts ~<5 mins
+
+SITREP 09/21/2022|22w38b1
+    - Changed TRAP Engine version to 22w38b1(0.8.46)
+    - OnTick() now also has a TimeStep as parameter ~<5 mins
+    - Scene Added OnTickRuntime() which updates the 2D physics ~<10 mins
+    - Components Added Rigidbody2D and BoxCollider2D components ~<10 mins
+    - SceneSerializer Added support for Rigidbody2D and BoxCollider2D components ~<15 mins
+    - TRAP-Editor SceneGraphPanel Added support for Rigidbody2D and BoxCollider2D components ~<15 mins
+    - Added [[fallthrough]] attribute where needed ~<15 mins
+
+SITREP 09/23/2022|22w38c1
+    - Changed TRAP Engine version to 22w38c1(0.8.47)
+    - Renderer2D Added support for line and rectangle (non filled) rendering ~>30 mins
+    - TRAP-Editor gizmos now use the correct camera when SceneState is Play ~<5 mins
+    - Scene Added GetAllEntitiesWithComponents() ~<5 mins
+    - TRAP-Editor Added OnOverlayRender() ~<20 mins
+    - TRAP-Editor Added visualization for physics colliders (BoxCollider2D) ~<20 mins
+
+SITREP 09/26/2022|22w39a1
+    - Changed TRAP Engine version to 22w39a1(0.8.48)
+    - Embed Added Renderer2D circle shader ~<20 mins
+    - Renderer2D Added support for circle rendering ~>40 mins
+    - TRAP-Editor TransformComponent now can not be removed anymore ~<5 mins
+    - TRAP-Editor Changed save shortcut from Shift+S to CTRL+S ~<5 mins
+    - Added CircleRendererComponent ~<5 mins
+    - Scene/SceneSerializer Added support for circle rendering and CircleRendererComponent ~<30 mins
+
+SITREP 09/27/2022|22w39a2
+    - Changed TRAP Engine version to 22w39a2(0.8.49)
+    - VulkanPhysicalDevice Added GetVkPhysicalDeviceFormatProperties() ~<5 mins
+    - VulkanCommon/VulkanPipeline now automatically disables blending for formats that dont support it ~<10 mins
+    - TRAP-Editor Enabled blending ~<5 mins
+    - Renderer2D Quad/Circle now only use a single index buffer instead of one for each draw call ~<10 mins
+    - Refactored Renderer2D ~>40 mins
+    - Renderer2D Made circle anti aliasing resolution independent ~<10 mins
+    - Updated supported DiscordGameSDK version to 3.2.1 ~<5 mins
+    - Components Added CircleCollider2DComponent ~<10 mins
+    - SceneSerializer Added support for CircleCollider2DComponent ~<10 mins
+    - Scene Added CircleCollider2DComponent Box2D physics integration ~<10 mins
+    - SceneGraphPanel Added support for CircleCollider2DComponent ~<5 mins
+
+SITREP 09/28/2022|22w39b1
+    - Changed TRAP Engine version to 22w39b1(0.8.50)
+    - Renderer2D Added support for multiple per-frame instances ~>40 mins
+    - Application Added call to Renderer2D::Reset() ~<5 mins
+    - TRAP-Editor Added circle collider visualization ~<5 mins
+
+SITREP 09/29/2022|22w39b2
+    - Changed TRAP Engine version to 22w39b2(0.8.51)
+    - Scene Copy() reversed iterating of UIDComponents so that the entities have the same order as in the original scene ~<5 mins
+
+SITREP 09/30/2022|22w39c1
+    - Changed TRAP Engine version to 22w39c1(0.8.52)
+    - Changed premake scripts optimize levels ~<5 mins
+    - Removed Instrumentor and all its macros ~<20 mins
+    - Premake scripts Added configuration for profiling ~<5 mins
+
+SITREP 10/01/2022|22w39c2
+    - Changed TRAP Engine version to 22w39c2(0.8.53)
+    - Premake scripts Added support for Tracy ~<20 mins
+    - Profiler Added names for threads ~<10 mins
+    - String Fixed double null terminator ins GetTimeStamp() and GetDateTimeStamp() ~<5 mins
+    - Profiler Added log messages ~<15 mins
+    - Base Added overloads for new and delete (only used for memory profiling) ~<5 mins
+    - Profiler Added all mutexes ~>20 mins
+    - Profiler Added instrumentation everywhere ~>30 mins
+    - Profiler color coded instrumentation ~<20 mins
+    - Premake disabled PCH for TracyClient.cpp ~<5 mins
+
+SITREP 10/02/2022|22w39c3
+    - Changed TRAP Engine version to 22w39c3(0.8.54)
+    - Base Added ability to compile-time define what to profile via TRAP_PROFILE_SYSTEMS() ~<5 mins
+    - Changed instrumentation to use TRAP_PROFILE_SYSTEMS() ~>30 mins
+
+SITREP 10/03/2022|22w40a1
+    - Changed TRAP Engine version to 22w40a1(0.8.55)
+    - AftermathTracker Fixed Tracy macro compiler error ~<5 mins
+    - Network Packet replaced std::copy_n with memcpy once again ~<5 mins
+    - Renderer2D lowered RAM usage by delaying buffer creation to the first draw call of each geometry type (i.e. quad, circle, line) ~<20 mins
+    - Profiler tracy::SetThreadName() now only gets called when TRACY_ENABLE is defined ~<5 mins
+    - ConvertToSPIRV Added version number (0.1.0) and added CLI parameter for it ~<5 mins
+
+SITREP 10/08/2022|22w40b1
+    - Changed TRAP Engine version to 22w40b1(0.8.56)
+    - Log now utilizes the unused IsColorTerminal() function ~<5 mins
+    - Removed noexcept from potentially throwing functions ~<15 mins
+
+SITREP 10/13/2022|22w41a1
+    - Changed TRAP Engine version to 22w41a1(0.8.57)
+    - Added more error checks for WinAPI/Linux specific functions ~>30 mins
+    - EntryPoint Removed OpenGL specific variables ~<5 mins
+    - Network prevented leaking "far" macro to other includes ~<5 mins
+    - Replaced FileStatusToString(), MouseButtonToString(), Rigidbody2DBodyTypeToString(), Rigidbody2DBodyTypeFromString() with ConvertToType() and ConvertToString() ~<15 mins
+    - Moved EncodeUTF8() to TRAP::Utils::String ~<10 mins
+    - LinuxInput Replaced POSIX regex with std::regex ~<15 mins
+
+SITREP 10/14/2022|22w41a2
+    - Changed TRAP Engine version to 22w41a2(0.8.58)
+    - LinuxInput Replaced opendir(), readdir() & closedir() in InitController() with std::filesystem equivalents ~<10 mins
+    - FileWatcher Fixed MSVC compilation errors ~<5 mins
+    - FileSystem OpenFileInFileBrowser() Replaced ILCreateFromPath() with SHParseDisplayName() ~<5 mins
+
+SITREP 10/15/2022|22w41a3
+    - Changed TRAP Engine version to 22w41a3(0.8.59)
+    - FileChangeEvent Changed oldName to be of type std::optional<std::filesystem::path> ~<5 mins
+    - FileSystem Added and changed error message ~<30 mins
+
+SITREP 10/20/2022|22w42a1
+    - Changed TRAP Engine version to 22w42a1(0.8.60)
+    - FileSystem unified OpenFileInFileBrower() and OpenFolderInFileBrowser() into OpenInFileBrowser() ~<5 mins
+    - FileSystem unified MoveFile() and MoveFolder() into Move() ~<5 mins
+    - FileSystem unified CopyFile() and CopyFolder() into Copy() ~<5 mins
+    - FileSystem unified RenameFile() and RenameFolder() into Rename() ~<5 mins
+    - FileSystem renamed GetFileName() to GetFileNameWithoutEnding() ~<5 mins
+    - FileSystem renamed DeleteFileOrFolder() to Delete() ~<5 mins
+    - FileSystem renamed FileOrFolderExists() to Exists() ~<5 mins
+    - FileSystem renamed GetFileOrFolderSize() to GetSize() ~<5 mins
+    - FileSystem renamed IsPathEquivalent() to IsEquivalent() ~<5 mins
+    - FileSystem added IsEmpty() to check for empty files and folders ~<5 mins
+    - FileSystem added SetCurrentFolderPath() to set the current working directory ~<5 mins
+    - FileSystem made ReadTextFile() faster ~<10 mins
+    - FileSystem Fixed WriteFile() and WriteTextFile() append mode ~<5 mins
+    - HeadlessTests Addded FileSystemTests ~>60 mins
+
+SITREP 10/21/2022|22w42a2
+    - Changed TRAP Engine version to 22w42a2(0.8.61)
+    - Docs Added Steamworks SDK to buildingtrap.md ~<5 mins
+    - RendererAPI Changed GetMainWindowData() into a generic GetWindowData() function ~<5 mins
+
+SITREP 10/22/2022|22w42b1
+    - Changed TRAP Engine version to 22w42b1(0.8.62)
+    - Changed includes ~>20 mins
+    - RendererAPI Removed the default window = nullptr stuff, RenderCommand now defaults to TRAP::Application::GetWindow() ~>10 mins
+    - Fixed MSVC linker error ~<5 mins
+
+SITREP 10/23/2022|22w42c1
+    - Changed TRAP Engine version to 22w42c1(0.8.63)
+    - Integrated NVIDIAReflexTest into InputLagTest ~<10 mins
+    - Removed NVIDIAReflexTests ~<5 mins
+    - Windows Added COMInitializer an exception-safe RAII wrapper for COM initialization ~<10 mins
+
+SITREP 10/24/2022|22w43a1
+    - Changed TRAP Engine version to 22w43a1(0.8.64)
+    - Scene Removed OnComponentAdded() template ~<5 mins
+    - Application OnTick() may now be called multiple times per frame if devices FPS are lower than the set tick rate ~>15 mins
+    - Application limited number of OnTick() calls to a maximum of 8 per frame ~<5 mins
+
+SITREP 10/26/2022|22w43a2
+    - Changed TRAP Engine version to 22w43a2(0.8.65)
+    - Changed usage of constexpr in combination with static and inline keywords ~<20 mins
+    - Fixed FPS limiter inaccuracy ~>20 mins
+
+SITREP 10/29/2022|22w43b1
+    - Changed TRAP Engine version to 22w43b1(0.8.66)
+    - Fixed TRAP_PROFILE_SYSTEMS() compiler errors ~<5 mins
+    - Games now use Framebuffer size instead of window size ~<5 mins
+    - Window/FrameBufferResizeEvent Added GetAspectRatio() ~<5 mins
+    - Games now use GetAspectRatio() instead of manually calculating it ~<5 mins
+    - WindowingAPI refresh rate is now a double, removed rounding ~<10 mins
+
+SITREP 11/21/2022|22w47a1
+    - Changed TRAP Engine version to 22w47a1(0.8.67)
+    - Updated Codestyle.md ~<10 mins
+    - Added missing ModernDialogs License ~<5 mins
+    - Fixed bug in compile_commands.json generator ~<5 mins
+    - ImGuiLayer Added std::string overloads for InputText(), InputTextMultiline() & InputTextWithHint() ~<10 mins
+
+SITREP 11/22/2022|22w47a2
+    - Changed TRAP Engine version to 22w47a2(0.8.68)
+    - Improved PNG loader ~<15 mins
+    - Reworked TRAP_ASSERT ~<30 mins
+    - Fixed GCC Wpedantic warnings ~<5 mins
+
+SITREP 11/23/2022|22w47b1
+    - Changed TRAP Engine version to 22w47b1(0.8.69)
+    - Fixed GCC Wconversion warnings ~>30 mins
+
+SITREP 11/24/2022|22w47b2
+    - Changed TRAP Engine version to 22w47b2(0.8.70)
+    - Fixed GCC Wshadow warnings ~>30 mins
+    - Updated Readme ~<5 mins
+
+SITREP 11/25/2022|22w47c1
+    - Changed TRAP Engine version to 22w47c1(0.8.71)
+    - DiscordGameSDK Create() now only sets default activity if provided appID is TRAPs ~<5 mins
+    - Monitor Removed Window::GetMonitor() friend ~<5 mins
+    - Window Added SetDisplayMode() overload for Monitor::VideoMode ~<5 mins
+    - RendererAPI Added SetNewGPU() and GetNewGPU() to allow setting a different GPU to use on the next engine run ~<10 mins
+    - Made TimeStep constexpr ~<5 mins
+    - Window/WindowingAPI Added SetAspectRatio() to restrict windows to a specific aspect ratio ~<30 mins
+    - Updated Tracy profiler to v0.9 ~<15 mins
+    - Moved Tracy into own static lib ~<15 mins
+    - FileWatcher constructor removed path(s) parameter ~<5 mins
+    - Added TRAP_ASSERTs to Application, HotReloadEvent, WindowEvent, FileSystem and FileWatcher ~<10 mins
+    - Added TRAP_ASSERTs to DescriptorPool, Fence and Sampler ~<10 mins
+    - AftermathTracker Changed some variable and function names ~<5 mins
+    - Changed messages of TRAP_ASSERTs ~>30 mins
+
+SITREP 11/26/2022|22w47c2
+    - Changed TRAP Engine version to 22w47c2(0.8.72)
+    - Replaced dynamic_cast with std::dynamic_pointer_cast where smart pointers are used ~<15 mins
+    - Silenced TracyLockable warnings for now ~<5 mins
+
+SITREP 11/28/2022|22w48a1
+    - Changed TRAP Engine version to 22w48a1(0.8.73)
+    - Scene Added destructors of Box2D on OnRuntimeStop() ~<15 mins
+    - VulkanRenderer Added support for VK_KHR_create_renderpass2 ~<20 mins
+    - VulkanRenderer now uses VK_KHR_create_renderpass2 as default when device supports it ~<5 mins
+
+SITREP 11/29/2022|22w48a2
+    - Changed TRAP Engine version to 22w48a2(0.8.74)
+    - VulkanRenderPass Added support for VkFragmentShadingRateAttachmentInfoKHR ~<15 mins
+    - Added support for Tier 2 Variable Rate Shading (Texture attachment) ~>60 mins
+    - VRSTests Added Tier 2 example ~<15 mins
+
+SITREP 11/30/2022|22w48a3
+    - Changed TRAP Engine version to 22w48a3(0.8.75)
+    - Updated README ~<5 mins
+    - Fixed VulkanPipeline.cpp compiler error ~<5 mins
+    - VRSTests Added resizing of shading rate texture ~<10 mins
+
+SITREP 12/01/2022|22w48a4
+    - Changed TRAP Engine version to 22w48a4(0.8.76)
+    - VulkanRenderer Fixed VK_KHR_multiview used instead of VK_KHR_create_renderpass2 ~<5 mins
+    - VRSTests Fixed issues with GPUs that dont support VRS ~<10 mins
+    - VulkanRenderer Fixed ReflexMarker() trying to call NVIDIA Reflex SDK API while not using supported NVIDIA GPU ~<5 mins
+
+SITREP 12/02/2022|22w48b1
+    - Changed TRAP Engine version to 22w48b1(0.8.77)
+    - VulkanPhysicalDevice RatePhysicalDevices() Added checks for VRS ~<15 mins
+
+SITREP 12/03/2022|22w48b2
+    - Changed TRAP Engine version to 22w48b2(0.8.78)
+    - RendererAPI/RenderCommand Added Get/SetAnisotropyLevel() ~<5 mins
+    - Sampler constructor now injects engine set anisotropy level if EnableAnisotropy is true and OverrideAnisotropyLevel is 0 ~<5 mins
+    - Engine.cfg Added AnisotropyLevel ~<10 mins
+    - Renderer2D Added SetCustomSampler() to specify a custom sampler to use ~<5 mins
+    - Renderer2D/Cube3D Added check if anisotropy level changed ~<5 mins
+    - Tests Added AnisotropyTests ~<15 mins
+    - Engine.cfg AntiAliasingQuality now defaults to 2 instead of (invalid) 1 ~<20 mins
+    - TextureManager/ShaderManager Added Shutdown() ~<5 mins
+    - Moved RendererAPI usings to RenderCommand ~<10 mins
+
+SITREP 12/05/2022|22w49a1
+    - Changed TRAP Engine version to 22w49a1(0.8.79)
+    - VRSTests/AntiAliasingTests unsupported values are now greyed out in combo boxes ~<10 mins
+    - VRSTests now uses a circular pattern for shading rate texture ~<20 mins
+    - VRSTests Added visualization pass for shading rate ~<10 mins
+    - VRSTests Added check if VRS is actually supported before trying to load the visualization shader ~<5 mins
+    - VulkanShader Fixed a crash when shaders do not use any descriptors ~<5 mins
+    - Fixed Windows freezing when application focus is lost ~<5 mins
+
+SITREP 12/10/2022|22w49b1
+    - Changed TRAP Engine version to 22w49b1(0.8.80)
+    - Branch decouple-resolution:
+        - RenderCommand/RendererAPI/VulkanRenderer Added SetRenderScale(), GetRenderScale() and OnPostUpdate() functions ~<10 mins
+        - Engine.cfg Added RenderScale ~<5 mins
+        - Moved MSAA RenderTarget from SwapChain to PerWindowData ~<20 mins
+
+SITREP 12/11/2022|22w49b2
+    - Changed TRAP Engine version to 22w49b1(0.8.81)
+    - Branch decouple-resolution:
+        - Added initial support for render scaling (doesnt support resizing and MSAA yet) ~>60 mins
+        - Added window resizing support for render scaling ~<10 mins
+        - Disabled VRS after render scaling pass ~<5 mins
+        - VulkanRenderer StartGraphicRecording() now checks with internal resolution against VRS image attachment ~<10 mins
+        - Updated VRSTests ~<5 mins
+        - RendererAPI MSAAResolvePass replaced Window* with CommandBuffer* ~<5 mins
+        - RendererAPI Removed RenderTargetsMSAA ~<10 mins
+        - VulkanRenderer Combined UpdateAntiAliasingRenderTargets() with UpdateInternalRenderTargets() ~<10 mins
+        - RendererAPI ShadingRateTextures are now cached so they dont get destroyed while being in use by command buffers ~<5 mins
+        - RendererAPI RenderScalePass() WIP MSAA support ~>20 mins
+        - RendererAPI ShadingRateTexture is now of type RenderTarget instead of Texture ~<20 mins
+        - ImGuiLayer now automatically sets appropriate MSAA sample count ~<5 mins
+        - ImGuiLayer Removed SetMSAASamples() ~<5 mins
+        - VulkanRenderer Finished MSAA RenderScale support ~>30 mins
+        - VulkanRenderer RenderScalePass() removed code redundancy ~<5 mins
+        - Headless-Mode Added support for RenderScale ~<10 mins
+        - Tests Added RenderScaleTests ~<10 mins
+
+SITREP 12/12/2022|22w50a1
+    - Changed TRAP Engine version to 22w50a1(0.8.82)
+    - Application Fixed Fallback Shader/Texture destruction error ~<5 mins
+    - Headless FileSystem now doesnt create game documents folder ~<5 mins
+    - Headless AftermathTracker now uses current path instead of game documents path ~<5 mins
+    - AftermathTracker Changed crash dump file ending from ".dump" to ".nv-gpudmp" ~<5 mins
+
+SITREP 12/16/2022|22w50b1
+    - Changed TRAP Engine version to 22w50b1(0.8.83)
+    - Sampler Added automatic updating of anisotropy level for samplers that use the engine default ~>30 mins
+
+SITREP 12/17/2022|22w50c1
+    - Changed TRAP Engine version to 22w50c1(0.8.84)
+    - Premake Added architecture option to all files ~<5 mins
+
+SITREP 12/18/2022|22w50c2
+    - Changed TRAP Engine version to 22w50c2(0.8.85)
+    - Added noexcept to some constructors ~<20 mins
+    - SPIRVTools Moved CrossCompiler::m_compiler to stack ~<5 mins
+    - WindowingAPI Fixed retrieving of monitor resolutions ~>10 mins
+    - Added noexcept to Events ~>30 mins
+
+SITREP 12/20/2022|22w51a1
+    - Changed TRAP Engine version to 22w51a1(0.8.86)
+    - Added noexcept where applicable ~>120 mins
+
+SITREP 12/21/2022|22w51a2
+    - Changed TRAP Engine version to 22w51a2(0.8.87)
+    - Removed TRAP_ASSERTs which are already guaranteed to not get triggered ~>30 mins
+
+SITREP 12/22/2022|22w51a3
+    - Changed TRAP Engine version to 22w51a3(0.8.88)
+    - Added [[nodiscard]] attribute to lots of functions ~>120 mins
+    - WindowsInput Replaced qsort with std::sort ~<10 mins
+    - (Vulkan)Buffer/PipelineCache/RootSignature Made some function non-virtual ~<15 mins
+
+SITREP 12/23/2022|22w51b1
+    - Changed TRAP Engine version to 22w51b1(0.8.89)
+    - Made WindowingAPI sole owner of InternalWindows and InternalCursors ~<30 mins
+    - Updated Controller mappings ~<5 mins
+    - Updated Vulkan loader ~<5 mins
+    - Updated EnTT ~<5 mins
+    - Updated GLSLang ~<10 mins
+    - Updated ImGui ~<10 mins
+    - Updated SPIRV-Cross ~<5 mins
+    - Updated VulkanMemoryAllocator ~<5 mins
+    - Updated YAMLCpp ~<5 mins
+
+SITREP 12/24/2022|22w51c1
+    - Changed TRAP Engine version to 22w51c1(0.8.90)
+    - Resolved GLSLang linker error ~<5 mins
+    - ConvertToSPIRV Fixed compiler error ~<5 mins
+    - ConvertToSPIRV Added nodiscard attribute where applicable ~<5 mins
+    - ImGuiLayer Added engine termination if ImGuiWindowing::Init() failed ~<5 mins
+    - exit() calls replaced -1 return code with the actual error code ~<5 mins
+    - ImGuiLayer Removed test code ~<5 mins
+
+SITREP 12/25/2022|22w51d1
+    - Changed TRAP Engine version to 22w51d1(0.8.91)
+    - Updated ResourceLoader ~<45 mins
+
+SITREP 12/26/2022|22w52a1
+    - Changed TRAP Engine version to 22w52a1(0.8.92)
+    - ImageFormat Added ImageFormatIsNormalized(), ImageFormatIsSigned() ~<10 mins
+    - RendererAPI Added type for ClearValue (color/depth and stencil) ~<5 mins
+    - Updated RendererAPI to use new ClearValue type ~<30 mins
+    - VulkanInits Added ClearColorValue() which converts clear color data to a specific image format ~<10 mins
+    - Updated TRAP-Editor and FrameBufferTests ~<5 mins
+
+SITREP 01/26/2023|23w04a1
+    - Updated all licenses ~>10 mins
+
+SITREP 02/07/2023|23w06a1
+    - Removed Visual Studio 2017 support (preparation for C++20) ~<5 mins
+    - Removed unnecessary Linux Visual Studio project generation scripts ~<5 mins
+    - GitHub Actions Added workflow for Visual Studio 2019 ~<5 mins
+
+SITREP 02/12/2023|23w06a2
+    - Changed TRAP Engine version to 23w06a2(0.8.93)
+    - GitHub Action Docs workflow now runs when pushed on master branch ~<5 mins
+    - Updated NVIDIA Nsight Aftermath support to 2022.2 ~<10 mins
+    - Updated VulkanLoader to Vulkan API 1.3.240 ~<5 mins
+    - Updated ControllerMappings ~<5 mins
+    - Updated Box2D, GLSLang, SPIRV-Cross, Vulkan Memory Allocator ~<10 mins
+    - Updated ImGui submodule ~>10 mins
+
+SITREP 02/13/2023|23w07a3
+    - Changed TRAP Engine version to 23w07a3(0.8.94)
+    - Updated documentation (index.md) ~<5 mins
+    - WindowingAPIWin32 Windows now display black background during initialization ~<5 mins
+    - WindowingAPIWin32 now disables accessibility keys if not in use while engine is running ~<10 mins
+
+SITREP 02/14/2023|23w07b1
+    - Updated compile_commands.json generator ~<5 mins
+    - Updated Premake-VSCodeGen submodule ~<5 mins
+    - Added support for AddressSanitizer, UndefinedBehaviorSanitizer and LeakSanitizer on Linux ~>20 mins
+
+SITREP 02/17/2023|23w07c1
+    - Changed TRAP Engine version to 23w07c1(0.8.95)
+    - Updated TRAP.gif animation ~<5 mins
+    - Updated VulkanLoader generator script ~<10 mins

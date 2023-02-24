@@ -1,10 +1,20 @@
 #ifndef TRAP_SCENE_H
 #define TRAP_SCENE_H
 
+#include "Core/Base.h"
+
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
 #endif
 #include <entt.hpp>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
+
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
+#include <box2d/b2_world.h>
 #ifdef _MSC_VER
 	#pragma warning(pop)
 #endif
@@ -14,6 +24,11 @@ namespace TRAP
 	namespace Utils
 	{
 		struct TimeStep;
+		class UID;
+	}
+	namespace Graphics
+	{
+		class EditorCamera;
 	}
 
 	class Entity;
@@ -22,34 +37,45 @@ namespace TRAP
 	class Scene
 	{
 	public:
-		Scene() = default;
-		~Scene() = default;
+		Scene() noexcept = default;
+		~Scene() noexcept = default;
 
 		Scene(const Scene&) = delete;
-		Scene(Scene&&) = default;
+		Scene(Scene&&) noexcept = default;
 		Scene& operator=(const Scene&) = delete;
-		Scene& operator=(Scene&&) = default;
+		Scene& operator=(Scene&&) noexcept = default;
 
-		Entity CreateEntity(const std::string& name = std::string());
+		static TRAP::Ref<Scene> Copy(Ref<Scene> other);
+
+		[[nodiscard]] Entity CreateEntity(const std::string& name = std::string());
+		[[nodiscard]] Entity CreateEntityWithUID(Utils::UID uid, const std::string& name = std::string());
 		void DestroyEntity(Entity entity);
 
-		//TEMP
-		entt::registry& Reg()
-		{
-			return m_registry;
-		}
+		void OnRuntimeStart();
+		void OnRuntimeStop();
 
-		void OnUpdate(Utils::TimeStep deltaTime);
-		void OnTick();
+		void OnTickRuntime(const TRAP::Utils::TimeStep& deltaTime);
+		void OnUpdateRuntime(Utils::TimeStep deltaTime);
+		void OnUpdateEditor(Utils::TimeStep deltaTime, Graphics::EditorCamera& camera);
+		void OnTick(const TRAP::Utils::TimeStep& deltaTime);
 		void OnViewportResize(uint32_t width, uint32_t height);
 
-	private:
-		template<typename T>
-		void OnComponentAdded(Entity entity, T& component);
+		void DuplicateEntity(Entity entity);
 
+		[[nodiscard]] Entity GetPrimaryCameraEntity();
+
+		template<typename... Components>
+		[[nodiscard]] auto GetAllEntitiesWithComponents()
+		{
+			return m_registry.view<Components...>();
+		}
+
+	private:
 		friend class Entity;
 		friend class SceneSerializer;
 		friend class SceneGraphPanel;
+
+		TRAP::Scope<b2World> m_physicsWorld = nullptr;
 
 		entt::registry m_registry;
 		uint32_t m_viewportWidth = 0, m_viewportHeight = 0;

@@ -2,15 +2,18 @@
 #include "VertexBufferLayout.h"
 
 TRAP::Graphics::VertexBufferElement::VertexBufferElement(const ShaderDataType type, std::string name,
-                                                         const bool normalized)
+                                                         const bool normalized) noexcept
 	: Name(std::move(name)), Type(type), Size(ShaderDataTypeSize(type)), Offset(0), Normalized(normalized)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::VertexBufferElement::GetComponentCount() const
+[[nodiscard]] uint32_t TRAP::Graphics::VertexBufferElement::GetComponentCount() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	switch (Type)
 	{
 	case ShaderDataType::Float:   return 1;
@@ -26,65 +29,81 @@ uint32_t TRAP::Graphics::VertexBufferElement::GetComponentCount() const
 	case ShaderDataType::Bool:    return 1;
 
 	default:
-		TRAP_ASSERT(false, "Unknown/Invalid shader data type!");
+		TRAP_ASSERT(false, "VertexBufferElement::GetComponentCount(): Unknown/Invalid shader data type!");
 		return 0;
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::VertexBufferLayout::VertexBufferLayout(const std::initializer_list<VertexBufferElement>& elements)
+TRAP::Graphics::VertexBufferLayout::VertexBufferLayout(const std::initializer_list<VertexBufferElement>& elements) noexcept
 	: m_elements(elements)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	CalculateOffsetsAndStride();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::VertexBufferLayout::GetStride() const
+[[nodiscard]] uint32_t TRAP::Graphics::VertexBufferLayout::GetStride() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_stride;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<TRAP::Graphics::VertexBufferElement>& TRAP::Graphics::VertexBufferLayout::GetElements() const
+[[nodiscard]] const std::vector<TRAP::Graphics::VertexBufferElement>& TRAP::Graphics::VertexBufferLayout::GetElements() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_elements;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::Graphics::VertexBufferElement>::iterator TRAP::Graphics::VertexBufferLayout::begin()
+[[nodiscard]] std::vector<TRAP::Graphics::VertexBufferElement>::iterator TRAP::Graphics::VertexBufferLayout::begin() noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_elements.begin();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::Graphics::VertexBufferElement>::iterator TRAP::Graphics::VertexBufferLayout::end()
+[[nodiscard]] std::vector<TRAP::Graphics::VertexBufferElement>::iterator TRAP::Graphics::VertexBufferLayout::end() noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_elements.end();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics::VertexBufferLayout::begin() const
+[[nodiscard]] std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics::VertexBufferLayout::begin() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_elements.begin();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics::VertexBufferLayout::end() const
+[[nodiscard]] std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics::VertexBufferLayout::end() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_elements.end();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VertexBufferLayout::CalculateOffsetsAndStride()
+void TRAP::Graphics::VertexBufferLayout::CalculateOffsetsAndStride() noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	uint32_t offset = 0;
 	m_stride = 0;
 

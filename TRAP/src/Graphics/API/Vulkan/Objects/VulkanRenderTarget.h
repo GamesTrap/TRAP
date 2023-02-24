@@ -34,27 +34,27 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanRenderTarget(VulkanRenderTarget&&) = default;
+		VulkanRenderTarget(VulkanRenderTarget&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanRenderTarget& operator=(VulkanRenderTarget&&) = default;
+		VulkanRenderTarget& operator=(VulkanRenderTarget&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the render target's Vulkan image view.
 		/// </summary>
 		/// <returns>Vulkan image view.</returns>
-		VkImageView GetVkImageView() const;
+		[[nodiscard]] VkImageView GetVkImageView() const noexcept;
 		/// <summary>
 		/// Retrieve the render target's Vulkan image view slices.
 		/// </summary>
 		/// <returns>Vulkan image view slices.</returns>
-		const std::vector<VkImageView>& GetVkImageViewSlices() const;
+		[[nodiscard]] const std::vector<VkImageView>& GetVkImageViewSlices() const noexcept;
 		/// <summary>
 		/// Retrieve the render target's ID.
 		/// </summary>
 		/// <returns>Render target ID.</returns>
-		uint32_t GetID() const;
+		[[nodiscard]] uint32_t GetID() const noexcept;
 
 	private:
 		friend void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector<RendererAPI::BufferBarrier>* bufferBarriers,
@@ -69,7 +69,8 @@ namespace TRAP::Graphics::API
 			                                                                    const std::vector<uint32_t>* colorArraySlices,
 			                                                                    const std::vector<uint32_t>* colorMipSlices,
 			                                                                    uint32_t depthArraySlice,
-			                                                                    uint32_t depthMipSlice);
+			                                                                    uint32_t depthMipSlice,
+							   												    const TRAP::Ref<RenderTarget>& shadingRate);
 
 		/// <summary>
 		/// Set the name of the render target.

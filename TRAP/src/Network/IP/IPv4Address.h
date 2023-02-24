@@ -2,7 +2,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -46,7 +46,7 @@ namespace TRAP::Network
 		/// <summary>
 		/// This constructor creates an empty (invalid) address.
 		/// </summary>
-		IPv4Address() = default;
+		IPv4Address() noexcept = default;
 
 		/// <summary>
 		/// Construct the address from a string.
@@ -89,7 +89,7 @@ namespace TRAP::Network
 		/// from a host name.
 		/// </summary>
 		/// <returns>String representation of the address.</returns>
-		std::string ToString() const;
+		[[nodiscard]] std::string ToString() const;
 
 		/// <summary>
 		/// Get an integer representation of the address.
@@ -101,7 +101,7 @@ namespace TRAP::Network
 		/// back to a TRAP::Network::IPv4Address with the proper constructor.
 		/// </summary>
 		/// <returns>32 bit unsigned integer representation of the address.</returns>
-		uint32_t ToInteger() const;
+		[[nodiscard]] uint32_t ToInteger() const;
 
 		/// <summary>
 		/// Get the computer's local address.
@@ -112,7 +112,7 @@ namespace TRAP::Network
 		/// Unlike GetPublicAddress, this function is fast and may be used safely anywhere.
 		/// </summary>
 		/// <returns>Local IPv4 address of the computer.</returns>
-		static IPv4Address GetLocalAddress();
+		[[nodiscard]] static IPv4Address GetLocalAddress();
 
 		/// <summary>
 		/// Get the computer's public address.
@@ -132,7 +132,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="timeout">Maximum time to wait.</param>
 		/// <returns>Public IP address of the computer.</returns>
-		static IPv4Address GetPublicAddress(Utils::TimeStep timeout = Utils::TimeStep(0.0f));
+		[[nodiscard]] static IPv4Address GetPublicAddress(Utils::TimeStep timeout = Utils::TimeStep(0.0f));
 
 		static const IPv4Address None;      //Value representing an empty/invalid address
 		static const IPv4Address Any;       //Value representing any address (0.0.0.0)

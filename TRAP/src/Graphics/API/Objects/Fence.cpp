@@ -3,8 +3,10 @@
 
 #include "Graphics/API/Vulkan/Objects/VulkanFence.h"
 
-TRAP::Ref<TRAP::Graphics::Fence> TRAP::Graphics::Fence::Create()
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Fence> TRAP::Graphics::Fence::Create()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
@@ -14,7 +16,7 @@ TRAP::Ref<TRAP::Graphics::Fence> TRAP::Graphics::Fence::Create()
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Fence::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
 }
@@ -24,6 +26,8 @@ TRAP::Ref<TRAP::Graphics::Fence> TRAP::Graphics::Fence::Create()
 TRAP::Graphics::Fence::Fence()
 	: m_submitted(false)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererFencePrefix, "Creating Fence");
 #endif
@@ -33,6 +37,8 @@ TRAP::Graphics::Fence::Fence()
 
 TRAP::Graphics::Fence::~Fence()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererFencePrefix, "Destroying Fence");
 #endif
@@ -40,8 +46,10 @@ TRAP::Graphics::Fence::~Fence()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::Fence::IsSubmitted() const
+[[nodiscard]] bool TRAP::Graphics::Fence::IsSubmitted() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_submitted;
 }
 
@@ -49,8 +57,9 @@ bool TRAP::Graphics::Fence::IsSubmitted() const
 
 void TRAP::Graphics::Fence::WaitForFences(std::vector<Fence>& fences)
 {
-	if(fences.empty())
-		return;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	TRAP_ASSERT(!fences.empty(), "Fence::WaitForFences(): Fences count can not be 0!");
 
 	for(Fence& f : fences)
 		f.Wait();

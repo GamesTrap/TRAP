@@ -10,8 +10,9 @@ class ParticleSystem2DLayer : public TRAP::Layer
 public:
 	ParticleSystem2DLayer()
 		: Layer("ParticleSystem2D"),
-		  m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight())),
+		  m_cameraController(TRAP::Application::GetWindow()->GetAspectRatio()),
 		  m_particle(),
+		  m_maxParticles(1000),
 		  m_frameTimeHistory()
 	{
 	}
@@ -52,8 +53,8 @@ public:
 			const TRAP::Graphics::OrthographicCameraBounds bounds = m_cameraController.GetBounds();
 			const TRAP::Math::Vec3 pos = m_cameraController.GetCamera().GetPosition();
 
-			const float x = (mousePosition.x / resolution.x) * bounds.GetWidth() - bounds.GetWidth() * 0.5f;
-			const float y = bounds.GetHeight() * 0.5f - (mousePosition.y / resolution.y) * bounds.GetHeight();
+			const float x = (mousePosition.x / static_cast<float>(resolution.x)) * bounds.GetWidth() - bounds.GetWidth() * 0.5f;
+			const float y = bounds.GetHeight() * 0.5f - (mousePosition.y / static_cast<float>(resolution.y)) * bounds.GetHeight();
 			m_particle.Position = { x + pos.x, y + pos.y };
 			for (uint32_t i = 0; i < 5; i++)
 				m_particleSystem.Emit(m_particle);
@@ -72,13 +73,13 @@ public:
 			static int frameTimeIndex = 0;
 			if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
 			{
-				m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::Renderer::GetFrameTime();
+				m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
 				frameTimeIndex++;
 			}
 			else
 			{
 				std::move(m_frameTimeHistory.begin() + 1, m_frameTimeHistory.end(), m_frameTimeHistory.begin());
-				m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::Renderer::GetFrameTime();
+				m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
 			}
 		}
 	}
@@ -89,15 +90,21 @@ public:
 		ImGui::ColorEdit4("Spawn Color", &m_particle.ColorBegin[0]);
 		ImGui::ColorEdit4("Decay Color", &m_particle.ColorEnd[0]);
 		ImGui::DragFloat("Life Time", &m_particle.LifeTime, 0.1f, 0.0f, 1000.0f);
+		if(ImGui::SliderInt("Max Particles", &m_maxParticles, 1, 100000))
+			m_particleSystem.SetMaxParticles(m_maxParticles);
 		ImGui::End();
 
 		ImGui::SetNextWindowBgAlpha(0.3f);
 		ImGui::Begin("Performance", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
 		ImGui::Text("Performance");
 		ImGui::Separator();
-		//ImGui::Text("DrawCalls: %u", TRAP::Graphics::Renderer::GetDrawCalls());
-		ImGui::Text("FPS: %u", TRAP::Graphics::Renderer::GetFPS());
-		ImGui::Text("FrameTime: %.3fms", TRAP::Graphics::Renderer::GetFrameTime());
+		ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
+		ImGui::Text("GPU: %s", TRAP::Graphics::RenderCommand::GetGPUName().c_str());
+		ImGui::Text("CPU FPS: %u", TRAP::Graphics::RenderCommand::GetCPUFPS());
+		ImGui::Text("GPU FPS: %u", TRAP::Graphics::RenderCommand::GetGPUFPS());
+		ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
+		ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
+		ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
 		ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
 		ImGui::End();
 	}
@@ -106,6 +113,7 @@ private:
 	TRAP::Graphics::OrthographicCameraController m_cameraController;
 	ParticleProps m_particle;
 	ParticleSystem2D m_particleSystem;
+	int32_t m_maxParticles;
 
 	std::array<float, 50> m_frameTimeHistory;
 	TRAP::Utils::Timer m_updateFPSTimer;

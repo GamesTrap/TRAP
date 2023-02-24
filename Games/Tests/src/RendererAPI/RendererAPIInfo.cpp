@@ -20,7 +20,7 @@ void RendererAPIInfo::OnAttach()
 
 void RendererAPIInfo::OnImGuiRender()
 {
-    const std::string GPUName = TRAP::Graphics::RendererAPI::GetRenderer()->GetCurrentGPUName();
+    const std::string GPUName = TRAP::Graphics::RenderCommand::GetGPUName();
     const std::array<uint8_t, 16> GPUUUID = TRAP::Graphics::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
     std::string GPUUUIDStr = TRAP::Utils::UUIDToString(GPUUUID);
     const std::string renderAPI = TRAP::Utils::String::ConvertToString(TRAP::Graphics::RendererAPI::GetRenderAPI());
@@ -91,9 +91,9 @@ void RendererAPIInfo::OnImGuiRender()
 
     if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
     {
-        TRAP::Graphics::API::VulkanRenderer* vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(TRAP::Graphics::RendererAPI::GetRenderer());
-        TRAP::Graphics::API::VulkanInstance* vkInstance = vkRenderer->GetInstance().get();
-        TRAP::Graphics::API::VulkanDevice* vkDev = vkRenderer->GetDevice().get();
+        const TRAP::Graphics::API::VulkanRenderer* const vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(TRAP::Graphics::RendererAPI::GetRenderer());
+        const TRAP::Graphics::API::VulkanInstance* const vkInstance = vkRenderer->GetInstance().get();
+        const TRAP::Graphics::API::VulkanDevice* const vkDev = vkRenderer->GetDevice().get();
         const std::vector<std::string> instLayers = vkInstance->GetUsedInstanceLayers();
         const std::vector<std::string> instExts = vkInstance->GetUsedInstanceExtensions();
         const std::vector<std::string> devExts = vkDev->GetUsedPhysicalDeviceExtensions();

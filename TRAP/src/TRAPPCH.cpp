@@ -1,1 +1,5 @@
 #include "TRAPPCH.h"
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+NVSTATS_DEFINE()
+#endif

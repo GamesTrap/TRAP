@@ -149,7 +149,7 @@ void MultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep&)
 		TRAP::Graphics::RenderCommand::DrawIndexed(3, 0, 0, m_window.get());
 
 		//Secondary Windows need to explicitly present its content
-		TRAP::Graphics::RenderCommand::Present(m_window.get());
+		TRAP::Graphics::RenderCommand::Flush(m_window.get());
 	}
 
 	//Main Window OnUpdate
@@ -168,8 +168,8 @@ void MultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep&)
 	//Simple performance metrics
 	if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
 	{
-		TP_INFO("[MultiWindow] FPS: ", TRAP::Graphics::Renderer::GetFPS());
-		TP_INFO("[MultiWindow] FrameTime: ", TRAP::Graphics::Renderer::GetFrameTime(), "ms");
+		TP_INFO("[MultiWindow] FPS: ", TRAP::Graphics::RenderCommand::GetCPUFPS());
+		TP_INFO("[MultiWindow] CPU FrameTime: ", TRAP::Graphics::RenderCommand::GetCPUFrameTime(), "ms");
 		m_fpsTimer.Reset();
 	}
 }

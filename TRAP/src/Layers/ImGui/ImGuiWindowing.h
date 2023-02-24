@@ -1,7 +1,7 @@
 /*
 The MIT License(MIT)
 
-Copyright(c) 2014 - 2022 Omar Cornut
+Copyright(c) 2014 - 2023 Omar Cornut
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this softwareand associated documentation files(the "Software"), to deal
@@ -27,8 +27,9 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_IMGUIWINDOWING_H
 #define TRAP_IMGUIWINDOWING_H
 
+#include <imgui.h>
+
 #include "Core/PlatformDetection.h"
-#include "Window/WindowingAPI.h"
 #include "Graphics/API/RendererAPI.h"
 
 namespace TRAP::INTERNAL
@@ -46,8 +47,8 @@ namespace TRAP::INTERNAL
 		/// <param name="installCallbacks">Whether to set ImGui callbacks or not.</param>
 		/// <param name="renderAPI">RenderAPI to be used by ImGui.</param>
 		/// <returns>True on successful initialization, false otherwise.</returns>
-		static bool Init(WindowingAPI::InternalWindow* window, bool installCallbacks,
-		                 Graphics::RenderAPI renderAPI);
+		[[nodiscard]] static bool Init(WindowingAPI::InternalWindow* window, bool installCallbacks,
+		                               Graphics::RenderAPI renderAPI);
 		/// <summary>
 		/// Shutdown the ImGui TRAP::INTERNAL::WindowingAPI interface.
 		/// </summary>
@@ -61,7 +62,19 @@ namespace TRAP::INTERNAL
 		/// Note: This will make ImGui the owner of the cursor!
 		/// </summary>
 		/// <param name="cursor">Custom cursor to use.</param>
-		static void SetCustomCursor(Scope<WindowingAPI::InternalCursor>& cursor);
+		static void SetCustomCursor(WindowingAPI::InternalCursor* cursor);
+		/// <summary>
+		/// Set to true to enable chaining installed callbacks for all windows
+		/// (including secondary viewports created y backends or by user).
+		///
+		/// Note: This is false by default meaning we only chain callbacks for the main viewport.
+		///       We cannot set this to true by default because user callbacks code may not be testing
+		///       the window parameter of their callback.
+		///       If you set this to true your user callback code will need to make sure you are testing
+		///       the window parameter.
+		/// </summary>
+		/// <param name="chainForAllWindows">Whether to enable callback chaining or not.</param>
+		static void SetCallbacksChainForAllWindows(const bool chainForAllWindows);
 
 		/// <summary>
 		/// Install ImGui callbacks.
@@ -73,6 +86,13 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Window to restore callbacks for.</param>
 		static void RestoreCallbacks(WindowingAPI::InternalWindow* window);
+
+		/// <summary>
+		/// Check if the given window should chain callbacks.
+		/// </summary>
+		/// <param name="window">Window to check for chaining.</param>
+		/// <returns>True or false.</returns>
+		static bool ShouldChainCallback(const WindowingAPI::InternalWindow* const window);
 
 	private:
 		static std::string s_clipboardText;
@@ -86,12 +106,13 @@ namespace TRAP::INTERNAL
 			Graphics::RenderAPI ClientAPI;
 			double Time;
 			const WindowingAPI::InternalWindow* MouseWindow;
-			std::array<TRAP::Scope<WindowingAPI::InternalCursor>, ImGuiMouseCursor_COUNT> MouseCursors;
+			std::array<WindowingAPI::InternalCursor*, ImGuiMouseCursor_COUNT> MouseCursors;
 			ImVec2 LastValidMousePos;
 			std::vector<const WindowingAPI::InternalWindow*> KeyOwnerWindows;
 			bool InstalledCallbacks;
+			bool CallbacksChainForAllWindows;
 			bool WantUpdateMonitors;
- 			Scope<WindowingAPI::InternalCursor> CustomCursor;
+ 			WindowingAPI::InternalCursor* CustomCursor = nullptr;
 
 			//Chain WindowingAPI callbacks; our callbacks will call the user's previously installed callbacks, if any.
 			WindowingAPI::WindowFocusFunc PrevUserCallbackWindowFocus;
@@ -105,7 +126,8 @@ namespace TRAP::INTERNAL
 
 			ImGuiTRAPData()
 				: Window(nullptr), ClientAPI(Graphics::RenderAPI::NONE), Time(0.0), MouseWindow(nullptr),
-				  LastValidMousePos(0.0f, 0.0f), KeyOwnerWindows(), InstalledCallbacks(false), WantUpdateMonitors(false),
+				  LastValidMousePos(0.0f, 0.0f), KeyOwnerWindows(), InstalledCallbacks(false), CallbacksChainForAllWindows(false),
+				  WantUpdateMonitors(false), CustomCursor(nullptr),
 				  PrevUserCallbackWindowFocus(nullptr), PrevUserCallbackCursorPos(nullptr), PrevUserCallbackCursorEnter(nullptr),
 				  PrevUserCallbackMouseButton(nullptr), PrevUserCallbackScroll(nullptr), PrevUserCallbackKey(nullptr),
 				  PrevUserCallbackChar(nullptr), PrevUserCallbackMonitor(nullptr)
@@ -119,8 +141,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		struct ImGuiViewportDataTRAP
 		{
-			Scope<WindowingAPI::InternalWindow> Window;
-			WindowingAPI::InternalWindow* WindowPtr;
+			WindowingAPI::InternalWindow* Window;
 			bool WindowOwned;
 			int32_t IgnoreWindowPosEventFrame;
 			int32_t IgnoreWindowSizeEventFrame;
@@ -128,8 +149,8 @@ namespace TRAP::INTERNAL
 			/// <summary>
 			/// Constructor.
 			/// </summary>
-			ImGuiViewportDataTRAP()
-				: Window(nullptr), WindowPtr(nullptr), WindowOwned(false),
+			ImGuiViewportDataTRAP() noexcept
+				: Window(nullptr), WindowOwned(false),
 				  IgnoreWindowPosEventFrame(-1), IgnoreWindowSizeEventFrame(-1)
 			{}
 
@@ -200,14 +221,14 @@ namespace TRAP::INTERNAL
 		/// Get the backend data provided by user.
 		/// </summary>
 		/// <returns>Pointer to backend data.</returns>
-		static ImGuiTRAPData* GetBackendData();
+		[[nodiscard]] static ImGuiTRAPData* GetBackendData();
 
 		/// <summary>
 		/// Get clipboard text.
 		/// </summary>
 		/// <param name="userData">Unused.</param>
 		/// <returns>Clipboard content.</returns>
-		static const char* GetClipboardText(void* userData);
+		[[nodiscard]] static const char* GetClipboardText(void* userData);
 		/// <summary>
 		/// Set the clipboard text.
 		/// </summary>
@@ -220,13 +241,13 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="key">Key to convert.</param>
 		/// <returns>Converted key.</returns>
-		static ImGuiKey KeyToImGuiKey(Input::Key key);
+		[[nodiscard]] static ImGuiKey KeyToImGuiKey(Input::Key key) noexcept;
 
 		/// <summary>
 		/// Update modifier keys.
 		/// </summary>
 		/// <param name="window">Window to check modifier keys on.</param>
-		static void UpdateKeyModifiers(WindowingAPI::InternalWindow* window);
+		static void UpdateKeyModifiers(const WindowingAPI::InternalWindow* window);
 
 		/// <summary>
 		/// Translate untranslated keys from the WindowingAPI
@@ -234,7 +255,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="key">Key to translate.</param>
 		/// <returns>Translated key.</returns>
-		static Input::Key TranslateUntranslateKey(Input::Key key);
+		[[nodiscard]] static Input::Key TranslateUntranslateKey(Input::Key key);
 
 		/// <summary>
 		/// Update the ImGui mouse data.
@@ -301,7 +322,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="viewport">Viewport to retrieve position for.</param>
 		/// <returns>Window position.</returns>
-		static ImVec2 GetWindowPos(ImGuiViewport* viewport);
+		[[nodiscard]] static ImVec2 GetWindowPos(ImGuiViewport* viewport);
 		/// <summary>
 		/// Set the position for the ImGui Window.
 		/// </summary>
@@ -313,7 +334,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="viewport">Viewport to retrieve size for.</param>
 		/// <returns>Window size.</returns>
-		static ImVec2 GetWindowSize(ImGuiViewport* viewport);
+		[[nodiscard]] static ImVec2 GetWindowSize(ImGuiViewport* viewport);
 		/// <summary>
 		/// Set the size for the ImGui Window.
 		/// </summary>
@@ -336,13 +357,13 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="viewport">Viewport to retrieve focus state for.</param>
 		/// <returns>Focus state.</returns>
-		static bool GetWindowFocus(ImGuiViewport* viewport);
+		[[nodiscard]] static bool GetWindowFocus(ImGuiViewport* viewport);
 		/// <summary>
 		/// Retrieve the ImGui Window minimization state.
 		/// </summary>
 		/// <param name="viewport">Viewport to retrieve minimization state for.</param>
 		/// <returns>Minimization state.</returns>
-		static bool GetWindowMinimized(ImGuiViewport* viewport);
+		[[nodiscard]] static bool GetWindowMinimized(ImGuiViewport* viewport);
 		/// <summary>
 		/// Set the alpha value for the ImGui Window.
 		/// </summary>
@@ -362,8 +383,8 @@ namespace TRAP::INTERNAL
 		/// <param name="vkAllocator">Vulkan allocator.</param>
 		/// <param name="outVkSurface">Output for Vulkan surface.</param>
 		/// <returns>Vulkan error code.</returns>
-		static int32_t CreateVkSurface(ImGuiViewport* viewport, const ImU64 vkInstance,
-		                               const void* vkAllocator, ImU64* outVkSurface);
+		[[nodiscard]] static int32_t CreateVkSurface(ImGuiViewport* viewport, const ImU64 vkInstance,
+		                                             const void* vkAllocator, ImU64* outVkSurface);
 
 		/// <summary>
 		/// Initialize the platform interface.

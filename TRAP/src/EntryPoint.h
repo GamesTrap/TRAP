@@ -4,15 +4,6 @@
 #include "Application.h"
 #include "Core/PlatformDetection.h"
 
-#ifdef TRAP_PLATFORM_WINDOWS
-//Only used by OpenGL
-extern "C"
-{
-	inline _declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;		  //Utilize NVIDIA GPU
-	inline _declspec(dllexport) int32_t AmdPowerXpressRequestHighPerformance = 1; //Utilize AMD GPU
-}
-#endif
-
 /// <summary>
 /// This function will be called by TRAP engines main function to initialize the engine.
 /// IT MUST BE IMPLEMENTED BY ANY CLIENT!

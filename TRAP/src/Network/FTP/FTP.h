@@ -2,7 +2,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -33,7 +33,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include <string>
 
 #include "Network/Sockets/TCPSocket.h"
-#include "Utils/Time/TimeStep.h"
 
 namespace TRAP::Network
 {
@@ -129,7 +128,7 @@ namespace TRAP::Network
 			/// </summary>
 			/// <param name="code">Response status code.</param>
 			/// <param name="message">Response message.</param>
-			explicit Response(Status code = Status::InvalidResponse, std::string message = "");
+			explicit Response(Status code = Status::InvalidResponse, std::string message = "") noexcept;
 
 			/// <summary>
 			/// Check if the status code means a success.
@@ -138,19 +137,19 @@ namespace TRAP::Network
 			/// equivalent to testing if the status code is < 400.
 			/// </summary>
 			/// <returns>True if the status is a success, false if it is a failure.</returns>
-			bool IsOK() const;
+			[[nodiscard]] bool IsOK() const noexcept;
 
 			/// <summary>
 			/// Get the status code of the response.
 			/// </summary>
 			/// <returns>Status code.</returns>
-			Status GetStatus() const;
+			[[nodiscard]] Status GetStatus() const noexcept;
 
 			/// <summary>
 			/// Get the full message contained in the response.
 			/// </summary>
 			/// <returns>The response message.</returns>
-			std::string GetMessage() const;
+			[[nodiscard]] std::string GetMessage() const noexcept;
 
 		private:
 			Status m_status; //Status code returned from the server
@@ -173,7 +172,7 @@ namespace TRAP::Network
 			/// Get the directory returned in the response.
 			/// </summary>
 			/// <returns>Directory name.</returns>
-			const std::filesystem::path& GetDirectory() const;
+			[[nodiscard]] const std::filesystem::path& GetDirectory() const noexcept;
 
 		private:
 			std::filesystem::path m_directory; //Directory extracted from the response message
@@ -196,7 +195,7 @@ namespace TRAP::Network
 			/// Return the array of directory/file names.
 			/// </summary>
 			/// <returns>Array containing the requested listing.</returns>
-			const std::vector<std::filesystem::path>& GetListing() const;
+			[[nodiscard]] const std::vector<std::filesystem::path>& GetListing() const noexcept;
 
 		private:
 			std::vector<std::filesystem::path> m_listing; //Directory/file names extracted from the data
@@ -205,7 +204,7 @@ namespace TRAP::Network
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		FTP() = default;
+		FTP() noexcept = default;
 
 		/// <summary>
 		/// Automatically closes the connection with the server if it is still opened.
@@ -225,12 +224,12 @@ namespace TRAP::Network
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		FTP(FTP&&) = default;
+		FTP(FTP&&) noexcept = default;
 
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		FTP& operator=(FTP&&) = default;
+		FTP& operator=(FTP&&) noexcept = default;
 
 		/// <summary>
 		/// Connect to the specified FTP server.
@@ -295,7 +294,7 @@ namespace TRAP::Network
 		/// operations involving directories and/or filenames.
 		/// </summary>
 		/// <returns>Server response to the request.</returns>
-		[[nodiscard]] DirectoryResponse GetWorkingDirectory();
+		[[nodiscard]] [[nodiscard]] DirectoryResponse GetWorkingDirectory();
 
 		/// <summary>
 		/// Get the contents of the given directory.
@@ -307,7 +306,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="directory">Directory to list.</param>
 		/// <returns>Server response to the request.</returns>
-		[[nodiscard]] ListingResponse GetDirectoryListing(const std::filesystem::path& directory = "");
+		[[nodiscard]] [[nodiscard]] ListingResponse GetDirectoryListing(const std::filesystem::path& directory = "");
 
 		/// <summary>
 		/// Change the current working directory.
@@ -433,7 +432,7 @@ namespace TRAP::Network
 		/// SendCommand that expects a response.
 		/// </summary>
 		/// <returns>Server response to the request.</returns>
-		Response GetResponse();
+		[[nodiscard]] Response GetResponse();
 
 		/// <summary>
 		/// Utility class for exchanging data with the server on the data channel.

@@ -3,7 +3,6 @@
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/CommandBuffer.h"
-#include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 namespace TRAP::Graphics::API
 {
@@ -37,35 +36,35 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanCommandBuffer(const VulkanCommandBuffer&) = default;
+		VulkanCommandBuffer(const VulkanCommandBuffer&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanCommandBuffer& operator=(const VulkanCommandBuffer&) = delete;
+		VulkanCommandBuffer& operator=(const VulkanCommandBuffer&) noexcept = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanCommandBuffer(VulkanCommandBuffer&&) = default;
+		VulkanCommandBuffer(VulkanCommandBuffer&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanCommandBuffer& operator=(VulkanCommandBuffer&&) = delete;
+		VulkanCommandBuffer& operator=(VulkanCommandBuffer&&) noexcept = delete;
 
 		/// <summary>
 		/// Retrieve the VkCommandBuffer handle.
 		/// </summary>
 		/// <returns>VkCommandBuffer handle.</returns>
-		VkCommandBuffer GetVkCommandBuffer() const;
+		[[nodiscard]] VkCommandBuffer GetVkCommandBuffer() const noexcept;
 		/// <summary>
 		/// Retrieve the queue type used for resource barriers.
 		/// </summary>
 		/// <returns>Queue type used for resource barriers.</returns>
-		RendererAPI::QueueType GetQueueType() const;
+		[[nodiscard]] RendererAPI::QueueType GetQueueType() const;
 		/// <summary>
 		/// Retrieve whether this is a secondary command buffer.
 		/// </summary>
 		/// <returns>True of this is a secondary command buffer, false otherwise.</returns>
-		bool IsSecondary() const;
+		[[nodiscard]] bool IsSecondary() const noexcept;
 
 		/// <summary>
 		/// Bind push constant buffer data to the command buffer.
@@ -124,13 +123,15 @@ namespace TRAP::Graphics::API
 		/// <param name="colorMipSlices">Optional color mip slices for each render target.</param>
 		/// <param name="depthArraySlice">Optional depth array slice for the depth stencil target.</param>
 		/// <param name="depthMipSlice">Optional depth mip slice for the depth stencil target.</param>
+		/// <param name="shadingRate">Optional shading rate texture.</param>
 		void BindRenderTargets(const std::vector<TRAP::Ref<RenderTarget>>& renderTargets,
 		                       const TRAP::Ref<RenderTarget>& depthStencil,
 							   const RendererAPI::LoadActionsDesc* loadActions,
 							   const std::vector<uint32_t>* colorArraySlices,
 		                       const std::vector<uint32_t>* colorMipSlices,
 							   uint32_t depthArraySlice,
-							   uint32_t depthMipSlice) override;
+							   uint32_t depthMipSlice,
+							   const TRAP::Ref<RenderTarget>& shadingRate = nullptr) override;
 
 		/// <summary>
 		/// Add a debug marker to the command buffer.
@@ -251,8 +252,16 @@ namespace TRAP::Graphics::API
 		/// <param name="texture">Texture to update.</param>
 		/// <param name="srcBuffer">Source buffer to read data from.</param>
 		/// <param name="subresourceDesc">Subresource description.</param>
-		void UpdateSubresource(TRAP::Graphics::Texture* texture, const TRAP::Ref<Buffer>& srcBuffer,
+		void UpdateSubresource(const TRAP::Graphics::Texture* const texture, const TRAP::Ref<Buffer>& srcBuffer,
 		                       const RendererAPI::SubresourceDataDesc& subresourceDesc) const override;
+		/// <summary>
+		/// Copy a texture partially into a buffer.
+		/// </summary>
+		/// <param name="dstBuffer">Destination to copy data into.</param>
+		/// <param name="texture">Source texture to copy from.</param>
+		/// <param name="subresourceDesc">Subresource description.</param>
+		void CopySubresource(const Buffer* const dstBuffer, const Texture* const texture,
+		                     const RendererAPI::SubresourceDataDesc& subresourceDesc) const override;
 
 		/// <summary>
 		/// Reset a query pool.
@@ -313,11 +322,9 @@ namespace TRAP::Graphics::API
 		/// Set the pipeline fragment shading rate and combiner operation for the command buffer.
 		/// </summary>
 		/// <param name="shadingRate">Shading rate to use.</param>
-		/// <param name="texture">Unused by Vulkan.</param>
 		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
 		/// <param name="finalRate">Shading rate combiner to use.</param>
 		void SetShadingRate(RendererAPI::ShadingRate shadingRate,
-						    TRAP::Graphics::Texture* texture,
 		                    RendererAPI::ShadingRateCombiner postRasterizerRate,
 							RendererAPI::ShadingRateCombiner finalRate) const override;
 
@@ -327,7 +334,7 @@ namespace TRAP::Graphics::API
 		/// <param name="color">Color to clear the color attachment with.</param>
 		/// <param name="width">Width of the area to clear.</param>
 		/// <param name="height">Height of the area to clear.</param>
-		void Clear(TRAP::Math::Vec4 color, uint32_t width, uint32_t height) const override;
+		void Clear(const RendererAPI::Color& color, uint32_t width, uint32_t height) const override;
 		/// <summary>
 		/// Clear the currently used depth and stencil attachment.
 		/// </summary>
@@ -358,14 +365,14 @@ namespace TRAP::Graphics::API
 		/// <param name="srcState">Source texture state.</param>
 		/// <param name="dstImage">Destination non-multisample color texture to resolve into.</param>
 		/// <param name="dstState">Destination texture state.</param>
-		void ResolveImage(API::VulkanTexture* srcImage, RendererAPI::ResourceState srcState,
-		                  API::VulkanTexture* dstImage, RendererAPI::ResourceState dstState) const;
+		void ResolveImage(Ref<API::VulkanTexture> srcImage, RendererAPI::ResourceState srcState,
+		                  Ref<API::VulkanTexture> dstImage, RendererAPI::ResourceState dstState) const;
 
 		/// <summary>
 		/// Retrieve the currently active VkRenderPass.
 		/// </summary>
 		/// <returns>Currently active VkRenderPass.</returns>
-		VkRenderPass GetActiveVkRenderPass() const;
+		[[nodiscard]] VkRenderPass GetActiveVkRenderPass() const noexcept;
 
 	private:
 		/// <summary>
@@ -377,6 +384,11 @@ namespace TRAP::Graphics::API
 		template<typename T>
 		static std::size_t HashAlg(const T* mem, std::size_t size, const std::size_t prev = 2166136261U)
 		{
+			ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+			TRAP_ASSERT(mem, "VulkanCommandBuffer::HashAlg(): mem is nullptr!");
+			TRAP_ASSERT(size, "VulkanCommandBuffer::HashAlg(): size is 0!");
+
 			//Intentionally uint32_t instead of std::size_t, so the behavior is the same regardless of size.
 			uint32_t result = static_cast<uint32_t>(prev);
 

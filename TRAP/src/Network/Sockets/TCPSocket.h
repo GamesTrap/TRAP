@@ -2,7 +2,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -49,7 +49,7 @@ namespace TRAP::Network
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		TCPSocket();
+		TCPSocket() noexcept;
 
 		/// <summary>
 		/// Get the port to which the socket is bound locally.
@@ -57,7 +57,7 @@ namespace TRAP::Network
 		/// If the socket is not connected, this function returns 0.
 		/// </summary>
 		/// <returns>Port to which the socket is bound.</returns>
-		uint16_t GetLocalPort() const;
+		[[nodiscard]] uint16_t GetLocalPort() const;
 
 		/// <summary>
 		/// Get the address of the connected peer.
@@ -66,7 +66,7 @@ namespace TRAP::Network
 		/// TRAP::Network::IPv4Address::None.
 		/// </summary>
 		/// <returns>Address of the remote peer.</returns>
-		IPv4Address GetRemoteAddress() const;
+		[[nodiscard]] IPv4Address GetRemoteAddress() const;
 
 		/// <summary>
 		/// Get the port of the connected peer to which
@@ -75,7 +75,7 @@ namespace TRAP::Network
 		/// If the socket is not connected, this function returns 0.
 		/// </summary>
 		/// <returns>Remote port to which the socket is connected.</returns>
-		uint16_t GetRemotePort() const;
+		[[nodiscard]] uint16_t GetRemotePort() const;
 
 		/// <summary>
 		/// Connect the socket to a remote peer.
@@ -170,7 +170,7 @@ namespace TRAP::Network
 		/// </summary>
 		struct PendingPacket
 		{
-			PendingPacket();
+			PendingPacket() noexcept;
 
 			uint32_t Size;            //Data of packet size
 			std::size_t SizeReceived; //Number of size bytes received so far

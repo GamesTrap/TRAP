@@ -6,6 +6,8 @@
 
 TRAP::Graphics::PipelineCache::PipelineCache()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererPipelineCachePrefix, "Creating PipelineCache");
 #endif
@@ -15,6 +17,8 @@ TRAP::Graphics::PipelineCache::PipelineCache()
 
 TRAP::Graphics::PipelineCache::~PipelineCache()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererPipelineCachePrefix, "Destroying PipelineCache");
 #endif
@@ -22,8 +26,30 @@ TRAP::Graphics::PipelineCache::~PipelineCache()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::PipelineCache> TRAP::Graphics::PipelineCache::Create(const RendererAPI::PipelineCacheDesc& desc)
+void TRAP::Graphics::PipelineCache::Save(const std::filesystem::path& path)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	std::vector<uint8_t> data{};
+	std::size_t dataSize = 0;
+
+	GetPipelineCacheData(&dataSize, nullptr);
+	if (dataSize == 0)
+		return;
+	data.resize(dataSize);
+	GetPipelineCacheData(&dataSize, data.data());
+
+	if (!TRAP::FileSystem::WriteFile(path, data))
+		TP_ERROR(Log::RendererPipelineCachePrefix, "Saving of PipelineCache to path: \"",
+		         path.u8string(), "\" failed!");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::PipelineCache> TRAP::Graphics::PipelineCache::Create(const RendererAPI::PipelineCacheDesc& desc)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
@@ -33,15 +59,17 @@ TRAP::Ref<TRAP::Graphics::PipelineCache> TRAP::Graphics::PipelineCache::Create(c
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "PipelineCache::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::PipelineCache> TRAP::Graphics::PipelineCache::Create(const RendererAPI::PipelineCacheLoadDesc& desc)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::PipelineCache> TRAP::Graphics::PipelineCache::Create(const RendererAPI::PipelineCacheLoadDesc& desc)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
@@ -64,7 +92,7 @@ TRAP::Ref<TRAP::Graphics::PipelineCache> TRAP::Graphics::PipelineCache::Create(c
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "PipelineCache::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
 }

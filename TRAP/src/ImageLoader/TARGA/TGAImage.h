@@ -16,19 +16,19 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		TGAImage(const TGAImage&) = default;
+		TGAImage(const TGAImage&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		TGAImage& operator=(const TGAImage&) = default;
+		TGAImage& operator=(const TGAImage&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		TGAImage(TGAImage&&) = default;
+		TGAImage(TGAImage&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		TGAImage& operator=(TGAImage&&) = default;
+		TGAImage& operator=(TGAImage&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -38,12 +38,12 @@ namespace TRAP::INTERNAL
 		/// Retrieve the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Constant pointer to the raw pixel data.</returns>
-		const void* GetPixelData() const override;
+		[[nodiscard]] const void* GetPixelData() const noexcept override;
 		/// <summary>
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		uint64_t GetPixelDataSize() const override;
+		[[nodiscard]] uint64_t GetPixelDataSize() const noexcept override;
 	private:
 		/// <summary>
 		/// Decode run length encoded indexed BGRA data.
@@ -55,8 +55,8 @@ namespace TRAP::INTERNAL
 		/// <param name="channels">Amount of channels, i.e. 4 = RGBA, 3 = RGB and so on.</param>
 		/// <param name="colorMap">Color table.</param>
 		/// <returns>Decoded pixel data.</returns>
-		static std::vector<uint8_t> DecodeRLEBGRAMap(std::vector<uint8_t>& source, uint32_t width, uint32_t height,
-		                                             uint32_t channels, std::vector<uint8_t>& colorMap);
+		[[nodiscard]] static std::vector<uint8_t> DecodeRLEBGRAMap(std::vector<uint8_t>& source, uint32_t width, uint32_t height,
+		                                                           uint32_t channels, std::vector<uint8_t>& colorMap);
 		/// <summary>
 		/// Decode run length encoded grayscale data.
 		/// </summary>
@@ -64,8 +64,8 @@ namespace TRAP::INTERNAL
 		/// <param name="width">Width of the image.</param>
 		/// <param name="height">Height of the image.</param>
 		/// <returns>Decoded grayscale pixel data.</returns>
-		static std::vector<uint8_t> DecodeRLEGrayScale(std::vector<uint8_t>& source,
-		                                               uint32_t width, uint32_t height);
+		[[nodiscard]] static std::vector<uint8_t> DecodeRLEGrayScale(std::vector<uint8_t>& source,
+		                                                             uint32_t width, uint32_t height);
 		/// <summary>
 		/// Convert run length encoded BGR16 data to RGB24.
 		/// </summary>
@@ -73,8 +73,8 @@ namespace TRAP::INTERNAL
 		/// <param name="width">Width of the image.</param>
 		/// <param name="height">Height of the image.</param>
 		/// <returns>Decoded RGB24 pixel data.</returns>
-		static std::vector<uint8_t> ConvertRLEBGR16ToRGB24(std::vector<uint8_t>& source,
-		                                                   uint32_t width, uint32_t height);
+		[[nodiscard]] static std::vector<uint8_t> ConvertRLEBGR16ToRGB24(std::vector<uint8_t>& source,
+		                                                                 uint32_t width, uint32_t height);
 		/// <summary>
 		/// Convert run length encoded BGR24 data to RGB24.
 		/// </summary>
@@ -82,8 +82,8 @@ namespace TRAP::INTERNAL
 		/// <param name="width">Width of the image.</param>
 		/// <param name="height">Height of the image.</param>
 		/// <returns>Decoded RGB24 pixel data.</returns>
-		static std::vector<uint8_t> ConvertRLEBGR24ToRGB24(std::vector<uint8_t>& source,
-		                                                   uint32_t width, uint32_t height);
+		[[nodiscard]] static std::vector<uint8_t> ConvertRLEBGR24ToRGB24(std::vector<uint8_t>& source,
+		                                                                 uint32_t width, uint32_t height);
 		/// <summary>
 		/// Convert run length encoded BGRA32 data to RGBA32.
 		/// </summary>
@@ -91,8 +91,8 @@ namespace TRAP::INTERNAL
 		/// <param name="width">Width of the image.</param>
 		/// <param name="height">Height of the image.</param>
 		/// <returns>Decoded RGBA32 pixel data.</returns>
-		static std::vector<uint8_t> ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>& source,
-		                                                   uint32_t width, uint32_t height);
+		[[nodiscard]] static std::vector<uint8_t> ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>& source,
+		                                                                 uint32_t width, uint32_t height);
 
 		std::vector<uint8_t> m_data;
 

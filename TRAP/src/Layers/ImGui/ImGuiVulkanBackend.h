@@ -1,7 +1,7 @@
 /*
 The MIT License(MIT)
 
-Copyright(c) 2014 - 2022 Omar Cornut
+Copyright(c) 2014 - 2023 Omar Cornut
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this softwareand associated documentation files(the "Software"), to deal
@@ -81,19 +81,19 @@ struct ImGui_ImplVulkan_InitInfo
 };
 
 // Called by user code
-IMGUI_IMPL_API bool           ImGui_ImplVulkan_Init(ImGui_ImplVulkan_InitInfo* info, VkRenderPass render_pass);
-IMGUI_IMPL_API void           ImGui_ImplVulkan_Shutdown();
-IMGUI_IMPL_API void           ImGui_ImplVulkan_NewFrame();
-IMGUI_IMPL_API void           ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer command_buffer, VkPipeline pipeline = VK_NULL_HANDLE);
-// IMGUI_IMPL_API bool           ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer);
-// IMGUI_IMPL_API void           ImGui_ImplVulkan_DestroyFontsTexture();
-IMGUI_IMPL_API void           ImGui_ImplVulkan_UploadFontsTexture();
-IMGUI_IMPL_API void           ImGui_ImplVulkan_DestroyFontUploadObjects();
-IMGUI_IMPL_API void           ImGui_ImplVulkan_SetMinImageCount(uint32_t min_image_count); // To override MinImageCount after initialization (e.g. if swap chain is recreated)
-IMGUI_IMPL_API ImTextureID    ImGui_ImplVulkan_AddTexture(VkSampler sampler, VkImageView image_view, VkImageLayout image_layout);
-IMGUI_IMPL_API ImTextureID    ImGui_ImplVulkan_UpdateTextureInfo(VkDescriptorSet descriptorSet, VkSampler sampler, VkImageView image_view, VkImageLayout image_layout);
-IMGUI_IMPL_API void           ImGui_ImplVulkan_ClearCache();
-IMGUI_IMPL_API void           ImGui_ImplVulkan_SetMSAASamples(VkSampleCountFlagBits sampleCount);
+              IMGUI_IMPL_API bool           ImGui_ImplVulkan_Init(ImGui_ImplVulkan_InitInfo* info, VkRenderPass render_pass);
+              IMGUI_IMPL_API void           ImGui_ImplVulkan_Shutdown();
+              IMGUI_IMPL_API void           ImGui_ImplVulkan_NewFrame();
+              IMGUI_IMPL_API void           ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer command_buffer, VkPipeline pipeline = VK_NULL_HANDLE);
+              // IMGUI_IMPL_API bool           ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer);
+              // IMGUI_IMPL_API void           ImGui_ImplVulkan_DestroyFontsTexture();
+              IMGUI_IMPL_API void           ImGui_ImplVulkan_UploadFontsTexture();
+              IMGUI_IMPL_API void           ImGui_ImplVulkan_DestroyFontUploadObjects();
+              IMGUI_IMPL_API void           ImGui_ImplVulkan_SetMinImageCount(uint32_t min_image_count); // To override MinImageCount after initialization (e.g. if swap chain is recreated)
+[[nodiscard]] IMGUI_IMPL_API ImTextureID    ImGui_ImplVulkan_AddTexture(VkSampler sampler, VkImageView image_view, VkImageLayout image_layout);
+              IMGUI_IMPL_API ImTextureID    ImGui_ImplVulkan_UpdateTextureInfo(VkDescriptorSet descriptorSet, VkSampler sampler, VkImageView image_view, VkImageLayout image_layout);
+              IMGUI_IMPL_API void           ImGui_ImplVulkan_ClearCache() noexcept;
+              IMGUI_IMPL_API void           ImGui_ImplVulkan_SetMSAASamples(VkSampleCountFlagBits sampleCount);
 
 //-------------------------------------------------------------------------
 // Internal / Miscellaneous Vulkan Helpers
@@ -115,11 +115,11 @@ struct ImGui_ImplVulkanH_Frame;
 struct ImGui_ImplVulkanH_Window;
 
 // Helpers
-IMGUI_IMPL_API void                 ImGui_ImplVulkanH_CreateOrResizeWindow(VkInstance instance, VkPhysicalDevice physical_device, VkDevice device, ImGui_ImplVulkanH_Window* wnd, uint32_t queue_family, const VkAllocationCallbacks* allocator, int w, int h, uint32_t min_image_count);
-IMGUI_IMPL_API void                 ImGui_ImplVulkanH_DestroyWindow(VkInstance instance, VkDevice device, ImGui_ImplVulkanH_Window* wnd, const VkAllocationCallbacks* allocator);
-IMGUI_IMPL_API VkSurfaceFormatKHR   ImGui_ImplVulkanH_SelectSurfaceFormat(VkPhysicalDevice physical_device, VkSurfaceKHR surface, const VkFormat* request_formats, int request_formats_count, VkColorSpaceKHR request_color_space);
-IMGUI_IMPL_API VkPresentModeKHR     ImGui_ImplVulkanH_SelectPresentMode(VkPhysicalDevice physical_device, VkSurfaceKHR surface, const VkPresentModeKHR* request_modes, int request_modes_count);
-IMGUI_IMPL_API int                  ImGui_ImplVulkanH_GetMinImageCountFromPresentMode(VkPresentModeKHR present_mode);
+              IMGUI_IMPL_API void                 ImGui_ImplVulkanH_CreateOrResizeWindow(VkInstance instance, VkPhysicalDevice physical_device, VkDevice device, ImGui_ImplVulkanH_Window* wnd, uint32_t queue_family, const VkAllocationCallbacks* allocator, int w, int h, uint32_t min_image_count);
+              IMGUI_IMPL_API void                 ImGui_ImplVulkanH_DestroyWindow(VkInstance instance, VkDevice device, ImGui_ImplVulkanH_Window* wnd, const VkAllocationCallbacks* allocator);
+[[nodiscard]] IMGUI_IMPL_API VkSurfaceFormatKHR   ImGui_ImplVulkanH_SelectSurfaceFormat(VkPhysicalDevice physical_device, VkSurfaceKHR surface, const VkFormat* request_formats, int request_formats_count, VkColorSpaceKHR request_color_space);
+[[nodiscard]] IMGUI_IMPL_API VkPresentModeKHR     ImGui_ImplVulkanH_SelectPresentMode(VkPhysicalDevice physical_device, VkSurfaceKHR surface, const VkPresentModeKHR* request_modes, int request_modes_count);
+[[nodiscard]] IMGUI_IMPL_API int                  ImGui_ImplVulkanH_GetMinImageCountFromPresentMode(VkPresentModeKHR present_mode);
 
 // Helper structure to hold the data needed by one rendering frame
 // (Used by example's main.cpp. Used by multi-viewport features. Probably NOT used by your own engine/app.)
@@ -160,9 +160,9 @@ struct ImGui_ImplVulkanH_Window
     ImGui_ImplVulkanH_Frame*            Frames;
     ImGui_ImplVulkanH_FrameSemaphores*  FrameSemaphores;
 
-    ImGui_ImplVulkanH_Window()
+    ImGui_ImplVulkanH_Window() noexcept
         : Width(), Height(), Swapchain(VK_NULL_HANDLE), Surface(VK_NULL_HANDLE), SurfaceFormat(),
-          PresentMode(static_cast<VkPresentModeKHR>(~0)), RenderPass(VK_NULL_HANDLE),
+          PresentMode(VK_PRESENT_MODE_MAX_ENUM_KHR), RenderPass(VK_NULL_HANDLE),
           Pipeline(VK_NULL_HANDLE), ClearEnable(true), ClearValue(), FrameIndex(), ImageCount(),
           SemaphoreIndex(), Frames(nullptr), FrameSemaphores(nullptr)
     {

@@ -2,7 +2,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -32,9 +32,9 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include <map>
 
 #include "Network/IP/IPv4Address.h"
+#include "Network/IP/IPv6Address.h"
 #include "Network/Sockets/TCPSocket.h"
 #include "Network/Sockets/TCPSocketIPv6.h"
-#include "Utils/Time/TimeStep.h"
 
 namespace TRAP::Network
 {
@@ -95,7 +95,7 @@ namespace TRAP::Network
 			/// The method is HTTP::Request::GET by default.
 			/// </summary>
 			/// <param name="method">Method to use for the request.</param>
-			void SetMethod(Method method);
+			void SetMethod(Method method) noexcept;
 
 			/// <summary>
 			/// Set the requested URI.
@@ -114,7 +114,7 @@ namespace TRAP::Network
 			/// </summary>
 			/// <param name="major">Major HTTP version number.</param>
 			/// <param name="minor">Minor HTTP version number.</param>
-			void SetHTTPVersion(uint32_t major, uint32_t minor);
+			void SetHTTPVersion(uint32_t major, uint32_t minor) noexcept;
 
 			/// <summary>
 			/// Set the body of the request.
@@ -146,7 +146,7 @@ namespace TRAP::Network
 			/// </summary>
 			/// <param name="field">Name of the field to test.</param>
 			/// <returns>True if the field exists, false otherwise.</returns>
-			bool HasField(const std::string& field) const;
+			[[nodiscard]] bool HasField(const std::string& field) const;
 
 			using FieldTable = std::map<std::string, std::string>;
 
@@ -206,7 +206,7 @@ namespace TRAP::Network
 			/// <summary>
 			/// Constructor.
 			/// </summary>
-			Response();
+			Response() noexcept;
 
 			/// <summary>
 			/// Get the value of a field.
@@ -217,7 +217,7 @@ namespace TRAP::Network
 			/// </summary>
 			/// <param name="field">Name of the field to get.</param>
 			/// <returns>Value of the field, or empty string if not found.</returns>
-			std::string GetField(const std::string& field) const;
+			[[nodiscard]] std::string GetField(const std::string& field) const;
 
 			/// <summary>
 			/// Get the response status code.
@@ -228,19 +228,19 @@ namespace TRAP::Network
 			/// enumeration).
 			/// </summary>
 			/// <returns>Status code of the response.</returns>
-			Status GetStatus() const;
+			[[nodiscard]] Status GetStatus() const noexcept;
 
 			/// <summary>
 			/// Get the major HTTP version number of the response.
 			/// </summary>
 			/// <returns>Major HTTP version number.</returns>
-			uint32_t GetMajorHTTPVersion() const;
+			[[nodiscard]] uint32_t GetMajorHTTPVersion() const noexcept;
 
 			/// <summary>
 			/// Get the minor HTTP version number of the response.
 			/// </summary>
 			/// <returns>Minor HTTP version number.</returns>
-			uint32_t GetMinorHTTPVersion() const;
+			[[nodiscard]] uint32_t GetMinorHTTPVersion() const noexcept;
 
 			/// <summary>
 			/// Get the body of the response.
@@ -252,7 +252,7 @@ namespace TRAP::Network
 			/// - an error message (in case of an error)
 			/// </summary>
 			/// <returns>The response body.</returns>
-			std::string GetBody() const;
+			[[nodiscard]] std::string GetBody() const noexcept;
 
 		private:
 			friend class HTTP;
@@ -287,7 +287,7 @@ namespace TRAP::Network
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		HTTP();
+		HTTP() noexcept;
 
 		/// <summary>
 		/// Construct the HTTP client with the target host.
@@ -306,11 +306,11 @@ namespace TRAP::Network
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		HTTP(HTTP&&) = default;
+		HTTP(HTTP&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		HTTP& operator=(HTTP&&) = default;
+		HTTP& operator=(HTTP&&) noexcept = default;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>

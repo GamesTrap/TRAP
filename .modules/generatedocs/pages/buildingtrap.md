@@ -14,18 +14,20 @@ If you want to be able to build the documentation and to update the Vulkan loade
 :::{tab} Linux
 Please install the [VulkanSDK](https://vulkan.lunarg.com/sdk/home/) and make sure that the `VULKAN_SDK` environment variable is set properly.
 
-TRAP™ also depends on some X11 development packages.  
+TRAP™ also depends on some X11 and Wayland development packages.  
 To install those run the following command in a terminal:
 
 ```sh
-sudo apt install xorg-dev
+sudo apt install xorg-dev libwayland-dev libxkbcommon-dev wayland-protocols
 ```
 
 or to only install the required packages
 
 ```sh
-sudo apt install libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev
+sudo apt install libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libwayland-dev libxkbcommon-dev wayland-protocols
 ```
+
+Make sure that the Wayland Scanner can be used from Terminal via `wayland-scanner` command.
 
 If you want to be able to build the documentation and to update the Vulkan loader you need to install [Python 3](https://www.python.org/downloads/) and [Sphinx](https://www.sphinx-doc.org/en/master/usage/installation.html).
 Make sure Python 3 and Sphinx can be used from Terminal via the `python` and `sphinx-build` commands.
@@ -96,4 +98,15 @@ To install the NVIDIA® Nsight™ Aftermath SDK do the following:
 TRAP™ will then automatically detect if the NVIDIA® Nsight™ Aftermath SDK is installed properly on the next run of any of the GenerateProject scripts inside the `GeneratorScripts` folder.
 
 If everything went right, feel free to use the `ENABLE_NSIGHT_AFTERMATH` macro in Base.h to enable Nsight-Aftermath in debug builds.
+:::
+:::{tab} Steamworks SDK
+To install the Steamworks SDK do the following:
+
+1. Create an account on the [Steamworks website](https://partner.steamgames.com/).
+2. Download the [Steamworks SDK](https://partner.steamgames.com/doc/sdk).
+3. Extract the contents of the downloaded SDK to the `Dependencies/SteamworksSDK` folder.
+
+TRAP™ will then automatically detect if the Steamworks SDK is installed properly on the next run of any of the GenerateProject scripts inside the `GeneratorScripts` folder.
+
+If everything went right, feel free to use the TRAP::Utils::Steam namespace.
 :::

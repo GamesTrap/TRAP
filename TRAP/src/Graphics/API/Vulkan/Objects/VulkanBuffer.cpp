@@ -18,17 +18,19 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 	  m_allocation(VK_NULL_HANDLE),
 	  m_offset()
 {
-	m_CPUMappedAddress = nullptr;
-	m_size = desc.Size;
-	m_descriptors = desc.Descriptors;
-	m_memoryUsage = desc.MemoryUsage;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_device, "device is nullptr");
-	TRAP_ASSERT(m_VMA, "VMA is nullptr");
+	TRAP_ASSERT(m_device, "VulkanBuffer(): Vulkan Device is nullptr");
+	TRAP_ASSERT(m_VMA, "VulkanBuffer(): VMA is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanBufferPrefix, "Creating Buffer");
 #endif
+
+	m_CPUMappedAddress = nullptr;
+	m_size = desc.Size;
+	m_descriptors = desc.Descriptors;
+	m_memoryUsage = desc.MemoryUsage;
 
 	uint64_t allocationSize = desc.Size;
 	//Align the buffer size to multiples of the dynamic uniform buffer minimum size
@@ -71,6 +73,9 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 	VmaAllocationInfo allocInfo{};
 	VkCall(vmaCreateBuffer(m_VMA->GetVMAAllocator(), &info, &vmaMemReqs, &m_vkBuffer, &m_allocation, &allocInfo));
 
+	TRAP_ASSERT(m_vkBuffer, "VulkanBuffer(): Failed to create Buffer");
+	TRAP_ASSERT(m_allocation, "VulkanBuffer(): Failed to create Buffer");
+
 	m_CPUMappedAddress = allocInfo.pMappedData;
 
 	//Set descriptor data
@@ -89,9 +94,7 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 		                                                                          ImageFormatToVkFormat(desc.Format),
 		                                                                          desc.FirstElement * desc.StructStride,
 		                                                                          desc.ElementCount * desc.StructStride);
-		VkFormatProperties formatProps{};
-		vkGetPhysicalDeviceFormatProperties(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(), viewInfo.format,
-		                                    &formatProps);
+		const VkFormatProperties formatProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(viewInfo.format);
 		if (!(formatProps.bufferFeatures & VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT))
 			TP_WARN(Log::RendererVulkanBufferPrefix, "Failed to create uniform texel buffer view for format ",
 			        static_cast<uint32_t>(desc.Format));
@@ -104,9 +107,7 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 		                                                                          ImageFormatToVkFormat(desc.Format),
 		                                                                          desc.FirstElement * desc.StructStride,
 		                                                                          desc.ElementCount * desc.StructStride);
-		VkFormatProperties formatProps{};
-		vkGetPhysicalDeviceFormatProperties(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(), viewInfo.format,
-		                                    &formatProps);
+		const VkFormatProperties formatProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(viewInfo.format);
 		if (!(formatProps.bufferFeatures & VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT))
 			TP_WARN(Log::RendererVulkanBufferPrefix, "Failed to create storage texel buffer view for format ",
 			        static_cast<uint32_t>(desc.Format));
@@ -124,7 +125,7 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 
 TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 {
-	TRAP_ASSERT(m_vkBuffer);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanBufferPrefix, "Destroying Buffer");
@@ -148,36 +149,46 @@ TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkBuffer TRAP::Graphics::API::VulkanBuffer::GetVkBuffer() const
+[[nodiscard]] VkBuffer TRAP::Graphics::API::VulkanBuffer::GetVkBuffer() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_vkBuffer;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkBufferView TRAP::Graphics::API::VulkanBuffer::GetStorageTexelView() const
+[[nodiscard]] VkBufferView TRAP::Graphics::API::VulkanBuffer::GetStorageTexelView() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_vkStorageTexelView;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkBufferView TRAP::Graphics::API::VulkanBuffer::GetUniformTexelView() const
+[[nodiscard]] VkBufferView TRAP::Graphics::API::VulkanBuffer::GetUniformTexelView() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_vkUniformTexelView;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::Graphics::API::VulkanBuffer::GetOffset() const
+[[nodiscard]] uint64_t TRAP::Graphics::API::VulkanBuffer::GetOffset() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_offset;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDeviceMemory TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemory() const
+[[nodiscard]] VkDeviceMemory TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemory() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	VmaAllocationInfo allocInfo{};
 	vmaGetAllocationInfo(m_VMA->GetVMAAllocator(), m_allocation, &allocInfo);
 
@@ -186,8 +197,10 @@ VkDeviceMemory TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemory() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemoryOffset() const
+[[nodiscard]] uint64_t TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemoryOffset() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	VmaAllocationInfo allocInfo{};
 	vmaGetAllocationInfo(m_VMA->GetVMAAllocator(), m_allocation, &allocInfo);
 
@@ -196,38 +209,12 @@ uint64_t TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemoryOffset() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::Graphics::API::VulkanBuffer::GetSize() const
+void TRAP::Graphics::API::VulkanBuffer::MapBuffer(const RendererAPI::ReadRange* const range)
 {
-	return m_size;
-}
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::API::VulkanBuffer::GetDescriptors() const
-{
-	return m_descriptors;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::RendererAPI::ResourceMemoryUsage TRAP::Graphics::API::VulkanBuffer::GetMemoryUsage() const
-{
-	return m_memoryUsage;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void* TRAP::Graphics::API::VulkanBuffer::GetCPUMappedAddress() const
-{
-	return m_CPUMappedAddress;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanBuffer::MapBuffer(RendererAPI::ReadRange* range)
-{
 	TRAP_ASSERT(m_memoryUsage != RendererAPI::ResourceMemoryUsage::GPUOnly,
-	            "Trying to unmap non-CPU accessible resource");
+	            "VulkanBuffer::MapBuffer(): Trying to map non-CPU accessible resource");
 
 	const VkResult res = vmaMapMemory(m_VMA->GetVMAAllocator(), m_allocation, &m_CPUMappedAddress);
 	TRAP_ASSERT(res == VK_SUCCESS);
@@ -240,8 +227,10 @@ void TRAP::Graphics::API::VulkanBuffer::MapBuffer(RendererAPI::ReadRange* range)
 
 void TRAP::Graphics::API::VulkanBuffer::UnMapBuffer()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	TRAP_ASSERT(m_memoryUsage != RendererAPI::ResourceMemoryUsage::GPUOnly,
-	            "Trying to unmap non-CPU accessible resource");
+	            "VulkanBuffer::UnMapBuffer(): Trying to unmap non-CPU accessible resource");
 
 	if (m_VMA && m_allocation)
 		vmaUnmapMemory(m_VMA->GetVMAAllocator(), m_allocation);
@@ -252,6 +241,10 @@ void TRAP::Graphics::API::VulkanBuffer::UnMapBuffer()
 
 void TRAP::Graphics::API::VulkanBuffer::SetBufferName(const std::string_view name) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(!name.empty(), "VulkanBuffer::SetBufferName(): Name is empty!");
+
 	if(!VulkanRenderer::s_debugMarkerSupport)
 		return;
 

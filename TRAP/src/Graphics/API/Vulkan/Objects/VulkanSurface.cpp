@@ -9,12 +9,14 @@
 
 TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> instance,
 												  const TRAP::Ref<VulkanDevice>& device,
-                                                  TRAP::Window* window)
+                                                  const TRAP::Window* const window)
 	: m_surface(VK_NULL_HANDLE), m_surfaceCapabilities(), m_instance(std::move(instance))
 {
-	TRAP_ASSERT(m_instance, "instance is nullptr");
-	TRAP_ASSERT(device, "device is nullptr");
-	TRAP_ASSERT(window, "window is nullptr");
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(m_instance, "VulkanSurface(): Vulkan Instance is nullptr");
+	TRAP_ASSERT(device, "VulkanSurface(): Vulkan Device is nullptr");
+	TRAP_ASSERT(window, "VulkanSurface(): Window is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSurfacePrefix, "Creating Surface");
@@ -23,6 +25,7 @@ TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> inst
 	VkCall(TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(m_instance->GetVkInstance(),
 	                                                         static_cast<TRAP::INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()),
 															 nullptr, m_surface));
+	TRAP_ASSERT(m_surface, "VulkanSurface(): Vulkan Surface is nullptr");
 
 	VkCall(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device->GetPhysicalDevice()->GetVkPhysicalDevice(), m_surface,
 	                                                 &m_surfaceCapabilities));
@@ -46,7 +49,7 @@ TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> inst
 
 TRAP::Graphics::API::VulkanSurface::~VulkanSurface()
 {
-	TRAP_ASSERT(m_surface);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSurfacePrefix, "Destroying Surface");
@@ -58,28 +61,36 @@ TRAP::Graphics::API::VulkanSurface::~VulkanSurface()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkSurfaceKHR TRAP::Graphics::API::VulkanSurface::GetVkSurface() const
+[[nodiscard]] VkSurfaceKHR TRAP::Graphics::API::VulkanSurface::GetVkSurface() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_surface;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkSurfaceCapabilitiesKHR TRAP::Graphics::API::VulkanSurface::GetVkSurfaceCapabilities() const
+[[nodiscard]] VkSurfaceCapabilitiesKHR TRAP::Graphics::API::VulkanSurface::GetVkSurfaceCapabilities() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_surfaceCapabilities;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<VkSurfaceFormatKHR>& TRAP::Graphics::API::VulkanSurface::GetVkSurfaceFormats() const
+[[nodiscard]] const std::vector<VkSurfaceFormatKHR>& TRAP::Graphics::API::VulkanSurface::GetVkSurfaceFormats() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_surfaceFormats;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<VkPresentModeKHR>& TRAP::Graphics::API::VulkanSurface::GetVkSurfacePresentModes() const
+[[nodiscard]] const std::vector<VkPresentModeKHR>& TRAP::Graphics::API::VulkanSurface::GetVkSurfacePresentModes() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_surfacePresentModes;
 }

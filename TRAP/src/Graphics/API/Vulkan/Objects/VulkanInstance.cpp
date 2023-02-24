@@ -20,6 +20,8 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appNa
 	  m_instanceLayers(std::move(instanceLayers)),
 	  m_instanceExtensions(std::move(instanceExtensions))
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	std::vector<const char*> layers(m_instanceLayers.size());
 	for (uint32_t i = 0; i < m_instanceLayers.size(); i++)
 	{
@@ -71,6 +73,7 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appNa
 #endif
 
 	VkCall(vkCreateInstance(&info, nullptr, &m_instance));
+	TRAP_ASSERT(m_instance, "VulkanInstance(): Vulkan Instance is nullptr!");
 
 	if (m_instance)
 		VkLoadInstance(m_instance);
@@ -81,7 +84,7 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appNa
 								   Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::RendererVulkanInstancePrefix, "Instance creation failed!");
 		TRAP::Application::Shutdown();
-		exit(-1);
+		exit(0x0005);
 	}
 }
 
@@ -89,7 +92,7 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appNa
 
 TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 {
-	TRAP_ASSERT(m_instance);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanInstancePrefix, "Destroying Instance");
@@ -100,29 +103,37 @@ TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkInstance TRAP::Graphics::API::VulkanInstance::GetVkInstance() const
+[[nodiscard]] VkInstance TRAP::Graphics::API::VulkanInstance::GetVkInstance() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_instance;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<std::string>& TRAP::Graphics::API::VulkanInstance::GetUsedInstanceLayers() const
+[[nodiscard]] const std::vector<std::string>& TRAP::Graphics::API::VulkanInstance::GetUsedInstanceLayers() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_instanceLayers;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<std::string>& TRAP::Graphics::API::VulkanInstance::GetUsedInstanceExtensions() const
+[[nodiscard]] const std::vector<std::string>& TRAP::Graphics::API::VulkanInstance::GetUsedInstanceExtensions() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_instanceExtensions;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanInstance::GetInstanceVersion()
+[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanInstance::GetInstanceVersion()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if(!s_instanceVersion)
 		s_instanceVersion = VkGetInstanceVersion();
 
@@ -131,8 +142,10 @@ uint32_t TRAP::Graphics::API::VulkanInstance::GetInstanceVersion()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<VkLayerProperties>& TRAP::Graphics::API::VulkanInstance::GetAvailableInstanceLayers()
+[[nodiscard]] const std::vector<VkLayerProperties>& TRAP::Graphics::API::VulkanInstance::GetAvailableInstanceLayers()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if (s_availableInstanceLayers.empty())
 		LoadAllInstanceLayers();
 
@@ -141,8 +154,10 @@ const std::vector<VkLayerProperties>& TRAP::Graphics::API::VulkanInstance::GetAv
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<VkExtensionProperties>& TRAP::Graphics::API::VulkanInstance::GetAvailableInstanceExtensions()
+[[nodiscard]] const std::vector<VkExtensionProperties>& TRAP::Graphics::API::VulkanInstance::GetAvailableInstanceExtensions()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if (s_availableInstanceExtensions.empty())
 		LoadAllInstanceExtensions();
 
@@ -151,8 +166,10 @@ const std::vector<VkExtensionProperties>& TRAP::Graphics::API::VulkanInstance::G
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::VulkanInstance::IsLayerSupported(const std::string_view layer)
+[[nodiscard]] bool TRAP::Graphics::API::VulkanInstance::IsLayerSupported(const std::string_view layer)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	if (s_availableInstanceLayers.empty())
 		LoadAllInstanceLayers();
 
@@ -178,8 +195,10 @@ bool TRAP::Graphics::API::VulkanInstance::IsLayerSupported(const std::string_vie
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::VulkanInstance::IsExtensionSupported(const std::string_view extension)
+[[nodiscard]] bool TRAP::Graphics::API::VulkanInstance::IsExtensionSupported(const std::string_view extension)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	if (s_availableInstanceExtensions.empty())
 		LoadAllInstanceExtensions();
 
@@ -205,6 +224,8 @@ bool TRAP::Graphics::API::VulkanInstance::IsExtensionSupported(const std::string
 
 void TRAP::Graphics::API::VulkanInstance::LoadAllInstanceLayers()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	uint32_t layersCount = 0;
 	VkCall(vkEnumerateInstanceLayerProperties(&layersCount, nullptr));
 	s_availableInstanceLayers.resize(layersCount);
@@ -215,6 +236,8 @@ void TRAP::Graphics::API::VulkanInstance::LoadAllInstanceLayers()
 
 void TRAP::Graphics::API::VulkanInstance::LoadAllInstanceExtensions()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	uint32_t extensionsCount = 0;
 	VkCall(vkEnumerateInstanceExtensionProperties(nullptr, &extensionsCount, nullptr));
 	s_availableInstanceExtensions.resize(extensionsCount);

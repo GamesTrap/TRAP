@@ -4,7 +4,7 @@
 #include "OrthographicCamera.h"
 #include "Utils/Time/TimeStep.h"
 #include "Events/MouseEvent.h"
-#include "Application.h"
+#include "Events/WindowEvent.h"
 
 namespace TRAP::Graphics
 {
@@ -17,12 +17,12 @@ namespace TRAP::Graphics
 		/// Retrieve the width of the camera bounds.
 		/// </summary>
 		/// <returns>Width of the camera bounds.</returns>
-		float GetWidth() const;
+		[[nodiscard]] float GetWidth() const noexcept;
 		/// <summary>
 		/// Retrieve the height of the camera bounds.
 		/// </summary>
 		/// <returns>Height of the camera bounds.</returns>
-		float GetHeight() const;
+		[[nodiscard]] float GetHeight() const noexcept;
 	};
 
 	class OrthographicCameraController
@@ -37,7 +37,7 @@ namespace TRAP::Graphics
 		/// <param name="useController">Use the mouse and keyboard to control the camera or a controller.</param>
 		/// <param name="controller">Which controller slot to use when useController is set to true.</param>
 		explicit OrthographicCameraController(float aspectRatio, bool rotation = false, bool useController = false,
-		                                      Input::Controller controller = Input::Controller::One); //TODO Could be split into 2 constructors, one containing controller.
+		                                      Input::Controller controller = Input::Controller::One) noexcept; //TODO Could be split into 2 constructors, one containing controller.
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -46,7 +46,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		OrthographicCameraController(const OrthographicCameraController&) = default;
+		OrthographicCameraController(const OrthographicCameraController&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -54,7 +54,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		OrthographicCameraController(OrthographicCameraController&&) = default;
+		OrthographicCameraController(OrthographicCameraController&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
@@ -88,40 +88,40 @@ namespace TRAP::Graphics
 		/// Retrieve the Orthographic/2D camera.
 		/// </summary>
 		/// <returns>Orthographic/2D camera.</returns>
-		OrthographicCamera& GetCamera();
+		[[nodiscard]] OrthographicCamera& GetCamera() noexcept;
 		/// <summary>
 		/// Retrieve the Orthographic/2D camera.
 		/// </summary>
 		/// <returns>Orthographic/2D camera.</returns>
-		const OrthographicCamera& GetCamera() const;
+		[[nodiscard]] const OrthographicCamera& GetCamera() const noexcept;
 
 		/// <summary>
 		/// Retrieve the currently used translation/movement speed.
 		/// </summary>
 		/// <returns>Translation/movement speed.</returns>
-		float GetTranslationSpeed() const;
+		[[nodiscard]] float GetTranslationSpeed() const noexcept;
 		/// <summary>
 		/// Set the translation/movement speed.
 		/// </summary>
 		/// <param name="translationSpeed">New translation/movement speed.</param>
-		void SetTranslationSpeed(float translationSpeed);
+		void SetTranslationSpeed(float translationSpeed) noexcept;
 
 		/// <summary>
 		/// Retrieve the currently used rotation speed.
 		/// </summary>
 		/// <returns>Rotation speed.</returns>
-		float GetRotationSpeed() const;
+		[[nodiscard]] float GetRotationSpeed() const noexcept;
 		/// <summary>
 		/// Set the rotation speed.
 		/// </summary>
 		/// <param name="rotationSpeed">New rotation speed.</param>
-		void SetRotationSpeed(float rotationSpeed);
+		void SetRotationSpeed(float rotationSpeed) noexcept;
 
 		/// <summary>
 		/// Retrieve the current zoom level.
 		/// </summary>
 		/// <returns>Zoom level.</returns>
-		float GetZoomLevel() const;
+		[[nodiscard]] float GetZoomLevel() const noexcept;
 		/// <summary>
 		/// Set the zoom level.
 		/// </summary>
@@ -132,7 +132,7 @@ namespace TRAP::Graphics
 		/// Retrieve the current camera bounds.
 		/// </summary>
 		/// <returns>Camera bounds.</returns>
-		const OrthographicCameraBounds& GetBounds() const;
+		[[nodiscard]] const OrthographicCameraBounds& GetBounds() const noexcept;
 
 	private:
 		/// <summary>

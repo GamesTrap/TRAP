@@ -1,4 +1,3 @@
-
 local p = premake
 
 p.modules.ecc = {}
@@ -7,13 +6,7 @@ local m = p.modules.ecc
 local workspace = p.workspace
 local project = p.project
 
-m._VERSION = "1.0.0-alpha"
-
-newoption {
-	trigger = "config",
-	value = "CFG",
-	description = "Select config for export compile_commands.json"
-}
+m._VERSION = "1.0.1"
 
 newaction {
 	trigger         = "ecc",
@@ -26,10 +19,6 @@ newaction {
 	valid_tools     = {
 		cc     = { "clang", "gcc" }
 	},
-
-	-- onStart = function()
-	-- 	p.indent("  ")
-	-- end,
 
 	execute = function()
 		m.onExecute()
@@ -48,7 +37,7 @@ function m.getCommonFlags(prj, cfg)
 	flags = table.join(flags, toolset.getcppflags(cfg))
 	flags = table.join(flags, toolset.getdefines(cfg.defines))
 	flags = table.join(flags, toolset.getundefines(cfg.undefines))
-	flags = table.join(flags, toolset.getincludedirs(cfg, cfg.includedirs, cfg.sysincludedirs))
+	flags = table.join(flags, toolset.getincludedirs(cfg, cfg.includedirs, cfg.externalincludedirs))
 	flags = table.join(flags, toolset.getforceincludes(cfg))
 	if (project.iscpp(prj)) then
 		flags = table.join(flags, toolset.getcxxflags(cfg))
@@ -119,8 +108,9 @@ function m.getProjectCommands(prj, cfg)
 end
 
 function m.onExecute()
+	print("Exporting compile_commands.json...")
 	for wks in p.global.eachWorkspace() do
-		local cfgCmds
+		local cfgCmds = {}
 		for prj in workspace.eachproject(wks) do
 			local cfg = project.getconfig(prj, "Debug")
 			if not cfg then

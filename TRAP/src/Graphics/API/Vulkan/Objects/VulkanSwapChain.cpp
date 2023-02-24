@@ -11,6 +11,7 @@
 #include "VulkanSurface.h"
 #include "VulkanRenderTarget.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc& desc)
 	: m_vma(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetVMA()),
@@ -18,8 +19,10 @@ TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc
 	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
 	  m_presentQueue(), m_swapChain(), m_presentQueueFamilyIndex(), m_imageCount(), m_enableVSync()
 {
-	TRAP_ASSERT(m_device);
-	TRAP_ASSERT(desc.ImageCount >= RendererAPI::ImageCount);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(m_device, "VulkanSwapChain(): Vulkan Device is nullptr!");
+	TRAP_ASSERT(desc.ImageCount >= RendererAPI::ImageCount, "VulkanSwapChain(): ImageCount is too low!");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSwapChainPrefix, "Creating SwapChain");
@@ -32,7 +35,7 @@ TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc
 
 TRAP::Graphics::API::VulkanSwapChain::~VulkanSwapChain()
 {
-	TRAP_ASSERT(m_swapChain);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSwapChainPrefix, "Destroying SwapChain");
@@ -45,6 +48,8 @@ TRAP::Graphics::API::VulkanSwapChain::~VulkanSwapChain()
 
 void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainDesc& desc)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	//////////////////
 	//Create Surface//
 	//////////////////
@@ -112,7 +117,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 		}
 	}
 
-	TRAP_ASSERT(surfaceFormat.format != VK_FORMAT_UNDEFINED);
+	TRAP_ASSERT(surfaceFormat.format != VK_FORMAT_UNDEFINED, "VulkanSwapChain::InitSwapchain(): No suitable surface format found!");
 
 	//The VK_PRESENT_MODE_FIFO_KHR mode must always be present as per spec
 	//This mode waits for the vertical blank ("VSync")
@@ -156,7 +161,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	uint32_t queueFamilyIndexCount = 0;
 	std::array<uint32_t, 2> queueFamilyIndices =
 	{
-		static_cast<uint32_t>(dynamic_cast<VulkanQueue*>(desc.PresentQueues[0].get())->GetQueueFamilyIndex()),
+		static_cast<uint32_t>(std::dynamic_pointer_cast<VulkanQueue>(desc.PresentQueues[0])->GetQueueFamilyIndex()),
 		0
 	};
 	uint32_t presentQueueFamilyIndex = std::numeric_limits<uint32_t>::max();
@@ -173,7 +178,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 			                                                          index, surface->GetVkSurface(),
 																	  &supportsPresent);
 			if ((res == VK_SUCCESS) && (supportsPresent == VK_TRUE) &&
-			    dynamic_cast<VulkanQueue*>(desc.PresentQueues[0].get())->GetQueueFamilyIndex() != index)
+			    std::dynamic_pointer_cast<VulkanQueue>(desc.PresentQueues[0])->GetQueueFamilyIndex() != index)
 			{
 				presentQueueFamilyIndex = index;
 				break;
@@ -196,7 +201,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 				}
 
 				//No present queue family available. Something goes wrong.
-				TRAP_ASSERT(false);
+				TRAP_ASSERT(false, "VulkanSwapChain::InitSwapchain(): No present queue family available!");
 			}
 		}
 	}
@@ -241,7 +246,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 		}
 	}
 
-	TRAP_ASSERT(compositeAlpha != VK_COMPOSITE_ALPHA_FLAG_BITS_MAX_ENUM_KHR);
+	TRAP_ASSERT(compositeAlpha != VK_COMPOSITE_ALPHA_FLAG_BITS_MAX_ENUM_KHR, "VulkanSwapChain::InitSwapchain(): No composite alpha flag available!");
 
 	VkSwapchainKHR swapChain = VK_NULL_HANDLE;
 	const VkSwapchainCreateInfoKHR swapChainCreateInfo = VulkanInits::SwapchainCreateInfoKHR(surface->GetVkSurface(),
@@ -256,6 +261,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 		                                                                                     presentMode);
 
 	VkCall(vkCreateSwapchainKHR(m_device->GetVkDevice(), &swapChainCreateInfo, nullptr, &swapChain));
+	TRAP_ASSERT(swapChain, "VulkanSwapChain::InitSwapchain(): Vulkan SwapChain is nullptr!");
 
 	desc.ColorFormat = ImageFormatFromVkFormat(surfaceFormat.format);
 
@@ -263,7 +269,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	uint32_t imageCount = 0;
 	VkCall(vkGetSwapchainImagesKHR(m_device->GetVkDevice(), swapChain, &imageCount, nullptr));
 
-	TRAP_ASSERT(desc.ImageCount == imageCount);
+	TRAP_ASSERT(desc.ImageCount == imageCount, "VulkanSwapChain::InitSwapchain(): ImageCount does not match!");
 
 	std::vector<VkImage> images(imageCount);
 	VkCall(vkGetSwapchainImagesKHR(m_device->GetVkDevice(), swapChain, &imageCount, images.data()));
@@ -274,9 +280,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	descColor.Depth = 1;
 	descColor.ArraySize = 1;
 	descColor.Format = desc.ColorFormat;
-	descColor.ClearColor = desc.ClearColor;
-	descColor.ClearDepth = desc.ClearDepth;
-	descColor.ClearStencil = desc.ClearStencil;
+	descColor.ClearValue = desc.ClearValue;
 	descColor.SampleCount = RendererAPI::SampleCount::One;
 	descColor.SampleQuality = 0;
 	descColor.StartState = RendererAPI::ResourceState::Present;
@@ -286,15 +290,6 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	{
 		descColor.NativeHandle = images[i];
 		m_renderTargets.push_back(TRAP::MakeRef<VulkanRenderTarget>(descColor));
-	}
-
-	//Create MSAA resolve images if needed
-	if(desc.SampleCount != RendererAPI::SampleCount::One)
-	{
-		descColor.NativeHandle = nullptr;
-		descColor.SampleCount = desc.SampleCount;
-		for (uint32_t i = 0; i < imageCount; ++i)
-			m_renderTargetsMSAA.push_back(TRAP::MakeRef<VulkanRenderTarget>(descColor));
 	}
 
 	//////////////
@@ -312,9 +307,10 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 
 void TRAP::Graphics::API::VulkanSwapChain::DeInitSwapchain()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	m_device->WaitIdle();
 
-	m_renderTargetsMSAA.clear();
 	m_renderTargets.clear();
 
 	vkDestroySwapchainKHR(m_device->GetVkDevice(), m_swapChain, nullptr);
@@ -323,19 +319,20 @@ void TRAP::Graphics::API::VulkanSwapChain::DeInitSwapchain()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
-                                                                const TRAP::Ref<Fence>& fence) const
+[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
+                                                                              const TRAP::Ref<Fence>& fence) const
 {
-	TRAP_ASSERT(m_device != VK_NULL_HANDLE);
-	TRAP_ASSERT(m_swapChain != VK_NULL_HANDLE);
-	TRAP_ASSERT(signalSemaphore || fence);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(m_swapChain != VK_NULL_HANDLE, "VulkanSwapChain::AcquireNextImage(): Vulkan SwapChain is nullptr!");
+	TRAP_ASSERT(signalSemaphore || fence, "VulkanSwapChain::AcquireNextImage(): Semaphore and Fence are nullptr!");
 
 	uint32_t imageIndex = std::numeric_limits<uint32_t>::max();
 	VkResult res{};
 
 	if(fence != nullptr)
 	{
-		VulkanFence* fen = dynamic_cast<VulkanFence*>(fence.get());
+		Ref<VulkanFence> fen = std::dynamic_pointer_cast<VulkanFence>(fence);
 		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<uint64_t>::max(),
 		                            VK_NULL_HANDLE, fen->GetVkFence(), &imageIndex);
 
@@ -352,7 +349,7 @@ uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<
 	}
 	else
 	{
-		VulkanSemaphore* sema = dynamic_cast<VulkanSemaphore*>(signalSemaphore.get());
+		Ref<VulkanSemaphore> sema = std::dynamic_pointer_cast<VulkanSemaphore>(signalSemaphore);
 		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<uint64_t>::max(),
 		                            sema->GetVkSemaphore(), VK_NULL_HANDLE, &imageIndex);
 
@@ -374,6 +371,8 @@ uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<
 
 void TRAP::Graphics::API::VulkanSwapChain::ToggleVSync()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	RendererAPI::SwapChainDesc desc = m_desc;
 	desc.EnableVSync = !desc.EnableVSync;
 
@@ -385,25 +384,18 @@ void TRAP::Graphics::API::VulkanSwapChain::ToggleVSync()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanSwapChain::SetSampleCount(const RendererAPI::SampleCount sampleCount)
+[[nodiscard]] VkSwapchainKHR TRAP::Graphics::API::VulkanSwapChain::GetVkSwapChain() const noexcept
 {
-	RendererAPI::SwapChainDesc desc = m_desc;
-	desc.SampleCount = sampleCount;
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	DeInitSwapchain();
-	InitSwapchain(desc);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-VkSwapchainKHR TRAP::Graphics::API::VulkanSwapChain::GetVkSwapChain() const
-{
 	return m_swapChain;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkQueue TRAP::Graphics::API::VulkanSwapChain::GetPresentVkQueue() const
+[[nodiscard]] VkQueue TRAP::Graphics::API::VulkanSwapChain::GetPresentVkQueue() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_presentQueue;
 }

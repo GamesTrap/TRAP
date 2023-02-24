@@ -4,7 +4,10 @@ name: Build-Docs
 
 # Controls when the workflow will run
 on:
-  # Only run this action manually
+  # Run on master branch
+  push:
+    branches: [ master ]
+  # Allow to run this action manually
   workflow_dispatch:
 
 jobs:

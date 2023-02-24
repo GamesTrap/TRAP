@@ -19,7 +19,7 @@ from io import open
 # -- Project information -----------------------------------------------------
 
 project = 'TRAP'
-copyright = '2019-2022 Jan "GamesTrap" Schürkamp All Rights Reserved'
+copyright = '2019-2023 Jan "GamesTrap" Schürkamp. All Rights Reserved.'
 author = 'Jan "GamesTrap" Schuerkamp'
 
 # The full version, including alpha/beta/rc tags

@@ -4,7 +4,9 @@
 #include "VulkanRenderTarget.h"
 #include "VulkanDevice.h"
 #include "VulkanInits.h"
+#include "VulkanRenderPass.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 
 TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice> device,
                                                           const VulkanRenderer::FrameBufferDesc& desc)
@@ -14,7 +16,9 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	  m_arraySize(),
       m_device(std::move(device))
 {
-	TRAP_ASSERT(m_device, "device is nullptr");
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(m_device, "VulkanFrameBuffer(): Vulkan Device is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanFrameBufferPrefix, "Creating FrameBuffer");
@@ -22,10 +26,11 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 
 	const uint32_t colorAttachmentCount = static_cast<uint32_t>(desc.RenderTargets.size());
 	const uint32_t depthAttachmentCount = desc.DepthStencil ? 1 : 0;
+	const uint32_t shadingRateAttachmentCount = desc.ShadingRate ? 1 : 0;
 
 	if(colorAttachmentCount)
 	{
-		const VulkanRenderTarget* renderTarget = dynamic_cast<VulkanRenderTarget*>(desc.RenderTargets[0].get());
+		const Ref<VulkanRenderTarget> renderTarget = std::dynamic_pointer_cast<VulkanRenderTarget>(desc.RenderTargets[0]);
 		m_width = renderTarget->GetWidth();
 		m_height = renderTarget->GetHeight();
 		if (!desc.ColorArraySlices.empty())
@@ -44,13 +49,13 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	}
 	else
 	{
-		TRAP_ASSERT(false, "No color or depth attachments");
+		TRAP_ASSERT(false, "VulkanFrameBuffer(): No color or depth attachments");
 	}
 
 	if (colorAttachmentCount && desc.RenderTargets[0]->GetDepth() > 1)
 		m_arraySize = desc.RenderTargets[0]->GetDepth();
 
-	const uint32_t attachmentCount = colorAttachmentCount + depthAttachmentCount;
+	const uint32_t attachmentCount = colorAttachmentCount + depthAttachmentCount + shadingRateAttachmentCount;
 
 	std::vector<VkImageView> imageViews(attachmentCount);
 	auto iterAttachments = imageViews.begin();
@@ -58,7 +63,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	//Color
 	for(std::size_t i = 0; i < desc.RenderTargets.size(); i++)
 	{
-		const VulkanRenderTarget* rTarget = dynamic_cast<VulkanRenderTarget*>(desc.RenderTargets[i].get());
+		const Ref<VulkanRenderTarget> rTarget = std::dynamic_pointer_cast<VulkanRenderTarget>(desc.RenderTargets[i]);
 		if(desc.ColorMipSlices.empty() && desc.ColorArraySlices.empty())
 		{
 			*iterAttachments = rTarget->GetVkImageView();
@@ -86,11 +91,11 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	//Depth/Stencil
 	if(desc.DepthStencil)
 	{
-		const VulkanRenderTarget* rTarget = dynamic_cast<VulkanRenderTarget*>(desc.DepthStencil.get());
+		const Ref<VulkanRenderTarget> rTarget = std::dynamic_pointer_cast<VulkanRenderTarget>(desc.DepthStencil);
 		if(desc.DepthMipSlice == std::numeric_limits<uint32_t>::max() &&
 		   desc.DepthArraySlice == std::numeric_limits<uint32_t>::max())
 		{
-			*iterAttachments = rTarget ->GetVkImageView();
+			*iterAttachments = rTarget->GetVkImageView();
 			++iterAttachments;
 		}
 		else
@@ -111,10 +116,20 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 		}
 	}
 
+	//Shading rate
+	if(desc.ShadingRate)
+	{
+		const Ref<VulkanRenderTarget> rTarget = std::dynamic_pointer_cast<VulkanRenderTarget>(desc.ShadingRate);
+
+		*iterAttachments = rTarget->GetVkImageView();
+		++iterAttachments;
+	}
+
 	const VkFramebufferCreateInfo info = VulkanInits::FramebufferCreateInfo(desc.RenderPass->GetVkRenderPass(),
 	                                                                        imageViews, m_width,
 																			m_height, m_arraySize);
 	VkCall(vkCreateFramebuffer(m_device->GetVkDevice(), &info, nullptr, &m_framebuffer));
+	TRAP_ASSERT(m_framebuffer, "VulkanFrameBuffer(): Vulkan FrameBuffer is nullptr");
 
 	imageViews.clear();
 }
@@ -123,7 +138,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 
 TRAP::Graphics::API::VulkanFrameBuffer::~VulkanFrameBuffer()
 {
-	TRAP_ASSERT(m_framebuffer);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanFrameBufferPrefix, "Destroying FrameBuffer");
@@ -134,28 +149,36 @@ TRAP::Graphics::API::VulkanFrameBuffer::~VulkanFrameBuffer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkFramebuffer TRAP::Graphics::API::VulkanFrameBuffer::GetVkFrameBuffer() const
+[[nodiscard]] VkFramebuffer TRAP::Graphics::API::VulkanFrameBuffer::GetVkFrameBuffer() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_framebuffer;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetWidth() const
+[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetWidth() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_width;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetHeight() const
+[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetHeight() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_height;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetArraySize() const
+[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetArraySize() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_arraySize;
 }

@@ -9,7 +9,9 @@
 TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 	: m_debugReport(nullptr), m_instance(std::move(instance))
 {
-	TRAP_ASSERT(m_instance, "instance is nullptr");
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(m_instance, "VulkanDebug(): Instance is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDebugPrefix, "Registering Debug Callback");
@@ -20,6 +22,7 @@ TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 	{
 		const VkDebugUtilsMessengerCreateInfoEXT info = VulkanInits::DebugUtilsMessengerCreateInfo(VulkanDebugUtilsCallback);
 		const VkResult res = vkCreateDebugUtilsMessengerEXT(m_instance->GetVkInstance(), &info, nullptr, &m_debugUtils);
+		TRAP_ASSERT(m_debugUtils, "VulkanDebug(): Debug Utils Messenger is nullptr");
 		if(res != VK_SUCCESS)
 			TP_ERROR(TRAP::Log::RendererVulkanPrefix, "Couldn't create Debug Utils Messenger!");
 	}
@@ -28,6 +31,7 @@ TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 	{
 		const VkDebugReportCallbackCreateInfoEXT info = VulkanInits::DebugReportCallbackCreateInfo(VulkanDebugReportCallback);
 		const VkResult res = vkCreateDebugReportCallbackEXT(m_instance->GetVkInstance(), &info, nullptr, &m_debugReport);
+		TRAP_ASSERT(m_debugReport, "VulkanDebug(): Debug Report Messenger is nullptr");
 		if(res != VK_SUCCESS)
 			TP_ERROR(TRAP::Log::RendererVulkanPrefix, "Couldn't create Debug Report Messenger!");
 	}
@@ -38,16 +42,16 @@ TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 
 TRAP::Graphics::API::VulkanDebug::~VulkanDebug()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDebugPrefix, "Unregistering Debug Callback");
 #endif
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	TRAP_ASSERT(m_debugUtils);
 	vkDestroyDebugUtilsMessengerEXT(m_instance->GetVkInstance(), m_debugUtils, nullptr);
 	m_debugUtils = nullptr;
 #else
-	TRAP_ASSERT(m_debugReport);
 	vkDestroyDebugReportCallbackEXT(m_instance->GetVkInstance(), m_debugReport, nullptr);
 	m_debugReport = nullptr;
 #endif
@@ -57,7 +61,7 @@ TRAP::Graphics::API::VulkanDebug::~VulkanDebug()
 
 VkBool32 TRAP::Graphics::API::VulkanDebug::VulkanDebugUtilsCallback(const VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
                                                                     const VkDebugUtilsMessageTypeFlagsEXT,
-                                                                    const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
+                                                                    const VkDebugUtilsMessengerCallbackDataEXT* const callbackData,
                                                                     void*)
 {
 	std::string str = Log::RendererVulkanDebugPrefix;
@@ -84,7 +88,7 @@ VkBool32 TRAP::Graphics::API::VulkanDebug::VulkanDebugReportCallback(const VkDeb
 																	 const size_t /*location*/,
 																	 const int32_t messageCode,
 																	 const std::string_view layerPrefix,
-																	 const std::string_view message, void* /*userData*/)
+																	 const std::string_view message, void* const /*userData*/)
 {
 	std::string str = Log::RendererVulkanDebugPrefix;
 	str.pop_back();

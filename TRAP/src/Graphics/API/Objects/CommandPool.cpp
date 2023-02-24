@@ -6,6 +6,8 @@
 
 TRAP::Graphics::CommandPool::CommandPool()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererCommandPoolPrefix, "Creating CommandPool");
 #endif
@@ -15,6 +17,8 @@ TRAP::Graphics::CommandPool::CommandPool()
 
 TRAP::Graphics::CommandPool::~CommandPool()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererCommandPoolPrefix, "Destroying CommandPool");
 #endif
@@ -22,8 +26,10 @@ TRAP::Graphics::CommandPool::~CommandPool()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::CommandPool> TRAP::Graphics::CommandPool::Create(const RendererAPI::CommandPoolDesc& desc)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::CommandPool> TRAP::Graphics::CommandPool::Create(const RendererAPI::CommandPoolDesc& desc)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
@@ -33,7 +39,7 @@ TRAP::Ref<TRAP::Graphics::CommandPool> TRAP::Graphics::CommandPool::Create(const
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "CommandPool::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
 }

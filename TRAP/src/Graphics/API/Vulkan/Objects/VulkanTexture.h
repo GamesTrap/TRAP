@@ -45,19 +45,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanTexture(const VulkanTexture&) = default;
+		VulkanTexture(const VulkanTexture&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanTexture& operator=(const VulkanTexture&) = default;
+		VulkanTexture& operator=(const VulkanTexture&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanTexture(VulkanTexture&&) = default;
+		VulkanTexture(VulkanTexture&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanTexture& operator=(VulkanTexture&&) = default;
+		VulkanTexture& operator=(VulkanTexture&&) noexcept = default;
 
 		/// <summary>
 		/// Initialize the Texture.
@@ -69,33 +69,33 @@ namespace TRAP::Graphics::API
 		/// Retrieve the read only color Vulkan image view handle of the texture.
 		/// </summary>
 		/// <returns>Vulkan image view handle.</returns>
-		VkImageView GetSRVVkImageView() const;
+		[[nodiscard]] VkImageView GetSRVVkImageView() const noexcept;
 		/// <summary>
 		/// Retrieve the read only  stencil Vulkan image view handle of the texture.
 		/// </summary>
 		/// <returns>Vulkan image view handle.</returns>
-		VkImageView GetSRVStencilVkImageView() const;
+		[[nodiscard]] VkImageView GetSRVStencilVkImageView() const noexcept;
 		/// <summary>
 		/// Retrieve all read-writable Vulkan image view handles of the texture.
 		/// </summary>
 		/// <returns>
-		const std::vector<VkImageView>& GetUAVVkImageViews() const;
+		[[nodiscard]] const std::vector<VkImageView>& GetUAVVkImageViews() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan image handle.
 		/// </summary>
 		/// <returns>Vulkan image handle.</returns>
-		VkImage GetVkImage() const;
+		[[nodiscard]] VkImage GetVkImage() const noexcept;
 		/// <summary>
 		/// Retrieve the VMA allocation handle used by the texture.
 		/// </summary>
 		/// <returns>VMA allocation handle.</returns>
-		VmaAllocation GetVMAAllocation() const;
+		[[nodiscard]] VmaAllocation GetVMAAllocation() const noexcept;
 
 		/// <summary>
 		/// Retrieve whether the texture is lazily allocated or not.
 		/// </summary>
 		/// <returns>True if the texture is lazily allocated, false otherwise.</returns>
-		bool IsLazilyAllocated() const;
+		[[nodiscard]] bool IsLazilyAllocated() const noexcept;
 
 		/// <summary>
 		/// Set the name of the texture.
@@ -123,8 +123,8 @@ namespace TRAP::Graphics::API
 		/// <param name="props">Vulkan memory property flags.</param>
 		/// <param name="memTypeFound">Output: True if memory type found, false otherwise.</param>
 		/// <returns>Index of memory type.</returns>
-		static uint32_t GetMemoryType(uint32_t typeBits, const VkPhysicalDeviceMemoryProperties& memProps,
-		                              VkMemoryPropertyFlags props, VkBool32* memTypeFound = nullptr);
+		[[nodiscard]] static uint32_t GetMemoryType(uint32_t typeBits, const VkPhysicalDeviceMemoryProperties& memProps,
+		                                            VkMemoryPropertyFlags props, VkBool32* memTypeFound = nullptr);
 
 		TRAP::Ref<VulkanDevice> m_device;
 		TRAP::Ref<VulkanMemoryAllocator> m_vma;

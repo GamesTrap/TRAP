@@ -13,7 +13,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="desc">Pipeline description.</param>
 		/// <returns>Created pipeline.</returns>
-		static TRAP::Ref<Pipeline> Create(const RendererAPI::PipelineDesc& desc);
+		[[nodiscard]] static TRAP::Ref<Pipeline> Create(const RendererAPI::PipelineDesc& desc);
 
 		/// <summary>
 		/// Destructor.
@@ -23,19 +23,19 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Pipeline(const Pipeline&) = default;
+		Pipeline(const Pipeline&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Pipeline& operator=(const Pipeline&) = default;
+		Pipeline& operator=(const Pipeline&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Pipeline(Pipeline&&) = default;
+		Pipeline(Pipeline&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Pipeline& operator=(Pipeline&&) = default;
+		Pipeline& operator=(Pipeline&&) noexcept = default;
 
 	protected:
 		/// <summary>

@@ -42,35 +42,35 @@ void WindowStateTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
 
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e)
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([](TRAP::Events::KeyPressEvent& e)
 	{
 		return OnKeyPress(e);
 	});
-	dispatcher.Dispatch<TRAP::Events::WindowResizeEvent>([this](TRAP::Events::WindowResizeEvent& e)
+	dispatcher.Dispatch<TRAP::Events::WindowResizeEvent>([](TRAP::Events::WindowResizeEvent& e)
 	{
 		return OnWindowResize(e);
 	});
-	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>([this](TRAP::Events::FrameBufferResizeEvent& e)
+	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>([](TRAP::Events::FrameBufferResizeEvent& e)
 	{
 		return OnFrameBufferResize(e);
 	});
-	dispatcher.Dispatch<TRAP::Events::WindowFocusEvent>([this](TRAP::Events::WindowFocusEvent& e)
+	dispatcher.Dispatch<TRAP::Events::WindowFocusEvent>([](TRAP::Events::WindowFocusEvent& e)
 	{
 		return OnWindowFocus(e);
 	});
-	dispatcher.Dispatch<TRAP::Events::WindowLostFocusEvent>([this](TRAP::Events::WindowLostFocusEvent& e)
+	dispatcher.Dispatch<TRAP::Events::WindowLostFocusEvent>([](TRAP::Events::WindowLostFocusEvent& e)
 	{
 		return OnWindowLostFocus(e);
 	});
-	dispatcher.Dispatch<TRAP::Events::WindowMinimizeEvent>([this](TRAP::Events::WindowMinimizeEvent& e)
+	dispatcher.Dispatch<TRAP::Events::WindowMinimizeEvent>([](TRAP::Events::WindowMinimizeEvent& e)
 	{
 		return OnWindowMinimize(e);
 	});
-	dispatcher.Dispatch<TRAP::Events::WindowMaximizeEvent>([this](TRAP::Events::WindowMaximizeEvent& e)
+	dispatcher.Dispatch<TRAP::Events::WindowMaximizeEvent>([](TRAP::Events::WindowMaximizeEvent& e)
 	{
 		return OnWindowMaximize(e);
 	});
-	dispatcher.Dispatch<TRAP::Events::WindowRestoreEvent>([this](TRAP::Events::WindowRestoreEvent& e)
+	dispatcher.Dispatch<TRAP::Events::WindowRestoreEvent>([](TRAP::Events::WindowRestoreEvent& e)
 	{
 		return OnWindowRestore(e);
 	});
@@ -85,7 +85,7 @@ bool WindowStateTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 	if (event.GetRepeatCount() > 0)
 		return true;
 
-	TRAP::Window* window = TRAP::Application::GetWindow();
+	const TRAP::Window* const window = TRAP::Application::GetWindow();
 
 	switch(event.GetKey())
 	{

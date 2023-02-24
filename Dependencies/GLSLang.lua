@@ -1,25 +1,65 @@
--- Create build_info.h which is neccessary for ShaderLang.cpp
-print("Checking Python")
-local res = true
-local out, errorCode = os.outputof("python --version")
-if(errorCode ~= 0) then
-    print("Unable to find Python 3.\nMake sure it is accessible via python")
-    res = false
-end
+VersionMajor = 0
+VersionMinor = 0
+VersionPatch = 0
 
-if (res) then
-    local f = io.open("GLSLang/glslang/build_info.h", "r")
-    if (f ~= nil) then
-        io.close(f)
-    else
-        local out, errorCode = os.outputof("python GLSLang/build_info.py GLSLang/ -i GLSLang/build_info.h.tmpl -o GLSLang/glslang/build_info.h")
-        if(errorCode ~= 0) then
-            print("Unable to create Dependencies/GLSLang/glslang/build_info.h")
-            res = false
+function RetrieveVersion()
+    local pattern = "^#* +(%d+)%.(%d+)%.(%d+)( +)(%d%d%d%d%-%d%d%-%d%d) *$"
+    local changeFile = "GLSLang/CHANGES.md"
+    local changeFileContent = io.readfile(changeFile)
+
+    if changeFileContent then
+        --For each line in changeFileContent
+        for line in changeFileContent:gmatch("[^\r\n]+") do
+            --If the line matches the pattern
+            if line:match(pattern) then
+                --Get the version
+                local major, minor, patch, _, date = line:match(pattern)
+                VersionMajor = major
+                VersionMinor = minor
+                VersionPatch = patch
+                -- term.setTextColor(term.infoColor)
+                -- print("Detected GLSLang version " .. VersionMajor .. "." .. VersionMinor .. "." .. VersionPatch)
+                -- term.setTextColor(nil)
+                return
+            end
         end
     end
-else
+
+    term.setTextColor(term.errorColor)
+    print("Unable to retrieve version from Dependencies/GLSLang/CHANGES.md")
+    term.setTextColor(nil)
     os.exit(-1)
+end
+
+function GenerateBuildInfoH()
+    if (VersionMajor == 0 and VersionMinor == 0 and VersionPatch == 0) then
+        RetrieveVersion()
+    end
+
+    local templateFile = "GLSLang/build_info.h.tmpl"
+    local targetFile = "GLSLang/glslang/build_info.h"
+
+    --Does target file already exist
+    if os.isfile(targetFile) then
+        return
+    end
+
+    local ok, err = os.touchfile(templateFile, targetFile)
+
+    if not ok then
+        term.setTextColor(term.errorColor)
+        print("Unable to copy " .. templateFile .. " to " .. targetFile .. ": " .. err)
+        term.setTextColor(nil)
+        os.exit(-1)
+    end
+
+    --Replace @major@ @minor@ @patch@ and @flavor@
+    local content = io.readfile(templateFile)
+    content = content:gsub("@major@", VersionMajor)
+    content = content:gsub("@minor@", VersionMinor)
+    content = content:gsub("@patch@", VersionPatch)
+    content = content:gsub("@flavor@", "")
+    io.writefile(targetFile, content)
 end
 
 project "GLSLang"
@@ -29,9 +69,12 @@ project "GLSLang"
     staticruntime "off"
     systemversion "latest"
     warnings "off"
+	architecture "x86_64"
 
     targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
     objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+
+    GenerateBuildInfoH() --Generate build_info.h
 
     files
     {
@@ -59,10 +102,7 @@ project "GLSLang"
         "GLSLang/glslang/MachineIndependent/pch.h"
     }
 
-    includedirs
-    {
-        "%{IncludeDir.GLSLANG}"
-    }
+    includedirs "%{IncludeDir.GLSLANG}"
 
     defines
     {
@@ -74,10 +114,7 @@ project "GLSLang"
     }
 
     filter "system:windows"
-        files
-        {
-            "GLSLang/glslang/OSDependent/Windows/ossource.cpp"
-        }
+        files "GLSLang/glslang/OSDependent/Windows/ossource.cpp"
 
         defines
         {
@@ -86,10 +123,7 @@ project "GLSLang"
         }
 
     filter "system:linux"
-        files
-        {
-            "GLSLang/glslang/OSDependent/Unix/ossource.cpp"
-        }
+        files "GLSLang/glslang/OSDependent/Unix/ossource.cpp"
 
         defines
         {
@@ -103,11 +137,82 @@ project "GLSLang"
 
     filter "configurations:Release"
         runtime "Release"
-        optimize "On"
+        optimize "Full"
 
     filter "configurations:RelWithDebInfo"
         runtime "Release"
-        optimize "On"
+        optimize "Debug"
+		symbols "On"
+
+    filter "configurations:Profiling"
+        editandcontinue "Off"
+        runtime "Release"
+        optimize "Full"
+        symbols "On"
+
+    filter "configurations:ASAN"
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=address",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=address",
+			"-static-libasan"
+		}
+
+	filter "configurations:UBSAN"
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=undefined",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=undefined",
+			"-static-libubsan"
+		}
+
+	filter "configurations:LSAN"
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=leak",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=leak"
+		}
+
+	filter "configurations:TSAN"
+		staticruntime "off"
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=thread",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=thread",
+			"-static-libtsan"
+		}
 
 project "SPIRV"
     kind "StaticLib"
@@ -116,6 +221,7 @@ project "SPIRV"
     staticruntime "off"
     systemversion "latest"
     warnings "off"
+	architecture "x86_64"
 
     targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
     objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
@@ -144,10 +250,7 @@ project "SPIRV"
         "GLSLang/SPIRV/spirv.hpp"
     }
 
-    removefiles
-    {
-        "GLSLang/SPIRV/SpvTools.cpp"
-    }
+    removefiles "GLSLang/SPIRV/SpvTools.cpp"
 
     includedirs
     {
@@ -155,10 +258,7 @@ project "SPIRV"
         "%{IncludeDir.GLSLANG}/SPIRV",
     }
 
-    links
-    {
-        "GLSLang"
-    }
+    links "GLSLang"
 
     filter "system:windows"
         defines
@@ -180,11 +280,82 @@ project "SPIRV"
 
     filter "configurations:Release"
         runtime "Release"
-        optimize "On"
+        optimize "Full"
 
     filter "configurations:RelWithDebInfo"
         runtime "Release"
-        optimize "On"
+        optimize "Debug"
+		symbols "On"
+
+    filter "configurations:Profiling"
+        editandcontinue "Off"
+        runtime "Release"
+        optimize "Full"
+        symbols "On"
+
+    filter "configurations:ASAN"
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=address",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=address",
+			"-static-libasan"
+		}
+
+	filter "configurations:UBSAN"
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=undefined",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=undefined",
+			"-static-libubsan"
+		}
+
+	filter "configurations:LSAN"
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=leak",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=leak"
+		}
+
+	filter "configurations:TSAN"
+		staticruntime "off"
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=thread",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=thread",
+			"-static-libtsan"
+		}
 
 project "GLSLang-Default-Resource-Limits"
     kind "StaticLib"
@@ -193,6 +364,7 @@ project "GLSLang-Default-Resource-Limits"
     staticruntime "off"
     systemversion "latest"
     warnings "off"
+	architecture "x86_64"
 
     targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
     objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
@@ -203,9 +375,11 @@ project "GLSLang-Default-Resource-Limits"
         "GLSLang/StandAlone/ResourceLimits.h"
     }
 
-    links
+    links "GLSLang"
+
+    includedirs
     {
-        "GLSLang"
+        "%{IncludeDir.GLSLANG}"
     }
 
     filter "system:windows"
@@ -228,8 +402,79 @@ project "GLSLang-Default-Resource-Limits"
 
     filter "configurations:Release"
         runtime "Release"
-        optimize "On"
+        optimize "Full"
 
     filter "configurations:RelWithDebInfo"
         runtime "Release"
-        optimize "On"
+        optimize "Debug"
+		symbols "On"
+
+    filter "configurations:Profiling"
+        editandcontinue "Off"
+        runtime "Release"
+        optimize "Full"
+        symbols "On"
+
+    filter "configurations:ASAN"
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=address",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=address",
+			"-static-libasan"
+		}
+
+	filter "configurations:UBSAN"
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=undefined",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=undefined",
+			"-static-libubsan"
+		}
+
+	filter "configurations:LSAN"
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=leak",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=leak"
+		}
+
+	filter "configurations:TSAN"
+		staticruntime "off"
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=thread",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=thread",
+			"-static-libtsan"
+		}

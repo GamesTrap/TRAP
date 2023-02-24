@@ -46,112 +46,124 @@ namespace TRAP::Graphics::API
 	/// <param name="line">Line number of the error check call.</param>
 	/// <returns>True for non error codes, otherwise false.</returns>
 	constexpr bool ErrorCheck(VkResult result, std::string_view function, std::string_view file, int32_t line);
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	/// <summary>
+	/// Check the if given NvLL_VK_Status contains an error.
+	/// If the given NvLL_VK_Status contains an error, the function will log information about the error.
+	/// </summary>
+	/// <param name="result">NvLL_VK_Status to check.</param>
+	/// <param name="function">Name of the function that called the error checker.</param>
+	/// <param name="file">Name of the file where the function is in that called the error checker.</param>
+	/// <param name="line">Line number of the error check call.</param>
+	/// <returns>True for non error codes, otherwise false.</returns>
+	constexpr bool ReflexErrorCheck(NvLL_VK_Status result, std::string_view function, std::string_view file, int32_t line);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 	/// <summary>
 	/// Convert the RendererAPI::QueueType to VkQueueFlags.
 	/// </summary>
 	/// <param name="queueType">QueueType to convert.</param>
 	/// <returns>Converted VkQueueFlags.</returns>
-	constexpr VkQueueFlags QueueTypeToVkQueueFlags(RendererAPI::QueueType queueType);
+	[[nodiscard]] constexpr VkQueueFlags QueueTypeToVkQueueFlags(RendererAPI::QueueType queueType) noexcept;
 
 	/// <summary>
 	/// Convert the RendererAPI::SampleCount to VkSampleCountFlagBits.
 	/// </summary>
 	/// <param name="sampleCount">SampleCount to convert.</param>
 	/// <returns>Converted VkSampleCountFlagBits.</returns>
-	constexpr VkSampleCountFlagBits SampleCountToVkSampleCount(RendererAPI::SampleCount sampleCount);
+	[[nodiscard]] constexpr VkSampleCountFlagBits SampleCountToVkSampleCount(RendererAPI::SampleCount sampleCount) noexcept;
 	/// <summary>
 	/// Convert the ImageFormat to VkFormat.
 	/// </summary>
 	/// <param name="imageFormat">ImageFormat to convert.</param>
 	/// <returns>Converted VkFormat.</returns>
-	constexpr VkFormat ImageFormatToVkFormat(TRAP::Graphics::API::ImageFormat imageFormat);
+	[[nodiscard]] constexpr VkFormat ImageFormatToVkFormat(TRAP::Graphics::API::ImageFormat imageFormat) noexcept;
 	/// <summary>
 	/// Determine the aspect mask for an image.
 	/// </summary>
 	/// <param name="format">ImageFormat.</param>
 	/// <param name="includeStencilBit">Whether to include the stencil bit in the aspect mask.</param>
 	/// <returns>VkImageAspectFlags.</returns>
-	constexpr VkImageAspectFlags DetermineAspectMask(VkFormat format, bool includeStencilBit);
+	[[nodiscard]] constexpr VkImageAspectFlags DetermineAspectMask(VkFormat format, bool includeStencilBit) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::DescriptorType to VkImageUsageFlags.
 	/// </summary>
 	/// <param name="type">DescriptorType to convert.</param>
 	/// <returns>Converted VkImageUsageFlags.</returns>
-	constexpr VkImageUsageFlags DescriptorTypeToVkImageUsage(RendererAPI::DescriptorType type);
+	[[nodiscard]] constexpr VkImageUsageFlags DescriptorTypeToVkImageUsage(RendererAPI::DescriptorType type) noexcept;
 	/// <summary>
 	/// Convert the VkImageUsageFlags to VkFormatFeatureFlags.
 	/// </summary>
 	/// <param name="usage">VkImageUsageFlags to convert.</param>
 	/// <returns>Converted VkFormatFeatureFlags.</returns>
-	constexpr VkFormatFeatureFlags VkImageUsageToFormatFeatures(VkImageUsageFlags usage);
+	[[nodiscard]] constexpr VkFormatFeatureFlags VkImageUsageToFormatFeatures(VkImageUsageFlags usage) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::DescriptorType to VkBufferUsage.
 	/// </summary>
 	/// <param name="usage">DescriptorType to convert.</param>
 	/// <param name="typed">Whether the buffer is a typed buffer.</param>
 	/// <returns>Converted VkBufferUsageFlags.</returns>
-	constexpr VkBufferUsageFlags DescriptorTypeToVkBufferUsage(RendererAPI::DescriptorType usage, bool typed);
+	[[nodiscard]] constexpr VkBufferUsageFlags DescriptorTypeToVkBufferUsage(RendererAPI::DescriptorType usage, bool typed) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::FilterType to VkFilter.
 	/// </summary>
 	/// <param name="filter">FilterType to convert.</param>
 	/// <returns>Converted VkFilter.</returns>
-	constexpr VkFilter FilterTypeToVkFilter(RendererAPI::FilterType filter);
+	[[nodiscard]] constexpr VkFilter FilterTypeToVkFilter(RendererAPI::FilterType filter) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::MipMapMode to VkSamplerMipmapMode.
 	/// </summary>
 	/// <param name="mipMapMode">MipMapMode to convert.</param>
 	/// <returns>Converted VkSamplerMipmapMode.</returns>
-	constexpr VkSamplerMipmapMode MipMapModeToVkMipMapMode(RendererAPI::MipMapMode mipMapMode);
+	[[nodiscard]] constexpr VkSamplerMipmapMode MipMapModeToVkMipMapMode(RendererAPI::MipMapMode mipMapMode) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::AddressMode to VkSamplerAddressMode.
 	/// </summary>
 	/// <param name="addressMode">AddressMode to convert.</param>
 	/// <returns>Converted VkSamplerAddressMode.</returns>
-	constexpr VkSamplerAddressMode AddressModeToVkAddressMode(RendererAPI::AddressMode addressMode);
+	[[nodiscard]] constexpr VkSamplerAddressMode AddressModeToVkAddressMode(RendererAPI::AddressMode addressMode) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::DescriptorType to VkDescriptorType.
 	/// </summary>
 	/// <param name="type">DescriptorType to convert.</param>
 	/// <returns>Converted VkDescriptorType.</returns>
-	constexpr VkDescriptorType DescriptorTypeToVkDescriptorType(RendererAPI::DescriptorType type);
+	[[nodiscard]] constexpr VkDescriptorType DescriptorTypeToVkDescriptorType(RendererAPI::DescriptorType type) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::ShaderStage to VkShaderStageFlags.
 	/// </summary>
 	/// <param name="stages">ShaderStage(s) to convert.</param>
 	/// <returns>Converted VkShaderStageFlags.</returns>
-	constexpr VkShaderStageFlags ShaderStageToVkShaderStageFlags(RendererAPI::ShaderStage stages);
+	[[nodiscard]] constexpr VkShaderStageFlags ShaderStageToVkShaderStageFlags(RendererAPI::ShaderStage stages) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::PipelineCacheFlags to VkPipelineCacheCreateFlags.
 	/// </summary>
 	/// <param name="flags">PipelineCacheFlag to convert.</param>
 	/// <returns>Converted VkPipelineCacheCreateFlags.</returns>
-	constexpr VkPipelineCacheCreateFlags PipelineCacheFlagsToVkPipelineCacheCreateFlags(RendererAPI::PipelineCacheFlags flags);
+	[[nodiscard]] constexpr VkPipelineCacheCreateFlags PipelineCacheFlagsToVkPipelineCacheCreateFlags(RendererAPI::PipelineCacheFlags flags) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::ResourceState to VkAccessFlags.
 	/// </summary>
 	/// <param name="state">ResourceState to convert.</param>
 	/// <returns>Converted VkAccessFlags.</returns>
-	constexpr VkAccessFlags ResourceStateToVkAccessFlags(RendererAPI::ResourceState state);
+	[[nodiscard]] constexpr VkAccessFlags ResourceStateToVkAccessFlags(RendererAPI::ResourceState state) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::ResourceState to VkImageLayout.
 	/// </summary>
 	/// <param name="usage">ResourceState to convert.</param>
 	/// <returns>Converted VkImageLayout.</returns>
-	constexpr VkImageLayout ResourceStateToVkImageLayout(RendererAPI::ResourceState usage);
+	[[nodiscard]] constexpr VkImageLayout ResourceStateToVkImageLayout(RendererAPI::ResourceState usage) noexcept;
 	/// <summary>
 	/// Determine the VkPipelineStageFlags from VkAccessFlags and RendererAPI::QueueType.
 	/// </summary>
 	/// <param name="accessFlags">VkAccessFlags.</param>
 	/// <param name="queueType">QueueType.</param>
 	/// <returns>Determined VkPipelineStageFlags.</returns>
-	VkPipelineStageFlags DetermineVkPipelineStageFlags(VkAccessFlags accessFlags, RendererAPI::QueueType queueType);
+	[[nodiscard]] VkPipelineStageFlags DetermineVkPipelineStageFlags(VkAccessFlags accessFlags, RendererAPI::QueueType queueType) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::QueryType to VkQueryType.
 	/// </summary>
 	/// <param name="type">QueryType to convert.</param>
 	/// <returns>Converted VkQueryType.</returns>
-	constexpr VkQueryType QueryTypeToVkQueryType(RendererAPI::QueryType type);
+	[[nodiscard]] constexpr VkQueryType QueryTypeToVkQueryType(RendererAPI::QueryType type) noexcept;
 
 	/// <summary>
 	/// Utility to create the VkPipelineColorBlendStateCreateInfo struct from
@@ -160,22 +172,22 @@ namespace TRAP::Graphics::API
 	/// <param name="desc">BlendStateDesc.</param>
 	/// <param name="attachments">Color blend attachments.</param>
 	/// <returns>Created VkPipelineColorBlendStateCreateInfo.</returns>
-	VkPipelineColorBlendStateCreateInfo UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc,
-	                                                    std::vector<VkPipelineColorBlendAttachmentState>& attachments);
+	[[nodiscard]] VkPipelineColorBlendStateCreateInfo UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc,
+	                                                                  std::vector<VkPipelineColorBlendAttachmentState>& attachments) ;
 	/// <summary>
 	/// Utility to create the VkPipelineDepthStencilStateCreateInfo struct from
 	/// a RendererAPI::DepthStateDesc.
 	/// </summary>
 	/// <param name="desc">DepthStateDesc.</param>
 	/// <returns>Created VkPipelineDepthStencilStateCreateInfo.</returns>
-	VkPipelineDepthStencilStateCreateInfo UtilToDepthDesc(const RendererAPI::DepthStateDesc& desc);
+	[[nodiscard]] VkPipelineDepthStencilStateCreateInfo UtilToDepthDesc(const RendererAPI::DepthStateDesc& desc);
 	/// <summary>
 	/// Utility to create the VkPipelineRasterizationStateCreateInfo struct from
 	/// a RendererAPI::RasterizerStateDesc.
 	/// </summary>
 	/// <param name="desc">RasterizerStateDesc.</param>
 	/// <returns>Created VkPipelineRasterizationStateCreateInfo.</returns>
-	VkPipelineRasterizationStateCreateInfo UtilToRasterizerDesc(const RendererAPI::RasterizerStateDesc& desc);
+	[[nodiscard]] VkPipelineRasterizationStateCreateInfo UtilToRasterizerDesc(const RendererAPI::RasterizerStateDesc& desc);
 	/// <summary>
 	/// Utility to retrieve the planar image memory requirement for Vulkan.
 	/// </summary>
@@ -192,14 +204,14 @@ namespace TRAP::Graphics::API
 	/// </summary>
 	/// <param name="combiner">ShadingRateCombiner.</param>
 	/// <returns>Converted VkFragmentShadingRateCombinerOpKHR.</returns>
-	constexpr VkFragmentShadingRateCombinerOpKHR ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(const RendererAPI::ShadingRateCombiner& combiner);
+	[[nodiscard]] constexpr VkFragmentShadingRateCombinerOpKHR ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(const RendererAPI::ShadingRateCombiner& combiner);
 	/// <summary>
 	/// Utility to create the VkExtent2D (fragment size) from
 	/// a RendererAPI::ShadingRate.
 	/// </summary>
 	/// <param name="rate">ShadingRate.</param>
 	/// <returns>Converted VkExtent2D.</returns>
-	constexpr VkExtent2D ShadingRateToVkExtent2D(const RendererAPI::ShadingRate& rate);
+	[[nodiscard]] constexpr VkExtent2D ShadingRateToVkExtent2D(const RendererAPI::ShadingRate& rate);
 
 	/// <summary>
 	/// Retrieve the recommended swapchain format for Vulkan.
@@ -207,14 +219,14 @@ namespace TRAP::Graphics::API
 	/// <param name="HDR">True if HDR is desired.</param>
 	/// <param name="SRGB">True if SRGB is desired.</param>
 	/// <returns>Recommended swapchain format.</returns>
-	TRAP::Graphics::API::ImageFormat VulkanGetRecommendedSwapchainFormat(bool HDR, bool SRGB);
+	[[nodiscard]] TRAP::Graphics::API::ImageFormat VulkanGetRecommendedSwapchainFormat(bool HDR, bool SRGB) noexcept;
 
 	/// <summary>
 	/// Convert the VkFormat to ImageFormat.
 	/// </summary>
 	/// <param name="format">VkFormat to convert.</param>
 	/// <returns>Converted ImageFormat.</returns>
-	constexpr TRAP::Graphics::API::ImageFormat ImageFormatFromVkFormat(VkFormat format);
+	[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat ImageFormatFromVkFormat(VkFormat format) noexcept;
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	/// <summary>
@@ -238,7 +250,7 @@ namespace TRAP::Graphics::API
 	                     [[maybe_unused]] VkDebugReportObjectTypeEXT type, [[maybe_unused]] const std::string_view name);
 #endif
 
-	inline static constexpr std::array<VkAttachmentLoadOp,
+	inline constexpr std::array<VkAttachmentLoadOp,
 	                                   static_cast<uint32_t>(RendererAPI::LoadActionType::MAX_LOAD_ACTION_TYPE)> VkAttachmentLoadOpTranslator =
 	{
 		VK_ATTACHMENT_LOAD_OP_DONT_CARE,
@@ -246,7 +258,7 @@ namespace TRAP::Graphics::API
 		VK_ATTACHMENT_LOAD_OP_CLEAR
 	};
 
-	inline static constexpr std::array<VkAttachmentStoreOp,
+	inline constexpr std::array<VkAttachmentStoreOp,
 	                                   static_cast<uint32_t>(RendererAPI::StoreActionType::MAX_STORE_ACTION_TYPE)> VkAttachmentStoreOpTranslator =
 	{
 		VK_ATTACHMENT_STORE_OP_STORE,
@@ -255,7 +267,7 @@ namespace TRAP::Graphics::API
 		VK_ATTACHMENT_STORE_OP_DONT_CARE
 	};
 
-	inline static constexpr std::array<VkCompareOp,
+	inline constexpr std::array<VkCompareOp,
 	                                   static_cast<uint32_t>(RendererAPI::CompareMode::MAX_COMPARE_MODES)> VkComparisonFuncTranslator =
 	{
 		VK_COMPARE_OP_NEVER,
@@ -268,7 +280,7 @@ namespace TRAP::Graphics::API
 		VK_COMPARE_OP_ALWAYS
 	};
 
-	inline static constexpr std::array<VkPipelineBindPoint,
+	inline constexpr std::array<VkPipelineBindPoint,
 	                                   static_cast<uint32_t>(RendererAPI::PipelineType::PIPELINE_TYPE_COUNT)> VkPipelineBindPointTranslator =
 	{
 		VK_PIPELINE_BIND_POINT_MAX_ENUM,
@@ -277,7 +289,7 @@ namespace TRAP::Graphics::API
 		VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR
 	};
 
-	inline static constexpr std::array<VkBlendFactor,
+	inline constexpr std::array<VkBlendFactor,
 	                                   static_cast<uint32_t>(RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS)> VkBlendConstantTranslator =
 	{
 		VK_BLEND_FACTOR_ZERO,
@@ -295,7 +307,7 @@ namespace TRAP::Graphics::API
 		VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR
 	};
 
-	inline static constexpr std::array<VkBlendOp,
+	inline constexpr std::array<VkBlendOp,
 	                                   static_cast<uint32_t>(RendererAPI::BlendMode::MAX_BLEND_MODES)> VkBlendOpTranslator =
 	{
 		VK_BLEND_OP_ADD,
@@ -305,7 +317,7 @@ namespace TRAP::Graphics::API
 		VK_BLEND_OP_MAX
 	};
 
-	inline static constexpr std::array<VkStencilOp,
+	inline constexpr std::array<VkStencilOp,
 	                                   static_cast<uint32_t>(RendererAPI::StencilOp::MAX_STENCIL_OPS)> VkStencilOpTranslator =
 	{
 		VK_STENCIL_OP_KEEP,
@@ -318,7 +330,7 @@ namespace TRAP::Graphics::API
 		VK_STENCIL_OP_DECREMENT_AND_CLAMP
 	};
 
-	inline static constexpr std::array<VkCullModeFlagBits,
+	inline constexpr std::array<VkCullModeFlagBits,
 	                                   static_cast<uint32_t>(RendererAPI::CullMode::MAX_CULL_MODES)> VkCullModeTranslator =
 	{
 		VK_CULL_MODE_NONE,
@@ -326,14 +338,14 @@ namespace TRAP::Graphics::API
 		VK_CULL_MODE_FRONT_BIT
 	};
 
-	inline static constexpr std::array<VkPolygonMode,
+	inline constexpr std::array<VkPolygonMode,
 	                                   static_cast<uint32_t>(RendererAPI::FillMode::MAX_FILL_MODES)> VkFillModeTranslator =
 	{
 		VK_POLYGON_MODE_FILL,
 		VK_POLYGON_MODE_LINE
 	};
 
-	inline static constexpr std::array<VkFrontFace, 2> VkFrontFaceTranslator =
+	inline constexpr std::array<VkFrontFace, 2> VkFrontFaceTranslator =
 	{
 		VK_FRONT_FACE_COUNTER_CLOCKWISE,
 		VK_FRONT_FACE_CLOCKWISE
@@ -350,6 +362,9 @@ namespace TRAP::Graphics::API
 #else
 	//Utility to check VkResult for errors and log them.
 	#define VkCall(x) ::TRAP::Graphics::API::ErrorCheck(x, #x, __FILE__, __LINE__);
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	#define VkReflexCall(x) ::TRAP::Graphics::API::ReflexErrorCheck(x, #x, __FILE__, __LINE__);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 #endif
 #else
 	/// <summary>
@@ -357,6 +372,10 @@ namespace TRAP::Graphics::API
 	/// </summary>
 	constexpr void VkCall(VkResult)
 	{}
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	constexpr void VkReflexCall(NvLL_VK_Status)
+	{}
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -438,7 +457,65 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkQueueFlags TRAP::Graphics::API::QueueTypeToVkQueueFlags(const RendererAPI::QueueType queueType)
+#ifdef NVIDIA_REFLEX_AVAILABLE
+constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result, const std::string_view function,
+                                                     const std::string_view file, const int32_t line)
+{
+	if(result == NVLL_VK_OK)
+		return true;
+
+	switch (result)
+	{
+	case NVLL_VK_ERROR:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_ERROR: ", function, " @[", file, ':', line, ']');
+		break;
+	case NVLL_VK_LIBRARY_NOT_FOUND:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_LIBRARY_NOT_FOUND: ", function, " @[", file, ':', line,
+				']');
+		break;
+	case NVLL_VK_NO_IMPLEMENTATION:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_NO_IMPLEMENTATION: ", function, " @[", file, ':', line,
+				']');
+		break;
+	case NVLL_VK_API_NOT_INITIALIZED:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_API_NOT_INITIALIZED: ", function, " @[", file, ':', line, ']');
+		break;
+	case NVLL_VK_INVALID_ARGUMENT:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_INVALID_ARGUMENT: ", function, " @[", file, ':', line, ']');
+		break;
+	case NVLL_VK_INVALID_HANDLE:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_INVALID_HANDLE: ", function, " @[", file, ':', line, ']');
+		break;
+	case NVLL_VK_INCOMPATIBLE_STRUCT_VERSION:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_INCOMPATIBLE_STRUCT_VERSION: ", function, " @[", file, ':', line,
+				']');
+		break;
+	case NVLL_VK_INVALID_POINTER:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_INVALID_POINTER: ", function, " @[", file, ':', line, ']');
+		break;
+	case NVLL_VK_OUT_OF_MEMORY:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_OUT_OF_MEMORY: ", function, " @[", file, ':', line, ']');
+		break;
+	case NVLL_VK_API_IN_USE:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_API_IN_USE: ", function, " @[", file, ':', line, ']');
+		break;
+	case NVLL_VK_NO_VULKAN:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_NO_VULKAN: ", function, " @[", file, ':', line,
+				']');
+		break;
+
+	default:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "Unknown error: ", function, " @[", file, ':', line, ']');
+		break;
+	}
+
+	return false;
+}
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkQueueFlags TRAP::Graphics::API::QueueTypeToVkQueueFlags(const RendererAPI::QueueType queueType) noexcept
 {
 	switch(queueType)
 	{
@@ -452,14 +529,14 @@ constexpr VkQueueFlags TRAP::Graphics::API::QueueTypeToVkQueueFlags(const Render
 		return VK_QUEUE_COMPUTE_BIT;
 
 	default:
-		// TRAP_ASSERT(false, "Invalid Queue Type");
+		// TRAP_ASSERT(false, "QueueTypeToVkQueueFlags(): Invalid Queue Type");
 		return VK_QUEUE_FLAG_BITS_MAX_ENUM;
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkSampleCountFlagBits TRAP::Graphics::API::SampleCountToVkSampleCount(const RendererAPI::SampleCount sampleCount)
+[[nodiscard]] constexpr VkSampleCountFlagBits TRAP::Graphics::API::SampleCountToVkSampleCount(const RendererAPI::SampleCount sampleCount) noexcept
 {
 	switch(sampleCount)
 	{
@@ -485,7 +562,7 @@ constexpr VkSampleCountFlagBits TRAP::Graphics::API::SampleCountToVkSampleCount(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkFormat TRAP::Graphics::API::ImageFormatToVkFormat(const TRAP::Graphics::API::ImageFormat imageFormat)
+[[nodiscard]] constexpr VkFormat TRAP::Graphics::API::ImageFormatToVkFormat(const TRAP::Graphics::API::ImageFormat imageFormat) noexcept
 {
 	switch(imageFormat)
 	{
@@ -660,13 +737,15 @@ constexpr VkFormat TRAP::Graphics::API::ImageFormatToVkFormat(const TRAP::Graphi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkImageAspectFlags TRAP::Graphics::API::DetermineAspectMask(const VkFormat format, const bool includeStencilBit)
+[[nodiscard]] constexpr VkImageAspectFlags TRAP::Graphics::API::DetermineAspectMask(const VkFormat format, const bool includeStencilBit) noexcept
 {
 	switch(format)
 	{
 		//Depth
 	case VK_FORMAT_D16_UNORM:
+		[[fallthrough]];
 	case VK_FORMAT_X8_D24_UNORM_PACK32:
+		[[fallthrough]];
 	case VK_FORMAT_D32_SFLOAT:
 		return VK_IMAGE_ASPECT_DEPTH_BIT;
 
@@ -676,7 +755,9 @@ constexpr VkImageAspectFlags TRAP::Graphics::API::DetermineAspectMask(const VkFo
 
 		//Depth/Stencil
 	case VK_FORMAT_D16_UNORM_S8_UINT:
+		[[fallthrough]];
 	case VK_FORMAT_D24_UNORM_S8_UINT:
+		[[fallthrough]];
 	case VK_FORMAT_D32_SFLOAT_S8_UINT:
 	{
 		VkImageAspectFlags res = VK_IMAGE_ASPECT_DEPTH_BIT;
@@ -693,7 +774,7 @@ constexpr VkImageAspectFlags TRAP::Graphics::API::DetermineAspectMask(const VkFo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkImageUsageFlags TRAP::Graphics::API::DescriptorTypeToVkImageUsage(const RendererAPI::DescriptorType type)
+[[nodiscard]] constexpr VkImageUsageFlags TRAP::Graphics::API::DescriptorTypeToVkImageUsage(const RendererAPI::DescriptorType type) noexcept
 {
 	VkImageUsageFlags result = 0;
 
@@ -707,7 +788,7 @@ constexpr VkImageUsageFlags TRAP::Graphics::API::DescriptorTypeToVkImageUsage(co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkFormatFeatureFlags TRAP::Graphics::API::VkImageUsageToFormatFeatures(const VkImageUsageFlags usage)
+[[nodiscard]] constexpr VkFormatFeatureFlags TRAP::Graphics::API::VkImageUsageToFormatFeatures(const VkImageUsageFlags usage) noexcept
 {
 	VkFormatFeatureFlags result = 0;
 
@@ -725,8 +806,8 @@ constexpr VkFormatFeatureFlags TRAP::Graphics::API::VkImageUsageToFormatFeatures
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkBufferUsageFlags TRAP::Graphics::API::DescriptorTypeToVkBufferUsage(const RendererAPI::DescriptorType usage,
-                                                                                const bool typed)
+[[nodiscard]] constexpr VkBufferUsageFlags TRAP::Graphics::API::DescriptorTypeToVkBufferUsage(const RendererAPI::DescriptorType usage,
+                                                                                              const bool typed) noexcept
 {
 	VkBufferUsageFlags result = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 
@@ -766,7 +847,7 @@ constexpr VkBufferUsageFlags TRAP::Graphics::API::DescriptorTypeToVkBufferUsage(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkFilter TRAP::Graphics::API::FilterTypeToVkFilter(const RendererAPI::FilterType filter)
+[[nodiscard]] constexpr VkFilter TRAP::Graphics::API::FilterTypeToVkFilter(const RendererAPI::FilterType filter) noexcept
 {
 	switch(filter)
 	{
@@ -783,7 +864,7 @@ constexpr VkFilter TRAP::Graphics::API::FilterTypeToVkFilter(const RendererAPI::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkSamplerMipmapMode TRAP::Graphics::API::MipMapModeToVkMipMapMode(const RendererAPI::MipMapMode mipMapMode)
+[[nodiscard]] constexpr VkSamplerMipmapMode TRAP::Graphics::API::MipMapModeToVkMipMapMode(const RendererAPI::MipMapMode mipMapMode) noexcept
 {
 	switch (mipMapMode)
 	{
@@ -794,14 +875,14 @@ constexpr VkSamplerMipmapMode TRAP::Graphics::API::MipMapModeToVkMipMapMode(cons
 		return VK_SAMPLER_MIPMAP_MODE_LINEAR;
 
 	default:
-		// TRAP_ASSERT(false, "Invalid Mip Map Mode");
+		// TRAP_ASSERT(false, "MipMapModeToVkMipMapMode(): Invalid Mip Map Mode");
 		return VK_SAMPLER_MIPMAP_MODE_MAX_ENUM;
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkSamplerAddressMode TRAP::Graphics::API::AddressModeToVkAddressMode(const RendererAPI::AddressMode addressMode)
+[[nodiscard]] constexpr VkSamplerAddressMode TRAP::Graphics::API::AddressModeToVkAddressMode(const RendererAPI::AddressMode addressMode) noexcept
 {
 	switch(addressMode)
 	{
@@ -824,12 +905,12 @@ constexpr VkSamplerAddressMode TRAP::Graphics::API::AddressModeToVkAddressMode(c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkDescriptorType TRAP::Graphics::API::DescriptorTypeToVkDescriptorType(const RendererAPI::DescriptorType type)
+[[nodiscard]] constexpr VkDescriptorType TRAP::Graphics::API::DescriptorTypeToVkDescriptorType(const RendererAPI::DescriptorType type) noexcept
 {
 	switch(type)
 	{
 	case RendererAPI::DescriptorType::Undefined:
-		// TRAP_ASSERT("Invalid DescriptorInfo Type");
+		// TRAP_ASSERT(false, "DescriptorTypeToVkDescriptorType(): Invalid DescriptorInfo Type");
 		return VK_DESCRIPTOR_TYPE_MAX_ENUM;
 
 	case RendererAPI::DescriptorType::Sampler:
@@ -865,14 +946,14 @@ constexpr VkDescriptorType TRAP::Graphics::API::DescriptorTypeToVkDescriptorType
 		return VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR;
 
 	default:
-		// TRAP_ASSERT("Invalid DescriptorInfo Type");
+		// TRAP_ASSERT(false, "DescriptorTypeToVkDescriptorType(): Invalid DescriptorInfo Type");
 		return VK_DESCRIPTOR_TYPE_MAX_ENUM;
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkShaderStageFlags TRAP::Graphics::API::ShaderStageToVkShaderStageFlags(const RendererAPI::ShaderStage stages)
+[[nodiscard]] constexpr VkShaderStageFlags TRAP::Graphics::API::ShaderStageToVkShaderStageFlags(const RendererAPI::ShaderStage stages) noexcept
 {
 	VkShaderStageFlags res = 0;
 
@@ -897,13 +978,13 @@ constexpr VkShaderStageFlags TRAP::Graphics::API::ShaderStageToVkShaderStageFlag
 			    VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR | VK_SHADER_STAGE_MISS_BIT_KHR |
 			    VK_SHADER_STAGE_INTERSECTION_BIT_KHR | VK_SHADER_STAGE_CALLABLE_BIT_KHR);
 
-	// TRAP_ASSERT(res != 0);
+	// TRAP_ASSERT(res != 0, "ShaderStageToVkShaderStageFlags(): Invalid ShaderStage combination");
 	return res;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkPipelineCacheCreateFlags TRAP::Graphics::API::PipelineCacheFlagsToVkPipelineCacheCreateFlags(const RendererAPI::PipelineCacheFlags flags)
+[[nodiscard]] constexpr VkPipelineCacheCreateFlags TRAP::Graphics::API::PipelineCacheFlagsToVkPipelineCacheCreateFlags(const RendererAPI::PipelineCacheFlags flags) noexcept
 {
 	VkPipelineCacheCreateFlags ret = 0;
 
@@ -915,7 +996,7 @@ constexpr VkPipelineCacheCreateFlags TRAP::Graphics::API::PipelineCacheFlagsToVk
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkAccessFlags TRAP::Graphics::API::ResourceStateToVkAccessFlags(const RendererAPI::ResourceState state)
+[[nodiscard]] constexpr VkAccessFlags TRAP::Graphics::API::ResourceStateToVkAccessFlags(const RendererAPI::ResourceState state) noexcept
 {
 	VkAccessFlags ret = 0;
 
@@ -949,7 +1030,7 @@ constexpr VkAccessFlags TRAP::Graphics::API::ResourceStateToVkAccessFlags(const 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkImageLayout TRAP::Graphics::API::ResourceStateToVkImageLayout(const RendererAPI::ResourceState usage)
+[[nodiscard]] constexpr VkImageLayout TRAP::Graphics::API::ResourceStateToVkImageLayout(const RendererAPI::ResourceState usage) noexcept
 {
 	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::CopySource))
 		return VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
@@ -975,12 +1056,15 @@ constexpr VkImageLayout TRAP::Graphics::API::ResourceStateToVkImageLayout(const 
 	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::Common))
 		return VK_IMAGE_LAYOUT_GENERAL;
 
+	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::ShadingRateSource))
+		return VK_IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR;
+
 	return VK_IMAGE_LAYOUT_UNDEFINED;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkQueryType TRAP::Graphics::API::QueryTypeToVkQueryType(const RendererAPI::QueryType type)
+[[nodiscard]] constexpr VkQueryType TRAP::Graphics::API::QueryTypeToVkQueryType(const RendererAPI::QueryType type) noexcept
 {
 	switch(type)
 	{
@@ -994,14 +1078,14 @@ constexpr VkQueryType TRAP::Graphics::API::QueryTypeToVkQueryType(const Renderer
 		return VK_QUERY_TYPE_OCCLUSION;
 
 	default:
-		// TRAP_ASSERT(false, "Invalid query heap type");
+		// TRAP_ASSERT(false, "QueryTypeToVkQueryType(): Invalid query heap type");
 		return VK_QUERY_TYPE_MAX_ENUM;
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::ImageFormatFromVkFormat(const VkFormat format)
+[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::ImageFormatFromVkFormat(const VkFormat format) noexcept
 {
 	switch(format)
 	{
@@ -1162,47 +1246,89 @@ constexpr TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::ImageFormatFromV
 	case VK_FORMAT_PVRTC1_4BPP_SRGB_BLOCK_IMG: return TRAP::Graphics::API::ImageFormat::PVRTC1_4BPP_SRGB;
 
 	case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
+		[[fallthrough]];
 	case VK_FORMAT_R8_USCALED:
+		[[fallthrough]];
 	case VK_FORMAT_R8_SSCALED:
+		[[fallthrough]];
 	case VK_FORMAT_R8G8_USCALED:
+		[[fallthrough]];
 	case VK_FORMAT_R8G8_SSCALED:
+		[[fallthrough]];
 	case VK_FORMAT_R8G8B8_USCALED:
+		[[fallthrough]];
 	case VK_FORMAT_R8G8B8_SSCALED:
+		[[fallthrough]];
 	case VK_FORMAT_B8G8R8_USCALED:
+		[[fallthrough]];
 	case VK_FORMAT_B8G8R8_SSCALED:
+		[[fallthrough]];
 	case VK_FORMAT_R8G8B8A8_USCALED:
+		[[fallthrough]];
 	case VK_FORMAT_R8G8B8A8_SSCALED:
+		[[fallthrough]];
 	case VK_FORMAT_B8G8R8A8_USCALED:
+		[[fallthrough]];
 	case VK_FORMAT_B8G8R8A8_SSCALED:
+		[[fallthrough]];
 	case VK_FORMAT_A8B8G8R8_SNORM_PACK32:
+		[[fallthrough]];
 	case VK_FORMAT_A8B8G8R8_USCALED_PACK32:
+		[[fallthrough]];
 	case VK_FORMAT_A8B8G8R8_SSCALED_PACK32:
+		[[fallthrough]];
 	case VK_FORMAT_A8B8G8R8_UINT_PACK32:
+		[[fallthrough]];
 	case VK_FORMAT_A8B8G8R8_SINT_PACK32:
+		[[fallthrough]];
 	case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
+		[[fallthrough]];
 	case VK_FORMAT_A2R10G10B10_SNORM_PACK32:
+		[[fallthrough]];
 	case VK_FORMAT_A2R10G10B10_USCALED_PACK32:
+		[[fallthrough]];
 	case VK_FORMAT_A2R10G10B10_SSCALED_PACK32:
+		[[fallthrough]];
 	case VK_FORMAT_A2R10G10B10_SINT_PACK32:
+		[[fallthrough]];
 	case VK_FORMAT_A2B10G10R10_SNORM_PACK32:
+		[[fallthrough]];
 	case VK_FORMAT_A2B10G10R10_USCALED_PACK32:
+		[[fallthrough]];
 	case VK_FORMAT_A2B10G10R10_SSCALED_PACK32:
+		[[fallthrough]];
 	case VK_FORMAT_A2B10G10R10_SINT_PACK32:
+		[[fallthrough]];
 	case VK_FORMAT_R16_USCALED:
+		[[fallthrough]];
 	case VK_FORMAT_R16_SSCALED:
+		[[fallthrough]];
 	case VK_FORMAT_R16G16_USCALED:
+		[[fallthrough]];
 	case VK_FORMAT_R16G16_SSCALED:
+		[[fallthrough]];
 	case VK_FORMAT_R16G16B16_USCALED:
+		[[fallthrough]];
 	case VK_FORMAT_R16G16B16_SSCALED:
+		[[fallthrough]];
 	case VK_FORMAT_R16G16B16A16_USCALED:
+		[[fallthrough]];
 	case VK_FORMAT_R16G16B16A16_SSCALED:
+		[[fallthrough]];
 	case VK_FORMAT_R10X6_UNORM_PACK16:
+		[[fallthrough]];
 	case VK_FORMAT_R10X6G10X6_UNORM_2PACK16:
+		[[fallthrough]];
 	case VK_FORMAT_R12X4_UNORM_PACK16:
+		[[fallthrough]];
 	case VK_FORMAT_R12X4G12X4_UNORM_2PACK16:
+		[[fallthrough]];
 	case VK_FORMAT_PVRTC2_2BPP_UNORM_BLOCK_IMG:
+		[[fallthrough]];
 	case VK_FORMAT_PVRTC2_4BPP_UNORM_BLOCK_IMG:
+		[[fallthrough]];
 	case VK_FORMAT_PVRTC2_2BPP_SRGB_BLOCK_IMG:
+		[[fallthrough]];
 	case VK_FORMAT_PVRTC2_4BPP_SRGB_BLOCK_IMG:
 		return TRAP::Graphics::API::ImageFormat::Undefined;
 
@@ -1213,7 +1339,7 @@ constexpr TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::ImageFormatFromV
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkFragmentShadingRateCombinerOpKHR TRAP::Graphics::API::ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(const RendererAPI::ShadingRateCombiner& combiner)
+[[nodiscard]] constexpr VkFragmentShadingRateCombinerOpKHR TRAP::Graphics::API::ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(const RendererAPI::ShadingRateCombiner& combiner)
 {
 	switch(combiner)
 	{
@@ -1229,14 +1355,14 @@ constexpr VkFragmentShadingRateCombinerOpKHR TRAP::Graphics::API::ShadingRateCom
 		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_MUL_KHR;
 
 	default:
-		TRAP_ASSERT(false, "Invalid shading rate combiner type");
+		TRAP_ASSERT(false, "ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(): Invalid shading rate combiner type");
 		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_KEEP_KHR;
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkExtent2D TRAP::Graphics::API::ShadingRateToVkExtent2D(const RendererAPI::ShadingRate& rate)
+[[nodiscard]] constexpr VkExtent2D TRAP::Graphics::API::ShadingRateToVkExtent2D(const RendererAPI::ShadingRate& rate)
 {
 	switch(rate)
 	{
@@ -1258,7 +1384,7 @@ constexpr VkExtent2D TRAP::Graphics::API::ShadingRateToVkExtent2D(const Renderer
 		return VkExtent2D{ 4, 2 };
 
 	default:
-		TRAP_ASSERT(false, "Invalid shading rate");
+		TRAP_ASSERT(false, "ShadingRateToVkExtent2D(): Invalid shading rate");
 		return VkExtent2D{ 1, 1 };
 	}
 }

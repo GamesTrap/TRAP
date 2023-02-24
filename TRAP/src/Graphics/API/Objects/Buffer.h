@@ -13,7 +13,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="desc">Buffer description.</param>
 		/// <returns>Created buffer.</returns>
-		static TRAP::Ref<Buffer> Create(const RendererAPI::BufferDesc& desc);
+		[[nodiscard]] static TRAP::Ref<Buffer> Create(const RendererAPI::BufferDesc& desc);
 
 		/// <summary>
 		/// Destructor.
@@ -23,35 +23,35 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Buffer(const Buffer&) = default;
+		Buffer(const Buffer&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Buffer& operator=(const Buffer&) = default;
+		Buffer& operator=(const Buffer&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Buffer(Buffer&&) = default;
+		Buffer(Buffer&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Buffer& operator=(Buffer&&) = default;
+		Buffer& operator=(Buffer&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the size of the buffer in bytes.
 		/// </summary>
 		/// <returns>Size of the buffer in bytes.</returns>
-		virtual uint64_t GetSize() const = 0;
+		[[nodiscard]] uint64_t GetSize() const noexcept;
 		/// <summary>
 		/// Retrieve the type of descriptor.
 		/// </summary>
 		/// <returns>Type of descriptor.</returns>
-		virtual RendererAPI::DescriptorType GetDescriptors() const = 0;
+		[[nodiscard]] RendererAPI::DescriptorType GetDescriptors() const noexcept;
 		/// <summary>
 		/// Retrieve the usage of the buffer memory.
 		/// </summary>
 		/// <returns>Usage of the buffer memory.</returns>
-		virtual RendererAPI::ResourceMemoryUsage GetMemoryUsage() const = 0;
+		[[nodiscard]] RendererAPI::ResourceMemoryUsage GetMemoryUsage() const noexcept;
 
 		/// <summary>
 		/// Retrieve the CPU mapped address of the buffer.
@@ -59,7 +59,7 @@ namespace TRAP::Graphics
 		/// Note: MapBuffer must be called before accessing the buffer on the CPU.
 		/// </summary>
 		/// <returns>CPU mapped address of the buffer.</returns>
-		virtual void* GetCPUMappedAddress() const = 0;
+		[[nodiscard]] void* GetCPUMappedAddress() const noexcept;
 
 		/// <summary>
 		/// Map a region of the buffer to the CPU.
@@ -67,7 +67,7 @@ namespace TRAP::Graphics
 		/// Note: MapBuffer must not be called if memory usage is GPU only.
 		/// </summary>
 		/// <param name="range">Optional range of the buffer to map. Default: Whole buffer.</param>
-		virtual void MapBuffer(RendererAPI::ReadRange* range) = 0;
+		virtual void MapBuffer(const RendererAPI::ReadRange* const range) = 0;
 		/// <summary>
 		/// Unmap CPU mapped memory region.
 		///

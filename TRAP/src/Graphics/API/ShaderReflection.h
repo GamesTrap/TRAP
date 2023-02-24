@@ -5,7 +5,7 @@
 
 namespace TRAP::Graphics::API::ShaderReflection
 {
-	inline static constexpr uint32_t MaxShaderStageCount = 5;
+	inline constexpr uint32_t MaxShaderStageCount = 5;
 
 	enum class TextureDimension
 	{
@@ -116,9 +116,9 @@ namespace TRAP::Graphics::API::ShaderReflection
 	/// <param name="reflection">Shader reflection data.</param>
 	/// <param name="stageCount">Number of used shader stages.</param>
 	/// <returns>Pipeline reflection.</returns>
-	TRAP::Ref<PipelineReflection> CreatePipelineReflection(const std::array<ShaderReflection,
-	                                                       static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& reflection,
-														   uint32_t stageCount);
+	[[nodiscard]] TRAP::Ref<PipelineReflection> CreatePipelineReflection(const std::array<ShaderReflection,
+	                                                                     static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& reflection,
+														                 uint32_t stageCount);
 }
 
 #endif /*TRAP_SHADERREFLECTION_H*/

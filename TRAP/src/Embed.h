@@ -10,7 +10,7 @@ namespace TRAP::Embed
 	/// <summary>
 	/// Fallback Graphics shader
 	/// </summary>
-	inline static constexpr std::string_view FallbackGraphicsShader
+	inline constexpr std::string_view FallbackGraphicsShader
 	{
 		R"(
 #shader vertex
@@ -44,7 +44,7 @@ namespace TRAP::Embed
 	/// <summary>
 	/// Fallback Compute shader
 	/// </summary>
-	inline static constexpr std::string_view FallbackComputeShader
+	inline constexpr std::string_view FallbackComputeShader
 	{
 		R"(
 #shader compute
@@ -59,9 +59,9 @@ namespace TRAP::Embed
 	};
 
 	/// <summary>
-	/// 2D Renderer shader
+	/// 2D Renderer quad shader
 	/// </summary>
-	inline static constexpr std::string_view Renderer2DShader
+	inline constexpr std::string_view Renderer2DQuadShader
 	{
 		R"(
 #shader vertex
@@ -70,10 +70,12 @@ namespace TRAP::Embed
 		layout(location = 1) in vec4 Color;
 		layout(location = 2) in vec2 TexCoord;
 		layout(location = 3) in float TexIndex;
+		layout(location = 4) in int EntityID;
 
 		layout(location = 1) out vec4 vColor;
 		layout(location = 2) out vec2 vTexCoord;
 		layout(location = 3) out flat float vTexIndex;
+		layout(location = 4) out flat int vEntityID;
 
 		layout(std140, UpdateFreqDynamic, binding = 0) uniform CameraBuffer
 		{
@@ -87,15 +89,18 @@ namespace TRAP::Embed
 			vColor = Color;
 			vTexCoord = TexCoord;
 			vTexIndex = TexIndex;
+			vEntityID = EntityID;
 		}
 
 #shader fragment
 
 		layout(location = 0) out vec4 FragColor;
+		layout(location = 1) out int FragColor2;
 
 		layout(location = 1) in vec4 vColor;
 		layout(location = 2) in vec2 vTexCoord;
 		layout(location = 3) in flat float vTexIndex;
+		layout(location = 4) in flat int vEntityID;
 
 		layout(UpdateFreqStatic, binding = 1) uniform sampler Sampler;
 		layout(UpdateFreqDynamic, binding = 1) uniform texture2D Textures[32];
@@ -205,6 +210,117 @@ namespace TRAP::Embed
 			}
 
 			FragColor = texColor;
+			FragColor2 = vEntityID;
+		}
+	)"
+	};
+
+	/// <summary>
+	/// 2D Renderer line shader
+	/// </summary>
+	inline constexpr std::string_view Renderer2DLineShader
+	{
+		R"(
+#shader vertex
+
+		layout(location = 0) in vec3 Position;
+		layout(location = 1) in vec4 Color;
+		layout(location = 2) in int EntityID;
+
+		layout(location = 1) out vec4 vColor;
+		layout(location = 2) out flat int vEntityID;
+
+		layout(std140, UpdateFreqDynamic, binding = 0) uniform CameraBuffer
+		{
+			mat4 sys_ProjectionMatrix;
+			mat4 sys_ViewMatrix;
+		} Camera;
+
+		void main()
+		{
+			gl_Position = Camera.sys_ProjectionMatrix * Camera.sys_ViewMatrix * vec4(Position, 1.0f);
+			vColor = Color;
+			vEntityID = EntityID;
+		}
+
+#shader fragment
+
+		layout(location = 0) out vec4 FragColor;
+		layout(location = 1) out int FragColor2;
+
+		layout(location = 1) in vec4 vColor;
+		layout(location = 2) in flat int vEntityID;
+
+		void main()
+		{
+			FragColor = vColor;
+			FragColor2 = vEntityID;
+		}
+	)"
+	};
+
+	/// <summary>
+	/// 2D Renderer circle shader
+	/// </summary>
+	inline constexpr std::string_view Renderer2DCircleShader
+	{
+		R"(
+#shader vertex
+
+		layout(location = 0) in vec3 WorldPosition;
+		layout(location = 1) in vec3 LocalPosition;
+		layout(location = 2) in vec4 Color;
+		layout(location = 3) in float Thickness;
+		layout(location = 4) in float Fade;
+		layout(location = 5) in int EntityID;
+
+		layout(location = 1) out vec3 vLocalPosition;
+		layout(location = 2) out vec4 vColor;
+		layout(location = 3) out float vThickness;
+		layout(location = 4) out float vFade;
+		layout(location = 5) out flat int vEntityID;
+
+		layout(std140, UpdateFreqDynamic, binding = 0) uniform CameraBuffer
+		{
+			mat4 sys_ProjectionMatrix;
+			mat4 sys_ViewMatrix;
+		} Camera;
+
+		void main()
+		{
+			gl_Position = Camera.sys_ProjectionMatrix * Camera.sys_ViewMatrix * vec4(WorldPosition, 1.0f);
+			vLocalPosition = LocalPosition;
+			vColor = Color;
+			vThickness = Thickness;
+			vFade = Fade;
+			vEntityID = EntityID;
+		}
+
+#shader fragment
+
+		layout(location = 0) out vec4 FragColor;
+		layout(location = 1) out int FragColor2;
+
+		layout(location = 1) in vec3 vLocalPosition;
+		layout(location = 2) in vec4 vColor;
+		layout(location = 3) in float vThickness;
+		layout(location = 4) in float vFade;
+		layout(location = 5) in flat int vEntityID;
+
+		void main()
+		{
+			float distance = 1.0 - length(vLocalPosition);
+			float delta = fwidth(distance);
+			float circle = smoothstep(0.0 - delta, vFade, distance);
+			circle *= smoothstep(vThickness + vFade + delta, vThickness, distance);
+
+			if(circle == 0.0)
+				discard;
+
+			FragColor = vColor;
+			FragColor.a *= circle;
+
+			FragColor2 = vEntityID;
 		}
 	)"
 	};
@@ -212,7 +328,7 @@ namespace TRAP::Embed
 	/// <summary>
 	/// Default debug image pixel data RGBA 32BPP
 	/// </summary>
-	inline static constexpr std::array<uint8_t, 4096> DefaultImageData =
+	inline constexpr std::array<uint8_t, 4096> DefaultImageData =
 	{
 		13, 13, 13, 255,
 		13, 13, 13, 255,
@@ -1243,7 +1359,7 @@ namespace TRAP::Embed
 	/// <summary>
 	/// TRAP Engine Logo Pixel Data RGBA 32BPP
 	/// </summary>
-	inline static constexpr std::array<uint8_t, 4096> TRAPLogo
+	inline constexpr std::array<uint8_t, 4096> TRAPLogo
 	{
 		255, 255, 255, 0,
 		255, 255, 255, 0,
@@ -2274,7 +2390,7 @@ namespace TRAP::Embed
 	/// <summary>
 	/// OpenSans TTF Font data.
 	/// </summary>
-	inline static constexpr std::array<uint8_t, 96932> OpenSansTTFData =
+	inline constexpr std::array<uint8_t, 96932> OpenSansTTFData =
 	{
 		0x00, 0x01, 0x00, 0x00, 0x00, 0x11, 0x01, 0x00, 0x00, 0x04, 0x00, 0x10,
 		0x47, 0x44, 0x45, 0x46, 0x0B, 0x7C, 0x0C, 0xD4, 0x00, 0x01, 0x77, 0x74,
@@ -10359,7 +10475,7 @@ namespace TRAP::Embed
 	/// <summary>
 	/// OpenSans Bold TTF Font data
 	/// </summary>
-	inline static constexpr std::array<uint8_t, 104120> OpenSansBoldTTFData =
+	inline constexpr std::array<uint8_t, 104120> OpenSansBoldTTFData =
 	{
 		0x00, 0x01, 0x00, 0x00, 0x00, 0x11, 0x01, 0x00, 0x00, 0x04, 0x00, 0x10,
 		0x47, 0x44, 0x45, 0x46, 0x0B, 0x7C, 0x0C, 0xD4, 0x00, 0x01, 0x93, 0x88,

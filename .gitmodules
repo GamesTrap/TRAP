@@ -20,3 +20,12 @@
 [submodule "Dependencies/GLSLang"]
 	path = Dependencies/GLSLang
 	url = https://github.com/KhronosGroup/glslang.git
+[submodule "Dependencies/Box2D"]
+	path = Dependencies/Box2D
+	url = https://github.com/erincatto/box2d
+[submodule "Dependencies/Tracy"]
+	path = Dependencies/Tracy
+	url = https://github.com/wolfpld/tracy.git
+[submodule ".modules/vscode"]
+	path = .modules/vscode
+	url = https://github.com/GamesTrap/Premake-VSCodeGen.git

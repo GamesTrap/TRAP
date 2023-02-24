@@ -2,7 +2,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -32,17 +32,20 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Network/Packet.h"
 #include "SocketImpl.h"
 #include "Utils/Utils.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 
 TRAP::Network::UDPSocket::UDPSocket()
 	: Socket(Type::UDP), m_buffer(MaxDatagramSize)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint16_t TRAP::Network::UDPSocket::GetLocalPort() const
+[[nodiscard]] uint16_t TRAP::Network::UDPSocket::GetLocalPort() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 		return 0; //We failed to retrieve the port
 
@@ -66,6 +69,8 @@ uint16_t TRAP::Network::UDPSocket::GetLocalPort() const
 
 TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Bind(const uint16_t port, const IPv4Address& address)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//Close the socket if it is already bound
 	Close();
 
@@ -92,16 +97,20 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Bind(const uint16_t port
 
 void TRAP::Network::UDPSocket::Unbind()
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//Simply close the socket
 	Close();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(const void* data, const std::size_t size,
+TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(const void* const data, const std::size_t size,
                                                              const IPv4Address& remoteAddress,
 														     const uint16_t remotePort)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//Create the internal socket if it doesn't exist
 	CreateIPv4();
 
@@ -130,10 +139,12 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(const void* data, c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* data, const std::size_t size,
+TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* const data, const std::size_t size,
                                                                 std::size_t& received, IPv4Address& remoteAddress,
 																uint16_t& remotePort) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//First clear the variables to fill
 	received = 0;
 	remoteAddress = IPv4Address();
@@ -184,6 +195,8 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* data, cons
 TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(Packet& packet, const IPv4Address& remoteAddress,
                                                              const uint16_t remotePort)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//UDP is a datagram-oriented protocol (as opposed to TCP which is a stream protocol).
 	//Sending one datagram is almost safe: it may be lost but if it's received, then its data
 	//is guaranteed to be ok.
@@ -195,7 +208,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(Packet& packet, con
 
 	//Get the data to send from the packet
 	std::size_t size = 0;
-	const void* data = packet.OnSend(size);
+	const void* const data = packet.OnSend(size);
 
 	//Send it
 	return Send(data, size, remoteAddress, remotePort);
@@ -206,6 +219,8 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(Packet& packet, con
 TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(Packet& packet, IPv4Address& remoteAddress,
                                                                 uint16_t& remotePort)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//See the detailed comment in Send(Packet) above.
 
 	//Receive the datagram

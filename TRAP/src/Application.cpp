@@ -10,6 +10,7 @@
 #include "Graphics/Renderer2D.h"
 #include "Graphics/Shaders/ShaderManager.h"
 #include "Graphics/Textures/TextureManager.h"
+#include "Graphics/Textures/SpriteManager.h"
 #include "Graphics/Textures/Texture.h"
 #include "Graphics/Renderer.h"
 #include "Utils/String/String.h"
@@ -22,7 +23,10 @@
 #include "Utils/Utils.h"
 #include "Window/Monitor.h"
 #include "Utils/Discord/DiscordGameSDK.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Steam/SteamworksSDK.h"
+#include "Utils/Memory.h"
+#include "Utils/Time/TimeStep.h"
+#include "Layers/ImGui/ImGuiLayer.h"
 
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
 
@@ -50,8 +54,10 @@ static BOOL WINAPI SIGINTHandlerRoutine(_In_ DWORD dwCtrlType)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #if defined(ENABLE_SINGLE_PROCESS_ONLY) && defined(TRAP_PLATFORM_LINUX)
-static bool CheckSingleProcessLinux()
+[[nodiscard]] static bool CheckSingleProcessLinux()
 {
+	ZoneScoped;
+
 	static int32_t socketFD = -1;
 	static int32_t rc = 1;
 	static constexpr uint16_t port = 49420; //Just a free (hopefully) random port
@@ -63,7 +69,11 @@ static bool CheckSingleProcessLinux()
 
 		socketFD = socket(AF_INET, SOCK_DGRAM, 0);
 		if(socketFD < 0)
+		{
+			TP_ERROR(Log::ApplicationPrefix, "Failed to create socket!");
+			TP_ERROR(Log::ApplicationPrefix, Utils::String::GetStrError());
 			return false;
+		}
 
 		sockaddr_in name;
 		name.sin_family = AF_INET;
@@ -78,6 +88,11 @@ static bool CheckSingleProcessLinux()
 
 		sockaddr convertedSock = TRAP::Utils::BitCast<sockaddr_in, sockaddr>(name); //Prevent usage of reinterpret_cast
 		rc = bind(socketFD, &convertedSock, sizeof(name));
+		if(rc < 0)
+		{
+			TP_ERROR(Log::ApplicationPrefix, "Failed to bind socket!");
+			TP_ERROR(Log::ApplicationPrefix, Utils::String::GetStrError());
+		}
 	}
 
 	return (socketFD != -1 && rc == 0);
@@ -87,11 +102,17 @@ static bool CheckSingleProcessLinux()
 //-------------------------------------------------------------------------------------------------------------------//
 
 #if defined(ENABLE_SINGLE_PROCESS_ONLY) && defined(TRAP_PLATFORM_WINDOWS)
-static bool CheckSingleProcessWindows()
+[[nodiscard]] static bool CheckSingleProcessWindows()
 {
+	ZoneScoped;
+
 	const HANDLE hMutex = CreateMutex(0, 0, L"TRAP-Engine");
 	if(!hMutex) //Error creating mutex
+	{
+		TP_ERROR(Log::ApplicationPrefix, "Failed to create mutex!");
+		TP_ERROR(Log::ApplicationPrefix, Utils::String::GetStrError());
 		return false;
+	}
 	if(hMutex && GetLastError() == ERROR_ALREADY_EXISTS)
 		return false;
 
@@ -101,28 +122,41 @@ static bool CheckSingleProcessWindows()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Application::Application(std::string gameName)
+TRAP::Application::Application(std::string gameName, const uint32_t appID)
 	: m_hotReloadingEnabled(false),
 	  m_timer(),
-	  m_FramesPerSecond(0),
 	  m_FrameTime(0.0f),
 	  m_fpsLimit(0),
 	  m_tickRate(64),
 	  m_timeScale(1.0f),
 	  m_gameName(std::move(gameName)),
+	  m_globalCounter(0),
 	  m_threadPool(Utils::GetCPUInfo().LogicalCores > 1 ? (Utils::GetCPUInfo().LogicalCores - 1) :
 	               std::thread::hardware_concurrency()),
 	  m_newRenderAPI(Graphics::RenderAPI::NONE)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneScoped;
 
 	//Register SIGINT callback to capture CTRL+C
 #ifdef TRAP_HEADLESS_MODE
 #ifdef TRAP_PLATFORM_LINUX
-	signal(SIGINT, [](int) {TRAP::Application::Shutdown(); });
+	if(signal(SIGINT, [](int) {TRAP::Application::Shutdown(); }) == SIG_ERR)
+	{
+		TP_ERROR(Log::ApplicationPrefix, "Failed to register SIGINT callback!");
+		TP_ERROR(Log::ApplicationPrefix, Utils::String::GetStrError());
+	}
 #elif defined(TRAP_PLATFORM_WINDOWS)
-	SetConsoleCtrlHandler(SIGINTHandlerRoutine, TRUE);
+	if(!SetConsoleCtrlHandler(SIGINTHandlerRoutine, TRUE))
+	{
+		TP_ERROR(Log::ApplicationPrefix, "Failed to set SIGINT handler!");
+		TP_ERROR(Log::ApplicationPrefix, Utils::String::GetStrError());
+	}
 #endif
+#endif
+
+#ifdef TRACY_ENABLE
+	//Set Main Thread name for profiler
+	tracy::SetThreadName("Main Thread");
 #endif
 
 	//Single process mode
@@ -139,13 +173,13 @@ TRAP::Application::Application(std::string gameName)
 		Utils::Dialogs::ShowMsgBox("TRAP™ already running", "A TRAP™ Application is already running!\n"
 		                           "Error code: 0x0012", Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
-		std::exit(0x0012);
+		exit(0x0012);
 	}
 #endif
 
 	TP_DEBUG(Log::ApplicationPrefix, "Initializing TRAP modules...");
 
-	TRAP_ASSERT(!s_Instance, "Application already exists!");
+	TRAP_ASSERT(!s_Instance, "Application(): Application already exists!");
 	s_Instance = this;
 	m_mainThreadID = std::this_thread::get_id();
 
@@ -159,6 +193,8 @@ TRAP::Application::Application(std::string gameName)
 		TRAP::TRAPLog.SetFilePath(*logFolder / "trap.log");
 	else //Fallback to current directory
 		TRAP::TRAPLog.SetFilePath("trap.log");
+
+	TRAP::Utils::Steam::Initalize(appID);
 
 	std::filesystem::path cfgPath = "engine.cfg";
 #ifndef TRAP_HEADLESS_MODE
@@ -178,6 +214,9 @@ TRAP::Application::Application(std::string gameName)
 	m_config.Get("RefreshRate", refreshRate);
 	const bool vsync = m_config.Get<bool>("VSync");
 	const bool visible = true;
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	const Graphics::LatencyMode latencyMode = m_config.Get<Graphics::LatencyMode>("NVIDIAReflex");
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 #else
 	const uint32_t width = 2;
 	const uint32_t height = 2;
@@ -201,14 +240,6 @@ TRAP::Application::Application(std::string gameName)
 #endif
 	Graphics::RenderAPI renderAPI = m_config.Get<Graphics::RenderAPI>("RenderAPI");
 
-	if (fpsLimit > 0)
-	{
-		if (fpsLimit >= 25 && fpsLimit <= 500)
-			m_fpsLimit = fpsLimit;
-		else
-			m_fpsLimit = 0;
-	}
-
 #ifdef TRAP_HEADLESS_MODE
 	if(enableGPU)
 	{
@@ -225,18 +256,38 @@ TRAP::Application::Application(std::string gameName)
 #ifdef TRAP_HEADLESS_MODE
 	if(renderAPI != Graphics::RenderAPI::NONE)
 	{
-		//Get Anti aliasing from engine.cfg
-		const Graphics::AntiAliasing antiAliasing = m_config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing");
-		const Graphics::SampleCount sampleCount = m_config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality");
+		//Retrieve RendererAPI values from engine.cfg
+		Graphics::AntiAliasing antiAliasing = Graphics::AntiAliasing::Off;
+		m_config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing", antiAliasing);
+		Graphics::SampleCount antiAliasingSampleCount = Graphics::SampleCount::Two;
+		m_config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality", antiAliasingSampleCount);
+		std::string anisotropyLevelStr = "16";
+		m_config.Get<std::string>("AnisotropyLevel", anisotropyLevelStr);
 
-		Graphics::RendererAPI::Init(m_gameName, renderAPI, antiAliasing, sampleCount);
+		Graphics::RendererAPI::Init(m_gameName, renderAPI);
+		Graphics::RenderCommand::SetAntiAliasing(antiAliasing, antiAliasingSampleCount);
+		if(!anisotropyLevelStr.empty())
+		{
+			const Graphics::SampleCount anisotropyLevel = (anisotropyLevelStr == "Off") ? Graphics::SampleCount::One : Utils::String::ConvertToType<Graphics::SampleCount>(anisotropyLevelStr);
+			Graphics::RenderCommand::SetAnisotropyLevel(anisotropyLevel);
+		}
 	}
 #else
-	//Get Anti aliasing from engine.cfg
-	const Graphics::AntiAliasing antiAliasing = m_config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing");
-	const Graphics::SampleCount sampleCount = m_config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality");
+	//Retrieve RendererAPI values from engine.cfg
+	Graphics::AntiAliasing antiAliasing = Graphics::AntiAliasing::Off;
+	m_config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing", antiAliasing);
+	Graphics::SampleCount antiAliasingSampleCount = Graphics::SampleCount::Two;
+	m_config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality", antiAliasingSampleCount);
+	std::string anisotropyLevelStr = "16";
+	m_config.Get<std::string>("AnisotropyLevel", anisotropyLevelStr);
 
-	Graphics::RendererAPI::Init(m_gameName, renderAPI, antiAliasing, sampleCount);
+	Graphics::RendererAPI::Init(m_gameName, renderAPI);
+	Graphics::RenderCommand::SetAntiAliasing(antiAliasing, antiAliasingSampleCount);
+	if(!anisotropyLevelStr.empty())
+	{
+		const Graphics::SampleCount anisotropyLevel = (anisotropyLevelStr == "Off") ? Graphics::SampleCount::One : Utils::String::ConvertToType<Graphics::SampleCount>(anisotropyLevelStr);
+		Graphics::RenderCommand::SetAnisotropyLevel(anisotropyLevel);
+	}
 #endif
 
 	//Window creation stuff
@@ -264,7 +315,7 @@ TRAP::Application::Application(std::string gameName)
 
 		//Update Window Title (Debug/RelWithDebInfo)
 		if(renderAPI != Graphics::RenderAPI::NONE)
-			m_window->SetTitle(m_window->GetTitle() + Graphics::Renderer::GetTitle());
+			m_window->SetTitle(m_window->GetTitle() + Graphics::RendererAPI::GetRenderer()->GetTitle());
 #ifdef TRAP_PLATFORM_LINUX
 	}
 #ifdef TRAP_HEADLESS_MODE
@@ -276,18 +327,22 @@ TRAP::Application::Application(std::string gameName)
 #endif
 #endif
 
+	SetFPSLimit(fpsLimit);
+
 #ifndef TRAP_HEADLESS_MODE
-	//Update Viewport
-	int32_t w = 0, h = 0;
-	INTERNAL::WindowingAPI::GetFrameBufferSize(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
-		(
-			m_window->GetInternalWindow()
-		), w, h);
-	Graphics::RenderCommand::SetViewport(0, 0, static_cast<uint32_t>(w), static_cast<uint32_t>(h));
+	//NVIDIA Reflex
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	Graphics::RenderCommand::SetLatencyMode(latencyMode);
+	NVSTATS_INIT(0, 0);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 #endif
 
 	if(renderAPI != Graphics::RenderAPI::NONE)
 	{
+		float renderScale = 1.0f;
+		m_config.Get<float>("RenderScale", renderScale);
+		Graphics::RenderCommand::SetRenderScale(renderScale);
+
 		//Always added as a fallback shader
 		Graphics::ShaderManager::LoadSource("FallbackGraphics", std::string(Embed::FallbackGraphicsShader))->Use();
 		Graphics::ShaderManager::LoadSource("FallbackCompute", std::string(Embed::FallbackComputeShader))->Use();
@@ -301,11 +356,15 @@ TRAP::Application::Application(std::string gameName)
 	}
 
 	//Initialize Input for Joysticks
+#ifdef TRAP_PLATFORM_LINUX
 	if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
 	{
+#endif
 		Input::SetEventCallback([this](Events::Event& e) {OnEvent(e); });
 		Input::Init();
+#ifdef TRAP_PLATFORM_LINUX
 	}
+#endif
 
 #ifndef TRAP_HEADLESS_MODE
 	if(Graphics::RendererAPI::GPUSettings.SurfaceSupported &&
@@ -324,8 +383,7 @@ TRAP::Application::Application(std::string gameName)
 
 TRAP::Application::~Application()
 {
-	TP_PROFILE_BEGIN_SESSION("Shutdown", "TRAPProfile-Shutdown.json");
-	TP_PROFILE_FUNCTION();
+	ZoneScoped;
 	TP_DEBUG(Log::ApplicationPrefix, "Shutting down TRAP modules...");
 
 	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
@@ -333,6 +391,7 @@ TRAP::Application::~Application()
 
 	m_layerStack.Shutdown();
 
+	TRAP::Utils::Steam::Shutdown();
 	TRAP::Utils::Discord::Destroy();
 	if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
 		Input::Shutdown();
@@ -355,19 +414,31 @@ TRAP::Application::~Application()
 	m_config.Set("FPSLimit", m_fpsLimit);
 	m_config.Set("RenderAPI", (m_newRenderAPI != Graphics::RenderAPI::NONE) ? m_newRenderAPI :
 	                                                                          Graphics::RendererAPI::GetRenderAPI());
-	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
-	{
-		const std::array<uint8_t, 16> VulkanGPUUUID = Graphics::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
-		m_config.Set("VulkanGPU", Utils::UUIDToString(VulkanGPUUUID));
-	}
 
 	if (Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
 	{
+		//GPU UUID
+		std::array<uint8_t, 16> GPUUUID{};
+		if(Graphics::RendererAPI::GetRenderer()->GetNewGPU() != std::array<uint8_t, 16>{}) //Only if UUID is not empty
+			GPUUUID = Graphics::RendererAPI::GetRenderer()->GetNewGPU();
+		else
+			GPUUUID = Graphics::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
+		m_config.Set("VulkanGPU", Utils::UUIDToString(GPUUUID));
+
 		Graphics::AntiAliasing antiAliasing = Graphics::AntiAliasing::Off;
-		Graphics::SampleCount sampleCount = Graphics::SampleCount::One;
-		Graphics::RenderCommand::GetAntiAliasing(antiAliasing, sampleCount);
+		Graphics::SampleCount antiAliasingSampleCount = Graphics::SampleCount::Two;
+		Graphics::RenderCommand::GetAntiAliasing(antiAliasing, antiAliasingSampleCount);
+		const Graphics::SampleCount anisotropyLevel = Graphics::RenderCommand::GetAnisotropyLevel();
 		m_config.Set("AntiAliasing", antiAliasing);
-		m_config.Set("AntiAliasingQuality", sampleCount);
+		m_config.Set("AntiAliasingQuality", antiAliasingSampleCount);
+		m_config.Set("AnisotropyLevel", (anisotropyLevel == Graphics::SampleCount::One) ? "Off" : Utils::String::ConvertToString(anisotropyLevel));
+		m_config.Set("RenderScale", Graphics::RenderCommand::GetRenderScale());
+
+		//NVIDIA Reflex
+#if !defined(TRAP_HEADLESS_MODE) && defined(NVIDIA_REFLEX_AVAILABLE)
+		NVSTATS_SHUTDOWN();
+		m_config.Set("NVIDIAReflex", Graphics::RenderCommand::GetLatencyMode());
+#endif
 	}
 
 	std::filesystem::path cfgPath = "engine.cfg";
@@ -383,6 +454,8 @@ TRAP::Application::~Application()
 	{
 		TP_TRACE(Log::ApplicationPrefix, "Shutting down Renderer");
 		Graphics::Renderer::Shutdown();
+		TP_TRACE(Log::ApplicationPrefix, "Shutting down SpriteManager");
+		Graphics::SpriteManager::Clean();
 		TP_TRACE(Log::ApplicationPrefix, "Shutting down TextureManager");
 		Graphics::TextureManager::Shutdown();
 		TP_TRACE(Log::ApplicationPrefix, "Shutting down ShaderManager");
@@ -394,68 +467,48 @@ TRAP::Application::~Application()
 	FileSystem::Shutdown();
 
 	s_Instance = nullptr;
-
-	TP_PROFILE_END_SESSION();
 };
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Application::Run()
 {
-	TP_PROFILE_FUNCTION();
+	ZoneScoped;
 
 	float lastFrameTime = 0.0f;
-	auto nextFrame = std::chrono::steady_clock::now();
-	Utils::Timer tickTimer;
+	float tickTimerSeconds = 0.0f;
+	Utils::Timer limiterTimer{};
 
 	while (m_running)
 	{
-		TP_PROFILE_SCOPE("RunLoop");
-
-		if (m_fpsLimit)
-			nextFrame += std::chrono::milliseconds(1000 / m_fpsLimit);
-		if (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow))
-			nextFrame += std::chrono::milliseconds(1000 / 30); //30 FPS
-
-		const Utils::Timer FrameTimeTimer;
+		const Utils::Timer FrameTimeTimer{};
 		const float time = m_timer.Elapsed();
 		const Utils::TimeStep deltaTime{ (time - lastFrameTime) * m_timeScale };
+		tickTimerSeconds += time - lastFrameTime;
 		lastFrameTime = time;
 
-		if (!m_minimized)
-		{
-			{
-				TP_PROFILE_SCOPE("LayerStack OnUpdate");
-
-				for (const auto& layer : m_layerStack)
-					layer->OnUpdate(deltaTime);
-			}
-
-			if (tickTimer.ElapsedMilliseconds() > 1000.0f / static_cast<float>(m_tickRate))
-			{
-				{
-					TP_PROFILE_SCOPE("LayerStack OnTick");
-
-					for (const auto& layer : m_layerStack)
-						layer->OnTick();
-				}
-
-				tickTimer.Reset();
-			}
-
-#ifndef TRAP_HEADLESS_MODE
-			ImGuiLayer::Begin();
-			{
-				TP_PROFILE_SCOPE("LayerStack OnImGuiRender");
-
-				for (const auto& layer : m_layerStack)
-					layer->OnImGuiRender();
-			}
-			ImGuiLayer::End();
+		//FPSLimiter
+		if(Graphics::RendererAPI::GPUSettings.ReflexSupported)
+			Graphics::RendererAPI::GetRenderer()->ReflexSleep();
+#ifndef TRACY_ENABLE
+		else if (m_fpsLimit || (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)))
+#else
+		else if (m_fpsLimit)
 #endif
-			if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
-				Graphics::RenderCommand::Present(m_window.get());
+		{
+			std::chrono::duration<float, std::milli> limitMs{};
+			if(m_fpsLimit)
+				limitMs = std::chrono::duration<float, std::milli>(1000.0f / static_cast<float>(m_fpsLimit) - limiterTimer.ElapsedMilliseconds());
+			else //If engine is not focused, set engine to 30 FPS so other applications dont lag
+				limitMs = std::chrono::duration<float, std::milli>(1000.0f / 30.0f - limiterTimer.ElapsedMilliseconds());
+			std::this_thread::sleep_for(limitMs); //If this is too inaccurate, resort to using nanosleep
+			limiterTimer.Reset();
 		}
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_SIMULATION_START);
+		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_INPUT_SAMPLE);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 
 #ifdef TRAP_PLATFORM_LINUX
 		if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
@@ -464,20 +517,73 @@ void TRAP::Application::Run()
 		TRAP::Window::OnUpdate();
 #endif
 
-		UpdateHotReloading();
-
-		//FPSLimiter
-		if (m_fpsLimit || (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)))
-			std::this_thread::sleep_until(nextFrame);
+#ifdef NVIDIA_REFLEX_AVAILABLE
+		if(Input::IsMouseButtonPressed(Input::MouseButton::Left))
+			Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_TRIGGER_FLASH);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 
 		if (!m_minimized)
 		{
-			m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
-			m_FramesPerSecond = static_cast<uint32_t>(1000.0f / m_FrameTime);
+			for (const auto& layer : m_layerStack)
+				layer->OnUpdate(deltaTime);
+
+			//Timestep of a single tick
+			const Utils::TimeStep tickRateTimeStep{1000.0f / static_cast<float>(m_tickRate) / 1000.0f};
+			//If we reached at least one fixed time step update
+			if (tickTimerSeconds >= tickRateTimeStep)
+			{
+				static constexpr uint32_t MAX_TICKS_PER_FRAME = 8;
+
+				//Count how many ticks we need to run (this is limited to a maximum of MAX_TICKS_PER_FRAME)
+				const uint32_t fixedTimeSteps = TRAP::Math::Min(static_cast<uint32_t>(tickTimerSeconds / tickRateTimeStep), MAX_TICKS_PER_FRAME);
+				// TP_TRACE("Ticks: ", fixedTimeSteps);
+
+				// TP_TRACE("Before: ", tickTimerSeconds, "s of tick time remaining");
+				//Call OnTick() fixedTimeSteps times.
+				for(uint32_t i = 0; i < fixedTimeSteps; ++i)
+				{
+					for (const auto& layer : m_layerStack)
+						layer->OnTick(tickRateTimeStep);
+
+					//Instead of resetting the timer, we just subtract the current tick from the counted time.
+					tickTimerSeconds -= tickRateTimeStep;
+				}
+				// TP_TRACE("After: ", tickTimerSeconds, "s of tick time remaining");
+			}
+
+			if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
+				Graphics::RendererAPI::OnPostUpdate();
+
+#ifndef TRAP_HEADLESS_MODE
+			ImGuiLayer::Begin();
+			{
+				for (const auto& layer : m_layerStack)
+					layer->OnImGuiRender();
+			}
+			ImGuiLayer::End();
+#endif
+			if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
+			{
+				Graphics::RenderCommand::Flush(m_window.get());
+				Graphics::Renderer2D::Reset();
+			}
 		}
+
+		UpdateHotReloading();
 
 		//Needed by Discord Game SDK
 		TRAP::Utils::Discord::RunCallbacks();
+		//Needed by Steamworks SDK
+		TRAP::Utils::Steam::RunCallbacks();
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_SIMULATION_END);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
+		if (!m_minimized)
+			m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
+
+		++m_globalCounter;
 	}
 }
 
@@ -485,7 +591,7 @@ void TRAP::Application::Run()
 
 void TRAP::Application::OnEvent(Events::Event& e)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Events::EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<Events::WindowCloseEvent>([this](Events::WindowCloseEvent& event)
@@ -530,6 +636,8 @@ void TRAP::Application::OnEvent(Events::Event& e)
 
 void TRAP::Application::PushLayer(std::unique_ptr<Layer> layer)
 {
+	ZoneScoped;
+
 	m_layerStack.PushLayer(std::move(layer));
 }
 
@@ -537,72 +645,91 @@ void TRAP::Application::PushLayer(std::unique_ptr<Layer> layer)
 
 void TRAP::Application::PushOverlay(std::unique_ptr<Layer> overlay)
 {
+	ZoneScoped;
+
 	m_layerStack.PushOverlay(std::move(overlay));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Utils::Config& TRAP::Application::GetConfig()
+[[nodiscard]] const TRAP::Utils::Config& TRAP::Application::GetConfig()
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return s_Instance->m_config;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::LayerStack& TRAP::Application::GetLayerStack()
+[[nodiscard]] TRAP::LayerStack& TRAP::Application::GetLayerStack()
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return s_Instance->m_layerStack;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::ImGuiLayer TRAP::Application::GetImGuiLayer()
+[[nodiscard]] TRAP::ImGuiLayer& TRAP::Application::GetImGuiLayer()
 {
-	return *s_Instance->m_ImGuiLayer;
-}
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::Application::GetFPS()
-{
-	return s_Instance->m_FramesPerSecond;
+	return *(s_Instance->m_ImGuiLayer);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Application::SetFPSLimit(const uint32_t fps)
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if(fps == 0)
 		s_Instance->m_fpsLimit = 0;
 	else
 		s_Instance->m_fpsLimit = TRAP::Math::Clamp(fps, 25u, 500u);
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE &&
+	   TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported)
+	{
+		Graphics::RendererAPI::GetRenderer()->SetReflexFPSLimit(s_Instance->m_fpsLimit);
+	}
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Application::GetFPSLimit()
+[[nodiscard]] uint32_t TRAP::Application::GetFPSLimit()
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return s_Instance->m_fpsLimit;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Application::GetFrameTime()
+[[nodiscard]] float TRAP::Application::GetCPUFrameTime()
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return s_Instance->m_FrameTime;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Application::GetTimeScale()
+[[nodiscard]] float TRAP::Application::GetTimeScale()
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return s_Instance->m_timeScale;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Application::GetTickRate()
+[[nodiscard]] uint32_t TRAP::Application::GetTickRate()
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return s_Instance->m_tickRate;
 }
 
@@ -610,6 +737,8 @@ uint32_t TRAP::Application::GetTickRate()
 
 void TRAP::Application::SetTickRate(const uint32_t tickRate)
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	s_Instance->m_tickRate = tickRate;
 }
 
@@ -617,6 +746,8 @@ void TRAP::Application::SetTickRate(const uint32_t tickRate)
 
 void TRAP::Application::SetTimeScale(const float timeScale)
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	s_Instance->m_timeScale = timeScale;
 }
 
@@ -624,6 +755,8 @@ void TRAP::Application::SetTimeScale(const float timeScale)
 
 void TRAP::Application::SetNewRenderAPI(const Graphics::RenderAPI renderAPI)
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	s_Instance->m_newRenderAPI = renderAPI;
 }
 
@@ -631,20 +764,26 @@ void TRAP::Application::SetNewRenderAPI(const Graphics::RenderAPI renderAPI)
 
 void TRAP::Application::Shutdown()
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	s_Instance->m_running = false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Window* TRAP::Application::GetWindow()
+[[nodiscard]] TRAP::Window* TRAP::Application::GetWindow()
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return s_Instance->m_window.get();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::TimeStep TRAP::Application::GetTime()
+[[nodiscard]] TRAP::Utils::TimeStep TRAP::Application::GetTime()
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	const Utils::TimeStep timeStep(s_Instance->m_timer.Elapsed());
 
 	return timeStep;
@@ -652,8 +791,10 @@ TRAP::Utils::TimeStep TRAP::Application::GetTime()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::ThreadPool& TRAP::Application::GetThreadPool()
+[[nodiscard]] TRAP::ThreadPool& TRAP::Application::GetThreadPool()
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return s_Instance->m_threadPool;
 }
 
@@ -661,38 +802,53 @@ TRAP::ThreadPool& TRAP::Application::GetThreadPool()
 
 void TRAP::Application::SetClipboardString(const std::string& string)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	INTERNAL::WindowingAPI::SetClipboardString(string);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Application::GetClipboardString()
+[[nodiscard]] std::string TRAP::Application::GetClipboardString()
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return INTERNAL::WindowingAPI::GetClipboardString();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::thread::id TRAP::Application::GetMainThreadID()
+[[nodiscard]] std::thread::id TRAP::Application::GetMainThreadID()
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return s_Instance->m_mainThreadID;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Application::GetGameName()
+[[nodiscard]] std::string TRAP::Application::GetGameName()
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return s_Instance->m_gameName;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::FileSystem::FileWatcher* TRAP::Application::GetHotReloadingFileWatcher()
+[[nodiscard]] uint64_t TRAP::Application::GetGlobalCounter()
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	return s_Instance->m_globalCounter;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::FileSystem::FileWatcher* TRAP::Application::GetHotReloadingFileWatcher()
+{
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if(s_Instance->m_hotReloadingFileWatcher)
 		return s_Instance->m_hotReloadingFileWatcher.get();
 
@@ -701,8 +857,10 @@ TRAP::FileSystem::FileWatcher* TRAP::Application::GetHotReloadingFileWatcher()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::IsHotReloadingEnabled()
+[[nodiscard]] bool TRAP::Application::IsHotReloadingEnabled()
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return s_Instance->m_hotReloadingEnabled;
 }
 
@@ -710,11 +868,13 @@ bool TRAP::Application::IsHotReloadingEnabled()
 
 void TRAP::Application::SetHotReloading(const bool enable)
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	s_Instance->m_hotReloadingEnabled = enable;
 
 	if(enable && !s_Instance->m_hotReloadingFileWatcher)
 	{
-		s_Instance->m_hotReloadingFileWatcher = std::make_unique<FileSystem::FileWatcher>("", false);
+		s_Instance->m_hotReloadingFileWatcher = std::make_unique<FileSystem::FileWatcher>("HotReloading", false);
 		s_Instance->m_hotReloadingFileWatcher->SetEventCallback([](Events::Event& e) {s_Instance->OnEvent(e); });
 	}
 	else if(s_Instance->m_hotReloadingFileWatcher)
@@ -723,8 +883,10 @@ void TRAP::Application::SetHotReloading(const bool enable)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowClose(Events::WindowCloseEvent& e)
+bool TRAP::Application::OnWindowClose(Events::WindowCloseEvent& e) noexcept
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if(e.GetWindow() == m_window.get())
 		m_running = false;
 
@@ -735,9 +897,8 @@ bool TRAP::Application::OnWindowClose(Events::WindowCloseEvent& e)
 
 bool TRAP::Application::OnFrameBufferResize(Events::FrameBufferResizeEvent& e)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Graphics::RenderCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight(), e.GetWindow());
 	Graphics::RendererAPI::GetRenderer()->ResizeSwapChain(e.GetWindow());
 
 	return false;
@@ -747,6 +908,8 @@ bool TRAP::Application::OnFrameBufferResize(Events::FrameBufferResizeEvent& e)
 
 bool TRAP::Application::OnKeyPress(Events::KeyPressEvent& e) const
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if(Window::GetActiveWindows() != 1)
 		return false;
 
@@ -759,6 +922,8 @@ bool TRAP::Application::OnKeyPress(Events::KeyPressEvent& e) const
 			m_window->SetDisplayMode(Window::DisplayMode::Fullscreen, 0, 0, 0);
 		else if (m_window->GetDisplayMode() == Window::DisplayMode::Fullscreen)
 			m_window->SetDisplayMode(Window::DisplayMode::Windowed, 0, 0, 0);
+
+		return true;
 	}
 #endif
 	(void)e; //Silence unused parameter warning
@@ -768,8 +933,10 @@ bool TRAP::Application::OnKeyPress(Events::KeyPressEvent& e) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowFocus(Events::WindowFocusEvent&)
+bool TRAP::Application::OnWindowFocus(Events::WindowFocusEvent&) noexcept
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	m_focused = true;
 
 	return false;
@@ -777,8 +944,10 @@ bool TRAP::Application::OnWindowFocus(Events::WindowFocusEvent&)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowLostFocus(Events::WindowLostFocusEvent&)
+bool TRAP::Application::OnWindowLostFocus(Events::WindowLostFocusEvent&) noexcept
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if (Window::GetActiveWindows() == 1)
 		m_focused = false;
 
@@ -787,8 +956,10 @@ bool TRAP::Application::OnWindowLostFocus(Events::WindowLostFocusEvent&)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowMinimize(Events::WindowMinimizeEvent&)
+bool TRAP::Application::OnWindowMinimize(Events::WindowMinimizeEvent&) noexcept
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if (Window::GetActiveWindows() == 1)
 		m_minimized = true;
 
@@ -797,8 +968,10 @@ bool TRAP::Application::OnWindowMinimize(Events::WindowMinimizeEvent&)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowRestore(Events::WindowRestoreEvent&)
+bool TRAP::Application::OnWindowRestore(Events::WindowRestoreEvent&) noexcept
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	m_minimized = false;
 
 	return false;
@@ -808,12 +981,15 @@ bool TRAP::Application::OnWindowRestore(Events::WindowRestoreEvent&)
 
 void TRAP::Application::UpdateHotReloading()
 {
+	ZoneScoped;
+
 	std::vector<std::filesystem::path> shaderPaths;
 	std::vector<std::filesystem::path> texturePaths;
 
 	//Hot code
 	{
-		std::lock_guard<std::mutex> lock(m_hotReloadingMutex);
+		std::lock_guard lock(m_hotReloadingMutex);
+		LockMark(m_hotReloadingMutex);
 
 		//Shader
 		shaderPaths = m_hotReloadingShaderPaths;
@@ -831,7 +1007,7 @@ void TRAP::Application::UpdateHotReloading()
 		{
 			TP_INFO(Log::HotReloadingPrefix, "Shader modified reloading...");
 			Graphics::RendererAPI::GetRenderer()->WaitIdle();
-			TRAP::Graphics::Shader* shader = Graphics::ShaderManager::Reload(p.string());
+			Ref<TRAP::Graphics::Shader> shader = Graphics::ShaderManager::Reload(p.string());
 
 			//By binding the fallback shader, we can make sure that the
 			//new shader will trigger a pipeline rebuild.
@@ -853,7 +1029,7 @@ void TRAP::Application::UpdateHotReloading()
 		{
 			TP_INFO(Log::HotReloadingPrefix, "Texture modified reloading...");
 			Graphics::RendererAPI::GetRenderer()->WaitIdle();
-			TRAP::Graphics::Texture* texture = Graphics::TextureManager::Reload(p.string());
+			TRAP::Ref<TRAP::Graphics::Texture> texture = Graphics::TextureManager::Reload(p.string());
 
 			//Send event
 			TRAP::Events::TextureReloadEvent e(texture);
@@ -866,6 +1042,8 @@ void TRAP::Application::UpdateHotReloading()
 
 bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 {
+	ZoneScoped;
+
 	if(event.GetStatus() != FileSystem::FileStatus::Modified)
 		return false; //Only handle modified files
 
@@ -904,12 +1082,13 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 
 	if(texture)
 	{
-		std::lock_guard<std::mutex> lock(m_hotReloadingMutex); //Hot code
+		std::lock_guard lock(m_hotReloadingMutex); //Hot code
+		LockMark(m_hotReloadingMutex);
 
 		//Don't add duplicates!
 		for(const auto& p : m_hotReloadingTexturePaths)
 		{
-			if(FileSystem::IsPathEquivalent(p, event.GetPath()))
+			if(FileSystem::IsEquivalent(p, event.GetPath()))
 				return false;
 		}
 
@@ -917,12 +1096,13 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 	}
 	else if(shader)
 	{
-		std::lock_guard<std::mutex> lock(m_hotReloadingMutex); //Hot code
+		std::lock_guard lock(m_hotReloadingMutex); //Hot code
+		LockMark(m_hotReloadingMutex);
 
 		//Don't add duplicates!
 		for(const auto& p : m_hotReloadingShaderPaths)
 		{
-			if(FileSystem::IsPathEquivalent(p, event.GetPath()))
+			if(FileSystem::IsEquivalent(p, event.GetPath()))
 				return false;
 		}
 

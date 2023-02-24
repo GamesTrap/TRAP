@@ -3,11 +3,12 @@
 
 #include <variant>
 
-#include "Maths/Math.h"
 #include "Window/Window.h"
-
-#include "Layers/ImGui/ImGuiLayer.h"
 #include "ImageFormat.h"
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+#include <NvLowLatencyVk.h>
+#endif
 
 namespace TRAP
 {
@@ -27,6 +28,7 @@ namespace TRAP::Graphics
 	class SwapChain;
 	class Fence;
 	class Semaphore;
+	class QueryPool;
 	class Queue;
 	class Buffer;
 	class CommandBuffer;
@@ -76,6 +78,9 @@ namespace TRAP::Graphics
 		enum class AntiAliasing;
 		enum class SampleCount;
 		enum class QueueType;
+		enum class GPUVendor;
+		enum class LatencyMode;
+		struct Color;
 		struct LoadActionsDesc;
 		struct BufferBarrier;
 		struct TextureBarrier;
@@ -87,7 +92,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		RendererAPI() = default;
+		RendererAPI() noexcept = default;
 	public:
 		/// <summary>
 		/// Destructor.
@@ -115,14 +120,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="gameName">Name of the game.</param>
 		/// <param name="renderAPI">Render API to use.</param>
-		/// <param name="antiAliasing">Optional anti aliasing method to use.</param>
-		/// <param name="antiAliasingSamples">
-		/// Optional number of samples to use by anti aliasing if enabled.
-		/// Note: A sample count of 1 is only valid if anti aliasing is disabled.
-		/// </param>
-		static void Init(std::string_view gameName, RenderAPI renderAPI,
-		                 AntiAliasing antiAliasing = AntiAliasing::Off,
-						 SampleCount antiAliasingSamples = SampleCount::One);
+		static void Init(std::string_view gameName, RenderAPI renderAPI);
 		/// <summary>
 		/// Shutdown the Renderer.
 		/// </summary>
@@ -132,28 +130,50 @@ namespace TRAP::Graphics
 		/// Retrieve the Renderer singleton.
 		/// </summary>
 		/// <returns>Renderer.</returns>
-		static RendererAPI* GetRenderer();
+		[[nodiscard]] static RendererAPI* GetRenderer();
 		/// <summary>
 		/// Retrieve the resource loader singleton.
 		/// </summary>
 		/// <returns>Resource loader.</returns>
-		static API::ResourceLoader* GetResourceLoader();
+		[[nodiscard]] static API::ResourceLoader* GetResourceLoader() noexcept;
 
 		/// <summary>
 		/// Auto select a supported render API.
 		/// </summary>
 		/// <returns>Auto selected render API.</returns>
-		static RenderAPI AutoSelectRenderAPI();
+		[[nodiscard]] static RenderAPI AutoSelectRenderAPI();
 		/// <summary>
 		/// Check whether a render API is supported by the system.
 		/// </summary>
 		/// <returns>True if supported, false otherwise.</returns>
-		static bool IsSupported(RenderAPI api);
+		[[nodiscard]] static bool IsSupported(RenderAPI api);
 		/// <summary>
 		/// Retrieve the currently used render API.
 		/// </summary>
 		/// <returns>Currently used render API.</returns>
-		static RenderAPI GetRenderAPI();
+		[[nodiscard]] static RenderAPI GetRenderAPI() noexcept;
+
+		/// <summary>
+		/// Set a new GPU to use.
+		///
+		/// Note: This only takes effect after a restart of the engine.
+		/// </summary>
+		/// <param name="GPUUUID">UUID of the GPU to use.</param>
+		static void SetNewGPU(std::array<uint8_t, 16> GPUUUID) noexcept;
+		/// <summary>
+		/// Get the UUID of the new GPU to use.
+		///
+		/// Note: This will return an empty UUID if no new GPU was set.
+		/// </summary>
+		/// <returns>UUID of the new GPU to use.</returns>
+		[[nodiscard]] static std::array<uint8_t, 16> GetNewGPU() noexcept;
+
+		/// <summary>
+		/// On post update function.
+		/// This function performs several tasks that need to be done after LayerStack::OnUpdate() calls.
+		/// Currently this only performs scaling of the render targets, dependening on the current render scale.
+		/// </summary>
+		static void OnPostUpdate();
 
 		/// <summary>
 		/// Initialize the internal renderer.
@@ -162,10 +182,15 @@ namespace TRAP::Graphics
 		virtual void InitInternal(const std::string_view gameName) = 0;
 
 		/// <summary>
-		/// Present to the given window.
+		/// Flush renderer for the given window.
+		///
+		/// 1. Stops graphics and compute recording.
+		/// 2. Submits the graphics and compute commands.
+		/// 3. Presents the rendered image to the screen.
+		/// 4. Starts graphics and compute recording for the next frame.
 		/// </summary>
-		/// <param name="window">Window to present.</param>
-		virtual void Present(Window* window) const = 0;
+		/// <param name="window">Window to flush.</param>
+		virtual void Flush(const Window* const window) const = 0;
 
 		/// <summary>
 		/// Dispatch to the given window.
@@ -175,42 +200,65 @@ namespace TRAP::Graphics
 		/// The elements are automatically divided by the number of threads in the work group and rounded up.
 		/// </param>
 		/// <param name="window">Window to Dispatch.</param>
-		virtual void Dispatch(std::array<uint32_t, 3> workGroupElements, Window* window) const = 0;
+		virtual void Dispatch(std::array<uint32_t, 3> workGroupElements, const Window* const window) const = 0;
 
 		/// <summary>
 		/// Set the VSync state for the given window.
 		/// </summary>
 		/// <param name="vsync">Enable or disable VSync.</param>
-		/// <param name="window">Window to set VSync for. Default: Main Window.</param>
-		virtual void SetVSync(bool vsync, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to set VSync for.</param>
+		virtual void SetVSync(bool vsync, const Window* const window) const = 0;
 		/// <summary>
 		/// Retrieve whether VSync is enabled or not for the given window.
 		/// </summary>
-		/// <param name="window">Window to retrieve VSync for. Default: Main Window.</param>
+		/// <param name="window">Window to retrieve VSync for.</param>
 		/// <returns>True if VSync is enabled, false otherwise.</returns>
-		virtual bool GetVSync(Window* window = nullptr) const = 0;
+		[[nodiscard]] virtual bool GetVSync(const Window* const window) const = 0;
+
+		/// <summary>
+		/// Set the FPS limit for NVIDIA-Reflex.
+		/// Note: This function affects all windows.
+		/// Note: Do not call this function in user code! Use TRAP::Application::SetFPSLimit() instead.
+		///       This function is only used internally for NVIDIA-Reflex.
+		/// </summary>
+		/// <param name="limit">FPS target to limit to.</param>
+		virtual void SetReflexFPSLimit(uint32_t limit) = 0;
 
 		//RenderTarget Stuff
+
+		/// <summary>
+		/// Set the render scale for the given window.
+		/// Note: This functon takes effect on the next frame.
+		/// </summary>
+		/// <param name="scale">Render scale value (valid range: 0.5f-1.0f inclusive).</param>
+		/// <param name="window">Window to set render scale for.</param>
+		virtual void SetRenderScale(float scale, const Window* const window) const = 0;
+		/// <summary>
+		/// Retrieve the used render scale value of the given window.
+		/// </summary>
+		/// <param name="window">Window to retrieve render scale from.</param>
+		/// <returns>Render scale (between 0.5f and 2.0f inclusive).</returns>
+		[[nodiscard]] virtual float GetRenderScale(const Window* const window) const = 0;
 
 		/// <summary>
 		/// Set the clear color to be used by the given window.
 		/// </summary>
 		/// <param name="color">New clear color.</param>
-		/// <param name="window">Window to set clear color for. Default: Main Window.</param>
-		virtual void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f },
-		                           Window* window = nullptr) const = 0;
+		/// <param name="window">Window to set clear color for.</param>
+		virtual void SetClearColor(const Color& color /*= { 0.1f, 0.1f, 0.1f, 1.0f }*/,
+		                           const Window* const window) const = 0;
 		/// <summary>
 		/// Set the clear depth value to be used by the given window.
 		/// </summary>
 		/// <param name="depth">New clear depth value. Must be between 0.0f and 1.0f</param>
-		/// <param name="window">Window to set clear depth value for. Default: Main Window.</param>
-		virtual void SetClearDepth(float depth = 1.0f, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to set clear depth value for.</param>
+		virtual void SetClearDepth(float depth /*= 0.0f*/, const Window* const window) const = 0;
 		/// <summary>
 		/// Set the clear stencil value to be used by the given window.
 		/// </summary>
 		/// <param name="stencil">New clear stencil value.</param>
-		/// <param name="window">Window to set clear stencil value for. Default: Main Window.</param>
-		virtual void SetClearStencil(uint32_t stencil = 0, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to set clear stencil value for.</param>
+		virtual void SetClearStencil(uint32_t stencil /*= 0*/, const Window* const window) const = 0;
 #ifdef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Set the resolution of the render targets used by the given window.
@@ -219,8 +267,8 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="width">New width.</param>
 		/// <param name="height">New height.</param>
-		/// <param name="window">Window to set resolution for. Default: Main Window.</param>
-		virtual void SetResolution(uint32_t width, uint32_t height, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to set resolution for.</param>
+		virtual void SetResolution(uint32_t width, uint32_t height, const Window* const window) const = 0;
 #endif
 
 		//Pipeline Stuff
@@ -229,104 +277,104 @@ namespace TRAP::Graphics
 		/// Enable or disable depth testing for the given window.
 		/// </summary>
 		/// <param name="enabled">Enable or disable depth testing.</param>
-		/// <param name="window">Window to set depth testing for. Default: Main Window.</param>
-		virtual void SetDepthTesting(bool enabled, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to set depth testing for.</param>
+		virtual void SetDepthTesting(bool enabled, const Window* const window) const = 0;
 		/// <summary>
 		/// Enable or disable depth writing for the given window.
 		/// </summary>
 		/// <param name="enabled">Enable or disable depth writing.</param>
-		/// <param name="window">Window to set depth writing for. Default: Main Window.</param>
-		virtual void SetDepthWriting(bool enabled, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to set depth writing for.</param>
+		virtual void SetDepthWriting(bool enabled, const Window* const window) const = 0;
 		/// <summary>
 		/// Set the depth function for the given window.
 		/// </summary>
 		/// <param name="function">Function to use for depth testing.</param>
-		/// <param name="window">Window to set depth function for. Default: Main Window.</param>
-		virtual void SetDepthFunction(CompareMode function, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to set depth function for.</param>
+		virtual void SetDepthFunction(CompareMode function, const Window* const window) const = 0;
 		/// <summary>
 		/// Set the depth action to perform when depth testing fails for the given window.
 		/// </summary>
 		/// <param name="front">Depth action to perform when depth testing fails.</param>
 		/// <param name="back">Depth action to perform when depth testing fails.</param>
-		/// <param name="window">Window to set the depth fail action for. Default: Main Window.</param>
-		virtual void SetDepthFail(StencilOp front, StencilOp back, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to set the depth fail action for.</param>
+		virtual void SetDepthFail(StencilOp front, StencilOp back, const Window* const window) const = 0;
 		/// <summary>
 		/// Set the depth bias (scalar factor to add to each fragments depth value) for the given window.
 		/// </summary>
 		/// <param name="depthBias">Depth bias.</param>
-		/// <param name="window">Window to set the depth bias for. Default: Main Window.</param>
-		virtual void SetDepthBias(int32_t depthBias, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to set the depth bias for.</param>
+		virtual void SetDepthBias(int32_t depthBias, const Window* const window) const = 0;
 		/// <summary>
 		/// Set the depth bias slope factor (scalar factor applied to fragment's slope in depth bias calculation) for the given window.
 		/// </summary>
 		/// <param name="factor">Depth bias slope factor.</param>
-		/// <param name="window">Window to set the depth bias slope factor for. Default: Main Window.</param>
-		virtual void SetDepthBiasSlopeFactor(float factor, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to set the depth bias slope factor for.</param>
+		virtual void SetDepthBiasSlopeFactor(float factor, const Window* const window) const = 0;
 		/// <summary>
 		/// Enable or disable stencil testing for the given window.
 		/// </summary>
 		/// <param name="enabled">Enable or disable stencil testing.</param>
-		/// <param name="window">Window to set stencil testing for. Default: Main Window.</param>
-		virtual void SetStencilTesting(bool enabled, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to set stencil testing for.</param>
+		virtual void SetStencilTesting(bool enabled, const Window* const window) const = 0;
 		/// <summary>
 		/// Set the stencil action to perform when stencil testing fails for the given window.
 		/// </summary>
 		/// <param name="front">Stencil action to perform when stencil testing fails.</param>
 		/// <param name="back">Stencil action to perform when stencil testing fails.</param>
-		/// <param name="window">Window to set the stencil fail action for. Default: Main Window.</param>
-		virtual void SetStencilFail(StencilOp front, StencilOp back, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to set the stencil fail action for.</param>
+		virtual void SetStencilFail(StencilOp front, StencilOp back, const Window* const window) const = 0;
 		/// <summary>
 		/// Set the stencil action to perform when stencil testing and depth testing passes for the given window.
 		/// </summary>
 		/// <param name="front">Stencil action to perform when passed.</param>
 		/// <param name="back">Stencil action to perform when passed.</param>
-		/// <param name="window">Window to set the stencil pass action for. Default: Main Window.</param>
-		virtual void SetStencilPass(StencilOp front, StencilOp back, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to set the stencil pass action for.</param>
+		virtual void SetStencilPass(StencilOp front, StencilOp back, const Window* const window) const = 0;
 		/// <summary>
 		/// Set the stencil functions for the given window.
 		/// </summary>
 		/// <param name="front">Function to use on the front for stencil testing.</param>
 		/// <param name="back">Function to use on the back for stencil testing.</param>
-		/// <param name="window">Window to set stencil functions for. Default: Main Window.</param>
-		virtual void SetStencilFunction(CompareMode front, CompareMode back, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to set stencil functions for.</param>
+		virtual void SetStencilFunction(CompareMode front, CompareMode back, const Window* const window) const = 0;
 		/// <summary>
 		/// Set the stencil mask for the given window.
 		/// </summary>
 		/// <param name="read">Select the bits of the stencil values to test.</param>
 		/// <param name="write">Select the bits of the stencil values updated by the stencil test.</param>
-		/// <param name="window">Window to set stencil mask for. Default: Main Window.</param>
-		virtual void SetStencilMask(uint8_t read, uint8_t write, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to set stencil mask for.</param>
+		virtual void SetStencilMask(uint8_t read, uint8_t write, const Window* const window) const = 0;
 		/// <summary>
 		/// Set the cull mode for the given window.
 		/// </summary>
 		/// <param name="mode">Cull mode to use.</param>
-		/// <param name="window">Window to set cull mode for. Default: Main Window.</param>
-		virtual void SetCullMode(CullMode mode, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to set cull mode for.</param>
+		virtual void SetCullMode(CullMode mode, const Window* const window) const = 0;
 		/// <summary>
 		/// Set the fill mode for the given window.
 		/// </summary>
 		/// <param name="mode">Fill mode to use.</param>
-		/// <param name="window">Window to set fill mode for. Default: Main Window.</param>
-		virtual void SetFillMode(FillMode mode, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to set fill mode for.</param>
+		virtual void SetFillMode(FillMode mode, const Window* const window) const = 0;
 		/// <summary>
 		/// Set the primitive topology for the given window.
 		/// </summary>
 		/// <param name="topology">Primitive topology to use.</param>
-		/// <param name="window">Window to set primitive topology for. Default: Main Window.</param>
-		virtual void SetPrimitiveTopology(PrimitiveTopology topology, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to set primitive topology for.</param>
+		virtual void SetPrimitiveTopology(PrimitiveTopology topology, const Window* const window) const = 0;
 		/// <summary>
 		/// Set the front face winding order for the given window.
 		/// </summary>
 		/// <param name="face">Front face winding order to use.</param>
-		/// <param name="window">Window to set front face winding order for. Default: Main Window.</param>
-		virtual void SetFrontFace(FrontFace face, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to set front face winding order for.</param>
+		virtual void SetFrontFace(FrontFace face, const Window* const window) const = 0;
 		/// <summary>
 		/// Set the blend mode for the given window.
 		/// </summary>
 		/// <param name="modeRGB">Blend mode to use for the RGB channels.</param>
 		/// <param name="modeAlpha">Blend mode to use for the alpha channel.</param>
-		/// <param name="window">Window to set the blend mode for. Default: Main Window.</param>
-		virtual void SetBlendMode(BlendMode modeRGB, BlendMode modeAlpha, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to set the blend mode for.</param>
+		virtual void SetBlendMode(BlendMode modeRGB, BlendMode modeAlpha, const Window* const window) const = 0;
 		/// <summary>
 		/// Set the blend constants/factors for the given window.
 		/// </summary>
@@ -334,29 +382,36 @@ namespace TRAP::Graphics
 		/// <param name="sourceAlpha">Specifies how the alpha source blending factor is computed.</param>
 		/// <param name="destinationRGB">Specifies how the red, green, and blue destination blending factors are computed.</param>
 		/// <param name="destinationAlpha">Specified how the alpha destination blending factor is computed.</param>
-		/// <param name="window">Window to set the blend constants for. Default: Main Window.</param>
+		/// <param name="window">Window to set the blend constants for.</param>
 		virtual void SetBlendConstant(BlendConstant sourceRGB, BlendConstant sourceAlpha,
 			                          BlendConstant destinationRGB, BlendConstant destinationAlpha,
-									  Window* window = nullptr) const = 0;
+									  const Window* const window) const = 0;
 		/// <summary>
 		/// Set the pipeline fragment shading rate and combiner operation for the command buffer.
 		/// </summary>
 		/// <param name="shadingRate">Shading rate to use.</param>
-		/// <param name="texture">Unused by Vulkan.</param>
 		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
 		/// <param name="finalRate">Shading rate combiner to use.</param>
-		/// <param name="window">Window to set the shading rate for. Default: Main Window.</param>
+		/// <param name="window">Window to set the shading rate for.</param>
 		virtual void SetShadingRate(ShadingRate shadingRate,
-						            TRAP::Graphics::Texture* texture,
 		                            ShadingRateCombiner postRasterizerRate,
-							        ShadingRateCombiner finalRate, Window* window = nullptr) const = 0;
+							        ShadingRateCombiner finalRate, const Window* const window) const = 0;
+		/// <summary>
+		/// Set the pipeline fragment shading rate via texture.
+		/// </summary>
+		/// <param name="texture">
+		/// Shading rate texture to use.
+		/// Note: The texture must be in ResourceState::ShadingRateSource.
+		/// </param>
+		/// <param name="window">Window to set shading rate for.</param>
+		virtual void SetShadingRate(Ref<RenderTarget> texture, const Window* const window) const = 0;
 
 		/// <summary>
 		/// Clear the given window's render target.
 		/// </summary>
 		/// <param name="clearType">Type of buffer to clear.</param>
-		/// <param name="window">Window to clear. Default: Main Window.</param>
-		virtual void Clear(ClearBufferType clearType, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to clear.</param>
+		virtual void Clear(ClearBufferType clearType, const Window* const window) const = 0;
 
 		//CommandBuffer Stuff
 
@@ -369,9 +424,9 @@ namespace TRAP::Graphics
 		/// <param name="height">New viewport height.</param>
 		/// <param name="minDepth">New min depth value. Default: 0.0f.</param>
 		/// <param name="maxDepth">New max depth value. Default: 1.0f.</param>
-		/// <param name="window">Window to set viewport for. Default: Main Window.</param>
-		virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height, float minDepth = 0.0f,
-		                         float maxDepth = 1.0f, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to set viewport for.</param>
+		virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height, float minDepth /*= 0.0f*/,
+		                         float maxDepth /*= 1.0f*/, const Window* const window) const = 0;
 		/// <summary>
 		/// Set scissor size for the given window.
 		/// </summary>
@@ -379,26 +434,26 @@ namespace TRAP::Graphics
 		/// <param name="y">Upper left corner.</param>
 		/// <param name="width">New scissor width.</param>
 		/// <param name="height">New scissor height.</param>
-		/// <param name="window">Window to set scissor size for. Default: Main Window.</param>
+		/// <param name="window">Window to set scissor size for.</param>
 		virtual void SetScissor(uint32_t x, uint32_t y, uint32_t width, uint32_t height,
-		                        Window* window = nullptr) const = 0;
+		                        const Window* const window) const = 0;
 
 		/// <summary>
 		/// Draw non-indexed, non-instanced geometry for the given window.
 		/// </summary>
 		/// <param name="vertexCount">Number of vertices to draw.</param>
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
-		/// <param name="window">Window to draw for. Default: Main Window.</param>
-		virtual void Draw(uint32_t vertexCount, uint32_t firstVertex = 0, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to draw for.</param>
+		virtual void Draw(uint32_t vertexCount, uint32_t firstVertex /*= 0*/, const Window* const window) const = 0;
 		/// <summary>
 		/// Draw indexed, non-instanced geometry for the given window.
 		/// </summary>
 		/// <param name="indexCount">Number of indices to draw.</param>
 		/// <param name="firstIndex">Index of the first indice to draw. Default: 0.</param>
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
-		/// <param name="window">Window to draw for. Default: Main Window.</param>
-		virtual void DrawIndexed(uint32_t indexCount, uint32_t firstIndex = 0, uint32_t firstVertex = 0,
-		                         Window* window = nullptr) const = 0;
+		/// <param name="window">Window to draw for.</param>
+		virtual void DrawIndexed(uint32_t indexCount, uint32_t firstIndex /*= 0*/, uint32_t firstVertex /*= 0*/,
+		                         const Window* const window) const = 0;
 		/// <summary>
 		/// Draw non-indexed, instanced geometry for the given window.
 		/// </summary>
@@ -406,9 +461,9 @@ namespace TRAP::Graphics
 		/// <param name="instanceCount">Number of instances to draw.</param>
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
 		/// <param name="firstInstance">Index of the first instance to draw. Default: 0.</param>
-		/// <param name="window">Window to draw for. Default: Main Window.</param>
-		virtual void DrawInstanced(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex = 0,
-		                           uint32_t firstInstance = 0, Window* window = nullptr) const = 0;
+		/// <param name="window">Window to draw for.</param>
+		virtual void DrawInstanced(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex /*= 0*/,
+		                           uint32_t firstInstance /*= 0*/, const Window* const window) const = 0;
 		/// <summary>
 		/// Draw indexed, instanced geometry for the given window.
 		/// </summary>
@@ -417,37 +472,37 @@ namespace TRAP::Graphics
 		/// <param name="firstIndex">Index of the first indice to draw. Default: 0.</param>
 		/// <param name="firstInstance">Index of the first instance to draw. Default: 0.</param>
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
-		/// <param name="window">Window to draw for. Default: Main Window.</param>
+		/// <param name="window">Window to draw for.</param>
 		virtual void DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount,
-		                                  uint32_t firstIndex = 0, uint32_t firstInstance = 0,
-										  uint32_t firstVertex = 0, Window* window = nullptr) const = 0;
+		                                  uint32_t firstIndex /*= 0*/, uint32_t firstInstance /*= 0*/,
+										  uint32_t firstVertex /*= 0*/, const Window* const window) const = 0;
 
 		/// <summary>
 		/// Bind vertex buffer on the given window.
 		/// </summary>
 		/// <param name="vBuffer">Vertex buffer to bind.</param>
 		/// <param name="layout">Layout of the vertex buffer.</param>
-		/// <param name="window">Window to bind the vertex buffer for. Default: Main Window.</param>
+		/// <param name="window">Window to bind the vertex buffer for.</param>
 		virtual void BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const VertexBufferLayout& layout,
-		                              Window* window = nullptr) const = 0;
+		                              const Window* const window) const = 0;
 		/// <summary>
 		/// Bind an index buffer on the given window.
 		/// </summary>
 		/// <param name="iBuffer">Index buffer to bind.</param>
 		/// <param name="indexType">Data type used by the index buffer.</param>
-		/// <param name="window">Window to bind the vertex buffer for. Default: Main Window.</param>
+		/// <param name="window">Window to bind the vertex buffer for.</param>
 		virtual void BindIndexBuffer(const TRAP::Ref<Buffer>& iBuffer, IndexType indexType,
-		                             Window* window = nullptr) const = 0;
+		                             const Window* const window) const = 0;
 		/// <summary>
 		/// Bind a descriptor set on the given window.
 		/// </summary>
 		/// <param name="dSet">Descriptor set to bind.</param>
 		/// <param name="index">Index for which descriptor set to bind.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
-		/// <param name="window">Window to bind the descriptor set for. Default: Main Window.</param>
+		/// <param name="window">Window to bind the descriptor set for.</param>
 		virtual void BindDescriptorSet(DescriptorSet& dSet, uint32_t index,
-		                               QueueType queueType = QueueType::Graphics,
-									   Window* window = nullptr) const = 0;
+		                               QueueType queueType /*= QueueType::Graphics*/,
+									   const Window* const window) const = 0;
 		/// <summary>
 		/// Bind push constant buffer data on the given window.
 		/// Note: There is an optimized function which uses the index into the RootSignature
@@ -456,20 +511,20 @@ namespace TRAP::Graphics
 		/// <param name="name">Name of the push constant block.</param>
 		/// <param name="constantsData">Pointer to the constant buffer data.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
-		/// <param name="window">Window to bind the push constants for. Default: Main Window.</param>
+		/// <param name="window">Window to bind the push constants for.</param>
 		virtual void BindPushConstants(const char* name, const void* constantsData,
-		                               QueueType queueType = QueueType::Graphics,
-									   Window* window = nullptr) const = 0;
+		                               QueueType queueType /*= QueueType::Graphics*/,
+									   const Window* const window) const = 0;
 		/// <summary>
 		/// Bind push constant buffer data on the given window.
 		/// </summary>
 		/// <param name="paramIndex">Index of the push constant block in the RootSignatures descriptors array.</param>
 		/// <param name="constantsData">Pointer to the constant buffer data.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
-		/// <param name="window">Window to bind the push constants for. Default: Main Window.</param>
+		/// <param name="window">Window to bind the push constants for.</param>
 		virtual void BindPushConstantsByIndex(uint32_t paramIndex, const void* constantsData,
-											  QueueType queueType = QueueType::Graphics,
-											  Window* window = nullptr) const = 0;
+											  QueueType queueType /*= QueueType::Graphics*/,
+											  const Window* const window) const = 0;
 		/// <summary>
 		/// Bind render target(s) on the given window.
 		///
@@ -482,14 +537,14 @@ namespace TRAP::Graphics
 		/// <param name="colorMipSlices">Optional color mip slices for each render target. Default: nullptr.</param>
 		/// <param name="depthArraySlice">Optional depth array slice for the depth stencil target. Default: -1.</param>
 		/// <param name="depthMipSlice">Optional depth mip slice for the depth stencil target. Default: -1.</param>
-		/// <param name="window">Window to bind the render target(s) for. Default: Main Window.</param>
+		/// <param name="window">Window to bind the render target(s) for.</param>
 		virtual void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
-		                              const TRAP::Ref<Graphics::RenderTarget>& depthStencil = nullptr,
-									  const RendererAPI::LoadActionsDesc* loadActions = nullptr,
-									  std::vector<uint32_t>* colorArraySlices = nullptr,
-									  std::vector<uint32_t>* colorMipSlices = nullptr,
-									  uint32_t depthArraySlice = -1, uint32_t depthMipSlice = -1,
-									  Window* window = nullptr) const = 0;
+		                              const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
+									  const RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
+									  std::vector<uint32_t>* colorArraySlices /*= nullptr*/,
+									  std::vector<uint32_t>* colorMipSlices /*= nullptr*/,
+									  uint32_t depthArraySlice /*= -1*/, uint32_t depthMipSlice /*= -1*/,
+									  const Window* const window) const = 0;
 		/// <summary>
 		/// Bind render target(s) on the given window.
 		///
@@ -502,96 +557,119 @@ namespace TRAP::Graphics
 		/// <param name="colorMipSlices">Optional color mip slices for each render target. Default: nullptr.</param>
 		/// <param name="depthArraySlice">Optional depth array slice for the depth stencil target. Default: -1.</param>
 		/// <param name="depthMipSlice">Optional depth mip slice for the depth stencil target. Default: -1.</param>
-		/// <param name="window">Window to bind the render target(s) for. Default: Main Window.</param>
+		/// <param name="window">Window to bind the render target(s) for.</param>
 		virtual void BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
-		                               const TRAP::Ref<Graphics::RenderTarget>& depthStencil = nullptr,
-									   const RendererAPI::LoadActionsDesc* loadActions = nullptr,
-									   std::vector<uint32_t>* colorArraySlices = nullptr,
-									   std::vector<uint32_t>* colorMipSlices = nullptr,
-									   uint32_t depthArraySlice = -1, uint32_t depthMipSlice = -1,
-									   Window* window = nullptr) const = 0;
+		                               const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
+									   const RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
+									   std::vector<uint32_t>* colorArraySlices /*= nullptr*/,
+									   std::vector<uint32_t>* colorMipSlices /*= nullptr*/,
+									   uint32_t depthArraySlice /*= -1*/, uint32_t depthMipSlice /*= -1*/,
+									   const Window* const window) const = 0;
 
 		/// <summary>
 		/// Add a resource barrier (memory dependency) for the given window.
 		/// </summary>
 		/// <param name="bufferBarrier">Buffer barrier.</param>
 		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
-		/// <param name="window">Window to add the barrier for. Default: Main Window.</param>
+		/// <param name="window">Window to add the barrier for.</param>
 		virtual void ResourceBufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
-										   QueueType queueType = QueueType::Graphics,
-								           Window* window = nullptr) const = 0;
+										   QueueType queueType /*= QueueType::Graphics*/,
+								           const Window* const window) const = 0;
 		/// <summary>
 		/// Add resource barriers (memory dependencies) for the given window.
 		/// </summary>
 		/// <param name="bufferBarriers">Buffer barriers.</param>
 		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
-		/// <param name="window">Window to add the barriers for. Default: Main Window.</param>
+		/// <param name="window">Window to add the barriers for.</param>
 		virtual void ResourceBufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
-											QueueType queueType = QueueType::Graphics,
-									        Window* window = nullptr) const = 0;
+											QueueType queueType /*= QueueType::Graphics*/,
+									        const Window* const window) const = 0;
 		/// <summary>
 		/// Add a resource barrier (memory dependency) for the given window.
 		/// </summary>
 		/// <param name="textureBarrier">Texture barrier.</param>
 		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
-		/// <param name="window">Window to add the barrier for. Default: Main Window.</param>
+		/// <param name="window">Window to add the barrier for.</param>
 		virtual void ResourceTextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
-											QueueType queueType = QueueType::Graphics,
-									        Window* window = nullptr) const = 0;
+											QueueType queueType /*= QueueType::Graphics*/,
+									        const Window* const window) const = 0;
 		/// <summary>
 		/// Add resource barriers (memory dependencies) for the given window.
 		/// </summary>
 		/// <param name="textureBarriers">Texture barriers.</param>
 		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
-		/// <param name="window">Window to add the barriers for. Default: Main Window.</param>
+		/// <param name="window">Window to add the barriers for.</param>
 		virtual void ResourceTextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
-											 QueueType queueType = QueueType::Graphics,
-									         Window* window = nullptr) const = 0;
+											 QueueType queueType /*= QueueType::Graphics*/,
+									         const Window* const window) const = 0;
 		/// <summary>
 		/// Add a resource barrier (memory dependency) for the given window.
 		/// </summary>
 		/// <param name="renderTargetBarrier">Render target barrier.</param>
-		/// <param name="window">Window to add the barrier for. Default: Main Window.</param>
+		/// <param name="window">Window to add the barrier for.</param>
 		virtual void ResourceRenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier,
-									             Window* window = nullptr) const = 0;
+									             const Window* const window) const = 0;
 		/// <summary>
 		/// Add resource barriers (memory dependencies) for the given window.
 		/// </summary>
 		/// <param name="renderTargetBarriers">Render target barriers.</param>
-		/// <param name="window">Window to add the barriers for. Default: Main Window.</param>
+		/// <param name="window">Window to add the barriers for.</param>
 		virtual void ResourceRenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers,
-									              Window* window = nullptr) const = 0;
+									              const Window* const window) const = 0;
+
+		/// <summary>
+		/// NVIDIA-Reflex Sleep/synchronize on the given window.
+		/// </summary>
+		virtual void ReflexSleep() const = 0;
+		/// <summary>
+		/// NVIDIA-Reflex latency marker.
+		/// </summary>
+		/// <param name="frame">Frame to set marker for. Must be unique for each frame!</param>
+		/// <param name="marker">Enum value of the marker to set.</param>
+		virtual void ReflexMarker(uint32_t frame, uint32_t marker) const = 0;
+#ifdef NVIDIA_REFLEX_AVAILABLE
+		/// <summary>
+		/// Retrieve the latency report from NVIDIA-Reflex.
+		/// </summary>
+		/// <returns>Latency report.</returns>
+		[[nodiscard]] virtual NVLL_VK_LATENCY_RESULT_PARAMS ReflexGetLatency() const = 0;
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 
 		/// <summary>
 		/// Retrieve the renderer title.
 		/// Example title: "[Vulkan 1.3.0]".
 		/// </summary>
 		/// <returns>Renderer title.</returns>
-		virtual std::string GetTitle() const = 0;
+		[[nodiscard]] virtual std::string GetTitle() const noexcept = 0;
 
 		/// <summary>
 		/// Retrieve the currently used GPUs UUID.
 		/// </summary>
 		/// <returns>GPU's UUID.</returns>
-		virtual std::array<uint8_t, 16> GetCurrentGPUUUID() const = 0;
+		[[nodiscard]] virtual std::array<uint8_t, 16> GetCurrentGPUUUID() const noexcept = 0;
 		/// <summary>
 		/// Retrieve the name of the currently used GPU.
 		/// </summary>
 		/// <returns>GPU's name.</returns>
-		virtual std::string GetCurrentGPUName() const = 0;
+		[[nodiscard]] virtual std::string GetCurrentGPUName() const noexcept = 0;
+		/// <summary>
+		/// Retrieve the vendor of the currently used GPU.
+		/// </summary>
+		/// <returns>GPU vendor.</returns>
+		[[nodiscard]] virtual GPUVendor GetCurrentGPUVendor() const noexcept = 0;
 		/// <summary>
 		/// Retrieve a list of all supported GPUs.
 		/// The list contains the GPUs name and UUID.
 		/// </summary>
 		/// <returns>List of all supported GPUs.</returns>
-		virtual std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() const = 0;
+		[[nodiscard]] virtual std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() const = 0;
 
 		/// <summary>
 		/// Capture a screenshot of the last presented frame.
 		/// </summary>
-		/// <param name="window">Window to capture screenshot on. Default: Main Window.</param>
+		/// <param name="window">Window to capture screenshot on.</param>
 		/// <returns>Captured screenshot as TRAP::Image on success, Black 1x1 TRAP::Image otherwise.</returns>
-		virtual TRAP::Scope<TRAP::Image> CaptureScreenshot(Window* window = nullptr) const = 0;
+		[[nodiscard]] virtual TRAP::Scope<TRAP::Image> CaptureScreenshot(const Window* const window) const = 0;
 
 		/// <summary>
 		/// Resolve a MSAA render target to a non MSAA render target.
@@ -601,49 +679,86 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="source">Source MSAA render target to resolve.</param>
 		/// <param name="destination">Destination non MSAA render target to resolve into.</param>
-		/// <param name="window">Window to do the resolve pass on.</param>
+		/// <param name="cmd">CommadBuffer to resolve on.</param>
 		virtual void MSAAResolvePass(TRAP::Ref<RenderTarget> source, TRAP::Ref<RenderTarget> destination,
-		                             Window* window = nullptr) const = 0;
+		                             CommandBuffer* const cmd) const = 0;
+
+		/// <summary>
+		/// Scale image from internal resolution to the final output resolution.
+		///
+		/// Note: source and destination must be in ResourceState::RenderTarget.
+		/// </summary>
+		/// <param name="source">Source render target to resolve.</param>
+		/// <param name="destination">Destination render target to resolve into.</param>
+		/// <param name="window">Window to do the scaling pass on.</param>
+		virtual void RenderScalePass(TRAP::Ref<RenderTarget> source,
+									 TRAP::Ref<RenderTarget> destination,
+		                             const Window* const window) const = 0;
+
+		/// <summary>
+		/// Set the latency mode.
+		/// The actual latency mode may differ from the requested one so check
+		/// the actual used mode with GetLatencyMode().
+		/// Note: Only LatencyMode::Disabled is supported everywhere.
+		///       Other LatencyModes are only available on Windows 10 or
+		///       newer with NVIDIA hardware.
+		/// </summary>
+		/// <param name="mode">LatencyMode to set.</param>
+		/// <param name="window">Window to set latency mode for.</param>
+		virtual void SetLatencyMode(LatencyMode mode, const Window* const window) = 0;
+		/// <summary>
+		/// Retrieve the currently used latency mode.
+		/// Note: This may differ from the requested mode set with SetLatencyMode().
+		/// </summary>
+		/// <param name="window">Window to retrieve latency mode for.</param>
+		/// <returns>Used latency mode.</returns>
+		[[nodiscard]] virtual LatencyMode GetLatencyMode(const Window* const window) const = 0;
 
 		/// <summary>
 		/// Retrieve the used descriptor pool.
 		/// </summary>
 		/// <returns>Descriptor pool.</returns>
-		static TRAP::Ref<TRAP::Graphics::DescriptorPool> GetDescriptorPool();
+		[[nodiscard]] static TRAP::Ref<TRAP::Graphics::DescriptorPool> GetDescriptorPool() noexcept;
 		/// <summary>
 		/// Retrieve the used graphics queue.
 		/// </summary>
 		/// <returns>Graphics queue.</returns>
-		static TRAP::Ref<TRAP::Graphics::Queue> GetGraphicsQueue();
+		[[nodiscard]] static TRAP::Ref<TRAP::Graphics::Queue> GetGraphicsQueue() noexcept;
 		/// <summary>
 		/// Retrieve the used compute queue.
 		/// </summary>
 		/// <returns>Compute queue.</returns>
-		static TRAP::Ref<TRAP::Graphics::Queue> GetComputeQueue();
+		[[nodiscard]] static TRAP::Ref<TRAP::Graphics::Queue> GetComputeQueue() noexcept;
 		/// <summary>
 		/// Retrieve the used transfer queue.
 		/// </summary>
 		/// <returns>Transfer queue.</returns>
-		static TRAP::Ref<TRAP::Graphics::Queue> GetTransferQueue();
+		[[nodiscard]] static TRAP::Ref<TRAP::Graphics::Queue> GetTransferQueue() noexcept;
 		/// <summary>
 		/// Retrieve the currently used graphics root signature of the given window.
 		/// </summary>
-		/// <param name="window">Window to retrieve the graphics root signature from. Default: Main Window.</param>
+		/// <param name="window">Window to retrieve the graphics root signature from.</param>
 		/// <returns>Graphics root signature.</returns>
-		static TRAP::Ref<TRAP::Graphics::RootSignature> GetGraphicsRootSignature(Window* window = nullptr);
+		[[nodiscard]] static TRAP::Ref<TRAP::Graphics::RootSignature> GetGraphicsRootSignature(const Window* const window);
+		/// <summary>
+		/// Retrieve the currently used internal render resolution of the given window.
+		/// </summary>
+		/// <param name="window">Window to get internal render resolution from.</param>
+		/// <returns>Internal render resolution.</returns>
+		[[nodiscard]] static TRAP::Math::Vec2ui GetInternalRenderResolution(const Window* window);
 
 		/// <summary>
 		/// Start a render pass for the given window.
 		///
 		/// Note: This will bind the render target for the current frame again.
 		/// </summary>
-		/// <param name="window">Window to start render pass for. Default: Main Window.</param>
-		static void StartRenderPass(Window* window = nullptr);
+		/// <param name="window">Window to start render pass for.</param>
+		static void StartRenderPass(const Window* const window);
 		/// <summary>
 		/// Stop running render pass of the given window.
 		/// </summary>
-		/// <param name="window">Window to stop render pass on. Default: Main Window.</param>
-		static void StopRenderPass(Window* window = nullptr);
+		/// <param name="window">Window to stop render pass on.</param>
+		static void StopRenderPass(const Window* const window);
 
 		/// <summary>
 		/// Transition a texture from old layout to the new layout.
@@ -653,7 +768,7 @@ namespace TRAP::Graphics
 		/// <param name="oldLayout">Current resource state of the given texture.</param>
 		/// <param name="newLayout">New resource state for the given texture.</param>
 		/// <param name="queueType">Queue type on which to perform the transition. Default: Graphics.</param>
-		static void Transition(TRAP::Graphics::Texture* texture,
+		static void Transition(Ref<TRAP::Graphics::Texture> texture,
 							   TRAP::Graphics::RendererAPI::ResourceState oldLayout,
 							   TRAP::Graphics::RendererAPI::ResourceState newLayout,
 							   TRAP::Graphics::RendererAPI::QueueType queueType = QueueType::Graphics);
@@ -663,11 +778,11 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="outAntiAliasing">Output: Used anti aliasing method.</param>
 		/// <param name="outSampleCount">Output: Used sample count.</param>
-		static void GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount);
+		static void GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount) noexcept;
 
 		/// <summary>
 		/// Set the anti aliasing method and the sample count.
-		/// Use AntiAliasing::Off and SampleCount::One to disable anti aliasing.
+		/// Use AntiAliasing::Off to disable anti aliasing.
 		///
 		/// Note: This won't affect the currently recorded frame.
 		/// Note: A sample count of 1 is only valid if anti aliasing is disabled.
@@ -677,30 +792,58 @@ namespace TRAP::Graphics
 		static void SetAntiAliasing(AntiAliasing antiAliasing, SampleCount sampleCount);
 
 		/// <summary>
+		/// Retrieve the currently used anisotropy level.
+		/// </summary>
+		/// <returns>Used anisotropy level.</returns>
+		[[nodiscard]] static SampleCount GetAnisotropyLevel() noexcept;
+
+		/// <summary>
+		/// Set the anisotropy level.
+		/// A value of SampleCount::One effectively disables anisotropic filtering.
+		///
+		/// Note: User created samplers need to be recreated in order to use the new anisotropy level.
+		/// </summary>
+		/// <param name="anisotropyLevel">Anisotropy level to use.</param>
+		static void SetAnisotropyLevel(SampleCount anisotropyLevel);
+
+		/// <summary>
 		/// Notify the RendererAPI that the SwapChain needs to be resized.
 		/// This function should be called inside FrameBufferResizeEvent callbacks.
 		/// </summary>
 		/// <param name="window">Window that needs an updated SwapChain.</param>
-		static void ResizeSwapChain(Window* window = nullptr);
+		static void ResizeSwapChain(const Window* const window);
+
+		/// <summary>
+		/// Retrieve the GPU side frame time for the graphics queue.
+		/// </summary>
+		/// <param name="window">Window to get frame time from.</param>
+		/// <returns>GPU Graphics frame time in milliseconds.</returns>
+		[[nodiscard]] static float GetGPUGraphicsFrameTime(const Window* const window);
+		/// <summary>
+		/// Retrieve the GPU side frame time for the compute queue.
+		/// </summary>
+		/// <param name="window">Window to get frame time from.</param>
+		/// <returns>GPU Compute frame time in milliseconds.</returns>
+		[[nodiscard]] static float GetGPUComputeFrameTime(const Window* const window);
 
 	//protected:
 		/// <summary>
-		/// Retrieve the main windows internal rendering data.
+		/// Retrieve windows internal rendering data.
 		/// </summary>
-		/// <returns>Main windows internal rendering data.</returns>
-		static PerWindowData& GetMainWindowData();
+		/// <returns>Windows internal rendering data.</returns>
+		[[nodiscard]] static PerWindowData& GetWindowData(const Window* const window);
 
 	public:
 		/// <summary>
 		/// Initialize the internal rendering data of the given window.
 		/// </summary>
 		/// <param name="window">Window to initialize the internal rendering data for.</param>
-		virtual void InitPerWindowData(Window* window) const = 0;
+		virtual void InitPerWindowData(Window* const window) const = 0;
 		/// <summary>
 		/// Remove the internal rendering data of the given window.
 		/// </summary>
 		/// <param name="window">Window to remove the internal rendering data from.</param>
-		virtual void RemovePerWindowData(Window* window) const = 0;
+		virtual void RemovePerWindowData(const Window* const window) const = 0;
 
 		/// <summary>
 		/// Wait for the GPU to idle.
@@ -713,7 +856,7 @@ namespace TRAP::Graphics
 		/// Note: The first call to this function will run the Vulkan capability tester.
 		/// </summary>
 		/// <returns>True if the system is Vulkan API capable, false otherwise.</returns>
-		static bool IsVulkanCapable();
+		[[nodiscard]] static bool IsVulkanCapable();
 
 		/// <summary>
 		/// Enum bit flag for the different wave operations.
@@ -836,6 +979,27 @@ namespace TRAP::Graphics
 		{
 			Off,
 			MSAA
+		};
+
+		/// <summary>
+		/// Enum describing the different GPU vendors.
+		/// </summary>
+		enum class GPUVendor
+		{
+			Unknown     = -1,
+			AMD         = 0x1002,
+			ImgTec      = 0x1010,
+			NVIDIA      = 0x10DE,
+			ARM         = 0x13B5,
+			Broadcom    = 0x14E4,
+			Qualcomm    = 0x5143,
+			Intel       = 0x8086,
+			Apple       = 0x106B,
+			Vivante     = 0x7A05,
+			VeriSilicon = 0x1EB1,
+			Kazan       = 0x10003,
+			Codeplay    = 0x10004,
+			Mesa        = 0x10005
 		};
 
 		/// <summary>
@@ -1008,6 +1172,16 @@ namespace TRAP::Graphics
 			Color_Stencil = Color | Stencil,
 			Color_Depth_Stencil = Color | Stencil | Depth,
 			Depth_Stencil = Depth | Stencil
+		};
+
+		/// <summary>
+		/// Enum describing the different latency modes.
+		/// </summary>
+		enum class LatencyMode
+		{
+			Disabled,
+			Enabled,
+			EnabledBoost
 		};
 
 		/// <summary>
@@ -1355,11 +1529,11 @@ namespace TRAP::Graphics
 		/// </summary>
 		enum class ShadingRateCombiner
 		{
-			Passthrough = 0x0,
-			Override = BIT(0),
-			Min = BIT(1),
-			Max = BIT(2),
-			Sum = BIT(3)
+			Passthrough = BIT(0),
+			Override = BIT(1),
+			Min = BIT(2),
+			Max = BIT(3),
+			Sum = BIT(4)
 		};
 
 		/// <summary>
@@ -1369,8 +1543,31 @@ namespace TRAP::Graphics
 		{
 			NotSupported = 0x0,
 			PerDraw = BIT(0),
-			PerTile = BIT(1)
+			PerTile = BIT(1),
+
+			//Vulkan only
+			PerPrimitive = BIT(2)
 		};
+
+
+		struct Color
+		{
+			//Doubles are used because they are large enough to precisely
+			//hold 32-bit signed/unsigned integers and single-precision floats.
+
+			double Red;
+			double Green;
+			double Blue;
+			double Alpha;
+		};
+
+		struct DepthStencil
+		{
+			float Depth;
+			uint32_t Stencil;
+		};
+
+		using ClearValue = std::variant<Color, DepthStencil>;
 
 		/// <summary>
 		/// Description of a subresource.
@@ -1410,9 +1607,7 @@ namespace TRAP::Graphics
 			//What state will the texture get created in
 			ResourceState StartState{};
 			//Optimized clear value (recommended to use the same value when clearing the renderTarget)
-			TRAP::Math::Vec4 ClearColor{};
-			float ClearDepth = 1.0f;
-			uint32_t ClearStencil = 0;
+			RendererAPI::ClearValue ClearValue{};
 			//The image quality level.
 			//The higher the quality, the lower the performance.
 			//The valid range is between 0 and the value appropriate for SampleCount
@@ -1452,9 +1647,7 @@ namespace TRAP::Graphics
 			//Image format
 			TRAP::Graphics::API::ImageFormat Format{};
 			//Optimized clear value (recommended to use the same value when clearing the renderTarget)
-			TRAP::Math::Vec4 ClearColor{};
-			float ClearDepth = 1.0f;
-			uint32_t ClearStencil = 0;
+			RendererAPI::ClearValue ClearValue{};
 			//What state will the texture get created in
 			ResourceState StartState{};
 			//Descriptor creation
@@ -1479,6 +1672,8 @@ namespace TRAP::Graphics
 			TextureDesc* Desc;
 			//Filepath with extension.
 			std::array<std::filesystem::path, 6> Filepaths;
+			//Loaded images (used to load in memory images, if set Filepaths are ignored)
+			std::array<const Image*, 6> Images;
 			//Following is ignored if Desc != nullptr.
 			//Desc->Flags will be considered instead.
 			TextureCreationFlags CreationFlag;
@@ -1524,7 +1719,7 @@ namespace TRAP::Graphics
 			//Flags specifying the suitable usage of this buffer (Uniform Buffer, Vertex Buffer, Index Buffer, ...)
 			DescriptorType Descriptors{};
 			//Debug name used in GPU-profile
-			const std::string_view Name{};
+			std::string Name{};
 		};
 
 		/// <summary>
@@ -1552,8 +1747,10 @@ namespace TRAP::Graphics
 			float MinLod{};
 			//Maximum lod value
 			float MaxLod{};
-			//Max anisotropy
-			float MaxAnisotropy{};
+			//Enable/Disable Anisotropic filtering
+			bool EnableAnisotropy = true;
+			//Override Anisotropic filtering level (0.0f = auto)
+			float OverrideAnisotropyLevel{};
 			//Comparison function compares sampled data against existing sampled data
 			CompareMode CompareFunc{};
 
@@ -1577,10 +1774,10 @@ namespace TRAP::Graphics
 				//Explicitly force the reconstruction
 				bool ForceExplicitReconstruction;
 
-				constexpr bool operator==(const SamplerConversionDesc& s) const;
+				constexpr bool operator==(const SamplerConversionDesc& s) const noexcept;
 			} SamplerConversionDesc{};
 
-			constexpr bool operator==(const SamplerDesc& s) const;
+			constexpr bool operator==(const SamplerDesc& s) const noexcept;
 		};
 
 		/// <summary>
@@ -1897,6 +2094,12 @@ namespace TRAP::Graphics
 			TRAP::Graphics::API::ImageFormat DepthStencilFormat{};
 			//Primitive topology to use
 			TRAP::Graphics::RendererAPI::PrimitiveTopology PrimitiveTopology{};
+			//Shading rate to use (only if supported)
+			TRAP::Graphics::RendererAPI::ShadingRate ShadingRate{};
+			//Shading rate combiners to use (only if supported)
+			std::array<TRAP::Graphics::RendererAPI::ShadingRateCombiner, 2> ShadingRateCombiners{};
+			//Shading rate texture to use (only if ShadingRateCaps::PerTile is supported, disables fixed ShadingRate)
+			TRAP::Ref<TRAP::Graphics::RenderTarget> ShadingRateTexture{};
 		};
 
 		/// <summary>
@@ -2039,9 +2242,7 @@ namespace TRAP::Graphics
 			//Color format of the swapchain
 			TRAP::Graphics::API::ImageFormat ColorFormat{};
 			//Clear value
-			TRAP::Math::Vec4 ClearColor{};
-			float ClearDepth = 1.0f;
-			uint32_t ClearStencil = 0;
+			RendererAPI::ClearValue ClearValue{};
 			//Set whether swapchain will be presented using VSync
 			bool EnableVSync{};
 			//Anti aliasing sample count (1 = no AA)
@@ -2161,7 +2362,7 @@ namespace TRAP::Graphics
 			{
 				//Index of the descriptor set to extract
 				uint32_t DescriptorSetBufferIndex{};
-				Shader* DescriptorSetShader{};
+				Ref<Shader> DescriptorSetShader{};
 				ShaderStage DescriptorSetShaderStage{};
 			};
 
@@ -2182,9 +2383,9 @@ namespace TRAP::Graphics
 			//Array of pipeline descriptors
 			//DescriptorSet buffer extraction
 			//Custom binding (RayTracing acceleration structure ...)
-			std::variant<std::vector<TRAP::Graphics::Texture*>, std::vector<Sampler*>,
+			std::variant<std::vector<Ref<TRAP::Graphics::Texture>>, std::vector<Sampler*>,
 				std::vector<Buffer*>, std::vector<Pipeline*>,
-				std::vector<DescriptorSet*>> Resource{std::vector<TRAP::Graphics::Texture*>()}; //TODO RayTracing acceleration structure
+				std::vector<DescriptorSet*>> Resource{std::vector<Ref<TRAP::Graphics::Texture>>()}; //TODO RayTracing acceleration structure
 
 			//Number of resources in the descriptor(applies to array of textures, buffers, ...)
 			uint32_t Count{};
@@ -2217,11 +2418,9 @@ namespace TRAP::Graphics
 			//Action to perform on the stencil attachment on load.
 			LoadActionType LoadActionStencil{};
 			//Clear color(s)
-			std::array<TRAP::Math::Vec4, 8> ClearColorValues{};
-			//Clear depth value
-			float ClearDepth = 1.0f;
-			//Clear stencil value
-			uint32_t ClearStencil = 0;
+			std::array<RendererAPI::Color, 8> ClearColorValues{};
+			//Clear depth/stencil value
+			RendererAPI::DepthStencil ClearDepthStencil{};
 			//Action to perform on the color attachment(s) on store.
 			std::array<StoreActionType, 8> StoreActionsColor{};
 			//Action to perform on the depth attachment on store.
@@ -2300,6 +2499,27 @@ namespace TRAP::Graphics
 			{
 				MappedMemoryRange MappedRange;
 			} Internal;
+		};
+
+		struct TextureCopyDesc
+		{
+			//Source texture to copy from
+			TRAP::Ref<TRAP::Graphics::Texture> Texture;
+			//Destination buffer to copy to
+			TRAP::Ref<TRAP::Graphics::Buffer> Buffer;
+			//Semaphore to synchronize graphics/compute operations that write
+			//to the textures with the texture -> buffer copy.
+			TRAP::Ref<Semaphore> WaitSemaphore;
+			//Mip level to copy from
+			uint32_t MipLevel;
+			//Array layer to copy from
+			uint32_t ArrayLayer;
+			//Current texture state
+			ResourceState TextureState;
+			//Queue the texture is copied from
+			RendererAPI::QueueType QueueType;
+			//Offset into the destination buffer to start at
+			uint64_t BufferOffset;
 		};
 
 		/// <summary>
@@ -2391,6 +2611,9 @@ namespace TRAP::Graphics
 			TRAP::Graphics::RendererAPI::ShadingRateCombiner ShadingRateCombiner;
 			uint32_t ShadingRateTexelWidth;
 			uint32_t ShadingRateTexelHeight;
+
+			//NVIDIA Reflex
+			bool ReflexSupported;
 		} GPUSettings{};
 
 		inline static constexpr uint32_t ImageCount = 3; //Triple Buffered
@@ -2400,7 +2623,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="window">Window to retrieve image index from.</param>
 		/// <returns>Image index.</returns>
-		static uint32_t GetCurrentImageIndex(TRAP::Window* window);
+		[[nodiscard]] static uint32_t GetCurrentImageIndex(const TRAP::Window* const window);
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
 		//GPU crash dump tracker using Nsight Aftermath instrumentation
@@ -2423,8 +2646,17 @@ namespace TRAP::Graphics
 		static RendererAPI::AntiAliasing s_currentAntiAliasing;
 		static RendererAPI::SampleCount s_newSampleCount;
 		static RendererAPI::AntiAliasing s_newAntiAliasing;
+		static RendererAPI::SampleCount s_Anisotropy;
+
+		static std::array<uint8_t, 16> s_newGPUUUID;
 
 	public:
+		enum class PerWindowState
+		{
+			PreUpdate,
+			PostUpdate,
+		};
+
 		/// <summary>
 		/// Per window data used for rendering.
 		/// </summary>
@@ -2437,6 +2669,8 @@ namespace TRAP::Graphics
 
 			TRAP::Window* Window;
 
+			PerWindowState State{};
+
 			//Swapchain/Graphics stuff
 			uint32_t ImageIndex = 0;
 			std::array<TRAP::Ref<CommandPool>, ImageCount> GraphicCommandPools;
@@ -2445,23 +2679,30 @@ namespace TRAP::Graphics
 			TRAP::Ref<Semaphore> ImageAcquiredSemaphore;
 			std::array<TRAP::Ref<Semaphore>, ImageCount> RenderCompleteSemaphores;
 			std::array<TRAP::Ref<Semaphore>, ImageCount> GraphicsCompleteSemaphores;
+			std::array<TRAP::Ref<QueryPool>, ImageCount> GraphicsTimestampQueryPools;
+			std::array<TRAP::Ref<Buffer>, ImageCount> GraphicsTimestampReadbackBuffers;
 			PipelineDesc GraphicsPipelineDesc;
 			TRAP::Ref<Pipeline> CurrentGraphicsPipeline;
+			float GraphicsFrameTime;
 			bool Recording;
+			TRAP::Ref<RenderTarget> NewShadingRateTexture;
+			std::array<TRAP::Ref<TRAP::Graphics::RenderTarget>, 3> CachedShadingRateTextures{};
 
+			float NewRenderScale = 1.0f;
+			float RenderScale = 1.0f;
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;
 			bool ResizeSwapChain = false;
+			std::array<TRAP::Ref<RenderTarget>, ImageCount> TemporaryResolveRenderTargets; //Used to resolve MSAA RenderTarget before applying RenderScale
+			std::array<TRAP::Ref<RenderTarget>, ImageCount> InternalRenderTargets; //Used when RenderScale is not 1.0f
 #ifdef TRAP_HEADLESS_MODE
 			std::array<TRAP::Ref<RenderTarget>, ImageCount> RenderTargets;
-			std::array<TRAP::Ref<RenderTarget>, ImageCount> RenderTargetsMSAA;
 			bool Resize = false;
 			uint32_t NewWidth = 1920, NewHeight = 1080; //Default RenderTargets to use Full HD
 #endif
 			uint32_t CurrentSwapChainImageIndex;
 
-			TRAP::Math::Vec4 ClearColor{0.1f, 0.1f, 0.1f, 1.0f};
-			float ClearDepth = 1.0f;
-			uint32_t ClearStencil = 0;
+			RendererAPI::Color ClearColor{0.1, 0.1, 0.1, 1.0};
+			RendererAPI::DepthStencil ClearDepthStencil{0.0, 0};
 
 			bool CurrentVSync;
 			bool NewVSync;
@@ -2471,14 +2712,22 @@ namespace TRAP::Graphics
 			std::array<CommandBuffer*, ImageCount>  ComputeCommandBuffers;
 			std::array<TRAP::Ref<Fence>, ImageCount> ComputeCompleteFences;
 			std::array<TRAP::Ref<Semaphore>, ImageCount> ComputeCompleteSemaphores;
+			std::array<TRAP::Ref<QueryPool>, ImageCount> ComputeTimestampQueryPools;
+			std::array<TRAP::Ref<Buffer>, ImageCount> ComputeTimestampReadbackBuffers;
 			TRAP::Math::Vec3 CurrentComputeWorkGroupSize;
 			PipelineDesc ComputePipelineDesc;
 			TRAP::Ref<Pipeline> CurrentComputePipeline;
+			float ComputeFrameTime;
 			bool RecordingCompute;
+
+			//NVIDIA Reflex
+#ifdef NVIDIA_REFLEX_AVAILABLE
+			NVLL_VK_SET_SLEEP_MODE_PARAMS SleepModeParams{};
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 		};
 
 	protected:
-		static std::unordered_map<Window*, TRAP::Scope<PerWindowData>> s_perWindowDataMap;
+		static std::unordered_map<const Window*, TRAP::Scope<PerWindowData>> s_perWindowDataMap;
 
 	private:
 		static bool s_isVulkanCapable;
@@ -2488,18 +2737,19 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr bool TRAP::Graphics::RendererAPI::SamplerDesc::operator==(const SamplerDesc& s) const
+constexpr bool TRAP::Graphics::RendererAPI::SamplerDesc::operator==(const SamplerDesc& s) const noexcept
 {
 	//Deep equality
 	return this->MinFilter == s.MinFilter && this->MagFilter == s.MagFilter && this->MipMapMode == s.MipMapMode &&
 		   this->AddressU == s.AddressU && this->AddressV == s.AddressV && this->AddressW == s.AddressW &&
-		   this->MipLodBias == s.MipLodBias && this->MaxAnisotropy == s.MaxAnisotropy &&
-		   this->CompareFunc == s.CompareFunc && this->SamplerConversionDesc == s.SamplerConversionDesc;
+		   this->MipLodBias == s.MipLodBias && this->EnableAnisotropy == s.EnableAnisotropy &&
+		   this->OverrideAnisotropyLevel == s.OverrideAnisotropyLevel && this->CompareFunc == s.CompareFunc &&
+		   this->SamplerConversionDesc == s.SamplerConversionDesc;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr bool TRAP::Graphics::RendererAPI::SamplerDesc::SamplerConversionDesc::operator==(const SamplerConversionDesc& s) const
+constexpr bool TRAP::Graphics::RendererAPI::SamplerDesc::SamplerConversionDesc::operator==(const SamplerConversionDesc& s) const noexcept
 {
 	//Deep equality
 	return this->Format == s.Format && this->Model == s.Model && this->Range == s.Range &&
@@ -2510,7 +2760,7 @@ constexpr bool TRAP::Graphics::RendererAPI::SamplerDesc::SamplerConversionDesc::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::WaveOpsSupportFlags)
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::WaveOpsSupportFlags);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::TextureCreationFlags);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ResourceState);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::DescriptorType);
@@ -2524,5 +2774,6 @@ MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRate);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCaps);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCombiner);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ClearBufferType);
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::LatencyMode);
 
 #endif /*TRAP_RENDERERAPI_H*/

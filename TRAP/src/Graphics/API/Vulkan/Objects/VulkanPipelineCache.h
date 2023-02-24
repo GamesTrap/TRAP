@@ -24,19 +24,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanPipelineCache(const VulkanPipelineCache&) = default;
+		VulkanPipelineCache(const VulkanPipelineCache&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanPipelineCache& operator=(const VulkanPipelineCache&) = default;
+		VulkanPipelineCache& operator=(const VulkanPipelineCache&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanPipelineCache(VulkanPipelineCache&&) = default;
+		VulkanPipelineCache(VulkanPipelineCache&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanPipelineCache& operator=(VulkanPipelineCache&&) = default;
+		VulkanPipelineCache& operator=(VulkanPipelineCache&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the cached pipeline data.
@@ -48,16 +48,10 @@ namespace TRAP::Graphics::API
 		void GetPipelineCacheData(std::size_t* size, void* data) const override;
 
 		/// <summary>
-		/// Save a pipeline to disk.
-		/// </summary>
-		/// <param name="path">Path to save the pipeline to.</param>
-		void Save(const std::filesystem::path& path) override;
-
-		/// <summary>
 		/// Retrieve the Vulkan pipeline cache handle.
 		/// </summary>
 		/// <returns>Vulkan pipeline cache handle</returns>
-		VkPipelineCache GetVkPipelineCache() const;
+		[[nodiscard]] VkPipelineCache GetVkPipelineCache() const noexcept;
 
 	private:
 		VkPipelineCache m_cache;

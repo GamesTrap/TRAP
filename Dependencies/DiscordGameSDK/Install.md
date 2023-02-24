@@ -2,7 +2,7 @@
 
 ## Installation
 
-1. Get the version 2.5.6 of the Discord Game SDK from https://discord.com/developers/docs/game-sdk/sdk-starter-guide.
+1. Get the version 3.2.1 of the Discord Game SDK from https://discord.com/developers/docs/game-sdk/sdk-starter-guide.
 2. Extract the contents of the discord_game_sdk.zip file into this folder.
 
 TRAP will then automatically detect if the Discord Game SDK is installed properly on the next run of any GenerateProject script.  
@@ -14,4 +14,4 @@ The discord_game_sdk.dll file will be automatically copied to the .exe file's fo
 
 ### Linux
 
-The discord_game_sdk.so file will be automatically copied to /usr/local/lib during linking
+The libdiscord_game_sdk.so file will be automatically copied to the executables folder.

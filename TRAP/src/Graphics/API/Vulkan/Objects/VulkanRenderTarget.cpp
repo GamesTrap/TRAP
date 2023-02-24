@@ -5,8 +5,10 @@
 #include "VulkanDevice.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/Textures/Texture.h"
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
+#include <memory>
 
 std::atomic<int32_t> TRAP::Graphics::API::VulkanRenderTarget::s_RenderTargetIDs = 1;
 
@@ -18,6 +20,8 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	  m_used(),
 	  m_ID(++s_RenderTargetIDs)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	m_width = desc.Width;
 	m_height = desc.Height;
 	m_depth = desc.Depth;
@@ -26,12 +30,10 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	m_sampleCount = desc.SampleCount;
 	m_sampleQuality = desc.SampleQuality;
 	m_format = desc.Format;
-	m_clearColor = desc.ClearColor;
-	m_clearDepth = desc.ClearDepth;
-	m_clearStencil = desc.ClearStencil;
+	m_clearValue = desc.ClearValue;
 	m_descriptors = desc.Descriptors;
 
-	TRAP_ASSERT(m_device, "device is nullptr");
+	TRAP_ASSERT(m_device, "VulkanRenderTarget(): Vulkan Device is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRenderTargetPrefix, "Creating RenderTarget");
@@ -41,7 +43,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	                     TRAP::Graphics::API::ImageFormatIsDepthAndStencil(desc.Format);
 
 	TRAP_ASSERT(!((isDepth) && static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWTexture)),
-	            "Cannot use depth stencil as UAV");
+	            "VulkanRenderTarget(): Cannot use depth stencil as UAV");
 
 	const uint32_t depthOrArraySize = desc.ArraySize * desc.Depth;
 	uint32_t numRTVs = m_mipLevels;
@@ -63,15 +65,15 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	textureDesc.SampleCount = desc.SampleCount;
 	textureDesc.SampleQuality = desc.SampleQuality;
 	textureDesc.Format = desc.Format;
-	textureDesc.ClearColor = desc.ClearColor;
-	textureDesc.ClearDepth = desc.ClearDepth;
-	textureDesc.ClearStencil = desc.ClearStencil;
+	textureDesc.ClearValue = desc.ClearValue;
 	textureDesc.NativeHandle = desc.NativeHandle;
 
 	if (!isDepth)
 		textureDesc.StartState |= RendererAPI::ResourceState::RenderTarget;
 	else
 		textureDesc.StartState |= RendererAPI::ResourceState::DepthWrite;
+	if(static_cast<bool>(desc.StartState & RendererAPI::ResourceState::ShadingRateSource))
+		textureDesc.StartState |= RendererAPI::ResourceState::ShadingRateSource;
 
 	//Set this by default to be able to sample the renderTarget in shader
 	textureDesc.Descriptors = desc.Descriptors;
@@ -89,8 +91,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 
 		//On tile textures do not support SRV/UAV as there is no backing memory
 		//You can only read these textures as input attachments inside same render pass
-		textureDesc.Descriptors &= static_cast<RendererAPI::DescriptorType>(~static_cast<uint32_t>(RendererAPI::DescriptorType::Texture));
-		textureDesc.Descriptors &= static_cast<RendererAPI::DescriptorType>(~static_cast<uint32_t>(RendererAPI::DescriptorType::RWTexture));
+		textureDesc.Descriptors &= static_cast<RendererAPI::DescriptorType>(~static_cast<int32_t>(RendererAPI::DescriptorType::Texture | RendererAPI::DescriptorType::RWTexture));
 	}
 
 	if(isDepth)
@@ -117,7 +118,8 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 
 	textureDesc.Name = desc.Name;
 
-	m_texture = TRAP::MakeScope<VulkanTexture>();
+	m_texture = TRAP::MakeRef<VulkanTexture>();
+	TRAP_ASSERT(m_texture, "VulkanRenderTarget(): Texture is nullptr!");
 	m_texture->Init(textureDesc);
 
 	VkImageViewType viewType = VK_IMAGE_VIEW_TYPE_MAX_ENUM;
@@ -126,12 +128,13 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	else
 		viewType = depthOrArraySize > 1 ? VK_IMAGE_VIEW_TYPE_1D_ARRAY : VK_IMAGE_VIEW_TYPE_1D;
 
-	auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(m_texture.get());
+	auto vkTexture = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(m_texture);
 	VkImageViewCreateInfo rtvDesc = VulkanInits::ImageViewCreateInfo(vkTexture->GetVkImage(), viewType,
 	                                                                 ImageFormatToVkFormat(desc.Format), 1,
 																	 depthOrArraySize);
 
 	VkCall(vkCreateImageView(m_device->GetVkDevice(), &rtvDesc, nullptr, &m_vkDescriptor));
+	TRAP_ASSERT(m_vkDescriptor, "VulkanRenderTarget(): Vulkan Descriptor is nullptr!");
 
 	for(uint32_t i = 0; i < m_mipLevels; ++i)
 	{
@@ -155,15 +158,14 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	//To keep in line with DirectX 12, we transition them to the specified layout
 	//manually so app code doesn't have to worry about this
 	//Render targets wont be created during runtime so this overhead will be minimal
-	VulkanRenderer::UtilInitialTransition(m_texture.get(), desc.StartState);
+	VulkanRenderer::UtilInitialTransition(m_texture, desc.StartState);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanRenderTarget::~VulkanRenderTarget()
 {
-	TRAP_ASSERT(m_texture);
-	TRAP_ASSERT(m_vkDescriptor);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRenderTargetPrefix, "Destroying RenderTarget");
@@ -199,22 +201,28 @@ TRAP::Graphics::API::VulkanRenderTarget::~VulkanRenderTarget()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkImageView TRAP::Graphics::API::VulkanRenderTarget::GetVkImageView() const
+[[nodiscard]] VkImageView TRAP::Graphics::API::VulkanRenderTarget::GetVkImageView() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_vkDescriptor;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<VkImageView>& TRAP::Graphics::API::VulkanRenderTarget::GetVkImageViewSlices() const
+[[nodiscard]] const std::vector<VkImageView>& TRAP::Graphics::API::VulkanRenderTarget::GetVkImageViewSlices() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_vkSliceDescriptors;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanRenderTarget::GetID() const
+[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanRenderTarget::GetID() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_ID;
 }
 
@@ -222,5 +230,7 @@ uint32_t TRAP::Graphics::API::VulkanRenderTarget::GetID() const
 
 void TRAP::Graphics::API::VulkanRenderTarget::SetRenderTargetName(const std::string_view name) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	m_texture->SetTextureName(name);
 }

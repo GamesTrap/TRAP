@@ -29,55 +29,55 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanDescriptorSet(const VulkanDescriptorSet&) = default;
+		VulkanDescriptorSet(const VulkanDescriptorSet&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanDescriptorSet& operator=(const VulkanDescriptorSet&) = default;
+		VulkanDescriptorSet& operator=(const VulkanDescriptorSet&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanDescriptorSet(VulkanDescriptorSet&&) = default;
+		VulkanDescriptorSet(VulkanDescriptorSet&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanDescriptorSet& operator=(VulkanDescriptorSet&&) = default;
+		VulkanDescriptorSet& operator=(VulkanDescriptorSet&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the VkDescriptorSet handles.
 		/// </summary>
 		/// <returns>VkDescriptorSet handles.</returns>
-		const std::vector<VkDescriptorSet>& GetVkDescriptorSets() const;
+		[[nodiscard]] const std::vector<VkDescriptorSet>& GetVkDescriptorSets() const noexcept;
 		/// <summary>
 		/// Retrieve the root signature.
 		/// </summary>
 		/// <returns>Root signature.</returns>
-		TRAP::Ref<VulkanRootSignature> GetRootSignature() const;
+		[[nodiscard]] TRAP::Ref<VulkanRootSignature> GetRootSignature() const noexcept;
 		/// <summary>
 		/// Retrieve the update frequency used by the descriptor set.
 		/// </summary>
 		/// <returns>Update frequency.</returns>
-		RendererAPI::DescriptorUpdateFrequency GetUpdateFrequency() const;
+		[[nodiscard]] RendererAPI::DescriptorUpdateFrequency GetUpdateFrequency() const noexcept;
 		/// <summary>
 		/// Retrieve the amount of dynamic offsets used by the descriptor set.
 		/// </summary>
 		/// <returns>Amount of dynamic offsets.</returns>
-		uint8_t GetDynamicOffsetCount() const;
+		[[nodiscard]] uint8_t GetDynamicOffsetCount() const noexcept;
 		/// <summary>
 		/// Retrieve the dynamic size offsets used by the descriptor set.
 		/// </summary>
 		/// <returns>Dynamic size offsets.</returns>
-		std::vector<VulkanRenderer::SizeOffset> GetDynamicSizeOffsets() const;
+		[[nodiscard]] std::vector<VulkanRenderer::SizeOffset> GetDynamicSizeOffsets() const noexcept;
 		/// <summary>
 		/// Retrieve the max number of sets for the descriptor set.
 		/// </summary>
 		/// <returns>Max number of sets.</returns>
-		uint32_t GetMaxSets() const;
+		[[nodiscard]] uint32_t GetMaxSets() const noexcept;
 		/// <summary>
 		/// Retrieve the index of the set for the descriptor set.
 		/// </summary>
 		/// <returns>Index of the set.</returns>
-		uint32_t GetSet() const;
+		[[nodiscard]] uint32_t GetSet() const noexcept;
 
 		/// <summary>
 		/// Update the descriptor set.

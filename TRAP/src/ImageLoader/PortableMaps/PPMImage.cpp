@@ -3,19 +3,19 @@
 
 #include "Utils/String/String.h"
 #include "FileSystem/FileSystem.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 #include "Utils/Utils.h"
 
 TRAP::INTERNAL::PPMImage::PPMImage(std::filesystem::path filepath)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	m_filepath = std::move(filepath);
 	m_colorFormat = ColorFormat::RGB;
 
 	TP_DEBUG(Log::ImagePPMPrefix, "Loading image: \"", m_filepath.u8string(), "\"");
 
-	if (!FileSystem::FileOrFolderExists(m_filepath))
+	if (!FileSystem::Exists(m_filepath))
 		return;
 
 	std::ifstream file(m_filepath, std::ios::binary);
@@ -106,8 +106,10 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const void* TRAP::INTERNAL::PPMImage::GetPixelData() const
+[[nodiscard]] const void* TRAP::INTERNAL::PPMImage::GetPixelData() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if (!m_data2Byte.empty())
 		return m_data2Byte.data();
 
@@ -116,8 +118,10 @@ const void* TRAP::INTERNAL::PPMImage::GetPixelData() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::INTERNAL::PPMImage::GetPixelDataSize() const
+[[nodiscard]] uint64_t TRAP::INTERNAL::PPMImage::GetPixelDataSize() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if (!m_data2Byte.empty())
 		return m_data2Byte.size() * sizeof(uint16_t);
 
@@ -128,6 +132,8 @@ uint64_t TRAP::INTERNAL::PPMImage::GetPixelDataSize() const
 
 void TRAP::INTERNAL::PPMImage::Save(const Image* const img, const std::filesystem::path& filepath)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
 	//NOTE Only supports 24/32BPP RGB(A) Input
 
 	std::ofstream file(filepath, std::ios::out | std::ios::binary);

@@ -5,6 +5,8 @@
 
 TRAP::Graphics::Pipeline::Pipeline()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererPipelinePrefix, "Creating Pipeline");
 #endif
@@ -14,6 +16,8 @@ TRAP::Graphics::Pipeline::Pipeline()
 
 TRAP::Graphics::Pipeline::~Pipeline()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererPipelinePrefix, "Destroying Pipeline");
 #endif
@@ -21,8 +25,10 @@ TRAP::Graphics::Pipeline::~Pipeline()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Pipeline> TRAP::Graphics::Pipeline::Create(const RendererAPI::PipelineDesc& desc)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Pipeline> TRAP::Graphics::Pipeline::Create(const RendererAPI::PipelineDesc& desc)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
@@ -32,7 +38,7 @@ TRAP::Ref<TRAP::Graphics::Pipeline> TRAP::Graphics::Pipeline::Create(const Rende
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Pipeline::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
 }

@@ -2,6 +2,7 @@ require "generatecontrollermappings"
 require "generatedocs"
 require "generatevulkanloader"
 require "ecc"
+require "vscode"
 
 workspace "TRAP"
 	architecture "x86_64"
@@ -11,19 +12,27 @@ workspace "TRAP"
 	{
 		"Debug",
 		"Release",
-		"RelWithDebInfo"
+		"RelWithDebInfo",
+		"Profiling"
 	}
 
-	flags
-	{
-		"MultiProcessorCompile"
-	}
+	filter "system:linux"
+		configurations
+		{
+			"ASan",
+			"UBSan",
+			"LSan",
+			-- "TSan" -- Not working, crashes in thread from libnvidia-glcore.so
+		}
+
+	flags "MultiProcessorCompile"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 --Include directories relative to root folder(solution folder)
 IncludeDir = {}
 IncludeDir["IMGUI"] = "%{wks.location}/Dependencies/ImGui"
+IncludeDir["IMGUIZMO"] = "%{wks.location}/Dependencies/ImGuizmo"
 IncludeDir["VULKAN"] = os.getenv("VULKAN_SDK")
 IncludeDir["GLSLANG"] = "%{wks.location}/Dependencies/GLSLang"
 IncludeDir["SPIRV"] = "%{wks.location}/Dependencies/GLSLang/SPIRV"
@@ -35,13 +44,21 @@ IncludeDir["DISCORDGAMESDK"] = "%{wks.location}/Dependencies/DiscordGameSDK/cpp"
 IncludeDir["NSIGHTAFTERMATH"] = "%{wks.location}/Dependencies/Nsight-Aftermath/include"
 IncludeDir["VMA"] = "%{wks.location}/Dependencies/VulkanMemoryAllocator/include"
 IncludeDir["WAYLAND"] = "%{wks.location}/Dependencies/Wayland"
+IncludeDir["STEAMWORKSSDK"] = "%{wks.location}/Dependencies/SteamworksSDK/sdk/public/steam"
+IncludeDir["NVIDIAREFLEX"] = "%{wks.location}/Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Vulkan/Reflex_Vulkan/inc"
+IncludeDir["NVIDIAREFLEXSTATS"] = "%{wks.location}/Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Stats"
+IncludeDir["BOX2D"] = "%{wks.location}/Dependencies/Box2D/include"
+IncludeDir["TRACY"] = "%{wks.location}/Dependencies/Tracy/public"
 
 include "TRAP"
 
 group "Dependencies"
 	include "Dependencies/ImGui.lua"
+	include "Dependencies/ImGuizmo.lua"
 	include "Dependencies/YAMLCpp.lua"
 	include "Dependencies/ModernDialogs.lua"
+	include "Dependencies/Box2D.lua"
+	include "Dependencies/Tracy.lua"
 	group "Dependencies/GLSLang"
 		include "Dependencies/GLSLang.lua"
 	group "Dependencies/SPIRV-Cross"

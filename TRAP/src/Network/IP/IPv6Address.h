@@ -19,7 +19,7 @@ namespace TRAP::Network
 		/// <summary>
 		/// This constructor creates an empty (invalid) address.
 		/// </summary>
-		IPv6Address() = default;
+		IPv6Address() noexcept = default;
 
 		/// <summary>
 		/// Construct the address from a string.
@@ -46,7 +46,7 @@ namespace TRAP::Network
 		/// Construct the address from 16 bytes array.
 		/// </summary>
 		/// <param name="addressBytes">Array containing 16 bytes address.</param>
-		explicit IPv6Address(const std::array<uint8_t, 16>& addressBytes);
+		explicit IPv6Address(const std::array<uint8_t, 16>& addressBytes) noexcept;
 
 		/// <summary>
 		/// Get a string representation of the address.
@@ -56,7 +56,7 @@ namespace TRAP::Network
 		/// from a host name.
 		/// </summary>
 		/// <returns>String representation of the address.</returns>
-		std::string ToString() const;
+		[[nodiscard]] std::string ToString() const;
 
 		/// <summary>
 		/// Get a byte representation of the address.
@@ -66,7 +66,7 @@ namespace TRAP::Network
 		/// from a host name.
 		/// </summary>
 		/// <returns>Byte representation of the address.</returns>
-		std::array<uint8_t, 16> ToArray() const;
+		[[nodiscard]] std::array<uint8_t, 16> ToArray() const noexcept;
 
 		/// <summary>
 		/// Get the computer's local address.
@@ -77,7 +77,7 @@ namespace TRAP::Network
 		/// Unlike GetPublicAddress, this function is fast and may be used safely anywhere.
 		/// </summary>
 		/// <returns>Local IPv6 address of the computer.</returns>
-		static IPv6Address GetLocalAddress();
+		[[nodiscard]] static IPv6Address GetLocalAddress();
 
 		/// <summary>
 		/// Get the computer's public address.
@@ -96,7 +96,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="timeout">Maximum time to wait.</param>
 		/// <returns>Public IP address of the computer.</returns>
-		static IPv6Address GetPublicAddress(Utils::TimeStep timeout = Utils::TimeStep(0.0f));
+		[[nodiscard]] static IPv6Address GetPublicAddress(Utils::TimeStep timeout = Utils::TimeStep(0.0f));
 
 		static const IPv6Address None; //Value representing an empty/invaid address
 		static const IPv6Address Any; //Value representing any address (0000:0000:0000:0000:0000:0000:0000:0000)

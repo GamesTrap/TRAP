@@ -16,19 +16,19 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		PAMImage(const PAMImage&) = default;
+		PAMImage(const PAMImage&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		PAMImage& operator=(const PAMImage&) = default;
+		PAMImage& operator=(const PAMImage&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		PAMImage(PAMImage&&) = default;
+		PAMImage(PAMImage&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		PAMImage& operator=(PAMImage&&) = default;
+		PAMImage& operator=(PAMImage&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -38,12 +38,12 @@ namespace TRAP::INTERNAL
 		/// Retrieve the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Constant pointer to the raw pixel data.</returns>
-		const void* GetPixelData() const override;
+		[[nodiscard]] const void* GetPixelData() const noexcept override;
 		/// <summary>
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		uint64_t GetPixelDataSize() const override;
+		[[nodiscard]] uint64_t GetPixelDataSize() const noexcept override;
 
 	private:
 		std::vector<uint8_t> m_data;

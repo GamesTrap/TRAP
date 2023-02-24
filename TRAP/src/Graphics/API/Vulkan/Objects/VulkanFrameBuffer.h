@@ -1,7 +1,6 @@
 #ifndef TRAP_VULKANFRAMEBUFFER_H
 #define TRAP_VULKANFRAMEBUFFER_H
 
-#include "VulkanRenderPass.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 namespace TRAP::Graphics::API
@@ -25,41 +24,41 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanFrameBuffer(const VulkanFrameBuffer&) = default;
+		VulkanFrameBuffer(const VulkanFrameBuffer&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanFrameBuffer& operator=(const VulkanFrameBuffer&) = default;
+		VulkanFrameBuffer& operator=(const VulkanFrameBuffer&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanFrameBuffer(VulkanFrameBuffer&&) = default;
+		VulkanFrameBuffer(VulkanFrameBuffer&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanFrameBuffer& operator=(VulkanFrameBuffer&&) = default;
+		VulkanFrameBuffer& operator=(VulkanFrameBuffer&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the VkFramebuffer handle.
 		/// </summary>
 		/// <returns>VkFramebuffer handle.</returns>
-		VkFramebuffer GetVkFrameBuffer() const;
+		[[nodiscard]] VkFramebuffer GetVkFrameBuffer() const noexcept;
 
 		/// <summary>
 		/// Retrieve the width of the framebuffer.
 		/// </summary>
 		/// <returns>Framebuffer width.</returns>
-		uint32_t GetWidth() const;
+		[[nodiscard]] uint32_t GetWidth() const noexcept;
 		/// <summary>
 		/// Retrieve the height of the framebuffer.
 		/// </summary>
 		/// <returns>Framebuffer height.</returns>
-		uint32_t GetHeight() const;
+		[[nodiscard]] uint32_t GetHeight() const noexcept;
 		/// <summary>
 		/// Retrieve the array size of the framebuffer.
 		/// </summary>
 		/// <returns>Framebuffer array size.</returns>
-		uint32_t GetArraySize() const;
+		[[nodiscard]] uint32_t GetArraySize() const noexcept;
 
 	private:
 		VkFramebuffer m_framebuffer;

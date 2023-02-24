@@ -7,8 +7,10 @@
 #include "Application.h"
 #include "Utils/DynamicLoading/DynamicLoading.h"
 
-std::string TRAP::Utils::UUIDToString(const std::array<uint8_t, 16>& uuid)
+[[nodiscard]] std::string TRAP::Utils::UUIDToString(const std::array<uint8_t, 16>& uuid)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	std::stringstream s;
 
 	s << std::hex << std::setfill('0')
@@ -38,8 +40,10 @@ std::string TRAP::Utils::UUIDToString(const std::array<uint8_t, 16>& uuid)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 16> TRAP::Utils::UUIDFromString(const std::string_view uuid)
+[[nodiscard]] std::array<uint8_t, 16> TRAP::Utils::UUIDFromString(const std::string_view uuid)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	uint8_t digit = 0;
 	bool firstDigit = true;
 	std::size_t index = 0;
@@ -94,11 +98,13 @@ std::array<uint8_t, 16> TRAP::Utils::UUIDFromString(const std::string_view uuid)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::Endian TRAP::Utils::GetEndian()
+[[nodiscard]] TRAP::Utils::Endian TRAP::Utils::GetEndian()
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	//Check if machine is using little-endian or big-endian
 	const int32_t intVal = 1;
-	const uint8_t* uVal = reinterpret_cast<const uint8_t*>(&intVal);
+	const uint8_t* const uVal = reinterpret_cast<const uint8_t*>(&intVal);
 #if __cpp_lib_endian
 	static Endian endian = static_cast<Endian>(std::endian::native == std::endian::little);
 #else
@@ -110,8 +116,10 @@ TRAP::Utils::Endian TRAP::Utils::GetEndian()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
+[[nodiscard]] const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	static CPUInfo cpu{};
 
 	if(!cpu.Model.empty())
@@ -142,9 +150,9 @@ const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 
 	const std::string upVendorID = Utils::String::ToUpper(vendorID);
 	//Get Number of cores
-	constexpr int32_t MAX_INTEL_TOP_LVL = 4;
-	constexpr uint32_t LVL_TYPE = 0x0000FF00;
-	constexpr uint32_t LVL_CORES = 0x0000FFFF;
+	static constexpr int32_t MAX_INTEL_TOP_LVL = 4;
+	static constexpr uint32_t LVL_TYPE = 0x0000FF00;
+	static constexpr uint32_t LVL_CORES = 0x0000FFFF;
 	if (upVendorID.find("INTEL") != std::string::npos)
 	{
 		if (HFS >= 11)
@@ -247,7 +255,7 @@ const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 		cpu.Model += std::string(reinterpret_cast<char*>(&regs1[3]), sizeof(uint32_t));
 	}
 
-	int32_t lastAlphaChar = 0;
+	std::size_t lastAlphaChar = 0;
 	for(auto it = cpu.Model.rbegin(); it != cpu.Model.rend(); ++it)
 	{
 		if (isalnum(*it))
@@ -263,8 +271,10 @@ const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
+[[nodiscard]] TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	static LinuxWindowManager windowManager{};
 
 #ifdef TRAP_PLATFORM_LINUX
@@ -291,7 +301,7 @@ TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 									Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::EngineLinuxPrefix, "Unsupported window manager!");
 		TRAP::Application::Shutdown();
-		exit(-1);
+		exit(0x0008);
 #else
 		return LinuxWindowManager::Unknown;
 #endif
@@ -308,7 +318,6 @@ TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 			windowManager = LinuxWindowManager::Unknown;
 	}
 #endif
-
 #endif
 
 	return windowManager;
@@ -320,8 +329,10 @@ TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 
 static TRAP::Utils::NTDLL s_ntdll;
 
-BOOL TRAP::Utils::IsWindowsVersionOrGreaterWin32(const WORD major, const WORD minor, const WORD sp)
+[[nodiscard]] BOOL TRAP::Utils::IsWindowsVersionOrGreaterWin32(const WORD major, const WORD minor, const WORD sp)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	if(!s_ntdll.Instance || !s_ntdll.RtlVerifyVersionInfo) //Init s_ntdll if not already done
 	{
 		s_ntdll.Instance = static_cast<HINSTANCE>(DynamicLoading::LoadLibrary("ntdll.dll"));
@@ -331,7 +342,7 @@ BOOL TRAP::Utils::IsWindowsVersionOrGreaterWin32(const WORD major, const WORD mi
 																									  "RtlVerifyVersionInfo");
 		}
 
-		TRAP_ASSERT(s_ntdll.Instance && s_ntdll.RtlVerifyVersionInfo, "[Utils][Win32] Failed to load ntdll.dll");
+		TRAP_ASSERT(s_ntdll.Instance && s_ntdll.RtlVerifyVersionInfo, "Utils::IsWindowsVersionOrGreaterWin32(): Failed to load ntdll.dll");
 	}
 
 	OSVERSIONINFOEXW osvi = { sizeof(osvi), major, minor, 0, 0, {0}, sp };
@@ -347,8 +358,10 @@ BOOL TRAP::Utils::IsWindowsVersionOrGreaterWin32(const WORD major, const WORD mi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-BOOL TRAP::Utils::IsWindows10BuildOrGreaterWin32(const WORD build)
+[[nodiscard]] BOOL TRAP::Utils::IsWindows10BuildOrGreaterWin32(const WORD build)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	if(!s_ntdll.Instance || !s_ntdll.RtlVerifyVersionInfo) //Init s_ntdll if not already done
 	{
 		s_ntdll.Instance = static_cast<HINSTANCE>(DynamicLoading::LoadLibrary("ntdll.dll"));
@@ -358,7 +371,7 @@ BOOL TRAP::Utils::IsWindows10BuildOrGreaterWin32(const WORD build)
 																									  "RtlVerifyVersionInfo");
 		}
 
-		TRAP_ASSERT(s_ntdll.Instance && s_ntdll.RtlVerifyVersionInfo, "[Utils][Win32] Failed to load ntdll.dll");
+		TRAP_ASSERT(s_ntdll.Instance && s_ntdll.RtlVerifyVersionInfo, "Utils::IsWindows10BuildOrGreaterWin32(): Failed to load ntdll.dll");
 	}
 
 	OSVERSIONINFOEXW osvi = { sizeof(osvi), 10, 0, build };
@@ -374,45 +387,57 @@ BOOL TRAP::Utils::IsWindows10BuildOrGreaterWin32(const WORD build)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-BOOL TRAP::Utils::IsWindows11BuildOrGreaterWin32(const WORD build)
+[[nodiscard]] BOOL TRAP::Utils::IsWindows11BuildOrGreaterWin32(const WORD build)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return IsWindows10BuildOrGreaterWin32(build); //Windows 11 shares 10.0.XXXXX format with Windows 10
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-BOOL TRAP::Utils::IsWindows10Version1607OrGreaterWin32()
+[[nodiscard]] BOOL TRAP::Utils::IsWindows10Version1607OrGreaterWin32()
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return IsWindows10BuildOrGreaterWin32(14393);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-BOOL TRAP::Utils::IsWindows10Version1703OrGreaterWin32()
+[[nodiscard]] BOOL TRAP::Utils::IsWindows10Version1703OrGreaterWin32()
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return IsWindows10BuildOrGreaterWin32(15063);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-BOOL TRAP::Utils::IsWindows8Point1OrGreaterWin32()
+[[nodiscard]] BOOL TRAP::Utils::IsWindows8Point1OrGreaterWin32()
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return IsWindowsVersionOrGreaterWin32(HIBYTE(_WIN32_WINNT_WINBLUE),
 		                                  LOBYTE(_WIN32_WINNT_WINBLUE), 0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-BOOL TRAP::Utils::IsWindows8OrGreaterWin32()
+[[nodiscard]] BOOL TRAP::Utils::IsWindows8OrGreaterWin32()
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return IsWindowsVersionOrGreaterWin32(HIBYTE(_WIN32_WINNT_WIN8),
 		                                  LOBYTE(_WIN32_WINNT_WIN8), 0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-BOOL TRAP::Utils::IsWindows7OrGreaterWin32()
+[[nodiscard]] BOOL TRAP::Utils::IsWindows7OrGreaterWin32()
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return IsWindowsVersionOrGreaterWin32(HIBYTE(_WIN32_WINNT_WIN7),
 		                                  LOBYTE(_WIN32_WINNT_WIN7), 0);
 }

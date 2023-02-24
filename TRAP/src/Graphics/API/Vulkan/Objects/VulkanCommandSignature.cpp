@@ -4,6 +4,8 @@
 TRAP::Graphics::API::VulkanCommandSignature::VulkanCommandSignature(const RendererAPI::CommandSignatureDesc& desc)
 	: m_drawType(), m_stride()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandSignaturePrefix, "Creating CommandSignature");
 #endif
@@ -28,8 +30,8 @@ TRAP::Graphics::API::VulkanCommandSignature::VulkanCommandSignature(const Render
 			break;
 
 		default:
-			TRAP_ASSERT(false, "Vulkan runtime only supports IndirectDraw, IndirectDrawIndex and IndirectDispatch "
-			         "at this point!");
+			TRAP_ASSERT(false, "VulkanCommandSignature(): Vulkan runtime only supports IndirectDraw, IndirectDrawIndex and IndirectDispatch "
+			                   "at this point!");
 			break;
 		}
 	}
@@ -42,6 +44,8 @@ TRAP::Graphics::API::VulkanCommandSignature::VulkanCommandSignature(const Render
 
 TRAP::Graphics::API::VulkanCommandSignature::~VulkanCommandSignature()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandSignaturePrefix, "Destroying CommandSignature");
 #endif
@@ -49,14 +53,18 @@ TRAP::Graphics::API::VulkanCommandSignature::~VulkanCommandSignature()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::IndirectArgumentType TRAP::Graphics::API::VulkanCommandSignature::GetDrawType() const
+[[nodiscard]] TRAP::Graphics::RendererAPI::IndirectArgumentType TRAP::Graphics::API::VulkanCommandSignature::GetDrawType() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_drawType;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanCommandSignature::GetStride() const
+[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanCommandSignature::GetStride() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_stride;
 }

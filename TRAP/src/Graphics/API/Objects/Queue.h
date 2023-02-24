@@ -13,7 +13,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="desc">Queue description.</param>
 		/// <returns>Created queue.</returns>
-		static TRAP::Ref<Queue> Create(const RendererAPI::QueueDesc& desc);
+		[[nodiscard]] static TRAP::Ref<Queue> Create(const RendererAPI::QueueDesc& desc);
 
 		/// <summary>
 		/// Destructor.
@@ -23,19 +23,19 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Queue(const Queue&) = default;
+		Queue(const Queue&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Queue& operator=(const Queue&) = default;
+		Queue& operator=(const Queue&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Queue(Queue&&) = default;
+		Queue(Queue&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Queue& operator=(Queue&&) = default;
+		Queue& operator=(Queue&&) noexcept = default;
 
 		/// <summary>
 		/// Wait for the queue to finish all submitted commands.
@@ -53,7 +53,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="desc">Queue presentation description.</param>
 		/// <returns>Presentation status.</returns>
-		virtual RendererAPI::PresentStatus Present(const RendererAPI::QueuePresentDesc& desc) const = 0;
+		[[nodiscard]] virtual RendererAPI::PresentStatus Present(const RendererAPI::QueuePresentDesc& desc) const = 0;
 
 	protected:
 		/// <summary>

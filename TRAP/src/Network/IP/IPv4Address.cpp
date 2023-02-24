@@ -2,7 +2,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -32,7 +32,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Network/HTTP/HTTP.h"
 #include "Network/Sockets/SocketImpl.h"
 #include "Utils/Utils.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 
 const TRAP::Network::IPv4Address TRAP::Network::IPv4Address::None{};
 const TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Any(0, 0, 0, 0);
@@ -44,6 +44,8 @@ const TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Broadcast(255, 255,
 TRAP::Network::IPv4Address::IPv4Address(const std::string_view address)
 	: m_address(0), m_valid(false)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	Resolve(address);
 }
 
@@ -53,6 +55,8 @@ TRAP::Network::IPv4Address::IPv4Address(const uint8_t byte0, const uint8_t byte1
                                         const uint8_t byte3)
 	: m_address(static_cast<uint32_t>((byte0 << 24) | (byte1 << 16) | (byte2 << 8) | byte3)), m_valid(true)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(m_address);
 }
@@ -62,27 +66,33 @@ TRAP::Network::IPv4Address::IPv4Address(const uint8_t byte0, const uint8_t byte1
 TRAP::Network::IPv4Address::IPv4Address(const uint32_t address)
 	: m_address(address), m_valid(true)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(m_address);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Network::IPv4Address::ToString() const
+[[nodiscard]] std::string TRAP::Network::IPv4Address::ToString() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	in_addr address{};
 	address.s_addr = m_address;
 
 	std::string str(16, '\0');
-	inet_ntop(AF_INET, &address, str.data(), str.size());
+	inet_ntop(AF_INET, &address, str.data(), static_cast<uint32_t>(str.size()));
 	str.erase(std::find(str.begin(), str.end(), '\0'), str.end());
 	return str;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Network::IPv4Address::ToInteger() const
+[[nodiscard]] uint32_t TRAP::Network::IPv4Address::ToInteger() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	uint32_t address = m_address;
 
 	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
@@ -93,8 +103,10 @@ uint32_t TRAP::Network::IPv4Address::ToInteger() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetLocalAddress()
+[[nodiscard]] TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetLocalAddress()
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//The method here is to connect a UDP socket to anyone (here to localhost),
 	//and get the local socket address with the getsockname function.
 	//UDP connection will not send anything to the network, so this function won't cause any overhead.
@@ -140,8 +152,10 @@ TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetLocalAddress()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetPublicAddress(const Utils::TimeStep timeout)
+[[nodiscard]] TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetPublicAddress(const Utils::TimeStep timeout)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//The trick here is more complicated, because the only way
 	//to get our public IPv4 address is to get it from a distant computer.
 	//Here we get the web page from http://www.sfml-dev.org/ip-provider.php
@@ -162,6 +176,8 @@ TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetPublicAddress(const Ut
 
 void TRAP::Network::IPv4Address::Resolve(const std::string_view address)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	m_address = 0;
 	m_valid = false;
 
@@ -210,6 +226,8 @@ void TRAP::Network::IPv4Address::Resolve(const std::string_view address)
 
 bool TRAP::Network::operator==(const IPv4Address& left, const IPv4Address& right)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return !(left < right) && !(right < left);
 }
 
@@ -217,6 +235,8 @@ bool TRAP::Network::operator==(const IPv4Address& left, const IPv4Address& right
 
 bool TRAP::Network::operator!=(const IPv4Address& left, const IPv4Address& right)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return !(left == right);
 }
 
@@ -224,6 +244,8 @@ bool TRAP::Network::operator!=(const IPv4Address& left, const IPv4Address& right
 
 bool TRAP::Network::operator<(const IPv4Address& left, const IPv4Address& right)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return std::make_pair(left.m_valid, left.m_address) < std::make_pair(right.m_valid, right.m_address);
 }
 
@@ -231,6 +253,8 @@ bool TRAP::Network::operator<(const IPv4Address& left, const IPv4Address& right)
 
 bool TRAP::Network::operator>(const IPv4Address& left, const IPv4Address& right)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return right < left;
 }
 
@@ -238,6 +262,8 @@ bool TRAP::Network::operator>(const IPv4Address& left, const IPv4Address& right)
 
 bool TRAP::Network::operator<=(const IPv4Address& left, const IPv4Address& right)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return !(right < left);
 }
 
@@ -245,6 +271,8 @@ bool TRAP::Network::operator<=(const IPv4Address& left, const IPv4Address& right
 
 bool TRAP::Network::operator>=(const IPv4Address& left, const IPv4Address& right)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return !(left < right);
 }
 
@@ -252,6 +280,8 @@ bool TRAP::Network::operator>=(const IPv4Address& left, const IPv4Address& right
 
 std::istream& TRAP::Network::operator>>(std::istream& stream, IPv4Address& address)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	std::string str;
 	stream >> str;
 	address = IPv4Address(str);
@@ -263,5 +293,7 @@ std::istream& TRAP::Network::operator>>(std::istream& stream, IPv4Address& addre
 
 std::ostream& TRAP::Network::operator<<(std::ostream& stream, const IPv4Address& address)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	return stream << address.ToString();
 }

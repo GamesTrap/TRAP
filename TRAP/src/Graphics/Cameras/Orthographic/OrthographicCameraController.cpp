@@ -4,15 +4,19 @@
 #include "Input/Input.h"
 #include "Events/WindowEvent.h"
 
-float TRAP::Graphics::OrthographicCameraBounds::GetWidth() const
+[[nodiscard]] float TRAP::Graphics::OrthographicCameraBounds::GetWidth() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return Right - Left;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::OrthographicCameraBounds::GetHeight() const
+[[nodiscard]] float TRAP::Graphics::OrthographicCameraBounds::GetHeight() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return Top - Bottom;
 }
 
@@ -21,21 +25,22 @@ float TRAP::Graphics::OrthographicCameraBounds::GetHeight() const
 TRAP::Graphics::OrthographicCameraController::OrthographicCameraController(const float aspectRatio,
 																		   const bool rotation,
 																		   const bool useController,
-																		   const Input::Controller controller)
+																		   const Input::Controller controller) noexcept
 	: m_aspectRatio(aspectRatio),
 	  m_bounds({ -m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel }),
-	  m_camera(m_bounds.Left, m_bounds.Right, m_bounds.Bottom, m_bounds.Top, -1.0f, 1.0f),
+	  m_camera(m_bounds.Left, m_bounds.Right, m_bounds.Bottom, m_bounds.Top, 1.0f, -1.0f),
 	  m_rotation(rotation),
 	  m_useController(useController),
 	  m_controller(controller)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeStep& deltaTime)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	if (m_useController)
 	{
@@ -66,7 +71,7 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 				m_zoomLevel = Math::Max(m_zoomLevel, 0.25f);
 				m_cameraTranslationSpeed = m_zoomLevel;
 				m_camera.SetProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel,
-				                       m_zoomLevel, -1.0f, 1.0f);
+				                       m_zoomLevel, 1.0f, -1.0f);
 			}
 			const float leftTrigger = (Input::GetControllerAxis(m_controller, Input::ControllerAxis::Left_Trigger) +
 			                           1) / 2;
@@ -76,7 +81,7 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 				m_zoomLevel = Math::Max(m_zoomLevel, 0.25f);
 				m_cameraTranslationSpeed = m_zoomLevel;
 				m_camera.SetProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel,
-				                       m_zoomLevel, -1.0f, 1.0f);
+				                       m_zoomLevel, 1.0f, -1.0f);
 			}
 
 			if (m_rotation)
@@ -144,7 +149,7 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 
 void TRAP::Graphics::OrthographicCameraController::OnEvent(Events::Event& e)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Events::EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<Events::MouseScrollEvent>([this](Events::MouseScrollEvent& event)
@@ -161,59 +166,73 @@ void TRAP::Graphics::OrthographicCameraController::OnEvent(Events::Event& e)
 
 void TRAP::Graphics::OrthographicCameraController::OnResize(const float width, const float height)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	m_aspectRatio = width / height;
 	m_bounds = { -m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel };
-	m_camera.SetProjection(m_bounds.Left, m_bounds.Right, m_bounds.Bottom, m_bounds.Top, -1.0f, 1.0f);
+	m_camera.SetProjection(m_bounds.Left, m_bounds.Right, m_bounds.Bottom, m_bounds.Top, 1.0f, -1.0f);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::OrthographicCamera& TRAP::Graphics::OrthographicCameraController::GetCamera()
+[[nodiscard]] TRAP::Graphics::OrthographicCamera& TRAP::Graphics::OrthographicCameraController::GetCamera() noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_camera;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Graphics::OrthographicCamera& TRAP::Graphics::OrthographicCameraController::GetCamera() const
+[[nodiscard]] const TRAP::Graphics::OrthographicCamera& TRAP::Graphics::OrthographicCameraController::GetCamera() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_camera;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::OrthographicCameraController::GetTranslationSpeed() const
+[[nodiscard]] float TRAP::Graphics::OrthographicCameraController::GetTranslationSpeed() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_cameraTranslationSpeed;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::OrthographicCameraController::SetTranslationSpeed(const float translationSpeed)
+void TRAP::Graphics::OrthographicCameraController::SetTranslationSpeed(const float translationSpeed) noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	m_cameraTranslationSpeed = translationSpeed;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::OrthographicCameraController::GetRotationSpeed() const
+[[nodiscard]] float TRAP::Graphics::OrthographicCameraController::GetRotationSpeed() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_cameraRotationSpeed;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::OrthographicCameraController::SetRotationSpeed(const float rotationSpeed)
+void TRAP::Graphics::OrthographicCameraController::SetRotationSpeed(const float rotationSpeed) noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	m_cameraRotationSpeed = rotationSpeed;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::OrthographicCameraController::GetZoomLevel() const
+[[nodiscard]] float TRAP::Graphics::OrthographicCameraController::GetZoomLevel() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_zoomLevel;
 }
 
@@ -221,19 +240,21 @@ float TRAP::Graphics::OrthographicCameraController::GetZoomLevel() const
 
 void TRAP::Graphics::OrthographicCameraController::SetZoomLevel(const float zoomLevel)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	m_zoomLevel = zoomLevel;
 	m_zoomLevel = Math::Max(m_zoomLevel, 0.25f);
 	m_cameraTranslationSpeed = m_zoomLevel;
 	m_camera.SetProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel,
-	                       -1.0f, 1.0f);
+	                       1.0f, -1.0f);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Graphics::OrthographicCameraBounds& TRAP::Graphics::OrthographicCameraController::GetBounds() const
+[[nodiscard]] const TRAP::Graphics::OrthographicCameraBounds& TRAP::Graphics::OrthographicCameraController::GetBounds() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_bounds;
 }
 
@@ -241,13 +262,13 @@ const TRAP::Graphics::OrthographicCameraBounds& TRAP::Graphics::OrthographicCame
 
 bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(const Events::MouseScrollEvent& e)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	m_zoomLevel -= e.GetYOffset() * 0.25f;
 	m_zoomLevel = Math::Max(m_zoomLevel, 0.25f);
 	m_cameraTranslationSpeed = m_zoomLevel;
 	m_bounds = { -m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel };
-	m_camera.SetProjection(m_bounds.Left, m_bounds.Right, m_bounds.Bottom, m_bounds.Top, -1.0f, 1.0f);
+	m_camera.SetProjection(m_bounds.Left, m_bounds.Right, m_bounds.Bottom, m_bounds.Top, 1.0f, -1.0f);
 
 	return false;
 }
@@ -256,7 +277,7 @@ bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(const Events::M
 
 bool TRAP::Graphics::OrthographicCameraController::OnFrameBufferResize(const Events::FrameBufferResizeEvent& e)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	if (e.GetWidth() > 0 && e.GetHeight() > 0)
 		OnResize(static_cast<float>(e.GetWidth()), static_cast<float>(e.GetHeight()));

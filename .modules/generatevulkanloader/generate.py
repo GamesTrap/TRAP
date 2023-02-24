@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# This file is part of volk library; see volk.h for version/license details
+# This file is part of volk library; see Licenses/Volk.LICENSE for license details
 # Modified by: Jan "GamesTrap" Schuerkamp
 
 from collections import OrderedDict
@@ -7,6 +7,13 @@ import sys
 import urllib
 import xml.etree.ElementTree as etree
 import urllib.request
+import re
+
+cmdversions = {
+	"vkCmdSetDiscardRectangleEnableEXT": 2,
+	"vkCmdSetDiscardRectangleModeEXT": 2,
+	"vkCmdSetExclusiveScissorEnableNV": 2
+}
 
 def parse_xml(path):
 	file = urllib.request.urlopen(path)
@@ -49,6 +56,9 @@ def is_descendant_type(types, name, base):
 def defined(key):
 	return 'defined(' + key + ')'
 
+def cdepends(key):
+	return re.sub(r'[a-zA-Z0-9_]+', lambda m: defined(m.group(0)), key).replace(',', ' || ').replace('+', ' && ')
+
 if __name__ == "__main__":
 	specpath = "https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/main/xml/vk.xml"
 
@@ -66,24 +76,37 @@ if __name__ == "__main__":
 	instance_commands = set()
 
 	for feature in spec.findall('feature'):
+		api = feature.get('api')
+		if 'vulkan' not in api.split(','):
+			continue
 		key = defined(feature.get('name'))
 		cmdrefs = feature.findall('require/command')
 		command_groups[key] = [cmdref.get('name') for cmdref in cmdrefs]
 
 	for ext in sorted(spec.findall('extensions/extension'), key=lambda ext: ext.get('name')):
 		supported = ext.get('supported')
-		if supported == 'disabled':
+		if 'vulkan' not in supported.split(','):
 			continue
 		name = ext.get('name')
 		type = ext.get('type')
 		for req in ext.findall('require'):
 			key = defined(name)
-			if req.get('feature'):
-				key += ' && ' + defined(req.get('feature'))
-			if req.get('extension'):
-				key += ' && ' + defined(req.get('extension'))
+			if req.get('feature'): # old-style XML depends specification
+				for i in req.get('feature').split(','):
+					key += ' && ' + defined(i)
+			if req.get('extension'): # old-style XML depends specification
+				for i in req.get('extension').split(','):
+					key += ' && ' + defined(i)
+			if req.get('depends'): # new-style XML depends specification
+				dep = cdepends(req.get('depends'))
+				key += ' && ' + ('(' + dep + ')' if '||' in dep else dep)
 			cmdrefs = req.findall('command')
-			command_groups.setdefault(key, []).extend([cmdref.get('name') for cmdref in cmdrefs])
+			for cmdref in cmdrefs:
+				ver = cmdversions.get(cmdref.get('name'))
+				if ver:
+					command_groups.setdefault(key + ' && ' + name.upper() + '_SPEC_VERSION >= ' + str(ver), []).append(cmdref.get('name'))
+				else:
+					command_groups.setdefault(key, []).append(cmdref.get('name'))
 			if type == 'instance':
 				for cmdref in cmdrefs:
 					instance_commands.add(cmdref.get('name'))

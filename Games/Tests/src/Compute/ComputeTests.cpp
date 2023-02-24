@@ -52,13 +52,14 @@ void ComputeTests::OnAttach()
     TRAP::Graphics::ShaderManager::LoadFile("ComputeEmboss", "./Assets/Shaders/emboss.compute.shader");
     TRAP::Graphics::ShaderManager::LoadFile("ComputeEdgeDetect", "./Assets/Shaders/edgedetect.compute.shader");
 
-    TRAP::Graphics::SamplerDesc samplerDesc{};
+    TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
     samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;
 	samplerDesc.AddressV = TRAP::Graphics::AddressMode::Repeat;
 	samplerDesc.AddressW = TRAP::Graphics::AddressMode::Repeat;
 	samplerDesc.MagFilter = TRAP::Graphics::FilterType::Linear;
 	samplerDesc.MinFilter = TRAP::Graphics::FilterType::Linear;
 	samplerDesc.MipMapMode = TRAP::Graphics::MipMapMode::Linear;
+    samplerDesc.EnableAnisotropy = false;
     m_textureSampler = TRAP::Graphics::Sampler::Create(samplerDesc);
 
     //Wait for all pending resources (Just in case)
@@ -88,7 +89,7 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
     {
         m_reset = false;
 
-        TRAP::Graphics::Shader* shader = nullptr;
+        TRAP::Ref<TRAP::Graphics::Shader> shader = nullptr;
         if(m_sharpen)
             shader = TRAP::Graphics::ShaderManager::Get("ComputeSharpen");
         else if(m_emboss)
@@ -100,9 +101,9 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
         TRAP::Graphics::RendererAPI::TextureBarrier barrier{};
         barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
         barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
-        barrier.Texture = m_colTex;
+        barrier.Texture = m_colTex.get();
         TRAP::Graphics::RenderCommand::TextureBarrier(barrier, TRAP::Graphics::QueueType::Compute);
-        barrier.Texture = m_compTex;
+        barrier.Texture = m_compTex.get();
         TRAP::Graphics::RenderCommand::TextureBarrier(barrier, TRAP::Graphics::QueueType::Compute);
 
         //ALWAYS Bind descriptors (textures, buffers, etc) before binding the shader (pipeline)!
@@ -122,9 +123,9 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
         barrier = {};
         barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
         barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
-        barrier.Texture = m_colTex;
+        barrier.Texture = m_colTex.get();
         TRAP::Graphics::RenderCommand::TextureBarrier(barrier, TRAP::Graphics::QueueType::Compute);
-        barrier.Texture = m_compTex;
+        barrier.Texture = m_compTex.get();
         TRAP::Graphics::RenderCommand::TextureBarrier(barrier, TRAP::Graphics::QueueType::Compute);
     }
 
@@ -136,7 +137,7 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
     m_indexBuffer->Use();
 
     //Use shader
-    auto* texShader = TRAP::Graphics::ShaderManager::Get("Texture");
+    const auto texShader = TRAP::Graphics::ShaderManager::Get("Texture");
     if(m_disabled)
         texShader->UseTexture(1, 0, m_colTex, TRAP::Application::GetWindow());
     else
@@ -153,13 +154,13 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
         static int frameTimeIndex = 0;
         if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
         {
-            m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::Renderer::GetFrameTime();
+            m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
             frameTimeIndex++;
         }
         else
         {
             std::move(m_frameTimeHistory.begin() + 1, m_frameTimeHistory.end(), m_frameTimeHistory.begin());
-            m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::Renderer::GetFrameTime();
+            m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
         }
     }
 }
@@ -172,9 +173,12 @@ void ComputeTests::OnImGuiRender()
     ImGui::Text("Press ESC to close");
     ImGui::Separator();
     ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
-    ImGui::Text("GPU: %s", TRAP::Graphics::RendererAPI::GetRenderer()->GetCurrentGPUName().c_str());
-    ImGui::Text("FPS: %u", TRAP::Graphics::Renderer::GetFPS());
-    ImGui::Text("FrameTime: %.3fms", TRAP::Graphics::Renderer::GetFrameTime());
+	ImGui::Text("GPU: %s", TRAP::Graphics::RenderCommand::GetGPUName().c_str());
+    ImGui::Text("CPU FPS: %u", TRAP::Graphics::RenderCommand::GetCPUFPS());
+    ImGui::Text("GPU FPS: %u", TRAP::Graphics::RenderCommand::GetGPUFPS());
+    ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
+    ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
+    ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
     ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0,
                      33, ImVec2(200, 50));
     ImGui::Separator();

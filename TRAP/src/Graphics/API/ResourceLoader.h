@@ -6,7 +6,6 @@
 #include <thread>
 
 #include "RendererAPI.h"
-#include "ImageLoader/Image.h"
 
 namespace TRAP::Graphics
 {
@@ -22,7 +21,7 @@ namespace TRAP::Graphics::API
 	/// Resource loader.
 	/// Does the heavy lifting of sending data between the CPU and GPU.
 	/// </summary>
-	class ResourceLoader //TODO Maybe use ThreadPool for more parallelization?!
+	class ResourceLoader
 	{
 	public:
 		/// <summary>
@@ -106,10 +105,22 @@ namespace TRAP::Graphics::API
 		void EndUpdateResource(RendererAPI::TextureUpdateDesc& desc, SyncToken* token);
 
 		/// <summary>
+		/// Copy data from GPU to the CPU.
+		/// For optimal use, the amount of data to transfer should be minimized as much as possible and
+		/// applications should provide additional graphics/compute work that the GPU can execute alongside the copy.
+		/// </summary>
+		/// <param name="textureDesc">Description of the texture copy.</param>
+		/// <param name="token">
+		/// If token is nullptr, the resource will be available when AllResourceLoadsCompleted() returns true.
+		/// If token is not nullptr, the resource will be available after IsTokenCompleted(token) return true.
+		/// </param>
+		void CopyResource(RendererAPI::TextureCopyDesc& textureDesc, SyncToken* token);
+
+		/// <summary>
 		/// Retrieve whether all submitted resource loads and updates have been completed.
 		/// </summary>
 		/// <returns>True if all loads and updates have finished, false otherwise.</returns>
-		bool AllResourceLoadsCompleted() const;
+		[[nodiscard]] bool AllResourceLoadsCompleted() const noexcept;
 
 		//Blocks the calling thread until AllResourceLoadsCompleted() returns true.
 		//Note that if more resource loads or updates are submitted from a different thread
@@ -132,18 +143,46 @@ namespace TRAP::Graphics::API
 		/// Retrieve the last sync token which has finished loading or updating.
 		/// </summary>
 		/// <returns>Last value for which IsTokenCompleted(token) is guaranteed to return true.</returns>
-		SyncToken GetLastTokenCompleted() const;
+		[[nodiscard]] SyncToken GetLastTokenCompleted() const noexcept;
 		/// <summary>
 		/// Retrieve whether a sync token has finished loading or updating.
 		/// </summary>
 		/// <param name="token">Token to check.</param>
 		/// <returns>True if the token has finished, false otherwise.</returns>
-		bool IsTokenCompleted(const SyncToken* token) const;
+		[[nodiscard]] bool IsTokenCompleted(const SyncToken* token) const;
 		/// <summary>
 		/// Block the calling thread until IsTokenCompleted(token) for the provided token returns true.
 		/// </summary>
-		/// <param name="token">Token to wait for.</param>
+		/// <param name="token">Token to wait for completion.</param>
 		void WaitForToken(const SyncToken* token);
+
+		//Allows clients to synchronize with the submission of copy commands (as opposed to their completion).
+		//This can reduce the wait time for client but requires using the Semaphore from GetLastSemaphoreCompleted()
+		//in a wait operation in a submit that uses the textures just updated.
+
+		/// <summary>
+		/// Retrieve the last sync token which has been submitted for copying.
+		/// </summary>
+		/// <returns>Last value for which IsTokenSubmitted(token) is guaranteed to return true.</returns>
+		[[nodiscard]] SyncToken GetLastTokenSubmitted() const noexcept;
+		/// <summary>
+		/// Retrieve whether a sync token has been submitted for copying.
+		/// </summary>
+		/// <param name="token">Token to check.</param>
+		/// <returns>True if the token has been submitted for copying, false otherwise.</returns>
+		[[nodiscard]] bool IsTokenSubmitted(const SyncToken* token) const;
+		/// <summary>
+		/// Block the calling thread until IsTokenSubmitted(token) for the provided token returns true.
+		/// </summary>
+		/// <param name="token">Token to wait for submission.</param>
+		void WaitForTokenSubmitted(const SyncToken* token);
+
+		/// <summary>
+		/// Retrieve the semaphore for the last copy operation that has been submitted.
+		/// Note: This can be nullptr if no operations have been executed.
+		/// </summary>
+		/// <returns>Semaphore for the last copy operation that has been submitted.</returns>
+		[[nodiscard]] TRAP::Ref<Semaphore> GetLastSemaphoreCompleted();
 
 	private:
 		struct TextureUpdateDescInternal
@@ -169,13 +208,13 @@ namespace TRAP::Graphics::API
 		/// Retrieve the row alignment for textures used by the GPU.
 		/// </summary>
 		/// <returns>Row alignment used by the GPU.</returns>
-		static uint64_t UtilGetTextureRowAlignment();
+		[[nodiscard]] static uint64_t UtilGetTextureRowAlignment() noexcept;
 		/// <summary>
 		/// Retrieve the subresource alignment for textures used by the GPU.
 		/// </summary>
 		/// <param name="fmt">Format of the texture. Default: ImageFormat::Undefined.</param>
 		/// <returns>Subresource alignment used by the GPU.</returns>
-		static uint64_t UtilGetTextureSubresourceAlignment(TRAP::Graphics::API::ImageFormat fmt = TRAP::Graphics::API::ImageFormat::Undefined);
+		[[nodiscard]] static uint64_t UtilGetTextureSubresourceAlignment(TRAP::Graphics::API::ImageFormat fmt = TRAP::Graphics::API::ImageFormat::Undefined) noexcept;
 		/// <summary>
 		///	Retrieve the total surface size of a texture.
 		/// </summary>
@@ -190,10 +229,10 @@ namespace TRAP::Graphics::API
 		/// <param name="baseArrayLayer">Base array layer of the texture.</param>
 		/// <param name="arrayLayers">Number of array layers of the texture.</param>
 		/// <returns>Total surface size of the texture.</returns>
-		static uint64_t UtilGetSurfaceSize(TRAP::Graphics::API::ImageFormat fmt, uint32_t width, uint32_t height,
-		                                   uint32_t depth, uint64_t rowStride, uint64_t sliceStride,
-										   uint32_t baseMipLevel, uint32_t mipLevels, uint32_t baseArrayLayer,
-										   uint32_t arrayLayers);
+		[[nodiscard]] static uint64_t UtilGetSurfaceSize(TRAP::Graphics::API::ImageFormat fmt, uint32_t width, uint32_t height,
+		                                                 uint32_t depth, uint64_t rowStride, uint64_t sliceStride,
+										                 uint32_t baseMipLevel, uint32_t mipLevels, uint32_t baseArrayLayer,
+										                 uint32_t arrayLayers) noexcept;
 		/// <summary>
 		/// Retrieve information about a texture.
 		/// </summary>
@@ -204,15 +243,15 @@ namespace TRAP::Graphics::API
 		/// <param name="outRowBytes">Optional output for the number of bytes in a row of the texture.</param>
 		/// <param name="outNumRows">Optional output for the number of rows in the texture.</param>
 		/// <returns>True on successful retrieval, false otherwise.</returns>
-		static bool UtilGetSurfaceInfo(uint32_t width, uint32_t height, TRAP::Graphics::API::ImageFormat fmt,
-		                               uint64_t* outNumBytes, uint64_t* outRowBytes, uint64_t* outNumRows);
+		[[nodiscard]] static bool UtilGetSurfaceInfo(uint32_t width, uint32_t height, TRAP::Graphics::API::ImageFormat fmt,
+		                                             uint64_t* outNumBytes, uint64_t* outRowBytes, uint64_t* outNumRows);
 		/// <summary>
 		/// Allocate a new staging buffer.
 		/// </summary>
 		/// <param name="memoryRequirement">Required memory size.</param>
 		/// <param name="alignment">Memory alignment.</param>
 		/// <returns>Staging buffer information.</returns>
-		static RendererAPI::MappedMemoryRange AllocateUploadMemory(uint64_t memoryRequirement, uint32_t alignment);
+		[[nodiscard]] static RendererAPI::MappedMemoryRange AllocateUploadMemory(uint64_t memoryRequirement, uint32_t alignment);
 		/// <summary>
 		/// Queue a buffer barrier.
 		/// </summary>
@@ -239,6 +278,12 @@ namespace TRAP::Graphics::API
 		/// <param name="token">Optional output sync token.</param>
 		void QueueTextureUpdate(const TextureUpdateDescInternal& textureUpdate, SyncToken* token);
 		/// <summary>
+		/// Queue a texture copy.
+		/// </summary>
+		/// <param name="desc">Description of texture copy.</param>
+		/// <param name="token">Optional output sync token.</param>
+		void QueueTextureCopy(const RendererAPI::TextureCopyDesc& desc, SyncToken* token);
+		/// <summary>
 		/// Queue a texture barrier.
 		/// </summary>
 		/// <param name="texture">Texture to queue a barrier on.</param>
@@ -254,11 +299,11 @@ namespace TRAP::Graphics::API
 		/// <param name="memoryRequirement">Required memory size.</param>
 		/// <param name="alignment">Memory alignment.</param>
 		/// <returns>Memory from pre-allocated staging buffer or temporary buffer.</returns>
-		RendererAPI::MappedMemoryRange AllocateStagingMemory(uint64_t memoryRequirement, uint32_t alignment);
+		[[nodiscard]] RendererAPI::MappedMemoryRange AllocateStagingMemory(uint64_t memoryRequirement, uint32_t alignment);
 		/// <summary>
 		/// Free all upload memory and temporary buffers.
 		/// </summary>
-		void FreeAllUploadMemory();
+		void FreeAllUploadMemory() noexcept;
 
 		/// <summary>
 		/// Initialize the copy engine.
@@ -284,7 +329,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="activeSet">Copy engine resource set to acquire command buffer for.</param>
 		/// <returns>Acquired command buffer.</returns>
-		CommandBuffer* AcquireCmd(std::size_t activeSet);
+		[[nodiscard]] CommandBuffer* AcquireCmd(std::size_t activeSet);
 		/// <summary>
 		/// Resource loader thread.
 		/// Flush a copy engine resource set.
@@ -298,20 +343,20 @@ namespace TRAP::Graphics::API
 		/// Check whether there are tasks pending for the resource loader.
 		/// </summary>
 		/// <returns>True if there are tasks pending, false otherwise.</returns>
-		bool AreTasksAvailable() const;
+		[[nodiscard]] bool AreTasksAvailable() const noexcept;
 
 		/// <summary>
 		/// Determine the resources start state from a buffer description.
 		/// </summary>
 		/// <param name="desc">Buffer description.</param>
 		/// <returns>Determined start state of the buffer.</returns>
-		static constexpr RendererAPI::ResourceState UtilDetermineResourceStartState(const RendererAPI::BufferDesc& desc);
+		[[nodiscard]] static constexpr RendererAPI::ResourceState UtilDetermineResourceStartState(const RendererAPI::BufferDesc& desc) noexcept;
 		/// <summary>
 		/// Determine the resources start state.
 		/// </summary>
 		/// <param name="uav">Is unordered access view.</param>
 		/// <returns>Determined start state of the buffer.</returns>
-		static constexpr RendererAPI::ResourceState UtilDetermineResourceStartState(bool uav);
+		[[nodiscard]] static constexpr RendererAPI::ResourceState UtilDetermineResourceStartState(bool uav) noexcept;
 
 		/// <summary>
 		/// Generate mip maps for a texture.
@@ -343,8 +388,8 @@ namespace TRAP::Graphics::API
 		/// <param name="activeSet">Resource set to use.</param>
 		/// <param name="bufferUpdateDesc">Description of buffer update.</param>
 		/// <return>Result of upload.</return>
-		UploadFunctionResult UpdateBuffer(std::size_t activeSet,
-		                                  const RendererAPI::BufferUpdateDesc& bufferUpdateDesc);
+		[[nodiscard]] UploadFunctionResult UpdateBuffer(std::size_t activeSet,
+		                                                const RendererAPI::BufferUpdateDesc& bufferUpdateDesc);
 		/// <summary>
 		/// Update a texture with the specified resource set.
 		/// </summary>
@@ -352,25 +397,33 @@ namespace TRAP::Graphics::API
 		/// <param name="textureUpdateDesc">Description of texture update.</param>
 		/// <param name="images">Images to update.</param>
 		/// <return>Result of upload.</return>
-		UploadFunctionResult UpdateTexture(std::size_t activeSet, const TextureUpdateDescInternal& textureUpdateDesc,
-		                                   const std::array<TRAP::Scope<TRAP::Image>, 6>* images);
+		[[nodiscard]] UploadFunctionResult UpdateTexture(std::size_t activeSet, const TextureUpdateDescInternal& textureUpdateDesc,
+		                                                 const std::array<const TRAP::Image*, 6>* images);
 		/// <summary>
 		/// Load a texture with the specified resource set.
 		/// </summary>
 		/// <param name="activeSet">Resource set to use.</param>
 		/// <param name="textureUpdate">Texture update request.</param>
 		/// <return>Result of upload.</return>
-		UploadFunctionResult LoadTexture(std::size_t activeSet, UpdateRequest& textureUpdate);
+		[[nodiscard]] UploadFunctionResult LoadTexture(std::size_t activeSet, UpdateRequest& textureUpdate);
+
+		/// <summary>
+		/// Copy a texture to a buffer with the specified resource set.
+		/// </summary>
+		/// <param name="activeSet">Resource set to use.</param>
+		/// <param name="textureCopy">Texture copy request.</param>
+		/// <returns>Result of copy.</returns>
+		[[nodiscard]] UploadFunctionResult CopyTexture(std::size_t activeSet, RendererAPI::TextureCopyDesc& textureCopy);
 
 		RendererAPI::ResourceLoaderDesc m_desc;
 
 		std::atomic<bool> m_run;
 		std::thread m_thread;
 
-		std::mutex m_queueMutex;
-		std::condition_variable m_queueCond;
-		std::mutex m_tokenMutex;
-		std::condition_variable m_tokenCond;
+		TracyLockable(std::mutex, m_queueMutex);
+		std::condition_variable_any m_queueCond;
+		TracyLockable(std::mutex, m_tokenMutex);
+		std::condition_variable_any m_tokenCond;
 		enum class UpdateRequestType
 		{
 			UpdateBuffer,
@@ -378,6 +431,7 @@ namespace TRAP::Graphics::API
 			BufferBarrier,
 			TextureBarrier,
 			LoadTexture,
+			CopyTexture,
 			Invalid
 		};
 		struct UpdateRequest
@@ -386,27 +440,32 @@ namespace TRAP::Graphics::API
 			/// Constructor for buffer update request.
 			/// </summary>
 			/// <param name="buffer">Description of buffer update.</param>
-			explicit UpdateRequest(const RendererAPI::BufferUpdateDesc& buffer);
+			explicit UpdateRequest(const RendererAPI::BufferUpdateDesc& buffer) noexcept;
 			/// <summary>
 			/// Constructor for texture load request.
 			/// </summary>
 			/// <param name="texture">Description of texture load.</param>
-			explicit UpdateRequest(const RendererAPI::TextureLoadDesc& texture);
+			explicit UpdateRequest(const RendererAPI::TextureLoadDesc& texture) noexcept;
+			/// <summary>
+			/// Constructor for texture copy request.
+			/// </summary>
+			/// <param name="texture">Description of texture copy.</param>
+			explicit UpdateRequest(const RendererAPI::TextureCopyDesc& textureCopy) noexcept;
 			/// <summary>
 			/// Constructor for texture update request.
 			/// </summary>
 			/// <param name="texture">Description of texture update.</param>
-			explicit UpdateRequest(TRAP::Graphics::API::ResourceLoader::TextureUpdateDescInternal texture);
+			explicit UpdateRequest(TRAP::Graphics::API::ResourceLoader::TextureUpdateDescInternal texture) noexcept;
 			/// <summary>
 			/// Constructor for buffer barrier request.
 			/// </summary>
 			/// <param name="buffer">Description of buffer barrier.</param>
-			explicit UpdateRequest(const RendererAPI::BufferBarrier& barrier);
+			explicit UpdateRequest(const RendererAPI::BufferBarrier& barrier) noexcept;
 			/// <summary>
 			/// Constructor for texture barrier request.
 			/// </summary>
 			/// <param name="texture">Description of texture barrier.</param>
-			explicit UpdateRequest(const RendererAPI::TextureBarrier& barrier);
+			explicit UpdateRequest(const RendererAPI::TextureBarrier& barrier) noexcept;
 
 			UpdateRequestType Type = UpdateRequestType::Invalid;
 			uint64_t WaitIndex = 0;
@@ -414,14 +473,18 @@ namespace TRAP::Graphics::API
 			TRAP::Scope<TRAP::Image> Image = nullptr;
 			std::variant<RendererAPI::BufferUpdateDesc,
 			             TRAP::Graphics::API::ResourceLoader::TextureUpdateDescInternal,
-						 RendererAPI::TextureLoadDesc, RendererAPI::BufferBarrier, RendererAPI::TextureBarrier> Desc;
+						 RendererAPI::TextureLoadDesc, RendererAPI::TextureCopyDesc,
+						 RendererAPI::BufferBarrier, RendererAPI::TextureBarrier> Desc;
 		};
 		std::vector<UpdateRequest> m_requestQueue;
 
 		std::atomic<uint64_t> m_tokenCompleted;
+		std::atomic<uint64_t> m_tokenSubmitted;
 		std::atomic<uint64_t> m_tokenCounter;
 
-		std::array<SyncToken, 3> m_currentTokenState;
+		TracyLockable(std::mutex, m_semaphoreMutex);
+
+		std::array<SyncToken, TRAP::Graphics::RendererAPI::ImageCount> m_currentTokenState;
 
 		struct CopyEngine
 		{
@@ -437,11 +500,17 @@ namespace TRAP::Graphics::API
 				//Buffers created in case we ran out of space in the original staging buffer
 				//Will be cleaned up after the fence for this set is complete
 				std::vector<TRAP::Ref<Graphics::Buffer>> TempBuffers;
+
+				TRAP::Ref<TRAP::Graphics::Semaphore> CopyCompletedSemaphore;
 			};
 			std::vector<CopyResourceSet> ResourceSets{};
 			uint64_t BufferSize{};
 			uint32_t BufferCount{};
 			bool IsRecording{};
+			TRAP::Ref<TRAP::Graphics::Semaphore> LastCompletedSemaphore;
+
+			//For reading back GPU generated textures, we need to ensure writes have completed before performing the copy.
+			std::vector<TRAP::Ref<Semaphore>> WaitSemaphores;
 		} m_copyEngine;
 		uint32_t m_nextSet;
 	};
@@ -449,7 +518,7 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::RendererAPI::ResourceState TRAP::Graphics::API::ResourceLoader::UtilDetermineResourceStartState(const RendererAPI::BufferDesc& desc)
+[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::ResourceState TRAP::Graphics::API::ResourceLoader::UtilDetermineResourceStartState(const RendererAPI::BufferDesc& desc) noexcept
 {
 	//Host visible (Upload Heap)
 	if (desc.MemoryUsage == RendererAPI::ResourceMemoryUsage::CPUOnly ||
@@ -481,7 +550,7 @@ constexpr TRAP::Graphics::RendererAPI::ResourceState TRAP::Graphics::API::Resour
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::RendererAPI::ResourceState TRAP::Graphics::API::ResourceLoader::UtilDetermineResourceStartState(const bool uav)
+[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::ResourceState TRAP::Graphics::API::ResourceLoader::UtilDetermineResourceStartState(const bool uav) noexcept
 {
 	if(uav)
 		return RendererAPI::ResourceState::UnorderedAccess;

@@ -2,6 +2,7 @@
 #define TRAP_VERTEXBUFFERLAYOUT_H
 
 #include "Graphics/API/RendererAPI.h"
+#include "Graphics/RenderCommand.h"
 
 namespace TRAP::Graphics
 {
@@ -14,17 +15,16 @@ namespace TRAP::Graphics
 		Float, Float2, Float3, Float4,
 		Mat3, Mat4,
 		Int, Int2, Int3, Int4,
+		UInt, UInt2, UInt3, UInt4,
 		Bool
 	};
-
-	using UpdateFrequency = RendererAPI::DescriptorUpdateFrequency;
 
 	/// <summary>
 	/// Retrieve the byte size of a given shader data type.
 	/// </summary>
 	/// <param name="type">Shader data type.</param>
 	/// <returns>Byte size of the shader data type.</returns>
-	constexpr uint32_t ShaderDataTypeSize(ShaderDataType type);
+	[[nodiscard]] constexpr uint32_t ShaderDataTypeSize(ShaderDataType type);
 
 	/// <summary>
 	/// Struct used to describe a single vertex attribute.
@@ -40,7 +40,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		VertexBufferElement() = default;
+		VertexBufferElement() noexcept = default;
 		/// <summary>
 		/// Constructor.
 		/// Initialize the vertex buffer element with the given data.
@@ -48,13 +48,13 @@ namespace TRAP::Graphics
 		/// <param name="type">Shader data type.</param>
 		/// <param name="name">Name of the vertex attribute.</param>
 		/// <param name="normalized">Whether data is normalized.</param>
-		VertexBufferElement(ShaderDataType type, std::string name, bool normalized = false);
+		VertexBufferElement(ShaderDataType type, std::string name, bool normalized = false) noexcept;
 
 		/// <summary>
 		/// Retrieve the component count of this vertex attribute.
 		/// </summary>
 		/// <returns>Component count of this vertex attribute.</returns>
-		uint32_t GetComponentCount() const;
+		[[nodiscard]] uint32_t GetComponentCount() const;
 	};
 
 	/// <summary>
@@ -66,34 +66,34 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		VertexBufferLayout() = default;
+		VertexBufferLayout() noexcept = default;
 		/// <summary>
 		/// Constructor.
 		/// Initialize the vertex buffer layout with the given elements.
 		/// </summary>
 		/// <param name="elements">Vertex buffer elements.</param>
-		VertexBufferLayout(const std::initializer_list<VertexBufferElement>& elements);
+		VertexBufferLayout(const std::initializer_list<VertexBufferElement>& elements) noexcept;
 
 		/// <summary>
 		/// Retrieve the total byte size of all vertex buffer elements used in this layout.
 		/// </summary>
-		uint32_t GetStride() const;
+		[[nodiscard]] uint32_t GetStride() const noexcept;
 		/// <summary>
 		/// Retrieve the vertex buffer elements described by this layout.
 		/// </summary>
 		/// <returns>Vertex buffer elements.</returns>
-		const std::vector<VertexBufferElement>& GetElements() const;
+		[[nodiscard]] const std::vector<VertexBufferElement>& GetElements() const noexcept;
 
-		std::vector<VertexBufferElement>::iterator begin();
-		std::vector<VertexBufferElement>::iterator end();
-		std::vector<VertexBufferElement>::const_iterator begin() const;
-		std::vector<VertexBufferElement>::const_iterator end() const;
+		[[nodiscard]] std::vector<VertexBufferElement>::iterator begin() noexcept;
+		[[nodiscard]] std::vector<VertexBufferElement>::iterator end() noexcept;
+		[[nodiscard]] std::vector<VertexBufferElement>::const_iterator begin() const noexcept;
+		[[nodiscard]] std::vector<VertexBufferElement>::const_iterator end() const noexcept;
 
 	private:
 		/// <summary>
 		/// Update the offset and stride values of all vertex buffer elements.
 		/// </summary>
-		void CalculateOffsetsAndStride();
+		void CalculateOffsetsAndStride() noexcept;
 
 		std::vector<VertexBufferElement> m_elements;
 		uint32_t m_stride = 0;
@@ -102,7 +102,7 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t TRAP::Graphics::ShaderDataTypeSize(const ShaderDataType type)
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::ShaderDataTypeSize(const ShaderDataType type)
 {
 	switch (type)
 	{
@@ -122,7 +122,7 @@ constexpr uint32_t TRAP::Graphics::ShaderDataTypeSize(const ShaderDataType type)
 	case ShaderDataType::Bool:   return 1;
 
 	default:
-		TRAP_ASSERT(false, "Unknown shader data type!");
+		TRAP_ASSERT(false, "ShaderDataTypeSize(): Unknown shader data type!");
 		return 0;
 	}
 }

@@ -1,8 +1,8 @@
 #include "TRAPPCH.h"
 #include "ShaderReflection.h"
 
-constexpr bool ShaderResourceCmp(const TRAP::Graphics::API::ShaderReflection::ShaderResource& a,
-                                 const TRAP::Graphics::API::ShaderReflection::ShaderResource& b)
+[[nodiscard]] constexpr bool ShaderResourceCmp(const TRAP::Graphics::API::ShaderReflection::ShaderResource& a,
+                                               const TRAP::Graphics::API::ShaderReflection::ShaderResource& b) noexcept
 {
 	bool isSame = true;
 
@@ -15,8 +15,8 @@ constexpr bool ShaderResourceCmp(const TRAP::Graphics::API::ShaderReflection::Sh
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr bool ShaderVariableCmp(const TRAP::Graphics::API::ShaderReflection::ShaderVariable& a,
-                                 const TRAP::Graphics::API::ShaderReflection::ShaderVariable& b)
+[[nodiscard]] constexpr bool ShaderVariableCmp(const TRAP::Graphics::API::ShaderReflection::ShaderVariable& a,
+                                               const TRAP::Graphics::API::ShaderReflection::ShaderVariable& b) noexcept
 {
 	bool isSame = true;
 
@@ -35,10 +35,12 @@ constexpr bool ShaderVariableCmp(const TRAP::Graphics::API::ShaderReflection::Sh
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graphics::API::ShaderReflection::CreatePipelineReflection(
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graphics::API::ShaderReflection::CreatePipelineReflection(
 	const std::array<ShaderReflection, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& reflection,
 	const uint32_t stageCount)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	if(stageCount == 0)
 	{
 		TP_ERROR(Log::ShaderPrefix, "Parameter 'stageCount' is 0");
@@ -166,7 +168,7 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 		for(std::size_t i = 0; i < variableCount; ++i)
 		{
 			variables[i] = *uniqueVariable[i];
-			const ShaderResource* parentResource = uniqueVariableParent[i];
+			const ShaderResource* const parentResource = uniqueVariableParent[i];
 			//Look for parent
 			for(std::size_t j = 0; j < resourceCount; ++j)
 			{

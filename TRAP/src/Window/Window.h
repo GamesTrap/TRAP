@@ -1,8 +1,7 @@
 #ifndef TRAP_WINDOW_H
 #define TRAP_WINDOW_H
 
-#include "Events/Event.h"
-#include "ImageLoader/Image.h"
+#include "Window/Monitor.h"
 #include "WindowingAPI.h"
 
 namespace TRAP
@@ -63,11 +62,11 @@ namespace TRAP
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Window(Window&&) = default;
+		Window(Window&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Window& operator=(Window&&) = default;
+		Window& operator=(Window&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -82,86 +81,91 @@ namespace TRAP
 		/// Get the amount of all active windows.
 		/// </summary>
 		/// <returns>Total amount of active windows.</returns>
-		static uint32_t GetActiveWindows() noexcept;
+		[[nodiscard]] static uint32_t GetActiveWindows() noexcept;
 
 		/// <summary>
 		/// Get the current title of the window.
 		/// </summary>
 		/// <returns>Title of the window.</returns>
-		std::string GetTitle() const noexcept;
+		[[nodiscard]] std::string GetTitle() const noexcept;
 		/// <summary>
 		/// Get the current width of the window.
 		/// </summary>
 		/// <returns>Width of the window.</returns>
-		uint32_t GetWidth() const noexcept;
+		[[nodiscard]] uint32_t GetWidth() const noexcept;
 		/// <summary>
 		/// Get the current height of the window.
 		/// </summary>
 		/// <returns>Height of the window.</returns>
-		uint32_t GetHeight() const noexcept;
+		[[nodiscard]] uint32_t GetHeight() const noexcept;
 		/// <summary>
 		/// Get the current width and height of the window.
 		/// </summary>
 		/// <returns>Vec2ui containing the width and height of the window.</returns>
-		Math::Vec2ui GetSize() const noexcept;
+		[[nodiscard]] Math::Vec2ui GetSize() const noexcept;
 		/// <summary>
 		/// Get the current framebuffer width and height of the window.
 		/// </summary>
 		/// <returns>Vec2ui containing the framebuffer width and height of the window.</returns>
-		Math::Vec2ui GetFrameBufferSize() const noexcept;
+		[[nodiscard]] Math::Vec2ui GetFrameBufferSize() const;
 		/// <summary>
 		/// Get the current position of the window.
 		/// Retrieves the position, in screen coordinates, of the upper-left corner of the content area.
 		/// </summary>
 		/// <returns>Vec2i containing the position of the window.</returns>
-		Math::Vec2i GetPosition() const noexcept;
+		[[nodiscard]] Math::Vec2i GetPosition() const;
 		/// <summary>
 		/// Get the current refresh rate of the window.
 		/// </summary>
 		/// <returns>Refresh rate of the window.</returns>
-		uint32_t GetRefreshRate() const noexcept;
+		[[nodiscard]] double GetRefreshRate() const noexcept;
 		/// <summary>
 		/// Get the current display mode of the window.
 		/// </summary>
 		/// <returns>Display mode of the window.</returns>
-		DisplayMode GetDisplayMode() const noexcept;
+		[[nodiscard]] DisplayMode GetDisplayMode() const noexcept;
 		/// <summary>
 		/// Get the current monitor used by the window
 		/// (only for display modes fullscreen and borderless).
 		/// </summary>
 		/// <returns>Object of monitor class used by the window.</returns>
-		Monitor GetMonitor() const;
+		[[nodiscard]] Monitor GetMonitor() const;
 		/// <summary>
 		/// Get the current cursor mode of the window.
 		/// </summary>
 		/// <returns>Cursor mode of the window.</returns>
-		CursorMode GetCursorMode() const noexcept;
+		[[nodiscard]] CursorMode GetCursorMode() const noexcept;
 		/// <summary>
 		/// Get the current raw mouse input (false = off, true = on) usage of the window.
 		/// </summary>
 		/// <returns>Raw mouse input status of the window.</returns>
-		bool GetRawMouseInput() const noexcept;
+		[[nodiscard]] bool GetRawMouseInput() const noexcept;
 		/// <summary>
 		/// Get the ratio between the current DPI and the platforms DPI.
 		/// </summary>
 		/// <returns>Vec2 containing the x and y scale.</returns>
-		Math::Vec2 GetContentScale() const;
+		[[nodiscard]] Math::Vec2 GetContentScale() const;
 		/// <summary>
 		/// Get the current opacity of the window.
 		/// </summary>
 		/// <returns>Opacity of the window.</returns>
-		float GetOpacity() const;
+		[[nodiscard]] float GetOpacity() const;
 		/// <summary>
 		/// Get whether VSync is enabled or disabled.
 		/// </summary>
 		/// <returns>True if VSync is enabled, false otherwise.</returns>
-		bool GetVSync() const noexcept;
+		[[nodiscard]] bool GetVSync() const noexcept;
+		/// <summary>
+		/// Get the aspect ratio of the window.
+		/// </summary>
+		/// <returns>Aspect ratio of window framebuffer.</returns>
+		[[nodiscard]] float GetAspectRatio() const;
 
 		/// <summary>
 		/// Get the internal handle of the window.
 		/// </summary>
 		/// <returns>Pointer to the internal window handle.</returns>
-		void* GetInternalWindow() const;
+		[[nodiscard]] void* GetInternalWindow() const noexcept;
 
 		/// <summary>
 		/// Set a new title for the window.
@@ -180,7 +184,15 @@ namespace TRAP
 		void SetDisplayMode(const DisplayMode& mode,
 			                uint32_t width = 0,
 			                uint32_t height = 0,
-			                uint32_t refreshRate = 0);
+			                double refreshRate = 0);
+		/// <summary>
+		/// Set a new display mode and or a new video mode for the window.
+		///
+		/// See also: SetDisplayMode(const DisplayMode&, uint32_t, uint32_t, double).
+		/// </summary>
+		/// <param name="displayMode">New display mode for the window.</param>
+		/// <param name="videoMode">New video mode for the window.</param>
+		void SetDisplayMode(DisplayMode displayMode, const Monitor::VideoMode& videoMode);
 		/// <summary>
 		/// Set a new monitor for the window.
 		/// </summary>
@@ -210,10 +222,13 @@ namespace TRAP
 		void SetRawMouseInput(bool enabled);
 		/// <summary>
 		/// Sets the progress on the taskbar for the specified window.
+		///
+		/// Linux: This only works on KDE & Unity environments.
+		///        A .desktop file must exist for the application with the same name as given to TRAP::Application.
 		/// </summary>
 		/// <param name="state">State of progress.</param>
 		/// <param name="progress">How much has been completed. Valid values: 0 - 100.</param>
-		void SetProgress(ProgressState state, uint32_t progress);
+		void SetProgress(ProgressState state, uint32_t progress) const;
 		/// <summary>
 		/// Resets the window icon to the TRAP logo.
 		/// </summary>
@@ -249,6 +264,20 @@ namespace TRAP
 		/// <param name="maxHeight">Max height.</param>
 		void SetMaximumSize(uint32_t maxWidth, uint32_t maxHeight);
 		/// <summary>
+		/// Set the aspect ratio of the window.
+		/// This makes sure that the window size always matches the specified aspect ratio.
+		///
+		/// Set both parameters to 0 to disable the aspect ratio restriction.
+		///
+		/// Note: This only takes effect in windowed mode.
+		///       This function does nothing if the window is not resizable.
+		///       If you set size limits and an aspect ratio that conflict, the results are undefined.
+		//        The aspect ratio is applied immediately to a windowed mode window and may cause it to be resized.
+		/// </summary>
+		/// <param name="numerator">Numerator of the desired aspect ratio, or 0.</param>
+		/// <param name="denominator">Denominator of the desired aspect ratio, or 0.</param>
+		void SetAspectRatio(uint32_t numerator, uint32_t denominator);
+		/// <summary>
 		/// Set the position of the window.
 		/// </summary>
 		/// <param name="x">New x position.</param>
@@ -274,37 +303,37 @@ namespace TRAP
 		/// Query whether the window is maximized or not.
 		/// </summary>
 		/// <returns>Window maximization status.</returns>
-		bool IsMaximized() const;
+		[[nodiscard]] bool IsMaximized() const;
 		/// <summary>
 		/// Query whether the window is minimized or not.
 		/// </summary>
 		/// <returns>Window minimization status.</returns>
-		bool IsMinimized() const;
+		[[nodiscard]] bool IsMinimized() const;
 		/// <summary>
 		/// Query whether the window is resizable or not.
 		/// </summary>
 		/// <returns>Window resizable status.</returns>
-		bool IsResizable() const;
+		[[nodiscard]] bool IsResizable() const;
 		/// <summary>
 		/// Query whether the window is visible or not.
 		/// </summary>
 		/// <returns>Window visibility status.</returns>
-		bool IsVisible() const;
+		[[nodiscard]] bool IsVisible() const;
 		/// <summary>
 		/// Query whether the window is focused or not.
 		/// </summary>
 		/// <returns>Window focus status.</returns>
-		bool IsFocused() const;
+		[[nodiscard]] bool IsFocused() const;
 		/// <summary>
 		/// Query whether the window is decorated or not.
 		/// </summary>
 		/// <returns>Window decoration status.</returns>
-		bool IsDecorated() const;
+		[[nodiscard]] bool IsDecorated() const;
 		/// <summary>
 		/// Query whether the mouse is hovered on the window or not.
 		/// </summary>
 		/// <returns>Window mouse hover status.</returns>
-		bool IsHovered() const;
+		[[nodiscard]] bool IsHovered() const;
 
 		/// <summary>
 		/// Maximize the window.
@@ -352,7 +381,7 @@ namespace TRAP
 		/// </summary>
 		void SetupEventCallbacks();
 
-		Scope<INTERNAL::WindowingAPI::InternalWindow> m_window;
+		INTERNAL::WindowingAPI::InternalWindow* m_window;
 		INTERNAL::WindowingAPI::InternalMonitor* m_useMonitor; //Stores a reference to the monitor
 		//Stores the underlying video mode being used by the OS for every monitor
 		static std::unordered_map<std::size_t, INTERNAL::WindowingAPI::InternalVideoMode> s_baseVideoModes;
@@ -362,14 +391,16 @@ namespace TRAP
 		/// </summary>
 		struct WindowedModeParams
 		{
-			int32_t Width = 800, Height = 600, RefreshRate;
+			int32_t Width = 800, Height = 600;
+			double RefreshRate;
 			int32_t XPos, YPos;
 		};
 
 		struct WindowData
 		{
 			std::string Title;
-			int32_t Width{}, Height{}, RefreshRate{};
+			int32_t Width{}, Height{};
+			double RefreshRate{};
 			int32_t MinWidth = -1, MinHeight = -1;
 			int32_t MaxWidth = -1, MaxHeight = -1;
 			bool VSync{};
@@ -401,7 +432,7 @@ namespace TRAP
 		std::string Title;
 		uint32_t Width;
 		uint32_t Height;
-		uint32_t RefreshRate;
+		double RefreshRate;
 		bool VSync;
 		Window::DisplayMode DisplayMode;
 		uint32_t Monitor;
@@ -455,7 +486,7 @@ namespace TRAP
 		explicit WindowProps(std::string title = "TRAP™",
 							 uint32_t width = 1280,
 							 uint32_t height = 720,
-							 uint32_t refreshRate = 60,
+							 double refreshRate = 60.0,
 							 bool vsync = false,
 							 Window::DisplayMode displayMode = Window::DisplayMode::Windowed,
 							 AdvancedProps advanced = AdvancedProps{},

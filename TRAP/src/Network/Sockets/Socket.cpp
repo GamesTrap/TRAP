@@ -2,7 +2,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -31,15 +31,18 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "SocketImpl.h"
 
-TRAP::Network::Socket::Socket(const Type type)
+TRAP::Network::Socket::Socket(const Type type) noexcept
 	: m_type(type), m_socket(INTERNAL::Network::SocketImpl::InvalidSocket()), m_isBlocking(true)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Network::Socket::~Socket()
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//Close the socket before it gets destructed
 	Close();
 }
@@ -48,6 +51,8 @@ TRAP::Network::Socket::~Socket()
 
 void TRAP::Network::Socket::SetBlocking(const bool blocking)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//Apply if the socket is already created
 	if (m_socket != INTERNAL::Network::SocketImpl::InvalidSocket())
 		INTERNAL::Network::SocketImpl::SetBlocking(m_socket, blocking);
@@ -57,15 +62,19 @@ void TRAP::Network::Socket::SetBlocking(const bool blocking)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Network::Socket::IsBlocking() const
+[[nodiscard]] bool TRAP::Network::Socket::IsBlocking() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_isBlocking;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::SocketHandle TRAP::Network::Socket::GetHandle() const
+[[nodiscard]] TRAP::Network::SocketHandle TRAP::Network::Socket::GetHandle() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_socket;
 }
 
@@ -73,6 +82,8 @@ TRAP::Network::SocketHandle TRAP::Network::Socket::GetHandle() const
 
 void TRAP::Network::Socket::CreateIPv4()
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//Don't create the socket if it already exists
 	if(m_socket != INTERNAL::Network::SocketImpl::InvalidSocket())
 		return;
@@ -92,6 +103,8 @@ void TRAP::Network::Socket::CreateIPv4()
 
 void TRAP::Network::Socket::CreateIPv6()
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//Don't create the socket if it already exists
 	if (m_socket != INTERNAL::Network::SocketImpl::InvalidSocket())
 		return;
@@ -111,6 +124,8 @@ void TRAP::Network::Socket::CreateIPv6()
 
 void TRAP::Network::Socket::Create(const SocketHandle handle)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//Don't create the socket if it already exists
 	if(m_socket != INTERNAL::Network::SocketImpl::InvalidSocket())
 		return;
@@ -146,6 +161,8 @@ void TRAP::Network::Socket::Create(const SocketHandle handle)
 
 void TRAP::Network::Socket::Close()
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//Close the socket
 	if(m_socket != INTERNAL::Network::SocketImpl::InvalidSocket())
 	{

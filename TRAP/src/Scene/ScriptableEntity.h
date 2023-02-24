@@ -2,7 +2,6 @@
 #define TRAP_SCRIPTABLEENTITY_H
 
 #include "Entity.h"
-#include "Utils/Time/TimeStep.h"
 
 namespace TRAP
 {
@@ -10,15 +9,15 @@ namespace TRAP
 	class ScriptableEntity
 	{
 	public:
-		ScriptableEntity() = default;
+		ScriptableEntity() noexcept = default;
 		virtual ~ScriptableEntity() = default;
-		ScriptableEntity(const ScriptableEntity&) = default;
-		ScriptableEntity(ScriptableEntity&&) = default;
-		ScriptableEntity& operator=(const ScriptableEntity&) = default;
-		ScriptableEntity& operator=(ScriptableEntity&&) = default;
+		ScriptableEntity(const ScriptableEntity&) noexcept = default;
+		ScriptableEntity(ScriptableEntity&&) noexcept = default;
+		ScriptableEntity& operator=(const ScriptableEntity&) noexcept = default;
+		ScriptableEntity& operator=(ScriptableEntity&&) noexcept = default;
 
 		template<typename T>
-		T& GetComponent()
+		[[nodiscard]] T& GetComponent()
 		{
 			return m_entity.GetComponent<T>();
 		}
@@ -27,7 +26,7 @@ namespace TRAP
 		virtual void OnCreate() {}
 		virtual void OnDestroy() {}
 		virtual void OnUpdate(const Utils::TimeStep&) {}
-		virtual void OnTick() {}
+		virtual void OnTick(const Utils::TimeStep&) {}
 
 	private:
 		Entity m_entity;

@@ -25,7 +25,9 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	  m_vkEmptyDescriptorSets(),
 	  m_vkPushConstantCount()
 {
-	TRAP_ASSERT(m_device, "device is nullptr");
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(m_device, "VulkanRootSignature(): Vulkan Device is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRootSignaturePrefix, "Creating RootSignature");
@@ -41,7 +43,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 	for(std::size_t i = 0; i < desc.StaticSamplers.size(); ++i)
 	{
-		TRAP_ASSERT(desc.StaticSamplers[i]);
+		TRAP_ASSERT(desc.StaticSamplers[i], "VulkanRootSignature(): Static Sampler is nullptr");
 		staticSamplerMap.insert({ {desc.StaticSamplerNames[i],
 		                           std::dynamic_pointer_cast<VulkanSampler>(desc.StaticSamplers[i])} });
 	}
@@ -52,7 +54,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	//Collect all unique shader resources in the given shaders
 	//Resources are parsed by name (two resources name "XYZ" in two shader will
 	//be considered the same resource)
-	for(auto* sh : desc.Shaders)
+	for(auto sh : desc.Shaders)
 	{
 		const TRAP::Ref<ShaderReflection::PipelineReflection> reflection = dynamic_cast<VulkanShader*>
 		(
@@ -84,7 +86,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 				}
 				else
 				{
-					TRAP_ASSERT(res.Type == resIt->Type);
+					TRAP_ASSERT(res.Type == resIt->Type, "VulkanRootSignature(): Resource Type mismatch");
 					if(res.Type != resIt->Type)
 					{
 						TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Failed to create root signature");
@@ -175,7 +177,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 				}
 				else
 				{
-					TRAP_ASSERT(false, "Descriptor (" + descInfo.Name +
+					TRAP_ASSERT(false, "VulkanRootSignature(): Descriptor (" + descInfo.Name +
 					            "): Cannot use VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC for arrays");
 					TP_WARN("Descriptor (", descInfo.Name,
 					        "): Cannot use VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC for arrays");
@@ -286,7 +288,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		//Loop through descriptor belonging to this update frequency and increment the cumulative descriptor count
 		for(std::size_t descIndex = 0; descIndex < layout.Descriptors.size(); ++descIndex)
 		{
-			RendererAPI::DescriptorInfo* descInfo = layout.Descriptors[descIndex];
+			RendererAPI::DescriptorInfo* const descInfo = layout.Descriptors[descIndex];
 			descInfo->IndexInParent = static_cast<uint32_t>(descIndex);
 			descInfo->HandleIndex = m_vkCumulativeDescriptorsCounts[i];
 			m_vkCumulativeDescriptorsCounts[i] += descInfo->Size;
@@ -295,7 +297,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		m_vkDynamicDescriptorCounts[i] = static_cast<uint8_t>(layout.DynamicDescriptors.size());
 		for(std::size_t descIndex = 0; descIndex < m_vkDynamicDescriptorCounts[i]; ++descIndex)
 		{
-			RendererAPI::DescriptorInfo* descInfo = layout.DynamicDescriptors[descIndex];
+			RendererAPI::DescriptorInfo* const descInfo = layout.DynamicDescriptors[descIndex];
 			descInfo->RootDescriptorIndex = static_cast<uint32_t>(descIndex);
 		}
 	}
@@ -314,6 +316,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 																			         m_vkPushConstantCount,
 																			         pushConstants.data());
 	VkCall(vkCreatePipelineLayout(m_device->GetVkDevice(), &addInfo, nullptr, &m_pipelineLayout));
+	TRAP_ASSERT(m_pipelineLayout, "VulkanRootSignature(): Vulkan PipelineLayout is nullptr!");
 
 	//Update templates
 	for(uint32_t setIndex = 0; setIndex < RendererAPI::MaxDescriptorSets; ++setIndex)
@@ -328,7 +331,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 			//Fill the write descriptors with default values during initialization so the only thing we change
 			//in CmdBindDescriptors are the VkBuffer / VKImageView objects
-			for (auto* descInfo : layout.Descriptors)
+			for (const auto* const descInfo : layout.Descriptors)
 			{
 				const uint64_t offset = descInfo->HandleIndex * sizeof(VulkanRenderer::DescriptorUpdateData);
 
@@ -371,7 +374,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 						updateData[descInfo->HandleIndex + static_cast<std::size_t>(arr)].ImageInfo =
 						{
 							VK_NULL_HANDLE,
-							dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(VulkanRenderer::s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(descInfo->Dimension)].get())->GetSRVVkImageView(),
+							std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(VulkanRenderer::s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(descInfo->Dimension)])->GetSRVVkImageView(),
 							VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
 						};
 					}
@@ -383,14 +386,16 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 						updateData[descInfo->HandleIndex + static_cast<std::size_t>(arr)].ImageInfo =
 						{
 							VK_NULL_HANDLE,
-							dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(VulkanRenderer::s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(descInfo->Dimension)].get())->GetUAVVkImageViews()[0],
+							std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(VulkanRenderer::s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(descInfo->Dimension)])->GetUAVVkImageViews()[0],
 							VK_IMAGE_LAYOUT_GENERAL
 						};
 					}
 					break;
 
 				case RendererAPI::DescriptorType::UniformBuffer:
+					[[fallthrough]];
 				case RendererAPI::DescriptorType::Buffer:
+					[[fallthrough]];
 				case RendererAPI::DescriptorType::BufferRaw:
 					for(uint32_t arr = 0; arr < arrayCount; ++arr)
 					{
@@ -404,6 +409,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 					break;
 
 				case RendererAPI::DescriptorType::RWBuffer:
+					[[fallthrough]];
 				case RendererAPI::DescriptorType::RWBufferRaw:
 					for(uint32_t arr = 0; arr < arrayCount; ++arr)
 					{
@@ -447,9 +453,9 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		else if(m_vkDescriptorSetLayouts[setIndex] != VK_NULL_HANDLE)
 		{
 			//Consume empty descriptor sets from empty descriptor set pool
-			m_vkEmptyDescriptorSets[setIndex] = dynamic_cast<TRAP::Graphics::API::VulkanDescriptorPool*>
+			m_vkEmptyDescriptorSets[setIndex] = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanDescriptorPool>
 			(
-				RendererAPI::GetDescriptorPool().get()
+				RendererAPI::GetDescriptorPool()
 			)->RetrieveVkDescriptorSet(m_vkDescriptorSetLayouts[setIndex]);
 		}
 	}
@@ -459,7 +465,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 TRAP::Graphics::API::VulkanRootSignature::~VulkanRootSignature()
 {
-	TRAP_ASSERT(m_pipelineLayout);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRootSignaturePrefix, "Destroying RootSignature");
@@ -481,87 +487,100 @@ TRAP::Graphics::API::VulkanRootSignature::~VulkanRootSignature()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::API::VulkanRootSignature::GetPipelineType() const
+[[nodiscard]] VkPipelineLayout TRAP::Graphics::API::VulkanRootSignature::GetVkPipelineLayout() const noexcept
 {
-	return m_pipelineType;
-}
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-VkPipelineLayout TRAP::Graphics::API::VulkanRootSignature::GetVkPipelineLayout() const
-{
 	return m_pipelineLayout;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-auto TRAP::Graphics::API::VulkanRootSignature::GetVkDescriptorSetLayouts() const ->
+[[nodiscard]] auto TRAP::Graphics::API::VulkanRootSignature::GetVkDescriptorSetLayouts() const noexcept ->
 const std::array<VkDescriptorSetLayout, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_vkDescriptorSetLayouts;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-auto TRAP::Graphics::API::VulkanRootSignature::GetVkCumulativeDescriptorCounts() const ->
+[[nodiscard]] auto TRAP::Graphics::API::VulkanRootSignature::GetVkCumulativeDescriptorCounts() const noexcept ->
 	const std::array<uint32_t, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_vkCumulativeDescriptorsCounts;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-auto TRAP::Graphics::API::VulkanRootSignature::GetVkDescriptorCounts() const ->
+[[nodiscard]] auto TRAP::Graphics::API::VulkanRootSignature::GetVkDescriptorCounts() const noexcept ->
 	const std::array<uint16_t, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_vkDescriptorCounts;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-auto TRAP::Graphics::API::VulkanRootSignature::GetVkDynamicDescriptorCounts() const ->
+[[nodiscard]] auto TRAP::Graphics::API::VulkanRootSignature::GetVkDynamicDescriptorCounts() const noexcept ->
 	const std::array<uint8_t, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_vkDynamicDescriptorCounts;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-auto TRAP::Graphics::API::VulkanRootSignature::GetVkRayTracingDescriptorCounts() const ->
+[[nodiscard]] auto TRAP::Graphics::API::VulkanRootSignature::GetVkRayTracingDescriptorCounts() const noexcept ->
 	const std::array<uint8_t, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_vkRayTracingDescriptorCounts;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplates() const ->
+[[nodiscard]] auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplates() const noexcept ->
 	const std::array<VkDescriptorUpdateTemplate, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_updateTemplates;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-auto TRAP::Graphics::API::VulkanRootSignature::GetVkEmptyDescriptorSets() const ->
+[[nodiscard]] auto TRAP::Graphics::API::VulkanRootSignature::GetVkEmptyDescriptorSets() const noexcept ->
 	const std::array<VkDescriptorSet, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_vkEmptyDescriptorSets;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplateData() const ->
+[[nodiscard]] auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplateData() const noexcept ->
 	const std::array<std::vector<TRAP::Graphics::API::VulkanRenderer::DescriptorUpdateData>,
 	                 TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_updateTemplateData;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const char* resName)
+[[nodiscard]] TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const char* const resName)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	const auto it = m_descriptorNameToIndexMap.find(resName);
 	if (it != m_descriptorNameToIndexMap.end())
 		return &m_descriptors[it->second];
@@ -571,21 +590,13 @@ TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSign
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanRootSignature::GetDescriptorCount() const
+[[nodiscard]] const TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const char* const resName) const
 {
-	return static_cast<uint32_t>(m_descriptors.size());
-}
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-//-------------------------------------------------------------------------------------------------------------------//
+	const auto it = m_descriptorNameToIndexMap.find(resName);
+	if (it != m_descriptorNameToIndexMap.end())
+		return &m_descriptors[it->second];
 
-const std::vector<TRAP::Graphics::RendererAPI::DescriptorInfo>& TRAP::Graphics::API::VulkanRootSignature::GetDescriptors() const
-{
-	return m_descriptors;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-const TRAP::Graphics::API::VulkanRenderer::DescriptorIndexMap& TRAP::Graphics::API::VulkanRootSignature::GetDescriptorNameToIndexMap() const
-{
-	return m_descriptorNameToIndexMap;
+	return nullptr;
 }

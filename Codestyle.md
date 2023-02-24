@@ -1,8 +1,8 @@
 # C++ Coding Standards and Practices
 
-#### © 2019-2021 Jan "GamesTrap" Schürkamp (GamesTrap@web.de). No rights reserved.
+#### © 2019-2022 Jan "GamesTrap" Schürkamp (jan.schuerkamp@trappedgames.de). No rights reserved.
 
-##### Latest Update: 2021-05-15
+##### Latest Update: 2022-09-29
 
 ___
 
@@ -92,28 +92,28 @@ ___
 ### Header Protection
 
 Every header should internally protect itself from multiple includes using the following technique:  
-&nbsp;&nbsp;&nbsp;&nbsp;Wrong:
+Wrong:
 
 ```cpp
-#ifndef _PROJECTNAME_FILENAME_H_
+#ifndef PROJECTNAME_FILENAME_H
 #include "FileName.h"
 #endif
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;Correct:
+Correct:
 
 ```cpp
-#ifndef _PROJECTNAME_FILENAME_H_
-#define _PROJECTNAME_FILENAME_H_
+#ifndef PROJECTNAME_FILENAME_H
+#define PROJECTNAME_FILENAME_H
 /*All header contents*/
-#endif /*_PROJECTNAME_FILENAME_H_*/
+#endif /*PROJECTNAME_FILENAME_H*/
 ```
 
 ### Defining Functions (inlining)
 
 A header file should be used for declarations of types and functions only, however if code must be inlined it should be placed under all declarations within the header file.  
 This is for readability, when looking through a header, one should not be concerned with implementation details.  
-&nbsp;&nbsp;&nbsp;&nbsp;Correct:
+Correct:
 
 ```cpp
 namespace Example
@@ -150,14 +150,14 @@ ___
 
 Locally defined types must be declared within an anonymous, unnamed or named namespace.  
 This is to prevent undefined behavior if the type is declared in two seperate translation units.  
-&nbsp;&nbsp;&nbsp;&nbsp;Consider:  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In MyFoo.cpp:
+Consider:  
+In MyFoo.cpp:
 
 ```cpp
 struct Foo { int32_t x; char z; }
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In YourBar.cpp:
+In YourBar.cpp:
 
 ```cpp
 struct Foo { float y[3], bool a; }
@@ -175,13 +175,13 @@ Tabs should be set to four spaces. (This shouldn't matter if using tabs properly
 ### Spacing
 
 A space must precede and follow binary operators: `+`, `-`, `*`, `<<` etc:  
-&nbsp;&nbsp;&nbsp;&nbsp;Wrong:
+Wrong:
 
 ```cpp
 myVariable+=10;
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;Correct:
+Correct:
 
 ```cpp
 myVariable += 10;
@@ -190,7 +190,7 @@ myVariable += 10;
 ### Scope Braces
 
 Scope braces should be placed on separate lines, and the contents of the scope tabbed.  
-&nbsp;&nbsp;&nbsp;&nbsp;Wrong:
+Wrong:
 
 ```cpp
 while (condition) {
@@ -203,7 +203,7 @@ while(condition)
     }
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;Correct:
+Correct:
 
 ```cpp
 while(condition)
@@ -229,7 +229,7 @@ ___
 - If a class has virtual methods, it must have a virtual destructor as well.
 - Must have public methods then members, followed by protected and finally private.
 
-&nbsp;&nbsp;&nbsp;&nbsp;Correct:
+Correct:
 
 ```cpp
 class Example
@@ -260,7 +260,7 @@ private:
 - Overriden virtual functions must be marked with override if using C++11 or newer.
 - Always use explicit constructors for single argument constructor to avoid implicit-casting.
 
-&nbsp;&nbsp;&nbsp;&nbsp;Wrong:
+Wrong:
 
 ```cpp
 class Example
@@ -270,7 +270,7 @@ public:
 };
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;Correct:
+Correct:
 
 ```cpp
 class Example
@@ -282,7 +282,7 @@ public:
 
 - Never give direct access to contained objects. Even returning read-only contained objects makes code more dependant on other parts. Sometimes this is necessary, though it should never be necessary to give writable access.
 
-&nbsp;&nbsp;&nbsp;&nbsp;Wrong:
+Wrong:
 
 ```cpp
 class Example
@@ -296,7 +296,7 @@ private:
 };
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;Acceptable: (with reasoning)
+Acceptable: (with reasoning)
 
 ```cpp
 class Example
@@ -319,7 +319,7 @@ ___
 - Never use a namespace or part of a namespace within a header file.
 - Place function declarations within a namespace, then use the Scope-Resolution Operator to define the function. *Allows the compiler to help spot type-safety errors that would be linker errors.*
 
-&nbsp;&nbsp;&nbsp;&nbsp;Header File:
+Header File:
 
 ```cpp
 namespace Example
@@ -328,8 +328,8 @@ namespace Example
 }
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;Source File:  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Wrong:
+Source File:  
+Wrong:
 
 ```cpp
 namespace Example
@@ -338,7 +338,7 @@ namespace Example
 }
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Correct:
+Correct:
 
 ```cpp
 void Example::DoSomething(const int32_t withValue) { /*Codes*/ }
@@ -402,10 +402,10 @@ ___
 - Member variables should start with an m_ following a lowercase letter.
 - Constants should start with a lowercase letter.
 - Global variables should be used very rarely, if ever. Use uppercase letters.  
-&nbsp;&nbsp;&nbsp;&nbsp;Locals / Parameters: `elapsedTime`  
-&nbsp;&nbsp;&nbsp;&nbsp;Class Members: `m_isVisible`  
-&nbsp;&nbsp;&nbsp;&nbsp;Constants: `thisNeverChanges`  
-&nbsp;&nbsp;&nbsp;&nbsp;Globals: `VISUALSYSTEM`
+Locals / Parameters: `elapsedTime`  
+Class Members: `m_isVisible`  
+Constants: `thisNeverChanges`  
+Globals: `VISUALSYSTEM`
 
 ### Type-Casting
 
@@ -419,14 +419,14 @@ They are potentially very dangerous, properly use `static_cast`, `const_cast`, `
 In general stick with `static_cast`.
 *Note: `dynamic_cast` can only be used if RTTI is turned on, usually disabled by default.*
 
-&nbsp;&nbsp;&nbsp;&nbsp;Wrong:
+Wrong:
 
 ```cpp
 float val = 30.0f;
 int32_t intVal = (int32_t)val;
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;Correct:
+Correct:
 
 ```cpp
 float val = 30.0f;

@@ -45,8 +45,18 @@
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
 #endif
+//Tracy - Profiler
+#include <tracy/Tracy.hpp>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
+
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
 //ImGUI
 #include <imgui.h>
+#include <ImGuizmo.h>
 #ifdef _MSC_VER
 	#pragma warning(pop)
 #endif
@@ -55,7 +65,6 @@
 #include "Core/Base.h"
 #include "TRAP_Assert.h"
 #include "Log/Log.h"
-#include "Utils/Profiler/Instrumentor.h"
 
 #ifdef TRAP_PLATFORM_LINUX
 #include "Utils/Linux.h"
@@ -77,6 +86,7 @@
 #endif
 //SPIRV
 #include <glslang/Public/ShaderLang.h>
+#include <glslang/Public/ResourceLimits.h>
 #include <SPIRV/GlslangToSpv.h>
 //SPIRV to GLSL
 #include <spirv_glsl.hpp>
@@ -96,6 +106,11 @@
 #include <GFSDK_Aftermath.h>
 #include <GFSDK_Aftermath_Defines.h>
 #include <GFSDK_Aftermath_GpuCrashDump.h>
+#endif
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+#include <NvLowLatencyVk.h>
+#include <reflexstats.h>
 #endif
 
 #endif /*TRAP_TRAPPCH_H*/

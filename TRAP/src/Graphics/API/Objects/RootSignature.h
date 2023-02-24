@@ -12,7 +12,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="desc">Root signature description.</param>
 		/// <returns>Created root signature.</returns>
-		static TRAP::Ref<RootSignature> Create(const RendererAPI::RootSignatureDesc& desc);
+		[[nodiscard]] static TRAP::Ref<RootSignature> Create(const RendererAPI::RootSignatureDesc& desc);
 
 		/// <summary>
 		/// Destructor.
@@ -30,32 +30,32 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		RootSignature(RootSignature&&) = default;
+		RootSignature(RootSignature&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		RootSignature& operator=(RootSignature&&) = default;
+		RootSignature& operator=(RootSignature&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the pipeline type used by the shaders of the root signature.
 		/// </summary>
 		/// <returns>Pipeline type.</returns>
-		virtual RendererAPI::PipelineType GetPipelineType() const = 0;
+		[[nodiscard]] RendererAPI::PipelineType GetPipelineType() const noexcept;
 		/// <summary>
 		/// Retrieve the amount of descriptors contained in the root signature.
 		/// </summary>
 		/// <returns>Amount of descriptors.</returns>
-		virtual uint32_t GetDescriptorCount() const = 0;
+		[[nodiscard]] uint32_t GetDescriptorCount() const noexcept;
 		/// <summary>
 		/// Retrieve the list of descriptors contained in the root signature.
 		/// </summary>
 		/// <returns>List of descriptors.</returns>
-		virtual const std::vector<RendererAPI::DescriptorInfo>& GetDescriptors() const = 0;
+		[[nodiscard]] const std::vector<RendererAPI::DescriptorInfo>& GetDescriptors() const noexcept;
 		/// <summary>
 		/// Retrieve the map which converts a descriptor name to its index.
 		/// </summary>
 		/// <returns>Map which converts a descriptor name to its index.</returns>
-		virtual const RendererAPI::DescriptorIndexMap& GetDescriptorNameToIndexMap() const = 0;
+		[[nodiscard]] const RendererAPI::DescriptorIndexMap& GetDescriptorNameToIndexMap() const noexcept;
 
 	protected:
 		/// <summary>

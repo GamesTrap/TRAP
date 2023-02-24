@@ -5,6 +5,15 @@
 #include <queue>
 #include <condition_variable>
 
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
+//Tracy - Profiler
+#include <tracy/Tracy.hpp>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
+
 namespace TRAP
 {
 	template<typename T>
@@ -88,18 +97,18 @@ namespace TRAP
 		/// Check if queue is empty.
 		/// </summary>
 		/// <returns>True if queue is empty, false otherwise.</returns>
-		bool Empty() const noexcept;
+		[[nodiscard]] bool Empty() const noexcept;
 
 		/// <summary>
 		/// Retrieve the size of the queue.
 		/// </summary>
 		/// <returns>Queue size.</returns>
-		uint32_t Size() const noexcept;
+		[[nodiscard]] uint32_t Size() const noexcept;
 
 	private:
 		std::queue<T> m_queue{};
-		mutable std::mutex m_mutex;
-		std::condition_variable m_ready;
+		mutable TracyLockable(std::mutex, m_mutex);
+		std::condition_variable_any m_ready;
 		bool m_done = false;
 	};
 }
@@ -110,8 +119,11 @@ template <typename T>
 template <typename Q>
 typename std::enable_if<std::is_copy_constructible<Q>::value, void>::type TRAP::BlockingQueue<T>::Push(const T& item)
 {
+	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	{
 		std::unique_lock lock(m_mutex);
+		LockMark(m_mutex);
 		m_queue.push(item);
 	}
 
@@ -124,8 +136,11 @@ template <typename T>
 template <typename Q>
 typename std::enable_if<std::is_move_constructible<Q>::value, void>::type TRAP::BlockingQueue<T>::Push(T&& item)
 {
+	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	{
 		std::unique_lock lock(m_mutex);
+		LockMark(m_mutex);
 		m_queue.emplace(std::forward<T>(item));
 	}
 
@@ -141,8 +156,11 @@ typename std::enable_if<std::is_copy_constructible<Q>::value, bool>::type TRAP::
 	const T& item
 )
 {
+	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	{
 		const std::unique_lock lock(m_mutex, std::try_to_lock);
+		LockMark(m_mutex);
 		if (!lock)
 			return false;
 
@@ -159,8 +177,11 @@ template <typename T>
 template <typename Q>
 typename std::enable_if<std::is_move_constructible<Q>::value, bool>::type TRAP::BlockingQueue<T>::TryPush(T&& item)
 {
+	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	{
 		const std::unique_lock lock(m_mutex, std::try_to_lock);
+		LockMark(m_mutex);
 		if (!lock)
 			return false;
 
@@ -178,7 +199,10 @@ template <typename Q>
 typename std::enable_if<std::is_copy_assignable<Q>::value && !std::is_move_assignable<Q>::value, bool>::type
 TRAP::BlockingQueue<T>::Pop(T& item)
 {
+	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	std::unique_lock lock(m_mutex);
+	LockMark(m_mutex);
 	while (m_queue.empty() && !m_done)
 		m_ready.wait(lock);
 
@@ -197,7 +221,10 @@ template <typename T>
 template <typename Q>
 typename std::enable_if<std::is_move_assignable<Q>::value, bool>::type TRAP::BlockingQueue<T>::Pop(T& item)
 {
+	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	std::unique_lock lock(m_mutex);
+	LockMark(m_mutex);
 	while (m_queue.empty() && !m_done)
 		m_ready.wait(lock);
 
@@ -217,7 +244,10 @@ template <typename Q>
 typename std::enable_if<std::is_copy_assignable<Q>::value && !std::is_move_assignable<Q>::value, bool>::type
 TRAP::BlockingQueue<T>::TryPop(T& item)
 {
+	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	const std::unique_lock lock(m_mutex, std::try_to_lock);
+	LockMark(m_mutex);
 	if (!lock || m_queue.empty())
 		return false;
 
@@ -232,7 +262,10 @@ template <typename T>
 template <typename Q>
 typename std::enable_if<std::is_move_assignable<Q>::value, bool>::type TRAP::BlockingQueue<T>::TryPop(T& item)
 {
+	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	const std::unique_lock lock(m_mutex, std::try_to_lock);
+	LockMark(m_mutex);
 	if (!lock || m_queue.empty())
 		return false;
 
@@ -247,8 +280,11 @@ typename std::enable_if<std::is_move_assignable<Q>::value, bool>::type TRAP::Blo
 template <typename T>
 void TRAP::BlockingQueue<T>::Done() noexcept
 {
+	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	{
 		std::unique_lock lock(m_mutex);
+		LockMark(m_mutex);
 		m_done = true;
 	}
 
@@ -258,18 +294,24 @@ void TRAP::BlockingQueue<T>::Done() noexcept
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-bool TRAP::BlockingQueue<T>::Empty() const noexcept
+[[nodiscard]] bool TRAP::BlockingQueue<T>::Empty() const noexcept
 {
+	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	std::scoped_lock lock(m_mutex);
+	LockMark(m_mutex);
 	return m_queue.empty();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-uint32_t TRAP::BlockingQueue<T>::Size() const noexcept
+[[nodiscard]] uint32_t TRAP::BlockingQueue<T>::Size() const noexcept
 {
+	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	std::scoped_lock lock(m_mutex);
+	LockMark(m_mutex);
 	return m_queue.size();
 }
 

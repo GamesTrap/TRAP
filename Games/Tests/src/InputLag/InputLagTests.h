@@ -32,6 +32,18 @@ private:
 	TRAP::Math::Vec2 m_cursorPos;
 	TRAP::Math::Vec2 m_cursorVelocity;
 	bool m_showForecasts;
+
+	//NVIDIA-Relfex stuff
+	TRAP::Graphics::LatencyMode m_latencyMode;
+
+	std::array<float, 50> m_totalHistory;
+	std::array<float, 50> m_simulationDeltaHistory;
+	std::array<float, 50> m_renderDeltaHistory;
+	std::array<float, 50> m_presentDeltaHistory;
+	std::array<float, 50> m_driverDeltaHistory;
+	std::array<float, 50> m_OSRenderQueueDeltaHistory;
+	std::array<float, 50> m_GPURenderDeltaHistory;
+	TRAP::Utils::Timer m_updateLatencyTimer;
 };
 
 #endif /*GAMESTRAP_INPUTLAGTESTS_H*/

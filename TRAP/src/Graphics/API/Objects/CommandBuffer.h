@@ -25,25 +25,25 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		CommandBuffer(const CommandBuffer&) = default;
+		CommandBuffer(const CommandBuffer&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		CommandBuffer& operator=(const CommandBuffer&) = default;
+		CommandBuffer& operator=(const CommandBuffer&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		CommandBuffer(CommandBuffer&&) = default;
+		CommandBuffer(CommandBuffer&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		CommandBuffer& operator=(CommandBuffer&&) = default;
+		CommandBuffer& operator=(CommandBuffer&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the queue used by the command buffer.
 		/// </summary>
 		/// <returns>Queue used by the command buffer.</returns>
-		virtual TRAP::Ref<Queue> GetQueue() const;
+		[[nodiscard]] TRAP::Ref<Queue> GetQueue() const noexcept;
 
 		/// <summary>
 		/// Bind push constant buffer data to the command buffer.
@@ -108,7 +108,8 @@ namespace TRAP::Graphics
 			                           const RendererAPI::LoadActionsDesc* loadActions,
 			                           const std::vector<uint32_t>* colorArraySlices,
 			                           const std::vector<uint32_t>* colorMipSlices,
-			                           uint32_t depthArraySlice, uint32_t depthMipSlice) = 0;
+			                           uint32_t depthArraySlice, uint32_t depthMipSlice,
+									   const TRAP::Ref<RenderTarget>& shadingRate = nullptr) = 0;
 
 		/// <summary>
 		/// Add a debug marker to the command buffer.
@@ -230,9 +231,17 @@ namespace TRAP::Graphics
 		/// <param name="texture">Texture to update.</param>
 		/// <param name="srcBuffer">Source buffer to read data from.</param>
 		/// <param name="subresourceDesc">Subresource description.</param>
-		virtual void UpdateSubresource(Texture* texture,
+		virtual void UpdateSubresource(const Texture* const texture,
 		                               const TRAP::Ref<Buffer>& srcBuffer,
 									   const RendererAPI::SubresourceDataDesc& subresourceDesc) const = 0;
+		/// <summary>
+		/// Copy a texture partially into a buffer.
+		/// </summary>
+		/// <param name="dstBuffer">Destination to copy data into.</param>
+		/// <param name="texture">Source texture to copy from.</param>
+		/// <param name="subresourceDesc">Subresource description.</param>
+		virtual void CopySubresource(const Buffer* const dstBuffer, const Texture* const texture,
+		                             const RendererAPI::SubresourceDataDesc& subresourceDesc) const = 0;
 
 		/// <summary>
 		/// Reset a query pool.
@@ -293,11 +302,9 @@ namespace TRAP::Graphics
 		/// Set the pipeline fragment shading rate and combiner operation for the command buffer.
 		/// </summary>
 		/// <param name="shadingRate">Shading rate to use.</param>
-		/// <param name="texture">Unused by Vulkan.</param>
 		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
 		/// <param name="finalRate">Shading rate combiner to use.</param>
 		virtual void SetShadingRate(RendererAPI::ShadingRate shadingRate,
-						            TRAP::Graphics::Texture* texture,
 		                            RendererAPI::ShadingRateCombiner postRasterizerRate,
 							        RendererAPI::ShadingRateCombiner finalRate) const = 0;
 
@@ -307,7 +314,7 @@ namespace TRAP::Graphics
 		/// <param name="color">Color to clear the color attachment with.</param>
 		/// <param name="width">Width of the area to clear.</param>
 		/// <param name="height">Height of the area to clear.</param>
-		virtual void Clear(TRAP::Math::Vec4 color, uint32_t width, uint32_t height) const = 0;
+		virtual void Clear(const RendererAPI::Color& color, uint32_t width, uint32_t height) const = 0;
 		/// <summary>
 		/// Clear the currently used depth and stencil attachment.
 		/// </summary>

@@ -27,19 +27,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanSwapChain(const VulkanSwapChain&) = default;
+		VulkanSwapChain(const VulkanSwapChain&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanSwapChain& operator=(const VulkanSwapChain&) = default;
+		VulkanSwapChain& operator=(const VulkanSwapChain&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanSwapChain(VulkanSwapChain&&) = default;
+		VulkanSwapChain(VulkanSwapChain&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanSwapChain& operator=(VulkanSwapChain&&) = default;
+		VulkanSwapChain& operator=(VulkanSwapChain&&) noexcept = default;
 
 		/// <summary>
 		/// Acquire the next presentable image from the swapchain to render to.
@@ -47,8 +47,8 @@ namespace TRAP::Graphics::API
 		/// <param name="signalSemaphore">Semaphore to signal when the image is ready to be presented.</param>
 		/// <param name="fence">Fence to wait for the image to be ready to be presented.</param>
 		/// <returns>Acuired image index.</returns>
-		uint32_t AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
-		                          const TRAP::Ref<Fence>& fence) const override;
+		[[nodiscard]] uint32_t AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
+		                                        const TRAP::Ref<Fence>& fence) const override;
 
 		/// <summary>
 		/// Toggle Vsync on and off.
@@ -56,20 +56,15 @@ namespace TRAP::Graphics::API
 		void ToggleVSync() override;
 
 		/// <summary>
-		/// Set sample count used by anti aliasing.
-		/// </summary>
-		void SetSampleCount(RendererAPI::SampleCount sampleCount) override;
-
-		/// <summary>
 		/// Retrieve the Vulkan swap chain handle.
 		/// </summary>
 		/// <returns>Vulkan swap chain handle.</returns>
-		VkSwapchainKHR GetVkSwapChain() const;
+		[[nodiscard]] VkSwapchainKHR GetVkSwapChain() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan queue used for presentation.
 		/// </summary>
 		/// <returns>Vulkan queue used for presentation.</returns>
-		VkQueue GetPresentVkQueue() const;
+		[[nodiscard]] VkQueue GetPresentVkQueue() const noexcept;
 
 	private:
 		/// <summary>

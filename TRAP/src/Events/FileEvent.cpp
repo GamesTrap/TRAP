@@ -2,75 +2,66 @@
 #include "FileEvent.h"
 
 #include "FileSystem/FileWatcher.h"
-#include <stdexcept>
+#include "Utils/String/String.h"
 
 TRAP::Events::FileChangeEvent::FileChangeEvent(TRAP::FileSystem::FileStatus status, std::filesystem::path path,
-                                               std::filesystem::path oldName)
+                                               std::optional<std::filesystem::path> oldName) noexcept
     : m_status(status), m_path(std::move(path)), m_oldName(std::move(oldName))
-{}
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::filesystem::path TRAP::Events::FileChangeEvent::GetPath() const
+[[nodiscard]] std::filesystem::path TRAP::Events::FileChangeEvent::GetPath() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
     return m_path;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::filesystem::path TRAP::Events::FileChangeEvent::GetOldName() const
+[[nodiscard]] std::optional<std::filesystem::path> TRAP::Events::FileChangeEvent::GetOldName() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
     return m_oldName;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::FileChangeEvent::ToString() const
+[[nodiscard]] std::string TRAP::Events::FileChangeEvent::ToString() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
     return "FileChangeEvent: Path: " + m_path.u8string() + " Status: " +
-           FileStatusToString(m_status) + (m_oldName.empty() ? "" : " OldName: " + m_oldName.u8string());
+           Utils::String::ConvertToString<FileSystem::FileStatus>(m_status) + (!m_oldName ? "" : " OldName: " + m_oldName->u8string());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetEventType() const
+[[nodiscard]] TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetEventType() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return GetStaticType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::FileChangeEvent::GetName() const
+[[nodiscard]] std::string TRAP::Events::FileChangeEvent::GetName() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return "FileChange";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::FileChangeEvent::GetCategoryFlags() const
+[[nodiscard]] TRAP::Events::EventCategory TRAP::Events::FileChangeEvent::GetCategoryFlags() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return EventCategory::FileChange;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string TRAP::Events::FileChangeEvent::FileStatusToString(const TRAP::FileSystem::FileStatus status)
-{
-    switch(status)
-    {
-    case TRAP::FileSystem::FileStatus::Created:
-        return "Created";
-
-    case TRAP::FileSystem::FileStatus::Renamed:
-        return "Renamed";
-
-    case TRAP::FileSystem::FileStatus::Modified:
-        return "Modified";
-
-    case TRAP::FileSystem::FileStatus::Erased:
-        return "Erased";
-
-    default:
-        throw std::invalid_argument("Unimplemented enum->string value for TRAP::FileSystem::FileStatus");
-    }
 }

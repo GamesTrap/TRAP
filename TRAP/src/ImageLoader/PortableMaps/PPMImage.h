@@ -16,19 +16,19 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		PPMImage(const PPMImage&) = default;
+		PPMImage(const PPMImage&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		PPMImage& operator=(const PPMImage&) = default;
+		PPMImage& operator=(const PPMImage&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		PPMImage(PPMImage&&) = default;
+		PPMImage(PPMImage&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		PPMImage& operator=(PPMImage&&) = default;
+		PPMImage& operator=(PPMImage&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -38,12 +38,12 @@ namespace TRAP::INTERNAL
 		/// Retrieve the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Constant pointer to the raw pixel data.</returns>
-		const void* GetPixelData() const override;
+		[[nodiscard]] const void* GetPixelData() const noexcept override;
 		/// <summary>
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		uint64_t GetPixelDataSize() const override;
+		[[nodiscard]] uint64_t GetPixelDataSize() const noexcept override;
 
 		/// <summary>
 		/// Save an TRAP::Image as a Portable Pixmap (PPM) file.

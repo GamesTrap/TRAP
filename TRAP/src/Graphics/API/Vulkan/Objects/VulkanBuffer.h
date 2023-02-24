@@ -26,74 +26,50 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanBuffer(const VulkanBuffer&) = default;
+		VulkanBuffer(const VulkanBuffer&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanBuffer& operator=(const VulkanBuffer&) = default;
+		VulkanBuffer& operator=(const VulkanBuffer&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanBuffer(VulkanBuffer&&) = default;
+		VulkanBuffer(VulkanBuffer&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanBuffer& operator=(VulkanBuffer&&) = default;
+		VulkanBuffer& operator=(VulkanBuffer&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the VkBuffer handle.
 		/// </summary>
 		/// <returns>VkBuffer handle.</returns>
-		VkBuffer GetVkBuffer() const;
+		[[nodiscard]] VkBuffer GetVkBuffer() const noexcept;
 		/// <summary>
 		/// Retrieve the storage texel view.
 		/// </summary>
 		/// <returns>VkBufferView for storage texel.</returns>
-		VkBufferView GetStorageTexelView() const;
+		[[nodiscard]] VkBufferView GetStorageTexelView() const noexcept;
 		/// <summary>
 		/// Retrieve the uniform texel view.
 		/// </summary>
 		/// <returns>VkBufferView for uniform texel.</returns>
-		VkBufferView GetUniformTexelView() const;
+		[[nodiscard]] VkBufferView GetUniformTexelView() const noexcept;
 		/// <summary>
 		/// Retrieve the byte offset to the first element in the buffer.
 		/// </summary>
 		/// <returns>Byte offset to the first element in the buffer.</returns>
-		uint64_t GetOffset() const;
+		[[nodiscard]] uint64_t GetOffset() const noexcept;
 		/// <summary>
 		/// Retrieve the VkDeviceMemory handle.
 		/// </summary>
 		/// <returns>VkDeviceMemory handle.</returns>
-		VkDeviceMemory GetVkDeviceMemory() const;
+		[[nodiscard]] VkDeviceMemory GetVkDeviceMemory() const;
 		/// <summary>
 		/// Retrieve the VkDeviceMemory offset to the start of the buffer.
 		/// </summary>
 		/// <returns>VkDeviceMemory offset.</returns>
-		uint64_t GetVkDeviceMemoryOffset() const;
-
-		/// <summary>
-		/// Retrieve the size of the buffer in bytes.
-		/// </summary>
-		/// <returns>Size of the buffer in bytes.</returns>
-		uint64_t GetSize() const override;
-		/// <summary>
-		/// Retrieve the type of descriptor.
-		/// </summary>
-		/// <returns>Type of descriptor.</returns>
-		RendererAPI::DescriptorType GetDescriptors() const override;
-		/// <summary>
-		/// Retrieve the usage of the buffer memory.
-		/// </summary>
-		/// <returns>Usage of the buffer memory.</returns>
-		RendererAPI::ResourceMemoryUsage GetMemoryUsage() const override;
-
-		/// <summary>
-		/// Retrieve the CPU mapped address of the buffer.
-		///
-		/// Note: MapBuffer must be called before accessing the buffer on the CPU.
-		/// </summary>
-		/// <returns>CPU mapped address of the buffer.</returns>
-		void* GetCPUMappedAddress() const override;
+		[[nodiscard]] uint64_t GetVkDeviceMemoryOffset() const;
 
 		/// <summary>
 		/// Map a region of the buffer to the CPU.
@@ -101,7 +77,7 @@ namespace TRAP::Graphics::API
 		/// Note: MapBuffer must not be called if memory usage is GPU only.
 		/// </summary>
 		/// <param name="range">Optional range of the buffer to map. Default: Whole buffer.</param>
-		void MapBuffer(RendererAPI::ReadRange* range) override;
+		void MapBuffer(const RendererAPI::ReadRange* const range) override;
 		/// <summary>
 		/// Unmap CPU mapped memory region.
 		///

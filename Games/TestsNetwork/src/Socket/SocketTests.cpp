@@ -26,7 +26,7 @@ void SocketTests::OnDetach()
 void SocketTests::Sockets()
 {
 	//Choose an arbitrary port for opening sockets
-	constexpr uint16_t port = 50001;
+	static constexpr uint16_t port = 50001;
 
 	//IPv4 or IPv6?
 	char IPVersion = '4';

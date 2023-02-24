@@ -1,0 +1,11 @@
+@echo off
+pushd %~dp0
+call ..\libs\premake5\windows\premake5.exe --file=../premake5.lua vs2022
+IF %ERRORLEVEL% NEQ 0 (
+  PAUSE
+)
+call ..\libs\premake5\windows\premake5.exe --file=../premake5.lua vscode
+IF %ERRORLEVEL% NEQ 0 (
+  PAUSE
+)
+popd

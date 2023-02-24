@@ -16,19 +16,19 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		PFMImage(const PFMImage&) = default;
+		PFMImage(const PFMImage&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		PFMImage& operator=(const PFMImage&) = default;
+		PFMImage& operator=(const PFMImage&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		PFMImage(PFMImage&&) = default;
+		PFMImage(PFMImage&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		PFMImage& operator=(PFMImage&&) = default;
+		PFMImage& operator=(PFMImage&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -38,12 +38,12 @@ namespace TRAP::INTERNAL
 		/// Retrieve the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Constant pointer to the raw pixel data.</returns>
-		const void* GetPixelData() const override;
+		[[nodiscard]] const void* GetPixelData() const noexcept override;
 		/// <summary>
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		uint64_t GetPixelDataSize() const override;
+		[[nodiscard]] uint64_t GetPixelDataSize() const noexcept override;
 
 	private:
 		std::vector<float> m_data;

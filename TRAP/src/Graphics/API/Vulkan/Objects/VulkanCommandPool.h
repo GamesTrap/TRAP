@@ -26,37 +26,37 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanCommandPool(const VulkanCommandPool&) = default;
+		VulkanCommandPool(const VulkanCommandPool&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanCommandPool& operator=(const VulkanCommandPool&) = default;
+		VulkanCommandPool& operator=(const VulkanCommandPool&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanCommandPool(VulkanCommandPool&&) = default;
+		VulkanCommandPool(VulkanCommandPool&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanCommandPool& operator=(VulkanCommandPool&&) = default;
+		VulkanCommandPool& operator=(VulkanCommandPool&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the VkCommandPool handle.
 		/// </summary>
 		/// <returns>VkCommandPool handle.</returns>
-		VkCommandPool GetVkCommandPool() const;
+		[[nodiscard]] VkCommandPool GetVkCommandPool() const noexcept;
 
 		/// <summary>
 		/// Allocate a new command buffer.
 		/// </summary>
 		/// <param name="secondary">Should the command buffer be a secondary command buffer.</param>
 		///<returns>New command buffer.</returns>
-		CommandBuffer* AllocateCommandBuffer(bool secondary) override;
+		[[nodiscard]] CommandBuffer* AllocateCommandBuffer(bool secondary) override;
 		/// <summary>
 		/// Free a command buffer
 		/// </summary>
 		/// <param name="cmdBuffer">Command buffer to free.</param>
-		void FreeCommandBuffer(CommandBuffer* cmdBuffer) override;
+		void FreeCommandBuffer(const CommandBuffer* const cmdBuffer) override;
 
 		/// <summary>
 		/// Reset the command pool.

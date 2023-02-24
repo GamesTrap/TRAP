@@ -22,8 +22,10 @@ TRAP::Graphics::API::VulkanMemoryAllocator::VulkanMemoryAllocator(const TRAP::Re
                                                                   const TRAP::Ref<VulkanInstance>& instance)
 	: m_allocator(nullptr)
 {
-	TRAP_ASSERT(device, "device is nullptr");
-	TRAP_ASSERT(instance, "instance is nullptr");
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(device, "VulkanMemoryAllocator(): Vulkan Device is nullptr");
+	TRAP_ASSERT(instance, "VulkanMemoryAllocator(): Vulkan Instance is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanVMAPrefix, "Creating Allocator");
@@ -80,13 +82,14 @@ TRAP::Graphics::API::VulkanMemoryAllocator::VulkanMemoryAllocator(const TRAP::Re
 		                                                                    instance->GetVkInstance(), vulkanFunctions);
 
 	VkCall(vmaCreateAllocator(&info, &m_allocator));
+	TRAP_ASSERT(m_allocator, "VulkanMemoryAllocator(): Vulkan Allocator is nullptr");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanMemoryAllocator::~VulkanMemoryAllocator()
 {
-	TRAP_ASSERT(m_allocator);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanVMAPrefix, "Destroying Allocator");
@@ -97,7 +100,9 @@ TRAP::Graphics::API::VulkanMemoryAllocator::~VulkanMemoryAllocator()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VmaAllocator TRAP::Graphics::API::VulkanMemoryAllocator::GetVMAAllocator() const
+[[nodiscard]] VmaAllocator TRAP::Graphics::API::VulkanMemoryAllocator::GetVMAAllocator() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_allocator;
 }

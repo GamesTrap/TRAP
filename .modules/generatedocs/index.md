@@ -43,27 +43,41 @@ To build TRAP™ follow the guide on this page: {ref}`buildingtrap`.
 ## 3rd Party Libraries used by TRAP™ Engine
 
 :::{tab} Required
-The following libraries are required to build TRAP™.
+The following libraries/utilities are required to build TRAP™.
 They are provided in the TRAP™ repository.
 
-- [ImGui](https://github.com/GamesTrap/imgui)
-- [VulkanSDK](https://vulkan.lunarg.com/sdk/home)
-- [GLSLang](https://github.com/GamesTrap/glslang)
-- [SPIRV-Cross](https://github.com/GamesTrap/SPIRV-Cross)
+- [Box2D](https://github.com/erincatto/box2d)
 - [Entt](https://github.com/skypjack/entt)
+- [GLFW](https://github.com/glfw/glfw) integrated as TRAP::INTERNAL::WindowingAPI
+- [GLM](https://github.com/g-truc/glm) integrated as TRAP::Math
+- [GLSLang](https://github.com/GamesTrap/glslang)
+- [ImGui](https://github.com/GamesTrap/imgui)
+- [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo)
+- [LodePNG](https://github.com/lvandeve/lodepng) integrated as TRAP::INTERNAL::PNGImage and TRAP::Utils::Decompress::Inflate()
 - [ModernDialogs](https://github.com/GamesTrap/ModernDialogs)
+- [PlatformFolders](https://github.com/sago007/PlatformFolders) partially integrated as part of TRAP::FileSystem
+- [Premake](https://github.com/premake/premake-core) as build system
+- [Premake-VSCodeGen](https://github.com/GamesTrap/Premake-VSCodeGen)
+- [Quite OK Image Format](https://github.com/phoboslab/qoi)
+- [SDL_GameControllerDB from gabomdq](https://github.com/gabomdq/SDL_GameControllerDB)
+- [SFML](https://github.com/SFML/SFML) partially used as part of TRAP::Network
+- [SPIRV-Cross](https://github.com/GamesTrap/SPIRV-Cross)
+- [TinyImageFormat](https://github.com/DeanoC/tiny_imageformat) integrated as TRAP::Graphics::API::ImageFormat
+- [Tracy](https://github.com/wolfpld/tracy) only client integration is used
+- [Volk](https://github.com/zeux/volk) integrated as VulkanLoader
 - [VulkanMemoryAllocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator)
+- [VulkanSDK](https://vulkan.lunarg.com/sdk/home)
 - [YAMLCpp](https://github.com/jbeder/yaml-cpp)
-- [SDL_gamecontrollerdb.h from SDL](https://github.com/libsdl-org/SDL/blob/main/src/joystick/SDL_gamecontrollerdb.h)
-- [Volk](https://github.com/zeux/volk)
 :::
 :::{tab} Additional
 The following libraries add additional features to TRAP™.  
 
 The user is required to supply these. See the {ref}`additionallibraries` section of the {ref}`buildingtrap` page for instructions.
 
-- [DiscordGameSDK](https://discord.com/developers/docs/game-sdk/sdk-starter-guide)
+- [Discord Game SDK](https://discord.com/developers/docs/game-sdk/sdk-starter-guide)
 - [NVIDIA® Nsight™ Aftermath SDK](https://developer.nvidia.com/nsight-aftermath)
+- [NVIDIA® Reflex SDK](https://developer.nvidia.com/performance-rendering-tools/reflex)
+- [Steamworks SDK](https://partner.steamgames.com/doc/sdk)
 :::
 
 

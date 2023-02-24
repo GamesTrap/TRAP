@@ -24,7 +24,7 @@ namespace TRAP
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		~ThreadPool() noexcept;
+		~ThreadPool();
 
 		/// <summary>
 		/// Copy constructor.
@@ -85,6 +85,8 @@ namespace TRAP
 template <typename F, typename ... Args>
 void TRAP::ThreadPool::EnqueueWork(F&& f, Args&&... args)
 {
+	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	auto work = [p = std::forward<F>(f), t = { std::forward<Args>(args)... }]()
 	{
 		std::apply(p, t);
@@ -103,8 +105,10 @@ void TRAP::ThreadPool::EnqueueWork(F&& f, Args&&... args)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename F, typename ... Args>
-auto TRAP::ThreadPool::EnqueueTask(F&& f, Args&&... args) -> std::future<std::invoke_result_t<F, Args...>>
+[[nodiscard]] auto TRAP::ThreadPool::EnqueueTask(F&& f, Args&&... args) -> std::future<std::invoke_result_t<F, Args...>>
 {
+	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	using TaskReturnType = std::invoke_result_t<F, Args...>;
 	using TaskType = std::packaged_task<TaskReturnType()>;
 

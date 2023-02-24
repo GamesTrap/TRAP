@@ -1,25 +1,35 @@
+/*
+Copyright (c) 2021, Dominic Szablewski - https://phoboslab.org
+SPDX-License-Identifier: MIT
+
+
+QOI - The "Quite OK Image" format for fast, lossless image compression
+
+Modified by Jan "GamesTrap" Schuerkamp
+*/
+
 #include "TRAPPCH.h"
 #include "QOIImage.h"
 
 #include "Utils/String/String.h"
 #include "FileSystem/FileSystem.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 #include "Utils/Utils.h"
 #include "ImageLoader/Image.h"
 
-static constexpr std::array<uint8_t, 8> EndMarker{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01};
+constexpr std::array<uint8_t, 8> EndMarker{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	m_filepath = std::move(filepath);
 
 	TP_DEBUG(Log::ImageQOIPrefix, "Loading image: \"", m_filepath.u8string(), "\"");
 
-	if (!FileSystem::FileOrFolderExists(m_filepath))
+	if (!FileSystem::Exists(m_filepath))
 		return;
 
 	std::ifstream file(m_filepath, std::ios::binary);
@@ -30,7 +40,7 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
 		return;
 	}
 
-    const auto size = FileSystem::GetFileOrFolderSize(filepath);
+    const auto size = FileSystem::GetSize(m_filepath);
     std::size_t fileSize;
     if(size)
         fileSize = *size;
@@ -126,15 +136,19 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const void* TRAP::INTERNAL::QOIImage::GetPixelData() const
+[[nodiscard]] const void* TRAP::INTERNAL::QOIImage::GetPixelData() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_data.data();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::INTERNAL::QOIImage::GetPixelDataSize() const
+[[nodiscard]] uint64_t TRAP::INTERNAL::QOIImage::GetPixelDataSize() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_data.size();
 }
 
@@ -148,22 +162,24 @@ struct Pixel
     uint8_t Alpha;
 };
 
-static constexpr uint8_t QOI_OP_INDEX = 0x00;
-static constexpr uint8_t QOI_OP_DIFF  = 0x40;
-static constexpr uint8_t QOI_OP_LUMA  = 0x80;
-static constexpr uint8_t QOI_OP_RUN   = 0xC0;
-static constexpr uint8_t QOI_OP_RGB   = 0xFE;
-static constexpr uint8_t QOI_OP_RGBA  = 0xFF;
+constexpr uint8_t QOI_OP_INDEX = 0x00;
+constexpr uint8_t QOI_OP_DIFF  = 0x40;
+constexpr uint8_t QOI_OP_LUMA  = 0x80;
+constexpr uint8_t QOI_OP_RUN   = 0xC0;
+constexpr uint8_t QOI_OP_RGB   = 0xFE;
+constexpr uint8_t QOI_OP_RGBA  = 0xFF;
 
-static constexpr uint8_t QOI_MASK_2   = 0xC0;
+constexpr uint8_t QOI_MASK_2   = 0xC0;
 
-static constexpr uint32_t QOI_COLOR_HASH(const Pixel& p)
+[[nodiscard]] constexpr uint32_t QOI_COLOR_HASH(const Pixel& p) noexcept
 {
     return p.Red * 3 + p.Green * 5 + p.Blue * 7 + p.Alpha * 11;
 }
 
 void TRAP::INTERNAL::QOIImage::DecodeImage(std::ifstream& file, const std::size_t& fileSize)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
     Pixel prevPixel{0, 0, 0, 255};
     std::array<Pixel, 64> prevPixels{};
 
@@ -203,9 +219,9 @@ void TRAP::INTERNAL::QOIImage::DecodeImage(std::ifstream& file, const std::size_
                 {
                     const uint8_t data = static_cast<uint8_t>(file.get());
                     const uint8_t vg = static_cast<uint8_t>((tag & 0x3Fu) - 32);
-                    prevPixel.Red   += (vg - 8 + static_cast<uint8_t>((data >> 4u) & 0xFu));
+                    prevPixel.Red   += static_cast<uint8_t>(vg - 8 + ((data >> 4) & 0xF));
                     prevPixel.Green += vg;
-                    prevPixel.Blue  += (vg - 8 + static_cast<uint8_t>((data >> 0u) & 0xFu));
+                    prevPixel.Blue  += static_cast<uint8_t>(vg - 8 + ((data >> 0) & 0xF));
                 }
                 else if((tag & QOI_MASK_2) == QOI_OP_RUN)
                 {

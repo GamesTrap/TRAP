@@ -1,9 +1,9 @@
 #include "TRAPPCH.h"
 #include "SHA-2.h"
 
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 
-constexpr std::array<uint32_t, 64> SHA256_K =
+static constexpr std::array<uint32_t, 64> SHA256_K =
 {
 	0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
 	0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
@@ -17,7 +17,7 @@ constexpr std::array<uint32_t, 64> SHA256_K =
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr std::array<uint64_t, 80> SHA512_K =
+static constexpr std::array<uint64_t, 80> SHA512_K =
 {
 	0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
 	0x3956c25bf348b538, 0x59f111f1b605d019, 0x923f82a4af194f9b, 0xab1c5ed5da6d8118,
@@ -43,120 +43,122 @@ constexpr std::array<uint64_t, 80> SHA512_K =
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t Rotr(const uint32_t x, const int32_t n)
+[[nodiscard]] constexpr uint32_t Rotr(const uint32_t x, const int32_t n) noexcept
 {
 	return (x >> n) | (x << (32 - n));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t Rotr(const uint64_t x, const int32_t n)
+[[nodiscard]] constexpr uint64_t Rotr(const uint64_t x, const int32_t n) noexcept
 {
 	return (x >> n) | (x << (64 - n));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t Shr(const uint32_t x, const int32_t n)
+[[nodiscard]] constexpr uint32_t Shr(const uint32_t x, const int32_t n) noexcept
 {
 	return x >> n;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t Shr(const uint64_t x, const int32_t n)
+[[nodiscard]] constexpr uint64_t Shr(const uint64_t x, const int32_t n) noexcept
 {
 	return x >> n;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t Ch(const uint32_t x, const uint32_t y, const uint32_t z)
+[[nodiscard]] constexpr uint32_t Ch(const uint32_t x, const uint32_t y, const uint32_t z) noexcept
 {
 	return (x & y) ^ (~x & z);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t Ch(const uint64_t x, const uint64_t y, const uint64_t z)
+[[nodiscard]] constexpr uint64_t Ch(const uint64_t x, const uint64_t y, const uint64_t z) noexcept
 {
 	return (x & y) ^ (~x & z);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t Maj(const uint32_t x, const uint32_t y, const uint32_t z)
+[[nodiscard]] constexpr uint32_t Maj(const uint32_t x, const uint32_t y, const uint32_t z) noexcept
 {
 	return (x & y) ^ (x & z) ^ (y & z);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t Maj(const uint64_t x, const uint64_t y, const uint64_t z)
+[[nodiscard]] constexpr uint64_t Maj(const uint64_t x, const uint64_t y, const uint64_t z) noexcept
 {
 	return (x & y) ^ (x & z) ^ (y & z);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t Sum0(const uint32_t x)
+[[nodiscard]] constexpr uint32_t Sum0(const uint32_t x) noexcept
 {
 	return Rotr(x, 2) ^ Rotr(x, 13) ^ Rotr(x, 22);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t Sum0(const uint64_t x)
+[[nodiscard]] constexpr uint64_t Sum0(const uint64_t x) noexcept
 {
 	return Rotr(x, 28) ^ Rotr(x, 34) ^ Rotr(x, 39);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t Sum1(const uint32_t x)
+[[nodiscard]] constexpr uint32_t Sum1(const uint32_t x) noexcept
 {
 	return Rotr(x, 6) ^ Rotr(x, 11) ^ Rotr(x, 25);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t Sum1(const uint64_t x)
+[[nodiscard]] constexpr uint64_t Sum1(const uint64_t x) noexcept
 {
 	return Rotr(x, 14) ^ Rotr(x, 18) ^ Rotr(x, 41);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t Sigma0(const uint32_t x)
+[[nodiscard]] constexpr uint32_t Sigma0(const uint32_t x) noexcept
 {
 	return Rotr(x, 7) ^ Rotr(x, 18) ^ Shr(x, 3);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t Sigma0(const uint64_t x)
+[[nodiscard]] constexpr uint64_t Sigma0(const uint64_t x) noexcept
 {
 	return Rotr(x, 1) ^ Rotr(x, 8) ^ Shr(x, 7);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t Sigma1(const uint32_t x)
+[[nodiscard]] constexpr uint32_t Sigma1(const uint32_t x) noexcept
 {
 	return Rotr(x, 17) ^ Rotr(x, 19) ^ Shr(x, 10);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t Sigma1(const uint64_t x)
+[[nodiscard]] constexpr uint64_t Sigma1(const uint64_t x) noexcept
 {
 	return Rotr(x, 19) ^ Rotr(x, 61) ^ Shr(x, 6);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void Transform(const void* mp, const uint64_t numBlks, std::array<uint32_t, 8>& hash)
+void Transform(const void* const mp, const uint64_t numBlks, std::array<uint32_t, 8>& hash)
 {
+    ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	for(uint64_t blk = 0; blk < numBlks; blk++)
 	{
 		std::array<uint32_t, 16> M{};
@@ -209,8 +211,10 @@ void Transform(const void* mp, const uint64_t numBlks, std::array<uint32_t, 8>& 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void Transform(const void* mp, const uint64_t numBlks, std::array<uint64_t, 8>& hash)
+void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t, 8>& hash)
 {
+    ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	for(uint64_t blk = 0; blk < numBlks; blk++)
 	{
 		std::array<uint64_t, 16> M{};
@@ -262,9 +266,9 @@ void Transform(const void* mp, const uint64_t numBlks, std::array<uint64_t, 8>& 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 32> TRAP::Utils::Hash::SHA2_256(const void* data, uint64_t length)
+[[nodiscard]] std::array<uint8_t, 32> TRAP::Utils::Hash::SHA2_256(const void* const data, uint64_t length)
 {
-	TP_PROFILE_FUNCTION();
+    ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	std::array<uint32_t, 8> hash =
 	{
@@ -318,16 +322,18 @@ std::array<uint8_t, 32> TRAP::Utils::Hash::SHA2_256(const void* data, uint64_t l
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 32> TRAP::Utils::Hash::SHA2_256(const std::string_view str)
+[[nodiscard]] std::array<uint8_t, 32> TRAP::Utils::Hash::SHA2_256(const std::string_view str)
 {
+    ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return SHA2_256(str.data(), str.length());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 64> TRAP::Utils::Hash::SHA2_512(const void* data, uint64_t length)
+[[nodiscard]] std::array<uint8_t, 64> TRAP::Utils::Hash::SHA2_512(const void* const data, uint64_t length)
 {
-	TP_PROFILE_FUNCTION();
+    ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	std::size_t pos = 0;
 	uint64_t total = 0;
@@ -381,7 +387,9 @@ std::array<uint8_t, 64> TRAP::Utils::Hash::SHA2_512(const void* data, uint64_t l
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 64> TRAP::Utils::Hash::SHA2_512(const std::string_view str)
+[[nodiscard]] std::array<uint8_t, 64> TRAP::Utils::Hash::SHA2_512(const std::string_view str)
 {
+    ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return SHA2_512(str.data(), str.length());
 }

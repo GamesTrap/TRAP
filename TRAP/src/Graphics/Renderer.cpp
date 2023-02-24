@@ -4,6 +4,7 @@
 #include "Buffers/VertexBufferLayout.h"
 #include "Buffers/VertexBuffer.h"
 #include "Buffers/IndexBuffer.h"
+#include "Buffers/StorageBuffer.h"
 #include "Cameras/Camera.h"
 #include "Cameras/Orthographic/OrthographicCamera.h"
 #include "Graphics/Shaders/Shader.h"
@@ -23,10 +24,10 @@ uint32_t TRAP::Graphics::Renderer::s_currentDrawCalls = 0;
 
 void TRAP::Graphics::Renderer::Init()
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	s_maxDrawCalls = RendererAPI::GPUSettings.MaxStorageBufferRange /
-	                 static_cast<uint32_t>(StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
+	s_maxDrawCalls = static_cast<uint32_t>(RendererAPI::GPUSettings.MaxStorageBufferRange /
+	                 StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
 	s_maxDrawCalls = TRAP::Math::Min(s_maxDrawCalls, 1000000u); //Max 1 million draw calls (so we don't exceed heap sizes)
 
 	s_sceneStorageBuffer = TRAP::Graphics::StorageBuffer::Create(s_sceneData.get(), sizeof(SceneData),
@@ -41,7 +42,7 @@ void TRAP::Graphics::Renderer::Init()
 
 void TRAP::Graphics::Renderer::Shutdown()
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	Renderer2D::Shutdown();
 
@@ -54,51 +55,9 @@ void TRAP::Graphics::Renderer::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Graphics::Renderer::GetTitle()
-{
-	return RendererAPI::GetRenderer()->GetTitle();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::Graphics::Renderer::GetFPS()
-{
-	return Application::GetFPS();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-float TRAP::Graphics::Renderer::GetFrameTime()
-{
-	return Application::GetFrameTime();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::Graphics::Renderer::GetTickRate()
-{
-	return Application::GetTickRate();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string TRAP::Graphics::Renderer::GetGPUName()
-{
-	return RendererAPI::GetRenderer()->GetCurrentGPUName();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::Renderer::SetTickRate(const uint32_t tickRate)
-{
-	Application::SetTickRate(tickRate);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::Renderer::BeginScene(const OrthographicCamera& camera)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	s_currentDrawCalls = 0;
 
@@ -112,7 +71,7 @@ void TRAP::Graphics::Renderer::BeginScene(const OrthographicCamera& camera)
 
 void TRAP::Graphics::Renderer::BeginScene(const Camera& camera, const Math::Mat4& transform)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	s_currentDrawCalls = 0;
 
@@ -124,18 +83,18 @@ void TRAP::Graphics::Renderer::BeginScene(const Camera& camera, const Math::Mat4
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer::EndScene()
+void TRAP::Graphics::Renderer::EndScene() noexcept
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer::Submit(Shader* shader, VertexBuffer* vertexBuffer, const Math::Mat4& transform)
+void TRAP::Graphics::Renderer::Submit(Ref<Shader> shader, const VertexBuffer* const vertexBuffer, const Math::Mat4& transform)
 {
-	TRAP_ASSERT(vertexBuffer, "VertexBuffer is nullptr!");
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TP_PROFILE_FUNCTION();
+	TRAP_ASSERT(vertexBuffer, "Renderer::Submit(): VertexBuffer is nullptr!");
 
 	if(s_currentDrawCalls >= s_maxDrawCalls)
 		return;
@@ -158,13 +117,13 @@ void TRAP::Graphics::Renderer::Submit(Shader* shader, VertexBuffer* vertexBuffer
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer::Submit(Shader* shader, VertexBuffer* vertexBuffer, IndexBuffer* indexBuffer,
+void TRAP::Graphics::Renderer::Submit(Ref<Shader> shader, const VertexBuffer* const vertexBuffer, const IndexBuffer* const indexBuffer,
 									  const Math::Mat4& transform)
 {
-	TRAP_ASSERT(vertexBuffer, "VertexBuffer is nullptr!");
-	TRAP_ASSERT(indexBuffer, "IndexBuffer is nullptr!");
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TP_PROFILE_FUNCTION();
+	TRAP_ASSERT(vertexBuffer, "Renderer::Submit(): VertexBuffer is nullptr!");
+	TRAP_ASSERT(indexBuffer, "Renderer::Submit(): IndexBuffer is nullptr!");
 
 	if(s_currentDrawCalls >= s_maxDrawCalls)
 		return;
@@ -184,11 +143,4 @@ void TRAP::Graphics::Renderer::Submit(Shader* shader, VertexBuffer* vertexBuffer
 
 	RenderCommand::DrawIndexedInstanced(indexBuffer->GetCount(), s_currentDrawCalls + 1, 0, s_currentDrawCalls);
 	++s_currentDrawCalls;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::Renderer::SceneData::SceneData() noexcept
-	: m_projectionMatrix(0.0f), m_viewMatrix(0.0f)
-{
 }

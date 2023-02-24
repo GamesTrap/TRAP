@@ -3,10 +3,15 @@
 
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include <vulkan/vulkan_core.h>
 
-VkApplicationInfo TRAP::Graphics::API::VulkanInits::ApplicationInfo(const std::string_view appName) noexcept
+[[nodiscard]] VkApplicationInfo TRAP::Graphics::API::VulkanInits::ApplicationInfo(const std::string_view appName)
 {
-	VkApplicationInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(!appName.empty(), "VulkanInits::ApplicationInfo(): Application name can't be empty!");
+
+	VkApplicationInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	info.pNext = nullptr;
@@ -21,11 +26,13 @@ VkApplicationInfo TRAP::Graphics::API::VulkanInits::ApplicationInfo(const std::s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkInstanceCreateInfo TRAP::Graphics::API::VulkanInits::InstanceCreateInfo(const VkApplicationInfo& appInfo,
-	                                                                      const std::vector<const char*>& instanceLayers,
-	                                                                      const std::vector<const char*>& instanceExtensions) noexcept
+[[nodiscard]] VkInstanceCreateInfo TRAP::Graphics::API::VulkanInits::InstanceCreateInfo(const VkApplicationInfo& appInfo,
+	                                                                                    const std::vector<const char*>& instanceLayers,
+	                                                                                    const std::vector<const char*>& instanceExtensions) noexcept
 {
-	VkInstanceCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkInstanceCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -41,9 +48,13 @@ VkInstanceCreateInfo TRAP::Graphics::API::VulkanInits::InstanceCreateInfo(const 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDebugUtilsMessengerCreateInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsMessengerCreateInfo(const PFN_vkDebugUtilsMessengerCallbackEXT callback) noexcept
+[[nodiscard]] VkDebugUtilsMessengerCreateInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsMessengerCreateInfo(const PFN_vkDebugUtilsMessengerCallbackEXT callback)
 {
-	VkDebugUtilsMessengerCreateInfoEXT info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(callback, "VulkanInits::DebugUtilsMessengerCreateInfo(): Callback can't be nullptr!");
+
+	VkDebugUtilsMessengerCreateInfoEXT info{};
 
 	info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
 	info.pNext = nullptr;
@@ -62,9 +73,13 @@ VkDebugUtilsMessengerCreateInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsM
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDebugReportCallbackCreateInfoEXT TRAP::Graphics::API::VulkanInits::DebugReportCallbackCreateInfo(const PFN_vkDebugReportCallbackEXT callback) noexcept
+[[nodiscard]] VkDebugReportCallbackCreateInfoEXT TRAP::Graphics::API::VulkanInits::DebugReportCallbackCreateInfo(const PFN_vkDebugReportCallbackEXT callback)
 {
-	VkDebugReportCallbackCreateInfoEXT info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(callback, "VulkanInits::DebugReportCallbackCreateInfo(): Callback can't be nullptr!");
+
+	VkDebugReportCallbackCreateInfoEXT info{};
 
 	info.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
 	info.pNext = nullptr;
@@ -78,11 +93,16 @@ VkDebugReportCallbackCreateInfoEXT TRAP::Graphics::API::VulkanInits::DebugReport
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDebugUtilsObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsObjectNameInfo(const VkObjectType type,
-	                                                                                     const uint64_t handle,
-	                                                                                     const std::string_view name) noexcept
+[[nodiscard]] VkDebugUtilsObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsObjectNameInfo(const VkObjectType type,
+	                                                                                                   const uint64_t handle,
+	                                                                                                   const std::string_view name)
 {
-	VkDebugUtilsObjectNameInfoEXT info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(!name.empty(), "VulkanInits::DebugUtilsObjectNameInfo(): Name can't be empty!");
+	TRAP_ASSERT(!(type == VK_OBJECT_TYPE_UNKNOWN && handle == 0), "VulkanInits::DebugUtilsObjectNameInfo(): Type and Handle can't be VK_OBJECT_TYPE_UNKNOWN and VK_NULL_HANDLE!");
+
+	VkDebugUtilsObjectNameInfoEXT info{};
 
 	info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
 	info.pNext = nullptr;
@@ -95,11 +115,17 @@ VkDebugUtilsObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsObject
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDebugMarkerObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugMarkerObjectNameInfo(const VkDebugReportObjectTypeEXT type,
-	                                                                                       const uint64_t handle,
-	                                                                                       const std::string_view name) noexcept
+[[nodiscard]] VkDebugMarkerObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugMarkerObjectNameInfo(const VkDebugReportObjectTypeEXT type,
+	                                                                                                     const uint64_t handle,
+	                                                                                                     const std::string_view name)
 {
-	VkDebugMarkerObjectNameInfoEXT info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(!name.empty(), "VulkanInits::DebugMarkerObjectNameInfo(): Name can't be empty!");
+	TRAP_ASSERT(type != VK_DEBUG_REPORT_OBJECT_TYPE_UNKNOWN_EXT, "VulkanInits::DebugMarkerObjectNameInfo(): Type can't be VK_DEBUG_REPORT_OBJECT_TYPE_UNKNOWN_EXT!");
+	TRAP_ASSERT(handle != 0, "VulkanInits::DebugMarkerObjectNameInfo(): Handle can't be VK_NULL_HANDLE!");
+
+	VkDebugMarkerObjectNameInfoEXT info{};
 
 	info.sType = VK_STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_NAME_INFO_EXT;
 	info.pNext = nullptr;
@@ -112,9 +138,13 @@ VkDebugMarkerObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugMarkerObje
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDebugUtilsLabelEXT TRAP::Graphics::API::VulkanInits::DebugUtilsLabelExt(const float r, const float g,
-                                                                          const float b, const std::string_view name) noexcept
+[[nodiscard]] VkDebugUtilsLabelEXT TRAP::Graphics::API::VulkanInits::DebugUtilsLabelExt(const float r, const float g,
+                                                                                        const float b, const std::string_view name)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(!name.empty(), "VulkanInits::DebugUtilsLabelExt(): Name can't be empty!");
+
 	VkDebugUtilsLabelEXT info{};
 
 	info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT;
@@ -129,9 +159,13 @@ VkDebugUtilsLabelEXT TRAP::Graphics::API::VulkanInits::DebugUtilsLabelExt(const 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDebugMarkerMarkerInfoEXT TRAP::Graphics::API::VulkanInits::DebugMarkerMarkerInfo(const float r, const float g,
-                                                                                   const float b, const std::string_view name) noexcept
+[[nodiscard]] VkDebugMarkerMarkerInfoEXT TRAP::Graphics::API::VulkanInits::DebugMarkerMarkerInfo(const float r, const float g,
+                                                                                                 const float b, const std::string_view name)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(!name.empty(), "VulkanInits::DebugMarkerMarkerInfo(): Name can't be empty!");
+
 	VkDebugMarkerMarkerInfoEXT info{};
 
 	info.sType = VK_STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT;
@@ -146,11 +180,15 @@ VkDebugMarkerMarkerInfoEXT TRAP::Graphics::API::VulkanInits::DebugMarkerMarkerIn
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDeviceCreateInfo TRAP::Graphics::API::VulkanInits::DeviceCreateInfo(const void* pNext,
-                                                                      const std::vector<VkDeviceQueueCreateInfo>& queueCreateInfos,
-																	  const std::vector<const char*>& deviceExtensions) noexcept
+[[nodiscard]] VkDeviceCreateInfo TRAP::Graphics::API::VulkanInits::DeviceCreateInfo(const void* const pNext,
+                                                                                    const std::vector<VkDeviceQueueCreateInfo>& queueCreateInfos,
+																	                const std::vector<const char*>& deviceExtensions)
 {
-	VkDeviceCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(!queueCreateInfos.empty(), "VulkanInits::DeviceCreateInfo(): QueueCreateInfos can't be empty!");
+
+	VkDeviceCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 	info.pNext = pNext;
@@ -168,11 +206,17 @@ VkDeviceCreateInfo TRAP::Graphics::API::VulkanInits::DeviceCreateInfo(const void
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VmaAllocatorCreateInfo TRAP::Graphics::API::VulkanInits::VMAAllocatorCreateInfo(VkDevice device,
-	                                                                            VkPhysicalDevice physicalDevice,
-	                                                                            VkInstance instance,
-	                                                                            const VmaVulkanFunctions& vulkanFunctions) noexcept
+[[nodiscard]] VmaAllocatorCreateInfo TRAP::Graphics::API::VulkanInits::VMAAllocatorCreateInfo(VkDevice device,
+	                                                                                          VkPhysicalDevice physicalDevice,
+	                                                                                          VkInstance instance,
+	                                                                                          const VmaVulkanFunctions& vulkanFunctions)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(device != VK_NULL_HANDLE, "VulkanInits::VMAAllocatorCreateInfo(): Device can't be VK_NULL_HANDLE!");
+	TRAP_ASSERT(physicalDevice != VK_NULL_HANDLE, "VulkanInits::VMAAllocatorCreateInfo(): PhysicalDevice can't be VK_NULL_HANDLE!");
+	TRAP_ASSERT(instance != VK_NULL_HANDLE, "VulkanInits::VMAAllocatorCreateInfo(): Instance can't be VK_NULL_HANDLE!");
+
 	VmaAllocatorCreateInfo info{};
 
 	info.device = device;
@@ -193,10 +237,14 @@ VmaAllocatorCreateInfo TRAP::Graphics::API::VulkanInits::VMAAllocatorCreateInfo(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDescriptorPoolCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorPoolCreateInfo(const std::vector<VkDescriptorPoolSize>& descriptorPoolSizes,
-                                                                                      const uint32_t numDescriptorSets) noexcept
+[[nodiscard]] VkDescriptorPoolCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorPoolCreateInfo(const std::vector<VkDescriptorPoolSize>& descriptorPoolSizes,
+                                                                                                    const uint32_t numDescriptorSets)
 {
-	VkDescriptorPoolCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(numDescriptorSets != 0, "VulkanInits::DescriptorPoolCreateInfo(): NumDescriptorSets can't be 0!");
+
+	VkDescriptorPoolCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 	info.pNext = nullptr;
@@ -210,10 +258,15 @@ VkDescriptorPoolCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorPoolCreat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDescriptorSetAllocateInfo TRAP::Graphics::API::VulkanInits::DescriptorSetAllocateInfo(VkDescriptorPool descriptorPool,
-	                                                                                    const VkDescriptorSetLayout& descriptorLayout) noexcept
+[[nodiscard]] VkDescriptorSetAllocateInfo TRAP::Graphics::API::VulkanInits::DescriptorSetAllocateInfo(VkDescriptorPool descriptorPool,
+	                                                                                                  const VkDescriptorSetLayout& descriptorLayout)
 {
-	VkDescriptorSetAllocateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(descriptorPool != VK_NULL_HANDLE, "VulkanInits::DescriptorSetAllocateInfo(): DescriptorPool can't be VK_NULL_HANDLE!");
+	TRAP_ASSERT(descriptorLayout != VK_NULL_HANDLE, "VulkanInits::DescriptorSetAllocateInfo(): DescriptorLayout can't be VK_NULL_HANDLE!");
+
+	VkDescriptorSetAllocateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	info.pNext = nullptr;
@@ -226,9 +279,11 @@ VkDescriptorSetAllocateInfo TRAP::Graphics::API::VulkanInits::DescriptorSetAlloc
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDescriptorSetLayoutCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorSetLayoutCreateInfo(const std::vector<VkDescriptorSetLayoutBinding>& bindings) noexcept
+[[nodiscard]] VkDescriptorSetLayoutCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorSetLayoutCreateInfo(const std::vector<VkDescriptorSetLayoutBinding>& bindings) noexcept
 {
-	VkDescriptorSetLayoutCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkDescriptorSetLayoutCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 	info.pNext = nullptr;
@@ -241,14 +296,20 @@ VkDescriptorSetLayoutCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorSetL
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDescriptorUpdateTemplateCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorUpdateTemplateCreateInfo(VkDescriptorSetLayout descriptorSetLayout,
-	                                                                                                      const uint32_t entryCount,
-	                                                                                                      VkDescriptorUpdateTemplateEntry* entries,
-	                                                                                                      const VkPipelineBindPoint bindPoint,
-	                                                                                                      VkPipelineLayout pipelineLayout,
-	                                                                                                      const uint32_t setIndex) noexcept
+[[nodiscard]] VkDescriptorUpdateTemplateCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorUpdateTemplateCreateInfo(VkDescriptorSetLayout descriptorSetLayout,
+	                                                                                                                    const uint32_t entryCount,
+	                                                                                                                    const VkDescriptorUpdateTemplateEntry* const entries,
+	                                                                                                                    const VkPipelineBindPoint bindPoint,
+	                                                                                                                    VkPipelineLayout pipelineLayout,
+	                                                                                                                    const uint32_t setIndex)
 {
-	VkDescriptorUpdateTemplateCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(descriptorSetLayout != VK_NULL_HANDLE, "VulkanInits::DescriptorUpdateTemplateCreateInfo(): DescriptorSetLayout can't be VK_NULL_HANDLE!");
+	TRAP_ASSERT(entryCount != 0, "VulkanInits::DescriptorUpdateTemplateCreateInfo(): EntryCount can't be 0!");
+	TRAP_ASSERT(entries, "VulkanInits::DescriptorUpdateTemplateCreateInfo(): Entries can't be nullptr!");
+
+	VkDescriptorUpdateTemplateCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -266,9 +327,11 @@ VkDescriptorUpdateTemplateCreateInfo TRAP::Graphics::API::VulkanInits::Descripto
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkFenceCreateInfo TRAP::Graphics::API::VulkanInits::FenceCreateInfo() noexcept
+[[nodiscard]] VkFenceCreateInfo TRAP::Graphics::API::VulkanInits::FenceCreateInfo() noexcept
 {
-	VkFenceCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkFenceCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -279,9 +342,11 @@ VkFenceCreateInfo TRAP::Graphics::API::VulkanInits::FenceCreateInfo() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkSemaphoreCreateInfo TRAP::Graphics::API::VulkanInits::SemaphoreCreateInfo() noexcept
+[[nodiscard]] VkSemaphoreCreateInfo TRAP::Graphics::API::VulkanInits::SemaphoreCreateInfo() noexcept
 {
-	VkSemaphoreCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkSemaphoreCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -292,16 +357,65 @@ VkSemaphoreCreateInfo TRAP::Graphics::API::VulkanInits::SemaphoreCreateInfo() no
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkAttachmentDescription TRAP::Graphics::API::VulkanInits::AttachmentDescription(const VkFormat format,
-	                                                                            const VkSampleCountFlagBits sampleCount,
-	                                                                            const VkAttachmentLoadOp loadOp,
-	                                                                            const VkAttachmentStoreOp storeOp,
-	                                                                            const VkAttachmentLoadOp stencilLoadOp,
-	                                                                            const VkAttachmentStoreOp stencilStoreOp,
-	                                                                            const VkImageLayout layout,
-	                                                                            const VkImageLayout finalLayout) noexcept
+[[nodiscard]] VkSemaphoreWaitInfoKHR TRAP::Graphics::API::VulkanInits::SemaphoreWaitInfo(VkSemaphore& semaphore, uint64_t& value)
 {
-	VkAttachmentDescription desc;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(semaphore != VK_NULL_HANDLE, "VulkanInits::SemaphoreWaitInfo(): Semaphore can't be VK_NULL_HANDLE!");
+
+	VkSemaphoreWaitInfoKHR info{};
+
+	info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO_KHR;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.semaphoreCount = 1;
+	info.pSemaphores = &semaphore;
+	info.pValues = &value;
+
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+
+[[nodiscard]] VkFragmentShadingRateAttachmentInfoKHR TRAP::Graphics::API::VulkanInits::FragmentShadingRateAttachmentInfo(VkAttachmentReference2KHR& shadingRateAttachment,
+	                                                                                                                     VkExtent2D texelSize)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(shadingRateAttachment.attachment != VK_ATTACHMENT_UNUSED, "VulkanInits::FragmentShadingRateAttachmentInfo(): ShadingRateAttachment can't be VK_ATTACHMENT_UNUSED!");
+	TRAP_ASSERT(shadingRateAttachment.layout == VK_IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR || shadingRateAttachment.layout == VK_IMAGE_LAYOUT_GENERAL, "VulkanInits::FragmentShadingRateAttachmentInfo(): ShadingRateAttachment Layout must be VK_IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR or VK_IMAGE_LAYOUT_GENERAL!");
+	TRAP_ASSERT(Math::IsPowerOfTwo(texelSize.width) && Math::IsPowerOfTwo(texelSize.height), "VulkanInits::FragmentShadingRateAttachmentInfo(): TexelSize must be a power of two!");
+	TRAP_ASSERT(texelSize.width <= RendererAPI::GPUSettings.ShadingRateTexelWidth && texelSize.height <= RendererAPI::GPUSettings.ShadingRateTexelHeight, "VulkanInits::FragmentShadingRateAttachmentInfo(): TexelSize must be smaller than or equal to RendererAPI::GPUSettings.ShadingRateTexelWidth and RendererAPI::GPUSettings.ShadingRateTexelHeight!");
+
+	VkFragmentShadingRateAttachmentInfoKHR info{};
+
+	info.sType = VK_STRUCTURE_TYPE_FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR;
+	info.pNext = nullptr;
+	info.pFragmentShadingRateAttachment = &shadingRateAttachment;
+	info.shadingRateAttachmentTexelSize = texelSize;
+
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] VkAttachmentDescription TRAP::Graphics::API::VulkanInits::AttachmentDescription(const VkFormat format,
+	                                                                                          const VkSampleCountFlagBits sampleCount,
+	                                                                                          const VkAttachmentLoadOp loadOp,
+	                                                                                          const VkAttachmentStoreOp storeOp,
+	                                                                                          const VkAttachmentLoadOp stencilLoadOp,
+	                                                                                          const VkAttachmentStoreOp stencilStoreOp,
+	                                                                                          const VkImageLayout layout,
+	                                                                                          const VkImageLayout finalLayout)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(format != VK_FORMAT_UNDEFINED, "VulkanInits::AttachmentDescription(): Format can't be VK_FORMAT_UNDEFINED!");
+	TRAP_ASSERT(finalLayout != VK_IMAGE_LAYOUT_UNDEFINED, "VulkanInits::AttachmentDescription(): FinalLayout can't be VK_IMAGE_LAYOUT_UNDEFINED!");
+	TRAP_ASSERT(finalLayout != VK_IMAGE_LAYOUT_PREINITIALIZED, "VulkanInits::AttachmentDescription(): FinalLayout can't be VK_IMAGE_LAYOUT_PREINITIALIZED!");
+
+	VkAttachmentDescription desc{};
 
 	desc.flags = 0;
 	desc.format = format;
@@ -318,12 +432,48 @@ VkAttachmentDescription TRAP::Graphics::API::VulkanInits::AttachmentDescription(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkSubpassDescription TRAP::Graphics::API::VulkanInits::SubPassDescription(const VkPipelineBindPoint bindPoint,
-	                                                                      const std::vector<VkAttachmentReference>& inputAttachments,
-	                                                                      const std::vector<VkAttachmentReference>& colorAttachments,
-	                                                                      VkAttachmentReference& depthStencilAttachment) noexcept
+[[nodiscard]] VkAttachmentDescription2KHR TRAP::Graphics::API::VulkanInits::AttachmentDescription2(const VkFormat format,
+	                                                                                               const VkSampleCountFlagBits sampleCount,
+	                                                                                               const VkAttachmentLoadOp loadOp,
+	                                                                                               const VkAttachmentStoreOp storeOp,
+	                                                                                               const VkAttachmentLoadOp stencilLoadOp,
+	                                                                                               const VkAttachmentStoreOp stencilStoreOp,
+	                                                                                               const VkImageLayout layout,
+	                                                                                               const VkImageLayout finalLayout)
 {
-	VkSubpassDescription subpass;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(format != VK_FORMAT_UNDEFINED, "VulkanInits::AttachmentDescription2(): Format can't be VK_FORMAT_UNDEFINED!");
+	TRAP_ASSERT(finalLayout != VK_IMAGE_LAYOUT_UNDEFINED, "VulkanInits::AttachmentDescription2(): FinalLayout can't be VK_IMAGE_LAYOUT_UNDEFINED!");
+	TRAP_ASSERT(finalLayout != VK_IMAGE_LAYOUT_PREINITIALIZED, "VulkanInits::AttachmentDescription2(): FinalLayout can't be VK_IMAGE_LAYOUT_PREINITIALIZED!");
+
+	VkAttachmentDescription2KHR desc{};
+
+	desc.sType = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2_KHR;
+	desc.pNext = nullptr;
+	desc.flags = 0;
+	desc.format = format;
+	desc.samples = sampleCount;
+	desc.loadOp = loadOp;
+	desc.storeOp = storeOp;
+	desc.stencilLoadOp = stencilLoadOp;
+	desc.stencilStoreOp = stencilStoreOp;
+	desc.initialLayout = layout;
+	desc.finalLayout = finalLayout;
+
+	return desc;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] VkSubpassDescription TRAP::Graphics::API::VulkanInits::SubPassDescription(const VkPipelineBindPoint bindPoint,
+	                                                                                    const std::vector<VkAttachmentReference>& inputAttachments,
+	                                                                                    const std::vector<VkAttachmentReference>& colorAttachments,
+	                                                                                    VkAttachmentReference& depthStencilAttachment) noexcept
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkSubpassDescription subpass{};
 
 	subpass.flags = 0;
 	subpass.pipelineBindPoint = bindPoint;
@@ -341,11 +491,13 @@ VkSubpassDescription TRAP::Graphics::API::VulkanInits::SubPassDescription(const 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkSubpassDescription TRAP::Graphics::API::VulkanInits::SubPassDescription(const VkPipelineBindPoint bindPoint,
-	                                                                      const std::vector<VkAttachmentReference>& inputAttachments,
-	                                                                      const std::vector<VkAttachmentReference>& colorAttachments) noexcept
+[[nodiscard]] VkSubpassDescription TRAP::Graphics::API::VulkanInits::SubPassDescription(const VkPipelineBindPoint bindPoint,
+	                                                                                    const std::vector<VkAttachmentReference>& inputAttachments,
+	                                                                                    const std::vector<VkAttachmentReference>& colorAttachments) noexcept
 {
-	VkSubpassDescription subpass;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkSubpassDescription subpass{};
 
 	subpass.flags = 0;
 	subpass.pipelineBindPoint = bindPoint;
@@ -363,10 +515,69 @@ VkSubpassDescription TRAP::Graphics::API::VulkanInits::SubPassDescription(const 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription>& attachmentDescriptions,
-	                                                                          const VkSubpassDescription& subpassDescription) noexcept
+[[nodiscard]] VkSubpassDescription2KHR TRAP::Graphics::API::VulkanInits::SubPassDescription(const VkPipelineBindPoint bindPoint,
+	                                                                                        const std::vector<VkAttachmentReference2KHR>& inputAttachments,
+	                                                                                        const std::vector<VkAttachmentReference2KHR>& colorAttachments,
+	                                                                                        VkAttachmentReference2KHR& depthStencilAttachment,
+												                                            const VkFragmentShadingRateAttachmentInfoKHR* const shadingRateAttachment) noexcept
 {
-	VkRenderPassCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkSubpassDescription2KHR subpass{};
+
+	subpass.sType = VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_2_KHR;
+	subpass.pNext = shadingRateAttachment ? shadingRateAttachment : nullptr;
+	subpass.flags = 0;
+	subpass.pipelineBindPoint = bindPoint;
+	subpass.viewMask = 0;
+	subpass.inputAttachmentCount = static_cast<uint32_t>(inputAttachments.size());
+	subpass.pInputAttachments = inputAttachments.data();
+	subpass.colorAttachmentCount = static_cast<uint32_t>(colorAttachments.size());
+	subpass.pColorAttachments = colorAttachments.data();
+	subpass.pResolveAttachments = nullptr;
+	subpass.pDepthStencilAttachment = &depthStencilAttachment;
+	subpass.preserveAttachmentCount = 0;
+	subpass.pPreserveAttachments = nullptr;
+
+	return subpass;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] VkSubpassDescription2KHR TRAP::Graphics::API::VulkanInits::SubPassDescription(const VkPipelineBindPoint bindPoint,
+	                                                                                        const std::vector<VkAttachmentReference2KHR>& inputAttachments,
+	                                                                                        const std::vector<VkAttachmentReference2KHR>& colorAttachments,
+																			                const VkFragmentShadingRateAttachmentInfoKHR* const shadingRateAttachment) noexcept
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkSubpassDescription2KHR subpass{};
+
+	subpass.sType = VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_2_KHR;
+	subpass.pNext = shadingRateAttachment ? shadingRateAttachment : nullptr;
+	subpass.flags = 0;
+	subpass.pipelineBindPoint = bindPoint;
+	subpass.viewMask = 0;
+	subpass.inputAttachmentCount = static_cast<uint32_t>(inputAttachments.size());
+	subpass.pInputAttachments = inputAttachments.data();
+	subpass.colorAttachmentCount = static_cast<uint32_t>(colorAttachments.size());
+	subpass.pColorAttachments = colorAttachments.data();
+	subpass.pResolveAttachments = nullptr;
+	subpass.pDepthStencilAttachment = nullptr;
+	subpass.preserveAttachmentCount = 0;
+	subpass.pPreserveAttachments = nullptr;
+
+	return subpass;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription>& attachmentDescriptions,
+	                                                                                        const VkSubpassDescription& subpassDescription) noexcept
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkRenderPassCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
 	info.pNext = nullptr;
@@ -383,9 +594,11 @@ VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription>& attachmentDescriptions) noexcept
+[[nodiscard]] VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription>& attachmentDescriptions) noexcept
 {
-	VkRenderPassCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkRenderPassCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
 	info.pNext = nullptr;
@@ -402,12 +615,64 @@ VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkRenderPassBeginInfo TRAP::Graphics::API::VulkanInits::RenderPassBeginInfo(VkRenderPass renderPass,
-	                                                                        VkFramebuffer frameBuffer,
-	                                                                        const VkRect2D renderArea,
-	                                                                        const std::vector<VkClearValue>& colorValues) noexcept
+[[nodiscard]] VkRenderPassCreateInfo2KHR TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription2KHR>& attachmentDescriptions,
+	                                                                                            const VkSubpassDescription2KHR& subpassDescription) noexcept
 {
-	VkRenderPassBeginInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkRenderPassCreateInfo2KHR info{};
+
+	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2_KHR;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.attachmentCount = static_cast<uint32_t>(attachmentDescriptions.size());
+	info.pAttachments = attachmentDescriptions.data();
+	info.subpassCount = 1;
+	info.pSubpasses = &subpassDescription;
+	info.dependencyCount = 0;
+	info.pDependencies = nullptr;
+	info.correlatedViewMaskCount = 0;
+	info.pCorrelatedViewMasks = nullptr;
+
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] VkRenderPassCreateInfo2KHR TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription2KHR>& attachmentDescriptions) noexcept
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkRenderPassCreateInfo2KHR info{};
+
+	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2_KHR;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.attachmentCount = static_cast<uint32_t>(attachmentDescriptions.size());
+	info.pAttachments = attachmentDescriptions.data();
+	info.subpassCount = 0;
+	info.pSubpasses = nullptr;
+	info.dependencyCount = 0;
+	info.pDependencies = nullptr;
+	info.correlatedViewMaskCount = 0;
+	info.pCorrelatedViewMasks = nullptr;
+
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] VkRenderPassBeginInfo TRAP::Graphics::API::VulkanInits::RenderPassBeginInfo(VkRenderPass renderPass,
+	                                                                                      VkFramebuffer frameBuffer,
+	                                                                                      const VkRect2D renderArea,
+	                                                                                      const std::vector<VkClearValue>& colorValues)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(renderPass != VK_NULL_HANDLE, "VulkanInits::RenderPassBeginInfo(): RenderPass can't be VK_NULL_HANDLE!");
+	TRAP_ASSERT(frameBuffer != VK_NULL_HANDLE, "VulkanInits::RenderPassBeginInfo(): FrameBuffer can't be VK_NULL_HANDLE!");
+
+	VkRenderPassBeginInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 	info.pNext = nullptr;
@@ -422,13 +687,20 @@ VkRenderPassBeginInfo TRAP::Graphics::API::VulkanInits::RenderPassBeginInfo(VkRe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkFramebufferCreateInfo TRAP::Graphics::API::VulkanInits::FramebufferCreateInfo(VkRenderPass renderPass,
-	                                                                            const std::vector<VkImageView>& attachments,
-	                                                                            const uint32_t width,
-	                                                                            const uint32_t height,
-	                                                                            const uint32_t layerCount) noexcept
+[[nodiscard]] VkFramebufferCreateInfo TRAP::Graphics::API::VulkanInits::FramebufferCreateInfo(VkRenderPass renderPass,
+	                                                                                          const std::vector<VkImageView>& attachments,
+	                                                                                          const uint32_t width,
+	                                                                                          const uint32_t height,
+	                                                                                          const uint32_t layerCount)
 {
-	VkFramebufferCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(width != 0, "VulkanInits::FramebufferCreateInfo(): Width can't be 0!");
+	TRAP_ASSERT(height != 0, "VulkanInits::FramebufferCreateInfo(): Height can't be 0!");
+	TRAP_ASSERT(layerCount != 0, "VulkanInits::FramebufferCreateInfo(): LayerCount can't be 0!");
+	TRAP_ASSERT(renderPass != VK_NULL_HANDLE, "VulkanInits::FramebufferCreateInfo(): RenderPass can't be VK_NULL_HANDLE!");
+
+	VkFramebufferCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 	info.pNext = nullptr;
@@ -445,13 +717,17 @@ VkFramebufferCreateInfo TRAP::Graphics::API::VulkanInits::FramebufferCreateInfo(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkImageViewCreateInfo TRAP::Graphics::API::VulkanInits::ImageViewCreateInfo(VkImage image,
-	                                                                        const VkImageViewType imageViewType,
-	                                                                        const VkFormat format,
-																			const uint32_t levelCount,
-	                                                                        const uint32_t layerCount) noexcept
+[[nodiscard]] VkImageViewCreateInfo TRAP::Graphics::API::VulkanInits::ImageViewCreateInfo(VkImage image,
+	                                                                                      const VkImageViewType imageViewType,
+	                                                                                      const VkFormat format,
+																			              const uint32_t levelCount,
+	                                                                                      const uint32_t layerCount)
 {
-	VkImageViewCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(image != VK_NULL_HANDLE, "VulkanInits::ImageViewCreateInfo(): Image can't be VK_NULL_HANDLE!");
+
+	VkImageViewCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 	info.pNext = nullptr;
@@ -474,16 +750,24 @@ VkImageViewCreateInfo TRAP::Graphics::API::VulkanInits::ImageViewCreateInfo(VkIm
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkImageCreateInfo TRAP::Graphics::API::VulkanInits::ImageCreateInfo(const VkImageType imageType,
-                                                                    const VkFormat imageFormat, const uint32_t width,
-                                                                    const uint32_t height, const uint32_t depth,
-                                                                    const uint32_t mipLevels,
-																	const uint32_t arrayLayers,
-																	const VkSampleCountFlagBits sampleCount,
-																	const VkImageTiling tiling,
-																	const VkImageUsageFlags usage) noexcept
+[[nodiscard]] VkImageCreateInfo TRAP::Graphics::API::VulkanInits::ImageCreateInfo(const VkImageType imageType,
+                                                                                  const VkFormat imageFormat, const uint32_t width,
+                                                                                  const uint32_t height, const uint32_t depth,
+                                                                                  const uint32_t mipLevels,
+																	              const uint32_t arrayLayers,
+																	              const VkSampleCountFlagBits sampleCount,
+																	              const VkImageTiling tiling,
+																	              const VkImageUsageFlags usage)
 {
-	VkImageCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(width != 0, "VulkanInits::ImageCreateInfo(): Width can't be 0!");
+	TRAP_ASSERT(height != 0, "VulkanInits::ImageCreateInfo(): Height can't be 0!");
+	TRAP_ASSERT(depth != 0, "VulkanInits::ImageCreateInfo(): Depth can't be 0!");
+	TRAP_ASSERT(mipLevels != 0, "VulkanInits::ImageCreateInfo(): MipLevels can't be 0!");
+	TRAP_ASSERT(arrayLayers != 0, "VulkanInits::ImageCreateInfo(): ArrayLayers can't be 0!");
+
+	VkImageCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -508,11 +792,17 @@ VkImageCreateInfo TRAP::Graphics::API::VulkanInits::ImageCreateInfo(const VkImag
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkBufferImageCopy TRAP::Graphics::API::VulkanInits::ImageCopy(const uint32_t bufferRowLength, const uint32_t width,
-															  const uint32_t height, const uint32_t depth,
-							    							  const VkImageSubresourceLayers layers) noexcept
+[[nodiscard]] VkBufferImageCopy TRAP::Graphics::API::VulkanInits::ImageCopy(const uint32_t bufferRowLength, const uint32_t width,
+															                const uint32_t height, const uint32_t depth,
+							    							                const VkImageSubresourceLayers layers)
 {
-	VkBufferImageCopy copy;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(width != 0, "VulkanInits::ImageCopy(): Width can't be 0!");
+	TRAP_ASSERT(height != 0, "VulkanInits::ImageCopy(): Height can't be 0!");
+	TRAP_ASSERT(depth != 0, "VulkanInits::ImageCopy(): Depth can't be 0!");
+
+	VkBufferImageCopy copy{};
 
 	copy.bufferOffset = 0;
 	copy.bufferRowLength = bufferRowLength;
@@ -530,10 +820,44 @@ VkBufferImageCopy TRAP::Graphics::API::VulkanInits::ImageCopy(const uint32_t buf
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkBufferCreateInfo TRAP::Graphics::API::VulkanInits::BufferCreateInfo(const uint64_t allocationSize,
-                                                                      const VkBufferUsageFlags usageFlags) noexcept
+[[nodiscard]] VkBufferImageCopy TRAP::Graphics::API::VulkanInits::ImageCopy(const uint64_t bufferOffset, const uint32_t bufferRowLength,
+ 															                const uint32_t bufferImageHeight, const uint32_t width,
+															                const uint32_t height, const uint32_t depth,
+							    							                const VkImageSubresourceLayers layers)
 {
-	VkBufferCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(width != 0, "VulkanInits::ImageCopy(): Width can't be 0!");
+	TRAP_ASSERT(height != 0, "VulkanInits::ImageCopy(): Height can't be 0!");
+	TRAP_ASSERT(depth != 0, "VulkanInits::ImageCopy(): Depth can't be 0!");
+
+	VkBufferImageCopy copy{};
+
+	copy.bufferOffset = bufferOffset;
+	copy.bufferRowLength = bufferRowLength;
+	copy.bufferImageHeight = bufferImageHeight;
+	copy.imageSubresource = layers;
+	copy.imageOffset.x = 0;
+	copy.imageOffset.y = 0;
+	copy.imageOffset.z = 0;
+	copy.imageExtent.width = width;
+	copy.imageExtent.height = height;
+	copy.imageExtent.depth = depth;
+
+	return copy;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] VkBufferCreateInfo TRAP::Graphics::API::VulkanInits::BufferCreateInfo(const uint64_t allocationSize,
+                                                                                    const VkBufferUsageFlags usageFlags)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(allocationSize != 0, "VulkanInits::BufferCreateInfo(): AllocationSize can't be 0!");
+	TRAP_ASSERT(usageFlags != 0, "VulkanInits::BufferCreateInfo(): UsageFlags can't be 0!");
+
+	VkBufferCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 	info.pNext = nullptr;
@@ -549,11 +873,15 @@ VkBufferCreateInfo TRAP::Graphics::API::VulkanInits::BufferCreateInfo(const uint
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkBufferViewCreateInfo TRAP::Graphics::API::VulkanInits::BufferViewCreateInfo(VkBuffer buffer, const VkFormat format,
-	                                                                          const uint64_t offset,
-	                                                                          const uint64_t range) noexcept
+[[nodiscard]] VkBufferViewCreateInfo TRAP::Graphics::API::VulkanInits::BufferViewCreateInfo(VkBuffer buffer, const VkFormat format,
+	                                                                                        const uint64_t offset,
+	                                                                                        const uint64_t range)
 {
-	VkBufferViewCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(buffer != VK_NULL_HANDLE, "VulkanInits::BufferViewCreateInfo(): Buffer can't be VK_NULL_HANDLE!");
+
+	VkBufferViewCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
 	info.pNext = nullptr;
@@ -568,9 +896,11 @@ VkBufferViewCreateInfo TRAP::Graphics::API::VulkanInits::BufferViewCreateInfo(Vk
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkCommandPoolCreateInfo TRAP::Graphics::API::VulkanInits::CommandPoolCreateInfo(const uint32_t queueFamilyIndex) noexcept
+[[nodiscard]] VkCommandPoolCreateInfo TRAP::Graphics::API::VulkanInits::CommandPoolCreateInfo(const uint32_t queueFamilyIndex) noexcept
 {
-	VkCommandPoolCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkCommandPoolCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 	info.pNext = nullptr;
@@ -582,10 +912,14 @@ VkCommandPoolCreateInfo TRAP::Graphics::API::VulkanInits::CommandPoolCreateInfo(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkCommandBufferAllocateInfo TRAP::Graphics::API::VulkanInits::CommandBufferAllocateInfo(VkCommandPool commandPool,
-                                                                                        const bool secondary) noexcept
+[[nodiscard]] VkCommandBufferAllocateInfo TRAP::Graphics::API::VulkanInits::CommandBufferAllocateInfo(VkCommandPool commandPool,
+                                                                                                      const bool secondary)
 {
-	VkCommandBufferAllocateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(commandPool != VK_NULL_HANDLE, "VulkanInits::CommandBufferAllocateInfo(): CommandPool can't be VK_NULL_HANDLE!");
+
+	VkCommandBufferAllocateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 	info.pNext = nullptr;
@@ -598,9 +932,11 @@ VkCommandBufferAllocateInfo TRAP::Graphics::API::VulkanInits::CommandBufferAlloc
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkCommandBufferBeginInfo TRAP::Graphics::API::VulkanInits::CommandBufferBeginInfo() noexcept
+[[nodiscard]] VkCommandBufferBeginInfo TRAP::Graphics::API::VulkanInits::CommandBufferBeginInfo() noexcept
 {
-	VkCommandBufferBeginInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkCommandBufferBeginInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 	info.pNext = nullptr;
@@ -612,19 +948,23 @@ VkCommandBufferBeginInfo TRAP::Graphics::API::VulkanInits::CommandBufferBeginInf
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkSamplerCreateInfo TRAP::Graphics::API::VulkanInits::SamplerCreateInfo(const VkFilter magFilter,
-	                                                                    const VkFilter minFilter,
-	                                                                    const VkSamplerMipmapMode mipMapMode,
-	                                                                    const VkSamplerAddressMode u,
-	                                                                    const VkSamplerAddressMode v,
-	                                                                    const VkSamplerAddressMode w,
-	                                                                    const float mipLodBias,
-																		const float minLod,
-																		const float maxLod,
-	                                                                    const float maxAnisotropy,
-	                                                                    const VkCompareOp compareOp) noexcept
+[[nodiscard]] VkSamplerCreateInfo TRAP::Graphics::API::VulkanInits::SamplerCreateInfo(const VkFilter magFilter,
+	                                                                                  const VkFilter minFilter,
+	                                                                                  const VkSamplerMipmapMode mipMapMode,
+	                                                                                  const VkSamplerAddressMode u,
+	                                                                                  const VkSamplerAddressMode v,
+	                                                                                  const VkSamplerAddressMode w,
+	                                                                                  const float mipLodBias,
+																		              const float minLod,
+																		              const float maxLod,
+	                                                                                  const float maxAnisotropy,
+	                                                                                  const VkCompareOp compareOp)
 {
-	VkSamplerCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(minLod <= maxLod, "VulkanInits::SamplerCreateInfo(): minLod can't be greater than maxLod!");
+
+	VkSamplerCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
 	info.pNext = nullptr;
@@ -650,12 +990,14 @@ VkSamplerCreateInfo TRAP::Graphics::API::VulkanInits::SamplerCreateInfo(const Vk
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineLayoutCreateInfo TRAP::Graphics::API::VulkanInits::PipelineLayoutCreateInfo(const uint32_t layoutCount,
-	                                                                                  VkDescriptorSetLayout* layouts,
-	                                                                                  const uint32_t pushConstantRangeCount,
-	                                                                                  VkPushConstantRange* pushConstants) noexcept
+[[nodiscard]] VkPipelineLayoutCreateInfo TRAP::Graphics::API::VulkanInits::PipelineLayoutCreateInfo(const uint32_t layoutCount,
+	                                                                                                const VkDescriptorSetLayout* const layouts,
+	                                                                                                const uint32_t pushConstantRangeCount,
+	                                                                                                const VkPushConstantRange* const pushConstants) noexcept
 {
-	VkPipelineLayoutCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkPipelineLayoutCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 	info.pNext = nullptr;
@@ -670,8 +1012,10 @@ VkPipelineLayoutCreateInfo TRAP::Graphics::API::VulkanInits::PipelineLayoutCreat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineColorBlendStateCreateInfo(const std::vector<VkPipelineColorBlendAttachmentState>& attachments) noexcept
+[[nodiscard]] VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineColorBlendStateCreateInfo(const std::vector<VkPipelineColorBlendAttachmentState>& attachments) noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	VkPipelineColorBlendStateCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
@@ -691,13 +1035,15 @@ VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineCo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineColorBlendStateCreateInfo(const VkLogicOp logicOp,
-	                                                                                                    const std::vector<VkPipelineColorBlendAttachmentState>& attachments,
-	                                                                                                    const float blendConstR,
-	                                                                                                    const float blendConstG,
-	                                                                                                    const float blendConstB,
-	                                                                                                    const float blendConstA) noexcept
+[[nodiscard]] VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineColorBlendStateCreateInfo(const VkLogicOp logicOp,
+	                                                                                                                  const std::vector<VkPipelineColorBlendAttachmentState>& attachments,
+	                                                                                                                  const float blendConstR,
+	                                                                                                                  const float blendConstG,
+	                                                                                                                  const float blendConstB,
+	                                                                                                                  const float blendConstA) noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	VkPipelineColorBlendStateCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
@@ -717,10 +1063,12 @@ VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineCo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineCacheCreateInfo TRAP::Graphics::API::VulkanInits::PipelineCacheCreateInfo(const std::vector<uint8_t>& data,
-	                                                                                const VkPipelineCacheCreateFlags flags) noexcept
+[[nodiscard]] VkPipelineCacheCreateInfo TRAP::Graphics::API::VulkanInits::PipelineCacheCreateInfo(const std::vector<uint8_t>& data,
+	                                                                                              const VkPipelineCacheCreateFlags flags) noexcept
 {
-	VkPipelineCacheCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkPipelineCacheCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -733,11 +1081,15 @@ VkPipelineCacheCreateInfo TRAP::Graphics::API::VulkanInits::PipelineCacheCreateI
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineShaderStageCreateInfo TRAP::Graphics::API::VulkanInits::PipelineShaderStageCreateInfo(const VkShaderStageFlagBits stage,
-	                                                                                            VkShaderModule module,
-	                                                                                            const std::string_view name) noexcept
+[[nodiscard]] VkPipelineShaderStageCreateInfo TRAP::Graphics::API::VulkanInits::PipelineShaderStageCreateInfo(const VkShaderStageFlagBits stage,
+	                                                                                                          VkShaderModule module,
+	                                                                                                          const std::string_view name)
 {
-	VkPipelineShaderStageCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(!name.empty(), "VulkanInits::PipelineShaderStageCreateInfo(): Shader name can not be empty!");
+
+	VkPipelineShaderStageCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -752,12 +1104,14 @@ VkPipelineShaderStageCreateInfo TRAP::Graphics::API::VulkanInits::PipelineShader
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineVertexInputStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineVertexInputStateCreateInfo(const uint32_t inputBindingCount,
-	                                                                                                      VkVertexInputBindingDescription* inputBindings,
-	                                                                                                      const uint32_t inputAttributeCount,
-	                                                                                                      VkVertexInputAttributeDescription* inputAttributes) noexcept
+[[nodiscard]] VkPipelineVertexInputStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineVertexInputStateCreateInfo(const uint32_t inputBindingCount,
+	                                                                                                                    const VkVertexInputBindingDescription* const inputBindings,
+	                                                                                                                    const uint32_t inputAttributeCount,
+	                                                                                                                    const VkVertexInputAttributeDescription* const inputAttributes) noexcept
 {
-	VkPipelineVertexInputStateCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkPipelineVertexInputStateCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -772,10 +1126,12 @@ VkPipelineVertexInputStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineV
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineInputAssemblyStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineInputAssemblyStateCreateInfo(const VkPrimitiveTopology topology,
-                                                                                                              const bool primitiveRestart) noexcept
+[[nodiscard]] VkPipelineInputAssemblyStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineInputAssemblyStateCreateInfo(const VkPrimitiveTopology topology,
+                                                                                                                            const bool primitiveRestart) noexcept
 {
-	VkPipelineInputAssemblyStateCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkPipelineInputAssemblyStateCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -788,9 +1144,11 @@ VkPipelineInputAssemblyStateCreateInfo TRAP::Graphics::API::VulkanInits::Pipelin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineTessellationStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineTessellationStateCreateInfo(const uint32_t patchControlPoints) noexcept
+[[nodiscard]] VkPipelineTessellationStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineTessellationStateCreateInfo(const uint32_t patchControlPoints) noexcept
 {
-	VkPipelineTessellationStateCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkPipelineTessellationStateCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -802,9 +1160,11 @@ VkPipelineTessellationStateCreateInfo TRAP::Graphics::API::VulkanInits::Pipeline
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineViewportStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineViewportStateCreateInfo() noexcept
+[[nodiscard]] VkPipelineViewportStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineViewportStateCreateInfo() noexcept
 {
-	VkPipelineViewportStateCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkPipelineViewportStateCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -819,11 +1179,13 @@ VkPipelineViewportStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineView
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineMultisampleStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineMultisampleStateCreateInfo(const VkSampleCountFlagBits sampleCount,
-	                                                                                                      const bool sampleShading,
-																										  const float sampleShadingRate) noexcept
+[[nodiscard]] VkPipelineMultisampleStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineMultisampleStateCreateInfo(const VkSampleCountFlagBits sampleCount,
+	                                                                                                                    const bool sampleShading,
+																										                const float sampleShadingRate) noexcept
 {
-	VkPipelineMultisampleStateCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkPipelineMultisampleStateCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -840,9 +1202,29 @@ VkPipelineMultisampleStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineM
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineDynamicStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineDynamicStateCreateInfo(const std::vector<VkDynamicState>& dynamicStates) noexcept
+[[nodiscard]] VkPipelineFragmentShadingRateStateCreateInfoKHR TRAP::Graphics::API::VulkanInits::PipelineFragmentShadingRateStateCreateInfo(const VkExtent2D fragmentSize,
+	                                                                                                                                       const std::array<VkFragmentShadingRateCombinerOpKHR, 2>& rateCombiners) noexcept
 {
-	VkPipelineDynamicStateCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkPipelineFragmentShadingRateStateCreateInfoKHR info{};
+
+	info.sType = VK_STRUCTURE_TYPE_PIPELINE_FRAGMENT_SHADING_RATE_STATE_CREATE_INFO_KHR;
+	info.pNext = nullptr;
+	info.fragmentSize = fragmentSize;
+	info.combinerOps[0] = rateCombiners[0];
+	info.combinerOps[1] = rateCombiners[1];
+
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] VkPipelineDynamicStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineDynamicStateCreateInfo(const std::vector<VkDynamicState>& dynamicStates) noexcept
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkPipelineDynamicStateCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -855,10 +1237,14 @@ VkPipelineDynamicStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineDynam
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkComputePipelineCreateInfo TRAP::Graphics::API::VulkanInits::ComputePipelineCreateInfo(const VkPipelineShaderStageCreateInfo& stage,
-	                                                                                    VkPipelineLayout layout) noexcept
+[[nodiscard]] VkComputePipelineCreateInfo TRAP::Graphics::API::VulkanInits::ComputePipelineCreateInfo(const VkPipelineShaderStageCreateInfo& stage,
+	                                                                                                  VkPipelineLayout layout)
 {
-	VkComputePipelineCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(layout, "VulkanInits::ComputePipelineCreateInfo(): Invalid Pipeline Layout!");
+
+	VkComputePipelineCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -873,20 +1259,22 @@ VkComputePipelineCreateInfo TRAP::Graphics::API::VulkanInits::ComputePipelineCre
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkGraphicsPipelineCreateInfo TRAP::Graphics::API::VulkanInits::GraphicsPipelineCreateInfo(const uint32_t stageCount,
-	                                                                                      VkPipelineShaderStageCreateInfo* stages,
-	                                                                                      const VkPipelineVertexInputStateCreateInfo& vi,
-	                                                                                      const VkPipelineInputAssemblyStateCreateInfo& ia,
-	                                                                                      const VkPipelineViewportStateCreateInfo& vs,
-	                                                                                      const VkPipelineRasterizationStateCreateInfo& rs,
-	                                                                                      const VkPipelineMultisampleStateCreateInfo& ms,
-	                                                                                      const VkPipelineDepthStencilStateCreateInfo& ds,
-	                                                                                      const VkPipelineColorBlendStateCreateInfo& cb,
-	                                                                                      const VkPipelineDynamicStateCreateInfo& dy,
-	                                                                                      VkPipelineLayout layout,
-	                                                                                      VkRenderPass renderPass) noexcept
+[[nodiscard]] VkGraphicsPipelineCreateInfo TRAP::Graphics::API::VulkanInits::GraphicsPipelineCreateInfo(const uint32_t stageCount,
+	                                                                                                    const VkPipelineShaderStageCreateInfo* const stages,
+	                                                                                                    const VkPipelineVertexInputStateCreateInfo& vi,
+	                                                                                                    const VkPipelineInputAssemblyStateCreateInfo& ia,
+	                                                                                                    const VkPipelineViewportStateCreateInfo& vs,
+	                                                                                                    const VkPipelineRasterizationStateCreateInfo& rs,
+	                                                                                                    const VkPipelineMultisampleStateCreateInfo& ms,
+	                                                                                                    const VkPipelineDepthStencilStateCreateInfo& ds,
+	                                                                                                    const VkPipelineColorBlendStateCreateInfo& cb,
+	                                                                                                    const VkPipelineDynamicStateCreateInfo& dy,
+	                                                                                                    VkPipelineLayout layout,
+	                                                                                                    VkRenderPass renderPass) noexcept
 {
-	VkGraphicsPipelineCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkGraphicsPipelineCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -915,14 +1303,16 @@ VkGraphicsPipelineCreateInfo TRAP::Graphics::API::VulkanInits::GraphicsPipelineC
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkSubmitInfo TRAP::Graphics::API::VulkanInits::SubmitInfo(const std::vector<VkSemaphore>& waitSemaphores,
-														  const uint32_t waitCount,
-                                                          const std::vector<VkPipelineStageFlags>& waitMasks,
-                                                          const std::vector<VkCommandBuffer>& cmds,
-                                                          const std::vector<VkSemaphore>& signalSemaphores,
-														  const uint32_t signalCount) noexcept
+[[nodiscard]] VkSubmitInfo TRAP::Graphics::API::VulkanInits::SubmitInfo(const std::vector<VkSemaphore>& waitSemaphores,
+														                const uint32_t waitCount,
+                                                                        const std::vector<VkPipelineStageFlags>& waitMasks,
+                                                                        const std::vector<VkCommandBuffer>& cmds,
+                                                                        const std::vector<VkSemaphore>& signalSemaphores,
+														                const uint32_t signalCount) noexcept
 {
-	VkSubmitInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkSubmitInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 	info.pNext = nullptr;
@@ -939,10 +1329,13 @@ VkSubmitInfo TRAP::Graphics::API::VulkanInits::SubmitInfo(const std::vector<VkSe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkQueryPoolCreateInfo TRAP::Graphics::API::VulkanInits::QueryPoolCreateInfo(const uint32_t count,
-                                                                            const VkQueryType queryType) noexcept
+[[nodiscard]] VkQueryPoolCreateInfo TRAP::Graphics::API::VulkanInits::QueryPoolCreateInfo(const uint32_t count,
+                                                                                          const VkQueryType queryType) noexcept
 {
-	VkQueryPoolCreateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+
+	VkQueryPoolCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO;
 	info.pNext = nullptr;
@@ -956,18 +1349,22 @@ VkQueryPoolCreateInfo TRAP::Graphics::API::VulkanInits::QueryPoolCreateInfo(cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkSwapchainCreateInfoKHR TRAP::Graphics::API::VulkanInits::SwapchainCreateInfoKHR(VkSurfaceKHR surface,
-	                                                                              const uint32_t imageCount,
-	                                                                              const VkSurfaceFormatKHR surfaceFormat,
-	                                                                              const VkExtent2D imageExtent,
-	                                                                              const VkSharingMode sharingMode,
-	                                                                              const uint32_t queueFamilyIndexCount,
-	                                                                              const std::array<uint32_t, 2>& queueFamilyIndices,
-	                                                                              const VkSurfaceTransformFlagBitsKHR preTransform,
-	                                                                              const VkCompositeAlphaFlagBitsKHR compositeAlpha,
-	                                                                              const VkPresentModeKHR presentMode) noexcept
+[[nodiscard]] VkSwapchainCreateInfoKHR TRAP::Graphics::API::VulkanInits::SwapchainCreateInfoKHR(VkSurfaceKHR surface,
+	                                                                                            const uint32_t imageCount,
+	                                                                                            const VkSurfaceFormatKHR surfaceFormat,
+	                                                                                            const VkExtent2D imageExtent,
+	                                                                                            const VkSharingMode sharingMode,
+	                                                                                            const uint32_t queueFamilyIndexCount,
+	                                                                                            const std::array<uint32_t, 2>& queueFamilyIndices,
+	                                                                                            const VkSurfaceTransformFlagBitsKHR preTransform,
+	                                                                                            const VkCompositeAlphaFlagBitsKHR compositeAlpha,
+	                                                                                            const VkPresentModeKHR presentMode)
 {
-	VkSwapchainCreateInfoKHR info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(surface, "VulkanInits::SwapchainCreateInfoKHR(): Invalid Surface!");
+
+	VkSwapchainCreateInfoKHR info{};
 
 	info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 	info.pNext = nullptr;
@@ -993,11 +1390,13 @@ VkSwapchainCreateInfoKHR TRAP::Graphics::API::VulkanInits::SwapchainCreateInfoKH
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPresentInfoKHR TRAP::Graphics::API::VulkanInits::PresentInfo(const std::vector<VkSemaphore>& waitSemaphores,
-                                                               const VkSwapchainKHR& swapChain,
-															   uint32_t& presentIndex) noexcept
+[[nodiscard]] VkPresentInfoKHR TRAP::Graphics::API::VulkanInits::PresentInfo(const std::vector<VkSemaphore>& waitSemaphores,
+                                                                             const VkSwapchainKHR& swapChain,
+															                 uint32_t& presentIndex) noexcept
 {
-	VkPresentInfoKHR info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkPresentInfoKHR info{};
 
 	info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 	info.pNext = nullptr;
@@ -1013,10 +1412,12 @@ VkPresentInfoKHR TRAP::Graphics::API::VulkanInits::PresentInfo(const std::vector
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkMemoryAllocateInfo TRAP::Graphics::API::VulkanInits::MemoryAllocateInfo(const VkDeviceSize allocSize,
-                                                                          const uint32_t memoryTypeIndex) noexcept
+[[nodiscard]] VkMemoryAllocateInfo TRAP::Graphics::API::VulkanInits::MemoryAllocateInfo(const VkDeviceSize allocSize,
+                                                                                        const uint32_t memoryTypeIndex) noexcept
 {
-	VkMemoryAllocateInfo info;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkMemoryAllocateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	info.pNext = nullptr;
@@ -1024,4 +1425,61 @@ VkMemoryAllocateInfo TRAP::Graphics::API::VulkanInits::MemoryAllocateInfo(const 
 	info.memoryTypeIndex = memoryTypeIndex;
 
 	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] VkClearColorValue TRAP::Graphics::API::VulkanInits::ClearColorValue(const RendererAPI::Color& color,
+                                                                                  const ImageFormat format)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkClearColorValue clearColor{};
+
+	if(ImageFormatIsNormalized(format))
+	{
+		if(!ImageFormatIsSigned(format))
+		{
+			clearColor.float32[0] = TRAP::Math::Clamp(static_cast<float>(color.Red), 0.0f, 1.0f);
+			clearColor.float32[1] = TRAP::Math::Clamp(static_cast<float>(color.Green), 0.0f, 1.0f);
+			clearColor.float32[2] = TRAP::Math::Clamp(static_cast<float>(color.Blue), 0.0f, 1.0f);
+			clearColor.float32[3] = TRAP::Math::Clamp(static_cast<float>(color.Alpha), 0.0f, 1.0f);
+		}
+		else /*if(ImageFormatIsSigned(format))*/
+		{
+			clearColor.float32[0] = TRAP::Math::Clamp(static_cast<float>(color.Red), -1.0f, 1.0f);
+			clearColor.float32[1] = TRAP::Math::Clamp(static_cast<float>(color.Green), -1.0f, 1.0f);
+			clearColor.float32[2] = TRAP::Math::Clamp(static_cast<float>(color.Blue), -1.0f, 1.0f);
+			clearColor.float32[3] = TRAP::Math::Clamp(static_cast<float>(color.Alpha), -1.0f, 1.0f);
+		}
+	}
+	else /*if(!ImageFormatIsNormalized(format))*/
+	{
+		if(!ImageFormatIsFloat(format))
+		{
+			if(!ImageFormatIsSigned(format))
+			{
+				clearColor.uint32[0] = static_cast<uint32_t>(TRAP::Math::Round(color.Red));
+				clearColor.uint32[1] = static_cast<uint32_t>(TRAP::Math::Round(color.Green));
+				clearColor.uint32[2] = static_cast<uint32_t>(TRAP::Math::Round(color.Blue));
+				clearColor.uint32[3] = static_cast<uint32_t>(TRAP::Math::Round(color.Alpha));
+			}
+			else /*if(ImageFormatIsSigned(format))*/
+			{
+				clearColor.int32[0] = static_cast<int32_t>(TRAP::Math::Round(color.Red));
+				clearColor.int32[1] = static_cast<int32_t>(TRAP::Math::Round(color.Green));
+				clearColor.int32[2] = static_cast<int32_t>(TRAP::Math::Round(color.Blue));
+				clearColor.int32[3] = static_cast<int32_t>(TRAP::Math::Round(color.Alpha));
+			}
+		}
+		else
+		{
+			clearColor.float32[0] = static_cast<float>(color.Red);
+			clearColor.float32[1] = static_cast<float>(color.Green);
+			clearColor.float32[2] = static_cast<float>(color.Blue);
+			clearColor.float32[3] = static_cast<float>(color.Alpha);
+		}
+	}
+
+	return clearColor;
 }

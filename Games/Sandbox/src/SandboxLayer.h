@@ -11,8 +11,7 @@ public:
 		m_frameTimeHistory(),
 		m_wireFrame(false),
 		m_indexedDrawing(true),
-		m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) /
-		                   static_cast<float>(TRAP::Application::GetWindow()->GetHeight()))
+		m_cameraController(TRAP::Application::GetWindow()->GetAspectRatio())
 	{
 	}
 
@@ -20,16 +19,16 @@ public:
 
 	void OnImGuiRender() override
 	{
-		TP_PROFILE_FUNCTION();
-
 		ImGui::SetNextWindowBgAlpha(0.3f);
 		ImGui::Begin("Performance", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 		                                     ImGuiWindowFlags_AlwaysAutoResize);
 		ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
-		ImGui::Text("GPU: %s", TRAP::Graphics::RendererAPI::GetRenderer()->GetCurrentGPUName().c_str());
-		//ImGui::Text("DrawCalls: %u", TRAP::Graphics::Renderer::GetDrawCalls());
-		ImGui::Text("FPS: %u", TRAP::Graphics::Renderer::GetFPS());
-		ImGui::Text("FrameTime: %.3fms", TRAP::Graphics::Renderer::GetFrameTime());
+		ImGui::Text("GPU: %s", TRAP::Graphics::RenderCommand::GetGPUName().c_str());
+		ImGui::Text("CPU FPS: %u", TRAP::Graphics::RenderCommand::GetCPUFPS());
+		ImGui::Text("GPU FPS: %u", TRAP::Graphics::RenderCommand::GetGPUFPS());
+		ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
+		ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
+		ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
 		ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0,
 		                 33, ImVec2(200, 50));
 		ImGui::End();
@@ -45,8 +44,6 @@ public:
 
 	void OnAttach() override
 	{
-		TP_PROFILE_FUNCTION();
-
 		TRAP::Application::SetHotReloading(true);
 
 		TRAP::Application::GetWindow()->SetTitle("Sandbox");
@@ -114,10 +111,11 @@ public:
 		m_vertexBuffer->AwaitLoading();
 		m_vertexBuffer->SetLayout(layout);
 
-		TRAP::Graphics::SamplerDesc samplerDesc{};
+		TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
 		samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;
 		samplerDesc.AddressV = TRAP::Graphics::AddressMode::Repeat;
 		samplerDesc.AddressW = TRAP::Graphics::AddressMode::Repeat;
+		samplerDesc.EnableAnisotropy = false;
 		m_sampler = TRAP::Graphics::Sampler::Create(samplerDesc);
 
 		TRAP::Graphics::RenderCommand::SetBlendMode(TRAP::Graphics::BlendMode::Add, TRAP::Graphics::BlendMode::Add);
@@ -139,8 +137,6 @@ public:
 
 	void OnDetach() override
 	{
-		TP_PROFILE_FUNCTION();
-
 		m_sampler.reset();
 		m_indexBuffer.reset();
 		m_indexedVertexBuffer.reset();
@@ -151,8 +147,6 @@ public:
 
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override
 	{
-		TP_PROFILE_FUNCTION();
-
 		//Update
 		m_cameraController.OnUpdate(deltaTime);
 
@@ -187,13 +181,13 @@ public:
 			static int frameTimeIndex = 0;
 			if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
 			{
-				m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::Renderer::GetFrameTime();
+				m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
 				frameTimeIndex++;
 			}
 			else
 			{
 				std::move(m_frameTimeHistory.begin() + 1, m_frameTimeHistory.end(), m_frameTimeHistory.begin());
-				m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::Renderer::GetFrameTime();
+				m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
 			}
 		}
 
@@ -201,8 +195,8 @@ public:
 		if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
 		{
 			//TP_INFO("[Sandbox] DrawCall(s): ", TRAP::Graphics::Renderer::GetDrawCalls());
-			TP_INFO("[Sandbox] FPS: ", TRAP::Graphics::Renderer::GetFPS());
-			TP_INFO("[Sandbox] FrameTime: ", TRAP::Graphics::Renderer::GetFrameTime(), "ms");
+			TP_INFO("[Sandbox] FPS: ", TRAP::Graphics::RenderCommand::GetCPUFPS());
+			TP_INFO("[Sandbox] CPU FrameTime: ", TRAP::Graphics::RenderCommand::GetCPUFrameTime(), "ms");
 			m_fpsTimer.Reset();
 		}
 	}
@@ -286,8 +280,8 @@ private:
 	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer{};
 	TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer{};
 	TRAP::Ref<TRAP::Graphics::Sampler> m_sampler{};
-	TRAP::Graphics::Texture* m_texture{};
-	TRAP::Graphics::Shader* m_shader{};
+	TRAP::Ref<TRAP::Graphics::Texture> m_texture{};
+	TRAP::Ref<TRAP::Graphics::Shader> m_shader{};
 };
 
 #endif /*GAMESTRAP_SANDBOXLAYER_H*/

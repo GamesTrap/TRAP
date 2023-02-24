@@ -2,19 +2,19 @@
 #define TRAP_PIPELINEDESCHASH_H
 
 #include "RendererAPI.h"
-#include "Utils/Utils.h"
 
 namespace std
 {
-	template<> struct hash<TRAP::Graphics::RendererAPI::PipelineDesc>
+	template<>
+    struct hash<TRAP::Graphics::RendererAPI::PipelineDesc>
 	{
 		std::size_t operator()(const TRAP::Graphics::RendererAPI::PipelineDesc& p) const noexcept
 		{
-			std::size_t hash = 0;
+			std::size_t res = 0;
 
 			TRAP::Utils::HashCombine
             (
-                hash,
+                res,
                 p.Type,
                 p.PipelineExtensions,
                 p.PipelineExtensionCount
@@ -26,7 +26,7 @@ namespace std
 
 				TRAP::Utils::HashCombine
                 (
-                    hash,
+                    res,
                     c.ShaderProgram,
                     c.RootSignature
                 );
@@ -38,21 +38,25 @@ namespace std
 
 				TRAP::Utils::HashCombine
                 (
-                    hash,
+                    res,
 					g.ShaderProgram,
 					g.RootSignature,
 					g.RenderTargetCount,
 					g.SampleCount,
 					g.SampleQuality,
 					g.DepthStencilFormat,
-					g.PrimitiveTopology
+					g.PrimitiveTopology,
+                    g.ShadingRate,
+                    g.ShadingRateCombiners[0],
+                    g.ShadingRateCombiners[1],
+                    g.ShadingRateTexture
                 );
 
 				if (g.VertexLayout)
 				{
 					TRAP::Utils::HashCombine
                     (
-                        hash,
+                        res,
                         g.VertexLayout->AttributeCount
                     );
 
@@ -60,7 +64,7 @@ namespace std
 					{
 						TRAP::Utils::HashCombine
                         (
-                            hash,
+                            res,
                             g.VertexLayout->Attributes[i].Binding,
                             g.VertexLayout->Attributes[i].Location,
 							g.VertexLayout->Attributes[i].Offset,
@@ -72,7 +76,7 @@ namespace std
 
 				TRAP::Utils::HashCombine
                 (
-                    hash,
+                    res,
                     g.BlendState->RenderTargetMask,
                     g.BlendState->IndependentBlend
                 );
@@ -80,7 +84,7 @@ namespace std
 				{
 					TRAP::Utils::HashCombine
                     (
-                        hash,
+                        res,
                         g.BlendState->SrcFactors[i],
                         g.BlendState->DstFactors[i],
 						g.BlendState->SrcAlphaFactors[i],
@@ -93,7 +97,7 @@ namespace std
 
 				TRAP::Utils::HashCombine
                 (
-                    hash,
+                    res,
                     g.DepthState->DepthTest,
                     g.DepthState->DepthWrite,
                     g.DepthState->DepthFunc,
@@ -112,7 +116,7 @@ namespace std
 
 				TRAP::Utils::HashCombine
                 (
-                    hash,
+                    res,
                     g.RasterizerState->CullMode,
                     g.RasterizerState->DepthBias,
 					g.RasterizerState->SlopeScaledDepthBias,
@@ -122,7 +126,7 @@ namespace std
                 );
 
 				for (const TRAP::Graphics::API::ImageFormat i : g.ColorFormats)
-					TRAP::Utils::HashCombine(hash, i);
+					TRAP::Utils::HashCombine(res, i);
 			}
 
 			//if (std::holds_alternative<TRAP::Graphics::RendererAPI::RayTracingPipelineDesc>(p.Pipeline))
@@ -132,7 +136,7 @@ namespace std
 			//	//TODO Implement When RayTracing is implemented
 			//}
 
-			return hash;
+			return res;
 		}
 	};
 }

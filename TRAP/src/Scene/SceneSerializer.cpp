@@ -1,5 +1,6 @@
 #include "TRAPPCH.h"
 #include "SceneSerializer.h"
+#include "Utils/String/String.h"
 
 #ifdef _MSC_VER
 #pragma warning(push, 0)
@@ -16,10 +17,39 @@
 namespace YAML
 {
 	template<>
+	struct convert<TRAP::Math::Vec2>
+	{
+		[[nodiscard]] static Node encode(const TRAP::Math::Vec2& rhs)
+		{
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+			Node node;
+			node.push_back(rhs.x);
+			node.push_back(rhs.y);
+			node.SetStyle(EmitterStyle::Flow);
+			return node;
+		}
+
+		[[nodiscard]] static bool decode(const Node& node, TRAP::Math::Vec2& rhs)
+		{
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+			if (!node.IsSequence() || node.size() != 2)
+				return false;
+
+			rhs.x = node[0].as<float>();
+			rhs.y = node[1].as<float>();
+			return true;
+		}
+	};
+
+	template<>
 	struct convert<TRAP::Math::Vec3>
 	{
-		static Node encode(const TRAP::Math::Vec3& rhs)
+		[[nodiscard]] static Node encode(const TRAP::Math::Vec3& rhs)
 		{
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 			Node node;
 			node.push_back(rhs.x);
 			node.push_back(rhs.y);
@@ -28,8 +58,10 @@ namespace YAML
 			return node;
 		}
 
-		static bool decode(const Node& node, TRAP::Math::Vec3& rhs)
+		[[nodiscard]] static bool decode(const Node& node, TRAP::Math::Vec3& rhs)
 		{
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 			if (!node.IsSequence() || node.size() != 3)
 				return false;
 
@@ -43,8 +75,10 @@ namespace YAML
 	template<>
 	struct convert<TRAP::Math::Vec4>
 	{
-		static Node encode(const TRAP::Math::Vec4& rhs)
+		[[nodiscard]] static Node encode(const TRAP::Math::Vec4& rhs)
 		{
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 			Node node;
 			node.push_back(rhs.x);
 			node.push_back(rhs.y);
@@ -54,8 +88,10 @@ namespace YAML
 			return node;
 		}
 
-		static bool decode(const Node& node, TRAP::Math::Vec4& rhs)
+		[[nodiscard]] static bool decode(const Node& node, TRAP::Math::Vec4& rhs)
 		{
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 			if (!node.IsSequence() || node.size() != 4)
 				return false;
 
@@ -70,8 +106,19 @@ namespace YAML
 
 namespace TRAP
 {
+	YAML::Emitter& operator<<(YAML::Emitter& out, const Math::Vec2& v)
+	{
+		ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+		out << YAML::Flow;
+		out << YAML::BeginSeq << v.x << v.y << YAML::EndSeq;
+		return out;
+	}
+
 	YAML::Emitter& operator<<(YAML::Emitter& out, const Math::Vec3& v)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 		out << YAML::Flow;
 		out << YAML::BeginSeq << v.x << v.y << v.z << YAML::EndSeq;
 		return out;
@@ -79,15 +126,21 @@ namespace TRAP
 
 	YAML::Emitter& operator<<(YAML::Emitter& out, const Math::Vec4& v)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 		out << YAML::Flow;
 		out << YAML::BeginSeq << v.x << v.y << v.z << v.w << YAML::EndSeq;
 		return out;
 	}
 
-	static void SerializeEntity(YAML::Emitter& out, Entity entity)
+	void SerializeEntity(YAML::Emitter& out, Entity entity)
 	{
+		ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
+		TRAP_ASSERT(entity.HasComponent<UIDComponent>(), "SerializeEntity(): Entity has no UIDComponent!");
+
 		out << YAML::BeginMap; //Entity
-		out << YAML::Key << "Entity" << YAML::Value << "00000000000000"; //Entity ID
+		out << YAML::Key << "Entity" << YAML::Value << entity.GetUID(); //Entity UID
 
 		if (entity.HasComponent<TagComponent>())
 		{
@@ -126,7 +179,6 @@ namespace TRAP
 			out << YAML::Key << "ProjectionType" << YAML::Value << static_cast<int32_t>(camera.GetProjectionType());
 			out << YAML::Key << "PerspectiveFOV" << YAML::Value << camera.GetPerspectiveVerticalFOV();
 			out << YAML::Key << "PerspectiveNear" << YAML::Value << camera.GetPerspectiveNearClip();
-			out << YAML::Key << "PerspectiveFar" << YAML::Value << camera.GetPerspectiveFarClip();
 			out << YAML::Key << "OrthographicSize" << YAML::Value << camera.GetOrthographicSize();
 			out << YAML::Key << "OrthographicNear" << YAML::Value << camera.GetOrthographicNearClip();
 			out << YAML::Key << "OrthographicFar" << YAML::Value << camera.GetOrthographicFarClip();
@@ -149,20 +201,81 @@ namespace TRAP
 			out << YAML::EndMap; //SpriteRendererComponent
 		}
 
+		if (entity.HasComponent<CircleRendererComponent>())
+		{
+			out << YAML::Key << "CircleRendererComponent";
+			out << YAML::BeginMap; //CircleRendererComponent
+
+			auto& circleRendererComponent = entity.GetComponent<CircleRendererComponent>();
+			out << YAML::Key << "Color" << YAML::Value << circleRendererComponent.Color;
+			out << YAML::Key << "Thickness" << YAML::Value << circleRendererComponent.Thickness;
+			out << YAML::Key << "Fade" << YAML::Value << circleRendererComponent.Fade;
+
+			out << YAML::EndMap; //CircleRendererComponent
+		}
+
+		if (entity.HasComponent<Rigidbody2DComponent>())
+		{
+			out << YAML::Key << "Rigidbody2DComponent";
+			out << YAML::BeginMap; //Rigidbody2DComponent
+
+			auto& rigidbody2DComponent = entity.GetComponent<Rigidbody2DComponent>();
+			out << YAML::Key << "BodyType" << YAML::Value << Utils::String::ConvertToString<Rigidbody2DComponent::BodyType>(rigidbody2DComponent.Type);
+			out << YAML::Key << "FixedRotation" << YAML::Value << rigidbody2DComponent.FixedRotation;
+
+			out << YAML::EndMap; //Rigidbody2DComponent
+		}
+
+		if (entity.HasComponent<BoxCollider2DComponent>())
+		{
+			out << YAML::Key << "BoxCollider2DComponent";
+			out << YAML::BeginMap; //BoxCollider2DComponent
+
+			auto& boxCollider2DComponent = entity.GetComponent<BoxCollider2DComponent>();
+			out << YAML::Key << "Offset" << YAML::Value << boxCollider2DComponent.Offset;
+			out << YAML::Key << "Size" << YAML::Value << boxCollider2DComponent.Size;
+			out << YAML::Key << "Density" << YAML::Value << boxCollider2DComponent.Density;
+			out << YAML::Key << "Friction" << YAML::Value << boxCollider2DComponent.Friction;
+			out << YAML::Key << "Restitution" << YAML::Value << boxCollider2DComponent.Restitution;
+			out << YAML::Key << "RestitutionThreshold" << YAML::Value << boxCollider2DComponent.RestitutionThreshold;
+
+			out << YAML::EndMap; //BoxCollider2DComponent
+		}
+
+		if (entity.HasComponent<CircleCollider2DComponent>())
+		{
+			out << YAML::Key << "CircleCollider2DComponent";
+			out << YAML::BeginMap; //CircleCollider2DComponent
+
+			auto& circleCollider2DComponent = entity.GetComponent<CircleCollider2DComponent>();
+			out << YAML::Key << "Offset" << YAML::Value << circleCollider2DComponent.Offset;
+			out << YAML::Key << "Radius" << YAML::Value << circleCollider2DComponent.Radius;
+			out << YAML::Key << "Density" << YAML::Value << circleCollider2DComponent.Density;
+			out << YAML::Key << "Friction" << YAML::Value << circleCollider2DComponent.Friction;
+			out << YAML::Key << "Restitution" << YAML::Value << circleCollider2DComponent.Restitution;
+			out << YAML::Key << "RestitutionThreshold" << YAML::Value << circleCollider2DComponent.RestitutionThreshold;
+
+			out << YAML::EndMap; //CircleCollider2DComponent
+		}
+
 		out << YAML::EndMap; //Entity
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::SceneSerializer::SceneSerializer(Ref<Scene> scene)
+TRAP::SceneSerializer::SceneSerializer(Ref<Scene> scene) noexcept
 	: m_scene(std::move(scene))
-{}
+{
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::SceneSerializer::Serialize(const std::filesystem::path& filepath)
 {
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	YAML::Emitter out;
 	out << YAML::BeginMap;
 	out << YAML::Key << "Scene" << YAML::Value << "Untitled";
@@ -186,14 +299,18 @@ void TRAP::SceneSerializer::Serialize(const std::filesystem::path& filepath)
 
 void TRAP::SceneSerializer::SerializeRuntime(const std::filesystem::path&)
 {
-	TRAP_ASSERT(false, "Not implemented yet!");
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(false, "SceneSerializer::SerializeRuntime(): Not implemented yet!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 {
-	if (!FileSystem::FileOrFolderExists(filepath))
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
+	if (!FileSystem::Exists(filepath))
 	{
 		TP_ERROR(Log::SceneSerializerPrefix, "File: \"", filepath.u8string(), "\" doesn't exists!");
 		return false;
@@ -220,16 +337,16 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 	{
 		for (auto entity : entities)
 		{
-			const uint64_t uuid = entity["Entity"].as<uint64_t>(); //TODO
+			const uint64_t uid = entity["Entity"].as<uint64_t>();
 
 			std::string name;
 			auto tagComponent = entity["TagComponent"];
 			if (tagComponent)
 				name = tagComponent["Tag"].as<std::string>();
 
-			TP_TRACE(Log::SceneSerializerPrefix, "Deserialized entity with ID = ", uuid, ", name = ", name);
+			TP_TRACE(Log::SceneSerializerPrefix, "Deserialized entity with UID = ", uid, ", name = ", name);
 
-			Entity deserializedEntity = m_scene->CreateEntity(name);
+			Entity deserializedEntity = m_scene->CreateEntityWithUID(uid, name);
 
 			auto transformComponent = entity["TransformComponent"];
 			if (transformComponent)
@@ -254,7 +371,6 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 
 				cc.Camera.SetPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<float>());
 				cc.Camera.SetPerspectiveNearClip(cameraProps["PerspectiveNear"].as<float>());
-				cc.Camera.SetPerspectiveFarClip(cameraProps["PerspectiveFar"].as<float>());
 
 				cc.Camera.SetOrthographicSize(cameraProps["OrthographicSize"].as<float>());
 				cc.Camera.SetOrthographicNearClip(cameraProps["OrthographicNear"].as<float>());
@@ -270,6 +386,47 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 				auto& src = deserializedEntity.AddComponent<SpriteRendererComponent>();
 				src.Color = spriteRendererComponent["Color"].as<Math::Vec4>();
 			}
+
+			auto circleRendererComponent = entity["CircleRendererComponent"];
+			if (circleRendererComponent)
+			{
+				auto& src = deserializedEntity.AddComponent<CircleRendererComponent>();
+				src.Color = circleRendererComponent["Color"].as<Math::Vec4>();
+				src.Thickness = circleRendererComponent["Thickness"].as<float>();
+				src.Fade = circleRendererComponent["Fade"].as<float>();
+			}
+
+			auto rigidbody2DComponent = entity["Rigidbody2DComponent"];
+			if (rigidbody2DComponent)
+			{
+				auto& rb2d = deserializedEntity.AddComponent<Rigidbody2DComponent>();
+				rb2d.Type = Utils::String::ConvertToType<Rigidbody2DComponent::BodyType>(rigidbody2DComponent["BodyType"].as<std::string>());
+				rb2d.FixedRotation = rigidbody2DComponent["FixedRotation"].as<bool>();
+			}
+
+			auto boxCollider2DComponent = entity["BoxCollider2DComponent"];
+			if (boxCollider2DComponent)
+			{
+				auto& bc2d = deserializedEntity.AddComponent<BoxCollider2DComponent>();
+				bc2d.Offset = boxCollider2DComponent["Offset"].as<Math::Vec2>();
+				bc2d.Size = boxCollider2DComponent["Size"].as<Math::Vec2>();
+				bc2d.Density = boxCollider2DComponent["Density"].as<float>();
+				bc2d.Friction = boxCollider2DComponent["Friction"].as<float>();
+				bc2d.Restitution = boxCollider2DComponent["Restitution"].as<float>();
+				bc2d.RestitutionThreshold = boxCollider2DComponent["RestitutionThreshold"].as<float>();
+			}
+
+			auto circleCollider2DComponent = entity["CircleCollider2DComponent"];
+			if (circleCollider2DComponent)
+			{
+				auto& cc2d = deserializedEntity.AddComponent<CircleCollider2DComponent>();
+				cc2d.Offset = circleCollider2DComponent["Offset"].as<Math::Vec2>();
+				cc2d.Radius = circleCollider2DComponent["Radius"].as<float>();
+				cc2d.Density = circleCollider2DComponent["Density"].as<float>();
+				cc2d.Friction = circleCollider2DComponent["Friction"].as<float>();
+				cc2d.Restitution = circleCollider2DComponent["Restitution"].as<float>();
+				cc2d.RestitutionThreshold = circleCollider2DComponent["RestitutionThreshold"].as<float>();
+			}
 		}
 	}
 
@@ -280,6 +437,8 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 
 bool TRAP::SceneSerializer::DeserializeRuntime(const std::filesystem::path&)
 {
-	TRAP_ASSERT(false, "Not implemented yet!");
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(false, "SceneSerializer::DeserializeRuntime(): Not implemented yet!");
 	return false;
 }

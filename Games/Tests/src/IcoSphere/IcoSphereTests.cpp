@@ -48,9 +48,9 @@ void IcoSphereTests::OnAttach()
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
 	//Camera setup
-	m_camera.SetPerspective(TRAP::Math::Radians(m_FOV), 0.01f, 1000.0f);
-	m_camera.SetViewportSize(TRAP::Application::GetWindow()->GetWidth(),
-	                         TRAP::Application::GetWindow()->GetHeight());
+	m_camera.SetPerspective(TRAP::Math::Radians(m_FOV), 0.01f);
+	m_camera.SetViewportSize(TRAP::Application::GetWindow()->GetFrameBufferSize().x,
+	                         TRAP::Application::GetWindow()->GetFrameBufferSize().y);
 	m_cameraTransform.Position = TRAP::Math::Vec3(0.0f, 0.0f, 8.0f);
 
 	//Enable depth testing because this is 3D stuff
@@ -101,8 +101,8 @@ void IcoSphereTests::OnUpdate(const TRAP::Utils::TimeStep&)
 	//Simple performance metrics
 	if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
 	{
-		TP_INFO("[IcoSphere] FPS: ", TRAP::Graphics::Renderer::GetFPS());
-		TP_INFO("[IcoSphere] FrameTime: ", TRAP::Graphics::Renderer::GetFrameTime(), "ms");
+		TP_INFO("[IcoSphere] FPS: ", TRAP::Graphics::RenderCommand::GetCPUFPS());
+		TP_INFO("[IcoSphere] CPU FrameTime: ", TRAP::Graphics::RenderCommand::GetCPUFrameTime(), "ms");
 		m_fpsTimer.Reset();
 	}
 }

@@ -178,8 +178,8 @@ void RendererAPITests::OnUpdate(const TRAP::Utils::TimeStep&)
 	//Simple performance metrics
 	if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
 	{
-		TP_INFO("[RendererAPITests] FPS: ", TRAP::Graphics::Renderer::GetFPS());
-		TP_INFO("[RendererAPITests] FrameTime: ", TRAP::Graphics::Renderer::GetFrameTime(), "ms");
+		TP_INFO("[RendererAPITests] FPS: ", TRAP::Graphics::RenderCommand::GetCPUFPS());
+		TP_INFO("[RendererAPITests] CPU FrameTime: ", TRAP::Graphics::RenderCommand::GetCPUFrameTime(), "ms");
 		m_fpsTimer.Reset();
 	}
 }
@@ -236,7 +236,7 @@ bool RendererAPITests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 	}
 	if(e.GetKey() == TRAP::Input::Key::F4)
 	{
-		m_pushConstantOrUBO = (m_pushConstantOrUBO + 1) % 3;
+		m_pushConstantOrUBO = static_cast<uint8_t>((m_pushConstantOrUBO + 1) % 3);
 		TP_TRACE("[RendererAPITests] Push Constant / Uniform Buffer: ", m_pushConstantOrUBO ? "On" : "Off");
 	}
 	if(e.GetKey() == TRAP::Input::Key::V)

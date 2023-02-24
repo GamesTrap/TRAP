@@ -15,7 +15,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="desc">Render target description.</param>
 		/// <returns>Created render target.</returns>
-		static TRAP::Ref<RenderTarget> Create(const RendererAPI::RenderTargetDesc& desc);
+		[[nodiscard]] static TRAP::Ref<RenderTarget> Create(const RendererAPI::RenderTargetDesc& desc);
 
 		/// <summary>
 		/// Destructor.
@@ -33,78 +33,68 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		RenderTarget(RenderTarget&&) = default;
+		RenderTarget(RenderTarget&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		RenderTarget& operator=(RenderTarget&&) = default;
+		RenderTarget& operator=(RenderTarget&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the width of the render target.
 		/// </summary>
 		/// <returns>Render target width.</returns>
-		uint32_t GetWidth() const;
+		[[nodiscard]] uint32_t GetWidth() const noexcept;
 		/// <summary>
 		/// Retrieve the height of the render target.
 		/// </summary>
 		/// <returns>Render target height.</returns>
-		uint32_t GetHeight() const;
+		[[nodiscard]] uint32_t GetHeight() const noexcept;
 		/// <summary>
 		/// Retrieve the depth of the render target.
 		/// </summary>
 		/// <returns>Render target depth.</returns>
-		uint32_t GetDepth() const;
+		[[nodiscard]] uint32_t GetDepth() const noexcept;
 		/// <summary>
 		/// Retrieve the array size of the render target.
 		/// </summary>
 		/// <returns>Render target array size.</returns>
-		uint32_t GetArraySize() const;
+		[[nodiscard]] uint32_t GetArraySize() const noexcept;
 		/// <summary>
 		/// Retrieve the mip levels of the render target.
 		/// </summary>
 		/// <returns>Render target mip levels.</returns>
-		uint32_t GetMipLevels() const;
+		[[nodiscard]] uint32_t GetMipLevels() const noexcept;
 		/// <summary>
 		/// Retrieve the sample count of the render target.
 		/// </summary>
 		/// <returns>Render target sample count.</returns>
-		RendererAPI::SampleCount GetSampleCount() const;
+		[[nodiscard]] RendererAPI::SampleCount GetSampleCount() const noexcept;
 		/// <summary>
 		/// Retrieve the sample quality of the render target.
 		/// </summary>
 		/// <returns>Render target sample quality.</returns>
-		uint32_t GetSampleQuality() const;
+		[[nodiscard]] uint32_t GetSampleQuality() const noexcept;
 		/// <summary>
 		/// Retrieve the image format of the render target.
 		/// </summary>
 		/// <returns>Render target image format.</returns>
-		TRAP::Graphics::API::ImageFormat GetImageFormat() const;
+		[[nodiscard]] TRAP::Graphics::API::ImageFormat GetImageFormat() const noexcept;
 		/// <summary>
 		/// Retrieve the clear color of the render target.
 		/// </summary>
 		/// <returns>Render target clear color.</returns>
-		TRAP::Math::Vec4 GetClearColor() const;
-		/// <summary>
-		/// Retrieve the clear depth value of the render target.
-		/// </summary>
-		/// <returns>Render target clear depth value.</returns>
-		float GetClearDepth() const;
-		/// <summary>
-		/// Retrieve the clear stencil value of the render target.
-		/// </summary>
-		/// <returns>Render target clear stencil value.</returns>
-		uint32_t GetClearStencil() const;
+		[[nodiscard]] TRAP::Graphics::RendererAPI::ClearValue GetClearValue() const noexcept;
 		/// <summary>
 		/// Retrieve the descriptor type of the render target.
 		/// </summary>
 		/// <returns>Render target descriptor type.</returns>
-		RendererAPI::DescriptorType GetDescriptorType() const;
+		[[nodiscard]] RendererAPI::DescriptorType GetDescriptorType() const noexcept;
 
 		/// <summary>
 		/// Retrieve the texture base of the render target.
 		/// </summary>
 		/// <returns>Render target texture base.</returns>
-		TRAP::Graphics::Texture* GetTexture() const;
+		[[nodiscard]] Ref<TRAP::Graphics::Texture> GetTexture() const noexcept;
 
 	protected:
 		/// <summary>
@@ -112,11 +102,9 @@ namespace TRAP::Graphics
 		/// </summary>
 		RenderTarget();
 
-		TRAP::Scope<TRAP::Graphics::Texture> m_texture;
+		TRAP::Ref<TRAP::Graphics::Texture> m_texture;
 
-		TRAP::Math::Vec4 m_clearColor;
-		float m_clearDepth;
-		uint32_t m_clearStencil;
+		RendererAPI::ClearValue m_clearValue;
 		uint32_t m_arraySize;
 		uint32_t m_depth;
 		uint32_t m_width;

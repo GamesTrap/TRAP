@@ -2,7 +2,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -32,12 +32,14 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Core/PlatformDetection.h"
 
 #include "Utils/Utils.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
 
-sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(uint32_t address, uint16_t port)
+[[nodiscard]] sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(uint32_t address, uint16_t port)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	sockaddr_in addr{};
 
 	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
@@ -55,9 +57,11 @@ sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(uint32_t address,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array<uint8_t, 16>& address,
-                                                                uint16_t port)
+[[nodiscard]] sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array<uint8_t, 16>& address,
+                                                                              uint16_t port)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	sockaddr_in6 addr{};
 	std::copy(address.begin(), address.end(), addr.sin6_addr.u.Byte);
 	addr.sin6_family = AF_INET6;
@@ -72,8 +76,10 @@ sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::SocketHandle TRAP::INTERNAL::Network::SocketImpl::InvalidSocket()
+[[nodiscard]] TRAP::Network::SocketHandle TRAP::INTERNAL::Network::SocketImpl::InvalidSocket() noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return INVALID_SOCKET;
 }
 
@@ -81,6 +87,8 @@ TRAP::Network::SocketHandle TRAP::INTERNAL::Network::SocketImpl::InvalidSocket()
 
 void TRAP::INTERNAL::Network::SocketImpl::Close(const TRAP::Network::SocketHandle sock)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	closesocket(sock);
 }
 
@@ -88,24 +96,33 @@ void TRAP::INTERNAL::Network::SocketImpl::Close(const TRAP::Network::SocketHandl
 
 void TRAP::INTERNAL::Network::SocketImpl::SetBlocking(const TRAP::Network::SocketHandle sock, const bool block)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	u_long blocking = block ? 0 : 1;
 	ioctlsocket(sock, FIONBIO, &blocking);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::INTERNAL::Network::SocketImpl::GetErrorStatus()
+[[nodiscard]] TRAP::Network::Socket::Status TRAP::INTERNAL::Network::SocketImpl::GetErrorStatus()
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	switch(WSAGetLastError())
 	{
 	case WSAEWOULDBLOCK:
+		[[fallthrough]];
 	case WSAEALREADY:
 		return TRAP::Network::Socket::Status::NotReady;
 
 	case WSAECONNABORTED:
+		[[fallthrough]];
 	case WSAECONNRESET:
+		[[fallthrough]];
 	case WSAETIMEDOUT:
+		[[fallthrough]];
 	case WSAENETRESET:
+		[[fallthrough]];
 	case WSAENOTCONN:
 		return TRAP::Network::Socket::Status::Disconnected;
 
@@ -128,19 +145,23 @@ struct SocketInitializer
 {
 	SocketInitializer()
 	{
+		ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 		WSADATA init;
 		WSAStartup(MAKEWORD(2, 2), &init);
 	}
 
 	~SocketInitializer()
 	{
+		ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 		WSACleanup();
 	}
 
-	SocketInitializer(const SocketInitializer&) = default;
-	SocketInitializer& operator= (const SocketInitializer&) = default;
-	SocketInitializer(SocketInitializer&&) = default;
-	SocketInitializer& operator= (SocketInitializer&&) = default;
+	SocketInitializer(const SocketInitializer&) noexcept = default;
+	SocketInitializer& operator= (const SocketInitializer&) noexcept = default;
+	SocketInitializer(SocketInitializer&&) noexcept = default;
+	SocketInitializer& operator= (SocketInitializer&&) noexcept = default;
 };
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -3,8 +3,6 @@
 
 #include <thread>
 
-#include "Layers/ImGui/ImGuiLayer.h"
-
 #include "Utils/Config/Config.h"
 #include "Layers/LayerStack.h"
 #include "ThreadPool/ThreadPool.h"
@@ -16,6 +14,8 @@ int main(int32_t argc, char** argv);
 
 namespace TRAP
 {
+	class ImGuiLayer;
+
 	namespace Events
 	{
 		class WindowRestoreEvent;
@@ -33,6 +33,11 @@ namespace TRAP
 		class FileWatcher;
 	}
 
+	namespace Utils
+	{
+		struct TimeStep;
+	}
+
 	class Application
 	{
 	public:
@@ -40,7 +45,8 @@ namespace TRAP
 		/// Constructor.
 		/// </summary>
 		/// <param name="gameName">Name of the game.</param>
-		explicit Application(std::string gameName);
+		/// <param name="appID">Optional: Steam AppID for this application. Default: Invalid AppID.</param>
+		explicit Application(std::string gameName, uint32_t appID = 0);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -78,23 +84,23 @@ namespace TRAP
 		/// Get the Engine.cfg config from the application.
 		/// </summary>
 		/// <returns>Constant reference to the config.</returns>
-		static const Utils::Config& GetConfig();
+		[[nodiscard]] static const Utils::Config& GetConfig();
 		/// <summary>
 		/// Get the layer stack from the application.
 		/// </summary>
 		/// <returns>Reference to the layer stack.</returns>
-		static LayerStack& GetLayerStack();
+		[[nodiscard]] static LayerStack& GetLayerStack();
 		/// <summary>
 		/// Get the default ImGuiLayer
 		/// </summary>
 		/// <returns>Reference to ImGuiLayer.</returns>
-		static ImGuiLayer GetImGuiLayer();
+		[[nodiscard]] static ImGuiLayer& GetImGuiLayer();
 
 		/// <summary>
 		/// Get the current frames per second.
 		/// </summary>
 		/// <returns>Current frames per second.</returns>
-		static uint32_t GetFPS();
+		[[nodiscard]] static uint32_t GetFPS();
 		/// <summary>
 		/// Set a FPS limit.
 		/// Note: Valid FPS range is 25 - 500. 0 sets unlimited FPS.
@@ -106,24 +112,24 @@ namespace TRAP
 		/// Note: 0 means unlimited FPS.
 		/// </summary>
 		/// <returns>Current FPS limit.</returns>
-		static uint32_t GetFPSLimit();
+		[[nodiscard]] static uint32_t GetFPSLimit();
 		/// <summary>
-		/// Get the current frame time.
+		/// Get the current CPU frame time.
 		/// </summary>
-		/// <returns>Current frame time.</returns>
-		static float GetFrameTime();
+		/// <returns>Current CPU frame time.</returns>
+		[[nodiscard]] static float GetCPUFrameTime();
 		/// <summary>
 		/// Get the current time scale.
 		/// </summary>
 		/// <returns>Current time scale.</returns>
-		static float GetTimeScale();
+		[[nodiscard]] static float GetTimeScale();
 		/// <summary>
-		/// Get the current tick rate (Default: 100).
+		/// Get the current tick rate (Default: 64).
 		/// </summary>
 		/// <returns>Current tick rate.</returns>
-		static uint32_t GetTickRate();
+		[[nodiscard]] static uint32_t GetTickRate();
 		/// <summary>
-		/// Set the tick rate.
+		/// Set the tick rate (fixed update interval for OnTick()).
 		/// </summary>
 		/// <param name="tickRate">New Tick rate.</param>
 		static void SetTickRate(uint32_t tickRate);
@@ -148,17 +154,17 @@ namespace TRAP
 		/// Get the Main Render window.
 		/// </summary>
 		/// <returns>Pointer to the main render window.</returns>
-		static Window* GetWindow();
+		[[nodiscard]] static Window* GetWindow();
 		/// <summary>
 		/// Get the Time since the Engine was started.
 		/// </summary>
 		/// <returns>Time step containing the passed time since the engine was started.</returns>
-		static Utils::TimeStep GetTime();
+		[[nodiscard]] static Utils::TimeStep GetTime();
 		/// <summary>
 		/// Get the thread pool to be used for small tasks that can be multi-threaded.
 		/// </summary>
 		/// <returns>Reference to the thread pool.</returns>
-		static ThreadPool& GetThreadPool();
+		[[nodiscard]] static ThreadPool& GetThreadPool();
 
 		/// <summary>
 		/// Set the clipboard.
@@ -169,29 +175,37 @@ namespace TRAP
 		/// Get current content of the clipboard.
 		/// </summary>
 		/// <returns>String containing the clipboards content.</returns>
-		static std::string GetClipboardString();
+		[[nodiscard]] static std::string GetClipboardString();
 
 		/// <summary>
 		/// Get the id of the main engine thread.
 		/// </summary>
 		/// <returns>Main thread ID.</returns>
-		static std::thread::id GetMainThreadID();
+		[[nodiscard]] static std::thread::id GetMainThreadID();
 
 		/// <summary>
 		/// Get the name of the game.
 		/// </summary>
-		static std::string GetGameName();
+		[[nodiscard]] static std::string GetGameName();
+
+		/// <summary>
+		/// Get the global counter.
+		/// The counter is incremented every frame.
+		/// Note: This is mainly used for NVIDIA-Reflex support.
+		/// </summary>
+		/// <returns>Global counter value.</returns>
+		[[nodiscard]] static uint64_t GetGlobalCounter();
 
 		/// <summary>
 		/// Get the hot reloading file watcher.
 		/// </summary>
 		/// <returns>TRAP::FileSystem::FileWatcher* if file watcher is running, false otherwise.</returns>
-		static TRAP::FileSystem::FileWatcher* GetHotReloadingFileWatcher();
+		[[nodiscard]] static TRAP::FileSystem::FileWatcher* GetHotReloadingFileWatcher();
 		/// <summary>
 		/// Get whether hot reloading is enabled or not.
 		/// </summary>
 		/// <returns>True if hot reloading is enabled, false otherwise.</returns>
-		static bool IsHotReloadingEnabled();
+		[[nodiscard]] static bool IsHotReloadingEnabled();
 		/// <summary>
 		/// Set whether to enable or disable hot reloading.
 		/// </summary>
@@ -214,7 +228,7 @@ namespace TRAP
 		/// </summary>
 		/// <param name="e">Window close event that occurred.</param>
 		/// <returns>Always true.</returns>
-		bool OnWindowClose(Events::WindowCloseEvent& e);
+		bool OnWindowClose(Events::WindowCloseEvent& e) noexcept;
 		/// <summary>
 		/// Handles window framebuffer resizes for the main render window.
 		/// </summary>
@@ -232,25 +246,25 @@ namespace TRAP
 		/// </summary>
 		/// <param name="e">Window focus event that occurred.</param>
 		/// <returns>Always false.</returns>
-		bool OnWindowFocus(Events::WindowFocusEvent& e);
+		bool OnWindowFocus(Events::WindowFocusEvent& e) noexcept;
 		/// <summary>
 		/// Handles window lost focus for the main render window.
 		/// </summary>
 		/// <param name="e">Window lost focus event that occurred.</param>
 		/// <returns>Always false.</returns>
-		bool OnWindowLostFocus(Events::WindowLostFocusEvent& e);
+		bool OnWindowLostFocus(Events::WindowLostFocusEvent& e) noexcept;
 		/// <summary>
 		/// Handles window minimize events for the main render window.
 		/// </summary>
 		/// <param name="e">Window minimize event that occurred.</param>
 		/// <returns>Always false.</returns>
-		bool OnWindowMinimize(Events::WindowMinimizeEvent& e);
+		bool OnWindowMinimize(Events::WindowMinimizeEvent& e) noexcept;
 		/// <summary>
 		/// Handles window restore events for the main render window.
 		/// </summary>
 		/// <param name="e">Window restore event that occurred.</param>
 		/// <returns>Always false.</returns>
-		bool OnWindowRestore(Events::WindowRestoreEvent& e);
+		bool OnWindowRestore(Events::WindowRestoreEvent& e) noexcept;
 
 		/// <summary>
 		/// Handles file change events for the application.
@@ -267,7 +281,7 @@ namespace TRAP
 
 		std::vector<std::filesystem::path> m_hotReloadingShaderPaths;
 		std::vector<std::filesystem::path> m_hotReloadingTexturePaths;
-		std::mutex m_hotReloadingMutex;
+		TracyLockable(std::mutex, m_hotReloadingMutex);
 		std::unique_ptr<FileSystem::FileWatcher> m_hotReloadingFileWatcher;
 		bool m_hotReloadingEnabled;
 
@@ -281,12 +295,13 @@ namespace TRAP
 		Utils::Config m_config;
 
 		Utils::Timer m_timer;
-		uint32_t m_FramesPerSecond;
 		float m_FrameTime;
 		uint32_t m_fpsLimit;
 		uint32_t m_tickRate;
 		float m_timeScale;
 		std::string m_gameName;
+		//NVIDIA-Reflex
+		uint64_t m_globalCounter;
 
 		ThreadPool m_threadPool;
 

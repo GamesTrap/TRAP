@@ -19,7 +19,7 @@ namespace TRAP::Graphics::API
 		/// <param name="window">Window to create surface for.</param>
 		VulkanSurface(TRAP::Ref<VulkanInstance> instance,
 		              const TRAP::Ref<VulkanDevice>& device,
-		              TRAP::Window* window);
+		              const TRAP::Window* const window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -28,40 +28,40 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanSurface(const VulkanSurface&) = default;
+		VulkanSurface(const VulkanSurface&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanSurface& operator=(const VulkanSurface&) = default;
+		VulkanSurface& operator=(const VulkanSurface&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanSurface(VulkanSurface&&) = default;
+		VulkanSurface(VulkanSurface&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanSurface& operator=(VulkanSurface&&) = default;
+		VulkanSurface& operator=(VulkanSurface&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the Vulkan surface handle.
 		/// </summary>
 		/// <returns>Vulkan surface handle.</returns>
-		VkSurfaceKHR GetVkSurface() const;
+		[[nodiscard]] VkSurfaceKHR GetVkSurface() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan surface capabilities.
 		/// </summary>
 		/// <returns>Vulkan surface capabilities.</returns>
-		VkSurfaceCapabilitiesKHR GetVkSurfaceCapabilities() const;
+		[[nodiscard]] VkSurfaceCapabilitiesKHR GetVkSurfaceCapabilities() const noexcept;
 		/// <summary>
 		/// Retrieve all formats supported by the surface.
 		/// </summary>
 		/// <returns>All formats supported by the surface.</returns>
-		const std::vector<VkSurfaceFormatKHR>& GetVkSurfaceFormats() const;
+		[[nodiscard]] const std::vector<VkSurfaceFormatKHR>& GetVkSurfaceFormats() const noexcept;
 		/// <summary>
 		/// Retrieve all present modes supported by the surface.
 		/// </summary>
 		/// <returns>All present modes supported by the surface.</returns>
-		const std::vector<VkPresentModeKHR>& GetVkSurfacePresentModes() const;
+		[[nodiscard]] const std::vector<VkPresentModeKHR>& GetVkSurfacePresentModes() const noexcept;
 
 	private:
 		VkSurfaceKHR m_surface;

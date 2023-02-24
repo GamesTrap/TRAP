@@ -26,31 +26,31 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanFence(const VulkanFence&) = default;
+		VulkanFence(const VulkanFence&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanFence& operator=(const VulkanFence&) = default;
+		VulkanFence& operator=(const VulkanFence&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanFence(VulkanFence&&) = default;
+		VulkanFence(VulkanFence&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanFence& operator=(VulkanFence&&) = default;
+		VulkanFence& operator=(VulkanFence&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the VkFence handle.
 		/// </summary>
 		/// <returns>VkFence handle.</returns>
-		VkFence GetVkFence() const;
+		[[nodiscard]] VkFence GetVkFence() const noexcept;
 
 		/// <summary>
 		/// Retrieve the current status of the fence.
 		/// </summary>
 		/// <returns>Fence status.</returns>
-		RendererAPI::FenceStatus GetStatus() override;
+		[[nodiscard]] RendererAPI::FenceStatus GetStatus() override;
 
 		/// <summary>
 		/// Wait for the fence to be signaled.

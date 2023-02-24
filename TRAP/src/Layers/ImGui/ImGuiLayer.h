@@ -11,6 +11,7 @@
 #endif
 
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
+#include "Core/Base.h"
 #include "Layers/Layer.h"
 
 namespace TRAP
@@ -45,12 +46,6 @@ namespace TRAP
 		void OnEvent(Events::Event& event) override;
 
 		/// <summary>
-		/// Set the MSAA sample count.
-		/// </summary>
-		/// <param name="sampleCount">Sample count to use.</param>
-		void SetMSAASamples(uint32_t sampleCount);
-
-		/// <summary>
 		/// Begin a new ImGui frame.
 		/// </summary>
 		static void Begin();
@@ -63,7 +58,7 @@ namespace TRAP
 		/// Block ImGui event handling.
 		/// </summary>
 		/// <param name="block">Whether to block events or not</param>
-		void BlockEvents(bool block);
+		void BlockEvents(bool block) noexcept;
 
 		/// <summary>
 		/// Sets a dark theme for ImGui.
@@ -107,7 +102,7 @@ namespace ImGui
 	/// <param name="uv1">UV1 coordinates.</param>
 	/// <param name="tint_col">Tint color.</param>
 	/// <param name="border_col">Border color.</param>
-	void Image(TRAP::Graphics::Texture* image, TRAP::Graphics::Sampler* sampler,
+	void Image(TRAP::Ref<TRAP::Graphics::Texture> image, const TRAP::Graphics::Sampler* sampler,
 	           const ImVec2& size,
 	           const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1),
 			   const ImVec4& tint_col = ImVec4(1, 1, 1, 1),
@@ -121,10 +116,58 @@ namespace ImGui
 	/// <param name="uv1">UV1 coordinates.</param>
 	/// <param name="tint_col">Tint color.</param>
 	/// <param name="border_col">Border color.</param>
-	void Image(TRAP::Graphics::Texture* image, const ImVec2& size,
+	void Image(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& size,
 	           const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1),
 			   const ImVec4& tint_col = ImVec4(1, 1, 1, 1),
 			   const ImVec4& border_col = ImVec4(0, 0, 0, 0));
+
+	/// <summary>
+	/// Draw an image button with ImGui.
+	/// </summary>
+	/// <param name="image">Image to draw.</param>
+	/// <param name="size">Size for the image.</param>
+	/// <param name="uv0">UV0 coordinates.</param>
+	/// <param name="uv1">UV1 coordinates.</param>
+	/// <param name="bg_col">Background color.</param>
+	/// <param name="tint_col">Tint color.</param>
+	/// <returns>True if image button is pressed, false otherwise.</returns>
+    bool ImageButton(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& size,
+	                 const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1,1),
+					 const ImVec4& bg_col = ImVec4(0,0,0,0),
+					 const ImVec4& tint_col = ImVec4(1,1,1,1));
+
+	/// <summary>
+	/// Draw an input text field with ImGui.
+	/// </summary>
+	/// <param name="label">Label for the text field.</param>
+	/// <param name="str">String to store input to.</param>
+	/// <param name="flags">Additional flags for the input field.</param>
+	/// <param name="callback">Callback to implement additional functionality.</param>
+	/// <param name="userData">Pointer to provide user data.</param>
+	/// <returns>True if input text changed, false otherwise.</returns>
+	bool InputText(const std::string_view label, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* userData = nullptr);
+	/// <summary>
+	/// Draw an multi-line input text field with ImGui.
+	/// </summary>
+	/// <param name="label">Label for the text field.</param>
+	/// <param name="str">String to store input to.</param>
+	/// <param name="size">Size for the text field.</param>
+	/// <param name="flags">Additional flags for the input field.</param>
+	/// <param name="callback">Callback to implement additional functionality.</param>
+	/// <param name="userData">Pointer to provide user data.</param>
+	/// <returns>True if input text changed, false otherwise.</returns>
+	bool InputTextMultiline(const std::string_view label, std::string* str, const ImVec2& size = ImVec2(0.0f, 0.0f), ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* userData = nullptr);
+	/// <summary>
+	/// Draw an input text field with an additional hint with ImGui.
+	/// </summary>
+	/// <param name="label">Label for the text field.</param>
+	/// <param name="hint">Hint to display.</param>
+	/// <param name="str">String to store input to.</param>
+	/// <param name="flags">Additional flags for the input field.</param>
+	/// <param name="callback">Callback to implement additional functionality.</param>
+	/// <param name="userData">Pointer to provide user data.</param>
+	/// <returns>True if input text changed, false otherwise.</returns>
+	bool InputTextWithHint(const std::string_view label, const std::string_view hint, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* userData = nullptr);
 
 	/// <summary>
 	/// Add a TTF font to ImGui from file.
@@ -149,6 +192,17 @@ namespace ImGui
 	ImFont* AddFontFromMemoryTTF(void* fontData, int32_t fontSize, float sizePixels,
 							     const ImFontConfig* fontCfg = nullptr,
 							     const ImWchar* glyphRanges = nullptr);
+
+	/// <summary>
+	/// Retrieve whether ImGui input is enabled or not.
+	/// </summary>
+	/// <returns>True if input is enabled, false otherwise.</returns>
+	[[nodiscard]] bool IsInputEnabled();
+	/// <summary>
+	/// Enable or disable ImGui input.
+	/// </summary>
+	/// <param name="enable">Enable or disable.</param>
+	void SetInputEnabled(bool enable);
 }
 
 #endif /*TRAP_IMGUILAYER_H*/

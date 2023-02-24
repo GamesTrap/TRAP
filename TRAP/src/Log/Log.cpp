@@ -2,22 +2,27 @@
 #include "Log.h"
 
 #include "FileSystem/FileSystem.h"
+#include "Utils/String/String.h"
 
 TRAP::Log TRAP::TRAPLog{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Log::Log()
-	: m_path("trap.log")
+	: m_path("trap.log"), m_importance(Level::Trace | Level::Debug | Level::Info | Level::Warn | Level::Error | Level::Critical)
 {
+	ZoneScoped;
+
 	m_buffer.reserve(256);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Log::Log(std::filesystem::path filePath)
-	: m_path(std::move(filePath))
+	: m_path(std::move(filePath)), m_importance(Level::Trace | Level::Debug | Level::Info | Level::Warn | Level::Error | Level::Critical)
 {
+	ZoneScoped;
+
 	m_buffer.reserve(256);
 }
 
@@ -25,27 +30,44 @@ TRAP::Log::Log(std::filesystem::path filePath)
 
 TRAP::Log::~Log()
 {
+	ZoneScoped;
+
 	Save();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::filesystem::path& TRAP::Log::GetFilePath() const
+[[nodiscard]] const std::filesystem::path& TRAP::Log::GetFilePath() const noexcept
 {
+	ZoneScoped;
+
 	return m_path;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Log::SetFilePath(const std::filesystem::path& filePath)
+void TRAP::Log::SetFilePath(const std::filesystem::path& filePath) noexcept
 {
+	ZoneScoped;
+
 	m_path = std::move(filePath);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<std::pair<TRAP::Log::Level, std::string>>& TRAP::Log::GetBuffer() const
+void TRAP::Log::SetImportance(const Level level) noexcept
 {
+	ZoneScoped;
+
+	m_importance = level;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] const std::vector<std::pair<TRAP::Log::Level, std::string>>& TRAP::Log::GetBuffer() const noexcept
+{
+	ZoneScoped;
+
 	return m_buffer;
 }
 
@@ -53,11 +75,11 @@ const std::vector<std::pair<TRAP::Log::Level, std::string>>& TRAP::Log::GetBuffe
 
 void TRAP::Log::Save() const
 {
-	TP_PROFILE_FUNCTION();
+	ZoneScoped;
 
 	//Build final path and filename
 	const auto folderPath = FileSystem::GetFolderPath(m_path);
-	const auto fileName = FileSystem::GetFileName(m_path);
+	const auto fileName = FileSystem::GetFileNameWithoutEnding(m_path);
 	const auto fileEnding = FileSystem::GetFileEnding(m_path);
 	if(!folderPath || !fileName || !fileEnding)
 	{
@@ -78,26 +100,29 @@ void TRAP::Log::Save() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Log::Clear()
+void TRAP::Log::Clear() noexcept
 {
-	TP_PROFILE_FUNCTION();
+	ZoneScoped;
 
 	m_buffer.clear();
-	m_buffer.reserve(256);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Log::GetTimeStamp()
+[[nodiscard]] std::string TRAP::Log::GetTimeStamp()
 {
+	ZoneScoped;
+
 	const std::string timeStamp = TRAP::Utils::String::GetTimeStamp(std::chrono::system_clock::now());
 	return "[" + timeStamp + ']';
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Log::GetDateTimeStamp()
+[[nodiscard]] std::string TRAP::Log::GetDateTimeStamp()
 {
+	ZoneScoped;
+
 	std::string dateTimeStamp = TRAP::Utils::String::GetDateTimeStamp(std::chrono::system_clock::now());
 	//Make the date-time-stamp usable as file-name
 	std::replace(dateTimeStamp.begin(), dateTimeStamp.end(), ':', '-');

@@ -24,19 +24,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanDebug(const VulkanDebug&) = default;
+		VulkanDebug(const VulkanDebug&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanDebug& operator=(const VulkanDebug&) = default;
+		VulkanDebug& operator=(const VulkanDebug&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanDebug(VulkanDebug&&) = default;
+		VulkanDebug(VulkanDebug&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanDebug& operator=(VulkanDebug&&) = default;
+		VulkanDebug& operator=(VulkanDebug&&) noexcept = default;
 
 	private:
 		/// <summary>

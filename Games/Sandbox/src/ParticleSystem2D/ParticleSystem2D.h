@@ -22,6 +22,8 @@ public:
 
 	void Emit(const ParticleProps& particleProps);
 
+	void SetMaxParticles(int32_t maxParticles);
+
 private:
 	struct Particle
 	{
@@ -38,7 +40,8 @@ private:
 	};
 
 	std::vector<Particle> m_particlePool;
-	uint32_t m_poolIndex = 999;
+	uint32_t m_poolIndex;
+	uint32_t m_maxParticles;
 };
 
 #endif /*GAMESTRAP_PARTICLESYSTEM2D_H*/

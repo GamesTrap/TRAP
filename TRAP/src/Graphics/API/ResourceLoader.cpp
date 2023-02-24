@@ -5,6 +5,7 @@
 #include "Objects/Buffer.h"
 #include "Objects/CommandBuffer.h"
 #include "Objects/CommandPool.h"
+#include "Objects/Semaphore.h"
 #include "Graphics/Textures/Texture.h"
 #include "Vulkan/VulkanRenderer.h"
 #include "Utils/String/String.h"
@@ -15,28 +16,38 @@
 #include "Vulkan/Objects/VulkanPhysicalDevice.h"
 #include "Vulkan/Objects/VulkanCommandBuffer.h"
 #include "Vulkan/Objects/VulkanTexture.h"
+#include <memory>
 
 TRAP::Graphics::RendererAPI::ResourceLoaderDesc TRAP::Graphics::API::ResourceLoader::DefaultResourceLoaderDesc{8ull << 20, 2};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-static constexpr uint32_t MIP_REDUCE(const uint32_t size, const uint32_t mip)
+[[nodiscard]] constexpr uint32_t MIP_REDUCE(const uint32_t size, const uint32_t mip) noexcept
 {
 	return TRAP::Math::Max(1u, size >> mip);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* loader)
+void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* const loader)
 {
-	TRAP_ASSERT(loader);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	TRAP_ASSERT(loader, "ResourceLoader::StreamerThreadFunc(): ResourceLoader is nullptr!");
+
+#ifdef TRACY_ENABLE
+	//Set Thread name for profiler
+	tracy::SetThreadName("ResourceLoader");
+#endif
 
 	SyncToken maxToken{};
 
 	while(loader->m_run)
 	{
 		{
-			std::unique_lock<std::mutex> lock(loader->m_queueMutex);
+			std::unique_lock lock(loader->m_queueMutex);
+			auto& mutex = loader->m_queueMutex;
+			LockMark(mutex);
 
 			//Check for pending tokens
 			//Safe to use m_tokenCounter as we are inside critical section
@@ -55,7 +66,9 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* loa
 
 		//Signal pending tokens from previous frames
 		{
-			std::lock_guard<std::mutex> lock(loader->m_tokenMutex);
+			std::lock_guard lock(loader->m_tokenMutex);
+			auto& mutex = loader->m_tokenMutex;
+			LockMark(mutex);
 			loader->m_tokenCompleted = loader->m_currentTokenState[loader->m_nextSet];
 		}
 		loader->m_tokenCond.notify_all();
@@ -64,7 +77,9 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* loa
 
 		std::vector<UpdateRequest> activeQueue;
 		{
-			std::lock_guard<std::mutex> lock(loader->m_queueMutex);
+			std::lock_guard lock(loader->m_queueMutex);
+			auto& mutex = loader->m_queueMutex;
+			LockMark(mutex);
 
 			std::vector<UpdateRequest>& requestQueue = loader->m_requestQueue;
 
@@ -117,7 +132,14 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* loa
 				break;
 			}
 
+			case UpdateRequestType::CopyTexture:
+			{
+				result = loader->CopyTexture(loader->m_nextSet, std::get<RendererAPI::TextureCopyDesc>(updateState.Desc));
+				break;
+			}
+
 			case UpdateRequestType::Invalid:
+            	[[fallthrough]];
 			default:
 				break;
 			}
@@ -135,18 +157,37 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* loa
 
 			if(updateState.WaitIndex && completed)
 			{
-				TRAP_ASSERT(maxToken < updateState.WaitIndex);
+				TRAP_ASSERT(maxToken < updateState.WaitIndex, "ResourceLoader::StreamerThreadFunc(): Max sync token is smaller than current sync token!");
 				maxToken = updateState.WaitIndex;
 			}
 
-			TRAP_ASSERT(result != UploadFunctionResult::StagingBufferFull);
+			TRAP_ASSERT(result != UploadFunctionResult::StagingBufferFull, "ResourceLoader::StreamerThreadFunc() Staging buffer is full!");
 		}
 
 		if(completionMask != 0)
+		{
 			loader->StreamerFlush(loader->m_nextSet);
+			{
+				std::lock_guard lock(loader->m_semaphoreMutex);
+				auto& mutex = loader->m_semaphoreMutex;
+				LockMark(mutex);
+
+				loader->m_copyEngine.LastCompletedSemaphore = loader->m_copyEngine.ResourceSets[loader->m_nextSet].CopyCompletedSemaphore;
+			}
+		}
 
 		const SyncToken nextToken = Math::Max<SyncToken>(maxToken, loader->GetLastTokenCompleted());
 		loader->m_currentTokenState[loader->m_nextSet] = nextToken;
+
+		//Signal submitted tokens
+		{
+			std::lock_guard lock(loader->m_tokenMutex);
+			auto& mutex = loader->m_tokenMutex;
+			LockMark(mutex);
+
+			loader->m_tokenSubmitted = loader->m_currentTokenState[loader->m_nextSet];
+			loader->m_tokenCond.notify_all();
+		}
 	}
 
 	loader->StreamerFlush(loader->m_nextSet);
@@ -158,15 +199,19 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* loa
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetTextureRowAlignment()
+[[nodiscard]] uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetTextureRowAlignment() noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return TRAP::Math::Max(static_cast<uint64_t>(1), RendererAPI::GPUSettings.UploadBufferTextureRowAlignment);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetTextureSubresourceAlignment(const TRAP::Graphics::API::ImageFormat fmt)
+[[nodiscard]] uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetTextureSubresourceAlignment(const TRAP::Graphics::API::ImageFormat fmt) noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	const uint64_t blockSize = Math::Max(static_cast<uint64_t>(1), static_cast<uint64_t>(TRAP::Graphics::API::ImageFormatBitSizeOfBlock(fmt) >> 3));
 	const uint64_t alignment = ((RendererAPI::GPUSettings.UploadBufferTextureAlignment + blockSize - 1) /
 	                            blockSize) * blockSize;
@@ -177,15 +222,17 @@ uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetTextureSubresourceAlignment
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceSize(const TRAP::Graphics::API::ImageFormat fmt,
-                                                                 const uint32_t width, const uint32_t height,
-																 const uint32_t depth, const uint64_t rowStride,
-																 const uint64_t sliceStride,
-																 const uint32_t baseMipLevel,
-																 const uint32_t mipLevels,
-																 const uint32_t baseArrayLayer,
-																 const uint32_t arrayLayers)
+[[nodiscard]] uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceSize(const TRAP::Graphics::API::ImageFormat fmt,
+                                                                               const uint32_t width, const uint32_t height,
+																               const uint32_t depth, const uint64_t rowStride,
+																               const uint64_t sliceStride,
+																               const uint32_t baseMipLevel,
+																               const uint32_t mipLevels,
+																               const uint32_t baseArrayLayer,
+																               const uint32_t arrayLayers) noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	uint64_t requiredSize = 0;
 
 	for(uint32_t s = baseArrayLayer; s < baseArrayLayer + arrayLayers; ++s)
@@ -222,11 +269,13 @@ uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceSize(const TRAP::Gra
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceInfo(const uint32_t width, const uint32_t height,
-	                                                         const TRAP::Graphics::API::ImageFormat fmt,
-															 uint64_t* outNumBytes, uint64_t* outRowBytes,
-															 uint64_t* outNumRows)
+[[nodiscard]] bool TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceInfo(const uint32_t width, const uint32_t height,
+	                                                                       const TRAP::Graphics::API::ImageFormat fmt,
+															               uint64_t* const outNumBytes, uint64_t* const outRowBytes,
+															               uint64_t* const outNumRows)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	uint64_t numBytes = 0;
 	uint64_t rowBytes = 0;
 	uint64_t numRows = 0;
@@ -296,14 +345,17 @@ bool TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceInfo(const uint32_t widt
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ResourceLoader::ResourceLoader(const RendererAPI::ResourceLoaderDesc* desc)
+TRAP::Graphics::API::ResourceLoader::ResourceLoader(const RendererAPI::ResourceLoaderDesc* const desc)
 	: m_desc(desc ? *desc : DefaultResourceLoaderDesc),
 	  m_run(true),
 	  m_tokenCompleted(0),
+	  m_tokenSubmitted(0),
 	  m_tokenCounter(0),
 	  m_currentTokenState(),
       m_nextSet()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	SetupCopyEngine();
 
 	//Create dedicated resource loader thread.
@@ -314,6 +366,8 @@ TRAP::Graphics::API::ResourceLoader::ResourceLoader(const RendererAPI::ResourceL
 
 TRAP::Graphics::API::ResourceLoader::~ResourceLoader()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	m_run = false;
 
 	m_queueCond.notify_one();
@@ -322,12 +376,14 @@ TRAP::Graphics::API::ResourceLoader::~ResourceLoader()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDesc& desc, SyncToken* token)
+void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDesc& desc, SyncToken* const token)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	const uint64_t stagingBufferSize = m_copyEngine.BufferSize;
 	const bool update = desc.Data || desc.ForceReset;
 
-	TRAP_ASSERT(stagingBufferSize > 0);
+	TRAP_ASSERT(stagingBufferSize > 0, "ResourceLoader::AddResource(): Staging buffer size is 0!");
 	if(desc.Desc.MemoryUsage == RendererAPI::ResourceMemoryUsage::GPUOnly &&
 	   !static_cast<uint32_t>(desc.Desc.StartState) && !update)
 	{
@@ -349,7 +405,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 			//The data is too large for a single staging buffer copy, so perform it in stages.
 
 			//Save the data parameter so we can restore it later.
-			const void* data = desc.Data;
+			const void* const data = desc.Data;
 
 			RendererAPI::BufferUpdateDesc updateDesc{};
 			updateDesc.Buffer = desc.Buffer;
@@ -363,7 +419,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 					std::fill_n(static_cast<uint8_t*>(updateDesc.MappedData), chunkSize, static_cast<uint8_t>(0u));
 				else
 				{
-					TRAP_ASSERT(data);
+					TRAP_ASSERT(data, "ResourceLoader::AddResource(): Data is nullptr!");
 					std::copy_n(static_cast<const uint8_t*>(data) + offset, chunkSize, static_cast<uint8_t*>(updateDesc.MappedData));
 				}
 				EndUpdateResource(updateDesc, token);
@@ -378,7 +434,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 				std::fill_n(static_cast<uint8_t*>(updateDesc.MappedData), desc.Desc.Size, static_cast<uint8_t>(0u));
 			else
 			{
-				TRAP_ASSERT(!desc.Desc.Size || desc.Data);
+				TRAP_ASSERT(!desc.Desc.Size || desc.Data, "ResourceLoader::AddResource(): Data is nullptr!");
 				if(desc.Data)
 					std::copy_n(static_cast<const uint8_t*>(desc.Data), desc.Desc.Size, static_cast<uint8_t*>(updateDesc.MappedData));
 			}
@@ -399,14 +455,16 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::TextureLoadDesc& textureDesc, SyncToken* token)
+void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::TextureLoadDesc& textureDesc, SyncToken* const token)
 {
-	TRAP_ASSERT(textureDesc.Texture);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	if(textureDesc.Filepaths[0].empty() && textureDesc.Desc)
+	TRAP_ASSERT(textureDesc.Texture, "ResourceLoader::AddResource(): Texture is nullptr!");
+
+	if(textureDesc.Filepaths[0].empty() && !textureDesc.Images[0] && textureDesc.Desc)
 	{
-		TRAP_ASSERT(static_cast<uint32_t>(textureDesc.Desc->StartState));
-		TRAP_ASSERT(textureDesc.Texture != nullptr, "Texture must be constructed before loading");
+		TRAP_ASSERT(static_cast<uint32_t>(textureDesc.Desc->StartState), "ResourceLoader::AddResource(): Texture start state is undefined!");
+		TRAP_ASSERT(textureDesc.Texture != nullptr, "ResourceLoader::AddResource(): Texture must be constructed before loading");
 
 		//If texture is supposed to be filled later (UAV / Update later / ...) proceed with the StartState provided
 		//by the user in the texture description
@@ -432,11 +490,13 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::TextureLoadDe
 
 void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::BufferUpdateDesc& desc)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	const TRAP::Ref<Buffer>& buffer = desc.Buffer;
-	TRAP_ASSERT(buffer);
+	TRAP_ASSERT(buffer, "ResourceLoader::BeginUpdateResource(): Buffer is nullptr!");
 
 	const uint64_t size = desc.Size > 0 ? desc.Size : (desc.Buffer->GetSize() - desc.DstOffset);
-	TRAP_ASSERT(desc.DstOffset + size <= buffer->GetSize());
+	TRAP_ASSERT(desc.DstOffset + size <= buffer->GetSize(), "ResourceLoader::BeginUpdateResource(): Update size is larger than buffer size!");
 
 	const RendererAPI::ResourceMemoryUsage memoryUsage = desc.Buffer->GetMemoryUsage();
 	if(memoryUsage != RendererAPI::ResourceMemoryUsage::GPUOnly)
@@ -465,6 +525,8 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Buffe
 
 void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::TextureUpdateDesc& desc)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	const TRAP::Graphics::Texture* texture = desc.Texture;
 	const TRAP::Graphics::API::ImageFormat fmt = texture->GetImageFormat();
 	const uint64_t alignment = UtilGetTextureSubresourceAlignment(fmt);
@@ -472,7 +534,7 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Textu
 	const bool success = UtilGetSurfaceInfo(MIP_REDUCE(texture->GetWidth(), desc.MipLevel),
 	                                        MIP_REDUCE(texture->GetHeight(), desc.MipLevel),
 	                                        fmt, &desc.SrcSliceStride, &desc.SrcRowStride, &desc.RowCount);
-	TRAP_ASSERT(success);
+	TRAP_ASSERT(success, "ResourceLoader::BeginUpdateResource(): Failed to retrieve texture surface info!");
 
 	const uint64_t rowAlignment = UtilGetTextureRowAlignment();
 	desc.DstRowStride = ((desc.SrcRowStride + rowAlignment - 1) / rowAlignment) * rowAlignment;
@@ -489,8 +551,10 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Textu
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::EndUpdateResource(RendererAPI::BufferUpdateDesc& desc, SyncToken* token)
+void TRAP::Graphics::API::ResourceLoader::EndUpdateResource(RendererAPI::BufferUpdateDesc& desc, SyncToken* const token)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	if (desc.Internal.MappedRange.Flags & static_cast<uint32_t>(MappedRangeFlag::UnMapBuffer))
 		desc.Buffer->UnMapBuffer();
 
@@ -505,8 +569,10 @@ void TRAP::Graphics::API::ResourceLoader::EndUpdateResource(RendererAPI::BufferU
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::EndUpdateResource(RendererAPI::TextureUpdateDesc& desc, SyncToken* token)
+void TRAP::Graphics::API::ResourceLoader::EndUpdateResource(RendererAPI::TextureUpdateDesc& desc, SyncToken* const token)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	TextureUpdateDescInternal internalDesc = {};
 	internalDesc.Texture = desc.Texture;
 	internalDesc.Range = desc.Internal.MappedRange;
@@ -523,8 +589,19 @@ void TRAP::Graphics::API::ResourceLoader::EndUpdateResource(RendererAPI::Texture
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::ResourceLoader::AllResourceLoadsCompleted() const
+void TRAP::Graphics::API::ResourceLoader::CopyResource(RendererAPI::TextureCopyDesc &textureDesc, SyncToken *token)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	QueueTextureCopy(textureDesc, token);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::API::ResourceLoader::AllResourceLoadsCompleted() const noexcept
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	const SyncToken token = m_tokenCounter;
 	return token <= m_tokenCompleted;
 }
@@ -533,39 +610,92 @@ bool TRAP::Graphics::API::ResourceLoader::AllResourceLoadsCompleted() const
 
 void TRAP::Graphics::API::ResourceLoader::WaitForAllResourceLoads()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	const SyncToken token = m_tokenCounter;
 	WaitForToken(&token);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::SyncToken TRAP::Graphics::API::ResourceLoader::GetLastTokenCompleted() const
+[[nodiscard]] TRAP::Graphics::API::SyncToken TRAP::Graphics::API::ResourceLoader::GetLastTokenCompleted() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_tokenCompleted;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::ResourceLoader::IsTokenCompleted(const SyncToken* token) const
+[[nodiscard]] bool TRAP::Graphics::API::ResourceLoader::IsTokenCompleted(const SyncToken* const token) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return *token <= m_tokenCompleted;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::WaitForToken(const SyncToken* token)
+void TRAP::Graphics::API::ResourceLoader::WaitForToken(const SyncToken* const token)
 {
-	std::unique_lock<std::mutex> lock(m_tokenMutex);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	std::unique_lock lock(m_tokenMutex);
+	LockMark(m_tokenMutex);
 	while (!IsTokenCompleted(token))
 		m_tokenCond.wait(lock);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Return a new staging buffer
-TRAP::Graphics::RendererAPI::MappedMemoryRange TRAP::Graphics::API::ResourceLoader::AllocateUploadMemory(const uint64_t memoryRequirement,
-                                                                                                         const uint32_t alignment)
+[[nodiscard]] TRAP::Graphics::API::SyncToken TRAP::Graphics::API::ResourceLoader::GetLastTokenSubmitted() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	return m_tokenSubmitted;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] bool TRAP::Graphics::API::ResourceLoader::IsTokenSubmitted(const SyncToken* token) const
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	return *token <= m_tokenSubmitted;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::ResourceLoader::WaitForTokenSubmitted(const SyncToken* token)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	std::unique_lock lock(m_tokenMutex);
+	LockMark(m_tokenMutex);
+	while (!IsTokenSubmitted(token))
+		m_tokenCond.wait(lock);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Semaphore> TRAP::Graphics::API::ResourceLoader::GetLastSemaphoreCompleted()
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	std::unique_lock lock(m_semaphoreMutex);
+	LockMark(m_semaphoreMutex);
+
+	return m_copyEngine.LastCompletedSemaphore;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Return a new staging buffer
+[[nodiscard]] TRAP::Graphics::RendererAPI::MappedMemoryRange TRAP::Graphics::API::ResourceLoader::AllocateUploadMemory(const uint64_t memoryRequirement,
+                                                                                                                       const uint32_t alignment)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	RendererAPI::BufferDesc desc{};
 	desc.Size = memoryRequirement;
 	desc.Alignment = alignment;
@@ -573,7 +703,7 @@ TRAP::Graphics::RendererAPI::MappedMemoryRange TRAP::Graphics::API::ResourceLoad
 	desc.Flags = RendererAPI::BufferCreationFlags::PersistentMap;
 	const TRAP::Ref<Buffer> buffer = Buffer::Create(desc);
 
-	return RendererAPI::MappedMemoryRange{static_cast<uint8_t*>(buffer->GetCPUMappedAddress()), std::move(buffer),
+	return RendererAPI::MappedMemoryRange{static_cast<uint8_t*>(buffer->GetCPUMappedAddress()), buffer,
 	                                      0, memoryRequirement };
 }
 
@@ -581,19 +711,22 @@ TRAP::Graphics::RendererAPI::MappedMemoryRange TRAP::Graphics::API::ResourceLoad
 
 void TRAP::Graphics::API::ResourceLoader::QueueBufferBarrier(const TRAP::Ref<Buffer>& buffer,
                                                              const RendererAPI::ResourceState state,
-															 SyncToken* token)
+															 SyncToken* const token)
 {
-	SyncToken t = 0;
-	{
-		std::lock_guard<std::mutex> lock(m_queueMutex);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-		t = m_tokenCounter + 1;
-		++m_tokenCounter;
+	SyncToken t{};
+	{
+		std::lock_guard lock(m_queueMutex);
+		LockMark(m_queueMutex);
+
+		t = m_tokenCounter.fetch_add(1) + 1;
 
 		m_requestQueue.emplace_back(UpdateRequest{ RendererAPI::BufferBarrier{buffer,
 		                                                                      RendererAPI::ResourceState::Undefined,
 																			  state} });
-		m_requestQueue.back().WaitIndex = t;
+		UpdateRequest& lastRequest = m_requestQueue.back();
+		lastRequest.WaitIndex = t;
 	}
 	m_queueCond.notify_one();
 
@@ -604,20 +737,23 @@ void TRAP::Graphics::API::ResourceLoader::QueueBufferBarrier(const TRAP::Ref<Buf
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::ResourceLoader::QueueBufferUpdate(const RendererAPI::BufferUpdateDesc& desc,
-                                                            SyncToken* token)
+                                                            SyncToken* const token)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	SyncToken t{};
 	{
-		std::lock_guard<std::mutex> lock(m_queueMutex);
+		std::lock_guard lock(m_queueMutex);
+		LockMark(m_queueMutex);
 
-		t = m_tokenCounter + 1;
-		++m_tokenCounter;
+		t = m_tokenCounter.fetch_add(1) + 1;
 
 		m_requestQueue.emplace_back(UpdateRequest(desc));
-		m_requestQueue.back().WaitIndex = t;
-		m_requestQueue.back().UploadBuffer = (desc.Internal.MappedRange.Flags &
-		                                      static_cast<uint32_t>(MappedRangeFlag::TempBuffer)) ?
-											 desc.Internal.MappedRange.Buffer : nullptr;
+		UpdateRequest& lastRequest = m_requestQueue.back();
+		lastRequest.WaitIndex = t;
+		lastRequest.UploadBuffer = (desc.Internal.MappedRange.Flags &
+		                            static_cast<uint32_t>(MappedRangeFlag::TempBuffer)) ?
+									desc.Internal.MappedRange.Buffer : nullptr;
 	}
 	m_queueCond.notify_one();
 
@@ -628,17 +764,20 @@ void TRAP::Graphics::API::ResourceLoader::QueueBufferUpdate(const RendererAPI::B
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::ResourceLoader::QueueTextureLoad(const RendererAPI::TextureLoadDesc& desc,
-											               SyncToken* token)
+											               SyncToken* const token)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	SyncToken t{};
 	{
-		std::lock_guard<std::mutex> lock(m_queueMutex);
+		std::lock_guard lock(m_queueMutex);
+		LockMark(m_queueMutex);
 
-		t = m_tokenCounter + 1;
-		++m_tokenCounter;
+		t = m_tokenCounter.fetch_add(1) + 1;
 
 		m_requestQueue.emplace_back(UpdateRequest(desc));
-		m_requestQueue.back().WaitIndex = t;
+		UpdateRequest& lastRequest = m_requestQueue.back();
+		lastRequest.WaitIndex = t;
 	}
 	m_queueCond.notify_one();
 
@@ -649,22 +788,25 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureLoad(const RendererAPI::Te
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::ResourceLoader::QueueTextureUpdate(const TextureUpdateDescInternal& textureUpdate,
-															 SyncToken* token)
+															 SyncToken* const token)
 {
-	TRAP_ASSERT(textureUpdate.Range.Buffer);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	TRAP_ASSERT(textureUpdate.Range.Buffer, "ResourceLoader::QueueTextureUpdate(): Texture update buffer is nullptr!");
 
 	SyncToken t{};
 	{
-		std::lock_guard<std::mutex> lock(m_queueMutex);
+		std::lock_guard lock(m_queueMutex);
+		LockMark(m_queueMutex);
 
-		t = m_tokenCounter + 1;
-		++m_tokenCounter;
+		t = m_tokenCounter.fetch_add(1) + 1;
 
 		m_requestQueue.emplace_back(UpdateRequest(textureUpdate));
-		m_requestQueue.back().WaitIndex = t;
-		m_requestQueue.back().UploadBuffer = (textureUpdate.Range.Flags &
-		                                      static_cast<uint32_t>(MappedRangeFlag::TempBuffer) ?
-											 textureUpdate.Range.Buffer : nullptr);
+		UpdateRequest& lastRequest = m_requestQueue.back();
+		lastRequest.WaitIndex = t;
+		lastRequest.UploadBuffer = (textureUpdate.Range.Flags &
+		                            static_cast<uint32_t>(MappedRangeFlag::TempBuffer) ?
+									textureUpdate.Range.Buffer : nullptr);
 	}
 	m_queueCond.notify_one();
 
@@ -674,20 +816,46 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureUpdate(const TextureUpdate
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::QueueTextureBarrier(TRAP::Graphics::Texture* texture,
-                                                              const RendererAPI::ResourceState state, SyncToken* token)
+void TRAP::Graphics::API::ResourceLoader::QueueTextureCopy(const RendererAPI::TextureCopyDesc& desc, SyncToken* const token)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	SyncToken t{};
 	{
-		std::lock_guard<std::mutex> lock(m_queueMutex);
+		std::lock_guard lock(m_queueMutex);
+		LockMark(m_queueMutex);
 
-		t = m_tokenCounter + 1;
-		++m_tokenCounter;
+		t = m_tokenCounter.fetch_add(1) + 1;
+
+		m_requestQueue.emplace_back(UpdateRequest(desc));
+		UpdateRequest& lastRequest = m_requestQueue.back();
+		lastRequest.WaitIndex = t;
+	}
+	m_queueCond.notify_one();
+
+	if(token)
+		*token = Math::Max(t, *token);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::ResourceLoader::QueueTextureBarrier(TRAP::Graphics::Texture* const texture,
+                                                              const RendererAPI::ResourceState state, SyncToken* const token)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	SyncToken t{};
+	{
+		std::lock_guard lock(m_queueMutex);
+		LockMark(m_queueMutex);
+
+		t = m_tokenCounter.fetch_add(1) + 1;
 
 		m_requestQueue.emplace_back(UpdateRequest{ RendererAPI::TextureBarrier{texture,
 		                                                                       RendererAPI::ResourceState::Undefined,
 																			   state} });
-		m_requestQueue.back().WaitIndex = t;
+		UpdateRequest& lastRequest = m_requestQueue.back();
+		lastRequest.WaitIndex = t;
 	}
 	m_queueCond.notify_one();
 
@@ -698,9 +866,11 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureBarrier(TRAP::Graphics::Te
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Return memory from pre-allocated staging buffer or create a temporary buffer if the streamer ran out of memory
-TRAP::Graphics::RendererAPI::MappedMemoryRange TRAP::Graphics::API::ResourceLoader::AllocateStagingMemory(const uint64_t memoryRequirement,
-                                                                                                          const uint32_t alignment)
+[[nodiscard]] TRAP::Graphics::RendererAPI::MappedMemoryRange TRAP::Graphics::API::ResourceLoader::AllocateStagingMemory(const uint64_t memoryRequirement,
+                                                                                                                        const uint32_t alignment)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	uint64_t offset = m_copyEngine.ResourceSets[m_nextSet].AllocatedSpace;
 	if(alignment != 0)
 		offset = ((offset + static_cast<uint64_t>(alignment) - 1) / static_cast<uint64_t>(alignment)) *
@@ -712,10 +882,10 @@ TRAP::Graphics::RendererAPI::MappedMemoryRange TRAP::Graphics::API::ResourceLoad
 	if(memoryAvailable && resSet.Buffer->GetCPUMappedAddress())
 	{
 		const TRAP::Ref<Buffer> buffer = resSet.Buffer;
-		TRAP_ASSERT(buffer->GetCPUMappedAddress());
-		uint8_t* dstData = static_cast<uint8_t*>(buffer->GetCPUMappedAddress()) + offset;
+		TRAP_ASSERT(buffer->GetCPUMappedAddress(), "ResourceLoader::AllocateStagingMemory(): CPU mapped address of buffer is nullptr!");
+		uint8_t* const dstData = static_cast<uint8_t*>(buffer->GetCPUMappedAddress()) + offset;
 		m_copyEngine.ResourceSets[m_nextSet].AllocatedSpace = offset + memoryRequirement;
-		return { dstData, std::move(buffer), offset, memoryRequirement };
+		return { dstData, buffer, offset, memoryRequirement };
 	}
 
 	if(m_copyEngine.BufferSize < memoryRequirement)
@@ -732,8 +902,10 @@ TRAP::Graphics::RendererAPI::MappedMemoryRange TRAP::Graphics::API::ResourceLoad
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::FreeAllUploadMemory()
+void TRAP::Graphics::API::ResourceLoader::FreeAllUploadMemory() noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	for(UpdateRequest& request : m_requestQueue)
 	{
 		if (request.UploadBuffer)
@@ -745,6 +917,8 @@ void TRAP::Graphics::API::ResourceLoader::FreeAllUploadMemory()
 
 void TRAP::Graphics::API::ResourceLoader::SetupCopyEngine()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	//TODO Use Transfer Queue if texture already has mip maps inside it (they don't need to be generated)
 	//     Graphics Queue is required in order to use vkCmdBlitImage
 	/*const RendererAPI::QueueDesc desc{ RendererAPI::QueueType::Transfer, RendererAPI::QueueFlag::None,
@@ -753,13 +927,14 @@ void TRAP::Graphics::API::ResourceLoader::SetupCopyEngine()
 	                                   RendererAPI::QueuePriority::Normal };
 	m_copyEngine.Queue = Queue::Create(desc);
 
-	constexpr uint64_t maxBlockSize = 32;
+	static constexpr uint64_t maxBlockSize = 32;
 	const uint64_t size = Math::Max(m_desc.BufferSize, maxBlockSize);
 
-	m_copyEngine.ResourceSets.reserve(m_desc.BufferCount);
+	m_copyEngine.ResourceSets.resize(m_desc.BufferCount);
 	for(uint32_t i = 0; i < m_desc.BufferCount; ++i)
 	{
-		CopyEngine::CopyResourceSet cpyResSet{};
+		auto& cpyResSet = m_copyEngine.ResourceSets[i];
+
 		cpyResSet.Fence = Fence::Create();
 		RendererAPI::CommandPoolDesc cmdPoolDesc{};
 		cmdPoolDesc.Queue = m_copyEngine.Queue;
@@ -767,24 +942,29 @@ void TRAP::Graphics::API::ResourceLoader::SetupCopyEngine()
 
 		cpyResSet.Cmd = cpyResSet.CommandPool->AllocateCommandBuffer(false);
 
-		cpyResSet.Buffer = AllocateUploadMemory(size, static_cast<uint32_t>(UtilGetTextureSubresourceAlignment())).Buffer;
+		cpyResSet.CopyCompletedSemaphore = Semaphore::Create();
 
-		m_copyEngine.ResourceSets.push_back(cpyResSet);
+		cpyResSet.Buffer = AllocateUploadMemory(size, static_cast<uint32_t>(UtilGetTextureSubresourceAlignment())).Buffer;
 	}
 
 	m_copyEngine.BufferSize = size;
 	m_copyEngine.BufferCount = m_desc.BufferCount;
 	m_copyEngine.IsRecording = false;
+	m_copyEngine.LastCompletedSemaphore = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::ResourceLoader::CleanupCopyEngine()
 {
-	for(uint32_t i = 0; i < m_copyEngine.BufferCount; ++i)
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	for(uint32_t i = 0+1; i < m_copyEngine.BufferCount; ++i)
 	{
 		CopyEngine::CopyResourceSet& resourceSet = m_copyEngine.ResourceSets[i];
 		resourceSet.Buffer.reset();
+
+		resourceSet.CopyCompletedSemaphore.reset();
 
 		resourceSet.CommandPool->FreeCommandBuffer(resourceSet.Cmd);
 		resourceSet.Cmd = nullptr;
@@ -799,6 +979,7 @@ void TRAP::Graphics::API::ResourceLoader::CleanupCopyEngine()
 	}
 
 	m_copyEngine.ResourceSets.clear();
+	m_copyEngine.WaitSemaphores.clear();
 
 	m_copyEngine.Queue.reset();
 }
@@ -807,7 +988,9 @@ void TRAP::Graphics::API::ResourceLoader::CleanupCopyEngine()
 
 void TRAP::Graphics::API::ResourceLoader::WaitCopyEngineSet(const std::size_t activeSet) const
 {
-	TRAP_ASSERT(!m_copyEngine.IsRecording);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	TRAP_ASSERT(!m_copyEngine.IsRecording, "ResourceLoader::WaitCopyEngineSet(): Copy Engine is still recording!");
 	const CopyEngine::CopyResourceSet& resSet = m_copyEngine.ResourceSets[activeSet];
 
 	if (resSet.Fence->GetStatus() == RendererAPI::FenceStatus::Incomplete)
@@ -818,7 +1001,10 @@ void TRAP::Graphics::API::ResourceLoader::WaitCopyEngineSet(const std::size_t ac
 
 void TRAP::Graphics::API::ResourceLoader::ResetCopyEngineSet(const std::size_t activeSet)
 {
-	TRAP_ASSERT(!m_copyEngine.IsRecording);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	TRAP_ASSERT(!m_copyEngine.IsRecording, "ResourceLoader::ResetCopyEngineSet(): Copy Engine is still recording!");
+
 	m_copyEngine.ResourceSets[activeSet].AllocatedSpace = 0;
 	m_copyEngine.IsRecording = false;
 
@@ -827,8 +1013,10 @@ void TRAP::Graphics::API::ResourceLoader::ResetCopyEngineSet(const std::size_t a
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::ResourceLoader::AcquireCmd(const std::size_t activeSet)
+[[nodiscard]] TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::ResourceLoader::AcquireCmd(const std::size_t activeSet)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	const CopyEngine::CopyResourceSet& resSet = m_copyEngine.ResourceSets[activeSet];
 	if(!m_copyEngine.IsRecording)
 	{
@@ -844,6 +1032,8 @@ TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::ResourceLoader::AcquireCmd(c
 
 void TRAP::Graphics::API::ResourceLoader::StreamerFlush(const std::size_t activeSet)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	if(!m_copyEngine.IsRecording)
 		return;
 
@@ -852,7 +1042,14 @@ void TRAP::Graphics::API::ResourceLoader::StreamerFlush(const std::size_t active
 	RendererAPI::QueueSubmitDesc submitDesc{};
 	submitDesc.Cmds.push_back(resSet.Cmd);
 
+	submitDesc.SignalSemaphores.push_back(resSet.CopyCompletedSemaphore);
 	submitDesc.SignalFence = resSet.Fence;
+
+	if(!m_copyEngine.WaitSemaphores.empty())
+	{
+		submitDesc.WaitSemaphores = m_copyEngine.WaitSemaphores;
+		m_copyEngine.WaitSemaphores.clear();
+	}
 
 	{
 		m_copyEngine.Queue->Submit(submitDesc);
@@ -862,25 +1059,26 @@ void TRAP::Graphics::API::ResourceLoader::StreamerFlush(const std::size_t active
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::ResourceLoader::AreTasksAvailable() const
+[[nodiscard]] bool TRAP::Graphics::API::ResourceLoader::AreTasksAvailable() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return !m_requestQueue.empty();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::Texture* texture,
-                                                                CommandBuffer* cmd)
+void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::Texture* const texture,
+                                                                CommandBuffer* const cmd)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	//Check if image format supports linear blitting
-	VkFormatProperties formatProperties;
-	const TRAP::Graphics::API::VulkanRenderer* vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
+	const TRAP::Graphics::API::VulkanRenderer* const vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
 		(
 			RendererAPI::GetRenderer()
 		);
-	vkGetPhysicalDeviceFormatProperties(vkRenderer->GetDevice()->GetPhysicalDevice()->GetVkPhysicalDevice(),
-										TRAP::Graphics::API::ImageFormatToVkFormat(texture->GetImageFormat()),
-										&formatProperties);
+	const VkFormatProperties formatProperties = vkRenderer->GetDevice()->GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(TRAP::Graphics::API::ImageFormatToVkFormat(texture->GetImageFormat()));
 
 	if(!(formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT))
 	{
@@ -919,9 +1117,10 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 		blit.dstSubresource.baseArrayLayer = 0;
 		blit.dstSubresource.layerCount = 1;
 
-		const auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture);
+		const auto* const vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture);
+		const auto* const vkCmd = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>(cmd);
 
-		vkCmdBlitImage(dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>(cmd)->GetVkCommandBuffer(),
+		vkCmdBlitImage(vkCmd->GetVkCommandBuffer(),
 			           vkTexture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
 			           vkTexture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 			           1, &blit,
@@ -941,14 +1140,16 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::UpdateBuffer(const std::size_t activeSet,
-																											const RendererAPI::BufferUpdateDesc& bufferUpdateDesc)
+[[nodiscard]] TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::UpdateBuffer(const std::size_t activeSet,
+																											              const RendererAPI::BufferUpdateDesc& bufferUpdateDesc)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	const TRAP::Ref<Buffer>& buffer = bufferUpdateDesc.Buffer;
 	TRAP_ASSERT(buffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUOnly ||
-		        buffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUToCPU);
+		        buffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUToCPU, "ResourceLoader::UpdateBuffer(): Buffer must have memory usage GPUOnly or GPUToCPU!");
 
-	const CommandBuffer* cmd = AcquireCmd(activeSet);
+	const CommandBuffer* const cmd = AcquireCmd(activeSet);
 
 	const RendererAPI::MappedMemoryRange range = bufferUpdateDesc.Internal.MappedRange;
 	cmd->UpdateBuffer(buffer, bufferUpdateDesc.DstOffset, range.Buffer, range.Offset, range.Size);
@@ -958,16 +1159,18 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::UpdateTexture(const std::size_t activeSet,
-																											 const TextureUpdateDescInternal& textureUpdateDesc,
-																											 const std::array<TRAP::Scope<TRAP::Image>, 6>* const images)
+[[nodiscard]] TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::UpdateTexture(const std::size_t activeSet,
+																											               const TextureUpdateDescInternal& textureUpdateDesc,
+																											               const std::array<const TRAP::Image*, 6>* const images)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	//When this call comes from UpdateResource, staging buffer data is already filled
 	//All that is left to do is record and execute the Copy commands
 	const bool dataAlreadyFilled = textureUpdateDesc.Range.Buffer != nullptr;
-	TRAP::Graphics::Texture* texture = textureUpdateDesc.Texture;
+	TRAP::Graphics::Texture* const texture = textureUpdateDesc.Texture;
 	const TRAP::Graphics::API::ImageFormat format = texture->GetImageFormat();
-	CommandBuffer* cmd = AcquireCmd(activeSet);
+	CommandBuffer* const cmd = AcquireCmd(activeSet);
 
 	const uint64_t sliceAlignment = UtilGetTextureSubresourceAlignment(format);
 	const uint64_t rowAlignment = UtilGetTextureRowAlignment();
@@ -1026,7 +1229,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 			const uint64_t subNumRows = numRows;
 			const uint32_t subDepth = d;
 			const uint64_t subRowSize = rowBytes;
-			uint8_t* data = upload.Data + offset;
+			uint8_t* const data = upload.Data + offset;
 
 			if(!dataAlreadyFilled)
 			{
@@ -1037,14 +1240,14 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 					TRAP::Scope<TRAP::Image> RGBAImage = nullptr;
 					if((*images)[layer]->GetColorFormat() == TRAP::Image::ColorFormat::RGB) //Convert RGB to RGBA
 					{
-						RGBAImage = TRAP::Image::ConvertRGBToRGBA((*images)[layer].get());
+						RGBAImage = TRAP::Image::ConvertRGBToRGBA((*images)[layer]);
 						pixelData = static_cast<const uint8_t*>(RGBAImage->GetPixelData());
 					}
 					else
 						pixelData = static_cast<const uint8_t*>((*images)[layer]->GetPixelData());
 
-					uint8_t* dstData = data + subSlicePitch * z;
-					for(uint32_t r = 0; r < subNumRows; ++r)
+					uint8_t* const dstData = data + subSlicePitch * z;
+					for(uint64_t r = 0; r < subNumRows; ++r)
 						std::copy_n(pixelData + r * subRowSize, subRowSize, dstData + r * subRowPitch);
 				}
 			}
@@ -1082,32 +1285,58 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::LoadTexture(const std::size_t activeSet,
-																										   TRAP::Graphics::API::ResourceLoader::UpdateRequest& textureUpdate)
+[[nodiscard]] TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::LoadTexture(const std::size_t activeSet,
+																										                 TRAP::Graphics::API::ResourceLoader::UpdateRequest& textureUpdate)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	const TRAP::Graphics::RendererAPI::TextureLoadDesc& textureLoadDesc = std::get<TRAP::Graphics::RendererAPI::TextureLoadDesc>
 		(
 			textureUpdate.Desc
 		);
 
 	bool validMultiFileCubemap = true;
-	for(const std::filesystem::path& str : textureLoadDesc.Filepaths)
+	if(!textureLoadDesc.Images[0])
 	{
-		if(str.empty() || !TRAP::FileSystem::FileOrFolderExists(str) || !TRAP::Image::IsSupportedImageFile(str))
+		//Use normal file loading
+		for(const std::filesystem::path& str : textureLoadDesc.Filepaths)
 		{
-			validMultiFileCubemap = false;
-			break;
+			if(str.empty() || !TRAP::FileSystem::Exists(str) || !TRAP::Image::IsSupportedImageFile(str))
+			{
+				validMultiFileCubemap = false;
+				break;
+			}
+		}
+	}
+	else
+	{
+		//Use already in memory images
+		for(const auto* const img : textureLoadDesc.Images)
+		{
+			if(!img)
+			{
+				validMultiFileCubemap = false;
+				break;
+			}
 		}
 	}
 
 	bool supported = true;
-	if((textureLoadDesc.Filepaths[0].empty() ||
-	    !TRAP::FileSystem::FileOrFolderExists(textureLoadDesc.Filepaths[0]) ||
-	    !TRAP::Image::IsSupportedImageFile(textureLoadDesc.Filepaths[0])))
+	if(textureLoadDesc.IsCubemap && textureLoadDesc.Type == RendererAPI::TextureCubeType::MultiFile &&
+	   !validMultiFileCubemap)
+	{
 		supported = false;
-	else if(textureLoadDesc.IsCubemap && textureLoadDesc.Type == RendererAPI::TextureCubeType::MultiFile &&
-	        !validMultiFileCubemap)
-		supported = false;
+	}
+
+	if(!textureLoadDesc.Images[0] && supported)
+	{
+		if((textureLoadDesc.Filepaths[0].empty() ||
+			!TRAP::FileSystem::Exists(textureLoadDesc.Filepaths[0]) ||
+			!TRAP::Image::IsSupportedImageFile(textureLoadDesc.Filepaths[0])))
+		{
+			supported = false;
+		}
+	}
 
 	TextureUpdateDescInternal updateDesc = {};
 	updateDesc.MipsAfterSlice = false; //TODO Change when we support a texture format which holds mips after a slice like KTX
@@ -1125,43 +1354,69 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	   textureLoadDesc.Desc != nullptr)
 			textureDesc.VkSamplerYcbcrConversionInfo = textureLoadDesc.Desc->VkSamplerYcbcrConversionInfo;
 
-	std::array<TRAP::Scope<TRAP::Image>, 6> images{};
+	std::array<TRAP::Scope<TRAP::Image>, 6> ownedImages{}; //Storage for images that are getting loaded from here
+	std::array<const TRAP::Image*, 6> ptrImages{}; //Pointers to the images to upload
 
-	if(!textureLoadDesc.Filepaths[0].empty() && supported)
+	if((!textureLoadDesc.Filepaths[0].empty() || textureLoadDesc.Images[0]) && supported)
 	{
-		const auto fileName = FileSystem::GetFileNameWithEnding(textureLoadDesc.Filepaths[0]);
-		if(fileName)
-			textureDesc.Name = *fileName;
-		else
-			textureDesc.Name = "Unknown";
+		//Get a name for the texture
+		textureDesc.Name = "Unknown";
+		if(!textureLoadDesc.Images[0])
+		{
+			//Use file path
+			const auto fileName = FileSystem::GetFileNameWithEnding(textureLoadDesc.Filepaths[0]);
+			if(fileName)
+				textureDesc.Name = *fileName;
+		}
+		else if(!textureLoadDesc.Images[0]->GetFilePath().empty())
+		{
+			//Use already in memory image
+			const auto fileName = FileSystem::GetFileNameWithEnding(textureLoadDesc.Images[0]->GetFilePath());
+			if(fileName)
+				textureDesc.Name = *fileName;
+		}
 
+		//Handle the different types of textures
 		if(textureLoadDesc.IsCubemap && textureLoadDesc.Type == RendererAPI::TextureCubeType::MultiFile)
 		{
-			for(std::size_t i = 0; i < images.size(); ++i)
-				images[i] = TRAP::Image::LoadFromFile(textureLoadDesc.Filepaths[i]);
+			if(!textureLoadDesc.Images[0])
+			{
+				//Use file paths
+				for(std::size_t i = 0; i < ownedImages.size(); ++i)
+				{
+					ownedImages[i] = TRAP::Image::LoadFromFile(textureLoadDesc.Filepaths[i]);
+					if(ownedImages[i])
+						ptrImages[i] = ownedImages[i].get();
+				}
+			}
+			else
+			{
+				//Use already in memory images
+				ptrImages = textureLoadDesc.Images;
+			}
 
 			//Validation checks
 			bool valid = true;
-			if(images[0]->GetWidth() != images[0]->GetHeight())
+			if(ptrImages[0]->GetWidth() != ptrImages[0]->GetHeight())
 			{
 				TP_ERROR(Log::TexturePrefix, "Images width and height must be the same!");
 				valid = false;
 			}
-			for(std::size_t i = 1; i < images.size(); ++i)
+			for(std::size_t i = 1; i < ptrImages.size(); ++i)
 			{
 				if(!valid)
 					break;
 
 				//Check if every image has the same resolution as image 0
-				if (images[0]->GetWidth() != images[i]->GetWidth() ||
-					images[0]->GetHeight() != images[i]->GetHeight())
+				if (ptrImages[0]->GetWidth() != ptrImages[i]->GetWidth() ||
+					ptrImages[0]->GetHeight() != ptrImages[i]->GetHeight())
 				{
 					TP_ERROR(Log::TexturePrefix, "Images have mismatching width and/or height!");
 					valid = false;
 					break;
 				}
-				if (images[0]->GetColorFormat() != images[i]->GetColorFormat() ||
-					images[0]->GetBitsPerPixel() != images[i]->GetBitsPerPixel())
+				if (ptrImages[0]->GetColorFormat() != ptrImages[i]->GetColorFormat() ||
+					ptrImages[0]->GetBitsPerPixel() != ptrImages[i]->GetBitsPerPixel())
 				{
 					TP_ERROR(Log::TexturePrefix, "Images have mismatching color formats and/or bits per pixel!");
 					valid = false;
@@ -1174,12 +1429,15 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 				TP_WARN(Log::TexturePrefix, "Texture using FallbackCube texture");
 				textureDesc.Name = "FallbackCube";
 
-				for (auto& image : images)
-					image = TRAP::Image::LoadFallback();
+				for(std::size_t i = 0; i < ownedImages.size(); ++i)
+				{
+					ownedImages[i] = TRAP::Image::LoadFallback();
+					ptrImages[i] = ownedImages[i].get();
+				}
 			}
 
-			textureDesc.Width = images[0]->GetWidth();
-			textureDesc.Height = images[0]->GetHeight();
+			textureDesc.Width = ptrImages[0]->GetWidth();
+			textureDesc.Height = ptrImages[0]->GetHeight();
 			textureDesc.Descriptors |= RendererAPI::DescriptorType::TextureCube;
 			textureDesc.ArraySize = 6;
 			textureDesc.MipLevels = TRAP::Graphics::Texture::CalculateMipLevels(textureDesc.Width, textureDesc.Height);
@@ -1195,12 +1453,15 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		}*/
 		else if(textureLoadDesc.IsCubemap && textureLoadDesc.Type == RendererAPI::TextureCubeType::Cross)
 		{
-			const TRAP::Scope<TRAP::Image> baseImg = TRAP::Image::LoadFromFile(textureLoadDesc.Filepaths[0]);
+			TRAP::Scope<TRAP::Image> baseImg = nullptr;
+			if(!textureLoadDesc.Images[0])
+				baseImg = TRAP::Image::LoadFromFile(textureLoadDesc.Filepaths[0]);
+			const TRAP::Image* const baseImgPtr = textureLoadDesc.Images[0] ? textureLoadDesc.Images[0] : baseImg.get();
 
 			bool valid = true;
-			if(baseImg->GetWidth() > baseImg->GetHeight()) //Horizontal
+			if(baseImgPtr->GetWidth() > baseImgPtr->GetHeight()) //Horizontal
 			{
-				if(baseImg->GetWidth() % 4 != 0 || baseImg->GetHeight() % 3 != 0)
+				if(baseImgPtr->GetWidth() % 4 != 0 || baseImgPtr->GetHeight() % 3 != 0)
 				{
 					valid = false;
 					TP_ERROR(Log::TexturePrefix,
@@ -1209,7 +1470,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 			}
 			else //Vertical
 			{
-				if(baseImg->GetWidth() % 3 != 0 || baseImg->GetHeight() % 4 != 0)
+				if(baseImgPtr->GetWidth() % 3 != 0 || baseImgPtr->GetHeight() % 4 != 0)
 				{
 					TP_ERROR(Log::TexturePrefix,
 					         "Width must be a multiple of 3 & height must be a multiple of 4!");
@@ -1219,24 +1480,27 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 			if(valid)
 			{
-				if(baseImg->IsHDR() && baseImg->GetBytesPerChannel() == 4)
-					images = TRAP::Graphics::Texture::SplitImageFromCross<float>(baseImg.get());
-				else if (baseImg->IsLDR() && baseImg->GetBytesPerChannel() == 2)
-					images = TRAP::Graphics::Texture::SplitImageFromCross<uint16_t>(baseImg.get());
-				else /*if (baseImg->IsLDR() && baseImg->GetBytesPerChannel() == 1)*/
-					images = TRAP::Graphics::Texture::SplitImageFromCross<uint8_t>(baseImg.get());
+				if(baseImgPtr->IsHDR() && baseImgPtr->GetBytesPerChannel() == 4)
+				    ownedImages = TRAP::Graphics::Texture::SplitImageFromCross<float>(baseImgPtr);
+				else if (baseImgPtr->IsLDR() && baseImgPtr->GetBytesPerChannel() == 2)
+					ownedImages = TRAP::Graphics::Texture::SplitImageFromCross<uint16_t>(baseImgPtr);
+				else /*if (baseImgPtr->IsLDR() && baseImgPtr->GetBytesPerChannel() == 1)*/
+					ownedImages = TRAP::Graphics::Texture::SplitImageFromCross<uint8_t>(baseImgPtr);
 			}
 			else //Use FallbackCube
 			{
 				TP_WARN(Log::TexturePrefix, "Texture using FallbackCube texture");
 				textureDesc.Name = "FallbackCube";
 
-				for (auto& image : images)
-					image = TRAP::Image::LoadFallback();
+				for(std::size_t i = 0; i < ownedImages.size(); ++i)
+					ownedImages[i] = TRAP::Image::LoadFallback();
 			}
 
-			textureDesc.Width = images[0]->GetWidth();
-			textureDesc.Height = images[0]->GetHeight();
+			for(std::size_t i = 0; i < ownedImages.size(); ++i)
+				ptrImages[i] = ownedImages[i].get();
+
+			textureDesc.Width = ptrImages[0]->GetWidth();
+			textureDesc.Height = ptrImages[0]->GetHeight();
 			textureDesc.Descriptors |= RendererAPI::DescriptorType::TextureCube;
 			textureDesc.ArraySize = 6;
 			textureDesc.MipLevels = TRAP::Graphics::Texture::CalculateMipLevels(textureDesc.Width,
@@ -1244,34 +1508,36 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		}
 		else //if(!textureLoadDesc.IsCubemap) //Normal Texture
 		{
-			images[0] = TRAP::Image::LoadFromFile(textureLoadDesc.Filepaths[0]);
+			if(!textureLoadDesc.Images[0])
+				ownedImages[0] = TRAP::Image::LoadFromFile(textureLoadDesc.Filepaths[0]);
+			ptrImages[0] = textureLoadDesc.Images[0] ? textureLoadDesc.Images[0] : ownedImages[0].get();
 
-			textureDesc.Width = images[0]->GetWidth();
-			textureDesc.Height = images[0]->GetHeight();
+			textureDesc.Width = ptrImages[0]->GetWidth();
+			textureDesc.Height = ptrImages[0]->GetHeight();
 			textureDesc.MipLevels = TRAP::Graphics::Texture::CalculateMipLevels(textureDesc.Width,
 			                                                                    textureDesc.Height);
 		}
 
 		textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
 
-		if (images[0]->IsHDR() && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::RGB) //RGB HDR (32 bpc) | Will be converted to RGBA before upload
+		if (ptrImages[0]->IsHDR() && ptrImages[0]->GetColorFormat() == TRAP::Image::ColorFormat::RGB) //RGB HDR (32 bpc) | Will be converted to RGBA before upload
 			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R32G32B32A32_SFLOAT;
-		else if (images[0]->GetBitsPerChannel() == 16 && (images[0]->GetColorFormat() == TRAP::Image::ColorFormat::RGBA || //RGB(A) 16 bpc | Will be converted to RGBA before upload
-				 images[0]->GetColorFormat() == TRAP::Image::ColorFormat::RGB))
+		else if (ptrImages[0]->GetBitsPerChannel() == 16 && (ptrImages[0]->GetColorFormat() == TRAP::Image::ColorFormat::RGBA || //RGB(A) 16 bpc | Will be converted to RGBA before upload
+				 ptrImages[0]->GetColorFormat() == TRAP::Image::ColorFormat::RGB))
 			 textureDesc.Format = TRAP::Graphics::API::ImageFormat::R16G16B16A16_UNORM;
-		else if (images[0]->GetBitsPerChannel() == 8 && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::RGBA) //RGBA 8 bpc
+		else if (ptrImages[0]->GetBitsPerChannel() == 8 && ptrImages[0]->GetColorFormat() == TRAP::Image::ColorFormat::RGBA) //RGBA 8 bpc
 			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
-		else if (images[0]->GetBitsPerChannel() == 32 && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScaleAlpha) //GrayScale Alpha HDR (32 bpc)
+		else if (ptrImages[0]->GetBitsPerChannel() == 32 && ptrImages[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScaleAlpha) //GrayScale Alpha HDR (32 bpc)
 			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R32G32_SFLOAT;
-		else if (images[0]->GetBitsPerChannel() == 16 && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScaleAlpha) //GrayScale Alpha 16 bpc
+		else if (ptrImages[0]->GetBitsPerChannel() == 16 && ptrImages[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScaleAlpha) //GrayScale Alpha 16 bpc
 			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R16G16_UNORM;
-		else if (images[0]->GetBitsPerChannel() == 8 && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScaleAlpha) //GrayScale Alpha 8 bpc
+		else if (ptrImages[0]->GetBitsPerChannel() == 8 && ptrImages[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScaleAlpha) //GrayScale Alpha 8 bpc
 			 textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8_UNORM;
-		else if(images[0]->IsHDR() && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScale) //GrayScale HDR (32 bpc)
+		else if(ptrImages[0]->IsHDR() && ptrImages[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScale) //GrayScale HDR (32 bpc)
 			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R32_SFLOAT;
-		else if (images[0]->GetBitsPerChannel() == 16 && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScale) //GrayScale 16 bpc
+		else if (ptrImages[0]->GetBitsPerChannel() == 16 && ptrImages[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScale) //GrayScale 16 bpc
 			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R16_UNORM;
-		else if (images[0]->GetBitsPerChannel() == 8 && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScale) //GrayScale 8 bpc
+		else if (ptrImages[0]->GetBitsPerChannel() == 8 && ptrImages[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScale) //GrayScale 8 bpc
 			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8_UNORM;
 
 		textureLoadDesc.Texture->Init(textureDesc);
@@ -1283,7 +1549,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		updateDesc.BaseArrayLayer = 0;
 		updateDesc.LayerCount = textureDesc.ArraySize;
 
-		return UpdateTexture(activeSet, updateDesc, &images);
+		return UpdateTexture(activeSet, updateDesc, &ptrImages);
 	}
 
 	//Fallback to default textures
@@ -1291,10 +1557,11 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	{
 		textureDesc.Name = "Fallback2D";
 
-		images[0] = TRAP::Image::LoadFallback();
+		ownedImages[0] = TRAP::Image::LoadFallback();
+		ptrImages[0] = ownedImages[0].get();
 
-		textureDesc.Width = images[0]->GetWidth();
-		textureDesc.Height = images[0]->GetHeight();
+		textureDesc.Width = ptrImages[0]->GetWidth();
+		textureDesc.Height = ptrImages[0]->GetHeight();
 		textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
 		textureDesc.MipLevels = TRAP::Graphics::Texture::CalculateMipLevels(textureDesc.Width,
 			                                                                textureDesc.Height);
@@ -1303,11 +1570,14 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	{
 		textureDesc.Name = "FallbackCube";
 
-		for (auto& image : images)
-			image = TRAP::Image::LoadFallback();
+		for(std::size_t i = 0; i < ownedImages.size(); ++i)
+		{
+			ownedImages[i] = TRAP::Image::LoadFallback();
+			ptrImages[i] = ownedImages[i].get();
+		}
 
-		textureDesc.Width = images[0]->GetWidth();
-		textureDesc.Height = images[0]->GetHeight();
+		textureDesc.Width = ptrImages[0]->GetWidth();
+		textureDesc.Height = ptrImages[0]->GetHeight();
 		textureDesc.Descriptors |= RendererAPI::DescriptorType::TextureCube;
 		textureDesc.ArraySize = 6;
 		textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
@@ -1324,35 +1594,93 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	updateDesc.BaseArrayLayer = 0;
 	updateDesc.LayerCount = textureDesc.ArraySize;
 
-	return UpdateTexture(activeSet, updateDesc, &images);
+	return UpdateTexture(activeSet, updateDesc, &ptrImages);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::BufferUpdateDesc& buffer)
+[[nodiscard]] TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::CopyTexture(std::size_t activeSet,
+            																					                         RendererAPI::TextureCopyDesc& textureCopy)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	TRAP::Ref<Texture> texture = textureCopy.Texture;
+	const ImageFormat format = texture->GetImageFormat();
+
+	const CommandBuffer* const cmd = AcquireCmd(activeSet);
+
+	if(textureCopy.WaitSemaphore)
+		m_copyEngine.WaitSemaphores.push_back(textureCopy.WaitSemaphore);
+
+	if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
+	{
+		RendererAPI::TextureBarrier barrier{};
+		barrier.Texture = texture.get();
+		barrier.CurrentState = textureCopy.TextureState;
+		barrier.NewState = RendererAPI::ResourceState::CopySource;
+		cmd->ResourceBarrier(nullptr, &barrier, nullptr);
+	}
+
+	uint64_t numBytes = 0;
+	uint64_t rowBytes = 0;
+	uint64_t numRows = 0;
+
+	const bool ret = UtilGetSurfaceInfo(texture->GetWidth(), texture->GetHeight(), format, &numBytes, &rowBytes, &numRows);
+	if(!ret)
+		return UploadFunctionResult::InvalidRequest;
+
+	RendererAPI::SubresourceDataDesc subresourceDesc{};
+	subresourceDesc.ArrayLayer = textureCopy.ArrayLayer;
+	subresourceDesc.MipLevel = textureCopy.MipLevel;
+	subresourceDesc.SrcOffset = textureCopy.BufferOffset;
+
+	if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
+	{
+		const uint64_t sliceAlignment = UtilGetTextureSubresourceAlignment(format);
+		const uint64_t rowAlignment = UtilGetTextureRowAlignment();
+		const uint64_t subRowPitch = ((rowBytes + rowAlignment - 1) / rowAlignment) * rowAlignment;
+		const uint64_t subSlicePitch = (((subRowPitch * numRows) + sliceAlignment - 1) / sliceAlignment) * sliceAlignment;
+		subresourceDesc.RowPitch = static_cast<uint32_t>(subRowPitch);
+		subresourceDesc.SlicePitch = static_cast<uint32_t>(subSlicePitch);
+	}
+
+	cmd->CopySubresource(textureCopy.Buffer.get(), textureCopy.Texture.get(), subresourceDesc);
+
+	return UploadFunctionResult::Completed;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::BufferUpdateDesc& buffer) noexcept
 	: Type(UpdateRequestType::UpdateBuffer), Desc(buffer)
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::TextureLoadDesc& texture)
+TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::TextureLoadDesc& texture) noexcept
 	: Type(UpdateRequestType::LoadTexture), Desc(texture)
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(TRAP::Graphics::API::ResourceLoader::TextureUpdateDescInternal texture)
+TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::TextureCopyDesc& textureCopy) noexcept
+	: Type(UpdateRequestType::CopyTexture), Desc(textureCopy)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(TRAP::Graphics::API::ResourceLoader::TextureUpdateDescInternal texture) noexcept
 	: Type(UpdateRequestType::UpdateTexture), Desc(texture)
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::BufferBarrier& barrier)
+TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::BufferBarrier& barrier) noexcept
 	: Type(UpdateRequestType::BufferBarrier), Desc(barrier)
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::TextureBarrier& barrier)
+TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::TextureBarrier& barrier) noexcept
 	: Type(UpdateRequestType::TextureBarrier), Desc(barrier)
 {}

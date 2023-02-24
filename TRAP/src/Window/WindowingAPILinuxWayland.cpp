@@ -534,11 +534,11 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleScale(void* userData, wl_output* 
     monitor->Wayland.Scale = factor;
 
     uint32_t index = 0;
-    for(InternalWindow* window : s_Data.WindowList)
+    for(const TRAP::Scope<InternalWindow>& window : s_Data.WindowList)
     {
         if(window->Wayland.Monitors[index] == monitor)
         {
-            UpdateContentScaleWayland(window);
+            UpdateContentScaleWayland(window.get());
             break;
         }
 
@@ -923,7 +923,8 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleButton(void* /*userData*/, wl_po
            window->Wayland.XDG.TopLevel)
         {
             xdg_toplevel_show_window_menu(window->Wayland.XDG.TopLevel, s_Data.Wayland.Seat,
-                                          serial, window->Wayland.CursorPosX, window->Wayland.CursorPosY);
+                                          serial, static_cast<int32_t>(window->Wayland.CursorPosX),
+                                          static_cast<int32_t>(window->Wayland.CursorPosY));
             return;
         }
     }
@@ -1040,8 +1041,8 @@ void TRAP::INTERNAL::WindowingAPI::RegistryHandleGlobal(void* /*userData*/, wl_r
             return;
 
         //Note this pointer will be acquired by a TRAP::Scope in OutputHandleDone()
-        InternalMonitor* monitor = new InternalMonitor;
-        std::memset(monitor, 0, sizeof(InternalMonitor));
+        InternalMonitor* monitor = new InternalMonitor();
+        //std::memset(monitor, 0, sizeof(InternalMonitor));
         monitor->Wayland.Scale = 1;
         monitor->Wayland.Output = output;
         monitor->Wayland.Name = name;
@@ -1379,27 +1380,27 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorWayland(InternalWindow* window, cons
 
 TRAP::INTERNAL::WindowingAPI::InternalWindow* TRAP::INTERNAL::WindowingAPI::FindWindowFromDecorationSurface(wl_surface* surface, TRAPDecorationSideWayland& which)
 {
-    for(InternalWindow* window : s_Data.WindowList)
+    for(const TRAP::Scope<InternalWindow>& window : s_Data.WindowList)
     {
         if(surface == window->Wayland.Decorations.Top.surface)
         {
             which = TRAPDecorationSideWayland::TopDecoration;
-            return window;
+            return window.get();
         }
         if(surface == window->Wayland.Decorations.Left.surface)
         {
             which = TRAPDecorationSideWayland::LeftDecoration;
-            return window;
+            return window.get();
         }
         if(surface == window->Wayland.Decorations.Right.surface)
         {
             which = TRAPDecorationSideWayland::RightDecoration;
-            return window;
+            return window.get();
         }
         if(surface == window->Wayland.Decorations.Bottom.surface)
         {
             which = TRAPDecorationSideWayland::BottomDecoration;
-            return window;
+            return window.get();
         }
     }
 
@@ -1463,7 +1464,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateContentScaleWayland(InternalWindow* win
     {
         window->Wayland.Scale = maxScale;
         wl_surface_set_buffer_scale(window->Wayland.Surface, maxScale);
-        InputWindowContentScale(window, maxScale, maxScale);
+        InputWindowContentScale(window, static_cast<float>(maxScale), static_cast<float>(maxScale));
         ResizeWindowWayland(window);
     }
 }
@@ -2003,8 +2004,8 @@ void TRAP::INTERNAL::WindowingAPI::HandleEventsWayland(double* timeout)
         {
             s_Data.Wayland.WaylandClient.DisplayCancelRead(s_Data.Wayland.DisplayWL);
 
-            for(InternalWindow* window : s_Data.WindowList)
-                InputWindowCloseRequest(window);
+            for(const TRAP::Scope<InternalWindow>& window : s_Data.WindowList)
+                InputWindowCloseRequest(window.get());
 
             return;
         }
@@ -2108,7 +2109,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPosWayland(const InternalWin
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorWayland(InternalWindow* window, InternalMonitor* monitor,
 														           const int32_t /*xPos*/, const int32_t /*yPos*/,
                                                                    const int32_t width, const int32_t height,
-                                                                   const int32_t /*refreshRate*/)
+                                                                   const double /*refreshRate*/)
 {
     if(window->Monitor == monitor)
     {
@@ -2484,7 +2485,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowWayland(InternalWindow* w
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitleWayland(InternalWindow* window, const std::string& title)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitleWayland(InternalWindow* const window, const std::string& title)
 {
     window->Wayland.Title = title;
 
@@ -2962,14 +2963,17 @@ const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeNameWayland(const i
         return nullptr;
     }
 
-    const std::size_t count = EncodeUTF8(s_Data.KeyNames[static_cast<uint32_t>(key)].data(), codePoint);
-    if(count == 0)
+    const std::string utf8Str = Utils::String::EncodeUTF8(codePoint);
+	if(utf8Str.empty())
     {
         InputError(Error::Platform_Error, "[Wayland] Failed to encode codepoint for key name");
-        return nullptr;
+		return nullptr;
     }
+	for(std::size_t i = 0; i < utf8Str.size(); ++i)
+		s_Data.KeyNames[static_cast<uint32_t>(key)][i] = utf8Str[i];
 
-    s_Data.KeyNames[static_cast<uint32_t>(key)][count] = '\0';
+	s_Data.KeyNames[static_cast<uint32_t>(key)][utf8Str.size()] = '\0';
+
     return s_Data.KeyNames[static_cast<uint32_t>(key)].data();;
 }
 
@@ -3051,7 +3055,7 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurfaceWayland(VkInst
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindowWayland(InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindowWayland(InternalWindow* const window)
 {
     if(window->Wayland.XDG.TopLevel)
         xdg_toplevel_set_maximized(window->Wayland.XDG.TopLevel);

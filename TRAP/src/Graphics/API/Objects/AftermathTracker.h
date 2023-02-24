@@ -19,7 +19,7 @@ namespace TRAP::Graphics::AftermathTracker
 	/// Set a marker.
 	/// </summary>
 	/// <param name="name">Name of the marker.</param>
-	void SetAftermathMarker(const std::string_view name);
+	void SetAftermathMarker(const std::string_view name) noexcept;
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
 	/// <summary>
@@ -35,7 +35,7 @@ namespace TRAP::Graphics::AftermathTracker
 	/// </summary>
 	/// <param name="outStatus">Output: Statuc of the crash dump generation.</param>
 	/// <returns>Result the crash dump status call.</returns>
-	GFSDK_Aftermath_Result GetCrashDumpStatus(GFSDK_Aftermath_CrashDump_Status* outStatus);
+	[[nodiscard]] GFSDK_Aftermath_Result GetGPUCrashDumpStatus(GFSDK_Aftermath_CrashDump_Status& outStatus);
 #endif
 }
 

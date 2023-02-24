@@ -24,63 +24,63 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanInstance(const VulkanInstance&) = default;
+		VulkanInstance(const VulkanInstance&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanInstance& operator=(const VulkanInstance&) = default;
+		VulkanInstance& operator=(const VulkanInstance&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanInstance(VulkanInstance&&) = default;
+		VulkanInstance(VulkanInstance&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanInstance& operator=(VulkanInstance&&) = default;
+		VulkanInstance& operator=(VulkanInstance&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the Vulkan instance handle.
 		/// </summary>
 		/// <returns>Vulkan instance handle.</returns>
-		VkInstance GetVkInstance() const;
+		[[nodiscard]] VkInstance GetVkInstance() const noexcept;
 		/// <summary>
 		/// Retrieve a list of used instance layers.
 		/// </summary>
 		/// <returns>List of used instance layers.</returns>
-		const std::vector<std::string>& GetUsedInstanceLayers() const;
+		[[nodiscard]] const std::vector<std::string>& GetUsedInstanceLayers() const noexcept;
 		/// <summary>
 		/// Retrieve a list of used instance extensions.
 		/// </summary>
 		/// <returns>List of used instance extensions.</returns>
-		const std::vector<std::string>& GetUsedInstanceExtensions() const;
+		[[nodiscard]] const std::vector<std::string>& GetUsedInstanceExtensions() const noexcept;
 
 		/// <summary>
 		/// Retrieve the Vulkan instance version packed by VK_MAKE_API_VERSION.
 		/// </summary>
 		/// <returns>Vulkan instance version.</returns>
-		static uint32_t GetInstanceVersion();
+		[[nodiscard]] static uint32_t GetInstanceVersion();
 		/// <summary>
 		/// Retrieve a list of available instance layers.
 		/// </summary>
 		/// <returns>List of available instance layers.</returns>
-		static const std::vector<VkLayerProperties>& GetAvailableInstanceLayers();
+		[[nodiscard]] static const std::vector<VkLayerProperties>& GetAvailableInstanceLayers();
 		/// <summary>
 		/// Retrieve a list of available instance extensions.
 		/// </summary>
 		/// <returns>List of available instance extensions.</returns>
-		static const std::vector<VkExtensionProperties>& GetAvailableInstanceExtensions();
+		[[nodiscard]] static const std::vector<VkExtensionProperties>& GetAvailableInstanceExtensions();
 		/// <summary>
 		/// Check whether an instance layer is supported or not.
 		/// </summary>
 		/// <param name="layer">Instance layer to check.</param>
 		/// <returns>True if the instance layer is supported, false otherwise.</returns>
-		static bool IsLayerSupported(const std::string_view layer);
+		[[nodiscard]] static bool IsLayerSupported(const std::string_view layer);
 		/// <summary>
 		/// Check whether an instance extension is supported or not.
 		/// </summary>
 		/// <param name="extension">Instance extension to check.</param>
 		/// <returns>True if the instance extension is supported, false otherwise.</returns>
-		static bool IsExtensionSupported(const std::string_view extension);
+		[[nodiscard]] static bool IsExtensionSupported(const std::string_view extension);
 
 	private:
 		/// <summary>

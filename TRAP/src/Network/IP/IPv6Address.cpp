@@ -24,28 +24,35 @@ const TRAP::Network::IPv6Address TRAP::Network::IPv6Address::LocalHost(std::arra
 TRAP::Network::IPv6Address::IPv6Address(const std::string address)
 	: m_address(), m_valid(false)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	Resolve(std::move(address));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::IPv6Address::IPv6Address(const char* address)
+TRAP::Network::IPv6Address::IPv6Address(const char* const address)
 	: m_address(), m_valid(false)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	Resolve(address);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::IPv6Address::IPv6Address(const std::array<uint8_t, 16>& addressBytes)
+TRAP::Network::IPv6Address::IPv6Address(const std::array<uint8_t, 16>& addressBytes) noexcept
 	: m_address(addressBytes), m_valid(true)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Network::IPv6Address::ToString() const
+[[nodiscard]] std::string TRAP::Network::IPv6Address::ToString() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	in6_addr address{};
 #ifdef TRAP_PLATFORM_WINDOWS
 	std::copy(m_address.begin(), m_address.end(), address.u.Byte);
@@ -55,22 +62,26 @@ std::string TRAP::Network::IPv6Address::ToString() const
 
 	//8 * 4 = 8 Blocks 4 Values each | 7 = 7 times ':'
 	std::string str(8 * 4 + 7, 0);
-	inet_ntop(AF_INET6, &address, str.data(), str.size());
+	inet_ntop(AF_INET6, &address, str.data(), static_cast<uint32_t>(str.size()));
 	str.erase(std::find(str.begin(), str.end(), '\0'), str.end());
 	return str;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 16> TRAP::Network::IPv6Address::ToArray() const
+[[nodiscard]] std::array<uint8_t, 16> TRAP::Network::IPv6Address::ToArray() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_address;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::IPv6Address TRAP::Network::IPv6Address::GetLocalAddress()
+[[nodiscard]] TRAP::Network::IPv6Address TRAP::Network::IPv6Address::GetLocalAddress()
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//The method here is to connect a UDP socket to anyone (here to localhost),
 	//and get the local socket address with the getsockname function.
 	//UDP connection will not send anything to the network, so this function won't cause any overhead.
@@ -117,8 +128,10 @@ TRAP::Network::IPv6Address TRAP::Network::IPv6Address::GetLocalAddress()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::IPv6Address TRAP::Network::IPv6Address::GetPublicAddress(const Utils::TimeStep timeout)
+[[nodiscard]] TRAP::Network::IPv6Address TRAP::Network::IPv6Address::GetPublicAddress(const Utils::TimeStep timeout)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//HTTP URL v6.ident.me
 	//GetBody
 	TRAP::Network::HTTP server("v6.ident.me");
@@ -135,6 +148,8 @@ TRAP::Network::IPv6Address TRAP::Network::IPv6Address::GetPublicAddress(const Ut
 
 void TRAP::Network::IPv6Address::Resolve(const std::string& address)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	m_address = {};
 	m_valid = false;
 
@@ -185,6 +200,8 @@ void TRAP::Network::IPv6Address::Resolve(const std::string& address)
 
 bool TRAP::Network::operator==(const IPv6Address& left, const IPv6Address& right)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return !(left < right) && !(right < left);
 }
 
@@ -192,6 +209,8 @@ bool TRAP::Network::operator==(const IPv6Address& left, const IPv6Address& right
 
 bool TRAP::Network::operator!=(const IPv6Address& left, const IPv6Address& right)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return !(left == right);
 }
 
@@ -199,6 +218,8 @@ bool TRAP::Network::operator!=(const IPv6Address& left, const IPv6Address& right
 
 bool TRAP::Network::operator<(const IPv6Address& left, const IPv6Address& right)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return std::make_pair(left.m_valid, left.m_address) < std::make_pair(right.m_valid, right.m_address);
 }
 
@@ -206,6 +227,8 @@ bool TRAP::Network::operator<(const IPv6Address& left, const IPv6Address& right)
 
 bool TRAP::Network::operator>(const IPv6Address& left, const IPv6Address& right)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return right < left;
 }
 
@@ -213,6 +236,8 @@ bool TRAP::Network::operator>(const IPv6Address& left, const IPv6Address& right)
 
 bool TRAP::Network::operator<=(const IPv6Address& left, const IPv6Address& right)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return !(right < left);
 }
 
@@ -220,6 +245,8 @@ bool TRAP::Network::operator<=(const IPv6Address& left, const IPv6Address& right
 
 bool TRAP::Network::operator>=(const IPv6Address& left, const IPv6Address& right)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return !(left < right);
 }
 
@@ -227,6 +254,8 @@ bool TRAP::Network::operator>=(const IPv6Address& left, const IPv6Address& right
 
 std::istream& TRAP::Network::operator>>(std::istream& stream, IPv6Address& address)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	std::string str;
 	stream >> str;
 	address = IPv6Address(str);
@@ -238,5 +267,7 @@ std::istream& TRAP::Network::operator>>(std::istream& stream, IPv6Address& addre
 
 std::ostream& TRAP::Network::operator<<(std::ostream& stream, const IPv6Address& address)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	return stream << address.ToString();
 }

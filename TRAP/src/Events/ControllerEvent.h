@@ -21,36 +21,36 @@ namespace TRAP::Events
 		/// Retrieve the affected controller.
 		/// </summary>
 		/// <returns>Controller.</returns>
-		constexpr Input::Controller GetController() const;
+		[[nodiscard]] constexpr Input::Controller GetController() const;
 
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const override;
+		[[nodiscard]] EventCategory GetCategoryFlags() const noexcept override;
 
 	protected:
 		/// <summary>
 		/// Constructor.
 		/// </summary>
 		/// <param name="controller">Affected controller.</param>
-		explicit ControllerEvent(Input::Controller controller);
+		explicit ControllerEvent(Input::Controller controller) noexcept;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		ControllerEvent(const ControllerEvent&) = default;
+		ControllerEvent(const ControllerEvent&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		ControllerEvent& operator=(const ControllerEvent&) = default;
+		ControllerEvent& operator=(const ControllerEvent&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		ControllerEvent(ControllerEvent&&) = default;
+		ControllerEvent(ControllerEvent&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		ControllerEvent& operator=(ControllerEvent&&) = default;
+		ControllerEvent& operator=(ControllerEvent&&) noexcept = default;
 
 		Input::Controller m_controller;
 	};
@@ -65,7 +65,7 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="controller">Newly connected controller.</param>
-		explicit ControllerConnectEvent(Input::Controller controller);
+		explicit ControllerConnectEvent(Input::Controller controller) noexcept;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -73,41 +73,41 @@ namespace TRAP::Events
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		ControllerConnectEvent(const ControllerConnectEvent&) = default;
+		ControllerConnectEvent(const ControllerConnectEvent&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		ControllerConnectEvent& operator=(const ControllerConnectEvent&) = default;
+		ControllerConnectEvent& operator=(const ControllerConnectEvent&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		ControllerConnectEvent(ControllerConnectEvent&&) = default;
+		ControllerConnectEvent(ControllerConnectEvent&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		ControllerConnectEvent& operator=(ControllerConnectEvent&&) = default;
+		ControllerConnectEvent& operator=(ControllerConnectEvent&&) noexcept = default;
 
 		/// <summary>
 		/// Get a string representation of the ControllerConnectEvent.
 		/// </summary>
 		/// <returns>String representation.</returns>
-		std::string ToString() const override;
+		[[nodiscard]] std::string ToString() const override;
 
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType();
+		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const override;
+		[[nodiscard]] EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		std::string GetName() const override;
+		[[nodiscard]] std::string GetName() const override;
 	};
 
 	/// <summary>
@@ -120,7 +120,7 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="controller">Disconnected controller.</param>
-		explicit ControllerDisconnectEvent(Input::Controller controller);
+		explicit ControllerDisconnectEvent(Input::Controller controller) noexcept;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -128,47 +128,47 @@ namespace TRAP::Events
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		ControllerDisconnectEvent(const ControllerDisconnectEvent&) = default;
+		ControllerDisconnectEvent(const ControllerDisconnectEvent&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		ControllerDisconnectEvent& operator=(const ControllerDisconnectEvent&) = default;
+		ControllerDisconnectEvent& operator=(const ControllerDisconnectEvent&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		ControllerDisconnectEvent(ControllerDisconnectEvent&&) = default;
+		ControllerDisconnectEvent(ControllerDisconnectEvent&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		ControllerDisconnectEvent& operator=(ControllerDisconnectEvent&&) = default;
+		ControllerDisconnectEvent& operator=(ControllerDisconnectEvent&&) noexcept = default;
 
 		/// <summary>
 		/// Get a string representation of the ControllerDisconnectEvent.
 		/// </summary>
 		/// <returns>String representation.</returns>
-		std::string ToString() const override;
+		[[nodiscard]] std::string ToString() const override;
 
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType();
+		[[nodiscard]] static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const override;
+		[[nodiscard]] EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		std::string GetName() const override;
+		[[nodiscard]] std::string GetName() const override;
 	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Input::Controller TRAP::Events::ControllerEvent::GetController() const
+[[nodiscard]] constexpr TRAP::Input::Controller TRAP::Events::ControllerEvent::GetController() const
 {
 	return m_controller;
 }
@@ -177,7 +177,7 @@ constexpr TRAP::Input::Controller TRAP::Events::ControllerEvent::GetController()
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::ControllerConnectEvent::GetStaticType()
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::ControllerConnectEvent::GetStaticType() noexcept
 {
 	return EventType::ControllerConnect;
 }
@@ -186,7 +186,7 @@ constexpr TRAP::Events::EventType TRAP::Events::ControllerConnectEvent::GetStati
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::ControllerDisconnectEvent::GetStaticType()
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::ControllerDisconnectEvent::GetStaticType() noexcept
 {
 	return EventType::ControlledDisconnect;
 }

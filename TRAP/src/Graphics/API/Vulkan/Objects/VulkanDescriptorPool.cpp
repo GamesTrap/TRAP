@@ -7,6 +7,7 @@
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include <vulkan/vulkan_core.h>
 
 std::array<VkDescriptorPoolSize, TRAP::Graphics::API::VulkanDescriptorPool::DESCRIPTOR_TYPE_RANGE_SIZE>
 TRAP::Graphics::API::VulkanDescriptorPool::s_descriptorPoolSizes =
@@ -34,8 +35,10 @@ TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const uint32_t n
 	  m_usedDescriptorSetCount(0),
 	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	m_numDescriptorSets = numDescriptorSets;
-	TRAP_ASSERT(m_device, "device is nullptr");
+	TRAP_ASSERT(m_device, "VulkanDescriptorPool(): Vulkan Device is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDescriptorPoolPrefix, "Creating DescriptorPool");
@@ -51,15 +54,17 @@ TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const uint32_t n
 	const VkDescriptorPoolCreateInfo info = VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes,
 	                                                                              m_numDescriptorSets);
 	VkCall(vkCreateDescriptorPool(m_device->GetVkDevice(), &info, nullptr, &m_currentPool));
+	TRAP_ASSERT(m_currentPool, "VulkanDescriptorPool(): Failed to create DescriptorPool");
 
-	m_descriptorPools.emplace_back(m_currentPool);
+	if(m_currentPool != VK_NULL_HANDLE)
+		m_descriptorPools.emplace_back(m_currentPool);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanDescriptorPool::~VulkanDescriptorPool()
 {
-	TRAP_ASSERT(!m_descriptorPools.empty());
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDescriptorPoolPrefix, "Destroying DescriptorPool");
@@ -73,35 +78,47 @@ TRAP::Graphics::API::VulkanDescriptorPool::~VulkanDescriptorPool()
 
 void TRAP::Graphics::API::VulkanDescriptorPool::Reset()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	VkCall(vkResetDescriptorPool(m_device->GetVkDevice(), m_currentPool, 0));
 	m_usedDescriptorSetCount = 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDescriptorPool TRAP::Graphics::API::VulkanDescriptorPool::GetCurrentVkDescriptorPool() const
+[[nodiscard]] VkDescriptorPool TRAP::Graphics::API::VulkanDescriptorPool::GetCurrentVkDescriptorPool() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_currentPool;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<VkDescriptorPoolSize>& TRAP::Graphics::API::VulkanDescriptorPool::GetDescriptorPoolSizes() const
+[[nodiscard]] const std::vector<VkDescriptorPoolSize>& TRAP::Graphics::API::VulkanDescriptorPool::GetDescriptorPoolSizes() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_descriptorPoolSizes;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanDescriptorPool::GetUsedDescriptorSetsCount() const
+[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanDescriptorPool::GetUsedDescriptorSetsCount() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_usedDescriptorSetCount;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::DescriptorSet> TRAP::Graphics::API::VulkanDescriptorPool::RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc)
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::DescriptorSet> TRAP::Graphics::API::VulkanDescriptorPool::RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(desc.RootSignature, "VulkanDescriptorPool::RetrieveDescriptorSet(): RootSignature is nullptr");
+
 	const TRAP::Ref<VulkanRootSignature> rootSignature = std::dynamic_pointer_cast<VulkanRootSignature>
 		(
 			desc.RootSignature
@@ -133,12 +150,12 @@ TRAP::Scope<TRAP::Graphics::DescriptorSet> TRAP::Graphics::API::VulkanDescriptor
 	{
 		TP_ERROR(Log::RendererVulkanDescriptorSetPrefix, "nullptr Descriptor Set Layout for update frequency ",
 		         updateFreq, ". Cannot allocate descriptor set");
-		TRAP_ASSERT(false, "nullptr Descriptor Set Layout for update frequency. Cannot allocate descriptor set");
+		TRAP_ASSERT(false, "VulkanDescriptorPool::RetrieveDescriptorSet(): nullptr Descriptor Set Layout for update frequency. Cannot allocate descriptor set");
 	}
 
 	if(dynamicOffsetCount)
 	{
-		TRAP_ASSERT(dynamicOffsetCount == 1);
+		TRAP_ASSERT(dynamicOffsetCount == 1, "VulkanDescriptorPool::RetrieveDescriptorSet(): Only 1 dynamic descriptor per set is supported");
 	}
 
 	return TRAP::MakeScope<VulkanDescriptorSet>(m_device, handles, rootSignature, updateData, maxSets,
@@ -147,11 +164,14 @@ TRAP::Scope<TRAP::Graphics::DescriptorSet> TRAP::Graphics::API::VulkanDescriptor
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::RetrieveVkDescriptorSet(VkDescriptorSetLayout layout)
+[[nodiscard]] VkDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::RetrieveVkDescriptorSet(VkDescriptorSetLayout layout)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	//Need a lock since vkAllocateDescriptorSets needs to be externally synchronized
 	//This is fine since this will only happen during Init time
-	std::lock_guard<std::mutex> lockGuard(m_mutex);
+	std::lock_guard lockGuard(m_mutex);
+	LockMark(m_mutex);
 
 	VkDescriptorSetAllocateInfo info = VulkanInits::DescriptorSetAllocateInfo(m_currentPool,
 	                                                                          layout);
@@ -176,7 +196,7 @@ VkDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::RetrieveVkDescriptorS
 		res = vkAllocateDescriptorSets(m_device->GetVkDevice(), &info, &descriptorSet);
 	}
 
-	TRAP_ASSERT(res == VK_SUCCESS);
+	TRAP_ASSERT(res == VK_SUCCESS, "VulkanDescriptorPool::RetrieveVkDescriptorSet(): Failed to allocate Descriptor Set");
 
 	m_usedDescriptorSetCount++;
 

@@ -65,6 +65,7 @@ project "TRAP"
 	systemversion "latest"
 	vectorextensions "AVX2"
 	warnings "Extra"
+	architecture "x86_64"
 
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
@@ -78,7 +79,7 @@ project "TRAP"
 		"src/**.h",
 		"src/**.hpp",
 		"src/**.cpp",
-		"src/**.inl"
+		"src/**.inl",
 	}
 
 	--Exclude all folders in Platform, since not all platforms need all of these
@@ -100,14 +101,12 @@ project "TRAP"
 		"src/Network/Sockets/Platform/SocketImplWinAPI.cpp"
 	}
 
-	includedirs
-	{
-		"src"
-	}
+	includedirs	"src"
 
-	sysincludedirs
+	externalincludedirs
 	{
 		"%{IncludeDir.IMGUI}",
+		"%{IncludeDir.IMGUIZMO}",
 		"%{IncludeDir.GLSLANG}",
 		"%{IncludeDir.SPIRV}",
 		"%{IncludeDir.SPIRVCROSS}",
@@ -115,19 +114,25 @@ project "TRAP"
 		"%{IncludeDir.ENTT}",
 		"%{IncludeDir.YAMLCPP}",
 		"%{IncludeDir.MODERNDIALOGS}",
-		"%{IncludeDir.VMA}"
+		"%{IncludeDir.VMA}",
+		"%{IncludeDir.BOX2D}",
+		"%{IncludeDir.TRACY}"
 	}
 
 	links
 	{
 		"ImGui",
+		"ImGuizmo",
 		"YAMLCpp",
 		"ModernDialogs",
 		"GLSLang",
 		"SPIRV",
 		"SPIRV-Cross-Core",
 		"SPIRV-Cross-GLSL",
-		"SPIRV-Cross-HLSL"
+		"SPIRV-Cross-HLSL",
+		"Box2D",
+		"TracyClient",
+		"GLSLang-Default-Resource-Limits"
 	}
 
 	defines "YAML_CPP_STATIC_DEFINE"
@@ -148,10 +153,7 @@ project "TRAP"
 		   os.isfile("../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.dll") and
 		   os.isdir("../Dependencies/DiscordGameSDK/cpp") and
 		   os.isfile("../Dependencies/DiscordGameSDK/cpp/discord.h") then
-			sysincludedirs
-			{
-				"%{IncludeDir.DISCORDGAMESDK}"
-			}
+			externalincludedirs "%{IncludeDir.DISCORDGAMESDK}"
 
 			files
 			{
@@ -170,12 +172,34 @@ project "TRAP"
 		   os.isfile("../Dependencies/Nsight-Aftermath/lib/x64/llvm_7_0_1.dll") and
 		   os.isdir("../Dependencies/Nsight-Aftermath/include") and
 		   os.isfile("../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
-			sysincludedirs
-			{
-				"%{IncludeDir.NSIGHTAFTERMATH}"
-			}
+			externalincludedirs "%{IncludeDir.NSIGHTAFTERMATH}"
 
 			defines "NSIGHT_AFTERMATH_AVAILABLE"
+		end
+
+		-- Steamworks SDK stuff
+		if os.isfile("../Dependencies/SteamworksSDK/sdk/redistributable_bin/win64/steam_api64.dll") and
+		   os.isfile("../Dependencies/SteamworksSDK/sdk/redistributable_bin/win64/steam_api64.lib") and
+		   os.isdir("../Dependencies/SteamworksSDK/sdk/public/steam") then
+			externalincludedirs "%{IncludeDir.STEAMWORKSSDK}"
+
+			files "%{IncludeDir.DISCORDGAMESDK}/**.h"
+
+			defines "USE_STEAMWORKS_SDK"
+		end
+
+		-- NVIDIA Reflex SDK stuff
+		if os.isfile("../Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Vulkan/Reflex_Vulkan/inc/NvLowLatencyVk.h") and
+		   os.isfile("../Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Vulkan/Reflex_Vulkan/lib/NvLowLatencyVk.lib") and
+		   os.isfile("../Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Vulkan/Reflex_Vulkan/lib/NvLowLatencyVk.dll") and
+		   os.isfile("../Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Stats/reflexstats.h") then
+			externalincludedirs
+			{
+				"%{IncludeDir.NVIDIAREFLEX}",
+				"%{IncludeDir.NVIDIAREFLEXSTATS}"
+			}
+
+			defines "NVIDIA_REFLEX_AVAILABLE"
 		end
 
 	filter "system:linux"
@@ -189,7 +213,9 @@ project "TRAP"
 			"src/Window/WindowingAPILinuxX11.cpp",
 			"src/Window/WindowingAPILinuxWayland.cpp",
 			"src/Network/Sockets/Platform/SocketImplLinux.h",
-			"src/Network/Sockets/Platform/SocketImplLinux.cpp"
+			"src/Network/Sockets/Platform/SocketImplLinux.cpp",
+
+			"%{IncludeDir.WAYLAND}/**.h"
 		}
 
 		-- Discord Game SDK stuff
@@ -198,10 +224,7 @@ project "TRAP"
 			os.isdir("../Dependencies/DiscordGameSDK/cpp") and
 			os.isfile("../Dependencies/DiscordGameSDK/cpp/discord.h") then
 
-			sysincludedirs
-			{
-				"%{IncludeDir.DISCORDGAMESDK}"
-			}
+			externalincludedirs "%{IncludeDir.DISCORDGAMESDK}"
 
 			files
 			{
@@ -219,23 +242,31 @@ project "TRAP"
 		   os.isdir("../Dependencies/Nsight-Aftermath/include") and
 		   os.isfile("../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
 
-			sysincludedirs
-			{
-				"%{IncludeDir.NSIGHTAFTERMATH}"
-			}
+			externalincludedirs "%{IncludeDir.NSIGHTAFTERMATH}"
 
 			defines "NSIGHT_AFTERMATH_AVAILABLE"
 		end
 
+		-- Steamworks SDK stuff
+		if os.isfile("../Dependencies/SteamworksSDK/sdk/redistributable_bin/linux64/libsteam_api.so") and
+		   os.isdir("../Dependencies/SteamworksSDK/sdk/public/steam") then
+			externalincludedirs "%{IncludeDir.STEAMWORKSSDK}"
+
+			files "%{IncludeDir.DISCORDGAMESDK}/**.h"
+
+			defines "USE_STEAMWORKS_SDK"
+		end
+
 		GenerateWayland()
-		sysincludedirs
+		externalincludedirs
 		{
 			"%{IncludeDir.WAYLAND}"
 		}
 
-		files
+	filter { "action:gmake*", "toolset:gcc" }
+		buildoptions
 		{
-			"%{IncludeDir.WAYLAND}/**.h"
+			"-Wpedantic", "-Wconversion", "-Wshadow"
 		}
 
 	filter "configurations:Debug"
@@ -246,13 +277,108 @@ project "TRAP"
 	filter "configurations:Release"
 		defines "TRAP_RELEASE"
 		runtime "Release"
-		optimize "On"
+		optimize "Full"
 
 	filter "configurations:RelWithDebInfo"
 		defines "TRAP_RELWITHDEBINFO"
 		runtime "Release"
-		optimize "On"
+		optimize "Debug"
 		symbols "On"
+
+	filter "configurations:Profiling"
+		editandcontinue "Off"
+		defines
+		{
+			"TRAP_RELEASE",
+			"TRACY_ENABLE"
+		}
+		runtime "Release"
+		optimize "Full"
+		symbols "On"
+
+	filter "configurations:ASAN"
+		defines
+		{
+			"TRAP_RELWITHDEBINFO",
+			"TRAP_ASAN"
+		}
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=address",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=address",
+			"-static-libasan"
+		}
+
+	filter "configurations:UBSAN"
+		defines
+		{
+			"TRAP_RELWITHDEBINFO",
+			"TRAP_UBSAN"
+		}
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=undefined",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=undefined",
+			"-static-libubsan"
+		}
+
+	filter "configurations:LSAN"
+		defines
+		{
+			"TRAP_RELWITHDEBINFO",
+			"TRAP_LSAN"
+		}
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=leak",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=leak"
+		}
+
+	filter "configurations:TSAN"
+		staticruntime "off"
+		defines
+		{
+			"TRAP_RELWITHDEBINFO",
+			"TRAP_TSAN"
+		}
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=thread",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=thread",
+			"-static-libtsan"
+		}
 
 project "TRAP-Headless"
 	location "."
@@ -263,6 +389,7 @@ project "TRAP-Headless"
 	systemversion "latest"
 	vectorextensions "AVX2"
 	warnings "Extra"
+	architecture "x86_64"
 
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
@@ -297,14 +424,12 @@ project "TRAP-Headless"
 		"src/Network/Sockets/Platform/SocketImplWinAPI.cpp",
 	}
 
-	includedirs
-	{
-		"src"
-	}
+	includedirs "src"
 
-	sysincludedirs
+	externalincludedirs
 	{
 		"%{IncludeDir.IMGUI}",
+		"%{IncludeDir.IMGUIZMO}",
 		"%{IncludeDir.GLSLANG}",
 		"%{IncludeDir.SPIRV}",
 		"%{IncludeDir.SPIRVCROSS}",
@@ -312,19 +437,25 @@ project "TRAP-Headless"
 		"%{IncludeDir.ENTT}",
 		"%{IncludeDir.YAMLCPP}",
 		"%{IncludeDir.MODERNDIALOGS}",
-		"%{IncludeDir.VMA}"
+		"%{IncludeDir.VMA}",
+		"%{IncludeDir.BOX2D}",
+		"%{IncludeDir.TRACY}"
 	}
 
 	links
 	{
 		"ImGui",
+		"ImGuizmo",
 		"YAMLCpp",
 		"ModernDialogs",
 		"GLSLang",
 		"SPIRV",
 		"SPIRV-Cross-Core",
 		"SPIRV-Cross-GLSL",
-		"SPIRV-Cross-HLSL"
+		"SPIRV-Cross-HLSL",
+		"Box2D",
+		"TracyClient",
+		"GLSLang-Default-Resource-Limits"
 	}
 
 	defines
@@ -360,18 +491,21 @@ project "TRAP-Headless"
 			"src/Window/WindowingAPILinuxX11.cpp",
 			"src/Window/WindowingAPILinuxWayland.cpp",
 			"src/Network/Sockets/Platform/SocketImplLinux.h",
-			"src/Network/Sockets/Platform/SocketImplLinux.cpp"
+			"src/Network/Sockets/Platform/SocketImplLinux.cpp",
+
+			"%{IncludeDir.WAYLAND}/**.h"
 		}
 
 		GenerateWayland()
-		sysincludedirs
+		externalincludedirs
 		{
 			"%{IncludeDir.WAYLAND}"
 		}
 
-		files
+	filter { "action:gmake*", "toolset:gcc" }
+		buildoptions
 		{
-			"%{IncludeDir.WAYLAND}/**.h"
+			"-Wpedantic", "-Wconversion", "-Wshadow"
 		}
 
 	filter "configurations:Debug"
@@ -382,10 +516,21 @@ project "TRAP-Headless"
 	filter "configurations:Release"
 		defines "TRAP_RELEASE"
 		runtime "Release"
-		optimize "On"
+		optimize "Full"
 
 	filter "configurations:RelWithDebInfo"
 		defines "TRAP_RELWITHDEBINFO"
 		runtime "Release"
-		optimize "On"
+		optimize "Debug"
+		symbols "On"
+
+	filter "configurations:Profiling"
+		defines
+		{
+			"TRAP_RELEASE",
+			"TRACY_ENABLE"
+		}
+		editandcontinue "Off"
+		runtime "Release"
+		optimize "Full"
 		symbols "On"

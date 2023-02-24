@@ -1,12 +1,21 @@
 #include "TRAPEditorLayer.h"
 
-#include <Scene/SceneSerializer.h>
+#include "Graphics/RenderCommand.h"
+#include "Scene/SceneSerializer.h"
+
+#include <ImGuizmo.h>
+#include <imgui.h>
+#include <imgui_internal.h>
 
 TRAPEditorLayer::TRAPEditorLayer()
-	: Layer("TRAPEditorLayer"),
-	  m_viewportSize(),
-	  m_viewportFocused(false),
-	  m_viewportHovered(false)
+	: Layer("TRAPEditorLayer"), m_iconPlay(nullptr), m_iconStop(nullptr),
+	  m_renderTargetLoadActions(), m_renderTargetDesc(),
+	  m_renderTarget(nullptr), m_viewportSize(), m_viewportBounds(), m_viewportFocused(false),
+	  m_viewportHovered(false), m_gizmoType(-1), m_allowViewportCameraEvents(false),
+	  m_editorCamera(45.0f, 16.0f / 9.0f, 0.1f),
+	  m_startedCameraMovement(false), m_leftMouseBtnRepeatCount(0), m_entityChanged(false),
+	  m_mousePickBufferDesc(), m_mousePickBuffer(nullptr), m_IDRenderTarget(nullptr), m_activeScene(nullptr),
+	  m_editorScene(nullptr), m_sceneState(SceneState::Edit), m_showPhysicsColliders(false)
 {
 }
 
@@ -19,12 +28,20 @@ void TRAPEditorLayer::OnImGuiRender()
 	const bool optFullscreen = optFullscreenPersistent;
 	static ImGuiDockNodeFlags dockspaceFlags = ImGuiDockNodeFlags_None;
 
+	if(ImGui::IsMouseClicked(ImGuiMouseButton_Left) ||
+	   (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && !m_startedCameraMovement))
+	{
+		ImGui::FocusWindow(GImGui->HoveredWindow);
+		if(TRAP::Application::GetWindow()->GetCursorMode() != TRAP::Window::CursorMode::Normal)
+			TRAP::Application::GetWindow()->SetCursorMode(TRAP::Window::CursorMode::Normal);
+	}
+
 	//We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
 	//because it would be confusing to have two docking targets within each others.
 	ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
 	if(optFullscreen)
 	{
-		ImGuiViewport* viewport = ImGui::GetMainViewport();
+		const ImGuiViewport* const viewport = ImGui::GetMainViewport();
 		ImGui::SetNextWindowPos(viewport->Pos);
 		ImGui::SetNextWindowSize(viewport->Size);
 		ImGui::SetNextWindowViewport(viewport->ID);
@@ -39,7 +56,7 @@ void TRAPEditorLayer::OnImGuiRender()
 	if (dockspaceFlags & ImGuiDockNodeFlags_PassthruCentralNode)
 		windowFlags |= ImGuiWindowFlags_NoBackground;
 
-	//Important: Note that we proceed event if Begin() returns false (aka window is collapsed).
+	//Important: Note that we proceed even if Begin() returns false (aka window is collapsed).
 	//This is because we want to keep our DockSpace() active.
 	//If a DockSpace() is inactive, all active windows docked into it will lose their parent and become undocked.
 	//We cannot preserve the docking relationship between an active window and an inactive docking,
@@ -94,33 +111,117 @@ void TRAPEditorLayer::OnImGuiRender()
 	m_sceneGraphPanel.OnImGuiRender();
 
 	ImGui::Begin("Settings");
-	ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
-	ImGui::Text("GPU: %s", TRAP::Graphics::RendererAPI::GetRenderer()->GetCurrentGPUName().c_str());
-	ImGui::Text("FPS: %u", TRAP::Graphics::Renderer::GetFPS());
-	ImGui::Text("FrameTime: %.3fms", TRAP::Graphics::Renderer::GetFrameTime());
+    ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
+	ImGui::Text("GPU: %s", TRAP::Graphics::RenderCommand::GetGPUName().c_str());
+    ImGui::Text("CPU FPS: %u", TRAP::Graphics::RenderCommand::GetCPUFPS());
+    ImGui::Text("GPU FPS: %u", TRAP::Graphics::RenderCommand::GetGPUFPS());
+    ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
+    ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
+    ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
 	ImGui::Separator();
 	const TRAP::Graphics::Renderer2D::Statistics stats = TRAP::Graphics::Renderer2D::GetStats();
 	ImGui::Text("Renderer2D Stats:");
 	ImGui::Text("DrawCalls: %u", stats.DrawCalls);
 	ImGui::Text("Quads: %u", stats.QuadCount);
+	ImGui::Text("Circles: %u", stats.CircleCount);
+	ImGui::Text("Lines: %u", stats.LineCount);
 	ImGui::Text("Vertices: %u", stats.GetTotalVertexCount());
 	ImGui::Text("Indices: %u", stats.GetTotalIndexCount());
+	ImGui::Separator();
+	ImGui::Checkbox("Show physics colliders", &m_showPhysicsColliders);
 
 	ImGui::End();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0.0f, 0.0f });
 	ImGui::Begin("Viewport");
 
+	const ImVec2 viewportMinRegion = ImGui::GetWindowContentRegionMin();
+	const ImVec2 viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+	const ImVec2 viewportOffset = ImGui::GetWindowPos(); //Includes menu bar
+	m_viewportBounds[0] = {viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y};
+	m_viewportBounds[1] = {viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y};
+
 	m_viewportFocused = ImGui::IsWindowFocused();
 	m_viewportHovered = ImGui::IsWindowHovered();
-	TRAP::Application::GetImGuiLayer().BlockEvents(!m_viewportFocused || !m_viewportHovered);
+	TRAP::Application::GetImGuiLayer().BlockEvents(m_viewportHovered && (TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Right) ||
+	                                                                           TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Middle)));
 
 	const ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 	m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
 	ImGui::Image(m_renderTarget->GetTexture(), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0.0f, 0.0f }, ImVec2{ 1.0f, 1.0f });
+
+	m_allowViewportCameraEvents = (ImGui::IsMouseHoveringRect(ImVec2(m_viewportBounds[0].x, m_viewportBounds[0].y),
+	                                                          ImVec2(m_viewportBounds[1].x, m_viewportBounds[1].y)) && m_viewportFocused) || m_startedCameraMovement;
+
+	//Gizmos
+	TRAP::Entity selectedEntity = m_sceneGraphPanel.GetSelectedEntity();
+	if(selectedEntity && m_gizmoType != -1)
+	{
+		//Camera
+		auto cameraEntity = m_activeScene->GetPrimaryCameraEntity(); //Run time camera
+		TRAP::Math::Mat4 cameraProj{};
+		TRAP::Math::Mat4 cameraView{};
+		if(m_sceneState == SceneState::Edit || !cameraEntity)
+		{
+			cameraProj = m_editorCamera.GetProjectionMatrix();
+			cameraView = m_editorCamera.GetViewMatrix();
+		}
+		else if(m_sceneState == SceneState::Play)
+		{
+			const auto& camera = cameraEntity.GetComponent<TRAP::CameraComponent>().Camera;
+			cameraProj = camera.GetProjectionMatrix();
+			cameraView = TRAP::Math::Inverse(cameraEntity.GetComponent<TRAP::TransformComponent>().GetTransform());
+		}
+
+		//Entity transform
+		auto& tc = selectedEntity.GetComponent<TRAP::TransformComponent>();
+		TRAP::Math::Mat4 transform = tc.GetTransform();
+
+		// ImGuizmo::SetOrthographic(camera.GetProjectionType() == TRAP::SceneCamera::ProjectionType::Orthographic); //TODO 2D mode
+		ImGuizmo::SetOrthographic(false);
+		ImGuizmo::SetDrawlist();
+
+		ImGuizmo::SetRect(m_viewportBounds[0].x, m_viewportBounds[0].y,
+							m_viewportBounds[1].x - m_viewportBounds[0].x,
+							m_viewportBounds[1].y - m_viewportBounds[0].y);
+
+		//Snapping
+		const bool snap = TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Control) ||
+							TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_Control);
+		float snapValue = 0.5f;
+		if(m_gizmoType == ImGuizmo::OPERATION::ROTATE)
+			snapValue = 45.0f;
+
+		std::array<float, 3> snapValues = {snapValue, snapValue, snapValue};
+
+		//Disable gizmo while entity was just changed and the left mouse button is still pressed
+		ImGuizmo::Enable(!(m_entityChanged && m_leftMouseBtnRepeatCount != 0));
+
+		const bool manipulated = ImGuizmo::Manipulate(&cameraView[0].x, &cameraProj[0].x,
+														static_cast<ImGuizmo::OPERATION>(m_gizmoType),
+														ImGuizmo::LOCAL, &transform[0].x,
+														nullptr, snap ? snapValues.data() : nullptr);
+
+		if (manipulated &&
+			!TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Right) &&
+			!TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Middle))
+		{
+			TRAP::Math::Vec3 position{}, rotation{}, scale{};
+			TRAP::Math::Decompose(transform, position, rotation, scale);
+			{
+				const TRAP::Math::Vec3 deltaRotation = rotation - tc.Rotation;
+				tc.Position = position;
+				tc.Rotation += deltaRotation;
+				tc.Scale = scale;
+			}
+		}
+	}
+
 	ImGui::End();
 	ImGui::PopStyleVar();
+
+	UIToolbar();
 
 	ImGui::End();
 }
@@ -132,11 +233,27 @@ void TRAPEditorLayer::OnAttach()
 	//THIS IS THE TRAP EDITOR!!!11!!1!
 	TRAP::Application::GetWindow()->SetTitle("TRAP™ Editor");
 
+	//Copy Default editor layout (imgui.ini) if it doesn't exist
+	auto gameDocsFolder = TRAP::FileSystem::GetGameDocumentsFolderPath();
+	std::filesystem::path imguiIniPath;
+	if(gameDocsFolder)
+	{
+		imguiIniPath = *gameDocsFolder / "imgui.ini";
+		if(!TRAP::FileSystem::Exists(imguiIniPath))
+		{
+			if(TRAP::FileSystem::Copy("./Resources/Layouts/Default.ini", imguiIniPath))
+				ImGui::LoadIniSettingsFromDisk(imguiIniPath.u8string().c_str());
+		}
+	}
+
 	//Set Discord stuff
 	TRAP::Utils::Discord::SetActivity({"trapwhitelogo2048x2048", "TRAP™ Editor", "TRAP™ Editor", "Developed by TrappedGames"});
 
 	//Enable Developer features
 	TRAP::Application::SetHotReloading(true);
+
+	m_iconPlay = TRAP::Graphics::Texture::CreateFromFile("./Resources/Icons/Play.png", TRAP::Graphics::TextureType::Texture2D);
+	m_iconStop = TRAP::Graphics::Texture::CreateFromFile("./Resources/Icons/Stop.png", TRAP::Graphics::TextureType::Texture2D);
 
 	//Setup Viewport FrameBuffer
 	TRAP::Graphics::RendererAPI::RenderTargetDesc desc{};
@@ -149,62 +266,45 @@ void TRAPEditorLayer::OnAttach()
     m_renderTargetDesc.StartState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
     m_renderTargetDesc.Name = "Viewport Framebuffer";
 	m_renderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
+    m_renderTargetDesc.Name = "Viewport ID Framebuffer";
+	m_renderTargetDesc.Format = TRAP::Graphics::API::ImageFormat::R32_SINT;
+	m_IDRenderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
 
-	m_renderTargetLoadActions.ClearColorValues[0] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	m_renderTargetLoadActions.ClearColorValues[0] = { 0.1, 0.1, 0.1, 1.0 };
 	m_renderTargetLoadActions.LoadActionsColor[0] = TRAP::Graphics::RendererAPI::LoadActionType::Clear;
+	m_renderTargetLoadActions.ClearColorValues[1] = {-1.0, 0.0, 0.0, 0.0};
+	m_renderTargetLoadActions.LoadActionsColor[1] = TRAP::Graphics::RendererAPI::LoadActionType::Clear;
 
-	m_activeScene = TRAP::MakeRef<TRAP::Scene>();
+	//Setup Mouse Picking Buffer
+	m_mousePickBufferDesc.Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::PersistentMap |
+	                              TRAP::Graphics::RendererAPI::BufferCreationFlags::NoDescriptorViewCreation;
+	m_mousePickBufferDesc.Size = m_renderTargetDesc.Width * m_renderTargetDesc.Height * sizeof(int32_t);
+	m_mousePickBufferDesc.QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics;
+	m_mousePickBufferDesc.MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::GPUToCPU;
+	m_mousePickBufferDesc.StartState = TRAP::Graphics::RendererAPI::ResourceState::CopyDestination;
+	m_mousePickBufferDesc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::RWBuffer;
+	m_mousePickBufferDesc.Name = "Viewport ID Buffer";
+	m_mousePickBuffer = TRAP::Graphics::Buffer::Create(m_mousePickBufferDesc);
 
-#if 0
-	//Entity
-	auto square = m_activeScene->CreateEntity("Square Entity");
-	square.AddComponent<TRAP::SpriteRendererComponent>(TRAP::Math::Vec4{0.0f, 1.0f, 0.0f, 1.0f});
-
-	m_squareEntity = square;
-
-	m_cameraEntity = m_activeScene->CreateEntity("Camera Entity");
-	m_cameraEntity.AddComponent<TRAP::CameraComponent>();
-
-	class CameraController : public TRAP::ScriptableEntity
-	{
-	public:
-		void OnCreate() override
-		{
-			auto& pos = GetComponent<TRAP::TransformComponent>().Position;
-			pos.x = TRAP::Utils::Random::Get(-5.0f, 5.0f);
-		}
-
-		void OnDestroy() override
-		{}
-
-		void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override
-		{
-			auto& pos = GetComponent<TRAP::TransformComponent>().Position;
-			const float speed = 5.0f;
-
-			if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::W))
-				pos.y += speed * deltaTime;
-			if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::A))
-				pos.x -= speed * deltaTime;
-			if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::S))
-				pos.y -= speed * deltaTime;
-			if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::D))
-				pos.x += speed * deltaTime;
-		}
-
-		void OnTick() override
-		{}
-	};
-
-	m_cameraEntity.AddComponent<TRAP::NativeScriptComponent>().Bind<CameraController>();
-#endif
+	m_editorScene = TRAP::MakeRef<TRAP::Scene>();
+	m_activeScene = m_editorScene;
 	m_sceneGraphPanel.SetContext(m_activeScene);
+
+	m_editorCamera = TRAP::Graphics::EditorCamera(30.0f, 16.0f / 9.0f, 0.1f);
+
+	TRAP::Graphics::RenderCommand::SetCullMode(TRAP::Graphics::CullMode::None); //Culling
+	TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha,
+	                                                TRAP::Graphics::BlendConstant::OneMinusSrcAlpha); //Blending
+
+	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAPEditorLayer::OnDetach()
 {
+	m_mousePickBuffer.reset();
+	m_IDRenderTarget.reset();
 	m_renderTarget.reset();
 	m_activeScene.reset();
 }
@@ -218,12 +318,35 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 		(m_renderTarget->GetWidth() != static_cast<uint32_t>(m_viewportSize.x) ||
 		 m_renderTarget->GetHeight() != static_cast<uint32_t>(m_viewportSize.y)))
 	{
+		//Update RenderTargets
 		m_renderTargetDesc.Width = static_cast<uint32_t>(m_viewportSize.x);
 		m_renderTargetDesc.Height = static_cast<uint32_t>(m_viewportSize.y);
+    	m_renderTargetDesc.Format = TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM;
+    	m_renderTargetDesc.Name = "Viewport Framebuffer";
 		m_renderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
+    	m_renderTargetDesc.Name = "Viewport ID Framebuffer";
+    	m_renderTargetDesc.Format = TRAP::Graphics::API::ImageFormat::R32_SINT;
+		m_IDRenderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
+
+		//Update Mouse Picking Buffer
+		m_mousePickBufferDesc.Size = m_renderTargetDesc.Width * m_renderTargetDesc.Height * sizeof(int32_t);
+		m_mousePickBuffer = TRAP::Graphics::Buffer::Create(m_mousePickBufferDesc);
+
+		m_editorCamera.SetViewportSize(m_viewportSize.x, m_viewportSize.y);
 
 		m_activeScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
 	}
+
+	if((TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Right) ||
+		TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Middle)) &&
+	   !m_startedCameraMovement && m_viewportFocused && m_viewportHovered)
+	{
+		m_startedCameraMovement = true;
+	}
+
+	if(!TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Right) &&
+	   !TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Middle))
+		m_startedCameraMovement = false;
 
 	TRAP::Graphics::Renderer2D::ResetStats();
 
@@ -234,15 +357,48 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	barrier.RenderTarget = m_renderTarget;
 	barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
 	barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
-	TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
+	TRAP::Graphics::RendererAPI::RenderTargetBarrier IDBarrier = barrier;
+	IDBarrier.RenderTarget = m_IDRenderTarget;
+	TRAP::Graphics::RenderCommand::RenderTargetBarriers({barrier, IDBarrier});
 
 	//Framebuffer bind
-	TRAP::Graphics::RenderCommand::BindRenderTarget(m_renderTarget, nullptr, &m_renderTargetLoadActions);
+	TRAP::Graphics::RenderCommand::BindRenderTargets({ m_renderTarget, m_IDRenderTarget }, nullptr, &m_renderTargetLoadActions);
 	TRAP::Graphics::RenderCommand::SetViewport(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
 	TRAP::Graphics::RenderCommand::SetScissor(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
 
 	//Update Scene
-	m_activeScene->OnUpdate(deltaTime);
+	switch(m_sceneState)
+	{
+	case SceneState::Edit:
+	{
+		m_editorCamera.SetActive(m_allowViewportCameraEvents);
+		m_editorCamera.OnUpdate(deltaTime);
+
+		m_activeScene->OnUpdateEditor(deltaTime, m_editorCamera);
+		break;
+	}
+
+	case SceneState::Play:
+	{
+		m_activeScene->OnUpdateRuntime(deltaTime);
+		break;
+	}
+
+	// case SceneState::Pause:
+	{
+		// break;
+	}
+
+	// case SceneState::Simulate:
+	{
+		// break;
+	}
+
+	default:
+		break;
+	}
+
+	OnOverlayRender();
 
 	//Stop RenderPass (necessary for transition)
 	TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
@@ -251,21 +407,44 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	barrier.RenderTarget = m_renderTarget;
 	barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
 	barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
-	TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
+	IDBarrier = barrier;
+	IDBarrier.RenderTarget = m_IDRenderTarget;
+	TRAP::Graphics::RenderCommand::RenderTargetBarriers({barrier, IDBarrier});
+
+	MousePicking();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAPEditorLayer::OnTick()
+void TRAPEditorLayer::OnTick(const TRAP::Utils::TimeStep& deltaTime)
 {
 	//Update Scene
-	m_activeScene->OnTick();
+	switch(m_sceneState)
+	{
+	case SceneState::Edit:
+	{
+		break;
+	}
+
+	case SceneState::Play:
+	{
+		m_activeScene->OnTick(deltaTime);
+		m_activeScene->OnTickRuntime(deltaTime);
+		break;
+	}
+
+	default:
+		break;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAPEditorLayer::OnEvent(TRAP::Events::Event& event)
 {
+	if(m_allowViewportCameraEvents)
+		m_editorCamera.OnEvent(event);
+
 	TRAP::Events::EventDispatcher dispatcher(event);
 	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e) {return OnKeyPress(e); });
 }
@@ -280,36 +459,76 @@ bool TRAPEditorLayer::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 
 	const bool ctrlPressed = TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Control) || TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_Control);
 	const bool shiftPressed = TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Shift) || TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_Shift);
-	switch(event.GetKey())
+
+	//TODO Make these shortcuts customizable
+	if(!TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Right) && !ImGuizmo::IsUsing())
 	{
-	case TRAP::Input::Key::N:
-	{
-		if (ctrlPressed)
-			NewScene();
+		switch(event.GetKey())
+		{
+		case TRAP::Input::Key::N:
+		{
+			if (ctrlPressed)
+				NewScene();
 
-		break;
-	}
+			break;
+		}
 
-	case TRAP::Input::Key::O:
-	{
-		if (ctrlPressed)
-			OpenScene();
+		case TRAP::Input::Key::O:
+		{
+			if (ctrlPressed)
+				OpenScene();
 
-		break;
-	}
+			break;
+		}
 
-	case TRAP::Input::Key::S:
-	{
-		if (ctrlPressed && shiftPressed)
-			SaveSceneAs();
-		else if (shiftPressed)
-			SaveScene();
+		case TRAP::Input::Key::S:
+		{
+			if (ctrlPressed && shiftPressed)
+				SaveSceneAs();
+			else if (ctrlPressed)
+				SaveScene();
 
-		break;
-	}
+			break;
+		}
 
-	default:
-		break;
+		//Entity Shortcuts
+		case TRAP::Input::Key::D: //TODO Also duplicate if left clicking on a translation gizmoe while holding shift
+		{
+			if(ctrlPressed)
+				DuplicateEntity();
+			break;
+		}
+		case TRAP::Input::Key::Delete:
+		{
+			DeleteEntity();
+			break;
+		}
+
+		//Gizmos
+		case TRAP::Input::Key::Q:
+		{
+				m_gizmoType = -1;
+			break;
+		}
+		case TRAP::Input::Key::W:
+		{
+			m_gizmoType = ImGuizmo::OPERATION::TRANSLATE;
+			break;
+		}
+		case TRAP::Input::Key::E:
+		{
+			m_gizmoType = ImGuizmo::OPERATION::ROTATE;
+			break;
+		}
+		case TRAP::Input::Key::R:
+		{
+			m_gizmoType = ImGuizmo::OPERATION::SCALE;
+			break;
+		}
+
+		default:
+			break;
+		}
 	}
 
 	return false;
@@ -330,17 +549,24 @@ void TRAPEditorLayer::NewScene()
 
 void TRAPEditorLayer::OpenScene()
 {
+	if(m_sceneState != SceneState::Edit)
+		OnSceneStop();
+
 	const std::string path = TRAP::Utils::Dialogs::OpenSingleFile("TRAP Scene", m_lastScenePath.empty() ? "" : m_lastScenePath, { {"TRAP Scene", "*.TRAPScene;*.TPScene"} });
 	if (!path.empty())
 	{
 		m_lastScenePath = path;
 
-		m_activeScene = TRAP::MakeRef<TRAP::Scene>();
-		m_activeScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
-		m_sceneGraphPanel.SetContext(m_activeScene);
+		TRAP::Ref<TRAP::Scene> newScene = TRAP::MakeRef<TRAP::Scene>();
+		TRAP::SceneSerializer serializer(newScene);
+		if(serializer.Deserialize(m_lastScenePath))
+		{
+			m_editorScene = newScene;
+			m_editorScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
+			m_sceneGraphPanel.SetContext(m_editorScene);
 
-		TRAP::SceneSerializer serializer(m_activeScene);
-		serializer.Deserialize(m_lastScenePath);
+			m_activeScene = m_editorScene;
+		}
 	}
 }
 
@@ -355,8 +581,7 @@ void TRAPEditorLayer::SaveScene()
 	if (!path.empty())
 		m_lastScenePath = path;
 
-	TRAP::SceneSerializer serializer(m_activeScene);
-	serializer.Serialize(m_lastScenePath);
+	SerializeScene(m_activeScene, m_lastScenePath);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -368,8 +593,238 @@ void TRAPEditorLayer::SaveSceneAs()
 	if (!path.empty())
 	{
 		m_lastScenePath = path;
-
-		TRAP::SceneSerializer serializer(m_activeScene);
-		serializer.Serialize(m_lastScenePath);
+		SerializeScene(m_activeScene, m_lastScenePath);
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAPEditorLayer::OnOverlayRender()
+{
+	static constexpr float zIndex = 0.001f;
+	float colliderProjectionZ = 0.0f;
+	if(m_sceneState == SceneState::Play && m_activeScene->GetPrimaryCameraEntity() != TRAP::Entity())
+	{
+		TRAP::Entity camera = m_activeScene->GetPrimaryCameraEntity();
+		const auto& transformComponent = camera.GetComponent<TRAP::TransformComponent>();
+
+		//Get forward direction from camera
+		const TRAP::Math::Quat orientation = TRAP::Math::Quat(transformComponent.Rotation);
+		const TRAP::Math::Vec3 forwardDirection = orientation * TRAP::Math::Vec3(0.0f, 0.0f, 1.0f);
+		colliderProjectionZ = forwardDirection.z * zIndex;
+
+		TRAP::Graphics::Renderer2D::BeginScene(camera.GetComponent<TRAP::CameraComponent>().Camera,
+		                                       camera.GetComponent<TRAP::TransformComponent>().GetTransform());
+	}
+	else
+	{
+		colliderProjectionZ = m_editorCamera.GetForwardDirection().z * zIndex;
+		TRAP::Graphics::Renderer2D::BeginScene(m_editorCamera);
+	}
+
+	if(m_showPhysicsColliders)
+	{
+		//Box Collider 2D visualization
+		{
+			auto view = m_activeScene->GetAllEntitiesWithComponents<TRAP::TransformComponent, TRAP::BoxCollider2DComponent>();
+			for(auto entity : view)
+			{
+				auto [transform, boxCollider] = view.get<TRAP::TransformComponent, TRAP::BoxCollider2DComponent>(entity);
+
+				const TRAP::Math::Vec3 position = transform.Position + TRAP::Math::Vec3(boxCollider.Offset, -colliderProjectionZ);
+				const float rotation = transform.Rotation.z;
+				const TRAP::Math::Vec3 scale = transform.Scale * TRAP::Math::Vec3(boxCollider.Size * 2.0f, 1.0f);
+
+				const TRAP::Math::Mat4 trans = TRAP::Math::Translate(position) *
+											TRAP::Math::Rotate(rotation, {0.0f, 0.0f, 1.0f}) *
+											TRAP::Math::Scale(scale);
+
+				TRAP::Graphics::Renderer2D::DrawRect(trans, TRAP::Math::Vec4(0.0f, 1.0f, 0.0f, 1.0f));
+			}
+		}
+
+		//Circle Collider 2D visualization
+		{
+			auto view = m_activeScene->GetAllEntitiesWithComponents<TRAP::TransformComponent, TRAP::CircleCollider2DComponent>();
+			for(auto entity : view)
+			{
+				auto [transform, circleCollider] = view.get<TRAP::TransformComponent, TRAP::CircleCollider2DComponent>(entity);
+
+				const TRAP::Math::Vec3 position = transform.Position + TRAP::Math::Vec3(circleCollider.Offset, -colliderProjectionZ);
+				const TRAP::Math::Vec3 scale = transform.Scale * TRAP::Math::Vec3(circleCollider.Radius * 2.0f);
+
+				const TRAP::Math::Mat4 trans = TRAP::Math::Translate(position) * TRAP::Math::Scale(scale);
+
+				TRAP::Graphics::Renderer2D::DrawCircle(trans, TRAP::Math::Vec4(0.0f, 1.0f, 0.0f, 1.0f), 0.01f);
+			}
+		}
+	}
+
+	TRAP::Graphics::Renderer2D::EndScene();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAPEditorLayer::MousePicking()
+{
+	if(!m_viewportHovered)
+		return;
+
+	if(TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Left) && m_leftMouseBtnRepeatCount == 0)
+	{
+		++m_leftMouseBtnRepeatCount;
+
+		//Get mouse position relative to viewport
+		ImVec2 mousePos = ImGui::GetMousePos();
+		mousePos.x -= m_viewportBounds[0].x;
+		mousePos.y -= m_viewportBounds[0].y;
+		const TRAP::Math::Vec2 viewportSize = m_viewportBounds[1] - m_viewportBounds[0];
+		int32_t mouseX = static_cast<int32_t>(mousePos.x);
+		int32_t mouseY = static_cast<int32_t>(mousePos.y);
+
+		//Out of viewport bounds check (maybe redundant, doesnt hurt)
+		if(mouseX < 0 || mouseY < 0 || mouseX >= static_cast<int32_t>(viewportSize.x) || mouseY >= static_cast<int32_t>(viewportSize.y))
+			return;
+
+		//Copy the RenderTarget contents to our CPU visible buffer
+		TRAP::Graphics::API::SyncToken sync{};
+		TRAP::Graphics::RendererAPI::TextureCopyDesc copyDesc{};
+		copyDesc.Texture = m_IDRenderTarget->GetTexture();
+		copyDesc.Buffer = m_mousePickBuffer;
+		copyDesc.TextureState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
+		copyDesc.QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics;
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->CopyResource(copyDesc, &sync);
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForToken(&sync);
+
+		//Bring the RenderTarget back into its original state
+		TRAP::Graphics::RenderCommand::Transition(m_IDRenderTarget->GetTexture(),
+		                                          TRAP::Graphics::RendererAPI::ResourceState::CopySource,
+												  TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource);
+
+		//Read pixel of the CPU visible buffer
+		TRAP::Graphics::RendererAPI::ReadRange range{0, m_renderTargetDesc.Width * m_renderTargetDesc.Height * sizeof(int32_t)};
+		m_mousePickBuffer->MapBuffer(&range);
+
+		//Get our wanted value
+		const int32_t id = *(static_cast<int32_t*>(m_mousePickBuffer->GetCPUMappedAddress()) + (mouseY * m_renderTargetDesc.Width + mouseX));
+		if(m_activeScene)
+		{
+			const TRAP::Entity entity{static_cast<entt::entity>(id), m_activeScene.get()};
+			if(entity != m_sceneGraphPanel.GetSelectedEntity() && !ImGuizmo::IsUsing())
+			{
+				if ((!ImGuizmo::IsOver() && entity != TRAP::Entity()) || id != -1)
+				{
+					m_sceneGraphPanel.SetSelectedEntity(entity);
+					m_entityChanged = true;
+				}
+			}
+		}
+		// TP_TRACE("Mouse = {", mouseX, "}, {", mouseY, "}, ID = {", id, "}");
+
+		m_mousePickBuffer->UnMapBuffer();
+	}
+	else if(TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Left))
+		++m_leftMouseBtnRepeatCount;
+	else
+	{
+		m_leftMouseBtnRepeatCount = 0;
+		m_entityChanged = false;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAPEditorLayer::DeleteEntity()
+{
+	if(m_sceneState != SceneState::Edit)
+		return;
+
+	TRAP::Entity selectedEntity = m_sceneGraphPanel.GetSelectedEntity();
+	if(selectedEntity)
+	{
+		m_sceneGraphPanel.SetSelectedEntity(TRAP::Entity(entt::null, m_editorScene.get()));
+		m_editorScene->DestroyEntity(selectedEntity);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAPEditorLayer::DuplicateEntity()
+{
+	if(m_sceneState != SceneState::Edit)
+		return;
+
+	TRAP::Entity selectedEntity = m_sceneGraphPanel.GetSelectedEntity();
+	if(selectedEntity)
+		m_editorScene->DuplicateEntity(selectedEntity);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAPEditorLayer::SerializeScene(TRAP::Ref<TRAP::Scene> scene, const std::filesystem::path& path)
+{
+	TRAP::SceneSerializer serializer(scene);
+	serializer.Serialize(path.u8string());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAPEditorLayer::UIToolbar()
+{
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 2.0f));
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0.0f, 0.0f));
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+	const auto& colors = ImGui::GetStyle().Colors;
+	const auto& buttonHovered = colors[ImGuiCol_ButtonHovered];
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(buttonHovered.x, buttonHovered.y, buttonHovered.z, 0.5f));
+	const auto& buttonActive = colors[ImGuiCol_ButtonActive];
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
+
+	ImGui::Begin("##toolbar", nullptr, /*ImGuiWindowFlags_NoDecoration | */ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+	{
+		const float size = ImGui::GetWindowHeight() - 4.0f;
+		TRAP::Ref<TRAP::Graphics::Texture> icon = m_sceneState == SceneState::Edit ? m_iconPlay : m_iconStop;
+		ImGui::SameLine((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
+		if(ImGui::ImageButton(icon, ImVec2(size, size), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f)))
+		{
+			if(m_sceneState == SceneState::Edit)
+				OnScenePlay();
+			else if(m_sceneState == SceneState::Play)
+				OnSceneStop();
+			// else if(m_sceneState == SceneState::Pause)
+			// 	OnScenePause();
+			// else if(m_sceneState == SceneState::Simulate)
+			// 	OnSceneSimulate();
+		}
+	}
+
+	ImGui::PopStyleVar(2);
+	ImGui::PopStyleColor(3);
+
+	ImGui::End();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAPEditorLayer::OnScenePlay()
+{
+	m_sceneState = SceneState::Play;
+
+	m_activeScene = TRAP::Scene::Copy(m_editorScene);
+	m_activeScene->OnRuntimeStart();
+
+	m_sceneGraphPanel.SetContext(m_activeScene);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAPEditorLayer::OnSceneStop()
+{
+	m_activeScene->OnRuntimeStop();
+
+	m_sceneState = SceneState::Edit;
+
+	m_activeScene = m_editorScene;
+
+	m_sceneGraphPanel.SetContext(m_activeScene);
 }

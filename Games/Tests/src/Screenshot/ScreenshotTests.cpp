@@ -3,8 +3,7 @@
 #include <ImageLoader/PortableMaps/PPMImage.h>
 
 ScreenshotTests::ScreenshotTests()
-	: Layer("Screenshot"), m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) /
-	 										  static_cast<float>(TRAP::Application::GetWindow()->GetHeight()), true)
+	: Layer("Screenshot"), m_cameraController(TRAP::Application::GetWindow()->GetAspectRatio(), true)
 {
 }
 
@@ -42,7 +41,7 @@ void ScreenshotTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	time += deltaTime.GetSeconds();
 	if(time >= 3.0f && !done)
 	{
-		TRAP::Scope<TRAP::Image> renderedImg = TRAP::Graphics::RendererAPI::GetRenderer()->CaptureScreenshot();
+		TRAP::Scope<TRAP::Image> renderedImg = TRAP::Graphics::RendererAPI::GetRenderer()->CaptureScreenshot(TRAP::Application::GetWindow());
 		TRAP::INTERNAL::PPMImage::Save(renderedImg.get(), "output.ppm");
 		done = true;
 	}

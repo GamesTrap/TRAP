@@ -6,6 +6,8 @@
 #include "Graphics/API/Objects/AftermathTracker.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/API/Vulkan/Objects/VulkanSemaphore.h"
+#include "Graphics/API/Objects/Semaphore.h"
 #include "Application.h"
 
 TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice> physicalDevice,
@@ -21,7 +23,9 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	  m_computeQueueIndex(),
 	  m_device()
 {
-	TRAP_ASSERT(m_physicalDevice, "physicalDevice is nullptr");
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(m_physicalDevice, "VulkanDevice(): Vulkan PhysicalDevice is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Creating Device");
@@ -45,7 +49,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	}
 #endif
 
-	if (std::find_if(extensions.begin(), extensions.end(), [](const char* ext)
+	if (std::find_if(extensions.begin(), extensions.end(), [](const char* const ext)
 		{
 			return std::strcmp(ext, VK_EXT_FRAGMENT_SHADER_INTERLOCK_EXTENSION_NAME) == 0;
 		}) != extensions.end())
@@ -95,6 +99,8 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	rayQueryFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_QUERY_FEATURES_KHR;
 	VkPhysicalDeviceFragmentShadingRateFeaturesKHR shadingRateFeatures{};
 	shadingRateFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR;
+	VkPhysicalDeviceTimelineSemaphoreFeaturesKHR timelineSemaphoreFeatures{};
+	timelineSemaphoreFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES_KHR;
 
 	if (VulkanRenderer::s_bufferDeviceAddressExtension)
 	{
@@ -121,6 +127,13 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	if(VulkanRenderer::s_shadingRate)
 	{
 		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&shadingRateFeatures);
+		base = base->pNext;
+	}
+
+	//Timeline semaphore
+	if(VulkanRenderer::s_timelineSemaphore)
+	{
+		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&timelineSemaphoreFeatures);
 		base = base->pNext;
 	}
 
@@ -178,6 +191,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	                                                                          extensions);
 
 	VkCall(vkCreateDevice(m_physicalDevice->GetVkPhysicalDevice(), &deviceCreateInfo, nullptr, &m_device));
+	TRAP_ASSERT(m_device, "VulkanDevice(): No Vulkan device!");
 
 	VkLoadDevice(m_device);
 
@@ -186,23 +200,43 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	VulkanRenderer::s_bufferDeviceAddressExtension = bufferDeviceAddressFeatures.bufferDeviceAddress;
 	VulkanRenderer::s_samplerYcbcrConversionExtension = ycbcrFeatures.samplerYcbcrConversion;
 	VulkanRenderer::s_shaderDrawParameters = shaderDrawParametersFeatures.shaderDrawParameters;
+	VulkanRenderer::s_timelineSemaphore = timelineSemaphoreFeatures.timelineSemaphore;
 	LoadShadingRateCaps(shadingRateFeatures);
 
-#if defined(ENABLE_GRAPHICS_DEBUG)
+#ifdef ENABLE_GRAPHICS_DEBUG
 	if (m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName[0] != '\0')
 		SetDeviceName(m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName);
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	m_reflexSemaphore = {};
+	if (m_physicalDevice->GetVendor() == RendererAPI::GPUVendor::NVIDIA &&
+	    VulkanRenderer::s_timelineSemaphore &&
+		TRAP::Utils::IsWindows10BuildOrGreaterWin32(10240))
+	{
+		TP_WARN(Log::RendererVulkanDevicePrefix, "The following VkSemaphore error comes from NVIDIA Reflex and can be ignored");
+		const NvLL_VK_Status status = NvLL_VK_InitLowLatencyDevice(m_device, reinterpret_cast<HANDLE*>(&m_reflexSemaphore));
+		VkReflexCall(status);
+		if(status == NVLL_VK_OK)
+			RendererAPI::GPUSettings.ReflexSupported = true;
+	}
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 {
-	TRAP_ASSERT(m_device);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Destroying Device");
 #endif
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	if(RendererAPI::GPUSettings.ReflexSupported)
+		vkDestroySemaphore(m_device, m_reflexSemaphore, nullptr);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
 	vkDestroyDevice(m_device, nullptr);
 	m_device = nullptr;
 
@@ -214,22 +248,28 @@ TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDevice TRAP::Graphics::API::VulkanDevice::GetVkDevice() const
+[[nodiscard]] VkDevice TRAP::Graphics::API::VulkanDevice::GetVkDevice() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_device;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanPhysicalDevice* TRAP::Graphics::API::VulkanDevice::GetPhysicalDevice() const
+[[nodiscard]] TRAP::Graphics::API::VulkanPhysicalDevice* TRAP::Graphics::API::VulkanDevice::GetPhysicalDevice() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_physicalDevice.get();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<std::string>& TRAP::Graphics::API::VulkanDevice::GetUsedPhysicalDeviceExtensions() const
+[[nodiscard]] const std::vector<std::string>& TRAP::Graphics::API::VulkanDevice::GetUsedPhysicalDeviceExtensions() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_deviceExtensions;
 }
 
@@ -237,6 +277,8 @@ const std::vector<std::string>& TRAP::Graphics::API::VulkanDevice::GetUsedPhysic
 
 void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndices()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	FindQueueFamilyIndex(RendererAPI::QueueType::Graphics, m_graphicsQueueFamilyIndex, m_graphicsQueueIndex);
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Graphics Queue Family Index ",
@@ -258,6 +300,8 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndices()
 
 void TRAP::Graphics::API::VulkanDevice::WaitIdle() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	VkCall(vkDeviceWaitIdle(m_device));
 }
 
@@ -266,6 +310,8 @@ void TRAP::Graphics::API::VulkanDevice::WaitIdle() const
 void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::QueueType queueType,
                                                              uint8_t& queueFamilyIndex, uint8_t& queueIndex)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	uint32_t qfi = std::numeric_limits<uint32_t>::max();
 	uint32_t qi = std::numeric_limits<uint32_t>::max();
 	const VkQueueFlags requiredFlags = QueueTypeToVkQueueFlags(queueType);
@@ -342,6 +388,8 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
                                                              VkQueueFamilyProperties& queueFamilyProperties,
 															 uint8_t& queueFamilyIndex, uint8_t& queueIndex)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	uint32_t qfi = std::numeric_limits<uint32_t>::max();
 	uint32_t qi = std::numeric_limits<uint32_t>::max();
 	const VkQueueFlags requiredFlags = QueueTypeToVkQueueFlags(queueType);
@@ -415,57 +463,84 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint8_t TRAP::Graphics::API::VulkanDevice::GetGraphicsQueueFamilyIndex() const
+[[nodiscard]] uint8_t TRAP::Graphics::API::VulkanDevice::GetGraphicsQueueFamilyIndex() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_graphicsQueueFamilyIndex;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint8_t TRAP::Graphics::API::VulkanDevice::GetTransferQueueFamilyIndex() const
+[[nodiscard]] uint8_t TRAP::Graphics::API::VulkanDevice::GetTransferQueueFamilyIndex() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_transferQueueFamilyIndex;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueFamilyIndex() const
+[[nodiscard]] uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueFamilyIndex() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_computeQueueFamilyIndex;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 3> TRAP::Graphics::API::VulkanDevice::GetQueueFamilyIndices() const
+[[nodiscard]] std::array<uint8_t, 3> TRAP::Graphics::API::VulkanDevice::GetQueueFamilyIndices() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return { m_graphicsQueueFamilyIndex, m_transferQueueFamilyIndex, m_computeQueueFamilyIndex };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint8_t TRAP::Graphics::API::VulkanDevice::GetGraphicsQueueIndex() const
+[[nodiscard]] uint8_t TRAP::Graphics::API::VulkanDevice::GetGraphicsQueueIndex() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_graphicsQueueIndex;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint8_t TRAP::Graphics::API::VulkanDevice::GetTransferQueueIndex() const
+[[nodiscard]] uint8_t TRAP::Graphics::API::VulkanDevice::GetTransferQueueIndex() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_transferQueueIndex;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueIndex() const
+[[nodiscard]] uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueIndex() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_computeQueueIndex;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifdef NVIDIA_REFLEX_AVAILABLE
+[[nodiscard]] VkSemaphore& TRAP::Graphics::API::VulkanDevice::GetReflexSemaphore() noexcept
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	return m_reflexSemaphore;
+}
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanDevice::SetDeviceName(const std::string_view name) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	if(!VulkanRenderer::s_debugMarkerSupport)
 		return;
 
@@ -480,11 +555,15 @@ void TRAP::Graphics::API::VulkanDevice::SetDeviceName(const std::string_view nam
 
 void TRAP::Graphics::API::VulkanDevice::LoadShadingRateCaps(const VkPhysicalDeviceFragmentShadingRateFeaturesKHR& shadingRateFeatures) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	if(!VulkanRenderer::s_shadingRate)
 		return;
 
 	if(shadingRateFeatures.pipelineFragmentShadingRate)
 		RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerDraw;
+	if(shadingRateFeatures.primitiveFragmentShadingRate)
+		RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerPrimitive;
 	if(shadingRateFeatures.attachmentFragmentShadingRate)
 		RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerTile;
 

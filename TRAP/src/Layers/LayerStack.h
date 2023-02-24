@@ -1,10 +1,12 @@
 #ifndef TRAP_LAYERSTACK_H
 #define TRAP_LAYERSTACK_H
 
-#include "Layer.h"
+#include "Core/Base.h"
 
 namespace TRAP
 {
+	class Layer;
+
 	class LayerStack
 	{
 	public:
@@ -44,43 +46,43 @@ namespace TRAP
 		/// Layer stack begin iterator.
 		/// </summary>
 		/// <returns>Layer stack iterator.</returns>
-		std::vector<std::unique_ptr<Layer>>::iterator begin();
+		[[nodiscard]] std::vector<std::unique_ptr<Layer>>::iterator begin() noexcept;
 		/// <summary>
 		/// Layer stack end iterator.
 		/// </summary>
 		/// <returns>Layer stack iterator.</returns>
-		std::vector<std::unique_ptr<Layer>>::iterator end();
+		[[nodiscard]] std::vector<std::unique_ptr<Layer>>::iterator end() noexcept;
 		/// <summary>
 		/// Layer stack reverse begin iterator.
 		/// </summary>
 		/// <returns>Layer stack reverse iterator.</returns>
-		std::vector<std::unique_ptr<Layer>>::reverse_iterator rbegin();
+		[[nodiscard]] std::vector<std::unique_ptr<Layer>>::reverse_iterator rbegin() noexcept;
 		/// <summary>
 		/// Layer stack reverse end iterator.
 		/// </summary>
 		/// <returns>Layer stack reverse iterator.</returns>
-		std::vector<std::unique_ptr<Layer>>::reverse_iterator rend();
+		[[nodiscard]] std::vector<std::unique_ptr<Layer>>::reverse_iterator rend() noexcept;
 
 		/// <summary>
 		/// Layer stack const begin iterator.
 		/// </summary>
 		/// <returns>Layer stack const iterator.</returns>
-		std::vector<std::unique_ptr<Layer>>::const_iterator begin() const;
+		[[nodiscard]] std::vector<std::unique_ptr<Layer>>::const_iterator begin() const noexcept;
 		/// <summary>
 		/// Layer stack const end iterator.
 		/// </summary>
 		/// <returns>Layer stack const iterator.</returns>
-		std::vector<std::unique_ptr<Layer>>::const_iterator end() const;
+		[[nodiscard]] std::vector<std::unique_ptr<Layer>>::const_iterator end() const noexcept;
 		/// <summary>
 		/// Layer stack const reverse begin iterator.
 		/// </summary>
 		/// <returns>Layer stack reverse iterator.</returns>
-		std::vector<std::unique_ptr<Layer>>::const_reverse_iterator rbegin() const;
+		[[nodiscard]] std::vector<std::unique_ptr<Layer>>::const_reverse_iterator rbegin() const noexcept;
 		/// <summary>
 		/// Layer stack const reverse end iterator.
 		/// </summary>
 		/// <returns>Layer stack reverse iterator.</returns>
-		std::vector<std::unique_ptr<Layer>>::const_reverse_iterator rend() const;
+		[[nodiscard]] std::vector<std::unique_ptr<Layer>>::const_reverse_iterator rend() const noexcept;
 
 	private:
 		std::vector<std::unique_ptr<Layer>> m_layers;

@@ -24,25 +24,25 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanSemaphore(const VulkanSemaphore&) = default;
+		VulkanSemaphore(const VulkanSemaphore&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanSemaphore& operator=(const VulkanSemaphore&) = default;
+		VulkanSemaphore& operator=(const VulkanSemaphore&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanSemaphore(VulkanSemaphore&&) = default;
+		VulkanSemaphore(VulkanSemaphore&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanSemaphore& operator=(VulkanSemaphore&&) = default;
+		VulkanSemaphore& operator=(VulkanSemaphore&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the Vulkan semaphore handle.
 		/// </summary>
 		/// <returns>Vulkan semaphore handle.</returns>
-		VkSemaphore GetVkSemaphore() const;
+		[[nodiscard]] VkSemaphore GetVkSemaphore() const noexcept;
 
 	private:
 		friend uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,

@@ -1,8 +1,14 @@
 #ifndef TRAP_LAYER_H
 #define TRAP_LAYER_H
 
+#include <string>
+
 #include "Utils/Time/TimeStep.h"
-#include "Events/Event.h"
+
+namespace TRAP::Events
+{
+	class Event;
+}
 
 namespace TRAP
 {
@@ -13,23 +19,23 @@ namespace TRAP
 		/// Constructor.
 		/// </summary>
 		/// <param name="debugName">Layer name for debugging.</param>
-		explicit Layer(std::string debugName = "Layer");
+		explicit Layer(std::string debugName = "Layer") noexcept;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Layer(const Layer&) = default;
+		Layer(const Layer&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Layer& operator=(const Layer&) = default;
+		Layer& operator=(const Layer&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Layer(Layer&&) = default;
+		Layer(Layer&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Layer& operator=(Layer&&) = default;
+		Layer& operator=(Layer&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -51,7 +57,8 @@ namespace TRAP
 		/// <summary>
 		/// Called every tick (default 100 ticks).
 		/// </summary>
-		virtual void OnTick();
+		/// <param name="deltaTime">Time difference between current and last tick.</param>
+		virtual void OnTick(const Utils::TimeStep& deltaTime);
 		/// <summary>
 		/// Called every frame.
 		/// Should be used for debug GUIs.
@@ -67,7 +74,7 @@ namespace TRAP
 		/// Retrieve the debug name of the layer.
 		/// </summary>
 		/// <returns>Name of the layer.</returns>
-		std::string GetName() const;
+		[[nodiscard]] std::string GetName() const noexcept;
 
 	protected:
 		std::string m_DebugName;

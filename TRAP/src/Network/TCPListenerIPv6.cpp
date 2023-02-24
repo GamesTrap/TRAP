@@ -1,31 +1,3 @@
-/*
-////////////////////////////////////////////////////////////
-//
-// SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
-//
-// This software is provided 'as-is', without any express or implied warranty.
-// In no event will the authors be held liable for any damages arising from the use of this software.
-//
-// Permission is granted to anyone to use this software for any purpose,
-// including commercial applications, and to alter it and redistribute it freely,
-// subject to the following restrictions:
-//
-// 1. The origin of this software must not be misrepresented;
-//    you must not claim that you wrote the original software.
-//    If you use this software in a product, an acknowledgment
-//    in the product documentation would be appreciated but is not required.
-//
-// 2. Altered source versions must be plainly marked as such,
-//    and must not be misrepresented as being the original software.
-//
-// 3. This notice may not be removed or altered from any source distribution.
-//
-////////////////////////////////////////////////////////////
-
-Modified by: Jan "GamesTrap" Schuerkamp
-*/
-
 #include "TRAPPCH.h"
 #include "TCPListenerIPv6.h"
 
@@ -34,17 +6,20 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Sockets/TCPSocketIPv6.h"
 #include "Sockets/SocketImpl.h"
 #include "Utils/Utils.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 
-TRAP::Network::TCPListenerIPv6::TCPListenerIPv6()
+TRAP::Network::TCPListenerIPv6::TCPListenerIPv6() noexcept
 	: Socket(Type::TCP)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint16_t TRAP::Network::TCPListenerIPv6::GetLocalPort() const
+[[nodiscard]] uint16_t TRAP::Network::TCPListenerIPv6::GetLocalPort() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 		return 0; //We failed to retrieve the port
 
@@ -66,8 +41,10 @@ uint16_t TRAP::Network::TCPListenerIPv6::GetLocalPort() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPListenerIPv6::Listen(const uint16_t port, const IPv6Address& address)
+[[nodiscard]] TRAP::Network::Socket::Status TRAP::Network::TCPListenerIPv6::Listen(const uint16_t port, const IPv6Address& address)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//Close the socket if it is already bound
 	Close();
 
@@ -102,14 +79,18 @@ TRAP::Network::Socket::Status TRAP::Network::TCPListenerIPv6::Listen(const uint1
 
 void TRAP::Network::TCPListenerIPv6::Close()
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//Simply close the socket
 	Socket::Close();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPListenerIPv6::Accept(TCPSocketIPv6& socket) const
+[[nodiscard]] TRAP::Network::Socket::Status TRAP::Network::TCPListenerIPv6::Accept(TCPSocketIPv6& socket) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//Make sure that we're listening
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 	{

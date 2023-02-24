@@ -53,24 +53,24 @@ namespace TRAP::Graphics::API
 		/// Retrieve the current VkDescriptorPool handle.
 		/// </summary>
 		/// <returns>VkDescriptorPool handle.</returns>
-		VkDescriptorPool GetCurrentVkDescriptorPool() const;
+		[[nodiscard]] VkDescriptorPool GetCurrentVkDescriptorPool() const noexcept;
 		/// <summary>
 		/// Retrieve the descriptor pool sizes for each descriptor type.
 		/// </summary>
 		/// <returns>Descriptor pool sizes.</returns>
-		const std::vector<VkDescriptorPoolSize>& GetDescriptorPoolSizes() const;
+		[[nodiscard]] const std::vector<VkDescriptorPoolSize>& GetDescriptorPoolSizes() const noexcept;
 		/// <summary>
 		/// Retrieve the count of used descriptor sets.
 		/// </summary>
 		/// <returns>Count of used descriptor sets.</returns>
-		uint32_t GetUsedDescriptorSetsCount() const;
+		[[nodiscard]] uint32_t GetUsedDescriptorSetsCount() const noexcept;
 
 		/// <summary>
 		/// Retrieve a new descriptor set from description.
 		/// </summary>
 		/// <param name="desc">Descriptor set description.</param>
 		/// <returns>New descriptor set.</returns>
-		TRAP::Scope<DescriptorSet> RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc) override;
+		[[nodiscard]] TRAP::Scope<DescriptorSet> RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc) override;
 
 		inline static constexpr uint32_t DescriptorTypeRangeSize = DESCRIPTOR_TYPE_RANGE_SIZE - 1;
 	private:
@@ -79,13 +79,13 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="layout">Descriptor set layout.</param>
 		/// <returns>VkDescriptorSet handle.</returns>
-		VkDescriptorSet RetrieveVkDescriptorSet(VkDescriptorSetLayout layout);
+		[[nodiscard]] VkDescriptorSet RetrieveVkDescriptorSet(VkDescriptorSetLayout layout);
 
 		VkDescriptorPool m_currentPool;
 		std::vector<VkDescriptorPool> m_descriptorPools;
 		std::vector<VkDescriptorPoolSize> m_descriptorPoolSizes;
 		uint32_t m_usedDescriptorSetCount;
-		std::mutex m_mutex;
+		TracyLockable(std::mutex, m_mutex);
 
 		TRAP::Ref<VulkanDevice> m_device;
 

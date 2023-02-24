@@ -2,7 +2,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -30,6 +30,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #define TRAP_NETWORK_SOCKETSELECTOR_H
 
 #include "Core/Base.h"
+
 namespace TRAP::Utils
 {
 	struct TimeStep;
@@ -63,11 +64,11 @@ namespace TRAP::Network
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		SocketSelector(SocketSelector&&);
+		SocketSelector(SocketSelector&&) noexcept;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		SocketSelector& operator=(SocketSelector&&);
+		SocketSelector& operator=(SocketSelector&&) noexcept;
 
 		/// <summary>
 		/// Add a new socket to the selector.
@@ -123,7 +124,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="socket">Socket to test.</param>
 		/// <returns>True if the socket is ready to read, false otherwise.</returns>
-		bool IsReady(Socket& socket) const;
+		[[nodiscard]] bool IsReady(Socket& socket) const;
 
 		/// <summary>
 		/// Overload of assignment operator.

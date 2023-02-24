@@ -16,19 +16,19 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		RadianceImage(const RadianceImage&) = default;
+		RadianceImage(const RadianceImage&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		RadianceImage& operator=(const RadianceImage&) = default;
+		RadianceImage& operator=(const RadianceImage&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		RadianceImage(RadianceImage&&) = default;
+		RadianceImage(RadianceImage&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		RadianceImage& operator=(RadianceImage&&) = default;
+		RadianceImage& operator=(RadianceImage&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -38,12 +38,12 @@ namespace TRAP::INTERNAL
 		/// Retrieve the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Constant pointer to the raw pixel data.</returns>
-		const void* GetPixelData() const override;
+		[[nodiscard]] const void* GetPixelData() const noexcept override;
 		/// <summary>
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		uint64_t GetPixelDataSize() const override;
+		[[nodiscard]] uint64_t GetPixelDataSize() const noexcept override;
 
 	private:
 		/// <summary>
@@ -53,7 +53,7 @@ namespace TRAP::INTERNAL
 		/// <param name="exponent">Exponent.</param>
 		/// <param name="value">Value.</param>
 		/// <returns>Floating point value.</returns>
-		static float ConvertComponent(int8_t exponent, int32_t value);
+		[[nodiscard]] static float ConvertComponent(int8_t exponent, int32_t value);
 		/// <summary>
 		/// Decode the given scanline.
 		/// Used for RLE encoding and uncompressed data.
@@ -62,8 +62,8 @@ namespace TRAP::INTERNAL
 		/// <param name="length">Scanline length.</param>
 		/// <param name="file">Open Radiance HDR file.</param>
 		/// <returns>True if successful, false otherwise.</returns>
-		static bool Decrunch(std::vector<std::array<uint8_t, 4>>& scanline,
-		                     uint32_t length, std::ifstream& file);
+		[[nodiscard]] static bool Decrunch(std::vector<std::array<uint8_t, 4>>& scanline,
+		                                   uint32_t length, std::ifstream& file);
 		/// <summary>
 		/// Decode the given scanline.
 		/// Used for old RLE encoding.
@@ -73,8 +73,8 @@ namespace TRAP::INTERNAL
 		/// <param name="length">Scanline length.</param>
 		/// <param name="file">Open Radiance HDR file.</param>
 		/// <returns>True if successful, false otherwise.</returns>
-		static bool OldDecrunch(std::vector<std::array<uint8_t, 4>>& scanline, uint32_t scanlineIndex,
-		                        uint32_t length, std::ifstream& file);
+		[[nodiscard]] static bool OldDecrunch(std::vector<std::array<uint8_t, 4>>& scanline, uint32_t scanlineIndex,
+		                                      uint32_t length, std::ifstream& file);
 		/// <summary>
 		/// Extract color values from the scanlines.
 		/// </summary>

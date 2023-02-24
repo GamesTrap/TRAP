@@ -13,13 +13,13 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="desc">Pipeline cache description.</param>
 		/// <returns>Created pipeline cache.</returns>
-		static TRAP::Ref<PipelineCache> Create(const RendererAPI::PipelineCacheDesc& desc);
+		[[nodiscard]] static TRAP::Ref<PipelineCache> Create(const RendererAPI::PipelineCacheDesc& desc);
 		/// <summary>
 		/// Create a new pipeline cache from the given description.
 		/// </summary>
 		/// <param name="desc">Pipeline cache description.</param>
 		/// <returns>Created pipeline cache.</returns>
-		static TRAP::Ref<PipelineCache> Create(const RendererAPI::PipelineCacheLoadDesc& desc);
+		[[nodiscard]] static TRAP::Ref<PipelineCache> Create(const RendererAPI::PipelineCacheLoadDesc& desc);
 
 		/// <summary>
 		/// Destructor.
@@ -29,19 +29,19 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		PipelineCache(const PipelineCache&) = default;
+		PipelineCache(const PipelineCache&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		PipelineCache& operator=(const PipelineCache&) = default;
+		PipelineCache& operator=(const PipelineCache&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		PipelineCache(PipelineCache&&) = default;
+		PipelineCache(PipelineCache&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		PipelineCache& operator=(PipelineCache&&) = default;
+		PipelineCache& operator=(PipelineCache&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the cached pipeline data.
@@ -56,7 +56,7 @@ namespace TRAP::Graphics
 		/// Save a pipeline to disk.
 		/// </summary>
 		/// <param name="path">Path to save the pipeline to.</param>
-		virtual void Save(const std::filesystem::path& path) = 0;
+		void Save(const std::filesystem::path& path);
 
 	protected:
 		/// <summary>

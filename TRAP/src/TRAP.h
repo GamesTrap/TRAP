@@ -52,12 +52,9 @@
 #include "../src/Utils/Hash/CRC32.h"
 #include "../src/Utils/Hash/SHA-2.h"
 #include "../src/Utils/Hash/SHA-3.h"
+#include "../src/Utils/Hash/UID.h"
 #include "../src/Utils/Hash/ConvertHashToString.h"
 #include "../src/Utils/Discord/DiscordGameSDK.h"
-//-----------------------
-
-//----DEBUG--------------
-#include "../src/Utils/Profiler/Instrumentor.h"
 //-----------------------
 
 //----MATHS--------------
@@ -101,8 +98,11 @@
 
 //----TEXTURES-----------
 #include "../src/Graphics/Textures/TextureManager.h"
+#include "../src/Graphics/Textures/SpriteManager.h"
 #include "../src/ImageLoader/Image.h"
 #include "../src/Graphics/Textures/Texture.h"
+#include "../src/Graphics/Textures/SubTexture2D.h"
+#include "../src/Graphics/Textures/SpriteAnimation.h"
 #include "../src/Graphics/API/Objects/Sampler.h"
 //-----------------------
 
@@ -110,6 +110,7 @@
 #include "../src/Graphics/Cameras/Camera.h"
 #include "../src/Graphics/Cameras/Orthographic/OrthographicCamera.h"
 #include "../src/Graphics/Cameras/Orthographic/OrthographicCameraController.h"
+#include "../src/Graphics/Cameras/Editor/EditorCamera.h"
 //-----------------------
 
 //----NETWORK------------

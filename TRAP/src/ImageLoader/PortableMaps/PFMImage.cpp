@@ -3,19 +3,19 @@
 
 #include "Utils/String/String.h"
 #include "FileSystem/FileSystem.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 #include "Utils/Utils.h"
 
 TRAP::INTERNAL::PFMImage::PFMImage(std::filesystem::path filepath)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	m_filepath = std::move(filepath);
 	m_isHDR = true;
 
 	TP_DEBUG(Log::ImagePFMPrefix, "Loading image: \"", m_filepath.u8string(), "\"");
 
-	if (!FileSystem::FileOrFolderExists(m_filepath))
+	if (!FileSystem::Exists(m_filepath))
 		return;
 
 	std::ifstream file(m_filepath, std::ios::binary);
@@ -116,14 +116,18 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const void* TRAP::INTERNAL::PFMImage::GetPixelData() const
+[[nodiscard]] const void* TRAP::INTERNAL::PFMImage::GetPixelData() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_data.data();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::INTERNAL::PFMImage::GetPixelDataSize() const
+[[nodiscard]] uint64_t TRAP::INTERNAL::PFMImage::GetPixelDataSize() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_data.size() * sizeof(float);
 }

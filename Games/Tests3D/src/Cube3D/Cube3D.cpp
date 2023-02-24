@@ -2,6 +2,7 @@
 
 Cube3D::Cube3D()
     : Layer("Cube3D"),
+      m_textureSamplerDesc(),
       m_diffuseReflectionDataBuffer(),
 	  m_phongLightningDataBuffer(),
 	  m_cubePosition(0.0f, 0.0f, -5.0f),
@@ -164,19 +165,19 @@ void Cube3D::OnAttach()
     };
     m_skyBoxVertexBuffer->SetLayout(skyBoxLayout);
 
-    TRAP::Graphics::SamplerDesc samplerDesc{};
-    samplerDesc.AddressU = TRAP::Graphics::AddressMode::ClampToEdge;
-    samplerDesc.AddressV = TRAP::Graphics::AddressMode::ClampToEdge;
-    samplerDesc.AddressW = TRAP::Graphics::AddressMode::ClampToEdge;
-    samplerDesc.MinFilter = TRAP::Graphics::FilterType::Linear;
-    samplerDesc.MagFilter = TRAP::Graphics::FilterType::Linear;
-    samplerDesc.MipMapMode = TRAP::Graphics::MipMapMode::Linear;
-    m_textureSampler = TRAP::Graphics::Sampler::Create(samplerDesc);
+    m_textureSamplerDesc.AddressU = TRAP::Graphics::AddressMode::ClampToEdge;
+    m_textureSamplerDesc.AddressV = TRAP::Graphics::AddressMode::ClampToEdge;
+    m_textureSamplerDesc.AddressW = TRAP::Graphics::AddressMode::ClampToEdge;
+    m_textureSamplerDesc.MinFilter = TRAP::Graphics::FilterType::Linear;
+    m_textureSamplerDesc.MagFilter = TRAP::Graphics::FilterType::Linear;
+    m_textureSamplerDesc.MipMapMode = TRAP::Graphics::MipMapMode::Linear;
+    m_textureSamplerDesc.EnableAnisotropy = true;
+    m_textureSampler = TRAP::Graphics::Sampler::Create(m_textureSamplerDesc);
 
 	//Camera setup
-    m_camera.SetPerspective(TRAP::Math::Radians(45.0f), 0.01f, 1000.0f);
-    m_camera.SetViewportSize(TRAP::Application::GetWindow()->GetWidth(),
-                             TRAP::Application::GetWindow()->GetHeight());
+    m_camera.SetPerspective(TRAP::Math::Radians(45.0f), 0.01f);
+    m_camera.SetViewportSize(TRAP::Application::GetWindow()->GetFrameBufferSize().x,
+                             TRAP::Application::GetWindow()->GetFrameBufferSize().y);
 
     //Load diffuse reflection UniformBuffer
     const TRAP::Math::Mat4 inverseView = TRAP::Math::Inverse(m_cameraTransform.GetTransform());
@@ -241,12 +242,13 @@ void Cube3D::OnImGuiRender()
 
     ImGui::Begin("Settings", nullptr, flags);
     ImGui::Text("Performance");
-    const TRAP::Utils::CPUInfo& cpuInfo = TRAP::Utils::GetCPUInfo();
-    ImGui::Text("CPU: %ix %s", cpuInfo.LogicalCores, cpuInfo.Model.c_str());
-    ImGui::Text("GPU: %s", TRAP::Graphics::RendererAPI::GetRenderer()->GetCurrentGPUName().c_str());
-    //ImGui::Text("DrawCalls: %u", TRAP::Graphics::Renderer::GetDrawCalls());
-    ImGui::Text("FPS: %u", TRAP::Graphics::Renderer::GetFPS());
-    ImGui::Text("FrameTime: %.3fms", TRAP::Graphics::Renderer::GetFrameTime());
+    ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
+	ImGui::Text("GPU: %s", TRAP::Graphics::RenderCommand::GetGPUName().c_str());
+    ImGui::Text("CPU FPS: %u", TRAP::Graphics::RenderCommand::GetCPUFPS());
+    ImGui::Text("GPU FPS: %u", TRAP::Graphics::RenderCommand::GetGPUFPS());
+    ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
+    ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
+    ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
     ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0, 33,
                      ImVec2(200, 50));
     ImGui::Separator();
@@ -331,6 +333,13 @@ void Cube3D::OnImGuiRender()
 
 void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
+    //Update sampler
+	if(m_textureSampler->UsesEngineAnisotropyLevel() &&
+	   static_cast<float>(TRAP::Graphics::RenderCommand::GetAnisotropyLevel()) != m_textureSampler->GetAnisotropyLevel())
+	{
+		m_textureSampler = TRAP::Graphics::Sampler::Create(m_textureSamplerDesc);
+	}
+
     //Use Textures
     TRAP::Graphics::ShaderManager::Get("Texture")->UseTexture(0, 0, TRAP::Graphics::TextureManager::Get2D("UVGrid"));
     TRAP::Graphics::ShaderManager::Get("Texture")->UseSampler(0, 1, m_textureSampler.get());
@@ -340,22 +349,22 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     if(m_wireFrame)
     {
         TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::FillMode::Line);
-		TRAP::Graphics::RendererAPI::GetRenderer()->SetCullMode(TRAP::Graphics::RendererAPI::CullMode::None);
+        TRAP::Graphics::RenderCommand::SetCullMode(TRAP::Graphics::CullMode::None);
     }
     else
     {
         TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::FillMode::Solid);
-		TRAP::Graphics::RendererAPI::GetRenderer()->SetCullMode(TRAP::Graphics::RendererAPI::CullMode::Back);
+        TRAP::Graphics::RenderCommand::SetCullMode(TRAP::Graphics::CullMode::Back);
     }
 
     TRAP::Graphics::Renderer::BeginScene(m_camera, m_cameraTransform.GetTransform());
 	{
         if(m_drawSkyBox)
     	{
-            TRAP::Graphics::RenderCommand::SetDepthFunction(TRAP::Graphics::CompareMode::LessOrEqual);
+            TRAP::Graphics::RenderCommand::SetDepthFunction(TRAP::Graphics::CompareMode::GreaterOrEqual);
             TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("SkyBox"),
                                              m_skyBoxVertexBuffer.get());
-            TRAP::Graphics::RenderCommand::SetDepthFunction(TRAP::Graphics::CompareMode::Less);
+            TRAP::Graphics::RenderCommand::SetDepthFunction(TRAP::Graphics::CompareMode::Greater);
     	}
 
         if (m_shaderNames[m_currentShader] == "Diffuse Reflection")
@@ -427,13 +436,13 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
         static int frameTimeIndex = 0;
         if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
         {
-            m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::Renderer::GetFrameTime();
+            m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
             frameTimeIndex++;
         }
         else
         {
             std::move(m_frameTimeHistory.begin() + 1, m_frameTimeHistory.end(), m_frameTimeHistory.begin());
-            m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::Renderer::GetFrameTime();
+            m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
         }
     }
 }
@@ -506,9 +515,9 @@ bool Cube3D::OnKeyPress(TRAP::Events::KeyPressEvent& event)
     if(event.GetRepeatCount() != 0)
         return false;
 
-	if(event.GetKey() == TRAP::Input::Key::F1)
+    if(event.GetKey() == TRAP::Input::Key::F1)
 	{
-        m_currentShader = (m_currentShader + 1) % m_shaderNames.size();
+        m_currentShader = (m_currentShader + 1) % static_cast<uint32_t>(m_shaderNames.size());
         return true;
 	}
 

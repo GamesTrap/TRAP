@@ -1,10 +1,37 @@
+/*
+LodePNG version 20221108
+
+Copyright (c) 2005-2022 Lode Vandevenne
+
+This software is provided 'as-is', without any express or implied
+warranty. In no event will the authors be held liable for any damages
+arising from the use of this software.
+
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it
+freely, subject to the following restrictions:
+
+    1. The origin of this software must not be misrepresented; you must not
+    claim that you wrote the original software. If you use this software
+    in a product, an acknowledgment in the product documentation would be
+    appreciated but is not required.
+
+    2. Altered source versions must be plainly marked as such, and must not be
+    misrepresented as being the original software.
+
+    3. This notice may not be removed or altered from any source
+    distribution.
+
+Modified by Jan "GamesTrap" Schuerkamp
+*/
+
 #include "TRAPPCH.h"
 #include "PNGImage.h"
 
 #include "Utils/String/String.h"
 #include "FileSystem/FileSystem.h"
 #include "Maths/Math.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 #include "Utils/Utils.h"
 #include "Utils/Hash/CRC32.h"
 #include "Utils/Decompress/Inflate.h"
@@ -13,13 +40,13 @@
 
 TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	m_filepath = std::move(filepath);
 
 	TP_DEBUG(Log::ImagePNGPrefix, "Loading image: \"", m_filepath.u8string(), "\"");
 
-	if (!FileSystem::FileOrFolderExists(m_filepath))
+	if (!FileSystem::Exists(m_filepath))
 		return;
 
 	std::ifstream file(m_filepath, std::ios::binary);
@@ -105,13 +132,16 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 		switch (data.BitDepth)
 		{
 		case 1:
+			[[fallthrough]];
 		case 2:
+			[[fallthrough]];
 		case 4:
 			TP_ERROR(Log::ImagePNGPrefix, "Bit depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
 			TP_WARN(Log::ImagePNGPrefix, "Using default image!");
 			return;
 
 		case 8:
+			[[fallthrough]];
 		case 16:
 			m_bitsPerPixel = data.BitDepth;
 			break;
@@ -136,7 +166,9 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 		switch (data.BitDepth)
 		{
 		case 1:
+			[[fallthrough]];
 		case 2:
+			[[fallthrough]];
 		case 4:
 			TP_ERROR(Log::ImagePNGPrefix, "Bit depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
 			TP_WARN(Log::ImagePNGPrefix, "Using default image!");
@@ -295,8 +327,10 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const void* TRAP::INTERNAL::PNGImage::GetPixelData() const
+[[nodiscard]] const void* TRAP::INTERNAL::PNGImage::GetPixelData() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if (!m_data2Byte.empty())
 		return m_data2Byte.data();
 
@@ -305,8 +339,10 @@ const void* TRAP::INTERNAL::PNGImage::GetPixelData() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::INTERNAL::PNGImage::GetPixelDataSize() const
+[[nodiscard]] uint64_t TRAP::INTERNAL::PNGImage::GetPixelDataSize() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if (!m_data2Byte.empty())
 		return m_data2Byte.size() * sizeof(uint16_t);
 
@@ -319,9 +355,11 @@ static const std::array<std::string, 11> UnusedChunks
 {
 	"cHRM", "gAMA", "iCCP", "hIST", "pHYs", "sPLT", "tIME", "iTXt", "tEXt", "zTXt", "eXIf"
 };
-bool TRAP::INTERNAL::PNGImage::ProcessChunk(NextChunk& nextChunk, std::ifstream& file, Data& data,
-                                            AlreadyLoaded& alreadyLoaded, const bool needSwap)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::ProcessChunk(NextChunk& nextChunk, std::ifstream& file, Data& data,
+                                                          AlreadyLoaded& alreadyLoaded, const bool needSwap)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
 	if (nextChunk.MagicNumber == "IHDR" && !alreadyLoaded.IHDR)
 	{
 		alreadyLoaded.IHDR = true;
@@ -386,8 +424,10 @@ bool TRAP::INTERNAL::PNGImage::ProcessChunk(NextChunk& nextChunk, std::ifstream&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::ProcessIHDR(std::ifstream& file, Data& data, const bool needSwap)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::ProcessIHDR(std::ifstream& file, Data& data, const bool needSwap)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	IHDRChunk ihdrChunk{};
 	//Read in IHDR Chunk
 	file.read(reinterpret_cast<char*>(&ihdrChunk.Width), sizeof(uint32_t));
@@ -442,8 +482,10 @@ bool TRAP::INTERNAL::PNGImage::ProcessIHDR(std::ifstream& file, Data& data, cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::ProcesssBIT(std::ifstream& file, const Data& data)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::ProcesssBIT(std::ifstream& file, const Data& data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	switch (data.ColorType)
 	{
 	case 0:
@@ -453,6 +495,7 @@ bool TRAP::INTERNAL::PNGImage::ProcesssBIT(std::ifstream& file, const Data& data
 	}
 
 	case 2:
+		[[fallthrough]];
 	case 3:
 	{
 		file.seekg(4 + 3, std::ios::cur);
@@ -478,8 +521,10 @@ bool TRAP::INTERNAL::PNGImage::ProcesssBIT(std::ifstream& file, const Data& data
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::ProcesssRGB(std::ifstream& file)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::ProcesssRGB(std::ifstream& file)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	//TODO Treat image as sRGB
 	std::array<uint8_t, 4> CRC{};
 	const uint8_t renderingIntent = static_cast<uint8_t>(file.get());
@@ -500,11 +545,14 @@ bool TRAP::INTERNAL::PNGImage::ProcesssRGB(std::ifstream& file)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::ProcessbKGD(std::ifstream& file, const Data& data)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::ProcessbKGD(std::ifstream& file, const Data& data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	switch (data.ColorType)
 	{
 	case 0:
+		[[fallthrough]];
 	case 4:
 	{
 		file.seekg(4 + 2, std::ios::cur);
@@ -512,6 +560,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessbKGD(std::ifstream& file, const Data& data
 	}
 
 	case 2:
+		[[fallthrough]];
 	case 6:
 	{
 		file.seekg(4 + 6, std::ios::cur);
@@ -531,8 +580,10 @@ bool TRAP::INTERNAL::PNGImage::ProcessbKGD(std::ifstream& file, const Data& data
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t length, Data& data)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t length, Data& data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	//TODO Use this chunk!
 	switch (data.ColorType)
 	{
@@ -623,8 +674,10 @@ bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t l
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::ProcessPLTE(std::ifstream& file, Data& data, const uint32_t length)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::ProcessPLTE(std::ifstream& file, Data& data, const uint32_t length)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
 	if (length % 3 != 0)
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "PLTE length ", length, " is not divisible by 3!");
@@ -683,8 +736,10 @@ bool TRAP::INTERNAL::PNGImage::ProcessPLTE(std::ifstream& file, Data& data, cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::ProcessIDAT(std::ifstream& file, Data& data, const uint32_t length)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::ProcessIDAT(std::ifstream& file, Data& data, const uint32_t length)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	std::vector<uint8_t> compressedData(length);
 	std::array<uint8_t, 4> CRC{};
 	file.read(reinterpret_cast<char*>(compressedData.data()), static_cast<std::streamsize>(compressedData.size()));
@@ -713,8 +768,10 @@ bool TRAP::INTERNAL::PNGImage::ProcessIDAT(std::ifstream& file, Data& data, cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::IHDRCheck(const IHDRChunk& ihdrChunk)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::IHDRCheck(const IHDRChunk& ihdrChunk)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	//Check if Width is (in)valid
 	if(!ihdrChunk.Width)
 	{
@@ -812,9 +869,11 @@ bool TRAP::INTERNAL::PNGImage::IHDRCheck(const IHDRChunk& ihdrChunk)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceLength, uint8_t* destination,
-										      const int destinationLength)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::DecompressData(const uint8_t* const source, const int sourceLength, uint8_t* destination,
+										                    const int destinationLength)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
 	if (sourceLength < 2)
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "Compressed zlib data is too small!");
@@ -857,7 +916,7 @@ bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceL
 		return false;
 	}
 
-	const uint8_t* buf = &source[sourceLength - 4];
+	const uint8_t* const buf = &source[sourceLength - 4];
 	const std::array<uint8_t, 4> adler32 =
 	{
 		buf[0],
@@ -882,13 +941,15 @@ bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceL
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* recon,
-	                                            const uint8_t* scanline,
-	                                            const uint8_t* precon,
-	                                            const std::size_t byteWidth,
-	                                            const uint8_t filterType,
-	                                            const std::size_t length)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* const recon,
+	                                                          const uint8_t* const scanline,
+	                                                          const uint8_t* const precon,
+	                                                          const std::size_t byteWidth,
+	                                                          const uint8_t filterType,
+	                                                          const std::size_t length)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
 	//For PNG Filter Method 0
 	//UnFilter a PNG Image Scanline by Scanline.
 	//When the pixels are smaller than 1 Byte, the Filter works Byte per Byte (byteWidth = 1)
@@ -908,10 +969,11 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* recon,
 
 	case 1:
 	{
+		std::size_t j = 0;
 		for (i = 0; i != byteWidth; ++i)
 			recon[i] = scanline[i];
-		for (i = byteWidth; i < length; ++i)
-			recon[i] = scanline[i] + recon[i - byteWidth];
+		for (i = byteWidth; i != length; ++i, ++j)
+			recon[i] = scanline[i] + recon[j];
 		break;
 	}
 
@@ -930,17 +992,64 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* recon,
 	{
 		if (precon)
 		{
+			std::size_t j = 0;
+
 			for (i = 0; i != byteWidth; ++i)
 				recon[i] = scanline[i] + (precon[i] >> 1u);
-			for (i = byteWidth; i < length; ++i)
-				recon[i] = scanline[i] + ((recon[i - byteWidth] + precon[i]) >> 1u);
+
+			//Unroll independent paths of the Paeth predictor.
+			//A 6x and 8x version is also possible but that adds too much code.
+			//Whether this speeds up anything at all depends on compiler and settings.
+			if(byteWidth >= 4)
+			{
+				for(; i + 3 < length; i += 4, j += 4)
+				{
+					uint8_t s0 = scanline[i + 0], r0 = recon[j + 0], p0 = precon[i + 0];
+					uint8_t s1 = scanline[i + 1], r1 = recon[j + 1], p1 = precon[i + 1];
+					uint8_t s2 = scanline[i + 2], r2 = recon[j + 2], p2 = precon[i + 2];
+					uint8_t s3 = scanline[i + 3], r3 = recon[j + 3], p3 = precon[i + 3];
+
+					recon[i + 0] = static_cast<uint8_t>(s0 + ((r0 + p0) >> 1u));
+					recon[i + 1] = static_cast<uint8_t>(s1 + ((r1 + p1) >> 1u));
+					recon[i + 2] = static_cast<uint8_t>(s2 + ((r2 + p2) >> 1u));
+					recon[i + 3] = static_cast<uint8_t>(s3 + ((r3 + p3) >> 1u));
+				}
+			}
+			else if(byteWidth >= 3)
+			{
+				for(; i + 2 < length; i += 3, j += 3)
+				{
+					uint8_t s0 = scanline[i + 0], r0 = recon[j + 0], p0 = precon[i + 0];
+					uint8_t s1 = scanline[i + 1], r1 = recon[j + 1], p1 = precon[i + 1];
+					uint8_t s2 = scanline[i + 2], r2 = recon[j + 2], p2 = precon[i + 2];
+
+					recon[i + 0] = static_cast<uint8_t>(s0 + ((r0 + p0) >> 1u));
+					recon[i + 1] = static_cast<uint8_t>(s1 + ((r1 + p1) >> 1u));
+					recon[i + 2] = static_cast<uint8_t>(s2 + ((r2 + p2) >> 1u));
+				}
+			}
+			else if(byteWidth >= 2)
+			{
+				for(; i + 1 < length; i += 2, j += 2)
+				{
+					uint8_t s0 = scanline[i + 0], r0 = recon[j + 0], p0 = precon[i + 0];
+					uint8_t s1 = scanline[i + 1], r1 = recon[j + 1], p1 = precon[i + 1];
+
+					recon[i + 0] = static_cast<uint8_t>(s0 + ((r0 + p0) >> 1u));
+					recon[i + 1] = static_cast<uint8_t>(s1 + ((r1 + p1) >> 1u));
+				}
+			}
+
+			for(; i != length; ++i, ++j)
+				recon[i] = static_cast<uint8_t>(scanline[i] + ((recon[j] + precon[i]) >> 1u));
 		}
 		else
 		{
 			for (i = 0; i != byteWidth; ++i)
 				recon[i] = scanline[i];
-			for (i = byteWidth; i < length; ++i)
-				recon[i] = scanline[i] + (recon[i - byteWidth] >> 1u);
+			std::size_t j = 0;
+			for (i = byteWidth; i != length; ++i, ++j)
+				recon[i] = scanline[i] + (recon[j] >> 1u);
 		}
 		break;
 	}
@@ -949,17 +1058,18 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* recon,
 	{
 		if (precon)
 		{
+			std::size_t j = 0;
+
 			for (i = 0; i != byteWidth; ++i)
 				recon[i] = (scanline[i] + precon[i]);
 
 			//Unroll independent paths of the Paeth predictor.
-			//A 6x and 8x version would also be possible but that adds too much code.
-			//Whether this actually speeds anything up at all depends on compiler and settings.
+			//A 6x and 8x version is also possible but that adds too much code.
+			//Whether this speeds up anything at all depends on compiler and settings.
 			if (byteWidth >= 4)
 			{
-				for (; i + 3 < length; i += 4)
+				for (; i + 3 < length; i += 4, j += 4)
 				{
-					const std::size_t j = i - byteWidth;
 					const uint8_t s0 = scanline[i + 0], s1 = scanline[i + 1];
 					const uint8_t s2 = scanline[i + 2], s3 = scanline[i + 3];
 					const uint8_t r0 = recon[j + 0], r1 = recon[j + 1], r2 = recon[j + 2], r3 = recon[j + 3];
@@ -973,9 +1083,8 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* recon,
 			}
 			else if (byteWidth >= 3)
 			{
-				for (; i + 2 < length; i += 3)
+				for (; i + 2 < length; i += 3, j += 3)
 				{
-					const std::size_t j = i - byteWidth;
 					const uint8_t s0 = scanline[i + 0], s1 = scanline[i + 1], s2 = scanline[i + 2];
 					const uint8_t r0 = recon[j + 0], r1 = recon[j + 1], r2 = recon[j + 2];
 					const uint8_t p0 = precon[i + 0], p1 = precon[i + 1], p2 = precon[i + 2];
@@ -987,9 +1096,8 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* recon,
 			}
 			else if (byteWidth >= 2)
 			{
-				for (; i + 1 < length; i += 2)
+				for (; i + 1 < length; i += 2, j += 2)
 				{
-					const std::size_t j = i - byteWidth;
 					const uint8_t s0 = scanline[i + 0], s1 = scanline[i + 1];
 					const uint8_t r0 = recon[j + 0], r1 = recon[j + 1];
 					const uint8_t p0 = precon[i + 0], p1 = precon[i + 1];
@@ -999,15 +1107,16 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* recon,
 				}
 			}
 
-			for (; i != length; ++i)
-				recon[i] = (scanline[i] + PaethPredictor(recon[i - byteWidth], precon[i], precon[i - byteWidth]));
+			for (; i != length; ++i, ++j)
+				recon[i] = (scanline[i] + PaethPredictor(recon[i - byteWidth], precon[i], precon[j]));
 		}
 		else
 		{
 			for (i = 0; i != byteWidth; ++i)
 				recon[i] = scanline[i];
-			for (i = byteWidth; i < length; ++i)
-				recon[i] = (scanline[i] + recon[i - byteWidth]);
+			std::size_t j = 0;
+			for (i = byteWidth; i != length; ++i, ++j)
+				recon[i] = (scanline[i] + recon[j]);
 		}
 		break;
 	}
@@ -1021,9 +1130,12 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* recon,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::UnFilter(uint8_t* out, const uint8_t* in, const uint32_t width, const uint32_t height,
-                                        const uint32_t bitsPerPixel)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::UnFilter(uint8_t* const out, const uint8_t* const in,
+									                  const uint32_t width, const uint32_t height,
+                                                      const uint32_t bitsPerPixel)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
 	//For PNG Filter Method 0
 	//This function unFilters a single image(e.g. without interlacing this is called once, with Adam7 seven times)
 	//out must have enough bytes allocated already, in must have the scanlines + 1 filterType byte per scanline
@@ -1053,8 +1165,10 @@ bool TRAP::INTERNAL::PNGImage::UnFilter(uint8_t* out, const uint8_t* in, const u
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint8_t TRAP::INTERNAL::PNGImage::PaethPredictor(uint16_t a, const uint16_t b, uint16_t c)
+[[nodiscard]] uint8_t TRAP::INTERNAL::PNGImage::PaethPredictor(uint16_t a, const uint16_t b, uint16_t c)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	uint16_t pa = static_cast<uint16_t>(Math::Abs(b - c));
 	const uint16_t pb = static_cast<uint16_t>(Math::Abs(a - c));
 	const uint16_t pc = static_cast<uint16_t>(Math::Abs(a + b - c - c));
@@ -1071,9 +1185,11 @@ uint8_t TRAP::INTERNAL::PNGImage::PaethPredictor(uint16_t a, const uint16_t b, u
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::size_t TRAP::INTERNAL::PNGImage::GetRawSizeIDAT(const uint32_t width, const uint32_t height,
-                                                     const uint32_t bitsPerPixel)
+[[nodiscard]] std::size_t TRAP::INTERNAL::PNGImage::GetRawSizeIDAT(const uint32_t width, const uint32_t height,
+                                                                   const uint32_t bitsPerPixel)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	//In an IDAT chunk, each scanline is a multiple of 8 bits and in addition has one extra byte per line: the filter byte.
 	//+ 1 for the filter byte, and possibly plus padding bits per line
 	const std::size_t line = (static_cast<std::size_t>(width / 8u) * bitsPerPixel) +
@@ -1084,19 +1200,23 @@ std::size_t TRAP::INTERNAL::PNGImage::GetRawSizeIDAT(const uint32_t width, const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::size_t TRAP::INTERNAL::PNGImage::GetRawSize(const uint32_t width, const uint32_t height,
-                                                 const uint32_t bitsPerPixel)
+[[nodiscard]] std::size_t TRAP::INTERNAL::PNGImage::GetRawSize(const uint32_t width, const uint32_t height,
+                                                               const uint32_t bitsPerPixel)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	const std::size_t n = static_cast<std::size_t>(width) * static_cast<std::size_t>(height);
 	return ((n / 8u) * bitsPerPixel) + ((n & 7u) * bitsPerPixel + 7u) / 8u;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::PostProcessScanlines(uint8_t* out, uint8_t* in, const uint32_t width,
-                                                    const uint32_t height, const uint32_t bitsPerPixel,
-													const uint8_t interlaceMethod)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::PostProcessScanlines(uint8_t* const out, uint8_t* const in, const uint32_t width,
+                                                                  const uint32_t height, const uint32_t bitsPerPixel,
+													              const uint8_t interlaceMethod)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
 	//out must be a buffer big enough to contain full image, and in must contain the full decompressed
 	//data from the IDAT chunks(with filter bytes and possible padding bits)
 	//This function converts filtered-padded-interlaced data into pure 2D image buffer with the PNGs colorType.
@@ -1148,6 +1268,8 @@ void TRAP::INTERNAL::PNGImage::Adam7GetPassValues(std::array<uint32_t, 7>& passW
 	                                              const uint32_t height,
 	                                              const uint32_t bitsPerPixel)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
 	//"padded" is only relevant if bitsPerPixel is less than 8 and a scanline or image does not end at a full byte
 
 	//The passStart values have 8 values: The 8th one indicates the byte after the end of the 7th(= last) pass
@@ -1180,9 +1302,11 @@ void TRAP::INTERNAL::PNGImage::Adam7GetPassValues(std::array<uint32_t, 7>& passW
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::PNGImage::Adam7DeInterlace(uint8_t* out, const uint8_t* in, const uint32_t width,
+void TRAP::INTERNAL::PNGImage::Adam7DeInterlace(uint8_t* const out, const uint8_t* const in, const uint32_t width,
                                                 const uint32_t height, const uint32_t bitsPerPixel)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
 	//out has the following size in bits: width * height * bitsPerPixel.
 	//in is possibly bigger due to padding bits between reduced images.
 	//out must be big enough AND must be 0 everywhere
@@ -1216,8 +1340,10 @@ void TRAP::INTERNAL::PNGImage::Adam7DeInterlace(uint8_t* out, const uint8_t* in,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint16_t> TRAP::INTERNAL::PNGImage::ConvertTo2Byte(std::vector<uint8_t>& raw)
+[[nodiscard]] std::vector<uint16_t> TRAP::INTERNAL::PNGImage::ConvertTo2Byte(std::vector<uint8_t>& raw)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
 	std::vector<uint16_t> result(raw.size() / 2, 0);
 	uint32_t resultIndex = 0;
 	if (Utils::GetEndian() == Utils::Endian::Big)
@@ -1245,9 +1371,11 @@ std::vector<uint16_t> TRAP::INTERNAL::PNGImage::ConvertTo2Byte(std::vector<uint8
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::PNGImage::ResolveIndexed(std::vector<uint8_t>& raw, const uint32_t width,
-                                                              const uint32_t height, const Data& data)
+[[nodiscard]] std::vector<uint8_t> TRAP::INTERNAL::PNGImage::ResolveIndexed(std::vector<uint8_t>& raw, const uint32_t width,
+                                                                            const uint32_t height, const Data& data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
 	std::vector<uint8_t> result(static_cast<std::size_t>(width) * height * 4, 0);
 	uint32_t resultIndex = 0;
 	for (const uint8_t& element : raw)

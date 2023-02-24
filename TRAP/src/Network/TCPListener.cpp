@@ -2,7 +2,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -34,17 +34,20 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Sockets/TCPSocket.h"
 #include "Sockets/SocketImpl.h"
 #include "Utils/Utils.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 
-TRAP::Network::TCPListener::TCPListener()
+TRAP::Network::TCPListener::TCPListener() noexcept
 	: Socket(Type::TCP)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint16_t TRAP::Network::TCPListener::GetLocalPort() const
+[[nodiscard]] uint16_t TRAP::Network::TCPListener::GetLocalPort() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 		return 0; //We failed to retrieve the port
 
@@ -66,8 +69,10 @@ uint16_t TRAP::Network::TCPListener::GetLocalPort() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPListener::Listen(const uint16_t port, const IPv4Address& address)
+[[nodiscard]] TRAP::Network::Socket::Status TRAP::Network::TCPListener::Listen(const uint16_t port, const IPv4Address& address)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//Close the socket if it is already bound
 	Close();
 
@@ -103,14 +108,18 @@ TRAP::Network::Socket::Status TRAP::Network::TCPListener::Listen(const uint16_t 
 
 void TRAP::Network::TCPListener::Close()
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//Simply close the socket
 	Socket::Close();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPListener::Accept(TCPSocket& socket) const
+[[nodiscard]] TRAP::Network::Socket::Status TRAP::Network::TCPListener::Accept(TCPSocket& socket) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//Make sure that we're listening
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 	{

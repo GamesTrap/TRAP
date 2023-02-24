@@ -8,6 +8,7 @@
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Utils/Dialogs/Dialogs.h"
+#include <vulkan/vulkan_core.h>
 
 std::multimap<uint32_t, std::array<uint8_t, 16>> TRAP::Graphics::API::VulkanPhysicalDevice::s_availablePhysicalDeviceUUIDs{};
 
@@ -24,9 +25,12 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	  m_physicalDeviceFragmentShaderInterlockFeatures(),
 	  m_deviceUUID()
 {
-	TRAP_ASSERT(instance, "instance is nullptr");
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(instance, "VulkanPhysicalDevice(): Vulkan Instance is nullptr");
 
 	m_physicalDevice = FindPhysicalDeviceViaUUID(instance, physicalDeviceUUID);
+	TRAP_ASSERT(m_physicalDevice, "VulkanPhysicalDevice(): Vulkan Physical Device is nullptr!");
 
 	if (!m_physicalDevice)
 	{
@@ -36,7 +40,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 								   Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::RendererVulkanPhysicalDevicePrefix, "Physical device creation failed!");
 		TRAP::Application::Shutdown();
-		exit(-1);
+		exit(0x0006);
 	}
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -73,11 +77,11 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	// Capabilities for VulkanRenderer
 	for (uint32_t i = 0; i < static_cast<uint32_t>(TRAP::Graphics::API::ImageFormat::IMAGE_FORMAT_COUNT); ++i)
 	{
-		VkFormatProperties formatSupport;
 		const VkFormat fmt = ImageFormatToVkFormat(static_cast<TRAP::Graphics::API::ImageFormat>(i));
 		if (fmt == VK_FORMAT_UNDEFINED)
 			continue;
 
+		VkFormatProperties formatSupport{};
 		vkGetPhysicalDeviceFormatProperties(m_physicalDevice, fmt, &formatSupport);
 		VulkanRenderer::s_GPUCapBits.CanShaderReadFrom[i] = (formatSupport.optimalTilingFeatures &
 															 VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) != 0;
@@ -138,12 +142,12 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	{
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Visible, false);
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Focused, false);
-		Scope<INTERNAL::WindowingAPI::InternalWindow> win = INTERNAL::WindowingAPI::CreateWindow(2, 2, "Vulkan Surface Tester", nullptr);
+		INTERNAL::WindowingAPI::InternalWindow* win = INTERNAL::WindowingAPI::CreateWindow(2, 2, "Vulkan Surface Tester", nullptr);
 		INTERNAL::WindowingAPI::DefaultWindowHints();
 		if (win)
 		{
 			VkSurfaceKHR surface = VK_NULL_HANDLE;
-			VkResult res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance->GetVkInstance(), win.get(), nullptr, surface);
+			VkResult res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance->GetVkInstance(), win, nullptr, surface);
 
 			if (surface != VK_NULL_HANDLE && res == VK_SUCCESS)
 			{
@@ -198,7 +202,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 
 TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 {
-	TRAP_ASSERT(m_physicalDevice);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPhysicalDevicePrefix, "Destroying PhysicalDevice");
@@ -208,64 +212,95 @@ TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDevice() const
+[[nodiscard]] VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDevice() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_physicalDevice;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const VkPhysicalDeviceProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceProperties() const
+[[nodiscard]] VkFormatProperties TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFormatProperties(const VkFormat format) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkFormatProperties formatProps{};
+
+	vkGetPhysicalDeviceFormatProperties(m_physicalDevice, format, &formatProps);
+
+	return formatProps;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] const VkPhysicalDeviceProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceProperties() const noexcept
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_physicalDeviceProperties;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const VkPhysicalDeviceSubgroupProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceSubgroupProperties() const
+[[nodiscard]] const VkPhysicalDeviceSubgroupProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceSubgroupProperties() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_physicalDeviceSubgroupProperties;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const VkPhysicalDeviceIDProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceIDProperties() const
+[[nodiscard]] const VkPhysicalDeviceIDProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceIDProperties() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_physicalDeviceIDProperties;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const VkPhysicalDeviceMemoryProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceMemoryProperties() const
+[[nodiscard]] const VkPhysicalDeviceMemoryProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceMemoryProperties() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_physicalDeviceMemoryProperties;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const VkPhysicalDeviceFeatures &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFeatures() const
+[[nodiscard]] const VkPhysicalDeviceFeatures &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFeatures() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_physicalDeviceFeatures;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFragmentShaderInterlockFeatures() const
+[[nodiscard]] const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFragmentShaderInterlockFeatures() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_physicalDeviceFragmentShaderInterlockFeatures;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<VkQueueFamilyProperties> &TRAP::Graphics::API::VulkanPhysicalDevice::GetQueueFamilyProperties() const
+[[nodiscard]] const std::vector<VkQueueFamilyProperties> &TRAP::Graphics::API::VulkanPhysicalDevice::GetQueueFamilyProperties() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_queueFamilyProperties;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::VulkanPhysicalDevice::IsExtensionSupported(const std::string_view extension)
+[[nodiscard]] bool TRAP::Graphics::API::VulkanPhysicalDevice::IsExtensionSupported(const std::string_view extension)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	if (m_availablePhysicalDeviceExtensions.empty())
 		LoadAllPhysicalDeviceExtensions();
 
@@ -292,8 +327,10 @@ bool TRAP::Graphics::API::VulkanPhysicalDevice::IsExtensionSupported(const std::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<VkExtensionProperties> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAvailablePhysicalDeviceExtensions()
+[[nodiscard]] const std::vector<VkExtensionProperties> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAvailablePhysicalDeviceExtensions()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	if (m_availablePhysicalDeviceExtensions.empty())
 		LoadAllPhysicalDeviceExtensions();
 
@@ -302,8 +339,10 @@ const std::vector<VkExtensionProperties> &TRAP::Graphics::API::VulkanPhysicalDev
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::array<uint8_t, 16> &TRAP::Graphics::API::VulkanPhysicalDevice::GetPhysicalDeviceUUID() const
+[[nodiscard]] const std::array<uint8_t, 16> &TRAP::Graphics::API::VulkanPhysicalDevice::GetPhysicalDeviceUUID() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_deviceUUID;
 }
 
@@ -311,6 +350,8 @@ const std::array<uint8_t, 16> &TRAP::Graphics::API::VulkanPhysicalDevice::GetPhy
 
 void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentShaderInterlockFeatures()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	if(VulkanRenderer::s_fragmentShaderInterlockExtension)
 	{
 		VkPhysicalDeviceFeatures2 features2;
@@ -327,9 +368,51 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::multimap<uint32_t, std::array<uint8_t, 16>> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(const TRAP::Ref<VulkanInstance> &instance)
+[[nodiscard]] TRAP::Graphics::RendererAPI::GPUVendor TRAP::Graphics::API::VulkanPhysicalDevice::GetVendor() const noexcept
 {
-	TRAP_ASSERT(instance, "instance is nullptr");
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	switch(m_physicalDeviceProperties.vendorID)
+	{
+	case 0x1002:
+		[[fallthrough]];
+	case 0x1010:
+		[[fallthrough]];
+	case 0x10DE:
+		[[fallthrough]];
+	case 0x13B5:
+		[[fallthrough]];
+	case 0x14E4:
+		[[fallthrough]];
+	case 0x5143:
+		[[fallthrough]];
+	case 0x8086:
+		[[fallthrough]];
+	case 0x106B:
+		[[fallthrough]];
+	case 0x7A05:
+		[[fallthrough]];
+	case 0x1EB1:
+		[[fallthrough]];
+	case 0x10003:
+		[[fallthrough]];
+	case 0x10004:
+		[[fallthrough]];
+	case 0x10005:
+		return static_cast<RendererAPI::GPUVendor>(m_physicalDeviceProperties.vendorID);
+
+	default:
+		return RendererAPI::GPUVendor::Unknown;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] const std::multimap<uint32_t, std::array<uint8_t, 16>> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(const TRAP::Ref<VulkanInstance> &instance)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(instance, "VulkanPhysicalDevice::GetAllRatedPhysicalDevices(): Vulkan Instance is nullptr");
 
 	if (!s_availablePhysicalDeviceUUIDs.empty())
 		return s_availablePhysicalDeviceUUIDs;
@@ -346,7 +429,7 @@ const std::multimap<uint32_t, std::array<uint8_t, 16>> &TRAP::Graphics::API::Vul
 								   Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::RendererVulkanPrefix, "No Vulkan capable physical device was found!!");
 		TRAP::Application::Shutdown();
-		exit(-1);
+		exit(0x0007);
 	}
 
 	return s_availablePhysicalDeviceUUIDs;
@@ -354,10 +437,12 @@ const std::multimap<uint32_t, std::array<uint8_t, 16>> &TRAP::Graphics::API::Vul
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::FindPhysicalDeviceViaUUID(const TRAP::Ref<VulkanInstance> &instance,
+[[nodiscard]] VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::FindPhysicalDeviceViaUUID(const TRAP::Ref<VulkanInstance> &instance,
 																					  const std::array<uint8_t, 16> &physicalDeviceUUID)
 {
-	TRAP_ASSERT(instance, "instance is nullptr");
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(instance, "VulkanPhysicalDevice::FindPhysicalDeviceViaUUID(): Vulkan Instance is nullptr");
 
 	const auto physicalDevices = GetAllVkPhysicalDevices(instance->GetVkInstance());
 
@@ -395,8 +480,10 @@ VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::FindPhysicalDeviceVi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::multimap<uint32_t, std::array<uint8_t, 16>> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(const VkInstance &instance)
+[[nodiscard]] const std::multimap<uint32_t, std::array<uint8_t, 16>> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(const VkInstance &instance)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	if (!s_availablePhysicalDeviceUUIDs.empty())
 		return s_availablePhysicalDeviceUUIDs;
 
@@ -412,7 +499,7 @@ const std::multimap<uint32_t, std::array<uint8_t, 16>> &TRAP::Graphics::API::Vul
 								   Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::RendererVulkanPrefix, "No Vulkan capable physical device was found!");
 		TRAP::Application::Shutdown();
-		exit(-1);
+		exit(0x0007);
 	}
 
 	return s_availablePhysicalDeviceUUIDs;
@@ -420,8 +507,10 @@ const std::multimap<uint32_t, std::array<uint8_t, 16>> &TRAP::Graphics::API::Vul
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<VkPhysicalDevice> TRAP::Graphics::API::VulkanPhysicalDevice::GetAllVkPhysicalDevices(const VkInstance &instance)
+[[nodiscard]] std::vector<VkPhysicalDevice> TRAP::Graphics::API::VulkanPhysicalDevice::GetAllVkPhysicalDevices(const VkInstance &instance)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	uint32_t physicalDeviceCount = 0;
 	VkCall(vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, nullptr));
 
@@ -435,6 +524,8 @@ std::vector<VkPhysicalDevice> TRAP::Graphics::API::VulkanPhysicalDevice::GetAllV
 
 void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::vector<VkPhysicalDevice> &physicalDevices, VkInstance instance)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	// Score each Physical Device and insert into multimap
 	uint32_t score = 0;
 	for (VkPhysicalDevice dev : physicalDevices)
@@ -511,10 +602,10 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 #ifndef TRAP_HEADLESS_MODE
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Visible, false);
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Focused, false);
-		Scope<INTERNAL::WindowingAPI::InternalWindow> vulkanTestWindow = INTERNAL::WindowingAPI::CreateWindow(400,
-																											  400,
-																											  "TRAP Vulkan Surface Tester",
-																											  nullptr);
+		INTERNAL::WindowingAPI::InternalWindow* vulkanTestWindow = INTERNAL::WindowingAPI::CreateWindow(400,
+																									    400,
+																									    "TRAP Vulkan Surface Tester",
+																									    nullptr);
 		INTERNAL::WindowingAPI::DefaultWindowHints();
 		if (!vulkanTestWindow)
 		{
@@ -530,7 +621,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 #ifndef TRAP_HEADLESS_MODE
 		VkSurfaceKHR surface = VK_NULL_HANDLE;
 		VkResult res{};
-		VkCall(res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance, vulkanTestWindow.get(), nullptr,
+		VkCall(res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance, vulkanTestWindow, nullptr,
 																	   surface));
 		if (!surface || res != VK_SUCCESS)
 		{
@@ -666,7 +757,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 
 		// Big Optionally: Check if Raytracing extensions are supported
 		bool raytracing = true;
-		const std::vector<std::string> raytracingExt =
+		constexpr std::array<const char*, 8> raytracingExt =
 		{
 			VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
 			VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME,
@@ -677,12 +768,12 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME,
 			VK_KHR_RAY_QUERY_EXTENSION_NAME
 		};
-		for (const std::string_view str : raytracingExt)
+		for (const char* str : raytracingExt)
 		{
 			const auto extRes = std::find_if(extensions.begin(), extensions.end(),
 											 [str](const VkExtensionProperties &props)
 											 {
-												 return std::strcmp(str.data(), props.extensionName) == 0;
+												 return std::strcmp(str, props.extensionName) == 0;
 											 });
 
 			if (extRes == extensions.end())
@@ -713,6 +804,52 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		else
 			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
 					"\" Failed Tessellation Shader Test!");
+
+		// Big Optionally: Check if Variable Rate Shading is supported and Tier 1/Tier 2
+		bool VRS = true;
+		const std::array<const char*, 2> VRSExt =
+		{
+			VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME,
+			VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME
+		};
+		for (const char* str : VRSExt)
+		{
+			const auto extRes = std::find_if(extensions.begin(), extensions.end(),
+											 [str](const VkExtensionProperties &props)
+											 {
+												 return std::strcmp(str, props.extensionName) == 0;
+											 });
+
+			if (extRes == extensions.end())
+			{
+				VRS = false;
+				break;
+			}
+		}
+
+		if (VRS)
+		{
+			//VRS Tier 1/Tier 2
+			VkPhysicalDeviceFragmentShadingRateFeaturesKHR fsrFeatures{};
+			fsrFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR;
+			fsrFeatures.pNext = nullptr;
+			VkPhysicalDeviceFeatures2KHR devFeatures2{};
+			devFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2_KHR;
+			devFeatures2.pNext = &fsrFeatures;
+			vkGetPhysicalDeviceFeatures2KHR(dev, &devFeatures2);
+
+			if(!fsrFeatures.pipelineFragmentShadingRate && !fsrFeatures.attachmentFragmentShadingRate)
+				TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Variable Rate Shading Test!");
+			else
+				score += 1000;
+
+			if(fsrFeatures.pipelineFragmentShadingRate) //Tier 1
+				score += 100;
+			if(fsrFeatures.attachmentFragmentShadingRate) //Tier 2
+				score += 200;
+		}
+		else
+			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Variable Rate Shading Test!");
 
 		// Optionally: Check if device support fill mode non solid
 		if (devFeatures.fillModeNonSolid)
@@ -797,6 +934,8 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 
 void TRAP::Graphics::API::VulkanPhysicalDevice::LoadAllPhysicalDeviceExtensions()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	uint32_t extensionsCount = 0;
 	VkCall(vkEnumerateDeviceExtensionProperties(m_physicalDevice, nullptr, &extensionsCount, nullptr));
 	m_availablePhysicalDeviceExtensions.resize(extensionsCount);
@@ -806,8 +945,10 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::LoadAllPhysicalDeviceExtensions(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanPhysicalDevice::GetMaxUsableMSAASampleCount() const
+[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanPhysicalDevice::GetMaxUsableMSAASampleCount() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	VkSampleCountFlags sampleCounts = TRAP::Math::Min(m_physicalDeviceProperties.limits.framebufferColorSampleCounts,
 	                                                  m_physicalDeviceProperties.limits.framebufferDepthSampleCounts);
 	sampleCounts = TRAP::Math::Min(sampleCounts, m_physicalDeviceProperties.limits.framebufferStencilSampleCounts);

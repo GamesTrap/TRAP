@@ -2,6 +2,16 @@
 #define TRAP_CORE_H
 
 #include <memory>
+#include <type_traits>
+
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
+//Tracy - Profiler
+#include <tracy/Tracy.hpp>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
 
 #include "PlatformDetection.h"
 
@@ -63,7 +73,55 @@
 //NOTE: Wayland support is still experimental and not fully implemented.
 //Currently X11/Xwayland is preferred over native Wayland.
 #ifdef TRAP_PLATFORM_LINUX
-	// #define ENABLE_WAYLAND_SUPPORT
+	#define ENABLE_WAYLAND_SUPPORT
+#endif
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wshadow"
+#endif
+
+//Settings for Profiling (with Tracy)
+
+enum class ProfileSystems
+{
+	Events = 1 << 0,
+	FileSystem = 1 << 1,
+	Graphics = 1 << 2,
+	Vulkan = 1 << 3,
+	ImageLoader = 1 << 4,
+	Input = 1 << 5,
+	Layers = 1 << 6,
+	Network = 1 << 7,
+	Scene = 1 << 8,
+	ThreadPool = 1 << 9,
+	Utils = 1 << 10,
+	Window = 1 << 11,
+	WindowingAPI = 1 << 12,
+	Verbose = 1 << 13, //Toggles profiling of very trivial functions (i.e. getters, setters, etc.)
+
+	All = Events | FileSystem | Graphics | Vulkan | ImageLoader | Input | Layers |
+	      Network | Scene | ThreadPool | Utils | Window | WindowingAPI,
+	AllVerbose = Events | FileSystem | Graphics | Vulkan | ImageLoader | Input | Layers |
+	             Network | Scene | ThreadPool | Utils | Window | WindowingAPI | Verbose
+};
+
+[[nodiscard]] constexpr bool operator&(const ProfileSystems lhs, const ProfileSystems rhs) noexcept
+{
+	return static_cast<bool>(static_cast<std::underlying_type_t<ProfileSystems>>(lhs) &
+			                 static_cast<std::underlying_type_t<ProfileSystems>>(rhs));
+}
+
+//Set this macro to specify which systems should be profiled.
+[[nodiscard]] constexpr ProfileSystems TRAP_PROFILE_SYSTEMS() noexcept
+{
+	return ProfileSystems::All;
+}
+
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -75,10 +133,7 @@
 /// <param name="minor">Minor version number.</param>
 /// <param name="patch">Patch version number.</param>
 /// <returns>Version number packed into a single uint32_t.</returns>
-constexpr uint32_t TRAP_MAKE_VERSION(const uint32_t major, const uint32_t minor, const uint32_t patch)
-{
-	return major << 22 | minor << 12 | patch;
-}
+[[nodiscard]] uint32_t TRAP_MAKE_VERSION(const uint32_t major, const uint32_t minor, const uint32_t patch);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -87,7 +142,7 @@ constexpr uint32_t TRAP_MAKE_VERSION(const uint32_t major, const uint32_t minor,
 /// </summary>
 /// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
 /// <returns>Major version number.</returns>
-constexpr uint32_t TRAP_VERSION_MAJOR(const uint32_t version)
+[[nodiscard]] constexpr uint32_t TRAP_VERSION_MAJOR(const uint32_t version) noexcept
 {
 	return version >> 22u;
 }
@@ -99,7 +154,7 @@ constexpr uint32_t TRAP_VERSION_MAJOR(const uint32_t version)
 /// </summary>
 /// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
 /// <returns>Minor version number.</returns>
-constexpr uint32_t TRAP_VERSION_MINOR(const uint32_t version)
+[[nodiscard]] constexpr uint32_t TRAP_VERSION_MINOR(const uint32_t version) noexcept
 {
 	return version >> 12u;
 }
@@ -111,7 +166,7 @@ constexpr uint32_t TRAP_VERSION_MINOR(const uint32_t version)
 /// </summary>
 /// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
 /// <returns>Patch version number.</returns>
-constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
+[[nodiscard]] constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version) noexcept
 {
 	return version & 0xFFFu;
 }
@@ -121,24 +176,24 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 21);
+const uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 95);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef MAKE_ENUM_FLAG
 #define MAKE_ENUM_FLAG(ENUM_TYPE) \
-	static constexpr inline ENUM_TYPE operator|(const ENUM_TYPE a, const ENUM_TYPE b) \
+	constexpr inline ENUM_TYPE operator|(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
 	{ \
 		return static_cast<ENUM_TYPE>(static_cast<std::underlying_type<ENUM_TYPE>::type>(a) | \
 		 							  static_cast<std::underlying_type<ENUM_TYPE>::type>(b)); \
 	} \
-	static constexpr inline ENUM_TYPE operator&(const ENUM_TYPE a, const ENUM_TYPE b) \
+	constexpr inline ENUM_TYPE operator&(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
 	{ \
 		return static_cast<ENUM_TYPE>(static_cast<std::underlying_type<ENUM_TYPE>::type>(a) & \
 									  static_cast<std::underlying_type<ENUM_TYPE>::type>(b)); \
 	} \
-	static constexpr inline ENUM_TYPE operator|=(ENUM_TYPE& a, const ENUM_TYPE b) { return a = (a | b); }\
-	static constexpr inline ENUM_TYPE operator&=(ENUM_TYPE& a, const ENUM_TYPE b) { return a = (a & b); }
+	constexpr inline ENUM_TYPE operator|=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a | b); }\
+	constexpr inline ENUM_TYPE operator&=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a & b); }
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -168,7 +223,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 21);
 		/// Sets a cross platform debug break.
 		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
 		/// </summary>
-		constexpr void TRAP_DEBUG_BREAK()
+		constexpr void TRAP_DEBUG_BREAK() noexcept
 		{}
 	#endif
 #else
@@ -176,7 +231,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 21);
 		/// Sets a cross platform debug break.
 		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
 		/// </summary>
-		constexpr void TRAP_DEBUG_BREAK()
+		constexpr void TRAP_DEBUG_BREAK() noexcept
 		{}
 #endif
 
@@ -194,10 +249,32 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 21);
 /// <param name="x">Amount to shift.</param>
 /// <returns>Shifted value.</returns>
 template <typename T>
-constexpr T BIT(T x)
+[[nodiscard]] constexpr T BIT(const T x) noexcept
 {
 	return T(1) << x;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRACY_ENABLE
+//Overloads for new and delete (only used for profiling)
+[[nodiscard]] void* operator new(const std::size_t count);
+[[nodiscard]] void* operator new[](const std::size_t count);
+void operator delete(void* ptr) noexcept;
+void operator delete[](void* ptr) noexcept;
+void operator delete(void* ptr, std::size_t count) noexcept;
+void operator delete[](void* ptr, std::size_t count) noexcept;
+#endif /*TRACY_ENABLE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//TODO Temporary, remove after Tracy fixed this
+#ifndef TRACY_ENABLE
+#ifdef TracyLockable
+#undef TracyLockable
+#endif /*TracyLockable*/
+#define TracyLockable( type, varname ) type varname
+#endif /*TRACY_ENABLE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

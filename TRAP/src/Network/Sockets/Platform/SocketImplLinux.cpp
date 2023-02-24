@@ -2,7 +2,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -33,13 +33,16 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include <fcntl.h>
 #include <cstring>
 #include "Core/PlatformDetection.h"
+#include "Utils/String/String.h"
 #include "Utils/Utils.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 
 #ifdef TRAP_PLATFORM_LINUX
 
-sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(uint32_t address, uint16_t port)
+[[nodiscard]] sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(uint32_t address, uint16_t port)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	sockaddr_in addr{};
 
 	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
@@ -57,9 +60,11 @@ sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(uint32_t address,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array<uint8_t, 16>& address,
-                                                                uint16_t port)
+[[nodiscard]] sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array<uint8_t, 16>& address,
+                                                                              uint16_t port)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	sockaddr_in6 addr{};
 	std::copy(address.begin(), address.end(), addr.sin6_addr.s6_addr);
 	addr.sin6_family = AF_INET6;
@@ -74,8 +79,10 @@ sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::SocketHandle TRAP::INTERNAL::Network::SocketImpl::InvalidSocket()
+[[nodiscard]] TRAP::Network::SocketHandle TRAP::INTERNAL::Network::SocketImpl::InvalidSocket() noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return -1;
 }
 
@@ -83,30 +90,53 @@ TRAP::Network::SocketHandle TRAP::INTERNAL::Network::SocketImpl::InvalidSocket()
 
 void TRAP::INTERNAL::Network::SocketImpl::Close(TRAP::Network::SocketHandle sock)
 {
-	::close(sock);
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
+	if(::close(sock) < 0)
+	{
+		TP_ERROR(Log::NetworkSocketUnixPrefix, "Failed to close socket!");
+		TP_ERROR(Log::NetworkSocketUnixPrefix, Utils::String::GetStrError());
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::Network::SocketImpl::SetBlocking(const TRAP::Network::SocketHandle sock, const bool block)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	const int32_t status = fcntl(sock, F_GETFL);
+	if(status < 0)
+	{
+		TP_ERROR(Log::NetworkSocketUnixPrefix, "Failed to get socket status!");
+		TP_ERROR(Log::NetworkSocketUnixPrefix, Utils::String::GetStrError());
+		return;
+	}
+
 	if (block)
 	{
-		if (fcntl(sock, F_SETFL, status & ~O_NONBLOCK) == -1)
-			TP_ERROR(Log::NetworkSocketUnixPrefix, "Failed to set file status flags: ", errno);
+		if (fcntl(sock, F_SETFL, status & ~O_NONBLOCK) < 0)
+		{
+			TP_ERROR(Log::NetworkSocketUnixPrefix, "Failed to set file status flags");
+			TP_ERROR(Log::NetworkSocketUnixPrefix, Utils::String::GetStrError());
+		}
 	}
 	else
 	{
-		if (fcntl(sock, F_SETFL, status | O_NONBLOCK) == -1)
-			TP_ERROR(Log::NetworkSocketPrefix, "Failed to set file status flags: ", errno);
+		if (fcntl(sock, F_SETFL, status | O_NONBLOCK) < 0)
+		{
+			TP_ERROR(Log::NetworkSocketPrefix, "Failed to set file status flags");
+			TP_ERROR(Log::NetworkSocketPrefix, Utils::String::GetStrError());
+		}
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::INTERNAL::Network::SocketImpl::GetErrorStatus()
+[[nodiscard]] TRAP::Network::Socket::Status TRAP::INTERNAL::Network::SocketImpl::GetErrorStatus() noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	//The followings are sometimes equal to EWOULDBLOCK,
 	//so we have to make a special case for them in order
 	//to avoid having double values in the switch case
@@ -119,10 +149,15 @@ TRAP::Network::Socket::Status TRAP::INTERNAL::Network::SocketImpl::GetErrorStatu
 		return TRAP::Network::Socket::Status::NotReady;
 
 	case ECONNABORTED:
+		[[fallthrough]];
 	case ECONNRESET:
+		[[fallthrough]];
 	case ETIMEDOUT:
+		[[fallthrough]];
 	case ENETRESET:
+		[[fallthrough]];
 	case ENOTCONN:
+		[[fallthrough]];
 	case EPIPE:
 		return TRAP::Network::Socket::Status::Disconnected;
 

@@ -16,19 +16,19 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		BMPImage(const BMPImage&) = default;
+		BMPImage(const BMPImage&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		BMPImage& operator=(const BMPImage&) = default;
+		BMPImage& operator=(const BMPImage&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		BMPImage(BMPImage&&) = default;
+		BMPImage(BMPImage&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		BMPImage& operator=(BMPImage&&) = default;
+		BMPImage& operator=(BMPImage&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -38,12 +38,12 @@ namespace TRAP::INTERNAL
 		/// Retrieve the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Constant pointer to the raw pixel data.</returns>
-		const void* GetPixelData() const override;
+		[[nodiscard]] const void* GetPixelData() const noexcept override;
 		/// <summary>
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		uint64_t GetPixelDataSize() const override;
+		[[nodiscard]] uint64_t GetPixelDataSize() const noexcept override;
 
 	private:
 		struct BitField
@@ -80,41 +80,41 @@ namespace TRAP::INTERNAL
 		/// <param name="bitFields">Bit fields to validate.</param>
 		/// <param name="masks">Mask to validate the bit fields against.</param>
 		/// <returns>True if the bit fields are valid, false otherwise.</returns>
-		bool ValidateBitFields(std::array<BitField, 4>& bitFields, std::array<uint32_t, 4>& masks) const;
+		[[nodiscard]] bool ValidateBitFields(std::array<BitField, 4>& bitFields, std::array<uint32_t, 4>& masks) const noexcept;
 		/// <summary>
 		/// Parse a bit field.
 		/// </summary>
 		/// <param name="field">Bit field to parse.</param>
 		/// <param name="mask">Mask.</param>
 		/// <returns>True if the bit field was parsed successfully, false otherwise.</returns>
-		static bool ParseBitfield(BitField& field, uint32_t mask);
+		[[nodiscard]] static bool ParseBitfield(BitField& field, uint32_t mask) noexcept;
 		/// <summary>
 		/// Convert given value to 8 bits.
 		/// </summary>
 		/// <param name="value">Value to convert.</param>
 		/// <param name="bitSpan">Bit span.</param>
 		/// <returns>Value as 8 bits.</returns>
-		static uint8_t Make8Bits(uint32_t value, uint32_t bitSpan);
+		[[nodiscard]] static uint8_t Make8Bits(uint32_t value, uint32_t bitSpan) noexcept;
 		/// <summary>
 		/// Applies a bit field on the given value.
 		/// </summary>
 		/// <param name="x">Value to apply bit field to.</param>
 		/// <param name="bitField">Bit field to apply.</param>
 		/// <returns>Value with bit field applied.</returns>
-		static uint32_t ApplyBitField(uint32_t x, BitField& bitField);
+		[[nodiscard]] static uint32_t ApplyBitField(uint32_t x, BitField& bitField) noexcept;
 		/// <summary>
 		/// Applies a bit field on the given value.
 		/// </summary>
 		/// <param name="x">Value to apply bit field to.</param>
 		/// <param name="bitField">Bit field to apply.</param>
 		/// <returns>Value with bit field applied.</returns>
-		static uint32_t ApplyBitField(uint16_t x, BitField& bitField);
+		[[nodiscard]] static uint32_t ApplyBitField(uint16_t x, BitField& bitField) noexcept;
 		/// <summary>
 		/// Decode run length encoded 8-bit BMP data.
 		/// </summary>
 		/// <param name="compressedImageData">Compressed image data.</param>
 		/// <param name="colorTable">Color table.</param>
-		void DecodeRLE8(std::vector<uint8_t>& compressedImageData, std::vector<uint8_t>* colorTable);
+		void DecodeRLE8(std::vector<uint8_t>& compressedImageData, const std::vector<uint8_t>* colorTable);
 
 		std::vector<uint8_t> m_data;
 	};

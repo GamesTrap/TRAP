@@ -6,37 +6,40 @@
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 #include "Graphics/API/Objects/Queue.h"
 
-TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(std::string name,
-																			  std::array<std::filesystem::path, 6> filepaths,
-																			  const TextureCreationFlags flags)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(std::string name,
+																			              std::array<std::filesystem::path, 6> filepaths,
+																			              const TextureCreationFlags flags)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	if(name.empty())
 	{
-		TRAP_ASSERT(false, "Name is empty!");
+		TRAP_ASSERT(false, "Texture::CreateFromFiles(): Name is empty!");
 		TP_ERROR(Log::TexturePrefix, "Name is empty!");
 		return nullptr;
 	}
 
-	TRAP::Scope<Texture> texture = nullptr;
+	TRAP::Ref<Texture> texture = nullptr;
 
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeScope<API::VulkanTexture>(std::move(name), std::move(filepaths));
+		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(name), std::move(filepaths));
 
 		//Hot Reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				const auto folderPath = FileSystem::GetFolderPath(path);
-				if(!folderPath)
-					continue;
+				if(!path.empty())
+				{
+					const auto folderPath = FileSystem::GetFolderPath(path);
+					if(!folderPath)
+						continue;
 
-				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+					TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+				}
 			}
 		}
 
@@ -47,7 +50,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(st
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Texture::CreateFromFiles(): Unknown RenderAPI");
 		return nullptr;
 	}
 
@@ -69,15 +72,15 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(st
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::string name,
-																			 std::filesystem::path filepath,
-																			 const TextureType type,
-																			 const TextureCubeFormat cubeFormat,
-																			 const TextureCreationFlags flags)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::string name,
+																		                 std::filesystem::path filepath,
+																		                 const TextureType type,
+																		                 const TextureCubeFormat cubeFormat,
+																		                 const TextureCreationFlags flags)
 {
-	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Provided cube format is invalid");
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TP_PROFILE_FUNCTION();
+	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Texture::CreateFromFile(): Provided cube format is invalid");
 
 	if(name.empty())
 	{
@@ -85,24 +88,28 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 		name = filepath.string();
 	}
 
-	TRAP::Scope<Texture> texture = nullptr;
+	TRAP::Ref<Texture> texture = nullptr;
 
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeScope<API::VulkanTexture>(std::move(name), std::move(filepath), type, cubeFormat);
+		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(name), std::move(filepath), type, cubeFormat);
 
 		//Hot Reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				const auto folderPath = FileSystem::GetFolderPath(path);
-				if(!folderPath)
-					continue;
+				if(!path.empty())
+				{
+					const auto folderPath = FileSystem::GetFolderPath(path);
+					if(!folderPath)
+						continue;
 
-				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+					TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+				}
+
 			}
 		}
 
@@ -113,7 +120,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Texture::CreateFromFile(): Unknown RenderAPI");
 		return nullptr;
 	}
 
@@ -135,41 +142,44 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::filesystem::path filepath,
-																			 const TextureType type,
-		                                                                     const TextureCubeFormat cubeFormat,
-																			 const TextureCreationFlags flags)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::filesystem::path filepath,
+																		                 const TextureType type,
+		                                                                                 const TextureCubeFormat cubeFormat,
+																		                 const TextureCreationFlags flags)
 {
-	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Provided cube format is invalid");
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TP_PROFILE_FUNCTION();
+	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Texture::CreateFromFile(): Provided cube format is invalid");
 
-	const auto name = FileSystem::GetFileName(filepath);
+	const auto name = FileSystem::GetFileNameWithoutEnding(filepath);
 	if(!name)
 	{
-		TRAP_ASSERT(false, "Name is empty!");
+		TRAP_ASSERT(false, "Texture::CreateFromFile(): Name is empty!");
 		TP_ERROR(Log::TexturePrefix, "Name is empty!");
 		return nullptr;
 	}
 
-	TRAP::Scope<Texture> texture = nullptr;
+	TRAP::Ref<Texture> texture = nullptr;
 
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeScope<API::VulkanTexture>(std::move(*name), std::move(filepath), type, cubeFormat);
+		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(*name), std::move(filepath), type, cubeFormat);
 
 		//Hot Reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				const auto folderPath = FileSystem::GetFolderPath(path);
-				if(!folderPath)
-					continue;
+				if(!path.empty())
+				{
+					const auto folderPath = FileSystem::GetFolderPath(path);
+					if(!folderPath)
+						continue;
 
-				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+					TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+				}
 			}
 		}
 
@@ -180,7 +190,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Texture::CreateFromFile(): Unknown RenderAPI");
 		return nullptr;
 	}
 
@@ -202,69 +212,47 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(std::string name,
-																			   const std::array<Image*, 6>& imgs,
-																			   const TextureCreationFlags flags)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(std::string name,
+																			               const std::array<const Image*, 6>& imgs,
+																			               const TextureCreationFlags flags)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	TRAP_ASSERT(std::none_of(imgs.cbegin(), imgs.cend(),
-	            [](const Image* img) { return img == nullptr; }), "An Image is nullptr!");
+	            [](const Image* const img) { return img == nullptr; }), "Texture::CreateFromImages(): An Image is nullptr!");
 
-	TP_PROFILE_FUNCTION();
-
-	//Validation that images have same size and format
-	const Image::ColorFormat format = imgs[0]->GetColorFormat();
-	if(std::none_of(imgs.cbegin(), imgs.cend(),
-	   [&](const Image* img) {return img->GetColorFormat() != format ||
-	                                 img->GetBitsPerChannel() != imgs[0]->GetBitsPerPixel() ||
-									 img->GetWidth() != imgs[0]->GetWidth() ||
-									 img->GetHeight() != imgs[0]->GetHeight(); }))
+	if(name.empty())
 	{
-		TP_ERROR(Log::TexturePrefix, "An image has mismatching color format, bits per channel, width and/or height!");
+		TRAP_ASSERT(false, "Texture::CreateFromImages(): Name is empty!");
+		TP_ERROR(Log::TexturePrefix, "Name is empty!");
 		return nullptr;
 	}
 
-	//Convert to RGBA if necessary
-	std::array<Scope<Image>, 6> imgsRGBA{};
-	std::array<Image*, 6> imgsRGBAPtr{};
-	if(format == Image::ColorFormat::RGB)
-	{
-		for(uint32_t i = 0; i < imgs.size(); ++i)
-		{
-			imgsRGBA[i] = TRAP::Image::ConvertRGBToRGBA(imgs[i]);
-			imgsRGBAPtr[i] = imgsRGBA[i].get();
-		}
-	}
+	TRAP::Ref<Texture> texture = nullptr;
 
-	const std::array<Image*, 6>& useImgs = (format == Image::ColorFormat::RGB ? imgsRGBAPtr : imgs);
+	std::array<std::filesystem::path, 6> filePaths{};
+	for(std::size_t i = 0; i < filePaths.size(); ++i)
+		filePaths[i] = imgs[i]->GetFilePath();
 
-	TRAP::Scope<Texture> texture = nullptr;
-
-	const API::ImageFormat imageFormat = ColorFormatBitsPerPixelToImageFormat(useImgs[0]->GetColorFormat(),
-																			  useImgs[0]->GetBitsPerPixel());
-
-	if(imageFormat == API::ImageFormat::Undefined)
-		return nullptr;
-
-	std::array<std::filesystem::path, 6> filepaths{};
-	for(uint32_t i = 0; i < useImgs.size(); ++i)
-		filepaths[i] = useImgs[i]->GetFilePath();
-
-	switch(RendererAPI::GetRenderAPI())
+	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeScope<API::VulkanTexture>(std::move(name), filepaths);
+		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(name), std::move(filePaths));
 
 		//Hot Reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				const auto folderPath = FileSystem::GetFolderPath(path);
-				if(!folderPath)
-					continue;
+				if(!path.empty())
+				{
+					const auto folderPath = FileSystem::GetFolderPath(path);
+					if(!folderPath)
+						continue;
 
-				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+					TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+				}
 			}
 		}
 
@@ -275,39 +263,21 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(s
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Texture::CreateFromImages(): Unknown RenderAPI");
 		return nullptr;
 	}
 
 	if(texture)
 	{
-		//Create empty Texture
-		TRAP::Graphics::RendererAPI::TextureLoadDesc loadDesc{};
-		loadDesc.Texture = texture.get();
+		//Load Texture
+		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
+		desc.Images = imgs;
+		desc.IsCubemap = texture->m_textureType == TextureType::TextureCube;
+		desc.Type = texture->m_textureCubeFormat;
+		desc.CreationFlag = flags;
+		desc.Texture = texture.get();
 
-		RendererAPI::TextureDesc texDesc{};
-		texDesc.Width = useImgs[0]->GetWidth();
-		texDesc.Height = useImgs[0]->GetHeight();
-		texDesc.ArraySize = 6;
-		texDesc.MipLevels = CalculateMipLevels(useImgs[0]->GetWidth(), useImgs[0]->GetHeight());
-		texDesc.Format = imageFormat;
-		texDesc.StartState = RendererAPI::ResourceState::Common;
-		texDesc.Descriptors = RendererAPI::DescriptorType::Texture | RendererAPI::DescriptorType::TextureCube;
-		if(static_cast<bool>(flags & TextureCreationFlags::Storage))
-			texDesc.Descriptors |= RendererAPI::DescriptorType::RWTexture;
-
-		loadDesc.Desc = &texDesc;
-		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(loadDesc, &texture->m_syncToken);
-
-		//Wait for texture to be ready
-		RendererAPI::GetResourceLoader()->WaitForToken(&texture->m_syncToken);
-
-		//Fill empty Texture with images pixel data
-		for(uint32_t i = 0; i < useImgs.size(); ++i)
-			texture->Update(useImgs[i]->GetPixelData(), static_cast<uint32_t>(useImgs[i]->GetPixelDataSize()), 0, i);
-
-		//TODO Mipmaps
-		//TODO Make use of the ResourceLoader to do all this stuff
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
 	}
 
 	return texture;
@@ -315,47 +285,45 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(std::string name,
-																			  const TRAP::Image* const img,
- 																	          const TextureType type,
-		                                                                      const TextureCubeFormat cubeFormat,
-																			  const TextureCreationFlags flags)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(std::string name,
+																			              const TRAP::Image* const img,
+ 																	                      const TextureType type,
+		                                                                                  const TextureCubeFormat cubeFormat,
+																			              const TextureCreationFlags flags)
 {
-	TRAP_ASSERT(img, "Image is nullptr!");
-	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Provided cube format is invalid");
-	TRAP_ASSERT(cubeFormat != TextureCubeFormat::MultiFile, "Provided cube format is invalid");
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TP_PROFILE_FUNCTION();
+	TRAP_ASSERT(img, "Texture::CreateFromImage(): Image is nullptr!");
+	TRAP_ASSERT(cubeFormat != TextureCubeFormat::MultiFile, "Texture::CreateFromImage(): Provided cube format is invalid");
+	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Texture::CreateFromImage(): Provided cube format is invalid");
 
-	TRAP::Scope<Image> imgRGBA = nullptr;
-	if(img->GetColorFormat() == Image::ColorFormat::RGB)
-		imgRGBA = TRAP::Image::ConvertRGBToRGBA(img);
+	if(name.empty() && !img->GetFilePath().empty())
+	{
+		TP_WARN(Log::TexturePrefix, "Name is empty! Using filename as name!");
+		name = img->GetFilePath().filename().u8string();
+	}
 
-	const Image* const useImg = imgRGBA ? imgRGBA.get() : img;
-
-	TRAP::Scope<Texture> texture = nullptr;
-
-	const API::ImageFormat imageFormat = ColorFormatBitsPerPixelToImageFormat(useImg->GetColorFormat(), useImg->GetBitsPerPixel());
-
-	if(imageFormat == API::ImageFormat::Undefined)
-		return nullptr;
+	TRAP::Ref<Texture> texture = nullptr;
 
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeScope<API::VulkanTexture>(std::move(name), img->GetFilePath(), type, cubeFormat);
+		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(name), img->GetFilePath(), type, cubeFormat);
 
 		//Hot Reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				const auto folderPath = FileSystem::GetFolderPath(path);
-				if(!folderPath)
-					continue;
+				if(!path.empty())
+				{
+					const auto folderPath = FileSystem::GetFolderPath(path);
+					if(!folderPath)
+						continue;
 
-				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+					TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+				}
 			}
 		}
 
@@ -366,63 +334,22 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(st
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Texture::CreateFromImage(): Unknown RenderAPI");
 		return nullptr;
 	}
 
 	if(texture)
 	{
-		//Create empty Texture
-		TRAP::Graphics::RendererAPI::TextureLoadDesc loadDesc{};
-		loadDesc.Texture = texture.get();
+		//Load Texture
+		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
+		desc.Filepaths = texture->m_filepaths;
+		desc.Images = {img};
+		desc.IsCubemap = texture->m_textureType == TextureType::TextureCube;
+		desc.Type = texture->m_textureCubeFormat;
+		desc.CreationFlag = flags;
+		desc.Texture = texture.get();
 
-		RendererAPI::TextureDesc texDesc{};
-		texDesc.Format = imageFormat;
-		texDesc.StartState = RendererAPI::ResourceState::Common;
-		texDesc.Descriptors = texture->m_textureType == TextureType::TextureCube ? (RendererAPI::DescriptorType::Texture | RendererAPI::DescriptorType::TextureCube) :
-																				   RendererAPI::DescriptorType::Texture;
-		if(static_cast<bool>(flags & TextureCreationFlags::Storage))
-			texDesc.Descriptors |= RendererAPI::DescriptorType::RWTexture;
-
-		std::array<TRAP::Scope<Image>, 6> faces{};
-		if(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::Cross)
-		{
-			if(useImg->GetBytesPerChannel() == 1)
-				faces = SplitImageFromCross<uint8_t>(imgRGBA ? imgRGBA.get() : img);
-			else if(useImg->GetBytesPerChannel() == 2)
-				faces = SplitImageFromCross<uint16_t>(imgRGBA ? imgRGBA.get() : img);
-			else if(useImg->GetBytesPerChannel() == 4)
-				faces = SplitImageFromCross<float>(imgRGBA ? imgRGBA.get() : img);
-
-			texDesc.MipLevels = CalculateMipLevels(faces[0]->GetWidth(), faces[0]->GetHeight());
-			texDesc.Width = faces[0]->GetWidth();
-			texDesc.Height = faces[0]->GetWidth();
-			texDesc.ArraySize = 6;
-		}
-		else if(type == TextureType::Texture2D)
-		{
-			texDesc.Width = useImg->GetWidth();
-			texDesc.Height = useImg->GetHeight();
-			texDesc.MipLevels = CalculateMipLevels(useImg->GetWidth(), useImg->GetHeight());
-		}
-
-		loadDesc.Desc = &texDesc;
-		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(loadDesc, &texture->m_syncToken);
-
-		//Wait for texture to be ready
-		RendererAPI::GetResourceLoader()->WaitForToken(&texture->m_syncToken);
-
-		//Upload image data
-		if(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::Cross)
-		{
-			for(uint32_t i = 0; i < faces.size(); ++i)
-				texture->Update(faces[i]->GetPixelData(), static_cast<uint32_t>(faces[i]->GetPixelDataSize()), 0, i);
-		}
-		else if(type == TextureType::Texture2D)
-			texture->Update(useImg->GetPixelData(), static_cast<uint32_t>(useImg->GetPixelDataSize()));
-
-		//TODO Mipmaps
-		//TODO Make use of the ResourceLoader to do all this stuff
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
 	}
 
 	return texture;
@@ -430,17 +357,17 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(st
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateEmpty(std::string name,
-																		  const uint32_t width,
-																		  const uint32_t height,
-																		  const uint32_t bitsPerPixel,
-																		  const Image::ColorFormat format,
-																		  const TextureType type,
-																		  const TextureCreationFlags flags)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateEmpty(std::string name,
+																		              const uint32_t width,
+																		              const uint32_t height,
+																		              const uint32_t bitsPerPixel,
+																		              const Image::ColorFormat format,
+																		              const TextureType type,
+																		              const TextureCreationFlags flags)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP::Scope<Texture> texture = nullptr;
+	TRAP::Ref<Texture> texture = nullptr;
 
 	const API::ImageFormat imageFormat = ColorFormatBitsPerPixelToImageFormat(format, bitsPerPixel);
 
@@ -451,7 +378,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateEmpty(std::s
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeScope<API::VulkanTexture>(type);
+		texture = TRAP::MakeRef<API::VulkanTexture>(type);
 		break;
 	}
 
@@ -459,7 +386,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateEmpty(std::s
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Texture::CreateEmpty(): Unknown RenderAPI");
 		return nullptr;
 	}
 
@@ -490,22 +417,22 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateEmpty(std::s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCustom(const TRAP::Graphics::RendererAPI::TextureDesc& desc)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCustom(const TRAP::Graphics::RendererAPI::TextureDesc& desc)
 {
-    TRAP_ASSERT(desc.Width && desc.Height && (desc.Depth || desc.ArraySize));
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TP_PROFILE_FUNCTION();
+    TRAP_ASSERT(desc.Width && desc.Height && (desc.Depth || desc.ArraySize), "Texture::CreateCustom(): Invalid TextureDesc!");
 
 	if(!ValidateLimits(desc))
 		return nullptr;
 
-	TRAP::Scope<Texture> texture = nullptr;
+	TRAP::Ref<Texture> texture = nullptr;
 
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeScope<API::VulkanTexture>(desc.ArraySize == 6 ? TextureType::TextureCube : TextureType::Texture2D);
+		texture = TRAP::MakeRef<API::VulkanTexture>(desc.ArraySize == 6 ? TextureType::TextureCube : TextureType::Texture2D);
 		break;
 	}
 
@@ -513,7 +440,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCustom(const
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Texture::CreateCustom(): Unknown RenderAPI");
 		return nullptr;
 	}
 
@@ -533,17 +460,20 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCustom(const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallback2D()
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallback2D()
 {
-	TRAP::Scope<TRAP::Graphics::Texture> fallback2DTex = CreateFromImage("Fallback2D",
-																		 TRAP::Image::LoadFallback().get(),
-																		 TextureType::Texture2D,
-	                       												 TextureCubeFormat::NONE, TextureCreationFlags::Storage);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	const auto fallbackImg = TRAP::Image::LoadFallback();
+	TRAP::Ref<TRAP::Graphics::Texture> fallback2DTex = CreateFromImage("Fallback2D",
+																	   fallbackImg.get(),
+																	   TextureType::Texture2D,
+	                       											   TextureCubeFormat::NONE, TextureCreationFlags::Storage);
 
 	fallback2DTex->AwaitLoading();
 
 	//By default Storage texture are in Unordered Access layout.
-	RendererAPI::Transition(fallback2DTex.get(), RendererAPI::ResourceState::UnorderedAccess,
+	RendererAPI::Transition(fallback2DTex, RendererAPI::ResourceState::UnorderedAccess,
 	                        RendererAPI::ResourceState::ShaderResource);
 
 	return fallback2DTex;
@@ -551,21 +481,23 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallback2D()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallbackCube()
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallbackCube()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	std::array<TRAP::Scope<TRAP::Image>, 6> imgs{};
-	std::array<TRAP::Image*, 6> imgPtrs{};
-	for(uint32_t i = 0; i < imgs.size(); ++i)
+	std::array<const TRAP::Image*, 6> imgPtrs{};
+	for(std::size_t i = 0; i < imgs.size(); ++i)
 	{
 		imgs[i] = TRAP::Image::LoadFallback();
 		imgPtrs[i] = imgs[i].get();
 	}
 
-	TRAP::Scope<TRAP::Graphics::Texture> fallbackCubeTex = CreateFromImages("FallbackCube", imgPtrs, TextureCreationFlags::Storage);
+	TRAP::Ref<TRAP::Graphics::Texture> fallbackCubeTex = CreateFromImages("FallbackCube", imgPtrs, TextureCreationFlags::Storage);
 	fallbackCubeTex->AwaitLoading();
 
 	//By default Storage texture are in Unordered Access layout.
-	RendererAPI::Transition(fallbackCubeTex.get(), RendererAPI::ResourceState::UnorderedAccess,
+	RendererAPI::Transition(fallbackCubeTex, RendererAPI::ResourceState::UnorderedAccess,
 	                        RendererAPI::ResourceState::ShaderResource);
 
 	return fallbackCubeTex;
@@ -575,7 +507,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallbackCube
 
 bool TRAP::Graphics::Texture::Reload()
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	//Can't reload if there is no filepath
 	if(m_textureType == TextureType::Texture2D && m_filepaths[0].empty())
@@ -616,120 +548,154 @@ bool TRAP::Graphics::Texture::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Graphics::Texture::GetName() const
+[[nodiscard]] std::string TRAP::Graphics::Texture::GetName() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_name;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::TextureType TRAP::Graphics::Texture::GetType() const
+[[nodiscard]] TRAP::Graphics::TextureType TRAP::Graphics::Texture::GetType() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_textureType;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetWidth() const
+[[nodiscard]] uint32_t TRAP::Graphics::Texture::GetWidth() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_width;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetHeight() const
+[[nodiscard]] uint32_t TRAP::Graphics::Texture::GetHeight() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_height;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Math::Vec2ui TRAP::Graphics::Texture::GetSize() const
+[[nodiscard]] TRAP::Math::Vec2ui TRAP::Graphics::Texture::GetSize() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return Math::Vec2ui(m_width, m_height);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetDepth() const
+[[nodiscard]] uint32_t TRAP::Graphics::Texture::GetDepth() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_depth;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetArraySize() const
+[[nodiscard]] uint32_t TRAP::Graphics::Texture::GetArraySize() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_arraySize;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetMipLevels() const
+[[nodiscard]] uint32_t TRAP::Graphics::Texture::GetMipLevels() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_mipLevels;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetAspectMask() const
+[[nodiscard]] uint32_t TRAP::Graphics::Texture::GetAspectMask() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_aspectMask;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Image::ColorFormat TRAP::Graphics::Texture::GetColorFormat() const
+[[nodiscard]] TRAP::Image::ColorFormat TRAP::Graphics::Texture::GetColorFormat() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return ImageFormatToColorFormat(m_imageFormat);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::GetImageFormat() const
+[[nodiscard]] TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::GetImageFormat() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_imageFormat;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::Texture::GetDescriptorTypes() const
+[[nodiscard]] TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::Texture::GetDescriptorTypes() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_descriptorTypes;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetBitsPerChannel() const
+[[nodiscard]] uint32_t TRAP::Graphics::Texture::GetBitsPerChannel() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return GetBitsPerChannelFromImageFormat(m_imageFormat);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetBytesPerChannel() const
+[[nodiscard]] uint32_t TRAP::Graphics::Texture::GetBytesPerChannel() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return GetBitsPerChannel() / 8;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetBitsPerPixel() const
+[[nodiscard]] uint32_t TRAP::Graphics::Texture::GetBitsPerPixel() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return GetBitsPerChannel() * static_cast<uint32_t>(m_colorFormat);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetBytesPerPixel() const
+[[nodiscard]] uint32_t TRAP::Graphics::Texture::GetBytesPerPixel() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return GetBitsPerPixel() / 8;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetMipWidth(const uint32_t mipLevel) const
+[[nodiscard]] uint32_t TRAP::Graphics::Texture::GetMipWidth(const uint32_t mipLevel) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if(mipLevel >= m_mipLevels)
 		TP_ERROR(Log::TexturePrefix, "GetMipWidth: Invalid mip level provided!");
 
@@ -738,8 +704,10 @@ uint32_t TRAP::Graphics::Texture::GetMipWidth(const uint32_t mipLevel) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetMipHeight(const uint32_t mipLevel) const
+[[nodiscard]] uint32_t TRAP::Graphics::Texture::GetMipHeight(const uint32_t mipLevel) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if(mipLevel >= m_mipLevels)
 		TP_ERROR(Log::TexturePrefix, "GetMipHeight: Invalid mip level provided!");
 
@@ -748,42 +716,52 @@ uint32_t TRAP::Graphics::Texture::GetMipHeight(const uint32_t mipLevel) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Math::Vec2ui TRAP::Graphics::Texture::GetMipSize(const uint32_t mipLevel) const
+[[nodiscard]] TRAP::Math::Vec2ui TRAP::Graphics::Texture::GetMipSize(const uint32_t mipLevel) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return TRAP::Math::Vec2ui{GetMipWidth(mipLevel), GetMipHeight(mipLevel)};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::filesystem::path& TRAP::Graphics::Texture::GetFilePath() const
+[[nodiscard]] const std::filesystem::path& TRAP::Graphics::Texture::GetFilePath() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_filepaths[0];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::array<std::filesystem::path, 6>& TRAP::Graphics::Texture::GetFilePaths() const
+[[nodiscard]] const std::array<std::filesystem::path, 6>& TRAP::Graphics::Texture::GetFilePaths() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_filepaths;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::TextureCubeFormat TRAP::Graphics::Texture::GetCubeFormat() const
+[[nodiscard]] TRAP::Graphics::TextureCubeFormat TRAP::Graphics::Texture::GetCubeFormat() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_textureCubeFormat;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Texture::Update(const void* data, const uint32_t sizeInBytes, const uint32_t mipLevel,
+void TRAP::Graphics::Texture::Update(const void* const data, const uint32_t sizeInBytes, const uint32_t mipLevel,
                                      const uint32_t arrayLayer)
 {
-	TRAP_ASSERT(data, "Update: Data is nullptr!");
-	TRAP_ASSERT(arrayLayer < m_arraySize, "Invalid array layer provided!");
-	TRAP_ASSERT(mipLevel < m_mipLevels, "Invalid mip level provided!");
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	TRAP_ASSERT(data, "Texture::Update(): Data is nullptr!");
+	TRAP_ASSERT(arrayLayer < m_arraySize, "Texture::Update(): Invalid array layer provided!");
+	TRAP_ASSERT(mipLevel < m_mipLevels, "Texture::Update(): Invalid mip level provided!");
 	TRAP_ASSERT(sizeInBytes >= (m_width >> mipLevel) * (m_height >> mipLevel) * GetBytesPerPixel(),
-	            "Texture update size is too small");
+	            "Texture::Update(): Texture update size is too small");
 
 	if(mipLevel >= m_mipLevels)
 	{
@@ -818,15 +796,19 @@ void TRAP::Graphics::Texture::Update(const void* data, const uint32_t sizeInByte
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::Texture::OwnsImage() const
+[[nodiscard]] bool TRAP::Graphics::Texture::OwnsImage() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_ownsImage;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::Texture::IsLoaded() const
+[[nodiscard]] bool TRAP::Graphics::Texture::IsLoaded() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	if(m_syncToken == std::numeric_limits<API::SyncToken>::max())
 		return true; //We don't have a valid sync token, so we assume the texture is loaded
 
@@ -837,6 +819,8 @@ bool TRAP::Graphics::Texture::IsLoaded() const
 
 void TRAP::Graphics::Texture::AwaitLoading() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	if(m_syncToken == std::numeric_limits<API::SyncToken>::max())
 		return; //We don't have a valid sync token, so we assume the texture is loaded
 
@@ -845,20 +829,24 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::CalculateMipLevels(const uint32_t width, const uint32_t height)
+[[nodiscard]] uint32_t TRAP::Graphics::Texture::CalculateMipLevels(const uint32_t width, const uint32_t height)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return Math::Max(1u, static_cast<uint32_t>(Math::Floor(Math::Log2(Math::Max(static_cast<float>(width),
 					                                                            static_cast<float>(height))))) + 1);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::Texture::ValidateLimits(const RendererAPI::TextureDesc& desc)
+[[nodiscard]] bool TRAP::Graphics::Texture::ValidateLimits(const RendererAPI::TextureDesc& desc)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
     if(desc.SampleCount > RendererAPI::SampleCount::One && desc.MipLevels > 1)
 	{
 		TP_ERROR(Log::TexturePrefix, "Multi-Sampled textures cannot have mip maps!");
-		TRAP_ASSERT(false);
+		TRAP_ASSERT(false, "Texture::ValidateLimits(): Multi-Sampled textures cannot have mip maps!");
 		return false;
 	}
     const bool cubeMapRequired = (desc.Descriptors & RendererAPI::DescriptorType::TextureCube) ==
@@ -869,14 +857,14 @@ bool TRAP::Graphics::Texture::ValidateLimits(const RendererAPI::TextureDesc& des
         {
             TP_ERROR(Log::TexturePrefix, "Texture width: ", desc.Width,
                      " is bigger than max allowed size: ", RendererAPI::GPUSettings.MaxImageDimension2D, "!");
-            TRAP_ASSERT(false);
+            TRAP_ASSERT(false, "Texture::ValidateLimits(): Texture width is bigger than max allowed size!");
             return false;
         }
         if(desc.Height > RendererAPI::GPUSettings.MaxImageDimension2D)
         {
             TP_ERROR(Log::TexturePrefix, "Texture height: ", desc.Width,
                      " is bigger than max allowed size: ", RendererAPI::GPUSettings.MaxImageDimension2D, "!");
-            TRAP_ASSERT(false);
+            TRAP_ASSERT(false, "Texture::ValidateLimits(): Texture height is bigger than max allowed size!");
             return false;
         }
     }
@@ -886,14 +874,14 @@ bool TRAP::Graphics::Texture::ValidateLimits(const RendererAPI::TextureDesc& des
         {
             TP_ERROR(Log::TexturePrefix, "Texture width: ", desc.Width,
                      " is bigger than max allowed size: ", RendererAPI::GPUSettings.MaxImageDimensionCube, "!");
-            TRAP_ASSERT(false);
+            TRAP_ASSERT(false, "Texture::ValidateLimits(): Texture width is bigger than max allowed size!");
             return false;
         }
         if(desc.Height > RendererAPI::GPUSettings.MaxImageDimensionCube)
         {
             TP_ERROR(Log::TexturePrefix, "Texture height: ", desc.Width,
                      " is bigger than max allowed size: ", RendererAPI::GPUSettings.MaxImageDimensionCube, "!");
-            TRAP_ASSERT(false);
+            TRAP_ASSERT(false, "Texture::ValidateLimits(): Texture height is bigger than max allowed size!");
             return false;
         }
     }
@@ -903,8 +891,10 @@ bool TRAP::Graphics::Texture::ValidateLimits(const RendererAPI::TextureDesc& des
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90Clockwise(const TRAP::Image* const img)
+[[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90Clockwise(const TRAP::Image* const img)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	if(img->GetBitsPerChannel() == 32)
 	{
 		std::vector<float> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() *
@@ -965,8 +955,10 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90Clockwise(const TRAP::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90CounterClockwise(const TRAP::Image* const img)
+[[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90CounterClockwise(const TRAP::Image* const img)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	if(img->GetBitsPerChannel() == 32)
 	{
 		std::vector<float> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() *
@@ -1049,7 +1041,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90CounterClockwise(const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture::Texture()
+TRAP::Graphics::Texture::Texture() noexcept
 	: m_name(),
 	  m_syncToken(0),
 	  m_textureType(TextureType::Texture2D),
@@ -1065,4 +1057,5 @@ TRAP::Graphics::Texture::Texture()
 	  m_ownsImage(true),
 	  m_textureCubeFormat(TextureCubeFormat::NONE)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 }

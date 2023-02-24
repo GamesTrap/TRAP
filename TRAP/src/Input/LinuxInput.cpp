@@ -27,6 +27,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "TRAPPCH.h"
 #include "Input/Input.h"
+#include <regex>
 
 #ifdef TRAP_PLATFORM_LINUX
 
@@ -42,47 +43,38 @@ TRAP::Input::ControllerLinuxLibrary TRAP::Input::s_linuxController{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::InitController()
+[[nodiscard]] bool TRAP::Input::InitController()
 {
-	constexpr std::string_view dirName = "/dev/input";
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
+
+	static constexpr std::string_view dirName = "/dev/input";
 
 	s_linuxController.INotify = inotify_init1(IN_NONBLOCK | IN_CLOEXEC);
 	if(s_linuxController.INotify > 0)
 	{
 		//HACK: Register for IN_ATTRIB to get notified when udev is done
-		//This works well in practice but the true way is libudev
+		//This works well in practice but the true way is sd-device
 		s_linuxController.Watch = inotify_add_watch(s_linuxController.INotify, dirName.data(),
 		                                            IN_CREATE | IN_ATTRIB | IN_DELETE);
+		if(s_linuxController.Watch < 0)
+		{
+			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to add watch for ", dirName, "!");
+			TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
+		}
+	}
+	else
+	{
+		TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to initialize inotify!");
+		TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
 	}
 
 	//Continue without device connection notifications if inotify fails
-	if(regcomp(&s_linuxController.Regex, "^event[0-9]\\+$", 0) != 0)
+	s_linuxController.Regex = std::regex("^event[0-9]+$", std::regex_constants::extended);
+
+	for(const auto& entry : std::filesystem::directory_iterator(dirName))
 	{
-		TP_ERROR(Log::InputControllerLinuxPrefix, "Could not compile regex!");
-		return false;
-	}
-
-	int32_t count = 0;
-
-	DIR* dir = opendir(dirName.data());
-	if(dir)
-	{
-		const dirent* entry = nullptr;
-
-		while((entry = readdir(dir)))
-		{
-			regmatch_t match;
-
-			if (regexec(&s_linuxController.Regex, entry->d_name, 1, &match, 0) != 0)
-				continue;
-
-			const std::filesystem::path path = std::filesystem::path(dirName) / entry->d_name;
-
-			if (OpenControllerDeviceLinux(path))
-				count++;
-		}
-
-		closedir(dir);
+		if(std::regex_match(entry.path().filename().string(), s_linuxController.Regex))
+			OpenControllerDeviceLinux(entry);
 	}
 
 	//Continue with no controllers if enumeration fails
@@ -93,6 +85,8 @@ bool TRAP::Input::InitController()
 
 void TRAP::Input::ShutdownController()
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
+
 	for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Sixteen); cID++)
 	{
 		if(s_controllerInternal[cID].LinuxCon.CurrentVibration != -1)
@@ -101,14 +95,22 @@ void TRAP::Input::ShutdownController()
 			CloseController(static_cast<Controller>(cID));
 	}
 
-	regfree(&s_linuxController.Regex);
-
 	if(s_linuxController.INotify > 0)
 	{
 		if (s_linuxController.Watch > 0)
-			inotify_rm_watch(s_linuxController.INotify, s_linuxController.Watch);
+		{
+			if(inotify_rm_watch(s_linuxController.INotify, s_linuxController.Watch) < 0)
+			{
+				TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to remove watch!");
+				TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
+			}
+		}
 
-		close(s_linuxController.INotify);
+		if(close(s_linuxController.INotify) < 0)
+		{
+			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to close inotify!");
+			TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
+		}
 	}
 
 	s_controllerInternal = {};
@@ -118,10 +120,12 @@ void TRAP::Input::ShutdownController()
 
 void TRAP::Input::SetControllerVibrationInternal(Controller controller, const float leftMotor, const float rightMotor)
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
+
 	if(!PollController(controller, PollMode::Presence))
 		return;
 
-	ControllerInternal* con = &s_controllerInternal[static_cast<uint8_t>(controller)];
+	ControllerInternal* const con = &s_controllerInternal[static_cast<uint8_t>(controller)];
 
 	if(!con->LinuxCon.VibrationSupported)
 		return;
@@ -135,14 +139,20 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 		play.code = con->LinuxCon.CurrentVibration;
 		play.value = 0;
 
-		if(write(con->LinuxCon.FD, static_cast<const void*>(&play), sizeof(play)) == -1)
+		if(write(con->LinuxCon.FD, static_cast<const void*>(&play), sizeof(play)) < 0)
 		{
 			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to stop vibration");
+			TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
 			return;
 		}
 
 		//Delete the effect
-		ioctl(con->LinuxCon.FD, EVIOCRMFF, con->LinuxCon.CurrentVibration);
+		if(ioctl(con->LinuxCon.FD, EVIOCRMFF, con->LinuxCon.CurrentVibration) < 0)
+		{
+			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to delete vibration");
+			TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
+			return;
+		}
 	}
 
 	//If VibrationSupported is true, start the new effect
@@ -159,17 +169,25 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 		ff.replay.delay = 0;
 
 		//Upload the effect
-		if(ioctl(con->LinuxCon.FD, EVIOCSFF, &ff) != -1)
+		if(ioctl(con->LinuxCon.FD, EVIOCSFF, &ff) >= 0)
 			con->LinuxCon.CurrentVibration = ff.id;
+		else
+		{
+			con->LinuxCon.CurrentVibration = -1;
+			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to upload vibration");
+			TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
+			return;
+		}
 
 		//Play the effect
 		play.type = EV_FF;
 		play.code = con->LinuxCon.CurrentVibration;
 		play.value = 1;
 
-		if(write(con->LinuxCon.FD, static_cast<const void*>(&play), sizeof(play)) == -1)
+		if(write(con->LinuxCon.FD, static_cast<const void*>(&play), sizeof(play)) < 0)
 		{
 			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to start vibration");
+			TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
 			return;
 		}
 	}
@@ -177,8 +195,10 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInternal(Controller /*controller*/)
+[[nodiscard]] TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInternal(Controller /*controller*/)
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return ControllerBatteryStatus::Wired;
 }
 
@@ -187,6 +207,8 @@ TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInte
 //Attempt to open the specified controller device
 bool TRAP::Input::OpenControllerDeviceLinux(const std::filesystem::path path)
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
+
 	for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Sixteen); cID++)
 	{
 		if (!s_controllerInternal[cID].Connected)
@@ -203,8 +225,12 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::filesystem::path path)
 	if(errno == EACCES)
 		LinuxCon.FD = open(path.c_str(), O_RDONLY | O_NONBLOCK);
 
-	if (LinuxCon.FD == -1)
+	if (LinuxCon.FD < 0)
+	{
+		TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to open controller device!");
+		TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
 		return false;
+	}
 
 	const std::array<char, (EV_CNT + 7) / 8> EVBits{};
 	const std::array<char, (KEY_CNT + 7) / 8> keyBits{};
@@ -216,15 +242,24 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::filesystem::path path)
 		ioctl(LinuxCon.FD, EVIOCGBIT(EV_ABS, ABSBits.size()), ABSBits.data()) < 0 ||
 		ioctl(LinuxCon.FD, EVIOCGID, &ID) < 0)
 	{
-		TP_ERROR(Log::InputControllerLinuxPrefix, "Could not query input device: ", Utils::String::GetStrError(), "!");
-		close(LinuxCon.FD);
+		TP_ERROR(Log::InputControllerLinuxPrefix, "Could not query input device");
+		TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
+		if(close(LinuxCon.FD) < 0)
+		{
+			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to close controller device!");
+			TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
+		}
 		return false;
 	}
 
 	//Ensure this device supports the events expected of a controller
 	if(!(EVBits[EV_ABS / 8] & (1 << (EV_ABS % 8))))
 	{
-		close(LinuxCon.FD);
+		if(close(LinuxCon.FD) < 0)
+		{
+			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to close controller device!");
+			TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
+		}
 		return false;
 	}
 
@@ -288,10 +323,14 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::filesystem::path path)
 		}
 	}
 
-	ControllerInternal* con = AddInternalController(name, guid, axisCount, buttonCount, dpadCount);
+	ControllerInternal* const con = AddInternalController(name, guid, axisCount, buttonCount, dpadCount);
 	if(!con)
 	{
-		close(LinuxCon.FD);
+		if(close(LinuxCon.FD) < 0)
+		{
+			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to close controller device!");
+			TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
+		}
 		return false;
 	}
 
@@ -322,9 +361,15 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::filesystem::path path)
 //Frees all resources associated with the specified controller
 void TRAP::Input::CloseController(Controller controller)
 {
-	ControllerInternal* con = &s_controllerInternal[static_cast<uint8_t>(controller)];
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	close(con->LinuxCon.FD);
+	ControllerInternal* const con = &s_controllerInternal[static_cast<uint8_t>(controller)];
+
+	if(close(con->LinuxCon.FD) < 0)
+	{
+		TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to close controller device!");
+		TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
+	}
 
 	const bool connected = con->Connected;
 
@@ -353,6 +398,8 @@ void TRAP::Input::CloseController(Controller controller)
 
 void TRAP::Input::DetectControllerConnectionLinux()
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
+
 	if (s_linuxController.INotify <= 0)
 		return;
 
@@ -362,12 +409,11 @@ void TRAP::Input::DetectControllerConnectionLinux()
 
 	while(size > offset)
 	{
-		regmatch_t match;
-		const inotify_event* e = reinterpret_cast<const inotify_event*>(&buffer[offset]); //Must use reinterpret_cast because of flexible array member
+		const inotify_event* const e = reinterpret_cast<const inotify_event*>(&buffer[offset]); //Must use reinterpret_cast because of flexible array member
 
 		offset += static_cast<ssize_t>(sizeof(inotify_event)) + e->len;
 
-		if (regexec(&s_linuxController.Regex, e->name, 1, &match, 0) != 0)
+		if(!std::regex_match(e->name, s_linuxController.Regex))
 			continue;
 
 		const std::filesystem::path path = std::filesystem::path("/dev/input") / e->name;
@@ -392,9 +438,11 @@ void TRAP::Input::DetectControllerConnectionLinux()
 
 bool TRAP::Input::PollController(Controller controller, PollMode)
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
+
 	if(s_controllerInternal[static_cast<uint8_t>(controller)].Connected)
 	{
-		ControllerInternal* con = &s_controllerInternal[static_cast<uint8_t>(controller)];
+		ControllerInternal* const con = &s_controllerInternal[static_cast<uint8_t>(controller)];
 
 		//Read all queued events (non-blocking)
 		while(true)
@@ -438,14 +486,16 @@ bool TRAP::Input::PollController(Controller controller, PollMode)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Poll state of absolute axes
-void TRAP::Input::PollABSStateLinux(ControllerInternal* con)
+void TRAP::Input::PollABSStateLinux(ControllerInternal* const con)
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
+
 	for (int32_t code = 0; code < ABS_CNT; code++)
 	{
 		if (con->LinuxCon.ABSMap[code] < 0)
 			continue;
 
-		const input_absinfo* info = &con->LinuxCon.ABSInfo[code];
+		const input_absinfo* const info = &con->LinuxCon.ABSInfo[code];
 
 		if (ioctl(con->LinuxCon.FD, EVIOCGABS(code), info) < 0)
 			continue;
@@ -457,8 +507,10 @@ void TRAP::Input::PollABSStateLinux(ControllerInternal* con)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Apply an EV_ABS event to the specified controller
-void TRAP::Input::HandleABSEventLinux(ControllerInternal* con, int32_t code, int32_t value)
+void TRAP::Input::HandleABSEventLinux(ControllerInternal* const con, int32_t code, int32_t value)
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
+
 	const int32_t index = con->LinuxCon.ABSMap[code];
 
 	if (code >= ABS_HAT0X && code <= ABS_HAT3Y)
@@ -486,7 +538,7 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* con, int32_t code, int
 
 		const int32_t dpad = (code - ABS_HAT0X) / 2;
 		const int32_t axis = (code - ABS_HAT0X) % 2;
-		int32_t* state = con->LinuxCon.DPads[dpad].data();
+		int32_t* const state = con->LinuxCon.DPads[dpad].data();
 
 		//NOTE: Looking at several input drivers, it seems all DPad events use
 		//-1 for left / up, 0 for centered and 1 for right / down
@@ -501,7 +553,7 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* con, int32_t code, int
 	}
 	else
 	{
-		const input_absinfo* info = &con->LinuxCon.ABSInfo[code];
+		const input_absinfo* const info = &con->LinuxCon.ABSInfo[code];
 		float normalized = static_cast<float>(value);
 
 		const int range = info->maximum - info->minimum;
@@ -519,8 +571,10 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* con, int32_t code, int
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::HandleKeyEventLinux(ControllerInternal* con, int32_t code, int32_t value)
+void TRAP::Input::HandleKeyEventLinux(ControllerInternal* const con, int32_t code, int32_t value)
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
+
 	if(code - BTN_MISC >= 0)
 		InternalInputControllerButton(con, con->LinuxCon.KeyMap[code - BTN_MISC], value);
 }
@@ -529,12 +583,15 @@ void TRAP::Input::HandleKeyEventLinux(ControllerInternal* con, int32_t code, int
 
 void TRAP::Input::UpdateControllerGUID(std::string&)
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Input::GetKeyboardLayoutName()
+[[nodiscard]] std::string TRAP::Input::GetKeyboardLayoutName()
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
+
 	return TRAP::INTERNAL::WindowingAPI::GetLinuxKeyboardLayoutName();
 }
 

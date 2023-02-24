@@ -1,8 +1,6 @@
 #ifndef TRAP_CONFIG_H
 #define TRAP_CONFIG_H
 
-#include "Utils/Profiler/Instrumentor.h"
-#include "Window/Window.h"
 #include "Utils/String/String.h"
 
 namespace TRAP::Utils
@@ -13,7 +11,7 @@ namespace TRAP::Utils
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		Config();
+		Config() noexcept;
 
 		/// <summary>
 		/// Load a config file from disk.
@@ -32,7 +30,7 @@ namespace TRAP::Utils
 		/// Check if config has changed after last load/save.
 		/// </summary>
 		/// <returns>True if config has changed, false otherwise.</returns>
-		bool HasChanged() const;
+		[[nodiscard]] bool HasChanged() const noexcept;
 
 		/// <summary>
 		/// Retrieve the value of a specific key in the config.
@@ -64,7 +62,7 @@ namespace TRAP::Utils
 		/// <param name="key">Key to get value from.</param>
 		/// <returns>Found value or default constructor for the given type.</returns>
 		template<typename T>
-		T Get(std::string_view key) const;
+		[[nodiscard]] T Get(std::string_view key) const;
 		/// <summary>
 		/// Retrieve the values of a specific key in the config.
 		/// </summary>
@@ -72,7 +70,7 @@ namespace TRAP::Utils
 		/// <param name="key">Key to get values from.</param>
 		/// <returns>Found values or default constructor for the given type.</returns>
 		template<typename T>
-		std::vector<T> GetVector(std::string_view key) const;
+		[[nodiscard]] std::vector<T> GetVector(std::string_view key) const;
 
 		/// <summary>
 		/// Set a value in the config.
@@ -104,7 +102,7 @@ namespace TRAP::Utils
 		/// </summary>
 		/// <param name="line">Line to parse.</param>
 		/// <returns>Pair of key and value.</returns>
-		std::pair<std::string, std::string> ParseLine(const std::string_view line) const;
+		[[nodiscard]] std::pair<std::string, std::string> ParseLine(const std::string_view line) const;
 
 		bool m_hasChanged;
 		std::vector<std::pair<std::string, std::string>> m_data;
@@ -117,7 +115,7 @@ namespace TRAP::Utils
 template<typename T>
 void TRAP::Utils::Config::Get(const std::string_view key, T& value) const
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	const auto it = std::find_if(m_data.begin(), m_data.end(),
 		[&key](const std::pair<std::string, std::string>& element)
@@ -136,7 +134,7 @@ void TRAP::Utils::Config::Get(const std::string_view key, T& value) const
 template<typename T>
 void TRAP::Utils::Config::Get(const std::string_view key, std::vector<T>& value) const
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	const auto it = std::find_if(m_data.begin(), m_data.end(),
 		[&key](const std::pair<std::string, std::string>& element)
@@ -156,9 +154,9 @@ void TRAP::Utils::Config::Get(const std::string_view key, std::vector<T>& value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-T TRAP::Utils::Config::Get(const std::string_view key) const
+[[nodiscard]] T TRAP::Utils::Config::Get(const std::string_view key) const
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	const auto it = std::find_if(m_data.begin(), m_data.end(),
 		[&key](const std::pair<std::string, std::string>& element)
@@ -177,9 +175,9 @@ T TRAP::Utils::Config::Get(const std::string_view key) const
 //The values have to be separated by comma.
 //The vector is cleared before it it filled.
 template<typename T>
-std::vector<T> TRAP::Utils::Config::GetVector(const std::string_view key) const
+[[nodiscard]] std::vector<T> TRAP::Utils::Config::GetVector(const std::string_view key) const
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	const auto it = std::find_if(m_data.begin(), m_data.end(),
 		[&key](const std::pair<std::string, std::string>& element)
@@ -203,7 +201,7 @@ std::vector<T> TRAP::Utils::Config::GetVector(const std::string_view key) const
 template<typename T>
 void TRAP::Utils::Config::Set(const std::string& key, const T value)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	//Replaces the value if the key is found
 	m_hasChanged = true;
@@ -226,7 +224,7 @@ void TRAP::Utils::Config::Set(const std::string& key, const T value)
 template<typename T>
 void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T>& value)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	//Transform the vector into a string that separates the elements with a comma
 	std::string valueAsString;

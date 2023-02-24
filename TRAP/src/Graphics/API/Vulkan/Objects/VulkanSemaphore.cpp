@@ -10,7 +10,9 @@ TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore()
 	: m_semaphore(VK_NULL_HANDLE),
 	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
-	TRAP_ASSERT(m_device, "device is nullptr");
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(m_device, "VulkanSemaphore(): Vulkan Device is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSemaphorePrefix, "Creating Semaphore");
@@ -18,13 +20,14 @@ TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore()
 
 	VkSemaphoreCreateInfo info = VulkanInits::SemaphoreCreateInfo();
 	VkCall(vkCreateSemaphore(m_device->GetVkDevice(), &info, nullptr, &m_semaphore));
+	TRAP_ASSERT(m_semaphore, "VulkanSemaphore(): Vulkan Semaphore is nullptr");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanSemaphore::~VulkanSemaphore()
 {
-	TRAP_ASSERT(m_semaphore);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSemaphorePrefix, "Destroying Semaphore");
@@ -36,7 +39,9 @@ TRAP::Graphics::API::VulkanSemaphore::~VulkanSemaphore()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkSemaphore TRAP::Graphics::API::VulkanSemaphore::GetVkSemaphore() const
+[[nodiscard]] VkSemaphore TRAP::Graphics::API::VulkanSemaphore::GetVkSemaphore() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_semaphore;
 }

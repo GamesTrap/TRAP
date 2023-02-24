@@ -10,7 +10,7 @@ namespace TRAP
 	class SceneSerializer
 	{
 	public:
-		explicit SceneSerializer(Ref<Scene> scene);
+		explicit SceneSerializer(Ref<Scene> scene) noexcept;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -18,19 +18,19 @@ namespace TRAP
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		SceneSerializer(const SceneSerializer&) = default;
+		SceneSerializer(const SceneSerializer&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		SceneSerializer& operator=(const SceneSerializer&) = default;
+		SceneSerializer& operator=(const SceneSerializer&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		SceneSerializer(SceneSerializer&&) = default;
+		SceneSerializer(SceneSerializer&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		SceneSerializer& operator=(SceneSerializer&&) = default;
+		SceneSerializer& operator=(SceneSerializer&&) noexcept = default;
 
 		void Serialize(const std::filesystem::path& filepath);
 		void SerializeRuntime(const std::filesystem::path& filepath);

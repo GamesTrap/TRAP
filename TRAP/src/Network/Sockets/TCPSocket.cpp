@@ -2,7 +2,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -34,7 +34,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Network/IP/IPv4Address.h"
 #include "SocketImpl.h"
 #include "Utils/Utils.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
 #define far
@@ -52,15 +52,18 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::TCPSocket::TCPSocket()
+TRAP::Network::TCPSocket::TCPSocket() noexcept
 	: Socket(Type::TCP)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint16_t TRAP::Network::TCPSocket::GetLocalPort() const
+[[nodiscard]] uint16_t TRAP::Network::TCPSocket::GetLocalPort() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 		return 0; //We failed to retrieve the port
 
@@ -83,8 +86,10 @@ uint16_t TRAP::Network::TCPSocket::GetLocalPort() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::IPv4Address TRAP::Network::TCPSocket::GetRemoteAddress() const
+[[nodiscard]] TRAP::Network::IPv4Address TRAP::Network::TCPSocket::GetRemoteAddress() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 		return IPv4Address::None; //We failed to retrieve the address
 
@@ -106,8 +111,10 @@ TRAP::Network::IPv4Address TRAP::Network::TCPSocket::GetRemoteAddress() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint16_t TRAP::Network::TCPSocket::GetRemotePort() const
+[[nodiscard]] uint16_t TRAP::Network::TCPSocket::GetRemotePort() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 		return 0; //We failed to retrieve the port
 
@@ -132,6 +139,8 @@ uint16_t TRAP::Network::TCPSocket::GetRemotePort() const
 TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Connect(const IPv4Address& remoteAddress,
                                                                 const uint16_t remotePort, Utils::TimeStep timeout)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//Disconnect the socket if it is already connected
 	Disconnect();
 
@@ -215,6 +224,8 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Connect(const IPv4Addres
 
 void TRAP::Network::TCPSocket::Disconnect()
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//Close the socket
 	Close();
 
@@ -224,8 +235,10 @@ void TRAP::Network::TCPSocket::Disconnect()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* data, const std::size_t size) const
+TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* const data, const std::size_t size) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	if (!IsBlocking())
 		TP_WARN(Log::NetworkTCPSocketPrefix, "Partial sends might not be handled properly.");
 
@@ -236,9 +249,11 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* data, c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* data, const std::size_t size,
+TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* const data, const std::size_t size,
                                                              std::size_t& sent) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//Check the parameters
 	if(!data || (size == 0))
 	{
@@ -270,9 +285,11 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* data, c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(void* data, const std::size_t size,
+TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(void* const data, const std::size_t size,
                                                                 std::size_t& received) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//First clear the variables to fill
 	received = 0;
 
@@ -303,6 +320,8 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(void* data, cons
 
 TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(Packet& packet) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//TCP is a stream protocol, it doesn't preserve messages boundaries.
 	//This means that we have to send the packet size first, so that the
 	//receiver knows the actual end of the packet in the data stream.
@@ -314,7 +333,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(Packet& packet) con
 
 	//Get the data to send from the packet
 	std::size_t size = 0;
-	const void* data = packet.OnSend(size);
+	const void* const data = packet.OnSend(size);
 
 	//First convert the packet size to network byte order
 	uint32_t packetSize = static_cast<uint32_t>(size);
@@ -347,6 +366,8 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(Packet& packet) con
 
 TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(Packet& packet)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//First clear the variables to fill
 	packet.Clear();
 
@@ -359,7 +380,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(Packet& packet)
 		//(even a 4 byte variable may be received in more than one call)
 		while(m_pendingPacket.SizeReceived < sizeof(m_pendingPacket.Size))
 		{
-			char* data = reinterpret_cast<char*>(&m_pendingPacket.Size) + m_pendingPacket.SizeReceived;
+			char* const data = reinterpret_cast<char*>(&m_pendingPacket.Size) + m_pendingPacket.SizeReceived;
 			const Status status = Receive(data, sizeof(m_pendingPacket.Size) - m_pendingPacket.SizeReceived,
 			                              received);
 			m_pendingPacket.SizeReceived += received;
@@ -396,7 +417,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(Packet& packet)
 		if(received > 0)
 		{
 			m_pendingPacket.Data.resize(m_pendingPacket.Data.size() + received);
-			char* begin = &m_pendingPacket.Data[0] + m_pendingPacket.Data.size() - received;
+			char* const begin = &m_pendingPacket.Data[0] + m_pendingPacket.Data.size() - received;
 			std::copy_n(buffer.data(), received, begin);
 		}
 	}
@@ -413,7 +434,14 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(Packet& packet)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::TCPSocket::PendingPacket::PendingPacket()
+TRAP::Network::TCPSocket::PendingPacket::PendingPacket() noexcept
 	: Size(0), SizeReceived(0)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRAP_PLATFORM_WINDOWS
+#undef far
+#endif

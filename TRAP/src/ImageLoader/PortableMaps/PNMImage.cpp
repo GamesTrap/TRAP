@@ -3,18 +3,18 @@
 
 #include "Utils/String/String.h"
 #include "FileSystem/FileSystem.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 #include "Utils/Utils.h"
 
 TRAP::INTERNAL::PNMImage::PNMImage(std::filesystem::path filepath)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	m_filepath = std::move(filepath);
 
 	TP_DEBUG(Log::ImagePNMPrefix, "Loading image: \"", m_filepath.u8string(), "\"");
 
-	if (!FileSystem::FileOrFolderExists(m_filepath))
+	if (!FileSystem::Exists(m_filepath))
 		return;
 
 	std::ifstream file(m_filepath, std::ios::binary);
@@ -147,8 +147,10 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const void* TRAP::INTERNAL::PNMImage::GetPixelData() const
+[[nodiscard]] const void* TRAP::INTERNAL::PNMImage::GetPixelData() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if (!m_data2Byte.empty())
 		return m_data2Byte.data();
 
@@ -157,8 +159,10 @@ const void* TRAP::INTERNAL::PNMImage::GetPixelData() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::INTERNAL::PNMImage::GetPixelDataSize() const
+[[nodiscard]] uint64_t TRAP::INTERNAL::PNMImage::GetPixelDataSize() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if (!m_data2Byte.empty())
 		return m_data2Byte.size() * sizeof(uint16_t);
 

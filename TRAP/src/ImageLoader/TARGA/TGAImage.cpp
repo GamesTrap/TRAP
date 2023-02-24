@@ -3,18 +3,18 @@
 
 #include "Utils/String/String.h"
 #include "FileSystem/FileSystem.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 #include "Utils/Utils.h"
 
 TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	m_filepath = std::move(filepath);
 	TP_DEBUG(Log::ImageTGAPrefix, "Loading image: \"",
 	         m_filepath.u8string(), "\"");
 
-	if (!FileSystem::FileOrFolderExists(m_filepath))
+	if (!FileSystem::Exists(m_filepath))
 		return;
 
 	std::ifstream file(m_filepath, std::ios::binary);
@@ -319,25 +319,29 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const void* TRAP::INTERNAL::TGAImage::GetPixelData() const
+[[nodiscard]] const void* TRAP::INTERNAL::TGAImage::GetPixelData() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_data.data();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::INTERNAL::TGAImage::GetPixelDataSize() const
+[[nodiscard]] uint64_t TRAP::INTERNAL::TGAImage::GetPixelDataSize() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_data.size();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEBGRAMap(std::vector<uint8_t>& source, const uint32_t width,
-                                                                const uint32_t height, const uint32_t channels,
-																std::vector<uint8_t>& colorMap)
+[[nodiscard]] std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEBGRAMap(std::vector<uint8_t>& source, const uint32_t width,
+                                                                              const uint32_t height, const uint32_t channels,
+																              std::vector<uint8_t>& colorMap)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	std::vector<uint8_t> data{};
 	data.resize(static_cast<std::size_t>(width) * height * channels);
@@ -402,10 +406,10 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEBGRAMap(std::vector<uint
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEGrayScale(std::vector<uint8_t>& source,
-                                                                  const uint32_t width, const uint32_t height)
+[[nodiscard]] std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEGrayScale(std::vector<uint8_t>& source,
+                                                                                const uint32_t width, const uint32_t height)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	std::vector<uint8_t> data{};
 	data.resize(static_cast<std::size_t>(width) * height);
@@ -444,10 +448,10 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEGrayScale(std::vector<ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR16ToRGB24(std::vector<uint8_t>& source,
-                                                                      const uint32_t width, const uint32_t height)
+[[nodiscard]] std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR16ToRGB24(std::vector<uint8_t>& source,
+                                                                                    const uint32_t width, const uint32_t height)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	std::vector<uint8_t> data{};
 	data.resize(static_cast<std::size_t>(width) * height * 3);
@@ -487,10 +491,10 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR16ToRGB24(std::vecto
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR24ToRGB24(std::vector<uint8_t>& source,
-                                                                      const uint32_t width, const uint32_t height)
+[[nodiscard]] std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR24ToRGB24(std::vector<uint8_t>& source,
+                                                                                    const uint32_t width, const uint32_t height)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	std::vector<uint8_t> data{};
 	data.resize(static_cast<std::size_t>(width) * height * 3);
@@ -530,10 +534,10 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR24ToRGB24(std::vecto
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>& source,
-                                                                      const uint32_t width, const uint32_t height)
+[[nodiscard]] std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>& source,
+                                                                                    const uint32_t width, const uint32_t height)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	std::vector<uint8_t> data{};
 	data.resize(static_cast<std::size_t>(width) * height * 4);

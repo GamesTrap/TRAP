@@ -1,11 +1,11 @@
 #include "TRAPPCH.h"
 #include "Adler32.h"
 
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 
-std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const void* data, uint64_t length)
+[[nodiscard]] std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const void* const data, uint64_t length)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	const uint8_t* dataPtr = static_cast<const uint8_t*>(data);
 
@@ -37,7 +37,9 @@ std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const void* data, uint64_t len
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const std::string_view str)
+[[nodiscard]] std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const std::string_view str)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return Adler32(str.data(), str.length());
 }

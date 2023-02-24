@@ -2,7 +2,7 @@
 
 float CursorTests::Star(const int32_t x, const int32_t y, const float t)
 {
-	constexpr float c = 64.0f / 2.0f;
+	static constexpr float c = 64.0f / 2.0f;
 
 	const float i = (0.25f * TRAP::Math::Sin(2.0f * TRAP::Math::PI<float>() * t) + 0.75f);
 	const float k = 64.0f * 0.046875f * i;
@@ -238,13 +238,21 @@ bool CursorTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 	}
 
 	case TRAP::Input::Key::One:
+		[[fallthrough]];
 	case TRAP::Input::Key::Two:
+		[[fallthrough]];
 	case TRAP::Input::Key::Three:
+		[[fallthrough]];
 	case TRAP::Input::Key::Four:
+		[[fallthrough]];
 	case TRAP::Input::Key::Five:
+		[[fallthrough]];
 	case TRAP::Input::Key::Six:
+		[[fallthrough]];
 	case TRAP::Input::Key::Seven:
+		[[fallthrough]];
 	case TRAP::Input::Key::Eight:
+		[[fallthrough]];
 	case TRAP::Input::Key::Nine:
 	{
 		int32_t index = static_cast<int32_t>(event.GetKey()) - static_cast<int32_t>(TRAP::Input::Key::One);

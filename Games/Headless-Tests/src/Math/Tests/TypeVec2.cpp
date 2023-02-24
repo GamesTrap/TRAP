@@ -15,7 +15,7 @@ namespace TypeVec2
         error += TRAP::Math::Vec2::Length() == 2 ? 0 : 1;
         error += TRAP::Math::Vec2d::Length() == 2 ? 0 : 1;
 
-        constexpr std::size_t length = TRAP::Math::Vec2::Length();
+        static constexpr std::size_t length = TRAP::Math::Vec2::Length();
         error += length == 2 ? 0 : 1;
 
         return error;

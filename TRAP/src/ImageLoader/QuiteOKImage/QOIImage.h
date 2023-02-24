@@ -1,3 +1,13 @@
+/*
+Copyright (c) 2021, Dominic Szablewski - https://phoboslab.org
+SPDX-License-Identifier: MIT
+
+
+QOI - The "Quite OK Image" format for fast, lossless image compression
+
+Modified by Jan "GamesTrap" Schuerkamp
+*/
+
 #ifndef TRAP_QOIIMAGE_H
 #define TRAP_QOIIMAGE_H
 
@@ -16,19 +26,19 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		QOIImage(const QOIImage&) = default;
+		QOIImage(const QOIImage&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		QOIImage& operator=(const QOIImage&) = default;
+		QOIImage& operator=(const QOIImage&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		QOIImage(QOIImage&&) = default;
+		QOIImage(QOIImage&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		QOIImage& operator=(QOIImage&&) = default;
+		QOIImage& operator=(QOIImage&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -38,12 +48,12 @@ namespace TRAP::INTERNAL
 		/// Retrieve the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Constant pointer to the raw pixel data.</returns>
-		const void* GetPixelData() const override;
+		[[nodiscard]] const void* GetPixelData() const noexcept override;
 		/// <summary>
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		uint64_t GetPixelDataSize() const override;
+		[[nodiscard]] uint64_t GetPixelDataSize() const noexcept override;
 
 	private:
         /// <summary>

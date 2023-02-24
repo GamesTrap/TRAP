@@ -33,27 +33,16 @@ namespace TRAP::FileSystem
 		using EventCallbackFn = std::function<void(Events::Event&)>;
 
         /// <summary>
-        /// Keeps track of the statuses of all files inside the specified paths.
+        /// Keeps track of the status of all files inside the added folders.
         ///
         /// Note: This class starts a new thread.
         ///
         /// Windows: Event-based via ReadDirectoryChangesW.
         /// Linux: Event-based via inotify & eventfd.
         /// </summary>
-        /// <param name="paths">Folder paths to watch over.</param>
-        /// <param name="recursive">Whether to also include sub-folders inside the given paths.</param>
-        explicit FileWatcher(const std::vector<std::filesystem::path>& paths, bool recursive = true);
-        /// <summary>
-        /// Keeps track of the statuses of all files inside the specified path.
-        ///
-        /// Note: This class starts a new thread.
-        ///
-        /// Windows: Event-based via ReadDirectoryChangesW.
-        /// Linux: Event-based via inotify & eventfd.
-        /// </summary>
-        /// <param name="path">Folder path to watch over.</param>
-        /// <param name="recursive">Whether to also include sub-folders inside the given paths.</param>
-        explicit FileWatcher(const std::filesystem::path& path, bool recursive = true);
+        /// <param name="name">Name for the file watcher.</param>
+        /// <param name="recursive">Whether to also include sub-folders.</param>
+        explicit FileWatcher(std::string name, bool recursive = true);
 
         /// <summary>
 		/// Destructor.
@@ -80,12 +69,12 @@ namespace TRAP::FileSystem
         /// Sets the callback function that is called when a file event occurs.
         /// </summary>
         /// <param name="callback">Callback function used to report events to.</param>
-        void SetEventCallback(const EventCallbackFn& callback);
+        void SetEventCallback(const EventCallbackFn& callback) noexcept;
 		/// <summary>
 		/// Get the function to call when an file event occurred.
 		/// </summary>
 		/// <returns>EventCallbackFn.</returns>
-		EventCallbackFn GetEventCallback() const;
+		[[nodiscard]] EventCallbackFn GetEventCallback() const noexcept;
 
         /// <summary>Adds a new folder path to the tracked paths.</summary>
         /// <param name="path">Folder path to track.</param>
@@ -105,7 +94,7 @@ namespace TRAP::FileSystem
         /// Returns the paths that are being watched.
         /// </summary>
         /// <returns>The paths that are being watched.</returns>
-        std::vector<std::filesystem::path> GetFolders() const;
+        [[nodiscard]] std::vector<std::filesystem::path> GetFolders() const noexcept;
 
     private:
         /// <summary>
@@ -127,6 +116,7 @@ namespace TRAP::FileSystem
         std::vector<std::filesystem::path> m_paths; //No synchronization needed since it's only changed when m_thread is not running.
         bool m_recursive;
         std::atomic<bool> m_run;
+        std::string m_name; //Doesn't need to be synced because it won't change after construction
 
 #ifdef TRAP_PLATFORM_WINDOWS
         HANDLE m_killEvent = nullptr;

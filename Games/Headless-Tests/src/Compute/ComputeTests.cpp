@@ -50,13 +50,14 @@ void ComputeTests::OnAttach()
     TRAP::Graphics::ShaderManager::LoadFile("Texture", "./Assets/Shaders/testtextureseperate.shader");
     TRAP::Graphics::ShaderManager::LoadFile("ComputeEmboss", "./Assets/Shaders/emboss.compute.shader");
 
-    TRAP::Graphics::SamplerDesc samplerDesc{};
+    TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
     samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;
 	samplerDesc.AddressV = TRAP::Graphics::AddressMode::Repeat;
 	samplerDesc.AddressW = TRAP::Graphics::AddressMode::Repeat;
 	samplerDesc.MagFilter = TRAP::Graphics::FilterType::Linear;
 	samplerDesc.MinFilter = TRAP::Graphics::FilterType::Linear;
 	samplerDesc.MipMapMode = TRAP::Graphics::MipMapMode::Linear;
+    samplerDesc.EnableAnisotropy = false;
     m_textureSampler = TRAP::Graphics::Sampler::Create(samplerDesc);
 
     //Wait for all pending resources (Just in case)
@@ -84,8 +85,6 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
     static uint32_t frames = 0;
     if(frames == 3)
     {
-        TRAP::Graphics::RendererAPI::GetGraphicsQueue()->WaitQueueIdle();
-        TRAP::Graphics::RendererAPI::GetComputeQueue()->WaitQueueIdle();
 
         //Screenshot
 	    TRAP::Scope<TRAP::Image> testImage = TRAP::Graphics::RenderCommand::CaptureScreenshot();
@@ -104,7 +103,7 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
     {
         once = false;
 
-        TRAP::Graphics::Shader* shader = TRAP::Graphics::ShaderManager::Get("ComputeEmboss");
+        const auto shader = TRAP::Graphics::ShaderManager::Get("ComputeEmboss");
 
         //Set shader descriptors
         shader->UseTexture(1, 0, m_colTex);
@@ -122,9 +121,9 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
         TRAP::Graphics::RendererAPI::TextureBarrier barrier = {};
         barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
         barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
-        barrier.Texture = m_colTex;
+        barrier.Texture = m_colTex.get();
         TRAP::Graphics::RenderCommand::TextureBarrier(barrier, TRAP::Graphics::QueueType::Compute);
-        barrier.Texture = m_compTex;
+        barrier.Texture = m_compTex.get();
         TRAP::Graphics::RenderCommand::TextureBarrier(barrier, TRAP::Graphics::QueueType::Compute);
     }
 
@@ -136,7 +135,7 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
     m_indexBuffer->Use();
 
     //Use shader
-    auto* texShader = TRAP::Graphics::ShaderManager::Get("Texture");
+    const auto texShader = TRAP::Graphics::ShaderManager::Get("Texture");
     texShader->UseTexture(1, 0, m_compTex, TRAP::Application::GetWindow());
     texShader->Use();
 

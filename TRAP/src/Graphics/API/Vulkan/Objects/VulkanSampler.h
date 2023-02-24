@@ -24,27 +24,32 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanSampler(const VulkanSampler&) = default;
+		VulkanSampler(const VulkanSampler&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanSampler& operator=(const VulkanSampler&) = default;
+		VulkanSampler& operator=(const VulkanSampler&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanSampler(VulkanSampler&&) = default;
+		VulkanSampler(VulkanSampler&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanSampler& operator=(VulkanSampler&&) = default;
+		VulkanSampler& operator=(VulkanSampler&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the Vulkan sampler handle.
 		/// </summary>
 		/// <returns>Vulkan sampler handle.</returns>
-		VkSampler GetVkSampler() const;
+		[[nodiscard]] VkSampler GetVkSampler() const noexcept;
 
 	private:
+		void UpdateAnisotropy(float anisotropy) override;
+
+		void Init();
+		void Shutdown();
+
 		TRAP::Ref<VulkanDevice> m_device;
 
 		//Native handle of the underlying resource

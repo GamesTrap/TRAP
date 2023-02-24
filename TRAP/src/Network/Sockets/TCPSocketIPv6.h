@@ -4,11 +4,11 @@
 #include <vector>
 
 #include "Socket.h"
-#include "Network/IP/IPv6Address.h"
 #include "Utils/Time/TimeStep.h"
 
 namespace TRAP::Network
 {
+	class IPv6Address;
 	class TCPListenerIPv6;
 	class Packet;
 
@@ -21,7 +21,7 @@ namespace TRAP::Network
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		TCPSocketIPv6();
+		TCPSocketIPv6() noexcept;
 
 		/// <summary>
 		/// Get the port to which the socket is bound locally.
@@ -29,7 +29,7 @@ namespace TRAP::Network
 		/// If the socket is not connected, this function returns 0.
 		/// </summary>
 		/// <returns>Port to which the socket is bound.</returns>
-		uint16_t GetLocalPort() const;
+		[[nodiscard]] uint16_t GetLocalPort() const;
 
 		/// <summary>
 		/// Get the address of the connected peer.
@@ -38,7 +38,7 @@ namespace TRAP::Network
 		/// TRAP::Network::IPv4Address::None.
 		/// </summary>
 		/// <returns>Address of the remote peer.</returns>
-		IPv6Address GetRemoteAddress() const;
+		[[nodiscard]] IPv6Address GetRemoteAddress() const;
 
 		/// <summary>
 		/// Get the port of the connected peer to which
@@ -47,7 +47,7 @@ namespace TRAP::Network
 		/// If the socket is not connected, this function returns 0.
 		/// </summary>
 		/// <returns>Remote port to which the socket is connected.</returns>
-		uint16_t GetRemotePort() const;
+		[[nodiscard]] uint16_t GetRemotePort() const;
 
 		/// <summary>
 		/// Connect the socket to a remote peer.
@@ -142,7 +142,7 @@ namespace TRAP::Network
 		/// </summary>
 		struct PendingPacket
 		{
-			PendingPacket();
+			PendingPacket() noexcept;
 
 			uint32_t Size; //Data of packet size
 			std::size_t SizeReceived; //Number of size bytes received so far

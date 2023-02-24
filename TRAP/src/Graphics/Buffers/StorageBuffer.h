@@ -3,6 +3,7 @@
 
 #include "Graphics/API/ResourceLoader.h"
 #include "Graphics/API/Objects/Buffer.h"
+#include "Graphics/RenderCommand.h"
 #include "Application.h"
 
 namespace TRAP
@@ -12,8 +13,6 @@ namespace TRAP
 
 namespace TRAP::Graphics
 {
-	using UpdateFrequency = RendererAPI::DescriptorUpdateFrequency;
-
 	class StorageBuffer
 	{
 	protected:
@@ -25,19 +24,19 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		StorageBuffer(const StorageBuffer&) = default;
+		StorageBuffer(const StorageBuffer&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		StorageBuffer& operator=(const StorageBuffer&) = default;
+		StorageBuffer& operator=(const StorageBuffer&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		StorageBuffer(StorageBuffer&&) = default;
+		StorageBuffer(StorageBuffer&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		StorageBuffer& operator=(StorageBuffer&&) = default;
+		StorageBuffer& operator=(StorageBuffer&&) noexcept = default;
 
 	public:
 		/// <summary>
@@ -49,17 +48,17 @@ namespace TRAP::Graphics
 		/// Retrieve the byte size of the SSBO.
 		/// </summary>
 		/// <returns>Byte size of the SSBO.</returns>
-		uint64_t GetSize() const;
+		[[nodiscard]] uint64_t GetSize() const noexcept;
 		/// <summary>
 		/// Retrieve the update frequency of the SSBO.
 		/// </summary>
 		/// <returns>Update frequency of the SSBO.</returns>
-		UpdateFrequency GetUpdateFrequency() const;
+		[[nodiscard]] UpdateFrequency GetUpdateFrequency() const noexcept;
 		/// <summary>
 		/// Retrieve the underlying buffers.
 		/// </summary>
 		/// <returns>Underlying buffers.</returns>
-		const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& GetSSBOs() const;
+		[[nodiscard]] const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& GetSSBOs() const noexcept;
 
 		/// <summary>
 		/// Update data of the SSBO.
@@ -74,16 +73,16 @@ namespace TRAP::Graphics
 		/// <param name="data">Pointer to store data in.</param>
 		/// <param name="size">Byte size for data storage.</param>
 		/// <param name="offset">Offset into the currently used data.</param>
-		/// <param name="window">Window to use for the data retrieval.</param>
+		/// <param name="window">Window to use for the data retrieval. Default: Main Window.</param>
 		template<typename T>
 		void GetData(const T* data, uint64_t size, const uint64_t offset = 0,
-		             Window* window = nullptr);
+		             const Window* const window = TRAP::Application::GetWindow());
 
 		/// <summary>
 		/// Check whether uploading data to the GPU has finished.
 		/// </summary>
 		/// <returns>True if uploading data to the GPU has finished.</returns>
-		bool IsLoaded() const;
+		[[nodiscard]] bool IsLoaded() const;
 		/// <summary>
 		/// Wait until uploading data to the GPU has finished.
 		/// </summary>
@@ -93,7 +92,7 @@ namespace TRAP::Graphics
 		/// Calculate the aligned size of the SSBO.
 		/// </summary>
 		/// <param name="byteSize">Byte size of the SSBO.</param>
-		static uint64_t CalculateAlignedSize(const uint64_t byteSize);
+		[[nodiscard]] static uint64_t CalculateAlignedSize(const uint64_t byteSize) noexcept;
 
 		/// <summary>
 		/// Create a new shader storage buffer and set its size.
@@ -101,7 +100,7 @@ namespace TRAP::Graphics
 		/// <param name="size">Byte size for the uniform buffer.</param>
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New shader storage buffer.</returns>
-		static Scope<StorageBuffer> Create(uint64_t size, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<StorageBuffer> Create(uint64_t size, UpdateFrequency updateFrequency);
 		/// <summary>
 		/// Create a new shader storage buffer and set its data.
 		/// </summary>
@@ -109,7 +108,7 @@ namespace TRAP::Graphics
 		/// <param name="size">Byte size of the data to upload.</param>
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New shader storage buffer.</returns>
-		static Scope<StorageBuffer> Create(void* data, uint64_t size, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<StorageBuffer> Create(const void* data, uint64_t size, UpdateFrequency updateFrequency);
 
 	private:
 		/// <summary>
@@ -119,7 +118,7 @@ namespace TRAP::Graphics
 		/// <param name="size">Byte size of the data to upload.</param>
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New shader storage buffer.</returns>
-		static Scope<StorageBuffer> Init(void* data, uint64_t size, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<StorageBuffer> Init(const void* data, uint64_t size, UpdateFrequency updateFrequency);
 
 		std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> m_storageBuffers;
 
@@ -128,12 +127,12 @@ namespace TRAP::Graphics
 }
 
 template<typename T>
-inline void TRAP::Graphics::StorageBuffer::GetData(const T* data, const uint64_t size, const uint64_t offset, Window* window)
+inline void TRAP::Graphics::StorageBuffer::GetData(const T* const data, const uint64_t size, const uint64_t offset, const Window* const window)
 {
-	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize());
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	if(!window)
-		window = TRAP::Application::GetWindow();
+	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize(), "StorageBuffer::GetData(): Out of bounds!");
+	TRAP_ASSERT(window, "StorageBuffer::GetData(): Window is nullptr");
 
 	RendererAPI::BufferUpdateDesc desc{};
 	const uint32_t imageIndex = GetUpdateFrequency() ==

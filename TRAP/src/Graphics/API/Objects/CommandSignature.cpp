@@ -5,6 +5,8 @@
 
 TRAP::Graphics::CommandSignature::CommandSignature()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererCommandSignaturePrefix, "Creating CommandSignature");
 #endif
@@ -14,6 +16,8 @@ TRAP::Graphics::CommandSignature::CommandSignature()
 
 TRAP::Graphics::CommandSignature::~CommandSignature()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererCommandSignaturePrefix, "Destroying CommandSignature");
 #endif
@@ -21,8 +25,10 @@ TRAP::Graphics::CommandSignature::~CommandSignature()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::CommandSignature> TRAP::Graphics::CommandSignature::Create(const RendererAPI::CommandSignatureDesc& desc)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::CommandSignature> TRAP::Graphics::CommandSignature::Create(const RendererAPI::CommandSignatureDesc& desc)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
@@ -32,7 +38,7 @@ TRAP::Ref<TRAP::Graphics::CommandSignature> TRAP::Graphics::CommandSignature::Cr
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "CommandSignature::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
 }

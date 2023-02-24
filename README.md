@@ -1,6 +1,11 @@
-# TRAP
+# TRAP™
 
-![TRAP](Branding/TRAP.gif?raw=true "TRAP")
+<p align="center">
+    <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="Branding/TRAPWhiteLogoMedia2048x2048.png">
+        <img alt="TRAP™ logo" src="Branding/TRAPBlackLogoMedia2048x2048.png" width="375" height="204">
+    </picture>
+</p>
 
 [![Build-CI](https://github.com/GamesTrap/TRAP/actions/workflows/build.yml/badge.svg)](https://github.com/GamesTrap/TRAP/actions/workflows/build.yml)
 [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/GamesTrap/TRAP)](https://github.com/GamesTrap/TRAP)

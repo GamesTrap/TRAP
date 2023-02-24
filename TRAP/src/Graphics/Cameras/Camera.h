@@ -11,12 +11,12 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		Camera() = default;
+		Camera() noexcept = default;
 		/// <summary>
 		/// Constructor.
 		/// </summary>
 		/// <param name="projection">Projection matrix.</param>
-		explicit Camera(const Math::Mat4& projection);
+		explicit Camera(const Math::Mat4& projection) noexcept;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -24,25 +24,25 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Camera(const Camera&) = default;
+		Camera(const Camera&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Camera(Camera&&) = default;
+		Camera(Camera&&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Camera& operator=(const Camera&) = default;
+		Camera& operator=(const Camera&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Camera& operator=(Camera&&) = default;
+		Camera& operator=(Camera&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the projection matrix.
 		/// </summary>
 		/// <returns>Projection matrix.</returns>
-		const Math::Mat4& GetProjectionMatrix() const;
+		[[nodiscard]] const Math::Mat4& GetProjectionMatrix() const noexcept;
 
 	protected:
 		//Projection matrix, identity by default.

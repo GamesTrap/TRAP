@@ -17,7 +17,7 @@
 
 discord::Core* core{};
 discord::Result lastRes = discord::Result::Ok;
-int64_t CurrentAppID = 639903785971613728;
+int64_t CurrentAppID = TRAP::Utils::Discord::TRAPDiscordAppID;
 TRAP::Utils::Discord::Activity CurrentActivity{};
 
 //Forward declares
@@ -44,18 +44,23 @@ bool TRAP::Utils::Discord::Create([[maybe_unused]] const int64_t appID)
     //Set log hook
     core->SetLogHook(discord::LogLevel::Warn, DiscordLogger);
 
-    //Set activity to TRAP as default
-    std::string version(TRAP::Log::WindowVersion);
-    version += "[" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
-                     std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." +
-                     std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) + "]";
+    if(appID == TRAPDiscordAppID)
+    {
+        //Set activity to TRAP as default
+        std::string version(TRAP::Log::WindowVersion);
+        version += "[" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
+                         std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." +
+                         std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) + "]";
 
-    CurrentActivity.LargeImage = "trapwhitelogo2048x2048";
-    CurrentActivity.LargeText = "TRAP™";
-    CurrentActivity.Details = version;
-    CurrentActivity.State = "Developed by TrappedGames";
+        CurrentActivity.LargeImage = "trapwhitelogo2048x2048";
+        CurrentActivity.LargeText = "TRAP™";
+        CurrentActivity.Details = version;
+        CurrentActivity.State = "Developed by TrappedGames";
 
-    return SetActivity(CurrentActivity);
+        return SetActivity(CurrentActivity);
+    }
+
+    return true;
 #else
     return false;
 #endif
@@ -127,6 +132,9 @@ bool TRAP::Utils::Discord::SetActivity([[maybe_unused]] const Activity& activity
 
         CurrentActivity = activity;
 
+        if(lastRes == discord::Result::Ok)
+            RunCallbacks();
+
         return lastRes == discord::Result::Ok;
     }
 #endif
@@ -137,7 +145,7 @@ bool TRAP::Utils::Discord::SetActivity([[maybe_unused]] const Activity& activity
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef USE_DISCORD_GAME_SDK
-discord::Core* TRAP::Utils::Discord::GetDiscordCore()
+[[nodiscard]] discord::Core* TRAP::Utils::Discord::GetDiscordCore() noexcept
 {
     return core;
 }

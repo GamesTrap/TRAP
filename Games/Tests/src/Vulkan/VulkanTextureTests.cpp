@@ -50,13 +50,13 @@ void VulkanTextureTests::OnAttach()
     //Load Shader
     m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKTextureTest", "./Assets/Shaders/testtextureseperatelod.shader");
 
-    TRAP::Graphics::SamplerDesc samplerDesc{};
+    TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
     samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;
 	samplerDesc.AddressV = TRAP::Graphics::AddressMode::Repeat;
 	samplerDesc.AddressW = TRAP::Graphics::AddressMode::Repeat;
 	samplerDesc.MagFilter = TRAP::Graphics::FilterType::Linear;
 	samplerDesc.MinFilter = TRAP::Graphics::FilterType::Linear;
-	samplerDesc.MaxAnisotropy = 0.0f;
+	samplerDesc.EnableAnisotropy = false;
 	samplerDesc.CompareFunc = TRAP::Graphics::CompareMode::Never;
 	samplerDesc.MipLodBias = 0.0f;
 	samplerDesc.MipMapMode = TRAP::Graphics::MipMapMode::Linear;

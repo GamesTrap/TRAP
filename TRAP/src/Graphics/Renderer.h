@@ -1,7 +1,7 @@
 #ifndef TRAP_RENDERER_H
 #define TRAP_RENDERER_H
 
-#include "Application.h"
+#include "Maths/Math.h"
 
 namespace TRAP::Graphics
 {
@@ -26,40 +26,6 @@ namespace TRAP::Graphics
 		static void Shutdown();
 
 		/// <summary>
-		/// Retrieve the renderer title.
-		/// Example when using Vulkan: "[Vulkan 1.1.108]"
-		/// </summary>
-		/// <returns>Renderer title.</returns>
-		static std::string GetTitle();
-		/// <summary>
-		/// Retrieve the frames per second.
-		/// </summary>
-		/// <returns>Frames per second.</returns>
-		static uint32_t GetFPS();
-		/// <summary>
-		/// Retrieve the frame time.
-		/// </summary>
-		/// <returns>Frame time in milliseconds.</returns>
-		static float GetFrameTime();
-		/// <summary>
-		/// Retrieve the current set tick rate.
-		/// Default tick rate is 64.
-		/// </summary>
-		/// <returns>Tick rate.</returns>
-		static uint32_t GetTickRate();
-		/// <summary>
-		/// Retrieve the name of the currently used GPU.
-		/// </summary>
-		/// <returns>Name of GPU.</returns>
-		static std::string GetGPUName();
-
-		/// <summary>
-		/// Set the tick rate.
-		/// </summary>
-		/// <param name="tickRate">New tick rate.</param>
-		static void SetTickRate(uint32_t tickRate);
-
-		/// <summary>
 		/// Begin a Renderer scene.
 		/// </summary>
 		/// <param name="camera">Orthographic camera.</param>
@@ -74,7 +40,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// End a running Renderer scene.
 		/// </summary>
-		static void EndScene();
+		static void EndScene() noexcept;
 
 		/// <summary>
 		/// Submit a non-indexed draw call.
@@ -82,7 +48,7 @@ namespace TRAP::Graphics
 		/// <param name="shader">Shader to use.</param>
 		/// <param name="vertexBuffer">Vertex buffer to use.</param>
 		/// <param name="transform">Model transform. Default is identity.</param>
-		static void Submit(Shader* shader, VertexBuffer* vertexBuffer,
+		static void Submit(Ref<Shader> shader, const VertexBuffer* vertexBuffer,
 						   const Math::Mat4& transform = Math::Mat4(1.0f));
 		/// <summary>
 		/// Submit an indexed draw call.
@@ -91,17 +57,12 @@ namespace TRAP::Graphics
 		/// <param name="vertexBuffer">Vertex buffer to use.</param>
 		/// <param name="indexBuffer">Index buffer to use.</param>
 		/// <param name="transform">Model transform. Default is identity.</param>
-		static void Submit(Shader* shader, VertexBuffer* vertexBuffer, IndexBuffer* indexBuffer,
+		static void Submit(Ref<Shader> shader, const VertexBuffer* vertexBuffer, const IndexBuffer* indexBuffer,
 						   const Math::Mat4& transform = Math::Mat4(1.0f));
 
 	private:
 		struct SceneData
 		{
-			/// <summary>
-			/// Constructor.
-			/// </summary>
-			SceneData() noexcept;
-
 			Math::Mat4 m_projectionMatrix;
 			Math::Mat4 m_viewMatrix;
 		};

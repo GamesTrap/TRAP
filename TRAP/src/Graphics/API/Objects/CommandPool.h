@@ -15,7 +15,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="desc">Command pool description.</param>
 		/// <returns>Created command pool.</returns>
-		static TRAP::Ref<CommandPool> Create(const RendererAPI::CommandPoolDesc& desc);
+		[[nodiscard]] static TRAP::Ref<CommandPool> Create(const RendererAPI::CommandPoolDesc& desc);
 
 		/// <summary>
 		/// Destructor.
@@ -25,31 +25,31 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		CommandPool(const CommandPool&) = default;
+		CommandPool(const CommandPool&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		CommandPool& operator=(const CommandPool&) = default;
+		CommandPool& operator=(const CommandPool&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		CommandPool(CommandPool&&) = default;
+		CommandPool(CommandPool&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		CommandPool& operator=(CommandPool&&) = default;
+		CommandPool& operator=(CommandPool&&) noexcept = default;
 
 		/// <summary>
 		/// Allocate a new command buffer.
 		/// </summary>
 		/// <param name="secondary">Should the command buffer be a secondary command buffer.</param>
 		///<returns>New command buffer.</returns>
-		virtual CommandBuffer* AllocateCommandBuffer(bool secondary) = 0;
+		[[nodiscard]] virtual CommandBuffer* AllocateCommandBuffer(bool secondary) = 0;
 		/// <summary>
 		/// Free a command buffer
 		/// </summary>
 		/// <param name="cmdBuffer">Command buffer to free.</param>
-		virtual void FreeCommandBuffer(CommandBuffer* cmdBuffer) = 0;
+		virtual void FreeCommandBuffer(const CommandBuffer* const cmdBuffer) = 0;
 
 		/// <summary>
 		/// Reset the command pool.

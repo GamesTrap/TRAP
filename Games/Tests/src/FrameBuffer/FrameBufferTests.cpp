@@ -43,13 +43,13 @@ void FrameBufferTests::OnAttach()
     //Load Shader
     m_shader = TRAP::Graphics::ShaderManager::LoadFile("TextureTest", "./Assets/Shaders/testtextureseperate.shader");
 
-    TRAP::Graphics::SamplerDesc samplerDesc{};
+    TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
     samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;
 	samplerDesc.AddressV = TRAP::Graphics::AddressMode::Repeat;
 	samplerDesc.AddressW = TRAP::Graphics::AddressMode::Repeat;
 	samplerDesc.MagFilter = TRAP::Graphics::FilterType::Linear;
 	samplerDesc.MinFilter = TRAP::Graphics::FilterType::Linear;
-	samplerDesc.MaxAnisotropy = 0.0f;
+    samplerDesc.EnableAnisotropy = false;
 	samplerDesc.CompareFunc = TRAP::Graphics::CompareMode::Never;
 	samplerDesc.MipLodBias = 0.0f;
 	samplerDesc.MipMapMode = TRAP::Graphics::MipMapMode::Linear;
@@ -69,7 +69,7 @@ void FrameBufferTests::OnAttach()
     desc.Depth = 1;
     desc.ArraySize = 1;
     desc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture;
-    desc.ClearColor = {0.0f, 0.0f, 0.0f, 1.0f};
+    desc.ClearValue = TRAP::Graphics::RendererAPI::Color{0.0, 0.0, 0.0, 1.0};
     desc.Format = TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM;
     desc.StartState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
     desc.SampleCount = m_MSAAEnabled ? aaSamples : TRAP::Graphics::SampleCount::One;
@@ -152,13 +152,13 @@ void FrameBufferTests::OnUpdate(const TRAP::Utils::TimeStep&)
         static int frameTimeIndex = 0;
         if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
         {
-            m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::Renderer::GetFrameTime();
+            m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
             frameTimeIndex++;
         }
         else
         {
             std::move(m_frameTimeHistory.begin() + 1, m_frameTimeHistory.end(), m_frameTimeHistory.begin());
-            m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::Renderer::GetFrameTime();
+            m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
         }
     }
 }
@@ -171,9 +171,12 @@ void FrameBufferTests::OnImGuiRender()
     ImGui::Text("Press ESC to close");
     ImGui::Separator();
     ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
-    ImGui::Text("GPU: %s", TRAP::Graphics::RendererAPI::GetRenderer()->GetCurrentGPUName().c_str());
-    ImGui::Text("FPS: %u", TRAP::Graphics::Renderer::GetFPS());
-    ImGui::Text("FrameTime: %.3fms", TRAP::Graphics::Renderer::GetFrameTime());
+	ImGui::Text("GPU: %s", TRAP::Graphics::RenderCommand::GetGPUName().c_str());
+    ImGui::Text("CPU FPS: %u", TRAP::Graphics::RenderCommand::GetCPUFPS());
+    ImGui::Text("GPU FPS: %u", TRAP::Graphics::RenderCommand::GetGPUFPS());
+    ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
+    ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
+    ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
     ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0,
                         33, ImVec2(200, 50));
     ImGui::End();

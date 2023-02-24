@@ -5,17 +5,20 @@
 #include "Network/Packet.h"
 #include "SocketImpl.h"
 #include "Utils/Utils.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 
 TRAP::Network::UDPSocketIPv6::UDPSocketIPv6()
 	: Socket(Type::UDP), m_buffer(MaxDatagramSize)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint16_t TRAP::Network::UDPSocketIPv6::GetLocalPort() const
+[[nodiscard]] uint16_t TRAP::Network::UDPSocketIPv6::GetLocalPort() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 		return 0; //We failed to retrieve the port
 
@@ -39,6 +42,8 @@ uint16_t TRAP::Network::UDPSocketIPv6::GetLocalPort() const
 
 TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Bind(const uint16_t port, const IPv6Address& address)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//Close the socket if it is already bound
 	Close();
 
@@ -64,16 +69,20 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Bind(const uint16_t 
 
 void TRAP::Network::UDPSocketIPv6::Unbind()
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//Simply close the socket
 	Close();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(const void* data, const std::size_t size,
+TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(const void* const data, const std::size_t size,
                                                                  const IPv6Address& remoteAddress,
 																 const uint16_t remotePort)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//Create the internal socket if it doesn't exist
 	CreateIPv6();
 
@@ -101,11 +110,13 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(const void* dat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(void* data, const std::size_t size,
+TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(void* const data, const std::size_t size,
                                                                     std::size_t& received,
 																	IPv6Address& remoteAddress,
 																	uint16_t& remotePort) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//First clear the variables to fill
 	received = 0;
 	remoteAddress = IPv6Address();
@@ -162,6 +173,8 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(void* data, 
 TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(Packet& packet, const IPv6Address& remoteAddress,
                                                                  const uint16_t remotePort)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//UDP is a datagram-oriented protocol (as opposed to TCP which is a stream protocol).
 	//Sending one datagram is almost safe: it may be lost but if it's received, then its data
 	//is guaranteed to be ok.
@@ -173,7 +186,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(Packet& packet,
 
 	//Get the data to send from the packet
 	std::size_t size = 0;
-	const void* data = packet.OnSend(size);
+	const void* const data = packet.OnSend(size);
 
 	//Send it
 	return Send(data, size, remoteAddress, remotePort);
@@ -184,6 +197,8 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(Packet& packet,
 TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(Packet& packet, IPv6Address& remoteAddress,
                                                                     uint16_t& remotePort)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//See the detailed comment in Send(Packet) above.
 
 	//Receive the datagram

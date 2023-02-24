@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2014-2021 Omar Cornut
+Copyright (c) 2014-2023 Omar Cornut
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,10 +27,13 @@ Modified by Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 #include "ImGuiVulkanBackend.h"
 
+#include "Application.h"
 #include "Maths/Math.h"
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/Objects/VulkanCommandPool.h"
 #include "Graphics/API/Vulkan/Objects/VulkanCommandBuffer.h"
+#include "Graphics/API/Vulkan/Objects/VulkanInits.h"
+#include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Objects/Fence.h"
 
 // dear imgui: Renderer Backend for Vulkan
@@ -123,8 +126,8 @@ struct ImGui_ImplVulkan_ViewportData
     ImGui_ImplVulkanH_Window                Window;             // Used by secondary viewports only
     ImGui_ImplVulkanH_WindowRenderBuffers   RenderBuffers;      // Used by all viewports
 
-    ImGui_ImplVulkan_ViewportData()         { WindowOwned = false; RenderBuffers = {}; }
-    ~ImGui_ImplVulkan_ViewportData()        { }
+    ImGui_ImplVulkan_ViewportData() noexcept { WindowOwned = false; RenderBuffers = {}; }
+    ~ImGui_ImplVulkan_ViewportData()         { }
 };
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -156,7 +159,7 @@ struct ImGui_ImplVulkan_Data
     // Render buffers for main window
     ImGui_ImplVulkanH_WindowRenderBuffers MainWindowRenderBuffers;
 
-    ImGui_ImplVulkan_Data()
+    ImGui_ImplVulkan_Data() noexcept
         : VulkanInitInfo(), RenderPass(VK_NULL_HANDLE), BufferMemoryAlignment(256), PipelineCreateFlags(),
           DescriptorSetLayout(VK_NULL_HANDLE), PipelineLayout(VK_NULL_HANDLE), DescriptorSet(VK_NULL_HANDLE),
           Pipeline(VK_NULL_HANDLE), Subpass(), ShaderModuleVert(VK_NULL_HANDLE), ShaderModuleFrag(VK_NULL_HANDLE),
@@ -164,6 +167,8 @@ struct ImGui_ImplVulkan_Data
           FontDescriptorSet(VK_NULL_HANDLE), UploadBufferMemory(VK_NULL_HANDLE), UploadBuffer(VK_NULL_HANDLE)
     {}
 };
+
+std::vector<VkDescriptorPool> g_DescriptorPools;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -213,7 +218,7 @@ void main()
     gl_Position = vec4(aPos * pc.uScale + pc.uTranslate, 0, 1);
 }
 */
-static uint32_t __glsl_shader_vert_spv[] =
+static constexpr std::array<uint32_t, 324> __glsl_shader_vert_spv =
 {
     0x07230203,0x00010000,0x00080001,0x0000002e,0x00000000,0x00020011,0x00000001,0x0006000b,
     0x00000001,0x4c534c47,0x6474732e,0x3035342e,0x00000000,0x0003000e,0x00000000,0x00000001,
@@ -272,7 +277,7 @@ void main()
     fColor = In.Color * texture(sTexture, In.UV.st);
 }
 */
-static uint32_t __glsl_shader_frag_spv[] =
+static constexpr std::array<uint32_t, 193> __glsl_shader_frag_spv =
 {
     0x07230203,0x00010000,0x00080001,0x0000001e,0x00000000,0x00020011,0x00000001,0x0006000b,
     0x00000001,0x4c534c47,0x6474732e,0x3035342e,0x00000000,0x0003000e,0x00000000,0x00000001,
@@ -308,15 +313,19 @@ static uint32_t __glsl_shader_frag_spv[] =
 // Backend data stored in io.BackendRendererUserData to allow support for multiple Dear ImGui contexts
 // It is STRONGLY preferred that you use docking branch with multi-viewports (== single Dear ImGui context + multiple windows) instead of multiple Dear ImGui contexts.
 // FIXME: multi-context support is not tested and probably dysfunctional in this backend.
-static ImGui_ImplVulkan_Data* ImGui_ImplVulkan_GetBackendData()
+[[nodiscard]] static ImGui_ImplVulkan_Data* ImGui_ImplVulkan_GetBackendData()
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
     return ImGui::GetCurrentContext() ? static_cast<ImGui_ImplVulkan_Data*>(ImGui::GetIO().BackendRendererUserData) : nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-static uint32_t ImGui_ImplVulkan_MemoryType(VkMemoryPropertyFlags properties, uint32_t type_bits)
+[[nodiscard]] static uint32_t ImGui_ImplVulkan_MemoryType(VkMemoryPropertyFlags properties, uint32_t type_bits)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     const ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
 
@@ -335,6 +344,8 @@ static uint32_t ImGui_ImplVulkan_MemoryType(VkMemoryPropertyFlags properties, ui
 
 static void check_vk_result(VkResult err)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     if (!bd)
         return;
@@ -348,6 +359,8 @@ static void check_vk_result(VkResult err)
 static void CreateOrResizeBuffer(VkBuffer& buffer, VkDeviceMemory& buffer_memory, VkDeviceSize& p_buffer_size,
                                  size_t new_size, VkBufferUsageFlagBits usage)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     const ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
     VkResult err;
@@ -387,6 +400,8 @@ static void ImGui_ImplVulkan_SetupRenderState(ImDrawData* draw_data, VkPipeline 
                                               VkCommandBuffer command_buffer,
                                               ImGui_ImplVulkanH_FrameRenderBuffers* rb, int fb_width, int fb_height)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
 
     // Bind pipeline
@@ -430,6 +445,8 @@ static void ImGui_ImplVulkan_SetupRenderState(ImDrawData* draw_data, VkPipeline 
 // Render function
 void ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer command_buffer, VkPipeline pipeline)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     // Avoid rendering when minimized, scale coordinates for retina displays (screen coordinates != framebuffer coordinates)
     const int fb_width = static_cast<int32_t>(draw_data->DisplaySize.x * draw_data->FramebufferScale.x);
     const int fb_height = static_cast<int32_t>(draw_data->DisplaySize.y * draw_data->FramebufferScale.y);
@@ -529,8 +546,8 @@ void ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer comm
                 // Clamp to viewport as vkCmdSetScissor() won't accept values that are off bounds
                 if (clip_min.x < 0.0f) { clip_min.x = 0.0f; }
                 if (clip_min.y < 0.0f) { clip_min.y = 0.0f; }
-                if (clip_max.x > fb_width) { clip_max.x = static_cast<float>(fb_width); }
-                if (clip_max.y > fb_height) { clip_max.y = static_cast<float>(fb_height); }
+                if (clip_max.x > static_cast<float>(fb_width)) { clip_max.x = static_cast<float>(fb_width); }
+                if (clip_max.y > static_cast<float>(fb_height)) { clip_max.y = static_cast<float>(fb_height); }
                 if (clip_max.x < clip_min.x || clip_max.y < clip_min.y)
                     continue;
 
@@ -576,6 +593,8 @@ void ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer comm
 
 bool ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     const ImGuiIO& io = ImGui::GetIO();
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     const ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
@@ -718,6 +737,8 @@ bool ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer)
 
 void ImGui_ImplVulkan_DestroyFontsTexture()
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     const ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
 
@@ -733,10 +754,12 @@ void ImGui_ImplVulkan_DestroyFontsTexture()
 
 void ImGui_ImplVulkan_UploadFontsTexture()
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     //Destroy old font
     ImGui_ImplVulkan_DestroyFontsTexture();
 
-    const auto& winData = TRAP::Graphics::RendererAPI::GetMainWindowData();
+    const auto& winData = TRAP::Graphics::RendererAPI::GetWindowData(TRAP::Application::GetWindow());
     //Execute a GPU command to upload ImGui font textures
     TRAP::Graphics::CommandBuffer* cmd = winData.GraphicCommandPools[winData.ImageIndex]->AllocateCommandBuffer(false);
     cmd->Begin();
@@ -758,6 +781,8 @@ void ImGui_ImplVulkan_UploadFontsTexture()
 
 static void ImGui_ImplVulkan_CreateShaderModules(VkDevice device, const VkAllocationCallbacks* allocator)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     // Create the shader modules
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     if (bd->ShaderModuleVert == VK_NULL_HANDLE)
@@ -765,7 +790,7 @@ static void ImGui_ImplVulkan_CreateShaderModules(VkDevice device, const VkAlloca
         VkShaderModuleCreateInfo vert_info = {};
         vert_info.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
         vert_info.codeSize = sizeof(__glsl_shader_vert_spv);
-        vert_info.pCode = static_cast<uint32_t*>(__glsl_shader_vert_spv);
+        vert_info.pCode = __glsl_shader_vert_spv.data();
         const VkResult err = vkCreateShaderModule(device, &vert_info, allocator, &bd->ShaderModuleVert);
         check_vk_result(err);
     }
@@ -774,82 +799,10 @@ static void ImGui_ImplVulkan_CreateShaderModules(VkDevice device, const VkAlloca
         VkShaderModuleCreateInfo frag_info = {};
         frag_info.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
         frag_info.codeSize = sizeof(__glsl_shader_frag_spv);
-        frag_info.pCode = static_cast<uint32_t*>(__glsl_shader_frag_spv);
+        frag_info.pCode = __glsl_shader_frag_spv.data();
         const VkResult err = vkCreateShaderModule(device, &frag_info, allocator, &bd->ShaderModuleFrag);
         check_vk_result(err);
     }
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-static void ImGui_ImplVulkan_CreateFontSampler(VkDevice device, const VkAllocationCallbacks* allocator)
-{
-    ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
-    if (bd->FontSampler)
-        return;
-
-    // Bilinear sampling is required by default. Set 'io.Fonts->Flags |= ImFontAtlasFlags_NoBakedLines' or 'style.AntiAliasedLinesUseTex = false' to allow point/nearest sampling.
-    VkSamplerCreateInfo info = {};
-    info.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-    info.magFilter = VK_FILTER_LINEAR;
-    info.minFilter = VK_FILTER_LINEAR;
-    info.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-    info.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-    info.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-    info.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-    info.minLod = -1000;
-    info.maxLod = 1000;
-    info.maxAnisotropy = 1.0f;
-    const VkResult err = vkCreateSampler(device, &info, allocator, &bd->FontSampler);
-    check_vk_result(err);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-static void ImGui_ImplVulkan_CreateDescriptorSetLayout(VkDevice device, const VkAllocationCallbacks* allocator)
-{
-    ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
-    if (bd->DescriptorSetLayout)
-        return;
-
-    ImGui_ImplVulkan_CreateFontSampler(device, allocator);
-    const VkSampler sampler = bd->FontSampler;
-    VkDescriptorSetLayoutBinding binding{};
-    binding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    binding.descriptorCount = 1;
-    binding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-    binding.pImmutableSamplers = &sampler;
-    VkDescriptorSetLayoutCreateInfo info = {};
-    info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-    info.bindingCount = 1;
-    info.pBindings = &binding;
-    const VkResult err = vkCreateDescriptorSetLayout(device, &info, allocator, &bd->DescriptorSetLayout);
-    check_vk_result(err);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-static void ImGui_ImplVulkan_CreatePipelineLayout(VkDevice device, const VkAllocationCallbacks* allocator)
-{
-    ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
-    if (bd->PipelineLayout)
-        return;
-
-    // Constants: we are using 'vec2 offset' and 'vec2 scale' instead of a full 3d projection matrix
-    ImGui_ImplVulkan_CreateDescriptorSetLayout(device, allocator);
-    VkPushConstantRange push_constants{};
-    push_constants.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-    push_constants.offset = sizeof(float) * 0;
-    push_constants.size = sizeof(float) * 4;
-    const VkDescriptorSetLayout set_layout = bd->DescriptorSetLayout;
-    VkPipelineLayoutCreateInfo layout_info = {};
-    layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    layout_info.setLayoutCount = 1;
-    layout_info.pSetLayouts = &set_layout;
-    layout_info.pushConstantRangeCount = 1;
-    layout_info.pPushConstantRanges = &push_constants;
-    const VkResult err = vkCreatePipelineLayout(device, &layout_info, allocator, &bd->PipelineLayout);
-    check_vk_result(err);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -859,6 +812,8 @@ static void ImGui_ImplVulkan_CreatePipeline(VkDevice device, const VkAllocationC
                                             VkSampleCountFlagBits MSAASamples, VkPipeline* pipeline,
                                             uint32_t subpass)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     ImGui_ImplVulkan_CreateShaderModules(device, allocator);
 
@@ -941,8 +896,6 @@ static void ImGui_ImplVulkan_CreatePipeline(VkDevice device, const VkAllocationC
     dynamic_state.dynamicStateCount = static_cast<uint32_t>(dynamic_states.size());
     dynamic_state.pDynamicStates = dynamic_states.data();
 
-    ImGui_ImplVulkan_CreatePipelineLayout(device, allocator);
-
     VkGraphicsPipelineCreateInfo info = {};
     info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
     info.flags = bd->PipelineCreateFlags;
@@ -967,12 +920,15 @@ static void ImGui_ImplVulkan_CreatePipeline(VkDevice device, const VkAllocationC
 
 bool ImGui_ImplVulkan_CreateDeviceObjects()
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     const ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
     VkResult err;
 
     if (!bd->FontSampler)
     {
+        // Bilinear sampling is required by default. Set 'io.Fonts->Flags |= ImFontAtlasFlags_NoBakedLines' or 'style.AntiAliasedLinesUseTex = false' to allow point/nearest sampling.
         VkSamplerCreateInfo info = {};
         info.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
         info.magFilter = VK_FILTER_LINEAR;
@@ -990,12 +946,10 @@ bool ImGui_ImplVulkan_CreateDeviceObjects()
 
     if (!bd->DescriptorSetLayout)
     {
-        const VkSampler sampler = bd->FontSampler;
         VkDescriptorSetLayoutBinding binding{};
         binding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
         binding.descriptorCount = 1;
         binding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-        binding.pImmutableSamplers = &sampler;
         VkDescriptorSetLayoutCreateInfo info = {};
         info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
         info.bindingCount = 1;
@@ -1042,6 +996,8 @@ bool ImGui_ImplVulkan_CreateDeviceObjects()
 
 void ImGui_ImplVulkan_DestroyFontUploadObjects()
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     const ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
     if (bd->UploadBuffer)
@@ -1060,6 +1016,8 @@ void ImGui_ImplVulkan_DestroyFontUploadObjects()
 
 void ImGui_ImplVulkan_DestroyDeviceObjects()
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     const ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
     ImGui_ImplVulkanH_DestroyAllViewportsRenderBuffers(v->Device, v->Allocator);
@@ -1080,6 +1038,8 @@ void ImGui_ImplVulkan_DestroyDeviceObjects()
 
 bool ImGui_ImplVulkan_Init(ImGui_ImplVulkan_InitInfo* info, VkRenderPass render_pass)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     ImGuiIO& io = ImGui::GetIO();
     IM_ASSERT(io.BackendRendererUserData == nullptr && "Already initialized a renderer backend!");
 
@@ -1105,6 +1065,9 @@ bool ImGui_ImplVulkan_Init(ImGui_ImplVulkan_InitInfo* info, VkRenderPass render_
 
     ImGui_ImplVulkan_CreateDeviceObjects();
 
+    if(info->DescriptorPool)
+        g_DescriptorPools.push_back(info->DescriptorPool);
+
     // Our render function expect RendererUserData to be storing the window render buffer we need (for the main viewport we won't use ->Window)
     ImGuiViewport* main_viewport = ImGui::GetMainViewport();
     main_viewport->RendererUserData = IM_NEW(ImGui_ImplVulkan_ViewportData)();
@@ -1119,12 +1082,19 @@ bool ImGui_ImplVulkan_Init(ImGui_ImplVulkan_InitInfo* info, VkRenderPass render_
 
 void ImGui_ImplVulkan_Shutdown()
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     IM_ASSERT(bd != nullptr && "No renderer backend to shutdown, or already shutdown?");
     ImGuiIO& io = ImGui::GetIO();
+    const ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
 
     // First destroy objects in all viewports
     ImGui_ImplVulkan_DestroyDeviceObjects();
+
+    for(VkDescriptorPool& descPool : g_DescriptorPools)
+        vkDestroyDescriptorPool(v->Device, descPool, v->Allocator);
+    g_DescriptorPools.clear();
 
     // Manually delete main viewport render data in-case we haven't initialized for viewports
     ImGuiViewport* main_viewport = ImGui::GetMainViewport();
@@ -1146,6 +1116,8 @@ void ImGui_ImplVulkan_Shutdown()
 
 void ImGui_ImplVulkan_NewFrame()
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     IM_ASSERT(bd != nullptr && "Did you call ImGui_ImplVulkan_Init()?");
     IM_UNUSED(bd);
@@ -1155,6 +1127,8 @@ void ImGui_ImplVulkan_NewFrame()
 
 void ImGui_ImplVulkan_SetMinImageCount(uint32_t min_image_count)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     IM_ASSERT(min_image_count >= 2);
     if (bd->VulkanInitInfo.MinImageCount == min_image_count)
@@ -1185,11 +1159,13 @@ void ImGui_ImplVulkan_SetMinImageCount(uint32_t min_image_count)
 // (The ImGui_ImplVulkanH_XXX functions do not interact with any of the state used by the regular ImGui_ImplVulkan_XXX functions)
 //-------------------------------------------------------------------------
 
-VkSurfaceFormatKHR ImGui_ImplVulkanH_SelectSurfaceFormat(VkPhysicalDevice physical_device, VkSurfaceKHR surface,
-                                                         const VkFormat* request_formats,
-                                                         int request_formats_count,
-                                                         VkColorSpaceKHR request_color_space)
+[[nodiscard]] VkSurfaceFormatKHR ImGui_ImplVulkanH_SelectSurfaceFormat(VkPhysicalDevice physical_device, VkSurfaceKHR surface,
+                                                                       const VkFormat* request_formats,
+                                                                       int request_formats_count,
+                                                                       VkColorSpaceKHR request_color_space)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     IM_ASSERT(request_formats != nullptr);
     IM_ASSERT(request_formats_count > 0);
 
@@ -1238,10 +1214,12 @@ VkSurfaceFormatKHR ImGui_ImplVulkanH_SelectSurfaceFormat(VkPhysicalDevice physic
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPresentModeKHR ImGui_ImplVulkanH_SelectPresentMode(VkPhysicalDevice physical_device, VkSurfaceKHR surface,
-                                                     const VkPresentModeKHR* request_modes,
-                                                     int request_modes_count)
+[[nodiscard]] VkPresentModeKHR ImGui_ImplVulkanH_SelectPresentMode(VkPhysicalDevice physical_device, VkSurfaceKHR surface,
+                                                                   const VkPresentModeKHR* request_modes,
+                                                                   int request_modes_count)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     IM_ASSERT(request_modes != nullptr);
     IM_ASSERT(request_modes_count > 0);
 
@@ -1270,6 +1248,8 @@ void ImGui_ImplVulkanH_CreateWindowCommandBuffers(VkPhysicalDevice physical_devi
                                                   ImGui_ImplVulkanH_Window* wd, uint32_t queue_family,
                                                   const VkAllocationCallbacks* allocator)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     IM_ASSERT(physical_device != VK_NULL_HANDLE && device != VK_NULL_HANDLE);
     (void)physical_device;
     (void)allocator;
@@ -1317,8 +1297,10 @@ void ImGui_ImplVulkanH_CreateWindowCommandBuffers(VkPhysicalDevice physical_devi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int ImGui_ImplVulkanH_GetMinImageCountFromPresentMode(VkPresentModeKHR present_mode)
+[[nodiscard]] int ImGui_ImplVulkanH_GetMinImageCountFromPresentMode(VkPresentModeKHR present_mode)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
     if (present_mode == VK_PRESENT_MODE_MAILBOX_KHR)
         return 3;
     if (present_mode == VK_PRESENT_MODE_FIFO_KHR || present_mode == VK_PRESENT_MODE_FIFO_RELAXED_KHR)
@@ -1336,6 +1318,8 @@ void ImGui_ImplVulkanH_CreateWindowSwapChain(VkPhysicalDevice physical_device, V
                                              ImGui_ImplVulkanH_Window* wd, const VkAllocationCallbacks* allocator,
                                              int w, int h, uint32_t min_image_count)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     VkResult err;
     const VkSwapchainKHR old_swapchain = wd->Swapchain;
     wd->Swapchain = VK_NULL_HANDLE;
@@ -1511,6 +1495,8 @@ void ImGui_ImplVulkanH_CreateOrResizeWindow(VkInstance instance, VkPhysicalDevic
                                             const VkAllocationCallbacks* allocator, int width, int height,
                                             uint32_t min_image_count)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     (void)instance;
     ImGui_ImplVulkanH_CreateWindowSwapChain(physical_device, device, wd, allocator, width, height, min_image_count);
     // ImGui_ImplVulkan_CreatePipeline(device, allocator, VK_NULL_HANDLE, wd->RenderPass, VK_SAMPLE_COUNT_1_BIT, &wd->Pipeline, g_VulkanInitInfo.Subpass);
@@ -1522,6 +1508,8 @@ void ImGui_ImplVulkanH_CreateOrResizeWindow(VkInstance instance, VkPhysicalDevic
 void ImGui_ImplVulkanH_DestroyWindow(VkInstance instance, VkDevice device, ImGui_ImplVulkanH_Window* wd,
                                      const VkAllocationCallbacks* allocator)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     vkDeviceWaitIdle(device); // FIXME: We could wait on the Queue if we had the queue in wd-> (otherwise VulkanH functions can't use globals)
     //vkQueueWaitIdle(bd->Queue);
 
@@ -1547,6 +1535,8 @@ void ImGui_ImplVulkanH_DestroyWindow(VkInstance instance, VkDevice device, ImGui
 void ImGui_ImplVulkanH_DestroyFrame(VkDevice device, ImGui_ImplVulkanH_Frame* fd,
                                     const VkAllocationCallbacks* allocator)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     vkDestroyFence(device, fd->Fence, allocator);
     vkFreeCommandBuffers(device, fd->CommandPool, 1, &fd->CommandBuffer);
     vkDestroyCommandPool(device, fd->CommandPool, allocator);
@@ -1563,6 +1553,8 @@ void ImGui_ImplVulkanH_DestroyFrame(VkDevice device, ImGui_ImplVulkanH_Frame* fd
 void ImGui_ImplVulkanH_DestroyFrameSemaphores(VkDevice device, ImGui_ImplVulkanH_FrameSemaphores* fsd,
                                               const VkAllocationCallbacks* allocator)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     vkDestroySemaphore(device, fsd->ImageAcquiredSemaphore, allocator);
     vkDestroySemaphore(device, fsd->RenderCompleteSemaphore, allocator);
     fsd->ImageAcquiredSemaphore = fsd->RenderCompleteSemaphore = VK_NULL_HANDLE;
@@ -1573,6 +1565,8 @@ void ImGui_ImplVulkanH_DestroyFrameSemaphores(VkDevice device, ImGui_ImplVulkanH
 void ImGui_ImplVulkanH_DestroyFrameRenderBuffers(VkDevice device, ImGui_ImplVulkanH_FrameRenderBuffers* buffers,
                                                  const VkAllocationCallbacks* allocator)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     if (buffers->VertexBuffer) { vkDestroyBuffer(device, buffers->VertexBuffer, allocator); buffers->VertexBuffer = VK_NULL_HANDLE; }
     if (buffers->VertexBufferMemory) { vkFreeMemory(device, buffers->VertexBufferMemory, allocator); buffers->VertexBufferMemory = VK_NULL_HANDLE; }
     if (buffers->IndexBuffer) { vkDestroyBuffer(device, buffers->IndexBuffer, allocator); buffers->IndexBuffer = VK_NULL_HANDLE; }
@@ -1586,12 +1580,49 @@ void ImGui_ImplVulkanH_DestroyFrameRenderBuffers(VkDevice device, ImGui_ImplVulk
 void ImGui_ImplVulkanH_DestroyWindowRenderBuffers(VkDevice device, ImGui_ImplVulkanH_WindowRenderBuffers* buffers,
                                                   const VkAllocationCallbacks* allocator)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     for (uint32_t n = 0; n < buffers->Count; n++)
         ImGui_ImplVulkanH_DestroyFrameRenderBuffers(device, &buffers->FrameRenderBuffers[n], allocator);
     IM_FREE(buffers->FrameRenderBuffers);
     buffers->FrameRenderBuffers = nullptr;
     buffers->Index = 0;
     buffers->Count = 0;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::vector<VkDescriptorPoolSize> g_DescriptorPoolSizes =
+{
+    { VK_DESCRIPTOR_TYPE_SAMPLER, 1000 },
+    { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000 },
+    { VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1000 },
+    { VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1000 },
+    { VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1000 },
+    { VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1000 },
+    { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000 },
+    { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1000 },
+    { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000 },
+    { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000 },
+    { VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 1000 }
+};
+
+void ImGui_ImplVulkan_CreateNewDescriptorPool()
+{
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
+    ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
+    ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
+
+    VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
+
+    VkDescriptorPoolCreateInfo poolInfo = TRAP::Graphics::API::VulkanInits::DescriptorPoolCreateInfo(g_DescriptorPoolSizes,
+																				                     1000);
+
+    VkCall(vkCreateDescriptorPool(v->Device, &poolInfo, nullptr, &descriptorPool));
+
+    g_DescriptorPools.push_back(descriptorPool);
+    v->DescriptorPool = descriptorPool;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1604,20 +1635,22 @@ struct VkDetails
     VkDescriptorSet DescriptorSet;
 };
 
-static std::unordered_map<void*, VkDetails> s_VulkanCache;
+static std::unordered_map<void*, VkDetails> s_VulkanTextureCache;
 
-ImTextureID ImGui_ImplVulkan_AddTexture(VkSampler sampler, VkImageView imageView, VkImageLayout imageLayout)
+[[nodiscard]] ImTextureID ImGui_ImplVulkan_AddTexture(VkSampler sampler, VkImageView imageView, VkImageLayout imageLayout)
 {
-    if(s_VulkanCache.find((void*)imageView) == s_VulkanCache.end())
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
+    if(s_VulkanTextureCache.find((void*)imageView) == s_VulkanTextureCache.end())
     {
-        VkDetails& vulkanDetails = s_VulkanCache[static_cast<void*>(imageView)];
+        VkDetails& vulkanDetails = s_VulkanTextureCache[(void*)imageView];
         vulkanDetails.Sampler = sampler;
         vulkanDetails.ImageView = imageView;
         vulkanDetails.ImageLayout = imageLayout;
 
         const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
         const ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
-        VkDescriptorSet descriptorSet;
+        VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
 
         // Create Descriptor Set:
         {
@@ -1626,22 +1659,34 @@ ImTextureID ImGui_ImplVulkan_AddTexture(VkSampler sampler, VkImageView imageView
             allocInfo.descriptorPool = v->DescriptorPool;
             allocInfo.descriptorSetCount = 1;
             allocInfo.pSetLayouts = &bd->DescriptorSetLayout;
-            const VkResult err = vkAllocateDescriptorSets(v->Device, &allocInfo, &descriptorSet);
-            check_vk_result(err);
+            VkResult err = vkAllocateDescriptorSets(v->Device, &allocInfo, &descriptorSet);
+            // check_vk_result(err);
+
+            if(descriptorSet == VK_NULL_HANDLE)
+            {
+                ImGui_ImplVulkan_CreateNewDescriptorPool();
+
+                //Try again now with the new pool
+                allocInfo.descriptorPool = v->DescriptorPool;
+                err = vkAllocateDescriptorSets(v->Device, &allocInfo, &descriptorSet);
+                check_vk_result(err);
+            }
         }
 
         vulkanDetails.DescriptorSet = descriptorSet;
         ImGui_ImplVulkan_UpdateTextureInfo(vulkanDetails.DescriptorSet, vulkanDetails.Sampler, vulkanDetails.ImageView, vulkanDetails.ImageLayout);
     }
 
-    return (ImTextureID)s_VulkanCache[(void*)imageView].DescriptorSet;
+    return (ImTextureID)s_VulkanTextureCache[(void*)imageView].DescriptorSet;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ImTextureID ImGui_ImplVulkan_UpdateTextureInfo(VkDescriptorSet descriptorSet, VkSampler sampler,
-                                               VkImageView imageView, VkImageLayout imageLayout)
+[[nodiscard]] ImTextureID ImGui_ImplVulkan_UpdateTextureInfo(VkDescriptorSet descriptorSet, VkSampler sampler,
+                                                             VkImageView imageView, VkImageLayout imageLayout)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     const ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
 
@@ -1665,18 +1710,25 @@ ImTextureID ImGui_ImplVulkan_UpdateTextureInfo(VkDescriptorSet descriptorSet, Vk
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui_ImplVulkan_ClearCache()
+void ImGui_ImplVulkan_ClearCache() noexcept
 {
-    s_VulkanCache.clear();
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
+    s_VulkanTextureCache.clear();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void ImGui_ImplVulkan_SetMSAASamples(const VkSampleCountFlagBits sampleCount)
 {
-	const auto& winData = TRAP::Graphics::RendererAPI::GetMainWindowData();
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
+	const auto& winData = TRAP::Graphics::RendererAPI::GetWindowData(TRAP::Application::GetWindow());
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
+
+    if(sampleCount == v->MSAASamples)
+        return;
 
     v->MSAASamples = sampleCount;
     bd->RenderPass = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
@@ -1699,6 +1751,8 @@ void ImGui_ImplVulkan_SetMSAASamples(const VkSampleCountFlagBits sampleCount)
 
 void ImGui_ImplVulkanH_DestroyAllViewportsRenderBuffers(VkDevice device, const VkAllocationCallbacks* allocator)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     const ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO();
     for (int n = 0; n < platform_io.Viewports.Size; n++)
     {
@@ -1715,6 +1769,8 @@ void ImGui_ImplVulkanH_DestroyAllViewportsRenderBuffers(VkDevice device, const V
 
 static void ImGui_ImplVulkan_CreateWindow(ImGuiViewport* viewport)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     ImGui_ImplVulkan_ViewportData* vd = IM_NEW(ImGui_ImplVulkan_ViewportData)();
     viewport->RendererUserData = vd;
@@ -1755,6 +1811,8 @@ static void ImGui_ImplVulkan_CreateWindow(ImGuiViewport* viewport)
 
 static void ImGui_ImplVulkan_DestroyWindow(ImGuiViewport* viewport)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     // The main viewport (owned by the application) will always have RendererUserData == nullptr since we didn't create the data for it.
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     if (ImGui_ImplVulkan_ViewportData* vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData))
@@ -1772,6 +1830,8 @@ static void ImGui_ImplVulkan_DestroyWindow(ImGuiViewport* viewport)
 
 static void ImGui_ImplVulkan_SetWindowSize(ImGuiViewport* viewport, ImVec2 size)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     ImGui_ImplVulkan_ViewportData* vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData);
     if (vd == nullptr) // This is nullptr for the main viewport (which is left to the user/app to handle)
@@ -1785,6 +1845,8 @@ static void ImGui_ImplVulkan_SetWindowSize(ImGuiViewport* viewport, ImVec2 size)
 
 static void ImGui_ImplVulkan_RenderWindow(ImGuiViewport* viewport, void*)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     ImGui_ImplVulkan_ViewportData* vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData);
     ImGui_ImplVulkanH_Window* wd = &vd->Window;
@@ -1861,6 +1923,8 @@ static void ImGui_ImplVulkan_RenderWindow(ImGuiViewport* viewport, void*)
 
 static void ImGui_ImplVulkan_SwapBuffers(ImGuiViewport* viewport, void*)
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     ImGui_ImplVulkan_ViewportData* vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData);
     ImGui_ImplVulkanH_Window* wd = &vd->Window;
@@ -1891,6 +1955,8 @@ static void ImGui_ImplVulkan_SwapBuffers(ImGuiViewport* viewport, void*)
 
 void ImGui_ImplVulkan_InitPlatformInterface()
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
     ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO();
     if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
         IM_ASSERT(platform_io.Platform_CreateVkSurface != nullptr && "Platform needs to setup the CreateVkSurface handler.");
@@ -1905,5 +1971,7 @@ void ImGui_ImplVulkan_InitPlatformInterface()
 
 void ImGui_ImplVulkan_ShutdownPlatformInterface()
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
     ImGui::DestroyPlatformWindows();
 }

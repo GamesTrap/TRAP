@@ -27,78 +27,84 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanPhysicalDevice(const VulkanPhysicalDevice&) = default;
+		VulkanPhysicalDevice(const VulkanPhysicalDevice&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanPhysicalDevice& operator=(const VulkanPhysicalDevice&) = default;
+		VulkanPhysicalDevice& operator=(const VulkanPhysicalDevice&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanPhysicalDevice(VulkanPhysicalDevice&&) = default;
+		VulkanPhysicalDevice(VulkanPhysicalDevice&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanPhysicalDevice& operator=(VulkanPhysicalDevice&&) = default;
+		VulkanPhysicalDevice& operator=(VulkanPhysicalDevice&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the Vulkan physical device handle.
 		/// </summary>
 		/// <returns>Vulkan physical device handle.</returns>
-		VkPhysicalDevice GetVkPhysicalDevice() const;
+		[[nodiscard]] VkPhysicalDevice GetVkPhysicalDevice() const noexcept;
+		/// <summary>
+		/// Retrieve the Vulkan physical device format properties for a specific format.
+		/// </summary>
+		/// <param name="format">Format to retrieve properties for.</param>
+		/// <returns>VkFormatProperties.</returns>
+		[[nodiscard]] VkFormatProperties GetVkPhysicalDeviceFormatProperties(VkFormat format) const;
 		/// <summary>
 		/// Retrieve the Vulkan physical device properties.
 		/// </summary>
 		/// <returns>VkPhysicalDeviceProperties.</returns>
-		const VkPhysicalDeviceProperties& GetVkPhysicalDeviceProperties() const;
+		[[nodiscard]] const VkPhysicalDeviceProperties& GetVkPhysicalDeviceProperties() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan physical device subgroup properties.
 		/// </summary>
 		/// <returns>VkPhysicalDeviceSubgroupProperties.</returns>
-		const VkPhysicalDeviceSubgroupProperties& GetVkPhysicalDeviceSubgroupProperties() const;
+		[[nodiscard]] const VkPhysicalDeviceSubgroupProperties& GetVkPhysicalDeviceSubgroupProperties() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan physical device id properties.
 		/// </summary>
 		/// <returns>VkPhysicalDeviceIDProperties.</returns>
-		const VkPhysicalDeviceIDProperties& GetVkPhysicalDeviceIDProperties() const;
+		[[nodiscard]] const VkPhysicalDeviceIDProperties& GetVkPhysicalDeviceIDProperties() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan physical device memory properties.
 		/// </summary>
 		/// <returns>VkPhysicalDeviceMemoryProperties.</returns>
-		const VkPhysicalDeviceMemoryProperties& GetVkPhysicalDeviceMemoryProperties() const;
+		[[nodiscard]] const VkPhysicalDeviceMemoryProperties& GetVkPhysicalDeviceMemoryProperties() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan physical device features.
 		/// </summary>
 		/// <returns>VkPhysicalDeviceFeatures.</returns>
-		const VkPhysicalDeviceFeatures& GetVkPhysicalDeviceFeatures() const;
+		[[nodiscard]] const VkPhysicalDeviceFeatures& GetVkPhysicalDeviceFeatures() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan physical device fragment shader interlock features.
 		/// </summary>
 		/// <returns>VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT.</returns>
-		const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT& GetVkPhysicalDeviceFragmentShaderInterlockFeatures() const;
+		[[nodiscard]] const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT& GetVkPhysicalDeviceFragmentShaderInterlockFeatures() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan queue family properties of each queue family.
 		/// </summary>
 		/// <returns>List of VkQueueFamilyProperties.</returns>
-		const std::vector<VkQueueFamilyProperties>& GetQueueFamilyProperties() const;
+		[[nodiscard]] const std::vector<VkQueueFamilyProperties>& GetQueueFamilyProperties() const noexcept;
 		/// <summary>
 		/// Check whether an extension is supported by the physical device or not.
 		/// </summary>
 		/// <param name="extension">Extension to check.</param>
 		/// <returns>True if extension is supported, false otherwise.</returns>
-		bool IsExtensionSupported(const std::string_view extension);
+		[[nodiscard]] bool IsExtensionSupported(const std::string_view extension);
 
 		/// <summary>
 		/// Retrieve a list of all available physical device extensions.
 		/// </summary>
 		/// <returns>List of physical device extensions.</returns>
-		const std::vector<VkExtensionProperties>& GetAvailablePhysicalDeviceExtensions();
+		[[nodiscard]] const std::vector<VkExtensionProperties>& GetAvailablePhysicalDeviceExtensions();
 
 		/// <summary>
 		/// Retrieve the physical device's UUID.
 		/// </summary>
 		/// <returns>Physical device UUID.</returns>
-		const std::array<uint8_t, 16>& GetPhysicalDeviceUUID() const;
+		[[nodiscard]] const std::array<uint8_t, 16>& GetPhysicalDeviceUUID() const noexcept;
 
 		/// <summary>
 		/// Retrieve the physical device fragment shader interlock features.
@@ -107,12 +113,18 @@ namespace TRAP::Graphics::API
 		void RetrievePhysicalDeviceFragmentShaderInterlockFeatures();
 
 		/// <summary>
+		/// Retrieve the vendor of the physical device.
+		/// </summary>
+		/// <returns>Vendor.</returns>
+		[[nodiscard]] RendererAPI::GPUVendor GetVendor() const noexcept;
+
+		/// <summary>
 		/// Retrieve a list of all rated physical devices.
 		/// Key is the devices score, value is the UUID of the physical device.
 		/// </summary>
 		/// <param name="instance">Vulkan instance.</param>
 		/// <returns>List of rated physical devices.</returns>
-		static const std::multimap<uint32_t, std::array<uint8_t, 16>>& GetAllRatedPhysicalDevices(const TRAP::Ref<VulkanInstance>& instance);
+		[[nodiscard]] static const std::multimap<uint32_t, std::array<uint8_t, 16>>& GetAllRatedPhysicalDevices(const TRAP::Ref<VulkanInstance>& instance);
 
 		/// <summary>
 		/// Retrieve a phyiscal device via its UUID.
@@ -120,8 +132,8 @@ namespace TRAP::Graphics::API
 		/// <param name="instance">Vulkan instance.</param>
 		/// <param name="physicalDeviceUUID">Physical device UUID to retrieve.</param>
 		/// <returns>Vulkan physical device.</returns>
-		static VkPhysicalDevice FindPhysicalDeviceViaUUID(const TRAP::Ref<VulkanInstance>& instance,
-			                                              const std::array<uint8_t, 16>& physicalDeviceUUID);
+		[[nodiscard]] static VkPhysicalDevice FindPhysicalDeviceViaUUID(const TRAP::Ref<VulkanInstance>& instance,
+			                                                            const std::array<uint8_t, 16>& physicalDeviceUUID);
 
 	private:
 		friend bool TRAP::Graphics::RendererAPI::IsVulkanCapable();
@@ -131,14 +143,14 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="instance">Vulkan instance handle.</param>
 		/// <returns>List of rated physical devices.</returns>
-		static const std::multimap<uint32_t, std::array<uint8_t, 16>>& GetAllRatedPhysicalDevices(const VkInstance& instance);
+		[[nodiscard]] static const std::multimap<uint32_t, std::array<uint8_t, 16>>& GetAllRatedPhysicalDevices(const VkInstance& instance);
 
 		/// <summary>
 		/// Retrieve a list of all Vulkan physical device handles.
 		/// </summary>
 		/// <param name="instance">Vulkan instance handle.</param>
 		/// <returns>List of Vulkan physical device handles.</returns>
-		static std::vector<VkPhysicalDevice> GetAllVkPhysicalDevices(const VkInstance& instance);
+		[[nodiscard]] static std::vector<VkPhysicalDevice> GetAllVkPhysicalDevices(const VkInstance& instance);
 
 		/// <summary>
 		/// Rate a list of physical devices.
@@ -161,12 +173,13 @@ namespace TRAP::Graphics::API
 		/// 15. Optionally supports RayTracing extensions (2000 score).
 		/// 16. Optionally supports geometry shaders (1000 score).
 		/// 17. Optionally supports tessellation shaders (1000 score).
-		/// 18. Optionally supports fill mode non solid (250 score).
-		/// 19. Optionally does surface has optimal format (B8G8R8A8 Unorm & SRGB Non-linear) (250 score) (Disabled for Headless mode).
-		/// 20. Optionally check VRAM size (size / 1 Gigabyte * 100 score).
-		/// 21. Optionally check max resolution of 2D and cube images. (Max image resolution is score).
-		/// 22. Optionally check max sample count for MSAA. (Sample count * 10 score).
-		/// 23. Optionally check if anisotropic filtering is supported (500 score).
+		/// 18. Optionally supports Variable Rate Shading extensions and Tier 1/Tier 2 (1000 + 100/200 score).
+		/// 19. Optionally supports fill mode non solid (250 score).
+		/// 20. Optionally does surface has optimal format (B8G8R8A8 Unorm & SRGB Non-linear) (250 score) (Disabled for Headless mode).
+		/// 21. Optionally check VRAM size (size / 1 Gigabyte * 100 score).
+		/// 22. Optionally check max resolution of 2D and cube images. (Max image resolution is score).
+		/// 23. Optionally check max sample count for MSAA. (Sample count * 10 score).
+		/// 24. Optionally check if anisotropic filtering is supported (500 score).
 		/// </summary>
 		/// <param name="physicalDevices">Vulkan physical devices to rate.</param>
 		/// <param name="instance">Vulkan instance used to retrieve the physical devices.</param>
@@ -181,7 +194,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the max usable MSAA sample count for the GPU.
 		/// </summary>
 		/// <returns>Max usable MSAA sample count.</returns>
-		uint32_t GetMaxUsableMSAASampleCount() const;
+		[[nodiscard]] uint32_t GetMaxUsableMSAASampleCount() const noexcept;
 
 		VkPhysicalDevice m_physicalDevice;
 		VkPhysicalDeviceProperties m_physicalDeviceProperties;

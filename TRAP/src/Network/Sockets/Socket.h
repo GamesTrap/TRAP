@@ -2,7 +2,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -41,15 +41,15 @@ namespace TRAP::Network
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		Socket() = default;
+		Socket() noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Socket(Socket&&) = default;
+		Socket(Socket&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Socket& operator=(Socket&&) = default;
+		Socket& operator=(Socket&&) noexcept = default;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
@@ -105,7 +105,7 @@ namespace TRAP::Network
 		/// Tell whether the socket is in blocking or non-blocking mode.
 		/// </summary>
 		/// <returns>True if the socket is blocking, false otherwise.</returns>
-		bool IsBlocking() const;
+		[[nodiscard]] bool IsBlocking() const noexcept;
 
 	protected:
 		/// <summary>
@@ -123,7 +123,7 @@ namespace TRAP::Network
 		/// This constructor can only be accessed by derived classes.
 		/// </summary>
 		/// <param name="type">Type of the socket (TCP or UDP).</param>
-		explicit Socket(Type type);
+		explicit Socket(Type type) noexcept;
 
 		/// <summary>
 		/// Return the internal handle of the socket.
@@ -133,7 +133,7 @@ namespace TRAP::Network
 		/// This function can only be accessed by derived classes.
 		/// </summary>
 		/// <returns>The internal (OS-specific) handle of the socket.</returns>
-		SocketHandle GetHandle() const;
+		[[nodiscard]] SocketHandle GetHandle() const noexcept;
 
 		/// <summary>
 		/// Create the internal representation of the socket.

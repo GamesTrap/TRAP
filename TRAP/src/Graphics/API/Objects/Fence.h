@@ -14,7 +14,7 @@ namespace TRAP::Graphics
 		/// Fence is not signaled.
 		/// </summary>
 		/// <returns>Created fence.</returns>
-		static TRAP::Ref<Fence> Create();
+		[[nodiscard]] static TRAP::Ref<Fence> Create();
 
 		/// <summary>
 		/// Destructor.
@@ -24,31 +24,31 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Fence(const Fence&) = default;
+		Fence(const Fence&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Fence& operator=(const Fence&) = default;
+		Fence& operator=(const Fence&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Fence(Fence&&) = default;
+		Fence(Fence&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Fence& operator=(Fence&&) = default;
+		Fence& operator=(Fence&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve whether the Fence was submitted or not.
 		/// </summary>
 		/// <returns>True if Fence was submitted, false otherwise.</returns>
-		bool IsSubmitted() const;
+		[[nodiscard]] bool IsSubmitted() const noexcept;
 
 		/// <summary>
 		/// Retrieve the current status of the fence.
 		/// </summary>
 		/// <returns>Fence status.</returns>
-		virtual RendererAPI::FenceStatus GetStatus() = 0;
+		[[nodiscard]] virtual RendererAPI::FenceStatus GetStatus() = 0;
 		/// <summary>
 		/// Wait for the fence to be signaled.
 		///

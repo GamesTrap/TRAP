@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
-#include "Utils/Utils.h"
 #include "VulkanPipeline.h"
 
+#include "Utils/Utils.h"
 #include "VulkanRenderPass.h"
 #include "VulkanRootSignature.h"
 #include "VulkanShader.h"
@@ -9,13 +9,17 @@
 #include "VulkanDevice.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"
+#include "Graphics/API/Objects/RenderTarget.h"
 
 TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineDesc& desc)
 	: m_vkPipeline(VK_NULL_HANDLE),
 	  m_type(),
 	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
-	TRAP_ASSERT(m_device);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(m_device, "VulkanPipeline(): Vulkan Device is nullptr!");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPipelinePrefix, "Creating Pipeline");
@@ -42,7 +46,7 @@ TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineD
 	}
 
 	default:
-		TRAP_ASSERT(false);
+		TRAP_ASSERT(false, "VulkanPipeline(): Unknown Pipeline Type!");
 		break;
 	}
 
@@ -56,8 +60,7 @@ TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineD
 
 TRAP::Graphics::API::VulkanPipeline::~VulkanPipeline()
 {
-	TRAP_ASSERT(m_device);
-	TRAP_ASSERT(m_vkPipeline);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPipelinePrefix, "Destroying Pipeline");
@@ -72,15 +75,17 @@ TRAP::Graphics::API::VulkanPipeline::~VulkanPipeline()
 
 void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI::PipelineDesc& desc)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	const auto& computeDesc = std::get<RendererAPI::ComputePipelineDesc>(desc.Pipeline);
 	const VkPipelineCache psoCache = desc.Cache ?
-	                                 dynamic_cast<VulkanPipelineCache*>(desc.Cache.get())->GetVkPipelineCache() :
+	                                 std::dynamic_pointer_cast<VulkanPipelineCache>(desc.Cache)->GetVkPipelineCache() :
 							         VK_NULL_HANDLE;
 
-	TRAP_ASSERT(computeDesc.ShaderProgram);
-	TRAP_ASSERT(computeDesc.RootSignature);
-	const VulkanShader* vShader = dynamic_cast<VulkanShader*>(computeDesc.ShaderProgram);
-	TRAP_ASSERT(vShader->GetVkShaderModules()[0] != VK_NULL_HANDLE);
+	TRAP_ASSERT(computeDesc.ShaderProgram, "VulkanPipeline::InitComputePipeline(): ShaderProgram is nullptr!");
+	TRAP_ASSERT(computeDesc.RootSignature, "VulkanPipeline::InitComputePipeline(): RootSignature is nullptr!");
+	const VulkanShader* const vShader = dynamic_cast<VulkanShader*>(computeDesc.ShaderProgram);
+	TRAP_ASSERT(vShader->GetVkShaderModules()[0] != VK_NULL_HANDLE, "VulkanPipeline::InitComputePipeline(): ShaderModule is nullptr!");
 
 	m_type = RendererAPI::PipelineType::Compute;
 
@@ -96,10 +101,11 @@ void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI:
 		const VkComputePipelineCreateInfo info = VulkanInits::ComputePipelineCreateInfo
 		(
 			stage,
-			dynamic_cast<VulkanRootSignature*>(computeDesc.RootSignature.get())->GetVkPipelineLayout()
+			std::dynamic_pointer_cast<VulkanRootSignature>(computeDesc.RootSignature)->GetVkPipelineLayout()
 		);
 
 		VkCall(vkCreateComputePipelines(m_device->GetVkDevice(), psoCache, 1, &info, nullptr, &m_vkPipeline));
+		TRAP_ASSERT(m_vkPipeline, "VulkanPipeline::InitComputePipeline(): Vulkan Pipeline is nullptr!");
 	}
 }
 
@@ -107,13 +113,15 @@ void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI:
 
 void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI::PipelineDesc& desc)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	const auto& graphicsDesc = std::get<RendererAPI::GraphicsPipelineDesc>(desc.Pipeline);
 	const VkPipelineCache psoCache = desc.Cache ?
-	                                 dynamic_cast<VulkanPipelineCache*>(desc.Cache.get())->GetVkPipelineCache() :
+	                                 std::dynamic_pointer_cast<VulkanPipelineCache>(desc.Cache)->GetVkPipelineCache() :
 							         VK_NULL_HANDLE;
 
-	TRAP_ASSERT(graphicsDesc.ShaderProgram);
-	TRAP_ASSERT(graphicsDesc.RootSignature);
+	TRAP_ASSERT(graphicsDesc.ShaderProgram, "VulkanPipeline::InitGraphicsPipeline(): ShaderProgram is nullptr!");
+	TRAP_ASSERT(graphicsDesc.RootSignature, "VulkanPipeline::InitGraphicsPipeline(): RootSignature is nullptr!");
 
 	const auto& shaderProgram = graphicsDesc.ShaderProgram;
 	const auto& vertexLayout = graphicsDesc.VertexLayout;
@@ -126,12 +134,13 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 	renderPassDesc.ColorFormats = graphicsDesc.ColorFormats;
 	renderPassDesc.SampleCount = graphicsDesc.SampleCount;
 	renderPassDesc.DepthStencilFormat = graphicsDesc.DepthStencilFormat;
+	renderPassDesc.ShadingRateFormat = graphicsDesc.ShadingRateTexture ? graphicsDesc.ShadingRateTexture->GetImageFormat() : Graphics::API::ImageFormat::Undefined;
 	TRAP::Scope<VulkanRenderPass> renderPass = TRAP::MakeScope<VulkanRenderPass>(m_device, renderPassDesc);
 
-	const VulkanShader* vShader = dynamic_cast<VulkanShader*>(shaderProgram);
+	const VulkanShader* const vShader = dynamic_cast<VulkanShader*>(shaderProgram);
 	for(uint32_t i = 0; i < vShader->GetReflection()->StageReflectionCount; ++i)
 	{
-		TRAP_ASSERT(vShader->GetVkShaderModules()[i] != VK_NULL_HANDLE);
+		TRAP_ASSERT(vShader->GetVkShaderModules()[i] != VK_NULL_HANDLE, "VulkanPipeline::InitGraphicsPipeline(): ShaderModule is nullptr!");
 	}
 
 	//Pipeline
@@ -190,7 +199,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 				}
 
 				default:
-					TRAP_ASSERT(false, "Shader Stage is not supported!");
+					TRAP_ASSERT(false, "VulkanPipeline::InitGraphicsPipeline(): Shader Stage is not supported!");
 					break;
 				}
 				++stageCount;
@@ -198,7 +207,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 		}
 
 		//Make sure there's a shader
-		TRAP_ASSERT(stageCount != 0);
+		TRAP_ASSERT(stageCount != 0, "VulkanPipeline::InitGraphicsPipeline(): No Shader stage found!");
 
 		uint32_t inputBindingCount = 0;
 		std::vector<VkVertexInputBindingDescription> inputBindings(RendererAPI::GPUSettings.MaxVertexInputBindings);
@@ -271,7 +280,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 			break;
 
 		default:
-			TRAP_ASSERT(false, "Primitive Topology not supported!");
+			TRAP_ASSERT(false, "VulkanPipeline::InitGraphicsPipeline(): Primitive Topology not supported!");
 			break;
 		}
 
@@ -305,11 +314,35 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 		                                                 UtilToDepthDesc(*graphicsDesc.DepthState) :
 												         VulkanRenderer::DefaultDepthDesc;
 
+		if(graphicsDesc.BlendState) //Set affected render target mask for blending (only enable blending for supported formats)
+		{
+			graphicsDesc.BlendState->RenderTargetMask = {};
+			for(std::size_t i = 0; i < graphicsDesc.ColorFormats.size(); ++i)
+			{
+				const ImageFormat fmt = graphicsDesc.ColorFormats[i];
+				const auto formatProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(ImageFormatToVkFormat(fmt));
+				if(formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT)
+					graphicsDesc.BlendState->RenderTargetMask |= static_cast<RendererAPI::BlendStateTargets>(BIT(i));
+			}
+		}
+
 		std::vector<VkPipelineColorBlendAttachmentState> cbAttachments(8);
 		VkPipelineColorBlendStateCreateInfo cb = graphicsDesc.BlendState ?
 		                                         UtilToBlendDesc(*graphicsDesc.BlendState, cbAttachments) :
 												 VulkanRenderer::DefaultBlendDesc;
 		cb.attachmentCount = graphicsDesc.RenderTargetCount;
+
+		VkPipelineFragmentShadingRateStateCreateInfoKHR fsr{};
+		if(VulkanRenderer::s_shadingRate)
+		{
+			const std::array<VkFragmentShadingRateCombinerOpKHR, 2> rateCombiners
+			{
+				ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(graphicsDesc.ShadingRateCombiners[0]),
+				ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(graphicsDesc.ShadingRateCombiners[1])
+			};
+			const VkExtent2D shadingRate = ShadingRateToVkExtent2D(graphicsDesc.ShadingRate);
+			fsr = VulkanInits::PipelineFragmentShadingRateStateCreateInfo(shadingRate, rateCombiners);
+		}
 
 		std::vector<VkDynamicState> dynamicStates =
 		{
@@ -326,14 +359,18 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 
 		VkGraphicsPipelineCreateInfo info = VulkanInits::GraphicsPipelineCreateInfo(static_cast<uint32_t>(stageCount), stages.data(),
 																					vi, ia, vs, rs, ms, ds, cb, dy,
-																					dynamic_cast<VulkanRootSignature*>(graphicsDesc.RootSignature.get())->GetVkPipelineLayout(),
+																					std::dynamic_pointer_cast<VulkanRootSignature>(graphicsDesc.RootSignature)->GetVkPipelineLayout(),
 																					renderPass->GetVkRenderPass()
 		);
 		if (static_cast<uint32_t>(shaderProgram->GetShaderStages() & RendererAPI::ShaderStage::TessellationControl) &&
 			static_cast<uint32_t>(shaderProgram->GetShaderStages() & RendererAPI::ShaderStage::TessellationEvaluation))
 			info.pTessellationState = &ts;
 
+		if(VulkanRenderer::s_shadingRate) //Only use shading rate extension if supported
+			info.pNext = &fsr; //Add shading rate extension
+
 		VkCall(vkCreateGraphicsPipelines(m_device->GetVkDevice(), psoCache, 1, &info, nullptr, &m_vkPipeline));
+		TRAP_ASSERT(m_vkPipeline, "VulkanPipeline::InitComputePipeline(): Vulkan Pipeline is nullptr!");
 
 		renderPass.reset();
 	}
@@ -341,15 +378,19 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipeline TRAP::Graphics::API::VulkanPipeline::GetVkPipeline() const
+[[nodiscard]] VkPipeline TRAP::Graphics::API::VulkanPipeline::GetVkPipeline() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_vkPipeline;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::API::VulkanPipeline::GetPipelineType() const
+[[nodiscard]] TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::API::VulkanPipeline::GetPipelineType() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_type;
 }
 
@@ -357,6 +398,8 @@ TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::API::VulkanPipeline::G
 
 void TRAP::Graphics::API::VulkanPipeline::SetPipelineName(const std::string_view name) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	if(!VulkanRenderer::s_debugMarkerSupport)
 		return;
 

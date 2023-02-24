@@ -7,6 +7,7 @@
 #include "VulkanCommandSignature.h"
 #include "VulkanQueryPool.h"
 #include "VulkanPhysicalDevice.h"
+#include "VulkanRenderPass.h"
 #include "VulkanBuffer.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/Textures/Texture.h"
@@ -20,13 +21,14 @@
 
 TRAP::Graphics::API::VulkanCommandBuffer::~VulkanCommandBuffer()
 {
-	TRAP_ASSERT(m_vkCommandBuffer);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandBufferPrefix, "Destroying CommandBuffer");
 #endif
 
-	vkFreeCommandBuffers(m_device->GetVkDevice(), m_vkCommandPool, 1, &m_vkCommandBuffer);
+	if(m_device && m_vkCommandBuffer && m_vkCommandPool)
+		vkFreeCommandBuffers(m_device->GetVkDevice(), m_vkCommandPool, 1, &m_vkCommandBuffer);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -40,9 +42,13 @@ TRAP::Graphics::API::VulkanCommandBuffer::VulkanCommandBuffer(TRAP::Ref<VulkanDe
 	  m_activeRenderPass(VK_NULL_HANDLE),
 	  m_boundPipelineLayout(VK_NULL_HANDLE)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	m_queue = std::move(queue);
 
-	TRAP_ASSERT(m_device, "device is nullptr");
+	TRAP_ASSERT(m_device, "VulkanCommandBuffer(): Vulkan Device is nullptr");
+	TRAP_ASSERT(m_queue, "VulkanCommandBuffer(): Queue is nullptr");
+	TRAP_ASSERT(m_vkCommandPool, "VulkanCommandBuffer(): Vulkan CommandPool is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandBufferPrefix, "Creating CommandBuffer");
@@ -51,41 +57,50 @@ TRAP::Graphics::API::VulkanCommandBuffer::VulkanCommandBuffer(TRAP::Ref<VulkanDe
 	const VkCommandBufferAllocateInfo info = VulkanInits::CommandBufferAllocateInfo(commandPool, secondary);
 
 	VkCall(vkAllocateCommandBuffers(m_device->GetVkDevice(), &info, &m_vkCommandBuffer));
+	TRAP_ASSERT(m_vkCommandBuffer, "VulkanCommandBuffer(): Vulkan CommandBuffer is nullptr!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkCommandBuffer TRAP::Graphics::API::VulkanCommandBuffer::GetVkCommandBuffer() const
+[[nodiscard]] VkCommandBuffer TRAP::Graphics::API::VulkanCommandBuffer::GetVkCommandBuffer() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_vkCommandBuffer;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::QueueType TRAP::Graphics::API::VulkanCommandBuffer::GetQueueType() const
+[[nodiscard]] TRAP::Graphics::RendererAPI::QueueType TRAP::Graphics::API::VulkanCommandBuffer::GetQueueType() const
 {
-	return dynamic_cast<VulkanQueue*>(m_queue.get())->GetQueueType();
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	return std::dynamic_pointer_cast<VulkanQueue>(m_queue)->GetQueueType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::VulkanCommandBuffer::IsSecondary() const
+[[nodiscard]] bool TRAP::Graphics::API::VulkanCommandBuffer::IsSecondary() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_secondary;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstants(const TRAP::Ref<RootSignature>& rootSignature,
-                                                                 const char* name, const void* constants) const
+                                                                 const char* const name, const void* const constants) const
 {
-	TRAP_ASSERT(constants);
-	TRAP_ASSERT(rootSignature);
-	TRAP_ASSERT(name);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	VulkanRootSignature* rSig = dynamic_cast<VulkanRootSignature*>(rootSignature.get());
+	TRAP_ASSERT(constants, "VulkanCommandBuffer::BindPushConstants(): Constants is nullptr");
+	TRAP_ASSERT(rootSignature, "VulkanCommandBuffer::BindPushConstants(): RootSignature is nullptr");
+	TRAP_ASSERT(name, "VulkanCommandBuffer::BindPushConstants(): Name is nullptr");
 
-	const RendererAPI::DescriptorInfo* desc = rSig->GetDescriptor(name);
+	const Ref<VulkanRootSignature> rSig = std::dynamic_pointer_cast<VulkanRootSignature>(rootSignature);
+
+	const RendererAPI::DescriptorInfo* const desc = rSig->GetDescriptor(name);
 
 	if(!desc)
 	{
@@ -93,7 +108,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstants(const TRAP::Ref
 		return;
 	}
 
-	TRAP_ASSERT(desc->Type == RendererAPI::DescriptorType::RootConstant);
+	TRAP_ASSERT(desc->Type == RendererAPI::DescriptorType::RootConstant, "VulkanCommandBuffer::BindPushConstants(): Descriptor is not a RootConstant!");
 
 	vkCmdPushConstants(m_vkCommandBuffer, rSig->GetVkPipelineLayout(), desc->VkStages, 0, desc->Size, constants);
 }
@@ -102,13 +117,15 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstants(const TRAP::Ref
 
 void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstantsByIndex(const TRAP::Ref<RootSignature>& rootSignature,
 	                                                                    const uint32_t paramIndex,
-																		const void* constants) const
+																		const void* const constants) const
 {
-	TRAP_ASSERT(constants);
-	TRAP_ASSERT(rootSignature);
-	TRAP_ASSERT(paramIndex < rootSignature->GetDescriptorCount());
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	const RendererAPI::DescriptorInfo* desc = &rootSignature->GetDescriptors()[paramIndex];
+	TRAP_ASSERT(constants, "VulkanCommandBuffer::BindPushConstantsByIndex(): Constants is nullptr");
+	TRAP_ASSERT(rootSignature, "VulkanCommandBuffer::BindPushConstantsByIndex(): RootSignature is nullptr");
+	TRAP_ASSERT(paramIndex < rootSignature->GetDescriptorCount(), "VulkanCommandBuffer::BindPushConstantsByIndex(): Index out of bounds!");
+
+	const RendererAPI::DescriptorInfo* const desc = &rootSignature->GetDescriptors()[paramIndex];
 
 	if(!desc)
 	{
@@ -116,10 +133,10 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstantsByIndex(const TR
 		return;
 	}
 
-	TRAP_ASSERT(desc->Type == RendererAPI::DescriptorType::RootConstant);
+	TRAP_ASSERT(desc->Type == RendererAPI::DescriptorType::RootConstant, "VulkanCommandBuffer::BindPushConstantsByIndex(): Descriptor is not a RootConstant!");
 
 	vkCmdPushConstants(m_vkCommandBuffer,
-	                   dynamic_cast<VulkanRootSignature*>(rootSignature.get())->GetVkPipelineLayout(),
+					   std::dynamic_pointer_cast<VulkanRootSignature>(rootSignature)->GetVkPipelineLayout(),
 					   desc->VkStages, 0, desc->Size, constants);
 }
 
@@ -127,11 +144,13 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstantsByIndex(const TR
 
 void TRAP::Graphics::API::VulkanCommandBuffer::BindDescriptorSet(const uint32_t index, DescriptorSet& descriptorSet)
 {
-	VulkanDescriptorSet* dSet = dynamic_cast<VulkanDescriptorSet*>(&descriptorSet);
-	TRAP_ASSERT(!dSet->GetVkDescriptorSets().empty());
-	TRAP_ASSERT(dSet->GetMaxSets() > index);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	const TRAP::Ref<VulkanRootSignature> rootSignature = dSet->GetRootSignature();
+	const VulkanDescriptorSet& dSet = dynamic_cast<VulkanDescriptorSet&>(descriptorSet);
+	TRAP_ASSERT(!dSet.GetVkDescriptorSets().empty(), "VulkanCommandBuffer::BindDescriptorSet(): DescriptorSet is empty!");
+	TRAP_ASSERT(dSet.GetMaxSets() > index, "VulkanCommandBuffer::BindDescriptorSet(): Index out of bounds!");
+
+	const TRAP::Ref<VulkanRootSignature> rootSignature = dSet.GetRootSignature();
 
 	if(m_boundPipelineLayout != rootSignature->GetVkPipelineLayout())
 	{
@@ -151,9 +170,9 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindDescriptorSet(const uint32_t 
 
 	vkCmdBindDescriptorSets(m_vkCommandBuffer,
 	                        VkPipelineBindPointTranslator[static_cast<uint32_t>(rootSignature->GetPipelineType())],
-	                        rootSignature->GetVkPipelineLayout(), dSet->GetSet(),
-	                        1, &dSet->GetVkDescriptorSets()[index], dSet->GetDynamicOffsetCount(),
-							dSet->GetDynamicOffsetCount() ? &dSet->GetDynamicSizeOffsets()[index].Offset : nullptr);
+	                        rootSignature->GetVkPipelineLayout(), dSet.GetSet(),
+	                        1, &dSet.GetVkDescriptorSets()[index], dSet.GetDynamicOffsetCount(),
+							dSet.GetDynamicOffsetCount() ? &dSet.GetDynamicSizeOffsets()[index].Offset : nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -162,12 +181,13 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindIndexBuffer(const TRAP::Ref<B
                                                                const RendererAPI::IndexType indexType,
 															   const uint64_t offset) const
 {
-	TRAP_ASSERT(buffer);
-	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(buffer, "VulkanCommandBuffer::BindIndexBuffer(): Index buffer is nullptr!");
 
 	const VkIndexType vkIndexType = ((RendererAPI::IndexType::UInt16 == indexType) ? VK_INDEX_TYPE_UINT16 :
 	                                                                                 VK_INDEX_TYPE_UINT32);
-	vkCmdBindIndexBuffer(m_vkCommandBuffer, dynamic_cast<VulkanBuffer*>(buffer.get())->GetVkBuffer(), offset,
+	vkCmdBindIndexBuffer(m_vkCommandBuffer, std::dynamic_pointer_cast<VulkanBuffer>(buffer)->GetVkBuffer(), offset,
 	                     vkIndexType);
 }
 
@@ -177,9 +197,10 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindVertexBuffer(const std::vecto
                                                                 const std::vector<uint32_t>& strides,
                                                                 const std::vector<uint64_t>& offsets) const
 {
-	TRAP_ASSERT(!buffers.empty());
-	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
-	TRAP_ASSERT(!strides.empty());
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(!buffers.empty(), "VulkanCommandBuffer::BindVertexBuffer(): Vertex buffers are empty!");
+	TRAP_ASSERT(!strides.empty(), "VulkanCommandBuffer::BindVertexBuffer(): Strides are empty!");
 
 	const uint32_t maxBuffers = RendererAPI::GPUSettings.MaxVertexInputBindings;
 	const uint32_t cappedBufferCount = buffers.size() > maxBuffers ? maxBuffers :
@@ -191,7 +212,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindVertexBuffer(const std::vecto
 
 	for(uint32_t i = 0; i < cappedBufferCount; ++i)
 	{
-		vkBuffers[i] = dynamic_cast<VulkanBuffer*>(buffers[i].get())->GetVkBuffer();
+		vkBuffers[i] = std::dynamic_pointer_cast<VulkanBuffer>(buffers[i])->GetVkBuffer();
 		vkOffsets[i] = (offsets.size() > i) ? offsets[i] : 0;
 	}
 
@@ -202,10 +223,11 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindVertexBuffer(const std::vecto
 
 void TRAP::Graphics::API::VulkanCommandBuffer::BindPipeline(const TRAP::Ref<Pipeline>& pipeline) const
 {
-	TRAP_ASSERT(pipeline);
-	TRAP_ASSERT(m_vkCommandBuffer);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	const VulkanPipeline* pipe = dynamic_cast<VulkanPipeline*>(pipeline.get());
+	TRAP_ASSERT(pipeline, "VulkanCommandBuffer::BindPipeline(): Pipeline is nullptr!");
+
+	const Ref<VulkanPipeline> pipe = std::dynamic_pointer_cast<VulkanPipeline>(pipeline);
 	const VkPipelineBindPoint pipelineBindPoint = VkPipelineBindPointTranslator[static_cast<uint32_t>(pipe->GetPipelineType())];
 	vkCmdBindPipeline(m_vkCommandBuffer, pipelineBindPoint, pipe->GetVkPipeline());
 }
@@ -214,13 +236,14 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPipeline(const TRAP::Ref<Pipe
 
 void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vector<TRAP::Ref<RenderTarget>>& renderTargets,
 																 const TRAP::Ref<RenderTarget>& depthStencil,
-																 const RendererAPI::LoadActionsDesc* loadActions,
-																 const std::vector<uint32_t>* colorArraySlices,
-																 const std::vector<uint32_t>* colorMipSlices,
+																 const RendererAPI::LoadActionsDesc* const loadActions,
+																 const std::vector<uint32_t>* const colorArraySlices,
+																 const std::vector<uint32_t>* const colorMipSlices,
 																 const uint32_t depthArraySlice,
-																 const uint32_t depthMipSlice)
+																 const uint32_t depthMipSlice,
+																 const TRAP::Ref<RenderTarget>& shadingRate)
 {
-	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	if(m_activeRenderPass)
 	{
@@ -246,7 +269,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 	//We hash the texture id associated with the RenderTarget to generate the FrameBuffer Hash.
 	for(std::size_t i = 0; i < renderTargets.size(); ++i)
 	{
-		const VulkanTexture* vkTex = dynamic_cast<VulkanTexture*>(renderTargets[i]->GetTexture());
+		const Ref<VulkanTexture> vkTex = std::dynamic_pointer_cast<VulkanTexture>(renderTargets[i]->GetTexture());
 		if(vkTex->IsLazilyAllocated())
 			colorStoreActions[i] = RendererAPI::StoreActionType::DontCare;
 		else if(loadActions)
@@ -261,13 +284,13 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		};
 
 		renderPassHash = HashAlg<uint32_t>(hashValues.data(), 4, renderPassHash);
-		const uint32_t ID = dynamic_cast<VulkanRenderTarget*>(renderTargets[i].get())->GetID();
+		const uint32_t ID = std::dynamic_pointer_cast<VulkanRenderTarget>(renderTargets[i])->GetID();
 		frameBufferHash = HashAlg<uint32_t>(&ID, 1, frameBufferHash);
 	}
 	if(depthStencil)
 	{
-		const VulkanRenderTarget* dStencil = dynamic_cast<VulkanRenderTarget*>(depthStencil.get());
-		const VulkanTexture* vkTex = dynamic_cast<VulkanTexture*>(dStencil->GetTexture());
+		const Ref<VulkanRenderTarget> dStencil = std::dynamic_pointer_cast<VulkanRenderTarget>(depthStencil);
+		const Ref<VulkanTexture> vkTex = std::dynamic_pointer_cast<VulkanTexture>(dStencil->GetTexture());
 
 		if(vkTex->IsLazilyAllocated())
 		{
@@ -292,7 +315,6 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		renderPassHash = HashAlg<uint32_t>(hashValues.data(), 6, renderPassHash);
 		const uint32_t ID = dStencil->GetID();
 		frameBufferHash = HashAlg<uint32_t>(&ID, 1, frameBufferHash);
-
 	}
 	if (colorArraySlices)
 		frameBufferHash = HashAlg<uint32_t>(colorArraySlices->data(), renderTargets.size(), frameBufferHash);
@@ -302,6 +324,15 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		frameBufferHash = HashAlg<uint32_t>(&depthArraySlice, 1, frameBufferHash);
 	if (depthMipSlice != std::numeric_limits<uint32_t>::max())
 		frameBufferHash = HashAlg<uint32_t>(&depthMipSlice, 1, frameBufferHash);
+	if(shadingRate)
+	{
+		const Ref<VulkanTexture> vkTex = std::dynamic_pointer_cast<VulkanTexture>(shadingRate);
+
+		uint32_t hashValue = static_cast<uint32_t>(shadingRate->GetImageFormat());
+		renderPassHash = HashAlg<uint32_t>(&hashValue, 1, renderPassHash);
+		const uint32_t ID = std::dynamic_pointer_cast<VulkanRenderTarget>(shadingRate)->GetID();
+		frameBufferHash = HashAlg<uint32_t>(&ID, 1, frameBufferHash);
+	}
 
 	RendererAPI::SampleCount sampleCount = RendererAPI::SampleCount::One;
 
@@ -321,6 +352,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 	{
 		std::array<TRAP::Graphics::API::ImageFormat, 8> colorFormats{};
 		TRAP::Graphics::API::ImageFormat depthStencilFormat = TRAP::Graphics::API::ImageFormat::Undefined;
+		TRAP::Graphics::API::ImageFormat shadingRateFormat = TRAP::Graphics::API::ImageFormat::Undefined;
 		for (uint32_t i = 0; i < renderTargets.size(); ++i)
 			colorFormats[i] = renderTargets[i]->GetImageFormat();
 		if (depthStencil)
@@ -330,12 +362,15 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		}
 		else if (!renderTargets.empty())
 			sampleCount = renderTargets[0]->GetSampleCount();
+		if(shadingRate)
+			shadingRateFormat = shadingRate->GetImageFormat();
 
 		VulkanRenderer::RenderPassDesc desc{};
 		desc.RenderTargetCount = static_cast<uint32_t>(renderTargets.size());
 		desc.SampleCount = sampleCount;
 		desc.ColorFormats = std::vector<TRAP::Graphics::API::ImageFormat>(colorFormats.begin(), colorFormats.end());
 		desc.DepthStencilFormat = depthStencilFormat;
+		desc.ShadingRateFormat = shadingRateFormat;
 		desc.LoadActionsColor = loadActions ?
 		                        std::vector<RendererAPI::LoadActionType>(loadActions->LoadActionsColor.begin(),
 								                                         loadActions->LoadActionsColor.end()) :
@@ -360,6 +395,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		VulkanRenderer::FrameBufferDesc desc{};
 		desc.RenderTargets = renderTargets;
 		desc.DepthStencil = depthStencil;
+		desc.ShadingRate = shadingRate;
 		desc.RenderPass = renderPass;
 		if(colorArraySlices)
 			desc.ColorArraySlices = *colorArraySlices;
@@ -385,16 +421,16 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 	{
 		for(std::size_t i = 0; i < renderTargets.size(); ++i)
 		{
-			const TRAP::Math::Vec4 clearColor = loadActions->ClearColorValues[i];
 			VkClearValue val{};
-			val.color = { {clearColor.x, clearColor.y, clearColor.z, clearColor.w} };
+			val.color = VulkanInits::ClearColorValue(loadActions->ClearColorValues[i], renderTargets[i]->GetImageFormat());
+
 			clearValues.push_back(val);
 		}
 		if(depthStencil)
 		{
 			VkClearValue val{};
-			val.depthStencil = { loadActions->ClearDepth,
-			                     loadActions->ClearStencil };
+			val.depthStencil = { loadActions->ClearDepthStencil.Depth,
+			                     loadActions->ClearDepthStencil.Stencil };
 			clearValues.push_back(val);
 		}
 	}
@@ -411,6 +447,10 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 
 void TRAP::Graphics::API::VulkanCommandBuffer::AddDebugMarker(const TRAP::Math::Vec3& color, const std::string_view name) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(name.empty(), "VulkanCommandBuffer::AddDebugMarker(): Name is empty!")
+
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	if(!VulkanRenderer::s_debugUtilsExtension)
 		return;
@@ -435,6 +475,10 @@ void TRAP::Graphics::API::VulkanCommandBuffer::AddDebugMarker(const TRAP::Math::
 
 void TRAP::Graphics::API::VulkanCommandBuffer::BeginDebugMarker(const TRAP::Math::Vec3& color, const std::string_view name) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(name.empty(), "VulkanCommandBuffer::BeginDebugMarker(): Name is empty!")
+
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	if(!VulkanRenderer::s_debugUtilsExtension)
 		return;
@@ -454,6 +498,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BeginDebugMarker(const TRAP::Math
 
 void TRAP::Graphics::API::VulkanCommandBuffer::EndDebugMarker() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	if(!VulkanRenderer::s_debugUtilsExtension)
 		return;
@@ -471,7 +517,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::EndDebugMarker() const
 
 void TRAP::Graphics::API::VulkanCommandBuffer::Begin()
 {
-	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	const VkCommandBufferBeginInfo beginInfo = VulkanInits::CommandBufferBeginInfo();
 
@@ -485,7 +531,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Begin()
 
 void TRAP::Graphics::API::VulkanCommandBuffer::End()
 {
-	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	if (m_activeRenderPass)
 		vkCmdEndRenderPass(m_vkCommandBuffer);
@@ -500,7 +546,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetViewport(const float x, const 
                                                            const float height, const float minDepth,
 														   const float maxDepth) const
 {
-	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	if (width == 0.0f || height == 0.0f)
 		return;
@@ -521,7 +567,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetViewport(const float x, const 
 void TRAP::Graphics::API::VulkanCommandBuffer::SetScissor(const uint32_t x, const uint32_t y, const uint32_t width,
                                                           const uint32_t height) const
 {
-	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	VkRect2D rect;
 	rect.offset.x = static_cast<int32_t>(x);
@@ -536,7 +582,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetScissor(const uint32_t x, cons
 
 void TRAP::Graphics::API::VulkanCommandBuffer::Draw(const uint32_t vertexCount, const uint32_t firstVertex) const
 {
-	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	vkCmdDraw(m_vkCommandBuffer, vertexCount, 1, firstVertex, 0);
 }
@@ -547,7 +593,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::DrawInstanced(const uint32_t vert
                                                              const uint32_t instanceCount,
                                                              const uint32_t firstInstance) const
 {
-	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	vkCmdDraw(m_vkCommandBuffer, vertexCount, instanceCount, firstVertex, firstInstance);
 }
@@ -557,7 +603,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::DrawInstanced(const uint32_t vert
 void TRAP::Graphics::API::VulkanCommandBuffer::DrawIndexed(const uint32_t indexCount, const uint32_t firstIndex,
                                                            const uint32_t firstVertex) const
 {
-	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	vkCmdDrawIndexed(m_vkCommandBuffer, indexCount, 1, firstIndex, static_cast<int32_t>(firstVertex), 0);
 }
@@ -570,7 +616,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::DrawIndexedInstanced(const uint32
                                                                     const uint32_t firstInstance,
                                                                     const uint32_t firstVertex) const
 {
-	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	vkCmdDrawIndexed(m_vkCommandBuffer, indexCount, instanceCount, firstIndex, static_cast<int32_t>(firstVertex), firstInstance);
 }
@@ -584,15 +630,20 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ExecuteIndirect(const TRAP::Ref<C
                                                                const TRAP::Ref<Buffer>& counterBuffer,
                                                                const uint64_t counterBufferOffset) const
 {
-	const VulkanBuffer* iBuffer = dynamic_cast<VulkanBuffer*>(indirectBuffer.get());
-	const VulkanCommandSignature* cSig = dynamic_cast<VulkanCommandSignature*>(cmdSignature.get());
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(cmdSignature, "VulkanCommandBuffer::ExecuteIndirect(): CommandSignature is nullptr!");
+	TRAP_ASSERT(indirectBuffer, "VulkanCommandBuffer::ExecuteIndirect(): IndirectBuffer is nullptr!");
+
+	const Ref<VulkanBuffer> iBuffer = std::dynamic_pointer_cast<VulkanBuffer>(indirectBuffer);
+	const Ref<VulkanCommandSignature> cSig = std::dynamic_pointer_cast<VulkanCommandSignature>(cmdSignature);
 
 	if (cSig->GetDrawType() == RendererAPI::IndirectArgumentType::IndirectDraw)
 	{
 		if (counterBuffer)
 		{
 			vkCmdDrawIndirectCountKHR(m_vkCommandBuffer, iBuffer->GetVkBuffer(), bufferOffset,
-				                      dynamic_cast<VulkanBuffer*>(counterBuffer.get())->GetVkBuffer(),
+				                      std::dynamic_pointer_cast<VulkanBuffer>(counterBuffer)->GetVkBuffer(),
 				                      counterBufferOffset, maxCommandCount, cSig->GetStride());
 		}
 		else
@@ -604,7 +655,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ExecuteIndirect(const TRAP::Ref<C
 		if (counterBuffer)
 		{
 			vkCmdDrawIndexedIndirectCountKHR(m_vkCommandBuffer, iBuffer->GetVkBuffer(), bufferOffset,
-				                             dynamic_cast<VulkanBuffer*>(counterBuffer.get())->GetVkBuffer(),
+				                             std::dynamic_pointer_cast<VulkanBuffer>(counterBuffer)->GetVkBuffer(),
 				                             counterBufferOffset, maxCommandCount, cSig->GetStride());
 		}
 		else
@@ -620,7 +671,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ExecuteIndirect(const TRAP::Ref<C
 void TRAP::Graphics::API::VulkanCommandBuffer::Dispatch(const uint32_t groupCountX, const uint32_t groupCountY,
                                                         const uint32_t groupCountZ) const
 {
-	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	vkCmdDispatch(m_vkCommandBuffer, groupCountX, groupCountY, groupCountZ);
 }
@@ -632,15 +683,17 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateBuffer(const TRAP::Ref<Buff
                                                             const TRAP::Ref<Buffer>& srcBuffer,
                                                             const uint64_t srcOffset, const uint64_t size) const
 {
-	const VulkanBuffer* sBuffer = dynamic_cast<VulkanBuffer*>(srcBuffer.get());
-	const VulkanBuffer* buf = dynamic_cast<VulkanBuffer*>(buffer.get());
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(srcBuffer);
-	TRAP_ASSERT(sBuffer->GetVkBuffer());
-	TRAP_ASSERT(buffer);
-	TRAP_ASSERT(buf->GetVkBuffer());
-	TRAP_ASSERT(srcOffset + size <= srcBuffer->GetSize());
-	TRAP_ASSERT(dstOffset + size <= buffer->GetSize());
+	const Ref<VulkanBuffer> sBuffer = std::dynamic_pointer_cast<VulkanBuffer>(srcBuffer);
+	const Ref<VulkanBuffer> buf = std::dynamic_pointer_cast<VulkanBuffer>(buffer);
+
+	TRAP_ASSERT(srcBuffer, "VulkanCommandBuffer::UpdateBuffer(): Source Buffer is nullptr!");
+	TRAP_ASSERT(sBuffer->GetVkBuffer(), "VulkanCommandBuffer::UpdateBuffer(): Source Vulkan Buffer is nullptr!");
+	TRAP_ASSERT(buffer, "VulkanCommandBuffer::UpdateBuffer(): Destination Buffer is nullptr!");
+	TRAP_ASSERT(buf->GetVkBuffer(), "VulkanCommandBuffer::UpdateBuffer(): Destination Vulkan Buffer is nullptr!");
+	TRAP_ASSERT(srcOffset + size <= srcBuffer->GetSize(), "VulkanCommandBuffer::UpdateBuffer(): Source Buffer out of bounds!");
+	TRAP_ASSERT(dstOffset + size <= buffer->GetSize(), "VulkanCommandBuffer::UpdateBuffer(): Destination Buffer out of bounds!");
 
 	VkBufferCopy region{};
 	region.srcOffset = srcOffset;
@@ -652,12 +705,14 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateBuffer(const TRAP::Ref<Buff
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(TRAP::Graphics::Texture* texture,
+void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(const TRAP::Graphics::Texture* const texture,
                                                                  const TRAP::Ref<Buffer>& srcBuffer,
                                                                  const RendererAPI::SubresourceDataDesc& subresourceDesc) const
 {
-	const VkBuffer buffer = dynamic_cast<VulkanBuffer*>(srcBuffer.get())->GetVkBuffer();
-	auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	const VkBuffer buffer = std::dynamic_pointer_cast<VulkanBuffer>(srcBuffer)->GetVkBuffer();
+	const auto* const vkTexture = dynamic_cast<const TRAP::Graphics::API::VulkanTexture*>(texture);
 
 	const TRAP::Graphics::API::ImageFormat fmt = texture->GetImageFormat();
 	if(TRAP::Graphics::API::ImageFormatIsSinglePlane(fmt))
@@ -723,11 +778,83 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(TRAP::Graphics:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanCommandBuffer::CopySubresource(const Buffer* const dstBuffer, const Texture* const texture,
+                                                               const RendererAPI::SubresourceDataDesc& subresourceDesc) const
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(dstBuffer, "VulkanCommandBuffer::CopySubresource(): Invalid Buffer!");
+	TRAP_ASSERT(texture, "VulkanCommandBuffer::CopySubresource(): Invalid Texture!");
+
+	const VulkanTexture* const vkTexture = dynamic_cast<const VulkanTexture*>(texture);
+	const VulkanBuffer* const vkBuffer = dynamic_cast<const VulkanBuffer*>(dstBuffer);
+
+	const ImageFormat format = texture->GetImageFormat();
+	const bool isSinglePlane = ImageFormatIsSinglePlane(format);
+
+	//TODO Currently all textures can only be single plane (as we dont support formats that have multiple textures inside)
+	if(isSinglePlane)
+	{
+		const uint32_t width = TRAP::Math::Max(1u, texture->GetWidth() >> subresourceDesc.MipLevel);
+		const uint32_t height = TRAP::Math::Max(1u, texture->GetHeight() >> subresourceDesc.MipLevel);
+		const uint32_t depth = TRAP::Math::Max(1u, texture->GetDepth() >> subresourceDesc.MipLevel);
+		const uint32_t numBlocksWide = subresourceDesc.RowPitch / (ImageFormatBitSizeOfBlock(format) >> 3u);
+		const uint32_t numBlocksHigh = (subresourceDesc.SlicePitch / subresourceDesc.RowPitch);
+
+		VkImageSubresourceLayers layers{};
+		layers.aspectMask = texture->GetAspectMask();
+		layers.mipLevel = subresourceDesc.MipLevel;
+		layers.baseArrayLayer = subresourceDesc.ArrayLayer;
+		layers.layerCount = 1;
+
+		const VkBufferImageCopy copy = VulkanInits::ImageCopy(subresourceDesc.SrcOffset,
+		                                                      numBlocksWide * ImageFormatWidthOfBlock(format),
+															  numBlocksHigh * ImageFormatHeightOfBlock(format),
+															  width, height, depth, layers);
+
+		vkCmdCopyImageToBuffer(m_vkCommandBuffer, vkTexture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+		                       vkBuffer->GetVkBuffer(), 1, &copy);
+	}
+	else
+	{
+		const uint32_t width = texture->GetWidth();
+		const uint32_t height = texture->GetHeight();
+		const uint32_t depth = texture->GetDepth();
+		const uint32_t numOfPlanes = ImageFormatNumOfPlanes(format);
+
+		uint64_t offset = subresourceDesc.SrcOffset;
+		std::vector<VkBufferImageCopy> bufferImageCopies(numOfPlanes);
+
+		for(uint32_t i = 0; i < numOfPlanes; ++i)
+		{
+			VkImageSubresourceLayers layers{};
+			layers.aspectMask = static_cast<VkImageAspectFlagBits>(VK_IMAGE_ASPECT_PLANE_0_BIT << i);
+			layers.mipLevel = subresourceDesc.MipLevel;
+			layers.baseArrayLayer = subresourceDesc.ArrayLayer;
+			layers.layerCount = 1;
+
+			bufferImageCopies[i] = VulkanInits::ImageCopy(offset, 0, 0,
+			                                              ImageFormatPlaneWidth(format, i, width),
+														  ImageFormatPlaneHeight(format, i, height),
+														  depth, layers);
+
+			offset += bufferImageCopies[i].imageExtent.width * bufferImageCopies[i].imageExtent.height *
+			          ImageFormatPlaneSizeOfBlock(format, i);
+		}
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanCommandBuffer::ResetQueryPool(const TRAP::Ref<QueryPool>& queryPool,
                                                               const uint32_t startQuery,
 															  const uint32_t queryCount) const
 {
-	vkCmdResetQueryPool(m_vkCommandBuffer, dynamic_cast<VulkanQueryPool*>(queryPool.get())->GetVkQueryPool(),
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(queryPool, "VulkanCommandBuffer::ResetQueryPool(): Invalid QueryPool!");
+
+	vkCmdResetQueryPool(m_vkCommandBuffer, std::dynamic_pointer_cast<VulkanQueryPool>(queryPool)->GetVkQueryPool(),
 	                    startQuery, queryCount);
 }
 
@@ -736,7 +863,11 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResetQueryPool(const TRAP::Ref<Qu
 void TRAP::Graphics::API::VulkanCommandBuffer::BeginQuery(const TRAP::Ref<QueryPool>& queryPool,
                                                           const RendererAPI::QueryDesc& desc) const
 {
-	const VulkanQueryPool* qPool = dynamic_cast<VulkanQueryPool*>(queryPool.get());
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(queryPool, "VulkanCommandBuffer::BeginQuery(): Invalid QueryPool!");
+
+	const Ref<VulkanQueryPool> qPool = std::dynamic_pointer_cast<VulkanQueryPool>(queryPool);
 
 	const VkQueryType type = qPool->GetVkQueryType();
 	switch(type)
@@ -747,7 +878,9 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BeginQuery(const TRAP::Ref<QueryP
 		break;
 
 	case VK_QUERY_TYPE_PIPELINE_STATISTICS:
+		[[fallthrough]];
 	case VK_QUERY_TYPE_OCCLUSION:
+		[[fallthrough]];
 	default:
 		break;
 	}
@@ -758,6 +891,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BeginQuery(const TRAP::Ref<QueryP
 void TRAP::Graphics::API::VulkanCommandBuffer::EndQuery(const TRAP::Ref<QueryPool>& queryPool,
                                                         const RendererAPI::QueryDesc& desc) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	BeginQuery(queryPool, desc);
 }
 
@@ -768,22 +903,30 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResolveQuery(const TRAP::Ref<Quer
                                                             const uint32_t startQuery,
 															const uint32_t queryCount) const
 {
-	VkQueryResultFlags flags = VK_QUERY_RESULT_64_BIT;
-	flags |= VK_QUERY_RESULT_WAIT_BIT;
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(queryPool, "VulkanCommandBuffer::ResolveQuery(): Invalid QueryPool!");
+	TRAP_ASSERT(readBackBuffer, "VulkanCommandBuffer::ResolveQuery(): Invalid ReadBackBuffer!");
+
+	constexpr VkQueryResultFlags flags = VK_QUERY_RESULT_64_BIT | VK_QUERY_RESULT_WAIT_BIT;
 
 	vkCmdCopyQueryPoolResults(m_vkCommandBuffer,
-	                          dynamic_cast<VulkanQueryPool*>(queryPool.get())->GetVkQueryPool(),
+	                          std::dynamic_pointer_cast<VulkanQueryPool>(queryPool)->GetVkQueryPool(),
 	                          startQuery, queryCount,
-	                          dynamic_cast<VulkanBuffer*>(readBackBuffer.get())->GetVkBuffer(),
+	                          std::dynamic_pointer_cast<VulkanBuffer>(readBackBuffer)->GetVkBuffer(),
 	                          0, sizeof(uint64_t), flags);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector<RendererAPI::BufferBarrier>* bufferBarriers,
-	                                                           const std::vector<RendererAPI::TextureBarrier>* textureBarriers,
-	                                                           const std::vector<RendererAPI::RenderTargetBarrier>* renderTargetBarriers) const
+void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector<RendererAPI::BufferBarrier>* const bufferBarriers,
+	                                                           const std::vector<RendererAPI::TextureBarrier>* const textureBarriers,
+	                                                           const std::vector<RendererAPI::RenderTargetBarrier>* const renderTargetBarriers) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(bufferBarriers || textureBarriers || renderTargetBarriers, "VulkanCommandBuffer::ResourceBarrier(): No barrier specified!");
+
 	std::vector<VkImageMemoryBarrier> iBarriers;
 	std::size_t iBarriersCount = 0;
 	if (textureBarriers)
@@ -801,7 +944,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 	VkAccessFlags srcAccessFlags = 0;
 	VkAccessFlags dstAccessFlags = 0;
 
-	const VulkanQueue* queue = dynamic_cast<VulkanQueue*>(m_queue.get());
+	const Ref<VulkanQueue> queue = std::dynamic_pointer_cast<VulkanQueue>(m_queue);
 	if(bufferBarriers)
 	{
 		for (const auto& trans : *bufferBarriers)
@@ -831,7 +974,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 
 			if(bufferBarrier)
 			{
-				bufferBarrier->buffer = dynamic_cast<VulkanBuffer*>(buffer.get())->GetVkBuffer();
+				bufferBarrier->buffer = std::dynamic_pointer_cast<VulkanBuffer>(buffer)->GetVkBuffer();
 				bufferBarrier->size = VK_WHOLE_SIZE;
 				bufferBarrier->offset = 0;
 
@@ -861,8 +1004,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 	{
 		for (const auto& trans : *textureBarriers)
 		{
-			const TRAP::Graphics::Texture* texture = trans.Texture;
-			auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(trans.Texture);
+			const TRAP::Graphics::Texture* const texture = trans.Texture;
+			const auto* const vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(trans.Texture);
 			VkImageMemoryBarrier* imageBarrier = nullptr;
 
 			if (trans.CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
@@ -924,8 +1067,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 	{
 		for (const auto& trans : *renderTargetBarriers)
 		{
-			TRAP::Graphics::Texture* texture = dynamic_cast<VulkanRenderTarget*>(trans.RenderTarget.get())->m_texture.get();
-			auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture);
+			const Ref<TRAP::Graphics::Texture> texture = std::dynamic_pointer_cast<VulkanRenderTarget>(trans.RenderTarget)->m_texture;
+			const Ref<VulkanTexture> vkTexture = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(texture);
 			VkImageMemoryBarrier* imageBarrier = nullptr;
 
 			if (trans.CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
@@ -993,10 +1136,14 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const RendererAPI::BufferBarrier* bufferBarrier,
-	                                                           const RendererAPI::TextureBarrier* textureBarrier,
-	                                                           const RendererAPI::RenderTargetBarrier* renderTargetBarrier) const
+void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const RendererAPI::BufferBarrier* const bufferBarrier,
+	                                                           const RendererAPI::TextureBarrier* const textureBarrier,
+	                                                           const RendererAPI::RenderTargetBarrier* const renderTargetBarrier) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(bufferBarrier || textureBarrier || renderTargetBarrier, "VulkanCommandBuffer::ResourceBarrier(): No barrier specified!");
+
 	std::vector<VkImageMemoryBarrier> iBarriers;
 	std::size_t iBarriersCount = 0;
 	if (textureBarrier)
@@ -1011,7 +1158,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const RendererAPI
 	VkAccessFlags srcAccessFlags = 0;
 	VkAccessFlags dstAccessFlags = 0;
 
-	const VulkanQueue* queue = dynamic_cast<VulkanQueue*>(m_queue.get());
+	const Ref<VulkanQueue> queue = std::dynamic_pointer_cast<VulkanQueue>(m_queue);
 	if(bufferBarrier)
 	{
 		const TRAP::Ref<Buffer>& buffer = bufferBarrier->Buffer;
@@ -1034,7 +1181,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const RendererAPI
 			bBarrier.dstAccessMask = ResourceStateToVkAccessFlags(bufferBarrier->NewState);
 		}
 
-		bBarrier.buffer = dynamic_cast<VulkanBuffer*>(buffer.get())->GetVkBuffer();
+		bBarrier.buffer = std::dynamic_pointer_cast<VulkanBuffer>(buffer)->GetVkBuffer();
 		bBarrier.size = VK_WHOLE_SIZE;
 		bBarrier.offset = 0;
 
@@ -1060,8 +1207,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const RendererAPI
 
 	if(textureBarrier)
 	{
-		TRAP::Graphics::Texture* texture = textureBarrier->Texture;
-		auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture);
+		const TRAP::Graphics::Texture* const texture = textureBarrier->Texture;
+		const auto* const vkTexture = dynamic_cast<const TRAP::Graphics::API::VulkanTexture*>(texture);
 		VkImageMemoryBarrier* imageBarrier = nullptr;
 
 		if (textureBarrier->CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
@@ -1120,8 +1267,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const RendererAPI
 
 	if(renderTargetBarrier)
 	{
-		TRAP::Graphics::Texture* texture = dynamic_cast<VulkanRenderTarget*>(renderTargetBarrier->RenderTarget.get())->m_texture.get();
-		auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture);
+		const Ref<TRAP::Graphics::Texture> texture = std::dynamic_pointer_cast<VulkanRenderTarget>(renderTargetBarrier->RenderTarget)->m_texture;
+		const Ref<VulkanTexture> vkTexture = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(texture);
 		VkImageMemoryBarrier* imageBarrier = nullptr;
 
 		if (renderTargetBarrier->CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
@@ -1190,40 +1337,42 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const RendererAPI
 
 void TRAP::Graphics::API::VulkanCommandBuffer::SetStencilReferenceValue(const uint32_t val) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	vkCmdSetStencilReference(m_vkCommandBuffer, VK_STENCIL_FRONT_AND_BACK, val);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanCommandBuffer::SetShadingRate(const RendererAPI::ShadingRate rate,
-															  Texture* /*texture*/,
 															  const RendererAPI::ShadingRateCombiner postRasterizerState,
 															  const RendererAPI::ShadingRateCombiner finalRate) const
 {
-	//Texture would be used for https://www.khronos.org/registry/vulkan/specs/1.3-extensions/html/vkspec.html#primsrast-fragment-shading-rate-attachment
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps), "Shading rate is not supported!");
+	TRAP_ASSERT(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps), "VulkanCommandBuffer::SetShadingRate(): Shading rate is not supported by this device!");
+
 	if(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps) == 0) //VRS is not supported
 		return;
 
-	if(static_cast<bool>(RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerDraw))
+	const std::array<VkFragmentShadingRateCombinerOpKHR, 2> combiner
 	{
-		const std::array<VkFragmentShadingRateCombinerOpKHR, 2> combiner
-		{
-			ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(postRasterizerState),
-			ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(finalRate)
-		};
-		const VkExtent2D fragmentSize = ShadingRateToVkExtent2D(rate);
+		ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(postRasterizerState),
+		ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(finalRate)
+	};
 
-		vkCmdSetFragmentShadingRateKHR(m_vkCommandBuffer, &fragmentSize, combiner.data());
-	}
+	const VkExtent2D fragmentSize = ShadingRateToVkExtent2D(rate);
+
+	vkCmdSetFragmentShadingRateKHR(m_vkCommandBuffer, &fragmentSize, combiner.data());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const TRAP::Math::Vec4 color, const uint32_t width,
+void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const RendererAPI::Color& color, const uint32_t width,
 													 const uint32_t height) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	VkClearRect rect;
 	VkRect2D r;
 	r.offset.x = 0;
@@ -1237,7 +1386,15 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const TRAP::Math::Vec4 colo
 	VkClearAttachment attachment;
 	attachment.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 	attachment.colorAttachment = 0;
-	attachment.clearValue.color = {{color.x, color.y, color.z, color.w}};
+	attachment.clearValue.color =
+	{
+		{
+			static_cast<float>(color.Red),
+			static_cast<float>(color.Green),
+			static_cast<float>(color.Blue),
+			static_cast<float>(color.Alpha)
+		}
+	};
 
 	vkCmdClearAttachments(m_vkCommandBuffer, 1, &attachment, 1, &rect);
 }
@@ -1247,6 +1404,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const TRAP::Math::Vec4 colo
 void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const float depth, const uint32_t stencil,
  												     const uint32_t width, const uint32_t height) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	VkClearRect rect;
 	VkRect2D r;
 	r.offset.x = 0;
@@ -1269,6 +1428,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const float depth, const ui
 
 void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const float depth, const uint32_t width, const uint32_t height) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	VkClearRect rect;
 	VkRect2D r;
 	r.offset.x = 0;
@@ -1292,6 +1453,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const float depth, const ui
 void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const uint32_t stencil, const uint32_t width,
                                                      const uint32_t height) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	VkClearRect rect;
 	VkRect2D r;
 	r.offset.x = 0;
@@ -1305,18 +1468,23 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const uint32_t stencil, con
 	VkClearAttachment attachment;
 	attachment.aspectMask = VK_IMAGE_ASPECT_STENCIL_BIT;
 	attachment.colorAttachment = 0;
-	attachment.clearValue.depthStencil = { 1.0f, stencil };
+	attachment.clearValue.depthStencil = { 0.0f, stencil };
 
 	vkCmdClearAttachments(m_vkCommandBuffer, 1, &attachment, 1, &rect);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::ResolveImage(TRAP::Graphics::API::VulkanTexture* srcImage,
+void TRAP::Graphics::API::VulkanCommandBuffer::ResolveImage(Ref<TRAP::Graphics::API::VulkanTexture> srcImage,
 															const RendererAPI::ResourceState srcState,
-															TRAP::Graphics::API::VulkanTexture* dstImage,
+															Ref<TRAP::Graphics::API::VulkanTexture> dstImage,
 															const RendererAPI::ResourceState dstState) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(srcImage, "VulkanCommandBuffer::ResolveImage(): Invalid Source Image!");
+	TRAP_ASSERT(dstImage, "VulkanCommandBuffer::ResolveImage(): Invalid Destination Image!");
+
 	VkImageResolve imageResolve{};
 	imageResolve.srcSubresource = {srcImage->GetAspectMask(), 0, 0, 1};
 	imageResolve.dstSubresource = {dstImage->GetAspectMask(), 0, 0, 1};
@@ -1328,7 +1496,9 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResolveImage(TRAP::Graphics::API:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkRenderPass TRAP::Graphics::API::VulkanCommandBuffer::GetActiveVkRenderPass() const
+[[nodiscard]] VkRenderPass TRAP::Graphics::API::VulkanCommandBuffer::GetActiveVkRenderPass() const noexcept
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_activeRenderPass;
 }
