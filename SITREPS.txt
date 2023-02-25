@@ -3659,3 +3659,8 @@ SITREP 02/17/2023|23w07c1
     - Changed TRAP Engine version to 23w07c1(0.8.95)
     - Updated TRAP.gif animation ~<5 mins
     - Updated VulkanLoader generator script ~<10 mins
+
+SITREP 02/25/2022|23w08a1
+    - Changed TRAP Engine version to 23w08a1(0.8.96)
+    - Branch wayland:
+        - ImGuiLayer disabled Multi-Viewport support when compiling with Wayland support enabled ~<5 mins
