@@ -2754,10 +2754,12 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeWayland(InternalWindow* 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizableWayland(InternalWindow* /*window*/, const bool /*enabled*/)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizableWayland(InternalWindow* window, const bool enabled)
 {
-    //TODO
-    InputError(Error::Feature_Unimplemented, "[Wayland] Window attribute settings not implemented yet");
+    if(enabled)
+        PlatformSetWindowSizeLimitsWayland(window, window->MinWidth, window->MinHeight, window->MaxWidth, window->MaxHeight);
+    else
+        PlatformSetWindowSizeLimitsWayland(window, window->Width, window->Height, window->Width, window->Height);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
