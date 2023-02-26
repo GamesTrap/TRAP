@@ -53,6 +53,7 @@ They are provided in the TRAP™ repository.
 - [GLSLang](https://github.com/GamesTrap/glslang)
 - [ImGui](https://github.com/GamesTrap/imgui)
 - [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo)
+- [LibDecor](https://gitlab.freedesktop.org/libdecor/libdecor) - Linux Wayland client-side decorations
 - [LodePNG](https://github.com/lvandeve/lodepng) integrated as TRAP::INTERNAL::PNGImage and TRAP::Utils::Decompress::Inflate()
 - [ModernDialogs](https://github.com/GamesTrap/ModernDialogs)
 - [PlatformFolders](https://github.com/sago007/PlatformFolders) partially integrated as part of TRAP::FileSystem

@@ -536,6 +536,30 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::INTERNAL::WindowingAPI::PlatformWaitEvents(const double timeout)
+{
+    TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
+
+    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
+        PlatformWaitEventsX11(timeout);
+    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+        PlatformWaitEventsWayland(timeout);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformPostEmptyEvent()
+{
+    TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
+
+    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
+        PlatformPostEmptyEventX11();
+    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+        PlatformPostEmptyEventWayland();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::INTERNAL::WindowingAPI::PlatformWindowFocused(const InternalWindow* window)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");

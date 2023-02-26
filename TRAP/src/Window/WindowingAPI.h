@@ -88,19 +88,40 @@ namespace TRAP::INTERNAL
 		struct VkWaylandSurfaceCreateInfoKHR;
 		struct VkXlibSurfaceCreateInfoKHR;
 		struct VkXcbSurfaceCreateInfoKHR;
-		//---------//
+		//-------//
 		//Windows//
-		//---------//
+		//-------//
 #ifdef TRAP_PLATFORM_WINDOWS
 		enum class Monitor_DPI_Type;
 		enum class Process_DPI_Awareness;
+		//-----//
+		//Linux//
+		//-----//
 #elif defined(TRAP_PLATFORM_LINUX)
 		struct xcb_connection_t;
 		using xcb_window_t = XID;
 		using xcb_visualid_t = XID;
+
 		struct wl_cursor_theme;
 		struct wl_cursor_image;
 		struct wl_cursor;
+
+		struct DBusError;
+		struct DBusMessageIter;
+		struct DBusConnection;
+		struct DBusMessage;
+		enum class DBusBusType;
+		using dbus_bool_t = uint32_t;
+		using dbus_uint32_t = uint32_t;
+
+		struct libdecor;
+		struct libdecor_frame;
+		struct libdecor_state;
+		struct libdecor_configuration;
+		struct libdecor_interface;
+		struct libdecor_frame_interface;
+		enum class libdecor_capabilities;
+		enum class libdecor_window_state;
 #endif
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Typedefs-----------------------------------------------------------------------------------------------------------//
@@ -431,47 +452,6 @@ namespace TRAP::INTERNAL
 		using PFN_XrmUniqueQuark = XrmQuark(*)();
 		using PFN_XUnregisterIMInstantiateCallback = int(*)(Display*, void*, char*, char*, XIDProc, XPointer);
 
-		typedef struct DBusConnection DBusConnection;
-		typedef struct DBusMessage DBusMessage;
-		typedef uint32_t dbus_bool_t;
-		typedef uint32_t dbus_uint32_t;
-		enum DBusBusType
-		{
-			DBUS_BUS_SESSION,
-			DBUS_BUS_SYSTEM,
-			DBUS_BUS_STARTER
-		};
-		struct DBusError
-		{
-			const char* name;
-			const char* message;
-			uint32_t dummy1 : 1;
-			uint32_t dummy2 : 1;
-			uint32_t dummy3 : 1;
-			uint32_t dummy4 : 1;
-			uint32_t dummy5 : 1;
-			void* padding1;
-		};
-		struct DBusMessageIter
-		{
-			void* dummy1;
-			void* dummy2;
-			dbus_uint32_t dummy3;
-			int32_t dummy4, dummy5, dummy6, dummy7, dummy8, dummy9, dummy10, dummy11;
-			int32_t pad1;
-			void* pad2;
-			void* pad3;
-		};
-		inline static constexpr uint32_t DBUS_NAME_FLAG_REPLACE_EXISTING = 0x2;
-		inline static constexpr uint32_t DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER = 1;
-		inline static constexpr uint32_t DBUS_TYPE_STRING = static_cast<uint32_t>('s');
-		inline static constexpr uint32_t DBUS_TYPE_ARRAY = static_cast<uint32_t>('a');
-		inline static constexpr uint32_t DBUS_TYPE_DICT_ENTRY = static_cast<uint32_t>('e');
-		inline static constexpr uint32_t DBUS_TYPE_VARIANT = static_cast<uint32_t>('v');
-		inline static constexpr uint32_t DBUS_TYPE_BOOLEAN = static_cast<uint32_t>('b');
-		inline static constexpr uint32_t DBUS_TYPE_DOUBLE = static_cast<uint32_t>('d');
-
-
 		//DBus
 		using PFN_DBusErrorInit = void(*)(DBusError*);
 		using PFN_DBusErrorIsSet = dbus_bool_t(*)(const DBusError*);
@@ -510,7 +490,9 @@ namespace TRAP::INTERNAL
 		using PFN_wl_proxy_marshal_constructor = wl_proxy*(*)(wl_proxy*, uint32_t, const wl_interface*, ...);
 		using PFN_wl_proxy_marshal_constructor_versioned = wl_proxy*(*)(wl_proxy*, uint32_t, const wl_interface*, uint32_t, ...);
 		using PFN_wl_proxy_get_user_data = void*(*)(wl_proxy*);
-		using PFN_wl_proxy_set_user_data = void*(*)(wl_proxy*, void*);
+		using PFN_wl_proxy_set_user_data = void(*)(wl_proxy*, void*);
+		using PFN_wl_proxy_set_tag = void(*)(wl_proxy*, const char* const*);
+		using PFN_wl_proxy_get_tag = const char* const*(*)(wl_proxy*);
 		using PFN_wl_proxy_get_version = uint32_t(*)(wl_proxy*);
 		using PFN_wl_proxy_marshal_flags = wl_proxy*(*)(wl_proxy*, uint32_t, const wl_interface*, uint32_t, uint32_t, ...);
 
@@ -544,6 +526,33 @@ namespace TRAP::INTERNAL
 		using PFN_xkb_compose_state_feed = xkb_compose_feed_result(*)(xkb_compose_state*, xkb_keysym_t);
 		using PFN_xkb_compose_state_get_status = xkb_compose_status(*)(xkb_compose_state*);
 		using PFN_xkb_compose_state_get_one_sym = xkb_keysym_t(*)(xkb_compose_state*);
+
+		//LibDecor
+		using PFN_libdecor_new = libdecor*(*)(wl_display*, const libdecor_interface*);
+		using PFN_libdecor_unref = void(*)(libdecor*);
+		using PFN_libdecor_get_fd = int32_t(*)(libdecor*);
+		using PFN_libdecor_dispatch = int32_t(*)(libdecor*, int32_t);
+		using PFN_libdecor_decorate = libdecor_frame*(*)(libdecor*, wl_surface*, const libdecor_frame_interface*, void*);
+		using PFN_libdecor_frame_unref = void(*)(libdecor_frame*);
+		using PFN_libdecor_frame_set_app_id = void(*)(libdecor_frame*, const char*);
+		using PFN_libdecor_frame_set_title = void(*)(libdecor_frame*, const char*);
+		using PFN_libdecor_frame_set_minimized = void(*)(libdecor_frame*);
+		using PFN_libdecor_frame_set_fullscreen = void(*)(libdecor_frame*, wl_output*);
+		using PFN_libdecor_frame_unset_fullscreen = void(*)(libdecor_frame*);
+		using PFN_libdecor_frame_map = void(*)(libdecor_frame*);
+		using PFN_libdecor_frame_commit = void(*)(libdecor_frame*, libdecor_state*, libdecor_configuration*);
+		using PFN_libdecor_frame_set_min_content_size = void(*)(libdecor_frame*, int32_t, int32_t);
+		using PFN_libdecor_frame_set_max_content_size = void(*)(libdecor_frame*, int32_t, int32_t);
+		using PFN_libdecor_frame_set_maximized = void(*)(libdecor_frame*);
+		using PFN_libdecor_frame_unset_maximized = void(*)(libdecor_frame*);
+		using PFN_libdecor_frame_set_capabilities = void(*)(libdecor_frame*, libdecor_capabilities);
+		using PFN_libdecor_frame_unset_capabilities = void(*)(libdecor_frame*, libdecor_capabilities);
+		using PFN_libdecor_frame_set_visibility = void(*)(libdecor_frame*, bool visible);
+		using PFN_libdecor_frame_get_xdg_toplevel = xdg_toplevel*(*)(libdecor_frame*);
+		using PFN_libdecor_configuration_get_content_size = bool(*)(libdecor_configuration*, libdecor_frame*, int32_t*, int32_t*);
+		using PFN_libdecor_configuration_get_window_state = bool(*)(libdecor_configuration*, libdecor_window_state*);
+		using PFN_libdecor_state_new = libdecor_state*(*)(int32_t, int32_t);
+		using PFN_libdecor_state_free = void(*)(libdecor_state*);
 #endif
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Enums--------------------------------------------------------------------------------------------------------------//
@@ -649,6 +658,44 @@ namespace TRAP::INTERNAL
 		};
 	#endif /*DPI_ENUMS_DECLARED*/
 #endif /*TRAP_PLATFORM_WINDOWS*/
+		//-----//
+		//Linux//
+		//-----//
+#ifdef TRAP_PLATFORM_LINUX
+		enum class DBusBusType
+		{
+			DBUS_BUS_SESSION,
+			DBUS_BUS_SYSTEM,
+			DBUS_BUS_STARTER
+		};
+
+		enum class libdecor_error
+		{
+			CompositorIncompatible,
+			InvalidFrameConfiguration,
+		};
+
+		enum class libdecor_window_state
+		{
+			None = 0,
+			Active = BIT(0),
+			Maximized = BIT(1),
+			Fullscreen = BIT(2),
+			TiledLeft = BIT(3),
+			TiledRight = BIT(4),
+			TiledTop = BIT(5),
+			TiledBottom = BIT(6),
+		};
+
+		enum class libdecor_capabilities
+		{
+			ActionMove = BIT(0),
+			ActionResize = BIT(1),
+			ActionMinimize = BIT(2),
+			ActionFullscreen = BIT(3),
+			ActionClose = BIT(4),
+		};
+#endif /*TRAP_PLATFORM_LINUX*/
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Constant Expressions-----------------------------------------------------------------------------------------------//
 		//-------------------------------------------------------------------------------------------------------------------//
@@ -664,6 +711,16 @@ namespace TRAP::INTERNAL
 		inline static constexpr uint32_t WM_COPYGLOBALDATA = 0x0049;
 	#endif /*WM_COPYGLOBALDATA*/
 #endif
+#ifdef TRAP_PLATFORM_LINUX
+		inline static constexpr uint32_t DBUS_NAME_FLAG_REPLACE_EXISTING = 0x2;
+		inline static constexpr uint32_t DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER = 1;
+		inline static constexpr uint32_t DBUS_TYPE_STRING = static_cast<uint32_t>('s');
+		inline static constexpr uint32_t DBUS_TYPE_ARRAY = static_cast<uint32_t>('a');
+		inline static constexpr uint32_t DBUS_TYPE_DICT_ENTRY = static_cast<uint32_t>('e');
+		inline static constexpr uint32_t DBUS_TYPE_VARIANT = static_cast<uint32_t>('v');
+		inline static constexpr uint32_t DBUS_TYPE_BOOLEAN = static_cast<uint32_t>('b');
+		inline static constexpr uint32_t DBUS_TYPE_DOUBLE = static_cast<uint32_t>('d');
+#endif /*TRAP_PLATFORM_LINUX*/
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Structs------------------------------------------------------------------------------------------------------------//
 		//-------------------------------------------------------------------------------------------------------------------//
@@ -677,6 +734,62 @@ namespace TRAP::INTERNAL
 			HWND hwnd;
 		};
 #elif defined(TRAP_PLATFORM_LINUX)
+		struct DBusError
+		{
+			const char* name;
+			const char* message;
+			uint32_t dummy1 : 1;
+			uint32_t dummy2 : 1;
+			uint32_t dummy3 : 1;
+			uint32_t dummy4 : 1;
+			uint32_t dummy5 : 1;
+			void* padding1;
+		};
+
+		struct DBusMessageIter
+		{
+			void* dummy1;
+			void* dummy2;
+			dbus_uint32_t dummy3;
+			int32_t dummy4, dummy5, dummy6, dummy7, dummy8, dummy9, dummy10, dummy11;
+			int32_t pad1;
+			void* pad2;
+			void* pad3;
+		};
+
+		struct libdecor_interface
+		{
+			void (*error)(libdecor*, libdecor_error, const char*);
+			void (*reserved0)(void);
+			void (*reserved1)(void);
+			void (*reserved2)(void);
+			void (*reserved3)(void);
+			void (*reserved4)(void);
+			void (*reserved5)(void);
+			void (*reserved6)(void);
+			void (*reserved7)(void);
+			void (*reserved8)(void);
+			void (*reserved9)(void);
+		};
+
+		struct libdecor_frame_interface
+		{
+			void (*configure)(libdecor_frame*, libdecor_configuration*, void*);
+			void (*close)(libdecor_frame*, void*);
+			void (*commit)(libdecor_frame*, void*);
+			void (*dismiss_popup)(libdecor_frame*, const char*, void*);
+			void (*reserved0)(void);
+			void (*reserved1)(void);
+			void (*reserved2)(void);
+			void (*reserved3)(void);
+			void (*reserved4)(void);
+			void (*reserved5)(void);
+			void (*reserved6)(void);
+			void (*reserved7)(void);
+			void (*reserved8)(void);
+			void (*reserved9)(void);
+		};
+
 		struct VkXlibSurfaceCreateInfoKHR
 		{
 			VkStructureType sType;
@@ -741,6 +854,12 @@ namespace TRAP::INTERNAL
 			wl_data_offer* offer;
 			bool text_plain_utf8;
 			bool text_uri_list;
+		};
+
+		struct TRAPScaleWayland
+		{
+			wl_output* output;
+			int32_t factor;
 		};
 #endif
 
@@ -1204,8 +1323,8 @@ namespace TRAP::INTERNAL
 				InternalWindow* DragFocus;
 				uint32_t DragSerial;
 
-				int32_t CompositorVersion;
-				int32_t SeatVersion;
+				std::string Tag;
+				const char* TagCStr;
 
 				wl_cursor_theme* CursorTheme;
 				wl_cursor_theme* CursorThemeHiDPI;
@@ -1287,6 +1406,8 @@ namespace TRAP::INTERNAL
 					PFN_wl_proxy_marshal_constructor_versioned ProxyMarshalConstructorVersioned;
 					PFN_wl_proxy_get_user_data ProxyGetUserData;
 					PFN_wl_proxy_set_user_data ProxySetUserData;
+					PFN_wl_proxy_get_tag ProxyGetTag;
+					PFN_wl_proxy_set_tag ProxySetTag;
 					PFN_wl_proxy_get_version ProxyGetVersion;
 					PFN_wl_proxy_marshal_flags ProxyMarshalFlags;
 				} WaylandClient;
@@ -1299,6 +1420,37 @@ namespace TRAP::INTERNAL
 					PFN_wl_cursor_theme_get_cursor ThemeGetCursor;
 					PFN_wl_cursor_image_get_buffer ImageGetBuffer;
 				} WaylandCursor;
+
+				struct
+				{
+					void* Handle;
+					libdecor* Context;
+					PFN_libdecor_new New;
+					PFN_libdecor_unref Unref;
+					PFN_libdecor_get_fd GetFD;
+					PFN_libdecor_dispatch Dispatch;
+					PFN_libdecor_decorate Decorate;
+					PFN_libdecor_frame_unref FrameUnref;
+					PFN_libdecor_frame_set_app_id FrameSetAppID;
+					PFN_libdecor_frame_set_title FrameSetTitle;
+					PFN_libdecor_frame_set_minimized FrameSetMinimized;
+					PFN_libdecor_frame_set_fullscreen FrameSetFullscreen;
+					PFN_libdecor_frame_unset_fullscreen FrameUnsetFullscreen;
+					PFN_libdecor_frame_map FrameMap;
+					PFN_libdecor_frame_commit FrameCommit;
+					PFN_libdecor_frame_set_min_content_size FrameSetMinContentSize;
+					PFN_libdecor_frame_set_max_content_size FrameSetMaxContentSize;
+					PFN_libdecor_frame_set_maximized FrameSetMaximized;
+					PFN_libdecor_frame_unset_maximized FrameUnsetMaximized;
+					PFN_libdecor_frame_set_capabilities FrameSetCapabilities;
+					PFN_libdecor_frame_unset_capabilities FrameUnsetCapabilities;
+					PFN_libdecor_frame_set_visibility FrameSetVisibility;
+					PFN_libdecor_frame_get_xdg_toplevel FrameGetXDGTopLevel;
+					PFN_libdecor_configuration_get_content_size ConfigurationGetContentSize;
+					PFN_libdecor_configuration_get_window_state ConfigurationGetWindowState;
+					PFN_libdecor_state_new StateNew;
+					PFN_libdecor_state_free StateFree;
+				} LibDecor;
 			} Wayland{};
 
 			struct dbus
@@ -1383,7 +1535,7 @@ namespace TRAP::INTERNAL
 				uint32_t Name;
 				int32_t X;
 				int32_t Y;
-				int32_t Scale;
+				int32_t ContentScale;
 			} Wayland;
 #endif
 		};
@@ -1535,11 +1687,17 @@ namespace TRAP::INTERNAL
 					uint32_t DecorationMode;
 				} XDG;
 
+				struct
+				{
+					libdecor_frame* Frame;
+					int32_t Mode;
+				} LibDecor;
+
 				std::string Title;
 				std::string AppID;
 
-				int32_t Scale;
-				std::vector<InternalMonitor*> Monitors;
+				int32_t ContentScale;
+				std::vector<TRAPScaleWayland> Scales;
 
 				zwp_relative_pointer_v1* RelativePointer;
 				zwp_locked_pointer_v1* LockedPointer;
@@ -3714,6 +3872,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="timeout">Maximum amount of time, in seconds, to wait.</param>
 		static void PlatformWaitEvents(double timeout);
+		static void PlatformWaitEventsX11(double timeout);
+		static void PlatformWaitEventsWayland(double timeout);
 		/// <summary>
 		/// This function posts an empty event from the current thread to the event queue,
 		/// causing WaitEvents to return.
@@ -3722,6 +3882,8 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function may be called from any thread.
 		/// </summary>
 		static void PlatformPostEmptyEvent();
+		static void PlatformPostEmptyEventX11();
+		static void PlatformPostEmptyEventWayland();
 		/// <summary>
 		/// This function returns whether the window is focused or not.
 		///
@@ -4755,6 +4917,22 @@ namespace TRAP::INTERNAL
 			RegistryHandleGlobalRemove
 		};
 
+		static void LibDecorHandleError(libdecor* context, libdecor_error error, const char* message);
+		inline static constexpr libdecor_interface LibDecorInterface
+		{
+			LibDecorHandleError,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr
+		};
+
 		static void WMBaseHandlePing(void* userData, xdg_wm_base* wmBase, uint32_t serial);
 		inline static constexpr xdg_wm_base_listener WMBaseListener
 		{
@@ -4918,11 +5096,33 @@ namespace TRAP::INTERNAL
 			nullptr
 		};
 
+
+		static void LibDecorFrameHandleConfigure(libdecor_frame* frame, libdecor_configuration* config, void* userData);
+		static void LibDecorFrameHandleClose(libdecor_frame* frame, void* userData);
+		static void LibDecorFrameHandleCommit(libdecor_frame* frame, void* userData);
+		static void LibDecorFrameHandleDismissPopup(libdecor_frame* frame, const char* seatName, void* userData);
+		inline static constexpr libdecor_frame_interface LibDecorFrameInterface
+		{
+			LibDecorFrameHandleConfigure,
+			LibDecorFrameHandleClose,
+			LibDecorFrameHandleCommit,
+			LibDecorFrameHandleDismissPopup,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+		};
+
 		static bool LoadCursorThemeWayland();
 		static std::string ReadDataOfferAsString(wl_data_offer* offer, const char* mimeType);
 		static bool FlushDisplay();
 		static void SetCursorWayland(InternalWindow* window, const std::string& name);
-		static InternalWindow* FindWindowFromDecorationSurface(wl_surface* surface, TRAPDecorationSideWayland& which);
 		static void InputTextWayland(InternalWindow* window, uint32_t scanCode);
 		static xkb_keysym_t ComposeSymbol(xkb_keysym_t sym);
 		static void UpdateContentScaleWayland(InternalWindow* window);
@@ -4934,11 +5134,13 @@ namespace TRAP::INTERNAL
 		static wl_buffer* CreateShmBufferWayland(const Image* image);
 		static int32_t CreateAnonymousFileWayland(off_t size);
 		static int32_t CreateTmpFileCloexec(char* tmpName);
-		static void CreateFallbackDecorationWayland(TRAPDecorationWayland& decoration, wl_surface* parent, wl_buffer* buffer, int32_t x, int32_t y, int32_t width, int32_t height);
+		static void CreateFallbackDecorationWayland(InternalWindow* window, TRAPDecorationWayland& decoration, wl_surface* parent, wl_buffer* buffer, int32_t x, int32_t y, int32_t width, int32_t height);
 		static void AcquireMonitorWayland(InternalWindow* window);
 		static void DestroyFallbackDecorationsWayland(InternalWindow* window);
 		static void DestroyFallbackDecorationWayland(TRAPDecorationWayland& decoration);
 		static void DestroyShellObjectsWayland(InternalWindow* window);
+		static bool CreateLibDecorFrame(InternalWindow* window);
+		static bool CreateXDGShellObjectsWayland(InternalWindow* window);
 		static bool CreateShellObjectsWayland(InternalWindow* window);
 		static bool CreateNativeSurfaceWayland(InternalWindow* window, WindowConfig& WNDConfig);
 		static void ConfinePointerWayland(InternalWindow* window);

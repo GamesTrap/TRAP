@@ -1929,7 +1929,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessX11(Interna
 
 			//Connect to session bus
 			s_Data.DBUS.ErrorInit(&s_Data.DBUS.Error);
-			s_Data.DBUS.Connection = s_Data.DBUS.BusGet(DBUS_BUS_SESSION, &s_Data.DBUS.Error);
+			s_Data.DBUS.Connection = s_Data.DBUS.BusGet(DBusBusType::DBUS_BUS_SESSION, &s_Data.DBUS.Error);
 
 			if(s_Data.DBUS.ErrorIsSet(&s_Data.DBUS.Error) || !s_Data.DBUS.Connection) //Check for errors
 			{
@@ -1996,7 +1996,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessX11(Interna
 
 			//Connect to session bus
 			s_Data.DBUS.ErrorInit(&s_Data.DBUS.Error);
-			s_Data.DBUS.Connection = s_Data.DBUS.BusGet(DBUS_BUS_SESSION, &s_Data.DBUS.Error);
+			s_Data.DBUS.Connection = s_Data.DBUS.BusGet(DBusBusType::DBUS_BUS_SESSION, &s_Data.DBUS.Error);
 
 			if(s_Data.DBUS.ErrorIsSet(&s_Data.DBUS.Error) || !s_Data.DBUS.Connection) //Check for errors
 			{
@@ -3136,7 +3136,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEventsX11()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformWaitEvents(double timeout)
+void TRAP::INTERNAL::WindowingAPI::PlatformWaitEventsX11(double timeout)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -3150,7 +3150,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformWaitEvents(double timeout)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformPostEmptyEvent()
+void TRAP::INTERNAL::WindowingAPI::PlatformPostEmptyEventX11()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
