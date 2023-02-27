@@ -3639,3 +3639,7 @@ SITREP 02/24/2023|23w08a1
     - Changed TRAP Engine version to 23w08a1(0.8.96)
     - WindowingAPIWin32 PlatformGetVideoModes() now always returns the currently used video mode ~<5 mins
     - WindowingAPIWin32 Updated dark/light mode handling ~>15 mins
+
+SITREP 02/27/2023|23w09a1
+    - Changed TRAP Engine version to 23w09a1(0.8.97)
+    - Update Tracy submodule ~<5 mins
