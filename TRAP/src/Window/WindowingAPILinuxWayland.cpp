@@ -2628,6 +2628,11 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdownWayland()
 {
     if(s_Data.Wayland.LibDecor.Context)
         s_Data.Wayland.LibDecor.Unref(s_Data.Wayland.LibDecor.Context);
+    if(s_Data.Wayland.LibDecor.Handle)
+    {
+        Utils::DynamicLoading::FreeLibrary(s_Data.Wayland.LibDecor.Handle);
+        s_Data.Wayland.LibDecor.Handle = nullptr;
+    }
 
     if(s_Data.Wayland.WaylandXKB.ComposeState)
         s_Data.Wayland.WaylandXKB.ComposeStateUnref(s_Data.Wayland.WaylandXKB.ComposeState);
