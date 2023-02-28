@@ -319,8 +319,8 @@ void TRAP::Graphics::API::VulkanSwapChain::DeInitSwapchain()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
-                                                                              const TRAP::Ref<Fence>& fence) const
+[[nodiscard]] std::optional<uint32_t> TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
+                                                                                             const TRAP::Ref<Fence>& fence) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -336,13 +336,12 @@ void TRAP::Graphics::API::VulkanSwapChain::DeInitSwapchain()
 		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<uint64_t>::max(),
 		                            VK_NULL_HANDLE, fen->GetVkFence(), &imageIndex);
 
-		//If SwapChain is out of date, let caller know by returning -1
-		if(res == VK_ERROR_OUT_OF_DATE_KHR)
+		if(res == VK_ERROR_OUT_OF_DATE_KHR || res == VK_SUBOPTIMAL_KHR)
 		{
 			const VkFence vkF = fen->GetVkFence();
 			VkCall(vkResetFences(m_device->GetVkDevice(), 1, &vkF));
 			fen->m_submitted = false;
-			return std::numeric_limits<uint32_t>::max();
+			return std::nullopt;
 		}
 
 		fen->m_submitted = true;
@@ -353,16 +352,18 @@ void TRAP::Graphics::API::VulkanSwapChain::DeInitSwapchain()
 		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<uint64_t>::max(),
 		                            sema->GetVkSemaphore(), VK_NULL_HANDLE, &imageIndex);
 
-		//If SwapChain is out of date, let caller know by returning -1
-		if(res == VK_ERROR_OUT_OF_DATE_KHR)
+		if(res == VK_ERROR_OUT_OF_DATE_KHR || res == VK_SUBOPTIMAL_KHR)
 		{
 			sema->m_signaled = false;
-			return std::numeric_limits<uint32_t>::max();
+			return std::nullopt;
 		}
 
 		VkCall(res);
 		sema->m_signaled = true;
 	}
+
+	if(imageIndex == std::numeric_limits<uint32_t>::max())
+		return std::nullopt;
 
 	return imageIndex;
 }

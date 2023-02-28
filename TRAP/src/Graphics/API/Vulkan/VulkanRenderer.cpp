@@ -169,7 +169,21 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerWindowData* c
 
 	//Start Recording
 #ifndef TRAP_HEADLESS_MODE
-	p->CurrentSwapChainImageIndex = p->SwapChain->AcquireNextImage(p->ImageAcquiredSemaphore, nullptr);
+	const std::optional<uint32_t> acquiredImage = p->SwapChain->AcquireNextImage(p->ImageAcquiredSemaphore, nullptr);
+
+	if(!acquiredImage)
+	{
+		//TODO Rebuild swapchain and try again, if that fails, quit
+
+		Utils::Dialogs::ShowMsgBox("Failed to acquire image", "Failed to acquire next swapchain image!\n"
+								   "Error code: 0x0014", Utils::Dialogs::Style::Error,
+								   Utils::Dialogs::Buttons::Quit);
+		TP_CRITICAL(Log::RendererPrefix, "Failed to acquire next swapchain image!");
+		TRAP::Application::Shutdown();
+		exit(0x0014);
+	}
+
+	p->CurrentSwapChainImageIndex = *acquiredImage;
 #else
 	p->CurrentSwapChainImageIndex = (p->CurrentSwapChainImageIndex + 1) % RendererAPI::ImageCount;
 #endif
