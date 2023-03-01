@@ -104,7 +104,7 @@ TRAP::Events::KeyTypeEvent::KeyTypeEvent(const uint32_t codePoint, TRAP::Window*
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window, "Events::KeyTypeEvent(): Window is nullptr!")
+	TRAP_ASSERT(window, "Events::KeyTypeEvent(): Window is nullptr!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

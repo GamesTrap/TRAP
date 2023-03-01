@@ -61,8 +61,8 @@ namespace TRAP::Graphics::API
 		void Wait() override;
 
 	private:
-		friend uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
-		                                                                       const TRAP::Ref<Fence>& fence) const;
+		friend std::optional<uint32_t> TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
+		                                                                                      const TRAP::Ref<Fence>& fence) const;
 
 		VkFence m_fence;
 		TRAP::Ref<VulkanDevice> m_device;

@@ -2,8 +2,6 @@
 #include "EntryPoint.h"
 #include "Core/PlatformDetection.h"
 
-void* p;
-
 int main(int32_t argc, char** argv)
 {
 #ifdef TRAP_PLATFORM_WINDOWS

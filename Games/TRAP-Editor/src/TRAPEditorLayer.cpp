@@ -11,8 +11,8 @@ TRAPEditorLayer::TRAPEditorLayer()
 	: Layer("TRAPEditorLayer"), m_iconPlay(nullptr), m_iconStop(nullptr),
 	  m_renderTargetLoadActions(), m_renderTargetDesc(),
 	  m_renderTarget(nullptr), m_viewportSize(), m_viewportBounds(), m_viewportFocused(false),
-	  m_viewportHovered(false), m_gizmoType(-1), m_allowViewportCameraEvents(false),
-	  m_editorCamera(45.0f, 16.0f / 9.0f, 0.1f),
+	  m_viewportHovered(false), m_gizmoType(ImGuizmo::OPERATION::TRANSLATE), m_enableGizmo(false),
+	  m_allowViewportCameraEvents(false), m_editorCamera(45.0f, 16.0f / 9.0f, 0.1f),
 	  m_startedCameraMovement(false), m_leftMouseBtnRepeatCount(0), m_entityChanged(false),
 	  m_mousePickBufferDesc(), m_mousePickBuffer(nullptr), m_IDRenderTarget(nullptr), m_activeScene(nullptr),
 	  m_editorScene(nullptr), m_sceneState(SceneState::Edit), m_showPhysicsColliders(false)
@@ -156,7 +156,7 @@ void TRAPEditorLayer::OnImGuiRender()
 
 	//Gizmos
 	TRAP::Entity selectedEntity = m_sceneGraphPanel.GetSelectedEntity();
-	if(selectedEntity && m_gizmoType != -1)
+	if(selectedEntity && m_enableGizmo)
 	{
 		//Camera
 		auto cameraEntity = m_activeScene->GetPrimaryCameraEntity(); //Run time camera
@@ -208,7 +208,7 @@ void TRAPEditorLayer::OnImGuiRender()
 			!TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Middle))
 		{
 			TRAP::Math::Vec3 position{}, rotation{}, scale{};
-			TRAP::Math::Decompose(transform, position, rotation, scale);
+			if(TRAP::Math::Decompose(transform, position, rotation, scale))
 			{
 				const TRAP::Math::Vec3 deltaRotation = rotation - tc.Rotation;
 				tc.Position = position;
@@ -507,22 +507,25 @@ bool TRAPEditorLayer::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 		//Gizmos
 		case TRAP::Input::Key::Q:
 		{
-				m_gizmoType = -1;
+			m_enableGizmo = false;
 			break;
 		}
 		case TRAP::Input::Key::W:
 		{
 			m_gizmoType = ImGuizmo::OPERATION::TRANSLATE;
+			m_enableGizmo = true;
 			break;
 		}
 		case TRAP::Input::Key::E:
 		{
 			m_gizmoType = ImGuizmo::OPERATION::ROTATE;
+			m_enableGizmo = true;
 			break;
 		}
 		case TRAP::Input::Key::R:
 		{
 			m_gizmoType = ImGuizmo::OPERATION::SCALE;
+			m_enableGizmo = true;
 			break;
 		}
 

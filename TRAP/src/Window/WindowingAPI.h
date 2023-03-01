@@ -94,6 +94,7 @@ namespace TRAP::INTERNAL
 #ifdef TRAP_PLATFORM_WINDOWS
 		enum class Monitor_DPI_Type;
 		enum class Process_DPI_Awareness;
+		enum class PreferredAppMode;
 		//-----//
 		//Linux//
 		//-----//
@@ -279,6 +280,10 @@ namespace TRAP::INTERNAL
 		using PFN_DwmFlush = HRESULT(WINAPI*)();
 		using PFN_DwmEnableBlurBehindWindow = HRESULT(WINAPI*)(HWND, const DWM_BLURBEHIND*);
 		using PFN_DwmSetWindowAttribute = HRESULT(WINAPI*)(HWND, DWORD, LPCVOID, DWORD);
+
+		//uxtheme.dll function pointer typedefs
+		using PFN_ShouldAppsUseDarkMode = BOOL(WINAPI*)();
+		using PFN_SetPreferredAppMode = PreferredAppMode(WINAPI*)(PreferredAppMode);
 
 		//shcore.dll function pointer typedefs
 		using PFN_SetProcessDPIAwareness = HRESULT(WINAPI*)(Process_DPI_Awareness);
@@ -657,6 +662,16 @@ namespace TRAP::INTERNAL
 			MDT_DEFAULT = MDT_Effective_DPI
 		};
 	#endif /*DPI_ENUMS_DECLARED*/
+
+		enum class PreferredAppMode
+		{
+			Default = 0,
+			AllowDark,
+			ForceDark,
+			ForceLight,
+
+			COUNT
+		};
 #endif /*TRAP_PLATFORM_WINDOWS*/
 		//-----//
 		//Linux//
@@ -970,6 +985,14 @@ namespace TRAP::INTERNAL
 				PFN_DwmEnableBlurBehindWindow EnableBlurBehindWindow = nullptr;
 				PFN_DwmSetWindowAttribute SetWindowAttribute = nullptr;
 			} DWMAPI_;
+
+			struct
+			{
+				HINSTANCE Instance = nullptr;
+				bool DarkModeAvailable = false;
+				PFN_ShouldAppsUseDarkMode ShouldAppsUseDarkMode = nullptr;
+				PFN_SetPreferredAppMode SetPreferredAppMode = nullptr;
+			} UXTheme;
 
 			struct
 			{
@@ -4507,6 +4530,11 @@ namespace TRAP::INTERNAL
 		/// <param name="xScale">X monitor content scale.</param>
 		/// <param name="yScale">Y monitor content scale.</param>
 		static void GetMonitorContentScaleWin32(HMONITOR handle, float& xScale, float& yScale);
+		/// <summary>
+		/// Update the theme of the given window.
+		/// </summary>
+		/// <param name="hWnd">Window to update theme for.</param>
+		static void UpdateTheme(HWND hWnd);
 		/// <summary>
 		/// Returns the window style for the specified window.
 		/// </summary>

@@ -45,8 +45,8 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] VkSemaphore GetVkSemaphore() const noexcept;
 
 	private:
-		friend uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
-		                                                                       const TRAP::Ref<Fence>& fence) const;
+		friend std::optional<uint32_t> TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
+		                                                                                      const TRAP::Ref<Fence>& fence) const;
 
 		VkSemaphore m_semaphore;
 

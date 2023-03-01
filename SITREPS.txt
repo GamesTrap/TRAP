@@ -3660,18 +3660,32 @@ SITREP 02/17/2023|23w07c1
     - Updated TRAP.gif animation ~<5 mins
     - Updated VulkanLoader generator script ~<10 mins
 
-SITREP 02/25/2022|23w08a1
+SITREP 02/24/2023|23w08a1
+    - Changed TRAP Engine version to 23w08a1(0.8.96)
+    - WindowingAPIWin32 PlatformGetVideoModes() now always returns the currently used video mode ~<5 mins
+    - WindowingAPIWin32 Updated dark/light mode handling ~>15 mins
+
+SITREP 02/25/2023|23w08a1
     - Changed TRAP Engine version to 23w08a1(0.8.96)
     - Branch wayland:
         - ImGuiLayer disabled Multi-Viewport support when compiling with Wayland support enabled ~<5 mins
         - WindowingAPILinuxWayland Implemented PlatformSetWindowResizableWayland() ~<5 mins
 
-SITREP 02/26/2022|23w08b1
+SITREP 02/26/2023|23w08b1
     - Changed TRAP Engine version to 23w08b1(0.8.97)
     - Branch wayland:
         - WindowingAPILinuxWayland Added support for libdecor client-side window decorations ~>120 mins
 
-SITREP 02/28/2022|23w08a1
-    - Changed TRAP Engine version to 23w09a1(0.8.98)
+SITREP 02/27/2023|23w09a1
+    - Changed TRAP Engine version to 23w09a1(0.8.97)
+    - Update Tracy submodule ~<5 mins
+
+SITREP 02/28/2023|23w09a2
+    - Changed TRAP Engine version to 23w09a2(0.8.98)
+    - VulkanRenderer Added shutdown if swapchain image acquire fails ~<10 mins
     - Branch wayland:
         - WindowingAPILinuxWayland Added missing libdecor.so unloading ~<5 mins
+
+SITREP 03/01/2023|23w09b1
+    - Changed TRAP Engine version to 23w09b1(0.8.99)
+    - VulkanRenderer StartGraphicRecording() now handles VulkanSwapChain::AcquireNextImage() failures ~<10 mins

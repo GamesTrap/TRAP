@@ -47,13 +47,18 @@ namespace TRAP::Graphics::API
 		/// <param name="signalSemaphore">Semaphore to signal when the image is ready to be presented.</param>
 		/// <param name="fence">Fence to wait for the image to be ready to be presented.</param>
 		/// <returns>Acuired image index.</returns>
-		[[nodiscard]] uint32_t AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
-		                                        const TRAP::Ref<Fence>& fence) const override;
+		[[nodiscard]] std::optional<uint32_t> AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
+		                                                       const TRAP::Ref<Fence>& fence) const override;
 
 		/// <summary>
-		/// Toggle Vsync on and off.
+		/// Toggle VSync on and off.
 		/// </summary>
 		void ToggleVSync() override;
+
+		/// <summary>
+		/// Updates the framebuffer size and recreates the swap chain.
+		/// </summary>
+		void UpdateFramebufferSize() override;
 
 		/// <summary>
 		/// Retrieve the Vulkan swap chain handle.

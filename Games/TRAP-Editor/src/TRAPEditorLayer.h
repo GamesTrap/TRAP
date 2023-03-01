@@ -56,6 +56,7 @@ private:
 
 	//Gizmo
 	int32_t m_gizmoType;
+	bool m_enableGizmo;
 	bool m_allowViewportCameraEvents;
 
 	//Editor Camera

@@ -2295,42 +2295,49 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdownX11()
 	{
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.X11.XCB.Handle);
 		s_Data.X11.XCB.Handle = nullptr;
+		s_Data.X11.XCB = {};
 	}
 
 	if(s_Data.X11.XCursor.Handle)
 	{
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.X11.XCursor.Handle);
 		s_Data.X11.XCursor.Handle = nullptr;
+		s_Data.X11.XCursor = {};
 	}
 
 	if(s_Data.X11.RandR.Handle)
 	{
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.X11.RandR.Handle);
 		s_Data.X11.RandR.Handle = nullptr;
+		s_Data.X11.RandR = {};
 	}
 
 	if(s_Data.X11.Xinerama.Handle)
 	{
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.X11.Xinerama.Handle);
 		s_Data.X11.Xinerama.Handle = nullptr;
+		s_Data.X11.Xinerama = {};
 	}
 
 	if(s_Data.X11.XRender.Handle)
 	{
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.X11.XRender.Handle);
 		s_Data.X11.XRender.Handle = nullptr;
+		s_Data.X11.XRender = {};
 	}
 
 	if(s_Data.X11.XI.Handle)
 	{
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.X11.XI.Handle);
 		s_Data.X11.XI.Handle = nullptr;
+		s_Data.X11.XI = {};
 	}
 
 	if(s_Data.X11.XLIB.Handle)
 	{
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.X11.XLIB.Handle);
 		s_Data.X11.XLIB.Handle = nullptr;
+		s_Data.X11.XLIB = {};
 	}
 
 	if(s_Data.DBUS.Handle)
@@ -2344,19 +2351,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdownX11()
 
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.DBUS.Handle);
 		s_Data.DBUS.Handle = nullptr;
-	}
-
-	if(s_Data.DBUS.Handle)
-	{
-		if(s_Data.DBUS.Connection)
-		{
-			// ::dbus_connection_close() //Do not do this for shared connection
-			s_Data.DBUS.ConnectionUnref(s_Data.DBUS.Connection); //Just unref the connection
-			s_Data.DBUS.Connection = nullptr;
-		}
-
-		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.DBUS.Handle);
-		s_Data.DBUS.Handle = nullptr;
+		s_Data.DBUS = {};
 	}
 
 	if(s_Data.EmptyEventPipe[0] || s_Data.EmptyEventPipe[1])
