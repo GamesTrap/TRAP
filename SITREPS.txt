@@ -3691,3 +3691,4 @@ SITREP 03/01/2023|23w09b1
     - VulkanRenderer StartGraphicRecording() now handles VulkanSwapChain::AcquireNextImage() failures ~<10 mins
     - Branch wayland:
         - WindowingAPILinuxWayland Added [[nodiscard]] attributes where applicable ~<15 mins
+        - WindowingAPILinuxWayland Added support for xdg_activation protocol ~>30 mins

@@ -49,7 +49,7 @@ public:
 		// PushLayer(std::make_unique<IcoSphereTests>());
 		// PushLayer(std::make_unique<ImageLoaderTests>());
 		// PushLayer(std::make_unique<InputLagTests>());
-		PushLayer(std::make_unique<MonitorTests>());
+		// PushLayer(std::make_unique<MonitorTests>());
 		// PushLayer(std::make_unique<MultiWindowTests>());
 		// PushLayer(std::make_unique<OpacityTests>());
 		// PushLayer(std::make_unique<RendererAPIInfo>());
@@ -62,7 +62,7 @@ public:
 		// PushLayer(std::make_unique<VRSTests>());
 		// PushLayer(std::make_unique<VulkanTextureTests>());
 		// PushLayer(std::make_unique<WindowStateTests>());
-		// PushLayer(std::make_unique<WindowFeaturesTests>());
+		PushLayer(std::make_unique<WindowFeaturesTests>());
 	}
 };
 

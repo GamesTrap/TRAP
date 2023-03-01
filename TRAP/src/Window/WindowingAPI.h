@@ -1336,6 +1336,7 @@ namespace TRAP::INTERNAL
 				zwp_relative_pointer_manager_v1* RelativePointerManager;
 				zwp_pointer_constraints_v1* PointerConstraints;
 				zwp_idle_inhibit_manager_v1* IdleInhibitManager;
+				xdg_activation_v1* ActivationManager;
 
 				std::vector<TRAPOfferWayland> Offers;
 
@@ -1727,6 +1728,8 @@ namespace TRAP::INTERNAL
 				zwp_confined_pointer_v1* ConfinedPointer;
 
 				zwp_idle_inhibitor_v1* IdleInhibitor;
+
+				xdg_activation_token_v1* ActivationToken;
 
 				struct
 				{
@@ -2943,7 +2946,7 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to request user attention for.</param>
-		static void RequestWindowAttention(const InternalWindow* window);
+		static void RequestWindowAttention(InternalWindow* window);
 		/// <summary>
 		/// This function hides the specified window if it was previously visible. If
 		/// the window is already hidden or is in full screen mode, this function
@@ -4130,9 +4133,9 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to request user attention for.</param>
-		static void PlatformRequestWindowAttention(const InternalWindow* window);
-		static void PlatformRequestWindowAttentionX11(const InternalWindow* window);
-		static void PlatformRequestWindowAttentionWayland(const InternalWindow* window);
+		static void PlatformRequestWindowAttention(InternalWindow* window);
+		static void PlatformRequestWindowAttentionX11(InternalWindow* window);
+		static void PlatformRequestWindowAttentionWayland(InternalWindow* window);
 		/// <summary>
 		/// This function hides the specified window if it was previously visible. If
 		/// the window is already hidden or is in full screen mode, this function
@@ -5072,6 +5075,12 @@ namespace TRAP::INTERNAL
 			XDGTopLevelHandleClose,
 			nullptr,
 			nullptr
+		};
+
+		static void XDGActivationHandleDone(void* userData, xdg_activation_token_v1* activationToken, const char* token);
+		inline static constexpr xdg_activation_token_v1_listener XDGActivationListener
+		{
+			XDGActivationHandleDone
 		};
 
 		static void XDGDecorationHandleConfigure(void* userData, zxdg_toplevel_decoration_v1* decoration, uint32_t mode);

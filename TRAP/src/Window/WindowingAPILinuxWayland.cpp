@@ -69,6 +69,10 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "wayland-idle-inhibit-unstable-v1-client-protocol-code.h"
 #undef types
 
+#define types _TRAP_xdg_activation_types
+#include "wayland-xdg-activation-v1-client-protocol-code.h"
+#undef types
+
 using namespace std::string_view_literals;
 
 static constexpr int32_t TRAP_BORDER_SIZE = 4;
@@ -344,6 +348,20 @@ void TRAP::INTERNAL::WindowingAPI::XDGSurfaceHandleConfigure(void* userData, xdg
             window->Wayland.Visible = true;
         }
     }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::XDGActivationHandleDone(void* userData, xdg_activation_token_v1* activationToken,
+                                                           const char* token)
+{
+    InternalWindow* window = static_cast<InternalWindow*>(userData);
+    if(activationToken != window->Wayland.ActivationToken)
+        return;
+
+    xdg_activation_v1_activate(s_Data.Wayland.ActivationManager, token, window->Wayland.Surface);
+    xdg_activation_token_v1_destroy(window->Wayland.ActivationToken);
+    window->Wayland.ActivationToken = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1097,6 +1115,8 @@ void TRAP::INTERNAL::WindowingAPI::RegistryHandleGlobal(void* /*userData*/, wl_r
         s_Data.Wayland.PointerConstraints = static_cast<zwp_pointer_constraints_v1*>(wl_registry_bind(registry, name, &zwp_pointer_constraints_v1_interface, 1));
     else if(interface == "zwp_idle_inhibit_manager_v1"sv)
         s_Data.Wayland.IdleInhibitManager = static_cast<zwp_idle_inhibit_manager_v1*>(wl_registry_bind(registry, name, &zwp_idle_inhibit_manager_v1_interface, 1));
+    else if(interface == "xdg_activation_v1"sv)
+        s_Data.Wayland.ActivationManager = static_cast<xdg_activation_v1*>(wl_registry_bind(registry, name, &xdg_activation_v1_interface, 1));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2597,6 +2617,9 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindowWayland(InternalWindow* 
     if(window == s_Data.Wayland.KeyboardFocus)
         s_Data.Wayland.KeyboardFocus = nullptr;
 
+    if(window->Wayland.ActivationToken)
+        xdg_activation_token_v1_destroy(window->Wayland.ActivationToken);
+
     if(window->Wayland.IdleInhibitor)
         zwp_idle_inhibitor_v1_destroy(window->Wayland.IdleInhibitor);
 
@@ -2699,6 +2722,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdownWayland()
         zwp_pointer_constraints_v1_destroy(s_Data.Wayland.PointerConstraints);
     if(s_Data.Wayland.IdleInhibitManager)
         zwp_idle_inhibit_manager_v1_destroy(s_Data.Wayland.IdleInhibitManager);
+    if(s_Data.Wayland.ActivationManager)
+        xdg_activation_v1_destroy(s_Data.Wayland.ActivationManager);
     if(s_Data.Wayland.Registry)
         wl_registry_destroy(s_Data.Wayland.Registry);
     if(s_Data.Wayland.DisplayWL)
@@ -2747,7 +2772,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShowWindowWayland(InternalWindow* win
 
 void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindowWayland(const InternalWindow* /*window*/)
 {
-    InputError(Error::Feature_Unavailable, "[Wayland] The platform doesn not support setting the input focus");
+    InputError(Error::Feature_Unavailable, "[Wayland] The platform does not support setting the input focus");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3405,10 +3430,18 @@ void TRAP::INTERNAL::WindowingAPI::PlatformMinimizeWindowWayland(const InternalW
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformRequestWindowAttentionWayland(const InternalWindow* /*window*/)
+void TRAP::INTERNAL::WindowingAPI::PlatformRequestWindowAttentionWayland(InternalWindow* window)
 {
-    //TODO
-    InputError(Error::Feature_Unimplemented, "[Wayland] Window attention request not implemented yet");
+    if(!s_Data.Wayland.ActivationManager)
+        return;
+
+    if(window->Wayland.ActivationToken) //We're about to overwrite this with a new request
+        xdg_activation_token_v1_destroy(window->Wayland.ActivationToken);
+
+    window->Wayland.ActivationToken = xdg_activation_v1_get_activation_token(s_Data.Wayland.ActivationManager);
+    xdg_activation_token_v1_add_listener(window->Wayland.ActivationToken, &XDGActivationListener, window);
+
+    xdg_activation_token_v1_commit(window->Wayland.ActivationToken);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

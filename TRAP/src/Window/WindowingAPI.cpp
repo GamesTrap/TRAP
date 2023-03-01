@@ -2029,7 +2029,7 @@ void TRAP::INTERNAL::WindowingAPI::MinimizeWindow(const InternalWindow* const wi
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Requests user attention to the specified window.
-void TRAP::INTERNAL::WindowingAPI::RequestWindowAttention(const InternalWindow* const window)
+void TRAP::INTERNAL::WindowingAPI::RequestWindowAttention(InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
