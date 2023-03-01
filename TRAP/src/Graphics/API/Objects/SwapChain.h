@@ -70,6 +70,11 @@ namespace TRAP::Graphics
 		/// </summary>
 		virtual void ToggleVSync() = 0;
 
+		/// <summary>
+		/// Updates the framebuffer size and recreates the swap chain.
+		/// </summary>
+		virtual void UpdateFramebufferSize() = 0;
+
 	protected:
 		/// <summary>
 		/// Constructor.

@@ -51,9 +51,14 @@ namespace TRAP::Graphics::API
 		                                                       const TRAP::Ref<Fence>& fence) const override;
 
 		/// <summary>
-		/// Toggle Vsync on and off.
+		/// Toggle VSync on and off.
 		/// </summary>
 		void ToggleVSync() override;
+
+		/// <summary>
+		/// Updates the framebuffer size and recreates the swap chain.
+		/// </summary>
+		void UpdateFramebufferSize() override;
 
 		/// <summary>
 		/// Retrieve the Vulkan swap chain handle.

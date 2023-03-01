@@ -23,6 +23,7 @@ TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc
 
 	TRAP_ASSERT(m_device, "VulkanSwapChain(): Vulkan Device is nullptr!");
 	TRAP_ASSERT(desc.ImageCount >= RendererAPI::ImageCount, "VulkanSwapChain(): ImageCount is too low!");
+	TRAP_ASSERT(desc.Window, "VulkanSwapChain(): Window is nullptr!");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSwapChainPrefix, "Creating SwapChain");
@@ -374,13 +375,27 @@ void TRAP::Graphics::API::VulkanSwapChain::ToggleVSync()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	RendererAPI::SwapChainDesc desc = m_desc;
-	desc.EnableVSync = !desc.EnableVSync;
+	m_desc.EnableVSync = !m_desc.EnableVSync;
 
 	//Toggle VSync on or off
 	//For Vulkan we need to remove the SwapChain and recreate it with correct VSync option
 	DeInitSwapchain();
-	InitSwapchain(desc);
+	InitSwapchain(m_desc);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanSwapChain::UpdateFramebufferSize()
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	const auto fbSize = m_desc.Window->GetFrameBufferSize();
+
+	m_desc.Width = fbSize.x;
+	m_desc.Height = fbSize.y;
+
+	DeInitSwapchain();
+	InitSwapchain(m_desc);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

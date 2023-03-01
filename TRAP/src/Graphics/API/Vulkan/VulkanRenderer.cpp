@@ -169,16 +169,21 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerWindowData* c
 
 	//Start Recording
 #ifndef TRAP_HEADLESS_MODE
-	const std::optional<uint32_t> acquiredImage = p->SwapChain->AcquireNextImage(p->ImageAcquiredSemaphore, nullptr);
+	std::optional<uint32_t> acquiredImage = p->SwapChain->AcquireNextImage(p->ImageAcquiredSemaphore, nullptr);
 
 	if(!acquiredImage)
 	{
-		//TODO Rebuild swapchain and try again, if that fails, quit
+		p->SwapChain->UpdateFramebufferSize();
 
-		Utils::Dialogs::ShowMsgBox("Failed to acquire image", "Failed to acquire next swapchain image!\n"
+		acquiredImage = p->SwapChain->AcquireNextImage(p->ImageAcquiredSemaphore, nullptr);
+	}
+
+	//Try again, if it also fails with the updated swapchain, quit engine
+	if(!acquiredImage)
+	{
+		Utils::Dialogs::ShowMsgBox("Failed to acquire image", "Vulkan: Failed to acquire next swapchain image!\n"
 								   "Error code: 0x0014", Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::RendererPrefix, "Failed to acquire next swapchain image!");
 		TRAP::Application::Shutdown();
 		exit(0x0014);
 	}
@@ -398,40 +403,10 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerWindowData* const p)
 	{
 		p->ResizeSwapChain = false;
 
-		//Recreation needed
-		//Clear SwapChain reference
-		presentDesc = {};
-
-		p->SwapChain.reset();
-
-		const auto fbSize = p->Window->GetFrameBufferSize();
-
-		SwapChainDesc swapChainDesc{};
-		swapChainDesc.Window = p->Window;
-		swapChainDesc.PresentQueues = { s_graphicQueue };
-		swapChainDesc.Width = fbSize.x;
-		swapChainDesc.Height = fbSize.y;
-		swapChainDesc.ImageCount = RendererAPI::ImageCount;
-		swapChainDesc.ColorFormat = SwapChain::GetRecommendedSwapchainFormat(true, false);
-		swapChainDesc.ClearValue = p->ClearColor;
-		swapChainDesc.EnableVSync = p->CurrentVSync;
-		if(s_currentAntiAliasing == AntiAliasing::MSAA)
-			swapChainDesc.SampleCount = s_currentSampleCount;
-		else
-			swapChainDesc.SampleCount = SampleCount::One;
-		p->SwapChain = SwapChain::Create(swapChainDesc);
+		p->SwapChain->UpdateFramebufferSize();
 
 		p->CurrentSwapChainImageIndex = 0;
 		p->ImageIndex = 0;
-
-		if (!p->SwapChain)
-		{
-			TRAP::Utils::Dialogs::ShowMsgBox("Swapchain creation failed", "Vulkan: Unable to create swapchain!\n"
-											 "Error code: 0x0010",
-			                                 TRAP::Utils::Dialogs::Style::Error,
-											 TRAP::Utils::Dialogs::Buttons::Quit);
-			TRAP::Application::Shutdown();
-		}
 	}
 	else if (presentStatus == PresentStatus::DeviceReset || presentStatus == PresentStatus::Failed)
 	{
