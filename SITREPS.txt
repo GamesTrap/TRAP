@@ -3692,3 +3692,4 @@ SITREP 03/01/2023|23w09b1
     - Branch wayland:
         - WindowingAPILinuxWayland Added [[nodiscard]] attributes where applicable ~<15 mins
         - WindowingAPILinuxWayland Added support for xdg_activation protocol ~>30 mins
+        - WindowingAPILinuxX11 Moved DBus stuff to WindowingAPILinux ~<10 mins

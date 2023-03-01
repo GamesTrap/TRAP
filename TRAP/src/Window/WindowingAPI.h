@@ -3975,8 +3975,6 @@ namespace TRAP::INTERNAL
 		/// <param name="state">State of progress.</param>
 		/// <param name="completed">How much has been completed. Valid values: 0 - 100.</param>
 		static void PlatformSetProgress(const InternalWindow* window, ProgressState state, uint32_t completed);
-		static void PlatformSetProgressX11(const InternalWindow* window, ProgressState state, uint32_t completed);
-		static void PlatformSetProgressWayland(const InternalWindow* window, ProgressState state, uint32_t completed);
 		/// <summary>
 		/// This function returns the platform-specific scancode of the specified key.
 		///
@@ -4607,10 +4605,18 @@ namespace TRAP::INTERNAL
 		static void SetAccessibilityShortcutKeys(const bool allowKeys);
 
 		friend bool TRAP::Input::InitController();
-		//----------//
-		//Linux(X11)//
-		//----------//
+		//------------------//
+		//Linux(X11/Wayland)//
+		//------------------//
 #elif defined(TRAP_PLATFORM_LINUX)
+		/// <summary>
+		/// Load the DBus shared library functions.
+		/// </summary>
+		static void LoadDBus();
+		/// <summary>
+		/// Unload the DBus shared library functions.
+		/// </summary>
+		static void UnloadDBus();
 		/// <summary>
 		/// Calculates the refresh rate, in Hz, from the specified RandR mode info.
 		/// </summary>

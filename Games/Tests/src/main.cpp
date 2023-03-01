@@ -61,8 +61,8 @@ public:
 		// PushLayer(std::make_unique<TitleTests>());
 		// PushLayer(std::make_unique<VRSTests>());
 		// PushLayer(std::make_unique<VulkanTextureTests>());
-		// PushLayer(std::make_unique<WindowStateTests>());
-		PushLayer(std::make_unique<WindowFeaturesTests>());
+		PushLayer(std::make_unique<WindowStateTests>());
+		// PushLayer(std::make_unique<WindowFeaturesTests>());
 	}
 };
 

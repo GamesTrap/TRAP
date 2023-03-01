@@ -3269,14 +3269,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionWayland(const Intern
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetProgressWayland(const InternalWindow* /*window*/, const ProgressState /*state*/,
-													          const uint32_t /*completed*/)
-{
-    InputError(Error::Feature_Unavailable, "[Wayland] Platform does not support taskbar progress indicator");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 int32_t TRAP::INTERNAL::WindowingAPI::PlatformGetKeyScanCodeWayland(const Input::Key key)
 {
     return s_Data.ScanCodes[static_cast<uint32_t>(key)];
