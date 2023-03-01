@@ -3689,3 +3689,5 @@ SITREP 02/28/2023|23w09a2
 SITREP 03/01/2023|23w09b1
     - Changed TRAP Engine version to 23w09b1(0.8.99)
     - VulkanRenderer StartGraphicRecording() now handles VulkanSwapChain::AcquireNextImage() failures ~<10 mins
+    - Branch wayland:
+        - WindowingAPILinuxWayland Added [[nodiscard]] attributes where applicable ~<15 mins

@@ -1303,7 +1303,7 @@ std::string TRAP::INTERNAL::WindowingAPI::ReadDataOfferAsString(wl_data_offer* o
     FlushDisplay();
     close(fds[1]);
 
-    std::string str = nullptr;
+    std::string str = "";
     std::size_t size = 0;
     std::size_t length = 0;
 
@@ -1327,7 +1327,7 @@ std::string TRAP::INTERNAL::WindowingAPI::ReadDataOfferAsString(wl_data_offer* o
 
             InputError(Error::Platform_Error, "[Wayland] Failed to read data offer pipe: " + Utils::String::GetStrError());
             close(fds[0]);
-            return nullptr;
+            return "";
         }
 
         length += result;
