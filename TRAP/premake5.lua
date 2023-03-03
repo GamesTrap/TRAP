@@ -8,6 +8,7 @@ function GenerateWayland()
 	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/unstable/pointer-constraints/pointer-constraints-unstable-v1.xml"] = "../Dependencies/Wayland/wayland-pointer-constraints-unstable-v1-client-protocol"
 	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/unstable/idle-inhibit/idle-inhibit-unstable-v1.xml"] = "../Dependencies/Wayland/wayland-idle-inhibit-unstable-v1-client-protocol"
 	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/staging/xdg-activation/xdg-activation-v1.xml"] = "../Dependencies/Wayland/wayland-xdg-activation-v1-client-protocol"
+	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/staging/content-type/content-type-v1.xml"] = "../Dependencies/Wayland/wayland-content-type-v1-client-protocol"
 
 	local result, errorCode = os.outputof("wayland-scanner --version")
 	if errorCode ~= 0 then

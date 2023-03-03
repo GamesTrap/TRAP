@@ -73,6 +73,10 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "wayland-xdg-activation-v1-client-protocol-code.h"
 #undef types
 
+#define types _TRAP_content_type_types
+#include "wayland-content-type-v1-client-protocol-code.h"
+#undef types
+
 using namespace std::string_view_literals;
 
 static constexpr int32_t TRAP_BORDER_SIZE = 4;
@@ -1117,6 +1121,8 @@ void TRAP::INTERNAL::WindowingAPI::RegistryHandleGlobal(void* /*userData*/, wl_r
         s_Data.Wayland.IdleInhibitManager = static_cast<zwp_idle_inhibit_manager_v1*>(wl_registry_bind(registry, name, &zwp_idle_inhibit_manager_v1_interface, 1));
     else if(interface == "xdg_activation_v1"sv)
         s_Data.Wayland.ActivationManager = static_cast<xdg_activation_v1*>(wl_registry_bind(registry, name, &xdg_activation_v1_interface, 1));
+    else if(interface == "wp_content_type_manager_v1"sv)
+        s_Data.Wayland.ContentTypeManager = static_cast<wp_content_type_manager_v1*>(wl_registry_bind(registry, name, &wp_content_type_manager_v1_interface, 1));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2617,6 +2623,9 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindowWayland(InternalWindow* 
     if(window == s_Data.Wayland.KeyboardFocus)
         s_Data.Wayland.KeyboardFocus = nullptr;
 
+    if(window->Wayland.ContentType)
+        wp_content_type_v1_destroy(window->Wayland.ContentType);
+
     if(window->Wayland.ActivationToken)
         xdg_activation_token_v1_destroy(window->Wayland.ActivationToken);
 
@@ -2724,6 +2733,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdownWayland()
         zwp_idle_inhibit_manager_v1_destroy(s_Data.Wayland.IdleInhibitManager);
     if(s_Data.Wayland.ActivationManager)
         xdg_activation_v1_destroy(s_Data.Wayland.ActivationManager);
+    if(s_Data.Wayland.ContentTypeManager)
+        wp_content_type_manager_v1_destroy(s_Data.Wayland.ContentTypeManager);
     if(s_Data.Wayland.Registry)
         wl_registry_destroy(s_Data.Wayland.Registry);
     if(s_Data.Wayland.DisplayWL)
@@ -2790,6 +2801,14 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowWayland(InternalWindow* w
     {
         if(!CreateShellObjectsWayland(window))
             return false;
+    }
+
+    if(s_Data.Wayland.ContentTypeManager)
+    {
+        window->Wayland.ContentType = wp_content_type_manager_v1_get_surface_content_type(s_Data.Wayland.ContentTypeManager,
+                                                                                          window->Wayland.Surface);
+        if(window->Wayland.ContentType)
+            wp_content_type_v1_set_content_type(window->Wayland.ContentType, WP_CONTENT_TYPE_V1_TYPE_GAME);
     }
 
     return true;

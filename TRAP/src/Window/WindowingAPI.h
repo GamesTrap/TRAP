@@ -1337,6 +1337,7 @@ namespace TRAP::INTERNAL
 				zwp_pointer_constraints_v1* PointerConstraints;
 				zwp_idle_inhibit_manager_v1* IdleInhibitManager;
 				xdg_activation_v1* ActivationManager;
+				wp_content_type_manager_v1* ContentTypeManager;
 
 				std::vector<TRAPOfferWayland> Offers;
 
@@ -1730,6 +1731,8 @@ namespace TRAP::INTERNAL
 				zwp_idle_inhibitor_v1* IdleInhibitor;
 
 				xdg_activation_token_v1* ActivationToken;
+
+				wp_content_type_v1* ContentType;
 
 				struct
 				{
