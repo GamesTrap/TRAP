@@ -293,8 +293,10 @@ void TRAPEditorLayer::OnAttach()
 	m_editorCamera = TRAP::Graphics::EditorCamera(30.0f, 16.0f / 9.0f, 0.1f);
 
 	TRAP::Graphics::RenderCommand::SetCullMode(TRAP::Graphics::CullMode::None); //Culling
-	TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha,
-	                                                TRAP::Graphics::BlendConstant::OneMinusSrcAlpha); //Blending
+		TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha,
+														TRAP::Graphics::BlendConstant::One,
+														TRAP::Graphics::BlendConstant::OneMinusSrcAlpha,
+														TRAP::Graphics::BlendConstant::OneMinusSrcAlpha); //Blending
 
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 }

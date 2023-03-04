@@ -101,7 +101,10 @@ void VRSTests::OnAttach()
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
 	TRAP::Graphics::RenderCommand::SetDepthTesting(true);
-	TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha, TRAP::Graphics::BlendConstant::OneMinusSrcAlpha);
+		TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha,
+														TRAP::Graphics::BlendConstant::One,
+														TRAP::Graphics::BlendConstant::OneMinusSrcAlpha,
+														TRAP::Graphics::BlendConstant::OneMinusSrcAlpha);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -3694,7 +3694,12 @@ SITREP 03/01/2023|23w09b1
         - WindowingAPILinuxWayland Added support for xdg_activation protocol ~>30 mins
         - WindowingAPILinuxX11 Moved DBus stuff to WindowingAPILinux ~<10 mins
 
-SITREP 03/03/2023|23w09b1
-    - Changed TRAP Engine version to 23w09b1(0.8.100)
+SITREP 03/03/2023|23w09b2
+    - Changed TRAP Engine version to 23w09b2(0.8.100)
     - Branch wayland:
         - WindowingAPILinuxWayland Added support for wp_content_type protocol ~<20 mins
+
+SITREP 03/04/2023|23w09c1
+    - Changed TRAP Engine version to 23w09c1(0.8.101)
+    - Branch wayland:
+        - Worked around NVIDIA bug making windows transparent with some blend modes ~<15 mins

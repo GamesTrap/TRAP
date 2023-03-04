@@ -22,7 +22,10 @@ public:
 		TRAP::Application::GetWindow()->SetTitle("ParticleSystem2D");
 
 		TRAP::Graphics::RenderCommand::SetDepthTesting(false);
-		TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha, TRAP::Graphics::BlendConstant::OneMinusSrcAlpha);
+		TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha,
+														TRAP::Graphics::BlendConstant::One,
+														TRAP::Graphics::BlendConstant::OneMinusSrcAlpha,
+														TRAP::Graphics::BlendConstant::OneMinusSrcAlpha);
 
 		//Init here
 		m_particle.ColorBegin = { 254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f };
