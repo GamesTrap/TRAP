@@ -86,7 +86,8 @@ static constexpr int32_t TRAP_CAPTION_HEIGHT = 24;
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::DataSourceHandleTarget(void* /*userData*/, wl_data_source* source, const char* /*mimeType*/)
+void TRAP::INTERNAL::WindowingAPI::DataSourceHandleTarget([[maybe_unused]] void* userData, wl_data_source* source,
+                                                          [[maybe_unused]] const char* mimeType)
 {
     if(s_Data.Wayland.SelectionSource != source)
     {
@@ -97,7 +98,8 @@ void TRAP::INTERNAL::WindowingAPI::DataSourceHandleTarget(void* /*userData*/, wl
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::DataSourceHandleSend(void* /*userData*/, wl_data_source* source, const char* mimeType, int32_t fd)
+void TRAP::INTERNAL::WindowingAPI::DataSourceHandleSend([[maybe_unused]] void* userData, wl_data_source* source,
+                                                        const char* mimeType, int32_t fd)
 {
     //Ignore it if this is an outdated or invalid request
     if(s_Data.Wayland.SelectionSource != source ||
@@ -131,7 +133,7 @@ void TRAP::INTERNAL::WindowingAPI::DataSourceHandleSend(void* /*userData*/, wl_d
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::DataSourceHandleCancelled(void* /*userData*/, wl_data_source* source)
+void TRAP::INTERNAL::WindowingAPI::DataSourceHandleCancelled([[maybe_unused]] void* userData, wl_data_source* source)
 {
     wl_data_source_destroy(source);
 
@@ -143,21 +145,24 @@ void TRAP::INTERNAL::WindowingAPI::DataSourceHandleCancelled(void* /*userData*/,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::LockedPointerHandleLocked(void* /*userData*/, zwp_locked_pointer_v1* /*lockedPointer*/)
+void TRAP::INTERNAL::WindowingAPI::LockedPointerHandleLocked([[maybe_unused]] void* userData,
+                                                             [[maybe_unused]] zwp_locked_pointer_v1* lockedPointer)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::LockedPointerHandleUnlocked(void* /*userData*/, zwp_locked_pointer_v1* /*lockedPointer*/)
+void TRAP::INTERNAL::WindowingAPI::LockedPointerHandleUnlocked([[maybe_unused]] void* userData,
+                                                               [[maybe_unused]] zwp_locked_pointer_v1* lockedPointer)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::RelativePointerHandleRelativeMotion(void* userData,
-                                                                       zwp_relative_pointer_v1* /*pointer*/,
-                                                                       uint32_t /*timeHi*/, uint32_t /*timeLo*/,
+                                                                       [[maybe_unused]] zwp_relative_pointer_v1* pointer,
+                                                                       [[maybe_unused]] uint32_t timeHi,
+                                                                       [[maybe_unused]] uint32_t timeLo,
                                                                        wl_fixed_t dx, wl_fixed_t dy,
                                                                        wl_fixed_t dxUnaccel, wl_fixed_t dyUnaccel)
 {
@@ -184,21 +189,22 @@ void TRAP::INTERNAL::WindowingAPI::RelativePointerHandleRelativeMotion(void* use
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::ConfinedPointerHandleConfined(void* /*userData*/,
-                                                                 zwp_confined_pointer_v1* /*confinedPointer*/)
+void TRAP::INTERNAL::WindowingAPI::ConfinedPointerHandleConfined([[maybe_unused]] void* userData,
+                                                                 [[maybe_unused]] zwp_confined_pointer_v1* confinedPointer)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::ConfinedPointerHandleUnconfined(void* /*userData*/,
-                                                                   zwp_confined_pointer_v1* /*confinedPointer*/)
+void TRAP::INTERNAL::WindowingAPI::ConfinedPointerHandleUnconfined([[maybe_unused]] void* userData,
+                                                                   [[maybe_unused]] zwp_confined_pointer_v1* confinedPointer)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::SurfaceHandleEnter(void* userData, wl_surface* /*surface*/, wl_output* output)
+void TRAP::INTERNAL::WindowingAPI::SurfaceHandleEnter(void* userData, [[maybe_unused]] wl_surface* surface,
+                                                      wl_output* output)
 {
     if(s_Data.Wayland.WaylandClient.ProxyGetTag(reinterpret_cast<wl_proxy*>(output)) != &s_Data.Wayland.TagCStr)
         return;
@@ -215,7 +221,8 @@ void TRAP::INTERNAL::WindowingAPI::SurfaceHandleEnter(void* userData, wl_surface
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::SurfaceHandleLeave(void* userData, wl_surface* /*surface*/, wl_output* output)
+void TRAP::INTERNAL::WindowingAPI::SurfaceHandleLeave(void* userData, [[maybe_unused]] wl_surface* surface,
+                                                      wl_output* output)
 {
     if(s_Data.Wayland.WaylandClient.ProxyGetTag(reinterpret_cast<wl_proxy*>(output)) != &s_Data.Wayland.TagCStr)
         return;
@@ -238,7 +245,7 @@ void TRAP::INTERNAL::WindowingAPI::SurfaceHandleLeave(void* userData, wl_surface
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::XDGDecorationHandleConfigure(void* userData,
-                                                                zxdg_toplevel_decoration_v1* /*decoration*/,
+                                                                [[maybe_unused]] zxdg_toplevel_decoration_v1* decoration,
                                                                 uint32_t mode)
 {
     InternalWindow* window = static_cast<InternalWindow*>(userData);
@@ -256,8 +263,9 @@ void TRAP::INTERNAL::WindowingAPI::XDGDecorationHandleConfigure(void* userData,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::XDGTopLevelHandleConfigure(void* userData, xdg_toplevel* /*topLevel*/, int32_t width,
-                                                              int32_t height, wl_array* states)
+void TRAP::INTERNAL::WindowingAPI::XDGTopLevelHandleConfigure(void* userData,
+                                                              [[maybe_unused]] xdg_toplevel* topLevel,
+                                                              int32_t width, int32_t height, wl_array* states)
 {
     InternalWindow* window = static_cast<InternalWindow*>(userData);
 
@@ -306,7 +314,7 @@ void TRAP::INTERNAL::WindowingAPI::XDGTopLevelHandleConfigure(void* userData, xd
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::XDGTopLevelHandleClose(void* userData, xdg_toplevel* /*topLevel*/)
+void TRAP::INTERNAL::WindowingAPI::XDGTopLevelHandleClose(void* userData, [[maybe_unused]] xdg_toplevel* topLevel)
 {
     InternalWindow* window = static_cast<InternalWindow*>(userData);
     InputWindowCloseRequest(window);
@@ -370,7 +378,8 @@ void TRAP::INTERNAL::WindowingAPI::XDGActivationHandleDone(void* userData, xdg_a
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::DataOfferHandleOffer(void* /*userData*/, wl_data_offer* offer, const char* mimeType)
+void TRAP::INTERNAL::WindowingAPI::DataOfferHandleOffer([[maybe_unused]] void* userData, wl_data_offer* offer,
+                                                        const char* mimeType)
 {
     for(uint32_t i = 0; i < s_Data.Wayland.Offers.size(); ++i)
     {
@@ -388,7 +397,8 @@ void TRAP::INTERNAL::WindowingAPI::DataOfferHandleOffer(void* /*userData*/, wl_d
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleDataOffer(void* /*userData*/, wl_data_device* /*device*/,
+void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleDataOffer([[maybe_unused]] void* userData,
+                                                             [[maybe_unused]] wl_data_device* device,
                                                              wl_data_offer* offer)
 {
     s_Data.Wayland.Offers.push_back(TRAPOfferWayland{offer, false, false});
@@ -397,9 +407,11 @@ void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleDataOffer(void* /*userData*/,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleEnter(void* /*userData*/, wl_data_device* /*device*/,
-                                                         uint32_t serial, wl_surface* surface, wl_fixed_t /*x*/,
-                                                         wl_fixed_t /*y*/, wl_data_offer* offer)
+void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleEnter([[maybe_unused]] void* userData,
+                                                         [[maybe_unused]] wl_data_device* device,
+                                                         uint32_t serial, wl_surface* surface,
+                                                         [[maybe_unused]] wl_fixed_t x,
+                                                         [[maybe_unused]] wl_fixed_t y, wl_data_offer* offer)
 {
     if(s_Data.Wayland.DragOffer)
     {
@@ -446,7 +458,8 @@ void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleEnter(void* /*userData*/, wl_
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleLeave(void* /*userData*/, wl_data_device* /*device*/)
+void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleLeave([[maybe_unused]] void* userData,
+                                                         [[maybe_unused]] wl_data_device* device)
 {
     if(s_Data.Wayland.DragOffer)
     {
@@ -458,14 +471,18 @@ void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleLeave(void* /*userData*/, wl_
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleMotion(void* /*userData*/, wl_data_device* /*device*/,
-                                                          uint32_t /*time*/, wl_fixed_t /*x*/, wl_fixed_t /*y*/)
+void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleMotion([[maybe_unused]] void* userData,
+                                                          [[maybe_unused]] wl_data_device* device,
+                                                          [[maybe_unused]] uint32_t time,
+                                                          [[maybe_unused]] wl_fixed_t x,
+                                                          [[maybe_unused]] wl_fixed_t y)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleDrop(void* /*userData*/, wl_data_device* /*device*/)
+void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleDrop([[maybe_unused]] void* userData,
+                                                        [[maybe_unused]] wl_data_device* device)
 {
     if(!s_Data.Wayland.DragOffer)
         return;
@@ -482,7 +499,8 @@ void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleDrop(void* /*userData*/, wl_d
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleSelection(void* /*userData*/, wl_data_device* /*device*/,
+void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleSelection([[maybe_unused]] void* userData,
+                                                             [[maybe_unused]] wl_data_device* device,
                                                              wl_data_offer* offer)
 {
     if(s_Data.Wayland.SelectionOffer)
@@ -508,10 +526,12 @@ void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleSelection(void* /*userData*/,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::OutputHandleGeometry(void* userData, wl_output* /*output*/, int32_t x, int32_t y,
-                                                        int32_t /*physicalWidth*/, int32_t /*physicalHeight*/,
-                                                        int32_t /*subpixel*/, const char* make, const char* model,
-                                                        int32_t /*transform*/)
+void TRAP::INTERNAL::WindowingAPI::OutputHandleGeometry(void* userData, [[maybe_unused]] wl_output* output,
+                                                        int32_t x, int32_t y,
+                                                        [[maybe_unused]] int32_t physicalWidth,
+                                                        [[maybe_unused]] int32_t physicalHeight,
+                                                        [[maybe_unused]] int32_t subpixel, const char* make,
+                                                        const char* model, [[maybe_unused]] int32_t transform)
 {
     InternalMonitor* monitor = static_cast<InternalMonitor*>(userData);
 
@@ -525,8 +545,8 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleGeometry(void* userData, wl_outpu
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::OutputHandleMode(void* userData, wl_output* /*output*/, uint32_t flags,
-                                                    int32_t width, int32_t height, int32_t refresh)
+void TRAP::INTERNAL::WindowingAPI::OutputHandleMode(void* userData, [[maybe_unused]] wl_output* output,
+                                                    uint32_t flags, int32_t width, int32_t height, int32_t refresh)
 {
     InternalMonitor* monitor = static_cast<InternalMonitor*>(userData);
 
@@ -546,7 +566,7 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleMode(void* userData, wl_output* /
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::OutputHandleDone(void* userData, wl_output* /*output*/)
+void TRAP::INTERNAL::WindowingAPI::OutputHandleDone(void* userData, [[maybe_unused]] wl_output* output)
 {
     InternalMonitor* monitor = static_cast<InternalMonitor*>(userData);
 
@@ -561,7 +581,8 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleDone(void* userData, wl_output* /
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::OutputHandleScale(void* userData, wl_output* /*output*/, int32_t factor)
+void TRAP::INTERNAL::WindowingAPI::OutputHandleScale(void* userData, [[maybe_unused]] wl_output* output,
+                                                     int32_t factor)
 {
     InternalMonitor* monitor = static_cast<InternalMonitor*>(userData);
 
@@ -584,7 +605,8 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleScale(void* userData, wl_output* 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef WL_OUTPUT_NAME_SINCE_VERSION
-void TRAP::INTERNAL::WindowingAPI::OutputHandleName(void* userData, wl_output* /*output*/, const char* name)
+void TRAP::INTERNAL::WindowingAPI::OutputHandleName(void* userData, [[maybe_unused]] wl_output* output,
+                                                    const char* name)
 {
     InternalMonitor* monitor = static_cast<InternalMonitor*>(userData);
 
@@ -595,15 +617,17 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleName(void* userData, wl_output* /
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef WL_OUTPUT_NAME_SINCE_VERSION
-void TRAP::INTERNAL::WindowingAPI::OutputHandleDescription(void* /*userData*/, wl_output* /*output*/,
-                                                           const char* /*description*/)
+void TRAP::INTERNAL::WindowingAPI::OutputHandleDescription([[maybe_unused]] void* userData,
+                                                           [[maybe_unused]] wl_output* output,
+                                                           [[maybe_unused]] const char* description)
 {
 }
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKeymap(void* /*userData*/, wl_keyboard* /*keyboard*/, uint32_t format,
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKeymap([[maybe_unused]] void* userData,
+                                                        [[maybe_unused]] wl_keyboard* keyboard, uint32_t format,
                                                         int32_t fd, uint32_t size)
 {
     if(format != WL_KEYBOARD_KEYMAP_FORMAT_XKB_V1)
@@ -675,8 +699,9 @@ void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKeymap(void* /*userData*/, wl_k
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::KeyboardHandleEnter(void* /*userData*/, wl_keyboard* /*keyboard*/, uint32_t serial,
-                                                       wl_surface* surface, wl_array* /*keys*/)
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleEnter([[maybe_unused]] void* userData,
+                                                       [[maybe_unused]] wl_keyboard* keyboard, uint32_t serial,
+                                                       wl_surface* surface, [[maybe_unused]] wl_array* keys)
 {
     //Happens in the case we just destroyed the surface.
     if(!surface)
@@ -696,8 +721,9 @@ void TRAP::INTERNAL::WindowingAPI::KeyboardHandleEnter(void* /*userData*/, wl_ke
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::KeyboardHandleLeave(void* /*userData*/, wl_keyboard* /*keyboard*/, uint32_t serial,
-                                                       wl_surface* /*surface*/)
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleLeave([[maybe_unused]] void* userData,
+                                                       [[maybe_unused]] wl_keyboard* keyboard, uint32_t serial,
+                                                       [[maybe_unused]] wl_surface* surface)
 {
     InternalWindow* window = s_Data.Wayland.KeyboardFocus;
 
@@ -714,8 +740,10 @@ void TRAP::INTERNAL::WindowingAPI::KeyboardHandleLeave(void* /*userData*/, wl_ke
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKey(void* /*userData*/, wl_keyboard* /*keyboard*/, uint32_t serial,
-                                                     uint32_t /*time*/, uint32_t scanCode, uint32_t state)
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKey([[maybe_unused]] void* userData,
+                                                     [[maybe_unused]] wl_keyboard* keyboard, uint32_t serial,
+                                                     [[maybe_unused]] uint32_t time, uint32_t scanCode,
+                                                     uint32_t state)
 {
     InternalWindow* window = s_Data.Wayland.KeyboardFocus;
     if(!window)
@@ -757,13 +785,13 @@ void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKey(void* /*userData*/, wl_keyb
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::KeyboardHandleModifiers(void* /*userData*/, wl_keyboard* /*keyboard*/,
-                                                           uint32_t /*serial*/, uint32_t /*modsDepressed*/,
-                                                           uint32_t /*modsLatched*/, uint32_t /*modsLocked*/,
-                                                           uint32_t group)
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleModifiers([[maybe_unused]] void* userData,
+                                                           [[maybe_unused]] wl_keyboard* keyboard,
+                                                           [[maybe_unused]] uint32_t serial,
+                                                           [[maybe_unused]] uint32_t modsDepressed,
+                                                           [[maybe_unused]] uint32_t modsLatched,
+                                                           [[maybe_unused]] uint32_t modsLocked, uint32_t group)
 {
-    //TODO Only used for setting modifier bits which we dont use anyway
-
     if(s_Data.Wayland.WaylandXKB.Group != group)
     {
         s_Data.Wayland.WaylandXKB.Group = group;
@@ -774,7 +802,7 @@ void TRAP::INTERNAL::WindowingAPI::KeyboardHandleModifiers(void* /*userData*/, w
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION
-void TRAP::INTERNAL::WindowingAPI::KeyboardHandleRepeatInfo(void* /*userData*/, wl_keyboard* keyboard, int32_t rate,
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleRepeatInfo([[maybe_unused]] void* userData, wl_keyboard* keyboard, int32_t rate,
                                                             int32_t delay)
 {
     if(keyboard != s_Data.Wayland.Keyboard)
@@ -787,8 +815,10 @@ void TRAP::INTERNAL::WindowingAPI::KeyboardHandleRepeatInfo(void* /*userData*/, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PointerHandleEnter(void* /*userData*/, wl_pointer* /*pointer*/, uint32_t serial,
-                                                      wl_surface* surface, wl_fixed_t /*sX*/, wl_fixed_t /*sY*/)
+void TRAP::INTERNAL::WindowingAPI::PointerHandleEnter([[maybe_unused]] void* userData,
+                                                      [[maybe_unused]] wl_pointer* pointer, uint32_t serial,
+                                                      wl_surface* surface, [[maybe_unused]] wl_fixed_t sX,
+                                                      [[maybe_unused]] wl_fixed_t sY)
 {
     //Happens in the case we just destroyed the surface.
     if(!surface)
@@ -822,7 +852,8 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleEnter(void* /*userData*/, wl_poi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PointerHandleLeave(void* /*userData*/, wl_pointer* /*pointer*/, uint32_t serial,
+void TRAP::INTERNAL::WindowingAPI::PointerHandleLeave([[maybe_unused]] void* userData,
+                                                      [[maybe_unused]] wl_pointer* pointer, uint32_t serial,
                                                       wl_surface* surface)
 {
     if(!surface)
@@ -846,8 +877,9 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleLeave(void* /*userData*/, wl_poi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PointerHandleMotion(void* /*userData*/, wl_pointer* /*pointer*/, uint32_t /*time*/,
-                                                       wl_fixed_t sX, wl_fixed_t sY)
+void TRAP::INTERNAL::WindowingAPI::PointerHandleMotion([[maybe_unused]] void* userData,
+                                                       [[maybe_unused]] wl_pointer* pointer,
+                                                       [[maybe_unused]] uint32_t time, wl_fixed_t sX, wl_fixed_t sY)
 {
     InternalWindow* window = s_Data.Wayland.PointerFocus;
     std::string cursorName{};
@@ -910,8 +942,10 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleMotion(void* /*userData*/, wl_po
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PointerHandleButton(void* /*userData*/, wl_pointer* /*pointer*/, uint32_t serial,
-                                                       uint32_t /*time*/, uint32_t button, uint32_t state)
+void TRAP::INTERNAL::WindowingAPI::PointerHandleButton([[maybe_unused]] void* userData,
+                                                       [[maybe_unused]] wl_pointer* pointer, uint32_t serial,
+                                                       [[maybe_unused]] uint32_t time, uint32_t button,
+                                                       uint32_t state)
 {
     InternalWindow* window = s_Data.Wayland.PointerFocus;
     uint32_t edges = XDG_TOPLEVEL_RESIZE_EDGE_NONE;
@@ -988,8 +1022,10 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleButton(void* /*userData*/, wl_po
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PointerHandleAxis(void* /*userData*/, wl_pointer* /*pointer*/, uint32_t /*time*/,
-                                                     uint32_t axis, wl_fixed_t value)
+void TRAP::INTERNAL::WindowingAPI::PointerHandleAxis([[maybe_unused]] void* userData,
+                                                     [[maybe_unused]] wl_pointer* pointer,
+                                                     [[maybe_unused]] uint32_t time, uint32_t axis,
+                                                     wl_fixed_t value)
 {
     InternalWindow* window = s_Data.Wayland.PointerFocus;
     double x = 0.0, y = 0.0;
@@ -1014,7 +1050,8 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleAxis(void* /*userData*/, wl_poin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::SeatHandleCapabilities(void* /*userData*/, wl_seat* seat, const uint32_t caps)
+void TRAP::INTERNAL::WindowingAPI::SeatHandleCapabilities([[maybe_unused]] void* userData, wl_seat* seat,
+                                                          const uint32_t caps)
 {
     if((caps & WL_SEAT_CAPABILITY_POINTER) && !s_Data.Wayland.Pointer)
     {
@@ -1041,21 +1078,23 @@ void TRAP::INTERNAL::WindowingAPI::SeatHandleCapabilities(void* /*userData*/, wl
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::SeatHandleName(void* /*userData*/, wl_seat* /*seat*/, const char* /*name*/)
+void TRAP::INTERNAL::WindowingAPI::SeatHandleName([[maybe_unused]] void* userData, [[maybe_unused]] wl_seat* seat,
+                                                  [[maybe_unused]] const char* name)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::WMBaseHandlePing(void* /*userData*/, xdg_wm_base* wmBase, uint32_t serial)
+void TRAP::INTERNAL::WindowingAPI::WMBaseHandlePing([[maybe_unused]] void* userData, xdg_wm_base* wmBase,
+                                                    uint32_t serial)
 {
     xdg_wm_base_pong(wmBase, serial);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::RegistryHandleGlobal(void* /*userData*/, wl_registry* registry, uint32_t name,
-                                                        const char* interface, uint32_t version)
+void TRAP::INTERNAL::WindowingAPI::RegistryHandleGlobal([[maybe_unused]] void* userData, wl_registry* registry,
+                                                        uint32_t name, const char* interface, uint32_t version)
 {
     if(interface == "wl_compositor"sv)
         s_Data.Wayland.Compositor = static_cast<wl_compositor*>(wl_registry_bind(registry, name, &wl_compositor_interface, TRAP::Math::Min(3u, version)));
@@ -1127,7 +1166,8 @@ void TRAP::INTERNAL::WindowingAPI::RegistryHandleGlobal(void* /*userData*/, wl_r
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::RegistryHandleGlobalRemove(void* /*userData*/, wl_registry* /*registry*/, uint32_t name)
+void TRAP::INTERNAL::WindowingAPI::RegistryHandleGlobalRemove([[maybe_unused]] void* userData,
+                                                              [[maybe_unused]] wl_registry* registry, uint32_t name)
 {
     for(uint32_t i = 0; i < s_Data.Monitors.size(); ++i)
     {
@@ -2322,8 +2362,9 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSizeWayland(const InternalWi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPosWayland(const InternalWindow* /*window*/, const int32_t /*xPos*/,
-                                                               const int32_t /*yPos*/)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPosWayland([[maybe_unused]] const InternalWindow* window,
+                                                               [[maybe_unused]] const int32_t xPos,
+                                                               [[maybe_unused]] const int32_t yPos)
 {
     //A Wayland client can't set its position, so just warn
 
@@ -2333,9 +2374,10 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPosWayland(const InternalWin
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorWayland(InternalWindow* window, InternalMonitor* monitor,
-														           const int32_t /*xPos*/, const int32_t /*yPos*/,
+														           [[maybe_unused]] const int32_t xPos,
+                                                                   [[maybe_unused]] const int32_t yPos,
                                                                    const int32_t width, const int32_t height,
-                                                                   const double /*refreshRate*/)
+                                                                   [[maybe_unused]] const double refreshRate)
 {
     if(window->Monitor == monitor)
     {
@@ -2358,8 +2400,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorWayland(InternalWindo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessWayland(InternalWindow* /*window*/,
-                                                                             InternalMonitor* /*monitor*/)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessWayland([[maybe_unused]] InternalWindow* window,
+                                                                             [[maybe_unused]] InternalMonitor* monitor)
 {
     //TODO
 }
@@ -2781,7 +2823,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShowWindowWayland(InternalWindow* win
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindowWayland(const InternalWindow* /*window*/)
+void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindowWayland([[maybe_unused]] const InternalWindow* window)
 {
     InputError(Error::Feature_Unavailable, "[Wayland] The platform does not support setting the input focus");
 }
@@ -3031,15 +3073,17 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorWayland(InternalWindow* wind
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorModeWayland(InternalWindow* window, const CursorMode /*mode*/)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorModeWayland(InternalWindow* window,
+                                                                [[maybe_unused]] const CursorMode mode)
 {
     PlatformSetCursorWayland(window, window->Cursor);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPosWayland(InternalWindow* /*window*/, const double /*xPos*/,
-                                                               const double /*yPos*/)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPosWayland([[maybe_unused]] InternalWindow* window,
+                                                               [[maybe_unused]] const double xPos,
+                                                               [[maybe_unused]] const double yPos)
 {
     InputError(Error::Feature_Unavailable, "[Wayland] The platform does not support setting the cursor position");
 }
@@ -3054,15 +3098,17 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetCursorPosWayland(const InternalWin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIconWayland(InternalWindow* /*window*/, const Image* const /*image*/)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIconWayland([[maybe_unused]] InternalWindow* window,
+                                                                [[maybe_unused]] const Image* const image)
 {
     InputError(Error::Feature_Unavailable, "[Wayland] The platform does not support setting the window icon, use a .desktop file instead");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowPosWayland(const InternalWindow* /*window*/, int32_t& /*xPos*/,
-                                                               int32_t& /*yPos*/)
+void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowPosWayland([[maybe_unused]] const InternalWindow* window,
+                                                               [[maybe_unused]] int32_t& xPos,
+                                                               [[maybe_unused]] int32_t& yPos)
 {
     //A Wayland client is not aware of its position, so just warn and leave it as (0, 0)
 
@@ -3140,14 +3186,16 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecoratedWayland(InternalWin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloatingWayland(const InternalWindow* /*window*/, const bool /*enabled*/)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloatingWayland([[maybe_unused]] const InternalWindow* window,
+                                                                    [[maybe_unused]] const bool enabled)
 {
     InputError(Error::Feature_Unavailable, "[Wayland] Platform does not support making a window floating");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacityWayland(const InternalWindow* /*window*/, const float /*opacity*/)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacityWayland([[maybe_unused]] const InternalWindow* window,
+                                                                   [[maybe_unused]] const float opacity)
 {
     InputError(Error::Feature_Unavailable, "[Wayland] Platform does not support setting the window opacity");
 }
@@ -3168,14 +3216,14 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthroughWayland(Inte
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbarWayland(InternalWindow* /*window*/)
+void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbarWayland([[maybe_unused]] InternalWindow* window)
 {
     InputError(Error::Feature_Unavailable, "[Wayland] Platform does not support hiding windows from the taskbar");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacityWayland(const InternalWindow* /*window*/)
+float TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacityWayland([[maybe_unused]] const InternalWindow* window)
 {
     return 1.0f;
 }
@@ -3226,7 +3274,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformWindowMaximizedWayland(const Internal
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::PlatformWindowMinimizedWayland(const InternalWindow* /*window*/)
+bool TRAP::INTERNAL::WindowingAPI::PlatformWindowMinimizedWayland([[maybe_unused]] const InternalWindow* window)
 {
     //xdg-shell doesn't give any way to request whether a surface is iconified/minimized.
     return false;
@@ -3281,7 +3329,8 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformRawMouseMotionSupportedWayland()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionWayland(const InternalWindow* /*window*/, const bool /*enabled*/)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionWayland([[maybe_unused]] const InternalWindow* window,
+                                                                    [[maybe_unused]] const bool enabled)
 {
     //This is handled in RelativePointerHandleRelativeMotion
 }
@@ -3565,7 +3614,8 @@ std::string TRAP::INTERNAL::WindowingAPI::GetLinuxKeyboardLayoutNameWayland()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDropWayland(InternalWindow* /*window*/, const bool /*value*/)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDropWayland([[maybe_unused]] InternalWindow* window,
+                                                                 [[maybe_unused]] const bool value)
 {
     InputError(Error::Feature_Unavailable, "[Wayland] Platform does not support toggling drag and drop. Drag and drop is enabled by default.");
 }
