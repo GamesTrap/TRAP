@@ -556,7 +556,7 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleMode(void* userData, [[maybe_unus
     mode.RedBits = 8;
     mode.GreenBits = 8;
     mode.BlueBits = 8;
-    mode.RefreshRate = static_cast<int32_t>(TRAP::Math::Round(refresh / 1000.0));
+    mode.RefreshRate = refresh / 1000.0;
 
     monitor->Modes.push_back(mode);
 
