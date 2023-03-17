@@ -1934,6 +1934,14 @@ namespace TRAP::INTERNAL
 		///          title passed to this function. The instance part will use the contents of the
 		///          RESOURCE_NAME environment variable, if present and not empty, or fall back to the
 		///          window title.
+		///     Wayland: Compositors should implement the xdg-decoration protocol to decorate the window properly.
+		///              If this protocol isn't supported, or if the compositor prefers client-side decorations, a
+		///              fallback decoration will be drawn using libdecor. If this is also not available then we fallback
+		///              to a very simple frame using the wp_viewporter protocol.
+		///              A compositor can still emit close, maximize or fullscreen events, using for instance a keybind
+		///              mechanism. If neither of these protocols nor libdecor is supported, the window won't be docorated.
+		///              A full screen window will not attempt to change the mode, no matter what the requested size or refresh rate.
+		///              Screensaver inhibition requires the idle-inhibit protocol to be implemented in the user's compositor.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="width">Desired width for the new window. Must be greater than zero.</param>
@@ -2044,6 +2052,9 @@ namespace TRAP::INTERNAL
 		/// Good sizes include 16x16, 32x32 and 48x48.
 		///
 		/// Errors: Possible errors include Error::Not_Initialized and Error::Platform_Error.
+		/// Remarks:
+		///     Wayland: There is no existing protocol to change an icon, the window will thus inherit
+		///              the one defined in the application's desktop file. This function will emit Error::Feature_Unavailable.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window whose icon to set.</param>
@@ -2063,6 +2074,9 @@ namespace TRAP::INTERNAL
 		/// cannot and should not override these limits.
 		///
 		/// Errors: Possible errors include Error::Not_Initialized and Error::Platform_Error.
+		/// Remarks:
+		///     Wayland: There is no way for an application to set the global position of its window.
+		///              This function will emit Error::Feature_Unavailable.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to set the position for.</param>
@@ -2076,6 +2090,9 @@ namespace TRAP::INTERNAL
 		/// If an error occurs, xPos and yPos will be set to zero.
 		///
 		/// Errors: Possible errors include Error::Not_Initialized and Error::Platform_Error.
+		/// Remarks:
+		///     Wayland: There is now way for an application to retrieve the global position of its windows.
+		///              This function will emit Error::Feature_Unavailable.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to get the current position from.</param>
@@ -2095,6 +2112,9 @@ namespace TRAP::INTERNAL
 		/// cannot and should not override these limits.
 		///
 		/// Errors: Possible errors include Error::Not_Initialized and Error::Platform_Error.
+		/// Remarks:
+		///     Wayland: A full screen window will not attempt to change the mode,
+		///              no matter what the requested size.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to set the size for.</param>
@@ -2138,6 +2158,9 @@ namespace TRAP::INTERNAL
 		/// The initial opacity value for newly created windows is 1.0f.
 		///
 		/// Errors: Possible errors include Error::Not_Initialized and Error::Platform_Error.
+		/// Remarks:
+		///     Wayland: There is no way to set an opacity factor for a window.
+		///              This function will emit Error::Feature_Unavailable.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to set opacity for.</param>
@@ -2227,6 +2250,11 @@ namespace TRAP::INTERNAL
 		/// floating, resizable, has size limits, etc.
 		///
 		/// Errors: Possible errors include Error::Not_Initialized and Error::Platform_Error.
+		/// Remarks:
+		///     Wayland: The desired window position is ignored, as there is no way
+		///              for an application to set this property.
+		///              Setting the window to full screen will not attempt to change the mode,
+		///              no matter what the requested size or refresh rate.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to set the monitor for.</param>
@@ -2291,6 +2319,9 @@ namespace TRAP::INTERNAL
 		/// coordinates, of the upper-left corner of the content area of the window.
 		///
 		/// Errors: Possible errors include Error::Not_Initialized.
+		/// Remarks:
+		///     Wayland: This callback will never by called, as there is no way for an application
+		///              to know its global position.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to set the callback for.</param>
@@ -2500,6 +2531,8 @@ namespace TRAP::INTERNAL
 		/// called when one or more dragged paths are dropped on the window.
 		///
 		/// Errors: Possible errors include Error::Not_Initialized.
+		/// Remarks:
+		///     Wayland: File drop is currently unimplemented.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to set the callback for.</param>
@@ -2813,6 +2846,9 @@ namespace TRAP::INTERNAL
 		/// limited only by the minimum and maximum values of a double.
 		///
 		/// Errors: Possible errors include Error::Not_Initialized and Error::Platform_Error.
+		/// Remarks:
+		///     Wayland: This function will only work when the cursor mode is CursorMode::Disabled, otherwise
+		///              it will emit Error::Feature_Unavailable.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to set the cursor position for.</param>
@@ -2885,6 +2921,10 @@ namespace TRAP::INTERNAL
 		/// the behaviour for and existing window with WindowingAPI::SetWindowHint.
 		///
 		/// Errors: Possible errors include Error::Not_Initialized and Error::Platform_Error.
+		/// Remarks:
+		///     Wayland: Because Wayland wants every frame of the desktop to be complete, this function
+		///              does not immediately make the window visible. Instead it will become visible the
+		///              next time the window framebuffer is updated after this call.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to display.</param>
@@ -2909,6 +2949,9 @@ namespace TRAP::INTERNAL
 		/// WindowingAPI::RequestWindowAttention.
 		///
 		/// Errors: Possible errors include Error::Not_Initialized and Error::Platform_Error.
+		/// Remarks:
+		///     Wayland: It is not possible for an application to set the input focus.
+		///              This function will emit Error::Feature_Unavailable.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to focus.</param>
@@ -2933,6 +2976,9 @@ namespace TRAP::INTERNAL
 		/// is restored util the window is restored.
 		///
 		/// Errors: Possible errors include Error::Not_Initialized and Error::Platform_Error.
+		/// Remarks:
+		///     Wayland: Once a window is minimized, RestoreWindow won't be able to restore it.
+		///              This is a design decision of the xdg-shell protocol.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to minimize/iconify.</param>
@@ -2993,6 +3039,9 @@ namespace TRAP::INTERNAL
 		///
 		/// Errors: Possible errors include Error::Not_Initialized, Error::Invalid_Value and
 		///         Error::Platform_Error.
+		/// Remarks:
+		///     Wayland: The size limits will not be applied until the window is actually resized,
+		///              either by the user or by the compositor.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to set size limits for.</param>
@@ -3023,6 +3072,9 @@ namespace TRAP::INTERNAL
 		///
 		/// Errors: Possible errors include Error::Not_Initialized, Error::Invalid_Value and
 		///         Error::Platform_Error.
+		/// Remarks:
+		///     Wayland: The aspect ratio will not be applied until the window is actually resized,
+		///              either by the user or by the compositor.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to set aspect ratio for.</param>

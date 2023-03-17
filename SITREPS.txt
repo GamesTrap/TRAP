@@ -3712,3 +3712,4 @@ SITREP 03/17/2023|23w11a1
         - Resolved shadowing warnings for "pointer" ~<10 mins
         - Removed refresh rate rounding to integer ~<5 mins
         - Better names for monitors ~<5 mins
+        - WindowingAPI Added Wayland remarks to functions ~<20 mins
