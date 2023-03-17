@@ -539,8 +539,7 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleGeometry(void* userData, [[maybe_
     monitor->Wayland.Y = y;
 
     const std::string name = std::string(make) + " " + std::string(model);
-    if(monitor->Name.empty())
-        monitor->Name = name;
+    monitor->Name = name;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
