@@ -2057,7 +2057,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	window->BorderlessFullscreen = true;
+	window->BorderlessFullscreen = monitor ? true : false;
 	window->Monitor = monitor;
 
 	if(!window->Monitor)

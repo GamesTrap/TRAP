@@ -160,7 +160,7 @@ void TRAP::INTERNAL::WindowingAPI::LockedPointerHandleUnlocked([[maybe_unused]] 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::RelativePointerHandleRelativeMotion(void* userData,
-                                                                       [[maybe_unused]] zwp_relative_pointer_v1* pointer,
+                                                                       [[maybe_unused]] zwp_relative_pointer_v1* relPointer,
                                                                        [[maybe_unused]] uint32_t timeHi,
                                                                        [[maybe_unused]] uint32_t timeLo,
                                                                        wl_fixed_t dx, wl_fixed_t dy,
@@ -816,7 +816,7 @@ void TRAP::INTERNAL::WindowingAPI::KeyboardHandleRepeatInfo([[maybe_unused]] voi
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PointerHandleEnter([[maybe_unused]] void* userData,
-                                                      [[maybe_unused]] wl_pointer* pointer, uint32_t serial,
+                                                      [[maybe_unused]] wl_pointer* wlPointer, uint32_t serial,
                                                       wl_surface* surface, [[maybe_unused]] wl_fixed_t sX,
                                                       [[maybe_unused]] wl_fixed_t sY)
 {
@@ -853,7 +853,7 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleEnter([[maybe_unused]] void* use
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PointerHandleLeave([[maybe_unused]] void* userData,
-                                                      [[maybe_unused]] wl_pointer* pointer, uint32_t serial,
+                                                      [[maybe_unused]] wl_pointer* wlPointer, uint32_t serial,
                                                       wl_surface* surface)
 {
     if(!surface)
@@ -878,7 +878,7 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleLeave([[maybe_unused]] void* use
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PointerHandleMotion([[maybe_unused]] void* userData,
-                                                       [[maybe_unused]] wl_pointer* pointer,
+                                                       [[maybe_unused]] wl_pointer* wlPointer,
                                                        [[maybe_unused]] uint32_t time, wl_fixed_t sX, wl_fixed_t sY)
 {
     InternalWindow* window = s_Data.Wayland.PointerFocus;
@@ -943,7 +943,7 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleMotion([[maybe_unused]] void* us
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PointerHandleButton([[maybe_unused]] void* userData,
-                                                       [[maybe_unused]] wl_pointer* pointer, uint32_t serial,
+                                                       [[maybe_unused]] wl_pointer* wlPointer, uint32_t serial,
                                                        [[maybe_unused]] uint32_t time, uint32_t button,
                                                        uint32_t state)
 {
@@ -1023,7 +1023,7 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleButton([[maybe_unused]] void* us
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PointerHandleAxis([[maybe_unused]] void* userData,
-                                                     [[maybe_unused]] wl_pointer* pointer,
+                                                     [[maybe_unused]] wl_pointer* wlPointer,
                                                      [[maybe_unused]] uint32_t time, uint32_t axis,
                                                      wl_fixed_t value)
 {
@@ -2403,7 +2403,15 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorWayland(InternalWindo
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessWayland([[maybe_unused]] InternalWindow* window,
                                                                              [[maybe_unused]] InternalMonitor* monitor)
 {
-    //TODO
+    window->BorderlessFullscreen = monitor ? true : false;
+
+    if(window->Monitor)
+        ReleaseMonitorWayland(window);
+
+    window->Monitor = monitor;
+
+    if(window->Monitor)
+        AcquireMonitorWayland(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

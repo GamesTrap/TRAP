@@ -3704,3 +3704,9 @@ SITREP 03/04/2023|23w09c1
     - Branch wayland:
         - Worked around NVIDIA Wayland bug making windows transparent with some blend modes ~<15 mins
         - Marked commented out function parameters with [[maybe_unused]] attribute ~<15 mins
+
+SITREP 03/17/2023|23w11a1
+    - Changed TRAP Engine version to 23w11a1(0.8.102)
+    - Branch wayland:
+        - Implemented PlatformSetWindowMonitorBorderlessWayland() ~<10 mins
+        - Resolved shadowing warnings for "pointer" ~<10 mins

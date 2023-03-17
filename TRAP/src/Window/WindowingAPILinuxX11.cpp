@@ -1806,7 +1806,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessX11(Interna
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	window->BorderlessFullscreen = true;
+	window->BorderlessFullscreen = monitor ? true : false;
 	window->Monitor = monitor;
 	UpdateNormalHints(window, 0, 0);
 
