@@ -3713,3 +3713,8 @@ SITREP 03/17/2023|23w11a1
         - Removed refresh rate rounding to integer ~<5 mins
         - Better names for monitors ~<5 mins
         - WindowingAPI Added Wayland remarks to functions ~<20 mins
+
+SITREP 03/18/2023|23w11a2
+    - Changed TRAP Engine version to 23w11a2(0.8.103)
+    - Branch wayland:
+        - Added video mode emulation ~<30 mins

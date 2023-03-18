@@ -5078,6 +5078,8 @@ namespace TRAP::INTERNAL
 #endif
 		};
 
+		static void AddEmulatedVideoModes(std::vector<InternalVideoMode>& modes, const InternalVideoMode& nativeMode);
+
 		static void OutputHandleGeometry(void* userData, wl_output* output, int32_t x, int32_t y, int32_t physicalWidth, int32_t physicalHeight, int32_t subpixel, const char* make, const char* model, int32_t transform);
 		static void OutputHandleMode(void* userData, wl_output* output, uint32_t flags, int32_t width, int32_t height, int32_t refresh);
 		static void OutputHandleDone(void* userData, wl_output* output);

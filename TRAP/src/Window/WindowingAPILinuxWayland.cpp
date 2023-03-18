@@ -526,6 +526,85 @@ void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleSelection([[maybe_unused]] vo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+constexpr std::array<std::pair<int32_t, int32_t>, 31> EmulatedVideoModes
+{
+    {
+        //16:9 (1.77)
+        { 7680, 4320 },
+        { 6144, 3160 },
+        { 5120, 2880 },
+        { 4096, 2304 },
+        { 3840, 2160 },
+        { 3200, 1800 },
+        { 2880, 1620 },
+        { 2560, 1440 },
+        { 2048, 1152 },
+        { 1920, 1080 },
+        { 1600, 900 },
+        { 1368, 768 },
+        { 1280, 720 },
+        { 864, 486 },
+
+        //16:10 (1.6)
+        { 2560, 1600 },
+        { 1920, 1200 },
+        { 1680, 1050 },
+        { 1440, 900 },
+        { 1280, 800 },
+
+        //3:2 (1.5)
+        { 720, 480 },
+
+        //4:3 (1.33)
+        { 2048, 1536 },
+        { 1920, 1440 },
+        { 1600, 1200 },
+        { 1440, 1080 },
+        { 1400, 1050 },
+        { 1280, 1024 },
+        { 1280, 960 },
+        { 1152, 864 },
+        { 1024, 768 },
+        { 800, 600 },
+        { 640, 480 }
+    }
+};
+
+void TRAP::INTERNAL::WindowingAPI::AddEmulatedVideoModes(std::vector<InternalVideoMode>& modes, const InternalVideoMode& nativeMode)
+{
+    const bool rot90 = nativeMode.Width < nativeMode.Height; //Reverse width / height for portrait displays.
+
+    InternalVideoMode mode{};
+    mode.RedBits = 8;
+    mode.GreenBits = 8;
+    mode.BlueBits = 8;
+    mode.RefreshRate = nativeMode.RefreshRate;
+
+    for(const auto& [width, height] : EmulatedVideoModes)
+    {
+        if(rot90)
+        {
+            mode.Width = height;
+            mode.Height = width;
+        }
+        else
+        {
+            mode.Width = width;
+            mode.Height = height;
+        }
+
+        //Only add modes that are smaller than the native mode
+        if((mode.Width < nativeMode.Width && mode.Height < nativeMode.Height) ||
+           (mode.Width < nativeMode.Width && mode.Height == nativeMode.Height) ||
+           (mode.Width == nativeMode.Width && mode.Height < nativeMode.Height))
+        {
+            modes.push_back(mode);
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::INTERNAL::WindowingAPI::OutputHandleGeometry(void* userData, [[maybe_unused]] wl_output* output,
                                                         int32_t x, int32_t y,
                                                         [[maybe_unused]] int32_t physicalWidth,
@@ -557,10 +636,29 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleMode(void* userData, [[maybe_unus
     mode.BlueBits = 8;
     mode.RefreshRate = refresh / 1000.0;
 
-    monitor->Modes.push_back(mode);
+    const auto ele = std::find_if(monitor->Modes.cbegin(), monitor->Modes.cend(), [mode](const InternalVideoMode& e)
+    {
+        return mode.Width == e.Width && mode.Height == e.Height && mode.RedBits == e.RedBits &&
+               mode.GreenBits == e.GreenBits && mode.BlueBits == e.BlueBits && mode.RefreshRate == e.RefreshRate;
+    });
 
-    if(flags & WL_OUTPUT_MODE_CURRENT)
-        monitor->CurrentMode = monitor->Modes.back();
+    if(ele != monitor->Modes.cend())
+    {
+        if(flags & WL_OUTPUT_MODE_CURRENT)
+            monitor->CurrentMode = mode;
+    }
+    else
+    {
+        monitor->Modes.push_back(mode);
+
+        if(flags & WL_OUTPUT_MODE_CURRENT)
+        {
+            monitor->CurrentMode = monitor->Modes.back();
+            AddEmulatedVideoModes(monitor->Modes, monitor->CurrentMode);
+        }
+    }
+
+	std::sort(monitor->Modes.begin(), monitor->Modes.end(), CompareVideoModes);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
