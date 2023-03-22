@@ -3718,3 +3718,8 @@ SITREP 03/18/2023|23w11a2
     - Changed TRAP Engine version to 23w11a2(0.8.103)
     - Branch wayland:
         - Added video mode emulation ~<30 mins
+
+SITREP 03/22/2023|23w12a1
+    - Changed TRAP Engine version to 23w12a1(0.8.104)
+    - Branch wayland:
+        - WindowingAPILinuxWayland Codestyle const-correctness ~>100 mins

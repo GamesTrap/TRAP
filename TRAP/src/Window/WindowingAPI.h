@@ -5222,12 +5222,12 @@ namespace TRAP::INTERNAL
 		[[nodiscard]] static bool LoadCursorThemeWayland();
 		[[nodiscard]] static std::string ReadDataOfferAsString(wl_data_offer* offer, const char* mimeType);
 		static bool FlushDisplay();
-		static void SetCursorWayland(InternalWindow* window, const std::string& name);
-		static void InputTextWayland(InternalWindow* window, uint32_t scanCode);
+		static void SetCursorWayland(const InternalWindow* const window, const std::string& name);
+		static void InputTextWayland(const InternalWindow* const window, uint32_t scanCode);
 		[[nodiscard]] static xkb_keysym_t ComposeSymbol(xkb_keysym_t sym);
 		static void UpdateContentScaleWayland(InternalWindow* window);
-		static void ResizeWindowWayland(InternalWindow* window);
-		static void SetContentAreaOpaqueWayland(InternalWindow* window);
+		static void ResizeWindowWayland(const InternalWindow* const window);
+		static void SetContentAreaOpaqueWayland(const InternalWindow* const window);
 		static void ReleaseMonitorWayland(InternalWindow* window);
 		static void SetIdleInhibitorWayland(InternalWindow* window, bool enable);
 		static void CreateFallbackDecorationsWayland(InternalWindow* window);
@@ -5247,9 +5247,9 @@ namespace TRAP::INTERNAL
 		static void UnconfinePointerWayland(InternalWindow* window);
 		static void LockPointerWayland(InternalWindow* window);
 		static void UnlockPointerWayland(InternalWindow* window);
-		static void SetCursorImageWayland(InternalWindow* window, InternalCursor::wayland& cursorWayland);
+		static void SetCursorImageWayland(const InternalWindow* const window, InternalCursor::wayland& cursorWayland);
 		static void HandleEventsWayland(double* timeout);
-		static void IncrementCursorImageWayland(InternalWindow* window);
+		static void IncrementCursorImageWayland(const InternalWindow* const window);
 
 		friend std::string TRAP::Input::GetKeyboardLayoutName();
 
