@@ -3724,3 +3724,8 @@ SITREP 03/22/2023|23w12a1
     - Branch wayland:
         - WindowingAPILinuxWayland Codestyle const-correctness ~>100 mins
         - WindowingAPILinuxWayland Added Tracy markers everywhere ~<30 mins
+
+SITREP 03/23/2023|23w12a2
+    - Changed TRAP Engine version to 23w12a2(0.8.105)
+    - Branch wayland:
+        - WindowingAPILinuxWayland Added documentation for functions ~>200 mins

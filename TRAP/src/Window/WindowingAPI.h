@@ -5001,7 +5001,21 @@ namespace TRAP::INTERNAL
 		[[nodiscard]] static std::string GetLinuxKeyboardLayoutNameX11();
 		[[nodiscard]] static std::string GetLinuxKeyboardLayoutNameWayland();
 
+		/// <summary>
+		/// Callback function for Wayland registry notifying the removal of global objects.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="registry">Affected registry object.</param>
+		/// <param name="name">Unique numeric name of the object.</param>
 		static void RegistryHandleGlobalRemove(void* userData, wl_registry* registry, uint32_t name);
+		/// <summary>
+		/// Callback function for Wayland registry notifying the creation of global objects.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="registry">Affected registry object.</param>
+		/// <param name="name">Unique numeric name of the object.</param>
+		/// <param name="interface">Interface implemented by the object.</param>
+		/// <param name="version">Interface version.</param>
 		static void RegistryHandleGlobal(void* userData, wl_registry* registry, uint32_t name, const char* interface, uint32_t version);
 		inline static constexpr wl_registry_listener RegistryListener
 		{
@@ -5009,6 +5023,12 @@ namespace TRAP::INTERNAL
 			RegistryHandleGlobalRemove
 		};
 
+		/// <summary>
+		/// Callback function for LibDecor errors.
+		/// </summary>
+		/// <param name="context">Handle to the affected LibDecor context.</param>
+		/// <param name="error">LibDecor error code.</param>
+		/// <param name="message">Description of the error.</param>
 		static void LibDecorHandleError(libdecor* context, libdecor_error error, const char* message);
 		inline static constexpr libdecor_interface LibDecorInterface
 		{
@@ -5025,13 +5045,33 @@ namespace TRAP::INTERNAL
 			nullptr
 		};
 
+		/// <summary>
+		/// Callback function for Wayland to check if the client is still alive.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="wmBase">Affected xdg_wm_base object.</param>
+		/// <param name="serial">Serial to pass back to the compositor via "pong" request.</param>
 		static void WMBaseHandlePing(void* userData, xdg_wm_base* wmBase, uint32_t serial);
 		inline static constexpr xdg_wm_base_listener WMBaseListener
 		{
 			WMBaseHandlePing
 		};
 
+		/// <summary>
+		/// Callback function for Wayland to retrieve the capabilities of
+		/// a "seat" (a group of keyboards, pointers and touch devices).
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="seat">Affected wl_seat object.</param>
+		/// <param name="caps">Capabilities of the wl_seat object.</param>
 		static void SeatHandleCapabilities(void* userData, wl_seat* seat, uint32_t caps);
+		/// <summary>
+		/// Callback function for Wayland to retrieve the unique identifier of
+		/// a "seat" (a group of keyboards, pointers and touch devices).
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="seat">Affected wl_seat object.</param>
+		/// <param name="name">Unique identifier of the wl_seat object.</param>
 		static void SeatHandleName(void* userData, wl_seat* seat, const char* name);
 		inline static constexpr wl_seat_listener SeatListener
 		{
@@ -5039,10 +5079,56 @@ namespace TRAP::INTERNAL
 			SeatHandleName
 		};
 
+		/// <summary>
+		/// Callback function for Wayland notifying that the pointer
+		/// is focused on a certain surface.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="pointer">Affected wl_pointer.</param>
+		/// <param name="serial">Unique identifier of the pointer enter event.</param>
+		/// <param name="surface">Surface that got focused.</param>
+		/// <param name="sX">X position of the pointer on the surface.</param>
+		/// <param name="sY">Y position of the pointer on the surface.</param>
 		static void PointerHandleEnter(void* userData, wl_pointer* pointer, uint32_t serial, wl_surface* surface, wl_fixed_t sX, wl_fixed_t sY);
+		/// <summary>
+		/// Callback function for Wayland notifying that the pointer
+		/// is unfocused on a certain surface.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="pointer">Affected wl_pointer.</param>
+		/// <param name="serial">Unique identifier of the pointer leave event.</param>
+		/// <param name="surface">Surface that got unfocused.</param>
 		static void PointerHandleLeave(void* userData, wl_pointer* pointer, uint32_t serial, wl_surface* surface);
+		/// <summary>
+		/// Callback function for Wayland notifying that the pointer
+		/// has changed position.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="pointer">Affected wl_pointer.</param>
+		/// <param name="time">Timestamp of the event.</param>
+		/// <param name="sX">New X position on the surface.</param>
+		/// <param name="sY">New Y position on the surface.</param>
 		static void PointerHandleMotion(void* userData, wl_pointer* pointer, uint32_t time, wl_fixed_t sX, wl_fixed_t sY);
+		/// <summary>
+		/// Callback function for Wayland notifying that the pointer
+		/// button has been clicked or released.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="pointer">Affected wl_pointer.</param>
+		/// <param name="serial">Unique identifier of the pointer button event.</param>
+		/// <param name="time">Timestammp of the event.</param>
+		/// <param name="button">Affected button.</param>
+		/// <param name="state">State of the affected button</param>
 		static void PointerHandleButton(void* userData, wl_pointer* pointer, uint32_t serial, uint32_t time, uint32_t button, uint32_t state);
+		/// <summary>
+		/// Callback function for Wayland notifying that the pointer
+		/// axis has changed.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="pointer">Affected wl_pointer.</param>
+		/// <param name="time">Timestamp of the event.</param>
+		/// <param name="axis">Affected axis</param>
+		/// <param name="value">Amount of relative movement on the axis.</param>
 		static void PointerHandleAxis(void* userData, wl_pointer* pointer, uint32_t time, uint32_t axis, wl_fixed_t value);
 		inline static constexpr wl_pointer_listener PointerListener
 		{
@@ -5058,12 +5144,66 @@ namespace TRAP::INTERNAL
 			nullptr
 		};
 
+		/// <summary>
+		/// Callback function for Wayland notifying about the keyboard mapping.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="keyboard">Affected wl_keyboard.</param>
+		/// <param name="format">Format of the keyboard mapping.</param>
+		/// <param name="fd">Keyboard map file descriptor.</param>
+		/// <param name="size">Keyboard map size in bytes.</param>
 		static void KeyboardHandleKeymap(void* userData, wl_keyboard* keyboard, uint32_t format, int32_t fd, uint32_t size);
+		/// <summary>
+		/// Callback function for Wayland notifying that the keyboard has
+		/// been focused on a certain surface.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="keyboard">Affected wl_keyboard.</param>
+		/// <param name="serial">Unique identifier of the keyboard enter event.</param>
+		/// <param name="surface">Surface that got focused.</param>
+		/// <param name="keys">Currently pressed keys.</param>
 		static void KeyboardHandleEnter(void* userData, wl_keyboard* keyboard, uint32_t serial, wl_surface* surface, wl_array* keys);
+		/// <summary>
+		/// Callback function for Wayland notifying that the keyboard has
+		/// been unfocused on a certain surface.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="keyboard">Affected wl_keyboard.</param>
+		/// <param name="serial">Unique identifier of the keyboard leave event.</param>
+		/// <param name="surface">Surface that got unfocused.</param>
 		static void KeyboardHandleLeave(void* userData, wl_keyboard* keyboard, uint32_t serial, wl_surface* surface);
+		/// <summary>
+		/// Callback function for Wayland notifying that
+		/// a key on the keyboard has changed its state.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="keyboard">Affected wl_keyboard.</param>
+		/// <param name="serial">Unique identifier of the keyboard key event.</param>
+		/// <param name="time">Timestamp of the event.</param>
+		/// <param name="scanCode">Affected key.</param>
+		/// <param name="state">State of the key.</param>
 		static void KeyboardHandleKey(void* userData, wl_keyboard* keyboard, uint32_t serial, uint32_t time, uint32_t scanCode, uint32_t state);
+		/// <summary>
+		/// Callback function for Wayland notifying that
+		/// the keyboard modifiers have changed.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="keyboard">Affected wl_keyboard.</param>
+		/// <param name="serial">Unique identifier of the keyboard modifiers event.</param>
+		/// <param name="modsDepressed">Depressed modifiers.</param>
+		/// <param name="modsLatched">Latched modifiers.</param>
+		/// <param name="modsLocked">Locked modifiers.</param>
+		/// <param name="group">Keyboard layout.</param>
 		static void KeyboardHandleModifiers(void* userData, wl_keyboard* keyboard, uint32_t serial, uint32_t modsDepressed, uint32_t modsLatched, uint32_t modsLocked, uint32_t group);
 #ifdef WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION
+		/// <summary>
+		/// Callback function for Wayland notifying about
+		/// the keyboard repeat rate and delay.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="keyboard">Affected wl_keyboard.</param>
+		/// <param name="rate">Rate of repeating keys in characters per second.</param>
+		/// <param name="delay">Delay in milliseconds since key down until repeating starts.</param>
 		static void KeyboardHandleRepeatInfo(void* userData, wl_keyboard* keyboard, int32_t rate, int32_t delay);
 #endif
 		inline static constexpr wl_keyboard_listener KeyboardListener
@@ -5078,14 +5218,69 @@ namespace TRAP::INTERNAL
 #endif
 		};
 
-		static void AddEmulatedVideoModes(std::vector<InternalVideoMode>& modes, const InternalVideoMode& nativeMode);
+		/// <summary>
+		/// This functions adds a set of custom video modes to the monitor.
+		/// This is needed for arbitrary fullscreen video modes as Wayland
+		/// doesn't offer a way of querying the monitors available video modes.
+		/// </summary>
+		/// <param name="monitor">Monitor to add video modes to.</param>
+		static void AddEmulatedVideoModes(InternalMonitor* monitor);
 
+		/// <summary>
+		/// Callback function for Wayland notifying about an
+		/// output handles geometry.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="output">Affected output.</param>
+		/// <param name="x">X position of the monitor within the global compositor space.</param>
+		/// <param name="y">Y position of the monitor within the global compositor space.</param>
+		/// <param name="physicalWidth">Width in millimeters of the output.</param>
+		/// <param name="physicalHeight">Height in millimeters of the output.</param>
+		/// <param name="subpixel">Subpixel orientationof the output.</param>
+		/// <param name="make">Description of the manufacturer.</param>
+		/// <param name="model">Description of the model.</param>
+		/// <param name="transform">Transform that maps framebuffer to output.</param>
 		static void OutputHandleGeometry(void* userData, wl_output* output, int32_t x, int32_t y, int32_t physicalWidth, int32_t physicalHeight, int32_t subpixel, const char* make, const char* model, int32_t transform);
+		/// <summary>
+		/// Callback function for Wayland notifying about an available video mode
+		/// for the output.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="output">Affected output.</param>
+		/// <param name="flags">Bitfield of mode flags.</param>
+		/// <param name="width">Width of the mode.</param>
+		/// <param name="height">Height of the mode.</param>
+		/// <param name="refresh">Refresh rate of the mode.</param>
 		static void OutputHandleMode(void* userData, wl_output* output, uint32_t flags, int32_t width, int32_t height, int32_t refresh);
+		/// <summary>
+		/// Callback function for Wayland notifying that the
+		/// output has finished sending events.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="output">Affected output.</param>
 		static void OutputHandleDone(void* userData, wl_output* output);
+		/// <summary>
+		/// Callback function for Wayland notifying that the
+		/// output has a new scaling factor.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="output">Affected output.</param>
+		/// <param name="factor">New scaling factor.</param>
 		static void OutputHandleScale(void* userData, wl_output* output, int32_t factor);
 #ifdef WL_OUTPUT_NAME_SINCE_VERSION
+		/// <summary>
+		/// Callback function for Wayland notifying about the name of the output.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="output">Affected output.</param>
+		/// <param name="name">Name of the output.</param>
 		static void OutputHandleName(void* userData, wl_output* output, const char* name);
+		/// <summary>
+		/// Callback function for Wayland notifying about the description of the output.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="output">Affected output.</param>
+		/// <param name="description">Description of the output.</param>
 		static void OutputHandleDescription(void* userData, wl_output* output, const char* description);
 #endif
 		inline static constexpr wl_output_listener OutputListener
@@ -5100,11 +5295,51 @@ namespace TRAP::INTERNAL
 #endif
 		};
 
+		/// <summary>
+		/// Callback function for Wayland initiating a new data offer.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="device">Wayland data device object.</param>
+		/// <param name="offer">Wayland data offer object.</param>
 		static void DataDeviceHandleDataOffer(void* userData, wl_data_device* device, wl_data_offer* offer);
+		/// <summary>
+		/// Callback function for Wayland initiating a new drag-and-drop session.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="device">Wayland data device object.</param>
+		/// <param name="serial">Unique identifier of the data enter event.</param>
+		/// <param name="surface">Affected wl_surface.</param>
+		/// <param name="x">X position on the surface.</param>
+		/// <param name="y">Y position on the surface.</param>
+		/// <param name="offer">Wayland data offer object.</param>
 		static void DataDeviceHandleEnter(void* userData, wl_data_device* device, uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y, wl_data_offer* offer);
+		/// <summary>
+		/// Callback function for Wayland ending a drag-and-drop session.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="device">Wayland data device object.</param>
 		static void DataDeviceHandleLeave(void* userData, wl_data_device* device);
+		/// <summary>
+		/// Callback function for Wayland notifying about motion in a drag-and-drop session.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="device">Wayland data device object.</param>
+		/// <param name="time">Timestamp of the event.</param>
+		/// <param name="x">New X position on the surface.</param>
+		/// <param name="y">New Y position on the surface.</param>
 		static void DataDeviceHandleMotion(void* userData, wl_data_device* device, uint32_t time, wl_fixed_t x, wl_fixed_t y);
+		/// <summary>
+		/// Callback function for Wayland notifying about a successful drag-and-drop operation.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="device">Wayland data device object.</param>
 		static void DataDeviceHandleDrop(void* userData, wl_data_device* device);
+		/// <summary>
+		/// Callback function for Wayland notifying about a new drag-and-drop selection.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="device">Wayland data device object.</param>
+		/// <param name="offer">Wayland data offer object.</param>
 		static void DataDeviceHandleSelection(void* userData, wl_data_device* device, wl_data_offer* offer);
 		inline static constexpr wl_data_device_listener DataDeviceListener
 		{
@@ -5116,6 +5351,12 @@ namespace TRAP::INTERNAL
 			DataDeviceHandleSelection
 		};
 
+		/// <summary>
+		/// Callback function for Wayland notifying about the mime type of a data offer.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="offer">Wayland data offer object.</param>
+		/// <param name="mimeType">Offered mime type.</param>
 		static void DataOfferHandleOffer(void* userData, wl_data_offer* offer, const char* mimeType);
 		inline static constexpr wl_data_offer_listener DataOfferListener
 		{
@@ -5124,13 +5365,33 @@ namespace TRAP::INTERNAL
 			nullptr
 		};
 
+		/// <summary>
+		/// Callback function for Wayland suggesting a surface change.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="surface">Affected surface.</param>
+		/// <param name="serial">Unique identifier of the XDG surface configure event.</param>
 		static void XDGSurfaceHandleConfigure(void* userData, xdg_surface* surface, uint32_t serial);
 		inline static constexpr xdg_surface_listener XDGSurfaceListener
 		{
 			XDGSurfaceHandleConfigure
 		};
 
+		/// <summary>
+		/// Callback function for Wayland suggesting a surface change
+		/// for the toplevel surface.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="topLevel">Affected toplevel surface.</param>
+		/// <param name="width">Suggested width.</param>
+		/// <param name="height">Suggested height.</param>
+		/// <param name="states">How to interpret the width and height arguments.</param>
 		static void XDGTopLevelHandleConfigure(void* userData, xdg_toplevel* topLevel, int32_t width, int32_t height, wl_array* states);
+		/// <summary>
+		/// Callback function for Wayland notifying that the toplevel surface wants to be closed.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="topLevel">Affected toplevel surface.</param>
 		static void XDGTopLevelHandleClose(void* userData, xdg_toplevel* topLevel);
 		inline static constexpr xdg_toplevel_listener XDGTopLevelListener
 		{
@@ -5140,19 +5401,43 @@ namespace TRAP::INTERNAL
 			nullptr
 		};
 
+		/// <summary>
+		/// Callback function for Wayland notifying that the XDG activation is done.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="activationToken">XDG activation token object.</param>
+		/// <param name="token">Exported activation token.</param>
 		static void XDGActivationHandleDone(void* userData, xdg_activation_token_v1* activationToken, const char* token);
 		inline static constexpr xdg_activation_token_v1_listener XDGActivationListener
 		{
 			XDGActivationHandleDone
 		};
 
+		/// <summary>
+		/// Callback function for Wayland suggesting to change the decoration mode.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="decoration">XDG toplevel decoration object.</param>
+		/// <param name="mode">Decoration mode.</param>
 		static void XDGDecorationHandleConfigure(void* userData, zxdg_toplevel_decoration_v1* decoration, uint32_t mode);
 		inline static constexpr zxdg_toplevel_decoration_v1_listener XDGDecorationListener
 		{
 			XDGDecorationHandleConfigure
 		};
 
+		/// <summary>
+		/// Callback function for Wayland notifying that an output entered a surface.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="surface">Affected surface.</param>
+		/// <param name="output">Output that entered the surface.</param>
 		static void SurfaceHandleEnter(void* userData, wl_surface* surface, wl_output* output);
+		/// <summary>
+		/// Callback function for Wayland notifying that an output left a surface.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="surface">Affected surface.</param>
+		/// <param name="output">Output that left the surface.</param>
 		static void SurfaceHandleLeave(void* userData, wl_surface* surface, wl_output* output);
 		inline static constexpr wl_surface_listener SurfaceListener
 		{
@@ -5160,7 +5445,19 @@ namespace TRAP::INTERNAL
 			SurfaceHandleLeave
 		};
 
+		/// <summary>
+		/// Callback function for Wayland notifying that
+		/// pointer confinement has been activated.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="confinedPointer">ZWP confined pointer object.</param>
 		static void ConfinedPointerHandleConfined(void* userData, zwp_confined_pointer_v1* confinedPointer);
+		/// <summary>
+		/// Callback function for Wayland notifying that
+		/// pointer confinement has been deactivated.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="confinedPointer">ZWP confined pointer object.</param>
 		static void ConfinedPointerHandleUnconfined(void* userData, zwp_confined_pointer_v1* confinedPointer);
 		inline static constexpr zwp_confined_pointer_v1_listener ConfinedPointerListener
 		{
@@ -5168,6 +5465,17 @@ namespace TRAP::INTERNAL
 			ConfinedPointerHandleUnconfined
 		};
 
+		/// <summary>
+		/// Callback function for Wayland notifying that the relative pointer moved.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="pointer">Affected pointer.</param>
+		/// <param name="timeHi">High 32 bits of a 64 bit timestamp.</param>
+		/// <param name="timeLo">Low 32 bits of a 64 bit timestamp.</param>
+		/// <param name="dx">X component of the motion vector.</param>
+		/// <param name="dy">Y component of the motion vector.</param>
+		/// <param name="dxUnaccel">X component of the unaccelerated motion vector.</param>
+		/// <param name="dyUnaccel">Y component of the unaccelerated motion vector.</param>
 		static void RelativePointerHandleRelativeMotion(void* userData, zwp_relative_pointer_v1* pointer, uint32_t timeHi,
 		                                                uint32_t timeLo, wl_fixed_t dx, wl_fixed_t dy, wl_fixed_t dxUnaccel, wl_fixed_t dyUnaccel);
 		inline static constexpr zwp_relative_pointer_v1_listener RelativePointerListener
@@ -5175,7 +5483,17 @@ namespace TRAP::INTERNAL
 			RelativePointerHandleRelativeMotion
 		};
 
+		/// <summary>
+		/// Callback function for Wayland notifying that pointer has been locked.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="lockedPointer">ZWP locked pointer object.</param>
 		static void LockedPointerHandleLocked(void* userData, zwp_locked_pointer_v1* lockedPointer);
+		/// <summary>
+		/// Callback function for Wayland notifying that pointer has been unlocked.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="lockedPointer">ZWP locked pointer object.</param>
 		static void LockedPointerHandleUnlocked(void* userData, zwp_locked_pointer_v1* lockedPointer);
 		inline static constexpr zwp_locked_pointer_v1_listener LockedPointerListener
 		{
@@ -5183,8 +5501,26 @@ namespace TRAP::INTERNAL
 			LockedPointerHandleUnlocked
 		};
 
+		/// <summary>
+		/// Callback function for Wayland called when an offered mime type got accepted.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="source">Wayland data source object.</param>
+		/// <param name="mimeType">Accepted mime type.</param>
 		static void DataSourceHandleTarget(void* userData, wl_data_source* source, const char* mimeType);
+		/// <summary>
+		/// Callback function for Wayland notifying about a data request.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="source">Wayland data source object.</param>
+		/// <param name="mimeType">Mime type.</param>
+		/// <param name="fd">File descriptor for data transfer.</param>
 		static void DataSourceHandleSend(void* userData, wl_data_source* source, const char* mimeType, int32_t fd);
+		/// <summary>
+		/// Callback function for Wayland notifying that a data request got cancelled.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="source">Wayland data source object.</param>
 		static void DataSourceHandleCancelled(void* userData, wl_data_source* source);
 		inline static constexpr wl_data_source_listener DataSourceListener
 		{
@@ -5196,10 +5532,34 @@ namespace TRAP::INTERNAL
 			nullptr
 		};
 
-
+		/// <summary>
+		/// Callback function for Wayland notifying that a new configuration was received.
+		/// </summary>
+		/// <param name="frame">LibDecor frame object.</param>
+		/// <param name="config">LibDecor configuration object.</param>
+		/// <param name="userData">Pointer to user provided data.</param>
 		static void LibDecorFrameHandleConfigure(libdecor_frame* frame, libdecor_configuration* config, void* userData);
+		/// <summary>
+		/// Callback function for Wayland notifying that window
+		/// was requested to be closed by compositor.
+		/// </summary>
+		/// <param name="frame">LibDecor frame object.</param>
+		/// <param name="userData">Pointer to user provided data.</param>
 		static void LibDecorFrameHandleClose(libdecor_frame* frame, void* userData);
+		/// <summary>
+		/// Callback function for Wayland notifying about a
+		/// request to commit the main surface.
+		/// </summary>
+		/// <param name="frame">LibDecor frame object.</param>
+		/// <param name="userData">Pointer to user provided data.</param>
 		static void LibDecorFrameHandleCommit(libdecor_frame* frame, void* userData);
+		/// <summary>
+		/// Callback function for Wayland notifying that any mapped popup
+		/// that has grab on the given seat should be dismissed.
+		/// </summary>
+		/// <param name="frame">LibDecor frame object.</param>
+		/// <param name="seatName">Seat to dismiss popups for.</param>
+		/// <param name="userData">Pointer to user provided data.</param>
 		static void LibDecorFrameHandleDismissPopup(libdecor_frame* frame, const char* seatName, void* userData);
 		inline static constexpr libdecor_frame_interface LibDecorFrameInterface
 		{
@@ -5219,36 +5579,195 @@ namespace TRAP::INTERNAL
 			nullptr,
 		};
 
+		/// <summary>
+		/// This function tries to load the cursor's size and theme.
+		/// </summary>
+		/// <returns>True on success, false otherwise.</returns>
 		[[nodiscard]] static bool LoadCursorThemeWayland();
+		/// <summary>
+		/// Read a Wayland data offer as a string.
+		/// </summary>
+		/// <param name="offer">Wayland data offer object.</param>
+		/// <param name="mimeType">Mime type of data to receive.</param>
+		/// <returns>Read data on success, empty string otherwise</returns>
 		[[nodiscard]] static std::string ReadDataOfferAsString(wl_data_offer* offer, const char* mimeType);
+		/// <summary>
+		/// Flush the display till it succeeds.
+		/// </summary>
+		/// <returns>True on successful flush, false otherwise.</returns>
 		static bool FlushDisplay();
+		/// <summary>
+		/// Set the given cursor for the window.
+		/// </summary>
+		/// <param name="window">Window to set cursor on.</param>
+		/// <param name="name">Name of the cursor to set.</param>
 		static void SetCursorWayland(const InternalWindow* const window, const std::string& name);
+		/// <summary>
+		/// Process Wayland text input (calls InputChar()) on the given window.
+		/// </summary>
+		/// <param name="window">Window to input text on.</param>
+		/// <param name="scanCode">Wayland key.</param>
 		static void InputTextWayland(const InternalWindow* const window, uint32_t scanCode);
+		/// <summary>
+		/// Compose an XKB key symbol.
+		/// </summary>
+		/// <param name="sym">XKB key symbol to compose.</param>
+		/// <returns>Composed XBK key symbol.</returns>
 		[[nodiscard]] static xkb_keysym_t ComposeSymbol(xkb_keysym_t sym);
+		/// <summary>
+		/// Update the content scaling of the given window.
+		/// </summary>
+		/// <param name="window">Window to update content scaling for.</param>
 		static void UpdateContentScaleWayland(InternalWindow* window);
+		/// <summary>
+		/// Resize the given window to the current framebuffer size.
+		/// </summary>
+		/// <param name="window">Window to resize.</param>
 		static void ResizeWindowWayland(const InternalWindow* const window);
+		/// <summary>
+		/// Make the content area (surface) of the given window opaque.
+		/// </summary>
+		/// <param name="window">Window to make content area opaque for.</param>
 		static void SetContentAreaOpaqueWayland(const InternalWindow* const window);
+		/// <summary>
+		/// Release the acquired monitor from the given window.
+		/// This disables fullscreen for the window if a monitor is acquired.
+		/// </summary>
+		/// <param name="window">Window to release monitor from.</param>
 		static void ReleaseMonitorWayland(InternalWindow* window);
+		/// <summary>
+		/// Whether the enable or disable the idle (screen saver) inhibitor.
+		/// </summary>
+		/// <param name="window">Window to set the idle inhibitor for.</param>
+		/// <param name="enable">Whether to enable or disable the idle inhibitor.</param>
 		static void SetIdleInhibitorWayland(InternalWindow* window, bool enable);
+		/// <summary>
+		/// Create the fallback window decoration.
+		/// This is used when both XDG server side decorations and libdecor are unavailable.
+		/// </summary>
+		/// <param name="window">Window to create decorations for.</param>
 		static void CreateFallbackDecorationsWayland(InternalWindow* window);
+		/// <summary>
+		/// Create a shared memory buffer with the contents of the given image.
+		/// </summary>
+		/// <param name="image">Image to copy into the shared memory buffer.</param>
+		/// <returns>Newly created shared memory buffer on success, nullptr otherwise.</returns>
 		[[nodiscard]] static wl_buffer* CreateShmBufferWayland(const Image* image);
+		/// <summary>
+		/// Create an anonymous file handle with given size in bytes.
+		/// </summary>
+		/// <param name="size">Size in bytes for the file handle.</param>
+		/// <returns>File descriptor on success, -1 otherwise.</returns>
 		[[nodiscard]] static int32_t CreateAnonymousFileWayland(off_t size);
+		/// <summary>
+		/// Create a unique temporary file
+		/// </summary>
+		/// <param name="tmpName">Template filename.</param>
+		/// <returns>File descriptor.</returns>
 		[[nodiscard]] static int32_t CreateTmpFileCloexec(char* tmpName);
+		/// <summary>
+		/// Create a fallback decoration for the given window.
+		/// </summary>
+		/// <param name="window">Window to create decoration for.</param>
+		/// <param name="decoration">Data of the decoration.</param>
+		/// <param name="parent">Parent surface of the decoration.</param>
+		/// <param name="buffer">Buffer to set as content of the decoration surface.</param>
+		/// <param name="x">X position for the decoration surface.</param>
+		/// <param name="y">Y position for the decoration surface.</param>
+		/// <param name="width">Width for the decoration surface.</param>
+		/// <param name="height">Height for the decoration surface.</param>
 		static void CreateFallbackDecorationWayland(InternalWindow* window, TRAPDecorationWayland& decoration, wl_surface* parent, wl_buffer* buffer, int32_t x, int32_t y, int32_t width, int32_t height);
+		/// <summary>
+		/// Acquire monitor on the given window.
+		/// This also enables fullscreen mode for the window.
+		/// </summary>
+		/// <param name="window">Window to acquire monitor on.</param>
 		static void AcquireMonitorWayland(InternalWindow* window);
+		/// <summary>
+		/// Destroy the fallback window decorations on the given window.
+		/// </summary>
+		/// <param name="window">Window to destroy fallback decorations for.</param>
 		static void DestroyFallbackDecorationsWayland(InternalWindow* window);
+		/// <summary>
+		/// Destroy a fallback decoration.
+		/// </summary>
+		/// <param name="decoration">Decoration to destroy.</param>
 		static void DestroyFallbackDecorationWayland(TRAPDecorationWayland& decoration);
+		/// <summary>
+		/// Destroy shell objects on the given window.
+		/// This destroys the following objects:
+		/// - Fallback window decorations
+		/// - LibDecor frame
+		/// - XDG decorations
+		/// - XDG TopLevel
+		/// - XDG Surface
+		/// </summary>
+		/// <param name="window">Window to destroy shell objects for.</param>
 		static void DestroyShellObjectsWayland(InternalWindow* window);
+		/// <summary>
+		/// Create window decorations using LibDecor for the given window.
+		/// </summary>
+		/// <param name="window">Window to create decorations for.</param>
+		/// <returns>True on successful window decoration creation, false otherwise.</returns>
 		[[nodiscard]] static bool CreateLibDecorFrame(InternalWindow* window);
+		/// <summary>
+		/// Create XDG shell objects for the given window.
+		/// </summary>
+		/// <param name="window">Window to create XDG shell objects for.</param>
+		/// <returns>True on success, false otherwise.</returns>
 		[[nodiscard]] static bool CreateXDGShellObjectsWayland(InternalWindow* window);
+		/// <summary>
+		/// Create shell objects for the given window.
+		/// </summary>
+		/// <param name="window">Window to create shell objects for.</param>
+		/// <returns>True on success, false otherwise.</returns>
 		static bool CreateShellObjectsWayland(InternalWindow* window);
+		/// <summary>
+		/// Create the surface for the given window.
+		/// </summary>
+		/// <param name="window">Window to create surface for.</param>
+		/// <param name="WNDConfig">WindowConfig to use for the surface.</param>
+		/// <returns>True on success, false otherwise.</returns>
 		[[nodiscard]] static bool CreateNativeSurfaceWayland(InternalWindow* window, WindowConfig& WNDConfig);
+		/// <summary>
+		/// Confine the pointer/cursor to the limits of the given window.
+		/// </summary>
+		/// <param name="window">Window to confine pointer to.</param>
 		static void ConfinePointerWayland(InternalWindow* window);
+		/// <summary>
+		/// Unconfine the pointer/cursor from the limits of the given window.
+		/// </summary>
+		/// <param name="window">Window to unconfine pointer from.</param>
 		static void UnconfinePointerWayland(InternalWindow* window);
+		/// <summary>
+		/// Lock the pointer/cursor to the given window.
+		/// </summary>
+		/// <param name="window">Window to lock pointer to.</param>
 		static void LockPointerWayland(InternalWindow* window);
+		/// <summary>
+		/// Unlock the pointer/cursor from the given window.
+		/// </summary>
+		/// <param name="window">Window to unlock pointer from.</param>
 		static void UnlockPointerWayland(InternalWindow* window);
+		/// <summary>
+		/// Set a custom image as mouse cursor for the given window.
+		/// </summary>
+		/// <param name="window">Window to set mouse cursor image on.</param>
+		/// <param name="cursorWayland">Data of the cursor to set.</param>
 		static void SetCursorImageWayland(const InternalWindow* const window, InternalCursor::wayland& cursorWayland);
+		/// <summary>
+		/// Wayland event pump.
+		/// </summary>
+		/// <param name="timeout">
+		/// Amount of time to wait for events before timing out.
+		/// Using nullptr disabled the timeout functionality.
+		/// </param>
 		static void HandleEventsWayland(double* timeout);
+		/// <summary>
+		/// Increment the cursor image counter of the given window.
+		/// This is needed for animated cursor to display the animation.
+		/// </summary>
+		/// <param name="window">Window to increment cursor image counter on.</param>
 		static void IncrementCursorImageWayland(const InternalWindow* const window);
 
 		friend std::string TRAP::Input::GetKeyboardLayoutName();
