@@ -566,11 +566,11 @@ void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleDrop([[maybe_unused]] void* c
     if(!s_Data.Wayland.DragOffer)
         return;
 
-    std::string string = ReadDataOfferAsString(s_Data.Wayland.DragOffer, "text/uri-list");
-    if(!string.empty())
+    std::optional<std::string> string = ReadDataOfferAsString(s_Data.Wayland.DragOffer, "text/uri-list");
+    if(string && (*string).empty())
     {
         int32_t count = 0;
-        const std::vector<std::string> paths = ParseUriList(string.data(), count);
+        const std::vector<std::string> paths = ParseUriList((*string).data(), count);
         if(!paths.empty())
             InputDrop(s_Data.Wayland.DragFocus, paths);
     }
@@ -1678,7 +1678,8 @@ bool TRAP::INTERNAL::WindowingAPI::LoadCursorThemeWayland()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::INTERNAL::WindowingAPI::ReadDataOfferAsString(wl_data_offer* const offer, const char* const mimeType)
+std::optional<std::string> TRAP::INTERNAL::WindowingAPI::ReadDataOfferAsString(wl_data_offer* const offer,
+                                                                               const char* const mimeType)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -1690,7 +1691,7 @@ std::string TRAP::INTERNAL::WindowingAPI::ReadDataOfferAsString(wl_data_offer* c
     if(pipe2(fds.data(), O_CLOEXEC) == -1)
     {
         InputError(Error::Platform_Error, "[Wayland] Failed to create pipe for data offer: " + Utils::String::GetStrError());
-        return {};
+        return std::nullopt;
     }
 
     wl_data_offer_receive(offer, mimeType, fds[1]);
@@ -1721,7 +1722,7 @@ std::string TRAP::INTERNAL::WindowingAPI::ReadDataOfferAsString(wl_data_offer* c
 
             InputError(Error::Platform_Error, "[Wayland] Failed to read data offer pipe: " + Utils::String::GetStrError());
             close(fds[0]);
-            return "";
+            return std::nullopt;
         }
 
         length += result;
@@ -2017,25 +2018,25 @@ wl_buffer* TRAP::INTERNAL::WindowingAPI::CreateShmBufferWayland(const Image* con
     const int32_t stride = image->GetWidth() * 4;
     const int32_t length = image->GetWidth() * image->GetHeight() * 4;
 
-    const int32_t fd = CreateAnonymousFileWayland(length);
-    if(fd < 0)
+    const std::optional<int32_t> fd = CreateAnonymousFileWayland(length);
+    if(!fd)
     {
         InputError(Error::Platform_Error, "[Wayland] Failed to create buffer file of size " +
                    std::to_string(length) + ": " + Utils::String::GetStrError());
         return nullptr;
     }
 
-    void* data = mmap(nullptr, length, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    void* data = mmap(nullptr, length, PROT_READ | PROT_WRITE, MAP_SHARED, *fd, 0);
     if(data == MAP_FAILED)
     {
         InputError(Error::Platform_Error, "[Wayland] Failed to map file: " + Utils::String::GetStrError());
-        close(fd);
+        close(*fd);
         return nullptr;
     }
 
-    wl_shm_pool* const pool = wl_shm_create_pool(s_Data.Wayland.Shm, fd, length);
+    wl_shm_pool* const pool = wl_shm_create_pool(s_Data.Wayland.Shm, *fd, length);
 
-    close(fd);
+    close(*fd);
 
     const uint8_t* source = static_cast<const uint8_t*>(image->GetPixelData());
     uint8_t* target = static_cast<uint8_t*>(data);
@@ -2059,7 +2060,7 @@ wl_buffer* TRAP::INTERNAL::WindowingAPI::CreateShmBufferWayland(const Image* con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::INTERNAL::WindowingAPI::CreateAnonymousFileWayland(const off_t size)
+std::optional<int32_t> TRAP::INTERNAL::WindowingAPI::CreateAnonymousFileWayland(const off_t size)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2088,15 +2089,15 @@ int32_t TRAP::INTERNAL::WindowingAPI::CreateAnonymousFileWayland(const off_t siz
         if(!path)
         {
             errno = ENOENT;
-            return -1;
+            return std::nullopt;
         }
 
         std::string name = path;
         name += temp;
 
-        fd = CreateTmpFileCloexec(name.data());
+        fd = CreateTmpFileCloexec(name.data()).value_or(-1);
         if(fd < 0)
-            return -1;
+            return std::nullopt;
     }
 
 #ifdef SHM_ANON
@@ -2109,7 +2110,7 @@ int32_t TRAP::INTERNAL::WindowingAPI::CreateAnonymousFileWayland(const off_t siz
     {
         close(fd);
         errno = ret;
-        return -1;
+        return std::nullopt;
     }
 
     return fd;
@@ -2117,7 +2118,7 @@ int32_t TRAP::INTERNAL::WindowingAPI::CreateAnonymousFileWayland(const off_t siz
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::INTERNAL::WindowingAPI::CreateTmpFileCloexec(char* const tmpName)
+std::optional<int32_t> TRAP::INTERNAL::WindowingAPI::CreateTmpFileCloexec(char* const tmpName)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -2125,9 +2126,12 @@ int32_t TRAP::INTERNAL::WindowingAPI::CreateTmpFileCloexec(char* const tmpName)
 
     const int32_t fd = mkostemp(tmpName, O_CLOEXEC);
     if(fd >= 0)
+    {
         unlink(tmpName);
+        return fd;
+    }
 
-    return fd;
+    return std::nullopt;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3544,7 +3548,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorWayland(InternalWindow* cons
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(window, "WindowingAPI::PlatformSetCursorWayland(): InternalWindow is nullptr!");
-	TRAP_ASSERT(cursor, "WindowingAPI::PlatformSetCursorWayland(): InternalCursor is nullptr!");
 
     if(!s_Data.Wayland.Pointer)
         return;
@@ -4067,7 +4070,10 @@ std::string TRAP::INTERNAL::WindowingAPI::PlatformGetClipboardStringWayland()
     if(s_Data.Wayland.SelectionSource)
         return s_Data.ClipboardString;
 
-    s_Data.ClipboardString = ReadDataOfferAsString(s_Data.Wayland.SelectionOffer, "text/plain;charset=utf-8");
+
+    const auto clipboard = ReadDataOfferAsString(s_Data.Wayland.SelectionOffer, "text/plain;charset=utf-8");
+    s_Data.ClipboardString = clipboard.value_or("");
+
     return s_Data.ClipboardString;
 }
 

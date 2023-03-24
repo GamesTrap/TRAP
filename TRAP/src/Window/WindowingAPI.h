@@ -31,6 +31,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Core/PlatformDetection.h"
 
 #include <forward_list>
+#include <optional>
 
 #ifdef TRAP_PLATFORM_LINUX
 #include "Utils/Linux.h"
@@ -5589,8 +5590,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="offer">Wayland data offer object.</param>
 		/// <param name="mimeType">Mime type of data to receive.</param>
-		/// <returns>Read data on success, empty string otherwise</returns>
-		[[nodiscard]] static std::string ReadDataOfferAsString(wl_data_offer* offer, const char* mimeType);
+		/// <returns>Read data on success, empty optional otherwise</returns>
+		[[nodiscard]] static std::optional<std::string> ReadDataOfferAsString(wl_data_offer* offer, const char* mimeType);
 		/// <summary>
 		/// Flush the display till it succeeds.
 		/// </summary>
@@ -5657,14 +5658,14 @@ namespace TRAP::INTERNAL
 		/// Create an anonymous file handle with given size in bytes.
 		/// </summary>
 		/// <param name="size">Size in bytes for the file handle.</param>
-		/// <returns>File descriptor on success, -1 otherwise.</returns>
-		[[nodiscard]] static int32_t CreateAnonymousFileWayland(off_t size);
+		/// <returns>File descriptor on success, empty optional otherwise.</returns>
+		[[nodiscard]] static std::optional<int32_t> CreateAnonymousFileWayland(off_t size);
 		/// <summary>
 		/// Create a unique temporary file
 		/// </summary>
 		/// <param name="tmpName">Template filename.</param>
-		/// <returns>File descriptor.</returns>
-		[[nodiscard]] static int32_t CreateTmpFileCloexec(char* tmpName);
+		/// <returns>File descriptor on success, empty optional otherwise.</returns>
+		[[nodiscard]] static std::optional<int32_t> CreateTmpFileCloexec(char* tmpName);
 		/// <summary>
 		/// Create a fallback decoration for the given window.
 		/// </summary>
