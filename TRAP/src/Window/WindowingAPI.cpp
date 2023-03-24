@@ -2920,14 +2920,8 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitorDisconnect(const uint32_t monitor
 	if (s_Data.Callbacks.Monitor)
 		s_Data.Callbacks.Monitor(monitor.get(), false);
 
-	for (uint32_t i = 0; i < s_Data.Monitors.size(); i++)
-	{
-		if (s_Data.Monitors[i] == monitor)
-		{
-			s_Data.Monitors.erase(s_Data.Monitors.begin() + i);
-			break;
-		}
-	}
+	//Remove monitor from monitors list
+	s_Data.Monitors.erase(std::remove(s_Data.Monitors.begin(), s_Data.Monitors.end(), monitor), s_Data.Monitors.end());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

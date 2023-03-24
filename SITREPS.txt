@@ -3729,3 +3729,9 @@ SITREP 03/23/2023|23w12a2
     - Changed TRAP Engine version to 23w12a2(0.8.105)
     - Branch wayland:
         - WindowingAPILinuxWayland Added documentation for functions ~>200 mins
+
+SITREP 03/24/2023|23w12b1
+    - Changed TRAP Engine version to 23w12b1(0.8.106)
+    - Branch wayland:
+        - WindowingAPILinuxWayland Added more asserts ~>120 mins
+        - WindowingAPILinuxWayland Changed some for loops ~<15 mins
