@@ -3737,3 +3737,4 @@ SITREP 03/24/2023|23w12b1
         - WindowingAPILinuxWayland Changed some for loops ~<15 mins
         - WindowFeaturesTests Changed hide briefly functionality ~<5 mins
         - WindowingAPILinuxWayland Replaced some return types with std::optional ~<15 mins
+        - Utils Added TRAP_WM env var detection to GetLinuxWindowManager() ~<10 mins

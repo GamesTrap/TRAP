@@ -282,20 +282,42 @@
 		return windowManager;
 
 	const std::string wl = "wayland";
-	const std::string x = "x11";
+	const std::string x11 = "x11";
 	std::string session;
+
+	//TRAP_WM env var allows the user to override the window manager detection
+	if(getenv("TRAP_WM"))
+	{
+		session = getenv("TRAP_WM");
+
+		if(session == wl)
+			windowManager = LinuxWindowManager::Wayland;
+		else if(session == x11)
+			windowManager = LinuxWindowManager::X11;
+
+
+		//Return if a valid window manager was set via TRAP_WM
+		if(windowManager != LinuxWindowManager::Unknown)
+		{
+			TP_INFO(Log::EngineLinuxPrefix, "TRAP_WM env var detected, now using ",
+			                                Utils::String::ConvertToString(windowManager));
+			return windowManager;
+		}
+	}
+
+	//Proceed with normal detection
+	session = "";
 	if(getenv("XDG_SESSION_TYPE"))
 		session = getenv("XDG_SESSION_TYPE");
 	if (getenv("WAYLAND_DISPLAY") || session == wl)
 		windowManager = LinuxWindowManager::Wayland;
-	else if (getenv("DISPLAY") || session == x)
+	else if (getenv("DISPLAY") || session == x11)
 		windowManager = LinuxWindowManager::X11;
 	else
 	{
 #ifndef TRAP_HEADLESS_MODE
 		Utils::Dialogs::ShowMsgBox("Unsupported window manager", "Window manager is unsupported!\n"
-									"TRAP™ currently only supports X11/Xwayland\n"
-									//"TRAP™ uses X11 or Wayland\n"
+									"TRAP™ only supports X11 and Wayland\n"
 									"Make sure the appropriate environment variable(s) is/are set!\n"
 									"Error code: 0x0008",
 									Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
@@ -308,7 +330,7 @@
 	}
 
 #ifndef ENABLE_WAYLAND_SUPPORT
-	//Replace Wayland with X11
+	//Replace Wayland with X11 (thus forcing to use Xwayland)
 	using namespace std::string_view_literals;
 	if(windowManager == LinuxWindowManager::Wayland)
 	{
