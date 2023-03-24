@@ -2430,7 +2430,7 @@ bool TRAP::INTERNAL::WindowingAPI::CreateLibDecorFrame(InternalWindow* const win
     }
 
     s_Data.Wayland.LibDecor.FrameMap(window->Wayland.LibDecor.Frame);
-    wl_display_roundtrip(s_Data.Wayland.DisplayWL);
+    s_Data.Wayland.WaylandClient.DisplayRoundtrip(s_Data.Wayland.DisplayWL);
 
     return true;
 }
