@@ -3719,6 +3719,10 @@ SITREP 03/18/2023|23w11a2
     - Branch wayland:
         - Added video mode emulation ~<30 mins
 
+SITREP 03/21/2023|23w12a1
+    - Changed TRAP Engine version to 23w12a1(0.8.104)
+    - Updated Redists/GameInputRedist.msi ~<5 mins
+
 SITREP 03/22/2023|23w12a1
     - Changed TRAP Engine version to 23w12a1(0.8.104)
     - Branch wayland:
@@ -3741,4 +3745,6 @@ SITREP 03/24/2023|23w12b1
 
 SITREP 03/25/2023|23w12b2
     - Changed TRAP Engine version to 23w12b2(0.8.107)
-    - WindowingAPILinuxWayland Removed unnecessary assert ~<5 mins
+    - Branch wayland:
+        - WindowingAPILinuxWayland Removed unnecessary assert ~<5 mins
+    - Added [[maybe_unused]] to commented out parameters ~<20 mins

@@ -25,14 +25,14 @@ void TRAP::Layer::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Layer::OnUpdate(const Utils::TimeStep& /*deltaTime*/)
+void TRAP::Layer::OnUpdate([[maybe_unused]] const Utils::TimeStep& deltaTime)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Layer::OnTick(const Utils::TimeStep& /*deltaTime*/)
+void TRAP::Layer::OnTick([[maybe_unused]] const Utils::TimeStep& deltaTime)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 }
@@ -46,7 +46,7 @@ void TRAP::Layer::OnImGuiRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Layer::OnEvent(Events::Event& /*event*/)
+void TRAP::Layer::OnEvent([[maybe_unused]] Events::Event& event)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 }

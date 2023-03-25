@@ -22,7 +22,7 @@ PFN_GFSDK_Aftermath_GetCrashDumpStatus AftermathGetGPUCrashDumpStatus = nullptr;
 
 void OnGPUCrashDump([[maybe_unused]] const void* gpuCrashDump,
                     [[maybe_unused]] const uint32_t gpuCrashDumpSize,
-                    void* /*userData*/)
+                    [[maybe_unused]] void* userData)
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);

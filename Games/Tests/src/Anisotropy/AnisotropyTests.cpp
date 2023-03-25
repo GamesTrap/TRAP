@@ -49,7 +49,7 @@ void AnisotropyTests::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void AnisotropyTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
+void AnisotropyTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 {
 	TRAP::Graphics::Renderer2D::BeginScene(m_camera, TRAP::Math::Mat4(1.0f));
 	TRAP::Graphics::Renderer2D::DrawQuad({ {0.0f, 0.0f, -7.5f}, {-85.0f, 0.0f, 0.0f}, {3.0f, 30.0f, 2.0f} }, TRAP::Graphics::TextureManager::Get2D("Test"));

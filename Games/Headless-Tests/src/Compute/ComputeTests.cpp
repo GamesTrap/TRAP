@@ -75,7 +75,7 @@ void ComputeTests::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
+void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 {
     if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::NONE)
         return;

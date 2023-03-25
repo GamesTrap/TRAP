@@ -28,7 +28,7 @@ void AntiAliasingTests::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void AntiAliasingTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
+void AntiAliasingTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 {
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::NONE)
 		return;

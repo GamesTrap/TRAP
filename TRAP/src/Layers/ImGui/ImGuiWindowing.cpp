@@ -452,7 +452,7 @@ void TRAP::INTERNAL::ImGuiWindowing::MonitorCallback(const WindowingAPI::Interna
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const char* TRAP::INTERNAL::ImGuiWindowing::GetClipboardText(void* const /*userData*/)
+[[nodiscard]] const char* TRAP::INTERNAL::ImGuiWindowing::GetClipboardText([[maybe_unused]] void* const userData)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -462,7 +462,7 @@ void TRAP::INTERNAL::ImGuiWindowing::MonitorCallback(const WindowingAPI::Interna
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::SetClipboardText(void* const /*userData*/, const char* const text)
+void TRAP::INTERNAL::ImGuiWindowing::SetClipboardText([[maybe_unused]] void* const userData, const char* const text)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
