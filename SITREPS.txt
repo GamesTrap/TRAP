@@ -3738,3 +3738,7 @@ SITREP 03/24/2023|23w12b1
         - WindowFeaturesTests Changed hide briefly functionality ~<5 mins
         - WindowingAPILinuxWayland Replaced some return types with std::optional ~<15 mins
         - Utils Added TRAP_WM env var detection to GetLinuxWindowManager() ~<10 mins
+
+SITREP 03/25/2023|23w12b2
+    - Changed TRAP Engine version to 23w12b2(0.8.107)
+    - WindowingAPILinuxWayland Removed unnecessary assert ~<5 mins

@@ -584,8 +584,6 @@ void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleSelection([[maybe_unused]] vo
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(offer, "WindowingAPI::DataDeviceHandleSelection(): wl_data_offer is nullptr!");
-
     if(s_Data.Wayland.SelectionOffer)
     {
         wl_data_offer_destroy(s_Data.Wayland.SelectionOffer);
