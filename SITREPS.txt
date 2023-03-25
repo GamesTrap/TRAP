@@ -3748,3 +3748,8 @@ SITREP 03/25/2023|23w12b2
     - Branch wayland:
         - WindowingAPILinuxWayland Removed unnecessary assert ~<5 mins
     - Added [[maybe_unused]] to commented out parameters ~<20 mins
+
+SITREP 03/26/2023|23w12c1
+    - Changed TRAP Engine version to 23w12c1(0.8.108)
+    - Branch wayland:
+        - GitHub Action Build-CI workflow Added Wayland dependencies ~<5 mins

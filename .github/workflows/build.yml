@@ -30,9 +30,12 @@ jobs:
     # Install G++ & GCC 10
     - name: Install G++ & GCC 10 multilib
       run: sudo apt install -y g++-10-multilib gcc-10-multilib
-    # Install xorg-dev
-    - name: Install xorg-dev
+    # Install X11 dependencies
+    - name: Install X11 dependencies
       run: sudo apt install -y xorg-dev
+    # Install Wayland dependencies
+    - name: Install Wayland dependencies
+      run: sudo apt install -y libwayland-dev libxkbcommon-dev wayland-protocols
     # Setup the Vulkan SDK
     - name: Prepare latest Vulkan SDK
       uses: humbletim/setup-vulkan-sdk@v1.2.0
