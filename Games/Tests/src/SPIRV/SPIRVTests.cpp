@@ -53,7 +53,7 @@ void SPIRVTests::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void SPIRVTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
+void SPIRVTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 {
     m_vertexBuffer->Use();
     m_indexBuffer->Use();

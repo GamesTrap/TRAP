@@ -160,7 +160,7 @@ void WindowFeaturesTests::OnImGuiRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void WindowFeaturesTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
+void WindowFeaturesTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 {
 }
 

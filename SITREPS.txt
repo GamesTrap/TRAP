@@ -3655,3 +3655,7 @@ SITREP 03/01/2023|23w09b1
 SITREP 03/21/2023|23w12a1
     - Changed TRAP Engine version to 23w12a1(0.8.100)
     - Updated Redists/GameInputRedist.msi ~<5 mins
+
+SITREP 03/25/2023|23w12b1
+    - Changed TRAP Engine version to 23w12b1(0.8.101)
+    - Added [[maybe_unused]] to commented out parameters ~<20 mins

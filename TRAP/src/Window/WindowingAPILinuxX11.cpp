@@ -1824,9 +1824,11 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPos(const InternalWindow* co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* const window, InternalMonitor* const monitor,
-														    const int32_t xPos, const int32_t yPos, const int32_t width,
-															const int32_t height, const double /*refreshRate*/)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* const window,
+                                                            InternalMonitor* const monitor, const int32_t xPos,
+															const int32_t yPos, const int32_t width,
+															const int32_t height,
+															[[maybe_unused]] const double refreshRate)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2634,7 +2636,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyCursor(InternalCursor* const c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetCursor(const InternalWindow* const window, const InternalCursor* const /*cursor*/)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetCursor(const InternalWindow* const window,
+                                                     [[maybe_unused]] const InternalCursor* const cursor)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2801,7 +2804,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSize(InternalWindow* const w
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizable(InternalWindow* const window, const bool /*enabled*/)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizable(InternalWindow* const window,
+                                                              [[maybe_unused]] const bool enabled)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2926,7 +2930,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthrough(InternalWin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbar(InternalWindow* const /*window*/)
+void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbar([[maybe_unused]] InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 }
@@ -3241,8 +3245,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotion(const InternalWindo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetProgress(const InternalWindow* const /*window*/, const ProgressState state,
-													   const uint32_t completed)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetProgress([[maybe_unused]] const InternalWindow* const window,
+                                                       const ProgressState state, const uint32_t completed)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -3590,9 +3594,11 @@ void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindow(InternalWindow* const w
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(InternalWindow* const window, const int32_t /*minWidth*/,
-                                                               const int32_t /*minHeight*/, const int32_t /*maxWidth*/,
-                                                               const int32_t /*maxHeight*/)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(InternalWindow* const window,
+                                                               [[maybe_unused]] const int32_t minWidth,
+                                                               [[maybe_unused]] const int32_t minHeight,
+															   [[maybe_unused]] const int32_t maxWidth,
+                                                               [[maybe_unused]] const int32_t maxHeight)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -3604,8 +3610,9 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(InternalWindow* c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowAspectRatio(InternalWindow* window, const int32_t /*numerator*/,
-                                                                const int32_t /*denominator*/)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowAspectRatio(InternalWindow* window,
+                                                                [[maybe_unused]] const int32_t numerator,
+                                                                [[maybe_unused]] const int32_t denominator)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -3618,7 +3625,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowAspectRatio(InternalWindow* 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Enable XI2 raw mouse motion events
-void TRAP::INTERNAL::WindowingAPI::EnableRawMouseMotion(const InternalWindow* const /*window*/)
+void TRAP::INTERNAL::WindowingAPI::EnableRawMouseMotion([[maybe_unused]] const InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -3636,7 +3643,7 @@ void TRAP::INTERNAL::WindowingAPI::EnableRawMouseMotion(const InternalWindow* co
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Disable XI2 raw mouse motion events
-void TRAP::INTERNAL::WindowingAPI::DisableRawMouseMotion(const InternalWindow* const /*window*/)
+void TRAP::INTERNAL::WindowingAPI::DisableRawMouseMotion([[maybe_unused]] const InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 

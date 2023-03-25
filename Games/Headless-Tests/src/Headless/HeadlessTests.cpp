@@ -21,7 +21,7 @@ void HeadlessTests::OnAttach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void HeadlessTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
+void HeadlessTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 {
 	//Give engine time to update resolution
 	static int count = 0;

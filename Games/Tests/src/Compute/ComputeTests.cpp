@@ -77,7 +77,7 @@ void ComputeTests::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
+void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 {
     TRAP::Graphics::ShaderManager::Get("Texture")->UseSampler(0, 1, m_textureSampler.get());
 

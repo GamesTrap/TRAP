@@ -83,12 +83,13 @@ VkBool32 TRAP::Graphics::API::VulkanDebug::VulkanDebugUtilsCallback(const VkDebu
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkBool32 TRAP::Graphics::API::VulkanDebug::VulkanDebugReportCallback(const VkDebugReportFlagsEXT flags,
-																	 const VkDebugReportObjectTypeEXT /*objectType*/,
-																	 const uint64_t /*object*/,
-																	 const size_t /*location*/,
+																	 [[maybe_unused]] const VkDebugReportObjectTypeEXT objectType,
+																	 [[maybe_unused]] const uint64_t object,
+																	 [[maybe_unused]] const size_t location,
 																	 const int32_t messageCode,
 																	 const std::string_view layerPrefix,
-																	 const std::string_view message, void* const /*userData*/)
+																	 const std::string_view message,
+																	 [[maybe_unused]] void* const userData)
 {
 	std::string str = Log::RendererVulkanDebugPrefix;
 	str.pop_back();
