@@ -1,4 +1,8 @@
 function GenerateWayland()
+	if os.target ~= linux then
+		return
+	end
+
 	local files = {};
 	files["https://gitlab.freedesktop.org/wayland/wayland/-/raw/main/protocol/wayland.xml"] = "../Dependencies/Wayland/wayland-client-protocol"
 	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/stable/xdg-shell/xdg-shell.xml"] = "../Dependencies/Wayland/wayland-xdg-shell-client-protocol"

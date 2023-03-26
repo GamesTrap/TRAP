@@ -3753,3 +3753,5 @@ SITREP 03/26/2023|23w12c1
     - Changed TRAP Engine version to 23w12c1(0.8.108)
     - Branch wayland:
         - GitHub Action Build-CI workflow Added Wayland dependencies ~<5 mins
+        - TRAP premake5.lua GenerateWayland() now immediately returns if OS is not linux ~<5 mins
+        - WindowingAPIWin32 Fixed compiler errors ~<10 mins

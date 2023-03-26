@@ -2954,11 +2954,13 @@ void TRAP::INTERNAL::WindowingAPI::SetDragAndDrop(InternalWindow* const window, 
 void TRAP::INTERNAL::WindowingAPI::InputWindowContentScale(const InternalWindow* window, const float xScale,
                                                            const float yScale)
 {
-	TRAP_ASSERT(window != nullptr);
-	TRAP_ASSERT(xScale > 0.0f);
-	TRAP_ASSERT(xScale < std::numeric_limits<float>::max());
-	TRAP_ASSERT(yScale > 0.0f);
-	TRAP_ASSERT(yScale < std::numeric_limits<float>::max());
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+
+	TRAP_ASSERT(window != nullptr, "WindowingAPI::InputWindowContentScale(): Window is nullptr!");
+	TRAP_ASSERT(xScale > 0.0f, "WindowingAPI::InputWindowContentScale(): XScale is 0.0f!");
+	TRAP_ASSERT(xScale < std::numeric_limits<float>::max(), "WindowingAPI::InputWindowContentScale(): XScale is too big!");
+	TRAP_ASSERT(yScale > 0.0f, "WindowingAPI::InputWindowContentScale(): YScale is 0.0f!");
+	TRAP_ASSERT(yScale < std::numeric_limits<float>::max(), "WindowingAPI::InputWindowContentScale(): YScale is too big!");
 
 	if (window->Callbacks.Scale)
 		window->Callbacks.Scale(window, xScale, yScale);
