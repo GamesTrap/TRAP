@@ -7,10 +7,10 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://gamestrap.github.io/TRAP/pages/changelog.html" />
 <meta property="og:site_name" content="TRAP Documentation" />
-<meta property="og:description" content="Generated on 03/25/2023 2023 TRAP™ Engine 0.8.101 - 03/25/2023|23w12b1 Added [[maybe_unused]] to commented out parameters, GitHub Actions only run Build-Docs workflow on successful Build-CI on mast..." />
+<meta property="og:description" content="Generated on 03/26/2023 2023 TRAP™ Engine 0.9.0 - 03/26/2023|23w12d1 Merged Wayland support, Updated Controller mappings, Updated Vulkan loader, Updated Box2D, GLSLang, ModernDialogs, SPIRV-Cross, ..." />
 <meta property="og:image" content="https://gamestrap.github.io/TRAP/_static/TRAPWhiteLogo.png" />
 <meta property="og:image:alt" content="TRAP Documentation" />
-<meta name="description" content="Generated on 03/25/2023 2023 TRAP™ Engine 0.8.101 - 03/25/2023|23w12b1 Added [[maybe_unused]] to commented out parameters, GitHub Actions only run Build-Docs workflow on successful Build-CI on mast..." />
+<meta name="description" content="Generated on 03/26/2023 2023 TRAP™ Engine 0.9.0 - 03/26/2023|23w12d1 Merged Wayland support, Updated Controller mappings, Updated Vulkan loader, Updated Box2D, GLSLang, ModernDialogs, SPIRV-Cross, ..." />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="TRAP™ Engine End User License Agreement" href="eula.html" /><link rel="prev" title="Getting Started" href="gettingstarted.html" />
 
     <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><!-- Generated with Sphinx 5.3.0 and Furo 2023.03.23 -->
@@ -336,6 +336,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/structTRAP_1_1INTERNAL_1_1WindowingAPI_1_1InternalVideoMode.html">Struct WindowingAPI::InternalVideoMode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/structTRAP_1_1INTERNAL_1_1WindowingAPI_1_1InternalWindow.html">Struct WindowingAPI::InternalWindow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/structTRAP_1_1INTERNAL_1_1WindowingAPI_1_1WindowConfig.html">Struct WindowingAPI::WindowConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/structTRAP_1_1INTERNAL_1_1WindowingAPI_1_1WindowConfig_1_1wayland.html">Struct WindowConfig::wayland</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/structTRAP_1_1Math_1_1Mat.html">Template Struct Mat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/structTRAP_1_1Math_1_1Mat_3_013_00_013_00_01T_01_4.html">Template Struct Mat&lt; 3, 3, T &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/structTRAP_1_1Math_1_1Mat_3_014_00_014_00_01T_01_4.html">Template Struct Mat&lt; 4, 4, T &gt;</a></li>
@@ -1508,7 +1509,7 @@
         <article role="main">
           <section id="changelog">
 <span id="id1"></span><h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this heading">#</a></h1>
-<p>Generated on 03/25/2023</p>
+<p>Generated on 03/26/2023</p>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in-slide-down">
 <summary class="sd-summary-title sd-card-header">
 2023<div class="sd-summary-down docutils">
@@ -1518,25 +1519,176 @@
 </summary><div class="sd-summary-content sd-card-body docutils">
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
 <summary class="sd-summary-title sd-card-header">
-TRAP™ Engine 0.8.101 - 03/25/2023|23w12b1<div class="sd-summary-down docutils">
+TRAP™ Engine 0.9.0 - 03/26/2023|23w12d1<div class="sd-summary-down docutils">
 <svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="sd-summary-up docutils">
 <svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="sd-summary-content sd-card-body docutils">
 <ul class="simple">
-<li><p class="sd-card-text">Added [[maybe_unused]] to commented out parameters</p></li>
-<li><p class="sd-card-text">GitHub Actions only run Build-Docs workflow on successful Build-CI on master branch</p></li>
+<li><p class="sd-card-text">Merged Wayland support</p></li>
+<li><p class="sd-card-text">Updated Controller mappings</p></li>
+<li><p class="sd-card-text">Updated Vulkan loader</p></li>
+<li><p class="sd-card-text">Updated Box2D, GLSLang, ModernDialogs, SPIRV-Cross, VulkanMemoryAllocator submodules</p></li>
 </ul>
 </div>
 </details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
 <summary class="sd-summary-title sd-card-header">
-TRAP™ Engine 0.8.100 - 03/21/2023|23w12a1<div class="sd-summary-down docutils">
+TRAP™ Engine 0.8.108 - 03/26/2023|23w12c1<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">Branch wayland:</p>
+<ul>
+<li><p class="sd-card-text">GitHub Action Build-CI workflow Added Wayland dependencies</p></li>
+<li><p class="sd-card-text">TRAP premake5.lua GenerateWayland() now immediately returns if OS is not linux</p></li>
+<li><p class="sd-card-text">WindowingAPIWin32 Fixed compiler errors</p></li>
+<li><p class="sd-card-text">Moved Wayland protocol generator into its own Premake module</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 0.8.107 - 03/25/2023|23w12b2<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">Branch wayland:</p>
+<ul>
+<li><p class="sd-card-text">WindowingAPILinuxWayland Removed unnecessary assert</p></li>
+</ul>
+</li>
+<li><p class="sd-card-text">Added [[maybe_unused]] to commented out parameters</p></li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 0.8.106 - 03/24/2023|23w12b1<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">Branch wayland:</p>
+<ul>
+<li><p class="sd-card-text">WindowingAPILinuxWayland Added more asserts</p></li>
+<li><p class="sd-card-text">WindowingAPILinuxWayland Changed some for loops</p></li>
+<li><p class="sd-card-text">WindowFeaturesTests Changed hide briefly functionality</p></li>
+<li><p class="sd-card-text">WindowingAPILinuxWayland Replaced some return types with std::optional</p></li>
+<li><p class="sd-card-text">Utils Added TRAP_WM env var detection to GetLinuxWindowManager()</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 0.8.105 - 03/23/2023|23w12a2<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">Branch wayland:</p>
+<ul>
+<li><p class="sd-card-text">WindowingAPILinuxWayland Added documentation for functions</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 0.8.104 - 03/22/2023|23w12a1<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">Branch wayland:</p>
+<ul>
+<li><p class="sd-card-text">WindowingAPILinuxWayland Codestyle const-correctness</p></li>
+<li><p class="sd-card-text">WindowingAPILinuxWayland Added Tracy markers everywhere</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 0.8.104 - 03/21/2023|23w12a1<div class="sd-summary-down docutils">
 <svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="sd-summary-up docutils">
 <svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
 </summary><div class="sd-summary-content sd-card-body docutils">
 <ul class="simple">
 <li><p class="sd-card-text">Updated Redists/GameInputRedist.msi</p></li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 0.8.103 - 03/18/2023|23w11a2<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">Branch wayland:</p>
+<ul>
+<li><p class="sd-card-text">Added video mode emulation</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 0.8.102 - 03/17/2023|23w11a1<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">Branch wayland:</p>
+<ul>
+<li><p class="sd-card-text">Implemented PlatformSetWindowMonitorBorderlessWayland()</p></li>
+<li><p class="sd-card-text">Resolved shadowing warnings for “pointer”</p></li>
+<li><p class="sd-card-text">Removed refresh rate rounding to integer</p></li>
+<li><p class="sd-card-text">Better names for monitors</p></li>
+<li><p class="sd-card-text">WindowingAPI Added Wayland remarks to functions</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 0.8.101 - 03/04/2023|23w09c1<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">Branch wayland:</p>
+<ul>
+<li><p class="sd-card-text">Worked around NVIDIA Wayland bug making windows transparent with some blend modes</p></li>
+<li><p class="sd-card-text">Marked commented out function parameters with [[maybe_unused]] attribute</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 0.8.100 - 03/03/2023|23w09b2<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">Branch wayland:</p>
+<ul>
+<li><p class="sd-card-text">WindowingAPILinuxWayland Added support for wp_content_type protocol</p></li>
+</ul>
+</li>
 </ul>
 </div>
 </details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
@@ -1548,6 +1700,13 @@ TRAP™ Engine 0.8.99 - 03/01/2023|23w09b1<div class="sd-summary-down docutils">
 </summary><div class="sd-summary-content sd-card-body docutils">
 <ul class="simple">
 <li><p class="sd-card-text">VulkanRenderer StartGraphicRecording() now handles VulkanSwapChain::AcquireNextImage() failures</p></li>
+<li><p class="sd-card-text">Branch wayland:</p>
+<ul>
+<li><p class="sd-card-text">WindowingAPILinuxWayland Added [[nodiscard]] attributes where applicable</p></li>
+<li><p class="sd-card-text">WindowingAPILinuxWayland Added support for xdg_activation protocol</p></li>
+<li><p class="sd-card-text">WindowingAPILinuxX11 Moved DBus stuff to WindowingAPILinux</p></li>
+</ul>
+</li>
 </ul>
 </div>
 </details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
@@ -1559,6 +1718,11 @@ TRAP™ Engine 0.8.98 - 02/28/2023|23w09a2<div class="sd-summary-down docutils">
 </summary><div class="sd-summary-content sd-card-body docutils">
 <ul class="simple">
 <li><p class="sd-card-text">VulkanRenderer Added shutdown if swapchain image acquire fails</p></li>
+<li><p class="sd-card-text">Branch wayland:</p>
+<ul>
+<li><p class="sd-card-text">WindowingAPILinuxWayland Added missing libdecor.so unloading</p></li>
+</ul>
+</li>
 </ul>
 </div>
 </details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
@@ -1570,6 +1734,37 @@ TRAP™ Engine 0.8.97 - 02/27/2023|23w09a1<div class="sd-summary-down docutils">
 </summary><div class="sd-summary-content sd-card-body docutils">
 <ul class="simple">
 <li><p class="sd-card-text">Update Tracy submodule</p></li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 0.8.97 - 02/26/2023|23w08b1<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">Branch wayland:</p>
+<ul>
+<li><p class="sd-card-text">WindowingAPILinuxWayland Added support for libdecor client-side window decorations</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 0.8.96 - 02/25/2023|23w08a1<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">Branch wayland:</p>
+<ul>
+<li><p class="sd-card-text">ImGuiLayer disabled Multi-Viewport support when compiling with Wayland support enabled</p></li>
+<li><p class="sd-card-text">WindowingAPILinuxWayland Implemented PlatformSetWindowResizableWayland()</p></li>
+</ul>
+</li>
 </ul>
 </div>
 </details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
@@ -2807,6 +3002,54 @@ TRAP™ Engine 0.8.20 - 08/08/2022|22w32a1<div class="sd-summary-down docutils">
 <ul class="simple">
 <li><p class="sd-card-text">Linux Enabled Xwayland support</p></li>
 <li><p class="sd-card-text">Added macro to enable native Wayland support (disables use of Xwayland)</p></li>
+<li><p class="sd-card-text">Branch wayland:</p>
+<ul>
+<li><p class="sd-card-text">WindowingAPI Wayland Implemented PointerListener functions</p></li>
+<li><p class="sd-card-text">WindowingAPI Wayland Implemented KeyboardListener functions</p></li>
+<li><p class="sd-card-text">WindowingAPI Wayland Implemented OutputListener functions</p></li>
+<li><p class="sd-card-text">WindowingAPI Wayland Implemented PlatformSetWindowMonitorWayland</p></li>
+<li><p class="sd-card-text">WindowingAPI Now uses Xwayland by default (Wayland is still experimental)</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 0.8.20 - 08/07/2022|22w31c1<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">Branch wayland:</p>
+<ul>
+<li><p class="sd-card-text">WindowingAPI Added support for Wayland functionality</p></li>
+<li><p class="sd-card-text">Added Dependencies/Wayland folder</p></li>
+<li><p class="sd-card-text">Premake Added Wayland protocol to C++ generation function</p></li>
+<li><p class="sd-card-text">Updated all premake scripts</p></li>
+<li><p class="sd-card-text">WindowingAPI Linux Moved KeySymToUnicode() from X11 to the shared header</p></li>
+<li><p class="sd-card-text">WindowingAPI Data put X11 and Wayland stuff into their own structs</p></li>
+<li><p class="sd-card-text">WindowingAPI InternalWindow/Cursor/Monitor put X11 and Wayland stuff into their own structs</p></li>
+<li><p class="sd-card-text">WindowingAPI Wayland Implemented PlatformInitWayland</p></li>
+<li><p class="sd-card-text">Updated all premake scripts to link against wayland-client, wayland-cursor and xkbcommon</p></li>
+<li><p class="sd-card-text">WindowingAPI Wayland Implemented DataOfferListener &amp; DataDeviceListener functions</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 0.8.20 - 08/06/2022|22w31c1<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">Branch wayland:</p>
+<ul>
+<li><p class="sd-card-text">Application Removed Wayland check</p></li>
+</ul>
+</li>
 </ul>
 </div>
 </details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
