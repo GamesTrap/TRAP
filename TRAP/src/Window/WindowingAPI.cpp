@@ -395,7 +395,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowShouldClose(InternalWindow* const wi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::SetWindowTitle(const InternalWindow* const window, const std::string& title)
+void TRAP::INTERNAL::WindowingAPI::SetWindowTitle(InternalWindow* const window, const std::string& title)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -1986,7 +1986,7 @@ void TRAP::INTERNAL::WindowingAPI::FocusWindow(const InternalWindow* const windo
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Maximizes the specified window.
-void TRAP::INTERNAL::WindowingAPI::MaximizeWindow(const InternalWindow* const window)
+void TRAP::INTERNAL::WindowingAPI::MaximizeWindow(InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2029,7 +2029,7 @@ void TRAP::INTERNAL::WindowingAPI::MinimizeWindow(const InternalWindow* const wi
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Requests user attention to the specified window.
-void TRAP::INTERNAL::WindowingAPI::RequestWindowAttention(const InternalWindow* const window)
+void TRAP::INTERNAL::WindowingAPI::RequestWindowAttention(InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2049,7 +2049,7 @@ void TRAP::INTERNAL::WindowingAPI::RequestWindowAttention(const InternalWindow* 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Hides the specified window.
-void TRAP::INTERNAL::WindowingAPI::HideWindow(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::HideWindow(InternalWindow* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2921,14 +2921,8 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitorDisconnect(const uint32_t monitor
 	if (s_Data.Callbacks.Monitor)
 		s_Data.Callbacks.Monitor(monitor.get(), false);
 
-	for (uint32_t i = 0; i < s_Data.Monitors.size(); i++)
-	{
-		if (s_Data.Monitors[i] == monitor)
-		{
-			s_Data.Monitors.erase(s_Data.Monitors.begin() + i);
-			break;
-		}
-	}
+	//Remove monitor from monitors list
+	s_Data.Monitors.erase(std::remove(s_Data.Monitors.begin(), s_Data.Monitors.end(), monitor), s_Data.Monitors.end());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2951,4 +2945,23 @@ void TRAP::INTERNAL::WindowingAPI::SetDragAndDrop(InternalWindow* const window, 
 	TRAP_ASSERT(window, "WindowingAPI::SetDragAndDrop(): Window is nullptr!");
 
 	PlatformSetDragAndDrop(window, value);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Notifies shared code that a window content scale has changed
+//The scale is specified as the ratio between the current and default DPI
+void TRAP::INTERNAL::WindowingAPI::InputWindowContentScale(const InternalWindow* window, const float xScale,
+                                                           const float yScale)
+{
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+
+	TRAP_ASSERT(window != nullptr, "WindowingAPI::InputWindowContentScale(): Window is nullptr!");
+	TRAP_ASSERT(xScale > 0.0f, "WindowingAPI::InputWindowContentScale(): XScale is 0.0f!");
+	TRAP_ASSERT(xScale < std::numeric_limits<float>::max(), "WindowingAPI::InputWindowContentScale(): XScale is too big!");
+	TRAP_ASSERT(yScale > 0.0f, "WindowingAPI::InputWindowContentScale(): YScale is 0.0f!");
+	TRAP_ASSERT(yScale < std::numeric_limits<float>::max(), "WindowingAPI::InputWindowContentScale(): YScale is too big!");
+
+	if (window->Callbacks.Scale)
+		window->Callbacks.Scale(window, xScale, yScale);
 }

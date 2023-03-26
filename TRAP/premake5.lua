@@ -1,3 +1,5 @@
+local wayland = require "generatewayland"
+
 project "TRAP"
 	location "."
 	kind "StaticLib"
@@ -34,7 +36,9 @@ project "TRAP"
 		"src/Input/WindowsInput.cpp",
 		"src/Input/LinuxInput.cpp",
 		"src/Window/WindowingAPIWin32.cpp",
+		"src/Window/WindowingAPILinux.cpp",
 		"src/Window/WindowingAPILinuxX11.cpp",
+		"src/Window/WindowingAPILinuxWayland.cpp",
 		"src/Network/Sockets/Platform/SocketImplLinux.h",
 		"src/Network/Sockets/Platform/SocketImplLinux.cpp",
 		"src/Network/Sockets/Platform/SocketImplWinAPI.h",
@@ -149,9 +153,13 @@ project "TRAP"
 			"src/Utils/Linux.h",
 			"src/Log/ANSILog.cpp",
 			"src/Input/LinuxInput.cpp",
+			"src/Window/WindowingAPILinux.cpp",
 			"src/Window/WindowingAPILinuxX11.cpp",
+			"src/Window/WindowingAPILinuxWayland.cpp",
 			"src/Network/Sockets/Platform/SocketImplLinux.h",
-			"src/Network/Sockets/Platform/SocketImplLinux.cpp"
+			"src/Network/Sockets/Platform/SocketImplLinux.cpp",
+
+			"%{IncludeDir.WAYLAND}/**.h"
 		}
 
 		-- Discord Game SDK stuff
@@ -192,6 +200,12 @@ project "TRAP"
 
 			defines "USE_STEAMWORKS_SDK"
 		end
+
+		wayland.GenerateWayland()
+		externalincludedirs
+		{
+			"%{IncludeDir.WAYLAND}"
+		}
 
 	filter { "action:gmake*", "toolset:gcc" }
 		buildoptions
@@ -345,7 +359,9 @@ project "TRAP-Headless"
 		"src/Input/WindowsInput.cpp",
 		"src/Input/LinuxInput.cpp",
 		"src/Window/WindowingAPIWin32.cpp",
+		"src/Window/WindowingAPILinux.cpp",
 		"src/Window/WindowingAPILinuxX11.cpp",
+		"src/Window/WindowingAPILinuxWayland.cpp",
 		"src/Network/Sockets/Platform/SocketImplLinux.h",
 		"src/Network/Sockets/Platform/SocketImplLinux.cpp",
 		"src/Network/Sockets/Platform/SocketImplWinAPI.h",
@@ -415,9 +431,19 @@ project "TRAP-Headless"
 		{
 			"src/Log/ANSILog.cpp",
 			"src/Input/LinuxInput.cpp",
+			"src/Window/WindowingAPILinux.cpp",
 			"src/Window/WindowingAPILinuxX11.cpp",
+			"src/Window/WindowingAPILinuxWayland.cpp",
 			"src/Network/Sockets/Platform/SocketImplLinux.h",
-			"src/Network/Sockets/Platform/SocketImplLinux.cpp"
+			"src/Network/Sockets/Platform/SocketImplLinux.cpp",
+
+			"%{IncludeDir.WAYLAND}/**.h"
+		}
+
+		wayland.GenerateWayland()
+		externalincludedirs
+		{
+			"%{IncludeDir.WAYLAND}"
 		}
 
 	filter { "action:gmake*", "toolset:gcc" }

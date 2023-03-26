@@ -118,12 +118,6 @@ public:
 		samplerDesc.EnableAnisotropy = false;
 		m_sampler = TRAP::Graphics::Sampler::Create(samplerDesc);
 
-		TRAP::Graphics::RenderCommand::SetBlendMode(TRAP::Graphics::BlendMode::Add, TRAP::Graphics::BlendMode::Add);
-		TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha,
-														TRAP::Graphics::BlendConstant::OneMinusSrcAlpha,
-														TRAP::Graphics::BlendConstant::One,
-														TRAP::Graphics::BlendConstant::Zero);
-
 		//Wait for all pending resources (just in case)
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
@@ -149,6 +143,12 @@ public:
 	{
 		//Update
 		m_cameraController.OnUpdate(deltaTime);
+
+		TRAP::Graphics::RenderCommand::SetBlendMode(TRAP::Graphics::BlendMode::Add, TRAP::Graphics::BlendMode::Add);
+		TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha,
+														TRAP::Graphics::BlendConstant::One,
+														TRAP::Graphics::BlendConstant::OneMinusSrcAlpha,
+														TRAP::Graphics::BlendConstant::OneMinusSrcAlpha);
 
 		//Render
 		if(m_wireFrame)

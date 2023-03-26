@@ -43,6 +43,7 @@ IncludeDir["MODERNDIALOGS"] = "%{wks.location}/Dependencies/ModernDialogs/Modern
 IncludeDir["DISCORDGAMESDK"] = "%{wks.location}/Dependencies/DiscordGameSDK/cpp"
 IncludeDir["NSIGHTAFTERMATH"] = "%{wks.location}/Dependencies/Nsight-Aftermath/include"
 IncludeDir["VMA"] = "%{wks.location}/Dependencies/VulkanMemoryAllocator/include"
+IncludeDir["WAYLAND"] = "%{wks.location}/Dependencies/Wayland"
 IncludeDir["STEAMWORKSSDK"] = "%{wks.location}/Dependencies/SteamworksSDK/sdk/public/steam"
 IncludeDir["NVIDIAREFLEX"] = "%{wks.location}/Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Vulkan/Reflex_Vulkan/inc"
 IncludeDir["NVIDIAREFLEXSTATS"] = "%{wks.location}/Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Stats"

@@ -73,7 +73,7 @@
 //NOTE: Wayland support is still experimental and not fully implemented.
 //Currently X11/Xwayland is preferred over native Wayland.
 #ifdef TRAP_PLATFORM_LINUX
-	// #define ENABLE_WAYLAND_SUPPORT
+	#define ENABLE_WAYLAND_SUPPORT
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -176,7 +176,7 @@ enum class ProfileSystems
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-const uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 101);
+const uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 108);
 
 //-------------------------------------------------------------------------------------------------------------------//
 

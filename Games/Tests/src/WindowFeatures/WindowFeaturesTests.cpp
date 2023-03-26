@@ -21,16 +21,24 @@ void WindowFeaturesTests::OnAttach()
 
 void WindowFeaturesTests::OnImGuiRender()
 {
-	static double time = 0.0;
-	static bool once = false;
-
 	ImGui::Begin("WindowFeatures", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse |
 	                                        ImGuiWindowFlags_AlwaysAutoResize);
 
 	ImGui::Text("Press ESC to close");
 	ImGui::Separator();
-	if(ImGui::Checkbox("Toggle Fullscreen", &m_fullscreen))
-		TRAP::Application::GetWindow()->SetDisplayMode(m_fullscreen ? TRAP::Window::DisplayMode::Borderless : TRAP::Window::DisplayMode::Windowed);
+
+	if(ImGui::BeginCombo("Display Mode", TRAP::Utils::String::ConvertToString<TRAP::Window::DisplayMode>(TRAP::Application::GetWindow()->GetDisplayMode()).c_str()))
+	{
+		if(ImGui::Selectable(TRAP::Utils::String::ConvertToString<TRAP::Window::DisplayMode>(TRAP::Window::DisplayMode::Windowed).c_str(), TRAP::Application::GetWindow()->GetDisplayMode() == TRAP::Window::DisplayMode::Windowed))
+			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Windowed);
+		if(ImGui::Selectable(TRAP::Utils::String::ConvertToString<TRAP::Window::DisplayMode>(TRAP::Window::DisplayMode::Borderless).c_str(), TRAP::Application::GetWindow()->GetDisplayMode() == TRAP::Window::DisplayMode::Borderless))
+			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Borderless);
+		if(ImGui::Selectable(TRAP::Utils::String::ConvertToString<TRAP::Window::DisplayMode>(TRAP::Window::DisplayMode::Fullscreen).c_str(), TRAP::Application::GetWindow()->GetDisplayMode() == TRAP::Window::DisplayMode::Fullscreen))
+			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Fullscreen);
+
+		ImGui::EndCombo();
+	}
+
 	if(ImGui::Button("Maximize"))
 		TRAP::Application::GetWindow()->Maximize();
 	ImGui::SameLine();
@@ -42,9 +50,14 @@ void WindowFeaturesTests::OnImGuiRender()
 	ImGui::SameLine();
 	if(ImGui::Button("Hide (briefly)"))
 	{
-		time = TRAP::Application::GetTime().GetSeconds() + 3.0;
-		once = true;
+		const float time = TRAP::Application::GetTime().GetSeconds() + 3.0f;
+
 		TRAP::Application::GetWindow()->Hide();
+
+		while(TRAP::Application::GetTime().GetSeconds() < time)
+			TRAP::INTERNAL::WindowingAPI::WaitEvents(0.1);
+
+		TRAP::Application::GetWindow()->Show();
 	}
 
 	ImGui::Text("Press Enter in a text field to set value");
@@ -150,12 +163,6 @@ void WindowFeaturesTests::OnImGuiRender()
 	ImGui::Text("Minimized: %s", TRAP::Application::GetWindow()->IsMinimized() ? "true" : "false");
 	ImGui::Text("Maximized: %s", TRAP::Application::GetWindow()->IsMaximized() ? "true" : "false");
 	ImGui::End();
-
-	if(TRAP::Application::GetTime().GetSeconds() > time && once)
-	{
-		TRAP::Application::GetWindow()->Show();
-		once = false;
-	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

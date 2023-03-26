@@ -3012,10 +3012,35 @@ SITREP 08/05/2022|22w31b1
     - Renderer2D Fixed artifacting because of non dynamically uniform array index value usage ~<10 mins
     - Renderer Replaced UBO with SSBO for SceneData (+ updated all affected shaders) ~<10 mins
 
+SITREP 08/06/2022|22w31c1
+    - Changed TRAP Engine version to 22w31c1(0.8.20)
+    - Branch wayland:
+        - Application Removed Wayland check ~<5 mins
+
+SITREP 08/07/2022|22w31c1
+    - Changed TRAP Engine version to 22w31c1(0.8.20)
+    - Branch wayland:
+        - WindowingAPI Added support for Wayland functionality ~<40 mins
+        - Added Dependencies/Wayland folder ~<5 mins
+        - Premake Added Wayland protocol to C++ generation function ~<40 mins
+        - Updated all premake scripts ~<5 mins
+        - WindowingAPI Linux Moved KeySymToUnicode() from X11 to the shared header ~<5 mins
+        - WindowingAPI Data put X11 and Wayland stuff into their own structs ~<20 mins
+        - WindowingAPI InternalWindow/Cursor/Monitor put X11 and Wayland stuff into their own structs ~<20 mins
+        - WindowingAPI Wayland Implemented PlatformInitWayland ~>45 mins
+        - Updated all premake scripts to link against wayland-client, wayland-cursor and xkbcommon ~<5 mins
+        - WindowingAPI Wayland Implemented DataOfferListener & DataDeviceListener functions ~<20 mins
+
 SITREP 08/08/2022|22w32a1
     - Changed TRAP Engine version to 22w32a1(0.8.20)
     - Linux Enabled Xwayland support ~<5 mins
     - Added macro to enable native Wayland support (disables use of Xwayland) ~<5 mins
+    - Branch wayland:
+        - WindowingAPI Wayland Implemented PointerListener functions ~<20 mins
+        - WindowingAPI Wayland Implemented KeyboardListener functions ~<20 mins
+        - WindowingAPI Wayland Implemented OutputListener functions ~<20 mins
+        - WindowingAPI Wayland Implemented PlatformSetWindowMonitorWayland ~<20 mins
+        - WindowingAPI Now uses Xwayland by default (Wayland is still experimental) ~<5 mins
 
 SITREP 08/09/2022|22w32a2
     - Changed TRAP Engine version to 22w32a2(0.8.21)
@@ -3640,6 +3665,17 @@ SITREP 02/24/2023|23w08a1
     - WindowingAPIWin32 PlatformGetVideoModes() now always returns the currently used video mode ~<5 mins
     - WindowingAPIWin32 Updated dark/light mode handling ~>15 mins
 
+SITREP 02/25/2023|23w08a1
+    - Changed TRAP Engine version to 23w08a1(0.8.96)
+    - Branch wayland:
+        - ImGuiLayer disabled Multi-Viewport support when compiling with Wayland support enabled ~<5 mins
+        - WindowingAPILinuxWayland Implemented PlatformSetWindowResizableWayland() ~<5 mins
+
+SITREP 02/26/2023|23w08b1
+    - Changed TRAP Engine version to 23w08b1(0.8.97)
+    - Branch wayland:
+        - WindowingAPILinuxWayland Added support for libdecor client-side window decorations ~>120 mins
+
 SITREP 02/27/2023|23w09a1
     - Changed TRAP Engine version to 23w09a1(0.8.97)
     - Update Tracy submodule ~<5 mins
@@ -3647,15 +3683,76 @@ SITREP 02/27/2023|23w09a1
 SITREP 02/28/2023|23w09a2
     - Changed TRAP Engine version to 23w09a2(0.8.98)
     - VulkanRenderer Added shutdown if swapchain image acquire fails ~<10 mins
+    - Branch wayland:
+        - WindowingAPILinuxWayland Added missing libdecor.so unloading ~<5 mins
 
 SITREP 03/01/2023|23w09b1
     - Changed TRAP Engine version to 23w09b1(0.8.99)
     - VulkanRenderer StartGraphicRecording() now handles VulkanSwapChain::AcquireNextImage() failures ~<10 mins
+    - Branch wayland:
+        - WindowingAPILinuxWayland Added [[nodiscard]] attributes where applicable ~<15 mins
+        - WindowingAPILinuxWayland Added support for xdg_activation protocol ~>30 mins
+        - WindowingAPILinuxX11 Moved DBus stuff to WindowingAPILinux ~<10 mins
+
+SITREP 03/03/2023|23w09b2
+    - Changed TRAP Engine version to 23w09b2(0.8.100)
+    - Branch wayland:
+        - WindowingAPILinuxWayland Added support for wp_content_type protocol ~<20 mins
+
+SITREP 03/04/2023|23w09c1
+    - Changed TRAP Engine version to 23w09c1(0.8.101)
+    - Branch wayland:
+        - Worked around NVIDIA Wayland bug making windows transparent with some blend modes ~<15 mins
+        - Marked commented out function parameters with [[maybe_unused]] attribute ~<15 mins
+
+SITREP 03/17/2023|23w11a1
+    - Changed TRAP Engine version to 23w11a1(0.8.102)
+    - Branch wayland:
+        - Implemented PlatformSetWindowMonitorBorderlessWayland() ~<10 mins
+        - Resolved shadowing warnings for "pointer" ~<10 mins
+        - Removed refresh rate rounding to integer ~<5 mins
+        - Better names for monitors ~<5 mins
+        - WindowingAPI Added Wayland remarks to functions ~<20 mins
+
+SITREP 03/18/2023|23w11a2
+    - Changed TRAP Engine version to 23w11a2(0.8.103)
+    - Branch wayland:
+        - Added video mode emulation ~<30 mins
 
 SITREP 03/21/2023|23w12a1
-    - Changed TRAP Engine version to 23w12a1(0.8.100)
+    - Changed TRAP Engine version to 23w12a1(0.8.104)
     - Updated Redists/GameInputRedist.msi ~<5 mins
 
-SITREP 03/25/2023|23w12b1
-    - Changed TRAP Engine version to 23w12b1(0.8.101)
+SITREP 03/22/2023|23w12a1
+    - Changed TRAP Engine version to 23w12a1(0.8.104)
+    - Branch wayland:
+        - WindowingAPILinuxWayland Codestyle const-correctness ~>100 mins
+        - WindowingAPILinuxWayland Added Tracy markers everywhere ~<30 mins
+
+SITREP 03/23/2023|23w12a2
+    - Changed TRAP Engine version to 23w12a2(0.8.105)
+    - Branch wayland:
+        - WindowingAPILinuxWayland Added documentation for functions ~>200 mins
+
+SITREP 03/24/2023|23w12b1
+    - Changed TRAP Engine version to 23w12b1(0.8.106)
+    - Branch wayland:
+        - WindowingAPILinuxWayland Added more asserts ~>120 mins
+        - WindowingAPILinuxWayland Changed some for loops ~<15 mins
+        - WindowFeaturesTests Changed hide briefly functionality ~<5 mins
+        - WindowingAPILinuxWayland Replaced some return types with std::optional ~<15 mins
+        - Utils Added TRAP_WM env var detection to GetLinuxWindowManager() ~<10 mins
+
+SITREP 03/25/2023|23w12b2
+    - Changed TRAP Engine version to 23w12b2(0.8.107)
+    - Branch wayland:
+        - WindowingAPILinuxWayland Removed unnecessary assert ~<5 mins
     - Added [[maybe_unused]] to commented out parameters ~<20 mins
+
+SITREP 03/26/2023|23w12c1
+    - Changed TRAP Engine version to 23w12c1(0.8.108)
+    - Branch wayland:
+        - GitHub Action Build-CI workflow Added Wayland dependencies ~<5 mins
+        - TRAP premake5.lua GenerateWayland() now immediately returns if OS is not linux ~<5 mins
+        - WindowingAPIWin32 Fixed compiler errors ~<10 mins
+        - Moved Wayland protocol generator into its own Premake module ~<10 mins

@@ -59,7 +59,10 @@ void Sandbox2D::OnAttach()
 	m_spriteSheet->AwaitLoading();
 
 	TRAP::Graphics::RenderCommand::SetDepthTesting(true);
-	TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha, TRAP::Graphics::BlendConstant::OneMinusSrcAlpha);
+	TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha,
+													TRAP::Graphics::BlendConstant::One,
+													TRAP::Graphics::BlendConstant::OneMinusSrcAlpha,
+													TRAP::Graphics::BlendConstant::OneMinusSrcAlpha);
 
 	TRAP::Graphics::SpriteManager::CreateFromCoords("AButton", m_spriteSheet, {4.0f, 0.0f}, {16.0f, 16.0f});
 	TRAP::Graphics::SpriteManager::CreateFromCoords("BButton", m_spriteSheet, {5.0f, 0.0f}, {16.0f, 16.0f});

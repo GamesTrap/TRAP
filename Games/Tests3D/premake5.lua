@@ -57,7 +57,11 @@ project "Tests3D"
 			"pthread",
 			"SPIRV-Cross-Core",
 			"SPIRV-Cross-GLSL",
-			"SPIRV-Cross-HLSL"
+			"SPIRV-Cross-HLSL",
+
+			"wayland-client",
+			"wayland-cursor",
+			"xkbcommon"
 		}
 
 		runpathdirs
@@ -65,6 +69,11 @@ project "Tests3D"
 			".",
 			"%{cfg.targetdir}",
 			"$ORIGIN"
+		}
+
+		externalincludedirs
+		{
+			"%{IncludeDir.WAYLAND}"
 		}
 
 		-- Discord Game SDK stuff

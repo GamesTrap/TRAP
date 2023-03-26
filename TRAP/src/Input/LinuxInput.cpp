@@ -592,7 +592,7 @@ void TRAP::Input::UpdateControllerGUID(std::string&)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	return TRAP::INTERNAL::WindowingAPI::GetX11KeyboardLayoutName();
+	return TRAP::INTERNAL::WindowingAPI::GetLinuxKeyboardLayoutName();
 }
 
 #endif

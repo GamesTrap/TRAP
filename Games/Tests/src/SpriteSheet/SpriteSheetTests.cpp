@@ -35,7 +35,10 @@ void SpriteSheetTests::OnAttach()
 	m_characterSheet->AwaitLoading();
 
 	TRAP::Graphics::RenderCommand::SetDepthTesting(true);
-	TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha, TRAP::Graphics::BlendConstant::OneMinusSrcAlpha);
+		TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha,
+														TRAP::Graphics::BlendConstant::One,
+														TRAP::Graphics::BlendConstant::OneMinusSrcAlpha,
+														TRAP::Graphics::BlendConstant::OneMinusSrcAlpha);
 
     static constexpr TRAP::Math::Vec2 foregroundSpriteSize{18.0f, 18.0f};
     static constexpr TRAP::Math::Vec2 backgroundSpriteSize{24.0f, 24.0f};
