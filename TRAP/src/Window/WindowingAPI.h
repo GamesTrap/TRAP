@@ -5142,6 +5142,7 @@ namespace TRAP::INTERNAL
 			nullptr,
 			nullptr,
 			nullptr,
+			nullptr,
 			nullptr
 		};
 
@@ -5443,7 +5444,9 @@ namespace TRAP::INTERNAL
 		inline static constexpr wl_surface_listener SurfaceListener
 		{
 			SurfaceHandleEnter,
-			SurfaceHandleLeave
+			SurfaceHandleLeave,
+			nullptr,
+			nullptr
 		};
 
 		/// <summary>

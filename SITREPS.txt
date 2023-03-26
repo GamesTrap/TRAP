@@ -3756,3 +3756,10 @@ SITREP 03/26/2023|23w12c1
         - TRAP premake5.lua GenerateWayland() now immediately returns if OS is not linux ~<5 mins
         - WindowingAPIWin32 Fixed compiler errors ~<10 mins
         - Moved Wayland protocol generator into its own Premake module ~<10 mins
+
+SITREP 03/26/2023|23w12d1
+    - Changed TRAP Engine version to 23w12d1(0.9.0)
+    - Merged Wayland support
+    - Updated Controller mappings ~<5 mins
+    - Updated Vulkan loader ~<5 mins
+    - Updated Box2D, GLSLang, ModernDialogs, SPIRV-Cross, VulkanMemoryAllocator submodules ~<5 mins

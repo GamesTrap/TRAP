@@ -371,8 +371,7 @@ project "GLSLang-Default-Resource-Limits"
 
     files
     {
-        "GLSLang/StandAlone/ResourceLimits.cpp",
-        "GLSLang/StandAlone/ResourceLimits.h"
+        "GLSLang/glslang/ResourceLimits/ResourceLimits.cpp"
     }
 
     links "GLSLang"
