@@ -35,6 +35,7 @@ The above license only applies to some of the Controller specific parts of this 
 #include <array>
 #include <string_view>
 #include <regex>
+#include <optional>
 
 #ifdef TRAP_PLATFORM_LINUX
 #include "Utils/Linux.h"
@@ -479,8 +480,8 @@ namespace TRAP
 		/// <summary>
 		/// Retrieve the name of the current keyboard layout.
 		/// </summary>
-		/// <returns>Name of keyboard layout.</returns>
-		[[nodiscard]] static std::string GetKeyboardLayoutName();
+		/// <returns>Name of keyboard layout on success, empty optional otherwise.</returns>
+		[[nodiscard]] static std::optional<std::string> GetKeyboardLayoutName();
 
 		/// <summary>
 		/// Set the vibration level(s) for the specified controller.

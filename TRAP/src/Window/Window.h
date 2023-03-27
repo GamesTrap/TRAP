@@ -148,8 +148,8 @@ namespace TRAP
 		/// <summary>
 		/// Get the current opacity of the window.
 		/// </summary>
-		/// <returns>Opacity of the window.</returns>
-		[[nodiscard]] float GetOpacity() const;
+		/// <returns>Opacity of the window on success, empty optional otherwise.</returns>
+		[[nodiscard]] std::optional<float> GetOpacity() const;
 		/// <summary>
 		/// Get whether VSync is enabled or disabled.
 		/// </summary>

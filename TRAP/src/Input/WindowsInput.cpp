@@ -806,7 +806,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::string TRAP::Input::GetKeyboardLayoutName()
+[[nodiscard]] std::optional<std::string> TRAP::Input::GetKeyboardLayoutName()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
@@ -814,9 +814,8 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 
 	if(!GetKeyboardLayoutNameW(keyboardLayoutID.data()))
 	{
-		TP_ERROR(Log::InputWinAPIPrefix, "Failed to retrieve keyboard layout name");
-		TP_ERROR(Log::InputWinAPIPrefix, Utils::String::GetStrError());
-		return "";
+		TP_ERROR(Log::InputWinAPIPrefix, "Failed to retrieve keyboard layout name (", Utils::String::GetStrError(), ")");
+		return std::nullopt;
 	}
 
 	//NOTE: Only care about the language part of the keyboard layout ID
@@ -825,18 +824,16 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 	const uint32_t size = GetLocaleInfoW(lcID, LOCALE_SLANGUAGE, nullptr, 0);
 	if(!size)
 	{
-		TP_ERROR(Log::InputWinAPIPrefix, "Failed to retrieve keyboard layout name length");
-		TP_ERROR(Log::InputWinAPIPrefix, Utils::String::GetStrError());
-		return "";
+		TP_ERROR(Log::InputWinAPIPrefix, "Failed to retrieve keyboard layout name length (", Utils::String::GetStrError(), ")");
+		return std::nullopt;
 	}
 
 	std::wstring language(size, 0);
 
 	if(!GetLocaleInfoW(lcID, LOCALE_SLANGUAGE, language.data(), size))
 	{
-		TP_ERROR(Log::InputWinAPIPrefix, "Failed to translate keyboard layout name");
-		TP_ERROR(Log::InputWinAPIPrefix, Utils::String::GetStrError());
-		return "";
+		TP_ERROR(Log::InputWinAPIPrefix, "Failed to translate keyboard layout name (", Utils::String::GetStrError(), ")");
+		return std::nullopt;
 	}
 
 	return TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(language);

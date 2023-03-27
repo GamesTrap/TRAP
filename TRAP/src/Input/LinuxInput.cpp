@@ -588,7 +588,7 @@ void TRAP::Input::UpdateControllerGUID(std::string&)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::string TRAP::Input::GetKeyboardLayoutName()
+[[nodiscard]] std::optional<std::string> TRAP::Input::GetKeyboardLayoutName()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 

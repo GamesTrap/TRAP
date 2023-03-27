@@ -148,7 +148,7 @@ void WindowFeaturesTests::OnImGuiRender()
 	TRAP::Math::Vec2 contentScale = TRAP::Application::GetWindow()->GetMonitor().GetContentScale();
 	ImGui::Text("Content Scale: %f %f", contentScale.x, contentScale.y);
 
-	float opacity = TRAP::Application::GetWindow()->GetOpacity();
+	float opacity = TRAP::Application::GetWindow()->GetOpacity().value_or(1.0f);
 	if(ImGui::SliderFloat("Opacity", &opacity, 0.001f, 1.0f))
 		TRAP::Application::GetWindow()->SetOpacity(opacity);
 

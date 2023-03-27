@@ -842,7 +842,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowOpacity(const InternalWindow* const 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the opacity of the whole window.
-[[nodiscard]] float TRAP::INTERNAL::WindowingAPI::GetWindowOpacity(const InternalWindow* const window)
+[[nodiscard]] std::optional<float> TRAP::INTERNAL::WindowingAPI::GetWindowOpacity(const InternalWindow* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -853,7 +853,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowOpacity(const InternalWindow* const 
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
-		return 1.0f;
+		return std::nullopt;
 	}
 
 	return PlatformGetWindowOpacity(window);
@@ -2655,8 +2655,12 @@ void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 	//This function is not window specific because you can only have 1 keyboard layout selected and not multiple!
 	//So apply this globally
 	//This event gets redirected to the TRAP::Input callback
-	TRAP::Events::KeyLayoutEvent event(TRAP::Input::GetKeyboardLayoutName());
-	TRAP::Input::GetEventCallback()(event);
+	const auto layout = TRAP::Input::GetKeyboardLayoutName();
+	if(layout)
+	{
+		TRAP::Events::KeyLayoutEvent event(*layout);
+		TRAP::Input::GetEventCallback()(event);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2773,20 +2777,6 @@ void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 
 	//Lastly sort on refresh rate
 	return fm.RefreshRate < sm.RefreshRate;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::IsSameVideoMode(const InternalVideoMode& fm, const InternalVideoMode& sm)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	const int32_t fbpp = fm.RedBits + fm.GreenBits + fm.BlueBits;
-	const int32_t sbpp = sm.RedBits + sm.GreenBits + sm.BlueBits;
-	const int32_t farea = fm.Width * fm.Height;
-	const int32_t sarea = sm.Width * sm.Height;
-
-	return fbpp == sbpp && farea == sarea && fm.Width == sm.Width && fm.RefreshRate == sm.RefreshRate;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

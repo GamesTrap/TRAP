@@ -3814,7 +3814,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbarWayland([[maybe_
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacityWayland([[maybe_unused]] const InternalWindow* const window)
+std::optional<float> TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacityWayland([[maybe_unused]] const InternalWindow* const window)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -4269,14 +4269,14 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimitsWayland(InternalWi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::INTERNAL::WindowingAPI::GetLinuxKeyboardLayoutNameWayland()
+std::optional<std::string> TRAP::INTERNAL::WindowingAPI::GetLinuxKeyboardLayoutNameWayland()
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
     if(!s_Data.Wayland.WaylandXKB.KeyMap)
     {
         InputError(Error::Platform_Error, "[Wayland] Key map missing");
-        return nullptr;
+        return std::nullopt;
     }
 
     const std::string name = s_Data.Wayland.WaylandXKB.KeyMapLayoutGetName(s_Data.Wayland.WaylandXKB.KeyMap,
@@ -4285,7 +4285,7 @@ std::string TRAP::INTERNAL::WindowingAPI::GetLinuxKeyboardLayoutNameWayland()
     if(name.empty())
     {
         InputError(Error::Platform_Error, "[Wayland] Failed to query keyboard layout name");
-        return nullptr;
+        return std::nullopt;
     }
 
     return s_Data.Wayland.WaylandXKB.KeyboardLayoutName;

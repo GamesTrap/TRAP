@@ -1523,6 +1523,20 @@ namespace TRAP::INTERNAL
 			int32_t BlueBits = 0;
 			//The refresh rate, in Hz, of the video mode.
 			double RefreshRate = 0;
+
+			inline constexpr bool operator==(const InternalVideoMode& other) const
+			{
+				return Width == other.Width &&
+				       Height == other.Height &&
+					   RedBits == other.RedBits &&
+					   GreenBits == other.GreenBits &&
+					   BlueBits == other.BlueBits &&
+					   RefreshRate == other.RefreshRate;
+			}
+			inline constexpr bool operator!=(const InternalVideoMode& other) const
+			{
+				return !(*this == other);
+			}
 		};
 
 		/// <summary>
@@ -2186,8 +2200,8 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to get the opacity from.</param>
-		/// <returns>Opacity of the given internal window.</returns>
-		[[nodiscard]] static float GetWindowOpacity(const InternalWindow* window);
+		/// <returns>Opacity of the given internal window on success, empty optional otherwise.</returns>
+		[[nodiscard]] static std::optional<float> GetWindowOpacity(const InternalWindow* window);
 		/// <summary>
 		/// This function retrieves the content scale for the specified window.
 		/// The content scale is the reatio between the current DPI and the platform's
@@ -3812,10 +3826,10 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to get the opacity from.</param>
-		/// <returns>Opacity of the given internal window.</returns>
-		[[nodiscard]] static float PlatformGetWindowOpacity(const InternalWindow* window);
-		[[nodiscard]] static float PlatformGetWindowOpacityX11(const InternalWindow* window);
-		[[nodiscard]] static float PlatformGetWindowOpacityWayland(const InternalWindow* window);
+		/// <returns>Opacity of the given internal window on success, empty optional otherwise.</returns>
+		[[nodiscard]] static std::optional<float> PlatformGetWindowOpacity(const InternalWindow* window);
+		[[nodiscard]] static std::optional<float> PlatformGetWindowOpacityX11(const InternalWindow* window);
+		[[nodiscard]] static std::optional<float> PlatformGetWindowOpacityWayland(const InternalWindow* window);
 		/// <summary>
 		/// This function retrieves the size, in pixels, of the framebuffer of the specified window.
 		/// If you wish to retrieve the size of the window in screen coordinates, see
@@ -4339,13 +4353,6 @@ namespace TRAP::INTERNAL
 		/// <returns>Index for the sorted internal video mode.</returns>
 		[[nodiscard]] static bool CompareVideoModes(const InternalVideoMode& fm, const InternalVideoMode& sm);
 		/// <summary>
-		/// Check if two video modes are equal.
-		/// </summary>
-		/// <param name="fm">Internal video mode to check.</param>
-		/// <param name="sm">Internal video mode to check.</param>
-		/// <returns>True if both video modes are equal, false otherwise.</returns>
-		[[nodiscard]] static bool IsSameVideoMode(const InternalVideoMode& fm, const InternalVideoMode& sm);
-		/// <summary>
 		/// Updates the cursor image according to its cursor mode.
 		/// </summary>
 		/// <param name="window">Internal window to update.</param>
@@ -4687,15 +4694,15 @@ namespace TRAP::INTERNAL
 		/// Calculates the refresh rate, in Hz, from the specified RandR mode info.
 		/// </summary>
 		/// <param name="mi">RandR mode info.</param>
-		/// <returns>Refresh rate.</returns>
-		[[nodiscard]] static double CalculateRefreshRate(const XRRModeInfo* mi);
+		/// <returns>Refresh rate on success, empty optional otherwise.</returns>
+		[[nodiscard]] static std::optional<double> CalculateRefreshRate(const XRRModeInfo* mi);
 		/// <summary>
 		/// Create InternalVideoMode from RandR mode info.
 		/// </summary>
 		/// <param name="mi">RandR mode info.</param>
 		/// <param name="ci">RandR CRTC info.</param>
-		/// <returns>Newly created InternalVideoMode.</returns>
-		[[nodiscard]] static InternalVideoMode VideoModeFromModeInfo(const XRRModeInfo* mi, const XRRCrtcInfo* ci);
+		/// <returns>Newly created InternalVideoMode on success, empty optional otherwise.</returns>
+		[[nodiscard]] static std::optional<InternalVideoMode> VideoModeFromModeInfo(const XRRModeInfo* mi, const XRRCrtcInfo* ci);
 		/// <summary>
 		/// Sends an EWMH or ICCCM event to the window manager.
 		/// </summary>
@@ -4822,8 +4829,8 @@ namespace TRAP::INTERNAL
 		/// <param name="supportedAtoms">List of supported atoms.</param>
 		/// <param name="atomCount">Number of supported atoms.</param>
 		/// <param name="atomName">Atom to check.</param>
-		/// <returns>Atom on success, 0 otherwise.</returns>
-		[[nodiscard]] static Atom GetAtomIfSupported(const Atom* supportedAtoms, uint64_t atomCount, std::string_view atomName);
+		/// <returns>Atom on success, empty optional otherwise.</returns>
+		[[nodiscard]] static std::optional<Atom> GetAtomIfSupported(const Atom* supportedAtoms, uint64_t atomCount, std::string_view atomName);
 		/// <summary>
 		/// Create a blank cursor for hidden and disabled cursor modes.
 		/// </summary>
@@ -4857,9 +4864,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="display">X11 display.</param>
 		/// <param name="event">X11 event.</param>
-		/// <param name="pointer">Pointer to the event.</param>
+		/// <param name="ptr">Pointer to the event.</param>
 		/// <returns>True if the event is a selection event, false otherwise.</returns>
-		[[nodiscard]] static int32_t IsSelectionEvent(Display* const display, XEvent* const event, XPointer pointer);
+		[[nodiscard]] static int32_t IsSelectionEvent(Display* const display, XEvent* const event, XPointer ptr);
 		/// <summary>
 		/// Set the specified property to the selection converted to the requested target.
 		/// </summary>
@@ -4927,9 +4934,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="display">X11 display.</param>
 		/// <param name="event">X11 event.</param>
-		/// <param name="pointer">Pointer to the event.</param>
+		/// <param name="ptr">Pointer to the event.</param>
 		/// <returns>True if the event is a property new value event for the specified selection, false otherwise.</returns>
-		[[nodiscard]] static int32_t IsSelPropNewValueNotify(Display* display, XEvent* event, XPointer pointer);
+		[[nodiscard]] static int32_t IsSelPropNewValueNotify(Display* display, XEvent* event, XPointer ptr);
 		/// <summary>
 		/// Convert the specified Latin-1 string to UTF-8.
 		/// </summary>
@@ -4995,8 +5002,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="keySyms">X11 KeySyms.</param>
 		/// <param name="width">Width of KeySyms.</param>
-		/// <returns>Translated TRAP::Input::Key.</returns>
-		[[nodiscard]] static Input::Key TranslateKeySyms(const KeySym* keySyms, int32_t width);
+		/// <returns>Translated TRAP::Input::Key on success, false otherwise.</returns>
+		[[nodiscard]] static std::optional<Input::Key> TranslateKeySyms(const KeySym* keySyms, int32_t width);
 		/// <summary>
 		/// Clear its handle when the input context has been destroyed.
 		/// </summary>
@@ -5007,10 +5014,10 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Retrieve the current keyboard layout name.
 		/// </summary>
-		/// <returns>Current keyboard layout name.</returns>
-		[[nodiscard]] static std::string GetLinuxKeyboardLayoutName();
-		[[nodiscard]] static std::string GetLinuxKeyboardLayoutNameX11();
-		[[nodiscard]] static std::string GetLinuxKeyboardLayoutNameWayland();
+		/// <returns>Current keyboard layout name on success, empty optional otherwise.</returns>
+		[[nodiscard]] static std::optional<std::string> GetLinuxKeyboardLayoutName();
+		[[nodiscard]] static std::optional<std::string> GetLinuxKeyboardLayoutNameX11();
+		[[nodiscard]] static std::optional<std::string> GetLinuxKeyboardLayoutNameWayland();
 
 		/// <summary>
 		/// Callback function for Wayland registry notifying the removal of global objects.
@@ -5784,7 +5791,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Window to increment cursor image counter on.</param>
 		static void IncrementCursorImageWayland(const InternalWindow* const window);
 
-		friend std::string TRAP::Input::GetKeyboardLayoutName();
+		friend std::optional<std::string> TRAP::Input::GetKeyboardLayoutName();
 
 		struct CodePair
 		{

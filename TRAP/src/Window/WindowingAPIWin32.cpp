@@ -2203,7 +2203,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 
 		for (i = 0; i < count; i++)
 		{
-			if (IsSameVideoMode(result[i], mode))
+			if (result[i] == mode)
 				break;
 		}
 
@@ -2834,7 +2834,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthrough(InternalWin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] float TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacity(const InternalWindow* window)
+[[nodiscard]] std::optional<float> TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacity(const InternalWindow* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2848,7 +2848,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthrough(InternalWin
 			return static_cast<float>(alpha) / 255.0f;
 	}
 
-	return 1.0f;
+	return std::nullopt;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -523,7 +523,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbar(InternalWindow*
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacity(const InternalWindow* window)
+std::optional<float> TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacity(const InternalWindow* window)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -532,7 +532,7 @@ float TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacity(const InternalWindo
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         return PlatformGetWindowOpacityWayland(window);
 
-    return {};
+    return std::nullopt;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -931,7 +931,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(InternalWindow* w
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::INTERNAL::WindowingAPI::GetLinuxKeyboardLayoutName()
+std::optional<std::string> TRAP::INTERNAL::WindowingAPI::GetLinuxKeyboardLayoutName()
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -940,7 +940,7 @@ std::string TRAP::INTERNAL::WindowingAPI::GetLinuxKeyboardLayoutName()
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         return GetLinuxKeyboardLayoutNameWayland();
 
-    return {};
+    return std::nullopt;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

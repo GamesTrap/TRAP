@@ -212,7 +212,7 @@ void TRAP::Window::OnUpdate()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] float TRAP::Window::GetOpacity() const
+[[nodiscard]] std::optional<float> TRAP::Window::GetOpacity() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
