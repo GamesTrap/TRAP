@@ -3767,3 +3767,4 @@ SITREP 03/26/2023|23w12d1
 SITREP 03/27/2023|23w13a1
     - Changed TRAP Engine version to 23w13a1(0.9.1)
     - WindowingAPIWin32 Windows now also process events while being dragged or resized ~<45 mins
+    - FileWatcher Changed error message formatting ~<10 mins
