@@ -961,6 +961,8 @@ namespace TRAP::INTERNAL
 			std::vector<RAWINPUT> RawInput{};
 			int32_t RawInputSize = 0;
 			UINT MouseTrailSize = 0;
+			LPVOID MessageFiber;
+			LPVOID MainFiber;
 
 			STICKYKEYS UserStickyKeys{sizeof(STICKYKEYS), 0};
 			TOGGLEKEYS UserToggleKeys{sizeof(TOGGLEKEYS), 0};
@@ -1661,6 +1663,10 @@ namespace TRAP::INTERNAL
 
 			ITaskbarList3* TaskbarList = nullptr;
 			UINT TaskbarListMsgID = 0;
+
+			//If user pressed mouse button on window title bar
+			UINT NCMouseButton;
+			LPARAM NCMousePos;
 #elif defined(TRAP_PLATFORM_LINUX)
 			//Whether the visual supports framebuffer transparency
 			bool Transparent = false;
@@ -4549,6 +4555,8 @@ namespace TRAP::INTERNAL
 		/// <param name="lParam">Message parameter.</param>
 		/// <returns>True if the message was handled, false otherwise.</returns>
 		static LRESULT CALLBACK HelperWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+		//TODO
+		static void CALLBACK MessageFiberProc(LPVOID lpFiberParameter);
 		/// <summary>
 		/// Callback for EnumDisplayMonitors in CreateMonitor.
 		/// </summary>
@@ -4631,6 +4639,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to update window style for.</param>
 		static void UpdateWindowStyles(const InternalWindow* window);
+		//TODO
+		static void PollMessageLoopWin32();
 		/// <summary>
 		/// Creates a dummy window for behind-the-scenes work.
 		/// </summary>

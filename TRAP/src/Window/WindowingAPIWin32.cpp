@@ -541,10 +541,45 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		return 0;
 	}
 
+	case WM_NCLBUTTONDOWN:
+	{
+		if (wParam == HTCAPTION)
+		{
+			windowPtr->NCMouseButton = uMsg;
+			windowPtr->NCMousePos = lParam;
+			return 0;
+		}
+		break;
+	}
+
+	case WM_NCMOUSEMOVE:
+	{
+		if (windowPtr->NCMouseButton)
+		{
+			if (GET_X_LPARAM(windowPtr->NCMousePos) != GET_X_LPARAM(lParam) ||
+				GET_Y_LPARAM(windowPtr->NCMousePos) != GET_Y_LPARAM(lParam))
+			{
+				DefWindowProcW(hWnd, windowPtr->NCMouseButton, HTCAPTION, windowPtr->NCMousePos);
+				windowPtr->NCMouseButton = 0;
+			}
+		}
+		break;
+	}
+
 	case WM_MOUSEMOVE:
 	{
 		const int32_t x = GET_X_LPARAM(lParam);
 		const int32_t y = GET_Y_LPARAM(lParam);
+
+		if (windowPtr->NCMouseButton)
+		{
+			if (GET_X_LPARAM(windowPtr->NCMousePos) != x ||
+				GET_Y_LPARAM(windowPtr->NCMousePos) != y)
+			{
+				DefWindowProcW(hWnd, windowPtr->NCMouseButton, HTCAPTION, windowPtr->NCMousePos);
+				windowPtr->NCMouseButton = 0;
+			}
+		}
 
 		if (!windowPtr->CursorTracked)
 		{
@@ -662,6 +697,8 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		else if (windowPtr->cursorMode == CursorMode::Captured)
 			ReleaseCursor();
 
+		SetTimer(hWnd, 1, 1, nullptr);
+
 		break;
 	}
 
@@ -679,6 +716,15 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		else if (windowPtr->cursorMode == CursorMode::Captured)
 			CaptureCursor(windowPtr);
 
+		KillTimer(hWnd, 1);
+
+		break;
+	}
+
+	case WM_TIMER:
+	{
+		if (wParam == 1)
+			SwitchToFiber(s_Data.MainFiber);
 		break;
 	}
 
@@ -1573,11 +1619,46 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::HelperWindowProc(HWND hWnd, UINT 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void CALLBACK TRAP::INTERNAL::WindowingAPI::MessageFiberProc([[maybe_unused]] LPVOID lpFiberParameter)
+{
+	while (true)
+	{
+		PollMessageLoopWin32();
+		SwitchToFiber(s_Data.MainFiber);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PollMessageLoopWin32()
+{
+	MSG msg;
+
+	while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE))
+	{
+		if (msg.message == WM_QUIT)
+		{
+			//NOTE: While the WindowingAPI does not itself post WM_QUIT, other processes may post it to this one,
+			//      for example Task Manager
+			//HACK: Treat WM_QUIT as a close on all windows
+
+			for (const Scope<InternalWindow>& window : s_Data.WindowList)
+				InputWindowCloseRequest(window.get());
+		}
+		else
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::CreateHelperWindow()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	MSG msg;
 	WNDCLASSEXW wc{};
 	wc.cbSize = sizeof(wc);
 	wc.style = CS_OWNDC;
@@ -1619,11 +1700,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::HelperWindowProc(HWND hWnd, UINT 
 				                                                      DEVICE_NOTIFY_WINDOW_HANDLE);
 	}
 
-	while (PeekMessageW(&msg, s_Data.HelperWindowHandle, 0, 0, PM_REMOVE))
-	{
-		TranslateMessage(&msg);
-		DispatchMessageW(&msg);
-	}
+	SwitchToFiber(s_Data.MessageFiber);
 
 	return true;
 }
@@ -2232,6 +2309,20 @@ void TRAP::INTERNAL::WindowingAPI::SetAccessibilityShortcutKeys(const bool allow
 
 	s_Data.User32.SetProcessDPIAware();
 
+	s_Data.MainFiber = ConvertThreadToFiber(nullptr);
+	if (!s_Data.MainFiber)
+	{
+		InputErrorWin32(Error::Platform_Error, "Failed to convert thread to fiber!");
+		return false;
+	}
+
+	s_Data.MessageFiber = CreateFiber(0, &MessageFiberProc, nullptr);
+	if (!s_Data.MessageFiber)
+	{
+		InputErrorWin32(Error::Platform_Error, "Failed to create message loop fiber!");
+		return false;
+	}
+
 	//Store accessibility key states
 	SystemParametersInfo(SPI_GETSTICKYKEYS, sizeof(STICKYKEYS), &s_Data.UserStickyKeys, 0);
 	SystemParametersInfo(SPI_GETTOGGLEKEYS, sizeof(TOGGLEKEYS), &s_Data.UserToggleKeys, 0);
@@ -2301,6 +2392,11 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdown()
 		::UnregisterClassW(MAKEINTATOM(s_Data.HelperWindowClass), s_Data.Instance);
 	if (s_Data.MainWindowClass)
 		::UnregisterClassW(MAKEINTATOM(s_Data.MainWindowClass), s_Data.Instance);
+
+	if (s_Data.MessageFiber)
+		DeleteFiber(s_Data.MessageFiber);
+	if (s_Data.MainFiber)
+		ConvertFiberToThread();
 
 	s_Data.ClipboardString = {};
 	s_Data.RawInput = {};
@@ -2826,25 +2922,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	MSG msg;
-
-	while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE))
-	{
-		if (msg.message == WM_QUIT)
-		{
-			//NOTE: While TRAP does not itself post WM_QUIT, other processes
-			//      may post it to this one, for example Task Manager
-			//HACK: Treat WM_QUIT as a close on all windows
-
-			for(const Scope<InternalWindow>& win : s_Data.WindowList)
-				InputWindowCloseRequest(win.get());
-		}
-		else
-		{
-			TranslateMessage(&msg);
-			DispatchMessageW(&msg);
-		}
-	}
+	SwitchToFiber(s_Data.MessageFiber);
 
 	//HACK: Release modifier keys that the system did not emit KEYUP for
 	//NOTE: Shift keys on Windows tend to "stick" when both are pressed as no key up message is generated
