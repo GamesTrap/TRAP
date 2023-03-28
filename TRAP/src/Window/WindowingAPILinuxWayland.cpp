@@ -1088,7 +1088,7 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleEnter([[maybe_unused]] void* con
 
     window->Wayland.Hovered = true;
 
-    PlatformSetCursor(window, window->Cursor);
+    PlatformSetCursorWayland(window, window->Cursor);
     InputCursorEnter(window, true);
 }
 
@@ -3630,7 +3630,10 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorModeWayland(InternalWindow* 
 
 	TRAP_ASSERT(window, "WindowingAPI::PlatformSetCursorModeWayland(): InternalWindow is nullptr!");
 
-    PlatformSetCursorWayland(window, window->Cursor);
+    if(mode == CursorMode::Disabled || mode == CursorMode::Hidden)
+        PlatformSetCursorWayland(window, nullptr);
+    else
+        PlatformSetCursorWayland(window, window->Cursor);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
