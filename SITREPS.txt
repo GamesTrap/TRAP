@@ -3770,3 +3770,8 @@ SITREP 03/27/2023|23w13a1
     - FileWatcher Changed error message formatting ~<10 mins
     - WindowingAPILinuxX11 Added asserts ~<20 mins
     - WindowingAPILinuxX11 Replaced magic return values with std::optional where appropriate ~<30 mins
+    - WindowingAPILinuxWayland Added missing PlatformSetWindowAspectRatioWayland() function ~<5 mins
+
+SITREP 03/28/2023|23w13b1
+    - Changed TRAP Engine version to 23w13b1(0.9.2)
+    - WindowingAPILinuxX11 Replaced pointer usage with references where possible ~>60 mins

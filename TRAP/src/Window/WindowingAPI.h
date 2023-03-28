@@ -1055,8 +1055,6 @@ namespace TRAP::INTERNAL
 				Atom NET_WORKAREA{};
 				Atom NET_CURRENT_DESKTOP{};
 				Atom NET_ACTIVE_WINDOW{};
-				Atom NET_FRAME_EXTENTS{};
-				Atom NET_REQUEST_FRAME_EXTENTS{};
 				Atom MOTIF_WM_HINTS{};
 
 				//Xdnd (drag and drop) atoms
@@ -4296,6 +4294,8 @@ namespace TRAP::INTERNAL
 		/// <param name="numerator">Numerator of the desired aspect ratio, or -1.</param>
 		/// <param name="denominator">Denominator of the desired aspect ratio, or -1.</param>
 		static void PlatformSetWindowAspectRatio(InternalWindow* window, int32_t numerator, int32_t denominator);
+		static void PlatformSetWindowAspectRatioX11(InternalWindow* window, int32_t numerator, int32_t denominator);
+		static void PlatformSetWindowAspectRatioWayland(InternalWindow* window, int32_t numerator, int32_t denominator);
 		/// <summary>
 		/// Enable/Disable drag and drop feature for the specified window.
 		/// </summary>
@@ -4334,17 +4334,17 @@ namespace TRAP::INTERNAL
 		/// Make the specified window and its video mode active on its monitor.
 		/// </summary>
 		/// <param name="window">Internal window to make active on the given monitor.</param>
-		static void AcquireMonitor(InternalWindow* window);
+		static void AcquireMonitor(InternalWindow& window);
 		/// <summary>
 		/// Make the specified window active on its monitor.
 		/// </summary>
 		/// <param name="window">Internal window to make active on the given monitor.</param>
-		static void AcquireMonitorBorderless(InternalWindow* window);
+		static void AcquireMonitorBorderless(InternalWindow& window);
 		/// <summary>
 		/// Remove the window and restore the original video mode.
 		/// </summary>
 		/// <param name="window">Internal window which to release from current acquired monitor.</param>
-		static void ReleaseMonitor(const InternalWindow* window);
+		static void ReleaseMonitor(const InternalWindow& window);
 		/// <summary>
 		/// Lexically compare video modes, used for sorting.
 		/// </summary>
@@ -4356,27 +4356,27 @@ namespace TRAP::INTERNAL
 		/// Updates the cursor image according to its cursor mode.
 		/// </summary>
 		/// <param name="window">Internal window to update.</param>
-		static void UpdateCursorImage(const InternalWindow* window);
+		static void UpdateCursorImage(const InternalWindow& window);
 		/// <summary>
 		/// Exit disabled cursor mode for the specified window.
 		/// </summary>
 		/// <param name="window">Internal window for which to enable cursor.</param>
-		static void EnableCursor(InternalWindow* window);
+		static void EnableCursor(InternalWindow& window);
 		/// <summary>
 		/// Apply disabled cursor mode to a focused window.
 		/// </summary>
 		/// <param name="window">Internal window for which to disable cursor.</param>
-		static void DisableCursor(InternalWindow* window);
+		static void DisableCursor(InternalWindow& window);
 		/// <summary>
 		/// Enables raw messages for the mouse for the specified window.
 		/// </summary>
 		/// <param name="window">Internal window for which to enable raw mouse motion.</param>
-		static void EnableRawMouseMotion(const InternalWindow* window);
+		static void EnableRawMouseMotion(const InternalWindow& window);
 		/// <summary>
 		/// Disables raw messages for the mouse.
 		/// </summary>
 		/// <param name="window">Internal window for which to disable raw mouse motion.</param>
-		static void DisableRawMouseMotion(const InternalWindow* window);
+		static void DisableRawMouseMotion(const InternalWindow& window);
 		/// <summary>
 		/// Get a string representation of a VkResult.
 		/// </summary>
@@ -4507,7 +4507,7 @@ namespace TRAP::INTERNAL
 		/// Sets the cursor clip rect to the window content area.
 		/// </summary>
 		/// <param name="window">Internal window for which to capture the cursor.</param>
-		static void CaptureCursor(InternalWindow* window);
+		static void CaptureCursor(InternalWindow& window);
 		/// <summary>
 		/// Disables clip cursor
 		/// </summary>
@@ -4562,7 +4562,12 @@ namespace TRAP::INTERNAL
 		/// <param name="lParam">Message parameter.</param>
 		/// <returns>True if the message was handled, false otherwise.</returns>
 		static LRESULT CALLBACK HelperWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-		//TODO
+		/// <summary>
+		/// Window message loop using fiber to allow for window updates while resizing/moving a window.
+		/// This function only polls one time before giving control back to the main thread/fiber.
+		/// The message pumping is simplified to only honor window close requests.
+		/// </summary>
+		/// <param name="lpFiberParameter">User data pointer.</param>
 		static void CALLBACK MessageFiberProc(LPVOID lpFiberParameter);
 		/// <summary>
 		/// Callback for EnumDisplayMonitors in CreateMonitor.
@@ -4646,8 +4651,6 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to update window style for.</param>
 		static void UpdateWindowStyles(const InternalWindow* window);
-		//TODO
-		static void PollMessageLoopWin32();
 		/// <summary>
 		/// Creates a dummy window for behind-the-scenes work.
 		/// </summary>
@@ -4695,14 +4698,14 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="mi">RandR mode info.</param>
 		/// <returns>Refresh rate on success, empty optional otherwise.</returns>
-		[[nodiscard]] static std::optional<double> CalculateRefreshRate(const XRRModeInfo* mi);
+		[[nodiscard]] static std::optional<double> CalculateRefreshRate(const XRRModeInfo& mi);
 		/// <summary>
 		/// Create InternalVideoMode from RandR mode info.
 		/// </summary>
 		/// <param name="mi">RandR mode info.</param>
 		/// <param name="ci">RandR CRTC info.</param>
 		/// <returns>Newly created InternalVideoMode on success, empty optional otherwise.</returns>
-		[[nodiscard]] static std::optional<InternalVideoMode> VideoModeFromModeInfo(const XRRModeInfo* mi, const XRRCrtcInfo* ci);
+		[[nodiscard]] static std::optional<InternalVideoMode> VideoModeFromModeInfo(const XRRModeInfo& mi, const XRRCrtcInfo& ci);
 		/// <summary>
 		/// Sends an EWMH or ICCCM event to the window manager.
 		/// </summary>
@@ -4713,16 +4716,8 @@ namespace TRAP::INTERNAL
 		/// <param name="c">Event data c.</param>
 		/// <param name="d">Event data d.</param>
 		/// <param name="e">Event data e.</param>
-		static void SendEventToWM(const InternalWindow* window, Atom type, int64_t a, int64_t b, int64_t c,
+		static void SendEventToWM(const InternalWindow& window, Atom type, int64_t a, int64_t b, int64_t c,
 		                          int64_t d, int64_t e);
-		/// <summary>
-		/// Returns whether it is a _NET_FRAME_EXTENTS event for the specified window.
-		/// </summary>
-		/// <param name="display">X11 display.</param>
-		/// <param name="event">X11 event.</param>
-		/// <param name="pointer">Pointer to the window.</param>
-		/// <returns>True if it is a _NET_FRAME_EXTENTS event for the specified window, false otherwise.</returns>
-		[[nodiscard]] static bool IsFrameExtentsEvent(const Display* display, const XEvent* event, XPointer pointer);
 		/// <summary>
 		/// Wait for data to arrive on any of the specified file descriptors
 		/// </summary>
@@ -4774,25 +4769,25 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to update hints for.</param>
 		/// <param name="width">Width of the window.</param>
 		/// <param name="height">Height of the window.</param>
-		static void UpdateNormalHints(const InternalWindow* const window, int32_t width, int32_t height);
+		static void UpdateNormalHints(const InternalWindow& window, int32_t width, int32_t height);
 		/// <summary>
 		/// Waits until a VisibilityNotify event arrives for the specified window or the timeout period elapses.
 		/// </summary>
 		/// <param name="window">Internal window to wait for.</param>
 		/// <returns>True if a VisibilityNotify event was received, false otherwise.</returns>
-		static bool WaitForVisibilityNotify(const InternalWindow* const window);
+		static bool WaitForVisibilityNotify(const InternalWindow& window);
 		/// <summary>
 		/// Updates the full screen status of the window.
 		/// </summary>
 		/// <param name="window">Internal window to update window mode for.</param>
-		static void UpdateWindowMode(InternalWindow* window);
+		static void UpdateWindowMode(InternalWindow& window);
 		/// <summary>
 		/// Returns the mode info for a RandR mode XID.
 		/// </summary>
 		/// <param name="sr">RandR screen resource.</param>
 		/// <param name="id">RandR mode XID.</param>
 		/// <returns>RandR mode info.</returns>
-		[[nodiscard]] static const XRRModeInfo* GetModeInfo(const XRRScreenResources* sr, RRMode id);
+		[[nodiscard]] static const XRRModeInfo* GetModeInfo(const XRRScreenResources& sr, RRMode id);
 		/// <summary>
 		/// Retrieve system content scale via folklore heuristics.
 		/// </summary>
@@ -4827,15 +4822,14 @@ namespace TRAP::INTERNAL
 		/// Check whether the specified atom is supported.
 		/// </summary>
 		/// <param name="supportedAtoms">List of supported atoms.</param>
-		/// <param name="atomCount">Number of supported atoms.</param>
 		/// <param name="atomName">Atom to check.</param>
 		/// <returns>Atom on success, empty optional otherwise.</returns>
-		[[nodiscard]] static std::optional<Atom> GetAtomIfSupported(const Atom* supportedAtoms, uint64_t atomCount, std::string_view atomName);
+		[[nodiscard]] static std::optional<Atom> GetAtomIfSupported(const std::vector<Atom>& supportedAtoms, std::string_view atomName);
 		/// <summary>
 		/// Create a blank cursor for hidden and disabled cursor modes.
 		/// </summary>
-		/// <returns>Newly created Cursor.</returns>
-		[[nodiscard]] static Cursor CreateHiddenCursor();
+		/// <returns>Newly created Cursor on success, empty optional otherwise.</returns>
+		[[nodiscard]] static std::optional<Cursor> CreateHiddenCursor();
 		/// <summary>
 		/// Check whether the IM has a usable style.
 		/// </summary>
@@ -4871,8 +4865,8 @@ namespace TRAP::INTERNAL
 		/// Set the specified property to the selection converted to the requested target.
 		/// </summary>
 		/// <param name="request">Selection request.</param>
-		/// <returns>Atom on success, 0 otherwise.</returns>
-		[[nodiscard]] static Atom WriteTargetToProperty(const XSelectionRequestEvent* request);
+		/// <returns>Atom on success, None Atom otherwise.</returns>
+		[[nodiscard]] static Atom WriteTargetToProperty(const XSelectionRequestEvent& request);
 		/// <summary>
 		/// Handles a selection request.
 		/// </summary>
@@ -4886,13 +4880,13 @@ namespace TRAP::INTERNAL
 		/// Create X11 input context.
 		/// </summary>
 		/// <param name="window">Internal window to create input context for.</param>
-		static void CreateInputContextX11(InternalWindow* window);
+		static void CreateInputContextX11(InternalWindow& window);
 		/// <summary>
 		/// Check whether the specified visual is transparent.
 		/// </summary>
 		/// <param name="visual">X11 visual.</param>
 		/// <returns>True if the visual is a transparent visual.</returns>
-		[[nodiscard]] static bool IsVisualTransparentX11(Visual* visual);
+		[[nodiscard]] static bool IsVisualTransparentX11(const Visual& visual);
 		/// <summary>
 		/// Create the X11 window (and its colormap).
 		/// </summary>
@@ -4901,7 +4895,7 @@ namespace TRAP::INTERNAL
 		/// <param name="visual">X11 visual.</param>
 		/// <param name="depth">Window depth.</param>
 		/// <returns>True on success, false otherwise.</returns>
-		[[nodiscard]] static bool CreateNativeWindow(InternalWindow* window, WindowConfig& WNDConfig, Visual* visual,
+		[[nodiscard]] static bool CreateNativeWindow(InternalWindow& window, WindowConfig& WNDConfig, Visual& visual,
 		                                             int32_t depth);
 		/// <summary>
 		/// Creates a native cursor object from the specified image and hotspot.
@@ -4909,14 +4903,14 @@ namespace TRAP::INTERNAL
 		/// <param name="image">Image to use.</param>
 		/// <param name="xHotSpot">X center coordinate of the given image.</param>
 		/// <param name="yHotSpot">Y center coordinate of the given image.</param>
-		/// <returns>Newly created cursor.</returns>
-		[[nodiscard]] static Cursor CreateCursorX11(const TRAP::Image* const image, int32_t xHotSpot, int32_t yHotSpot);
+		/// <returns>Newly created cursor on success, empty optional otherwise.</returns>
+		[[nodiscard]] static std::optional<Cursor> CreateCursorX11(const TRAP::Image& image, int32_t xHotSpot, int32_t yHotSpot);
 		/// <summary>
 		/// Returns whether the window is iconified/minimized
 		/// </summary>
 		/// <param name="window">Internal window to check.</param>
 		/// <returns>Window state.</returns>
-		[[nodiscard]] static int32_t GetWindowState(const InternalWindow* window);
+		[[nodiscard]] static int32_t GetWindowState(const InternalWindow& window);
 		/// <summary>
 		/// Convert XKB KeySym to Unicode.
 		/// </summary>
@@ -4980,12 +4974,12 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="monitor">Monitor to set video mode for.</param>
 		/// <param name="desired">Desired video mode.</param>
-		static void SetVideoModeX11(InternalMonitor* monitor, const InternalVideoMode& desired);
+		static void SetVideoModeX11(InternalMonitor& monitor, const InternalVideoMode& desired);
 		/// <summary>
 		/// Restore the saved(original) video mode for the specified monitor.
 		/// </summary>
 		/// <param name="monitor">Monitor to restore video mode for.</param>
-		static void RestoreVideoModeX11(InternalMonitor* monitor);
+		static void RestoreVideoModeX11(InternalMonitor& monitor);
 		/// <summary>
 		/// Allocates and returns a monitor object with the specified name.
 		/// </summary>
@@ -5001,9 +4995,8 @@ namespace TRAP::INTERNAL
 		/// Translate the X11 KeySyms for a key to a TRAP key.
 		/// </summary>
 		/// <param name="keySyms">X11 KeySyms.</param>
-		/// <param name="width">Width of KeySyms.</param>
 		/// <returns>Translated TRAP::Input::Key on success, false otherwise.</returns>
-		[[nodiscard]] static std::optional<Input::Key> TranslateKeySyms(const KeySym* keySyms, int32_t width);
+		[[nodiscard]] static std::optional<Input::Key> TranslateKeySyms(const std::vector<KeySym>& keySyms);
 		/// <summary>
 		/// Clear its handle when the input context has been destroyed.
 		/// </summary>

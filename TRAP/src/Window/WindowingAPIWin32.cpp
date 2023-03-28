@@ -264,9 +264,9 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		if (lParam == 0 && windowPtr->FrameAction)
 		{
 			if (windowPtr->cursorMode == CursorMode::Disabled)
-				DisableCursor(windowPtr);
+				DisableCursor(*windowPtr);
 			else if (windowPtr->cursorMode == CursorMode::Captured)
-				CaptureCursor(windowPtr);
+				CaptureCursor(*windowPtr);
 
 			windowPtr->FrameAction = false;
 		}
@@ -283,9 +283,9 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 			break;
 
 		if (windowPtr->cursorMode == CursorMode::Disabled)
-			DisableCursor(windowPtr);
+			DisableCursor(*windowPtr);
 		else if (windowPtr->cursorMode == CursorMode::Captured)
-			CaptureCursor(windowPtr);
+			CaptureCursor(*windowPtr);
 
 		return 0;
 	}
@@ -293,7 +293,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 	case WM_KILLFOCUS:
 	{
 		if (windowPtr->cursorMode == CursorMode::Disabled)
-			EnableCursor(windowPtr);
+			EnableCursor(*windowPtr);
 		else if (windowPtr->cursorMode == CursorMode::Captured)
 			ReleaseCursor();
 
@@ -693,7 +693,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		//HACK: Enable the cursor while the user is moving or
 		//      resizing the window or using the window menu
 		if (windowPtr->cursorMode == CursorMode::Disabled)
-			EnableCursor(windowPtr);
+			EnableCursor(*windowPtr);
 		else if (windowPtr->cursorMode == CursorMode::Captured)
 			ReleaseCursor();
 
@@ -712,9 +712,9 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		//HACK: Disable the cursor once the user is done moving or
 		//      resizing the window or using the menu
 		if (windowPtr->cursorMode == CursorMode::Disabled)
-			DisableCursor(windowPtr);
+			DisableCursor(*windowPtr);
 		else if (windowPtr->cursorMode == CursorMode::Captured)
-			CaptureCursor(windowPtr);
+			CaptureCursor(*windowPtr);
 
 		KillTimer(hWnd, 1);
 
@@ -736,7 +736,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		const int32_t height = HIWORD(lParam);
 
 		if (s_Data.CapturedCursorWindow == windowPtr)
-			CaptureCursor(windowPtr);
+			CaptureCursor(*windowPtr);
 
 		if (windowPtr->Minimized != minimized)
 			InputWindowMinimize(windowPtr, minimized);
@@ -765,7 +765,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 	case WM_MOVE:
 	{
 		if (s_Data.CapturedCursorWindow == windowPtr)
-			CaptureCursor(windowPtr);
+			CaptureCursor(*windowPtr);
 
 		//NOTE: This cannot use LOWORD/HIWORD recommended by MSDN, as
 		//      those macros do not handle negative window positions correctly
@@ -898,7 +898,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 	{
 		if (LOWORD(lParam) == HTCLIENT)
 		{
-			UpdateCursorImage(windowPtr);
+			UpdateCursorImage(*windowPtr);
 			return TRUE;
 		}
 
@@ -1136,7 +1136,7 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsWin32()
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Make the specified window and its video mode active on its monitor
-void TRAP::INTERNAL::WindowingAPI::AcquireMonitor(InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::AcquireMonitor(InternalWindow& window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -1150,17 +1150,17 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitor(InternalWindow* window)
 		SystemParametersInfoW(SPI_SETMOUSETRAILS, 0, nullptr, 0);
 	}
 
-	if (!window->Monitor->Window)
+	if (!window.Monitor->Window)
 		s_Data.AcquiredMonitorCount++;
 
-	SetVideoModeWin32(window->Monitor, window->videoMode);
-	window->Monitor->Window = window;
+	SetVideoModeWin32(window.Monitor, window.videoMode);
+	window.Monitor->Window = &window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Make the specified window active on its monitor
-void TRAP::INTERNAL::WindowingAPI::AcquireMonitorBorderless(InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::AcquireMonitorBorderless(InternalWindow& window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -1174,20 +1174,20 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitorBorderless(InternalWindow* wind
 		SystemParametersInfoW(SPI_SETMOUSETRAILS, 0, nullptr, 0);
 	}
 
-	if (!window->Monitor->Window)
+	if (!window.Monitor->Window)
 		s_Data.AcquiredMonitorCount++;
 
-	window->Monitor->Window = window;
+	window.Monitor->Window = &window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Remove the window and restore the original video mode
-void TRAP::INTERNAL::WindowingAPI::ReleaseMonitor(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::ReleaseMonitor(const InternalWindow& window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	if (window->Monitor->Window != window)
+	if (window.Monitor->Window != &window)
 		return;
 
 	--s_Data.AcquiredMonitorCount;
@@ -1199,12 +1199,12 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseMonitor(const InternalWindow* window)
 		SystemParametersInfoW(SPI_SETMOUSETRAILS, s_Data.MouseTrailSize, nullptr, 0);
 	}
 
-	window->Monitor->Window = nullptr;
+	window.Monitor->Window = nullptr;
 
-	if (window->Monitor->ModeChanged)
+	if (window.Monitor->ModeChanged)
 	{
-		ChangeDisplaySettingsExW(window->Monitor->AdapterName.data(), nullptr, nullptr, CDS_FULLSCREEN, nullptr);
-		window->Monitor->ModeChanged = false;
+		ChangeDisplaySettingsExW(window.Monitor->AdapterName.data(), nullptr, nullptr, CDS_FULLSCREEN, nullptr);
+		window.Monitor->ModeChanged = false;
 	}
 }
 
@@ -1623,33 +1623,27 @@ void CALLBACK TRAP::INTERNAL::WindowingAPI::MessageFiberProc([[maybe_unused]] LP
 {
 	while (true)
 	{
-		PollMessageLoopWin32();
+		MSG msg;
+
+		while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE))
+		{
+			if (msg.message == WM_QUIT)
+			{
+				//NOTE: While the WindowingAPI does not itself post WM_QUIT, other processes may post it to this one,
+				//      for example Task Manager
+				//HACK: Treat WM_QUIT as a close on all windows
+
+				for (const Scope<InternalWindow>& window : s_Data.WindowList)
+					InputWindowCloseRequest(window.get());
+			}
+			else
+			{
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+		}
+
 		SwitchToFiber(s_Data.MainFiber);
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::PollMessageLoopWin32()
-{
-	MSG msg;
-
-	while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE))
-	{
-		if (msg.message == WM_QUIT)
-		{
-			//NOTE: While the WindowingAPI does not itself post WM_QUIT, other processes may post it to this one,
-			//      for example Task Manager
-			//HACK: Treat WM_QUIT as a close on all windows
-
-			for (const Scope<InternalWindow>& window : s_Data.WindowList)
-				InputWindowCloseRequest(window.get());
-		}
-		else
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
 	}
 }
 
@@ -1834,16 +1828,16 @@ void TRAP::INTERNAL::WindowingAPI::ApplyAspectRatio(InternalWindow* window, int3
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the cursor clip rect to the window content area
-void TRAP::INTERNAL::WindowingAPI::CaptureCursor(InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::CaptureCursor(InternalWindow& window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	RECT clipRect;
-	GetClientRect(window->Handle, &clipRect);
-	ClientToScreen(window->Handle, reinterpret_cast<POINT*>(&clipRect.left));
-	ClientToScreen(window->Handle, reinterpret_cast<POINT*>(&clipRect.right));
+	GetClientRect(window.Handle, &clipRect);
+	ClientToScreen(window.Handle, reinterpret_cast<POINT*>(&clipRect.left));
+	ClientToScreen(window.Handle, reinterpret_cast<POINT*>(&clipRect.right));
 	ClipCursor(&clipRect);
-	s_Data.CapturedCursorWindow = window;
+	s_Data.CapturedCursorWindow = &window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1860,11 +1854,11 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseCursor()
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Enables WM_INPUT messages for the mouse for the specified window
-void TRAP::INTERNAL::WindowingAPI::EnableRawMouseMotion(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::EnableRawMouseMotion(const InternalWindow& window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	const RAWINPUTDEVICE rid = { 0x01, 0x02, 0, window->Handle };
+	const RAWINPUTDEVICE rid = { 0x01, 0x02, 0, window.Handle };
 
 	if (!RegisterRawInputDevices(&rid, 1, sizeof(rid)))
 		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to register raw input device");
@@ -1873,7 +1867,7 @@ void TRAP::INTERNAL::WindowingAPI::EnableRawMouseMotion(const InternalWindow* wi
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Disables WM_INPUT messages for the mouse
-void TRAP::INTERNAL::WindowingAPI::DisableRawMouseMotion(const InternalWindow*)
+void TRAP::INTERNAL::WindowingAPI::DisableRawMouseMotion([[maybe_unused]] const InternalWindow& window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2024,7 +2018,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* wind
 		{
 			if (monitor->Window == window)
 			{
-				AcquireMonitor(window);
+				AcquireMonitor(*window);
 				FitToMonitor(window);
 			}
 		}
@@ -2049,7 +2043,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* wind
 	}
 
 	if (window->Monitor)
-		ReleaseMonitor(window);
+		ReleaseMonitor(*window);
 	if (window->BorderlessFullscreen)
 		window->BorderlessFullscreen = false;
 
@@ -2069,7 +2063,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* wind
 			flags |= SWP_FRAMECHANGED;
 		}
 
-		AcquireMonitor(window);
+		AcquireMonitor(*window);
 
 		GetMonitorInfoW(window->Monitor->Handle, &mi);
 		::SetWindowPos(window->Handle, HWND_TOPMOST, mi.rcMonitor.left, mi.rcMonitor.top,
@@ -2133,7 +2127,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 		flags |= SWP_FRAMECHANGED;
 	}
 
-	AcquireMonitorBorderless(window);
+	AcquireMonitorBorderless(*window);
 
 	GetMonitorInfoW(window->Monitor->Handle, &mi);
 	::SetWindowPos(window->Handle, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
@@ -2349,10 +2343,10 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindow(InternalWindow* window)
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	if (window->Monitor)
-		ReleaseMonitor(window);
+		ReleaseMonitor(*window);
 
 	if (s_Data.DisabledCursorWindow == window)
-		EnableCursor(window);
+		EnableCursor(*window);
 
 	if (s_Data.CapturedCursorWindow == window)
 		ReleaseCursor();
@@ -2467,7 +2461,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindow(const InternalWindow* win
 	{
 		PlatformShowWindow(window);
 		PlatformFocusWindow(window);
-		AcquireMonitor(window);
+		AcquireMonitor(*window);
 		FitToMonitor(window);
 	}
 	else
@@ -2592,7 +2586,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursor(InternalWindow* window, Int
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	if (CursorInContentArea(window))
-		UpdateCursorImage(window);
+		UpdateCursorImage(*window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2608,16 +2602,16 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorMode(InternalWindow* window,
 			PlatformGetCursorPos(window, s_Data.RestoreCursorPosX, s_Data.RestoreCursorPosY);
 			CenterCursorInContentArea(window);
 			if (window->RawMouseMotion)
-				EnableRawMouseMotion(window);
+				EnableRawMouseMotion(*window);
 		}
 		else if (s_Data.DisabledCursorWindow == window)
 		{
 			if (window->RawMouseMotion)
-				DisableRawMouseMotion(window);
+				DisableRawMouseMotion(*window);
 		}
 
 		if (mode == CursorMode::Disabled || mode == CursorMode::Captured)
-			CaptureCursor(window);
+			CaptureCursor(*window);
 		else
 			ReleaseCursor();
 
@@ -2631,7 +2625,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorMode(InternalWindow* window,
 	}
 
 	if (CursorInContentArea(window))
-		UpdateCursorImage(window);
+		UpdateCursorImage(*window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2726,7 +2720,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSize(InternalWindow* window,
 	{
 		if (window->Monitor->Window == window)
 		{
-			AcquireMonitor(window);
+			AcquireMonitor(*window);
 			FitToMonitor(window);
 		}
 	}
@@ -3034,9 +3028,9 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotion(const InternalWindo
 		return;
 
 	if (enabled)
-		EnableRawMouseMotion(window);
+		EnableRawMouseMotion(*window);
 	else
-		DisableRawMouseMotion(window);
+		DisableRawMouseMotion(*window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3316,14 +3310,14 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowAspectRatio(InternalWindow* 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Updates the cursor image according to its cursor mode
-void TRAP::INTERNAL::WindowingAPI::UpdateCursorImage(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::UpdateCursorImage(const InternalWindow& window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	if (window->cursorMode == CursorMode::Normal || window->cursorMode == CursorMode::Captured)
+	if (window.cursorMode == CursorMode::Normal || window.cursorMode == CursorMode::Captured)
 	{
-		if (window->Cursor)
-			::SetCursor(window->Cursor->Handle);
+		if (window.Cursor)
+			::SetCursor(window.Cursor->Handle);
 		else
 			::SetCursor(LoadCursorW(nullptr, IDC_ARROW));
 	}
@@ -3334,33 +3328,33 @@ void TRAP::INTERNAL::WindowingAPI::UpdateCursorImage(const InternalWindow* windo
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Exit disabled cursor mode for the specified window
-void TRAP::INTERNAL::WindowingAPI::EnableCursor(InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::EnableCursor(InternalWindow& window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	if (window->RawMouseMotion)
+	if (window.RawMouseMotion)
 		DisableRawMouseMotion(window);
 
 	s_Data.DisabledCursorWindow = nullptr;
 	ReleaseCursor();
-	PlatformSetCursorPos(window, s_Data.RestoreCursorPosX, s_Data.RestoreCursorPosY);
+	PlatformSetCursorPos(&window, s_Data.RestoreCursorPosX, s_Data.RestoreCursorPosY);
 	UpdateCursorImage(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Apply disabled cursor mode to a focused window
-void TRAP::INTERNAL::WindowingAPI::DisableCursor(InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::DisableCursor(InternalWindow& window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	s_Data.DisabledCursorWindow = window;
-	PlatformGetCursorPos(window, s_Data.RestoreCursorPosX, s_Data.RestoreCursorPosY);
+	s_Data.DisabledCursorWindow = &window;
+	PlatformGetCursorPos(&window, s_Data.RestoreCursorPosX, s_Data.RestoreCursorPosY);
 	UpdateCursorImage(window);
-	CenterCursorInContentArea(window);
+	CenterCursorInContentArea(&window);
 	CaptureCursor(window);
 
-	if (window->RawMouseMotion)
+	if (window.RawMouseMotion)
 		EnableRawMouseMotion(window);
 }
 

@@ -4269,6 +4269,28 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimitsWayland(InternalWi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowAspectRatioWayland(InternalWindow* const window,
+                                                                       const int32_t numerator,
+                                                                       const int32_t denominator)
+{
+    if(window->Maximized || window->Wayland.Fullscreen)
+        return;
+
+    if(numerator == -1 || denominator == -1)
+		return;
+
+    const float aspectRatio = static_cast<float>(window->Width) / static_cast<float>(window->Height);
+    const float targetRatio = static_cast<float>(numerator) / static_cast<float>(denominator);
+    if(aspectRatio < targetRatio)
+        window->Height = static_cast<int32_t>(static_cast<float>(window->Width) / targetRatio);
+    else if(aspectRatio > targetRatio)
+        window->Width = static_cast<int32_t>(static_cast<float>(window->Height) * targetRatio);
+
+    ResizeWindowWayland(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::optional<std::string> TRAP::INTERNAL::WindowingAPI::GetLinuxKeyboardLayoutNameWayland()
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);

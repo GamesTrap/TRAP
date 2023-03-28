@@ -931,6 +931,19 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(InternalWindow* w
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowAspectRatio(InternalWindow* const window,
+                                                                const int32_t numerator, const int32_t denominator)
+{
+    TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
+
+    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
+        PlatformSetWindowAspectRatioX11(window, numerator, denominator);
+    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+        PlatformSetWindowAspectRatioWayland(window, numerator, denominator);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::optional<std::string> TRAP::INTERNAL::WindowingAPI::GetLinuxKeyboardLayoutName()
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
