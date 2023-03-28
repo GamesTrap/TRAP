@@ -5236,7 +5236,7 @@ namespace TRAP::INTERNAL
 		/// doesn't offer a way of querying the monitors available video modes.
 		/// </summary>
 		/// <param name="monitor">Monitor to add video modes to.</param>
-		static void AddEmulatedVideoModes(InternalMonitor* monitor);
+		static void AddEmulatedVideoModes(InternalMonitor& monitor);
 
 		/// <summary>
 		/// Callback function for Wayland notifying about an
@@ -5604,7 +5604,7 @@ namespace TRAP::INTERNAL
 		/// <param name="offer">Wayland data offer object.</param>
 		/// <param name="mimeType">Mime type of data to receive.</param>
 		/// <returns>Read data on success, empty optional otherwise</returns>
-		[[nodiscard]] static std::optional<std::string> ReadDataOfferAsString(wl_data_offer* offer, const char* mimeType);
+		[[nodiscard]] static std::optional<std::string> ReadDataOfferAsString(wl_data_offer& offer, const std::string_view mimeType);
 		/// <summary>
 		/// Flush the display till it succeeds.
 		/// </summary>
@@ -5615,13 +5615,13 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Window to set cursor on.</param>
 		/// <param name="name">Name of the cursor to set.</param>
-		static void SetCursorWayland(const InternalWindow* const window, const std::string& name);
+		static void SetCursorWayland(const InternalWindow& window, const std::string& name);
 		/// <summary>
 		/// Process Wayland text input (calls InputChar()) on the given window.
 		/// </summary>
 		/// <param name="window">Window to input text on.</param>
 		/// <param name="scanCode">Wayland key.</param>
-		static void InputTextWayland(const InternalWindow* const window, uint32_t scanCode);
+		static void InputTextWayland(const InternalWindow& window, uint32_t scanCode);
 		/// <summary>
 		/// Compose an XKB key symbol.
 		/// </summary>
@@ -5632,41 +5632,41 @@ namespace TRAP::INTERNAL
 		/// Update the content scaling of the given window.
 		/// </summary>
 		/// <param name="window">Window to update content scaling for.</param>
-		static void UpdateContentScaleWayland(InternalWindow* window);
+		static void UpdateContentScaleWayland(InternalWindow& window);
 		/// <summary>
 		/// Resize the given window to the current framebuffer size.
 		/// </summary>
 		/// <param name="window">Window to resize.</param>
-		static void ResizeWindowWayland(const InternalWindow* const window);
+		static void ResizeWindowWayland(const InternalWindow& window);
 		/// <summary>
 		/// Make the content area (surface) of the given window opaque.
 		/// </summary>
 		/// <param name="window">Window to make content area opaque for.</param>
-		static void SetContentAreaOpaqueWayland(const InternalWindow* const window);
+		static void SetContentAreaOpaqueWayland(const InternalWindow& window);
 		/// <summary>
 		/// Release the acquired monitor from the given window.
 		/// This disables fullscreen for the window if a monitor is acquired.
 		/// </summary>
 		/// <param name="window">Window to release monitor from.</param>
-		static void ReleaseMonitorWayland(InternalWindow* window);
+		static void ReleaseMonitorWayland(InternalWindow& window);
 		/// <summary>
 		/// Whether the enable or disable the idle (screen saver) inhibitor.
 		/// </summary>
 		/// <param name="window">Window to set the idle inhibitor for.</param>
 		/// <param name="enable">Whether to enable or disable the idle inhibitor.</param>
-		static void SetIdleInhibitorWayland(InternalWindow* window, bool enable);
+		static void SetIdleInhibitorWayland(InternalWindow& window, bool enable);
 		/// <summary>
 		/// Create the fallback window decoration.
 		/// This is used when both XDG server side decorations and libdecor are unavailable.
 		/// </summary>
 		/// <param name="window">Window to create decorations for.</param>
-		static void CreateFallbackDecorationsWayland(InternalWindow* window);
+		static void CreateFallbackDecorationsWayland(InternalWindow& window);
 		/// <summary>
 		/// Create a shared memory buffer with the contents of the given image.
 		/// </summary>
 		/// <param name="image">Image to copy into the shared memory buffer.</param>
 		/// <returns>Newly created shared memory buffer on success, nullptr otherwise.</returns>
-		[[nodiscard]] static wl_buffer* CreateShmBufferWayland(const Image* image);
+		[[nodiscard]] static wl_buffer* CreateShmBufferWayland(const Image& image);
 		/// <summary>
 		/// Create an anonymous file handle with given size in bytes.
 		/// </summary>
@@ -5678,7 +5678,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="tmpName">Template filename.</param>
 		/// <returns>File descriptor on success, empty optional otherwise.</returns>
-		[[nodiscard]] static std::optional<int32_t> CreateTmpFileCloexec(char* tmpName);
+		[[nodiscard]] static std::optional<int32_t> CreateTmpFileCloexec(std::string tmpName);
 		/// <summary>
 		/// Create a fallback decoration for the given window.
 		/// </summary>
@@ -5690,18 +5690,18 @@ namespace TRAP::INTERNAL
 		/// <param name="y">Y position for the decoration surface.</param>
 		/// <param name="width">Width for the decoration surface.</param>
 		/// <param name="height">Height for the decoration surface.</param>
-		static void CreateFallbackDecorationWayland(InternalWindow* window, TRAPDecorationWayland& decoration, wl_surface* parent, wl_buffer* buffer, int32_t x, int32_t y, int32_t width, int32_t height);
+		static void CreateFallbackDecorationWayland(InternalWindow& window, TRAPDecorationWayland& decoration, wl_surface& parent, wl_buffer& buffer, int32_t x, int32_t y, int32_t width, int32_t height);
 		/// <summary>
 		/// Acquire monitor on the given window.
 		/// This also enables fullscreen mode for the window.
 		/// </summary>
 		/// <param name="window">Window to acquire monitor on.</param>
-		static void AcquireMonitorWayland(InternalWindow* window);
+		static void AcquireMonitorWayland(InternalWindow& window);
 		/// <summary>
 		/// Destroy the fallback window decorations on the given window.
 		/// </summary>
 		/// <param name="window">Window to destroy fallback decorations for.</param>
-		static void DestroyFallbackDecorationsWayland(InternalWindow* window);
+		static void DestroyFallbackDecorationsWayland(InternalWindow& window);
 		/// <summary>
 		/// Destroy a fallback decoration.
 		/// </summary>
@@ -5717,58 +5717,58 @@ namespace TRAP::INTERNAL
 		/// - XDG Surface
 		/// </summary>
 		/// <param name="window">Window to destroy shell objects for.</param>
-		static void DestroyShellObjectsWayland(InternalWindow* window);
+		static void DestroyShellObjectsWayland(InternalWindow& window);
 		/// <summary>
 		/// Create window decorations using LibDecor for the given window.
 		/// </summary>
 		/// <param name="window">Window to create decorations for.</param>
 		/// <returns>True on successful window decoration creation, false otherwise.</returns>
-		[[nodiscard]] static bool CreateLibDecorFrame(InternalWindow* window);
+		[[nodiscard]] static bool CreateLibDecorFrame(InternalWindow& window);
 		/// <summary>
 		/// Create XDG shell objects for the given window.
 		/// </summary>
 		/// <param name="window">Window to create XDG shell objects for.</param>
 		/// <returns>True on success, false otherwise.</returns>
-		[[nodiscard]] static bool CreateXDGShellObjectsWayland(InternalWindow* window);
+		[[nodiscard]] static bool CreateXDGShellObjectsWayland(InternalWindow& window);
 		/// <summary>
 		/// Create shell objects for the given window.
 		/// </summary>
 		/// <param name="window">Window to create shell objects for.</param>
 		/// <returns>True on success, false otherwise.</returns>
-		static bool CreateShellObjectsWayland(InternalWindow* window);
+		static bool CreateShellObjectsWayland(InternalWindow& window);
 		/// <summary>
 		/// Create the surface for the given window.
 		/// </summary>
 		/// <param name="window">Window to create surface for.</param>
 		/// <param name="WNDConfig">WindowConfig to use for the surface.</param>
 		/// <returns>True on success, false otherwise.</returns>
-		[[nodiscard]] static bool CreateNativeSurfaceWayland(InternalWindow* window, WindowConfig& WNDConfig);
+		[[nodiscard]] static bool CreateNativeSurfaceWayland(InternalWindow& window, WindowConfig& WNDConfig);
 		/// <summary>
 		/// Confine the pointer/cursor to the limits of the given window.
 		/// </summary>
 		/// <param name="window">Window to confine pointer to.</param>
-		static void ConfinePointerWayland(InternalWindow* window);
+		static void ConfinePointerWayland(InternalWindow& window);
 		/// <summary>
 		/// Unconfine the pointer/cursor from the limits of the given window.
 		/// </summary>
 		/// <param name="window">Window to unconfine pointer from.</param>
-		static void UnconfinePointerWayland(InternalWindow* window);
+		static void UnconfinePointerWayland(InternalWindow& window);
 		/// <summary>
 		/// Lock the pointer/cursor to the given window.
 		/// </summary>
 		/// <param name="window">Window to lock pointer to.</param>
-		static void LockPointerWayland(InternalWindow* window);
+		static void LockPointerWayland(InternalWindow& window);
 		/// <summary>
 		/// Unlock the pointer/cursor from the given window.
 		/// </summary>
 		/// <param name="window">Window to unlock pointer from.</param>
-		static void UnlockPointerWayland(InternalWindow* window);
+		static void UnlockPointerWayland(InternalWindow& window);
 		/// <summary>
 		/// Set a custom image as mouse cursor for the given window.
 		/// </summary>
 		/// <param name="window">Window to set mouse cursor image on.</param>
 		/// <param name="cursorWayland">Data of the cursor to set.</param>
-		static void SetCursorImageWayland(const InternalWindow* const window, InternalCursor::wayland& cursorWayland);
+		static void SetCursorImageWayland(const InternalWindow& window, InternalCursor::wayland& cursorWayland);
 		/// <summary>
 		/// Wayland event pump.
 		/// </summary>
@@ -5782,7 +5782,7 @@ namespace TRAP::INTERNAL
 		/// This is needed for animated cursor to display the animation.
 		/// </summary>
 		/// <param name="window">Window to increment cursor image counter on.</param>
-		static void IncrementCursorImageWayland(const InternalWindow* const window);
+		static void IncrementCursorImageWayland(const InternalWindow& window);
 
 		friend std::optional<std::string> TRAP::Input::GetKeyboardLayoutName();
 

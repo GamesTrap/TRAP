@@ -3776,3 +3776,5 @@ SITREP 03/28/2023|23w13b1
     - Changed TRAP Engine version to 23w13b1(0.9.2)
     - WindowingAPILinuxX11 Replaced pointer usage with references where possible ~>60 mins
     - WindowingAPILinuxWayland Fixed hidden or disabled cursors were still displaying ~<10 mins
+    - WindowingAPILinuxWayland Fixed drag and drop not working ~<10 mins
+    - WindowingAPILinuxWayland Replaced pointer usage with references where possible ~>60 mins
