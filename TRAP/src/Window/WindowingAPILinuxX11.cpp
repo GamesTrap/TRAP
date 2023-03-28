@@ -4016,10 +4016,9 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 
 			if(result)
 			{
-				int32_t count = 0;
-				const std::vector<std::string> paths = ParseUriList(data, count);
-
-				InputDrop(window, paths);
+				const std::vector<std::string> paths = ParseUriList(data);
+				if(!paths.empty())
+					InputDrop(window, paths);
 			}
 
 			if(data)

@@ -581,8 +581,7 @@ void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleDrop([[maybe_unused]] void* c
     std::optional<std::string> string = ReadDataOfferAsString(*s_Data.Wayland.DragOffer, "text/uri-list");
     if(string && !string->empty())
     {
-        int32_t count = 0;
-        const std::vector<std::string> paths = ParseUriList((*string).data(), count);
+        const std::vector<std::string> paths = ParseUriList(string->data());
         if(!paths.empty())
             InputDrop(s_Data.Wayland.DragFocus, paths);
     }
@@ -2762,8 +2761,11 @@ void TRAP::INTERNAL::WindowingAPI::HandleEventsWayland(double* const timeout)
 
             if(read(s_Data.Wayland.CursorTimerFD, &repeats, sizeof(repeats)) == sizeof(repeats))
             {
-                IncrementCursorImageWayland(*s_Data.Wayland.PointerFocus);
-                event = true;
+                if(s_Data.Wayland.PointerFocus)
+                {
+                    IncrementCursorImageWayland(*s_Data.Wayland.PointerFocus);
+                    event = true;
+                }
             }
         }
 

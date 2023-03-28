@@ -4966,9 +4966,8 @@ namespace TRAP::INTERNAL
 		/// Splits and translates a text/uri-list into separate file paths.
 		/// </summary>
 		/// <param name="text">Text to split.</param>
-		/// <param name="count">Number of file paths.</param>
 		/// <returns>Vector of file paths.</returns>
-		[[nodiscard]] static std::vector<std::string> ParseUriList(char* text, int32_t& count);
+		[[nodiscard]] static std::vector<std::string> ParseUriList(char* text);
 		/// <summary>
 		/// Set the current video mode for the specified monitor.
 		/// </summary>

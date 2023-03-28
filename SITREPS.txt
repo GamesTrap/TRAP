@@ -3778,3 +3778,7 @@ SITREP 03/28/2023|23w13b1
     - WindowingAPILinuxWayland Fixed hidden or disabled cursors were still displaying ~<10 mins
     - WindowingAPILinuxWayland Fixed drag and drop not working ~<10 mins
     - WindowingAPILinuxWayland Replaced pointer usage with references where possible ~>60 mins
+
+SITREP 03/29/2023|23w13b2
+    - Changed TRAP Engine version to 23w13b2(0.9.3)
+    - WindowingAPILinux Added missing elses ~<20 mins

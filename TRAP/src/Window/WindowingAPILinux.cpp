@@ -148,7 +148,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSize(const InternalWindow* w
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformGetWindowSizeX11(window, width, height);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformGetWindowSizeWayland(window, width, height);
 }
 
@@ -160,7 +160,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPos(const InternalWindow* wi
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformSetWindowPosX11(window, xPos, yPos);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformSetWindowPosWayland(window, xPos, yPos);
 }
 
@@ -174,7 +174,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* wind
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformSetWindowMonitorX11(window, monitor, xPos, yPos, width, height, refreshRate);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformSetWindowMonitorWayland(window, monitor, xPos, yPos, width, height, refreshRate);
 }
 
@@ -187,7 +187,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformSetWindowMonitorBorderlessX11(window, monitor);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformSetWindowMonitorBorderlessWayland(window, monitor);
 }
 
@@ -229,7 +229,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindow(InternalWindow* window)
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformDestroyWindowX11(window);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformDestroyWindowWayland(window);
 }
 
@@ -243,7 +243,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdown()
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformShutdownX11();
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformShutdownWayland();
 }
 
@@ -256,7 +256,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorContentScale(const Internal
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformGetMonitorContentScaleX11(monitor, xScale, yScale);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformGetMonitorContentScaleWayland(monitor, xScale, yScale);
 }
 
@@ -269,7 +269,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorPos(const InternalMonitor* 
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformGetMonitorPosX11(monitor, xPos, yPos);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformGetMonitorPosWayland(monitor, xPos, yPos);
 }
 
@@ -281,7 +281,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShowWindow(InternalWindow* window)
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformShowWindowX11(window);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformShowWindowWayland(window);
 }
 
@@ -293,7 +293,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindow(const InternalWindow* win
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformFocusWindowX11(window);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformFocusWindowWayland(window);
 }
 
@@ -320,7 +320,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(InternalWindow* const 
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformSetWindowTitleX11(window, title);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformSetWindowTitleWayland(window, title);
 }
 
@@ -361,7 +361,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyCursor(InternalCursor* cursor)
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformDestroyCursorX11(cursor);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformDestroyCursorWayland(cursor);
 }
 
@@ -373,7 +373,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursor(InternalWindow* window, Int
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformSetCursorX11(window, cursor);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformSetCursorWayland(window, cursor);
 }
 
@@ -385,7 +385,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorMode(InternalWindow* window,
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformSetCursorModeX11(window, mode);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformSetCursorModeWayland(window, mode);
 }
 
@@ -397,7 +397,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPos(InternalWindow* window, 
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformSetCursorPosX11(window, xPos, yPos);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformSetCursorPosWayland(window, xPos, yPos);
 }
 
@@ -409,7 +409,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetCursorPos(const InternalWindow* wi
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformGetCursorPosX11(window, xPos, yPos);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformGetCursorPosWayland(window, xPos, yPos);
 }
 
@@ -421,7 +421,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIcon(InternalWindow* window,
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformSetWindowIconX11(window, image);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformSetWindowIconWayland(window, image);
 }
 
@@ -433,7 +433,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowPos(const InternalWindow* wi
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformGetWindowPosX11(window, xPos, yPos);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformGetWindowPosWayland(window, xPos, yPos);
 }
 
@@ -445,7 +445,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSize(InternalWindow* window,
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformSetWindowSizeX11(window, width, height);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformSetWindowSizeWayland(window, width, height);
 }
 
@@ -457,7 +457,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizable(InternalWindow* wi
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformSetWindowResizableX11(window, enabled);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformSetWindowResizableWayland(window, enabled);
 }
 
@@ -469,7 +469,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecorated(InternalWindow* wi
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformSetWindowDecoratedX11(window, enabled);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformSetWindowDecoratedWayland(window, enabled);
 }
 
@@ -481,7 +481,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloating(const InternalWindo
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformSetWindowFloatingX11(window, enabled);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformSetWindowFloatingWayland(window, enabled);
 }
 
@@ -493,7 +493,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacity(const InternalWindow
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformSetWindowOpacityX11(window, opacity);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformSetWindowOpacityWayland(window, opacity);
 }
 
@@ -505,7 +505,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthrough(InternalWin
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformSetWindowMousePassthroughX11(window, enabled);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformSetWindowMousePassthroughWayland(window, enabled);
 }
 
@@ -517,7 +517,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbar(InternalWindow*
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformHideWindowFromTaskbarX11(window);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformHideWindowFromTaskbarWayland(window);
 }
 
@@ -544,7 +544,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSize(const InternalWind
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformGetFrameBufferSizeX11(window, width, height);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformGetFrameBufferSizeWayland(window, width, height);
 }
 
@@ -557,7 +557,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScale(const InternalW
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformGetWindowContentScaleX11(window, xScale, yScale);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformGetWindowContentScaleWayland(window, xScale, yScale);
 }
 
@@ -570,7 +570,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkArea(const InternalMoni
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformGetMonitorWorkAreaX11(monitor, xPos, yPos, width, height);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformGetMonitorWorkAreaWayland(monitor, xPos, yPos, width, height);
 }
 
@@ -624,7 +624,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformPollEventsX11();
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformPollEventsWayland();
 }
 
@@ -636,7 +636,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformWaitEvents(const double timeout)
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformWaitEventsX11(timeout);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformWaitEventsWayland(timeout);
 }
 
@@ -648,7 +648,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPostEmptyEvent()
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformPostEmptyEventX11();
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformPostEmptyEventWayland();
 }
 
@@ -702,7 +702,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotion(const InternalWindo
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformSetRawMouseMotionX11(window, enabled);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformSetRawMouseMotionWayland(window, enabled);
 }
 
@@ -809,7 +809,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetClipboardString(const std::string&
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformSetClipboardStringX11(string);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformSetClipboardStringWayland(string);
 }
 
@@ -835,7 +835,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensions(std::ar
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformGetRequiredInstanceExtensionsX11(extensions);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformGetRequiredInstanceExtensionsWayland(extensions);
 }
 
@@ -863,7 +863,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindow(InternalWindow* const 
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformMaximizeWindowX11(window);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformMaximizeWindowWayland(window);
 }
 
@@ -875,7 +875,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformMinimizeWindow(const InternalWindow* 
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformMinimizeWindowX11(window);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformMinimizeWindowWayland(window);
 }
 
@@ -887,7 +887,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformRequestWindowAttention(InternalWindow
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformRequestWindowAttentionX11(window);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformRequestWindowAttentionWayland(window);
 }
 
@@ -899,7 +899,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformHideWindow(InternalWindow* window)
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformHideWindowX11(window);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformHideWindowWayland(window);
 }
 
@@ -911,7 +911,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindow(InternalWindow* window)
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformRestoreWindowX11(window);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformRestoreWindowWayland(window);
 }
 
@@ -925,7 +925,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(InternalWindow* w
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformSetWindowSizeLimitsX11(window, minWidth, minHeight, maxWidth, maxHeight);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformSetWindowSizeLimitsWayland(window, minWidth, minHeight, maxWidth, maxHeight);
 }
 
@@ -938,7 +938,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowAspectRatio(InternalWindow* 
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformSetWindowAspectRatioX11(window, numerator, denominator);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformSetWindowAspectRatioWayland(window, numerator, denominator);
 }
 
@@ -964,7 +964,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow* window
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformSetDragAndDropX11(window, value);
-    if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
+    else if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
         PlatformSetDragAndDropWayland(window, value);
 }
 
@@ -1011,7 +1011,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow* window
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Splits and translates a text/uri-list into separate file paths
-[[nodiscard]] std::vector<std::string> TRAP::INTERNAL::WindowingAPI::ParseUriList(char* text, int32_t& count)
+[[nodiscard]] std::vector<std::string> TRAP::INTERNAL::WindowingAPI::ParseUriList(char* text)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -1019,7 +1019,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow* window
 	std::vector<std::string> paths{};
 	const char* line = nullptr;
 
-	count = 0;
+	std::size_t count = 0;
 
 	while((line = std::strtok(text, "\r\n")))
 	{
@@ -1028,7 +1028,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow* window
 		if(line[0] == '#')
 			continue;
 
-		if(std::strncmp(line, prefix.data(), prefix.size()) == 0)
+		if(prefix.compare(line) == 0)
 		{
 			line += prefix.size();
 			while(*line != '/')
@@ -1037,8 +1037,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow* window
 
 		count++;
 
-		std::string path;
-		path.resize(std::strlen(line) + 1);
+		std::string path(std::strlen(line) + 1, '\0');
 		paths.resize(count);
 		paths[count - 1] = path;
 		char* pathPtr = paths[count - 1].data();
