@@ -3217,7 +3217,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window from which to get the HWND from.</param>
 		/// <returns>HWND of the specified window.</returns>
-		[[nodiscard]] static HWND GetWin32Window(const InternalWindow* window);
+		[[nodiscard]] static HWND GetWin32Window(const InternalWindow& window);
 #endif
 		//-------//
 		//Private//
@@ -4584,7 +4584,7 @@ namespace TRAP::INTERNAL
 		/// <param name="adapter">Adapter to create monitor from.</param>
 		/// <param name="display">Display to create monitor from.</param>
 		/// <returns>New Internal monitor.</returns>
-		[[nodiscard]] static Scope<InternalMonitor> CreateMonitor(DISPLAY_DEVICEW* adapter, DISPLAY_DEVICEW* display);
+		[[nodiscard]] static Scope<InternalMonitor> CreateMonitor(const DISPLAY_DEVICEW& adapter, const DISPLAY_DEVICEW* display);
 		/// <summary>
 		/// Poll for changes in the set of connected monitors.
 		/// </summary>
@@ -4593,13 +4593,13 @@ namespace TRAP::INTERNAL
 		/// Fit the Internal window to the monitor.
 		/// </summary>
 		/// <param name="window">Internal window to fit.</param>
-		static void FitToMonitor(const InternalWindow* window);
+		static void FitToMonitor(const InternalWindow& window);
 		/// <summary>
 		/// Change the current video mode.
 		/// </summary>
 		/// <param name="monitor">Internal monitor to set internal video mode for.</param>
 		/// <param name="desired">Desired internal video mode for the monitor.</param>
-		static void SetVideoModeWin32(InternalMonitor* monitor, const InternalVideoMode& desired);
+		static void SetVideoModeWin32(InternalMonitor& monitor, const InternalVideoMode& desired);
 		/// <summary>
 		/// Retrieve the content scale of the given monitor.
 		/// </summary>
@@ -4617,19 +4617,19 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to query.</param>
 		/// <returns>Window style as a DWORD.</returns>
-		[[nodiscard]] static DWORD GetWindowStyle(const InternalWindow* window);
+		[[nodiscard]] static DWORD GetWindowStyle(const InternalWindow& window);
 		/// <summary>
 		/// Returns the extended window style for the specified window.
 		/// </summary>
 		/// <param name="window">Internal window to query.</param>
 		/// <returns>Window Ex style as a DWORD.</returns>
-		[[nodiscard]] static DWORD GetWindowExStyle(const InternalWindow* window);
+		[[nodiscard]] static DWORD GetWindowExStyle(const InternalWindow& window);
 		/// <summary>
 		/// Returns whether the cursor is in the content area of the specified window.
 		/// </summary>
 		/// <param name="window">Internal window to check</param>
 		/// <returns>True if cursor is inside the given windows content area, false otherwise.</returns>
-		[[nodiscard]] static bool CursorInContentArea(const InternalWindow* window);
+		[[nodiscard]] static bool CursorInContentArea(const InternalWindow& window);
 		/// <summary>
 		/// Creates an RGBA icon or cursor,
 		/// </summary>
@@ -4638,19 +4638,19 @@ namespace TRAP::INTERNAL
 		/// <param name="yHot">Center y coordinate of the image.</param>
 		/// <param name="icon">Whether it is an icon or a cursor.</param>
 		/// <returns>Handle to the icon.</returns>
-		[[nodiscard]] static HICON CreateIcon(const Image* const image, int32_t xHot, int32_t yHot, bool icon);
+		[[nodiscard]] static HICON CreateIcon(const Image& image, int32_t xHot, int32_t yHot, bool icon);
 		/// <summary>
 		/// Enfore the content area aspect ratio based on which edge is being dragged.
 		/// </summary>
 		/// <param name="window">Internal window to enforce aspect ratio for.</param>
 		/// <param name="edge">Window edge being dragged.</param>
 		/// <param name="area">Content area.</param>
-		static void ApplyAspectRatio(InternalWindow* window, int32_t edge, RECT* area);
+		static void ApplyAspectRatio(const InternalWindow& window, int32_t edge, RECT& area);
 		/// <summary>
 		/// Update native window styles to match attributes.
 		/// </summary>
 		/// <param name="window">Internal window to update window style for.</param>
-		static void UpdateWindowStyles(const InternalWindow* window);
+		static void UpdateWindowStyles(const InternalWindow& window);
 		/// <summary>
 		/// Creates a dummy window for behind-the-scenes work.
 		/// </summary>
@@ -4662,13 +4662,13 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to create.</param>
 		/// <param name="WNDConfig">Window configuration.</param>
 		/// <returns>True if creation was successful, false otherwise.</returns>
-		[[nodiscard]] static bool CreateNativeWindow(InternalWindow* window,
+		[[nodiscard]] static bool CreateNativeWindow(InternalWindow& window,
 			                                         const WindowConfig& WNDConfig);
 		/// <summary>
 		/// Manually maximize the window, for when SW_MAXIMIZE cannot be used.
 		/// </summary>
 		/// <param name="window">Internal window to maximize manually.</param>
-		static void MaximizeWindowManually(const InternalWindow* window);
+		static void MaximizeWindowManually(const InternalWindow& window);
 		/// <summary>
 		/// Retrieve the Win32 HInstance for the application.
 		/// </summary>

@@ -1197,7 +1197,7 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleMotion([[maybe_unused]] void* co
         break;
 
     default:
-        TRAP_ASSERT(false);
+        TRAP_ASSERT(false, "WindowingAPI::PointerHandleMotion(): Unknown decoration side");
     }
 
     if(s_Data.Wayland.CursorPreviousName != cursorName)
@@ -1253,7 +1253,7 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleButton([[maybe_unused]] void* co
             break;
 
         default:
-            TRAP_ASSERT(false);
+            TRAP_ASSERT(false, "WindowingAPI::PointerHandleButton(): Unknown decoration side");
         }
 
         if(edges != XDG_TOPLEVEL_RESIZE_EDGE_NONE)
@@ -1296,7 +1296,8 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleAxis([[maybe_unused]] void* cons
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-    TRAP_ASSERT(axis == WL_POINTER_AXIS_HORIZONTAL_SCROLL || axis == WL_POINTER_AXIS_VERTICAL_SCROLL);
+    TRAP_ASSERT(axis == WL_POINTER_AXIS_HORIZONTAL_SCROLL || axis == WL_POINTER_AXIS_VERTICAL_SCROLL,
+                "WindowingAPI::PointerHandleAxis(): Unknown pointer axis");
 
     const InternalWindow* const window = s_Data.Wayland.PointerFocus;
     if(!window)

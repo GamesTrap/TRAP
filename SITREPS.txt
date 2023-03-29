@@ -3782,3 +3782,6 @@ SITREP 03/28/2023|23w13b1
 SITREP 03/29/2023|23w13b2
     - Changed TRAP Engine version to 23w13b2(0.9.3)
     - WindowingAPILinux Added missing elses ~<20 mins
+    - WindowingAPIWin32 Fixed PlatformGetVideoModes() returning the current video mode multiple times ~<10 mins
+    - WindowingAPIWin32 Replaced pointer usage with references where possible ~>30 mins
+    - WindowingAPIWin32 Added asserts ~<20 mins
