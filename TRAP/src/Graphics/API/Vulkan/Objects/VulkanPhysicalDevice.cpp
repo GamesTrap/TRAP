@@ -147,7 +147,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 		if (win)
 		{
 			VkSurfaceKHR surface = VK_NULL_HANDLE;
-			VkResult res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance->GetVkInstance(), win, nullptr, surface);
+			VkResult res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance->GetVkInstance(), *win, nullptr, surface);
 
 			if (surface != VK_NULL_HANDLE && res == VK_SUCCESS)
 			{
@@ -621,7 +621,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 #ifndef TRAP_HEADLESS_MODE
 		VkSurfaceKHR surface = VK_NULL_HANDLE;
 		VkResult res{};
-		VkCall(res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance, vulkanTestWindow, nullptr,
+		VkCall(res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance, *vulkanTestWindow, nullptr,
 																	   surface));
 		if (!surface || res != VK_SUCCESS)
 		{

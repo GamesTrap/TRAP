@@ -207,10 +207,7 @@ bool InputLagTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 bool InputLagTests::OnMouseMove(TRAP::Events::MouseMoveEvent& event)
 {
 	if(m_cursorMethod == CursorMethod::InputMessage)
-	{
 		m_cursorNew = event.GetPosition();
-		m_cursorNew += event.GetWindow()->GetPosition();
-	}
 
 	return true;
 }
@@ -222,11 +219,7 @@ void InputLagTests::SampleInput()
 	static constexpr float a = 0.25f; //Exponential smoothing factor
 
 	if(m_cursorMethod == CursorMethod::SyncQuery)
-	{
 		m_cursorNew = TRAP::Input::GetMousePosition();
-		m_cursorNew += TRAP::Application::GetWindow()->GetPosition();
-	}
-
 
 	m_cursorVelocity = (m_cursorNew - m_cursorPos) * a + m_cursorVelocity * (1 - a);
 	m_cursorPos = m_cursorNew;

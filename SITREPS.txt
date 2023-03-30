@@ -3789,3 +3789,5 @@ SITREP 03/29/2023|23w13b2
 SITREP 03/30/2023|23w13b3
     - Changed TRAP Engine version to 23w13b3(0.9.4)
     - WindowingAPILinux Added const to pointers ~<5 mins
+    - WindowingAPI Replaced pointer usage with references where possible ~>360 mins
+    - WindowingAPILinux Fixed GetCursorPos() returning wrong values ~<20 mins

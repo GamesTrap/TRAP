@@ -23,7 +23,7 @@ TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> inst
 #endif
 
 	VkCall(TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(m_instance->GetVkInstance(),
-	                                                         static_cast<TRAP::INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()),
+	                                                         *static_cast<TRAP::INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()),
 															 nullptr, m_surface));
 	TRAP_ASSERT(m_surface, "VulkanSurface(): Vulkan Surface is nullptr");
 

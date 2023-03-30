@@ -25,7 +25,7 @@ TRAP::Monitor::Monitor(const uint32_t monitor)
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
 	std::vector<VideoMode> modes{};
-	const std::vector<INTERNAL::WindowingAPI::InternalVideoMode>& internalModes = INTERNAL::WindowingAPI::GetVideoModes(m_handle);
+	const std::vector<INTERNAL::WindowingAPI::InternalVideoMode>& internalModes = INTERNAL::WindowingAPI::GetVideoModes(*m_handle);
 
 	for(auto i = internalModes.rbegin(); i != internalModes.rend(); ++i)
 		modes.emplace_back(i->Width, i->Height, i->RefreshRate);
@@ -40,7 +40,7 @@ TRAP::Monitor::Monitor(const uint32_t monitor)
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
 	TRAP::Math::Vec2 scale{};
-	INTERNAL::WindowingAPI::GetMonitorContentScale(m_handle, scale.x, scale.y);
+	INTERNAL::WindowingAPI::GetMonitorContentScale(*m_handle, scale.x, scale.y);
 
 	return scale;
 }
@@ -70,7 +70,7 @@ TRAP::Monitor::Monitor(const uint32_t monitor)
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
 	TRAP::Math::Vec2i pos{};
-	INTERNAL::WindowingAPI::GetMonitorPos(m_handle, pos.x, pos.y);
+	INTERNAL::WindowingAPI::GetMonitorPos(*m_handle, pos.x, pos.y);
 
 	return pos;
 }
@@ -100,7 +100,7 @@ TRAP::Monitor::Monitor(const uint32_t monitor)
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
 	TRAP::Math::Vec4i workArea{};
-	INTERNAL::WindowingAPI::GetMonitorWorkArea(m_handle, workArea.x, workArea.y,
+	INTERNAL::WindowingAPI::GetMonitorWorkArea(*m_handle, workArea.x, workArea.y,
 	                                           workArea.z, workArea.w);
 
 	return workArea;

@@ -612,7 +612,7 @@ namespace TRAP::INTERNAL
 			Hidden,   //Makes the cursor invisible when it is over the
 			          //content area of the window but does not restrict the cursor from leaving.
 			Disabled, //Hides and grabs the cursor, providing virtual and unlimited cursor movement.
-			Captured  //Hides and grabs the cursor, without providing virtual cursor movement.
+			Captured  //Makes the cursor visible and confines it to the content area of the window.
 		};
 
 		/// <summary>
@@ -1854,7 +1854,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="monitor">InternalMonitor to query name from.</param>
 		/// <returns>Name of the provided monitor.</returns>
-		[[nodiscard]] static std::string GetMonitorName(const InternalMonitor* monitor);
+		[[nodiscard]] static std::string GetMonitorName(const InternalMonitor& monitor);
 		/// <summary>
 		/// This function returns the primary monitor. This is usually the monitor
 		/// where elements like the task bar or global menu bar are located.
@@ -1890,9 +1890,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="monitor">Internal monitor to get internal video mode from.</param>
 		/// <returns>
-		/// Current video mode of the specified monitor, or an empty one if an error occurred.
+		/// Current video mode of the specified monitor, or an empty optional if an error occurred.
 		/// </returns>
-		[[nodiscard]] static InternalVideoMode GetVideoMode(InternalMonitor* monitor);
+		[[nodiscard]] static std::optional<InternalVideoMode> GetVideoMode(InternalMonitor& monitor);
 		/// <summary>
 		/// This function returns a vector of all video modes supported by the specified monitor.
 		/// The returned vector is sorted in ascending order, first by color bit depth
@@ -1907,7 +1907,7 @@ namespace TRAP::INTERNAL
 		/// Vector with all available video modes of the specified monitor, or an empty vector
 		/// if an error occurred.
 		/// </returns>
-		[[nodiscard]] static std::vector<InternalVideoMode> GetVideoModes(InternalMonitor* monitor);
+		[[nodiscard]] static std::vector<InternalVideoMode> GetVideoModes(InternalMonitor& monitor);
 		/// <summary>
 		/// This function creates a window.
 		/// Most of the options controlling how the window should be created are specified with window hints.
@@ -1979,7 +1979,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window whose flag to change.</param>
 		/// <param name="value">Whether to close the window or not.</param>
-		static void SetWindowShouldClose(InternalWindow* window, bool value);
+		static void SetWindowShouldClose(InternalWindow& window, bool value);
 		/// <summary>
 		/// This function sets the window title, encoded as UTF-8, of the specified window.
 		///
@@ -1988,7 +1988,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window whose title to change.</param>
 		/// <param name="title">New UTF-8 encoded title for the window.</param>
-		static void SetWindowTitle(InternalWindow* window, const std::string& title);
+		static void SetWindowTitle(InternalWindow& window, const std::string& title);
 		/// <summary>
 		/// This function retrieves the content scale for the specified monitor.
 		/// The content scale is the ratio between the current DPI and the platform's default DPI.
@@ -2007,7 +2007,7 @@ namespace TRAP::INTERNAL
 		/// <param name="monitor">Internal monitor.</param>
 		/// <param name="xScale">Output variable for the X scale of the provided monitor.</param>
 		/// <param name="yScale">Output variable for the Y scale of the provided monitor.</param>
-		static void GetMonitorContentScale(const InternalMonitor* monitor, float& xScale, float& yScale);
+		static void GetMonitorContentScale(const InternalMonitor& monitor, float& xScale, float& yScale);
 		/// <summary>
 		/// This function destroys a cursor previously created with CreateCursor. Any remaining cursors
 		/// will be destroyed by WindowingAPI::Shutdown.
@@ -2036,7 +2036,7 @@ namespace TRAP::INTERNAL
 		/// <param name="xHotspot">Center x coordinate of the image.</param>
 		/// <param name="yHotspot">Center y coordinate of the image.</param>
 		/// <returns>On success new internal cursor, nullptr otherwise.</returns>
-		[[nodiscard]] static InternalCursor* CreateCursor(const Image* const image, int32_t xHotspot, int32_t yHotspot);
+		[[nodiscard]] static InternalCursor* CreateCursor(const Image& image, int32_t xHotspot, int32_t yHotspot);
 		/// <summary>
 		/// Creates a cursor with a standard shape.
 		///
@@ -2060,7 +2060,7 @@ namespace TRAP::INTERNAL
 		/// <param name="cursor">
 		/// Internal cursor to set, or nullptr to switch back to the default arrow cursor.
 		/// </param>
-		static void SetCursor(InternalWindow* window, InternalCursor* cursor);
+		static void SetCursor(InternalWindow& window, InternalCursor* cursor);
 		/// <summary>
 		/// This function sets the icon of the specified window. If no image is specified, the window
 		/// reverts to its default icon.
@@ -2080,7 +2080,7 @@ namespace TRAP::INTERNAL
 		/// <param name="image">
 		/// Image to be set as window icon or nullptr to revert back to the default icon.
 		/// </param>
-		static void SetWindowIcon(InternalWindow* window, const Image* const image);
+		static void SetWindowIcon(InternalWindow& window, const Image* const image);
 		/// <summary>
 		/// This function sets the position, in screen coordinates, of the upper-left corner of the
 		/// content area of the specifed windowed mode window. If the window is a full screen window,
@@ -2101,7 +2101,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set the position for.</param>
 		/// <param name="xPos">X position to be set.</param>
 		/// <param name="yPos">Y position to be set.</param>
-		static void SetWindowPos(const InternalWindow* window, int32_t xPos, int32_t yPos);
+		static void SetWindowPos(const InternalWindow& window, int32_t xPos, int32_t yPos);
 		/// <summary>
 		/// This function retrieves the position, in screen coordinates, of the upper-left corner of the
 		/// content area of the specified window.
@@ -2117,7 +2117,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get the current position from.</param>
 		/// <param name="xPos">Output variable for the current x position of the internal window.</param>
 		/// <param name="yPos">Output variable for the current y position of the internal window.</param>
-		static void GetWindowPos(const InternalWindow* window, int32_t& xPos, int32_t& yPos);
+		static void GetWindowPos(const InternalWindow& window, int32_t& xPos, int32_t& yPos);
 		/// <summary>
 		/// This function sets the size, in screen coordinates, of the content area of the specified window.
 		///
@@ -2139,7 +2139,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set the size for.</param>
 		/// <param name="width">New width for the internal window.</param>
 		/// <param name="height">New height for the internal window.</param>
-		static void SetWindowSize(InternalWindow* window, int32_t width, int32_t height);
+		static void SetWindowSize(InternalWindow& window, int32_t width, int32_t height);
 		/// <summary>
 		/// This function retrieves the size, in screen coordinates, of the content area of
 		/// the specified window. If you wish to retrieve the size of the framebuffer of the window
@@ -2153,7 +2153,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get the size from.</param>
 		/// <param name="width">Output variable for the internal windows current width.</param>
 		/// <param name="height">Output variable for the internal windows current height.</param>
-		static void GetWindowSize(const InternalWindow* window, int32_t& width, int32_t& height);
+		static void GetWindowSize(const InternalWindow& window, int32_t& width, int32_t& height);
 		/// <summary>
 		/// This function retrieves the size, in pixels, of the framebuffer of the specified window.
 		/// If you wish to retrieve the size of the window in screen coordinates, see
@@ -2167,7 +2167,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get the framebuffer size from.</param>
 		/// <param name="width">Output variable for the internal windows current framebuffer width.</param>
 		/// <param name="height">Output variable for the internal windows current framebuffer height.</param>
-		static void GetFrameBufferSize(const InternalWindow* window, int32_t& width, int32_t& height);
+		static void GetFrameBufferSize(const InternalWindow& window, int32_t& width, int32_t& height);
 		/// <summary>
 		/// This function sets the opacity of the window, including any decorations.
 		///
@@ -2184,7 +2184,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to set opacity for.</param>
 		/// <param name="opacity">Opacity ranging from 0.0f-1.0f.</param>
-		static void SetWindowOpacity(const InternalWindow* window, float opacity);
+		static void SetWindowOpacity(const InternalWindow& window, float opacity);
 		/// <summary>
 		/// This function returns the opacity of the window, including any decorations.
 		///
@@ -2199,7 +2199,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to get the opacity from.</param>
 		/// <returns>Opacity of the given internal window on success, empty optional otherwise.</returns>
-		[[nodiscard]] static std::optional<float> GetWindowOpacity(const InternalWindow* window);
+		[[nodiscard]] static std::optional<float> GetWindowOpacity(const InternalWindow& window);
 		/// <summary>
 		/// This function retrieves the content scale for the specified window.
 		/// The content scale is the reatio between the current DPI and the platform's
@@ -2219,7 +2219,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get the content scale from.</param>
 		/// <param name="xScale">Output variable for the internal windows content scale x.</param>
 		/// <param name="yScale">Output variable for the internal windows content scale y.</param>
-		static void GetWindowContentScale(const InternalWindow* window, float& xScale, float& yScale);
+		static void GetWindowContentScale(const InternalWindow& window, float& xScale, float& yScale);
 		/// <summary>
 		/// This function sets the value of a hint of the specified window.
 		///
@@ -2238,7 +2238,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set the hint for.</param>
 		/// <param name="hint">Hint to be set.</param>
 		/// <param name="value">Value for the hint.</param>
-		static void SetWindowHint(InternalWindow* window, Hint hint, bool value);
+		static void SetWindowHint(InternalWindow& window, Hint hint, bool value);
 		/// <summary>
 		/// This function returns the value of a hint of the specified window.
 		///
@@ -2249,7 +2249,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get the hint from.</param>
 		/// <param name="hint">Hint to query.</param>
 		/// <returns>True if hint is enabled, false otherwise.</returns>
-		[[nodiscard]] static bool GetWindowHint(const InternalWindow* window, Hint hint);
+		[[nodiscard]] static bool GetWindowHint(const InternalWindow& window, Hint hint);
 		/// <summary>
 		/// This function sets the monitor that the window uses for full screen mode or,
 		/// if the monitor is nullptr, makes it windowed mode.
@@ -2283,7 +2283,7 @@ namespace TRAP::INTERNAL
 		/// <param name="width">New width for the window.</param>
 		/// <param name="height">New height for the window.</param>
 		/// <param name="refreshRate">New refresh rate for the window.</param>
-		static void SetWindowMonitor(InternalWindow* window,
+		static void SetWindowMonitor(InternalWindow& window,
 		                             InternalMonitor* monitor,
 		                             int32_t xPos,
 		                             int32_t yPos,
@@ -2298,7 +2298,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to set the monitor for.</param>
 		/// <param name="monitor">Internal monitor to use.</param>
-		static void SetWindowMonitorBorderless(InternalWindow* window, InternalMonitor* monitor);
+		static void SetWindowMonitorBorderless(InternalWindow& window, InternalMonitor& monitor);
 		/// <summary>
 		/// This function sets the user-define dpointer of the specified window.
 		/// The current value is retained until the window is destroyed.
@@ -2309,7 +2309,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to set the user pointer for.</param>
 		/// <param name="ptr">Data to be stored with the window.</param>
-		static void SetWindowUserPointer(InternalWindow* window, void* ptr);
+		static void SetWindowUserPointer(InternalWindow& window, void* ptr);
 		/// <summary>
 		/// This function returns the current value of the user-defined pointer
 		/// of the specified window. The initial value is nullptr.
@@ -2319,7 +2319,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to get the user pointer from.</param>
 		/// <returns>Data stored with the window.</returns>
-		[[nodiscard]] static void* GetWindowUserPointer(const InternalWindow* window);
+		[[nodiscard]] static void* GetWindowUserPointer(const InternalWindow& window);
 		/// <summary>
 		/// This function sets the monitor configuration callback, or removes
 		/// the currently set callback. This is called when a monitor is
@@ -2347,7 +2347,7 @@ namespace TRAP::INTERNAL
 		/// <param name="callback">
 		/// Function to call when a position event occurs, or nullptr to remove the currently set callback.
 		/// </param>
-		static void SetWindowPosCallback(InternalWindow* window, WindowPositionFunc callback);
+		static void SetWindowPosCallback(InternalWindow& window, WindowPositionFunc callback);
 		/// <summary>
 		/// This function sets the size callback of the specified window, which is
 		/// called when the window is resized. The callback is provided with the
@@ -2360,7 +2360,7 @@ namespace TRAP::INTERNAL
 		/// <param name="callback">
 		/// Function to call when a size event occurs, or nullptr to remove the currently set callback.
 		/// </param>
-		static void SetWindowSizeCallback(InternalWindow* window, WindowSizeFunc callback);
+		static void SetWindowSizeCallback(InternalWindow& window, WindowSizeFunc callback);
 		/// <summary>
 		/// This function sets the minimization/iconification callback of the specified window, which
 		/// is called when the window is minimized/iconified or restored.
@@ -2372,7 +2372,7 @@ namespace TRAP::INTERNAL
 		/// <param name="callback">
 		/// Function to call when a minimize event occurs, or nullptr to remove the currently set callback.
 		/// </param>
-		static void SetWindowMinimizeCallback(InternalWindow* window, WindowMinimizeFunc callback);
+		static void SetWindowMinimizeCallback(InternalWindow& window, WindowMinimizeFunc callback);
 		/// <summary>
 		/// This function sets the maximization callback of the specified window, which
 		/// is called when the window is maximized or restored.
@@ -2384,7 +2384,7 @@ namespace TRAP::INTERNAL
 		/// <param name="callback">
 		/// Function to call when a maximize event occurs, or nullptr to remove the currently set callback.
 		/// </param>
-		static void SetWindowMaximizeCallback(InternalWindow* window, WindowMaximizeFunc callback);
+		static void SetWindowMaximizeCallback(InternalWindow& window, WindowMaximizeFunc callback);
 		/// <summary>
 		/// This function sets the close callback of the specified window, which is called
 		/// when the user attempts to close the window, for example by clicking the close widget
@@ -2402,7 +2402,7 @@ namespace TRAP::INTERNAL
 		/// <param name="callback">
 		/// Function to call when a close event occurs, or nullptr to remove the currently set callback.
 		/// </param>
-		static void SetWindowCloseCallback(InternalWindow* window, WindowCloseFunc callback);
+		static void SetWindowCloseCallback(InternalWindow& window, WindowCloseFunc callback);
 		/// <summary>
 		/// This function sets the focus callback of the specified window, which is called
 		/// when the window gains or loses input focus.
@@ -2419,7 +2419,7 @@ namespace TRAP::INTERNAL
 		/// <param name="callback">
 		/// Function to call when a focus event occurs, or nullptr to remove the currently set callback.
 		/// </param>
-		static void SetWindowFocusCallback(InternalWindow* window, WindowFocusFunc callback);
+		static void SetWindowFocusCallback(InternalWindow& window, WindowFocusFunc callback);
 		/// <summary>
 		/// This function sets the framebuffer resize callback of the specified window, which is
 		/// called when the framebuffer of the specified window is resized.
@@ -2431,7 +2431,7 @@ namespace TRAP::INTERNAL
 		/// <param name="callback">
 		/// Function to call when a framebuffer size event occurs, or nullptr to remove the currently set callback.
 		/// </param>
-		static void SetFrameBufferSizeCallback(InternalWindow* window, FrameBufferSizeFunc callback);
+		static void SetFrameBufferSizeCallback(InternalWindow& window, FrameBufferSizeFunc callback);
 		/// <summary>
 		/// This function sets the window content scale callback of the specified window, which is
 		/// called when the content scale of the specified window changes.
@@ -2443,7 +2443,7 @@ namespace TRAP::INTERNAL
 		/// <param name="callback">
 		/// Function to call when a content scale event occurs, or nullptr to remove the currently set callback.
 		/// </param>
-		static void SetContentScaleCallback(InternalWindow* window, WindowContentScaleFunc callback);
+		static void SetContentScaleCallback(InternalWindow& window, WindowContentScaleFunc callback);
 		/// <summary>
 		/// This function sets the key callback of the specified window, which is called when
 		/// a key is pressed, repeated or released.
@@ -2464,7 +2464,7 @@ namespace TRAP::INTERNAL
 		/// <param name="callback">
 		/// Function to call when a key event occurs, or nullptr to remove the currently set callback.
 		/// </param>
-		static void SetKeyCallback(InternalWindow* window, KeyFunc callback);
+		static void SetKeyCallback(InternalWindow& window, KeyFunc callback);
 		/// <summary>
 		/// This function sets the character callback of the specified window, which is called
 		/// when a Unicode character is input.
@@ -2486,7 +2486,7 @@ namespace TRAP::INTERNAL
 		/// <param name="callback">
 		/// Function to call when a char event occurs, or nullptr to remove the currently set callback.
 		/// </param>
-		static void SetCharCallback(InternalWindow* window, CharFunc callback);
+		static void SetCharCallback(InternalWindow& window, CharFunc callback);
 		/// <summary>
 		/// This function sets the mouse button callback of the specified window, which is
 		/// called when amouse button is pressed or released.
@@ -2503,7 +2503,7 @@ namespace TRAP::INTERNAL
 		/// <param name="callback">
 		/// Function to call when a mouse button event occurs, or nullptr to remove the currently set callback.
 		/// </param>
-		static void SetMouseButtonCallback(InternalWindow* window, MouseButtonFunc callback);
+		static void SetMouseButtonCallback(InternalWindow& window, MouseButtonFunc callback);
 		/// <summary>
 		/// This function sets the cursor position callback of the specified window, which is
 		/// called when the cursor is moved. The callback is provided with the position,
@@ -2517,7 +2517,7 @@ namespace TRAP::INTERNAL
 		/// <param name="callback">
 		/// Function to call when a cursor position event occurs, or nullptr to remove the currently set callback.
 		/// </param>
-		static void SetCursorPosCallback(InternalWindow* window, CursorPositionFunc callback);
+		static void SetCursorPosCallback(InternalWindow& window, CursorPositionFunc callback);
 		/// <summary>
 		/// This function sets the cursor boundary crossing callback of the specified window, which
 		/// is called when the cursor enters or leaves the content area of the window.
@@ -2529,7 +2529,7 @@ namespace TRAP::INTERNAL
 		/// <param name="callback">
 		/// Function to call when a cursor enter event occurs, or nullptr to remove the currently set callback.
 		/// </param>
-		static void SetCursorEnterCallback(InternalWindow* window, CursorEnterFunc callback);
+		static void SetCursorEnterCallback(InternalWindow& window, CursorEnterFunc callback);
 		/// <summary>
 		/// This function sets the scroll callback of the specified window, which is called when a
 		/// scrolling device is used, such as a mouse wheel or scrolling area of a touchpad.
@@ -2544,7 +2544,7 @@ namespace TRAP::INTERNAL
 		/// <param name="callback">
 		/// Function to call when a scroll event occurs, or nullptr to remove the currently set callback.
 		/// </param>
-		static void SetScrollCallback(InternalWindow* window, ScrollFunc callback);
+		static void SetScrollCallback(InternalWindow& window, ScrollFunc callback);
 		/// <summary>
 		/// This function sets the path drop callback of the specified window, which is
 		/// called when one or more dragged paths are dropped on the window.
@@ -2558,7 +2558,7 @@ namespace TRAP::INTERNAL
 		/// <param name="callback">
 		/// Function to call when a drop even occurs, or nullptr to remove the currently set callback.
 		/// </param>
-		static void SetDropCallback(InternalWindow* window, DropFunc callback);
+		static void SetDropCallback(InternalWindow& window, DropFunc callback);
 		/// <summary>
 		/// Gets the monitor configuration callback.
 		/// </summary>
@@ -2569,79 +2569,79 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window from which to query the callback from.</param>
 		/// <returns>Function that gets called when a position event occurs.</returns>
-		[[nodiscard]] static WindowPositionFunc GetWindowPosCallback(const InternalWindow* window);
+		[[nodiscard]] static WindowPositionFunc GetWindowPosCallback(const InternalWindow& window);
 		/// <summary>
 		/// Gets the size callback for the specified window.
 		/// </summary>
 		/// <param name="window">Internal window from which to query the callback from.</param>
 		/// <returns>Function that gets called when a size event occurs.</returns>
-		[[nodiscard]] static WindowSizeFunc GetWindowSizeCallback(const InternalWindow* window);
+		[[nodiscard]] static WindowSizeFunc GetWindowSizeCallback(const InternalWindow& window);
 		/// <summary>
 		/// Gets the close callback for the specified window.
 		/// </summary>
 		/// <param name="window">Internal window from which to query the callback from.</param>
 		/// <returns>Function that gets called when a close event occurs.</returns>
-		[[nodiscard]] static WindowCloseFunc GetWindowCloseCallback(const InternalWindow* window);
+		[[nodiscard]] static WindowCloseFunc GetWindowCloseCallback(const InternalWindow& window);
 		/// <summary>
 		/// Gets the focus callback for the specified window.
 		/// </summary>
 		/// <param name="window">Internal window from which to query the callback from.</param>
 		/// <returns>Function that gets called when a focus event occurs.</returns>
-		[[nodiscard]] static WindowFocusFunc GetWindowFocusCallback(const InternalWindow* window);
+		[[nodiscard]] static WindowFocusFunc GetWindowFocusCallback(const InternalWindow& window);
 		/// <summary>
 		/// Gets the framebuffer resize callback for the specified window.
 		/// </summary>
 		/// <param name="window">Internal window from which to query the callback from.</param>
 		/// <returns>Function that gets called when a framebuffer size event occurs.</returns>
-		[[nodiscard]] static FrameBufferSizeFunc GetFrameBufferSizeCallback(const InternalWindow* window);
+		[[nodiscard]] static FrameBufferSizeFunc GetFrameBufferSizeCallback(const InternalWindow& window);
 		/// <summary>
 		/// Gets the window content scale callback for the specified window.
 		/// </summary>
 		/// <param name="window">Internal window from which to query the callback from.</param>
 		/// <returns>Function that gets called when a content scale event occurs.</returns>
-		[[nodiscard]] static WindowContentScaleFunc GetWindowContentScaleCallback(const InternalWindow* window);
+		[[nodiscard]] static WindowContentScaleFunc GetWindowContentScaleCallback(const InternalWindow& window);
 		/// <summary>
 		/// Gets the key callback for the specified window.
 		/// </summary>
 		/// <param name="window">Internal window from which to query the callback from.</param>
 		/// <returns>Function that gets called when a key event occurs.</returns>
-		[[nodiscard]] static KeyFunc GetKeyCallback(const InternalWindow* window);
+		[[nodiscard]] static KeyFunc GetKeyCallback(const InternalWindow& window);
 		/// <summary>
 		/// Gets the Unicode character callback for the specified window.
 		/// </summary>
 		/// <param name="window">Internal window from which to query the callback from.</param>
 		/// <returns>Function that gets called when a char event occurs.</returns>
-		[[nodiscard]] static CharFunc GetCharCallback(const InternalWindow* window);
+		[[nodiscard]] static CharFunc GetCharCallback(const InternalWindow& window);
 		/// <summary>
 		/// Gets the mouse button callback for the specified window.
 		/// </summary>
 		/// <param name="window">Internal window from which to query the callback from.</param>
 		/// <returns>Function that gets called when a mouse button event occurs.</returns>
-		[[nodiscard]] static MouseButtonFunc GetMouseButtonCallback(const InternalWindow* window);
+		[[nodiscard]] static MouseButtonFunc GetMouseButtonCallback(const InternalWindow& window);
 		/// <summary>
 		/// Gets the cursor position callback for the specified window.
 		/// </summary>
 		/// <param name="window">Internal window from which to query the callback from.</param>
 		/// <returns>Function that gets called when a cursor position event occurs.</returns>
-		[[nodiscard]] static CursorPositionFunc GetCursorPosCallback(const InternalWindow* window);
+		[[nodiscard]] static CursorPositionFunc GetCursorPosCallback(const InternalWindow& window);
 		/// <summary>
 		/// Gets the cursor enter callback for the specified window.
 		/// </summary>
 		/// <param name="window">Internal window from which to query the callback from.</param>
 		/// <returns>Function that gets called when a cursor enter event occurs.</returns>
-		[[nodiscard]] static CursorEnterFunc GetCursorEnterCallback(const InternalWindow* window);
+		[[nodiscard]] static CursorEnterFunc GetCursorEnterCallback(const InternalWindow& window);
 		/// <summary>
 		/// Gets the scroll callback for the specified window.
 		/// </summary>
 		/// <param name="window">Internal window from which to query the callback from.</param>
 		/// <returns>Function that gets called when a scroll event occurs.</returns>
-		[[nodiscard]] static ScrollFunc GetScrollCallback(const InternalWindow* window);
+		[[nodiscard]] static ScrollFunc GetScrollCallback(const InternalWindow& window);
 		/// <summary>
 		/// Gets the path drop callback for the specified window.
 		/// </summary>
 		/// <param name="window">Internal window from which to query the callback from.</param>
 		/// <returns>Function that gets called when a drop event occurs.</returns>
-		[[nodiscard]] static DropFunc GetDropCallback(const InternalWindow* window);
+		[[nodiscard]] static DropFunc GetDropCallback(const InternalWindow& window);
 		/// <summary>
 		/// This function processes only those events that are already in the event queue and then
 		/// returns immediately. Processing events will cause the window and input callbacks
@@ -2706,19 +2706,20 @@ namespace TRAP::INTERNAL
 		/// - Hidden makes the cursor invisible when it is over the content area of the
 		///   window but does not restrict the cursor from leaving.
 		/// - Disabled hides and grabs the cursor, providing virtual and unlimited cursor movement.
+		/// - Captured makes the cursor visible and confines it to the content area of the window.
 		///
 		/// Errors: Possible errors include Error::Not_Initialized, Error::Invalid_Enum and Error::Platform_Error.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to set the cursor mode for.</param>
 		/// <param name="mode">Cursor mode to be set.</param>
-		static void SetCursorMode(InternalWindow* window, CursorMode mode);
+		static void SetCursorMode(InternalWindow& window, CursorMode mode);
 		/// <summary>
 		/// Retrieves the cursor mode from the specified window.
 		/// </summary>
 		/// <param name="window">Internal window to query the cursor mode from.</param>
 		/// <returns>Cursor mode used by the internal window.</returns>
-		[[nodiscard]] static CursorMode GetCursorMode(const InternalWindow* window);
+		[[nodiscard]] static CursorMode GetCursorMode(const InternalWindow& window);
 		/// <summary>
 		/// This function returns whether raw mouse motion is supported on the current system.
 		/// This status does not change after the WindowingAPI has been initialized so you
@@ -2748,13 +2749,13 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to set raw mouse input for.</param>
 		/// <param name="enabled">Whether to enable or disable raw mouse input.</param>
-		static void SetRawMouseMotionMode(InternalWindow* window, bool enabled);
+		static void SetRawMouseMotionMode(InternalWindow& window, bool enabled);
 		/// <summary>
 		/// Retrieves the raw mouse motion mode for the specified window.
 		/// </summary>
 		/// <param name="window">Internal window to query.</param>
 		/// <returns>True if raw mouse motion mode is enabled, false otherwise.</returns>
-		[[nodiscard]] static bool GetRawMouseMotionMode(const InternalWindow* window);
+		[[nodiscard]] static bool GetRawMouseMotionMode(const InternalWindow& window);
 		/// <summary>
 		/// Sets the progress value and state on the taskbar for the specified window.
 		///
@@ -2767,7 +2768,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set progress for.</param>
 		/// <param name="state">State of progress.</param>
 		/// <param name="progress">How much has been completed. Valid values: 0 - 100.</param>
-		static void SetProgress(const InternalWindow* window, ProgressState state, uint32_t progress);
+		static void SetProgress(const InternalWindow& window, ProgressState state, uint32_t progress);
 		/// <summary>
 		/// This function returns the name of the specified printable key, encoded as UTF-8.
 		/// This is typically the character that key would produce without any modifier
@@ -2839,7 +2840,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to query.</param>
 		/// <param name="key">Key to get last reported state from.</param>
 		/// <returns>Last reported state of the specified key.</returns>
-		[[nodiscard]] static TRAP::Input::KeyState GetKey(const InternalWindow* window, Input::Key key);
+		[[nodiscard]] static TRAP::Input::KeyState GetKey(const InternalWindow& window, Input::Key key);
 		/// <summary>
 		/// This function returns the last state reported for the specified mouse button
 		/// to the specified window. The returned state is pressed (true) or released (false).
@@ -2850,7 +2851,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to query.</param>
 		/// <param name="button">Mouse button to get last reported state from.</param>
 		/// <returns>Last reported state of the specified mouse button.</returns>
-		[[nodiscard]] static TRAP::Input::KeyState GetMouseButton(const InternalWindow* window, Input::MouseButton button);
+		[[nodiscard]] static TRAP::Input::KeyState GetMouseButton(const InternalWindow& window, Input::MouseButton button);
 		/// <summary>
 		/// This function sets the position, in screen coordinates, of the cursor relative to the
 		/// upper-left corner of the content area of the specified window. The window must have
@@ -2873,7 +2874,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set the cursor position for.</param>
 		/// <param name="xPos">New x position, relative to the left edge of the content area, for the cursor.</param>
 		/// <param name="yPos">New y position, relative to the top edge of the content area, for the cursor.</param>
-		static void SetCursorPos(InternalWindow* window, double xPos, double yPos);
+		static void SetCursorPos(InternalWindow& window, double xPos, double yPos);
 		/// <summary>
 		/// This function returns the position of the cursor, in screen coordinates, relative
 		/// to the upper-left corner of the content area of the specified window.
@@ -2896,7 +2897,7 @@ namespace TRAP::INTERNAL
 		/// <param name="yPos">
 		/// Output variable for the current y position, relative to the top edge of the content area, of the cursor.
 		/// </param>
-		static void GetCursorPos(const InternalWindow* window, double& xPos, double& yPos);
+		static void GetCursorPos(const InternalWindow& window, double& xPos, double& yPos);
 		/// <summary>
 		/// Returns the position of the monitor's viewport on the virtual screen.
 		/// This function returns the position, in screen coordinates, of the upper-left corner
@@ -2910,7 +2911,7 @@ namespace TRAP::INTERNAL
 		/// <param name="monitor">Internal monitor to query.</param>
 		/// <param name="xPos">Output variable for the x position of the monitor.</param>
 		/// <param name="yPos">Output variable for the y position of the monitor.</param>
-		static void GetMonitorPos(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos);
+		static void GetMonitorPos(const InternalMonitor& monitor, int32_t& xPos, int32_t& yPos);
 		/// <summary>
 		/// This function returns the position, in screen coordinates, of the upper-left corner
 		/// of the work area of the specified monitor along with the work area size in screen
@@ -2928,7 +2929,7 @@ namespace TRAP::INTERNAL
 		/// <param name="yPos">Output variable for the y position of the monitor.</param>
 		/// <param name="width">Output variable for the width of the monitor.</param>
 		/// <param name="height">Output variable for the height of the monitor.</param>
-		static void GetMonitorWorkArea(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos,
+		static void GetMonitorWorkArea(const InternalMonitor& monitor, int32_t& xPos, int32_t& yPos,
 		                               int32_t& width, int32_t& height);
 		/// <summary>
 		/// This function makes the specified window visible if it was previously
@@ -2947,7 +2948,7 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to display.</param>
-		static void ShowWindow(InternalWindow* window);
+		static void ShowWindow(InternalWindow& window);
 		/// <summary>
 		/// This function brings the specified window to front and sets input focus.
 		/// The window should already be visible and not minimized/iconified.
@@ -2974,7 +2975,7 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to focus.</param>
-		static void FocusWindow(const InternalWindow* window);
+		static void FocusWindow(const InternalWindow& window);
 		/// <summary>
 		/// This function maximizes the specified window if it was previously not
 		/// maximized. If the window is already maximized, this function does nothing.
@@ -2985,7 +2986,7 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function may only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to maximize.</param>
-		static void MaximizeWindow(InternalWindow* window);
+		static void MaximizeWindow(InternalWindow& window);
 		/// <summary>
 		/// This function minimizes (iconifies) the specified window if it was previously
 		/// restored. If the window is already minimized (iconified), this function does
@@ -3001,7 +3002,7 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to minimize/iconify.</param>
-		static void MinimizeWindow(const InternalWindow* window);
+		static void MinimizeWindow(const InternalWindow& window);
 		/// <summary>
 		/// This function requests user attention to the specified window.
 		/// On platforms where this is not supported, attention is requested
@@ -3014,7 +3015,7 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to request user attention for.</param>
-		static void RequestWindowAttention(InternalWindow* window);
+		static void RequestWindowAttention(InternalWindow& window);
 		/// <summary>
 		/// This function hides the specified window if it was previously visible. If
 		/// the window is already hidden or is in full screen mode, this function
@@ -3024,7 +3025,7 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to hide.</param>
-		static void HideWindow(InternalWindow* window);
+		static void HideWindow(InternalWindow& window);
 		/// <summary>
 		/// Restores the specified window.
 		/// This function restores the specified window if it was previously
@@ -3038,7 +3039,7 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to be restored.</param>
-		static void RestoreWindow(InternalWindow* window);
+		static void RestoreWindow(InternalWindow& window);
 		/// <summary>
 		/// Sets the size limits of the specified window.
 		///
@@ -3068,7 +3069,7 @@ namespace TRAP::INTERNAL
 		/// <param name="minHeight">New minimum window height.</param>
 		/// <param name="maxWidth">New maximum window width.</param>
 		/// <param name="maxHeight">New maximum window height.</param>
-		static void SetWindowSizeLimits(InternalWindow* window, int32_t minWidth, int32_t minHeight,
+		static void SetWindowSizeLimits(InternalWindow& window, int32_t minWidth, int32_t minHeight,
 		                                int32_t maxWidth, int32_t maxHeight);
 		/// <summary>
 		/// Sets the aspect ratio of the specified window.
@@ -3099,7 +3100,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set aspect ratio for.</param>
 		/// <param name="numerator">Numerator of the desired aspect ratio, or -1.</param>
 		/// <param name="denominator">Denominator of the desired aspect ratio, or -1.</param>
-		static void SetWindowAspectRatio(InternalWindow* window, int32_t numerator, int32_t denominator);
+		static void SetWindowAspectRatio(InternalWindow& window, int32_t numerator, int32_t denominator);
 		/// <summary>
 		/// This function sets the system clipboard to the specified, UTF-8 encoded string.
 		///
@@ -3198,19 +3199,19 @@ namespace TRAP::INTERNAL
 		/// <param name="allocator">Optional allocator.</param>
 		/// <param name="surface">Output variable for the new Vulkan surface.</param>
 		/// <returns>VK_SUCCESS if successful, or a Vulkan error code if an error occurred.</returns>
-		[[nodiscard]] static VkResult CreateWindowSurface(VkInstance instance, const InternalWindow* window,
+		[[nodiscard]] static VkResult CreateWindowSurface(VkInstance instance, const InternalWindow& window,
 		                                                  const VkAllocationCallbacks* allocator, VkSurfaceKHR& surface);
 		/// <summary>
 		/// Hides the specified window from the taskbar.
 		/// </summary>
 		/// <param name="window">Internal window to hide from the taskbar.</param>
-		static void HideWindowFromTaskbar(InternalWindow* window);
+		static void HideWindowFromTaskbar(InternalWindow& window);
 		/// <summary>
 		/// Enable/Disable drag and drop feature for the specified window.
 		/// </summary>
 		/// <param name="window">Internal window for which to set drag and drop.</param>
 		/// <param name="value">Whether to enable or disable drag and drop.</param>
-		static void SetDragAndDrop(InternalWindow* window, bool value);
+		static void SetDragAndDrop(InternalWindow& window, bool value);
 #ifdef TRAP_PLATFORM_WINDOWS
 		/// <summary>
 		/// Returns the HWND handle of the internal window.
@@ -3227,7 +3228,7 @@ namespace TRAP::INTERNAL
 		/// Center the cursor in the content area of the specified windows.
 		/// </summary>
 		/// <param name="window">Internal window which to center the cursor for.</param>
-		static void CenterCursorInContentArea(InternalWindow* window);
+		static void CenterCursorInContentArea(InternalWindow& window);
 		/// <summary>
 		/// Notifies shared code of an error.
 		/// </summary>
@@ -3253,11 +3254,11 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="monitor">Internal monitor to get internal video mode from.</param>
 		/// <returns>
-		/// Current video mode of the specified monitor, or an empty one if an error occurred.
+		/// Current video mode of the specified monitor, or an empty optional if an error occurred.
 		/// </returns>
-		[[nodiscard]] static InternalVideoMode PlatformGetVideoMode(const InternalMonitor* monitor);
-		[[nodiscard]] static InternalVideoMode PlatformGetVideoModeX11(const InternalMonitor* monitor);
-		[[nodiscard]] static InternalVideoMode PlatformGetVideoModeWayland(const InternalMonitor* monitor);
+		[[nodiscard]] static std::optional<InternalVideoMode> PlatformGetVideoMode(const InternalMonitor& monitor);
+		[[nodiscard]] static std::optional<InternalVideoMode> PlatformGetVideoModeX11(const InternalMonitor& monitor);
+		[[nodiscard]] static std::optional<InternalVideoMode> PlatformGetVideoModeWayland(const InternalMonitor& monitor);
 		/// <summary>
 		/// This function retrieves the size, in screen coordinates, of the content area of
 		/// the specified window. If you wish to retrieve the size of the framebuffer of the window
@@ -3271,9 +3272,9 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get the size from.</param>
 		/// <param name="width">Output variable for the internal windows current width.</param>
 		/// <param name="height">Output variable for the internal windows current height.</param>
-		static void PlatformGetWindowSize(const InternalWindow* window, int32_t& width, int32_t& height);
-		static void PlatformGetWindowSizeX11(const InternalWindow* window, int32_t& width, int32_t& height);
-		static void PlatformGetWindowSizeWayland(const InternalWindow* window, int32_t& width, int32_t& height);
+		static void PlatformGetWindowSize(const InternalWindow& window, int32_t& width, int32_t& height);
+		static void PlatformGetWindowSizeX11(const InternalWindow& window, int32_t& width, int32_t& height);
+		static void PlatformGetWindowSizeWayland(const InternalWindow& window, int32_t& width, int32_t& height);
 		/// <summary>
 		/// This function sets the position, in screen coordinates, of the upper-left corner of the
 		/// content area of the specifed windowed mode window. If the window is a full screen window,
@@ -3291,9 +3292,9 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set the position for.</param>
 		/// <param name="xPos">X position to be set.</param>
 		/// <param name="yPos">Y position to be set.</param>
-		static void PlatformSetWindowPos(const InternalWindow* window, int32_t xPos, int32_t yPos);
-		static void PlatformSetWindowPosX11(const InternalWindow* window, int32_t xPos, int32_t yPos);
-		static void PlatformSetWindowPosWayland(const InternalWindow* window, int32_t xPos, int32_t yPos);
+		static void PlatformSetWindowPos(const InternalWindow& window, int32_t xPos, int32_t yPos);
+		static void PlatformSetWindowPosX11(const InternalWindow& window, int32_t xPos, int32_t yPos);
+		static void PlatformSetWindowPosWayland(const InternalWindow& window, int32_t xPos, int32_t yPos);
 		/// <summary>
 		/// This function sets the monitor that the window uses for full screen mode or,
 		/// if the monitor is nullptr, makes it windowed mode.
@@ -3322,13 +3323,13 @@ namespace TRAP::INTERNAL
 		/// <param name="width">New width for the window.</param>
 		/// <param name="height">New height for the window.</param>
 		/// <param name="refreshRate">New refresh rate for the window.</param>
-		static void PlatformSetWindowMonitor(InternalWindow* window, InternalMonitor* monitor,
+		static void PlatformSetWindowMonitor(InternalWindow& window, InternalMonitor* monitor,
 			                                 int32_t xPos, int32_t yPos, int32_t width, int32_t height,
 											 double refreshRate);
-		static void PlatformSetWindowMonitorX11(InternalWindow* window, InternalMonitor* monitor,
+		static void PlatformSetWindowMonitorX11(InternalWindow& window, InternalMonitor* monitor,
 			                                    int32_t xPos, int32_t yPos, int32_t width, int32_t height,
 											    double refreshRate);
-		static void PlatformSetWindowMonitorWayland(InternalWindow* window, InternalMonitor* monitor,
+		static void PlatformSetWindowMonitorWayland(InternalWindow& window, InternalMonitor* monitor,
 			                                        int32_t xPos, int32_t yPos, int32_t width, int32_t height,
 											        double refreshRate);
 		/// <summary>
@@ -3339,9 +3340,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to set the monitor for.</param>
 		/// <param name="monitor">Internal monitor to use.</param>
-		static void PlatformSetWindowMonitorBorderless(InternalWindow* window, InternalMonitor* monitor);
-		static void PlatformSetWindowMonitorBorderlessX11(InternalWindow* window, InternalMonitor* monitor);
-		static void PlatformSetWindowMonitorBorderlessWayland(InternalWindow* window, InternalMonitor* monitor);
+		static void PlatformSetWindowMonitorBorderless(InternalWindow& window, InternalMonitor& monitor);
+		static void PlatformSetWindowMonitorBorderlessX11(InternalWindow& window, InternalMonitor& monitor);
+		static void PlatformSetWindowMonitorBorderlessWayland(InternalWindow& window, InternalMonitor& monitor);
 		/// <summary>
 		/// This function returns a vector of all video modes supported by the specified monitor.
 		/// The returned vector is sorted in ascending order, first by color bit depth
@@ -3356,9 +3357,9 @@ namespace TRAP::INTERNAL
 		/// Vector with all available video modes of the specified monitor, or an empty vector
 		/// if an error occurred.
 		/// </returns>
-		[[nodiscard]] static std::vector<InternalVideoMode> PlatformGetVideoModes(const InternalMonitor* monitor);
-		[[nodiscard]] static std::vector<InternalVideoMode> PlatformGetVideoModesX11(const InternalMonitor* monitor);
-		[[nodiscard]] static std::vector<InternalVideoMode> PlatformGetVideoModesWayland(const InternalMonitor* monitor);
+		[[nodiscard]] static std::vector<InternalVideoMode> PlatformGetVideoModes(const InternalMonitor& monitor);
+		[[nodiscard]] static std::vector<InternalVideoMode> PlatformGetVideoModesX11(const InternalMonitor& monitor);
+		[[nodiscard]] static std::vector<InternalVideoMode> PlatformGetVideoModesWayland(const InternalMonitor& monitor);
 		/// <summary>
 		/// Initializes the windowing API.
 		/// Before most WindowingAPI functions can be used, the WindowingAPI must be initialized, and before the engine
@@ -3431,9 +3432,9 @@ namespace TRAP::INTERNAL
 		/// <param name="monitor">Internal monitor.</param>
 		/// <param name="xScale">Output variable for the X scale of the provided monitor.</param>
 		/// <param name="yScale">Output variable for the Y scale of the provided monitor.</param>
-		static void PlatformGetMonitorContentScale(const InternalMonitor* monitor, float& xScale, float& yScale);
-		static void PlatformGetMonitorContentScaleX11(const InternalMonitor* monitor, float& xScale, float& yScale);
-		static void PlatformGetMonitorContentScaleWayland(const InternalMonitor* monitor, float& xScale, float& yScale);
+		static void PlatformGetMonitorContentScale(const InternalMonitor& monitor, float& xScale, float& yScale);
+		static void PlatformGetMonitorContentScaleX11(const InternalMonitor& monitor, float& xScale, float& yScale);
+		static void PlatformGetMonitorContentScaleWayland(const InternalMonitor& monitor, float& xScale, float& yScale);
 		/// <summary>
 		/// Returns the position of the monitor's viewport on the virtual screen.
 		/// This function returns the position, in screen coordinates, of the upper-left corner
@@ -3447,9 +3448,9 @@ namespace TRAP::INTERNAL
 		/// <param name="monitor">Internal monitor to query.</param>
 		/// <param name="xPos">Output variable for the x position of the monitor.</param>
 		/// <param name="yPos">Output variable for the y position of the monitor.</param>
-		static void PlatformGetMonitorPos(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos);
-		static void PlatformGetMonitorPosX11(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos);
-		static void PlatformGetMonitorPosWayland(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos);
+		static void PlatformGetMonitorPos(const InternalMonitor& monitor, int32_t& xPos, int32_t& yPos);
+		static void PlatformGetMonitorPosX11(const InternalMonitor& monitor, int32_t& xPos, int32_t& yPos);
+		static void PlatformGetMonitorPosWayland(const InternalMonitor& monitor, int32_t& xPos, int32_t& yPos);
 		/// <summary>
 		/// This function makes the specified window visible if it was previously
 		/// hidden. If the window is already visible or is in full screen mode,
@@ -3463,9 +3464,9 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to display.</param>
-		static void PlatformShowWindow(InternalWindow* window);
-		static void PlatformShowWindowX11(InternalWindow* window);
-		static void PlatformShowWindowWayland(InternalWindow* window);
+		static void PlatformShowWindow(InternalWindow& window);
+		static void PlatformShowWindowX11(InternalWindow& window);
+		static void PlatformShowWindowWayland(InternalWindow& window);
 		/// <summary>
 		/// This function brings the specified window to front and sets input focus.
 		/// The window should already be visible and not minimized/iconified.
@@ -3489,9 +3490,9 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to focus.</param>
-		static void PlatformFocusWindow(const InternalWindow* window);
-		static void PlatformFocusWindowX11(const InternalWindow* window);
-		static void PlatformFocusWindowWayland(const InternalWindow* window);
+		static void PlatformFocusWindow(const InternalWindow& window);
+		static void PlatformFocusWindowX11(const InternalWindow& window);
+		static void PlatformFocusWindowWayland(const InternalWindow& window);
 		/// <summary>
 		/// This function creates a window.
 		/// Most of the options controlling how the window should be created are specified with window hints.
@@ -3542,11 +3543,11 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to create.</param>
 		/// <param name="WNDConfig">Configuration of the window to create.</param>
 		/// <returns>True if the window was created successfully.</returns>
-		[[nodiscard]] static bool PlatformCreateWindow(InternalWindow* window,
+		[[nodiscard]] static bool PlatformCreateWindow(InternalWindow& window,
 			                                           WindowConfig& WNDConfig);
-		[[nodiscard]] static bool PlatformCreateWindowX11(InternalWindow* window,
+		[[nodiscard]] static bool PlatformCreateWindowX11(InternalWindow& window,
 			                                              WindowConfig& WNDConfig);
-		[[nodiscard]] static bool PlatformCreateWindowWayland(InternalWindow* window,
+		[[nodiscard]] static bool PlatformCreateWindowWayland(InternalWindow& window,
 			                                                  WindowConfig& WNDConfig);
 		/// <summary>
 		/// This function sets the window title, encoded as UTF-8, of the specified window.
@@ -3556,9 +3557,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window whose title to change.</param>
 		/// <param name="title">New UTF-8 encoded title for the window.</param>
-		static void PlatformSetWindowTitle(InternalWindow* window, const std::string& title);
-		static void PlatformSetWindowTitleX11(const InternalWindow* window, const std::string& title);
-		static void PlatformSetWindowTitleWayland(InternalWindow* window, const std::string& title);
+		static void PlatformSetWindowTitle(InternalWindow& window, const std::string& title);
+		static void PlatformSetWindowTitleX11(const InternalWindow& window, const std::string& title);
+		static void PlatformSetWindowTitleWayland(InternalWindow& window, const std::string& title);
 		/// <summary>
 		/// Creates a new custom cursor image that can be set for a window with SetCursor. The cursor can
 		/// be destroyed with DestroyCursor. Any remaining cursors are destroyed by WindowingAPI::Shutdown.
@@ -3575,11 +3576,11 @@ namespace TRAP::INTERNAL
 		/// <param name="xHotspot">Center x coordinate of the image.</param>
 		/// <param name="yHotspot">Center y coordinate of the image.</param>
 		/// <returns>True if the cursor was created successfully.</returns>
-		[[nodiscard]] static bool PlatformCreateCursor(InternalCursor* cursor, const Image* const image, int32_t xHotspot,
+		[[nodiscard]] static bool PlatformCreateCursor(InternalCursor& cursor, const Image& image, int32_t xHotspot,
 		                                               int32_t yHotspot);
-		[[nodiscard]] static bool PlatformCreateCursorX11(InternalCursor* cursor, const Image* const image, int32_t xHotspot,
+		[[nodiscard]] static bool PlatformCreateCursorX11(InternalCursor& cursor, const Image& image, int32_t xHotspot,
 		                                                  int32_t yHotspot);
-		[[nodiscard]] static bool PlatformCreateCursorWayland(InternalCursor* cursor, const Image* const image, int32_t xHotspot,
+		[[nodiscard]] static bool PlatformCreateCursorWayland(InternalCursor& cursor, const Image& image, int32_t xHotspot,
 		                                                      int32_t yHotspot);
 		/// <summary>
 		/// Creates a cursor with a standard shape.
@@ -3590,9 +3591,9 @@ namespace TRAP::INTERNAL
 		/// <param name="cursor">Internal cursor to create.</param>
 		/// <param name="type">Cursor type to get.</param>
 		/// <returns>True if the cursor was created successfully.</returns>
-		[[nodiscard]] static bool PlatformCreateStandardCursor(InternalCursor* cursor, const CursorType& type);
-		[[nodiscard]] static bool PlatformCreateStandardCursorX11(InternalCursor* cursor, const CursorType& type);
-		[[nodiscard]] static bool PlatformCreateStandardCursorWayland(InternalCursor* cursor, const CursorType& type);
+		[[nodiscard]] static bool PlatformCreateStandardCursor(InternalCursor& cursor, const CursorType& type);
+		[[nodiscard]] static bool PlatformCreateStandardCursorX11(InternalCursor& cursor, const CursorType& type);
+		[[nodiscard]] static bool PlatformCreateStandardCursorWayland(InternalCursor& cursor, const CursorType& type);
 		/// <summary>
 		/// This function destroys a cursor previously created with CreateCursor. Any remaining cursors
 		/// will be destroyed by WindowingAPI::Shutdown.
@@ -3605,9 +3606,9 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="cursor">Internal cursor to be destroyed.</param>
-		static void PlatformDestroyCursor(InternalCursor* cursor);
-		static void PlatformDestroyCursorX11(InternalCursor* cursor);
-		static void PlatformDestroyCursorWayland(InternalCursor* cursor);
+		static void PlatformDestroyCursor(InternalCursor& cursor);
+		static void PlatformDestroyCursorX11(InternalCursor& cursor);
+		static void PlatformDestroyCursorWayland(InternalCursor& cursor);
 		/// <summary>
 		/// This function sets the cursor image to be used when the cursor is over the content are of the
 		/// specified window. The set cursor will only be visible when the CursorMode of the window is
@@ -3622,9 +3623,9 @@ namespace TRAP::INTERNAL
 		/// <param name="cursor">
 		/// Internal cursor to set, or nullptr to switch back to the default arrow cursor.
 		/// </param>
-		static void PlatformSetCursor(InternalWindow* window, InternalCursor* cursor);
-		static void PlatformSetCursorX11(InternalWindow* window, InternalCursor* cursor);
-		static void PlatformSetCursorWayland(InternalWindow* window, InternalCursor* cursor);
+		static void PlatformSetCursor(InternalWindow& window, InternalCursor* cursor);
+		static void PlatformSetCursorX11(InternalWindow& window, InternalCursor* cursor);
+		static void PlatformSetCursorWayland(InternalWindow& window, InternalCursor* cursor);
 		/// <summary>
 		/// This function sets a cursor mode for the specified window.
 		///
@@ -3633,15 +3634,16 @@ namespace TRAP::INTERNAL
 		/// - Hidden makes the cursor invisible when it is over the content area of the
 		///   window but does not restrict the cursor from leaving.
 		/// - Disabled hides and grabs the cursor, providing virtual and unlimited cursor movement.
+		/// - Captured makes the cursor visible and confines it to the content area of the window.
 		///
 		/// Errors: Possible errors include Error::Invalid_Enum and Error::Platform_Error.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to set the cursor mode for.</param>
 		/// <param name="mode">Cursor mode to be set.</param>
-		static void PlatformSetCursorMode(InternalWindow* window, CursorMode mode);
-		static void PlatformSetCursorModeX11(InternalWindow* window, CursorMode mode);
-		static void PlatformSetCursorModeWayland(InternalWindow* window, CursorMode mode);
+		static void PlatformSetCursorMode(InternalWindow& window, CursorMode mode);
+		static void PlatformSetCursorModeX11(InternalWindow& window, CursorMode mode);
+		static void PlatformSetCursorModeWayland(InternalWindow& window, CursorMode mode);
 		/// <summary>
 		/// This function sets the position, in screen coordinates, of the cursor relative to the
 		/// upper-left corner of the content area of the specified window. The window must have
@@ -3661,9 +3663,9 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set the cursor position for.</param>
 		/// <param name="xPos">New x position, relative to the left edge of the content area, for the cursor.</param>
 		/// <param name="yPos">New y position, relative to the top edge of the content area, for the cursor.</param>
-		static void PlatformSetCursorPos(InternalWindow* window, double xPos, double yPos);
-		static void PlatformSetCursorPosX11(InternalWindow* window, double xPos, double yPos);
-		static void PlatformSetCursorPosWayland(InternalWindow* window, double xPos, double yPos);
+		static void PlatformSetCursorPos(InternalWindow& window, double xPos, double yPos);
+		static void PlatformSetCursorPosX11(InternalWindow& window, double xPos, double yPos);
+		static void PlatformSetCursorPosWayland(InternalWindow& window, double xPos, double yPos);
 		/// <summary>
 		/// This function returns the position of the cursor, in screen coordinates, relative
 		/// to the upper-left corner of the content area of the specified window.
@@ -3686,9 +3688,9 @@ namespace TRAP::INTERNAL
 		/// <param name="yPos">
 		/// Output variable for the current y position, relative to the top edge of the content area, of the cursor.
 		/// </param>
-		static void PlatformGetCursorPos(const InternalWindow* window, double& xPos, double& yPos);
-		static void PlatformGetCursorPosX11(const InternalWindow* window, double& xPos, double& yPos);
-		static void PlatformGetCursorPosWayland(const InternalWindow* window, double& xPos, double& yPos);
+		static void PlatformGetCursorPos(const InternalWindow& window, double& xPos, double& yPos);
+		static void PlatformGetCursorPosX11(const InternalWindow& window, double& xPos, double& yPos);
+		static void PlatformGetCursorPosWayland(const InternalWindow& window, double& xPos, double& yPos);
 		/// <summary>
 		/// This function sets the icon of the specified window. If no image is specified, the window
 		/// reverts to its default icon.
@@ -3705,9 +3707,9 @@ namespace TRAP::INTERNAL
 		/// <param name="image">
 		/// Image to be set as window icon or nullptr to revert back to the default icon.
 		/// </param>
-		static void PlatformSetWindowIcon(InternalWindow* window, const Image* const image);
-		static void PlatformSetWindowIconX11(InternalWindow* window, const Image* const image);
-		static void PlatformSetWindowIconWayland(InternalWindow* window, const Image* const image);
+		static void PlatformSetWindowIcon(InternalWindow& window, const Image* const image);
+		static void PlatformSetWindowIconX11(InternalWindow& window, const Image* const image);
+		static void PlatformSetWindowIconWayland(InternalWindow& window, const Image* const image);
 		/// <summary>
 		/// This function retrieves the position, in screen coordinates, of the upper-left corner of the
 		/// content area of the specified window.
@@ -3720,9 +3722,9 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get the current position from.</param>
 		/// <param name="xPos">Output variable for the current x position of the internal window.</param>
 		/// <param name="yPos">Output variable for the current y position of the internal window.</param>
-		static void PlatformGetWindowPos(const InternalWindow* window, int32_t& xPos, int32_t& yPos);
-		static void PlatformGetWindowPosX11(const InternalWindow* window, int32_t& xPos, int32_t& yPos);
-		static void PlatformGetWindowPosWayland(const InternalWindow* window, int32_t& xPos, int32_t& yPos);
+		static void PlatformGetWindowPos(const InternalWindow& window, int32_t& xPos, int32_t& yPos);
+		static void PlatformGetWindowPosX11(const InternalWindow& window, int32_t& xPos, int32_t& yPos);
+		static void PlatformGetWindowPosWayland(const InternalWindow& window, int32_t& xPos, int32_t& yPos);
 		/// <summary>
 		/// This function sets the size, in screen coordinates, of the content area of the specified window.
 		///
@@ -3741,9 +3743,9 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set the size for.</param>
 		/// <param name="width">New width for the internal window.</param>
 		/// <param name="height">New height for the internal window.</param>
-		static void PlatformSetWindowSize(InternalWindow* window, int32_t width, int32_t height);
-		static void PlatformSetWindowSizeX11(InternalWindow* window, int32_t width, int32_t height);
-		static void PlatformSetWindowSizeWayland(InternalWindow* window, int32_t width, int32_t height);
+		static void PlatformSetWindowSize(InternalWindow& window, int32_t width, int32_t height);
+		static void PlatformSetWindowSizeX11(InternalWindow& window, int32_t width, int32_t height);
+		static void PlatformSetWindowSizeWayland(InternalWindow& window, int32_t width, int32_t height);
 		/// <summary>
 		/// This function toggles the resizeability of the specified window.
 		///
@@ -3752,9 +3754,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to set the size for.</param>
 		/// <param name="enabled">Enable or disable resizing for the internal window.</param>
-		static void PlatformSetWindowResizable(InternalWindow* window, bool enabled);
-		static void PlatformSetWindowResizableX11(InternalWindow* window, bool enabled);
-		static void PlatformSetWindowResizableWayland(InternalWindow* window, bool enabled);
+		static void PlatformSetWindowResizable(InternalWindow& window, bool enabled);
+		static void PlatformSetWindowResizableX11(InternalWindow& window, bool enabled);
+		static void PlatformSetWindowResizableWayland(InternalWindow& window, bool enabled);
 		/// <summary>
 		/// This function toggles the decorations of the specified window.
 		///
@@ -3763,9 +3765,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to set the size for.</param>
 		/// <param name="enabled">Enable or disable decorations for the internal window.</param>
-		static void PlatformSetWindowDecorated(InternalWindow* window, bool enabled);
-		static void PlatformSetWindowDecoratedX11(InternalWindow* window, bool enabled);
-		static void PlatformSetWindowDecoratedWayland(InternalWindow* window, bool enabled);
+		static void PlatformSetWindowDecorated(InternalWindow& window, bool enabled);
+		static void PlatformSetWindowDecoratedX11(InternalWindow& window, bool enabled);
+		static void PlatformSetWindowDecoratedWayland(InternalWindow& window, bool enabled);
 		/// <summary>
 		/// This function toggles whether the specified window is floating.
 		///
@@ -3774,9 +3776,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to set the size for.</param>
 		/// <param name="enabled">Enable or disable floating mode for the internal window.</param>
-		static void PlatformSetWindowFloating(const InternalWindow* window, bool enabled);
-		static void PlatformSetWindowFloatingX11(const InternalWindow* window, bool enabled);
-		static void PlatformSetWindowFloatingWayland(const InternalWindow* window, bool enabled);
+		static void PlatformSetWindowFloating(const InternalWindow& window, bool enabled);
+		static void PlatformSetWindowFloatingX11(const InternalWindow& window, bool enabled);
+		static void PlatformSetWindowFloatingWayland(const InternalWindow& window, bool enabled);
 		/// <summary>
 		/// This function sets the opacity of the window, including any decorations.
 		///
@@ -3790,9 +3792,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to set opacity for.</param>
 		/// <param name="opacity">Opacity ranging from 0.0f-1.0f.</param>
-		static void PlatformSetWindowOpacity(const InternalWindow* window, float opacity);
-		static void PlatformSetWindowOpacityX11(const InternalWindow* window, float opacity);
-		static void PlatformSetWindowOpacityWayland(const InternalWindow* window, float opacity);
+		static void PlatformSetWindowOpacity(const InternalWindow& window, float opacity);
+		static void PlatformSetWindowOpacityX11(const InternalWindow& window, float opacity);
+		static void PlatformSetWindowOpacityWayland(const InternalWindow& window, float opacity);
 		/// <summary>
 		/// This function toggles mouse passthrough for the specified window.
 		///
@@ -3801,16 +3803,16 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to set the size for.</param>
 		/// <param name="enabled">Enable or disable mouse passthrough for the internal window.</param>
-		static void PlatformSetWindowMousePassthrough(InternalWindow* window, bool enabled);
-		static void PlatformSetWindowMousePassthroughX11(InternalWindow* window, bool enabled);
-		static void PlatformSetWindowMousePassthroughWayland(InternalWindow* window, bool enabled);
+		static void PlatformSetWindowMousePassthrough(InternalWindow& window, bool enabled);
+		static void PlatformSetWindowMousePassthroughX11(InternalWindow& window, bool enabled);
+		static void PlatformSetWindowMousePassthroughWayland(InternalWindow& window, bool enabled);
 		/// <summary>
 		/// Hides the specified window from the taskbar.
 		/// </summary>
 		/// <param name="window">Internal window to hide from the taskbar.</param>
-		static void PlatformHideWindowFromTaskbar(InternalWindow* window);
-		static void PlatformHideWindowFromTaskbarX11(InternalWindow* window);
-		static void PlatformHideWindowFromTaskbarWayland(InternalWindow* window);
+		static void PlatformHideWindowFromTaskbar(InternalWindow& window);
+		static void PlatformHideWindowFromTaskbarX11(InternalWindow& window);
+		static void PlatformHideWindowFromTaskbarWayland(InternalWindow& window);
 		/// <summary>
 		/// This function returns the opacity of the window, including any decorations.
 		///
@@ -3825,9 +3827,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to get the opacity from.</param>
 		/// <returns>Opacity of the given internal window on success, empty optional otherwise.</returns>
-		[[nodiscard]] static std::optional<float> PlatformGetWindowOpacity(const InternalWindow* window);
-		[[nodiscard]] static std::optional<float> PlatformGetWindowOpacityX11(const InternalWindow* window);
-		[[nodiscard]] static std::optional<float> PlatformGetWindowOpacityWayland(const InternalWindow* window);
+		[[nodiscard]] static std::optional<float> PlatformGetWindowOpacity(const InternalWindow& window);
+		[[nodiscard]] static std::optional<float> PlatformGetWindowOpacityX11(const InternalWindow& window);
+		[[nodiscard]] static std::optional<float> PlatformGetWindowOpacityWayland(const InternalWindow& window);
 		/// <summary>
 		/// This function retrieves the size, in pixels, of the framebuffer of the specified window.
 		/// If you wish to retrieve the size of the window in screen coordinates, see
@@ -3841,9 +3843,9 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get the framebuffer size from.</param>
 		/// <param name="width">Output variable for the internal windows current framebuffer width.</param>
 		/// <param name="height">Output variable for the internal windows current framebuffer height.</param>
-		static void PlatformGetFrameBufferSize(const InternalWindow* window, int32_t& width, int32_t& height);
-		static void PlatformGetFrameBufferSizeX11(const InternalWindow* window, int32_t& width, int32_t& height);
-		static void PlatformGetFrameBufferSizeWayland(const InternalWindow* window, int32_t& width, int32_t& height);
+		static void PlatformGetFrameBufferSize(const InternalWindow& window, int32_t& width, int32_t& height);
+		static void PlatformGetFrameBufferSizeX11(const InternalWindow& window, int32_t& width, int32_t& height);
+		static void PlatformGetFrameBufferSizeWayland(const InternalWindow& window, int32_t& width, int32_t& height);
 		/// <summary>
 		/// This function retrieves the content scale for the specified window.
 		/// The content scale is the reatio between the current DPI and the platform's
@@ -3863,9 +3865,9 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get the content scale from.</param>
 		/// <param name="xScale">Output variable for the internal windows content scale x.</param>
 		/// <param name="yScale">Output variable for the internal windows content scale y.</param>
-		static void PlatformGetWindowContentScale(const InternalWindow* window, float& xScale, float& yScale);
-		static void PlatformGetWindowContentScaleX11(const InternalWindow* window, float& xScale, float& yScale);
-		static void PlatformGetWindowContentScaleWayland(const InternalWindow* window, float& xScale, float& yScale);
+		static void PlatformGetWindowContentScale(const InternalWindow& window, float& xScale, float& yScale);
+		static void PlatformGetWindowContentScaleX11(const InternalWindow& window, float& xScale, float& yScale);
+		static void PlatformGetWindowContentScaleWayland(const InternalWindow& window, float& xScale, float& yScale);
 		/// <summary>
 		/// This function returns the position, in screen coordinates, of the upper-left corner
 		/// of the work area of the specified monitor along with the work area size in screen
@@ -3883,11 +3885,11 @@ namespace TRAP::INTERNAL
 		/// <param name="yPos">Output variable for the y position of the monitor.</param>
 		/// <param name="width">Output variable for the width of the monitor.</param>
 		/// <param name="height">Output variable for the height of the monitor.</param>
-		static void PlatformGetMonitorWorkArea(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos,
+		static void PlatformGetMonitorWorkArea(const InternalMonitor& monitor, int32_t& xPos, int32_t& yPos,
 		                                       int32_t& width, int32_t& height);
-		static void PlatformGetMonitorWorkAreaX11(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos,
+		static void PlatformGetMonitorWorkAreaX11(const InternalMonitor& monitor, int32_t& xPos, int32_t& yPos,
 		                                       int32_t& width, int32_t& height);
-		static void PlatformGetMonitorWorkAreaWayland(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos,
+		static void PlatformGetMonitorWorkAreaWayland(const InternalMonitor& monitor, int32_t& xPos, int32_t& yPos,
 		                                       int32_t& width, int32_t& height);
 		/// <summary>
 		/// This function returns whether the window is visible or not.
@@ -3897,9 +3899,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to get visibility state from.</param>
 		/// <returns>True if the window is visible, false otherwise.</returns>
-		[[nodiscard]] static bool PlatformWindowVisible(const InternalWindow* window);
-		[[nodiscard]] static bool PlatformWindowVisibleX11(const InternalWindow* window);
-		[[nodiscard]] static bool PlatformWindowVisibleWayland(const InternalWindow* window);
+		[[nodiscard]] static bool PlatformWindowVisible(const InternalWindow& window);
+		[[nodiscard]] static bool PlatformWindowVisibleX11(const InternalWindow& window);
+		[[nodiscard]] static bool PlatformWindowVisibleWayland(const InternalWindow& window);
 		/// <summary>
 		/// This function returns whether the window is maximized or not.
 		///
@@ -3908,9 +3910,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to get maximization state from.</param>
 		/// <returns>True if the window is maximized, false otherwise.</returns>
-		[[nodiscard]] static bool PlatformWindowMaximized(const InternalWindow* window);
-		[[nodiscard]] static bool PlatformWindowMaximizedX11(const InternalWindow* window);
-		[[nodiscard]] static bool PlatformWindowMaximizedWayland(const InternalWindow* window);
+		[[nodiscard]] static bool PlatformWindowMaximized(const InternalWindow& window);
+		[[nodiscard]] static bool PlatformWindowMaximizedX11(const InternalWindow& window);
+		[[nodiscard]] static bool PlatformWindowMaximizedWayland(const InternalWindow& window);
 		/// <summary>
 		/// This function returns whether the window is minimized or not.
 		///
@@ -3919,9 +3921,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to get minimization state from.</param>
 		/// <returns>True if the window is minimized, false otherwise.</returns>
-		[[nodiscard]] static bool PlatformWindowMinimized(const InternalWindow* window);
-		[[nodiscard]] static bool PlatformWindowMinimizedX11(const InternalWindow* window);
-		[[nodiscard]] static bool PlatformWindowMinimizedWayland(const InternalWindow* window);
+		[[nodiscard]] static bool PlatformWindowMinimized(const InternalWindow& window);
+		[[nodiscard]] static bool PlatformWindowMinimizedX11(const InternalWindow& window);
+		[[nodiscard]] static bool PlatformWindowMinimizedWayland(const InternalWindow& window);
 		/// <summary>
 		/// This function processes only those events that are already in the event queue and then
 		/// returns immediately. Processing events will cause the window and input callbacks
@@ -3992,9 +3994,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to get focused state from.</param>
 		/// <returns>True if the window is focused, false otherwise.</returns>
-		[[nodiscard]] static bool PlatformWindowFocused(const InternalWindow* window);
-		[[nodiscard]] static bool PlatformWindowFocusedX11(const InternalWindow* window);
-		[[nodiscard]] static bool PlatformWindowFocusedWayland(const InternalWindow* window);
+		[[nodiscard]] static bool PlatformWindowFocused(const InternalWindow& window);
+		[[nodiscard]] static bool PlatformWindowFocusedX11(const InternalWindow& window);
+		[[nodiscard]] static bool PlatformWindowFocusedWayland(const InternalWindow& window);
 		/// <summary>
 		/// This function returns whether the window is hovered or not.
 		///
@@ -4003,9 +4005,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to get hovered state from.</param>
 		/// <returns>True if the window is hovered, false otherwise.</returns>
-		[[nodiscard]] static bool PlatformWindowHovered(const InternalWindow* window);
-		[[nodiscard]] static bool PlatformWindowHoveredX11(const InternalWindow* window);
-		[[nodiscard]] static bool PlatformWindowHoveredWayland(const InternalWindow* window);
+		[[nodiscard]] static bool PlatformWindowHovered(const InternalWindow& window);
+		[[nodiscard]] static bool PlatformWindowHoveredX11(const InternalWindow& window);
+		[[nodiscard]] static bool PlatformWindowHoveredWayland(const InternalWindow& window);
 		/// <summary>
 		/// This function returns whether raw mouse motion is supported on the current system.
 		/// This status does not change after the WindowingAPI has been initialized so you
@@ -4036,9 +4038,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to set raw mouse input for.</param>
 		/// <param name="enabled">Whether to enable or disable raw mouse input.</param>
-		static void PlatformSetRawMouseMotion(const InternalWindow* window, bool enabled);
-		static void PlatformSetRawMouseMotionX11(const InternalWindow* window, bool enabled);
-		static void PlatformSetRawMouseMotionWayland(const InternalWindow* window, bool enabled);
+		static void PlatformSetRawMouseMotion(const InternalWindow& window, bool enabled);
+		static void PlatformSetRawMouseMotionX11(const InternalWindow& window, bool enabled);
+		static void PlatformSetRawMouseMotionWayland(const InternalWindow& window, bool enabled);
 		/// <summary>
 		/// Sets the progress value and state on the taskbar for the specified window.
 		///
@@ -4159,11 +4161,11 @@ namespace TRAP::INTERNAL
 		/// <param name="allocator">Optional allocator.</param>
 		/// <param name="surface">Output variable for the new Vulkan surface.</param>
 		/// <returns>VK_SUCCESS if successful, or a Vulkan error code if an error occurred.</returns>
-		static VkResult PlatformCreateWindowSurface(VkInstance instance, const InternalWindow* window,
+		static VkResult PlatformCreateWindowSurface(VkInstance instance, const InternalWindow& window,
 			                                        const VkAllocationCallbacks* allocator, VkSurfaceKHR& surface);
-		static VkResult PlatformCreateWindowSurfaceX11(VkInstance instance, const InternalWindow* window,
+		static VkResult PlatformCreateWindowSurfaceX11(VkInstance instance, const InternalWindow& window,
 			                                        const VkAllocationCallbacks* allocator, VkSurfaceKHR& surface);
-		static VkResult PlatformCreateWindowSurfaceWayland(VkInstance instance, const InternalWindow* window,
+		static VkResult PlatformCreateWindowSurfaceWayland(VkInstance instance, const InternalWindow& window,
 			                                        const VkAllocationCallbacks* allocator, VkSurfaceKHR& surface);
 		/// <summary>
 		/// This function maximizes the specified window if it was previously not
@@ -4175,9 +4177,9 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function may only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to maximize.</param>
-		static void PlatformMaximizeWindow(InternalWindow* window);
-		static void PlatformMaximizeWindowX11(const InternalWindow* window);
-		static void PlatformMaximizeWindowWayland(InternalWindow* window);
+		static void PlatformMaximizeWindow(InternalWindow& window);
+		static void PlatformMaximizeWindowX11(const InternalWindow& window);
+		static void PlatformMaximizeWindowWayland(InternalWindow& window);
 		/// <summary>
 		/// This function minimizes (iconifies) the specified window if it was previously
 		/// restored. If the window is already minimized (iconified), this function does
@@ -4190,9 +4192,9 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to minimize/iconify.</param>
-		static void PlatformMinimizeWindow(const InternalWindow* window);
-		static void PlatformMinimizeWindowX11(const InternalWindow* window);
-		static void PlatformMinimizeWindowWayland(const InternalWindow* window);
+		static void PlatformMinimizeWindow(const InternalWindow& window);
+		static void PlatformMinimizeWindowX11(const InternalWindow& window);
+		static void PlatformMinimizeWindowWayland(const InternalWindow& window);
 		/// <summary>
 		/// This function requests user attention to the specified window.
 		/// On platforms where this is not supported, attention is requested
@@ -4205,9 +4207,9 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to request user attention for.</param>
-		static void PlatformRequestWindowAttention(InternalWindow* window);
-		static void PlatformRequestWindowAttentionX11(InternalWindow* window);
-		static void PlatformRequestWindowAttentionWayland(InternalWindow* window);
+		static void PlatformRequestWindowAttention(InternalWindow& window);
+		static void PlatformRequestWindowAttentionX11(InternalWindow& window);
+		static void PlatformRequestWindowAttentionWayland(InternalWindow& window);
 		/// <summary>
 		/// This function hides the specified window if it was previously visible. If
 		/// the window is already hidden or is in full screen mode, this function
@@ -4217,9 +4219,9 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to hide.</param>
-		static void PlatformHideWindow(InternalWindow* window);
-		static void PlatformHideWindowX11(InternalWindow* window);
-		static void PlatformHideWindowWayland(InternalWindow* window);
+		static void PlatformHideWindow(InternalWindow& window);
+		static void PlatformHideWindowX11(InternalWindow& window);
+		static void PlatformHideWindowWayland(InternalWindow& window);
 		/// <summary>
 		/// Restores the specified window.
 		/// This function restores the specified window if it was previously
@@ -4233,9 +4235,9 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to be restored.</param>
-		static void PlatformRestoreWindow(InternalWindow* window);
-		static void PlatformRestoreWindowX11(InternalWindow* window);
-		static void PlatformRestoreWindowWayland(InternalWindow* window);
+		static void PlatformRestoreWindow(InternalWindow& window);
+		static void PlatformRestoreWindowX11(InternalWindow& window);
+		static void PlatformRestoreWindowWayland(InternalWindow& window);
 		/// <summary>
 		/// Sets the size limits of the specified window.
 		///
@@ -4261,11 +4263,11 @@ namespace TRAP::INTERNAL
 		/// <param name="minHeight">New minimum window height.</param>
 		/// <param name="maxWidth">New maximum window width.</param>
 		/// <param name="maxHeight">New maximum window height.</param>
-		static void PlatformSetWindowSizeLimits(InternalWindow* window, int32_t minWidth, int32_t minHeight,
+		static void PlatformSetWindowSizeLimits(InternalWindow& window, int32_t minWidth, int32_t minHeight,
 		                                        int32_t maxWidth, int32_t maxHeight);
-		static void PlatformSetWindowSizeLimitsX11(InternalWindow* window, int32_t minWidth, int32_t minHeight,
+		static void PlatformSetWindowSizeLimitsX11(InternalWindow& window, int32_t minWidth, int32_t minHeight,
 		                                        int32_t maxWidth, int32_t maxHeight);
-		static void PlatformSetWindowSizeLimitsWayland(InternalWindow* window, int32_t minWidth, int32_t minHeight,
+		static void PlatformSetWindowSizeLimitsWayland(InternalWindow& window, int32_t minWidth, int32_t minHeight,
 		                                        int32_t maxWidth, int32_t maxHeight);
 		/// <summary>
 		/// Sets the aspect ratio of the specified window.
@@ -4293,17 +4295,17 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set aspect ratio for.</param>
 		/// <param name="numerator">Numerator of the desired aspect ratio, or -1.</param>
 		/// <param name="denominator">Denominator of the desired aspect ratio, or -1.</param>
-		static void PlatformSetWindowAspectRatio(InternalWindow* window, int32_t numerator, int32_t denominator);
-		static void PlatformSetWindowAspectRatioX11(InternalWindow* window, int32_t numerator, int32_t denominator);
-		static void PlatformSetWindowAspectRatioWayland(InternalWindow* window, int32_t numerator, int32_t denominator);
+		static void PlatformSetWindowAspectRatio(InternalWindow& window, int32_t numerator, int32_t denominator);
+		static void PlatformSetWindowAspectRatioX11(InternalWindow& window, int32_t numerator, int32_t denominator);
+		static void PlatformSetWindowAspectRatioWayland(InternalWindow& window, int32_t numerator, int32_t denominator);
 		/// <summary>
 		/// Enable/Disable drag and drop feature for the specified window.
 		/// </summary>
 		/// <param name="window">Internal window for which to set drag and drop.</param>
 		/// <param name="value">Whether to enable or disable drag and drop.</param>
-		static void PlatformSetDragAndDrop(InternalWindow* window, bool value);
-		static void PlatformSetDragAndDropX11(InternalWindow* window, bool value);
-		static void PlatformSetDragAndDropWayland(InternalWindow* window, bool value);
+		static void PlatformSetDragAndDrop(InternalWindow& window, bool value);
+		static void PlatformSetDragAndDropX11(InternalWindow& window, bool value);
+		static void PlatformSetDragAndDropWayland(InternalWindow& window, bool value);
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Single Platform Functions------------------------------------------------------------------------------------------//
 		//-------------------------------------------------------------------------------------------------------------------//
@@ -4315,7 +4317,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="monitor">Internal monitor to refresh video modes for.</param>
 		/// <returns>True if video modes were successfully updated, false otherwise.</returns>
-		[[nodiscard]] static bool RefreshVideoModes(InternalMonitor* monitor);
+		[[nodiscard]] static bool RefreshVideoModes(InternalMonitor& monitor);
 		/// <summary>
 		/// Initialize Vulkan API for further use.
 		/// </summary>
@@ -4329,7 +4331,7 @@ namespace TRAP::INTERNAL
 		/// <param name="red">Output variable for the red channel.</param>
 		/// <param name="green">Output variable for the green channel.</param>
 		/// <param name="blue">Output variable for the blue channel.</param>
-		static void SplitBPP(int32_t bpp, int32_t& red, int32_t& green, int32_t& blue);
+		static constexpr void SplitBPP(int32_t bpp, int32_t& red, int32_t& green, int32_t& blue);
 		/// <summary>
 		/// Make the specified window and its video mode active on its monitor.
 		/// </summary>
@@ -4351,7 +4353,7 @@ namespace TRAP::INTERNAL
 		/// <param name="fm">Internal video mode to sort.</param>
 		/// <param name="sm">Internal video mode to sort.</param>
 		/// <returns>Index for the sorted internal video mode.</returns>
-		[[nodiscard]] static bool CompareVideoModes(const InternalVideoMode& fm, const InternalVideoMode& sm);
+		[[nodiscard]] static constexpr bool CompareVideoModes(const InternalVideoMode& fm, const InternalVideoMode& sm);
 		/// <summary>
 		/// Updates the cursor image according to its cursor mode.
 		/// </summary>
@@ -4390,7 +4392,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="xPos">X position of the cursor.</param>
 		/// <param name="yPos">Y position of the cursor.</param>
-		static void InputCursorPos(InternalWindow* window, double xPos, double yPos);
+		static void InputCursorPos(InternalWindow& window, double xPos, double yPos);
 		/// <summary>
 		/// Notifies shared code of a physical key event.
 		/// </summary>
@@ -4398,34 +4400,34 @@ namespace TRAP::INTERNAL
 		/// <param name="key">Key that is pressed or released.</param>
 		/// <param name="scancode">Scan code of the key which is pressed or released.</param>
 		/// <param name="state">State of the key (pressed, repeated or released).</param>
-		static void InputKey(InternalWindow* window, Input::Key key, int32_t scancode, Input::KeyState state);
+		static void InputKey(InternalWindow& window, Input::Key key, int32_t scancode, Input::KeyState state);
 		/// <summary>
 		/// Notifies shared code of a Unicode codepoint input event.
 		/// The 'plain' parameter determines whether to emit a regular character event.
 		/// </summary>
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="codePoint">Code point of the typed char.</param>
-		static void InputChar(const InternalWindow* window, uint32_t codePoint);
+		static void InputChar(const InternalWindow& window, uint32_t codePoint);
 		/// <summary>
 		/// Notifies shared code of a mouse button click event.
 		/// </summary>
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="button">Mouse button that is pressed or released.</param>
 		/// <param name="state">Mouse button state (pressed or released).</param>
-		static void InputMouseClick(InternalWindow* window, Input::MouseButton button, TRAP::Input::KeyState state);
+		static void InputMouseClick(InternalWindow& window, Input::MouseButton button, TRAP::Input::KeyState state);
 		/// <summary>
 		/// Notifies shared code of a scroll event.
 		/// </summary>
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="xOffset">X offset of the scroll wheel.</param>
 		/// <param name="yOffset">Y offset of the scroll wheel.</param>
-		static void InputScroll(const InternalWindow* window, double xOffset, double yOffset);
+		static void InputScroll(const InternalWindow& window, double xOffset, double yOffset);
 		/// <summary>
 		/// Notified shared code of a cursor enter/leave event.
 		/// </summary>
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="entered">Whether the cursor entered or leaved the window.</param>
-		static void InputCursorEnter(const InternalWindow* window, bool entered);
+		static void InputCursorEnter(const InternalWindow& window, bool entered);
 		/// <summary>
 		/// Notifies shared code that a window framebuffer has been resized.
 		/// The size is specified in pixels.
@@ -4433,7 +4435,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="width">New framebuffer width.</param>
 		/// <param name="height">New framebuffer height.</param>
-		static void InputFrameBufferSize(const InternalWindow* window, int32_t width, int32_t height);
+		static void InputFrameBufferSize(const InternalWindow& window, int32_t width, int32_t height);
 		/// <summary>
 		/// Notifies shared code that a window has been resized.
 		/// The size is specified in screen coordinates.
@@ -4441,19 +4443,19 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="width">New window width.</param>
 		/// <param name="height">New window height.</param>
-		static void InputWindowSize(const InternalWindow* window, int32_t width, int32_t height);
+		static void InputWindowSize(const InternalWindow& window, int32_t width, int32_t height);
 		/// <summary>
 		/// Notifies shared code that a window has been minimized.
 		/// </summary>
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="restored">Whether window was minimized or restored.</param>
-		static void InputWindowMinimize(const InternalWindow* window, bool restored);
+		static void InputWindowMinimize(const InternalWindow& window, bool restored);
 		/// <summary>
 		/// Notifies shared code that a window has been maximized.
 		/// </summary>
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="restored">Whether window was maximized or restored.</param>
-		static void InputWindowMaximize(const InternalWindow* window, bool restored);
+		static void InputWindowMaximize(const InternalWindow& window, bool restored);
 		/// <summary>
 		/// Notifies shared code that a window has moved.
 		/// The position is specified in content area relative screen coordinates.
@@ -4461,24 +4463,24 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="x">X position of the window.</param>
 		/// <param name="y">Y position of the window.</param>
-		static void InputWindowPos(const InternalWindow* window, int32_t x, int32_t y);
+		static void InputWindowPos(const InternalWindow& window, int32_t x, int32_t y);
 		/// <summary>
 		/// Notifies shared code that the user wishes to close a window.
 		/// </summary>
 		/// <param name="window">Internal window which is meant.</param>
-		static void InputWindowCloseRequest(InternalWindow* window);
+		static void InputWindowCloseRequest(InternalWindow& window);
 		/// <summary>
 		/// Notifies shared code of files or directories dropped on a window.
 		/// </summary>
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="paths">All dropped paths.</param>
-		static void InputDrop(const InternalWindow* window, const std::vector<std::string>& paths);
+		static void InputDrop(const InternalWindow& window, const std::vector<std::string>& paths);
 		/// <summary>
 		/// Notifies shared code that a window has lost or received input focus.
 		/// </summary>
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="focused">Whether window is focused or not.</param>
-		static void InputWindowFocus(InternalWindow* window, bool focused);
+		static void InputWindowFocus(InternalWindow& window, bool focused);
 		/// <summary>
 		/// Notifies shared code of a keyboard layout change.
 		/// </summary>
@@ -4488,8 +4490,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="monitor">Internal monitor to query.</param>
 		/// <param name="desired">Desired internal video mode.</param>
-		/// <returns>Pointer to closest matching internal video mode from the desired one.</returns>
-		[[nodiscard]] static InternalVideoMode* ChooseVideoMode(InternalMonitor* monitor, const InternalVideoMode& desired);
+		/// <returns>Pointer to closest matching internal video mode from the desired one or empty optional on error.</returns>
+		[[nodiscard]] static std::optional<InternalVideoMode> ChooseVideoMode(InternalMonitor& monitor, const InternalVideoMode& desired);
 		/// <summary>
 		/// Notifies shared code of a monitor connection or disconnection.
 		/// </summary>
@@ -4519,7 +4521,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="xScale">New x content scale.</param>
 		/// <param name="yScale">New y content scale.</param>
-		static void InputWindowContentScale(const InternalWindow* window, float xScale, float yScale);
+		static void InputWindowContentScale(const InternalWindow& window, float xScale, float yScale);
 
 		//-------//
 		//Windows//
@@ -6034,6 +6036,52 @@ namespace TRAP::INTERNAL
 		};
 #endif
 	};
+}
+
+[[nodiscard]] inline constexpr bool TRAP::INTERNAL::WindowingAPI::CompareVideoModes(const InternalVideoMode& fm, const InternalVideoMode& sm)
+{
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	const int32_t fbpp = fm.RedBits + fm.GreenBits + fm.BlueBits;
+	const int32_t sbpp = sm.RedBits + sm.GreenBits + sm.BlueBits;
+	const int32_t farea = fm.Width * fm.Height;
+	const int32_t sarea = sm.Width * sm.Height;
+
+	//First sort on color bits per pixel
+	if (fbpp != sbpp)
+		return fbpp < sbpp;
+
+	//Then sort on screen area
+	if (farea != sarea)
+		return farea < sarea;
+
+	//Then sort on width
+	if (fm.Width != sm.Width)
+		return fm.Width < sm.Width;
+
+	//Lastly sort on refresh rate
+	return fm.RefreshRate < sm.RefreshRate;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline constexpr void TRAP::INTERNAL::WindowingAPI::SplitBPP(int32_t bpp, int32_t& red, int32_t& green, int32_t& blue)
+{
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	//We assume that by 32 the user really meant 24
+	if (bpp == 32)
+		bpp = 24;
+
+	//Convert "bits per pixel" to red, green & blue sizes
+
+	red = green = blue = bpp / 3;
+	const int32_t delta = bpp - (red * 3);
+	if (delta >= 1)
+		green = green + 1;
+
+	if (delta == 2)
+		red = red + 1;
 }
 
 #endif /*TRAP_WINDOWINGAPI_H*/

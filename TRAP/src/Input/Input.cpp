@@ -83,7 +83,7 @@ void TRAP::Input::Shutdown()
 		return false;
 	}
 
-	const auto state = INTERNAL::WindowingAPI::GetKey(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
+	const auto state = INTERNAL::WindowingAPI::GetKey(*static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
 	                                                  (Application::GetWindow()->GetInternalWindow()), key);
 
 	return static_cast<bool>(state);
@@ -106,7 +106,7 @@ void TRAP::Input::Shutdown()
 		return false;
 	}
 
-	const auto state = INTERNAL::WindowingAPI::GetKey(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
+	const auto state = INTERNAL::WindowingAPI::GetKey(*static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
 	                                                  (window->GetInternalWindow()), key);
 
 	return static_cast<bool>(state);
@@ -118,7 +118,7 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	const auto state = INTERNAL::WindowingAPI::GetMouseButton(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
+	const auto state = INTERNAL::WindowingAPI::GetMouseButton(*static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
 	                                                          (Application::GetWindow()->GetInternalWindow()),
 															  button);
 
@@ -137,7 +137,7 @@ void TRAP::Input::Shutdown()
 		return false;
 	}
 
-	const auto state = INTERNAL::WindowingAPI::GetMouseButton(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
+	const auto state = INTERNAL::WindowingAPI::GetMouseButton(*static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
 	                                                          (window->GetInternalWindow()), button);
 
 	return static_cast<bool>(state);
@@ -183,8 +183,14 @@ void TRAP::Input::Shutdown()
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	double xPos = 0.0, yPos = 0.0;
-	INTERNAL::WindowingAPI::GetCursorPos(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
+	INTERNAL::WindowingAPI::GetCursorPos(*static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
 	                                     (Application::GetWindow()->GetInternalWindow()), xPos, yPos);
+
+#ifdef TRAP_PLATFORM_WINDOWS
+	const TRAP::Math::Vec2i windowPos = Application::GetWindow()->GetPosition();
+	xPos += windowPos.x;
+	yPos += windowPos.y;
+#endif
 
 	return {static_cast<float>(xPos), static_cast<float>(yPos)};
 }
@@ -202,8 +208,14 @@ void TRAP::Input::Shutdown()
 	}
 
 	double xPos = 0.0, yPos = 0.0;
-	INTERNAL::WindowingAPI::GetCursorPos(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
+	INTERNAL::WindowingAPI::GetCursorPos(*static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
 	                                     (window->GetInternalWindow()), xPos, yPos);
+
+#ifdef TRAP_PLATFORM_WINDOWS
+	const TRAP::Math::Vec2i windowPos = window->GetPosition();
+	xPos += windowPos.x;
+	yPos += windowPos.y;
+#endif
 
 	return TRAP::Math::Vec2{ static_cast<float>(xPos), static_cast<float>(yPos) };
 }
@@ -622,7 +634,7 @@ void TRAP::Input::SetMousePosition(const float x, const float y)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>
+	INTERNAL::WindowingAPI::SetCursorPos(*static_cast<INTERNAL::WindowingAPI::InternalWindow*>
 	                                     (Application::GetWindow()->GetInternalWindow()), x, y);
 }
 
@@ -638,7 +650,7 @@ void TRAP::Input::SetMousePosition(const float x, const float y, const Window* c
 		return;
 	}
 
-	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>
+	INTERNAL::WindowingAPI::SetCursorPos(*static_cast<INTERNAL::WindowingAPI::InternalWindow*>
 	                                     (window->GetInternalWindow()), x, y);
 }
 
@@ -648,7 +660,7 @@ void TRAP::Input::SetMousePosition(const Math::Vec2& position)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>
+	INTERNAL::WindowingAPI::SetCursorPos(*static_cast<INTERNAL::WindowingAPI::InternalWindow*>
 	                                     (Application::GetWindow()->GetInternalWindow()), position.x, position.y);
 }
 
@@ -664,7 +676,7 @@ void TRAP::Input::SetMousePosition(const Math::Vec2& position, const Window* con
 		return;
 	}
 
-	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>
+	INTERNAL::WindowingAPI::SetCursorPos(*static_cast<INTERNAL::WindowingAPI::InternalWindow*>
 	                                     (window->GetInternalWindow()), position.x, position.y);
 }
 

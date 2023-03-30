@@ -205,7 +205,7 @@ void TRAP::INTERNAL::WindowingAPI::RelativePointerHandleRelativeMotion(void* con
         yPos += wl_fixed_to_double(dy);
     }
 
-    InputCursorPos(window, xPos, yPos);
+    InputCursorPos(*window, xPos, yPos);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -377,7 +377,7 @@ void TRAP::INTERNAL::WindowingAPI::XDGTopLevelHandleClose(void* const userData,
     if(!window)
         return;
 
-    InputWindowCloseRequest(window);
+    InputWindowCloseRequest(*window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -402,7 +402,7 @@ void TRAP::INTERNAL::WindowingAPI::XDGSurfaceHandleConfigure(void* const userDat
     if(window->Maximized != window->Wayland.Pending.Maximized)
     {
         window->Maximized = window->Wayland.Pending.Maximized;
-        InputWindowMaximize(window, window->Maximized);
+        InputWindowMaximize(*window, window->Maximized);
     }
 
     window->Wayland.Fullscreen = window->Wayland.Pending.Fullscreen;
@@ -416,7 +416,7 @@ void TRAP::INTERNAL::WindowingAPI::XDGSurfaceHandleConfigure(void* const userDat
         window->Height = height;
         ResizeWindowWayland(*window);
 
-        InputWindowSize(window, width, height);
+        InputWindowSize(*window, width, height);
     }
 
     if(!window->Wayland.Visible)
@@ -583,7 +583,7 @@ void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleDrop([[maybe_unused]] void* c
     {
         const std::vector<std::string> paths = ParseUriList(string->data());
         if(!paths.empty())
-            InputDrop(s_Data.Wayland.DragFocus, paths);
+            InputDrop(*s_Data.Wayland.DragFocus, paths);
     }
 }
 
@@ -958,7 +958,7 @@ void TRAP::INTERNAL::WindowingAPI::KeyboardHandleEnter([[maybe_unused]] void* co
 
     s_Data.Wayland.Serial = serial;
     s_Data.Wayland.KeyboardFocus = window;
-    InputWindowFocus(window, true);
+    InputWindowFocus(*window, true);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -979,7 +979,7 @@ void TRAP::INTERNAL::WindowingAPI::KeyboardHandleLeave([[maybe_unused]] void* co
 
     s_Data.Wayland.Serial = serial;
     s_Data.Wayland.KeyboardFocus = nullptr;
-    InputWindowFocus(window, false);
+    InputWindowFocus(*window, false);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1023,7 +1023,7 @@ void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKey([[maybe_unused]] void* cons
 
     timerfd_settime(s_Data.Wayland.KeyRepeatTimerFD, 0, &timer, nullptr);
 
-    InputKey(window, key, scanCode, action);
+    InputKey(*window, key, scanCode, action);
 
     if(action == Input::KeyState::Pressed)
         InputTextWayland(*window, scanCode);
@@ -1105,8 +1105,8 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleEnter([[maybe_unused]] void* con
 
     window->Wayland.Hovered = true;
 
-    PlatformSetCursorWayland(window, window->Cursor);
-    InputCursorEnter(window, true);
+    PlatformSetCursorWayland(*window, window->Cursor);
+    InputCursorEnter(*window, true);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1133,7 +1133,7 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleLeave([[maybe_unused]] void* con
     s_Data.Wayland.PointerFocus = nullptr;
     s_Data.Wayland.CursorPreviousName = "";
 
-    InputCursorEnter(window, false);
+    InputCursorEnter(*window, false);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1163,7 +1163,7 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleMotion([[maybe_unused]] void* co
     {
     case TRAPDecorationSideWayland::MainWindow:
         s_Data.Wayland.CursorPreviousName = "";
-        InputCursorPos(window, x, y);
+        InputCursorPos(*window, x, y);
         break;
 
     case TRAPDecorationSideWayland::TopDecoration:
@@ -1283,8 +1283,8 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleButton([[maybe_unused]] void* co
     //Makes left, right and middle 0, 1 and 2. Overall order follows evdev codes
     const TRAP::Input::MouseButton btn = static_cast<Input::MouseButton>(button - BTN_LEFT);
 
-    InputMouseClick(window, btn, state == WL_POINTER_BUTTON_STATE_PRESSED ? Input::KeyState::Pressed :
-                                                                            Input::KeyState::Released);
+    InputMouseClick(*window, btn, state == WL_POINTER_BUTTON_STATE_PRESSED ? Input::KeyState::Pressed :
+                                                                             Input::KeyState::Released);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1315,7 +1315,7 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleAxis([[maybe_unused]] void* cons
     else if(axis == WL_POINTER_AXIS_VERTICAL_SCROLL)
         y = -wl_fixed_to_double(value) * scrollFactor;
 
-    InputScroll(window, x, y);
+    InputScroll(*window, x, y);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1832,7 +1832,7 @@ void TRAP::INTERNAL::WindowingAPI::InputTextWayland(const InternalWindow& window
         const xkb_keysym_t keysym = ComposeSymbol(keysyms[0]);
         const uint32_t codePoint = KeySymToUnicode(keysym);
         if(codePoint != 0xFFFFFFFFu)
-            InputChar(&window, codePoint);
+            InputChar(window, codePoint);
     }
 }
 
@@ -1881,7 +1881,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateContentScaleWayland(InternalWindow& win
     {
         window.Wayland.ContentScale = maxScale;
         wl_surface_set_buffer_scale(window.Wayland.Surface, maxScale);
-        InputWindowContentScale(&window, static_cast<float>(maxScale), static_cast<float>(maxScale));
+        InputWindowContentScale(window, static_cast<float>(maxScale), static_cast<float>(maxScale));
         ResizeWindowWayland(window);
     }
 }
@@ -1898,7 +1898,7 @@ void TRAP::INTERNAL::WindowingAPI::ResizeWindowWayland(const InternalWindow& win
 
     if(!window.Transparent)
         SetContentAreaOpaqueWayland(window);
-    InputFrameBufferSize(&window, scaledWidth, scaledHeight);
+    InputFrameBufferSize(window, scaledWidth, scaledHeight);
 
     if(!window.Wayland.Decorations.Top.surface)
         return;
@@ -2302,7 +2302,7 @@ void TRAP::INTERNAL::WindowingAPI::LibDecorFrameHandleConfigure(libdecor_frame* 
     if(window->Maximized != maximized)
     {
         window->Maximized = maximized;
-        InputWindowMaximize(window, window->Maximized);
+        InputWindowMaximize(*window, window->Maximized);
     }
 
     window->Wayland.Fullscreen = fullscreen;
@@ -2321,7 +2321,7 @@ void TRAP::INTERNAL::WindowingAPI::LibDecorFrameHandleConfigure(libdecor_frame* 
         window->Height = height;
         ResizeWindowWayland(*window);
 
-        InputWindowSize(window, width, height);
+        InputWindowSize(*window, width, height);
         damaged = true;
     }
 
@@ -2342,7 +2342,7 @@ void TRAP::INTERNAL::WindowingAPI::LibDecorFrameHandleClose([[maybe_unused]] lib
     if(!window)
         return;
 
-    InputWindowCloseRequest(window);
+    InputWindowCloseRequest(*window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2717,7 +2717,10 @@ void TRAP::INTERNAL::WindowingAPI::HandleEventsWayland(double* const timeout)
             s_Data.Wayland.WaylandClient.DisplayCancelRead(s_Data.Wayland.DisplayWL);
 
             for(const TRAP::Scope<InternalWindow>& window : s_Data.WindowList)
-                InputWindowCloseRequest(window.get());
+            {
+                if(window)
+                    InputWindowCloseRequest(*window);
+            }
 
             return;
         }
@@ -2745,7 +2748,7 @@ void TRAP::INTERNAL::WindowingAPI::HandleEventsWayland(double* const timeout)
             {
                 for(uint64_t i = 0; i < repeats; ++i)
                 {
-                    InputKey(s_Data.Wayland.KeyboardFocus,
+                    InputKey(*s_Data.Wayland.KeyboardFocus,
                              TranslateKey(s_Data.Wayland.KeyRepeatScancode),
                              s_Data.Wayland.KeyRepeatScancode, Input::KeyState::Pressed);
 
@@ -2798,31 +2801,27 @@ void TRAP::INTERNAL::WindowingAPI::IncrementCursorImageWayland(const InternalWin
 //-------------------------------------------------------------------------------------------------------------------//
 
 
-TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::PlatformGetVideoModeWayland(const InternalMonitor* const monitor)
+std::optional<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::PlatformGetVideoModeWayland(const InternalMonitor& monitor)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(monitor, "WindowingAPI::PlatformGetVideoModeWayland(): InternalMonitor is nullptr!");
-
-    return monitor->CurrentMode;
+    return monitor.CurrentMode;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSizeWayland(const InternalWindow* const window, int32_t& width,
+void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSizeWayland(const InternalWindow& window, int32_t& width,
                                                                 int32_t& height)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformGetWindowSizeWayland(): InternalWindow is nullptr!");
-
-    width = window->Width;
-    height = window->Height;
+    width = window.Width;
+    height = window.Height;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPosWayland([[maybe_unused]] const InternalWindow* const window,
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPosWayland([[maybe_unused]] const InternalWindow& window,
                                                                [[maybe_unused]] const int32_t xPos,
                                                                [[maybe_unused]] const int32_t yPos)
 {
@@ -2835,7 +2834,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPosWayland([[maybe_unused]] 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorWayland(InternalWindow* const window,
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorWayland(InternalWindow& window,
                                                                    InternalMonitor* const monitor,
 														           [[maybe_unused]] const int32_t xPos,
                                                                    [[maybe_unused]] const int32_t yPos,
@@ -2844,9 +2843,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorWayland(InternalWindo
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformSetWindowMonitorWayland(): InternalWindow is nullptr!");
-
-    if(window->Monitor == monitor)
+    if(window.Monitor == monitor)
     {
         if(!monitor)
             PlatformSetWindowSizeWayland(window, width, height);
@@ -2854,46 +2851,42 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorWayland(InternalWindo
         return;
     }
 
-    if(window->Monitor)
-        ReleaseMonitorWayland(*window);
+    if(window.Monitor)
+        ReleaseMonitorWayland(window);
 
-    window->Monitor = monitor;
+    window.Monitor = monitor;
 
-    if(window->Monitor)
-        AcquireMonitorWayland(*window);
+    if(window.Monitor)
+        AcquireMonitorWayland(window);
     else
         PlatformSetWindowSizeWayland(window, width, height);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessWayland(InternalWindow* const window,
-                                                                             InternalMonitor* const monitor)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessWayland(InternalWindow& window,
+                                                                             InternalMonitor& monitor)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformSetWindowMonitorBorderlessWayland(): InternalWindow is nullptr!");
+    window.BorderlessFullscreen = true;
 
-    window->BorderlessFullscreen = monitor ? true : false;
+    if(window.Monitor)
+        ReleaseMonitorWayland(window);
 
-    if(window->Monitor)
-        ReleaseMonitorWayland(*window);
+    window.Monitor = &monitor;
 
-    window->Monitor = monitor;
-
-    if(window->Monitor)
-        AcquireMonitorWayland(*window);
+    if(window.Monitor)
+        AcquireMonitorWayland(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::PlatformGetVideoModesWayland(const InternalMonitor* const monitor)
+std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::PlatformGetVideoModesWayland(const InternalMonitor& monitor)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(monitor, "WindowingAPI::PlatformGetVideoModesWayland(): InternalMonitor is nullptr!");
-
-    return monitor->Modes;
+    return monitor.Modes;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3282,49 +3275,43 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdownWayland()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorContentScaleWayland(const InternalMonitor* const monitor,
+void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorContentScaleWayland(const InternalMonitor& monitor,
                                                                          float& xScale, float& yScale)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(monitor, "WindowingAPI::PlatformGetMonitorContentScaleWayland(): InternalMonitor is nullptr!");
-
-    xScale = static_cast<float>(monitor->Wayland.ContentScale);
-    yScale = static_cast<float>(monitor->Wayland.ContentScale);
+    xScale = static_cast<float>(monitor.Wayland.ContentScale);
+    yScale = static_cast<float>(monitor.Wayland.ContentScale);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorPosWayland(const InternalMonitor* const monitor, int32_t& xPos,
+void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorPosWayland(const InternalMonitor& monitor, int32_t& xPos,
                                                                 int32_t& yPos)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(monitor, "WindowingAPI::PlatformGetMonitorPosWayland(): InternalMonitor is nullptr!");
-
-    xPos = monitor->Wayland.X;
-    yPos = monitor->Wayland.Y;
+    xPos = monitor.Wayland.X;
+    yPos = monitor.Wayland.Y;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformShowWindowWayland(InternalWindow* const window)
+void TRAP::INTERNAL::WindowingAPI::PlatformShowWindowWayland(InternalWindow& window)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformShowWindowWayland(): InternalWindow is nullptr!");
-
-    if(!window->Wayland.LibDecor.Frame && !window->Wayland.XDG.TopLevel)
+    if(!window.Wayland.LibDecor.Frame && !window.Wayland.XDG.TopLevel)
     {
         //Note: The XDG surface and role are created here so command-line applications
         //      with off-screen windows do not appear in for example the Unity dock
-        CreateShellObjectsWayland(*window);
+        CreateShellObjectsWayland(window);
     }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindowWayland([[maybe_unused]] const InternalWindow* const window)
+void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindowWayland([[maybe_unused]] const InternalWindow& window)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -3333,31 +3320,29 @@ void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindowWayland([[maybe_unused]] c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowWayland(InternalWindow* const window,
+bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowWayland(InternalWindow& window,
 			                                                   WindowConfig& WNDConfig)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformCreateWindowWayland(): InternalWindow is nullptr!");
-
-    if(!CreateNativeSurfaceWayland(*window, WNDConfig))
+    if(!CreateNativeSurfaceWayland(window, WNDConfig))
         return false;
 
     if(WNDConfig.MousePassthrough)
         PlatformSetWindowMousePassthroughWayland(window, true);
 
-    if(window->Monitor || WNDConfig.Visible)
+    if(window.Monitor || WNDConfig.Visible)
     {
-        if(!CreateShellObjectsWayland(*window))
+        if(!CreateShellObjectsWayland(window))
             return false;
     }
 
     if(s_Data.Wayland.ContentTypeManager)
     {
-        window->Wayland.ContentType = wp_content_type_manager_v1_get_surface_content_type(s_Data.Wayland.ContentTypeManager,
-                                                                                          window->Wayland.Surface);
-        if(window->Wayland.ContentType)
-            wp_content_type_v1_set_content_type(window->Wayland.ContentType, WP_CONTENT_TYPE_V1_TYPE_GAME);
+        window.Wayland.ContentType = wp_content_type_manager_v1_get_surface_content_type(s_Data.Wayland.ContentTypeManager,
+                                                                                         window.Wayland.Surface);
+        if(window.Wayland.ContentType)
+            wp_content_type_v1_set_content_type(window.Wayland.ContentType, WP_CONTENT_TYPE_V1_TYPE_GAME);
     }
 
     return true;
@@ -3365,51 +3350,44 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowWayland(InternalWindow* c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitleWayland(InternalWindow* const window, const std::string& title)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitleWayland(InternalWindow& window, const std::string& title)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformSetWindowTitleWayland(): InternalWindow is nullptr!");
+    window.Wayland.Title = title;
 
-    window->Wayland.Title = title;
-
-    if(window->Wayland.LibDecor.Frame)
-        s_Data.Wayland.LibDecor.FrameSetTitle(window->Wayland.LibDecor.Frame, title.c_str());
-    else if(window->Wayland.XDG.TopLevel)
-        xdg_toplevel_set_title(window->Wayland.XDG.TopLevel, title.c_str());
+    if(window.Wayland.LibDecor.Frame)
+        s_Data.Wayland.LibDecor.FrameSetTitle(window.Wayland.LibDecor.Frame, title.c_str());
+    else if(window.Wayland.XDG.TopLevel)
+        xdg_toplevel_set_title(window.Wayland.XDG.TopLevel, title.c_str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::PlatformCreateCursorWayland(InternalCursor* const cursor,
-                                                               const Image* const image, const int32_t xHotspot,
+bool TRAP::INTERNAL::WindowingAPI::PlatformCreateCursorWayland(InternalCursor& cursor,
+                                                               const Image& image, const int32_t xHotspot,
                                                                const int32_t yHotspot)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(cursor, "WindowingAPI::PlatformCreateCursorWayland(): InternalCursor is nullptr!");
-	TRAP_ASSERT(image, "WindowingAPI::PlatformCreateCursorWayland(): Image is nullptr!");
-
-    cursor->Wayland.Buffer = CreateShmBufferWayland(*image);
-    if(!cursor->Wayland.Buffer)
+    cursor.Wayland.Buffer = CreateShmBufferWayland(image);
+    if(!cursor.Wayland.Buffer)
         return false;
 
-    cursor->Wayland.Width = image->GetWidth();
-    cursor->Wayland.Height = image->GetHeight();
-    cursor->Wayland.XHotspot = xHotspot;
-    cursor->Wayland.YHotspot = yHotspot;
+    cursor.Wayland.Width = image.GetWidth();
+    cursor.Wayland.Height = image.GetHeight();
+    cursor.Wayland.XHotspot = xHotspot;
+    cursor.Wayland.YHotspot = yHotspot;
 
     return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursorWayland(InternalCursor* const cursor,
+bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursorWayland(InternalCursor& cursor,
                                                                        const CursorType& type)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
-
-	TRAP_ASSERT(cursor, "WindowingAPI::PlatformCreateStandardCursorWayland(): InternalCursor is nullptr!");
 
     std::string name{};
 
@@ -3447,12 +3425,12 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursorWayland(InternalC
         break;
     }
 
-    cursor->Wayland.CursorWL = s_Data.Wayland.WaylandCursor.ThemeGetCursor(s_Data.Wayland.CursorTheme, name.c_str());
+    cursor.Wayland.CursorWL = s_Data.Wayland.WaylandCursor.ThemeGetCursor(s_Data.Wayland.CursorTheme, name.c_str());
 
     if(s_Data.Wayland.CursorThemeHiDPI)
-        cursor->Wayland.CursorHiDPI = s_Data.Wayland.WaylandCursor.ThemeGetCursor(s_Data.Wayland.CursorThemeHiDPI, name.c_str());
+        cursor.Wayland.CursorHiDPI = s_Data.Wayland.WaylandCursor.ThemeGetCursor(s_Data.Wayland.CursorThemeHiDPI, name.c_str());
 
-    if(!cursor->Wayland.CursorWL)
+    if(!cursor.Wayland.CursorWL)
     {
         //Fall back to the core X11 names
         switch(type)
@@ -3484,8 +3462,8 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursorWayland(InternalC
             return false;
         }
 
-        cursor->Wayland.CursorWL = s_Data.Wayland.WaylandCursor.ThemeGetCursor(s_Data.Wayland.CursorTheme, name.c_str());
-        if(!cursor->Wayland.CursorWL)
+        cursor.Wayland.CursorWL = s_Data.Wayland.WaylandCursor.ThemeGetCursor(s_Data.Wayland.CursorTheme, name.c_str());
+        if(!cursor.Wayland.CursorWL)
         {
             InputError(Error::Cursor_Unavailable, "[Wayland] Failed to create standard cursor \"" + name + "\"");
             return false;
@@ -3493,9 +3471,9 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursorWayland(InternalC
 
         if(s_Data.Wayland.CursorThemeHiDPI)
         {
-            if(!cursor->Wayland.CursorHiDPI)
+            if(!cursor.Wayland.CursorHiDPI)
             {
-                cursor->Wayland.CursorHiDPI = s_Data.Wayland.WaylandCursor.ThemeGetCursor(s_Data.Wayland.CursorThemeHiDPI, name.c_str());
+                cursor.Wayland.CursorHiDPI = s_Data.Wayland.WaylandCursor.ThemeGetCursor(s_Data.Wayland.CursorThemeHiDPI, name.c_str());
             }
         }
     }
@@ -3505,68 +3483,64 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursorWayland(InternalC
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformDestroyCursorWayland(InternalCursor* const cursor)
+void TRAP::INTERNAL::WindowingAPI::PlatformDestroyCursorWayland(InternalCursor& cursor)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(cursor, "WindowingAPI::PlatformDestroyCursorWayland(): InternalCursor is nullptr!");
-
     //If it's a standard cursor we don't need to do anything here
-    if(cursor->Wayland.CursorWL)
+    if(cursor.Wayland.CursorWL)
         return;
 
-    if(cursor->Wayland.Buffer)
-        wl_buffer_destroy(cursor->Wayland.Buffer);
+    if(cursor.Wayland.Buffer)
+        wl_buffer_destroy(cursor.Wayland.Buffer);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorWayland(InternalWindow* const window,
+void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorWayland(InternalWindow& window,
                                                             InternalCursor* const cursor)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformSetCursorWayland(): InternalWindow is nullptr!");
-
     if(!s_Data.Wayland.Pointer)
         return;
 
-    window->Cursor = cursor;
+    window.Cursor = cursor;
 
     //If we're not in the correct window just save the cursor
     //the next time the pointer enters the window the cursor will change
-    if(window != s_Data.Wayland.PointerFocus || window->Wayland.Decorations.Focus != TRAPDecorationSideWayland::MainWindow)
+    if(&window != s_Data.Wayland.PointerFocus || window.Wayland.Decorations.Focus != TRAPDecorationSideWayland::MainWindow)
         return;
 
     //Update pointer lock to match cursor mode
-    if(window->cursorMode == CursorMode::Disabled)
+    if(window.cursorMode == CursorMode::Disabled)
     {
-        if(window->Wayland.ConfinedPointer)
-            UnconfinePointerWayland(*window);
-        if(!window->Wayland.LockedPointer)
-            LockPointerWayland(*window);
+        if(window.Wayland.ConfinedPointer)
+            UnconfinePointerWayland(window);
+        if(!window.Wayland.LockedPointer)
+            LockPointerWayland(window);
     }
-    else if(window->cursorMode == CursorMode::Captured)
+    else if(window.cursorMode == CursorMode::Captured)
     {
-        if(window->Wayland.LockedPointer)
-            UnlockPointerWayland(*window);
-        if(!window->Wayland.ConfinedPointer)
-            ConfinePointerWayland(*window);
+        if(window.Wayland.LockedPointer)
+            UnlockPointerWayland(window);
+        if(!window.Wayland.ConfinedPointer)
+            ConfinePointerWayland(window);
     }
-    else if(window->cursorMode == CursorMode::Normal ||
-            window->cursorMode == CursorMode::Hidden)
+    else if(window.cursorMode == CursorMode::Normal ||
+            window.cursorMode == CursorMode::Hidden)
     {
-        if(window->Wayland.LockedPointer)
-            UnlockPointerWayland(*window);
-        else if(window->Wayland.ConfinedPointer)
-            UnconfinePointerWayland(*window);
+        if(window.Wayland.LockedPointer)
+            UnlockPointerWayland(window);
+        else if(window.Wayland.ConfinedPointer)
+            UnconfinePointerWayland(window);
     }
 
-    if(window->cursorMode == CursorMode::Normal ||
-       window->cursorMode == CursorMode::Captured)
+    if(window.cursorMode == CursorMode::Normal ||
+       window.cursorMode == CursorMode::Captured)
     {
         if(cursor)
-            SetCursorImageWayland(*window, cursor->Wayland);
+            SetCursorImageWayland(window, cursor->Wayland);
         else
         {
             wl_cursor* const defaultCursor = s_Data.Wayland.WaylandCursor.ThemeGetCursor(s_Data.Wayland.CursorTheme, "left_ptr");
@@ -3592,11 +3566,11 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorWayland(InternalWindow* cons
                 0
             };
 
-            SetCursorImageWayland(*window, cursorWayland);
+            SetCursorImageWayland(window, cursorWayland);
         }
     }
-    else if(window->cursorMode == CursorMode::Hidden ||
-            window->cursorMode == CursorMode::Disabled)
+    else if(window.cursorMode == CursorMode::Hidden ||
+            window.cursorMode == CursorMode::Disabled)
     {
         wl_pointer_set_cursor(s_Data.Wayland.Pointer, s_Data.Wayland.PointerEnterSerial, nullptr, 0, 0);
     }
@@ -3604,22 +3578,20 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorWayland(InternalWindow* cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorModeWayland(InternalWindow* const window,
+void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorModeWayland(InternalWindow& window,
                                                                 [[maybe_unused]] const CursorMode mode)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformSetCursorModeWayland(): InternalWindow is nullptr!");
-
     if(mode == CursorMode::Disabled || mode == CursorMode::Hidden)
         PlatformSetCursorWayland(window, nullptr);
     else
-        PlatformSetCursorWayland(window, window->Cursor);
+        PlatformSetCursorWayland(window, window.Cursor);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPosWayland([[maybe_unused]] InternalWindow* const window,
+void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPosWayland([[maybe_unused]] InternalWindow& window,
                                                                [[maybe_unused]] const double xPos,
                                                                [[maybe_unused]] const double yPos)
 {
@@ -3630,20 +3602,18 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPosWayland([[maybe_unused]] 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetCursorPosWayland(const InternalWindow* const window, double& xPos,
+void TRAP::INTERNAL::WindowingAPI::PlatformGetCursorPosWayland(const InternalWindow& window, double& xPos,
                                                                double& yPos)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformGetCursorPosWayland(): InternalWindow is nullptr!");
-
-    xPos = window->Wayland.CursorPosX;
-    yPos = window->Wayland.CursorPosY;
+    xPos = window.Wayland.CursorPosX;
+    yPos = window.Wayland.CursorPosY;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIconWayland([[maybe_unused]] InternalWindow* const window,
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIconWayland([[maybe_unused]] InternalWindow& window,
                                                                 [[maybe_unused]] const Image* const image)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
@@ -3653,7 +3623,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIconWayland([[maybe_unused]]
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowPosWayland([[maybe_unused]] const InternalWindow* const window,
+void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowPosWayland([[maybe_unused]] const InternalWindow& window,
                                                                [[maybe_unused]] int32_t& xPos,
                                                                [[maybe_unused]] int32_t& yPos)
 {
@@ -3666,27 +3636,25 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowPosWayland([[maybe_unused]] 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeWayland(InternalWindow* const window, const int32_t width,
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeWayland(InternalWindow& window, const int32_t width,
                                                                 const int32_t height)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformSetWindowSizeWayland(): InternalWindow is nullptr!");
-
-    if(window->Monitor)
+    if(window.Monitor)
     {
         //Video mode settings is not available on Wayland
     }
     else
     {
-        window->Width = width;
-        window->Height = height;
-        ResizeWindowWayland(*window);
+        window.Width = width;
+        window.Height = height;
+        ResizeWindowWayland(window);
 
-        if(window->Wayland.LibDecor.Frame)
+        if(window.Wayland.LibDecor.Frame)
         {
             libdecor_state* const frameState = s_Data.Wayland.LibDecor.StateNew(width, height);
-            s_Data.Wayland.LibDecor.FrameCommit(window->Wayland.LibDecor.Frame, frameState, nullptr);
+            s_Data.Wayland.LibDecor.FrameCommit(window.Wayland.LibDecor.Frame, frameState, nullptr);
             s_Data.Wayland.LibDecor.StateFree(frameState);
         }
     }
@@ -3694,41 +3662,37 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeWayland(InternalWindow* 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizableWayland(InternalWindow* const window,
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizableWayland(InternalWindow& window,
                                                                      const bool enabled)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformSetWindowResizableWayland(): InternalWindow is nullptr!");
-
-    if(window->Wayland.LibDecor.Frame)
+    if(window.Wayland.LibDecor.Frame)
     {
         if(enabled)
-            s_Data.Wayland.LibDecor.FrameSetCapabilities(window->Wayland.LibDecor.Frame, libdecor_capabilities::ActionResize);
+            s_Data.Wayland.LibDecor.FrameSetCapabilities(window.Wayland.LibDecor.Frame, libdecor_capabilities::ActionResize);
         else
-            s_Data.Wayland.LibDecor.FrameUnsetCapabilities(window->Wayland.LibDecor.Frame, libdecor_capabilities::ActionResize);
+            s_Data.Wayland.LibDecor.FrameUnsetCapabilities(window.Wayland.LibDecor.Frame, libdecor_capabilities::ActionResize);
     }
     else
     {
         if(enabled)
-            PlatformSetWindowSizeLimitsWayland(window, window->MinWidth, window->MinHeight, window->MaxWidth, window->MaxHeight);
+            PlatformSetWindowSizeLimitsWayland(window, window.MinWidth, window.MinHeight, window.MaxWidth, window.MaxHeight);
         else
-            PlatformSetWindowSizeLimitsWayland(window, window->Width, window->Height, window->Width, window->Height);
+            PlatformSetWindowSizeLimitsWayland(window, window.Width, window.Height, window.Width, window.Height);
     }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecoratedWayland(InternalWindow* const window,
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecoratedWayland(InternalWindow& window,
                                                                      const bool enabled)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformSetWindowDecoratedWayland(): InternalWindow is nullptr!");
-
-    if(window->Wayland.LibDecor.Frame)
-        s_Data.Wayland.LibDecor.FrameSetVisibility(window->Wayland.LibDecor.Frame, enabled);
-    else if(window->Wayland.XDG.Decoration)
+    if(window.Wayland.LibDecor.Frame)
+        s_Data.Wayland.LibDecor.FrameSetVisibility(window.Wayland.LibDecor.Frame, enabled);
+    else if(window.Wayland.XDG.Decoration)
     {
         uint32_t mode;
 
@@ -3737,20 +3701,20 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecoratedWayland(InternalWin
         else
             mode = ZXDG_TOPLEVEL_DECORATION_V1_MODE_CLIENT_SIDE;
 
-        zxdg_toplevel_decoration_v1_set_mode(window->Wayland.XDG.Decoration, mode);
+        zxdg_toplevel_decoration_v1_set_mode(window.Wayland.XDG.Decoration, mode);
     }
-    else if(window->Wayland.XDG.TopLevel)
+    else if(window.Wayland.XDG.TopLevel)
     {
         if(enabled)
-            CreateFallbackDecorationsWayland(*window);
+            CreateFallbackDecorationsWayland(window);
         else
-            DestroyFallbackDecorationsWayland(*window);
+            DestroyFallbackDecorationsWayland(window);
     }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloatingWayland([[maybe_unused]] const InternalWindow* const window,
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloatingWayland([[maybe_unused]] const InternalWindow& window,
                                                                     [[maybe_unused]] const bool enabled)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
@@ -3760,7 +3724,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloatingWayland([[maybe_unus
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacityWayland([[maybe_unused]] const InternalWindow* const window,
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacityWayland([[maybe_unused]] const InternalWindow& window,
                                                                    [[maybe_unused]] const float opacity)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
@@ -3770,26 +3734,24 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacityWayland([[maybe_unuse
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthroughWayland(InternalWindow* const window,
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthroughWayland(InternalWindow& window,
                                                                             const bool enabled)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformSetWindowMousePassthroughWayland(): InternalWindow is nullptr!");
-
     if(enabled)
     {
         wl_region* const region = wl_compositor_create_region(s_Data.Wayland.Compositor);
-        wl_surface_set_input_region(window->Wayland.Surface, region);
+        wl_surface_set_input_region(window.Wayland.Surface, region);
         wl_region_destroy(region);
     }
     else
-        wl_surface_set_input_region(window->Wayland.Surface, 0);
+        wl_surface_set_input_region(window.Wayland.Surface, 0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbarWayland([[maybe_unused]] InternalWindow* const window)
+void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbarWayland([[maybe_unused]] InternalWindow& window)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -3798,7 +3760,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbarWayland([[maybe_
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<float> TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacityWayland([[maybe_unused]] const InternalWindow* const window)
+std::optional<float> TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacityWayland([[maybe_unused]] const InternalWindow& window)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -3807,72 +3769,62 @@ std::optional<float> TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacityWayla
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSizeWayland(const InternalWindow* const window,
+void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSizeWayland(const InternalWindow& window,
                                                                      int32_t& width, int32_t& height)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformGetFrameBufferSizeWayland(): InternalWindow is nullptr!");
-
     PlatformGetWindowSizeWayland(window, width, height);
-    width *= window->Wayland.ContentScale;
-    height *= window->Wayland.ContentScale;
+    width *= window.Wayland.ContentScale;
+    height *= window.Wayland.ContentScale;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScaleWayland(const InternalWindow* const window,
+void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScaleWayland(const InternalWindow& window,
                                                                         float& xScale, float& yScale)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformGetWindowContentScaleWayland(): InternalWindow is nullptr!");
-
-    xScale = static_cast<float>(window->Wayland.ContentScale);
-    yScale = static_cast<float>(window->Wayland.ContentScale);
+    xScale = static_cast<float>(window.Wayland.ContentScale);
+    yScale = static_cast<float>(window.Wayland.ContentScale);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkAreaWayland(const InternalMonitor* const monitor,
+void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkAreaWayland(const InternalMonitor& monitor,
                                                                      int32_t& xPos, int32_t& yPos,
                                                                      int32_t& width, int32_t& height)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(monitor, "WindowingAPI::PlatformGetMonitorWorkAreaWayland(): InternalMonitor is nullptr!");
-
-    xPos = monitor->Wayland.X;
-    yPos = monitor->Wayland.Y;
-    width = monitor->CurrentMode.Width;
-    height = monitor->CurrentMode.Height;
+    xPos = monitor.Wayland.X;
+    yPos = monitor.Wayland.Y;
+    width = monitor.CurrentMode.Width;
+    height = monitor.CurrentMode.Height;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::PlatformWindowVisibleWayland(const InternalWindow* const window)
+bool TRAP::INTERNAL::WindowingAPI::PlatformWindowVisibleWayland(const InternalWindow& window)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformWindowVisibleWayland(): InternalWindow is nullptr!");
-
-    return window->Wayland.Visible;
+    return window.Wayland.Visible;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::PlatformWindowMaximizedWayland(const InternalWindow* const window)
+bool TRAP::INTERNAL::WindowingAPI::PlatformWindowMaximizedWayland(const InternalWindow& window)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformWindowMaximizedWayland(): InternalWindow is nullptr!");
-
-    return window->Maximized;
+    return window.Maximized;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::PlatformWindowMinimizedWayland([[maybe_unused]] const InternalWindow* const window)
+bool TRAP::INTERNAL::WindowingAPI::PlatformWindowMinimizedWayland([[maybe_unused]] const InternalWindow& window)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -3914,24 +3866,20 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPostEmptyEventWayland()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::PlatformWindowFocusedWayland(const InternalWindow* const window)
+bool TRAP::INTERNAL::WindowingAPI::PlatformWindowFocusedWayland(const InternalWindow& window)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformWindowFocusedWayland(): InternalWindow is nullptr!");
-
-    return s_Data.Wayland.KeyboardFocus == window;
+    return s_Data.Wayland.KeyboardFocus == &window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::PlatformWindowHoveredWayland(const InternalWindow* const window)
+bool TRAP::INTERNAL::WindowingAPI::PlatformWindowHoveredWayland(const InternalWindow& window)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformWindowHoveredWayland(): InternalWindow is nullptr!");
-
-    return window->Wayland.Hovered;
+    return window.Wayland.Hovered;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3945,7 +3893,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformRawMouseMotionSupportedWayland()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionWayland([[maybe_unused]] const InternalWindow* const window,
+void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionWayland([[maybe_unused]] const InternalWindow& window,
                                                                     [[maybe_unused]] const bool enabled)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
@@ -4074,13 +4022,12 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensionsWayland(
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurfaceWayland(VkInstance instance,
-                                                                          const InternalWindow* const window,
+                                                                          const InternalWindow& window,
 																          const VkAllocationCallbacks* const allocator,
 																          VkSurfaceKHR& surface)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformCreateWindowSurfaceWayland(): InternalWindow is nullptr!");
 	TRAP_ASSERT(instance != VK_NULL_HANDLE, "WindowingAPI::PlatformCreateWindowSurfaceWayland(): VkInstance is nullptr!");
 
     const PFN_vkCreateWaylandSurfaceKHR vkCreateWaylandSurfaceKHR = reinterpret_cast<PFN_vkCreateWaylandSurfaceKHR>(vkGetInstanceProcAddr(instance, "vkCreateWaylandSurfaceKHR"));
@@ -4093,7 +4040,7 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurfaceWayland(VkInst
     VkWaylandSurfaceCreateInfoKHR sci{};
     sci.sType = VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR;
     sci.display = s_Data.Wayland.DisplayWL;
-    sci.surface = window->Wayland.Surface;
+    sci.surface = window.Wayland.Surface;
 
     VkResult err = vkCreateWaylandSurfaceKHR(instance, &sci, allocator, &surface);
     if(err)
@@ -4104,81 +4051,71 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurfaceWayland(VkInst
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindowWayland(InternalWindow* const window)
+void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindowWayland(InternalWindow& window)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformMaximizeWindowWayland(): InternalWindow is nullptr!");
-
-    if(window->Wayland.LibDecor.Frame)
-        s_Data.Wayland.LibDecor.FrameSetMaximized(window->Wayland.LibDecor.Frame);
-    else if(window->Wayland.XDG.TopLevel)
-        xdg_toplevel_set_maximized(window->Wayland.XDG.TopLevel);
+    if(window.Wayland.LibDecor.Frame)
+        s_Data.Wayland.LibDecor.FrameSetMaximized(window.Wayland.LibDecor.Frame);
+    else if(window.Wayland.XDG.TopLevel)
+        xdg_toplevel_set_maximized(window.Wayland.XDG.TopLevel);
     else
-        window->Maximized = true;
+        window.Maximized = true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformMinimizeWindowWayland(const InternalWindow* const window)
+void TRAP::INTERNAL::WindowingAPI::PlatformMinimizeWindowWayland(const InternalWindow& window)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformMinimizeWindowWayland(): InternalWindow is nullptr!");
-
-    if(window->Wayland.LibDecor.Frame)
-        s_Data.Wayland.LibDecor.FrameSetMinimized(window->Wayland.LibDecor.Frame);
-    else if(window->Wayland.XDG.TopLevel)
-        xdg_toplevel_set_minimized(window->Wayland.XDG.TopLevel);
+    if(window.Wayland.LibDecor.Frame)
+        s_Data.Wayland.LibDecor.FrameSetMinimized(window.Wayland.LibDecor.Frame);
+    else if(window.Wayland.XDG.TopLevel)
+        xdg_toplevel_set_minimized(window.Wayland.XDG.TopLevel);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformRequestWindowAttentionWayland(InternalWindow* const window)
+void TRAP::INTERNAL::WindowingAPI::PlatformRequestWindowAttentionWayland(InternalWindow& window)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
-
-	TRAP_ASSERT(window, "WindowingAPI::PlatformRequestWindowAttentionWayland(): InternalWindow is nullptr!");
 
     if(!s_Data.Wayland.ActivationManager)
         return;
 
-    if(window->Wayland.ActivationToken) //We're about to overwrite this with a new request
-        xdg_activation_token_v1_destroy(window->Wayland.ActivationToken);
+    if(window.Wayland.ActivationToken) //We're about to overwrite this with a new request
+        xdg_activation_token_v1_destroy(window.Wayland.ActivationToken);
 
-    window->Wayland.ActivationToken = xdg_activation_v1_get_activation_token(s_Data.Wayland.ActivationManager);
-    xdg_activation_token_v1_add_listener(window->Wayland.ActivationToken, &XDGActivationListener, window);
+    window.Wayland.ActivationToken = xdg_activation_v1_get_activation_token(s_Data.Wayland.ActivationManager);
+    xdg_activation_token_v1_add_listener(window.Wayland.ActivationToken, &XDGActivationListener, &window);
 
-    xdg_activation_token_v1_commit(window->Wayland.ActivationToken);
+    xdg_activation_token_v1_commit(window.Wayland.ActivationToken);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowWayland(InternalWindow* const window)
+void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowWayland(InternalWindow& window)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformHideWindowWayland(): InternalWindow is nullptr!");
-
-    if(window->Wayland.Visible)
+    if(window.Wayland.Visible)
     {
-        window->Wayland.Visible = false;
-        DestroyShellObjectsWayland(*window);
+        window.Wayland.Visible = false;
+        DestroyShellObjectsWayland(window);
 
-        wl_surface_attach(window->Wayland.Surface, nullptr, 0, 0);
-        wl_surface_commit(window->Wayland.Surface);
+        wl_surface_attach(window.Wayland.Surface, nullptr, 0, 0);
+        wl_surface_commit(window.Wayland.Surface);
     }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindowWayland(InternalWindow* const window)
+void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindowWayland(InternalWindow& window)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformRestoreWindowWayland(): InternalWindow is nullptr!");
-
-    if(window->Monitor)
+    if(window.Monitor)
     {
         //There is no way to unset minimized, or even to know if we are minimized,
         //so there is nothng to do in this case
@@ -4187,29 +4124,27 @@ void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindowWayland(InternalWindow* 
     {
         //We assume we are not minimized and act only on maximization
 
-        if(window->Maximized)
+        if(window.Maximized)
         {
-            if(window->Wayland.LibDecor.Frame)
-                s_Data.Wayland.LibDecor.FrameUnsetMaximized(window->Wayland.LibDecor.Frame);
-            else if(window->Wayland.XDG.TopLevel)
-                xdg_toplevel_unset_maximized(window->Wayland.XDG.TopLevel);
+            if(window.Wayland.LibDecor.Frame)
+                s_Data.Wayland.LibDecor.FrameUnsetMaximized(window.Wayland.LibDecor.Frame);
+            else if(window.Wayland.XDG.TopLevel)
+                xdg_toplevel_unset_maximized(window.Wayland.XDG.TopLevel);
             else
-                window->Maximized = false;
+                window.Maximized = false;
         }
     }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimitsWayland(InternalWindow* const window,
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimitsWayland(InternalWindow& window,
                                                                       int32_t minWidth, int32_t minHeight,
                                                                       int32_t maxWidth, int32_t maxHeight)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformSetWindowSizeLimitsWayland(): InternalWindow is nullptr!");
-
-    if(window->Wayland.LibDecor.Frame)
+    if(window.Wayland.LibDecor.Frame)
     {
         if(minWidth == -1 || minHeight == -1)
             minWidth = minHeight = 0;
@@ -4217,16 +4152,16 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimitsWayland(InternalWi
         if(maxWidth == -1 || maxHeight == -1)
             maxWidth = maxHeight = 0;
 
-        s_Data.Wayland.LibDecor.FrameSetMinContentSize(window->Wayland.LibDecor.Frame, minWidth, minHeight);
-        s_Data.Wayland.LibDecor.FrameSetMaxContentSize(window->Wayland.LibDecor.Frame, maxWidth, maxHeight);
+        s_Data.Wayland.LibDecor.FrameSetMinContentSize(window.Wayland.LibDecor.Frame, minWidth, minHeight);
+        s_Data.Wayland.LibDecor.FrameSetMaxContentSize(window.Wayland.LibDecor.Frame, maxWidth, maxHeight);
     }
-    else if(window->Wayland.XDG.TopLevel)
+    else if(window.Wayland.XDG.TopLevel)
     {
         if(minWidth == -1 || minHeight == -1)
             minWidth = minHeight = 0;
         else
         {
-            if(window->Wayland.Decorations.Top.surface)
+            if(window.Wayland.Decorations.Top.surface)
             {
                 minWidth += TRAP_BORDER_SIZE * 2;
                 minHeight += TRAP_CAPTION_HEIGHT + TRAP_BORDER_SIZE;
@@ -4237,39 +4172,39 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimitsWayland(InternalWi
             maxWidth = maxHeight = 0;
         else
         {
-            if(window->Wayland.Decorations.Top.surface)
+            if(window.Wayland.Decorations.Top.surface)
             {
                 maxWidth += TRAP_BORDER_SIZE * 2;
                 maxHeight += TRAP_CAPTION_HEIGHT + TRAP_BORDER_SIZE;
             }
         }
 
-        xdg_toplevel_set_min_size(window->Wayland.XDG.TopLevel, minWidth, minHeight);
-        xdg_toplevel_set_max_size(window->Wayland.XDG.TopLevel, maxWidth, maxHeight);
-        wl_surface_commit(window->Wayland.Surface);
+        xdg_toplevel_set_min_size(window.Wayland.XDG.TopLevel, minWidth, minHeight);
+        xdg_toplevel_set_max_size(window.Wayland.XDG.TopLevel, maxWidth, maxHeight);
+        wl_surface_commit(window.Wayland.Surface);
     }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowAspectRatioWayland(InternalWindow* const window,
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowAspectRatioWayland(InternalWindow& window,
                                                                        const int32_t numerator,
                                                                        const int32_t denominator)
 {
-    if(window->Maximized || window->Wayland.Fullscreen)
+    if(window.Maximized || window.Wayland.Fullscreen)
         return;
 
     if(numerator == -1 || denominator == -1)
 		return;
 
-    const float aspectRatio = static_cast<float>(window->Width) / static_cast<float>(window->Height);
+    const float aspectRatio = static_cast<float>(window.Width) / static_cast<float>(window.Height);
     const float targetRatio = static_cast<float>(numerator) / static_cast<float>(denominator);
     if(aspectRatio < targetRatio)
-        window->Height = static_cast<int32_t>(static_cast<float>(window->Width) / targetRatio);
+        window.Height = static_cast<int32_t>(static_cast<float>(window.Width) / targetRatio);
     else if(aspectRatio > targetRatio)
-        window->Width = static_cast<int32_t>(static_cast<float>(window->Height) * targetRatio);
+        window.Width = static_cast<int32_t>(static_cast<float>(window.Height) * targetRatio);
 
-    ResizeWindowWayland(*window);
+    ResizeWindowWayland(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4298,7 +4233,7 @@ std::optional<std::string> TRAP::INTERNAL::WindowingAPI::GetLinuxKeyboardLayoutN
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDropWayland([[maybe_unused]] InternalWindow* const window,
+void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDropWayland([[maybe_unused]] InternalWindow& window,
                                                                  [[maybe_unused]] const bool value)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
