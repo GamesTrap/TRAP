@@ -142,14 +142,14 @@ namespace TRAP::INTERNAL
 		/// <param name="yPos">
 		/// The new y-coordinate, in screen coordinates, of the upper-left corner of the content area.
 		/// </param>
-		using WindowPositionFunc = void(*)(const InternalWindow* window, int32_t xPos, int32_t yPos);
+		using WindowPositionFunc = void(*)(const InternalWindow& window, int32_t xPos, int32_t yPos);
 		/// <summary>
 		/// The function pointer type for window size callbacks.
 		/// </summary>
 		/// <param name="window">The window that was resized.</param>
 		/// <param name="width">The new width, in screen coordinates.</param>
 		/// <param name="height">The new height, in screen coordinates.</param>
-		using WindowSizeFunc = void(*)(const InternalWindow* window, int32_t width, int32_t height);
+		using WindowSizeFunc = void(*)(const InternalWindow& window, int32_t width, int32_t height);
 		/// <summary>
 		/// The function pointer type for window minimize/iconfiy callbacks.
 		/// </summary>
@@ -157,90 +157,90 @@ namespace TRAP::INTERNAL
 		/// <param name="restored">
 		/// True if the window was minimized/iconified, or false if it was restored.
 		/// </param>
-		using WindowMinimizeFunc = void(*)(const InternalWindow* window, bool restored);
+		using WindowMinimizeFunc = void(*)(const InternalWindow& window, bool restored);
 		/// <summary>
 		/// The function pointer type for window maximize callbacks.
 		/// </summary>
 		/// <param name="window">The window that was maximized or restored.</param>
 		/// <param name="restored">True if the window was maximized, or false if it was restored.</param>
-		using WindowMaximizeFunc = void(*)(const InternalWindow* window, bool restored);
+		using WindowMaximizeFunc = void(*)(const InternalWindow& window, bool restored);
 		/// <summary>
 		/// The function pointer type for window close callbacks.
 		/// </summary>
 		/// <param name="window">The window that the user attempted to close.</param>
-		using WindowCloseFunc = void(*)(const InternalWindow* window);
+		using WindowCloseFunc = void(*)(const InternalWindow& window);
 		/// <summary>
 		/// The function pointer type for window focus callbacks.
 		/// </summary>
 		/// <param name="window">The window that gained or lost input focus.</param>
 		/// <param name="focused">True if the window was given input focus, or false if it lost it.</param>
-		using WindowFocusFunc = void(*)(const InternalWindow* window, bool focused);
+		using WindowFocusFunc = void(*)(const InternalWindow& window, bool focused);
 		/// <summary>
 		/// The function pointer type for framebuffer size callbacks.
 		/// </summary>
 		/// <param name="window">The window whose framebuffer was resized.</param>
 		/// <param name="width">The new width, in pixels, of the framebuffer.</param>
 		/// <param name="height">The new height, in pixels, of the framebuffer.</param>
-		using FrameBufferSizeFunc = void(*)(const InternalWindow* window, int32_t width, int32_t height);
+		using FrameBufferSizeFunc = void(*)(const InternalWindow& window, int32_t width, int32_t height);
 		/// <summary>
 		/// The function pointer type for window content scale callbacks.
 		/// </summary>
 		/// <param name="window">The window whose content scale changed.</param>
 		/// <param name="xScale">The new x-axis content scale of the window.</param>
 		/// <param name="yScale">The new y-axis content scale of the window.</param>
-		using WindowContentScaleFunc = void(*)(const InternalWindow* window, float xScale, float yScale);
+		using WindowContentScaleFunc = void(*)(const InternalWindow& window, float xScale, float yScale);
 		/// <summary>
 		/// The function pointer type for mouse button callbacks.
 		/// </summary>
 		/// <param name="window">The window that received the event.</param>
 		/// <param name="mouseButton">The mouse button that was pressed or released.</param>
 		/// <param name="state">State of the mouse button (pressed or released).</param>
-		using MouseButtonFunc = void(*)(const InternalWindow* window, Input::MouseButton mouseButton, TRAP::Input::KeyState state);
+		using MouseButtonFunc = void(*)(const InternalWindow& window, Input::MouseButton mouseButton, TRAP::Input::KeyState state);
 		/// <summary>
 		/// The function pointer type for cursor position callbacks.
 		/// </summary>
 		/// <param name="window>The window that received the event.</param>
 		/// <param name="xPos">The new cursor x-coordinate, relative to the left edge of the content area.</param>
 		/// <param name="yPos">The new cursor y-coordinate, relative to the top edge of the content area.</param>
-		using CursorPositionFunc = void(*)(const InternalWindow* window, double xPos, double yPos);
+		using CursorPositionFunc = void(*)(const InternalWindow& window, double xPos, double yPos);
 		/// <summary>
 		/// The function pointer type for cursor enter callbacks.
 		/// </summary>
 		/// <param name="window">The window that received the event.</param>
 		/// <param name="entered">True if the cursor entered the window's content area, false if it left it.</param>
-		using CursorEnterFunc = void(*)(const InternalWindow* window, bool entered);
+		using CursorEnterFunc = void(*)(const InternalWindow& window, bool entered);
 		/// <summary>
 		/// The function pointer type for scroll callbacks.
 		/// </summary>
 		/// <param name="window">The window that received the event.</param>
 		/// <param name="xOffset">The scroll offset along the x-axis.</param>
 		/// <param name="yOffset">The scroll offset along the y-axis.</param>
-		using ScrollFunc = void(*)(const InternalWindow* window, double xOffset, double yOffset);
+		using ScrollFunc = void(*)(const InternalWindow& window, double xOffset, double yOffset);
 		/// <summary>
 		/// The function pointer type for keyboard key callbacks.
 		/// </summary>
 		/// <param name="window">The window that received the event.</param>
 		/// <param name="key">The key that was pressed, repeated or released.</param>
 		/// <param name="state">The state of the key.</param>
-		using KeyFunc = void(*)(const InternalWindow* window, Input::Key key, Input::KeyState state);
+		using KeyFunc = void(*)(const InternalWindow& window, Input::Key key, Input::KeyState state);
 		/// <summary>
 		/// The function pointer type for Unicode character callbacks.
 		/// </summary>
 		/// <param name="window">The window that received the event.</param>
 		/// <param name="codePoint">The Unicode code point of the character.</param>
-		using CharFunc = void(*)(const InternalWindow* window, uint32_t codePoint);
+		using CharFunc = void(*)(const InternalWindow& window, uint32_t codePoint);
 		/// <summary>
 		/// The function pointer type for path drop callbacks.
 		/// </summary>
 		/// <param name="window">The window that received the event.</param>
 		/// <param name="paths">The UTF-8 encoded file and/or directory path names.</param>
-		using DropFunc = void(*)(const InternalWindow* window, std::vector<std::string> paths);
+		using DropFunc = void(*)(const InternalWindow& window, std::vector<std::string> paths);
 		/// <summary>
 		/// The function pointer type for monitor configuration callbacks.
 		/// </summary>
 		/// <param name="monitor">The monitor that was connected or disconnected.</param>
 		/// <param name="connceted">True if monitor got connceted or false if it got disconnceted.</param>
-		using MonitorFunc = void(*)(const InternalMonitor* monitor, bool connected);
+		using MonitorFunc = void(*)(const InternalMonitor& monitor, bool connected);
 	private:
 		//--------------//
 		//Vulkan Surface//

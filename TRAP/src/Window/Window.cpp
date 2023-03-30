@@ -1129,287 +1129,298 @@ void TRAP::Window::SetupEventCallbacks()
 
 	//Set WindowingAPI callbacks
 	INTERNAL::WindowingAPI::SetWindowSizeCallback(*m_window,
-		[](const INTERNAL::WindowingAPI::InternalWindow* const window, const int32_t w, const int32_t h)
+		[](const INTERNAL::WindowingAPI::InternalWindow& window, const int32_t w, const int32_t h)
 		{
-			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(*window));
-			data.Width = w;
-			data.Height = h;
-
-			if (!data.EventCallback)
+			WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
+			if(!data)
 				return;
 
-			Events::WindowResizeEvent event(w, h, data.Win);
-			data.EventCallback(event);
+			data->Width = w;
+			data->Height = h;
+
+			if (!data->EventCallback)
+				return;
+
+			Events::WindowResizeEvent event(w, h, data->Win);
+			data->EventCallback(event);
 		}
 	);
 
 	INTERNAL::WindowingAPI::SetWindowMinimizeCallback(*m_window,
-		[](const INTERNAL::WindowingAPI::InternalWindow* const window, bool restored)
+		[](const INTERNAL::WindowingAPI::InternalWindow& window, bool restored)
 		{
-			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(*window));
+			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if (!data.EventCallback)
+			if (!data || !data->EventCallback)
 				return;
 
 			if (restored)
 			{
-				Events::WindowRestoreEvent event(data.Win);
-				data.EventCallback(event);
+				Events::WindowRestoreEvent event(data->Win);
+				data->EventCallback(event);
 			}
 			else
 			{
-				Events::WindowMinimizeEvent event(data.Win);
-				data.EventCallback(event);
+				Events::WindowMinimizeEvent event(data->Win);
+				data->EventCallback(event);
 			}
 		}
 	);
 
 	INTERNAL::WindowingAPI::SetWindowMaximizeCallback(*m_window,
-		[](const INTERNAL::WindowingAPI::InternalWindow* const window, bool restored)
+		[](const INTERNAL::WindowingAPI::InternalWindow& window, bool restored)
 		{
-			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(*window));
+			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if (!data.EventCallback)
+			if (!data || !data->EventCallback)
 				return;
 
 			if (restored)
 			{
-				Events::WindowRestoreEvent event(data.Win);
-				data.EventCallback(event);
+				Events::WindowRestoreEvent event(data->Win);
+				data->EventCallback(event);
 			}
 			else
 			{
-				Events::WindowMaximizeEvent event(data.Win);
-				data.EventCallback(event);
+				Events::WindowMaximizeEvent event(data->Win);
+				data->EventCallback(event);
 			}
 		}
 	);
 
 	INTERNAL::WindowingAPI::SetWindowPosCallback(*m_window,
-		[](const INTERNAL::WindowingAPI::InternalWindow* const window, const int32_t x, const int32_t y)
+		[](const INTERNAL::WindowingAPI::InternalWindow& window, const int32_t x, const int32_t y)
 		{
-			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(*window));
-
-			if(data.displayMode == DisplayMode::Windowed && x > 0 && y > 0)
-			{
-				data.windowModeParams.XPos = x;
-				data.windowModeParams.YPos = y;
-			}
-
-			if (!data.EventCallback)
+			WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
+			if(!data)
 				return;
 
-			Events::WindowMoveEvent event(x, y, data.Win);
-			data.EventCallback(event);
+			if(data->displayMode == DisplayMode::Windowed && x > 0 && y > 0)
+			{
+				data->windowModeParams.XPos = x;
+				data->windowModeParams.YPos = y;
+			}
+
+			if (!data->EventCallback)
+				return;
+
+			Events::WindowMoveEvent event(x, y, data->Win);
+			data->EventCallback(event);
 		}
 	);
 
 	INTERNAL::WindowingAPI::SetWindowFocusCallback(*m_window,
-		[](const INTERNAL::WindowingAPI::InternalWindow* const window, const bool focused)
+		[](const INTERNAL::WindowingAPI::InternalWindow& window, const bool focused)
 		{
-			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(*window));
+			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if (!data.EventCallback)
+			if (!data || !data->EventCallback)
 				return;
 
 			if (focused)
 			{
-				Events::WindowFocusEvent event(data.Win);
-				data.EventCallback(event);
+				Events::WindowFocusEvent event(data->Win);
+				data->EventCallback(event);
 			}
 			else
 			{
-				Events::WindowLostFocusEvent event(data.Win);
-				data.EventCallback(event);
+				Events::WindowLostFocusEvent event(data->Win);
+				data->EventCallback(event);
 			}
 		}
 	);
 
 	INTERNAL::WindowingAPI::SetWindowCloseCallback(*m_window,
-		[](const INTERNAL::WindowingAPI::InternalWindow* const window)
+		[](const INTERNAL::WindowingAPI::InternalWindow& window)
 		{
-			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(*window));
+			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if (!data.EventCallback)
+			if (!data || !data->EventCallback)
 				return;
 
-			Events::WindowCloseEvent event(data.Win);
-			data.EventCallback(event);
+			Events::WindowCloseEvent event(data->Win);
+			data->EventCallback(event);
 		}
 	);
 
 	INTERNAL::WindowingAPI::SetKeyCallback(*m_window,
-		[](const INTERNAL::WindowingAPI::InternalWindow* const window, const Input::Key key, const Input::KeyState state)
+		[](const INTERNAL::WindowingAPI::InternalWindow& window, const Input::Key key, const Input::KeyState state)
 		{
-			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(*window));
+			WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
+
+			if(!data)
+				return;
 
 			if(state == Input::KeyState::Pressed || state == Input::KeyState::Repeat)
 			{
-				if(data.KeyRepeatCounts.find(static_cast<uint16_t>(key)) == data.KeyRepeatCounts.end())
+				if(data->KeyRepeatCounts.find(static_cast<uint16_t>(key)) == data->KeyRepeatCounts.end())
 				{
-					data.KeyRepeatCounts[static_cast<uint16_t>(key)] = 0;
+					data->KeyRepeatCounts[static_cast<uint16_t>(key)] = 0;
 
-					if (!data.EventCallback)
+					if (!data->EventCallback)
 						return;
 
-					Events::KeyPressEvent event(static_cast<Input::Key>(key), 0, data.Win);
-					data.EventCallback(event);
+					Events::KeyPressEvent event(static_cast<Input::Key>(key), 0, data->Win);
+					data->EventCallback(event);
 				}
 				else
 				{
-					data.KeyRepeatCounts[static_cast<uint16_t>(key)]++;
+					data->KeyRepeatCounts[static_cast<uint16_t>(key)]++;
 
-					if (!data.EventCallback)
+					if (!data->EventCallback)
 						return;
 
 					Events::KeyPressEvent event(static_cast<Input::Key>(key),
-					                            data.KeyRepeatCounts[static_cast<uint16_t>(key)], data.Win);
-					data.EventCallback(event);
+					                            data->KeyRepeatCounts[static_cast<uint16_t>(key)], data->Win);
+					data->EventCallback(event);
 				}
 			}
 			else
 			{
-				data.KeyRepeatCounts.erase(static_cast<uint16_t>(key));
+				data->KeyRepeatCounts.erase(static_cast<uint16_t>(key));
 
-				if (!data.EventCallback)
+				if (!data->EventCallback)
 					return;
 
-				Events::KeyReleaseEvent event(static_cast<Input::Key>(key), data.Win);
-				data.EventCallback(event);
+				Events::KeyReleaseEvent event(static_cast<Input::Key>(key), data->Win);
+				data->EventCallback(event);
 			}
 		}
 	);
 
 	INTERNAL::WindowingAPI::SetCharCallback(*m_window,
-		[](const INTERNAL::WindowingAPI::InternalWindow* const window, const uint32_t codePoint)
+		[](const INTERNAL::WindowingAPI::InternalWindow& window, const uint32_t codePoint)
 		{
-			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(*window));
+			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if (!data.EventCallback)
+			if (!data || !data->EventCallback)
 				return;
 
-			Events::KeyTypeEvent event(codePoint, data.Win);
-			data.EventCallback(event);
+			Events::KeyTypeEvent event(codePoint, data->Win);
+			data->EventCallback(event);
 		}
 	);
 
 	INTERNAL::WindowingAPI::SetMouseButtonCallback(*m_window,
-		[](const INTERNAL::WindowingAPI::InternalWindow* const window, const Input::MouseButton button, const Input::KeyState state)
+		[](const INTERNAL::WindowingAPI::InternalWindow& window, const Input::MouseButton button, const Input::KeyState state)
 		{
-			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(*window));
+			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if (!data.EventCallback)
+			if (!data || !data->EventCallback)
 				return;
 
 			if (state == Input::KeyState::Pressed)
 			{
-				Events::MouseButtonPressEvent event(button, data.Win);
-				data.EventCallback(event);
+				Events::MouseButtonPressEvent event(button, data->Win);
+				data->EventCallback(event);
 			}
 			else
 			{
-				Events::MouseButtonReleaseEvent event(button, data.Win);
-				data.EventCallback(event);
+				Events::MouseButtonReleaseEvent event(button, data->Win);
+				data->EventCallback(event);
 			}
 		}
 	);
 
 	INTERNAL::WindowingAPI::SetScrollCallback(*m_window,
-		[](const INTERNAL::WindowingAPI::InternalWindow* const window, const double xOffset, const double yOffset)
+		[](const INTERNAL::WindowingAPI::InternalWindow& window, const double xOffset, const double yOffset)
 		{
-			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(*window));
+			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if (!data.EventCallback)
+			if (!data || !data->EventCallback)
 				return;
 
-			Events::MouseScrollEvent event(static_cast<float>(xOffset), static_cast<float>(yOffset), data.Win);
-			data.EventCallback(event);
+			Events::MouseScrollEvent event(static_cast<float>(xOffset), static_cast<float>(yOffset), data->Win);
+			data->EventCallback(event);
 		}
 	);
 
 	INTERNAL::WindowingAPI::SetCursorPosCallback(*m_window,
-		[](const INTERNAL::WindowingAPI::InternalWindow* const window, double xPos, double yPos)
+		[](const INTERNAL::WindowingAPI::InternalWindow& window, double xPos, double yPos)
 		{
-			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(*window));
+			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if (!data.EventCallback)
+			if (!data->EventCallback)
 				return;
 
 #ifdef TRAP_PLATFORM_WINDOWS
 			int32_t winPosX = 0, winPosY = 0;
-			INTERNAL::WindowingAPI::GetWindowPos(*window, winPosX, winPosY);
+			INTERNAL::WindowingAPI::GetWindowPos(window, winPosX, winPosY);
 			xPos += winPosX;
 			yPos += winPosY;
 #endif
 
-			Events::MouseMoveEvent event(static_cast<float>(xPos), static_cast<float>(yPos), data.Win);
-			data.EventCallback(event);
+			Events::MouseMoveEvent event(static_cast<float>(xPos), static_cast<float>(yPos), data->Win);
+			data->EventCallback(event);
 		}
 	);
 
 	INTERNAL::WindowingAPI::SetFrameBufferSizeCallback(*m_window,
-		[](const INTERNAL::WindowingAPI::InternalWindow* const window, const int32_t w, const int32_t h)
+		[](const INTERNAL::WindowingAPI::InternalWindow& window, const int32_t w, const int32_t h)
 		{
-			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(*window));
-			data.Width = w;
-			data.Height = h;
-
-			if (!data.EventCallback || w == 0 || h == 0)
+			WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
+			if(!data)
 				return;
 
-			Events::FrameBufferResizeEvent event(w, h, data.Win);
-			data.EventCallback(event);
+			data->Width = w;
+			data->Height = h;
+
+			if (!data->EventCallback || w == 0 || h == 0)
+				return;
+
+			Events::FrameBufferResizeEvent event(w, h, data->Win);
+			data->EventCallback(event);
 		}
 	);
 
 	INTERNAL::WindowingAPI::SetCursorEnterCallback(*m_window,
-		[](const INTERNAL::WindowingAPI::InternalWindow* const window, const bool entered)
+		[](const INTERNAL::WindowingAPI::InternalWindow& window, const bool entered)
 		{
-			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(*window));
+			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if (!data.EventCallback)
+			if (!data || !data->EventCallback)
 				return;
 
 			if (entered)
 			{
-				Events::MouseEnterEvent event(data.Win);
-				data.EventCallback(event);
+				Events::MouseEnterEvent event(data->Win);
+				data->EventCallback(event);
 			}
 			else
 			{
-				Events::MouseLeaveEvent event(data.Win);
-				data.EventCallback(event);
+				Events::MouseLeaveEvent event(data->Win);
+				data->EventCallback(event);
 			}
 		}
 	);
 
 	INTERNAL::WindowingAPI::SetDropCallback(*m_window,
-		[](const INTERNAL::WindowingAPI::InternalWindow* const window, std::vector<std::string> paths)
+		[](const INTERNAL::WindowingAPI::InternalWindow& window, std::vector<std::string> paths)
 		{
-			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(*window));
+			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if (!data.EventCallback)
+			if (!data || !data->EventCallback)
 				return;
 
-			Events::WindowDropEvent event(std::move(paths), data.Win);
-			data.EventCallback(event);
+			Events::WindowDropEvent event(std::move(paths), data->Win);
+			data->EventCallback(event);
 		}
 	);
 
 	INTERNAL::WindowingAPI::SetContentScaleCallback(*m_window,
-		[](const INTERNAL::WindowingAPI::InternalWindow* const window, const float xScale, const float yScale)
+		[](const INTERNAL::WindowingAPI::InternalWindow& window, const float xScale, const float yScale)
 		{
-			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(*window));
+			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if (!data.EventCallback)
+			if (!data || !data->EventCallback)
 				return;
 
-			Events::WindowContentScaleEvent event(xScale, yScale, data.Win);
-			data.EventCallback(event);
+			Events::WindowContentScaleEvent event(xScale, yScale, data->Win);
+			data->EventCallback(event);
 		}
 	);
 
-	INTERNAL::WindowingAPI::SetMonitorCallback([](const INTERNAL::WindowingAPI::InternalMonitor* const mon,
+	INTERNAL::WindowingAPI::SetMonitorCallback([](const INTERNAL::WindowingAPI::InternalMonitor& mon,
 	                                              const bool connected)
 	{
 		if(!connected && Monitor::GetAllMonitors().size() == 1)
@@ -1420,14 +1431,16 @@ void TRAP::Window::SetupEventCallbacks()
 			exit(0x000C);
 		}
 
-		if(!mon->Window)
+		if(!mon.Window)
 			return;
 
-		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(*mon->Window));
+		const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(*mon.Window));
+		if(!data)
+			return;
 
 		for (const auto& win : s_fullscreenWindows)
 		{
-			if(!win || win->m_useMonitor != mon)
+			if(!win || win->m_useMonitor != &mon)
 				continue;
 
 			const auto removeWindowIterator = s_fullscreenWindows.begin() + win->m_data.Monitor;
@@ -1448,23 +1461,23 @@ void TRAP::Window::SetupEventCallbacks()
 			break;
 		}
 
-		if (!data.EventCallback)
+		if (!data->EventCallback)
 			return;
 
 		for (const auto& m : Monitor::GetAllMonitors())
 		{
-			if(mon != m.GetInternalMonitor())
+			if(&mon != m.GetInternalMonitor())
 				continue;
 
 			if (connected)
 			{
 				Events::MonitorConnectEvent event(m);
-				data.EventCallback(event);
+				data->EventCallback(event);
 			}
 			else
 			{
 				Events::MonitorDisconnectEvent event(m);
-				data.EventCallback(event);
+				data->EventCallback(event);
 			}
 
 			return;

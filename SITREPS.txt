@@ -3791,3 +3791,4 @@ SITREP 03/30/2023|23w13b3
     - WindowingAPILinux Added const to pointers ~<5 mins
     - WindowingAPI Replaced pointer usage with references where possible ~>360 mins
     - WindowingAPILinux Fixed GetCursorPos() returning wrong values ~<20 mins
+    - WindowingAPI Callbacks replaced pointer usage with references where possible ~<30 mins

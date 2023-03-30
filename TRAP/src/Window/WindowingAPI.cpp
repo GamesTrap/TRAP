@@ -2322,7 +2322,7 @@ void TRAP::INTERNAL::WindowingAPI::InputCursorPos(InternalWindow& window, const 
 	window.VirtualCursorPosY = yPos;
 
 	if (window.Callbacks.CursorPos)
-		window.Callbacks.CursorPos(&window, xPos, yPos);
+		window.Callbacks.CursorPos(window, xPos, yPos);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2353,7 +2353,7 @@ void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow& window, Input::Key k
 	}
 
 	if (window.Callbacks.Key)
-		window.Callbacks.Key(&window, key, state);
+		window.Callbacks.Key(window, key, state);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2368,7 +2368,7 @@ void TRAP::INTERNAL::WindowingAPI::InputChar(const InternalWindow& window, const
 		return;
 
 	if (window.Callbacks.Character)
-		window.Callbacks.Character(&window, codePoint);
+		window.Callbacks.Character(window, codePoint);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2388,7 +2388,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMouseClick(InternalWindow& window, const
 	window.MouseButtons[static_cast<uint32_t>(button)] = state;
 
 	if (window.Callbacks.MouseButton)
-		window.Callbacks.MouseButton(&window, button, state);
+		window.Callbacks.MouseButton(window, button, state);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2405,7 +2405,7 @@ void TRAP::INTERNAL::WindowingAPI::InputScroll(const InternalWindow& window, con
 	TRAP_ASSERT(yOffset <  std::numeric_limits<float>::max(), "WindowingAPI::InputScroll(): yOffset is NaN!");
 
 	if (window.Callbacks.Scroll)
-		window.Callbacks.Scroll(&window, xOffset, yOffset);
+		window.Callbacks.Scroll(window, xOffset, yOffset);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2416,7 +2416,7 @@ void TRAP::INTERNAL::WindowingAPI::InputCursorEnter(const InternalWindow& window
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if (window.Callbacks.CursorEnter)
-		window.Callbacks.CursorEnter(&window, entered);
+		window.Callbacks.CursorEnter(window, entered);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2432,7 +2432,7 @@ void TRAP::INTERNAL::WindowingAPI::InputFrameBufferSize(const InternalWindow& wi
 	TRAP_ASSERT(height >= 0, "WindowingAPI::InputFrameBufferSize(): Height is invalid!");
 
 	if (window.Callbacks.FBSize)
-		window.Callbacks.FBSize(&window, width, height);
+		window.Callbacks.FBSize(window, width, height);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2448,7 +2448,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowSize(const InternalWindow& window,
 	TRAP_ASSERT(height >= 0, "WindowingAPI::InputWindowSize(): Height is invalid!");
 
 	if (window.Callbacks.Size)
-		window.Callbacks.Size(&window, width, height);
+		window.Callbacks.Size(window, width, height);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2459,7 +2459,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowMinimize(const InternalWindow& win
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if (window.Callbacks.Minimize)
-		window.Callbacks.Minimize(&window, !restored);
+		window.Callbacks.Minimize(window, !restored);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2470,7 +2470,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowMaximize(const InternalWindow& win
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if (window.Callbacks.Maximize)
-		window.Callbacks.Maximize(&window, !restored);
+		window.Callbacks.Maximize(window, !restored);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2482,7 +2482,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowPos(const InternalWindow& window, 
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if (window.Callbacks.Pos)
-		window.Callbacks.Pos(&window, x, y);
+		window.Callbacks.Pos(window, x, y);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2495,7 +2495,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowCloseRequest(InternalWindow& windo
 	window.ShouldClose = true;
 
 	if (window.Callbacks.Close)
-		window.Callbacks.Close(&window);
+		window.Callbacks.Close(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2506,7 +2506,7 @@ void TRAP::INTERNAL::WindowingAPI::InputDrop(const InternalWindow& window, const
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if (window.Callbacks.Drop)
-		window.Callbacks.Drop(&window, paths);
+		window.Callbacks.Drop(window, paths);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2517,7 +2517,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowFocus(InternalWindow& window, cons
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if (window.Callbacks.Focus)
-		window.Callbacks.Focus(&window, focused);
+		window.Callbacks.Focus(window, focused);
 
 	if(focused)
 		return;
@@ -2723,21 +2723,14 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, 
 		}
 
 		if(s_Data.Callbacks.Monitor)
-			s_Data.Callbacks.Monitor(mon, connected);
+			s_Data.Callbacks.Monitor(*mon, connected);
 	}
 	else
 	{
 		if (s_Data.Callbacks.Monitor)
-			s_Data.Callbacks.Monitor(monitor.get(), connected);
+			s_Data.Callbacks.Monitor(*monitor, connected);
 
-		for (uint32_t i = 0; i < s_Data.Monitors.size(); i++)
-		{
-			if (s_Data.Monitors[i] == monitor)
-			{
-				s_Data.Monitors.erase(s_Data.Monitors.begin() + i);
-				break;
-			}
-		}
+		s_Data.Monitors.erase(std::remove(s_Data.Monitors.begin(), s_Data.Monitors.end(), monitor), s_Data.Monitors.end());
 	}
 }
 
@@ -2752,7 +2745,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitorDisconnect(const uint32_t monitor
 	const Scope<InternalMonitor>& monitor = s_Data.Monitors[monitorIndex];
 
 	if (s_Data.Callbacks.Monitor)
-		s_Data.Callbacks.Monitor(monitor.get(), false);
+		s_Data.Callbacks.Monitor(*monitor, false);
 
 	//Remove monitor from monitors list
 	s_Data.Monitors.erase(std::remove(s_Data.Monitors.begin(), s_Data.Monitors.end(), monitor), s_Data.Monitors.end());
@@ -2791,5 +2784,5 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowContentScale(const InternalWindow&
 	TRAP_ASSERT(yScale < std::numeric_limits<float>::max(), "WindowingAPI::InputWindowContentScale(): YScale is too big!");
 
 	if (window.Callbacks.Scale)
-		window.Callbacks.Scale(&window, xScale, yScale);
+		window.Callbacks.Scale(window, xScale, yScale);
 }

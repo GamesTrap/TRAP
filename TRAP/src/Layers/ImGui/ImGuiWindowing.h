@@ -168,27 +168,27 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Affected window.</param>
 		/// <param name="focused">Is window focused or not.</param>
-		static void WindowFocusCallback(const WindowingAPI::InternalWindow* window, bool focused);
+		static void WindowFocusCallback(const WindowingAPI::InternalWindow& window, bool focused);
 		/// <summary>
 		/// Cursor enter callback.
 		/// </summary>
 		/// <param name="window">Affected window.</param>
 		/// <param name="entered">Cursor entered or leaved window.</param>
-		static void CursorEnterCallback(const WindowingAPI::InternalWindow* window, bool entered);
+		static void CursorEnterCallback(const WindowingAPI::InternalWindow& window, bool entered);
 		/// <summary>
 		/// Cursor position callback.
 		/// </summary>
 		/// <param name="window">Affected window.</param>
 		/// <param name="xPos">Cursor x position of the window.</param>
 		/// <param name="yPos">Cursor y position of the window.</param>
-		static void CursorPosCallback(const WindowingAPI::InternalWindow* window, double xPos, double yPos);
+		static void CursorPosCallback(const WindowingAPI::InternalWindow& window, double xPos, double yPos);
 		/// <summary>
 		/// Mouse button callback.
 		/// </summary>
 		/// <param name="window">Affected window.</param>
 		/// <param name="mouseButton">Affected mouse button.</param>
 		/// <param name="state">Mouse button state (pressed or released).</param>
-		static void MouseButtonCallback(const WindowingAPI::InternalWindow* window, Input::MouseButton mouseButton,
+		static void MouseButtonCallback(const WindowingAPI::InternalWindow& window, Input::MouseButton mouseButton,
 		                                Input::KeyState state);
 		/// <summary>
 		/// Scroll callback.
@@ -196,26 +196,26 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Affected window.</param>
 		/// <param name="xOffset">Horizontal mouse wheel offset.</param>
 		/// <param name="yOffset">Vertical mouse wheel offset.</param>
-		static void ScrollCallback(const WindowingAPI::InternalWindow* window, double xOffset, double yOffset);
+		static void ScrollCallback(const WindowingAPI::InternalWindow& window, double xOffset, double yOffset);
 		/// <summary>
 		/// Key callback.
 		/// </summary>
 		/// <param name="window">Affected window.</param>
 		/// <param name="key">Keyboard key.</param>
 		/// <param name="state">Key state (pressed, repeated or released).</param>
-		static void KeyCallback(const WindowingAPI::InternalWindow* window, Input::Key key, Input::KeyState state);
+		static void KeyCallback(const WindowingAPI::InternalWindow& window, Input::Key key, Input::KeyState state);
 		/// <summary>
 		/// Char callback.
 		/// </summary>
 		/// <param name="window">Affected window.</param>
 		/// <param name="codePoint">UTF-32 code point.</param>
-		static void CharCallback(const WindowingAPI::InternalWindow* window, uint32_t codePoint);
+		static void CharCallback(const WindowingAPI::InternalWindow& window, uint32_t codePoint);
 		/// <summary>
 		/// Monitor callback.
 		/// </summary>
 		/// <param name="monitor">Affected monitor.</param>
 		/// <param name="connected">Monitor connected or disconnected.</param>
-		static void MonitorCallback(const WindowingAPI::InternalMonitor* monitor, bool connected);
+		static void MonitorCallback(const WindowingAPI::InternalMonitor& monitor, bool connected);
 
 		/// <summary>
 		/// Get the backend data provided by user.
@@ -286,21 +286,21 @@ namespace TRAP::INTERNAL
 		/// Window close callback.
 		/// </summary>
 		/// <param name="window">Affected window.</param>
-		static void WindowCloseCallback(const WindowingAPI::InternalWindow* window);
+		static void WindowCloseCallback(const WindowingAPI::InternalWindow& window);
 		/// <summary>
 		/// Window position callback.
 		/// </summary>
 		/// <param name="window">Affected window.</param>
 		/// <param name="xPos">New x position.</param>
 		/// <param name="yPos">New y position.</param>
-		static void WindowPosCallback(const WindowingAPI::InternalWindow* window, int32_t xPos, int32_t yPos);
+		static void WindowPosCallback(const WindowingAPI::InternalWindow& window, int32_t xPos, int32_t yPos);
 		/// <summary>
 		/// Window size callback.
 		/// </summary>
 		/// <param name="window">Affected window.</param>
 		/// <param name="width">New width.</param>
 		/// <param name="height">New height.</param>
-		static void WindowSizeCallback(const WindowingAPI::InternalWindow* window, int32_t width, int32_t height);
+		static void WindowSizeCallback(const WindowingAPI::InternalWindow& window, int32_t width, int32_t height);
 
 		/// <summary>
 		/// Create a new ImGui Window.
