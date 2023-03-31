@@ -2353,36 +2353,34 @@ void TRAP::INTERNAL::WindowingAPI::SetAccessibilityShortcutKeys(const bool allow
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindow(InternalWindow* const window)
+void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindow(InternalWindow& window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformDestroyWindow(): window is nullptr!");
+	if (window.Monitor)
+		ReleaseMonitor(window);
 
-	if (window->Monitor)
-		ReleaseMonitor(*window);
+	if (s_Data.DisabledCursorWindow == &window)
+		EnableCursor(window);
 
-	if (s_Data.DisabledCursorWindow == window)
-		EnableCursor(*window);
-
-	if (s_Data.CapturedCursorWindow == window)
+	if (s_Data.CapturedCursorWindow == &window)
 		ReleaseCursor();
 
-	if (window->TaskbarList)
-		window->TaskbarList->Release();
+	if (window.TaskbarList)
+		window.TaskbarList->Release();
 
-	if (window->Handle)
+	if (window.Handle)
 	{
-		RemovePropW(window->Handle, L"TRAP");
-		::DestroyWindow(window->Handle);
-		window->Handle = nullptr;
+		RemovePropW(window.Handle, L"TRAP");
+		::DestroyWindow(window.Handle);
+		window.Handle = nullptr;
 	}
 
-	if (window->BigIcon)
-		DestroyIcon(window->BigIcon);
+	if (window.BigIcon)
+		DestroyIcon(window.BigIcon);
 
-	if (window->SmallIcon)
-		DestroyIcon(window->SmallIcon);
+	if (window.SmallIcon)
+		DestroyIcon(window.SmallIcon);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

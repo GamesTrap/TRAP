@@ -102,6 +102,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyWindow(InternalWindow* window)
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::DestroyWindow(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::DestroyWindow(): window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -115,7 +116,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyWindow(InternalWindow* window)
 	//Clear all callbacks to avoid exposing a half torn-down window object
 	window->Callbacks = {};
 
-	PlatformDestroyWindow(window);
+	PlatformDestroyWindow(*window);
 
 	//Unlink window from global linked list
 	s_Data.WindowList.remove_if([window](const Scope<InternalWindow>& winOwner)
@@ -490,6 +491,8 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(InternalCursor* cursor)
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::DestroyCursor(): must only be called from main thread");
+	TRAP_ASSERT(cursor, "WindowingAPI::DestroyCursor(): cursor is nullptr!");
+
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");

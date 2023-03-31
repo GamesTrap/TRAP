@@ -3135,45 +3135,45 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInitWayland()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindowWayland(InternalWindow* const window)
+void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindowWayland(InternalWindow& window)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-    if(window == s_Data.Wayland.PointerFocus)
+    if(&window == s_Data.Wayland.PointerFocus)
         s_Data.Wayland.PointerFocus = nullptr;
 
-    if(window == s_Data.Wayland.KeyboardFocus)
+    if(&window == s_Data.Wayland.KeyboardFocus)
         s_Data.Wayland.KeyboardFocus = nullptr;
 
-    if(window->Wayland.ContentType)
-        wp_content_type_v1_destroy(window->Wayland.ContentType);
+    if(window.Wayland.ContentType)
+        wp_content_type_v1_destroy(window.Wayland.ContentType);
 
-    if(window->Wayland.ActivationToken)
-        xdg_activation_token_v1_destroy(window->Wayland.ActivationToken);
+    if(window.Wayland.ActivationToken)
+        xdg_activation_token_v1_destroy(window.Wayland.ActivationToken);
 
-    if(window->Wayland.IdleInhibitor)
-        zwp_idle_inhibitor_v1_destroy(window->Wayland.IdleInhibitor);
+    if(window.Wayland.IdleInhibitor)
+        zwp_idle_inhibitor_v1_destroy(window.Wayland.IdleInhibitor);
 
-    if(window->Wayland.RelativePointer)
-        zwp_relative_pointer_v1_destroy(window->Wayland.RelativePointer);
+    if(window.Wayland.RelativePointer)
+        zwp_relative_pointer_v1_destroy(window.Wayland.RelativePointer);
 
-    if(window->Wayland.LockedPointer)
-        zwp_locked_pointer_v1_destroy(window->Wayland.LockedPointer);
+    if(window.Wayland.LockedPointer)
+        zwp_locked_pointer_v1_destroy(window.Wayland.LockedPointer);
 
-    if(window->Wayland.ConfinedPointer)
-        zwp_confined_pointer_v1_destroy(window->Wayland.ConfinedPointer);
+    if(window.Wayland.ConfinedPointer)
+        zwp_confined_pointer_v1_destroy(window.Wayland.ConfinedPointer);
 
-    DestroyShellObjectsWayland(*window);
+    DestroyShellObjectsWayland(window);
 
-    if(window->Wayland.Decorations.Buffer)
-        wl_buffer_destroy(window->Wayland.Decorations.Buffer);
+    if(window.Wayland.Decorations.Buffer)
+        wl_buffer_destroy(window.Wayland.Decorations.Buffer);
 
-    if(window->Wayland.Surface)
-        wl_surface_destroy(window->Wayland.Surface);
+    if(window.Wayland.Surface)
+        wl_surface_destroy(window.Wayland.Surface);
 
-    window->Wayland.Title = "";
-    window->Wayland.AppID = "";
-    window->Wayland.Scales.clear();
+    window.Wayland.Title = "";
+    window.Wayland.AppID = "";
+    window.Wayland.Scales.clear();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -3391,9 +3391,9 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to destroy.</param>
-		static void PlatformDestroyWindow(InternalWindow* window);
-		static void PlatformDestroyWindowX11(InternalWindow* window);
-		static void PlatformDestroyWindowWayland(InternalWindow* window);
+		static void PlatformDestroyWindow(InternalWindow& window);
+		static void PlatformDestroyWindowX11(InternalWindow& window);
+		static void PlatformDestroyWindowWayland(InternalWindow& window);
 		/// <summary>
 		/// This function destroys all remaining windows and cursor, and frees any other allocated resources.
 		/// Once this function is called, you must again call WindowingAPI::Init successfully before you

@@ -3792,3 +3792,7 @@ SITREP 03/30/2023|23w13b3
     - WindowingAPI Replaced pointer usage with references where possible ~>360 mins
     - WindowingAPILinux Fixed GetCursorPos() returning wrong values ~<20 mins
     - WindowingAPI Callbacks replaced pointer usage with references where possible ~<30 mins
+
+SITREP 03/31/2023|23w13b4
+    - Changed TRAP Engine version to 23w13b4(0.9.5)
+    - WindowingAPI PlatformDestroyWindow() Replaced pointer usage with references where possible ~<15 mins

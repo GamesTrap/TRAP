@@ -2118,36 +2118,34 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessX11(Interna
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindowX11(InternalWindow* const window)
+void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindowX11(InternalWindow& window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformDestroyWindowX11(): window is nullptr!");
+	if (s_Data.DisabledCursorWindow == &window)
+		EnableCursor(window);
 
-	if (s_Data.DisabledCursorWindow == window)
-		EnableCursor(*window);
+	if(window.Monitor)
+		ReleaseMonitor(window);
 
-	if(window->Monitor)
-		ReleaseMonitor(*window);
-
-	if(window->X11.IC)
+	if(window.X11.IC)
 	{
-		s_Data.X11.XLIB.DestroyIC(window->X11.IC);
-		window->X11.IC = nullptr;
+		s_Data.X11.XLIB.DestroyIC(window.X11.IC);
+		window.X11.IC = nullptr;
 	}
 
-	if(window->X11.Handle)
+	if(window.X11.Handle)
 	{
-		s_Data.X11.XLIB.DeleteContext(s_Data.X11.display, window->X11.Handle, s_Data.X11.Context);
-		s_Data.X11.XLIB.UnmapWindow(s_Data.X11.display, window->X11.Handle);
-		s_Data.X11.XLIB.DestroyWindow(s_Data.X11.display, window->X11.Handle);
-		window->X11.Handle = 0;
+		s_Data.X11.XLIB.DeleteContext(s_Data.X11.display, window.X11.Handle, s_Data.X11.Context);
+		s_Data.X11.XLIB.UnmapWindow(s_Data.X11.display, window.X11.Handle);
+		s_Data.X11.XLIB.DestroyWindow(s_Data.X11.display, window.X11.Handle);
+		window.X11.Handle = 0;
 	}
 
-	if(window->X11.colormap)
+	if(window.X11.colormap)
 	{
-		s_Data.X11.XLIB.FreeColormap(s_Data.X11.display, window->X11.colormap);
-		window->X11.colormap = 0;
+		s_Data.X11.XLIB.FreeColormap(s_Data.X11.display, window.X11.colormap);
+		window.X11.colormap = 0;
 	}
 
 	s_Data.X11.XLIB.Flush(s_Data.X11.display);

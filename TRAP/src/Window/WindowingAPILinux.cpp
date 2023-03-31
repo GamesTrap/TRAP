@@ -226,7 +226,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindow(InternalWindow* const window)
+void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindow(InternalWindow& window)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
