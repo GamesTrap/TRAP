@@ -982,44 +982,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow& window
 //Shared Code--------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Convert XKB KeySym to Unicode
-[[nodiscard]] uint32_t TRAP::INTERNAL::WindowingAPI::KeySymToUnicode(const uint32_t keySym)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
-
-	int32_t min = 0;
-	int32_t max = KeySymTab.size() - 1;
-	int32_t mid = 0;
-
-	//First check for Latin-1 characters (1:1 mapping)
-	if((keySym >= 0x0020 && keySym <= 0x007E) ||
-	   (keySym >= 0x00A0 && keySym <= 0x00FF))
-	{
-		return keySym;
-	}
-
-	//Also check for directly encoded 24-bit UCS characters
-	if((keySym & 0xFF000000) == 0x01000000)
-		return keySym & 0x00FFFFFF;
-
-	//Binary search in table
-	while(max >= min)
-	{
-		mid = (min + max) / 2;
-		if(KeySymTab[mid].keySym < keySym)
-			min = mid + 1;
-		else if(KeySymTab[mid].keySym > keySym)
-			max = mid - 1;
-		else
-			return KeySymTab[mid].UCS;
-	}
-
-	//No matching Unicode value found
-	return 0xFFFFFFFFu;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Splits and translates a text/uri-list into separate file paths
 [[nodiscard]] std::vector<std::string> TRAP::INTERNAL::WindowingAPI::ParseUriList(char* text)
 {

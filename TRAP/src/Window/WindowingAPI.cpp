@@ -80,10 +80,20 @@ void TRAP::INTERNAL::WindowingAPI::Shutdown()
 	s_Data.Callbacks = {};
 
 	while(!s_Data.WindowList.empty())
-		DestroyWindow(s_Data.WindowList.front().get());
+	{
+		if(s_Data.WindowList.front())
+			DestroyWindow(s_Data.WindowList.front().get());
+		else
+			s_Data.WindowList.remove(s_Data.WindowList.front());
+	}
 
 	while(!s_Data.CursorList.empty())
-		DestroyCursor(s_Data.CursorList.front().get());
+	{
+		if(s_Data.CursorList.front())
+			DestroyCursor(s_Data.CursorList.front().get());
+		else
+			s_Data.CursorList.remove(s_Data.CursorList.front());
+	}
 
 	s_Data.Monitors.clear();
 
@@ -240,6 +250,9 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 		return nullptr;
 	}
 
+	if(s_Data.Monitors.empty())
+		return nullptr;
+
 	return s_Data.Monitors[0].get();
 }
 
@@ -251,6 +264,7 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetMonitors(): must only be called from main thread");
+
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
@@ -260,7 +274,10 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 	std::vector<InternalMonitor*> monitors{};
 
 	for (const Scope<InternalMonitor>& monitor : s_Data.Monitors)
-		monitors.push_back(monitor.get());
+	{
+		if(monitor)
+			monitors.push_back(monitor.get());
+	}
 
 	return monitors;
 }
@@ -452,7 +469,7 @@ void TRAP::INTERNAL::WindowingAPI::CenterCursorInContentArea(InternalWindow& win
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::InputError(const Error code, const std::string& str)
+void TRAP::INTERNAL::WindowingAPI::InputError(const Error code, const std::string_view str)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -505,7 +522,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(InternalCursor* cursor)
 	//Make sure the cursor is not being used by any window
 	for(const Scope<InternalWindow>& window : s_Data.WindowList)
 	{
-		if (window->Cursor == cursor)
+		if (window && window->Cursor == cursor)
 			SetCursor(*window, nullptr);
 	}
 
@@ -1040,6 +1057,9 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitorBorderless(InternalWindow& wi
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetWindowMonitorBorderless(): must only be called from main thread");
+
 	window.videoMode.Width = monitor.CurrentMode.Width;
 	window.videoMode.Height = monitor.CurrentMode.Height;
 	window.videoMode.RefreshRate = monitor.CurrentMode.RefreshRate;
@@ -1393,136 +1413,6 @@ void TRAP::INTERNAL::WindowingAPI::SetDropCallback(InternalWindow& window, const
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return s_Data.Callbacks.Monitor;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Gets the position callback for the specified window.
-[[nodiscard]] TRAP::INTERNAL::WindowingAPI::WindowPositionFunc TRAP::INTERNAL::WindowingAPI::GetWindowPosCallback(const InternalWindow& window)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return window.Callbacks.Pos;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Gets the size callback for the specified window.
-[[nodiscard]] TRAP::INTERNAL::WindowingAPI::WindowSizeFunc TRAP::INTERNAL::WindowingAPI::GetWindowSizeCallback(const InternalWindow& window)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return window.Callbacks.Size;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Gets the close callback for the specified window.
-[[nodiscard]] TRAP::INTERNAL::WindowingAPI::WindowCloseFunc TRAP::INTERNAL::WindowingAPI::GetWindowCloseCallback(const InternalWindow& window)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return window.Callbacks.Close;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Gets the focus callback for the specified window.
-[[nodiscard]] TRAP::INTERNAL::WindowingAPI::WindowFocusFunc TRAP::INTERNAL::WindowingAPI::GetWindowFocusCallback(const InternalWindow& window)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return window.Callbacks.Focus;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Gets the framebuffer resize callback for the specified window.
-[[nodiscard]] TRAP::INTERNAL::WindowingAPI::FrameBufferSizeFunc TRAP::INTERNAL::WindowingAPI::GetFrameBufferSizeCallback(const InternalWindow& window)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return window.Callbacks.FBSize;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Gets the window content scale callback for the specified window.
-[[nodiscard]] TRAP::INTERNAL::WindowingAPI::WindowContentScaleFunc TRAP::INTERNAL::WindowingAPI::GetWindowContentScaleCallback(const InternalWindow& window)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return window.Callbacks.Scale;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Gets the key callback.
-[[nodiscard]] TRAP::INTERNAL::WindowingAPI::KeyFunc TRAP::INTERNAL::WindowingAPI::GetKeyCallback(const InternalWindow& window)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return window.Callbacks.Key;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Gets the Unicode character callback.
-[[nodiscard]] TRAP::INTERNAL::WindowingAPI::CharFunc TRAP::INTERNAL::WindowingAPI::GetCharCallback(const InternalWindow& window)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return window.Callbacks.Character;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Gets the mouse button callback.
-[[nodiscard]] TRAP::INTERNAL::WindowingAPI::MouseButtonFunc TRAP::INTERNAL::WindowingAPI::GetMouseButtonCallback(const InternalWindow& window)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return window.Callbacks.MouseButton;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Gets the cursor position callback.
-[[nodiscard]] TRAP::INTERNAL::WindowingAPI::CursorPositionFunc TRAP::INTERNAL::WindowingAPI::GetCursorPosCallback(const InternalWindow& window)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return window.Callbacks.CursorPos;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Gets the cursor enter callback.
-[[nodiscard]] TRAP::INTERNAL::WindowingAPI::CursorEnterFunc TRAP::INTERNAL::WindowingAPI::GetCursorEnterCallback(const InternalWindow& window)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return window.Callbacks.CursorEnter;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Gets the scroll callback.
-[[nodiscard]] TRAP::INTERNAL::WindowingAPI::ScrollFunc TRAP::INTERNAL::WindowingAPI::GetScrollCallback(const InternalWindow& window)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return window.Callbacks.Scroll;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Gets the path drop callback.
-[[nodiscard]] TRAP::INTERNAL::WindowingAPI::DropFunc TRAP::INTERNAL::WindowingAPI::GetDropCallback(const InternalWindow& window)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return window.Callbacks.Drop;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2361,21 +2251,6 @@ void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow& window, Input::Key k
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Notifies shared code of a Unicode codepoint input event
-//The 'plain' parameter determines whether to emit a regular character event
-void TRAP::INTERNAL::WindowingAPI::InputChar(const InternalWindow& window, const uint32_t codePoint)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	if (codePoint < 32 || (codePoint > 126 && codePoint < 160))
-		return;
-
-	if (window.Callbacks.Character)
-		window.Callbacks.Character(window, codePoint);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Notifies shared code of a mouse button click event
 void TRAP::INTERNAL::WindowingAPI::InputMouseClick(InternalWindow& window, const Input::MouseButton button,
                                                    const Input::KeyState state)
@@ -2413,17 +2288,6 @@ void TRAP::INTERNAL::WindowingAPI::InputScroll(const InternalWindow& window, con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Notifies shared code of a cursor enter/leave event
-void TRAP::INTERNAL::WindowingAPI::InputCursorEnter(const InternalWindow& window, const bool entered)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	if (window.Callbacks.CursorEnter)
-		window.Callbacks.CursorEnter(window, entered);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Notifies shared code that a window framebuffer has been resized
 //The size is specified in pixels
 void TRAP::INTERNAL::WindowingAPI::InputFrameBufferSize(const InternalWindow& window, const int32_t width,
@@ -2452,64 +2316,6 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowSize(const InternalWindow& window,
 
 	if (window.Callbacks.Size)
 		window.Callbacks.Size(window, width, height);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Notifies shared code that a window has been minimized
-void TRAP::INTERNAL::WindowingAPI::InputWindowMinimize(const InternalWindow& window, const bool restored)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	if (window.Callbacks.Minimize)
-		window.Callbacks.Minimize(window, !restored);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Notifies shared code that a window has been maximized
-void TRAP::INTERNAL::WindowingAPI::InputWindowMaximize(const InternalWindow& window, const bool restored)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	if (window.Callbacks.Maximize)
-		window.Callbacks.Maximize(window, !restored);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Notifies shared code that a window has moved
-//The position is specified in content area relative screen coordinates
-void TRAP::INTERNAL::WindowingAPI::InputWindowPos(const InternalWindow& window, const int32_t x, const int32_t y)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	if (window.Callbacks.Pos)
-		window.Callbacks.Pos(window, x, y);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Notifies shared code that the user wishes to close a window
-void TRAP::INTERNAL::WindowingAPI::InputWindowCloseRequest(InternalWindow& window)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	window.ShouldClose = true;
-
-	if (window.Callbacks.Close)
-		window.Callbacks.Close(window);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Notifies shared code of files or directories dropped on a window
-void TRAP::INTERNAL::WindowingAPI::InputDrop(const InternalWindow& window, const std::vector<std::string>& paths)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	if (window.Callbacks.Drop)
-		window.Callbacks.Drop(window, paths);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

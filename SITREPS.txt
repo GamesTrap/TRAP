@@ -3796,3 +3796,4 @@ SITREP 03/30/2023|23w13b3
 SITREP 03/31/2023|23w13b4
     - Changed TRAP Engine version to 23w13b4(0.9.5)
     - WindowingAPI PlatformDestroyWindow() Replaced pointer usage with references where possible ~<15 mins
+    - WindowingAPI Made functions constexpr where possible ~<30 mins

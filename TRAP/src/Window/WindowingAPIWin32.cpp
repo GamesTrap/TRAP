@@ -1352,50 +1352,6 @@ void TRAP::INTERNAL::WindowingAPI::UpdateTheme(HWND hWnd)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Returns the window style for the specified window
-[[nodiscard]] DWORD TRAP::INTERNAL::WindowingAPI::GetWindowStyle(const InternalWindow& window)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	DWORD style = WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
-
-	if (window.Monitor)
-		style |= WS_POPUP;
-	else
-	{
-		style |= WS_SYSMENU | WS_MINIMIZEBOX;
-
-		if (window.Decorated)
-		{
-			style |= WS_CAPTION;
-
-			if (window.Resizable)
-				style |= WS_MAXIMIZEBOX | WS_THICKFRAME;
-		}
-		else
-			style |= WS_POPUP;
-	}
-
-	return style;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Returns the extended window style for the specified window
-[[nodiscard]] DWORD TRAP::INTERNAL::WindowingAPI::GetWindowExStyle(const InternalWindow& window)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	DWORD style = WS_EX_APPWINDOW;
-
-	if (window.Monitor || window.Floating)
-		style |= WS_EX_TOPMOST;
-
-	return style;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Creates the TRAP window
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow& window, const WindowConfig& WNDConfig)
 {
@@ -2169,7 +2125,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	uint32_t modeIndex = 0;
-	std::vector<InternalVideoMode> result{}; //HACK: Always return the current video mode
+	std::vector<InternalVideoMode> result{};
+	//HACK: Always return the current video mode
 	const auto currMode = PlatformGetVideoMode(monitor);
 	if(currMode)
 		result.push_back(*currMode);

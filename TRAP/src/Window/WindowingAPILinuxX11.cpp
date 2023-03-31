@@ -60,45 +60,6 @@ static constexpr int32_t KeyRelease = 3;
 
 static constexpr uint32_t InvalidCodepoint = 0xFFFFFFFFu;
 
-//Calculates the refresh rate, in Hz, from the specified RandR mode info
-[[nodiscard]] std::optional<double> TRAP::INTERNAL::WindowingAPI::CalculateRefreshRate(const XRRModeInfo& mi)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	if(mi.hTotal && mi.vTotal)
-		return static_cast<double>(mi.dotClock) / (static_cast<double>(mi.hTotal) * static_cast<double>(mi.vTotal));
-
-	return std::nullopt;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] std::optional<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::VideoModeFromModeInfo(const XRRModeInfo& mi,
-                                                                                                                                 const XRRCrtcInfo& ci)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
-
-	InternalVideoMode mode{};
-
-	mode.Width = static_cast<int32_t>(mi.width);
-	mode.Height = static_cast<int32_t>(mi.height);
-
-	if(ci.rotation == RR_Rotate_90 || ci.rotation == RR_Rotate_270)
-		std::swap(mode.Width, mode.Height);
-
-	const std::optional<double> refreshRate = CalculateRefreshRate(mi);
-	if(refreshRate)
-		mode.RefreshRate = *refreshRate;
-	else
-		return std::nullopt;
-
-	SplitBPP(DefaultDepth(s_Data.X11.display, s_Data.X11.Screen), mode.RedBits, mode.GreenBits, mode.BlueBits);
-
-	return mode;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Sends an EWMH or ICCCM event to the window manager
 void TRAP::INTERNAL::WindowingAPI::SendEventToWM(const InternalWindow& window, const Atom type, const int64_t a,
 												 const int64_t b, const int64_t c, const int64_t d, const int64_t e)
@@ -407,22 +368,6 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowMode(InternalWindow& window)
 		if(!window.Transparent)
 			s_Data.X11.XLIB.DeleteProperty(s_Data.X11.display, window.X11.Handle, s_Data.X11.NET_WM_BYPASS_COMPOSITOR);
 	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Returns the mode info for a RandR mode XID
-[[nodiscard]] const XRRModeInfo* TRAP::INTERNAL::WindowingAPI::GetModeInfo(const XRRScreenResources& sr, const RRMode id)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
-
-	for(int32_t i = 0; i < sr.nmode; i++)
-	{
-		if(sr.modes[i].id == id)
-			return sr.modes + i;
-	}
-
-	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4399,10 +4344,10 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesX11()
 		struct Keys
 		{
 			TRAP::Input::Key Key = TRAP::Input::Key::Unknown;
-			std::string Name;
+			std::string_view Name;
 		};
 
-		const std::array<Keys, 121> KeyMap =
+		constexpr std::array<Keys, 121> KeyMap =
 		{
             {
                 { TRAP::Input::Key::Grave_Accent, "TLDE"}, { TRAP::Input::Key::One, "AE01"},
@@ -4480,7 +4425,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesX11()
 			//they are mapped here instead.
 			for(const Keys& keyMapKey : KeyMap)
 			{
-				if(strncmp(desc->names->keys[scanCode].name, keyMapKey.Name.c_str(), XkbKeyNameLength) == 0)
+				if(strncmp(desc->names->keys[scanCode].name, keyMapKey.Name.data(), XkbKeyNameLength) == 0)
 				{
 					key = keyMapKey.Key;
 					break;
@@ -4498,7 +4443,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesX11()
 
 				for(const Keys& keyMapKey : KeyMap)
 				{
-					if(strncmp(desc->names->key_aliases[i].alias, keyMapKey.Name.c_str(), XkbKeyNameLength) == 0)
+					if(strncmp(desc->names->key_aliases[i].alias, keyMapKey.Name.data(), XkbKeyNameLength) == 0)
 					{
 						key = keyMapKey.Key;
 						break;
