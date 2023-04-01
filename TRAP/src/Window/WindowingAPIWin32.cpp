@@ -3015,22 +3015,20 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotion(const InternalWindo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetProgress(const InternalWindow* const window,
-	                                                   const ProgressState state, const uint32_t completed)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowProgressIndicator(const InternalWindow& window,
+	                                                                  const ProgressState state, const double progress)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "WindowingAPI::PlatformSetProgress(): window is nullptr!");
-
-	if(!window->TaskbarList)
+	if(!window.TaskbarList)
 		return;
 
-	const uint32_t progress = TRAP::Math::Clamp(completed, 0u, 100u);
+	const int32_t progressValue = TRAP::Math::Round(progress * 100.0);
 
-	HRESULT res = window->TaskbarList->SetProgressValue(window->Handle, progress, 100u);
+	HRESULT res = window.TaskbarList->SetProgressValue(window.Handle, progressValue, 100u);
 	if(res != S_OK)
 	{
-		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to set progress value");
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to set taskbar progress value");
 		return;
 	}
 
@@ -3049,17 +3047,17 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetProgress(const InternalWindow* con
 	case ProgressState::Paused:
 		flag = TBPF_PAUSED;
 		break;
-	case ProgressState::NoProgress:
+	case ProgressState::Disabled:
 		[[fallthrough]];
 	default:
 		flag = TBPF_NOPROGRESS;
 		break;
 	}
 
-	res = window->TaskbarList->SetProgressState(window->Handle, flag);
+	res = window.TaskbarList->SetProgressState(window.Handle, flag);
 	if(res != S_OK)
 	{
-		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to set progress state");
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to set taskbar progress state");
 		return;
 	}
 }

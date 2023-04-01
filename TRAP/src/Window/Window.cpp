@@ -594,11 +594,11 @@ void TRAP::Window::SetRawMouseInput(const bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Window::SetProgress(const ProgressState state, const uint32_t progress) const
+void TRAP::Window::SetProgress(const ProgressState state, const double progress) const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
-	INTERNAL::WindowingAPI::SetProgress(*m_window, state, progress);
+	INTERNAL::WindowingAPI::SetWindowProgressIndicator(*m_window, state, progress);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

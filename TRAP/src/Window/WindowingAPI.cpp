@@ -1561,16 +1561,17 @@ void TRAP::INTERNAL::WindowingAPI::SetRawMouseMotionMode(InternalWindow& window,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::SetProgress(const InternalWindow& window, const ProgressState state,
-											   const uint32_t progress)
+void TRAP::INTERNAL::WindowingAPI::SetWindowProgressIndicator(const InternalWindow& window,
+                                                              const ProgressState state,
+											                  const double progress)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetProgress(): must only be called from main thread");
-	TRAP_ASSERT(progress <= 100, "WindowingAPI::SetProgress(): Progress must be between 0 and 100");
+	            "WindowingAPI::SetWindowProgressIndicator(): must only be called from main thread");
+	TRAP_ASSERT(progress >= 0.0 && progress <= 1.0, "WindowingAPI::SetWindowProgressIndicator(): Progress must be between 0.0 and 1.0");
 
-	PlatformSetProgress(&window, state, progress);
+	PlatformSetWindowProgressIndicator(window, state, progress);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

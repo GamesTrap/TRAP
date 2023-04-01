@@ -102,7 +102,7 @@ void TRAP::INTERNAL::WindowingAPI::LoadDBus()
 
         //Clear existing progress from bus
         if(s_Data.DBUS.Connection)
-            PlatformSetProgress(nullptr, ProgressState::NoProgress, 0u);
+            SetProgressIndicator(ProgressState::Disabled, 0.0);
     }
 }
 
@@ -717,8 +717,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotion(const InternalWindo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetProgress([[maybe_unused]] const InternalWindow* const window,
-                                                       const ProgressState state, const uint32_t completed)
+void TRAP::INTERNAL::WindowingAPI::SetProgressIndicator(const ProgressState state, const double progress)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -728,8 +727,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetProgress([[maybe_unused]] const In
 		return;
 
 	//Setup parameters
-	const dbus_bool_t progressVisible = (state != ProgressState::NoProgress);
-	const double progressValue = completed / 100.0;
+	const dbus_bool_t progressVisible = (state != ProgressState::Disabled);
 
 	DBusMessageIter args{};
 
@@ -767,7 +765,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetProgress([[maybe_unused]] const In
 	const char* const progressValueCStr = progressValueStr.c_str();
 	s_Data.DBUS.MessageIterAppendBasic(&sub2, DBUS_TYPE_STRING, &progressValueCStr);
 	s_Data.DBUS.MessageIterOpenContainer(&sub2, DBUS_TYPE_VARIANT, "d", &sub3);
-	s_Data.DBUS.MessageIterAppendBasic(&sub3, DBUS_TYPE_DOUBLE, &progressValue);
+	s_Data.DBUS.MessageIterAppendBasic(&sub3, DBUS_TYPE_DOUBLE, &progress);
 	s_Data.DBUS.MessageIterCloseContainer(&sub2, &sub3);
 	s_Data.DBUS.MessageIterCloseContainer(&sub1, &sub2);
 	s_Data.DBUS.MessageIterCloseContainer(&args, &sub1);
@@ -780,6 +778,18 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetProgress([[maybe_unused]] const In
 		s_Data.DBUS.ConnectionFlush(s_Data.DBUS.Connection);
 
 	s_Data.DBUS.MessageUnref(msg);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowProgressIndicator([[maybe_unused]] const InternalWindow& window,
+                                                                      const ProgressState state, const double progress)
+{
+    TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
+
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+
+    SetProgressIndicator(state, progress);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -637,7 +637,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		enum class ProgressState
 		{
-			NoProgress = 0,
+			Disabled = 0,
 			Indeterminate,
 			Normal,
 			Error,
@@ -2757,18 +2757,32 @@ namespace TRAP::INTERNAL
 		/// <returns>True if raw mouse motion mode is enabled, false otherwise.</returns>
 		[[nodiscard]] static bool GetRawMouseMotionMode(const InternalWindow& window);
 		/// <summary>
-		/// Sets the progress value and state on the taskbar for the specified window.
+		/// Sets the dock or taskbar progress indicator of the specified window.
 		///
 		/// Linux: This only works on KDE & Unity environments.
 		///        A .desktop file must exist for the application with the same name as given to TRAP::Application.
 		///
-		/// Errors: Possible errors include Error::Platform_Error and Error::Feature_Unavailable.
+		/// Errors: Possible errors include Error::Not_Initialized, Error::Invalid_Value,
+		///         Error::Invalid_Enum, Error::Platform_Error, Error::Feature_Unimplemented
+		//          and Error::Feature_Unavailable.
+		/// Remarks:
+		///     X11 & Wayland: Requires a valid application desktop file with the same name
+		///                    as the compiled executable. Due to limitations in the Unity Launcher API
+		///                    ProgressState::Indeterminate, ProgressState::Error and ProgressState::Paused
+		///                    have the same behaviour as ProgressState::Normal.
+		///                    The Unity Launcher API is only known to be supported on Unity and
+		///                    KDE desktop environments; on other desktop environments this
+		///                    function may do nothing.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to set progress for.</param>
-		/// <param name="state">State of progress.</param>
-		/// <param name="progress">How much has been completed. Valid values: 0 - 100.</param>
-		static void SetProgress(const InternalWindow& window, ProgressState state, uint32_t progress);
+		/// <param name="state">State of progress to be displayed in the dock or taskbar.</param>
+		/// <param name="progress">
+		/// The amount of completed progress to set.
+		/// Valid range is [0.0-1.0].
+		/// This parameter is ignored if state is ProgressState::Disabled
+		/// </param>
+		static void SetWindowProgressIndicator(const InternalWindow& window, ProgressState state, double progress);
 		/// <summary>
 		/// This function returns the name of the specified printable key, encoded as UTF-8.
 		/// This is typically the character that key would produce without any modifier
@@ -4042,15 +4056,32 @@ namespace TRAP::INTERNAL
 		static void PlatformSetRawMouseMotionX11(const InternalWindow& window, bool enabled);
 		static constexpr void PlatformSetRawMouseMotionWayland(const InternalWindow& window, bool enabled);
 		/// <summary>
-		/// Sets the progress value and state on the taskbar for the specified window.
+		/// Sets the dock or taskbar progress indicator of the specified window.
 		///
-		/// Errors: Possible errors include Error::Platform_Error and Error::Feature_Unavailable.
+		/// Linux: This only works on KDE & Unity environments.
+		///        A .desktop file must exist for the application with the same name as given to TRAP::Application.
+		///
+		/// Errors: Possible errors include Error::Not_Initialized, Error::Invalid_Value,
+		///         Error::Invalid_Enum, Error::Platform_Error, Error::Feature_Unimplemented
+		//          and Error::Feature_Unavailable.
+		/// Remarks:
+		///     X11 & Wayland: Requires a valid application desktop file with the same name
+		///                    as the compiled executable. Due to limitations in the Unity Launcher API
+		///                    ProgressState::Indeterminate, ProgressState::Error and ProgressState::Paused
+		///                    have the same behaviour as ProgressState::Normal.
+		///                    The Unity Launcher API is only known to be supported on Unity and
+		///                    KDE desktop environments; on other desktop environments this
+		///                    function may do nothing.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to set progress for.</param>
-		/// <param name="state">State of progress.</param>
-		/// <param name="completed">How much has been completed. Valid values: 0 - 100.</param>
-		static void PlatformSetProgress(const InternalWindow* window, ProgressState state, uint32_t completed);
+		/// <param name="state">State of progress to be displayed in the dock or taskbar.</param>
+		/// <param name="progress">
+		/// The amount of completed progress to set.
+		/// Valid range is [0.0-1.0].
+		/// This parameter is ignored if state is ProgressState::Disabled
+		/// </param>
+		static void PlatformSetWindowProgressIndicator(const InternalWindow& window, ProgressState state, double progress);
 		/// <summary>
 		/// This function returns the platform-specific scancode of the specified key.
 		///
@@ -5784,6 +5815,32 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Window to increment cursor image counter on.</param>
 		static void IncrementCursorImageWayland(const InternalWindow& window);
+		/// <summary>
+		/// Sets the dock or taskbar progress indicator via DBUS.
+		///
+		/// This only works on KDE & Unity environments.
+		/// A .desktop file must exist for the application with the same name as given to TRAP::Application.
+		///
+		/// Errors: Possible errors include Error::Not_Initialized, Error::Invalid_Value,
+		///         Error::Invalid_Enum, Error::Platform_Error, Error::Feature_Unimplemented
+		//          and Error::Feature_Unavailable.
+		/// Remarks:
+		///     X11 & Wayland: Requires a valid application desktop file with the same name
+		///                    as the compiled executable. Due to limitations in the Unity Launcher API
+		///                    ProgressState::Indeterminate, ProgressState::Error and ProgressState::Paused
+		///                    have the same behaviour as ProgressState::Normal.
+		///                    The Unity Launcher API is only known to be supported on Unity and
+		///                    KDE desktop environments; on other desktop environments this
+		///                    function may do nothing.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="state">State of progress to be displayed in the dock or taskbar.</param>
+		/// <param name="progress">
+		/// The amount of completed progress to set.
+		/// Valid range is [0.0-1.0].
+		/// This parameter is ignored if state is ProgressState::Disabled
+		/// </param>
+		static void SetProgressIndicator(const ProgressState state, const double progress);
 
 		friend std::optional<std::string> TRAP::Input::GetKeyboardLayoutName();
 

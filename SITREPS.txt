@@ -3807,3 +3807,4 @@ SITREP 04/01/2023|23w13c1
     - Docs Added NVIDIA Reflex SDK to additional libraries ~<5 mins
     - All known critical errors now have a MsgBox and quit the engine immediately ~<10 mins
     - Fixed warnings in Games folder ~<10 mins
+    - WindowingAPI Updated Taskbar progress implementation ~<10 mins

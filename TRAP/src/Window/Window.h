@@ -227,8 +227,8 @@ namespace TRAP
 		///        A .desktop file must exist for the application with the same name as given to TRAP::Application.
 		/// </summary>
 		/// <param name="state">State of progress.</param>
-		/// <param name="progress">How much has been completed. Valid values: 0 - 100.</param>
-		void SetProgress(ProgressState state, uint32_t progress) const;
+		/// <param name="progress">How much has been completed. Valid range [0.0-1.0].</param>
+		void SetProgress(ProgressState state, double progress) const;
 		/// <summary>
 		/// Resets the window icon to the TRAP logo.
 		/// </summary>

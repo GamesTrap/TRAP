@@ -110,28 +110,28 @@ bool WindowStateTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 		break;
 
 	case TRAP::Input::Key::One:
-		window->SetProgress(TRAP::Window::ProgressState::NoProgress, 0);
+		window->SetProgress(TRAP::Window::ProgressState::Disabled, 0.0);
 		break;
 	case TRAP::Input::Key::Two:
-		window->SetProgress(TRAP::Window::ProgressState::Normal, 25);
+		window->SetProgress(TRAP::Window::ProgressState::Normal, 0.25);
 		break;
 	case TRAP::Input::Key::Three:
-		window->SetProgress(TRAP::Window::ProgressState::Normal, 50);
+		window->SetProgress(TRAP::Window::ProgressState::Normal, 0.50);
 		break;
 	case TRAP::Input::Key::Four:
-		window->SetProgress(TRAP::Window::ProgressState::Normal, 75);
+		window->SetProgress(TRAP::Window::ProgressState::Normal, 0.75);
 		break;
 	case TRAP::Input::Key::Five:
-		window->SetProgress(TRAP::Window::ProgressState::Normal, 100);
+		window->SetProgress(TRAP::Window::ProgressState::Normal, 1.0);
 		break;
 	case TRAP::Input::Key::Six:
-		window->SetProgress(TRAP::Window::ProgressState::Indeterminate, 0);
+		window->SetProgress(TRAP::Window::ProgressState::Indeterminate, 0.0);
 		break;
 	case TRAP::Input::Key::Seven:
-		window->SetProgress(TRAP::Window::ProgressState::Error, 100);
+		window->SetProgress(TRAP::Window::ProgressState::Error, 1.0);
 		break;
 	case TRAP::Input::Key::Eight:
-		window->SetProgress(TRAP::Window::ProgressState::Paused, 100);
+		window->SetProgress(TRAP::Window::ProgressState::Paused, 1.0);
 		break;
 	case TRAP::Input::Key::Nine:
 		window->RequestAttention();
