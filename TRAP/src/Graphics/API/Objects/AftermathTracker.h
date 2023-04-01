@@ -27,13 +27,13 @@ namespace TRAP::Graphics::AftermathTracker
 	///
 	/// Logs a message in case of an error.
 	/// </summary>
-	/// <param name="ress">Aftermath result to check.</param>
+	/// <param name="res">Aftermath result to check.</param>
 	void AftermathCall(GFSDK_Aftermath_Result res);
 
 	/// <summary>
 	/// Retrieve the crash dump generation status.
 	/// </summary>
-	/// <param name="outStatus">Output: Statuc of the crash dump generation.</param>
+	/// <param name="outStatus">Output: Status of the crash dump generation.</param>
 	/// <returns>Result the crash dump status call.</returns>
 	[[nodiscard]] GFSDK_Aftermath_Result GetGPUCrashDumpStatus(GFSDK_Aftermath_CrashDump_Status& outStatus);
 #endif

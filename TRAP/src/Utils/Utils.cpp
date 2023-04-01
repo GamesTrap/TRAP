@@ -321,8 +321,7 @@
 									"Make sure the appropriate environment variable(s) is/are set!\n"
 									"Error code: 0x0008",
 									Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::EngineLinuxPrefix, "Unsupported window manager!");
-		TRAP::Application::Shutdown();
+		TP_CRITICAL(Log::EngineLinuxPrefix, "Window manager is unsupported! (0x0008)");
 		exit(0x0008);
 #else
 		return LinuxWindowManager::Unknown;

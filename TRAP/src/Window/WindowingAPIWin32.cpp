@@ -104,8 +104,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 	Utils::Dialogs::ShowMsgBox("Unsupported Windows version", "Unsupported Windows version!\n"
 	                           "TRAP™ needs Windows 7 or newer\nError code: 0x000A",
 							   Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
-	TP_CRITICAL(Log::EngineWindowsPrefix, "Unsupported Windows version!");
-	TRAP::Application::Shutdown();
+	TP_CRITICAL(Log::EngineWindowsPrefix, "Unsupported Windows version! (0x000A)");
 	exit(0x000A);
 }
 

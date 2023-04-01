@@ -34,12 +34,11 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 
 	if (!m_physicalDevice)
 	{
-		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan physical device creation failed!\n"
+		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan: Physical device creation failed!\n"
 													   "Error code: 0x0006",
 								   Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::RendererVulkanPhysicalDevicePrefix, "Physical device creation failed!");
-		TRAP::Application::Shutdown();
+		TP_CRITICAL(Log::RendererVulkanPhysicalDevicePrefix, "Vulkan: Physical device creation failed! (0x0006)");
 		exit(0x0006);
 	}
 
@@ -423,12 +422,11 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 		RatePhysicalDevices(physicalDevices, instance->GetVkInstance());
 	else
 	{
-		Utils::Dialogs::ShowMsgBox("Vulkan API error", "No Vulkan capable physical device was found!\n"
+		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan: No capable physical device was found!\n"
 													   "Error code: 0x0007",
 								   Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::RendererVulkanPrefix, "No Vulkan capable physical device was found!!");
-		TRAP::Application::Shutdown();
+		TP_CRITICAL(Log::RendererVulkanPrefix, "Vulkan: No capable physical device was found! (0x0007)");
 		exit(0x0007);
 	}
 
@@ -493,12 +491,11 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 		RatePhysicalDevices(physicalDevices, instance);
 	else
 	{
-		Utils::Dialogs::ShowMsgBox("Vulkan API error", "No Vulkan capable physical device was found!\n"
+		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan: No capable physical device was found!\n"
 													   "Error code: 0x0007",
 								   Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::RendererVulkanPrefix, "No Vulkan capable physical device was found!");
-		TRAP::Application::Shutdown();
+		TP_CRITICAL(Log::RendererVulkanPrefix, "Vulkan: No capable physical device was found! (0x0007)");
 		exit(0x0007);
 	}
 
@@ -591,9 +588,11 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 #ifndef TRAP_HEADLESS_MODE
 		if (!INTERNAL::WindowingAPI::Init())
 		{
-			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
-					"\" Failed to initialize WindowingAPI!");
-			TRAP::Application::Shutdown();
+			Utils::Dialogs::ShowMsgBox("Failed to initialize WindowingAPI", "The WindowingAPI couldn't be initialized!\n"
+								       "Error code: 0x0011", Utils::Dialogs::Style::Error,
+								       Utils::Dialogs::Buttons::Quit);
+			TP_CRITICAL(Log::RendererVulkanPrefix, "The WindowingAPI couldn't be initialized! (0x0011)");
+			exit(0x0011);
 		}
 #endif
 

@@ -7,6 +7,7 @@
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/API/Objects/AftermathTracker.h"
+#include "Utils/Dialogs/Dialogs.h"
 
 TRAP::Graphics::API::VulkanFence::VulkanFence()
 	: m_fence(VK_NULL_HANDLE), m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
@@ -101,6 +102,10 @@ void TRAP::Graphics::API::VulkanFence::Wait()
 					tElapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - tStart);
 				}
 
+				Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan: Device lost!\nA GPU crashdump may have been created.\n"
+										   "Error code: 0x000D", Utils::Dialogs::Style::Error,
+										   Utils::Dialogs::Buttons::Quit);
+				TP_CRITICAL(Log::RendererVulkanPrefix, "Vulkan: Device lost!\nA GPU crashdump may have been created. (0x000D)");
 				exit(0x000D);
 			}
 		}

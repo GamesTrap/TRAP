@@ -3805,3 +3805,4 @@ SITREP 04/01/2023|23w13c1
     - ImageFormat/VulkanCommon Commented out deprecated formats of VK_IMG_format_pvrtc extension ~<10 mins
     - Vec2/3/4 Added std::get() support ~<10 mins
     - Docs Added NVIDIA Reflex SDK to additional libraries ~<5 mins
+    - All known critical errors now have a MsgBox and quit the engine immediately ~<10 mins

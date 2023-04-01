@@ -65,8 +65,7 @@ void TRAP::Graphics::RendererAPI::Init(const std::string_view gameName, const Re
 		Utils::Dialogs::ShowMsgBox("Unsupported device", "Device is unsupported!\nNo RenderAPI selected!\n"
 								   "Error code: 0x0002", Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::RendererPrefix, "Unsupported device!");
-		TRAP::Application::Shutdown();
+		TP_CRITICAL(Log::RendererPrefix, "Unsupported device! (0x0002)");
 		exit(0x0002);
 	}
 
@@ -152,7 +151,7 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 									 "Does your system meet the minimum system requirements for running TRAP™?\n"
 									 "Please check your GPU driver!\nError code: 0x000B", Utils::Dialogs::Style::Error,
 		Utils::Dialogs::Buttons::Quit);
-	TRAP::Application::Shutdown();
+	TP_CRITICAL(Log::RendererPrefix, "TRAP™ was unable to detect a compatible RenderAPI! (0x000B)");
 	exit(0x000B);
 #else
 	TP_WARN(Log::RendererPrefix, "Disabling RendererAPI, no compatible RenderAPI was found!");
@@ -540,8 +539,11 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 	{
 		if (!INTERNAL::WindowingAPI::Init())
 		{
-			TP_ERROR(Log::RendererVulkanPrefix, "Failed to initialize WindowingAPI!");
-			TRAP::Application::Shutdown();
+			Utils::Dialogs::ShowMsgBox("Failed to initialize WindowingAPI", "The WindowingAPI couldn't be initialized!\n"
+								       "Error code: 0x0011", Utils::Dialogs::Style::Error,
+								       Utils::Dialogs::Buttons::Quit);
+			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed to initialize WindowingAPI! (0x0011)");
+			exit(0x0011);
 		}
 	}
 

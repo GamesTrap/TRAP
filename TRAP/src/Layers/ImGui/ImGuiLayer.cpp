@@ -143,8 +143,8 @@ void TRAP::ImGuiLayer::OnAttach()
 		Utils::Dialogs::ShowMsgBox("Failed to initialize ImGui", "Failed to initialize ImGui!\n"
 								   "Error code: 0x0013", Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::ImGuiPrefix, "Failed to initialize ImGui!");
-		TRAP::Application::Shutdown();
+		TP_CRITICAL(Log::ImGuiPrefix, "Failed to initialize ImGui! (0x0013)");
+		exit(0x0013);
 	}
 
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)

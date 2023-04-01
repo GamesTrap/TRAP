@@ -31,14 +31,22 @@ void TRAP::Utils::Steam::Initalize([[maybe_unused]] const uint32_t appID)
 
     if(SteamAPI_RestartAppIfNecessary(appID))
     {
-        TP_ERROR(TRAP::Log::SteamworksSDKPrefix, "Please launch the game through Steam!");
-        exit(-1);
+		TRAP::Utils::Dialogs::ShowMsgBox("Application error",
+										 "Please launch the game through Steam!\nError code: 0x0015",
+										 Utils::Dialogs::Style::Error,
+										 Utils::Dialogs::Buttons::Quit);
+		TP_CRITICAL(Log::SteamworksSDKPrefix, "Please launch the game through Steam! (0x0015)");
+        exit(0x0015);
     }
 
     if(!SteamAPI_Init())
     {
-        TP_ERROR(TRAP::Log::SteamworksSDKPrefix, "Steam must be running to play this game!");
-        exit(-1);
+		TRAP::Utils::Dialogs::ShowMsgBox("Application error",
+										 "Steam must be running to play the game!\nError code: 0x0016",
+										 Utils::Dialogs::Style::Error,
+										 Utils::Dialogs::Buttons::Quit);
+		TP_CRITICAL(Log::SteamworksSDKPrefix, "Steam must be running to play the game! (0x0016)");
+        exit(0x0016);
     }
 
     SteamUtils()->SetWarningMessageHook(&SteamLogCallback);

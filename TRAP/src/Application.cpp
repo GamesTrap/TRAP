@@ -170,9 +170,10 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 
 	if(!singleProcess)
 	{
-		Utils::Dialogs::ShowMsgBox("TRAP™ already running", "A TRAP™ Application is already running!\n"
+		Utils::Dialogs::ShowMsgBox("TRAP™ is already running", "A TRAP™ Application is already running!\n"
 		                           "Error code: 0x0012", Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
+		TP_CRITICAL(Log::ApplicationPrefix, "A TRAP™ Application is already running! (0x0012)");
 		exit(0x0012);
 	}
 #endif

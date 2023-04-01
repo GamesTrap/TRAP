@@ -181,10 +181,10 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerWindowData* c
 	//Try again, if it also fails with the updated swapchain, quit engine
 	if(!acquiredImage)
 	{
-		Utils::Dialogs::ShowMsgBox("Failed to acquire image", "Vulkan: Failed to acquire next swapchain image!\n"
+		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan: Failed to acquire next swapchain image!\n"
 								   "Error code: 0x0014", Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
-		TRAP::Application::Shutdown();
+		TP_CRITICAL(Log::RendererPrefix, "Vulkan: Failed to acquire next swapchain image! (0x0014)");
 		exit(0x0014);
 	}
 
@@ -411,19 +411,23 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerWindowData* const p)
 	else if (presentStatus == PresentStatus::DeviceReset || presentStatus == PresentStatus::Failed)
 	{
 		if (presentStatus == PresentStatus::DeviceReset)
-			TRAP::Utils::Dialogs::ShowMsgBox("Presenting failed", "Vulkan: Device was reset while presenting!\n"
+		{
+			TRAP::Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan: Device was reset while presenting!\n"
 				"Error code: 0x000D",
 				TRAP::Utils::Dialogs::Style::Error,
 				TRAP::Utils::Dialogs::Buttons::Quit);
+			TP_CRITICAL(Log::RendererPrefix, "Vulkan: Device was reset while presenting! (0x000D)");
+			exit(0x000D);
+		}
 		else if (presentStatus == PresentStatus::Failed)
 		{
-			TRAP::Utils::Dialogs::ShowMsgBox("Presenting failed", "Vulkan: Presenting failed!\n"
+			TRAP::Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan: Presenting failed!\n"
 				"Error code: 0x000F",
 				TRAP::Utils::Dialogs::Style::Error,
 				TRAP::Utils::Dialogs::Buttons::Quit);
+			TP_CRITICAL(Log::RendererPrefix, "Vulkan: Presenting failed! (0x000F)");
+			exit(0x000F);
 		}
-
-		TRAP::Application::Shutdown();
 	}
 #else /*TRAP_HEADLESS_MODE*/
 	if(p->Resize)
@@ -2301,7 +2305,14 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* const window
 	p->SwapChain = SwapChain::Create(swapChainDesc);
 
 	if (!p->SwapChain)
-		TRAP::Application::Shutdown();
+	{
+		TRAP::Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan: Failed to create new SwapChain!\n"
+			"Error code: 0x0010",
+			TRAP::Utils::Dialogs::Style::Error,
+			TRAP::Utils::Dialogs::Buttons::Quit);
+		TP_CRITICAL(Log::RendererPrefix, "Vulkan: Failed to create new SwapChain! (0x0010)");
+		exit(0x0010);
+	}
 
 	//Create MSAA RenderTargets if needed
 	if(s_currentAntiAliasing == AntiAliasing::MSAA)
@@ -2477,8 +2488,7 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Mandatory Vulkan surface extensions are unsupported!\n"
 								   "Error code: 0x0003", Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan surface extensions are unsupported!");
-		TRAP::Application::Shutdown();
+		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan surface extensions are unsupported! (0x0003)");
 		exit(0x0003);
 #endif
 	}
@@ -2544,8 +2554,7 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Mandatory Vulkan swapchain extension is unsupported!\n"
 								   "Error code: 0x0004", Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan swapchain extension is unsupported!");
-		TRAP::Application::Shutdown();
+		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan swapchain extension is unsupported! (0x0004)");
 		exit(0x0004);
 	}
 
