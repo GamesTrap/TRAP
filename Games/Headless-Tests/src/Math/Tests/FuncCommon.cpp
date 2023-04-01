@@ -753,8 +753,8 @@ namespace FuncCommon
     {
         int32_t error = 0;
 
-        constexpr float zeroF = 0.0;
-        constexpr double zeroD = 0.0;
+        float zeroF = 0.0;
+        double zeroD = 0.0;
 
         {
             error += true == TRAP::Math::IsNaN(0.0 / zeroD) ? 0 : 1;
@@ -779,8 +779,8 @@ namespace FuncCommon
     {
         int32_t error = 0;
 
-        constexpr float zeroF = 0.0;
-        constexpr double zeroD = 0.0;
+        float zeroF = 0.0;
+        double zeroD = 0.0;
 
         {
             error += true == TRAP::Math::IsInf( 1.0 / zeroD) ? 0 : 1;
