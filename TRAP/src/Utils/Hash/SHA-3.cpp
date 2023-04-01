@@ -36,79 +36,79 @@ void DoTransform(std::array<uint64_t, 25>& A)
 	{
 		std::array<uint64_t, 5> c{};
 		std::array<uint64_t, 5> d{};
-		c[0] = A[0 * 5 + 0] ^ A[1 * 5 + 0] ^ A[2 * 5 + 0] ^ A[3 * 5 + 0] ^ A[4 * 5 + 0];
-		c[1] = A[0 * 5 + 1] ^ A[1 * 5 + 1] ^ A[2 * 5 + 1] ^ A[3 * 5 + 1] ^ A[4 * 5 + 1];
-		c[2] = A[0 * 5 + 2] ^ A[1 * 5 + 2] ^ A[2 * 5 + 2] ^ A[3 * 5 + 2] ^ A[4 * 5 + 2];
-		c[3] = A[0 * 5 + 3] ^ A[1 * 5 + 3] ^ A[2 * 5 + 3] ^ A[3 * 5 + 3] ^ A[4 * 5 + 3];
-		c[4] = A[0 * 5 + 4] ^ A[1 * 5 + 4] ^ A[2 * 5 + 4] ^ A[3 * 5 + 4] ^ A[4 * 5 + 4];
+		std::get<0>(c) = std::get<0 * 5 + 0>(A) ^ std::get<1 * 5 + 0>(A) ^ std::get<2 * 5 + 0>(A) ^ std::get<3 * 5 + 0>(A) ^ std::get<4 * 5 + 0>(A);
+		std::get<1>(c) = std::get<0 * 5 + 1>(A) ^ std::get<1 * 5 + 1>(A) ^ std::get<2 * 5 + 1>(A) ^ std::get<3 * 5 + 1>(A) ^ std::get<4 * 5 + 1>(A);
+		std::get<2>(c) = std::get<0 * 5 + 2>(A) ^ std::get<1 * 5 + 2>(A) ^ std::get<2 * 5 + 2>(A) ^ std::get<3 * 5 + 2>(A) ^ std::get<4 * 5 + 2>(A);
+		std::get<3>(c) = std::get<0 * 5 + 3>(A) ^ std::get<1 * 5 + 3>(A) ^ std::get<2 * 5 + 3>(A) ^ std::get<3 * 5 + 3>(A) ^ std::get<4 * 5 + 3>(A);
+		std::get<4>(c) = std::get<0 * 5 + 4>(A) ^ std::get<1 * 5 + 4>(A) ^ std::get<2 * 5 + 4>(A) ^ std::get<3 * 5 + 4>(A) ^ std::get<4 * 5 + 4>(A);
 
-		d[0] = c[4] ^ Rotatel64(c[1], 1);
-		d[1] = c[0] ^ Rotatel64(c[2], 1);
-		d[2] = c[1] ^ Rotatel64(c[3], 1);
-		d[3] = c[2] ^ Rotatel64(c[4], 1);
-		d[4] = c[3] ^ Rotatel64(c[0], 1);
+		std::get<0>(d) = std::get<4>(c) ^ Rotatel64(std::get<1>(c), 1);
+		std::get<1>(d) = std::get<0>(c) ^ Rotatel64(std::get<2>(c), 1);
+		std::get<2>(d) = std::get<1>(c) ^ Rotatel64(std::get<3>(c), 1);
+		std::get<3>(d) = std::get<2>(c) ^ Rotatel64(std::get<4>(c), 1);
+		std::get<4>(d) = std::get<3>(c) ^ Rotatel64(std::get<0>(c), 1);
 
-		const uint64_t b0 = A[0 * 5 + 0] ^ d[0];
-		const uint64_t b10 = Rotatel64(A[0 * 5 + 1] ^ d[1], 1);
-		const uint64_t b20 = Rotatel64(A[0 * 5 + 2] ^ d[2], 62);
-		const uint64_t b5 = Rotatel64(A[0 * 5 + 3] ^ d[3], 28);
-		const uint64_t b15 = Rotatel64(A[0 * 5 + 4] ^ d[4], 27);
+		const uint64_t b0  = std::get<0 * 5 + 0>(A) ^ std::get<0>(d);
+		const uint64_t b10 = Rotatel64(std::get<0 * 5 + 1>(A) ^ std::get<1>(d), 1);
+		const uint64_t b20 = Rotatel64(std::get<0 * 5 + 2>(A) ^ std::get<2>(d), 62);
+		const uint64_t b5  = Rotatel64(std::get<0 * 5 + 3>(A) ^ std::get<3>(d), 28);
+		const uint64_t b15 = Rotatel64(std::get<0 * 5 + 4>(A) ^ std::get<4>(d), 27);
 
-		const uint64_t b16 = Rotatel64(A[1 * 5 + 0] ^ d[0], 36);
-		const uint64_t b1 = Rotatel64(A[1 * 5 + 1] ^ d[1], 44);
-		const uint64_t b11 = Rotatel64(A[1 * 5 + 2] ^ d[2], 6);
-		const uint64_t b21 = Rotatel64(A[1 * 5 + 3] ^ d[3], 55);
-		const uint64_t b6 = Rotatel64(A[1 * 5 + 4] ^ d[4], 20);
+		const uint64_t b16 = Rotatel64(std::get<1 * 5 + 0>(A) ^ std::get<0>(d), 36);
+		const uint64_t b1  = Rotatel64(std::get<1 * 5 + 1>(A) ^ std::get<1>(d), 44);
+		const uint64_t b11 = Rotatel64(std::get<1 * 5 + 2>(A) ^ std::get<2>(d), 6);
+		const uint64_t b21 = Rotatel64(std::get<1 * 5 + 3>(A) ^ std::get<3>(d), 55);
+		const uint64_t b6  = Rotatel64(std::get<1 * 5 + 4>(A) ^ std::get<4>(d), 20);
 
-		const uint64_t b7 = Rotatel64(A[2 * 5 + 0] ^ d[0], 3);
-		const uint64_t b17 = Rotatel64(A[2 * 5 + 1] ^ d[1], 10);
-		const uint64_t b2 = Rotatel64(A[2 * 5 + 2] ^ d[2], 43);
-		const uint64_t b12 = Rotatel64(A[2 * 5 + 3] ^ d[3], 25);
-		const uint64_t b22 = Rotatel64(A[2 * 5 + 4] ^ d[4], 39);
+		const uint64_t b7  = Rotatel64(std::get<2 * 5 + 0>(A) ^ std::get<0>(d), 3);
+		const uint64_t b17 = Rotatel64(std::get<2 * 5 + 1>(A) ^ std::get<1>(d), 10);
+		const uint64_t b2  = Rotatel64(std::get<2 * 5 + 2>(A) ^ std::get<2>(d), 43);
+		const uint64_t b12 = Rotatel64(std::get<2 * 5 + 3>(A) ^ std::get<3>(d), 25);
+		const uint64_t b22 = Rotatel64(std::get<2 * 5 + 4>(A) ^ std::get<4>(d), 39);
 
-		const uint64_t b23 = Rotatel64(A[3 * 5 + 0] ^ d[0], 41);
-		const uint64_t b8 = Rotatel64(A[3 * 5 + 1] ^ d[1], 45);
-		const uint64_t b18 = Rotatel64(A[3 * 5 + 2] ^ d[2], 15);
-		const uint64_t b3 = Rotatel64(A[3 * 5 + 3] ^ d[3], 21);
-		const uint64_t b13 = Rotatel64(A[3 * 5 + 4] ^ d[4], 8);
+		const uint64_t b23 = Rotatel64(std::get<3 * 5 + 0>(A) ^ std::get<0>(d), 41);
+		const uint64_t b8  = Rotatel64(std::get<3 * 5 + 1>(A) ^ std::get<1>(d), 45);
+		const uint64_t b18 = Rotatel64(std::get<3 * 5 + 2>(A) ^ std::get<2>(d), 15);
+		const uint64_t b3  = Rotatel64(std::get<3 * 5 + 3>(A) ^ std::get<3>(d), 21);
+		const uint64_t b13 = Rotatel64(std::get<3 * 5 + 4>(A) ^ std::get<4>(d), 8);
 
-		const uint64_t b14 = Rotatel64(A[4 * 5 + 0] ^ d[0], 18);
-		const uint64_t b24 = Rotatel64(A[4 * 5 + 1] ^ d[1], 2);
-		const uint64_t b9 = Rotatel64(A[4 * 5 + 2] ^ d[2], 61);
-		const uint64_t b19 = Rotatel64(A[4 * 5 + 3] ^ d[3], 56);
-		const uint64_t b4 = Rotatel64(A[4 * 5 + 4] ^ d[4], 14);
+		const uint64_t b14 = Rotatel64(std::get<4 * 5 + 0>(A) ^ std::get<0>(d), 18);
+		const uint64_t b24 = Rotatel64(std::get<4 * 5 + 1>(A) ^ std::get<1>(d), 2);
+		const uint64_t b9  = Rotatel64(std::get<4 * 5 + 2>(A) ^ std::get<2>(d), 61);
+		const uint64_t b19 = Rotatel64(std::get<4 * 5 + 3>(A) ^ std::get<3>(d), 56);
+		const uint64_t b4  = Rotatel64(std::get<4 * 5 + 4>(A) ^ std::get<4>(d), 14);
 
-		A[0 * 5 + 0] = b0 ^ ((~b1) & b2);
-		A[0 * 5 + 1] = b1 ^ ((~b2) & b3);
-		A[0 * 5 + 2] = b2 ^ ((~b3) & b4);
-		A[0 * 5 + 3] = b3 ^ ((~b4) & b0);
-		A[0 * 5 + 4] = b4 ^ ((~b0) & b1);
+		std::get<0 * 5 + 0>(A) = b0 ^ ((~b1) & b2);
+		std::get<0 * 5 + 1>(A) = b1 ^ ((~b2) & b3);
+		std::get<0 * 5 + 2>(A) = b2 ^ ((~b3) & b4);
+		std::get<0 * 5 + 3>(A) = b3 ^ ((~b4) & b0);
+		std::get<0 * 5 + 4>(A) = b4 ^ ((~b0) & b1);
 
-		A[1 * 5 + 0] = b5 ^ ((~b6) & b7);
-		A[1 * 5 + 1] = b6 ^ ((~b7) & b8);
-		A[1 * 5 + 2] = b7 ^ ((~b8) & b9);
-		A[1 * 5 + 3] = b8 ^ ((~b9) & b5);
-		A[1 * 5 + 4] = b9 ^ ((~b5) & b6);
+		std::get<1 * 5 + 0>(A) = b5 ^ ((~b6) & b7);
+		std::get<1 * 5 + 1>(A) = b6 ^ ((~b7) & b8);
+		std::get<1 * 5 + 2>(A) = b7 ^ ((~b8) & b9);
+		std::get<1 * 5 + 3>(A) = b8 ^ ((~b9) & b5);
+		std::get<1 * 5 + 4>(A) = b9 ^ ((~b5) & b6);
 
-		A[2 * 5 + 0] = b10 ^ ((~b11) & b12);
-		A[2 * 5 + 1] = b11 ^ ((~b12) & b13);
-		A[2 * 5 + 2] = b12 ^ ((~b13) & b14);
-		A[2 * 5 + 3] = b13 ^ ((~b14) & b10);
-		A[2 * 5 + 4] = b14 ^ ((~b10) & b11);
+		std::get<2 * 5 + 0>(A) = b10 ^ ((~b11) & b12);
+		std::get<2 * 5 + 1>(A) = b11 ^ ((~b12) & b13);
+		std::get<2 * 5 + 2>(A) = b12 ^ ((~b13) & b14);
+		std::get<2 * 5 + 3>(A) = b13 ^ ((~b14) & b10);
+		std::get<2 * 5 + 4>(A) = b14 ^ ((~b10) & b11);
 
-		A[3 * 5 + 0] = b15 ^ ((~b16) & b17);
-		A[3 * 5 + 1] = b16 ^ ((~b17) & b18);
-		A[3 * 5 + 2] = b17 ^ ((~b18) & b19);
-		A[3 * 5 + 3] = b18 ^ ((~b19) & b15);
-		A[3 * 5 + 4] = b19 ^ ((~b15) & b16);
+		std::get<3 * 5 + 0>(A) = b15 ^ ((~b16) & b17);
+		std::get<3 * 5 + 1>(A) = b16 ^ ((~b17) & b18);
+		std::get<3 * 5 + 2>(A) = b17 ^ ((~b18) & b19);
+		std::get<3 * 5 + 3>(A) = b18 ^ ((~b19) & b15);
+		std::get<3 * 5 + 4>(A) = b19 ^ ((~b15) & b16);
 
-		A[4 * 5 + 0] = b20 ^ ((~b21) & b22);
-		A[4 * 5 + 1] = b21 ^ ((~b22) & b23);
-		A[4 * 5 + 2] = b22 ^ ((~b23) & b24);
-		A[4 * 5 + 3] = b23 ^ ((~b24) & b20);
-		A[4 * 5 + 4] = b24 ^ ((~b20) & b21);
+		std::get<4 * 5 + 0>(A) = b20 ^ ((~b21) & b22);
+		std::get<4 * 5 + 1>(A) = b21 ^ ((~b22) & b23);
+		std::get<4 * 5 + 2>(A) = b22 ^ ((~b23) & b24);
+		std::get<4 * 5 + 3>(A) = b23 ^ ((~b24) & b20);
+		std::get<4 * 5 + 4>(A) = b24 ^ ((~b20) & b21);
 
-		A[0] ^= RC[round];
+		std::get<0>(A) ^= RC[round];
 	}
 }
 

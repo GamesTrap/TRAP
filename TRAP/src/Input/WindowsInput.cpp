@@ -69,7 +69,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 	{
 		if (!s_xinput.Instance)
 		{
-			const std::array<std::string, 5> names =
+			constexpr std::array<std::string_view, 5> names =
 			{
 				"xinput1_4.dll",
 				"xinput1_3.dll",
@@ -575,7 +575,7 @@ bool TRAP::Input::SupportsXInput(const GUID* guid)
 		if (GetRawInputDeviceInfoA(ridl[i].hDevice, RIDI_DEVICENAME, name.data(), &size) == static_cast<uint32_t>(-1))
 			break;
 
-		name[name.size() - 1] = '\0';
+		std::get<name.size() - 1>(name) = '\0';
 		if (strstr(name.data(), "IG_"))
 		{
 			result = true;

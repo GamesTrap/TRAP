@@ -59,7 +59,7 @@ public:
 		//    Quad   //
 		///////////////
 		//XYZ RGBA
-		std::array<float, 9 * 4> indexedVertices //Quad
+		constexpr std::array<float, 9 * 4> indexedVertices //Quad
 		{
 			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,    0.0f, 1.0f,
 			 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,    1.0f, 1.0f,
@@ -80,7 +80,7 @@ public:
 		};
 		m_indexedVertexBuffer->SetLayout(layout);
 
-		std::array<uint16_t, 6> indices //Quad
+		constexpr std::array<uint16_t, 6> indices //Quad
 		{
 			0, 1, 2, 2, 3, 0
 		};
@@ -95,7 +95,7 @@ public:
 		//    Quad   //
 		///////////////
 		//XYZ RGBA
-		std::array<float, 9 * 6> vertices //Quad
+		constexpr std::array<float, 9 * 6> vertices //Quad
 		{
 			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,    0.0f, 1.0f,
 			 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,    1.0f, 1.0f,

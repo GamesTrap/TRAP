@@ -757,7 +757,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 
 		// Big Optionally: Check if Raytracing extensions are supported
 		bool raytracing = true;
-		constexpr std::array<const char*, 8> raytracingExt =
+		constexpr std::array<std::string_view, 8> raytracingExt =
 		{
 			VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
 			VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME,
@@ -768,12 +768,12 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME,
 			VK_KHR_RAY_QUERY_EXTENSION_NAME
 		};
-		for (const char* str : raytracingExt)
+		for (const std::string_view str : raytracingExt)
 		{
 			const auto extRes = std::find_if(extensions.begin(), extensions.end(),
 											 [str](const VkExtensionProperties &props)
 											 {
-												 return std::strcmp(str, props.extensionName) == 0;
+												 return str.compare(props.extensionName) == 0;
 											 });
 
 			if (extRes == extensions.end())
@@ -807,17 +807,17 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 
 		// Big Optionally: Check if Variable Rate Shading is supported and Tier 1/Tier 2
 		bool VRS = true;
-		const std::array<const char*, 2> VRSExt =
+		const std::array<std::string_view, 2> VRSExt =
 		{
 			VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME,
 			VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME
 		};
-		for (const char* str : VRSExt)
+		for (const std::string_view str : VRSExt)
 		{
 			const auto extRes = std::find_if(extensions.begin(), extensions.end(),
 											 [str](const VkExtensionProperties &props)
 											 {
-												 return std::strcmp(str, props.extensionName) == 0;
+												 return str.compare(props.extensionName) == 0;
 											 });
 
 			if (extRes == extensions.end())

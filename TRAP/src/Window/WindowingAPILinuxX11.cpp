@@ -107,7 +107,7 @@ bool TRAP::INTERNAL::WindowingAPI::WaitForAnyEvent(double* const timeout)
 	{
 		{
 			{ConnectionNumber(s_Data.X11.display), POLLIN, 0},
-			{s_Data.EmptyEventPipe[0], POLLIN, 0},
+			{std::get<0>(s_Data.EmptyEventPipe), POLLIN, 0},
 			{TRAP::Input::s_linuxController.INotify, POLLIN, 0}
 		}
 	};
@@ -136,7 +136,7 @@ void TRAP::INTERNAL::WindowingAPI::WriteEmptyEvent()
 	while(true)
 	{
 		const char byte = 0;
-		const ssize_t result = write(s_Data.EmptyEventPipe[1], &byte, 1);
+		const ssize_t result = write(std::get<1>(s_Data.EmptyEventPipe), &byte, 1);
 		if(result == 1 || (result == -1 && errno != EINTR))
 			break;
 	}
@@ -151,7 +151,7 @@ void TRAP::INTERNAL::WindowingAPI::DrainEmptyEvents()
 	while(true)
 	{
 		std::array<char, 64> dummy{};
-		const ssize_t result = read(s_Data.EmptyEventPipe[0], dummy.data(), dummy.size());
+		const ssize_t result = read(std::get<0>(s_Data.EmptyEventPipe), dummy.data(), dummy.size());
 		if(result == -1 && errno != EINTR)
 			break;
 	}
@@ -2143,10 +2143,10 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdownX11()
 	if(s_Data.X11.XLIB.Handle)
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.X11.XLIB.Handle);
 
-	if(s_Data.EmptyEventPipe[0] || s_Data.EmptyEventPipe[1])
+	if(std::get<0>(s_Data.EmptyEventPipe) || std::get<1>(s_Data.EmptyEventPipe))
 	{
-		close(s_Data.EmptyEventPipe[0]);
-		close(s_Data.EmptyEventPipe[1]);
+		close(std::get<0>(s_Data.EmptyEventPipe));
+		close(std::get<1>(s_Data.EmptyEventPipe));
 	}
 
 	s_Data.X11 = {};
@@ -3115,14 +3115,14 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensionsX11(std:
 			return;
 	}
 
-	extensions[0] = "VK_KHR_surface";
+	std::get<0>(extensions) = "VK_KHR_surface";
 
 	//NOTE: VK_KHR_xcb_surface is preferred due to some early ICDs exposing but not correctly implementing
 	//      VK_KHR_xlib_surface
 	if(s_Data.VK.KHR_XCB_Surface && s_Data.X11.XCB.Handle)
-		extensions[1] = "VK_KHR_xcb_surface";
+		std::get<1>(extensions) = "VK_KHR_xcb_surface";
 	else
-		extensions[1] = "VK_KHR_xlib_surface";
+		std::get<1>(extensions) = "VK_KHR_xlib_surface";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -926,7 +926,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
 
 	auto& currData = s_data[s_dataIndex];
 
-	if(currData.QuadData.DataBuffers[0].empty())
+	if(std::get<0>(currData.QuadData.DataBuffers).empty())
 		currData.QuadData.InitBuffers();
 
 	const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
@@ -967,7 +967,7 @@ void TRAP::Graphics::Renderer2D::DrawCircle(const Math::Mat4& transform, const M
 
 	auto& currData = s_data[s_dataIndex];
 
-	if(currData.CircleData.DataBuffers[0].empty())
+	if(std::get<0>(currData.CircleData.DataBuffers).empty())
 		currData.CircleData.InitBuffers();
 
 	const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
@@ -1013,7 +1013,7 @@ void TRAP::Graphics::Renderer2D::DrawLine(const TRAP::Math::Vec3& p0, const TRAP
 
 	auto& currData = s_data[s_dataIndex];
 
-	if(currData.LineData.DataBuffers[0].empty())
+	if(std::get<0>(currData.LineData.DataBuffers).empty())
 		currData.LineData.InitBuffers();
 
 	const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
@@ -1068,10 +1068,10 @@ void TRAP::Graphics::Renderer2D::DrawRect(const TRAP::Math::Mat4& transform, con
 	for(std::size_t i = 0; i < lineVertices.size(); ++i)
 		lineVertices[i] = Math::Vec3(transform * Renderer2DData::QuadData::VertexPositions[i]);
 
-	DrawLine(lineVertices[0], lineVertices[1], color, entityID);
-	DrawLine(lineVertices[1], lineVertices[2], color, entityID);
-	DrawLine(lineVertices[2], lineVertices[3], color, entityID);
-	DrawLine(lineVertices[3], lineVertices[0], color, entityID);
+	DrawLine(std::get<0>(lineVertices), std::get<1>(lineVertices), color, entityID);
+	DrawLine(std::get<1>(lineVertices), std::get<2>(lineVertices), color, entityID);
+	DrawLine(std::get<2>(lineVertices), std::get<3>(lineVertices), color, entityID);
+	DrawLine(std::get<3>(lineVertices), std::get<0>(lineVertices), color, entityID);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

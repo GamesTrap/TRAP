@@ -15,8 +15,8 @@ void ComputeTests::OnAttach()
     TRAP::Application::GetWindow()->SetTitle("Async Compute Test");
 
     //Load Quad vertices
-    m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_quadVerticesIndexed.data(),
-                                                          static_cast<uint32_t>(m_quadVerticesIndexed.size()) *
+    m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(QuadVerticesIndexed.data(),
+                                                          static_cast<uint32_t>(QuadVerticesIndexed.size()) *
                                                           sizeof(float), TRAP::Graphics::UpdateFrequency::Static);
     const TRAP::Graphics::VertexBufferLayout layout =
     {
@@ -27,8 +27,8 @@ void ComputeTests::OnAttach()
     m_vertexBuffer->AwaitLoading();
 
     //Load Quad indices
-    m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_quadIndices.data(),
-                                                        static_cast<uint16_t>(m_quadIndices.size()) *
+    m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(QuadIndices.data(),
+                                                        static_cast<uint16_t>(QuadIndices.size()) *
                                                         sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::Static);
     m_indexBuffer->AwaitLoading();
 
@@ -182,8 +182,8 @@ void ComputeTests::OnImGuiRender()
     ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0,
                      33, ImVec2(200, 50));
     ImGui::Separator();
-    const std::array<std::string, 4> shaders{"Disabled", "Sharpen", "Emboss", "Edge Detection"};
-    const std::array<const char*, 4> shadersC{shaders[0].c_str(), shaders[1].c_str(), shaders[2].c_str(), shaders[3].c_str()};
+    constexpr std::array<std::string_view, 4> shaders{"Disabled", "Sharpen", "Emboss", "Edge Detection"};
+    constexpr std::array<const char*, 4> shadersC{std::get<0>(shaders).data(), std::get<1>(shaders).data(), std::get<2>(shaders).data(), std::get<3>(shaders).data()};
     static int32_t currentItem = 0;
     int32_t oldItem = currentItem;
     ImGui::Combo("##Compute shader", &currentItem, shadersC.data(), shadersC.size());

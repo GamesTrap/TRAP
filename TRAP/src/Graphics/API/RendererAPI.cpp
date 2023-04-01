@@ -561,10 +561,10 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 		std::vector<std::string> instanceExtensions{};
 		const auto reqExt = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
 
-		if (reqExt[0].empty() ||
-		    reqExt[1].empty() ||
-			!API::VulkanInstance::IsExtensionSupported(reqExt[0]) ||
-			!API::VulkanInstance::IsExtensionSupported(reqExt[1]))
+		if (std::get<0>(reqExt).empty() ||
+		    std::get<1>(reqExt).empty() ||
+			!API::VulkanInstance::IsExtensionSupported(std::get<0>(reqExt)) ||
+			!API::VulkanInstance::IsExtensionSupported(std::get<1>(reqExt)))
 		{
 			GPUSettings.SurfaceSupported = false;
 			TP_WARN(Log::RendererVulkanPrefix, "Failed required instance extension test");
@@ -576,8 +576,8 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 		else
 		{
 			GPUSettings.SurfaceSupported = true;
-			instanceExtensions.push_back(reqExt[0]);
-			instanceExtensions.push_back(reqExt[1]);
+			instanceExtensions.push_back(std::get<0>(reqExt));
+			instanceExtensions.push_back(std::get<1>(reqExt));
 		}
 
 		if(!API::VulkanInstance::IsExtensionSupported(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME))

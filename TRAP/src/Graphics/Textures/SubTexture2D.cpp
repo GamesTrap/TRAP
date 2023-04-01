@@ -63,10 +63,10 @@ TRAP::Graphics::SubTexture2D::SubTexture2D(std::string name, Ref<TRAP::Graphics:
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-    m_texCoords[0] = { min.x, max.y };
-    m_texCoords[1] = max;
-    m_texCoords[2] = { max.x, min.y};
-    m_texCoords[3] = min;
+    std::get<0>(m_texCoords) = { min.x, max.y };
+    std::get<1>(m_texCoords) = max;
+    std::get<2>(m_texCoords) = { max.x, min.y};
+    std::get<3>(m_texCoords) = min;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

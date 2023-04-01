@@ -138,8 +138,8 @@ void TRAPEditorLayer::OnImGuiRender()
 	const ImVec2 viewportMinRegion = ImGui::GetWindowContentRegionMin();
 	const ImVec2 viewportMaxRegion = ImGui::GetWindowContentRegionMax();
 	const ImVec2 viewportOffset = ImGui::GetWindowPos(); //Includes menu bar
-	m_viewportBounds[0] = {viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y};
-	m_viewportBounds[1] = {viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y};
+	std::get<0>(m_viewportBounds) = {viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y};
+	std::get<1>(m_viewportBounds) = {viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y};
 
 	m_viewportFocused = ImGui::IsWindowFocused();
 	m_viewportHovered = ImGui::IsWindowHovered();
@@ -151,8 +151,8 @@ void TRAPEditorLayer::OnImGuiRender()
 
 	ImGui::Image(m_renderTarget->GetTexture(), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0.0f, 0.0f }, ImVec2{ 1.0f, 1.0f });
 
-	m_allowViewportCameraEvents = (ImGui::IsMouseHoveringRect(ImVec2(m_viewportBounds[0].x, m_viewportBounds[0].y),
-	                                                          ImVec2(m_viewportBounds[1].x, m_viewportBounds[1].y)) && m_viewportFocused) || m_startedCameraMovement;
+	m_allowViewportCameraEvents = (ImGui::IsMouseHoveringRect(ImVec2(std::get<0>(m_viewportBounds).x, std::get<0>(m_viewportBounds).y),
+	                                                          ImVec2(std::get<1>(m_viewportBounds).x, std::get<1>(m_viewportBounds).y)) && m_viewportFocused) || m_startedCameraMovement;
 
 	//Gizmos
 	TRAP::Entity selectedEntity = m_sceneGraphPanel.GetSelectedEntity();
@@ -182,9 +182,9 @@ void TRAPEditorLayer::OnImGuiRender()
 		ImGuizmo::SetOrthographic(false);
 		ImGuizmo::SetDrawlist();
 
-		ImGuizmo::SetRect(m_viewportBounds[0].x, m_viewportBounds[0].y,
-							m_viewportBounds[1].x - m_viewportBounds[0].x,
-							m_viewportBounds[1].y - m_viewportBounds[0].y);
+		ImGuizmo::SetRect(std::get<0>(m_viewportBounds).x, std::get<0>(m_viewportBounds).y,
+							std::get<1>(m_viewportBounds).x - std::get<0>(m_viewportBounds).x,
+							std::get<1>(m_viewportBounds).y - std::get<0>(m_viewportBounds).y);
 
 		//Snapping
 		const bool snap = TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Control) ||
@@ -193,7 +193,7 @@ void TRAPEditorLayer::OnImGuiRender()
 		if(m_gizmoType == ImGuizmo::OPERATION::ROTATE)
 			snapValue = 45.0f;
 
-		std::array<float, 3> snapValues = {snapValue, snapValue, snapValue};
+		const std::array<float, 3> snapValues = {snapValue, snapValue, snapValue};
 
 		//Disable gizmo while entity was just changed and the left mouse button is still pressed
 		ImGuizmo::Enable(!(m_entityChanged && m_leftMouseBtnRepeatCount != 0));
@@ -270,10 +270,10 @@ void TRAPEditorLayer::OnAttach()
 	m_renderTargetDesc.Format = TRAP::Graphics::API::ImageFormat::R32_SINT;
 	m_IDRenderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
 
-	m_renderTargetLoadActions.ClearColorValues[0] = { 0.1, 0.1, 0.1, 1.0 };
-	m_renderTargetLoadActions.LoadActionsColor[0] = TRAP::Graphics::RendererAPI::LoadActionType::Clear;
-	m_renderTargetLoadActions.ClearColorValues[1] = {-1.0, 0.0, 0.0, 0.0};
-	m_renderTargetLoadActions.LoadActionsColor[1] = TRAP::Graphics::RendererAPI::LoadActionType::Clear;
+	std::get<0>(m_renderTargetLoadActions.ClearColorValues) = { 0.1, 0.1, 0.1, 1.0 };
+	std::get<0>(m_renderTargetLoadActions.LoadActionsColor) = TRAP::Graphics::RendererAPI::LoadActionType::Clear;
+	std::get<1>(m_renderTargetLoadActions.ClearColorValues) = {-1.0, 0.0, 0.0, 0.0};
+	std::get<1>(m_renderTargetLoadActions.LoadActionsColor) = TRAP::Graphics::RendererAPI::LoadActionType::Clear;
 
 	//Setup Mouse Picking Buffer
 	m_mousePickBufferDesc.Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::PersistentMap |
@@ -681,9 +681,9 @@ void TRAPEditorLayer::MousePicking()
 
 		//Get mouse position relative to viewport
 		ImVec2 mousePos = ImGui::GetMousePos();
-		mousePos.x -= m_viewportBounds[0].x;
-		mousePos.y -= m_viewportBounds[0].y;
-		const TRAP::Math::Vec2 viewportSize = m_viewportBounds[1] - m_viewportBounds[0];
+		mousePos.x -= std::get<0>(m_viewportBounds).x;
+		mousePos.y -= std::get<0>(m_viewportBounds).y;
+		const TRAP::Math::Vec2 viewportSize = std::get<1>(m_viewportBounds) - std::get<0>(m_viewportBounds);
 		int32_t mouseX = static_cast<int32_t>(mousePos.x);
 		int32_t mouseY = static_cast<int32_t>(mousePos.y);
 

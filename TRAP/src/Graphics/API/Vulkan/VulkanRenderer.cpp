@@ -236,8 +236,8 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerWindowData* c
 #endif
 
 	LoadActionsDesc loadActions{};
-	loadActions.LoadActionsColor[0] = LoadActionType::Clear;
-	loadActions.ClearColorValues[0] = p->ClearColor;
+	std::get<0>(loadActions.LoadActionsColor) = LoadActionType::Clear;
+	std::get<0>(loadActions.ClearColorValues) = p->ClearColor;
 	loadActions.ClearDepthStencil = p->ClearDepthStencil;
 	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({ bindRenderTarget }, nullptr, &loadActions, nullptr, nullptr,
 	                                                           std::numeric_limits<uint32_t>::max(),
@@ -595,7 +595,7 @@ void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<uint32_t, 3> workG
 	for(std::size_t i = 0; i < workGroupElements.size(); ++i)
 		workGroupElements[i] = static_cast<uint32_t>(TRAP::Math::Round(static_cast<float>(workGroupElements[i]) / p->CurrentComputeWorkGroupSize[static_cast<int32_t>(i)]));
 
-	p->ComputeCommandBuffers[p->ImageIndex]->Dispatch(workGroupElements[0], workGroupElements[1], workGroupElements[2]);
+	p->ComputeCommandBuffers[p->ImageIndex]->Dispatch(std::get<0>(workGroupElements), std::get<1>(workGroupElements), std::get<2>(workGroupElements));
 }
 
 //------------------------------------------------------------------------------------------------------------------//
@@ -1063,8 +1063,8 @@ void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(TRAP::Ref<TRAP::Graphic
 		gpd.ShadingRateCombiners = {ShadingRateCombiner::Passthrough, ShadingRateCombiner::Override};
 
 		p->GraphicCommandBuffers[p->ImageIndex]->SetShadingRate(gpd.ShadingRate,
-																gpd.ShadingRateCombiners[0],
-																gpd.ShadingRateCombiners[1]);
+																std::get<0>(gpd.ShadingRateCombiners),
+																std::get<1>(gpd.ShadingRateCombiners));
 
 		p->NewShadingRateTexture = shadingRateTex;
 	}
@@ -1245,9 +1245,9 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, const Windo
 			cpd.RootSignature = shader->GetRootSignature();
 		}
 
-		data->CurrentComputeWorkGroupSize.x = static_cast<float>(shader->GetNumThreadsPerGroup()[0]);
-		data->CurrentComputeWorkGroupSize.y = static_cast<float>(shader->GetNumThreadsPerGroup()[1]);
-		data->CurrentComputeWorkGroupSize.z = static_cast<float>(shader->GetNumThreadsPerGroup()[2]);
+		data->CurrentComputeWorkGroupSize.x = static_cast<float>(std::get<0>(shader->GetNumThreadsPerGroup()));
+		data->CurrentComputeWorkGroupSize.y = static_cast<float>(std::get<1>(shader->GetNumThreadsPerGroup()));
+		data->CurrentComputeWorkGroupSize.z = static_cast<float>(std::get<2>(shader->GetNumThreadsPerGroup()));
 
 		data->CurrentComputePipeline = GetPipeline(data->ComputePipelineDesc);
 		data->ComputeCommandBuffers[data->ImageIndex]->BindPipeline(data->CurrentComputePipeline);
@@ -2006,11 +2006,11 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerWindowD
 
 	bool rebuild = false;
 	const auto newInternalRes = GetInternalRenderResolution(winData->Window);
-	if(winData->RenderScale != 1.0f && !winData->InternalRenderTargets[0])
+	if(winData->RenderScale != 1.0f && !std::get<0>(winData->InternalRenderTargets))
 		rebuild = true;
-	else if(winData->InternalRenderTargets[0] &&
-	        (winData->InternalRenderTargets[0]->GetWidth() != newInternalRes.x ||
-	         winData->InternalRenderTargets[0]->GetHeight() != newInternalRes.y))
+	else if(std::get<0>(winData->InternalRenderTargets) &&
+	        (std::get<0>(winData->InternalRenderTargets)->GetWidth() != newInternalRes.x ||
+	         std::get<0>(winData->InternalRenderTargets)->GetHeight() != newInternalRes.y))
 	{
 		rebuild = true;
 	}
@@ -2341,10 +2341,10 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* const window
 	//Graphics Pipeline
 #ifndef TRAP_HEADLESS_MODE
 	TRAP::Ref<RenderTarget> rT = s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA ?
-	                             p->InternalRenderTargets[0] :
+	                             std::get<0>(p->InternalRenderTargets) :
 								 p->SwapChain->GetRenderTargets()[0];
 #else
-	const auto& rT = s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA ? p->InternalRenderTargets[0] : p->RenderTargets[0];
+	const auto& rT = s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA ? std::get<0>(p->InternalRenderTargets) : std::get<0>(p->RenderTargets);
 #endif
 	p->GraphicsPipelineDesc = {};
 	p->GraphicsPipelineDesc.Type = PipelineType::Graphics;
@@ -2397,10 +2397,10 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* const window
 	gpd.VertexLayout = TRAP::MakeRef<VertexLayout>();
 	const TRAP::Ref<VertexLayout>& vLayout = gpd.VertexLayout;
 	vLayout->AttributeCount = 1;
-	vLayout->Attributes[0].Format = ImageFormat::R32G32B32_SFLOAT;
-	vLayout->Attributes[0].Binding = 0;
-	vLayout->Attributes[0].Location = 0;
-	vLayout->Attributes[0].Offset = 0;
+	std::get<0>(vLayout->Attributes).Format = ImageFormat::R32G32B32_SFLOAT;
+	std::get<0>(vLayout->Attributes).Binding = 0;
+	std::get<0>(vLayout->Attributes).Location = 0;
+	std::get<0>(vLayout->Attributes).Offset = 0;
 
 	//Compute Pipeline
 	p->ComputePipelineDesc = {};
@@ -2471,7 +2471,7 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 
 	const auto reqExt = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
 
-	if(!VulkanInstance::IsExtensionSupported(reqExt[0]) || !VulkanInstance::IsExtensionSupported(reqExt[1]))
+	if(!VulkanInstance::IsExtensionSupported(std::get<0>(reqExt)) || !VulkanInstance::IsExtensionSupported(std::get<1>(reqExt)))
 	{
 #ifndef TRAP_HEADLESS_MODE
 		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Mandatory Vulkan surface extensions are unsupported!\n"
@@ -2484,8 +2484,8 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 	}
 	else
 	{
-		extensions.push_back(reqExt[0]);
-		extensions.push_back(reqExt[1]);
+		extensions.push_back(std::get<0>(reqExt));
+		extensions.push_back(std::get<1>(reqExt));
 	}
 
 	//Vulkan 1.1 core
@@ -2816,11 +2816,11 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	s_NullDescriptors->DefaultSampler = TRAP::MakeRef<VulkanSampler>(samplerDesc);
 
 	BlendStateDesc blendStateDesc{};
-	blendStateDesc.DstAlphaFactors[0] = BlendConstant::Zero;
-	blendStateDesc.DstFactors[0] = BlendConstant::Zero;
-	blendStateDesc.SrcAlphaFactors[0] = BlendConstant::One;
-	blendStateDesc.SrcFactors[0] = BlendConstant::One;
-	blendStateDesc.Masks[0] = (BIT(0) | BIT(1) | BIT(2) | BIT(3));
+	std::get<0>(blendStateDesc.DstAlphaFactors) = BlendConstant::Zero;
+	std::get<0>(blendStateDesc.DstFactors) = BlendConstant::Zero;
+	std::get<0>(blendStateDesc.SrcAlphaFactors) = BlendConstant::One;
+	std::get<0>(blendStateDesc.SrcFactors) = BlendConstant::One;
+	std::get<0>(blendStateDesc.Masks) = (BIT(0) | BIT(1) | BIT(2) | BIT(3));
 	blendStateDesc.RenderTargetMask = BlendStateTargets::BlendStateTargetAll;
 	blendStateDesc.IndependentBlend = false;
 	DefaultBlendDesc = UtilToBlendDesc(blendStateDesc, DefaultBlendAttachments);

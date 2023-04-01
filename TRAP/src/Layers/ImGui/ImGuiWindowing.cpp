@@ -63,33 +63,33 @@ std::string TRAP::INTERNAL::ImGuiWindowing::s_clipboardText{};
 	io.ClipboardUserData = bd->Window;
 
 	//Create mouse cursors
-	bd->MouseCursors[ImGuiMouseCursor_Arrow] = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::Arrow);
-	bd->MouseCursors[ImGuiMouseCursor_TextInput] = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::Input);
-	bd->MouseCursors[ImGuiMouseCursor_ResizeNS] = WindowingAPI::CreateStandardCursor
+	std::get<ImGuiMouseCursor_Arrow>(bd->MouseCursors) = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::Arrow);
+	std::get<ImGuiMouseCursor_TextInput>(bd->MouseCursors) = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::Input);
+	std::get<ImGuiMouseCursor_ResizeNS>(bd->MouseCursors) = WindowingAPI::CreateStandardCursor
 	(
 		WindowingAPI::CursorType::ResizeVertical
 	);
-	bd->MouseCursors[ImGuiMouseCursor_ResizeEW] = WindowingAPI::CreateStandardCursor
+	std::get<ImGuiMouseCursor_ResizeEW>(bd->MouseCursors) = WindowingAPI::CreateStandardCursor
 	(
 		WindowingAPI::CursorType::ResizeHorizontal
 	);
-	bd->MouseCursors[ImGuiMouseCursor_Hand] = WindowingAPI::CreateStandardCursor
+	std::get<ImGuiMouseCursor_Hand>(bd->MouseCursors) = WindowingAPI::CreateStandardCursor
 	(
 		WindowingAPI::CursorType::PointingHand
 	);
-	bd->MouseCursors[ImGuiMouseCursor_ResizeAll] = WindowingAPI::CreateStandardCursor
+	std::get<ImGuiMouseCursor_ResizeAll>(bd->MouseCursors) = WindowingAPI::CreateStandardCursor
 	(
 		WindowingAPI::CursorType::ResizeAll
 	);
-	bd->MouseCursors[ImGuiMouseCursor_ResizeNESW] = WindowingAPI::CreateStandardCursor
+	std::get<ImGuiMouseCursor_ResizeNESW>(bd->MouseCursors) = WindowingAPI::CreateStandardCursor
 	(
 		WindowingAPI::CursorType::ResizeDiagonalTopLeftBottomRight
 	);
-	bd->MouseCursors[ImGuiMouseCursor_ResizeNWSE] = WindowingAPI::CreateStandardCursor
+	std::get<ImGuiMouseCursor_ResizeNWSE>(bd->MouseCursors) = WindowingAPI::CreateStandardCursor
 	(
 		WindowingAPI::CursorType::ResizeDiagonalTopRightBottomLeft
 	);
-	bd->MouseCursors[ImGuiMouseCursor_NotAllowed] = WindowingAPI::CreateStandardCursor
+	std::get<ImGuiMouseCursor_NotAllowed>(bd->MouseCursors) = WindowingAPI::CreateStandardCursor
 	(
 		WindowingAPI::CursorType::NotAllowed
 	);
@@ -737,7 +737,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMouseCursor()
 				//Show OS mouse cursor
 				WindowingAPI::SetCursor(*windowPtr, bd->MouseCursors[imguiCursor] ?
 												    bd->MouseCursors[imguiCursor] :
-												    bd->MouseCursors[ImGuiMouseCursor_Arrow]);
+												    std::get<ImGuiMouseCursor_Arrow>(bd->MouseCursors));
 				WindowingAPI::SetCursorMode(*windowPtr, WindowingAPI::CursorMode::Normal);
 			}
 			else
@@ -745,7 +745,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMouseCursor()
 				if(bd->CustomCursor)
 					WindowingAPI::SetCursor(*windowPtr, bd->CustomCursor);
 				else
-					WindowingAPI::SetCursor(*windowPtr, bd->MouseCursors[ImGuiMouseCursor_Arrow]);
+					WindowingAPI::SetCursor(*windowPtr, std::get<ImGuiMouseCursor_Arrow>(bd->MouseCursors));
 			}
 		}
 	}

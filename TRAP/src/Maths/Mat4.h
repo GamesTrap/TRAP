@@ -396,10 +396,10 @@ template<typename T>
 template<typename U>
 constexpr TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator=(const Mat<4, 4, U>& m) noexcept
 {
-	this->value[0] = m[0];
-	this->value[1] = m[1];
-	this->value[2] = m[2];
-	this->value[3] = m[3];
+	std::get<0>(this->value) = m[0];
+	std::get<1>(this->value) = m[1];
+	std::get<2>(this->value) = m[2];
+	std::get<3>(this->value) = m[3];
 
 	return *this;
 }
@@ -408,10 +408,10 @@ template<typename T>
 template<typename U>
 constexpr TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator+=(const U s) noexcept
 {
-	this->value[0] += s;
-	this->value[1] += s;
-	this->value[2] += s;
-	this->value[3] += s;
+	std::get<0>(this->value) += s;
+	std::get<1>(this->value) += s;
+	std::get<2>(this->value) += s;
+	std::get<3>(this->value) += s;
 
 	return *this;
 }
@@ -420,10 +420,10 @@ template<typename T>
 template<typename U>
 constexpr TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator+=(const Mat<4, 4, U>& m) noexcept
 {
-	this->value[0] += m[0];
-	this->value[1] += m[1];
-	this->value[2] += m[2];
-	this->value[3] += m[3];
+	std::get<0>(this->value) += m[0];
+	std::get<1>(this->value) += m[1];
+	std::get<2>(this->value) += m[2];
+	std::get<3>(this->value) += m[3];
 
 	return *this;
 }
@@ -432,10 +432,10 @@ template<typename T>
 template<typename U>
 constexpr TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator-=(const U s) noexcept
 {
-	this->value[0] -= s;
-	this->value[1] -= s;
-	this->value[2] -= s;
-	this->value[3] -= s;
+	std::get<0>(this->value) -= s;
+	std::get<1>(this->value) -= s;
+	std::get<2>(this->value) -= s;
+	std::get<3>(this->value) -= s;
 
 	return *this;
 }
@@ -444,10 +444,10 @@ template<typename T>
 template<typename U>
 constexpr TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator-=(const Mat<4, 4, U>& m) noexcept
 {
-	this->value[0] -= m[0];
-	this->value[1] -= m[1];
-	this->value[2] -= m[2];
-	this->value[3] -= m[3];
+	std::get<0>(this->value) -= m[0];
+	std::get<1>(this->value) -= m[1];
+	std::get<2>(this->value) -= m[2];
+	std::get<3>(this->value) -= m[3];
 
 	return *this;
 }
@@ -456,10 +456,10 @@ template<typename T>
 template<typename U>
 constexpr TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator*=(const U s) noexcept
 {
-	this->value[0] *= s;
-	this->value[1] *= s;
-	this->value[2] *= s;
-	this->value[3] *= s;
+	std::get<0>(this->value) *= s;
+	std::get<1>(this->value) *= s;
+	std::get<2>(this->value) *= s;
+	std::get<3>(this->value) *= s;
 
 	return *this;
 }
@@ -475,10 +475,10 @@ template<typename T>
 template<typename U>
 constexpr TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator/=(const U s) noexcept
 {
-	this->value[0] /= s;
-	this->value[1] /= s;
-	this->value[2] /= s;
-	this->value[3] /= s;
+	std::get<0>(this->value) /= s;
+	std::get<1>(this->value) /= s;
+	std::get<2>(this->value) /= s;
+	std::get<3>(this->value) /= s;
 
 	return *this;
 }
@@ -496,10 +496,10 @@ constexpr TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator/=(const M
 template<typename T>
 constexpr TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator++() noexcept
 {
-	++this->value[0];
-	++this->value[1];
-	++this->value[2];
-	++this->value[3];
+	++std::get<0>(this->value);
+	++std::get<1>(this->value);
+	++std::get<2>(this->value);
+	++std::get<3>(this->value);
 
 	return *this;
 }
@@ -507,10 +507,10 @@ constexpr TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator++() noexc
 template<typename T>
 constexpr TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator--() noexcept
 {
-	--this->value[0];
-	--this->value[1];
-	--this->value[2];
-	--this->value[3];
+	--std::get<0>(this->value);
+	--std::get<1>(this->value);
+	--std::get<2>(this->value);
+	--std::get<3>(this->value);
 
 	return *this;
 }
@@ -714,13 +714,13 @@ constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator/(const Mat<4, 4, T>& m1,
 template<typename T>
 constexpr bool TRAP::Math::operator==(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept
 {
-	return (m1[0] == m2[0]) && (m1[1] == m2[1]) && (m1[2] == m2[2]);
+	return (m1[0] == m2[0]) && (m1[1] == m2[1]) && (m1[2] == m2[2]) && (m1[3] == m2[3]);
 }
 
 template<typename T>
 constexpr bool TRAP::Math::operator!=(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept
 {
-	return (m1[0] != m2[0]) || (m1[1] != m2[1]) || (m1[2] != m2[2]);
+	return (m1[0] != m2[0]) || (m1[1] != m2[1]) || (m1[2] != m2[2]) || (m1[3] != m2[3]);
 }
 
 #endif /*TRAP_MAT4_H*/

@@ -45,8 +45,8 @@ TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const uint32_t n
 #endif
 
 	if (VulkanRenderer::s_rayTracingExtension)
-		s_descriptorPoolSizes[DESCRIPTOR_TYPE_RANGE_SIZE - 1] = { VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR,
-		                                                          1024 };
+		std::get<DESCRIPTOR_TYPE_RANGE_SIZE - 1>(s_descriptorPoolSizes) = { VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR,
+		                                                                    1024 };
 
 	for(uint32_t i = 0; i < DescriptorTypeRangeSize; i++)
 		m_descriptorPoolSizes[i] = s_descriptorPoolSizes[i];

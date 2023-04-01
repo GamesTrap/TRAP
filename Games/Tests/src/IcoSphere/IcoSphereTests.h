@@ -41,7 +41,7 @@ private:
 	};
 
 	TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer;
-	std::array<uint16_t, 20 * 3> m_icosphereIndices
+	inline static constexpr std::array<uint16_t, 20 * 3> IcosphereIndices
 	{
 		0, 11, 5,
 		0, 5, 1,

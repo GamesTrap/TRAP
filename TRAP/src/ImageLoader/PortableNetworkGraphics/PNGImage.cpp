@@ -62,8 +62,10 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 	file.read(reinterpret_cast<char*>(MagicNumber.data()), MagicNumber.size() * sizeof(uint8_t));
 
 	//Check MagicNumber
-	if (MagicNumber[0] != 0x89 || MagicNumber[1] != 0x50 || MagicNumber[2] != 0x4E || MagicNumber[3] != 0x47 ||
-		MagicNumber[4] != 0x0D || MagicNumber[5] != 0x0A || MagicNumber[6] != 0x1A || MagicNumber[7] != 0x0A)
+	if (std::get<0>(MagicNumber) != 0x89 || std::get<1>(MagicNumber) != 0x50 ||
+	    std::get<2>(MagicNumber) != 0x4E || std::get<3>(MagicNumber) != 0x47 ||
+		std::get<4>(MagicNumber) != 0x0D || std::get<5>(MagicNumber) != 0x0A ||
+		std::get<6>(MagicNumber) != 0x1A || std::get<7>(MagicNumber) != 0x0A)
 	{
 		file.close();
 		std::string mNum{};
@@ -351,7 +353,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-static const std::array<std::string, 11> UnusedChunks
+static constexpr std::array<std::string_view, 11> UnusedChunks
 {
 	"cHRM", "gAMA", "iCCP", "hIST", "pHYs", "sPLT", "tIME", "iTXt", "tEXt", "zTXt", "eXIf"
 };
@@ -458,8 +460,7 @@ static const std::array<std::string, 11> UnusedChunks
 	};
 
 	const std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-	if (crc[0] != ihdrChunk.CRC[0] && crc[1] != ihdrChunk.CRC[1] && crc[2] != ihdrChunk.CRC[2] &&
-	    crc[3] != ihdrChunk.CRC[3])
+	if(crc != ihdrChunk.CRC)
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "IHDR CRC: ", Utils::Hash::ConvertHashToString(ihdrChunk.CRC), " is wrong!");
 		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
@@ -533,7 +534,7 @@ static const std::array<std::string, 11> UnusedChunks
 	const std::array<uint8_t, 5> CRCData{ 's', 'R', 'G', 'B', renderingIntent };
 
 	const std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
+	if(CRC != crc)
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "sRGB CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
 		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
@@ -597,7 +598,7 @@ static const std::array<std::string, 11> UnusedChunks
 		const std::array<uint8_t, 6> CRCData{ 't', 'R', 'N', 'S', grayAlpha1, grayAlpha2 };
 
 		const std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
+		if(crc != CRC)
 		{
 			TP_ERROR(Log::ImagePNGPrefix, "tRNS CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
 			TP_WARN(Log::ImagePNGPrefix, "Using default image!");
@@ -627,7 +628,7 @@ static const std::array<std::string, 11> UnusedChunks
 		};
 
 		const std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
+		if(crc != CRC)
 		{
 			TP_ERROR(Log::ImagePNGPrefix, "tRNS CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
 			TP_WARN(Log::ImagePNGPrefix, "Using default image!");
@@ -654,7 +655,7 @@ static const std::array<std::string, 11> UnusedChunks
 			CRCData[i + 4] = paletteAlpha[i];
 
 		const std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
+		if(crc != CRC)
 		{
 			TP_ERROR(Log::ImagePNGPrefix, "tRNS CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
 			TP_WARN(Log::ImagePNGPrefix, "Using default image!");
@@ -722,7 +723,7 @@ static const std::array<std::string, 11> UnusedChunks
 	}
 
 	const std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
+	if(crc != CRC)
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "PLTE CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
 		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
@@ -754,7 +755,7 @@ static const std::array<std::string, 11> UnusedChunks
 		CRCData[i + 4] = compressedData[i];
 
 	const std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
+	if(crc != CRC)
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "IDAT CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
 		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
@@ -926,8 +927,7 @@ static const std::array<std::string, 11> UnusedChunks
 	};
 	const std::array<uint8_t, 4> checksum = Utils::Hash::Adler32(destination, destinationLength);
 
-	if (checksum[0] != adler32[0] && checksum[1] != adler32[1] && checksum[2] != adler32[2] &&
-	    checksum[3] != adler32[3])
+	if(checksum != adler32)
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "Decompression failed! Adler32 checksum: ",
 		                              Utils::Hash::ConvertHashToString(adler32),
@@ -1286,7 +1286,7 @@ void TRAP::INTERNAL::PNGImage::Adam7GetPassValues(std::array<uint32_t, 7>& passW
 			passW[i] = 0;
 	}
 
-	filterPassStart[0] = paddedPassStart[0] = passStart[0] = 0;
+	std::get<0>(filterPassStart) = std::get<0>(paddedPassStart) = std::get<0>(passStart) = 0;
 	for (i = 0; i != 7; ++i)
 	{
 		//If passW[i] is 0, its 0 bytes, not 1(no filterType-byte)

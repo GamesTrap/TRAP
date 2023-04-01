@@ -17,7 +17,7 @@ namespace ScalarInteger
 
         //int16_t
         {
-            const std::array<TypeIsPowerOfTwo<int16_t>, 6> data =
+            constexpr std::array<TypeIsPowerOfTwo<int16_t>, 6> data =
             {
                 {
                     { 0x0001, true },
@@ -31,14 +31,14 @@ namespace ScalarInteger
 
             for(const auto& entry : data)
             {
-                bool result = TRAP::Math::IsPowerOfTwo(entry.Value);
+                const bool result = TRAP::Math::IsPowerOfTwo(entry.Value);
                 error += entry.Return == result ? 0 : 1;
             }
         }
 
         //uint16_t
         {
-            const std::array<TypeIsPowerOfTwo<uint16_t>, 6> data =
+            constexpr std::array<TypeIsPowerOfTwo<uint16_t>, 6> data =
             {
                 {
                     { 0x0001, true },
@@ -52,14 +52,14 @@ namespace ScalarInteger
 
             for(const auto& entry : data)
             {
-                bool result = TRAP::Math::IsPowerOfTwo(entry.Value);
+                const bool result = TRAP::Math::IsPowerOfTwo(entry.Value);
                 error += entry.Return == result ? 0 : 1;
             }
         }
 
         //int32_t
         {
-            const std::array<TypeIsPowerOfTwo<int32_t>, 6> data =
+            constexpr std::array<TypeIsPowerOfTwo<int32_t>, 6> data =
             {
                 {
                     { 0x00000001, true },
@@ -73,14 +73,14 @@ namespace ScalarInteger
 
             for(const auto& entry : data)
             {
-                bool result = TRAP::Math::IsPowerOfTwo(entry.Value);
+                const bool result = TRAP::Math::IsPowerOfTwo(entry.Value);
                 error += entry.Return == result ? 0 : 1;
             }
         }
 
         //uint32_t
         {
-            const std::array<TypeIsPowerOfTwo<uint32_t>, 6> data =
+            constexpr std::array<TypeIsPowerOfTwo<uint32_t>, 6> data =
             {
                 {
                     { 0x00000001, true },
@@ -94,7 +94,7 @@ namespace ScalarInteger
 
             for(const auto& entry : data)
             {
-                bool result = TRAP::Math::IsPowerOfTwo(entry.Value);
+                const bool result = TRAP::Math::IsPowerOfTwo(entry.Value);
                 error += entry.Return == result ? 0 : 1;
             }
         }

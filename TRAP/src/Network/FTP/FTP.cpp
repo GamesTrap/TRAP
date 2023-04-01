@@ -613,8 +613,8 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::DataChannel::Open(const Transfe
 			}
 
 			//Reconstruct connection port and address
-			const uint16_t port = static_cast<uint16_t>(data[4] * 256) + data[5];
-			const IPv4Address address(data[0], data[1], data[2], data[3]);
+			const uint16_t port = static_cast<uint16_t>(std::get<4>(data) * 256) + std::get<5>(data);
+			const IPv4Address address(std::get<0>(data), std::get<1>(data), std::get<2>(data), std::get<3>(data));
 
 			//Connect the data channel to the server
 			if(m_dataSocket.Connect(address, port) == Socket::Status::Done)

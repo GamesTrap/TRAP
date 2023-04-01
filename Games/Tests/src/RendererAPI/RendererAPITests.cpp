@@ -23,8 +23,8 @@ void RendererAPITests::OnAttach()
 	TRAP::Application::GetWindow()->SetTitle("RendererAPI Test");
 
 	//Load Triangle vertices (with enough space for a quad)
-	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_triangleVertices.data(),
-	                                                      static_cast<uint32_t>(m_quadVertices.size()) *
+	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(TriangleVertices.data(),
+	                                                      static_cast<uint32_t>(QuadVertices.size()) *
 														  sizeof(float), TRAP::Graphics::UpdateFrequency::Dynamic);
 	const TRAP::Graphics::VertexBufferLayout layout =
 	{
@@ -36,8 +36,8 @@ void RendererAPITests::OnAttach()
 	m_vertexBuffer->Use();
 
 	//Load Triangle indices (with enough space for a quad)
-	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_triangleIndices.data(),
-	                                                    static_cast<uint32_t>(m_quadIndices.size()) *
+	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(TriangleIndices.data(),
+	                                                    static_cast<uint32_t>(QuadIndices.size()) *
 														sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::Dynamic);
 	m_indexBuffer->AwaitLoading();
 	m_indexBuffer->Use();
@@ -87,22 +87,22 @@ void RendererAPITests::OnUpdate(const TRAP::Utils::TimeStep&)
 
 	if(!m_quad)
 	{
-		m_vertexBuffer->SetData(m_triangleVertices.data(), static_cast<uint32_t>(m_triangleVertices.size()) *
+		m_vertexBuffer->SetData(TriangleVertices.data(), static_cast<uint32_t>(TriangleVertices.size()) *
 		                        sizeof(float));
 		if (m_indexed)
-			m_indexBuffer->SetData(m_triangleIndices.data(), static_cast<uint32_t>(m_triangleIndices.size()) *
+			m_indexBuffer->SetData(TriangleIndices.data(), static_cast<uint32_t>(TriangleIndices.size()) *
 			                       sizeof(uint16_t));
 	}
 	else
 	{
 		if(!m_indexed)
-			m_vertexBuffer->SetData(m_quadVertices.data(), static_cast<uint32_t>(m_quadVertices.size()) *
+			m_vertexBuffer->SetData(QuadVertices.data(), static_cast<uint32_t>(QuadVertices.size()) *
 			                        sizeof(float));
 		else
 		{
-			m_vertexBuffer->SetData(m_quadVerticesIndexed.data(),
-			                        static_cast<uint32_t>(m_quadVerticesIndexed.size()) * sizeof(float));
-			m_indexBuffer->SetData(m_quadIndices.data(), static_cast<uint32_t>(m_quadIndices.size()) *
+			m_vertexBuffer->SetData(QuadVerticesIndexed.data(),
+			                        static_cast<uint32_t>(QuadVerticesIndexed.size()) * sizeof(float));
+			m_indexBuffer->SetData(QuadIndices.data(), static_cast<uint32_t>(QuadIndices.size()) *
 			                       sizeof(uint16_t));
 			const TRAP::Graphics::VertexBufferLayout layoutUV =
 			{

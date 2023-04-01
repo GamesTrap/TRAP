@@ -5063,18 +5063,18 @@ template<typename T>
 	}
 
 	//Compute X scale factor and normalize first row.
-	outScale.x = Length(row[0]);
-	row[0] = row[0] * T(1) / Length(row[0]);
-	outScale.y = Length(row[1]);
-	row[1] = row[1] * T(1) / Length(row[1]);
-	outScale.z = Length(row[2]);
-	row[2] = row[2] * T(1) / Length(row[2]);
+	outScale.x = Length(std::get<0>(row));
+	std::get<0>(row) = std::get<0>(row) * T(1) / Length(std::get<0>(row));
+	outScale.y = Length(std::get<1>(row));
+	std::get<1>(row) = std::get<1>(row) * T(1) / Length(std::get<1>(row));
+	outScale.z = Length(std::get<2>(row));
+	std::get<2>(row) = std::get<2>(row) * T(1) / Length(std::get<2>(row));
 
 	//At this point, the matrix (in rows[]) is orthonormal.
 	//Check for a coordinate system flip, If the determinant
 	//is -1, then negate the matrix and the scaling factors.
-	// std::array<TRAP::Math::Vec<3, T>, 3> Pdum3 = Cross(row[1], row[2]);
-	// if(Dot(row[0], Pdum3) < T(0))
+	// std::array<TRAP::Math::Vec<3, T>, 3> Pdum3 = Cross(std::get<1>(row), std::get<2>(row));
+	// if(Dot(std::get<0>(row), Pdum3) < T(0))
 	// {
 	// 	for(uint32_t i = 0; i < 3; ++i)
 	// 	{

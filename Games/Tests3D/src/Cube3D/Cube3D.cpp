@@ -41,7 +41,7 @@ void Cube3D::OnAttach()
 
 	//Cube
 	//XYZ
-    std::array<float, 11ull * 24ull> cubeVertices
+    constexpr std::array<float, 11ull * 24ull> cubeVertices
     {
         //Positions             //Colors             //Textures      //Normals
         -1.0f, -1.0f, -1.0f,    0.0f, 0.0f, 0.0f,    1.0f, 1.0f,     0.0f,  0.0f, -1.0f,
@@ -74,7 +74,7 @@ void Cube3D::OnAttach()
         -1.0f,  1.0f,  1.0f,    0.0f, 1.0f, 1.0f,    0.0f, 1.0f,     0.0f,  1.0f,  0.0f,
          1.0f,  1.0f,  1.0f,    1.0f, 1.0f, 1.0f,    1.0f, 1.0f,     0.0f,  1.0f,  0.0f
     };
-    std::array<uint16_t, 36> cubeIndices
+    constexpr std::array<uint16_t, 36> cubeIndices
     {
          0,  3,  2,
          2,  1,  0,
@@ -111,7 +111,7 @@ void Cube3D::OnAttach()
     };
     m_cubeVertexBuffer->SetLayout(cubeLayout);
 
-    std::array<float, 3ull * 36ull> skyBoxVertices
+    constexpr std::array<float, 3ull * 36ull> skyBoxVertices
     {
         -1.0f,  1.0f, -1.0f,
         -1.0f, -1.0f, -1.0f,

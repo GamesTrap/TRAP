@@ -30,8 +30,8 @@ void IcoSphereTests::OnAttach()
 	m_vertexBuffer->Use();
 
 	//Load Icosphere indices
-	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_icosphereIndices.data(),
-	                                                    static_cast<uint32_t>(m_icosphereIndices.size()) *
+	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(IcosphereIndices.data(),
+	                                                    static_cast<uint32_t>(IcosphereIndices.size()) *
 														sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::Static);
 	m_indexBuffer->AwaitLoading();
 	m_indexBuffer->Use();
@@ -96,7 +96,7 @@ void IcoSphereTests::OnUpdate(const TRAP::Utils::TimeStep&)
 	m_vertexBuffer->Use();
 	m_indexBuffer->Use();
 	m_shader->Use();
-	TRAP::Graphics::RenderCommand::DrawIndexed(static_cast<uint32_t>(m_icosphereIndices.size()));
+	TRAP::Graphics::RenderCommand::DrawIndexed(static_cast<uint32_t>(IcosphereIndices.size()));
 
 	//Simple performance metrics
 	if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds

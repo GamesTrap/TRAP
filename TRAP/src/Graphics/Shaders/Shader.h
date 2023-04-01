@@ -206,7 +206,7 @@ namespace TRAP::Graphics
 		[[nodiscard]] static Ref<Shader> CreateFromSource(const std::string& name, const std::string& glslSource,
 		                                                  const std::vector<Macro>* userMacros = nullptr);
 
-		static std::array<std::string, 2> SupportedShaderFormatSuffixes;
+		inline static constexpr std::array<std::string_view, 2> SupportedShaderFormatSuffixes{".shader", ".spirv"};
 
 	protected:
 		/// <summary>

@@ -2043,7 +2043,7 @@ void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string& string)
 	if (!InitVulkan(2))
 		return {};
 
-	if (s_Data.VK.Extensions[0].empty() || s_Data.VK.Extensions[1].empty())
+	if (std::get<0>(s_Data.VK.Extensions).empty() || std::get<1>(s_Data.VK.Extensions).empty())
 		return {};
 
 	return s_Data.VK.Extensions;
@@ -2070,7 +2070,7 @@ void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string& string)
 	if (!InitVulkan(2))
 		return VK_ERROR_INITIALIZATION_FAILED;
 
-	if (s_Data.VK.Extensions[0].empty() || s_Data.VK.Extensions[1].empty())
+	if (std::get<0>(s_Data.VK.Extensions).empty() || std::get<1>(s_Data.VK.Extensions).empty())
 	{
 		InputError(Error::API_Unavailable, "[Vulkan] Window surface creation extensions not found");
 		return VK_ERROR_EXTENSION_NOT_PRESENT;

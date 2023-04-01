@@ -321,9 +321,9 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderVariables()
 
 	const spirv_cross::SPIREntryPoint& entryPoint = m_compiler.get_entry_point(m_entryPoint, m_compiler.get_execution_model());
 
-	res[0] = entryPoint.workgroup_size.x;
-	res[1] = entryPoint.workgroup_size.y;
-	res[2] = entryPoint.workgroup_size.z;
+	std::get<0>(res) = entryPoint.workgroup_size.x;
+	std::get<1>(res) = entryPoint.workgroup_size.y;
+	std::get<2>(res) = entryPoint.workgroup_size.z;
 
 	return res;
 }

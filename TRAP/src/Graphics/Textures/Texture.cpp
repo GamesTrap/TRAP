@@ -510,7 +510,7 @@ bool TRAP::Graphics::Texture::Reload()
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	//Can't reload if there is no filepath
-	if(m_textureType == TextureType::Texture2D && m_filepaths[0].empty())
+	if(m_textureType == TextureType::Texture2D && std::get<0>(m_filepaths).empty())
 		return false;
 	if(m_textureType == TextureType::TextureCube)
 	{
@@ -729,7 +729,7 @@ bool TRAP::Graphics::Texture::Reload()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return m_filepaths[0];
+	return std::get<0>(m_filepaths);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

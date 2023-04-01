@@ -21,7 +21,7 @@ private:
     TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer;
     TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer;
 
-    std::array<float, 5 * 4> m_quadVerticesIndexed
+    inline static constexpr std::array<float, 5 * 4> QuadVerticesIndexed
 	{
 		//XYZ UV
 		-0.5f, -0.5f, 0.0f,    0.0f, 1.0f,
@@ -29,7 +29,7 @@ private:
 		 0.5f,  0.5f, 0.0f,    1.0f, 0.0f,
 		-0.5f,  0.5f, 0.0f,    0.0f, 0.0f
 	};
-    std::array<uint16_t, 6> m_quadIndices
+    inline static constexpr std::array<uint16_t, 6> QuadIndices
 	{
 		0, 1, 2, 2, 3, 0
 	};

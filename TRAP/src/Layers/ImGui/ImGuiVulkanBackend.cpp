@@ -434,7 +434,7 @@ static void ImGui_ImplVulkan_SetupRenderState(ImDrawData* draw_data, VkPipeline 
     // Our visible imgui space lies from draw_data->DisplayPps (top left) to draw_data->DisplayPos+data_data->DisplaySize (bottom right). DisplayPos is (0,0) for single viewport apps.
     {
         const std::array<float, 2> scale{2.0f / draw_data->DisplaySize.x, 2.0f / draw_data->DisplaySize.y};
-        const std::array<float, 2> translate{-1.0f - draw_data->DisplayPos.x * scale[0], -1.0f - draw_data->DisplayPos.y * scale[1]};
+        const std::array<float, 2> translate{-1.0f - draw_data->DisplayPos.x * std::get<0>(scale), -1.0f - draw_data->DisplayPos.y * std::get<1>(scale)};
         vkCmdPushConstants(command_buffer, bd->PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, sizeof(float) * 0, sizeof(float) * 2, scale.data());
         vkCmdPushConstants(command_buffer, bd->PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, sizeof(float) * 2, sizeof(float) * 2, translate.data());
     }
@@ -499,12 +499,12 @@ void ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer comm
             idx_dst += cmd_list->IdxBuffer.Size;
         }
         std::array<VkMappedMemoryRange, 2> range{};
-        range[0].sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
-        range[0].memory = rb->VertexBufferMemory;
-        range[0].size = VK_WHOLE_SIZE;
-        range[1].sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
-        range[1].memory = rb->IndexBufferMemory;
-        range[1].size = VK_WHOLE_SIZE;
+        std::get<0>(range).sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+        std::get<0>(range).memory = rb->VertexBufferMemory;
+        std::get<0>(range).size = VK_WHOLE_SIZE;
+        std::get<1>(range).sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+        std::get<1>(range).memory = rb->IndexBufferMemory;
+        std::get<1>(range).size = VK_WHOLE_SIZE;
         err = vkFlushMappedMemoryRanges(v->Device, 2, range.data());
         check_vk_result(err);
         vkUnmapMemory(v->Device, rb->VertexBufferMemory);
@@ -818,32 +818,32 @@ static void ImGui_ImplVulkan_CreatePipeline(VkDevice device, const VkAllocationC
     ImGui_ImplVulkan_CreateShaderModules(device, allocator);
 
     std::array<VkPipelineShaderStageCreateInfo, 2> stage{};
-    stage[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-    stage[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
-    stage[0].module = bd->ShaderModuleVert;
-    stage[0].pName = "main";
-    stage[1].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-    stage[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-    stage[1].module = bd->ShaderModuleFrag;
-    stage[1].pName = "main";
+    std::get<0>(stage).sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    std::get<0>(stage).stage = VK_SHADER_STAGE_VERTEX_BIT;
+    std::get<0>(stage).module = bd->ShaderModuleVert;
+    std::get<0>(stage).pName = "main";
+    std::get<1>(stage).sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    std::get<1>(stage).stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    std::get<1>(stage).module = bd->ShaderModuleFrag;
+    std::get<1>(stage).pName = "main";
 
     VkVertexInputBindingDescription binding_desc{};
     binding_desc.stride = sizeof(ImDrawVert);
     binding_desc.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
     std::array<VkVertexInputAttributeDescription, 3> attribute_desc{};
-    attribute_desc[0].location = 0;
-    attribute_desc[0].binding = binding_desc.binding;
-    attribute_desc[0].format = VK_FORMAT_R32G32_SFLOAT;
-    attribute_desc[0].offset = IM_OFFSETOF(ImDrawVert, pos);
-    attribute_desc[1].location = 1;
-    attribute_desc[1].binding = binding_desc.binding;
-    attribute_desc[1].format = VK_FORMAT_R32G32_SFLOAT;
-    attribute_desc[1].offset = IM_OFFSETOF(ImDrawVert, uv);
-    attribute_desc[2].location = 2;
-    attribute_desc[2].binding = binding_desc.binding;
-    attribute_desc[2].format = VK_FORMAT_R8G8B8A8_UNORM;
-    attribute_desc[2].offset = IM_OFFSETOF(ImDrawVert, col);
+    std::get<0>(attribute_desc).location = 0;
+    std::get<0>(attribute_desc).binding = binding_desc.binding;
+    std::get<0>(attribute_desc).format = VK_FORMAT_R32G32_SFLOAT;
+    std::get<0>(attribute_desc).offset = IM_OFFSETOF(ImDrawVert, pos);
+    std::get<1>(attribute_desc).location = 1;
+    std::get<1>(attribute_desc).binding = binding_desc.binding;
+    std::get<1>(attribute_desc).format = VK_FORMAT_R32G32_SFLOAT;
+    std::get<1>(attribute_desc).offset = IM_OFFSETOF(ImDrawVert, uv);
+    std::get<2>(attribute_desc).location = 2;
+    std::get<2>(attribute_desc).binding = binding_desc.binding;
+    std::get<2>(attribute_desc).format = VK_FORMAT_R8G8B8A8_UNORM;
+    std::get<2>(attribute_desc).offset = IM_OFFSETOF(ImDrawVert, col);
 
     VkPipelineVertexInputStateCreateInfo vertex_info = {};
     vertex_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -1792,13 +1792,13 @@ static void ImGui_ImplVulkan_CreateWindow(ImGuiViewport* viewport)
     }
 
     // Select Surface Format
-    const std::array<VkFormat, 4> requestSurfaceImageFormat{ VK_FORMAT_B8G8R8A8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_B8G8R8_UNORM, VK_FORMAT_R8G8B8_UNORM };
+    constexpr std::array<VkFormat, 4> requestSurfaceImageFormat{ VK_FORMAT_B8G8R8A8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_B8G8R8_UNORM, VK_FORMAT_R8G8B8_UNORM };
     const VkColorSpaceKHR requestSurfaceColorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR;
     wd->SurfaceFormat = ImGui_ImplVulkanH_SelectSurfaceFormat(v->PhysicalDevice, wd->Surface, requestSurfaceImageFormat.data(), static_cast<int32_t>(requestSurfaceImageFormat.size()), requestSurfaceColorSpace);
 
     // Select Present Mode
     // FIXME-VULKAN: Even thought mailbox seems to get us maximum framerate with a single window, it halves framerate with a second window etc. (w/ Nvidia and SDK 1.82.1)
-    const std::array<VkPresentModeKHR, 3> present_modes{ VK_PRESENT_MODE_MAILBOX_KHR, VK_PRESENT_MODE_IMMEDIATE_KHR, VK_PRESENT_MODE_FIFO_KHR };
+    constexpr std::array<VkPresentModeKHR, 3> present_modes{ VK_PRESENT_MODE_MAILBOX_KHR, VK_PRESENT_MODE_IMMEDIATE_KHR, VK_PRESENT_MODE_FIFO_KHR };
     wd->PresentMode = ImGui_ImplVulkanH_SelectPresentMode(v->PhysicalDevice, wd->Surface, present_modes.data(), static_cast<int32_t>(present_modes.size()));
 
     // Create SwapChain, RenderPass, Framebuffer, etc.

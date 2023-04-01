@@ -125,7 +125,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	VkPresentModeKHR presentMode = VK_PRESENT_MODE_FIFO_KHR;
 	const std::vector<VkPresentModeKHR>& modes = surface->GetVkSurfacePresentModes();
 
-	const std::array<VkPresentModeKHR, 4> preferredModeList =
+	constexpr std::array<VkPresentModeKHR, 4> preferredModeList =
 	{
 		VK_PRESENT_MODE_IMMEDIATE_KHR,
 		VK_PRESENT_MODE_MAILBOX_KHR,
@@ -211,16 +211,16 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	VkQueue presentQueue = VK_NULL_HANDLE;
 	uint32_t finalPresentQueueFamilyIndex = 0;
 	if (presentQueueFamilyIndex != std::numeric_limits<uint32_t>::max() &&
-	    queueFamilyIndices[0] != presentQueueFamilyIndex)
+	    std::get<0>(queueFamilyIndices) != presentQueueFamilyIndex)
 	{
-		queueFamilyIndices[0] = presentQueueFamilyIndex;
-		vkGetDeviceQueue(m_device->GetVkDevice(), queueFamilyIndices[0], 0, &presentQueue);
+		std::get<0>(queueFamilyIndices) = presentQueueFamilyIndex;
+		vkGetDeviceQueue(m_device->GetVkDevice(), std::get<0>(queueFamilyIndices), 0, &presentQueue);
 		queueFamilyIndexCount = 1;
 		finalPresentQueueFamilyIndex = presentQueueFamilyIndex;
 	}
 	else
 	{
-		finalPresentQueueFamilyIndex = queueFamilyIndices[0];
+		finalPresentQueueFamilyIndex = std::get<0>(queueFamilyIndices);
 		presentQueue = VK_NULL_HANDLE;
 	}
 
@@ -230,7 +230,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	else
 		preTransform = caps.currentTransform;
 
-	const std::array<VkCompositeAlphaFlagBitsKHR, 4> compositeAlphaFlags =
+	constexpr std::array<VkCompositeAlphaFlagBitsKHR, 4> compositeAlphaFlags =
 	{
 		VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR,
 		VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,

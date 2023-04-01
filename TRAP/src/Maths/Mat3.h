@@ -343,9 +343,9 @@ template<typename T>
 template<typename U>
 constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator=(const Mat<3, 3, U>& m) noexcept
 {
-	this->value[0] = m[0];
-	this->value[1] = m[1];
-	this->value[2] = m[2];
+	std::get<0>(this->value) = m[0];
+	std::get<1>(this->value) = m[1];
+	std::get<2>(this->value) = m[2];
 
 	return *this;
 }
@@ -354,9 +354,9 @@ template<typename T>
 template<typename U>
 constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator+=(const U s) noexcept
 {
-	this->value[0] += s;
-	this->value[1] += s;
-	this->value[2] += s;
+	std::get<0>(this->value) += s;
+	std::get<1>(this->value) += s;
+	std::get<2>(this->value) += s;
 
 	return *this;
 }
@@ -365,9 +365,9 @@ template<typename T>
 template<typename U>
 constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator+=(const Mat<3, 3, U>& m) noexcept
 {
-	this->value[0] += m[0];
-	this->value[1] += m[1];
-	this->value[2] += m[2];
+	std::get<0>(this->value) += m[0];
+	std::get<1>(this->value) += m[1];
+	std::get<2>(this->value) += m[2];
 
 	return *this;
 }
@@ -376,9 +376,9 @@ template<typename T>
 template<typename U>
 constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator-=(const U s) noexcept
 {
-	this->value[0] -= s;
-	this->value[1] -= s;
-	this->value[2] -= s;
+	std::get<0>(this->value) -= s;
+	std::get<1>(this->value) -= s;
+	std::get<2>(this->value) -= s;
 
 	return *this;
 }
@@ -387,9 +387,9 @@ template<typename T>
 template<typename U>
 constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator-=(const Mat<3, 3, U>& m) noexcept
 {
-	this->value[0] -= m[0];
-	this->value[1] -= m[1];
-	this->value[2] -= m[2];
+	std::get<0>(this->value) -= m[0];
+	std::get<1>(this->value) -= m[1];
+	std::get<2>(this->value) -= m[2];
 
 	return *this;
 }
@@ -398,9 +398,9 @@ template<typename T>
 template<typename U>
 constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator*=(const U s) noexcept
 {
-	this->value[0] *= s;
-	this->value[1] *= s;
-	this->value[2] *= s;
+	std::get<0>(this->value) *= s;
+	std::get<1>(this->value) *= s;
+	std::get<2>(this->value) *= s;
 
 	return *this;
 }
@@ -416,9 +416,9 @@ template<typename T>
 template<typename U>
 constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator/=(const U s) noexcept
 {
-	this->value[0] /= s;
-	this->value[1] /= s;
-	this->value[2] /= s;
+	std::get<0>(this->value) /= s;
+	std::get<1>(this->value) /= s;
+	std::get<2>(this->value) /= s;
 
 	return *this;
 }
@@ -436,9 +436,9 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator/=(const M
 template<typename T>
 constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator++() noexcept
 {
-	++this->value[0];
-	++this->value[1];
-	++this->value[2];
+	++std::get<0>(this->value);
+	++std::get<1>(this->value);
+	++std::get<2>(this->value);
 
 	return *this;
 }
@@ -446,9 +446,9 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator++() noexc
 template<typename T>
 constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator--() noexcept
 {
-	--this->value[0];
-	--this->value[1];
-	--this->value[2];
+	--std::get<0>(this->value);
+	--std::get<1>(this->value);
+	--std::get<2>(this->value);
 
 	return *this;
 }

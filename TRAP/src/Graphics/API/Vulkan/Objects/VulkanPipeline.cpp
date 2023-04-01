@@ -95,7 +95,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI:
 		(
 			 VK_SHADER_STAGE_COMPUTE_BIT,
 			 vShader->GetVkShaderModules()[0],
-			 vShader->GetReflection()->StageReflections[0].EntryPoint.data()
+			 std::get<0>(vShader->GetReflection()->StageReflections).EntryPoint.data()
 		);
 
 		const VkComputePipelineCreateInfo info = VulkanInits::ComputePipelineCreateInfo
@@ -337,8 +337,8 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 		{
 			const std::array<VkFragmentShadingRateCombinerOpKHR, 2> rateCombiners
 			{
-				ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(graphicsDesc.ShadingRateCombiners[0]),
-				ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(graphicsDesc.ShadingRateCombiners[1])
+				ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(std::get<0>(graphicsDesc.ShadingRateCombiners)),
+				ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(std::get<1>(graphicsDesc.ShadingRateCombiners))
 			};
 			const VkExtent2D shadingRate = ShadingRateToVkExtent2D(graphicsDesc.ShadingRate);
 			fsr = VulkanInits::PipelineFragmentShadingRateStateCreateInfo(shadingRate, rateCombiners);

@@ -22,7 +22,7 @@ int main(const int argc, char* argv[])
 
 	//Print all customMacros
 	for(const auto& macro : customMacros)
-		std::cout << macro[0] << " " << macro[1] << std::endl;
+		std::cout << std::get<0>(macro) << " " << std::get<1>(macro) << std::endl;
 
 	Shader shader{};
 	if(!LoadShader(argv[1], shader))

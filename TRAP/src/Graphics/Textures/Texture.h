@@ -495,21 +495,21 @@ template<typename T>
 	//Load Images in correct order
 	if(cxLimit == 4 && cyLimit == 3)
 	{
-		images[0] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[3]); //+X
-		images[1] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[1]); //-X
-		images[2] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[0]); //+Y
-		images[3] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[5]); //-Y
-		images[4] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[2]); //+Z
-		images[5] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[4]); //-Z
+		std::get<0>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<3>(cubeTextureData)); //+X
+		std::get<1>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<1>(cubeTextureData)); //-X
+		std::get<2>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<0>(cubeTextureData)); //+Y
+		std::get<3>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<5>(cubeTextureData)); //-Y
+		std::get<4>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<2>(cubeTextureData)); //+Z
+		std::get<5>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<4>(cubeTextureData)); //-Z
 	}
 	else
 	{
-		images[0] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[2]); //+X
-		images[1] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[5]); //-X
-		images[2] = Rotate90CounterClockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[0]).get()); //+Y
-		images[3] = Rotate90Clockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[4]).get()); //-Y
-		images[4] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[1]); //+Z
-		images[5] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[3]); //-Z
+		std::get<0>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<2>(cubeTextureData)); //+X
+		std::get<1>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<5>(cubeTextureData)); //-X
+		std::get<2>(images) = Rotate90CounterClockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<0>(cubeTextureData)).get()); //+Y
+		std::get<3>(images) = Rotate90Clockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<4>(cubeTextureData)).get()); //-Y
+		std::get<4>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<1>(cubeTextureData)); //+Z
+		std::get<5>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<3>(cubeTextureData)); //-Z
 	}
 
 	return images;

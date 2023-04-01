@@ -406,7 +406,7 @@ TRAP::Utils::Decompress::INTERNAL::HuffmanTree::HuffmanTree() noexcept
 		if (error)
 			break;
 
-		if(bitLengthLL[256] == 0)
+		if(std::get<256>(bitLengthLL) == 0)
 		{
 			error = true; //Error: The length of the end code 256 must be larger than 0
 			break;

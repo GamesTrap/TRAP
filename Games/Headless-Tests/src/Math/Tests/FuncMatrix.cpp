@@ -29,8 +29,8 @@ namespace FuncMatrix
 
     void TestOuterProduct()
     {
-        { TRAP::Math::Mat3 m = TRAP::Math::OuterProduct(TRAP::Math::Vec3(1.0f), TRAP::Math::Vec3(1.0f)); }
-        { TRAP::Math::Mat4 m = TRAP::Math::OuterProduct(TRAP::Math::Vec4(1.0f), TRAP::Math::Vec4(1.0f)); }
+        { [[maybe_unused]] TRAP::Math::Mat3 m = TRAP::Math::OuterProduct(TRAP::Math::Vec3(1.0f), TRAP::Math::Vec3(1.0f)); }
+        { [[maybe_unused]] TRAP::Math::Mat4 m = TRAP::Math::OuterProduct(TRAP::Math::Vec4(1.0f), TRAP::Math::Vec4(1.0f)); }
     }
 
 //-------------------------------------------------------------------------------------------------------------------//

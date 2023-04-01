@@ -553,7 +553,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 
 	//Set work group sizes if compute shader
 	if(m_reflection->ShaderStages == RendererAPI::ShaderStage::Compute)
-		m_numThreadsPerGroup = m_reflection->StageReflections[0].NumThreadsPerGroup;
+		m_numThreadsPerGroup = std::get<0>(m_reflection->StageReflections).NumThreadsPerGroup;
 
 	//Create DescriptorSets
 	for(std::size_t i = 0; i < m_descriptorSets.size(); ++i)

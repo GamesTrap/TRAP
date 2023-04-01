@@ -14,26 +14,26 @@
 	std::stringstream s;
 
 	s << std::hex << std::setfill('0')
-	  << std::setw(2) << static_cast<int32_t>(uuid[0])
-	  << std::setw(2) << static_cast<int32_t>(uuid[1])
-	  << std::setw(2) << static_cast<int32_t>(uuid[2])
-	  << std::setw(2) << static_cast<int32_t>(uuid[3])
+	  << std::setw(2) << static_cast<int32_t>(std::get<0>(uuid))
+	  << std::setw(2) << static_cast<int32_t>(std::get<1>(uuid))
+	  << std::setw(2) << static_cast<int32_t>(std::get<2>(uuid))
+	  << std::setw(2) << static_cast<int32_t>(std::get<3>(uuid))
 	  << '-'
-	  << std::setw(2) << static_cast<int32_t>(uuid[4])
-	  << std::setw(2) << static_cast<int32_t>(uuid[5])
+	  << std::setw(2) << static_cast<int32_t>(std::get<4>(uuid))
+	  << std::setw(2) << static_cast<int32_t>(std::get<5>(uuid))
 	  << '-'
-	  << std::setw(2) << static_cast<int32_t>(uuid[6])
-	  << std::setw(2) << static_cast<int32_t>(uuid[7])
+	  << std::setw(2) << static_cast<int32_t>(std::get<6>(uuid))
+	  << std::setw(2) << static_cast<int32_t>(std::get<7>(uuid))
 	  << '-'
-	  << std::setw(2) << static_cast<int32_t>(uuid[8])
-	  << std::setw(2) << static_cast<int32_t>(uuid[9])
+	  << std::setw(2) << static_cast<int32_t>(std::get<8>(uuid))
+	  << std::setw(2) << static_cast<int32_t>(std::get<9>(uuid))
 	  << '-'
-	  << std::setw(2) << static_cast<int32_t>(uuid[10])
-	  << std::setw(2) << static_cast<int32_t>(uuid[11])
-	  << std::setw(2) << static_cast<int32_t>(uuid[12])
-	  << std::setw(2) << static_cast<int32_t>(uuid[13])
-	  << std::setw(2) << static_cast<int32_t>(uuid[14])
-	  << std::setw(2) << static_cast<int32_t>(uuid[15]);
+	  << std::setw(2) << static_cast<int32_t>(std::get<10>(uuid))
+	  << std::setw(2) << static_cast<int32_t>(std::get<11>(uuid))
+	  << std::setw(2) << static_cast<int32_t>(std::get<12>(uuid))
+	  << std::setw(2) << static_cast<int32_t>(std::get<13>(uuid))
+	  << std::setw(2) << static_cast<int32_t>(std::get<14>(uuid))
+	  << std::setw(2) << static_cast<int32_t>(std::get<15>(uuid));
 
 	return s.str();
 }
@@ -132,7 +132,7 @@
 		__cpuidex(regs.data(), static_cast<int32_t>(funcID), static_cast<int32_t>(subFuncID));
 	#else
 		asm volatile
-			("cpuid" : "=a" (regs[0]), "=b" (regs[1]), "=c" (regs[2]), "=d" (regs[3])
+			("cpuid" : "=a" (std::get<0>(regs)), "=b" (std::get<1>(regs)), "=c" (std::get<2>(regs)), "=d" (std::get<3>(regs))
 				: "a" (funcID), "c" (subFuncID));
 	#endif
 
@@ -140,13 +140,13 @@
 	};
 
 	std::array<uint32_t, 4> regs = CPUID(0, 0);
-	const uint32_t HFS = regs[0];
+	const uint32_t HFS = std::get<0>(regs);
 	//Get Vendor
-	const std::string vendorID = std::string(reinterpret_cast<char*>(&regs[1]), sizeof(uint32_t)) +
-		                         std::string(reinterpret_cast<char*>(&regs[3]), sizeof(uint32_t)) +
-		                         std::string(reinterpret_cast<char*>(&regs[2]), sizeof(uint32_t));
+	const std::string vendorID = std::string(reinterpret_cast<char*>(&std::get<1>(regs)), sizeof(uint32_t)) +
+		                         std::string(reinterpret_cast<char*>(&std::get<2>(regs)), sizeof(uint32_t)) +
+		                         std::string(reinterpret_cast<char*>(&std::get<3>(regs)), sizeof(uint32_t));
 	regs = CPUID(1, 0);
-	cpu.HyperThreaded = regs[3] & 0x10000000; //Get Hyper-threading
+	cpu.HyperThreaded = std::get<3>(regs) & 0x10000000; //Get Hyper-threading
 
 	const std::string upVendorID = Utils::String::ToUpper(vendorID);
 	//Get Number of cores
@@ -161,15 +161,15 @@
 			for (int32_t lvl = 0; lvl < MAX_INTEL_TOP_LVL; ++lvl)
 			{
 				const std::array<uint32_t, 4> regs1 = CPUID(0x0B, lvl);
-				const uint32_t currentLevel = (LVL_TYPE & regs1[2]) >> 8;
+				const uint32_t currentLevel = (LVL_TYPE & std::get<2>(regs1)) >> 8;
 				switch (currentLevel)
 				{
 				case BIT(0):
-					numSMT = static_cast<int32_t>(LVL_CORES & regs1[1]);
+					numSMT = static_cast<int32_t>(LVL_CORES & std::get<1>(regs1));
 					break;
 
 				case BIT(1):
-					cpu.LogicalCores = LVL_CORES & regs1[1];
+					cpu.LogicalCores = LVL_CORES & std::get<1>(regs1);
 					break;
 
 				default:
@@ -182,11 +182,11 @@
 		{
 			if (HFS >= 1)
 			{
-				cpu.LogicalCores = (regs[1] >> 16) & 0xFF;
+				cpu.LogicalCores = (std::get<1>(regs) >> 16) & 0xFF;
 				if (HFS >= 4)
 				{
 					const std::array<uint32_t, 4> regs1 = CPUID(4, 0);
-					cpu.Cores = (1 + (regs1[0] >> 26)) & 0x3F;
+					cpu.Cores = (1 + (std::get<0>(regs1) >> 26)) & 0x3F;
 				}
 			}
 			if (cpu.HyperThreaded)
@@ -204,19 +204,19 @@
 	else if (upVendorID.find("AMD") != std::string::npos)
 	{
 		uint32_t extFamily = 0;
-		if (((regs[0] >> 8) & 0xF) < 0xF)
-			extFamily = (regs[0] >> 8) & 0xF;
+		if (((std::get<0>(regs) >> 8) & 0xF) < 0xF)
+			extFamily = (std::get<0>(regs) >> 8) & 0xF;
 		else
-			extFamily = ((regs[0] >> 8) & 0xF) + ((regs[0] >> 20) & 0xFF);
+			extFamily = ((std::get<0>(regs) >> 8) & 0xF) + ((std::get<0>(regs) >> 20) & 0xFF);
 
 		if (HFS >= 1)
 		{
-			cpu.LogicalCores = (regs[1] >> 16) & 0xFF;
+			cpu.LogicalCores = (std::get<1>(regs) >> 16) & 0xFF;
 			std::array<uint32_t, 4> regs1 = CPUID(0x80000000, 0);
-			if (regs1[0] >= 8)
+			if (std::get<0>(regs1) >= 8)
 			{
 				regs1 = CPUID(0x80000008, 0);
-				cpu.Cores = 1 + (regs1[2] & 0xFF);
+				cpu.Cores = 1 + (std::get<2>(regs1) & 0xFF);
 			}
 		}
 		if (cpu.HyperThreaded)
@@ -234,10 +234,10 @@
 				//CPUID_Fn8000001E_EBX [Core Identifiers][15:8] is ThreadsPerCore
 				//ThreadsPerCore: [...] The number of threads per core is ThreadsPerCore + 1
 				std::array<uint32_t, 4> regs1 = CPUID(0x80000000, 0);
-				if ((extFamily >= 23) && (regs1[0] >= 30))
+				if ((extFamily >= 23) && (std::get<0>(regs1) >= 30))
 				{
 					regs1 = CPUID(0x8000001E, 0);
-					cpu.Cores /= ((regs1[1] >> 8) & 0xFF) + 1;
+					cpu.Cores /= ((std::get<1>(regs1) >> 8) & 0xFF) + 1;
 				}
 			}
 		}
@@ -249,10 +249,10 @@
 	for (uint32_t i = 0x80000002; i < 0x80000005; ++i)
 	{
 		std::array<uint32_t, 4> regs1 = CPUID(i, 0);
-		cpu.Model += std::string(reinterpret_cast<char*>(&regs1[0]), sizeof(uint32_t));
-		cpu.Model += std::string(reinterpret_cast<char*>(&regs1[1]), sizeof(uint32_t));
-		cpu.Model += std::string(reinterpret_cast<char*>(&regs1[2]), sizeof(uint32_t));
-		cpu.Model += std::string(reinterpret_cast<char*>(&regs1[3]), sizeof(uint32_t));
+		cpu.Model += std::string(reinterpret_cast<char*>(&std::get<0>(regs1)), sizeof(uint32_t));
+		cpu.Model += std::string(reinterpret_cast<char*>(&std::get<1>(regs1)), sizeof(uint32_t));
+		cpu.Model += std::string(reinterpret_cast<char*>(&std::get<2>(regs1)), sizeof(uint32_t));
+		cpu.Model += std::string(reinterpret_cast<char*>(&std::get<3>(regs1)), sizeof(uint32_t));
 	}
 
 	std::size_t lastAlphaChar = 0;

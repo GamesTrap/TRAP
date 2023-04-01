@@ -175,14 +175,14 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint32_t
 		for (uint32_t t = 16; t <= 63; t++)
 			W[t] = Sigma1(W[t - 2]) + W[t - 7] + Sigma0(W[t - 15]) + W[t - 16];
 
-		uint32_t a = hash[0];
-		uint32_t b = hash[1];
-		uint32_t c = hash[2];
-		uint32_t d = hash[3];
-		uint32_t e = hash[4];
-		uint32_t f = hash[5];
-		uint32_t g = hash[6];
-		uint32_t h = hash[7];
+		uint32_t a = std::get<0>(hash);
+		uint32_t b = std::get<1>(hash);
+		uint32_t c = std::get<2>(hash);
+		uint32_t d = std::get<3>(hash);
+		uint32_t e = std::get<4>(hash);
+		uint32_t f = std::get<5>(hash);
+		uint32_t g = std::get<6>(hash);
+		uint32_t h = std::get<7>(hash);
 
 		for (uint32_t t = 0; t <= 63; t++)
 		{
@@ -198,14 +198,14 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint32_t
 			a = t1 + t2;
 		}
 
-		hash[0] += a;
-		hash[1] += b;
-		hash[2] += c;
-		hash[3] += d;
-		hash[4] += e;
-		hash[5] += f;
-		hash[6] += g;
-		hash[7] += h;
+		std::get<0>(hash) += a;
+		std::get<1>(hash) += b;
+		std::get<2>(hash) += c;
+		std::get<3>(hash) += d;
+		std::get<4>(hash) += e;
+		std::get<5>(hash) += f;
+		std::get<6>(hash) += g;
+		std::get<7>(hash) += h;
 	}
 }
 
@@ -230,14 +230,14 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 		for (uint32_t t = 16; t <= 79; t++)
 			W[t] = Sigma1(W[t - 2]) + W[t - 7] + Sigma0(W[t - 15]) + W[t - 16];
 
-		uint64_t a = hash[0];
-		uint64_t b = hash[1];
-		uint64_t c = hash[2];
-		uint64_t d = hash[3];
-		uint64_t e = hash[4];
-		uint64_t f = hash[5];
-		uint64_t g = hash[6];
-		uint64_t h = hash[7];
+		uint64_t a = std::get<0>(hash);
+		uint64_t b = std::get<1>(hash);
+		uint64_t c = std::get<2>(hash);
+		uint64_t d = std::get<3>(hash);
+		uint64_t e = std::get<4>(hash);
+		uint64_t f = std::get<5>(hash);
+		uint64_t g = std::get<6>(hash);
+		uint64_t h = std::get<7>(hash);
 
 		for(uint32_t t = 0; t <= 79; t++)
 		{
@@ -253,14 +253,14 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 			a = t1 + t2;
 		}
 
-		hash[0] += a;
-		hash[1] += b;
-		hash[2] += c;
-		hash[3] += d;
-		hash[4] += e;
-		hash[5] += f;
-		hash[6] += g;
-		hash[7] += h;
+		std::get<0>(hash) += a;
+		std::get<1>(hash) += b;
+		std::get<2>(hash) += c;
+		std::get<3>(hash) += d;
+		std::get<4>(hash) += e;
+		std::get<5>(hash) += f;
+		std::get<6>(hash) += g;
+		std::get<7>(hash) += h;
 	}
 }
 
@@ -295,7 +295,7 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 		total += bytes * 8;
 		dataPtr += bytes;
 	}
-	std::copy_n(dataPtr, length, &m[0] + pos);
+	std::copy_n(dataPtr, length, &std::get<0>(m) + pos);
 	pos += length;
 	total += length * 8;
 
@@ -303,14 +303,14 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 	if(pos > 56)
 	{
 		std::fill_n(m.data() + pos, 64 - pos, static_cast<uint8_t>(0u));
-		Transform(&m[0], 1, hash);
+		Transform(&std::get<0>(m), 1, hash);
 		pos = 0;
 	}
 	std::fill_n(m.data() + pos, 56 - pos, static_cast<uint8_t>(0u));
 	uint64_t mLength = total;
 	TRAP::Utils::Memory::SwapBytes<uint64_t>(mLength);
-	std::copy_n(reinterpret_cast<uint8_t*>(&mLength), 64 / 8, &m[0] + (64 - 8));
-	Transform(&m[0], 1, hash);
+	std::copy_n(reinterpret_cast<uint8_t*>(&mLength), 64 / 8, &std::get<0>(m) + (64 - 8));
+	Transform(&std::get<0>(m), 1, hash);
 	for(uint32_t i = 0; i < 8; i++)
 		TRAP::Utils::Memory::SwapBytes<uint32_t>(hash[i]);
 
@@ -360,7 +360,7 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 		total += bytes * 8;
 		dataPtr += bytes;
 	}
-	std::copy_n(dataPtr, length, &m[0] + pos);
+	std::copy_n(dataPtr, length, &std::get<0>(m) + pos);
 	pos += length;
 	total += length * 8;
 
@@ -368,14 +368,14 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 	if(pos > 112)
 	{
 		std::fill_n(m.data() + pos, 128 - pos, static_cast<uint8_t>(0u));
-		Transform(&m[0], 1, hash);
+		Transform(&std::get<0>(m), 1, hash);
 		pos = 0;
 	}
 	std::fill_n(m.data() + pos, 128 - pos, static_cast<uint8_t>(0u));
 	uint64_t mLength = total;
 	TRAP::Utils::Memory::SwapBytes<uint64_t>(mLength);
-	std::copy_n(reinterpret_cast<const uint8_t*>(&mLength), 64 / 8, &m[0] + (128 - 8));
-	Transform(&m[0], 1, hash);
+	std::copy_n(reinterpret_cast<const uint8_t*>(&mLength), 64 / 8, &std::get<0>(m) + (128 - 8));
+	Transform(&std::get<0>(m), 1, hash);
 	for (uint32_t i = 0; i < 8; i++)
 		TRAP::Utils::Memory::SwapBytes<uint64_t>(hash[i]);
 

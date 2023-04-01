@@ -1212,8 +1212,8 @@
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_FRAGMENT_SHADING_RATE_STATE_CREATE_INFO_KHR;
 	info.pNext = nullptr;
 	info.fragmentSize = fragmentSize;
-	info.combinerOps[0] = rateCombiners[0];
-	info.combinerOps[1] = rateCombiners[1];
+	info.combinerOps[0] = std::get<0>(rateCombiners);
+	info.combinerOps[1] = std::get<1>(rateCombiners);
 
 	return info;
 }

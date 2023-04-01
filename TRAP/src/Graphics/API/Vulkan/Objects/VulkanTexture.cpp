@@ -62,7 +62,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(std::string name, std::filesys
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	m_name = std::move(name);
-	m_filepaths[0] = std::move(filepath);
+	std::get<0>(m_filepaths) = std::move(filepath);
 	m_textureType = type;
 	m_textureCubeFormat = cubeFormat;
 

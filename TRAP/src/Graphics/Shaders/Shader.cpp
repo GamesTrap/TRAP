@@ -40,7 +40,6 @@ static const std::vector<TRAP::Graphics::RendererAPI::ShaderStage> IndexToStage
 };
 
 bool TRAP::Graphics::Shader::s_glslangInitialized = false;
-std::array<std::string, 2> TRAP::Graphics::Shader::SupportedShaderFormatSuffixes{".shader", ".spirv"};
 
 //-------------------------------------------------------------------------------------------------------------------//
 

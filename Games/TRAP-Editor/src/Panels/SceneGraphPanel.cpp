@@ -278,16 +278,16 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 
 		ImGui::Checkbox("Primary", &component.Primary);
 
-		static constexpr std::array<const char*, 2> projectionTypeStrings = { "Perspective", "Orthographic" };
-		const char* currentProjectionTypeString = projectionTypeStrings[static_cast<uint32_t>(camera.GetProjectionType())];
+		static constexpr std::array<std::string_view, 2> projectionTypeStrings = { "Perspective", "Orthographic" };
+		const char* currentProjectionTypeString = projectionTypeStrings[static_cast<uint32_t>(camera.GetProjectionType())].data();
 		if (ImGui::BeginCombo("Projection", currentProjectionTypeString))
 		{
 			for (uint32_t i = 0; i < projectionTypeStrings.size(); i++)
 			{
 				const bool isSelected = currentProjectionTypeString == projectionTypeStrings[i];
-				if (ImGui::Selectable(projectionTypeStrings[i], isSelected))
+				if (ImGui::Selectable(projectionTypeStrings[i].data(), isSelected))
 				{
-					currentProjectionTypeString = projectionTypeStrings[i];
+					currentProjectionTypeString = projectionTypeStrings[i].data();
 					camera.SetProjectionType(static_cast<SceneCamera::ProjectionType>(i));
 				}
 
@@ -341,16 +341,16 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 
 	DrawComponent<Rigidbody2DComponent>("Rigidbody 2D", entity, [](auto& component)
 	{
-		static constexpr std::array<const char*, 3> bodyTypeStrings{"Static", "Dynamic", "Kinematic"};
-		const char* currentBodyTypeString = bodyTypeStrings[static_cast<std::size_t>(component.Type)];
+		static constexpr std::array<std::string_view, 3> bodyTypeStrings{"Static", "Dynamic", "Kinematic"};
+		const char* currentBodyTypeString = bodyTypeStrings[static_cast<std::size_t>(component.Type)].data();
 		if(ImGui::BeginCombo("Body Type", currentBodyTypeString))
 		{
 			for(int32_t i = 0; i < 3; ++i)
 			{
 				bool isSelected = currentBodyTypeString == bodyTypeStrings[i];
-				if(ImGui::Selectable(bodyTypeStrings[i], isSelected))
+				if(ImGui::Selectable(bodyTypeStrings[i].data(), isSelected))
 				{
-					currentBodyTypeString = bodyTypeStrings[i];
+					currentBodyTypeString = bodyTypeStrings[i].data();
 					component.Type = static_cast<Rigidbody2DComponent::BodyType>(i);
 				}
 

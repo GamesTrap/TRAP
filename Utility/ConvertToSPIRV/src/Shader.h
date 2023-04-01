@@ -246,9 +246,9 @@ inline static const std::unordered_map<ShaderStage, EShLanguage> ShaderStageToES
 			std::string tmp = shader.SubShaderSources[i].Source;
 			shader.SubShaderSources[i].Source = "#version 460 core\n";
 			for(const auto& macro : DefaultShaderMacros)
-				shader.SubShaderSources[i].Source += "#define " + macro[0] + " " + macro[1] + '\n';
+				shader.SubShaderSources[i].Source += "#define " + std::get<0>(macro) + " " + std::get<1>(macro) + '\n';
             for(const auto& macro : customMacros)
-                shader.SubShaderSources[i].Source += "#define " + macro[0] + " " + macro[1] + '\n';
+                shader.SubShaderSources[i].Source += "#define " + std::get<0>(macro) + " " + std::get<1>(macro) + '\n';
 			shader.SubShaderSources[i].Source += tmp;
 		}
 	}

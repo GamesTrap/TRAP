@@ -461,7 +461,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::TextureLoadDe
 
 	TRAP_ASSERT(textureDesc.Texture, "ResourceLoader::AddResource(): Texture is nullptr!");
 
-	if(textureDesc.Filepaths[0].empty() && !textureDesc.Images[0] && textureDesc.Desc)
+	if(std::get<0>(textureDesc.Filepaths).empty() && !std::get<0>(textureDesc.Images) && textureDesc.Desc)
 	{
 		TRAP_ASSERT(static_cast<uint32_t>(textureDesc.Desc->StartState), "ResourceLoader::AddResource(): Texture start state is undefined!");
 		TRAP_ASSERT(textureDesc.Texture != nullptr, "ResourceLoader::AddResource(): Texture must be constructed before loading");
@@ -1296,7 +1296,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 		);
 
 	bool validMultiFileCubemap = true;
-	if(!textureLoadDesc.Images[0])
+	if(!std::get<0>(textureLoadDesc.Images))
 	{
 		//Use normal file loading
 		for(const std::filesystem::path& str : textureLoadDesc.Filepaths)
@@ -1328,11 +1328,11 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 		supported = false;
 	}
 
-	if(!textureLoadDesc.Images[0] && supported)
+	if(!std::get<0>(textureLoadDesc.Images) && supported)
 	{
-		if((textureLoadDesc.Filepaths[0].empty() ||
-			!TRAP::FileSystem::Exists(textureLoadDesc.Filepaths[0]) ||
-			!TRAP::Image::IsSupportedImageFile(textureLoadDesc.Filepaths[0])))
+		if((std::get<0>(textureLoadDesc.Filepaths).empty() ||
+			!TRAP::FileSystem::Exists(std::get<0>(textureLoadDesc.Filepaths)) ||
+			!TRAP::Image::IsSupportedImageFile(std::get<0>(textureLoadDesc.Filepaths))))
 		{
 			supported = false;
 		}
@@ -1357,21 +1357,21 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 	std::array<TRAP::Scope<TRAP::Image>, 6> ownedImages{}; //Storage for images that are getting loaded from here
 	std::array<const TRAP::Image*, 6> ptrImages{}; //Pointers to the images to upload
 
-	if((!textureLoadDesc.Filepaths[0].empty() || textureLoadDesc.Images[0]) && supported)
+	if((!std::get<0>(textureLoadDesc.Filepaths).empty() || std::get<0>(textureLoadDesc.Images)) && supported)
 	{
 		//Get a name for the texture
 		textureDesc.Name = "Unknown";
-		if(!textureLoadDesc.Images[0])
+		if(!std::get<0>(textureLoadDesc.Images))
 		{
 			//Use file path
-			const auto fileName = FileSystem::GetFileNameWithEnding(textureLoadDesc.Filepaths[0]);
+			const auto fileName = FileSystem::GetFileNameWithEnding(std::get<0>(textureLoadDesc.Filepaths));
 			if(fileName)
 				textureDesc.Name = *fileName;
 		}
-		else if(!textureLoadDesc.Images[0]->GetFilePath().empty())
+		else if(!std::get<0>(textureLoadDesc.Images)->GetFilePath().empty())
 		{
 			//Use already in memory image
-			const auto fileName = FileSystem::GetFileNameWithEnding(textureLoadDesc.Images[0]->GetFilePath());
+			const auto fileName = FileSystem::GetFileNameWithEnding(std::get<0>(textureLoadDesc.Images)->GetFilePath());
 			if(fileName)
 				textureDesc.Name = *fileName;
 		}
@@ -1379,7 +1379,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 		//Handle the different types of textures
 		if(textureLoadDesc.IsCubemap && textureLoadDesc.Type == RendererAPI::TextureCubeType::MultiFile)
 		{
-			if(!textureLoadDesc.Images[0])
+			if(!std::get<0>(textureLoadDesc.Images))
 			{
 				//Use file paths
 				for(std::size_t i = 0; i < ownedImages.size(); ++i)
@@ -1397,7 +1397,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 
 			//Validation checks
 			bool valid = true;
-			if(ptrImages[0]->GetWidth() != ptrImages[0]->GetHeight())
+			if(std::get<0>(ptrImages)->GetWidth() != std::get<0>(ptrImages)->GetHeight())
 			{
 				TP_ERROR(Log::TexturePrefix, "Images width and height must be the same!");
 				valid = false;
@@ -1408,15 +1408,15 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 					break;
 
 				//Check if every image has the same resolution as image 0
-				if (ptrImages[0]->GetWidth() != ptrImages[i]->GetWidth() ||
-					ptrImages[0]->GetHeight() != ptrImages[i]->GetHeight())
+				if (std::get<0>(ptrImages)->GetWidth() != ptrImages[i]->GetWidth() ||
+					std::get<0>(ptrImages)->GetHeight() != ptrImages[i]->GetHeight())
 				{
 					TP_ERROR(Log::TexturePrefix, "Images have mismatching width and/or height!");
 					valid = false;
 					break;
 				}
-				if (ptrImages[0]->GetColorFormat() != ptrImages[i]->GetColorFormat() ||
-					ptrImages[0]->GetBitsPerPixel() != ptrImages[i]->GetBitsPerPixel())
+				if (std::get<0>(ptrImages)->GetColorFormat() != ptrImages[i]->GetColorFormat() ||
+					std::get<0>(ptrImages)->GetBitsPerPixel() != ptrImages[i]->GetBitsPerPixel())
 				{
 					TP_ERROR(Log::TexturePrefix, "Images have mismatching color formats and/or bits per pixel!");
 					valid = false;
@@ -1436,8 +1436,8 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 				}
 			}
 
-			textureDesc.Width = ptrImages[0]->GetWidth();
-			textureDesc.Height = ptrImages[0]->GetHeight();
+			textureDesc.Width = std::get<0>(ptrImages)->GetWidth();
+			textureDesc.Height = std::get<0>(ptrImages)->GetHeight();
 			textureDesc.Descriptors |= RendererAPI::DescriptorType::TextureCube;
 			textureDesc.ArraySize = 6;
 			textureDesc.MipLevels = TRAP::Graphics::Texture::CalculateMipLevels(textureDesc.Width, textureDesc.Height);
@@ -1454,9 +1454,9 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 		else if(textureLoadDesc.IsCubemap && textureLoadDesc.Type == RendererAPI::TextureCubeType::Cross)
 		{
 			TRAP::Scope<TRAP::Image> baseImg = nullptr;
-			if(!textureLoadDesc.Images[0])
-				baseImg = TRAP::Image::LoadFromFile(textureLoadDesc.Filepaths[0]);
-			const TRAP::Image* const baseImgPtr = textureLoadDesc.Images[0] ? textureLoadDesc.Images[0] : baseImg.get();
+			if(!std::get<0>(textureLoadDesc.Images))
+				baseImg = TRAP::Image::LoadFromFile(std::get<0>(textureLoadDesc.Filepaths));
+			const TRAP::Image* const baseImgPtr = std::get<0>(textureLoadDesc.Images) ? std::get<0>(textureLoadDesc.Images) : baseImg.get();
 
 			bool valid = true;
 			if(baseImgPtr->GetWidth() > baseImgPtr->GetHeight()) //Horizontal
@@ -1499,8 +1499,8 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 			for(std::size_t i = 0; i < ownedImages.size(); ++i)
 				ptrImages[i] = ownedImages[i].get();
 
-			textureDesc.Width = ptrImages[0]->GetWidth();
-			textureDesc.Height = ptrImages[0]->GetHeight();
+			textureDesc.Width = std::get<0>(ptrImages)->GetWidth();
+			textureDesc.Height = std::get<0>(ptrImages)->GetHeight();
 			textureDesc.Descriptors |= RendererAPI::DescriptorType::TextureCube;
 			textureDesc.ArraySize = 6;
 			textureDesc.MipLevels = TRAP::Graphics::Texture::CalculateMipLevels(textureDesc.Width,
@@ -1508,36 +1508,36 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 		}
 		else //if(!textureLoadDesc.IsCubemap) //Normal Texture
 		{
-			if(!textureLoadDesc.Images[0])
-				ownedImages[0] = TRAP::Image::LoadFromFile(textureLoadDesc.Filepaths[0]);
-			ptrImages[0] = textureLoadDesc.Images[0] ? textureLoadDesc.Images[0] : ownedImages[0].get();
+			if(!std::get<0>(textureLoadDesc.Images))
+				std::get<0>(ownedImages) = TRAP::Image::LoadFromFile(std::get<0>(textureLoadDesc.Filepaths));
+			std::get<0>(ptrImages) = std::get<0>(textureLoadDesc.Images) ? std::get<0>(textureLoadDesc.Images) : std::get<0>(ownedImages).get();
 
-			textureDesc.Width = ptrImages[0]->GetWidth();
-			textureDesc.Height = ptrImages[0]->GetHeight();
+			textureDesc.Width = std::get<0>(ptrImages)->GetWidth();
+			textureDesc.Height = std::get<0>(ptrImages)->GetHeight();
 			textureDesc.MipLevels = TRAP::Graphics::Texture::CalculateMipLevels(textureDesc.Width,
 			                                                                    textureDesc.Height);
 		}
 
 		textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
 
-		if (ptrImages[0]->IsHDR() && ptrImages[0]->GetColorFormat() == TRAP::Image::ColorFormat::RGB) //RGB HDR (32 bpc) | Will be converted to RGBA before upload
+		if (std::get<0>(ptrImages)->IsHDR() && std::get<0>(ptrImages)->GetColorFormat() == TRAP::Image::ColorFormat::RGB) //RGB HDR (32 bpc) | Will be converted to RGBA before upload
 			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R32G32B32A32_SFLOAT;
-		else if (ptrImages[0]->GetBitsPerChannel() == 16 && (ptrImages[0]->GetColorFormat() == TRAP::Image::ColorFormat::RGBA || //RGB(A) 16 bpc | Will be converted to RGBA before upload
-				 ptrImages[0]->GetColorFormat() == TRAP::Image::ColorFormat::RGB))
+		else if (std::get<0>(ptrImages)->GetBitsPerChannel() == 16 && (std::get<0>(ptrImages)->GetColorFormat() == TRAP::Image::ColorFormat::RGBA || //RGB(A) 16 bpc | Will be converted to RGBA before upload
+				 std::get<0>(ptrImages)->GetColorFormat() == TRAP::Image::ColorFormat::RGB))
 			 textureDesc.Format = TRAP::Graphics::API::ImageFormat::R16G16B16A16_UNORM;
-		else if (ptrImages[0]->GetBitsPerChannel() == 8 && ptrImages[0]->GetColorFormat() == TRAP::Image::ColorFormat::RGBA) //RGBA 8 bpc
+		else if (std::get<0>(ptrImages)->GetBitsPerChannel() == 8 && std::get<0>(ptrImages)->GetColorFormat() == TRAP::Image::ColorFormat::RGBA) //RGBA 8 bpc
 			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
-		else if (ptrImages[0]->GetBitsPerChannel() == 32 && ptrImages[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScaleAlpha) //GrayScale Alpha HDR (32 bpc)
+		else if (std::get<0>(ptrImages)->GetBitsPerChannel() == 32 && std::get<0>(ptrImages)->GetColorFormat() == TRAP::Image::ColorFormat::GrayScaleAlpha) //GrayScale Alpha HDR (32 bpc)
 			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R32G32_SFLOAT;
-		else if (ptrImages[0]->GetBitsPerChannel() == 16 && ptrImages[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScaleAlpha) //GrayScale Alpha 16 bpc
+		else if (std::get<0>(ptrImages)->GetBitsPerChannel() == 16 && std::get<0>(ptrImages)->GetColorFormat() == TRAP::Image::ColorFormat::GrayScaleAlpha) //GrayScale Alpha 16 bpc
 			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R16G16_UNORM;
-		else if (ptrImages[0]->GetBitsPerChannel() == 8 && ptrImages[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScaleAlpha) //GrayScale Alpha 8 bpc
+		else if (std::get<0>(ptrImages)->GetBitsPerChannel() == 8 && std::get<0>(ptrImages)->GetColorFormat() == TRAP::Image::ColorFormat::GrayScaleAlpha) //GrayScale Alpha 8 bpc
 			 textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8_UNORM;
-		else if(ptrImages[0]->IsHDR() && ptrImages[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScale) //GrayScale HDR (32 bpc)
+		else if(std::get<0>(ptrImages)->IsHDR() && std::get<0>(ptrImages)->GetColorFormat() == TRAP::Image::ColorFormat::GrayScale) //GrayScale HDR (32 bpc)
 			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R32_SFLOAT;
-		else if (ptrImages[0]->GetBitsPerChannel() == 16 && ptrImages[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScale) //GrayScale 16 bpc
+		else if (std::get<0>(ptrImages)->GetBitsPerChannel() == 16 && std::get<0>(ptrImages)->GetColorFormat() == TRAP::Image::ColorFormat::GrayScale) //GrayScale 16 bpc
 			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R16_UNORM;
-		else if (ptrImages[0]->GetBitsPerChannel() == 8 && ptrImages[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScale) //GrayScale 8 bpc
+		else if (std::get<0>(ptrImages)->GetBitsPerChannel() == 8 && std::get<0>(ptrImages)->GetColorFormat() == TRAP::Image::ColorFormat::GrayScale) //GrayScale 8 bpc
 			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8_UNORM;
 
 		textureLoadDesc.Texture->Init(textureDesc);
@@ -1557,11 +1557,11 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 	{
 		textureDesc.Name = "Fallback2D";
 
-		ownedImages[0] = TRAP::Image::LoadFallback();
-		ptrImages[0] = ownedImages[0].get();
+		std::get<0>(ownedImages) = TRAP::Image::LoadFallback();
+		std::get<0>(ptrImages) = std::get<0>(ownedImages).get();
 
-		textureDesc.Width = ptrImages[0]->GetWidth();
-		textureDesc.Height = ptrImages[0]->GetHeight();
+		textureDesc.Width = std::get<0>(ptrImages)->GetWidth();
+		textureDesc.Height = std::get<0>(ptrImages)->GetHeight();
 		textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
 		textureDesc.MipLevels = TRAP::Graphics::Texture::CalculateMipLevels(textureDesc.Width,
 			                                                                textureDesc.Height);
@@ -1576,8 +1576,8 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 			ptrImages[i] = ownedImages[i].get();
 		}
 
-		textureDesc.Width = ptrImages[0]->GetWidth();
-		textureDesc.Height = ptrImages[0]->GetHeight();
+		textureDesc.Width = std::get<0>(ptrImages)->GetWidth();
+		textureDesc.Height = std::get<0>(ptrImages)->GetHeight();
 		textureDesc.Descriptors |= RendererAPI::DescriptorType::TextureCube;
 		textureDesc.ArraySize = 6;
 		textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;

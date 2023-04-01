@@ -86,11 +86,11 @@ namespace TypeMat3
         TRAP::Math::Vec3 u(1.0f);
         TRAP::Math::Vec3 v(1.0f);
         float x = 1.0f;
-        TRAP::Math::Vec3 a = m * u;
-        TRAP::Math::Vec3 b = v * m;
-        TRAP::Math::Mat3 n = x / m;
-        TRAP::Math::Mat3 o = m / x;
-        TRAP::Math::Mat3 p = x * m;
+        [[maybe_unused]] TRAP::Math::Vec3 a = m * u;
+        [[maybe_unused]] TRAP::Math::Vec3 b = v * m;
+        [[maybe_unused]] TRAP::Math::Mat3 n = x / m;
+        [[maybe_unused]] TRAP::Math::Mat3 o = m / x;
+        [[maybe_unused]] TRAP::Math::Mat3 p = x * m;
         TRAP::Math::Mat3 q = m * x;
         bool r = TRAP::Math::Any(TRAP::Math::NotEqual(m, q, TRAP::Math::Epsilon<float>()));
         bool s = TRAP::Math::All(TRAP::Math::Equal(m, l, TRAP::Math::Epsilon<float>()));
@@ -148,7 +148,7 @@ namespace TypeMat3
     {
         static_assert(TRAP::Math::Mat3::Length() == 3, "Math: Failed constexpr");
 
-        static constexpr TRAP::Math::Mat3 z(0.0f);
+        [[maybe_unused]] static constexpr TRAP::Math::Mat3 z(0.0f);
     }
 }
 

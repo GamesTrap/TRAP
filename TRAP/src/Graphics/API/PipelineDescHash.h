@@ -47,8 +47,8 @@ namespace std
 					g.DepthStencilFormat,
 					g.PrimitiveTopology,
                     g.ShadingRate,
-                    g.ShadingRateCombiners[0],
-                    g.ShadingRateCombiners[1],
+                    std::get<0>(g.ShadingRateCombiners),
+                    std::get<1>(g.ShadingRateCombiners),
                     g.ShadingRateTexture
                 );
 

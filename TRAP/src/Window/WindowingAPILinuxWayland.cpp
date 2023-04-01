@@ -1647,9 +1647,9 @@ std::optional<std::string> TRAP::INTERNAL::WindowingAPI::ReadDataOfferAsString(w
         return std::nullopt;
     }
 
-    wl_data_offer_receive(&offer, mimeType.data(), fds[1]);
+    wl_data_offer_receive(&offer, mimeType.data(), std::get<1>(fds));
     FlushDisplay();
-    close(fds[1]);
+    close(std::get<1>(fds));
 
     std::string str = "";
     std::size_t size = 0;
@@ -1665,7 +1665,7 @@ std::optional<std::string> TRAP::INTERNAL::WindowingAPI::ReadDataOfferAsString(w
             size = requiredSize;
         }
 
-        const ssize_t result = read(fds[0], str.data() + length, readSize);
+        const ssize_t result = read(std::get<0>(fds), str.data() + length, readSize);
         if(result == 0)
             break;
         else if(result == -1)
@@ -1674,14 +1674,14 @@ std::optional<std::string> TRAP::INTERNAL::WindowingAPI::ReadDataOfferAsString(w
                 continue;
 
             InputError(Error::Platform_Error, "[Wayland] Failed to read data offer pipe: " + Utils::String::GetStrError());
-            close(fds[0]);
+            close(std::get<0>(fds));
             return std::nullopt;
         }
 
         length += result;
     }
 
-    close(fds[0]);
+    close(std::get<0>(fds));
 
     str.resize(length);
 
@@ -2631,7 +2631,7 @@ void TRAP::INTERNAL::WindowingAPI::HandleEventsWayland(double* const timeout)
     };
 
     if(s_Data.Wayland.LibDecor.Context)
-        fds[3].fd = s_Data.Wayland.LibDecor.GetFD(s_Data.Wayland.LibDecor.Context);
+        std::get<3>(fds).fd = s_Data.Wayland.LibDecor.GetFD(s_Data.Wayland.LibDecor.Context);
 
     while(!event)
     {
@@ -2659,7 +2659,7 @@ void TRAP::INTERNAL::WindowingAPI::HandleEventsWayland(double* const timeout)
             return;
         }
 
-        if(fds[0].revents & POLLIN)
+        if(std::get<0>(fds).revents & POLLIN)
         {
             s_Data.Wayland.WaylandClient.DisplayReadEvents(s_Data.Wayland.DisplayWL);
             if(s_Data.Wayland.WaylandClient.DisplayDispatchPending(s_Data.Wayland.DisplayWL) > 0)
@@ -2668,7 +2668,7 @@ void TRAP::INTERNAL::WindowingAPI::HandleEventsWayland(double* const timeout)
         else
             s_Data.Wayland.WaylandClient.DisplayCancelRead(s_Data.Wayland.DisplayWL);
 
-        if(fds[1].revents & POLLIN)
+        if(std::get<1>(fds).revents & POLLIN)
         {
             uint64_t repeats = 0;
 
@@ -2687,7 +2687,7 @@ void TRAP::INTERNAL::WindowingAPI::HandleEventsWayland(double* const timeout)
             }
         }
 
-        if(fds[2].revents & POLLIN)
+        if(std::get<2>(fds).revents & POLLIN)
         {
             uint64_t repeats = 0;
 
@@ -2701,7 +2701,7 @@ void TRAP::INTERNAL::WindowingAPI::HandleEventsWayland(double* const timeout)
             }
         }
 
-        if(fds[3].revents & POLLIN)
+        if(std::get<3>(fds).revents & POLLIN)
             s_Data.Wayland.LibDecor.Dispatch(s_Data.Wayland.LibDecor.Context, 0);
     }
 }
@@ -3787,8 +3787,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensionsWayland(
     if(!s_Data.VK.KHR_Surface || !s_Data.VK.KHR_Wayland_Surface)
         return;
 
-    extensions[0] = "VK_KHR_surface";
-    extensions[1] = "VK_KHR_wayland_surface";
+    std::get<0>(extensions) = "VK_KHR_surface";
+    std::get<1>(extensions) = "VK_KHR_wayland_surface";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

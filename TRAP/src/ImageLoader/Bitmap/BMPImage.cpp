@@ -93,17 +93,17 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 			return;
 		}
 
-		file.read(reinterpret_cast<char*>(&masks[0]), sizeof(uint32_t));
-		file.read(reinterpret_cast<char*>(&masks[1]), sizeof(uint32_t));
-		file.read(reinterpret_cast<char*>(&masks[2]), sizeof(uint32_t));
-		file.read(reinterpret_cast<char*>(&masks[3]), sizeof(uint32_t));
+		file.read(reinterpret_cast<char*>(&std::get<0>(masks)), sizeof(uint32_t));
+		file.read(reinterpret_cast<char*>(&std::get<1>(masks)), sizeof(uint32_t));
+		file.read(reinterpret_cast<char*>(&std::get<2>(masks)), sizeof(uint32_t));
+		file.read(reinterpret_cast<char*>(&std::get<3>(masks)), sizeof(uint32_t));
 
 		if (needSwap)
 		{
-			Utils::Memory::SwapBytes(masks[0]);
-			Utils::Memory::SwapBytes(masks[1]);
-			Utils::Memory::SwapBytes(masks[2]);
-			Utils::Memory::SwapBytes(masks[3]);
+			Utils::Memory::SwapBytes(std::get<0>(masks));
+			Utils::Memory::SwapBytes(std::get<1>(masks));
+			Utils::Memory::SwapBytes(std::get<2>(masks));
+			Utils::Memory::SwapBytes(std::get<3>(masks));
 		}
 	}
 
@@ -340,13 +340,13 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 					                   (static_cast<uint32_t>(imageData[i + 2]) << 16) +
 					                   (static_cast<uint32_t>(imageData[i + 3]) << 24);
 
-				data[index++] = Make8Bits(ApplyBitField(value, bitFields[0]), bitFields[0].Span);
-				data[index++] = Make8Bits(ApplyBitField(value, bitFields[1]), bitFields[1].Span);
-				data[index++] = Make8Bits(ApplyBitField(value, bitFields[2]), bitFields[2].Span);
+				data[index++] = Make8Bits(ApplyBitField(value, std::get<0>(bitFields)), std::get<0>(bitFields).Span);
+				data[index++] = Make8Bits(ApplyBitField(value, std::get<1>(bitFields)), std::get<1>(bitFields).Span);
+				data[index++] = Make8Bits(ApplyBitField(value, std::get<2>(bitFields)), std::get<2>(bitFields).Span);
 				if (GetBytesPerPixel() == 4)
 				{
-					if (bitFields[3].Span)
-						data[index++] = Make8Bits(ApplyBitField(value, bitFields[3]), bitFields[3].Span);
+					if (std::get<3>(bitFields).Span)
+						data[index++] = Make8Bits(ApplyBitField(value, std::get<3>(bitFields)), std::get<3>(bitFields).Span);
 					else
 						data[index++] = 255;
 				}
@@ -369,13 +369,13 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 				const uint16_t value = static_cast<uint16_t>(imageData[i]) +
 								       static_cast<uint16_t>(imageData[i + 1] << 8);
 
-				data[index++] = Make8Bits(ApplyBitField(value, bitFields[0]), bitFields[0].Span);
-				data[index++] = Make8Bits(ApplyBitField(value, bitFields[1]), bitFields[1].Span);
-				data[index++] = Make8Bits(ApplyBitField(value, bitFields[2]), bitFields[2].Span);
+				data[index++] = Make8Bits(ApplyBitField(value, std::get<0>(bitFields)), std::get<0>(bitFields).Span);
+				data[index++] = Make8Bits(ApplyBitField(value, std::get<1>(bitFields)), std::get<1>(bitFields).Span);
+				data[index++] = Make8Bits(ApplyBitField(value, std::get<2>(bitFields)), std::get<2>(bitFields).Span);
 				if(GetBytesPerPixel() == 4)
 				{
-					if (bitFields[3].Span)
-						data[index++] = Make8Bits(ApplyBitField(value, bitFields[3]), bitFields[3].Span);
+					if (std::get<3>(bitFields).Span)
+						data[index++] = Make8Bits(ApplyBitField(value, std::get<3>(bitFields)), std::get<3>(bitFields).Span);
 					else
 						data[index++] = 255;
 				}

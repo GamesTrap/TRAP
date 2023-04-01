@@ -46,7 +46,7 @@ namespace TRAP::Network
 		/// Construct the address from 16 bytes array.
 		/// </summary>
 		/// <param name="addressBytes">Array containing 16 bytes address.</param>
-		explicit IPv6Address(const std::array<uint8_t, 16>& addressBytes) noexcept;
+		explicit constexpr IPv6Address(const std::array<uint8_t, 16>& addressBytes) noexcept;
 
 		/// <summary>
 		/// Get a string representation of the address.
@@ -178,6 +178,13 @@ namespace TRAP::Network
 	/// <param name="address">IP address to print.</param>
 	/// <returns>Reference to the output stream.</returns>
 	std::ostream& operator<<(std::ostream& stream, const IPv6Address& address);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline constexpr TRAP::Network::IPv6Address::IPv6Address(const std::array<uint8_t, 16>& addressBytes) noexcept
+	: m_address(addressBytes), m_valid(true)
+{
 }
 
 #endif /*TRAP_IPV6ADDRESS_H*/
