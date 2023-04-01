@@ -121,7 +121,7 @@ void IcoSphereTests::OnImGuiRender()
 	ImGui::Text("VSync (V): %s", m_vsync ? "Enabled" : "Disabled");
 	if(ImGui::SliderFloat("Camera FoV", &fov, 45.0f, 100.0f))
         m_camera.SetPerspectiveVerticalFOV(TRAP::Math::Radians(fov));
-	if(ImGui::SliderFloat3("Camera Pos", &pos[0], -10.0f, 10.0f))
+	if(ImGui::SliderFloat3("Camera Pos", &std::get<0>(pos), -10.0f, 10.0f))
 		m_cameraTransform.Position = pos;
 	ImGui::SliderFloat("Rotation Speed", &m_rotationSpeed, 0.0f, 500.0f);
 	ImGui::End();

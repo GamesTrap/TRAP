@@ -90,8 +90,8 @@ public:
 	void OnImGuiRender() override
 	{
 		ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
-		ImGui::ColorEdit4("Spawn Color", &m_particle.ColorBegin[0]);
-		ImGui::ColorEdit4("Decay Color", &m_particle.ColorEnd[0]);
+		ImGui::ColorEdit4("Spawn Color", &std::get<0>(m_particle.ColorBegin));
+		ImGui::ColorEdit4("Decay Color", &std::get<0>(m_particle.ColorEnd));
 		ImGui::DragFloat("Life Time", &m_particle.LifeTime, 0.1f, 0.0f, 1000.0f);
 		if(ImGui::SliderInt("Max Particles", &m_maxParticles, 1, 100000))
 			m_particleSystem.SetMaxParticles(m_maxParticles);

@@ -45,7 +45,7 @@ namespace Constexpr
 
         {
             static constexpr TRAP::Math::Vec2i a(1);
-            static_assert(a[0] == 1, "Math: Failed constexpr");
+            static_assert(std::get<0>(a) == 1, "Math: Failed constexpr");
             static_assert(TRAP::Math::Vec2(1.0f).x > 0.0f, "Math: Failed constexpr");
             static_assert(TRAP::Math::Vec2(1.0f, -1.0f).x > 0.0f, "Math: Failed constexpr");
             static_assert(TRAP::Math::Vec2(1.0f, -1.0f).y < 0.0f, "Math: Failed constexpr");
@@ -200,7 +200,7 @@ namespace Constexpr
 
         {
             static constexpr TRAP::Math::Vec3i a(1);
-            static_assert(a[0] == 1, "Math: Failed constexpr");
+            static_assert(std::get<0>(a) == 1, "Math: Failed constexpr");
             static_assert(TRAP::Math::Vec3(1.0f).x > 0.0f, "Math: Failed constexpr");
             static_assert(TRAP::Math::Vec3(1.0f, -1.0f, -1.0f).x > 0.0f, "Math: Failed constexpr");
             static_assert(TRAP::Math::Vec3(1.0f, -1.0f, -1.0f).y < 0.0f, "Math: Failed constexpr");
@@ -363,7 +363,7 @@ namespace Constexpr
 
         {
             static constexpr TRAP::Math::Vec4i a(1);
-            static_assert(a[0] == 1, "Math: Failed constexpr");
+            static_assert(std::get<0>(a) == 1, "Math: Failed constexpr");
             static_assert(TRAP::Math::Vec4i(1).x > 0, "Math: Failed constexpr");
             static_assert(TRAP::Math::Vec4i(1.0f, -1.0f, -1.0f, 1.0f).x > 0, "Math: Failed constexpr");
             static_assert(TRAP::Math::Vec4i(1.0f, -1.0f, -1.0f, 1.0f).y < 0, "Math: Failed constexpr");

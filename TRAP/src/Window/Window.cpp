@@ -148,7 +148,7 @@ void TRAP::Window::OnUpdate()
 
 	TRAP::Math::Vec2i pos{};
 
-	INTERNAL::WindowingAPI::GetWindowPos(*m_window, pos[0], pos[1]);
+	INTERNAL::WindowingAPI::GetWindowPos(*m_window, std::get<0>(pos), std::get<1>(pos));
 
 	return pos;
 }

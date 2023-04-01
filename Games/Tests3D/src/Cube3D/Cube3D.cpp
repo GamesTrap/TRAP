@@ -264,19 +264,19 @@ void Cube3D::OnImGuiRender()
     ImGui::Text("Press ALT to toggle Mouse Movement");
     ImGui::Separator();
     ImGui::Text("Cube");
-    ImGui::DragFloat3("Cube Position", &m_cubePosition[0]);
-    ImGui::DragFloat3("Cube Rotation", &m_cubeRotation[0], 1, -360.0f, 360.0f);
-    ImGui::DragFloat3("Cube Scale", &m_cubeScale[0], 1, 0.1f, 1000.0f);
+    ImGui::DragFloat3("Cube Position", &std::get<0>(m_cubePosition));
+    ImGui::DragFloat3("Cube Rotation", &std::get<0>(m_cubeRotation), 1, -360.0f, 360.0f);
+    ImGui::DragFloat3("Cube Scale", &std::get<0>(m_cubeScale), 1, 0.1f, 1000.0f);
     ImGui::Separator();
 	if (m_shaderNames[m_currentShader] == "Diffuse Reflection")
 	{
         DiffuseReflectionDataBuffer diffuseReflectionDataBuffer = m_diffuseReflectionDataBuffer;
 
         ImGui::Text("Diffuse Reflection");
-        ImGui::DragFloat3("Light Position", &m_lightPosition[0], 0.1f);
-        ImGui::SliderFloat3("Light Source Intensity", &diffuseReflectionDataBuffer.LightSourceIntensity[0], 0.0f,
+        ImGui::DragFloat3("Light Position", &std::get<0>(m_lightPosition), 0.1f);
+        ImGui::SliderFloat3("Light Source Intensity", &std::get<0>(diffuseReflectionDataBuffer.LightSourceIntensity), 0.0f,
                             1.0f);
-        ImGui::SliderFloat3("Diffuse Reflectivity", &diffuseReflectionDataBuffer.DiffuseReflectivity[0], 0.0f,
+        ImGui::SliderFloat3("Diffuse Reflectivity", &std::get<0>(diffuseReflectionDataBuffer.DiffuseReflectivity), 0.0f,
                             1.0f);
         ImGui::Separator();
 
@@ -293,14 +293,14 @@ void Cube3D::OnImGuiRender()
 
         ImGui::Text("Phong Lightning");
         ImGui::Text("Light");
-        ImGui::DragFloat3("Light Position", &m_lightPosition[0], 0.1f);
-        ImGui::SliderFloat3("Light Ambient", &phongLightningDataBuffer.LightLa[0], 0.0f, 1.0f);
-        ImGui::SliderFloat3("Light Diffuse", &phongLightningDataBuffer.LightLd[0], 0.0f, 1.0f);
-        ImGui::SliderFloat3("Light Specular", &phongLightningDataBuffer.LightLs[0], 0.0f, 1.0f);
+        ImGui::DragFloat3("Light Position", &std::get<0>(m_lightPosition), 0.1f);
+        ImGui::SliderFloat3("Light Ambient", &std::get<0>(phongLightningDataBuffer.LightLa), 0.0f, 1.0f);
+        ImGui::SliderFloat3("Light Diffuse", &std::get<0>(phongLightningDataBuffer.LightLd), 0.0f, 1.0f);
+        ImGui::SliderFloat3("Light Specular", &std::get<0>(phongLightningDataBuffer.LightLs), 0.0f, 1.0f);
         ImGui::Text("Material");
-        ImGui::SliderFloat3("Material Ambient", &phongLightningDataBuffer.MaterialKa[0], 0.0f, 1.0f);
-        ImGui::SliderFloat3("Material Diffuse", &phongLightningDataBuffer.MaterialKd[0], 0.0f, 1.0f);
-        ImGui::SliderFloat3("Material Specular", &phongLightningDataBuffer.MaterialKs[0], 0.0f, 1.0f);
+        ImGui::SliderFloat3("Material Ambient", &std::get<0>(phongLightningDataBuffer.MaterialKa), 0.0f, 1.0f);
+        ImGui::SliderFloat3("Material Diffuse", &std::get<0>(phongLightningDataBuffer.MaterialKd), 0.0f, 1.0f);
+        ImGui::SliderFloat3("Material Specular", &std::get<0>(phongLightningDataBuffer.MaterialKs), 0.0f, 1.0f);
         ImGui::SliderFloat("Material Shininess", &phongLightningDataBuffer.MaterialShininess, 1.0f, 100.0f);
         ImGui::Separator();
 

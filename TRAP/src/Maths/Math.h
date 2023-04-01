@@ -4815,7 +4815,7 @@ template <typename T>
 {
 	Mat<4, 4, T> result(m);
 
-	result[3] = m[0] * v[0] + m[1] * v[1] + m[2] * v[2] + m[3];
+	result[3] = m[0] * std::get<0>(v) + m[1] * std::get<1>(v) + m[2] * std::get<2>(v) + m[3];
 
 	return result;
 }
@@ -4825,7 +4825,7 @@ template <typename T>
 {
 	Mat<4, 4, T> result(T(1.0));
 
-	result[3] = result[0] * v[0] + result[1] * v[1] + result[2] * v[2] + result[3];
+	result[3] = result[0] * std::get<0>(v) + result[1] * std::get<1>(v) + result[2] * std::get<2>(v) + result[3];
 
 	return result;
 }
@@ -4846,17 +4846,17 @@ template<typename T>
 
 	Mat<4, 4, T> rotate;
 
-	rotate[0][0] = c + temp[0] * axis[0];
-	rotate[0][1] = temp[0] * axis[1] + s * axis[2];
-	rotate[0][2] = temp[0] * axis[2] - s * axis[1];
+	rotate[0][0] = c + std::get<0>(temp) * std::get<0>(axis);
+	rotate[0][1] = std::get<0>(temp) * std::get<1>(axis) + s * std::get<2>(axis);
+	rotate[0][2] = std::get<0>(temp) * std::get<2>(axis) - s * std::get<1>(axis);
 
-	rotate[1][0] = temp[1] * axis[0] - s * axis[2];
-	rotate[1][1] = c + temp[1] * axis[1];
-	rotate[1][2] = temp[1] * axis[2] + s * axis[0];
+	rotate[1][0] = std::get<1>(temp) * std::get<0>(axis) - s * std::get<2>(axis);
+	rotate[1][1] = c + std::get<1>(temp) * std::get<1>(axis);
+	rotate[1][2] = std::get<1>(temp) * std::get<2>(axis) + s * std::get<0>(axis);
 
-	rotate[2][0] = temp[2] * axis[0] + s * axis[1];
-	rotate[2][1] = temp[2] * axis[1] - s * axis[0];
-	rotate[2][2] = c + temp[2] * axis[2];
+	rotate[2][0] = std::get<2>(temp) * std::get<0>(axis) + s * std::get<1>(axis);
+	rotate[2][1] = std::get<2>(temp) * std::get<1>(axis) - s * std::get<0>(axis);
+	rotate[2][2] = c + std::get<2>(temp) * std::get<2>(axis);
 
 	Mat<4, 4, T> result;
 
@@ -4882,17 +4882,17 @@ template<typename T>
 
 	Mat<4, 4, T> rotate;
 
-	rotate[0][0] = c + temp[0] * axis[0];
-	rotate[0][1] = temp[0] * axis[1] + s * axis[2];
-	rotate[0][2] = temp[0] * axis[2] - s * axis[1];
+	rotate[0][0] = c + std::get<0>(temp) * std::get<0>(axis);
+	rotate[0][1] = std::get<0>(temp) * std::get<1>(axis) + s * std::get<2>(axis);
+	rotate[0][2] = std::get<0>(temp) * std::get<2>(axis) - s * std::get<1>(axis);
 
-	rotate[1][0] = temp[1] * axis[0] - s * axis[2];
-	rotate[1][1] = c + temp[1] * axis[1];
-	rotate[1][2] = temp[1] * axis[2] + s * axis[0];
+	rotate[1][0] = std::get<1>(temp) * std::get<0>(axis) - s * std::get<2>(axis);
+	rotate[1][1] = c + std::get<1>(temp) * std::get<1>(axis);
+	rotate[1][2] = std::get<1>(temp) * std::get<2>(axis) + s * std::get<0>(axis);
 
-	rotate[2][0] = temp[2] * axis[0] + s * axis[1];
-	rotate[2][1] = temp[2] * axis[1] - s * axis[0];
-	rotate[2][2] = c + temp[2] * axis[2];
+	rotate[2][0] = std::get<2>(temp) * std::get<0>(axis) + s * std::get<1>(axis);
+	rotate[2][1] = std::get<2>(temp) * std::get<1>(axis) - s * std::get<0>(axis);
+	rotate[2][2] = c + std::get<2>(temp) * std::get<2>(axis);
 
 	const Mat<4, 4, T> identity(1.0f);
 	Mat<4, 4, T> result;
@@ -4914,9 +4914,9 @@ template <typename T>
 
 	Mat<4, 4, T> result;
 
-	result[0] = m[0] * v[0];
-	result[1] = m[1] * v[1];
-	result[2] = m[2] * v[2];
+	result[0] = m[0] * std::get<0>(v);
+	result[1] = m[1] * std::get<1>(v);
+	result[2] = m[2] * std::get<2>(v);
 	result[3] = m[3];
 
 	return result;
@@ -4929,9 +4929,9 @@ template <typename T>
 
 	Mat<4, 4, T> result(1.0f);
 
-	result[0] *= v[0];
-	result[1] *= v[1];
-	result[2] *= v[2];
+	result[0] *= std::get<0>(v);
+	result[1] *= std::get<1>(v);
+	result[2] *= std::get<2>(v);
 
 	return result;
 }

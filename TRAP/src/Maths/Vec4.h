@@ -919,4 +919,130 @@ constexpr TRAP::Math::Vec<4, bool> TRAP::Math::operator||(const Vec<4, bool>& v1
 	return Vec<4, bool>(v1.x || v2.x, v1.y || v2.y, v1.z || v2.z, v1.w || v2.w);
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+//std::get support
+
+namespace std
+{
+	/// <summary>
+	/// Extracts the Ith element from the vector.
+	/// I must be an integer value in range [0, 4).
+	/// This is enforced at compile time!
+	/// </summary>
+	/// <param name="v">Vector whose contents to extract.</param>
+	/// <returns>A reference to the Ith element of v.</returns>
+	template<std::size_t I, typename T>
+	constexpr T& get(TRAP::Math::Vec<4, T>& v) noexcept
+	{
+		static_assert(I < TRAP::Math::Vec<4, T>::Length());
+
+		switch (I)
+		{
+		default:
+			[[fallthrough]];
+		case 0:
+			return v.x;
+
+		case 1:
+			return v.y;
+
+		case 2:
+			return v.z;
+
+		case 3:
+			return v.w;
+		}
+	}
+
+	/// <summary>
+	/// Extracts the Ith element from the vector.
+	/// I must be an integer value in range [0, 4).
+	/// This is enforced at compile time!
+	/// </summary>
+	/// <param name="v">Vector whose contents to extract.</param>
+	/// <returns>A reference to the Ith element of v.</returns>
+	template<std::size_t I, typename T>
+	constexpr T&& get(TRAP::Math::Vec<4, T>&& v) noexcept
+	{
+		static_assert(I < TRAP::Math::Vec<4, T>::Length());
+
+		switch (I)
+		{
+		default:
+			[[fallthrough]];
+		case 0:
+			return v.x;
+
+		case 1:
+			return v.y;
+
+		case 2:
+			return v.z;
+
+		case 3:
+			return v.w;
+		}
+	}
+
+	/// <summary>
+	/// Extracts the Ith element from the vector.
+	/// I must be an integer value in range [0, 4).
+	/// This is enforced at compile time!
+	/// </summary>
+	/// <param name="v">Vector whose contents to extract.</param>
+	/// <returns>A reference to the Ith element of v.</returns>
+	template<std::size_t I, typename T>
+	constexpr const T& get(const TRAP::Math::Vec<4, T>& v) noexcept
+	{
+		static_assert(I < TRAP::Math::Vec<4, T>::Length());
+
+		switch (I)
+		{
+		default:
+			[[fallthrough]];
+		case 0:
+			return v.x;
+
+		case 1:
+			return v.y;
+
+		case 2:
+			return v.z;
+
+		case 3:
+			return v.w;
+		}
+	}
+
+	/// <summary>
+	/// Extracts the Ith element from the vector.
+	/// I must be an integer value in range [0, 4).
+	/// This is enforced at compile time!
+	/// </summary>
+	/// <param name="v">Vector whose contents to extract.</param>
+	/// <returns>A reference to the Ith element of v.</returns>
+	template<std::size_t I, typename T>
+	constexpr const T&& get(const TRAP::Math::Vec<4, T>&& v) noexcept
+	{
+		static_assert(I < TRAP::Math::Vec<4, T>::Length());
+
+		switch (I)
+		{
+		default:
+			[[fallthrough]];
+		case 0:
+			return v.x;
+
+		case 1:
+			return v.y;
+
+		case 2:
+			return v.z;
+
+		case 3:
+			return v.w;
+		}
+	}
+}
+
 #endif /*TRAP_VEC4_H*/

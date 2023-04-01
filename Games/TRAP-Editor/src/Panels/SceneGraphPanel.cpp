@@ -329,12 +329,12 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 
 	DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component)
 	{
-		ImGui::ColorEdit4("Color", &component.Color[0]);
+		ImGui::ColorEdit4("Color", &std::get<0>(component.Color));
 	});
 
 	DrawComponent<CircleRendererComponent>("Circle Renderer", entity, [](auto& component)
 	{
-		ImGui::ColorEdit4("Color", &component.Color[0]);
+		ImGui::ColorEdit4("Color", &std::get<0>(component.Color));
 		ImGui::DragFloat("Thickness", &component.Thickness, 0.025f, 0.0f, 1.0f);
 		ImGui::DragFloat("Fade", &component.Fade, 0.00025f, 0.0f, 1.0f);
 	});
@@ -366,8 +366,8 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 
 	DrawComponent<BoxCollider2DComponent>("Box Collider 2D", entity, [](auto& component)
 	{
-		ImGui::DragFloat2("Offset", &component.Offset[0], 0.1f);
-		ImGui::DragFloat2("Size", &component.Size[0], 0.1f);
+		ImGui::DragFloat2("Offset", &std::get<0>(component.Offset), 0.1f);
+		ImGui::DragFloat2("Size", &std::get<0>(component.Size), 0.1f);
 		ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
 		ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
 		ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
@@ -376,7 +376,7 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 
 	DrawComponent<CircleCollider2DComponent>("Circle Collider 2D", entity, [](auto& component)
 	{
-		ImGui::DragFloat2("Offset", &component.Offset[0], 0.1f);
+		ImGui::DragFloat2("Offset", &std::get<0>(component.Offset), 0.1f);
 		ImGui::DragFloat("Radius", &component.Radius, 0.1f);
 		ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
 		ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);

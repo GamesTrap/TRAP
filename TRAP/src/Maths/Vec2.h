@@ -880,4 +880,70 @@ constexpr TRAP::Math::Vec<2, bool> TRAP::Math::operator||(const Vec<2, bool>& v1
 	return Vec<2, bool>(v1.x || v2.x, v1.y || v2.y);
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+//std::get support
+
+namespace std
+{
+	/// <summary>
+	/// Extracts the Ith element from the vector.
+	/// I must be an integer value in range [0, 2).
+	/// This is enforced at compile time!
+	/// </summary>
+	/// <param name="v">Vector whose contents to extract.</param>
+	/// <returns>A reference to the Ith element of v.</returns>
+	template<std::size_t I, typename T>
+	constexpr T& get(TRAP::Math::Vec<2, T>& v) noexcept
+	{
+		static_assert(I < TRAP::Math::Vec<2, T>::Length());
+
+		return I == 0 ? v.x : v.y;
+	}
+
+	/// <summary>
+	/// Extracts the Ith element from the vector.
+	/// I must be an integer value in range [0, 2).
+	/// This is enforced at compile time!
+	/// </summary>
+	/// <param name="v">Vector whose contents to extract.</param>
+	/// <returns>A reference to the Ith element of v.</returns>
+	template<std::size_t I, typename T>
+	constexpr T&& get(TRAP::Math::Vec<2, T>&& v) noexcept
+	{
+		static_assert(I < TRAP::Math::Vec<2, T>::Length());
+
+		return I == 0 ? v.x : v.y;
+	}
+
+	/// <summary>
+	/// Extracts the Ith element from the vector.
+	/// I must be an integer value in range [0, 2).
+	/// This is enforced at compile time!
+	/// </summary>
+	/// <param name="v">Vector whose contents to extract.</param>
+	/// <returns>A reference to the Ith element of v.</returns>
+	template<std::size_t I, typename T>
+	constexpr const T& get(const TRAP::Math::Vec<2, T>& v) noexcept
+	{
+		static_assert(I < TRAP::Math::Vec<2, T>::Length());
+
+		return I == 0 ? v.x : v.y;
+	}
+
+	/// <summary>
+	/// Extracts the Ith element from the vector.
+	/// I must be an integer value in range [0, 2).
+	/// This is enforced at compile time!
+	/// </summary>
+	/// <param name="v">Vector whose contents to extract.</param>
+	/// <returns>A reference to the Ith element of v.</returns>
+	template<std::size_t I, typename T>
+	constexpr const T&& get(const TRAP::Math::Vec<2, T>&& v) noexcept
+	{
+		static_assert(I < TRAP::Math::Vec<2, T>::Length());
+
+		return I == 0 ? v.x : v.y;
+	}
+}
+
 #endif /*TRAP_VEC2_H*/
