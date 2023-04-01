@@ -3804,3 +3804,4 @@ SITREP 04/01/2023|23w13c1
     - Fixed MSVC compiler error in FuncCommon.cpp ~<5 mins
     - ImageFormat/VulkanCommon Commented out deprecated formats of VK_IMG_format_pvrtc extension ~<10 mins
     - Vec2/3/4 Added std::get() support ~<10 mins
+    - Docs Added NVIDIA Reflex SDK to additional libraries ~<5 mins

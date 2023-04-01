@@ -110,3 +110,14 @@ TRAP™ will then automatically detect if the Steamworks SDK is installed proper
 
 If everything went right, feel free to use the TRAP::Utils::Steam namespace.
 :::
+:::{tab} NVIDIA® Reflex SDK
+To install the NVIDIA® Reflex SDK do the following:
+
+1. Create an account on the [NVIDIA Developer site](https://developer.nvidia.com/).
+2. Download the [NVIDIA® Reflex SDK](https://developer.nvidia.com/performance-rendering-tools/reflex/get-started).
+3. Extract the contents of the downloaded SDK to the `Dependencies/NVIDIA-Reflex` folder.
+
+TRAP™ will then automatically detect if the NVIDIA® Reflex SDK is installed properly on the next run of any of the GenerateProject scripts inside the `GeneratorScripts` folder.
+
+If everything went right, feel free to use `TRAP::Graphics::RendererAPI::SetLatencyMode()` and other NVIDIA® Reflex related functions.
+:::
