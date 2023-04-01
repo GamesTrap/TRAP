@@ -3802,3 +3802,4 @@ SITREP 04/01/2023|23w13c1
     - Changed TRAP Engine version to 23w13c1(0.9.6)
     - Replaced std::array::operator[] with std::get() where a constant index is used ~<40 mins
     - Fixed MSVC compiler error in FuncCommon.cpp ~<5 mins
+    - ImageFormat/VulkanCommon Commented out deprecated formats of VK_IMG_format_pvrtc extension ~<10 mins
