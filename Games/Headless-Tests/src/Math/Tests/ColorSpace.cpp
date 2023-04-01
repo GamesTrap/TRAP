@@ -39,8 +39,8 @@ namespace ColorSpace
         const TRAP::Math::Vec4 colorSrcGNI = TRAP::Math::Vec4(107, 107, 104, 131) / TRAP::Math::Vec4(255);
 
         {
-            const TRAP::Math::Vec4 colorGNA = TRAP::Math::ConvertSRGBToLinear(colorSrcGNI) * TRAP::Math::Vec4(255);
-            const TRAP::Math::Vec4 colorGNE = TRAP::Math::ConvertLinearToSRGB(colorSrcGNI) * TRAP::Math::Vec4(255);
+            [[maybe_unused]] const TRAP::Math::Vec4 colorGNA = TRAP::Math::ConvertSRGBToLinear(colorSrcGNI) * TRAP::Math::Vec4(255);
+            [[maybe_unused]] const TRAP::Math::Vec4 colorGNE = TRAP::Math::ConvertLinearToSRGB(colorSrcGNI) * TRAP::Math::Vec4(255);
             const TRAP::Math::Vec4 colorSRGB = TRAP::Math::ConvertLinearToSRGB(colorSrcGNI);
             const TRAP::Math::Vec4 colorRGB = TRAP::Math::ConvertSRGBToLinear(colorSRGB);
             error += TRAP::Math::All(TRAP::Math::Equal(colorSrcGNI, colorRGB, 0.00001f)) ? 0 : 1;
@@ -55,7 +55,7 @@ namespace ColorSpace
     {
         int32_t error = 0;
 
-        TRAP::Math::Vec4 color = TRAP::Math::Saturation(1.0f, TRAP::Math::Vec4(1.0, 0.5, 0.0, 1.0));
+        [[maybe_unused]] TRAP::Math::Vec4 color = TRAP::Math::Saturation(1.0f, TRAP::Math::Vec4(1.0, 0.5, 0.0, 1.0));
 
         return error;
     }

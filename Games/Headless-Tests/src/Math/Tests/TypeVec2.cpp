@@ -34,7 +34,7 @@ namespace TypeVec2
         }
 
         {
-            TRAP::Math::Vec2 a{0, 1};
+            [[maybe_unused]] TRAP::Math::Vec2 a{0, 1};
             std::vector<TRAP::Math::Vec2> v =
             {
                 {0, 1},
@@ -44,7 +44,7 @@ namespace TypeVec2
         }
 
         {
-            TRAP::Math::Vec2d a{0, 1};
+            [[maybe_unused]] TRAP::Math::Vec2d a{0, 1};
             std::vector<TRAP::Math::Vec2d> v =
             {
                 {0, 1},
@@ -54,12 +54,12 @@ namespace TypeVec2
         }
 
         {
-            TRAP::Math::Vec2 a = TRAP::Math::Vec2(2.0f);
-            TRAP::Math::Vec2 b = TRAP::Math::Vec2(2.0f, 3.0f);
-            TRAP::Math::Vec2 c = TRAP::Math::Vec2(2.0f, 3.0);
-            TRAP::Math::Vec2d d = TRAP::Math::Vec2d(2.0);
-            TRAP::Math::Vec2d e(TRAP::Math::Vec2d(2.0f));
-            TRAP::Math::Vec2d f(TRAP::Math::Vec2i(2));
+            [[maybe_unused]] TRAP::Math::Vec2 a = TRAP::Math::Vec2(2.0f);
+            [[maybe_unused]] TRAP::Math::Vec2 b = TRAP::Math::Vec2(2.0f, 3.0f);
+            [[maybe_unused]] TRAP::Math::Vec2 c = TRAP::Math::Vec2(2.0f, 3.0);
+            [[maybe_unused]] TRAP::Math::Vec2d d = TRAP::Math::Vec2d(2.0);
+            [[maybe_unused]] TRAP::Math::Vec2d e(TRAP::Math::Vec2d(2.0f));
+            [[maybe_unused]] TRAP::Math::Vec2d f(TRAP::Math::Vec2i(2));
         }
 
         {

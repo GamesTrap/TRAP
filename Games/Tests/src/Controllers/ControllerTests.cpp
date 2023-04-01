@@ -161,15 +161,15 @@ void ControllerTests::OnImGuiRender()
 void ControllerTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::ControllerConnectEvent>([this](TRAP::Events::ControllerConnectEvent& e)
+	dispatcher.Dispatch<TRAP::Events::ControllerConnectEvent>([](TRAP::Events::ControllerConnectEvent& e)
 	{
 		return OnControllerConnect(e);
 	});
-	dispatcher.Dispatch<TRAP::Events::ControllerDisconnectEvent>([this](TRAP::Events::ControllerDisconnectEvent& e)
+	dispatcher.Dispatch<TRAP::Events::ControllerDisconnectEvent>([](TRAP::Events::ControllerDisconnectEvent& e)
 	{
 		return OnControllerDisconnect(e);
 	});
-	dispatcher.Dispatch<TRAP::Events::WindowDropEvent>([this](TRAP::Events::WindowDropEvent& e)
+	dispatcher.Dispatch<TRAP::Events::WindowDropEvent>([](TRAP::Events::WindowDropEvent& e)
 	{
 		return OnWindowDrop(e);
 	});

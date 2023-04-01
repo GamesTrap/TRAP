@@ -9,7 +9,7 @@ namespace TypeVec3
         int32_t error = 0;
 
         {
-            TRAP::Math::Vec3 a{0, 1, 2};
+            [[maybe_unused]] TRAP::Math::Vec3 a{0, 1, 2};
             std::vector<TRAP::Math::Vec3> v =
             {
                 {0, 1, 2},
@@ -19,7 +19,7 @@ namespace TypeVec3
         }
 
         {
-            TRAP::Math::Vec3d a{0, 1, 2};
+            [[maybe_unused]] TRAP::Math::Vec3d a{0, 1, 2};
             std::vector<TRAP::Math::Vec3d> v =
             {
                 {0, 1, 2},

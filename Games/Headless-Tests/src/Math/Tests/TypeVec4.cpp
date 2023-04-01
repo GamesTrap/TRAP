@@ -15,7 +15,7 @@ namespace TypeVec4
         }
 
         {
-            TRAP::Math::Vec4 a{0, 1, 2, 3};
+            [[maybe_unused]] TRAP::Math::Vec4 a{0, 1, 2, 3};
             std::vector<TRAP::Math::Vec4> v =
             {
                 {0, 1, 2, 3},
@@ -25,7 +25,7 @@ namespace TypeVec4
         }
 
         {
-            TRAP::Math::Vec4d a{0, 1, 2, 3};
+            [[maybe_unused]] TRAP::Math::Vec4d a{0, 1, 2, 3};
             std::vector<TRAP::Math::Vec4d> v =
             {
                 {0, 1, 2, 3},
@@ -80,11 +80,11 @@ namespace TypeVec4
 
         {
             const TRAP::Math::Vec2 v2_0(1.0f, 2.0f);
-            const TRAP::Math::Vec2 v2_1(2.0f, 3.0f);
+            [[maybe_unused]] const TRAP::Math::Vec2 v2_1(2.0f, 3.0f);
             const TRAP::Math::Vec2 v2_2(3.0f, 4.0f);
 
-            const TRAP::Math::Vec3 v3_0(1.0f, 2.0f, 3.0f);
-            const TRAP::Math::Vec3 v3_1(2.0f, 3.0f, 4.0f);
+            [[maybe_unused]] const TRAP::Math::Vec3 v3_0(1.0f, 2.0f, 3.0f);
+            [[maybe_unused]] const TRAP::Math::Vec3 v3_1(2.0f, 3.0f, 4.0f);
 
             const TRAP::Math::Vec4 o(1.0f, 2.0, 3.0f, 4.0);
 

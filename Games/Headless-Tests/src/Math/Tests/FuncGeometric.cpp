@@ -83,12 +83,12 @@ namespace FuncGeometric
         TRAP::Math::Vec3 normalize1 = TRAP::Math::Normalize(TRAP::Math::Vec3(1, 0, 0));
         TRAP::Math::Vec3 normalize2 = TRAP::Math::Normalize(TRAP::Math::Vec3(2, 0, 0));
 
-        TRAP::Math::Vec3 normalize3 = TRAP::Math::Normalize(TRAP::Math::Vec3(-0.6, 0.7, -0.5));
+        [[maybe_unused]] TRAP::Math::Vec3 normalize3 = TRAP::Math::Normalize(TRAP::Math::Vec3(-0.6, 0.7, -0.5));
 
         TRAP::Math::Vec3 ro = TRAP::Math::Vec3(TRAP::Math::Cos(5.0f) * 3.0f, 2.0f, TRAP::Math::Sin(5.0f) * 3.0f);
         TRAP::Math::Vec3 w = TRAP::Math::Normalize(TRAP::Math::Vec3(0, -0.2f, 0) - ro);
         TRAP::Math::Vec3 u = TRAP::Math::Normalize(TRAP::Math::Cross(w, TRAP::Math::Vec3(0, 1, 0)));
-        TRAP::Math::Vec3 v = TRAP::Math::Cross(u, w);
+        [[maybe_unused]] TRAP::Math::Vec3 v = TRAP::Math::Cross(u, w);
 
         error += TRAP::Math::All(TRAP::Math::LessThan(TRAP::Math::Abs(normalize1 - TRAP::Math::Vec3(1, 0, 0)), TRAP::Math::Vec3(std::numeric_limits<float>::epsilon()))) ? 0 : 1;
         error += TRAP::Math::All(TRAP::Math::LessThan(TRAP::Math::Abs(normalize2 - TRAP::Math::Vec3(1, 0, 0)), TRAP::Math::Vec3(std::numeric_limits<float>::epsilon()))) ? 0 : 1;
@@ -103,7 +103,7 @@ namespace FuncGeometric
         TRAP::Math::Vec3 n(0.0f, 0.0f, 1.0f);
         TRAP::Math::Vec3 i(1.0f, 0.0f, 1.0f);
         TRAP::Math::Vec3 nRef(0.0f, 0.0f, 1.0f);
-        TRAP::Math::Vec3 f = TRAP::Math::FaceForward(n, i, nRef);
+        [[maybe_unused]] TRAP::Math::Vec3 f = TRAP::Math::FaceForward(n, i, nRef);
     }
 
 //-------------------------------------------------------------------------------------------------------------------//

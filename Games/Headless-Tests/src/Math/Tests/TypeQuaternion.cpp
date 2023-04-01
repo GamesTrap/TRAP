@@ -9,7 +9,7 @@ namespace TypeQuaternion
         int32_t error = 0;
 
         {
-            TRAP::Math::Quat a{0, 1, 2, 3};
+            [[maybe_unused]] TRAP::Math::Quat a{0, 1, 2, 3};
 
             std::vector<TRAP::Math::Quat> b
             {
@@ -319,10 +319,10 @@ namespace TypeQuaternion
         TRAP::Math::Quat temp2 = TRAP::Math::Normalize(TRAP::Math::Quat(0.5f, TRAP::Math::Vec3(1.0, 0.0, 0.0)));
 
         TRAP::Math::Vec3 transformed0 = (temp1 * TRAP::Math::Vec3(0.0, 1.0, 0.0) * TRAP::Math::Inverse(temp1));
-        TRAP::Math::Vec3 temp4 = temp2 * transformed0 * TRAP::Math::Inverse(temp2);
+        [[maybe_unused]] TRAP::Math::Vec3 temp4 = temp2 * transformed0 * TRAP::Math::Inverse(temp2);
 
         TRAP::Math::Quat temp5 = TRAP::Math::Normalize(temp1 * temp2);
-        TRAP::Math::Vec3 temp6 = temp5 * TRAP::Math::Vec3(0.0, 1.0, 0.0) * TRAP::Math::Inverse(temp5);
+        [[maybe_unused]] TRAP::Math::Vec3 temp6 = temp5 * TRAP::Math::Vec3(0.0, 1.0, 0.0) * TRAP::Math::Inverse(temp5);
 
         TRAP::Math::Quat temp7(1.0f, TRAP::Math::Vec3(0.0, 1.0, 0.0));
 
@@ -473,7 +473,7 @@ namespace TypeQuaternion
         float sqrt2 = TRAP::Math::Sqrt(2.0f) / 2.0f;
         TRAP::Math::Quat id(static_cast<float>(1), static_cast<float>(0), static_cast<float>(0), static_cast<float>(0));
         TRAP::Math::Quat y90Rot(sqrt2, 0.0f, sqrt2, 0.0f);
-        TRAP::Math::Quat y180Rot(0.0f, 0.0f, 1.0f, 0.0f);
+        [[maybe_unused]] TRAP::Math::Quat y180Rot(0.0f, 0.0f, 1.0f, 0.0f);
 
         TRAP::Math::Quat id2 = TRAP::Math::SLerp(id, y90Rot, 0.0f);
         error += TRAP::Math::All(TRAP::Math::Equal(id, id2, epsilon)) ? 0 : 1;
@@ -481,7 +481,7 @@ namespace TypeQuaternion
         TRAP::Math::Quat y90Rot2 = TRAP::Math::SLerp(id, y90Rot, 1.0f);
         error += TRAP::Math::All(TRAP::Math::Equal(y90Rot, y90Rot2, epsilon)) ? 0 : 1;
 
-        TRAP::Math::Quat y45Rot1 = TRAP::Math::SLerp(id, y90Rot, 0.5f);
+        [[maybe_unused]] TRAP::Math::Quat y45Rot1 = TRAP::Math::SLerp(id, y90Rot, 0.5f);
 
         TRAP::Math::Quat ym45Rot2 = TRAP::Math::SLerp(y90Rot, id, 0.5f);
 
@@ -500,7 +500,7 @@ namespace TypeQuaternion
         float xz90Angle = TRAP::Math::Angle(xz90Rot);
         error += TRAP::Math::Equal(xz90Angle, TRAP::Math::PI<float>() * 0.25f, epsilon) ? 0 : 1;
 
-        TRAP::Math::Quat almostId = TRAP::Math::SLerp(id, TRAP::Math::AngleAxis(0.1f, TRAP::Math::Vec3(0.0f, 1.0f, 0.0f)), 0.5f);
+        [[maybe_unused]] TRAP::Math::Quat almostId = TRAP::Math::SLerp(id, TRAP::Math::AngleAxis(0.1f, TRAP::Math::Vec3(0.0f, 1.0f, 0.0f)), 0.5f);
 
         {
             TRAP::Math::Quat a(-1, 0, 0, 0);
