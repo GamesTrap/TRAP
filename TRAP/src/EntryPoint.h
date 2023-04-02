@@ -9,8 +9,8 @@
 /// IT MUST BE IMPLEMENTED BY ANY CLIENT!
 /// </summary>
 /// <returns>A unique pointer containing a TRAP::Application</returns>
-extern std::unique_ptr<TRAP::Application> TRAP::CreateApplication(int32_t argc, char** argv);
+extern std::unique_ptr<TRAP::Application> TRAP::CreateApplication(const std::vector<std::string_view>& args);
 
-int main(int32_t argc, char** argv);
+int main(int32_t argc, const char* const* const argv);
 
 #endif /*TRAP_ENTRYPOINT_H*/

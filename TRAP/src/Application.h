@@ -9,7 +9,7 @@
 #include "Utils/Time/Timer.h"
 
 #if !defined(DOXYGEN_DOCUMENTATION_BUILD)
-int main(int32_t argc, char** argv);
+int main(int32_t argc, const char* const* const argv);
 #endif
 
 namespace TRAP
@@ -311,11 +311,11 @@ namespace TRAP
 
 		static Application* s_Instance; //Singleton instance
 
-		friend int ::main(int32_t argc, char** argv);
+		friend int ::main(int32_t argc, const char* const* const argv);
 	};
 
 	//To be defined in CLIENT
-	std::unique_ptr<Application> CreateApplication(int32_t argc, char** argv);
+	std::unique_ptr<Application> CreateApplication(const std::vector<std::string_view>&args);
 }
 
 #endif /*TRAP_APPLICATION_H*/

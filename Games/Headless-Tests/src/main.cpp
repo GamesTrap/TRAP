@@ -24,7 +24,7 @@ public:
 	}
 };
 
-std::unique_ptr<TRAP::Application> TRAP::CreateApplication(int32_t, char**)
+std::unique_ptr<TRAP::Application> TRAP::CreateApplication([[maybe_unused]] const std::vector<std::string_view>& args)
 {
 	return std::make_unique<HeadlessTestsApp>("HeadlessTests");
 }
