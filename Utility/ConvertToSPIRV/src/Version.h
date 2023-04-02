@@ -12,7 +12,7 @@
 /// <returns>Version number packed into a single uint32_t.</returns>
 [[nodiscard]] constexpr uint32_t CONVERTTOSPIRV_MAKE_VERSION(const uint32_t major, const uint32_t minor, const uint32_t patch) noexcept
 {
-	return major << 22 | minor << 12 | patch;
+	return major << 22u | minor << 12u | patch;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -56,6 +56,6 @@
 /// <summary>
 /// ConvertToSPIRV version number created with CONVERTTOSPIRV_MAKE_VERSION
 /// </summary>
-inline constexpr uint32_t CONVERTTOSPIRV_VERSION = CONVERTTOSPIRV_MAKE_VERSION(0, 1, 0);
+inline constexpr uint32_t CONVERTTOSPIRV_VERSION = CONVERTTOSPIRV_MAKE_VERSION(0, 1, 1);
 
 #endif /*CONVERTTOSPIRV_VERSION_H*/

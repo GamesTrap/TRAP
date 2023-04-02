@@ -189,7 +189,7 @@ namespace TRAP::Network
 			/// </summary>
 			/// <param name="response">Source response.</param>
 			/// <param name="data">Data containing the raw listing.</param>
-			ListingResponse(const Response& response, const std::string_view data);
+			ListingResponse(const Response& response, std::string_view data);
 
 			/// <summary>
 			/// Return the array of directory/file names.

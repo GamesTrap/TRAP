@@ -89,10 +89,10 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 	bool needXFlip = false;
 	bool needYFlip = false;
 	//1. If Image is stored Top/Right | 2. If Image is stored Bottom/Right
-	if ((header.ImageDescriptor & 0x30) == 0x30 || (header.ImageDescriptor & 0x30) == 0x10)
+	if ((header.ImageDescriptor & 0x30u) == 0x30u || (header.ImageDescriptor & 0x30u) == 0x10u)
 		needXFlip = true;
 	//1. If Image is stored Bottom/Left | 2. If Image is stored Bottom/Right
-	if ((header.ImageDescriptor & 0x30) == 0x00 || (header.ImageDescriptor & 0x30) == 0x10)
+	if ((header.ImageDescriptor & 0x30u) == 0x00u || (header.ImageDescriptor & 0x30u) == 0x10u)
 		needYFlip = true;
 	if (header.Width < 2)
 	{
@@ -355,8 +355,8 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 		//If RAW, the next count channels-byte color values in the file are taken verbatim
 		//If RLE, the next single channels-byte color value speaks for the next count pixels
 
-		const int32_t raw = (source[i] & 0x80) == 0; //Is this packet RAW pixels or a repeating color
-		int32_t count = (source[i] & 0x7F) + 1; //How many RAW pixels or color repeats
+		const int32_t raw = (source[i] & 0x80u) == 0; //Is this packet RAW pixels or a repeating color
+		int32_t count = (source[i] & 0x7Fu) + 1; //How many RAW pixels or color repeats
 		i++;
 
 		//Prevent from writing out of data range
@@ -372,11 +372,11 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 			}
 			else if (channels == 2)
 			{
-				data[index++] = (colorMap[source[i] * channels + 1] << 1) & 0xF8;
-				data[index++] = ((colorMap[source[i] * channels + 1] << 6) |
-				                (colorMap[static_cast<std::size_t>(source[i]) * channels] >> 2))
-				                & 0xF8;
-				data[index++] = (colorMap[static_cast<std::size_t>(source[i]) * channels] << 3) & 0xF8;
+				data[index++] = (colorMap[source[i] * channels + 1u] << 1u) & 0xF8u;
+				data[index++] = ((colorMap[source[i] * channels + 1u] << 6u) |
+				                (colorMap[static_cast<std::size_t>(source[i]) * channels] >> 2u))
+				                & 0xF8u;
+				data[index++] = (colorMap[static_cast<std::size_t>(source[i]) * channels] << 3u) & 0xF8u;
 			}
 			else if (channels == 3)
 			{
@@ -394,10 +394,10 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 				l += 4;
 			}
 
-			if (raw) //In RAW mode, keep advancing to subsequent values
+			if (raw != 0) //In RAW mode, keep advancing to subsequent values
 				i++; //In RLE mode, just repeat the packet[1] color
 		}
-		if (!raw) //After outputting count values, advance if RLE
+		if (raw == 0) //After outputting count values, advance if RLE
 			i++;
 	}
 
@@ -423,8 +423,8 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 		//If RAW, the next count byte color values in the file are taken verbatim
 		//If RLE, the next single byte color value speaks for the next count pixels
 
-		const int32_t raw = (source[i] & 0x80) == 0; //Is this packet RAW pixels or a repeating color
-		int32_t count = (source[i] & 0x7F) + 1; //How many RAW pixels or color repeats
+		const int32_t raw = (source[i] & 0x80u) == 0; //Is this packet RAW pixels or a repeating color
+		int32_t count = (source[i] & 0x7Fu) + 1; //How many RAW pixels or color repeats
 		i++;
 
 		//Prevent from writing out of data range
@@ -435,11 +435,11 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 		{
 			data[index++] = source[i];
 
-			if (raw) //In RAW mode, keep advancing to subsequent values
+			if (raw != 0) //In RAW mode, keep advancing to subsequent values
 				i++; //In RLE mode, just repeat the packet[1] color
 			l++;
 		}
-		if (!raw) //After outputting count values, advance if RLE
+		if (raw == 0) //After outputting count values, advance if RLE
 			i++;
 	}
 
@@ -464,8 +464,8 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 		//If RAW, the next count channel-byte color values in the file are taken verbatim
 		//If RLE, the next single channel-byte color value speaks for the next count pixels
 
-		const int32_t raw = (source[i] & 0x80) == 0; //Is this packet RAW pixels or a repeating color
-		int32_t count = (source[i] & 0x7F) + 1; //How many RAW pixels or color repeats
+		const int32_t raw = (source[i] & 0x80u) == 0; //Is this packet RAW pixels or a repeating color
+		int32_t count = (source[i] & 0x7Fu) + 1; //How many RAW pixels or color repeats
 		i++;
 
 		//Prevent from writing out of data range
@@ -474,15 +474,15 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 
 		for (int32_t j = 0; j < count; j++)
 		{
-			data[index++] = (source[i + 1] << 1) & 0xF8;
-			data[index++] = ((source[i + 1] << 6) | (source[i] >> 2)) & 0xF8;
-			data[index++] = (source[i] << 3) & 0xF8;
+			data[index++] = (source[i + 1u] << 1u) & 0xF8u;
+			data[index++] = ((source[i + 1u] << 6u) | (source[i] >> 2)) & 0xF8u;
+			data[index++] = (source[i] << 3u) & 0xF8u;
 
-			if (raw) //In RAW mode, keep advancing to subsequent values
+			if (raw != 0) //In RAW mode, keep advancing to subsequent values
 				i += 2; //IN RLE mode, just repeat the packet[1] RGB color
 			l += 3;
 		}
-		if (!raw) //After outputting count RGB values, advance if RLE
+		if (raw == 0) //After outputting count RGB values, advance if RLE
 			i += 2;
 	}
 
@@ -507,8 +507,8 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 		//If RAW, the next count channel-byte color values in the file are taken verbatim
 		//If RLE, the next single channel-byte color value speaks for the next count pixels
 
-		const int32_t raw = (source[i] & 0x80) == 0; //Is this packet RAW pixels or a repeating color
-		int32_t count = (source[i] & 0x7F) + 1; //How many RAW pixels or color repeats
+		const int32_t raw = (source[i] & 0x80u) == 0; //Is this packet RAW pixels or a repeating color
+		int32_t count = (source[i] & 0x7Fu) + 1; //How many RAW pixels or color repeats
 		i++;
 
 		//Prevent from writing out of data range
@@ -521,11 +521,11 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 			data[index++] = source[i + 1]; //Green
 			data[index++] = source[i];     //Blue
 
-			if (raw) //In RAW mode, keep advancing to subsequent values
+			if (raw != 0) //In RAW mode, keep advancing to subsequent values
 				i += 3; //IN RLE mode, just repeat the packet[1] RGB color
 			l += 3;
 		}
-		if (!raw) //After outputting count RGB values, advance if RLE
+		if (raw == 0) //After outputting count RGB values, advance if RLE
 			i += 3;
 	}
 
@@ -550,8 +550,8 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 		//If RAW, the next count channel-byte color values in the file are taken verbatim
 		//If RLE, the next single channel-byte color value speaks for the next count pixels
 
-		const int32_t raw = (source[i] & 0x80) == 0; //Is this packet RAW pixels or a repeating color
-		int32_t count = (source[i] & 0x7F) + 1; //How many RAW pixels or color repeats
+		const int32_t raw = (source[i] & 0x80u) == 0; //Is this packet RAW pixels or a repeating color
+		int32_t count = (source[i] & 0x7Fu) + 1; //How many RAW pixels or color repeats
 		i++;
 
 		//Prevent from writing out of data range
@@ -565,11 +565,11 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 			data[index++] = source[i];     //Blue
 			data[index++] = source[i + 3]; //Alpha
 
-			if (raw) //In RAW mode, keep advancing to subsequent values
+			if (raw != 0) //In RAW mode, keep advancing to subsequent values
 				i += 4; //IN RLE mode, just repeat the packet[1] RGBA color
 			l += 4;
 		}
-		if (!raw) //After outputting count RGBA values, advance if RLE
+		if (raw == 0) //After outputting count RGBA values, advance if RLE
 			i += 4;
 	}
 

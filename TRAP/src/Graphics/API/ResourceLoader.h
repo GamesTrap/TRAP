@@ -531,14 +531,14 @@ namespace TRAP::Graphics::API
 		const RendererAPI::DescriptorType usage = desc.Descriptors;
 
 		//Try to limit number of states used overall to avoid sync complexities
-		if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::RWBuffer))
+		if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::RWBuffer) != 0u)
 			return RendererAPI::ResourceState::UnorderedAccess;
-		if ((static_cast<uint32_t>(usage & RendererAPI::DescriptorType::VertexBuffer) ||
-			 static_cast<uint32_t>(usage & RendererAPI::DescriptorType::UniformBuffer)))
+		if (((static_cast<uint32_t>(usage & RendererAPI::DescriptorType::VertexBuffer) != 0u) ||
+			 (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::UniformBuffer) != 0u)))
 			return RendererAPI::ResourceState::VertexAndConstantBuffer;
-		if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::IndexBuffer))
+		if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::IndexBuffer) != 0u)
 			return RendererAPI::ResourceState::IndexBuffer;
-		if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::Buffer))
+		if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::Buffer) != 0u)
 			return RendererAPI::ResourceState::ShaderResource;
 
 		return RendererAPI::ResourceState::Common;

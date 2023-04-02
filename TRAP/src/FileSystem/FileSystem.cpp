@@ -75,7 +75,7 @@ void TRAP::FileSystem::Init()
 
     std::vector<uint8_t> buffer(*fileSize);
 
-    file.read(reinterpret_cast<char*>(buffer.data()), buffer.size());
+    file.read(reinterpret_cast<char*>(buffer.data()), static_cast<int32_t>(buffer.size()));
     file.close();
 
     return buffer;
@@ -107,7 +107,7 @@ void TRAP::FileSystem::Init()
 
     std::string result(*fileSize, '\0');
 
-    file.read(result.data(), *fileSize);
+    file.read(result.data(), static_cast<int32_t>(*fileSize));
     file.close();
 
     result.erase(std::remove(result.begin(), result.end(), '\r'), result.end());
@@ -318,7 +318,8 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
                      "\" (", ec.message(), ")!");
             return std::nullopt;
         }
-        else if(size == static_cast<uintmax_t>(-1))
+
+        if(size == static_cast<uintmax_t>(-1))
         {
             TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", path.u8string(),
                      "\" (size is -1)!");
@@ -362,7 +363,8 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
                                 "\" (", ec.message(), ")!");
                         return std::nullopt;
                     }
-                    else if(fileSize == static_cast<uintmax_t>(-1))
+
+                    if(fileSize == static_cast<uintmax_t>(-1))
                     {
                         TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", entry.path().u8string(),
                                 "\" (size is -1)!");
@@ -400,7 +402,8 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
                                 "\" (", ec.message(), ")!");
                         return std::nullopt;
                     }
-                    else if(fileSize == static_cast<uintmax_t>(-1))
+
+                    if(fileSize == static_cast<uintmax_t>(-1))
                     {
                         TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", entry.path().u8string(),
                                 "\" (size is -1)!");
@@ -433,7 +436,8 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
                  "\" (", ec.message(), ")!");
         return std::nullopt;
     }
-    else if(res == std::filesystem::file_time_type::min())
+
+    if(res == std::filesystem::file_time_type::min())
     {
         TP_ERROR(Log::FileSystemPrefix, "Couldn't get last write time: \"", path.u8string(),
                  "\" (time is min)!");
@@ -925,7 +929,7 @@ bool TRAP::FileSystem::OpenExternally(const std::filesystem::path& p)
     std::string cmd = "xdg-open ";
     cmd += absPath->native();
     FILE* const xdg = popen(cmd.c_str(), "r");
-    if(!xdg)
+    if(xdg == nullptr)
     {
         TP_ERROR(Log::FileSystemPrefix, "Couldn't open externally: \"", p.u8string(), "\"!");
         TP_ERROR(Log::FileSystemPrefix, Utils::String::GetStrError());
@@ -991,7 +995,7 @@ bool OpenFolderInFileBrowser(const std::filesystem::path& p)
     std::string cmd = "xdg-open ";
     cmd += (*absPath).u8string();
     FILE* const xdg = popen(cmd.c_str(), "r");
-    if(!xdg)
+    if(xdg == nullptr)
     {
         TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: \"", p.u8string(), "\"!");
         TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
@@ -1064,7 +1068,7 @@ bool OpenFileInFileBrowser(const std::filesystem::path& p)
     std::string cmd = "xdg-open ";
     cmd += absPath->parent_path().u8string();
     FILE* const xdg = popen(cmd.c_str(), "r");
-    if(!xdg)
+    if(xdg == nullptr)
     {
         TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: \"", p.u8string(), "\"!");
         TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
@@ -1107,7 +1111,7 @@ bool OpenFileInFileBrowser(const std::filesystem::path& p)
     //Non root user way
     const uid_t uid = getuid();
     const char* const homeEnv = getenv("HOME");
-    if(uid != 0 && homeEnv)
+    if(uid != 0 && (homeEnv != nullptr))
     {
         //We only acknowledge HOME if not root.
         homeDir = homeEnv;
@@ -1122,14 +1126,14 @@ bool OpenFileInFileBrowser(const std::filesystem::path& p)
         bufSize = 16384;
     std::vector<char> buffer(bufSize, '\0');
     const int32_t errorCode = getpwuid_r(uid, &pwd, buffer.data(), buffer.size(), &pw);
-    if(errorCode)
+    if(errorCode != 0)
     {
         TP_ERROR(TRAP::Log::FileSystemPrefix, "Failed to get home folder path (", errorCode, ")!");
         homeDir = std::filesystem::path{};
         return std::nullopt;
     }
     const char* const tempRes = pw->pw_dir;
-    if(!tempRes)
+    if(tempRes == nullptr)
     {
         TP_ERROR(TRAP::Log::FileSystemPrefix, "Failed to get home folder path (", errorCode, ")!");
         homeDir = std::filesystem::path{};
@@ -1168,7 +1172,7 @@ bool OpenFileInFileBrowser(const std::filesystem::path& p)
     //Get config folder
     const char* const tempRes = getenv("XDG_CONFIG_HOME");
     std::filesystem::path configPath{};
-    if(tempRes)
+    if(tempRes != nullptr)
         configPath = tempRes;
     else
     {

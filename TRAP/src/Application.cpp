@@ -122,12 +122,17 @@ static BOOL WINAPI SIGINTHandlerRoutine(_In_ DWORD dwCtrlType)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+static constexpr uint32_t DefaultTickrate = 64;
+static constexpr uint32_t DefaultWindowWidth = 1280;
+static constexpr uint32_t DefaultWindowHeight = 720;
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Application::Application(std::string gameName, const uint32_t appID)
 	: m_hotReloadingEnabled(false),
-	  m_timer(),
 	  m_FrameTime(0.0f),
 	  m_fpsLimit(0),
-	  m_tickRate(64),
+	  m_tickRate(DefaultTickrate),
 	  m_timeScale(1.0f),
 	  m_gameName(std::move(gameName)),
 	  m_globalCounter(0),
@@ -207,9 +212,9 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 		TP_INFO(Log::ConfigPrefix, "Using default values");
 
 #ifndef TRAP_HEADLESS_MODE
-	uint32_t width = 1280;
-	uint32_t height = 720;
-	uint32_t refreshRate = 60;
+	uint32_t width = DefaultWindowWidth;
+	uint32_t height = DefaultWindowHeight;
+	uint32_t refreshRate = DefaultTickrate;
 	m_config.Get("Width", width);
 	m_config.Get("Height", height);
 	m_config.Get("RefreshRate", refreshRate);
@@ -312,7 +317,7 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 		winProps.Advanced = advWinProps;
 
 		m_window = std::make_unique<Window>(winProps);
-		m_window->SetEventCallback([this](Events::Event& e) { OnEvent(e); });
+		m_window->SetEventCallback([this](Events::Event& event) { OnEvent(event); });
 
 		//Update Window Title (Debug/RelWithDebInfo)
 		if(renderAPI != Graphics::RenderAPI::NONE)
@@ -361,7 +366,7 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 	if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
 	{
 #endif
-		Input::SetEventCallback([this](Events::Event& e) {OnEvent(e); });
+		Input::SetEventCallback([this](Events::Event& event) {OnEvent(event); });
 		Input::Init();
 #ifdef TRAP_PLATFORM_LINUX
 	}
@@ -420,8 +425,8 @@ TRAP::Application::~Application()
 	{
 		//GPU UUID
 		std::array<uint8_t, 16> GPUUUID{};
-		if(Graphics::RendererAPI::GetRenderer()->GetNewGPU() != std::array<uint8_t, 16>{}) //Only if UUID is not empty
-			GPUUUID = Graphics::RendererAPI::GetRenderer()->GetNewGPU();
+		if(Graphics::RendererAPI::GetNewGPU() != std::array<uint8_t, 16>{}) //Only if UUID is not empty
+			GPUUUID = Graphics::RendererAPI::GetNewGPU();
 		else
 			GPUUUID = Graphics::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
 		m_config.Set("VulkanGPU", Utils::UUIDToString(GPUUUID));
@@ -492,13 +497,13 @@ void TRAP::Application::Run()
 		if(Graphics::RendererAPI::GPUSettings.ReflexSupported)
 			Graphics::RendererAPI::GetRenderer()->ReflexSleep();
 #ifndef TRACY_ENABLE
-		else if (m_fpsLimit || (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)))
+		else if ((m_fpsLimit != 0u) || (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)))
 #else
-		else if (m_fpsLimit)
+		else if ((m_fpsLimit != 0u))
 #endif
 		{
 			std::chrono::duration<float, std::milli> limitMs{};
-			if(m_fpsLimit)
+			if(m_fpsLimit != 0u)
 				limitMs = std::chrono::duration<float, std::milli>(1000.0f / static_cast<float>(m_fpsLimit) - limiterTimer.ElapsedMilliseconds());
 			else //If engine is not focused, set engine to 30 FPS so other applications dont lag
 				limitMs = std::chrono::duration<float, std::milli>(1000.0f / 30.0f - limiterTimer.ElapsedMilliseconds());
@@ -590,46 +595,46 @@ void TRAP::Application::Run()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Application::OnEvent(Events::Event& e)
+void TRAP::Application::OnEvent(Events::Event& event)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Events::EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<Events::WindowCloseEvent>([this](Events::WindowCloseEvent& event)
+	Events::EventDispatcher dispatcher(event);
+	dispatcher.Dispatch<Events::WindowCloseEvent>([this](Events::WindowCloseEvent& wcEvent)
 		{
-			return OnWindowClose(event);
+			return OnWindowClose(wcEvent);
 		});
-	dispatcher.Dispatch<Events::FrameBufferResizeEvent>([](Events::FrameBufferResizeEvent& event)
+	dispatcher.Dispatch<Events::FrameBufferResizeEvent>([](Events::FrameBufferResizeEvent& fbrEvent)
 		{
-			return OnFrameBufferResize(event);
+			return OnFrameBufferResize(fbrEvent);
 		});
-	dispatcher.Dispatch<Events::KeyPressEvent>([this](Events::KeyPressEvent& event) {return OnKeyPress(event); });
-	dispatcher.Dispatch<Events::WindowFocusEvent>([this](Events::WindowFocusEvent& event)
+	dispatcher.Dispatch<Events::KeyPressEvent>([this](Events::KeyPressEvent& kpEvent) {return OnKeyPress(kpEvent); });
+	dispatcher.Dispatch<Events::WindowFocusEvent>([this](Events::WindowFocusEvent& wfEvent)
 		{
-			return OnWindowFocus(event);
+			return OnWindowFocus(wfEvent);
 		});
-	dispatcher.Dispatch<Events::WindowLostFocusEvent>([this](Events::WindowLostFocusEvent& event)
+	dispatcher.Dispatch<Events::WindowLostFocusEvent>([this](Events::WindowLostFocusEvent& wlfEvent)
 		{
-			return OnWindowLostFocus(event);
+			return OnWindowLostFocus(wlfEvent);
 		});
-	dispatcher.Dispatch<Events::WindowMinimizeEvent>([this](Events::WindowMinimizeEvent& event)
+	dispatcher.Dispatch<Events::WindowMinimizeEvent>([this](Events::WindowMinimizeEvent& wmEvent)
 		{
-			return OnWindowMinimize(event);
+			return OnWindowMinimize(wmEvent);
 		});
-	dispatcher.Dispatch<Events::WindowRestoreEvent>([this](Events::WindowRestoreEvent& event)
+	dispatcher.Dispatch<Events::WindowRestoreEvent>([this](Events::WindowRestoreEvent& wrEvent)
 		{
-			return OnWindowRestore(event);
+			return OnWindowRestore(wrEvent);
 		});
-	dispatcher.Dispatch<Events::FileChangeEvent>([this](Events::FileChangeEvent& event)
+	dispatcher.Dispatch<Events::FileChangeEvent>([this](Events::FileChangeEvent& fcEvent)
 		{
-			return OnFileChangeEvent(event);
+			return OnFileChangeEvent(fcEvent);
 		});
 
 	for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it)
 	{
-		if (e.Handled)
+		if (event.Handled)
 			break;
-		(*it)->OnEvent(e);
+		(*it)->OnEvent(event);
 	}
 }
 
@@ -680,6 +685,9 @@ void TRAP::Application::PushOverlay(std::unique_ptr<Layer> overlay)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+static constexpr uint32_t MinLimitedFPS = 25u;
+static constexpr uint32_t MaxLimitedFPS = 500u;
+
 void TRAP::Application::SetFPSLimit(const uint32_t fps)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -687,7 +695,7 @@ void TRAP::Application::SetFPSLimit(const uint32_t fps)
 	if(fps == 0)
 		s_Instance->m_fpsLimit = 0;
 	else
-		s_Instance->m_fpsLimit = TRAP::Math::Clamp(fps, 25u, 500u);
+		s_Instance->m_fpsLimit = TRAP::Math::Clamp(fps, MinLimitedFPS, MaxLimitedFPS);
 
 #ifdef NVIDIA_REFLEX_AVAILABLE
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE &&
@@ -876,7 +884,7 @@ void TRAP::Application::SetHotReloading(const bool enable)
 	if(enable && !s_Instance->m_hotReloadingFileWatcher)
 	{
 		s_Instance->m_hotReloadingFileWatcher = std::make_unique<FileSystem::FileWatcher>("HotReloading", false);
-		s_Instance->m_hotReloadingFileWatcher->SetEventCallback([](Events::Event& e) {s_Instance->OnEvent(e); });
+		s_Instance->m_hotReloadingFileWatcher->SetEventCallback([](Events::Event& event) {s_Instance->OnEvent(event); });
 	}
 	else if(s_Instance->m_hotReloadingFileWatcher)
 		s_Instance->m_hotReloadingFileWatcher.reset();
@@ -884,11 +892,11 @@ void TRAP::Application::SetHotReloading(const bool enable)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowClose(Events::WindowCloseEvent& e) noexcept
+bool TRAP::Application::OnWindowClose(Events::WindowCloseEvent& event) noexcept
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if(e.GetWindow() == m_window.get())
+	if(event.GetWindow() == m_window.get())
 		m_running = false;
 
 	return true;
@@ -896,18 +904,18 @@ bool TRAP::Application::OnWindowClose(Events::WindowCloseEvent& e) noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnFrameBufferResize(Events::FrameBufferResizeEvent& e)
+bool TRAP::Application::OnFrameBufferResize(Events::FrameBufferResizeEvent& event)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Graphics::RendererAPI::GetRenderer()->ResizeSwapChain(e.GetWindow());
+	Graphics::RendererAPI::ResizeSwapChain(event.GetWindow());
 
 	return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnKeyPress(Events::KeyPressEvent& e) const
+bool TRAP::Application::OnKeyPress([[maybe_unused]] Events::KeyPressEvent& event) const
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -915,8 +923,8 @@ bool TRAP::Application::OnKeyPress(Events::KeyPressEvent& e) const
 		return false;
 
 #ifndef TRAP_HEADLESS_MODE
-	if ((e.GetKey() == Input::Key::Enter || e.GetKey() == Input::Key::KP_Enter) &&
-	    Input::IsKeyPressed(Input::Key::Left_ALT) && e.GetRepeatCount() < 1)
+	if ((event.GetKey() == Input::Key::Enter || event.GetKey() == Input::Key::KP_Enter) &&
+	    Input::IsKeyPressed(Input::Key::Left_ALT) && event.GetRepeatCount() < 1)
 	{
 		if (m_window->GetDisplayMode() == Window::DisplayMode::Windowed ||
 			m_window->GetDisplayMode() == Window::DisplayMode::Borderless)
@@ -927,14 +935,13 @@ bool TRAP::Application::OnKeyPress(Events::KeyPressEvent& e) const
 		return true;
 	}
 #endif
-	(void)e; //Silence unused parameter warning
 
 	return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowFocus(Events::WindowFocusEvent&) noexcept
+bool TRAP::Application::OnWindowFocus([[maybe_unused]] Events::WindowFocusEvent& event) noexcept
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -945,7 +952,7 @@ bool TRAP::Application::OnWindowFocus(Events::WindowFocusEvent&) noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowLostFocus(Events::WindowLostFocusEvent&) noexcept
+bool TRAP::Application::OnWindowLostFocus([[maybe_unused]] Events::WindowLostFocusEvent& event) noexcept
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -957,7 +964,7 @@ bool TRAP::Application::OnWindowLostFocus(Events::WindowLostFocusEvent&) noexcep
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowMinimize(Events::WindowMinimizeEvent&) noexcept
+bool TRAP::Application::OnWindowMinimize([[maybe_unused]] Events::WindowMinimizeEvent& event) noexcept
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -969,7 +976,7 @@ bool TRAP::Application::OnWindowMinimize(Events::WindowMinimizeEvent&) noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowRestore(Events::WindowRestoreEvent&) noexcept
+bool TRAP::Application::OnWindowRestore([[maybe_unused]] Events::WindowRestoreEvent& event) noexcept
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1002,40 +1009,40 @@ void TRAP::Application::UpdateHotReloading()
 	}
 
 	//Shader reloading
-	for(const auto& p : shaderPaths)
+	for(const auto& path : shaderPaths)
 	{
-		if(Graphics::ShaderManager::ExistsPath(p))
-		{
-			TP_INFO(Log::HotReloadingPrefix, "Shader modified reloading...");
-			Graphics::RendererAPI::GetRenderer()->WaitIdle();
-			Ref<TRAP::Graphics::Shader> shader = Graphics::ShaderManager::Reload(p.string());
+		if(!Graphics::ShaderManager::ExistsPath(path))
+			continue;
 
-			//By binding the fallback shader, we can make sure that the
-			//new shader will trigger a pipeline rebuild.
-			if(static_cast<bool>(shader->GetShaderStages() & Graphics::RendererAPI::ShaderStage::Compute))
-				TRAP::Graphics::ShaderManager::Get("FallbackCompute")->Use();
-			else
-				TRAP::Graphics::ShaderManager::Get("FallbackGraphics")->Use();
+		TP_INFO(Log::HotReloadingPrefix, "Shader modified reloading...");
+		Graphics::RendererAPI::GetRenderer()->WaitIdle();
+		Ref<TRAP::Graphics::Shader> shader = Graphics::ShaderManager::Reload(path.string());
 
-			//Send event
-			TRAP::Events::ShaderReloadEvent e(shader);
-			OnEvent(e);
-		}
+		//By binding the fallback shader, we can make sure that the
+		//new shader will trigger a pipeline rebuild.
+		if(static_cast<bool>(shader->GetShaderStages() & Graphics::RendererAPI::ShaderStage::Compute))
+			TRAP::Graphics::ShaderManager::Get("FallbackCompute")->Use();
+		else
+			TRAP::Graphics::ShaderManager::Get("FallbackGraphics")->Use();
+
+		//Send event
+		TRAP::Events::ShaderReloadEvent event(shader);
+		OnEvent(event);
 	}
 
 	//Texture reloading
-	for(const auto& p : texturePaths)
+	for(const auto& path : texturePaths)
 	{
-		if(Graphics::TextureManager::ExistsPath(p))
-		{
-			TP_INFO(Log::HotReloadingPrefix, "Texture modified reloading...");
-			Graphics::RendererAPI::GetRenderer()->WaitIdle();
-			TRAP::Ref<TRAP::Graphics::Texture> texture = Graphics::TextureManager::Reload(p.string());
+		if(!Graphics::TextureManager::ExistsPath(path))
+			continue;
 
-			//Send event
-			TRAP::Events::TextureReloadEvent e(texture);
-			OnEvent(e);
-		}
+		TP_INFO(Log::HotReloadingPrefix, "Texture modified reloading...");
+		Graphics::RendererAPI::GetRenderer()->WaitIdle();
+		TRAP::Ref<TRAP::Graphics::Texture> texture = Graphics::TextureManager::Reload(path.string());
+
+		//Send event
+		TRAP::Events::TextureReloadEvent event(texture);
+		OnEvent(event);
 	}
 }
 
@@ -1087,9 +1094,9 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 		LockMark(m_hotReloadingMutex);
 
 		//Don't add duplicates!
-		for(const auto& p : m_hotReloadingTexturePaths)
+		for(const auto& path : m_hotReloadingTexturePaths)
 		{
-			if(FileSystem::IsEquivalent(p, event.GetPath()))
+			if(FileSystem::IsEquivalent(path, event.GetPath()))
 				return false;
 		}
 
@@ -1101,9 +1108,9 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 		LockMark(m_hotReloadingMutex);
 
 		//Don't add duplicates!
-		for(const auto& p : m_hotReloadingShaderPaths)
+		for(const auto& path : m_hotReloadingShaderPaths)
 		{
-			if(FileSystem::IsEquivalent(p, event.GetPath()))
+			if(FileSystem::IsEquivalent(path, event.GetPath()))
 				return false;
 		}
 

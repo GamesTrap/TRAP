@@ -21,12 +21,12 @@ constexpr TRAP::Network::IPv6Address TRAP::Network::IPv6Address::LocalHost(std::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::IPv6Address::IPv6Address(const std::string address)
+TRAP::Network::IPv6Address::IPv6Address(const std::string& address)
 	: m_address(), m_valid(false)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
-	Resolve(std::move(address));
+	Resolve(address);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -163,7 +163,7 @@ void TRAP::Network::IPv6Address::Resolve(const std::string& address)
 	{
 		//Try to convert the address as a hex representation ("XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX")
 		std::array<uint8_t, 16> ip{};
-		if(inet_pton(AF_INET6, lowerAddress.c_str(), ip.data()))
+		if(inet_pton(AF_INET6, lowerAddress.c_str(), ip.data()) != 0)
 		{
 			m_address = ip;
 			m_valid = true;
@@ -176,7 +176,7 @@ void TRAP::Network::IPv6Address::Resolve(const std::string& address)
 			addrinfo* result = nullptr;
 			if(getaddrinfo(lowerAddress.c_str(), nullptr, &hints, &result) == 0)
 			{
-				if(result)
+				if(result != nullptr)
 				{
 					std::copy_n(reinterpret_cast<sockaddr_in6*>(result->ai_addr)->sin6_addr.s6_addr, ip.size(), ip.data());
 					freeaddrinfo(result);

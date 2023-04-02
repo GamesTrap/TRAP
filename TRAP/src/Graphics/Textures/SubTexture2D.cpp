@@ -59,7 +59,7 @@
 
 TRAP::Graphics::SubTexture2D::SubTexture2D(std::string name, Ref<TRAP::Graphics::Texture> texture,
                                            const TRAP::Math::Vec2& min, const TRAP::Math::Vec2& max) noexcept
-    : m_texture(std::move(texture)), m_name(std::move(name))
+    : m_texture(std::move(texture)), m_texCoords(), m_name(std::move(name))
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

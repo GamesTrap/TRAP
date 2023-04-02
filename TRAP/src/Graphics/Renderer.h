@@ -48,7 +48,7 @@ namespace TRAP::Graphics
 		/// <param name="shader">Shader to use.</param>
 		/// <param name="vertexBuffer">Vertex buffer to use.</param>
 		/// <param name="transform">Model transform. Default is identity.</param>
-		static void Submit(Ref<Shader> shader, const VertexBuffer* vertexBuffer,
+		static void Submit(const Ref<Shader>& shader, const VertexBuffer* vertexBuffer,
 						   const Math::Mat4& transform = Math::Mat4(1.0f));
 		/// <summary>
 		/// Submit an indexed draw call.
@@ -57,7 +57,7 @@ namespace TRAP::Graphics
 		/// <param name="vertexBuffer">Vertex buffer to use.</param>
 		/// <param name="indexBuffer">Index buffer to use.</param>
 		/// <param name="transform">Model transform. Default is identity.</param>
-		static void Submit(Ref<Shader> shader, const VertexBuffer* vertexBuffer, const IndexBuffer* indexBuffer,
+		static void Submit(const Ref<Shader>& shader, const VertexBuffer* vertexBuffer, const IndexBuffer* indexBuffer,
 						   const Math::Mat4& transform = Math::Mat4(1.0f));
 
 	private:

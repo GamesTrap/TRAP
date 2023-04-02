@@ -133,9 +133,9 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 	int32_t blendDescIndex = 0;
 
 #ifdef ENABLE_GRAPHICS_DEBUG
-	for(int32_t i = 0; i < 8; ++i)
+	for(uint32_t i = 0; i < 8; ++i)
 	{
-		if(static_cast<uint32_t>(desc.RenderTargetMask) & (1 << i))
+		if((static_cast<uint32_t>(desc.RenderTargetMask) & (1u << i)) != 0u)
 		{
 			TRAP_ASSERT(desc.SrcFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS, "UtilToBlendDesc(): Invalid SrcFactor!");
 			TRAP_ASSERT(desc.DstFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS, "UtilToBlendDesc(): Invalid DstFactor!");
@@ -152,9 +152,9 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 	blendDescIndex = 0;
 #endif
 
-	for(int32_t i = 0; i < 8; ++i)
+	for(uint32_t i = 0; i < 8; ++i)
 	{
-		const VkBool32 blendEnable =
+		const VkBool32 blendEnable = static_cast<VkBool32>
 		(
 			VkBlendConstantTranslator[static_cast<uint32_t>(desc.SrcFactors[blendDescIndex])] != VK_BLEND_FACTOR_ONE ||
 			VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstFactors[blendDescIndex])] != VK_BLEND_FACTOR_ZERO ||
@@ -162,7 +162,7 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 			VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstAlphaFactors[blendDescIndex])] != VK_BLEND_FACTOR_ZERO
 		);
 
-		attachments[i].blendEnable = blendEnable && (static_cast<uint32_t>(desc.RenderTargetMask) & (1 << i));
+		attachments[i].blendEnable = static_cast<VkBool32>((blendEnable != 0u) && ((static_cast<uint32_t>(desc.RenderTargetMask) & (1u << i)) != 0u));
 		attachments[i].colorWriteMask = desc.Masks[blendDescIndex];
 		attachments[i].srcColorBlendFactor = VkBlendConstantTranslator[static_cast<uint32_t>(desc.SrcFactors[blendDescIndex])];
 		attachments[i].dstColorBlendFactor = VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstFactors[blendDescIndex])];

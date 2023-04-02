@@ -46,7 +46,7 @@ TRAP::Log::~Log()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Log::SetFilePath(const std::filesystem::path& filePath) noexcept
+void TRAP::Log::SetFilePath(std::filesystem::path filePath) noexcept
 {
 	ZoneScoped;
 

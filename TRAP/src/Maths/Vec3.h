@@ -120,8 +120,8 @@ namespace TRAP::Math
 		//Increment and decrement operators
 		constexpr Vec<3, T>& operator++() noexcept;
 		constexpr Vec<3, T>& operator--() noexcept;
-		constexpr Vec<3, T> operator++(int) noexcept;
-		constexpr Vec<3, T> operator--(int) noexcept;
+		constexpr const Vec<3, T> operator++(int) noexcept;
+		constexpr const Vec<3, T> operator--(int) noexcept;
 
 		//Unary bit operators
 		template<typename U>
@@ -522,7 +522,7 @@ constexpr TRAP::Math::Vec<3, T>& TRAP::Math::Vec<3, T>::operator--() noexcept
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<3, T> TRAP::Math::Vec<3, T>::operator++(const int) noexcept
+constexpr const TRAP::Math::Vec<3, T> TRAP::Math::Vec<3, T>::operator++(const int) noexcept
 {
 	Vec<3, T> result(*this);
 	++*this;
@@ -531,7 +531,7 @@ constexpr TRAP::Math::Vec<3, T> TRAP::Math::Vec<3, T>::operator++(const int) noe
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<3, T> TRAP::Math::Vec<3, T>::operator--(const int) noexcept
+constexpr const TRAP::Math::Vec<3, T> TRAP::Math::Vec<3, T>::operator--(const int) noexcept
 {
 	Vec<3, T> result(*this);
 	--*this;

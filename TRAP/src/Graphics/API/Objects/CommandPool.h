@@ -49,7 +49,7 @@ namespace TRAP::Graphics
 		/// Free a command buffer
 		/// </summary>
 		/// <param name="cmdBuffer">Command buffer to free.</param>
-		virtual void FreeCommandBuffer(const CommandBuffer* const cmdBuffer) = 0;
+		virtual void FreeCommandBuffer(const CommandBuffer* cmdBuffer) = 0;
 
 		/// <summary>
 		/// Reset the command pool.

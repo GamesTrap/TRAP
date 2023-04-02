@@ -82,8 +82,8 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] RendererAPI::LoadActionType GetLoadActionTypeStencil() const noexcept;
 
 	private:
-		[[nodiscard]] static VkRenderPass CreateRenderPass(TRAP::Ref<VulkanDevice> device, const VulkanRenderer::RenderPassDesc& desc);
-		[[nodiscard]] static VkRenderPass CreateRenderPass2(TRAP::Ref<VulkanDevice> device, const VulkanRenderer::RenderPassDesc& desc);
+		[[nodiscard]] static VkRenderPass CreateRenderPass(const TRAP::Ref<VulkanDevice>& device, const VulkanRenderer::RenderPassDesc& desc);
+		[[nodiscard]] static VkRenderPass CreateRenderPass2(const TRAP::Ref<VulkanDevice>& device, const VulkanRenderer::RenderPassDesc& desc);
 
 		VkRenderPass m_renderPass;
 

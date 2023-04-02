@@ -31,7 +31,7 @@ namespace TRAP::Events
 	/// <summary>
 	/// Categories for events.
 	/// </summary>
-	enum class EventCategory
+	enum class EventCategory : uint32_t
 	{
 		None        = 0,
 		Window      = BIT(0),

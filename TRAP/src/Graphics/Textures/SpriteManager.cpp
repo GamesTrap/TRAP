@@ -10,7 +10,7 @@ std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::SubTexture2D>> Sprites
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::CreateFromCoords(const std::string& name,
-                                                                                        Ref<TRAP::Graphics::Texture> texture,
+                                                                                        const Ref<TRAP::Graphics::Texture>& texture,
                                                                                         const TRAP::Math::Vec2& coords,
                                                                                         const TRAP::Math::Vec2& cellSize,
                                                                                         const TRAP::Math::Vec2& spriteSize)
@@ -37,7 +37,7 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::CreateFro
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::CreateFromPixels(const std::string& name,
-                                                                                        Ref<TRAP::Graphics::Texture> texture,
+                                                                                        const Ref<TRAP::Graphics::Texture>& texture,
                                                                                         const TRAP::Math::Vec2& pixelPos,
                                                                                         const TRAP::Math::Vec2& pixelSize,
                                                                                         const TRAP::Math::Vec2& spriteSize)
@@ -79,7 +79,7 @@ void TRAP::Graphics::SpriteManager::Add(Ref<SubTexture2D> sprite)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(Ref<SubTexture2D> sprite)
+TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(const Ref<SubTexture2D>& sprite)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -92,8 +92,8 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(Re
         Sprites.erase(sprite->GetName());
         return spr;
     }
-    else
-        TP_ERROR(Log::SpriteManagerPrefix, "Couldn't find sprite with name: \"", sprite->GetName(), "\"!");
+
+	TP_ERROR(Log::SpriteManagerPrefix, "Couldn't find sprite with name: \"", sprite->GetName(), "\"!");
 
     return nullptr;
 }
@@ -110,8 +110,8 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(co
 		Sprites.erase(name);
 		return spr;
 	}
-	else
-		TP_ERROR(Log::SpriteManagerPrefix, "Couldn't find sprite with name: \"", name, "\"!");
+
+	TP_ERROR(Log::SpriteManagerPrefix, "Couldn't find sprite with name: \"", name, "\"!");
 
 	return nullptr;
 }
@@ -166,8 +166,8 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Reload(co
 
 			return sprite;
 		}
-		else
-			TP_WARN(Log::SpriteManagerPrefix, "Couldn't find sprite: \"", nameOrPath, "\" to reload.");
+
+		TP_WARN(Log::SpriteManagerPrefix, "Couldn't find sprite: \"", nameOrPath, "\" to reload.");
 	}
 	else //Path
 	{
@@ -233,11 +233,8 @@ void TRAP::Graphics::SpriteManager::ReloadAll()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	for (const auto& [name, sprite] : Sprites)
+	return std::any_of(Sprites.begin(), Sprites.end(), [path](const auto& element)
 	{
-        if (FileSystem::IsEquivalent(sprite->GetTexture()->GetFilePath(), path))
-            return true;
-	}
-
-	return false;
+		return FileSystem::IsEquivalent(element.second->GetTexture()->GetFilePath(), path);
+	});
 }

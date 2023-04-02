@@ -30,7 +30,7 @@ namespace TRAP::Graphics::TextureManager
 	/// <param name="img">TRAP::Image to use as texture.</param>
 	/// <param name="flags">Additional flags. Default: None.</param>
 	/// <returns>Loaded texture.</returns>
-	Ref<Texture> Load(const std::string& name, const Image* const img,
+	Ref<Texture> Load(const std::string& name, const Image* img,
 				      TextureCreationFlags flags = TextureCreationFlags::None);
 	/// <summary>
 	/// Load a cube texture from file.
@@ -73,7 +73,7 @@ namespace TRAP::Graphics::TextureManager
 	/// <param name="format">Format of the cube texture.</param>
 	/// <param name="flags">Additional flags. Default: None.</param>
 	/// <returns>Loaded texture.</returns>
-	Ref<Texture> Load(const std::string& name, const Image* const img,
+	Ref<Texture> Load(const std::string& name, const Image* img,
 				      TextureCubeFormat format,
 				      TextureCreationFlags flags = TextureCreationFlags::None);
 
@@ -87,7 +87,7 @@ namespace TRAP::Graphics::TextureManager
 	/// </summary>
 	/// <param name="texture">Texture to remove.</param>
 	/// <returns>Removed texture on success, nullptr otherwise.</returns>
-	[[maybe_unused]] Ref<Texture>  Remove(Ref<Texture> texture);
+	[[maybe_unused]] Ref<Texture>  Remove(const Ref<Texture>& texture);
 	/// <summary>
 	/// Remove a texture from the TextureManager via its name.
 	/// </summary>

@@ -34,7 +34,7 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 
 	uint64_t allocationSize = desc.Size;
 	//Align the buffer size to multiples of the dynamic uniform buffer minimum size
-	if(static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::UniformBuffer))
+	if(static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::UniformBuffer) != 0u)
 	{
 		const uint64_t minAlignment = RendererAPI::GPUSettings.UniformBufferAlignment;
 		allocationSize = ((allocationSize + minAlignment - 1) / minAlignment) * minAlignment;
@@ -52,13 +52,13 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 	VmaAllocationCreateInfo vmaMemReqs{};
 	vmaMemReqs.usage = static_cast<VmaMemoryUsage>(desc.MemoryUsage);
 	vmaMemReqs.flags = 0;
-	if (static_cast<uint32_t>(desc.Flags & RendererAPI::BufferCreationFlags::OwnMemory))
+	if (static_cast<uint32_t>(desc.Flags & RendererAPI::BufferCreationFlags::OwnMemory) != 0u)
 		vmaMemReqs.flags |= VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT;
-	if (static_cast<uint32_t>(desc.Flags & RendererAPI::BufferCreationFlags::PersistentMap))
+	if (static_cast<uint32_t>(desc.Flags & RendererAPI::BufferCreationFlags::PersistentMap) != 0u)
 		vmaMemReqs.flags |= VMA_ALLOCATION_CREATE_MAPPED_BIT;
-	if (static_cast<uint32_t>(desc.Flags & RendererAPI::BufferCreationFlags::HostVisible))
+	if (static_cast<uint32_t>(desc.Flags & RendererAPI::BufferCreationFlags::HostVisible) != 0u)
 		vmaMemReqs.flags |= VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
-	if (static_cast<uint32_t>(desc.Flags & RendererAPI::BufferCreationFlags::HostCoherent))
+	if (static_cast<uint32_t>(desc.Flags & RendererAPI::BufferCreationFlags::HostCoherent) != 0u)
 		vmaMemReqs.flags |= VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 
 #ifdef TRAP_PLATFORM_ANDROID
@@ -79,36 +79,36 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 	m_CPUMappedAddress = allocInfo.pMappedData;
 
 	//Set descriptor data
-	if (static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::UniformBuffer) ||
-		static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::Buffer) ||
-		static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWBuffer))
+	if ((static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::UniformBuffer) != 0u) ||
+		(static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::Buffer) != 0u) ||
+		(static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWBuffer) != 0u))
 	{
-		if (static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::Buffer) ||
-			static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWBuffer))
+		if ((static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::Buffer) != 0u) ||
+			(static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWBuffer) != 0u))
 			m_offset = desc.StructStride * desc.FirstElement;
 	}
 
-	if(info.usage & VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT)
+	if((info.usage & VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT) != 0u)
 	{
 		const VkBufferViewCreateInfo viewInfo = VulkanInits::BufferViewCreateInfo(m_vkBuffer,
 		                                                                          ImageFormatToVkFormat(desc.Format),
 		                                                                          desc.FirstElement * desc.StructStride,
 		                                                                          desc.ElementCount * desc.StructStride);
 		const VkFormatProperties formatProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(viewInfo.format);
-		if (!(formatProps.bufferFeatures & VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT))
+		if ((formatProps.bufferFeatures & VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT) == 0u)
 			TP_WARN(Log::RendererVulkanBufferPrefix, "Failed to create uniform texel buffer view for format ",
 			        static_cast<uint32_t>(desc.Format));
 		else
 			VkCall(vkCreateBufferView(m_device->GetVkDevice(), &viewInfo, nullptr, &m_vkUniformTexelView));
 	}
-	if(info.usage & VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT)
+	if((info.usage & VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT) != 0u)
 	{
 		const VkBufferViewCreateInfo viewInfo = VulkanInits::BufferViewCreateInfo(m_vkBuffer,
 		                                                                          ImageFormatToVkFormat(desc.Format),
 		                                                                          desc.FirstElement * desc.StructStride,
 		                                                                          desc.ElementCount * desc.StructStride);
 		const VkFormatProperties formatProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(viewInfo.format);
-		if (!(formatProps.bufferFeatures & VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT))
+		if ((formatProps.bufferFeatures & VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT) == 0u)
 			TP_WARN(Log::RendererVulkanBufferPrefix, "Failed to create storage texel buffer view for format ",
 			        static_cast<uint32_t>(desc.Format));
 		else
@@ -131,19 +131,19 @@ TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 	TP_DEBUG(Log::RendererVulkanBufferPrefix, "Destroying Buffer");
 #endif
 
-	if(m_vkUniformTexelView)
+	if(m_vkUniformTexelView != nullptr)
 	{
 		vkDestroyBufferView(m_device->GetVkDevice(), m_vkUniformTexelView, nullptr);
 		m_vkUniformTexelView = VK_NULL_HANDLE;
 	}
 
-	if(m_vkStorageTexelView)
+	if(m_vkStorageTexelView != nullptr)
 	{
 		vkDestroyBufferView(m_device->GetVkDevice(), m_vkStorageTexelView, nullptr);
 		m_vkStorageTexelView = VK_NULL_HANDLE;
 	}
 
-	if(m_allocation)
+	if(m_allocation != nullptr)
 		vmaDestroyBuffer(m_VMA->GetVMAAllocator(), m_vkBuffer, m_allocation);
 }
 
@@ -219,7 +219,7 @@ void TRAP::Graphics::API::VulkanBuffer::MapBuffer(const RendererAPI::ReadRange* 
 	const VkResult res = vmaMapMemory(m_VMA->GetVMAAllocator(), m_allocation, &m_CPUMappedAddress);
 	TRAP_ASSERT(res == VK_SUCCESS);
 
-	if (range)
+	if (range != nullptr)
 		m_CPUMappedAddress = (static_cast<uint8_t*>(m_CPUMappedAddress) + range->Offset);
 }
 
@@ -232,7 +232,7 @@ void TRAP::Graphics::API::VulkanBuffer::UnMapBuffer()
 	TRAP_ASSERT(m_memoryUsage != RendererAPI::ResourceMemoryUsage::GPUOnly,
 	            "VulkanBuffer::UnMapBuffer(): Trying to unmap non-CPU accessible resource");
 
-	if (m_VMA && m_allocation)
+	if (m_VMA && (m_allocation != nullptr))
 		vmaUnmapMemory(m_VMA->GetVMAAllocator(), m_allocation);
 	m_CPUMappedAddress = nullptr;
 }

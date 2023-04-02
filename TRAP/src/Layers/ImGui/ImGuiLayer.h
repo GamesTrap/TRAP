@@ -102,7 +102,7 @@ namespace ImGui
 	/// <param name="uv1">UV1 coordinates.</param>
 	/// <param name="tint_col">Tint color.</param>
 	/// <param name="border_col">Border color.</param>
-	void Image(TRAP::Ref<TRAP::Graphics::Texture> image, const TRAP::Graphics::Sampler* sampler,
+	void Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const TRAP::Graphics::Sampler* sampler,
 	           const ImVec2& size,
 	           const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1),
 			   const ImVec4& tint_col = ImVec4(1, 1, 1, 1),
@@ -116,7 +116,7 @@ namespace ImGui
 	/// <param name="uv1">UV1 coordinates.</param>
 	/// <param name="tint_col">Tint color.</param>
 	/// <param name="border_col">Border color.</param>
-	void Image(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& size,
+	void Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const ImVec2& size,
 	           const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1),
 			   const ImVec4& tint_col = ImVec4(1, 1, 1, 1),
 			   const ImVec4& border_col = ImVec4(0, 0, 0, 0));
@@ -131,7 +131,7 @@ namespace ImGui
 	/// <param name="bg_col">Background color.</param>
 	/// <param name="tint_col">Tint color.</param>
 	/// <returns>True if image button is pressed, false otherwise.</returns>
-    bool ImageButton(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& size,
+    bool ImageButton(const TRAP::Ref<TRAP::Graphics::Texture>& image, const ImVec2& size,
 	                 const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1,1),
 					 const ImVec4& bg_col = ImVec4(0,0,0,0),
 					 const ImVec4& tint_col = ImVec4(1,1,1,1));
@@ -145,7 +145,7 @@ namespace ImGui
 	/// <param name="callback">Callback to implement additional functionality.</param>
 	/// <param name="userData">Pointer to provide user data.</param>
 	/// <returns>True if input text changed, false otherwise.</returns>
-	bool InputText(const std::string_view label, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* userData = nullptr);
+	bool InputText(std::string_view label, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* userData = nullptr);
 	/// <summary>
 	/// Draw an multi-line input text field with ImGui.
 	/// </summary>
@@ -156,7 +156,7 @@ namespace ImGui
 	/// <param name="callback">Callback to implement additional functionality.</param>
 	/// <param name="userData">Pointer to provide user data.</param>
 	/// <returns>True if input text changed, false otherwise.</returns>
-	bool InputTextMultiline(const std::string_view label, std::string* str, const ImVec2& size = ImVec2(0.0f, 0.0f), ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* userData = nullptr);
+	bool InputTextMultiline(std::string_view label, std::string* str, const ImVec2& size = ImVec2(0.0f, 0.0f), ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* userData = nullptr);
 	/// <summary>
 	/// Draw an input text field with an additional hint with ImGui.
 	/// </summary>
@@ -167,7 +167,7 @@ namespace ImGui
 	/// <param name="callback">Callback to implement additional functionality.</param>
 	/// <param name="userData">Pointer to provide user data.</param>
 	/// <returns>True if input text changed, false otherwise.</returns>
-	bool InputTextWithHint(const std::string_view label, const std::string_view hint, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* userData = nullptr);
+	bool InputTextWithHint(std::string_view label, std::string_view hint, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* userData = nullptr);
 
 	/// <summary>
 	/// Add a TTF font to ImGui from file.
@@ -177,7 +177,7 @@ namespace ImGui
 	/// <param name="fontCfgTemplate">Font configuration template.</param>
 	/// <param name="glyphRanges">Glyph ranges.</param>
 	/// <returns>Pointer to the new font.</returns>
-	ImFont* AddFontFromFileTTF(const std::string_view filename, float sizePixels,
+	ImFont* AddFontFromFileTTF(std::string_view filename, float sizePixels,
 		                       const ImFontConfig* fontCfgTemplate = nullptr,
 						       const ImWchar* glyphRanges = nullptr);
 	/// <summary>

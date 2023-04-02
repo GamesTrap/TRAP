@@ -28,7 +28,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	const uint32_t depthAttachmentCount = desc.DepthStencil ? 1 : 0;
 	const uint32_t shadingRateAttachmentCount = desc.ShadingRate ? 1 : 0;
 
-	if(colorAttachmentCount)
+	if(colorAttachmentCount != 0u)
 	{
 		const Ref<VulkanRenderTarget> renderTarget = std::dynamic_pointer_cast<VulkanRenderTarget>(desc.RenderTargets[0]);
 		m_width = renderTarget->GetWidth();
@@ -38,7 +38,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 		else
 			m_arraySize = renderTarget->GetArraySize();
 	}
-	else if(depthAttachmentCount)
+	else if(depthAttachmentCount != 0u)
 	{
 		m_width = desc.DepthStencil->GetWidth();
 		m_height = desc.DepthStencil->GetHeight();
@@ -52,7 +52,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 		TRAP_ASSERT(false, "VulkanFrameBuffer(): No color or depth attachments");
 	}
 
-	if (colorAttachmentCount && desc.RenderTargets[0]->GetDepth() > 1)
+	if ((colorAttachmentCount != 0u) && desc.RenderTargets[0]->GetDepth() > 1)
 		m_arraySize = desc.RenderTargets[0]->GetDepth();
 
 	const uint32_t attachmentCount = colorAttachmentCount + depthAttachmentCount + shadingRateAttachmentCount;

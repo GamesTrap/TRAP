@@ -231,7 +231,7 @@ namespace TRAP::Graphics
 		/// <param name="texture">Texture to update.</param>
 		/// <param name="srcBuffer">Source buffer to read data from.</param>
 		/// <param name="subresourceDesc">Subresource description.</param>
-		virtual void UpdateSubresource(const Texture* const texture,
+		virtual void UpdateSubresource(const Texture* texture,
 		                               const TRAP::Ref<Buffer>& srcBuffer,
 									   const RendererAPI::SubresourceDataDesc& subresourceDesc) const = 0;
 		/// <summary>
@@ -240,7 +240,7 @@ namespace TRAP::Graphics
 		/// <param name="dstBuffer">Destination to copy data into.</param>
 		/// <param name="texture">Source texture to copy from.</param>
 		/// <param name="subresourceDesc">Subresource description.</param>
-		virtual void CopySubresource(const Buffer* const dstBuffer, const Texture* const texture,
+		virtual void CopySubresource(const Buffer* dstBuffer, const Texture* texture,
 		                             const RendererAPI::SubresourceDataDesc& subresourceDesc) const = 0;
 
 		/// <summary>

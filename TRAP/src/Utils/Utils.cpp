@@ -57,7 +57,7 @@
 		if (i == '-')
 			continue;
 
-		if (index >= 16 || !std::isxdigit(i))
+		if (index >= 16u || (std::isxdigit(i) == 0))
 			return {};
 
 		if(firstDigit)
@@ -87,7 +87,7 @@
 				uuidDigit = 10 + i - 'A';
 			else
 				uuidDigit = 0;
-			result[index] = (static_cast<uint8_t>((charDigit << 4)) | uuidDigit);
+			result[index] = (static_cast<uint8_t>((charDigit << 4u)) | uuidDigit);
 			index++;
 			firstDigit = true;
 		}
@@ -146,7 +146,7 @@
 		                         std::string(reinterpret_cast<char*>(&std::get<2>(regs)), sizeof(uint32_t)) +
 		                         std::string(reinterpret_cast<char*>(&std::get<3>(regs)), sizeof(uint32_t));
 	regs = CPUID(1, 0);
-	cpu.HyperThreaded = std::get<3>(regs) & 0x10000000; //Get Hyper-threading
+	cpu.HyperThreaded = ((std::get<3>(regs) & 0x10000000u) != 0u); //Get Hyper-threading
 
 	const std::string upVendorID = Utils::String::ToUpper(vendorID);
 	//Get Number of cores
@@ -155,13 +155,13 @@
 	static constexpr uint32_t LVL_CORES = 0x0000FFFF;
 	if (upVendorID.find("INTEL") != std::string::npos)
 	{
-		if (HFS >= 11)
+		if (HFS >= 11u)
 		{
 			int32_t numSMT = 0;
 			for (int32_t lvl = 0; lvl < MAX_INTEL_TOP_LVL; ++lvl)
 			{
 				const std::array<uint32_t, 4> regs1 = CPUID(0x0B, lvl);
-				const uint32_t currentLevel = (LVL_TYPE & std::get<2>(regs1)) >> 8;
+				const uint32_t currentLevel = (LVL_TYPE & std::get<2>(regs1)) >> 8u;
 				switch (currentLevel)
 				{
 				case BIT(0):
@@ -182,11 +182,11 @@
 		{
 			if (HFS >= 1)
 			{
-				cpu.LogicalCores = (std::get<1>(regs) >> 16) & 0xFF;
+				cpu.LogicalCores = (std::get<1>(regs) >> 16u) & 0xFFu;
 				if (HFS >= 4)
 				{
 					const std::array<uint32_t, 4> regs1 = CPUID(4, 0);
-					cpu.Cores = (1 + (std::get<0>(regs1) >> 26)) & 0x3F;
+					cpu.Cores = (1 + (std::get<0>(regs1) >> 26u)) & 0x3Fu;
 				}
 			}
 			if (cpu.HyperThreaded)
@@ -204,19 +204,19 @@
 	else if (upVendorID.find("AMD") != std::string::npos)
 	{
 		uint32_t extFamily = 0;
-		if (((std::get<0>(regs) >> 8) & 0xF) < 0xF)
-			extFamily = (std::get<0>(regs) >> 8) & 0xF;
+		if (((std::get<0>(regs) >> 8u) & 0xFu) < 0xFu)
+			extFamily = (std::get<0>(regs) >> 8u) & 0xFu;
 		else
-			extFamily = ((std::get<0>(regs) >> 8) & 0xF) + ((std::get<0>(regs) >> 20) & 0xFF);
+			extFamily = ((std::get<0>(regs) >> 8u) & 0xFu) + ((std::get<0>(regs) >> 20u) & 0xFFu);
 
 		if (HFS >= 1)
 		{
-			cpu.LogicalCores = (std::get<1>(regs) >> 16) & 0xFF;
-			std::array<uint32_t, 4> regs1 = CPUID(0x80000000, 0);
-			if (std::get<0>(regs1) >= 8)
+			cpu.LogicalCores = (std::get<1>(regs) >> 16u) & 0xFFu;
+			std::array<uint32_t, 4> regs1 = CPUID(0x80000000u, 0u);
+			if (std::get<0>(regs1) >= 8u)
 			{
-				regs1 = CPUID(0x80000008, 0);
-				cpu.Cores = 1 + (std::get<2>(regs1) & 0xFF);
+				regs1 = CPUID(0x80000008u, 0u);
+				cpu.Cores = 1 + (std::get<2>(regs1) & 0xFFu);
 			}
 		}
 		if (cpu.HyperThreaded)
@@ -233,11 +233,11 @@
 				//On PPR 17h, page 82:
 				//CPUID_Fn8000001E_EBX [Core Identifiers][15:8] is ThreadsPerCore
 				//ThreadsPerCore: [...] The number of threads per core is ThreadsPerCore + 1
-				std::array<uint32_t, 4> regs1 = CPUID(0x80000000, 0);
-				if ((extFamily >= 23) && (std::get<0>(regs1) >= 30))
+				std::array<uint32_t, 4> regs1 = CPUID(0x80000000u, 0u);
+				if ((extFamily >= 23u) && (std::get<0>(regs1) >= 30u))
 				{
-					regs1 = CPUID(0x8000001E, 0);
-					cpu.Cores /= ((std::get<1>(regs1) >> 8) & 0xFF) + 1;
+					regs1 = CPUID(0x8000001Eu, 0u);
+					cpu.Cores /= ((std::get<1>(regs1) >> 8u) & 0xFFu) + 1u;
 				}
 			}
 		}
@@ -246,7 +246,7 @@
 	}
 
 	//Get CPU brand string
-	for (uint32_t i = 0x80000002; i < 0x80000005; ++i)
+	for (uint32_t i = 0x80000002u; i < 0x80000005u; ++i)
 	{
 		std::array<uint32_t, 4> regs1 = CPUID(i, 0);
 		cpu.Model += std::string(reinterpret_cast<char*>(&std::get<0>(regs1)), sizeof(uint32_t));
@@ -258,7 +258,7 @@
 	std::size_t lastAlphaChar = 0;
 	for(auto it = cpu.Model.rbegin(); it != cpu.Model.rend(); ++it)
 	{
-		if (isalnum(*it))
+		if (isalnum(*it) != 0)
 		{
 			lastAlphaChar = it - cpu.Model.rbegin();
 			break;

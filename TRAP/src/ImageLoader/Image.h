@@ -204,19 +204,19 @@ namespace TRAP
 		/// </summary>
 		/// <param name="img">Image to flip.</param>
 		/// <returns>Flipped image</returns>
-		[[nodiscard]] static Scope<Image> FlipX(const Image* const img);
+		[[nodiscard]] static Scope<Image> FlipX(const Image* img);
 		/// <summary>
 		/// Flip an image on its Y axis.
 		/// </summary>
 		/// <param name="img">Image to flip.</param>
 		/// <returns>Flipped image</returns>
-		[[nodiscard]] static Scope<Image> FlipY(const Image* const img);
+		[[nodiscard]] static Scope<Image> FlipY(const Image* img);
 		/// <summary>
 		/// Convert a RGB image to RGBA.
 		/// </summary>
 		/// <param name="img">Image to convert.</param>
 		/// <returns>Converted image</returns>
-		[[nodiscard]] static Scope<Image> ConvertRGBToRGBA(const Image* const img);
+		[[nodiscard]] static Scope<Image> ConvertRGBToRGBA(const Image* img);
 
 		inline static constexpr std::array<std::string_view, 15> SupportedImageFormatSuffixes
 		{
@@ -439,7 +439,7 @@ template <typename T>
 
 	std::vector<T> newData(width * height * static_cast<uint32_t>(ColorFormat::RGBA));
 	std::size_t newDataIndex = 0;
-	for(std::size_t oldDataIndex = 0; oldDataIndex < width * height * static_cast<uint32_t>(ColorFormat::RGB);
+	for(std::size_t oldDataIndex = 0; oldDataIndex < static_cast<std::size_t>(width) * height * static_cast<uint32_t>(ColorFormat::RGB);
 		oldDataIndex += 3)
 	{
 		newData[newDataIndex + 0] = data[oldDataIndex + 0];
@@ -476,7 +476,7 @@ template <typename T>
 
 	std::vector<T> newData(width * height * static_cast<uint32_t>(ColorFormat::RGB));
 	std::size_t newDataIndex = 0;
-	for(std::size_t oldDataIndex = 0; oldDataIndex < width * height * static_cast<uint32_t>(ColorFormat::RGBA);
+	for(std::size_t oldDataIndex = 0; oldDataIndex < static_cast<std::size_t>(width) * height * static_cast<uint32_t>(ColorFormat::RGBA);
 		oldDataIndex += 4)
 	{
 		newData[newDataIndex + 0] = data[oldDataIndex + 0];

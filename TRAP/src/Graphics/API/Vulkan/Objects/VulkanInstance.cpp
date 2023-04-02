@@ -75,7 +75,7 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appNa
 	VkCall(vkCreateInstance(&info, nullptr, &m_instance));
 	TRAP_ASSERT(m_instance, "VulkanInstance(): Vulkan Instance is nullptr!");
 
-	if (m_instance)
+	if (m_instance != nullptr)
 		VkLoadInstance(m_instance);
 	else
 	{
@@ -133,7 +133,7 @@ TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if(!s_instanceVersion)
+	if(s_instanceVersion == 0u)
 		s_instanceVersion = VkGetInstanceVersion();
 
 	return s_instanceVersion;

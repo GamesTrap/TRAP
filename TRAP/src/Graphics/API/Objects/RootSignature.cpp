@@ -4,7 +4,7 @@
 #include "Graphics/API/Vulkan/Objects/VulkanRootSignature.h"
 
 TRAP::Graphics::RootSignature::RootSignature()
-	: m_pipelineType(), m_descriptorNameToIndexMap()
+	: m_pipelineType()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 

@@ -227,7 +227,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(const void* con
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
 	//Check the parameters
-	if(!data || (size == 0))
+	if((data == nullptr) || (size == 0))
 	{
 		TP_ERROR(Log::NetworkTCPSocketPrefix, "Can't send data over the network (no data to send)");
 		return Status::Error;
@@ -245,7 +245,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(const void* con
 		{
 			const Status status = INTERNAL::Network::SocketImpl::GetErrorStatus();
 
-			if ((status == Status::NotReady) && sent)
+			if ((status == Status::NotReady) && (sent != 0u))
 				return Status::Partial;
 
 			return status;
@@ -266,7 +266,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(void* const 
 	received = 0;
 
 	//Check the destination buffer
-	if(!data)
+	if(data == nullptr)
 	{
 		TP_ERROR(Log::NetworkTCPSocketPrefix,
 		         "Can't receive data from the network (the destination buffer is invalid)");
@@ -323,7 +323,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(Packet& packet)
 
 	//Send the data block
 	std::size_t sent = 0;
-	const Status status = Send(&blockToSend[0] + packet.m_sendPos, blockToSend.size() - packet.m_sendPos, sent);
+	const Status status = Send(blockToSend.data() + packet.m_sendPos, blockToSend.size() - packet.m_sendPos, sent);
 
 	//In the case of a partial send, record the location to resume from
 	if (status == Status::Partial)
@@ -389,14 +389,14 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(Packet& pack
 		if(received > 0)
 		{
 			m_pendingPacket.Data.resize(m_pendingPacket.Data.size() + received);
-			char* const begin = &m_pendingPacket.Data[0] + m_pendingPacket.Data.size() - received;
+			char* const begin = m_pendingPacket.Data.data() + m_pendingPacket.Data.size() - received;
 			std::copy_n(buffer.data(), received, begin);
 		}
 	}
 
 	//we have received all the packet data: we can copy it to the user packet
 	if (!m_pendingPacket.Data.empty())
-		packet.OnReceive(&m_pendingPacket.Data[0], m_pendingPacket.Data.size());
+		packet.OnReceive(m_pendingPacket.Data.data(), m_pendingPacket.Data.size());
 
 	//Clear the pending packet data
 	m_pendingPacket = PendingPacket();

@@ -79,7 +79,6 @@ namespace TRAP::Network
 			AnyPort = 0 //Special value that tells the system to pick any available port
 		};
 
-	public:
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -168,9 +167,13 @@ namespace TRAP::Network
 	private:
 		friend class SocketSelector;
 
-		Type m_type; //Type of the socket (TCP or UDP)
-		SocketHandle m_socket; //Socket descriptor
-		bool m_isBlocking; //Current blocking mode of the socket
+		Type m_type = Type::TCP; //Type of the socket (TCP or UDP)
+#ifdef TRAP_PLATFORM_LINUX
+		SocketHandle m_socket = -1; //Socket descriptor
+#elif defined(TRAP_PLATFORM_WINDOWS)
+		SocketHandle m_socket = INVALID_SOCKET; //Socket descriptor
+#endif
+		bool m_isBlocking = true; //Current blocking mode of the socket
 	};
 }
 

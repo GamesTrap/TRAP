@@ -90,7 +90,7 @@ void TRAP::Graphics::Renderer::EndScene() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer::Submit(Ref<Shader> shader, const VertexBuffer* const vertexBuffer, const Math::Mat4& transform)
+void TRAP::Graphics::Renderer::Submit(const Ref<Shader>& shader, const VertexBuffer* const vertexBuffer, const Math::Mat4& transform)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -117,7 +117,7 @@ void TRAP::Graphics::Renderer::Submit(Ref<Shader> shader, const VertexBuffer* co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer::Submit(Ref<Shader> shader, const VertexBuffer* const vertexBuffer, const IndexBuffer* const indexBuffer,
+void TRAP::Graphics::Renderer::Submit(const Ref<Shader>& shader, const VertexBuffer* const vertexBuffer, const IndexBuffer* const indexBuffer,
 									  const Math::Mat4& transform)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);

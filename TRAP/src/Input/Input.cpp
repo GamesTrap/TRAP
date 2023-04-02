@@ -100,7 +100,7 @@ void TRAP::Input::Shutdown()
 		TP_WARN(Log::InputPrefix, "Invalid key provided!");
 		return false;
 	}
-	if(!window)
+	if(window == nullptr)
 	{
 		TP_WARN(Log::InputPrefix, "Tried to pass nullptr to IsKeyPressed!");
 		return false;
@@ -131,7 +131,7 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!window)
+	if (window == nullptr)
 	{
 		TP_WARN(Log::InputPrefix, "Tried to pass nullptr to IsMouseButtonPressed!");
 		return false;
@@ -173,7 +173,7 @@ void TRAP::Input::Shutdown()
 	if (!PollController(controller, PollMode::Presence))
 		return false;
 
-	return s_controllerInternal[static_cast<uint32_t>(controller)].mapping;
+	return s_controllerInternal[static_cast<uint32_t>(controller)].mapping != nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -201,7 +201,7 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if(!window)
+	if(window == nullptr)
 	{
 		TP_WARN(Log::InputPrefix, "Tried to pass nullptr to GetMousePosition!");
 		return TRAP::Math::Vec2{};
@@ -451,7 +451,7 @@ void TRAP::Input::Shutdown()
 
 	const char* const name = INTERNAL::WindowingAPI::GetKeyName(key, 0);
 
-	if (!name)
+	if (name == nullptr)
 		return NonPrintableKeyToString(key);
 
 	return name;
@@ -505,7 +505,7 @@ void TRAP::Input::Shutdown()
 	if (!PollController(controller, PollMode::Presence))
 		return "";
 
-	if(!s_controllerInternal[static_cast<uint32_t>(controller)].mapping)
+	if(s_controllerInternal[static_cast<uint32_t>(controller)].mapping == nullptr)
 		return s_controllerInternal[static_cast<uint32_t>(controller)].Name;
 
 	return s_controllerInternal[static_cast<uint32_t>(controller)].mapping->Name;
@@ -644,7 +644,7 @@ void TRAP::Input::SetMousePosition(const float x, const float y, const Window* c
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!window)
+	if (window == nullptr)
 	{
 		TP_WARN(Log::InputPrefix, "Tried to pass nullptr to SetMousePosition!");
 		return;
@@ -670,7 +670,7 @@ void TRAP::Input::SetMousePosition(const Math::Vec2& position, const Window* con
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!window)
+	if (window == nullptr)
 	{
 		TP_WARN(Log::InputPrefix, "Tried to pass nullptr to SetMousePosition!");
 		return;
@@ -718,7 +718,7 @@ void TRAP::Input::UpdateControllerMappings(const std::string& map)
 	if(ParseMapping(mapping, map))
 	{
 		Mapping* const previous = FindMapping(mapping.guid);
-		if (previous)
+		if (previous != nullptr)
 			*previous = mapping;
 		else
 			s_mappings.push_back(mapping);
@@ -771,7 +771,7 @@ TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(std::string 
 	con->ButtonCount = buttonCount;
 	con->mapping = FindValidMapping(con);
 
-	TP_INFO(Log::InputControllerPrefix, "Controller: ", (con->mapping ? con->mapping->Name : con->Name),
+	TP_INFO(Log::InputControllerPrefix, "Controller: ", (con->mapping != nullptr ? con->mapping->Name : con->Name),
 	        " (", cID, ") connected!");
 
 	return con;
@@ -786,10 +786,10 @@ void TRAP::Input::InternalInputControllerDPad(ControllerInternal* const con, con
 
 	const int32_t base = con->ButtonCount + dpad * 4;
 
-	con->Buttons[base + 0] = (value & BIT(0)); //Up
-	con->Buttons[base + 1] = (value & BIT(1)); //Right
-	con->Buttons[base + 2] = (value & BIT(2)); //Down
-	con->Buttons[base + 3] = (value & BIT(3)); //Left
+	con->Buttons[base + 0] = ((value & BIT(0)) != 0); //Up
+	con->Buttons[base + 1] = ((value & BIT(1)) != 0); //Right
+	con->Buttons[base + 2] = ((value & BIT(2)) != 0); //Down
+	con->Buttons[base + 3] = ((value & BIT(3)) != 0); //Left
 
 	if (con->Buttons[base + 1] && con->Buttons[base + 0])
 		con->DPads[dpad] = ControllerDPad::Right_Up;
@@ -934,7 +934,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 				        splittedString[1]);
 				return false;
 			}
-			if (!std::isalnum(static_cast<int8_t>(c)))
+			if (std::isalnum(static_cast<int8_t>(c)) == 0)
 			{
 				TP_ERROR(Log::InputControllerPrefix, "Invalid char inside field: ", static_cast<uint32_t>(i),
 				         "! Mapping: ", splittedString[1]);
@@ -953,7 +953,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 			}
 		}
 
-		if(found && fields[j].Element)
+		if(found && (fields[j].Element != nullptr))
 		{
 			MapElement* const e = fields[j].Element;
 			int8_t minimum = -1;
@@ -987,7 +987,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 			{
 				const uint64_t hat = std::stoul(splittedField[1].data() + charOffset);
 				const uint64_t bit = std::stoul(splittedField[1].data() + charOffset);
-				e->Index = static_cast<uint8_t>((hat << 4) | bit);
+				e->Index = static_cast<uint8_t>((hat << 4u) | bit);
 			}
 			else
 				e->Index = static_cast<uint8_t>(std::stoul(splittedField[1].data() + charOffset));
@@ -1051,7 +1051,7 @@ void TRAP::Input::InitControllerMappings()
 
 	Mapping* const mapping = FindMapping(con->guid);
 
-	if(!mapping)
+	if(mapping == nullptr)
 		return nullptr;
 
 	uint8_t i = 0;
@@ -1086,7 +1086,7 @@ void TRAP::Input::InitControllerMappings()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if(e->Type == 3 && (e->Index >> 4) >= static_cast<int32_t>(con->DPads.size() + 1))
+	if(e->Type == 3 && (e->Index >> 4u) >= static_cast<int32_t>(con->DPads.size() + 1))
 		return false;
 	if(e->Type == 2 && e->Index >= (con->Buttons.size() + 1))
 		return false;
@@ -1107,7 +1107,7 @@ void TRAP::Input::InitControllerMappings()
 
 	const ControllerInternal* const con = &s_controllerInternal[static_cast<uint32_t>(controller)];
 
-	if (!con->mapping)
+	if (con->mapping == nullptr)
 		return false;
 
 	const MapElement* const e = &con->mapping->Buttons[static_cast<uint8_t>(button)];
@@ -1133,7 +1133,7 @@ void TRAP::Input::InitControllerMappings()
 	}
 	else if (e->Type == 3) //DPad
 	{
-		if (con->Buttons[e->Index >> 4])
+		if (con->Buttons[e->Index >> 4u])
 			return true;
 	}
 
@@ -1151,7 +1151,7 @@ void TRAP::Input::InitControllerMappings()
 
 	const ControllerInternal* const con = &s_controllerInternal[static_cast<uint32_t>(controller)];
 
-	if(!con->mapping)
+	if(con->mapping == nullptr)
 		return 0.0f;
 
 	const MapElement* const e = &con->mapping->Axes[static_cast<uint8_t>(axis)];
@@ -1165,7 +1165,7 @@ void TRAP::Input::InitControllerMappings()
 		return con->Buttons[e->Index] ? 1.0f : -1.0f;
 	if(e->Type == 3) //DPad
 	{
-		if(con->Buttons[e->Index >>  4])
+		if(con->Buttons[e->Index >>  4u])
 			return 1.0f;
 
 		return -1.0f;
@@ -1185,12 +1185,12 @@ void TRAP::Input::InitControllerMappings()
 
 	const ControllerInternal* const con = &s_controllerInternal[static_cast<uint32_t>(controller)];
 
-	if (!con->mapping)
+	if (con->mapping == nullptr)
 		return ControllerDPad::Centered;
 
 	const MapElement* const e = &con->mapping->Buttons[11 + (dpad * 4)];
 	if(e->Type == 3)
-		return con->DPads[e->Index >> 4];
+		return con->DPads[e->Index >> 4u];
 
 	return ControllerDPad::Centered;
 }

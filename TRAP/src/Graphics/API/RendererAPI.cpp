@@ -182,9 +182,9 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RendererAPI::SetNewGPU(std::array<uint8_t, 16> GPUUUID) noexcept
+void TRAP::Graphics::RendererAPI::SetNewGPU(const std::array<uint8_t, 16>& GPUUUID) noexcept
 {
-	s_newGPUUUID = std::move(GPUUUID);
+	s_newGPUUUID = GPUUUID;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -261,7 +261,7 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if (!window)
+	if (window == nullptr)
 		window = TRAP::Application::GetWindow();
 
 	return *s_perWindowDataMap.at(window);
@@ -273,7 +273,7 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if (!window)
+	if (window == nullptr)
 		window = TRAP::Application::GetWindow();
 
 	return std::get<TRAP::Graphics::RendererAPI::GraphicsPipelineDesc>
@@ -288,7 +288,7 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if (!window)
+	if (window == nullptr)
 		window = TRAP::Application::GetWindow();
 
 	const float renderScale = s_perWindowDataMap.at(window)->RenderScale;
@@ -339,7 +339,7 @@ void TRAP::Graphics::RendererAPI::StartRenderPass(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	if(!window)
+	if(window == nullptr)
 		window = TRAP::Application::GetWindow();
 
 	const auto* const winData = s_perWindowDataMap.at(window).get();
@@ -371,7 +371,7 @@ void TRAP::Graphics::RendererAPI::StopRenderPass(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	if(!window)
+	if(window == nullptr)
 		window = TRAP::Application::GetWindow();
 
 	GetRenderer()->BindRenderTarget(nullptr, nullptr, nullptr, nullptr, nullptr, static_cast<uint32_t>(-1),
@@ -380,7 +380,7 @@ void TRAP::Graphics::RendererAPI::StopRenderPass(const Window* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RendererAPI::Transition(Ref<TRAP::Graphics::Texture> texture,
+void TRAP::Graphics::RendererAPI::Transition(const Ref<TRAP::Graphics::Texture>& texture,
 											 const TRAP::Graphics::RendererAPI::ResourceState oldLayout,
 											 const TRAP::Graphics::RendererAPI::ResourceState newLayout,
 											 const TRAP::Graphics::RendererAPI::QueueType queueType)
@@ -491,7 +491,7 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if (!window)
+	if (window == nullptr)
 		window = TRAP::Application::GetWindow();
 
 	s_perWindowDataMap.at(window)->ResizeSwapChain = true;
@@ -503,7 +503,7 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if(!window)
+	if(window == nullptr)
 		window = TRAP::Application::GetWindow();
 
 	return s_perWindowDataMap.at(window)->GraphicsFrameTime;
@@ -515,7 +515,7 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if(!window)
+	if(window == nullptr)
 		window = TRAP::Application::GetWindow();
 
 	return s_perWindowDataMap.at(window)->ComputeFrameTime;
@@ -575,12 +575,10 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 			s_isVulkanCapable = false;
 			return s_isVulkanCapable;
 		}
-		else
-		{
-			GPUSettings.SurfaceSupported = true;
-			instanceExtensions.push_back(std::get<0>(reqExt));
-			instanceExtensions.push_back(std::get<1>(reqExt));
-		}
+
+		GPUSettings.SurfaceSupported = true;
+		instanceExtensions.push_back(std::get<0>(reqExt));
+		instanceExtensions.push_back(std::get<1>(reqExt));
 
 		if(!API::VulkanInstance::IsExtensionSupported(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME))
 		{
@@ -590,8 +588,8 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 			s_isVulkanCapable = false;
 			return s_isVulkanCapable;
 		}
-		else
-			instanceExtensions.push_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
+
+		instanceExtensions.emplace_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
 
 		//Create Instance
 		VkInstance instance = VK_NULL_HANDLE;
@@ -601,7 +599,7 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 		const VkApplicationInfo appInfo = API::VulkanInits::ApplicationInfo("Vulkan Capability Tester");
 		const VkInstanceCreateInfo instanceCreateInfo = API::VulkanInits::InstanceCreateInfo(appInfo, {}, extensions);
 		const VkResult res = vkCreateInstance(&instanceCreateInfo, nullptr, &instance);
-		if (res == VK_SUCCESS && instance)
+		if (res == VK_SUCCESS && (instance != nullptr))
 		{
 			VkLoadInstance(instance);
 

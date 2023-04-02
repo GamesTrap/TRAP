@@ -1,11 +1,10 @@
 #ifndef TRAP_VULKANINITS_H
 #define TRAP_VULKANINITS_H
 
+#include "Graphics/API/RendererAPI.h"
 #include "VulkanMemoryAllocator.h"
-#include <vulkan/vulkan_core.h>
 
 #include "Graphics/API/ImageFormat.h"
-#include "Graphics/API/RendererAPI.h"
 
 namespace TRAP::Graphics::API::VulkanInits
 {
@@ -14,7 +13,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// </summary>
 	/// <param name="appName">Application name.</param>
 	/// <returns>VkApplicationInfo.</returns>
-	[[nodiscard]] VkApplicationInfo ApplicationInfo(const std::string_view appName);
+	[[nodiscard]] VkApplicationInfo ApplicationInfo(std::string_view appName);
 
 	/// <summary>
 	/// Create a Vulkan instance create info from app info, instance layers and extensions.
@@ -51,7 +50,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="name">Debug object name to set.</param>
 	/// <returns>VkDebugUtilsObjectNameInfoEXT.</returns>
 	[[nodiscard]] VkDebugUtilsObjectNameInfoEXT DebugUtilsObjectNameInfo(VkObjectType type, uint64_t handle,
-	                                                                     const std::string_view name);
+	                                                                     std::string_view name);
 
 	/// <summary>
 	/// Create a Vulkan debug marker object name info.
@@ -61,7 +60,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="name">Debug object name to set.</param>
 	/// <returns>VkDebugMarkerObjectNameInfoEXT.</returns>
 	[[nodiscard]] VkDebugMarkerObjectNameInfoEXT DebugMarkerObjectNameInfo(VkDebugReportObjectTypeEXT type, uint64_t handle,
-	                                                                       const std::string_view name);
+	                                                                       std::string_view name);
 
 	/// <summary>
 	/// Create a Vulkan debug utils label.
@@ -148,7 +147,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <returns>VkDescriptorUpdateTemplateCreateInfo.</returns>
 	[[nodiscard]] VkDescriptorUpdateTemplateCreateInfo DescriptorUpdateTemplateCreateInfo(VkDescriptorSetLayout descriptorSetLayout,
 		                                                                                  uint32_t entryCount,
-		                                                                                  const VkDescriptorUpdateTemplateEntry* const entries,
+		                                                                                  const VkDescriptorUpdateTemplateEntry* entries,
 		                                                                                  VkPipelineBindPoint bindPoint,
 		                                                                                  VkPipelineLayout pipelineLayout,
 		                                                                                  uint32_t setIndex);
@@ -260,7 +259,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	                                                          const std::vector<VkAttachmentReference2KHR>& inputAttachments,
 		                                                      const std::vector<VkAttachmentReference2KHR>& colorAttachments,
 		                                                      VkAttachmentReference2KHR& depthStencilAttachment,
-												              const VkFragmentShadingRateAttachmentInfoKHR* const shadingRateAttachment) noexcept;
+												              const VkFragmentShadingRateAttachmentInfoKHR* shadingRateAttachment) noexcept;
 
 	/// <summary>
 	/// Create a Vulkan subpass description.
@@ -272,7 +271,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	[[nodiscard]] VkSubpassDescription2KHR SubPassDescription(VkPipelineBindPoint bindPoint,
 		                                                      const std::vector<VkAttachmentReference2KHR>& inputAttachments,
 		                                                      const std::vector<VkAttachmentReference2KHR>& colorAttachments,
-												              const VkFragmentShadingRateAttachmentInfoKHR* const shadingRateAttachment) noexcept;
+												              const VkFragmentShadingRateAttachmentInfoKHR* shadingRateAttachment) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -467,9 +466,9 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="pushConstantRangeCount">Number of push constant ranges.</param>
 	/// <param name="pushConstants">Vulkan push constant ranges.</param>
 	/// <returns>VkPipelineLayoutCreateInfo.</returns>
-	[[nodiscard]] VkPipelineLayoutCreateInfo PipelineLayoutCreateInfo(uint32_t layoutCount, const VkDescriptorSetLayout* const layouts,
+	[[nodiscard]] VkPipelineLayoutCreateInfo PipelineLayoutCreateInfo(uint32_t layoutCount, const VkDescriptorSetLayout* layouts,
 	                                                                  uint32_t pushConstantRangeCount,
-														              const VkPushConstantRange* const pushConstants) noexcept;
+														              const VkPushConstantRange* pushConstants) noexcept;
 
 	/// <summary>
 	/// Create a Vulkan pipeline color blend state create info.
@@ -521,9 +520,9 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="inputAttributes">Vulkan vertex input attribute descriptions.</param>
 	/// <returns>VkPipelineVertexInputStateCreateInfo.</returns>
 	[[nodiscard]] VkPipelineVertexInputStateCreateInfo PipelineVertexInputStateCreateInfo(uint32_t inputBindingCount,
-		                                                                                  const VkVertexInputBindingDescription* const inputBindings,
+		                                                                                  const VkVertexInputBindingDescription* inputBindings,
 		                                                                                  uint32_t inputAttributeCount,
-		                                                                                  const VkVertexInputAttributeDescription* const inputAttributes) noexcept;
+		                                                                                  const VkVertexInputAttributeDescription* inputAttributes) noexcept;
 
 	/// <summary>
 	/// Create a Vulkan pipeline input assembly state create info.
@@ -600,7 +599,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="renderPass">Vulkan render pass.</param>
 	/// <returns>VkGraphicsPipelineCreateInfo.</returns>
 	[[nodiscard]] VkGraphicsPipelineCreateInfo GraphicsPipelineCreateInfo(uint32_t stageCount,
-															              const VkPipelineShaderStageCreateInfo* const stages,
+															              const VkPipelineShaderStageCreateInfo* stages,
 															              const VkPipelineVertexInputStateCreateInfo& vi,
 															              const VkPipelineInputAssemblyStateCreateInfo& ia,
 															              const VkPipelineViewportStateCreateInfo& vs,
@@ -627,7 +626,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	                                      const std::vector<VkPipelineStageFlags>& waitMasks,
 	                                      const std::vector<VkCommandBuffer>& cmds,
 	                                      const std::vector<VkSemaphore>& signalSemaphore,
-							              const uint32_t signalCount) noexcept;
+							              uint32_t signalCount) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -686,7 +685,7 @@ namespace TRAP::Graphics::API::VulkanInits
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	[[nodiscard]] VkClearColorValue ClearColorValue(const RendererAPI::Color& color, const ImageFormat format);
+	[[nodiscard]] VkClearColorValue ClearColorValue(const RendererAPI::Color& color, ImageFormat format);
 }
 
 #endif /*TRAP_VULKANINITS_H*/

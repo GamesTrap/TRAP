@@ -297,7 +297,7 @@ void TRAP::SceneSerializer::Serialize(const std::filesystem::path& filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::SceneSerializer::SerializeRuntime(const std::filesystem::path&)
+void TRAP::SceneSerializer::SerializeRuntime([[maybe_unused]] const std::filesystem::path& filepath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -346,7 +346,7 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 
 			TP_TRACE(Log::SceneSerializerPrefix, "Deserialized entity with UID = ", uid, ", name = ", name);
 
-			Entity deserializedEntity = m_scene->CreateEntityWithUID(uid, name);
+			Entity deserializedEntity = m_scene->CreateEntityWithUID(TRAP::Utils::UID(uid), name);
 
 			auto transformComponent = entity["TransformComponent"];
 			if (transformComponent)
@@ -435,7 +435,7 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::SceneSerializer::DeserializeRuntime(const std::filesystem::path&)
+bool TRAP::SceneSerializer::DeserializeRuntime([[maybe_unused]] const std::filesystem::path& filepath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

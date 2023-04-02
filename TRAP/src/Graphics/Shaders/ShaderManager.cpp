@@ -79,7 +79,7 @@ void TRAP::Graphics::ShaderManager::Add(Ref<Shader> shader)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(Ref<Shader> shader)
+TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(const Ref<Shader>& shader)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -91,8 +91,8 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(Ref<Shad
 		Shaders.erase(shader->GetName());
 		return revShader;
 	}
-	else
-		TP_ERROR(Log::ShaderManagerPrefix, "Couldn't find shader with name: \"", shader->GetName(), "\"!");
+
+	TP_ERROR(Log::ShaderManagerPrefix, "Couldn't find shader with name: \"", shader->GetName(), "\"!");
 
 	return nullptr;
 }
@@ -170,8 +170,8 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Reload(const st
 
 			return shader;
 		}
-		else
-			TP_WARN(Log::ShaderManagerPrefix, "Couldn't find shader: \"", nameOrPath, "\" to reload.");
+
+		TP_WARN(Log::ShaderManagerPrefix, "Couldn't find shader: \"", nameOrPath, "\" to reload.");
 	}
 	else //Path
 	{
@@ -237,13 +237,10 @@ void TRAP::Graphics::ShaderManager::ReloadAll()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	for(const auto& [name, shader] : Shaders)
+	return std::any_of(Shaders.begin(), Shaders.end(), [path](const auto& element)
 	{
-		if (FileSystem::IsEquivalent(shader->GetFilePath(), path))
-			return true;
-	}
-
-	return false;
+		return FileSystem::IsEquivalent(element.second->GetFilePath(), path);
+	});
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

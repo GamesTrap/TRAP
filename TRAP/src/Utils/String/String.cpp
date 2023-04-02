@@ -210,7 +210,8 @@
 #endif
 
 	std::array<char, 9> buffer{};
-	strftime(buffer.data(), buffer.size(), "%T", &tm);
+	if(strftime(buffer.data(), buffer.size(), "%T", &tm) == 0)
+		return "";
 
 	return std::string(buffer.data(), buffer.size() - 1); //Copy data except the null terminator
 }
@@ -231,7 +232,8 @@
 #endif
 
 	std::array<char, 20> buffer{};
-	strftime(buffer.data(), buffer.size(), "%F %T", &tm);
+	if(strftime(buffer.data(), buffer.size(), "%F %T", &tm) == 0)
+		return "";
 
 	return std::string(buffer.data(), buffer.size() - 1); //Copy data except the null terminator
 }
@@ -298,25 +300,25 @@
 	std::string result{};
 	result.reserve(4);
 
-	if (codePoint < 0x80)
+	if (codePoint < 0x80u)
 		result.push_back(static_cast<char>(codePoint));
-	else if (codePoint < 0x800)
+	else if (codePoint < 0x800u)
 	{
-		result.push_back(static_cast<char>((codePoint >> 6) | 0xC0u));
-		result.push_back(static_cast<char>((codePoint & 0x3F) | 0x80));
+		result.push_back(static_cast<char>((codePoint >> 6u) | 0xC0u));
+		result.push_back(static_cast<char>((codePoint & 0x3Fu) | 0x80u));
 	}
-	else if (codePoint < 0x10000)
+	else if (codePoint < 0x10000u)
 	{
-		result.push_back(static_cast<char>((codePoint >> 12) | 0xE0u));
-		result.push_back(static_cast<char>(((codePoint >> 6) & 0x3F) | 0x80));
-		result.push_back(static_cast<char>((codePoint & 0x3F) | 0x80));
+		result.push_back(static_cast<char>((codePoint >> 12u) | 0xE0u));
+		result.push_back(static_cast<char>(((codePoint >> 6u) & 0x3Fu) | 0x80u));
+		result.push_back(static_cast<char>((codePoint & 0x3Fu) | 0x80u));
 	}
-	else if (codePoint < 0x110000)
+	else if (codePoint < 0x110000u)
 	{
-		result.push_back(static_cast<char>((codePoint >> 18) | 0xF0u));
-		result.push_back(static_cast<char>(((codePoint >> 12) & 0x3F) | 0x80));
-		result.push_back(static_cast<char>(((codePoint >> 6) & 0x3F) | 0x80));
-		result.push_back(static_cast<char>((codePoint & 0x3F) | 0x80));
+		result.push_back(static_cast<char>((codePoint >> 18u) | 0xF0u));
+		result.push_back(static_cast<char>(((codePoint >> 12u) & 0x3Fu) | 0x80u));
+		result.push_back(static_cast<char>(((codePoint >> 6u) & 0x3Fu) | 0x80u));
+		result.push_back(static_cast<char>((codePoint & 0x3Fu) | 0x80u));
 	}
 
 	return result;

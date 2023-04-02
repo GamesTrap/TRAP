@@ -78,9 +78,9 @@ void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI:
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	const auto& computeDesc = std::get<RendererAPI::ComputePipelineDesc>(desc.Pipeline);
-	const VkPipelineCache psoCache = desc.Cache ?
-	                                 std::dynamic_pointer_cast<VulkanPipelineCache>(desc.Cache)->GetVkPipelineCache() :
-							         VK_NULL_HANDLE;
+	VkPipelineCache psoCache = desc.Cache ?
+	                           std::dynamic_pointer_cast<VulkanPipelineCache>(desc.Cache)->GetVkPipelineCache() :
+							   VK_NULL_HANDLE;
 
 	TRAP_ASSERT(computeDesc.ShaderProgram, "VulkanPipeline::InitComputePipeline(): ShaderProgram is nullptr!");
 	TRAP_ASSERT(computeDesc.RootSignature, "VulkanPipeline::InitComputePipeline(): RootSignature is nullptr!");
@@ -116,9 +116,9 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	const auto& graphicsDesc = std::get<RendererAPI::GraphicsPipelineDesc>(desc.Pipeline);
-	const VkPipelineCache psoCache = desc.Cache ?
-	                                 std::dynamic_pointer_cast<VulkanPipelineCache>(desc.Cache)->GetVkPipelineCache() :
-							         VK_NULL_HANDLE;
+	 VkPipelineCache psoCache = desc.Cache ?
+	                            std::dynamic_pointer_cast<VulkanPipelineCache>(desc.Cache)->GetVkPipelineCache() :
+							    VK_NULL_HANDLE;
 
 	TRAP_ASSERT(graphicsDesc.ShaderProgram, "VulkanPipeline::InitGraphicsPipeline(): ShaderProgram is nullptr!");
 	TRAP_ASSERT(graphicsDesc.RootSignature, "VulkanPipeline::InitGraphicsPipeline(): RootSignature is nullptr!");
@@ -288,8 +288,8 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 		                                                                                                    VK_FALSE);
 
 		VkPipelineTessellationStateCreateInfo ts{};
-		if (static_cast<uint32_t>(shaderProgram->GetShaderStages() & RendererAPI::ShaderStage::TessellationControl) &&
-			static_cast<uint32_t>(shaderProgram->GetShaderStages() & RendererAPI::ShaderStage::TessellationEvaluation))
+		if ((static_cast<uint32_t>(shaderProgram->GetShaderStages() & RendererAPI::ShaderStage::TessellationControl) != 0u) &&
+			(static_cast<uint32_t>(shaderProgram->GetShaderStages() & RendererAPI::ShaderStage::TessellationEvaluation) != 0u))
 		{
 			ts = VulkanInits::PipelineTessellationStateCreateInfo
 			(
@@ -302,7 +302,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 		const VkPipelineMultisampleStateCreateInfo ms = VulkanInits::PipelineMultisampleStateCreateInfo
 		(
 			SampleCountToVkSampleCount(graphicsDesc.SampleCount),
-			graphicsDesc.SampleCount != RendererAPI::SampleCount::One ? RendererAPI::GPUSettings.SampleRateShadingSupported : VK_FALSE,
+			graphicsDesc.SampleCount != RendererAPI::SampleCount::One ? RendererAPI::GPUSettings.SampleRateShadingSupported : VK_FALSE != 0u,
 			graphicsDesc.SampleCount != RendererAPI::SampleCount::One ? 0.25f : 0.0f
 		);
 
@@ -321,7 +321,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 			{
 				const ImageFormat fmt = graphicsDesc.ColorFormats[i];
 				const auto formatProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(ImageFormatToVkFormat(fmt));
-				if(formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT)
+				if((formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT) != 0u)
 					graphicsDesc.BlendState->RenderTargetMask |= static_cast<RendererAPI::BlendStateTargets>(BIT(i));
 			}
 		}
@@ -353,7 +353,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 			VK_DYNAMIC_STATE_DEPTH_BOUNDS,
 			VK_DYNAMIC_STATE_STENCIL_REFERENCE
 		};
-		if(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps))
+		if(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps) != 0u)
 			dynamicStates.emplace_back(VK_DYNAMIC_STATE_FRAGMENT_SHADING_RATE_KHR);
 		const VkPipelineDynamicStateCreateInfo dy = VulkanInits::PipelineDynamicStateCreateInfo(dynamicStates);
 
@@ -362,8 +362,8 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 																					std::dynamic_pointer_cast<VulkanRootSignature>(graphicsDesc.RootSignature)->GetVkPipelineLayout(),
 																					renderPass->GetVkRenderPass()
 		);
-		if (static_cast<uint32_t>(shaderProgram->GetShaderStages() & RendererAPI::ShaderStage::TessellationControl) &&
-			static_cast<uint32_t>(shaderProgram->GetShaderStages() & RendererAPI::ShaderStage::TessellationEvaluation))
+		if ((static_cast<uint32_t>(shaderProgram->GetShaderStages() & RendererAPI::ShaderStage::TessellationControl) != 0u) &&
+			(static_cast<uint32_t>(shaderProgram->GetShaderStages() & RendererAPI::ShaderStage::TessellationEvaluation) != 0u))
 			info.pTessellationState = &ts;
 
 		if(VulkanRenderer::s_shadingRate) //Only use shading rate extension if supported

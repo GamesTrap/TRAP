@@ -43,7 +43,7 @@ void TRAP::Graphics::API::VulkanPipelineCache::GetPipelineCacheData(std::size_t*
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	if(m_cache)
+	if(m_cache != nullptr)
 		VkCall(vkGetPipelineCacheData(m_device->GetVkDevice(), m_cache, size, data));
 }
 

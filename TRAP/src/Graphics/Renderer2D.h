@@ -61,7 +61,7 @@ namespace TRAP::Graphics
 		/// Set a custom sampler to use by the 2D renderer.
 		/// </summary>
 		/// <param name="sampler">Sampler to use.</param>
-		static void SetCustomSampler(TRAP::Ref<TRAP::Graphics::Sampler> sampler);
+		static void SetCustomSampler(const TRAP::Ref<TRAP::Graphics::Sampler>& sampler);
 
 		/// <summary>
 		/// Struct to describe position, rotation and scale.
@@ -86,7 +86,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="transform">Transform of the quad.</param>
 		/// <param name="texture">Texture for the quad.</param>
-		static void DrawQuad(const Transform& transform, Ref<Texture> texture);
+		static void DrawQuad(const Transform& transform, const Ref<Texture>& texture);
 		/// <summary>
 		/// Draw a colored and textured quad.
 		/// </summary>
@@ -94,13 +94,13 @@ namespace TRAP::Graphics
 		/// <param name="color">Color for the quad.</param>
 		/// <param name="texture">Texture for the quad.</param>
 		static void DrawQuad(const Transform& transform, const Math::Vec4& color,
-		                     Ref<Texture> texture);
+		                     const Ref<Texture>& texture);
 		/// <summary>
 		/// Draw a textured quad.
 		/// </summary>
 		/// <param name="transform">Transform of the quad.</param>
 		/// <param name="texture">Texture for the quad.</param>
-		static void DrawQuad(const Transform& transform, TRAP::Ref<SubTexture2D> texture);
+		static void DrawQuad(const Transform& transform, const TRAP::Ref<SubTexture2D>& texture);
 		/// <summary>
 		/// Draw a colored and textured quad.
 		/// </summary>
@@ -108,7 +108,7 @@ namespace TRAP::Graphics
 		/// <param name="color">Color for the quad.</param>
 		/// <param name="texture">Texture for the quad.</param>
 		static void DrawQuad(const Transform& transform, const Math::Vec4& color,
-		                     TRAP::Ref<SubTexture2D> texture);
+		                     const TRAP::Ref<SubTexture2D>& texture);
 		/// <summary>
 		/// Draw a colored and textured quad.
 		/// This is the base function for all the other DrawQuad functions.
@@ -119,7 +119,7 @@ namespace TRAP::Graphics
 		/// <param name="texCoords">Optional: Texture coordinates for the quad.</param>
 		/// <param name="entityID">Optional: Entity ID of the quad.</param>
 		static void DrawQuad(const TRAP::Math::Mat4& transform, const Math::Vec4& color,
-		                     Ref<Texture> texture, const std::array<Math::Vec2, 4>* texCoords, int32_t entityID = -1);
+		                     const Ref<Texture>& texture, const std::array<Math::Vec2, 4>* texCoords, int32_t entityID = -1);
 
 		/// <summary>
 		/// Draw a colored circle with given thickness and fading.

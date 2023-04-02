@@ -26,7 +26,7 @@ TRAP::Graphics::PipelineCache::~PipelineCache()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::PipelineCache::Save(const std::filesystem::path& path)
+void TRAP::Graphics::PipelineCache::Save(const std::filesystem::path& path) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

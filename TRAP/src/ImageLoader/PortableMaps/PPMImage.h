@@ -50,7 +50,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="img">Image to save.</param>
 		/// <param name="filepath">File path to save the image to.</param>
-		static void Save(const Image* const img, const std::filesystem::path& filepath);
+		static void Save(const Image* img, const std::filesystem::path& filepath);
 
 	private:
 		std::vector<uint8_t> m_data;
@@ -58,7 +58,7 @@ namespace TRAP::INTERNAL
 
 		struct Header
 		{
-			std::string MagicNumber = "";
+			std::string MagicNumber;
 			std::uint32_t Width = 0;
 			std::uint32_t Height = 0;
 			std::uint32_t MaxValue = 255;

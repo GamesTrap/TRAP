@@ -142,7 +142,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 	}
 
 	std::vector<uint8_t> colorTable{};
-	if (m_bitsPerPixel <= 8 && infoHeader.CLRUsed)
+	if (m_bitsPerPixel <= 8 && (infoHeader.CLRUsed != 0u))
 	{
 		colorTable.resize(static_cast<std::size_t>(4u) * infoHeader.CLRUsed);
 		if(!file.read(reinterpret_cast<char*>(colorTable.data()), 4 * static_cast<std::streamsize>(infoHeader.CLRUsed)))
@@ -236,14 +236,14 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 			return;
 		}
 
-		if (m_bitsPerPixel == 8 && infoHeader.CLRUsed) //Color Table
+		if (m_bitsPerPixel == 8 && (infoHeader.CLRUsed != 0u)) //Color Table
 		{
 			m_colorFormat = ColorFormat::RGBA;
 			m_bitsPerPixel = 32;
 
 			m_data = DecodeBGRAMap(imageData, m_width, m_height, 4, colorTable);
 		}
-		else if(m_bitsPerPixel == 8 && !infoHeader.CLRUsed) //Grayscale
+		else if(m_bitsPerPixel == 8 && (infoHeader.CLRUsed == 0u)) //Grayscale
 		{
 			m_colorFormat = ColorFormat::GrayScale;
 			m_bitsPerPixel = 8;
@@ -288,7 +288,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 	}
 	else if (infoHeader.Compression == 1) //Microsoft RLE 8
 	{
-		if(!infoHeader.CLRUsed)
+		if(infoHeader.CLRUsed == 0u)
 		{
 			//Compressed Grayscale
 			m_colorFormat = ColorFormat::GrayScale;
@@ -336,16 +336,16 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 			for (uint32_t i = 0; i < m_width * m_height * m_bitsPerPixel / 8 - 1;)
 			{
 				const uint32_t value = static_cast<uint32_t>(imageData[i]) +
-					                   (static_cast<uint32_t>(imageData[i + 1]) << 8) +
-					                   (static_cast<uint32_t>(imageData[i + 2]) << 16) +
-					                   (static_cast<uint32_t>(imageData[i + 3]) << 24);
+					                   (static_cast<uint32_t>(imageData[i + 1]) << 8u) +
+					                   (static_cast<uint32_t>(imageData[i + 2]) << 16u) +
+					                   (static_cast<uint32_t>(imageData[i + 3]) << 24u);
 
 				data[index++] = Make8Bits(ApplyBitField(value, std::get<0>(bitFields)), std::get<0>(bitFields).Span);
 				data[index++] = Make8Bits(ApplyBitField(value, std::get<1>(bitFields)), std::get<1>(bitFields).Span);
 				data[index++] = Make8Bits(ApplyBitField(value, std::get<2>(bitFields)), std::get<2>(bitFields).Span);
 				if (GetBytesPerPixel() == 4)
 				{
-					if (std::get<3>(bitFields).Span)
+					if (std::get<3>(bitFields).Span != 0u)
 						data[index++] = Make8Bits(ApplyBitField(value, std::get<3>(bitFields)), std::get<3>(bitFields).Span);
 					else
 						data[index++] = 255;
@@ -367,14 +367,14 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 			for (uint32_t i = 0; i < m_width * m_height * m_bitsPerPixel / 8 - 1;)
 			{
 				const uint16_t value = static_cast<uint16_t>(imageData[i]) +
-								       static_cast<uint16_t>(imageData[i + 1] << 8);
+								       static_cast<uint16_t>(imageData[i + 1] << 8u);
 
 				data[index++] = Make8Bits(ApplyBitField(value, std::get<0>(bitFields)), std::get<0>(bitFields).Span);
 				data[index++] = Make8Bits(ApplyBitField(value, std::get<1>(bitFields)), std::get<1>(bitFields).Span);
 				data[index++] = Make8Bits(ApplyBitField(value, std::get<2>(bitFields)), std::get<2>(bitFields).Span);
 				if(GetBytesPerPixel() == 4)
 				{
-					if (std::get<3>(bitFields).Span)
+					if (std::get<3>(bitFields).Span != 0u)
 						data[index++] = Make8Bits(ApplyBitField(value, std::get<3>(bitFields)), std::get<3>(bitFields).Span);
 					else
 						data[index++] = 255;
@@ -432,7 +432,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 	for(std::size_t i = 0; i < bitFields.size(); i++)
 	{
 		//No overlapping masks.
-		if (totalMask & masks[i])
+		if ((totalMask & masks[i]) != 0u)
 			return false;
 
 		totalMask |= masks[i];
@@ -445,7 +445,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 			return false;
 	}
 
-	if (!totalMask)
+	if (totalMask == 0u)
 		return false;
 
 	//Check for contiguous-ity between fields, too.
@@ -462,7 +462,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	uint32_t bit = 0;
-	for (; bit < 32 && !(mask & (static_cast<uint32_t>(1) << bit)); bit++);
+	for (; bit < 32 && ((mask & (static_cast<uint32_t>(1) << bit)) == 0u); bit++);
 
 	if(bit >= 32)
 	{
@@ -472,11 +472,11 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 	}
 
 	field.Start = bit;
-	for (; bit < 32 && (mask & (static_cast<uint32_t>(1) << bit)); bit++);
+	for (; bit < 32 && ((mask & (static_cast<uint32_t>(1) << bit)) != 0u); bit++);
 	field.Span = bit - field.Start;
 
 	//If there are more set bits, there was a gap, which is invalid
-	return !(bit < 32 && (mask & ~((static_cast<uint32_t>(1) << bit) - 1)));
+	return bit >= 32 || ((mask & ~((static_cast<uint32_t>(1) << bit) - 1)) == 0u);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -493,7 +493,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 		return static_cast<uint8_t>(value >> (bitSpan - 8));
 
 	value <<= (8 - bitSpan); //Shift it up into the most significant bits.
-	while(value)
+	while(value != 0u)
 	{
 		output |= value;
 		value >>= bitSpan;
@@ -508,7 +508,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return x >> bitField.Start & ((static_cast<uint32_t>(1) << bitField.Span) - 1);
+	return x >> bitField.Start & ((static_cast<uint32_t>(1u) << bitField.Span) - 1u);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -532,7 +532,7 @@ void TRAP::INTERNAL::BMPImage::DecodeRLE8(std::vector<uint8_t>& compressedImageD
 
 	uint32_t dataIndex = 0;
 
-	if(colorTable)
+	if(colorTable != nullptr)
 	{
 		//Compressed RGBA
 		while (true)

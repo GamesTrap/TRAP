@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "RenderCommand.h"
 
+#include <utility>
+
 #include "Application.h"
 
 void TRAP::Graphics::RenderCommand::Flush(const Window* const window)
@@ -170,10 +172,10 @@ void TRAP::Graphics::RenderCommand::SetShadingRate(const ShadingRate shadingRate
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetShadingRate(TRAP::Ref<TRAP::Graphics::RenderTarget> shadingRateTex,
+void TRAP::Graphics::RenderCommand::SetShadingRate(TRAP::Ref<TRAP::Graphics::RenderTarget> texture,
                                                    const Window* const window)
 {
-	RendererAPI::GetRenderer()->SetShadingRate(shadingRateTex, window);
+	RendererAPI::GetRenderer()->SetShadingRate(std::move(texture), window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -370,14 +372,14 @@ void TRAP::Graphics::RenderCommand::BindRenderTargets(const std::vector<TRAP::Re
 
 void TRAP::Graphics::RenderCommand::StartRenderPass(const Window* const window)
 {
-	RendererAPI::GetRenderer()->StartRenderPass(window);
+	RendererAPI::StartRenderPass(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::RenderCommand::StopRenderPass(const Window* const window)
 {
-	RendererAPI::GetRenderer()->StopRenderPass(window);
+	RendererAPI::StopRenderPass(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -440,7 +442,7 @@ void TRAP::Graphics::RenderCommand::RenderTargetBarriers(const std::vector<Rende
 void TRAP::Graphics::RenderCommand::Transition(Ref<Texture> texture, const RendererAPI::ResourceState oldLayout,
 											   const RendererAPI::ResourceState newLayout, const QueueType queueType)
 {
-	RendererAPI::Transition(texture, oldLayout, newLayout, queueType);
+	RendererAPI::Transition(std::move(texture), oldLayout, newLayout, queueType);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -453,7 +455,7 @@ void TRAP::Graphics::RenderCommand::MSAAResolvePass(TRAP::Ref<RenderTarget> sour
 	const auto& winData = TRAP::Graphics::RendererAPI::GetWindowData(window);
 	CommandBuffer* const cmd = winData.GraphicCommandBuffers[winData.ImageIndex];
 
-	RendererAPI::GetRenderer()->MSAAResolvePass(source, destination, cmd);
+	RendererAPI::GetRenderer()->MSAAResolvePass(std::move(source), std::move(destination), cmd);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

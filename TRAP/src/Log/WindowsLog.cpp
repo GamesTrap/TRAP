@@ -3,6 +3,8 @@
 
 #include "Utils/String/String.h"
 
+#ifdef TRAP_PLATFORM_WINDOWS
+
 HANDLE TRAP::Log::m_handleConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 CONSOLE_SCREEN_BUFFER_INFO TRAP::Log::m_csbi;
 
@@ -35,3 +37,5 @@ void TRAP::Log::ResetColor() noexcept
 
 	SetColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 }
+
+#endif

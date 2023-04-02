@@ -51,7 +51,7 @@ namespace TRAP::INTERNAL
 
 		struct Header
 		{
-			std::string MagicNumber = "";
+			std::string MagicNumber;
 			std::uint32_t Width = 0;
 			std::uint32_t Height = 0;
 			std::uint32_t MaxValue = 255;

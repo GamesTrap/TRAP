@@ -144,27 +144,24 @@ struct ImGui_ImplVulkanH_FrameSemaphores
 // (Used by example's main.cpp. Used by multi-viewport features. Probably NOT used by your own engine/app.)
 struct ImGui_ImplVulkanH_Window
 {
-    int                 Width;
-    int                 Height;
-    VkSwapchainKHR      Swapchain;
-    VkSurfaceKHR        Surface;
+    int                 Width{};
+    int                 Height{};
+    VkSwapchainKHR      Swapchain{VK_NULL_HANDLE};
+    VkSurfaceKHR        Surface{VK_NULL_HANDLE};
     VkSurfaceFormatKHR  SurfaceFormat;
-    VkPresentModeKHR    PresentMode;
-    VkRenderPass        RenderPass;
-    VkPipeline          Pipeline;               // The window pipeline may uses a different VkRenderPass than the one passed in ImGui_ImplVulkan_InitInfo
-    bool                ClearEnable;
+    VkPresentModeKHR    PresentMode{VK_PRESENT_MODE_MAX_ENUM_KHR};
+    VkRenderPass        RenderPass{VK_NULL_HANDLE};
+    VkPipeline          Pipeline{VK_NULL_HANDLE}; // The window pipeline may uses a different VkRenderPass than the one passed in ImGui_ImplVulkan_InitInfo
+    bool                ClearEnable = true;
     VkClearValue        ClearValue;
-    uint32_t            FrameIndex;             // Current frame being rendered to (0 <= FrameIndex < FrameInFlightCount)
-    uint32_t            ImageCount;             // Number of simultaneous in-flight frames (returned by vkGetSwapchainImagesKHR, usually derived from min_image_count)
-    uint32_t            SemaphoreIndex;         // Current set of swapchain wait semaphores we're using (needs to be distinct from per frame data)
-    ImGui_ImplVulkanH_Frame*            Frames;
-    ImGui_ImplVulkanH_FrameSemaphores*  FrameSemaphores;
+    uint32_t            FrameIndex{}; // Current frame being rendered to (0 <= FrameIndex < FrameInFlightCount)
+    uint32_t            ImageCount{}; // Number of simultaneous in-flight frames (returned by vkGetSwapchainImagesKHR, usually derived from min_image_count)
+    uint32_t            SemaphoreIndex{}; // Current set of swapchain wait semaphores we're using (needs to be distinct from per frame data)
+    ImGui_ImplVulkanH_Frame*            Frames = nullptr;
+    ImGui_ImplVulkanH_FrameSemaphores*  FrameSemaphores = nullptr;
 
     ImGui_ImplVulkanH_Window() noexcept
-        : Width(), Height(), Swapchain(VK_NULL_HANDLE), Surface(VK_NULL_HANDLE), SurfaceFormat(),
-          PresentMode(VK_PRESENT_MODE_MAX_ENUM_KHR), RenderPass(VK_NULL_HANDLE),
-          Pipeline(VK_NULL_HANDLE), ClearEnable(true), ClearValue(), FrameIndex(), ImageCount(),
-          SemaphoreIndex(), Frames(nullptr), FrameSemaphores(nullptr)
+        : SurfaceFormat(), ClearValue()
     {
         // PresentMode = static_cast<VkPresentModeKHR>(~0); //Ensure we get an error if user doesn't set this.
     }

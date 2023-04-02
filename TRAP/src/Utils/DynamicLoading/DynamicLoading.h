@@ -12,6 +12,10 @@
 	#pragma warning(pop)
 #endif
 
+#include "Core/PlatformDetection.h"
+#include "Utils/Linux.h"
+#include "Log/Log.h"
+
 namespace TRAP::Utils::DynamicLoading
 {
     /// <summary>
@@ -32,7 +36,7 @@ namespace TRAP::Utils::DynamicLoading
     /// <param name="name">Name of the function.</param>
     /// <returns>Pointer to the function.</returns>
     template<typename T>
-    [[nodiscard]] T GetLibrarySymbol(void* module, const std::string_view name);
+    [[nodiscard]] T GetLibrarySymbol(void* module, std::string_view name);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

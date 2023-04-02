@@ -214,7 +214,7 @@ namespace TRAP
 		/// <param name="image">Image to be used as a cursor.</param>
 		/// <param name="xHotspot">X hotspot of the image.</param>
 		/// <param name="yHotspot">Y hotspot of the image.</param>
-		void SetCursorIcon(const Image* const image, int32_t xHotspot = 0, int32_t yHotspot = 0) const;
+		void SetCursorIcon(const Image* image, int32_t xHotspot = 0, int32_t yHotspot = 0) const;
 		/// <summary>
 		/// Set if raw mouse input should be used.
 		/// </summary>
@@ -238,7 +238,7 @@ namespace TRAP
 		/// (nullptr resets the icon to the TRAP logo).
 		/// </summary>
 		/// <param name="image">New logo to be used by the window.</param>
-		void SetIcon(const Image* const image) const;
+		void SetIcon(const Image* image) const;
 		/// <summary>
 		/// Set the function where events should be reported to from the window.
 		/// </summary>
@@ -484,8 +484,8 @@ namespace TRAP
 		/// <param name="advanced">Optional advanced properties to be used for the new window.</param>
 		/// <param name="monitor">Monitor to be used by the new window.</param>
 		explicit WindowProps(std::string title = "TRAP™",
-							 uint32_t width = 1280,
-							 uint32_t height = 720,
+							 uint32_t width = 1280u,
+							 uint32_t height = 720u,
 							 double refreshRate = 60.0,
 							 bool vsync = false,
 							 Window::DisplayMode displayMode = Window::DisplayMode::Windowed,

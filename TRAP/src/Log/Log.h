@@ -63,12 +63,12 @@ namespace TRAP
 		///	Logs files are always saved in the format: "<FileName>-YYYY-MM-DDTHH-MM-SS.<FileEnding>"
 		/// </summary>
 		/// <param name="filePath">File path.</param>
-		void SetFilePath(const std::filesystem::path& filePath) noexcept;
+		void SetFilePath(std::filesystem::path filePath) noexcept;
 
 		/// <summary>
 		/// Importance levels.
 		/// </summary>
-		enum class Level
+		enum class Level : uint32_t
 		{
 			None = 0x00,
 			Trace = 0x01,

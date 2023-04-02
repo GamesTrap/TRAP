@@ -92,7 +92,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="extension">Extension to check.</param>
 		/// <returns>True if extension is supported, false otherwise.</returns>
-		[[nodiscard]] bool IsExtensionSupported(const std::string_view extension);
+		[[nodiscard]] bool IsExtensionSupported(std::string_view extension);
 
 		/// <summary>
 		/// Retrieve a list of all available physical device extensions.

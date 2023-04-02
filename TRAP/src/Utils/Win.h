@@ -1,6 +1,10 @@
 #ifndef TRAP_WIN_H
 #define TRAP_WIN_H
 
+#include "Core/PlatformDetection.h"
+
+#ifdef TRAP_PLATFORM_WINDOWS
+
 #ifndef NOMINMAX
 	#define NOMINMAX
 #endif
@@ -179,7 +183,6 @@ namespace TRAP::Utils::Windows
 		/// Default: COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE.
 		/// </param>
 		explicit COMInitializer(DWORD dwCoInit = COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE)
-			: m_COMInitialized(false)
 		{
 			//Initialize the COM library on the current thread
 			HRESULT hr = CoInitializeEx(nullptr, dwCoInit);
@@ -216,8 +219,10 @@ namespace TRAP::Utils::Windows
 
 	private:
 		//Flags whether COM was properly initialized or not
-		bool m_COMInitialized;
+		bool m_COMInitialized = false;
 	};
 }
+
+#endif /*TRAP_PLATFORM_WINDOWS*/
 
 #endif /*TRAP_WIN_H*/

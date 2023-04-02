@@ -61,7 +61,6 @@ namespace TRAP::INTERNAL
 template<typename T>
 TRAP::INTERNAL::CustomImage::CustomImage(std::filesystem::path filepath, const uint32_t width, const uint32_t height,
                                          const ColorFormat format, std::vector<T> pixelData)
-	: m_data(), m_data2Byte(), m_dataHDR()
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 

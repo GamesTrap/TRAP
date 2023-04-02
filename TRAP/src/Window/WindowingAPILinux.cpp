@@ -42,7 +42,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 void TRAP::INTERNAL::WindowingAPI::LoadDBus()
 {
     s_Data.DBUS.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libdbus-1.so.3");
-    if(!s_Data.DBUS.Handle)
+    if(s_Data.DBUS.Handle == nullptr)
         InputError(Error::Platform_Error, "[DBus] Failed to load DBus");
     else
     {
@@ -65,9 +65,9 @@ void TRAP::INTERNAL::WindowingAPI::LoadDBus()
         s_Data.DBUS.ErrorInit(&s_Data.DBUS.Error);
         s_Data.DBUS.Connection = s_Data.DBUS.BusGet(DBusBusType::DBUS_BUS_SESSION, &s_Data.DBUS.Error);
 
-        if(s_Data.DBUS.ErrorIsSet(&s_Data.DBUS.Error) || !s_Data.DBUS.Connection) //Check for errors
+        if((s_Data.DBUS.ErrorIsSet(&s_Data.DBUS.Error) != 0u) || (s_Data.DBUS.Connection == nullptr)) //Check for errors
         {
-            if(s_Data.DBUS.ErrorIsSet(&s_Data.DBUS.Error))
+            if(s_Data.DBUS.ErrorIsSet(&s_Data.DBUS.Error) != 0u)
             {
                 InputError(Error::Platform_Error, std::string("[DBus] Failed to connect to D-Bus: ") + s_Data.DBUS.Error.message);
                 s_Data.DBUS.ErrorFree(&s_Data.DBUS.Error);
@@ -84,9 +84,9 @@ void TRAP::INTERNAL::WindowingAPI::LoadDBus()
             //Request name on bus
             const int32_t ret = s_Data.DBUS.BusRequestName(s_Data.DBUS.Connection, "com.trap", DBUS_NAME_FLAG_REPLACE_EXISTING, &s_Data.DBUS.Error);
 
-            if(s_Data.DBUS.ErrorIsSet(&s_Data.DBUS.Error) || ret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER)
+            if((s_Data.DBUS.ErrorIsSet(&s_Data.DBUS.Error) != 0u) || ret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER)
             {
-                if(s_Data.DBUS.ErrorIsSet(&s_Data.DBUS.Error))
+                if(s_Data.DBUS.ErrorIsSet(&s_Data.DBUS.Error) != 0u)
                 {
                     InputError(Error::Platform_Error, std::string("[DBus] Failed to request D-Bus name: ") + s_Data.DBUS.Error.message);
                     s_Data.DBUS.ErrorFree(&s_Data.DBUS.Error);
@@ -101,7 +101,7 @@ void TRAP::INTERNAL::WindowingAPI::LoadDBus()
         }
 
         //Clear existing progress from bus
-        if(s_Data.DBUS.Connection)
+        if(s_Data.DBUS.Connection != nullptr)
             SetProgressIndicator(ProgressState::Disabled, 0.0);
     }
 }
@@ -110,10 +110,10 @@ void TRAP::INTERNAL::WindowingAPI::LoadDBus()
 
 void TRAP::INTERNAL::WindowingAPI::UnloadDBus()
 {
-    if(!s_Data.DBUS.Handle)
+    if(s_Data.DBUS.Handle == nullptr)
         return;
 
-    if(s_Data.DBUS.Connection)
+    if(s_Data.DBUS.Connection != nullptr)
     {
         // ::dbus_connection_close() //Do not do this for shared connection
         s_Data.DBUS.ConnectionUnref(s_Data.DBUS.Connection); //Just unref the connection
@@ -723,16 +723,16 @@ void TRAP::INTERNAL::WindowingAPI::SetProgressIndicator(const ProgressState stat
 
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-    if(!s_Data.DBUS.Handle || !s_Data.DBUS.Connection)
+    if((s_Data.DBUS.Handle == nullptr) || (s_Data.DBUS.Connection == nullptr))
 		return;
 
 	//Setup parameters
-	const dbus_bool_t progressVisible = (state != ProgressState::Disabled);
+	const dbus_bool_t progressVisible = static_cast<dbus_bool_t>(state != ProgressState::Disabled);
 
 	DBusMessageIter args{};
 
 	DBusMessage* const msg = s_Data.DBUS.MessageNewSignal("/com/trap", "com.canonical.Unity.LauncherEntry", "Update");
-	if(!msg)
+	if(msg == nullptr)
 	{
 		InputError(Error::Platform_Error, "Failed to allocate new D-Bus message");
 		return;
@@ -772,7 +772,7 @@ void TRAP::INTERNAL::WindowingAPI::SetProgressIndicator(const ProgressState stat
 
 	//Finally send the signal
 	uint32_t serial = 0;
-	if(!s_Data.DBUS.ConnectionSend(s_Data.DBUS.Connection, msg, &serial))
+	if(s_Data.DBUS.ConnectionSend(s_Data.DBUS.Connection, msg, &serial) == 0u)
 		InputError(Error::Platform_Error, "Failed to send D-Bus signal");
 	else
 		s_Data.DBUS.ConnectionFlush(s_Data.DBUS.Connection);
@@ -1003,14 +1003,14 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow& window
 
 	std::size_t count = 0;
 
-	while((line = std::strtok(text, "\r\n")))
+	while((line = std::strtok(text, "\r\n")) != nullptr)
 	{
 		text = nullptr;
 
 		if(line[0] == '#')
 			continue;
 
-		if(prefix.compare(line) == 0)
+		if(prefix == line)
 		{
 			line += prefix.size();
 			while(*line != '/')
@@ -1024,7 +1024,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow& window
 		paths[count - 1] = path;
 		char* pathPtr = paths[count - 1].data();
 
-		while(*line)
+		while(*line != 0)
 		{
 			if(line[0] == '%' && line[1] && line[2])
 			{
@@ -1062,7 +1062,7 @@ bool TRAP::INTERNAL::WindowingAPI::PollPOSIX(pollfd* const fds, const nfds_t cou
 {
 	while(true)
 	{
-		if(timeout)
+		if(timeout != nullptr)
 		{
 			const uint64_t base = static_cast<uint64_t>(TRAP::Application::GetTime());
 

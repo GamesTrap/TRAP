@@ -27,7 +27,7 @@ void ReflectBoundResources(spirv_cross::Compiler& compiler,
 		resource.Set = compiler.get_decoration(resource.SPIRVCode.ID, spv::DecorationDescriptorSet);
 		resource.Binding = compiler.get_decoration(resource.SPIRVCode.ID, spv::DecorationBinding);
 
-		const spirv_cross::SPIRType type = compiler.get_type(resource.SPIRVCode.TypeID);
+		const spirv_cross::SPIRType& type = compiler.get_type(resource.SPIRVCode.TypeID);
 
 		//Special case for textureBuffer / imageBuffer
 		//textureBuffer is considered as separate images with dimension buffer in SPIRV but they require a

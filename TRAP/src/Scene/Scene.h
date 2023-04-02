@@ -45,7 +45,7 @@ namespace TRAP
 		Scene& operator=(const Scene&) = delete;
 		Scene& operator=(Scene&&) noexcept = default;
 
-		static TRAP::Ref<Scene> Copy(Ref<Scene> other);
+		static TRAP::Ref<Scene> Copy(const Ref<Scene>& other);
 
 		[[nodiscard]] Entity CreateEntity(const std::string& name = std::string());
 		[[nodiscard]] Entity CreateEntityWithUID(Utils::UID uid, const std::string& name = std::string());

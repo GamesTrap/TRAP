@@ -779,16 +779,16 @@ namespace TRAP::INTERNAL
 		struct libdecor_interface
 		{
 			void (*error)(libdecor*, libdecor_error, const char*);
-			void (*reserved0)(void);
-			void (*reserved1)(void);
-			void (*reserved2)(void);
-			void (*reserved3)(void);
-			void (*reserved4)(void);
-			void (*reserved5)(void);
-			void (*reserved6)(void);
-			void (*reserved7)(void);
-			void (*reserved8)(void);
-			void (*reserved9)(void);
+			void (*reserved0)();
+			void (*reserved1)();
+			void (*reserved2)();
+			void (*reserved3)();
+			void (*reserved4)();
+			void (*reserved5)();
+			void (*reserved6)();
+			void (*reserved7)();
+			void (*reserved8)();
+			void (*reserved9)();
 		};
 
 		struct libdecor_frame_interface
@@ -797,16 +797,16 @@ namespace TRAP::INTERNAL
 			void (*close)(libdecor_frame*, void*);
 			void (*commit)(libdecor_frame*, void*);
 			void (*dismiss_popup)(libdecor_frame*, const char*, void*);
-			void (*reserved0)(void);
-			void (*reserved1)(void);
-			void (*reserved2)(void);
-			void (*reserved3)(void);
-			void (*reserved4)(void);
-			void (*reserved5)(void);
-			void (*reserved6)(void);
-			void (*reserved7)(void);
-			void (*reserved8)(void);
-			void (*reserved9)(void);
+			void (*reserved0)();
+			void (*reserved1)();
+			void (*reserved2)();
+			void (*reserved3)();
+			void (*reserved4)();
+			void (*reserved5)();
+			void (*reserved6)();
+			void (*reserved7)();
+			void (*reserved8)();
+			void (*reserved9)();
 		};
 
 		struct VkXlibSurfaceCreateInfoKHR
@@ -1596,8 +1596,8 @@ namespace TRAP::INTERNAL
 #elif defined(TRAP_PLATFORM_LINUX)
 			struct x11
 			{
-				Cursor Handle = 0;
-			} X11;
+				Cursor Handle;
+			} X11{};
 
 			struct wayland
 			{
@@ -1607,7 +1607,7 @@ namespace TRAP::INTERNAL
 				int32_t Width, Height;
 				int32_t XHotspot, YHotspot;
 				int32_t CurrentImage;
-			} Wayland;
+			} Wayland{};
 #endif
 		};
 
@@ -1705,7 +1705,7 @@ namespace TRAP::INTERNAL
 
 				//The time of the last KeyPress event per keycode, for discarding
 				//duplicate key events generated from some keys by ibus
-				std::array<Time, 256> KeyPressTimes;
+				std::array<Time, 256> KeyPressTimes{};
 			} X11;
 
 			struct wayland
@@ -2086,7 +2086,7 @@ namespace TRAP::INTERNAL
 		/// <param name="image">
 		/// Image to be set as window icon or nullptr to revert back to the default icon.
 		/// </param>
-		static void SetWindowIcon(InternalWindow& window, const Image* const image);
+		static void SetWindowIcon(InternalWindow& window, const Image* image);
 		/// <summary>
 		/// This function sets the position, in screen coordinates, of the upper-left corner of the
 		/// content area of the specifed windowed mode window. If the window is a full screen window,
@@ -3254,7 +3254,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="code">Error code.</param>
 		/// <param name="str">Description of the occurred error.</param>
-		static void InputError(Error code, const std::string_view str);
+		static void InputError(Error code, std::string_view str);
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Platform Specific Functions----------------------------------------------------------------------------------------//
 		//-------------------------------------------------------------------------------------------------------------------//
@@ -3727,9 +3727,9 @@ namespace TRAP::INTERNAL
 		/// <param name="image">
 		/// Image to be set as window icon or nullptr to revert back to the default icon.
 		/// </param>
-		static void PlatformSetWindowIcon(InternalWindow& window, const Image* const image);
-		static void PlatformSetWindowIconX11(InternalWindow& window, const Image* const image);
-		static void PlatformSetWindowIconWayland(InternalWindow& window, const Image* const image);
+		static void PlatformSetWindowIcon(InternalWindow& window, const Image* image);
+		static void PlatformSetWindowIconX11(InternalWindow& window, const Image* image);
+		static void PlatformSetWindowIconWayland(InternalWindow& window, const Image* image);
 		/// <summary>
 		/// This function retrieves the position, in screen coordinates, of the upper-left corner of the
 		/// content area of the specified window.
@@ -4498,9 +4498,9 @@ namespace TRAP::INTERNAL
 		/// The position is specified in content area relative screen coordinates.
 		/// </summary>
 		/// <param name="window">Internal window which is meant.</param>
-		/// <param name="x">X position of the window.</param>
-		/// <param name="y">Y position of the window.</param>
-		static constexpr void InputWindowPos(const InternalWindow& window, int32_t x, int32_t y);
+		/// <param name="xPos">X position of the window.</param>
+		/// <param name="yPos">Y position of the window.</param>
+		static constexpr void InputWindowPos(const InternalWindow& window, int32_t xPos, int32_t yPos);
 		/// <summary>
 		/// Notifies shared code that the user wishes to close a window.
 		/// </summary>
@@ -4795,6 +4795,12 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		static void DrainEmptyEvents();
 		/// <summary>
+		/// Set event flags for file descriptor.
+		/// </summary>
+		/// <param name="fileDescriptor">File descriptor to set flags for.</param>
+		/// <returns>True on success, false otherwise.</returns>
+		[[nodiscard]] static bool SetEventFlags(int32_t& fileDescriptor);
+		/// <summary>
 		/// Create the pipe for empty events without assuming the OS has pipe2(2)
 		/// </summary>
 		/// <returns>True if the pipe was created, false otherwise.</returns>
@@ -4858,7 +4864,7 @@ namespace TRAP::INTERNAL
 		/// <param name="display">X11 display.</param>
 		/// <param name="event">X11 error event.</param>
 		/// <returns>True if the error was handled, false otherwise.</returns>
-		[[nodiscard]] static int32_t ErrorHandler(Display* const display, XErrorEvent* const event);
+		[[nodiscard]] static int32_t ErrorHandler(Display* display, XErrorEvent* event);
 		/// <summary>
 		/// Clears the X error handler callback.
 		/// </summary>
@@ -4905,7 +4911,7 @@ namespace TRAP::INTERNAL
 		/// <param name="event">X11 event.</param>
 		/// <param name="ptr">Pointer to the event.</param>
 		/// <returns>True if the event is a selection event, false otherwise.</returns>
-		[[nodiscard]] static int32_t IsSelectionEvent(Display* const display, XEvent* const event, XPointer ptr);
+		[[nodiscard]] static int32_t IsSelectionEvent(Display* display, XEvent* event, XPointer ptr);
 		/// <summary>
 		/// Set the specified property to the selection converted to the requested target.
 		/// </summary>
@@ -5005,7 +5011,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="s">UTF-8 stream.</param>
 		/// <returns>Unicode code point.</returns>
-		[[nodiscard]] static uint32_t DecodeUTF8(const char** s);
+		[[nodiscard]] static uint32_t DecodeUTF8(const char** str);
 #endif
 		/// <summary>
 		/// Splits and translates a text/uri-list into separate file paths.
@@ -5142,9 +5148,9 @@ namespace TRAP::INTERNAL
 		/// <param name="pointer">Affected wl_pointer.</param>
 		/// <param name="serial">Unique identifier of the pointer enter event.</param>
 		/// <param name="surface">Surface that got focused.</param>
-		/// <param name="sX">X position of the pointer on the surface.</param>
-		/// <param name="sY">Y position of the pointer on the surface.</param>
-		static void PointerHandleEnter(void* userData, wl_pointer* pointer, uint32_t serial, wl_surface* surface, wl_fixed_t sX, wl_fixed_t sY);
+		/// <param name="sXPos">X position of the pointer on the surface.</param>
+		/// <param name="sYPos">Y position of the pointer on the surface.</param>
+		static void PointerHandleEnter(void* userData, wl_pointer* pointer, uint32_t serial, wl_surface* surface, wl_fixed_t sXPos, wl_fixed_t sYPos);
 		/// <summary>
 		/// Callback function for Wayland notifying that the pointer
 		/// is unfocused on a certain surface.
@@ -5161,9 +5167,9 @@ namespace TRAP::INTERNAL
 		/// <param name="userData">Pointer to user provided data.</param>
 		/// <param name="pointer">Affected wl_pointer.</param>
 		/// <param name="time">Timestamp of the event.</param>
-		/// <param name="sX">New X position on the surface.</param>
-		/// <param name="sY">New Y position on the surface.</param>
-		static void PointerHandleMotion(void* userData, wl_pointer* pointer, uint32_t time, wl_fixed_t sX, wl_fixed_t sY);
+		/// <param name="sXPos">New X position on the surface.</param>
+		/// <param name="sYPos">New Y position on the surface.</param>
+		static void PointerHandleMotion(void* userData, wl_pointer* pointer, uint32_t time, wl_fixed_t sXPos, wl_fixed_t sYPos);
 		/// <summary>
 		/// Callback function for Wayland notifying that the pointer
 		/// button has been clicked or released.
@@ -5288,15 +5294,15 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="userData">Pointer to user provided data.</param>
 		/// <param name="output">Affected output.</param>
-		/// <param name="x">X position of the monitor within the global compositor space.</param>
-		/// <param name="y">Y position of the monitor within the global compositor space.</param>
+		/// <param name="xPos">X position of the monitor within the global compositor space.</param>
+		/// <param name="yPos">Y position of the monitor within the global compositor space.</param>
 		/// <param name="physicalWidth">Width in millimeters of the output.</param>
 		/// <param name="physicalHeight">Height in millimeters of the output.</param>
 		/// <param name="subpixel">Subpixel orientationof the output.</param>
 		/// <param name="make">Description of the manufacturer.</param>
 		/// <param name="model">Description of the model.</param>
 		/// <param name="transform">Transform that maps framebuffer to output.</param>
-		static void OutputHandleGeometry(void* userData, wl_output* output, int32_t x, int32_t y, int32_t physicalWidth, int32_t physicalHeight, int32_t subpixel, const char* make, const char* model, int32_t transform);
+		static void OutputHandleGeometry(void* userData, wl_output* output, int32_t xPos, int32_t yPos, int32_t physicalWidth, int32_t physicalHeight, int32_t subpixel, const char* make, const char* model, int32_t transform);
 		/// <summary>
 		/// Callback function for Wayland notifying about an available video mode
 		/// for the output.
@@ -5365,10 +5371,10 @@ namespace TRAP::INTERNAL
 		/// <param name="device">Wayland data device object.</param>
 		/// <param name="serial">Unique identifier of the data enter event.</param>
 		/// <param name="surface">Affected wl_surface.</param>
-		/// <param name="x">X position on the surface.</param>
-		/// <param name="y">Y position on the surface.</param>
+		/// <param name="xPos">X position on the surface.</param>
+		/// <param name="yPos">Y position on the surface.</param>
 		/// <param name="offer">Wayland data offer object.</param>
-		static void DataDeviceHandleEnter(void* userData, wl_data_device* device, uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y, wl_data_offer* offer);
+		static void DataDeviceHandleEnter(void* userData, wl_data_device* device, uint32_t serial, wl_surface* surface, wl_fixed_t xPos, wl_fixed_t yPos, wl_data_offer* offer);
 		/// <summary>
 		/// Callback function for Wayland ending a drag-and-drop session.
 		/// </summary>
@@ -5381,9 +5387,9 @@ namespace TRAP::INTERNAL
 		/// <param name="userData">Pointer to user provided data.</param>
 		/// <param name="device">Wayland data device object.</param>
 		/// <param name="time">Timestamp of the event.</param>
-		/// <param name="x">New X position on the surface.</param>
-		/// <param name="y">New Y position on the surface.</param>
-		static constexpr void DataDeviceHandleMotion(void* userData, wl_data_device* device, uint32_t time, wl_fixed_t x, wl_fixed_t y);
+		/// <param name="xPos">New X position on the surface.</param>
+		/// <param name="yPos">New Y position on the surface.</param>
+		static constexpr void DataDeviceHandleMotion(void* userData, wl_data_device* device, uint32_t time, wl_fixed_t xPos, wl_fixed_t yPos);
 		/// <summary>
 		/// Callback function for Wayland notifying about a successful drag-and-drop operation.
 		/// </summary>
@@ -5648,7 +5654,7 @@ namespace TRAP::INTERNAL
 		/// <param name="offer">Wayland data offer object.</param>
 		/// <param name="mimeType">Mime type of data to receive.</param>
 		/// <returns>Read data on success, empty optional otherwise</returns>
-		[[nodiscard]] static std::optional<std::string> ReadDataOfferAsString(wl_data_offer& offer, const std::string_view mimeType);
+		[[nodiscard]] static std::optional<std::string> ReadDataOfferAsString(wl_data_offer& offer, std::string_view mimeType);
 		/// <summary>
 		/// Flush the display till it succeeds.
 		/// </summary>
@@ -5730,11 +5736,11 @@ namespace TRAP::INTERNAL
 		/// <param name="decoration">Data of the decoration.</param>
 		/// <param name="parent">Parent surface of the decoration.</param>
 		/// <param name="buffer">Buffer to set as content of the decoration surface.</param>
-		/// <param name="x">X position for the decoration surface.</param>
-		/// <param name="y">Y position for the decoration surface.</param>
+		/// <param name="xPos">X position for the decoration surface.</param>
+		/// <param name="yPos">Y position for the decoration surface.</param>
 		/// <param name="width">Width for the decoration surface.</param>
 		/// <param name="height">Height for the decoration surface.</param>
-		static void CreateFallbackDecorationWayland(InternalWindow& window, TRAPDecorationWayland& decoration, wl_surface& parent, wl_buffer& buffer, int32_t x, int32_t y, int32_t width, int32_t height);
+		static void CreateFallbackDecorationWayland(InternalWindow& window, TRAPDecorationWayland& decoration, wl_surface& parent, wl_buffer& buffer, int32_t xPos, int32_t yPos, int32_t width, int32_t height);
 		/// <summary>
 		/// Acquire monitor on the given window.
 		/// This also enables fullscreen mode for the window.
@@ -5852,7 +5858,7 @@ namespace TRAP::INTERNAL
 		/// Valid range is [0.0-1.0].
 		/// This parameter is ignored if state is ProgressState::Disabled
 		/// </param>
-		static void SetProgressIndicator(const ProgressState state, const double progress);
+		static void SetProgressIndicator(ProgressState state, double progress);
 
 		friend std::optional<std::string> TRAP::Input::GetKeyboardLayoutName();
 
@@ -6298,7 +6304,7 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::InputChar(const InternalWind
 	if (codePoint < 32 || (codePoint > 126 && codePoint < 160))
 		return;
 
-	if (window.Callbacks.Character)
+	if (window.Callbacks.Character != nullptr)
 		window.Callbacks.Character(window, codePoint);
 }
 
@@ -6309,7 +6315,7 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::InputCursorEnter(const Inter
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if (window.Callbacks.CursorEnter)
+	if (window.Callbacks.CursorEnter != nullptr)
 		window.Callbacks.CursorEnter(window, entered);
 }
 
@@ -6320,7 +6326,7 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::InputWindowMinimize(const In
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if (window.Callbacks.Minimize)
+	if (window.Callbacks.Minimize != nullptr)
 		window.Callbacks.Minimize(window, !restored);
 }
 
@@ -6331,7 +6337,7 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::InputWindowMaximize(const In
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if (window.Callbacks.Maximize)
+	if (window.Callbacks.Maximize != nullptr)
 		window.Callbacks.Maximize(window, !restored);
 }
 
@@ -6339,12 +6345,12 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::InputWindowMaximize(const In
 
 //Notifies shared code that a window has moved
 //The position is specified in content area relative screen coordinates
-inline constexpr void TRAP::INTERNAL::WindowingAPI::InputWindowPos(const InternalWindow& window, const int32_t x, const int32_t y)
+inline constexpr void TRAP::INTERNAL::WindowingAPI::InputWindowPos(const InternalWindow& window, const int32_t xPos, const int32_t yPos)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if (window.Callbacks.Pos)
-		window.Callbacks.Pos(window, x, y);
+	if (window.Callbacks.Pos != nullptr)
+		window.Callbacks.Pos(window, xPos, yPos);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -6356,7 +6362,7 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::InputWindowCloseRequest(Inte
 
 	window.ShouldClose = true;
 
-	if (window.Callbacks.Close)
+	if (window.Callbacks.Close != nullptr)
 		window.Callbacks.Close(window);
 }
 
@@ -6367,7 +6373,7 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::InputDrop(const InternalWind
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if (window.Callbacks.Drop)
+	if (window.Callbacks.Drop != nullptr)
 		window.Callbacks.Drop(window, paths);
 }
 
@@ -6382,7 +6388,7 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::InputDrop(const InternalWind
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if(mi.hTotal && mi.vTotal)
+	if((mi.hTotal != 0u) && (mi.vTotal != 0u))
 		return static_cast<double>(mi.dotClock) / (static_cast<double>(mi.hTotal) * static_cast<double>(mi.vTotal));
 
 	return std::nullopt;
@@ -6467,8 +6473,8 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::ConfinedPointerHandleUnconfi
 inline constexpr void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleMotion([[maybe_unused]] void* const userData,
                                                                           [[maybe_unused]] wl_data_device* const device,
                                                                           [[maybe_unused]] const uint32_t time,
-                                                                          [[maybe_unused]] const wl_fixed_t x,
-                                                                          [[maybe_unused]] const wl_fixed_t y)
+                                                                          [[maybe_unused]] const wl_fixed_t xPos,
+                                                                          [[maybe_unused]] const wl_fixed_t yPos)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 }
@@ -6669,15 +6675,15 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionWay
 	int32_t mid = 0;
 
 	//First check for Latin-1 characters (1:1 mapping)
-	if((keySym >= 0x0020 && keySym <= 0x007E) ||
-	   (keySym >= 0x00A0 && keySym <= 0x00FF))
+	if((keySym >= 0x0020u && keySym <= 0x007Eu) ||
+	   (keySym >= 0x00A0u && keySym <= 0x00FFu))
 	{
 		return keySym;
 	}
 
 	//Also check for directly encoded 24-bit UCS characters
-	if((keySym & 0xFF000000) == 0x01000000)
-		return keySym & 0x00FFFFFF;
+	if((keySym & 0xFF000000u) == 0x01000000u)
+		return keySym & 0x00FFFFFFu;
 
 	//Binary search in table
 	while(max >= min)

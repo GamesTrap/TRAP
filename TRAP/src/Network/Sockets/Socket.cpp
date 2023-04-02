@@ -32,7 +32,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "SocketImpl.h"
 
 TRAP::Network::Socket::Socket(const Type type) noexcept
-	: m_type(type), m_socket(INTERNAL::Network::SocketImpl::InvalidSocket()), m_isBlocking(true)
+	: m_type(type), m_socket(INTERNAL::Network::SocketImpl::InvalidSocket())
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 }

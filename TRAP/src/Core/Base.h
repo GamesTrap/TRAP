@@ -85,22 +85,22 @@
 
 //Settings for Profiling (with Tracy)
 
-enum class ProfileSystems
+enum class ProfileSystems : uint32_t
 {
-	Events = 1 << 0,
-	FileSystem = 1 << 1,
-	Graphics = 1 << 2,
-	Vulkan = 1 << 3,
-	ImageLoader = 1 << 4,
-	Input = 1 << 5,
-	Layers = 1 << 6,
-	Network = 1 << 7,
-	Scene = 1 << 8,
-	ThreadPool = 1 << 9,
-	Utils = 1 << 10,
-	Window = 1 << 11,
-	WindowingAPI = 1 << 12,
-	Verbose = 1 << 13, //Toggles profiling of very trivial functions (i.e. getters, setters, etc.)
+	Events = 1u << 0u,
+	FileSystem = 1u << 1u,
+	Graphics = 1u << 2u,
+	Vulkan = 1u << 3u,
+	ImageLoader = 1u << 4u,
+	Input = 1u << 5u,
+	Layers = 1u << 6u,
+	Network = 1u << 7u,
+	Scene = 1u << 8u,
+	ThreadPool = 1u << 9u,
+	Utils = 1u << 10u,
+	Window = 1u << 11u,
+	WindowingAPI = 1u << 12u,
+	Verbose = 1u << 13u, //Toggles profiling of very trivial functions (i.e. getters, setters, etc.)
 
 	All = Events | FileSystem | Graphics | Vulkan | ImageLoader | Input | Layers |
 	      Network | Scene | ThreadPool | Utils | Window | WindowingAPI,
@@ -133,7 +133,7 @@ enum class ProfileSystems
 /// <param name="minor">Minor version number.</param>
 /// <param name="patch">Patch version number.</param>
 /// <returns>Version number packed into a single uint32_t.</returns>
-[[nodiscard]] uint32_t TRAP_MAKE_VERSION(const uint32_t major, const uint32_t minor, const uint32_t patch);
+[[nodiscard]] uint32_t TRAP_MAKE_VERSION(uint32_t major, uint32_t minor, uint32_t patch);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -182,18 +182,18 @@ const uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 9, 7);
 
 #ifndef MAKE_ENUM_FLAG
 #define MAKE_ENUM_FLAG(ENUM_TYPE) \
-	constexpr inline ENUM_TYPE operator|(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
+	constexpr inline (ENUM_TYPE) operator|(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
 	{ \
 		return static_cast<ENUM_TYPE>(static_cast<std::underlying_type<ENUM_TYPE>::type>(a) | \
 		 							  static_cast<std::underlying_type<ENUM_TYPE>::type>(b)); \
 	} \
-	constexpr inline ENUM_TYPE operator&(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
+	constexpr inline (ENUM_TYPE) operator&(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
 	{ \
 		return static_cast<ENUM_TYPE>(static_cast<std::underlying_type<ENUM_TYPE>::type>(a) & \
 									  static_cast<std::underlying_type<ENUM_TYPE>::type>(b)); \
 	} \
-	constexpr inline ENUM_TYPE operator|=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a | b); }\
-	constexpr inline ENUM_TYPE operator&=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a & b); }
+	constexpr inline (ENUM_TYPE) operator|=((ENUM_TYPE)& a, const ENUM_TYPE b) noexcept { return a = (a | b); }\
+	constexpr inline (ENUM_TYPE) operator&=((ENUM_TYPE)& a, const ENUM_TYPE b) noexcept { return a = (a & b); }
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -47,8 +47,8 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 
 	const uint32_t depthOrArraySize = desc.ArraySize * desc.Depth;
 	uint32_t numRTVs = m_mipLevels;
-	if(static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RenderTargetArraySlices) ||
-	   static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RenderTargetDepthSlices))
+	if((static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RenderTargetArraySlices) != 0u) ||
+	   (static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RenderTargetDepthSlices) != 0u))
 	{
 		numRTVs *= depthOrArraySize;
 	}
@@ -91,7 +91,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 
 		//On tile textures do not support SRV/UAV as there is no backing memory
 		//You can only read these textures as input attachments inside same render pass
-		textureDesc.Descriptors &= static_cast<RendererAPI::DescriptorType>(~static_cast<int32_t>(RendererAPI::DescriptorType::Texture | RendererAPI::DescriptorType::RWTexture));
+		textureDesc.Descriptors &= RendererAPI::DescriptorType::Texture | RendererAPI::DescriptorType::RWTexture;
 	}
 
 	if(isDepth)
@@ -139,8 +139,8 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	for(uint32_t i = 0; i < m_mipLevels; ++i)
 	{
 		rtvDesc.subresourceRange.baseMipLevel = i;
-		if (static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RenderTargetArraySlices) ||
-			static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RenderTargetDepthSlices))
+		if ((static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RenderTargetArraySlices) != 0u) ||
+			(static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RenderTargetDepthSlices) != 0u))
 		{
 			for (uint32_t j = 0; j < depthOrArraySize; ++j)
 			{
@@ -176,14 +176,14 @@ TRAP::Graphics::API::VulkanRenderTarget::~VulkanRenderTarget()
 	vkDestroyImageView(m_device->GetVkDevice(), m_vkDescriptor, nullptr);
 
 	const uint32_t depthOrArraySize = m_arraySize * m_depth;
-	if (static_cast<uint32_t>(m_descriptors & RendererAPI::DescriptorType::RenderTargetArraySlices) ||
-		static_cast<uint32_t>(m_descriptors & RendererAPI::DescriptorType::RenderTargetDepthSlices))
+	if ((static_cast<uint32_t>(m_descriptors & RendererAPI::DescriptorType::RenderTargetArraySlices) != 0u) ||
+		(static_cast<uint32_t>(m_descriptors & RendererAPI::DescriptorType::RenderTargetDepthSlices) != 0u))
 	{
 		for(uint32_t i = 0; i < m_mipLevels; ++i)
 		{
 			for (uint32_t j = 0; j < depthOrArraySize; ++j)
 			{
-				if(m_vkSliceDescriptors[i * depthOrArraySize + j])
+				if(m_vkSliceDescriptors[i * depthOrArraySize + j] != nullptr)
 					vkDestroyImageView(m_device->GetVkDevice(), m_vkSliceDescriptors[i * depthOrArraySize + j],
 					                   nullptr);
 			}
@@ -193,7 +193,7 @@ TRAP::Graphics::API::VulkanRenderTarget::~VulkanRenderTarget()
 	{
 		for (uint32_t i = 0; i < m_mipLevels; ++i)
 		{
-			if(m_vkSliceDescriptors[i])
+			if(m_vkSliceDescriptors[i] != nullptr)
 				vkDestroyImageView(m_device->GetVkDevice(), m_vkSliceDescriptors[i], nullptr);
 		}
 	}

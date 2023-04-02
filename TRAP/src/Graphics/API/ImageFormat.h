@@ -787,7 +787,7 @@ namespace TRAP::Graphics::API
 		case ImageFormat::G16_B16_R16_3PLANE_422_UNORM: [[fallthrough]];
 		case ImageFormat::G16_B16R16_2PLANE_420_UNORM: [[fallthrough]];
 		case ImageFormat::G16_B16R16_2PLANE_422_UNORM:
-			return width >> 1;
+			return width >> 1u;
 
 		default:
 			return width;
@@ -816,7 +816,7 @@ namespace TRAP::Graphics::API
 		case ImageFormat::G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16: [[fallthrough]];
 		case ImageFormat::G16_B16_R16_3PLANE_420_UNORM: [[fallthrough]];
 		case ImageFormat::G16_B16R16_2PLANE_420_UNORM:
-			return height >> 1;
+			return height >> 1u;
 
 		default:
 			return height;

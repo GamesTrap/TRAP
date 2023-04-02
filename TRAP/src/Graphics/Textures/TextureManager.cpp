@@ -170,7 +170,7 @@ void TRAP::Graphics::TextureManager::Add(Ref<Texture> texture)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(Ref<Texture> texture)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(const Ref<Texture>& texture)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -182,8 +182,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(Ref<Te
 			Textures.erase(texture->GetName());
 			return tex;
 		}
-		else
-			TP_ERROR(Log::TextureManagerPrefix, "Couldn't find texture with name: \"", texture->GetName(), "\"!");
+
+		TP_ERROR(Log::TextureManagerPrefix, "Couldn't find texture with name: \"", texture->GetName(), "\"!");
 	}
 
 	return nullptr;
@@ -201,8 +201,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(const 
 		Textures.erase(name);
 		return tex;
 	}
-	else
-		TP_ERROR(Log::TextureManagerPrefix, "Couldn't find texture with name: \"", name, "\"!");
+
+	TP_ERROR(Log::TextureManagerPrefix, "Couldn't find texture with name: \"", name, "\"!");
 
 	return nullptr;
 }
@@ -283,8 +283,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Reload(const 
 
 			return texture;
 		}
-		else
-			TP_WARN(Log::TextureManagerPrefix, "Couldn't find texture: \"", nameOrPath, "\" to reload.");
+
+		TP_WARN(Log::TextureManagerPrefix, "Couldn't find texture: \"", nameOrPath, "\" to reload.");
 	}
 	else //Path
 	{

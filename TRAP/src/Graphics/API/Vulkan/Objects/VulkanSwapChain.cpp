@@ -225,7 +225,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	}
 
 	VkSurfaceTransformFlagBitsKHR preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
-	if (caps.supportedTransforms & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR)
+	if ((caps.supportedTransforms & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR) != 0u)
 		preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
 	else
 		preTransform = caps.currentTransform;
@@ -240,7 +240,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	VkCompositeAlphaFlagBitsKHR compositeAlpha = VK_COMPOSITE_ALPHA_FLAG_BITS_MAX_ENUM_KHR;
 	for (VkCompositeAlphaFlagBitsKHR flag : compositeAlphaFlags)
 	{
-		if (caps.supportedCompositeAlpha & flag)
+		if ((caps.supportedCompositeAlpha & flag) != 0u)
 		{
 			compositeAlpha = flag;
 			break;
@@ -298,7 +298,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	m_desc = desc;
 	m_enableVSync = desc.EnableVSync;
 	m_imageCount = imageCount;
-	m_surface = std::move(surface);
+	m_surface = surface;
 	m_presentQueueFamilyIndex = finalPresentQueueFamilyIndex;
 	m_presentQueue = presentQueue;
 	m_swapChain = swapChain;
@@ -339,7 +339,7 @@ void TRAP::Graphics::API::VulkanSwapChain::DeInitSwapchain()
 
 		if(res == VK_ERROR_OUT_OF_DATE_KHR || res == VK_SUBOPTIMAL_KHR)
 		{
-			const VkFence vkF = fen->GetVkFence();
+			VkFence vkF = fen->GetVkFence();
 			VkCall(vkResetFences(m_device->GetVkDevice(), 1, &vkF));
 			fen->m_submitted = false;
 			return std::nullopt;

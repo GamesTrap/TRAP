@@ -148,7 +148,7 @@ constexpr std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
 	std::vector<uint32_t> indexRemap{};
 	std::vector<ShaderReflection::ShaderResource> resources{};
 	//Continue with resources
-	if(resourceCount)
+	if(resourceCount != 0u)
 	{
 		indexRemap.resize(cc.GetShaderResources().size());
 		resources.resize(resourceCount);
@@ -183,7 +183,7 @@ constexpr std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
 
 	std::vector<ShaderReflection::ShaderVariable> variables{};
 	//Now do variables
-	if(variablesCount)
+	if(variablesCount != 0u)
 	{
 		variables.resize(variablesCount);
 

@@ -75,8 +75,8 @@ namespace TRAP::Graphics
 		/// <param name="offset">Offset into the currently used data.</param>
 		/// <param name="window">Window to use for the data retrieval. Default: Main Window.</param>
 		template<typename T>
-		void GetData(const T* data, uint64_t size, const uint64_t offset = 0,
-		             const Window* const window = TRAP::Application::GetWindow());
+		void GetData(const T* data, uint64_t size, uint64_t offset = 0,
+		             const Window* window = TRAP::Application::GetWindow());
 
 		/// <summary>
 		/// Check whether uploading data to the GPU has finished.
@@ -92,7 +92,7 @@ namespace TRAP::Graphics
 		/// Calculate the aligned size of the SSBO.
 		/// </summary>
 		/// <param name="byteSize">Byte size of the SSBO.</param>
-		[[nodiscard]] static uint64_t CalculateAlignedSize(const uint64_t byteSize) noexcept;
+		[[nodiscard]] static uint64_t CalculateAlignedSize(uint64_t byteSize) noexcept;
 
 		/// <summary>
 		/// Create a new shader storage buffer and set its size.
@@ -140,7 +140,7 @@ inline void TRAP::Graphics::StorageBuffer::GetData(const T* const data, const ui
 									0 : RendererAPI::GetCurrentImageIndex(window);
 	desc.Buffer = m_storageBuffers[imageIndex];
 	desc.DstOffset = offset;
-	RendererAPI::GetResourceLoader()->BeginUpdateResource(desc);
+	API::ResourceLoader::BeginUpdateResource(desc);
 	std::copy_n(static_cast<uint8_t*>(desc.MappedData), size, data);
 	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_tokens[imageIndex]);
 }

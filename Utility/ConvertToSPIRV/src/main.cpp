@@ -6,18 +6,20 @@
 
 using namespace std::string_view_literals;
 
-[[nodiscard]] bool CheckForParameters(int argc, char* argv[], std::filesystem::path& outOutputPath,
+[[nodiscard]] bool CheckForParameters(const std::vector<std::string_view>& args, std::filesystem::path& outOutputPath,
                                       std::vector<std::array<std::string, 2>>& outCustomMacros);
 void PrintUsage(const std::filesystem::path& programName);
 void PrintVersion();
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int main(const int argc, char* argv[])
+int main(const int argc, const char* const* const argv)
 {
+	std::vector<std::string_view> args(argv, std::next(argv, static_cast<std::ptrdiff_t>(argc)));
+
 	std::filesystem::path outputPath{};
 	std::vector<std::array<std::string, 2>> customMacros{};
-	if(!CheckForParameters(argc, argv, outputPath, customMacros))
+	if(!CheckForParameters(args, outputPath, customMacros))
 		return 0;
 
 	//Print all customMacros
@@ -25,7 +27,7 @@ int main(const int argc, char* argv[])
 		std::cout << std::get<0>(macro) << " " << std::get<1>(macro) << std::endl;
 
 	Shader shader{};
-	if(!LoadShader(argv[1], shader))
+	if(!LoadShader(args[1], shader))
 		return -1;
 
 	if(!PreProcessGLSL(shader, customMacros))
@@ -46,30 +48,30 @@ int main(const int argc, char* argv[])
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool CheckForParameters(const int argc, char* argv[], std::filesystem::path& outOutputPath,
+[[nodiscard]] bool CheckForParameters(const std::vector<std::string_view>& args, std::filesystem::path& outOutputPath,
                                       std::vector<std::array<std::string, 2>>& outCustomMacros)
 {
 	//Check for no parameters
-	if (argc < 2)
+	if (args.size() < 2)
 	{
-		PrintUsage(argv[0]);
+		PrintUsage(args[0]);
 		return false;
 	}
 
 	//Check for help flag
-	for(int32_t i = 0; i < argc; ++i)
+	for(std::size_t i = 0; i < args.size(); ++i)
 	{
-		if(argv[i] == "-h"sv || argv[i] == "--help"sv)
+		if(args[i] == "-h"sv || args[i] == "--help"sv)
 		{
-			PrintUsage(argv[0]);
+			PrintUsage(args[0]);
 			return false;
 		}
 	}
 
 	//Check for version flag
-	for(int32_t i = 0; i < argc; ++i)
+	for(const std::string_view arg : args)
 	{
-		if(argv[i] == "--version"sv)
+		if(arg == "--version"sv)
 		{
 			PrintVersion();
 			return false;
@@ -77,31 +79,29 @@ int main(const int argc, char* argv[])
 	}
 
 	//Check for custom output file name
-	for(int32_t i = 0; i < argc; ++i)
+	for(std::size_t i = 0; i < args.size(); ++i)
 	{
-		if(argv[i] == "-o"sv || argv[i] == "--output"sv)
+		if(args[i] == "-o"sv || args[i] == "--output"sv)
 		{
-			if(i + 1 < argc)
+			if(i + 1 < args.size())
 			{
-				outOutputPath = argv[i + 1];
+				outOutputPath = args[i + 1];
 				break;
 			}
-			else
-			{
-				std::cerr << "No output file name specified!\n";
-				return false;
-			}
+
+			std::cerr << "No output file name specified!\n";
+			return false;
 		}
 	}
 
 	//Check for custom macros
-	for(int32_t i = 0; i < argc; ++i)
+	for(std::size_t i = 0; i < args.size(); ++i)
 	{
-		if(argv[i] == "-m"sv || argv[i] == "--macro"sv)
+		if(args[i] == "-m"sv || args[i] == "--macro"sv)
 		{
-			if(i + 1 < argc)
+			if(i + 1 < args.size())
 			{
-				std::string macro = argv[i + 1];
+				std::string macro = std::string(args[i + 1]);
 				std::size_t equalSign = macro.find('=');
 				if(equalSign == std::string::npos)
 				{
@@ -109,12 +109,10 @@ int main(const int argc, char* argv[])
 					std::cerr << "Skipping macro\n";
 					continue;
 				}
-				else
-				{
-					std::string name = macro.substr(0, equalSign);
-					std::string value = macro.substr(equalSign + 1);
-					outCustomMacros.push_back({ name, value });
-				}
+
+				std::string name = macro.substr(0, equalSign);
+				std::string value = macro.substr(equalSign + 1);
+				outCustomMacros.push_back({ name, value });
 			}
 			else
 			{

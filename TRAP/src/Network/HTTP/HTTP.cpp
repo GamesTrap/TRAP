@@ -31,7 +31,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "Utils/String/String.h"
 
-TRAP::Network::HTTP::Request::Request(const std::string uri, const Method method, std::string body)
+TRAP::Network::HTTP::Request::Request(std::string uri, const Method method, std::string body)
 	: m_method(method), m_majorVersion(1), m_minorVersion(0), m_body(std::move(body))
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
@@ -225,7 +225,7 @@ void TRAP::Network::HTTP::Response::Parse(const std::string& data)
 	{
 		if((version.size() >= 8) && (version[6] == '.') &&
 		   (Utils::String::ToLower(version.substr(0, 5)) == "http/") &&
-			std::isdigit(version[5]) && std::isdigit(version[7]))
+			(std::isdigit(version[5]) != 0) && (std::isdigit(version[7]) != 0))
 		{
 			m_majorVersion = static_cast<uint32_t>(version[5] - '0');
 			m_minorVersion = static_cast<uint32_t>(version[7] - '0');
@@ -318,19 +318,19 @@ void TRAP::Network::HTTP::Response::ParseFields(std::istream& in)
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Network::HTTP::HTTP() noexcept
-	: m_port(0)
+	: m_host(), m_hostIPv6(), m_port(0)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::HTTP::HTTP(const std::string host, const uint16_t port)
-	: m_port(0)
+TRAP::Network::HTTP::HTTP(const std::string& host, const uint16_t port)
+	: m_host(), m_hostIPv6(), m_port(0)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
-	SetHost(std::move(host), port);
+	SetHost(host, port);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

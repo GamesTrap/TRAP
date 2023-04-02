@@ -402,7 +402,7 @@ bool TRAP::Graphics::Shader::Reload()
 			//TODO RayTracing Shaders i.e. "RayGen" "AnyHit" "ClosestHit" "Miss" "Intersection" ("Callable")
 
 			//Check for duplicate "#shader XXX" defines
-			if (static_cast<uint32_t>(shaderStages & currentShaderStage))
+			if (static_cast<uint32_t>(shaderStages & currentShaderStage) != 0u)
 			{
 				TP_ERROR(Log::ShaderGLSLPrefix, "Found duplicate \"#shader\" define: ", lines[i]);
 				return false;
@@ -448,7 +448,7 @@ bool TRAP::Graphics::Shader::Reload()
 	{
 		if (Utils::String::ToLower(shaders[i]).find("main") == std::string::npos)
 		{
-			if (static_cast<uint32_t>(IndexToStage[i] & shaderStages))
+			if (static_cast<uint32_t>(IndexToStage[i] & shaderStages) != 0u)
 			{
 				TP_ERROR(Log::ShaderGLSLPrefix, StageToStr.at(IndexToStage[i]), " shader couldn't find \"main\" function!");
 				return false;
@@ -475,7 +475,7 @@ bool TRAP::Graphics::Shader::Reload()
 
 		if(!shaders[i].empty())
 		{
-			if(userMacros)
+			if(userMacros != nullptr)
 			{
 				for(const Macro& macro : *userMacros)
 					preprocessed += "#define " + macro.Definition + " " + macro.Value + '\n';
@@ -553,7 +553,7 @@ bool TRAP::Graphics::Shader::Reload()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	if(shader)
+	if(shader != nullptr)
 		program.addShader(shader);
 
 	if(!program.link(static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
@@ -582,47 +582,47 @@ bool TRAP::Graphics::Shader::Reload()
 	}
 
 	//Check for "Normal" Shader Stages combined with Compute
-	if((static_cast<uint32_t>(RendererAPI::ShaderStage::Vertex & shaderStages) ||
-		static_cast<uint32_t>(RendererAPI::ShaderStage::Fragment & shaderStages) ||
-		static_cast<uint32_t>(RendererAPI::ShaderStage::TessellationControl & shaderStages) ||
-		static_cast<uint32_t>(RendererAPI::ShaderStage::TessellationEvaluation & shaderStages) ||
-		static_cast<uint32_t>(RendererAPI::ShaderStage::Geometry & shaderStages)) &&
-		static_cast<uint32_t>(RendererAPI::ShaderStage::Compute & shaderStages))
+	if(((static_cast<uint32_t>(RendererAPI::ShaderStage::Vertex & shaderStages) != 0u) ||
+		(static_cast<uint32_t>(RendererAPI::ShaderStage::Fragment & shaderStages) != 0u) ||
+		(static_cast<uint32_t>(RendererAPI::ShaderStage::TessellationControl & shaderStages) != 0u) ||
+		(static_cast<uint32_t>(RendererAPI::ShaderStage::TessellationEvaluation & shaderStages) != 0u) ||
+		(static_cast<uint32_t>(RendererAPI::ShaderStage::Geometry & shaderStages) != 0u)) &&
+		(static_cast<uint32_t>(RendererAPI::ShaderStage::Compute & shaderStages) != 0u))
 	{
 		TP_ERROR(Log::ShaderGLSLPrefix, "Rasterizer shader stages combined with compute stage!");
 		return false;
 	}
 
 	//Check for "Normal" Shader Stages combined with RayTracing
-	if((static_cast<uint32_t>(RendererAPI::ShaderStage::Vertex & shaderStages) ||
-	    static_cast<uint32_t>(RendererAPI::ShaderStage::Fragment & shaderStages) ||
-		static_cast<uint32_t>(RendererAPI::ShaderStage::TessellationControl & shaderStages) ||
-		static_cast<uint32_t>(RendererAPI::ShaderStage::TessellationEvaluation & shaderStages) ||
-		static_cast<uint32_t>(RendererAPI::ShaderStage::Geometry & shaderStages)) &&
-		static_cast<uint32_t>(RendererAPI::ShaderStage::RayTracing & shaderStages))
+	if(((static_cast<uint32_t>(RendererAPI::ShaderStage::Vertex & shaderStages) != 0u) ||
+	    (static_cast<uint32_t>(RendererAPI::ShaderStage::Fragment & shaderStages) != 0u) ||
+		(static_cast<uint32_t>(RendererAPI::ShaderStage::TessellationControl & shaderStages) != 0u) ||
+		(static_cast<uint32_t>(RendererAPI::ShaderStage::TessellationEvaluation & shaderStages) != 0u) ||
+		(static_cast<uint32_t>(RendererAPI::ShaderStage::Geometry & shaderStages) != 0u)) &&
+		(static_cast<uint32_t>(RendererAPI::ShaderStage::RayTracing & shaderStages) != 0u))
 	{
 		TP_ERROR(Log::ShaderGLSLPrefix, "Rasterizer shader stages combined with ray tracing stage!");
 		return false;
 	}
 
 	//Check for Compute Shader Stage combined with RayTracing
-	if (static_cast<uint32_t>(RendererAPI::ShaderStage::Compute & shaderStages) &&
-		static_cast<uint32_t>(RendererAPI::ShaderStage::RayTracing & shaderStages))
+	if ((static_cast<uint32_t>(RendererAPI::ShaderStage::Compute & shaderStages) != 0u) &&
+		(static_cast<uint32_t>(RendererAPI::ShaderStage::RayTracing & shaderStages) != 0u))
 	{
 		TP_ERROR(Log::ShaderGLSLPrefix, "Compute shader stage combined with ray tracing stage!");
 		return false;
 	}
 
 	//Check for Vertex Shader Stage & required Fragment/Pixel Shader Stage
-	if(static_cast<uint32_t>(RendererAPI::ShaderStage::Vertex & shaderStages) &&
-	   !(static_cast<uint32_t>(RendererAPI::ShaderStage::Fragment & shaderStages)))
+	if((static_cast<uint32_t>(RendererAPI::ShaderStage::Vertex & shaderStages) != 0u) &&
+	   ((static_cast<uint32_t>(RendererAPI::ShaderStage::Fragment & shaderStages)) == 0u))
 	{
 		TP_ERROR(Log::ShaderGLSLPrefix, "Only vertex shader stage provided! Missing fragment/pixel shader stage");
 		return false;
 	}
 	//Check for Fragment/Pixel Shader Stage & required Vertex Shader Stage
-	if(static_cast<uint32_t>(RendererAPI::ShaderStage::Fragment & shaderStages) &&
-	   !(static_cast<uint32_t>(RendererAPI::ShaderStage::Vertex & shaderStages)))
+	if((static_cast<uint32_t>(RendererAPI::ShaderStage::Fragment & shaderStages) != 0u) &&
+	   ((static_cast<uint32_t>(RendererAPI::ShaderStage::Vertex & shaderStages)) == 0u))
 	{
 		TP_ERROR(Log::ShaderGLSLPrefix, "Only fragment/pixel shader stage provided! Missing vertex shader stage");
 		return false;

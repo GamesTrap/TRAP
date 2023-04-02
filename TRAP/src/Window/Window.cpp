@@ -370,7 +370,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 		}
 
 		//Check if Monitor is already used by another window
-		if (s_fullscreenWindows[m_data.Monitor])
+		if (s_fullscreenWindows[m_data.Monitor] != nullptr)
 		{
 			//Check if Monitor is used by another window
 			if(s_fullscreenWindows[m_data.Monitor] != this)
@@ -517,7 +517,7 @@ void TRAP::Window::SetMonitor(Monitor& monitor)
 	if (m_data.displayMode == DisplayMode::Windowed)
 		return;
 
-	if (s_fullscreenWindows[m_data.Monitor]) //Monitor already has a Fullscreen/Borderless Window
+	if (s_fullscreenWindows[m_data.Monitor] != nullptr) //Monitor already has a Fullscreen/Borderless Window
 	{
 		TP_ERROR(Log::WindowPrefix, "Monitor: ", monitor.GetName(), " (", m_data.Monitor,
 		         ") is already used by another window!");
@@ -608,7 +608,7 @@ void TRAP::Window::SetIcon() const
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
 	const std::vector<uint8_t> TRAPLogo{ Embed::TRAPLogo.begin(), Embed::TRAPLogo.end() };
-	INTERNAL::WindowingAPI::SetWindowIcon(*m_window, Image::LoadFromMemory(32, 32, Image::ColorFormat::RGBA,
+	INTERNAL::WindowingAPI::SetWindowIcon(*m_window, Image::LoadFromMemory(32u, 32u, Image::ColorFormat::RGBA,
 	                                                                       TRAPLogo).get());
 }
 
@@ -618,7 +618,7 @@ void TRAP::Window::SetIcon(const Image* const image) const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
-	if (!image)
+	if (image == nullptr)
 	{
 		SetIcon();
 		return;
@@ -937,7 +937,7 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	if (!s_WindowingAPIInitialized)
 	{
-		const int32_t success = INTERNAL::WindowingAPI::Init();
+		const bool success = INTERNAL::WindowingAPI::Init();
 		TRAP_ASSERT(success, "Window::Init(): Couldn't initialize WindowingAPI!");
 		if (!success)
 			Utils::Dialogs::ShowMsgBox("WindowingAPI Error",
@@ -969,7 +969,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		//Store the current VideoMode of each monitor
 		for(std::size_t i = 0; i < monitors.size(); i++)
 		{
-			if(!monitors[i])
+			if(monitors[i] == nullptr)
 				continue;
 
 			const auto currMode = INTERNAL::WindowingAPI::GetVideoMode(*monitors[i]);
@@ -1029,7 +1029,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	m_window = INTERNAL::WindowingAPI::CreateWindow(m_data.Width, m_data.Height,
 		                                            newTitle, nullptr);
 
-	if (!m_window)
+	if (m_window == nullptr)
 	{
 		TRAP::Utils::Dialogs::ShowMsgBox("Failed to create window",
 										 "Failed to create window!\nError code: 0x0009",
@@ -1111,9 +1111,9 @@ void TRAP::Window::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
-	INTERNAL::WindowingAPI::DestroyWindow(std::move(m_window));
+	INTERNAL::WindowingAPI::DestroyWindow(m_window);
 	m_window = nullptr;
-	if (!s_windows)
+	if (s_windows == 0u)
 	{
 		INTERNAL::WindowingAPI::Shutdown();
 		s_WindowingAPIInitialized = false;
@@ -1131,7 +1131,7 @@ void TRAP::Window::SetupEventCallbacks()
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, const int32_t w, const int32_t h)
 		{
 			WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
-			if(!data)
+			if(data == nullptr)
 				return;
 
 			data->Width = w;
@@ -1150,7 +1150,7 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if (!data || !data->EventCallback)
+			if ((data == nullptr) || !data->EventCallback)
 				return;
 
 			if (restored)
@@ -1171,7 +1171,7 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if (!data || !data->EventCallback)
+			if ((data == nullptr) || !data->EventCallback)
 				return;
 
 			if (restored)
@@ -1191,7 +1191,7 @@ void TRAP::Window::SetupEventCallbacks()
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, const int32_t x, const int32_t y)
 		{
 			WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
-			if(!data)
+			if(data == nullptr)
 				return;
 
 			if(data->displayMode == DisplayMode::Windowed && x > 0 && y > 0)
@@ -1213,7 +1213,7 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if (!data || !data->EventCallback)
+			if ((data == nullptr) || !data->EventCallback)
 				return;
 
 			if (focused)
@@ -1234,7 +1234,7 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if (!data || !data->EventCallback)
+			if ((data == nullptr) || !data->EventCallback)
 				return;
 
 			Events::WindowCloseEvent event(data->Win);
@@ -1247,7 +1247,7 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if(!data)
+			if(data == nullptr)
 				return;
 
 			if(state == Input::KeyState::Pressed || state == Input::KeyState::Repeat)
@@ -1292,7 +1292,7 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if (!data || !data->EventCallback)
+			if ((data == nullptr) || !data->EventCallback)
 				return;
 
 			Events::KeyTypeEvent event(codePoint, data->Win);
@@ -1305,7 +1305,7 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if (!data || !data->EventCallback)
+			if ((data == nullptr) || !data->EventCallback)
 				return;
 
 			if (state == Input::KeyState::Pressed)
@@ -1326,7 +1326,7 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if (!data || !data->EventCallback)
+			if ((data == nullptr) || !data->EventCallback)
 				return;
 
 			Events::MouseScrollEvent event(static_cast<float>(xOffset), static_cast<float>(yOffset), data->Win);
@@ -1358,7 +1358,7 @@ void TRAP::Window::SetupEventCallbacks()
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, const int32_t w, const int32_t h)
 		{
 			WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
-			if(!data)
+			if(data == nullptr)
 				return;
 
 			data->Width = w;
@@ -1377,7 +1377,7 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if (!data || !data->EventCallback)
+			if ((data == nullptr) || !data->EventCallback)
 				return;
 
 			if (entered)
@@ -1398,7 +1398,7 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if (!data || !data->EventCallback)
+			if ((data == nullptr) || !data->EventCallback)
 				return;
 
 			Events::WindowDropEvent event(std::move(paths), data->Win);
@@ -1411,7 +1411,7 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if (!data || !data->EventCallback)
+			if ((data == nullptr) || !data->EventCallback)
 				return;
 
 			Events::WindowContentScaleEvent event(xScale, yScale, data->Win);
@@ -1432,16 +1432,16 @@ void TRAP::Window::SetupEventCallbacks()
 			exit(0x000C);
 		}
 
-		if(!mon.Window)
+		if(mon.Window == nullptr)
 			return;
 
 		const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(*mon.Window));
-		if(!data)
+		if(data == nullptr)
 			return;
 
 		for (const auto& win : s_fullscreenWindows)
 		{
-			if(!win || win->m_useMonitor != &mon)
+			if((win == nullptr) || win->m_useMonitor != &mon)
 				continue;
 
 			const auto removeWindowIterator = s_fullscreenWindows.begin() + win->m_data.Monitor;

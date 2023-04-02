@@ -102,7 +102,7 @@ namespace TRAP::Utils
 		/// </summary>
 		/// <param name="line">Line to parse.</param>
 		/// <returns>Pair of key and value.</returns>
-		[[nodiscard]] std::pair<std::string, std::string> ParseLine(const std::string_view line) const;
+		[[nodiscard]] std::pair<std::string, std::string> ParseLine(std::string_view line) const;
 
 		bool m_hasChanged;
 		std::vector<std::pair<std::string, std::string>> m_data;

@@ -34,15 +34,11 @@
 #include "Graphics/API/Objects/RenderTarget.h"
 #include "Graphics/API/Objects/RootSignature.h"
 #include "Graphics/API/Objects/PipelineCache.h"
-#include "Graphics/API/Objects/Pipeline.h"
 #include "Graphics/API/Objects/QueryPool.h"
 #include "Graphics/Buffers/VertexBufferLayout.h"
 #include "Graphics/Shaders/Shader.h"
 #include "Graphics/Shaders/ShaderManager.h"
 #include "Graphics/Textures/Texture.h"
-#include "Utils/Dialogs/Dialogs.h"
-#include <memory>
-#include <vulkan/vulkan_core.h>
 
 TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::s_renderer = nullptr;
 //Instance Extensions
@@ -91,7 +87,7 @@ VkPipelineDepthStencilStateCreateInfo TRAP::Graphics::API::VulkanRenderer::Defau
 VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanRenderer::DefaultBlendDesc = UtilToBlendDesc
 (
 	{ {BlendConstant::One}, {BlendConstant::Zero}, {BlendConstant::One}, {BlendConstant::Zero}, {}, {},
-	  {(BIT(0) | BIT(1) | BIT(2) | BIT(3)) }, BlendStateTargets::BlendStateTargetAll, false
+	  {(BIT(0u) | BIT(1u) | BIT(2u) | BIT(3u)) }, BlendStateTargets::BlendStateTargetAll, false
 	}, DefaultBlendAttachments
 );
 
@@ -1039,7 +1035,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(const ShadingRate shadi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(TRAP::Ref<TRAP::Graphics::RenderTarget> shadingRateTex,
+void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(TRAP::Ref<TRAP::Graphics::RenderTarget> texture,
                                                          const Window* const window) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -1070,7 +1066,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(TRAP::Ref<TRAP::Graphic
 																std::get<0>(gpd.ShadingRateCombiners),
 																std::get<1>(gpd.ShadingRateCombiners));
 
-		p->NewShadingRateTexture = shadingRateTex;
+		p->NewShadingRateTexture = texture;
 	}
 }
 
@@ -1761,7 +1757,7 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const ui
 
 	for (const auto& [score, devUUID] : VulkanPhysicalDevice::GetAllRatedPhysicalDevices(m_instance))
 	{
-		const VkPhysicalDevice dev = VulkanPhysicalDevice::FindPhysicalDeviceViaUUID(m_instance, devUUID);
+		VkPhysicalDevice dev = VulkanPhysicalDevice::FindPhysicalDeviceViaUUID(m_instance, devUUID);
 		VkPhysicalDeviceProperties props;
 		vkGetPhysicalDeviceProperties(dev, &props);
 
@@ -1810,7 +1806,7 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	const uint32_t height = renderTarget->GetTexture()->GetHeight();
 	const uint32_t depth = Math::Max(1u, renderTarget->GetTexture()->GetDepth());
 	const ImageFormat fmt = renderTarget->GetTexture()->GetImageFormat();
-	const uint32_t numBlocksWide = rowPitch / (ImageFormatBitSizeOfBlock(fmt) >> 3);
+	const uint32_t numBlocksWide = rowPitch / (ImageFormatBitSizeOfBlock(fmt) >> 3u);
 
 	//Copy the render target to the staging buffer
 	const uint32_t bufferRowLength = numBlocksWide * ImageFormatWidthOfBlock(fmt);
@@ -2401,7 +2397,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* const window
 	gpd.BlendState->DstAlphaFactors = { BlendConstant::Zero};
 	gpd.BlendState->BlendModes = {};
 	gpd.BlendState->BlendAlphaModes = {};
-	gpd.BlendState->Masks = {(BIT(0) | BIT(1) | BIT(2) | BIT(3))};
+	gpd.BlendState->Masks = {(BIT(0u) | BIT(1u) | BIT(2u) | BIT(3u))};
 	gpd.BlendState->RenderTargetMask = BlendStateTargets::BlendStateTargetAll;
 	gpd.BlendState->IndependentBlend = false;
 
@@ -2829,7 +2825,7 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	std::get<0>(blendStateDesc.DstFactors) = BlendConstant::Zero;
 	std::get<0>(blendStateDesc.SrcAlphaFactors) = BlendConstant::One;
 	std::get<0>(blendStateDesc.SrcFactors) = BlendConstant::One;
-	std::get<0>(blendStateDesc.Masks) = (BIT(0) | BIT(1) | BIT(2) | BIT(3));
+	std::get<0>(blendStateDesc.Masks) = (BIT(0u) | BIT(1u) | BIT(2u) | BIT(3u));
 	blendStateDesc.RenderTargetMask = BlendStateTargets::BlendStateTargetAll;
 	blendStateDesc.IndependentBlend = false;
 	DefaultBlendDesc = UtilToBlendDesc(blendStateDesc, DefaultBlendAttachments);
@@ -2915,7 +2911,7 @@ void TRAP::Graphics::API::VulkanRenderer::RemoveDefaultResources()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(Ref<TRAP::Graphics::Texture> texture,
+void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::Graphics::Texture>& texture,
                                                                 const RendererAPI::ResourceState startState)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -3106,7 +3102,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGPUFrameProfile(const QueueType typ
 	else if(type == QueueType::Compute)
 		buffer = p->ComputeTimestampReadbackBuffers[p->ImageIndex];
 	buffer->MapBuffer(&readRange);
-	if(buffer->GetCPUMappedAddress())
+	if(buffer->GetCPUMappedAddress() != nullptr)
 	{
 		const uint64_t startTime = *(static_cast<uint64_t*>(buffer->GetCPUMappedAddress()) + 0);
 		const uint64_t endTime = *(static_cast<uint64_t*>(buffer->GetCPUMappedAddress()) + 1);

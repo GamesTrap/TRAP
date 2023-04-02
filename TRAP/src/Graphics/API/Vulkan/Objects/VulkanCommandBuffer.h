@@ -252,7 +252,7 @@ namespace TRAP::Graphics::API
 		/// <param name="texture">Texture to update.</param>
 		/// <param name="srcBuffer">Source buffer to read data from.</param>
 		/// <param name="subresourceDesc">Subresource description.</param>
-		void UpdateSubresource(const TRAP::Graphics::Texture* const texture, const TRAP::Ref<Buffer>& srcBuffer,
+		void UpdateSubresource(const TRAP::Graphics::Texture* texture, const TRAP::Ref<Buffer>& srcBuffer,
 		                       const RendererAPI::SubresourceDataDesc& subresourceDesc) const override;
 		/// <summary>
 		/// Copy a texture partially into a buffer.
@@ -260,7 +260,7 @@ namespace TRAP::Graphics::API
 		/// <param name="dstBuffer">Destination to copy data into.</param>
 		/// <param name="texture">Source texture to copy from.</param>
 		/// <param name="subresourceDesc">Subresource description.</param>
-		void CopySubresource(const Buffer* const dstBuffer, const Texture* const texture,
+		void CopySubresource(const Buffer* dstBuffer, const Texture* texture,
 		                     const RendererAPI::SubresourceDataDesc& subresourceDesc) const override;
 
 		/// <summary>
@@ -365,8 +365,8 @@ namespace TRAP::Graphics::API
 		/// <param name="srcState">Source texture state.</param>
 		/// <param name="dstImage">Destination non-multisample color texture to resolve into.</param>
 		/// <param name="dstState">Destination texture state.</param>
-		void ResolveImage(Ref<API::VulkanTexture> srcImage, RendererAPI::ResourceState srcState,
-		                  Ref<API::VulkanTexture> dstImage, RendererAPI::ResourceState dstState) const;
+		void ResolveImage(const Ref<API::VulkanTexture>& srcImage, RendererAPI::ResourceState srcState,
+		                  const Ref<API::VulkanTexture>& dstImage, RendererAPI::ResourceState dstState) const;
 
 		/// <summary>
 		/// Retrieve the currently active VkRenderPass.

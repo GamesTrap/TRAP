@@ -73,7 +73,7 @@
 	std::vector<ShaderVariable> variables;
 	std::size_t variableCount = 0;
 
-	const TRAP::Ref<PipelineReflection> out = TRAP::MakeRef<PipelineReflection>();
+	TRAP::Ref<PipelineReflection> out = TRAP::MakeRef<PipelineReflection>();
 
 	std::array<ShaderResource*, 512> uniqueResources{};
 	std::array<RendererAPI::ShaderStage, 512> shaderUsage{};
@@ -149,7 +149,7 @@
 	}
 
 	//Copy over the shader resources in a dynamic array of the correct size
-	if(resourceCount)
+	if(resourceCount != 0u)
 	{
 		resources.resize(resourceCount);
 
@@ -161,7 +161,7 @@
 	}
 
 	//Copy over the shader variables in a dynamic array of the correct size
-	if(variableCount)
+	if(variableCount != 0u)
 	{
 		variables.resize(variableCount);
 

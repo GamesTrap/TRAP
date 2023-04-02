@@ -3,7 +3,6 @@
 
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
-#include <vulkan/vulkan_core.h>
 
 [[nodiscard]] VkApplicationInfo TRAP::Graphics::API::VulkanInits::ApplicationInfo(const std::string_view appName)
 {
@@ -526,7 +525,7 @@
 	VkSubpassDescription2KHR subpass{};
 
 	subpass.sType = VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_2_KHR;
-	subpass.pNext = shadingRateAttachment ? shadingRateAttachment : nullptr;
+	subpass.pNext = shadingRateAttachment != nullptr ? shadingRateAttachment : nullptr;
 	subpass.flags = 0;
 	subpass.pipelineBindPoint = bindPoint;
 	subpass.viewMask = 0;
@@ -554,7 +553,7 @@
 	VkSubpassDescription2KHR subpass{};
 
 	subpass.sType = VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_2_KHR;
-	subpass.pNext = shadingRateAttachment ? shadingRateAttachment : nullptr;
+	subpass.pNext = shadingRateAttachment != nullptr ? shadingRateAttachment : nullptr;
 	subpass.flags = 0;
 	subpass.pipelineBindPoint = bindPoint;
 	subpass.viewMask = 0;
@@ -1137,7 +1136,7 @@
 	info.pNext = nullptr;
 	info.flags = 0;
 	info.topology = topology;
-	info.primitiveRestartEnable = primitiveRestart;
+	info.primitiveRestartEnable = static_cast<VkBool32>(primitiveRestart);
 
 	return info;
 }
@@ -1191,7 +1190,7 @@
 	info.pNext = nullptr;
 	info.flags = 0;
 	info.rasterizationSamples = sampleCount;
-	info.sampleShadingEnable = sampleShading;
+	info.sampleShadingEnable = static_cast<VkBool32>(sampleShading);
 	info.minSampleShading = sampleShading ? sampleShadingRate : 0.0f;
 	info.pSampleMask = nullptr;
 	info.alphaToCoverageEnable = VK_FALSE;

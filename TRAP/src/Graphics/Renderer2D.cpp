@@ -15,7 +15,6 @@
 #include "Graphics/Cameras/Editor/EditorCamera.h"
 #include "Scene/Components.h"
 #include "Graphics/Cameras/Orthographic/OrthographicCamera.h"
-#include "Graphics/Cameras/Editor/EditorCamera.h"
 #include "Graphics/Textures/SubTexture2D.h"
 #include <cstdint>
 
@@ -93,7 +92,7 @@ namespace TRAP::Graphics
 			void ExtendBuffers(); //Extend buffers to allow for an additional draw call
 			uint32_t DrawBuffers(UniformBuffer* camera);
 
-			[[nodiscard]] uint32_t GetTextureIndex(Ref<Texture> texture);
+			[[nodiscard]] uint32_t GetTextureIndex(const Ref<Texture>& texture);
 		} QuadData;
 
 		//-------------------------------------------------------------------------------------------------------------------//
@@ -402,7 +401,7 @@ uint32_t TRAP::Graphics::Renderer2DData::QuadData::DrawBuffers(UniformBuffer* ca
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint32_t TRAP::Graphics::Renderer2DData::QuadData::GetTextureIndex(Ref<Texture> texture)
+[[nodiscard]] uint32_t TRAP::Graphics::Renderer2DData::QuadData::GetTextureIndex(const Ref<Texture>& texture)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -817,16 +816,16 @@ void TRAP::Graphics::Renderer2D::EndScene()
 
 	auto& currData = s_data[s_dataIndex];
 
-	currData.Stats.DrawCalls += currData.QuadData.DrawBuffers(currData.CameraUniformBuffer.get());
-	currData.Stats.DrawCalls += currData.CircleData.DrawBuffers(currData.CameraUniformBuffer.get());
-	currData.Stats.DrawCalls += currData.LineData.DrawBuffers(currData.CameraUniformBuffer.get());
+	Renderer2DData::Stats.DrawCalls += currData.QuadData.DrawBuffers(currData.CameraUniformBuffer.get());
+	Renderer2DData::Stats.DrawCalls += currData.CircleData.DrawBuffers(currData.CameraUniformBuffer.get());
+	Renderer2DData::Stats.DrawCalls += currData.LineData.DrawBuffers(currData.CameraUniformBuffer.get());
 
 	s_dataIndex++;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer2D::SetCustomSampler(TRAP::Ref<TRAP::Graphics::Sampler> sampler)
+void TRAP::Graphics::Renderer2D::SetCustomSampler(const TRAP::Ref<TRAP::Graphics::Sampler>& sampler)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -848,20 +847,20 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, Ref<Texture> texture)
+void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Ref<Texture>& texture)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if(texture->GetType() != TextureType::Texture2D)
 		return;
 
-	DrawQuad(transform, Math::Vec4(1.0f), std::move(texture));
+	DrawQuad(transform, Math::Vec4(1.0f), texture);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math::Vec4& color,
-                                          Ref<Texture> texture)
+                                          const Ref<Texture>& texture)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -875,25 +874,25 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 	else
 		transformation = Math::Translate(transform.Position) * Math::Scale(transform.Scale);
 
-	DrawQuad(transformation, color, std::move(texture), nullptr);
+	DrawQuad(transformation, color, texture, nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const TRAP::Ref<SubTexture2D> texture)
+void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const TRAP::Ref<SubTexture2D>& texture)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if(!texture || texture->GetTexture()->GetType() != TextureType::Texture2D)
 		return;
 
-	DrawQuad(transform, Math::Vec4(1.0f), std::move(texture));
+	DrawQuad(transform, Math::Vec4(1.0f), texture);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math::Vec4& color,
-                                          const TRAP::Ref<SubTexture2D> texture)
+                                          const TRAP::Ref<SubTexture2D>& texture)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -913,7 +912,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Math::Vec4& color,
-                                          Ref<Texture> texture, const std::array<Math::Vec2, 4>* const texCoords,
+                                          const Ref<Texture>& texture, const std::array<Math::Vec2, 4>* const texCoords,
 										  const int32_t entityID)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
@@ -939,13 +938,13 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
 	}
 
 	Ref<Texture> tex = texture ? texture : Renderer2DData::QuadData::WhiteTexture;
-	const uint32_t textureIndex = currData.QuadData.GetTextureIndex(std::move(tex));
+	const uint32_t textureIndex = currData.QuadData.GetTextureIndex(tex);
 
 	for (uint64_t i = 0; i < quadVertexCount; i++)
 	{
 		currData.QuadData.VertexBufferPtr->Position = Math::Vec3(transform * Renderer2DData::QuadData::VertexPositions[i]);
 		currData.QuadData.VertexBufferPtr->Color = color;
-		currData.QuadData.VertexBufferPtr->TexCoord = texCoords ? (*texCoords)[i] : textureCoords[i];
+		currData.QuadData.VertexBufferPtr->TexCoord = texCoords != nullptr ? (*texCoords)[i] : textureCoords[i];
 		currData.QuadData.VertexBufferPtr->TexIndex = static_cast<float>(textureIndex);
 		currData.QuadData.VertexBufferPtr->EntityID = entityID;
 		currData.QuadData.VertexBufferPtr++;

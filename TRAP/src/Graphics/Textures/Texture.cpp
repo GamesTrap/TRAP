@@ -165,7 +165,7 @@
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(*name), std::move(filepath), type, cubeFormat);
+		texture = TRAP::MakeRef<API::VulkanTexture>(*name, std::move(filepath), type, cubeFormat);
 
 		//Hot Reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
@@ -778,7 +778,7 @@ void TRAP::Graphics::Texture::Update(const void* const data, const uint32_t size
 	updateDesc.Texture = this;
 	updateDesc.MipLevel = mipLevel;
 	updateDesc.ArrayLayer = arrayLayer;
-	TRAP::Graphics::RendererAPI::GetResourceLoader()->BeginUpdateResource(updateDesc);
+	TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(updateDesc);
 	if(updateDesc.DstRowStride == updateDesc.SrcRowStride) //Single copy is enough
 		std::copy_n(static_cast<const uint8_t*>(data), updateDesc.RowCount * updateDesc.SrcRowStride,
 		            static_cast<uint8_t*>(updateDesc.MappedData));
@@ -1042,8 +1042,7 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::Texture::Texture() noexcept
-	: m_name(),
-	  m_syncToken(0),
+	: m_syncToken(0),
 	  m_textureType(TextureType::Texture2D),
 	  m_width(2),
 	  m_height(2),

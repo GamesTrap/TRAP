@@ -131,8 +131,8 @@ namespace TRAP
 
 		ScriptableEntity* Instance = nullptr;
 
-		PFN_InstantiateScript InstantiateScript;
-		PFN_DestroyScript DestroyScript;
+		PFN_InstantiateScript InstantiateScript = nullptr;
+		PFN_DestroyScript DestroyScript = nullptr;
 
 		template<typename T>
 		void Bind()

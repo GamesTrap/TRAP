@@ -87,7 +87,7 @@ namespace TRAP::Graphics
 		/// <param name="cubeFormat">Format of the cube texture. Ignored when using TextureType::Texture2D.</param>
 		/// <param name="flags">Additional flags. Default: None.</param>
 		/// <returns>Loaded texture on success, Fallback texture otherwise.</returns>
-		[[nodiscard]] static Ref<Texture> CreateFromImage(std::string name, const TRAP::Image* const img, TextureType type,
+		[[nodiscard]] static Ref<Texture> CreateFromImage(std::string name, const TRAP::Image* img, TextureType type,
 		                                                  TextureCubeFormat cubeFormat = TextureCubeFormat::NONE,
 											              TextureCreationFlags flags = TextureCreationFlags::None);
 		/// <summary>
@@ -285,7 +285,7 @@ namespace TRAP::Graphics
 		/// Set the texture name.
 		/// </summary>
 		/// <param name="name">Name for the texture.</param>
-        virtual void SetTextureName(const std::string_view name) const = 0;
+        virtual void SetTextureName(std::string_view name) const = 0;
 
 		/// <summary>
 		/// Retrieve whether the texture owns the image data.
@@ -316,7 +316,7 @@ namespace TRAP::Graphics
 		/// <param name="image">Image to split.</param>
 		/// <returns>Array of splitted textures.</returns>
 		template<typename T>
-		[[nodiscard]] static std::array<TRAP::Scope<TRAP::Image>, 6> SplitImageFromCross(const TRAP::Image* const image);
+		[[nodiscard]] static std::array<TRAP::Scope<TRAP::Image>, 6> SplitImageFromCross(const TRAP::Image* image);
 
 	protected:
 		/// <summary>
@@ -355,13 +355,13 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="img">Image to rotate.</param>
 		/// <returns>Rotated image.</returns>
-		[[nodiscard]] static TRAP::Scope<TRAP::Image> Rotate90Clockwise(const TRAP::Image* const img);
+		[[nodiscard]] static TRAP::Scope<TRAP::Image> Rotate90Clockwise(const TRAP::Image* img);
 		/// <summary>
 		/// Rotate image 90 degrees counter clockwise.
 		/// </summary>
 		/// <param name="img">Image to rotate.</param>
 		/// <returns>Rotated image.</returns>
-		[[nodiscard]] static TRAP::Scope<TRAP::Image> Rotate90CounterClockwise(const TRAP::Image* const img);
+		[[nodiscard]] static TRAP::Scope<TRAP::Image> Rotate90CounterClockwise(const TRAP::Image* img);
 
 		/// <summary>
 		/// Constructor.

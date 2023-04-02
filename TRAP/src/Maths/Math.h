@@ -2934,7 +2934,7 @@ namespace TRAP::Math
 	/// <param name="hsvValue">Specifies the color in HSV color space.</param>
 	/// <returns>The color in RGB color space.</returns>
 	template<typename T>
-	[[nodiscard]] constexpr Vec<3, T> RGBColor(const Vec<3, T>& hsvValue);
+	[[nodiscard]] constexpr Vec<3, T> RGBColor(const Vec<3, T>& hsvColor);
 
 	/// <summary>
 	/// Converts a color from RGB color space to its color in HSV color space.
@@ -2943,7 +2943,7 @@ namespace TRAP::Math
 	/// <param name="rgbValue">Specifies the color in RGB color space.</param>
 	/// <returns>The color in HSV color space.</returns>
 	template<typename T>
-	[[nodiscard]] constexpr Vec<3, T> HSVColor(const Vec<3, T>& rgbValue);
+	[[nodiscard]] constexpr Vec<3, T> HSVColor(const Vec<3, T>& rgbColor);
 
 	/// <summary>
 	/// Build a saturation matrix.
@@ -2952,7 +2952,7 @@ namespace TRAP::Math
 	/// <param name="s"></param>
 	/// <returns>Saturation matrix.</returns>
 	template<typename T>
-	[[nodiscard]] constexpr Mat<4, 4, T> Saturation(const T s) noexcept;
+	[[nodiscard]] constexpr Mat<4, 4, T> Saturation(T s) noexcept;
 
 	/// <summary>
 	/// Modify the saturation of a color.
@@ -2962,7 +2962,7 @@ namespace TRAP::Math
 	/// <param name="color">Color to modify.</param>
 	/// <returns>Color with new saturation.</returns>
 	template<typename T>
-	[[nodiscard]] constexpr Vec<3, T> Saturation(const T s, const Vec<3, T>& color) noexcept;
+	[[nodiscard]] constexpr Vec<3, T> Saturation(T s, const Vec<3, T>& color) noexcept;
 
 	/// <summary>
 	/// Modify the saturation of a color.
@@ -2972,7 +2972,7 @@ namespace TRAP::Math
 	/// <param name="color">Color to modify.</param>
 	/// <returns>Color with new saturation.</returns>
 	template<typename T>
-	[[nodiscard]] constexpr Vec<4, T> Saturation(const T s, const Vec<4, T>& color) noexcept;
+	[[nodiscard]] constexpr Vec<4, T> Saturation(T s, const Vec<4, T>& color) noexcept;
 
 	/// <summary>
 	/// Compute color luminosity associating ratios (0.33, 0.59, 0.11) to RGB canals.
@@ -2999,7 +2999,7 @@ namespace TRAP::Math
 	/// <param name="colorLinear">Color in linear space.</param>
 	/// <returns>Color in sRGB space.</returns>
 	template<uint32_t L, typename T>
-	[[nodiscard]] Vec<L, T> ConvertLinearToSRGB(const Vec<L, T>& colorLinear, const T gamma);
+	[[nodiscard]] Vec<L, T> ConvertLinearToSRGB(const Vec<L, T>& colorLinear, T gamma);
 
 	/// <summary>
 	/// Convert a sRGB color to linear color using a standard gamma correction.
@@ -3017,7 +3017,7 @@ namespace TRAP::Math
 	/// <param name="colorSRGB">Color in sRGB space.</param>
 	/// <returns>Color in linear space.</returns>
 	template<uint32_t L, typename T>
-	[[nodiscard]] Vec<L, T> ConvertSRGBToLinear(const Vec<L, T>& colorSRGB, const T gamma);
+	[[nodiscard]] Vec<L, T> ConvertSRGBToLinear(const Vec<L, T>& colorSRGB, T gamma);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	//Other--------------------------------------------------------------------------------------------------------------//
@@ -3029,7 +3029,7 @@ namespace TRAP::Math
 	/// <param name="x">Integer to check.</param>
 	/// <returns>True if the given integer is odd, false otherwise.</returns>
 	template<typename T>
-	[[nodiscard]] constexpr bool IsOdd(const T x);
+	[[nodiscard]] constexpr bool IsOdd(T x);
 
 
 	/// <summary>
@@ -3048,7 +3048,7 @@ namespace TRAP::Math
 	/// <param name="x">Integer to check.</param>
 	/// <returns>True if the given integer is even, false otherwise.</returns>
 	template<typename T>
-	[[nodiscard]] constexpr bool IsEven(const T x);
+	[[nodiscard]] constexpr bool IsEven(T x);
 
 
 	/// <summary>
@@ -3067,7 +3067,7 @@ namespace TRAP::Math
 	/// <param name="x">Number to check.</param>
 	/// <returns>True if the given number is finite, false otherwise.</returns>
 	template<typename T>
-	[[nodiscard]] constexpr bool IsFinite(const T x) noexcept;
+	[[nodiscard]] constexpr bool IsFinite(T x) noexcept;
 
 	/// <summary>
 	/// Returns whether the given numbers are finite or not.
@@ -5162,13 +5162,11 @@ template<typename T, typename S>
 		//Linear interpolation
 		return tQuat<T>(Mix(x.w, z.w, a), Mix(x.x, z.x, a), Mix(x.y, z.y, a), Mix(x.z, z.z, a));
 	}
-	else
-	{
-		//Graphics Gems III, page 96
-		const T angle = ACos(cosTheta);
-		const T phi = angle + static_cast<T>(k) * PI<T>();
-		return (Sin(angle - a * phi) * x + Sin(a * phi) * z) / Sin(angle);
-	}
+
+	//Graphics Gems III, page 96
+	const T angle = ACos(cosTheta);
+	const T phi = angle + static_cast<T>(k) * PI<T>();
+	return (Sin(angle - a * phi) * x + Sin(a * phi) * z) / Sin(angle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5415,7 +5413,7 @@ template <typename T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<4, bool> result;
+	Vec<4, bool> result{};
 	for (uint32_t i = 0; i < x.Length(); ++i)
 		result[i] = x[i] == y[i];
 
@@ -5438,7 +5436,7 @@ template <typename T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<4, bool> result;
+	Vec<4, bool> result{};
 	for (uint32_t i = 0; i < x.Length(); ++i)
 		result[i] = x[i] != y[i];
 

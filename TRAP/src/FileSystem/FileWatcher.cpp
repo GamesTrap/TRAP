@@ -430,7 +430,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
     //Lambda function for shutting down when an error has occurred
     const auto ErrorShutdown = [this, watchDescriptors, fileDescriptors]()
     {
-        for(auto& [wDesc, path] : watchDescriptors)
+        for(const auto& [wDesc, path] : watchDescriptors)
         {
             if(inotify_rm_watch(std::get<0>(fileDescriptors).fd, wDesc) < 0)
                 TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to remove watch descriptor of path: ", path, " (", Utils::String::GetStrError(), ")");
@@ -492,14 +492,14 @@ void TRAP::FileSystem::FileWatcher::Watch()
             return;
         }
 
-        if((std::get<0>(fileDescriptors).revents != 0 && (std::get<0>(fileDescriptors).revents & POLLHUP || std::get<0>(fileDescriptors).revents & POLLERR)) ||
-           (std::get<1>(fileDescriptors).revents != 0 && (std::get<1>(fileDescriptors).revents & POLLHUP || std::get<1>(fileDescriptors).revents & POLLERR)))
+        if((std::get<0>(fileDescriptors).revents != 0 && (((std::get<0>(fileDescriptors).revents & POLLHUP) != 0) || ((std::get<0>(fileDescriptors).revents & POLLERR) != 0))) ||
+           (std::get<1>(fileDescriptors).revents != 0 && (((std::get<1>(fileDescriptors).revents & POLLHUP) != 0) || ((std::get<1>(fileDescriptors).revents & POLLERR) != 0))))
         {
             TP_ERROR(Log::FileWatcherLinuxPrefix, "Polling error");
             ErrorShutdown();
             return;
         }
-        if(std::get<1>(fileDescriptors).revents & POLLIN)
+        if((std::get<1>(fileDescriptors).revents & POLLIN) != 0)
         {
             uint64_t value = 0;
             const ssize_t len = read(std::get<1>(fileDescriptors).fd, &value, sizeof(value));
@@ -541,7 +541,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
         while(offset < static_cast<std::size_t>(len)) //Process events
         {
             const inotify_event* const event = reinterpret_cast<const inotify_event*>(buf.data() + offset); //Must use reinterpret_cast because of flexible array member
-            if(!event->len)
+            if(event->len == 0u)
             {
                 offset += sizeof(inotify_event) + event->len;
                 continue;
@@ -552,7 +552,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
             const bool isDir = std::filesystem::is_directory(filePath);
             std::optional<std::filesystem::path> oldFileName = std::nullopt;
 
-            if(event->mask & IN_CREATE)
+            if((event->mask & IN_CREATE) != 0u)
             {
                 if(isDir && m_recursive) //Add to tracking list
                 {
@@ -571,7 +571,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
 
                 status = FileStatus::Created;
             }
-            else if(event->mask & IN_DELETE)
+            else if((event->mask & IN_DELETE) != 0u)
             {
                 if(isDir && m_recursive) //Remove from tracking list
                 {
@@ -582,14 +582,14 @@ void TRAP::FileSystem::FileWatcher::Watch()
 
                 status = FileStatus::Erased;
             }
-            else if(event->mask & IN_MODIFY)
+            else if((event->mask & IN_MODIFY) != 0u)
                 status = FileStatus::Modified;
-            else if(event->mask & IN_MOVED_FROM)
+            else if((event->mask & IN_MOVED_FROM) != 0u)
             {
                 oldName = filePath;
                 status = FileStatus::Renamed;
             }
-            else if(event->mask & IN_MOVED_TO) //BUG Some distros (like Ubuntu) seem to not report IN_MOVED_TO on deletion
+            else if((event->mask & IN_MOVED_TO) != 0u) //BUG Some distros (like Ubuntu) seem to not report IN_MOVED_TO on deletion
             {
                 if(filePath.parent_path() == oldName.parent_path())
                 {
@@ -605,7 +605,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
                 }
             }
 
-            if(!(event->mask & IN_MOVED_FROM))
+            if((event->mask & IN_MOVED_FROM) == 0u)
                 events.emplace_back(status, filePath, oldFileName);
 
             offset += sizeof(inotify_event) + event->len;

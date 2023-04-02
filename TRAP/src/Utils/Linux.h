@@ -1,6 +1,10 @@
 #ifndef TRAP_LINUX_H
 #define TRAP_LINUX_H
 
+#include "Core/PlatformDetection.h"
+
+#ifdef TRAP_PLATFORM_LINUX
+
 #include <linux/input.h>
 #include <linux/limits.h>
 #include <regex.h>
@@ -17,7 +21,7 @@
 #include <unistd.h>
 #include <dlfcn.h>
 #include <arpa/inet.h>
-#include <signal.h>
+#include <csignal>
 #include <pwd.h>
 #include <poll.h>
 #include <netinet/tcp.h>
@@ -85,5 +89,7 @@
 #ifdef Success
 	#undef Success
 #endif
+
+#endif /*TRAP_PLATFORM_LINUX*/
 
 #endif /*TRAP_LINUX_H*/

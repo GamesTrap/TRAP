@@ -90,7 +90,7 @@ namespace TRAP::Utils::INTERNAL
                               typename = typename std::iterator_traits<U>::reference,
                               typename = typename std::iterator_traits<U>::value_type,
                               typename = typename std::iterator_traits<U>::iterator_category>
-        static long Test(U&&) noexcept { return 0; }
+        static long Test([[maybe_unused]] U&& other) noexcept { return 0; }
     public:
         static constexpr bool value = std::is_same<decltype(Test(std::declval<T>())), long>::value;
     };

@@ -3813,3 +3813,5 @@ SITREP 04/02/2023|23w13d1
     - Changed TRAP Engine version to 23w13d1(0.9.7)
     - WindowingAPIWin32 Added more accurate monitor names ~<20 mins
     - TRAP::CreateApplication() now uses std::vector<std::string_view> for argv/argc paramter ~<5 mins
+    - Added .clang-tidy file ~<5 mins
+    - Resolved most clang-tidy warnings in TRAP ~>120 mins

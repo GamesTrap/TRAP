@@ -111,7 +111,7 @@ namespace TRAP::Graphics
 		/// Use shader for rendering on the given window.
 		/// </summary>
 		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
-		virtual void Use(const Window* const window = TRAP::Application::GetWindow()) = 0;
+		virtual void Use(const Window* window = TRAP::Application::GetWindow()) = 0;
 		/// <summary>
 		/// Use texture with this shader on the given window.
 		/// </summary>
@@ -120,7 +120,7 @@ namespace TRAP::Graphics
 		/// <param name="texture">Texture to use.</param>
 		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
 		virtual void UseTexture(uint32_t set, uint32_t binding, Ref<TRAP::Graphics::Texture> texture,
-		                        const Window* const window = TRAP::Application::GetWindow()) const = 0;
+		                        const Window* window = TRAP::Application::GetWindow()) const = 0;
 		/// <summary>
 		/// Use multiple textures with this shader on the given window.
 		/// </summary>
@@ -130,7 +130,7 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
 		virtual void UseTextures(uint32_t set, uint32_t binding,
 		                         const std::vector<Ref<TRAP::Graphics::Texture>>& textures,
-								 const Window* const window = TRAP::Application::GetWindow()) const = 0;
+								 const Window* window = TRAP::Application::GetWindow()) const = 0;
 		/// <summary>
 		/// Use sampler with this shader on the given window.
 		/// </summary>
@@ -138,8 +138,8 @@ namespace TRAP::Graphics
 		/// <param name="binding">Binding point of the sampler.</param>
 		/// <param name="sampler">Sampler to use.</param>
 		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
-		virtual void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* const sampler,
-		                        const Window* const window = TRAP::Application::GetWindow()) const = 0;
+		virtual void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* sampler,
+		                        const Window* window = TRAP::Application::GetWindow()) const = 0;
 		/// <summary>
 		/// Use multiple samplers with this shader on the given window.
 		/// </summary>
@@ -149,7 +149,7 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
 		virtual void UseSamplers(uint32_t set, uint32_t binding,
 		                         const std::vector<TRAP::Graphics::Sampler*>& samplers,
-								 const Window* const window = TRAP::Application::GetWindow()) const = 0;
+								 const Window* window = TRAP::Application::GetWindow()) const = 0;
 		/// <summary>
 		/// Use uniform buffer object with this shader on the given window.
 		/// </summary>
@@ -159,8 +159,8 @@ namespace TRAP::Graphics
 		/// <param name="size">Size of the UBO.</param>
 		/// <param name="offset">Offset of the UBO.</param>
 		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
-		virtual void UseUBO(uint32_t set, uint32_t binding, const TRAP::Graphics::UniformBuffer* const uniformBuffer,
-							uint64_t size = 0, uint64_t offset = 0, const Window* const window = TRAP::Application::GetWindow()) const = 0;
+		virtual void UseUBO(uint32_t set, uint32_t binding, const TRAP::Graphics::UniformBuffer* uniformBuffer,
+							uint64_t size = 0, uint64_t offset = 0, const Window* window = TRAP::Application::GetWindow()) const = 0;
 		/// <summary>
 		/// Use shader storage buffer object with this shader on the given window.
 		/// </summary>
@@ -169,8 +169,8 @@ namespace TRAP::Graphics
 		/// <param name="storageBuffer">Storage buffer to use.</param>
 		/// <param name="size">Size of the SSBO.</param>
 		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
-		virtual void UseSSBO(uint32_t set, uint32_t binding, const TRAP::Graphics::StorageBuffer* const storageBuffer,
-							 uint64_t size = 0, const Window* const window = TRAP::Application::GetWindow()) const = 0;
+		virtual void UseSSBO(uint32_t set, uint32_t binding, const TRAP::Graphics::StorageBuffer* storageBuffer,
+							 uint64_t size = 0, const Window* window = TRAP::Application::GetWindow()) const = 0;
 
 		/// <summary>
 		/// Retrieve the shaders thread count per work group.
@@ -225,7 +225,7 @@ namespace TRAP::Graphics
 		TRAP::Ref<RootSignature> m_rootSignature;
 		std::array<TRAP::Scope<DescriptorSet>, RendererAPI::MaxDescriptorSets> m_descriptorSets{};
 		std::vector<Macro> m_macros;
-		bool m_valid;
+		bool m_valid{};
 
 	private:
 		/// <summary>

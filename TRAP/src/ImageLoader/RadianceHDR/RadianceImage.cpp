@@ -192,7 +192,7 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 	scanline[0][B] = static_cast<uint8_t>(file.get());
 	i = static_cast<int32_t>(file.get());
 
-	if(scanline[0][G] != 2 || scanline[0][B] & 128)
+	if(scanline[0][G] != 2 || ((scanline[0][B] & 128u) != 0u))
 	{
 		scanline[0][R] = 2;
 		scanline[0][E] = static_cast<uint8_t>(i);
@@ -207,14 +207,14 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 			uint8_t code = static_cast<uint8_t>(file.get());
 			if(code > 128) //RLE
 			{
-				code &= 127;
+				code &= 127u;
 				const uint8_t value = static_cast<uint8_t>(file.get());
-				while (code--)
+				while ((code--) != 0u)
 					scanline[j++][i] = value;
 			}
 			else //Non-RLE
 			{
-				while (code--)
+				while ((code--) != 0u)
 					scanline[j++][i] = static_cast<uint8_t>(file.get());
 			}
 		}
@@ -246,7 +246,7 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 		{
 			for(int32_t i = scanline[0 + scanlineIndex][E] << rshift; i > 0; i--)
 			{
-				std::copy_n(&scanline[-1 + scanlineIndex][0], 4, &scanline[0 + scanlineIndex][0]);
+				std::copy_n(scanline[-1 + scanlineIndex].data(), 4, scanline[0 + scanlineIndex].data());
 				scanlineIndex++;
 				length--;
 			}

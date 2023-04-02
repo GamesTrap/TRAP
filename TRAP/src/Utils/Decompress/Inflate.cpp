@@ -751,7 +751,7 @@ TRAP::Utils::Decompress::INTERNAL::HuffmanTree::HuffmanTree() noexcept
 		if (!HuffmanTree::GetTreeInflateDynamic(treeLL, treeD, reader))
 			return false;
 
-	uint32_t error = false, done = false;
+	bool error = false, done = false;
 	while(!error && !done) //Decode all symbols until end reached, breaks at end code
 	{
 		//Ensure enough bits for 2 huffman code reads (15 bits each): if the first is a literal,
@@ -866,7 +866,7 @@ TRAP::Utils::Decompress::INTERNAL::HuffmanTree::HuffmanTree() noexcept
 	if (reader.Error)
 		return false;
 
-	while(!BFINAL)
+	while(BFINAL == 0u)
 	{
 		if(reader.BitSize - reader.BP < 3) //Error, bit pointer will jump past memory
 			return false;

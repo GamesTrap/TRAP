@@ -80,7 +80,7 @@ namespace TRAP::Graphics
 		/// Calculate the aligned size of the UBO.
 		/// </summary>
 		/// <param name="byteSize">Byte size of the UBO.</param>
-		[[nodiscard]] static uint64_t CalculateAlignedSize(const uint64_t byteSize) noexcept;
+		[[nodiscard]] static uint64_t CalculateAlignedSize(uint64_t byteSize) noexcept;
 
 		/// <summary>
 		/// Create a new uniform buffer and set its size.

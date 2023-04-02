@@ -44,7 +44,7 @@ namespace TRAP::Graphics::ShaderManager
 	/// </summary>
 	/// <param name="shader">Shader to remove.</param>
 	/// <returns>Removed shader on success, nullptr otherwise.</returns>
-	[[maybe_unused]] Ref<Shader> Remove(Ref<Shader> shader);
+	[[maybe_unused]] Ref<Shader> Remove(const Ref<Shader>& shader);
 	/// <summary>
 	/// Remove a shader from the ShaderManager via its name.
 	/// </summary>

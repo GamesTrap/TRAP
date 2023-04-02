@@ -24,7 +24,7 @@ static bool s_glslangInitialized = false;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-enum class ShaderStage
+enum class ShaderStage : uint32_t
 {
 	None                   = 0,
 	Vertex                 = BIT(0),
@@ -70,7 +70,7 @@ struct Shader
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-static const std::unordered_map<ShaderStage, std::string> ShaderStageToString
+inline const std::unordered_map<ShaderStage, std::string_view> ShaderStageToString
 {
     {ShaderStage::Vertex, "Vertex"},
     {ShaderStage::Fragment, "Fragment"},
@@ -94,7 +94,7 @@ inline constexpr std::array<ShaderStage, 7> IndexToShaderStage
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline static const std::unordered_map<ShaderStage, uint32_t> ShaderStageToIndex
+inline const std::unordered_map<ShaderStage, uint32_t> ShaderStageToIndex
 {
     { ShaderStage::Vertex, 0 },
     { ShaderStage::TessellationControl, 1 },
@@ -106,7 +106,7 @@ inline static const std::unordered_map<ShaderStage, uint32_t> ShaderStageToIndex
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline static const std::unordered_map<ShaderStage, EShLanguage> ShaderStageToEShLanguage
+inline const std::unordered_map<ShaderStage, EShLanguage> ShaderStageToEShLanguage
 {
     { ShaderStage::Vertex, EShLangVertex },
     { ShaderStage::TessellationControl, EShLangTessControl },
@@ -120,7 +120,7 @@ inline static const std::unordered_map<ShaderStage, EShLanguage> ShaderStageToES
 
 [[nodiscard]] inline ShaderStage DetectShaderStage(const std::string_view identifyString)
 {
-    static const std::unordered_map<std::string, ShaderStage> stages
+    static const std::unordered_map<std::string_view, ShaderStage> stages
     {
         {"vertex", ShaderStage::Vertex},
         {"fragment", ShaderStage::Fragment},
@@ -164,20 +164,20 @@ inline static const std::unordered_map<ShaderStage, EShLanguage> ShaderStageToES
 	}
 
 	//Check for "Normal" Shader Stages combined with Compute
-	if ((static_cast<uint32_t>(ShaderStage::Vertex                 & stages) ||
-		 static_cast<uint32_t>(ShaderStage::Fragment               & stages) ||
-		 static_cast<uint32_t>(ShaderStage::TessellationControl    & stages) ||
-		 static_cast<uint32_t>(ShaderStage::TessellationEvaluation & stages) ||
-		 static_cast<uint32_t>(ShaderStage::Geometry               & stages)) &&
-		 static_cast<uint32_t>(ShaderStage::Compute                & stages))
+	if (((static_cast<uint32_t>(ShaderStage::Vertex                 & stages) != 0u) ||
+		 (static_cast<uint32_t>(ShaderStage::Fragment               & stages) != 0u) ||
+		 (static_cast<uint32_t>(ShaderStage::TessellationControl    & stages) != 0u) ||
+		 (static_cast<uint32_t>(ShaderStage::TessellationEvaluation & stages) != 0u) ||
+		 (static_cast<uint32_t>(ShaderStage::Geometry               & stages) != 0u)) &&
+		 (static_cast<uint32_t>(ShaderStage::Compute                & stages) != 0u))
 	{
 		std::cerr << "[GLSL] Rasterizer Shader Stages combined with Compute stage!" << '\n';
 		return false;
 	}
 
 	//Check for Vertex Shader Stage & required Fragment/Pixel Shader Stage
-	if (  static_cast<uint32_t>(ShaderStage::Vertex   & stages) &&
-		!(static_cast<uint32_t>(ShaderStage::Fragment & stages)))
+	if (  (static_cast<uint32_t>(ShaderStage::Vertex   & stages) != 0u) &&
+		((static_cast<uint32_t>(ShaderStage::Fragment & stages)) == 0u))
 	{
 		std::cerr << "[GLSL] Only Vertex Shader Stage provided! Missing Fragment/Pixel Shader Stage" << '\n';
 		return false;
@@ -215,7 +215,7 @@ inline static const std::unordered_map<ShaderStage, EShLanguage> ShaderStageToES
             }
 
 			//Check for duplicate "#shader XXX" defines
-			if (static_cast<uint32_t>(shader.Stages & currentShaderStage))
+			if (static_cast<uint32_t>(shader.Stages & currentShaderStage) != 0u)
 			{
 				std::cerr << "[GLSL] Found duplicate \"#shader\" define: " << lines[i] << '\n';
                 std::cerr << "[GLSL] Skipping duplicated shader stage\n";
@@ -233,7 +233,7 @@ inline static const std::unordered_map<ShaderStage, EShLanguage> ShaderStageToES
 	for(std::size_t i = 0; i < shader.SubShaderSources.size(); ++i)
 	{
         if(!FindEntryPoint(shader.SubShaderSources[i].Source) &&
-           static_cast<uint32_t>(IndexToShaderStage.at(i) & shader.Stages))
+           (static_cast<uint32_t>(IndexToShaderStage.at(i) & shader.Stages) != 0u))
         {
             std::cerr << "[GLSL] " << ShaderStageToString.at(IndexToShaderStage.at(i)) << " Shader Couldn't find \"main\" function!\n";
             return false;
@@ -258,6 +258,8 @@ inline static const std::unordered_map<ShaderStage, EShLanguage> ShaderStageToES
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+inline constexpr int32_t GLSLVersion = 460;
+
 [[nodiscard]] inline std::unique_ptr<glslang::TShader> PreProcessGLSLForConversion(const char* source, const ShaderStage stage,
                                                                                    std::string& preProcessedSource)
 {
@@ -265,14 +267,14 @@ inline static const std::unordered_map<ShaderStage, EShLanguage> ShaderStageToES
 
 	shader = std::make_unique<glslang::TShader>(ShaderStageToEShLanguage.at(stage));
 	shader->setStrings(&source, 1);
-	shader->setEnvInput(glslang::EShSourceGlsl, ShaderStageToEShLanguage.at(stage), glslang::EShClientVulkan, 460);
+	shader->setEnvInput(glslang::EShSourceGlsl, ShaderStageToEShLanguage.at(stage), glslang::EShClientVulkan, GLSLVersion);
 
 	shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
 	shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3);
 	glslang::TShader::ForbidIncluder includer;
 	const TBuiltInResource* const DefaultTBuiltInResource = GetDefaultResources();
 	if (!shader->preprocess(DefaultTBuiltInResource,
-		460,
+		GLSLVersion,
 		ECoreProfile,
 		true,
 		true,
@@ -295,7 +297,7 @@ inline static const std::unordered_map<ShaderStage, EShLanguage> ShaderStageToES
 [[nodiscard]] inline bool ParseGLSL(glslang::TShader* shader)
 {
 	const TBuiltInResource* const DefaultTBuiltInResource = GetDefaultResources();
-	if (!shader->parse(DefaultTBuiltInResource, 460, true,
+	if (!shader->parse(DefaultTBuiltInResource, GLSLVersion, true,
                        static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
 	{
 		std::cerr << "[GLSL] Parsing failed:\n";
@@ -312,7 +314,7 @@ inline static const std::unordered_map<ShaderStage, EShLanguage> ShaderStageToES
 
 [[nodiscard]] inline bool LinkGLSL(glslang::TShader* shader, glslang::TProgram& program)
 {
-	if (shader)
+	if (shader != nullptr)
 		program.addShader(shader);
 
 	if (!program.link(static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
@@ -334,7 +336,7 @@ inline static const std::unordered_map<ShaderStage, EShLanguage> ShaderStageToES
 {
 	std::vector<uint32_t> SPIRV{};
 
-    if(!shader)
+    if(shader == nullptr)
         return SPIRV;
 
     spv::SpvBuildLogger logger{};
@@ -398,7 +400,7 @@ inline static const std::unordered_map<ShaderStage, EShLanguage> ShaderStageToES
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline bool SaveSPIRV(Shader& shader, std::filesystem::path customOutput)
+[[nodiscard]] inline bool SaveSPIRV(Shader& shader, const std::filesystem::path& customOutput)
 {
     std::filesystem::path filePath{};
     if(!customOutput.empty())

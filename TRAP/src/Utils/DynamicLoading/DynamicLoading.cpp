@@ -25,7 +25,7 @@
 #endif
 
 	void* handle = dlopen(path.data(), mode);
-	if(!handle)
+	if(handle == nullptr)
 	{
 		TP_ERROR(Log::UtilsPrefix, "Failed to load library: ", path);
 		TP_ERROR(Log::UtilsPrefix, dlerror());

@@ -153,7 +153,7 @@ void TRAP::Graphics::API::VulkanDescriptorPool::Reset()
 		TRAP_ASSERT(false, "VulkanDescriptorPool::RetrieveDescriptorSet(): nullptr Descriptor Set Layout for update frequency. Cannot allocate descriptor set");
 	}
 
-	if(dynamicOffsetCount)
+	if(dynamicOffsetCount != 0u)
 	{
 		TRAP_ASSERT(dynamicOffsetCount == 1, "VulkanDescriptorPool::RetrieveDescriptorSet(): Only 1 dynamic descriptor per set is supported");
 	}

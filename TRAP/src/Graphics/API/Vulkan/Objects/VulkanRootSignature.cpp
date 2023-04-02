@@ -54,16 +54,16 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	//Collect all unique shader resources in the given shaders
 	//Resources are parsed by name (two resources name "XYZ" in two shader will
 	//be considered the same resource)
-	for(auto sh : desc.Shaders)
+	for(auto* sh : desc.Shaders)
 	{
 		const TRAP::Ref<ShaderReflection::PipelineReflection> reflection = dynamic_cast<VulkanShader*>
 		(
 			sh
 		)->GetReflection();
 
-		if (static_cast<uint32_t>(reflection->ShaderStages & RendererAPI::ShaderStage::Compute))
+		if (static_cast<uint32_t>(reflection->ShaderStages & RendererAPI::ShaderStage::Compute) != 0u)
 			pipelineType = RendererAPI::PipelineType::Compute;
-		else if (static_cast<uint32_t>(reflection->ShaderStages & RendererAPI::ShaderStage::RayTracing))
+		else if (static_cast<uint32_t>(reflection->ShaderStages & RendererAPI::ShaderStage::RayTracing) != 0u)
 			pipelineType = RendererAPI::PipelineType::RayTracing;
 		else
 			pipelineType = RendererAPI::PipelineType::Graphics;
@@ -200,7 +200,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 			if (hasStaticSampler)
 			{
 				// TP_INFO("Descriptor (", descInfo.Name, "): User specified Static Sampler");
-				const VkSampler sampler = it->second->GetVkSampler();
+				VkSampler sampler = it->second->GetVkSampler();
 				binding.pImmutableSamplers = &sampler;
 			}
 
@@ -307,7 +307,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	uint32_t descriptorSetLayoutCount = 0;
 	for(uint32_t i = 0; i < RendererAPI::MaxDescriptorSets; ++i)
 	{
-		if (m_vkDescriptorSetLayouts[i])
+		if (m_vkDescriptorSetLayouts[i] != nullptr)
 			descriptorSetLayouts[descriptorSetLayoutCount++] = m_vkDescriptorSetLayouts[i];
 	}
 
@@ -321,7 +321,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	//Update templates
 	for(uint32_t setIndex = 0; setIndex < RendererAPI::MaxDescriptorSets; ++setIndex)
 	{
-		if(m_vkDescriptorCounts[setIndex])
+		if(m_vkDescriptorCounts[setIndex] != 0u)
 		{
 			const VulkanRenderer::UpdateFrequencyLayoutInfo& layout = layouts[setIndex];
 			std::vector<VkDescriptorUpdateTemplateEntry> entries(m_vkDescriptorCounts[setIndex]);

@@ -301,7 +301,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="host">Web server to connect to.</param>
 		/// <param name="port">Port to use for connection.</param>
-		explicit HTTP(std::string host, uint16_t port = 0);
+		explicit HTTP(const std::string& host, uint16_t port = 0);
 
 		/// <summary>
 		/// Move constructor.

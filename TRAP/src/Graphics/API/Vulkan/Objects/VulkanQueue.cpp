@@ -235,13 +235,13 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 	uint32_t presentIndex = desc.Index;
 
 	const Ref<VulkanSwapChain> sChain = std::dynamic_pointer_cast<VulkanSwapChain>(desc.SwapChain);
-	const VkSwapchainKHR sc = sChain->GetVkSwapChain();
+	VkSwapchainKHR sc = sChain->GetVkSwapChain();
 	const VkPresentInfoKHR presentInfo = VulkanInits::PresentInfo(wSemaphores, sc, presentIndex);
 
 	//Lightweigt lock to make sure multiple threads dont use the same queue simultaneously
 	std::lock_guard lock(m_submitMutex);
 	LockMark(m_submitMutex);
-	const VkResult res = vkQueuePresentKHR(sChain->GetPresentVkQueue() ? sChain->GetPresentVkQueue() : m_vkQueue,
+	const VkResult res = vkQueuePresentKHR(sChain->GetPresentVkQueue() != nullptr ? sChain->GetPresentVkQueue() : m_vkQueue,
 	                                       &presentInfo);
 	if (res == VK_SUCCESS)
 		presentStatus = RendererAPI::PresentStatus::Success;

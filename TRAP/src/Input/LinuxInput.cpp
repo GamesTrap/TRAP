@@ -27,9 +27,10 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "TRAPPCH.h"
 #include "Input/Input.h"
-#include <regex>
 
 #ifdef TRAP_PLATFORM_LINUX
+
+#include <regex>
 
 #define TRAP_BUILD_LINUX_MAPPINGS
 
@@ -205,7 +206,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Attempt to open the specified controller device
-bool TRAP::Input::OpenControllerDeviceLinux(const std::filesystem::path path)
+bool TRAP::Input::OpenControllerDeviceLinux(std::filesystem::path path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
@@ -253,7 +254,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::filesystem::path path)
 	}
 
 	//Ensure this device supports the events expected of a controller
-	if(!(EVBits[EV_ABS / 8] & (1 << (EV_ABS % 8))))
+	if((EVBits[EV_ABS / 8u] & (1u << (EV_ABS % 8u))) == 0)
 	{
 		if(close(LinuxCon.FD) < 0)
 		{
@@ -271,21 +272,27 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::filesystem::path path)
 	std::string guid;
 	guid.resize(32);
 	//Generate a controller GUID that matches the SDL 2.0.5+ one
-	if(ID.vendor && ID.product && ID.version)
+	if((ID.vendor != 0u) && (ID.product != 0u) && (ID.version != 0u))
 	{
-		sprintf(guid.data(), "%02x%02x0000%02x%02x0000%02x%02x0000%02x%02x0000",
-			ID.bustype & 0xFF, ID.bustype >> 8,
-			ID.vendor & 0xFF, ID.vendor >> 8,
-			ID.product & 0xFF, ID.product >> 8,
-			ID.version & 0xFF, ID.version >> 8);
+		if(sprintf(guid.data(), "%02x%02x0000%02x%02x0000%02x%02x0000%02x%02x0000",
+			ID.bustype & 0xFFu, ID.bustype >> 8u,
+			ID.vendor & 0xFFu, ID.vendor >> 8u,
+			ID.product & 0xFFu, ID.product >> 8u,
+			ID.version & 0xFFu, ID.version >> 8u) < 0)
+		{
+			return false;
+		}
 	}
 	else
 	{
-		sprintf(guid.data(), "%02x%02x0000%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x00",
-			ID.bustype & 0xFF, ID.bustype >> 8,
+		if(sprintf(guid.data(), "%02x%02x0000%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x00",
+			ID.bustype & 0xFFu, ID.bustype >> 8u,
 			name[0], name[1], name[2], name[3],
 			name[4], name[5], name[6], name[7],
-			name[8], name[9], name[10]);
+			name[8], name[9], name[10]) < 0)
+		{
+			return false;
+		}
 	}
 
 	name.erase(std::find(name.begin(), name.end(), '\0'), name.end());
@@ -293,7 +300,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::filesystem::path path)
 	int axisCount = 0, buttonCount = 0, dpadCount = 0;
 	for(int32_t code = BTN_MISC; code < KEY_CNT; code++)
 	{
-		if(!(keyBits[code / 8] & (1 << (code % 8))))
+		if((keyBits[code / 8u] & (1u << (code % 8u))) == 0u)
 			continue;
 
 		LinuxCon.KeyMap[code - BTN_MISC] = buttonCount;
@@ -303,7 +310,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::filesystem::path path)
 	for(int32_t code = 0; code < ABS_CNT; code++)
 	{
 		LinuxCon.ABSMap[code] = -1;
-		if(!(ABSBits[code / 8] & (1 << (code % 8))))
+		if((ABSBits[code / 8] & (1u << (code % 8u))) == 0u)
 			continue;
 
 		if(code >= ABS_HAT0X && code <= ABS_HAT3Y)
@@ -324,7 +331,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::filesystem::path path)
 	}
 
 	ControllerInternal* const con = AddInternalController(name, guid, axisCount, buttonCount, dpadCount);
-	if(!con)
+	if(con == nullptr)
 	{
 		if(close(LinuxCon.FD) < 0)
 		{
@@ -376,7 +383,7 @@ void TRAP::Input::CloseController(Controller controller)
 	if(connected)
 	{
 		TP_INFO(Log::InputControllerPrefix, "Controller: ",
-		        (con->mapping
+		        (con->mapping != nullptr
 			        ? con->mapping->Name
 			        : con->Name),
 		        " (", static_cast<uint32_t>(controller), ") disconnected!");
@@ -418,9 +425,9 @@ void TRAP::Input::DetectControllerConnectionLinux()
 
 		const std::filesystem::path path = std::filesystem::path("/dev/input") / e->name;
 
-		if (e->mask & (IN_CREATE | IN_ATTRIB))
+		if ((e->mask & (IN_CREATE | IN_ATTRIB)) != 0u)
 			OpenControllerDeviceLinux(path);
-		else if(e->mask & IN_DELETE)
+		else if((e->mask & IN_DELETE) != 0u)
 		{
 			for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Sixteen); cID++)
 			{
@@ -436,7 +443,7 @@ void TRAP::Input::DetectControllerConnectionLinux()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::PollController(Controller controller, PollMode)
+bool TRAP::Input::PollController(Controller controller, [[maybe_unused]] PollMode mode)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
@@ -557,7 +564,7 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* const con, int32_t cod
 		float normalized = static_cast<float>(value);
 
 		const int range = info->maximum - info->minimum;
-		if (range)
+		if (range != 0)
 		{
 			//Normalize to 0.0f -> 1.0f
 			normalized = (normalized - static_cast<float>(info->minimum)) / static_cast<float>(range);
@@ -576,12 +583,12 @@ void TRAP::Input::HandleKeyEventLinux(ControllerInternal* const con, int32_t cod
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if(code - BTN_MISC >= 0)
-		InternalInputControllerButton(con, con->LinuxCon.KeyMap[code - BTN_MISC], value);
+		InternalInputControllerButton(con, con->LinuxCon.KeyMap[code - BTN_MISC], value != 0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::UpdateControllerGUID(std::string&)
+void TRAP::Input::UpdateControllerGUID([[maybe_unused]] std::string& guid)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 }

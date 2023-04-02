@@ -21,7 +21,7 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="texture">Pointer to the affected texture.</param>
-		TextureReloadEvent(TRAP::Ref<TRAP::Graphics::Texture> texture);
+		explicit TextureReloadEvent(TRAP::Ref<TRAP::Graphics::Texture> texture);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -90,7 +90,7 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="shader">Affected shader.</param>
-		ShaderReloadEvent(TRAP::Ref<TRAP::Graphics::Shader> shader);
+		explicit ShaderReloadEvent(TRAP::Ref<TRAP::Graphics::Shader> shader);
 		/// <summary>
 		/// Destructor.
 		/// </summary>

@@ -45,14 +45,14 @@ static constexpr std::array<uint64_t, 80> SHA512_K =
 
 [[nodiscard]] constexpr uint32_t Rotr(const uint32_t x, const int32_t n) noexcept
 {
-	return (x >> n) | (x << (32 - n));
+	return (x >> n) | (x << (32u - n));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr uint64_t Rotr(const uint64_t x, const int32_t n) noexcept
 {
-	return (x >> n) | (x << (64 - n));
+	return (x >> n) | (x << (64u - n));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -272,14 +272,14 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 
 	std::array<uint32_t, 8> hash =
 	{
-		0x6a09e667,
-		0xbb67ae85,
-		0x3c6ef372,
-		0xa54ff53a,
-		0x510e527f,
-		0x9b05688c,
-		0x1f83d9ab,
-		0x5be0cd19
+		0x6a09e667u,
+		0xbb67ae85u,
+		0x3c6ef372u,
+		0xa54ff53au,
+		0x510e527fu,
+		0x9b05688cu,
+		0x1f83d9abu,
+		0x5be0cd19u
 	};
 	std::size_t pos = 0;
 	uint64_t total = 0;
@@ -339,14 +339,14 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 	uint64_t total = 0;
 	std::array<uint64_t, 8> hash =
 	{
-		0x6a09e667f3bcc908,
-		0xbb67ae8584caa73b,
-		0x3c6ef372fe94f82b,
-		0xa54ff53a5f1d36f1,
-		0x510e527fade682d1,
-		0x9b05688c2b3e6c1f,
-		0x1f83d9abfb41bd6b,
-		0x5be0cd19137e2179
+		0x6a09e667f3bcc908u,
+		0xbb67ae8584caa73bu,
+		0x3c6ef372fe94f82bu,
+		0xa54ff53a5f1d36f1u,
+		0x510e527fade682d1u,
+		0x9b05688c2b3e6c1fu,
+		0x1f83d9abfb41bd6bu,
+		0x5be0cd19137e2179u
 	};
 	std::array<uint8_t, 128> m{};
 	const uint8_t* dataPtr = static_cast<const uint8_t*>(data);

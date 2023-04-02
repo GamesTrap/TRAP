@@ -332,7 +332,7 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 
 [[nodiscard]] TRAP::INTERNAL::WindowingAPI::InternalWindow* TRAP::INTERNAL::WindowingAPI::CreateWindow(const uint32_t width,
 	                                                                                                   const uint32_t height,
-	                                                                                                   const std::string title,
+	                                                                                                   std::string title,
 	                                                                                                   InternalMonitor* const monitor)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
@@ -571,8 +571,8 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(InternalCursor* cursor)
 		return nullptr;
 	}
 
-	if (!((image.GetColorFormat() == Image::ColorFormat::RGB && image.GetBitsPerPixel() == 24) ||
-	      (image.GetColorFormat() == Image::ColorFormat::RGBA && image.GetBitsPerPixel() == 32)))
+	if ((image.GetColorFormat() != Image::ColorFormat::RGB || image.GetBitsPerPixel() != 24) &&
+	    (image.GetColorFormat() != Image::ColorFormat::RGBA || image.GetBitsPerPixel() != 32))
 	{
 		InputError(Error::Invalid_Value, "[Cursor] Unsupported BPP or format used!");
 		return nullptr;
@@ -627,7 +627,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(InternalCursor* cursor)
 
 	s_Data.CursorList.push_front(MakeScope<InternalCursor>());
 	InternalCursor* cursor = s_Data.CursorList.front().get();
-	if(!cursor)
+	if(cursor == nullptr)
 		return nullptr;
 
 	if (!PlatformCreateStandardCursor(*cursor, type))
@@ -674,7 +674,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow& window, const I
 		return;
 	}
 
-	if(!image)
+	if(image == nullptr)
 	{
 		PlatformSetWindowIcon(window, nullptr);
 		return;
@@ -698,8 +698,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow& window, const I
 		return;
 	}
 
-	if(!((image->GetColorFormat() == Image::ColorFormat::RGB && image->GetBitsPerPixel() == 24) ||
-		 (image->GetColorFormat() == Image::ColorFormat::RGBA && image->GetBitsPerPixel() == 32)))
+	if((image->GetColorFormat() != Image::ColorFormat::RGB || image->GetBitsPerPixel() != 24) &&
+	   (image->GetColorFormat() != Image::ColorFormat::RGBA || image->GetBitsPerPixel() != 32))
 	{
 		InputError(Error::Invalid_Value, "[Icon] Unsupported BPP or format used!");
 		return;
@@ -730,7 +730,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowPos(const InternalWindow& window, co
 		return;
 	}
 
-	if (window.Monitor)
+	if (window.Monitor != nullptr)
 		return;
 
 	PlatformSetWindowPos(window, xPos, yPos);
@@ -912,7 +912,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowHint(InternalWindow& window, const H
 	{
 	case Hint::Resizable:
 		window.Resizable = value;
-		if (!window.Monitor)
+		if (window.Monitor == nullptr)
 			PlatformSetWindowResizable(window, value);
 		break;
 
@@ -922,13 +922,13 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowHint(InternalWindow& window, const H
 
 	case Hint::Decorated:
 		window.Decorated = value;
-		if (!window.Monitor)
+		if (window.Monitor == nullptr)
 			PlatformSetWindowDecorated(window, value);
 		break;
 
 	case Hint::Floating:
 		window.Floating = value;
-		if (!window.Monitor)
+		if (window.Monitor == nullptr)
 			PlatformSetWindowFloating(window, value);
 		break;
 
@@ -1569,7 +1569,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowProgressIndicator(const InternalWind
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowProgressIndicator(): must only be called from main thread");
-	TRAP_ASSERT(progress >= 0.0 && progress <= 1.0, "WindowingAPI::SetWindowProgressIndicator(): Progress must be between 0.0 and 1.0");
+	TRAP_ASSERT(progress >= 0.0, "WindowingAPI::SetWindowProgressIndicator(): Progress must be between 0.0 and 1.0");
+	TRAP_ASSERT(progress <= 1.0, "WindowingAPI::SetWindowProgressIndicator(): Progress must be between 0.0 and 1.0");
 
 	PlatformSetWindowProgressIndicator(window, state, progress);
 }
@@ -1775,7 +1776,7 @@ void TRAP::INTERNAL::WindowingAPI::ShowWindow(InternalWindow& window)
 		return;
 	}
 
-	if (window.Monitor)
+	if (window.Monitor != nullptr)
 		return;
 
 	PlatformShowWindow(window);
@@ -1819,7 +1820,7 @@ void TRAP::INTERNAL::WindowingAPI::MaximizeWindow(InternalWindow& window)
 		return;
 	}
 
-	if (window.Monitor || !window.Resizable)
+	if ((window.Monitor != nullptr) || !window.Resizable)
 		return;
 
 	PlatformMaximizeWindow(window);
@@ -1879,7 +1880,7 @@ void TRAP::INTERNAL::WindowingAPI::HideWindow(InternalWindow& window)
 		return;
 	}
 
-	if (window.Monitor)
+	if (window.Monitor != nullptr)
 		return;
 
 	PlatformHideWindow(window);
@@ -1940,7 +1941,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSizeLimits(InternalWindow& window,
 	window.MaxWidth = maxWidth;
 	window.MaxHeight = maxHeight;
 
-	if (window.Monitor || !window.Resizable)
+	if ((window.Monitor != nullptr) || !window.Resizable)
 		return;
 
 	PlatformSetWindowSizeLimits(window, minWidth, minHeight, maxWidth, maxHeight);
@@ -1955,7 +1956,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowAspectRatio(InternalWindow& window, 
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowAspectRatio(): must only be called from main thread");
-	TRAP_ASSERT(numerator > 0 && denominator > 0, "WindowingAPI::SetWindowAspectRatio(): Invalid window aspect ratio!");
+	TRAP_ASSERT(numerator > 0, "WindowingAPI::SetWindowAspectRatio(): Invalid window aspect ratio!");
+	TRAP_ASSERT(denominator > 0, "WindowingAPI::SetWindowAspectRatio(): Invalid window aspect ratio!");
 
 	if(numerator != -1 && denominator != -1)
 	{
@@ -1970,7 +1972,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowAspectRatio(InternalWindow& window, 
 	window.Numerator = numerator;
 	window.Denominator = denominator;
 
-	if(window.Monitor || !window.Resizable)
+	if((window.Monitor != nullptr) || !window.Resizable)
 		return;
 
 	PlatformSetWindowAspectRatio(window, numerator, denominator);
@@ -2215,14 +2217,15 @@ void TRAP::INTERNAL::WindowingAPI::InputCursorPos(InternalWindow& window, const 
 	window.VirtualCursorPosX = xPos;
 	window.VirtualCursorPosY = yPos;
 
-	if (window.Callbacks.CursorPos)
+	if (window.Callbacks.CursorPos != nullptr)
 		window.Callbacks.CursorPos(window, xPos, yPos);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of a physical key event
-void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow& window, Input::Key key, const int32_t,
+void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow& window, Input::Key key,
+                                            [[maybe_unused]] const int32_t scancode,
                                             Input::KeyState state)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -2246,7 +2249,7 @@ void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow& window, Input::Key k
 			state = Input::KeyState::Repeat;
 	}
 
-	if (window.Callbacks.Key)
+	if (window.Callbacks.Key != nullptr)
 		window.Callbacks.Key(window, key, state);
 }
 
@@ -2266,7 +2269,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMouseClick(InternalWindow& window, const
 
 	window.MouseButtons[static_cast<uint32_t>(button)] = state;
 
-	if (window.Callbacks.MouseButton)
+	if (window.Callbacks.MouseButton != nullptr)
 		window.Callbacks.MouseButton(window, button, state);
 }
 
@@ -2283,7 +2286,7 @@ void TRAP::INTERNAL::WindowingAPI::InputScroll(const InternalWindow& window, con
 	TRAP_ASSERT(yOffset > -std::numeric_limits<float>::max(), "WindowingAPI::InputScroll(): yOffset is NaN!");
 	TRAP_ASSERT(yOffset <  std::numeric_limits<float>::max(), "WindowingAPI::InputScroll(): yOffset is NaN!");
 
-	if (window.Callbacks.Scroll)
+	if (window.Callbacks.Scroll != nullptr)
 		window.Callbacks.Scroll(window, xOffset, yOffset);
 }
 
@@ -2299,7 +2302,7 @@ void TRAP::INTERNAL::WindowingAPI::InputFrameBufferSize(const InternalWindow& wi
 	TRAP_ASSERT(width >= 0, "WindowingAPI::InputFrameBufferSize(): Width is invalid!");
 	TRAP_ASSERT(height >= 0, "WindowingAPI::InputFrameBufferSize(): Height is invalid!");
 
-	if (window.Callbacks.FBSize)
+	if (window.Callbacks.FBSize != nullptr)
 		window.Callbacks.FBSize(window, width, height);
 }
 
@@ -2315,7 +2318,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowSize(const InternalWindow& window,
 	TRAP_ASSERT(width >= 0, "WindowingAPI::InputWindowSize(): Width is invalid!");
 	TRAP_ASSERT(height >= 0, "WindowingAPI::InputWindowSize(): Height is invalid!");
 
-	if (window.Callbacks.Size)
+	if (window.Callbacks.Size != nullptr)
 		window.Callbacks.Size(window, width, height);
 }
 
@@ -2326,7 +2329,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowFocus(InternalWindow& window, cons
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if (window.Callbacks.Focus)
+	if (window.Callbacks.Focus != nullptr)
 		window.Callbacks.Focus(window, focused);
 
 	if(focused)
@@ -2410,7 +2413,7 @@ void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 	}
 
 	err = vkEnumerateInstanceExtensionProperties(nullptr, &count, nullptr);
-	if (err)
+	if (err != 0)
 	{
 		//NOTE: This happens on systems with a loader but without any Vulkan ICD
 		if (mode == 2)
@@ -2420,10 +2423,10 @@ void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 		return false;
 	}
 
-	std::vector<VkExtensionProperties> ep(count);
+	std::vector<VkExtensionProperties> extensionProps(count);
 
-	err = vkEnumerateInstanceExtensionProperties(nullptr, &count, ep.data());
-	if (err)
+	err = vkEnumerateInstanceExtensionProperties(nullptr, &count, extensionProps.data());
+	if (err != 0)
 	{
 		InputError(Error::API_Unavailable, "[Vulkan] Failed to query instance extensions: " +
 		           GetVulkanResultString(err));
@@ -2432,7 +2435,7 @@ void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 
 	for (uint32_t i = 0; i < count; i++)
 	{
-		const std::string_view ext(ep[i].extensionName);
+		const std::string_view ext(extensionProps[i].extensionName);
 
 		if (ext == "VK_KHR_surface")
 			s_Data.VK.KHR_Surface = true;
@@ -2532,12 +2535,12 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, 
 			mon = s_Data.Monitors.back().get();
 		}
 
-		if(s_Data.Callbacks.Monitor)
+		if(s_Data.Callbacks.Monitor != nullptr)
 			s_Data.Callbacks.Monitor(*mon, connected);
 	}
 	else
 	{
-		if (s_Data.Callbacks.Monitor)
+		if (s_Data.Callbacks.Monitor != nullptr)
 			s_Data.Callbacks.Monitor(*monitor, connected);
 
 		s_Data.Monitors.erase(std::remove(s_Data.Monitors.begin(), s_Data.Monitors.end(), monitor), s_Data.Monitors.end());
@@ -2554,7 +2557,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitorDisconnect(const uint32_t monitor
 
 	const Scope<InternalMonitor>& monitor = s_Data.Monitors[monitorIndex];
 
-	if (s_Data.Callbacks.Monitor)
+	if (s_Data.Callbacks.Monitor != nullptr)
 		s_Data.Callbacks.Monitor(*monitor, false);
 
 	//Remove monitor from monitors list
@@ -2593,6 +2596,6 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowContentScale(const InternalWindow&
 	TRAP_ASSERT(yScale > 0.0f, "WindowingAPI::InputWindowContentScale(): YScale is 0.0f!");
 	TRAP_ASSERT(yScale < std::numeric_limits<float>::max(), "WindowingAPI::InputWindowContentScale(): YScale is too big!");
 
-	if (window.Callbacks.Scale)
+	if (window.Callbacks.Scale != nullptr)
 		window.Callbacks.Scale(window, xScale, yScale);
 }

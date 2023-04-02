@@ -161,9 +161,9 @@ TRAP::Image::Image() noexcept
 	uint32_t index = 0;
 	for (uint32_t i = 0; i < width * height * 2; i += 2)
 	{
-		data[index++] = (source[i + 1] << 1) & 0xF8;
-		data[index++] = ((source[i + 1] << 6) | (source[i] >> 2)) & 0xF8;
-		data[index++] = (source[i] << 3) & 0xF8;
+		data[index++] = (source[i + 1u] << 1u) & 0xF8u;
+		data[index++] = ((source[i + 1u] << 6u) | (source[i] >> 2u)) & 0xF8u;
+		data[index++] = (source[i] << 3u) & 0xF8u;
 	}
 
 	return data;
@@ -209,9 +209,9 @@ TRAP::Image::Image() noexcept
 			data[index++] = colorMap[static_cast<std::size_t>(source[i]) * channels];
 		else if (channels == 2)
 		{
-			data[index++] = (colorMap[source[i] * channels + 1] << 1) & 0xF8;
-			data[index++] = ((colorMap[source[i] * channels + 1] << 6) | (colorMap[static_cast<std::size_t>(source[i]) * channels] >> 2)) & 0xF8;
-			data[index++] = (colorMap[static_cast<std::size_t>(source[i]) * channels] << 3) & 0xF8;
+			data[index++] = (colorMap[source[i] * channels + 1u] << 1u) & 0xF8u;
+			data[index++] = ((colorMap[source[i] * channels + 1u] << 6u) | (colorMap[static_cast<std::size_t>(source[i]) * channels] >> 2u)) & 0xF8u;
+			data[index++] = (colorMap[static_cast<std::size_t>(source[i]) * channels] << 3u) & 0xF8u;
 		}
 		else if (channels == 3)
 		{
@@ -247,6 +247,9 @@ TRAP::Image::Image() noexcept
 	}
 
 	const auto fileEnding = FileSystem::GetFileEnding(filepath);
+	if(!fileEnding)
+		return nullptr;
+
 	const std::string fileFormat = Utils::String::ToLower(*fileEnding);
 
 	Scope<Image> result;
@@ -345,7 +348,7 @@ TRAP::Image::Image() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
-	if(!img)
+	if(img == nullptr)
 		return nullptr;
 
 	Scope<Image> result;
@@ -382,7 +385,7 @@ TRAP::Image::Image() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
-	if (!img)
+	if (img == nullptr)
 		return nullptr;
 
 	Scope<Image> result;
@@ -418,7 +421,7 @@ TRAP::Image::Image() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
-	if(!img)
+	if(img == nullptr)
 		return nullptr;
 
 	Scope<Image> result;

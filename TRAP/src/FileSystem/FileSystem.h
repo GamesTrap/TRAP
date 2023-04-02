@@ -95,7 +95,7 @@ namespace TRAP
 		/// <param name="text">Text to be written.</param>
 		/// <param name="mode">Write mode to use. Default: WriteMode::Overwrite.</param>
 		/// <returns>True if file has been written successfully, false otherwise.</returns>
-		bool WriteTextFile(const std::filesystem::path& path, const std::string_view text,
+		bool WriteTextFile(const std::filesystem::path& path, std::string_view text,
 		                   WriteMode mode = WriteMode::Overwrite);
 
 		/// <summary>
@@ -145,7 +145,7 @@ namespace TRAP
 		/// <param name="oldPath">File or folder to rename.</param>
 		/// <param name="newName">New name for file or folder.</param>
 		/// <returns>True on success, false otherwise.</returns>
-		bool Rename(const std::filesystem::path& oldPath, const std::string_view newName);
+		bool Rename(const std::filesystem::path& oldPath, std::string_view newName);
 
         /// <summary>
 		/// Check if a file or folder exists.

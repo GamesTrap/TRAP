@@ -26,7 +26,6 @@
 #include <ctime>
 #include <cstdio>
 #include <iomanip>
-#include <cstring>
 #include <deque>
 #include <future>
 #include <cctype>

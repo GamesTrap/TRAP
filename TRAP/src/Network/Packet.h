@@ -125,7 +125,6 @@ namespace TRAP::Network
 		/// <returns>True if all data was read, false otherwise.</returns>
 		[[nodiscard]] bool EndOfPacket() const noexcept;
 
-	public:
 		/// <summary>
 		/// Test the validity of the packet, for reading.
 		///
@@ -177,8 +176,8 @@ namespace TRAP::Network
 		Packet& operator<<(uint64_t data);
 		Packet& operator<<(float data);
 		Packet& operator<<(double data);
-		Packet& operator<<(const std::string_view data);
-		Packet& operator<<(const std::wstring_view data);
+		Packet& operator<<(std::string_view data);
+		Packet& operator<<(std::wstring_view data);
 
 	protected:
 		friend class TCPSocket;

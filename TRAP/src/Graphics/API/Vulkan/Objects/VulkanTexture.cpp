@@ -114,7 +114,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 	    static_cast<bool>(desc.Flags & RendererAPI::TextureCreationFlags::Storage))
 		m_vkUAVDescriptors.resize(desc.MipLevels);
 
-	if (desc.NativeHandle && !static_cast<bool>((desc.Flags & RendererAPI::TextureCreationFlags::Import)))
+	if ((desc.NativeHandle != nullptr) && !static_cast<bool>((desc.Flags & RendererAPI::TextureCreationFlags::Import)))
 	{
 		m_ownsImage = false;
 		m_vkImage = static_cast<VkImage>(desc.NativeHandle);
@@ -123,20 +123,20 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 		m_ownsImage = true;
 
 	VkImageUsageFlags additionalFlags = 0;
-	if (static_cast<uint32_t>(desc.StartState & RendererAPI::ResourceState::RenderTarget))
+	if (static_cast<uint32_t>(desc.StartState & RendererAPI::ResourceState::RenderTarget) != 0u)
 		additionalFlags |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-	else if (static_cast<uint32_t>(desc.StartState & RendererAPI::ResourceState::DepthWrite))
+	else if (static_cast<uint32_t>(desc.StartState & RendererAPI::ResourceState::DepthWrite) != 0u)
 		additionalFlags |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
-	if (static_cast<uint32_t>(desc.StartState & RendererAPI::ResourceState::ShadingRateSource))
+	if (static_cast<uint32_t>(desc.StartState & RendererAPI::ResourceState::ShadingRateSource) != 0u)
 		additionalFlags |= VK_IMAGE_USAGE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR;
 
 	VkImageType imageType = VK_IMAGE_TYPE_MAX_ENUM;
-	if (static_cast<uint32_t>(desc.Flags & RendererAPI::TextureCreationFlags::Force2D))
+	if (static_cast<uint32_t>(desc.Flags & RendererAPI::TextureCreationFlags::Force2D) != 0u)
 	{
 		TRAP_ASSERT(desc.Depth == 1, "VulkanTexture::Init(): 2D Texture cannot have depth");
 		imageType = VK_IMAGE_TYPE_2D;
 	}
-	else if (static_cast<uint32_t>(desc.Flags & RendererAPI::TextureCreationFlags::Force3D))
+	else if (static_cast<uint32_t>(desc.Flags & RendererAPI::TextureCreationFlags::Force3D) != 0u)
 		imageType = VK_IMAGE_TYPE_3D;
 	else
 	{
@@ -194,7 +194,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 			info.flags |= VK_IMAGE_CREATE_DISJOINT_BIT;
 		}
 
-		if ((info.usage & VK_IMAGE_USAGE_SAMPLED_BIT) || (info.usage & VK_IMAGE_USAGE_STORAGE_BIT))
+		if (((info.usage & VK_IMAGE_USAGE_SAMPLED_BIT) != 0u) || ((info.usage & VK_IMAGE_USAGE_STORAGE_BIT) != 0u))
 		{
 			// Make it easy to copy to and from textures
 			info.usage |= (VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT);
@@ -209,7 +209,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 		TRAP_ASSERT(0 != flags, "VulkanTexture::Init(): Format is not suported for GPU local images (i.e. not host visible images)");
 
 		VmaAllocationCreateInfo memReqs{};
-		if (static_cast<uint32_t>(desc.Flags & RendererAPI::TextureCreationFlags::OwnMemory))
+		if (static_cast<uint32_t>(desc.Flags & RendererAPI::TextureCreationFlags::OwnMemory) != 0u)
 			memReqs.flags |= VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT;
 		memReqs.usage = VMA_MEMORY_USAGE_GPU_ONLY;
 
@@ -383,22 +383,22 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 																	 desc.MipLevels, desc.ArraySize);
 	m_aspectMask = DetermineAspectMask(srvDesc.format, true);
 
-	if (desc.VkSamplerYcbcrConversionInfo)
+	if (desc.VkSamplerYcbcrConversionInfo != nullptr)
 		srvDesc.pNext = desc.VkSamplerYcbcrConversionInfo;
 
-	if (static_cast<uint32_t>(descriptors & RendererAPI::DescriptorType::Texture))
+	if (static_cast<uint32_t>(descriptors & RendererAPI::DescriptorType::Texture) != 0u)
 		VkCall(vkCreateImageView(m_device->GetVkDevice(), &srvDesc, nullptr, &m_vkSRVDescriptor));
 
 	// SRV stencil
 	if ((TRAP::Graphics::API::ImageFormatHasStencil(desc.Format)) &&
-		(static_cast<uint32_t>(descriptors & RendererAPI::DescriptorType::Texture)))
+		((static_cast<uint32_t>(descriptors & RendererAPI::DescriptorType::Texture)) != 0u))
 	{
 		srvDesc.subresourceRange.aspectMask = VK_IMAGE_ASPECT_STENCIL_BIT;
 		VkCall(vkCreateImageView(m_device->GetVkDevice(), &srvDesc, nullptr, &m_vkSRVStencilDescriptor));
 	}
 
 	// UAV
-	if (static_cast<uint32_t>(descriptors & RendererAPI::DescriptorType::RWTexture))
+	if (static_cast<uint32_t>(descriptors & RendererAPI::DescriptorType::RWTexture) != 0u)
 	{
 		VkImageViewCreateInfo uavDesc = srvDesc;
 		// Note: We dont support imageCube, imageCubeArray for consistency with other APIs
@@ -513,7 +513,7 @@ void TRAP::Graphics::API::VulkanTexture::Shutdown()
 	TP_DEBUG(Log::RendererVulkanTexturePrefix, "Destroying Texture");
 #endif
 
-	if (m_ownsImage && m_vkImage)
+	if (m_ownsImage && (m_vkImage != nullptr))
 	{
 		if (TRAP::Graphics::API::ImageFormatIsSinglePlane(m_imageFormat))
 			vmaDestroyImage(m_vma->GetVMAAllocator(), m_vkImage, m_vkAllocation);
@@ -524,10 +524,10 @@ void TRAP::Graphics::API::VulkanTexture::Shutdown()
 		}
 	}
 
-	if (m_vkSRVDescriptor)
+	if (m_vkSRVDescriptor != nullptr)
 		vkDestroyImageView(m_device->GetVkDevice(), m_vkSRVDescriptor, nullptr);
 
-	if (m_vkSRVStencilDescriptor)
+	if (m_vkSRVStencilDescriptor != nullptr)
 		vkDestroyImageView(m_device->GetVkDevice(), m_vkSRVStencilDescriptor, nullptr);
 
 	if (!m_vkUAVDescriptors.empty())
@@ -572,22 +572,22 @@ void TRAP::Graphics::API::VulkanTexture::PreInit()
 
 	for (uint32_t i = 0; i < memProps.memoryTypeCount; i++)
 	{
-		if ((typeBits & 1) == 1)
+		if ((typeBits & 1u) == 1)
 		{
 			if ((memProps.memoryTypes[i].propertyFlags & props) == props)
 			{
-				if (memTypeFound)
-					*memTypeFound = true;
+				if (memTypeFound != nullptr)
+					*memTypeFound = VK_TRUE;
 
 				return i;
 			}
 		}
-		typeBits >>= 1;
+		typeBits >>= 1u;
 	}
 
-	if (memTypeFound)
+	if (memTypeFound != nullptr)
 	{
-		*memTypeFound = false;
+		*memTypeFound = VK_FALSE;
 		return 0;
 	}
 

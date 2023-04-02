@@ -1,8 +1,8 @@
 #ifndef TRAP_VULKANTEXTURE_H
 #define TRAP_VULKANTEXTURE_H
 
-#include "Graphics/API/Vulkan/Objects/VulkanMemoryAllocator.h"
 #include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/Vulkan/Objects/VulkanMemoryAllocator.h"
 #include "Graphics/Textures/Texture.h"
 
 namespace TRAP::Graphics::API
@@ -36,7 +36,7 @@ namespace TRAP::Graphics::API
 		/// Constructor.
 		/// </summary>
 		/// <param name="type">Type of texture.</param>
-		VulkanTexture(TextureType type);
+		explicit VulkanTexture(TextureType type);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -101,7 +101,7 @@ namespace TRAP::Graphics::API
 		/// Set the name of the texture.
 		/// </summary>
 		/// <param name="name">Name for the texture.</param>
-		void SetTextureName(const std::string_view name) const override;
+		void SetTextureName(std::string_view name) const override;
 
 	protected:
 		/// <summary>

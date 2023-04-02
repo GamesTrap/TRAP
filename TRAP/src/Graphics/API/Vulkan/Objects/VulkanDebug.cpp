@@ -7,7 +7,7 @@
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
-	: m_debugReport(nullptr), m_instance(std::move(instance))
+	: m_debugUtils(nullptr), m_debugReport(nullptr), m_instance(std::move(instance))
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -60,21 +60,21 @@ TRAP::Graphics::API::VulkanDebug::~VulkanDebug()
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkBool32 TRAP::Graphics::API::VulkanDebug::VulkanDebugUtilsCallback(const VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-                                                                    const VkDebugUtilsMessageTypeFlagsEXT,
+                                                                    [[maybe_unused]] const VkDebugUtilsMessageTypeFlagsEXT messageType,
                                                                     const VkDebugUtilsMessengerCallbackDataEXT* const callbackData,
-                                                                    void*)
+                                                                    [[maybe_unused]] void* userData)
 {
 	std::string str = Log::RendererVulkanDebugPrefix;
 	str.pop_back();
 
-	if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
-		TP_INFO(str, '[', callbackData->pMessageIdName ? callbackData->pMessageIdName : "", "] ",
+	if ((messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT) != 0)
+		TP_INFO(str, '[', callbackData->pMessageIdName != nullptr ? callbackData->pMessageIdName : "", "] ",
 		        callbackData->pMessage, " (", callbackData->messageIdNumber, ')');
-	else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
-		TP_WARN(str, '[', callbackData->pMessageIdName ? callbackData->pMessageIdName : "", "] ",
+	else if ((messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) != 0)
+		TP_WARN(str, '[', callbackData->pMessageIdName != nullptr ? callbackData->pMessageIdName : "", "] ",
 		        callbackData->pMessage, " (", callbackData->messageIdNumber, ')');
-	else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
-		TP_ERROR(str, '[', callbackData->pMessageIdName ? callbackData->pMessageIdName : "", "] ",
+	else if ((messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) != 0)
+		TP_ERROR(str, '[', callbackData->pMessageIdName != nullptr ? callbackData->pMessageIdName : "", "] ",
 		         callbackData->pMessage, " (", callbackData->messageIdNumber, ')');
 
 	return VK_FALSE;
@@ -94,11 +94,11 @@ VkBool32 TRAP::Graphics::API::VulkanDebug::VulkanDebugReportCallback(const VkDeb
 	std::string str = Log::RendererVulkanDebugPrefix;
 	str.pop_back();
 
-	if(flags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT)
+	if((flags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT) != 0u)
 		TP_INFO(str, '[', !layerPrefix.empty() ? layerPrefix : "", "] ", message, " (", messageCode, ')');
-	if(flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
+	if((flags & VK_DEBUG_REPORT_WARNING_BIT_EXT) != 0u)
 		TP_WARN(str, '[', !layerPrefix.empty() ? layerPrefix : "", "] ", message, " (", messageCode, ')');
-	if(flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
+	if((flags & VK_DEBUG_REPORT_ERROR_BIT_EXT) != 0u)
 		TP_ERROR(str, '[', !layerPrefix.empty() ? layerPrefix : "", "] ", message, " (", messageCode, ')');
 
 	return VK_FALSE;

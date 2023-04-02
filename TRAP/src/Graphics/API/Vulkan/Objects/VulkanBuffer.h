@@ -1,8 +1,8 @@
 #ifndef TRAP_VULKANBUFFER_H
 #define TRAP_VULKANBUFFER_H
 
-#include "Graphics/API/Vulkan/Objects/VulkanMemoryAllocator.h"
 #include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/Vulkan/Objects/VulkanMemoryAllocator.h"
 #include "Graphics/API/Objects/Buffer.h"
 
 namespace TRAP::Graphics::API
@@ -77,7 +77,7 @@ namespace TRAP::Graphics::API
 		/// Note: MapBuffer must not be called if memory usage is GPU only.
 		/// </summary>
 		/// <param name="range">Optional range of the buffer to map. Default: Whole buffer.</param>
-		void MapBuffer(const RendererAPI::ReadRange* const range) override;
+		void MapBuffer(const RendererAPI::ReadRange* range) override;
 		/// <summary>
 		/// Unmap CPU mapped memory region.
 		///

@@ -16,7 +16,7 @@ namespace TRAP
 		};
 
 		SceneCamera();
-		virtual ~SceneCamera() = default;
+		~SceneCamera() override = default;
 
 		SceneCamera(const SceneCamera&) noexcept = default;
 		SceneCamera(SceneCamera&&) noexcept = default;

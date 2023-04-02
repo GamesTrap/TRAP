@@ -25,8 +25,8 @@ namespace TRAP
 	protected:
 		virtual void OnCreate() {}
 		virtual void OnDestroy() {}
-		virtual void OnUpdate(const Utils::TimeStep&) {}
-		virtual void OnTick(const Utils::TimeStep&) {}
+		virtual void OnUpdate([[maybe_unused]] const Utils::TimeStep& deltaTime) {}
+		virtual void OnTick([[maybe_unused]] const Utils::TimeStep& deltaTime) {}
 
 	private:
 		Entity m_entity;

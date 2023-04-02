@@ -165,8 +165,8 @@ namespace TRAP::Math
 		//Increment and decrement operators
 		constexpr Mat<3, 3, T>& operator++() noexcept;
 		constexpr Mat<3, 3, T>& operator--() noexcept;
-		constexpr Mat<3, 3, T> operator++(int32_t) noexcept;
-		constexpr Mat<3, 3, T> operator--(int32_t) noexcept;
+		constexpr const Mat<3, 3, T> operator++(int32_t) noexcept;
+		constexpr const Mat<3, 3, T> operator--(int32_t) noexcept;
 
 		[[nodiscard]] std::string ToString() const;
 	};
@@ -454,7 +454,7 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator--() noexc
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator++(int) noexcept
+constexpr const TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator++(int) noexcept
 {
 	Mat<3, 3, T> result(*this);
 	++*this;
@@ -463,7 +463,7 @@ constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator++(int) noe
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator--(int) noexcept
+constexpr const TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator--(int) noexcept
 {
 	Mat<3, 3, T> result(*this);
 	--*this;
@@ -478,7 +478,7 @@ template<typename T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	std::string postfix = "";
+	std::string postfix;
 	if constexpr(std::is_same_v<T, float>)
 		postfix = "f";
 	else if constexpr(std::is_same_v<T, double>)

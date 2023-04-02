@@ -308,7 +308,7 @@ namespace TRAP
 		/// <summary>
 		/// Controller DPad.
 		/// </summary>
-		enum class ControllerDPad
+		enum class ControllerDPad : uint32_t
 		{
 			Centered   = 0,
 			Up         = BIT(0),
@@ -345,7 +345,7 @@ namespace TRAP
 		/// <param name="key">Key to check.</param>
 		/// <param name="window">Window to check on.</param>
 		/// <returns>True if provided key is pressed in provided window, false otherwise.</returns>
-		[[nodiscard]] static bool IsKeyPressed(Key key, const Window* const window);
+		[[nodiscard]] static bool IsKeyPressed(Key key, const Window* window);
 		/// <summary>
 		/// Check if a mouse button on the mouse is pressed.
 		/// </summary>
@@ -358,7 +358,7 @@ namespace TRAP
 		/// <param name="button">Mouse button to check.</param>
 		/// <param name="window">Window to check on.</param>
 		/// <returns>True if provided mouse button is pressed in provided window, false otherwise.</returns>
-		[[nodiscard]] static bool IsMouseButtonPressed(MouseButton button, const Window* const window);
+		[[nodiscard]] static bool IsMouseButtonPressed(MouseButton button, const Window* window);
 		/// <summary>
 		/// Retrieve whether raw mouse input is supported.
 		/// </summary>
@@ -387,7 +387,7 @@ namespace TRAP
 		/// </summary>
 		/// <param name="window">Window to check.</param>
 		/// <returns>Mouse position of the window as a Math::Vec2.</returns>
-		[[nodiscard]] static Math::Vec2 GetMousePosition(const Window* const window);
+		[[nodiscard]] static Math::Vec2 GetMousePosition(const Window* window);
 		/// <summary>
 		/// Retrieve the current mouse position on the x axis.
 		/// </summary>
@@ -403,13 +403,13 @@ namespace TRAP
 		/// </summary>
 		/// <param name="window">Window to check.</param>
 		/// <returns>X mouse position.</returns>
-		[[nodiscard]] static float GetMouseX(const Window* const window);
+		[[nodiscard]] static float GetMouseX(const Window* window);
 		/// <summary>
 		/// Retrieve the current mouse position on the y axis for the provided window.
 		/// </summary>
 		/// <param name="window">Window to check.</param>
 		/// <returns>Y mouse position.</returns>
-		[[nodiscard]] static float GetMouseY(const Window* const window);
+		[[nodiscard]] static float GetMouseY(const Window* window);
 		/// <summary>
 		/// Retrieve the string representation of a key.
 		/// </summary>
@@ -513,7 +513,7 @@ namespace TRAP
 		/// <param name="x">New x position.</param>
 		/// <param name="y">New y position.</param>
 		/// <param name="window">Window to affect.</param>
-		static void SetMousePosition(float x, float y, const Window* const window);
+		static void SetMousePosition(float x, float y, const Window* window);
 		/// <summary>
 		/// Set the mouse position.
 		/// </summary>
@@ -524,7 +524,7 @@ namespace TRAP
 		/// </summary>
 		/// <param name="position">New position.</param>
 		/// <param name="window">Window to affect.</param>
-		static void SetMousePosition(const Math::Vec2& position, const Window* const window);
+		static void SetMousePosition(const Math::Vec2& position, const Window* window);
 
 		/// <summary>
 		/// Set the system clipboard to the specified UTF-8 encoded string.
@@ -627,7 +627,7 @@ namespace TRAP
 		/// <summary>
 		/// Modes for polling.
 		/// </summary>
-		enum class PollMode
+		enum class PollMode : uint32_t
 		{
 			Presence = 0,
 			Axes = 1,

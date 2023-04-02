@@ -237,7 +237,7 @@ namespace TRAP::Graphics::API
 	/// <param name="type">Vulkan object type.</param>
 	/// <param name="name">Name to set.</param>
 	void VkSetObjectName([[maybe_unused]] VkDevice device, [[maybe_unused]] uint64_t handle,
-				         [[maybe_unused]] VkObjectType type, [[maybe_unused]] const std::string_view name);
+				         [[maybe_unused]] VkObjectType type, [[maybe_unused]] std::string_view name);
 #else
 	/// <summary>
 	/// Set a name for a Vulkan object.
@@ -247,7 +247,7 @@ namespace TRAP::Graphics::API
 	/// <param name="type">Vulkan object type.</param>
 	/// <param name="name">Name to set.</param>
 	void VkSetObjectName([[maybe_unused]] VkDevice device, [[maybe_unused]] uint64_t handle,
-	                     [[maybe_unused]] VkDebugReportObjectTypeEXT type, [[maybe_unused]] const std::string_view name);
+	                     [[maybe_unused]] VkDebugReportObjectTypeEXT type, [[maybe_unused]] std::string_view name);
 #endif
 
 	inline constexpr std::array<VkAttachmentLoadOp,
@@ -808,9 +808,9 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 {
 	VkImageUsageFlags result = 0;
 
-	if ((static_cast<uint32_t>(type & RendererAPI::DescriptorType::Texture)))
+	if ((static_cast<uint32_t>(type & RendererAPI::DescriptorType::Texture)) != 0u)
 		result |= VK_IMAGE_USAGE_SAMPLED_BIT;
-	if ((static_cast<uint32_t>(type & RendererAPI::DescriptorType::RWTexture)))
+	if ((static_cast<uint32_t>(type & RendererAPI::DescriptorType::RWTexture)) != 0u)
 		result |= VK_IMAGE_USAGE_STORAGE_BIT;
 
 	return result;
@@ -841,35 +841,35 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 {
 	VkBufferUsageFlags result = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 
-	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::UniformBuffer))
+	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::UniformBuffer) != 0u)
 		result |= VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
-	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::RWBuffer))
+	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::RWBuffer) != 0u)
 	{
 		result |= VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
 		if (typed)
 			result |= VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT;
 	}
-	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::Buffer))
+	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::Buffer) != 0u)
 	{
 		result |= VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
 		if (typed)
 			result |= VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT;
 	}
-	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::IndexBuffer))
+	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::IndexBuffer) != 0u)
 		result |= VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
-	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::VertexBuffer))
+	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::VertexBuffer) != 0u)
 		result |= VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::IndirectBuffer))
+	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::IndirectBuffer) != 0u)
 		result |= VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT;
 
 	//RayTracing
-	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::AccelerationStructure))
+	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::AccelerationStructure) != 0u)
 		result |= VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR;
-	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::AccelerationStructureBuildInput))
+	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::AccelerationStructureBuildInput) != 0u)
 		result |= VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR;
-	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::ShaderDeviceAddress))
+	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::ShaderDeviceAddress) != 0u)
 		result |= VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_KHR;
-	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::ShaderBindingTable))
+	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::ShaderBindingTable) != 0u)
 		result |= VK_BUFFER_USAGE_SHADER_BINDING_TABLE_BIT_KHR;
 
 	return result;
@@ -987,23 +987,23 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 {
 	VkShaderStageFlags res = 0;
 
-	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::AllGraphics))
+	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::AllGraphics) != 0u)
 		return VK_SHADER_STAGE_ALL_GRAPHICS;
 
-	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::Vertex))
+	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::Vertex) != 0u)
 		res |= VK_SHADER_STAGE_VERTEX_BIT;
-	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::Geometry))
+	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::Geometry) != 0u)
 		res |= VK_SHADER_STAGE_GEOMETRY_BIT;
-	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::TessellationEvaluation))
+	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::TessellationEvaluation) != 0u)
 		res |= VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
-	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::TessellationControl))
+	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::TessellationControl) != 0u)
 		res |= VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
-	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::Fragment))
+	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::Fragment) != 0u)
 		res |= VK_SHADER_STAGE_FRAGMENT_BIT;
-	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::Compute))
+	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::Compute) != 0u)
 		res |= VK_SHADER_STAGE_COMPUTE_BIT;
 	//RayTracing
-	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::RayTracing))
+	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::RayTracing) != 0u)
 		res |= (VK_SHADER_STAGE_RAYGEN_BIT_KHR | VK_SHADER_STAGE_ANY_HIT_BIT_KHR |
 			    VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR | VK_SHADER_STAGE_MISS_BIT_KHR |
 			    VK_SHADER_STAGE_INTERSECTION_BIT_KHR | VK_SHADER_STAGE_CALLABLE_BIT_KHR);
@@ -1018,7 +1018,7 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 {
 	VkPipelineCacheCreateFlags ret = 0;
 
-	if (static_cast<uint32_t>(flags & RendererAPI::PipelineCacheFlags::ExternallySynchronized))
+	if (static_cast<uint32_t>(flags & RendererAPI::PipelineCacheFlags::ExternallySynchronized) != 0u)
 		ret |= VK_PIPELINE_CACHE_CREATE_EXTERNALLY_SYNCHRONIZED_BIT_EXT;
 
 	return ret;
@@ -1030,29 +1030,29 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 {
 	VkAccessFlags ret = 0;
 
-	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::CopySource))
+	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::CopySource) != 0u)
 		ret |= VK_ACCESS_TRANSFER_READ_BIT;
-	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::CopyDestination))
+	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::CopyDestination) != 0u)
 		ret |= VK_ACCESS_TRANSFER_WRITE_BIT;
-	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::VertexAndConstantBuffer))
+	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::VertexAndConstantBuffer) != 0u)
 		ret |= VK_ACCESS_UNIFORM_READ_BIT | VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT;
-	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::IndexBuffer))
+	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::IndexBuffer) != 0u)
 		ret |= VK_ACCESS_INDEX_READ_BIT;
-	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::UnorderedAccess))
+	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::UnorderedAccess) != 0u)
 		ret |= VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT;
-	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::IndirectArgument))
+	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::IndirectArgument) != 0u)
 		ret |= VK_ACCESS_INDIRECT_COMMAND_READ_BIT;
-	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::RenderTarget))
+	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::RenderTarget) != 0u)
 		ret |= VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::DepthWrite))
+	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::DepthWrite) != 0u)
 		ret |= VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
-	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::ShaderResource))
+	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::ShaderResource) != 0u)
 		ret |= VK_ACCESS_SHADER_READ_BIT;
-	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::Present))
+	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::Present) != 0u)
 		ret |= VK_ACCESS_MEMORY_READ_BIT;
 
 	//RayTracing
-	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::RayTracingAccelerationStructure))
+	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::RayTracingAccelerationStructure) != 0u)
 		ret |= VK_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_KHR | VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_KHR;
 
 	return ret;
@@ -1062,31 +1062,31 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 
 [[nodiscard]] constexpr VkImageLayout TRAP::Graphics::API::ResourceStateToVkImageLayout(const RendererAPI::ResourceState usage) noexcept
 {
-	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::CopySource))
+	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::CopySource) != 0u)
 		return VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
 
-	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::CopyDestination))
+	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::CopyDestination) != 0u)
 		return VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
 
-	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::RenderTarget))
+	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::RenderTarget) != 0u)
 		return VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::DepthWrite))
+	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::DepthWrite) != 0u)
 		return VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
-	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::UnorderedAccess))
+	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::UnorderedAccess) != 0u)
 		return VK_IMAGE_LAYOUT_GENERAL;
 
-	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::ShaderResource))
+	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::ShaderResource) != 0u)
 		return VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
-	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::Present))
+	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::Present) != 0u)
 		return VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
-	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::Common))
+	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::Common) != 0u)
 		return VK_IMAGE_LAYOUT_GENERAL;
 
-	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::ShadingRateSource))
+	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::ShadingRateSource) != 0u)
 		return VK_IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR;
 
 	return VK_IMAGE_LAYOUT_UNDEFINED;

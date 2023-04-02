@@ -222,16 +222,16 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 	{
 		//Adam7 Interlaced: Expected size is the sum of the 7 sub-images sizes
 		std::size_t expectedSize = 0;
-		expectedSize += GetRawSizeIDAT((m_width + 7) >> 3, (m_height + 7) >> 3, m_bitsPerPixel);
+		expectedSize += GetRawSizeIDAT((m_width + 7u) >> 3u, (m_height + 7u) >> 3u, m_bitsPerPixel);
 		if (m_width > 4)
-			expectedSize += GetRawSizeIDAT((m_width + 3) >> 3, (m_height + 7) >> 3, m_bitsPerPixel);
-		expectedSize += GetRawSizeIDAT((m_width + 3) >> 2, (m_height + 3) >> 3, m_bitsPerPixel);
+			expectedSize += GetRawSizeIDAT((m_width + 3u) >> 3u, (m_height + 7u) >> 3u, m_bitsPerPixel);
+		expectedSize += GetRawSizeIDAT((m_width + 3u) >> 2u, (m_height + 3u) >> 3u, m_bitsPerPixel);
 		if (m_width > 2)
-			expectedSize += GetRawSizeIDAT((m_width + 1) >> 2, (m_height + 3) >> 2, m_bitsPerPixel);
-		expectedSize += GetRawSizeIDAT((m_width + 1) >> 1, (m_height + 1) >> 2, m_bitsPerPixel);
+			expectedSize += GetRawSizeIDAT((m_width + 1u) >> 2u, (m_height + 3u) >> 2u, m_bitsPerPixel);
+		expectedSize += GetRawSizeIDAT((m_width + 1u) >> 1u, (m_height + 1u) >> 2u, m_bitsPerPixel);
 		if (m_width > 1)
-			expectedSize += GetRawSizeIDAT((m_width + 0) >> 1, (m_height + 1) >> 1, m_bitsPerPixel);
-		expectedSize += GetRawSizeIDAT((m_width + 0), (m_height + 0) >> 1, m_bitsPerPixel);
+			expectedSize += GetRawSizeIDAT((m_width + 0u) >> 1u, (m_height + 1u) >> 1u, m_bitsPerPixel);
+		expectedSize += GetRawSizeIDAT((m_width + 0u), (m_height + 0u) >> 1u, m_bitsPerPixel);
 
 		decompressedData.resize(expectedSize);
 	}
@@ -353,7 +353,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-static constexpr std::array<std::string_view, 11> UnusedChunks
+inline constexpr std::array<std::string_view, 11> UnusedChunks
 {
 	"cHRM", "gAMA", "iCCP", "hIST", "pHYs", "sPLT", "tIME", "iTXt", "tEXt", "zTXt", "eXIf"
 };
@@ -774,7 +774,7 @@ static constexpr std::array<std::string_view, 11> UnusedChunks
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	//Check if Width is (in)valid
-	if(!ihdrChunk.Width)
+	if(ihdrChunk.Width == 0u)
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "Width ", ihdrChunk.Width, " is invalid!");
 		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
@@ -782,7 +782,7 @@ static constexpr std::array<std::string_view, 11> UnusedChunks
 	}
 
 	//Check if Height is (in)valid
-	if (!ihdrChunk.Height)
+	if (ihdrChunk.Height == 0u)
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "Height ", ihdrChunk.Height, " is invalid!");
 		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
@@ -889,11 +889,11 @@ static constexpr std::array<std::string_view, 11> UnusedChunks
 		return false; //Error: 256 * source[0] + source[1] must be a multiple of 31, the FCHECK value is supposed to be made this way
 	}
 
-	const uint32_t CM = source[0] & 15;
-	const uint32_t CINFO = (source[0] >> 4) & 15;
-	//FCHECK = source[1] & 31; //FCHECK is already tested above
-	const uint32_t FDICT = (source[1] >> 5) & 1;
-	//FLEVEL = (source[1] >> 6) & 3; //FLEVEL is not used here
+	const uint32_t CM = source[0] & 15u;
+	const uint32_t CINFO = (source[0] >> 4u) & 15u;
+	//FCHECK = source[1] & 31u; //FCHECK is already tested above
+	const uint32_t FDICT = (source[1] >> 5u) & 1u;
+	//FLEVEL = (source[1] >> 6u) & 3u; //FLEVEL is not used here
 
 	if (CM != 8 || CINFO > 7)
 	{
@@ -979,7 +979,7 @@ static constexpr std::array<std::string_view, 11> UnusedChunks
 
 	case 2:
 	{
-		if (precon)
+		if (precon != nullptr)
 			for (i = 0; i != length; ++i)
 				recon[i] = scanline[i] + precon[i];
 		else
@@ -990,7 +990,7 @@ static constexpr std::array<std::string_view, 11> UnusedChunks
 
 	case 3:
 	{
-		if (precon)
+		if (precon != nullptr)
 		{
 			std::size_t j = 0;
 
@@ -1056,7 +1056,7 @@ static constexpr std::array<std::string_view, 11> UnusedChunks
 
 	case 4:
 	{
-		if (precon)
+		if (precon != nullptr)
 		{
 			std::size_t j = 0;
 
@@ -1290,7 +1290,7 @@ void TRAP::INTERNAL::PNGImage::Adam7GetPassValues(std::array<uint32_t, 7>& passW
 	for (i = 0; i != 7; ++i)
 	{
 		//If passW[i] is 0, its 0 bytes, not 1(no filterType-byte)
-		filterPassStart[i + 1] = filterPassStart[i] + ((passW[i] && passH[i]) ?
+		filterPassStart[i + 1] = filterPassStart[i] + (((passW[i] != 0u) && (passH[i] != 0u)) ?
 			passH[i] * (1u + (passW[i] * bitsPerPixel + 7u) / 8u) : 0);
 		//Bits padded if needed to fill full byte at the end of each scanline
 		paddedPassStart[i + 1] = paddedPassStart[i] + static_cast<std::size_t>(passH[i]) *
@@ -1350,7 +1350,7 @@ void TRAP::INTERNAL::PNGImage::Adam7DeInterlace(uint8_t* const out, const uint8_
 	{
 		for (uint32_t i = 0; i < raw.size(); i += 2)
 		{
-			const uint16_t val = (static_cast<uint16_t>(raw[i + 1]) << 8) | raw[i];
+			const uint16_t val = (static_cast<uint16_t>(raw[i + 1u]) << 8u) | raw[i];
 			result[resultIndex++] = val;
 		}
 	}
@@ -1358,7 +1358,7 @@ void TRAP::INTERNAL::PNGImage::Adam7DeInterlace(uint8_t* const out, const uint8_
 	{
 		for (uint32_t i = 0; i < raw.size(); i += 2)
 		{
-			const uint16_t val = (static_cast<uint16_t>(raw[i + 1]) << 8) | raw[i];
+			const uint16_t val = (static_cast<uint16_t>(raw[i + 1u]) << 8u) | raw[i];
 			result[resultIndex++] = val;
 		}
 

@@ -32,8 +32,8 @@ namespace TRAP::Utils
 	template<typename T, typename... Rest>
 	constexpr void HashCombine(std::size_t& seed, const T& v, Rest... rest) noexcept
 	{
-		seed ^= std::hash<T>()(v) + 0x9E3779B9 + (seed << 6) + (seed >> 2);
-    	((seed ^= std::hash<Rest>()(rest) + 0x9E3779B9 + (seed << 6) + (seed >> 2)), ...);
+		seed ^= std::hash<T>()(v) + 0x9E3779B9u + (seed << 6u) + (seed >> 2u);
+    	((seed ^= std::hash<Rest>()(rest) + 0x9E3779B9u + (seed << 6u) + (seed >> 2u)), ...);
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -108,8 +108,8 @@ namespace TRAP::Utils
 	{
 		union U
 		{
-			U(){};
-			char storage[sizeof(To)];
+			U() = default;
+			char storage[sizeof(To)]{};
 			typename std::remove_const<To>::type dest;
 		} u; //Instead of To dest; because To doesn't require DefaultConstructible.
 		memcpy(&u.dest, &from, sizeof(from));

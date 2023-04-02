@@ -24,7 +24,7 @@ namespace TRAP::Graphics::SpriteManager
     /// <param name="spriteSize">Optional: Multiplier for the cell size (allows to use multi cell sprites as a single sprite).</param>
     /// <returns>Created sprite on success, nullptr otherwise.</returns>
     TRAP::Ref<SubTexture2D> CreateFromCoords(const std::string& name,
-                                             Ref<TRAP::Graphics::Texture> texture,
+                                             const Ref<TRAP::Graphics::Texture>& texture,
                                              const TRAP::Math::Vec2& coords,
                                              const TRAP::Math::Vec2& cellSize,
                                              const TRAP::Math::Vec2& spriteSize = {1.0f, 1.0f});
@@ -38,7 +38,7 @@ namespace TRAP::Graphics::SpriteManager
     /// <param name="spriteSize">Optional: Multiplied for the pixel size (allows to use multi cell sprites as a single sprite).</param>
     /// <returns>Created sprite  on success, nullptr otherwise.</returns>
     TRAP::Ref<SubTexture2D> CreateFromPixels(const std::string& name,
-                                             Ref<TRAP::Graphics::Texture> texture,
+                                             const Ref<TRAP::Graphics::Texture>& texture,
                                              const TRAP::Math::Vec2& pixelPos,
                                              const TRAP::Math::Vec2& pixelSize,
                                              const TRAP::Math::Vec2& spriteSize = {1.0f, 1.0f});
@@ -53,7 +53,7 @@ namespace TRAP::Graphics::SpriteManager
 	/// </summary>
 	/// <param name="sprite">Sprite to remove.</param>
 	/// <returns>Removed sprite on success, nullptr otherwise.</returns>
-	[[maybe_unused]] Ref<SubTexture2D> Remove(Ref<SubTexture2D> sprite);
+	[[maybe_unused]] Ref<SubTexture2D> Remove(const Ref<SubTexture2D>& sprite);
 	/// <summary>
 	/// Remove a sprite from the SpriteManager via its name.
 	/// </summary>

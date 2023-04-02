@@ -30,7 +30,6 @@ namespace TRAP::Graphics
             ArcBall
         };
 
-    public:
         /// <summary>
         /// Constructor.
         /// Create a new camera from the given parameters.
@@ -42,7 +41,7 @@ namespace TRAP::Graphics
         /// <summary>
         /// Destructor
         /// </summary>
-        ~EditorCamera() = default;
+        ~EditorCamera() override = default;
         /// <summary>
         /// Copy constructor.
         /// </summary>
@@ -258,7 +257,6 @@ namespace TRAP::Graphics
         /// </summary>
         void EnableMouse();
 
-    private:
         TRAP::Math::Mat4 m_viewMatrix;
         TRAP::Math::Vec3 m_position;
         TRAP::Math::Vec3 m_direction;

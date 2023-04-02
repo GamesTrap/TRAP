@@ -5,7 +5,7 @@
 #include "Graphics/API/Vulkan/Objects/VulkanRenderTarget.h"
 
 TRAP::Graphics::RenderTarget::RenderTarget()
-	: m_texture(nullptr), m_clearValue(), m_arraySize(),
+	: m_texture(nullptr), m_arraySize(),
 	  m_depth(), m_width(), m_height(), m_descriptors(), m_mipLevels(), m_sampleQuality(), m_format(),
 	  m_sampleCount()
 {

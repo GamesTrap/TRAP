@@ -188,7 +188,7 @@ constexpr TRAP::Monitor::VideoMode::VideoMode(const int32_t width, const int32_t
 
 [[nodiscard]] constexpr bool TRAP::Monitor::IsInUse() const noexcept
 {
-	return m_handle->Window;
+	return m_handle->Window != nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

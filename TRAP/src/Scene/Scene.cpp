@@ -65,8 +65,8 @@ static void CopyComponent(entt::registry& dst, entt::registry& src, const std::u
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename... Component>
-static void CopyComponent(TRAP::ComponentGroup<Component...>, entt::registry& dst, entt::registry& src,
-                          const std::unordered_map<TRAP::Utils::UID, entt::entity>& enttMap)
+static void CopyComponent([[maybe_unused]] TRAP::ComponentGroup<Component...> components, entt::registry& dst,
+                          entt::registry& src, const std::unordered_map<TRAP::Utils::UID, entt::entity>& enttMap)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -90,7 +90,8 @@ static void CopyComponentIfExists(TRAP::Entity dst, TRAP::Entity src)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename... Component>
-static void CopyComponentIfExists(TRAP::ComponentGroup<Component...>, TRAP::Entity dst, TRAP::Entity src)
+static void CopyComponentIfExists([[maybe_unused]] TRAP::ComponentGroup<Component...> components, TRAP::Entity dst,
+                                  TRAP::Entity src)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -99,7 +100,7 @@ static void CopyComponentIfExists(TRAP::ComponentGroup<Component...>, TRAP::Enti
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Ref<TRAP::Scene> TRAP::Scene::Copy(Ref<Scene> other)
+[[nodiscard]] TRAP::Ref<TRAP::Scene> TRAP::Scene::Copy(const Ref<Scene>& other)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -236,7 +237,7 @@ void TRAP::Scene::OnRuntimeStop()
 		{
 			auto& boxCollider2D = entity.GetComponent<BoxCollider2DComponent>();
 
-			if(rigidbody2D.RuntimeBody && boxCollider2D.RuntimeFixture)
+			if((rigidbody2D.RuntimeBody != nullptr) && (boxCollider2D.RuntimeFixture != nullptr))
 			{
 				rigidbody2D.RuntimeBody->DestroyFixture(boxCollider2D.RuntimeFixture);
 				boxCollider2D.RuntimeFixture = nullptr;
@@ -247,14 +248,14 @@ void TRAP::Scene::OnRuntimeStop()
 		{
 			auto& circleCollider2D = entity.GetComponent<CircleCollider2DComponent>();
 
-			if(rigidbody2D.RuntimeBody && circleCollider2D.RuntimeFixture)
+			if((rigidbody2D.RuntimeBody != nullptr) && (circleCollider2D.RuntimeFixture != nullptr))
 			{
 				rigidbody2D.RuntimeBody->DestroyFixture(circleCollider2D.RuntimeFixture);
 				circleCollider2D.RuntimeFixture = nullptr;
 			}
 		}
 
-		if(rigidbody2D.RuntimeBody)
+		if(rigidbody2D.RuntimeBody != nullptr)
 		{
 			m_physicsWorld->DestroyBody(rigidbody2D.RuntimeBody);
 			rigidbody2D.RuntimeBody = nullptr;
@@ -335,7 +336,7 @@ void TRAP::Scene::OnUpdateRuntime(const Utils::TimeStep deltaTime)
 	}
 
 	//Go Render something
-	if (mainCamera)
+	if (mainCamera != nullptr)
 	{
 		Graphics::Renderer2D::BeginScene(*mainCamera, cameraTransform);
 

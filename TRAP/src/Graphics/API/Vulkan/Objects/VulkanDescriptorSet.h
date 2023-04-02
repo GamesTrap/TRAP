@@ -44,6 +44,11 @@ namespace TRAP::Graphics::API
 		VulkanDescriptorSet& operator=(VulkanDescriptorSet&&) noexcept = default;
 
 		/// <summary>
+		/// Destructor.
+		/// </summary>
+		~VulkanDescriptorSet() override = default;
+
+		/// <summary>
 		/// Retrieve the VkDescriptorSet handles.
 		/// </summary>
 		/// <returns>VkDescriptorSet handles.</returns>

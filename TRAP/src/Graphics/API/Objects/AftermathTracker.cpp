@@ -35,6 +35,9 @@ void OnGPUCrashDump([[maybe_unused]] const void* gpuCrashDump,
 #else
     const auto targetFolder = TRAP::FileSystem::GetCurrentFolderPath();
 #endif
+    if(!targetFolder)
+        return;
+
     std::string dateTimeStamp = TRAP::Utils::String::GetDateTimeStamp(std::chrono::system_clock::now());
     std::replace(dateTimeStamp.begin(), dateTimeStamp.end(), ':', '-');
 
@@ -63,7 +66,7 @@ bool LoadFunctions()
     AftermathHandle = TRAP::Utils::DynamicLoading::LoadLibrary("libGFSDK_Aftermath_Lib.x64.so");
 #endif
 
-    if(!AftermathHandle)
+    if(AftermathHandle == nullptr)
         return false;
 
     AftermathEnableGPUCrashDumps = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_EnableGpuCrashDumps>
@@ -79,10 +82,7 @@ bool LoadFunctions()
         AftermathHandle, "GFSDK_Aftermath_GetCrashDumpStatus"
     );
 
-    if(!AftermathEnableGPUCrashDumps || !AftermathDisableGPUCrashDumps || !AftermathGetGPUCrashDumpStatus)
-        return false;
-
-    return true;
+    return (AftermathEnableGPUCrashDumps != nullptr) && (AftermathDisableGPUCrashDumps != nullptr) && (AftermathGetGPUCrashDumpStatus != nullptr);
 #endif
 
     return false;
@@ -95,7 +95,7 @@ void UnloadFunctions()
 #ifdef ENABLE_NSIGHT_AFTERMATH
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-    if(AftermathHandle)
+    if(AftermathHandle != nullptr)
         TRAP::Utils::DynamicLoading::FreeLibrary(AftermathHandle);
 
     AftermathHandle = nullptr;

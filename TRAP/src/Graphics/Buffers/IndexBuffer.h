@@ -59,7 +59,7 @@ namespace TRAP::Graphics
 		/// Use this buffer for rendering on the given window.
 		/// </summary>
 		/// <param name="window">Window to use index buffer on. Default: Main Window.</param>
-		void Use(const Window* const window = TRAP::Application::GetWindow()) const;
+		void Use(const Window* window = TRAP::Application::GetWindow()) const;
 
 		/// <summary>
 		/// Update the buffers index data.
@@ -119,7 +119,7 @@ namespace TRAP::Graphics
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New index buffer.</returns>
 		template<typename T>
-		[[nodiscard]] static TRAP::Scope<IndexBuffer> Init(const T* indices, const uint64_t size, const UpdateFrequency updateFrequency);
+		[[nodiscard]] static TRAP::Scope<IndexBuffer> Init(const T* indices, uint64_t size, UpdateFrequency updateFrequency);
 
 		/// <summary>
 		/// Set new index buffer data.
@@ -200,7 +200,7 @@ void TRAP::Graphics::IndexBuffer::SetDataInternal(const T* const indices, const 
 	RendererAPI::BufferUpdateDesc desc{};
 	desc.Buffer = m_indexBuffer;
 	desc.DstOffset = offset;
-	RendererAPI::GetResourceLoader()->BeginUpdateResource(desc);
+	API::ResourceLoader::BeginUpdateResource(desc);
 	std::copy_n(indices, size / sizeof(T), static_cast<T*>(desc.MappedData));
 	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_token);
 

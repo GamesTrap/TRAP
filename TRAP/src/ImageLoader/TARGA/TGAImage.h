@@ -118,7 +118,7 @@ namespace TRAP::INTERNAL
 
 		struct ColorMapData
 		{
-			std::string ImageID = "";
+			std::string ImageID;
 			std::vector<uint8_t> ColorMap{};
 			std::vector<uint8_t> ImageData{};
 		};

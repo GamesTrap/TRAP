@@ -53,9 +53,9 @@ static int32_t InputTextCallback(ImGuiInputTextCallbackData* const data)
 		std::string* str = userData->Str;
 		IM_ASSERT(data->Buf == str->c_str());
 		str->resize(data->BufTextLen);
-		data->Buf = &(*str)[0];
+		data->Buf = str->data();
 	}
-	else if(userData->ChainCallback)
+	else if(userData->ChainCallback != nullptr)
 	{
 		//Forward to user callback, if any
 		data->UserData = userData->ChainCallbackUserData;
@@ -121,7 +121,7 @@ void TRAP::ImGuiLayer::OnAttach()
 
 	style.ScaleAllSizes(scaleFactor);
 
-	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	if ((io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) != 0)
 	{
 		style.WindowRounding = 0.0f;
 		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
@@ -226,7 +226,7 @@ void TRAP::ImGuiLayer::OnDetach()
 		// (
 		// 	TRAP::Graphics::RendererAPI::GetRenderer()
 		// );
-		if(m_imguiDescriptorPool)
+		if(m_imguiDescriptorPool != nullptr)
 		{
 			//Gets cleard by ImGui_ImplVulkan_Shutdown()
 			// vkDestroyDescriptorPool(renderer->GetDevice()->GetVkDevice(), m_imguiDescriptorPool, nullptr);
@@ -325,7 +325,7 @@ void TRAP::ImGuiLayer::End()
 		}
 	}
 
-	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	if ((io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) != 0)
 	{
 		ImGui::UpdatePlatformWindows();
 		ImGui::RenderPlatformWindowsDefault();
@@ -380,7 +380,7 @@ void TRAP::ImGuiLayer::SetDarkThemeColors()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui::Image(TRAP::Ref<TRAP::Graphics::Texture> image, const TRAP::Graphics::Sampler* const sampler, const ImVec2& size,
+void ImGui::Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const TRAP::Graphics::Sampler* const sampler, const ImVec2& size,
                   const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -400,7 +400,7 @@ void ImGui::Image(TRAP::Ref<TRAP::Graphics::Texture> image, const TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui::Image(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1,
+void ImGui::Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1,
 			      const ImVec4& tint_col, const ImVec4& border_col)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -420,7 +420,7 @@ void ImGui::Image(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& size, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ImGui::ImageButton(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& size,
+bool ImGui::ImageButton(const TRAP::Ref<TRAP::Graphics::Texture>& image, const ImVec2& size,
                         const ImVec2& uv0, const ImVec2& uv1, const ImVec4& bg_col, const ImVec4& tint_col)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -456,7 +456,7 @@ bool ImGui::InputText(const std::string_view label, std::string* str, ImGuiInput
 
 	InputTextCallbackUserData cbUserData{str, callback, userData};
 
-	return InputText(label.data(), &(*str)[0], str->capacity() + 1, flags, InputTextCallback, &cbUserData);
+	return InputText(label.data(), str->data(), str->capacity() + 1, flags, InputTextCallback, &cbUserData);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -469,7 +469,7 @@ bool ImGui::InputTextMultiline(const std::string_view label, std::string* str, c
 
 	InputTextCallbackUserData cbUserData{str, callback, userData};
 
-	return InputTextMultiline(label.data(), &(*str)[0], str->capacity() + 1, size, flags, InputTextCallback, &cbUserData);
+	return InputTextMultiline(label.data(), str->data(), str->capacity() + 1, size, flags, InputTextCallback, &cbUserData);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -482,7 +482,7 @@ bool ImGui::InputTextWithHint(const std::string_view label, const std::string_vi
 
 	InputTextCallbackUserData cbUserData{str, callback, userData};
 
-	return InputTextWithHint(label.data(), hint.data(), &(*str)[0], str->capacity() + 1, flags, InputTextCallback, &cbUserData);
+	return InputTextWithHint(label.data(), hint.data(), str->data(), str->capacity() + 1, flags, InputTextCallback, &cbUserData);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

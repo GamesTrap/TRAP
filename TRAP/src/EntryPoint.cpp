@@ -1,5 +1,5 @@
 #include "TRAPPCH.h"
-#include "EntryPoint.h"
+#include "Application.h"
 #include "Core/PlatformDetection.h"
 
 int main(const int32_t argc, const char* const* const argv)

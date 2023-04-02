@@ -9,7 +9,7 @@
 #include "Utils/Time/Timer.h"
 
 #if !defined(DOXYGEN_DOCUMENTATION_BUILD)
-int main(int32_t argc, const char* const* const argv);
+int main(int32_t argc, const char* const* argv);
 #endif
 
 namespace TRAP
@@ -221,50 +221,50 @@ namespace TRAP
 		/// <summary>
 		/// Handles all events for the main render window and the layer stack.
 		/// </summary>
-		/// <param name="e">Event that occurred.</param>
-		void OnEvent(Events::Event& e);
+		/// <param name="event">Event that occurred.</param>
+		void OnEvent(Events::Event& event);
 		/// <summary>
 		/// Handles window close events for the main render window.
 		/// </summary>
-		/// <param name="e">Window close event that occurred.</param>
+		/// <param name="event">Window close event that occurred.</param>
 		/// <returns>Always true.</returns>
-		bool OnWindowClose(Events::WindowCloseEvent& e) noexcept;
+		bool OnWindowClose(Events::WindowCloseEvent& event) noexcept;
 		/// <summary>
 		/// Handles window framebuffer resizes for the main render window.
 		/// </summary>
-		/// <param name="e">Framebuffer resize event that occurred.</param>
+		/// <param name="event">Framebuffer resize event that occurred.</param>
 		/// <returns>Always false.</returns>
-		static bool OnFrameBufferResize(Events::FrameBufferResizeEvent& e);
+		static bool OnFrameBufferResize(Events::FrameBufferResizeEvent& event);
 		/// <summary>
 		/// Handles key presses(ALT+Enter) for the main render window.
 		/// </summary>
-		/// <param name="e">Key press event that occurred.</param>
+		/// <param name="event">Key press event that occurred.</param>
 		/// <returns>Always false.</returns>
-		bool OnKeyPress(Events::KeyPressEvent& e) const;
+		bool OnKeyPress(Events::KeyPressEvent& event) const;
 		/// <summary>
 		/// Handles window focus for the main render window.
 		/// </summary>
-		/// <param name="e">Window focus event that occurred.</param>
+		/// <param name="event">Window focus event that occurred.</param>
 		/// <returns>Always false.</returns>
-		bool OnWindowFocus(Events::WindowFocusEvent& e) noexcept;
+		bool OnWindowFocus(Events::WindowFocusEvent& event) noexcept;
 		/// <summary>
 		/// Handles window lost focus for the main render window.
 		/// </summary>
-		/// <param name="e">Window lost focus event that occurred.</param>
+		/// <param name="event">Window lost focus event that occurred.</param>
 		/// <returns>Always false.</returns>
-		bool OnWindowLostFocus(Events::WindowLostFocusEvent& e) noexcept;
+		bool OnWindowLostFocus(Events::WindowLostFocusEvent& event) noexcept;
 		/// <summary>
 		/// Handles window minimize events for the main render window.
 		/// </summary>
-		/// <param name="e">Window minimize event that occurred.</param>
+		/// <param name="event">Window minimize event that occurred.</param>
 		/// <returns>Always false.</returns>
-		bool OnWindowMinimize(Events::WindowMinimizeEvent& e) noexcept;
+		bool OnWindowMinimize(Events::WindowMinimizeEvent& event) noexcept;
 		/// <summary>
 		/// Handles window restore events for the main render window.
 		/// </summary>
-		/// <param name="e">Window restore event that occurred.</param>
+		/// <param name="event">Window restore event that occurred.</param>
 		/// <returns>Always false.</returns>
-		bool OnWindowRestore(Events::WindowRestoreEvent& e) noexcept;
+		bool OnWindowRestore(Events::WindowRestoreEvent& event) noexcept;
 
 		/// <summary>
 		/// Handles file change events for the application.
@@ -272,7 +272,7 @@ namespace TRAP
 		/// </summary>
 		/// <param name="e">File change event that occurred.</param>
 		/// <returns>True if event was handled, false otherwise.</returns>
-		bool OnFileChangeEvent(const Events::FileChangeEvent& e);
+		bool OnFileChangeEvent(const Events::FileChangeEvent& event);
 
 		/// <summary>
 		/// Tries to reload every modified shader/texture that was set by the hot reloading file watcher.
@@ -311,11 +311,15 @@ namespace TRAP
 
 		static Application* s_Instance; //Singleton instance
 
-		friend int ::main(int32_t argc, const char* const* const argv);
+		friend int ::main(int32_t argc, const char* const*  argv);
 	};
 
-	//To be defined in CLIENT
-	std::unique_ptr<Application> CreateApplication(const std::vector<std::string_view>&args);
+	/// <summary>
+	/// This function will be called by TRAP engines main function to initialize the engine.
+	/// IT MUST BE IMPLEMENTED BY ANY CLIENT!
+	/// </summary>
+	/// <returns>A unique pointer containing a TRAP::Application</returns>
+	extern std::unique_ptr<Application> CreateApplication(const std::vector<std::string_view>& args);
 }
 
 #endif /*TRAP_APPLICATION_H*/

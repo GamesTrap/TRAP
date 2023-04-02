@@ -578,22 +578,22 @@ static constexpr std::array<std::array<uint32_t, 256>, 16> CRC32Lookup =
 				const uint32_t two = *current++;
 				const uint32_t three = *current++;
 				const uint32_t four = *current++;
-				crc = CRC32Lookup[ 0][four & 0xFF] ^
-					  CRC32Lookup[ 1][(four >> 8) & 0xFF] ^
-					  CRC32Lookup[ 2][(four >> 16) & 0xFF] ^
-					  CRC32Lookup[ 3][(four >> 24) & 0xFF] ^
-					  CRC32Lookup[ 4][three & 0xFF] ^
-					  CRC32Lookup[ 5][(three >> 8) & 0xFF] ^
-					  CRC32Lookup[ 6][(three >> 16) & 0xFF] ^
-					  CRC32Lookup[ 7][(three >> 24) & 0xFF] ^
-					  CRC32Lookup[ 8][two & 0xFF] ^
-					  CRC32Lookup[ 9][(two >> 8) & 0xFF] ^
-					  CRC32Lookup[10][(two >> 16) & 0xFF] ^
-					  CRC32Lookup[11][(two >> 24) & 0xFF] ^
-					  CRC32Lookup[12][one & 0xFF] ^
-					  CRC32Lookup[13][(one >> 8) & 0xFF] ^
-					  CRC32Lookup[14][(one >> 16) & 0xFF] ^
-					  CRC32Lookup[15][(one >> 24) & 0xFF];
+				crc = CRC32Lookup[ 0][four & 0xFFu] ^
+					  CRC32Lookup[ 1][(four >> 8u) & 0xFFu] ^
+					  CRC32Lookup[ 2][(four >> 16u) & 0xFFu] ^
+					  CRC32Lookup[ 3][(four >> 24u) & 0xFFu] ^
+					  CRC32Lookup[ 4][three & 0xFFu] ^
+					  CRC32Lookup[ 5][(three >> 8u) & 0xFFu] ^
+					  CRC32Lookup[ 6][(three >> 16u) & 0xFFu] ^
+					  CRC32Lookup[ 7][(three >> 24u) & 0xFFu] ^
+					  CRC32Lookup[ 8][two & 0xFFu] ^
+					  CRC32Lookup[ 9][(two >> 8u) & 0xFFu] ^
+					  CRC32Lookup[10][(two >> 16u) & 0xFFu] ^
+					  CRC32Lookup[11][(two >> 24u) & 0xFFu] ^
+					  CRC32Lookup[12][one & 0xFFu] ^
+					  CRC32Lookup[13][(one >> 8u) & 0xFFu] ^
+					  CRC32Lookup[14][(one >> 16u) & 0xFFu] ^
+					  CRC32Lookup[15][(one >> 24u) & 0xFFu];
 			}
 			else
 			{
@@ -601,22 +601,22 @@ static constexpr std::array<std::array<uint32_t, 256>, 16> CRC32Lookup =
 				const uint32_t two = *current++;
 				const uint32_t three = *current++;
 				const uint32_t four = *current++;
-				crc = CRC32Lookup[ 0][(four >> 24) & 0xFF] ^
-					  CRC32Lookup[ 1][(four >> 16) & 0xFF] ^
-					  CRC32Lookup[ 2][(four >> 8) & 0xFF] ^
-					  CRC32Lookup[ 3][four & 0xFF] ^
-					  CRC32Lookup[ 4][(three >> 24) & 0xFF] ^
-					  CRC32Lookup[ 5][(three >> 16) & 0xFF] ^
-					  CRC32Lookup[ 6][(three >> 8) & 0xFF] ^
-					  CRC32Lookup[ 7][three & 0xFF] ^
-					  CRC32Lookup[ 8][(two >> 24) & 0xFF] ^
-					  CRC32Lookup[ 9][(two >> 16) & 0xFF] ^
-					  CRC32Lookup[10][(two >> 8) & 0xFF] ^
-					  CRC32Lookup[11][two & 0xFF] ^
-					  CRC32Lookup[12][(one >> 24) & 0xFF] ^
-					  CRC32Lookup[13][(one >> 16) & 0xFF] ^
-					  CRC32Lookup[14][(one >> 8) & 0xFF] ^
-					  CRC32Lookup[15][one & 0xFF];
+				crc = CRC32Lookup[ 0][(four >> 24u) & 0xFFu] ^
+					  CRC32Lookup[ 1][(four >> 16u) & 0xFFu] ^
+					  CRC32Lookup[ 2][(four >> 8u) & 0xFFu] ^
+					  CRC32Lookup[ 3][four & 0xFFu] ^
+					  CRC32Lookup[ 4][(three >> 24u) & 0xFFu] ^
+					  CRC32Lookup[ 5][(three >> 16u) & 0xFFu] ^
+					  CRC32Lookup[ 6][(three >> 8u) & 0xFFu] ^
+					  CRC32Lookup[ 7][three & 0xFFu] ^
+					  CRC32Lookup[ 8][(two >> 24u) & 0xFFu] ^
+					  CRC32Lookup[ 9][(two >> 16u) & 0xFFu] ^
+					  CRC32Lookup[10][(two >> 8u) & 0xFFu] ^
+					  CRC32Lookup[11][two & 0xFFu] ^
+					  CRC32Lookup[12][(one >> 24u) & 0xFFu] ^
+					  CRC32Lookup[13][(one >> 16u) & 0xFFu] ^
+					  CRC32Lookup[14][(one >> 8u) & 0xFFu] ^
+					  CRC32Lookup[15][one & 0xFFu];
 			}
 		}
 
@@ -626,7 +626,7 @@ static constexpr std::array<std::array<uint32_t, 256>, 16> CRC32Lookup =
 	const uint8_t* currentChar = reinterpret_cast<const uint8_t*>(current);
 	//Remaining 1 to 63 bytes (standard algorithm)
 	while (length-- != 0)
-		crc = (crc >> 8) ^ CRC32Lookup[0][(crc & 0xFF) ^ *currentChar++];
+		crc = (crc >> 8u) ^ CRC32Lookup[0][(crc & 0xFFu) ^ *currentChar++];
 
 	crc = ~crc; //Same as crc ^ 0xFFFFFFFF
 	Memory::SwapBytes(crc);

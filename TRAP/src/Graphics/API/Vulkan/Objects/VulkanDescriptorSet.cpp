@@ -126,7 +126,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 	std::vector<VkWriteDescriptorSetAccelerationStructureKHR> rayTracingWritesKHR;
 	const uint32_t rayTracingWriteCount = 0; //TODO Use
 
-	if(rootSignature->GetVkRayTracingDescriptorCounts()[m_set])
+	if(rootSignature->GetVkRayTracingDescriptorCounts()[m_set] != 0u)
 	{
 		rayTracingWrites.resize(rootSignature->GetVkRayTracingDescriptorCounts()[m_set]);
 		rayTracingWritesKHR.resize(rootSignature->GetVkRayTracingDescriptorCounts()[m_set]);
@@ -451,6 +451,6 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 										  updateData.data());
 
 	//RayTracing Update Descriptor Set since it does not support update template
-	if (rayTracingWriteCount)
+	if (rayTracingWriteCount != 0u)
 		vkUpdateDescriptorSets(m_device->GetVkDevice(), rayTracingWriteCount, rayTracingWrites.data(), 0, nullptr);
 }

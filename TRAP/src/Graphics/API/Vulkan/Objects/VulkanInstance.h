@@ -14,7 +14,7 @@ namespace TRAP::Graphics::API
 		/// <param name="appName">Application name.</param>
 		/// <param name="instanceLayers">Instance layers to use.</param>
 		/// <param name="instanceExtensions">Instance extensions to use.</param>
-		VulkanInstance(const std::string_view appName, std::vector<std::string> instanceLayers,
+		VulkanInstance(std::string_view appName, std::vector<std::string> instanceLayers,
 		               std::vector<std::string> instanceExtensions);
 		/// <summary>
 		/// Destructor.
@@ -74,13 +74,13 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="layer">Instance layer to check.</param>
 		/// <returns>True if the instance layer is supported, false otherwise.</returns>
-		[[nodiscard]] static bool IsLayerSupported(const std::string_view layer);
+		[[nodiscard]] static bool IsLayerSupported(std::string_view layer);
 		/// <summary>
 		/// Check whether an instance extension is supported or not.
 		/// </summary>
 		/// <param name="extension">Instance extension to check.</param>
 		/// <returns>True if the instance extension is supported, false otherwise.</returns>
-		[[nodiscard]] static bool IsExtensionSupported(const std::string_view extension);
+		[[nodiscard]] static bool IsExtensionSupported(std::string_view extension);
 
 	private:
 		/// <summary>

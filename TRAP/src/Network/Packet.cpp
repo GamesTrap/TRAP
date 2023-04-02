@@ -44,7 +44,7 @@ void TRAP::Network::Packet::Append(const void* const data, const std::size_t siz
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
-	if(!data || (sizeInBytes == 0))
+	if((data == nullptr) || (sizeInBytes == 0))
 		return;
 
 	const std::size_t start = m_data.size();
@@ -78,7 +78,7 @@ void TRAP::Network::Packet::Clear() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return !m_data.empty() ? &m_data[0] : nullptr;
+	return !m_data.empty() ? m_data.data() : nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

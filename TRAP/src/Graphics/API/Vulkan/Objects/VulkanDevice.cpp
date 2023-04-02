@@ -195,12 +195,12 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 
 	VkLoadDevice(m_device);
 
-	VulkanRenderer::s_debugMarkerSupport = (vkCmdBeginDebugUtilsLabelEXT) && (vkCmdEndDebugUtilsLabelEXT) &&
-		                                   (vkCmdInsertDebugUtilsLabelEXT) && (vkSetDebugUtilsObjectNameEXT);
-	VulkanRenderer::s_bufferDeviceAddressExtension = bufferDeviceAddressFeatures.bufferDeviceAddress;
-	VulkanRenderer::s_samplerYcbcrConversionExtension = ycbcrFeatures.samplerYcbcrConversion;
-	VulkanRenderer::s_shaderDrawParameters = shaderDrawParametersFeatures.shaderDrawParameters;
-	VulkanRenderer::s_timelineSemaphore = timelineSemaphoreFeatures.timelineSemaphore;
+	VulkanRenderer::s_debugMarkerSupport = ((vkCmdBeginDebugUtilsLabelEXT) != nullptr) && ((vkCmdEndDebugUtilsLabelEXT) != nullptr) &&
+		                                   ((vkCmdInsertDebugUtilsLabelEXT) != nullptr) && ((vkSetDebugUtilsObjectNameEXT) != nullptr);
+	VulkanRenderer::s_bufferDeviceAddressExtension = (bufferDeviceAddressFeatures.bufferDeviceAddress != 0u);
+	VulkanRenderer::s_samplerYcbcrConversionExtension = (ycbcrFeatures.samplerYcbcrConversion != 0u);
+	VulkanRenderer::s_shaderDrawParameters = (shaderDrawParametersFeatures.shaderDrawParameters != 0u);
+	VulkanRenderer::s_timelineSemaphore = (timelineSemaphoreFeatures.timelineSemaphore != 0u);
 	LoadShadingRateCaps(shadingRateFeatures);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
@@ -334,7 +334,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 			qi = 0;
 			break;
 		}
-		if((queueFlags & requiredFlags) && ((queueFlags & ~requiredFlags) == 0) &&
+		if(((queueFlags & requiredFlags) != 0u) && ((queueFlags & ~requiredFlags) == 0) &&
 			m_usedQueueCount[queueFlags] < m_availableQueueCount[queueFlags])
 		{
 			found = true;
@@ -342,7 +342,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 			qi = m_usedQueueCount[queueFlags];
 			break;
 		}
-		if(flagAnd && ((queueFlags - flagAnd) < minQueueFlag) && !graphicsQueue &&
+		if((flagAnd != 0u) && ((queueFlags - flagAnd) < minQueueFlag) && !graphicsQueue &&
 			m_usedQueueCount[queueFlags] < m_availableQueueCount[queueFlags])
 		{
 			found = true;
@@ -359,7 +359,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 		for(std::size_t index = 0; index < props.size(); ++index)
 		{
 			const VkQueueFlags queueFlags = props[index].queueFlags;
-			if((queueFlags & requiredFlags) && m_usedQueueCount[queueFlags] < m_availableQueueCount[queueFlags])
+			if(((queueFlags & requiredFlags) != 0u) && m_usedQueueCount[queueFlags] < m_availableQueueCount[queueFlags])
 			{
 				found = true;
 				qfi = static_cast<uint32_t>(index);
@@ -412,7 +412,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 			qi = 0;
 			break;
 		}
-		if ((queueFlags & requiredFlags) && ((queueFlags & ~requiredFlags) == 0) &&
+		if (((queueFlags & requiredFlags) != 0u) && ((queueFlags & ~requiredFlags) == 0) &&
 			m_usedQueueCount[queueFlags] < m_availableQueueCount[queueFlags])
 		{
 			found = true;
@@ -420,7 +420,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 			qi = m_usedQueueCount[queueFlags];
 			break;
 		}
-		if (flagAnd && ((queueFlags - flagAnd) < minQueueFlag) && !graphicsQueue &&
+		if ((flagAnd != 0u) && ((queueFlags - flagAnd) < minQueueFlag) && !graphicsQueue &&
 			m_usedQueueCount[queueFlags] < m_availableQueueCount[queueFlags])
 		{
 			found = true;
@@ -437,7 +437,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 		for (uint32_t index = 0; index < props.size(); ++index)
 		{
 			const VkQueueFlags queueFlags = props[index].queueFlags;
-			if ((queueFlags & requiredFlags) && m_usedQueueCount[queueFlags] < m_availableQueueCount[queueFlags])
+			if (((queueFlags & requiredFlags) != 0u) && m_usedQueueCount[queueFlags] < m_availableQueueCount[queueFlags])
 			{
 				found = true;
 				qfi = index;
@@ -560,14 +560,14 @@ void TRAP::Graphics::API::VulkanDevice::LoadShadingRateCaps(const VkPhysicalDevi
 	if(!VulkanRenderer::s_shadingRate)
 		return;
 
-	if(shadingRateFeatures.pipelineFragmentShadingRate)
+	if(shadingRateFeatures.pipelineFragmentShadingRate != 0u)
 		RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerDraw;
-	if(shadingRateFeatures.primitiveFragmentShadingRate)
+	if(shadingRateFeatures.primitiveFragmentShadingRate != 0u)
 		RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerPrimitive;
-	if(shadingRateFeatures.attachmentFragmentShadingRate)
+	if(shadingRateFeatures.attachmentFragmentShadingRate != 0u)
 		RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerTile;
 
-	if(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps))
+	if(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps) != 0u)
 	{
 		VkPhysicalDeviceFragmentShadingRatePropertiesKHR fragmentShadingRateProperties{};
 		fragmentShadingRateProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_PROPERTIES_KHR;
@@ -581,7 +581,7 @@ void TRAP::Graphics::API::VulkanDevice::LoadShadingRateCaps(const VkPhysicalDevi
 
 		RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Passthrough;
 		RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Override;
-		if(fragmentShadingRateProperties.fragmentShadingRateNonTrivialCombinerOps)
+		if(fragmentShadingRateProperties.fragmentShadingRateNonTrivialCombinerOps != 0u)
 		{
 			RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Min;
 			RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Max;

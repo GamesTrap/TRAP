@@ -32,7 +32,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	m_physicalDevice = FindPhysicalDeviceViaUUID(instance, physicalDeviceUUID);
 	TRAP_ASSERT(m_physicalDevice, "VulkanPhysicalDevice(): Vulkan Physical Device is nullptr!");
 
-	if (!m_physicalDevice)
+	if (m_physicalDevice == nullptr)
 	{
 		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan: Physical device creation failed!\n"
 													   "Error code: 0x0006",
@@ -103,7 +103,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	RendererAPI::GPUSettings.MaxAnisotropy = m_physicalDeviceProperties.limits.maxSamplerAnisotropy;
 	RendererAPI::GPUSettings.MaxImageDimension2D = m_physicalDeviceProperties.limits.maxImageDimension2D;
 	RendererAPI::GPUSettings.MaxImageDimensionCube = m_physicalDeviceProperties.limits.maxImageDimensionCube;
-	RendererAPI::GPUSettings.FillModeNonSolid = m_physicalDeviceFeatures.fillModeNonSolid;
+	RendererAPI::GPUSettings.FillModeNonSolid = (m_physicalDeviceFeatures.fillModeNonSolid != 0u);
 	RendererAPI::GPUSettings.MaxPushConstantSize = m_physicalDeviceProperties.limits.maxPushConstantsSize;
 	RendererAPI::GPUSettings.MaxSamplerAllocationCount = m_physicalDeviceProperties.limits.maxSamplerAllocationCount;
 	RendererAPI::GPUSettings.MaxTessellationControlPoints = m_physicalDeviceProperties.limits.maxTessellationPatchSize;
@@ -113,28 +113,28 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 
 	RendererAPI::GPUSettings.WaveLaneCount = m_physicalDeviceSubgroupProperties.subgroupSize;
 	RendererAPI::GPUSettings.WaveOpsSupportFlags = RendererAPI::WaveOpsSupportFlags::None;
-	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_BASIC_BIT)
+	if ((m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_BASIC_BIT) != 0u)
 		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Basic;
-	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_VOTE_BIT)
+	if ((m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_VOTE_BIT) != 0u)
 		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Vote;
-	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_ARITHMETIC_BIT)
+	if ((m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_ARITHMETIC_BIT) != 0u)
 		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Arithmetic;
-	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_BALLOT_BIT)
+	if ((m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_BALLOT_BIT) != 0u)
 		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Ballot;
-	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_SHUFFLE_BIT)
+	if ((m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_SHUFFLE_BIT) != 0u)
 		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Shuffle;
-	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT)
+	if ((m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT) != 0u)
 		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::ShuffleRelative;
-	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_CLUSTERED_BIT)
+	if ((m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_CLUSTERED_BIT) != 0u)
 		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Clustered;
-	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_QUAD_BIT)
+	if ((m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_QUAD_BIT) != 0u)
 		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Quad;
-	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_PARTITIONED_BIT_NV)
+	if ((m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_PARTITIONED_BIT_NV) != 0u)
 		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::PartitionedNV;
 
-	RendererAPI::GPUSettings.TessellationSupported = m_physicalDeviceFeatures.tessellationShader;
-	RendererAPI::GPUSettings.GeometryShaderSupported = m_physicalDeviceFeatures.geometryShader;
-	RendererAPI::GPUSettings.SampleRateShadingSupported = m_physicalDeviceFeatures.sampleRateShading;
+	RendererAPI::GPUSettings.TessellationSupported = (m_physicalDeviceFeatures.tessellationShader != 0u);
+	RendererAPI::GPUSettings.GeometryShaderSupported = (m_physicalDeviceFeatures.geometryShader != 0u);
+	RendererAPI::GPUSettings.SampleRateShadingSupported = (m_physicalDeviceFeatures.sampleRateShading != 0u);
 
 	// Surface & Present test
 #ifndef TRAP_HEADLESS_MODE
@@ -143,7 +143,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Focused, false);
 		INTERNAL::WindowingAPI::InternalWindow* win = INTERNAL::WindowingAPI::CreateWindow(2, 2, "Vulkan Surface Tester", nullptr);
 		INTERNAL::WindowingAPI::DefaultWindowHints();
-		if (win)
+		if (win != nullptr)
 		{
 			VkSurfaceKHR surface = VK_NULL_HANDLE;
 			VkResult res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance->GetVkInstance(), *win, nullptr, surface);
@@ -170,12 +170,12 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 					RendererAPI::GPUSettings.SurfaceSupported = false;
 
 				// Present test
-				VkBool32 presentSupport = false;
+				VkBool32 presentSupport = VK_FALSE;
 				const auto &queueFam = GetQueueFamilyProperties();
 				for (std::size_t i = 0; i < queueFam.size(); ++i)
 				{
 					VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(m_physicalDevice, static_cast<uint32_t>(i), surface, &presentSupport));
-					if (presentSupport)
+					if (presentSupport != 0u)
 					{
 						RendererAPI::GPUSettings.PresentSupported = true;
 						break;
@@ -184,13 +184,13 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 
 				// Cleanup
 				vkDestroySurfaceKHR(instance->GetVkInstance(), surface, nullptr);
-				TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(win));
+				TRAP::INTERNAL::WindowingAPI::DestroyWindow(win);
 			}
 			else
 			{
 				RendererAPI::GPUSettings.SurfaceSupported = false;
 				// Cleanup
-				TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(win));
+				TRAP::INTERNAL::WindowingAPI::DestroyWindow(win);
 			}
 		}
 	}
@@ -360,9 +360,9 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 		features2.pNext = &m_physicalDeviceFragmentShaderInterlockFeatures;
 		vkGetPhysicalDeviceFeatures2(m_physicalDevice, &features2);
 
-		RendererAPI::GPUSettings.ROVsSupported = static_cast<bool>(m_physicalDeviceFragmentShaderInterlockFeatures.fragmentShaderPixelInterlock);
+		RendererAPI::GPUSettings.ROVsSupported = static_cast<uint32_t>(static_cast<bool>(m_physicalDeviceFragmentShaderInterlockFeatures.fragmentShaderPixelInterlock));
 	}
-	RendererAPI::GPUSettings.ROVsSupported = false;
+	RendererAPI::GPUSettings.ROVsSupported = 0u;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -606,7 +606,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 																									    "TRAP Vulkan Surface Tester",
 																									    nullptr);
 		INTERNAL::WindowingAPI::DefaultWindowHints();
-		if (!vulkanTestWindow)
+		if (vulkanTestWindow == nullptr)
 		{
 			vkDestroyInstance(instance, nullptr);
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
@@ -622,9 +622,9 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		VkResult res{};
 		VkCall(res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance, *vulkanTestWindow, nullptr,
 																	   surface));
-		if (!surface || res != VK_SUCCESS)
+		if ((surface == nullptr) || res != VK_SUCCESS)
 		{
-			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
+			TRAP::INTERNAL::WindowingAPI::DestroyWindow(vulkanTestWindow);
 			vkDestroyInstance(instance, nullptr);
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Surface creation!");
 			continue;
@@ -640,7 +640,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		{
 #ifndef TRAP_HEADLESS_MODE
 			vkDestroySurfaceKHR(instance, surface, nullptr);
-			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
+			TRAP::INTERNAL::WindowingAPI::DestroyWindow(vulkanTestWindow);
 #endif
 			vkDestroyInstance(instance, nullptr);
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
@@ -652,7 +652,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		bool foundGraphicsQueue = false;
 		for (const VkQueueFamilyProperties &props : queueFamilyProperties)
 		{
-			if (props.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+			if ((props.queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0u)
 			{
 				foundGraphicsQueue = true;
 				break;
@@ -662,7 +662,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		{
 #ifndef TRAP_HEADLESS_MODE
 			vkDestroySurfaceKHR(instance, surface, nullptr);
-			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
+			TRAP::INTERNAL::WindowingAPI::DestroyWindow(vulkanTestWindow);
 #endif
 			vkDestroyInstance(instance, nullptr);
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Graphics Queue Test!");
@@ -672,17 +672,17 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		// Required: Check if PhysicalDevice supports Presenting
 		// Disabled in Headless mode.
 #ifndef TRAP_HEADLESS_MODE
-		VkBool32 foundPresentSupport = false;
+		VkBool32 foundPresentSupport = VK_FALSE;
 		for (std::size_t i = 0; i < queueFamilyProperties.size(); i++)
 		{
 			VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(dev, static_cast<uint32_t>(i), surface, &foundPresentSupport));
-			if (foundPresentSupport)
+			if (foundPresentSupport != 0u)
 				break;
 		}
-		if (!foundPresentSupport)
+		if (foundPresentSupport == 0u)
 		{
 			vkDestroySurfaceKHR(instance, surface, nullptr);
-			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
+			TRAP::INTERNAL::WindowingAPI::DestroyWindow(vulkanTestWindow);
 			vkDestroyInstance(instance, nullptr);
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
 					 "\" Failed Present Queue Test!");
@@ -701,7 +701,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		if (presentModes.empty())
 		{
 			vkDestroySurfaceKHR(instance, surface, nullptr);
-			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
+			TRAP::INTERNAL::WindowingAPI::DestroyWindow(vulkanTestWindow);
 			vkDestroyInstance(instance, nullptr);
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Present Mode Test!");
 			continue;
@@ -718,7 +718,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		if (surfaceFormats.empty())
 		{
 			vkDestroySurfaceKHR(instance, surface, nullptr);
-			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
+			TRAP::INTERNAL::WindowingAPI::DestroyWindow(vulkanTestWindow);
 			vkDestroyInstance(instance, nullptr);
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
 					 "\" Failed Surface Format Test!");
@@ -730,7 +730,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		bool foundComputeQueue = false;
 		for (const VkQueueFamilyProperties &props : queueFamilyProperties)
 		{
-			if (props.queueFlags & VK_QUEUE_COMPUTE_BIT)
+			if ((props.queueFlags & VK_QUEUE_COMPUTE_BIT) != 0u)
 			{
 				foundComputeQueue = true;
 				score += 1000;
@@ -744,7 +744,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		bool foundTransferQueue = false;
 		for (const VkQueueFamilyProperties &props : queueFamilyProperties)
 		{
-			if (props.queueFlags & VK_QUEUE_TRANSFER_BIT)
+			if ((props.queueFlags & VK_QUEUE_TRANSFER_BIT) != 0u)
 			{
 				foundTransferQueue = true;
 				score += 1000;
@@ -792,13 +792,13 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		vkGetPhysicalDeviceFeatures(dev, &devFeatures);
 
 		// Big Optionally: Check if Geometry Shaders are supported
-		if (devFeatures.geometryShader)
+		if (devFeatures.geometryShader != 0u)
 			score += 1000;
 		else
 			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Geometry Shader Test!");
 
 		// Big Optionally: Check if Tessellation Shaders are supported
-		if (devFeatures.tessellationShader)
+		if (devFeatures.tessellationShader != 0u)
 			score += 1000;
 		else
 			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
@@ -837,21 +837,21 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			devFeatures2.pNext = &fsrFeatures;
 			vkGetPhysicalDeviceFeatures2KHR(dev, &devFeatures2);
 
-			if(!fsrFeatures.pipelineFragmentShadingRate && !fsrFeatures.attachmentFragmentShadingRate)
+			if((fsrFeatures.pipelineFragmentShadingRate == 0u) && (fsrFeatures.attachmentFragmentShadingRate == 0u))
 				TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Variable Rate Shading Test!");
 			else
 				score += 1000;
 
-			if(fsrFeatures.pipelineFragmentShadingRate) //Tier 1
+			if(fsrFeatures.pipelineFragmentShadingRate != 0u) //Tier 1
 				score += 100;
-			if(fsrFeatures.attachmentFragmentShadingRate) //Tier 2
+			if(fsrFeatures.attachmentFragmentShadingRate != 0u) //Tier 2
 				score += 200;
 		}
 		else
 			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Variable Rate Shading Test!");
 
 		// Optionally: Check if device support fill mode non solid
-		if (devFeatures.fillModeNonSolid)
+		if (devFeatures.fillModeNonSolid != 0u)
 			score += 250;
 		else
 			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
@@ -879,7 +879,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 
 #ifndef TRAP_HEADLESS_MODE
 		vkDestroySurfaceKHR(instance, surface, nullptr);
-		TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
+		TRAP::INTERNAL::WindowingAPI::DestroyWindow(vulkanTestWindow);
 #endif
 
 		// Optionally: Check VRAM size (1e+9 == Bytes to Gigabytes)
@@ -888,7 +888,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		vkGetPhysicalDeviceMemoryProperties(dev, &memProps);
 		for (uint32_t i = 0; i < memProps.memoryHeapCount; i++)
 		{
-			if (VK_MEMORY_HEAP_DEVICE_LOCAL_BIT & memProps.memoryHeaps[i].flags)
+			if ((VK_MEMORY_HEAP_DEVICE_LOCAL_BIT & memProps.memoryHeaps[i].flags) != 0u)
 				score += static_cast<uint32_t>(memProps.memoryHeaps[i].size) / static_cast<uint32_t>(1e+9) * 100u;
 		}
 
@@ -903,7 +903,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		score += static_cast<uint32_t>(sampleCounts) * 10;
 
 		// Optionally: Check if Anisotropic Filtering is supported
-		if (devFeatures.samplerAnisotropy)
+		if (devFeatures.samplerAnisotropy != 0u)
 			score += 500;
 		else
 			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
@@ -952,17 +952,17 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::LoadAllPhysicalDeviceExtensions(
 	                                                  m_physicalDeviceProperties.limits.framebufferDepthSampleCounts);
 	sampleCounts = TRAP::Math::Min(sampleCounts, m_physicalDeviceProperties.limits.framebufferStencilSampleCounts);
 
-	if(sampleCounts & VK_SAMPLE_COUNT_64_BIT)
+	if((sampleCounts & VK_SAMPLE_COUNT_64_BIT) != 0u)
 		return VK_SAMPLE_COUNT_64_BIT;
-	if(sampleCounts & VK_SAMPLE_COUNT_32_BIT)
+	if((sampleCounts & VK_SAMPLE_COUNT_32_BIT) != 0u)
 		return VK_SAMPLE_COUNT_32_BIT;
-	if(sampleCounts & VK_SAMPLE_COUNT_16_BIT)
+	if((sampleCounts & VK_SAMPLE_COUNT_16_BIT) != 0u)
 		return VK_SAMPLE_COUNT_16_BIT;
-	if(sampleCounts & VK_SAMPLE_COUNT_8_BIT)
+	if((sampleCounts & VK_SAMPLE_COUNT_8_BIT) != 0u)
 		return VK_SAMPLE_COUNT_8_BIT;
-	if(sampleCounts & VK_SAMPLE_COUNT_4_BIT)
+	if((sampleCounts & VK_SAMPLE_COUNT_4_BIT) != 0u)
 		return VK_SAMPLE_COUNT_4_BIT;
-	if(sampleCounts & VK_SAMPLE_COUNT_2_BIT)
+	if((sampleCounts & VK_SAMPLE_COUNT_2_BIT) != 0u)
 		return VK_SAMPLE_COUNT_2_BIT;
 
 	return VK_SAMPLE_COUNT_1_BIT;

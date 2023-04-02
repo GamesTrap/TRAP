@@ -132,7 +132,7 @@ TRAP::Network::FTP::ListingResponse::ListingResponse(const Response& response, c
 	std::string::size_type lastPos = 0;
 	for(std::string::size_type pos = data.find("\r\n"); pos != std::string::npos; pos = data.find("\r\n", lastPos))
 	{
-		m_listing.push_back(data.substr(lastPos, pos - lastPos));
+		m_listing.emplace_back(data.substr(lastPos, pos - lastPos));
 		lastPos = pos + 2;
 	}
 }
@@ -199,7 +199,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Disconnect()
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
 	//Send the exit command
-	const Response response = SendCommand("QUIT");
+	Response response = SendCommand("QUIT");
 	if (response.IsOK())
 		m_commandSocket.Disconnect();
 
@@ -602,7 +602,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::DataChannel::Open(const Transfe
 			for (uint8_t& i : data)
 			{
 				//Extract the current number
-				while(std::isdigit(str[index]))
+				while(std::isdigit(str[index]) != 0)
 				{
 					i = static_cast<uint8_t>(static_cast<uint8_t>(i * 10) + static_cast<uint8_t>(str[index] - '0'));
 					index++;

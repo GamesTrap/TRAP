@@ -74,7 +74,7 @@ namespace TRAP::INTERNAL
 		///       the window parameter.
 		/// </summary>
 		/// <param name="chainForAllWindows">Whether to enable callback chaining or not.</param>
-		static void SetCallbacksChainForAllWindows(const bool chainForAllWindows);
+		static void SetCallbacksChainForAllWindows(bool chainForAllWindows);
 
 		/// <summary>
 		/// Install ImGui callbacks.
@@ -92,7 +92,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Window to check for chaining.</param>
 		/// <returns>True or false.</returns>
-		static bool ShouldChainCallback(const WindowingAPI::InternalWindow* const window);
+		static bool ShouldChainCallback(const WindowingAPI::InternalWindow* window);
 
 	private:
 		static std::string s_clipboardText;
@@ -102,35 +102,30 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		struct ImGuiTRAPData
 		{
-			WindowingAPI::InternalWindow* Window;
-			Graphics::RenderAPI ClientAPI;
-			double Time;
-			const WindowingAPI::InternalWindow* MouseWindow;
-			std::array<WindowingAPI::InternalCursor*, ImGuiMouseCursor_COUNT> MouseCursors;
+			WindowingAPI::InternalWindow* Window{};
+			Graphics::RenderAPI ClientAPI{};
+			double Time{};
+			const WindowingAPI::InternalWindow* MouseWindow{};
+			std::array<WindowingAPI::InternalCursor*, ImGuiMouseCursor_COUNT> MouseCursors{};
 			ImVec2 LastValidMousePos;
 			std::vector<const WindowingAPI::InternalWindow*> KeyOwnerWindows;
-			bool InstalledCallbacks;
-			bool CallbacksChainForAllWindows;
-			bool WantUpdateMonitors;
+			bool InstalledCallbacks{};
+			bool CallbacksChainForAllWindows{};
+			bool WantUpdateMonitors{};
  			WindowingAPI::InternalCursor* CustomCursor = nullptr;
 
 			//Chain WindowingAPI callbacks; our callbacks will call the user's previously installed callbacks, if any.
-			WindowingAPI::WindowFocusFunc PrevUserCallbackWindowFocus;
-			WindowingAPI::CursorPositionFunc PrevUserCallbackCursorPos;
-			WindowingAPI::CursorEnterFunc PrevUserCallbackCursorEnter;
-			WindowingAPI::MouseButtonFunc PrevUserCallbackMouseButton;
-			WindowingAPI::ScrollFunc PrevUserCallbackScroll;
-			WindowingAPI::KeyFunc PrevUserCallbackKey;
-			WindowingAPI::CharFunc PrevUserCallbackChar;
-			WindowingAPI::MonitorFunc PrevUserCallbackMonitor;
+			WindowingAPI::WindowFocusFunc PrevUserCallbackWindowFocus{};
+			WindowingAPI::CursorPositionFunc PrevUserCallbackCursorPos{};
+			WindowingAPI::CursorEnterFunc PrevUserCallbackCursorEnter{};
+			WindowingAPI::MouseButtonFunc PrevUserCallbackMouseButton{};
+			WindowingAPI::ScrollFunc PrevUserCallbackScroll{};
+			WindowingAPI::KeyFunc PrevUserCallbackKey{};
+			WindowingAPI::CharFunc PrevUserCallbackChar{};
+			WindowingAPI::MonitorFunc PrevUserCallbackMonitor{};
 
 			ImGuiTRAPData()
-				: Window(nullptr), ClientAPI(Graphics::RenderAPI::NONE), Time(0.0), MouseWindow(nullptr),
-				  LastValidMousePos(0.0f, 0.0f), KeyOwnerWindows(), InstalledCallbacks(false), CallbacksChainForAllWindows(false),
-				  WantUpdateMonitors(false), CustomCursor(nullptr),
-				  PrevUserCallbackWindowFocus(nullptr), PrevUserCallbackCursorPos(nullptr), PrevUserCallbackCursorEnter(nullptr),
-				  PrevUserCallbackMouseButton(nullptr), PrevUserCallbackScroll(nullptr), PrevUserCallbackKey(nullptr),
-				  PrevUserCallbackChar(nullptr), PrevUserCallbackMonitor(nullptr)
+				: LastValidMousePos(0.0f, 0.0f)
 			{
 				KeyOwnerWindows.resize(static_cast<int32_t>(TRAP::Input::Key::Menu));
 			}
@@ -141,18 +136,15 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		struct ImGuiViewportDataTRAP
 		{
-			WindowingAPI::InternalWindow* Window;
-			bool WindowOwned;
-			int32_t IgnoreWindowPosEventFrame;
-			int32_t IgnoreWindowSizeEventFrame;
+			WindowingAPI::InternalWindow* Window{};
+			bool WindowOwned{};
+			int32_t IgnoreWindowPosEventFrame = -1;
+			int32_t IgnoreWindowSizeEventFrame = -1;
 
 			/// <summary>
 			/// Constructor.
 			/// </summary>
-			ImGuiViewportDataTRAP() noexcept
-				: Window(nullptr), WindowOwned(false),
-				  IgnoreWindowPosEventFrame(-1), IgnoreWindowSizeEventFrame(-1)
-			{}
+			ImGuiViewportDataTRAP() noexcept = default;
 
 			/// <summary>
 			/// Destructor
@@ -161,6 +153,12 @@ namespace TRAP::INTERNAL
 			{
 				IM_ASSERT(Window == nullptr);
 			}
+
+			ImGuiViewportDataTRAP(const ImGuiViewportDataTRAP& other) = default;
+			ImGuiViewportDataTRAP(ImGuiViewportDataTRAP&& other) = default;
+
+			ImGuiViewportDataTRAP& operator=(const ImGuiViewportDataTRAP& other) = default;
+			ImGuiViewportDataTRAP& operator=(ImGuiViewportDataTRAP&& other) = default;
 		};
 
 		/// <summary>
@@ -328,7 +326,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="viewport">Viewport to set window position on.</param>
 		/// <param name="pos">Position to set.</param>
-		static void SetWindowPos(ImGuiViewport* viewport, const ImVec2 pos);
+		static void SetWindowPos(ImGuiViewport* viewport, ImVec2 pos);
 		/// <summary>
 		/// Retrieve the ImGui Window size.
 		/// </summary>
@@ -340,7 +338,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="viewport">Viewport to set window size on.</param>
 		/// <param name="size">Size to set.</param>
-		static void SetWindowSize(ImGuiViewport* viewport, const ImVec2 size);
+		static void SetWindowSize(ImGuiViewport* viewport, ImVec2 size);
 		/// <summary>
 		/// Set the title for the ImGui Window.
 		/// </summary>
@@ -369,7 +367,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="viewport">Viewport to set alpha value on.</param>
 		/// <param name="alpha">Alpha value.</param>
-		static void SetWindowAlpha(ImGuiViewport* viewport, const float alpha);
+		static void SetWindowAlpha(ImGuiViewport* viewport, float alpha);
 
 		//--------------------------------------------------------------------------------------------------------
 		// Vulkan support (the Vulkan renderer needs to call a platform-side support function to create the surface)
@@ -383,7 +381,7 @@ namespace TRAP::INTERNAL
 		/// <param name="vkAllocator">Vulkan allocator.</param>
 		/// <param name="outVkSurface">Output for Vulkan surface.</param>
 		/// <returns>Vulkan error code.</returns>
-		[[nodiscard]] static int32_t CreateVkSurface(ImGuiViewport* viewport, const ImU64 vkInstance,
+		[[nodiscard]] static int32_t CreateVkSurface(ImGuiViewport* viewport, ImU64 vkInstance,
 		                                             const void* vkAllocator, ImU64* outVkSurface);
 
 		/// <summary>

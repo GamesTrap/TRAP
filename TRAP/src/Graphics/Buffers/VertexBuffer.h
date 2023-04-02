@@ -77,7 +77,7 @@ namespace TRAP::Graphics
 		/// Use this buffer for rendering on the given window.
 		/// </summary>
 		/// <param name="window">Window to use vertex buffer on. Default: Main Window.</param>
-		void Use(const Window* const window = TRAP::Application::GetWindow()) const;
+		void Use(const Window* window = TRAP::Application::GetWindow()) const;
 
 		/// <summary>
 		/// Check whether uploading data to the GPU has finished.

@@ -11,6 +11,8 @@ Modified by Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 #include "QOIImage.h"
 
+#include <cstddef>
+
 #include "Utils/String/String.h"
 #include "FileSystem/FileSystem.h"
 #include "Utils/Memory.h"
@@ -41,7 +43,7 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
 	}
 
     const auto size = FileSystem::GetSize(m_filepath);
-    std::size_t fileSize;
+    std::size_t fileSize = 0;
     if(size)
         fileSize = *size;
     else //Fallback
@@ -59,7 +61,7 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
     }
 
     Header header{};
-    file.read(header.MagicNumber.data(), header.MagicNumber.size());
+    file.read(header.MagicNumber.data(), static_cast<uint32_t>(header.MagicNumber.size()));
     file.read(reinterpret_cast<char*>(&header.Width), sizeof(uint32_t));
     file.read(reinterpret_cast<char*>(&header.Height), sizeof(uint32_t));
     file >> header.Channels >> header.ColorSpace;
@@ -115,7 +117,7 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
 	m_width = header.Width;
 	m_height = header.Height;
 
-    m_data.resize(header.Width * header.Height * header.Channels);
+    m_data.resize(static_cast<std::size_t>(header.Width) * header.Height * header.Channels);
     m_bitsPerPixel = header.Channels * 8;
     m_colorFormat = header.Channels == 3 ? ColorFormat::RGB : ColorFormat::RGBA;
 
@@ -219,9 +221,9 @@ void TRAP::INTERNAL::QOIImage::DecodeImage(std::ifstream& file, const std::size_
                 {
                     const uint8_t data = static_cast<uint8_t>(file.get());
                     const uint8_t vg = static_cast<uint8_t>((tag & 0x3Fu) - 32);
-                    prevPixel.Red   += static_cast<uint8_t>(vg - 8 + ((data >> 4) & 0xF));
+                    prevPixel.Red   += static_cast<uint8_t>(vg - 8u + ((data >> 4u) & 0xFu));
                     prevPixel.Green += vg;
-                    prevPixel.Blue  += static_cast<uint8_t>(vg - 8 + ((data >> 0) & 0xF));
+                    prevPixel.Blue  += static_cast<uint8_t>(vg - 8u + ((data >> 0u) & 0xFu));
                 }
                 else if((tag & QOI_MASK_2) == QOI_OP_RUN)
                 {

@@ -403,7 +403,7 @@ template<typename T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	std::string postfix = "";
+	std::string postfix;
 	if constexpr(std::is_same_v<T, float>)
 		postfix = "f";
 	else if constexpr(std::is_same_v<T, double>)

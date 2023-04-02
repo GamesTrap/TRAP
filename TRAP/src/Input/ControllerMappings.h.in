@@ -29,7 +29,7 @@ freely, subject to the following restrictions:
 
 namespace TRAP::Embed
 {
-	inline static const std::vector<std::string> ControllerMappings =
+	inline const std::vector<std::string> ControllerMappings =
 	{
 #if defined(TRAP_BUILD_WIN32_MAPPINGS)
 @TRAP_WIN32_MAPPINGS@

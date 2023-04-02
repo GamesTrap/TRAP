@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "Log.h"
 
+#ifdef TRAP_PLATFORM_LINUX
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] bool TRAP::Log::IsColorTerminal()
@@ -22,3 +24,5 @@
 			return std::strstr(envP, term) != nullptr;
 		});
 }
+
+#endif

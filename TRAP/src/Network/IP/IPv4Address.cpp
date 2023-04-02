@@ -53,7 +53,7 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string_view address)
 
 TRAP::Network::IPv4Address::IPv4Address(const uint8_t byte0, const uint8_t byte1, const uint8_t byte2,
                                         const uint8_t byte3)
-	: m_address(static_cast<uint32_t>((byte0 << 24) | (byte1 << 16) | (byte2 << 8) | byte3)), m_valid(true)
+	: m_address(static_cast<uint32_t>((byte0 << 24u) | (byte1 << 16u) | (byte2 << 8u) | byte3)), m_valid(true)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -197,7 +197,7 @@ void TRAP::Network::IPv4Address::Resolve(const std::string_view address)
 	{
 		//Try to convert the address as a byte representation ("xxx.xxx.xxx.xxx")
 		uint32_t ip{};
-		if(inet_pton(AF_INET, address.data(), &ip) && ip != INADDR_NONE)
+		if((inet_pton(AF_INET, address.data(), &ip) != 0) && ip != INADDR_NONE)
 		{
 			m_address = ip;
 			m_valid = true;
@@ -210,7 +210,7 @@ void TRAP::Network::IPv4Address::Resolve(const std::string_view address)
 			addrinfo* result = nullptr;
 			if(getaddrinfo(address.data(), nullptr, &hints, &result) == 0)
 			{
-				if(result)
+				if(result != nullptr)
 				{
 					ip = Utils::BitCast<sockaddr, sockaddr_in>(*(result->ai_addr)).sin_addr.s_addr;
 					freeaddrinfo(result);

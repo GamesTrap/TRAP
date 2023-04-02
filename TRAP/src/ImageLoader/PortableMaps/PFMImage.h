@@ -50,7 +50,7 @@ namespace TRAP::INTERNAL
 
 		struct Header
 		{
-			std::string MagicNumber = "";
+			std::string MagicNumber;
 			uint32_t Width = 0;
 			uint32_t Height = 0;
 			float ByteOrder = 0.0f;

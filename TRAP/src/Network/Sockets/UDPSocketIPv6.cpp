@@ -123,7 +123,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(void* const 
 	remotePort = 0;
 
 	//Check the destination buffer
-	if(!data)
+	if(data == nullptr)
 	{
 		TP_ERROR(Log::NetworkUDPSocketPrefix,
 		         "Can't receive data from the network (the destination buffer is invalid)");
@@ -203,12 +203,12 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(Packet& pack
 
 	//Receive the datagram
 	std::size_t received = 0;
-	const Status status = Receive(&m_buffer[0], m_buffer.size(), received, remoteAddress, remotePort);
+	const Status status = Receive(m_buffer.data(), m_buffer.size(), received, remoteAddress, remotePort);
 
 	//If we received valid data, we can copy it to the user packet
 	packet.Clear();
 	if ((status == Status::Done) && (received > 0))
-		packet.OnReceive(&m_buffer[0], received);
+		packet.OnReceive(m_buffer.data(), received);
 
 	return status;
 }
