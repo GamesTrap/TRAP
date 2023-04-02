@@ -275,6 +275,9 @@ namespace TRAP::INTERNAL
 		using PFN_GetDPIForWindow = UINT(WINAPI*)(HWND);
 		using PFN_AdjustWindowRectExForDPI = BOOL(WINAPI*)(LPRECT, DWORD, BOOL, DWORD, UINT);
 		using PFN_GetSystemMetricsForDPI = int(WINAPI*)(int, UINT);
+		using PFN_GetDisplayConfigBufferSizes = LONG(WINAPI*)(UINT32, UINT32*, UINT32*);
+		using PFN_QueryDisplayConfig = LONG(WINAPI*)(UINT32, UINT32*, DISPLAYCONFIG_PATH_INFO*, UINT32*, DISPLAYCONFIG_MODE_INFO*, DISPLAYCONFIG_TOPOLOGY_ID*);
+		using PFN_DisplayConfigGetDeviceInfo = LONG(WINAPI*)(DISPLAYCONFIG_DEVICE_INFO_HEADER*);
 
 		//dwmapi.dll function pointer typedefs
 		using PFN_DwmIsCompositionEnabled = HRESULT(WINAPI*)(BOOL*);
@@ -978,6 +981,9 @@ namespace TRAP::INTERNAL
 				PFN_GetDPIForWindow GetDPIForWindow = nullptr;
 				PFN_AdjustWindowRectExForDPI AdjustWindowRectExForDPI = nullptr;
 				PFN_GetSystemMetricsForDPI GetSystemMetricsForDPI = nullptr;
+				PFN_GetDisplayConfigBufferSizes GetDisplayConfigBufferSizes = nullptr;
+				PFN_QueryDisplayConfig QueryDisplayConfig = nullptr;
+				PFN_DisplayConfigGetDeviceInfo DisplayConfigGetDeviceInfo = nullptr;
 			} User32;
 
 			struct
@@ -4712,6 +4718,12 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="allowKeys">Disable or enable (restore) accessibility keys.</param>
 		static void SetAccessibilityShortcutKeys(const bool allowKeys);
+		/// <summary>
+		/// Retrieve a more accurate name for the monitor.
+		/// </summary>
+		/// <param name="deviceName">Monitor name from MONITORINFOEXW.</param>
+		/// <returns>More accurate monitor name on success, empty optional otherwise.</returns>
+		static std::optional<std::string> GetAccurateMonitorName(const std::wstring_view deviceName);
 
 		friend bool TRAP::Input::InitController();
 		//------------------//

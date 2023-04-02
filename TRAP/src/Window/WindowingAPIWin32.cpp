@@ -68,6 +68,12 @@ Modified by: Jan "GamesTrap" Schuerkamp
 																														 "AdjustWindowRectExForDpi");
 	s_Data.User32.GetSystemMetricsForDPI = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GetSystemMetricsForDPI>(s_Data.User32.Instance,
 																													 "GetSystemMetricsForDpi");
+	s_Data.User32.GetDisplayConfigBufferSizes = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GetDisplayConfigBufferSizes>(s_Data.User32.Instance,
+																													           "GetDisplayConfigBufferSizes");
+	s_Data.User32.QueryDisplayConfig = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_QueryDisplayConfig>(s_Data.User32.Instance,
+																											 "QueryDisplayConfig");
+	s_Data.User32.DisplayConfigGetDeviceInfo = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_DisplayConfigGetDeviceInfo>(s_Data.User32.Instance,
+																											                 "DisplayConfigGetDeviceInfo");
 
 	s_Data.DWMAPI_.Instance = static_cast<HINSTANCE>(TRAP::Utils::DynamicLoading::LoadLibrary("dwmapi.dll"));
 	if (s_Data.DWMAPI_.Instance)
@@ -956,6 +962,69 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+std::optional<std::string> TRAP::INTERNAL::WindowingAPI::GetAccurateMonitorName(const std::wstring_view deviceName)
+{
+	LONG rc = 0;
+	UINT32 pathCount = 0;
+	UINT32 modeCount = 0;
+
+	std::vector<DISPLAYCONFIG_PATH_INFO> paths{};
+	std::vector<DISPLAYCONFIG_MODE_INFO> modes{};
+
+	do
+	{
+		rc = s_Data.User32.GetDisplayConfigBufferSizes(QDC_ONLY_ACTIVE_PATHS, &pathCount, &modeCount);
+		if(rc != ERROR_SUCCESS)
+			return std::nullopt;
+
+		paths.resize(pathCount);
+		modes.resize(modeCount);
+
+		rc = s_Data.User32.QueryDisplayConfig(QDC_ONLY_ACTIVE_PATHS, &pathCount, paths.data(), &modeCount, modes.data(), 0);
+
+	} while(rc == ERROR_INSUFFICIENT_BUFFER);
+
+	if(rc == ERROR_SUCCESS)
+	{
+		for(uint32_t i = 0; i < pathCount; ++i)
+		{
+			DISPLAYCONFIG_SOURCE_DEVICE_NAME sourceName;
+			ZeroMemory(&sourceName, sizeof(sourceName));
+			sourceName.header.adapterId = paths[i].targetInfo.adapterId;
+			sourceName.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME;
+			sourceName.header.size = sizeof(sourceName);
+			sourceName.header.id = paths[i].sourceInfo.id;
+			rc = s_Data.User32.DisplayConfigGetDeviceInfo(&sourceName.header);
+			if(rc != ERROR_SUCCESS)
+				break;
+			else if(deviceName.compare(sourceName.viewGdiDeviceName) != 0)
+				continue;
+
+			DISPLAYCONFIG_TARGET_DEVICE_NAME targetName;
+			ZeroMemory(&targetName, sizeof(targetName));
+			targetName.header.adapterId = paths[i].targetInfo.adapterId;
+			targetName.header.id = paths[i].targetInfo.id;
+			targetName.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_TARGET_NAME;
+			targetName.header.size = sizeof(targetName);
+			rc = s_Data.User32.DisplayConfigGetDeviceInfo(&targetName.header);
+			if(rc == ERROR_SUCCESS)
+			{
+				const std::string name = TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(targetName.monitorFriendlyDeviceName);
+				if(name.empty() || (name.size() == 1 && name.back() == '\0'))
+					return std::nullopt;
+
+				return name;
+			}
+
+			break;
+		}
+	}
+
+	return std::nullopt;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 //Callback for EnumDisplayMonitors in CreateMonitor
 BOOL CALLBACK TRAP::INTERNAL::WindowingAPI::MonitorCallback(HMONITOR handle, [[maybe_unused]] HDC dc,
 	                                                        [[maybe_unused]] RECT* rect, const LPARAM data)
@@ -972,7 +1041,12 @@ BOOL CALLBACK TRAP::INTERNAL::WindowingAPI::MonitorCallback(HMONITOR handle, [[m
 	{
 		InternalMonitor* const monitor = reinterpret_cast<InternalMonitor*>(data);
 		if (monitor && monitor->AdapterName.compare(mi.szDevice) == 0)
+		{
 			monitor->Handle = handle;
+			const std::optional<std::string> accurateMonitorName = GetAccurateMonitorName(mi.szDevice);
+			if(accurateMonitorName)
+				monitor->Name = *accurateMonitorName;
+		}
 	}
 
 	return TRUE;

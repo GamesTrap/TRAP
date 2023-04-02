@@ -3808,3 +3808,7 @@ SITREP 04/01/2023|23w13c1
     - All known critical errors now have a MsgBox and quit the engine immediately ~<10 mins
     - Fixed warnings in Games folder ~<10 mins
     - WindowingAPI Updated Taskbar progress implementation ~<10 mins
+
+SITREP 04/02/2023|23w13d1
+    - Changed TRAP Engine version to 23w13d1(0.9.7)
+    - WindowingAPIWin32 Added more accurate monitor names ~<20 mins
