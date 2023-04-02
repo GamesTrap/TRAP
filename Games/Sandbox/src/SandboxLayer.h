@@ -9,8 +9,6 @@ public:
 	SandboxLayer()
 		: Layer("Sandbox"),
 		m_frameTimeHistory(),
-		m_wireFrame(false),
-		m_indexedDrawing(true),
 		m_cameraController(TRAP::Application::GetWindow()->GetAspectRatio())
 	{
 	}
@@ -59,7 +57,7 @@ public:
 		//    Quad   //
 		///////////////
 		//XYZ RGBA
-		constexpr std::array<float, 9 * 4> indexedVertices //Quad
+		constexpr std::array<float, 9ull * 4> indexedVertices //Quad
 		{
 			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,    0.0f, 1.0f,
 			 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,    1.0f, 1.0f,
@@ -95,7 +93,7 @@ public:
 		//    Quad   //
 		///////////////
 		//XYZ RGBA
-		constexpr std::array<float, 9 * 6> vertices //Quad
+		constexpr std::array<float, 9ull * 6> vertices //Quad
 		{
 			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,    0.0f, 1.0f,
 			 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,    1.0f, 1.0f,
@@ -271,8 +269,8 @@ private:
 	std::array<float, 50> m_frameTimeHistory;
 	TRAP::Utils::Timer m_fpsTimer;
 	TRAP::Utils::Timer m_titleTimer;
-	bool m_wireFrame;
-	bool m_indexedDrawing;
+	bool m_wireFrame = false;
+	bool m_indexedDrawing = false;
 
 	TRAP::Graphics::OrthographicCameraController m_cameraController;
 

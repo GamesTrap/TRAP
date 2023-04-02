@@ -43,17 +43,17 @@ namespace TypeVec4
 
         {
             std::vector<TRAP::Math::Vec4i> tests;
-            tests.push_back(TRAP::Math::Vec4i(TRAP::Math::Vec2i(1, 2), 3, 4));
-            tests.push_back(TRAP::Math::Vec4i(1, TRAP::Math::Vec2i(2, 3), 4));
-            tests.push_back(TRAP::Math::Vec4i(1, 2, TRAP::Math::Vec2i(3, 4)));
-            tests.push_back(TRAP::Math::Vec4i(TRAP::Math::Vec3i(1, 2, 3), 4));
-            tests.push_back(TRAP::Math::Vec4i(1, TRAP::Math::Vec3i(2, 3, 4)));
-            tests.push_back(TRAP::Math::Vec4i(TRAP::Math::Vec2i(1, 2), TRAP::Math::Vec2i(3, 4)));
-            tests.push_back(TRAP::Math::Vec4i(1, 2, 3, 4));
+            tests.emplace_back(TRAP::Math::Vec2i(1, 2), 3, 4);
+            tests.emplace_back(1, TRAP::Math::Vec2i(2, 3), 4);
+            tests.emplace_back(1, 2, TRAP::Math::Vec2i(3, 4));
+            tests.emplace_back(TRAP::Math::Vec3i(1, 2, 3), 4);
+            tests.emplace_back(1, TRAP::Math::Vec3i(2, 3, 4));
+            tests.emplace_back(TRAP::Math::Vec2i(1, 2), TRAP::Math::Vec2i(3, 4));
+            tests.emplace_back(1, 2, 3, 4);
             tests.push_back(TRAP::Math::Vec4i(TRAP::Math::Vec4i(1, 2, 3, 4)));
 
-            for(std::size_t i = 0; i < tests.size(); ++i)
-                error += tests[i] == TRAP::Math::Vec4i(1, 2, 3, 4) ? 0 : 1;
+            for(auto & test : tests)
+                error += test == TRAP::Math::Vec4i(1, 2, 3, 4) ? 0 : 1;
         }
 
         {

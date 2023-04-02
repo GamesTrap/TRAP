@@ -3815,3 +3815,4 @@ SITREP 04/02/2023|23w13d1
     - TRAP::CreateApplication() now uses std::vector<std::string_view> for argv/argc paramter ~<5 mins
     - Added .clang-tidy file ~<5 mins
     - Resolved most clang-tidy warnings in TRAP ~>120 mins
+    - Games Resolved most clang-tidy warnings ~<30 mins

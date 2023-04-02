@@ -96,7 +96,7 @@ void MultiWindowTests::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void MultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep&)
+void MultiWindowTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 {
 	//Second Window OnUpdate
 	if(m_window)

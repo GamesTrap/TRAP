@@ -33,7 +33,7 @@ void IPv6Tests::IPv6()
 	             TRAP::Network::IPv6Address::GetPublicAddress() << std::endl;
 
 	//Ask for the server address
-	TRAP::Network::IPv6Address server;
+	TRAP::Network::IPv6Address server{};
 	do
 	{
 		std::cout << "[EXPERIMENTAL][Network][IPv6] Type the address or name of a server: ";

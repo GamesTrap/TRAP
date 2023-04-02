@@ -85,9 +85,9 @@ void HashTests::TestSHA2_256()
     static constexpr std::array<uint8_t, 32> extremeHash{0x50, 0xE7, 0x2A, 0x0E, 0x26, 0x44, 0x2F, 0xE2, 0x55, 0x2D, 0xC3,
                                                   0x93, 0x8A, 0xC5, 0x86, 0x58, 0x22, 0x8C, 0x0C, 0xBF, 0xB1, 0xD2,
                                                   0xCA, 0x87, 0x2A, 0xE4, 0x35, 0x26, 0x6F, 0xCD, 0x05, 0x5E};
-    std::string extremeTest = "";
-    extremeTest.reserve(16'777'216 * 64);
-    for(uint32_t i = 0; i < 16'777'216; ++i)
+    std::string extremeTest;
+    extremeTest.reserve(16'777'216ull * 64);
+    for(uint64_t i = 0; i < 16'777'216; ++i)
         extremeTest += "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmno";
     assert(TRAP::Utils::Hash::SHA2_256(extremeTest) == extremeHash);
 }
@@ -140,9 +140,9 @@ void HashTests::TestSHA2_512()
                                                   0xBE, 0x60, 0x91, 0xB8, 0x19, 0xED, 0x35, 0x2C, 0x29, 0x67, 0xA2,
                                                   0xE2, 0xD4, 0xFA, 0x50, 0x50, 0x72, 0x3C, 0x96, 0x30, 0x69, 0x1F,
                                                   0x1A, 0x05, 0xA7, 0x28, 0x1D, 0xBE, 0x6C, 0x10, 0x86};
-    std::string extremeTest = "";
-    extremeTest.reserve(16'777'216 * 64);
-    for(uint32_t i = 0; i < 16'777'216; ++i)
+    std::string extremeTest;
+    extremeTest.reserve(16'777'216ull * 64);
+    for(uint64_t i = 0; i < 16'777'216; ++i)
         extremeTest += "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmno";
     assert(TRAP::Utils::Hash::SHA2_512(extremeTest) == extremeHash);
 }
@@ -177,9 +177,9 @@ void HashTests::TestSHA3_256()
     static constexpr std::array<uint8_t, 32> extremeHash{0xEC, 0xBB, 0xC4, 0x2C, 0xBF, 0x29, 0x66, 0x03, 0xAC, 0xB2, 0xC6,
                                                   0xBC, 0x04, 0x10, 0xEF, 0x43, 0x78, 0xBA, 0xFB, 0x24, 0xB7, 0x10,
                                                   0x35, 0x7F, 0x12, 0xDF, 0x60, 0x77, 0x58, 0xB3, 0x3E, 0x2B};
-    std::string extremeTest = "";
-    extremeTest.reserve(16'777'216 * 64);
-    for(uint32_t i = 0; i < 16'777'216; ++i)
+    std::string extremeTest;
+    extremeTest.reserve(16'777'216ull * 64);
+    for(uint64_t i = 0; i < 16'777'216; ++i)
         extremeTest += "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmno";
     assert(TRAP::Utils::Hash::SHA3_256(extremeTest) == extremeHash);
 }
@@ -232,9 +232,9 @@ void HashTests::TestSHA3_512()
                                                   0x8D, 0x5C, 0x33, 0x95, 0x50, 0xDD, 0x59, 0x58, 0xA5, 0x00, 0xD4,
                                                   0xB9, 0x53, 0x63, 0xDA, 0x1B, 0x5F, 0xA1, 0x8A, 0xFF, 0xC1, 0xBA,
                                                   0xB2, 0x29, 0x2D, 0xC6, 0x3B, 0x7D, 0x85, 0x09, 0x7C};
-    std::string extremeTest = "";
-    extremeTest.reserve(16'777'216 * 64);
-    for(uint32_t i = 0; i < 16'777'216; ++i)
+    std::string extremeTest;
+    extremeTest.reserve(16'777'216ull * 64);
+    for(uint64_t i = 0; i < 16'777'216; ++i)
         extremeTest += "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmno";
     assert(TRAP::Utils::Hash::SHA3_512(extremeTest) == extremeHash);
 }

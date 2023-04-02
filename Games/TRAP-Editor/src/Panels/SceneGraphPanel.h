@@ -18,7 +18,7 @@ namespace TRAP
 		void OnImGuiRender();
 
 		void SetSelectedEntity(const Entity& entity);
-		Entity GetSelectedEntity() const;
+		[[nodiscard]] Entity GetSelectedEntity() const;
 
 	private:
 		template<typename T>

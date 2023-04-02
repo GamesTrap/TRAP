@@ -12,7 +12,6 @@ public:
 		: Layer("ParticleSystem2D"),
 		  m_cameraController(TRAP::Application::GetWindow()->GetAspectRatio()),
 		  m_particle(),
-		  m_maxParticles(1000),
 		  m_frameTimeHistory()
 	{
 	}
@@ -116,7 +115,7 @@ private:
 	TRAP::Graphics::OrthographicCameraController m_cameraController;
 	ParticleProps m_particle;
 	ParticleSystem2D m_particleSystem;
-	int32_t m_maxParticles;
+	int32_t m_maxParticles = 1000;
 
 	std::array<float, 50> m_frameTimeHistory;
 	TRAP::Utils::Timer m_updateFPSTimer;

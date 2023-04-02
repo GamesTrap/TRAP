@@ -5,7 +5,7 @@ constexpr std::array<const char*, 5> anisotropyLevels{"Off", "2x", "4x", "8x", "
 //-------------------------------------------------------------------------------------------------------------------//
 
 AnisotropyTests::AnisotropyTests()
-	: Layer("Anisotropy"), m_fpsTimer(), m_camera(), m_maxAnisotropyLevelIdx(0), m_currAnisotropyLevelIdx(0)
+	: Layer("Anisotropy"), m_maxAnisotropyLevelIdx(0), m_currAnisotropyLevelIdx(0)
 {
 }
 

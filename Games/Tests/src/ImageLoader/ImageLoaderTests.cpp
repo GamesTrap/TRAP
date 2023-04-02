@@ -195,7 +195,7 @@ void ImageLoaderTests::OnAttach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImageLoaderTests::OnUpdate(const TRAP::Utils::TimeStep&)
+void ImageLoaderTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 {
 	TRAP::Graphics::Renderer2D::BeginScene(m_camera);
 	if(m_tga)

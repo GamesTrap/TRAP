@@ -33,7 +33,7 @@ void FTPTests::OnDetach()
 void FTPTests::FTP()
 {
 	//Choose the server address
-	TRAP::Network::IPv4Address address;
+	TRAP::Network::IPv4Address address{};
 	do
 	{
 		std::cout << "[Network][FTP] Enter the FTP server address: ";

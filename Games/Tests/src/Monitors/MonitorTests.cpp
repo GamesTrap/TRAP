@@ -54,7 +54,7 @@ void MonitorTests::OnImGuiRender()
 
 int32_t MonitorTests::Euclid(const int32_t a, const int32_t b)
 {
-	return b ? Euclid(b, a % b) : a;
+	return b != 0 ? Euclid(b, a % b) : a;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

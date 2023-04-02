@@ -125,7 +125,7 @@ void SocketTests::RunTCPServerIPv4(const uint16_t port)
 void SocketTests::RunTCPClientIPv4(const uint16_t port)
 {
 	//Ask for the server address
-	TRAP::Network::IPv4Address server;
+	TRAP::Network::IPv4Address server{};
 	do
 	{
 		std::cout << "[Network][Sockets][TCP][IPv4] Type the address or name of the server to connect to: ";
@@ -171,7 +171,7 @@ void SocketTests::RunUDPServerIPv4(const uint16_t port)
 	//Wait for a message
 	std::array<char, 128> in{};
 	std::size_t received = 0;
-	TRAP::Network::IPv4Address sender;
+	TRAP::Network::IPv4Address sender{};
 	uint16_t senderPort = 0;
 	if (socket.Receive(in.data(), in.size(), received, sender, senderPort) != TRAP::Network::Socket::Status::Done)
 		return;
@@ -190,7 +190,7 @@ void SocketTests::RunUDPServerIPv4(const uint16_t port)
 void SocketTests::RunUDPClientIPv4(const uint16_t port)
 {
 	//Ask for the server address
-	TRAP::Network::IPv4Address server;
+	TRAP::Network::IPv4Address server{};
 	do
 	{
 		std::cout << "[Network][Sockets][UDP][IPv4] Type the address or name of the server to connect to: ";
@@ -209,7 +209,7 @@ void SocketTests::RunUDPClientIPv4(const uint16_t port)
 	//Receive an answer from anyone (but most likely from the server)
 	std::array<char, 128> in{};
 	std::size_t received = 0;
-	TRAP::Network::IPv4Address sender;
+	TRAP::Network::IPv4Address sender{};
 	uint16_t senderPort = 0;
 	if (socket.Receive(in.data(), in.size(), received, sender, senderPort) != TRAP::Network::Socket::Status::Done)
 		return;
@@ -258,7 +258,7 @@ void SocketTests::RunTCPServerIPv6(const uint16_t port)
 void SocketTests::RunTCPClientIPv6(const uint16_t port)
 {
 	//Ask for the server address
-	TRAP::Network::IPv6Address server;
+	TRAP::Network::IPv6Address server{};
 	do
 	{
 		std::cout << "[Network][Sockets][TCP][IPv6] Type the address or name of the server to connect to: ";
@@ -304,7 +304,7 @@ void SocketTests::RunUDPServerIPv6(const uint16_t port)
 	//Wait for a message
 	std::array<char, 128> in{};
 	std::size_t received = 0;
-	TRAP::Network::IPv6Address sender;
+	TRAP::Network::IPv6Address sender{};
 	uint16_t senderPort = 0;
 	if (socket.Receive(in.data(), in.size(), received, sender, senderPort) != TRAP::Network::Socket::Status::Done)
 		return;
@@ -323,7 +323,7 @@ void SocketTests::RunUDPServerIPv6(const uint16_t port)
 void SocketTests::RunUDPClientIPv6(const uint16_t port)
 {
 	//Ask for the server address
-	TRAP::Network::IPv6Address server;
+	TRAP::Network::IPv6Address server{};
 	do
 	{
 		std::cout << "[Network][Sockets][UDP][IPv6] Type the address or name of the server to connect to: ";
@@ -342,7 +342,7 @@ void SocketTests::RunUDPClientIPv6(const uint16_t port)
 	//Receive an answer from anyone (but most likely from the server)
 	std::array<char, 128> in{};
 	std::size_t received = 0;
-	TRAP::Network::IPv6Address sender;
+	TRAP::Network::IPv6Address sender{};
 	uint16_t senderPort = 0;
 	if (socket.Receive(in.data(), in.size(), received, sender, senderPort) != TRAP::Network::Socket::Status::Done)
 		return;

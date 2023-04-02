@@ -28,7 +28,7 @@ private:
     bool m_updateTexture;
     uint32_t m_currentTexture;
 
-    inline static constexpr std::array<float, 5 * 4> QuadVerticesIndexed
+    inline static constexpr std::array<float, 5ull * 4> QuadVerticesIndexed
 	{
 		//XYZ UV
 		-0.5f, -0.5f, 0.0f,    0.0f, 1.0f,

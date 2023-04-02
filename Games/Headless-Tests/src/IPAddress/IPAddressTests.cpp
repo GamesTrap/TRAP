@@ -204,17 +204,17 @@ void IPAddressTests::TestIPv4Operators()
     TRAP_ASSERT(TRAP::Network::IPv4Address(0x42, 0x69, 0x96, 0x24) >= TRAP::Network::IPv4Address(0x42699624));
     TRAP_ASSERT(TRAP::Network::IPv4Address(0xABCDEF01) >= TRAP::Network::IPv4Address(171, 205, 239, 1));
 
-    TRAP::Network::IPv4Address ipAddress;
+    TRAP::Network::IPv4Address ipAddress{};
     std::istringstream("4.4.4.4") >> ipAddress;
     TRAP_ASSERT(ipAddress != TRAP::Network::IPv4Address::None);
     TRAP_ASSERT(ipAddress.ToString() == "4.4.4.4");
     TRAP_ASSERT(ipAddress.ToInteger() == 0x04040404);
-    TRAP::Network::IPv4Address ipAddress2;
+    TRAP::Network::IPv4Address ipAddress2{};
     std::istringstream("92.100.0.72") >> ipAddress2;
     TRAP_ASSERT(ipAddress2 != TRAP::Network::IPv4Address::None);
     TRAP_ASSERT(ipAddress2.ToString() == "92.100.0.72");
     TRAP_ASSERT(ipAddress2.ToInteger() == 0x5C640048);
-    TRAP::Network::IPv4Address ipAddress3;
+    TRAP::Network::IPv4Address ipAddress3{};
     std::istringstream("") >> ipAddress3;
     TRAP_ASSERT(ipAddress3 == TRAP::Network::IPv4Address::None);
 
@@ -307,18 +307,18 @@ void IPAddressTests::TestIPv6Operators()
     TRAP_ASSERT(TRAP::Network::IPv6Address(std::array<uint8_t, 16>{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}) >= TRAP::Network::IPv6Address(std::array<uint8_t, 16>{0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
     TRAP_ASSERT(TRAP::Network::IPv6Address(std::array<uint8_t, 16>{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}) >= TRAP::Network::IPv6Address(std::array<uint8_t, 16>{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
 
-    TRAP::Network::IPv6Address ipAddress;
+    TRAP::Network::IPv6Address ipAddress{};
     std::istringstream("2a02:908:2226:1220:a2e6:22c4:86bd:20c0") >> ipAddress;
     TRAP_ASSERT(ipAddress != TRAP::Network::IPv6Address::None);
     TRAP_ASSERT(ipAddress.ToString() == "2a02:908:2226:1220:a2e6:22c4:86bd:20c0");
     TRAP_ASSERT(ipAddress.ToArray() == arr);
-    TRAP::Network::IPv6Address ipAddress2;
+    TRAP::Network::IPv6Address ipAddress2{};
     std::istringstream("::1") >> ipAddress2;
     TRAP_ASSERT(ipAddress2 != TRAP::Network::IPv6Address::None);
     TRAP_ASSERT(ipAddress2.ToString() == "::1");
     constexpr std::array<uint8_t, 16> arr2{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01};
     TRAP_ASSERT(ipAddress2.ToArray() == arr2);
-    TRAP::Network::IPv6Address ipAddress3;
+    TRAP::Network::IPv6Address ipAddress3{};
     std::istringstream("") >> ipAddress3;
     TRAP_ASSERT(ipAddress3 == TRAP::Network::IPv6Address::None);
 

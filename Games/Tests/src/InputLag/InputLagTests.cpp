@@ -3,7 +3,9 @@
 InputLagTests::InputLagTests()
 	: Layer("InputLag"), m_cursorMethod(CursorMethod::SyncQuery),
 	  m_vsync(TRAP::Application::GetConfig().Get<bool>("VSync")),
-	  m_cursorNew(), m_cursorPos(), m_cursorVelocity(), m_showForecasts(true), m_latencyMode()
+	  m_cursorNew(), m_cursorPos(), m_cursorVelocity(), m_showForecasts(true), m_latencyMode(), m_totalHistory(),
+	  m_simulationDeltaHistory(), m_renderDeltaHistory(), m_presentDeltaHistory(), m_driverDeltaHistory(),
+	  m_OSRenderQueueDeltaHistory(), m_GPURenderDeltaHistory()
 {
 }
 

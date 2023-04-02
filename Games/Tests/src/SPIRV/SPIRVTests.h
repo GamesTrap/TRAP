@@ -21,7 +21,7 @@ private:
     TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer;
     TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer;
 
-    inline static constexpr std::array<float, 5 * 4> QuadVerticesIndexed
+    inline static constexpr std::array<float, 5ull * 4> QuadVerticesIndexed
 	{
 		//XYZ UV
 		-0.5f, -0.5f, 0.0f,    0.0f, 1.0f,

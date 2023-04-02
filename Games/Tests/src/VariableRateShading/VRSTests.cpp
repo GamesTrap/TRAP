@@ -3,7 +3,8 @@
 VRSTests::VRSTests()
 	: Layer("Variable Rate Shading"),
 	m_cameraController(TRAP::Application::GetWindow()->GetAspectRatio(), true),
-    m_shadingRateTexture(nullptr), m_shadingRate(), m_shadingRates(),
+    m_shadingRateTexture(nullptr), m_shadingRate(),
+    m_currRenderScale(1.0f),
     m_supportsPerDrawVRS(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerDraw)),
     m_supportsPerTileVRS(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerTile)),
     m_perDrawActive(true), m_visualizeShadingRate(false)
@@ -221,25 +222,25 @@ TRAP::Ref<TRAP::Graphics::RenderTarget> VRSTests::CreateShadingRateTexture(const
 
     std::vector<ShadingRateData> supportedShadingRates{};
     if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Eighth))
-		supportedShadingRates.push_back({TRAP::Graphics::ShadingRate::Eighth, 8 >> 1, 8 << 1});
+		supportedShadingRates.push_back({TRAP::Graphics::ShadingRate::Eighth, 8u >> 1u, 8u << 1u});
 	if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Quarter))
-		supportedShadingRates.push_back({TRAP::Graphics::ShadingRate::Quarter, 4 >> 1, 4 << 1});
+		supportedShadingRates.push_back({TRAP::Graphics::ShadingRate::Quarter, 4u >> 1u, 4u << 1u});
 	if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::TwoXFour))
-		supportedShadingRates.push_back({TRAP::Graphics::ShadingRate::TwoXFour, 2 >> 1, 4 << 1});
+		supportedShadingRates.push_back({TRAP::Graphics::ShadingRate::TwoXFour, 2u >> 1u, 4u << 1u});
 	if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::FourXTwo))
-		supportedShadingRates.push_back({TRAP::Graphics::ShadingRate::FourXTwo, 4 >> 1, 2 << 1});
+		supportedShadingRates.push_back({TRAP::Graphics::ShadingRate::FourXTwo, 4u >> 1u, 2u << 1u});
 	if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Half))
-		supportedShadingRates.push_back({TRAP::Graphics::ShadingRate::Half, 2 >> 1, 2 << 1});
+		supportedShadingRates.push_back({TRAP::Graphics::ShadingRate::Half, 2u >> 1u, 2u << 1u});
 	if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::OneXTwo))
-		supportedShadingRates.push_back({TRAP::Graphics::ShadingRate::OneXTwo, 1 >> 1, 2 << 1});
+		supportedShadingRates.push_back({TRAP::Graphics::ShadingRate::OneXTwo, 1u >> 1u, 2u << 1u});
 	if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::TwoXOne))
-		supportedShadingRates.push_back({TRAP::Graphics::ShadingRate::TwoXOne, 2 >> 1, 1 << 1});
+		supportedShadingRates.push_back({TRAP::Graphics::ShadingRate::TwoXOne, 2u >> 1u, 1u << 1u});
 	if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Full))
 		supportedShadingRates.push_back({TRAP::Graphics::ShadingRate::Full, 0, 0});
 
 
     //Fill texture with lowest supported shading rate
-	std::vector<uint8_t> pixels(rTDesc.Width * rTDesc.Height, supportedShadingRates[0].V | supportedShadingRates[0].H);
+	std::vector<uint8_t> pixels(static_cast<uint64_t>(rTDesc.Width) * rTDesc.Height, supportedShadingRates[0].V | supportedShadingRates[0].H);
 
     //Create a circular pattern from the available list of fragment shadring rates with decreasing sampling rates outwards (max. range, pattern)
     //See https://github.com/KhronosGroup/Vulkan-Samples/blob/master/samples/extensions/fragment_shading_rate/fragment_shading_rate.cpp

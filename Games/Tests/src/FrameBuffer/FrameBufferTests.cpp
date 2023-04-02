@@ -96,7 +96,7 @@ void FrameBufferTests::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void FrameBufferTests::OnUpdate(const TRAP::Utils::TimeStep&)
+void FrameBufferTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 {
     m_shader->UseSampler(0, 1, m_textureSampler.get());
 

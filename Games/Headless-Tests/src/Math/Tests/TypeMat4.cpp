@@ -11,7 +11,7 @@ namespace TypeMat4
         const TRAP::Math::Mat4 m0(TRAP::Math::Vec4(0, 1, 2, 3), TRAP::Math::Vec4(4, 5, 6, 7),
                                 TRAP::Math::Vec4(8, 9, 10, 11), TRAP::Math::Vec4(12, 13, 14, 15));
 
-        TRAP_ASSERT(sizeof(m0) == 4 * 4 * 4);
+        TRAP_ASSERT(sizeof(m0) == 4ull * 4 * 4);
 
         const TRAP::Math::Mat4 m1{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 

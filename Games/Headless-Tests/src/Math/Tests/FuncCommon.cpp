@@ -757,17 +757,17 @@ namespace FuncCommon
         double zeroD = 0.0;
 
         {
-            error += true == TRAP::Math::IsNaN(0.0 / zeroD) ? 0 : 1;
-            error += true == TRAP::Math::Any(TRAP::Math::IsNaN(TRAP::Math::Vec2d(0.0 / zeroD))) ? 0 : 1;
-            error += true == TRAP::Math::Any(TRAP::Math::IsNaN(TRAP::Math::Vec3d(0.0 / zeroD))) ? 0 : 1;
-            error += true == TRAP::Math::Any(TRAP::Math::IsNaN(TRAP::Math::Vec4d(0.0 / zeroD))) ? 0 : 1;
+            error += TRAP::Math::IsNaN(0.0 / zeroD) ? 0 : 1;
+            error += TRAP::Math::Any(TRAP::Math::IsNaN(TRAP::Math::Vec2d(0.0 / zeroD))) ? 0 : 1;
+            error += TRAP::Math::Any(TRAP::Math::IsNaN(TRAP::Math::Vec3d(0.0 / zeroD))) ? 0 : 1;
+            error += TRAP::Math::Any(TRAP::Math::IsNaN(TRAP::Math::Vec4d(0.0 / zeroD))) ? 0 : 1;
         }
 
         {
-            error += true == TRAP::Math::IsNaN(0.0f / zeroF) ? 0 : 1;
-            error += true == TRAP::Math::Any(TRAP::Math::IsNaN(TRAP::Math::Vec2(0.0f / zeroF))) ? 0 : 1;
-            error += true == TRAP::Math::Any(TRAP::Math::IsNaN(TRAP::Math::Vec3(0.0f / zeroF))) ? 0 : 1;
-            error += true == TRAP::Math::Any(TRAP::Math::IsNaN(TRAP::Math::Vec4(0.0f / zeroF))) ? 0 : 1;
+            error += TRAP::Math::IsNaN(0.0f / zeroF) ? 0 : 1;
+            error += TRAP::Math::Any(TRAP::Math::IsNaN(TRAP::Math::Vec2(0.0f / zeroF))) ? 0 : 1;
+            error += TRAP::Math::Any(TRAP::Math::IsNaN(TRAP::Math::Vec3(0.0f / zeroF))) ? 0 : 1;
+            error += TRAP::Math::Any(TRAP::Math::IsNaN(TRAP::Math::Vec4(0.0f / zeroF))) ? 0 : 1;
         }
 
         return error;
@@ -783,25 +783,25 @@ namespace FuncCommon
         double zeroD = 0.0;
 
         {
-            error += true == TRAP::Math::IsInf( 1.0 / zeroD) ? 0 : 1;
-            error += true == TRAP::Math::IsInf(-1.0 / zeroD) ? 0 : 1;
-            error += true == TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec2d( 1.0 / zeroD))) ? 0 : 1;
-            error += true == TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec2d(-1.0 / zeroD))) ? 0 : 1;
-            error += true == TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec3d( 1.0 / zeroD))) ? 0 : 1;
-            error += true == TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec3d(-1.0 / zeroD))) ? 0 : 1;
-            error += true == TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec4d( 1.0 / zeroD))) ? 0 : 1;
-            error += true == TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec4d(-1.0 / zeroD))) ? 0 : 1;
+            error += TRAP::Math::IsInf( 1.0 / zeroD) ? 0 : 1;
+            error += TRAP::Math::IsInf(-1.0 / zeroD) ? 0 : 1;
+            error += TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec2d( 1.0 / zeroD))) ? 0 : 1;
+            error += TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec2d(-1.0 / zeroD))) ? 0 : 1;
+            error += TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec3d( 1.0 / zeroD))) ? 0 : 1;
+            error += TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec3d(-1.0 / zeroD))) ? 0 : 1;
+            error += TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec4d( 1.0 / zeroD))) ? 0 : 1;
+            error += TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec4d(-1.0 / zeroD))) ? 0 : 1;
         }
 
         {
-            error += true == TRAP::Math::IsInf( 1.0f / zeroF) ? 0 : 1;
-            error += true == TRAP::Math::IsInf(-1.0f / zeroF) ? 0 : 1;
-            error += true == TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec2d( 1.0f / zeroF))) ? 0 : 1;
-            error += true == TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec2d(-1.0f / zeroF))) ? 0 : 1;
-            error += true == TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec3d( 1.0f / zeroF))) ? 0 : 1;
-            error += true == TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec3d(-1.0f / zeroF))) ? 0 : 1;
-            error += true == TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec4d( 1.0f / zeroF))) ? 0 : 1;
-            error += true == TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec4d(-1.0f / zeroF))) ? 0 : 1;
+            error += TRAP::Math::IsInf( 1.0f / zeroF) ? 0 : 1;
+            error += TRAP::Math::IsInf(-1.0f / zeroF) ? 0 : 1;
+            error += TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec2d( 1.0f / zeroF))) ? 0 : 1;
+            error += TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec2d(-1.0f / zeroF))) ? 0 : 1;
+            error += TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec3d( 1.0f / zeroF))) ? 0 : 1;
+            error += TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec3d(-1.0f / zeroF))) ? 0 : 1;
+            error += TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec4d( 1.0f / zeroF))) ? 0 : 1;
+            error += TRAP::Math::Any(TRAP::Math::IsInf(TRAP::Math::Vec4d(-1.0f / zeroF))) ? 0 : 1;
         }
 
         return error;
@@ -815,7 +815,7 @@ namespace FuncCommon
 
         {
             const float x(1024);
-            int32_t exp;
+            int32_t exp = 0;
             const float a = TRAP::Math::FrExp(x, exp);
             error += TRAP::Math::Equal(a, 0.5f, TRAP::Math::Epsilon<float>()) ? 0 : 1;
             error += TRAP::Math::Equal(exp, 11) ? 0 : 1;

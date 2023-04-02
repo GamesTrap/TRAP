@@ -10,7 +10,8 @@ Checks: 'bugprone*,cert*,clang-analyzer*,concurrency*,cppcoreguidelines*,hicpp*,
          -bugprone-branch-clone,-cppcoreguidelines-pro-type-union-access,
          -readability-identifier-length,-cppcoreguidelines-non-private-member-variables-in-classes,
          -cppcoreguidelines-avoid-magic-numbers,-readability-magic-numbers,
-         -modernize-return-braced-init-list,-cert-dcl58-cpp,-readability-const-return-type'
+         -modernize-return-braced-init-list,-cert-dcl58-cpp,-readability-const-return-type,
+         -cppcoreguidelines-pro-type-vararg,-hicpp-vararg'
 # ExtraArgs:
 # ExtraArgsBefore:
 FormatStyle: none

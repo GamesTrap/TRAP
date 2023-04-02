@@ -7,6 +7,8 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
+#include <utility>
+
 TRAPEditorLayer::TRAPEditorLayer()
 	: Layer("TRAPEditorLayer"), m_iconPlay(nullptr), m_iconStop(nullptr),
 	  m_renderTargetLoadActions(), m_renderTargetDesc(),
@@ -53,7 +55,7 @@ void TRAPEditorLayer::OnImGuiRender()
 
 	//When using ImGuiDockNodeFlags_PassthruCentralNode, DockSpace() will render our background and handle the pass-thru hole,
 	//so we ask Begin() to not render a background.
-	if (dockspaceFlags & ImGuiDockNodeFlags_PassthruCentralNode)
+	if ((dockspaceFlags & ImGuiDockNodeFlags_PassthruCentralNode) != 0)
 		windowFlags |= ImGuiWindowFlags_NoBackground;
 
 	//Important: Note that we proceed even if Begin() returns false (aka window is collapsed).
@@ -73,7 +75,7 @@ void TRAPEditorLayer::OnImGuiRender()
 	ImGuiStyle& style = ImGui::GetStyle();
 	const float minWinSizeX = style.WindowMinSize.x;
 	style.WindowMinSize.x = 370.0f;
-	if(io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+	if((io.ConfigFlags & ImGuiConfigFlags_DockingEnable) != 0)
 	{
 		const ImGuiID dockspaceID = ImGui::GetID("MyDockSpace");
 		ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f), dockspaceFlags);
@@ -196,7 +198,7 @@ void TRAPEditorLayer::OnImGuiRender()
 		const std::array<float, 3> snapValues = {snapValue, snapValue, snapValue};
 
 		//Disable gizmo while entity was just changed and the left mouse button is still pressed
-		ImGuizmo::Enable(!(m_entityChanged && m_leftMouseBtnRepeatCount != 0));
+		ImGuizmo::Enable(!m_entityChanged || m_leftMouseBtnRepeatCount == 0);
 
 		const bool manipulated = ImGuizmo::Manipulate(&cameraView[0].x, &cameraProj[0].x,
 														static_cast<ImGuizmo::OPERATION>(m_gizmoType),
@@ -278,7 +280,7 @@ void TRAPEditorLayer::OnAttach()
 	//Setup Mouse Picking Buffer
 	m_mousePickBufferDesc.Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::PersistentMap |
 	                              TRAP::Graphics::RendererAPI::BufferCreationFlags::NoDescriptorViewCreation;
-	m_mousePickBufferDesc.Size = m_renderTargetDesc.Width * m_renderTargetDesc.Height * sizeof(int32_t);
+	m_mousePickBufferDesc.Size = static_cast<uint64_t>(m_renderTargetDesc.Width) * m_renderTargetDesc.Height * sizeof(int32_t);
 	m_mousePickBufferDesc.QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics;
 	m_mousePickBufferDesc.MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::GPUToCPU;
 	m_mousePickBufferDesc.StartState = TRAP::Graphics::RendererAPI::ResourceState::CopyDestination;
@@ -331,7 +333,7 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 		m_IDRenderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
 
 		//Update Mouse Picking Buffer
-		m_mousePickBufferDesc.Size = m_renderTargetDesc.Width * m_renderTargetDesc.Height * sizeof(int32_t);
+		m_mousePickBufferDesc.Size = static_cast<uint64_t>(m_renderTargetDesc.Width) * m_renderTargetDesc.Height * sizeof(int32_t);
 		m_mousePickBuffer = TRAP::Graphics::Buffer::Create(m_mousePickBufferDesc);
 
 		m_editorCamera.SetViewportSize(m_viewportSize.x, m_viewportSize.y);
@@ -707,7 +709,7 @@ void TRAPEditorLayer::MousePicking()
 												  TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource);
 
 		//Read pixel of the CPU visible buffer
-		TRAP::Graphics::RendererAPI::ReadRange range{0, m_renderTargetDesc.Width * m_renderTargetDesc.Height * sizeof(int32_t)};
+		TRAP::Graphics::RendererAPI::ReadRange range{0, static_cast<uint64_t>(m_renderTargetDesc.Width) * m_renderTargetDesc.Height * sizeof(int32_t)};
 		m_mousePickBuffer->MapBuffer(&range);
 
 		//Get our wanted value
@@ -768,7 +770,7 @@ void TRAPEditorLayer::DuplicateEntity()
 
 void TRAPEditorLayer::SerializeScene(TRAP::Ref<TRAP::Scene> scene, const std::filesystem::path& path)
 {
-	TRAP::SceneSerializer serializer(scene);
+	TRAP::SceneSerializer serializer(std::move(scene));
 	serializer.Serialize(path.u8string());
 }
 

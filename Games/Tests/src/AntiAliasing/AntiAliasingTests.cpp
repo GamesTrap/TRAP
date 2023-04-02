@@ -7,7 +7,7 @@ std::vector<TRAP::Graphics::AntiAliasing> AntiAliasingTests::AntiAliasingMethods
 //-------------------------------------------------------------------------------------------------------------------//
 
 AntiAliasingTests::AntiAliasingTests()
-	: Layer("AntiAliasing"), m_fpsTimer(), m_antiAliasing(), m_sampleCount(),
+	: Layer("AntiAliasing"), m_antiAliasing(), m_sampleCount(),
 	  m_camera(-TRAP::Application::GetWindow()->GetAspectRatio(),
 	           TRAP::Application::GetWindow()->GetAspectRatio(),
 	           -1.0f, 1.0f, -1.0f, 1.0f)
@@ -95,16 +95,16 @@ void AntiAliasingTests::OnImGuiRender()
 
 		if(ImGui::BeginCombo("Quality", Samples[currSample].Name))
 		{
-			for(uint32_t i = 0; i < Samples.size(); ++i)
+			for(auto Sample : Samples)
 			{
-				const bool isSelected = (m_sampleCount == Samples[i].Samples);
+				const bool isSelected = (m_sampleCount == Sample.Samples);
 				ImGuiSelectableFlags flags = ImGuiSelectableFlags_None;
-				if(m_antiAliasing == TRAP::Graphics::AntiAliasing::MSAA && Samples[i].Samples > TRAP::Graphics::RendererAPI::GPUSettings.MaxMSAASampleCount)
+				if(m_antiAliasing == TRAP::Graphics::AntiAliasing::MSAA && Sample.Samples > TRAP::Graphics::RendererAPI::GPUSettings.MaxMSAASampleCount)
 					flags = ImGuiSelectableFlags_Disabled;
-				if(ImGui::Selectable(Samples[i].Name, isSelected, flags))
+				if(ImGui::Selectable(Sample.Name, isSelected, flags))
 				{
 					updateAA = true;
-					m_sampleCount = Samples[i].Samples;
+					m_sampleCount = Sample.Samples;
 				}
 				if(isSelected)
 					ImGui::SetItemDefaultFocus();

@@ -21,7 +21,7 @@ private:
 	TRAP::Utils::Timer m_fpsTimer;
 
 	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer;
-	std::array<float, 12 * 6> m_icoSphereVerticesIndexed
+	std::array<float, 12ull * 6> m_icoSphereVerticesIndexed
 	{
 		//XYZ RGB
 		-1.0f,                                     (1.0f + TRAP::Math::Sqrt(5.0f)) / 2.0f,    0.0f,                                        1.0f, 0.0f, 0.0f,
@@ -41,7 +41,7 @@ private:
 	};
 
 	TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer;
-	inline static constexpr std::array<uint16_t, 20 * 3> IcosphereIndices
+	inline static constexpr std::array<uint16_t, 20ull * 3> IcosphereIndices
 	{
 		0, 11, 5,
 		0, 5, 1,

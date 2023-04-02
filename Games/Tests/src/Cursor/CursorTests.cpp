@@ -81,7 +81,7 @@ void CursorTests::OnAttach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void CursorTests::OnUpdate(const TRAP::Utils::TimeStep&)
+void CursorTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 {
 	if (m_animateCursor)
 	{

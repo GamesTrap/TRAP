@@ -68,7 +68,7 @@ void IcoSphereTests::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void IcoSphereTests::OnUpdate(const TRAP::Utils::TimeStep&)
+void IcoSphereTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 {
 	if(m_wireFrame)
 	{
