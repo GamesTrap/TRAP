@@ -617,14 +617,14 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateKeyModifiers(const WindowingAPI::Inte
 	const std::string keyName = TRAP::Input::GetKeyName(key);
 	if(!keyName.empty() && keyName[0] != 0 && keyName[1] == 0)
 	{
-		static constexpr std::array<char, 11> charNames{'`', '-', '=', '[', ']', '\\', ',', ';', '\'', '.', '/'};
+		static const std::array<char, 11> charNames{'`', '-', '=', '[', ']', '\\', ',', ';', '\'', '.', '/'};
 		static constexpr std::array<TRAP::Input::Key, 11> charKeys{TRAP::Input::Key::Grave_Accent, TRAP::Input::Key::Minus,
 		                                                           TRAP::Input::Key::Equal, TRAP::Input::Key::Left_Bracket,
 																   TRAP::Input::Key::Right_Bracket, TRAP::Input::Key::Backslash,
 																   TRAP::Input::Key::Comma, TRAP::Input::Key::Semicolon,
 																   TRAP::Input::Key::Apostrophe, TRAP::Input::Key::Period,
 																   TRAP::Input::Key::Slash};
-		const auto* const it = std::find(charNames.cbegin(), charNames.cend(), keyName[0]);
+		const std::array<char, 11>::const_iterator it = std::find(charNames.cbegin(), charNames.cend(), keyName[0]);
 		if(keyName[0] >= '0' && keyName[0] <= '9')
 			key = static_cast<TRAP::Input::Key>(static_cast<int32_t>(TRAP::Input::Key::Zero) + (keyName[0] - '0'));
 		else if(keyName[0] >= 'A' && keyName[0] <= 'Z')
