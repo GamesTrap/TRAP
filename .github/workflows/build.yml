@@ -54,7 +54,23 @@ jobs:
        ./GenerateProjectMake.sh
        cd ..
     - name: Compile code using g++-10
-      run: make all -j2
+      run: config=release make all -j2
+    - name: Copy Assets
+      run: |
+        cp -r Games/Headless-Tests/Assets bin/Release-linux-x86_64/Games/Headless-Tests/
+        cp -r Games/Sandbox/Assets bin/Release-linux-x86_64/Games/Sandbox/
+        cp -r Games/Tests/Assets bin/Release-linux-x86_64/Games/Tests/
+        cp -r Games/Tests3D/Assets bin/Release-linux-x86_64/Games/Tests3D/
+        cp -r Games/TRAP-Editor/Assets bin/Release-linux-x86_64/Games/TRAP-Editor/
+        cp -r Games/TRAP-Editor/Resources bin/Release-linux-x86_64/Games/TRAP-Editor/
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: Ubuntu 22.04 Release Executables
+        path: |
+          bin/Release-linux-x86_64/Games
+          bin/Release-linux-x86_64/Utility
+          Utility/QOIConv/QOIConv*
   build-windows-msvc-2022:
     name: Build Windows MSVC 2022
     runs-on: windows-2022
@@ -77,7 +93,23 @@ jobs:
     - name: Generate Visual Studio 2022 Project files
       run: cd GeneratorScripts && .\GenerateProjectVS2022.bat && cd ..
     - name: Compile code
-      run: msbuild /m TRAP.sln
+      run: msbuild /m TRAP.sln /property:Configuration=Release
+    - name: Copy Assets
+      run: |
+        Xcopy Games/Headless-Tests/Assets bin/Release-linux-x86_64/Games/Headless-Tests/ /E /H /C /I
+        Xcopy Games/Sandbox/Assets bin/Release-linux-x86_64/Games/Sandbox/ /E /H /C /I
+        Xcopy Games/Tests/Assets bin/Release-linux-x86_64/Games/Tests/ /E /H /C /I
+        Xcopy Games/Tests3D/Assets bin/Release-linux-x86_64/Games/Tests3D/ /E /H /C /I
+        Xcopy Games/TRAP-Editor/Assets bin/Release-linux-x86_64/Games/TRAP-Editor/ /E /H /C /I
+        Xcopy Games/TRAP-Editor/Resources bin/Release-linux-x86_64/Games/TRAP-Editor/ /E /H /C /I
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: MSVC 2022 Release Executables
+        path: |
+          bin/Release-windows-x86_64/Games
+          bin/Release-windows-x86_64/Utility
+          Utility/QOIConv/QOIConv*
   build-windows-msvc-2019:
     name: Build Windows MSVC 2019
     runs-on: windows-2019
@@ -100,4 +132,20 @@ jobs:
     - name: Generate Visual Studio 2019 Project files
       run: cd GeneratorScripts && .\GenerateProjectVS2019.bat && cd ..
     - name: Compile code
-      run: msbuild /m TRAP.sln
+      run: msbuild /m TRAP.sln /property:Configuration=Release
+    - name: Copy Assets
+      run: |
+        Xcopy Games/Headless-Tests/Assets bin/Release-linux-x86_64/Games/Headless-Tests/ /E /H /C /I
+        Xcopy Games/Sandbox/Assets bin/Release-linux-x86_64/Games/Sandbox/ /E /H /C /I
+        Xcopy Games/Tests/Assets bin/Release-linux-x86_64/Games/Tests/ /E /H /C /I
+        Xcopy Games/Tests3D/Assets bin/Release-linux-x86_64/Games/Tests3D/ /E /H /C /I
+        Xcopy Games/TRAP-Editor/Assets bin/Release-linux-x86_64/Games/TRAP-Editor/ /E /H /C /I
+        Xcopy Games/TRAP-Editor/Resources bin/Release-linux-x86_64/Games/TRAP-Editor/ /E /H /C /I
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: MSVC 2019 Release Executables
+        path: |
+          bin/Release-windows-x86_64/Games
+          bin/Release-windows-x86_64/Utility
+          Utility/QOIConv/QOIConv*
