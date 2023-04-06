@@ -98,14 +98,14 @@ jobs:
       run: msbuild /m TRAP.sln /property:Configuration=Release
     - name: Copy Assets (and other data)
       run: |
-        Xcopy Games/Headless-Tests/Assets bin/Release-linux-x86_64/Games/Headless-Tests/ /E /H /C /I
-        Xcopy Games/Sandbox/Assets bin/Release-linux-x86_64/Games/Sandbox/ /E /H /C /I
-        Xcopy Games/Tests/Assets bin/Release-linux-x86_64/Games/Tests/ /E /H /C /I
-        Xcopy Games/Tests3D/Assets bin/Release-linux-x86_64/Games/Tests3D/ /E /H /C /I
-        Xcopy Games/TRAP-Editor/Assets bin/Release-linux-x86_64/Games/TRAP-Editor/ /E /H /C /I
-        Xcopy Games/TRAP-Editor/Resources bin/Release-linux-x86_64/Games/TRAP-Editor/ /E /H /C /I
-        Xcopy Utility/QOIConv bin/Release-linux-x86_64/Utility/ /E /H /C /I
-        Xcopy Redists bin/Release-linux-x86_64/ /E /H /C /I
+        Xcopy Games\Headless-Tests\Assets bin\Release-windows-x86_64\Games\Headless-Tests\Assets /I /H /E /C
+        Xcopy Games\Sandbox\Assets bin\Release-windows-x86_64\Games\Sandbox\Assets /I /H /E /C
+        Xcopy Games\Tests\Assets bin\Release-windows-x86_64\Games\Tests\Assets /I /H /E /C
+        Xcopy Games\Tests3D\Assets bin\Release-windows-x86_64\Games\Tests3D\Assets /I /H /E /C
+        Xcopy Games\TRAP-Editor\Assets bin\Release-windows-x86_64\Games\TRAP-Editor\Assets /I /H /E /C
+        Xcopy Games\TRAP-Editor\Resources bin\Release-windows-x86_64\Games\TRAP-Editor\Resources /I /H /E /C
+        Xcopy Utility\QOIConv bin\Release-windows-x86_64\Utility\QOIConv /I /H /E /C
+        Xcopy Redists bin\Release-windows-x86_64\Redists /I /H /E /C
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
@@ -139,14 +139,14 @@ jobs:
       run: msbuild /m TRAP.sln /property:Configuration=Release
     - name: Copy Assets (and other data)
       run: |
-        Xcopy Games/Headless-Tests/Assets bin/Release-linux-x86_64/Games/Headless-Tests/ /E /H /C /I
-        Xcopy Games/Sandbox/Assets bin/Release-linux-x86_64/Games/Sandbox/ /E /H /C /I
-        Xcopy Games/Tests/Assets bin/Release-linux-x86_64/Games/Tests/ /E /H /C /I
-        Xcopy Games/Tests3D/Assets bin/Release-linux-x86_64/Games/Tests3D/ /E /H /C /I
-        Xcopy Games/TRAP-Editor/Assets bin/Release-linux-x86_64/Games/TRAP-Editor/ /E /H /C /I
-        Xcopy Games/TRAP-Editor/Resources bin/Release-linux-x86_64/Games/TRAP-Editor/ /E /H /C /I
-        Xcopy Utility/QOIConv bin/Release-linux-x86_64/Utility/ /E /H /C /I
-        Xcopy Redists bin/Release-linux-x86_64/ /E /H /C /I
+        Xcopy Games\Headless-Tests\Assets bin\Release-windows-x86_64\Games\Headless-Tests\Assets /I /H /E /C
+        Xcopy Games\Sandbox\Assets bin\Release-windows-x86_64\Games\Sandbox\Assets /I /H /E /C
+        Xcopy Games\Tests\Assets bin\Release-windows-x86_64\Games\Tests\Assets /I /H /E /C
+        Xcopy Games\Tests3D\Assets bin\Release-windows-x86_64\Games\Tests3D\Assets /I /H /E /C
+        Xcopy Games\TRAP-Editor\Assets bin\Release-windows-x86_64\Games\TRAP-Editor\Assets /I /H /E /C
+        Xcopy Games\TRAP-Editor\Resources bin\Release-windows-x86_64\Games\TRAP-Editor\Resources /I /H /E /C
+        Xcopy Utility\QOIConv bin\Release-windows-x86_64\Utility\QOIConv /I /H /E /C
+        Xcopy Redists bin\Release-windows-x86_64\Redists /I /H /E /C
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
