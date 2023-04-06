@@ -55,7 +55,7 @@ jobs:
        cd ..
     - name: Compile code using g++-10
       run: config=release make all -j2
-    - name: Copy Assets
+    - name: Copy Assets (and other data)
       run: |
         cp -r Games/Headless-Tests/Assets bin/Release-linux-x86_64/Games/Headless-Tests/
         cp -r Games/Sandbox/Assets bin/Release-linux-x86_64/Games/Sandbox/
@@ -63,6 +63,8 @@ jobs:
         cp -r Games/Tests3D/Assets bin/Release-linux-x86_64/Games/Tests3D/
         cp -r Games/TRAP-Editor/Assets bin/Release-linux-x86_64/Games/TRAP-Editor/
         cp -r Games/TRAP-Editor/Resources bin/Release-linux-x86_64/Games/TRAP-Editor/
+        cp -r Utility/QOIConv bin/Release-linux-x86_64/Utility/
+        cp -r Redists bin/Release-linux-x86_64/
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
@@ -70,7 +72,7 @@ jobs:
         path: |
           bin/Release-linux-x86_64/Games
           bin/Release-linux-x86_64/Utility
-          Utility/QOIConv/QOIConv*
+          bin/Release-linux-x86_64/Redists
   build-windows-msvc-2022:
     name: Build Windows MSVC 2022
     runs-on: windows-2022
@@ -94,7 +96,7 @@ jobs:
       run: cd GeneratorScripts && .\GenerateProjectVS2022.bat && cd ..
     - name: Compile code
       run: msbuild /m TRAP.sln /property:Configuration=Release
-    - name: Copy Assets
+    - name: Copy Assets (and other data)
       run: |
         Xcopy Games/Headless-Tests/Assets bin/Release-linux-x86_64/Games/Headless-Tests/ /E /H /C /I
         Xcopy Games/Sandbox/Assets bin/Release-linux-x86_64/Games/Sandbox/ /E /H /C /I
@@ -102,6 +104,8 @@ jobs:
         Xcopy Games/Tests3D/Assets bin/Release-linux-x86_64/Games/Tests3D/ /E /H /C /I
         Xcopy Games/TRAP-Editor/Assets bin/Release-linux-x86_64/Games/TRAP-Editor/ /E /H /C /I
         Xcopy Games/TRAP-Editor/Resources bin/Release-linux-x86_64/Games/TRAP-Editor/ /E /H /C /I
+        Xcopy Utility/QOIConv bin/Release-linux-x86_64/Utility/ /E /H /C /I
+        Xcopy Redists bin/Release-linux-x86_64/ /E /H /C /I
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
@@ -109,7 +113,7 @@ jobs:
         path: |
           bin/Release-windows-x86_64/Games
           bin/Release-windows-x86_64/Utility
-          Utility/QOIConv/QOIConv*
+          bin/Release-windows-x86_64/Redists
   build-windows-msvc-2019:
     name: Build Windows MSVC 2019
     runs-on: windows-2019
@@ -133,7 +137,7 @@ jobs:
       run: cd GeneratorScripts && .\GenerateProjectVS2019.bat && cd ..
     - name: Compile code
       run: msbuild /m TRAP.sln /property:Configuration=Release
-    - name: Copy Assets
+    - name: Copy Assets (and other data)
       run: |
         Xcopy Games/Headless-Tests/Assets bin/Release-linux-x86_64/Games/Headless-Tests/ /E /H /C /I
         Xcopy Games/Sandbox/Assets bin/Release-linux-x86_64/Games/Sandbox/ /E /H /C /I
@@ -141,6 +145,8 @@ jobs:
         Xcopy Games/Tests3D/Assets bin/Release-linux-x86_64/Games/Tests3D/ /E /H /C /I
         Xcopy Games/TRAP-Editor/Assets bin/Release-linux-x86_64/Games/TRAP-Editor/ /E /H /C /I
         Xcopy Games/TRAP-Editor/Resources bin/Release-linux-x86_64/Games/TRAP-Editor/ /E /H /C /I
+        Xcopy Utility/QOIConv bin/Release-linux-x86_64/Utility/ /E /H /C /I
+        Xcopy Redists bin/Release-linux-x86_64/ /E /H /C /I
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
@@ -148,4 +154,4 @@ jobs:
         path: |
           bin/Release-windows-x86_64/Games
           bin/Release-windows-x86_64/Utility
-          Utility/QOIConv/QOIConv*
+          bin/Release-windows-x86_64/Redists
