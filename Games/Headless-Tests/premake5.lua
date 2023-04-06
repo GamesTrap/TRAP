@@ -94,6 +94,7 @@ project "Headless-Tests"
 		defines "TRAP_RELEASE"
 		runtime "Release"
 		optimize "Full"
+		entrypoint "mainCRTStartup"
 		kind "WindowedApp"
 
 	filter "configurations:RelWithDebInfo"
