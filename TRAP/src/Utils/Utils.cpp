@@ -2,6 +2,7 @@
 #include "Utils.h"
 
 #include "Core/PlatformDetection.h"
+#include "Utils/Memory.h"
 #include "Utils/String/String.h"
 #include "Utils/Dialogs/Dialogs.h"
 #include "Application.h"
@@ -464,3 +465,136 @@ static TRAP::Utils::NTDLL s_ntdll;
 }
 
 #endif
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#if defined(ENABLE_SINGLE_PROCESS_ONLY) && defined(TRAP_PLATFORM_WINDOWS)
+[[nodiscard]] static bool CheckSingleProcessWindows()
+{
+	ZoneScoped;
+
+	const HANDLE hMutex = CreateMutex(0, 0, L"TRAP-Engine");
+	if(!hMutex) //Error creating mutex
+	{
+		TP_ERROR(TRAP::Log::ApplicationPrefix, "Failed to create mutex!");
+		TP_ERROR(TRAP::Log::ApplicationPrefix, TRAP::Utils::String::GetStrError());
+		return false;
+	}
+	if(hMutex && GetLastError() == ERROR_ALREADY_EXISTS)
+		return false;
+
+	return true;
+}
+#endif
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#if defined(ENABLE_SINGLE_PROCESS_ONLY) && defined(TRAP_PLATFORM_LINUX)
+[[nodiscard]] static bool CheckSingleProcessLinux()
+{
+	ZoneScoped;
+
+	static int32_t socketFD = -1;
+	static int32_t rc = 1;
+	static constexpr uint16_t port = 49420; //Just a free (hopefully) random port
+
+	if(socketFD == -1 || (rc != 0))
+	{
+		socketFD = -1;
+		rc = 1;
+
+		socketFD = socket(AF_INET, SOCK_DGRAM, 0);
+		if(socketFD < 0)
+		{
+			TP_ERROR(TRAP::Log::ApplicationPrefix, "Failed to create socket!");
+			TP_ERROR(TRAP::Log::ApplicationPrefix, TRAP::Utils::String::GetStrError());
+			return false;
+		}
+
+		sockaddr_in name{};
+		name.sin_family = AF_INET;
+		name.sin_port = port;
+		name.sin_addr.s_addr = INADDR_ANY;
+
+		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+		{
+			TRAP::Utils::Memory::SwapBytes(name.sin_port);
+			TRAP::Utils::Memory::SwapBytes(name.sin_addr.s_addr);
+		}
+
+		sockaddr convertedSock = TRAP::Utils::BitCast<sockaddr_in, sockaddr>(name); //Prevent usage of reinterpret_cast
+		rc = bind(socketFD, &convertedSock, sizeof(name));
+		if(rc < 0)
+		{
+			TP_ERROR(TRAP::Log::ApplicationPrefix, "Failed to bind socket!");
+			TP_ERROR(TRAP::Log::ApplicationPrefix, TRAP::Utils::String::GetStrError());
+		}
+	}
+
+	return (socketFD != -1 && rc == 0);
+}
+#endif
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Utils::CheckSingleProcess()
+{
+	//Single process mode
+#ifdef ENABLE_SINGLE_PROCESS_ONLY
+	bool singleProcess = true;
+	#ifdef TRAP_PLATFORM_LINUX
+		singleProcess = CheckSingleProcessLinux();
+	#elif defined(TRAP_PLATFORM_WINDOWS)
+		singleProcess = CheckSingleProcessWindows();
+	#endif
+
+	if(!singleProcess)
+	{
+		TRAP::Utils::Dialogs::ShowMsgBox("TRAP™ is already running", "A TRAP™ Application is already running!\n"
+		                                 "Error code: 0x0012", TRAP::Utils::Dialogs::Style::Error,
+								         TRAP::Utils::Dialogs::Buttons::Quit);
+		TP_CRITICAL(TRAP::Log::ApplicationPrefix, "A TRAP™ Application is already running! (0x0012)");
+		exit(0x0012);
+	}
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#if defined(TRAP_PLATFORM_WINDOWS) && defined(TRAP_HEADLESS_MODE)
+static BOOL WINAPI SIGINTHandlerRoutine(_In_ DWORD dwCtrlType)
+{
+	if (dwCtrlType == CTRL_C_EVENT)
+	{
+		TRAP::Application::Shutdown();
+		return TRUE;
+	}
+	else if (dwCtrlType == CTRL_CLOSE_EVENT)
+	{
+		TRAP::Application::Shutdown();
+		Sleep(10000);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+#endif
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Utils::RegisterSIGINTCallback()
+{
+#ifdef TRAP_HEADLESS_MODE
+
+#ifdef TRAP_PLATFORM_LINUX
+	if(signal(SIGINT, [](int) {TRAP::Application::Shutdown(); }) == SIG_ERR)
+#elif defined(TRAP_PLATFORM_WINDOWS)
+	if(!SetConsoleCtrlHandler(SIGINTHandlerRoutine, TRUE))
+#endif
+	{
+		TP_ERROR(TRAP::Log::ApplicationPrefix, "Failed to register SIGINT callback!");
+		TP_ERROR(TRAP::Log::ApplicationPrefix, TRAP::Utils::String::GetStrError());
+	}
+
+#endif /*TRAP_HEADLESS_MODE*/
+}

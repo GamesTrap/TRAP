@@ -279,37 +279,140 @@ namespace TRAP
 		/// </summary>
 		void UpdateHotReloading();
 
-		std::vector<std::filesystem::path> m_hotReloadingShaderPaths;
-		std::vector<std::filesystem::path> m_hotReloadingTexturePaths;
-		TracyLockable(std::mutex, m_hotReloadingMutex);
-		std::unique_ptr<FileSystem::FileWatcher> m_hotReloadingFileWatcher;
-		bool m_hotReloadingEnabled;
+		/// <summary>
+		/// Retrieve the filepath of the engine.cfg file.
+		/// </summary>
+		/// <returns>Path of the config file.</returns>
+		static std::filesystem::path GetTRAPConfigPath();
 
-		std::unique_ptr<Window> m_window;
-		ImGuiLayer* m_ImGuiLayer;
-		bool m_running = true;
+		/// <summary>
+		/// Load the engine.cfg file.
+		/// </summary>
+		/// <returns>Loaded config.</returns>
+		static Utils::Config LoadTRAPConfig();
+
+		/// <summary>
+		/// Update the engine.cfg file.
+		/// </summary>
+		/// <param name="config">Config to update.</param>
+		/// <param name="window">Optional: Main Window to query data from.</param>
+		/// <param name="fpsLimit">FPS limit to save.</param>
+		/// <param name="renderAPI">RenderAPI to save.</param>
+		static void UpdateTRAPConfig(Utils::Config& config, const Window* window, uint32_t fpsLimit, Graphics::RenderAPI renderAPI);
+
+		/// <summary>
+		/// Save the engine.cfg file.
+		/// </summary>
+		/// <param name="config">Config to save.</param>
+		static void SaveTRAPConfig(Utils::Config& config);
+
+		/// <summary>
+		/// Load the advanced window properties from the given config.
+		/// </summary>
+		/// <param name="config">Config to load data from.</param>
+		/// <returns>Advanced Window properties.</returns>
+		static WindowProps::AdvancedProps LoadAdvancedWindowProps(const TRAP::Utils::Config& config);
+
+		/// <summary>
+		/// Load the window properties from the given config.
+		/// </summary>
+		/// <param name="config">Config to load data from.</param>
+		/// <returns>Window properties.</returns>
+		static WindowProps LoadWindowProps(const TRAP::Utils::Config& config);
+
+		/// <summary>
+		/// Select the RenderAPI to be used for rendering.
+		/// </summary>
+		/// <param name="config">Config to load data from.</param>
+		/// <returns>RenderAPI to use for rendering.</returns>
+		static Graphics::RenderAPI SelectRenderAPI(const TRAP::Utils::Config& config);
+
+		/// <summary>
+		/// Initialize the RendererAPI.
+		/// </summary>
+		/// <param name="gameName">Name of the game.</param>
+		/// <param name="renderAPI">RenderAPI to use.</param>
+		/// <param name="config">Config to load data from.</param>
+		static void InitializeRendererAPI(std::string_view gameName, const TRAP::Graphics::RenderAPI& renderAPI, const TRAP::Utils::Config& config);
+
+		/// <summary>
+		/// Create the main window.
+		///
+		/// Linux: If no known window manager can be found this function will close the engine.
+		/// Headless-Mode: This function may not create a window, this is not an error.
+		/// </summary>
+		/// <param name="winProps">Properties for the window.</param>
+		/// <returns>Created main window or nullptr.</returns>
+		static std::unique_ptr<TRAP::Window> CreateMainWindow(const TRAP::WindowProps& winProps);
+
+		/// <summary>
+		/// Load fallback shaders.
+		/// </summary>
+		static void LoadFallbackShaders();
+		/// <summary>
+		/// Load fallback textures.
+		/// </summary>
+		static void LoadFallbackTextures();
+		/// <summary>
+		/// Load fallback data.
+		///
+		/// This currently adds fallback shaders and textures.
+		/// </summary>
+		static void LoadFallbackData();
+
+		/// <summary>
+		/// Apply RendererAPI specific settings from config file.
+		/// </summary>
+		/// <param name="config">Config to load data from.</param>
+		static void ApplyRendererAPISettings(const TRAP::Utils::Config& config);
+
+		/// <summary>
+		/// Initialize TRAP::Input.
+		/// </summary>
+		static void InitializeInput();
+		/// <summary>
+		/// Initialize ImGui Layer.
+		/// </summary>
+		/// <param name="layerStack">LayerStack to add ImGui to.</param>
+		/// <returns>ImGui Layer on success, nullptr otherwise.</returns>
+		static TRAP::ImGuiLayer* InitializeImGui(TRAP::LayerStack& layerStack);
+
+		//Hot Reloading
+		std::vector<std::filesystem::path> m_hotReloadingShaderPaths{};
+		std::vector<std::filesystem::path> m_hotReloadingTexturePaths{};
+		TracyLockable(std::mutex, m_hotReloadingMutex);
+		std::unique_ptr<FileSystem::FileWatcher> m_hotReloadingFileWatcher = nullptr;
+		bool m_hotReloadingEnabled = false;
+
+		//Layers
+		LayerStack m_layerStack{};
+		ImGuiLayer* m_ImGuiLayer = nullptr;
+
+		//Main window
+		std::unique_ptr<Window> m_window = nullptr;
 		bool m_minimized = false;
 		bool m_focused = true;
-		LayerStack m_layerStack;
 
-		Utils::Config m_config;
-
-		Utils::Timer m_timer;
-		float m_FrameTime;
-		uint32_t m_fpsLimit;
-		uint32_t m_tickRate;
-		float m_timeScale;
-		std::string m_gameName;
 		//NVIDIA-Reflex
-		uint64_t m_globalCounter;
+		uint64_t m_globalCounter = 0;
 
+		//Multithreading
 		ThreadPool m_threadPool;
-
 		std::thread::id m_mainThreadID;
 
-		Graphics::RenderAPI m_newRenderAPI;
+		//Other data
+		Utils::Config m_config{};
+		Utils::Timer m_timer{};
+		float m_FrameTime = 0.0f;
+		uint32_t m_fpsLimit = 0;
+		uint32_t m_tickRate = 64;
+		float m_timeScale = 1.0f;
+		std::string m_gameName = "TRAP™";
+		bool m_running = true;
+		Graphics::RenderAPI m_newRenderAPI = Graphics::RenderAPI::NONE;
 
-		static Application* s_Instance; //Singleton instance
+		//Singleton instance
+		static Application* s_Instance;
 
 		friend int ::main(int32_t argc, const char* const*  argv);
 	};

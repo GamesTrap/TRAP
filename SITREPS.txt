@@ -3819,4 +3819,8 @@ SITREP 04/02/2023|23w13d1
 
 SITREP 04/06/2023|23w14a1
     - Changed TRAP Engine version to 23w14a1(0.9.8)
-    - GitHub Actions Added uploading of release executable artifacts ~<10 mins
+    - GitHub Actions Added uploading of release executable artifacts ~<20 mins
+
+SITREP 04/07/2023|23w14a2
+    - Changed TRAP Engine version to 23w14a2(0.9.9)
+    - Refactored TRAP::Application constructor and destructor ~>45 mins

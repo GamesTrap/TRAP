@@ -175,6 +175,21 @@ namespace TRAP::Utils
 	[[nodiscard]] BOOL IsWindows7OrGreaterWin32();
 #endif
 
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// <summary>
+	/// Checks if another instance of the engine is already running.
+	/// If another instance is already running then this instance will be closed with an error code.
+	/// </summary>
+	void CheckSingleProcess();
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// <summary>
+	/// Register the SIGINT callback function.
+	/// Used in Headless mode to handle CTRL+C.
+	/// </summary>
+	void RegisterSIGINTCallback();
 }
 
 #endif /*TRAP_UTILS_H*/

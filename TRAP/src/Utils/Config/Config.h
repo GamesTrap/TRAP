@@ -12,6 +12,28 @@ namespace TRAP::Utils
 		/// Constructor.
 		/// </summary>
 		Config() noexcept;
+		/// <summary>
+		/// Destructor.
+		/// </summary>
+		~Config() = default;
+
+		/// <summary>
+		/// Copy constructor.
+		/// </summary>
+		Config(const Config&) = delete;
+		/// <summary>
+		/// Move constructor.
+		/// </summary>
+		Config(Config&&) = default;
+
+		/// <summary>
+		/// Copy assignment operator.
+		/// </summary>
+		Config& operator=(const Config&) = delete;
+		/// <summary>
+		/// Move assignment operator.
+		/// </summary>
+		Config& operator=(Config&&) = default;
 
 		/// <summary>
 		/// Load a config file from disk.
@@ -106,7 +128,7 @@ namespace TRAP::Utils
 
 		bool m_hasChanged;
 		std::vector<std::pair<std::string, std::string>> m_data;
-		const std::locale m_locale;
+		std::locale m_locale;
 	};
 }
 

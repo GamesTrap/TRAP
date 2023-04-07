@@ -32,355 +32,58 @@ TRAP::Application* TRAP::Application::s_Instance = nullptr;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#if defined(TRAP_PLATFORM_WINDOWS) && defined(TRAP_HEADLESS_MODE)
-static BOOL WINAPI SIGINTHandlerRoutine(_In_ DWORD dwCtrlType)
-{
-	if (dwCtrlType == CTRL_C_EVENT)
-	{
-		TRAP::Application::Shutdown();
-		return TRUE;
-	}
-	else if (dwCtrlType == CTRL_CLOSE_EVENT)
-	{
-		TRAP::Application::Shutdown();
-		Sleep(10000);
-		return TRUE;
-	}
-
-	return FALSE;
-}
-#endif
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#if defined(ENABLE_SINGLE_PROCESS_ONLY) && defined(TRAP_PLATFORM_LINUX)
-[[nodiscard]] static bool CheckSingleProcessLinux()
-{
-	ZoneScoped;
-
-	static int32_t socketFD = -1;
-	static int32_t rc = 1;
-	static constexpr uint16_t port = 49420; //Just a free (hopefully) random port
-
-	if(socketFD == -1 || rc)
-	{
-		socketFD = -1;
-		rc = 1;
-
-		socketFD = socket(AF_INET, SOCK_DGRAM, 0);
-		if(socketFD < 0)
-		{
-			TP_ERROR(Log::ApplicationPrefix, "Failed to create socket!");
-			TP_ERROR(Log::ApplicationPrefix, Utils::String::GetStrError());
-			return false;
-		}
-
-		sockaddr_in name;
-		name.sin_family = AF_INET;
-		name.sin_port = port;
-		name.sin_addr.s_addr = INADDR_ANY;
-
-		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
-			TRAP::Utils::Memory::SwapBytes(name.sin_port);
-
-		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
-			TRAP::Utils::Memory::SwapBytes(name.sin_addr.s_addr);
-
-		sockaddr convertedSock = TRAP::Utils::BitCast<sockaddr_in, sockaddr>(name); //Prevent usage of reinterpret_cast
-		rc = bind(socketFD, &convertedSock, sizeof(name));
-		if(rc < 0)
-		{
-			TP_ERROR(Log::ApplicationPrefix, "Failed to bind socket!");
-			TP_ERROR(Log::ApplicationPrefix, Utils::String::GetStrError());
-		}
-	}
-
-	return (socketFD != -1 && rc == 0);
-}
-#endif
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#if defined(ENABLE_SINGLE_PROCESS_ONLY) && defined(TRAP_PLATFORM_WINDOWS)
-[[nodiscard]] static bool CheckSingleProcessWindows()
-{
-	ZoneScoped;
-
-	const HANDLE hMutex = CreateMutex(0, 0, L"TRAP-Engine");
-	if(!hMutex) //Error creating mutex
-	{
-		TP_ERROR(Log::ApplicationPrefix, "Failed to create mutex!");
-		TP_ERROR(Log::ApplicationPrefix, Utils::String::GetStrError());
-		return false;
-	}
-	if(hMutex && GetLastError() == ERROR_ALREADY_EXISTS)
-		return false;
-
-	return true;
-}
-#endif
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-static constexpr uint32_t DefaultTickrate = 64;
-static constexpr uint32_t DefaultWindowWidth = 1280;
-static constexpr uint32_t DefaultWindowHeight = 720;
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Application::Application(std::string gameName, const uint32_t appID)
-	: m_hotReloadingEnabled(false),
-	  m_FrameTime(0.0f),
-	  m_fpsLimit(0),
-	  m_tickRate(DefaultTickrate),
-	  m_timeScale(1.0f),
-	  m_gameName(std::move(gameName)),
-	  m_globalCounter(0),
-	  m_threadPool(Utils::GetCPUInfo().LogicalCores > 1 ? (Utils::GetCPUInfo().LogicalCores - 1) :
+	: m_threadPool(Utils::GetCPUInfo().LogicalCores > 1 ? (Utils::GetCPUInfo().LogicalCores - 1) :
 	               std::thread::hardware_concurrency()),
-	  m_newRenderAPI(Graphics::RenderAPI::NONE)
+	  m_mainThreadID(std::this_thread::get_id()),
+	  m_gameName(std::move(gameName))
 {
 	ZoneScoped;
 
-	//Register SIGINT callback to capture CTRL+C
-#ifdef TRAP_HEADLESS_MODE
-#ifdef TRAP_PLATFORM_LINUX
-	if(signal(SIGINT, [](int) {TRAP::Application::Shutdown(); }) == SIG_ERR)
-	{
-		TP_ERROR(Log::ApplicationPrefix, "Failed to register SIGINT callback!");
-		TP_ERROR(Log::ApplicationPrefix, Utils::String::GetStrError());
-	}
-#elif defined(TRAP_PLATFORM_WINDOWS)
-	if(!SetConsoleCtrlHandler(SIGINTHandlerRoutine, TRUE))
-	{
-		TP_ERROR(Log::ApplicationPrefix, "Failed to set SIGINT handler!");
-		TP_ERROR(Log::ApplicationPrefix, Utils::String::GetStrError());
-	}
-#endif
-#endif
+	TRAP::Utils::RegisterSIGINTCallback();
 
 #ifdef TRACY_ENABLE
 	//Set Main Thread name for profiler
 	tracy::SetThreadName("Main Thread");
 #endif
 
-	//Single process mode
-#ifdef ENABLE_SINGLE_PROCESS_ONLY
-	bool singleProcess = true;
-	#ifdef TRAP_PLATFORM_LINUX
-		singleProcess = CheckSingleProcessLinux();
-	#elif defined(TRAP_PLATFORM_WINDOWS)
-		singleProcess = CheckSingleProcessWindows();
-	#endif
-
-	if(!singleProcess)
-	{
-		Utils::Dialogs::ShowMsgBox("TRAP™ is already running", "A TRAP™ Application is already running!\n"
-		                           "Error code: 0x0012", Utils::Dialogs::Style::Error,
-								   Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::ApplicationPrefix, "A TRAP™ Application is already running! (0x0012)");
-		exit(0x0012);
-	}
-#endif
+	Utils::CheckSingleProcess();
 
 	TP_DEBUG(Log::ApplicationPrefix, "Initializing TRAP modules...");
 
 	TRAP_ASSERT(!s_Instance, "Application(): Application already exists!");
 	s_Instance = this;
-	m_mainThreadID = std::this_thread::get_id();
 
 	TP_INFO(Log::ApplicationPrefix, "CPU: ", Utils::GetCPUInfo().LogicalCores, "x ", Utils::GetCPUInfo().Model);
 
 	FileSystem::Init();
 
-	//Set main log file path
-	const auto logFolder = FileSystem::GetGameLogFolderPath();
-	if(logFolder)
-		TRAP::TRAPLog.SetFilePath(*logFolder / "trap.log");
-	else //Fallback to current directory
-		TRAP::TRAPLog.SetFilePath("trap.log");
+	//Set main log file path (uses current folder as fallback)
+	TRAP::TRAPLog.SetFilePath(FileSystem::GetGameLogFolderPath().value_or("") / "trap.log");
 
 	TRAP::Utils::Steam::Initalize(appID);
 
-	std::filesystem::path cfgPath = "engine.cfg";
-#ifndef TRAP_HEADLESS_MODE
-	const auto docsFolder = FileSystem::GetGameDocumentsFolderPath();
-	if(docsFolder)
-		cfgPath = *docsFolder / "engine.cfg";
-#endif
-	if (!m_config.LoadFromFile(cfgPath))
-		TP_INFO(Log::ConfigPrefix, "Using default values");
+	m_config = LoadTRAPConfig();
 
-#ifndef TRAP_HEADLESS_MODE
-	uint32_t width = DefaultWindowWidth;
-	uint32_t height = DefaultWindowHeight;
-	uint32_t refreshRate = DefaultTickrate;
-	m_config.Get("Width", width);
-	m_config.Get("Height", height);
-	m_config.Get("RefreshRate", refreshRate);
-	const bool vsync = m_config.Get<bool>("VSync");
-	const bool visible = true;
-#ifdef NVIDIA_REFLEX_AVAILABLE
-	const Graphics::LatencyMode latencyMode = m_config.Get<Graphics::LatencyMode>("NVIDIAReflex");
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
-#else
-	const uint32_t width = 2;
-	const uint32_t height = 2;
-	const uint32_t refreshRate = 60;
-	const bool vsync = true;
-	const Window::DisplayMode displayMode = Window::DisplayMode::Windowed;
-	const uint32_t monitor = 0;
-	const bool maximized = false;
-	const bool rawInput = false;
-	const bool visible = false;
-#endif
-	const uint32_t fpsLimit = m_config.Get<uint32_t>("FPSLimit");
-#ifndef TRAP_HEADLESS_MODE
-	const Window::DisplayMode displayMode = m_config.Get<Window::DisplayMode>("DisplayMode");
-	const bool maximized = m_config.Get<bool>("Maximized");
-	const uint32_t monitor = m_config.Get<uint32_t>("Monitor");
-	const bool rawInput = m_config.Get<bool>("RawMouseInput");
-#else
-	bool enableGPU = true;
-	m_config.Get("EnableGPU", enableGPU);
-#endif
-	Graphics::RenderAPI renderAPI = m_config.Get<Graphics::RenderAPI>("RenderAPI");
+	const Graphics::RenderAPI renderAPI = SelectRenderAPI(m_config);
 
-#ifdef TRAP_HEADLESS_MODE
-	if(enableGPU)
+	InitializeRendererAPI(m_gameName, renderAPI, m_config);
+
+	m_window = CreateMainWindow(LoadWindowProps(m_config));
+
+	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
 	{
-#endif
-	if (renderAPI == Graphics::RenderAPI::NONE || !Graphics::RendererAPI::IsSupported(renderAPI))
-		renderAPI = Graphics::RendererAPI::AutoSelectRenderAPI();
-#ifdef TRAP_HEADLESS_MODE
-	}
-	else
-		renderAPI = Graphics::RenderAPI::NONE;
-#endif
-
-	//Initialize Renderer
-#ifdef TRAP_HEADLESS_MODE
-	if(renderAPI != Graphics::RenderAPI::NONE)
-	{
-		//Retrieve RendererAPI values from engine.cfg
-		Graphics::AntiAliasing antiAliasing = Graphics::AntiAliasing::Off;
-		m_config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing", antiAliasing);
-		Graphics::SampleCount antiAliasingSampleCount = Graphics::SampleCount::Two;
-		m_config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality", antiAliasingSampleCount);
-		std::string anisotropyLevelStr = "16";
-		m_config.Get<std::string>("AnisotropyLevel", anisotropyLevelStr);
-
-		Graphics::RendererAPI::Init(m_gameName, renderAPI);
-		Graphics::RenderCommand::SetAntiAliasing(antiAliasing, antiAliasingSampleCount);
-		if(!anisotropyLevelStr.empty())
-		{
-			const Graphics::SampleCount anisotropyLevel = (anisotropyLevelStr == "Off") ? Graphics::SampleCount::One : Utils::String::ConvertToType<Graphics::SampleCount>(anisotropyLevelStr);
-			Graphics::RenderCommand::SetAnisotropyLevel(anisotropyLevel);
-		}
-	}
-#else
-	//Retrieve RendererAPI values from engine.cfg
-	Graphics::AntiAliasing antiAliasing = Graphics::AntiAliasing::Off;
-	m_config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing", antiAliasing);
-	Graphics::SampleCount antiAliasingSampleCount = Graphics::SampleCount::Two;
-	m_config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality", antiAliasingSampleCount);
-	std::string anisotropyLevelStr = "16";
-	m_config.Get<std::string>("AnisotropyLevel", anisotropyLevelStr);
-
-	Graphics::RendererAPI::Init(m_gameName, renderAPI);
-	Graphics::RenderCommand::SetAntiAliasing(antiAliasing, antiAliasingSampleCount);
-	if(!anisotropyLevelStr.empty())
-	{
-		const Graphics::SampleCount anisotropyLevel = (anisotropyLevelStr == "Off") ? Graphics::SampleCount::One : Utils::String::ConvertToType<Graphics::SampleCount>(anisotropyLevelStr);
-		Graphics::RenderCommand::SetAnisotropyLevel(anisotropyLevel);
-	}
-#endif
-
-	//Window creation stuff
-#ifdef TRAP_PLATFORM_LINUX
-	if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
-	{
-#endif
-		WindowProps::AdvancedProps advWinProps{};
-		advWinProps.Maximized = maximized;
-		advWinProps.Visible = visible;
-		advWinProps.RawMouseInput = rawInput;
-
-		WindowProps winProps{};
-		winProps.Title = "TRAP™";
-		winProps.Width = width;
-		winProps.Height = height;
-		winProps.RefreshRate = refreshRate;
-		winProps.VSync = vsync;
-		winProps.DisplayMode = displayMode;
-		winProps.Monitor = monitor;
-		winProps.Advanced = advWinProps;
-
-		m_window = std::make_unique<Window>(winProps);
-		m_window->SetEventCallback([this](Events::Event& event) { OnEvent(event); });
-
-		//Update Window Title (Debug/RelWithDebInfo)
-		if(renderAPI != Graphics::RenderAPI::NONE)
-			m_window->SetTitle(m_window->GetTitle() + Graphics::RendererAPI::GetRenderer()->GetTitle());
-#ifdef TRAP_PLATFORM_LINUX
-	}
-#ifdef TRAP_HEADLESS_MODE
-	else //Headless without X11 or Wayland
-	{
-		if(TRAP::Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
-			TRAP::Graphics::RendererAPI::GetRenderer()->InitPerWindowData(nullptr);
-	}
-#endif
-#endif
-
-	SetFPSLimit(fpsLimit);
-
-#ifndef TRAP_HEADLESS_MODE
-	//NVIDIA Reflex
-#ifdef NVIDIA_REFLEX_AVAILABLE
-	Graphics::RenderCommand::SetLatencyMode(latencyMode);
-	NVSTATS_INIT(0, 0);
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
-#endif
-
-	if(renderAPI != Graphics::RenderAPI::NONE)
-	{
-		float renderScale = 1.0f;
-		m_config.Get<float>("RenderScale", renderScale);
-		Graphics::RenderCommand::SetRenderScale(renderScale);
-
-		//Always added as a fallback shader
-		Graphics::ShaderManager::LoadSource("FallbackGraphics", std::string(Embed::FallbackGraphicsShader))->Use();
-		Graphics::ShaderManager::LoadSource("FallbackCompute", std::string(Embed::FallbackComputeShader))->Use();
-
-		//Always added as a fallback texture
-		Graphics::TextureManager::Add(Graphics::Texture::CreateFallback2D());
-		Graphics::TextureManager::Add(Graphics::Texture::CreateFallbackCube());
+		LoadFallbackData();
+		ApplyRendererAPISettings(m_config);
 
 		//Initialize Renderer
 		Graphics::Renderer::Init();
 	}
 
-	//Initialize Input for Joysticks
-#ifdef TRAP_PLATFORM_LINUX
-	if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
-	{
-#endif
-		Input::SetEventCallback([this](Events::Event& event) {OnEvent(event); });
-		Input::Init();
-#ifdef TRAP_PLATFORM_LINUX
-	}
-#endif
+	SetFPSLimit(m_config.Get<uint32_t>("FPSLimit"));
 
-#ifndef TRAP_HEADLESS_MODE
-	if(Graphics::RendererAPI::GPUSettings.SurfaceSupported &&
-	   Graphics::RendererAPI::GPUSettings.PresentSupported)
-	{
-		Scope<ImGuiLayer> imguiLayer = TRAP::MakeScope<ImGuiLayer>();
-		m_ImGuiLayer = imguiLayer.get();
-		m_layerStack.PushOverlay(std::move(imguiLayer));
-	}
-#endif
+	InitializeInput();
+	m_ImGuiLayer = InitializeImGui(m_layerStack);
 
 	TRAP::Utils::Discord::Create();
 }
@@ -390,6 +93,7 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 TRAP::Application::~Application()
 {
 	ZoneScoped;
+
 	TP_DEBUG(Log::ApplicationPrefix, "Shutting down TRAP modules...");
 
 	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
@@ -399,61 +103,13 @@ TRAP::Application::~Application()
 
 	TRAP::Utils::Steam::Shutdown();
 	TRAP::Utils::Discord::Destroy();
+
 	if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
 		Input::Shutdown();
 
-#ifndef TRAP_HEADLESS_MODE
-	if(m_window->GetWidth() > 0)
-		m_config.Set("Width", m_window->GetWidth());
-	if(m_window->GetHeight() > 0)
-		m_config.Set("Height", m_window->GetHeight());
-	m_config.Set("RefreshRate", m_window->GetRefreshRate());
-	m_config.Set("VSync", m_window->GetVSync());
-	m_config.Set("DisplayMode", m_window->GetDisplayMode());
-	m_config.Set("Maximized", m_window->IsMaximized());
-	m_config.Set("Monitor", m_window->GetMonitor().GetID());
-	m_config.Set("RawMouseInput", m_window->GetRawMouseInput());
-#else
-	m_config.Set("EnableGPU", Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE);
-#endif
+	UpdateTRAPConfig(m_config, m_window.get(), m_fpsLimit, m_newRenderAPI);
+	SaveTRAPConfig(m_config);
 
-	m_config.Set("FPSLimit", m_fpsLimit);
-	m_config.Set("RenderAPI", (m_newRenderAPI != Graphics::RenderAPI::NONE) ? m_newRenderAPI :
-	                                                                          Graphics::RendererAPI::GetRenderAPI());
-
-	if (Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
-	{
-		//GPU UUID
-		std::array<uint8_t, 16> GPUUUID{};
-		if(Graphics::RendererAPI::GetNewGPU() != std::array<uint8_t, 16>{}) //Only if UUID is not empty
-			GPUUUID = Graphics::RendererAPI::GetNewGPU();
-		else
-			GPUUUID = Graphics::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
-		m_config.Set("VulkanGPU", Utils::UUIDToString(GPUUUID));
-
-		Graphics::AntiAliasing antiAliasing = Graphics::AntiAliasing::Off;
-		Graphics::SampleCount antiAliasingSampleCount = Graphics::SampleCount::Two;
-		Graphics::RenderCommand::GetAntiAliasing(antiAliasing, antiAliasingSampleCount);
-		const Graphics::SampleCount anisotropyLevel = Graphics::RenderCommand::GetAnisotropyLevel();
-		m_config.Set("AntiAliasing", antiAliasing);
-		m_config.Set("AntiAliasingQuality", antiAliasingSampleCount);
-		m_config.Set("AnisotropyLevel", (anisotropyLevel == Graphics::SampleCount::One) ? "Off" : Utils::String::ConvertToString(anisotropyLevel));
-		m_config.Set("RenderScale", Graphics::RenderCommand::GetRenderScale());
-
-		//NVIDIA Reflex
-#if !defined(TRAP_HEADLESS_MODE) && defined(NVIDIA_REFLEX_AVAILABLE)
-		NVSTATS_SHUTDOWN();
-		m_config.Set("NVIDIAReflex", Graphics::RenderCommand::GetLatencyMode());
-#endif
-	}
-
-	std::filesystem::path cfgPath = "engine.cfg";
-#ifndef TRAP_HEADLESS_MODE
-	const auto docsFolder = FileSystem::GetGameDocumentsFolderPath();
-	if(docsFolder)
-		cfgPath = *docsFolder / "engine.cfg";
-#endif
-	m_config.SaveToFile(cfgPath);
 	m_window.reset();
 
 	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
@@ -1118,4 +774,314 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 	}
 
 	return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::filesystem::path TRAP::Application::GetTRAPConfigPath()
+{
+#ifdef TRAP_HEADLESS_MODE
+	return "engine.cfg";
+#endif
+
+	return TRAP::FileSystem::GetGameDocumentsFolderPath().value_or("") / "engine.cfg";
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Utils::Config TRAP::Application::LoadTRAPConfig()
+{
+	TRAP::Utils::Config config{};
+
+	if (!config.LoadFromFile(GetTRAPConfigPath()))
+		TP_INFO(TRAP::Log::ConfigPrefix, "Using default values");
+
+	return config;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::UpdateTRAPConfig(Utils::Config& config, const TRAP::Window* const window,
+                                       const uint32_t fpsLimit, const Graphics::RenderAPI renderAPI)
+{
+#ifndef TRAP_HEADLESS_MODE
+	TRAP_ASSERT(window != nullptr, "Application::UpdateTRAPConfig(); window is nullptr!");
+#endif /*TRAP_HEADLESS_MODE*/
+
+	if(window != nullptr)
+	{
+		if(window->GetWidth() > 0)
+			config.Set("Width", window->GetWidth());
+		if(window->GetHeight() > 0)
+			config.Set("Height", window->GetHeight());
+		config.Set("RefreshRate", window->GetRefreshRate());
+		config.Set("VSync", window->GetVSync());
+		config.Set("DisplayMode", window->GetDisplayMode());
+		config.Set("Maximized", window->IsMaximized());
+		config.Set("Monitor", window->GetMonitor().GetID());
+		config.Set("RawMouseInput", window->GetRawMouseInput());
+	}
+
+#ifndef TRAP_HEADLESS_MODE
+	config.Set("EnableGPU", Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE);
+#endif
+
+	config.Set("FPSLimit", fpsLimit);
+	config.Set("RenderAPI", (renderAPI != Graphics::RenderAPI::NONE) ? renderAPI :
+	                                                                   Graphics::RendererAPI::GetRenderAPI());
+
+	if (Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
+	{
+		//GPU UUID
+		std::array<uint8_t, 16> GPUUUID{};
+		if(Graphics::RendererAPI::GetNewGPU() != std::array<uint8_t, 16>{}) //Only if UUID is not empty
+			GPUUUID = Graphics::RendererAPI::GetNewGPU();
+		else
+			GPUUUID = Graphics::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
+		config.Set(Utils::String::ConvertToString(Graphics::RendererAPI::GetRenderAPI()) + "GPU", Utils::UUIDToString(GPUUUID));
+
+		Graphics::AntiAliasing antiAliasing = Graphics::AntiAliasing::Off;
+		Graphics::SampleCount antiAliasingSampleCount = Graphics::SampleCount::Two;
+		Graphics::RenderCommand::GetAntiAliasing(antiAliasing, antiAliasingSampleCount);
+		const Graphics::SampleCount anisotropyLevel = Graphics::RenderCommand::GetAnisotropyLevel();
+		config.Set("AntiAliasing", antiAliasing);
+		config.Set("AntiAliasingQuality", antiAliasingSampleCount);
+		config.Set("AnisotropyLevel", (anisotropyLevel == Graphics::SampleCount::One) ? "Off" : Utils::String::ConvertToString(anisotropyLevel));
+		config.Set("RenderScale", Graphics::RenderCommand::GetRenderScale());
+
+		//NVIDIA Reflex
+#if !defined(TRAP_HEADLESS_MODE) && defined(NVIDIA_REFLEX_AVAILABLE)
+		NVSTATS_SHUTDOWN();
+		config.Set("NVIDIAReflex", Graphics::RenderCommand::GetLatencyMode());
+#endif
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::SaveTRAPConfig(TRAP::Utils::Config& config)
+{
+	config.SaveToFile(GetTRAPConfigPath());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::WindowProps::AdvancedProps TRAP::Application::LoadAdvancedWindowProps(const TRAP::Utils::Config& config)
+{
+	TRAP::WindowProps::AdvancedProps props{};
+
+	props.Maximized = config.Get<bool>("Maximized");
+	props.Visible = true;
+	props.RawMouseInput = config.Get<bool>("RawMouseInput");
+
+#ifdef TRAP_HEADLESS_MODE
+	props.Visible = false;
+#endif /*TRAP_HEADLESS_MODE*/
+
+	return props;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::WindowProps TRAP::Application::LoadWindowProps(const TRAP::Utils::Config& config)
+{
+	constexpr uint32_t DefaultWindowWidth = 1280;
+	constexpr uint32_t DefaultWindowHeight = 720;
+	constexpr uint32_t DefaultWindowRefreshRate = 60;
+
+	TRAP::WindowProps props{};
+
+	props.Title = "TRAP™";
+	props.Width = DefaultWindowWidth;
+	props.Height = DefaultWindowHeight;
+	props.RefreshRate = DefaultWindowRefreshRate;
+	props.VSync = config.Get<bool>("VSync");
+	props.DisplayMode = config.Get<TRAP::Window::DisplayMode>("DisplayMode");
+	props.Monitor = config.Get<uint32_t>("Monitor");
+	props.Advanced = LoadAdvancedWindowProps(config);
+
+	config.Get("Width", props.Width);
+	config.Get("Height", props.Height);
+	config.Get("RefreshRate", props.RefreshRate);
+
+	return props;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::RenderAPI TRAP::Application::SelectRenderAPI(const TRAP::Utils::Config& config)
+{
+	TRAP::Graphics::RenderAPI renderAPI = config.Get<TRAP::Graphics::RenderAPI>("RenderAPI");
+
+#ifdef TRAP_HEADLESS_MODE
+	bool enableGPU = true;
+	config.Get("EnableGPU", enableGPU);
+
+	if(enableGPU &&
+	   (renderAPI == TRAP::Graphics::RenderAPI::NONE || !TRAP::Graphics::RendererAPI::IsSupported(renderAPI)))
+	{
+		renderAPI = TRAP::Graphics::RendererAPI::AutoSelectRenderAPI();
+	}
+	else if(!enableGPU)
+		renderAPI = TRAP::Graphics::RenderAPI::NONE;
+#else
+	if (renderAPI == TRAP::Graphics::RenderAPI::NONE || !TRAP::Graphics::RendererAPI::IsSupported(renderAPI))
+		renderAPI = TRAP::Graphics::RendererAPI::AutoSelectRenderAPI();
+#endif
+
+	return renderAPI;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::InitializeRendererAPI(const std::string_view gameName,
+                                              const TRAP::Graphics::RenderAPI& renderAPI,
+											  const TRAP::Utils::Config& config)
+{
+#ifdef TRAP_HEADLESS_MODE
+	if(renderAPI == TRAP::Graphics::RenderAPI::NONE)
+		return;
+#endif /*TRAP_HEADLESS_MODE*/
+
+	TRAP::Graphics::RendererAPI::Init(gameName, renderAPI);
+
+	const TRAP::Graphics::SampleCount antiAliasingSampleCount = config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality");
+	TRAP::Graphics::RenderCommand::SetAntiAliasing(config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing"),
+	                                               antiAliasingSampleCount != TRAP::Graphics::SampleCount::One ?
+												   antiAliasingSampleCount : TRAP::Graphics::SampleCount::Two);
+
+	std::string anisotropyLevelStr = "16";
+	config.Get<std::string>("AnisotropyLevel", anisotropyLevelStr);
+	if(!anisotropyLevelStr.empty())
+	{
+		const TRAP::Graphics::SampleCount anisotropyLevel = (anisotropyLevelStr == "Off") ?
+		                                                    TRAP::Graphics::SampleCount::One :
+															TRAP::Utils::String::ConvertToType<TRAP::Graphics::SampleCount>(anisotropyLevelStr);
+		TRAP::Graphics::RenderCommand::SetAnisotropyLevel(anisotropyLevel);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::unique_ptr<TRAP::Window> TRAP::Application::CreateMainWindow(const TRAP::WindowProps& winProps)
+{
+	std::unique_ptr<TRAP::Window> window = nullptr;
+
+#ifdef TRAP_PLATFORM_LINUX
+	if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
+#endif /*TRAP_PLATFORM_LINUX*/
+	{
+		window = std::make_unique<TRAP::Window>(winProps);
+		if(window)
+		{
+			window->SetEventCallback([](TRAP::Events::Event& event) { s_Instance->OnEvent(event); });
+
+			//Update Window Title (Debug/RelWithDebInfo)
+			if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
+				window->SetTitle(window->GetTitle() + TRAP::Graphics::RendererAPI::GetRenderer()->GetTitle());
+		}
+	}
+#ifdef TRAP_HEADLESS_MODE
+	if(!window && TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
+		TRAP::Graphics::RendererAPI::GetRenderer()->InitPerWindowData(nullptr);
+#endif /*TRAP_HEADLESS_MODE*/
+
+	return window;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::LoadFallbackShaders()
+{
+	TRAP_ASSERT(TRAP::Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE,
+	            "Application::LoadFallbackShaders(): RenderAPI must not be RenderAPI::NONE!");
+
+	if(TRAP::Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::NONE)
+		return;
+
+	TRAP::Graphics::ShaderManager::LoadSource("FallbackGraphics", std::string(TRAP::Embed::FallbackGraphicsShader))->Use();
+	TRAP::Graphics::ShaderManager::LoadSource("FallbackCompute", std::string(TRAP::Embed::FallbackComputeShader))->Use();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::LoadFallbackTextures()
+{
+	TRAP_ASSERT(TRAP::Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE,
+	            "Application::LoadFallbackTextures(): RenderAPI must not be RenderAPI::NONE!");
+
+	if(TRAP::Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::NONE)
+		return;
+
+	TRAP::Graphics::TextureManager::Add(TRAP::Graphics::Texture::CreateFallback2D());
+	TRAP::Graphics::TextureManager::Add(TRAP::Graphics::Texture::CreateFallbackCube());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::LoadFallbackData()
+{
+	TRAP_ASSERT(TRAP::Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE,
+	            "Application::LoadFallbackData(): RenderAPI must not be RenderAPI::NONE!");
+
+	if(TRAP::Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::NONE)
+		return;
+
+	LoadFallbackShaders();
+	LoadFallbackTextures();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::ApplyRendererAPISettings(const TRAP::Utils::Config& config)
+{
+	TRAP_ASSERT(TRAP::Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE,
+	            "Application::ApplyRendererAPISettings(): RenderAPI must not be RenderAPI::NONE!");
+
+	if(TRAP::Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::NONE)
+		return;
+
+#if !defined(TRAP_HEADLESS_MODE) && defined(NVIDIA_REFLEX_AVAILABLE)
+	//NVIDIA Reflex
+	Graphics::RenderCommand::SetLatencyMode(config.Get<Graphics::LatencyMode>("NVIDIAReflex"));
+	NVSTATS_INIT(0, 0);
+#endif /*!TRAP_HEADLESS_MODE && NVIDIA_REFLEX_AVAILABLE*/
+
+	float renderScale = 1.0f;
+	config.Get<float>("RenderScale", renderScale);
+	Graphics::RenderCommand::SetRenderScale(renderScale);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::InitializeInput()
+{
+#ifdef TRAP_PLATFORM_LINUX
+	if(TRAP::Utils::GetLinuxWindowManager() == TRAP::Utils::LinuxWindowManager::Unknown)
+		return;
+#endif
+
+	Input::SetEventCallback([](Events::Event& event) { s_Instance->OnEvent(event); });
+	Input::Init();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::ImGuiLayer* TRAP::Application::InitializeImGui(TRAP::LayerStack& layerStack)
+{
+	if(!Graphics::RendererAPI::GPUSettings.SurfaceSupported ||
+	   !Graphics::RendererAPI::GPUSettings.PresentSupported)
+	{
+		return nullptr;
+	}
+
+	Scope<ImGuiLayer> imguiLayer = TRAP::MakeScope<ImGuiLayer>();
+	ImGuiLayer* imguiLayerPtr = nullptr;
+	if(imguiLayer)
+	{
+		imguiLayerPtr = imguiLayer.get();
+		layerStack.PushOverlay(std::move(imguiLayer));
+	}
+
+	return imguiLayerPtr;
 }

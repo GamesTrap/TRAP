@@ -2,11 +2,10 @@
 #define TRAP_LAYERSTACK_H
 
 #include "Core/Base.h"
+#include "Layers/Layer.h"
 
 namespace TRAP
 {
-	class Layer;
-
 	class LayerStack
 	{
 	public:
