@@ -1141,14 +1141,17 @@ void TRAP::Window::SetupEventCallbacks()
 			data->Width = w;
 			data->Height = h;
 
+#ifndef TRAP_HEADLESS_MODE
 			if (!data->EventCallback)
 				return;
 
 			Events::WindowResizeEvent event(w, h, data->Win);
 			data->EventCallback(event);
+#endif /*TRAP_HEADLESS_MODE*/
 		}
 	);
 
+#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::WindowingAPI::SetWindowMinimizeCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, bool restored)
 		{
@@ -1169,7 +1172,9 @@ void TRAP::Window::SetupEventCallbacks()
 			}
 		}
 	);
+#endif /*TRAP_HEADLESS_MODE*/
 
+#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::WindowingAPI::SetWindowMaximizeCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, bool restored)
 		{
@@ -1190,6 +1195,7 @@ void TRAP::Window::SetupEventCallbacks()
 			}
 		}
 	);
+#endif /*TRAP_HEADLESS_MODE*/
 
 	INTERNAL::WindowingAPI::SetWindowPosCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, const int32_t x, const int32_t y)
@@ -1204,14 +1210,17 @@ void TRAP::Window::SetupEventCallbacks()
 				data->windowModeParams.YPos = y;
 			}
 
+#ifndef TRAP_HEADLESS_MODE
 			if (!data->EventCallback)
 				return;
 
 			Events::WindowMoveEvent event(x, y, data->Win);
 			data->EventCallback(event);
+#endif /*TRAP_HEADLESS_MODE*/
 		}
 	);
 
+#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::WindowingAPI::SetWindowFocusCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, const bool focused)
 		{
@@ -1232,7 +1241,9 @@ void TRAP::Window::SetupEventCallbacks()
 			}
 		}
 	);
+#endif /*TRAP_HEADLESS_MODE*/
 
+#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::WindowingAPI::SetWindowCloseCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window)
 		{
@@ -1245,6 +1256,7 @@ void TRAP::Window::SetupEventCallbacks()
 			data->EventCallback(event);
 		}
 	);
+#endif /*TRAP_HEADLESS_MODE*/
 
 	INTERNAL::WindowingAPI::SetKeyCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, const Input::Key key, const Input::KeyState state)
@@ -1297,10 +1309,10 @@ void TRAP::Window::SetupEventCallbacks()
 		}
 	);
 
-	INTERNAL::WindowingAPI::SetCharCallback(*m_window,
-		[]([[maybe_unused]] const INTERNAL::WindowingAPI::InternalWindow& window, [[maybe_unused]] const uint32_t codePoint)
-		{
 #ifndef TRAP_HEADLESS_MODE
+	INTERNAL::WindowingAPI::SetCharCallback(*m_window,
+		[](const INTERNAL::WindowingAPI::InternalWindow& window, const uint32_t codePoint)
+		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
 			if ((data == nullptr) || !data->EventCallback)
@@ -1308,12 +1320,15 @@ void TRAP::Window::SetupEventCallbacks()
 
 			Events::KeyTypeEvent event(codePoint, data->Win);
 			data->EventCallback(event);
-#endif /*TRAP_HEADLESS_MODE*/
 		}
 	);
+#endif /*TRAP_HEADLESS_MODE*/
 
+#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::WindowingAPI::SetMouseButtonCallback(*m_window,
-		[](const INTERNAL::WindowingAPI::InternalWindow& window, const Input::MouseButton button, const Input::KeyState state)
+		[](const INTERNAL::WindowingAPI::InternalWindow& window,
+		   const Input::MouseButton button,
+		   const Input::KeyState state)
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -1332,9 +1347,12 @@ void TRAP::Window::SetupEventCallbacks()
 			}
 		}
 	);
+#endif /*TRAP_HEADLESS_MODE*/
 
+#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::WindowingAPI::SetScrollCallback(*m_window,
-		[](const INTERNAL::WindowingAPI::InternalWindow& window, const double xOffset, const double yOffset)
+		[](const INTERNAL::WindowingAPI::InternalWindow& window,
+		   const double xOffset, const double yOffset)
 		{
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -1345,7 +1363,9 @@ void TRAP::Window::SetupEventCallbacks()
 			data->EventCallback(event);
 		}
 	);
+#endif /*TRAP_HEADLESS_MODE*/
 
+#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::WindowingAPI::SetCursorPosCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, double xPos, double yPos)
 		{
@@ -1365,6 +1385,7 @@ void TRAP::Window::SetupEventCallbacks()
 			data->EventCallback(event);
 		}
 	);
+#endif /*TRAP_HEADLESS_MODE*/
 
 	INTERNAL::WindowingAPI::SetFrameBufferSizeCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, const int32_t w, const int32_t h)
@@ -1376,14 +1397,17 @@ void TRAP::Window::SetupEventCallbacks()
 			data->Width = w;
 			data->Height = h;
 
+#ifndef TRAP_HEADLESS_MODE
 			if (!data->EventCallback || w == 0 || h == 0)
 				return;
 
 			Events::FrameBufferResizeEvent event(w, h, data->Win);
 			data->EventCallback(event);
+#endif /*TRAP_HEADLESS_MODE*/
 		}
 	);
 
+#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::WindowingAPI::SetCursorEnterCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, const bool entered)
 		{
@@ -1404,7 +1428,9 @@ void TRAP::Window::SetupEventCallbacks()
 			}
 		}
 	);
+#endif /*TRAP_HEADLESS_MODE*/
 
+#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::WindowingAPI::SetDropCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, std::vector<std::string> paths)
 		{
@@ -1417,7 +1443,9 @@ void TRAP::Window::SetupEventCallbacks()
 			data->EventCallback(event);
 		}
 	);
+#endif /*TRAP_HEADLESS_MODE*/
 
+#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::WindowingAPI::SetContentScaleCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, const float xScale, const float yScale)
 		{
@@ -1430,6 +1458,7 @@ void TRAP::Window::SetupEventCallbacks()
 			data->EventCallback(event);
 		}
 	);
+#endif /*TRAP_HEADLESS_MODE*/
 
 	INTERNAL::WindowingAPI::SetMonitorCallback([](const INTERNAL::WindowingAPI::InternalMonitor& mon,
 	                                              const bool connected)

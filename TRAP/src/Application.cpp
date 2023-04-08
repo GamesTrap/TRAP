@@ -265,15 +265,15 @@ void TRAP::Application::OnEvent(Events::Event& event)
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<Events::WindowCloseEvent>([this](Events::WindowCloseEvent& wcEvent)
-		{
-			return OnWindowClose(wcEvent);
-		});
+#ifndef TRAP_HEADLESS_MODE
 	dispatcher.Dispatch<Events::FrameBufferResizeEvent>([](Events::FrameBufferResizeEvent& fbrEvent)
 		{
 			return OnFrameBufferResize(fbrEvent);
 		});
-#ifndef TRAP_HEADLESS_MODE
+	dispatcher.Dispatch<Events::WindowCloseEvent>([this](Events::WindowCloseEvent& wcEvent)
+		{
+			return OnWindowClose(wcEvent);
+		});
 	dispatcher.Dispatch<Events::KeyPressEvent>([](Events::KeyPressEvent& kpEvent) {return OnKeyPress(kpEvent); });
 #endif /*TRAP_HEADLESS_MODE*/
 	dispatcher.Dispatch<Events::FileChangeEvent>([this](Events::FileChangeEvent& fcEvent)
@@ -584,6 +584,7 @@ void TRAP::Application::SetHotReloading(const bool enable)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 bool TRAP::Application::OnWindowClose(Events::WindowCloseEvent& event) noexcept
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -593,9 +594,11 @@ bool TRAP::Application::OnWindowClose(Events::WindowCloseEvent& event) noexcept
 
 	return true;
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 bool TRAP::Application::OnFrameBufferResize(Events::FrameBufferResizeEvent& event)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -605,6 +608,7 @@ bool TRAP::Application::OnFrameBufferResize(Events::FrameBufferResizeEvent& even
 
 	return false;
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

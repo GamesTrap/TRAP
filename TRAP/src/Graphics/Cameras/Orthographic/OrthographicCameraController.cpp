@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "OrthographicCameraController.h"
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include "Input/Input.h"
 #include "Events/WindowEvent.h"
 
@@ -284,3 +286,5 @@ bool TRAP::Graphics::OrthographicCameraController::OnFrameBufferResize(const Eve
 
 	return false;
 }
+
+#endif /*TRAP_HEADLESS_MODE*/

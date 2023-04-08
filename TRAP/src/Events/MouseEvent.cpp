@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "MouseEvent.h"
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include "Utils/String/String.h"
 
 TRAP::Events::MouseMoveEvent::MouseMoveEvent(const float x, const float y, TRAP::Window* window)
@@ -266,3 +268,5 @@ TRAP::Events::MouseLeaveEvent::MouseLeaveEvent(TRAP::Window* window)
 
 	return EventCategory::Mouse | EventCategory::Input;
 }
+
+#endif /*TRAP_HEADLESS_MODE*/

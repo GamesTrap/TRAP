@@ -1,6 +1,8 @@
 #ifndef TRAP_MOUSEEVENT_H
 #define TRAP_MOUSEEVENT_H
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include "Input/Input.h"
 #include "Event.h"
 
@@ -636,5 +638,7 @@ constexpr TRAP::Events::MouseButtonEvent::MouseButtonEvent(const Input::MouseBut
 {
 	return EventType::MouseLeave;
 }
+
+#endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_MOUSEEVENT_H*/

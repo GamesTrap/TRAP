@@ -1,6 +1,8 @@
 #ifndef TRAP_ORTHOGRAPHICCAMERACONTROLLER_H
 #define TRAP_ORTHOGRAPHICCAMERACONTROLLER_H
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include "OrthographicCamera.h"
 #include "Utils/Time/TimeStep.h"
 #include "Events/MouseEvent.h"
@@ -167,5 +169,7 @@ namespace TRAP::Graphics
 		float m_cameraTranslationSpeed = 1.0f, m_cameraRotationSpeed = 180.0f;
 	};
 }
+
+#endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_ORTHOGRAPHICCAMERACONTROLLER_H*/

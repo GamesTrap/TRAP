@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "WindowEvent.h"
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include "Window/Window.h"
 
 TRAP::Events::WindowResizeEvent::WindowResizeEvent(const uint32_t width, const uint32_t height,
@@ -544,3 +546,5 @@ TRAP::Events::FrameBufferResizeEvent::FrameBufferResizeEvent(const uint32_t widt
 
 	return EventCategory::Window;
 }
+
+#endif /*TRAP_HEADLESS_MODE*/

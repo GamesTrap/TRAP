@@ -1,6 +1,8 @@
 #ifndef TRAP_WINDOWEVENT_H
 #define TRAP_WINDOWEVENT_H
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include "Event.h"
 #include "Maths/Vec2.h"
 
@@ -1107,5 +1109,7 @@ namespace TRAP::Events
 {
 	return EventType::FrameBufferResize;
 }
+
+#endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_WINDOWEVENT_H*/
