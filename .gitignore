@@ -201,3 +201,4 @@ compile_commands.json
 .modules/generatedocs/doxygen_docs/**
 .cache/**
 Dependencies/Wayland/**.h
+**steam_appid.txt**

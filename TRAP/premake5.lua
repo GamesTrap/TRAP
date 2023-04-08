@@ -432,6 +432,17 @@ project "TRAP-Headless"
 			defines "NSIGHT_AFTERMATH_AVAILABLE"
 		end
 
+		-- Steamworks SDK stuff
+		if os.isfile("../Dependencies/SteamworksSDK/sdk/redistributable_bin/win64/steam_api64.dll") and
+		   os.isfile("../Dependencies/SteamworksSDK/sdk/redistributable_bin/win64/steam_api64.lib") and
+		   os.isdir("../Dependencies/SteamworksSDK/sdk/public/steam") then
+			externalincludedirs "%{IncludeDir.STEAMWORKSSDK}"
+
+			files "%{IncludeDir.DISCORDGAMESDK}/**.h"
+
+			defines "USE_STEAMWORKS_SDK"
+		end
+
 	filter "system:linux"
 		-- Add Linux-specific files
 		files
@@ -461,6 +472,16 @@ project "TRAP-Headless"
 			externalincludedirs "%{IncludeDir.NSIGHTAFTERMATH}"
 
 			defines "NSIGHT_AFTERMATH_AVAILABLE"
+		end
+
+		-- Steamworks SDK stuff
+		if os.isfile("../Dependencies/SteamworksSDK/sdk/redistributable_bin/linux64/libsteam_api.so") and
+		   os.isdir("../Dependencies/SteamworksSDK/sdk/public/steam") then
+			externalincludedirs "%{IncludeDir.STEAMWORKSSDK}"
+
+			files "%{IncludeDir.DISCORDGAMESDK}/**.h"
+
+			defines "USE_STEAMWORKS_SDK"
 		end
 
 	filter { "action:gmake*", "toolset:gcc" }

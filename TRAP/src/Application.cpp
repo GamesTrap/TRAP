@@ -32,7 +32,7 @@ TRAP::Application* TRAP::Application::s_Instance = nullptr;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Application::Application(std::string gameName, const uint32_t appID)
+TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std::optional<uint32_t> appID)
 	: m_threadPool(Utils::GetCPUInfo().LogicalCores > 1 ? (Utils::GetCPUInfo().LogicalCores - 1) :
 	               std::thread::hardware_concurrency()),
 	  m_mainThreadID(std::this_thread::get_id()),
@@ -61,7 +61,8 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 	//Set main log file path (uses current folder as fallback)
 	TRAP::TRAPLog.SetFilePath(FileSystem::GetGameLogFolderPath().value_or("") / "trap.log");
 
-	TRAP::Utils::Steam::Initalize(appID);
+	if(appID)
+		TRAP::Utils::Steam::InitializeClient(*appID);
 
 	m_config = LoadTRAPConfig();
 

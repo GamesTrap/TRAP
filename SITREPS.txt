@@ -3835,3 +3835,5 @@ SITREP 04/08/2023|23w14a3
     - Headless mode Removed DiscordGameSDK and NVIDIA-Reflex support ~<30 mins
     - Added issue template for bug reporting ~<10 mins
     - Headless mode Added NVIDIA Aftermath SDK as an optional dependency ~<10 mins
+    - Headless mode Added Steamworks SDK as an optional dependency ~<10 mins
+    - SteamworksSDK Added support for Steam Game Server API ~>30 mins

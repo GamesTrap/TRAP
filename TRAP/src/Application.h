@@ -45,8 +45,12 @@ namespace TRAP
 		/// Constructor.
 		/// </summary>
 		/// <param name="gameName">Name of the game.</param>
-		/// <param name="appID">Optional: Steam AppID for this application. Default: Invalid AppID.</param>
-		explicit Application(std::string gameName, uint32_t appID = 0);
+		/// <param name="appID">
+		/// Optional: Steam AppID for this application.
+		/// If appID is a valid Steam AppID then the SteamAPI for clients will be initialized.
+		/// Headless mode: SteamAPI won't be initialized, users should manually initialize using TRAP::Utils::Steam::InitializeServer().
+		/// </param>
+		explicit Application(std::string gameName, std::optional<uint32_t> appID = std::nullopt);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
