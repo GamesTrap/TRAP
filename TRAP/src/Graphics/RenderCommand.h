@@ -112,6 +112,7 @@ namespace TRAP::Graphics
 
 		//VSync functions
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Set VSync for the given window.
 		/// </summary>
@@ -124,6 +125,7 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to get VSync state from. Default: Main Window.</param>
 		/// <returns>True if VSync is enabled, false otherwise.</returns>
 		[[nodiscard]] static bool GetVSync(const Window* window = TRAP::Application::GetWindow());
+#endif /*TRAP_HEADLESS_MODE*/
 
 		//Clear functions
 

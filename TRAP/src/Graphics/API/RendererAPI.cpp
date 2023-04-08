@@ -20,8 +20,12 @@
 TRAP::Scope<TRAP::Graphics::RendererAPI> TRAP::Graphics::RendererAPI::s_Renderer = nullptr;
 TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::s_RenderAPI = TRAP::Graphics::RenderAPI::NONE;
 TRAP::Scope<TRAP::Graphics::API::ResourceLoader> TRAP::Graphics::RendererAPI::s_ResourceLoader = nullptr;
+// #ifndef TRAP_HEADLESS_MODE
 std::unordered_map<const TRAP::Window*,
                    TRAP::Scope<TRAP::Graphics::RendererAPI::PerViewportData>> TRAP::Graphics::RendererAPI::s_perViewportDataMap = {};
+// #else
+// TRAP::Scope<TRAP::Graphics::RendererAPI::PerViewportData> TRAP::Graphics::RendererAPI::s_perViewportData = nullptr;
+// #endif /*TRAP_HEADLESS_MODE*/
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapable = true;
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapableFirstTest = true;
 TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::s_descriptorPool = nullptr;
@@ -487,6 +491,7 @@ void TRAP::Graphics::RendererAPI::SetAnisotropyLevel(const SampleCount anisotrop
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -496,6 +501,7 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 
 	s_perViewportDataMap.at(window)->ResizeSwapChain = true;
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -642,8 +648,10 @@ TRAP::Graphics::RendererAPI::PerViewportData::~PerViewportData()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
+#ifndef TRAP_HEADLESS_MODE
 	SwapChain.reset();
 	ImageAcquiredSemaphore.reset();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	for(int32_t i = ImageCount - 1; i >= 0; i--)
 	{

@@ -600,7 +600,9 @@ void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<uint32_t, 3> workG
 
 //------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetVSync(const bool vsync, const Window* const window) const
+#ifndef TRAP_HEADLESS_MODE
+void TRAP::Graphics::API::VulkanRenderer::SetVSync([[maybe_unused]] const bool vsync,
+                                                   [[maybe_unused]] const Window* const window) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -608,6 +610,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetVSync(const bool vsync, const Windo
 
 	s_perViewportDataMap.at(window)->NewVSync = vsync;
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //------------------------------------------------------------------------------------------------------------------//
 
@@ -1716,6 +1719,7 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] bool TRAP::Graphics::API::VulkanRenderer::GetVSync(const Window* const window) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -1724,6 +1728,7 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const ui
 
 	return s_perViewportDataMap.at(window)->CurrentVSync;
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -2293,10 +2298,10 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(Window* const wind
 		p->ComputeTimestampReadbackBuffers[i] = loadDesc.Buffer;
 	}
 
+#ifndef TRAP_HEADLESS_MODE
 	//Image Acquire Semaphore
 	p->ImageAcquiredSemaphore = Semaphore::Create();
 
-#ifndef TRAP_HEADLESS_MODE
 	//Create Swapchain
 	p->CurrentVSync = p->NewVSync = window->GetVSync();
 	SwapChainDesc swapChainDesc{};

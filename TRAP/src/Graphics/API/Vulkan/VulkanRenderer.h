@@ -85,12 +85,14 @@ namespace TRAP::Graphics::API
 		void Dispatch(std::array<uint32_t, 3> workGroupElements, const Window* window) const override;
 		//TODO DispatchIndirect
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Set the VSync state for the given window.
 		/// </summary>
 		/// <param name="vsync">Enable or disable VSync.</param>
 		/// <param name="window">Window to set VSync for.</param>
 		void SetVSync(bool vsync, const Window* window) const override;
+#endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -510,12 +512,15 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <returns>Renderer title.</returns>
 		[[nodiscard]] std::string GetTitle() const noexcept override;
+
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Retrieve whether VSync is enabled or not for the given window.
 		/// </summary>
 		/// <param name="window">Window to retrieve VSync for.</param>
 		/// <returns>True if VSync is enabled, false otherwise.</returns>
 		[[nodiscard]] bool GetVSync(const Window* window) const override;
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Retrieve the currently used GPUs UUID.

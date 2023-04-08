@@ -12,17 +12,21 @@ void TRAP::Graphics::RenderCommand::Flush(const Window* const window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::SetVSync(const bool vsync, const Window* const window)
 {
 	RendererAPI::GetRenderer()->SetVSync(vsync, window);
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] bool TRAP::Graphics::RenderCommand::GetVSync(const Window* const window)
 {
 	return RendererAPI::GetRenderer()->GetVSync(window);
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

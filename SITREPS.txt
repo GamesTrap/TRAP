@@ -3845,3 +3845,4 @@ SITREP 04/09/2023|23w14b1
     - VulkanPhysicalDevice Allow other physical device types when using headless mode ~<5 mins
     - Docs Updated differences between normal and headless mode ~<10 mins
     - Renamed PerWindowData to PerViewportData ~<5 mins
+    - Headless mode Removed support for VSync ~<15 mins

@@ -841,7 +841,9 @@ void TRAP::Application::UpdateTRAPConfig(Utils::Config& config, const TRAP::Wind
 		if(window->GetHeight() > 0)
 			config.Set("Height", window->GetHeight());
 		config.Set("RefreshRate", window->GetRefreshRate());
+#ifndef TRAP_HEADLESS_MODE
 		config.Set("VSync", window->GetVSync());
+#endif /*TRAP_HEADLESS_MODE*/
 		config.Set("DisplayMode", window->GetDisplayMode());
 		config.Set("Maximized", window->IsMaximized());
 		config.Set("Monitor", window->GetMonitor().GetID());

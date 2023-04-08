@@ -202,6 +202,7 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to Dispatch.</param>
 		virtual void Dispatch(std::array<uint32_t, 3> workGroupElements, const Window* window) const = 0;
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Set the VSync state for the given window.
 		/// </summary>
@@ -214,6 +215,7 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to retrieve VSync for.</param>
 		/// <returns>True if VSync is enabled, false otherwise.</returns>
 		[[nodiscard]] virtual bool GetVSync(const Window* window) const = 0;
+#endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -812,12 +814,14 @@ namespace TRAP::Graphics
 		/// <param name="anisotropyLevel">Anisotropy level to use.</param>
 		static void SetAnisotropyLevel(SampleCount anisotropyLevel);
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Notify the RendererAPI that the SwapChain needs to be resized.
 		/// This function should be called inside FrameBufferResizeEvent callbacks.
 		/// </summary>
 		/// <param name="window">Window that needs an updated SwapChain.</param>
 		static void ResizeSwapChain(const Window* window);
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Retrieve the GPU side frame time for the graphics queue.
@@ -2687,7 +2691,9 @@ namespace TRAP::Graphics
 			PerViewportData& operator=(const PerViewportData &) = delete;
 			PerViewportData& operator=(PerViewportData &&) = default;
 
+// #ifndef TRAP_HEADLESS_MODE
 			TRAP::Window* Window{};
+// #endif /*TRAP_HEADLESS_MODE*/
 
 			PerWindowState State{};
 
@@ -2696,7 +2702,9 @@ namespace TRAP::Graphics
 			std::array<TRAP::Ref<CommandPool>, ImageCount> GraphicCommandPools;
 			std::array<CommandBuffer*, ImageCount> GraphicCommandBuffers{};
 			std::array<TRAP::Ref<Fence>, ImageCount> RenderCompleteFences;
+#ifndef TRAP_HEADLESS_MODE
 			TRAP::Ref<Semaphore> ImageAcquiredSemaphore;
+#endif /*TRAP_HEADLESS_MODE*/
 			std::array<TRAP::Ref<Semaphore>, ImageCount> RenderCompleteSemaphores;
 			std::array<TRAP::Ref<Semaphore>, ImageCount> GraphicsCompleteSemaphores;
 			std::array<TRAP::Ref<QueryPool>, ImageCount> GraphicsTimestampQueryPools;
@@ -2710,8 +2718,10 @@ namespace TRAP::Graphics
 
 			float NewRenderScale = 1.0f;
 			float RenderScale = 1.0f;
+#ifndef TRAP_HEADLESS_MODE
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;
 			bool ResizeSwapChain = false;
+#endif /*TRAP_HEADLESS_MODE*/
 			std::array<TRAP::Ref<RenderTarget>, ImageCount> TemporaryResolveRenderTargets; //Used to resolve MSAA RenderTarget before applying RenderScale
 			std::array<TRAP::Ref<RenderTarget>, ImageCount> InternalRenderTargets; //Used when RenderScale is not 1.0f
 #ifdef TRAP_HEADLESS_MODE
@@ -2724,8 +2734,10 @@ namespace TRAP::Graphics
 			RendererAPI::Color ClearColor{0.1, 0.1, 0.1, 1.0};
 			RendererAPI::DepthStencil ClearDepthStencil{0.0, 0};
 
+#ifndef TRAP_HEADLESS_MODE
 			bool CurrentVSync{};
 			bool NewVSync{};
+#endif /*TRAP_HEADLESS_MODE*/
 
 			//Compute stuff
 			std::array<TRAP::Ref<CommandPool>, ImageCount> ComputeCommandPools;
@@ -2747,7 +2759,11 @@ namespace TRAP::Graphics
 		};
 
 	protected:
+// #ifndef TRAP_HEADLESS_MODE
 		static std::unordered_map<const Window*, TRAP::Scope<PerViewportData>> s_perViewportDataMap;
+// #else
+// 		static TRAP::Scope<PerViewportData> s_perViewportData;
+// #endif /*TRAP_HEADLESS_MODE*/
 
 	private:
 		static bool s_isVulkanCapable;
