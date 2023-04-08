@@ -15,7 +15,8 @@
 #ifdef _MSC_VER
 	#pragma warning(pop)
 #endif
-#endif
+
+#endif /*USE_STEAMWORKS_SDK*/
 
 namespace TRAP::Utils::Steam
 {
@@ -29,6 +30,7 @@ namespace TRAP::Utils::Steam
     /// <param name="appID">Steam AppID for this application.</param>
     void InitializeClient(uint32_t appID);
 
+#ifdef USE_STEAMWORKS_SDK
     /// <summary>
     /// Initialize the Steamworks SDK for servers.
     /// </summary>
@@ -44,21 +46,12 @@ namespace TRAP::Utils::Steam
     bool InitializeServer(uint32_t bindIPv4, uint16_t gamePort,
                           uint16_t queryPort, EServerMode authenticationMethod,
                           const std::string& version);
+#endif /*USE_STEAMWORKS_SDK*/
 
     /// <summary>
     /// Shutdown the Steamworks SDK.
     /// </summary>
     void Shutdown();
-
-    /// <summary>
-    /// Shutdown the Steamworks SDK client.
-    /// </summary>
-    void ShutdownClient();
-
-    /// <summary>
-    /// Shutdown the Steamworks SDK server.
-    /// </summary>
-    void ShutdownServer();
 
     /// <summary>
     /// Dispatches callbacks and call results to all of the registered listeners.

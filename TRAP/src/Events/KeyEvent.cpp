@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "KeyEvent.h"
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include "Utils/String/String.h"
 #include "Window/WindowingAPI.h"
 
@@ -195,3 +197,5 @@ TRAP::Events::KeyLayoutEvent::KeyLayoutEvent(std::string layout) noexcept
 
 	return EventCategory::Keyboard | EventCategory::Input;
 }
+
+#endif /*TRAP_HEADLESS_MODE*/

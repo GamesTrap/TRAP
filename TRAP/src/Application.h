@@ -18,13 +18,15 @@ namespace TRAP
 
 	namespace Events
 	{
+#ifndef TRAP_HEADLESS_MODE
+		class KeyPressEvent;
+#endif /*TRAP_HEADLESS_MODE*/
 		class WindowRestoreEvent;
 		class WindowMinimizeEvent;
 		class WindowLostFocusEvent;
 		class WindowFocusEvent;
 		class FrameBufferResizeEvent;
 		class WindowCloseEvent;
-		class KeyPressEvent;
 		class FileChangeEvent;
 	}
 
@@ -249,12 +251,14 @@ namespace TRAP
 		/// <param name="event">Framebuffer resize event that occurred.</param>
 		/// <returns>Always false.</returns>
 		static bool OnFrameBufferResize(Events::FrameBufferResizeEvent& event);
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Handles key presses(ALT+Enter) for the main render window.
 		/// </summary>
 		/// <param name="event">Key press event that occurred.</param>
 		/// <returns>Always false.</returns>
 		static bool OnKeyPress(Events::KeyPressEvent& event);
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Handles file change events for the application.

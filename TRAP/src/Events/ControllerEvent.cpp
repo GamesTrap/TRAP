@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "ControllerEvent.h"
 
+#ifndef TRAP_HEADLESS_MODE
+
 [[nodiscard]] TRAP::Events::EventCategory TRAP::Events::ControllerEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -87,3 +89,5 @@ TRAP::Events::ControllerDisconnectEvent::ControllerDisconnectEvent(const Input::
 
 	return "ControllerDisconnect";
 }
+
+#endif /*TRAP_HEADLESS_MODE*/

@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "MonitorEvent.h"
 
+#ifndef TRAP_HEADLESS_MODE
+
 [[nodiscard]] TRAP::Monitor TRAP::Events::MonitorEvent::GetMonitor() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -72,3 +74,5 @@
 
 	return "MonitorDisconnect";
 }
+
+#endif /*TRAP_HEADLESS_MODE*/

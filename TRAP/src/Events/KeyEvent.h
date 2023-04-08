@@ -1,6 +1,8 @@
 #ifndef TRAP_KEYEVENT_H
 #define TRAP_KEYEVENT_H
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include "Input/Input.h"
 #include "Event.h"
 
@@ -421,5 +423,7 @@ constexpr TRAP::Events::KeyEvent::KeyEvent(const Input::Key key) noexcept
 {
 	return EventType::KeyLayout;
 }
+
+#endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_KEYEVENT_H*/

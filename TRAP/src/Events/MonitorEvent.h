@@ -1,6 +1,8 @@
 #ifndef TRAP_MONITOREVENT_H
 #define TRAP_MONITOREVENT_H
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include "Event.h"
 #include "Window/Monitor.h"
 
@@ -204,5 +206,7 @@ constexpr TRAP::Events::MonitorDisconnectEvent::MonitorDisconnectEvent(const Mon
 {
 	return EventType::MonitorDisconnect;
 }
+
+#endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_MONITOREVENT_H*/

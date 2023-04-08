@@ -1,6 +1,8 @@
 #ifndef TRAP_CONTROLLEREVENT_H
 #define TRAP_CONTROLLEREVENT_H
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include "Event.h"
 #include "Input/Input.h"
 
@@ -190,5 +192,7 @@ namespace TRAP::Events
 {
 	return EventType::ControlledDisconnect;
 }
+
+#endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_CONTROLLEREVENT_H*/

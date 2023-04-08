@@ -346,6 +346,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(std::filesystem::path path)
 
 	PollABSStateLinux(con);
 
+#ifndef TRAP_HEADLESS_MODE
 	if (!s_eventCallback)
 		return false;
 
@@ -359,6 +360,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(std::filesystem::path path)
 
 	Events::ControllerConnectEvent event(static_cast<Controller>(index));
 	s_eventCallback(event);
+#endif /*TRAP_HEADLESS_MODE*/
 
 	return true;
 }
@@ -391,6 +393,7 @@ void TRAP::Input::CloseController(Controller controller)
 
 	*con = {};
 
+#ifndef TRAP_HEADLESS_MODE
 	if (!s_eventCallback)
 		return;
 
@@ -399,6 +402,7 @@ void TRAP::Input::CloseController(Controller controller)
 		Events::ControllerDisconnectEvent event(static_cast<Controller>(controller));
 		s_eventCallback(event);
 	}
+#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

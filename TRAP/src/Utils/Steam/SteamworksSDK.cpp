@@ -57,6 +57,7 @@ void TRAP::Utils::Steam::InitializeClient([[maybe_unused]] const uint32_t appID)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifdef USE_STEAMWORKS_SDK
 bool TRAP::Utils::Steam::InitializeServer(const uint32_t bindIPv4, const uint16_t gamePort,
                                           const uint16_t queryPort, const EServerMode authenticationMethod,
                                           const std::string& version)
@@ -76,6 +77,33 @@ bool TRAP::Utils::Steam::InitializeServer(const uint32_t bindIPv4, const uint16_
 
     return steamServerInitialized;
 }
+#endif /*USE_STEAMWORKS_SDK*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef USE_STEAMWORKS_SDK
+void TRAP::Utils::Steam::ShutdownClient()
+{
+    if(steamClientInitialized)
+    {
+        TP_INFO(TRAP::Log::SteamworksSDKPrefix, "Destroying Steam");
+        SteamAPI_Shutdown();
+    }
+}
+#endif /*USE_STEAMWORKS_SDK*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef USE_STEAMWORKS_SDK
+void TRAP::Utils::Steam::ShutdownServer()
+{
+    if(steamServerInitialized)
+    {
+        TP_INFO(TRAP::Log::SteamworksSDKPrefix, "Destroying Steam Server");
+        SteamGameServer_Shutdown();
+    }
+}
+#endif /*USE_STEAMWORKS_SDK*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -85,28 +113,6 @@ void TRAP::Utils::Steam::Shutdown()
     ShutdownClient();
     ShutdownServer();
 #endif /*USE_STEAMWORKS_SDK*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Utils::Steam::ShutdownClient()
-{
-    if(steamClientInitialized)
-    {
-        TP_INFO(TRAP::Log::SteamworksSDKPrefix, "Destroying Steam");
-        SteamAPI_Shutdown();
-    }
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Utils::Steam::ShutdownServer()
-{
-    if(steamServerInitialized)
-    {
-        TP_INFO(TRAP::Log::SteamworksSDKPrefix, "Destroying Steam Server");
-        SteamGameServer_Shutdown();
-    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

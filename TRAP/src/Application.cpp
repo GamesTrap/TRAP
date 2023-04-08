@@ -273,7 +273,9 @@ void TRAP::Application::OnEvent(Events::Event& event)
 		{
 			return OnFrameBufferResize(fbrEvent);
 		});
+#ifndef TRAP_HEADLESS_MODE
 	dispatcher.Dispatch<Events::KeyPressEvent>([](Events::KeyPressEvent& kpEvent) {return OnKeyPress(kpEvent); });
+#endif /*TRAP_HEADLESS_MODE*/
 	dispatcher.Dispatch<Events::FileChangeEvent>([this](Events::FileChangeEvent& fcEvent)
 		{
 			return OnFileChangeEvent(fcEvent);
@@ -606,6 +608,7 @@ bool TRAP::Application::OnFrameBufferResize(Events::FrameBufferResizeEvent& even
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 bool TRAP::Application::OnKeyPress([[maybe_unused]] Events::KeyPressEvent& event)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -613,7 +616,6 @@ bool TRAP::Application::OnKeyPress([[maybe_unused]] Events::KeyPressEvent& event
 	if(event.GetWindow() == nullptr)
 		return false;
 
-#ifndef TRAP_HEADLESS_MODE
 	if ((event.GetKey() == Input::Key::Enter || event.GetKey() == Input::Key::KP_Enter) &&
 	    Input::IsKeyPressed(Input::Key::Left_ALT, event.GetWindow()) && event.GetRepeatCount() < 1)
 	{
@@ -625,10 +627,10 @@ bool TRAP::Application::OnKeyPress([[maybe_unused]] Events::KeyPressEvent& event
 
 		return true;
 	}
-#endif
 
 	return false;
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

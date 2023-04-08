@@ -1260,40 +1260,47 @@ void TRAP::Window::SetupEventCallbacks()
 				{
 					data->KeyRepeatCounts[static_cast<uint16_t>(key)] = 0;
 
+#ifndef TRAP_HEADLESS_MODE
 					if (!data->EventCallback)
 						return;
 
 					Events::KeyPressEvent event(static_cast<Input::Key>(key), 0, data->Win);
 					data->EventCallback(event);
+#endif /*TRAP_HEADLESS_MODE*/
 				}
 				else
 				{
 					data->KeyRepeatCounts[static_cast<uint16_t>(key)]++;
 
+#ifndef TRAP_HEADLESS_MODE
 					if (!data->EventCallback)
 						return;
 
 					Events::KeyPressEvent event(static_cast<Input::Key>(key),
 					                            data->KeyRepeatCounts[static_cast<uint16_t>(key)], data->Win);
 					data->EventCallback(event);
+#endif /*TRAP_HEADLESS_MODE*/
 				}
 			}
 			else
 			{
 				data->KeyRepeatCounts.erase(static_cast<uint16_t>(key));
 
+#ifndef TRAP_HEADLESS_MODE
 				if (!data->EventCallback)
 					return;
 
 				Events::KeyReleaseEvent event(static_cast<Input::Key>(key), data->Win);
 				data->EventCallback(event);
+#endif /*TRAP_HEADLESS_MODE*/
 			}
 		}
 	);
 
 	INTERNAL::WindowingAPI::SetCharCallback(*m_window,
-		[](const INTERNAL::WindowingAPI::InternalWindow& window, const uint32_t codePoint)
+		[]([[maybe_unused]] const INTERNAL::WindowingAPI::InternalWindow& window, [[maybe_unused]] const uint32_t codePoint)
 		{
+#ifndef TRAP_HEADLESS_MODE
 			const WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
 			if ((data == nullptr) || !data->EventCallback)
@@ -1301,6 +1308,7 @@ void TRAP::Window::SetupEventCallbacks()
 
 			Events::KeyTypeEvent event(codePoint, data->Win);
 			data->EventCallback(event);
+#endif /*TRAP_HEADLESS_MODE*/
 		}
 	);
 
@@ -1466,6 +1474,7 @@ void TRAP::Window::SetupEventCallbacks()
 			break;
 		}
 
+#ifndef TRAP_HEADLESS_MODE
 		if (!data->EventCallback)
 			return;
 
@@ -1487,6 +1496,7 @@ void TRAP::Window::SetupEventCallbacks()
 
 			return;
 		}
+#endif /*TRAP_HEADLESS_MODE*/
 	});
 }
 
