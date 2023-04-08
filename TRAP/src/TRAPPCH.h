@@ -55,7 +55,9 @@
 #endif
 //ImGUI
 #include <imgui.h>
+#ifndef TRAP_HEADLESS_MODE
 #include <ImGuizmo.h>
+#endif /*TRAP_HEADLESS_MODE*/
 #ifdef _MSC_VER
 	#pragma warning(pop)
 #endif
