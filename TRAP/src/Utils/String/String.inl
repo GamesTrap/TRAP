@@ -186,6 +186,7 @@ template<typename T>
 
 		return Graphics::RendererAPI::GPUVendor::Unknown;
 	}
+#ifndef TRAP_HEADLESS_MODE
 	else if constexpr(std::is_same_v<T, TRAP::Graphics::RendererAPI::LatencyMode>) //LatencyMode
 	{
 		if(Utils::String::CompareAnyCase("Enabled", input))
@@ -198,6 +199,7 @@ template<typename T>
 		TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::RendererAPI::LatencyMode!");
 		return Graphics::RendererAPI::LatencyMode::Disabled;
 	}
+#endif /*TRAP_HEADLESS_MODE*/
 	else if constexpr(std::is_same_v<T, TRAP::FileSystem::FileStatus>) //FileStatus
 	{
 		if(Utils::String::CompareAnyCase("Created", input))
@@ -403,6 +405,7 @@ template<typename T>
 			return "Unknown";
 		}
 	}
+#ifndef TRAP_HEADLESS_MODE
 	else if constexpr(std::is_same_v<T, TRAP::Graphics::RendererAPI::LatencyMode>) //LatencyMode
 	{
 		switch(value)
@@ -418,6 +421,7 @@ template<typename T>
 			return "Disabled";
 		}
 	}
+#endif /*TRAP_HEADLESS_MODE*/
 	else if constexpr(std::is_same_v<T, TRAP::FileSystem::FileStatus>) //FileStatus
 	{
 		switch(value)

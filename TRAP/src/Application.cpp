@@ -87,7 +87,9 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 	m_ImGuiLayer = InitializeImGui(m_layerStack);
 #endif /*TRAP_HEADLESS_MODE*/
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP::Utils::Discord::Create();
+#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -104,7 +106,9 @@ TRAP::Application::~Application()
 	m_layerStack.Shutdown();
 
 	TRAP::Utils::Steam::Shutdown();
+#ifndef TRAP_HEADLESS_MODE
 	TRAP::Utils::Discord::Destroy();
+#endif /*TRAP_HEADLESS_MODE*/
 
 #ifdef TRAP_PLATFORM_LINUX
 	if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
@@ -165,10 +169,10 @@ void TRAP::Application::Run()
 			LimitFPS(m_fpsLimit, limiterTimer);
 #endif
 
-#ifdef NVIDIA_REFLEX_AVAILABLE
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_SIMULATION_START);
 		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_INPUT_SAMPLE);
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 #ifdef TRAP_PLATFORM_LINUX
 		if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
@@ -177,23 +181,25 @@ void TRAP::Application::Run()
 			TRAP::Window::OnUpdate();
 		}
 
-#ifdef NVIDIA_REFLEX_AVAILABLE
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 		if(Input::IsMouseButtonPressed(Input::MouseButton::Left))
 			Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_TRIGGER_FLASH);
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 		RunWork(deltaTime, tickTimerSeconds);
 
 		UpdateHotReloading();
 
+#ifndef TRAP_HEADLESS_MODE
 		//Needed by Discord Game SDK
 		TRAP::Utils::Discord::RunCallbacks();
+#endif /*TRAP_HEADLESS_MODE*/
 		//Needed by Steamworks SDK
 		TRAP::Utils::Steam::RunCallbacks();
 
-#ifdef NVIDIA_REFLEX_AVAILABLE
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_SIMULATION_END);
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 		m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
 
@@ -347,13 +353,13 @@ void TRAP::Application::SetFPSLimit(const uint32_t targetFPS)
 
 	s_Instance->m_fpsLimit = (targetFPS != 0) ? TRAP::Math::Clamp(targetFPS, MinLimitedFPS, MaxLimitedFPS) : 0u;
 
-#ifdef NVIDIA_REFLEX_AVAILABLE
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE &&
 	   TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported)
 	{
 		Graphics::RendererAPI::GetRenderer()->SetReflexFPSLimit(s_Instance->m_fpsLimit);
 	}
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -520,6 +526,7 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 [[nodiscard]] uint64_t TRAP::Application::GetGlobalCounter()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -528,6 +535,7 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 
 	return s_Instance->m_globalCounter;
 }
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -704,15 +712,18 @@ void TRAP::Application::LimitFPS(const uint32_t fpsLimit, Utils::Timer& limitTim
 	if(fpsLimit == 0u)
 		return;
 
+#ifndef TRAP_HEADLESS_MODE
 	if(Graphics::RendererAPI::GPUSettings.ReflexSupported)
-		Graphics::RendererAPI::GetRenderer()->ReflexSleep();
-	else
 	{
-		const std::chrono::duration<float, std::milli> limitMs =
-		    std::chrono::duration<float, std::milli>(1000.0f / static_cast<float>(fpsLimit) - limitTimer.ElapsedMilliseconds());
-		std::this_thread::sleep_for(limitMs); //If this is too inaccurate, resort to using nanosleep
-		limitTimer.Reset();
+		Graphics::RendererAPI::GetRenderer()->ReflexSleep();
+		return;
 	}
+#endif /*TRAP_HEADLESS_MODE*/
+
+	const std::chrono::duration<float, std::milli> limitMs =
+		std::chrono::duration<float, std::milli>(1000.0f / static_cast<float>(fpsLimit) - limitTimer.ElapsedMilliseconds());
+	std::this_thread::sleep_for(limitMs); //If this is too inaccurate, resort to using nanosleep
+	limitTimer.Reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

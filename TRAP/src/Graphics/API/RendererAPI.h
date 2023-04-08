@@ -6,9 +6,9 @@
 #include "Window/Window.h"
 #include "ImageFormat.h"
 
-#ifdef NVIDIA_REFLEX_AVAILABLE
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 #include <NvLowLatencyVk.h>
-#endif
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 namespace TRAP
 {
@@ -215,6 +215,7 @@ namespace TRAP::Graphics
 		/// <returns>True if VSync is enabled, false otherwise.</returns>
 		[[nodiscard]] virtual bool GetVSync(const Window* window) const = 0;
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Set the FPS limit for NVIDIA-Reflex.
 		/// Note: This function affects all windows.
@@ -223,6 +224,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="limit">FPS target to limit to.</param>
 		virtual void SetReflexFPSLimit(uint32_t limit) = 0;
+#endif /*TRAP_HEADLESS_MODE*/
 
 		//RenderTarget Stuff
 
@@ -617,6 +619,7 @@ namespace TRAP::Graphics
 		virtual void ResourceRenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers,
 									              const Window* window) const = 0;
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// NVIDIA-Reflex Sleep/synchronize on the given window.
 		/// </summary>
@@ -634,6 +637,7 @@ namespace TRAP::Graphics
 		/// <returns>Latency report.</returns>
 		[[nodiscard]] virtual NVLL_VK_LATENCY_RESULT_PARAMS ReflexGetLatency() const = 0;
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Retrieve the renderer title.
@@ -695,6 +699,7 @@ namespace TRAP::Graphics
 									 TRAP::Ref<RenderTarget> destination,
 		                             const Window* window) const = 0;
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Set the latency mode.
 		/// The actual latency mode may differ from the requested one so check
@@ -713,6 +718,7 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to retrieve latency mode for.</param>
 		/// <returns>Used latency mode.</returns>
 		[[nodiscard]] virtual LatencyMode GetLatencyMode(const Window* window) const = 0;
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Retrieve the used descriptor pool.
@@ -1174,6 +1180,7 @@ namespace TRAP::Graphics
 			Depth_Stencil = Depth | Stencil
 		};
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Enum describing the different latency modes.
 		/// </summary>
@@ -1183,6 +1190,7 @@ namespace TRAP::Graphics
 			Enabled,
 			EnabledBoost
 		};
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Enum describing the type of an indirect argument.
@@ -2612,8 +2620,10 @@ namespace TRAP::Graphics
 			uint32_t ShadingRateTexelWidth;
 			uint32_t ShadingRateTexelHeight;
 
+#ifndef TRAP_HEADLESS_MODE
 			//NVIDIA Reflex
 			bool ReflexSupported;
+#endif /*TRAP_HEADLESS_MODE*/
 		} GPUSettings{};
 
 		inline static constexpr uint32_t ImageCount = 3; //Triple Buffered
@@ -2731,9 +2741,9 @@ namespace TRAP::Graphics
 			bool RecordingCompute{};
 
 			//NVIDIA Reflex
-#ifdef NVIDIA_REFLEX_AVAILABLE
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 			NVLL_VK_SET_SLEEP_MODE_PARAMS SleepModeParams{};
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 		};
 
 	protected:

@@ -207,7 +207,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	if (m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName[0] != '\0')
 		SetDeviceName(m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
-#ifdef NVIDIA_REFLEX_AVAILABLE
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 	m_reflexSemaphore = {};
 	if (m_physicalDevice->GetVendor() == RendererAPI::GPUVendor::NVIDIA &&
 	    VulkanRenderer::s_timelineSemaphore &&
@@ -219,7 +219,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 		if(status == NVLL_VK_OK)
 			RendererAPI::GPUSettings.ReflexSupported = true;
 	}
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -232,10 +232,10 @@ TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Destroying Device");
 #endif
 
-#ifdef NVIDIA_REFLEX_AVAILABLE
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 	if(RendererAPI::GPUSettings.ReflexSupported)
 		vkDestroySemaphore(m_device, m_reflexSemaphore, nullptr);
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 	vkDestroyDevice(m_device, nullptr);
 	m_device = nullptr;
@@ -526,14 +526,14 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#ifdef NVIDIA_REFLEX_AVAILABLE
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 [[nodiscard]] VkSemaphore& TRAP::Graphics::API::VulkanDevice::GetReflexSemaphore() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_reflexSemaphore;
 }
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

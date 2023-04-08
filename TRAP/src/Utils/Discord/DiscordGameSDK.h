@@ -1,6 +1,8 @@
 #ifndef TRAP_DISCORDGAMESDK_H
 #define TRAP_DISCORDGAMESDK_H
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include <string>
 
 namespace discord
@@ -61,5 +63,7 @@ namespace TRAP::Utils::Discord
     [[nodiscard]] discord::Core* GetDiscordCore() noexcept;
 #endif
 }
+
+#endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_DISCORDGAMESDK_H*/

@@ -46,7 +46,7 @@ namespace TRAP::Graphics::API
 	/// <param name="line">Line number of the error check call.</param>
 	/// <returns>True for non error codes, otherwise false.</returns>
 	constexpr bool ErrorCheck(VkResult result, std::string_view function, std::string_view file, int32_t line);
-#ifdef NVIDIA_REFLEX_AVAILABLE
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 	/// <summary>
 	/// Check the if given NvLL_VK_Status contains an error.
 	/// If the given NvLL_VK_Status contains an error, the function will log information about the error.
@@ -57,7 +57,7 @@ namespace TRAP::Graphics::API
 	/// <param name="line">Line number of the error check call.</param>
 	/// <returns>True for non error codes, otherwise false.</returns>
 	constexpr bool ReflexErrorCheck(NvLL_VK_Status result, std::string_view function, std::string_view file, int32_t line);
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 	/// <summary>
 	/// Convert the RendererAPI::QueueType to VkQueueFlags.
 	/// </summary>
@@ -362,9 +362,9 @@ namespace TRAP::Graphics::API
 #else
 	//Utility to check VkResult for errors and log them.
 	#define VkCall(x) ::TRAP::Graphics::API::ErrorCheck(x, #x, __FILE__, __LINE__);
-#ifdef NVIDIA_REFLEX_AVAILABLE
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 	#define VkReflexCall(x) ::TRAP::Graphics::API::ReflexErrorCheck(x, #x, __FILE__, __LINE__);
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 #endif
 #else
 	/// <summary>
@@ -372,10 +372,10 @@ namespace TRAP::Graphics::API
 	/// </summary>
 	constexpr void VkCall(VkResult)
 	{}
-#ifdef NVIDIA_REFLEX_AVAILABLE
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 	constexpr void VkReflexCall(NvLL_VK_Status)
 	{}
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -457,7 +457,7 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#ifdef NVIDIA_REFLEX_AVAILABLE
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result, const std::string_view function,
                                                      const std::string_view file, const int32_t line)
 {
@@ -511,7 +511,7 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 
 	return false;
 }
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

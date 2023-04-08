@@ -3832,3 +3832,4 @@ SITREP 04/08/2023|23w14a3
     - Application Fixed crash with Headless mode ~<5 mins
     - Headless mode Removed ImGuizmo dependency ~<5 mins
     - Headless mode Removed ImGui dependency ~>25 mins
+    - Headless mode Removed DiscordGameSDK and NVIDIA-Reflex support ~<30 mins

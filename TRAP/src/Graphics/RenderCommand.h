@@ -65,10 +65,12 @@ namespace TRAP::Graphics
 	/// Different sample counts for anti aliasing.
 	/// </summary>
 	using SampleCount = RendererAPI::SampleCount;
+#ifndef TRAP_HEADLESS_MODE
 	/// <summary>
 	/// Different latency modes.
 	/// </summary>
 	using LatencyMode = RendererAPI::LatencyMode;
+#endif /*TRAP_HEADLESS_MODE*/
 	/// <summary>
 	/// Different texture filtering modes.
 	/// </summary>
@@ -608,6 +610,7 @@ namespace TRAP::Graphics
 		/// <returns>GPU name.</returns>
 		[[nodiscard]] static std::string GetGPUName();
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Set the latency mode.
 		/// Note: Only LatencyMode::Disabled is supported everywhere.
@@ -625,6 +628,7 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to retrieve latency mode for.</param>
 		/// <returns>Used latency mode.</returns>
 		[[nodiscard]] static LatencyMode GetLatencyMode(const Window* window = TRAP::Application::GetWindow());
+#endif /*TRAP_HEADLESS_MODE*/
 	};
 }
 

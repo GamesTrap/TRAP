@@ -111,13 +111,13 @@ namespace TRAP::Graphics::API
 		/// <returns>Compute queue index.</returns>
 		[[nodiscard]] uint8_t GetComputeQueueIndex() const noexcept;
 
-#ifdef NVIDIA_REFLEX_AVAILABLE
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 		/// <summary>
 		/// Retrieve the NVIDIA Reflex semaphore.
 		/// </summary>
 		/// <returns>Semaphore.</returns>
 		[[nodiscard]] VkSemaphore& GetReflexSemaphore() noexcept;
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 	private:
 		friend VulkanQueue;
@@ -165,9 +165,9 @@ namespace TRAP::Graphics::API
 		uint8_t m_transferQueueIndex;
 		uint8_t m_computeQueueIndex;
 
-#ifdef NVIDIA_REFLEX_AVAILABLE
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 		VkSemaphore m_reflexSemaphore;
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 		VkDevice m_device;
 	};

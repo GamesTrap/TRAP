@@ -230,10 +230,10 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-#ifdef NVIDIA_REFLEX_AVAILABLE
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 	if(NVSTATS_IS_PING_MSG_ID(uMsg))
 		TRAP::Graphics::RendererAPI::GetRenderer()->ReflexMarker(TRAP::Application::GetGlobalCounter(), NVSTATS_PC_LATENCY_PING);
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 	InternalWindow* const windowPtr = static_cast<InternalWindow*>(GetPropW(hWnd, L"TRAP"));
 

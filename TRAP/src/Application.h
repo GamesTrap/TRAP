@@ -190,6 +190,7 @@ namespace TRAP
 		/// </summary>
 		[[nodiscard]] static std::string GetGameName();
 
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 		/// <summary>
 		/// Get the global counter.
 		/// The counter is incremented every frame.
@@ -197,6 +198,7 @@ namespace TRAP
 		/// </summary>
 		/// <returns>Global counter value.</returns>
 		[[nodiscard]] static uint64_t GetGlobalCounter();
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Get the hot reloading file watcher.

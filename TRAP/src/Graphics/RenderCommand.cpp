@@ -504,14 +504,18 @@ void TRAP::Graphics::RenderCommand::MSAAResolvePass(TRAP::Ref<RenderTarget> sour
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::SetLatencyMode(const LatencyMode mode, const Window* const window)
 {
 	RendererAPI::GetRenderer()->SetLatencyMode(mode, window);
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] TRAP::Graphics::LatencyMode TRAP::Graphics::RenderCommand::GetLatencyMode(const Window* const window)
 {
 	return RendererAPI::GetRenderer()->GetLatencyMode(window);
 }
+#endif /*TRAP_HEADLESS_MODE*/

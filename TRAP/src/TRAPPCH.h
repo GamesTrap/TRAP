@@ -109,9 +109,9 @@
 #include <GFSDK_Aftermath_GpuCrashDump.h>
 #endif
 
-#ifdef NVIDIA_REFLEX_AVAILABLE
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 #include <NvLowLatencyVk.h>
 #include <reflexstats.h>
-#endif
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_TRAPPCH_H*/

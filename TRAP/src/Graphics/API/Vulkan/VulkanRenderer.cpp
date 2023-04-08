@@ -538,16 +538,16 @@ void TRAP::Graphics::API::VulkanRenderer::Flush(const Window* const window) cons
 
 	PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
-#ifdef NVIDIA_REFLEX_AVAILABLE
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 	ReflexMarker(Application::GetGlobalCounter(), VK_RENDERSUBMIT_START);
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 	EndComputeRecording(p);
 	EndGraphicRecording(p);
 
-#ifdef NVIDIA_REFLEX_AVAILABLE
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 	ReflexMarker(Application::GetGlobalCounter(), VK_RENDERSUBMIT_END);
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 	Present(p);
 
@@ -611,6 +611,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetVSync(const bool vsync, const Windo
 
 //------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetReflexFPSLimit([[maybe_unused]] const uint32_t limit)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -635,6 +636,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetReflexFPSLimit([[maybe_unused]] con
 	}
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //------------------------------------------------------------------------------------------------------------------//
 
@@ -1640,6 +1642,7 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarriers(const std
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::ReflexSleep() const
 {
 #ifdef NVIDIA_REFLEX_AVAILABLE
@@ -1657,9 +1660,11 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexSleep() const
 	VkCall(vkWaitSemaphoresKHR(m_device->GetVkDevice(), &waitInfo, std::numeric_limits<uint64_t>::max()));
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const uint32_t frame,
                                                        [[maybe_unused]] const uint32_t marker) const
 {
@@ -1683,10 +1688,11 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const ui
 	VkReflexCall(NvLL_VK_SetLatencyMarker(m_device->GetVkDevice(), &params));
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#ifdef NVIDIA_REFLEX_AVAILABLE
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 [[nodiscard]] NVLL_VK_LATENCY_RESULT_PARAMS TRAP::Graphics::API::VulkanRenderer::ReflexGetLatency() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -1697,7 +1703,7 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const ui
 
 	return params;
 }
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -2162,6 +2168,7 @@ void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(TRAP::Ref<RenderTarget
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetLatencyMode([[maybe_unused]] const LatencyMode mode,
                                                          [[maybe_unused]] const Window* const window)
 {
@@ -2181,9 +2188,11 @@ void TRAP::Graphics::API::VulkanRenderer::SetLatencyMode([[maybe_unused]] const 
 	VkReflexCall(NvLL_VK_SetSleepMode(m_device->GetVkDevice(), &p->SleepModeParams));
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] TRAP::Graphics::RendererAPI::LatencyMode TRAP::Graphics::API::VulkanRenderer::GetLatencyMode([[maybe_unused]] const Window* const window) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -2214,6 +2223,8 @@ void TRAP::Graphics::API::VulkanRenderer::SetLatencyMode([[maybe_unused]] const 
 	return LatencyMode::Disabled;
 }
 
+#endif /*TRAP_HEADLESS_MODE*/
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* const window) const
@@ -2227,12 +2238,12 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* const window
 	//Add new Window to map
 	TRAP::Scope<PerWindowData> p = TRAP::MakeScope<PerWindowData>();
 
-#ifdef NVIDIA_REFLEX_AVAILABLE
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 	if(Application::GetFPSLimit() == 0)
 		p->SleepModeParams.minimumIntervalUs = 0;
 	else
 		p->SleepModeParams.minimumIntervalUs = static_cast<uint32_t>(((1000.0f / Application::GetFPSLimit()) * 1000.0f));
-#endif
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 	p->Window = window;
 

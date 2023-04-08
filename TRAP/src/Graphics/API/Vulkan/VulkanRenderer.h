@@ -92,6 +92,7 @@ namespace TRAP::Graphics::API
 		/// <param name="window">Window to set VSync for.</param>
 		void SetVSync(bool vsync, const Window* window) const override;
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Set the FPS limit for NVIDIA-Reflex.
 		/// Note: This function affects all windows.
@@ -100,6 +101,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="limit">FPS target to limit to.</param>
 		void SetReflexFPSLimit(uint32_t limit) override;
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Set the render scale for the given window.
@@ -482,6 +484,7 @@ namespace TRAP::Graphics::API
 		void ResourceRenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers,
 								          const Window* window) const override;
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// NVIDIA-Reflex Sleep/synchronize.
 		/// </summary>
@@ -499,6 +502,7 @@ namespace TRAP::Graphics::API
 		/// <returns>Latency report.</returns>
 		[[nodiscard]] NVLL_VK_LATENCY_RESULT_PARAMS ReflexGetLatency() const override;
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Retrieve the renderer title.
@@ -572,6 +576,7 @@ namespace TRAP::Graphics::API
 		                     TRAP::Ref<RenderTarget> destination,
 		                     const Window* window) const override;
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Set the latency mode.
 		/// Note: Only LatencyMode::Disabled is supported everywhere.
@@ -589,6 +594,7 @@ namespace TRAP::Graphics::API
 		/// <param name="window">Window to retrieve latency mode for.</param>
 		/// <returns>Used latency mode.</returns>
 		[[nodiscard]] LatencyMode GetLatencyMode(const Window* window) const override;
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Initialize the internal rendering data of the given window.

@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "DiscordGameSDK.h"
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include "Log/Log.h"
 
 #include "Core/Base.h"
@@ -23,7 +25,7 @@ TRAP::Utils::Discord::Activity CurrentActivity{};
 //Forward declares
 void DiscordLogger(discord::LogLevel logLevel, std::string_view msg);
 void DiscordLogResult(discord::Result res);
-#endif
+#endif /*USE_DISCORD_GAME_SDK*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -63,7 +65,7 @@ bool TRAP::Utils::Discord::Create([[maybe_unused]] const int64_t appID)
     return true;
 #else
     return false;
-#endif
+#endif /*USE_DISCORD_GAME_SDK*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -73,7 +75,7 @@ void TRAP::Utils::Discord::Destroy()
 #ifdef USE_DISCORD_GAME_SDK
     TP_INFO(TRAP::Log::DiscordGameSDKPrefix, "Destroying Discord");
     core = nullptr; //Should implicitly call discord::Core's destructor
-#endif
+#endif /*USE_DISCORD_GAME_SDK*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -104,7 +106,7 @@ bool TRAP::Utils::Discord::RunCallbacks()
     }
 
     TRAP::Utils::Discord::SetActivity(CurrentActivity);
-#endif
+#endif /*USE_DISCORD_GAME_SDK*/
 
     return true;
 }
@@ -137,7 +139,7 @@ bool TRAP::Utils::Discord::SetActivity([[maybe_unused]] const Activity& activity
 
         return lastRes == discord::Result::Ok;
     }
-#endif
+#endif /*USE_DISCORD_GAME_SDK*/
 
     return false;
 }
@@ -149,7 +151,7 @@ bool TRAP::Utils::Discord::SetActivity([[maybe_unused]] const Activity& activity
 {
     return core;
 }
-#endif
+#endif /*USE_DISCORD_GAME_SDK*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -178,7 +180,7 @@ void DiscordLogger(const discord::LogLevel logLevel, const std::string_view msg)
         break;
     }
 }
-#endif
+#endif /*USE_DISCORD_GAME_SDK*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -322,4 +324,6 @@ void DiscordLogResult(const discord::Result res)
         break;
     }
 }
-#endif
+#endif /*USE_DISCORD_GAME_SDK*/
+
+#endif /*TRAP_HEADLESS_MODE*/
