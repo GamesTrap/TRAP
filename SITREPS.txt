@@ -3828,3 +3828,4 @@ SITREP 04/07/2023|23w14a2
 SITREP 04/08/2023|23w14a3
     - Changed TRAP Engine version to 23w14a3(0.9.10)
     - Refactored TRAP::Application functions ~<30 mins
+    - Application destructor Fixed Input::Shutdown() only called on Linux ~<5 mins

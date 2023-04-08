@@ -104,8 +104,12 @@ TRAP::Application::~Application()
 	TRAP::Utils::Steam::Shutdown();
 	TRAP::Utils::Discord::Destroy();
 
+#ifdef TRAP_PLATFORM_LINUX
 	if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
+#endif /*TRAP_PLATFORM_LINUX*/
+	{
 		Input::Shutdown();
+	}
 
 	UpdateTRAPConfig(m_config, m_window.get(), m_fpsLimit, m_newRenderAPI);
 	SaveTRAPConfig(m_config);
