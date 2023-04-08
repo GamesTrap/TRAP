@@ -105,8 +105,8 @@ namespace TRAP
 		/// Set a FPS limit.
 		/// Note: Valid FPS range is 25 - 500. 0 sets unlimited FPS.
 		/// </summary>
-		/// <param name="fps">FPS to limit to.</param>
-		static void SetFPSLimit(uint32_t fps);
+		/// <param name="targetFPS">FPS to limit to.</param>
+		static void SetFPSLimit(uint32_t targetFPS);
 		/// <summary>
 		/// Retrieve the current FPS limit.
 		/// Note: 0 means unlimited FPS.
@@ -217,6 +217,12 @@ namespace TRAP
 		/// Game/Run loop.
 		/// </summary>
 		void Run();
+		/// <summary>
+		/// Runs the work for a single iteration of the Run() function.
+		/// </summary>
+		/// <param name="deltaTime">Delta time.</param>
+		/// <param name="tickTimerSeconds">Tick timer in seconds.</param>
+		void RunWork(const Utils::TimeStep& deltaTime, float& tickTimerSeconds);
 
 		/// <summary>
 		/// Handles all events for the main render window and the layer stack.
@@ -240,31 +246,7 @@ namespace TRAP
 		/// </summary>
 		/// <param name="event">Key press event that occurred.</param>
 		/// <returns>Always false.</returns>
-		bool OnKeyPress(Events::KeyPressEvent& event) const;
-		/// <summary>
-		/// Handles window focus for the main render window.
-		/// </summary>
-		/// <param name="event">Window focus event that occurred.</param>
-		/// <returns>Always false.</returns>
-		bool OnWindowFocus(Events::WindowFocusEvent& event) noexcept;
-		/// <summary>
-		/// Handles window lost focus for the main render window.
-		/// </summary>
-		/// <param name="event">Window lost focus event that occurred.</param>
-		/// <returns>Always false.</returns>
-		bool OnWindowLostFocus(Events::WindowLostFocusEvent& event) noexcept;
-		/// <summary>
-		/// Handles window minimize events for the main render window.
-		/// </summary>
-		/// <param name="event">Window minimize event that occurred.</param>
-		/// <returns>Always false.</returns>
-		bool OnWindowMinimize(Events::WindowMinimizeEvent& event) noexcept;
-		/// <summary>
-		/// Handles window restore events for the main render window.
-		/// </summary>
-		/// <param name="event">Window restore event that occurred.</param>
-		/// <returns>Always false.</returns>
-		bool OnWindowRestore(Events::WindowRestoreEvent& event) noexcept;
+		static bool OnKeyPress(Events::KeyPressEvent& event);
 
 		/// <summary>
 		/// Handles file change events for the application.
@@ -278,6 +260,32 @@ namespace TRAP
 		/// Tries to reload every modified shader/texture that was set by the hot reloading file watcher.
 		/// </summary>
 		void UpdateHotReloading();
+
+		/// <summary>
+		/// Update the time data of the run loop for a new frame.
+		/// </summary>
+		/// <param name="time">Timer with elapsed time since start of engine.</param>
+		/// <param name="lastFrameTime">Frame time of the last frame.</param>
+		/// <param name="tickTimerSeconds"></param>
+		/// <param name="timeScale">Scaling for time.</param>
+		/// <returns>Delta time between start of the last frame to the current time.</returns>
+		static Utils::TimeStep UpdateNewFrameTimeData(const Utils::Timer& time, float& lastFrameTime,
+		                                              float& tickTimerSeconds, float timeScale);
+
+		/// <summary>
+		/// Limit the FPS to fpsLimit.
+		/// </summary>
+		/// <param name="fpsLimit">Target FPS to limit to.</param>
+		/// <param name="limitTimer">Limiter timer.</param>
+		static void LimitFPS(uint32_t fpsLimit, Utils::Timer& limitTimer);
+		/// <summary>
+		/// Limit the FPS to fpsLimit.
+		///
+		/// This function is used to limit FPS when the main window is unfocused.
+		/// </summary>
+		/// <param name="fpsLimit">Target FPS to limit to.</param>
+		/// <param name="limitTimer">Limiter timer.</param>
+		static void UnfocusedLimitFPS(uint32_t fpsLimit, Utils::Timer& limitTimer);
 
 		/// <summary>
 		/// Retrieve the filepath of the engine.cfg file.
@@ -382,7 +390,6 @@ namespace TRAP
 		std::vector<std::filesystem::path> m_hotReloadingTexturePaths{};
 		TracyLockable(std::mutex, m_hotReloadingMutex);
 		std::unique_ptr<FileSystem::FileWatcher> m_hotReloadingFileWatcher = nullptr;
-		bool m_hotReloadingEnabled = false;
 
 		//Layers
 		LayerStack m_layerStack{};

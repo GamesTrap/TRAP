@@ -144,28 +144,20 @@ void TRAP::Application::Run()
 	while (m_running)
 	{
 		const Utils::Timer FrameTimeTimer{};
-		const float time = m_timer.Elapsed();
-		const Utils::TimeStep deltaTime{ (time - lastFrameTime) * m_timeScale };
-		tickTimerSeconds += time - lastFrameTime;
-		lastFrameTime = time;
+		const Utils::TimeStep deltaTime = UpdateNewFrameTimeData(m_timer, lastFrameTime, tickTimerSeconds, m_timeScale);
 
-		//FPSLimiter
-		if(Graphics::RendererAPI::GPUSettings.ReflexSupported)
-			Graphics::RendererAPI::GetRenderer()->ReflexSleep();
-#ifndef TRACY_ENABLE
-		else if ((m_fpsLimit != 0u) || (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)))
+#ifdef TRACY_ENABLE
+		if(m_fpsLimit != 0u)
+			LimitFPS(m_fpsLimit, limiterTimer);
 #else
-		else if ((m_fpsLimit != 0u))
-#endif
+		if(Window::GetActiveWindows() == 1 && !m_window->IsFocused() &&
+		   !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow))
 		{
-			std::chrono::duration<float, std::milli> limitMs{};
-			if(m_fpsLimit != 0u)
-				limitMs = std::chrono::duration<float, std::milli>(1000.0f / static_cast<float>(m_fpsLimit) - limiterTimer.ElapsedMilliseconds());
-			else //If engine is not focused, set engine to 30 FPS so other applications dont lag
-				limitMs = std::chrono::duration<float, std::milli>(1000.0f / 30.0f - limiterTimer.ElapsedMilliseconds());
-			std::this_thread::sleep_for(limitMs); //If this is too inaccurate, resort to using nanosleep
-			limiterTimer.Reset();
+			UnfocusedLimitFPS(30, limiterTimer);
 		}
+		else if(m_fpsLimit != 0u)
+			LimitFPS(m_fpsLimit, limiterTimer);
+#endif
 
 #ifdef NVIDIA_REFLEX_AVAILABLE
 		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_SIMULATION_START);
@@ -174,62 +166,17 @@ void TRAP::Application::Run()
 
 #ifdef TRAP_PLATFORM_LINUX
 		if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
-			TRAP::Window::OnUpdate();
-#else
-		TRAP::Window::OnUpdate();
 #endif
+		{
+			TRAP::Window::OnUpdate();
+		}
 
 #ifdef NVIDIA_REFLEX_AVAILABLE
 		if(Input::IsMouseButtonPressed(Input::MouseButton::Left))
 			Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_TRIGGER_FLASH);
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
 
-		if (!m_minimized)
-		{
-			for (const auto& layer : m_layerStack)
-				layer->OnUpdate(deltaTime);
-
-			//Timestep of a single tick
-			const Utils::TimeStep tickRateTimeStep{1000.0f / static_cast<float>(m_tickRate) / 1000.0f};
-			//If we reached at least one fixed time step update
-			if (tickTimerSeconds >= tickRateTimeStep)
-			{
-				static constexpr uint32_t MAX_TICKS_PER_FRAME = 8;
-
-				//Count how many ticks we need to run (this is limited to a maximum of MAX_TICKS_PER_FRAME)
-				const uint32_t fixedTimeSteps = TRAP::Math::Min(static_cast<uint32_t>(tickTimerSeconds / tickRateTimeStep), MAX_TICKS_PER_FRAME);
-				// TP_TRACE("Ticks: ", fixedTimeSteps);
-
-				// TP_TRACE("Before: ", tickTimerSeconds, "s of tick time remaining");
-				//Call OnTick() fixedTimeSteps times.
-				for(uint32_t i = 0; i < fixedTimeSteps; ++i)
-				{
-					for (const auto& layer : m_layerStack)
-						layer->OnTick(tickRateTimeStep);
-
-					//Instead of resetting the timer, we just subtract the current tick from the counted time.
-					tickTimerSeconds -= tickRateTimeStep;
-				}
-				// TP_TRACE("After: ", tickTimerSeconds, "s of tick time remaining");
-			}
-
-			if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
-				Graphics::RendererAPI::OnPostUpdate();
-
-#ifndef TRAP_HEADLESS_MODE
-			ImGuiLayer::Begin();
-			{
-				for (const auto& layer : m_layerStack)
-					layer->OnImGuiRender();
-			}
-			ImGuiLayer::End();
-#endif
-			if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
-			{
-				Graphics::RenderCommand::Flush(m_window.get());
-				Graphics::Renderer2D::Reset();
-			}
-		}
+		RunWork(deltaTime, tickTimerSeconds);
 
 		UpdateHotReloading();
 
@@ -242,10 +189,59 @@ void TRAP::Application::Run()
 		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_SIMULATION_END);
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
 
-		if (!m_minimized)
-			m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
+		m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
 
 		++m_globalCounter;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::RunWork(const Utils::TimeStep& deltaTime, float& tickTimerSeconds)
+{
+	for (const auto& layer : m_layerStack)
+		layer->OnUpdate(deltaTime);
+
+	//Timestep of a single tick
+	const Utils::TimeStep tickRateTimeStep{1000.0f / static_cast<float>(m_tickRate) / 1000.0f};
+	//If we reached at least one fixed time step update
+	if (tickTimerSeconds >= tickRateTimeStep)
+	{
+		static constexpr uint32_t MAX_TICKS_PER_FRAME = 8;
+
+		//Count how many ticks we need to run (this is limited to a maximum of MAX_TICKS_PER_FRAME)
+		const uint32_t fixedTimeSteps = TRAP::Math::Min(static_cast<uint32_t>(tickTimerSeconds / tickRateTimeStep), MAX_TICKS_PER_FRAME);
+		// TP_TRACE("Ticks: ", fixedTimeSteps);
+
+		// TP_TRACE("Before: ", tickTimerSeconds, "s of tick time remaining");
+		//Call OnTick() fixedTimeSteps times.
+		for(uint32_t i = 0; i < fixedTimeSteps; ++i)
+		{
+			for (const auto& layer : m_layerStack)
+				layer->OnTick(tickRateTimeStep);
+
+			//Instead of resetting the timer, we just subtract the current tick from the counted time.
+			tickTimerSeconds -= tickRateTimeStep;
+		}
+		// TP_TRACE("After: ", tickTimerSeconds, "s of tick time remaining");
+	}
+
+	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
+		Graphics::RendererAPI::OnPostUpdate();
+
+#ifndef TRAP_HEADLESS_MODE
+	ImGuiLayer::Begin();
+	{
+		for (const auto& layer : m_layerStack)
+			layer->OnImGuiRender();
+	}
+	ImGuiLayer::End();
+#endif
+
+	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
+	{
+		Graphics::RenderCommand::Flush(m_window.get());
+		Graphics::Renderer2D::Reset();
 	}
 }
 
@@ -264,23 +260,7 @@ void TRAP::Application::OnEvent(Events::Event& event)
 		{
 			return OnFrameBufferResize(fbrEvent);
 		});
-	dispatcher.Dispatch<Events::KeyPressEvent>([this](Events::KeyPressEvent& kpEvent) {return OnKeyPress(kpEvent); });
-	dispatcher.Dispatch<Events::WindowFocusEvent>([this](Events::WindowFocusEvent& wfEvent)
-		{
-			return OnWindowFocus(wfEvent);
-		});
-	dispatcher.Dispatch<Events::WindowLostFocusEvent>([this](Events::WindowLostFocusEvent& wlfEvent)
-		{
-			return OnWindowLostFocus(wlfEvent);
-		});
-	dispatcher.Dispatch<Events::WindowMinimizeEvent>([this](Events::WindowMinimizeEvent& wmEvent)
-		{
-			return OnWindowMinimize(wmEvent);
-		});
-	dispatcher.Dispatch<Events::WindowRestoreEvent>([this](Events::WindowRestoreEvent& wrEvent)
-		{
-			return OnWindowRestore(wrEvent);
-		});
+	dispatcher.Dispatch<Events::KeyPressEvent>([](Events::KeyPressEvent& kpEvent) {return OnKeyPress(kpEvent); });
 	dispatcher.Dispatch<Events::FileChangeEvent>([this](Events::FileChangeEvent& fcEvent)
 		{
 			return OnFileChangeEvent(fcEvent);
@@ -318,6 +298,8 @@ void TRAP::Application::PushOverlay(std::unique_ptr<Layer> overlay)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
+	TRAP_ASSERT(s_Instance, "Application::GetConfig(): Application is nullptr!");
+
 	return s_Instance->m_config;
 }
 
@@ -326,6 +308,8 @@ void TRAP::Application::PushOverlay(std::unique_ptr<Layer> overlay)
 [[nodiscard]] TRAP::LayerStack& TRAP::Application::GetLayerStack()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(s_Instance, "Application::GetLayerStack(): Application is nullptr!");
 
 	return s_Instance->m_layerStack;
 }
@@ -336,6 +320,9 @@ void TRAP::Application::PushOverlay(std::unique_ptr<Layer> overlay)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
+	TRAP_ASSERT(s_Instance, "Application::GetImGuiLayer(): Application is nullptr!");
+	TRAP_ASSERT(s_Instance->m_ImGuiLayer != nullptr, "Application::GetImGuiLayer(): ImGuiLayer is nullptr!");
+
 	return *(s_Instance->m_ImGuiLayer);
 }
 
@@ -344,14 +331,13 @@ void TRAP::Application::PushOverlay(std::unique_ptr<Layer> overlay)
 static constexpr uint32_t MinLimitedFPS = 25u;
 static constexpr uint32_t MaxLimitedFPS = 500u;
 
-void TRAP::Application::SetFPSLimit(const uint32_t fps)
+void TRAP::Application::SetFPSLimit(const uint32_t targetFPS)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if(fps == 0)
-		s_Instance->m_fpsLimit = 0;
-	else
-		s_Instance->m_fpsLimit = TRAP::Math::Clamp(fps, MinLimitedFPS, MaxLimitedFPS);
+	TRAP_ASSERT(s_Instance, "Application::SetFPSLimit(): Application is nullptr!");
+
+	s_Instance->m_fpsLimit = (targetFPS != 0) ? TRAP::Math::Clamp(targetFPS, MinLimitedFPS, MaxLimitedFPS) : 0u;
 
 #ifdef NVIDIA_REFLEX_AVAILABLE
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE &&
@@ -368,6 +354,8 @@ void TRAP::Application::SetFPSLimit(const uint32_t fps)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
+	TRAP_ASSERT(s_Instance, "Application::GetFPSLimit(): Application is nullptr!");
+
 	return s_Instance->m_fpsLimit;
 }
 
@@ -376,6 +364,8 @@ void TRAP::Application::SetFPSLimit(const uint32_t fps)
 [[nodiscard]] float TRAP::Application::GetCPUFrameTime()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(s_Instance, "Application::GetCPUFrameTime(): Application is nullptr!");
 
 	return s_Instance->m_FrameTime;
 }
@@ -386,6 +376,8 @@ void TRAP::Application::SetFPSLimit(const uint32_t fps)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
+	TRAP_ASSERT(s_Instance, "Application::GetTimeScale(): Application is nullptr!");
+
 	return s_Instance->m_timeScale;
 }
 
@@ -394,6 +386,8 @@ void TRAP::Application::SetFPSLimit(const uint32_t fps)
 [[nodiscard]] uint32_t TRAP::Application::GetTickRate()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(s_Instance, "Application::GetTickRate(): Application is nullptr!");
 
 	return s_Instance->m_tickRate;
 }
@@ -404,6 +398,8 @@ void TRAP::Application::SetTickRate(const uint32_t tickRate)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
+	TRAP_ASSERT(s_Instance, "Application::SetTickRate(): Application is nullptr!");
+
 	s_Instance->m_tickRate = tickRate;
 }
 
@@ -412,6 +408,8 @@ void TRAP::Application::SetTickRate(const uint32_t tickRate)
 void TRAP::Application::SetTimeScale(const float timeScale)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(s_Instance, "Application::SetTimeScale(): Application is nullptr!");
 
 	s_Instance->m_timeScale = timeScale;
 }
@@ -422,6 +420,8 @@ void TRAP::Application::SetNewRenderAPI(const Graphics::RenderAPI renderAPI)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
+	TRAP_ASSERT(s_Instance, "Application::SetNewRenderAPI(): Application is nullptr!");
+
 	s_Instance->m_newRenderAPI = renderAPI;
 }
 
@@ -430,6 +430,8 @@ void TRAP::Application::SetNewRenderAPI(const Graphics::RenderAPI renderAPI)
 void TRAP::Application::Shutdown()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(s_Instance, "Application::Shutdown(): Application is nullptr!");
 
 	s_Instance->m_running = false;
 }
@@ -440,6 +442,9 @@ void TRAP::Application::Shutdown()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
+	TRAP_ASSERT(s_Instance, "Application::GetWindow(): Application is nullptr!");
+	TRAP_ASSERT(s_Instance->m_window, "Application::GetWindow(): Window is nullptr!");
+
 	return s_Instance->m_window.get();
 }
 
@@ -449,9 +454,9 @@ void TRAP::Application::Shutdown()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	const Utils::TimeStep timeStep(s_Instance->m_timer.Elapsed());
+	TRAP_ASSERT(s_Instance, "Application::GetTime(): Application is nullptr!");
 
-	return timeStep;
+	return Utils::TimeStep(s_Instance->m_timer.Elapsed());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -459,6 +464,8 @@ void TRAP::Application::Shutdown()
 [[nodiscard]] TRAP::ThreadPool& TRAP::Application::GetThreadPool()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(s_Instance, "Application::GetThreadPool(): Application is nullptr!");
 
 	return s_Instance->m_threadPool;
 }
@@ -487,6 +494,8 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
+	TRAP_ASSERT(s_Instance, "Application::GetMainThreadID(): Application is nullptr!");
+
 	return s_Instance->m_mainThreadID;
 }
 
@@ -495,6 +504,8 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 [[nodiscard]] std::string TRAP::Application::GetGameName()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(s_Instance, "Application::GetGameName(): Application is nullptr!");
 
 	return s_Instance->m_gameName;
 }
@@ -505,6 +516,8 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
+	TRAP_ASSERT(s_Instance, "Application::GetGlobalCounter(): Application is nullptr!");
+
 	return s_Instance->m_globalCounter;
 }
 
@@ -513,6 +526,8 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 [[nodiscard]] TRAP::FileSystem::FileWatcher* TRAP::Application::GetHotReloadingFileWatcher()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(s_Instance, "Application::GetHotReloadingFileWatcher(): Application is nullptr!");
 
 	if(s_Instance->m_hotReloadingFileWatcher)
 		return s_Instance->m_hotReloadingFileWatcher.get();
@@ -526,7 +541,9 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return s_Instance->m_hotReloadingEnabled;
+	TRAP_ASSERT(s_Instance, "Application::IsHotReloadingEnabled(): Application is nullptr!");
+
+	return s_Instance->m_hotReloadingFileWatcher != nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -535,14 +552,14 @@ void TRAP::Application::SetHotReloading(const bool enable)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	s_Instance->m_hotReloadingEnabled = enable;
+	TRAP_ASSERT(s_Instance, "Application::SetHotReloading(): Application is nullptr!");
 
 	if(enable && !s_Instance->m_hotReloadingFileWatcher)
 	{
 		s_Instance->m_hotReloadingFileWatcher = std::make_unique<FileSystem::FileWatcher>("HotReloading", false);
 		s_Instance->m_hotReloadingFileWatcher->SetEventCallback([](Events::Event& event) {s_Instance->OnEvent(event); });
 	}
-	else if(s_Instance->m_hotReloadingFileWatcher)
+	else if(!enable && s_Instance->m_hotReloadingFileWatcher)
 		s_Instance->m_hotReloadingFileWatcher.reset();
 }
 
@@ -564,79 +581,34 @@ bool TRAP::Application::OnFrameBufferResize(Events::FrameBufferResizeEvent& even
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Graphics::RendererAPI::ResizeSwapChain(event.GetWindow());
+	if(event.GetWindow() != nullptr)
+		Graphics::RendererAPI::ResizeSwapChain(event.GetWindow());
 
 	return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnKeyPress([[maybe_unused]] Events::KeyPressEvent& event) const
+bool TRAP::Application::OnKeyPress([[maybe_unused]] Events::KeyPressEvent& event)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if(Window::GetActiveWindows() != 1)
+	if(event.GetWindow() == nullptr)
 		return false;
 
 #ifndef TRAP_HEADLESS_MODE
 	if ((event.GetKey() == Input::Key::Enter || event.GetKey() == Input::Key::KP_Enter) &&
-	    Input::IsKeyPressed(Input::Key::Left_ALT) && event.GetRepeatCount() < 1)
+	    Input::IsKeyPressed(Input::Key::Left_ALT, event.GetWindow()) && event.GetRepeatCount() < 1)
 	{
-		if (m_window->GetDisplayMode() == Window::DisplayMode::Windowed ||
-			m_window->GetDisplayMode() == Window::DisplayMode::Borderless)
-			m_window->SetDisplayMode(Window::DisplayMode::Fullscreen, 0, 0, 0);
-		else if (m_window->GetDisplayMode() == Window::DisplayMode::Fullscreen)
-			m_window->SetDisplayMode(Window::DisplayMode::Windowed, 0, 0, 0);
+		if (event.GetWindow()->GetDisplayMode() == Window::DisplayMode::Windowed ||
+			event.GetWindow()->GetDisplayMode() == Window::DisplayMode::Borderless)
+			event.GetWindow()->SetDisplayMode(Window::DisplayMode::Fullscreen, 0, 0, 0);
+		else if (event.GetWindow()->GetDisplayMode() == Window::DisplayMode::Fullscreen)
+			event.GetWindow()->SetDisplayMode(Window::DisplayMode::Windowed, 0, 0, 0);
 
 		return true;
 	}
 #endif
-
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::Application::OnWindowFocus([[maybe_unused]] Events::WindowFocusEvent& event) noexcept
-{
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	m_focused = true;
-
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::Application::OnWindowLostFocus([[maybe_unused]] Events::WindowLostFocusEvent& event) noexcept
-{
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	if (Window::GetActiveWindows() == 1)
-		m_focused = false;
-
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::Application::OnWindowMinimize([[maybe_unused]] Events::WindowMinimizeEvent& event) noexcept
-{
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	if (Window::GetActiveWindows() == 1)
-		m_minimized = true;
-
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::Application::OnWindowRestore([[maybe_unused]] Events::WindowRestoreEvent& event) noexcept
-{
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	m_minimized = false;
 
 	return false;
 }
@@ -704,6 +676,49 @@ void TRAP::Application::UpdateHotReloading()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Utils::TimeStep TRAP::Application::UpdateNewFrameTimeData(const Utils::Timer& time, float& lastFrameTime,
+                                                                float& tickTimerSeconds, const float timeScale)
+{
+	const float elapsedTime = time.Elapsed();
+
+	const Utils::TimeStep deltaTime{ (elapsedTime - lastFrameTime) * timeScale };
+
+	tickTimerSeconds += elapsedTime - lastFrameTime;
+	lastFrameTime = elapsedTime;
+
+	return deltaTime;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::LimitFPS(const uint32_t fpsLimit, Utils::Timer& limitTimer)
+{
+	if(fpsLimit == 0u)
+		return;
+
+	if(Graphics::RendererAPI::GPUSettings.ReflexSupported)
+		Graphics::RendererAPI::GetRenderer()->ReflexSleep();
+	else
+	{
+		const std::chrono::duration<float, std::milli> limitMs =
+		    std::chrono::duration<float, std::milli>(1000.0f / static_cast<float>(fpsLimit) - limitTimer.ElapsedMilliseconds());
+		std::this_thread::sleep_for(limitMs); //If this is too inaccurate, resort to using nanosleep
+		limitTimer.Reset();
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::UnfocusedLimitFPS(const uint32_t fpsLimit, Utils::Timer& limitTimer)
+{
+	const std::chrono::duration<float, std::milli> limitMs =
+		std::chrono::duration<float, std::milli>(1000.0f / static_cast<float>(fpsLimit) - limitTimer.ElapsedMilliseconds());
+	std::this_thread::sleep_for(limitMs); //If this is too inaccurate, resort to using nanosleep
+	limitTimer.Reset();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 {
 	ZoneScoped;
@@ -717,32 +732,17 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 
 	const std::string fEnding = Utils::String::ToLower(*fileEnding);
 
-	//Is it a texture?
-	bool texture = false;
-	for(const auto& fmt : Image::SupportedImageFormatSuffixes)
-	{
-		if(fEnding == fmt)
-		{
-			texture = true;
-			break;
-		}
-	}
+	bool texture = std::find(Image::SupportedImageFormatSuffixes.begin(),
+	                         Image::SupportedImageFormatSuffixes.end(),
+							 fEnding) != Image::SupportedImageFormatSuffixes.end();
 
 	bool shader = false;
-	if(!texture) //Or is it a shader?
+	if(!texture)
 	{
-		for(const auto& fmt : Graphics::Shader::SupportedShaderFormatSuffixes)
-		{
-			if(fEnding == fmt)
-			{
-				shader = true;
-				break;
-			}
-		}
+		shader = std::find(Graphics::Shader::SupportedShaderFormatSuffixes.begin(),
+	                       Graphics::Shader::SupportedShaderFormatSuffixes.end(),
+						   fEnding) != Graphics::Shader::SupportedShaderFormatSuffixes.end();
 	}
-
-	if(!texture && !shader)
-		return false; //Not a texture or shader
 
 	if(texture)
 	{
