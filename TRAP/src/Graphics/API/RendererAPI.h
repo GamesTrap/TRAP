@@ -86,7 +86,7 @@ namespace TRAP::Graphics
 		struct TextureBarrier;
 		struct RenderTargetBarrier;
 	//protected:
-		struct PerWindowData;
+		struct PerViewportData;
 
 	protected:
 		/// <summary>
@@ -837,19 +837,19 @@ namespace TRAP::Graphics
 		/// Retrieve windows internal rendering data.
 		/// </summary>
 		/// <returns>Windows internal rendering data.</returns>
-		[[nodiscard]] static PerWindowData& GetWindowData(const Window* window);
+		[[nodiscard]] static PerViewportData& GetWindowData(const Window* window);
 
 	public:
 		/// <summary>
 		/// Initialize the internal rendering data of the given window.
 		/// </summary>
 		/// <param name="window">Window to initialize the internal rendering data for.</param>
-		virtual void InitPerWindowData(Window* window) const = 0;
+		virtual void InitPerViewportData(Window* window) const = 0;
 		/// <summary>
 		/// Remove the internal rendering data of the given window.
 		/// </summary>
 		/// <param name="window">Window to remove the internal rendering data from.</param>
-		virtual void RemovePerWindowData(const Window* window) const = 0;
+		virtual void RemovePerViewportData(const Window* window) const = 0;
 
 		/// <summary>
 		/// Wait for the GPU to idle.
@@ -2670,22 +2670,22 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Per window data used for rendering.
 		/// </summary>
-		struct PerWindowData
+		struct PerViewportData
 		{
 			/// <summary>
 			/// Constructor.
 			/// </summary>
-			PerWindowData() = default;
+			PerViewportData() = default;
 
 			/// <summary>
 			/// Destructor.
 			/// </summary>
-			~PerWindowData();
+			~PerViewportData();
 
-			PerWindowData(const PerWindowData&) = delete;
-			PerWindowData(PerWindowData&&) = default;
-			PerWindowData& operator=(const PerWindowData &) = delete;
-			PerWindowData& operator=(PerWindowData &&) = default;
+			PerViewportData(const PerViewportData&) = delete;
+			PerViewportData(PerViewportData&&) = default;
+			PerViewportData& operator=(const PerViewportData &) = delete;
+			PerViewportData& operator=(PerViewportData &&) = default;
 
 			TRAP::Window* Window{};
 
@@ -2747,7 +2747,7 @@ namespace TRAP::Graphics
 		};
 
 	protected:
-		static std::unordered_map<const Window*, TRAP::Scope<PerWindowData>> s_perWindowDataMap;
+		static std::unordered_map<const Window*, TRAP::Scope<PerViewportData>> s_perViewportDataMap;
 
 	private:
 		static bool s_isVulkanCapable;

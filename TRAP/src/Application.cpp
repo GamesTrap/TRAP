@@ -1009,7 +1009,7 @@ std::unique_ptr<TRAP::Window> TRAP::Application::CreateMainWindow(const TRAP::Wi
 	}
 #ifdef TRAP_HEADLESS_MODE
 	if(!window && TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
-		TRAP::Graphics::RendererAPI::GetRenderer()->InitPerWindowData(nullptr);
+		TRAP::Graphics::RendererAPI::GetRenderer()->InitPerViewportData(nullptr);
 #endif /*TRAP_HEADLESS_MODE*/
 
 	return window;

@@ -561,8 +561,8 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Update the internal RenderTargets used for render scaling.
 		/// </summary>
-		/// <param name="winData">PerWindowData to update.</param>
-		void UpdateInternalRenderTargets(PerWindowData* winData) const;
+		/// <param name="winData">PerViewportData to update.</param>
+		void UpdateInternalRenderTargets(PerViewportData* winData) const;
 
 		/// <summary>
 		/// Scale image from internal resolution to the final output resolution.
@@ -600,12 +600,12 @@ namespace TRAP::Graphics::API
 		/// Initialize the internal rendering data of the given window.
 		/// </summary>
 		/// <param name="window">Window to initialize the internal rendering data for.</param>
-		void InitPerWindowData(Window* window) const override;
+		void InitPerViewportData(Window* window) const override;
 		/// <summary>
 		/// Remove the internal rendering data of the given window.
 		/// </summary>
 		/// <param name="window">Window to remove the internal rendering data from.</param>
-		void RemovePerWindowData(const Window* window) const override;
+		void RemovePerViewportData(const Window* window) const override;
 
 		void WaitIdle() const override;
 
@@ -849,48 +849,48 @@ namespace TRAP::Graphics::API
 		/// Start recording the graphics pipeline.
 		/// </summary>
 		/// <param name="p">Per window data used for recording.</param>
-		static void StartGraphicRecording(PerWindowData* p);
+		static void StartGraphicRecording(PerViewportData* p);
 		/// <summary>
 		/// Stop recording the graphics pipeline.
 		/// </summary>
 		/// <param name="p">Per window data used for recording.</param>
-		static void EndGraphicRecording(PerWindowData* p);
+		static void EndGraphicRecording(PerViewportData* p);
 
 		/// <summary>
 		/// Start recording the compute pipeline.
 		/// </summary>
 		/// <param name="p">Per window data used for recording.</param>
-		static void StartComputeRecording(PerWindowData* p);
+		static void StartComputeRecording(PerViewportData* p);
 		/// <summary>
 		/// Stop recording the compute pipeline.
 		/// </summary>
 		/// <param name="p">Per window data used for recording.</param>
-		static void EndComputeRecording(PerWindowData* p);
+		static void EndComputeRecording(PerViewportData* p);
 
 		/// <summary>
 		/// Present the currently recorded frame.
 		/// </summary>
 		/// <param name="p">Per widow data used for presentation.</param>
-		static void Present(PerWindowData* p);
+		static void Present(PerViewportData* p);
 
 		/// <summary>
 		/// Start frame time profiling of the GPU.
 		/// </summary>
 		/// <param name="type">Queue type to profile.</param>
 		/// <param name="p">Per window data to profile for.</param>
-		static void BeginGPUFrameProfile(QueueType type, const PerWindowData* p);
+		static void BeginGPUFrameProfile(QueueType type, const PerViewportData* p);
 		/// <summary>
 		/// End frame time profiling of the GPU.
 		/// </summary>
 		/// <param name="type">Queue type to profile.</param>
 		/// <param name="p">Per window data to profile for.</param>
-		static void EndGPUFrameProfile(QueueType type, const PerWindowData* p);
+		static void EndGPUFrameProfile(QueueType type, const PerViewportData* p);
 		/// <summary>
 		/// Retrieve the result from GPU frame time profiling.
 		/// </summary>
 		/// <param name="type">Queue type to profile.</param>
 		/// <param name="p">Per window data to profile for.</param>
-		[[nodiscard]] static float ResolveGPUFrameProfile(QueueType type, const PerWindowData* p);
+		[[nodiscard]] static float ResolveGPUFrameProfile(QueueType type, const PerViewportData* p);
 
 		std::string m_rendererTitle;
 

@@ -66,7 +66,7 @@ TRAP::Window::~Window()
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
-		TRAP::Graphics::RendererAPI::GetRenderer()->RemovePerWindowData(this);
+		TRAP::Graphics::RendererAPI::GetRenderer()->RemovePerViewportData(this);
 
 	--s_windows;
 
@@ -1103,9 +1103,9 @@ void TRAP::Window::Init(const WindowProps& props)
 
 #ifdef TRAP_HEADLESS_MODE
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
-		TRAP::Graphics::RendererAPI::GetRenderer()->InitPerWindowData(this);
+		TRAP::Graphics::RendererAPI::GetRenderer()->InitPerViewportData(this);
 #else
-	TRAP::Graphics::RendererAPI::GetRenderer()->InitPerWindowData(this);
+	TRAP::Graphics::RendererAPI::GetRenderer()->InitPerViewportData(this);
 #endif
 }
 
