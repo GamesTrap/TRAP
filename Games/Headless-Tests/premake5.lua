@@ -67,6 +67,17 @@ project "Headless-Tests"
 			"%{IncludeDir.WAYLAND}"
 		}
 
+		-- Nsight Aftermath stuff
+		if os.isfile("../../Dependencies/Nsight-Aftermath/lib/x64/libGFSDK_Aftermath_Lib.x64.so") and
+		   os.isdir("../../Dependencies/Nsight-Aftermath/include") and
+		   os.isfile("../../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
+			externalincludedirs "%{IncludeDir.NSIGHTAFTERMATH}"
+
+			postbuildcommands "{COPYFILE} %{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/libGFSDK_Aftermath_Lib.x64.so %{cfg.targetdir}"
+
+			defines "NSIGHT_AFTERMATH_AVAILABLE"
+		end
+
 	filter "system:windows"
 		links
 		{
@@ -74,6 +85,19 @@ project "Headless-Tests"
 			"ws2_32",
 			"wsock32"
 		}
+
+		-- Nsight Aftermath stuff
+		if os.isfile("../../Dependencies/Nsight-Aftermath/lib/x64/GFSDK_Aftermath_Lib.x64.dll") and
+		   os.isfile("../../Dependencies/Nsight-Aftermath/lib/x64/GFSDK_Aftermath_Lib.x64.lib") and
+		   os.isfile("../../Dependencies/Nsight-Aftermath/lib/x64/llvm_7_0_1.dll") and
+		   os.isdir("../../Dependencies/Nsight-Aftermath/include") and
+		   os.isfile("../../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
+			externalincludedirs "%{IncludeDir.NSIGHTAFTERMATH}"
+
+			postbuildcommands "{COPYDIR} %{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/GFSDK_Aftermath_Lib.x64.dll %{cfg.targetdir}"
+
+			defines "NSIGHT_AFTERMATH_AVAILABLE"
+		end
 
 	filter { "action:gmake*", "toolset:gcc" }
 		buildoptions

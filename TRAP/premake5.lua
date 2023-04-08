@@ -421,6 +421,17 @@ project "TRAP-Headless"
 			"ws2_32"
 		}
 
+		-- Nsight Aftermath stuff
+		if os.isfile("../Dependencies/Nsight-Aftermath/lib/x64/GFSDK_Aftermath_Lib.x64.dll") and
+		   os.isfile("../Dependencies/Nsight-Aftermath/lib/x64/GFSDK_Aftermath_Lib.x64.lib") and
+		   os.isfile("../Dependencies/Nsight-Aftermath/lib/x64/llvm_7_0_1.dll") and
+		   os.isdir("../Dependencies/Nsight-Aftermath/include") and
+		   os.isfile("../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
+			externalincludedirs "%{IncludeDir.NSIGHTAFTERMATH}"
+
+			defines "NSIGHT_AFTERMATH_AVAILABLE"
+		end
+
 	filter "system:linux"
 		-- Add Linux-specific files
 		files
@@ -441,6 +452,16 @@ project "TRAP-Headless"
 		{
 			"%{IncludeDir.WAYLAND}"
 		}
+
+		-- Nsight Aftermath stuff
+		if os.isfile("../Dependencies/Nsight-Aftermath/lib/x64/libGFSDK_Aftermath_Lib.x64.so") and
+		   os.isdir("../Dependencies/Nsight-Aftermath/include") and
+		   os.isfile("../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
+
+			externalincludedirs "%{IncludeDir.NSIGHTAFTERMATH}"
+
+			defines "NSIGHT_AFTERMATH_AVAILABLE"
+		end
 
 	filter { "action:gmake*", "toolset:gcc" }
 		buildoptions
