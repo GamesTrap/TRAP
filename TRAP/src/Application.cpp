@@ -150,7 +150,7 @@ void TRAP::Application::Run()
 		const Utils::Timer FrameTimeTimer{};
 		const Utils::TimeStep deltaTime = UpdateNewFrameTimeData(m_timer, lastFrameTime, tickTimerSeconds, m_timeScale);
 
-#ifdef TRACY_ENABLE
+#if defined(TRAP_HEADLESS_MODE) || defined(TRACY_ENABLE)
 		if(m_fpsLimit != 0u)
 			LimitFPS(m_fpsLimit, limiterTimer);
 #else
