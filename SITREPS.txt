@@ -3839,3 +3839,8 @@ SITREP 04/08/2023|23w14a3
     - SteamworksSDK Added support for Steam Game Server API ~>30 mins
     - Headless mode Removed support for ControllerEvent, KeyEvent and MonitorEvent ~<30 mins
     - Headless mode Removed support for MouseEvent and WindowEvent ~<30 mins
+
+SITREP 04/09/2023|23w14b1
+    - Changed TRAP Engine version to 23w14b1(0.9.11)
+    - VulkanPhysicalDevice Allow other physical device types when using headless mode ~<5 mins
+    - Docs Updated differences between normal and headless mode ~<10 mins

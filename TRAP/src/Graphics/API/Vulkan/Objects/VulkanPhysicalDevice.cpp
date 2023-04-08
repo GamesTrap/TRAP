@@ -540,16 +540,19 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		}
 
 		// Required (dGPU or iGPU): Discrete GPUs have a significant performance advantage
+		// Headless mode: Allows all types of physical devices
 		if (devProps.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
 			score += 5000;
 		else if (devProps.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
 			score += 2500;
+#ifndef TRAP_HEADLESS_MODE
 		else
 		{
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
 					 "\" Failed Dedicated/Internal GPU Test!");
 			continue;
 		}
+#endif /*TRAP_HEADLESS_MODE*/
 
 		// Required: Minimum 4 simultaneously bound descriptor sets support
 		if (devProps.limits.maxBoundDescriptorSets < 4)

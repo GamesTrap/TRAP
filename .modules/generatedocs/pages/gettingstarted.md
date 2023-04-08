@@ -15,17 +15,46 @@ Some classes, functions, etc. may not be available to use.
 
 This mode does the following by default:
 
-- WindowingAPI only gets initialized if there is a supported Window Manager available
-- Default Window only gets created if the WindowingAPI is available to use. It is hidden by default
+- Some classes/structs/namespaces from normal mode are not available to use
 - Relaxed RenderAPI compatibility checks are used
-- Rendering uses a back buffer to render into instead of the usual Swapchain and Surface
+- RendererAPI uses a back buffer to render into instead of the usual Swapchain and Surface
 
-The following APIs may not be available in headless mode and usage of these may result in crashes:
+The following classes/structs/namespaces are not available in headless mode:
 
-- WindowingAPI may not be available if the engine was unable to recognize a supported Window Manager
-- Input is only available if WindowingAPI is available to use
-- RendererAPI is not available if the host does not have any GPU, else RendererAPI is initialized as usual
-- Surfaces and Swapchains may not be available depending on if the host has a GPU with surface capability
+- ImGui (TRAP::Graphics::ImGuiLayer, TRAP::INTERNAL::ImGuiWindowing)
+- ImGuizmo
+- DiscordGameSDK (TRAP::Utils::Discord)
+- NVIDIA-Reflex
+- TRAP::Graphics::EditorCamera
+- TRAP::Graphics::OrthographicCameraBounds
+- TRAP::Graphics::OrthographicCameraController
+- TRAP::Window
+- TRAP::Monitor
+- TRAP::Input
+- TRAP::Events::ControllerEvent (TRAP::Events::ControllerConnectEvent, TRAP::Events::ControllerDisconnectEvent)
+- TRAP::Events::KeyEvent (TRAP::Events::KeyPressEvent, TRAP::Events::KeyReleaseEvent)
+- TRAP::Events::KeyTypeEvent
+- TRAP::Events::KeyLayoutEvent
+- TRAP::Events::MonitorEvent (TRAP::Events::MonitorConnectEvent, TRAP::Events::MonitorDisconnectEvent)
+- TRAP::Events::MouseMoveEvent
+- TRAP::Events::MouseScrollEvent
+- TRAP::Events::MouseButtonEvent (TRAP::Events::MouseButtonPressEvent, TRAP::Events::MouseButtonReleaseEvent)
+- TRAP::Events::MouseEnterEvent
+- TRAP::Events::MouseLeaveEvent
+- TRAP::Events::WindowResizeEvent
+- TRAP::Events::WindowMinimizeEvent
+- TRAP::Events::WindowMaximizeEvent
+- TRAP::Events::WindowRestoreEvent
+- TRAP::Events::WindowCloseEvent
+- TRAP::Events::WindowMoveEvent
+- TRAP::Events::WindowFocusEvent
+- TRAP::Events::WindowLostFocusEvent
+- TRAP::Events::WindowDropEvent
+- TRAP::Events::WindowContentScaleEvent
+- TRAP::Events::FrameBufferResizeEvent
+- TRAP::INTERNAL::WindowingAPI
+- TRAP::Graphics::SwapChain (TRAP::Graphics::API::VulkanSwapChain)
+- TRAP::Graphics::API::VulkanSurface
 :::
 
 :::{note}
