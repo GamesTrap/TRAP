@@ -27,6 +27,8 @@ Modified by Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 #include "ImGuiVulkanBackend.h"
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include <cstddef>
 
 #include "Application.h"
@@ -1966,3 +1968,5 @@ void ImGui_ImplVulkan_ShutdownPlatformInterface()
 
     ImGui::DestroyPlatformWindows();
 }
+
+#endif /*TRAP_HEADLESS_MODE*/

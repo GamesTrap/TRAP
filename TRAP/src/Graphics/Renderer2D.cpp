@@ -785,6 +785,7 @@ void TRAP::Graphics::Renderer2D::BeginScene(const OrthographicCamera& camera)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::Renderer2D::BeginScene(const EditorCamera& camera)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
@@ -807,6 +808,7 @@ void TRAP::Graphics::Renderer2D::BeginScene(const EditorCamera& camera)
 	currData.CircleData.Reset();
 	currData.QuadData.Reset();
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

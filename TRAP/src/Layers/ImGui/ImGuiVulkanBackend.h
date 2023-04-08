@@ -27,6 +27,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_IMGUIVULKANBACKEND_H
 #define TRAP_IMGUIVULKANBACKEND_H
 
+#ifndef TRAP_HEADLESS_MODE
+
 // dear imgui: Renderer Backend for Vulkan
 // This needs to be used along with a Platform Backend (e.g. GLFW, SDL, Win32, custom..)
 
@@ -166,5 +168,7 @@ struct ImGui_ImplVulkanH_Window
         // PresentMode = static_cast<VkPresentModeKHR>(~0); //Ensure we get an error if user doesn't set this.
     }
 };
+
+#endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_IMGUIVULKANBACKEND_H*/

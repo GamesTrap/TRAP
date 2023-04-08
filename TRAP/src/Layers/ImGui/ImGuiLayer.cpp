@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "ImGuiLayer.h"
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include "ImGuiVulkanBackend.h"
 
 #include "Application.h"
@@ -555,3 +557,5 @@ void ImGui::SetInputEnabled(const bool enable)
 		io.ConfigFlags |= ImGuiConfigFlags_NavNoCaptureKeyboard;
 	}
 }
+
+#endif /*TRAP_HEADLESS_MODE*/

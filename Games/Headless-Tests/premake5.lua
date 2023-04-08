@@ -24,7 +24,6 @@ project "Headless-Tests"
 
 	externalincludedirs
 	{
-		"%{IncludeDir.IMGUI}",
 		"%{IncludeDir.GLSLANG}",
 		"%{IncludeDir.SPIRV}",
 		"%{IncludeDir.VULKAN}/include/",
@@ -44,7 +43,6 @@ project "Headless-Tests"
 	filter "system:linux"
 		links
 		{
-			"ImGui",
 			"YAMLCpp",
 			"ModernDialogs",
 			"GLSLang",

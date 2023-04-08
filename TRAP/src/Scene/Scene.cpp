@@ -365,6 +365,7 @@ void TRAP::Scene::OnUpdateRuntime(const Utils::TimeStep deltaTime)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Scene::OnUpdateEditor([[maybe_unused]] const Utils::TimeStep deltaTime, Graphics::EditorCamera& camera)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
@@ -392,6 +393,7 @@ void TRAP::Scene::OnUpdateEditor([[maybe_unused]] const Utils::TimeStep deltaTim
 
 	Graphics::Renderer2D::EndScene();
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

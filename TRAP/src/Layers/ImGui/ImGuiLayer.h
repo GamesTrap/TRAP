@@ -1,6 +1,8 @@
 #ifndef TRAP_IMGUILAYER_H
 #define TRAP_IMGUILAYER_H
 
+#ifndef TRAP_HEADLESS_MODE
+
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
 #endif
@@ -204,5 +206,7 @@ namespace ImGui
 	/// <param name="enable">Enable or disable.</param>
 	void SetInputEnabled(bool enable);
 }
+
+#endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_IMGUILAYER_H*/

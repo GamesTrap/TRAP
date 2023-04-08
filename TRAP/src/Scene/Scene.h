@@ -56,7 +56,9 @@ namespace TRAP
 
 		void OnTickRuntime(const TRAP::Utils::TimeStep& deltaTime);
 		void OnUpdateRuntime(Utils::TimeStep deltaTime);
+#ifndef TRAP_HEADLESS_MODE
 		void OnUpdateEditor(Utils::TimeStep deltaTime, Graphics::EditorCamera& camera);
+#endif /*TRAP_HEADLESS_MODE*/
 		void OnTick(const TRAP::Utils::TimeStep& deltaTime);
 		void OnViewportResize(uint32_t width, uint32_t height);
 

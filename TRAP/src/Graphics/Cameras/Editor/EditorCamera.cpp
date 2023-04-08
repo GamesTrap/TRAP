@@ -1,6 +1,7 @@
-#include "Maths/Math.h"
 #include "TRAPPCH.h"
 #include "EditorCamera.h"
+
+#ifndef TRAP_HEADLESS_MODE
 
 #include "Utils/Time/TimeStep.h"
 #include "Events/Event.h"
@@ -501,3 +502,5 @@ void TRAP::Graphics::EditorCamera::EnableMouse()
         TRAP::Application::GetWindow()->SetCursorMode(TRAP::Window::CursorMode::Normal);
     ImGui::SetInputEnabled(true);
 }
+
+#endif /*TRAP_HEADLESS_MODE*/

@@ -372,7 +372,6 @@ project "TRAP-Headless"
 
 	externalincludedirs
 	{
-		"%{IncludeDir.IMGUI}",
 		"%{IncludeDir.GLSLANG}",
 		"%{IncludeDir.SPIRV}",
 		"%{IncludeDir.SPIRVCROSS}",
@@ -387,7 +386,6 @@ project "TRAP-Headless"
 
 	links
 	{
-		"ImGui",
 		"YAMLCpp",
 		"ModernDialogs",
 		"GLSLang",

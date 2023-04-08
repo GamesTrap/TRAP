@@ -83,7 +83,9 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 	SetFPSLimit(m_config.Get<uint32_t>("FPSLimit"));
 
 	InitializeInput();
+#ifndef TRAP_HEADLESS_MODE
 	m_ImGuiLayer = InitializeImGui(m_layerStack);
+#endif /*TRAP_HEADLESS_MODE*/
 
 	TRAP::Utils::Discord::Create();
 }
@@ -320,6 +322,7 @@ void TRAP::Application::PushOverlay(std::unique_ptr<Layer> overlay)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] TRAP::ImGuiLayer& TRAP::Application::GetImGuiLayer()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -329,6 +332,7 @@ void TRAP::Application::PushOverlay(std::unique_ptr<Layer> overlay)
 
 	return *(s_Instance->m_ImGuiLayer);
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -1071,14 +1075,9 @@ void TRAP::Application::InitializeInput()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 TRAP::ImGuiLayer* TRAP::Application::InitializeImGui(TRAP::LayerStack& layerStack)
 {
-	if(!Graphics::RendererAPI::GPUSettings.SurfaceSupported ||
-	   !Graphics::RendererAPI::GPUSettings.PresentSupported)
-	{
-		return nullptr;
-	}
-
 	Scope<ImGuiLayer> imguiLayer = TRAP::MakeScope<ImGuiLayer>();
 	ImGuiLayer* imguiLayerPtr = nullptr;
 	if(imguiLayer)
@@ -1089,3 +1088,4 @@ TRAP::ImGuiLayer* TRAP::Application::InitializeImGui(TRAP::LayerStack& layerStac
 
 	return imguiLayerPtr;
 }
+#endif /*TRAP_HEADLESS_MODE*/

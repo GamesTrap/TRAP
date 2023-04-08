@@ -9,9 +9,11 @@ namespace TRAP
 }
 namespace TRAP::Graphics
 {
+#ifndef TRAP_HEADLESS_MODE
+	class EditorCamera;
+#endif /*TRAP_HEADLESS_MODE*/
 	class Camera;
 	class OrthographicCamera;
-	class EditorCamera;
 	class Texture;
 	class Sampler;
 	class SubTexture2D;
@@ -47,11 +49,13 @@ namespace TRAP::Graphics
 		/// <param name="camera">Orthographic camera.</param>
 		[[deprecated("Use BeginScene(Camera, Mat4) instead!")]]
 		static void BeginScene(const OrthographicCamera& camera);
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Begin a Renderer2D scene.
 		/// </summary>
 		/// <param name="camera">Editor camera.</param>
 		static void BeginScene(const EditorCamera& camera);
+#endif /*TRAP_HEADLESS_MODE*/
 		/// <summary>
 		/// End a running Renderer2D scene.
 		/// </summary>

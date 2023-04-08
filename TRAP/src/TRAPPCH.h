@@ -50,17 +50,17 @@
 	#pragma warning(pop)
 #endif
 
+#ifndef TRAP_HEADLESS_MODE
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
 #endif
 //ImGUI
 #include <imgui.h>
-#ifndef TRAP_HEADLESS_MODE
 #include <ImGuizmo.h>
-#endif /*TRAP_HEADLESS_MODE*/
 #ifdef _MSC_VER
 	#pragma warning(pop)
 #endif
+#endif /*TRAP_HEADLESS_MODE*/
 
 //TRAP
 #include "Core/Base.h"

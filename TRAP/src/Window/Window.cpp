@@ -556,7 +556,9 @@ void TRAP::Window::SetCursorType(const CursorType& cursor) const
 
 	INTERNAL::WindowingAPI::InternalCursor* internalCursor = INTERNAL::WindowingAPI::CreateStandardCursor(cursor);
 	INTERNAL::WindowingAPI::SetCursor(*m_window, internalCursor);
+#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::ImGuiWindowing::SetCustomCursor(internalCursor); //Make ImGui the owner of the cursor
+#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -570,7 +572,9 @@ void TRAP::Window::SetCursorIcon(const Image* const image, const int32_t xHotspo
 			*image, xHotspot, yHotspot
 		);
 	INTERNAL::WindowingAPI::SetCursor(*m_window, cursor);
+#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::ImGuiWindowing::SetCustomCursor(cursor); //Make ImGui the owner of the cursor
+#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

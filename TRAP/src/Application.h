@@ -90,11 +90,13 @@ namespace TRAP
 		/// </summary>
 		/// <returns>Reference to the layer stack.</returns>
 		[[nodiscard]] static LayerStack& GetLayerStack();
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Get the default ImGuiLayer
 		/// </summary>
 		/// <returns>Reference to ImGuiLayer.</returns>
 		[[nodiscard]] static ImGuiLayer& GetImGuiLayer();
+#endif
 
 		/// <summary>
 		/// Get the current frames per second.
@@ -378,12 +380,14 @@ namespace TRAP
 		/// Initialize TRAP::Input.
 		/// </summary>
 		static void InitializeInput();
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Initialize ImGui Layer.
 		/// </summary>
 		/// <param name="layerStack">LayerStack to add ImGui to.</param>
 		/// <returns>ImGui Layer on success, nullptr otherwise.</returns>
 		static TRAP::ImGuiLayer* InitializeImGui(TRAP::LayerStack& layerStack);
+#endif /*TRAP_HEADLESS_MODE*/
 
 		//Hot Reloading
 		std::vector<std::filesystem::path> m_hotReloadingShaderPaths{};

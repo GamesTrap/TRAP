@@ -27,6 +27,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_IMGUIWINDOWING_H
 #define TRAP_IMGUIWINDOWING_H
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include <imgui.h>
 
 #include "Core/PlatformDetection.h"
@@ -394,5 +396,7 @@ namespace TRAP::INTERNAL
 		static void ShutdownPlatformInterface();
 	};
 }
+
+#endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_IMGUIWINDOWING_H*/

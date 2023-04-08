@@ -1,6 +1,8 @@
 #ifndef TRAP_EDITORCAMERA_H
 #define TRAP_EDITORCAMERA_H
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include "Graphics/Cameras/Camera.h"
 
 class TRAPEditorLayer;
@@ -303,5 +305,7 @@ namespace TRAP::Graphics
 {
     return 0.3f;
 }
+
+#endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_EDITORCAMERA_H*/
