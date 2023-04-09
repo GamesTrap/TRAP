@@ -194,7 +194,9 @@ Dependencies/Nsight-Aftermath/include/**
 Dependencies/Nsight-Aftermath/Readme.md
 Dependencies/Nsight-Aftermath/nsight-aftermath-usage-guidelines.txt
 Dependencies/SteamworksSDK/sdk/**
-Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/**
+Dependencies/NVIDIA-Reflex/**
+!Dependencies/NVIDIA-Reflex/Install.md
+!Dependencies/NVIDIA-Reflex/license.txt
 TRAP.TODO
 compile_commands.json
 .modules/generatedocs/api/**
