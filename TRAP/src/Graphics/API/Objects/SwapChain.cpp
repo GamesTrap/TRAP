@@ -1,9 +1,13 @@
 #include "TRAPPCH.h"
 #include "SwapChain.h"
 
+#ifndef TRAP_HEADLESS_MODE
 #include "Graphics/API/Vulkan/Objects/VulkanSwapChain.h"
+#endif /*TRAP_HEADLESS_MODE*/
+
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 
+#ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::SwapChain> TRAP::Graphics::SwapChain::Create(RendererAPI::SwapChainDesc& desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -21,6 +25,7 @@
 		return nullptr;
 	}
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -43,6 +48,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 TRAP::Graphics::SwapChain::SwapChain()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
@@ -73,3 +79,5 @@ TRAP::Graphics::SwapChain::~SwapChain()
 
 	return m_renderTargets;
 }
+
+#endif /*TRAP_HEADLESS_MODE*/

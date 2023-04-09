@@ -206,6 +206,7 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Present(const RendererAPI::QueuePresentDesc& desc) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -256,6 +257,7 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 
 	return presentStatus;
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

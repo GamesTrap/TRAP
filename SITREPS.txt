@@ -3848,3 +3848,4 @@ SITREP 04/09/2023|23w14b1
     - Headless mode Removed support for VSync ~<15 mins
     - Branch headless-rendererapi-rework:
         - Headless mode Removed usage of TRAP::Window ~>60 mins
+        - Headless mode Removed support for Window, Monitor, SwapChain, VulkanSwapChain, VulkanSurface, Input, WindowingAPI ~>60 mins

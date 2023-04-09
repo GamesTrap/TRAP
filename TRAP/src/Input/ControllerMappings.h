@@ -1,6 +1,8 @@
 #ifndef TRAP_CONTROLLERMAPPINGS_H
 #define TRAP_CONTROLLERMAPPINGS_H
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include <vector>
 #include <string>
 
@@ -1360,5 +1362,7 @@ namespace TRAP::Embed
 #endif /*TRAP_BUILD_LINUX_MAPPINGS*/
 	};
 }
+
+#endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_CONTROLLERMAPPINGS_H*/

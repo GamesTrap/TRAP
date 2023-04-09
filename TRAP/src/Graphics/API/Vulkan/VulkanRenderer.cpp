@@ -35,6 +35,7 @@
 #include "Graphics/API/Objects/RootSignature.h"
 #include "Graphics/API/Objects/PipelineCache.h"
 #include "Graphics/API/Objects/QueryPool.h"
+#include "Graphics/API/Objects/SwapChain.h"
 #include "Graphics/Buffers/VertexBufferLayout.h"
 #include "Graphics/Shaders/Shader.h"
 #include "Graphics/Shaders/ShaderManager.h"
@@ -3021,6 +3022,7 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 
 	std::vector<std::string> extensions{};
 
+#ifndef TRAP_HEADLESS_MODE
 	const auto reqExt = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
 
 	if(!VulkanInstance::IsExtensionSupported(std::get<0>(reqExt)) || !VulkanInstance::IsExtensionSupported(std::get<1>(reqExt)))
@@ -3038,6 +3040,7 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 		extensions.push_back(std::get<0>(reqExt));
 		extensions.push_back(std::get<1>(reqExt));
 	}
+#endif /*TRAP_HEADLESS_MODE*/
 
 	//Vulkan 1.1 core
 	//VK_KHR_get_physical_device_properties2
@@ -3069,6 +3072,7 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 #endif
 #endif
 
+#ifndef TRAP_HEADLESS_MODE
 	///HDR support (requires surface extension)
 	if (VulkanInstance::IsExtensionSupported(VK_KHR_SURFACE_EXTENSION_NAME) &&
 	    VulkanInstance::IsExtensionSupported(VK_EXT_SWAPCHAIN_COLOR_SPACE_EXTENSION_NAME))
@@ -3076,6 +3080,7 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 		extensions.emplace_back(VK_EXT_SWAPCHAIN_COLOR_SPACE_EXTENSION_NAME);
 		s_swapchainColorSpaceExtension = true;
 	}
+#endif /*TRAP_HEADLESS_MODE*/
 
 	return extensions;
 }
@@ -3088,6 +3093,7 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 
 	std::vector<std::string> extensions{};
 
+#ifndef TRAP_HEADLESS_MODE
 	if(physicalDevice->IsExtensionSupported(VK_KHR_SWAPCHAIN_EXTENSION_NAME))
 		extensions.emplace_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 	else
@@ -3098,6 +3104,7 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan swapchain extension is unsupported! (0x0004)");
 		exit(0x0004);
 	}
+#endif /*TRAP_HEADLESS_MODE*/
 
 	//Vulkan 1.1 core
 	//VK_KHR_maintenance1

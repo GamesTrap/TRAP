@@ -1,6 +1,8 @@
 #ifndef TRAP_WINDOW_H
 #define TRAP_WINDOW_H
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include "Window/Monitor.h"
 #include "WindowingAPI.h"
 
@@ -497,5 +499,7 @@ namespace TRAP
 		                     uint32_t monitor = 0) noexcept;
 	};
 }
+
+#endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_WINDOW_H*/

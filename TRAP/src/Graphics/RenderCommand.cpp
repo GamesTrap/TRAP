@@ -1,9 +1,8 @@
 #include "TRAPPCH.h"
 #include "RenderCommand.h"
 
-#include <utility>
-
 #include "Application.h"
+#include "ImageLoader/Image.h"
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::Flush(const Window* const window)

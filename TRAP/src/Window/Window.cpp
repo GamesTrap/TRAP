@@ -1,7 +1,9 @@
 #include "TRAPPCH.h"
-#include "Utils/String/String.h"
 #include "Window.h"
 
+#ifndef TRAP_HEADLESS_MODE
+
+#include "Utils/String/String.h"
 #include "Core/PlatformDetection.h"
 #include "Utils/Dialogs/Dialogs.h"
 #include "Events/KeyEvent.h"
@@ -1582,3 +1584,5 @@ TRAP::WindowProps::AdvancedProps::AdvancedProps(const bool resizable,
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 }
+
+#endif /*TRAP_HEADLESS_MODE*/

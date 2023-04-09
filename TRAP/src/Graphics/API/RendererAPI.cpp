@@ -14,6 +14,7 @@
 #include "Objects/Queue.h"
 #include "Objects/Sampler.h"
 #include "Objects/SwapChain.h"
+#include "ImageLoader/Image.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 

@@ -29,6 +29,8 @@ The above license only applies to some of the Controller specific parts of this 
 #include "TRAPPCH.h"
 #include "Input.h"
 
+#ifndef TRAP_HEADLESS_MODE
+
 #ifdef TRAP_PLATFORM_WINDOWS
 #define TRAP_BUILD_WIN32_MAPPINGS
 #elif defined(TRAP_PLATFORM_LINUX)
@@ -1194,3 +1196,5 @@ void TRAP::Input::InitControllerMappings()
 
 	return ControllerDPad::Centered;
 }
+
+#endif /*TRAP_HEADLESS_MODE*/

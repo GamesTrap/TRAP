@@ -2,11 +2,7 @@
 #define TRAP_TEXTURE_H
 
 #include "Graphics/API/ResourceLoader.h"
-
-namespace TRAP
-{
-	class Image;
-}
+#include "ImageLoader/Image.h"
 
 namespace TRAP::Graphics
 {

@@ -2,9 +2,12 @@
 #define TRAP_RENDERERAPI_H
 
 #include <variant>
+#include <unordered_map>
 
 #include "Window/Window.h"
 #include "ImageFormat.h"
+#include "Maths/Math.h"
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 #include <NvLowLatencyVk.h>
@@ -14,6 +17,7 @@ namespace TRAP
 {
 	class Application;
 	class Window;
+	class Image;
 }
 
 namespace TRAP::Graphics

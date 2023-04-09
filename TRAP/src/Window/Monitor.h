@@ -1,7 +1,7 @@
 #ifndef TRAP_MONITOR_H
 #define TRAP_MONITOR_H
 
-// #include "Window.h"
+#ifndef TRAP_HEADLESS_MODE
 
 #include <cstdint>
 #include <string>
@@ -197,5 +197,7 @@ constexpr TRAP::Monitor::VideoMode::VideoMode(const int32_t width, const int32_t
 {
 	return m_handle;
 }
+
+#endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_MONITOR_H*/

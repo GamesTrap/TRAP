@@ -7,8 +7,8 @@
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 #include "Utils/Dialogs/Dialogs.h"
-#include <vulkan/vulkan_core.h>
 
 std::multimap<uint32_t, std::array<uint8_t, 16>> TRAP::Graphics::API::VulkanPhysicalDevice::s_availablePhysicalDeviceUUIDs{};
 

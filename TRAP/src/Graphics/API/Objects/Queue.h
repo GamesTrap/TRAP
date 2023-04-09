@@ -48,12 +48,14 @@ namespace TRAP::Graphics
 		/// <param name="desc">Queue submit description.</param>
 		virtual void Submit(const RendererAPI::QueueSubmitDesc& desc) const = 0;
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Queue an image for presentation.
 		/// </summary>
 		/// <param name="desc">Queue presentation description.</param>
 		/// <returns>Presentation status.</returns>
 		[[nodiscard]] virtual RendererAPI::PresentStatus Present(const RendererAPI::QueuePresentDesc& desc) const = 0;
+#endif /*TRAP_HEADLESS_MODE*/
 
 	protected:
 		/// <summary>

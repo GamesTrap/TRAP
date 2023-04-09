@@ -88,12 +88,14 @@ namespace TRAP::Graphics::API
 		/// <param name="desc">Queue submit description.</param>
 		void Submit(const RendererAPI::QueueSubmitDesc& desc) const override;
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Queue an image for presentation.
 		/// </summary>
 		/// <param name="desc">Queue presentation description.</param>
 		/// <returns>Presentation status.</returns>
 		[[nodiscard]] RendererAPI::PresentStatus Present(const RendererAPI::QueuePresentDesc& desc) const override;
+#endif /*TRAP_HEADLESS_MODE*/
 
 	private:
 		/// <summary>

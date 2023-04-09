@@ -25,9 +25,6 @@ freely, subject to the following restrictions:
 Modified by: Jan "GamesTrap" Schuerkamp
 */
 
-#include <cstddef>
-
-#include "Input/Input.h"
 #include "TRAPPCH.h"
 
 #include "Core/PlatformDetection.h"
@@ -35,6 +32,9 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifdef TRAP_PLATFORM_LINUX
 
 #include "WindowingAPI.h"
+
+#ifndef TRAP_HEADLESS_MODE
+
 #include "Application.h"
 #include "Utils/Utils.h"
 #include "Utils/DynamicLoading/DynamicLoading.h"
@@ -4015,4 +4015,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDropWayland([[maybe_unused]
     InputError(Error::Feature_Unavailable, "[Wayland] Platform does not support toggling drag and drop. Drag and drop is enabled by default.");
 }
 
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
+
+#endif /*TRAP_PLATFORM_LINUX*/

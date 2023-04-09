@@ -2,6 +2,7 @@
 #define TRAP_APPLICATION_H
 
 #include <thread>
+#include <optional>
 
 #include "Utils/Config/Config.h"
 #include "Layers/LayerStack.h"
@@ -158,11 +159,13 @@ namespace TRAP
 		/// </summary>
 		static void Shutdown();
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Get the Main Render window.
 		/// </summary>
 		/// <returns>Pointer to the main render window.</returns>
 		[[nodiscard]] static Window* GetWindow();
+#endif /*TRAP_HEADLESS_MODE*/
 		/// <summary>
 		/// Get the Time since the Engine was started.
 		/// </summary>
@@ -174,6 +177,7 @@ namespace TRAP
 		/// <returns>Reference to the thread pool.</returns>
 		[[nodiscard]] static ThreadPool& GetThreadPool();
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Set the clipboard.
 		/// </summary>
@@ -184,6 +188,7 @@ namespace TRAP
 		/// </summary>
 		/// <returns>String containing the clipboards content.</returns>
 		[[nodiscard]] static std::string GetClipboardString();
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Get the id of the main engine thread.
@@ -315,6 +320,7 @@ namespace TRAP
 		/// <returns>Loaded config.</returns>
 		static Utils::Config LoadTRAPConfig();
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Update the engine.cfg file.
 		/// </summary>
@@ -323,6 +329,15 @@ namespace TRAP
 		/// <param name="fpsLimit">FPS limit to save.</param>
 		/// <param name="renderAPI">RenderAPI to save.</param>
 		static void UpdateTRAPConfig(Utils::Config& config, const Window* window, uint32_t fpsLimit, Graphics::RenderAPI renderAPI);
+#else
+		/// <summary>
+		/// Update the engine.cfg file.
+		/// </summary>
+		/// <param name="config">Config to update.</param>
+		/// <param name="fpsLimit">FPS limit to save.</param>
+		/// <param name="renderAPI">RenderAPI to save.</param>
+		static void UpdateTRAPConfig(Utils::Config& config, uint32_t fpsLimit, Graphics::RenderAPI renderAPI);
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Save the engine.cfg file.
@@ -330,19 +345,23 @@ namespace TRAP
 		/// <param name="config">Config to save.</param>
 		static void SaveTRAPConfig(Utils::Config& config);
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Load the advanced window properties from the given config.
 		/// </summary>
 		/// <param name="config">Config to load data from.</param>
 		/// <returns>Advanced Window properties.</returns>
 		static WindowProps::AdvancedProps LoadAdvancedWindowProps(const TRAP::Utils::Config& config);
+#endif /*TRAP_HEADLESS_MODE*/
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Load the window properties from the given config.
 		/// </summary>
 		/// <param name="config">Config to load data from.</param>
 		/// <returns>Window properties.</returns>
 		static WindowProps LoadWindowProps(const TRAP::Utils::Config& config);
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Select the RenderAPI to be used for rendering.
@@ -359,6 +378,7 @@ namespace TRAP
 		/// <param name="config">Config to load data from.</param>
 		static void InitializeRendererAPI(std::string_view gameName, const TRAP::Graphics::RenderAPI& renderAPI, const TRAP::Utils::Config& config);
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Create the main window.
 		///
@@ -368,6 +388,7 @@ namespace TRAP
 		/// <param name="winProps">Properties for the window.</param>
 		/// <returns>Created main window or nullptr.</returns>
 		static std::unique_ptr<TRAP::Window> CreateMainWindow(const TRAP::WindowProps& winProps);
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Load fallback shaders.
@@ -390,11 +411,11 @@ namespace TRAP
 		/// <param name="config">Config to load data from.</param>
 		static void ApplyRendererAPISettings(const TRAP::Utils::Config& config);
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Initialize TRAP::Input.
 		/// </summary>
 		static void InitializeInput();
-#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Initialize ImGui Layer.
 		/// </summary>
@@ -411,15 +432,21 @@ namespace TRAP
 
 		//Layers
 		LayerStack m_layerStack{};
+#ifndef TRAP_HEADLESS_MODE
 		ImGuiLayer* m_ImGuiLayer = nullptr;
+#endif /*TRAP_HEADLESS_MODE*/
 
 		//Main window
+#ifndef TRAP_HEADLESS_MODE
 		std::unique_ptr<Window> m_window = nullptr;
 		bool m_minimized = false;
 		bool m_focused = true;
+#endif /*TRAP_HEADLESS_MODE*/
 
+#ifndef TRAP_HEADLESS_MODE
 		//NVIDIA-Reflex
 		uint64_t m_globalCounter = 0;
+#endif /*TRAP_HEADLESS_MODE*/
 
 		//Multithreading
 		ThreadPool m_threadPool;

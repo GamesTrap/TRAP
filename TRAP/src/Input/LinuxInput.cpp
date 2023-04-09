@@ -28,6 +28,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 #include "Input/Input.h"
 
+#ifndef TRAP_HEADLESS_MODE
+
 #ifdef TRAP_PLATFORM_LINUX
 
 #include <regex>
@@ -606,4 +608,6 @@ void TRAP::Input::UpdateControllerGUID([[maybe_unused]] std::string& guid)
 	return TRAP::INTERNAL::WindowingAPI::GetLinuxKeyboardLayoutName();
 }
 
-#endif
+#endif /*TRAP_PLATFORM_LINUX*/
+
+#endif /*TRAP_HEADLESS_MODE*/

@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "Monitor.h"
 
+#ifndef TRAP_HEADLESS_MODE
+
 TRAP::Monitor::Monitor(const uint32_t monitor)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
@@ -180,3 +182,5 @@ TRAP::Monitor::Monitor(const uint32_t monitor)
 
 	return Monitor(0);
 }
+
+#endif /*TRAP_HEADLESS_MODE*/

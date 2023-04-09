@@ -26,9 +26,11 @@ Modified by: Jan "GamesTrap" Schuerkamp
 */
 
 #include "TRAPPCH.h"
-#include "Core/PlatformDetection.h"
-
 #include "Input/Input.h"
+
+#ifndef TRAP_HEADLESS_MODE
+
+#include "Core/PlatformDetection.h"
 #include "Utils/String/String.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -845,4 +847,6 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 	return TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(language);
 }
 
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/
+
+#endif /*TRAP_HEADLESS_MODE*/

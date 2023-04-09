@@ -28,6 +28,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_WINDOWINGAPI_H
 #define TRAP_WINDOWINGAPI_H
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include "Core/PlatformDetection.h"
 
 #include <forward_list>
@@ -6750,5 +6752,7 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionWay
 }
 
 #endif
+
+#endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_WINDOWINGAPI_H*/

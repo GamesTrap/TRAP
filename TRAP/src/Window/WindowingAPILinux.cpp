@@ -32,6 +32,9 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifdef TRAP_PLATFORM_LINUX
 
 #include "WindowingAPI.h"
+
+#ifndef TRAP_HEADLESS_MODE
+
 #include "Application.h"
 #include "Utils/Utils.h"
 #include "Utils/Time/TimeStep.h"
@@ -1101,4 +1104,6 @@ bool TRAP::INTERNAL::WindowingAPI::PollPOSIX(pollfd* const fds, const nfds_t cou
 	}
 }
 
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
+
+#endif /*TRAP_PLATFORM_LINUX*/

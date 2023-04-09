@@ -79,6 +79,7 @@ template<typename T>
 	{
 		return input;
 	}
+#ifndef TRAP_HEADLESS_MODE
 	else if constexpr(std::is_same_v<T, TRAP::Window::DisplayMode>) //DisplayMode
 	{
 		if (Utils::String::CompareAnyCase("Windowed", input))
@@ -91,6 +92,7 @@ template<typename T>
 		TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Window::DisplayMode!");
 		return Window::DisplayMode::Windowed;
 	}
+#endif /*TRAP_HEADLESS_MODE*/
 	else if constexpr(std::is_same_v<T, TRAP::Graphics::RenderAPI>) //RenderAPI
 	{
 		if (Utils::String::CompareAnyCase("Vulkan", input) || Utils::String::CompareAnyCase("VulkanAPI", input))
@@ -214,6 +216,7 @@ template<typename T>
 		TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::FileSystem::FileStatus!");
 		throw std::invalid_argument("Exception while converting string to TRAP::FileSystem::FileStatus!");
 	}
+#ifndef TRAP_HEADLESS_MODE
 	else if constexpr(std::is_same_v<T, TRAP::Input::MouseButton>) //MouseButton
 	{
 		if(Utils::String::CompareAnyCase("Left", input))
@@ -242,6 +245,7 @@ template<typename T>
 		TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Input::MouseButton!");
 		throw std::invalid_argument("Exception while converting string to TRAP::Input::MouseButton!");
 	}
+#endif /*TRAP_HEADLESS_MODE*/
 	else if constexpr(std::is_same_v<T, TRAP::Rigidbody2DComponent::BodyType>) //Rigidbody2DComponent::BodyType
 	{
 		if(Utils::String::CompareAnyCase("Static", input))
@@ -288,6 +292,7 @@ template<typename T>
 	{
 		return std::to_string(value);
 	}
+#ifndef TRAP_HEADLESS_MODE
 	else if constexpr(std::is_same_v<T, TRAP::Window::DisplayMode>)
 	{
 		switch (value)
@@ -305,6 +310,7 @@ template<typename T>
 			return "Windowed";
 		}
 	}
+#endif /*TRAP_HEADLESS_MODE*/
 	else if constexpr(std::is_same_v<T, TRAP::Graphics::RenderAPI>)
 	{
 		switch (value)
@@ -442,6 +448,7 @@ template<typename T>
 			return "";
 		}
 	}
+#ifndef TRAP_HEADLESS_MODE
 	else if constexpr(std::is_same_v<T, TRAP::Input::MouseButton>) //MouseButton
 	{
 		switch(value)
@@ -483,6 +490,7 @@ template<typename T>
 			return "";
 		}
 	}
+#endif /*TRAP_HEADLESS_MODE*/
 	else if constexpr(std::is_same_v<T, TRAP::Rigidbody2DComponent::BodyType>) //Rigidbody2DComponent::BodyType
 	{
 		switch(value)

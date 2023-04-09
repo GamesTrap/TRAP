@@ -1,6 +1,8 @@
 #ifndef TRAP_VULKANSWAPCHAIN_H
 #define TRAP_VULKANSWAPCHAIN_H
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/SwapChain.h"
 
@@ -98,5 +100,7 @@ namespace TRAP::Graphics::API
 		RendererAPI::SwapChainDesc m_desc;
 	};
 }
+
+#endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_VULKANSWAPCHAIN_H*/

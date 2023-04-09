@@ -61,8 +61,10 @@ namespace TRAP::Graphics::API
 		void Wait() override;
 
 	private:
+#ifndef TRAP_HEADLESS_MODE
 		friend std::optional<uint32_t> TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
 		                                                                                      const TRAP::Ref<Fence>& fence) const;
+#endif /*TRAP_HEADLESS_MODE*/
 
 		VkFence m_fence;
 		TRAP::Ref<VulkanDevice> m_device;
