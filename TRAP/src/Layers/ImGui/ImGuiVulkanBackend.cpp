@@ -756,9 +756,9 @@ void ImGui_ImplVulkan_UploadFontsTexture()
     //Destroy old font
     ImGui_ImplVulkan_DestroyFontsTexture();
 
-    const auto& winData = TRAP::Graphics::RendererAPI::GetWindowData(TRAP::Application::GetWindow());
+    const auto& viewportData = TRAP::Graphics::RendererAPI::GetViewportData(TRAP::Application::GetWindow());
     //Execute a GPU command to upload ImGui font textures
-    TRAP::Graphics::CommandBuffer* cmd = winData.GraphicCommandPools[winData.ImageIndex]->AllocateCommandBuffer(false);
+    TRAP::Graphics::CommandBuffer* cmd = viewportData.GraphicCommandPools[viewportData.ImageIndex]->AllocateCommandBuffer(false);
     cmd->Begin();
     ImGui_ImplVulkan_CreateFontsTexture(dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
                                         (cmd)->GetVkCommandBuffer());
@@ -771,7 +771,7 @@ void ImGui_ImplVulkan_UploadFontsTexture()
     TRAP::Graphics::RendererAPI::GetGraphicsQueue()->Submit(submitDesc);
     submitFence->Wait();
     submitFence.reset();
-    winData.GraphicCommandPools[winData.ImageIndex]->FreeCommandBuffer(cmd);
+    viewportData.GraphicCommandPools[viewportData.ImageIndex]->FreeCommandBuffer(cmd);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1716,7 +1716,7 @@ void ImGui_ImplVulkan_SetMSAASamples(const VkSampleCountFlagBits sampleCount)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
-	const auto& winData = TRAP::Graphics::RendererAPI::GetWindowData(TRAP::Application::GetWindow());
+	const auto& viewportData = TRAP::Graphics::RendererAPI::GetViewportData(TRAP::Application::GetWindow());
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
 
@@ -1726,7 +1726,7 @@ void ImGui_ImplVulkan_SetMSAASamples(const VkSampleCountFlagBits sampleCount)
     v->MSAASamples = sampleCount;
     bd->RenderPass = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
 		(
-			winData.GraphicCommandBuffers[winData.ImageIndex]
+			viewportData.GraphicCommandBuffers[viewportData.ImageIndex]
 		)->GetActiveVkRenderPass();
 
     //Delete old pipeline

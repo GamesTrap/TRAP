@@ -1,7 +1,9 @@
 #include "TRAPPCH.h"
-#include "Utils/String/String.h"
 #include "Window.h"
 
+#ifndef TRAP_HEADLESS_MODE
+
+#include "Utils/String/String.h"
 #include "Core/PlatformDetection.h"
 #include "Utils/Dialogs/Dialogs.h"
 #include "Events/KeyEvent.h"
@@ -221,14 +223,12 @@ void TRAP::Window::OnUpdate()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] bool TRAP::Window::GetVSync() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_data.VSync;
 }
-#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -268,6 +268,8 @@ void TRAP::Window::SetTitle(const std::string& title)
 		                   "[INDEV]" + Log::WindowVersion + Graphics::RendererAPI::GetRenderer()->GetTitle();
 #ifdef TRAP_PLATFORM_LINUX
 		newTitle += "[" + Utils::String::ConvertToString(Utils::GetLinuxWindowManager()) + "]";
+#elif defined(TRAP_PLATFORM_WINDOWS)
+		newTitle += "[Win32]";
 #endif
 
 #if defined(__SANITIZE_ADDRESS__) || __has_feature(address_sanitizer) || defined(TRAP_ASAN)
@@ -558,9 +560,7 @@ void TRAP::Window::SetCursorType(const CursorType& cursor) const
 
 	INTERNAL::WindowingAPI::InternalCursor* internalCursor = INTERNAL::WindowingAPI::CreateStandardCursor(cursor);
 	INTERNAL::WindowingAPI::SetCursor(*m_window, internalCursor);
-#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::ImGuiWindowing::SetCustomCursor(internalCursor); //Make ImGui the owner of the cursor
-#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -574,9 +574,7 @@ void TRAP::Window::SetCursorIcon(const Image* const image, const int32_t xHotspo
 			*image, xHotspot, yHotspot
 		);
 	INTERNAL::WindowingAPI::SetCursor(*m_window, cursor);
-#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::ImGuiWindowing::SetCustomCursor(cursor); //Make ImGui the owner of the cursor
-#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -791,7 +789,6 @@ void TRAP::Window::SetDragAndDrop(const bool enabled) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#ifndef TRAP_HEADLESS_MODE
 void TRAP::Window::SetVSync(const bool enabled)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
@@ -799,7 +796,6 @@ void TRAP::Window::SetVSync(const bool enabled)
 	m_data.VSync = enabled;
 	TRAP::Graphics::RendererAPI::GetRenderer()->SetVSync(enabled, this);
 }
-#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -1056,14 +1052,11 @@ void TRAP::Window::Init(const WindowProps& props)
 	#ifndef TRAP_RELEASE
 		newTitle += Graphics::RendererAPI::GetRenderer()->GetTitle();
 	#ifdef TRAP_PLATFORM_LINUX
-		if (Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
-			newTitle += "[Wayland]";
-		else if (Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
-			newTitle += "[X11]";
-		else
-			newTitle += "[Unknown]";
+		newTitle += "[" + Utils::String::ConvertToString(Utils::GetLinuxWindowManager()) + "]";
+	#elif defined(TRAP_PLATFORM_WINDOWS)
+		newTitle += "[Win32]";
 	#endif
-	#endif
+	#endif /*TRAP_RELEASE*/
 		INTERNAL::WindowingAPI::SetWindowTitle(*m_window, newTitle);
 	}
 
@@ -1105,12 +1098,7 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	SetupEventCallbacks();
 
-#ifdef TRAP_HEADLESS_MODE
-	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
-		TRAP::Graphics::RendererAPI::GetRenderer()->InitPerViewportData(this);
-#else
 	TRAP::Graphics::RendererAPI::GetRenderer()->InitPerViewportData(this);
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1145,17 +1133,14 @@ void TRAP::Window::SetupEventCallbacks()
 			data->Width = w;
 			data->Height = h;
 
-#ifndef TRAP_HEADLESS_MODE
 			if (!data->EventCallback)
 				return;
 
 			Events::WindowResizeEvent event(w, h, data->Win);
 			data->EventCallback(event);
-#endif /*TRAP_HEADLESS_MODE*/
 		}
 	);
 
-#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::WindowingAPI::SetWindowMinimizeCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, bool restored)
 		{
@@ -1176,9 +1161,7 @@ void TRAP::Window::SetupEventCallbacks()
 			}
 		}
 	);
-#endif /*TRAP_HEADLESS_MODE*/
 
-#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::WindowingAPI::SetWindowMaximizeCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, bool restored)
 		{
@@ -1199,7 +1182,6 @@ void TRAP::Window::SetupEventCallbacks()
 			}
 		}
 	);
-#endif /*TRAP_HEADLESS_MODE*/
 
 	INTERNAL::WindowingAPI::SetWindowPosCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, const int32_t x, const int32_t y)
@@ -1214,17 +1196,14 @@ void TRAP::Window::SetupEventCallbacks()
 				data->windowModeParams.YPos = y;
 			}
 
-#ifndef TRAP_HEADLESS_MODE
 			if (!data->EventCallback)
 				return;
 
 			Events::WindowMoveEvent event(x, y, data->Win);
 			data->EventCallback(event);
-#endif /*TRAP_HEADLESS_MODE*/
 		}
 	);
 
-#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::WindowingAPI::SetWindowFocusCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, const bool focused)
 		{
@@ -1245,9 +1224,7 @@ void TRAP::Window::SetupEventCallbacks()
 			}
 		}
 	);
-#endif /*TRAP_HEADLESS_MODE*/
 
-#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::WindowingAPI::SetWindowCloseCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window)
 		{
@@ -1260,7 +1237,6 @@ void TRAP::Window::SetupEventCallbacks()
 			data->EventCallback(event);
 		}
 	);
-#endif /*TRAP_HEADLESS_MODE*/
 
 	INTERNAL::WindowingAPI::SetKeyCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, const Input::Key key, const Input::KeyState state)
@@ -1276,44 +1252,37 @@ void TRAP::Window::SetupEventCallbacks()
 				{
 					data->KeyRepeatCounts[static_cast<uint16_t>(key)] = 0;
 
-#ifndef TRAP_HEADLESS_MODE
 					if (!data->EventCallback)
 						return;
 
 					Events::KeyPressEvent event(static_cast<Input::Key>(key), 0, data->Win);
 					data->EventCallback(event);
-#endif /*TRAP_HEADLESS_MODE*/
 				}
 				else
 				{
 					data->KeyRepeatCounts[static_cast<uint16_t>(key)]++;
 
-#ifndef TRAP_HEADLESS_MODE
 					if (!data->EventCallback)
 						return;
 
 					Events::KeyPressEvent event(static_cast<Input::Key>(key),
 					                            data->KeyRepeatCounts[static_cast<uint16_t>(key)], data->Win);
 					data->EventCallback(event);
-#endif /*TRAP_HEADLESS_MODE*/
 				}
 			}
 			else
 			{
 				data->KeyRepeatCounts.erase(static_cast<uint16_t>(key));
 
-#ifndef TRAP_HEADLESS_MODE
 				if (!data->EventCallback)
 					return;
 
 				Events::KeyReleaseEvent event(static_cast<Input::Key>(key), data->Win);
 				data->EventCallback(event);
-#endif /*TRAP_HEADLESS_MODE*/
 			}
 		}
 	);
 
-#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::WindowingAPI::SetCharCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, const uint32_t codePoint)
 		{
@@ -1326,9 +1295,7 @@ void TRAP::Window::SetupEventCallbacks()
 			data->EventCallback(event);
 		}
 	);
-#endif /*TRAP_HEADLESS_MODE*/
 
-#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::WindowingAPI::SetMouseButtonCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window,
 		   const Input::MouseButton button,
@@ -1351,9 +1318,7 @@ void TRAP::Window::SetupEventCallbacks()
 			}
 		}
 	);
-#endif /*TRAP_HEADLESS_MODE*/
 
-#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::WindowingAPI::SetScrollCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window,
 		   const double xOffset, const double yOffset)
@@ -1367,9 +1332,7 @@ void TRAP::Window::SetupEventCallbacks()
 			data->EventCallback(event);
 		}
 	);
-#endif /*TRAP_HEADLESS_MODE*/
 
-#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::WindowingAPI::SetCursorPosCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, double xPos, double yPos)
 		{
@@ -1389,7 +1352,6 @@ void TRAP::Window::SetupEventCallbacks()
 			data->EventCallback(event);
 		}
 	);
-#endif /*TRAP_HEADLESS_MODE*/
 
 	INTERNAL::WindowingAPI::SetFrameBufferSizeCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, const int32_t w, const int32_t h)
@@ -1401,17 +1363,14 @@ void TRAP::Window::SetupEventCallbacks()
 			data->Width = w;
 			data->Height = h;
 
-#ifndef TRAP_HEADLESS_MODE
 			if (!data->EventCallback || w == 0 || h == 0)
 				return;
 
 			Events::FrameBufferResizeEvent event(w, h, data->Win);
 			data->EventCallback(event);
-#endif /*TRAP_HEADLESS_MODE*/
 		}
 	);
 
-#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::WindowingAPI::SetCursorEnterCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, const bool entered)
 		{
@@ -1432,9 +1391,7 @@ void TRAP::Window::SetupEventCallbacks()
 			}
 		}
 	);
-#endif /*TRAP_HEADLESS_MODE*/
 
-#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::WindowingAPI::SetDropCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, std::vector<std::string> paths)
 		{
@@ -1447,9 +1404,7 @@ void TRAP::Window::SetupEventCallbacks()
 			data->EventCallback(event);
 		}
 	);
-#endif /*TRAP_HEADLESS_MODE*/
 
-#ifndef TRAP_HEADLESS_MODE
 	INTERNAL::WindowingAPI::SetContentScaleCallback(*m_window,
 		[](const INTERNAL::WindowingAPI::InternalWindow& window, const float xScale, const float yScale)
 		{
@@ -1462,7 +1417,6 @@ void TRAP::Window::SetupEventCallbacks()
 			data->EventCallback(event);
 		}
 	);
-#endif /*TRAP_HEADLESS_MODE*/
 
 	INTERNAL::WindowingAPI::SetMonitorCallback([](const INTERNAL::WindowingAPI::InternalMonitor& mon,
 	                                              const bool connected)
@@ -1507,7 +1461,6 @@ void TRAP::Window::SetupEventCallbacks()
 			break;
 		}
 
-#ifndef TRAP_HEADLESS_MODE
 		if (!data->EventCallback)
 			return;
 
@@ -1529,7 +1482,6 @@ void TRAP::Window::SetupEventCallbacks()
 
 			return;
 		}
-#endif /*TRAP_HEADLESS_MODE*/
 	});
 }
 
@@ -1576,3 +1528,5 @@ TRAP::WindowProps::AdvancedProps::AdvancedProps(const bool resizable,
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 }
+
+#endif /*TRAP_HEADLESS_MODE*/

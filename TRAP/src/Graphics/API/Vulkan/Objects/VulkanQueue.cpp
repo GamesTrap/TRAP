@@ -206,13 +206,10 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Present(const RendererAPI::QueuePresentDesc& desc) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-#ifdef TRAP_HEADLESS_MODE
-	TRAP_ASSERT(RendererAPI::GPUSettings.PresentSupported, "VulkanQueue::Present(): Present is not supported by the system!");
-#endif
 
 	const std::vector<TRAP::Ref<Semaphore>>& waitSemaphores = desc.WaitSemaphores;
 	RendererAPI::PresentStatus presentStatus = RendererAPI::PresentStatus::Failed;
@@ -256,6 +253,7 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 
 	return presentStatus;
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

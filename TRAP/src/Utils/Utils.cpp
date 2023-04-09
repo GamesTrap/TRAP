@@ -272,11 +272,11 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
+TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	static LinuxWindowManager windowManager{};
+	static LinuxWindowManager windowManager = LinuxWindowManager::Unknown;
 
 #ifdef TRAP_PLATFORM_LINUX
 	if(windowManager != LinuxWindowManager::Unknown)
@@ -308,8 +308,10 @@
 
 	//Proceed with normal detection
 	session = "";
+
 	if(getenv("XDG_SESSION_TYPE"))
 		session = getenv("XDG_SESSION_TYPE");
+
 	if (getenv("WAYLAND_DISPLAY") || session == wl)
 		windowManager = LinuxWindowManager::Wayland;
 	else if (getenv("DISPLAY") || session == x11)
@@ -326,7 +328,7 @@
 		exit(0x0008);
 #else
 		return LinuxWindowManager::Unknown;
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
 	}
 
 #ifndef ENABLE_WAYLAND_SUPPORT
@@ -339,8 +341,8 @@
 		else
 			windowManager = LinuxWindowManager::Unknown;
 	}
-#endif
-#endif
+#endif /*ENABLE_WAYLAND_SUPPORT*/
+#endif /*TRAP_PLATFORM_LINUX*/
 
 	return windowManager;
 }
@@ -582,10 +584,9 @@ static BOOL WINAPI SIGINTHandlerRoutine(_In_ DWORD dwCtrlType)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifdef TRAP_HEADLESS_MODE
 void TRAP::Utils::RegisterSIGINTCallback()
 {
-#ifdef TRAP_HEADLESS_MODE
-
 #ifdef TRAP_PLATFORM_LINUX
 	if(signal(SIGINT, [](int) {TRAP::Application::Shutdown(); }) == SIG_ERR)
 #elif defined(TRAP_PLATFORM_WINDOWS)
@@ -595,6 +596,5 @@ void TRAP::Utils::RegisterSIGINTCallback()
 		TP_ERROR(TRAP::Log::ApplicationPrefix, "Failed to register SIGINT callback!");
 		TP_ERROR(TRAP::Log::ApplicationPrefix, TRAP::Utils::String::GetStrError());
 	}
-
-#endif /*TRAP_HEADLESS_MODE*/
 }
+#endif /*TRAP_HEADLESS_MODE*/

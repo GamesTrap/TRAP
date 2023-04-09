@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "VulkanSurface.h"
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include "VulkanPhysicalDevice.h"
 #include "VulkanDevice.h"
 #include "VulkanInstance.h"
@@ -94,3 +96,5 @@ TRAP::Graphics::API::VulkanSurface::~VulkanSurface()
 
 	return m_surfacePresentModes;
 }
+
+#endif /*TRAP_HEADLESS_MODE*/

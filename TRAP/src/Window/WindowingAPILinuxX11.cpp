@@ -25,16 +25,17 @@ freely, subject to the following restrictions:
 Modified by: Jan "GamesTrap" Schuerkamp
 */
 
-#include <cstddef>
-
 #include "TRAPPCH.h"
 
 #include "Core/PlatformDetection.h"
-#include "Utils/String/String.h"
 
 #ifdef TRAP_PLATFORM_LINUX
 
 #include "WindowingAPI.h"
+
+#ifndef TRAP_HEADLESS_MODE
+
+#include "Utils/String/String.h"
 #include "Application.h"
 #include "Utils/Utils.h"
 #include "Utils/DynamicLoading/DynamicLoading.h"
@@ -5014,4 +5015,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDropX11(InternalWindow& win
 		s_Data.X11.XLIB.DeleteProperty(s_Data.X11.display, window.X11.Handle, s_Data.X11.XDNDAware);
 }
 
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
+
+#endif /*TRAP_PLATFORM_LINUX*/

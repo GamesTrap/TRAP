@@ -27,11 +27,11 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "TRAPPCH.h"
 
-#include <limits>
-#include <thread>
-
 #include "Core/PlatformDetection.h"
 #include "WindowingAPI.h"
+
+#ifndef TRAP_HEADLESS_MODE
+
 #include "Window.h"
 #include "Events/KeyEvent.h"
 #include "Layers/ImGui/ImGuiWindowing.h"
@@ -2358,7 +2358,6 @@ void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-#ifndef TRAP_HEADLESS_MODE
 	if(!TRAP::Input::GetEventCallback())
 		return;
 
@@ -2371,7 +2370,6 @@ void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 		TRAP::Events::KeyLayoutEvent event(*layout);
 		TRAP::Input::GetEventCallback()(event);
 	}
-#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2601,3 +2599,5 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowContentScale(const InternalWindow&
 	if (window.Callbacks.Scale != nullptr)
 		window.Callbacks.Scale(window, xScale, yScale);
 }
+
+#endif /*TRAP_HEADLESS_MODE*/

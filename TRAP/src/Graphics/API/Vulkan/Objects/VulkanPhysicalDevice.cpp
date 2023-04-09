@@ -7,8 +7,8 @@
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 #include "Utils/Dialogs/Dialogs.h"
-#include <vulkan/vulkan_core.h>
 
 std::multimap<uint32_t, std::array<uint8_t, 16>> TRAP::Graphics::API::VulkanPhysicalDevice::s_availablePhysicalDeviceUUIDs{};
 
@@ -194,7 +194,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 			}
 		}
 	}
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -582,13 +582,12 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 					 "\" Failed Required PhysicalDevice Extensions Test!");
 			continue;
 		}
-#endif
 
 		// Required: Create Vulkan Instance
 
 		// Init WindowingAPI needed here for instance extensions
 		// Disabled in Headless mode.
-#ifndef TRAP_HEADLESS_MODE
+
 		if (!INTERNAL::WindowingAPI::Init())
 		{
 			Utils::Dialogs::ShowMsgBox("Failed to initialize WindowingAPI", "The WindowingAPI couldn't be initialized!\n"
@@ -597,11 +596,9 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			TP_CRITICAL(Log::RendererVulkanPrefix, "The WindowingAPI couldn't be initialized! (0x0011)");
 			exit(0x0011);
 		}
-#endif
 
 		// Required: Create Vulkan Surface Test Window
 		// Disabled in Headless mode.
-#ifndef TRAP_HEADLESS_MODE
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Visible, false);
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Focused, false);
 		INTERNAL::WindowingAPI::InternalWindow* vulkanTestWindow = INTERNAL::WindowingAPI::CreateWindow(400,
@@ -616,11 +613,10 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 					 "\" Failed Vulkan Surface Test Window creation!");
 			continue;
 		}
-#endif
 
 		// Required: Check if Surface can be created
 		// Disabled in Headless mode
-#ifndef TRAP_HEADLESS_MODE
+
 		VkSurfaceKHR surface = VK_NULL_HANDLE;
 		VkResult res{};
 		VkCall(res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance, *vulkanTestWindow, nullptr,
@@ -632,7 +628,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Surface creation!");
 			continue;
 		}
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
 
 		// Required: Get Queue Families
 		uint32_t queueFamilyPropertyCount = 0;
@@ -644,7 +640,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 #ifndef TRAP_HEADLESS_MODE
 			vkDestroySurfaceKHR(instance, surface, nullptr);
 			TRAP::INTERNAL::WindowingAPI::DestroyWindow(vulkanTestWindow);
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
 			vkDestroyInstance(instance, nullptr);
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
 					 "\" Failed Querying Queue Family Properties!");
@@ -666,7 +662,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 #ifndef TRAP_HEADLESS_MODE
 			vkDestroySurfaceKHR(instance, surface, nullptr);
 			TRAP::INTERNAL::WindowingAPI::DestroyWindow(vulkanTestWindow);
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
 			vkDestroyInstance(instance, nullptr);
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Graphics Queue Test!");
 			continue;
@@ -691,11 +687,10 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 					 "\" Failed Present Queue Test!");
 			continue;
 		}
-#endif
 
 		// Required: Check if Surface contains present modes
 		// Disabled in Headless mode.
-#ifndef TRAP_HEADLESS_MODE
+
 		uint32_t surfacePresentModeCount = 0;
 		VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(dev, surface, &surfacePresentModeCount, nullptr));
 		std::vector<VkPresentModeKHR> presentModes(surfacePresentModeCount);
@@ -709,11 +704,10 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Present Mode Test!");
 			continue;
 		}
-#endif
 
 		// Required: Check if Surface contains formats
 		// Disabled in Headless mode.
-#ifndef TRAP_HEADLESS_MODE
+
 		uint32_t surfaceFormatCount = 0;
 		VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(dev, surface, &surfaceFormatCount, nullptr));
 		std::vector<VkSurfaceFormatKHR> surfaceFormats(surfaceFormatCount);
@@ -727,7 +721,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 					 "\" Failed Surface Format Test!");
 			continue;
 		}
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
 
 		// Big Optionally: Check if PhysicalDevice supports Compute queue
 		bool foundComputeQueue = false;
@@ -878,12 +872,10 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		else
 			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
 					"\" Failed Optimal Surface Format Test!");
-#endif
 
-#ifndef TRAP_HEADLESS_MODE
 		vkDestroySurfaceKHR(instance, surface, nullptr);
 		TRAP::INTERNAL::WindowingAPI::DestroyWindow(vulkanTestWindow);
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
 
 		// Optionally: Check VRAM size (1e+9 == Bytes to Gigabytes)
 		// Get PhysicalDevice Memory Properties

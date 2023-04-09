@@ -29,6 +29,8 @@ The above license only applies to some of the Controller specific parts of this 
 #ifndef TRAP_INPUT_H
 #define TRAP_INPUT_H
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include "Core/PlatformDetection.h" //Needed for OS dependent includes
 
 #include <functional>
@@ -1071,5 +1073,7 @@ namespace TRAP
 }
 
 MAKE_ENUM_FLAG(TRAP::Input::ControllerDPad);
+
+#endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_INPUT_H*/

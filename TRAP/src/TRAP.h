@@ -17,23 +17,29 @@
 #include "../src/Log/Log.h"
 //-----------------------
 
+#ifndef TRAP_HEADLESS_MODE
 //----INPUT--------------
 #include "../src/Input/Input.h"
 //-----------------------
+#endif /*TRAP_HEADLESS_MODE*/
 
 //----EVENTS-------------
 #include "../src/Events/Event.h"
+#include "../src/Events/HotReloadEvent.h"
+#include "../src/Events/FileEvent.h"
+#ifndef TRAP_HEADLESS_MODE
 #include "../src/Events/WindowEvent.h"
 #include "../src/Events/KeyEvent.h"
 #include "../src/Events/MouseEvent.h"
 #include "../src/Events/ControllerEvent.h"
-#include "../src/Events/HotReloadEvent.h"
-#include "../src/Events/FileEvent.h"
+#endif /*TRAP_HEADLESS_MODE*/
 //-----------------------
 
 //----LAYERS-------------
 #include "../src/Layers/Layer.h"
+#ifndef TRAP_HEADLESS_MODE
 #include "../src/Layers/ImGui/ImGuiLayer.h"
+#endif /*TRAP_HEADLESS_MODE*/
 //-----------------------
 
 //----FILE-SYSTEM--------
@@ -54,7 +60,10 @@
 #include "../src/Utils/Hash/SHA-3.h"
 #include "../src/Utils/Hash/UID.h"
 #include "../src/Utils/Hash/ConvertHashToString.h"
+#ifndef TRAP_HEADLESS_MODE
 #include "../src/Utils/Discord/DiscordGameSDK.h"
+#endif /*TRAP_HEADLESS_MODE*/
+#include "../src/Utils/Steam/SteamworksSDK.h"
 //-----------------------
 
 //----MATHS--------------
@@ -68,13 +77,17 @@
 #include "../src/Maths/Types.h"
 //-----------------------
 
+#ifndef TRAP_HEADLESS_MODE
 //----WINDOWS------------
 #include "../src/Window/Window.h"
 //-----------------------
+#endif /*TRAP_HEADLESS_MODE*/
 
+#ifndef TRAP_HEADLESS_MODE
 //----MONITORS-----------
 #include "../src/Window/Monitor.h"
 //-----------------------
+#endif /*TRAP_HEADLESS_MODE*/
 
 //----RENDERER-----------
 #include "../src/Graphics/Renderer.h"
@@ -109,8 +122,10 @@
 //----CAMERAS------------
 #include "../src/Graphics/Cameras/Camera.h"
 #include "../src/Graphics/Cameras/Orthographic/OrthographicCamera.h"
+#ifndef TRAP_HEADLESS_MODE
 #include "../src/Graphics/Cameras/Orthographic/OrthographicCameraController.h"
 #include "../src/Graphics/Cameras/Editor/EditorCamera.h"
+#endif /*TRAP_HEADLESS_MODE*/
 //-----------------------
 
 //----NETWORK------------

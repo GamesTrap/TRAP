@@ -14,18 +14,19 @@
 #include "Objects/Queue.h"
 #include "Objects/Sampler.h"
 #include "Objects/SwapChain.h"
+#include "ImageLoader/Image.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::RendererAPI> TRAP::Graphics::RendererAPI::s_Renderer = nullptr;
 TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::s_RenderAPI = TRAP::Graphics::RenderAPI::NONE;
 TRAP::Scope<TRAP::Graphics::API::ResourceLoader> TRAP::Graphics::RendererAPI::s_ResourceLoader = nullptr;
-// #ifndef TRAP_HEADLESS_MODE
+#ifndef TRAP_HEADLESS_MODE
 std::unordered_map<const TRAP::Window*,
                    TRAP::Scope<TRAP::Graphics::RendererAPI::PerViewportData>> TRAP::Graphics::RendererAPI::s_perViewportDataMap = {};
-// #else
-// TRAP::Scope<TRAP::Graphics::RendererAPI::PerViewportData> TRAP::Graphics::RendererAPI::s_perViewportData = nullptr;
-// #endif /*TRAP_HEADLESS_MODE*/
+#else
+TRAP::Scope<TRAP::Graphics::RendererAPI::PerViewportData> TRAP::Graphics::RendererAPI::s_perViewportData = nullptr;
+#endif /*TRAP_HEADLESS_MODE*/
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapable = true;
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapableFirstTest = true;
 TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::s_descriptorPool = nullptr;
@@ -97,7 +98,11 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
+#ifndef TRAP_HEADLESS_MODE
 	s_perViewportDataMap.clear();
+#else
+	s_perViewportData.reset();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	TRAP::Graphics::Sampler::ClearCache();
 
@@ -118,9 +123,7 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-#ifdef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(s_RenderAPI != RenderAPI::NONE , "RendererAPI::GetRenderer(): RendererAPI is not available because RenderAPI::NONE is set (or EnableGPU=False)!");
-#endif
 
 	return s_Renderer.get();
 }
@@ -130,6 +133,8 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 [[nodiscard]] TRAP::Graphics::API::ResourceLoader* TRAP::Graphics::RendererAPI::GetResourceLoader() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(s_RenderAPI != RenderAPI::NONE , "RendererAPI::GetResourceLoader(): ResourceLoader is not available because RenderAPI::NONE is set (or EnableGPU=False)!");
 
 	return s_ResourceLoader.get();
 }
@@ -204,23 +209,30 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
+#ifndef TRAP_HEADLESS_MODE
 	for(const auto& [win, data] : s_perViewportDataMap)
 	{
 		data->State = PerWindowState::PostUpdate;
 
 		if(data->RenderScale != 1.0f)
 		{
-			TRAP::Ref<RenderTarget> outputTarget = nullptr;
-#ifndef TRAP_HEADLESS_MODE
-			outputTarget = data->SwapChain->GetRenderTargets()[data->CurrentSwapChainImageIndex];
-#else
-			outputTarget = data->RenderTargets[data->CurrentSwapChainImageIndex];
-#endif
+			TRAP::Ref<RenderTarget> outputTarget = data->SwapChain->GetRenderTargets()[data->CurrentSwapChainImageIndex];
 
 			GetRenderer()->RenderScalePass(data->InternalRenderTargets[data->CurrentSwapChainImageIndex],
 			                               outputTarget, win);
 		}
 	}
+#else
+	s_perViewportData->State = PerWindowState::PostUpdate;
+
+	if(s_perViewportData->RenderScale != 1.0f)
+	{
+		TRAP::Ref<RenderTarget> outputTarget = s_perViewportData->RenderTargets[s_perViewportData->CurrentSwapChainImageIndex];
+
+		GetRenderer()->RenderScalePass(s_perViewportData->InternalRenderTargets[s_perViewportData->CurrentSwapChainImageIndex],
+										outputTarget);
+	}
+#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -261,7 +273,8 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Graphics::RendererAPI::PerViewportData& TRAP::Graphics::RendererAPI::GetWindowData(const Window* window)
+#ifndef TRAP_HEADLESS_MODE
+[[nodiscard]] TRAP::Graphics::RendererAPI::PerViewportData& TRAP::Graphics::RendererAPI::GetViewportData(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -270,9 +283,18 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 
 	return *s_perViewportDataMap.at(window);
 }
+#else
+[[nodiscard]] TRAP::Graphics::RendererAPI::PerViewportData& TRAP::Graphics::RendererAPI::GetViewportData()
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	return *s_perViewportData;
+}
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphicsRootSignature(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -285,9 +307,21 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 		s_perViewportDataMap.at(window)->GraphicsPipelineDesc.Pipeline
 	).RootSignature;
 }
+#else
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphicsRootSignature()
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	return std::get<TRAP::Graphics::RendererAPI::GraphicsPipelineDesc>
+	(
+		s_perViewportData->GraphicsPipelineDesc.Pipeline
+	).RootSignature;
+}
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] TRAP::Math::Vec2ui TRAP::Graphics::RendererAPI::GetInternalRenderResolution(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -297,28 +331,13 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 
 	const float renderScale = s_perViewportDataMap.at(window)->RenderScale;
 
-#ifdef TRAP_HEADLESS_MODE
-	const auto& winData = s_perViewportDataMap.at(window);
-#endif
-
 	if(renderScale == 1.0f)
-	{
-#ifndef TRAP_HEADLESS_MODE
 		return window->GetFrameBufferSize();
-#else
-		return {winData->NewWidth, winData->NewHeight};
-#endif
-	}
 
 	const Math::Vec2 frameBufferSize
 	{
-#ifndef TRAP_HEADLESS_MODE
 		static_cast<float>(window->GetFrameBufferSize().x),
 		static_cast<float>(window->GetFrameBufferSize().y)
-#else
-		static_cast<float>(winData->NewWidth),
-		static_cast<float>(winData->NewHeight),
-#endif
 	};
 	const float aspectRatio = frameBufferSize.x / frameBufferSize.y;
 
@@ -336,9 +355,42 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 
 	return static_cast<Math::Vec2ui>(finalRes);
 }
+#else
+[[nodiscard]] TRAP::Math::Vec2ui TRAP::Graphics::RendererAPI::GetInternalRenderResolution()
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	const float renderScale = s_perViewportData->RenderScale;
+
+	if(renderScale == 1.0f)
+		return {s_perViewportData->NewWidth, s_perViewportData->NewHeight};
+
+	const Math::Vec2 frameBufferSize
+	{
+		static_cast<float>(s_perViewportData->NewWidth),
+		static_cast<float>(s_perViewportData->NewHeight),
+	};
+	const float aspectRatio = frameBufferSize.x / frameBufferSize.y;
+
+	Math::Vec2 finalRes = frameBufferSize * renderScale;
+
+	//Make sure the resolution is an integer scale of the framebuffer size.
+	//This is done to avoid scaling artifacts (like blurriness).
+	while((finalRes.x / finalRes.y) != aspectRatio)
+	{
+		if((finalRes.x / finalRes.y) <= aspectRatio)
+			++finalRes.x;
+		else
+			++finalRes.y;
+	}
+
+	return static_cast<Math::Vec2ui>(finalRes);
+}
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RendererAPI::StartRenderPass(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
@@ -346,31 +398,40 @@ void TRAP::Graphics::RendererAPI::StartRenderPass(const Window* window)
 	if(window == nullptr)
 		window = TRAP::Application::GetWindow();
 
-	const auto* const winData = s_perViewportDataMap.at(window).get();
+	const auto* const viewportData = s_perViewportDataMap.at(window).get();
 
 	TRAP::Ref<Graphics::RenderTarget> renderTarget = nullptr;
-#ifndef TRAP_HEADLESS_MODE
+
 	//Get correct RenderTarget
-	if((winData->RenderScale != 1.0f || s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) && winData->State == PerWindowState::PreUpdate)
-		renderTarget = winData->InternalRenderTargets[winData->CurrentSwapChainImageIndex];
+	if((viewportData->RenderScale != 1.0f || s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) && viewportData->State == PerWindowState::PreUpdate)
+		renderTarget = viewportData->InternalRenderTargets[viewportData->CurrentSwapChainImageIndex];
 	else
-		renderTarget = winData->SwapChain->GetRenderTargets()[winData->CurrentSwapChainImageIndex];
+		renderTarget = viewportData->SwapChain->GetRenderTargets()[viewportData->CurrentSwapChainImageIndex];
 
 	GetRenderer()->BindRenderTarget(renderTarget, nullptr, nullptr,
 									nullptr, nullptr, static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);
+}
 #else
-	if((winData->RenderScale != 1.0f || s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) && winData->State == PerWindowState::PreUpdate)
-		renderTarget = winData->InternalRenderTargets[winData->ImageIndex];
+void TRAP::Graphics::RendererAPI::StartRenderPass()
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	TRAP::Ref<Graphics::RenderTarget> renderTarget = nullptr;
+
+	//Get correct RenderTarget
+	if((s_perViewportData->RenderScale != 1.0f || s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) && s_perViewportData->State == PerWindowState::PreUpdate)
+		renderTarget = s_perViewportData->InternalRenderTargets[s_perViewportData->ImageIndex];
 	else
-		renderTarget = winData->RenderTargets[winData->ImageIndex];
+		renderTarget = s_perViewportData->RenderTargets[s_perViewportData->ImageIndex];
 
 	GetRenderer()->BindRenderTarget(renderTarget, nullptr, nullptr,
-	                                nullptr, nullptr, static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);
-#endif
+	                                nullptr, nullptr, static_cast<uint32_t>(-1), static_cast<uint32_t>(-1));
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RendererAPI::StopRenderPass(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
@@ -381,6 +442,15 @@ void TRAP::Graphics::RendererAPI::StopRenderPass(const Window* window)
 	GetRenderer()->BindRenderTarget(nullptr, nullptr, nullptr, nullptr, nullptr, static_cast<uint32_t>(-1),
 	                                static_cast<uint32_t>(-1), window);
 }
+#else
+void TRAP::Graphics::RendererAPI::StopRenderPass()
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	GetRenderer()->BindRenderTarget(nullptr, nullptr, nullptr, nullptr, nullptr, static_cast<uint32_t>(-1),
+	                                static_cast<uint32_t>(-1));
+}
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -505,6 +575,7 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] float TRAP::Graphics::RendererAPI::GetGPUGraphicsFrameTime(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -514,9 +585,18 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 
 	return s_perViewportDataMap.at(window)->GraphicsFrameTime;
 }
+#else
+[[nodiscard]] float TRAP::Graphics::RendererAPI::GetGPUGraphicsFrameTime()
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	return s_perViewportData->GraphicsFrameTime;
+}
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] float TRAP::Graphics::RendererAPI::GetGPUComputeFrameTime(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -526,6 +606,14 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 
 	return s_perViewportDataMap.at(window)->ComputeFrameTime;
 }
+#else
+[[nodiscard]] float TRAP::Graphics::RendererAPI::GetGPUComputeFrameTime()
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	return s_perViewportData->ComputeFrameTime;
+}
+#endif /**/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -541,19 +629,23 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 
 	s_isVulkanCapableFirstTest = false;
 
-	if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
+#ifndef TRAP_HEADLESS_MODE
+	if (!INTERNAL::WindowingAPI::Init())
 	{
-		if (!INTERNAL::WindowingAPI::Init())
-		{
-			Utils::Dialogs::ShowMsgBox("Failed to initialize WindowingAPI", "The WindowingAPI couldn't be initialized!\n"
-								       "Error code: 0x0011", Utils::Dialogs::Style::Error,
-								       Utils::Dialogs::Buttons::Quit);
-			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed to initialize WindowingAPI! (0x0011)");
-			exit(0x0011);
-		}
+		Utils::Dialogs::ShowMsgBox("Failed to initialize WindowingAPI", "The WindowingAPI couldn't be initialized!\n"
+									"Error code: 0x0011", Utils::Dialogs::Style::Error,
+									Utils::Dialogs::Buttons::Quit);
+		TP_CRITICAL(Log::RendererVulkanPrefix, "Failed to initialize WindowingAPI! (0x0011)");
+		exit(0x0011);
 	}
+#endif /*TRAP_HEADLESS_MODE*/
 
+#ifndef TRAP_HEADLESS_MODE
 	if (INTERNAL::WindowingAPI::VulkanSupported())
+#else
+	static VkResult initRes = VkInitialize();
+	if(initRes == VK_SUCCESS)
+#endif /*TRAP_HEADLESS_MODE*/
 	{
 		if(VkGetInstanceVersion() < VK_API_VERSION_1_1)
 		{
@@ -564,9 +656,10 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 			return s_isVulkanCapable;
 		}
 
+		std::vector<std::string> instanceExtensions{};
+#ifndef TRAP_HEADLESS_MODE
 		//Required: Instance Extensions
 		//Surface extensions are optional in Headless mode.
-		std::vector<std::string> instanceExtensions{};
 		const auto reqExt = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
 
 		if (std::get<0>(reqExt).empty() ||
@@ -585,6 +678,7 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 		GPUSettings.SurfaceSupported = true;
 		instanceExtensions.push_back(std::get<0>(reqExt));
 		instanceExtensions.push_back(std::get<1>(reqExt));
+#endif /*TRAP_HEADLESS_MODE*/
 
 		if(!API::VulkanInstance::IsExtensionSupported(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME))
 		{
@@ -683,6 +777,7 @@ TRAP::Graphics::RendererAPI::PerViewportData::~PerViewportData()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] uint32_t TRAP::Graphics::RendererAPI::GetCurrentImageIndex(const TRAP::Window* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -691,3 +786,11 @@ TRAP::Graphics::RendererAPI::PerViewportData::~PerViewportData()
 
 	return s_perViewportDataMap.at(window)->ImageIndex;
 }
+#else
+[[nodiscard]] uint32_t TRAP::Graphics::RendererAPI::GetCurrentImageIndex()
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	return s_perViewportData->ImageIndex;
+}
+#endif /*TRAP_HEADLESS_MODE*/

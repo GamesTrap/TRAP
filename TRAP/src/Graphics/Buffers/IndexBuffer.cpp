@@ -99,12 +99,21 @@ void TRAP::Graphics::IndexBuffer::SetData(const uint32_t* const indices, const u
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::IndexBuffer::Use(const Window* const window) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	RendererAPI::GetRenderer()->BindIndexBuffer(m_indexBuffer, m_indexType, window);
 }
+#else
+void TRAP::Graphics::IndexBuffer::Use() const
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	RendererAPI::GetRenderer()->BindIndexBuffer(m_indexBuffer, m_indexType);
+}
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

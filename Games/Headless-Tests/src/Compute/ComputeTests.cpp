@@ -136,7 +136,7 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
 
     //Use shader
     const auto texShader = TRAP::Graphics::ShaderManager::Get("Texture");
-    texShader->UseTexture(1, 0, m_compTex, TRAP::Application::GetWindow());
+    texShader->UseTexture(1, 0, m_compTex);
     texShader->Use();
 
     //Render Quad

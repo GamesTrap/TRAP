@@ -1,6 +1,8 @@
 #ifndef TRAP_WINDOW_H
 #define TRAP_WINDOW_H
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include "Window/Monitor.h"
 #include "WindowingAPI.h"
 
@@ -150,13 +152,11 @@ namespace TRAP
 		/// </summary>
 		/// <returns>Opacity of the window on success, empty optional otherwise.</returns>
 		[[nodiscard]] std::optional<float> GetOpacity() const;
-#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Get whether VSync is enabled or disabled.
 		/// </summary>
 		/// <returns>True if VSync is enabled, false otherwise.</returns>
 		[[nodiscard]] bool GetVSync() const noexcept;
-#endif /*TRAP_HEADLESS_MODE*/
 		/// <summary>
 		/// Get the aspect ratio of the window.
 		/// </summary>
@@ -295,13 +295,11 @@ namespace TRAP
 		/// </summary>
 		/// <param name="enabled">True to enable, false otherwise.</param>
 		void SetDragAndDrop(bool enabled) const;
-#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Enable or disable VSync for the window.
 		/// </summary>
 		/// <param name="enabled">Whether to enable VSync or not.</param>
 		void SetVSync(bool enabled);
-#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Query whether the window is maximized or not.
@@ -497,5 +495,7 @@ namespace TRAP
 		                     uint32_t monitor = 0) noexcept;
 	};
 }
+
+#endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_WINDOW_H*/

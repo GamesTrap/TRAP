@@ -87,13 +87,15 @@ namespace TRAP::Utils
 
 	/// <summary>
 	/// Get the window manager used by Linux based systems.
+	///
+	/// On Linux if no known window manager is found then the engine will be terminated.
 	/// </summary>
 	/// <returns>
 	/// TRAP::Application::LinuxWindowManager::X11, TRAP::Application::LinuxWindowManager::Wayland or
 	/// TRAP::Application::LinuxWindowManager::Unknown(If window manager is unknown or system OS
-	/// is not Linux based Windows).
+	/// is not Linux based).
 	/// </returns>
-	[[nodiscard]] LinuxWindowManager GetLinuxWindowManager();
+	LinuxWindowManager GetLinuxWindowManager();
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -185,11 +187,13 @@ namespace TRAP::Utils
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+#ifdef TRAP_HEADLESS_MODE
 	/// <summary>
 	/// Register the SIGINT callback function.
 	/// Used in Headless mode to handle CTRL+C.
 	/// </summary>
 	void RegisterSIGINTCallback();
+#endif /*TRAP_HEADLESS_MODE*/
 }
 
 #endif /*TRAP_UTILS_H*/

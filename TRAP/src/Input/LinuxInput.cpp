@@ -28,6 +28,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 #include "Input/Input.h"
 
+#ifndef TRAP_HEADLESS_MODE
+
 #ifdef TRAP_PLATFORM_LINUX
 
 #include <regex>
@@ -346,7 +348,6 @@ bool TRAP::Input::OpenControllerDeviceLinux(std::filesystem::path path)
 
 	PollABSStateLinux(con);
 
-#ifndef TRAP_HEADLESS_MODE
 	if (!s_eventCallback)
 		return false;
 
@@ -360,7 +361,6 @@ bool TRAP::Input::OpenControllerDeviceLinux(std::filesystem::path path)
 
 	Events::ControllerConnectEvent event(static_cast<Controller>(index));
 	s_eventCallback(event);
-#endif /*TRAP_HEADLESS_MODE*/
 
 	return true;
 }
@@ -393,7 +393,6 @@ void TRAP::Input::CloseController(Controller controller)
 
 	*con = {};
 
-#ifndef TRAP_HEADLESS_MODE
 	if (!s_eventCallback)
 		return;
 
@@ -402,7 +401,6 @@ void TRAP::Input::CloseController(Controller controller)
 		Events::ControllerDisconnectEvent event(static_cast<Controller>(controller));
 		s_eventCallback(event);
 	}
-#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -606,4 +604,6 @@ void TRAP::Input::UpdateControllerGUID([[maybe_unused]] std::string& guid)
 	return TRAP::INTERNAL::WindowingAPI::GetLinuxKeyboardLayoutName();
 }
 
-#endif
+#endif /*TRAP_PLATFORM_LINUX*/
+
+#endif /*TRAP_HEADLESS_MODE*/

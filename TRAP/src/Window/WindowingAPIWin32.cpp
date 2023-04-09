@@ -29,6 +29,9 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "Core/PlatformDetection.h"
 #include "WindowingAPI.h"
+
+#ifndef TRAP_HEADLESS_MODE
+
 #include "Utils/Dialogs/Dialogs.h"
 #include "Utils/DynamicLoading/DynamicLoading.h"
 #include "Application.h"
@@ -3573,4 +3576,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow& window
 	DragAcceptFiles(window.Handle, value);
 }
 
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
+
+#endif /*TRAP_PLATFORM_WINDOWS*/

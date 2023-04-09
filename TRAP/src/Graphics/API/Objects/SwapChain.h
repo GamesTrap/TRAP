@@ -13,12 +13,14 @@ namespace TRAP::Graphics
 	class SwapChain
 	{
 	public:
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Create a new swap chain from the given description.
 		/// </summary>
 		/// <param name="desc">Swap chain description.</param>
 		/// <returns>Created swap chain.</returns>
 		[[nodiscard]] static TRAP::Ref<SwapChain> Create(RendererAPI::SwapChainDesc& desc);
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Retrieve the recommended swap chain image format.
@@ -33,6 +35,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		virtual ~SwapChain();
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
@@ -83,6 +86,7 @@ namespace TRAP::Graphics
 
 		//Render targets created from the swapchain back buffers
 		std::vector<TRAP::Ref<RenderTarget>> m_renderTargets;
+#endif /*TRAP_HEADLESS_MODE*/
 	};
 }
 

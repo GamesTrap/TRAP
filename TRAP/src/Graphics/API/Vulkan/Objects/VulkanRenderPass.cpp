@@ -4,7 +4,7 @@
 #include "VulkanDevice.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
-#include <vulkan/vulkan_core.h>
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 
 TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> device,
                                                         const VulkanRenderer::RenderPassDesc& desc)

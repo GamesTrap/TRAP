@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "VulkanSwapChain.h"
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include "VulkanSemaphore.h"
 #include "VulkanFence.h"
 #include "VulkanCommandBuffer.h"
@@ -415,3 +417,5 @@ void TRAP::Graphics::API::VulkanSwapChain::UpdateFramebufferSize()
 
 	return m_presentQueue;
 }
+
+#endif /*TRAP_HEADLESS_MODE*/

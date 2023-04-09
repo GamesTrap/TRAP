@@ -83,9 +83,9 @@ bool LoadFunctions()
     );
 
     return (AftermathEnableGPUCrashDumps != nullptr) && (AftermathDisableGPUCrashDumps != nullptr) && (AftermathGetGPUCrashDumpStatus != nullptr);
-#endif
-
+#else
     return false;
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

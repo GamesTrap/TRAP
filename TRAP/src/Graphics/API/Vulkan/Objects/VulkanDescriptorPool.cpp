@@ -7,7 +7,7 @@
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
-#include <vulkan/vulkan_core.h>
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 
 std::array<VkDescriptorPoolSize, TRAP::Graphics::API::VulkanDescriptorPool::DESCRIPTOR_TYPE_RANGE_SIZE>
 TRAP::Graphics::API::VulkanDescriptorPool::s_descriptorPoolSizes =

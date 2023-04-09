@@ -145,19 +145,31 @@ TRAP::Graphics::API::VulkanShader::~VulkanShader()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanShader::Use(const Window* const window)
+#else
+void TRAP::Graphics::API::VulkanShader::Use()
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanShader::Use(): Window is nullptr");
 
 	dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->BindShader(this, window);
+#else
+	dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->BindShader(this);
+#endif /*TRAP_HEADLESS_MODE*/
 
 	if(m_rootSignature) //Only do the following if the shader actually uses descriptors
 	{
 		//Following some descriptor set allocation and reusing logic
 
+#ifndef TRAP_HEADLESS_MODE
 		const uint32_t currImageIndex = RendererAPI::GetCurrentImageIndex(window);
+#else
+		const uint32_t currImageIndex = RendererAPI::GetCurrentImageIndex();
+#endif /*TRAP_HEADLESS_MODE*/
 
 		if(m_lastImageIndex != std::numeric_limits<uint32_t>::max())
 		{
@@ -203,13 +215,20 @@ void TRAP::Graphics::API::VulkanShader::Use(const Window* const window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uint32_t binding,
                                                    Ref<TRAP::Graphics::Texture> const texture, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uint32_t binding,
+                                                   Ref<TRAP::Graphics::Texture> const texture) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(texture, "VulkanShader::UseTexture(): Texture is nullptr!");
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanShader::UseTexture(): Window is nullptr");
+#endif /*TRAP_HEADLESS_MODE*/
 
 	if(!m_valid)
 		return;
@@ -237,21 +256,32 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uin
 		GetDescriptorSets()[set]->Update(0, params);
 	else
 	{
+#ifndef TRAP_HEADLESS_MODE
 		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
+#else
+		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex();
+#endif /*TRAP_HEADLESS_MODE*/
 		GetDescriptorSets()[set]->Update(imageIndex, params);
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const uint32_t binding,
 													const std::vector<Ref<TRAP::Graphics::Texture>>& textures,
 													const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const uint32_t binding,
+													const std::vector<Ref<TRAP::Graphics::Texture>>& textures) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(!textures.empty(), "VulkanShader::UseTextures(): Textures are empty!");
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanShader::UseTextures(): Window is nullptr");
+#endif /*TRAP_HEADLESS_MODE*/
 
 	if(!m_valid)
 		return;
@@ -281,20 +311,31 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 		GetDescriptorSets()[set]->Update(0, params);
 	else
 	{
+#ifndef TRAP_HEADLESS_MODE
 		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
+#else
+		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex();
+#endif /*TRAP_HEADLESS_MODE*/
 		GetDescriptorSets()[set]->Update(imageIndex, params);
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uint32_t binding,
 	                                               TRAP::Graphics::Sampler* const sampler, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uint32_t binding,
+	                                               TRAP::Graphics::Sampler* const sampler) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(sampler, "VulkanShader::UseSampler(): Sampler is nullptr!");
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanShader::UseSampler(): Window is nullptr");
+#endif /*TRAP_HEADLESS_MODE*/
 
 	if(!m_valid)
 		return;
@@ -315,21 +356,32 @@ void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uin
 		GetDescriptorSets()[set]->Update(0, params);
 	else
 	{
+#ifndef TRAP_HEADLESS_MODE
 		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
+#else
+		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex();
+#endif /*TRAP_HEADLESS_MODE*/
 		GetDescriptorSets()[set]->Update(imageIndex, params);
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const uint32_t binding,
 	                                                const std::vector<TRAP::Graphics::Sampler*>& samplers,
 													const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const uint32_t binding,
+	                                                const std::vector<TRAP::Graphics::Sampler*>& samplers) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(!samplers.empty(), "VulkanShader::UseSamplers(): Samplers are empty!");
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanShader::UseSamplers(): Window is nullptr");
+#endif /*TRAP_HEADLESS_MODE*/
 
 	if(!m_valid)
 		return;
@@ -352,16 +404,21 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const ui
 		GetDescriptorSets()[set]->Update(0, params);
 	else
 	{
+#ifndef TRAP_HEADLESS_MODE
 		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
+#else
+		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex();
+#endif /*TRAP_HEADLESS_MODE*/
 		GetDescriptorSets()[set]->Update(imageIndex, params);
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_t binding,
                                                const TRAP::Graphics::UniformBuffer* const uniformBuffer,
-											   const uint64_t size,  const uint64_t offset, const Window* const window) const
+											   const uint64_t size, const uint64_t offset, const Window* const window) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -376,9 +433,28 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_
 
 	UseBuffer(set, binding, uniformBuffer->GetUBOs()[UBOIndex].get(), size != 0u ? size : uniformBuffer->GetSize(), offset, window);
 }
+#else
+void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_t binding,
+                                               const TRAP::Graphics::UniformBuffer* const uniformBuffer,
+											   const uint64_t size, const uint64_t offset) const
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(uniformBuffer, "VulkanShader::UseUBO(): UniformBuffer is nullptr!");
+
+	if(!m_valid)
+		return;
+
+	const uint32_t UBOIndex = (uniformBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
+		                          0 : RendererAPI::GetCurrentImageIndex();
+
+	UseBuffer(set, binding, uniformBuffer->GetUBOs()[UBOIndex].get(), size != 0u ? size : uniformBuffer->GetSize(), offset);
+}
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanShader::UseSSBO(const uint32_t set, const uint32_t binding,
                                                 const TRAP::Graphics::StorageBuffer* const storageBuffer,
 											    const uint64_t size, const Window* const window) const
@@ -396,6 +472,24 @@ void TRAP::Graphics::API::VulkanShader::UseSSBO(const uint32_t set, const uint32
 
 	UseBuffer(set, binding, storageBuffer->GetSSBOs()[SSBOIndex].get(), size != 0u ? size : storageBuffer->GetSize(), 0, window);
 }
+#else
+void TRAP::Graphics::API::VulkanShader::UseSSBO(const uint32_t set, const uint32_t binding,
+                                                const TRAP::Graphics::StorageBuffer* const storageBuffer,
+											    const uint64_t size) const
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(storageBuffer, "VulkanShader::UseSSBO(): StorageBuffer is nullptr!");
+
+	if(!m_valid)
+		return;
+
+	const uint32_t SSBOIndex = (storageBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
+		                           0 : RendererAPI::GetCurrentImageIndex();
+
+	UseBuffer(set, binding, storageBuffer->GetSSBOs()[SSBOIndex].get(), size != 0u ? size : storageBuffer->GetSize(), 0);
+}
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -634,9 +728,14 @@ void TRAP::Graphics::API::VulkanShader::SetShaderStageName(const std::string_vie
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanShader::UseBuffer(const uint32_t set, const uint32_t binding,
 												  TRAP::Graphics::Buffer* const buffer, uint64_t size, uint64_t offset,
 												  const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanShader::UseBuffer(const uint32_t set, const uint32_t binding,
+												  TRAP::Graphics::Buffer* const buffer, uint64_t size, uint64_t offset) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -681,7 +780,11 @@ void TRAP::Graphics::API::VulkanShader::UseBuffer(const uint32_t set, const uint
 	}
 	else
 	{
+#ifndef TRAP_HEADLESS_MODE
 		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
+#else
+		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex();
+#endif /*TRAP_HEADLESS_MODE*/
 		params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{buffer};
 		GetDescriptorSets()[set]->Update(imageIndex, params);
 	}

@@ -40,7 +40,9 @@ TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std:
 {
 	ZoneScoped;
 
+#ifdef TRAP_HEADLESS_MODE
 	TRAP::Utils::RegisterSIGINTCallback();
+#endif /*TRAP_HEADLESS_MODE*/
 
 #ifdef TRACY_ENABLE
 	//Set Main Thread name for profiler
@@ -48,6 +50,7 @@ TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std:
 #endif
 
 	Utils::CheckSingleProcess();
+	Utils::GetLinuxWindowManager(); //On Linux if no known window manager is found this will exit the engine
 
 	TP_DEBUG(Log::ApplicationPrefix, "Initializing TRAP modules...");
 
@@ -70,7 +73,11 @@ TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std:
 
 	InitializeRendererAPI(m_gameName, renderAPI, m_config);
 
+#ifndef TRAP_HEADLESS_MODE
 	m_window = CreateMainWindow(LoadWindowProps(m_config));
+#else
+	CreateMainViewport(m_config);
+#endif /*TRAP_HEADLESS_MODE*/
 
 	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
 	{
@@ -83,12 +90,10 @@ TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std:
 
 	SetFPSLimit(m_config.Get<uint32_t>("FPSLimit"));
 
+#ifndef TRAP_HEADLESS_MODE
 	InitializeInput();
-#ifndef TRAP_HEADLESS_MODE
 	m_ImGuiLayer = InitializeImGui(m_layerStack);
-#endif /*TRAP_HEADLESS_MODE*/
 
-#ifndef TRAP_HEADLESS_MODE
 	TRAP::Utils::Discord::Create();
 #endif /*TRAP_HEADLESS_MODE*/
 }
@@ -109,19 +114,18 @@ TRAP::Application::~Application()
 	TRAP::Utils::Steam::Shutdown();
 #ifndef TRAP_HEADLESS_MODE
 	TRAP::Utils::Discord::Destroy();
-#endif /*TRAP_HEADLESS_MODE*/
 
-#ifdef TRAP_PLATFORM_LINUX
-	if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
-#endif /*TRAP_PLATFORM_LINUX*/
-	{
-		Input::Shutdown();
-	}
+	Input::Shutdown();
 
 	UpdateTRAPConfig(m_config, m_window.get(), m_fpsLimit, m_newRenderAPI);
+#else
+	UpdateTRAPConfig(m_config, m_fpsLimit, m_newRenderAPI);
+#endif /*TRAP_HEADLESS_MODE*/
 	SaveTRAPConfig(m_config);
 
+#ifndef TRAP_HEADLESS_MODE
 	m_window.reset();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
 	{
@@ -175,12 +179,9 @@ void TRAP::Application::Run()
 		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_INPUT_SAMPLE);
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
-#ifdef TRAP_PLATFORM_LINUX
-		if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
-#endif
-		{
-			TRAP::Window::OnUpdate();
-		}
+#ifndef TRAP_HEADLESS_MODE
+		TRAP::Window::OnUpdate();
+#endif /*TRAP_HEADLESS_MODE*/
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 		if(Input::IsMouseButtonPressed(Input::MouseButton::Left))
@@ -204,7 +205,9 @@ void TRAP::Application::Run()
 
 		m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
 
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 		++m_globalCounter;
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 	}
 }
 
@@ -253,7 +256,11 @@ void TRAP::Application::RunWork(const Utils::TimeStep& deltaTime, float& tickTim
 
 	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
 	{
+#ifndef TRAP_HEADLESS_MODE
 		Graphics::RenderCommand::Flush(m_window.get());
+#else
+		Graphics::RenderCommand::Flush();
+#endif /*TRAP_HEADLESS_MODE*/
 		Graphics::Renderer2D::Reset();
 	}
 }
@@ -455,6 +462,7 @@ void TRAP::Application::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] TRAP::Window* TRAP::Application::GetWindow()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -464,6 +472,7 @@ void TRAP::Application::Shutdown()
 
 	return s_Instance->m_window.get();
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -489,21 +498,25 @@ void TRAP::Application::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Application::SetClipboardString(const std::string& string)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	INTERNAL::WindowingAPI::SetClipboardString(string);
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] std::string TRAP::Application::GetClipboardString()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return INTERNAL::WindowingAPI::GetClipboardString();
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -808,9 +821,9 @@ std::filesystem::path TRAP::Application::GetTRAPConfigPath()
 {
 #ifdef TRAP_HEADLESS_MODE
 	return "engine.cfg";
-#endif
-
+#else
 	return TRAP::FileSystem::GetGameDocumentsFolderPath().value_or("") / "engine.cfg";
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -827,12 +840,16 @@ TRAP::Utils::Config TRAP::Application::LoadTRAPConfig()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Application::UpdateTRAPConfig(Utils::Config& config, const TRAP::Window* const window,
-                                       const uint32_t fpsLimit, const Graphics::RenderAPI renderAPI)
+                                         const uint32_t fpsLimit, const Graphics::RenderAPI renderAPI)
+#else
+void TRAP::Application::UpdateTRAPConfig(Utils::Config& config, const uint32_t fpsLimit,
+                                         const Graphics::RenderAPI renderAPI)
+#endif /*TRAP_HEADLESS_MODE*/
 {
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window != nullptr, "Application::UpdateTRAPConfig(); window is nullptr!");
-#endif /*TRAP_HEADLESS_MODE*/
 
 	if(window != nullptr)
 	{
@@ -841,18 +858,15 @@ void TRAP::Application::UpdateTRAPConfig(Utils::Config& config, const TRAP::Wind
 		if(window->GetHeight() > 0)
 			config.Set("Height", window->GetHeight());
 		config.Set("RefreshRate", window->GetRefreshRate());
-#ifndef TRAP_HEADLESS_MODE
 		config.Set("VSync", window->GetVSync());
-#endif /*TRAP_HEADLESS_MODE*/
 		config.Set("DisplayMode", window->GetDisplayMode());
 		config.Set("Maximized", window->IsMaximized());
 		config.Set("Monitor", window->GetMonitor().GetID());
 		config.Set("RawMouseInput", window->GetRawMouseInput());
 	}
-
-#ifndef TRAP_HEADLESS_MODE
+#else
 	config.Set("EnableGPU", Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE);
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
 
 	config.Set("FPSLimit", fpsLimit);
 	config.Set("RenderAPI", (renderAPI != Graphics::RenderAPI::NONE) ? renderAPI :
@@ -860,6 +874,15 @@ void TRAP::Application::UpdateTRAPConfig(Utils::Config& config, const TRAP::Wind
 
 	if (Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
 	{
+#ifdef TRAP_HEADLESS_MODE
+		uint32_t width = 1920;
+		uint32_t height = 1080;
+		Graphics::RendererAPI::GetRenderer()->GetResolution(width, height);
+
+		config.Set("Width", width);
+		config.Set("Height", height);
+#endif /*TRAP_HEADLESS_MODE*/
+
 		//GPU UUID
 		std::array<uint8_t, 16> GPUUUID{};
 		if(Graphics::RendererAPI::GetNewGPU() != std::array<uint8_t, 16>{}) //Only if UUID is not empty
@@ -894,6 +917,7 @@ void TRAP::Application::SaveTRAPConfig(TRAP::Utils::Config& config)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 TRAP::WindowProps::AdvancedProps TRAP::Application::LoadAdvancedWindowProps(const TRAP::Utils::Config& config)
 {
 	TRAP::WindowProps::AdvancedProps props{};
@@ -902,15 +926,13 @@ TRAP::WindowProps::AdvancedProps TRAP::Application::LoadAdvancedWindowProps(cons
 	props.Visible = true;
 	props.RawMouseInput = config.Get<bool>("RawMouseInput");
 
-#ifdef TRAP_HEADLESS_MODE
-	props.Visible = false;
-#endif /*TRAP_HEADLESS_MODE*/
-
 	return props;
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 TRAP::WindowProps TRAP::Application::LoadWindowProps(const TRAP::Utils::Config& config)
 {
 	constexpr uint32_t DefaultWindowWidth = 1280;
@@ -934,6 +956,7 @@ TRAP::WindowProps TRAP::Application::LoadWindowProps(const TRAP::Utils::Config& 
 
 	return props;
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -991,31 +1014,38 @@ void TRAP::Application::InitializeRendererAPI(const std::string_view gameName,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 std::unique_ptr<TRAP::Window> TRAP::Application::CreateMainWindow(const TRAP::WindowProps& winProps)
 {
-	std::unique_ptr<TRAP::Window> window = nullptr;
-
-#ifdef TRAP_PLATFORM_LINUX
-	if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
-#endif /*TRAP_PLATFORM_LINUX*/
+	std::unique_ptr<TRAP::Window> window = std::make_unique<TRAP::Window>(winProps);
+	if(window)
 	{
-		window = std::make_unique<TRAP::Window>(winProps);
-		if(window)
-		{
-			window->SetEventCallback([](TRAP::Events::Event& event) { s_Instance->OnEvent(event); });
+		window->SetEventCallback([](TRAP::Events::Event& event) { s_Instance->OnEvent(event); });
 
-			//Update Window Title (Debug/RelWithDebInfo)
-			if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
-				window->SetTitle(window->GetTitle() + TRAP::Graphics::RendererAPI::GetRenderer()->GetTitle());
-		}
+		//Update Window Title (Debug/RelWithDebInfo)
+		if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
+			window->SetTitle(window->GetTitle() + TRAP::Graphics::RendererAPI::GetRenderer()->GetTitle());
 	}
-#ifdef TRAP_HEADLESS_MODE
-	if(!window && TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
-		TRAP::Graphics::RendererAPI::GetRenderer()->InitPerViewportData(nullptr);
-#endif /*TRAP_HEADLESS_MODE*/
 
 	return window;
 }
+#endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRAP_HEADLESS_MODE
+void TRAP::Application::CreateMainViewport(const TRAP::Utils::Config& config)
+{
+	uint32_t width = 1920;
+	uint32_t height = 1080;
+
+	config.Get<uint32_t>("Width", width);
+	config.Get<uint32_t>("Height", height);
+
+	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
+		TRAP::Graphics::RendererAPI::GetRenderer()->InitPerViewportData(width, height);
+}
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -1082,16 +1112,13 @@ void TRAP::Application::ApplyRendererAPISettings(const TRAP::Utils::Config& conf
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Application::InitializeInput()
 {
-#ifdef TRAP_PLATFORM_LINUX
-	if(TRAP::Utils::GetLinuxWindowManager() == TRAP::Utils::LinuxWindowManager::Unknown)
-		return;
-#endif
-
 	Input::SetEventCallback([](Events::Event& event) { s_Instance->OnEvent(event); });
 	Input::Init();
 }
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

@@ -38,7 +38,7 @@ void TRAP::FileSystem::Init()
         if(!CreateFolder(*gameDocsFolder))
             TP_ERROR(Log::FileSystemPrefix, "Failed to create game documents folder: \"", gameDocsFolder->u8string(), "\"!");
     }
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
 
     //Create game log folder
     const auto gameLogFolder = GetGameLogFolderPath();
@@ -662,7 +662,7 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
     return (*docsFolder / "logs");
 #else
     return "logs";
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

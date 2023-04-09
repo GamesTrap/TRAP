@@ -74,7 +74,10 @@ namespace TRAP::Graphics
 
 	private:
 		friend void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc& desc) const;
+
+#ifndef TRAP_HEADLESS_MODE
 		friend TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Present(const RendererAPI::QueuePresentDesc& desc) const;
+#endif /*TRAP_HEADLESS_MODE*/
 	};
 }
 

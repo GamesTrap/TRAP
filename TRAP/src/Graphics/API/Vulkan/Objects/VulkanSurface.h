@@ -1,6 +1,8 @@
 #ifndef TRAP_VULKANSURFACE_H
 #define TRAP_VULKANSURFACE_H
 
+#ifndef TRAP_HEADLESS_MODE
+
 #include "Window/WindowingAPI.h"
 
 namespace TRAP::Graphics::API
@@ -73,5 +75,7 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanInstance> m_instance;
 	};
 }
+
+#endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_VULKANSURFACE_H*/
