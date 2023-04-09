@@ -3851,3 +3851,4 @@ SITREP 04/09/2023|23w14b1
         - Headless mode Removed support for Window, Monitor, SwapChain, VulkanSwapChain, VulkanSurface, Input, WindowingAPI ~>60 mins
         - Headless mode Removed unnecessary TRAP_HEADLESS_MODE checks ~<10 mins
         - Headless mode Removed unnecessary GetLinuxWindowManager() checks ~<10 mins
+        - Headless mode Added saving and loading of viewport width and height through engine.cfg ~<10 mins

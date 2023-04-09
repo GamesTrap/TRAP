@@ -2746,7 +2746,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetLatencyMode([[maybe_unused]] const 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(Window* const window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData() const
+void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const uint32_t width, const uint32_t height) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -2769,6 +2769,9 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData() const
 
 #ifndef TRAP_HEADLESS_MODE
 	p->Window = window;
+#else
+	p->NewWidth = width;
+	p->NewHeight = height;
 #endif /*TRAP_HEADLESS_MODE*/
 
 	p->GraphicsFrameTime = 0.0f;

@@ -1392,7 +1392,9 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Initialize the internal rendering data.
 		/// </summary>
-		virtual void InitPerViewportData() const = 0;
+		/// <param name="width">Width for the viewport.</param>
+		/// <param name="height">Height for the viewport.</param>
+		virtual void InitPerViewportData(uint32_t width, uint32_t height) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>

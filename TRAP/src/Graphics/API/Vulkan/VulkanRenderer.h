@@ -1108,7 +1108,9 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Initialize the internal rendering data.
 		/// </summary>
-		void InitPerViewportData() const override;
+		/// <param name="width">Width for the viewport.</param>
+		/// <param name="height">Height for the viewport.</param>
+		void InitPerViewportData(uint32_t width, uint32_t height) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>

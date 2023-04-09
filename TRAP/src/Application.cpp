@@ -76,8 +76,7 @@ TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std:
 #ifndef TRAP_HEADLESS_MODE
 	m_window = CreateMainWindow(LoadWindowProps(m_config));
 #else
-	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
-		TRAP::Graphics::RendererAPI::GetRenderer()->InitPerViewportData();
+	CreateMainViewport(m_config);
 #endif /*TRAP_HEADLESS_MODE*/
 
 	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
@@ -875,6 +874,11 @@ void TRAP::Application::UpdateTRAPConfig(Utils::Config& config, const uint32_t f
 
 	if (Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
 	{
+#ifdef TRAP_HEADLESS_MODE
+		config.Set("Width", Graphics::RendererAPI::GetViewportData().NewWidth);
+		config.Set("Height", Graphics::RendererAPI::GetViewportData().NewHeight);
+#endif /*TRAP_HEADLESS_MODE*/
+
 		//GPU UUID
 		std::array<uint8_t, 16> GPUUUID{};
 		if(Graphics::RendererAPI::GetNewGPU() != std::array<uint8_t, 16>{}) //Only if UUID is not empty
@@ -1020,6 +1024,22 @@ std::unique_ptr<TRAP::Window> TRAP::Application::CreateMainWindow(const TRAP::Wi
 	}
 
 	return window;
+}
+#endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRAP_HEADLESS_MODE
+void TRAP::Application::CreateMainViewport(const TRAP::Utils::Config& config)
+{
+	uint32_t width = 1920;
+	uint32_t height = 1080;
+
+	config.Get<uint32_t>("Width", width);
+	config.Get<uint32_t>("Height", height);
+
+	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
+		TRAP::Graphics::RendererAPI::GetRenderer()->InitPerViewportData(width, height);
 }
 #endif /*TRAP_HEADLESS_MODE*/
 

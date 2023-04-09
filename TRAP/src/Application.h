@@ -384,11 +384,17 @@ namespace TRAP
 		/// Create the main window.
 		///
 		/// Linux: If no known window manager can be found this function will close the engine.
-		/// Headless-Mode: This function may not create a window, this is not an error.
 		/// </summary>
 		/// <param name="winProps">Properties for the window.</param>
 		/// <returns>Created main window or nullptr.</returns>
 		static std::unique_ptr<TRAP::Window> CreateMainWindow(const TRAP::WindowProps& winProps);
+#endif /*TRAP_HEADLESS_MODE*/
+#ifdef TRAP_HEADLESS_MODE
+		/// <summary>
+		/// Create the main viewport.
+		/// </summary>
+		/// <param name="config">Config to load data from.</param>
+		static void CreateMainViewport(const TRAP::Utils::Config& config);
 #endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
