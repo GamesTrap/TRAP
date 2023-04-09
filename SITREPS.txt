@@ -3858,3 +3858,5 @@ SITREP 04/09/2023|23w14b1
     - RendererAPI::CaptureScreenshot() now returns nullptr on error ~<5 mins
     - Branch NVReflex-1.8:
         - Updated premake files ~<10 mins
+        - Updated NVIDIA-Reflex implementation ~<30 mins
+        - Verified correct functionality of NVIDIA-Reflex ~<15 mins

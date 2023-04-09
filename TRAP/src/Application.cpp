@@ -175,8 +175,8 @@ void TRAP::Application::Run()
 #endif
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_SIMULATION_START);
-		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_INPUT_SAMPLE);
+		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, PCLSTATS_SIMULATION_START);
+		// Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, PCLSTATS_INPUT_SAMPLE); //Deprecated
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -185,7 +185,7 @@ void TRAP::Application::Run()
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 		if(Input::IsMouseButtonPressed(Input::MouseButton::Left))
-			Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_TRIGGER_FLASH);
+			Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, PCLSTATS_TRIGGER_FLASH);
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 		RunWork(deltaTime, tickTimerSeconds);
@@ -200,7 +200,7 @@ void TRAP::Application::Run()
 		TRAP::Utils::Steam::RunCallbacks();
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_SIMULATION_END);
+		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, PCLSTATS_SIMULATION_END);
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 		m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
@@ -902,7 +902,7 @@ void TRAP::Application::UpdateTRAPConfig(Utils::Config& config, const uint32_t f
 
 		//NVIDIA Reflex
 #if !defined(TRAP_HEADLESS_MODE) && defined(NVIDIA_REFLEX_AVAILABLE)
-		NVSTATS_SHUTDOWN();
+		PCLSTATS_SHUTDOWN();
 		config.Set("NVIDIAReflex", Graphics::RenderCommand::GetLatencyMode());
 #endif
 	}
@@ -1102,7 +1102,7 @@ void TRAP::Application::ApplyRendererAPISettings(const TRAP::Utils::Config& conf
 #if !defined(TRAP_HEADLESS_MODE) && defined(NVIDIA_REFLEX_AVAILABLE)
 	//NVIDIA Reflex
 	Graphics::RenderCommand::SetLatencyMode(config.Get<Graphics::LatencyMode>("NVIDIAReflex"));
-	NVSTATS_INIT(0, 0);
+	PCLSTATS_INIT(0);
 #endif /*!TRAP_HEADLESS_MODE && NVIDIA_REFLEX_AVAILABLE*/
 
 	float renderScale = 1.0f;

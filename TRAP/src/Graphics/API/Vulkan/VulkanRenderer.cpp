@@ -381,7 +381,7 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData* const p)
 #ifndef TRAP_HEADLESS_MODE
 
 #ifdef NVIDIA_REFLEX_AVAILABLE
-	GetRenderer()->ReflexMarker(Application::GetGlobalCounter(), VK_PRESENT_START);
+	GetRenderer()->ReflexMarker(Application::GetGlobalCounter(), PCLSTATS_PRESENT_START);
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
 
 	QueuePresentDesc presentDesc{};
@@ -391,7 +391,7 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData* const p)
 	const PresentStatus presentStatus = s_graphicQueue->Present(presentDesc);
 
 #ifdef NVIDIA_REFLEX_AVAILABLE
-	GetRenderer()->ReflexMarker(Application::GetGlobalCounter(), VK_PRESENT_END);
+	GetRenderer()->ReflexMarker(Application::GetGlobalCounter(), PCLSTATS_PRESENT_END);
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
 #endif
 
@@ -552,14 +552,14 @@ void TRAP::Graphics::API::VulkanRenderer::Flush() const
 #endif /*TRAP_HEADLESS_MODE*/
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-	ReflexMarker(Application::GetGlobalCounter(), VK_RENDERSUBMIT_START);
+	ReflexMarker(Application::GetGlobalCounter(), PCLSTATS_RENDERSUBMIT_START);
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 	EndComputeRecording(p);
 	EndGraphicRecording(p);
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-	ReflexMarker(Application::GetGlobalCounter(), VK_RENDERSUBMIT_END);
+	ReflexMarker(Application::GetGlobalCounter(), PCLSTATS_RENDERSUBMIT_END);
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 	Present(p);
@@ -2160,15 +2160,15 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const ui
 #ifdef NVIDIA_REFLEX_AVAILABLE
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	NVSTATS_MARKER(marker, frame);
+	PCLSTATS_MARKER(marker, frame);
 
 	if(!GPUSettings.ReflexSupported)
 		return;
 
-	if(marker == NVSTATS_PC_LATENCY_PING)
+	if(marker == PCLSTATS_PC_LATENCY_PING)
 		return;
 
-	if(marker == VK_TRIGGER_FLASH) //BUG This gives ERROR_DEVICE_LOST
+	if(marker == PCLSTATS_TRIGGER_FLASH) //BUG This gives ERROR_DEVICE_LOST
 		return;
 
 	NVLL_VK_LATENCY_MARKER_PARAMS params{};
