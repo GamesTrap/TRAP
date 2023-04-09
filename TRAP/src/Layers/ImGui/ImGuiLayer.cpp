@@ -137,7 +137,7 @@ void TRAP::ImGuiLayer::OnAttach()
 	);
 
 	//Setup Platform/Renderer bindings
-	const auto& winData = TRAP::Graphics::RendererAPI::GetWindowData(TRAP::Application::GetWindow());
+	const auto& viewportData = TRAP::Graphics::RendererAPI::GetViewportData(TRAP::Application::GetWindow());
 
 	TP_TRACE(Log::ImGuiPrefix, "Init...");
 	if(!TRAP::INTERNAL::ImGuiWindowing::Init(window, true, Graphics::RendererAPI::GetRenderAPI()))
@@ -199,7 +199,7 @@ void TRAP::ImGuiLayer::OnAttach()
 
 		ImGui_ImplVulkan_Init(&initInfo, dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
 		(
-			winData.GraphicCommandBuffers[winData.ImageIndex]
+			viewportData.GraphicCommandBuffers[viewportData.ImageIndex]
 		)->GetActiveVkRenderPass());
 
 		ImGui_ImplVulkan_UploadFontsTexture();
@@ -266,10 +266,10 @@ void TRAP::ImGuiLayer::Begin()
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
 		//Bind SwapChain RenderTarget (this also updates the used RenderPass)
-		const auto& winData = TRAP::Graphics::RendererAPI::GetWindowData(TRAP::Application::GetWindow());
+		const auto& viewportData = TRAP::Graphics::RendererAPI::GetViewportData(TRAP::Application::GetWindow());
 		auto* const vkCmdBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
 		(
-			winData.GraphicCommandBuffers[winData.ImageIndex]
+			viewportData.GraphicCommandBuffers[viewportData.ImageIndex]
 		);
 		TRAP::Graphics::AntiAliasing aaMethod = TRAP::Graphics::AntiAliasing::Off;
 		TRAP::Graphics::SampleCount aaSamples = TRAP::Graphics::SampleCount::Two;
@@ -277,10 +277,10 @@ void TRAP::ImGuiLayer::Begin()
 
 		TRAP::Ref<TRAP::Graphics::RenderTarget> rT = nullptr;
 
-		if(aaMethod == TRAP::Graphics::RendererAPI::AntiAliasing::MSAA && winData.RenderScale == 1.0f) //MSAA and no RenderScale
-			rT = winData.InternalRenderTargets[winData.CurrentSwapChainImageIndex];
+		if(aaMethod == TRAP::Graphics::RendererAPI::AntiAliasing::MSAA && viewportData.RenderScale == 1.0f) //MSAA and no RenderScale
+			rT = viewportData.InternalRenderTargets[viewportData.CurrentSwapChainImageIndex];
 		else
-			rT = winData.SwapChain->GetRenderTargets()[winData.CurrentSwapChainImageIndex];
+			rT = viewportData.SwapChain->GetRenderTargets()[viewportData.CurrentSwapChainImageIndex];
 
 		//Cant use TRAP::Graphics::RenderCommand::StartRenderPass() here, because it would also bind the shading rate image
 		vkCmdBuffer->BindRenderTargets({ rT }, nullptr, nullptr, nullptr, nullptr,
@@ -288,7 +288,7 @@ void TRAP::ImGuiLayer::Begin()
 																				std::numeric_limits<uint32_t>::max());
 
 		//Only apply MSAA if no RenderScale is used (else it got already resolved to a non-MSAA texture)
-		if(aaMethod == TRAP::Graphics::AntiAliasing::MSAA && winData.RenderScale == 1.0f)
+		if(aaMethod == TRAP::Graphics::AntiAliasing::MSAA && viewportData.RenderScale == 1.0f)
 			ImGui_ImplVulkan_SetMSAASamples(static_cast<VkSampleCountFlagBits>(aaSamples));
 		else
 			ImGui_ImplVulkan_SetMSAASamples(VK_SAMPLE_COUNT_1_BIT);
@@ -318,13 +318,13 @@ void TRAP::ImGuiLayer::End()
 	ImGui::Render();
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
-		const auto& winData = TRAP::Graphics::RendererAPI::GetWindowData(TRAP::Application::GetWindow());
+		const auto& viewportData = TRAP::Graphics::RendererAPI::GetViewportData(TRAP::Application::GetWindow());
 		if(!Application::GetWindow()->IsMinimized())
 		{
 			ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
 											dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
 											(
-												winData.GraphicCommandBuffers[winData.ImageIndex]
+												viewportData.GraphicCommandBuffers[viewportData.ImageIndex]
 											)->GetVkCommandBuffer());
 		}
 	}

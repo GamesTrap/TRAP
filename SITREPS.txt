@@ -3846,3 +3846,5 @@ SITREP 04/09/2023|23w14b1
     - Docs Updated differences between normal and headless mode ~<10 mins
     - Renamed PerWindowData to PerViewportData ~<5 mins
     - Headless mode Removed support for VSync ~<15 mins
+    - Branch headless-rendererapi-rework:
+        - Headless mode Removed usage of TRAP::Window ~>60 mins

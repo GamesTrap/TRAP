@@ -208,7 +208,11 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData*
 	}
 
 	//Set Shading rate texture (check if texture is big enough, else it would create errors so just deactivate it)
+#ifndef TRAP_HEADLESS_MODE
 	const auto internalRes = GetInternalRenderResolution(p->Window);
+#else
+	const auto internalRes = GetInternalRenderResolution();
+#endif /*TRAP_HEADLESS_MODE*/
 	if(p->NewShadingRateTexture &&
 	   p->NewShadingRateTexture->GetWidth() >= static_cast<uint32_t>(TRAP::Math::Ceil(static_cast<float>(internalRes.x) / static_cast<float>(GPUSettings.ShadingRateTexelWidth))) &&
 	   p->NewShadingRateTexture->GetHeight() >= static_cast<uint32_t>(TRAP::Math::Ceil(static_cast<float>(internalRes.y) / static_cast<float>(GPUSettings.ShadingRateTexelHeight))))
@@ -530,13 +534,21 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::Flush(const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::Flush() const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::Flush(): Window is nullptr!");
 
 	PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 	ReflexMarker(Application::GetGlobalCounter(), VK_RENDERSUBMIT_START);
@@ -573,13 +585,21 @@ void TRAP::Graphics::API::VulkanRenderer::Flush(const Window* const window) cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<uint32_t, 3> workGroupElements, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<uint32_t, 3> workGroupElements) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::Dispatch(): Window is nullptr!");
 
 	const PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	const PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	if(!p->RecordingCompute)
 		return;
@@ -588,7 +608,11 @@ void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<uint32_t, 3> workG
 	if(!p->CurrentComputePipeline)
 	{
 		//Bind fallback shader
+#ifndef TRAP_HEADLESS_MODE
 		this->BindShader(TRAP::Graphics::ShaderManager::Get("FallbackCompute").get(), p->Window);
+#else
+		this->BindShader(TRAP::Graphics::ShaderManager::Get("FallbackCompute").get());
+#endif /*TRAP_HEADLESS_MODE*/
 	}
 
 	//Calculate used work group sizes
@@ -623,16 +647,16 @@ void TRAP::Graphics::API::VulkanRenderer::SetReflexFPSLimit([[maybe_unused]] con
 	if(!GPUSettings.ReflexSupported)
 		return;
 
-	for(auto& [win, winData] : s_perViewportDataMap)
+	for(auto& [win, viewportData] : s_perViewportDataMap)
 	{
 		if(limit == 0)
-			winData->SleepModeParams.minimumIntervalUs = 0;
+			viewportData->SleepModeParams.minimumIntervalUs = 0;
 		else
-			winData->SleepModeParams.minimumIntervalUs = static_cast<uint32_t>((1000.0f / static_cast<float>(limit)) * 1000.0f);
+			viewportData->SleepModeParams.minimumIntervalUs = static_cast<uint32_t>((1000.0f / static_cast<float>(limit)) * 1000.0f);
 
-		if(winData->SleepModeParams.bLowLatencyMode && winData->SleepModeParams.bLowLatencyBoost)
+		if(viewportData->SleepModeParams.bLowLatencyMode && viewportData->SleepModeParams.bLowLatencyBoost)
 			SetLatencyMode(LatencyMode::EnabledBoost, win);
-		else if(winData->SleepModeParams.bLowLatencyMode)
+		else if(viewportData->SleepModeParams.bLowLatencyMode)
 			SetLatencyMode(LatencyMode::Enabled, win);
 		else
 			SetLatencyMode(LatencyMode::Disabled, win);
@@ -643,135 +667,217 @@ void TRAP::Graphics::API::VulkanRenderer::SetReflexFPSLimit([[maybe_unused]] con
 
 //------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetRenderScale(float scale, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetRenderScale(float scale) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::GetRenderScale(): Window is nullptr!");
+#endif /*TRAP_HEADLESS_MODE*/
 	TRAP_ASSERT(scale >= 0.5f && scale <= 2.0f, "VulkanRenderer::GetRenderScale(): Scale must be between 0.5f and 2.0f inclusive!");
 
 	scale = TRAP::Math::Clamp(scale, 0.5f, 2.0f);
 
-	const auto& winData = s_perViewportDataMap.at(window);
-	winData->NewRenderScale = scale;
+#ifndef TRAP_HEADLESS_MODE
+	s_perViewportDataMap.at(window)->NewRenderScale = scale;
+#else
+	s_perViewportData->NewRenderScale = scale;
+#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 float TRAP::Graphics::API::VulkanRenderer::GetRenderScale(const Window* const window) const
+#else
+float TRAP::Graphics::API::VulkanRenderer::GetRenderScale() const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::GetRenderScale(): Window is nullptr!");
 
 	return s_perViewportDataMap.at(window)->RenderScale;
+#else
+	return s_perViewportData->RenderScale;
+#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const RendererAPI::Color& color, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const RendererAPI::Color& color) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetClearColor(): Window is nullptr!");
 
 	s_perViewportDataMap.at(window)->ClearColor = color;
+#else
+	s_perViewportData->ClearColor = color;
+#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetClearDepth(const float depth, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetClearDepth(const float depth) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetClearDepth(): Window is nullptr!");
 
 	s_perViewportDataMap.at(window)->ClearDepthStencil.Depth = depth;
+#else
+	s_perViewportData->ClearDepthStencil.Depth = depth;
+#endif /*TRAP_HEADLESS_MODEs*/
 }
 
 //------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetClearStencil(const uint32_t stencil, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetClearStencil(const uint32_t stencil) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetClearStencil(): Window is nullptr!");
 
 	s_perViewportDataMap.at(window)->ClearDepthStencil.Stencil = stencil;
+#else
+	s_perViewportData->ClearDepthStencil.Stencil = stencil;
+#endif /*TRAP_HEADLESS_MODEs*/
 }
 
 //------------------------------------------------------------------------------------------------------------------//
 
 #ifdef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::SetResolution(const uint32_t width, const uint32_t height,
-														const Window* const window) const
+void TRAP::Graphics::API::VulkanRenderer::SetResolution(const uint32_t width, const uint32_t height) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(width > 0 && height > 0, "VulkanRenderer::SetResolution(): Invalid render target resolution!");
-	TRAP_ASSERT(window, "VulkanRenderer::SetResolution(): Window is nullptr!");
 
-	auto* const p = s_perViewportDataMap.at(window).get();
-	p->Resize = true;
-	p->NewWidth = width;
-	p->NewHeight = height;
+	s_perViewportData->Resize = true;
+	s_perViewportData->NewWidth = width;
+	s_perViewportData->NewHeight = height;
 }
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
 
 //------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetDepthTesting(const bool enabled, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetDepthTesting(const bool enabled) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetDepthTesting(): Window is nullptr!");
 
 	std::get<GraphicsPipelineDesc>
 	(
 		s_perViewportDataMap.at(window)->GraphicsPipelineDesc.Pipeline
 	).DepthState->DepthTest = enabled;
+#else
+	std::get<GraphicsPipelineDesc>
+	(
+		s_perViewportData->GraphicsPipelineDesc.Pipeline
+	).DepthState->DepthTest = enabled;
+#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetDepthWriting(const bool enabled, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetDepthWriting(const bool enabled) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetDepthWriting(): Window is nullptr!");
 
 	std::get<GraphicsPipelineDesc>
 	(
 		s_perViewportDataMap.at(window)->GraphicsPipelineDesc.Pipeline
 	).DepthState->DepthWrite = enabled;
+#else
+	std::get<GraphicsPipelineDesc>
+	(
+		s_perViewportData->GraphicsPipelineDesc.Pipeline
+	).DepthState->DepthWrite = enabled;
+#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetDepthFunction(const CompareMode function, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetDepthFunction(const CompareMode function) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetDepthFunction(): Window is nullptr!");
 
 	std::get<GraphicsPipelineDesc>
 	(
 		s_perViewportDataMap.at(window)->GraphicsPipelineDesc.Pipeline
 	).DepthState->DepthFunc = function;
+#else
+	std::get<GraphicsPipelineDesc>
+	(
+		s_perViewportData->GraphicsPipelineDesc.Pipeline
+	).DepthState->DepthFunc = function;
+#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetDepthFail(const StencilOp front, const StencilOp back, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetDepthFail(const StencilOp front, const StencilOp back) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetDepthFail(): Window is nullptr!");
 
 	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>
 	(
 		s_perViewportDataMap.at(window)->GraphicsPipelineDesc.Pipeline
 	);
+#else
+	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>
+	(
+		s_perViewportData->GraphicsPipelineDesc.Pipeline
+	);
+#endif /*TRAP_HEADLESS_MODE*/
 
 	gpd.DepthState->DepthFrontFail = front;
 	gpd.DepthState->DepthBackFail = back;
@@ -779,59 +885,103 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthFail(const StencilOp front, co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetDepthBias(const int32_t depthBias, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetDepthBias(const int32_t depthBias) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetDepthBias(): Window is nullptr!");
 
 	std::get<GraphicsPipelineDesc>
 	(
 		s_perViewportDataMap.at(window)->GraphicsPipelineDesc.Pipeline
 	).RasterizerState->DepthBias = depthBias;
+#else
+	std::get<GraphicsPipelineDesc>
+	(
+		s_perViewportData->GraphicsPipelineDesc.Pipeline
+	).RasterizerState->DepthBias = depthBias;
+#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetDepthBiasSlopeFactor(const float factor, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetDepthBiasSlopeFactor(const float factor) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetDepthBiasSlopeFactor(): Window is nullptr!");
 
 	std::get<GraphicsPipelineDesc>
 	(
 		s_perViewportDataMap.at(window)->GraphicsPipelineDesc.Pipeline
 	).RasterizerState->SlopeScaledDepthBias = factor;
+#else
+	std::get<GraphicsPipelineDesc>
+	(
+		s_perViewportData->GraphicsPipelineDesc.Pipeline
+	).RasterizerState->SlopeScaledDepthBias = factor;
+#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetStencilTesting(const bool enabled, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetStencilTesting(const bool enabled) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetStencilTesting(): Window is nullptr!");
 
 	std::get<GraphicsPipelineDesc>
 	(
 		s_perViewportDataMap.at(window)->GraphicsPipelineDesc.Pipeline
 	).DepthState->StencilTest = enabled;
+#else
+	std::get<GraphicsPipelineDesc>
+	(
+		s_perViewportData->GraphicsPipelineDesc.Pipeline
+	).DepthState->StencilTest = enabled;
+#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetStencilFail(const StencilOp front, const StencilOp back,
                                                          const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetStencilFail(const StencilOp front, const StencilOp back) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetStencilFail(): Window is nullptr!");
 
 	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>
 	(
 		s_perViewportDataMap.at(window)->GraphicsPipelineDesc.Pipeline
 	);
+#else
+	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>
+	(
+		s_perViewportData->GraphicsPipelineDesc.Pipeline
+	);
+#endif /*TRAP_HEADLESS_MODE*/
 
 	gpd.DepthState->StencilFrontFail = front;
 	gpd.DepthState->StencilBackFail = back;
@@ -839,16 +989,27 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilFail(const StencilOp front, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetStencilPass(const StencilOp front, const StencilOp back, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetStencilPass(const StencilOp front, const StencilOp back) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetStencilPass(): Window is nullptr!");
 
 	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>
 	(
 		s_perViewportDataMap.at(window)->GraphicsPipelineDesc.Pipeline
 	);
+#else
+	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>
+	(
+		s_perViewportData->GraphicsPipelineDesc.Pipeline
+	);
+#endif /*TRAP_HEADLESS_MODE*/
 
 	gpd.DepthState->StencilFrontPass = front;
 	gpd.DepthState->StencilBackPass = back;
@@ -856,17 +1017,28 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilPass(const StencilOp front, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetStencilFunction(const CompareMode front, const CompareMode back,
                                                              const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetStencilFunction(const CompareMode front, const CompareMode back) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetStencilFunction(): Window is nullptr!");
 
 	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>
 	(
 		s_perViewportDataMap.at(window)->GraphicsPipelineDesc.Pipeline
 	);
+#else
+	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>
+	(
+		s_perViewportData->GraphicsPipelineDesc.Pipeline
+	);
+#endif /*TRAP_HEADLESS_MODE*/
 
 	gpd.DepthState->StencilFrontFunc = front;
 	gpd.DepthState->StencilBackFunc = back;
@@ -874,16 +1046,27 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilFunction(const CompareMode f
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetStencilMask(const uint8_t read, const uint8_t write, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetStencilMask(const uint8_t read, const uint8_t write) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetStencilMask(): Window is nullptr!");
 
 	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>
 	(
 		s_perViewportDataMap.at(window)->GraphicsPipelineDesc.Pipeline
 	);
+#else
+	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>
+	(
+		s_perViewportData->GraphicsPipelineDesc.Pipeline
+	);
+#endif /*TRAP_HEADLESS_MODE*/
 
 	gpd.DepthState->StencilReadMask = read;
 	gpd.DepthState->StencilWriteMask = write;
@@ -891,70 +1074,115 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilMask(const uint8_t read, con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetCullMode(const CullMode mode, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetCullMode(const CullMode mode) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetCullMode(): Window is nullptr!");
 
 	std::get<GraphicsPipelineDesc>
 	(
 		s_perViewportDataMap.at(window)->GraphicsPipelineDesc.Pipeline
 	).RasterizerState->CullMode = mode;
+#else
+	std::get<GraphicsPipelineDesc>
+	(
+		s_perViewportData->GraphicsPipelineDesc.Pipeline
+	).RasterizerState->CullMode = mode;
+#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetFillMode(const FillMode mode, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetFillMode(const FillMode mode) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetFillMode(): Window is nullptr!");
+#endif /*TRAP_HEADLESS_MODE*/
 
 	if(mode != FillMode::Solid && !GPUSettings.FillModeNonSolid)
 		return;
 
+#ifndef TRAP_HEADLESS_MODE
 	const PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	const PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).RasterizerState->FillMode = mode;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetPrimitiveTopology(const PrimitiveTopology topology, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetPrimitiveTopology(const PrimitiveTopology topology) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetPrimitiveTopology(): Window is nullptr!");
 
 	PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).PrimitiveTopology = topology;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetFrontFace(const FrontFace face, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetFrontFace(const FrontFace face) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetFrontFace(): Window is nullptr!");
 
 	const PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	const PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).RasterizerState->FrontFace = face;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetBlendMode(const BlendMode modeRGB, const BlendMode modeAlpha,
                                                        const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetBlendMode(const BlendMode modeRGB, const BlendMode modeAlpha) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetBlendMode(): Window is nullptr!");
 
 	PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
 
@@ -964,16 +1192,27 @@ void TRAP::Graphics::API::VulkanRenderer::SetBlendMode(const BlendMode modeRGB, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetBlendConstant(const BlendConstant sourceRGB,
 														   const BlendConstant sourceAlpha,
                                                            const BlendConstant destinationRGB,
                                                            const BlendConstant destinationAlpha, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetBlendConstant(const BlendConstant sourceRGB,
+														   const BlendConstant sourceAlpha,
+                                                           const BlendConstant destinationRGB,
+                                                           const BlendConstant destinationAlpha) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetBlendConstant(): Window is nullptr!");
 
 	PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
 
@@ -985,16 +1224,27 @@ void TRAP::Graphics::API::VulkanRenderer::SetBlendConstant(const BlendConstant s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(const ShadingRate shadingRate,
 		                            					 ShadingRateCombiner postRasterizerRate,
 							        					 ShadingRateCombiner finalRate, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(const ShadingRate shadingRate,
+		                            					 ShadingRateCombiner postRasterizerRate,
+							        					 ShadingRateCombiner finalRate) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps), "VulkanRenderer::SetShadingRate(): Shading rate is not supported by this device!");
+
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetShadingRate(): Window is nullptr!");
 
 	PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
 
@@ -1040,15 +1290,24 @@ void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(const ShadingRate shadi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(TRAP::Ref<TRAP::Graphics::RenderTarget> texture,
                                                          const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(TRAP::Ref<TRAP::Graphics::RenderTarget> texture) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps), "VulkanRenderer::SetShadingRate(): Shading rate is not supported by this device!");
+
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetShadingRate(): Window is nullptr!");
 
 	PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
 
@@ -1077,13 +1336,21 @@ void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(TRAP::Ref<TRAP::Graphic
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::Clear(): Window is nullptr!");
 
 	const PerViewportData* const data = s_perViewportDataMap.at(window).get();
+#else
+	const PerViewportData* const data = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	TRAP::Ref<RenderTarget> renderTarget;
 	if(data->RenderScale != 1.0f || s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
@@ -1123,18 +1390,30 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetViewport(const uint32_t x, const uint32_t y, const uint32_t width,
                                                       const uint32_t height, const float minDepth,
                                                       const float maxDepth, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetViewport(const uint32_t x, const uint32_t y, const uint32_t width,
+                                                      const uint32_t height, const float minDepth,
+                                                      const float maxDepth) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetViewport(): Window is nullptr!");
+#endif /*TRAP_HEADLESS_MODE*/
 
 	if (width == 0 || height == 0)
 		return;
 
+#ifndef TRAP_HEADLESS_MODE
 	const PerViewportData* const data = s_perViewportDataMap.at(window).get();
+#else
+	const PerViewportData* const data = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	data->GraphicCommandBuffers[data->ImageIndex]->SetViewport(static_cast<float>(x), static_cast<float>(y),
 	                                                           static_cast<float>(width), static_cast<float>(height),
@@ -1143,57 +1422,92 @@ void TRAP::Graphics::API::VulkanRenderer::SetViewport(const uint32_t x, const ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetScissor(const uint32_t x, const uint32_t y, const uint32_t width,
                                                      const uint32_t height, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::SetScissor(const uint32_t x, const uint32_t y, const uint32_t width,
+                                                     const uint32_t height) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetScissor(): Window is nullptr!");
 
 	const PerViewportData* const data = s_perViewportDataMap.at(window).get();
+#else
+	const PerViewportData* const data = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	data->GraphicCommandBuffers[data->ImageIndex]->SetScissor(x, y, width, height);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::Draw(const uint32_t vertexCount, const uint32_t firstVertex,
                                                const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::Draw(const uint32_t vertexCount, const uint32_t firstVertex) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::Draw(): Window is nullptr!");
 
 	const PerViewportData* const data = s_perViewportDataMap.at(window).get();
+#else
+	const PerViewportData* const data = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	data->GraphicCommandBuffers[data->ImageIndex]->Draw(vertexCount, firstVertex);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const uint32_t indexCount, const uint32_t firstIndex,
                                                       const uint32_t firstVertex, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const uint32_t indexCount, const uint32_t firstIndex,
+                                                      const uint32_t firstVertex) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::DrawIndexed(): Window is nullptr!");
 
 	const PerViewportData* const data = s_perViewportDataMap.at(window).get();
+#else
+	const PerViewportData* const data = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	data->GraphicCommandBuffers[data->ImageIndex]->DrawIndexed(indexCount, firstIndex, firstVertex);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::DrawInstanced(const uint32_t vertexCount, const uint32_t instanceCount,
                                                         const uint32_t firstVertex, const uint32_t firstInstance,
                                                         const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::DrawInstanced(const uint32_t vertexCount, const uint32_t instanceCount,
+                                                        const uint32_t firstVertex, const uint32_t firstInstance) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::DrawInstanced(): Window is nullptr!");
 
 	const PerViewportData* const data = s_perViewportDataMap.at(window).get();
+#else
+	const PerViewportData* const data = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	data->GraphicCommandBuffers[data->ImageIndex]->DrawInstanced(vertexCount, firstVertex, instanceCount,
 	                                                             firstInstance);
@@ -1201,15 +1515,25 @@ void TRAP::Graphics::API::VulkanRenderer::DrawInstanced(const uint32_t vertexCou
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::DrawIndexedInstanced(const uint32_t indexCount, const uint32_t instanceCount,
                                                                const uint32_t firstIndex, const uint32_t firstInstance,
 						                                       const uint32_t firstVertex, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::DrawIndexedInstanced(const uint32_t indexCount, const uint32_t instanceCount,
+                                                               const uint32_t firstIndex, const uint32_t firstInstance,
+						                                       const uint32_t firstVertex) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::DrawIndexedInstanced(): Window is nullptr!");
 
 	const PerViewportData* const data = s_perViewportDataMap.at(window).get();
+#else
+	const PerViewportData* const data = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	data->GraphicCommandBuffers[data->ImageIndex]->DrawIndexedInstanced(indexCount, firstIndex, instanceCount,
 	                                                                    firstInstance, firstVertex);
@@ -1217,13 +1541,21 @@ void TRAP::Graphics::API::VulkanRenderer::DrawIndexedInstanced(const uint32_t in
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::BindShader(): Window is nullptr!");
 
 	PerViewportData* const data = s_perViewportDataMap.at(window).get();
+#else
+	PerViewportData* const data = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	const ShaderStage stages = shader->GetShaderStages();
 
@@ -1302,8 +1634,13 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, const Windo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer,
                                                            const VertexBufferLayout& layout, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer,
+                                                           const VertexBufferLayout& layout) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	static constexpr auto ShaderDataTypeToImageFormat = [](const ShaderDataType s) -> ImageFormat
 	{
@@ -1354,9 +1691,13 @@ void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffe
 
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::BindVertexBuffer(): Window is nullptr!");
 
 	PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	p->GraphicCommandBuffers[p->ImageIndex]->BindVertexBuffer({ vBuffer }, { layout.GetStride() }, {});
 
@@ -1376,29 +1717,48 @@ void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::BindIndexBuffer(const TRAP::Ref<Buffer>& iBuffer,
                                                           const IndexType indexType, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::BindIndexBuffer(const TRAP::Ref<Buffer>& iBuffer,
+                                                          const IndexType indexType) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::BindIndexBuffer(): Window is nullptr!");
 
 	const PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	const PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	p->GraphicCommandBuffers[p->ImageIndex]->BindIndexBuffer(iBuffer, indexType, 0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::BindDescriptorSet(DescriptorSet& dSet, const uint32_t index,
 															const QueueType queueType, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::BindDescriptorSet(DescriptorSet& dSet, const uint32_t index,
+															const QueueType queueType) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "VulkanRenderer::BindDescriptorSet(): Invalid QueueType provided!");
+
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::BindDescriptorSet(): Window is nullptr!");
 
 	const PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	const PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	if(queueType == QueueType::Graphics)
 		p->GraphicCommandBuffers[p->ImageIndex]->BindDescriptorSet(index, dSet);
@@ -1408,15 +1768,25 @@ void TRAP::Graphics::API::VulkanRenderer::BindDescriptorSet(DescriptorSet& dSet,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::BindPushConstants(const char* const name, const void* const constantsData,
 															const QueueType queueType, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::BindPushConstants(const char* const name, const void* const constantsData,
+															const QueueType queueType) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "VulkanRenderer::BindPushConstants(): Invalid QueueType provided!");
+
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::BindPushConstants(): Window is nullptr!");
 
 	const PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	const PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	if(queueType == QueueType::Graphics)
 	{
@@ -1438,17 +1808,28 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstants(const char* const na
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const uint32_t paramIndex,
                                                                    const void* const constantsData,
 																   const QueueType queueType,
 																   const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const uint32_t paramIndex,
+                                                                   const void* const constantsData,
+																   const QueueType queueType) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "VulkanRenderer::BindPushConstantsByIndex(): Invalid QueueType provided!");
+
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::BindPushConstantsByIndex(): Window is nullptr!");
 
 	const PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	const PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	if(queueType == QueueType::Graphics)
 	{
@@ -1470,6 +1851,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const uint32_
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		                                                   const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
 							                               const RendererAPI::LoadActionsDesc* const loadActions,
@@ -1477,12 +1859,25 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graph
 							                               std::vector<uint32_t>* const colorMipSlices,
 							                               const uint32_t depthArraySlice,
 														   const uint32_t depthMipSlice, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
+		                                                   const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
+							                               const RendererAPI::LoadActionsDesc* const loadActions,
+							                               std::vector<uint32_t>* const colorArraySlices,
+							                               std::vector<uint32_t>* const colorMipSlices,
+							                               const uint32_t depthArraySlice,
+														   const uint32_t depthMipSlice) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::BindRenderTarget(): Window is nullptr!");
 
 	PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	TRAP::Ref<TRAP::Graphics::RenderTarget> shadingRateTex = nullptr;
 
@@ -1494,7 +1889,11 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graph
 
 		gpd.RenderTargetCount = 1;
 		gpd.ColorFormats = {colorTarget->GetImageFormat()};
+#ifndef TRAP_HEADLESS_MODE
 		BindShader(gpd.ShaderProgram, window);
+#else
+		BindShader(gpd.ShaderProgram);
+#endif /*TRAP_HEADLESS_MODE*/
 	}
 
 	std::vector<TRAP::Ref<Graphics::RenderTarget>> targets;
@@ -1508,6 +1907,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graph
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
 		                                                    const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
 							                                const RendererAPI::LoadActionsDesc* const loadActions,
@@ -1515,12 +1915,25 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TR
 							                                std::vector<uint32_t>* const colorMipSlices,
 							                                const uint32_t depthArraySlice,
 														    const uint32_t depthMipSlice, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
+		                                                    const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
+							                                const RendererAPI::LoadActionsDesc* const loadActions,
+							                                std::vector<uint32_t>* const colorArraySlices,
+							                                std::vector<uint32_t>* const colorMipSlices,
+							                                const uint32_t depthArraySlice,
+														    const uint32_t depthMipSlice) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::BindRenderTargets(): Window is nullptr!");
 
 	PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	TRAP::Ref<TRAP::Graphics::RenderTarget> shadingRateTex = nullptr;
 
@@ -1534,7 +1947,11 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TR
 		gpd.ColorFormats.resize(colorTargets.size());
 		for(std::size_t i = 0; i < colorTargets.size(); ++i)
 			gpd.ColorFormats[i] = colorTargets[i]->GetImageFormat();
+#ifndef TRAP_HEADLESS_MODE
 		BindShader(gpd.ShaderProgram, window);
+#else
+		BindShader(gpd.ShaderProgram);
+#endif /*TRAP_HEADLESS_MODE*/
 	}
 
 	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets
@@ -1545,15 +1962,25 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TR
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
 															    const QueueType queueType, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
+															    const QueueType queueType) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "VulkanRenderer::ResourceBufferBarrier(): Invalid QueueType provided!");
+
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::ResourceBufferBarrier(): Window is nullptr!");
 
 	const PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	const PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	if(queueType == QueueType::Graphics)
 		p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(&bufferBarrier, nullptr, nullptr);
@@ -1563,15 +1990,25 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarrier(const RendererAP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
 																 const QueueType queueType, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
+																 const QueueType queueType) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "VulkanRenderer::ResourceBufferBarriers(): Invalid QueueType provided!");
+
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::ResourceBufferBarriers(): Window is nullptr!");
 
 	const PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	const PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	if(queueType == QueueType::Graphics)
 		p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(&bufferBarriers, nullptr, nullptr);
@@ -1581,15 +2018,25 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarriers(const std::vect
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
 																 const QueueType queueType, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
+																 const QueueType queueType) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "VulkanRenderer::ResourceTextureBarrier(): Invalid QueueType provided!");
+
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::ResourceTextureBarrier(): Window is nullptr!");
 
 	const PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	const PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	if(queueType == QueueType::Graphics)
 		p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, &textureBarrier, nullptr);
@@ -1599,15 +2046,25 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarrier(const RendererA
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
 																  const QueueType queueType, const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
+																  const QueueType queueType) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "VulkanRenderer::ResourceTextureBarriers(): Invalid QueueType provided!");
+
+	#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::ResourceTextureBarriers(): Window is nullptr!");
 
 	const PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	const PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	if(queueType == QueueType::Graphics)
 		p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, &textureBarriers, nullptr);
@@ -1617,28 +2074,44 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarriers(const std::vec
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier,
 									                                  const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::ResourceRenderTargetBarrier(): Window is nullptr!");
 
 	const PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	const PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &renderTargetBarrier);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers,
 									                                   const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::ResourceRenderTargetBarriers(): Window is nullptr!");
 
 	const PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	const PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &renderTargetBarriers);
 }
@@ -1863,23 +2336,31 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(const Window* const window) const
+#else
+[[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot() const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::CaptureScreenshot(): Window is nullptr!");
 
-	const auto* const winData = s_perViewportDataMap.at(window).get();
-	const uint32_t lastFrame = (winData->ImageIndex - 1) % RendererAPI::ImageCount;
+	const auto* const viewportData = s_perViewportDataMap.at(window).get();
+#else
+	const auto* const viewportData = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
+	const uint32_t lastFrame = (viewportData->ImageIndex - 1) % RendererAPI::ImageCount;
 
 	//Wait for queues to finish
 	s_computeQueue->WaitQueueIdle();
 	s_graphicQueue->WaitQueueIdle();
 
 #ifdef TRAP_HEADLESS_MODE
-	const TRAP::Ref<RenderTarget> rT = winData->RenderTargets[lastFrame];
+	const TRAP::Ref<RenderTarget> rT = viewportData->RenderTargets[lastFrame];
 #else
-	const TRAP::Ref<RenderTarget> rT = winData->SwapChain->GetRenderTargets()[lastFrame];
+	const TRAP::Ref<RenderTarget> rT = viewportData->SwapChain->GetRenderTargets()[lastFrame];
 #endif
 
 	const uint8_t channelCount = static_cast<uint8_t>(ImageFormatChannelCount(rT->GetImageFormat()));
@@ -2009,19 +2490,23 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(const TRAP::Ref<Render
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewportData* const winData) const
+void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewportData* const viewportData) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(winData, "VulkanRenderer::UpdateInternalRenderTargets(): winData is nullptr!");
+	TRAP_ASSERT(viewportData, "VulkanRenderer::UpdateInternalRenderTargets(): viewportData is nullptr!");
 
 	bool rebuild = false;
-	const auto newInternalRes = GetInternalRenderResolution(winData->Window);
-	if(winData->RenderScale != 1.0f && !std::get<0>(winData->InternalRenderTargets))
+#ifndef TRAP_HEADLESS_MODE
+	const auto newInternalRes = GetInternalRenderResolution(viewportData->Window);
+#else
+	const auto newInternalRes = GetInternalRenderResolution();
+#endif /*TRAP_HEADLESS_MODE*/
+	if(viewportData->RenderScale != 1.0f && !std::get<0>(viewportData->InternalRenderTargets))
 		rebuild = true;
-	else if(std::get<0>(winData->InternalRenderTargets) &&
-	        (std::get<0>(winData->InternalRenderTargets)->GetWidth() != newInternalRes.x ||
-	         std::get<0>(winData->InternalRenderTargets)->GetHeight() != newInternalRes.y))
+	else if(std::get<0>(viewportData->InternalRenderTargets) &&
+	        (std::get<0>(viewportData->InternalRenderTargets)->GetWidth() != newInternalRes.x ||
+	         std::get<0>(viewportData->InternalRenderTargets)->GetHeight() != newInternalRes.y))
 	{
 		rebuild = true;
 	}
@@ -2033,9 +2518,9 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 		s_currentSampleCount = s_newSampleCount;
 
 		if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
-			std::get<GraphicsPipelineDesc>(winData->GraphicsPipelineDesc.Pipeline).SampleCount = s_currentSampleCount;
+			std::get<GraphicsPipelineDesc>(viewportData->GraphicsPipelineDesc.Pipeline).SampleCount = s_currentSampleCount;
 		else
-			std::get<GraphicsPipelineDesc>(winData->GraphicsPipelineDesc.Pipeline).SampleCount = SampleCount::One;
+			std::get<GraphicsPipelineDesc>(viewportData->GraphicsPipelineDesc.Pipeline).SampleCount = SampleCount::One;
 
 		rebuild = true;
 	}
@@ -2044,7 +2529,7 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 	{
 		WaitIdle();
 
-		winData->InternalRenderTargets = {};
+		viewportData->InternalRenderTargets = {};
 
 		RendererAPI::RenderTargetDesc rTDesc{};
 		rTDesc.Width = newInternalRes.x;
@@ -2057,21 +2542,30 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 		rTDesc.SampleCount = (s_currentAntiAliasing == AntiAliasing::MSAA) ? s_currentSampleCount : SampleCount::One;
 
 		for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
-			winData->InternalRenderTargets[i] = RenderTarget::Create(rTDesc);
+			viewportData->InternalRenderTargets[i] = RenderTarget::Create(rTDesc);
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(TRAP::Ref<RenderTarget> source,
                                                           TRAP::Ref<RenderTarget> destination,
 		                                                  const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(TRAP::Ref<RenderTarget> source,
+                                                          TRAP::Ref<RenderTarget> destination) const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::RenderScalePass(): Window is nullptr!");
 
 	PerViewportData* const p = s_perViewportDataMap.at(window).get();
+#else
+	PerViewportData* const p = s_perViewportData.get();
+#endif /*TRAP_HEADLESS_MODE*/
 
 	TRAP_ASSERT(p->RenderScale != 1.0f, "VulkanRenderer::RenderScalePass(): RenderScale must not be 1.0f!");
 
@@ -2122,11 +2616,19 @@ void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(TRAP::Ref<RenderTarget
 	barrier.Texture = source->GetTexture().get();
 	barrier.CurrentState = ResourceState::RenderTarget;
 	barrier.NewState = ResourceState::CopySource;
+#ifndef TRAP_HEADLESS_MODE
 	ResourceTextureBarrier(barrier, QueueType::Graphics, window);
+#else
+	ResourceTextureBarrier(barrier, QueueType::Graphics);
+#endif /*TRAP_HEADLESS_MODE*/
 	barrier.Texture = destination->GetTexture().get();
 	barrier.CurrentState = ResourceState::RenderTarget;
 	barrier.NewState = ResourceState::CopyDestination;
+#ifndef TRAP_HEADLESS_MODE
 	ResourceTextureBarrier(barrier, QueueType::Graphics, window);
+#else
+	ResourceTextureBarrier(barrier, QueueType::Graphics);
+#endif /*TRAP_HEADLESS_MODE*/
 
 	//Do scaling
 	TRAP::Ref<VulkanTexture> texInternal = std::dynamic_pointer_cast<VulkanTexture>(source->GetTexture());
@@ -2156,11 +2658,19 @@ void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(TRAP::Ref<RenderTarget
 	barrier.Texture = source->GetTexture().get();
 	barrier.CurrentState = ResourceState::CopySource;
 	barrier.NewState = ResourceState::RenderTarget;
+#ifndef TRAP_HEADLESS_MODE
 	ResourceTextureBarrier(barrier, QueueType::Graphics, window);
+#else
+	ResourceTextureBarrier(barrier, QueueType::Graphics);
+#endif /*TRAP_HEADLESS_MODE*/
 	barrier.Texture = destination->GetTexture().get();
 	barrier.CurrentState = ResourceState::CopyDestination;
 	barrier.NewState = ResourceState::RenderTarget;
+#ifndef TRAP_HEADLESS_MODE
 	ResourceTextureBarrier(barrier, QueueType::Graphics, window);
+#else
+	ResourceTextureBarrier(barrier, QueueType::Graphics);
+#endif /*TRAP_HEADLESS_MODE*/
 
 	//Start render pass
 	cmd->BindRenderTargets({destination}, nullptr, nullptr, nullptr, nullptr,
@@ -2232,13 +2742,19 @@ void TRAP::Graphics::API::VulkanRenderer::SetLatencyMode([[maybe_unused]] const 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData() const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	if (s_perViewportDataMap.find(window) != s_perViewportDataMap.end())
 		//Window is already in map
 		return;
+#endif /*TRAP_HEADLESS_MODE*/
 
 	//Add new Window to map
 	TRAP::Scope<PerViewportData> p = TRAP::MakeScope<PerViewportData>();
@@ -2250,7 +2766,9 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(Window* const wind
 		p->SleepModeParams.minimumIntervalUs = static_cast<uint32_t>(((1000.0f / Application::GetFPSLimit()) * 1000.0f));
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
+#ifndef TRAP_HEADLESS_MODE
 	p->Window = window;
+#endif /*TRAP_HEADLESS_MODE*/
 
 	p->GraphicsFrameTime = 0.0f;
 	p->ComputeFrameTime = 0.0f;
@@ -2431,25 +2949,36 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(Window* const wind
 	p->ComputePipelineDesc.Pipeline = ComputePipelineDesc();
 	p->CurrentComputeWorkGroupSize = {1, 1, 1};
 
-	s_perViewportDataMap[window] = std::move(p);
 
 #ifndef TRAP_HEADLESS_MODE
+	s_perViewportDataMap[window] = std::move(p);
+
 	StartComputeRecording(s_perViewportDataMap.at(window).get());
 	StartGraphicRecording(s_perViewportDataMap.at(window).get());
 #else
-	StartComputeRecording(s_perViewportDataMap.at(window).get());
-	StartGraphicRecording(s_perViewportDataMap.at(window).get());
+	s_perViewportData = std::move(p);
+
+	StartComputeRecording(s_perViewportData.get());
+	StartGraphicRecording(s_perViewportData.get());
 #endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::RemovePerViewportData(const Window* const window) const
+#else
+void TRAP::Graphics::API::VulkanRenderer::RemovePerViewportData() const
+#endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+#ifndef TRAP_HEADLESS_MODE
 	if (s_perViewportDataMap.find(window) != s_perViewportDataMap.end())
 		s_perViewportDataMap.erase(window);
+#else
+	s_perViewportData.reset();
+#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

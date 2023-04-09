@@ -55,11 +55,18 @@ namespace TRAP::Graphics
 		/// <returns>Update frequency.</returns>
 		[[nodiscard]] UpdateFrequency GetUpdateFrequency() const noexcept;
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Use this buffer for rendering on the given window.
 		/// </summary>
 		/// <param name="window">Window to use index buffer on. Default: Main Window.</param>
 		void Use(const Window* window = TRAP::Application::GetWindow()) const;
+#else
+		/// <summary>
+		/// Use this buffer for rendering.
+		/// </summary>
+		void Use() const;
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Update the buffers index data.

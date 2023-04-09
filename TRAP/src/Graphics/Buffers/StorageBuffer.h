@@ -67,6 +67,7 @@ namespace TRAP::Graphics
 		/// <param name="size">Byte size of the data.</param>
 		/// <param name="offset">Offset into the currently used data.</param>
 		void SetData(const void* data, uint64_t size, uint64_t offset = 0);
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Retrieve data of the SSBO.
 		/// </summary>
@@ -77,6 +78,16 @@ namespace TRAP::Graphics
 		template<typename T>
 		void GetData(const T* data, uint64_t size, uint64_t offset = 0,
 		             const Window* window = TRAP::Application::GetWindow());
+#else
+		/// <summary>
+		/// Retrieve data of the SSBO.
+		/// </summary>
+		/// <param name="data">Pointer to store data in.</param>
+		/// <param name="size">Byte size for data storage.</param>
+		/// <param name="offset">Offset into the currently used data.</param>
+		template<typename T>
+		void GetData(const T* data, uint64_t size, uint64_t offset = 0);
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Check whether uploading data to the GPU has finished.
@@ -126,6 +137,7 @@ namespace TRAP::Graphics
 	};
 }
 
+#ifndef TRAP_HEADLESS_MODE
 template<typename T>
 inline void TRAP::Graphics::StorageBuffer::GetData(const T* const data, const uint64_t size, const uint64_t offset, const Window* const window)
 {
@@ -144,5 +156,23 @@ inline void TRAP::Graphics::StorageBuffer::GetData(const T* const data, const ui
 	std::copy_n(static_cast<uint8_t*>(desc.MappedData), size, data);
 	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_tokens[imageIndex]);
 }
+#else
+template<typename T>
+inline void TRAP::Graphics::StorageBuffer::GetData(const T* const data, const uint64_t size, const uint64_t offset)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
+	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize(), "StorageBuffer::GetData(): Out of bounds!");
+
+	RendererAPI::BufferUpdateDesc desc{};
+	const uint32_t imageIndex = GetUpdateFrequency() ==
+								RendererAPI::DescriptorUpdateFrequency::Static ?
+									0 : RendererAPI::GetCurrentImageIndex();
+	desc.Buffer = m_storageBuffers[imageIndex];
+	desc.DstOffset = offset;
+	API::ResourceLoader::BeginUpdateResource(desc);
+	std::copy_n(static_cast<uint8_t*>(desc.MappedData), size, data);
+	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_tokens[imageIndex]);
+}
+#endif /*TRAP_HEADLESS_MODE*/
 #endif /*TRAP_STORAGEBUFFER_H*/

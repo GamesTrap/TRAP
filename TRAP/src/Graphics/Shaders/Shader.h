@@ -107,11 +107,19 @@ namespace TRAP::Graphics
 		/// <returns>True if shader is valid, false otherwise.</returns>
 		[[nodiscard]] bool IsShaderValid() const noexcept;
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Use shader for rendering on the given window.
 		/// </summary>
 		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
 		virtual void Use(const Window* window = TRAP::Application::GetWindow()) = 0;
+#else
+		/// <summary>
+		/// Use shader for rendering.
+		/// </summary>
+		virtual void Use() = 0;
+#endif /*TRAP_HEADLESS_MODE*/
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Use texture with this shader on the given window.
 		/// </summary>
@@ -121,6 +129,17 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
 		virtual void UseTexture(uint32_t set, uint32_t binding, Ref<TRAP::Graphics::Texture> texture,
 		                        const Window* window = TRAP::Application::GetWindow()) const = 0;
+#else
+		/// <summary>
+		/// Use texture with this shader.
+		/// </summary>
+		/// <param name="set">Descriptor set to use the texture with.</param>
+		/// <param name="binding">Binding point of the texture.</param>
+		/// <param name="texture">Texture to use.</param>
+		virtual void UseTexture(uint32_t set, uint32_t binding, Ref<TRAP::Graphics::Texture> texture) const = 0;
+#endif /*TRAP_HEADLESS_MODE*/
+
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Use multiple textures with this shader on the given window.
 		/// </summary>
@@ -131,6 +150,18 @@ namespace TRAP::Graphics
 		virtual void UseTextures(uint32_t set, uint32_t binding,
 		                         const std::vector<Ref<TRAP::Graphics::Texture>>& textures,
 								 const Window* window = TRAP::Application::GetWindow()) const = 0;
+#else
+		/// <summary>
+		/// Use multiple textures with this shader.
+		/// </summary>
+		/// <param name="set">Descriptor set to use the textures with.</param>
+		/// <param name="binding">Binding point of the textures.</param>
+		/// <param name="textures">Textures to use.</param>
+		virtual void UseTextures(uint32_t set, uint32_t binding,
+		                         const std::vector<Ref<TRAP::Graphics::Texture>>& textures) const = 0;
+#endif /*TRAP_HEADLESS_MODE*/
+
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Use sampler with this shader on the given window.
 		/// </summary>
@@ -140,6 +171,16 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
 		virtual void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* sampler,
 		                        const Window* window = TRAP::Application::GetWindow()) const = 0;
+#else
+		/// <summary>
+		/// Use sampler with this shader.
+		/// </summary>
+		/// <param name="set">Descriptor set to use the sampler with.</param>
+		/// <param name="binding">Binding point of the sampler.</param>
+		/// <param name="sampler">Sampler to use.</param>
+		virtual void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* sampler) const = 0;
+#endif /*TRAP_HEADLESS_MODE*/
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Use multiple samplers with this shader on the given window.
 		/// </summary>
@@ -150,6 +191,18 @@ namespace TRAP::Graphics
 		virtual void UseSamplers(uint32_t set, uint32_t binding,
 		                         const std::vector<TRAP::Graphics::Sampler*>& samplers,
 								 const Window* window = TRAP::Application::GetWindow()) const = 0;
+#else
+		/// <summary>
+		/// Use multiple samplers with this shader.
+		/// </summary>
+		/// <param name="set">Descriptor set to use the samplers with.</param>
+		/// <param name="binding">Binding point of the samplers.</param>
+		/// <param name="samplers">Samplers to use.</param>
+		virtual void UseSamplers(uint32_t set, uint32_t binding,
+		                         const std::vector<TRAP::Graphics::Sampler*>& samplers) const = 0;
+#endif /*TRAP_HEADLESS_MODE*/
+
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Use uniform buffer object with this shader on the given window.
 		/// </summary>
@@ -161,6 +214,20 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
 		virtual void UseUBO(uint32_t set, uint32_t binding, const TRAP::Graphics::UniformBuffer* uniformBuffer,
 							uint64_t size = 0, uint64_t offset = 0, const Window* window = TRAP::Application::GetWindow()) const = 0;
+#else
+		/// <summary>
+		/// Use uniform buffer object with this shader.
+		/// </summary>
+		/// <param name="set">Descriptor set to use the UBO with.</param>
+		/// <param name="binding">Binding point of the UBO.</param>
+		/// <param name="uniformBuffer">Uniform buffer to use.</param>
+		/// <param name="size">Size of the UBO.</param>
+		/// <param name="offset">Offset of the UBO.</param>
+		virtual void UseUBO(uint32_t set, uint32_t binding, const TRAP::Graphics::UniformBuffer* uniformBuffer,
+							uint64_t size = 0, uint64_t offset = 0) const = 0;
+#endif /*TRAP_HEADLESS_MODE*/
+
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Use shader storage buffer object with this shader on the given window.
 		/// </summary>
@@ -171,6 +238,17 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
 		virtual void UseSSBO(uint32_t set, uint32_t binding, const TRAP::Graphics::StorageBuffer* storageBuffer,
 							 uint64_t size = 0, const Window* window = TRAP::Application::GetWindow()) const = 0;
+#else
+		/// <summary>
+		/// Use shader storage buffer object with this shader.
+		/// </summary>
+		/// <param name="set">Descriptor set to use the SSBO with.</param>
+		/// <param name="binding">Binding point of the SSBO.</param>
+		/// <param name="storageBuffer">Storage buffer to use.</param>
+		/// <param name="size">Size of the SSBO.</param>
+		virtual void UseSSBO(uint32_t set, uint32_t binding, const TRAP::Graphics::StorageBuffer* storageBuffer,
+							 uint64_t size = 0) const = 0;
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Retrieve the shaders thread count per work group.

@@ -73,11 +73,18 @@ namespace TRAP::Graphics
 		/// <param name="offset">Byte offset into the currently used vertex data.</param>
 		void SetData(const float* data, uint64_t size, uint64_t offset = 0);
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Use this buffer for rendering on the given window.
 		/// </summary>
 		/// <param name="window">Window to use vertex buffer on. Default: Main Window.</param>
 		void Use(const Window* window = TRAP::Application::GetWindow()) const;
+#else
+		/// <summary>
+		/// Use this buffer for rendering.
+		/// </summary>
+		void Use() const;
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Check whether uploading data to the GPU has finished.

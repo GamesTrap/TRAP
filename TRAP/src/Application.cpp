@@ -253,7 +253,11 @@ void TRAP::Application::RunWork(const Utils::TimeStep& deltaTime, float& tickTim
 
 	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
 	{
+#ifndef TRAP_HEADLESS_MODE
 		Graphics::RenderCommand::Flush(m_window.get());
+#else
+		Graphics::RenderCommand::Flush();
+#endif /*TRAP_HEADLESS_MODE*/
 		Graphics::Renderer2D::Reset();
 	}
 }
@@ -1011,7 +1015,7 @@ std::unique_ptr<TRAP::Window> TRAP::Application::CreateMainWindow(const TRAP::Wi
 	}
 #ifdef TRAP_HEADLESS_MODE
 	if(!window && TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
-		TRAP::Graphics::RendererAPI::GetRenderer()->InitPerViewportData(nullptr);
+		TRAP::Graphics::RendererAPI::GetRenderer()->InitPerViewportData();
 #endif /*TRAP_HEADLESS_MODE*/
 
 	return window;

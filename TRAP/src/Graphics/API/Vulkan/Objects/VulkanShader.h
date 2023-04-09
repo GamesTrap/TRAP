@@ -82,11 +82,19 @@ namespace TRAP::Graphics::API
 		/// <returns>Entry point names.</returns>
 		[[nodiscard]] const std::vector<std::string>& GetEntryNames() const noexcept;
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Use shader for rendering on the given window.
 		/// </summary>
 		/// <param name="window">Window to use the shader for.</param>
 		void Use(const Window* window) override;
+#else
+		/// <summary>
+		/// Use shader for rendering.
+		/// </summary>
+		void Use() override;
+#endif /*TRAP_HEADLESS_MODE*/
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Use texture with this shader on the given window.
 		/// </summary>
@@ -96,7 +104,17 @@ namespace TRAP::Graphics::API
 		/// <param name="window">Window to use the shader for.</param>
 		void UseTexture(uint32_t set, uint32_t binding, Ref<TRAP::Graphics::Texture> texture,
 		                const Window* window) const override;
+#else
+		/// <summary>
+		/// Use texture with this shader.
+		/// </summary>
+		/// <param name="set">Descriptor set to use the texture with.</param>
+		/// <param name="binding">Binding point of the texture.</param>
+		/// <param name="texture">Texture to use.</param>
+		void UseTexture(uint32_t set, uint32_t binding, Ref<TRAP::Graphics::Texture> texture) const override;
+#endif /*TRAP_HEADLESS_MODE*/
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Use multiple textures with this shader on the given window.
 		/// </summary>
@@ -107,6 +125,18 @@ namespace TRAP::Graphics::API
 		void UseTextures(uint32_t set, uint32_t binding,
 						 const std::vector<Ref<TRAP::Graphics::Texture>>& textures,
 						 const Window* window) const override;
+#else
+		/// <summary>
+		/// Use multiple textures with this shader.
+		/// </summary>
+		/// <param name="set">Descriptor set to use the textures with.</param>
+		/// <param name="binding">Binding point of the textures.</param>
+		/// <param name="textures">Textures to use.</param>
+		void UseTextures(uint32_t set, uint32_t binding,
+						 const std::vector<Ref<TRAP::Graphics::Texture>>& textures) const override;
+#endif /*TRAP_HEADLESS_MODE*/
+
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Use sampler with this shader on the given window.
 		/// </summary>
@@ -116,6 +146,16 @@ namespace TRAP::Graphics::API
 		/// <param name="window">Window to use the shader for.</param>
 		void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* sampler,
 		                const Window* window) const override;
+#else
+		/// <summary>
+		/// Use sampler with this shader.
+		/// </summary>
+		/// <param name="set">Descriptor set to use the sampler with.</param>
+		/// <param name="binding">Binding point of the sampler.</param>
+		/// <param name="sampler">Sampler to use.</param>
+		void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* sampler) const override;
+#endif /*TRAP_HEADLESS_MODE*/
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Use multiple samplers with this shader on the given window.
 		/// </summary>
@@ -126,6 +166,18 @@ namespace TRAP::Graphics::API
 		void UseSamplers(uint32_t set, uint32_t binding,
 		                 const std::vector<TRAP::Graphics::Sampler*>& samplers,
 						 const Window* window) const override;
+#else
+		/// <summary>
+		/// Use multiple samplers with this shader.
+		/// </summary>
+		/// <param name="set">Descriptor set to use the samplers with.</param>
+		/// <param name="binding">Binding point of the samplers.</param>
+		/// <param name="samplers">Samplers to use.</param>
+		void UseSamplers(uint32_t set, uint32_t binding,
+		                 const std::vector<TRAP::Graphics::Sampler*>& samplers) const override;
+#endif /*TRAP_HEADLESS_MODE*/
+
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Use uniform buffer object with this shader on the given window.
 		/// </summary>
@@ -137,6 +189,20 @@ namespace TRAP::Graphics::API
 		/// <param name="window">Window to use the shader for.</param>
 		void UseUBO(uint32_t set, uint32_t binding, const TRAP::Graphics::UniformBuffer* constuniformBuffer,
 		            uint64_t size, uint64_t offset, const Window* window) const override;
+#else
+		/// <summary>
+		/// Use uniform buffer object with this shader.
+		/// </summary>
+		/// <param name="set">Descriptor set to use the UBO with.</param>
+		/// <param name="binding">Binding point of the UBO.</param>
+		/// <param name="uniformBuffer">Uniform buffer to use.</param>
+		/// <param name="size">Size of the UBO.</param>
+		/// <param name="offset">Offset of the UBO.</param>
+		void UseUBO(uint32_t set, uint32_t binding, const TRAP::Graphics::UniformBuffer* constuniformBuffer,
+		            uint64_t size, uint64_t offset) const override;
+#endif /*TRAP_HEADLESS_MODE*/
+
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Use shader storage buffer object with this shader on the given window.
 		/// </summary>
@@ -147,6 +213,17 @@ namespace TRAP::Graphics::API
 		/// <param name="window">Window to use the shader for.</param>
 		void UseSSBO(uint32_t set, uint32_t binding, const TRAP::Graphics::StorageBuffer* storageBuffer,
 		             uint64_t size, const Window* window) const override;
+#else
+		/// <summary>
+		/// Use shader storage buffer object with this shader.
+		/// </summary>
+		/// <param name="set">Descriptor set to use the SSBO with.</param>
+		/// <param name="binding">Binding point of the SSBO.</param>
+		/// <param name="storageBuffer">Storage buffer to use.</param>
+		/// <param name="size">Size of the SSBO.</param>
+		void UseSSBO(uint32_t set, uint32_t binding, const TRAP::Graphics::StorageBuffer* storageBuffer,
+		             uint64_t size) const override;
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Retrieve the shaders thread count per work group.
@@ -173,6 +250,7 @@ namespace TRAP::Graphics::API
 		/// <param name="stage">Shader stage to name.</param>
 		void SetShaderStageName(std::string_view name, VkShaderModule stage) const;
 
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Use a buffer object with this shader on the given window.
 		/// </summary>
@@ -184,6 +262,18 @@ namespace TRAP::Graphics::API
 		/// <param name="window">Window to use the buffer for.</param>
 		void UseBuffer(uint32_t set, uint32_t binding, TRAP::Graphics::Buffer* buffer,
 		               uint64_t size, uint64_t offset, const Window* window) const;
+#else
+		/// <summary>
+		/// Use a buffer object with this shader.
+		/// </summary>
+		/// <param name="set">Descriptor set to use the buffer with.</param>
+		/// <param name="binding">Binding point of the buffer.</param>
+		/// <param name="buffer">Buffer to use.</param>
+		/// <param name="size">Size of the buffer.</param>
+		/// <param name="offset">Offset into the buffer to start at.</param>
+		void UseBuffer(uint32_t set, uint32_t binding, TRAP::Graphics::Buffer* buffer,
+		               uint64_t size, uint64_t offset) const;
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		///	Retrieve a descriptor's name via its set, binding, descriptor type and size.
