@@ -607,6 +607,14 @@ namespace TRAP::Graphics
 		/// <param name="height">Height.</param>
 		static void SetResolution(uint32_t width, uint32_t height);
 #endif
+#ifdef TRAP_HEADLESS_MODE
+		/// <summary>
+		/// Get RenderTarget resolution.
+		/// </summary>
+		/// <param name="width">Output: Width.</param>
+		/// <param name="height">Output: Height.</param>
+		static void GetResolution(uint32_t& width, uint32_t& height);
+#endif
 
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>

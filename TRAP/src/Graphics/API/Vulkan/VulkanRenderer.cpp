@@ -783,6 +783,18 @@ void TRAP::Graphics::API::VulkanRenderer::SetResolution(const uint32_t width, co
 
 //------------------------------------------------------------------------------------------------------------------//
 
+#ifdef TRAP_HEADLESS_MODE
+void TRAP::Graphics::API::VulkanRenderer::GetResolution(uint32_t& width, uint32_t& height) const
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	width = s_perViewportData->NewWidth;
+	height = s_perViewportData->NewHeight;
+}
+#endif /*TRAP_HEADLESS_MODE*/
+
+//------------------------------------------------------------------------------------------------------------------//
+
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetDepthTesting(const bool enabled, const Window* const window) const
 #else

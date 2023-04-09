@@ -456,6 +456,15 @@ void TRAP::Graphics::RenderCommand::SetResolution(const uint32_t width, const ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifdef TRAP_HEADLESS_MODE
+void TRAP::Graphics::RenderCommand::GetResolution(uint32_t& width, uint32_t& height)
+{
+	RendererAPI::GetRenderer()->GetResolution(width, height);
+}
+#endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::SetRenderScale(const float scale, const Window* const window)
 {

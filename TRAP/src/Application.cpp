@@ -875,8 +875,12 @@ void TRAP::Application::UpdateTRAPConfig(Utils::Config& config, const uint32_t f
 	if (Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
 	{
 #ifdef TRAP_HEADLESS_MODE
-		config.Set("Width", Graphics::RendererAPI::GetViewportData().NewWidth);
-		config.Set("Height", Graphics::RendererAPI::GetViewportData().NewHeight);
+		uint32_t width = 1920;
+		uint32_t height = 1080;
+		Graphics::RendererAPI::GetRenderer()->GetResolution(width, height);
+
+		config.Set("Width", width);
+		config.Set("Height", height);
 #endif /*TRAP_HEADLESS_MODE*/
 
 		//GPU UUID

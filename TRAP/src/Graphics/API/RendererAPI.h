@@ -1252,6 +1252,14 @@ namespace TRAP::Graphics
 		/// <returns>Internal render resolution.</returns>
 		[[nodiscard]] static TRAP::Math::Vec2ui GetInternalRenderResolution();
 #endif /*TRAP_HEADLESS_MODE*/
+#ifdef TRAP_HEADLESS_MODE
+		/// <summary>
+		/// Get the resolution of the render targets.
+		/// </summary>
+		/// <param name="width">Output: Width.</param>
+		/// <param name="height">Output: Height.</param>
+		virtual void GetResolution(uint32_t& width, uint32_t& height) const = 0;
+#endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>

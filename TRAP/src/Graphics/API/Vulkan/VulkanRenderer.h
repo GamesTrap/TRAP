@@ -208,6 +208,14 @@ namespace TRAP::Graphics::API
 		/// <param name="height">New height.</param>
 		void SetResolution(uint32_t width, uint32_t height) const override;
 #endif
+#ifdef TRAP_HEADLESS_MODE
+		/// <summary>
+		/// Get the resolution of the render targets.
+		/// </summary>
+		/// <param name="width">Output: Width.</param>
+		/// <param name="height">Output: Height.</param>
+		void GetResolution(uint32_t& width, uint32_t& height) const override;
+#endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Enable or disable depth testing for the given window.
