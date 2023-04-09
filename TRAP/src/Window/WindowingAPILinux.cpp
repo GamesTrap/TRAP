@@ -722,8 +722,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotion(const InternalWindo
 
 void TRAP::INTERNAL::WindowingAPI::SetProgressIndicator(const ProgressState state, const double progress)
 {
-    TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
-
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
     if((s_Data.DBUS.Handle == nullptr) || (s_Data.DBUS.Connection == nullptr))
@@ -788,8 +786,6 @@ void TRAP::INTERNAL::WindowingAPI::SetProgressIndicator(const ProgressState stat
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowProgressIndicator([[maybe_unused]] const InternalWindow& window,
                                                                       const ProgressState state, const double progress)
 {
-    TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
-
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
     SetProgressIndicator(state, progress);

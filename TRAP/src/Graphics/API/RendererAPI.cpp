@@ -630,16 +630,13 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 	s_isVulkanCapableFirstTest = false;
 
 #ifndef TRAP_HEADLESS_MODE
-	if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
+	if (!INTERNAL::WindowingAPI::Init())
 	{
-		if (!INTERNAL::WindowingAPI::Init())
-		{
-			Utils::Dialogs::ShowMsgBox("Failed to initialize WindowingAPI", "The WindowingAPI couldn't be initialized!\n"
-								       "Error code: 0x0011", Utils::Dialogs::Style::Error,
-								       Utils::Dialogs::Buttons::Quit);
-			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed to initialize WindowingAPI! (0x0011)");
-			exit(0x0011);
-		}
+		Utils::Dialogs::ShowMsgBox("Failed to initialize WindowingAPI", "The WindowingAPI couldn't be initialized!\n"
+									"Error code: 0x0011", Utils::Dialogs::Style::Error,
+									Utils::Dialogs::Buttons::Quit);
+		TP_CRITICAL(Log::RendererVulkanPrefix, "Failed to initialize WindowingAPI! (0x0011)");
+		exit(0x0011);
 	}
 #endif /*TRAP_HEADLESS_MODE*/
 

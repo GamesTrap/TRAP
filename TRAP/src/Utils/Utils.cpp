@@ -272,11 +272,11 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
+TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	static LinuxWindowManager windowManager{};
+	static LinuxWindowManager windowManager = LinuxWindowManager::Unknown;
 
 #ifdef TRAP_PLATFORM_LINUX
 	if(windowManager != LinuxWindowManager::Unknown)
@@ -308,8 +308,10 @@
 
 	//Proceed with normal detection
 	session = "";
+
 	if(getenv("XDG_SESSION_TYPE"))
 		session = getenv("XDG_SESSION_TYPE");
+
 	if (getenv("WAYLAND_DISPLAY") || session == wl)
 		windowManager = LinuxWindowManager::Wayland;
 	else if (getenv("DISPLAY") || session == x11)
@@ -326,7 +328,7 @@
 		exit(0x0008);
 #else
 		return LinuxWindowManager::Unknown;
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
 	}
 
 #ifndef ENABLE_WAYLAND_SUPPORT
@@ -339,8 +341,8 @@
 		else
 			windowManager = LinuxWindowManager::Unknown;
 	}
-#endif
-#endif
+#endif /*ENABLE_WAYLAND_SUPPORT*/
+#endif /*TRAP_PLATFORM_LINUX*/
 
 	return windowManager;
 }

@@ -268,6 +268,8 @@ void TRAP::Window::SetTitle(const std::string& title)
 		                   "[INDEV]" + Log::WindowVersion + Graphics::RendererAPI::GetRenderer()->GetTitle();
 #ifdef TRAP_PLATFORM_LINUX
 		newTitle += "[" + Utils::String::ConvertToString(Utils::GetLinuxWindowManager()) + "]";
+#elif defined(TRAP_PLATFORM_WINDOWS)
+		newTitle += "[Win32]";
 #endif
 
 #if defined(__SANITIZE_ADDRESS__) || __has_feature(address_sanitizer) || defined(TRAP_ASAN)
@@ -1050,14 +1052,11 @@ void TRAP::Window::Init(const WindowProps& props)
 	#ifndef TRAP_RELEASE
 		newTitle += Graphics::RendererAPI::GetRenderer()->GetTitle();
 	#ifdef TRAP_PLATFORM_LINUX
-		if (Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
-			newTitle += "[Wayland]";
-		else if (Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
-			newTitle += "[X11]";
-		else
-			newTitle += "[Unknown]";
+		newTitle += "[" + Utils::String::ConvertToString(Utils::GetLinuxWindowManager()) + "]";
+	#elif defined(TRAP_PLATFORM_WINDOWS)
+		newTitle += "[Win32]";
 	#endif
-	#endif
+	#endif /*TRAP_RELEASE*/
 		INTERNAL::WindowingAPI::SetWindowTitle(*m_window, newTitle);
 	}
 

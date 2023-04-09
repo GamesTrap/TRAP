@@ -50,6 +50,7 @@ TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std:
 #endif
 
 	Utils::CheckSingleProcess();
+	Utils::GetLinuxWindowManager(); //On Linux if no known window manager is found this will exit the engine
 
 	TP_DEBUG(Log::ApplicationPrefix, "Initializing TRAP modules...");
 
@@ -115,12 +116,7 @@ TRAP::Application::~Application()
 #ifndef TRAP_HEADLESS_MODE
 	TRAP::Utils::Discord::Destroy();
 
-#ifdef TRAP_PLATFORM_LINUX
-	if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
-#endif /*TRAP_PLATFORM_LINUX*/
-	{
-		Input::Shutdown();
-	}
+	Input::Shutdown();
 
 	UpdateTRAPConfig(m_config, m_window.get(), m_fpsLimit, m_newRenderAPI);
 #else
@@ -185,12 +181,7 @@ void TRAP::Application::Run()
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
-#ifdef TRAP_PLATFORM_LINUX
-		if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
-#endif
-		{
-			TRAP::Window::OnUpdate();
-		}
+		TRAP::Window::OnUpdate();
 #endif /*TRAP_HEADLESS_MODE*/
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
@@ -831,9 +822,9 @@ std::filesystem::path TRAP::Application::GetTRAPConfigPath()
 {
 #ifdef TRAP_HEADLESS_MODE
 	return "engine.cfg";
-#endif
-
+#else
 	return TRAP::FileSystem::GetGameDocumentsFolderPath().value_or("") / "engine.cfg";
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1018,21 +1009,14 @@ void TRAP::Application::InitializeRendererAPI(const std::string_view gameName,
 #ifndef TRAP_HEADLESS_MODE
 std::unique_ptr<TRAP::Window> TRAP::Application::CreateMainWindow(const TRAP::WindowProps& winProps)
 {
-	std::unique_ptr<TRAP::Window> window = nullptr;
-
-#ifdef TRAP_PLATFORM_LINUX
-	if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
-#endif /*TRAP_PLATFORM_LINUX*/
+	std::unique_ptr<TRAP::Window> window = std::make_unique<TRAP::Window>(winProps);
+	if(window)
 	{
-		window = std::make_unique<TRAP::Window>(winProps);
-		if(window)
-		{
-			window->SetEventCallback([](TRAP::Events::Event& event) { s_Instance->OnEvent(event); });
+		window->SetEventCallback([](TRAP::Events::Event& event) { s_Instance->OnEvent(event); });
 
-			//Update Window Title (Debug/RelWithDebInfo)
-			if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
-				window->SetTitle(window->GetTitle() + TRAP::Graphics::RendererAPI::GetRenderer()->GetTitle());
-		}
+		//Update Window Title (Debug/RelWithDebInfo)
+		if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
+			window->SetTitle(window->GetTitle() + TRAP::Graphics::RendererAPI::GetRenderer()->GetTitle());
 	}
 
 	return window;
@@ -1107,11 +1091,6 @@ void TRAP::Application::ApplyRendererAPISettings(const TRAP::Utils::Config& conf
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Application::InitializeInput()
 {
-#ifdef TRAP_PLATFORM_LINUX
-	if(TRAP::Utils::GetLinuxWindowManager() == TRAP::Utils::LinuxWindowManager::Unknown)
-		return;
-#endif
-
 	Input::SetEventCallback([](Events::Event& event) { s_Instance->OnEvent(event); });
 	Input::Init();
 }
