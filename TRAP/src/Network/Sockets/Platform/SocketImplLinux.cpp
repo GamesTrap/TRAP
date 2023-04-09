@@ -29,9 +29,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 #include "SocketImplLinux.h"
 
-#include <cerrno>
-#include <fcntl.h>
-#include <cstring>
 #include "Core/PlatformDetection.h"
 #include "Utils/String/String.h"
 #include "Utils/Utils.h"

@@ -1,4 +1,5 @@
 #include "TRAPPCH.h"
+
 #include "Application.h"
 #include "Core/PlatformDetection.h"
 

@@ -1,5 +1,6 @@
 #include "TRAPPCH.h"
 #include "SHA-3.h"
+
 #include "TRAP_Assert.h"
 
 static constexpr std::array<uint64_t, 24> RC =

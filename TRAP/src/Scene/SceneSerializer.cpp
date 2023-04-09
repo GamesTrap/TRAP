@@ -1,6 +1,5 @@
 #include "TRAPPCH.h"
 #include "SceneSerializer.h"
-#include "Utils/String/String.h"
 
 #ifdef _MSC_VER
 #pragma warning(push, 0)
@@ -10,6 +9,7 @@
 #pragma warning(pop)
 #endif
 
+#include "Utils/String/String.h"
 #include "Components.h"
 #include "Entity.h"
 #include "FileSystem/FileSystem.h"

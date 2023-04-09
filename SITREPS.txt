@@ -3853,3 +3853,5 @@ SITREP 04/09/2023|23w14b1
         - Headless mode Removed unnecessary GetLinuxWindowManager() checks ~<10 mins
         - Headless mode Added saving and loading of viewport width and height through engine.cfg ~<10 mins
         - Headless mode Added RendererAPI::GetResolution() function to query viewport size ~<10 mins
+    - Merged headless-rendererapi-rework into dev ~<5 mins
+    - Fixed include order in some files ~<5 mins

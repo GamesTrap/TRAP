@@ -29,8 +29,6 @@ Modified by Jan "GamesTrap" Schuerkamp
 
 #ifndef TRAP_HEADLESS_MODE
 
-#include <cstddef>
-
 #include "Application.h"
 #include "Maths/Math.h"
 #include "Graphics/API/RendererAPI.h"

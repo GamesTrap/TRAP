@@ -1,8 +1,6 @@
 #include "TRAPPCH.h"
 #include "VulkanCommandBuffer.h"
 
-#include <cstddef>
-
 #include "VulkanFrameBuffer.h"
 #include "VulkanRenderTarget.h"
 #include "VulkanPipeline.h"
