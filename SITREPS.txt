@@ -3855,3 +3855,4 @@ SITREP 04/09/2023|23w14b1
         - Headless mode Added RendererAPI::GetResolution() function to query viewport size ~<10 mins
     - Merged headless-rendererapi-rework into dev ~<5 mins
     - Fixed include order in some files ~<5 mins
+    - RendererAPI::CaptureScreenshot() now returns nullptr on error ~<5 mins

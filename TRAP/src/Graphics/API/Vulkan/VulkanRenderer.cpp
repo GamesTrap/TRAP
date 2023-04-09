@@ -2451,7 +2451,8 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	}
 
 	if(pixelDatau8.empty() && pixelDataf32.empty()) //Error
-		return TRAP::Image::LoadFromMemory(1, 1, TRAP::Image::ColorFormat::RGB, std::vector<uint8_t>{0, 0, 0});
+		return nullptr;
+
 	if(!pixelDataf32.empty()) //HDR
 		return TRAP::Image::LoadFromMemory(rT->GetWidth(), rT->GetHeight(), static_cast<TRAP::Image::ColorFormat>(channelCount), pixelDataf32);
 	if(!pixelDatau16.empty()) //U16

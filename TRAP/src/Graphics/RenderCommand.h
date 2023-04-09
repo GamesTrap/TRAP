@@ -964,16 +964,16 @@ namespace TRAP::Graphics
 
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
-		/// Take a screenshot of the RenderTarget from the given window.
+		/// Capture a screenshot of the last presented frame.
 		/// </summary>
 		/// <param name="window">Window to take screenshot from. Default: Main Window.</param>
-		/// <returns>Captured screenshot.</returns>
+		/// <returns>Captured screenshot as TRAP::Image on success, nullptr otherwise.</returns>
 		[[nodiscard]] static TRAP::Scope<TRAP::Image> CaptureScreenshot(const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
 		/// Capture a screenshot of the last presented frame.
 		/// </summary>
-		/// <returns>Captured screenshot as TRAP::Image on success, Black 1x1 TRAP::Image otherwise.</returns>
+		/// <returns>Captured screenshot as TRAP::Image on success, nullptr otherwise.</returns>
 		[[nodiscard]] static TRAP::Scope<TRAP::Image> CaptureScreenshot();
 #endif /*TRAP_HEADLESS_MODE*/
 

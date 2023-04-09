@@ -1137,13 +1137,13 @@ namespace TRAP::Graphics
 		/// Capture a screenshot of the last presented frame.
 		/// </summary>
 		/// <param name="window">Window to capture screenshot on.</param>
-		/// <returns>Captured screenshot as TRAP::Image on success, Black 1x1 TRAP::Image otherwise.</returns>
+		/// <returns>Captured screenshot as TRAP::Image on success, nullptr otherwise.</returns>
 		[[nodiscard]] virtual TRAP::Scope<TRAP::Image> CaptureScreenshot(const Window* window) const = 0;
 #else
 		/// <summary>
 		/// Capture a screenshot of the last presented frame.
 		/// </summary>
-		/// <returns>Captured screenshot as TRAP::Image on success, Black 1x1 TRAP::Image otherwise.</returns>
+		/// <returns>Captured screenshot as TRAP::Image on success, nullptr otherwise.</returns>
 		[[nodiscard]] virtual TRAP::Scope<TRAP::Image> CaptureScreenshot() const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 

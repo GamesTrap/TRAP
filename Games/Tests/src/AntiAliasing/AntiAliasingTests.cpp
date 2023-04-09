@@ -146,7 +146,8 @@ bool AntiAliasingTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 	{
         //Screenshot
 	    TRAP::Scope<TRAP::Image> testImage = TRAP::Graphics::RenderCommand::CaptureScreenshot();
-	    TRAP::INTERNAL::PPMImage::Save(testImage.get(), "antialiasing.ppm");
+		if(testImage)
+	    	TRAP::INTERNAL::PPMImage::Save(testImage.get(), "antialiasing.ppm");
 	}
 
 	return false;

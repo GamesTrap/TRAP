@@ -38,7 +38,8 @@ void AntiAliasingTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& d
     {
         //Screenshot
 	    TRAP::Scope<TRAP::Image> testImage = TRAP::Graphics::RenderCommand::CaptureScreenshot();
-	    TRAP::INTERNAL::PPMImage::Save(testImage.get(), "antialiasing.ppm");
+		if(testImage)
+	    	TRAP::INTERNAL::PPMImage::Save(testImage.get(), "antialiasing.ppm");
 
         TRAP::Application::Shutdown();
         return;
