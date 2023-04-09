@@ -40,7 +40,9 @@ TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std:
 {
 	ZoneScoped;
 
+#ifdef TRAP_HEADLESS_MODE
 	TRAP::Utils::RegisterSIGINTCallback();
+#endif /*TRAP_HEADLESS_MODE*/
 
 #ifdef TRACY_ENABLE
 	//Set Main Thread name for profiler
@@ -91,9 +93,7 @@ TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std:
 #ifndef TRAP_HEADLESS_MODE
 	InitializeInput();
 	m_ImGuiLayer = InitializeImGui(m_layerStack);
-#endif /*TRAP_HEADLESS_MODE*/
 
-#ifndef TRAP_HEADLESS_MODE
 	TRAP::Utils::Discord::Create();
 #endif /*TRAP_HEADLESS_MODE*/
 }
@@ -114,18 +114,14 @@ TRAP::Application::~Application()
 	TRAP::Utils::Steam::Shutdown();
 #ifndef TRAP_HEADLESS_MODE
 	TRAP::Utils::Discord::Destroy();
-#endif /*TRAP_HEADLESS_MODE*/
 
-#ifndef TRAP_HEADLESS_MODE
 #ifdef TRAP_PLATFORM_LINUX
 	if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
 #endif /*TRAP_PLATFORM_LINUX*/
 	{
 		Input::Shutdown();
 	}
-#endif /*TRAP_HEADLESS_MODE*/
 
-#ifndef TRAP_HEADLESS_MODE
 	UpdateTRAPConfig(m_config, m_window.get(), m_fpsLimit, m_newRenderAPI);
 #else
 	UpdateTRAPConfig(m_config, m_fpsLimit, m_newRenderAPI);

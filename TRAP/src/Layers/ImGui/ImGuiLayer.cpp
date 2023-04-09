@@ -299,9 +299,7 @@ void TRAP::ImGuiLayer::Begin()
 	INTERNAL::ImGuiWindowing::NewFrame();
 
 	ImGui::NewFrame();
-#ifndef TRAP_HEADLESS_MODE
 	ImGuizmo::BeginFrame();
-#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

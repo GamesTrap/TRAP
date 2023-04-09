@@ -573,7 +573,7 @@ void TRAP::Graphics::API::VulkanRenderer::Flush() const
 			p->SwapChain->ToggleVSync();
 		p->CurrentVSync = p->NewVSync;
 	}
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
 
 	if(p->RenderScale != p->NewRenderScale)
 		p->RenderScale = p->NewRenderScale;
@@ -3027,13 +3027,11 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 
 	if(!VulkanInstance::IsExtensionSupported(std::get<0>(reqExt)) || !VulkanInstance::IsExtensionSupported(std::get<1>(reqExt)))
 	{
-#ifndef TRAP_HEADLESS_MODE
 		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Mandatory Vulkan surface extensions are unsupported!\n"
 								   "Error code: 0x0003", Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan surface extensions are unsupported! (0x0003)");
 		exit(0x0003);
-#endif
 	}
 	else
 	{

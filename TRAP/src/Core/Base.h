@@ -53,10 +53,8 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Headless mode.
-//This macro changes Window and RendererAPI behaviour.
-//By default the Main Window will be hidden.
-//The RendererAPI uses relaxed requirements to allow for offline rendering or compute
-//if the hardware supports an RenderAPI.
+//This macro enables the headless mode
+//See https://gamestrap.github.io/TRAP/pages/gettingstarted.html#differences-between-normal-mode-and-headless-mode
 //#define TRAP_HEADLESS_MODE
 
 //-------------------------------------------------------------------------------------------------------------------//

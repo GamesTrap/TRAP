@@ -3251,9 +3251,9 @@ namespace TRAP::Graphics
 			PerViewportData& operator=(const PerViewportData &) = delete;
 			PerViewportData& operator=(PerViewportData &&) = default;
 
-// #ifndef TRAP_HEADLESS_MODE
+#ifndef TRAP_HEADLESS_MODE
 			TRAP::Window* Window{};
-// #endif /*TRAP_HEADLESS_MODE*/
+#endif /*TRAP_HEADLESS_MODE*/
 
 			PerWindowState State{};
 

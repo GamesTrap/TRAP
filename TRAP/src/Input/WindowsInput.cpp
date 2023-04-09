@@ -196,13 +196,11 @@ void TRAP::Input::DetectControllerConnectionWin32()
 			con->WinCon.Index = index;
 			con->WinCon.XInput = true;
 
-#ifndef TRAP_HEADLESS_MODE
 			if (!s_eventCallback)
 				continue;
 
 			Events::ControllerConnectEvent event(static_cast<Controller>(cID));
 			s_eventCallback(event);
-#endif /*TRAP_HEADLESS_MODE*/
 		}
 	}
 
@@ -458,7 +456,6 @@ void TRAP::Input::CloseController(Controller controller)
 
 	s_controllerInternal[static_cast<uint32_t>(controller)] = {};
 
-#ifndef TRAP_HEADLESS_MODE
 	if (!s_eventCallback)
 		return;
 
@@ -467,7 +464,6 @@ void TRAP::Input::CloseController(Controller controller)
 		Events::ControllerDisconnectEvent event(controller);
 		s_eventCallback(event);
 	}
-#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -795,7 +791,6 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 	/*if (forceFeedback)
 		controller->WinCon.ForceFeedback = true;*/
 
-#ifndef TRAP_HEADLESS_MODE
 	if (!s_eventCallback)
 		return DIENUM_STOP;
 
@@ -807,7 +802,6 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 
 	Events::ControllerConnectEvent event(static_cast<Controller>(index));
 	s_eventCallback(event);
-#endif /*TRAP_HEADLESS_MODE*/
 
 	return DIENUM_STOP;
 }

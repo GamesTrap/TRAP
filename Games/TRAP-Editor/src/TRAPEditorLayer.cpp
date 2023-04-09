@@ -248,10 +248,8 @@ void TRAPEditorLayer::OnAttach()
 		}
 	}
 
-#ifndef TRAP_HEADLESS_MODE
 	//Set Discord stuff
 	TRAP::Utils::Discord::SetActivity({"trapwhitelogo2048x2048", "TRAP™ Editor", "TRAP™ Editor", "Developed by TrappedGames"});
-#endif /*TRAP_HEADLESS_MODE*/
 
 	//Enable Developer features
 	TRAP::Application::SetHotReloading(true);

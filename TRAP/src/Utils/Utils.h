@@ -185,11 +185,13 @@ namespace TRAP::Utils
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+#ifdef TRAP_HEADLESS_MODE
 	/// <summary>
 	/// Register the SIGINT callback function.
 	/// Used in Headless mode to handle CTRL+C.
 	/// </summary>
 	void RegisterSIGINTCallback();
+#endif /*TRAP_HEADLESS_MODE*/
 }
 
 #endif /*TRAP_UTILS_H*/

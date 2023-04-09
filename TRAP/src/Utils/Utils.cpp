@@ -582,10 +582,9 @@ static BOOL WINAPI SIGINTHandlerRoutine(_In_ DWORD dwCtrlType)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifdef TRAP_HEADLESS_MODE
 void TRAP::Utils::RegisterSIGINTCallback()
 {
-#ifdef TRAP_HEADLESS_MODE
-
 #ifdef TRAP_PLATFORM_LINUX
 	if(signal(SIGINT, [](int) {TRAP::Application::Shutdown(); }) == SIG_ERR)
 #elif defined(TRAP_PLATFORM_WINDOWS)
@@ -595,6 +594,5 @@ void TRAP::Utils::RegisterSIGINTCallback()
 		TP_ERROR(TRAP::Log::ApplicationPrefix, "Failed to register SIGINT callback!");
 		TP_ERROR(TRAP::Log::ApplicationPrefix, TRAP::Utils::String::GetStrError());
 	}
-
-#endif /*TRAP_HEADLESS_MODE*/
 }
+#endif /*TRAP_HEADLESS_MODE*/

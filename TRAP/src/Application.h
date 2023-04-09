@@ -183,6 +183,8 @@ namespace TRAP
 		/// </summary>
 		/// <param name="string">String to be set.</param>
 		static void SetClipboardString(const std::string& string);
+#endif /*TRAP_HEADLESS_MODE*/
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Get current content of the clipboard.
 		/// </summary>
@@ -353,7 +355,6 @@ namespace TRAP
 		/// <returns>Advanced Window properties.</returns>
 		static WindowProps::AdvancedProps LoadAdvancedWindowProps(const TRAP::Utils::Config& config);
 #endif /*TRAP_HEADLESS_MODE*/
-
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Load the window properties from the given config.
@@ -416,6 +417,8 @@ namespace TRAP
 		/// Initialize TRAP::Input.
 		/// </summary>
 		static void InitializeInput();
+#endif /*TRAP_HEADLESS_MODE*/
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Initialize ImGui Layer.
 		/// </summary>
@@ -436,17 +439,17 @@ namespace TRAP
 		ImGuiLayer* m_ImGuiLayer = nullptr;
 #endif /*TRAP_HEADLESS_MODE*/
 
-		//Main window
 #ifndef TRAP_HEADLESS_MODE
+		//Main window
 		std::unique_ptr<Window> m_window = nullptr;
 		bool m_minimized = false;
 		bool m_focused = true;
 #endif /*TRAP_HEADLESS_MODE*/
 
-#ifndef TRAP_HEADLESS_MODE
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 		//NVIDIA-Reflex
 		uint64_t m_globalCounter = 0;
-#endif /*TRAP_HEADLESS_MODE*/
+#endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 		//Multithreading
 		ThreadPool m_threadPool;

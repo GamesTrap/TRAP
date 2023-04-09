@@ -452,7 +452,7 @@ void TRAP::Graphics::RenderCommand::SetResolution(const uint32_t width, const ui
 {
 	RendererAPI::GetRenderer()->SetResolution(width, height);
 }
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

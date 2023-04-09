@@ -2358,7 +2358,6 @@ void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-#ifndef TRAP_HEADLESS_MODE
 	if(!TRAP::Input::GetEventCallback())
 		return;
 
@@ -2371,7 +2370,6 @@ void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 		TRAP::Events::KeyLayoutEvent event(*layout);
 		TRAP::Input::GetEventCallback()(event);
 	}
-#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

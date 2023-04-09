@@ -123,9 +123,7 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-#ifdef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(s_RenderAPI != RenderAPI::NONE , "RendererAPI::GetRenderer(): RendererAPI is not available because RenderAPI::NONE is set (or EnableGPU=False)!");
-#endif
 
 	return s_Renderer.get();
 }
@@ -135,6 +133,8 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 [[nodiscard]] TRAP::Graphics::API::ResourceLoader* TRAP::Graphics::RendererAPI::GetResourceLoader() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(s_RenderAPI != RenderAPI::NONE , "RendererAPI::GetResourceLoader(): ResourceLoader is not available because RenderAPI::NONE is set (or EnableGPU=False)!");
 
 	return s_ResourceLoader.get();
 }
