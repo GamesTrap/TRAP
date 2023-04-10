@@ -393,6 +393,9 @@ void TRAP::Graphics::API::VulkanSwapChain::UpdateFramebufferSize()
 
 	const auto fbSize = m_desc.Window->GetFrameBufferSize();
 
+	if (fbSize.x == 0 || fbSize.y == 0) //0x0 is an invalid framebuffer size
+		return;
+
 	m_desc.Width = fbSize.x;
 	m_desc.Height = fbSize.y;
 

@@ -448,8 +448,6 @@ namespace TRAP
 #ifndef TRAP_HEADLESS_MODE
 		//Main window
 		std::unique_ptr<Window> m_window = nullptr;
-		bool m_minimized = false;
-		bool m_focused = true;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)

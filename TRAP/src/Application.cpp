@@ -188,7 +188,12 @@ void TRAP::Application::Run()
 			Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, PCLSTATS_TRIGGER_FLASH);
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
-		RunWork(deltaTime, tickTimerSeconds);
+#ifndef TRAP_HEADLESS_MODE
+		if(Window::GetActiveWindows() > 1 || !m_window->IsMinimized())
+#endif /*TRAP_HEADLESS_MODE*/
+		{
+			RunWork(deltaTime, tickTimerSeconds);
+		}
 
 		UpdateHotReloading();
 
