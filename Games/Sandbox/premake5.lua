@@ -176,10 +176,12 @@ project "Sandbox"
 		end
 
 		-- NVIDIA Reflex SDK stuff
-		if os.isfile("../../Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Vulkan/Reflex_Vulkan/inc/NvLowLatencyVk.h") and
-		   os.isfile("../../Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Vulkan/Reflex_Vulkan/lib/NvLowLatencyVk.lib") and
-		   os.isfile("../../Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Vulkan/Reflex_Vulkan/lib/NvLowLatencyVk.dll") and
-		   os.isfile("../../Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Stats/reflexstats.h") then
+		local NVReflexNvLowLatencyVkHeader = os.matchfiles(_MAIN_SCRIPT_DIR .. "/Dependencies/NVIDIA-Reflex/**NvLowLatencyVk.h")
+		local NVReflexNvLowLatencyVkLibrary = os.matchfiles(_MAIN_SCRIPT_DIR .. "/Dependencies/NVIDIA-Reflex/**NvLowLatencyVk.lib")
+		local NVReflexNvLowLatencyVkDLL = os.matchfiles(_MAIN_SCRIPT_DIR .. "/Dependencies/NVIDIA-Reflex/**NvLowLatencyVk.dll")
+		local NVReflexStatsFiles = os.matchfiles(_MAIN_SCRIPT_DIR .. "/Dependencies/NVIDIA-Reflex/**pclstats.h")
+		if next(NVReflexNvLowLatencyVkHeader) ~= nil and next(NVReflexNvLowLatencyVkLibrary) ~= nil and
+		   next(NVReflexNvLowLatencyVkDLL) ~= nil and next(NVReflexStatsFiles) ~= nil then
 			links "%{IncludeDir.NVIDIAREFLEX}/../lib/NvLowLatencyVk.lib"
 
 			postbuildcommands "{COPYDIR} %{IncludeDir.NVIDIAREFLEX}/../lib/NvLowLatencyVk.dll %{cfg.targetdir}"

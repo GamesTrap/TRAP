@@ -112,7 +112,7 @@ void InputLagTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& delta
 
 #ifdef NVIDIA_REFLEX_AVAILABLE
 	//Update latency history
-	if (m_updateLatencyTimer.Elapsed() >= 0.025f)
+	if (TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported && m_updateLatencyTimer.Elapsed() >= 0.025f)
 	{
 		const auto latencyData = TRAP::Graphics::RendererAPI::GetRenderer()->ReflexGetLatency();
 		const auto& curr = latencyData.frameReport[63];

@@ -111,7 +111,7 @@
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 #include <NvLowLatencyVk.h>
-#include <reflexstats.h>
+#include <pclstats.h>
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_TRAPPCH_H*/
