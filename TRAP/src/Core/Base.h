@@ -174,7 +174,7 @@ enum class ProfileSystems : uint32_t
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-const uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 9, 11);
+const uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 9, 12);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
