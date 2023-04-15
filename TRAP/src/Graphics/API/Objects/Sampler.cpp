@@ -14,7 +14,7 @@ TRAP::Graphics::Sampler::Sampler()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererSamplerPrefix, "Creating Sampler");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -25,7 +25,7 @@ TRAP::Graphics::Sampler::~Sampler()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererSamplerPrefix, "Destroying Sampler");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -81,7 +81,7 @@ TRAP::Graphics::Sampler::~Sampler()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererSamplerPrefix, "Caching Sampler");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 	s_cachedSamplers[desc] = result;
 
 	return result;

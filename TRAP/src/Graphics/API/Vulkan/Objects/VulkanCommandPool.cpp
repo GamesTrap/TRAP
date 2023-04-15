@@ -21,7 +21,7 @@ TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const RendererAPI::Com
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandPoolPrefix, "Creating CommandPool");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	VkCommandPoolCreateInfo info = VulkanInits::CommandPoolCreateInfo
 		(
@@ -46,7 +46,7 @@ TRAP::Graphics::API::VulkanCommandPool::~VulkanCommandPool()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandPoolPrefix, "Destroying CommandPool");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	vkDestroyCommandPool(m_device->GetVkDevice(), m_vkCommandPool, nullptr);
 }

@@ -842,7 +842,7 @@ void RunInvalidTests()
         const std::string path = "\\/:*?\"<>|";
         const auto res = TRAP::FileSystem::CreateFolder(path);
         TRAP_ASSERT(!res, "CreateFolder() failed!");
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/
     }
 
     //Delete()
@@ -1013,7 +1013,7 @@ void RunInvalidTests()
         const std::string path = "\\/:*?\"<>|";
         const auto res = TRAP::FileSystem::Exists(path);
         TRAP_ASSERT(!res, "Exists() failed!");
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/
     }
 
     //GetSize (File)

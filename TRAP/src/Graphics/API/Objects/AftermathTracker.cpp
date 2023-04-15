@@ -14,7 +14,7 @@ void* AftermathHandle = nullptr;
 PFN_GFSDK_Aftermath_EnableGpuCrashDumps AftermathEnableGPUCrashDumps = nullptr;
 PFN_GFSDK_Aftermath_DisableGpuCrashDumps AftermathDisableGPUCrashDumps = nullptr;
 PFN_GFSDK_Aftermath_GetCrashDumpStatus AftermathGetGPUCrashDumpStatus = nullptr;
-#endif
+#endif /*ENABLE_NSIGHT_AFTERMATH*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
@@ -50,7 +50,7 @@ void OnGPUCrashDump([[maybe_unused]] const void* gpuCrashDump,
     if(!TRAP::FileSystem::Exists(folderPath))
         TRAP::FileSystem::CreateFolder(folderPath);
     TRAP::FileSystem::WriteFile(filePath, buffer);
-#endif
+#endif /*ENABLE_NSIGHT_AFTERMATH*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -102,7 +102,7 @@ void UnloadFunctions()
     AftermathEnableGPUCrashDumps = nullptr;
     AftermathDisableGPUCrashDumps = nullptr;
     AftermathGetGPUCrashDumpStatus = nullptr;
-#endif
+#endif /*ENABLE_NSIGHT_AFTERMATH*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -118,7 +118,7 @@ void UnloadFunctions()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererAftermathTrackerPrefix, "Creating AftermathTracker");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
     if(!LoadFunctions())
@@ -134,7 +134,7 @@ void UnloadFunctions()
                                                    OnGPUCrashDump, nullptr, nullptr, nullptr, nullptr));
     }
 
-#endif
+#endif /*ENABLE_NSIGHT_AFTERMATH*/
 
     return AftermathInitialized;
 }
@@ -150,13 +150,13 @@ void TRAP::Graphics::AftermathTracker::Shutdown()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererAftermathTrackerPrefix, "Destroying AftermathTracker");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
     AftermathCall(AftermathDisableGPUCrashDumps());
 
     UnloadFunctions();
-#endif
+#endif /*ENABLE_NSIGHT_AFTERMATH*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -165,12 +165,13 @@ void TRAP::Graphics::AftermathTracker::SetAftermathMarker([[maybe_unused]] const
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-#endif
+#endif /*ENABLE_NSIGHT_AFTERMATH*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
+
 void TRAP::Graphics::AftermathTracker::AftermathCall(const GFSDK_Aftermath_Result res)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -285,4 +286,5 @@ void TRAP::Graphics::AftermathTracker::AftermathCall(const GFSDK_Aftermath_Resul
 
     return AftermathGetGPUCrashDumpStatus(&outStatus);
 }
-#endif
+
+#endif /*ENABLE_NSIGHT_AFTERMATH*/

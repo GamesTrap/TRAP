@@ -234,7 +234,7 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData*
 #ifndef TRAP_HEADLESS_MODE
 	RenderTargetBarrier barrier{p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex], ResourceState::Present, ResourceState::RenderTarget};
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
 
 	LoadActionsDesc loadActions{};
 	std::get<0>(loadActions.LoadActionsColor) = LoadActionType::Clear;
@@ -393,7 +393,8 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData* const p)
 #ifdef NVIDIA_REFLEX_AVAILABLE
 	GetRenderer()->ReflexMarker(Application::GetGlobalCounter(), PCLSTATS_PRESENT_END);
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
-#endif
+
+#endif /*TRAP_HEADLESS_MODE*/
 
 	FrameMark;
 
@@ -466,9 +467,9 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	m_instance = TRAP::MakeRef<VulkanInstance>(gameName, SetupInstanceLayers(), SetupInstanceExtensions());
-#if defined(ENABLE_GRAPHICS_DEBUG)
+#ifdef ENABLE_GRAPHICS_DEBUG
 	m_debug = TRAP::MakeScope<VulkanDebug>(m_instance);
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 	const std::multimap<uint32_t, std::array<uint8_t, 16>> physicalDevices = VulkanPhysicalDevice::GetAllRatedPhysicalDevices(m_instance);
 	TRAP::Scope<VulkanPhysicalDevice> physicalDevice;
@@ -3019,13 +3020,13 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 	//Turn on all validations
 	if (VulkanInstance::IsLayerSupported("VK_LAYER_KHRONOS_validation"))
 		layers.emplace_back("VK_LAYER_KHRONOS_validation");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 #ifdef USE_RENDER_DOC
 	//Turn on render doc layer for gpu capture
 	if(VulkanInstance::IsLayerSupported("VK_LAYER_RENDERDOC_Capture"))
 		layers.emplace_back("VK_LAYER_RENDERDOC_Capture");
-#endif
+#endif /*USE_RENDER_DOC*/
 
 	return layers;
 }
@@ -3063,6 +3064,7 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 	//VK_KHR_external_fence_capabilities
 
 #ifdef ENABLE_GRAPHICS_DEBUG
+
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	if(VulkanInstance::IsExtensionSupported(VK_EXT_DEBUG_UTILS_EXTENSION_NAME))
 	{
@@ -3083,8 +3085,9 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 		extensions.emplace_back(VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME);
 		s_validationFeaturesExtension = true;
 	}
-#endif
-#endif
+#endif /*ENABLE_GPU_BASED_VALIDATION*/
+
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 #ifndef TRAP_HEADLESS_MODE
 	///HDR support (requires surface extension)
@@ -3141,7 +3144,7 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 		extensions.emplace_back(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
 		s_debugMarkerSupport = true;
 	}
-#endif
+#endif /*ENABLE_DEBUG_UTILS_EXTENSION*/
 
 	if (physicalDevice->IsExtensionSupported(VK_KHR_DRAW_INDIRECT_COUNT_EXTENSION_NAME))
 	{
@@ -3223,7 +3226,7 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 	}
 	s_externalMemory = s_externalMemoryWin32Extension && s_externalFenceWin32Extension &&
 	                   s_externalSemaphoreWin32Extension;
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/
 
 	//RayTracing
 	if(s_descriptorIndexingExtension &&
@@ -3255,7 +3258,7 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 		extensions.emplace_back(VK_NV_DEVICE_DIAGNOSTIC_CHECKPOINTS_EXTENSION_NAME);
 		s_diagnosticCheckPointsSupport = true;
 	}
-#endif
+#endif /*ENABLE_NSIGHT_AFTERMATH*/
 
 	return extensions;
 }
@@ -3268,7 +3271,7 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPrefix, "Creating DefaultResources");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	s_NullDescriptors = TRAP::MakeScope<NullDescriptors>();
 
@@ -3451,7 +3454,7 @@ void TRAP::Graphics::API::VulkanRenderer::RemoveDefaultResources()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPrefix, "Destroying DefaultResources");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	for(uint32_t dim = 0; dim < static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCount); ++dim)
 	{
@@ -3594,12 +3597,12 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_TRACE(Log::RendererVulkanPipelinePrefix, "Recreating Graphics Pipeline...");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 	const TRAP::Ref<TRAP::Graphics::Pipeline> pipeline = Pipeline::Create(desc);
 	const auto pipeRes = s_pipelines.try_emplace(hash, pipeline);
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_TRACE(Log::RendererVulkanPipelinePrefix, "Cached Graphics Pipeline");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 	return pipeRes.first->second;
 }
 

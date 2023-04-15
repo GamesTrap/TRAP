@@ -38,7 +38,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifdef TRAP_PLATFORM_WINDOWS
 #define far
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/
 
 namespace
 {
@@ -444,4 +444,4 @@ TRAP::Network::TCPSocket::PendingPacket::PendingPacket() noexcept
 
 #ifdef TRAP_PLATFORM_WINDOWS
 #undef far
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/

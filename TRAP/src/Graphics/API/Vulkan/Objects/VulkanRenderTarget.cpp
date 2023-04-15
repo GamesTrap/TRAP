@@ -37,7 +37,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRenderTargetPrefix, "Creating RenderTarget");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	const bool isDepth = TRAP::Graphics::API::ImageFormatIsDepthOnly(desc.Format) ||
 	                     TRAP::Graphics::API::ImageFormatIsDepthAndStencil(desc.Format);
@@ -169,7 +169,7 @@ TRAP::Graphics::API::VulkanRenderTarget::~VulkanRenderTarget()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRenderTargetPrefix, "Destroying RenderTarget");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	m_texture.reset();
 

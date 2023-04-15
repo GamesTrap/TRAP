@@ -101,7 +101,7 @@ void InputLagTests::OnImGuiRender()
 		ImGui::PlotLines("GPU Render Delta", m_GPURenderDeltaHistory.data(), static_cast<int>(m_GPURenderDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
 		ImGui::End();
 	}
-#endif
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

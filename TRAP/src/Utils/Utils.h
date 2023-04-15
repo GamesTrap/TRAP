@@ -176,7 +176,7 @@ namespace TRAP::Utils
 	/// </summary>
 	/// <returns>Whether Windows 7 version or newer.</returns>
 	[[nodiscard]] BOOL IsWindows7OrGreaterWin32();
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/
 
 	//-------------------------------------------------------------------------------------------------------------------//
 

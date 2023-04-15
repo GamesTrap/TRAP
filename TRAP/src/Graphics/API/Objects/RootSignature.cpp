@@ -10,7 +10,7 @@ TRAP::Graphics::RootSignature::RootSignature()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererRootSignaturePrefix, "Creating RootSignature");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -21,7 +21,7 @@ TRAP::Graphics::RootSignature::~RootSignature()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererRootSignaturePrefix, "Destroying RootSignature");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

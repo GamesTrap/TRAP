@@ -4,11 +4,11 @@
 #define VMA_IMPLEMENTATION
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
-#endif
+#endif /*_MSC_VER*/
 #include <vk_mem_alloc.h>
 #ifdef _MSC_VER
 	#pragma warning(pop)
-#endif
+#endif /*_MSC_VER*/
 
 #include "VulkanInstance.h"
 #include "VulkanPhysicalDevice.h"
@@ -28,7 +28,7 @@ TRAP::Graphics::API::VulkanMemoryAllocator::VulkanMemoryAllocator(const TRAP::Re
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanVMAPrefix, "Creating Allocator");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	VmaVulkanFunctions vulkanFunctions;
 
@@ -60,13 +60,13 @@ TRAP::Graphics::API::VulkanMemoryAllocator::VulkanMemoryAllocator(const TRAP::Re
 #if VMA_BIND_MEMORY2 || VMA_VULKAN_VERSION >= 1001000
 	vulkanFunctions.vkBindBufferMemory2KHR = vkBindBufferMemory2;
 	vulkanFunctions.vkBindImageMemory2KHR = vkBindImageMemory2;
-#endif
+#endif /*VMA_BIND_MEMORY2 || VMA_VULKAN_VERSION >= 1001000*/
 
 	//Memory Budget
 #if VMA_MEMORY_BUDGET || VMA_VULKAN_VERSION >= 1001000
 	if(VulkanRenderer::s_memoryBudgetExtension)
 		vulkanFunctions.vkGetPhysicalDeviceMemoryProperties2KHR = vkGetPhysicalDeviceMemoryProperties2KHR;
-#endif
+#endif /*VMA_MEMORY_BUDGET || VMA_VULKAN_VERSION >= 1001000*/
 
 #if VMA_VULKAN_VERSION >= 1003000
 	if(VulkanRenderer::s_maintenance4Extension)
@@ -74,7 +74,7 @@ TRAP::Graphics::API::VulkanMemoryAllocator::VulkanMemoryAllocator(const TRAP::Re
 		vulkanFunctions.vkGetDeviceBufferMemoryRequirements = vkGetDeviceBufferMemoryRequirementsKHR;
 		vulkanFunctions.vkGetDeviceImageMemoryRequirements = vkGetDeviceImageMemoryRequirementsKHR;
 	}
-#endif
+#endif /*VMA_VULKAN_VERSION >= 1003000*/
 
 	const VmaAllocatorCreateInfo info = VulkanInits::VMAAllocatorCreateInfo(device->GetVkDevice(),
 		                                                                    device->GetPhysicalDevice()->GetVkPhysicalDevice(),
@@ -92,7 +92,7 @@ TRAP::Graphics::API::VulkanMemoryAllocator::~VulkanMemoryAllocator()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanVMAPrefix, "Destroying Allocator");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 	vmaDestroyAllocator(m_allocator);
 	m_allocator = nullptr;
 }

@@ -8,7 +8,7 @@ TRAP::Graphics::API::VulkanCommandSignature::VulkanCommandSignature(const Render
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandSignaturePrefix, "Creating CommandSignature");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	for(uint32_t i = 0; i < desc.IndirectArgCount; ++i) //Counting for all types
 	{
@@ -48,7 +48,7 @@ TRAP::Graphics::API::VulkanCommandSignature::~VulkanCommandSignature()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandSignaturePrefix, "Destroying CommandSignature");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

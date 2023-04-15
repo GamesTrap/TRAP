@@ -25,7 +25,7 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanBufferPrefix, "Creating Buffer");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	m_CPUMappedAddress = nullptr;
 	m_size = desc.Size;
@@ -68,7 +68,7 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 		vmaMemReqs.usage = VMA_MEMORY_USAGE_CPU_TO_GPU;
 		vmaMemReqs.flags |= VMA_ALLOCATION_CREATE_MAPPED_BIT;
 	}
-#endif
+#endif /*TRAP_PLATFORM_ANDROID*/
 
 	VmaAllocationInfo allocInfo{};
 	VkCall(vmaCreateBuffer(m_VMA->GetVMAAllocator(), &info, &vmaMemReqs, &m_vkBuffer, &m_allocation, &allocInfo));
@@ -118,7 +118,7 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 #ifdef ENABLE_GRAPHICS_DEBUG
 	if (!desc.Name.empty())
 		SetBufferName(desc.Name);
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -129,7 +129,7 @@ TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanBufferPrefix, "Destroying Buffer");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	if(m_vkUniformTexelView != nullptr)
 	{

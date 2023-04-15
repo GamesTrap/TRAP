@@ -657,7 +657,7 @@ bool TRAP::Graphics::Shader::Reload()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 		TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing ", StageToStr.at(IndexToStage[i]), " shader");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 		std::string preProcessedSource;
 		glslShaders[i] = PreProcessGLSLForSPIRVConversion(shaders[i].data(), IndexToStage[i],
 															preProcessedSource);
@@ -669,20 +669,20 @@ bool TRAP::Graphics::Shader::Reload()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 		TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing ", StageToStr.at(IndexToStage[i]), " shader");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 		if (!ParseGLSLang(glslShaders[i].get()))
 			return{};
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 		TP_DEBUG(Log::ShaderGLSLPrefix, "Linking ", StageToStr.at(IndexToStage[i]), " shader");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 		glslang::TProgram program;
 		if (!LinkGLSLang(glslShaders[i].get(), program))
 			return{};
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 		TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 		const std::vector<uint32_t> SPIRV = ConvertToSPIRV(IndexToStage[i], program);
 
 		switch(i)
@@ -759,7 +759,7 @@ bool TRAP::Graphics::Shader::Reload()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::ShaderSPIRVPrefix, "Loading SPIRV");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 	//Check endianness of byte strea
 	bool needsEndianSwap = false;

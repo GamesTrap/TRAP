@@ -58,7 +58,7 @@ void TRAP::Graphics::API::VulkanSampler::Init()
 {
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSamplerPrefix, "Creating Sampler");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	//Default sampler lod values
 	//Used if not overriden by SetLogRange or not Linear mipmaps
@@ -139,7 +139,7 @@ void TRAP::Graphics::API::VulkanSampler::Shutdown()
 {
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSamplerPrefix, "Destroying Sampler");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	vkDestroySampler(m_device->GetVkDevice(), m_vkSampler, nullptr);
 

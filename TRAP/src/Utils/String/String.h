@@ -189,7 +189,7 @@ namespace TRAP::Utils::String
 	/// <param name="str">UTF-8 representation.</param>
 	/// <returns>Wide string representation of the given UTF-8 string.</returns>
 	[[nodiscard]] std::wstring CreateWideStringFromUTF8StringWin32(std::string_view str);
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

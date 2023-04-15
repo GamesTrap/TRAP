@@ -92,6 +92,6 @@ namespace TRAP::INTERNAL::Network
 	};
 }
 
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/
 
 #endif /*TRAP_NETWORK_SOCKETIMPLWINAPI_H*/

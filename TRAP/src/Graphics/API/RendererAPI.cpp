@@ -46,7 +46,7 @@ std::array<uint8_t, 16> TRAP::Graphics::RendererAPI::s_newGPUUUID{};
 bool TRAP::Graphics::RendererAPI::s_aftermathSupport = false;
 bool TRAP::Graphics::RendererAPI::s_diagnosticsConfigSupport = false;
 bool TRAP::Graphics::RendererAPI::s_diagnosticCheckPointsSupport = false;
-#endif
+#endif /*ENABLE_NSIGHT_AFTERMATH*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -613,7 +613,7 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 
 	return s_perViewportData->ComputeFrameTime;
 }
-#endif /**/
+#endif
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -751,7 +751,7 @@ TRAP::Graphics::RendererAPI::PerViewportData::~PerViewportData()
 	{
 #ifdef TRAP_HEADLESS_MODE
 		RenderTargets[i].reset();
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
 
 		RenderCompleteSemaphores[i].reset();
 		RenderCompleteFences[i].reset();

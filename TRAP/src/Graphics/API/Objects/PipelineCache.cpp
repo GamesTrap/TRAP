@@ -10,7 +10,7 @@ TRAP::Graphics::PipelineCache::PipelineCache()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererPipelineCachePrefix, "Creating PipelineCache");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -21,7 +21,7 @@ TRAP::Graphics::PipelineCache::~PipelineCache()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererPipelineCachePrefix, "Destroying PipelineCache");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

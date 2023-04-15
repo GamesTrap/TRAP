@@ -29,7 +29,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Creating Device");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	std::vector<const char*> extensions{};
 	for (uint32_t i = 0; i < m_deviceExtensions.size(); i++)
@@ -47,7 +47,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 		for (const std::string_view str : m_deviceExtensions)
 			TP_DEBUG(Log::RendererVulkanDevicePrefix, "    ", str);
 	}
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	if (std::find_if(extensions.begin(), extensions.end(), [](const char* const ext)
 		{
@@ -185,7 +185,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 		//This needs to be done before the Vulkan device is created.
 		TRAP::Graphics::AftermathTracker::Initialize();
 	}
-#endif
+#endif /*ENABLE_NSIGHT_AFTERMATH*/
 
 	const VkDeviceCreateInfo deviceCreateInfo = VulkanInits::DeviceCreateInfo(&devFeatures2, queueCreateInfos,
 	                                                                          extensions);
@@ -230,7 +230,7 @@ TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Destroying Device");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 	if(RendererAPI::GPUSettings.ReflexSupported)
@@ -243,7 +243,7 @@ TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 #ifdef ENABLE_NSIGHT_AFTERMATH
 	if(RendererAPI::s_aftermathSupport)
 		TRAP::Graphics::AftermathTracker::Shutdown();
-#endif
+#endif /*ENABLE_NSIGHT_AFTERMATH*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -283,17 +283,17 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndices()
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Graphics Queue Family Index ",
 	         static_cast<uint32_t>(m_graphicsQueueFamilyIndex));
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 	FindQueueFamilyIndex(RendererAPI::QueueType::Compute, m_computeQueueFamilyIndex, m_computeQueueIndex);
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Compute Queue Family Index ",
 	         static_cast<uint32_t>(m_computeQueueFamilyIndex));
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 	FindQueueFamilyIndex(RendererAPI::QueueType::Transfer, m_transferQueueFamilyIndex, m_transferQueueIndex);
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Transfer Queue Family Index ",
 	         static_cast<uint32_t>(m_transferQueueFamilyIndex));
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

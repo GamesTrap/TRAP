@@ -47,7 +47,7 @@ TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std:
 #ifdef TRACY_ENABLE
 	//Set Main Thread name for profiler
 	tracy::SetThreadName("Main Thread");
-#endif
+#endif /*TRACY_ENABLE*/
 
 	Utils::CheckSingleProcess();
 	Utils::GetLinuxWindowManager(); //On Linux if no known window manager is found this will exit the engine
@@ -257,7 +257,7 @@ void TRAP::Application::RunWork(const Utils::TimeStep& deltaTime, float& tickTim
 			layer->OnImGuiRender();
 	}
 	ImGuiLayer::End();
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
 
 	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
 	{
@@ -909,7 +909,7 @@ void TRAP::Application::UpdateTRAPConfig(Utils::Config& config, const uint32_t f
 #if !defined(TRAP_HEADLESS_MODE) && defined(NVIDIA_REFLEX_AVAILABLE)
 		PCLSTATS_SHUTDOWN();
 		config.Set("NVIDIAReflex", Graphics::RenderCommand::GetLatencyMode());
-#endif
+#endif /*!TRAP_HEADLESS_MODE && NVIDIA_REFLEX_AVAILABLE*/
 	}
 }
 

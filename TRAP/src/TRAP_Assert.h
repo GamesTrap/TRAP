@@ -7,7 +7,7 @@
 
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
 	#define TRAP_ENABLE_ASSERTS
-#endif
+#endif /*TRAP_DEBUG || TRAP_RELWITHDEBINFO*/
 
 #ifdef TRAP_ENABLE_ASSERTS
 

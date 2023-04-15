@@ -18,7 +18,7 @@ void SteamLogCallback(const int32_t severity, const char* const msg)
     else if(severity == 1)
         TP_WARN(TRAP::Log::SteamworksSDKPrefix, msg);
 }
-#endif
+#endif /*USE_STEAMWORKS_SDK*/
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Utils::Steam::InitializeClient([[maybe_unused]] const uint32_t appID)
@@ -52,7 +52,7 @@ void TRAP::Utils::Steam::InitializeClient([[maybe_unused]] const uint32_t appID)
     steamClientInitialized = true;
 
     SteamUtils()->SetWarningMessageHook(&SteamLogCallback);
-#endif
+#endif /*USE_STEAMWORKS_SDK*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -125,7 +125,7 @@ void TRAP::Utils::Steam::RunCallbacks()
 
     if(steamClientInitialized)
         SteamAPI_RunCallbacks();
-#endif
+#endif /*USE_STEAMWORKS_SDK*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -414,4 +414,4 @@ void TRAP::Utils::Steam::RunCallbacks()
     return SteamGameServerStats();
 }
 
-#endif
+#endif /*USE_STEAMWORKS_SDK*/

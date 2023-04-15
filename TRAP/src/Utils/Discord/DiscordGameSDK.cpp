@@ -11,11 +11,11 @@
 
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
-#endif
+#endif /*_MSC_VER*/
 #include <discord.h>
 #ifdef _MSC_VER
 	#pragma warning(pop)
-#endif
+#endif /*_MSC_VER*/
 
 discord::Core* core{};
 discord::Result lastRes = discord::Result::Ok;

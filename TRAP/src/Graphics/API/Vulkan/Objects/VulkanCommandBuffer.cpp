@@ -25,7 +25,7 @@ TRAP::Graphics::API::VulkanCommandBuffer::~VulkanCommandBuffer()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandBufferPrefix, "Destroying CommandBuffer");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	if(m_device && (m_vkCommandBuffer != nullptr) && (m_vkCommandPool != nullptr))
 		vkFreeCommandBuffers(m_device->GetVkDevice(), m_vkCommandPool, 1, &m_vkCommandBuffer);
@@ -52,7 +52,7 @@ TRAP::Graphics::API::VulkanCommandBuffer::VulkanCommandBuffer(TRAP::Ref<VulkanDe
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandBufferPrefix, "Creating CommandBuffer");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	const VkCommandBufferAllocateInfo info = VulkanInits::CommandBufferAllocateInfo(commandPool, secondary);
 
@@ -468,7 +468,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::AddDebugMarker(const TRAP::Math::
 #ifdef ENABLE_NSIGHT_AFTERMATH
 	if(RendererAPI::s_aftermathSupport)
 		vkCmdSetCheckpointNV(m_vkCommandBuffer, name.data());
-#endif
+#endif /*ENABLE_NSIGHT_AFTERMATH*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

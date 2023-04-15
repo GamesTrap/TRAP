@@ -10,7 +10,7 @@ TRAP::Graphics::Buffer::Buffer()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererBufferPrefix, "Creating Buffer");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -21,7 +21,7 @@ TRAP::Graphics::Buffer::~Buffer()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererBufferPrefix, "Destroying Buffer");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -731,7 +731,7 @@ namespace TRAP::INTERNAL
 	#ifndef WM_COPYGLOBALDATA
 		inline static constexpr uint32_t WM_COPYGLOBALDATA = 0x0049;
 	#endif /*WM_COPYGLOBALDATA*/
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/
 #ifdef TRAP_PLATFORM_LINUX
 		inline static constexpr uint32_t DBUS_NAME_FLAG_REPLACE_EXISTING = 0x2;
 		inline static constexpr uint32_t DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER = 1;
@@ -3241,7 +3241,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window from which to get the HWND from.</param>
 		/// <returns>HWND of the specified window.</returns>
 		[[nodiscard]] static HWND GetWin32Window(const InternalWindow& window);
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/
 		//-------//
 		//Private//
 		//-------//
@@ -5014,7 +5014,7 @@ namespace TRAP::INTERNAL
 		/// <param name="s">UTF-8 stream.</param>
 		/// <returns>Unicode code point.</returns>
 		[[nodiscard]] static uint32_t DecodeUTF8(const char** str);
-#endif
+#endif /*X_HAVE_UTF8_STRING*/
 		/// <summary>
 		/// Splits and translates a text/uri-list into separate file paths.
 		/// </summary>
@@ -5269,7 +5269,7 @@ namespace TRAP::INTERNAL
 		/// <param name="rate">Rate of repeating keys in characters per second.</param>
 		/// <param name="delay">Delay in milliseconds since key down until repeating starts.</param>
 		static void KeyboardHandleRepeatInfo(void* userData, wl_keyboard* keyboard, int32_t rate, int32_t delay);
-#endif
+#endif /*WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION*/
 		inline static constexpr wl_keyboard_listener KeyboardListener
 		{
 			KeyboardHandleKeymap,
@@ -5279,7 +5279,7 @@ namespace TRAP::INTERNAL
 			KeyboardHandleModifiers,
 #ifdef WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION
 			KeyboardHandleRepeatInfo
-#endif
+#endif /*WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION*/
 		};
 
 		/// <summary>
@@ -5346,7 +5346,7 @@ namespace TRAP::INTERNAL
 		/// <param name="output">Affected output.</param>
 		/// <param name="description">Description of the output.</param>
 		static constexpr void OutputHandleDescription(void* userData, wl_output* output, const char* description);
-#endif
+#endif /*WL_OUTPUT_NAME_SINCE_VERSION*/
 		inline static constexpr wl_output_listener OutputListener
 		{
 			OutputHandleGeometry,
@@ -5356,7 +5356,7 @@ namespace TRAP::INTERNAL
 #ifdef WL_OUTPUT_NAME_SINCE_VERSION
 			OutputHandleName,
 			OutputHandleDescription
-#endif
+#endif /*WL_OUTPUT_NAME_SINCE_VERSION*/
 		};
 
 		/// <summary>
@@ -6490,7 +6490,7 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::OutputHandleDescription([[ma
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 }
-#endif
+#endif /*WL_OUTPUT_NAME_SINCE_VERSION*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

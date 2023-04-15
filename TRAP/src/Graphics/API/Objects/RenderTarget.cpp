@@ -13,7 +13,7 @@ TRAP::Graphics::RenderTarget::RenderTarget()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererRenderTargetPrefix, "Creating RenderTarget");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -24,7 +24,7 @@ TRAP::Graphics::RenderTarget::~RenderTarget()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererRenderTargetPrefix, "Destroying RenderTarget");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

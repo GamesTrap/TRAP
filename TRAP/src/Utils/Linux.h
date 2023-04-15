@@ -58,37 +58,37 @@
 
 #ifdef None
 	#undef None
-#endif
+#endif /*None*/
 #ifdef Bool
 	#undef Bool
-#endif
+#endif /*Bool*/
 #ifdef Always
 	#undef Always
-#endif
+#endif /*Always*/
 #ifdef True
 	#undef True
-#endif
+#endif /*True*/
 #ifdef False
 	#undef False
-#endif
+#endif /*False*/
 #ifdef KeyPress
 	#undef KeyPress
-#endif
+#endif /*KeyPress*/
 #ifdef KeyRelease
 	#undef KeyRelease
-#endif
+#endif /*KeyRelease*/
 #ifdef GrayScale
 	#undef GrayScale
-#endif
+#endif /*GrayScale*/
 #ifdef Status
 	#undef Status
-#endif
+#endif /*Status*/
 #ifdef BadRequest
 	#undef BadRequest
-#endif
+#endif /*BadRequest*/
 #ifdef Success
 	#undef Success
-#endif
+#endif /*Success*/
 
 #endif /*TRAP_PLATFORM_LINUX*/
 

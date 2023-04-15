@@ -43,23 +43,15 @@
 
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
-#endif
+#endif /*_MSC_VER*/
+
 //Tracy - Profiler
 #include <tracy/Tracy.hpp>
-#ifdef _MSC_VER
-	#pragma warning(pop)
-#endif
 
 #ifndef TRAP_HEADLESS_MODE
-#ifdef _MSC_VER
-	#pragma warning(push, 0)
-#endif
 //ImGUI
 #include <imgui.h>
 #include <ImGuizmo.h>
-#ifdef _MSC_VER
-	#pragma warning(pop)
-#endif
 #endif /*TRAP_HEADLESS_MODE*/
 
 //TRAP
@@ -71,47 +63,34 @@
 #include "Utils/Linux.h"
 #elif defined(TRAP_PLATFORM_WINDOWS)
 #include "Utils/Win.h"
-#endif
+#endif /*TRAP_PLATFORM_LINUX*/
 
 //VulkanAPI
-#ifdef _MSC_VER
-	#pragma warning(push, 0)
-#endif
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
-#ifdef _MSC_VER
-	#pragma warning(pop)
-#endif
 
-#ifdef _MSC_VER
-	#pragma warning(push, 0)
-#endif
 //SPIRV
 #include <glslang/Public/ShaderLang.h>
 #include <glslang/Public/ResourceLimits.h>
 #include <SPIRV/GlslangToSpv.h>
 //SPIRV to GLSL
 #include <spirv_glsl.hpp>
-#ifdef _MSC_VER
-	#pragma warning(pop)
-#endif
 
-#ifdef _MSC_VER
-	#pragma warning(push, 0)
-#endif
+//VulkanMemoryAllocator
 #include <vk_mem_alloc.h>
-#ifdef _MSC_VER
-	#pragma warning(pop)
-#endif
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
 #include <GFSDK_Aftermath.h>
 #include <GFSDK_Aftermath_Defines.h>
 #include <GFSDK_Aftermath_GpuCrashDump.h>
-#endif
+#endif /*ENABLE_NSIGHT_AFTERMATH*/
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 #include <NvLowLatencyVk.h>
 #include <pclstats.h>
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
+
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif /*_MSC_VER*/
 
 #endif /*TRAP_TRAPPCH_H*/

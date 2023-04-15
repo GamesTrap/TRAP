@@ -95,6 +95,6 @@ namespace TRAP::INTERNAL::Network
 	};
 }
 
-#endif
+#endif /*TRAP_PLATFORM_LINUX*/
 
 #endif /*TRAP_NETWORK_SOCKETIMPLLINUX_H*/

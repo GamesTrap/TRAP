@@ -55,7 +55,7 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appNa
 		for (const std::string_view str : m_instanceExtensions)
 			TP_DEBUG(Log::RendererVulkanInstancePrefix, "    ", str);
 	}
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	const VkApplicationInfo appInfo = VulkanInits::ApplicationInfo(appName);
 	VkInstanceCreateInfo info = VulkanInits::InstanceCreateInfo(appInfo, layers, extensions);
@@ -70,7 +70,7 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appNa
 		validationFeatures.pEnabledValidationFeatures = &enabledValidationFeatures;
 		info.pNext = &validationFeatures;
 	}
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG && ENABLE_GPU_BASED_VALIDATION*/
 
 	VkCall(vkCreateInstance(&info, nullptr, &m_instance));
 	TRAP_ASSERT(m_instance, "VulkanInstance(): Vulkan Instance is nullptr!");
@@ -95,7 +95,7 @@ TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanInstancePrefix, "Destroying Instance");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 	vkDestroyInstance(m_instance, nullptr);
 	m_instance = nullptr;
 }

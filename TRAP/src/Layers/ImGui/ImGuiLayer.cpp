@@ -91,7 +91,7 @@ void TRAP::ImGuiLayer::OnAttach()
 #if !defined(TRAP_PLATFORM_LINUX) || !defined(ENABLE_WAYLAND_SUPPORT)
 	//On Wayland we are unable to track window and mouse positions, so we disable multi-viewport support
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; //Enable Multi-Viewport / Platform Windows
-#endif
+#endif /*!TRAP_PLATFORM_LINUX || !ENABLE_WAYLAND_SUPPORT*/
 
 	//Set imgui.ini path
 	const auto docsFolder = TRAP::FileSystem::GetGameDocumentsFolderPath();

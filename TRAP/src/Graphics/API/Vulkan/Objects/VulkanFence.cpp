@@ -18,7 +18,7 @@ TRAP::Graphics::API::VulkanFence::VulkanFence()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanFencePrefix, "Creating Fence");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	const VkFenceCreateInfo info = VulkanInits::FenceCreateInfo();
 	VkCall(vkCreateFence(m_device->GetVkDevice(), &info, nullptr, &m_fence));
@@ -33,7 +33,7 @@ TRAP::Graphics::API::VulkanFence::~VulkanFence()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanFencePrefix, "Destroying Fence");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	vkDestroyFence(m_device->GetVkDevice(), m_fence, nullptr);
 	m_fence = nullptr;

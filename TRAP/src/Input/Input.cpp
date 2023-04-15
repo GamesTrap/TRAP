@@ -192,7 +192,7 @@ void TRAP::Input::Shutdown()
 	const TRAP::Math::Vec2i windowPos = Application::GetWindow()->GetPosition();
 	xPos += windowPos.x;
 	yPos += windowPos.y;
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/
 
 	return {static_cast<float>(xPos), static_cast<float>(yPos)};
 }
@@ -217,7 +217,7 @@ void TRAP::Input::Shutdown()
 	const TRAP::Math::Vec2i windowPos = window->GetPosition();
 	xPos += windowPos.x;
 	yPos += windowPos.y;
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/
 
 	return TRAP::Math::Vec2{ static_cast<float>(xPos), static_cast<float>(yPos) };
 }

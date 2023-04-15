@@ -3214,7 +3214,7 @@ namespace TRAP::Graphics
 		static bool s_aftermathSupport;
 		static bool s_diagnosticsConfigSupport;
 		static bool s_diagnosticCheckPointsSupport;
-#endif
+#endif /*ENABLE_NSIGHT_AFTERMATH*/
 
 	protected:
 		static TRAP::Scope<RendererAPI> s_Renderer;
@@ -3298,7 +3298,7 @@ namespace TRAP::Graphics
 			std::array<TRAP::Ref<RenderTarget>, ImageCount> RenderTargets;
 			bool Resize = false;
 			uint32_t NewWidth = 1920, NewHeight = 1080; //Default RenderTargets to use Full HD
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
 			uint32_t CurrentSwapChainImageIndex{};
 
 			RendererAPI::Color ClearColor{0.1, 0.1, 0.1, 1.0};

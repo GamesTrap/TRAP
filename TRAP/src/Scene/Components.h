@@ -3,12 +3,12 @@
 
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
-#endif
+#endif /*_MSC_VER*/
 #include <box2d/b2_body.h>
 #include <box2d/b2_fixture.h>
 #ifdef _MSC_VER
 	#pragma warning(pop)
-#endif
+#endif /*_MSC_VER*/
 
 #include "Scene/ScriptableEntity.h"
 #include "SceneCamera.h"

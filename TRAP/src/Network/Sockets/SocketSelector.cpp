@@ -37,7 +37,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifdef TRAP_PLATFORM_WINDOWS
 #define far
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/
 
 namespace TRAP::Network
 {
@@ -228,4 +228,4 @@ TRAP::Network::SocketSelector& TRAP::Network::SocketSelector::operator=(const So
 
 #ifdef TRAP_PLATFORM_WINDOWS
 #undef far
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/

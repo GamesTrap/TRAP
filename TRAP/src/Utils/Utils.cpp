@@ -466,7 +466,7 @@ static TRAP::Utils::NTDLL s_ntdll;
 		                                  LOBYTE(_WIN32_WINNT_WIN7), 0);
 }
 
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -487,7 +487,7 @@ static TRAP::Utils::NTDLL s_ntdll;
 
 	return true;
 }
-#endif
+#endif /*ENABLE_SINGLE_PROCESS_ONLY && TRAP_PLATFORM_WINDOWS*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -535,7 +535,7 @@ static TRAP::Utils::NTDLL s_ntdll;
 
 	return (socketFD != -1 && rc == 0);
 }
-#endif
+#endif /*ENABLE_SINGLE_PROCESS_ONLY && TRAP_PLATFORM_LINUX*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -558,7 +558,7 @@ void TRAP::Utils::CheckSingleProcess()
 		TP_CRITICAL(TRAP::Log::ApplicationPrefix, "A TRAP™ Application is already running! (0x0012)");
 		exit(0x0012);
 	}
-#endif
+#endif /*ENABLE_SINGLE_PROCESS_ONLY*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -580,7 +580,7 @@ static BOOL WINAPI SIGINTHandlerRoutine(_In_ DWORD dwCtrlType)
 
 	return FALSE;
 }
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS && TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

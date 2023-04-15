@@ -8,7 +8,7 @@ TRAP::Graphics::CommandBuffer::CommandBuffer()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererCommandBufferPrefix, "Creating CommandBuffer");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -19,7 +19,7 @@ TRAP::Graphics::CommandBuffer::~CommandBuffer()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererCommandBufferPrefix, "Destroying CommandBuffer");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -14,26 +14,26 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-#if defined(ENABLE_GRAPHICS_DEBUG)
+#ifdef ENABLE_GRAPHICS_DEBUG
 	if (VulkanRenderer::s_debugUtilsExtension)
 	{
 		const VkDebugUtilsObjectNameInfoEXT nameInfo = VulkanInits::DebugUtilsObjectNameInfo(type, handle, name);
 		VkCall(vkSetDebugUtilsObjectNameEXT(device, &nameInfo));
 	}
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 #else
 void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[maybe_unused]] const uint64_t handle,
 										  [[maybe_unused]] const VkDebugReportObjectTypeEXT type,
                                           [[maybe_unused]] const std::string_view name)
 {
-#if defined(ENABLE_GRAPHICS_DEBUG)
+#ifdef ENABLE_GRAPHICS_DEBUG
 	if (VulkanRenderer::s_debugReportExtension)
 	{
 		const VkDebugMarkerObjectNameInfoEXT nameInfo = VulkanInits::DebugMarkerObjectNameInfo(type, handle, name);
 		VkCall(vkDebugMarkerSetObjectNameEXT(device, &nameInfo));
 	}
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 #endif
 
@@ -150,7 +150,7 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 	}
 
 	blendDescIndex = 0;
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 	for(uint32_t i = 0; i < 8; ++i)
 	{
@@ -300,7 +300,7 @@ void TRAP::Graphics::API::UtilGetPlanarVkImageMemoryRequirement(VkDevice device,
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-#if !defined(TRAP_PLATFORM_ANDROID)
+#ifndef TRAP_PLATFORM_ANDROID
 	if(SRGB)
 		return TRAP::Graphics::API::ImageFormat::B8G8R8A8_SRGB;
 

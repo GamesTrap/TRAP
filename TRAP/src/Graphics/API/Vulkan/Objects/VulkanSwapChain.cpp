@@ -29,7 +29,7 @@ TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSwapChainPrefix, "Creating SwapChain");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	InitSwapchain(desc);
 }
@@ -42,7 +42,7 @@ TRAP::Graphics::API::VulkanSwapChain::~VulkanSwapChain()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSwapChainPrefix, "Destroying SwapChain");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	DeInitSwapchain();
 }

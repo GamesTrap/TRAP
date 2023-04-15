@@ -16,7 +16,7 @@ TRAP::Graphics::API::VulkanPipelineCache::VulkanPipelineCache(const RendererAPI:
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPipelineCachePrefix, "Creating PipelineCache");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	const VkPipelineCacheCreateInfo psoCacheCreateInfo = VulkanInits::PipelineCacheCreateInfo(desc.Data,
 	                                                     PipelineCacheFlagsToVkPipelineCacheCreateFlags(desc.Flags));
@@ -32,7 +32,7 @@ TRAP::Graphics::API::VulkanPipelineCache::~VulkanPipelineCache()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPipelineCachePrefix, "Destroying PipelineCache");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	vkDestroyPipelineCache(m_device->GetVkDevice(), m_cache, nullptr);
 }

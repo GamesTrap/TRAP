@@ -252,7 +252,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
 	    tracy::SetThreadName("FileWatcher");
     else
 	    tracy::SetThreadName((m_name + " (FileWatcher)").c_str());
-#endif
+#endif /*TRACY_ENABLE*/
 
     //Thread init
     std::vector<Events::FileChangeEvent> events;
@@ -405,7 +405,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
 	    tracy::SetThreadName("FileWatcher");
     else
 	    tracy::SetThreadName((m_name + " (FileWatcher)").c_str());
-#endif
+#endif /*TRACY_ENABLE*/
 
     //Thread init
     std::vector<Events::FileChangeEvent> events;

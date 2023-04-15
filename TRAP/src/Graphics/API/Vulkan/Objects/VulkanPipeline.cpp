@@ -23,7 +23,7 @@ TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineD
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPipelinePrefix, "Creating Pipeline");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	switch(desc.Type)
 	{
@@ -53,7 +53,7 @@ TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineD
 #ifdef ENABLE_GRAPHICS_DEBUG
 	if(!desc.Name.empty() && m_vkPipeline != VK_NULL_HANDLE)
 		SetPipelineName(desc.Name);
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -64,7 +64,7 @@ TRAP::Graphics::API::VulkanPipeline::~VulkanPipeline()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPipelinePrefix, "Destroying Pipeline");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	m_shaderStageNames.clear();
 

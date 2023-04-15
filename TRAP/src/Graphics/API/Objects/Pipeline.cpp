@@ -9,7 +9,7 @@ TRAP::Graphics::Pipeline::Pipeline()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererPipelinePrefix, "Creating Pipeline");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -20,7 +20,7 @@ TRAP::Graphics::Pipeline::~Pipeline()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererPipelinePrefix, "Destroying Pipeline");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

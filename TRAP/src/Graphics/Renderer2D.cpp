@@ -749,7 +749,7 @@ void TRAP::Graphics::Renderer2D::Init()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::Renderer2DPrefix, "Initializing");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 	Renderer2DData::QuadData::Init();
 	Renderer2DData::CircleData::Init();
@@ -766,7 +766,7 @@ void TRAP::Graphics::Renderer2D::Shutdown()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::Renderer2DPrefix, "Shutting down");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 
 	s_data.clear();
 

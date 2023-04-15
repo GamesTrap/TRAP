@@ -13,7 +13,7 @@ bool OpenFileInFileBrowser(const std::filesystem::path& p);
 #ifdef TRAP_PLATFORM_LINUX
 [[nodiscard]] std::optional<std::filesystem::path> GetHomeFolderPathLinux();
 [[nodiscard]] std::optional<std::filesystem::path> GetDocumentsFolderPathLinux();
-#endif
+#endif /*TRAP_PLATFORM_LINUX*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -1233,4 +1233,5 @@ bool OpenFileInFileBrowser(const std::filesystem::path& p)
 
     return documentsDir;
 }
-#endif
+
+#endif /*TRAP_PLATFORM_LINUX*/

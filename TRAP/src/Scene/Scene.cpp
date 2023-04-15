@@ -11,7 +11,7 @@
 
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
-#endif
+#endif /*_MSC_VER*/
 #include <box2d/b2_world.h>
 #include <box2d/b2_body.h>
 #include <box2d/b2_fixture.h>
@@ -19,7 +19,7 @@
 #include <box2d/b2_circle_shape.h>
 #ifdef _MSC_VER
 	#pragma warning(pop)
-#endif
+#endif /*_MSC_VER*/
 
 [[nodiscard]] static b2BodyType TRAPRigidbody2DTypeToBox2DBody(TRAP::Rigidbody2DComponent::BodyType bodyType)
 {

@@ -109,7 +109,7 @@ std::string TRAP::INTERNAL::ImGuiWindowing::s_clipboardText{};
 	mainViewport->PlatformHandle = bd->Window;
 #ifdef TRAP_PLATFORM_WINDOWS
 	mainViewport->PlatformHandleRaw = WindowingAPI::GetWin32Window(*bd->Window);
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/
 	if ((io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) != 0)
 		InitPlatformInterface();
 
@@ -945,7 +945,7 @@ void TRAP::INTERNAL::ImGuiWindowing::CreateWindow(ImGuiViewport* const viewport)
 	viewport->PlatformHandle = static_cast<void*>(vd->Window);
 #ifdef TRAP_PLATFORM_WINDOWS
 	viewport->PlatformHandleRaw = WindowingAPI::GetWin32Window(*vd->Window);
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/
 	WindowingAPI::SetWindowPos(*vd->Window, static_cast<int32_t>(viewport->Pos.x),
 	                           static_cast<int32_t>(viewport->Pos.y));
 

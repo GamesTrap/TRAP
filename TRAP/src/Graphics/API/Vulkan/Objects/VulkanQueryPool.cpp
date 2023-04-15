@@ -16,7 +16,7 @@ TRAP::Graphics::API::VulkanQueryPool::VulkanQueryPool(const RendererAPI::QueryPo
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanQueryPoolPrefix, "Creating QueryPool");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	m_type = QueryTypeToVkQueryType(desc.Type);
 	m_count = desc.QueryCount;
@@ -35,7 +35,7 @@ TRAP::Graphics::API::VulkanQueryPool::~VulkanQueryPool()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanQueryPoolPrefix, "Destroying QueryPool");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	vkDestroyQueryPool(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()->GetVkDevice(),
 	                   m_vkQueryPool, nullptr);

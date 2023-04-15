@@ -1877,7 +1877,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessX11(Interna
 	//      when UTF-8 support is missing
 	if(strcmp(setLocale(LC_CTYPE, nullptr), "C") == 0)
 		setLocale(LC_CTYPE, "");
-#endif
+#endif /*!X_HAVE_UTF8_STRING*/
 
 	#if defined(__CYGWIN__)
 		s_Data.X11.XLIB.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libX11-6.so");

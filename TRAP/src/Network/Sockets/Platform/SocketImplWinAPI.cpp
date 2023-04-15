@@ -168,4 +168,4 @@ struct SocketInitializer
 
 SocketInitializer GlobalInitializer;
 
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/

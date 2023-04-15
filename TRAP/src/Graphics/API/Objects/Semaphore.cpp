@@ -30,7 +30,7 @@ TRAP::Graphics::Semaphore::Semaphore()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererSemaphorePrefix, "Creating Semaphore");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -41,7 +41,7 @@ TRAP::Graphics::Semaphore::~Semaphore()
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererSemaphorePrefix, "Destroying Semaphore");
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

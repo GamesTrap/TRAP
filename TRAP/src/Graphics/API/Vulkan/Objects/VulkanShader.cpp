@@ -508,7 +508,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanShaderPrefix, "Creating Shader: \"", m_name, "\"");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	uint32_t counter = 0;
 
@@ -542,7 +542,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 #ifdef ENABLE_GRAPHICS_DEBUG
 					if (!m_name.empty())
 						SetShaderStageName(m_name + "_Vertex", m_shaderModules[counter]);
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 					break;
 				}
 
@@ -559,7 +559,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 #ifdef ENABLE_GRAPHICS_DEBUG
 					if (!m_name.empty())
 						SetShaderStageName(m_name + "_TessellationControl", m_shaderModules[counter]);
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 					break;
 				}
 
@@ -576,7 +576,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 #ifdef ENABLE_GRAPHICS_DEBUG
 					if (!m_name.empty())
 						SetShaderStageName(m_name + "_TessellationEvaluation", m_shaderModules[counter]);
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 					break;
 				}
 
@@ -592,7 +592,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 #ifdef ENABLE_GRAPHICS_DEBUG
 					if (!m_name.empty())
 						SetShaderStageName(m_name + "_Geometry", m_shaderModules[counter]);
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 					break;
 				}
 
@@ -608,7 +608,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 #ifdef ENABLE_GRAPHICS_DEBUG
 					if (!m_name.empty())
 						SetShaderStageName(m_name + "_Fragment", m_shaderModules[counter]);
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 					break;
 				}
 
@@ -626,7 +626,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 #ifdef ENABLE_GRAPHICS_DEBUG
 					if (!m_name.empty())
 						SetShaderStageName(m_name + "_Compute/RayTracing", m_shaderModules[counter]);
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 					break;
 				}
 
@@ -671,7 +671,7 @@ void TRAP::Graphics::API::VulkanShader::Shutdown()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanShaderPrefix, "Destroying Shader: \"", m_name, "\"");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	if(!m_reflection || !m_valid)
 	{

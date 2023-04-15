@@ -36,7 +36,7 @@ namespace TRAP::Graphics::AftermathTracker
 	/// <param name="outStatus">Output: Status of the crash dump generation.</param>
 	/// <returns>Result the crash dump status call.</returns>
 	[[nodiscard]] GFSDK_Aftermath_Result GetGPUCrashDumpStatus(GFSDK_Aftermath_CrashDump_Status& outStatus);
-#endif
+#endif /*ENABLE_NSIGHT_AFTERMATH*/
 }
 
 #endif /*TRAP_AFTERMATHTRACKER_H*/

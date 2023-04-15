@@ -376,7 +376,7 @@ namespace TRAP::Graphics::API
 	constexpr void VkReflexCall(NvLL_VK_Status)
 	{}
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
-#endif
+#endif /*TRAP_DEBUG*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

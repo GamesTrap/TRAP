@@ -31,7 +31,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRootSignaturePrefix, "Creating RootSignature");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	static constexpr uint32_t maxLayoutCount = RendererAPI::MaxDescriptorSets;
 	std::array<VulkanRenderer::UpdateFrequencyLayoutInfo, maxLayoutCount> layouts{};
@@ -469,7 +469,7 @@ TRAP::Graphics::API::VulkanRootSignature::~VulkanRootSignature()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRootSignaturePrefix, "Destroying RootSignature");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	for(uint32_t i = 0; i < RendererAPI::MaxDescriptorSets; ++i)
 	{

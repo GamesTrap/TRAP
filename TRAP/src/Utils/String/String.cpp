@@ -349,7 +349,7 @@
 
 	return result;
 }
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -377,4 +377,4 @@
 
 	return result;
 }
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/

@@ -41,7 +41,7 @@ The above license only applies to some of the Controller specific parts of this 
 
 #ifdef TRAP_PLATFORM_LINUX
 #include "Utils/Linux.h"
-#endif
+#endif /*TRAP_PLATFORM_LINUX*/
 
 #include "Maths/Math.h"
 #include "Events/Event.h"

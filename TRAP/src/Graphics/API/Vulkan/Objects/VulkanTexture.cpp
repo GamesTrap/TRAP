@@ -108,7 +108,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanTexturePrefix, "Creating Texture");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	if (static_cast<bool>(desc.Descriptors & RendererAPI::DescriptorType::RWTexture) ||
 	    static_cast<bool>(desc.Flags & RendererAPI::TextureCreationFlags::Storage))
@@ -221,7 +221,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 		VkImportMemoryWin32HandleInfoKHR importInfo{};
 		importInfo.sType = VK_STRUCTURE_TYPE_IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR;
 		importInfo.pNext = nullptr;
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/
 		VkExportMemoryAllocateInfo exportMemoryInfo{};
 		exportMemoryInfo.sType = VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO;
 		exportMemoryInfo.pNext = nullptr;
@@ -247,13 +247,13 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 			// Allocate external (importable / exportable) memory as dedicated memory to avoid
 			// unnecessary complexity to the Vulkan Memory Allocator
 			memReqs.flags |= VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT;
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/
 		}
 		else if (VulkanRenderer::s_externalMemory && static_cast<bool>(desc.Flags & RendererAPI::TextureCreationFlags::Export))
 		{
 #ifdef TRAP_PLATFORM_WINDOWS
 			exportMemoryInfo.handleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT;
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/
 			memReqs.pUserData = &exportMemoryInfo;
 			// Allocate external (importable / exportable) memory as dedicated memory to avoid
 			// unnecessary complexity to the Vulkan Memory Allocator
@@ -428,7 +428,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 #if defined(ENABLE_GRAPHICS_DEBUG)
 	if (!m_name.empty())
 		SetTextureName(m_name);
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -511,7 +511,7 @@ void TRAP::Graphics::API::VulkanTexture::Shutdown()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanTexturePrefix, "Destroying Texture");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	if (m_ownsImage && (m_vkImage != nullptr))
 	{

@@ -22,7 +22,7 @@ TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> inst
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSurfacePrefix, "Creating Surface");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	VkCall(TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(m_instance->GetVkInstance(),
 	                                                         *static_cast<TRAP::INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()),
@@ -55,7 +55,7 @@ TRAP::Graphics::API::VulkanSurface::~VulkanSurface()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSurfacePrefix, "Destroying Surface");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	vkDestroySurfaceKHR(m_instance->GetVkInstance(), m_surface, nullptr);
 	m_surface = nullptr;

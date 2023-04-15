@@ -1,6 +1,6 @@
 #ifndef __has_feature
     #define __has_feature(x) 0
-#endif
+#endif /*__has_feature*/
 
 #if defined(__SANITIZE_ADDRESS__) || __has_feature(address_sanitizer) || defined(TRAP_ASAN) || \
     defined(__SANITIZE_UNDEFINED__) || __has_feature(undefined_sanitizer) || defined(TRAP_UBSAN) || \

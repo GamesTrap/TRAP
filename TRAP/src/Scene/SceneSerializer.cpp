@@ -3,11 +3,11 @@
 
 #ifdef _MSC_VER
 #pragma warning(push, 0)
-#endif
+#endif /*_MSC_VER*/
 #include <yaml-cpp/yaml.h>
 #ifdef _MSC_VER
 #pragma warning(pop)
-#endif
+#endif /*_MSC_VER*/
 
 #include "Utils/String/String.h"
 #include "Components.h"

@@ -207,7 +207,7 @@ namespace TRAP::Graphics::API
 		/// <param name="width">New width.</param>
 		/// <param name="height">New height.</param>
 		void SetResolution(uint32_t width, uint32_t height) const override;
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
 #ifdef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Get the resolution of the render targets.

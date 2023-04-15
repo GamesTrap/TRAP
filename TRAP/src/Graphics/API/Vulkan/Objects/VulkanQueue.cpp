@@ -27,7 +27,7 @@ TRAP::Graphics::API::VulkanQueue::VulkanQueue(const RendererAPI::QueueDesc& desc
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanQueuePrefix, "Creating Queue");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	VkQueueFamilyProperties queueProps = {};
 
@@ -55,7 +55,7 @@ TRAP::Graphics::API::VulkanQueue::VulkanQueue(const RendererAPI::QueueDesc& desc
 	default:
 		break;
 	}
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -66,7 +66,7 @@ TRAP::Graphics::API::VulkanQueue::~VulkanQueue()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanQueuePrefix, "Destroying Queue");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	--m_device->m_usedQueueCount[m_flags];
 }

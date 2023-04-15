@@ -38,7 +38,7 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* con
 #ifdef TRACY_ENABLE
 	//Set Thread name for profiler
 	tracy::SetThreadName("ResourceLoader");
-#endif
+#endif /*TRACY_ENABLE*/
 
 	SyncToken maxToken{};
 

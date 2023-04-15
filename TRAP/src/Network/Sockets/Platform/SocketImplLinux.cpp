@@ -163,4 +163,4 @@ void TRAP::INTERNAL::Network::SocketImpl::SetBlocking(const TRAP::Network::Socke
 	}
 }
 
-#endif
+#endif /*TRAP_PLATFORM_LINUX*/

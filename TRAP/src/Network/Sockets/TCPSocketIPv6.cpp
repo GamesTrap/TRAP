@@ -10,7 +10,7 @@
 
 #ifdef TRAP_PLATFORM_WINDOWS
 #define far
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/
 
 namespace
 {
@@ -416,4 +416,4 @@ TRAP::Network::TCPSocketIPv6::PendingPacket::PendingPacket() noexcept
 
 #ifdef TRAP_PLATFORM_WINDOWS
 #undef far
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/

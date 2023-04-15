@@ -7,17 +7,17 @@
 
 #ifndef NOMINMAX
 	#define NOMINMAX
-#endif
+#endif /*NOMINMAX*/
 
 //Target Windows 8 or later
 #ifndef _WIN32_WINNT
 	#define _WIN32_WINNT 0x0602
-#endif
+#endif /*_WIN32_WINNT*/
 #include <sdkddkver.h>
 
 #ifndef OEMRESOURCE
 	#define OEMRESOURCE
-#endif
+#endif /*OEMRESOURCE*/
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
@@ -26,50 +26,50 @@
 //HACK: Define macros that some windows.h variants don't
 #ifndef WM_MOUSEHWHEEL
 	#define WM_MOUSEHWHEEL 0x020E
-#endif
+#endif /*WM_MOUSEHWHEEL*/
 #ifndef WM_DWMCOMPOSITIONCHANGED
 	#define WM_DWMCOMPOSITIONCHANGED 0x031E
-#endif
+#endif /*WM_DWMCOMPOSITIONCHANGED*/
 #ifndef WM_COPYGLOBALDATA
 	#define WM_COPYGLOBALDATA 0x0049
-#endif
+#endif /*WM_COPYGLOBALDATA*/
 #ifndef WM_UNICHAR
 	#define WM_UNICHAR 0x0109
-#endif
+#endif /*WM_UNICHAR*/
 #ifndef UNICODE_NOCHAR
 	#define UNICODE_NOCHAR 0xFFFF
-#endif
+#endif /*UNICODE_NOCHAR*/
 #ifndef WM_DPICHANGED
 	#define WM_DPICHANGED 0x02E0
-#endif
+#endif /*WM_DPICHANGED*/
 #ifndef GET_XBUTTON_WPARAM
 	#define GET_XBUTTON_WPARAM(w) (HIWORD(w))
-#endif
+#endif /*GET_XBUTTON_WPARAM*/
 #ifndef EDS_ROTATEDMODE
 	#define EDS_ROTATEDMODE 0x00000004
-#endif
+#endif /*EDS_ROTATEDMODE*/
 #ifndef DISPLAY_DEVICE_ACTIVE
 	#define DISPLAY_DEVICE_ACTIVE 0x00000001
-#endif
+#endif /*DISPLAY_DEVICE_ACTIVE*/
 #ifndef _WIN32_WINNT_WINBLUE
 	#define _WIN32_WINNT_WINBLUE 0x0603
-#endif
+#endif /*_WIN32_WINNT_WINBLUE*/
 #ifndef _WIN32_WINNT_WIN8
 	#define _WIN32_WINNT_WIN8 0x0602
-#endif
+#endif /*_WIN32_WINNT_WIN8*/
 #ifndef WM_GETDPISCALEDSIZE
 	#define WM_GETDPISCALEDSIZE 0x02e4
-#endif
+#endif /*WM_GETDPISCALEDSIZE*/
 #ifndef USER_DEFAULT_SCREEN_DPI
 	#define USER_DEFAULT_SCREEN_DPI 96
-#endif
+#endif /*USER_DEFAULT_SCREEN_DPI*/
 #ifndef OCR_HAND
 	#define OCR_HAND 32649
-#endif
+#endif /*OCR_HAND*/
 
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
-#endif
+#endif /*_MSC_VER*/
 //WinAPI
 #include <Dbt.h>
 #include <dwmapi.h>
@@ -83,10 +83,10 @@
 //DirectInput
 #ifndef DIDFT_OPTIONAL
 	#define DIDFT_OPTIONAL 0x80000000
-#endif
+#endif /*DIDFT_OPTIONAL*/
 #ifndef DIRECTINPUT_VERSION
 	#define DIRECTINPUT_VERSION 0x0800
-#endif
+#endif /*DIRECTINPUT_VERSION*/
 #include <basetsd.h>
 #include <dinput.h>
 #include <WinSock2.h>
@@ -95,71 +95,71 @@
 #include <shellapi.h>
 #ifdef _MSC_VER
 	#pragma warning(pop)
-#endif
+#endif /*_MSC_VER*/
 
 #ifdef far
 	#undef far
-#endif
+#endif /*far*/
 #ifdef min
 	#undef min
-#endif
+#endif /*min*/
 #ifdef max
 	#undef max
-#endif
+#endif /*max*/
 #ifdef CreateWindow
 	#undef CreateWindow
-#endif
+#endif /*CreateWindow*/
 #ifdef GetWindowStyle
 	#undef GetWindowStyle
-#endif
+#endif /*GetWindowStyle*/
 #ifdef GetWindowExStyle
 	#undef GetWindowExStyle
-#endif
+#endif /*GetWindowExStyle*/
 #ifdef IsMaximized
 	#undef IsMaximized
-#endif
+#endif /*IsMaximized*/
 #ifdef IsMinimized
 	#undef IsMinimized
-#endif
+#endif /*IsMinimized*/
 #ifdef IsRestored
 	#undef IsRestored
-#endif
+#endif /*IsRestored*/
 #ifdef near
 	#undef near
-#endif
+#endif /*near*/
 #ifdef DELETE
 	#undef DELETE
-#endif
+#endif /*DELETE*/
 #ifdef isnan
 	#undef isnan
-#endif
+#endif /*isnan*/
 #ifdef isinf
 	#undef isinf
-#endif
+#endif /*isinf*/
 #ifdef log2
 	#undef log2
-#endif
+#endif /*log2*/
 #ifdef GetKeyboardLayoutName
 	#undef GetKeyboardLayoutName
-#endif
+#endif /*GetKeyboardLayoutName*/
 #ifdef GetMessage
 	#undef GetMessage
-#endif
+#endif /*GetMessage*/
 #ifdef CreateDirectory
 	#undef CreateDirectory
-#endif
+#endif /*CreateDirectory*/
 #ifdef DeleteFile
 	#undef DeleteFile
-#endif
+#endif /*DeleteFile*/
 #ifdef BeginUpdateResource
 	#undef BeginUpdateResource
-#endif
+#endif /*BeginUpdateResource*/
 #ifdef EndUpdateResource
 	#undef EndUpdateResource
-#endif
+#endif /*EndUpdateResource*/
 #ifdef LoadLibrary
 	#undef LoadLibrary
-#endif
+#endif /*LoadLibrary*/
 
 namespace TRAP::Utils::Windows
 {

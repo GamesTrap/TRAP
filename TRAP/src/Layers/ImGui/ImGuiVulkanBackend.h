@@ -54,12 +54,12 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
-#endif
+#endif /*_MSC_VER*/
 //ImGUI
 #include <imgui.h>
 #ifdef _MSC_VER
 	#pragma warning(pop)
-#endif
+#endif /*_MSC_VER*/
 
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 

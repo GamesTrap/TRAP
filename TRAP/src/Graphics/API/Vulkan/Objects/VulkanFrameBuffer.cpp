@@ -22,7 +22,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanFrameBufferPrefix, "Creating FrameBuffer");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	const uint32_t colorAttachmentCount = static_cast<uint32_t>(desc.RenderTargets.size());
 	const uint32_t depthAttachmentCount = desc.DepthStencil ? 1 : 0;
@@ -142,7 +142,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::~VulkanFrameBuffer()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanFrameBufferPrefix, "Destroying FrameBuffer");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 	vkDestroyFramebuffer(m_device->GetVkDevice(), m_framebuffer, nullptr);
 	m_framebuffer = nullptr;
 }

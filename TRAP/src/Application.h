@@ -11,7 +11,7 @@
 
 #if !defined(DOXYGEN_DOCUMENTATION_BUILD)
 int main(int32_t argc, const char* const* argv);
-#endif
+#endif /*!DOXYGEN_DOCUMENTATION_BUILD*/
 
 namespace TRAP
 {
@@ -103,7 +103,7 @@ namespace TRAP
 		/// </summary>
 		/// <returns>Reference to ImGuiLayer.</returns>
 		[[nodiscard]] static ImGuiLayer& GetImGuiLayer();
-#endif
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Get the current frames per second.

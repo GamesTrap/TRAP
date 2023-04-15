@@ -546,7 +546,7 @@ void TRAP::Window::SetCursorMode(const CursorMode& mode)
 		TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" set cursor mode: Disabled");
 	else if(mode == CursorMode::Captured)
 		TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" set cursor mode: Captured");
-#endif
+#endif /*TRAP_RELEASE*/
 
 	INTERNAL::WindowingAPI::SetCursorMode(*m_window, mode);
 	m_data.cursorMode = mode;
@@ -1346,7 +1346,7 @@ void TRAP::Window::SetupEventCallbacks()
 			INTERNAL::WindowingAPI::GetWindowPos(window, winPosX, winPosY);
 			xPos += winPosX;
 			yPos += winPosY;
-#endif
+#endif /*TRAP_PLATFORM_WINDOWS*/
 
 			Events::MouseMoveEvent event(static_cast<float>(xPos), static_cast<float>(yPos), data->Win);
 			data->EventCallback(event);

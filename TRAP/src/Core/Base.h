@@ -6,12 +6,12 @@
 
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
-#endif
+#endif /*_MSC_VER*/
 //Tracy - Profiler
 #include <tracy/Tracy.hpp>
 #ifdef _MSC_VER
 	#pragma warning(pop)
-#endif
+#endif /*_MSC_VER*/
 
 #include "PlatformDetection.h"
 
@@ -30,7 +30,7 @@
 #if (defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)) && !defined(DISABLE_GRAPHICS_DEBUG)
 	#define ENABLE_GRAPHICS_DEBUG
 	#define VERBOSE_GRAPHICS_DEBUG
-#endif
+#endif /*(TRAP_DEBUG || TRAP_RELWITHDEBINFO) && !DISABLE_GRAPHICS_DEBUG*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -38,8 +38,8 @@
 #ifdef NSIGHT_AFTERMATH_AVAILABLE
 	#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
 		#define ENABLE_NSIGHT_AFTERMATH
-	#endif
-#endif
+	#endif /*TRAP_DEBUG || TRAP_RELWITHDEBINFO*/
+#endif /*NSIGHT_AFTERMATH_AVAILABLE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -72,14 +72,14 @@
 //Currently X11/Xwayland is preferred over native Wayland.
 #ifdef TRAP_PLATFORM_LINUX
 	#define ENABLE_WAYLAND_SUPPORT
-#endif
+#endif /*TRAP_PLATFORM_LINUX*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wshadow"
-#endif
+#endif /*__GNUC__ && !__clang__*/
 
 //Settings for Profiling (with Tracy)
 
@@ -120,7 +120,7 @@ enum class ProfileSystems : uint32_t
 
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic pop
-#endif
+#endif /*__GNUC__ && !__clang__*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -192,7 +192,7 @@ const uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 9, 13);
 	} \
 	constexpr inline ENUM_TYPE operator|=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a | b); }\
 	constexpr inline ENUM_TYPE operator&=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a & b); }
-#endif
+#endif /*MAKE_ENUM_FLAG*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -231,7 +231,7 @@ const uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 9, 13);
 		/// </summary>
 		constexpr void TRAP_DEBUG_BREAK() noexcept
 		{}
-#endif
+#endif /*TRAP_DEBUG || TRAP_RELWITHDEBINFO*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

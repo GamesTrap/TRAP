@@ -61,7 +61,7 @@ namespace TRAP::Utils::Discord
     /// </summary>
     /// <returns>Handle to internal Discord Game SDK discord::Core*, nullptr when not initialized.</returns>
     [[nodiscard]] discord::Core* GetDiscordCore() noexcept;
-#endif
+#endif /*USE_DISCORD_GAME_SDK*/
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

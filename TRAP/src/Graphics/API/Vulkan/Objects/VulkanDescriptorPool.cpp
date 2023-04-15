@@ -42,7 +42,7 @@ TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const uint32_t n
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDescriptorPoolPrefix, "Creating DescriptorPool");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	if (VulkanRenderer::s_rayTracingExtension)
 		std::get<DESCRIPTOR_TYPE_RANGE_SIZE - 1>(s_descriptorPoolSizes) = { VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR,
@@ -68,7 +68,7 @@ TRAP::Graphics::API::VulkanDescriptorPool::~VulkanDescriptorPool()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDescriptorPoolPrefix, "Destroying DescriptorPool");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 	for(VkDescriptorPool& pool : m_descriptorPools)
 		vkDestroyDescriptorPool(m_device->GetVkDevice(), pool, nullptr);
 	m_descriptorPools.clear();

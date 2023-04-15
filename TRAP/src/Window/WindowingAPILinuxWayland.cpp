@@ -800,7 +800,7 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleName(void* const userData, [[mayb
     if(name != nullptr)
         monitor->Name = name;
 }
-#endif
+#endif /*WL_OUTPUT_NAME_SINCE_VERSION*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -1013,7 +1013,7 @@ void TRAP::INTERNAL::WindowingAPI::KeyboardHandleRepeatInfo([[maybe_unused]] voi
     s_Data.Wayland.KeyRepeatRate = rate;
     s_Data.Wayland.KeyRepeatDelay = delay;
 }
-#endif
+#endif /*WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -3016,7 +3016,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInitWayland()
     {
         s_Data.Wayland.KeyRepeatTimerFD = timerfd_create(CLOCK_MONOTONIC, TFD_CLOEXEC | TFD_NONBLOCK);
     }
-#endif
+#endif /*WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION*/
 
     if(s_Data.Wayland.WMBase == nullptr)
     {

@@ -15,7 +15,7 @@ TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDebugPrefix, "Registering Debug Callback");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	if(VulkanRenderer::s_debugUtilsExtension)
@@ -46,7 +46,7 @@ TRAP::Graphics::API::VulkanDebug::~VulkanDebug()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDebugPrefix, "Unregistering Debug Callback");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	vkDestroyDebugUtilsMessengerEXT(m_instance->GetVkInstance(), m_debugUtils, nullptr);

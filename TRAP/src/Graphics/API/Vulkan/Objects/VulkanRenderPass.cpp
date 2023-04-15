@@ -24,7 +24,7 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRenderPassPrefix, "Creating RenderPass");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	if(VulkanRenderer::s_renderPass2)
 		m_renderPass = CreateRenderPass2(m_device, desc);
@@ -41,7 +41,7 @@ TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRenderPassPrefix, "Destroying RenderPass");
-#endif
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 	vkDestroyRenderPass(m_device->GetVkDevice(), m_renderPass, nullptr);
 	m_renderPass = nullptr;
 }

@@ -13,7 +13,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #if defined(VULKAN_H_) && !defined(VK_NO_PROTOTYPES)
     #error To use VulkanLoader, you need to define VK_NO_PROTOTYPES before including vulkan.h
-#endif
+#endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 #define VULKANLOADER_HEADER_VERSION 175
@@ -21,7 +21,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifndef VK_NO_PROTOTYPES
     #define VK_NO_PROTOTYPES
-#endif
+#endif /*VK_NO_PROTOTYPES*/
 
 #ifndef VULKAN_H_
     #ifdef VK_USE_PLATFORM_WIN32_KHR
@@ -45,24 +45,24 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
         #ifdef VK_ENABLE_BETA_EXTENSIONS
             #include <vulkan/vulkan_beta.h>
-        #endif
+        #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     #else
         #include <vulkan/vulkan.h>
     #endif
-#endif
+#endif /*VULKAN_H_*/
 
 //Disable VK_NVX_image_view_handle because SDK 140 introduced a change that can't be used with prior versions */
 #if VK_HEADER_VERSION < 140
     #undef VK_NVX_image_view_handle
-#endif
+#endif /*VK_HEADER_VERSION < 140*/
 
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
-#endif
+#endif /*_MSC_VER*/
 #ifdef __cplusplus
 extern "C"
 {
-#endif
+#endif /*__cplusplus*/
 
 struct VkDeviceTable;
 
@@ -139,14 +139,14 @@ struct VkDeviceTable
 
 #ifdef __cplusplus
 }
-#endif
+#endif /*__cplusplus*/
 
-#endif
+#endif /*TRAP_VULKANLOADER_H*/
 
 // For Visual Studio IntelliSense.
 #if defined(__cplusplus) && defined(__INTELLISENSE__)
 #define VULKANLOADER_IMPLEMENTATION
-#endif
+#endif /*__cplusplus && __INTELLISENSE__*/
 
 #ifdef VULKANLOADER_IMPLEMENTATION
 #undef VULKANLOADER_IMPLEMENTATION
@@ -167,12 +167,12 @@ struct VkDeviceTable
 #ifdef __cplusplus
 extern "C"
 {
-#endif
+#endif /*__cplusplus*/
 
 #ifdef _WIN32
     __declspec(dllimport) HMODULE __stdcall LoadLibraryA(LPCSTR);
     __declspec(dllimport) FARPROC __stdcall GetProcAddress(HMODULE, LPCSTR);
-#endif
+#endif /*_WIN32*/
 
 static VkInstance loadedInstance = VK_NULL_HANDLE;
 static VkDevice loadedDevice = VK_NULL_HANDLE;
@@ -229,7 +229,7 @@ uint32_t VkGetInstanceVersion()
 	uint32_t apiVersion = 0;
 	if (vkEnumerateInstanceVersion && vkEnumerateInstanceVersion(&apiVersion) == VK_SUCCESS)
 		return apiVersion;
-#endif
+#endif /*VK_VERSION_1_1*/
 
 	if (vkCreateInstance)
 		return VK_API_VERSION_1_0;
@@ -301,26 +301,26 @@ static void VkGenLoadDeviceTable(struct VkDeviceTable* table, void* context, PFN
     #else
         #pragma GCC visibility push(hidden)
     #endif
-#endif
+#endif /*__GNUC__*/
 
 /* VULKANLOADER_GENERATE_PROTOTYPES_C */
 /* VULKANLOADER_GENERATE_PROTOTYPES_C */
 
 #ifdef __GNUC__
     #pragma GCC visibility pop
-#endif
+#endif /*__GNUC__*/
 
 #ifdef __cplusplus
 }
-#endif
+#endif /*__cplusplus*/
 #ifdef _MSC_VER
 	#pragma warning(pop)
-#endif
+#endif /*_MSC_VER*/
 
-#endif //VULKANLOADER_IMPLEMENTATION
+#endif /*VULKANLOADER_IMPLEMENTATION*/
 
 /*
-Copyright (c) 2018-2019 Arseny Kapoulkine
+Copyright (c) 2018-2023 Arseny Kapoulkine
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
