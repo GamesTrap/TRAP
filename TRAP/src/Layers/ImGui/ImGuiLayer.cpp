@@ -8,6 +8,7 @@
 #include "Application.h"
 #include "Embed.h"
 #include "Utils/Dialogs/Dialogs.h"
+#include "Utils/ErrorCodes/ErrorCodes.h"
 #include "Window/WindowingAPI.h"
 #include "ImGuiWindowing.h"
 #include "Graphics/Textures/Texture.h"
@@ -141,13 +142,7 @@ void TRAP::ImGuiLayer::OnAttach()
 
 	TP_TRACE(Log::ImGuiPrefix, "Init...");
 	if(!TRAP::INTERNAL::ImGuiWindowing::Init(window, true, Graphics::RendererAPI::GetRenderAPI()))
-	{
-		Utils::Dialogs::ShowMsgBox("Failed to initialize ImGui", "Failed to initialize ImGui!\n"
-								   "Error code: 0x0013", Utils::Dialogs::Style::Error,
-								   Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::ImGuiPrefix, "Failed to initialize ImGui! (0x0013)");
-		exit(0x0013);
-	}
+		Utils::DisplayError(Utils::ErrorCode::ImGuiFailedInitialization);
 
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{

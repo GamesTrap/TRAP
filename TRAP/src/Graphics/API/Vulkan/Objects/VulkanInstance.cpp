@@ -6,6 +6,7 @@
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Utils/Dialogs/Dialogs.h"
+#include "Utils/ErrorCodes/ErrorCodes.h"
 
 uint32_t TRAP::Graphics::API::VulkanInstance::s_instanceVersion = 0;
 std::vector<VkLayerProperties> TRAP::Graphics::API::VulkanInstance::s_availableInstanceLayers{};
@@ -78,13 +79,7 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appNa
 	if (m_instance != nullptr)
 		VkLoadInstance(m_instance);
 	else
-	{
-		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan: Instance creation failed!\n"
-								   "Error code: 0x0005", Utils::Dialogs::Style::Error,
-								   Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::RendererVulkanInstancePrefix, "Vulkan: Instance creation failed! (0x0005)");
-		exit(0x0005);
-	}
+		Utils::DisplayError(Utils::ErrorCode::VulkanInstanceCreationFailed);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -3875,3 +3875,5 @@ SITREP 04/15/2023|23w15a2
     - Config Fixed Get() didnt return std::vector ~<5 mins
     - Config Get() now returns empty optional if key was not found ~<20 mins
     - Config Removed Get() with out parameter ~<5 mins
+    - Added ErrorCode enum and DisplayError() ~<10 mins
+    - Replaced all critical errors with Utils::DisplayError() ~<10 mins

@@ -6,6 +6,7 @@
 #include "Window/WindowingAPI.h"
 #include "Utils/Utils.h"
 #include "Utils/Dialogs/Dialogs.h"
+#include "Utils/ErrorCodes/ErrorCodes.h"
 #include "FileSystem/FileSystem.h"
 #include "VulkanCommon.h"
 #include "Embed.h"
@@ -177,13 +178,7 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData*
 
 	//Try again, if it also fails with the updated swapchain, quit engine
 	if(!acquiredImage)
-	{
-		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan: Failed to acquire next swapchain image!\n"
-								   "Error code: 0x0014", Utils::Dialogs::Style::Error,
-								   Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::RendererPrefix, "Vulkan: Failed to acquire next swapchain image! (0x0014)");
-		exit(0x0014);
-	}
+		Utils::DisplayError(Utils::ErrorCode::VulkanSwapchainImageAcquireFailed);
 
 	p->CurrentSwapChainImageIndex = *acquiredImage;
 #else
@@ -413,23 +408,9 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData* const p)
 	else if (presentStatus == PresentStatus::DeviceReset || presentStatus == PresentStatus::Failed)
 	{
 		if (presentStatus == PresentStatus::DeviceReset)
-		{
-			TRAP::Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan: Device was reset while presenting!\n"
-				"Error code: 0x000D",
-				TRAP::Utils::Dialogs::Style::Error,
-				TRAP::Utils::Dialogs::Buttons::Quit);
-			TP_CRITICAL(Log::RendererPrefix, "Vulkan: Device was reset while presenting! (0x000D)");
-			exit(0x000D);
-		}
+			Utils::DisplayError(Utils::ErrorCode::VulkanDeviceReset);
 		else if (presentStatus == PresentStatus::Failed)
-		{
-			TRAP::Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan: Presenting failed!\n"
-				"Error code: 0x000F",
-				TRAP::Utils::Dialogs::Style::Error,
-				TRAP::Utils::Dialogs::Buttons::Quit);
-			TP_CRITICAL(Log::RendererPrefix, "Vulkan: Presenting failed! (0x000F)");
-			exit(0x000F);
-		}
+			Utils::DisplayError(Utils::ErrorCode::VulkanPresentationFailed);
 	}
 #else /*TRAP_HEADLESS_MODE*/
 	if(p->Resize)
@@ -2855,14 +2836,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const uint32_t wid
 	p->SwapChain = SwapChain::Create(swapChainDesc);
 
 	if (!p->SwapChain)
-	{
-		TRAP::Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan: Failed to create new SwapChain!\n"
-			"Error code: 0x0010",
-			TRAP::Utils::Dialogs::Style::Error,
-			TRAP::Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::RendererPrefix, "Vulkan: Failed to create new SwapChain! (0x0010)");
-		exit(0x0010);
-	}
+		Utils::DisplayError(Utils::ErrorCode::VulkanSwapchainCreationFailed);
 
 	//Create MSAA RenderTargets if needed
 	if(s_currentAntiAliasing == AntiAliasing::MSAA)
@@ -3045,13 +3019,7 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 	const auto reqExt = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
 
 	if(!VulkanInstance::IsExtensionSupported(std::get<0>(reqExt)) || !VulkanInstance::IsExtensionSupported(std::get<1>(reqExt)))
-	{
-		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Mandatory Vulkan surface extensions are unsupported!\n"
-								   "Error code: 0x0003", Utils::Dialogs::Style::Error,
-								   Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan surface extensions are unsupported! (0x0003)");
-		exit(0x0003);
-	}
+		Utils::DisplayError(Utils::ErrorCode::VulkanSurfaceExtensionsUnsupported);
 	else
 	{
 		extensions.push_back(std::get<0>(reqExt));
@@ -3116,13 +3084,7 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 	if(physicalDevice->IsExtensionSupported(VK_KHR_SWAPCHAIN_EXTENSION_NAME))
 		extensions.emplace_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 	else
-	{
-		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Mandatory Vulkan swapchain extension is unsupported!\n"
-								   "Error code: 0x0004", Utils::Dialogs::Style::Error,
-								   Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan swapchain extension is unsupported! (0x0004)");
-		exit(0x0004);
-	}
+		Utils::DisplayError(Utils::ErrorCode::VulkanSwapchainExtensionsUnsupported);
 #endif /*TRAP_HEADLESS_MODE*/
 
 	//Vulkan 1.1 core

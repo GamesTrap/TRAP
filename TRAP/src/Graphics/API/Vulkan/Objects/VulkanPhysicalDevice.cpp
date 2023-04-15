@@ -9,6 +9,7 @@
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 #include "Utils/Dialogs/Dialogs.h"
+#include "Utils/ErrorCodes/ErrorCodes.h"
 
 std::multimap<uint32_t, std::array<uint8_t, 16>> TRAP::Graphics::API::VulkanPhysicalDevice::s_availablePhysicalDeviceUUIDs{};
 
@@ -33,14 +34,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	TRAP_ASSERT(m_physicalDevice, "VulkanPhysicalDevice(): Vulkan Physical Device is nullptr!");
 
 	if (m_physicalDevice == nullptr)
-	{
-		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan: Physical device creation failed!\n"
-													   "Error code: 0x0006",
-								   Utils::Dialogs::Style::Error,
-								   Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::RendererVulkanPhysicalDevicePrefix, "Vulkan: Physical device creation failed! (0x0006)");
-		exit(0x0006);
-	}
+		Utils::DisplayError(Utils::ErrorCode::VulkanPhysicalDeviceCreationFailed);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPhysicalDevicePrefix, "Creating PhysicalDevice");
@@ -421,14 +415,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 	if (!physicalDevices.empty())
 		RatePhysicalDevices(physicalDevices, instance->GetVkInstance());
 	else
-	{
-		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan: No capable physical device was found!\n"
-													   "Error code: 0x0007",
-								   Utils::Dialogs::Style::Error,
-								   Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::RendererVulkanPrefix, "Vulkan: No capable physical device was found! (0x0007)");
-		exit(0x0007);
-	}
+		Utils::DisplayError(Utils::ErrorCode::VulkanNoPhysicalDeviceFound);
 
 	return s_availablePhysicalDeviceUUIDs;
 }
@@ -490,14 +477,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 	if (!physicalDevices.empty())
 		RatePhysicalDevices(physicalDevices, instance);
 	else
-	{
-		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan: No capable physical device was found!\n"
-													   "Error code: 0x0007",
-								   Utils::Dialogs::Style::Error,
-								   Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::RendererVulkanPrefix, "Vulkan: No capable physical device was found! (0x0007)");
-		exit(0x0007);
-	}
+		Utils::DisplayError(Utils::ErrorCode::VulkanNoPhysicalDeviceFound);
 
 	return s_availablePhysicalDeviceUUIDs;
 }
@@ -589,13 +569,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		// Disabled in Headless mode.
 
 		if (!INTERNAL::WindowingAPI::Init())
-		{
-			Utils::Dialogs::ShowMsgBox("Failed to initialize WindowingAPI", "The WindowingAPI couldn't be initialized!\n"
-								       "Error code: 0x0011", Utils::Dialogs::Style::Error,
-								       Utils::Dialogs::Buttons::Quit);
-			TP_CRITICAL(Log::RendererVulkanPrefix, "The WindowingAPI couldn't be initialized! (0x0011)");
-			exit(0x0011);
-		}
+			Utils::DisplayError(Utils::ErrorCode::WindowingAPIFailedInitialization);
 
 		// Required: Create Vulkan Surface Test Window
 		// Disabled in Headless mode.

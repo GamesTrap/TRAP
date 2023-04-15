@@ -36,6 +36,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Utils/DynamicLoading/DynamicLoading.h"
 #include "Application.h"
 #include "Utils/Time/TimeStep.h"
+#include "Utils/ErrorCodes/ErrorCodes.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
 
@@ -110,11 +111,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 	if (Utils::IsWindows7OrGreaterWin32())
 		return true;
 
-	Utils::Dialogs::ShowMsgBox("Unsupported Windows version", "Unsupported Windows version!\n"
-	                           "TRAP™ needs Windows 7 or newer\nError code: 0x000A",
-							   Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
-	TP_CRITICAL(Log::EngineWindowsPrefix, "Unsupported Windows version! (0x000A)");
-	exit(0x000A);
+	Utils::DisplayError(Utils::ErrorCode::WindowsVersionOlderThanWindows7);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

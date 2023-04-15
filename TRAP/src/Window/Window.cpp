@@ -20,6 +20,7 @@
 #include "Layers/ImGui/ImGuiWindowing.h"
 #include "Utils/Utils.h"
 #include "Application.h"
+#include "Utils/ErrorCodes/ErrorCodes.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -944,10 +945,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		const bool success = INTERNAL::WindowingAPI::Init();
 		TRAP_ASSERT(success, "Window::Init(): Couldn't initialize WindowingAPI!");
 		if (!success)
-			Utils::Dialogs::ShowMsgBox("WindowingAPI Error",
-									   "Couldn't initialize WindowingAPI!\nError code: 0x0011",
-									   Utils::Dialogs::Style::Error,
-									   Utils::Dialogs::Buttons::Quit);
+			Utils::DisplayError(Utils::ErrorCode::WindowingAPIFailedInitialization);
 		s_WindowingAPIInitialized = true;
 	}
 
@@ -1034,14 +1032,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		                                            newTitle, nullptr);
 
 	if (m_window == nullptr)
-	{
-		TRAP::Utils::Dialogs::ShowMsgBox("Failed to create window",
-										 "Failed to create window!\nError code: 0x0009",
-										 Utils::Dialogs::Style::Error,
-										 Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::WindowPrefix, "Failed to create window! (0x0009)");
-		exit(0x0009);
-	}
+		Utils::DisplayError(Utils::ErrorCode::WindowingAPIWindowCreationFailed);
 
 	INTERNAL::WindowingAPI::GetWindowSize(*m_window, m_data.Width, m_data.Height);
 
@@ -1422,14 +1413,7 @@ void TRAP::Window::SetupEventCallbacks()
 	                                              const bool connected)
 	{
 		if(!connected && Monitor::GetAllMonitors().size() == 1)
-		{
-			TRAP::Utils::Dialogs::ShowMsgBox("No monitor found!",
-											"No monitor found!\nError code: 0x000C",
-											Utils::Dialogs::Style::Error,
-											Utils::Dialogs::Buttons::Quit);
-			TP_CRITICAL(Log::WindowPrefix, "No monitor found! (0x000C)");
-			exit(0x000C);
-		}
+			Utils::DisplayError(Utils::ErrorCode::MonitorNoneFound);
 
 		if(mon.Window == nullptr)
 			return;

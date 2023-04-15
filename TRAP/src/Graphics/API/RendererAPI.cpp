@@ -15,6 +15,7 @@
 #include "Objects/Sampler.h"
 #include "Objects/SwapChain.h"
 #include "ImageLoader/Image.h"
+#include "Utils/ErrorCodes/ErrorCodes.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -67,11 +68,7 @@ void TRAP::Graphics::RendererAPI::Init(const std::string_view gameName, const Re
 		break;
 
 	default:
-		Utils::Dialogs::ShowMsgBox("Unsupported device", "Device is unsupported!\nNo RenderAPI selected!\n"
-								   "Error code: 0x0002", Utils::Dialogs::Style::Error,
-								   Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::RendererPrefix, "Unsupported device! (0x0002)");
-		exit(0x0002);
+		Utils::DisplayError(Utils::ErrorCode::RenderAPIInvalid);
 	}
 
 	s_Renderer->InitInternal(gameName);
@@ -155,13 +152,8 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 
 #ifndef TRAP_HEADLESS_MODE
 	s_RenderAPI = RenderAPI::NONE;
-	TRAP::Utils::Dialogs::ShowMsgBox("Incompatible device (GPU)",
-		                             "TRAP™ was unable to detect a compatible RenderAPI!\n"
-									 "Does your system meet the minimum system requirements for running TRAP™?\n"
-									 "Please check your GPU driver!\nError code: 0x000B", Utils::Dialogs::Style::Error,
-		Utils::Dialogs::Buttons::Quit);
-	TP_CRITICAL(Log::RendererPrefix, "TRAP™ was unable to detect a compatible RenderAPI! (0x000B)");
-	exit(0x000B);
+	Utils::DisplayError(Utils::ErrorCode::RenderAPINoSupportedFound);
+	return RenderAPI::NONE;
 #else
 	TP_WARN(Log::RendererPrefix, "Disabling RendererAPI, no compatible RenderAPI was found!");
 	return RenderAPI::NONE;
@@ -631,13 +623,7 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 
 #ifndef TRAP_HEADLESS_MODE
 	if (!INTERNAL::WindowingAPI::Init())
-	{
-		Utils::Dialogs::ShowMsgBox("Failed to initialize WindowingAPI", "The WindowingAPI couldn't be initialized!\n"
-									"Error code: 0x0011", Utils::Dialogs::Style::Error,
-									Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::RendererVulkanPrefix, "Failed to initialize WindowingAPI! (0x0011)");
-		exit(0x0011);
-	}
+		Utils::DisplayError(Utils::ErrorCode::WindowingAPIFailedInitialization);
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -649,8 +635,8 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 	{
 		if(VkGetInstanceVersion() < VK_API_VERSION_1_1)
 		{
-			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed instance version test!");
-			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan capability tester!");
+			TP_WARN(Log::RendererVulkanPrefix, "Failed instance version test!");
+			TP_WARN(Log::RendererVulkanPrefix, "Failed Vulkan capability tester!");
 			TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
 			s_isVulkanCapable = false;
 			return s_isVulkanCapable;

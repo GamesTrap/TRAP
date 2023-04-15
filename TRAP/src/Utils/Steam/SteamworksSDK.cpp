@@ -5,6 +5,7 @@
 
 #include "Core/Base.h"
 #include "Utils/Dialogs/Dialogs.h"
+#include "Utils/ErrorCodes/ErrorCodes.h"
 
 bool steamClientInitialized = false;
 bool steamServerInitialized = false;
@@ -30,24 +31,10 @@ void TRAP::Utils::Steam::InitializeClient([[maybe_unused]] const uint32_t appID)
     TP_INFO(TRAP::Log::SteamworksSDKPrefix, "Initializing Steam");
 
     if(SteamAPI_RestartAppIfNecessary(appID))
-    {
-		TRAP::Utils::Dialogs::ShowMsgBox("Application error",
-										 "Please launch the game through Steam!\nError code: 0x0015",
-										 Utils::Dialogs::Style::Error,
-										 Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::SteamworksSDKPrefix, "Please launch the game through Steam! (0x0015)");
-        exit(0x0015);
-    }
+        Utils::DisplayError(Utils::ErrorCode::ApplicationNotLaunchedWithSteam);
 
     if(!SteamAPI_Init())
-    {
-		TRAP::Utils::Dialogs::ShowMsgBox("Application error",
-										 "Steam must be running to play the game!\nError code: 0x0016",
-										 Utils::Dialogs::Style::Error,
-										 Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::SteamworksSDKPrefix, "Steam must be running to play the game! (0x0016)");
-        exit(0x0016);
-    }
+        Utils::DisplayError(Utils::ErrorCode::SteamNotRunning);
 
     steamClientInitialized = true;
 

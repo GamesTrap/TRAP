@@ -7,6 +7,7 @@
 #include "Utils/Dialogs/Dialogs.h"
 #include "Application.h"
 #include "Utils/DynamicLoading/DynamicLoading.h"
+#include "Utils/ErrorCodes/ErrorCodes.h"
 
 [[nodiscard]] std::string TRAP::Utils::UUIDToString(const std::array<uint8_t, 16>& uuid)
 {
@@ -319,13 +320,7 @@ TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 	else
 	{
 #ifndef TRAP_HEADLESS_MODE
-		Utils::Dialogs::ShowMsgBox("Unsupported window manager", "Window manager is unsupported!\n"
-									"TRAP™ only supports X11 and Wayland\n"
-									"Make sure the appropriate environment variable(s) is/are set!\n"
-									"Error code: 0x0008",
-									Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::EngineLinuxPrefix, "Window manager is unsupported! (0x0008)");
-		exit(0x0008);
+		Utils::DisplayError(Utils::ErrorCode::LinuxUnsupportedWindowManager);
 #else
 		return LinuxWindowManager::Unknown;
 #endif /*TRAP_HEADLESS_MODE*/
@@ -551,13 +546,7 @@ void TRAP::Utils::CheckSingleProcess()
 	#endif
 
 	if(!singleProcess)
-	{
-		TRAP::Utils::Dialogs::ShowMsgBox("TRAP™ is already running", "A TRAP™ Application is already running!\n"
-		                                 "Error code: 0x0012", TRAP::Utils::Dialogs::Style::Error,
-								         TRAP::Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(TRAP::Log::ApplicationPrefix, "A TRAP™ Application is already running! (0x0012)");
-		exit(0x0012);
-	}
+		Utils::DisplayError(Utils::ErrorCode::ApplicationIsAlreadyRunning);
 #endif /*ENABLE_SINGLE_PROCESS_ONLY*/
 }
 
