@@ -720,9 +720,9 @@ void TRAP::Graphics::API::VulkanShader::SetShaderStageName(const std::string_vie
 		return;
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	VkSetObjectName(m_device->GetVkDevice(), Utils::BitCast<VkShaderModule, uint64_t>(stage), VK_OBJECT_TYPE_SHADER_MODULE, name);
+	VkSetObjectName(m_device->GetVkDevice(), Utils::BitCast<uint64_t>(stage), VK_OBJECT_TYPE_SHADER_MODULE, name);
 #else
-	VkSetObjectName(m_device->GetVkDevice(), Utils::BitCast<VkShaderModule, uint64_t>(stage), VK_DEBUG_REPORT_OBJECT_TYPE_SHADER_MODULE_EXT, name);
+	VkSetObjectName(m_device->GetVkDevice(), Utils::BitCast<uint64_t>(stage), VK_DEBUG_REPORT_OBJECT_TYPE_SHADER_MODULE_EXT, name);
 #endif
 }
 

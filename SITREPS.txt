@@ -3867,3 +3867,7 @@ SITREP 04/10/2023|23w15a1
         - Premake made NVIDIA-Reflex SDK path not hard coded anymore ~>10 mins
     - Merged NVReflex-1.8 into dev ~<5 mins
     - Application reverted change to window minimization handling ~<15 mins
+
+SITREP 04/15/2023|23w15a2
+    - Changed TRAP Engine version to 23w15a2(0.9.13)
+    - Changed Utils::BitCast function ~<5 mins

@@ -545,9 +545,9 @@ void TRAP::Graphics::API::VulkanDevice::SetDeviceName(const std::string_view nam
 		return;
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	VkSetObjectName(m_device, Utils::BitCast<VkDevice, uint64_t>(m_device), VK_OBJECT_TYPE_DEVICE, name);
+	VkSetObjectName(m_device, Utils::BitCast<uint64_t>(m_device), VK_OBJECT_TYPE_DEVICE, name);
 #else
-	VkSetObjectName(m_device, Utils::BitCast<VkDevice, uint64_t>(m_device), VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_EXT, name);
+	VkSetObjectName(m_device, Utils::BitCast<uint64_t>(m_device), VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_EXT, name);
 #endif
 }
 

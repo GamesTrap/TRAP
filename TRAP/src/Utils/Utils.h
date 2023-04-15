@@ -102,12 +102,13 @@ namespace TRAP::Utils
 #ifdef __cpp_lib_bit_cast
 	using BitCast = std::bit_cast;
 #else
-	template<typename From, typename To>
-	[[nodiscard]] inline typename std::enable_if<std::integral_constant<bool, (sizeof(From) == sizeof(To)) &&
-	                                                            std::is_trivially_copyable<From>::value &&
-																std::is_trivially_copyable<To>::value>::value, To>::type
-	BitCast(const From& from) noexcept
+	template<typename To, typename From>
+	[[nodiscard]] inline To BitCast(const From& from) noexcept
 	{
+		static_assert(sizeof(From) == sizeof(To));
+		static_assert(std::is_trivially_copyable_v<From>);
+		static_assert(std::is_trivially_copyable_v<To>);
+
 		union U
 		{
 			U() = default;

@@ -249,8 +249,8 @@ void TRAP::Graphics::API::VulkanBuffer::SetBufferName(const std::string_view nam
 		return;
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	VkSetObjectName(m_device->GetVkDevice(), Utils::BitCast<VkBuffer, uint64_t>(m_vkBuffer), VK_OBJECT_TYPE_BUFFER, name);
+	VkSetObjectName(m_device->GetVkDevice(), Utils::BitCast<uint64_t>(m_vkBuffer), VK_OBJECT_TYPE_BUFFER, name);
 #else
-	VkSetObjectName(m_device->GetVkDevice(), Utils::BitCast<VkBuffer, uint64_t>(m_vkBuffer), VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_EXT, name);
+	VkSetObjectName(m_device->GetVkDevice(), Utils::BitCast<uint64_t>(m_vkBuffer), VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_EXT, name);
 #endif
 }

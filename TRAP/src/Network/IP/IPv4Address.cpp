@@ -123,7 +123,7 @@ TRAP::Network::IPv4Address::IPv4Address(const uint32_t address)
 		TRAP::Utils::Memory::SwapBytes(loopback);
 
 	const sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(loopback, 9);
-	sockaddr convertedAddress = Utils::BitCast<sockaddr_in, sockaddr>(address);
+	sockaddr convertedAddress = Utils::BitCast<sockaddr>(address);
 	if (connect(sock, &convertedAddress, sizeof(address)) == -1)
 	{
 		INTERNAL::Network::SocketImpl::Close(sock);
@@ -142,7 +142,7 @@ TRAP::Network::IPv4Address::IPv4Address(const uint32_t address)
 	INTERNAL::Network::SocketImpl::Close(sock);
 
 	//Finally build the IP address
-	uint32_t addr = Utils::BitCast<sockaddr, sockaddr_in>(convertedAddress).sin_addr.s_addr;
+	uint32_t addr = Utils::BitCast<sockaddr_in>(convertedAddress).sin_addr.s_addr;
 
 	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(addr);
@@ -212,7 +212,7 @@ void TRAP::Network::IPv4Address::Resolve(const std::string_view address)
 			{
 				if(result != nullptr)
 				{
-					ip = Utils::BitCast<sockaddr, sockaddr_in>(*(result->ai_addr)).sin_addr.s_addr;
+					ip = Utils::BitCast<sockaddr_in>(*(result->ai_addr)).sin_addr.s_addr;
 					freeaddrinfo(result);
 					m_address = ip;
 					m_valid = true;

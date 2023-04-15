@@ -41,6 +41,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "Events/ControllerEvent.h"
 #include "ControllerMappings.h"
+#include "Utils/DynamicLoading/DynamicLoading.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -50,9 +51,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 	if(!s_dinput8.Instance)
 		s_dinput8.Instance = LoadLibraryA("dinput8.dll");
-	if (s_dinput8.Instance)
-		s_dinput8.Create = reinterpret_cast<PFN_DirectInput8Create>(GetProcAddress(s_dinput8.Instance,
-		                                                                           "DirectInput8Create"));
 
 	if(!s_dinput8.Instance)
 	{
@@ -60,9 +58,12 @@ Modified by: Jan "GamesTrap" Schuerkamp
 		return false;
 	}
 
-	if (!s_dinput8.Create || FAILED(s_dinput8.Create(INTERNAL::WindowingAPI::GetWin32HInstance(), DIRECTINPUT_VERSION,
-														TRAP_IID_IDirectInput8W,
-														reinterpret_cast<void**>(&s_dinput8.API), nullptr)))
+	s_dinput8.Create = Utils::DynamicLoading::GetLibrarySymbol<PFN_DirectInput8Create>(s_dinput8.Instance,
+		                                                                               "DirectInput8Create");
+
+	if (!s_dinput8.Create || FAILED(s_dinput8.Create(INTERNAL::WindowingAPI::GetWin32HInstance(),
+	                                                 DIRECTINPUT_VERSION, TRAP_IID_IDirectInput8W,
+													 reinterpret_cast<void**>(&s_dinput8.API), nullptr)))
 	{
 		TP_ERROR(Log::InputControllerDirectInputPrefix, "Failed to create interface for DirectInput!");
 		return false;
@@ -85,30 +86,27 @@ Modified by: Jan "GamesTrap" Schuerkamp
 				s_xinput.Instance = LoadLibraryA(dll.data());
 				if (s_xinput.Instance)
 				{
-					s_xinput.GetCapabilities = reinterpret_cast<PFN_XInputGetCapabilities>
+					s_xinput.GetCapabilities = Utils::DynamicLoading::GetLibrarySymbol<PFN_XInputGetCapabilities>
 					(
-						GetProcAddress
-						(
-							s_xinput.Instance,
-							"XInputGetCapabilities"
-						)
+						s_xinput.Instance,
+						"XInputGetCapabilities"
 					);
 
 					//Ordinal 100 is the same as XInputGetState, except it doesn't dummy out the guide button info.
 					//Try loading it and fall back if needed.
-					s_xinput.GetStateSecret = reinterpret_cast<PFN_XInputGetStateSecret>(GetProcAddress(s_xinput.Instance,
-					                                                                                    reinterpret_cast<LPCSTR>(100)));
+					s_xinput.GetStateSecret = Utils::DynamicLoading::GetLibrarySymbol<PFN_XInputGetStateSecret>(s_xinput.Instance,
+					                                                                                            reinterpret_cast<LPCSTR>(100));
 					if (s_xinput.GetStateSecret)
 						s_xinput.HasGuideButton = true;
 
-					s_xinput.GetState = reinterpret_cast<PFN_XInputGetState>(GetProcAddress(s_xinput.Instance,
-																								"XInputGetState"));
-					s_xinput.SetState = reinterpret_cast<PFN_XInputSetState>(GetProcAddress(s_xinput.Instance,
-																							"XInputSetState"));
+					s_xinput.GetState = Utils::DynamicLoading::GetLibrarySymbol<PFN_XInputGetState>(s_xinput.Instance,
+																								    "XInputGetState");
+					s_xinput.SetState = Utils::DynamicLoading::GetLibrarySymbol<PFN_XInputSetState>(s_xinput.Instance,
+																							        "XInputSetState");
 
-					s_xinput.GetBatteryInformation = reinterpret_cast<PFN_XInputGetBatteryInformation>
+					s_xinput.GetBatteryInformation = Utils::DynamicLoading::GetLibrarySymbol<PFN_XInputGetBatteryInformation>
 						(
-							GetProcAddress(s_xinput.Instance, "XInputGetBatteryInformation")
+							s_xinput.Instance, "XInputGetBatteryInformation"
 						);
 					break;
 				}

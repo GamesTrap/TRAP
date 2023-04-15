@@ -2,6 +2,7 @@
 #include "FileSystem.h"
 
 #include "Utils/String/String.h"
+#include "Utils/Utils.h"
 #include "Application.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -911,7 +912,7 @@ bool TRAP::FileSystem::OpenExternally(const std::filesystem::path& p)
         if(comInitializer.IsInitialized())
         {
             res = ShellExecuteW(nullptr, L"open", absPath->c_str(), nullptr, nullptr, SW_SHOWNORMAL);
-            if(reinterpret_cast<const INT_PTR>(res) <= 32)
+            if(TRAP::Utils::BitCast<INT_PTR>(res) <= 32)
             {
                 TP_ERROR(Log::FileSystemPrefix, "Couldn't open externally: \"", p.u8string(), "\"!");
                 TP_ERROR(Log::FileSystemPrefix, Utils::String::GetStrError());
@@ -924,7 +925,7 @@ bool TRAP::FileSystem::OpenExternally(const std::filesystem::path& p)
         }
     }
 
-    return reinterpret_cast<const INT_PTR>(res) > 32;
+    return TRAP::Utils::BitCast<INT_PTR>(res) > 32;
 #elif defined(TRAP_PLATFORM_LINUX)
     std::string cmd = "xdg-open ";
     cmd += absPath->native();
@@ -977,7 +978,7 @@ bool OpenFolderInFileBrowser(const std::filesystem::path& p)
         if(comInitializer.IsInitialized())
         {
             res = ShellExecuteW(nullptr, L"explore", absPath->c_str(), nullptr, nullptr, SW_SHOWNORMAL);
-            if(reinterpret_cast<const INT_PTR>(res) <= 32)
+            if(TRAP::Utils::BitCast<INT_PTR>(res) <= 32)
             {
                 TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: \"", p.u8string(), "\"!");
                 TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
@@ -990,7 +991,7 @@ bool OpenFolderInFileBrowser(const std::filesystem::path& p)
         }
     }
 
-    return reinterpret_cast<const INT_PTR>(res) > 32;
+    return TRAP::Utils::BitCast<INT_PTR>(res) > 32;
 #elif defined(TRAP_PLATFORM_LINUX)
     std::string cmd = "xdg-open ";
     cmd += (*absPath).u8string();

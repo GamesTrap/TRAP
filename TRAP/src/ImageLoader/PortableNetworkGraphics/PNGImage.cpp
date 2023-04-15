@@ -451,10 +451,10 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 	const std::array<uint8_t, 17> CRCData
 	{
 		'I', 'H', 'D', 'R',
-		reinterpret_cast<uint8_t*>(&ihdrChunk.Width)[3], reinterpret_cast<uint8_t*>(&ihdrChunk.Width)[2],
-		reinterpret_cast<uint8_t*>(&ihdrChunk.Width)[1], reinterpret_cast<uint8_t*>(&ihdrChunk.Width)[0],
-		reinterpret_cast<uint8_t*>(&ihdrChunk.Height)[3], reinterpret_cast<uint8_t*>(&ihdrChunk.Height)[2],
-		reinterpret_cast<uint8_t*>(&ihdrChunk.Height)[1], reinterpret_cast<uint8_t*>(&ihdrChunk.Height)[0],
+		static_cast<uint8_t>(ihdrChunk.Width >> 24u), static_cast<uint8_t>(ihdrChunk.Width >> 16u),
+		static_cast<uint8_t>(ihdrChunk.Width >> 8u), static_cast<uint8_t>(ihdrChunk.Width),
+		static_cast<uint8_t>(ihdrChunk.Height >> 24u), static_cast<uint8_t>(ihdrChunk.Height >> 16u),
+		static_cast<uint8_t>(ihdrChunk.Height >> 8u), static_cast<uint8_t>(ihdrChunk.Height),
 		ihdrChunk.BitDepth, ihdrChunk.ColorType, ihdrChunk.CompressionMethod, ihdrChunk.FilterMethod,
 		ihdrChunk.InterlaceMethod
 	};

@@ -137,7 +137,7 @@
 				: "a" (funcID), "c" (subFuncID));
 	#endif
 
-		return Utils::BitCast<std::array<int32_t, 4>, std::array<uint32_t, 4>>(regs);
+		return Utils::BitCast<std::array<uint32_t, 4>>(regs);
 	};
 
 	std::array<uint32_t, 4> regs = CPUID(0, 0);
@@ -524,7 +524,7 @@ static TRAP::Utils::NTDLL s_ntdll;
 			TRAP::Utils::Memory::SwapBytes(name.sin_addr.s_addr);
 		}
 
-		sockaddr convertedSock = TRAP::Utils::BitCast<sockaddr_in, sockaddr>(name); //Prevent usage of reinterpret_cast
+		sockaddr convertedSock = TRAP::Utils::BitCast<sockaddr>(name); //Prevent usage of reinterpret_cast
 		rc = bind(socketFD, &convertedSock, sizeof(name));
 		if(rc < 0)
 		{
