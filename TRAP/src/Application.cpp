@@ -560,16 +560,16 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::FileSystem::FileWatcher* TRAP::Application::GetHotReloadingFileWatcher()
+[[nodiscard]] std::optional<std::reference_wrapper<TRAP::FileSystem::FileWatcher>> TRAP::Application::GetHotReloadingFileWatcher()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(s_Instance, "Application::GetHotReloadingFileWatcher(): Application is nullptr!");
 
 	if(s_Instance->m_hotReloadingFileWatcher)
-		return s_Instance->m_hotReloadingFileWatcher.get();
+		return *s_Instance->m_hotReloadingFileWatcher;
 
-	return nullptr;
+	return std::nullopt;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -767,8 +767,8 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 {
 	ZoneScoped;
 
-	if(event.GetStatus() != FileSystem::FileStatus::Modified)
-		return false; //Only handle modified files
+	if(event.GetStatus() != FileSystem::FileStatus::Modified && event.GetStatus() != FileSystem::FileStatus::Created)
+		return false; //Only handle modified and created files
 
 	const auto fileEnding = FileSystem::GetFileEnding(event.GetPath());
 	if(!fileEnding) //Ignore files without an extension

@@ -214,14 +214,13 @@ bool TRAP::Graphics::Shader::Reload()
 		Ref<API::VulkanShader> result = MakeRef<API::VulkanShader>(name, filePath, desc, userMacros);
 
 		//Hot reloading
-		if(TRAP::Application::IsHotReloadingEnabled())
+		const auto hotReloadingFileWatcher = TRAP::Application::GetHotReloadingFileWatcher();
+
+		if(hotReloadingFileWatcher && !filePath.empty())
 		{
-			if(!filePath.empty())
-			{
-				const auto folderPath = FileSystem::GetFolderPath(filePath);
-				if(folderPath)
-					TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
-			}
+			const auto folderPath = FileSystem::GetFolderPath(filePath);
+			if(folderPath)
+				hotReloadingFileWatcher->get().AddFolder(*folderPath);
 		}
 
 		return result;
@@ -263,14 +262,13 @@ bool TRAP::Graphics::Shader::Reload()
 		Ref<API::VulkanShader> result = MakeRef<API::VulkanShader>(*name, filePath, desc, userMacros);
 
 		//Hot reloading
-		if(TRAP::Application::IsHotReloadingEnabled())
+		const auto hotReloadingFileWatcher = TRAP::Application::GetHotReloadingFileWatcher();
+
+		if(hotReloadingFileWatcher && !filePath.empty())
 		{
-			if(!filePath.empty())
-			{
-				const auto folderPath = FileSystem::GetFolderPath(filePath);
-				if(folderPath)
-					TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
-			}
+			const auto folderPath = FileSystem::GetFolderPath(filePath);
+			if(folderPath)
+				hotReloadingFileWatcher->get().AddFolder(*folderPath);
 		}
 
 		return result;

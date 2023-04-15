@@ -216,8 +216,8 @@ namespace TRAP
 		/// <summary>
 		/// Get the hot reloading file watcher.
 		/// </summary>
-		/// <returns>TRAP::FileSystem::FileWatcher* if file watcher is running, false otherwise.</returns>
-		[[nodiscard]] static TRAP::FileSystem::FileWatcher* GetHotReloadingFileWatcher();
+		/// <returns>Reference to TRAP::FileSystem::FileWatcher if file watcher is running, empty optional otherwise.</returns>
+		[[nodiscard]] static std::optional<std::reference_wrapper<TRAP::FileSystem::FileWatcher>>  GetHotReloadingFileWatcher();
 		/// <summary>
 		/// Get whether hot reloading is enabled or not.
 		/// </summary>
