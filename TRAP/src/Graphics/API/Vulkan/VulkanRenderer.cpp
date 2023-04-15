@@ -475,12 +475,14 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 	TRAP::Scope<VulkanPhysicalDevice> physicalDevice;
 
 	//Get Vulkan GPU UUID
-	const std::string UUIDstr = TRAP::Application::GetConfig().Get<std::string>("VulkanGPU");
-	const std::array<uint8_t, 16> UUID = TRAP::Utils::UUIDFromString(UUIDstr);
+	std::array<uint8_t, 16> UUID{};
+	const std::optional<std::string> UUIDstr = TRAP::Application::GetConfig().Get<std::string>("VulkanGPU");
+	if(UUIDstr)
+		UUID = TRAP::Utils::UUIDFromString(*UUIDstr);
 
 	if(UUID == std::array<uint8_t, 16>{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0})
 	{
-		TP_ERROR(Log::RendererVulkanPrefix, "Invalid GPU UUID: \"", UUIDstr, "\"!");
+		TP_ERROR(Log::RendererVulkanPrefix, "Invalid GPU UUID: \"", Utils::UUIDToString(UUID), "\"!");
 		TP_ERROR(Log::RendererVulkanPrefix, "Falling back to score based system");
 		physicalDevice = TRAP::MakeScope<VulkanPhysicalDevice>(m_instance, (--physicalDevices.end())->second);
 	}
@@ -497,7 +499,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 
 		if(!physicalDevice)
 		{
-			TP_ERROR(Log::RendererVulkanPrefix, "Could not find a GPU with UUID: \"", UUIDstr, "\"!");
+			TP_ERROR(Log::RendererVulkanPrefix, "Could not find a GPU with UUID: \"", Utils::UUIDToString(UUID), "\"!");
 			TP_ERROR(Log::RendererVulkanPrefix, "Falling back to score based system");
 			physicalDevice = TRAP::MakeScope<VulkanPhysicalDevice>(m_instance, (--physicalDevices.end())->second);
 		}

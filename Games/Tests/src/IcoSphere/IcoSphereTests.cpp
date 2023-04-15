@@ -3,7 +3,7 @@
 IcoSphereTests::IcoSphereTests()
 	: Layer("IcoSphere"),
 	  m_wireFrame(false),
-	  m_vsync(TRAP::Application::GetConfig().Get<bool>("VSync")),
+	  m_vsync(TRAP::Application::GetWindow()->GetVSync()),
 	  m_FOV(45.0f),
 	  m_rotationSpeed(20.0f),
 	  m_shader(nullptr)

@@ -7,7 +7,7 @@ RendererAPITests::RendererAPITests()
 	  m_wireFrame(false),
 	  m_quad(false),
 	  m_indexed(false),
-	  m_vsync(TRAP::Application::GetConfig().Get<bool>("VSync")),
+	  m_vsync(TRAP::Application::GetWindow()->GetVSync()),
 	  m_pushConstantOrUBO(0),
 	  m_colorData(),
 	  m_sizeMultiplicatorData(),

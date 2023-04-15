@@ -1,6 +1,8 @@
 #ifndef TRAP_CONFIG_H
 #define TRAP_CONFIG_H
 
+#include <optional>
+
 #include "Utils/String/String.h"
 
 namespace TRAP::Utils
@@ -59,40 +61,17 @@ namespace TRAP::Utils
 		/// </summary>
 		/// <typeparam name="T">Output variable.</typeparam>
 		/// <param name="key">Key to get value from.</param>
-		/// <param name="value">
-		/// Output variable for the value.
-		/// Note: Unchanged when key was not found!
-		/// </param>
+		/// <returns>Found value or std::nullopt.</returns>
 		template<typename T>
-		void Get(std::string_view key, T& value) const;
+		[[nodiscard]] std::optional<T> Get(std::string_view key) const;
 		/// <summary>
 		/// Retrieve the values of a specific key in the config.
 		/// </summary>
 		/// <typeparam name="T">Output variable.</typeparam>
 		/// <param name="key">Key to get values from.</param>
-		/// <param name="value">
-		/// Output variable for the values.
-		/// Note: Unchanged when key was not found!
-		/// </param>
+		/// <returns>Found values or std::nullopt.</returns>
 		template<typename T>
-		void Get(std::string_view key, std::vector<T>& value) const;
-
-		/// <summary>
-		/// Retrieve the value of a specific key in the config.
-		/// </summary>
-		/// <typeparam name="T">Output variable.</typeparam>
-		/// <param name="key">Key to get value from.</param>
-		/// <returns>Found value or default constructor for the given type.</returns>
-		template<typename T>
-		[[nodiscard]] T Get(std::string_view key) const;
-		/// <summary>
-		/// Retrieve the values of a specific key in the config.
-		/// </summary>
-		/// <typeparam name="T">Output variable.</typeparam>
-		/// <param name="key">Key to get values from.</param>
-		/// <returns>Found values or default constructor for the given type.</returns>
-		template<typename T>
-		[[nodiscard]] std::vector<T> GetVector(std::string_view key) const;
+		[[nodiscard]] std::optional<std::vector<T>> GetVector(std::string_view key) const;
 
 		/// <summary>
 		/// Set a value in the config.
@@ -135,48 +114,7 @@ namespace TRAP::Utils
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-void TRAP::Utils::Config::Get(const std::string_view key, T& value) const
-{
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
-
-	const auto it = std::find_if(m_data.begin(), m_data.end(),
-		[&key](const std::pair<std::string, std::string>& element)
-		{
-			return Utils::String::CompareAnyCase(element.first, key);
-		});
-	if (it != m_data.end())
-		value = String::ConvertToType<T>(it->second);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//This method tries to read the value of a key into a vector.
-//The values have to be separated by comma.
-//The vector is cleared before it it filled.
-template<typename T>
-void TRAP::Utils::Config::Get(const std::string_view key, std::vector<T>& value) const
-{
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
-
-	const auto it = std::find_if(m_data.begin(), m_data.end(),
-		[&key](const std::pair<std::string, std::string>& element)
-		{
-			return Utils::String::CompareAnyCase(element.first, key);
-		});
-	if (it != m_data.end())
-	{
-		value.clear();
-
-		//Split by comma
-		for (const std::string& str : Utils::String::SplitString(it->second, ','))
-			value.push_back(String::ConvertToType<T>(str));
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template<typename T>
-[[nodiscard]] T TRAP::Utils::Config::Get(const std::string_view key) const
+[[nodiscard]] std::optional<T> TRAP::Utils::Config::Get(const std::string_view key) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -188,7 +126,7 @@ template<typename T>
 	if (it != m_data.end())
 		return String::ConvertToType<T>(it->second);
 
-	return T();
+	return std::nullopt;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -197,7 +135,7 @@ template<typename T>
 //The values have to be separated by comma.
 //The vector is cleared before it it filled.
 template<typename T>
-[[nodiscard]] std::vector<T> TRAP::Utils::Config::GetVector(const std::string_view key) const
+[[nodiscard]] std::optional<std::vector<T>> TRAP::Utils::Config::GetVector(const std::string_view key) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -208,14 +146,19 @@ template<typename T>
 		});
 	if (it != m_data.end())
 	{
-		std::vector<T> data{};
+		const std::vector<std::string> splitted = Utils::String::SplitString(it->second, ',');
+		if(splitted.empty())
+			return std::nullopt;
 
-		//Split by comma
-		for (const std::string& str : Utils::String::SplitString(it->second, ','))
+		std::vector<T> data(splitted.size());
+
+		for (const std::string& str : splitted)
 			data.push_back(String::ConvertToType<T>(str));
+
+		return data;
 	}
 
-	return std::vector<T>();
+	return std::nullopt;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

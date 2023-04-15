@@ -88,7 +88,7 @@ TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std:
 		Graphics::Renderer::Init();
 	}
 
-	SetFPSLimit(m_config.Get<uint32_t>("FPSLimit"));
+	SetFPSLimit(m_config.Get<uint32_t>("FPSLimit").value_or(0u));
 
 #ifndef TRAP_HEADLESS_MODE
 	InitializeInput();
@@ -927,9 +927,9 @@ TRAP::WindowProps::AdvancedProps TRAP::Application::LoadAdvancedWindowProps(cons
 {
 	TRAP::WindowProps::AdvancedProps props{};
 
-	props.Maximized = config.Get<bool>("Maximized");
+	props.Maximized = config.Get<bool>("Maximized").value_or(false);
 	props.Visible = true;
-	props.RawMouseInput = config.Get<bool>("RawMouseInput");
+	props.RawMouseInput = config.Get<bool>("RawMouseInput").value_or(false);
 
 	return props;
 }
@@ -947,17 +947,13 @@ TRAP::WindowProps TRAP::Application::LoadWindowProps(const TRAP::Utils::Config& 
 	TRAP::WindowProps props{};
 
 	props.Title = "TRAP™";
-	props.Width = DefaultWindowWidth;
-	props.Height = DefaultWindowHeight;
-	props.RefreshRate = DefaultWindowRefreshRate;
-	props.VSync = config.Get<bool>("VSync");
-	props.DisplayMode = config.Get<TRAP::Window::DisplayMode>("DisplayMode");
-	props.Monitor = config.Get<uint32_t>("Monitor");
+	props.Width = config.Get<uint32_t>("Width").value_or(DefaultWindowWidth);
+	props.Height = config.Get<uint32_t>("Height").value_or(DefaultWindowHeight);
+	props.RefreshRate = config.Get<double>("RefreshRate").value_or(DefaultWindowRefreshRate);
+	props.VSync = config.Get<bool>("VSync").value_or(false);
+	props.DisplayMode = config.Get<TRAP::Window::DisplayMode>("DisplayMode").value_or(TRAP::Window::DisplayMode::Windowed);
+	props.Monitor = config.Get<uint32_t>("Monitor").value_or(0u);
 	props.Advanced = LoadAdvancedWindowProps(config);
-
-	config.Get("Width", props.Width);
-	config.Get("Height", props.Height);
-	config.Get("RefreshRate", props.RefreshRate);
 
 	return props;
 }
@@ -967,11 +963,10 @@ TRAP::WindowProps TRAP::Application::LoadWindowProps(const TRAP::Utils::Config& 
 
 TRAP::Graphics::RenderAPI TRAP::Application::SelectRenderAPI(const TRAP::Utils::Config& config)
 {
-	TRAP::Graphics::RenderAPI renderAPI = config.Get<TRAP::Graphics::RenderAPI>("RenderAPI");
+	TRAP::Graphics::RenderAPI renderAPI = config.Get<TRAP::Graphics::RenderAPI>("RenderAPI").value_or(TRAP::Graphics::RenderAPI::NONE);
 
 #ifdef TRAP_HEADLESS_MODE
-	bool enableGPU = true;
-	config.Get("EnableGPU", enableGPU);
+	const bool enableGPU = config.Get<bool>("EnableGPU").value_or(true);
 
 	if(enableGPU &&
 	   (renderAPI == TRAP::Graphics::RenderAPI::NONE || !TRAP::Graphics::RendererAPI::IsSupported(renderAPI)))
@@ -1001,16 +996,15 @@ void TRAP::Application::InitializeRendererAPI(const std::string_view gameName,
 
 	TRAP::Graphics::RendererAPI::Init(gameName, renderAPI);
 
-	const TRAP::Graphics::SampleCount antiAliasingSampleCount = config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality");
-	TRAP::Graphics::RenderCommand::SetAntiAliasing(config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing"),
+	const TRAP::Graphics::SampleCount antiAliasingSampleCount = config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality").value_or(TRAP::Graphics::SampleCount::Two);
+	TRAP::Graphics::RenderCommand::SetAntiAliasing(config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing").value_or(TRAP::Graphics::AntiAliasing::Off),
 	                                               antiAliasingSampleCount != TRAP::Graphics::SampleCount::One ?
 												   antiAliasingSampleCount : TRAP::Graphics::SampleCount::Two);
 
-	std::string anisotropyLevelStr = "16";
-	config.Get<std::string>("AnisotropyLevel", anisotropyLevelStr);
+	const std::string anisotropyLevelStr = config.Get<std::string>("AnisotropyLevel").value_or("Off");
 	if(!anisotropyLevelStr.empty())
 	{
-		const TRAP::Graphics::SampleCount anisotropyLevel = (anisotropyLevelStr == "Off") ?
+		const TRAP::Graphics::SampleCount anisotropyLevel = (Utils::String::CompareAnyCase(anisotropyLevelStr, "Off")) ?
 		                                                    TRAP::Graphics::SampleCount::One :
 															TRAP::Utils::String::ConvertToType<TRAP::Graphics::SampleCount>(anisotropyLevelStr);
 		TRAP::Graphics::RenderCommand::SetAnisotropyLevel(anisotropyLevel);
@@ -1041,11 +1035,8 @@ std::unique_ptr<TRAP::Window> TRAP::Application::CreateMainWindow(const TRAP::Wi
 #ifdef TRAP_HEADLESS_MODE
 void TRAP::Application::CreateMainViewport(const TRAP::Utils::Config& config)
 {
-	uint32_t width = 1920;
-	uint32_t height = 1080;
-
-	config.Get<uint32_t>("Width", width);
-	config.Get<uint32_t>("Height", height);
+	const uint32_t width = config.Get<uint32_t>("Width").value_or(1920u);
+	const uint32_t height = config.Get<uint32_t>("Height").value_or(1080u);
 
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
 		TRAP::Graphics::RendererAPI::GetRenderer()->InitPerViewportData(width, height);
@@ -1106,12 +1097,11 @@ void TRAP::Application::ApplyRendererAPISettings(const TRAP::Utils::Config& conf
 
 #if !defined(TRAP_HEADLESS_MODE) && defined(NVIDIA_REFLEX_AVAILABLE)
 	//NVIDIA Reflex
-	Graphics::RenderCommand::SetLatencyMode(config.Get<Graphics::LatencyMode>("NVIDIAReflex"));
+	Graphics::RenderCommand::SetLatencyMode(config.Get<Graphics::LatencyMode>("NVIDIAReflex").value_or(Graphics::LatencyMode::Disabled));
 	PCLSTATS_INIT(0);
 #endif /*!TRAP_HEADLESS_MODE && NVIDIA_REFLEX_AVAILABLE*/
 
-	float renderScale = 1.0f;
-	config.Get<float>("RenderScale", renderScale);
+	const float renderScale = config.Get<float>("RenderScale").value_or(1.0f);
 	Graphics::RenderCommand::SetRenderScale(renderScale);
 }
 
