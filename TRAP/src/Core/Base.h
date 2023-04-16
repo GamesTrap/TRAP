@@ -236,8 +236,8 @@ template<typename To, typename From>
 	constexpr From FromMax = std::numeric_limits<From>::max();
 	constexpr From FromLowest = std::numeric_limits<From>::lowest();
 
-	const bool positiveOverflowPossible = ToMax < static_cast<To>(FromMax);
-	const bool negativeOverflowPossible = FromIsSigned || (ToLowest > static_cast<To>(FromLowest));
+	constexpr bool positiveOverflowPossible = ToMax < static_cast<To>(FromMax);
+	constexpr bool negativeOverflowPossible = FromIsSigned || (ToLowest > static_cast<To>(FromLowest));
 
 	if constexpr ((!ToIsSigned) && (!FromIsSigned))
 	{
@@ -259,7 +259,7 @@ template<typename To, typename From>
 	}
 	else if constexpr(ToIsSigned && (!FromIsSigned))
 	{
-		if(positiveOverflowPossible && (static_cast<To>(value) > ToMax))
+		if constexpr (positiveOverflowPossible && (static_cast<To>(value) > ToMax))
 		{
 			TRAP_ASSERT(false, "NumericCast(): Positive overflow");
 		}

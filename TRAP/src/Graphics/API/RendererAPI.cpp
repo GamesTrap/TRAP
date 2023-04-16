@@ -368,7 +368,7 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 
 	//Make sure the resolution is an integer scale of the framebuffer size.
 	//This is done to avoid scaling artifacts (like blurriness).
-	while((NumericCast<float>(finalRes.x= / NumericCast<float>(finalRes.y)) != aspectRatio)
+	while((NumericCast<float>(finalRes.x) / NumericCast<float>(finalRes.y)) != aspectRatio)
 	{
 		if((NumericCast<float>(finalRes.x) / NumericCast<float>(finalRes.y)) <= aspectRatio)
 			++finalRes.x;

@@ -94,8 +94,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 					//Ordinal 100 is the same as XInputGetState, except it doesn't dummy out the guide button info.
 					//Try loading it and fall back if needed.
-					s_xinput.GetStateSecret = Utils::DynamicLoading::GetLibrarySymbol<PFN_XInputGetStateSecret>(s_xinput.Instance,
-					                                                                                            reinterpret_cast<LPCSTR>(100));
+					s_xinput.GetStateSecret = reinterpret_cast<PFN_XInputGetStateSecret>(::GetProcAddress(s_xinput.Instance, reinterpret_cast<LPCSTR>(100)));
 					if (s_xinput.GetStateSecret)
 						s_xinput.HasGuideButton = true;
 

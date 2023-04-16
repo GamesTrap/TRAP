@@ -94,8 +94,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 	s_Data.UXTheme.Instance = static_cast<HINSTANCE>(TRAP::Utils::DynamicLoading::LoadLibrary("uxtheme.dll"));
 	if (s_Data.UXTheme.Instance)
 	{
-		s_Data.UXTheme.ShouldAppsUseDarkMode = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_ShouldAppsUseDarkMode>(s_Data.UXTheme.Instance, MAKEINTRESOURCEA(132));
-		s_Data.UXTheme.SetPreferredAppMode = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_SetPreferredAppMode>(s_Data.UXTheme.Instance, MAKEINTRESOURCEA(135));
+		s_Data.UXTheme.ShouldAppsUseDarkMode = reinterpret_cast<PFN_ShouldAppsUseDarkMode>(::GetProcAddress(s_Data.UXTheme.Instance, MAKEINTRESOURCEA(132)));
+		s_Data.UXTheme.SetPreferredAppMode = reinterpret_cast<PFN_SetPreferredAppMode>(::GetProcAddress(s_Data.UXTheme.Instance, MAKEINTRESOURCEA(135)));
 		s_Data.UXTheme.DarkModeAvailable = TRAP::Utils::IsWindows10BuildOrGreaterWin32(17763);
 	}
 
@@ -112,6 +112,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 		return true;
 
 	Utils::DisplayError(Utils::ErrorCode::WindowsVersionOlderThanWindows7);
+	return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
