@@ -86,11 +86,11 @@ namespace TRAP::Math
 		/// Retrieve the count of components of the vector.
 		/// </summary>
 		/// <returns>Count of components.</returns>
-		[[nodiscard]] static constexpr int Length() noexcept;
+		[[nodiscard]] static constexpr std::size_t Length() noexcept;
 
 		//Component Access
-		[[nodiscard]] constexpr T& operator[](int i);
-		[[nodiscard]] constexpr const T& operator[](int i) const;
+		[[nodiscard]] constexpr T& operator[](std::size_t i);
+		[[nodiscard]] constexpr const T& operator[](std::size_t i) const;
 
 		//Unary arithmetic operators
 		constexpr Vec<2, T>& operator=(const Vec& v) noexcept = default;
@@ -336,7 +336,7 @@ constexpr TRAP::Math::Vec<2, T>::Vec(const Vec<4, U>& v) noexcept
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-[[nodiscard]] constexpr int TRAP::Math::Vec<2, T>::Length() noexcept
+[[nodiscard]] constexpr std::size_t TRAP::Math::Vec<2, T>::Length() noexcept
 {
 	return 2;
 }
@@ -345,17 +345,17 @@ template <typename T>
 //Component accesses
 
 template<typename T>
-[[nodiscard]] constexpr T& TRAP::Math::Vec<2, T>::operator[](const int i)
+[[nodiscard]] constexpr T& TRAP::Math::Vec<2, T>::operator[](const std::size_t i)
 {
-	TRAP_ASSERT(i >= 0 && i < this->Length(), "Math::Vec<2, T>::operator[]: Index out of range!");
+	TRAP_ASSERT(i < this->Length(), "Math::Vec<2, T>::operator[]: Index out of range!");
 
 	return i == 0 ? x : y;
 }
 
 template<typename T>
-[[nodiscard]] constexpr const T& TRAP::Math::Vec<2, T>::operator[](const int i) const
+[[nodiscard]] constexpr const T& TRAP::Math::Vec<2, T>::operator[](const std::size_t i) const
 {
-	TRAP_ASSERT(i >= 0 && i < this->Length(), "Math::Vec<2, T>::operator[]: Index out of range!");
+	TRAP_ASSERT(i < this->Length(), "Math::Vec<2, T>::operator[]: Index out of range!");
 
 	return i == 0 ? x : y;
 }

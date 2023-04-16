@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <type_traits>
+#include <limits>
 
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
@@ -14,6 +15,7 @@
 #endif /*_MSC_VER*/
 
 #include "PlatformDetection.h"
+#include "TRAP_Assert.h"
 
 //Set this define to enable RenderDoc layer
 //#define USE_RENDER_DOC
@@ -106,14 +108,14 @@ enum class ProfileSystems : uint32_t
 	             Network | Scene | ThreadPool | Utils | Window | WindowingAPI | Verbose
 };
 
-[[nodiscard]] constexpr bool operator&(const ProfileSystems lhs, const ProfileSystems rhs) noexcept
+[[nodiscard]] inline constexpr bool operator&(const ProfileSystems lhs, const ProfileSystems rhs) noexcept
 {
 	return static_cast<bool>(static_cast<std::underlying_type_t<ProfileSystems>>(lhs) &
 			                 static_cast<std::underlying_type_t<ProfileSystems>>(rhs));
 }
 
 //Set this macro to specify which systems should be profiled.
-[[nodiscard]] constexpr ProfileSystems TRAP_PROFILE_SYSTEMS() noexcept
+[[nodiscard]] inline constexpr ProfileSystems TRAP_PROFILE_SYSTEMS() noexcept
 {
 	return ProfileSystems::All;
 }
@@ -140,7 +142,7 @@ enum class ProfileSystems : uint32_t
 /// </summary>
 /// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
 /// <returns>Major version number.</returns>
-[[nodiscard]] constexpr uint32_t TRAP_VERSION_MAJOR(const uint32_t version) noexcept
+[[nodiscard]] inline constexpr uint32_t TRAP_VERSION_MAJOR(const uint32_t version) noexcept
 {
 	return version >> 22u;
 }
@@ -152,7 +154,7 @@ enum class ProfileSystems : uint32_t
 /// </summary>
 /// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
 /// <returns>Minor version number.</returns>
-[[nodiscard]] constexpr uint32_t TRAP_VERSION_MINOR(const uint32_t version) noexcept
+[[nodiscard]] inline constexpr uint32_t TRAP_VERSION_MINOR(const uint32_t version) noexcept
 {
 	return version >> 12u;
 }
@@ -164,7 +166,7 @@ enum class ProfileSystems : uint32_t
 /// </summary>
 /// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
 /// <returns>Patch version number.</returns>
-[[nodiscard]] constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version) noexcept
+[[nodiscard]] inline constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version) noexcept
 {
 	return version & 0xFFFu;
 }
@@ -174,7 +176,7 @@ enum class ProfileSystems : uint32_t
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-const uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 9, 13);
+const uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 9, 14);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -196,50 +198,6 @@ const uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 9, 13);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
-	#if defined(TRAP_PLATFORM_WINDOWS)
-		/// <summary>
-		/// Sets a cross platform debug break.
-		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
-		/// </summary>
-		inline void TRAP_DEBUG_BREAK()
-		{
-			__debugbreak();
-		}
-	#elif defined(TRAP_PLATFORM_LINUX)
-		/// <summary>
-		/// Sets a cross platform debug break.
-		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
-		/// </summary>
-		#include <signal.h>
-		inline void TRAP_DEBUG_BREAK()
-		{
-			raise(SIGTRAP);
-		}
-	#else
-		/// <summary>
-		/// Sets a cross platform debug break.
-		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
-		/// </summary>
-		constexpr void TRAP_DEBUG_BREAK() noexcept
-		{}
-	#endif
-#else
-		/// <summary>
-		/// Sets a cross platform debug break.
-		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
-		/// </summary>
-		constexpr void TRAP_DEBUG_BREAK() noexcept
-		{}
-#endif /*TRAP_DEBUG || TRAP_RELWITHDEBINFO*/
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#define TRAP_EXPAND_MACRO(x) x
-#define TRAP_STRINGIFY_MACRO(x) #x
-
-#include "Log/Log.h"
-
 /// <summary>
 /// Shift 1 x times.
 /// </summary>
@@ -247,9 +205,93 @@ const uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 9, 13);
 /// <param name="x">Amount to shift.</param>
 /// <returns>Shifted value.</returns>
 template <typename T>
-[[nodiscard]] constexpr T BIT(const T x) noexcept
+[[nodiscard]] inline constexpr T BIT(const T x) noexcept
 {
 	return T(1) << x;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+/// <summary>
+/// Convert given value from data type To to data type From.
+/// This behaves mostly like static_cast.
+/// With TRAP_DEBUG enabled additional checks are done.
+/// </summary>
+/// <typeparam name="To">Data type of value.</typeparam>
+/// <typeparam name="From">Data type to convert value to.</typeparam>
+/// <param name="value">Value to convert.</param>
+/// <returns>Converted value.</returns>
+template<typename To, typename From>
+[[nodiscard]] inline constexpr To NumericCast(const From& value)
+{
+	static_assert(!std::is_enum_v<To> && !std::is_enum_v<From>, "NumericCast(): Casting to/from enum is not allowed!");
+	static_assert(!std::is_pointer_v<To> && !std::is_pointer_v<From>, "NumericCast(): Casting to/from pointer is not allowed!");
+
+#ifdef TRAP_DEBUG
+	constexpr bool ToIsSigned = std::numeric_limits<To>::is_signed;
+	constexpr To ToMax = std::numeric_limits<To>::max();
+	constexpr To ToLowest = std::numeric_limits<To>::lowest();
+
+	constexpr bool FromIsSigned = std::numeric_limits<From>::is_signed;
+	constexpr From FromMax = std::numeric_limits<From>::max();
+	constexpr From FromLowest = std::numeric_limits<From>::lowest();
+
+	const bool positiveOverflowPossible = ToMax < static_cast<To>(FromMax);
+	const bool negativeOverflowPossible = FromIsSigned || (ToLowest > static_cast<To>(FromLowest));
+
+	if constexpr ((!ToIsSigned) && (!FromIsSigned))
+	{
+		if(positiveOverflowPossible && (static_cast<To>(value) > ToMax))
+		{
+			TRAP_ASSERT(false, "NumericCast(): Positive overflow");
+		}
+	}
+	else if constexpr((!ToIsSigned) && FromIsSigned)
+	{
+		if (positiveOverflowPossible && (static_cast<To>(value) > ToMax))
+		{
+			TRAP_ASSERT(false, "NumericCast(): Positive overflow");
+		}
+		else if (negativeOverflowPossible && (static_cast<To>(value) < To(0)))
+		{
+			TRAP_ASSERT(false, "NumericCast(): Negative overflow");
+		}
+	}
+	else if constexpr(ToIsSigned && (!FromIsSigned))
+	{
+		if(positiveOverflowPossible && (static_cast<To>(value) > ToMax))
+		{
+			TRAP_ASSERT(false, "NumericCast(): Positive overflow");
+		}
+	}
+	else if constexpr(ToIsSigned && FromIsSigned)
+	{
+		if (positiveOverflowPossible && (static_cast<To>(value) > ToMax))
+		{
+			TRAP_ASSERT(false, "NumericCast(): Positive overflow");
+		}
+		else if (negativeOverflowPossible && (static_cast<To>(value) < ToLowest))
+		{
+			TRAP_ASSERT(false, "NumericCast(): Negative overflow");
+		}
+	}
+#endif /*TRAP_DEBUG*/
+
+	return static_cast<To>(value);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+/// <summary>
+/// Retrieve a value of Enum using its underlying data type.
+/// </summary>
+/// <typeparam name="Enum">Enum to get value from</typeparam>
+/// <param name="e">Enum value to retrieve.</param>
+/// <returns>Enum value represented with its underlying data type.</returns>
+template<typename Enum>
+[[nodiscard]] inline constexpr std::underlying_type_t<Enum> ToUnderlying(const Enum e) noexcept
+{
+	return static_cast<std::underlying_type_t<Enum>>(e);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -289,7 +331,7 @@ namespace TRAP
 	/// Related to MemoryManagement which is still in planing.
 	/// </summary>
 	template<typename T, typename... Args>
-	constexpr Scope<T> MakeScope(Args&&... args)
+	inline constexpr Scope<T> MakeScope(Args&&... args)
 	{
 		return std::make_unique<T>(std::forward<Args>(args)...);
 	}
@@ -305,7 +347,7 @@ namespace TRAP
 	/// Related to MemoryManagement which is still in planing.
 	/// </summary>
 	template<typename T, typename... Args>
-	constexpr Ref<T> MakeRef(Args&&... args)
+	inline constexpr Ref<T> MakeRef(Args&&... args)
 	{
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}

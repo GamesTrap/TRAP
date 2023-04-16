@@ -129,18 +129,18 @@ namespace TRAP::Math
 		/// Retrieve the length of the matrix.
 		/// </summary>
 		/// <returns>Length.</returns>
-		[[nodiscard]] static constexpr int32_t Length() noexcept;
+		[[nodiscard]] static constexpr std::size_t Length() noexcept;
 
 		/// <summary>
 		/// Retrieve a column of the matrix.
 		/// </summary>
 		/// <param name="i">Column to retrieve.</param>
-		[[nodiscard]] constexpr colType& operator[](int32_t i);
+		[[nodiscard]] constexpr colType& operator[](std::size_t i);
 		/// <summary>
 		/// Retrieve a column of the matrix.
 		/// </summary>
 		/// <param name="i">Column to retrieve.</param>
-		[[nodiscard]] constexpr const colType& operator[](int32_t i) const;
+		[[nodiscard]] constexpr const colType& operator[](std::size_t i) const;
 
 		//Unary arithmetic operators
 		template<typename U>
@@ -312,7 +312,7 @@ constexpr TRAP::Math::Mat<3, 3, T>::Mat(const Mat<4, 4, T>& x) noexcept
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-[[nodiscard]] constexpr int TRAP::Math::Mat<3, 3, T>::Length() noexcept
+[[nodiscard]] constexpr std::size_t TRAP::Math::Mat<3, 3, T>::Length() noexcept
 {
 	return 3;
 }
@@ -321,7 +321,7 @@ template <typename T>
 //Accesses
 
 template<typename T>
-[[nodiscard]] constexpr typename TRAP::Math::Mat<3, 3, T>::colType& TRAP::Math::Mat<3, 3, T>::operator[](const int32_t i)
+[[nodiscard]] constexpr typename TRAP::Math::Mat<3, 3, T>::colType& TRAP::Math::Mat<3, 3, T>::operator[](const std::size_t i)
 {
 	TRAP_ASSERT(i < this->Length(), "Math::Mat<3, 3, T>::operator[]: index out of range");
 
@@ -329,7 +329,7 @@ template<typename T>
 }
 
 template<typename T>
-[[nodiscard]] constexpr const typename TRAP::Math::Mat<3, 3, T>::colType& TRAP::Math::Mat<3, 3, T>::operator[](const int32_t i) const
+[[nodiscard]] constexpr const typename TRAP::Math::Mat<3, 3, T>::colType& TRAP::Math::Mat<3, 3, T>::operator[](const std::size_t i) const
 {
 	TRAP_ASSERT(i < this->Length(), "Math::Mat<3, 3, T>::operator[]: index out of range");
 

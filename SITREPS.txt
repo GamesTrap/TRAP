@@ -3878,3 +3878,9 @@ SITREP 04/15/2023|23w15a2
     - Added ErrorCode enum and DisplayError() ~<10 mins
     - Replaced all critical errors with Utils::DisplayError() ~<10 mins
     - Application GetHotReloadingFileWatcher() now returns an optional reference ~<10 mins
+
+SITREP 04/16/2023|23w15b1
+    - Changed TRAP Engine version to 23w15b1(0.9.14)
+    - Base Added NumericCast() a checked version of static_cast for integers and float ~<10 mins
+    - Base Added ToUnderlying() utility to convert enum values to its underlying data type ~<5 mins
+    - Vec2/3/4 and Mat3/4 Changed operator[] data type ~<5 mins

@@ -1,13 +1,55 @@
 #ifndef TRAP_TRAPASSERT_H
 #define TRAP_TRAPASSERT_H
 
-#include "Core/Base.h"
+#include "Core/PlatformDetection.h"
 #include "Log/Log.h"
 #include <filesystem>
 
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
 	#define TRAP_ENABLE_ASSERTS
 #endif /*TRAP_DEBUG || TRAP_RELWITHDEBINFO*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
+	#if defined(TRAP_PLATFORM_WINDOWS)
+		/// <summary>
+		/// Sets a cross platform debug break.
+		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
+		/// </summary>
+		inline void TRAP_DEBUG_BREAK()
+		{
+			__debugbreak();
+		}
+	#elif defined(TRAP_PLATFORM_LINUX)
+		/// <summary>
+		/// Sets a cross platform debug break.
+		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
+		/// </summary>
+		#include <signal.h>
+		inline void TRAP_DEBUG_BREAK()
+		{
+			raise(SIGTRAP);
+		}
+	#else
+		/// <summary>
+		/// Sets a cross platform debug break.
+		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
+		/// </summary>
+		inline constexpr void TRAP_DEBUG_BREAK() noexcept
+		{}
+	#endif
+#else
+		/// <summary>
+		/// Sets a cross platform debug break.
+		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
+		/// </summary>
+		inline constexpr void TRAP_DEBUG_BREAK() noexcept
+		{}
+#endif /*TRAP_DEBUG || TRAP_RELWITHDEBINFO*/
+
+#define TRAP_EXPAND_MACRO(x) x
+#define TRAP_STRINGIFY_MACRO(x) #x
 
 #ifdef TRAP_ENABLE_ASSERTS
 
