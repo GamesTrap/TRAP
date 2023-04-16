@@ -184,13 +184,13 @@ const uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 9, 14);
 #define MAKE_ENUM_FLAG(ENUM_TYPE) \
 	constexpr inline ENUM_TYPE operator|(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
 	{ \
-		return static_cast<ENUM_TYPE>(static_cast<std::underlying_type<ENUM_TYPE>::type>(a) | \
-		 							  static_cast<std::underlying_type<ENUM_TYPE>::type>(b)); \
+		return static_cast<ENUM_TYPE>(static_cast<std::underlying_type_t<ENUM_TYPE>>(a) | \
+		 							  static_cast<std::underlying_type_t<ENUM_TYPE>>(b)); \
 	} \
 	constexpr inline ENUM_TYPE operator&(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
 	{ \
-		return static_cast<ENUM_TYPE>(static_cast<std::underlying_type<ENUM_TYPE>::type>(a) & \
-									  static_cast<std::underlying_type<ENUM_TYPE>::type>(b)); \
+		return static_cast<ENUM_TYPE>(static_cast<std::underlying_type_t<ENUM_TYPE>>(a) & \
+									  static_cast<std::underlying_type_t<ENUM_TYPE>>(b)); \
 	} \
 	constexpr inline ENUM_TYPE operator|=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a | b); }\
 	constexpr inline ENUM_TYPE operator&=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a & b); }

@@ -60,7 +60,7 @@ namespace TRAP::Graphics::API::ShaderReflection
 	struct ShaderVariable
 	{
 		//Parents resource index
-		uint32_t ParentIndex{};
+		uint64_t ParentIndex{};
 
 		//The offset of the Variable.
 		uint32_t Offset{};

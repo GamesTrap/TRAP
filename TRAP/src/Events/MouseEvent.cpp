@@ -129,7 +129,7 @@ TRAP::Events::MouseButtonPressEvent::MouseButtonPressEvent(const Input::MouseBut
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "MouseButtonPressEvent: " + Utils::String::ConvertToString<Input::MouseButton>(m_button) +
-	       "(" + std::to_string(static_cast<int32_t>(m_button)) + ')';
+	       "(" + std::to_string(ToUnderlying(m_button)) + ')';
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -170,7 +170,7 @@ TRAP::Events::MouseButtonReleaseEvent::MouseButtonReleaseEvent(const Input::Mous
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "MouseButtonReleaseEvent: " + Utils::String::ConvertToString<Input::MouseButton>(m_button) +
-	       "(" + std::to_string(static_cast<int32_t>(m_button)) + ')';
+	       "(" + std::to_string(ToUnderlying(m_button)) + ')';
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

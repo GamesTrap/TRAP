@@ -224,14 +224,14 @@ void TRAP::Application::RunWork(const Utils::TimeStep& deltaTime, float& tickTim
 		layer->OnUpdate(deltaTime);
 
 	//Timestep of a single tick
-	const Utils::TimeStep tickRateTimeStep{1000.0f / static_cast<float>(m_tickRate) / 1000.0f};
+	const Utils::TimeStep tickRateTimeStep{1000.0f / NumericCast<float>(m_tickRate) / 1000.0f}; //Tickrate in seconds
 	//If we reached at least one fixed time step update
 	if (tickTimerSeconds >= tickRateTimeStep)
 	{
 		static constexpr uint32_t MAX_TICKS_PER_FRAME = 8;
 
 		//Count how many ticks we need to run (this is limited to a maximum of MAX_TICKS_PER_FRAME)
-		const uint32_t fixedTimeSteps = TRAP::Math::Min(static_cast<uint32_t>(tickTimerSeconds / tickRateTimeStep), MAX_TICKS_PER_FRAME);
+		const uint32_t fixedTimeSteps = TRAP::Math::Min(NumericCast<uint32_t>(tickTimerSeconds / tickRateTimeStep), MAX_TICKS_PER_FRAME);
 		// TP_TRACE("Ticks: ", fixedTimeSteps);
 
 		// TP_TRACE("Before: ", tickTimerSeconds, "s of tick time remaining");
@@ -689,7 +689,7 @@ void TRAP::Application::UpdateHotReloading()
 
 		//By binding the fallback shader, we can make sure that the
 		//new shader will trigger a pipeline rebuild.
-		if(static_cast<bool>(shader->GetShaderStages() & Graphics::RendererAPI::ShaderStage::Compute))
+		if((shader->GetShaderStages() & Graphics::RendererAPI::ShaderStage::Compute) != Graphics::RendererAPI::ShaderStage::None)
 			TRAP::Graphics::ShaderManager::Get("FallbackCompute")->Use();
 		else
 			TRAP::Graphics::ShaderManager::Get("FallbackGraphics")->Use();
@@ -746,7 +746,7 @@ void TRAP::Application::LimitFPS(const uint32_t fpsLimit, Utils::Timer& limitTim
 #endif /*TRAP_HEADLESS_MODE*/
 
 	const std::chrono::duration<float, std::milli> limitMs =
-		std::chrono::duration<float, std::milli>(1000.0f / static_cast<float>(fpsLimit) - limitTimer.ElapsedMilliseconds());
+		std::chrono::duration<float, std::milli>(1000.0f / NumericCast<float>(fpsLimit) - limitTimer.ElapsedMilliseconds());
 	std::this_thread::sleep_for(limitMs); //If this is too inaccurate, resort to using nanosleep
 	limitTimer.Reset();
 }
@@ -756,7 +756,7 @@ void TRAP::Application::LimitFPS(const uint32_t fpsLimit, Utils::Timer& limitTim
 void TRAP::Application::UnfocusedLimitFPS(const uint32_t fpsLimit, Utils::Timer& limitTimer)
 {
 	const std::chrono::duration<float, std::milli> limitMs =
-		std::chrono::duration<float, std::milli>(1000.0f / static_cast<float>(fpsLimit) - limitTimer.ElapsedMilliseconds());
+		std::chrono::duration<float, std::milli>(1000.0f / NumericCast<float>(fpsLimit) - limitTimer.ElapsedMilliseconds());
 	std::this_thread::sleep_for(limitMs); //If this is too inaccurate, resort to using nanosleep
 	limitTimer.Reset();
 }

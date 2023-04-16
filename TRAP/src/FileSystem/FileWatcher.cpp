@@ -291,7 +291,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
     {
         for(std::size_t i = 0; i < bufs.size(); ++i)
         {
-            const BOOL result = ReadDirectoryChangesW(reinterpret_cast<HANDLE>(dirHandles[i]), bufs[i].data(), static_cast<DWORD>(bufs[i].size()),
+            const BOOL result = ReadDirectoryChangesW(reinterpret_cast<HANDLE>(dirHandles[i]), bufs[i].data(), NumericCast<DWORD>(bufs[i].size()),
                                                       m_recursive, FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME |
                                                       FILE_NOTIFY_CHANGE_SIZE, &bytesReturned[i], &pollingOverlap,
                                                       nullptr);
@@ -308,7 +308,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
         }
 
         const std::array<HANDLE, 2> handles = {pollingOverlap.hEvent, m_killEvent};
-        const DWORD res = WaitForMultipleObjects(static_cast<DWORD>(handles.size()), handles.data(), FALSE, INFINITE);
+        const DWORD res = WaitForMultipleObjects(NumericCast<DWORD>(handles.size()), handles.data(), FALSE, INFINITE);
 
         if (res == WAIT_OBJECT_0 + 1) //Exit work loop
             break;
@@ -538,7 +538,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
         }
 
         std::size_t offset = 0;
-        while(offset < static_cast<std::size_t>(len)) //Process events
+        while(offset < NumericCast<std::size_t>(len)) //Process events
         {
             const inotify_event* const event = reinterpret_cast<const inotify_event*>(buf.data() + offset); //Must use reinterpret_cast because of flexible array member
             if(event->len == 0u)

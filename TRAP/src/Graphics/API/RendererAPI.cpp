@@ -328,24 +328,24 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 
 	const Math::Vec2 frameBufferSize
 	{
-		static_cast<float>(window->GetFrameBufferSize().x),
-		static_cast<float>(window->GetFrameBufferSize().y)
+		NumericCast<float>(window->GetFrameBufferSize().x),
+		NumericCast<float>(window->GetFrameBufferSize().y)
 	};
 	const float aspectRatio = frameBufferSize.x / frameBufferSize.y;
 
-	Math::Vec2 finalRes = frameBufferSize * renderScale;
+	Math::Vec2ui finalRes = static_cast<Math::Vec2ui>(frameBufferSize * renderScale);
 
 	//Make sure the resolution is an integer scale of the framebuffer size.
 	//This is done to avoid scaling artifacts (like blurriness).
-	while((finalRes.x / finalRes.y) != aspectRatio)
+	while((NumericCast<float>(finalRes.x) / NumericCast<float>(finalRes.y)) != aspectRatio)
 	{
-		if((finalRes.x / finalRes.y) <= aspectRatio)
+		if((NumericCast<float>(finalRes.x) / NumericCast<float>(finalRes.y)) <= aspectRatio)
 			++finalRes.x;
 		else
 			++finalRes.y;
 	}
 
-	return static_cast<Math::Vec2ui>(finalRes);
+	return finalRes;
 }
 #else
 [[nodiscard]] TRAP::Math::Vec2ui TRAP::Graphics::RendererAPI::GetInternalRenderResolution()
@@ -359,24 +359,24 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 
 	const Math::Vec2 frameBufferSize
 	{
-		static_cast<float>(s_perViewportData->NewWidth),
-		static_cast<float>(s_perViewportData->NewHeight),
+		NumericCast<float>(s_perViewportData->NewWidth),
+		NumericCast<float>(s_perViewportData->NewHeight),
 	};
 	const float aspectRatio = frameBufferSize.x / frameBufferSize.y;
 
-	Math::Vec2 finalRes = frameBufferSize * renderScale;
+	Math::Vec2ui finalRes = static_cast<Math::Vec2ui>(frameBufferSize * renderScale);
 
 	//Make sure the resolution is an integer scale of the framebuffer size.
 	//This is done to avoid scaling artifacts (like blurriness).
-	while((finalRes.x / finalRes.y) != aspectRatio)
+	while((NumericCast<float>(finalRes.x= / NumericCast<float>(finalRes.y)) != aspectRatio)
 	{
-		if((finalRes.x / finalRes.y) <= aspectRatio)
+		if((NumericCast<float>(finalRes.x) / NumericCast<float>(finalRes.y)) <= aspectRatio)
 			++finalRes.x;
 		else
 			++finalRes.y;
 	}
 
-	return static_cast<Math::Vec2ui>(finalRes);
+	return finalRes;
 }
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -401,7 +401,8 @@ void TRAP::Graphics::RendererAPI::StartRenderPass(const Window* window)
 		renderTarget = viewportData->SwapChain->GetRenderTargets()[viewportData->CurrentSwapChainImageIndex];
 
 	GetRenderer()->BindRenderTarget(renderTarget, nullptr, nullptr,
-									nullptr, nullptr, static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);
+									nullptr, nullptr, std::numeric_limits<uint32_t>::max(),
+									std::numeric_limits<uint32_t>::max(), window);
 }
 #else
 void TRAP::Graphics::RendererAPI::StartRenderPass()
@@ -417,7 +418,8 @@ void TRAP::Graphics::RendererAPI::StartRenderPass()
 		renderTarget = s_perViewportData->RenderTargets[s_perViewportData->ImageIndex];
 
 	GetRenderer()->BindRenderTarget(renderTarget, nullptr, nullptr,
-	                                nullptr, nullptr, static_cast<uint32_t>(-1), static_cast<uint32_t>(-1));
+	                                nullptr, nullptr, std::numeric_limits<uint32_t>::max(),
+									std::numeric_limits<uint32_t>::max());
 }
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -431,16 +433,17 @@ void TRAP::Graphics::RendererAPI::StopRenderPass(const Window* window)
 	if(window == nullptr)
 		window = TRAP::Application::GetWindow();
 
-	GetRenderer()->BindRenderTarget(nullptr, nullptr, nullptr, nullptr, nullptr, static_cast<uint32_t>(-1),
-	                                static_cast<uint32_t>(-1), window);
+	GetRenderer()->BindRenderTarget(nullptr, nullptr, nullptr, nullptr, nullptr,
+	                                std::numeric_limits<uint32_t>::max(), std::numeric_limits<uint32_t>::max(),
+									window);
 }
 #else
 void TRAP::Graphics::RendererAPI::StopRenderPass()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	GetRenderer()->BindRenderTarget(nullptr, nullptr, nullptr, nullptr, nullptr, static_cast<uint32_t>(-1),
-	                                static_cast<uint32_t>(-1));
+	GetRenderer()->BindRenderTarget(nullptr, nullptr, nullptr, nullptr, nullptr,
+	                                std::numeric_limits<uint32_t>::max(), std::numeric_limits<uint32_t>::max());
 }
 #endif /*TRAP_HEADLESS_MODE*/
 

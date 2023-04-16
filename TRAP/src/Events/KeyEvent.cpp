@@ -34,7 +34,7 @@ TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, const uint32_t 
 
 	const std::string name = TRAP::Input::GetKeyName(m_key);
 
-	return "KeyPressEvent: " + name + "(" + std::to_string(static_cast<int32_t>(m_key)) + ") (" +
+	return "KeyPressEvent: " + name + "(" + std::to_string(ToUnderlying(m_key)) + ") (" +
 	       std::to_string(m_repeatCount) + " repeats)";
 }
 
@@ -76,7 +76,7 @@ TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, TRAP::Windo
 
 	const std::string name = TRAP::Input::GetKeyName(m_key);
 
-	return "KeyReleaseEvent: " + name + "(" + std::to_string(static_cast<int32_t>(m_key)) + ")";
+	return "KeyReleaseEvent: " + name + "(" + std::to_string(ToUnderlying(m_key)) + ")";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

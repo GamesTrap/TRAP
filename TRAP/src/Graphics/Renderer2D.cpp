@@ -439,7 +439,7 @@ uint32_t TRAP::Graphics::Renderer2DData::QuadData::DrawBuffers(UniformBuffer* ca
 		return TextureSlotIndex - 1;
 	}
 
-	return static_cast<uint32_t>(std::distance(DataBuffers[imageIndex][DataBufferIndex].TextureSlots.begin(), res));
+	return NumericCast<uint32_t>(std::distance(DataBuffers[imageIndex][DataBufferIndex].TextureSlots.begin(), res));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1002,7 +1002,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
 		currData.QuadData.VertexBufferPtr->Position = Math::Vec3(transform * Renderer2DData::QuadData::VertexPositions[i]);
 		currData.QuadData.VertexBufferPtr->Color = color;
 		currData.QuadData.VertexBufferPtr->TexCoord = texCoords != nullptr ? (*texCoords)[i] : textureCoords[i];
-		currData.QuadData.VertexBufferPtr->TexIndex = static_cast<float>(textureIndex);
+		currData.QuadData.VertexBufferPtr->TexIndex = NumericCast<float>(textureIndex);
 		currData.QuadData.VertexBufferPtr->EntityID = entityID;
 		currData.QuadData.VertexBufferPtr++;
 	}

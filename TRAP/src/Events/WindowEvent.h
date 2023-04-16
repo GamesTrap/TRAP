@@ -1093,7 +1093,7 @@ namespace TRAP::Events
 
 [[nodiscard]] constexpr float TRAP::Events::FrameBufferResizeEvent::GetAspectRatio() const noexcept
 {
-	return static_cast<float>(m_width) / static_cast<float>(m_height);
+	return NumericCast<float>(m_width) / NumericCast<float>(m_height);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

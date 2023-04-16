@@ -76,7 +76,7 @@ void TRAP::FileSystem::Init()
 
     std::vector<uint8_t> buffer(*fileSize);
 
-    file.read(reinterpret_cast<char*>(buffer.data()), static_cast<int32_t>(buffer.size()));
+    file.read(reinterpret_cast<char*>(buffer.data()), NumericCast<std::streamsize>(buffer.size()));
     file.close();
 
     return buffer;
@@ -108,7 +108,7 @@ void TRAP::FileSystem::Init()
 
     std::string result(*fileSize, '\0');
 
-    file.read(result.data(), static_cast<int32_t>(*fileSize));
+    file.read(result.data(), NumericCast<std::streamsize>(*fileSize));
     file.close();
 
     result.erase(std::remove(result.begin(), result.end(), '\r'), result.end());
@@ -133,7 +133,7 @@ bool TRAP::FileSystem::WriteFile(const std::filesystem::path& path, const std::v
         return false;
     }
 
-    file.write(reinterpret_cast<const char*>(buffer.data()), static_cast<int64_t>(buffer.size()));
+    file.write(reinterpret_cast<const char*>(buffer.data()), NumericCast<std::streamsize>(buffer.size()));
     file.close();
 
     return true;
@@ -155,7 +155,7 @@ bool TRAP::FileSystem::WriteTextFile(const std::filesystem::path& path, const st
         return false;
     }
 
-    file.write(static_cast<const char*>(text.data()), static_cast<int64_t>(text.size()));
+    file.write(text.data(), NumericCast<std::streamsize>(text.size()));
     file.close();
 
     return true;
@@ -320,10 +320,10 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
             return std::nullopt;
         }
 
-        if(size == static_cast<uintmax_t>(-1))
+        if(size == std::numeric_limits<uintmax_t>::max())
         {
             TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", path.u8string(),
-                     "\" (size is -1)!");
+                     "\" (size is ", std::numeric_limits<uintmax_t>::max(), ")!");
             return std::nullopt;
         }
 
@@ -365,10 +365,10 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
                         return std::nullopt;
                     }
 
-                    if(fileSize == static_cast<uintmax_t>(-1))
+                    if(fileSize == std::numeric_limits<uintmax_t>::max())
                     {
                         TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", entry.path().u8string(),
-                                "\" (size is -1)!");
+                                "\" (size is ", std::numeric_limits<uintmax_t>::max(), ")!");
                         return std::nullopt;
                     }
                     size += fileSize;
@@ -404,10 +404,10 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
                         return std::nullopt;
                     }
 
-                    if(fileSize == static_cast<uintmax_t>(-1))
+                    if(fileSize == std::numeric_limits<uintmax_t>::max())
                     {
                         TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", entry.path().u8string(),
-                                "\" (size is -1)!");
+                                "\" (size is ", std::numeric_limits<uintmax_t>::max(), ")!");
                         return std::nullopt;
                     }
                     size += fileSize;

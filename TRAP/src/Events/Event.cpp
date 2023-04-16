@@ -14,7 +14,7 @@
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return static_cast<bool>(GetCategoryFlags() & category);
+	return (GetCategoryFlags() & category) != EventCategory::None;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

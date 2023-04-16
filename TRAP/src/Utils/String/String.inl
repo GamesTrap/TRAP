@@ -258,6 +258,50 @@ template<typename T>
 		TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Rigidbody2DComponent::BodyType!");
 		throw std::invalid_argument("Exception while converting string to TRAP::Rigidbody2DComponent::BodyType!");
 	}
+	else if constexpr(std::is_same_v<T, TRAP::Graphics::RendererAPI::ResourceState>)
+	{
+		if(Utils::String::CompareAnyCase("Undefined", input))
+			return TRAP::Graphics::RendererAPI::ResourceState::Undefined;
+		if(Utils::String::CompareAnyCase("VertexAndConstantBuffer", input))
+			return TRAP::Graphics::RendererAPI::ResourceState::VertexAndConstantBuffer;
+		if(Utils::String::CompareAnyCase("IndexBuffer", input))
+			return TRAP::Graphics::RendererAPI::ResourceState::IndexBuffer;
+		if(Utils::String::CompareAnyCase("RenderTarget", input))
+			return TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
+		if(Utils::String::CompareAnyCase("UnorderedAccess", input))
+			return TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
+		if(Utils::String::CompareAnyCase("DepthWrite", input))
+			return TRAP::Graphics::RendererAPI::ResourceState::DepthWrite;
+		if(Utils::String::CompareAnyCase("DepthRead", input))
+			return TRAP::Graphics::RendererAPI::ResourceState::DepthRead;
+		if(Utils::String::CompareAnyCase("NonPixelShaderResource", input))
+			return TRAP::Graphics::RendererAPI::ResourceState::NonPixelShaderResource;
+		if(Utils::String::CompareAnyCase("PixelShaderResource", input))
+			return TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
+		if(Utils::String::CompareAnyCase("ShaderResource", input))
+			return TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
+		if(Utils::String::CompareAnyCase("StreamOut", input))
+			return TRAP::Graphics::RendererAPI::ResourceState::StreamOut;
+		if(Utils::String::CompareAnyCase("IndirectArgument", input))
+			return TRAP::Graphics::RendererAPI::ResourceState::IndirectArgument;
+		if(Utils::String::CompareAnyCase("CopyDestination", input))
+			return TRAP::Graphics::RendererAPI::ResourceState::CopyDestination;
+		if(Utils::String::CompareAnyCase("CopySource", input))
+			return TRAP::Graphics::RendererAPI::ResourceState::CopySource;
+		if(Utils::String::CompareAnyCase("GenericRead", input))
+			return TRAP::Graphics::RendererAPI::ResourceState::GenericRead;
+		if(Utils::String::CompareAnyCase("Present", input))
+			return TRAP::Graphics::RendererAPI::ResourceState::Present;
+		if(Utils::String::CompareAnyCase("Common", input))
+			return TRAP::Graphics::RendererAPI::ResourceState::Common;
+		if(Utils::String::CompareAnyCase("RayTracingAccelerationStructure", input))
+			return TRAP::Graphics::RendererAPI::ResourceState::RayTracingAccelerationStructure;
+		if(Utils::String::CompareAnyCase("ShadingRateSource", input))
+			return TRAP::Graphics::RendererAPI::ResourceState::ShadingRateSource;
+
+		TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::RendererAPI::ResourceState!");
+		throw std::invalid_argument("Exception while converting string to TRAP::Graphics::RendererAPI::ResourceState!");
+	}
 	else
 	{
 		static_assert(sizeof(T) == 0, "Unconvertable type encountered, please use a different type, "
@@ -503,6 +547,53 @@ template<typename T>
 
 		case Rigidbody2DComponent::BodyType::Kinematic:
 			return "Kinematic";
+
+		default:
+			return "";
+		}
+	}
+	else if constexpr(std::is_same_v<T, TRAP::Graphics::RendererAPI::ResourceState>)
+	{
+		switch(value)
+		{
+		case TRAP::Graphics::RendererAPI::ResourceState::Undefined:
+			return "Undefined";
+		case TRAP::Graphics::RendererAPI::ResourceState::VertexAndConstantBuffer:
+			return "VertexAndConstantBuffer";
+		case TRAP::Graphics::RendererAPI::ResourceState::IndexBuffer:
+			return "IndexBuffer";
+		case TRAP::Graphics::RendererAPI::ResourceState::RenderTarget:
+			return "RenderTarget";
+		case TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess:
+			return "UnorderedAccess";
+		case TRAP::Graphics::RendererAPI::ResourceState::DepthWrite:
+			return "DepthWrite";
+		case TRAP::Graphics::RendererAPI::ResourceState::DepthRead:
+			return "DepthRead";
+		case TRAP::Graphics::RendererAPI::ResourceState::NonPixelShaderResource:
+			return "NonPixelShaderResource";
+		case TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource:
+			return "PixelShaderResource";
+		case TRAP::Graphics::RendererAPI::ResourceState::ShaderResource:
+			return "ShaderResource";
+		case TRAP::Graphics::RendererAPI::ResourceState::StreamOut:
+			return "StreamOut";
+		case TRAP::Graphics::RendererAPI::ResourceState::IndirectArgument:
+			return "IndirectArgument";
+		case TRAP::Graphics::RendererAPI::ResourceState::CopyDestination:
+			return "CopyDestination";
+		case TRAP::Graphics::RendererAPI::ResourceState::CopySource:
+			return "CopySource";
+		case TRAP::Graphics::RendererAPI::ResourceState::GenericRead:
+			return "GenericRead";
+		case TRAP::Graphics::RendererAPI::ResourceState::Present:
+			return "Present";
+		case TRAP::Graphics::RendererAPI::ResourceState::Common:
+			return "Common";
+		case TRAP::Graphics::RendererAPI::ResourceState::RayTracingAccelerationStructure:
+			return "RayTracingAccelerationStructure";
+		case TRAP::Graphics::RendererAPI::ResourceState::ShadingRateSource:
+			return "ShadingRateSource";
 
 		default:
 			return "";

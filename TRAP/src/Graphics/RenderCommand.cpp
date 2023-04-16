@@ -596,7 +596,8 @@ void TRAP::Graphics::RenderCommand::BindRenderTarget(const TRAP::Ref<Graphics::R
 									                 const Window* const window)
 {
 	RendererAPI::GetRenderer()->BindRenderTarget(colorTarget, depthStencil, loadActions, nullptr, nullptr,
-												 static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);
+												 std::numeric_limits<uint32_t>::max(),
+												 std::numeric_limits<uint32_t>::max(), window);
 }
 #else
 void TRAP::Graphics::RenderCommand::BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
@@ -604,7 +605,8 @@ void TRAP::Graphics::RenderCommand::BindRenderTarget(const TRAP::Ref<Graphics::R
 									                 const RendererAPI::LoadActionsDesc* const loadActions)
 {
 	RendererAPI::GetRenderer()->BindRenderTarget(colorTarget, depthStencil, loadActions, nullptr, nullptr,
-												 static_cast<uint32_t>(-1), static_cast<uint32_t>(-1));
+												 std::numeric_limits<uint32_t>::max(),
+												 std::numeric_limits<uint32_t>::max());
 }
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -617,7 +619,8 @@ void TRAP::Graphics::RenderCommand::BindRenderTargets(const std::vector<TRAP::Re
 									                 const Window* const window)
 {
 	RendererAPI::GetRenderer()->BindRenderTargets(colorTargets, depthStencil, loadActions, nullptr, nullptr,
-												  static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);
+												  std::numeric_limits<uint32_t>::max(),
+												  std::numeric_limits<uint32_t>::max(), window);
 }
 #else
 void TRAP::Graphics::RenderCommand::BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
@@ -625,7 +628,8 @@ void TRAP::Graphics::RenderCommand::BindRenderTargets(const std::vector<TRAP::Re
 									                 const RendererAPI::LoadActionsDesc* const loadActions)
 {
 	RendererAPI::GetRenderer()->BindRenderTargets(colorTargets, depthStencil, loadActions, nullptr, nullptr,
-												  static_cast<uint32_t>(-1), static_cast<uint32_t>(-1));
+												  std::numeric_limits<uint32_t>::max(),
+												  std::numeric_limits<uint32_t>::max());
 }
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -801,7 +805,7 @@ void TRAP::Graphics::RenderCommand::MSAAResolvePass(TRAP::Ref<RenderTarget> sour
 
 [[nodiscard]] uint32_t TRAP::Graphics::RenderCommand::GetCPUFPS()
 {
-	return static_cast<uint32_t>(1000.0f / Application::GetCPUFrameTime());
+	return NumericCast<uint32_t>(1000.0f / Application::GetCPUFrameTime());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -809,16 +813,18 @@ void TRAP::Graphics::RenderCommand::MSAAResolvePass(TRAP::Ref<RenderTarget> sour
 #ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] uint32_t TRAP::Graphics::RenderCommand::GetGPUFPS(const Window* const window)
 {
-	const float maxGPUFrameTime = TRAP::Math::Max(RendererAPI::GetGPUGraphicsFrameTime(window), RendererAPI::GetGPUComputeFrameTime(window));
+	const float maxGPUFrameTime = TRAP::Math::Max(RendererAPI::GetGPUGraphicsFrameTime(window),
+	                                              RendererAPI::GetGPUComputeFrameTime(window));
 
-	return static_cast<uint32_t>(1000.0f / maxGPUFrameTime);
+	return NumericCast<uint32_t>(1000.0f / maxGPUFrameTime);
 }
 #else
 [[nodiscard]] uint32_t TRAP::Graphics::RenderCommand::GetGPUFPS()
 {
-	const float maxGPUFrameTime = TRAP::Math::Max(RendererAPI::GetGPUGraphicsFrameTime(), RendererAPI::GetGPUComputeFrameTime());
+	const float maxGPUFrameTime = TRAP::Math::Max(RendererAPI::GetGPUGraphicsFrameTime(),
+	                                              RendererAPI::GetGPUComputeFrameTime());
 
-	return static_cast<uint32_t>(1000.0f / maxGPUFrameTime);
+	return NumericCast<uint32_t>(1000.0f / maxGPUFrameTime);
 }
 #endif /*TRAP_HEADLESS_MODE*/
 

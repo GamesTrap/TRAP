@@ -187,27 +187,16 @@ MAKE_ENUM_FLAG(TRAP::Events::EventCategory)
 [[nodiscard]] constexpr TRAP::Events::EventCategory operator ^(const TRAP::Events::EventCategory lhs,
                                                                const TRAP::Events::EventCategory rhs) noexcept
 {
-	return static_cast<TRAP::Events::EventCategory>
-		(
-			static_cast<std::underlying_type<TRAP::Events::EventCategory>::type>(lhs) ^
-			static_cast<std::underlying_type<TRAP::Events::EventCategory>::type>(rhs)
-		);
+	return static_cast<TRAP::Events::EventCategory>(ToUnderlying(lhs) ^ ToUnderlying(rhs));
 }
 [[nodiscard]] constexpr TRAP::Events::EventCategory operator ~(const TRAP::Events::EventCategory rhs) noexcept
 {
-	return static_cast<TRAP::Events::EventCategory>
-		(
-			~static_cast<std::underlying_type<TRAP::Events::EventCategory>::type>(rhs)
-		);
+	return static_cast<TRAP::Events::EventCategory>(~ToUnderlying(rhs));
 }
 [[nodiscard]] constexpr TRAP::Events::EventCategory& operator ^=(TRAP::Events::EventCategory& lhs,
                                                                  const TRAP::Events::EventCategory rhs) noexcept
 {
-	lhs = static_cast<TRAP::Events::EventCategory>
-		(
-			static_cast<std::underlying_type<TRAP::Events::EventCategory>::type>(lhs) ^
-			static_cast<std::underlying_type<TRAP::Events::EventCategory>::type>(rhs)
-		);
+	lhs = lhs ^ rhs;
 
 	return lhs;
 }

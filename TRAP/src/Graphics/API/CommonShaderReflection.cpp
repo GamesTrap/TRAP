@@ -36,7 +36,7 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graphics::API::ShaderReflection::CreatePipelineReflection(
-	const std::array<ShaderReflection, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& reflection,
+	const std::array<ShaderReflection, ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& reflection,
 	const uint32_t stageCount)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
@@ -48,10 +48,10 @@
 	}
 
 	//Sanity checks to make sure we don't have repeated stages.
-	RendererAPI::ShaderStage combinedShaderStages = static_cast<RendererAPI::ShaderStage>(0);
+	RendererAPI::ShaderStage combinedShaderStages = RendererAPI::ShaderStage::None;
 	for(uint32_t i = 0; i < stageCount; ++i)
 	{
-		if(static_cast<uint32_t>(combinedShaderStages & reflection[i].ShaderStage) != 0)
+		if((combinedShaderStages & reflection[i].ShaderStage) != RendererAPI::ShaderStage::None)
 		{
 			TP_ERROR(Log::ShaderPrefix,
 			         "Duplicate shader stage was detected in shader reflection array.");
@@ -174,7 +174,7 @@
 			{
 				if(ShaderResourceCmp(resources[j], *parentResource))
 				{
-					variables[i].ParentIndex = static_cast<uint32_t>(j);
+					variables[i].ParentIndex = j;
 					break;
 				}
 			}
