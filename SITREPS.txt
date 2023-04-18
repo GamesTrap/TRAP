@@ -3884,5 +3884,9 @@ SITREP 04/16/2023|23w15b1
     - Base Added NumericCast() a checked version of static_cast for integers and float ~<10 mins
     - Base Added ToUnderlying() utility to convert enum values to its underlying data type ~<5 mins
     - Vec2/3/4 and Mat3/4 Changed operator[] data type ~<5 mins
-    - Replaced static_casts with NumericCast() and ToUnderlying() ~>20 mins
+    - Replaced some static_casts with NumericCast() and ToUnderlying() ~>20 mins
     - Fixed Windows crash while loading secret symbols ~<5 mins
+
+SITREP 04/18/2023|23w16a1
+    - Changed TRAP Engine version to 23w16a1(0.9.15)
+    - Replaced some static_casts with NumericCast() and ToUnderlying() ~>30 mins

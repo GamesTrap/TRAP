@@ -209,13 +209,13 @@ namespace TRAP::Graphics::API
 		/// Retrieve the row alignment for textures used by the GPU.
 		/// </summary>
 		/// <returns>Row alignment used by the GPU.</returns>
-		[[nodiscard]] static uint64_t UtilGetTextureRowAlignment() noexcept;
+		[[nodiscard]] static uint32_t UtilGetTextureRowAlignment() noexcept;
 		/// <summary>
 		/// Retrieve the subresource alignment for textures used by the GPU.
 		/// </summary>
 		/// <param name="fmt">Format of the texture. Default: ImageFormat::Undefined.</param>
 		/// <returns>Subresource alignment used by the GPU.</returns>
-		[[nodiscard]] static uint64_t UtilGetTextureSubresourceAlignment(TRAP::Graphics::API::ImageFormat fmt = TRAP::Graphics::API::ImageFormat::Undefined) noexcept;
+		[[nodiscard]] static uint32_t UtilGetTextureSubresourceAlignment(TRAP::Graphics::API::ImageFormat fmt = TRAP::Graphics::API::ImageFormat::Undefined) noexcept;
 		/// <summary>
 		///	Retrieve the total surface size of a texture.
 		/// </summary>
@@ -230,8 +230,8 @@ namespace TRAP::Graphics::API
 		/// <param name="baseArrayLayer">Base array layer of the texture.</param>
 		/// <param name="arrayLayers">Number of array layers of the texture.</param>
 		/// <returns>Total surface size of the texture.</returns>
-		[[nodiscard]] static uint64_t UtilGetSurfaceSize(TRAP::Graphics::API::ImageFormat fmt, uint32_t width, uint32_t height,
-		                                                 uint32_t depth, uint64_t rowStride, uint64_t sliceStride,
+		[[nodiscard]] static uint32_t UtilGetSurfaceSize(TRAP::Graphics::API::ImageFormat fmt, uint32_t width, uint32_t height,
+		                                                 uint32_t depth, uint32_t rowStride, uint32_t sliceStride,
 										                 uint32_t baseMipLevel, uint32_t mipLevels, uint32_t baseArrayLayer,
 										                 uint32_t arrayLayers) noexcept;
 		/// <summary>
@@ -245,7 +245,7 @@ namespace TRAP::Graphics::API
 		/// <param name="outNumRows">Optional output for the number of rows in the texture.</param>
 		/// <returns>True on successful retrieval, false otherwise.</returns>
 		[[nodiscard]] static bool UtilGetSurfaceInfo(uint32_t width, uint32_t height, TRAP::Graphics::API::ImageFormat fmt,
-		                                             uint64_t* outNumBytes, uint64_t* outRowBytes, uint64_t* outNumRows);
+		                                             uint32_t* outNumBytes, uint32_t* outRowBytes, uint32_t* outNumRows);
 		/// <summary>
 		/// Allocate a new staging buffer.
 		/// </summary>
@@ -377,7 +377,7 @@ namespace TRAP::Graphics::API
 			InvalidRequest
 		};
 
-		enum class MappedRangeFlag
+		enum class MappedRangeFlag : uint32_t
 		{
 			UnMapBuffer = BIT(0),
 			TempBuffer = BIT(1)
@@ -532,14 +532,14 @@ namespace TRAP::Graphics::API
 		const RendererAPI::DescriptorType usage = desc.Descriptors;
 
 		//Try to limit number of states used overall to avoid sync complexities
-		if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::RWBuffer) != 0u)
+		if ((usage & RendererAPI::DescriptorType::RWBuffer) != RendererAPI::DescriptorType::Undefined)
 			return RendererAPI::ResourceState::UnorderedAccess;
-		if (((static_cast<uint32_t>(usage & RendererAPI::DescriptorType::VertexBuffer) != 0u) ||
-			 (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::UniformBuffer) != 0u)))
+		if ((((usage & RendererAPI::DescriptorType::VertexBuffer) != RendererAPI::DescriptorType::Undefined) ||
+			 ((usage & RendererAPI::DescriptorType::UniformBuffer) != RendererAPI::DescriptorType::Undefined)))
 			return RendererAPI::ResourceState::VertexAndConstantBuffer;
-		if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::IndexBuffer) != 0u)
+		if ((usage & RendererAPI::DescriptorType::IndexBuffer) != RendererAPI::DescriptorType::Undefined)
 			return RendererAPI::ResourceState::IndexBuffer;
-		if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::Buffer) != 0u)
+		if ((usage & RendererAPI::DescriptorType::Buffer) != RendererAPI::DescriptorType::Undefined)
 			return RendererAPI::ResourceState::ShaderResource;
 
 		return RendererAPI::ResourceState::Common;

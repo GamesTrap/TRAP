@@ -135,7 +135,7 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 #ifdef ENABLE_GRAPHICS_DEBUG
 	for(uint32_t i = 0; i < 8; ++i)
 	{
-		if((static_cast<uint32_t>(desc.RenderTargetMask) & (1u << i)) != 0u)
+		if((ToUnderlying(desc.RenderTargetMask) & BIT(i)) != 0u)
 		{
 			TRAP_ASSERT(desc.SrcFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS, "UtilToBlendDesc(): Invalid SrcFactor!");
 			TRAP_ASSERT(desc.DstFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS, "UtilToBlendDesc(): Invalid DstFactor!");
@@ -154,22 +154,22 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 
 	for(uint32_t i = 0; i < 8; ++i)
 	{
-		const VkBool32 blendEnable = static_cast<VkBool32>
+		const VkBool32 blendEnable = VkBool32
 		(
-			VkBlendConstantTranslator[static_cast<uint32_t>(desc.SrcFactors[blendDescIndex])] != VK_BLEND_FACTOR_ONE ||
-			VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstFactors[blendDescIndex])] != VK_BLEND_FACTOR_ZERO ||
-			VkBlendConstantTranslator[static_cast<uint32_t>(desc.SrcAlphaFactors[blendDescIndex])] != VK_BLEND_FACTOR_ONE ||
-			VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstAlphaFactors[blendDescIndex])] != VK_BLEND_FACTOR_ZERO
+			VkBlendConstantTranslator[ToUnderlying(desc.SrcFactors[blendDescIndex])] != VK_BLEND_FACTOR_ONE ||
+			VkBlendConstantTranslator[ToUnderlying(desc.DstFactors[blendDescIndex])] != VK_BLEND_FACTOR_ZERO ||
+			VkBlendConstantTranslator[ToUnderlying(desc.SrcAlphaFactors[blendDescIndex])] != VK_BLEND_FACTOR_ONE ||
+			VkBlendConstantTranslator[ToUnderlying(desc.DstAlphaFactors[blendDescIndex])] != VK_BLEND_FACTOR_ZERO
 		);
 
-		attachments[i].blendEnable = static_cast<VkBool32>((blendEnable != 0u) && ((static_cast<uint32_t>(desc.RenderTargetMask) & (1u << i)) != 0u));
+		attachments[i].blendEnable = VkBool32((blendEnable != VK_FALSE) && ((ToUnderlying(desc.RenderTargetMask) & BIT(i)) != 0u));
 		attachments[i].colorWriteMask = desc.Masks[blendDescIndex];
-		attachments[i].srcColorBlendFactor = VkBlendConstantTranslator[static_cast<uint32_t>(desc.SrcFactors[blendDescIndex])];
-		attachments[i].dstColorBlendFactor = VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstFactors[blendDescIndex])];
-		attachments[i].colorBlendOp = VkBlendOpTranslator[static_cast<uint32_t>(desc.BlendModes[blendDescIndex])];
-		attachments[i].srcAlphaBlendFactor = VkBlendConstantTranslator[static_cast<uint32_t>(desc.SrcAlphaFactors[blendDescIndex])];
-		attachments[i].dstAlphaBlendFactor = VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstAlphaFactors[blendDescIndex])];
-		attachments[i].alphaBlendOp = VkBlendOpTranslator[static_cast<uint32_t>(desc.BlendAlphaModes[blendDescIndex])];
+		attachments[i].srcColorBlendFactor = VkBlendConstantTranslator[ToUnderlying(desc.SrcFactors[blendDescIndex])];
+		attachments[i].dstColorBlendFactor = VkBlendConstantTranslator[ToUnderlying(desc.DstFactors[blendDescIndex])];
+		attachments[i].colorBlendOp = VkBlendOpTranslator[ToUnderlying(desc.BlendModes[blendDescIndex])];
+		attachments[i].srcAlphaBlendFactor = VkBlendConstantTranslator[ToUnderlying(desc.SrcAlphaFactors[blendDescIndex])];
+		attachments[i].dstAlphaBlendFactor = VkBlendConstantTranslator[ToUnderlying(desc.DstAlphaFactors[blendDescIndex])];
+		attachments[i].alphaBlendOp = VkBlendOpTranslator[ToUnderlying(desc.BlendAlphaModes[blendDescIndex])];
 
 		if (desc.IndependentBlend)
 			++blendDescIndex;
@@ -200,28 +200,28 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 	ds.flags = 0;
 	ds.depthTestEnable = desc.DepthTest ? VK_TRUE : VK_FALSE;
 	ds.depthWriteEnable = desc.DepthWrite ? VK_TRUE : VK_FALSE;
-	ds.depthCompareOp = VkComparisonFuncTranslator[static_cast<uint32_t>(desc.DepthFunc)];
+	ds.depthCompareOp = VkComparisonFuncTranslator[ToUnderlying(desc.DepthFunc)];
 	ds.depthBoundsTestEnable = VK_FALSE;
 	ds.stencilTestEnable = desc.StencilTest ? VK_TRUE : VK_FALSE;
 
-	ds.front.failOp = VkStencilOpTranslator[static_cast<uint32_t>(desc.StencilFrontFail)];
-	ds.front.passOp = VkStencilOpTranslator[static_cast<uint32_t>(desc.StencilFrontPass)];
-	ds.front.depthFailOp = VkStencilOpTranslator[static_cast<uint32_t>(desc.DepthFrontFail)];
-	ds.front.compareOp = static_cast<VkCompareOp>(desc.StencilFrontFunc);
+	ds.front.failOp = VkStencilOpTranslator[ToUnderlying(desc.StencilFrontFail)];
+	ds.front.passOp = VkStencilOpTranslator[ToUnderlying(desc.StencilFrontPass)];
+	ds.front.depthFailOp = VkStencilOpTranslator[ToUnderlying(desc.DepthFrontFail)];
+	ds.front.compareOp = VkComparisonFuncTranslator[ToUnderlying(desc.StencilFrontFunc)];
 	ds.front.compareMask = desc.StencilReadMask;
 	ds.front.writeMask = desc.StencilWriteMask;
 	ds.front.reference = 0;
 
-	ds.back.failOp = VkStencilOpTranslator[static_cast<uint32_t>(desc.StencilBackFail)];
-	ds.back.passOp = VkStencilOpTranslator[static_cast<uint32_t>(desc.StencilBackPass)];
-	ds.back.depthFailOp = VkStencilOpTranslator[static_cast<uint32_t>(desc.DepthBackFail)];
-	ds.back.compareOp = VkComparisonFuncTranslator[static_cast<uint32_t>(desc.StencilBackFail)];
+	ds.back.failOp = VkStencilOpTranslator[ToUnderlying(desc.StencilBackFail)];
+	ds.back.passOp = VkStencilOpTranslator[ToUnderlying(desc.StencilBackPass)];
+	ds.back.depthFailOp = VkStencilOpTranslator[ToUnderlying(desc.DepthBackFail)];
+	ds.back.compareOp = VkComparisonFuncTranslator[ToUnderlying(desc.StencilBackFail)];
 	ds.back.compareMask = desc.StencilReadMask;
 	ds.back.writeMask = desc.StencilWriteMask;
 	ds.back.reference = 0;
 
-	ds.minDepthBounds = 0;
-	ds.maxDepthBounds = 1;
+	ds.minDepthBounds = 0.0f;
+	ds.maxDepthBounds = 1.0f;
 
 	return ds;
 }
@@ -241,11 +241,11 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 	rs.flags = 0;
 	rs.depthClampEnable = desc.DepthClampEnable ? VK_TRUE : VK_FALSE;
 	rs.rasterizerDiscardEnable = VK_FALSE;
-	rs.polygonMode = VkFillModeTranslator[static_cast<uint32_t>(desc.FillMode)];
-	rs.cullMode = VkCullModeTranslator[static_cast<uint32_t>(desc.CullMode)];
-	rs.frontFace = VkFrontFaceTranslator[static_cast<uint32_t>(desc.FrontFace)];
+	rs.polygonMode = VkFillModeTranslator[ToUnderlying(desc.FillMode)];
+	rs.cullMode = VkCullModeTranslator[ToUnderlying(desc.CullMode)];
+	rs.frontFace = VkFrontFaceTranslator[ToUnderlying(desc.FrontFace)];
 	rs.depthBiasEnable = (desc.DepthBias != 0) ? VK_TRUE : VK_FALSE;
-	rs.depthBiasConstantFactor = static_cast<float>(desc.DepthBias);
+	rs.depthBiasConstantFactor = NumericCast<float>(desc.DepthBias);
 	rs.depthBiasClamp = 0.0f;
 	rs.depthBiasSlopeFactor = desc.SlopeScaledDepthBias;
 	rs.lineWidth = 1.0f;

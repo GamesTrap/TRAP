@@ -167,13 +167,13 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderResources()
 
 		resource.IsUsed = usedResources.count(resource.SPIRVCode.ID) != 0;
 
-		resource.Set = static_cast<uint32_t>(-1); //Stage inputs dont have sets
+		resource.Set = std::numeric_limits<uint32_t>::max(); //Stage inputs dont have sets
 		//Location is the binding point for inputs
 		resource.Binding = m_compiler.get_decoration(resource.SPIRVCode.ID, spv::DecorationLocation);
 
 		const spirv_cross::SPIRType type = m_compiler.get_type(resource.SPIRVCode.TypeID);
 		//bit width * vecsize = size
-		resource.Size = static_cast<uint64_t>(type.width / 8) * type.vecsize;
+		resource.Size = NumericCast<uint64_t>(type.width / 8u) * type.vecsize;
 
 		resource.Name = input.name;
 	}
@@ -191,13 +191,13 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderResources()
 
 		resource.IsUsed = usedResources.count(resource.SPIRVCode.ID) != 0;
 
-		resource.Set = static_cast<uint32_t>(-1);
+		resource.Set = std::numeric_limits<uint32_t>::max();
 		//Location is the binding point for outputs
 		resource.Binding = m_compiler.get_decoration(resource.SPIRVCode.ID, spv::DecorationLocation);
 
 		const spirv_cross::SPIRType type = m_compiler.get_type(resource.SPIRVCode.TypeID);
 		//bit width * vecsize = size
-		resource.Size = (static_cast<uint64_t>(type.width / 8)) * type.vecsize;
+		resource.Size = (NumericCast<uint64_t>(type.width / 8u)) * type.vecsize;
 
 		resource.Name = output.name;
 	}
@@ -235,8 +235,8 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderResources()
 
 		resource.IsUsed = usedResources.count(resource.SPIRVCode.ID) != 0;
 
-		resource.Set = static_cast<uint32_t>(-1); //Push constants dont have sets
-		resource.Binding = static_cast<uint32_t>(-1); //Push constants dont have bindings
+		resource.Set = std::numeric_limits<uint32_t>::max(); //Push constants dont have sets
+		resource.Binding = std::numeric_limits<uint32_t>::max(); //Push constants dont have bindings
 
 		const spirv_cross::SPIRType type = m_compiler.get_type(resource.SPIRVCode.TypeID);
 		resource.Size = m_compiler.get_declared_struct_size(type);
@@ -291,15 +291,15 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderVariables()
 			variable.SPIRVTypeID = type.member_types[j];
 
 			variable.ParentSPIRVCode = resource.SPIRVCode;
-			variable.ParentIndex = static_cast<uint32_t>(i);
+			variable.ParentIndex = i;
 
 			variable.IsUsed = false;
 
-			variable.Size = m_compiler.get_declared_struct_member_size(type, static_cast<uint32_t>(j));
-			variable.Offset = m_compiler.get_member_decoration(resource.SPIRVCode.BaseTypeID, static_cast<uint32_t>(j),
+			variable.Size = m_compiler.get_declared_struct_member_size(type, NumericCast<uint32_t>(j));
+			variable.Offset = m_compiler.get_member_decoration(resource.SPIRVCode.BaseTypeID, NumericCast<uint32_t>(j),
 																		spv::DecorationOffset);
 
-			variable.Name = m_compiler.get_member_name(resource.SPIRVCode.BaseTypeID, static_cast<uint32_t>(j));
+			variable.Name = m_compiler.get_member_name(resource.SPIRVCode.BaseTypeID, NumericCast<uint32_t>(j));
 		}
 
 		const spirv_cross::SmallVector<spirv_cross::BufferRange> range = m_compiler.get_active_buffer_ranges(resource.SPIRVCode.ID);

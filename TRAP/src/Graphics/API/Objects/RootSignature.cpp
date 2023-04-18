@@ -35,11 +35,11 @@ TRAP::Graphics::RootSignature::~RootSignature()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint32_t TRAP::Graphics::RootSignature::GetDescriptorCount() const noexcept
+[[nodiscard]] uint64_t TRAP::Graphics::RootSignature::GetDescriptorCount() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return static_cast<uint32_t>(m_descriptors.size());
+	return m_descriptors.size();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

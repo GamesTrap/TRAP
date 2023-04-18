@@ -2964,7 +2964,7 @@ namespace TRAP::Graphics
 			//Number of resources in the descriptor(applies to array of textures, buffers, ...)
 			uint32_t Count{};
 			//Index into RootSignature->Descriptors array
-			uint32_t Index = static_cast<uint32_t>(-1);
+			uint32_t Index = std::numeric_limits<uint32_t>::max();
 		};
 
 		/// <summary>
@@ -3058,15 +3058,15 @@ namespace TRAP::Graphics
 			uint8_t* MappedData{};
 			//Size of each row in destination including padding - Needs to be respected
 			//otherwise texture data will be corrupted if dst row stride is not the same as src row stride
-			uint64_t DstRowStride{};
+			uint32_t DstRowStride{};
 			//Number of rows in this slice of the texture
-			uint64_t RowCount{};
+			uint32_t RowCount{};
 			//Src row stride for convenience (RowCount * width * texture format size)
-			uint64_t SrcRowStride{};
+			uint32_t SrcRowStride{};
 			//Size of each slice in destination including padding - Use for offsetting dst data updating 3D textures
-			uint64_t DstSliceStride{};
+			uint32_t DstSliceStride{};
 			//Size of each slice in src - Use for offsetting src data when updating 3D textures
-			uint64_t SrcSliceStride{};
+			uint32_t SrcSliceStride{};
 
 			//Internal
 			struct
@@ -3154,8 +3154,8 @@ namespace TRAP::Graphics
 			uint32_t MaxUniformBufferRange;
 			uint64_t StorageBufferAlignment;
 			uint64_t MaxStorageBufferRange;
-			uint64_t UploadBufferTextureAlignment;
-			uint64_t UploadBufferTextureRowAlignment;
+			uint32_t UploadBufferTextureAlignment;
+			uint32_t UploadBufferTextureRowAlignment;
 			uint32_t MaxVertexInputBindings;
 			uint32_t MaxVertexInputAttributes;
 			uint32_t MaxRootSignatureDWORDS;

@@ -127,7 +127,7 @@ namespace TRAP::Graphics::API::SPIRVTools
 		Type ParentSPIRVCode;
 
 		//Parents resource index
-		uint32_t ParentIndex;
+		uint64_t ParentIndex;
 
 		//If the data was used
 		bool IsUsed;

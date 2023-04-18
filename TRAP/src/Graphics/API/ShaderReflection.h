@@ -96,7 +96,7 @@ namespace TRAP::Graphics::API::ShaderReflection
 		RendererAPI::ShaderStage ShaderStages;
 		//The individual stages reflection data
 		std::array<ShaderReflection,
-		           static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> StageReflections;
+		           ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> StageReflections;
 		uint32_t StageReflectionCount{};
 
 		uint32_t VertexStageIndex{};
@@ -117,7 +117,7 @@ namespace TRAP::Graphics::API::ShaderReflection
 	/// <param name="stageCount">Number of used shader stages.</param>
 	/// <returns>Pipeline reflection.</returns>
 	[[nodiscard]] TRAP::Ref<PipelineReflection> CreatePipelineReflection(const std::array<ShaderReflection,
-	                                                                     static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& reflection,
+	                                                                     ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& reflection,
 														                 uint32_t stageCount);
 }
 

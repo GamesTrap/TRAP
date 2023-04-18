@@ -89,8 +89,8 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	RendererAPI::GPUSettings.MaxUniformBufferRange = m_physicalDeviceProperties.limits.maxUniformBufferRange;
 	RendererAPI::GPUSettings.StorageBufferAlignment = m_physicalDeviceProperties.limits.minStorageBufferOffsetAlignment;
 	RendererAPI::GPUSettings.MaxStorageBufferRange = m_physicalDeviceProperties.limits.maxStorageBufferRange;
-	RendererAPI::GPUSettings.UploadBufferTextureAlignment = m_physicalDeviceProperties.limits.optimalBufferCopyOffsetAlignment;
-	RendererAPI::GPUSettings.UploadBufferTextureRowAlignment = m_physicalDeviceProperties.limits.optimalBufferCopyRowPitchAlignment;
+	RendererAPI::GPUSettings.UploadBufferTextureAlignment = NumericCast<uint32_t>(m_physicalDeviceProperties.limits.optimalBufferCopyOffsetAlignment);
+	RendererAPI::GPUSettings.UploadBufferTextureRowAlignment = NumericCast<uint32_t>(m_physicalDeviceProperties.limits.optimalBufferCopyRowPitchAlignment);
 	RendererAPI::GPUSettings.MaxVertexInputBindings = m_physicalDeviceProperties.limits.maxVertexInputBindings;
 	RendererAPI::GPUSettings.MaxVertexInputAttributes = m_physicalDeviceProperties.limits.maxVertexInputAttributes;
 	RendererAPI::GPUSettings.MultiDrawIndirectSupported = m_physicalDeviceProperties.limits.maxDrawIndirectCount > 1u;

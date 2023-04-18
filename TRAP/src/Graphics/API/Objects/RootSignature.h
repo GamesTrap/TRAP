@@ -45,7 +45,7 @@ namespace TRAP::Graphics
 		/// Retrieve the amount of descriptors contained in the root signature.
 		/// </summary>
 		/// <returns>Amount of descriptors.</returns>
-		[[nodiscard]] uint32_t GetDescriptorCount() const noexcept;
+		[[nodiscard]] uint64_t GetDescriptorCount() const noexcept;
 		/// <summary>
 		/// Retrieve the list of descriptors contained in the root signature.
 		/// </summary>
