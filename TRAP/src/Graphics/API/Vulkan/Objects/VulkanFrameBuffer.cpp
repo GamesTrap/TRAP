@@ -24,7 +24,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	TP_DEBUG(Log::RendererVulkanFrameBufferPrefix, "Creating FrameBuffer");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	const uint32_t colorAttachmentCount = static_cast<uint32_t>(desc.RenderTargets.size());
+	const uint32_t colorAttachmentCount = NumericCast<uint32_t>(desc.RenderTargets.size());
 	const uint32_t depthAttachmentCount = desc.DepthStencil ? 1 : 0;
 	const uint32_t shadingRateAttachmentCount = desc.ShadingRate ? 1 : 0;
 
@@ -130,8 +130,6 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 																			m_height, m_arraySize);
 	VkCall(vkCreateFramebuffer(m_device->GetVkDevice(), &info, nullptr, &m_framebuffer));
 	TRAP_ASSERT(m_framebuffer, "VulkanFrameBuffer(): Vulkan FrameBuffer is nullptr");
-
-	imageViews.clear();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

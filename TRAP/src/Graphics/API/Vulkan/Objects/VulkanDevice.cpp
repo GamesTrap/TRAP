@@ -159,7 +159,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 			info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 			info.pNext = nullptr;
 			info.flags = 0;
-			info.queueFamilyIndex = static_cast<uint32_t>(i);
+			info.queueFamilyIndex = NumericCast<uint32_t>(i);
 			info.queueCount = queueCount;
 			info.pQueuePriorities = queueFamilyPriorities[i].data();
 			queueCreateInfos.push_back(info);
@@ -282,17 +282,17 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndices()
 	FindQueueFamilyIndex(RendererAPI::QueueType::Graphics, m_graphicsQueueFamilyIndex, m_graphicsQueueIndex);
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Graphics Queue Family Index ",
-	         static_cast<uint32_t>(m_graphicsQueueFamilyIndex));
+	         NumericCast<uint32_t>(m_graphicsQueueFamilyIndex));
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 	FindQueueFamilyIndex(RendererAPI::QueueType::Compute, m_computeQueueFamilyIndex, m_computeQueueIndex);
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Compute Queue Family Index ",
-	         static_cast<uint32_t>(m_computeQueueFamilyIndex));
+	         NumericCast<uint32_t>(m_computeQueueFamilyIndex));
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 	FindQueueFamilyIndex(RendererAPI::QueueType::Transfer, m_transferQueueFamilyIndex, m_transferQueueIndex);
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Transfer Queue Family Index ",
-	         static_cast<uint32_t>(m_transferQueueFamilyIndex));
+	         NumericCast<uint32_t>(m_transferQueueFamilyIndex));
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 }
 
@@ -330,15 +330,15 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 		if(queueType == RendererAPI::QueueType::Graphics && graphicsQueue)
 		{
 			found = true;
-			qfi = static_cast<uint32_t>(index);
-			qi = 0;
+			qfi = NumericCast<uint32_t>(index);
+			qi = 0u;
 			break;
 		}
 		if(((queueFlags & requiredFlags) != 0u) && ((queueFlags & ~requiredFlags) == 0) &&
 			m_usedQueueCount[queueFlags] < m_availableQueueCount[queueFlags])
 		{
 			found = true;
-			qfi = static_cast<uint32_t>(index);
+			qfi = NumericCast<uint32_t>(index);
 			qi = m_usedQueueCount[queueFlags];
 			break;
 		}
@@ -347,7 +347,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 		{
 			found = true;
 			minQueueFlag = (queueFlags - flagAnd);
-			qfi = static_cast<uint32_t>(index);
+			qfi = NumericCast<uint32_t>(index);
 			qi = m_usedQueueCount[queueFlags];
 			break;
 		}
@@ -362,7 +362,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 			if(((queueFlags & requiredFlags) != 0u) && m_usedQueueCount[queueFlags] < m_availableQueueCount[queueFlags])
 			{
 				found = true;
-				qfi = static_cast<uint32_t>(index);
+				qfi = NumericCast<uint32_t>(index);
 				qi = m_usedQueueCount[queueFlags];
 				break;
 			}
@@ -375,11 +375,11 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 		qi = 0;
 
 		TP_WARN(Log::RendererVulkanDevicePrefix, "Could not find queue of type ",
-		        static_cast<uint32_t>(queueType), ". Using default queue");
+		        Utils::String::ConvertToString(queueType), '(', ToUnderlying(queueType), "). Using default queue");
 	}
 
-	queueFamilyIndex = static_cast<uint8_t>(qfi);
-	queueIndex = static_cast<uint8_t>(qi);
+	queueFamilyIndex = NumericCast<uint8_t>(qfi);
+	queueIndex = NumericCast<uint8_t>(qi);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -453,12 +453,12 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 		qi = 0;
 
 		TP_WARN(Log::RendererVulkanDevicePrefix, "Could not find queue of type ",
-		        static_cast<uint32_t>(queueType), ". Using default queue");
+		        Utils::String::ConvertToString(queueType), '(', ToUnderlying(queueType), "). Using default queue");
 	}
 
 	queueFamilyProperties = props[qfi];
-	queueFamilyIndex = static_cast<uint8_t>(qfi);
-	queueIndex = static_cast<uint8_t>(qi);
+	queueFamilyIndex = NumericCast<uint8_t>(qfi);
+	queueIndex = NumericCast<uint8_t>(qi);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -567,54 +567,54 @@ void TRAP::Graphics::API::VulkanDevice::LoadShadingRateCaps(const VkPhysicalDevi
 	if(shadingRateFeatures.attachmentFragmentShadingRate != 0u)
 		RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerTile;
 
-	if(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps) != 0u)
+	if(RendererAPI::GPUSettings.ShadingRateCaps == RendererAPI::ShadingRateCaps::NotSupported)
+		return;
+
+	VkPhysicalDeviceFragmentShadingRatePropertiesKHR fragmentShadingRateProperties{};
+	fragmentShadingRateProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_PROPERTIES_KHR;
+	VkPhysicalDeviceProperties2 deviceProperties2{};
+	deviceProperties2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+	deviceProperties2.pNext = &fragmentShadingRateProperties;
+	vkGetPhysicalDeviceProperties2(m_physicalDevice->GetVkPhysicalDevice(), &deviceProperties2);
+
+	RendererAPI::GPUSettings.ShadingRateTexelWidth = fragmentShadingRateProperties.maxFragmentShadingRateAttachmentTexelSize.width;
+	RendererAPI::GPUSettings.ShadingRateTexelHeight = fragmentShadingRateProperties.maxFragmentShadingRateAttachmentTexelSize.height;
+
+	RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Passthrough;
+	RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Override;
+	if(fragmentShadingRateProperties.fragmentShadingRateNonTrivialCombinerOps != 0u)
 	{
-		VkPhysicalDeviceFragmentShadingRatePropertiesKHR fragmentShadingRateProperties{};
-		fragmentShadingRateProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_PROPERTIES_KHR;
-		VkPhysicalDeviceProperties2 deviceProperties2{};
-		deviceProperties2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
-		deviceProperties2.pNext = &fragmentShadingRateProperties;
-		vkGetPhysicalDeviceProperties2(m_physicalDevice->GetVkPhysicalDevice(), &deviceProperties2);
+		RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Min;
+		RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Max;
+		RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Sum;
+	}
 
-		RendererAPI::GPUSettings.ShadingRateTexelWidth = fragmentShadingRateProperties.maxFragmentShadingRateAttachmentTexelSize.width;
-		RendererAPI::GPUSettings.ShadingRateTexelHeight = fragmentShadingRateProperties.maxFragmentShadingRateAttachmentTexelSize.height;
-
-		RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Passthrough;
-		RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Override;
-		if(fragmentShadingRateProperties.fragmentShadingRateNonTrivialCombinerOps != 0u)
-		{
-			RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Min;
-			RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Max;
-			RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Sum;
-		}
-
-		uint32_t fragmentShadingRatesCount = 0;
-		vkGetPhysicalDeviceFragmentShadingRatesKHR(m_physicalDevice->GetVkPhysicalDevice(), &fragmentShadingRatesCount, nullptr);
-		std::vector<VkPhysicalDeviceFragmentShadingRateKHR> fragmentShadingRates(fragmentShadingRatesCount);
-		for(auto& rate : fragmentShadingRates)
-		{
-			rate.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_KHR;
-			rate.pNext = nullptr;
-		}
-		vkGetPhysicalDeviceFragmentShadingRatesKHR(m_physicalDevice->GetVkPhysicalDevice(), &fragmentShadingRatesCount, fragmentShadingRates.data());
-		for(const auto& rate : fragmentShadingRates)
-		{
-			if(rate.fragmentSize.width == 1 && rate.fragmentSize.height == 2)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::OneXTwo;
-			if(rate.fragmentSize.width == 2 && rate.fragmentSize.height == 1)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::TwoXOne;
-			if(rate.fragmentSize.width == 2 && rate.fragmentSize.height == 4)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::TwoXFour;
-			if(rate.fragmentSize.width == 4 && rate.fragmentSize.height == 2)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::FourXTwo;
-			if(rate.fragmentSize.width == 4 && rate.fragmentSize.height == 4)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Quarter;
-			if(rate.fragmentSize.width == 8 && rate.fragmentSize.height == 8)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Eighth;
-			if(rate.fragmentSize.width == 2 && rate.fragmentSize.height == 2)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Half;
-			if(rate.fragmentSize.width == 1 && rate.fragmentSize.height == 1)
-				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Full;
-		}
+	uint32_t fragmentShadingRatesCount = 0;
+	vkGetPhysicalDeviceFragmentShadingRatesKHR(m_physicalDevice->GetVkPhysicalDevice(), &fragmentShadingRatesCount, nullptr);
+	std::vector<VkPhysicalDeviceFragmentShadingRateKHR> fragmentShadingRates(fragmentShadingRatesCount);
+	for(auto& rate : fragmentShadingRates)
+	{
+		rate.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_KHR;
+		rate.pNext = nullptr;
+	}
+	vkGetPhysicalDeviceFragmentShadingRatesKHR(m_physicalDevice->GetVkPhysicalDevice(), &fragmentShadingRatesCount, fragmentShadingRates.data());
+	for(const auto& rate : fragmentShadingRates)
+	{
+		if(rate.fragmentSize.width == 1 && rate.fragmentSize.height == 2)
+			RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::OneXTwo;
+		if(rate.fragmentSize.width == 2 && rate.fragmentSize.height == 1)
+			RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::TwoXOne;
+		if(rate.fragmentSize.width == 2 && rate.fragmentSize.height == 4)
+			RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::TwoXFour;
+		if(rate.fragmentSize.width == 4 && rate.fragmentSize.height == 2)
+			RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::FourXTwo;
+		if(rate.fragmentSize.width == 4 && rate.fragmentSize.height == 4)
+			RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Quarter;
+		if(rate.fragmentSize.width == 8 && rate.fragmentSize.height == 8)
+			RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Eighth;
+		if(rate.fragmentSize.width == 2 && rate.fragmentSize.height == 2)
+			RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Half;
+		if(rate.fragmentSize.width == 1 && rate.fragmentSize.height == 1)
+			RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Full;
 	}
 }

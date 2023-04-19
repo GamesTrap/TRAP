@@ -34,7 +34,7 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 
 	uint64_t allocationSize = desc.Size;
 	//Align the buffer size to multiples of the dynamic uniform buffer minimum size
-	if(static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::UniformBuffer) != 0u)
+	if((desc.Descriptors & RendererAPI::DescriptorType::UniformBuffer) != RendererAPI::DescriptorType::Undefined)
 	{
 		const uint64_t minAlignment = RendererAPI::GPUSettings.UniformBufferAlignment;
 		allocationSize = ((allocationSize + minAlignment - 1) / minAlignment) * minAlignment;
@@ -52,13 +52,13 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 	VmaAllocationCreateInfo vmaMemReqs{};
 	vmaMemReqs.usage = static_cast<VmaMemoryUsage>(desc.MemoryUsage);
 	vmaMemReqs.flags = 0;
-	if (static_cast<uint32_t>(desc.Flags & RendererAPI::BufferCreationFlags::OwnMemory) != 0u)
+	if ((desc.Flags & RendererAPI::BufferCreationFlags::OwnMemory) != RendererAPI::BufferCreationFlags::None)
 		vmaMemReqs.flags |= VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT;
-	if (static_cast<uint32_t>(desc.Flags & RendererAPI::BufferCreationFlags::PersistentMap) != 0u)
+	if ((desc.Flags & RendererAPI::BufferCreationFlags::PersistentMap) != RendererAPI::BufferCreationFlags::None)
 		vmaMemReqs.flags |= VMA_ALLOCATION_CREATE_MAPPED_BIT;
-	if (static_cast<uint32_t>(desc.Flags & RendererAPI::BufferCreationFlags::HostVisible) != 0u)
+	if ((desc.Flags & RendererAPI::BufferCreationFlags::HostVisible) != RendererAPI::BufferCreationFlags::None)
 		vmaMemReqs.flags |= VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
-	if (static_cast<uint32_t>(desc.Flags & RendererAPI::BufferCreationFlags::HostCoherent) != 0u)
+	if ((desc.Flags & RendererAPI::BufferCreationFlags::HostCoherent) != RendererAPI::BufferCreationFlags::None)
 		vmaMemReqs.flags |= VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 
 #ifdef TRAP_PLATFORM_ANDROID
@@ -79,12 +79,12 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 	m_CPUMappedAddress = allocInfo.pMappedData;
 
 	//Set descriptor data
-	if ((static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::UniformBuffer) != 0u) ||
-		(static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::Buffer) != 0u) ||
-		(static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWBuffer) != 0u))
+	if (((desc.Descriptors & RendererAPI::DescriptorType::UniformBuffer) != RendererAPI::DescriptorType::Undefined) ||
+		((desc.Descriptors & RendererAPI::DescriptorType::Buffer) != RendererAPI::DescriptorType::Undefined) ||
+		((desc.Descriptors & RendererAPI::DescriptorType::RWBuffer) != RendererAPI::DescriptorType::Undefined))
 	{
-		if ((static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::Buffer) != 0u) ||
-			(static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWBuffer) != 0u))
+		if (((desc.Descriptors & RendererAPI::DescriptorType::Buffer) != RendererAPI::DescriptorType::Undefined) ||
+			((desc.Descriptors & RendererAPI::DescriptorType::RWBuffer) != RendererAPI::DescriptorType::Undefined))
 			m_offset = desc.StructStride * desc.FirstElement;
 	}
 
@@ -97,7 +97,7 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 		const VkFormatProperties formatProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(viewInfo.format);
 		if ((formatProps.bufferFeatures & VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT) == 0u)
 			TP_WARN(Log::RendererVulkanBufferPrefix, "Failed to create uniform texel buffer view for format ",
-			        static_cast<uint32_t>(desc.Format));
+			        ToUnderlying(desc.Format));
 		else
 			VkCall(vkCreateBufferView(m_device->GetVkDevice(), &viewInfo, nullptr, &m_vkUniformTexelView));
 	}
@@ -110,7 +110,7 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 		const VkFormatProperties formatProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(viewInfo.format);
 		if ((formatProps.bufferFeatures & VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT) == 0u)
 			TP_WARN(Log::RendererVulkanBufferPrefix, "Failed to create storage texel buffer view for format ",
-			        static_cast<uint32_t>(desc.Format));
+			        ToUnderlying(desc.Format));
 		else
 			VkCall(vkCreateBufferView(m_device->GetVkDevice(), &viewInfo, nullptr, &m_vkStorageTexelView));
 	}

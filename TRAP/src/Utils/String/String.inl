@@ -302,6 +302,18 @@ template<typename T>
 		TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::RendererAPI::ResourceState!");
 		throw std::invalid_argument("Exception while converting string to TRAP::Graphics::RendererAPI::ResourceState!");
 	}
+	else if constexpr(std::is_same_v<T, TRAP::Graphics::RendererAPI::QueueType>) //QueueType
+	{
+		if (Utils::String::CompareAnyCase("Graphics", input))
+			return TRAP::Graphics::RendererAPI::QueueType::Graphics;
+		if (Utils::String::CompareAnyCase("Transfer", input))
+			return TRAP::Graphics::RendererAPI::QueueType::Transfer;
+		if (Utils::String::CompareAnyCase("Compute", input))
+			return TRAP::Graphics::RendererAPI::QueueType::Compute;
+
+		TP_ERROR(TRAP::Log::RendererPrefix, "Exception while converting string to TRAP::Graphics::RendererAPI::QueueType!");
+		throw std::invalid_argument("Exception while converting string to TRAP::Graphics::RendererAPI::QueueType!");
+	}
 	else
 	{
 		static_assert(sizeof(T) == 0, "Unconvertable type encountered, please use a different type, "
@@ -594,6 +606,23 @@ template<typename T>
 			return "RayTracingAccelerationStructure";
 		case TRAP::Graphics::RendererAPI::ResourceState::ShadingRateSource:
 			return "ShadingRateSource";
+
+		default:
+			return "";
+		}
+	}
+	else if constexpr(std::is_same_v<T, TRAP::Graphics::RendererAPI::QueueType>) //QueueType
+	{
+		switch(value)
+		{
+		case TRAP::Graphics::RendererAPI::QueueType::Graphics:
+			return "Graphics";
+
+		case TRAP::Graphics::RendererAPI::QueueType::Transfer:
+			return "Transfer";
+
+		case TRAP::Graphics::RendererAPI::QueueType::Compute:
+			return "Compute";
 
 		default:
 			return "";

@@ -210,8 +210,8 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData*
 	const auto internalRes = GetInternalRenderResolution();
 #endif /*TRAP_HEADLESS_MODE*/
 	if(p->NewShadingRateTexture &&
-	   p->NewShadingRateTexture->GetWidth() >= static_cast<uint32_t>(TRAP::Math::Ceil(static_cast<float>(internalRes.x) / static_cast<float>(GPUSettings.ShadingRateTexelWidth))) &&
-	   p->NewShadingRateTexture->GetHeight() >= static_cast<uint32_t>(TRAP::Math::Ceil(static_cast<float>(internalRes.y) / static_cast<float>(GPUSettings.ShadingRateTexelHeight))))
+	   p->NewShadingRateTexture->GetWidth() >= NumericCast<uint32_t>(TRAP::Math::Ceil(NumericCast<float>(internalRes.x) / NumericCast<float>(GPUSettings.ShadingRateTexelWidth))) &&
+	   p->NewShadingRateTexture->GetHeight() >= NumericCast<uint32_t>(TRAP::Math::Ceil(NumericCast<float>(internalRes.y) / NumericCast<float>(GPUSettings.ShadingRateTexelHeight))))
 	{
 		p->CachedShadingRateTextures[p->ImageIndex] = p->NewShadingRateTexture;
 		std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).ShadingRateTexture = p->NewShadingRateTexture;
@@ -240,11 +240,11 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData*
 															   std::numeric_limits<uint32_t>::max(), std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).ShadingRateTexture);
 
 	//Set Default Dynamic Viewport & Scissor
-	uint32_t width = bindRenderTarget->GetWidth();
-	uint32_t height = bindRenderTarget->GetHeight();
+	const uint32_t width = bindRenderTarget->GetWidth();
+	const uint32_t height = bindRenderTarget->GetHeight();
 
-	p->GraphicCommandBuffers[p->ImageIndex]->SetViewport(0.0f, 0.0f, static_cast<float>(width),
-														 static_cast<float>(height), 0.0f, 1.0f);
+	p->GraphicCommandBuffers[p->ImageIndex]->SetViewport(0.0f, 0.0f, NumericCast<float>(width),
+														 NumericCast<float>(height), 0.0f, 1.0f);
 	p->GraphicCommandBuffers[p->ImageIndex]->SetScissor(0, 0, width, height);
 	if(p->CurrentGraphicsPipeline)
 		p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicsPipeline);
@@ -380,7 +380,7 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData* const p)
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
 
 	QueuePresentDesc presentDesc{};
-	presentDesc.Index = static_cast<uint8_t>(p->CurrentSwapChainImageIndex);
+	presentDesc.Index = p->CurrentSwapChainImageIndex;
 	presentDesc.WaitSemaphores = { p->RenderCompleteSemaphores[p->ImageIndex] };
 	presentDesc.SwapChain = p->SwapChain;
 	const PresentStatus presentStatus = s_graphicQueue->Present(presentDesc);
@@ -602,7 +602,7 @@ void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<uint32_t, 3> workG
 
 	//Calculate used work group sizes
 	for(std::size_t i = 0; i < workGroupElements.size(); ++i)
-		workGroupElements[i] = static_cast<uint32_t>(TRAP::Math::Round(static_cast<float>(workGroupElements[i]) / p->CurrentComputeWorkGroupSize[static_cast<int32_t>(i)]));
+		workGroupElements[i] = NumericCast<uint32_t>(TRAP::Math::Round(NumericCast<float>(workGroupElements[i]) / NumericCast<float>(p->CurrentComputeWorkGroupSize[i])));
 
 	p->ComputeCommandBuffers[p->ImageIndex]->Dispatch(std::get<0>(workGroupElements), std::get<1>(workGroupElements), std::get<2>(workGroupElements));
 }
@@ -637,7 +637,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetReflexFPSLimit([[maybe_unused]] con
 		if(limit == 0)
 			viewportData->SleepModeParams.minimumIntervalUs = 0;
 		else
-			viewportData->SleepModeParams.minimumIntervalUs = static_cast<uint32_t>((1000.0f / static_cast<float>(limit)) * 1000.0f);
+			viewportData->SleepModeParams.minimumIntervalUs = NumericCast<uint32_t>((1000.0f / NumericCast<float>(limit)) * 1000.0f);
 
 		if(viewportData->SleepModeParams.bLowLatencyMode && viewportData->SleepModeParams.bLowLatencyBoost)
 			SetLatencyMode(LatencyMode::EnabledBoost, win);
@@ -1233,7 +1233,8 @@ void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(const ShadingRate shadi
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps), "VulkanRenderer::SetShadingRate(): Shading rate is not supported by this device!");
+	TRAP_ASSERT(RendererAPI::GPUSettings.ShadingRateCaps != RendererAPI::ShadingRateCaps::NotSupported,
+	            "VulkanRenderer::SetShadingRate(): Shading rate is not supported by this device!");
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetShadingRate(): Window is nullptr!");
@@ -1252,30 +1253,30 @@ void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(const ShadingRate shadi
 		return;
 	}
 
-	if(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps) == 0) //VRS is not supported
+	if(RendererAPI::GPUSettings.ShadingRateCaps == RendererAPI::ShadingRateCaps::NotSupported) //VRS is not supported
 		return;
 
 	if(gpd.ShadingRateTexture)
 		p->NewShadingRateTexture = nullptr;
 
-	if(static_cast<bool>(RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerDraw))
+	if((RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerDraw) != RendererAPI::ShadingRateCaps::NotSupported)
 	{
-		if(!static_cast<bool>(RendererAPI::GPUSettings.ShadingRateCombiner & postRasterizerRate))
+		if(ToUnderlying(RendererAPI::GPUSettings.ShadingRateCombiner & postRasterizerRate) == 0u)
 		{
 			TP_ERROR(Log::RendererVulkanCommandBufferPrefix, "Shading rate combiner is not supported!");
 			return;
 		}
-		if(!static_cast<bool>(RendererAPI::GPUSettings.ShadingRateCombiner & finalRate))
+		if(ToUnderlying(RendererAPI::GPUSettings.ShadingRateCombiner & finalRate) == 0u)
 		{
 			TP_ERROR(Log::RendererVulkanCommandBufferPrefix, "Shading rate combiner is not supported!");
 			return;
 		}
 
 		//VUID-vkCmdSetFragmentShadingRateKHR-primitiveFragmentShadingRate-04510
-		if(!static_cast<bool>(RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerPrimitive))
+		if(ToUnderlying(RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerPrimitive) == 0u)
 			postRasterizerRate = ShadingRateCombiner::Passthrough;
 		//VUID-vkCmdSetFragmentShadingRateKHR-attachmentFragmentShadingRate-04511
-		if(!static_cast<bool>(RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerTile))
+		if(ToUnderlying(RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerTile) == 0u)
 			finalRate = ShadingRateCombiner::Passthrough;
 
 		gpd.ShadingRate = shadingRate;
@@ -1296,7 +1297,8 @@ void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(TRAP::Ref<TRAP::Graphic
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps), "VulkanRenderer::SetShadingRate(): Shading rate is not supported by this device!");
+	TRAP_ASSERT(RendererAPI::GPUSettings.ShadingRateCaps != RendererAPI::ShadingRateCaps::NotSupported,
+	            "VulkanRenderer::SetShadingRate(): Shading rate is not supported by this device!");
 
 #ifndef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(window, "VulkanRenderer::SetShadingRate(): Window is nullptr!");
@@ -1315,10 +1317,10 @@ void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(TRAP::Ref<TRAP::Graphic
 		return;
 	}
 
-	if(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps) == 0) //VRS is not supported
+	if(RendererAPI::GPUSettings.ShadingRateCaps == RendererAPI::ShadingRateCaps::NotSupported) //VRS is not supported
 		return;
 
-	if(static_cast<bool>(RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerTile))
+	if((RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerTile) != RendererAPI::ShadingRateCaps::NotSupported)
 	{
 		gpd.ShadingRate = ShadingRate::Full;
 		gpd.ShadingRateCombiners = {ShadingRateCombiner::Passthrough, ShadingRateCombiner::Override};
@@ -1361,24 +1363,24 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType)
 #endif
 	}
 
-	if(static_cast<uint32_t>(clearType & ClearBufferType::Color) != 0)
+	if((clearType & ClearBufferType::Color) != ClearBufferType::NONE)
 	{
 		data->GraphicCommandBuffers[data->ImageIndex]->Clear(data->ClearColor, renderTarget->GetWidth(), renderTarget->GetHeight());
 	}
 
-	if(static_cast<uint32_t>(clearType & ClearBufferType::Depth_Stencil) != 0 &&
+	if((clearType & ClearBufferType::Depth_Stencil) != ClearBufferType::NONE &&
 	   TRAP::Graphics::API::ImageFormatIsDepthAndStencil(renderTarget->GetImageFormat()))
 	{
 		data->GraphicCommandBuffers[data->ImageIndex]->Clear(data->ClearDepthStencil.Depth, data->ClearDepthStencil.Stencil,
 															 renderTarget->GetWidth(), renderTarget->GetHeight());
 	}
-	else if(static_cast<uint32_t>(clearType & ClearBufferType::Depth) != 0 &&
+	else if((clearType & ClearBufferType::Depth) != ClearBufferType::NONE &&
 	        (TRAP::Graphics::API::ImageFormatIsDepthAndStencil(renderTarget->GetImageFormat()) ||
 			 TRAP::Graphics::API::ImageFormatIsDepthOnly(renderTarget->GetImageFormat())))
 	{
 		data->GraphicCommandBuffers[data->ImageIndex]->Clear(data->ClearDepthStencil.Depth, renderTarget->GetWidth(), renderTarget->GetHeight());
 	}
-	else if(static_cast<uint32_t>(clearType & ClearBufferType::Stencil) != 0 &&
+	else if((clearType & ClearBufferType::Stencil) != ClearBufferType::NONE &&
 	        TRAP::Graphics::API::ImageFormatHasStencil(renderTarget->GetImageFormat()))
 	{
 		data->GraphicCommandBuffers[data->ImageIndex]->Clear(data->ClearDepthStencil.Stencil, renderTarget->GetWidth(), renderTarget->GetHeight());
@@ -1412,8 +1414,8 @@ void TRAP::Graphics::API::VulkanRenderer::SetViewport(const uint32_t x, const ui
 	const PerViewportData* const data = s_perViewportData.get();
 #endif /*TRAP_HEADLESS_MODE*/
 
-	data->GraphicCommandBuffers[data->ImageIndex]->SetViewport(static_cast<float>(x), static_cast<float>(y),
-	                                                           static_cast<float>(width), static_cast<float>(height),
+	data->GraphicCommandBuffers[data->ImageIndex]->SetViewport(NumericCast<float>(x), NumericCast<float>(y),
+	                                                           NumericCast<float>(width), NumericCast<float>(height),
 	                                                           minDepth, maxDepth);
 }
 
@@ -1466,10 +1468,10 @@ void TRAP::Graphics::API::VulkanRenderer::Draw(const uint32_t vertexCount, const
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const uint32_t indexCount, const uint32_t firstIndex,
-                                                      const uint32_t firstVertex, const Window* const window) const
+                                                      const int32_t firstVertex, const Window* const window) const
 #else
 void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const uint32_t indexCount, const uint32_t firstIndex,
-                                                      const uint32_t firstVertex) const
+                                                      const int32_t firstVertex) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -1515,11 +1517,11 @@ void TRAP::Graphics::API::VulkanRenderer::DrawInstanced(const uint32_t vertexCou
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::DrawIndexedInstanced(const uint32_t indexCount, const uint32_t instanceCount,
                                                                const uint32_t firstIndex, const uint32_t firstInstance,
-						                                       const uint32_t firstVertex, const Window* const window) const
+						                                       const int32_t firstVertex, const Window* const window) const
 #else
 void TRAP::Graphics::API::VulkanRenderer::DrawIndexedInstanced(const uint32_t indexCount, const uint32_t instanceCount,
                                                                const uint32_t firstIndex, const uint32_t firstInstance,
-						                                       const uint32_t firstVertex) const
+						                                       const int32_t firstVertex) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -1579,9 +1581,9 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader) const
 			cpd.RootSignature = shader->GetRootSignature();
 		}
 
-		data->CurrentComputeWorkGroupSize.x = static_cast<float>(std::get<0>(shader->GetNumThreadsPerGroup()));
-		data->CurrentComputeWorkGroupSize.y = static_cast<float>(std::get<1>(shader->GetNumThreadsPerGroup()));
-		data->CurrentComputeWorkGroupSize.z = static_cast<float>(std::get<2>(shader->GetNumThreadsPerGroup()));
+		data->CurrentComputeWorkGroupSize.x = std::get<0>(shader->GetNumThreadsPerGroup());
+		data->CurrentComputeWorkGroupSize.y = std::get<1>(shader->GetNumThreadsPerGroup());
+		data->CurrentComputeWorkGroupSize.z = std::get<2>(shader->GetNumThreadsPerGroup());
 
 		data->CurrentComputePipeline = GetPipeline(data->ComputePipelineDesc);
 		data->ComputeCommandBuffers[data->ImageIndex]->BindPipeline(data->CurrentComputePipeline);
@@ -1700,11 +1702,11 @@ void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffe
 
 	const TRAP::Ref<VertexLayout> lay = TRAP::MakeRef<VertexLayout>();
 	const std::vector<VertexBufferElement>& elements = layout.GetElements();
-	lay->AttributeCount = static_cast<uint32_t>(elements.size());
+	lay->AttributeCount = NumericCast<uint32_t>(elements.size());
 	for(std::size_t i = 0; i < elements.size(); ++i)
 	{
 		lay->Attributes[i].Binding = 0;
-		lay->Attributes[i].Location = static_cast<uint32_t>(i);
+		lay->Attributes[i].Location = NumericCast<uint32_t>(i);
 		lay->Attributes[i].Format = ShaderDataTypeToImageFormat(elements[i].Type);
 		lay->Attributes[i].Rate = VertexAttributeRate::Vertex;
 		lay->Attributes[i].Offset = elements[i].Offset;
@@ -1940,7 +1942,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TR
 		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
 		shadingRateTex = gpd.ShadingRateTexture;
 
-		gpd.RenderTargetCount = static_cast<uint32_t>(colorTargets.size());
+		gpd.RenderTargetCount = NumericCast<uint32_t>(colorTargets.size());
 		gpd.ColorFormats.resize(colorTargets.size());
 		for(std::size_t i = 0; i < colorTargets.size(); ++i)
 			gpd.ColorFormats[i] = colorTargets[i]->GetImageFormat();
@@ -2264,11 +2266,11 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	CommandBuffer* const cmd = cmdPool->AllocateCommandBuffer(false);
 
 	//Add a staging buffer
-	const uint16_t formatByteWidth = static_cast<uint16_t>(ImageFormatBitSizeOfBlock(renderTarget->GetImageFormat()) / 8u);
+	const uint32_t formatByteWidth = ImageFormatBitSizeOfBlock(renderTarget->GetImageFormat()) / 8u;
 	BufferDesc bufferDesc{};
 	bufferDesc.Descriptors = DescriptorType::RWBuffer;
 	bufferDesc.MemoryUsage = ResourceMemoryUsage::GPUToCPU;
-	bufferDesc.Size = static_cast<uint64_t>(renderTarget->GetWidth()) * renderTarget->GetHeight() * formatByteWidth;
+	bufferDesc.Size = NumericCast<uint64_t>(renderTarget->GetWidth()) * renderTarget->GetHeight() * formatByteWidth;
 	bufferDesc.Flags = BufferCreationFlags::PersistentMap | BufferCreationFlags::NoDescriptorViewCreation;
 	bufferDesc.StartState = ResourceState::CopyDestination;
 	bufferDesc.QueueType = QueueType::Graphics;
@@ -2322,7 +2324,7 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 
 	//Copy to CPU memory.
 	std::copy_n(static_cast<uint8_t*>(buffer->GetCPUMappedAddress()),
-	            static_cast<std::size_t>(renderTarget->GetWidth()) * renderTarget->GetHeight() * formatByteWidth,
+	            NumericCast<std::size_t>(renderTarget->GetWidth()) * renderTarget->GetHeight() * formatByteWidth,
 				static_cast<uint8_t*>(outPixelData));
 
 	//Cleanup
@@ -2360,7 +2362,7 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	const TRAP::Ref<RenderTarget> rT = viewportData->SwapChain->GetRenderTargets()[lastFrame];
 #endif
 
-	const uint8_t channelCount = static_cast<uint8_t>(ImageFormatChannelCount(rT->GetImageFormat()));
+	const uint32_t channelCount = ImageFormatChannelCount(rT->GetImageFormat());
 	const bool hdr = ImageFormatIsFloat(rT->GetImageFormat());
 	const bool u16 = ImageFormatIsU16(rT->GetImageFormat());
 	const bool flipRedBlue = rT->GetImageFormat() != ImageFormat::R8G8B8A8_UNORM;
@@ -2376,27 +2378,27 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	std::vector<uint16_t> pixelDatau16{};
 	if(!hdr && u16)
 	{
-		pixelDatau16.resize(static_cast<std::size_t>(rT->GetWidth()) *
-						    static_cast<std::size_t>(rT->GetHeight()) *
-						    static_cast<std::size_t>(channelCount));
+		pixelDatau16.resize(NumericCast<std::size_t>(rT->GetWidth()) *
+						    NumericCast<std::size_t>(rT->GetHeight()) *
+						    NumericCast<std::size_t>(channelCount));
 
 		//Generate image data buffer
 		MapRenderTarget(rT, resState, pixelDatau16.data());
 	}
 	else if(!hdr)
 	{
-		pixelDatau8.resize(static_cast<std::size_t>(rT->GetWidth()) *
-						   static_cast<std::size_t>(rT->GetHeight()) *
-						   static_cast<std::size_t>(channelCount));
+		pixelDatau8.resize(NumericCast<std::size_t>(rT->GetWidth()) *
+						   NumericCast<std::size_t>(rT->GetHeight()) *
+						   NumericCast<std::size_t>(channelCount));
 
 		//Generate image data buffer
 		MapRenderTarget(rT, resState, pixelDatau8.data());
 	}
 	else
 	{
-		pixelDataf32.resize(static_cast<std::size_t>(rT->GetWidth()) *
-							static_cast<std::size_t>(rT->GetHeight()) *
-							static_cast<std::size_t>(channelCount));
+		pixelDataf32.resize(NumericCast<std::size_t>(rT->GetWidth()) *
+							NumericCast<std::size_t>(rT->GetHeight()) *
+							NumericCast<std::size_t>(channelCount));
 
 		//Generate image data buffer
 		MapRenderTarget(rT, resState, pixelDataf32.data());
@@ -2637,13 +2639,13 @@ void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(TRAP::Ref<RenderTarget
 
 	VkImageBlit region{};
 	region.srcOffsets[0] = {0, 0, 0};
-	region.srcOffsets[1] = { static_cast<int32_t>(texInternal->GetWidth()), static_cast<int32_t>(texInternal->GetHeight()), 1};
+	region.srcOffsets[1] = { NumericCast<int32_t>(texInternal->GetWidth()), NumericCast<int32_t>(texInternal->GetHeight()), 1};
 	region.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 	region.srcSubresource.mipLevel = 0;
 	region.srcSubresource.baseArrayLayer = 0;
 	region.srcSubresource.layerCount = 1;
 	region.dstOffsets[0] = {0, 0, 0};
-	region.dstOffsets[1] = {static_cast<int32_t>(texOutput->GetWidth()), static_cast<int32_t>(texOutput->GetHeight()), 1};
+	region.dstOffsets[1] = {NumericCast<int32_t>(texOutput->GetWidth()), NumericCast<int32_t>(texOutput->GetHeight()), 1};
 	region.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 	region.dstSubresource.mipLevel = 0;
 	region.dstSubresource.baseArrayLayer = 0;
@@ -2675,7 +2677,7 @@ void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(TRAP::Ref<RenderTarget
 							std::numeric_limits<uint32_t>::max(),
 							std::numeric_limits<uint32_t>::max());
 
-	cmd->SetViewport(0.0f, 0.0f, static_cast<float>(destination->GetWidth()), static_cast<float>(destination->GetHeight()), 0.0f, 1.0f);
+	cmd->SetViewport(0.0f, 0.0f, NumericCast<float>(destination->GetWidth()), NumericCast<float>(destination->GetHeight()), 0.0f, 1.0f);
 	cmd->SetScissor(0, 0, destination->GetWidth(), destination->GetHeight());
 }
 
@@ -2761,7 +2763,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const uint32_t wid
 	if(Application::GetFPSLimit() == 0)
 		p->SleepModeParams.minimumIntervalUs = 0;
 	else
-		p->SleepModeParams.minimumIntervalUs = static_cast<uint32_t>(((1000.0f / Application::GetFPSLimit()) * 1000.0f));
+		p->SleepModeParams.minimumIntervalUs = NumericCast<uint32_t>(((1000.0f / NumericCast<float>(Application::GetFPSLimit())) * 1000.0f));
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -2941,7 +2943,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const uint32_t wid
 	p->ComputePipelineDesc = {};
 	p->ComputePipelineDesc.Type = PipelineType::Compute;
 	p->ComputePipelineDesc.Pipeline = ComputePipelineDesc();
-	p->CurrentComputeWorkGroupSize = {1, 1, 1};
+	p->CurrentComputeWorkGroupSize = {1u, 1u, 1u};
 
 
 #ifndef TRAP_HEADLESS_MODE
@@ -3254,22 +3256,22 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	textureDesc.Width = 1;
 	vkTex = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>();
 	vkTex->Init(textureDesc);
-	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim1D)] = std::move(vkTex);
+	s_NullDescriptors->DefaultTextureSRV[ToUnderlying(ShaderReflection::TextureDimension::TextureDim1D)] = std::move(vkTex);
 	textureDesc.Descriptors = DescriptorType::RWTexture;
 	vkTex = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>();
 	vkTex->Init(textureDesc);
-	s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim1D)] = std::move(vkTex);
+	s_NullDescriptors->DefaultTextureUAV[ToUnderlying(ShaderReflection::TextureDimension::TextureDim1D)] = std::move(vkTex);
 
 	//1D Texture Array
 	textureDesc.ArraySize = 2;
 	textureDesc.Descriptors = DescriptorType::Texture;
 	vkTex = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>();
 	vkTex->Init(textureDesc);
-	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim1DArray)] = std::move(vkTex);
+	s_NullDescriptors->DefaultTextureSRV[ToUnderlying(ShaderReflection::TextureDimension::TextureDim1DArray)] = std::move(vkTex);
 	textureDesc.Descriptors = DescriptorType::RWTexture;
 	vkTex = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>();
 	vkTex->Init(textureDesc);
-	s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim1DArray)] = std::move(vkTex);
+	s_NullDescriptors->DefaultTextureUAV[ToUnderlying(ShaderReflection::TextureDimension::TextureDim1DArray)] = std::move(vkTex);
 
 	//2D Texture
 	textureDesc.Width = 2;
@@ -3278,36 +3280,36 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	textureDesc.Descriptors = DescriptorType::Texture;
 	vkTex = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>();
 	vkTex->Init(textureDesc);
-	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2D)] = std::move(vkTex);
+	s_NullDescriptors->DefaultTextureSRV[ToUnderlying(ShaderReflection::TextureDimension::TextureDim2D)] = std::move(vkTex);
 	textureDesc.Descriptors = DescriptorType::RWTexture;
 	vkTex = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>();
 	vkTex->Init(textureDesc);
-	s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2D)] = std::move(vkTex);
+	s_NullDescriptors->DefaultTextureUAV[ToUnderlying(ShaderReflection::TextureDimension::TextureDim2D)] = std::move(vkTex);
 
 	//2D MS Texture
 	textureDesc.Descriptors = DescriptorType::Texture;
 	textureDesc.SampleCount = SampleCount::Four;
 	vkTex = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>();
 	vkTex->Init(textureDesc);
-	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2DMS)] = std::move(vkTex);
+	s_NullDescriptors->DefaultTextureSRV[ToUnderlying(ShaderReflection::TextureDimension::TextureDim2DMS)] = std::move(vkTex);
 	textureDesc.SampleCount = SampleCount::One;
 
 	//2D Texture Array
 	textureDesc.ArraySize = 2;
 	vkTex = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>();
 	vkTex->Init(textureDesc);
-	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2DArray)] = std::move(vkTex);
+	s_NullDescriptors->DefaultTextureSRV[ToUnderlying(ShaderReflection::TextureDimension::TextureDim2DArray)] = std::move(vkTex);
 	textureDesc.Descriptors = DescriptorType::RWTexture;
 	vkTex = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>();
 	vkTex->Init(textureDesc);
-	s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2DArray)] = std::move(vkTex);
+	s_NullDescriptors->DefaultTextureUAV[ToUnderlying(ShaderReflection::TextureDimension::TextureDim2DArray)] = std::move(vkTex);
 
 	//2D MS Texture Array
 	textureDesc.Descriptors = DescriptorType::Texture;
 	textureDesc.SampleCount = SampleCount::Four;
 	vkTex = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>();
 	vkTex->Init(textureDesc);
-	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2DMSArray)] = std::move(vkTex);
+	s_NullDescriptors->DefaultTextureSRV[ToUnderlying(ShaderReflection::TextureDimension::TextureDim2DMSArray)] = std::move(vkTex);
 	textureDesc.SampleCount = SampleCount::One;
 
 	//3D Texture
@@ -3315,11 +3317,11 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	textureDesc.ArraySize = 1;
 	vkTex = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>();
 	vkTex->Init(textureDesc);
-	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim3D)] = std::move(vkTex);
+	s_NullDescriptors->DefaultTextureSRV[ToUnderlying(ShaderReflection::TextureDimension::TextureDim3D)] = std::move(vkTex);
 	textureDesc.Descriptors = DescriptorType::RWTexture;
 	vkTex = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>();
 	vkTex->Init(textureDesc);
-	s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim3D)] = std::move(vkTex);
+	s_NullDescriptors->DefaultTextureUAV[ToUnderlying(ShaderReflection::TextureDimension::TextureDim3D)] = std::move(vkTex);
 
 	//Cube Texture
 	textureDesc.Depth = 1;
@@ -3327,11 +3329,11 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	textureDesc.Descriptors = DescriptorType::TextureCube;
 	vkTex = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>();
 	vkTex->Init(textureDesc);
-	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCube)] = std::move(vkTex);
+	s_NullDescriptors->DefaultTextureSRV[ToUnderlying(ShaderReflection::TextureDimension::TextureDimCube)] = std::move(vkTex);
 	textureDesc.ArraySize = 6 * 2;
 	vkTex = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>();
 	vkTex->Init(textureDesc);
-	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCubeArray)] = std::move(vkTex);
+	s_NullDescriptors->DefaultTextureSRV[ToUnderlying(ShaderReflection::TextureDimension::TextureDimCubeArray)] = std::move(vkTex);
 
 	BufferDesc bufferDesc{};
 	bufferDesc.Descriptors = DescriptorType::Buffer | DescriptorType::UniformBuffer;
@@ -3397,7 +3399,7 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	s_NullDescriptors->InitialTransitionFence = fence;
 
 	//Transition resources
-	for (uint32_t dim = 0; dim < static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCount); ++dim)
+	for (uint32_t dim = 0; dim < ToUnderlying(ShaderReflection::TextureDimension::TextureDimCount); ++dim)
 	{
 		if (s_NullDescriptors->DefaultTextureSRV[dim])
 			UtilInitialTransition(s_NullDescriptors->DefaultTextureSRV[dim], ResourceState::ShaderResource);
@@ -3420,7 +3422,7 @@ void TRAP::Graphics::API::VulkanRenderer::RemoveDefaultResources()
 	TP_DEBUG(Log::RendererVulkanPrefix, "Destroying DefaultResources");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	for(uint32_t dim = 0; dim < static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCount); ++dim)
+	for(uint32_t dim = 0; dim < ToUnderlying(ShaderReflection::TextureDimension::TextureDimCount); ++dim)
 	{
 		if (s_NullDescriptors->DefaultTextureSRV[dim])
 			s_NullDescriptors->DefaultTextureSRV[dim].reset();
@@ -3642,16 +3644,16 @@ void TRAP::Graphics::API::VulkanRenderer::EndGPUFrameProfile(const QueueType typ
 
 		if(endTime > startTime)
 		{
-			const uint64_t nsTime = endTime - startTime;
+			const double nsTime = NumericCast<double>(endTime - startTime);
 			if(type == QueueType::Graphics)
 			{
 				const Ref<VulkanQueue> graphicsQueue = std::dynamic_pointer_cast<VulkanQueue>(s_graphicQueue);
-				time = static_cast<float>((static_cast<double>(nsTime) / graphicsQueue->GetTimestampFrequency())) * 1000.0f;
+				time = NumericCast<float>(nsTime / graphicsQueue->GetTimestampFrequency()) * 1000.0f;
 			}
 			else if(type == QueueType::Compute)
 			{
 				const Ref<VulkanQueue> computeQueue = std::dynamic_pointer_cast<VulkanQueue>(s_computeQueue);
-				time = static_cast<float>((static_cast<double>(nsTime) / computeQueue->GetTimestampFrequency())) * 1000.0f;
+				time = NumericCast<float>(nsTime / computeQueue->GetTimestampFrequency()) * 1000.0f;
 			}
 		}
 

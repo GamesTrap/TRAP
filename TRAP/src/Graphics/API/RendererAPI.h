@@ -732,7 +732,7 @@ namespace TRAP::Graphics
 		/// <param name="firstIndex">Index of the first indice to draw. Default: 0.</param>
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
 		/// <param name="window">Window to draw for.</param>
-		virtual void DrawIndexed(uint32_t indexCount, uint32_t firstIndex /*= 0*/, uint32_t firstVertex /*= 0*/,
+		virtual void DrawIndexed(uint32_t indexCount, uint32_t firstIndex /*= 0*/, int32_t firstVertex /*= 0*/,
 		                         const Window* window) const = 0;
 #else
 		/// <summary>
@@ -741,7 +741,7 @@ namespace TRAP::Graphics
 		/// <param name="indexCount">Number of indices to draw.</param>
 		/// <param name="firstIndex">Index of the first indice to draw. Default: 0.</param>
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
-		virtual void DrawIndexed(uint32_t indexCount, uint32_t firstIndex /*= 0*/, uint32_t firstVertex /*= 0*/) const = 0;
+		virtual void DrawIndexed(uint32_t indexCount, uint32_t firstIndex /*= 0*/, int32_t firstVertex /*= 0*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -777,7 +777,7 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to draw for.</param>
 		virtual void DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount,
 		                                  uint32_t firstIndex /*= 0*/, uint32_t firstInstance /*= 0*/,
-										  uint32_t firstVertex /*= 0*/, const Window* window) const = 0;
+										  int32_t firstVertex /*= 0*/, const Window* window) const = 0;
 #else
 		/// <summary>
 		/// Draw indexed, instanced geometry.
@@ -789,7 +789,7 @@ namespace TRAP::Graphics
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
 		virtual void DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount,
 		                                  uint32_t firstIndex /*= 0*/, uint32_t firstInstance /*= 0*/,
-										  uint32_t firstVertex /*= 0*/) const = 0;
+										  int32_t firstVertex /*= 0*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -1716,15 +1716,15 @@ namespace TRAP::Graphics
 		{
 			//Default flag (Buffer will use aliased memory, buffer will not be CPU accessible until MapBuffer
 			//is called)
-			None = BIT(0),
+			None = 0x0,
 			//Buffer will allocate its own memory (COMMITTED resource)
-			OwnMemory = BIT(1),
+			OwnMemory = BIT(0),
 			//Buffer will be persistently mapped
-			PersistentMap = BIT(2),
+			PersistentMap = BIT(1),
 			//Use ESRAM to store this buffer
-			ESRAM = BIT(3),
+			ESRAM = BIT(2),
 			//Flag to specify not to allocate descriptors for the resource
-			NoDescriptorViewCreation = BIT(4),
+			NoDescriptorViewCreation = BIT(3),
 
 			//Vulkan
 			HostVisible = 0x100,
@@ -2924,9 +2924,9 @@ namespace TRAP::Graphics
 			struct BufferOffset
 			{
 				//Offset to bind the buffer descriptor
-				std::vector<uint64_t> Offsets{};
+				std::vector<uint32_t> Offsets{};
 				//Size of the buffer to bind
-				std::vector<uint64_t> Sizes{};
+				std::vector<uint32_t> Sizes{};
 			};
 
 			/// <summary>
@@ -2977,7 +2977,7 @@ namespace TRAP::Graphics
 			//Semaphores to wait on before presenting
 			std::vector<TRAP::Ref<Semaphore>> WaitSemaphores{};
 			//Render target of the swapchain to present
-			uint8_t Index{};
+			uint32_t Index{};
 		};
 
 		/// <summary>
@@ -3316,7 +3316,7 @@ namespace TRAP::Graphics
 			std::array<TRAP::Ref<Semaphore>, ImageCount> ComputeCompleteSemaphores;
 			std::array<TRAP::Ref<QueryPool>, ImageCount> ComputeTimestampQueryPools;
 			std::array<TRAP::Ref<Buffer>, ImageCount> ComputeTimestampReadbackBuffers;
-			TRAP::Math::Vec3 CurrentComputeWorkGroupSize{};
+			TRAP::Math::Vec3ui CurrentComputeWorkGroupSize{};
 			PipelineDesc ComputePipelineDesc;
 			TRAP::Ref<Pipeline> CurrentComputePipeline;
 			float ComputeFrameTime{};

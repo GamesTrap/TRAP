@@ -201,7 +201,7 @@ namespace TRAP::Graphics::API
 		/// <param name="indexCount">How many indices to draw.</param>
 		/// <param name="firstIndex">Offset to the first index to draw.</param>
 		/// <param name="firstVertex">Offset to the first vertex to draw.</param>
-		void DrawIndexed(uint32_t indexCount, uint32_t firstIndex, uint32_t firstVertex) const override;
+		void DrawIndexed(uint32_t indexCount, uint32_t firstIndex, int32_t firstVertex) const override;
 		/// <summary>
 		/// Draw multiple instances of indexed primitives.
 		/// </summary>
@@ -211,7 +211,7 @@ namespace TRAP::Graphics::API
 		/// <param name="firstInstance">Offset to the first instance to draw.</param>
 		/// <param name="firstVertex">Offset to the first vertex to draw.</param>
 		void DrawIndexedInstanced(uint32_t indexCount, uint32_t firstIndex, uint32_t instanceCount,
-		                          uint32_t firstInstance, uint32_t firstVertex) const override;
+		                          uint32_t firstInstance, int32_t firstVertex) const override;
 		/// <summary>
 		/// Draw primitives.
 		/// Draw data is provided by the indirect buffer.
@@ -395,7 +395,7 @@ namespace TRAP::Graphics::API
 			while (size--)
 				result = (result * 16777619) ^ *mem++;
 
-			return static_cast<std::size_t>(result);
+			return NumericCast<std::size_t>(result);
 		}
 
 		TRAP::Ref<API::VulkanDevice> m_device;

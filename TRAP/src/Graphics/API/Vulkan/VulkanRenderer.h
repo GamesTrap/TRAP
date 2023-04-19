@@ -606,7 +606,7 @@ namespace TRAP::Graphics::API
 		/// <param name="firstIndex">Index of the first indice to draw. Default: 0.</param>
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
 		/// <param name="window">Window to draw for.</param>
-		void DrawIndexed(uint32_t indexCount, uint32_t firstIndex /*= 0*/, uint32_t firstVertex /*= 0*/,
+		void DrawIndexed(uint32_t indexCount, uint32_t firstIndex /*= 0*/, int32_t firstVertex /*= 0*/,
 		                 const Window* window) const override;
 #else
 		/// <summary>
@@ -615,7 +615,7 @@ namespace TRAP::Graphics::API
 		/// <param name="indexCount">Number of indices to draw.</param>
 		/// <param name="firstIndex">Index of the first indice to draw. Default: 0.</param>
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
-		void DrawIndexed(uint32_t indexCount, uint32_t firstIndex /*= 0*/, uint32_t firstVertex /*= 0*/) const override;
+		void DrawIndexed(uint32_t indexCount, uint32_t firstIndex /*= 0*/, int32_t firstVertex /*= 0*/) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -651,7 +651,7 @@ namespace TRAP::Graphics::API
 		/// <param name="window">Window to draw for.</param>
 		void DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount,
 		                          uint32_t firstIndex /*= 0*/, uint32_t firstInstance /*= 0*/,
-								  uint32_t firstVertex /*= 0*/, const Window* window) const override;
+								  int32_t firstVertex /*= 0*/, const Window* window) const override;
 #else
 		/// <summary>
 		/// Draw indexed, instanced geometry.
@@ -663,7 +663,7 @@ namespace TRAP::Graphics::API
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
 		void DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount,
 		                          uint32_t firstIndex /*= 0*/, uint32_t firstInstance /*= 0*/,
-								  uint32_t firstVertex /*= 0*/) const override;
+								  int32_t firstVertex /*= 0*/) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -1165,9 +1165,9 @@ namespace TRAP::Graphics::API
 
 		static struct GPUCapBits
 		{
-			std::array<bool, static_cast<uint32_t>(ImageFormat::IMAGE_FORMAT_COUNT)> CanShaderReadFrom{};
-			std::array<bool, static_cast<uint32_t>(ImageFormat::IMAGE_FORMAT_COUNT)> CanShaderWriteTo{};
-			std::array<bool, static_cast<uint32_t>(ImageFormat::IMAGE_FORMAT_COUNT)> CanRenderTargetWriteTo{};
+			std::array<bool, ToUnderlying(ImageFormat::IMAGE_FORMAT_COUNT)> CanShaderReadFrom{};
+			std::array<bool, ToUnderlying(ImageFormat::IMAGE_FORMAT_COUNT)> CanShaderWriteTo{};
+			std::array<bool, ToUnderlying(ImageFormat::IMAGE_FORMAT_COUNT)> CanRenderTargetWriteTo{};
 		} s_GPUCapBits;
 
 		struct SizeOffset
@@ -1246,9 +1246,9 @@ namespace TRAP::Graphics::API
 		struct NullDescriptors
 		{
 			std::array<TRAP::Ref<TRAP::Graphics::Texture>,
-			           static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCount)> DefaultTextureSRV;
+			           ToUnderlying(ShaderReflection::TextureDimension::TextureDimCount)> DefaultTextureSRV;
 			std::array<TRAP::Ref<TRAP::Graphics::Texture>,
-			           static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCount)> DefaultTextureUAV;
+			           ToUnderlying(ShaderReflection::TextureDimension::TextureDimCount)> DefaultTextureUAV;
 			TRAP::Ref<VulkanBuffer> DefaultBufferSRV;
 			TRAP::Ref<VulkanBuffer> DefaultBufferUAV;
 			TRAP::Ref<VulkanSampler> DefaultSampler;

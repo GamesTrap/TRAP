@@ -7,7 +7,7 @@
 #include "Utils/String/String.h"
 
 constexpr std::array<TRAP::Graphics::RendererAPI::DescriptorType,
-                     static_cast<uint32_t>(TRAP::Graphics::API::SPIRVTools::ResourceType::RESOURCE_TYPE_COUNT)> SPIRVToDescriptorType =
+                     ToUnderlying(TRAP::Graphics::API::SPIRVTools::ResourceType::RESOURCE_TYPE_COUNT)> SPIRVToDescriptorType =
 {
 	TRAP::Graphics::RendererAPI::DescriptorType::Undefined, TRAP::Graphics::RendererAPI::DescriptorType::Undefined,
 	TRAP::Graphics::RendererAPI::DescriptorType::UniformBuffer,
@@ -24,7 +24,7 @@ constexpr std::array<TRAP::Graphics::RendererAPI::DescriptorType,
 //-------------------------------------------------------------------------------------------------------------------//
 
 constexpr std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
-                     static_cast<uint32_t>(TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::RESOURCE_TEXTURE_DIMENSION_COUNT)> SPIRVToTextureDimension =
+                     ToUnderlying(TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::RESOURCE_TEXTURE_DIMENSION_COUNT)> SPIRVToTextureDimension =
 {
 	TRAP::Graphics::API::ShaderReflection::TextureDimension::TextureDimUndefined,
 	TRAP::Graphics::API::ShaderReflection::TextureDimension::TextureDimUndefined,
@@ -70,7 +70,7 @@ constexpr std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	SPIRVTools::CrossCompiler cc(shaderCode.data(), static_cast<uint32_t>(shaderCode.size()));
+	SPIRVTools::CrossCompiler cc(shaderCode.data(), shaderCode.size());
 
 	cc.ReflectEntryPoint();
 	cc.ReflectShaderResources();
@@ -157,7 +157,7 @@ constexpr std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
 		for(std::size_t i = 0; i < cc.GetShaderResources().size(); ++i)
 		{
 			//Set index remap
-			indexRemap[i] = static_cast<uint32_t>(-1);
+			indexRemap[i] = std::numeric_limits<uint32_t>::max();
 
 			const SPIRVTools::Resource& resource = cc.GetShaderResources()[i];
 
@@ -165,16 +165,16 @@ constexpr std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
 			if(!FilterResource(resource, shaderStage) && resource.Type != SPIRVTools::ResourceType::Inputs)
 			{
 				//Set new index
-				indexRemap[i] = static_cast<uint32_t>(j);
+				indexRemap[i] = NumericCast<uint32_t>(j);
 
-				resources[j].Type = SPIRVToDescriptorType[static_cast<uint32_t>(resource.Type)];
+				resources[j].Type = SPIRVToDescriptorType[ToUnderlying(resource.Type)];
 				resources[j].Set = resource.Set;
 				resources[j].Reg = resource.Binding;
 				resources[j].Size = resource.Size;
 				resources[j].UsedStages = shaderStage;
 
 				resources[j].Name = resource.Name;
-				resources[j].Dim = SPIRVToTextureDimension[static_cast<uint32_t>(resource.Dimension)];
+				resources[j].Dim = SPIRVToTextureDimension[ToUnderlying(resource.Dimension)];
 
 				++j;
 			}

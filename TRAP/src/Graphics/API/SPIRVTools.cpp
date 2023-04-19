@@ -99,7 +99,7 @@ void ReflectBoundResources(spirv_cross::Compiler& compiler,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::SPIRVTools::CrossCompiler::CrossCompiler(const uint32_t* const SPIRVBinary, const uint32_t binarySize)
+TRAP::Graphics::API::SPIRVTools::CrossCompiler::CrossCompiler(const uint32_t* const SPIRVBinary, const std::size_t binarySize)
 	: m_compiler(spirv_cross::Compiler(SPIRVBinary, binarySize))
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

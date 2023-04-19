@@ -153,7 +153,7 @@ namespace TRAP::Graphics::API::SPIRVTools
 		/// </summary>
 		/// <param name="SPIRVBinary">SPIRV binary data.</param>
 		/// <param name="binarySize">Size of the SPIRV binary data.</param>
-		CrossCompiler(const uint32_t* SPIRVBinary, uint32_t binarySize);
+		CrossCompiler(const uint32_t* SPIRVBinary, std::size_t binarySize);
 
 		/// <summary>
 		/// Reflect the shaders entry point.

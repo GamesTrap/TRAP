@@ -180,7 +180,7 @@ namespace TRAP::Graphics
 		/// <param name="indexCount">How many indices to draw.</param>
 		/// <param name="firstIndex">Offset to the first index to draw.</param>
 		/// <param name="firstVertex">Offset to the first vertex to draw.</param>
-		virtual void DrawIndexed(uint32_t indexCount, uint32_t firstIndex, uint32_t firstVertex) const = 0;
+		virtual void DrawIndexed(uint32_t indexCount, uint32_t firstIndex, int32_t firstVertex) const = 0;
 		/// <summary>
 		/// Draw multiple instances of indexed primitives.
 		/// </summary>
@@ -190,7 +190,7 @@ namespace TRAP::Graphics
 		/// <param name="firstInstance">Offset to the first instance to draw.</param>
 		/// <param name="firstVertex">Offset to the first vertex to draw.</param>
 		virtual void DrawIndexedInstanced(uint32_t indexCount, uint32_t firstIndex, uint32_t instanceCount,
-		                                  uint32_t firstInstance, uint32_t firstVertex) const = 0;
+		                                  uint32_t firstInstance, int32_t firstVertex) const = 0;
 		/// <summary>
 		/// Draw primitives.
 		/// Draw data is provided by the indirect buffer.

@@ -37,9 +37,9 @@
 	info.pNext = nullptr;
 	info.flags = 0;
 	info.pApplicationInfo = &appInfo;
-	info.enabledLayerCount = static_cast<uint32_t>(instanceLayers.size());
+	info.enabledLayerCount = NumericCast<uint32_t>(instanceLayers.size());
 	info.ppEnabledLayerNames = instanceLayers.data();
-	info.enabledExtensionCount = static_cast<uint32_t>(instanceExtensions.size());
+	info.enabledExtensionCount = NumericCast<uint32_t>(instanceExtensions.size());
 	info.ppEnabledExtensionNames = instanceExtensions.data();
 
 	return info;
@@ -192,11 +192,11 @@
 	info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 	info.pNext = pNext;
 	info.flags = 0;
-	info.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+	info.queueCreateInfoCount = NumericCast<uint32_t>(queueCreateInfos.size());
 	info.pQueueCreateInfos = queueCreateInfos.data();
 	info.enabledLayerCount = 0;
 	info.ppEnabledLayerNames = nullptr;
-	info.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
+	info.enabledExtensionCount = NumericCast<uint32_t>(deviceExtensions.size());
 	info.ppEnabledExtensionNames = deviceExtensions.data();
 	info.pEnabledFeatures = nullptr;
 
@@ -248,7 +248,7 @@
 	info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 	info.pNext = nullptr;
 	info.flags = 0;
-	info.poolSizeCount = static_cast<uint32_t>(descriptorPoolSizes.size());
+	info.poolSizeCount = NumericCast<uint32_t>(descriptorPoolSizes.size());
 	info.pPoolSizes = descriptorPoolSizes.data();
 	info.maxSets = numDescriptorSets;
 
@@ -287,7 +287,7 @@
 	info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 	info.pNext = nullptr;
 	info.flags = 0;
-	info.bindingCount = static_cast<uint32_t>(bindings.size());
+	info.bindingCount = NumericCast<uint32_t>(bindings.size());
 	info.pBindings = bindings.data();
 
 	return info;
@@ -476,9 +476,9 @@
 
 	subpass.flags = 0;
 	subpass.pipelineBindPoint = bindPoint;
-	subpass.inputAttachmentCount = static_cast<uint32_t>(inputAttachments.size());
+	subpass.inputAttachmentCount = NumericCast<uint32_t>(inputAttachments.size());
 	subpass.pInputAttachments = inputAttachments.data();
-	subpass.colorAttachmentCount = static_cast<uint32_t>(colorAttachments.size());
+	subpass.colorAttachmentCount = NumericCast<uint32_t>(colorAttachments.size());
 	subpass.pColorAttachments = colorAttachments.data();
 	subpass.pResolveAttachments = nullptr;
 	subpass.pDepthStencilAttachment = &depthStencilAttachment;
@@ -500,9 +500,9 @@
 
 	subpass.flags = 0;
 	subpass.pipelineBindPoint = bindPoint;
-	subpass.inputAttachmentCount = static_cast<uint32_t>(inputAttachments.size());
+	subpass.inputAttachmentCount = NumericCast<uint32_t>(inputAttachments.size());
 	subpass.pInputAttachments = inputAttachments.data();
-	subpass.colorAttachmentCount = static_cast<uint32_t>(colorAttachments.size());
+	subpass.colorAttachmentCount = NumericCast<uint32_t>(colorAttachments.size());
 	subpass.pColorAttachments = colorAttachments.data();
 	subpass.pResolveAttachments = nullptr;
 	subpass.pDepthStencilAttachment = nullptr;
@@ -529,9 +529,9 @@
 	subpass.flags = 0;
 	subpass.pipelineBindPoint = bindPoint;
 	subpass.viewMask = 0;
-	subpass.inputAttachmentCount = static_cast<uint32_t>(inputAttachments.size());
+	subpass.inputAttachmentCount = NumericCast<uint32_t>(inputAttachments.size());
 	subpass.pInputAttachments = inputAttachments.data();
-	subpass.colorAttachmentCount = static_cast<uint32_t>(colorAttachments.size());
+	subpass.colorAttachmentCount = NumericCast<uint32_t>(colorAttachments.size());
 	subpass.pColorAttachments = colorAttachments.data();
 	subpass.pResolveAttachments = nullptr;
 	subpass.pDepthStencilAttachment = &depthStencilAttachment;
@@ -557,9 +557,9 @@
 	subpass.flags = 0;
 	subpass.pipelineBindPoint = bindPoint;
 	subpass.viewMask = 0;
-	subpass.inputAttachmentCount = static_cast<uint32_t>(inputAttachments.size());
+	subpass.inputAttachmentCount = NumericCast<uint32_t>(inputAttachments.size());
 	subpass.pInputAttachments = inputAttachments.data();
-	subpass.colorAttachmentCount = static_cast<uint32_t>(colorAttachments.size());
+	subpass.colorAttachmentCount = NumericCast<uint32_t>(colorAttachments.size());
 	subpass.pColorAttachments = colorAttachments.data();
 	subpass.pResolveAttachments = nullptr;
 	subpass.pDepthStencilAttachment = nullptr;
@@ -581,7 +581,7 @@
 	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
 	info.pNext = nullptr;
 	info.flags = 0;
-	info.attachmentCount = static_cast<uint32_t>(attachmentDescriptions.size());
+	info.attachmentCount = NumericCast<uint32_t>(attachmentDescriptions.size());
 	info.pAttachments = attachmentDescriptions.data();
 	info.subpassCount = 1;
 	info.pSubpasses = &subpassDescription;
@@ -602,7 +602,7 @@
 	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
 	info.pNext = nullptr;
 	info.flags = 0;
-	info.attachmentCount = static_cast<uint32_t>(attachmentDescriptions.size());
+	info.attachmentCount = NumericCast<uint32_t>(attachmentDescriptions.size());
 	info.pAttachments = attachmentDescriptions.data();
 	info.subpassCount = 0;
 	info.pSubpasses = nullptr;
@@ -624,7 +624,7 @@
 	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2_KHR;
 	info.pNext = nullptr;
 	info.flags = 0;
-	info.attachmentCount = static_cast<uint32_t>(attachmentDescriptions.size());
+	info.attachmentCount = NumericCast<uint32_t>(attachmentDescriptions.size());
 	info.pAttachments = attachmentDescriptions.data();
 	info.subpassCount = 1;
 	info.pSubpasses = &subpassDescription;
@@ -647,7 +647,7 @@
 	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2_KHR;
 	info.pNext = nullptr;
 	info.flags = 0;
-	info.attachmentCount = static_cast<uint32_t>(attachmentDescriptions.size());
+	info.attachmentCount = NumericCast<uint32_t>(attachmentDescriptions.size());
 	info.pAttachments = attachmentDescriptions.data();
 	info.subpassCount = 0;
 	info.pSubpasses = nullptr;
@@ -678,7 +678,7 @@
 	info.renderPass = renderPass;
 	info.framebuffer = frameBuffer;
 	info.renderArea = renderArea;
-	info.clearValueCount = static_cast<uint32_t>(colorValues.size());
+	info.clearValueCount = NumericCast<uint32_t>(colorValues.size());
 	info.pClearValues = colorValues.data();
 
 	return info;
@@ -705,7 +705,7 @@
 	info.pNext = nullptr;
 	info.flags = 0;
 	info.renderPass = renderPass;
-	info.attachmentCount = static_cast<uint32_t>(attachments.size());
+	info.attachmentCount = NumericCast<uint32_t>(attachments.size());
 	info.pAttachments = attachments.data();
 	info.width = width;
 	info.height = height;
@@ -1022,7 +1022,7 @@
 	info.flags = 0;
 	info.logicOpEnable = VK_FALSE;
 	info.logicOp = VK_LOGIC_OP_CLEAR;
-	info.attachmentCount = static_cast<uint32_t>(attachments.size());
+	info.attachmentCount = NumericCast<uint32_t>(attachments.size());
 	info.pAttachments = attachments.data();
 	info.blendConstants[0] = 0.0f;
 	info.blendConstants[1] = 0.0f;
@@ -1050,7 +1050,7 @@
 	info.flags = 0;
 	info.logicOpEnable = VK_TRUE;
 	info.logicOp = logicOp;
-	info.attachmentCount = static_cast<uint32_t>(attachments.size());
+	info.attachmentCount = NumericCast<uint32_t>(attachments.size());
 	info.pAttachments = attachments.data();
 	info.blendConstants[0] = blendConstR;
 	info.blendConstants[1] = blendConstG;
@@ -1228,7 +1228,7 @@
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
 	info.pNext = nullptr;
 	info.flags = 0;
-	info.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
+	info.dynamicStateCount = NumericCast<uint32_t>(dynamicStates.size());
 	info.pDynamicStates = dynamicStates.data();
 
 	return info;
@@ -1318,7 +1318,7 @@
 	info.waitSemaphoreCount = waitCount;
 	info.pWaitSemaphores = waitSemaphores.data();
 	info.pWaitDstStageMask = waitMasks.data();
-	info.commandBufferCount = static_cast<uint32_t>(cmds.size());
+	info.commandBufferCount = NumericCast<uint32_t>(cmds.size());
 	info.pCommandBuffers = cmds.data();
 	info.signalSemaphoreCount = signalCount;
 	info.pSignalSemaphores = signalSemaphores.data();
@@ -1399,7 +1399,7 @@
 
 	info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 	info.pNext = nullptr;
-	info.waitSemaphoreCount = static_cast<uint32_t>(waitSemaphores.size());
+	info.waitSemaphoreCount = NumericCast<uint32_t>(waitSemaphores.size());
 	info.pWaitSemaphores = !waitSemaphores.empty() ? waitSemaphores.data() : nullptr;
 	info.swapchainCount = 1;
 	info.pSwapchains = &swapChain;
@@ -1439,17 +1439,17 @@
 	{
 		if(!ImageFormatIsSigned(format))
 		{
-			clearColor.float32[0] = TRAP::Math::Clamp(static_cast<float>(color.Red), 0.0f, 1.0f);
-			clearColor.float32[1] = TRAP::Math::Clamp(static_cast<float>(color.Green), 0.0f, 1.0f);
-			clearColor.float32[2] = TRAP::Math::Clamp(static_cast<float>(color.Blue), 0.0f, 1.0f);
-			clearColor.float32[3] = TRAP::Math::Clamp(static_cast<float>(color.Alpha), 0.0f, 1.0f);
+			clearColor.float32[0] = TRAP::Math::Clamp(NumericCast<float>(color.Red), 0.0f, 1.0f);
+			clearColor.float32[1] = TRAP::Math::Clamp(NumericCast<float>(color.Green), 0.0f, 1.0f);
+			clearColor.float32[2] = TRAP::Math::Clamp(NumericCast<float>(color.Blue), 0.0f, 1.0f);
+			clearColor.float32[3] = TRAP::Math::Clamp(NumericCast<float>(color.Alpha), 0.0f, 1.0f);
 		}
 		else /*if(ImageFormatIsSigned(format))*/
 		{
-			clearColor.float32[0] = TRAP::Math::Clamp(static_cast<float>(color.Red), -1.0f, 1.0f);
-			clearColor.float32[1] = TRAP::Math::Clamp(static_cast<float>(color.Green), -1.0f, 1.0f);
-			clearColor.float32[2] = TRAP::Math::Clamp(static_cast<float>(color.Blue), -1.0f, 1.0f);
-			clearColor.float32[3] = TRAP::Math::Clamp(static_cast<float>(color.Alpha), -1.0f, 1.0f);
+			clearColor.float32[0] = TRAP::Math::Clamp(NumericCast<float>(color.Red), -1.0f, 1.0f);
+			clearColor.float32[1] = TRAP::Math::Clamp(NumericCast<float>(color.Green), -1.0f, 1.0f);
+			clearColor.float32[2] = TRAP::Math::Clamp(NumericCast<float>(color.Blue), -1.0f, 1.0f);
+			clearColor.float32[3] = TRAP::Math::Clamp(NumericCast<float>(color.Alpha), -1.0f, 1.0f);
 		}
 	}
 	else /*if(!ImageFormatIsNormalized(format))*/
@@ -1458,25 +1458,25 @@
 		{
 			if(!ImageFormatIsSigned(format))
 			{
-				clearColor.uint32[0] = static_cast<uint32_t>(TRAP::Math::Round(color.Red));
-				clearColor.uint32[1] = static_cast<uint32_t>(TRAP::Math::Round(color.Green));
-				clearColor.uint32[2] = static_cast<uint32_t>(TRAP::Math::Round(color.Blue));
-				clearColor.uint32[3] = static_cast<uint32_t>(TRAP::Math::Round(color.Alpha));
+				clearColor.uint32[0] = NumericCast<uint32_t>(TRAP::Math::Round(color.Red));
+				clearColor.uint32[1] = NumericCast<uint32_t>(TRAP::Math::Round(color.Green));
+				clearColor.uint32[2] = NumericCast<uint32_t>(TRAP::Math::Round(color.Blue));
+				clearColor.uint32[3] = NumericCast<uint32_t>(TRAP::Math::Round(color.Alpha));
 			}
 			else /*if(ImageFormatIsSigned(format))*/
 			{
-				clearColor.int32[0] = static_cast<int32_t>(TRAP::Math::Round(color.Red));
-				clearColor.int32[1] = static_cast<int32_t>(TRAP::Math::Round(color.Green));
-				clearColor.int32[2] = static_cast<int32_t>(TRAP::Math::Round(color.Blue));
-				clearColor.int32[3] = static_cast<int32_t>(TRAP::Math::Round(color.Alpha));
+				clearColor.int32[0] = NumericCast<int32_t>(TRAP::Math::Round(color.Red));
+				clearColor.int32[1] = NumericCast<int32_t>(TRAP::Math::Round(color.Green));
+				clearColor.int32[2] = NumericCast<int32_t>(TRAP::Math::Round(color.Blue));
+				clearColor.int32[3] = NumericCast<int32_t>(TRAP::Math::Round(color.Alpha));
 			}
 		}
 		else
 		{
-			clearColor.float32[0] = static_cast<float>(color.Red);
-			clearColor.float32[1] = static_cast<float>(color.Green);
-			clearColor.float32[2] = static_cast<float>(color.Blue);
-			clearColor.float32[3] = static_cast<float>(color.Alpha);
+			clearColor.float32[0] = NumericCast<float>(color.Red);
+			clearColor.float32[1] = NumericCast<float>(color.Green);
+			clearColor.float32[2] = NumericCast<float>(color.Blue);
+			clearColor.float32[3] = NumericCast<float>(color.Alpha);
 		}
 	}
 

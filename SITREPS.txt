@@ -3890,3 +3890,7 @@ SITREP 04/16/2023|23w15b1
 SITREP 04/18/2023|23w16a1
     - Changed TRAP Engine version to 23w16a1(0.9.15)
     - Replaced some static_casts with NumericCast() and ToUnderlying() ~>30 mins
+
+SITREP 04/20/2023|23w16a2
+    - Changed TRAP Engine version to 23w16a2(0.9.16)
+    - Replaced some static_casts with NumericCast() and ToUnderlying() ~>60 mins
