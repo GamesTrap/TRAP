@@ -110,6 +110,7 @@ project "TRAP-Editor"
 		-- Steamworks SDK stuff
 		if os.isfile("../../Dependencies/SteamworksSDK/sdk/redistributable_bin/linux64/libsteam_api.so") and
 		   os.isdir("../../Dependencies/SteamworksSDK/sdk/public/steam") then
+			externalincludedirs "%{IncludeDir.STEAMWORKSSDK}"
 
 			links "steam_api"
 			libdirs "%{IncludeDir.STEAMWORKSSDK}/../../redistributable_bin/linux64"
@@ -165,6 +166,7 @@ project "TRAP-Editor"
 		if os.isfile("../../Dependencies/SteamworksSDK/sdk/redistributable_bin/win64/steam_api64.dll") and
 		   os.isfile("../../Dependencies/SteamworksSDK/sdk/redistributable_bin/win64/steam_api64.lib") and
 		   os.isdir("../../Dependencies/SteamworksSDK/sdk/public/steam") then
+			externalincludedirs "%{IncludeDir.STEAMWORKSSDK}"
 
 			links "%{IncludeDir.STEAMWORKSSDK}/../../redistributable_bin/win64/steam_api64.lib"
 

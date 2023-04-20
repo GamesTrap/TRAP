@@ -69,7 +69,7 @@ bool TRAP::Utils::Steam::InitializeServer(const uint32_t bindIPv4, const uint16_
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef USE_STEAMWORKS_SDK
-void TRAP::Utils::Steam::ShutdownClient()
+void ShutdownClient()
 {
     if(steamClientInitialized)
     {
@@ -82,7 +82,7 @@ void TRAP::Utils::Steam::ShutdownClient()
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef USE_STEAMWORKS_SDK
-void TRAP::Utils::Steam::ShutdownServer()
+void ShutdownServer()
 {
     if(steamServerInitialized)
     {
