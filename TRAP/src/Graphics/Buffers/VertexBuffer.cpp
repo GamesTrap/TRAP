@@ -73,7 +73,7 @@ void TRAP::Graphics::VertexBuffer::SetLayout(const VertexBufferLayout& layout)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return static_cast<uint32_t>(m_vertexBuffer->GetSize() / static_cast<uint64_t>(m_bufferLayout.GetStride()));
+	return NumericCast<uint32_t>(m_vertexBuffer->GetSize() / NumericCast<uint64_t>(m_bufferLayout.GetStride()));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

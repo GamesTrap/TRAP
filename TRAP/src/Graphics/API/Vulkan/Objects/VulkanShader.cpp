@@ -23,9 +23,9 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesyste
                                                 const std::vector<Macro>* const userMacros, const bool valid)
 	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
 	  m_numThreadsPerGroup(),
-	  m_shaderModules(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
+	  m_shaderModules(ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
 	  m_reflection(nullptr),
-	  m_entryNames(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
+	  m_entryNames(ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
 	  m_dirtyDescriptorSets(),
 	  m_cleanedDescriptorSets(),
 	  m_lastImageIndex(std::numeric_limits<uint32_t>::max())
@@ -54,9 +54,9 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const Renderer
                                                 const std::vector<Macro>* const userMacros, const bool valid)
 	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
 	  m_numThreadsPerGroup(),
-	  m_shaderModules(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
+	  m_shaderModules(ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
 	  m_reflection(nullptr),
-	  m_entryNames(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
+	  m_entryNames(ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
 	  m_dirtyDescriptorSets(),
 	  m_cleanedDescriptorSets(),
 	  m_lastImageIndex(std::numeric_limits<uint32_t>::max())
@@ -85,9 +85,9 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesyste
 												const RendererAPI::ShaderStage stages)
 	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
 	  m_numThreadsPerGroup(),
-	  m_shaderModules(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
+	  m_shaderModules(ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
 	  m_reflection(nullptr),
-	  m_entryNames(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
+	  m_entryNames(ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
 	  m_dirtyDescriptorSets(),
 	  m_cleanedDescriptorSets(),
 	  m_lastImageIndex(std::numeric_limits<uint32_t>::max())
@@ -195,7 +195,7 @@ void TRAP::Graphics::API::VulkanShader::Use()
 				if(root->GetVkDescriptorSetLayouts()[i] != VK_NULL_HANDLE)
 				{
 					setDesc.MaxSets = (i == 0) ? 1 : RendererAPI::ImageCount;
-					setDesc.Set = static_cast<uint32_t>(i);
+					setDesc.Set = NumericCast<uint32_t>(i);
 					m_descriptorSets[i] = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(setDesc);
 				}
 			}
@@ -249,10 +249,10 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uin
 	params[0].Name = name;
 	params[0].Resource = std::vector<Ref<TRAP::Graphics::Texture>>{texture};
 
-	if(shaderUAV && static_cast<bool>(texture->GetDescriptorTypes() & RendererAPI::DescriptorType::RWTexture))
+	if(shaderUAV && (texture->GetDescriptorTypes() & RendererAPI::DescriptorType::RWTexture) != RendererAPI::DescriptorType::Undefined)
 		params[0].Offset = RendererAPI::DescriptorData::TextureSlice{};
 
-	if(set == static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::Static))
+	if(set == ToUnderlying(RendererAPI::DescriptorUpdateFrequency::Static))
 		GetDescriptorSets()[set]->Update(0, params);
 	else
 	{
@@ -302,12 +302,12 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
 	params[0].Name = name;
 	params[0].Resource = textures;
-	params[0].Count = static_cast<uint32_t>(textures.size());
+	params[0].Count = NumericCast<uint32_t>(textures.size());
 
-	if(shaderUAV && static_cast<bool>(textures[0]->GetDescriptorTypes() & RendererAPI::DescriptorType::RWTexture))
+	if(shaderUAV && (textures[0]->GetDescriptorTypes() & RendererAPI::DescriptorType::RWTexture) != RendererAPI::DescriptorType::Undefined)
 		params[0].Offset = RendererAPI::DescriptorData::TextureSlice{};
 
-	if(set == static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::Static))
+	if(set == ToUnderlying(RendererAPI::DescriptorUpdateFrequency::Static))
 		GetDescriptorSets()[set]->Update(0, params);
 	else
 	{
@@ -352,7 +352,7 @@ void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uin
 	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
 	params[0].Name = name;
 	params[0].Resource = std::vector<TRAP::Graphics::Sampler*>{sampler};
-	if(set == static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::Static))
+	if(set == ToUnderlying(RendererAPI::DescriptorUpdateFrequency::Static))
 		GetDescriptorSets()[set]->Update(0, params);
 	else
 	{
@@ -399,8 +399,8 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const ui
 	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
 	params[0].Name = name;
 	params[0].Resource = samplers;
-	params[0].Count = static_cast<uint32_t>(samplers.size());
-	if(set == static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::Static))
+	params[0].Count = NumericCast<uint32_t>(samplers.size());
+	if(set == ToUnderlying(RendererAPI::DescriptorUpdateFrequency::Static))
 		GetDescriptorSets()[set]->Update(0, params);
 	else
 	{
@@ -513,7 +513,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 	uint32_t counter = 0;
 
 	std::array<ShaderReflection::ShaderReflection,
-	           static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> stageReflections{};
+	           ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> stageReflections{};
 
 	for(std::size_t i = 0; i < stageReflections.size(); i++)
 	{
@@ -657,7 +657,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 			RendererAPI::DescriptorSetDesc setDesc{};
 			setDesc.MaxSets = (i == 0) ? 1 : RendererAPI::ImageCount;
 			setDesc.RootSignature = m_rootSignature;
-			setDesc.Set = static_cast<uint32_t>(i);
+			setDesc.Set = NumericCast<uint32_t>(i);
 			m_descriptorSets[i] = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(setDesc);
 		}
 	}
@@ -679,27 +679,27 @@ void TRAP::Graphics::API::VulkanShader::Shutdown()
 		m_shaderStages = RendererAPI::ShaderStage::None;
 	}
 
-	if (static_cast<uint32_t>(m_shaderStages & RendererAPI::ShaderStage::Vertex) != 0u)
+	if ((m_shaderStages & RendererAPI::ShaderStage::Vertex) != RendererAPI::ShaderStage::None)
 		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[m_reflection->VertexStageIndex], nullptr);
 
-	if (static_cast<uint32_t>(m_shaderStages & RendererAPI::ShaderStage::TessellationControl) != 0u)
+	if ((m_shaderStages & RendererAPI::ShaderStage::TessellationControl) != RendererAPI::ShaderStage::None)
 		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[m_reflection->TessellationControlStageIndex],
 		                      nullptr);
 
-	if (static_cast<uint32_t>(m_shaderStages & RendererAPI::ShaderStage::TessellationEvaluation) != 0u)
+	if ((m_shaderStages & RendererAPI::ShaderStage::TessellationEvaluation) != RendererAPI::ShaderStage::None)
 		vkDestroyShaderModule(m_device->GetVkDevice(),
 		                      m_shaderModules[m_reflection->TessellationEvaluationStageIndex], nullptr);
 
-	if (static_cast<uint32_t>(m_shaderStages & RendererAPI::ShaderStage::Geometry) != 0u)
+	if ((m_shaderStages & RendererAPI::ShaderStage::Geometry) != RendererAPI::ShaderStage::None)
 		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[m_reflection->GeometryStageIndex], nullptr);
 
-	if (static_cast<uint32_t>(m_shaderStages & RendererAPI::ShaderStage::Fragment) != 0u)
+	if ((m_shaderStages & RendererAPI::ShaderStage::Fragment) != RendererAPI::ShaderStage::None)
 		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[m_reflection->FragmentStageIndex], nullptr);
 
-	if (static_cast<uint32_t>(m_shaderStages & RendererAPI::ShaderStage::Compute) != 0u)
+	if ((m_shaderStages & RendererAPI::ShaderStage::Compute) != RendererAPI::ShaderStage::None)
 		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[0], nullptr);
 
-	if (static_cast<uint32_t>(m_shaderStages & RendererAPI::ShaderStage::RayTracing) != 0u)
+	if ((m_shaderStages & RendererAPI::ShaderStage::RayTracing) != RendererAPI::ShaderStage::None)
 		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[0], nullptr);
 
 	m_shaderModules = {};
@@ -773,7 +773,7 @@ void TRAP::Graphics::API::VulkanShader::UseBuffer(const uint32_t set, const uint
 	else
 		params[0].Offset = TRAP::Graphics::RendererAPI::DescriptorData::BufferOffset{};
 
-	if(set == static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::Static))
+	if(set == ToUnderlying(RendererAPI::DescriptorUpdateFrequency::Static))
 	{
 		params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{buffer};
 		GetDescriptorSets()[set]->Update(0, params);
@@ -801,10 +801,11 @@ void TRAP::Graphics::API::VulkanShader::UseBuffer(const uint32_t set, const uint
 
 	for(const auto& resource : m_reflection->ShaderResources)
 	{
-		if(static_cast<bool>(resource.Type & type) && resource.Set == set && resource.Reg == binding && resource.Size == size)
+		if((resource.Type & type) != RendererAPI::DescriptorType::Undefined &&
+		   resource.Set == set && resource.Reg == binding && resource.Size == size)
 		{
 			if(outUAV != nullptr)
-				*outUAV = static_cast<bool>(resource.Type & (RendererAPI::DescriptorType::RWTexture | RendererAPI::DescriptorType::RWBuffer));
+				*outUAV = (resource.Type & (RendererAPI::DescriptorType::RWTexture | RendererAPI::DescriptorType::RWBuffer)) != RendererAPI::DescriptorType::Undefined;
 
 			return resource.Name;
 		}

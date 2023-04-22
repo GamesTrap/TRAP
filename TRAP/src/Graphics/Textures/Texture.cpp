@@ -414,7 +414,7 @@
 		texDesc.Descriptors = texture->m_textureType == TextureType::TextureCube ? (RendererAPI::DescriptorType::Texture | RendererAPI::DescriptorType::TextureCube) :
 																				   RendererAPI::DescriptorType::Texture;
 		texDesc.StartState = RendererAPI::ResourceState::Common;
-		if(static_cast<bool>(flags & TextureCreationFlags::Storage))
+		if((flags & TextureCreationFlags::Storage) != TextureCreationFlags::None)
 			texDesc.Descriptors |= RendererAPI::DescriptorType::RWTexture;
 
 		desc.Desc = &texDesc;
@@ -546,7 +546,7 @@ bool TRAP::Graphics::Texture::Reload()
 	desc.CreationFlag = RendererAPI::TextureCreationFlags::None;
 	desc.Texture = this;
 
-	if(static_cast<bool>(m_descriptorTypes & RendererAPI::DescriptorType::RWTexture))
+	if((m_descriptorTypes & RendererAPI::DescriptorType::RWTexture) != RendererAPI::DescriptorType::Undefined)
 		desc.CreationFlag |= RendererAPI::TextureCreationFlags::Storage;
 
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &m_syncToken);
@@ -688,7 +688,7 @@ bool TRAP::Graphics::Texture::Reload()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return GetBitsPerChannel() * static_cast<uint32_t>(m_colorFormat);
+	return GetBitsPerChannel() * ToUnderlying(m_colorFormat);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -697,7 +697,7 @@ bool TRAP::Graphics::Texture::Reload()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return GetBitsPerPixel() / 8;
+	return GetBitsPerPixel() / 8u;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -843,8 +843,7 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return Math::Max(1u, static_cast<uint32_t>(Math::Floor(Math::Log2(Math::Max(static_cast<float>(width),
-					                                                            static_cast<float>(height))))) + 1);
+	return Math::Max(1u, NumericCast<uint32_t>(Math::Floor(Math::Log2(NumericCast<float>(Math::Max(width, height))))) + 1u);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -907,18 +906,18 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 
 	if(img->GetBitsPerChannel() == 32)
 	{
-		std::vector<float> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() *
-														    static_cast<std::size_t>(img->GetColorFormat()));
+		std::vector<float> rotated(NumericCast<std::size_t>(img->GetWidth()) * img->GetHeight() *
+														    ToUnderlying(img->GetColorFormat()));
 		for(uint32_t y = 0, destCol = img->GetHeight() - 1; y < img->GetHeight(); ++y, --destCol)
 		{
 			const uint32_t offset = y * img->GetWidth();
 
 			for(uint32_t x = 0; x < img->GetWidth(); ++x)
 			{
-				for(uint32_t channel = 0; channel < static_cast<uint32_t>(img->GetColorFormat()); ++channel)
+				for(uint32_t channel = 0; channel < ToUnderlying(img->GetColorFormat()); ++channel)
 				{
-					rotated[(x * img->GetHeight() + destCol) * static_cast<uint32_t>(img->GetColorFormat()) + channel] =
-					static_cast<const float*>(img->GetPixelData())[(offset + x) * static_cast<uint32_t>(img->GetColorFormat()) + channel];
+					rotated[(x * img->GetHeight() + destCol) * ToUnderlying(img->GetColorFormat()) + channel] =
+					static_cast<const float*>(img->GetPixelData())[(offset + x) * ToUnderlying(img->GetColorFormat()) + channel];
 				}
 			}
 		}
@@ -926,36 +925,36 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 	}
 	if(img->GetBitsPerChannel() == 16)
 	{
-		std::vector<uint16_t> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() *
-															   static_cast<std::size_t>(img->GetColorFormat()));
+		std::vector<uint16_t> rotated(NumericCast<std::size_t>(img->GetWidth()) * img->GetHeight() *
+															   ToUnderlying(img->GetColorFormat()));
 		for(uint32_t y = 0, destCol = img->GetHeight() - 1; y < img->GetHeight(); ++y, --destCol)
 		{
 			const uint32_t offset = y * img->GetWidth();
 
 			for(uint32_t x = 0; x < img->GetWidth(); ++x)
 			{
-				for(uint32_t channel = 0; channel < static_cast<uint32_t>(img->GetColorFormat()); ++channel)
+				for(uint32_t channel = 0; channel < ToUnderlying(img->GetColorFormat()); ++channel)
 				{
-					rotated[(x * img->GetHeight() + destCol) * static_cast<uint32_t>(img->GetColorFormat()) + channel] =
-					static_cast<const uint16_t*>(img->GetPixelData())[(offset + x) * static_cast<uint32_t>(img->GetColorFormat()) + channel];
+					rotated[(x * img->GetHeight() + destCol) * ToUnderlying(img->GetColorFormat()) + channel] =
+					static_cast<const uint16_t*>(img->GetPixelData())[(offset + x) * ToUnderlying(img->GetColorFormat()) + channel];
 				}
 			}
 		}
 		return TRAP::Image::LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), rotated);
 	}
 
-	std::vector<uint8_t> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() *
-								 static_cast<std::size_t>(img->GetColorFormat()));
+	std::vector<uint8_t> rotated(NumericCast<std::size_t>(img->GetWidth()) * img->GetHeight() *
+								 ToUnderlying(img->GetColorFormat()));
 	for(uint32_t y = 0, destCol = img->GetHeight() - 1; y < img->GetHeight(); ++y, --destCol)
 	{
 		const uint32_t offset = y * img->GetWidth();
 
 		for(uint32_t x = 0; x < img->GetWidth(); ++x)
 		{
-			for(uint32_t channel = 0; channel < static_cast<uint32_t>(img->GetColorFormat()); ++channel)
+			for(uint32_t channel = 0; channel < ToUnderlying(img->GetColorFormat()); ++channel)
 			{
-				rotated[(x * img->GetHeight() + destCol) * static_cast<uint32_t>(img->GetColorFormat()) + channel] =
-				static_cast<const uint8_t*>(img->GetPixelData())[(offset + x) * static_cast<uint32_t>(img->GetColorFormat()) + channel];
+				rotated[(x * img->GetHeight() + destCol) * ToUnderlying(img->GetColorFormat()) + channel] =
+				static_cast<const uint8_t*>(img->GetPixelData())[(offset + x) * ToUnderlying(img->GetColorFormat()) + channel];
 			}
 		}
 	}
@@ -971,8 +970,8 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 
 	if(img->GetBitsPerChannel() == 32)
 	{
-		std::vector<float> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() *
-								   static_cast<std::size_t>(img->GetColorFormat()));
+		std::vector<float> rotated(NumericCast<std::size_t>(img->GetWidth()) * img->GetHeight() *
+								   ToUnderlying(img->GetColorFormat()));
 		std::copy_n(static_cast<const uint8_t*>(img->GetPixelData()), img->GetPixelDataSize(), rotated.begin());
 		for(uint32_t x = 0; x < img->GetWidth(); ++x)
 		{
@@ -986,10 +985,10 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 					I = p % img->GetHeight();
 					J = img->GetWidth() - 1 - (p / img->GetHeight());
 				}
-				for(uint32_t channel = 0; channel < static_cast<uint32_t>(img->GetColorFormat()); ++channel)
+				for(uint32_t channel = 0; channel < ToUnderlying(img->GetColorFormat()); ++channel)
 				{
-					std::swap(rotated[(x * img->GetHeight() + y) * static_cast<uint32_t>(img->GetColorFormat()) + channel],
-							  rotated[(I * img->GetWidth() + J) * static_cast<uint32_t>(img->GetColorFormat()) + channel]);
+					std::swap(rotated[(x * img->GetHeight() + y) * ToUnderlying(img->GetColorFormat()) + channel],
+							  rotated[(I * img->GetWidth() + J) * ToUnderlying(img->GetColorFormat()) + channel]);
 				}
 			}
 		}
@@ -998,7 +997,7 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 	}
 	if(img->GetBitsPerChannel() == 16)
 	{
-		std::vector<uint16_t> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() * static_cast<std::size_t>(img->GetColorFormat()));
+		std::vector<uint16_t> rotated(NumericCast<std::size_t>(img->GetWidth()) * img->GetHeight() * ToUnderlying(img->GetColorFormat()));
 		std::copy_n(static_cast<const uint8_t*>(img->GetPixelData()), img->GetPixelDataSize(), rotated.begin());
 		for(uint32_t x = 0; x < img->GetWidth(); ++x)
 		{
@@ -1012,10 +1011,10 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 					I = p % img->GetHeight();
 					J = img->GetWidth() - 1 - (p / img->GetHeight());
 				}
-				for(uint32_t channel = 0; channel < static_cast<uint32_t>(img->GetColorFormat()); ++channel)
+				for(uint32_t channel = 0; channel < ToUnderlying(img->GetColorFormat()); ++channel)
 				{
-					std::swap(rotated[(x * img->GetHeight() + y) * static_cast<uint32_t>(img->GetColorFormat()) + channel],
-							  rotated[(I * img->GetWidth() + J) * static_cast<uint32_t>(img->GetColorFormat()) + channel]);
+					std::swap(rotated[(x * img->GetHeight() + y) * ToUnderlying(img->GetColorFormat()) + channel],
+							  rotated[(I * img->GetWidth() + J) * ToUnderlying(img->GetColorFormat()) + channel]);
 				}
 			}
 		}
@@ -1023,8 +1022,8 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 		return TRAP::Image::LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), rotated);
 	}
 
-	std::vector<uint8_t> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() *
-								 static_cast<std::size_t>(img->GetColorFormat()));
+	std::vector<uint8_t> rotated(NumericCast<std::size_t>(img->GetWidth()) * img->GetHeight() *
+								 ToUnderlying(img->GetColorFormat()));
 	std::copy_n(static_cast<const uint8_t*>(img->GetPixelData()), img->GetPixelDataSize(), rotated.begin());
 	for(uint32_t x = 0; x < img->GetWidth(); ++x)
 	{
@@ -1038,10 +1037,10 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 				I = p % img->GetHeight();
 				J = img->GetWidth() - 1 - (p / img->GetHeight());
 			}
-			for(uint32_t channel = 0; channel < static_cast<uint32_t>(img->GetColorFormat()); ++channel)
+			for(uint32_t channel = 0; channel < ToUnderlying(img->GetColorFormat()); ++channel)
 			{
-				std::swap(rotated[(x * img->GetHeight() + y) * static_cast<uint32_t>(img->GetColorFormat()) + channel],
-						  rotated[(I * img->GetWidth() + J) * static_cast<uint32_t>(img->GetColorFormat()) + channel]);
+				std::swap(rotated[(x * img->GetHeight() + y) * ToUnderlying(img->GetColorFormat()) + channel],
+						  rotated[(I * img->GetWidth() + J) * ToUnderlying(img->GetColorFormat()) + channel]);
 			}
 		}
 	}

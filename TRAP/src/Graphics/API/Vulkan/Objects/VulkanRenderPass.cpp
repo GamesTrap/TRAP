@@ -156,10 +156,10 @@ TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 			attachments[ssidx] = VulkanInits::AttachmentDescription(ImageFormatToVkFormat(desc.ColorFormats[i]),
 				                                                    sampleCount,
 				                                                    !desc.LoadActionsColor.empty() ?
-																	VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionsColor[i])] :
+																	VkAttachmentLoadOpTranslator[ToUnderlying(desc.LoadActionsColor[i])] :
 																	VK_ATTACHMENT_LOAD_OP_DONT_CARE,
 				                                                    !desc.StoreActionsColor.empty() ?
-																	VkAttachmentStoreOpTranslator[static_cast<uint32_t>(desc.StoreActionsColor[i])] :
+																	VkAttachmentStoreOpTranslator[ToUnderlying(desc.StoreActionsColor[i])] :
 																	VK_ATTACHMENT_STORE_OP_STORE,
 				                                                    VK_ATTACHMENT_LOAD_OP_DONT_CARE,
 				                                                    VK_ATTACHMENT_STORE_OP_STORE,
@@ -179,10 +179,10 @@ TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 		const uint32_t idx = colorAttachmentCount;
 		attachments[idx] = VulkanInits::AttachmentDescription(ImageFormatToVkFormat(desc.DepthStencilFormat),
 															  sampleCount,
-															  VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionDepth)],
-															  VkAttachmentStoreOpTranslator[static_cast<uint32_t>(desc.StoreActionDepth)],
-															  VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionStencil)],
-															  VkAttachmentStoreOpTranslator[static_cast<uint32_t>(desc.StoreActionStencil)],
+															  VkAttachmentLoadOpTranslator[ToUnderlying(desc.LoadActionDepth)],
+															  VkAttachmentStoreOpTranslator[ToUnderlying(desc.StoreActionDepth)],
+															  VkAttachmentLoadOpTranslator[ToUnderlying(desc.LoadActionStencil)],
+															  VkAttachmentStoreOpTranslator[ToUnderlying(desc.StoreActionStencil)],
 															  VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
 															  VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
 		);
@@ -244,10 +244,10 @@ TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 			attachments[ssidx] = VulkanInits::AttachmentDescription2(ImageFormatToVkFormat(desc.ColorFormats[i]),
 				                                                     sampleCount,
 				                                                     !desc.LoadActionsColor.empty() ?
-																	 VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionsColor[i])] :
+																	 VkAttachmentLoadOpTranslator[ToUnderlying(desc.LoadActionsColor[i])] :
 																	 VK_ATTACHMENT_LOAD_OP_DONT_CARE,
 				                                                     !desc.StoreActionsColor.empty() ?
-																	 VkAttachmentStoreOpTranslator[static_cast<uint32_t>(desc.StoreActionsColor[i])] :
+																	 VkAttachmentStoreOpTranslator[ToUnderlying(desc.StoreActionsColor[i])] :
 																	 VK_ATTACHMENT_STORE_OP_STORE,
 				                                                     VK_ATTACHMENT_LOAD_OP_DONT_CARE,
 				                                                     VK_ATTACHMENT_STORE_OP_STORE,
@@ -269,10 +269,10 @@ TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 		const uint32_t idx = colorAttachmentCount;
 		attachments[idx] = VulkanInits::AttachmentDescription2(ImageFormatToVkFormat(desc.DepthStencilFormat),
 															   sampleCount,
-															   VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionDepth)],
-															   VkAttachmentStoreOpTranslator[static_cast<uint32_t>(desc.StoreActionDepth)],
-															   VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionStencil)],
-															   VkAttachmentStoreOpTranslator[static_cast<uint32_t>(desc.StoreActionStencil)],
+															   VkAttachmentLoadOpTranslator[ToUnderlying(desc.LoadActionDepth)],
+															   VkAttachmentStoreOpTranslator[ToUnderlying(desc.StoreActionDepth)],
+															   VkAttachmentLoadOpTranslator[ToUnderlying(desc.LoadActionStencil)],
+															   VkAttachmentStoreOpTranslator[ToUnderlying(desc.StoreActionStencil)],
 															   VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
 															   VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
 		);
@@ -285,7 +285,7 @@ TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 
 	VkFragmentShadingRateAttachmentInfoKHR shadingRateAttachmentInfo{};
 	VkAttachmentReference2KHR shadingRateAttachmentRef{};
-	if(static_cast<bool>(RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerTile) && (shadingRateAttachmentCount != 0u))
+	if((RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerTile) != RendererAPI::ShadingRateCaps::NotSupported && (shadingRateAttachmentCount != 0u))
 	{
 		const uint32_t idx = colorAttachmentCount + depthAttachmentCount;
 		attachments[idx] = VulkanInits::AttachmentDescription2(ImageFormatToVkFormat(desc.ShadingRateFormat),

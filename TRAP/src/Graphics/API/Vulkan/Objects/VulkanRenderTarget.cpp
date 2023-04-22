@@ -42,13 +42,13 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	const bool isDepth = TRAP::Graphics::API::ImageFormatIsDepthOnly(desc.Format) ||
 	                     TRAP::Graphics::API::ImageFormatIsDepthAndStencil(desc.Format);
 
-	TRAP_ASSERT(!((isDepth) && static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWTexture)),
+	TRAP_ASSERT(!((isDepth) && (desc.Descriptors & RendererAPI::DescriptorType::RWTexture) != RendererAPI::DescriptorType::Undefined),
 	            "VulkanRenderTarget(): Cannot use depth stencil as UAV");
 
 	const uint32_t depthOrArraySize = desc.ArraySize * desc.Depth;
 	uint32_t numRTVs = m_mipLevels;
-	if((static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RenderTargetArraySlices) != 0u) ||
-	   (static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RenderTargetDepthSlices) != 0u))
+	if(((desc.Descriptors & RendererAPI::DescriptorType::RenderTargetArraySlices) != RendererAPI::DescriptorType::Undefined) ||
+	   ((desc.Descriptors & RendererAPI::DescriptorType::RenderTargetDepthSlices) != RendererAPI::DescriptorType::Undefined))
 	{
 		numRTVs *= depthOrArraySize;
 	}
@@ -72,19 +72,19 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 		textureDesc.StartState |= RendererAPI::ResourceState::RenderTarget;
 	else
 		textureDesc.StartState |= RendererAPI::ResourceState::DepthWrite;
-	if(static_cast<bool>(desc.StartState & RendererAPI::ResourceState::ShadingRateSource))
+	if((desc.StartState & RendererAPI::ResourceState::ShadingRateSource) != RendererAPI::ResourceState::Undefined)
 		textureDesc.StartState |= RendererAPI::ResourceState::ShadingRateSource;
 
 	//Set this by default to be able to sample the renderTarget in shader
 	textureDesc.Descriptors = desc.Descriptors;
 	//Create SRV by default for a render target unless this is on tile texture
 	//where SRV is not supported
-	if(!static_cast<bool>(desc.Flags & RendererAPI::TextureCreationFlags::OnTile))
+	if((desc.Flags & RendererAPI::TextureCreationFlags::OnTile) == RendererAPI::TextureCreationFlags::None)
 		textureDesc.Descriptors |= RendererAPI::DescriptorType::Texture;
 	else
 	{
-		if(static_cast<bool>(textureDesc.Descriptors & RendererAPI::DescriptorType::Texture) ||
-		   static_cast<bool>(textureDesc.Descriptors & RendererAPI::DescriptorType::RWTexture))
+		if((textureDesc.Descriptors & RendererAPI::DescriptorType::Texture) != RendererAPI::DescriptorType::Undefined ||
+		   (textureDesc.Descriptors & RendererAPI::DescriptorType::RWTexture) != RendererAPI::DescriptorType::Undefined)
 		{
 			TP_WARN(Log::RendererVulkanRenderTargetPrefix, "On tile textures do not support DescriptorType::Texture or DescriptorType::RWTexture");
 		}
@@ -111,7 +111,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 			{
 				textureDesc.Format = TRAP::Graphics::API::ImageFormat::D16_UNORM;
 				TP_WARN(Log::RendererVulkanRenderTargetPrefix, "Depth stencil format (",
-				        static_cast<uint32_t>(desc.Format), ") is not supported. Falling back to D16 format");
+				        ToUnderlying(desc.Format), ") is not supported. Falling back to D16 format");
 			}
 		}
 	}
@@ -139,8 +139,8 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	for(uint32_t i = 0; i < m_mipLevels; ++i)
 	{
 		rtvDesc.subresourceRange.baseMipLevel = i;
-		if ((static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RenderTargetArraySlices) != 0u) ||
-			(static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RenderTargetDepthSlices) != 0u))
+		if (((desc.Descriptors & RendererAPI::DescriptorType::RenderTargetArraySlices) != RendererAPI::DescriptorType::Undefined) ||
+			((desc.Descriptors & RendererAPI::DescriptorType::RenderTargetDepthSlices) != RendererAPI::DescriptorType::Undefined))
 		{
 			for (uint32_t j = 0; j < depthOrArraySize; ++j)
 			{
@@ -176,8 +176,8 @@ TRAP::Graphics::API::VulkanRenderTarget::~VulkanRenderTarget()
 	vkDestroyImageView(m_device->GetVkDevice(), m_vkDescriptor, nullptr);
 
 	const uint32_t depthOrArraySize = m_arraySize * m_depth;
-	if ((static_cast<uint32_t>(m_descriptors & RendererAPI::DescriptorType::RenderTargetArraySlices) != 0u) ||
-		(static_cast<uint32_t>(m_descriptors & RendererAPI::DescriptorType::RenderTargetDepthSlices) != 0u))
+	if (((m_descriptors & RendererAPI::DescriptorType::RenderTargetArraySlices) != RendererAPI::DescriptorType::Undefined) ||
+		((m_descriptors & RendererAPI::DescriptorType::RenderTargetDepthSlices) != RendererAPI::DescriptorType::Undefined))
 	{
 		for(uint32_t i = 0; i < m_mipLevels; ++i)
 		{

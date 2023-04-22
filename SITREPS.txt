@@ -3899,3 +3899,7 @@ SITREP 04/20/2023|23w16a3
     - Changed TRAP Engine version to 23w16a3(0.9.17)
     - Fixed SteamworksSDK compiler error ~<5 mins
     - Premake Added missing SteamworksSDK include headers ~<5 mins
+
+SITREP 04/22/2023|23w16a4
+    - Changed TRAP Engine version to 23w16a4(0.9.18)
+    - Replaced some static_casts with NumericCast() and ToUnderlying() ~>60 mins

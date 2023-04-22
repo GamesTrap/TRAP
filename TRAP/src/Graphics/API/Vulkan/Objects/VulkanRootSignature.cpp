@@ -35,8 +35,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 	static constexpr uint32_t maxLayoutCount = RendererAPI::MaxDescriptorSets;
 	std::array<VulkanRenderer::UpdateFrequencyLayoutInfo, maxLayoutCount> layouts{};
-	std::array<VkPushConstantRange,
-	           static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> pushConstants{};
+	std::array<VkPushConstantRange, ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> pushConstants{};
 	uint32_t pushConstantCount = 0;
 	std::vector<ShaderReflection::ShaderResource> shaderResources{};
 	std::unordered_map<std::string, TRAP::Ref<VulkanSampler>> staticSamplerMap;
@@ -54,21 +53,21 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	//Collect all unique shader resources in the given shaders
 	//Resources are parsed by name (two resources name "XYZ" in two shader will
 	//be considered the same resource)
-	for(auto* sh : desc.Shaders)
+	for(const Shader* const sh : desc.Shaders)
 	{
-		const TRAP::Ref<ShaderReflection::PipelineReflection> reflection = dynamic_cast<VulkanShader*>
+		const TRAP::Ref<ShaderReflection::PipelineReflection> reflection = dynamic_cast<const VulkanShader* const>
 		(
 			sh
 		)->GetReflection();
 
-		if (static_cast<uint32_t>(reflection->ShaderStages & RendererAPI::ShaderStage::Compute) != 0u)
+		if ((reflection->ShaderStages & RendererAPI::ShaderStage::Compute) != RendererAPI::ShaderStage::None)
 			pipelineType = RendererAPI::PipelineType::Compute;
-		else if (static_cast<uint32_t>(reflection->ShaderStages & RendererAPI::ShaderStage::RayTracing) != 0u)
+		else if ((reflection->ShaderStages & RendererAPI::ShaderStage::RayTracing) != RendererAPI::ShaderStage::None)
 			pipelineType = RendererAPI::PipelineType::RayTracing;
 		else
 			pipelineType = RendererAPI::PipelineType::Graphics;
 
-		for(auto& res : reflection->ShaderResources)
+		for(const auto& res : reflection->ShaderResources)
 		{
 			const auto resNameIt = indexMap.find(res.Name);
 			if(resNameIt == indexMap.end())
@@ -81,7 +80,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 				});
 				if(resIt == shaderResources.end())
 				{
-					indexMap.insert({ res.Name, static_cast<uint32_t>(shaderResources.size()) });
+					indexMap.insert({ res.Name, NumericCast<uint32_t>(shaderResources.size()) });
 					shaderResources.push_back(res);
 				}
 				else
@@ -91,8 +90,8 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 					{
 						TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Failed to create root signature");
 						TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Shared shader resources ", res.Name,
-						         " and ", resIt->Name, " have mismatching types (", static_cast<uint32_t>(res.Type),
-							     ") and (", static_cast<uint32_t>(resIt->Type),
+						         " and ", resIt->Name, " have mismatching types (", ToUnderlying(res.Type),
+							     ") and (", ToUnderlying(resIt->Type),
 								 "). All shader resources sharing the same",
 								 "register and space RootSignature must have the same type");
 						return;
@@ -148,7 +147,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 		//Copy the binding information generated from the shader reflection into the descriptor
 		descInfo.Reg = res.Reg;
-		descInfo.Size = static_cast<uint32_t>(res.Size);
+		descInfo.Size = NumericCast<uint32_t>(res.Size);
 		descInfo.Type = res.Type;
 		descInfo.Name = res.Name;
 		descInfo.Dimension = res.Dim;
@@ -270,7 +269,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		//Example: set = 0 is used, set = 2 is used.
 		//In this case, set = 1 needs to exist even if it is empty
 		if (!createLayout && i < maxLayoutCount - 1)
-			createLayout = m_vkDescriptorSetLayouts[i + static_cast<uint64_t>(1)] != VK_NULL_HANDLE;
+			createLayout = m_vkDescriptorSetLayouts[i + 1u] != VK_NULL_HANDLE;
 
 		if(createLayout)
 		{
@@ -283,22 +282,22 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		if (layout.Bindings.empty())
 			continue;
 
-		m_vkDescriptorCounts[i] = static_cast<uint16_t>(layout.Descriptors.size());
+		m_vkDescriptorCounts[i] = NumericCast<uint16_t>(layout.Descriptors.size());
 
 		//Loop through descriptor belonging to this update frequency and increment the cumulative descriptor count
 		for(std::size_t descIndex = 0; descIndex < layout.Descriptors.size(); ++descIndex)
 		{
 			RendererAPI::DescriptorInfo* const descInfo = layout.Descriptors[descIndex];
-			descInfo->IndexInParent = static_cast<uint32_t>(descIndex);
+			descInfo->IndexInParent = NumericCast<uint32_t>(descIndex);
 			descInfo->HandleIndex = m_vkCumulativeDescriptorsCounts[i];
 			m_vkCumulativeDescriptorsCounts[i] += descInfo->Size;
 		}
 
-		m_vkDynamicDescriptorCounts[i] = static_cast<uint8_t>(layout.DynamicDescriptors.size());
+		m_vkDynamicDescriptorCounts[i] = NumericCast<uint8_t>(layout.DynamicDescriptors.size());
 		for(std::size_t descIndex = 0; descIndex < m_vkDynamicDescriptorCounts[i]; ++descIndex)
 		{
 			RendererAPI::DescriptorInfo* const descInfo = layout.DynamicDescriptors[descIndex];
-			descInfo->RootDescriptorIndex = static_cast<uint32_t>(descIndex);
+			descInfo->RootDescriptorIndex = NumericCast<uint32_t>(descIndex);
 		}
 	}
 
@@ -338,7 +337,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 				//Raytracing descriptor dont support update template so we ignore them
 				if(descInfo->Type == RendererAPI::DescriptorType::RayTracing)
 				{
-					m_vkRayTracingDescriptorCounts[setIndex] += static_cast<uint8_t>(descInfo->Size);
+					m_vkRayTracingDescriptorCounts[setIndex] += NumericCast<uint8_t>(descInfo->Size);
 					continue;
 				}
 
@@ -359,7 +358,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 				case RendererAPI::DescriptorType::Sampler:
 					for (uint32_t arr = 0; arr < arrayCount; ++arr)
 					{
-						updateData[descInfo->HandleIndex + static_cast<std::size_t>(arr)].ImageInfo =
+						updateData[descInfo->HandleIndex + NumericCast<std::size_t>(arr)].ImageInfo =
 						{
 							VulkanRenderer::s_NullDescriptors->DefaultSampler->GetVkSampler(),
 						    VK_NULL_HANDLE,
@@ -371,10 +370,10 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 				case RendererAPI::DescriptorType::Texture:
 					for (uint32_t arr = 0; arr < arrayCount; ++arr)
 					{
-						updateData[descInfo->HandleIndex + static_cast<std::size_t>(arr)].ImageInfo =
+						updateData[descInfo->HandleIndex + NumericCast<std::size_t>(arr)].ImageInfo =
 						{
 							VK_NULL_HANDLE,
-							std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(VulkanRenderer::s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(descInfo->Dimension)])->GetSRVVkImageView(),
+							std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(VulkanRenderer::s_NullDescriptors->DefaultTextureSRV[ToUnderlying(descInfo->Dimension)])->GetSRVVkImageView(),
 							VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
 						};
 					}
@@ -383,10 +382,10 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 				case RendererAPI::DescriptorType::RWTexture:
 					for (uint32_t arr = 0; arr < arrayCount; ++arr)
 					{
-						updateData[descInfo->HandleIndex + static_cast<std::size_t>(arr)].ImageInfo =
+						updateData[descInfo->HandleIndex + NumericCast<std::size_t>(arr)].ImageInfo =
 						{
 							VK_NULL_HANDLE,
-							std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(VulkanRenderer::s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(descInfo->Dimension)])->GetUAVVkImageViews()[0],
+							std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(VulkanRenderer::s_NullDescriptors->DefaultTextureUAV[ToUnderlying(descInfo->Dimension)])->GetUAVVkImageViews()[0],
 							VK_IMAGE_LAYOUT_GENERAL
 						};
 					}
@@ -399,7 +398,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 				case RendererAPI::DescriptorType::BufferRaw:
 					for(uint32_t arr = 0; arr < arrayCount; ++arr)
 					{
-						updateData[descInfo->HandleIndex + static_cast<std::size_t>(arr)].BufferInfo =
+						updateData[descInfo->HandleIndex + NumericCast<std::size_t>(arr)].BufferInfo =
 						{
 							VulkanRenderer::s_NullDescriptors->DefaultBufferSRV->GetVkBuffer(),
 							VulkanRenderer::s_NullDescriptors->DefaultBufferSRV->GetOffset(),
@@ -413,7 +412,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 				case RendererAPI::DescriptorType::RWBufferRaw:
 					for(uint32_t arr = 0; arr < arrayCount; ++arr)
 					{
-						updateData[descInfo->HandleIndex + static_cast<std::size_t>(arr)].BufferInfo =
+						updateData[descInfo->HandleIndex + NumericCast<std::size_t>(arr)].BufferInfo =
 						{
 							VulkanRenderer::s_NullDescriptors->DefaultBufferUAV->GetVkBuffer(),
 							VulkanRenderer::s_NullDescriptors->DefaultBufferUAV->GetOffset(),
@@ -424,12 +423,12 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 				case RendererAPI::DescriptorType::TexelBuffer:
 					for (uint32_t arr = 0; arr < arrayCount; ++arr)
-						updateData[descInfo->HandleIndex + static_cast<std::size_t>(arr)].BufferView = VulkanRenderer::s_NullDescriptors->DefaultBufferSRV->GetUniformTexelView();
+						updateData[descInfo->HandleIndex + NumericCast<std::size_t>(arr)].BufferView = VulkanRenderer::s_NullDescriptors->DefaultBufferSRV->GetUniformTexelView();
 					break;
 
 				case RendererAPI::DescriptorType::RWTexelBuffer:
 					for (uint32_t arr = 0; arr < arrayCount; ++arr)
-						updateData[descInfo->HandleIndex + static_cast<std::size_t>(arr)].BufferView = VulkanRenderer::s_NullDescriptors->DefaultBufferUAV->GetStorageTexelView();
+						updateData[descInfo->HandleIndex + NumericCast<std::size_t>(arr)].BufferView = VulkanRenderer::s_NullDescriptors->DefaultBufferUAV->GetStorageTexelView();
 					break;
 
 				default:
@@ -442,7 +441,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 			const VkDescriptorUpdateTemplateCreateInfo createInfo = VulkanInits::DescriptorUpdateTemplateCreateInfo
 			(
 				m_vkDescriptorSetLayouts[setIndex], entryCount, entries.data(),
-				VkPipelineBindPointTranslator[static_cast<uint32_t>(m_pipelineType)],
+				VkPipelineBindPointTranslator[ToUnderlying(m_pipelineType)],
 				m_pipelineLayout, setIndex
 			);
 			VkCall(vkCreateDescriptorUpdateTemplate(m_device->GetVkDevice(), &createInfo, nullptr,

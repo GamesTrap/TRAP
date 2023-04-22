@@ -16,7 +16,7 @@ namespace TRAP
 		/// <summary>
 		/// Color formats.
 		/// </summary>
-		enum class ColorFormat
+		enum class ColorFormat : uint32_t
 		{
 			NONE = 0,
 			GrayScale = 1,

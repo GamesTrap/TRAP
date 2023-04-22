@@ -328,7 +328,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 									std::string(" which exceeds max size ") +
 									std::to_string(RendererAPI::GPUSettings.MaxUniformBufferRange)));
 
-				m_dynamicSizeOffsets[index].Offset = !off.Offsets.empty() ? off.Offsets[0] : 0u;
+				m_dynamicSizeOffsets[index].Offset = !off.Offsets.empty() ? NumericCast<uint32_t>(off.Offsets[0]) : 0u;
 				const VulkanBuffer* const buf = dynamic_cast<VulkanBuffer*>(buffers[0]);
 				updateData[NumericCast<std::size_t>(desc->HandleIndex) + 0u].BufferInfo =
 				{
@@ -341,7 +341,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 				//vkUpdateDescriptorSet is necessary
 				if (off.Sizes[0] != m_dynamicSizeOffsets[index].Size)
 				{
-					m_dynamicSizeOffsets[index].Size = off.Sizes[0];
+					m_dynamicSizeOffsets[index].Size = NumericCast<uint32_t>(off.Sizes[0]);
 					update = true;
 				}
 				break;

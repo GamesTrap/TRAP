@@ -55,7 +55,7 @@ TRAP::Graphics::IndexBuffer::~IndexBuffer()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return static_cast<uint32_t>(m_indexBuffer->GetSize() /
+	return NumericCast<uint32_t>(m_indexBuffer->GetSize() /
 	                             ((m_indexType == RendererAPI::IndexType::UInt16) ? sizeof(uint16_t) :
 	                                                                                sizeof(uint32_t)));
 }

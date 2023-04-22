@@ -282,7 +282,7 @@ bool TRAP::Graphics::OrthographicCameraController::OnFrameBufferResize(const Eve
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	if (e.GetWidth() > 0 && e.GetHeight() > 0)
-		OnResize(static_cast<float>(e.GetWidth()), static_cast<float>(e.GetHeight()));
+		OnResize(NumericCast<float>(e.GetWidth()), NumericCast<float>(e.GetHeight()));
 
 	return false;
 }

@@ -1777,7 +1777,7 @@ namespace TRAP::Graphics
 		/// Enum describing the update frequency of a descriptor.
 		/// Note: The same update frequency order should be used by shaders.
 		/// </summary>
-		enum class DescriptorUpdateFrequency
+		enum class DescriptorUpdateFrequency : uint32_t
 		{
 			Static = 0,
 			Dynamic
@@ -2924,9 +2924,9 @@ namespace TRAP::Graphics
 			struct BufferOffset
 			{
 				//Offset to bind the buffer descriptor
-				std::vector<uint32_t> Offsets{};
+				std::vector<uint64_t> Offsets{};
 				//Size of the buffer to bind
-				std::vector<uint32_t> Sizes{};
+				std::vector<uint64_t> Sizes{};
 			};
 
 			/// <summary>

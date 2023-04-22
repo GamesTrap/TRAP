@@ -16,13 +16,13 @@
 
     const TRAP::Math::Vec2 min
     {
-        (coords.x * cellSize.x) / static_cast<float>(texture->GetWidth()),
-        (coords.y * cellSize.y) / static_cast<float>(texture->GetHeight())
+        (coords.x * cellSize.x) / NumericCast<float>(texture->GetWidth()),
+        (coords.y * cellSize.y) / NumericCast<float>(texture->GetHeight())
     };
     const TRAP::Math::Vec2 max
     {
-        ((coords.x + spriteSize.x) * cellSize.x) / static_cast<float>(texture->GetWidth()),
-        ((coords.y + spriteSize.y) * cellSize.y) / static_cast<float>(texture->GetHeight())
+        ((coords.x + spriteSize.x) * cellSize.x) / NumericCast<float>(texture->GetWidth()),
+        ((coords.y + spriteSize.y) * cellSize.y) / NumericCast<float>(texture->GetHeight())
     };
 
     return MakeRef<SubTexture2D>(std::move(name), std::move(texture), min, max);
@@ -43,13 +43,13 @@
 
     const TRAP::Math::Vec2 min
     {
-        pixelPos.x / static_cast<float>(texture->GetWidth()),
-        pixelPos.y / static_cast<float>(texture->GetHeight())
+        pixelPos.x / NumericCast<float>(texture->GetWidth()),
+        pixelPos.y / NumericCast<float>(texture->GetHeight())
     };
     const TRAP::Math::Vec2 max
     {
-        (pixelPos.x + spriteSize.x * pixelSize.x) / static_cast<float>(texture->GetWidth()),
-        (pixelPos.y + spriteSize.y * pixelSize.y) / static_cast<float>(texture->GetHeight())
+        (pixelPos.x + spriteSize.x * pixelSize.x) / NumericCast<float>(texture->GetWidth()),
+        (pixelPos.y + spriteSize.y * pixelSize.y) / NumericCast<float>(texture->GetHeight())
     };
 
     return MakeRef<SubTexture2D>(std::move(name), std::move(texture), min, max);

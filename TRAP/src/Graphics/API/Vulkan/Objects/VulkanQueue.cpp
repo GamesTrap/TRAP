@@ -135,7 +135,7 @@ TRAP::Graphics::API::VulkanQueue::~VulkanQueue()
 	//Vulkan is nano sec per tick.
 	//Handle the conversion logic here.
 
-	return 1.0 / (static_cast<double>(m_timestampPeriod) * 1e-9);
+	return 1.0 / (NumericCast<double>(m_timestampPeriod) * 1e-9);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

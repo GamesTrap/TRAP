@@ -210,10 +210,10 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindVertexBuffer(const std::vecto
 	std::vector<VkBuffer> vkBuffers(cappedBufferCount);
 	std::vector<VkDeviceSize> vkOffsets(cappedBufferCount);
 
-	for(uint32_t i = 0; i < cappedBufferCount; ++i)
+	for(std::size_t i = 0; i < vkBuffers.size(); ++i)
 	{
 		vkBuffers[i] = std::dynamic_pointer_cast<VulkanBuffer>(buffers[i])->GetVkBuffer();
-		vkOffsets[i] = (offsets.size() > NumericCast<std::size_t>(i)) ? offsets[i] : 0;
+		vkOffsets[i] = (offsets.size() > i) ? offsets[i] : 0;
 	}
 
 	vkCmdBindVertexBuffers(m_vkCommandBuffer, 0, cappedBufferCount, vkBuffers.data(), vkOffsets.data());

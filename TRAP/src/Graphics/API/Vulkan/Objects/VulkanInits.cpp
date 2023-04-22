@@ -1136,7 +1136,7 @@
 	info.pNext = nullptr;
 	info.flags = 0;
 	info.topology = topology;
-	info.primitiveRestartEnable = static_cast<VkBool32>(primitiveRestart);
+	info.primitiveRestartEnable = primitiveRestart ? VK_TRUE : VK_FALSE;
 
 	return info;
 }
@@ -1190,7 +1190,7 @@
 	info.pNext = nullptr;
 	info.flags = 0;
 	info.rasterizationSamples = sampleCount;
-	info.sampleShadingEnable = static_cast<VkBool32>(sampleShading);
+	info.sampleShadingEnable = sampleShading ? VK_TRUE : VK_FALSE;
 	info.minSampleShading = sampleShading ? sampleShadingRate : 0.0f;
 	info.pSampleMask = nullptr;
 	info.alphaToCoverageEnable = VK_FALSE;

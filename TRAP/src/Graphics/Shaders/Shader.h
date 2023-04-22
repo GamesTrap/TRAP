@@ -328,7 +328,7 @@ namespace TRAP::Graphics
 		/// <param name="userMacros">Optional: User defined macros.</param>
 		/// <returns>True if pre processing was successful, false otherwise.</returns>
 		[[nodiscard]] static bool PreProcessGLSL(const std::string& glslSource,
-		                                         std::array<std::string, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& shaders,
+		                                         std::array<std::string, ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& shaders,
 		                                         RendererAPI::ShaderStage& shaderStages,
 								                 const std::vector<Macro>* userMacros);
 		/// <summary>
@@ -372,7 +372,7 @@ namespace TRAP::Graphics
 		/// <param name="shaders">GLSL shader(s) to convert.</param>
 		/// <param name="shaderStages">Shader stages contained in shaders parameter.</param>
 		/// <returns>RendererAPI::BinaryShaderDesc containing SPIRV binary data.</returns>
-		[[nodiscard]] static RendererAPI::BinaryShaderDesc ConvertGLSLToSPIRV(const std::array<std::string, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& shaders,
+		[[nodiscard]] static RendererAPI::BinaryShaderDesc ConvertGLSLToSPIRV(const std::array<std::string, ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& shaders,
 									                                          const RendererAPI::ShaderStage& shaderStages);
 		/// <summary>
 		/// Convert a glslang::TProgram object to SPIRV binary data.

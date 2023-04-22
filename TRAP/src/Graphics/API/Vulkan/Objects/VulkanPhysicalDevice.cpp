@@ -68,7 +68,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	std::copy_n(m_physicalDeviceIDProperties.deviceUUID, m_deviceUUID.size(), m_deviceUUID.begin());
 
 	// Capabilities for VulkanRenderer
-	for (uint32_t i = 0; i < static_cast<uint32_t>(TRAP::Graphics::API::ImageFormat::IMAGE_FORMAT_COUNT); ++i)
+	for (uint32_t i = 0; i < ToUnderlying(TRAP::Graphics::API::ImageFormat::IMAGE_FORMAT_COUNT); ++i)
 	{
 		const VkFormat fmt = ImageFormatToVkFormat(static_cast<TRAP::Graphics::API::ImageFormat>(i));
 		if (fmt == VK_FORMAT_UNDEFINED)
@@ -101,7 +101,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	RendererAPI::GPUSettings.MaxPushConstantSize = m_physicalDeviceProperties.limits.maxPushConstantsSize;
 	RendererAPI::GPUSettings.MaxSamplerAllocationCount = m_physicalDeviceProperties.limits.maxSamplerAllocationCount;
 	RendererAPI::GPUSettings.MaxTessellationControlPoints = m_physicalDeviceProperties.limits.maxTessellationPatchSize;
-	RendererAPI::GPUSettings.MaxMSAASampleCount = static_cast<RendererAPI::SampleCount>(TRAP::Math::Min(GetMaxUsableMSAASampleCount(), static_cast<uint32_t>(VK_SAMPLE_COUNT_16_BIT)));
+	RendererAPI::GPUSettings.MaxMSAASampleCount = static_cast<RendererAPI::SampleCount>(TRAP::Math::Min(GetMaxUsableMSAASampleCount(), ToUnderlying(VK_SAMPLE_COUNT_16_BIT)));
 
 	// maxBoundDescriptorSets not needed because engine is always limited to 4 descriptor sets
 
@@ -168,7 +168,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 				const auto &queueFam = GetQueueFamilyProperties();
 				for (std::size_t i = 0; i < queueFam.size(); ++i)
 				{
-					VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(m_physicalDevice, static_cast<uint32_t>(i), surface, &presentSupport));
+					VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(m_physicalDevice, NumericCast<uint32_t>(i), surface, &presentSupport));
 					if (presentSupport != 0u)
 					{
 						RendererAPI::GPUSettings.PresentSupported = true;
@@ -354,7 +354,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 		features2.pNext = &m_physicalDeviceFragmentShaderInterlockFeatures;
 		vkGetPhysicalDeviceFeatures2(m_physicalDevice, &features2);
 
-		RendererAPI::GPUSettings.ROVsSupported = static_cast<uint32_t>(static_cast<bool>(m_physicalDeviceFragmentShaderInterlockFeatures.fragmentShaderPixelInterlock));
+		RendererAPI::GPUSettings.ROVsSupported = m_physicalDeviceFragmentShaderInterlockFeatures.fragmentShaderPixelInterlock;
 	}
 	RendererAPI::GPUSettings.ROVsSupported = 0u;
 }
@@ -648,7 +648,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		VkBool32 foundPresentSupport = VK_FALSE;
 		for (std::size_t i = 0; i < queueFamilyProperties.size(); i++)
 		{
-			VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(dev, static_cast<uint32_t>(i), surface, &foundPresentSupport));
+			VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(dev, NumericCast<uint32_t>(i), surface, &foundPresentSupport));
 			if (foundPresentSupport != 0u)
 				break;
 		}
@@ -858,7 +858,10 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		for (uint32_t i = 0; i < memProps.memoryHeapCount; i++)
 		{
 			if ((VK_MEMORY_HEAP_DEVICE_LOCAL_BIT & memProps.memoryHeaps[i].flags) != 0u)
-				score += static_cast<uint32_t>(memProps.memoryHeaps[i].size) / static_cast<uint32_t>(1e+9) * 100u;
+			{
+				static constexpr uint64_t ByteToGigabyte = 1e+9;
+				score += NumericCast<uint32_t>(memProps.memoryHeaps[i].size / ByteToGigabyte * 100u);
+			}
 		}
 
 		// Optionally: Check 2D & Cube Image Max Size
