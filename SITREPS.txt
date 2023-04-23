@@ -3909,3 +3909,4 @@ SITREP 04/23/2023|23w16a5
     - Replaced some static_casts with NumericCast() and ToUnderlying() ~>45 mins
     - TestNetwork Added missing SteamworksSDK to premake file ~<5 mins
     - TestNetwork Removed unnecessary DiscordGameSDK from premake file ~<5 mins
+    - GitHub Actions Added job for Linux Clang ~<5 mins
