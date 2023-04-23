@@ -347,9 +347,9 @@ template <typename T>
 
 	std::vector<T> newData{};
 	uint32_t stride = 0;
-	const uint32_t multiplier = static_cast<uint32_t>(format);
+	const uint32_t multiplier = ToUnderlying(format);
 
-	newData.assign(data, data + static_cast<uint64_t>(width) * static_cast<uint64_t>(height) * multiplier);
+	newData.assign(data, data + NumericCast<uint64_t>(width) * height * multiplier);
 	stride = height * multiplier;
 
 	std::vector<T> row{};
@@ -390,9 +390,9 @@ template <typename T>
 
 	std::vector<T> newData{};
 	uint32_t stride = 0;
-	const uint32_t multiplier = static_cast<uint32_t>(format);
+	const uint32_t multiplier = ToUnderlying(format);
 
-	newData.assign(data, data + static_cast<uint64_t>(width) * static_cast<uint64_t>(height) * multiplier);
+	newData.assign(data, data + NumericCast<uint64_t>(width) * height * multiplier);
 	stride = width * multiplier;
 
 	std::vector<T> row{};
@@ -437,9 +437,9 @@ template <typename T>
 	else
 		whitePixelColor = 1.0f;
 
-	std::vector<T> newData(width * height * static_cast<uint32_t>(ColorFormat::RGBA));
+	std::vector<T> newData(width * height * ToUnderlying(ColorFormat::RGBA));
 	std::size_t newDataIndex = 0;
-	for(std::size_t oldDataIndex = 0; oldDataIndex < static_cast<std::size_t>(width) * height * static_cast<uint32_t>(ColorFormat::RGB);
+	for(std::size_t oldDataIndex = 0; oldDataIndex < NumericCast<std::size_t>(width) * height * ToUnderlying(ColorFormat::RGB);
 		oldDataIndex += 3)
 	{
 		newData[newDataIndex + 0] = data[oldDataIndex + 0];
@@ -474,9 +474,9 @@ template <typename T>
 		return std::vector<T>();
 	}
 
-	std::vector<T> newData(width * height * static_cast<uint32_t>(ColorFormat::RGB));
+	std::vector<T> newData(width * height * ToUnderlying(ColorFormat::RGB));
 	std::size_t newDataIndex = 0;
-	for(std::size_t oldDataIndex = 0; oldDataIndex < static_cast<std::size_t>(width) * height * static_cast<uint32_t>(ColorFormat::RGBA);
+	for(std::size_t oldDataIndex = 0; oldDataIndex < NumericCast<std::size_t>(width) * height * ToUnderlying(ColorFormat::RGBA);
 		oldDataIndex += 4)
 	{
 		newData[newDataIndex + 0] = data[oldDataIndex + 0];

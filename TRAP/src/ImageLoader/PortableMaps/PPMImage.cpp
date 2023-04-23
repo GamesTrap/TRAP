@@ -66,10 +66,10 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::filesystem::path filepath)
 	if(header.MaxValue > 255)
 	{
 		m_bitsPerPixel = 48;
-		m_data2Byte.resize(static_cast<std::size_t>(m_width) * m_height * 3);
+		m_data2Byte.resize(NumericCast<std::size_t>(m_width) * m_height * 3);
 		if(!file.read(reinterpret_cast<char*>(m_data2Byte.data()),
-		              static_cast<std::streamsize>(m_width) * m_height * 3 *
-					  static_cast<std::streamsize>(sizeof(uint16_t))))
+		              NumericCast<std::streamsize>(m_width) * m_height * 3 *
+					  NumericCast<std::streamsize>(sizeof(uint16_t))))
 		{
 			file.close();
 			TP_ERROR(Log::ImagePPMPrefix, "Couldn't load pixel data!");
@@ -90,9 +90,9 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::filesystem::path filepath)
 	else
 	{
 		m_bitsPerPixel = 24;
-		m_data.resize(static_cast<std::size_t>(m_width) * m_height * 3);
+		m_data.resize(NumericCast<std::size_t>(m_width) * m_height * 3);
 		if (!file.read(reinterpret_cast<char*>(m_data.data()),
-					   static_cast<std::streamsize>(m_width) * m_height * 3))
+					   NumericCast<std::streamsize>(m_width) * m_height * 3))
 		{
 			file.close();
 			TP_ERROR(Log::ImagePPMPrefix, "Couldn't load pixel data!");
@@ -146,10 +146,10 @@ void TRAP::INTERNAL::PPMImage::Save(const Image* const img, const std::filesyste
 	if(img->GetColorFormat() == ColorFormat::RGBA)
 	{
 		pixelData = ConvertRGBAToRGB<uint8_t>(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), static_cast<const uint8_t*>(img->GetPixelData()));
-		file.write(reinterpret_cast<const char*>(pixelData.data()), static_cast<std::streamsize>(pixelData.size()));
+		file.write(reinterpret_cast<const char*>(pixelData.data()), NumericCast<std::streamsize>(pixelData.size()));
 	}
 	else
-		file.write(static_cast<const char*>(img->GetPixelData()), static_cast<std::streamsize>(img->GetPixelDataSize()));
+		file.write(static_cast<const char*>(img->GetPixelData()), NumericCast<std::streamsize>(img->GetPixelDataSize()));
 
 	file.close();
 }

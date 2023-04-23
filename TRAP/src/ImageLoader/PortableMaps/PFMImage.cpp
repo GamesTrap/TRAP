@@ -58,7 +58,11 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::filesystem::path filepath)
 
 	//Determine endianness
 	const bool isFileLittleEndian = (header.ByteOrder < 0.0f); //If true little-endian is used else if false big-endian is used
-	const bool needSwap = isFileLittleEndian != static_cast<bool>(Utils::GetEndian());
+	bool needSwap = false;
+	if(isFileLittleEndian)
+		needSwap = Utils::GetEndian() != Utils::Endian::Little;
+	else
+		needSwap = Utils::GetEndian() != Utils::Endian::Big;
 
 	file.ignore(256, '\n'); //Skip ahead to the pixel data
 
@@ -67,10 +71,10 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::filesystem::path filepath)
 		//RGB
 		m_colorFormat = ColorFormat::RGB;
 		m_bitsPerPixel = 96;
-		m_data.resize(static_cast<std::size_t>(m_width) * m_height * 3);
+		m_data.resize(NumericCast<std::size_t>(m_width) * m_height * 3);
 		if (!file.read(reinterpret_cast<char*>(m_data.data()),
-					   static_cast<std::streamsize>(m_width) * m_height * 3 *
-                       static_cast<std::streamsize>(sizeof(float))))
+					   NumericCast<std::streamsize>(m_width) * m_height * 3 *
+                       NumericCast<std::streamsize>(sizeof(float))))
 		{
 			file.close();
 			m_data.clear();
@@ -92,10 +96,10 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::filesystem::path filepath)
 		//GrayScale
 		m_colorFormat = ColorFormat::GrayScale;
 		m_bitsPerPixel = 32;
-		m_data.resize(static_cast<std::size_t>(m_width) * m_height);
+		m_data.resize(NumericCast<std::size_t>(m_width) * m_height);
 		if (!file.read(reinterpret_cast<char*>(m_data.data()),
-					   static_cast<std::streamsize>(m_width) * m_height *
-					   static_cast<std::streamsize>(sizeof(float))))
+					   NumericCast<std::streamsize>(m_width) * m_height *
+					   NumericCast<std::streamsize>(sizeof(float))))
 		{
 			file.close();
 			m_data.clear();

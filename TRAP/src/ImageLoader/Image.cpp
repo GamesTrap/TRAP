@@ -47,7 +47,7 @@ TRAP::Image::Image() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return m_bitsPerPixel / static_cast<uint32_t>(m_colorFormat);
+	return m_bitsPerPixel / ToUnderlying(m_colorFormat);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -56,7 +56,7 @@ TRAP::Image::Image() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return GetBytesPerPixel() / static_cast<uint32_t>(m_colorFormat);
+	return GetBytesPerPixel() / ToUnderlying(m_colorFormat);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -156,7 +156,7 @@ TRAP::Image::Image() noexcept
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	std::vector<uint8_t> data{};
-	data.resize(static_cast<std::size_t>(width) * height * 3);
+	data.resize(NumericCast<std::size_t>(width) * height * 3);
 
 	uint32_t index = 0;
 	for (uint32_t i = 0; i < width * height * 2; i += 2)
@@ -200,31 +200,31 @@ TRAP::Image::Image() noexcept
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	std::vector<uint8_t> data{};
-	data.resize(static_cast<std::size_t>(width) * height * channels);
+	data.resize(NumericCast<std::size_t>(width) * height * channels);
 
 	uint32_t index = 0;
 	for (uint32_t i = 0; i < width * height; i++)
 	{
 		if (channels == 1)
-			data[index++] = colorMap[static_cast<std::size_t>(source[i]) * channels];
+			data[index++] = colorMap[NumericCast<std::size_t>(source[i]) * channels];
 		else if (channels == 2)
 		{
-			data[index++] = (colorMap[source[i] * channels + 1u] << 1u) & 0xF8u;
-			data[index++] = ((colorMap[source[i] * channels + 1u] << 6u) | (colorMap[static_cast<std::size_t>(source[i]) * channels] >> 2u)) & 0xF8u;
+			data[index++] = (colorMap[NumericCast<std::size_t>(source[i]) * channels + 1u] << 1u) & 0xF8u;
+			data[index++] = ((colorMap[NumericCast<std::size_t>(source[i]) * channels + 1u] << 6u) | (colorMap[static_cast<std::size_t>(source[i]) * channels] >> 2u)) & 0xF8u;
 			data[index++] = (colorMap[static_cast<std::size_t>(source[i]) * channels] << 3u) & 0xF8u;
 		}
 		else if (channels == 3)
 		{
-			data[index++] = colorMap[source[i] * channels + 2];
-			data[index++] = colorMap[source[i] * channels + 1];
-			data[index++] = colorMap[source[i] * channels + 0];
+			data[index++] = colorMap[NumericCast<std::size_t>(source[i]) * channels + 2];
+			data[index++] = colorMap[NumericCast<std::size_t>(source[i]) * channels + 1];
+			data[index++] = colorMap[NumericCast<std::size_t>(source[i]) * channels + 0];
 		}
 		else if (channels == 4)
 		{
-			data[index++] = colorMap[source[i] * channels + 2];
-			data[index++] = colorMap[source[i] * channels + 1];
-			data[index++] = colorMap[source[i] * channels + 0];
-			data[index++] = colorMap[source[i] * channels + 3];
+			data[index++] = colorMap[NumericCast<std::size_t>(source[i]) * channels + 2];
+			data[index++] = colorMap[NumericCast<std::size_t>(source[i]) * channels + 1];
+			data[index++] = colorMap[NumericCast<std::size_t>(source[i]) * channels + 0];
+			data[index++] = colorMap[NumericCast<std::size_t>(source[i]) * channels + 3];
 		}
 	}
 

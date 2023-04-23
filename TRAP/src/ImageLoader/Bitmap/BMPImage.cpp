@@ -144,8 +144,8 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 	std::vector<uint8_t> colorTable{};
 	if (m_bitsPerPixel <= 8 && (infoHeader.CLRUsed != 0u))
 	{
-		colorTable.resize(static_cast<std::size_t>(4u) * infoHeader.CLRUsed);
-		if(!file.read(reinterpret_cast<char*>(colorTable.data()), 4 * static_cast<std::streamsize>(infoHeader.CLRUsed)))
+		colorTable.resize(NumericCast<std::size_t>(4u) * infoHeader.CLRUsed);
+		if(!file.read(reinterpret_cast<char*>(colorTable.data()), 4 * NumericCast<std::streamsize>(infoHeader.CLRUsed)))
 		{
 			file.close();
 			TP_ERROR(Log::ImageBMPPrefix, "Couldn't load color map data!");
@@ -178,13 +178,13 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 	if ((m_bitsPerPixel != 32 && infoHeader.Compression == 0) &&
 	    4 - (((m_bitsPerPixel / 8) * m_width) % 4) != 4) //Padding
 	{
-		imageData.resize(static_cast<std::size_t>(m_width) * m_height * (m_bitsPerPixel / 8));
+		imageData.resize(NumericCast<std::size_t>(m_width) * m_height * (m_bitsPerPixel / 8));
 		const uint32_t padding = 4 - (((m_bitsPerPixel / 8) * m_width) % 4);
 		uint32_t offset = 0;
 		for (uint32_t j = 0; j < m_height; j++)
 		{
 			if(!file.read(reinterpret_cast<char*>(imageData.data()) + offset,
-			              static_cast<std::streamsize>(m_width) * (m_bitsPerPixel / 8)))
+			              NumericCast<std::streamsize>(m_width) * (m_bitsPerPixel / 8)))
 			{
 				file.close();
 				TP_ERROR(Log::ImageBMPPrefix, "Couldn't load pixel data!");
@@ -202,9 +202,9 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 	{
 		if (infoHeader.Compression != 1)
 		{
-			imageData.resize(static_cast<std::size_t>(m_width) * m_height * (m_bitsPerPixel / 8));
+			imageData.resize(NumericCast<std::size_t>(m_width) * m_height * (m_bitsPerPixel / 8));
 			if(!file.read(reinterpret_cast<char*>(imageData.data()),
-						  static_cast<std::streamsize>(m_width) * m_height * (m_bitsPerPixel / 8)))
+						  NumericCast<std::streamsize>(m_width) * m_height * (m_bitsPerPixel / 8)))
 			{
 				file.close();
 				TP_ERROR(Log::ImageBMPPrefix, "Couldn't load pixel data!");
@@ -293,7 +293,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 			//Compressed Grayscale
 			m_colorFormat = ColorFormat::GrayScale;
 			m_bitsPerPixel = 8;
-			m_data.resize(static_cast<std::size_t>(m_width) * m_height);
+			m_data.resize(NumericCast<std::size_t>(m_width) * m_height);
 
 			//Decode Single Channel RLE 8
 			DecodeRLE8(imageData, nullptr);
@@ -303,7 +303,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 			//Compressed Palette
 			m_colorFormat = ColorFormat::RGBA;
 			m_bitsPerPixel = 32;
-			m_data.resize(static_cast<std::size_t>(m_width) * m_height * 4);
+			m_data.resize(NumericCast<std::size_t>(m_width) * m_height * 4);
 
 			//Decode Multi Channel RLE 8
 			DecodeRLE8(imageData, &colorTable);
@@ -335,10 +335,10 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 			uint32_t index = 0;
 			for (uint32_t i = 0; i < m_width * m_height * m_bitsPerPixel / 8 - 1;)
 			{
-				const uint32_t value = static_cast<uint32_t>(imageData[i]) +
-					                   (static_cast<uint32_t>(imageData[i + 1]) << 8u) +
-					                   (static_cast<uint32_t>(imageData[i + 2]) << 16u) +
-					                   (static_cast<uint32_t>(imageData[i + 3]) << 24u);
+				const uint32_t value = NumericCast<uint32_t>(imageData[i]) +
+					                   (NumericCast<uint32_t>(imageData[i + 1]) << 8u) +
+					                   (NumericCast<uint32_t>(imageData[i + 2]) << 16u) +
+					                   (NumericCast<uint32_t>(imageData[i + 3]) << 24u);
 
 				data[index++] = Make8Bits(ApplyBitField(value, std::get<0>(bitFields)), std::get<0>(bitFields).Span);
 				data[index++] = Make8Bits(ApplyBitField(value, std::get<1>(bitFields)), std::get<1>(bitFields).Span);
@@ -366,8 +366,8 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 			uint32_t index = 0;
 			for (uint32_t i = 0; i < m_width * m_height * m_bitsPerPixel / 8 - 1;)
 			{
-				const uint16_t value = static_cast<uint16_t>(imageData[i]) +
-								       static_cast<uint16_t>(imageData[i + 1] << 8u);
+				const uint16_t value = NumericCast<uint16_t>(imageData[i]) +
+								       NumericCast<uint16_t>(imageData[i + 1] << 8u);
 
 				data[index++] = Make8Bits(ApplyBitField(value, std::get<0>(bitFields)), std::get<0>(bitFields).Span);
 				data[index++] = Make8Bits(ApplyBitField(value, std::get<1>(bitFields)), std::get<1>(bitFields).Span);
@@ -462,7 +462,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	uint32_t bit = 0;
-	for (; bit < 32 && ((mask & (static_cast<uint32_t>(1) << bit)) == 0u); bit++);
+	for (; bit < 32 && ((mask & BIT(bit)) == 0u); bit++);
 
 	if(bit >= 32)
 	{
@@ -472,11 +472,11 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 	}
 
 	field.Start = bit;
-	for (; bit < 32 && ((mask & (static_cast<uint32_t>(1) << bit)) != 0u); bit++);
+	for (; bit < 32 && ((mask & BIT(bit)) != 0u); bit++);
 	field.Span = bit - field.Start;
 
 	//If there are more set bits, there was a gap, which is invalid
-	return bit >= 32 || ((mask & ~((static_cast<uint32_t>(1) << bit) - 1)) == 0u);
+	return bit >= 32 || ((mask & ~(BIT(bit) - 1u)) == 0u);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -488,9 +488,9 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 	uint32_t output = 0;
 
 	if (bitSpan == 8)
-		return static_cast<uint8_t>(value);
+		return NumericCast<uint8_t>(value);
 	if (bitSpan > 8)
-		return static_cast<uint8_t>(value >> (bitSpan - 8));
+		return NumericCast<uint8_t>(value >> (bitSpan - 8));
 
 	value <<= (8 - bitSpan); //Shift it up into the most significant bits.
 	while(value != 0u)
@@ -499,7 +499,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 		value >>= bitSpan;
 	}
 
-	return static_cast<uint8_t>(output);
+	return NumericCast<uint8_t>(output);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -508,7 +508,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return x >> bitField.Start & ((static_cast<uint32_t>(1u) << bitField.Span) - 1u);
+	return x >> bitField.Start & (BIT(bitField.Span) - 1u);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -517,7 +517,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return x >> bitField.Start & ((static_cast<uint32_t>(1) << bitField.Span) - 1);
+	return x >> bitField.Start & (BIT(bitField.Span) - 1);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
