@@ -15,6 +15,7 @@
 
 #include "Application.h"
 #include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/Objects/DescriptorSet.h"
 
 namespace TRAP::Graphics
 {
