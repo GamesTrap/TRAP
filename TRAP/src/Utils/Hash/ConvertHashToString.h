@@ -1,6 +1,8 @@
 #ifndef TRAP_CONVERTHASHTOSTRING_H
 #define TRAP_CONVERTHASHTOSTRING_H
 
+#include "Core/Base.h"
+
 #include <array>
 #include <cstdint>
 #include <iomanip>
@@ -32,7 +34,7 @@ namespace TRAP::Utils::Hash
 		for (const uint8_t& i : hash)
 		{
 			ss << std::hex << std::setfill('0') << std::setw(2) << std::nouppercase
-			   << static_cast<int32_t>(i);
+			   << NumericCast<uint32_t>(i);
 		}
 
 		return ss.str();

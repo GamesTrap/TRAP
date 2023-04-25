@@ -29,8 +29,8 @@ namespace TRAP::Utils
     private:
         std::seed_seq SeedSeq
         { {
-                static_cast<std::uintmax_t>(std::random_device{ }()),
-                static_cast<std::uintmax_t>(std::chrono::steady_clock::now().time_since_epoch().count())
+                NumericCast<std::uintmax_t>(std::random_device{ }()),
+                NumericCast<std::uintmax_t>(std::chrono::steady_clock::now().time_since_epoch().count())
         } };
     };
 

@@ -239,7 +239,7 @@ void TRAP::Window::OnUpdate()
 
 	const auto frameBufferSize = GetFrameBufferSize();
 
-	return static_cast<float>(frameBufferSize.x) / static_cast<float>(frameBufferSize.y);
+	return NumericCast<float>(frameBufferSize.x) / NumericCast<float>(frameBufferSize.y);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -318,13 +318,13 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 			}
 
 			//Check if width or height differs from current
-			if(m_data.Width != static_cast<int32_t>(width) || m_data.Height != static_cast<int32_t>(height))
+			if(m_data.Width != NumericCast<int32_t>(width) || m_data.Height != NumericCast<int32_t>(height))
 			{
 				//Set new window resolution
 				m_data.windowModeParams.Width = m_data.Width;
-				m_data.Width = static_cast<int32_t>(width);
+				m_data.Width = NumericCast<int32_t>(width);
 				m_data.windowModeParams.Height = m_data.Height;
-				m_data.Height = static_cast<int32_t>(height);
+				m_data.Height = NumericCast<int32_t>(height);
 				INTERNAL::WindowingAPI::SetWindowSize(*m_window, m_data.Width,
 				                                      m_data.Height);
 			}
@@ -352,8 +352,8 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 			else
 			{
 				//Use provided window width, height and refresh rate
-				m_data.Width = static_cast<int32_t>(width);
-				m_data.Height = static_cast<int32_t>(height);
+				m_data.Width = NumericCast<int32_t>(width);
+				m_data.Height = NumericCast<int32_t>(height);
 				m_data.RefreshRate = refreshRate;
 			}
 
@@ -426,8 +426,8 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 			if (width != 0 && height != 0 && refreshRate != 0.0)
 			{
 				//Check if current running mode is same as target mode
-				if (static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].Width) == width &&
-					static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].Height) == height &&
+				if (NumericCast<uint32_t>(s_baseVideoModes[m_data.Monitor].Width) == width &&
+					NumericCast<uint32_t>(s_baseVideoModes[m_data.Monitor].Height) == height &&
 					s_baseVideoModes[m_data.Monitor].RefreshRate == refreshRate)
 					valid = true;
 
@@ -437,8 +437,8 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 					for (const auto& monitorVideoMode : monitorVideoModes)
 					{
 						//Check if resolution pair is valid and break if found
-						if (static_cast<uint32_t>(monitorVideoMode.Width) == width &&
-							static_cast<uint32_t>(monitorVideoMode.Height) == height &&
+						if (NumericCast<uint32_t>(monitorVideoMode.Width) == width &&
+							NumericCast<uint32_t>(monitorVideoMode.Height) == height &&
 							monitorVideoMode.RefreshRate == refreshRate)
 						{
 							valid = true;
@@ -456,8 +456,8 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 				refreshRate = s_baseVideoModes[m_data.Monitor].RefreshRate;
 			}
 
-			m_data.Width = static_cast<int32_t>(width);
-			m_data.Height = static_cast<int32_t>(height);
+			m_data.Width = NumericCast<int32_t>(width);
+			m_data.Height = NumericCast<int32_t>(height);
 			m_data.RefreshRate = refreshRate;
 		}
 
@@ -678,8 +678,8 @@ void TRAP::Window::SetMinimumSize(const uint32_t minWidth, const uint32_t minHei
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
-	m_data.MinWidth = static_cast<int32_t>(minWidth);
-	m_data.MinHeight = static_cast<int32_t>(minHeight);
+	m_data.MinWidth = NumericCast<int32_t>(minWidth);
+	m_data.MinHeight = NumericCast<int32_t>(minHeight);
 
 	if(m_data.MaxWidth == 0)
 		m_data.MaxWidth = -1;
@@ -716,8 +716,8 @@ void TRAP::Window::SetMaximumSize(const uint32_t maxWidth, const uint32_t maxHei
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
-	m_data.MaxWidth = static_cast<int32_t>(maxWidth);
-	m_data.MaxHeight = static_cast<int32_t>(maxHeight);
+	m_data.MaxWidth = NumericCast<int32_t>(maxWidth);
+	m_data.MaxHeight = NumericCast<int32_t>(maxHeight);
 
 	if(m_data.MaxWidth == 0)
 		m_data.MaxWidth = -1;
@@ -932,8 +932,8 @@ void TRAP::Window::Init(const WindowProps& props)
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
 	m_data.Title = props.Title;
-	m_data.Width = static_cast<int32_t>(props.Width);
-	m_data.Height = static_cast<int32_t>(props.Height);
+	m_data.Width = NumericCast<int32_t>(props.Width);
+	m_data.Height = NumericCast<int32_t>(props.Height);
 	m_data.RefreshRate = props.RefreshRate;
 	m_data.VSync = props.VSync;
 	m_data.Monitor = props.Monitor;
@@ -956,7 +956,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	}
 
 	const auto monitors = INTERNAL::WindowingAPI::GetMonitors();
-	if (props.Monitor < static_cast<uint32_t>(monitors.size()))
+	if (props.Monitor < NumericCast<uint32_t>(monitors.size()))
 		m_useMonitor = monitors[props.Monitor];
 	else
 	{
@@ -1239,36 +1239,35 @@ void TRAP::Window::SetupEventCallbacks()
 
 			if(state == Input::KeyState::Pressed || state == Input::KeyState::Repeat)
 			{
-				if(data->KeyRepeatCounts.find(static_cast<uint16_t>(key)) == data->KeyRepeatCounts.end())
+				if(data->KeyRepeatCounts.find(key) == data->KeyRepeatCounts.end())
 				{
-					data->KeyRepeatCounts[static_cast<uint16_t>(key)] = 0;
+					data->KeyRepeatCounts[key] = 0;
 
 					if (!data->EventCallback)
 						return;
 
-					Events::KeyPressEvent event(static_cast<Input::Key>(key), 0, data->Win);
+					Events::KeyPressEvent event(key, 0, data->Win);
 					data->EventCallback(event);
 				}
 				else
 				{
-					data->KeyRepeatCounts[static_cast<uint16_t>(key)]++;
+					data->KeyRepeatCounts[key]++;
 
 					if (!data->EventCallback)
 						return;
 
-					Events::KeyPressEvent event(static_cast<Input::Key>(key),
-					                            data->KeyRepeatCounts[static_cast<uint16_t>(key)], data->Win);
+					Events::KeyPressEvent event(key, data->KeyRepeatCounts[key], data->Win);
 					data->EventCallback(event);
 				}
 			}
 			else
 			{
-				data->KeyRepeatCounts.erase(static_cast<uint16_t>(key));
+				data->KeyRepeatCounts.erase(key);
 
 				if (!data->EventCallback)
 					return;
 
-				Events::KeyReleaseEvent event(static_cast<Input::Key>(key), data->Win);
+				Events::KeyReleaseEvent event(key, data->Win);
 				data->EventCallback(event);
 			}
 		}
@@ -1319,7 +1318,7 @@ void TRAP::Window::SetupEventCallbacks()
 			if ((data == nullptr) || !data->EventCallback)
 				return;
 
-			Events::MouseScrollEvent event(static_cast<float>(xOffset), static_cast<float>(yOffset), data->Win);
+			Events::MouseScrollEvent event(NumericCast<float>(xOffset), NumericCast<float>(yOffset), data->Win);
 			data->EventCallback(event);
 		}
 	);
@@ -1339,7 +1338,7 @@ void TRAP::Window::SetupEventCallbacks()
 			yPos += winPosY;
 #endif /*TRAP_PLATFORM_WINDOWS*/
 
-			Events::MouseMoveEvent event(static_cast<float>(xPos), static_cast<float>(yPos), data->Win);
+			Events::MouseMoveEvent event(NumericCast<float>(xPos), NumericCast<float>(yPos), data->Win);
 			data->EventCallback(event);
 		}
 	);

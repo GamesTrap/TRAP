@@ -16,26 +16,26 @@
 	std::stringstream s;
 
 	s << std::hex << std::setfill('0')
-	  << std::setw(2) << static_cast<int32_t>(std::get<0>(uuid))
-	  << std::setw(2) << static_cast<int32_t>(std::get<1>(uuid))
-	  << std::setw(2) << static_cast<int32_t>(std::get<2>(uuid))
-	  << std::setw(2) << static_cast<int32_t>(std::get<3>(uuid))
+	  << std::setw(2) << NumericCast<uint32_t>(std::get<0>(uuid))
+	  << std::setw(2) << NumericCast<uint32_t>(std::get<1>(uuid))
+	  << std::setw(2) << NumericCast<uint32_t>(std::get<2>(uuid))
+	  << std::setw(2) << NumericCast<uint32_t>(std::get<3>(uuid))
 	  << '-'
-	  << std::setw(2) << static_cast<int32_t>(std::get<4>(uuid))
-	  << std::setw(2) << static_cast<int32_t>(std::get<5>(uuid))
+	  << std::setw(2) << NumericCast<uint32_t>(std::get<4>(uuid))
+	  << std::setw(2) << NumericCast<uint32_t>(std::get<5>(uuid))
 	  << '-'
-	  << std::setw(2) << static_cast<int32_t>(std::get<6>(uuid))
-	  << std::setw(2) << static_cast<int32_t>(std::get<7>(uuid))
+	  << std::setw(2) << NumericCast<uint32_t>(std::get<6>(uuid))
+	  << std::setw(2) << NumericCast<uint32_t>(std::get<7>(uuid))
 	  << '-'
-	  << std::setw(2) << static_cast<int32_t>(std::get<8>(uuid))
-	  << std::setw(2) << static_cast<int32_t>(std::get<9>(uuid))
+	  << std::setw(2) << NumericCast<uint32_t>(std::get<8>(uuid))
+	  << std::setw(2) << NumericCast<uint32_t>(std::get<9>(uuid))
 	  << '-'
-	  << std::setw(2) << static_cast<int32_t>(std::get<10>(uuid))
-	  << std::setw(2) << static_cast<int32_t>(std::get<11>(uuid))
-	  << std::setw(2) << static_cast<int32_t>(std::get<12>(uuid))
-	  << std::setw(2) << static_cast<int32_t>(std::get<13>(uuid))
-	  << std::setw(2) << static_cast<int32_t>(std::get<14>(uuid))
-	  << std::setw(2) << static_cast<int32_t>(std::get<15>(uuid));
+	  << std::setw(2) << NumericCast<uint32_t>(std::get<10>(uuid))
+	  << std::setw(2) << NumericCast<uint32_t>(std::get<11>(uuid))
+	  << std::setw(2) << NumericCast<uint32_t>(std::get<12>(uuid))
+	  << std::setw(2) << NumericCast<uint32_t>(std::get<13>(uuid))
+	  << std::setw(2) << NumericCast<uint32_t>(std::get<14>(uuid))
+	  << std::setw(2) << NumericCast<uint32_t>(std::get<15>(uuid));
 
 	return s.str();
 }
@@ -167,7 +167,7 @@
 				switch (currentLevel)
 				{
 				case BIT(0):
-					numSMT = static_cast<int32_t>(LVL_CORES & std::get<1>(regs1));
+					numSMT = NumericCast<int32_t>(LVL_CORES & std::get<1>(regs1));
 					break;
 
 				case BIT(1):

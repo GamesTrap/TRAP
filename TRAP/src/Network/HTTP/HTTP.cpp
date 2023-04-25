@@ -227,8 +227,8 @@ void TRAP::Network::HTTP::Response::Parse(const std::string& data)
 		   (Utils::String::ToLower(version.substr(0, 5)) == "http/") &&
 			(std::isdigit(version[5]) != 0) && (std::isdigit(version[7]) != 0))
 		{
-			m_majorVersion = static_cast<uint32_t>(version[5] - '0');
-			m_minorVersion = static_cast<uint32_t>(version[7] - '0');
+			m_majorVersion = NumericCast<uint32_t>(version[5] - '0');
+			m_minorVersion = NumericCast<uint32_t>(version[7] - '0');
 		}
 		else
 		{

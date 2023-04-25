@@ -156,7 +156,7 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 	pos += length;
 
 	m[pos++] = 0x06;
-	std::fill_n(m.data() + pos, r - pos, static_cast<uint8_t>(0u));
+	std::fill_n(m.data() + pos, r - pos, NumericCast<uint8_t>(0u));
 	m[r - 1] |= 0x80;
 	Transform(m.data(), 1, A, rate);
 
@@ -201,7 +201,7 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 	pos += length;
 
 	m[pos++] = 0x06;
-	std::fill_n(m.data() + pos, r - pos, static_cast<uint8_t>(0u));
+	std::fill_n(m.data() + pos, r - pos, NumericCast<uint8_t>(0u));
 	m[r - 1] |= 0x80;
 	Transform(m.data(), 1, A, rate);
 

@@ -126,11 +126,11 @@ namespace TRAP::Math
 		/// Retrieve the count of components of a quaternion.
 		/// </summary>
 		/// <returns>Count.</returns>
-		[[nodiscard]] static constexpr int Length() noexcept;
+		[[nodiscard]] static constexpr std::size_t Length() noexcept;
 
 		//Component Access
-		[[nodiscard]] constexpr T& operator[](int i);
-		[[nodiscard]] constexpr const T& operator[](int i) const;
+		[[nodiscard]] constexpr T& operator[](std::size_t i);
+		[[nodiscard]] constexpr const T& operator[](std::size_t i) const;
 
 		[[nodiscard]] std::string ToString() const;
 	};
@@ -280,8 +280,8 @@ TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& u, const Vec<3, T>& v)
 template <typename T>
 constexpr TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& eulerAnglesInRadians)
 {
-	const Vec<3, T> c = Cos(eulerAnglesInRadians * T(0.5));
-	const Vec<3, T> s = Sin(eulerAnglesInRadians * T(0.5));
+	const Vec<3, T> c = Cos(eulerAnglesInRadians * static_cast<T>(0.5));
+	const Vec<3, T> s = Sin(eulerAnglesInRadians * static_cast<T>(0.5));
 
 	this->w = c.x * c.y * c.z + s.x * s.y * s.z;
 	this->x = s.x * c.y * c.z - c.x * s.y * s.z;
@@ -370,7 +370,7 @@ constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator/=(const U s) noex
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-[[nodiscard]] constexpr int TRAP::Math::tQuat<T>::Length() noexcept
+[[nodiscard]] constexpr std::size_t TRAP::Math::tQuat<T>::Length() noexcept
 {
 	return 4;
 }
@@ -379,9 +379,9 @@ template <typename T>
 //Component Access
 
 template <typename T>
-[[nodiscard]] constexpr T& TRAP::Math::tQuat<T>::operator[](const int i)
+[[nodiscard]] constexpr T& TRAP::Math::tQuat<T>::operator[](const std::size_t i)
 {
-	TRAP_ASSERT(i >= 0 && i < this->Length(), "Math::tQuat<T>::operator[]: Index out of range!");
+	TRAP_ASSERT(i < this->Length(), "Math::tQuat<T>::operator[]: Index out of range!");
 
 	return (&x)[i];
 }
@@ -389,9 +389,9 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-[[nodiscard]] constexpr const T& TRAP::Math::tQuat<T>::operator[](const int i) const
+[[nodiscard]] constexpr const T& TRAP::Math::tQuat<T>::operator[](const std::size_t i) const
 {
-	TRAP_ASSERT(i >= 0 && i < this->Length(), "Math::tQuat<T>::operator[]: Index out of range!");
+	TRAP_ASSERT(i < this->Length(), "Math::tQuat<T>::operator[]: Index out of range!");
 
 	return (&x)[i];
 }

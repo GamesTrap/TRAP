@@ -15,7 +15,7 @@ template<typename T>
 				value < std::numeric_limits<T>::min())
 				return 0;
 
-			return static_cast<T>(value);
+			return NumericCast<T>(value);
 		}
 		catch (std::exception&)
 		{
@@ -32,7 +32,7 @@ template<typename T>
 				value < std::numeric_limits<T>::min())
 				return 0;
 
-			return static_cast<T>(value);
+			return NumericCast<T>(value);
 		}
 		catch (std::exception&)
 		{

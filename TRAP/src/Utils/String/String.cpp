@@ -150,7 +150,7 @@
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	for(char& c : str)
-		c = static_cast<char>(::tolower(c));
+		c = NumericCast<char>(::tolower(c));
 
 	return str;
 }
@@ -162,7 +162,7 @@
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	for(char& c : str)
-		c = static_cast<char>(::toupper(c));
+		c = NumericCast<char>(::toupper(c));
 
 	return str;
 }
@@ -301,24 +301,24 @@
 	result.reserve(4);
 
 	if (codePoint < 0x80u)
-		result.push_back(static_cast<char>(codePoint));
+		result.push_back(NumericCast<char>(codePoint));
 	else if (codePoint < 0x800u)
 	{
-		result.push_back(static_cast<char>((codePoint >> 6u) | 0xC0u));
-		result.push_back(static_cast<char>((codePoint & 0x3Fu) | 0x80u));
+		result.push_back(NumericCast<char>((codePoint >> 6u) | 0xC0u));
+		result.push_back(NumericCast<char>((codePoint & 0x3Fu) | 0x80u));
 	}
 	else if (codePoint < 0x10000u)
 	{
-		result.push_back(static_cast<char>((codePoint >> 12u) | 0xE0u));
-		result.push_back(static_cast<char>(((codePoint >> 6u) & 0x3Fu) | 0x80u));
-		result.push_back(static_cast<char>((codePoint & 0x3Fu) | 0x80u));
+		result.push_back(NumericCast<char>((codePoint >> 12u) | 0xE0u));
+		result.push_back(NumericCast<char>(((codePoint >> 6u) & 0x3Fu) | 0x80u));
+		result.push_back(NumericCast<char>((codePoint & 0x3Fu) | 0x80u));
 	}
 	else if (codePoint < 0x110000u)
 	{
-		result.push_back(static_cast<char>((codePoint >> 18u) | 0xF0u));
-		result.push_back(static_cast<char>(((codePoint >> 12u) & 0x3Fu) | 0x80u));
-		result.push_back(static_cast<char>(((codePoint >> 6u) & 0x3Fu) | 0x80u));
-		result.push_back(static_cast<char>((codePoint & 0x3Fu) | 0x80u));
+		result.push_back(NumericCast<char>((codePoint >> 18u) | 0xF0u));
+		result.push_back(NumericCast<char>(((codePoint >> 12u) & 0x3Fu) | 0x80u));
+		result.push_back(NumericCast<char>(((codePoint >> 6u) & 0x3Fu) | 0x80u));
+		result.push_back(NumericCast<char>((codePoint & 0x3Fu) | 0x80u));
 	}
 
 	return result;

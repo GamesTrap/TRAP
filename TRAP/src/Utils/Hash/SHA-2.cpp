@@ -302,11 +302,11 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 	m[pos++] = 0x80;
 	if(pos > 56)
 	{
-		std::fill_n(m.data() + pos, 64 - pos, static_cast<uint8_t>(0u));
+		std::fill_n(m.data() + pos, 64 - pos, NumericCast<uint8_t>(0u));
 		Transform(&std::get<0>(m), 1, hash);
 		pos = 0;
 	}
-	std::fill_n(m.data() + pos, 56 - pos, static_cast<uint8_t>(0u));
+	std::fill_n(m.data() + pos, 56 - pos, NumericCast<uint8_t>(0u));
 	uint64_t mLength = total;
 	TRAP::Utils::Memory::SwapBytes<uint64_t>(mLength);
 	std::copy_n(reinterpret_cast<uint8_t*>(&mLength), 64 / 8, &std::get<0>(m) + (64 - 8));
@@ -367,11 +367,11 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 	m[pos++] = 0x80;
 	if(pos > 112)
 	{
-		std::fill_n(m.data() + pos, 128 - pos, static_cast<uint8_t>(0u));
+		std::fill_n(m.data() + pos, 128 - pos, NumericCast<uint8_t>(0u));
 		Transform(&std::get<0>(m), 1, hash);
 		pos = 0;
 	}
-	std::fill_n(m.data() + pos, 128 - pos, static_cast<uint8_t>(0u));
+	std::fill_n(m.data() + pos, 128 - pos, NumericCast<uint8_t>(0u));
 	uint64_t mLength = total;
 	TRAP::Utils::Memory::SwapBytes<uint64_t>(mLength);
 	std::copy_n(reinterpret_cast<const uint8_t*>(&mLength), 64 / 8, &std::get<0>(m) + (128 - 8));

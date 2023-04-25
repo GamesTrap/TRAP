@@ -5,7 +5,7 @@
 
 namespace TRAP::Utils
 {
-    enum class ErrorCode : uint32_t
+    enum class ErrorCode : int32_t
     {
         // LinuxUsingWayland = 0x0001, //REMOVED
         RenderAPIInvalid = 0x0002,

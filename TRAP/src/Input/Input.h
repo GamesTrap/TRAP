@@ -230,7 +230,7 @@ namespace TRAP
 		/// <summary>
 		/// Mouse buttons.
 		/// </summary>
-		enum class MouseButton
+		enum class MouseButton : uint32_t
 		{
 			One = 0,
 			Two = 1,

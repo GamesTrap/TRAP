@@ -125,7 +125,7 @@ namespace TRAP::INTERNAL
 		struct libdecor_interface;
 		struct libdecor_frame_interface;
 		enum class libdecor_capabilities;
-		enum class libdecor_window_state;
+		enum class libdecor_window_state : uint32_t;
 #endif
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Typedefs-----------------------------------------------------------------------------------------------------------//
@@ -696,7 +696,7 @@ namespace TRAP::INTERNAL
 			InvalidFrameConfiguration,
 		};
 
-		enum class libdecor_window_state
+		enum class libdecor_window_state : uint32_t
 		{
 			None = 0,
 			Active = BIT(0),
@@ -735,12 +735,12 @@ namespace TRAP::INTERNAL
 #ifdef TRAP_PLATFORM_LINUX
 		inline static constexpr uint32_t DBUS_NAME_FLAG_REPLACE_EXISTING = 0x2;
 		inline static constexpr uint32_t DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER = 1;
-		inline static constexpr uint32_t DBUS_TYPE_STRING = static_cast<uint32_t>('s');
-		inline static constexpr uint32_t DBUS_TYPE_ARRAY = static_cast<uint32_t>('a');
-		inline static constexpr uint32_t DBUS_TYPE_DICT_ENTRY = static_cast<uint32_t>('e');
-		inline static constexpr uint32_t DBUS_TYPE_VARIANT = static_cast<uint32_t>('v');
-		inline static constexpr uint32_t DBUS_TYPE_BOOLEAN = static_cast<uint32_t>('b');
-		inline static constexpr uint32_t DBUS_TYPE_DOUBLE = static_cast<uint32_t>('d');
+		inline static constexpr uint32_t DBUS_TYPE_STRING = NumericCast<uint32_t>('s');
+		inline static constexpr uint32_t DBUS_TYPE_ARRAY = NumericCast<uint32_t>('a');
+		inline static constexpr uint32_t DBUS_TYPE_DICT_ENTRY = NumericCast<uint32_t>('e');
+		inline static constexpr uint32_t DBUS_TYPE_VARIANT = NumericCast<uint32_t>('v');
+		inline static constexpr uint32_t DBUS_TYPE_BOOLEAN = NumericCast<uint32_t>('b');
+		inline static constexpr uint32_t DBUS_TYPE_DOUBLE = NumericCast<uint32_t>('d');
 #endif /*TRAP_PLATFORM_LINUX*/
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Structs------------------------------------------------------------------------------------------------------------//
@@ -945,8 +945,8 @@ namespace TRAP::INTERNAL
 			} VK{};
 
 			std::string ClipboardString{};
-			std::array<std::array<char, 5>, static_cast<uint32_t>(Input::Key::Menu) + 1> KeyNames{};
-			std::array<int16_t, static_cast<uint32_t>(Input::Key::Menu) + 1> ScanCodes{};
+			std::array<std::array<char, 5>, ToUnderlying(Input::Key::Menu) + 1> KeyNames{};
+			std::array<int16_t, ToUnderlying(Input::Key::Menu) + 1> ScanCodes{};
 			//Where to place the cursor when re-enabled
 			double RestoreCursorPosX = 0.0, RestoreCursorPosY = 0.0;
 			//The window whose disabled cursor mode is active
@@ -1637,8 +1637,8 @@ namespace TRAP::INTERNAL
 			int32_t Numerator = -1, Denominator = -1;
 
 			CursorMode cursorMode = CursorMode::Normal;
-			std::array<TRAP::Input::KeyState, static_cast<uint32_t>(TRAP::Input::MouseButton::Eight) + 1> MouseButtons{};
-			std::array<TRAP::Input::KeyState, static_cast<uint32_t>(TRAP::Input::Key::Menu) + 1> Keys{};
+			std::array<TRAP::Input::KeyState, ToUnderlying(TRAP::Input::MouseButton::Eight) + 1> MouseButtons{};
+			std::array<TRAP::Input::KeyState, ToUnderlying(TRAP::Input::Key::Menu) + 1> Keys{};
 			//Virtual cursor position when cursor is disabled
 			double VirtualCursorPosX = 0.0, VirtualCursorPosY = 0.0;
 			bool RawMouseMotion = false;
@@ -6391,7 +6391,7 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::InputDrop(const InternalWind
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if((mi.hTotal != 0u) && (mi.vTotal != 0u))
-		return static_cast<double>(mi.dotClock) / (static_cast<double>(mi.hTotal) * static_cast<double>(mi.vTotal));
+		return NumericCast<double>(mi.dotClock) / (NumericCast<double>(mi.hTotal) * NumericCast<double>(mi.vTotal));
 
 	return std::nullopt;
 }
@@ -6405,8 +6405,8 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::InputDrop(const InternalWind
 
 	InternalVideoMode mode{};
 
-	mode.Width = static_cast<int32_t>(mi.width);
-	mode.Height = static_cast<int32_t>(mi.height);
+	mode.Width = NumericCast<int32_t>(mi.width);
+	mode.Height = NumericCast<int32_t>(mi.height);
 
 	if(ci.rotation == RR_Rotate_90 || ci.rotation == RR_Rotate_270)
 		std::swap(mode.Width, mode.Height);
@@ -6537,8 +6537,8 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorContentSca
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-    xScale = static_cast<float>(monitor.Wayland.ContentScale);
-    yScale = static_cast<float>(monitor.Wayland.ContentScale);
+    xScale = NumericCast<float>(monitor.Wayland.ContentScale);
+    yScale = NumericCast<float>(monitor.Wayland.ContentScale);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -6591,8 +6591,8 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScal
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-    xScale = static_cast<float>(window.Wayland.ContentScale);
-    yScale = static_cast<float>(window.Wayland.ContentScale);
+    xScale = NumericCast<float>(window.Wayland.ContentScale);
+    yScale = NumericCast<float>(window.Wayland.ContentScale);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

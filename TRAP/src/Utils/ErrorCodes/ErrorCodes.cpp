@@ -12,7 +12,7 @@ struct ErrorData
     std::string_view LogMessage;
 };
 
-static std::unordered_map<TRAP::Utils::ErrorCode, ErrorData> s_errorMap
+static const std::unordered_map<TRAP::Utils::ErrorCode, ErrorData> s_errorMap
 {
     {TRAP::Utils::ErrorCode::RenderAPIInvalid, {"Unsupported device", "Device is unsupported!\nNo compatible RenderAPI selected!\nError code: 0x0002", TRAP::Log::RendererPrefix, "No compatible RenderAPI found! (0x0002)"}},
     {TRAP::Utils::ErrorCode::VulkanSurfaceExtensionsUnsupported, {"Vulkan API error", "Mandatory Vulkan surface extensions are unsupported!\nError code: 0x0003", TRAP::Log::RendererVulkanPrefix, "Vulkan surface extensions are unsupported! (0x0003)"}},
@@ -48,5 +48,5 @@ void TRAP::Utils::DisplayError(const ErrorCode error)
 
     TP_CRITICAL(errorData.LogPrefix, errorData.LogMessage);
 
-    exit(static_cast<int32_t>(error));
+    exit(ToUnderlying(error));
 }

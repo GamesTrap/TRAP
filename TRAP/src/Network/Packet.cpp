@@ -539,7 +539,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::string_view 
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
 	//First insert string length
-	const uint32_t length = static_cast<uint32_t>(data.size());
+	const std::size_t length = data.size();
 	*this << length;
 
 	//Then insert characters
@@ -556,7 +556,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::wstring_view
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
 	//First insert string length
-	const uint32_t length = static_cast<uint32_t>(data.size());
+	const std::size_t length = data.size();
 	*this << length;
 
 	//Then insert characters

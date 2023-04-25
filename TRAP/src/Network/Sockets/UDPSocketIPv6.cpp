@@ -98,7 +98,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(const void* con
 	const sockaddr_in6 address = INTERNAL::Network::SocketImpl::CreateAddress(remoteAddress.ToArray(), remotePort);
 
 	//Send the data (unlike TCP, all the data is always sent in one call)
-	const int64_t sent = sendto(GetHandle(), static_cast<const char*>(data), static_cast<int32_t>(size), 0,
+	const int64_t sent = sendto(GetHandle(), static_cast<const char*>(data), size, 0,
 	                            reinterpret_cast<const sockaddr*>(&address), sizeof(address));
 
 	//Check for errors
@@ -141,7 +141,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(void* const 
 
 	//Receive a chunk of bytes
 	INTERNAL::Network::SocketImpl::AddressLength addressSize = sizeof(address);
-	const int64_t sizeReceived = recvfrom(GetHandle(), static_cast<char*>(data), static_cast<int32_t>(size), 0,
+	const int64_t sizeReceived = recvfrom(GetHandle(), static_cast<char*>(data), size, 0,
 	                                      reinterpret_cast<sockaddr*>(&address), &addressSize);
 
 	//Check for errors
@@ -149,7 +149,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(void* const 
 		return INTERNAL::Network::SocketImpl::GetErrorStatus();
 
 	//Fill the sender information
-	received = static_cast<std::size_t>(sizeReceived);
+	received = NumericCast<std::size_t>(sizeReceived);
 	addr = {};
 #ifdef TRAP_PLATFORM_WINDOWS
 	std::copy_n(address.sin6_addr.u.Byte, addr.size(), addr.data());

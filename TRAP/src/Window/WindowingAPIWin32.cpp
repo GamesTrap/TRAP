@@ -160,7 +160,7 @@ void TRAP::INTERNAL::WindowingAPI::InputErrorWin32(const Error error, const std:
 	FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM |	FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_MAX_WIDTH_MASK,
 		           nullptr, GetLastError() & 0xFFFF, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),	buffer.data(),
 		           static_cast<DWORD>(buffer.size()), nullptr);
-	WideCharToMultiByte(CP_UTF8, 0, buffer.data(), -1, message.data(), static_cast<int32_t>(message.size()),
+	WideCharToMultiByte(CP_UTF8, 0, buffer.data(), -1, message.data(), NumericCast<int32_t>(message.size()),
 	                    nullptr, nullptr);
 
 	message.erase(message.find('\0'));
@@ -179,8 +179,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateKeyNamesWin32()
 
 	s_Data.KeyNames = {};
 
-	for (uint32_t key = static_cast<uint32_t>(Input::Key::Space); key <= static_cast<uint32_t>(Input::Key::Menu);
-	     key++)
+	for (uint32_t key = ToUnderlying(Input::Key::Space); key <= ToUnderlying(Input::Key::Menu); key++)
 	{
 		uint32_t virtualKey;
 
@@ -188,7 +187,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateKeyNamesWin32()
 		if (scanCode == -1)
 			continue;
 
-		if (key >= static_cast<uint32_t>(Input::Key::KP_0) && key <= static_cast<uint32_t>(Input::Key::KP_Add))
+		if (key >= ToUnderlying(Input::Key::KP_0) && key <= ToUnderlying(Input::Key::KP_Add))
 		{
 			static constexpr std::array<uint32_t, 15> virtualKeys =
 			{
@@ -198,20 +197,20 @@ void TRAP::INTERNAL::WindowingAPI::UpdateKeyNamesWin32()
 				VK_MULTIPLY, VK_SUBTRACT, VK_ADD
 			};
 
-			virtualKey = virtualKeys[key - static_cast<uint32_t>(Input::Key::KP_0)];
+			virtualKey = virtualKeys[key - ToUnderlying(Input::Key::KP_0)];
 		}
 		else
 			virtualKey = MapVirtualKeyW(scanCode, MAPVK_VSC_TO_VK);
 
 		std::wstring chars(16, L'\0');
 		int32_t length = ToUnicode(virtualKey, scanCode, state.data(), chars.data(),
-		                           static_cast<int32_t>(chars.size()), 0);
+		                           NumericCast<int32_t>(chars.size()), 0);
 
 		if (length == -1)
 		{
 			//This is a dead key, so we need a second simulated key press to make it output its own
 			//character (usually a diacritic)
-			length = ToUnicode(virtualKey, scanCode, state.data(), chars.data(), static_cast<int32_t>(chars.size()),
+			length = ToUnicode(virtualKey, scanCode, state.data(), chars.data(), NumericCast<int32_t>(chars.size()),
 				               0);
 		}
 
@@ -219,7 +218,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateKeyNamesWin32()
 			continue;
 
 		WideCharToMultiByte(CP_UTF8, 0, chars.data(), 1, s_Data.KeyNames[key].data(),
-		                    static_cast<int32_t>(s_Data.KeyNames[key].size()), nullptr, nullptr);
+		                    NumericCast<int32_t>(s_Data.KeyNames[key].size()), nullptr, nullptr);
 	}
 }
 
@@ -517,20 +516,20 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 			state = Input::KeyState::Released;
 
 		uint32_t i;
-		for (i = 0; i <= static_cast<uint32_t>(Input::MouseButton::Eight); i++)
+		for (i = 0; i <= ToUnderlying(Input::MouseButton::Eight); i++)
 			if (windowPtr->MouseButtons[i] == Input::KeyState::Pressed)
 				break;
 
-		if (i > static_cast<uint32_t>(Input::MouseButton::Eight))
+		if (i > ToUnderlying(Input::MouseButton::Eight))
 			SetCapture(hWnd);
 
 		InputMouseClick(*windowPtr, button, state);
 
-		for (i = 0; i <= static_cast<uint32_t>(Input::MouseButton::Eight); i++)
+		for (i = 0; i <= ToUnderlying(Input::MouseButton::Eight); i++)
 			if (windowPtr->MouseButtons[i] == Input::KeyState::Pressed)
 				break;
 
-		if (i > static_cast<uint32_t>(TRAP::Input::MouseButton::Eight))
+		if (i > ToUnderlying(TRAP::Input::MouseButton::Eight))
 			ReleaseCapture();
 
 		if (uMsg == WM_XBUTTONDOWN || uMsg == WM_XBUTTONUP)
@@ -625,7 +624,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 			break;
 
 		GetRawInputData(ri, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER));
-		if (size > static_cast<UINT>(s_Data.RawInputSize))
+		if (size > NumericCast<UINT>(s_Data.RawInputSize))
 		{
 			s_Data.RawInput.clear();
 			s_Data.RawInput.resize(size);
@@ -634,7 +633,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 
 		size = s_Data.RawInputSize;
 		if (GetRawInputData(ri, RID_INPUT, s_Data.RawInput.data(), &size, sizeof(RAWINPUTHEADER)) ==
-		    static_cast<UINT>(-1))
+		    std::numeric_limits<UINT>::max())
 		{
 			InputError(Error::Platform_Error, "[WinAPI] Failed to retrieve raw input data!");
 			break;
@@ -669,7 +668,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 
 	case WM_MOUSEWHEEL:
 	{
-		InputScroll(*windowPtr, 0.0, static_cast<SHORT>(HIWORD(wParam)) / static_cast<double>(WHEEL_DELTA));
+		InputScroll(*windowPtr, 0.0, static_cast<SHORT>(HIWORD(wParam)) / NumericCast<double>(WHEEL_DELTA));
 		return 0;
 	}
 
@@ -677,7 +676,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 	{
 		//This message is only sent on Windows Vista and later
 		//NOTE: The X-axis is inverted for consistency with X11
-		InputScroll(*windowPtr, -(static_cast<SHORT>(HIWORD(wParam)) / static_cast<double>(WHEEL_DELTA)), 0.0);
+		InputScroll(*windowPtr, -(static_cast<SHORT>(HIWORD(wParam)) / NumericCast<double>(WHEEL_DELTA)), 0.0);
 		return 0;
 	}
 
@@ -884,8 +883,8 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 
 	case WM_DPICHANGED:
 	{
-		const float xScale = HIWORD(wParam) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
-		const float yScale = LOWORD(wParam) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
+		const float xScale = HIWORD(wParam) / NumericCast<float>(USER_DEFAULT_SCREEN_DPI);
+		const float yScale = LOWORD(wParam) / NumericCast<float>(USER_DEFAULT_SCREEN_DPI);
 
 		//Resize windowed mode windows that either permit rescaling or that
 		//need it to compensate for non-client area scaling
@@ -932,7 +931,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 			const UINT length = DragQueryFileW(drop, i, nullptr, 0);
 			std::wstring buffer(length + 1, L'\0');
 
-			DragQueryFileW(drop, i, buffer.data(), static_cast<UINT>(buffer.size()));
+			DragQueryFileW(drop, i, buffer.data(), NumericCast<UINT>(buffer.size()));
 			paths[i] = TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(buffer);
 		}
 
@@ -1389,8 +1388,8 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScaleWin32(HMONITOR handle, 
 		ReleaseDC(nullptr, dc);
 	}
 
-	xScale = static_cast<float>(xDPI) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
-	yScale = static_cast<float>(yDPI) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
+	xScale = NumericCast<float>(xDPI) / NumericCast<float>(USER_DEFAULT_SCREEN_DPI);
+	yScale = NumericCast<float>(yDPI) / NumericCast<float>(USER_DEFAULT_SCREEN_DPI);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1525,7 +1524,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateTheme(HWND hWnd)
 
 	if (!window.Monitor)
 	{
-		RECT rect = { 0, 0, static_cast<LONG>(WNDConfig.Width), static_cast<LONG>(WNDConfig.Height) };
+		RECT rect = { 0, 0, NumericCast<LONG>(WNDConfig.Width), NumericCast<LONG>(WNDConfig.Height) };
 		WINDOWPLACEMENT wp = { sizeof(wp) };
 		const HMONITOR mh = MonitorFromWindow(window.Handle, MONITOR_DEFAULTTONEAREST);
 
@@ -1787,7 +1786,7 @@ void CALLBACK TRAP::INTERNAL::WindowingAPI::MessageFiberProc([[maybe_unused]] LP
 	ZeroMemory(&bi, sizeof(bi));
 	bi.bV5Size = sizeof(bi);
 	bi.bV5Width = image.GetWidth();
-	bi.bV5Height = -static_cast<int32_t>(image.GetHeight());
+	bi.bV5Height = -NumericCast<int32_t>(image.GetHeight());
 	bi.bV5Planes = 1;
 	bi.bV5BitCount = 32;
 	bi.bV5Compression = BI_BITFIELDS;
@@ -1858,7 +1857,7 @@ void CALLBACK TRAP::INTERNAL::WindowingAPI::MessageFiberProc([[maybe_unused]] LP
 void TRAP::INTERNAL::WindowingAPI::ApplyAspectRatio(const InternalWindow& window, const int32_t edge, RECT& area)
 {
 	RECT frame{};
-	const float ratio = static_cast<float>(window.Numerator) / static_cast<float>(window.Denominator);
+	const float ratio = NumericCast<float>(window.Numerator) / NumericCast<float>(window.Denominator);
 	const DWORD style = GetWindowStyle(window);
 	const DWORD exStyle = GetWindowExStyle(window);
 
@@ -1871,11 +1870,11 @@ void TRAP::INTERNAL::WindowingAPI::ApplyAspectRatio(const InternalWindow& window
 		AdjustWindowRectEx(&frame, style, FALSE, exStyle);
 
 	if(edge == WMSZ_LEFT || edge == WMSZ_BOTTOMLEFT || edge == WMSZ_RIGHT || edge == WMSZ_BOTTOMRIGHT)
-		area.bottom = area.top + (frame.bottom - frame.top) + static_cast<int32_t>(((area.right - area.left) - (frame.right - frame.left)) / ratio);
+		area.bottom = area.top + (frame.bottom - frame.top) + NumericCast<int32_t>(((area.right - area.left) - (frame.right - frame.left)) / ratio);
 	else if(edge == WMSZ_TOPLEFT || edge == WMSZ_TOPRIGHT)
-		area.top = area.bottom - (frame.bottom - frame.top) - static_cast<int32_t>(((area.right - area.left) - (frame.right - frame.left)) / ratio);
+		area.top = area.bottom - (frame.bottom - frame.top) - NumericCast<int32_t>(((area.right - area.left) - (frame.right - frame.left)) / ratio);
 	else if(edge == WMSZ_TOP || edge == WMSZ_BOTTOM)
-		area.right = area.left + (frame.right - frame.left) + static_cast<int32_t>(((area.bottom - area.top) - (frame.bottom - frame.top)) * ratio);
+		area.right = area.left + (frame.right - frame.left) + NumericCast<int32_t>(((area.bottom - area.top) - (frame.bottom - frame.top)) * ratio);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1991,7 +1990,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowStyles(const InternalWindow& wind
 	//dm.dmDisplayFrequency is an integer which is rounded down, so it's
 	//highly likely that 23 represents 24/1.001 Hz, 59 represents 60/1.001 Hz, etc.
 	//A caller can always reproduce the original value by using floor.
-	double refreshRate = static_cast<double>(dm.dmDisplayFrequency);
+	double refreshRate = NumericCast<double>(dm.dmDisplayFrequency);
 	switch(dm.dmDisplayFrequency)
 	{
 	case 23:
@@ -2011,7 +2010,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowStyles(const InternalWindow& wind
 	case 119:
 		[[fallthrough]];
 	case 143:
-		refreshRate = static_cast<double>(refreshRate + 1) / 1.001;
+		refreshRate = NumericCast<double>(refreshRate + 1) / 1.001;
 		break;
 
 	default:
@@ -2223,7 +2222,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 		//dm.dmDisplayFrequency is an integer which is rounded down, so it's
 		//highly likely that 23 represents 24/1.001 Hz, 59 represents 60/1.001 Hz, etc.
 		//A caller can always reproduce the original value by using floor.
-		double refreshRate = static_cast<double>(dm.dmDisplayFrequency);
+		double refreshRate = NumericCast<double>(dm.dmDisplayFrequency);
 		switch(dm.dmDisplayFrequency)
 		{
 		case 23:
@@ -2243,7 +2242,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 		case 119:
 			[[fallthrough]];
 		case 143:
-			refreshRate = static_cast<double>(refreshRate + 1) / 1.001;
+			refreshRate = NumericCast<double>(refreshRate + 1) / 1.001;
 			break;
 
 		default:
@@ -2685,7 +2684,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPos(InternalWindow& window,
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	POINT pos = { static_cast<int32_t>(xPos), static_cast<int32_t>(yPos) };
+	POINT pos = { NumericCast<int32_t>(xPos), NumericCast<int32_t>(yPos) };
 
 	//Store the new position so it can be recognized later
 	window.LastCursorPosX = pos.x;
@@ -2894,7 +2893,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthrough(InternalWin
 	   GetLayeredWindowAttributes(window.Handle, nullptr, &alpha, &flags))
 	{
 		if (flags & LWA_ALPHA)
-			return static_cast<float>(alpha) / 255.0f;
+			return NumericCast<float>(alpha) / 255.0f;
 	}
 
 	return std::nullopt;
@@ -2988,20 +2987,20 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 			constexpr std::array<std::array<int32_t, 2>, 4> keys =
 			{
 				{
-					{ VK_LSHIFT, static_cast<int32_t>(Input::Key::Left_Shift)},
-					{ VK_RSHIFT, static_cast<int32_t>(Input::Key::Right_Super)},
-					{ VK_LWIN, static_cast<int32_t>(Input::Key::Left_Super)},
-					{ VK_RWIN, static_cast<int32_t>(Input::Key::Right_Super)}
+					{ VK_LSHIFT, ToUnderlying(Input::Key::Left_Shift)},
+					{ VK_RSHIFT, ToUnderlying(Input::Key::Right_Super)},
+					{ VK_LWIN, ToUnderlying(Input::Key::Left_Super)},
+					{ VK_RWIN, ToUnderlying(Input::Key::Right_Super)}
 				}
 			};
 
 			for(const auto& [vk, key] : keys)
 			{
-				const int32_t scanCode = s_Data.ScanCodes[static_cast<int32_t>(key)];
+				const int32_t scanCode = s_Data.ScanCodes[key];
 
 				if ((GetKeyState(vk) & 0x8000))
 					continue;
-				if (windowPtr->Keys[static_cast<int32_t>(key)] != Input::KeyState::Pressed)
+				if (windowPtr->Keys[key] != Input::KeyState::Pressed)
 					continue;
 
 				InputKey(*windowPtr, static_cast<Input::Key>(key), scanCode, Input::KeyState::Released);
@@ -3018,7 +3017,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 		if (window->LastCursorPosX != width / 2 ||
 			window->LastCursorPosY != height / 2)
 		{
-			PlatformSetCursorPos(*window, static_cast<double>(width) / 2.0, static_cast<double>(height) / 2.0);
+			PlatformSetCursorPos(*window, NumericCast<double>(width) / 2.0, NumericCast<double>(height) / 2.0);
 		}
 	}
 }
@@ -3143,7 +3142,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowProgressIndicator(const Inte
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return s_Data.ScanCodes[static_cast<uint32_t>(key)];
+	return s_Data.ScanCodes[ToUnderlying(key)];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3152,7 +3151,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowProgressIndicator(const Inte
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return s_Data.KeyNames[static_cast<uint32_t>(s_Data.KeyCodes[scanCode])].data();
+	return s_Data.KeyNames[ToUnderlying(s_Data.KeyCodes[scanCode])].data();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3422,7 +3421,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesWin32()
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	std::fill(s_Data.KeyCodes.begin(), s_Data.KeyCodes.end(), Input::Key::Unknown);
-	std::fill(s_Data.ScanCodes.begin(), s_Data.ScanCodes.end(), static_cast<int16_t>(-1));
+	std::fill(s_Data.ScanCodes.begin(), s_Data.ScanCodes.end(), std::numeric_limits<int16_t>::max());
 
 	std::get<0x00B>(s_Data.KeyCodes) = Input::Key::Zero;
 	std::get<0x002>(s_Data.KeyCodes) = Input::Key::One;
@@ -3548,8 +3547,8 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesWin32()
 
 	for (uint32_t scanCode = 0; scanCode < 512; scanCode++)
 	{
-		if (static_cast<int32_t>(s_Data.KeyCodes[scanCode]) > 0)
-			s_Data.ScanCodes[static_cast<int32_t>(s_Data.KeyCodes[scanCode])] = static_cast<int16_t>(scanCode);
+		if (ToUnderlying(s_Data.KeyCodes[scanCode]) > 0)
+			s_Data.ScanCodes[ToUnderlying(s_Data.KeyCodes[scanCode])] = NumericCast<int16_t>(scanCode);
 	}
 }
 

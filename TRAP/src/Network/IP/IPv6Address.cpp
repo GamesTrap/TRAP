@@ -54,7 +54,7 @@ TRAP::Network::IPv6Address::IPv6Address(const char* const address)
 
 	//8 * 4 = 8 Blocks 4 Values each | 7 = 7 times ':'
 	std::string str(8 * 4 + 7, 0);
-	inet_ntop(AF_INET6, &address, str.data(), static_cast<uint32_t>(str.size()));
+	inet_ntop(AF_INET6, &address, str.data(), NumericCast<uint32_t>(str.size()));
 	str.erase(std::find(str.begin(), str.end(), '\0'), str.end());
 	return str;
 }

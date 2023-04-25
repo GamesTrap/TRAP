@@ -943,7 +943,7 @@ void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKey([[maybe_unused]] void* cons
     if(window == nullptr)
         return;
 
-    const Input::Key key = TranslateKey(static_cast<int32_t>(scanCode));
+    const Input::Key key = TranslateKey(NumericCast<int32_t>(scanCode));
     const Input::KeyState action = state == WL_KEYBOARD_KEY_STATE_PRESSED ? Input::KeyState::Pressed :
                                                                             Input::KeyState::Released;
 
@@ -958,7 +958,7 @@ void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKey([[maybe_unused]] void* cons
         if((s_Data.Wayland.WaylandXKB.KeyMapKeyRepeats(s_Data.Wayland.WaylandXKB.KeyMap, keycode) != 0) &&
            s_Data.Wayland.KeyRepeatScancode > 0)
         {
-            s_Data.Wayland.KeyRepeatScancode = static_cast<int32_t>(scanCode);
+            s_Data.Wayland.KeyRepeatScancode = NumericCast<int32_t>(scanCode);
             if(s_Data.Wayland.KeyRepeatRate > 1)
                 timer.it_interval.tv_nsec = 1000000000 / s_Data.Wayland.KeyRepeatRate;
             else
@@ -971,7 +971,7 @@ void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKey([[maybe_unused]] void* cons
 
     timerfd_settime(s_Data.Wayland.KeyRepeatTimerFD, 0, &timer, nullptr);
 
-    InputKey(*window, key, static_cast<int32_t>(scanCode), action);
+    InputKey(*window, key, NumericCast<int32_t>(scanCode), action);
 
     if(action == Input::KeyState::Pressed)
         InputTextWayland(*window, scanCode);
@@ -1216,8 +1216,8 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleButton([[maybe_unused]] void* co
            (window->Wayland.XDG.TopLevel != nullptr))
         {
             xdg_toplevel_show_window_menu(window->Wayland.XDG.TopLevel, s_Data.Wayland.Seat,
-                                          serial, static_cast<int32_t>(window->Wayland.CursorPosX),
-                                          static_cast<int32_t>(window->Wayland.CursorPosY));
+                                          serial, NumericCast<int32_t>(window->Wayland.CursorPosX),
+                                          NumericCast<int32_t>(window->Wayland.CursorPosY));
             return;
         }
     }
@@ -1337,16 +1337,16 @@ void TRAP::INTERNAL::WindowingAPI::RegistryHandleGlobal([[maybe_unused]] void* c
         s_Data.Wayland.Shm = static_cast<wl_shm*>(wl_registry_bind(registry, name, &wl_shm_interface, 1));
     else if(interface == "wl_output"sv)
     {
-        if(version < 2)
+        if(version < 2u)
         {
             InputError(Error::Platform_Error, "[Wayland] Unsupported output interface version");
             return;
         }
 
 #ifdef WL_OUTPUT_NAME_SINCE_VERSION
-        version = TRAP::Math::Min(static_cast<int32_t>(version), WL_OUTPUT_NAME_SINCE_VERSION);
+        version = TRAP::Math::Min(version, NumericCast<uint32_t>(WL_OUTPUT_NAME_SINCE_VERSION));
 #else
-        version = 2;
+        version = 2u;
 #endif
 
         wl_output* const output = static_cast<wl_output*>(wl_registry_bind(s_Data.Wayland.Registry, name,
@@ -1461,7 +1461,7 @@ void TRAP::INTERNAL::WindowingAPI::LibDecorHandleError([[maybe_unused]] libdecor
         return;
 
     InputError(Error::Platform_Error, "[Wayland] libdecor error: " + std::string(message) + " (" +
-                                      std::to_string(static_cast<uint32_t>(error)) + ")");
+                                      std::to_string(ToUnderlying(error)) + ")");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1592,10 +1592,10 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesWayland()
     s_Data.KeyCodes[KEY_KPENTER]    = Input::Key::KP_Enter;
     s_Data.KeyCodes[KEY_102ND]      = Input::Key::World_2;
 
-    for (int32_t scancode = 0;  scancode < static_cast<int32_t>(s_Data.KeyCodes.size());  scancode++)
+    for (std::size_t scancode = 0; scancode < s_Data.KeyCodes.size();  scancode++)
     {
         if (s_Data.KeyCodes[scancode] != TRAP::Input::Key::Unknown)
-            s_Data.ScanCodes[static_cast<int32_t>(s_Data.KeyCodes[scancode])] = static_cast<int16_t>(scancode);
+            s_Data.ScanCodes[ToUnderlying(s_Data.KeyCodes[scancode])] = NumericCast<int16_t>(scancode);
     }
 }
 
@@ -1613,7 +1613,7 @@ bool TRAP::INTERNAL::WindowingAPI::LoadCursorThemeWayland()
         errno = 0;
         const long cursorSizeLong = std::stol(sizeString);
         if(errno == 0 && cursorSizeLong > 0 && cursorSizeLong < std::numeric_limits<int32_t>::max())
-            cursorSize = static_cast<int32_t>(cursorSizeLong);
+            cursorSize = NumericCast<int32_t>(cursorSizeLong);
     }
 
     const char* const themeName = getenv("XCURSOR_THEME");
@@ -1820,7 +1820,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateContentScaleWayland(InternalWindow& win
     {
         window.Wayland.ContentScale = maxScale;
         wl_surface_set_buffer_scale(window.Wayland.Surface, maxScale);
-        InputWindowContentScale(window, static_cast<float>(maxScale), static_cast<float>(maxScale));
+        InputWindowContentScale(window, NumericCast<float>(maxScale), NumericCast<float>(maxScale));
         ResizeWindowWayland(window);
     }
 }
@@ -1981,10 +1981,10 @@ wl_buffer* TRAP::INTERNAL::WindowingAPI::CreateShmBufferWayland(const Image& ima
     {
         uint32_t alpha = source[3];
 
-        *target++ = static_cast<uint8_t>((source[2] * alpha) / 255u);
-        *target++ = static_cast<uint8_t>((source[1] * alpha) / 255u);
-        *target++ = static_cast<uint8_t>((source[0] * alpha) / 255u);
-        *target++ = static_cast<uint8_t>(alpha);
+        *target++ = NumericCast<uint8_t>((source[2] * alpha) / 255u);
+        *target++ = NumericCast<uint8_t>((source[1] * alpha) / 255u);
+        *target++ = NumericCast<uint8_t>((source[0] * alpha) / 255u);
+        *target++ = NumericCast<uint8_t>(alpha);
     }
 
     wl_buffer* const buffer = wl_shm_pool_create_buffer(pool, 0, image.GetWidth(), image.GetHeight(), stride,
@@ -2191,9 +2191,9 @@ void TRAP::INTERNAL::WindowingAPI::LibDecorFrameHandleConfigure(libdecor_frame* 
 
     if(s_Data.Wayland.LibDecor.ConfigurationGetWindowState(config, &windowState))
     {
-        fullscreen = (static_cast<uint32_t>(windowState) & static_cast<uint32_t>(libdecor_window_state::Fullscreen)) != 0;
-        activated = (static_cast<uint32_t>(windowState) & static_cast<uint32_t>(libdecor_window_state::Active)) != 0;
-        maximized = (static_cast<uint32_t>(windowState) & static_cast<uint32_t>(libdecor_window_state::Maximized)) != 0;
+        fullscreen = (ToUnderlying(windowState) & ToUnderlying(libdecor_window_state::Fullscreen)) != 0u;
+        activated = (ToUnderlying(windowState) & ToUnderlying(libdecor_window_state::Active)) != 0u;
+        maximized = (ToUnderlying(windowState) & ToUnderlying(libdecor_window_state::Maximized)) != 0u;
     }
     else
     {
@@ -2213,13 +2213,13 @@ void TRAP::INTERNAL::WindowingAPI::LibDecorFrameHandleConfigure(libdecor_frame* 
     {
         if(window->Numerator != -1 && window->Denominator != -1)
         {
-            const float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
-            const float targetRatio = static_cast<float>(window->Numerator) / static_cast<float>(window->Denominator);
+            const float aspectRatio = NumericCast<float>(width) / NumericCast<float>(height);
+            const float targetRatio = NumericCast<float>(window->Numerator) / NumericCast<float>(window->Denominator);
 
             if(aspectRatio < targetRatio)
-                height = static_cast<int32_t>(static_cast<float>(width) / targetRatio);
+                height = NumericCast<int32_t>(NumericCast<float>(width) / targetRatio);
             else if(aspectRatio > targetRatio)
-                width = static_cast<int32_t>(static_cast<float>(height) * targetRatio);
+                width = NumericCast<int32_t>(NumericCast<float>(height) * targetRatio);
         }
     }
 
@@ -3681,7 +3681,7 @@ int32_t TRAP::INTERNAL::WindowingAPI::PlatformGetKeyScanCodeWayland(const Input:
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-    return s_Data.ScanCodes[static_cast<uint32_t>(key)];
+    return s_Data.ScanCodes[ToUnderlying(key)];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3727,11 +3727,11 @@ const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeNameWayland(const i
 		return nullptr;
     }
 	for(std::size_t i = 0; i < utf8Str.size(); ++i)
-		s_Data.KeyNames[static_cast<uint32_t>(key)][i] = utf8Str[i];
+		s_Data.KeyNames[ToUnderlying(key)][i] = utf8Str[i];
 
-	s_Data.KeyNames[static_cast<uint32_t>(key)][utf8Str.size()] = '\0';
+	s_Data.KeyNames[ToUnderlying(key)][utf8Str.size()] = '\0';
 
-    return s_Data.KeyNames[static_cast<uint32_t>(key)].data();;
+    return s_Data.KeyNames[ToUnderlying(key)].data();;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3971,12 +3971,12 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowAspectRatioWayland(InternalW
     if(numerator == -1 || denominator == -1)
 		return;
 
-    const float aspectRatio = static_cast<float>(window.Width) / static_cast<float>(window.Height);
-    const float targetRatio = static_cast<float>(numerator) / static_cast<float>(denominator);
+    const float aspectRatio = NumericCast<float>(window.Width) / NumericCast<float>(window.Height);
+    const float targetRatio = NumericCast<float>(numerator) / NumericCast<float>(denominator);
     if(aspectRatio < targetRatio)
-        window.Height = static_cast<int32_t>(static_cast<float>(window.Width) / targetRatio);
+        window.Height = NumericCast<int32_t>(NumericCast<float>(window.Width) / targetRatio);
     else if(aspectRatio > targetRatio)
-        window.Width = static_cast<int32_t>(static_cast<float>(window.Height) * targetRatio);
+        window.Width = NumericCast<int32_t>(NumericCast<float>(window.Height) * targetRatio);
 
     ResizeWindowWayland(window);
 }

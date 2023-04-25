@@ -72,7 +72,7 @@ TRAP::Network::FTP::Response::Response(const Status code, std::string message) n
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return static_cast<uint32_t>(m_status) < 400;
+	return  ToUnderlying(m_status) < 400;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -604,7 +604,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::DataChannel::Open(const Transfe
 				//Extract the current number
 				while(std::isdigit(str[index]) != 0)
 				{
-					i = static_cast<uint8_t>(static_cast<uint8_t>(i * 10) + static_cast<uint8_t>(str[index] - '0'));
+					i = NumericCast<uint8_t>(NumericCast<uint8_t>(i * 10u) + NumericCast<uint8_t>(str[index] - '0'));
 					index++;
 				}
 
@@ -613,7 +613,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::DataChannel::Open(const Transfe
 			}
 
 			//Reconstruct connection port and address
-			const uint16_t port = static_cast<uint16_t>(std::get<4>(data) * 256) + std::get<5>(data);
+			const uint16_t port = NumericCast<uint16_t>(std::get<4>(data) * 256) + std::get<5>(data);
 			const IPv4Address address(std::get<0>(data), std::get<1>(data), std::get<2>(data), std::get<3>(data));
 
 			//Connect the data channel to the server
@@ -665,7 +665,7 @@ void TRAP::Network::FTP::DataChannel::Receive(std::ostream& stream)
 	std::size_t received = 0;
 	while(m_dataSocket.Receive(buffer.data(), buffer.size(), received) == Socket::Status::Done)
 	{
-		stream.write(buffer.data(), static_cast<std::streamsize>(received));
+		stream.write(buffer.data(), NumericCast<std::streamsize>(received));
 
 		if(!stream.good())
 		{
@@ -698,12 +698,12 @@ void TRAP::Network::FTP::DataChannel::Send(std::istream& stream)
 			break;
 		}
 
-		const std::size_t count = static_cast<std::size_t>(stream.gcount());
+		const int64_t count = NumericCast<int64_t>(stream.gcount());
 
 		if(count > 0)
 		{
 			//We could read mode data from the stream: send them
-			if (m_dataSocket.Send(buffer.data(), count) != Socket::Status::Done)
+			if (m_dataSocket.Send(buffer.data(), NumericCast<std::size_t>(count)) != Socket::Status::Done)
 				break;
 		}
 		else

@@ -713,7 +713,7 @@ namespace TRAP::Math
 	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<uint32_t L, typename T>
-	[[nodiscard]] Vec<L, uint32_t> IRound(const Vec<L, T>& x);
+	[[nodiscard]] Vec<L, int32_t> IRound(const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2078,7 +2078,7 @@ namespace TRAP::Math
 	/// <param name="index">Row index to retrieve.</param>
 	/// <returns>Row vector.</returns>
 	template<typename T>
-	[[nodiscard]] typename T::rowType Row(const T& m, int32_t index);
+	[[nodiscard]] typename T::rowType Row(const T& m, std::size_t index);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2091,7 +2091,7 @@ namespace TRAP::Math
 	/// <param name="x">New row data.</param>
 	/// <returns>Matrix with new row data.</returns>
 	template<typename T>
-	[[nodiscard]] T Row(const T& m, int32_t index, const typename T::rowType& x);
+	[[nodiscard]] T Row(const T& m, std::size_t index, const typename T::rowType& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2103,7 +2103,7 @@ namespace TRAP::Math
 	/// <param name="index">Column index to retrieve.</param>
 	/// <returns>Column vector.</returns>
 	template<typename T>
-	[[nodiscard]] typename T::colType Column(const T& m, int32_t index);
+	[[nodiscard]] typename T::colType Column(const T& m, std::size_t index);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2116,7 +2116,7 @@ namespace TRAP::Math
 	/// <param name="x">New column data.</param>
 	/// <returns>Matrix with new column data.</returns>
 	template<typename T>
-	[[nodiscard]] T Column(const T& m, int32_t index, const typename T::colType& x);
+	[[nodiscard]] T Column(const T& m, std::size_t index, const typename T::colType& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -3134,12 +3134,12 @@ template<typename genFIType>
 
 		if constexpr (std::is_same_v<int32_t, genFIType>)
 		{
-			const int32_t y = x >> (sizeof(int32_t) * 8 - 1);
+			const int32_t y = x >> (sizeof(int32_t) * 8u - 1u);
 			return (x ^ y) - y;
 		}
 		else
 		{
-			return x >= genFIType(0) ? x : -x;
+			return x >= static_cast<genFIType>(0) ? x : -x;
 		}
 	}
 	else
@@ -3150,7 +3150,7 @@ template<uint32_t L, typename T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Abs(const Vec<L, T>& x)
 {
 	Vec<L, T> result{};
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = Abs(x[i]);
 	return result;
 }
@@ -3164,7 +3164,8 @@ template<typename genFIType>
 	              (std::numeric_limits<genFIType>::is_signed && std::numeric_limits<genFIType>::is_integer),
 				  "'Sign' only accepts signed inputs");
 
-	return genFIType(genFIType(0) < x) - genFIType(x < genFIType(0));
+	return static_cast<genFIType>(static_cast<genFIType>(0) < x) -
+	       static_cast<genFIType>(x < static_cast<genFIType>(0));
 }
 
 template<uint32_t L, typename T>
@@ -3174,7 +3175,8 @@ template<uint32_t L, typename T>
 	              (std::numeric_limits<T>::is_signed && std::numeric_limits<T>::is_integer),
 				  "'Sign' only accepts signed inputs");
 
-	return Vec<L, T>(LessThan(Vec<L, T>(0), x)) - Vec<L, T>(LessThan(x, Vec<L, T>(0)));
+	return Vec<L, T>(LessThan(Vec<L, T>(static_cast<T>(0)), x)) -
+	       Vec<L, T>(LessThan(x, Vec<L, T>(static_cast<T>(0))));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3195,7 +3197,7 @@ template<uint32_t L, typename T>
 	static_assert(std::numeric_limits<T>::is_iec559, "'Floor' only accepts floating-point inputs.");
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = std::floor(x[i]);
 	return result;
 }
@@ -3210,7 +3212,7 @@ template<uint32_t L, typename T>
 	static_assert(std::numeric_limits<T>::is_iec559, "'Trunc' only accepts floating-point inputs.");
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = std::trunc(x[i]);
 	return result;
 }
@@ -3225,7 +3227,7 @@ template<uint32_t L, typename T>
 	static_assert(std::numeric_limits<T>::is_iec559, "'Round' only accepts floating-point inputs.");
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = std::round(x[i]);
 	return result;
 }
@@ -3261,7 +3263,7 @@ template<uint32_t L, typename T>
 	static_assert(std::numeric_limits<T>::is_iec559, "'RoundEven' only accepts floating-point inputs");
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = RoundEven(x[i]);
 	return result;
 }
@@ -3284,7 +3286,7 @@ template<uint32_t L, typename T>
 	static_assert(std::numeric_limits<T>::is_iec559, "'Ceil' only accepts floating-point inputs");
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = std::ceil(x[i]);
 	return result;
 }
@@ -3357,7 +3359,7 @@ template<uint32_t L, typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result;
-	for (uint32_t j = 0; j < L; j++)
+	for (uint32_t j = 0u; j < L; j++)
 		result[j] = std::modf(x[j], &i[j]);
 	return result;
 }
@@ -3371,7 +3373,7 @@ template<uint32_t L, typename T>
 	              "'Min' only accepts floating-point or integer inputs");
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = Min(a[i], b);
 	return result;
 }
@@ -3383,7 +3385,7 @@ template<uint32_t L, typename T>
 	              "'Min' only accepts floating-point or integer inputs");
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = Min(a[i], b[i]);
 	return result;
 }
@@ -3415,7 +3417,7 @@ template<uint32_t L, typename T >
 	              "'Max' only accepts floating-point or integer inputs");
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = Max(a[i], b);
 	return result;
 }
@@ -3427,7 +3429,7 @@ template<uint32_t L, typename T>
 	              "'Max' only accepts floating-point or integer inputs");
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = Max(a[i], b[i]);
 	return result;
 }
@@ -3489,18 +3491,18 @@ template<typename genType>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	static_assert(std::numeric_limits<genType>::is_iec559, "'IRound' only accepts floating-point inputs");
-	TRAP_ASSERT(static_cast<genType>(0.0) <= x, "Math::IRound(): x must be positive!");
+	TRAP_ASSERT(static_cast<genType>(0) <= x, "Math::IRound(): x must be positive!");
 
 	return static_cast<int32_t>(x + static_cast<genType>(0.5));
 }
 
 template<uint32_t L, typename T>
-[[nodiscard]] TRAP::Math::Vec<L, uint32_t> TRAP::Math::IRound(const Vec<L, T>& x)
+[[nodiscard]] TRAP::Math::Vec<L, int32_t> TRAP::Math::IRound(const Vec<L, T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	static_assert(std::numeric_limits<T>::is_iec559, "'IRound' only accepts floating-point inputs");
-	TRAP_ASSERT(All(LessThanEqual(Vec<L, T>(0), x)), "Math::IRound(): x must be positive!");
+	TRAP_ASSERT(All(LessThanEqual(Vec<L, T>(static_cast<T>(0)), x)), "Math::IRound(): x must be positive!");
 
 	return Vec<L, int32_t>(x + static_cast<T>(0.5));
 }
@@ -3513,7 +3515,7 @@ template<typename genType>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	static_assert(std::numeric_limits<genType>::is_iec559, "'URound' only accepts floating-point inputs");
-	TRAP_ASSERT(static_cast<genType>(0.0) <= x, "Math::URound(): x must be positive!");
+	TRAP_ASSERT(static_cast<genType>(0) <= x, "Math::URound(): x must be positive!");
 
 	return static_cast<uint32_t>(x + static_cast<genType>(0.5));
 }
@@ -3524,7 +3526,7 @@ template<uint32_t L, typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	static_assert(std::numeric_limits<T>::is_iec559, "'URound' only accepts floating-point inputs");
-	TRAP_ASSERT(All(LessThanEqual(Vec<L, T>(0), x)), "Math::URound(): x must be positive!");
+	TRAP_ASSERT(All(LessThanEqual(Vec<L, T>(static_cast<T>(0)), x)), "Math::URound(): x must be positive!");
 
 	return Vec<L, uint32_t>(x + static_cast<T>(0.5));
 }
@@ -3566,7 +3568,7 @@ template<uint32_t L, typename T, typename U>
 	if constexpr (std::is_same_v<U, bool>)
 	{
 		Vec<L, T> result{};
-		for (int32_t i = 0; i < Vec<L, T>::Length(); ++i)
+		for (uint32_t i = 0; i < L; ++i)
 			result[i] = a[i] ? y[i] : x[i];
 		return result;
 	}
@@ -3597,7 +3599,7 @@ template<typename T>
 	}
 
 	const T angle = ACos(cosTheta);
-	return (Sin((static_cast<T>(1) - a)* angle)* x + Sin(a * angle) * y) / Sin(angle);
+	return (Sin((static_cast<T>(1) - a) * angle) * x + Sin(a * angle) * y) / Sin(angle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3686,7 +3688,7 @@ template<uint32_t L, typename T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return Mix(Vec<L, T>(1), Vec<L, T>(0), LessThan(x, Vec<L, T>(edge)));
+	return Mix(Vec<L, T>(static_cast<T>(1)), Vec<L, T>(static_cast<T>(0)), LessThan(x, Vec<L, T>(edge)));
 }
 
 template<uint32_t L, typename T>
@@ -3694,7 +3696,7 @@ template<uint32_t L, typename T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return Mix(Vec<L, T>(1), Vec<L, T>(0), LessThan(x, edge));
+	return Mix(Vec<L, T>(static_cast<T>(1)), Vec<L, T>(static_cast<T>(0)), LessThan(x, edge));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3706,9 +3708,9 @@ template<typename genType>
 
 	static_assert(std::numeric_limits<genType>::is_iec559, "'SmoothStep' only accepts floating-point inputs");
 
-	const genType tmp(Clamp((x - edge0) / (edge1 - edge0), genType(0), genType(1)));
+	const genType tmp(Clamp((x - edge0) / (edge1 - edge0), static_cast<genType>(0), static_cast<genType>(1)));
 
-	return tmp * tmp * (genType(3) - genType(2) * tmp);
+	return tmp * tmp * (static_cast<genType>(3) - static_cast<genType>(2) * tmp);
 }
 
 template<uint32_t L, typename T>
@@ -3750,7 +3752,7 @@ template<uint32_t L, typename T>
 	static_assert(std::numeric_limits<T>::is_iec559, "'IsNaN' only accepts floating-point inputs");
 
 	Vec<L, bool> result;
-	for (uint32_t i = 0; i < L; ++i)
+	for (uint32_t i = 0u; i < L; ++i)
 		result[i] = TRAP::Math::IsNaN(v[i]);
 	return result;
 }
@@ -3777,7 +3779,7 @@ template<uint32_t L, typename T>
 	static_assert(std::numeric_limits<T>::is_iec559, "'IsInf' only accepts floating-point inputs");
 
 	Vec<L, bool> result;
-	for (uint32_t i = 0; i < L; ++i)
+	for (uint32_t i = 0u; i < L; ++i)
 		result[i] = TRAP::Math::IsInf(v[i]);
 	return result;
 }
@@ -3820,7 +3822,7 @@ template<uint32_t L, typename T>
 	static_assert(std::numeric_limits<T>::is_iec559, "'FrExp' only accepts floating-point inputs");
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; ++i)
+	for (uint32_t i = 0u; i < L; ++i)
 		result[i] = std::frexp(v[i], &exp[i]);
 	return result;
 }
@@ -3845,7 +3847,7 @@ template<uint32_t L, typename T>
 	static_assert(std::numeric_limits<T>::is_iec559, "'LdExp' only accepts floating-point inputs");
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; ++i)
+	for (uint32_t i = 0u; i < L; ++i)
 		result[i] = std::ldexp(v[i], exp[i]);
 	return result;
 }
@@ -3873,7 +3875,7 @@ template<uint32_t L, typename T>
 
 	const Vec<L, T> result(Abs(v));
 
-	return Equal(result & (result - Vec<L, T>(1)), Vec<L, T>(0));
+	return Equal(result & (result - Vec<L, T>(static_cast<T>(1))), Vec<L, T>(static_cast<T>(0)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3892,7 +3894,7 @@ template<uint32_t L, typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = static_cast<T>(std::fmod(x[i], y));
 	return result;
 }
@@ -3903,7 +3905,7 @@ template<uint32_t L, typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = static_cast<T>(std::fmod(x[i], y[i]));
 	return result;
 }
@@ -3943,7 +3945,7 @@ template <typename T>
 	TRAP_ASSERT(a >= static_cast<T>(0), "Math::Lerp(): 'a' must be greater or equal to 0!");
 	TRAP_ASSERT(a <= static_cast<T>(1), "Math::Lerp(): 'a' must be less or equal to 1!");
 
-	return x * (static_cast<T>(1) - 1) + (y * a);
+	return x * (static_cast<T>(1) - static_cast<T>(1)) + (y * a);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3964,7 +3966,7 @@ template<uint32_t L, typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = static_cast<T>(std::pow(static_cast<float>(base[i]), static_cast<float>(exponent[i])));
 	return result;
 }
@@ -3977,7 +3979,7 @@ template <typename T>
 	//Raising to the power of 0 should yield 1
 	//Needed to prevent a division by 0 error later on
 	if (y > -Epsilon<T>() && y < Epsilon<T>())
-		return tQuat<T>(1, 0, 0, 0);
+		return tQuat<T>(static_cast<T>(1), static_cast<T>(0), static_cast<T>(0), static_cast<T>(0));
 
 	//To deal with non-unit quaternions
 	const T magnitude = Sqrt(x.x * x.x + x.y * x.y + x.z * x.z + x.w * x.w);
@@ -3996,7 +3998,7 @@ template <typename T>
 		if(vectorMagnitude < std::numeric_limits<T>::min())
 		{
 			//Equivalent to raising a real number to a power
-			return tQuat<T>(Pow(x.w, y), 0, 0, 0);
+			return tQuat<T>(Pow(x.w, y), static_cast<T>(0), static_cast<T>(0), static_cast<T>(0));
 		}
 
 		angle = ASin(Sqrt(vectorMagnitude) / magnitude);
@@ -4029,7 +4031,7 @@ template<uint32_t L, typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = std::exp(x[i]);
 	return result;
 }
@@ -4064,7 +4066,7 @@ template<uint32_t L, typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = std::log(x[i]);
 	return result;
 }
@@ -4089,7 +4091,7 @@ template <typename T>
 
 	const T t = ATan(vec3Len, T(q.w)) / vec3Len;
 	const T quatLen2 = vec3Len * vec3Len + q.w * q.w;
-	return tQuat<T>(static_cast<T>(0.5)* Log(quatLen2), t* q.x, t* q.y, t* q.z);
+	return tQuat<T>(static_cast<T>(0.5) * Log(quatLen2), t * q.x, t * q.y, t * q.z);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4108,7 +4110,7 @@ template<uint32_t L, typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = std::exp2(x[i]);
 	return result;
 }
@@ -4129,7 +4131,7 @@ template<uint32_t L, typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = static_cast<T>(std::log2(x[i]));
 	return result;
 }
@@ -4152,7 +4154,7 @@ template<uint32_t L, typename T>
 	static_assert(std::numeric_limits<T>::is_iec559, "'Sqrt' only accepts floating-point inputs");
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = std::sqrt(x[i]);
 	return result;
 }
@@ -4183,7 +4185,7 @@ template<uint32_t L, typename T>
 	static_assert(std::numeric_limits<T>::is_iec559, "'InverseSqrt' only accepts floating-point inputs");
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = static_cast<T>(1) / Sqrt(x[i]);
 	return result;
 }
@@ -4257,7 +4259,7 @@ template<uint32_t L, typename T>
 
 	T result = 0;
 	const Vec<L, T> tmp(x * y);
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result += tmp[i];
 	return result;
 }
@@ -4353,7 +4355,7 @@ template<typename genType>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return I - N * Dot(N, I) * genType(2);
+	return I - N * Dot(N, I) * static_cast<genType>(2);
 }
 
 template<uint32_t L, typename T>
@@ -4388,7 +4390,7 @@ template<uint32_t L, typename T>
 
 	const T dotValue(Dot(N, I));
 	const T k(static_cast<T>(1) - eta * eta * (static_cast<T>(1) - dotValue * dotValue));
-	const Vec<L, T> result = (k >= static_cast<T>(0)) ? (eta * I - (eta * dotValue + std::sqrt(k)) * N) : Vec<L, T>(0);
+	const Vec<L, T> result = (k >= static_cast<T>(0)) ? (eta * I - (eta * dotValue + std::sqrt(k)) * N) : Vec<L, T>(static_cast<T>(0));
 
 	return result;
 }
@@ -4399,7 +4401,7 @@ template <uint32_t L, typename T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Mat<L, L, T>& x, const Mat<L, L, T>& y)
 {
 	Vec<L, bool> result(true);
-	for(uint32_t i = 0; i < L; ++i)
+	for(uint32_t i = 0u; i < L; ++i)
 		result[i] = All(Equal(x[i], y[i]));
 	return result;
 }
@@ -4415,7 +4417,7 @@ template <uint32_t L, typename T>
                                                                    const Vec<L, T>& epsilon)
 {
 	Vec<L, bool> result(true);
-	for (uint32_t i = 0; i < L; ++i)
+	for (uint32_t i = 0u; i < L; ++i)
 		result[i] = All(Equal(x[i], y[i], epsilon[i]));
 	return result;
 }
@@ -4426,7 +4428,7 @@ template <uint32_t L, typename T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Mat<L, L, T>& x, const Mat<L, L, T>& y)
 {
 	Vec<L, bool> result(true);
-	for(uint32_t i = 0; i < L; ++i)
+	for(uint32_t i = 0u; i < L; ++i)
 		result[i] = Any(NotEqual(x[i], y[i]));
 	return result;
 }
@@ -4442,7 +4444,7 @@ template <uint32_t L, typename T>
                                                                       const Vec<L, T>& epsilon)
 {
 	Vec<L, bool> result(true);
-	for (uint32_t i = 0; i < L; ++i)
+	for (uint32_t i = 0u; i < L; ++i)
 		result[i] = Any(NotEqual(x[i], y[i], epsilon[i]));
 	return result;
 }
@@ -4459,7 +4461,7 @@ template<uint32_t L, typename T>
 	static_assert(std::numeric_limits<T>::is_iec559, "'MatrixCompMult' only accepts floating-point inputs");
 
 	Mat<L, L, T> result;
-	for (uint32_t i = 0; i < static_cast<uint32_t>(result.Length()); ++i)
+	for (std::size_t i = 0u; i < result.Length(); ++i)
 		result[i] = x[i] * y[i];
 	return result;
 }
@@ -4474,7 +4476,7 @@ template<uint32_t L, typename T>
 	static_assert(std::numeric_limits<T>::is_iec559, "'OuterProduct' only accepts floating-point inputs");
 
 	Mat<L, L, T> m;
-	for (int32_t i = 0; i < m.Length(); ++i)
+	for (std::size_t i = 0u; i < m.Length(); ++i)
 		m[i] = c * r[i];
 	return m;
 }
@@ -4581,7 +4583,7 @@ template<typename T>
 
 	static_assert(std::numeric_limits<T>::is_iec559, "'Inverse' only accepts floating-points inputs");
 
-	const T oneOverDeterminant = static_cast<T>(1) / (+m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2])
+	const T oneOverDeterminant = static_cast<T>(1) / (+ m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2])
 		                                              - m[1][0] * (m[0][1] * m[2][2] - m[2][1] * m[0][2])
 		                                              + m[2][0] * (m[0][1] * m[1][2] - m[1][1] * m[0][2]));
 
@@ -4646,8 +4648,8 @@ template<typename T>
 	const Vec<4, T> inv2(vec0 * fac1 - vec1 * fac3 + vec3 * fac5);
 	const Vec<4, T> inv3(vec0 * fac2 - vec1 * fac4 + vec2 * fac5);
 
-	const Vec<4, T> signA(+1, -1, +1, -1);
-	const Vec<4, T> signB(-1, +1, -1, +1);
+	const Vec<4, T> signA(static_cast<T>(+1), static_cast<T>(-1), static_cast<T>(+1), static_cast<T>(-1));
+	const Vec<4, T> signB(static_cast<T>(-1), static_cast<T>(+1), static_cast<T>(-1), static_cast<T>(+1));
 	const Mat<4, 4, T> inverse(inv0 * signA, inv1 * signB, inv2 * signA, inv3 * signB);
 
 	const Vec<4, T> row0(inverse[0][0], inverse[1][0], inverse[2][0], inverse[3][0]);
@@ -4823,7 +4825,7 @@ template <typename T>
 template <typename T>
 [[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Translate(const Vec<3, T>& v) noexcept
 {
-	Mat<4, 4, T> result(T(1.0));
+	Mat<4, 4, T> result(static_cast<T>(1.0));
 
 	result[3] = result[0] * std::get<0>(v) + result[1] * std::get<1>(v) + result[2] * std::get<2>(v) + result[3];
 
@@ -4842,7 +4844,7 @@ template<typename T>
 	const T s = std::sin(a);
 
 	const Vec<3, T> axis(Normalize(v));
-	const Vec<3, T> temp((T(1) - c) * axis);
+	const Vec<3, T> temp((static_cast<T>(1) - c) * axis);
 
 	Mat<4, 4, T> rotate;
 
@@ -4878,7 +4880,7 @@ template<typename T>
 	const T s = std::sin(a);
 
 	const Vec<3, T> axis(Normalize(v));
-	const Vec<3, T> temp((T(1) - c) * axis);
+	const Vec<3, T> temp((static_cast<T>(1) - c) * axis);
 
 	Mat<4, 4, T> rotate;
 
@@ -4894,7 +4896,7 @@ template<typename T>
 	rotate[2][1] = std::get<2>(temp) * std::get<1>(axis) - s * std::get<0>(axis);
 	rotate[2][2] = c + std::get<2>(temp) * std::get<2>(axis);
 
-	const Mat<4, 4, T> identity(1.0f);
+	const Mat<4, 4, T> identity(static_cast<T>(1.0));
 	Mat<4, 4, T> result;
 
 	result[0] = identity[0] * rotate[0][0] + identity[1] * rotate[0][1] + identity[2] * rotate[0][2];
@@ -4927,7 +4929,7 @@ template <typename T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Mat<4, 4, T> result(1.0f);
+	Mat<4, 4, T> result(static_cast<T>(1.0f));
 
 	result[0] *= std::get<0>(v);
 	result[1] *= std::get<1>(v);
@@ -4947,7 +4949,7 @@ template <typename T>
 	const Vec<3, T> s(Normalize(Cross(f, up)));
 	const Vec<3, T> u(Cross(s, f));
 
-	Mat<4, 4, T> result(1);
+	Mat<4, 4, T> result(static_cast<T>(1));
 
 	result[0][0] = s.x;
 	result[1][0] = s.y;
@@ -4968,15 +4970,15 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] T TRAP::Math::Row(const T& m, const int32_t index, const typename T::rowType& x)
+[[nodiscard]] T TRAP::Math::Row(const T& m, const std::size_t index, const typename T::rowType& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(index >= 0 && index < m[0].Length(), "Math::Row(): Index out of range!");
+	TRAP_ASSERT(index < m[0].Length(), "Math::Row(): Index out of range!");
 
 	T result = m;
 
-	for(int32_t i = 0; i < m.Length(); ++i)
+	for(std::size_t i = 0u; i < m.Length(); ++i)
 		result[i][index] = x[i];
 
 	return result;
@@ -4985,15 +4987,15 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] typename T::rowType TRAP::Math::Row(const T& m, const int32_t index)
+[[nodiscard]] typename T::rowType TRAP::Math::Row(const T& m, const std::size_t index)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(index >= 0 && index < m[0].Length(), "Math::Row(): Index out of range!");
+	TRAP_ASSERT(index < m[0].Length(), "Math::Row(): Index out of range!");
 
 	typename T::rowType result(0);
 
-	for(int32_t i = 0; i < m.Length(); ++i)
+	for(std::size_t i = 0u; i < m.Length(); ++i)
 		result[i] = m[i][index];
 
 	return result;
@@ -5002,11 +5004,11 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] T TRAP::Math::Column(const T& m, const int32_t index, const typename T::colType& x)
+[[nodiscard]] T TRAP::Math::Column(const T& m, const std::size_t index, const typename T::colType& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(index >= 0 && index < m.Length(), "Math::Column(): Index out of range!");
+	TRAP_ASSERT(index < m.Length(), "Math::Column(): Index out of range!");
 
 	T result = m;
 	result[index] = x;
@@ -5017,11 +5019,11 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] typename T::colType TRAP::Math::Column(const T& m, const int32_t index)
+[[nodiscard]] typename T::colType TRAP::Math::Column(const T& m, const std::size_t index)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(index >= 0 && index < m.Length(), "Math::Column(): Index out of range!");
+	TRAP_ASSERT(index < m.Length(), "Math::Column(): Index out of range!");
 
 	return m[index];
 }
@@ -5034,13 +5036,13 @@ template<typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	//Normalize
-	if(Equal(m[3][3], T(0), Epsilon<T>()))
+	if(Equal(m[3][3], static_cast<T>(0), Epsilon<T>()))
 		return false;
 
 	//First, isolate perspective. This is the messiest.
-	if (NotEqual(m[0][3], T(0), Epsilon<T>()) ||
-		NotEqual(m[1][3], T(0), Epsilon<T>()) ||
-		NotEqual(m[2][3], T(0), Epsilon<T>()))
+	if (NotEqual(m[0][3], static_cast<T>(0), Epsilon<T>()) ||
+		NotEqual(m[1][3], static_cast<T>(0), Epsilon<T>()) ||
+		NotEqual(m[2][3], static_cast<T>(0), Epsilon<T>()))
 	{
 		//Clear the perspective partition
 		m[0][3] = T(0);
@@ -5056,19 +5058,19 @@ template<typename T>
 	std::array<TRAP::Math::Vec<3, T>, 3> row;
 
 	//Now get scale and shear.
-	for(uint32_t i = 0; i < 3; ++i)
+	for(uint32_t i = 0; i < 3u; ++i)
 	{
-		for(uint32_t j = 0; j < 3; ++j)
+		for(uint32_t j = 0; j < 3u; ++j)
 			row[i][j] = m[i][j];
 	}
 
 	//Compute X scale factor and normalize first row.
 	outScale.x = Length(std::get<0>(row));
-	std::get<0>(row) = std::get<0>(row) * T(1) / Length(std::get<0>(row));
+	std::get<0>(row) = std::get<0>(row) * static_cast<T>(1) / Length(std::get<0>(row));
 	outScale.y = Length(std::get<1>(row));
-	std::get<1>(row) = std::get<1>(row) * T(1) / Length(std::get<1>(row));
+	std::get<1>(row) = std::get<1>(row) * static_cast<T>(1) / Length(std::get<1>(row));
 	outScale.z = Length(std::get<2>(row));
-	std::get<2>(row) = std::get<2>(row) * T(1) / Length(std::get<2>(row));
+	std::get<2>(row) = std::get<2>(row) * static_cast<T>(1) / Length(std::get<2>(row));
 
 	//At this point, the matrix (in rows[]) is orthonormal.
 	//Check for a coordinate system flip, If the determinant
@@ -5076,15 +5078,15 @@ template<typename T>
 	// std::array<TRAP::Math::Vec<3, T>, 3> Pdum3 = Cross(std::get<1>(row), std::get<2>(row));
 	// if(Dot(std::get<0>(row), Pdum3) < T(0))
 	// {
-	// 	for(uint32_t i = 0; i < 3; ++i)
+	// 	for(uint32_t i = 0; i < 3u; ++i)
 	// 	{
-	// 		outScale[i] *= T(-1);
-	// 		row[i] *= T(-1);
+	// 		outScale[i] *= static_cast<T>(-1);
+	// 		row[i] *= static_cast<T>(-1);
 	// 	}
 	// }
 
 	outRotation.y = ASin(-row[0][2]);
-	if(Cos(outRotation.y) != T(0))
+	if(Cos(outRotation.y) != static_cast<T>(0))
 	{
 		outRotation.x = ATan(row[1][2], row[2][2]);
 		outRotation.z = ATan(row[0][1], row[0][0]);
@@ -5092,7 +5094,7 @@ template<typename T>
 	else
 	{
 		outRotation.x = ATan(-row[2][0], row[1][1]);
-		outRotation.z = T(0);
+		outRotation.z = static_cast<T>(0);
 	}
 
 	return true;
@@ -5205,7 +5207,7 @@ template <typename T>
 	const T y = static_cast<T>(2) * (q.x * q.y + q.w * q.z);
 	const T x = q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z;
 
-	if (All(Equal(tVec2<T>(x, y), tVec2<T>(0), Epsilon<T>()))) //Avoid ATan2(0, 0) - handle singularity
+	if (All(Equal(tVec2<T>(x, y), tVec2<T>(static_cast<T>(0)), Epsilon<T>()))) //Avoid ATan2(0, 0) - handle singularity
 		return static_cast<T>(0);
 
 	return static_cast<T>(ATan(y, x));
@@ -5221,8 +5223,8 @@ template <typename T>
 	const T y = static_cast<T>(2) * (q.y * q.z + q.w * q.x);
 	const T x = q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z;
 
-	if (All(Equal(Vec<2, T>(x, y), Vec<2, T>(0), Epsilon<T>())))
-		return static_cast<T>(static_cast<T>(2)* ATan(q.x, q.w));
+	if (All(Equal(Vec<2, T>(x, y), Vec<2, T>(static_cast<T>(0)), Epsilon<T>())))
+		return static_cast<T>(static_cast<T>(2) * ATan(q.x, q.w));
 
 	return static_cast<T>(ATan(y, x));
 }
@@ -5234,7 +5236,7 @@ template <typename T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return ASin(Clamp(static_cast<T>(-2)* (x.x * x.z - x.w * x.y), static_cast<T>(-1), static_cast<T>(1)));
+	return ASin(Clamp(static_cast<T>(-2) * (x.x * x.z - x.w * x.y), static_cast<T>(-1), static_cast<T>(1)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5244,7 +5246,7 @@ template <typename T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Mat<3, 3, T> result(T(1));
+	Mat<3, 3, T> result(static_cast<T>(1));
 	const T qxx(q.x * q.x);
 	const T qyy(q.y * q.y);
 	const T qzz(q.z * q.z);
@@ -5255,17 +5257,17 @@ template <typename T>
 	const T qwy(q.w * q.y);
 	const T qwz(q.w * q.z);
 
-	result[0][0] = T(1) - T(2) * (qyy + qzz);
-	result[0][1] = T(2) * (qxy + qwz);
-	result[0][2] = T(2) * (qxz - qwy);
+	result[0][0] = static_cast<T>(1) - static_cast<T>(2) * (qyy + qzz);
+	result[0][1] = static_cast<T>(2) * (qxy + qwz);
+	result[0][2] = static_cast<T>(2) * (qxz - qwy);
 
-	result[1][0] = T(2) * (qxy - qwz);
-	result[1][1] = T(1) - T(2) * (qxx + qzz);
-	result[1][2] = T(2) * (qyz + qwx);
+	result[1][0] = static_cast<T>(2) * (qxy - qwz);
+	result[1][1] = static_cast<T>(1) - static_cast<T>(2) * (qxx + qzz);
+	result[1][2] = static_cast<T>(2) * (qyz + qwx);
 
-	result[2][0] = T(2) * (qxz + qwy);
-	result[2][1] = T(2) * (qyz - qwx);
-	result[2][2] = T(1) - T(2) * (qxx + qyy);
+	result[2][0] = static_cast<T>(2) * (qxz + qwy);
+	result[2][1] = static_cast<T>(2) * (qyz - qwx);
+	result[2][2] = static_cast<T>(1) - static_cast<T>(2) * (qxx + qyy);
 
 	return result;
 }
@@ -5288,22 +5290,22 @@ template <typename T>
 	const T fourZSquaredMinus1 = m[2][2] - m[0][0] - m[1][1];
 	const T fourWSquaredMinus1 = m[0][0] + m[1][1] + m[2][2];
 
-	int32_t biggestIndex = 0;
+	uint32_t biggestIndex = 0;
 	T fourBiggestSquaredMinus1 = fourWSquaredMinus1;
 	if (fourXSquaredMinus1 > fourBiggestSquaredMinus1)
 	{
 		fourBiggestSquaredMinus1 = fourXSquaredMinus1;
-		biggestIndex = 1;
+		biggestIndex = 1u;
 	}
 	if (fourYSquaredMinus1 > fourBiggestSquaredMinus1)
 	{
 		fourBiggestSquaredMinus1 = fourYSquaredMinus1;
-		biggestIndex = 2;
+		biggestIndex = 2u;
 	}
 	if (fourZSquaredMinus1 > fourBiggestSquaredMinus1)
 	{
 		fourBiggestSquaredMinus1 = fourZSquaredMinus1;
-		biggestIndex = 3;
+		biggestIndex = 3u;
 	}
 
 	const T biggestVal = Sqrt(fourBiggestSquaredMinus1 + static_cast<T>(1))* static_cast<T>(0.5);
@@ -5329,7 +5331,7 @@ template <typename T>
 
 	default:
 		TRAP_ASSERT(false, "Math::QuaternionCast(): Invalid Index!");
-		return tQuat<T>(1, 0, 0, 0);
+		return tQuat<T>(static_cast<T>(1), static_cast<T>(0), static_cast<T>(0), static_cast<T>(0));
 	}
 }
 
@@ -5347,7 +5349,7 @@ template <typename T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::LessThan(const tQuat<T>& x, const tQuat<T>& y) noexcept
 {
 	Vec<4, bool> result(false, false, false, false);
-	for (uint32_t i = 0; i < x.Length(); ++i)
+	for (std::size_t i = 0u; i < x.Length(); ++i)
 		result[i] = x[i] < y[i];
 
 	return result;
@@ -5359,7 +5361,7 @@ template <typename T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::LessThanEqual(const tQuat<T>& x, const tQuat<T>& y) noexcept
 {
 	Vec<4, bool> result(false, false, false, false);
-	for (uint32_t i = 0; i < x.Length(); ++i)
+	for (std::size_t i = 0u; i < x.Length(); ++i)
 		result[i] = x[i] <= y[i];
 
 	return result;
@@ -5371,7 +5373,7 @@ template <typename T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::GreaterThan(const tQuat<T>& x, const tQuat<T>& y) noexcept
 {
 	Vec<4, bool> result(false, false, false, false);
-	for (uint32_t i = 0; i < x.Length(); ++i)
+	for (std::size_t i = 0u; i < x.Length(); ++i)
 		result[i] = x[i] > y[i];
 
 	return result;
@@ -5383,7 +5385,7 @@ template <typename T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::GreaterThanEqual(const tQuat<T>& x, const tQuat<T>& y) noexcept
 {
 	Vec<4, bool> result(false, false, false, false);
-	for (uint32_t i = 0; i < x.Length(); ++i)
+	for (std::size_t i = 0u; i < x.Length(); ++i)
 		result[i] = x[i] >= y[i];
 
 	return result;
@@ -5414,7 +5416,7 @@ template <typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<4, bool> result{};
-	for (uint32_t i = 0; i < x.Length(); ++i)
+	for (std::size_t i = 0u; i < x.Length(); ++i)
 		result[i] = x[i] == y[i];
 
 	return result;
@@ -5437,7 +5439,7 @@ template <typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<4, bool> result{};
-	for (uint32_t i = 0; i < x.Length(); ++i)
+	for (std::size_t i = 0u; i < x.Length(); ++i)
 		result[i] = x[i] != y[i];
 
 	return result;
@@ -5475,7 +5477,7 @@ template <typename T>
 	const T tmp1 = static_cast<T>(1) - x.w * x.w;
 
 	if (tmp1 <= static_cast<T>(0))
-		return Vec<3, T>(0, 0, 1);
+		return Vec<3, T>(static_cast<T>(0), static_cast<T>(0), static_cast<T>(1));
 
 	const T tmp2 = static_cast<T>(1) / Sqrt(tmp1);
 	return Vec<3, T>(x.x * tmp2, x.y * tmp2, x.z * tmp2);
@@ -5526,19 +5528,19 @@ template <typename T>
 template<typename T>
 [[nodiscard]] constexpr TRAP::Math::Vec<3, T> TRAP::Math::XAxis() noexcept
 {
-	return Vec<3, T>(T(1.0), T(0.0), T(0.0));
+	return Vec<3, T>(static_cast<T>(1.0), static_cast<T>(0.0), static_cast<T>(0.0));
 }
 
 template<typename T>
 [[nodiscard]] constexpr TRAP::Math::Vec<3, T> TRAP::Math::YAxis() noexcept
 {
-	return Vec<3, T>(T(0.0), T(1.0), T(0.0));
+	return Vec<3, T>(static_cast<T>(0.0), static_cast<T>(1.0), static_cast<T>(0.0));
 }
 
 template<typename T>
 [[nodiscard]] constexpr TRAP::Math::Vec<3, T> TRAP::Math::ZAxis() noexcept
 {
-	return Vec<3, T>(T(0.0), T(0.0), T(1.0));
+	return Vec<3, T>(static_cast<T>(0.0), static_cast<T>(0.0), static_cast<T>(1.0));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5547,7 +5549,7 @@ template<uint32_t L, typename T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::LessThan(const Vec<L, T>& x, const Vec<L, T>& y) noexcept
 {
 	Vec<L, bool> result(true);
-	for (uint32_t i = 0; i < L; ++i)
+	for (uint32_t i = 0u; i < L; ++i)
 		result[i] = x[i] < y[i];
 	return result;
 }
@@ -5558,7 +5560,7 @@ template <uint32_t L, typename T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::LessThanEqual(const Vec<L, T>& x, const Vec<L, T>& y) noexcept
 {
 	Vec<L, bool> result(true);
-	for (uint32_t i = 0; i < L; ++i)
+	for (uint32_t i = 0u; i < L; ++i)
 		result[i] = x[i] <= y[i];
 	return result;
 }
@@ -5569,7 +5571,7 @@ template <uint32_t L, typename T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::GreaterThan(const Vec<L, T>& x, const Vec<L, T>& y) noexcept
 {
 	Vec<L, bool> result(true);
-	for (uint32_t i = 0; i < L; ++i)
+	for (uint32_t i = 0u; i < L; ++i)
 		result[i] = x[i] > y[i];
 	return result;
 }
@@ -5580,7 +5582,7 @@ template <uint32_t L, typename T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::GreaterThanEqual(const Vec<L, T>& x, const Vec<L, T>& y) noexcept
 {
 	Vec<L, bool> result(true);
-	for (uint32_t i = 0; i < L; ++i)
+	for (uint32_t i = 0u; i < L; ++i)
 		result[i] = x[i] >= y[i];
 	return result;
 }
@@ -5591,7 +5593,7 @@ template <uint32_t L, typename T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Vec<L, T>& x, const Vec<L, T>& y) noexcept
 {
 	Vec<L, bool> result(true);
-	for (uint32_t i = 0; i < L; ++i)
+	for (uint32_t i = 0u; i < L; ++i)
 		result[i] = x[i] == y[i];
 	return result;
 }
@@ -5619,7 +5621,7 @@ template <uint32_t L, typename T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Vec<L, T>& x, const Vec<L, T>& y) noexcept
 {
 	Vec<L, bool> result(true);
-	for (uint32_t i = 0; i < L; ++i)
+	for (uint32_t i = 0u; i < L; ++i)
 		result[i] = x[i] != y[i];
 	return result;
 }
@@ -5647,7 +5649,7 @@ template<uint32_t L>
 [[nodiscard]] constexpr bool TRAP::Math::Any(const Vec<L, bool>& v) noexcept
 {
 	bool result = false;
-	for (uint32_t i = 0; i < L; ++i)
+	for (uint32_t i = 0u; i < L; ++i)
 		result = result || v[i];
 	return result;
 }
@@ -5658,7 +5660,7 @@ template<uint32_t L>
 [[nodiscard]] constexpr bool TRAP::Math::All(const Vec<L, bool>& v) noexcept
 {
 	bool result = true;
-	for (uint32_t i = 0; i < L; ++i)
+	for (uint32_t i = 0u; i < L; ++i)
 		result = result && v[i];
 	return result;
 }
@@ -5669,7 +5671,7 @@ template<uint32_t L>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Not(const Vec<L, bool>& v) noexcept
 {
 	Vec<L, bool> result(true);
-	for (uint32_t i = 0; i < L; ++i)
+	for (uint32_t i = 0u; i < L; ++i)
 		result[i] = !v[i];
 	return result;
 }
@@ -5690,7 +5692,7 @@ template<uint32_t L, typename T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Radians(const Vec<L, T>& v)
 {
 	Vec<L, T> result{};
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = Radians(v[i]);
 	return result;
 }
@@ -5709,7 +5711,7 @@ template<uint32_t L, typename T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Degrees(const Vec<L, T>& v)
 {
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = Degrees(v[i]);
 	return result;
 }
@@ -5730,7 +5732,7 @@ template<uint32_t L, typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result{};
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = std::sin(v[i]);
 	return result;
 }
@@ -5751,7 +5753,7 @@ template<uint32_t L, typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result{};
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = std::cos(v[i]);
 	return result;
 }
@@ -5772,7 +5774,7 @@ template<uint32_t L, typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = std::tan(v[i]);
 	return result;
 }
@@ -5793,7 +5795,7 @@ template<uint32_t L, typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = std::asin(v[i]);
 	return result;
 }
@@ -5814,7 +5816,7 @@ template<uint32_t L, typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = std::acos(v[i]);
 	return result;
 }
@@ -5837,7 +5839,7 @@ template<uint32_t L, typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = std::atan2(a[i], b[i]);
 	return result;
 }
@@ -5856,7 +5858,7 @@ template<uint32_t L, typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = std::atan(v[i]);
 	return result;
 }
@@ -5877,7 +5879,7 @@ template<uint32_t L, typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = std::sinh(v[i]);
 	return result;
 }
@@ -5898,7 +5900,7 @@ template<uint32_t L, typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = std::cosh(v[i]);
 	return result;
 }
@@ -5919,7 +5921,7 @@ template<uint32_t L, typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = std::tanh(v[i]);
 	return result;
 }
@@ -5940,7 +5942,7 @@ template<uint32_t L, typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = std::asinh(v[i]);
 	return result;
 }
@@ -5961,7 +5963,7 @@ template<uint32_t L, typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = std::acosh(v[i]);
 	return result;
 }
@@ -5982,7 +5984,7 @@ template<uint32_t L, typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result;
-	for (uint32_t i = 0; i < L; i++)
+	for (uint32_t i = 0u; i < L; i++)
 		result[i] = std::atanh(v[i]);
 	return result;
 }
@@ -6001,14 +6003,14 @@ template<typename T>
 		rgbColor = Vec<3, T>(hsv.z); //Achromatic (grey)
 	else
 	{
-		const T sector = Floor(hsv.x * (T(1) / T(60)));
-		const T frac = (hsv.x * (T(1) / T(60))) - sector;
+		const T sector = Floor(hsv.x * (static_cast<T>(1) / static_cast<T>(60)));
+		const T frac = (hsv.x * (static_cast<T>(1) / static_cast<T>(60))) - sector;
 		//Fractional part of h
-		const T o = hsv.z * (T(1) - hsv.y);
-		const T p = hsv.z * (T(1) - hsv.y * frac);
-		const T q = hsv.z * (T(1) - hsv.y * (T(1) - frac));
+		const T o = hsv.z * (static_cast<T>(1) - hsv.y);
+		const T p = hsv.z * (static_cast<T>(1) - hsv.y * frac);
+		const T q = hsv.z * (static_cast<T>(1) - hsv.y * (static_cast<T>(1) - frac));
 
-		switch(static_cast<int32_t>(sector))
+		switch(static_cast<uint32_t>(sector))
 		{
 		default:
 			[[fallthrough]];
@@ -6066,14 +6068,14 @@ template<typename T>
 		T h = static_cast<T>(0);
 
 		if(rgbColor.r == max) //Between yellow & magenta
-			h = static_cast<T>(0) + T(60) * (rgbColor.g - rgbColor.b) / delta;
+			h = static_cast<T>(0) + static_cast<T>(60) * (rgbColor.g - rgbColor.b) / delta;
 		else if(rgbColor.g == max) //Between cyan & yellow
-			h = static_cast<T>(120) + T(60) * (rgbColor.b - rgbColor.r) / delta;
+			h = static_cast<T>(120) + static_cast<T>(60) * (rgbColor.b - rgbColor.r) / delta;
 		else //Between magenta & cyan
-			h = static_cast<T>(240) + T(60) * (rgbColor.r - rgbColor.g) / delta;
+			h = static_cast<T>(240) + static_cast<T>(60) * (rgbColor.r - rgbColor.g) / delta;
 
-		if(h < T(0))
-			hsv.x = h + T(360);
+		if(h < static_cast<T>(0))
+			hsv.x = h + static_cast<T>(360);
 		else
 			hsv.x = h;
 	}
@@ -6092,11 +6094,11 @@ template<typename T>
 template<typename T>
 [[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Saturation(const T s) noexcept
 {
-	const Vec<3, T> rgbw = Vec<3, T>(T(0.2126), T(0.7152), T(0.0722));
+	const Vec<3, T> rgbw = Vec<3, T>(static_cast<T>(0.2126), static_cast<T>(0.7152), static_cast<T>(0.0722));
 
-	const Vec<3, T> col((T(1) - s) * rgbw);
+	const Vec<3, T> col((static_cast<T>(1) - s) * rgbw);
 
-	Mat<4, 4, T> result(T(1));
+	Mat<4, 4, T> result(static_cast<T>(1));
 	result[0][0] = col.x + s;
 	result[0][1] = col.x;
 	result[0][2] = col.x;
@@ -6113,7 +6115,7 @@ template<typename T>
 template<typename T>
 [[nodiscard]] constexpr TRAP::Math::Vec<3, T> TRAP::Math::Saturation(const T s, const Vec<3, T>& color) noexcept
 {
-	return Vec<3, T>(Saturation(s) * Vec<4, T>(color, T(0)));
+	return Vec<3, T>(Saturation(s) * Vec<4, T>(color, static_cast<T>(0)));
 }
 
 template<typename T>
@@ -6127,7 +6129,7 @@ template<typename T>
 template<typename T>
 [[nodiscard]] constexpr T TRAP::Math::Luminosity(const Vec<3, T>& color)
 {
-	constexpr Vec<3, T> tmp = Vec<3, T>(0.33, 0.59, 0.11);
+	constexpr Vec<3, T> tmp = Vec<3, T>(static_cast<T>(0.33), static_cast<T>(0.59), static_cast<T>(0.11));
 	return Dot(color, tmp);
 }
 
@@ -6244,7 +6246,7 @@ template<uint32_t L, typename T>
 {
 	Vec<L, bool> result{};
 
-	for(uint32_t i = 0; i < L; ++i)
+	for(uint32_t i = 0u; i < L; ++i)
 		result[i] = (x[i] & 1u) != 0;
 
 	return result;
@@ -6265,7 +6267,7 @@ template<uint32_t L, typename T>
 {
 	Vec<L, bool> result{};
 
-	for(uint32_t i = 0; i < L; ++i)
+	for(uint32_t i = 0u; i < L; ++i)
 		result[i] = !IsOdd(x);
 
 	return result;
@@ -6284,7 +6286,7 @@ template<uint32_t L, typename T>
 {
 	Vec<L, bool> result{};
 
-	for(uint32_t i = 0; i < L; ++i)
+	for(uint32_t i = 0u; i < L; ++i)
 		result[i] = TRAP::Math::IsFinite(x[i]);
 
 	return result;

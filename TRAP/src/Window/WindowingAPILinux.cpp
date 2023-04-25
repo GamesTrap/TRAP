@@ -728,7 +728,7 @@ void TRAP::INTERNAL::WindowingAPI::SetProgressIndicator(const ProgressState stat
 		return;
 
 	//Setup parameters
-	const dbus_bool_t progressVisible = static_cast<dbus_bool_t>(state != ProgressState::Disabled);
+	const dbus_bool_t progressVisible = NumericCast<dbus_bool_t>(state != ProgressState::Disabled);
 
 	DBusMessageIter args{};
 
@@ -1028,7 +1028,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow& window
 			if(line[0] == '%' && line[1] && line[2])
 			{
 				const std::array<char, 3> digits = { line[1], line[2], '\0'};
-				*pathPtr = static_cast<char>(strtol(digits.data(), nullptr, 16));
+				*pathPtr = NumericCast<char>(strtol(digits.data(), nullptr, 16));
 				line += 2;
 			}
 			else
@@ -1048,7 +1048,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow& window
 TRAP::Input::Key TRAP::INTERNAL::WindowingAPI::TranslateKey(const int32_t scanCode)
 {
 	//Use the pre-filled LUT (see CreateKeyTables())
-	if(scanCode < 0 || scanCode >= static_cast<int32_t>(s_Data.KeyCodes.size()))
+	if(scanCode < 0 || scanCode >= NumericCast<int32_t>(s_Data.KeyCodes.size()))
 		return Input::Key::Unknown;
 
 	return s_Data.KeyCodes[scanCode];

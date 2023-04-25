@@ -176,7 +176,7 @@ enum class ProfileSystems : uint32_t
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-const uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 9, 20);
+const uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 9, 21);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -239,40 +239,40 @@ template<typename To, typename From>
 	constexpr bool positiveOverflowPossible = ToMax < static_cast<To>(FromMax);
 	constexpr bool negativeOverflowPossible = FromIsSigned || (ToLowest > static_cast<To>(FromLowest));
 
-	if constexpr ((!ToIsSigned) && (!FromIsSigned))
+	if constexpr ((!ToIsSigned) && (!FromIsSigned) && positiveOverflowPossible)
 	{
-		if(positiveOverflowPossible && (static_cast<To>(value) > ToMax))
-		{
+		if((static_cast<To>(value) > ToMax))
 			TRAP_ASSERT(false, "NumericCast(): Positive overflow");
-		}
 	}
 	else if constexpr((!ToIsSigned) && FromIsSigned)
 	{
-		if (positiveOverflowPossible && (static_cast<To>(value) > ToMax))
+		if constexpr (positiveOverflowPossible)
 		{
-			TRAP_ASSERT(false, "NumericCast(): Positive overflow");
+			if((static_cast<To>(value) > ToMax))
+				TRAP_ASSERT(false, "NumericCast(): Positive overflow");
 		}
-		else if (negativeOverflowPossible && (static_cast<To>(value) < To(0)))
+		else if constexpr (negativeOverflowPossible)
 		{
-			TRAP_ASSERT(false, "NumericCast(): Negative overflow");
+			if((static_cast<To>(value) < To(0)))
+				TRAP_ASSERT(false, "NumericCast(): Negative overflow");
 		}
 	}
-	else if constexpr(ToIsSigned && (!FromIsSigned))
+	else if constexpr(ToIsSigned && (!FromIsSigned) && positiveOverflowPossible)
 	{
-		if constexpr (positiveOverflowPossible && (static_cast<To>(value) > ToMax))
-		{
+		if((static_cast<To>(value) > ToMax))
 			TRAP_ASSERT(false, "NumericCast(): Positive overflow");
-		}
 	}
 	else if constexpr(ToIsSigned && FromIsSigned)
 	{
-		if (positiveOverflowPossible && (static_cast<To>(value) > ToMax))
+		if constexpr (positiveOverflowPossible)
 		{
-			TRAP_ASSERT(false, "NumericCast(): Positive overflow");
+			if((static_cast<To>(value) > ToMax))
+				TRAP_ASSERT(false, "NumericCast(): Positive overflow");
 		}
-		else if (negativeOverflowPossible && (static_cast<To>(value) < ToLowest))
+		else if constexpr (negativeOverflowPossible)
 		{
-			TRAP_ASSERT(false, "NumericCast(): Negative overflow");
+			if((static_cast<To>(value) < ToLowest))
+				TRAP_ASSERT(false, "NumericCast(): Negative overflow");
 		}
 	}
 #endif /*TRAP_DEBUG*/

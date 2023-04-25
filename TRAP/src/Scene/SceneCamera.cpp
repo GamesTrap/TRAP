@@ -39,7 +39,7 @@ void TRAP::SceneCamera::SetViewportSize(const uint32_t width, const uint32_t hei
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
-	m_aspectRatio = static_cast<float>(width) / static_cast<float>(height);
+	m_aspectRatio = NumericCast<float>(width) / NumericCast<float>(height);
 	RecalculateProjection();
 }
 

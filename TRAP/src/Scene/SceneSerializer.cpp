@@ -176,7 +176,7 @@ namespace TRAP
 
 			out << YAML::Key << "Camera" << YAML::Value;
 			out << YAML::BeginMap; //Camera
-			out << YAML::Key << "ProjectionType" << YAML::Value << static_cast<int32_t>(camera.GetProjectionType());
+			out << YAML::Key << "ProjectionType" << YAML::Value << ToUnderlying(camera.GetProjectionType());
 			out << YAML::Key << "PerspectiveFOV" << YAML::Value << camera.GetPerspectiveVerticalFOV();
 			out << YAML::Key << "PerspectiveNear" << YAML::Value << camera.GetPerspectiveNearClip();
 			out << YAML::Key << "OrthographicSize" << YAML::Value << camera.GetOrthographicSize();

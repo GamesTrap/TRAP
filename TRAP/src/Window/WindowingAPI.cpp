@@ -365,8 +365,8 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 	s_Data.WindowList.push_front(MakeScope<InternalWindow>());
 	InternalWindow* window = s_Data.WindowList.front().get();
 
-	window->videoMode.Width = static_cast<int32_t>(width);
-	window->videoMode.Height = static_cast<int32_t>(height);
+	window->videoMode.Width = NumericCast<int32_t>(width);
+	window->videoMode.Height = NumericCast<int32_t>(height);
 	window->videoMode.RedBits = 8;
 	window->videoMode.GreenBits = 8;
 	window->videoMode.BlueBits = 8;
@@ -464,7 +464,7 @@ void TRAP::INTERNAL::WindowingAPI::CenterCursorInContentArea(InternalWindow& win
 	int32_t width = 0, height = 0;
 
 	PlatformGetWindowSize(window, width, height);
-	PlatformSetCursorPos(window, static_cast<double>(width) / 2.0, static_cast<double>(height) / 2.0);
+	PlatformSetCursorPos(window, NumericCast<double>(width) / 2.0, NumericCast<double>(height) / 2.0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -497,7 +497,7 @@ void TRAP::INTERNAL::WindowingAPI::InputError(const Error code, const std::strin
 			description += " UNKNOWN WINDOWING ERROR";
 	}
 
-	TP_ERROR(description, " Code(", static_cast<uint32_t>(code), ")");
+	TP_ERROR(description, " Code(", ToUnderlying(code), ")");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1622,11 +1622,11 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowProgressIndicator(const InternalWind
 
 	if (key < Input::Key::Space || key > Input::Key::Menu)
 	{
-		InputError(Error::Invalid_Enum, " Invalid key: " + std::to_string(static_cast<int32_t>(key)));
+		InputError(Error::Invalid_Enum, " Invalid key: " + std::to_string(ToUnderlying(key)));
 		return Input::KeyState::Released;
 	}
 
-	return window.Keys[static_cast<uint32_t>(key)];
+	return window.Keys[ToUnderlying(key)];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1645,7 +1645,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowProgressIndicator(const InternalWind
 		return Input::KeyState::Released;
 	}
 
-	return window.MouseButtons[static_cast<uint32_t>(button)];
+	return window.MouseButtons[ToUnderlying(button)];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2237,13 +2237,13 @@ void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow& window, Input::Key k
 	{
 		bool repeated = false;
 
-		if(state == Input::KeyState::Released && window.Keys[static_cast<uint32_t>(key)] == Input::KeyState::Released)
+		if(state == Input::KeyState::Released && window.Keys[ToUnderlying(key)] == Input::KeyState::Released)
 			return;
 
-		if(state == Input::KeyState::Pressed && window.Keys[static_cast<uint32_t>(key)] == Input::KeyState::Pressed)
+		if(state == Input::KeyState::Pressed && window.Keys[ToUnderlying(key)] == Input::KeyState::Pressed)
 			repeated = true;
 
-		window.Keys[static_cast<uint32_t>(key)] = state;
+		window.Keys[ToUnderlying(key)] = state;
 
 		if(repeated)
 			state = Input::KeyState::Repeat;
@@ -2261,13 +2261,12 @@ void TRAP::INTERNAL::WindowingAPI::InputMouseClick(InternalWindow& window, const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(static_cast<int32_t>(button) >= 0, "WindowingAPI::InputMouseClick(): Button is invalid!");
 	TRAP_ASSERT(state == Input::KeyState::Pressed || state == Input::KeyState::Released, "WindowingAPI::InputMouseClick(): KeyState is invalid!");
 
-	if(static_cast<int32_t>(button) < 0 || button > Input::MouseButton::Eight)
+	if(button > Input::MouseButton::Eight)
 		return;
 
-	window.MouseButtons[static_cast<uint32_t>(button)] = state;
+	window.MouseButtons[ToUnderlying(button)] = state;
 
 	if (window.Callbacks.MouseButton != nullptr)
 		window.Callbacks.MouseButton(window, button, state);
@@ -2335,7 +2334,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowFocus(InternalWindow& window, cons
 	if(focused)
 		return;
 
-	for (uint32_t key = 0; key <= static_cast<uint32_t>(Input::Key::Menu); key++)
+	for (uint32_t key = 0; key <= ToUnderlying(Input::Key::Menu); key++)
 	{
 		if (window.Keys[key] == Input::KeyState::Pressed)
 		{
@@ -2344,7 +2343,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowFocus(InternalWindow& window, cons
 		}
 	}
 
-	for (uint32_t button = 0; button <= static_cast<uint32_t>(Input::MouseButton::Eight); button++)
+	for (uint32_t button = 0; button <= ToUnderlying(Input::MouseButton::Eight); button++)
 	{
 		if (window.MouseButtons[button] == Input::KeyState::Pressed)
 			InputMouseClick(window, static_cast<Input::MouseButton>(button), Input::KeyState::Pressed);

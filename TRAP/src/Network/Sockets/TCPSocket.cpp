@@ -201,7 +201,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Connect(const IPv4Addres
 		time.tv_usec = static_cast<time_t>(timeout.GetSeconds());
 
 		//Wait for something to write on our socket (which means that the connection request has returned)
-		if(select(static_cast<int>(GetHandle() + 1), nullptr, &selector, nullptr, &time) > 0)
+		if(select(NumericCast<int>(GetHandle() + 1), nullptr, &selector, nullptr, &time) > 0)
 		{
 			//At this point the connection may have been either accepted or refused.
 			//To know whether it's a success or a failure, we must check the address of the connected peer
@@ -266,7 +266,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* const d
 	for(sent = 0; sent < size; sent += result)
 	{
 		//Send a chunk of data
-		result = ::send(GetHandle(), static_cast<const char*>(data) + sent, static_cast<int>(size - sent), flags);
+		result = ::send(GetHandle(), static_cast<const char*>(data) + sent, NumericCast<size_t>(size - sent), flags);
 
 		//Check for errors
 		if(result < 0)
@@ -302,12 +302,12 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(void* const data
 	}
 
 	//Receive a chunk of bytes
-	const int64_t sizeReceived = recv(GetHandle(), static_cast<char*>(data), static_cast<int>(size), flags);
+	const int64_t sizeReceived = recv(GetHandle(), static_cast<char*>(data), NumericCast<size_t>(size), flags);
 
 	//Check the number of bytes received
 	if (sizeReceived > 0)
 	{
-		received = static_cast<std::size_t>(sizeReceived);
+		received = NumericCast<std::size_t>(sizeReceived);
 		return Status::Done;
 	}
 	if (sizeReceived == 0)
@@ -336,7 +336,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(Packet& packet) con
 	const void* const data = packet.OnSend(size);
 
 	//First convert the packet size to network byte order
-	uint32_t packetSize = static_cast<uint32_t>(size);
+	std::size_t packetSize = size;
 
 	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(packetSize);

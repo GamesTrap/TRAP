@@ -127,7 +127,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(const void* const d
 	const sockaddr finalAddress = Utils::BitCast<sockaddr>(address);
 
 	//Send the data (unlike TCP, all the data is always sent in one call)
-	const int64_t sent = sendto(GetHandle(), static_cast<const char*>(data), static_cast<int32_t>(size), 0,
+	const int64_t sent = sendto(GetHandle(), static_cast<const char*>(data), size, 0,
 	                            &finalAddress, sizeof(sockaddr_in));
 
 	//Check for errors
@@ -164,7 +164,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* const data
 
 	//Receive a chunk of bytes
 	INTERNAL::Network::SocketImpl::AddressLength addressSize = sizeof(sockaddr_in);
-	const int64_t sizeReceived = recvfrom(GetHandle(), static_cast<char*>(data), static_cast<int32_t>(size), 0,
+	const int64_t sizeReceived = recvfrom(GetHandle(), static_cast<char*>(data), size, 0,
 	                                      &convertedAddress, &addressSize);
 
 	//Check for errors
@@ -172,7 +172,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* const data
 		return INTERNAL::Network::SocketImpl::GetErrorStatus();
 
 	//Fill the sender information
-	received = static_cast<std::size_t>(sizeReceived);
+	received = NumericCast<std::size_t>(sizeReceived);
 
 	address = Utils::BitCast<sockaddr_in>(convertedAddress);
 	uint32_t addr = address.sin_addr.s_addr;

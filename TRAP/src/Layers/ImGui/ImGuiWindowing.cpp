@@ -363,8 +363,8 @@ void TRAP::INTERNAL::ImGuiWindowing::MouseButtonCallback(const WindowingAPI::Int
 
 	UpdateKeyModifiers(bd->Window);
 
-	if(ToUnderlying(mouseButton) >= 0 && ToUnderlying(mouseButton) < ImGuiMouseButton_COUNT)
-		io.AddMouseButtonEvent(ToUnderlying(mouseButton), (state == Input::KeyState::Pressed));
+	if(ToUnderlying(mouseButton) < ImGuiMouseButton_COUNT)
+		io.AddMouseButtonEvent(NumericCast<int32_t>(ToUnderlying(mouseButton)), (state == Input::KeyState::Pressed));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

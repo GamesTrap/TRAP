@@ -154,7 +154,7 @@ TRAP::Monitor::Monitor(const uint32_t monitor)
 	for(std::size_t i = 0; i < monitors.size(); i++)
 	{
 		if (monitors[i] == m_handle)
-			return static_cast<uint32_t>(i);
+			return NumericCast<uint32_t>(i);
 	}
 
 	return 0; //Primary Monitor as fallback
@@ -167,9 +167,9 @@ TRAP::Monitor::Monitor(const uint32_t monitor)
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
 	std::vector<Monitor> monitors{};
-	const uint32_t monitorSize = static_cast<uint32_t>(INTERNAL::WindowingAPI::GetMonitors().size());
-	for (uint32_t i = 0; i < monitorSize; i++)
-		monitors.emplace_back(Monitor(i));
+	const std::size_t monitorSize = INTERNAL::WindowingAPI::GetMonitors().size();
+	for (std::size_t i = 0; i < monitorSize; i++)
+		monitors.emplace_back(Monitor(NumericCast<uint32_t>(i)));
 
 	return monitors;
 }

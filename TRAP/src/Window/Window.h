@@ -410,7 +410,7 @@ namespace TRAP
 			uint32_t Monitor{};
 			CursorMode cursorMode{};
 			bool RawMouseInput{};
-			std::unordered_map<uint16_t, uint32_t> KeyRepeatCounts;
+			std::unordered_map<TRAP::Input::Key, uint32_t> KeyRepeatCounts;
 
 			EventCallbackFn EventCallback;
 
