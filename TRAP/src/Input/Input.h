@@ -248,7 +248,7 @@ namespace TRAP
 		/// <summary>
 		/// Controllers
 		/// </summary>
-		enum class Controller
+		enum class Controller : uint32_t
 		{
 			One      = 0,
 			Two      = 1,
@@ -763,7 +763,7 @@ namespace TRAP
 			sizeof(DIOBJECTDATAFORMAT),
 			DIDFT_ABSAXIS,
 			sizeof(DIJOYSTATE2),
-			static_cast<DWORD>(TRAPObjectDataFormats.size()),
+			TRAPObjectDataFormats.size(),
 			TRAPObjectDataFormats.data()
 		};
 		using PFN_DirectInput8Create = HRESULT(WINAPI*)(HINSTANCE, DWORD, REFIID, LPVOID*, LPUNKNOWN);

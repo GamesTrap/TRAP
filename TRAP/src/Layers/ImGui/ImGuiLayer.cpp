@@ -110,10 +110,10 @@ void TRAP::ImGuiLayer::OnAttach()
 	ImFontConfig fontConfig;
 	fontConfig.FontDataOwnedByAtlas = false; //This makes the const_cast below safe.
 	io.Fonts->AddFontFromMemoryTTF(const_cast<uint8_t*>(Embed::OpenSansBoldTTFData.data()),
-	                               static_cast<int32_t>(Embed::OpenSansBoldTTFData.size()),
+	                               NumericCast<int32_t>(Embed::OpenSansBoldTTFData.size()),
 								   scaleFactor * 18.0f, &fontConfig);
 	io.FontDefault = io.Fonts->AddFontFromMemoryTTF(const_cast<uint8_t*>(Embed::OpenSansTTFData.data()),
-	                                                static_cast<int32_t>(Embed::OpenSansTTFData.size()),
+	                                                NumericCast<int32_t>(Embed::OpenSansTTFData.size()),
 													scaleFactor * 18.0f, &fontConfig);
 
 	//Setup Dear ImGui style
@@ -304,8 +304,8 @@ void TRAP::ImGuiLayer::End()
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
 	ImGuiIO& io = ImGui::GetIO();
-	io.DisplaySize = ImVec2(static_cast<float>(Application::GetWindow()->GetFrameBufferSize().x),
-	                        static_cast<float>(Application::GetWindow()->GetFrameBufferSize().y));
+	io.DisplaySize = ImVec2(NumericCast<float>(Application::GetWindow()->GetFrameBufferSize().x),
+	                        NumericCast<float>(Application::GetWindow()->GetFrameBufferSize().y));
 
 	//Rendering
 	ImGui::Render();
@@ -435,7 +435,7 @@ bool ImGui::ImageButton(const TRAP::Ref<TRAP::Graphics::Texture>& image, const I
 		VkImageView imgView = vkImage->GetSRVVkImageView();
 		std::size_t imgViewHash = 0;
 		TRAP::Utils::HashCombine(imgViewHash, imgView);
-		const ImGuiID imgViewID = static_cast<uint32_t>(imgViewHash);
+		const ImGuiID imgViewID = NumericCast<uint32_t>(imgViewHash);
 
 		return ImGui::ImageButtonEx(imgViewID, texID, size, uv0, uv1, bg_col, tint_col);
 	}

@@ -90,7 +90,7 @@ void TRAP::Input::ShutdownController()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Sixteen); cID++)
+	for(uint32_t cID = 0; cID <= ToUnderlying(Controller::Sixteen); cID++)
 	{
 		if(s_controllerInternal[cID].LinuxCon.CurrentVibration != -1)
 			SetControllerVibration(static_cast<Controller>(cID), 0.0f, 0.0f);
@@ -128,7 +128,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 	if(!PollController(controller, PollMode::Presence))
 		return;
 
-	ControllerInternal* const con = &s_controllerInternal[static_cast<uint8_t>(controller)];
+	ControllerInternal* const con = &s_controllerInternal[ToUnderlying(controller)];
 
 	if(!con->LinuxCon.VibrationSupported)
 		return;
@@ -166,9 +166,9 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 		//Define an effect for this vibration setting
 		ff.type = FF_RUMBLE;
 		ff.id = -1;
-		ff.u.rumble.strong_magnitude = static_cast<uint16_t>(leftMotor * 65535);
-		ff.u.rumble.weak_magnitude = static_cast<uint16_t>(rightMotor * 65535);
-		ff.replay.length = 65535;
+		ff.u.rumble.strong_magnitude = NumericCast<uint16_t>(leftMotor * std::numeric_limits<uint16_t>::max());
+		ff.u.rumble.weak_magnitude = NumericCast<uint16_t>(rightMotor * std::numeric_limits<uint16_t>::max());
+		ff.replay.length = std::numeric_limits<uint16_t>::max();
 		ff.replay.delay = 0;
 
 		//Upload the effect
@@ -212,7 +212,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(std::filesystem::path path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Sixteen); cID++)
+	for(uint32_t cID = 0; cID <= ToUnderlying(Controller::Sixteen); cID++)
 	{
 		if (!s_controllerInternal[cID].Connected)
 			continue;
@@ -352,8 +352,8 @@ bool TRAP::Input::OpenControllerDeviceLinux(std::filesystem::path path)
 		return false;
 
 	//Get index of our ControllerInternal
-	uint8_t index = 0;
-	for (index = 0; index <= static_cast<uint8_t>(Controller::Sixteen); index++)
+	uint32_t index = 0;
+	for (index = 0; index <= ToUnderlying(Controller::Sixteen); index++)
 	{
 		if (&s_controllerInternal[index] == con)
 			break;
@@ -372,7 +372,7 @@ void TRAP::Input::CloseController(Controller controller)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	ControllerInternal* const con = &s_controllerInternal[static_cast<uint8_t>(controller)];
+	ControllerInternal* const con = &s_controllerInternal[ToUnderlying(controller)];
 
 	if(close(con->LinuxCon.FD) < 0)
 	{
@@ -388,7 +388,7 @@ void TRAP::Input::CloseController(Controller controller)
 		        (con->mapping != nullptr
 			        ? con->mapping->Name
 			        : con->Name),
-		        " (", static_cast<uint32_t>(controller), ") disconnected!");
+		        " (", ToUnderlying(controller), ") disconnected!");
 	}
 
 	*con = {};
@@ -420,7 +420,7 @@ void TRAP::Input::DetectControllerConnectionLinux()
 	{
 		const inotify_event* const e = reinterpret_cast<const inotify_event*>(&buffer[offset]); //Must use reinterpret_cast because of flexible array member
 
-		offset += static_cast<ssize_t>(sizeof(inotify_event)) + e->len;
+		offset += NumericCast<ssize_t>(sizeof(inotify_event)) + e->len;
 
 		if(!std::regex_match(e->name, s_linuxController.Regex))
 			continue;
@@ -431,7 +431,7 @@ void TRAP::Input::DetectControllerConnectionLinux()
 			OpenControllerDeviceLinux(path);
 		else if((e->mask & IN_DELETE) != 0u)
 		{
-			for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Sixteen); cID++)
+			for(uint32_t cID = 0; cID <= ToUnderlying(Controller::Sixteen); cID++)
 			{
 				if(s_controllerInternal[cID].LinuxCon.Path == path)
 				{
@@ -449,9 +449,9 @@ bool TRAP::Input::PollController(Controller controller, [[maybe_unused]] PollMod
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if(s_controllerInternal[static_cast<uint8_t>(controller)].Connected)
+	if(s_controllerInternal[ToUnderlying(controller)].Connected)
 	{
-		ControllerInternal* const con = &s_controllerInternal[static_cast<uint8_t>(controller)];
+		ControllerInternal* const con = &s_controllerInternal[ToUnderlying(controller)];
 
 		//Read all queued events (non-blocking)
 		while(true)
@@ -489,7 +489,7 @@ bool TRAP::Input::PollController(Controller controller, [[maybe_unused]] PollMod
 		}
 	}
 
-	return s_controllerInternal[static_cast<uint8_t>(controller)].Connected;
+	return s_controllerInternal[ToUnderlying(controller)].Connected;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -528,19 +528,19 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* const con, int32_t cod
 		{
 			{
 				{
-					static_cast<uint8_t>(ControllerDPad::Centered),
-					static_cast<uint8_t>(ControllerDPad::Up),
-					static_cast<uint8_t>(ControllerDPad::Down)
+					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Centered)),
+					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Up)),
+					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Down))
 				},
 				{
-					static_cast<uint8_t>(ControllerDPad::Left),
-					static_cast<uint8_t>(ControllerDPad::Left_Up),
-					static_cast<uint8_t>(ControllerDPad::Left_Down)
+					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Left)),
+					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Left_Up)),
+					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Left_Down))
 				},
 				{
-					static_cast<uint8_t>(ControllerDPad::Right),
-					static_cast<uint8_t>(ControllerDPad::Right_Up),
-					static_cast<uint8_t>(ControllerDPad::Right_Down)
+					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Right)),
+					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Right_Up)),
+					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Right_Down))
 				}
 			}
 		};
@@ -563,13 +563,13 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* const con, int32_t cod
 	else
 	{
 		const input_absinfo* const info = &con->LinuxCon.ABSInfo[code];
-		float normalized = static_cast<float>(value);
+		float normalized = NumericCast<float>(value);
 
 		const int range = info->maximum - info->minimum;
 		if (range != 0)
 		{
 			//Normalize to 0.0f -> 1.0f
-			normalized = (normalized - static_cast<float>(info->minimum)) / static_cast<float>(range);
+			normalized = (normalized - NumericCast<float>(info->minimum)) / NumericCast<float>(range);
 			//Normalize to -1.0f -> 1.0f
 			normalized = normalized * 2.0f - 1.0f;
 		}

@@ -28,18 +28,18 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 	//Start TGA Loading here
 	Header header{};
 
-	header.IDLength = static_cast<uint8_t>(file.get());
-	header.ColorMapType = static_cast<uint8_t>(file.get());
-	header.ImageType = static_cast<uint8_t>(file.get());
+	header.IDLength = NumericCast<uint8_t>(file.get());
+	header.ColorMapType = NumericCast<uint8_t>(file.get());
+	header.ImageType = NumericCast<uint8_t>(file.get());
 	file.read(reinterpret_cast<char*>(&header.ColorMapOffset), sizeof(uint16_t));
 	file.read(reinterpret_cast<char*>(&header.NumOfColorMaps), sizeof(uint16_t));
-	header.ColorMapDepth = static_cast<uint8_t>(file.get());
+	header.ColorMapDepth = NumericCast<uint8_t>(file.get());
 	file.read(reinterpret_cast<char*>(&header.XOffset), sizeof(uint16_t));
 	file.read(reinterpret_cast<char*>(&header.YOffset), sizeof(uint16_t));
 	file.read(reinterpret_cast<char*>(&header.Width), sizeof(uint16_t));
 	file.read(reinterpret_cast<char*>(&header.Height), sizeof(uint16_t));
-	header.BitsPerPixel = static_cast<uint8_t>(file.get());
-	header.ImageDescriptor = static_cast<uint8_t>(file.get());
+	header.BitsPerPixel = NumericCast<uint8_t>(file.get());
+	header.ImageDescriptor = NumericCast<uint8_t>(file.get());
 
 	//File uses little-endian
 	//Convert to machines endian
@@ -65,13 +65,13 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 	if (header.IDLength != 0)
 	{
 		colorMapData.ImageID.resize(header.IDLength);
-		file.read(static_cast<char*>(colorMapData.ImageID.data()), header.IDLength);
+		file.read(colorMapData.ImageID.data(), header.IDLength);
 	}
 	if (header.ColorMapType == 1)
 	{
-		colorMapData.ColorMap.resize(static_cast<std::size_t>(header.ColorMapDepth / 8) * header.NumOfColorMaps);
+		colorMapData.ColorMap.resize(NumericCast<std::size_t>(header.ColorMapDepth / 8) * header.NumOfColorMaps);
 		if(!file.read(reinterpret_cast<char*>(colorMapData.ColorMap.data()),
-		              static_cast<std::streamsize>(header.ColorMapDepth / 8) * header.NumOfColorMaps))
+		              NumericCast<std::streamsize>(header.ColorMapDepth / 8) * header.NumOfColorMaps))
 		{
 			file.close();
 			TP_ERROR(Log::ImageTGAPrefix, "Couldn't load color map!");
@@ -131,10 +131,10 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 	}
 	else
 	{
-		colorMapData.ImageData.resize(static_cast<std::size_t>(header.Width) * header.Height *
+		colorMapData.ImageData.resize(NumericCast<std::size_t>(header.Width) * header.Height *
 		                              (header.BitsPerPixel / 8));
 		if (!file.read(reinterpret_cast<char*>(colorMapData.ImageData.data()),
-		                                       static_cast<std::streamsize>(header.Width) *
+		                                       NumericCast<std::streamsize>(header.Width) *
 											   header.Height * (header.BitsPerPixel / 8)))
 		{
 			file.close();
@@ -344,7 +344,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	std::vector<uint8_t> data{};
-	data.resize(static_cast<std::size_t>(width) * height * channels);
+	data.resize(NumericCast<std::size_t>(width) * height * channels);
 
 	uint32_t index = 0;
 	for (uint32_t i = 0, l = 0; i < source.size();)
@@ -361,22 +361,22 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 
 		//Prevent from writing out of data range
 		if (count * channels + l > width * height * channels)
-			count = static_cast<int32_t>((width * height * channels - l) / channels);
+			count = NumericCast<int32_t>((width * height * channels - l) / channels);
 
 		for (int32_t j = 0; j < count; j++)
 		{
 			if (channels == 1)
 			{
-				data[index++] = colorMap[static_cast<std::size_t>(source[i]) * channels];
+				data[index++] = colorMap[NumericCast<std::size_t>(source[i]) * channels];
 				l++;
 			}
 			else if (channels == 2)
 			{
 				data[index++] = (colorMap[source[i] * channels + 1u] << 1u) & 0xF8u;
 				data[index++] = ((colorMap[source[i] * channels + 1u] << 6u) |
-				                (colorMap[static_cast<std::size_t>(source[i]) * channels] >> 2u))
+				                (colorMap[NumericCast<std::size_t>(source[i]) * channels] >> 2u))
 				                & 0xF8u;
-				data[index++] = (colorMap[static_cast<std::size_t>(source[i]) * channels] << 3u) & 0xF8u;
+				data[index++] = (colorMap[NumericCast<std::size_t>(source[i]) * channels] << 3u) & 0xF8u;
 			}
 			else if (channels == 3)
 			{
@@ -412,7 +412,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	std::vector<uint8_t> data{};
-	data.resize(static_cast<std::size_t>(width) * height);
+	data.resize(NumericCast<std::size_t>(width) * height);
 
 	uint32_t index = 0;
 	for (uint32_t i = 0, l = 0; i < source.size();)
@@ -429,7 +429,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 
 		//Prevent from writing out of data range
 		if (count + l > width * height)
-			count = static_cast<int32_t>(width * height - l);
+			count = NumericCast<int32_t>(width * height - l);
 
 		for (int32_t j = 0; j < count; j++)
 		{
@@ -454,7 +454,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	std::vector<uint8_t> data{};
-	data.resize(static_cast<std::size_t>(width) * height * 3);
+	data.resize(NumericCast<std::size_t>(width) * height * 3);
 
 	uint32_t index = 0;
 	for (uint32_t i = 0, l = 0; i < source.size();)
@@ -470,7 +470,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 
 		//Prevent from writing out of data range
 		if (count * 3 + l > width * height * 3)
-			count = static_cast<int32_t>((width * height * 3 - l) / 3);
+			count = NumericCast<int32_t>((width * height * 3 - l) / 3);
 
 		for (int32_t j = 0; j < count; j++)
 		{
@@ -497,7 +497,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	std::vector<uint8_t> data{};
-	data.resize(static_cast<std::size_t>(width) * height * 3);
+	data.resize(NumericCast<std::size_t>(width) * height * 3);
 
 	uint32_t index = 0;
 	for (uint32_t i = 0, l = 0; i < source.size();)
@@ -513,7 +513,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 
 		//Prevent from writing out of data range
 		if (count * 3 + l > width * height * 3)
-			count = static_cast<int32_t>((width * height * 3 - l) / 3);
+			count = NumericCast<int32_t>((width * height * 3 - l) / 3);
 
 		for (int32_t j = 0; j < count; j++)
 		{
@@ -540,7 +540,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	std::vector<uint8_t> data{};
-	data.resize(static_cast<std::size_t>(width) * height * 4);
+	data.resize(NumericCast<std::size_t>(width) * height * 4);
 
 	uint32_t index = 0;
 	for (uint32_t i = 0, l = 0; i < source.size();)
@@ -556,7 +556,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 
 		//Prevent from writing out of data range
 		if (count * 4 + l > width * height * 4)
-			count = static_cast<int32_t>((width * height * 4 - l) / 4);
+			count = NumericCast<int32_t>((width * height * 4 - l) / 4);
 
 		for (int32_t j = 0; j < count; j++)
 		{

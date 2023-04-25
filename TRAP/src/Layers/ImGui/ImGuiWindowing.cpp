@@ -158,16 +158,16 @@ void TRAP::INTERNAL::ImGuiWindowing::NewFrame()
 	int32_t displayWidth = 0, displayHeight = 0;
 	WindowingAPI::GetWindowSize(*bd->Window, width, height);
 	WindowingAPI::GetFrameBufferSize(*bd->Window, displayWidth, displayHeight);
-	io.DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
+	io.DisplaySize = ImVec2(NumericCast<float>(width), NumericCast<float>(height));
 	if (width > 0 && height > 0)
-		io.DisplayFramebufferScale = ImVec2(static_cast<float>(displayWidth) / static_cast<float>(width),
-		                                    static_cast<float>(displayHeight) / static_cast<float>(height));
+		io.DisplayFramebufferScale = ImVec2(NumericCast<float>(displayWidth) / io.DisplaySize.x,
+		                                    NumericCast<float>(displayHeight) / io.DisplaySize.y);
 	if (bd->WantUpdateMonitors)
 		UpdateMonitors();
 
 	//Setup time step
 	const double currentTime = static_cast<double>(Application::GetTime());
-	io.DeltaTime = TRAP::Math::Max(static_cast<float>(currentTime - bd->Time), 1e-4f);
+	io.DeltaTime = TRAP::Math::Max(NumericCast<float>(currentTime - bd->Time), 1e-4f);
 	bd->Time = currentTime;
 
 	UpdateMouseData();
@@ -342,7 +342,7 @@ void TRAP::INTERNAL::ImGuiWindowing::CursorPosCallback(const WindowingAPI::Inter
 		xPos += windowX;
 		yPos += windowY;
 	}
-	bd->LastValidMousePos = ImVec2(static_cast<float>(xPos), static_cast<float>(yPos));
+	bd->LastValidMousePos = ImVec2(NumericCast<float>(xPos), NumericCast<float>(yPos));
 	io.AddMousePosEvent(bd->LastValidMousePos.x, bd->LastValidMousePos.y);
 }
 
@@ -363,8 +363,8 @@ void TRAP::INTERNAL::ImGuiWindowing::MouseButtonCallback(const WindowingAPI::Int
 
 	UpdateKeyModifiers(bd->Window);
 
-	if(static_cast<int32_t>(mouseButton) >= 0 && static_cast<int32_t>(mouseButton) < ImGuiMouseButton_COUNT)
-		io.AddMouseButtonEvent(static_cast<int32_t>(mouseButton), (state == Input::KeyState::Pressed));
+	if(ToUnderlying(mouseButton) >= 0 && ToUnderlying(mouseButton) < ImGuiMouseButton_COUNT)
+		io.AddMouseButtonEvent(ToUnderlying(mouseButton), (state == Input::KeyState::Pressed));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -382,7 +382,7 @@ void TRAP::INTERNAL::ImGuiWindowing::ScrollCallback(const WindowingAPI::Internal
 	if((io.ConfigFlags & ImGuiConfigFlags_NoMouse) != 0)
 		return;
 
-	io.AddMouseWheelEvent(static_cast<float>(xOffset), static_cast<float>(yOffset));
+	io.AddMouseWheelEvent(NumericCast<float>(xOffset), NumericCast<float>(yOffset));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -401,8 +401,8 @@ void TRAP::INTERNAL::ImGuiWindowing::KeyCallback(const WindowingAPI::InternalWin
 
 	UpdateKeyModifiers(bd->Window);
 
-	if(static_cast<int32_t>(key) >= 0 && static_cast<int32_t>(key) < static_cast<int32_t>(bd->KeyOwnerWindows.size()))
-		bd->KeyOwnerWindows[static_cast<int32_t>(key)] = (state == Input::KeyState::Pressed) ? &window : nullptr;
+	if(ToUnderlying(key) >= 0 && ToUnderlying(key) < NumericCast<int32_t>(bd->KeyOwnerWindows.size()))
+		bd->KeyOwnerWindows[ToUnderlying(key)] = (state == Input::KeyState::Pressed) ? &window : nullptr;
 
 	key = TranslateUntranslateKey(key);
 
@@ -599,14 +599,14 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateKeyModifiers(const WindowingAPI::Inte
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
 	ImGuiIO& io = ImGui::GetIO();
-	io.AddKeyEvent(ImGuiKey_ModCtrl, static_cast<bool>(WindowingAPI::GetKey(*window, Input::Key::Left_Control)) ||
-		                             static_cast<bool>(WindowingAPI::GetKey(*window, Input::Key::Right_Control)));
-	io.AddKeyEvent(ImGuiKey_ModShift, static_cast<bool>(WindowingAPI::GetKey(*window, Input::Key::Left_Shift)) ||
-									  static_cast<bool>(WindowingAPI::GetKey(*window, Input::Key::Right_Shift)));
-	io.AddKeyEvent(ImGuiKey_ModAlt, static_cast<bool>(WindowingAPI::GetKey(*window, Input::Key::Left_ALT)) ||
-									static_cast<bool>(WindowingAPI::GetKey(*window, Input::Key::Right_ALT)));
-	io.AddKeyEvent(ImGuiKey_ModSuper, static_cast<bool>(WindowingAPI::GetKey(*window, Input::Key::Left_Super)) ||
-									  static_cast<bool>(WindowingAPI::GetKey(*window, Input::Key::Right_Super)));
+	io.AddKeyEvent(ImGuiKey_ModCtrl, WindowingAPI::GetKey(*window, Input::Key::Left_Control) != Input::KeyState::Released ||
+		                             WindowingAPI::GetKey(*window, Input::Key::Right_Control) != Input::KeyState::Released);
+	io.AddKeyEvent(ImGuiKey_ModShift, WindowingAPI::GetKey(*window, Input::Key::Left_Shift) != Input::KeyState::Released ||
+									  WindowingAPI::GetKey(*window, Input::Key::Right_Shift) != Input::KeyState::Released);
+	io.AddKeyEvent(ImGuiKey_ModAlt, WindowingAPI::GetKey(*window, Input::Key::Left_ALT) != Input::KeyState::Released ||
+									WindowingAPI::GetKey(*window, Input::Key::Right_ALT) != Input::KeyState::Released);
+	io.AddKeyEvent(ImGuiKey_ModSuper, WindowingAPI::GetKey(*window, Input::Key::Left_Super) != Input::KeyState::Released ||
+									  WindowingAPI::GetKey(*window, Input::Key::Right_Super) != Input::KeyState::Released);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -629,13 +629,13 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateKeyModifiers(const WindowingAPI::Inte
 																   TRAP::Input::Key::Slash};
 		const std::array<char, 11>::const_iterator it = std::find(charNames.cbegin(), charNames.cend(), keyName[0]);
 		if(keyName[0] >= '0' && keyName[0] <= '9')
-			key = static_cast<TRAP::Input::Key>(static_cast<int32_t>(TRAP::Input::Key::Zero) + (keyName[0] - '0'));
+			key = static_cast<TRAP::Input::Key>(ToUnderlying(TRAP::Input::Key::Zero) + (keyName[0] - '0'));
 		else if(keyName[0] >= 'A' && keyName[0] <= 'Z')
-			key = static_cast<TRAP::Input::Key>(static_cast<int32_t>(TRAP::Input::Key::A) + (keyName[0] - 'A'));
+			key = static_cast<TRAP::Input::Key>(ToUnderlying(TRAP::Input::Key::A) + (keyName[0] - 'A'));
 		else if(keyName[0] >= 'a' && keyName[0] <= 'z')
-			key = static_cast<TRAP::Input::Key>(static_cast<int32_t>(TRAP::Input::Key::A) + (keyName[0] - 'a'));
+			key = static_cast<TRAP::Input::Key>(ToUnderlying(TRAP::Input::Key::A) + (keyName[0] - 'a'));
 		else if(it != charNames.cend())
-			key = static_cast<TRAP::Input::Key>(charKeys[it - charNames.cbegin()]);
+			key = charKeys[it - charNames.cbegin()];
 	}
 
 	return key;
@@ -668,8 +668,8 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMouseData()
 			//(rarely used, only when ImGuiConfigFlags_NavEnableSetMousePos is enabled by used)
 			//When multi-viewports are enabled, all Dear ImGui positions are same as OS positions.
 			if(io.WantSetMousePos)
-				WindowingAPI::SetCursorPos(*window, static_cast<double>(mousePosPrev.x - viewport->Pos.x),
-				                                    static_cast<double>(mousePosPrev.y - viewport->Pos.y));
+				WindowingAPI::SetCursorPos(*window, NumericCast<double>(mousePosPrev.x - viewport->Pos.x),
+				                                    NumericCast<double>(mousePosPrev.y - viewport->Pos.y));
 
 			//(Optional) Fallback to provide mouse position when focused (CursorPosCallback already provides this when hovered or captured)
 			if(bd->MouseWindow == nullptr)
@@ -688,7 +688,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMouseData()
 					mouseY += windowY;
 				}
 
-				bd->LastValidMousePos = ImVec2(static_cast<float>(mouseX), static_cast<float>(mouseY));
+				bd->LastValidMousePos = ImVec2(NumericCast<float>(mouseX), NumericCast<float>(mouseY));
 				io.AddMousePosEvent(bd->LastValidMousePos.x, bd->LastValidMousePos.y);
 			}
 		}
@@ -829,13 +829,13 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMonitors()
 		WindowingAPI::GetMonitorPos(*n, x, y);
 		const std::optional<WindowingAPI::InternalVideoMode> videoMode = WindowingAPI::GetVideoMode(*n);
 		if(videoMode)
-			monitor.MainSize = ImVec2(static_cast<float>(videoMode->Width), static_cast<float>(videoMode->Height));
+			monitor.MainSize = ImVec2(NumericCast<float>(videoMode->Width), NumericCast<float>(videoMode->Height));
 
-		monitor.MainPos = ImVec2(static_cast<float>(x), static_cast<float>(y));
+		monitor.MainPos = ImVec2(NumericCast<float>(x), NumericCast<float>(y));
 		int32_t width = 0, height = 0;
 		WindowingAPI::GetMonitorWorkArea(*n, x, y, width, height);
-		monitor.WorkPos = ImVec2(static_cast<float>(x), static_cast<float>(y));
-		monitor.WorkSize = ImVec2(static_cast<float>(width), static_cast<float>(height));
+		monitor.WorkPos = ImVec2(NumericCast<float>(x), NumericCast<float>(y));
+		monitor.WorkSize = ImVec2(NumericCast<float>(width), NumericCast<float>(height));
 
 		//Warning: The validity of monitor DPI information on Windows depends on the application
 		//DPI awareness settings,
@@ -939,15 +939,15 @@ void TRAP::INTERNAL::ImGuiWindowing::CreateWindow(ImGuiViewport* const viewport)
 	WindowingAPI::WindowHint(WindowingAPI::Hint::FocusOnShow, false);
 	WindowingAPI::WindowHint(WindowingAPI::Hint::Decorated, (viewport->Flags & ImGuiViewportFlags_NoDecoration) == 0);
 	WindowingAPI::WindowHint(WindowingAPI::Hint::Floating, (viewport->Flags & ImGuiViewportFlags_TopMost) != 0);
-	vd->Window = WindowingAPI::CreateWindow(static_cast<int32_t>(viewport->Size.x),
-	                                        static_cast<int32_t>(viewport->Size.y), "No Title Yet", nullptr);
+	vd->Window = WindowingAPI::CreateWindow(NumericCast<uint32_t>(viewport->Size.x),
+	                                        NumericCast<uint32_t>(viewport->Size.y), "No Title Yet", nullptr);
 	vd->WindowOwned = true;
 	viewport->PlatformHandle = static_cast<void*>(vd->Window);
 #ifdef TRAP_PLATFORM_WINDOWS
 	viewport->PlatformHandleRaw = WindowingAPI::GetWin32Window(*vd->Window);
 #endif /*TRAP_PLATFORM_WINDOWS*/
-	WindowingAPI::SetWindowPos(*vd->Window, static_cast<int32_t>(viewport->Pos.x),
-	                           static_cast<int32_t>(viewport->Pos.y));
+	WindowingAPI::SetWindowPos(*vd->Window, NumericCast<int32_t>(viewport->Pos.x),
+	                           NumericCast<int32_t>(viewport->Pos.y));
 
 	//Install callbacks for secondary viewports
 	WindowingAPI::SetWindowFocusCallback(*vd->Window, WindowFocusCallback);
@@ -1014,7 +1014,7 @@ void TRAP::INTERNAL::ImGuiWindowing::ShowWindow(ImGuiViewport* const viewport)
 	int32_t x = 0, y = 0;
 	WindowingAPI::GetWindowPos(*vd->Window, x, y);
 
-	return ImVec2(static_cast<float>(x), static_cast<float>(y));
+	return ImVec2(NumericCast<float>(x), NumericCast<float>(y));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1025,7 +1025,7 @@ void TRAP::INTERNAL::ImGuiWindowing::SetWindowPos(ImGuiViewport* const viewport,
 
 	ImGuiViewportDataTRAP* const vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 	vd->IgnoreWindowPosEventFrame = ImGui::GetFrameCount();
-	WindowingAPI::SetWindowPos(*vd->Window, static_cast<int32_t>(pos.x), static_cast<int32_t>(pos.y));
+	WindowingAPI::SetWindowPos(*vd->Window, NumericCast<int32_t>(pos.x), NumericCast<int32_t>(pos.y));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1039,7 +1039,7 @@ void TRAP::INTERNAL::ImGuiWindowing::SetWindowPos(ImGuiViewport* const viewport,
 	int32_t width = 0, height = 0;
 	WindowingAPI::GetWindowSize(*vd->Window, width, height);
 
-	return ImVec2(static_cast<float>(width), static_cast<float>(height));
+	return ImVec2(NumericCast<float>(width), NumericCast<float>(height));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1051,7 +1051,7 @@ void TRAP::INTERNAL::ImGuiWindowing::SetWindowSize(ImGuiViewport* const viewport
 	ImGuiViewportDataTRAP* const vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 	vd->IgnoreWindowSizeEventFrame = ImGui::GetFrameCount();
 
-	WindowingAPI::SetWindowSize(*vd->Window, static_cast<int32_t>(size.x), static_cast<int32_t>(size.y));
+	WindowingAPI::SetWindowSize(*vd->Window, NumericCast<int32_t>(size.x), NumericCast<int32_t>(size.y));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

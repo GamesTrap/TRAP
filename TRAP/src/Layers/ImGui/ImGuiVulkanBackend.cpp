@@ -418,8 +418,8 @@ static void ImGui_ImplVulkan_SetupRenderState(ImDrawData* draw_data, VkPipeline 
         VkViewport viewport;
         viewport.x = 0;
         viewport.y = 0;
-        viewport.width = static_cast<float>(fb_width);
-        viewport.height = static_cast<float>(fb_height);
+        viewport.width = NumericCast<float>(fb_width);
+        viewport.height = NumericCast<float>(fb_height);
         viewport.minDepth = 0.0f;
         viewport.maxDepth = 1.0f;
         vkCmdSetViewport(command_buffer, 0, 1, &viewport);
@@ -443,8 +443,8 @@ void ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer comm
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
     // Avoid rendering when minimized, scale coordinates for retina displays (screen coordinates != framebuffer coordinates)
-    const int fb_width = static_cast<int32_t>(draw_data->DisplaySize.x * draw_data->FramebufferScale.x);
-    const int fb_height = static_cast<int32_t>(draw_data->DisplaySize.y * draw_data->FramebufferScale.y);
+    const int fb_width = NumericCast<int32_t>(draw_data->DisplaySize.x * draw_data->FramebufferScale.x);
+    const int fb_height = NumericCast<int32_t>(draw_data->DisplaySize.y * draw_data->FramebufferScale.y);
     if (fb_width <= 0 || fb_height <= 0)
         return;
 
@@ -541,17 +541,17 @@ void ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer comm
                 // Clamp to viewport as vkCmdSetScissor() won't accept values that are off bounds
                 if (clip_min.x < 0.0f) { clip_min.x = 0.0f; }
                 if (clip_min.y < 0.0f) { clip_min.y = 0.0f; }
-                if (clip_max.x > static_cast<float>(fb_width)) { clip_max.x = static_cast<float>(fb_width); }
-                if (clip_max.y > static_cast<float>(fb_height)) { clip_max.y = static_cast<float>(fb_height); }
+                if (clip_max.x > NumericCast<float>(fb_width)) { clip_max.x = NumericCast<float>(fb_width); }
+                if (clip_max.y > NumericCast<float>(fb_height)) { clip_max.y = NumericCast<float>(fb_height); }
                 if (clip_max.x < clip_min.x || clip_max.y < clip_min.y)
                     continue;
 
                 // Apply scissor/clipping rectangle
                 VkRect2D scissor;
-                scissor.offset.x = static_cast<int32_t>(clip_min.x);
-                scissor.offset.y = static_cast<int32_t>(clip_min.y);
-                scissor.extent.width = static_cast<uint32_t>(TRAP::Math::Abs(clip_max.x - clip_min.x));
-                scissor.extent.height = static_cast<uint32_t>(TRAP::Math::Abs(clip_max.y - clip_min.y));
+                scissor.offset.x = NumericCast<int32_t>(clip_min.x);
+                scissor.offset.y = NumericCast<int32_t>(clip_min.y);
+                scissor.extent.width = NumericCast<uint32_t>(TRAP::Math::Abs(clip_max.x - clip_min.x));
+                scissor.extent.height = NumericCast<uint32_t>(TRAP::Math::Abs(clip_max.y - clip_min.y));
                 vkCmdSetScissor(command_buffer, 0, 1, &scissor);
 
                 // Bind descriptorset with font or user texture
@@ -580,7 +580,7 @@ void ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer comm
     // If you use VK_DYNAMIC_STATE_VIEWPORT or VK_DYNAMIC_STATE_SCISSOR you are responsible for settings the values before rendering.
     // In theory we should aim to backup/restore those values but I am not sure this is possible.
     // We perform a call to vkCmdSetScissor() to set back a full viewport which is likely to fix things for 99% users but technically this is not perfect. (See github #4644)
-    const VkRect2D scissor = { { 0, 0 }, { static_cast<uint32_t>(fb_width), static_cast<uint32_t>(fb_height) } };
+    const VkRect2D scissor = { { 0, 0 }, { NumericCast<uint32_t>(fb_width), NumericCast<uint32_t>(fb_height) } };
     vkCmdSetScissor(command_buffer, 0, 1, &scissor);
 }
 
@@ -597,7 +597,7 @@ bool ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer)
     unsigned char* pixels = nullptr;
     int width = 0, height = 0;
     io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
-    const size_t upload_size = static_cast<size_t>(width) * height * 4 * sizeof(char);
+    const size_t upload_size = NumericCast<size_t>(width) * height * 4 * sizeof(char);
 
     VkResult err = VK_SUCCESS;
 
@@ -888,7 +888,7 @@ static void ImGui_ImplVulkan_CreatePipeline(VkDevice device, const VkAllocationC
     const std::array<VkDynamicState, 2> dynamic_states{ VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR };
     VkPipelineDynamicStateCreateInfo dynamic_state = {};
     dynamic_state.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-    dynamic_state.dynamicStateCount = static_cast<uint32_t>(dynamic_states.size());
+    dynamic_state.dynamicStateCount = NumericCast<uint32_t>(dynamic_states.size());
     dynamic_state.pDynamicStates = dynamic_states.data();
 
     VkGraphicsPipelineCreateInfo info = {};
@@ -1171,7 +1171,7 @@ void ImGui_ImplVulkan_SetMinImageCount(uint32_t min_image_count)
     uint32_t avail_count = 0;
     vkGetPhysicalDeviceSurfaceFormatsKHR(physical_device, surface, &avail_count, nullptr);
     ImVector<VkSurfaceFormatKHR> avail_format;
-    avail_format.resize(static_cast<int32_t>(avail_count));
+    avail_format.resize(NumericCast<int32_t>(avail_count));
     vkGetPhysicalDeviceSurfaceFormatsKHR(physical_device, surface, &avail_count, avail_format.Data);
 
     // First check if only one format, VK_FORMAT_UNDEFINED, is available, which would imply that any format is available
@@ -1218,7 +1218,7 @@ void ImGui_ImplVulkan_SetMinImageCount(uint32_t min_image_count)
     uint32_t avail_count = 0;
     vkGetPhysicalDeviceSurfacePresentModesKHR(physical_device, surface, &avail_count, nullptr);
     ImVector<VkPresentModeKHR> avail_modes;
-    avail_modes.resize(static_cast<int>(avail_count));
+    avail_modes.resize(NumericCast<int32_t>(avail_count));
     vkGetPhysicalDeviceSurfacePresentModesKHR(physical_device, surface, &avail_count, avail_modes.Data);
 
     for (int request_i = 0; request_i < request_modes_count; request_i++)
@@ -1785,16 +1785,16 @@ static void ImGui_ImplVulkan_CreateWindow(ImGuiViewport* viewport)
     // Select Surface Format
     constexpr std::array<VkFormat, 4> requestSurfaceImageFormat{ VK_FORMAT_B8G8R8A8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_B8G8R8_UNORM, VK_FORMAT_R8G8B8_UNORM };
     const VkColorSpaceKHR requestSurfaceColorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR;
-    wd->SurfaceFormat = ImGui_ImplVulkanH_SelectSurfaceFormat(v->PhysicalDevice, wd->Surface, requestSurfaceImageFormat.data(), static_cast<int32_t>(requestSurfaceImageFormat.size()), requestSurfaceColorSpace);
+    wd->SurfaceFormat = ImGui_ImplVulkanH_SelectSurfaceFormat(v->PhysicalDevice, wd->Surface, requestSurfaceImageFormat.data(), NumericCast<int32_t>(requestSurfaceImageFormat.size()), requestSurfaceColorSpace);
 
     // Select Present Mode
     // FIXME-VULKAN: Even thought mailbox seems to get us maximum framerate with a single window, it halves framerate with a second window etc. (w/ Nvidia and SDK 1.82.1)
     constexpr std::array<VkPresentModeKHR, 3> present_modes{ VK_PRESENT_MODE_MAILBOX_KHR, VK_PRESENT_MODE_IMMEDIATE_KHR, VK_PRESENT_MODE_FIFO_KHR };
-    wd->PresentMode = ImGui_ImplVulkanH_SelectPresentMode(v->PhysicalDevice, wd->Surface, present_modes.data(), static_cast<int32_t>(present_modes.size()));
+    wd->PresentMode = ImGui_ImplVulkanH_SelectPresentMode(v->PhysicalDevice, wd->Surface, present_modes.data(), NumericCast<int32_t>(present_modes.size()));
 
     // Create SwapChain, RenderPass, Framebuffer, etc.
     wd->ClearEnable = (viewport->Flags & ImGuiViewportFlags_NoRendererClear) == 0;
-    ImGui_ImplVulkanH_CreateOrResizeWindow(v->Instance, v->PhysicalDevice, v->Device, wd, v->QueueFamily, v->Allocator, static_cast<int>(viewport->Size.x), static_cast<int>(viewport->Size.y), v->MinImageCount);
+    ImGui_ImplVulkanH_CreateOrResizeWindow(v->Instance, v->PhysicalDevice, v->Device, wd, v->QueueFamily, v->Allocator, NumericCast<int32_t>(viewport->Size.x), NumericCast<int32_t>(viewport->Size.y), v->MinImageCount);
     vd->WindowOwned = true;
 }
 
@@ -1934,7 +1934,7 @@ static void ImGui_ImplVulkan_SwapBuffers(ImGuiViewport* viewport, void*)
     info.pImageIndices = &present_index;
     err = vkQueuePresentKHR(v->Queue, &info);
     if (err == VK_ERROR_OUT_OF_DATE_KHR || err == VK_SUBOPTIMAL_KHR)
-        ImGui_ImplVulkanH_CreateOrResizeWindow(v->Instance, v->PhysicalDevice, v->Device, &vd->Window, v->QueueFamily, v->Allocator, static_cast<int32_t>(viewport->Size.x), static_cast<int32_t>(viewport->Size.y), v->MinImageCount);
+        ImGui_ImplVulkanH_CreateOrResizeWindow(v->Instance, v->PhysicalDevice, v->Device, &vd->Window, v->QueueFamily, v->Allocator, NumericCast<int32_t>(viewport->Size.x), NumericCast<int32_t>(viewport->Size.y), v->MinImageCount);
     else
         check_vk_result(err);
 

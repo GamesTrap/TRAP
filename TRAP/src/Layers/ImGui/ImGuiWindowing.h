@@ -127,9 +127,9 @@ namespace TRAP::INTERNAL
 			WindowingAPI::MonitorFunc PrevUserCallbackMonitor{};
 
 			ImGuiTRAPData()
-				: LastValidMousePos(0.0f, 0.0f)
+				: LastValidMousePos(0.0f, 0.0f),
+				  KeyOwnerWindows(ToUnderlying(TRAP::Input::Key::Menu), nullptr)
 			{
-				KeyOwnerWindows.resize(static_cast<int32_t>(TRAP::Input::Key::Menu));
 			}
 		};
 

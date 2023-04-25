@@ -195,7 +195,7 @@ newaction
             --     print("Sphinx-InlineSyntaxHighlight is not installed!")
             --     term.setTextColor(nil)
             --     print("Installing Sphinx-InlineSyntaxHighlight...")
-            --     os.execute("pip install -U sphinxcontrib-inlinesyntaxhighlight  > /dev/null 2>&1")
+            --     os.execute("pip install -U sphinxcontrib-inlinesyntaxhighlight --break-system-packages  > /dev/null 2>&1")
             -- end
 
             local out, errorCode = os.outputof("pip list | grep -F exhale")
@@ -204,7 +204,7 @@ newaction
                 print("Exhale is not installed!")
                 term.setTextColor(nil)
                 print("Installing Exhale...")
-                os.execute("pip install -U exhale  > /dev/null 2>&1")
+                os.execute("pip install -U exhale --break-system-packages > /dev/null 2>&1")
             end
 
             local out, errorCode = os.outputof("pip list | grep -F breathe")
@@ -213,7 +213,7 @@ newaction
                 print("Breathe is not installed!")
                 term.setTextColor(nil)
                 print("Installing Breathe...")
-                os.execute("pip install -U breathe  > /dev/null 2>&1")
+                os.execute("pip install -U breathe --break-system-packages > /dev/null 2>&1")
             end
 
             local out, errorCode = os.outputof("pip list | grep -F furo")
@@ -222,7 +222,7 @@ newaction
                 print("Furo theme is not installed!")
                 term.setTextColor(nil)
                 print("Installing Furo theme...")
-                os.execute("pip install -U furo  > /dev/null 2>&1")
+                os.execute("pip install -U furo --break-system-packages > /dev/null 2>&1")
             end
 
             local out, errorCode = os.outputof("pip list | grep -F sphinx_inline_tabs")
@@ -232,7 +232,7 @@ newaction
                 print("Sphinx-Inline-Tabs is not installed!")
                 term.setTextColor(nil)
                 print("Installing Sphinx-Inline-Tabs...")
-                os.execute("pip install -U sphinx-inline-tabs  > /dev/null 2>&1")
+                os.execute("pip install -U sphinx-inline-tabs --break-system-packages > /dev/null 2>&1")
             end
 
             local out, errorCode = os.outputof("pip list | grep -F sphinxext-opengraph")
@@ -241,7 +241,7 @@ newaction
                 print("SphinxExt-OpenGraph is not installed!")
                 term.setTextColor(nil)
                 print("Installing SphinxExt-OpenGraph...")
-                os.execute("pip install -U sphinxext-opengraph  > /dev/null 2>&1")
+                os.execute("pip install -U sphinxext-opengraph --break-system-packages > /dev/null 2>&1")
             end
 
             local out, errorCode = os.outputof("pip list | grep -F sphinx-copybutton")
@@ -250,7 +250,7 @@ newaction
                 print("Sphinx-CopyButton is not installed!")
                 term.setTextColor(nil)
                 print("Installing Sphinx-CopyButton...")
-                os.execute("pip install -U sphinx-copybutton  > /dev/null 2>&1")
+                os.execute("pip install -U sphinx-copybutton --break-system-packages > /dev/null 2>&1")
             end
 
             local out, errorCode = os.outputof("pip list | grep -F myst-parser")
@@ -259,7 +259,7 @@ newaction
                 print("MyST-Parser is not installed!")
                 term.setTextColor(nil)
                 print("Installing MyST-Parser...")
-                os.execute("pip install -U myst-parser  > /dev/null 2>&1")
+                os.execute("pip install -U myst-parser --break-system-packages > /dev/null 2>&1")
             end
 
             local out, errorCode = os.outputof("pip list | grep -F Pygments")
@@ -268,7 +268,7 @@ newaction
                 print("Pygments is not installed!")
                 term.setTextColor(nil)
                 print("Installing Pygments...")
-                os.execute("pip install -U Pygments  > /dev/null 2>&1")
+                os.execute("pip install -U Pygments --break-system-packages > /dev/null 2>&1")
             end
 
             local out, errorCode = os.outputof("pip list | grep -F sphinx-design")
@@ -278,7 +278,7 @@ newaction
                 print("Sphinx-Design is not installed!")
                 term.setTextColor(nil)
                 print("Installing Sphinx-Design...")
-                os.execute("pip install -U sphinx-design  > /dev/null 2>&1")
+                os.execute("pip install -U sphinx-design --break-system-packages > /dev/null 2>&1")
             end
 
         elseif(os.host() == "windows") then
@@ -329,7 +329,7 @@ newaction
             --     print("Sphinx-InlineSyntaxHighlight is not installed!")
             --     term.setTextColor(nil)
             --     print("Installing Sphinx-InlineSyntaxHighlight...")
-            --     os.execute("pip install -U sphinxcontrib-inlinesyntaxhighlight  > NUL")
+            --     os.execute("pip install -U sphinxcontrib-inlinesyntaxhighlight --break-system-packages > NUL")
             -- end
 
             local out, errorCode = os.outputof("pip list | findstr exhale")
@@ -338,7 +338,7 @@ newaction
                 print("Exhale is not installed!")
                 term.setTextColor(nil)
                 print("Installing Exhale...")
-                os.execute("pip install -U exhale  > NUL")
+                os.execute("pip install -U exhale --break-system-packages > NUL")
             end
 
             local out, errorCode = os.outputof("pip list | findstr breathe")
@@ -347,7 +347,7 @@ newaction
                 print("Breathe is not installed!")
                 term.setTextColor(nil)
                 print("Installing Breathe...")
-                os.execute("pip install -U breathe  > NUL")
+                os.execute("pip install -U breathe --break-system-packages > NUL")
             end
 
             local out, errorCode = os.outputof("pip list | findstr furo")
@@ -356,7 +356,7 @@ newaction
                 print("Furo theme is not installed!")
                 term.setTextColor(nil)
                 print("Installing Furo theme...")
-                os.execute("pip install -U furo  > NUL")
+                os.execute("pip install -U furo --break-system-packages > NUL")
             end
 
             local out, errorCode = os.outputof("pip list | findstr sphinx_inline_tabs")
@@ -366,7 +366,7 @@ newaction
                 print("Sphinx-Inline-Tabs is not installed!")
                 term.setTextColor(nil)
                 print("Installing Sphinx-Inline-Tabs...")
-                os.execute("pip install -U sphinx-inline-tabs  > NUL")
+                os.execute("pip install -U sphinx-inline-tabs --break-system-packages > NUL")
             end
 
             local out, errorCode = os.outputof("pip list | findstr sphinxext-opengraph")
@@ -375,7 +375,7 @@ newaction
                 print("SphinxExt-OpenGraph is not installed!")
                 term.setTextColor(nil)
                 print("Installing SphinxExt-OpenGraph...")
-                os.execute("pip install -U sphinxext-opengraph  > NUL")
+                os.execute("pip install -U sphinxext-opengraph --break-system-packages > NUL")
             end
 
             local out, errorCode = os.outputof("pip list | findstr sphinx-copybutton")
@@ -384,7 +384,7 @@ newaction
                 print("Sphinx-CopyButton is not installed!")
                 term.setTextColor(nil)
                 print("Installing Sphinx-CopyButton...")
-                os.execute("pip install -U sphinx-copybutton  > NUL")
+                os.execute("pip install -U sphinx-copybutton --break-system-packages > NUL")
             end
 
             local out, errorCode = os.outputof("pip list | findstr myst-parser")
@@ -393,7 +393,7 @@ newaction
                 print("MyST-Parser is not installed!")
                 term.setTextColor(nil)
                 print("Installing MyST-Parser...")
-                os.execute("pip install -U myst-parser  > NUL")
+                os.execute("pip install -U myst-parser --break-system-packages > NUL")
             end
 
             local out, errorCode = os.outputof("pip list | findstr Pygments")
@@ -402,7 +402,7 @@ newaction
                 print("Pygments is not installed!")
                 term.setTextColor(nil)
                 print("Installing Pygments...")
-                os.execute("pip install -U Pygments  > NUL")
+                os.execute("pip install -U Pygments --break-system-packages > NUL")
             end
 
             local out, errorCode = os.outputof("pip list | findstr sphinx-design")
@@ -412,7 +412,7 @@ newaction
                 print("Sphinx-Design is not installed!")
                 term.setTextColor(nil)
                 print("Installing Sphinx-Design...")
-                os.execute("pip install -U sphinx-design  > NUL")
+                os.execute("pip install -U sphinx-design --break-system-packages > NUL")
             end
         else
             term.setTextColor(term.errorColor)

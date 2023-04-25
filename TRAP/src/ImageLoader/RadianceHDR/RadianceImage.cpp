@@ -58,12 +58,12 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 		return;
 	}
 
-	const char signOne = static_cast<char>(file.get());
-	const char axisOne = static_cast<char>(file.get());
+	const char signOne = NumericCast<char>(file.get());
+	const char axisOne = NumericCast<char>(file.get());
 	file >> m_width;
 	file.ignore();
-	const char signTwo = static_cast<char>(file.get());
-	const char axisTwo = static_cast<char>(file.get());
+	const char signTwo = NumericCast<char>(file.get());
+	const char axisTwo = NumericCast<char>(file.get());
 	file >> m_height;
 	file.ignore();
 
@@ -108,14 +108,14 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 		return;
 	}
 
-	m_data.resize(static_cast<std::size_t>(m_width) * m_height * 3, 0.0f);
+	m_data.resize(NumericCast<std::size_t>(m_width) * m_height * 3, 0.0f);
 	uint32_t dataIndex = 0;
 
 	std::vector<std::array<uint8_t, 4>> scanline;
 	scanline.resize(m_width);
 
 	//Convert image
-	for(int32_t y = static_cast<int32_t>(m_height) - 1; y >= 0; y--)
+	for(int32_t y = NumericCast<int32_t>(m_height) - 1; y >= 0; y--)
 	{
 		if (!Decrunch(scanline, m_width, file))
 		{
@@ -164,8 +164,8 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 	if (exponent == -128)
 		return 0.0f;
 
-	const float v = static_cast<float>(value) / 256.0f;
-	const float d = Math::Pow(2.0f, static_cast<float>(exponent));
+	const float v = NumericCast<float>(value) / 256.0f;
+	const float d = Math::Pow(2.0f, NumericCast<float>(exponent));
 
 	return v * d;
 }
@@ -181,41 +181,41 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 	if (length < MinEncodingLength || length > MaxEncodingLength)
 		return OldDecrunch(scanline, 0, length, file);
 
-	int32_t i = static_cast<int32_t>(file.get());
-	if(i != 2)
+	uint8_t i = NumericCast<uint8_t>(file.get());
+	if(i != 2u)
 	{
 		file.seekg(-1, std::ifstream::cur);
 		return OldDecrunch(scanline, 0, length, file);
 	}
 
-	scanline[0][G] = static_cast<uint8_t>(file.get());
-	scanline[0][B] = static_cast<uint8_t>(file.get());
-	i = static_cast<int32_t>(file.get());
+	scanline[0][G] = NumericCast<uint8_t>(file.get());
+	scanline[0][B] = NumericCast<uint8_t>(file.get());
+	i = NumericCast<uint8_t>(file.get());
 
 	if(scanline[0][G] != 2 || ((scanline[0][B] & 128u) != 0u))
 	{
 		scanline[0][R] = 2;
-		scanline[0][E] = static_cast<uint8_t>(i);
+		scanline[0][E] = i;
 		return OldDecrunch(scanline, 1, length - 1, file);
 	}
 
 	//read each component
-	for(i = 0; i < 4; i++)
+	for(i = 0u; i < 4u; i++)
 	{
 		for(uint32_t j = 0; j < length;)
 		{
-			uint8_t code = static_cast<uint8_t>(file.get());
+			uint8_t code = NumericCast<uint8_t>(file.get());
 			if(code > 128) //RLE
 			{
 				code &= 127u;
-				const uint8_t value = static_cast<uint8_t>(file.get());
+				const uint8_t value = NumericCast<uint8_t>(file.get());
 				while ((code--) != 0u)
 					scanline[j++][i] = value;
 			}
 			else //Non-RLE
 			{
 				while ((code--) != 0u)
-					scanline[j++][i] = static_cast<uint8_t>(file.get());
+					scanline[j++][i] = NumericCast<uint8_t>(file.get());
 			}
 		}
 	}
@@ -231,14 +231,14 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
-	int32_t rshift = 0;
+	uint32_t rshift = 0;
 
 	while (length > 0)
 	{
-		scanline[0 + scanlineIndex][R] = static_cast<uint8_t>(file.get());
-		scanline[0 + scanlineIndex][G] = static_cast<uint8_t>(file.get());
-		scanline[0 + scanlineIndex][B] = static_cast<uint8_t>(file.get());
-		scanline[0 + scanlineIndex][E] = static_cast<uint8_t>(file.get());
+		scanline[0 + scanlineIndex][R] = NumericCast<uint8_t>(file.get());
+		scanline[0 + scanlineIndex][G] = NumericCast<uint8_t>(file.get());
+		scanline[0 + scanlineIndex][B] = NumericCast<uint8_t>(file.get());
+		scanline[0 + scanlineIndex][E] = NumericCast<uint8_t>(file.get());
 		if (file.eof())
 			return false;
 
@@ -250,13 +250,13 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 				scanlineIndex++;
 				length--;
 			}
-			rshift += 8;
+			rshift += 8u;
 		}
 		else
 		{
 			scanlineIndex++;
 			length--;
-			rshift = 0;
+			rshift = 0u;
 		}
 	}
 
@@ -270,12 +270,12 @@ void TRAP::INTERNAL::RadianceImage::WorkOnRGBE(std::vector<std::array<uint8_t, 4
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
-	int32_t length = static_cast<int32_t>(m_width);
+	int32_t length = NumericCast<int32_t>(m_width);
 	uint32_t scanlineIndex = 0;
 
 	while(length-- > 0)
 	{
-		const int8_t exponent = static_cast<int8_t>(scanline[0 + scanlineIndex][E] - 128);
+		const int8_t exponent = NumericCast<int8_t>(scanline[0 + scanlineIndex][E] - 128);
 		if (exponent > eMax)
 			eMax = exponent;
 		if (exponent != -128 && exponent < eMin)

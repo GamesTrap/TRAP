@@ -88,7 +88,7 @@ void TRAP::Input::Shutdown()
 	const auto state = INTERNAL::WindowingAPI::GetKey(*static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
 	                                                  (Application::GetWindow()->GetInternalWindow()), key);
 
-	return static_cast<bool>(state);
+	return state != TRAP::Input::KeyState::Released;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -111,7 +111,7 @@ void TRAP::Input::Shutdown()
 	const auto state = INTERNAL::WindowingAPI::GetKey(*static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
 	                                                  (window->GetInternalWindow()), key);
 
-	return static_cast<bool>(state);
+	return state != TRAP::Input::KeyState::Released;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -124,7 +124,7 @@ void TRAP::Input::Shutdown()
 	                                                          (Application::GetWindow()->GetInternalWindow()),
 															  button);
 
-	return static_cast<bool>(state);
+	return state != TRAP::Input::KeyState::Released;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -142,7 +142,7 @@ void TRAP::Input::Shutdown()
 	const auto state = INTERNAL::WindowingAPI::GetMouseButton(*static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
 	                                                          (window->GetInternalWindow()), button);
 
-	return static_cast<bool>(state);
+	return state != TRAP::Input::KeyState::Released;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -160,7 +160,7 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	return s_controllerInternal[static_cast<uint32_t>(controller)].Connected;
+	return s_controllerInternal[ToUnderlying(controller)].Connected;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -169,13 +169,13 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
+	if (!s_controllerInternal[ToUnderlying(controller)].Connected)
 		return false;
 
 	if (!PollController(controller, PollMode::Presence))
 		return false;
 
-	return s_controllerInternal[static_cast<uint32_t>(controller)].mapping != nullptr;
+	return s_controllerInternal[ToUnderlying(controller)].mapping != nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -194,7 +194,7 @@ void TRAP::Input::Shutdown()
 	yPos += windowPos.y;
 #endif /*TRAP_PLATFORM_WINDOWS*/
 
-	return {static_cast<float>(xPos), static_cast<float>(yPos)};
+	return {NumericCast<float>(xPos), NumericCast<float>(yPos)};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -219,7 +219,7 @@ void TRAP::Input::Shutdown()
 	yPos += windowPos.y;
 #endif /*TRAP_PLATFORM_WINDOWS*/
 
-	return TRAP::Math::Vec2{ static_cast<float>(xPos), static_cast<float>(yPos) };
+	return TRAP::Math::Vec2{ NumericCast<float>(xPos), NumericCast<float>(yPos) };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -465,7 +465,7 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
+	if (!s_controllerInternal[ToUnderlying(controller)].Connected)
 		return 0.0f;
 
 	return GetMappedControllerAxis(controller, axis);
@@ -477,7 +477,7 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
+	if (!s_controllerInternal[ToUnderlying(controller)].Connected)
 		return ControllerDPad::Centered;
 
 	return GetMappedControllerDPad(controller, dpad);
@@ -489,7 +489,7 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
+	if (!s_controllerInternal[ToUnderlying(controller)].Connected)
 		return false;
 
 	return GetMappedControllerButton(controller, button);
@@ -501,16 +501,16 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
+	if (!s_controllerInternal[ToUnderlying(controller)].Connected)
 		return "";
 
 	if (!PollController(controller, PollMode::Presence))
 		return "";
 
-	if(s_controllerInternal[static_cast<uint32_t>(controller)].mapping == nullptr)
-		return s_controllerInternal[static_cast<uint32_t>(controller)].Name;
+	if(s_controllerInternal[ToUnderlying(controller)].mapping == nullptr)
+		return s_controllerInternal[ToUnderlying(controller)].Name;
 
-	return s_controllerInternal[static_cast<uint32_t>(controller)].mapping->Name;
+	return s_controllerInternal[ToUnderlying(controller)].mapping->Name;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -519,13 +519,13 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
+	if (!s_controllerInternal[ToUnderlying(controller)].Connected)
 		return "";
 
 	if (!PollController(controller, PollMode::Presence))
 		return "";
 
-	return s_controllerInternal[static_cast<uint32_t>(controller)].guid;
+	return s_controllerInternal[ToUnderlying(controller)].guid;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -534,13 +534,13 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
+	if (!s_controllerInternal[ToUnderlying(controller)].Connected)
 		return {};
 
 	if (!PollController(controller, PollMode::Axes))
 		return {};
 
-	return s_controllerInternal[static_cast<uint32_t>(controller)].Axes;
+	return s_controllerInternal[ToUnderlying(controller)].Axes;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -549,13 +549,13 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
+	if (!s_controllerInternal[ToUnderlying(controller)].Connected)
 		return {};
 
 	if (!PollController(controller, PollMode::Buttons))
 		return {};
 
-	return s_controllerInternal[static_cast<uint32_t>(controller)].Buttons;
+	return s_controllerInternal[ToUnderlying(controller)].Buttons;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -564,13 +564,13 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
+	if (!s_controllerInternal[ToUnderlying(controller)].Connected)
 		return {};
 
 	if (!PollController(controller, PollMode::Buttons))
 		return {};
 
-	return s_controllerInternal[static_cast<uint32_t>(controller)].DPads;
+	return s_controllerInternal[ToUnderlying(controller)].DPads;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -579,17 +579,17 @@ void TRAP::Input::SetControllerVibration(const Controller controller, const floa
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
+	if (!s_controllerInternal[ToUnderlying(controller)].Connected)
 		return;
 
 	if (!PollController(controller, PollMode::Presence))
 		return;
 
-	if (leftMotor != s_controllerInternal[static_cast<uint32_t>(controller)].LeftMotor ||
-		rightMotor != s_controllerInternal[static_cast<uint32_t>(controller)].RightMotor)
+	if (leftMotor != s_controllerInternal[ToUnderlying(controller)].LeftMotor ||
+		rightMotor != s_controllerInternal[ToUnderlying(controller)].RightMotor)
 	{
-		s_controllerInternal[static_cast<uint32_t>(controller)].LeftMotor = leftMotor;
-		s_controllerInternal[static_cast<uint32_t>(controller)].RightMotor = rightMotor;
+		s_controllerInternal[ToUnderlying(controller)].LeftMotor = leftMotor;
+		s_controllerInternal[ToUnderlying(controller)].RightMotor = rightMotor;
 		SetControllerVibrationInternal(controller, leftMotor, rightMotor);
 	}
 }
@@ -600,17 +600,17 @@ void TRAP::Input::SetControllerVibration(const Controller controller, const Math
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
+	if (!s_controllerInternal[ToUnderlying(controller)].Connected)
 		return;
 
 	if (!PollController(controller, PollMode::Presence))
 		return;
 
-	if (intensity.x != s_controllerInternal[static_cast<uint32_t>(controller)].LeftMotor ||
-		intensity.y != s_controllerInternal[static_cast<uint32_t>(controller)].RightMotor)
+	if (intensity.x != s_controllerInternal[ToUnderlying(controller)].LeftMotor ||
+		intensity.y != s_controllerInternal[ToUnderlying(controller)].RightMotor)
 	{
-		s_controllerInternal[static_cast<uint32_t>(controller)].LeftMotor = intensity.x;
-		s_controllerInternal[static_cast<uint32_t>(controller)].RightMotor = intensity.y;
+		s_controllerInternal[ToUnderlying(controller)].LeftMotor = intensity.x;
+		s_controllerInternal[ToUnderlying(controller)].RightMotor = intensity.y;
 		SetControllerVibrationInternal(controller, intensity.x, intensity.y);
 	}
 }
@@ -621,7 +621,7 @@ void TRAP::Input::SetControllerVibration(const Controller controller, const Math
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if(!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
+	if(!s_controllerInternal[ToUnderlying(controller)].Connected)
 		return ControllerBatteryStatus::Wired;
 
 	if(!PollController(controller, PollMode::Presence))
@@ -726,7 +726,7 @@ void TRAP::Input::UpdateControllerMappings(const std::string& map)
 			s_mappings.push_back(mapping);
 	}
 
-	for(uint32_t cID = 0; cID <= static_cast<uint32_t>(Controller::Sixteen); cID++)
+	for(uint32_t cID = 0; cID <= ToUnderlying(Controller::Sixteen); cID++)
 	{
 		ControllerInternal* const con = &s_controllerInternal[cID];
 		if(s_controllerInternal[cID].Connected)
@@ -754,13 +754,13 @@ TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(std::string 
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	uint32_t cID = 0;
-	for(cID = 0; cID <= static_cast<uint32_t>(Controller::Sixteen); cID++)
+	for(cID = 0; cID <= ToUnderlying(Controller::Sixteen); cID++)
 	{
 		if (!s_controllerInternal[cID].Connected)
 			break;
 	}
 
-	if (cID > static_cast<uint32_t>(Controller::Sixteen))
+	if (cID > ToUnderlying(Controller::Sixteen))
 		return nullptr;
 
 	ControllerInternal* const con = &s_controllerInternal[cID];
@@ -849,27 +849,27 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 	{
 		{
 			{"platform", nullptr},
-			{"a", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::A)]},
-			{"b", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::B)]},
-			{"x", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::X)]},
-			{"y", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::Y)]},
-			{"back", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::Back)]},
-			{"start", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::Start)]},
-			{"guide", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::Guide)]},
-			{"leftshoulder", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::Left_Bumper)]},
-			{"rightshoulder", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::Right_Bumper)]},
-			{"leftstick", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::Left_Thumb)]},
-			{"rightstick", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::Right_Thumb)]},
-			{"dpup", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::DPad_Up)]},
-			{"dpright", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::DPad_Right)]},
-			{"dpdown", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::DPad_Down)]},
-			{"dpleft", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::DPad_Left)]},
-			{"lefttrigger", &mapping.Axes[static_cast<uint32_t>(ControllerAxis::Left_Trigger)]},
-			{"righttrigger", &mapping.Axes[static_cast<uint32_t>(ControllerAxis::Right_Trigger)]},
-			{"leftx", &mapping.Axes[static_cast<uint32_t>(ControllerAxis::Left_X)]},
-			{"lefty", &mapping.Axes[static_cast<uint32_t>(ControllerAxis::Left_Y)]},
-			{"rightx", &mapping.Axes[static_cast<uint32_t>(ControllerAxis::Right_X)]},
-			{"righty", &mapping.Axes[static_cast<uint32_t>(ControllerAxis::Right_Y)]}
+			{"a", &mapping.Buttons[ToUnderlying(ControllerButton::A)]},
+			{"b", &mapping.Buttons[ToUnderlying(ControllerButton::B)]},
+			{"x", &mapping.Buttons[ToUnderlying(ControllerButton::X)]},
+			{"y", &mapping.Buttons[ToUnderlying(ControllerButton::Y)]},
+			{"back", &mapping.Buttons[ToUnderlying(ControllerButton::Back)]},
+			{"start", &mapping.Buttons[ToUnderlying(ControllerButton::Start)]},
+			{"guide", &mapping.Buttons[ToUnderlying(ControllerButton::Guide)]},
+			{"leftshoulder", &mapping.Buttons[ToUnderlying(ControllerButton::Left_Bumper)]},
+			{"rightshoulder", &mapping.Buttons[ToUnderlying(ControllerButton::Right_Bumper)]},
+			{"leftstick", &mapping.Buttons[ToUnderlying(ControllerButton::Left_Thumb)]},
+			{"rightstick", &mapping.Buttons[ToUnderlying(ControllerButton::Right_Thumb)]},
+			{"dpup", &mapping.Buttons[ToUnderlying(ControllerButton::DPad_Up)]},
+			{"dpright", &mapping.Buttons[ToUnderlying(ControllerButton::DPad_Right)]},
+			{"dpdown", &mapping.Buttons[ToUnderlying(ControllerButton::DPad_Down)]},
+			{"dpleft", &mapping.Buttons[ToUnderlying(ControllerButton::DPad_Left)]},
+			{"lefttrigger", &mapping.Axes[ToUnderlying(ControllerAxis::Left_Trigger)]},
+			{"righttrigger", &mapping.Axes[ToUnderlying(ControllerAxis::Right_Trigger)]},
+			{"leftx", &mapping.Axes[ToUnderlying(ControllerAxis::Left_X)]},
+			{"lefty", &mapping.Axes[ToUnderlying(ControllerAxis::Left_Y)]},
+			{"rightx", &mapping.Axes[ToUnderlying(ControllerAxis::Right_X)]},
+			{"righty", &mapping.Axes[ToUnderlying(ControllerAxis::Right_Y)]}
 		}
 	};
 
@@ -917,13 +917,13 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 		}
 		if (splittedField.size() < 2)
 		{
-			TP_ERROR(Log::InputControllerPrefix, "Too few elements inside field: ", static_cast<uint32_t>(i),
+			TP_ERROR(Log::InputControllerPrefix, "Too few elements inside field: ", NumericCast<uint32_t>(i),
 			         "! Mapping: ", splittedString[1]);
 			return false;
 		}
 		if (splittedField.size() > 2)
 		{
-			TP_ERROR(Log::InputControllerPrefix, "Too many elements inside field: ", static_cast<uint32_t>(i),
+			TP_ERROR(Log::InputControllerPrefix, "Too many elements inside field: ", NumericCast<uint32_t>(i),
 			         "! Mapping: ", splittedString[1]);
 			return false;
 		}
@@ -936,9 +936,9 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 				        splittedString[1]);
 				return false;
 			}
-			if (std::isalnum(static_cast<int8_t>(c)) == 0)
+			if (std::isalnum(NumericCast<int8_t>(c)) == 0)
 			{
-				TP_ERROR(Log::InputControllerPrefix, "Invalid char inside field: ", static_cast<uint32_t>(i),
+				TP_ERROR(Log::InputControllerPrefix, "Invalid char inside field: ", NumericCast<uint32_t>(i),
 				         "! Mapping: ", splittedString[1]);
 				return false;
 			}
@@ -946,7 +946,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 
 		bool found = false;
 		uint8_t j = 0;
-		for (j = 0; j < static_cast<uint8_t>(fields.size()); j++)
+		for (j = 0; j < NumericCast<uint8_t>(fields.size()); j++)
 		{
 			if (fields[j].Name == splittedField[0])
 			{
@@ -989,21 +989,21 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 			{
 				const uint64_t hat = std::stoul(splittedField[1].data() + charOffset);
 				const uint64_t bit = std::stoul(splittedField[1].data() + charOffset);
-				e->Index = static_cast<uint8_t>((hat << 4u) | bit);
+				e->Index = NumericCast<uint8_t>((hat << 4u) | bit);
 			}
 			else
-				e->Index = static_cast<uint8_t>(std::stoul(splittedField[1].data() + charOffset));
+				e->Index = NumericCast<uint8_t>(std::stoul(splittedField[1].data() + charOffset));
 
 			if (e->Type == 1) //Axis
 			{
-				e->AxisScale = static_cast<int8_t>(2 / (maximum - minimum));
-				e->AxisOffset = static_cast<int8_t>(-(maximum + minimum));
+				e->AxisScale = NumericCast<int8_t>(2 / (maximum - minimum));
+				e->AxisOffset = NumericCast<int8_t>(-(maximum + minimum));
 
 				//Invert axis input modifier
 				if (splittedField[1][charOffset] == '~')
 				{
-					e->AxisScale = static_cast<int8_t>(-e->AxisScale);
-					e->AxisOffset = static_cast<int8_t>(-e->AxisOffset);
+					e->AxisScale = NumericCast<int8_t>(-e->AxisScale);
+					e->AxisOffset = NumericCast<int8_t>(-e->AxisOffset);
 				}
 			}
 		}
@@ -1056,9 +1056,9 @@ void TRAP::Input::InitControllerMappings()
 	if(mapping == nullptr)
 		return nullptr;
 
-	uint8_t i = 0;
+	uint32_t i = 0;
 
-	for(i = 0; i <= static_cast<uint8_t>(ControllerButton::DPad_Left); i++)
+	for(i = 0; i <= ToUnderlying(ControllerButton::DPad_Left); i++)
 	{
 		if(!IsValidElementForController(&mapping->Buttons[i], con))
 		{
@@ -1068,7 +1068,7 @@ void TRAP::Input::InitControllerMappings()
 		}
 	}
 
-	for(i = 0; i <= static_cast<uint8_t>(ControllerAxis::Right_Trigger); i++)
+	for(i = 0; i <= ToUnderlying(ControllerAxis::Right_Trigger); i++)
 	{
 		if(!IsValidElementForController(&mapping->Axes[i], con))
 		{
@@ -1088,7 +1088,7 @@ void TRAP::Input::InitControllerMappings()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if(e->Type == 3 && (e->Index >> 4u) >= static_cast<int32_t>(con->DPads.size() + 1))
+	if(e->Type == 3 && (e->Index >> 4u) >= NumericCast<int32_t>(con->DPads.size() + 1))
 		return false;
 	if(e->Type == 2 && e->Index >= (con->Buttons.size() + 1))
 		return false;
@@ -1107,12 +1107,12 @@ void TRAP::Input::InitControllerMappings()
 	if (!PollController(controller, PollMode::Buttons))
 		return false;
 
-	const ControllerInternal* const con = &s_controllerInternal[static_cast<uint32_t>(controller)];
+	const ControllerInternal* const con = &s_controllerInternal[ToUnderlying(controller)];
 
 	if (con->mapping == nullptr)
 		return false;
 
-	const MapElement* const e = &con->mapping->Buttons[static_cast<uint8_t>(button)];
+	const MapElement* const e = &con->mapping->Buttons[ToUnderlying(button)];
 	if (e->Index < con->ButtonCount)
 	{
 		if (e->Type == 2) //Button
@@ -1120,8 +1120,8 @@ void TRAP::Input::InitControllerMappings()
 	}
 	if (e->Type == 1) //Axis
 	{
-		const float value = con->Axes[e->Index] * static_cast<float>(e->AxisScale) +
-		                    static_cast<float>(e->AxisOffset);
+		const float value = con->Axes[e->Index] * NumericCast<float>(e->AxisScale) +
+		                    NumericCast<float>(e->AxisOffset);
 		if (e->AxisOffset < 0 || (e->AxisOffset == 0 && e->AxisScale > 0))
 		{
 			if (value >= 0.0f)
@@ -1151,16 +1151,16 @@ void TRAP::Input::InitControllerMappings()
 	if(!PollController(controller, PollMode::Axes))
 		return 0.0f;
 
-	const ControllerInternal* const con = &s_controllerInternal[static_cast<uint32_t>(controller)];
+	const ControllerInternal* const con = &s_controllerInternal[ToUnderlying(controller)];
 
 	if(con->mapping == nullptr)
 		return 0.0f;
 
-	const MapElement* const e = &con->mapping->Axes[static_cast<uint8_t>(axis)];
+	const MapElement* const e = &con->mapping->Axes[ToUnderlying(axis)];
 	if(e->Type == 1) //Axis
 	{
-		const float value = con->Axes[e->Index] * static_cast<float>(e->AxisScale) +
-		                    static_cast<float>(e->AxisOffset);
+		const float value = con->Axes[e->Index] * NumericCast<float>(e->AxisScale) +
+		                    NumericCast<float>(e->AxisOffset);
 		return Math::Min(Math::Max(value, -1.0f), 1.0f);
 	}
 	if(e->Type == 2) //Button
@@ -1185,7 +1185,7 @@ void TRAP::Input::InitControllerMappings()
 	if(!PollController(controller, PollMode::All))
 		return ControllerDPad::Centered;
 
-	const ControllerInternal* const con = &s_controllerInternal[static_cast<uint32_t>(controller)];
+	const ControllerInternal* const con = &s_controllerInternal[ToUnderlying(controller)];
 
 	if (con->mapping == nullptr)
 		return ControllerDPad::Centered;

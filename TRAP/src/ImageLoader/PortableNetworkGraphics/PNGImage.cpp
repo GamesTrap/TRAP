@@ -88,7 +88,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 		while (nextChunk.MagicNumber != "IEND")
 		{
 			file.read(reinterpret_cast<char*>(&nextChunk.Length), sizeof(uint32_t));
-			file.read(nextChunk.MagicNumber.data(), static_cast<std::streamsize>(nextChunk.MagicNumber.size()));
+			file.read(nextChunk.MagicNumber.data(), NumericCast<std::streamsize>(nextChunk.MagicNumber.size()));
 			if (needSwap)
 				Utils::Memory::SwapBytes(nextChunk.Length);
 
@@ -106,7 +106,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 				return;
 			}
 		}
-		if (nextChunk.Length > 2147483647)
+		if (nextChunk.Length > std::numeric_limits<int32_t>::max())
 		{
 			file.close();
 			TP_ERROR(Log::ImagePNGPrefix, "Chunk length ", nextChunk.Length, " is invalid!");
@@ -138,7 +138,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 		case 2:
 			[[fallthrough]];
 		case 4:
-			TP_ERROR(Log::ImagePNGPrefix, "Bit depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
+			TP_ERROR(Log::ImagePNGPrefix, "Bit depth: ", NumericCast<uint32_t>(data.BitDepth), " is unsupported!");
 			TP_WARN(Log::ImagePNGPrefix, "Using default image!");
 			return;
 
@@ -172,7 +172,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 		case 2:
 			[[fallthrough]];
 		case 4:
-			TP_ERROR(Log::ImagePNGPrefix, "Bit depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
+			TP_ERROR(Log::ImagePNGPrefix, "Bit depth: ", NumericCast<uint32_t>(data.BitDepth), " is unsupported!");
 			TP_WARN(Log::ImagePNGPrefix, "Using default image!");
 			return;
 
@@ -237,8 +237,8 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 	}
 
 	if (!DecompressData(data.CompressedData.data(),
-	                    static_cast<int>(data.CompressedData.size()), decompressedData.data(),
-						static_cast<int>(decompressedData.size())))
+	                    NumericCast<int32_t>(data.CompressedData.size()), decompressedData.data(),
+						NumericCast<int32_t>(decompressedData.size())))
 	{
 		decompressedData.clear();
 		return;
@@ -291,10 +291,10 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 		else
 		{
 			if (data.BitDepth > 8)
-				TP_ERROR(Log::ImagePNGPrefix, "Indexed with bit depth: ", static_cast<uint32_t>(data.BitDepth),
+				TP_ERROR(Log::ImagePNGPrefix, "Indexed with bit depth: ", NumericCast<uint32_t>(data.BitDepth),
 					" is invalid!");
 			else
-				TP_ERROR(Log::ImagePNGPrefix, "Indexed with bit depth: ", static_cast<uint32_t>(data.BitDepth),
+				TP_ERROR(Log::ImagePNGPrefix, "Indexed with bit depth: ", NumericCast<uint32_t>(data.BitDepth),
 					" is unsupported!");
 			TP_WARN(Log::ImagePNGPrefix, "Using default image!");
 			return;
@@ -434,11 +434,11 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 	//Read in IHDR Chunk
 	file.read(reinterpret_cast<char*>(&ihdrChunk.Width), sizeof(uint32_t));
 	file.read(reinterpret_cast<char*>(&ihdrChunk.Height), sizeof(uint32_t));
-	ihdrChunk.BitDepth = static_cast<uint8_t>(file.get());
-	ihdrChunk.ColorType = static_cast<uint8_t>(file.get());
-	ihdrChunk.CompressionMethod = static_cast<uint8_t>(file.get());
-	ihdrChunk.FilterMethod = static_cast<uint8_t>(file.get());
-	ihdrChunk.InterlaceMethod = static_cast<uint8_t>(file.get());
+	ihdrChunk.BitDepth = NumericCast<uint8_t>(file.get());
+	ihdrChunk.ColorType = NumericCast<uint8_t>(file.get());
+	ihdrChunk.CompressionMethod = NumericCast<uint8_t>(file.get());
+	ihdrChunk.FilterMethod = NumericCast<uint8_t>(file.get());
+	ihdrChunk.InterlaceMethod = NumericCast<uint8_t>(file.get());
 	file.read(reinterpret_cast<char*>(ihdrChunk.CRC.data()), ihdrChunk.CRC.size());
 
 	//Convert to machines endian
@@ -451,10 +451,10 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 	const std::array<uint8_t, 17> CRCData
 	{
 		'I', 'H', 'D', 'R',
-		static_cast<uint8_t>(ihdrChunk.Width >> 24u), static_cast<uint8_t>(ihdrChunk.Width >> 16u),
-		static_cast<uint8_t>(ihdrChunk.Width >> 8u), static_cast<uint8_t>(ihdrChunk.Width),
-		static_cast<uint8_t>(ihdrChunk.Height >> 24u), static_cast<uint8_t>(ihdrChunk.Height >> 16u),
-		static_cast<uint8_t>(ihdrChunk.Height >> 8u), static_cast<uint8_t>(ihdrChunk.Height),
+		NumericCast<uint8_t>(ihdrChunk.Width >> 24u), NumericCast<uint8_t>(ihdrChunk.Width >> 16u),
+		NumericCast<uint8_t>(ihdrChunk.Width >> 8u), NumericCast<uint8_t>(ihdrChunk.Width),
+		NumericCast<uint8_t>(ihdrChunk.Height >> 24u), NumericCast<uint8_t>(ihdrChunk.Height >> 16u),
+		NumericCast<uint8_t>(ihdrChunk.Height >> 8u), NumericCast<uint8_t>(ihdrChunk.Height),
 		ihdrChunk.BitDepth, ihdrChunk.ColorType, ihdrChunk.CompressionMethod, ihdrChunk.FilterMethod,
 		ihdrChunk.InterlaceMethod
 	};
@@ -528,7 +528,7 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 
 	//TODO Treat image as sRGB
 	std::array<uint8_t, 4> CRC{};
-	const uint8_t renderingIntent = static_cast<uint8_t>(file.get());
+	const uint8_t renderingIntent = NumericCast<uint8_t>(file.get());
 	file.read(reinterpret_cast<char*>(CRC.data()), CRC.size());
 
 	const std::array<uint8_t, 5> CRCData{ 's', 'R', 'G', 'B', renderingIntent };
@@ -591,8 +591,8 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 	case 0:
 	{
 		std::array<uint8_t, 4> CRC{};
-		const uint8_t grayAlpha1 = static_cast<uint8_t>(file.get());
-		const uint8_t grayAlpha2 = static_cast<uint8_t>(file.get());
+		const uint8_t grayAlpha1 = NumericCast<uint8_t>(file.get());
+		const uint8_t grayAlpha2 = NumericCast<uint8_t>(file.get());
 		file.read(reinterpret_cast<char*>(CRC.data()), CRC.size());
 
 		const std::array<uint8_t, 6> CRCData{ 't', 'R', 'N', 'S', grayAlpha1, grayAlpha2 };
@@ -611,12 +611,12 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 	case 2:
 	{
 		std::array<uint8_t, 4> CRC{};
-		const uint8_t redAlpha1 = static_cast<uint8_t>(file.get());
-		const uint8_t redAlpha2 = static_cast<uint8_t>(file.get());
-		const uint8_t greenAlpha1 = static_cast<uint8_t>(file.get());
-		const uint8_t greenAlpha2 = static_cast<uint8_t>(file.get());
-		const uint8_t blueAlpha1 = static_cast<uint8_t>(file.get());
-		const uint8_t blueAlpha2 = static_cast<uint8_t>(file.get());
+		const uint8_t redAlpha1 = NumericCast<uint8_t>(file.get());
+		const uint8_t redAlpha2 = NumericCast<uint8_t>(file.get());
+		const uint8_t greenAlpha1 = NumericCast<uint8_t>(file.get());
+		const uint8_t greenAlpha2 = NumericCast<uint8_t>(file.get());
+		const uint8_t blueAlpha1 = NumericCast<uint8_t>(file.get());
+		const uint8_t blueAlpha2 = NumericCast<uint8_t>(file.get());
 		file.read(reinterpret_cast<char*>(CRC.data()), CRC.size());
 
 		const std::array<uint8_t, 10> CRCData
@@ -643,7 +643,7 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 		std::vector<uint8_t> paletteAlpha(length);
 		std::array<uint8_t, 4> CRC{};
 		file.read(reinterpret_cast<char*>(paletteAlpha.data()),
-		          static_cast<std::streamsize>(paletteAlpha.size()));
+		          NumericCast<std::streamsize>(paletteAlpha.size()));
 		file.read(reinterpret_cast<char*>(CRC.data()), CRC.size());
 
 		std::vector<uint8_t> CRCData(paletteAlpha.size() + 4);
@@ -688,7 +688,7 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 	if (data.ColorType == 0 || data.ColorType == 4)
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "PLTE invalid usage! This chunk should not appear with color type: ",
-			static_cast<uint32_t>(data.ColorType), "!");
+			     NumericCast<uint32_t>(data.ColorType), "!");
 		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
 		return false;
 	}
@@ -699,11 +699,11 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 	for (uint32_t i = 0; i < length; i++)
 	{
 		RGBA rgba{};
-		rgba.Red = static_cast<uint8_t>(file.get());
+		rgba.Red = NumericCast<uint8_t>(file.get());
 		i++;
-		rgba.Green = static_cast<uint8_t>(file.get());
+		rgba.Green = NumericCast<uint8_t>(file.get());
 		i++;
-		rgba.Blue = static_cast<uint8_t>(file.get());
+		rgba.Blue = NumericCast<uint8_t>(file.get());
 
 		paletteData[paletteIndex++] = rgba;
 	}
@@ -743,7 +743,7 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 
 	std::vector<uint8_t> compressedData(length);
 	std::array<uint8_t, 4> CRC{};
-	file.read(reinterpret_cast<char*>(compressedData.data()), static_cast<std::streamsize>(compressedData.size()));
+	file.read(reinterpret_cast<char*>(compressedData.data()), NumericCast<std::streamsize>(compressedData.size()));
 	file.read(reinterpret_cast<char*>(CRC.data()), CRC.size());
 
 	std::vector<uint8_t> CRCData(compressedData.size() + 4);
@@ -810,30 +810,30 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 	//Check if Color Type matches Bit Depth
 	if (ihdrChunk.ColorType == 2 && (ihdrChunk.BitDepth != 8 && ihdrChunk.BitDepth != 16))
 	{
-		TP_ERROR(Log::ImagePNGPrefix, "Color type: TrueColor(", static_cast<uint32_t>(ihdrChunk.ColorType),
-			") doesnt allow a bit depth of ", static_cast<uint32_t>(ihdrChunk.BitDepth), "!");
+		TP_ERROR(Log::ImagePNGPrefix, "Color type: TrueColor(", NumericCast<uint32_t>(ihdrChunk.ColorType),
+			") doesnt allow a bit depth of ", NumericCast<uint32_t>(ihdrChunk.BitDepth), "!");
 		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
 		return false;
 	}
 	if (ihdrChunk.ColorType == 3 && (ihdrChunk.BitDepth != 1 && ihdrChunk.BitDepth != 2 &&
 		ihdrChunk.BitDepth != 4 && ihdrChunk.BitDepth != 8))
 	{
-		TP_ERROR(Log::ImagePNGPrefix, "Color type: Indexed-Color(", static_cast<uint32_t>(ihdrChunk.ColorType),
-			") doesnt allow a bit depth of ", static_cast<uint32_t>(ihdrChunk.BitDepth), "!");
+		TP_ERROR(Log::ImagePNGPrefix, "Color type: Indexed-Color(", NumericCast<uint32_t>(ihdrChunk.ColorType),
+			") doesnt allow a bit depth of ", NumericCast<uint32_t>(ihdrChunk.BitDepth), "!");
 		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
 		return false;
 	}
 	if (ihdrChunk.ColorType == 4 && (ihdrChunk.BitDepth != 8 && ihdrChunk.BitDepth != 16))
 	{
-		TP_ERROR(Log::ImagePNGPrefix, "Color type: GrayScale Alpha(", static_cast<uint32_t>(ihdrChunk.ColorType),
-			") doesnt allow a bit depth of ", static_cast<uint32_t>(ihdrChunk.BitDepth), "!");
+		TP_ERROR(Log::ImagePNGPrefix, "Color type: GrayScale Alpha(", NumericCast<uint32_t>(ihdrChunk.ColorType),
+			") doesnt allow a bit depth of ", NumericCast<uint32_t>(ihdrChunk.BitDepth), "!");
 		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
 		return false;
 	}
 	if (ihdrChunk.ColorType == 6 && (ihdrChunk.BitDepth != 8 && ihdrChunk.BitDepth != 16))
 	{
-		TP_ERROR(Log::ImagePNGPrefix, "Color type: TrueColor Alpha(", static_cast<uint32_t>(ihdrChunk.ColorType),
-			") doesnt allow a bit depth of ", static_cast<uint32_t>(ihdrChunk.BitDepth), "!");
+		TP_ERROR(Log::ImagePNGPrefix, "Color type: TrueColor Alpha(", NumericCast<uint32_t>(ihdrChunk.ColorType),
+			") doesnt allow a bit depth of ", NumericCast<uint32_t>(ihdrChunk.BitDepth), "!");
 		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
 		return false;
 	}
@@ -841,7 +841,7 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 	//Only Deflate/Inflate Compression Method is defined by the ISO
 	if (ihdrChunk.CompressionMethod != 0)
 	{
-		TP_ERROR(Log::ImagePNGPrefix, "Compression method: ", static_cast<uint32_t>(ihdrChunk.CompressionMethod),
+		TP_ERROR(Log::ImagePNGPrefix, "Compression method: ", NumericCast<uint32_t>(ihdrChunk.CompressionMethod),
 			" is unsupported!");
 		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
 		return false;
@@ -850,7 +850,7 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 	//Only Adaptive filtering with 5 basic filter types is defined by the ISO
 	if (ihdrChunk.FilterMethod != 0)
 	{
-		TP_ERROR(Log::ImagePNGPrefix, "Filter method: ", static_cast<uint32_t>(ihdrChunk.CompressionMethod),
+		TP_ERROR(Log::ImagePNGPrefix, "Filter method: ", NumericCast<uint32_t>(ihdrChunk.CompressionMethod),
 			" is unsupported!");
 		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
 		return false;
@@ -859,7 +859,7 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 	//Only No Interlace and Adam7 Interlace are defined by the ISO
 	if (ihdrChunk.InterlaceMethod != 0 && ihdrChunk.InterlaceMethod != 1)
 	{
-		TP_ERROR(Log::ImagePNGPrefix, "Interlace method: ", static_cast<uint32_t>(ihdrChunk.InterlaceMethod),
+		TP_ERROR(Log::ImagePNGPrefix, "Interlace method: ", NumericCast<uint32_t>(ihdrChunk.InterlaceMethod),
 			" is unsupported!");
 		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
 		return false;
@@ -884,7 +884,7 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 	if ((source[0] * 256 + source[1]) % 31 != 0)
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "Decompression failed! 256 * source[0](", source[0], ") + source[1](",
-			source[1], ") must be a multiple of 31(", static_cast<uint32_t>(source[0] * 256 + source[1]), ")!");
+			source[1], ") must be a multiple of 31(", NumericCast<uint32_t>(source[0] * 256 + source[1]), ")!");
 		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
 		return false; //Error: 256 * source[0] + source[1] must be a multiple of 31, the FCHECK value is supposed to be made this way
 	}
@@ -1009,10 +1009,10 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 					uint8_t s2 = scanline[i + 2], r2 = recon[j + 2], p2 = precon[i + 2];
 					uint8_t s3 = scanline[i + 3], r3 = recon[j + 3], p3 = precon[i + 3];
 
-					recon[i + 0] = static_cast<uint8_t>(s0 + ((r0 + p0) >> 1u));
-					recon[i + 1] = static_cast<uint8_t>(s1 + ((r1 + p1) >> 1u));
-					recon[i + 2] = static_cast<uint8_t>(s2 + ((r2 + p2) >> 1u));
-					recon[i + 3] = static_cast<uint8_t>(s3 + ((r3 + p3) >> 1u));
+					recon[i + 0] = NumericCast<uint8_t>(s0 + ((r0 + p0) >> 1u));
+					recon[i + 1] = NumericCast<uint8_t>(s1 + ((r1 + p1) >> 1u));
+					recon[i + 2] = NumericCast<uint8_t>(s2 + ((r2 + p2) >> 1u));
+					recon[i + 3] = NumericCast<uint8_t>(s3 + ((r3 + p3) >> 1u));
 				}
 			}
 			else if(byteWidth >= 3)
@@ -1023,9 +1023,9 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 					uint8_t s1 = scanline[i + 1], r1 = recon[j + 1], p1 = precon[i + 1];
 					uint8_t s2 = scanline[i + 2], r2 = recon[j + 2], p2 = precon[i + 2];
 
-					recon[i + 0] = static_cast<uint8_t>(s0 + ((r0 + p0) >> 1u));
-					recon[i + 1] = static_cast<uint8_t>(s1 + ((r1 + p1) >> 1u));
-					recon[i + 2] = static_cast<uint8_t>(s2 + ((r2 + p2) >> 1u));
+					recon[i + 0] = NumericCast<uint8_t>(s0 + ((r0 + p0) >> 1u));
+					recon[i + 1] = NumericCast<uint8_t>(s1 + ((r1 + p1) >> 1u));
+					recon[i + 2] = NumericCast<uint8_t>(s2 + ((r2 + p2) >> 1u));
 				}
 			}
 			else if(byteWidth >= 2)
@@ -1035,13 +1035,13 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 					uint8_t s0 = scanline[i + 0], r0 = recon[j + 0], p0 = precon[i + 0];
 					uint8_t s1 = scanline[i + 1], r1 = recon[j + 1], p1 = precon[i + 1];
 
-					recon[i + 0] = static_cast<uint8_t>(s0 + ((r0 + p0) >> 1u));
-					recon[i + 1] = static_cast<uint8_t>(s1 + ((r1 + p1) >> 1u));
+					recon[i + 0] = NumericCast<uint8_t>(s0 + ((r0 + p0) >> 1u));
+					recon[i + 1] = NumericCast<uint8_t>(s1 + ((r1 + p1) >> 1u));
 				}
 			}
 
 			for(; i != length; ++i, ++j)
-				recon[i] = static_cast<uint8_t>(scanline[i] + ((recon[j] + precon[i]) >> 1u));
+				recon[i] = NumericCast<uint8_t>(scanline[i] + ((recon[j] + precon[i]) >> 1u));
 		}
 		else
 		{
@@ -1165,13 +1165,13 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint8_t TRAP::INTERNAL::PNGImage::PaethPredictor(uint16_t a, const uint16_t b, uint16_t c)
+[[nodiscard]] uint8_t TRAP::INTERNAL::PNGImage::PaethPredictor(uint16_t a, const uint16_t b, const uint16_t c)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	uint16_t pa = static_cast<uint16_t>(Math::Abs(b - c));
-	const uint16_t pb = static_cast<uint16_t>(Math::Abs(a - c));
-	const uint16_t pc = static_cast<uint16_t>(Math::Abs(a + b - c - c));
+	uint16_t pa = NumericCast<uint16_t>(Math::Abs(b - c));
+	const uint16_t pb = NumericCast<uint16_t>(Math::Abs(a - c));
+	const uint16_t pc = NumericCast<uint16_t>(Math::Abs(a + b - c - c));
 
 	//Return input value associated with smallest of pa, pb, pc(with certain priority if equal)
 	if (pb < pa)
@@ -1180,7 +1180,7 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 		pa = pb;
 	}
 
-	return static_cast<uint8_t>((pc < pa) ? c : a);
+	return NumericCast<uint8_t>((pc < pa) ? c : a);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1192,10 +1192,10 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 
 	//In an IDAT chunk, each scanline is a multiple of 8 bits and in addition has one extra byte per line: the filter byte.
 	//+ 1 for the filter byte, and possibly plus padding bits per line
-	const std::size_t line = (static_cast<std::size_t>(width / 8u) * bitsPerPixel) +
+	const std::size_t line = (NumericCast<std::size_t>(width / 8u) * bitsPerPixel) +
 	                         1u + ((width & 7u) * bitsPerPixel + 7u) / 8u;
 
-	return static_cast<std::size_t>(height) * line;
+	return NumericCast<std::size_t>(height) * line;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1205,7 +1205,7 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	const std::size_t n = static_cast<std::size_t>(width) * static_cast<std::size_t>(height);
+	const std::size_t n = NumericCast<std::size_t>(width) * NumericCast<std::size_t>(height);
 	return ((n / 8u) * bitsPerPixel) + ((n & 7u) * bitsPerPixel + 7u) / 8u;
 }
 
@@ -1293,7 +1293,7 @@ void TRAP::INTERNAL::PNGImage::Adam7GetPassValues(std::array<uint32_t, 7>& passW
 		filterPassStart[i + 1] = filterPassStart[i] + (((passW[i] != 0u) && (passH[i] != 0u)) ?
 			passH[i] * (1u + (passW[i] * bitsPerPixel + 7u) / 8u) : 0);
 		//Bits padded if needed to fill full byte at the end of each scanline
-		paddedPassStart[i + 1] = paddedPassStart[i] + static_cast<std::size_t>(passH[i]) *
+		paddedPassStart[i + 1] = paddedPassStart[i] + NumericCast<std::size_t>(passH[i]) *
 		                         ((passW[i] * bitsPerPixel + 7u) / 8u);
 		//Only padded at end of reduced image
 		passStart[i + 1] = passStart[i] + (passH[i] * passW[i] * bitsPerPixel + 7u) / 8u;
@@ -1350,7 +1350,7 @@ void TRAP::INTERNAL::PNGImage::Adam7DeInterlace(uint8_t* const out, const uint8_
 	{
 		for (uint32_t i = 0; i < raw.size(); i += 2)
 		{
-			const uint16_t val = (static_cast<uint16_t>(raw[i + 1u]) << 8u) | raw[i];
+			const uint16_t val = (NumericCast<uint16_t>(raw[i + 1u]) << 8u) | raw[i];
 			result[resultIndex++] = val;
 		}
 	}
@@ -1358,7 +1358,7 @@ void TRAP::INTERNAL::PNGImage::Adam7DeInterlace(uint8_t* const out, const uint8_
 	{
 		for (uint32_t i = 0; i < raw.size(); i += 2)
 		{
-			const uint16_t val = (static_cast<uint16_t>(raw[i + 1u]) << 8u) | raw[i];
+			const uint16_t val = (NumericCast<uint16_t>(raw[i + 1u]) << 8u) | raw[i];
 			result[resultIndex++] = val;
 		}
 
@@ -1376,7 +1376,7 @@ void TRAP::INTERNAL::PNGImage::Adam7DeInterlace(uint8_t* const out, const uint8_
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
-	std::vector<uint8_t> result(static_cast<std::size_t>(width) * height * 4, 0);
+	std::vector<uint8_t> result(NumericCast<std::size_t>(width) * height * 4, 0);
 	uint32_t resultIndex = 0;
 	for (const uint8_t& element : raw)
 	{
