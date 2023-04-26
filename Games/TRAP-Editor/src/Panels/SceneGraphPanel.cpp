@@ -74,7 +74,7 @@ void TRAP::SceneGraphPanel::DrawEntityNode(Entity entity)
 	auto& tag = entity.GetComponent<TagComponent>().Tag;
 
 	const ImGuiTreeNodeFlags flags = ((m_selectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-	const bool opened = ImGui::TreeNodeEx(reinterpret_cast<void*>(static_cast<uint64_t>(static_cast<uint32_t>(entity))), flags, "%s", tag.c_str());
+	const bool opened = ImGui::TreeNodeEx(reinterpret_cast<void*>(NumericCast<uint64_t>(static_cast<uint32_t>(entity))), flags, "%s", tag.c_str());
 	if(ImGui::IsItemClicked())
 		m_selectionContext = entity;
 
@@ -273,7 +273,7 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 		ImGui::Checkbox("Primary", &component.Primary);
 
 		static constexpr std::array<std::string_view, 2> projectionTypeStrings = { "Perspective", "Orthographic" };
-		const char* currentProjectionTypeString = projectionTypeStrings[static_cast<uint32_t>(camera.GetProjectionType())].data();
+		const char* currentProjectionTypeString = projectionTypeStrings[ToUnderlying(camera.GetProjectionType())].data();
 		if (ImGui::BeginCombo("Projection", currentProjectionTypeString))
 		{
 			for (uint32_t i = 0; i < projectionTypeStrings.size(); i++)
@@ -336,7 +336,7 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 	DrawComponent<Rigidbody2DComponent>("Rigidbody 2D", entity, [](auto& component)
 	{
 		static constexpr std::array<std::string_view, 3> bodyTypeStrings{"Static", "Dynamic", "Kinematic"};
-		const char* currentBodyTypeString = bodyTypeStrings[static_cast<std::size_t>(component.Type)].data();
+		const char* currentBodyTypeString = bodyTypeStrings[ToUnderlying(component.Type)].data();
 		if(ImGui::BeginCombo("Body Type", currentBodyTypeString))
 		{
 			for(int32_t i = 0; i < 3; ++i)

@@ -22,8 +22,8 @@ void VulkanTextureTests::OnAttach()
 
     //Load Quad vertices
     m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(QuadVerticesIndexed.data(),
-                                                          static_cast<uint32_t>(QuadVerticesIndexed.size()) *
-                                                          sizeof(float), TRAP::Graphics::UpdateFrequency::Static);
+                                                          QuadVerticesIndexed.size() * sizeof(float),
+                                                          TRAP::Graphics::UpdateFrequency::Static);
     const TRAP::Graphics::VertexBufferLayout layout =
     {
         { TRAP::Graphics::ShaderDataType::Float3, "Pos" },
@@ -34,8 +34,8 @@ void VulkanTextureTests::OnAttach()
 
     //Load Quad indices
     m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(QuadIndices.data(),
-                                                        static_cast<uint16_t>(QuadIndices.size()) *
-                                                        sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::Static);
+                                                        QuadIndices.size() * sizeof(uint16_t),
+                                                        TRAP::Graphics::UpdateFrequency::Static);
     m_indexBuffer->AwaitLoading();
 
     //Load Images
@@ -104,9 +104,9 @@ void VulkanTextureTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
         m_currentTexture = (m_currentTexture + 1) % 2;
 
         if(m_currentTexture == 0)
-            m_texture->Update(m_vulkanLogo->GetPixelData(), static_cast<uint32_t>(m_vulkanLogo->GetPixelDataSize()));
+            m_texture->Update(m_vulkanLogo->GetPixelData(), NumericCast<uint32_t>(m_vulkanLogo->GetPixelDataSize()));
         else if(m_currentTexture == 1)
-            m_texture->Update(m_vulkanLogoTransparent->GetPixelData(), static_cast<uint32_t>(m_vulkanLogoTransparent->GetPixelDataSize()));
+            m_texture->Update(m_vulkanLogoTransparent->GetPixelData(), NumericCast<uint32_t>(m_vulkanLogoTransparent->GetPixelDataSize()));
     }
 
 	//Use shader

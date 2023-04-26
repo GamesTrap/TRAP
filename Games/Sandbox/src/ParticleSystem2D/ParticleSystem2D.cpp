@@ -22,7 +22,7 @@ void ParticleSystem2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 		}
 
 		particle.LifeRemaining -= deltaTime;
-		particle.Position += particle.Velocity * static_cast<float>(deltaTime);
+		particle.Position += particle.Velocity * deltaTime.GetSeconds();
 		particle.Rotation += 0.01f * deltaTime;
 	}
 }
@@ -75,9 +75,9 @@ void ParticleSystem2D::Emit(const ParticleProps& particleProps)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ParticleSystem2D::SetMaxParticles(int32_t maxParticles)
+void ParticleSystem2D::SetMaxParticles(uint32_t maxParticles)
 {
-	if(m_particlePool.size() < static_cast<uint32_t>(maxParticles))
+	if(m_particlePool.size() < maxParticles)
 		m_particlePool.resize(maxParticles);
 
 	m_maxParticles = maxParticles;

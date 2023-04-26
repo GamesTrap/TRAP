@@ -26,7 +26,7 @@ void Sandbox2D::OnImGuiRender()
     ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
     ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
     ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
-	ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+	ImGui::PlotLines("", m_frameTimeHistory.data(), NumericCast<int32_t>(m_frameTimeHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
 	ImGui::NewLine();
 	ImGui::Image(TRAP::Graphics::TextureManager::Get2D("TRAP"), ImVec2(100, 100));
 	ImGui::End();
@@ -120,8 +120,8 @@ void Sandbox2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	if (m_updateFPSTimer.Elapsed() >= 0.025f)
 	{
 		m_updateFPSTimer.Reset();
-		static int frameTimeIndex = 0;
-		if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
+		static std::size_t frameTimeIndex = 0;
+		if (frameTimeIndex < m_frameTimeHistory.size() - 1)
 		{
 			m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
 			frameTimeIndex++;

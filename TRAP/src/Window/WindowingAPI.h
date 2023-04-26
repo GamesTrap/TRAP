@@ -623,7 +623,7 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Cursor types that can be used.
 		/// </summary>
-		enum class CursorType
+		enum class CursorType : uint32_t
 		{
 			Arrow = 0, //Regular arrow cursor shape.
 			Input = 1, //Text input I-beasm cursor shape.

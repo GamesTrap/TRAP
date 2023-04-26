@@ -95,12 +95,10 @@ void Cube3D::OnAttach()
         22, 23, 20
     };
     m_cubeVertexBuffer = TRAP::Graphics::VertexBuffer::Create(cubeVertices.data(),
-                                                              static_cast<uint32_t>(cubeVertices.size()) *
-                                                              sizeof(float),
+                                                              cubeVertices.size() * sizeof(float),
                                                               TRAP::Graphics::UpdateFrequency::Static);
     m_cubeIndexBuffer = TRAP::Graphics::IndexBuffer::Create(cubeIndices.data(),
-                                                            static_cast<uint32_t>(cubeIndices.size()) *
-                                                            sizeof(uint16_t),
+                                                            cubeIndices.size() * sizeof(uint16_t),
                                                             TRAP::Graphics::UpdateFrequency::Static);
     const TRAP::Graphics::VertexBufferLayout cubeLayout =
     {
@@ -156,8 +154,7 @@ void Cube3D::OnAttach()
          1.0f, -1.0f,  1.0f
     };
     m_skyBoxVertexBuffer = TRAP::Graphics::VertexBuffer::Create(skyBoxVertices.data(),
-                                                                static_cast<uint32_t>(skyBoxVertices.size()) *
-                                                                sizeof(float),
+                                                                skyBoxVertices.size() * sizeof(float),
                                                                 TRAP::Graphics::UpdateFrequency::Static);
     const TRAP::Graphics::VertexBufferLayout skyBoxLayout =
     {
@@ -249,7 +246,7 @@ void Cube3D::OnImGuiRender()
     ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
     ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
     ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
-    ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0, 33,
+    ImGui::PlotLines("", m_frameTimeHistory.data(), NumericCast<int32_t>(m_frameTimeHistory.size()), 0, nullptr, 0, 33,
                      ImVec2(200, 50));
     ImGui::Separator();
     ImGui::Text("Camera");
@@ -433,8 +430,8 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     if (m_titleTimer.Elapsed() >= 0.025f)
     {
         m_titleTimer.Reset();
-        static int frameTimeIndex = 0;
-        if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
+        static std::size_t frameTimeIndex = 0;
+        if (frameTimeIndex < m_frameTimeHistory.size() - 1)
         {
             m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
             frameTimeIndex++;
@@ -517,7 +514,7 @@ bool Cube3D::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 
     if(event.GetKey() == TRAP::Input::Key::F1)
 	{
-        m_currentShader = (m_currentShader + 1) % static_cast<uint32_t>(m_shaderNames.size());
+        m_currentShader = (m_currentShader + 1) % NumericCast<uint32_t>(m_shaderNames.size());
         return true;
 	}
 

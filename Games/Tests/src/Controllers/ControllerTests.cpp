@@ -16,8 +16,8 @@ void ControllerTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Controllers");
 
-	for(uint32_t controller = static_cast<uint32_t>(TRAP::Input::Controller::One);
-	    controller <= static_cast<uint32_t>(TRAP::Input::Controller::Sixteen); controller++)
+	for(uint32_t controller = ToUnderlying(TRAP::Input::Controller::One);
+	    controller <= ToUnderlying(TRAP::Input::Controller::Sixteen); controller++)
 	{
 		if (TRAP::Input::IsControllerConnected(static_cast<TRAP::Input::Controller>(controller)))
 			s_controllers.push_back(static_cast<TRAP::Input::Controller>(controller));
@@ -34,10 +34,10 @@ void ControllerTests::OnImGuiRender()
 		ImGui::Checkbox("DPad Buttons", &s_dpadButtons);
 		for (const TRAP::Input::Controller& controller : s_controllers)
 		{
-			if (ImGui::Button((std::to_string(static_cast<uint32_t>(controller) + 1) + ". " +
+			if (ImGui::Button((std::to_string(ToUnderlying(controller) + 1) + ". " +
 			                   TRAP::Input::GetControllerName(controller)).c_str()))
 			{
-				ImGui::SetWindowFocus((std::to_string(static_cast<uint32_t>(controller) + 1) + ". " +
+				ImGui::SetWindowFocus((std::to_string(ToUnderlying(controller) + 1) + ". " +
 				                       TRAP::Input::GetControllerName(controller)).c_str());
 			}
 		}
@@ -52,7 +52,7 @@ void ControllerTests::OnImGuiRender()
 		std::vector<bool> buttons = TRAP::Input::GetAllControllerButtons(controller);
 		std::vector<TRAP::Input::ControllerDPad> dpads = TRAP::Input::GetAllControllerDPads(controller);
 
-		ImGui::Begin((std::to_string(static_cast<uint32_t>(controller) + 1) + ". " +
+		ImGui::Begin((std::to_string(ToUnderlying(controller) + 1) + ". " +
 		              TRAP::Input::GetControllerName(controller)).c_str());
 		ImGui::Text("Hardware GUID: %s", TRAP::Input::GetControllerGUID(controller).c_str());
 		ImGui::NewLine();
@@ -75,7 +75,7 @@ void ControllerTests::OnImGuiRender()
 		{
 			std::string dpadText = "DPad " + std::to_string(i) + ": ";
 			dpadText += GetDPadDirection(dpads[i]);
-			bool dpadPressed = static_cast<bool>(dpads[i]);
+			bool dpadPressed = dpads[i] != TRAP::Input::ControllerDPad::Centered;
 			ImGui::Checkbox(dpadText.c_str(), &dpadPressed);
 			if (i % 2 == 0)
 				ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2.0f);
@@ -137,7 +137,7 @@ void ControllerTests::OnImGuiRender()
 
 			TRAP::Input::ControllerDPad dpad = TRAP::Input::GetControllerDPad(controller, 0);
 			std::string dpadText = "DPad: " + GetDPadDirection(dpad);
-			bool dpadPressed = static_cast<bool>(dpad);
+			bool dpadPressed = dpad != TRAP::Input::ControllerDPad::Centered;
 			ImGui::Checkbox(dpadText.c_str(), &dpadPressed);
 
 			ImGui::NewLine();
@@ -195,7 +195,7 @@ bool ControllerTests::OnControllerDisconnect(const TRAP::Events::ControllerDisco
 	{
 		if(s_controllers[i] == event.GetController())
 		{
-			s_controllers.erase(s_controllers.begin() + static_cast<int64_t>(i));
+			s_controllers.erase(s_controllers.begin() + NumericCast<ptrdiff_t>(i));
 			break;
 		}
 	}

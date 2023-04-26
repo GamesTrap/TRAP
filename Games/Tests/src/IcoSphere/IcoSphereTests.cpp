@@ -18,7 +18,7 @@ void IcoSphereTests::OnAttach()
 
 	//Load Icosphere vertices
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_icoSphereVerticesIndexed.data(),
-		                                                  static_cast<uint32_t>(m_icoSphereVerticesIndexed.size()) *
+		                                                  m_icoSphereVerticesIndexed.size() *
 														  sizeof(float), TRAP::Graphics::UpdateFrequency::Static);
 	const TRAP::Graphics::VertexBufferLayout layout =
 	{
@@ -31,7 +31,7 @@ void IcoSphereTests::OnAttach()
 
 	//Load Icosphere indices
 	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(IcosphereIndices.data(),
-	                                                    static_cast<uint32_t>(IcosphereIndices.size()) *
+	                                                    IcosphereIndices.size() *
 														sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::Static);
 	m_indexBuffer->AwaitLoading();
 	m_indexBuffer->Use();
@@ -96,7 +96,7 @@ void IcoSphereTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& delt
 	m_vertexBuffer->Use();
 	m_indexBuffer->Use();
 	m_shader->Use();
-	TRAP::Graphics::RenderCommand::DrawIndexed(static_cast<uint32_t>(IcosphereIndices.size()));
+	TRAP::Graphics::RenderCommand::DrawIndexed(NumericCast<uint32_t>(IcosphereIndices.size()));
 
 	//Simple performance metrics
 	if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds

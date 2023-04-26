@@ -16,7 +16,7 @@ void ComputeTests::OnAttach()
 
     //Load Quad vertices
     m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(QuadVerticesIndexed.data(),
-                                                          static_cast<uint32_t>(QuadVerticesIndexed.size()) *
+                                                          QuadVerticesIndexed.size() *
                                                           sizeof(float), TRAP::Graphics::UpdateFrequency::Static);
     const TRAP::Graphics::VertexBufferLayout layout =
     {
@@ -28,7 +28,7 @@ void ComputeTests::OnAttach()
 
     //Load Quad indices
     m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(QuadIndices.data(),
-                                                        static_cast<uint16_t>(QuadIndices.size()) *
+                                                        QuadIndices.size() *
                                                         sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::Static);
     m_indexBuffer->AwaitLoading();
 
@@ -151,8 +151,8 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
     if (m_titleTimer.Elapsed() >= 0.025f)
     {
         m_titleTimer.Reset();
-        static int frameTimeIndex = 0;
-        if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
+        static std::size_t frameTimeIndex = 0;
+        if (frameTimeIndex < m_frameTimeHistory.size() - 1)
         {
             m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
             frameTimeIndex++;
@@ -179,7 +179,7 @@ void ComputeTests::OnImGuiRender()
     ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
     ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
     ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
-    ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0,
+    ImGui::PlotLines("", m_frameTimeHistory.data(), NumericCast<int32_t>(m_frameTimeHistory.size()), 0, nullptr, 0,
                      33, ImVec2(200, 50));
     ImGui::Separator();
     constexpr std::array<std::string_view, 4> shaders{"Disabled", "Sharpen", "Emboss", "Edge Detection"};

@@ -34,11 +34,11 @@ void AnisotropyTests::OnAttach()
 	TRAP::Ref<TRAP::Graphics::Sampler> sampler = TRAP::Graphics::Sampler::Create(samplerDesc);
 	TRAP::Graphics::Renderer2D::SetCustomSampler(sampler);
 
-	m_maxAnisotropyLevelIdx = static_cast<uint32_t>(TRAP::Math::Ceil(TRAP::Math::Sqrt(TRAP::Graphics::RendererAPI::GPUSettings.MaxAnisotropy)));
+	m_maxAnisotropyLevelIdx = NumericCast<uint32_t>(TRAP::Math::Ceil(TRAP::Math::Sqrt(TRAP::Graphics::RendererAPI::GPUSettings.MaxAnisotropy)));
 	if(TRAP::Graphics::RenderCommand::GetAnisotropyLevel() == TRAP::Graphics::SampleCount::One)
 		m_currAnisotropyLevelIdx = 0;
 	else
-		m_currAnisotropyLevelIdx = static_cast<uint32_t>(TRAP::Math::Ceil(TRAP::Math::Sqrt(static_cast<float>(TRAP::Graphics::RenderCommand::GetAnisotropyLevel()))));
+		m_currAnisotropyLevelIdx = NumericCast<uint32_t>(TRAP::Math::Ceil(TRAP::Math::Sqrt(static_cast<float>(TRAP::Graphics::RenderCommand::GetAnisotropyLevel()))));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -79,10 +79,10 @@ void AnisotropyTests::OnImGuiRender()
 		{
 			for(std::size_t i = 0; i < anisotropyLevels.size(); i++)
 			{
-				const bool isSelected = m_currAnisotropyLevelIdx == i;
+				const bool isSelected = m_currAnisotropyLevelIdx == NumericCast<uint32_t>(i);
 				if(ImGui::Selectable(anisotropyLevels[i], isSelected, (i > m_maxAnisotropyLevelIdx) ? ImGuiSelectableFlags_Disabled : ImGuiSelectableFlags_None))
 				{
-					m_currAnisotropyLevelIdx = static_cast<uint32_t>(i);
+					m_currAnisotropyLevelIdx = NumericCast<uint32_t>(i);
 					if(m_currAnisotropyLevelIdx == 0)
 						TRAP::Graphics::RenderCommand::SetAnisotropyLevel(TRAP::Graphics::SampleCount::One);
 					else

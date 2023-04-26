@@ -22,7 +22,7 @@ public:
 
 	void Emit(const ParticleProps& particleProps);
 
-	void SetMaxParticles(int32_t maxParticles);
+	void SetMaxParticles(uint32_t maxParticles);
 
 private:
 	struct Particle

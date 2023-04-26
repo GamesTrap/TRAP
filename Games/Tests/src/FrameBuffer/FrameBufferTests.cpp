@@ -20,7 +20,7 @@ void FrameBufferTests::OnAttach()
 
     //Load Quad vertices
     m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(QuadVerticesIndexed.data(),
-                                                          static_cast<uint32_t>(QuadVerticesIndexed.size()) *
+                                                          QuadVerticesIndexed.size() *
                                                           sizeof(float), TRAP::Graphics::UpdateFrequency::Static);
     const TRAP::Graphics::VertexBufferLayout layout =
     {
@@ -32,7 +32,7 @@ void FrameBufferTests::OnAttach()
 
     //Load Quad indices
     m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(QuadIndices.data(),
-                                                        static_cast<uint16_t>(QuadIndices.size()) *
+                                                        QuadIndices.size() *
                                                         sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::Static);
     m_indexBuffer->AwaitLoading();
 
@@ -149,8 +149,8 @@ void FrameBufferTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
     if (m_titleTimer.Elapsed() >= 0.025f)
     {
         m_titleTimer.Reset();
-        static int frameTimeIndex = 0;
-        if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
+        static std::size_t frameTimeIndex = 0;
+        if (frameTimeIndex < m_frameTimeHistory.size() - 1)
         {
             m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
             frameTimeIndex++;
@@ -177,7 +177,7 @@ void FrameBufferTests::OnImGuiRender()
     ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
     ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
     ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
-    ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0,
+    ImGui::PlotLines("", m_frameTimeHistory.data(), NumericCast<int32_t>(m_frameTimeHistory.size()), 0, nullptr, 0,
                         33, ImVec2(200, 50));
     ImGui::End();
 
@@ -186,13 +186,13 @@ void FrameBufferTests::OnImGuiRender()
                                                                 ImGuiWindowFlags_NoResize);
     if(m_MSAAEnabled)
     {
-        ImGui::Image(m_resolveTarget->GetTexture(), ImVec2(static_cast<float>(m_resolveTarget->GetWidth()),
-                     static_cast<float>(m_resolveTarget->GetHeight())), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f));
+        ImGui::Image(m_resolveTarget->GetTexture(), ImVec2(NumericCast<float>(m_resolveTarget->GetWidth()),
+                     NumericCast<float>(m_resolveTarget->GetHeight())), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f));
     }
     else
     {
-        ImGui::Image(m_renderTarget->GetTexture(), ImVec2(static_cast<float>(m_renderTarget->GetWidth()),
-                     static_cast<float>(m_renderTarget->GetHeight())), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f));
+        ImGui::Image(m_renderTarget->GetTexture(), ImVec2(NumericCast<float>(m_renderTarget->GetWidth()),
+                     NumericCast<float>(m_renderTarget->GetHeight())), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f));
     }
     ImGui::Text("Vulkan and the Vulkan logo are registered trademarks of the Khronos Group Inc.");
     ImGui::End();

@@ -151,7 +151,7 @@ void SpriteSheetTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
             {
                 if(m_backgroundMap[y][x].empty())
                     continue;
-		        TRAP::Graphics::Renderer2D::DrawQuad({ {static_cast<float>(x), -static_cast<float>(y), 0.0f}, {}, {1.0f, 1.0f, 1.0f} }, TRAP::Graphics::SpriteManager::Get(m_backgroundMap[y][x]));
+		        TRAP::Graphics::Renderer2D::DrawQuad({ {NumericCast<float>(x), -NumericCast<float>(y), 0.0f}, {}, {1.0f, 1.0f, 1.0f} }, TRAP::Graphics::SpriteManager::Get(m_backgroundMap[y][x]));
             }
         }
 
@@ -162,7 +162,7 @@ void SpriteSheetTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
             {
                 if(m_foregroundMap[y][x].empty())
                     continue;
-		        TRAP::Graphics::Renderer2D::DrawQuad({ {static_cast<float>(x), -static_cast<float>(y), 0.0f}, {}, {1.0f, 1.0f, 1.0f} }, TRAP::Graphics::SpriteManager::Get(m_foregroundMap[y][x]));
+		        TRAP::Graphics::Renderer2D::DrawQuad({ {NumericCast<float>(x), -NumericCast<float>(y), 0.0f}, {}, {1.0f, 1.0f, 1.0f} }, TRAP::Graphics::SpriteManager::Get(m_foregroundMap[y][x]));
             }
         }
 	}

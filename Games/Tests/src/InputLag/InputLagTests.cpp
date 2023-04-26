@@ -30,7 +30,7 @@ void InputLagTests::OnImGuiRender()
 	ImGui::Separator();
 	//Draw indicators on mouse pos
 	for(int32_t lead = m_showForecasts ? 3 : 0; lead >= 0; --lead)
-		DrawMarker(lead, TRAP::Math::Vec2(m_cursorPos + m_cursorVelocity * static_cast<float>(lead)));
+		DrawMarker(lead, TRAP::Math::Vec2(m_cursorPos + m_cursorVelocity * NumericCast<float>(lead)));
 	//Draw instructions
 	ImGui::Text("Move mouse uniformly and check marker under cursor:");
 	for(uint32_t lead = 0; lead <= 3; ++lead)
@@ -71,16 +71,21 @@ void InputLagTests::OnImGuiRender()
 	{
 		ImGui::Text("Current Latency Mode: %s", TRAP::Utils::String::ConvertToString(m_latencyMode).c_str());
 
-		static constexpr std::array<const char*, 3> latencyModes{"Disabled", "Enabled", "Enabled+Boost"};
-		static int32_t currentLatencyMode = static_cast<int32_t>(m_latencyMode);
-		if(ImGui::Combo("Latency Mode", &currentLatencyMode, latencyModes.data(), latencyModes.size()))
+		if(ImGui::BeginCombo("Latency Mode", TRAP::Utils::String::ConvertToString(m_latencyMode).c_str()))
 		{
-			if(static_cast<int32_t>(m_latencyMode) != currentLatencyMode)
+			for(uint32_t i = 0; i <= ToUnderlying(TRAP::Graphics::LatencyMode::EnabledBoost); ++i)
 			{
-				m_latencyMode = static_cast<TRAP::Graphics::LatencyMode>(currentLatencyMode);
-				TRAP::Graphics::RenderCommand::SetLatencyMode(m_latencyMode);
-				m_latencyMode = TRAP::Graphics::RenderCommand::GetLatencyMode();
+				const bool isSelected = (ToUnderlying(m_latencyMode) == i);
+				if(ImGui::Selectable(TRAP::Utils::String::ConvertToString(static_cast<TRAP::Graphics::LatencyMode>(i)).c_str(), isSelected))
+				{
+					TRAP::Graphics::RenderCommand::SetLatencyMode(static_cast<TRAP::Graphics::LatencyMode>(i));
+					m_latencyMode = TRAP::Graphics::RenderCommand::GetLatencyMode();
+				}
+				if(isSelected)
+					ImGui::SetItemDefaultFocus();
 			}
+
+			ImGui::EndCombo();
 		}
 	}
 	ImGui::Separator();
@@ -92,13 +97,13 @@ void InputLagTests::OnImGuiRender()
 	{
 		ImGui::Begin("NVIDIA Reflex Latency", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 					ImGuiWindowFlags_AlwaysAutoResize);
-		ImGui::PlotLines("Total Game to Render Latency", m_totalHistory.data(), static_cast<int>(m_totalHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
-		ImGui::PlotLines("Simulation Delta", m_simulationDeltaHistory.data(), static_cast<int>(m_simulationDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
-		ImGui::PlotLines("Render Delta", m_renderDeltaHistory.data(), static_cast<int>(m_renderDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
-		ImGui::PlotLines("Present Delta", m_presentDeltaHistory.data(), static_cast<int>(m_presentDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
-		ImGui::PlotLines("Driver Delta", m_driverDeltaHistory.data(), static_cast<int>(m_driverDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
-		ImGui::PlotLines("OS Render Queue Delta", m_OSRenderQueueDeltaHistory.data(), static_cast<int>(m_OSRenderQueueDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
-		ImGui::PlotLines("GPU Render Delta", m_GPURenderDeltaHistory.data(), static_cast<int>(m_GPURenderDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+		ImGui::PlotLines("Total Game to Render Latency", m_totalHistory.data(), NumericCast<int32_t>(m_totalHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+		ImGui::PlotLines("Simulation Delta", m_simulationDeltaHistory.data(), NumericCast<int32_t>(m_simulationDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+		ImGui::PlotLines("Render Delta", m_renderDeltaHistory.data(), NumericCast<int32_t>(m_renderDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+		ImGui::PlotLines("Present Delta", m_presentDeltaHistory.data(), NumericCast<int32_t>(m_presentDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+		ImGui::PlotLines("Driver Delta", m_driverDeltaHistory.data(), NumericCast<int32_t>(m_driverDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+		ImGui::PlotLines("OS Render Queue Delta", m_OSRenderQueueDeltaHistory.data(), NumericCast<int32_t>(m_OSRenderQueueDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+		ImGui::PlotLines("GPU Render Delta", m_GPURenderDeltaHistory.data(), NumericCast<int32_t>(m_GPURenderDeltaHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
 		ImGui::End();
 	}
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
@@ -124,9 +129,9 @@ void InputLagTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& delta
 		const float OSRenderQueueDeltaMs = (curr.osRenderQueueEndTime - curr.osRenderQueueStartTime) / 1000.0f;
 		const float GPURenderDeltaMs = (curr.gpuRenderEndTime - curr.gpuRenderStartTime) / 1000.0f;
 
-		static int frameTimeIndex = 0;
+		static std::size_t frameTimeIndex = 0;
 		m_updateLatencyTimer.Reset();
-		if (frameTimeIndex < static_cast<int32_t>(m_totalHistory.size() - 1))
+		if (frameTimeIndex < m_totalHistory.size() - 1)
 		{
 			if(curr.gpuRenderEndTime != 0)
 			{

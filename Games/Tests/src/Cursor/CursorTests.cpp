@@ -1,18 +1,18 @@
 #include "CursorTests.h"
 
-float CursorTests::Star(const int32_t x, const int32_t y, const float t)
+float CursorTests::Star(const uint32_t x, const uint32_t y, const float t)
 {
 	static constexpr float c = 64.0f / 2.0f;
 
 	const float i = (0.25f * TRAP::Math::Sin(2.0f * TRAP::Math::PI<float>() * t) + 0.75f);
 	const float k = 64.0f * 0.046875f * i;
 
-	const float dist = TRAP::Math::Sqrt((static_cast<float>(x) - c) * (static_cast<float>(x) - c) +
-		                                  (static_cast<float>(y) - c) * (static_cast<float>(y) - c));
+	const float dist = TRAP::Math::Sqrt((NumericCast<float>(x) - c) * (NumericCast<float>(x) - c) +
+		                                  (NumericCast<float>(y) - c) * (NumericCast<float>(y) - c));
 
 	const float sAlpha = 1.0f - dist / c;
-	const float xAlpha = static_cast<float>(x) == c ? c : k / TRAP::Math::Abs(static_cast<float>(x) - c);
-	const float yAlpha = static_cast<float>(y) == c ? c : k / TRAP::Math::Abs(static_cast<float>(y) - c);
+	const float xAlpha = NumericCast<float>(x) == c ? c : k / TRAP::Math::Abs(NumericCast<float>(x) - c);
+	const float yAlpha = NumericCast<float>(y) == c ? c : k / TRAP::Math::Abs(NumericCast<float>(y) - c);
 
 	return TRAP::Math::Max(0.0f, TRAP::Math::Min(1.0f, i * sAlpha * 0.2f + sAlpha * xAlpha * yAlpha));
 }
@@ -24,14 +24,14 @@ TRAP::Scope<TRAP::Image> CursorTests::CreateCursorFrame(const float t)
 	int32_t i = 0;
 	std::vector<uint8_t> buffer(64ull * 64ull * 4ull, 0);
 
-	for(int32_t y = 0; y < 64; y++)
+	for(uint32_t y = 0; y < 64; y++)
 	{
-		for(int32_t x = 0; x < 64; x++)
+		for(uint32_t x = 0; x < 64; x++)
 		{
 			buffer[i++] = 255;
 			buffer[i++] = 255;
 			buffer[i++] = 255;
-			buffer[i++] = static_cast<uint8_t>(255 * Star(x, y, t));
+			buffer[i++] = NumericCast<uint8_t>(255 * Star(x, y, t));
 		}
 	}
 
@@ -76,7 +76,7 @@ void CursorTests::OnAttach()
 
 	m_starCursors.reserve(60);
 	for(uint32_t i = 0; i < 60; i++)
-		m_starCursors.push_back(CreateCursorFrame(static_cast<float>(i) / 60.0f));
+		m_starCursors.push_back(CreateCursorFrame(NumericCast<float>(i) / 60.0f));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -85,7 +85,7 @@ void CursorTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTi
 {
 	if (m_animateCursor)
 	{
-		const int32_t i = static_cast<int32_t>(TRAP::Application::GetTime() * 30.0f) % 60;
+		const uint32_t i = NumericCast<uint32_t>(TRAP::Application::GetTime() * 30.0f) % 60;
 		if (m_currentFrame != m_starCursors[i].get())
 		{
 			TRAP::Application::GetWindow()->SetCursorIcon(m_starCursors[i].get(), 32, 32);
@@ -224,7 +224,7 @@ bool CursorTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 	{
 		const uint32_t width = TRAP::Application::GetWindow()->GetWidth();
 		const uint32_t height = TRAP::Application::GetWindow()->GetHeight();
-		TRAP::Input::SetMousePosition(static_cast<float>(width) - 1.0f, static_cast<float>(height) - 1.0f);
+		TRAP::Input::SetMousePosition(NumericCast<float>(width) - 1.0f, NumericCast<float>(height) - 1.0f);
 		m_cursorX = TRAP::Input::GetMouseX();
 		m_cursorY = TRAP::Input::GetMouseY();
 
@@ -255,12 +255,12 @@ bool CursorTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 		[[fallthrough]];
 	case TRAP::Input::Key::Nine:
 	{
-		int32_t index = static_cast<int32_t>(event.GetKey()) - static_cast<int32_t>(TRAP::Input::Key::One);
+		uint32_t index = ToUnderlying(event.GetKey()) - ToUnderlying(TRAP::Input::Key::One);
 		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Shift) ||
 			TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_Shift))
 			index += 9;
 
-		if (index <= static_cast<int32_t>(TRAP::Window::CursorType::NotAllowed))
+		if (index <= ToUnderlying(TRAP::Window::CursorType::NotAllowed))
 			TRAP::Application::GetWindow()->SetCursorType(static_cast<TRAP::Window::CursorType>(index));
 
 		break;

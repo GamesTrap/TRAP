@@ -46,7 +46,7 @@ void MultiWindowTests::OnAttach()
 
 	//Load Triangle vertices
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(TriangleVertices.data(),
-	                                                      static_cast<uint32_t>(TriangleVertices.size()) *
+	                                                      TriangleVertices.size() *
 														  sizeof(float), TRAP::Graphics::UpdateFrequency::Static);
 	const TRAP::Graphics::VertexBufferLayout layout =
 	{
@@ -59,7 +59,7 @@ void MultiWindowTests::OnAttach()
 
 	//Load Triangle indices
 	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(TriangleIndices.data(),
-	                                                    static_cast<uint32_t>(TriangleIndices.size()) *
+	                                                    TriangleIndices.size() *
 														sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::Static);
 	m_indexBuffer->AwaitLoading();
 	m_indexBuffer->Use();

@@ -24,7 +24,7 @@ void RendererAPITests::OnAttach()
 
 	//Load Triangle vertices (with enough space for a quad)
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(TriangleVertices.data(),
-	                                                      static_cast<uint32_t>(QuadVertices.size()) *
+	                                                      QuadVertices.size() *
 														  sizeof(float), TRAP::Graphics::UpdateFrequency::Dynamic);
 	const TRAP::Graphics::VertexBufferLayout layout =
 	{
@@ -37,7 +37,7 @@ void RendererAPITests::OnAttach()
 
 	//Load Triangle indices (with enough space for a quad)
 	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(TriangleIndices.data(),
-	                                                    static_cast<uint32_t>(QuadIndices.size()) *
+	                                                    QuadIndices.size() *
 														sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::Dynamic);
 	m_indexBuffer->AwaitLoading();
 	m_indexBuffer->Use();
@@ -71,7 +71,7 @@ void RendererAPITests::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void RendererAPITests::OnUpdate(const TRAP::Utils::TimeStep&)
+void RendererAPITests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 {
 	if(m_wireFrame)
 		TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Line);
@@ -87,23 +87,19 @@ void RendererAPITests::OnUpdate(const TRAP::Utils::TimeStep&)
 
 	if(!m_quad)
 	{
-		m_vertexBuffer->SetData(TriangleVertices.data(), static_cast<uint32_t>(TriangleVertices.size()) *
-		                        sizeof(float));
+		m_vertexBuffer->SetData(TriangleVertices.data(), TriangleVertices.size() * sizeof(float));
 		if (m_indexed)
-			m_indexBuffer->SetData(TriangleIndices.data(), static_cast<uint32_t>(TriangleIndices.size()) *
-			                       sizeof(uint16_t));
+			m_indexBuffer->SetData(TriangleIndices.data(), TriangleIndices.size() * sizeof(uint16_t));
 	}
 	else
 	{
 		if(!m_indexed)
-			m_vertexBuffer->SetData(QuadVertices.data(), static_cast<uint32_t>(QuadVertices.size()) *
-			                        sizeof(float));
+			m_vertexBuffer->SetData(QuadVertices.data(), QuadVertices.size() * sizeof(float));
 		else
 		{
 			m_vertexBuffer->SetData(QuadVerticesIndexed.data(),
-			                        static_cast<uint32_t>(QuadVerticesIndexed.size()) * sizeof(float));
-			m_indexBuffer->SetData(QuadIndices.data(), static_cast<uint32_t>(QuadIndices.size()) *
-			                       sizeof(uint16_t));
+			                        QuadVerticesIndexed.size() * sizeof(float));
+			m_indexBuffer->SetData(QuadIndices.data(), QuadIndices.size() * sizeof(uint16_t));
 			const TRAP::Graphics::VertexBufferLayout layoutUV =
 			{
 				{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
@@ -236,7 +232,7 @@ bool RendererAPITests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 	}
 	if(e.GetKey() == TRAP::Input::Key::F4)
 	{
-		m_pushConstantOrUBO = static_cast<uint8_t>((m_pushConstantOrUBO + 1) % 3);
+		m_pushConstantOrUBO = NumericCast<uint8_t>((m_pushConstantOrUBO + 1) % 3);
 		TP_TRACE("[RendererAPITests] Push Constant / Uniform Buffer: ", m_pushConstantOrUBO != 0u ? "On" : "Off");
 	}
 	if(e.GetKey() == TRAP::Input::Key::V)

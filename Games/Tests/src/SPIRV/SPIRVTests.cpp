@@ -13,8 +13,8 @@ void SPIRVTests::OnAttach()
 
 	//Load Quad vertices
     m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(QuadVerticesIndexed.data(),
-                                                          static_cast<uint32_t>(QuadVerticesIndexed.size()) *
-                                                          sizeof(float), TRAP::Graphics::UpdateFrequency::Static);
+                                                          QuadVerticesIndexed.size() * sizeof(float),
+                                                          TRAP::Graphics::UpdateFrequency::Static);
     const TRAP::Graphics::VertexBufferLayout layout =
     {
         { TRAP::Graphics::ShaderDataType::Float3, "Pos" },
@@ -25,8 +25,8 @@ void SPIRVTests::OnAttach()
 
     //Load Quad indices
     m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(QuadIndices.data(),
-                                                        static_cast<uint16_t>(QuadIndices.size()) *
-                                                        sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::Static);
+                                                        QuadIndices.size() * sizeof(uint16_t),
+                                                        TRAP::Graphics::UpdateFrequency::Static);
     m_indexBuffer->AwaitLoading();
 
     //Load Shader
@@ -68,8 +68,8 @@ void SPIRVTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTim
     if (m_titleTimer.Elapsed() >= 0.025f)
     {
         m_titleTimer.Reset();
-        static int frameTimeIndex = 0;
-        if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
+        static std::size_t frameTimeIndex = 0;
+        if (frameTimeIndex < m_frameTimeHistory.size() - 1)
         {
             m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
             frameTimeIndex++;
@@ -98,7 +98,7 @@ void SPIRVTests::OnImGuiRender()
     ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
     ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
     ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
-    ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0,
+    ImGui::PlotLines("", m_frameTimeHistory.data(), NumericCast<int32_t>(m_frameTimeHistory.size()), 0, nullptr, 0,
                      33, ImVec2(200, 50));
 	ImGui::End();
 }

@@ -280,7 +280,7 @@ void TRAPEditorLayer::OnAttach()
 	//Setup Mouse Picking Buffer
 	m_mousePickBufferDesc.Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::PersistentMap |
 	                              TRAP::Graphics::RendererAPI::BufferCreationFlags::NoDescriptorViewCreation;
-	m_mousePickBufferDesc.Size = static_cast<uint64_t>(m_renderTargetDesc.Width) * m_renderTargetDesc.Height * sizeof(int32_t);
+	m_mousePickBufferDesc.Size = NumericCast<uint64_t>(m_renderTargetDesc.Width) * m_renderTargetDesc.Height * sizeof(int32_t);
 	m_mousePickBufferDesc.QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics;
 	m_mousePickBufferDesc.MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::GPUToCPU;
 	m_mousePickBufferDesc.StartState = TRAP::Graphics::RendererAPI::ResourceState::CopyDestination;
@@ -319,12 +319,12 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
 	//Resize Viewport
 	if (m_viewportSize.x > 0.0f && m_viewportSize.y > 0.0f && //Zero sized framebuffer is invalid
-		(m_renderTarget->GetWidth() != static_cast<uint32_t>(m_viewportSize.x) ||
-		 m_renderTarget->GetHeight() != static_cast<uint32_t>(m_viewportSize.y)))
+		(m_renderTarget->GetWidth() != NumericCast<uint32_t>(m_viewportSize.x) ||
+		 m_renderTarget->GetHeight() != NumericCast<uint32_t>(m_viewportSize.y)))
 	{
 		//Update RenderTargets
-		m_renderTargetDesc.Width = static_cast<uint32_t>(m_viewportSize.x);
-		m_renderTargetDesc.Height = static_cast<uint32_t>(m_viewportSize.y);
+		m_renderTargetDesc.Width = NumericCast<uint32_t>(m_viewportSize.x);
+		m_renderTargetDesc.Height = NumericCast<uint32_t>(m_viewportSize.y);
     	m_renderTargetDesc.Format = TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM;
     	m_renderTargetDesc.Name = "Viewport Framebuffer";
 		m_renderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
@@ -333,12 +333,12 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 		m_IDRenderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
 
 		//Update Mouse Picking Buffer
-		m_mousePickBufferDesc.Size = static_cast<uint64_t>(m_renderTargetDesc.Width) * m_renderTargetDesc.Height * sizeof(int32_t);
+		m_mousePickBufferDesc.Size = NumericCast<uint64_t>(m_renderTargetDesc.Width) * m_renderTargetDesc.Height * sizeof(int32_t);
 		m_mousePickBuffer = TRAP::Graphics::Buffer::Create(m_mousePickBufferDesc);
 
 		m_editorCamera.SetViewportSize(m_viewportSize.x, m_viewportSize.y);
 
-		m_activeScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
+		m_activeScene->OnViewportResize(NumericCast<uint32_t>(m_viewportSize.x), NumericCast<uint32_t>(m_viewportSize.y));
 	}
 
 	if((TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Right) ||
@@ -546,7 +546,7 @@ bool TRAPEditorLayer::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 void TRAPEditorLayer::NewScene()
 {
 	m_activeScene = TRAP::MakeRef<TRAP::Scene>();
-	m_activeScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
+	m_activeScene->OnViewportResize(NumericCast<uint32_t>(m_viewportSize.x), NumericCast<uint32_t>(m_viewportSize.y));
 	m_sceneGraphPanel.SetContext(m_activeScene);
 
 	m_lastScenePath = "";
@@ -569,7 +569,7 @@ void TRAPEditorLayer::OpenScene()
 		if(serializer.Deserialize(m_lastScenePath))
 		{
 			m_editorScene = newScene;
-			m_editorScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
+			m_editorScene->OnViewportResize(NumericCast<uint32_t>(m_viewportSize.x), NumericCast<uint32_t>(m_viewportSize.y));
 			m_sceneGraphPanel.SetContext(m_editorScene);
 
 			m_activeScene = m_editorScene;
@@ -686,11 +686,11 @@ void TRAPEditorLayer::MousePicking()
 		mousePos.x -= std::get<0>(m_viewportBounds).x;
 		mousePos.y -= std::get<0>(m_viewportBounds).y;
 		const TRAP::Math::Vec2 viewportSize = std::get<1>(m_viewportBounds) - std::get<0>(m_viewportBounds);
-		int32_t mouseX = static_cast<int32_t>(mousePos.x);
-		int32_t mouseY = static_cast<int32_t>(mousePos.y);
+		uint32_t mouseX = NumericCast<uint32_t>(mousePos.x);
+		uint32_t mouseY = NumericCast<uint32_t>(mousePos.y);
 
 		//Out of viewport bounds check (maybe redundant, doesnt hurt)
-		if(mouseX < 0 || mouseY < 0 || mouseX >= static_cast<int32_t>(viewportSize.x) || mouseY >= static_cast<int32_t>(viewportSize.y))
+		if(mouseX >= NumericCast<uint32_t>(viewportSize.x) || mouseY >= NumericCast<uint32_t>(viewportSize.y))
 			return;
 
 		//Copy the RenderTarget contents to our CPU visible buffer
@@ -709,7 +709,7 @@ void TRAPEditorLayer::MousePicking()
 												  TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource);
 
 		//Read pixel of the CPU visible buffer
-		TRAP::Graphics::RendererAPI::ReadRange range{0, static_cast<uint64_t>(m_renderTargetDesc.Width) * m_renderTargetDesc.Height * sizeof(int32_t)};
+		TRAP::Graphics::RendererAPI::ReadRange range{0, NumericCast<uint64_t>(m_renderTargetDesc.Width) * m_renderTargetDesc.Height * sizeof(int32_t)};
 		m_mousePickBuffer->MapBuffer(&range);
 
 		//Get our wanted value
@@ -726,7 +726,7 @@ void TRAPEditorLayer::MousePicking()
 				}
 			}
 		}
-		// TP_TRACE("Mouse = {", mouseX, "}, {", mouseY, "}, ID = {", id, "}");
+		TP_TRACE("Mouse = {", mouseX, "}, {", mouseY, "}, ID = {", id, "}");
 
 		m_mousePickBuffer->UnMapBuffer();
 	}

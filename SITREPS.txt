@@ -3920,3 +3920,7 @@ SITREP 04/26/2023|23w17a2
     - Changed TRAP Engine version to 23w17a2(0.9.21)
     - Replaced some static_casts with NumericCast() and ToUnderlying() ~>60 mins
     - Updated ModernDialogs submodule ~<5 mins
+
+SITREP 04/27/2023|23w17a3
+    - Changed TRAP Engine version to 23w17a3(0.9.22)
+    - Replaced some static_casts with NumericCast() and ToUnderlying() ~<60 mins

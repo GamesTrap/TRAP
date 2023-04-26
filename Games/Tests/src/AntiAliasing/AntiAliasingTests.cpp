@@ -22,7 +22,7 @@ void AntiAliasingTests::OnAttach()
 
 	TRAP::Graphics::RenderCommand::GetAntiAliasing(m_antiAliasing, m_sampleCount);
 
-	for(uint32_t i = static_cast<uint32_t>(TRAP::Graphics::AntiAliasing::Off); i < (static_cast<uint32_t>(TRAP::Graphics::AntiAliasing::MSAA) + 1); ++i)
+	for(uint32_t i = ToUnderlying(TRAP::Graphics::AntiAliasing::Off); i < (ToUnderlying(TRAP::Graphics::AntiAliasing::MSAA) + 1); ++i)
 		AntiAliasingMethods.emplace_back(static_cast<TRAP::Graphics::AntiAliasing>(i));
 }
 
@@ -63,12 +63,11 @@ void AntiAliasingTests::OnImGuiRender()
 	                                      ImGuiWindowFlags_AlwaysAutoResize);
 
 	bool updateAA = false;
-	const uint32_t currentAA = static_cast<uint32_t>(m_antiAliasing);
-	if(ImGui::BeginCombo("Anti aliasing", TRAP::Utils::String::ConvertToString(AntiAliasingMethods[currentAA]).c_str()))
+	if(ImGui::BeginCombo("Anti aliasing", TRAP::Utils::String::ConvertToString(m_antiAliasing).c_str()))
 	{
-		for(uint32_t i = 0; i < AntiAliasingMethods.size(); ++i)
+		for(std::size_t i = 0; i < AntiAliasingMethods.size(); ++i)
 		{
-			const bool isSelected = (currentAA == i);
+			const bool isSelected = (NumericCast<std::size_t>(ToUnderlying(m_antiAliasing)) == i);
 			if(ImGui::Selectable(TRAP::Utils::String::ConvertToString(AntiAliasingMethods[i]).c_str(), isSelected))
 			{
 				updateAA = true;

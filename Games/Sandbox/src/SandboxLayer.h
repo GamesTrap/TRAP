@@ -27,7 +27,7 @@ public:
 		ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
 		ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
 		ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
-		ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0,
+		ImGui::PlotLines("", m_frameTimeHistory.data(), NumericCast<int32_t>(m_frameTimeHistory.size()), 0, nullptr, 0,
 		                 33, ImVec2(200, 50));
 		ImGui::End();
 
@@ -65,7 +65,7 @@ public:
 			-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f,    0.0f, 0.0f
 		};
 		m_indexedVertexBuffer = TRAP::Graphics::VertexBuffer::Create(indexedVertices.data(),
-																	 static_cast<uint32_t>(indexedVertices.size()) *
+																	 indexedVertices.size() *
 																	 sizeof(uint32_t),
 																	 TRAP::Graphics::UpdateFrequency::Static);
 		m_indexedVertexBuffer->AwaitLoading();
@@ -83,7 +83,7 @@ public:
 			0, 1, 2, 2, 3, 0
 		};
 		m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(indices.data(),
-		                                                    static_cast<uint32_t>(indices.size()) *
+		                                                    indices.size() *
 															sizeof(uint16_t),
 															TRAP::Graphics::UpdateFrequency::Static);
 		m_indexBuffer->AwaitLoading();
@@ -103,7 +103,7 @@ public:
 			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,    0.0f, 1.0f
 		};
 		m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(vertices.data(),
-		 													  static_cast<uint32_t>(vertices.size()) *
+		 													  vertices.size() *
 															  sizeof(uint32_t),
 															  TRAP::Graphics::UpdateFrequency::Static);
 		m_vertexBuffer->AwaitLoading();
@@ -176,8 +176,8 @@ public:
 		if (m_titleTimer.Elapsed() >= 0.025f)
 		{
 			m_titleTimer.Reset();
-			static int frameTimeIndex = 0;
-			if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
+			static std::size_t frameTimeIndex = 0;
+			if (frameTimeIndex < m_frameTimeHistory.size() - 1)
 			{
 				m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
 				frameTimeIndex++;

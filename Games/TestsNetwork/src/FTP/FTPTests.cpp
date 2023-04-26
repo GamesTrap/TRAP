@@ -2,7 +2,7 @@
 
 std::ostream& operator<<(std::ostream& stream, const TRAP::Network::FTP::Response& response)
 {
-	return stream << static_cast<int32_t>(response.GetStatus()) << response.GetMessage();
+	return stream << ToUnderlying(response.GetStatus()) << response.GetMessage();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
