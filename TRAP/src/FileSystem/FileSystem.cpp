@@ -1125,7 +1125,7 @@ bool OpenFileInFileBrowser(const std::filesystem::path& p)
     int64_t bufSize = sysconf(_SC_GETPW_R_SIZE_MAX);
     if(bufSize <= 0)
         bufSize = 16384;
-    std::vector<char> buffer(bufSize, '\0');
+    std::vector<char> buffer(NumericCast<std::size_t>(bufSize), '\0');
     const int32_t errorCode = getpwuid_r(uid, &pwd, buffer.data(), buffer.size(), &pw);
     if(errorCode != 0)
     {

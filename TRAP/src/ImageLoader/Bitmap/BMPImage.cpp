@@ -117,7 +117,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 
 	bool needYFlip = false;
 	if (infoHeader.Height < 0)
-		m_height = Math::Abs(infoHeader.Height);
+		m_height = NumericCast<uint32_t>(Math::Abs(infoHeader.Height));
 	else if (infoHeader.Height == 0)
 	{
 		file.close();
@@ -128,7 +128,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 	else
 	{
 		needYFlip = true;
-		m_height = infoHeader.Height;
+		m_height = NumericCast<uint32_t>(infoHeader.Height);
 	}
 	m_width = infoHeader.Width;
 	m_bitsPerPixel = infoHeader.BitsPerPixel;
@@ -527,7 +527,7 @@ void TRAP::INTERNAL::BMPImage::DecodeRLE8(std::vector<uint8_t>& compressedImageD
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
-	int32_t x = 0, y = 0;
+	uint32_t x = 0, y = 0;
 	uint8_t t = 0, r = 0;
 
 	uint32_t dataIndex = 0;
@@ -566,8 +566,8 @@ void TRAP::INTERNAL::BMPImage::DecodeRLE8(std::vector<uint8_t>& compressedImageD
 					return;
 				if (r == 2)
 				{
-					x = x + compressedImageData[dataIndex++];
-					y = y + compressedImageData[dataIndex++];
+					x += compressedImageData[dataIndex++];
+					y += compressedImageData[dataIndex++];
 					continue;
 				}
 
@@ -618,8 +618,8 @@ void TRAP::INTERNAL::BMPImage::DecodeRLE8(std::vector<uint8_t>& compressedImageD
 				return;
 			if (r == 2)
 			{
-				x = x + compressedImageData[dataIndex++];
-				y = y + compressedImageData[dataIndex++];
+				x += compressedImageData[dataIndex++];
+				y += compressedImageData[dataIndex++];
 				continue;
 			}
 

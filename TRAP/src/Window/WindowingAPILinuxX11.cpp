@@ -61,8 +61,6 @@ static constexpr int32_t None = 0;
 static constexpr int32_t KeyPress = 2;
 static constexpr int32_t KeyRelease = 3;
 
-static constexpr uint32_t InvalidCodepoint = 0xFFFFFFFFu;
-
 //Sends an EWMH or ICCCM event to the window manager
 void TRAP::INTERNAL::WindowingAPI::SendEventToWM(const InternalWindow& window, const Atom type, const int64_t a,
 												 const int64_t b, const int64_t c, const int64_t d, const int64_t e)
@@ -3079,11 +3077,11 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionX11(const InternalWi
 	if(keySym == NoSymbol)
 		return nullptr;
 
-	const uint32_t ch = KeySymToUnicode(static_cast<uint32_t>(keySym));
-	if(ch == 0xFFFFFFFFu)
+	const std::optional<uint32_t> ch = KeySymToUnicode(static_cast<uint32_t>(keySym));
+	if(!ch)
 		return nullptr;
 
-	const std::string utf8Str = Utils::String::EncodeUTF8(ch);
+	const std::string utf8Str = Utils::String::EncodeUTF8(*ch);
 	if(utf8Str.empty())
 		return nullptr;
 	for(std::size_t i = 0; i < utf8Str.size(); ++i)
@@ -3573,9 +3571,9 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 
 			InputKey(*window, key, keyCode, Input::KeyState::Pressed);
 
-			const uint32_t character = KeySymToUnicode(static_cast<uint32_t>(keySym));
-			if(character != InvalidCodepoint)
-				InputChar(*window, character);
+			const std::optional<uint32_t> character = KeySymToUnicode(static_cast<uint32_t>(keySym));
+			if(character)
+				InputChar(*window, *character);
 		}
 
 		return;

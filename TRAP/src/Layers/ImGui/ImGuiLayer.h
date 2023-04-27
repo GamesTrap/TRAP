@@ -68,7 +68,6 @@ namespace TRAP
 		static void SetDarkThemeColors();
 	private:
 		bool m_blockEvents;
-		float m_time = 0.0f;
 
 		std::string m_imguiIniPath;
 

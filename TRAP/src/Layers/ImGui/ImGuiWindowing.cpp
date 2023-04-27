@@ -134,8 +134,8 @@ void TRAP::INTERNAL::ImGuiWindowing::Shutdown()
 
 	for (ImGuiMouseCursor cursorN = 0; cursorN < ImGuiMouseCursor_COUNT; cursorN++)
 	{
-		WindowingAPI::DestroyCursor(bd->MouseCursors[cursorN]);
-		bd->MouseCursors[cursorN] = nullptr;
+		WindowingAPI::DestroyCursor(bd->MouseCursors[NumericCast<std::size_t>(cursorN)]);
+		bd->MouseCursors[NumericCast<std::size_t>(cursorN)] = nullptr;
 	}
 
 	io.BackendPlatformName = nullptr;
@@ -402,7 +402,7 @@ void TRAP::INTERNAL::ImGuiWindowing::KeyCallback(const WindowingAPI::InternalWin
 	UpdateKeyModifiers(bd->Window);
 
 	if(ToUnderlying(key) >= 0 && ToUnderlying(key) < NumericCast<int32_t>(bd->KeyOwnerWindows.size()))
-		bd->KeyOwnerWindows[ToUnderlying(key)] = (state == Input::KeyState::Pressed) ? &window : nullptr;
+		bd->KeyOwnerWindows[NumericCast<std::size_t>(ToUnderlying(key))] = (state == Input::KeyState::Pressed) ? &window : nullptr;
 
 	key = TranslateUntranslateKey(key);
 
@@ -635,7 +635,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateKeyModifiers(const WindowingAPI::Inte
 		else if(keyName[0] >= 'a' && keyName[0] <= 'z')
 			key = static_cast<TRAP::Input::Key>(ToUnderlying(TRAP::Input::Key::A) + (keyName[0] - 'a'));
 		else if(it != charNames.cend())
-			key = charKeys[it - charNames.cbegin()];
+			key = charKeys[NumericCast<std::size_t>(it - charNames.cbegin())];
 	}
 
 	return key;
@@ -739,8 +739,8 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMouseCursor()
 			if(imguiCursor != ImGuiMouseCursor_Arrow)
 			{
 				//Show OS mouse cursor
-				WindowingAPI::SetCursor(*windowPtr, bd->MouseCursors[imguiCursor] != nullptr ?
-												    bd->MouseCursors[imguiCursor] :
+				WindowingAPI::SetCursor(*windowPtr, bd->MouseCursors[NumericCast<std::size_t>(imguiCursor)] != nullptr ?
+												    bd->MouseCursors[NumericCast<std::size_t>(imguiCursor)] :
 												    std::get<ImGuiMouseCursor_Arrow>(bd->MouseCursors));
 				WindowingAPI::SetCursorMode(*windowPtr, WindowingAPI::CursorMode::Normal);
 			}

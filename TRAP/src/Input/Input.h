@@ -220,7 +220,7 @@ namespace TRAP
 		/// <summary>
 		/// Key state.
 		/// </summary>
-		enum class KeyState
+		enum class KeyState : uint32_t
 		{
 			Released,
 			Pressed,
@@ -271,7 +271,7 @@ namespace TRAP
 		/// <summary>
 		/// Controller axes.
 		/// </summary>
-		enum class ControllerAxis
+		enum class ControllerAxis : uint32_t
 		{
 			Left_X        = 0,
 			Left_Y        = 1,
@@ -284,7 +284,7 @@ namespace TRAP
 		/// <summary>
 		/// Controller buttons.
 		/// </summary>
-		enum class ControllerButton
+		enum class ControllerButton : uint32_t
 		{
 			A            = 0,
 			B            = 1,
@@ -326,7 +326,7 @@ namespace TRAP
 		/// <summary>
 		/// Controller Battery status.
 		/// </summary>
-		enum class ControllerBatteryStatus
+		enum class ControllerBatteryStatus : uint32_t
 		{
 			Wired = 0,
 			Empty,
@@ -990,7 +990,7 @@ namespace TRAP
 		/// <param name="dpadCount">Amount of DPads.</param>
 		/// <returns>Pointer to the new controller internal or nullptr if there are already 16 controllers connected.</returns>
 		static ControllerInternal* AddInternalController(std::string name, std::string guid,
-		                                                 int32_t axisCount, int32_t buttonCount, int32_t dpadCount);
+		                                                 uint32_t axisCount, uint32_t buttonCount, uint32_t dpadCount);
 		/// <summary>
 		/// Internally DPad input processing.
 		/// </summary>

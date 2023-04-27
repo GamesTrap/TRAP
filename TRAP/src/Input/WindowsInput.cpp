@@ -186,7 +186,7 @@ void TRAP::Input::DetectControllerConnectionWin32()
 				      xic.SubType & 0xFF);
 			guid.pop_back();
 
-			ControllerInternal* con = AddInternalController(GetDeviceDescription(&xic), guid, 6, 11, 1);
+			ControllerInternal* con = AddInternalController(GetDeviceDescription(&xic), guid, 6u, 11u, 1u);
 			if (!con)
 				continue;
 
@@ -772,8 +772,9 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 
 	name.erase(std::find(name.begin(), name.end(), '\0'), name.end());
 
-	controller = AddInternalController(name, guid, data.AxisCount + data.SliderCount, data.ButtonCount,
-	                                   data.PoVCount);
+	controller = AddInternalController(name, guid, NumericCast<uint32_t>(data.AxisCount + data.SliderCount),
+	                                   NumericCast<uint32_t>(data.ButtonCount),
+	                                   NumericCast<uint32_t>(data.PoVCount));
 
 	if (!controller)
 	{

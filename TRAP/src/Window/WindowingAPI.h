@@ -4968,8 +4968,8 @@ namespace TRAP::INTERNAL
 		/// Convert XKB KeySym to Unicode.
 		/// </summary>
 		/// <param name="keysym">XKB KeySym.</param>
-		/// <returns>Unicode character.</returns>
-		[[nodiscard]] static constexpr uint32_t KeySymToUnicode(uint32_t keySym);
+		/// <returns>Unicode character on success, empty optional otherwise.</returns>
+		[[nodiscard]] static constexpr std::optional<uint32_t> KeySymToUnicode(uint32_t keySym);
 		/// <summary>
 		/// Return selection string from specified selection.
 		/// </summary>
@@ -6668,13 +6668,9 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionWay
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Convert XKB KeySym to Unicode
-[[nodiscard]] inline constexpr uint32_t TRAP::INTERNAL::WindowingAPI::KeySymToUnicode(const uint32_t keySym)
+[[nodiscard]] inline constexpr std::optional<uint32_t> TRAP::INTERNAL::WindowingAPI::KeySymToUnicode(const uint32_t keySym)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
-
-	int32_t min = 0;
-	int32_t max = KeySymTab.size() - 1;
-	int32_t mid = 0;
 
 	//First check for Latin-1 characters (1:1 mapping)
 	if((keySym >= 0x0020u && keySym <= 0x007Eu) ||
@@ -6687,20 +6683,16 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionWay
 	if((keySym & 0xFF000000u) == 0x01000000u)
 		return keySym & 0x00FFFFFFu;
 
-	//Binary search in table
-	while(max >= min)
+	if(std::binary_search(KeySymTab.cbegin(), KeySymTab.cend(), CodePair{static_cast<uint16_t>(keySym), 0u},
+	                      [](const CodePair& lhs, const CodePair& rhs){ return lhs.keySym < rhs.keySym; }))
 	{
-		mid = (min + max) / 2;
-		if(KeySymTab[mid].keySym < keySym)
-			min = mid + 1;
-		else if(KeySymTab[mid].keySym > keySym)
-			max = mid - 1;
-		else
-			return KeySymTab[mid].UCS;
+		const auto *const it = std::lower_bound(KeySymTab.cbegin(), KeySymTab.cend(), CodePair{static_cast<uint16_t>(keySym), 0u},
+		                                        [](const CodePair& lhs, const CodePair& rhs){ return lhs.keySym < rhs.keySym; });
+		return it->UCS;
 	}
 
 	//No matching Unicode value found
-	return 0xFFFFFFFFu;
+	return std::nullopt;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

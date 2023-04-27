@@ -471,8 +471,8 @@ void ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer comm
     if (draw_data->TotalVtxCount > 0)
     {
         // Create or resize the vertex/index buffers
-        const size_t vertex_size = draw_data->TotalVtxCount * sizeof(ImDrawVert);
-        const size_t index_size = draw_data->TotalIdxCount * sizeof(ImDrawIdx);
+        const size_t vertex_size = NumericCast<size_t>(draw_data->TotalVtxCount) * sizeof(ImDrawVert);
+        const size_t index_size = NumericCast<size_t>(draw_data->TotalIdxCount) * sizeof(ImDrawIdx);
         if (rb->VertexBuffer == VK_NULL_HANDLE || rb->VertexBufferSize < vertex_size)
             CreateOrResizeBuffer(rb->VertexBuffer, rb->VertexBufferMemory, rb->VertexBufferSize, vertex_size, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
         if (rb->IndexBuffer == VK_NULL_HANDLE || rb->IndexBufferSize < index_size)
@@ -515,8 +515,8 @@ void ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer comm
 
     // Render command lists
     // (Because we merged all buffers into a single one, we maintain our own offset into them)
-    int global_vtx_offset = 0;
-    int global_idx_offset = 0;
+    int32_t global_vtx_offset = 0;
+    uint32_t global_idx_offset = 0;
     for (int n = 0; n < draw_data->CmdListsCount; n++)
     {
         const ImDrawList* cmd_list = draw_data->CmdLists[n];
@@ -566,10 +566,10 @@ void ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer comm
                 vkCmdBindDescriptorSets(command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, bd->PipelineLayout, 0, 1, &descSet, 0, nullptr);
 
                 // Draw
-                vkCmdDrawIndexed(command_buffer, pcmd->ElemCount, 1, pcmd->IdxOffset + global_idx_offset, pcmd->VtxOffset + global_vtx_offset, 0);
+                vkCmdDrawIndexed(command_buffer, pcmd->ElemCount, 1u, pcmd->IdxOffset + global_idx_offset, NumericCast<int32_t>(pcmd->VtxOffset) + global_vtx_offset, 0u);
             }
         }
-        global_idx_offset += cmd_list->IdxBuffer.Size;
+        global_idx_offset += NumericCast<uint32_t>(cmd_list->IdxBuffer.Size);
         global_vtx_offset += cmd_list->VtxBuffer.Size;
     }
 
@@ -607,8 +607,8 @@ bool ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer)
         info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
         info.imageType = VK_IMAGE_TYPE_2D;
         info.format = VK_FORMAT_R8G8B8A8_UNORM;
-        info.extent.width = width;
-        info.extent.height = height;
+        info.extent.width = NumericCast<uint32_t>(width);
+        info.extent.height = NumericCast<uint32_t>(height);
         info.extent.depth = 1;
         info.mipLevels = 1;
         info.arrayLayers = 1;
@@ -702,8 +702,8 @@ bool ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer)
         VkBufferImageCopy region = {};
         region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
         region.imageSubresource.layerCount = 1;
-        region.imageExtent.width = width;
-        region.imageExtent.height = height;
+        region.imageExtent.width = NumericCast<uint32_t>(width);
+        region.imageExtent.height = NumericCast<uint32_t>(height);
         region.imageExtent.depth = 1;
         vkCmdCopyBufferToImage(command_buffer, bd->UploadBuffer, bd->FontImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
@@ -1192,7 +1192,7 @@ void ImGui_ImplVulkan_SetMinImageCount(uint32_t min_image_count)
     // Request several formats, the first found will be used
     for (int request_i = 0; request_i < request_formats_count; request_i++)
     {
-        for (uint32_t avail_i = 0; avail_i < avail_count; avail_i++)
+        for (int32_t avail_i = 0; avail_i < NumericCast<int32_t>(avail_count); avail_i++)
         {
             if (avail_format[avail_i].format == request_formats[request_i] && avail_format[avail_i].colorSpace == request_color_space)
                 return avail_format[avail_i];
@@ -1221,9 +1221,9 @@ void ImGui_ImplVulkan_SetMinImageCount(uint32_t min_image_count)
     avail_modes.resize(NumericCast<int32_t>(avail_count));
     vkGetPhysicalDeviceSurfacePresentModesKHR(physical_device, surface, &avail_count, avail_modes.Data);
 
-    for (int request_i = 0; request_i < request_modes_count; request_i++)
+    for (int32_t request_i = 0; request_i < request_modes_count; request_i++)
     {
-        for (uint32_t avail_i = 0; avail_i < avail_count; avail_i++)
+        for (int32_t avail_i = 0; avail_i < NumericCast<int32_t>(avail_count); avail_i++)
         {
             if (request_modes[request_i] == avail_modes[avail_i])
                 return request_modes[request_i];
@@ -1336,7 +1336,7 @@ void ImGui_ImplVulkanH_CreateWindowSwapChain(VkPhysicalDevice physical_device, V
 
     // If min image count was not specified, request different count of images dependent on selected present mode
     if (min_image_count == 0)
-        min_image_count = ImGui_ImplVulkanH_GetMinImageCountFromPresentMode(wd->PresentMode);
+        min_image_count = NumericCast<uint32_t>(ImGui_ImplVulkanH_GetMinImageCountFromPresentMode(wd->PresentMode));
 
     // Create Swapchain
     {
@@ -1364,13 +1364,19 @@ void ImGui_ImplVulkanH_CreateWindowSwapChain(VkPhysicalDevice physical_device, V
 
         if (cap.currentExtent.width == 0xffffffff)
         {
-            info.imageExtent.width = wd->Width = w;
-            info.imageExtent.height = wd->Height = h;
+            wd->Width = w;
+            wd->Height = h;
+
+            info.imageExtent.width = NumericCast<uint32_t>(w);
+            info.imageExtent.height = NumericCast<uint32_t>(h);
         }
         else
         {
-            info.imageExtent.width = wd->Width = cap.currentExtent.width;
-            info.imageExtent.height = wd->Height = cap.currentExtent.height;
+            wd->Width = NumericCast<int32_t>(cap.currentExtent.width);
+            wd->Height = NumericCast<int32_t>(cap.currentExtent.height);
+
+            info.imageExtent.width = cap.currentExtent.width;
+            info.imageExtent.height = cap.currentExtent.height;
         }
         err = vkCreateSwapchainKHR(device, &info, allocator, &wd->Swapchain);
         check_vk_result(err);
@@ -1465,8 +1471,8 @@ void ImGui_ImplVulkanH_CreateWindowSwapChain(VkPhysicalDevice physical_device, V
         info.renderPass = wd->RenderPass;
         info.attachmentCount = 1;
         info.pAttachments = &attachment;
-        info.width = wd->Width;
-        info.height = wd->Height;
+        info.width = NumericCast<uint32_t>(wd->Width);
+        info.height = NumericCast<uint32_t>(wd->Height);
         info.layers = 1;
         for (uint32_t i = 0; i < wd->ImageCount; i++)
         {
@@ -1876,8 +1882,8 @@ static void ImGui_ImplVulkan_RenderWindow(ImGuiViewport* viewport, void*)
             info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
             info.renderPass = wd->RenderPass;
             info.framebuffer = fd->Framebuffer;
-            info.renderArea.extent.width = wd->Width;
-            info.renderArea.extent.height = wd->Height;
+            info.renderArea.extent.width = NumericCast<uint32_t>(wd->Width);
+            info.renderArea.extent.height = NumericCast<uint32_t>(wd->Height);
             info.clearValueCount = (viewport->Flags & ImGuiViewportFlags_NoRendererClear) != 0 ? 0 : 1;
             info.pClearValues = (viewport->Flags & ImGuiViewportFlags_NoRendererClear) != 0 ? nullptr : &wd->ClearValue;
             vkCmdBeginRenderPass(fd->CommandBuffer, &info, VK_SUBPASS_CONTENTS_INLINE);

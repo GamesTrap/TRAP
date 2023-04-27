@@ -1769,9 +1769,9 @@ void TRAP::INTERNAL::WindowingAPI::InputTextWayland(const InternalWindow& window
     if(s_Data.Wayland.WaylandXKB.StateKeyGetSyms(s_Data.Wayland.WaylandXKB.State, keycode, &keysyms) == 1 && keysyms)
     {
         const xkb_keysym_t keysym = ComposeSymbol(keysyms[0]);
-        const uint32_t codePoint = KeySymToUnicode(keysym);
-        if(codePoint != 0xFFFFFFFFu)
-            InputChar(window, codePoint);
+        const std::optional<uint32_t> codePoint = KeySymToUnicode(keysym);
+        if(codePoint)
+            InputChar(window, *codePoint);
     }
 }
 
@@ -3713,14 +3713,14 @@ const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeNameWayland(const i
         return nullptr;
     }
 
-    const uint32_t codePoint = KeySymToUnicode(keysyms[0]);
-    if(codePoint == 0xFFFFFFFFu)
+    const std::optional<uint32_t> codePoint = KeySymToUnicode(keysyms[0]);
+    if(!codePoint)
     {
         InputError(Error::Platform_Error, "[Wayland] Failed to retrieve codepoint for key name");
         return nullptr;
     }
 
-    const std::string utf8Str = Utils::String::EncodeUTF8(codePoint);
+    const std::string utf8Str = Utils::String::EncodeUTF8(*codePoint);
 	if(utf8Str.empty())
     {
         InputError(Error::Platform_Error, "[Wayland] Failed to encode codepoint for key name");

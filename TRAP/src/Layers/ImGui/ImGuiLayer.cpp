@@ -55,7 +55,7 @@ static int32_t InputTextCallback(ImGuiInputTextCallbackData* const data)
 		//If for some reason we refuse the new length (BufTextLen) and/or capacity (BufSize) we need to set them back to what we want.
 		std::string* str = userData->Str;
 		IM_ASSERT(data->Buf == str->c_str());
-		str->resize(data->BufTextLen);
+		str->resize(NumericCast<std::size_t>(data->BufTextLen));
 		data->Buf = str->data();
 	}
 	else if(userData->ChainCallback != nullptr)

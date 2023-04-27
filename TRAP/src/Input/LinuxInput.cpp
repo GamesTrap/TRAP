@@ -332,7 +332,9 @@ bool TRAP::Input::OpenControllerDeviceLinux(std::filesystem::path path)
 		}
 	}
 
-	ControllerInternal* const con = AddInternalController(name, guid, axisCount, buttonCount, dpadCount);
+	ControllerInternal* const con = AddInternalController(name, guid, NumericCast<uint32_t>(axisCount),
+	                                                      NumericCast<uint32_t>(buttonCount),
+														  NumericCast<uint32_t>(dpadCount));
 	if(con == nullptr)
 	{
 		if(close(LinuxCon.FD) < 0)

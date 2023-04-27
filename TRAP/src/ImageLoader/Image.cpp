@@ -161,9 +161,9 @@ TRAP::Image::Image() noexcept
 	uint32_t index = 0;
 	for (uint32_t i = 0; i < width * height * 2; i += 2)
 	{
-		data[index++] = (source[i + 1u] << 1u) & 0xF8u;
-		data[index++] = ((source[i + 1u] << 6u) | (source[i] >> 2u)) & 0xF8u;
-		data[index++] = (source[i] << 3u) & 0xF8u;
+		data[index++] = NumericCast<uint8_t>(source[i + 1u] << 1u) & 0xF8u;
+		data[index++] = NumericCast<uint8_t>(NumericCast<uint8_t>((source[i + 1u]) << 6u) | NumericCast<uint8_t>(source[i] >> 2u)) & 0xF8u;
+		data[index++] = NumericCast<uint8_t>(source[i] << 3u) & 0xF8u;
 	}
 
 	return data;
@@ -209,9 +209,9 @@ TRAP::Image::Image() noexcept
 			data[index++] = colorMap[NumericCast<std::size_t>(source[i]) * channels];
 		else if (channels == 2)
 		{
-			data[index++] = (colorMap[NumericCast<std::size_t>(source[i]) * channels + 1u] << 1u) & 0xF8u;
-			data[index++] = ((colorMap[NumericCast<std::size_t>(source[i]) * channels + 1u] << 6u) | (colorMap[static_cast<std::size_t>(source[i]) * channels] >> 2u)) & 0xF8u;
-			data[index++] = (colorMap[static_cast<std::size_t>(source[i]) * channels] << 3u) & 0xF8u;
+			data[index++] = NumericCast<uint8_t>(colorMap[NumericCast<std::size_t>(source[i]) * channels + 1u] << 1u) & 0xF8u;
+			data[index++] = NumericCast<uint8_t>(NumericCast<uint8_t>(colorMap[NumericCast<std::size_t>(source[i]) * channels + 1u] << 6u) | NumericCast<uint8_t>(colorMap[NumericCast<std::size_t>(source[i]) * channels] >> 2u)) & 0xF8u;
+			data[index++] = NumericCast<uint8_t>(colorMap[NumericCast<std::size_t>(source[i]) * channels] << 3u) & 0xF8u;
 		}
 		else if (channels == 3)
 		{

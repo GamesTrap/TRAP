@@ -103,7 +103,7 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::filesystem::path filepath)
 		m_data2Byte.resize(NumericCast<std::size_t>(m_width) * m_height * header.Depth);
 		if (!file.read(reinterpret_cast<char*>(m_data2Byte.data()),
 			           NumericCast<std::streamsize>(m_width) * m_height * header.Depth *
-					   sizeof(uint16_t)))
+					   NumericCast<std::streamsize>(sizeof(uint16_t))))
 		{
 			file.close();
 			m_data2Byte.clear();

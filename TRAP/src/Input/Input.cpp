@@ -747,9 +747,9 @@ void TRAP::Input::UpdateControllerMappings(const std::string& map)
 
 TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(std::string name,
                                                                     std::string guid,
-																	const int32_t axisCount,
-																	const int32_t buttonCount,
-																	const int32_t dpadCount)
+																	const uint32_t axisCount,
+																	const uint32_t buttonCount,
+																	const uint32_t dpadCount)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
@@ -770,7 +770,7 @@ TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(std::string 
 	con->Axes.resize(axisCount);
 	con->Buttons.resize(buttonCount + dpadCount * 4);
 	con->DPads.resize(dpadCount);
-	con->ButtonCount = buttonCount;
+	con->ButtonCount = NumericCast<int32_t>(buttonCount);
 	con->mapping = FindValidMapping(con);
 
 	TP_INFO(Log::InputControllerPrefix, "Controller: ", (con->mapping != nullptr ? con->mapping->Name : con->Name),
@@ -786,31 +786,31 @@ void TRAP::Input::InternalInputControllerDPad(ControllerInternal* const con, con
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	const int32_t base = con->ButtonCount + dpad * 4;
+	const uint32_t base = con->ButtonCount + NumericCast<uint32_t>(dpad) * 4u;
 
-	con->Buttons[base + 0] = ((value & BIT(0)) != 0); //Up
-	con->Buttons[base + 1] = ((value & BIT(1)) != 0); //Right
-	con->Buttons[base + 2] = ((value & BIT(2)) != 0); //Down
-	con->Buttons[base + 3] = ((value & BIT(3)) != 0); //Left
+	con->Buttons[base + 0u] = ((value & BIT(0u)) != 0u); //Up
+	con->Buttons[base + 1u] = ((value & BIT(1u)) != 0u); //Right
+	con->Buttons[base + 2u] = ((value & BIT(2u)) != 0u); //Down
+	con->Buttons[base + 3u] = ((value & BIT(3u)) != 0u); //Left
 
-	if (con->Buttons[base + 1] && con->Buttons[base + 0])
-		con->DPads[dpad] = ControllerDPad::Right_Up;
-	else if (con->Buttons[base + 1] && con->Buttons[base + 2])
-		con->DPads[dpad] = ControllerDPad::Right_Down;
-	else if (con->Buttons[base + 3] && con->Buttons[base + 0])
-		con->DPads[dpad] = ControllerDPad::Left_Up;
-	else if (con->Buttons[base + 3] && con->Buttons[base + 2])
-		con->DPads[dpad] = ControllerDPad::Left_Down;
-	else if (con->Buttons[base + 0])
-		con->DPads[dpad] = ControllerDPad::Up;
-	else if (con->Buttons[base + 1])
-		con->DPads[dpad] = ControllerDPad::Right;
-	else if (con->Buttons[base + 2])
-		con->DPads[dpad] = ControllerDPad::Down;
-	else if (con->Buttons[base + 3])
-		con->DPads[dpad] = ControllerDPad::Left;
+	if (con->Buttons[base + 1u] && con->Buttons[base + 0u])
+		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Right_Up;
+	else if (con->Buttons[base + 1u] && con->Buttons[base + 2u])
+		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Right_Down;
+	else if (con->Buttons[base + 3u] && con->Buttons[base + 0u])
+		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Left_Up;
+	else if (con->Buttons[base + 3u] && con->Buttons[base + 2u])
+		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Left_Down;
+	else if (con->Buttons[base + 0u])
+		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Up;
+	else if (con->Buttons[base + 1u])
+		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Right;
+	else if (con->Buttons[base + 2u])
+		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Down;
+	else if (con->Buttons[base + 3u])
+		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Left;
 	else
-		con->DPads[dpad] = ControllerDPad::Centered;
+		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Centered;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -820,7 +820,7 @@ void TRAP::Input::InternalInputControllerAxis(ControllerInternal* const con, con
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	con->Axes[axis] = value;
+	con->Axes[NumericCast<std::size_t>(axis)] = value;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -830,7 +830,7 @@ void TRAP::Input::InternalInputControllerButton(ControllerInternal* const con, c
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	con->Buttons[button] = pressed;
+	con->Buttons[NumericCast<std::size_t>(button)] = pressed;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
