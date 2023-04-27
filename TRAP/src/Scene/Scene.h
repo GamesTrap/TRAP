@@ -40,8 +40,8 @@ namespace TRAP
 
 		static TRAP::Ref<Scene> Copy(const Ref<Scene>& other);
 
-		[[nodiscard]] Entity CreateEntity(const std::string& name = std::string());
-		[[nodiscard]] Entity CreateEntityWithUID(Utils::UID uid, const std::string& name = std::string());
+		Entity CreateEntity(const std::string& name = std::string());
+		Entity CreateEntityWithUID(Utils::UID uid, const std::string& name = std::string());
 		void DestroyEntity(Entity entity);
 
 		void OnRuntimeStart();

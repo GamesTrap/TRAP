@@ -132,7 +132,7 @@ static void CopyComponentIfExists([[maybe_unused]] TRAP::ComponentGroup<Componen
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Entity TRAP::Scene::CreateEntity(const std::string& name)
+TRAP::Entity TRAP::Scene::CreateEntity(const std::string& name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -141,7 +141,7 @@ static void CopyComponentIfExists([[maybe_unused]] TRAP::ComponentGroup<Componen
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Entity TRAP::Scene::CreateEntityWithUID(Utils::UID uid, const std::string& name)
+TRAP::Entity TRAP::Scene::CreateEntityWithUID(Utils::UID uid, const std::string& name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 

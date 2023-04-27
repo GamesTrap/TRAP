@@ -119,7 +119,7 @@ void RendererAPITests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 	{
 		if(m_colorTimer.Elapsed() > 2.5f)
 		{
-			for(int32_t i = 0; i < m_colorData.Color.Length(); ++i)
+			for(std::size_t i = 0; i < TRAP::Math::Vec3::Length(); ++i)
 				m_colorData.Color[i] = TRAP::Utils::Random::Get(0.0f, 1.0f);
 
 			m_colorTimer.Reset();
