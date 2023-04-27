@@ -601,11 +601,11 @@ void TRAP::Graphics::API::VulkanCommandBuffer::DrawInstanced(const uint32_t vert
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanCommandBuffer::DrawIndexed(const uint32_t indexCount, const uint32_t firstIndex,
-                                                           const int32_t firstVertex) const
+                                                           const int32_t vertexOffset) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	vkCmdDrawIndexed(m_vkCommandBuffer, indexCount, 1, firstIndex, firstVertex, 0);
+	vkCmdDrawIndexed(m_vkCommandBuffer, indexCount, 1, firstIndex, vertexOffset, 0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -614,11 +614,11 @@ void TRAP::Graphics::API::VulkanCommandBuffer::DrawIndexedInstanced(const uint32
 																    const uint32_t firstIndex,
                                                                     const uint32_t instanceCount,
                                                                     const uint32_t firstInstance,
-                                                                    const int32_t firstVertex) const
+                                                                    const int32_t vertexOffset) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	vkCmdDrawIndexed(m_vkCommandBuffer, indexCount, instanceCount, firstIndex, firstVertex, firstInstance);
+	vkCmdDrawIndexed(m_vkCommandBuffer, indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

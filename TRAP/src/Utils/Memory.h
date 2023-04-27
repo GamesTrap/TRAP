@@ -116,7 +116,7 @@ namespace TRAP::Utils::Memory
 		if constexpr(std::is_same_v<input_type, uint8_t>)
 		{
 			//Is size a multiple of OutputIts type
-			std::size_t size = std::distance(begin, end);
+			const auto size = std::distance(begin, end);
 			if(size % sizeof(output_type) != 0)
 			{
 				TRAP_ASSERT(false, "Memory::ConvertBytes(): Size of input type is not a multiple of output type");

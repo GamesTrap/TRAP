@@ -246,7 +246,7 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 		{
 			for(int32_t i = scanline[0 + scanlineIndex][E] << rshift; i > 0; i--)
 			{
-				std::copy_n(scanline[-1 + scanlineIndex].data(), 4, scanline[0 + scanlineIndex].data());
+				std::copy_n(scanline[NumericCast<std::size_t>(-1 + scanlineIndex)].data(), 4, scanline[0 + scanlineIndex].data());
 				scanlineIndex++;
 				length--;
 			}

@@ -43,28 +43,28 @@ static constexpr std::array<uint64_t, 80> SHA512_K =
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t Rotr(const uint32_t x, const int32_t n) noexcept
+[[nodiscard]] constexpr uint32_t Rotr(const uint32_t x, const uint32_t n) noexcept
 {
 	return (x >> n) | (x << (32u - n));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint64_t Rotr(const uint64_t x, const int32_t n) noexcept
+[[nodiscard]] constexpr uint64_t Rotr(const uint64_t x, const uint32_t n) noexcept
 {
 	return (x >> n) | (x << (64u - n));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t Shr(const uint32_t x, const int32_t n) noexcept
+[[nodiscard]] constexpr uint32_t Shr(const uint32_t x, const uint32_t n) noexcept
 {
 	return x >> n;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint64_t Shr(const uint64_t x, const int32_t n) noexcept
+[[nodiscard]] constexpr uint64_t Shr(const uint64_t x, const uint32_t n) noexcept
 {
 	return x >> n;
 }

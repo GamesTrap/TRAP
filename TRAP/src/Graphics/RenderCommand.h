@@ -673,9 +673,9 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="indexCount">Number of indices to draw.</param>
 		/// <param name="firstIndex">Index of the first indice to draw.</param>
-		/// <param name="firstVertex">Index of the first vertex to draw.</param>
+		/// <param name="vertexOffset">Index of the first vertex to draw.</param>
 		/// <param name="window">Window to draw for. Default: Main Window.</param>
-		static void DrawIndexed(uint32_t indexCount, uint32_t firstIndex = 0, uint32_t firstVertex = 0,
+		static void DrawIndexed(uint32_t indexCount, uint32_t firstIndex = 0, int32_t vertexOffset = 0,
 		                        const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
@@ -683,8 +683,8 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="indexCount">Number of indices to draw.</param>
 		/// <param name="firstIndex">Index of the first indice to draw. Default: 0.</param>
-		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
-		static void DrawIndexed(uint32_t indexCount, uint32_t firstIndex = 0, uint32_t firstVertex = 0);
+		/// <param name="vertexOffset">Index of the first vertex to draw. Default: 0.</param>
+		static void DrawIndexed(uint32_t indexCount, uint32_t firstIndex = 0, int32_t vertexOffset = 0);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -716,10 +716,10 @@ namespace TRAP::Graphics
 		/// <param name="instanceCount">Number of instances to draw.</param>
 		/// <param name="firstIndex">Index of the first indice to draw.</param>
 		/// <param name="firstInstance">Index of the first instance to draw.</param>
-		/// <param name="firstVertex">Index of the first vertex to draw.</param>
+		/// <param name="vertexOffset">Index of the first vertex to draw.</param>
 		/// <param name="window">Window to draw for. Default: Main Window.</param>
 		static void DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex = 0,
-		                                 uint32_t firstInstance = 0, uint32_t firstVertex = 0,
+		                                 uint32_t firstInstance = 0, int32_t vertexOffset = 0,
 										 const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
@@ -729,10 +729,10 @@ namespace TRAP::Graphics
 		/// <param name="instanceCount">Number of instances to draw.</param>
 		/// <param name="firstIndex">Index of the first indice to draw. Default: 0.</param>
 		/// <param name="firstInstance">Index of the first instance to draw. Default: 0.</param>
-		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
+		/// <param name="vertexOffset">Index of the first vertex to draw. Default: 0.</param>
 		static void DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount,
 		                                 uint32_t firstIndex = 0, uint32_t firstInstance = 0,
-										 uint32_t firstVertex = 0);
+										 int32_t vertexOffset = 0);
 #endif /*TRAP_HEADLESS_MODE*/
 
 		//Compute functions

@@ -786,7 +786,7 @@ void TRAP::Input::InternalInputControllerDPad(ControllerInternal* const con, con
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	const uint32_t base = con->ButtonCount + NumericCast<uint32_t>(dpad) * 4u;
+	const uint32_t base = NumericCast<uint32_t>(con->ButtonCount) + NumericCast<uint32_t>(dpad) * 4u;
 
 	con->Buttons[base + 0u] = ((value & BIT(0u)) != 0u); //Up
 	con->Buttons[base + 1u] = ((value & BIT(1u)) != 0u); //Right

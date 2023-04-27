@@ -200,8 +200,8 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="indexCount">How many indices to draw.</param>
 		/// <param name="firstIndex">Offset to the first index to draw.</param>
-		/// <param name="firstVertex">Offset to the first vertex to draw.</param>
-		void DrawIndexed(uint32_t indexCount, uint32_t firstIndex, int32_t firstVertex) const override;
+		/// <param name="vertexOffset">Offset to the first vertex to draw.</param>
+		void DrawIndexed(uint32_t indexCount, uint32_t firstIndex, int32_t vertexOffset) const override;
 		/// <summary>
 		/// Draw multiple instances of indexed primitives.
 		/// </summary>
@@ -209,9 +209,9 @@ namespace TRAP::Graphics::API
 		/// <param name="firstIndex">Offset to the first index to draw.</param>
 		/// <param name="instanceCount">How many instances to draw.</param>
 		/// <param name="firstInstance">Offset to the first instance to draw.</param>
-		/// <param name="firstVertex">Offset to the first vertex to draw.</param>
+		/// <param name="vertexOffset">Offset to the first vertex to draw.</param>
 		void DrawIndexedInstanced(uint32_t indexCount, uint32_t firstIndex, uint32_t instanceCount,
-		                          uint32_t firstInstance, int32_t firstVertex) const override;
+		                          uint32_t firstInstance, int32_t vertexOffset) const override;
 		/// <summary>
 		/// Draw primitives.
 		/// Draw data is provided by the indirect buffer.

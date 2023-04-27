@@ -237,8 +237,8 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 	}
 
 	if (!DecompressData(data.CompressedData.data(),
-	                    NumericCast<int32_t>(data.CompressedData.size()), decompressedData.data(),
-						NumericCast<int32_t>(decompressedData.size())))
+	                    data.CompressedData.size(), decompressedData.data(),
+						decompressedData.size()))
 	{
 		decompressedData.clear();
 		return;
@@ -870,8 +870,10 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::INTERNAL::PNGImage::DecompressData(const uint8_t* const source, const int sourceLength, uint8_t* destination,
-										                    const int destinationLength)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::DecompressData(const uint8_t* const source,
+                                                            const std::size_t sourceLength,
+															uint8_t* const destination,
+										                    const std::size_t destinationLength)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -1350,7 +1352,7 @@ void TRAP::INTERNAL::PNGImage::Adam7DeInterlace(uint8_t* const out, const uint8_
 	{
 		for (uint32_t i = 0; i < raw.size(); i += 2)
 		{
-			const uint16_t val = (NumericCast<uint16_t>(raw[i + 1u]) << 8u) | raw[i];
+			const uint16_t val = (NumericCast<uint16_t>(raw[i + 1u] << 8u)) | raw[i];
 			result[resultIndex++] = val;
 		}
 	}
@@ -1358,7 +1360,7 @@ void TRAP::INTERNAL::PNGImage::Adam7DeInterlace(uint8_t* const out, const uint8_
 	{
 		for (uint32_t i = 0; i < raw.size(); i += 2)
 		{
-			const uint16_t val = (NumericCast<uint16_t>(raw[i + 1u]) << 8u) | raw[i];
+			const uint16_t val = (NumericCast<uint16_t>(raw[i + 1u] << 8u)) | raw[i];
 			result[resultIndex++] = val;
 		}
 

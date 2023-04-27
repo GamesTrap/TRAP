@@ -734,34 +734,31 @@ TRAP::Graphics::RendererAPI::PerViewportData::~PerViewportData()
 #ifndef TRAP_HEADLESS_MODE
 	SwapChain.reset();
 	ImageAcquiredSemaphore.reset();
-#endif /*TRAP_HEADLESS_MODE*/
+#else
+	RenderTargets = {};
+#endif
 
-	for(int32_t i = ImageCount - 1; i >= 0; i--)
-	{
-#ifdef TRAP_HEADLESS_MODE
-		RenderTargets[i].reset();
-#endif /*TRAP_HEADLESS_MODE*/
+	RenderCompleteSemaphores = {};
+	RenderCompleteFences = {};
 
-		RenderCompleteSemaphores[i].reset();
-		RenderCompleteFences[i].reset();
-
+	for(uint32_t i = 0u; i < ImageCount; ++i)
 		GraphicCommandPools[i]->FreeCommandBuffer(GraphicCommandBuffers[i]);
-		GraphicCommandBuffers[i] = nullptr;
-		GraphicCommandPools[i].reset();
+	GraphicCommandBuffers = {};
+	GraphicCommandPools = {};
 
-		GraphicsTimestampQueryPools[i].reset();
-		GraphicsTimestampReadbackBuffers[i].reset();
+	GraphicsTimestampQueryPools = {};
+	GraphicsTimestampReadbackBuffers = {};
 
-		ComputeCompleteSemaphores[i].reset();
-		ComputeCompleteFences[i].reset();
+	ComputeCompleteSemaphores = {};
+	ComputeCompleteFences = {};
 
+	for(uint32_t i = 0u; i < ImageCount; ++i)
 		ComputeCommandPools[i]->FreeCommandBuffer(ComputeCommandBuffers[i]);
-		ComputeCommandBuffers[i] = nullptr;
-		ComputeCommandPools[i].reset();
+	ComputeCommandBuffers = {};
+	ComputeCommandPools = {};
 
-		ComputeTimestampQueryPools[i].reset();
-		ComputeTimestampReadbackBuffers[i].reset();
-	}
+	ComputeTimestampQueryPools = {};
+	ComputeTimestampReadbackBuffers = {};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

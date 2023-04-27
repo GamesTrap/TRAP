@@ -3925,4 +3925,8 @@ SITREP 04/27/2023|23w17a3
     - Changed TRAP Engine version to 23w17a3(0.9.22)
     - Replaced some static_casts with NumericCast() and ToUnderlying() ~<60 mins
     - Resolved Build-CI GCC warnings ~<10 mins
-    - Resolved Build-CI Clang warnings ~>30 mins
+    - Resolved Build-CI Clang warnings ~>60 mins
+
+SITREP 04/28/2023|23w17a4
+    - Changed TRAP Engine version to 23w17a4(0.9.23)
+    - Resolved Build-CI Clang warnings ~>60 mins

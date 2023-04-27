@@ -509,15 +509,15 @@ void TRAP::Graphics::RenderCommand::Draw(const uint32_t vertexCount, const uint3
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::DrawIndexed(const uint32_t indexCount, const uint32_t firstIndex,
-												const uint32_t firstVertex, const Window* const window)
+												const int32_t vertexOffset, const Window* const window)
 {
-	RendererAPI::GetRenderer()->DrawIndexed(indexCount, firstIndex, firstVertex, window);
+	RendererAPI::GetRenderer()->DrawIndexed(indexCount, firstIndex, vertexOffset, window);
 }
 #else
 void TRAP::Graphics::RenderCommand::DrawIndexed(const uint32_t indexCount, const uint32_t firstIndex,
-												const uint32_t firstVertex)
+												const int32_t vertexOffset)
 {
-	RendererAPI::GetRenderer()->DrawIndexed(indexCount, firstIndex, firstVertex);
+	RendererAPI::GetRenderer()->DrawIndexed(indexCount, firstIndex, vertexOffset);
 }
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -543,18 +543,18 @@ void TRAP::Graphics::RenderCommand::DrawInstanced(const uint32_t vertexCount, co
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::DrawIndexedInstanced(const uint32_t indexCount, const uint32_t instanceCount,
 														 const uint32_t firstIndex, const uint32_t firstInstance,
-														 const uint32_t firstVertex, const Window* const window)
+														 const int32_t vertexOffset, const Window* const window)
 {
 	RendererAPI::GetRenderer()->DrawIndexedInstanced(indexCount, instanceCount, firstIndex, firstInstance,
-	                                                 firstVertex, window);
+	                                                 vertexOffset, window);
 }
 #else
 void TRAP::Graphics::RenderCommand::DrawIndexedInstanced(const uint32_t indexCount, const uint32_t instanceCount,
 														 const uint32_t firstIndex, const uint32_t firstInstance,
-														 const uint32_t firstVertex)
+														 const int32_t vertexOffset)
 {
 	RendererAPI::GetRenderer()->DrawIndexedInstanced(indexCount, instanceCount, firstIndex, firstInstance,
-	                                                 firstVertex);
+	                                                 vertexOffset);
 }
 #endif /*TRAP_HEADLESS_MODE*/
 

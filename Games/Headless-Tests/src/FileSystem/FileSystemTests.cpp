@@ -41,7 +41,7 @@ void RunValidTests()
         //Check
         std::ifstream file("Assets/Textures/vulkanlogo.png", std::ios::binary | std::ios::ate);
         TRAP_ASSERT(file.is_open() && file.good(), "ReadFile() failed! (ifstream failed)");
-        const std::streamsize fileSize = NumericCast<std::streamsize>(file.tellg());
+        const std::streamsize fileSize = static_cast<std::streamsize>(file.tellg());
         std::vector<uint8_t> validRes(fileSize);
         file.seekg(0, std::ios::beg);
         file.read(reinterpret_cast<char*>(validRes.data()), fileSize);
@@ -60,7 +60,7 @@ void RunValidTests()
         //Check
         std::ifstream file("Assets/Shaders/emboss.compute.shader", std::ios::ate);
         TRAP_ASSERT(file.is_open() && file.good(), "ReadTextFile() failed! (ifstream failed)");
-        const std::streamsize fileSize = NumericCast<std::streamsize>(file.tellg());
+        const std::streamsize fileSize = static_cast<std::streamsize>(file.tellg());
         std::string validRes(fileSize, '\0');
         file.seekg(0, std::ios::beg);
         file.read(reinterpret_cast<char*>(validRes.data()), fileSize);
@@ -446,7 +446,7 @@ void RunValidTests()
             TRAP_ASSERT(false, "GetSize() failed!");
         const auto size = file.tellg();
         file.close();
-        TRAP_ASSERT(*res1 == NumericCast<uintmax_t>(size), "GetSize() failed!");
+        TRAP_ASSERT(*res1 == static_cast<uintmax_t>(size), "GetSize() failed!");
 
         //Cleanup
         const auto res2 = TRAP::FileSystem::Delete("test.txt");

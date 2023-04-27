@@ -597,7 +597,7 @@ bool ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer)
     unsigned char* pixels = nullptr;
     int width = 0, height = 0;
     io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
-    const size_t upload_size = NumericCast<size_t>(width) * height * 4 * sizeof(char);
+    const size_t upload_size = NumericCast<size_t>(width) * NumericCast<size_t>(height) * 4u * sizeof(char);
 
     VkResult err = VK_SUCCESS;
 

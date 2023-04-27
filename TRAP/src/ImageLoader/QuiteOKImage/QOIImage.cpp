@@ -47,7 +47,7 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
     else //Fallback
     {
         file.seekg(0, std::ios::end);
-        fileSize = file.tellg();
+        fileSize = static_cast<std::size_t>(file.tellg());
         file.seekg(0);
     }
 

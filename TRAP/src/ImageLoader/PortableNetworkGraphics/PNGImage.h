@@ -222,7 +222,7 @@ namespace TRAP::INTERNAL
 		/// <param name="destination">Destination for uncompressed data.</param>
 		/// <param name="destinationLength">Destination size.</param>
 		/// <returns>True if the data was decompressed successfully, false otherwise.</returns>
-		[[nodiscard]] static bool DecompressData(const uint8_t* source, int sourceLength, uint8_t* destination, int destinationLength);
+		[[nodiscard]] static bool DecompressData(const uint8_t* source, std::size_t sourceLength, uint8_t* destination, std::size_t destinationLength);
 		/// <summary>
 		/// Unfilter scanline depending on given filter type.
 		/// </summary>

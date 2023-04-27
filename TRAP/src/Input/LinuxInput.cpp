@@ -92,7 +92,7 @@ void TRAP::Input::ShutdownController()
 
 	for(uint32_t cID = 0; cID <= ToUnderlying(Controller::Sixteen); cID++)
 	{
-		if(s_controllerInternal[cID].LinuxCon.CurrentVibration != -1)
+		if(s_controllerInternal[cID].LinuxCon.CurrentVibration)
 			SetControllerVibration(static_cast<Controller>(cID), 0.0f, 0.0f);
 		if (s_controllerInternal[cID].Connected)
 			CloseController(static_cast<Controller>(cID));
@@ -135,11 +135,11 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 
 	input_event play{};
 	//Delete any existing effect
-	if(con->LinuxCon.CurrentVibration != -1)
+	if(con->LinuxCon.CurrentVibration)
 	{
 		//Stop the effect
 		play.type = EV_FF;
-		play.code = con->LinuxCon.CurrentVibration;
+		play.code = *con->LinuxCon.CurrentVibration;
 		play.value = 0;
 
 		if(write(con->LinuxCon.FD, static_cast<const void*>(&play), sizeof(play)) < 0)
@@ -150,7 +150,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 		}
 
 		//Delete the effect
-		if(ioctl(con->LinuxCon.FD, EVIOCRMFF, con->LinuxCon.CurrentVibration) < 0)
+		if(ioctl(con->LinuxCon.FD, EVIOCRMFF, *con->LinuxCon.CurrentVibration) < 0)
 		{
 			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to delete vibration");
 			TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
@@ -173,10 +173,10 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 
 		//Upload the effect
 		if(ioctl(con->LinuxCon.FD, EVIOCSFF, &ff) >= 0)
-			con->LinuxCon.CurrentVibration = ff.id;
+			con->LinuxCon.CurrentVibration = NumericCast<uint16_t>(ff.id);
 		else
 		{
-			con->LinuxCon.CurrentVibration = -1;
+			con->LinuxCon.CurrentVibration = std::nullopt;
 			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to upload vibration");
 			TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
 			return;
@@ -184,7 +184,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 
 		//Play the effect
 		play.type = EV_FF;
-		play.code = con->LinuxCon.CurrentVibration;
+		play.code = *con->LinuxCon.CurrentVibration;
 		play.value = 1;
 
 		if(write(con->LinuxCon.FD, static_cast<const void*>(&play), sizeof(play)) < 0)
@@ -300,19 +300,19 @@ bool TRAP::Input::OpenControllerDeviceLinux(std::filesystem::path path)
 	name.erase(std::find(name.begin(), name.end(), '\0'), name.end());
 
 	int axisCount = 0, buttonCount = 0, dpadCount = 0;
-	for(int32_t code = BTN_MISC; code < KEY_CNT; code++)
+	for(uint32_t code = BTN_MISC; code < KEY_CNT; code++)
 	{
-		if((keyBits[code / 8u] & (1u << (code % 8u))) == 0u)
+		if((NumericCast<uint8_t>(keyBits[code / 8u]) & (1u << (code % 8u))) == 0u)
 			continue;
 
 		LinuxCon.KeyMap[code - BTN_MISC] = buttonCount;
 		buttonCount++;
 	}
 
-	for(int32_t code = 0; code < ABS_CNT; code++)
+	for(uint32_t code = 0; code < ABS_CNT; code++)
 	{
 		LinuxCon.ABSMap[code] = -1;
-		if((ABSBits[code / 8] & (1u << (code % 8u))) == 0u)
+		if((NumericCast<uint8_t>(ABSBits[code / 8u]) & (1u << (code % 8u))) == 0u)
 			continue;
 
 		if(code >= ABS_HAT0X && code <= ABS_HAT3Y)
@@ -420,7 +420,7 @@ void TRAP::Input::DetectControllerConnectionLinux()
 
 	while(size > offset)
 	{
-		const inotify_event* const e = reinterpret_cast<const inotify_event*>(&buffer[offset]); //Must use reinterpret_cast because of flexible array member
+		const inotify_event* const e = reinterpret_cast<const inotify_event*>(&buffer[NumericCast<std::size_t>(offset)]); //Must use reinterpret_cast because of flexible array member
 
 		offset += NumericCast<ssize_t>(sizeof(inotify_event)) + e->len;
 
@@ -501,7 +501,7 @@ void TRAP::Input::PollABSStateLinux(ControllerInternal* const con)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	for (int32_t code = 0; code < ABS_CNT; code++)
+	for (uint32_t code = 0; code < ABS_CNT; code++)
 	{
 		if (con->LinuxCon.ABSMap[code] < 0)
 			continue;
@@ -518,7 +518,7 @@ void TRAP::Input::PollABSStateLinux(ControllerInternal* const con)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Apply an EV_ABS event to the specified controller
-void TRAP::Input::HandleABSEventLinux(ControllerInternal* const con, int32_t code, int32_t value)
+void TRAP::Input::HandleABSEventLinux(ControllerInternal* const con, uint32_t code, int32_t value)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
@@ -547,8 +547,8 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* const con, int32_t cod
 			}
 		};
 
-		const int32_t dpad = (code - ABS_HAT0X) / 2;
-		const int32_t axis = (code - ABS_HAT0X) % 2;
+		const uint32_t dpad = (code - ABS_HAT0X) / 2u;
+		const uint32_t axis = (code - ABS_HAT0X) % 2u;
 		int32_t* const state = con->LinuxCon.DPads[dpad].data();
 
 		//NOTE: Looking at several input drivers, it seems all DPad events use
@@ -560,7 +560,7 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* const con, int32_t cod
 		else if (value > 0)
 			state[axis] = 2;
 
-		InternalInputControllerDPad(con, index, stateMap[state[0]][state[1]]);
+		InternalInputControllerDPad(con, index, stateMap[state[0u]][state[1u]]);
 	}
 	else
 	{

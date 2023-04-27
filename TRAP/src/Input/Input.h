@@ -910,7 +910,7 @@ namespace TRAP
 		/// <param name="con">Controller to handle event.</param>
 		/// <param name="code">Event code.</param>
 		/// <param name="value">Event value.</param>
-		static void HandleABSEventLinux(ControllerInternal* con, int32_t code, int32_t value);
+		static void HandleABSEventLinux(ControllerInternal* con, uint32_t code, int32_t value);
 		/// <summary>
 		/// Handle key event for the specified controller.
 		/// </summary>
@@ -930,7 +930,7 @@ namespace TRAP
 		{
 			int32_t FD = 0;
 			bool VibrationSupported = false;
-			int16_t CurrentVibration = -1;
+			std::optional<uint16_t> CurrentVibration = std::nullopt;
 			std::filesystem::path Path{};
 			std::array<int32_t, KEY_CNT - BTN_MISC> KeyMap{};
 			std::array<int32_t, ABS_CNT> ABSMap{};
