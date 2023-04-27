@@ -313,7 +313,7 @@ namespace TRAP
 		/// <param name="p">File or folder to open.</param>
 		/// <returns>True on success, false otherwise.</returns>
 		bool OpenExternally(const std::filesystem::path& p);
-    };
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

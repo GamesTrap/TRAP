@@ -3366,20 +3366,20 @@ constexpr bool TRAP::Graphics::RendererAPI::SamplerDesc::SamplerConversionDesc::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::WaveOpsSupportFlags);
-MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::TextureCreationFlags);
-MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ResourceState);
-MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::DescriptorType);
-MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::QueueFlag);
-MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::BufferCreationFlags);
-MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShaderStage);
-MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::RootSignatureFlags);
-MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::BlendStateTargets);
-MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::PipelineCacheFlags);
-MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRate);
-MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCaps);
-MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCombiner);
-MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ClearBufferType);
-MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::LatencyMode);
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::WaveOpsSupportFlags)
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::TextureCreationFlags)
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ResourceState)
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::DescriptorType)
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::QueueFlag)
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::BufferCreationFlags)
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShaderStage)
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::RootSignatureFlags)
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::BlendStateTargets)
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::PipelineCacheFlags)
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRate)
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCaps)
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCombiner)
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ClearBufferType)
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::LatencyMode)
 
 #endif /*TRAP_RENDERERAPI_H*/

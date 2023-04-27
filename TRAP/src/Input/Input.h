@@ -1072,7 +1072,7 @@ namespace TRAP
 	};
 }
 
-MAKE_ENUM_FLAG(TRAP::Input::ControllerDPad);
+MAKE_ENUM_FLAG(TRAP::Input::ControllerDPad)
 
 #endif /*TRAP_HEADLESS_MODE*/
 
