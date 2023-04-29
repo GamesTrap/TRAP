@@ -150,7 +150,7 @@ namespace TRAP
 
 	struct Rigidbody2DComponent
 	{
-		enum class BodyType {Static, Dynamic, Kinematic};
+		enum class BodyType : uint32_t {Static, Dynamic, Kinematic};
 		BodyType Type = BodyType::Static;
 		bool FixedRotation = false;
 

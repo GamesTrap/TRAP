@@ -539,8 +539,8 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(InternalCursor* cursor)
 
 //Creates a custom cursor.
 [[nodiscard]] TRAP::INTERNAL::WindowingAPI::InternalCursor* TRAP::INTERNAL::WindowingAPI::CreateCursor(const Image& image,
-	                                                                                                   const int32_t xHotspot,
-	                                                                                                   const int32_t yHotspot)
+	                                                                                                   const uint32_t xHotspot,
+	                                                                                                   const uint32_t yHotspot)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 

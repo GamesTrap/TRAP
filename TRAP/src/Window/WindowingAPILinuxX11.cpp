@@ -4502,7 +4502,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesX11()
 
 		//Store the reverse translation for faster key name lookup
 		if(ToUnderlying(s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)]) > 0)
-			s_Data.ScanCodes[NumericCast<uint32_t>(ToUnderlying(s_Data.KeyCodes[scanCode]))] = NumericCast<int16_t>(scanCode);
+			s_Data.ScanCodes[NumericCast<uint32_t>(ToUnderlying(s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)]))] = NumericCast<int16_t>(scanCode);
 	}
 
 	s_Data.X11.XLIB.Free(keySyms);

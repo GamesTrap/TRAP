@@ -2044,7 +2044,7 @@ namespace TRAP::INTERNAL
 		/// <param name="xHotspot">Center x coordinate of the image.</param>
 		/// <param name="yHotspot">Center y coordinate of the image.</param>
 		/// <returns>On success new internal cursor, nullptr otherwise.</returns>
-		[[nodiscard]] static InternalCursor* CreateCursor(const Image& image, int32_t xHotspot, int32_t yHotspot);
+		[[nodiscard]] static InternalCursor* CreateCursor(const Image& image, uint32_t xHotspot, uint32_t yHotspot);
 		/// <summary>
 		/// Creates a cursor with a standard shape.
 		///
