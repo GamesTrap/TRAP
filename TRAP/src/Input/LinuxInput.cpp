@@ -560,7 +560,7 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* const con, uint32_t co
 		else if (value > 0)
 			state[axis] = 2;
 
-		InternalInputControllerDPad(con, index, stateMap[state[0u]][state[1u]]);
+		InternalInputControllerDPad(con, index, stateMap[NumericCast<std::size_t>(state[0u])][NumericCast<std::size_t>(state[1u])]);
 	}
 	else
 	{
@@ -582,12 +582,11 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* const con, uint32_t co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::HandleKeyEventLinux(ControllerInternal* const con, int32_t code, int32_t value)
+void TRAP::Input::HandleKeyEventLinux(ControllerInternal* const con, uint32_t code, int32_t value)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if(code - BTN_MISC >= 0)
-		InternalInputControllerButton(con, con->LinuxCon.KeyMap[code - BTN_MISC], value != 0);
+	InternalInputControllerButton(con, con->LinuxCon.KeyMap[code - BTN_MISC], value != 0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

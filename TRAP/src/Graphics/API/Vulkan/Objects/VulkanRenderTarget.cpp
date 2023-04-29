@@ -10,7 +10,7 @@
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 #include <memory>
 
-std::atomic<int32_t> TRAP::Graphics::API::VulkanRenderTarget::s_RenderTargetIDs = 1;
+std::atomic<uint64_t> TRAP::Graphics::API::VulkanRenderTarget::s_RenderTargetIDs = 1;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -18,7 +18,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
 	  m_vkDescriptor(VK_NULL_HANDLE),
 	  m_used(),
-	  m_ID(++s_RenderTargetIDs)
+	  m_ID(s_RenderTargetIDs++)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -219,7 +219,7 @@ TRAP::Graphics::API::VulkanRenderTarget::~VulkanRenderTarget()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanRenderTarget::GetID() const noexcept
+[[nodiscard]] uint64_t TRAP::Graphics::API::VulkanRenderTarget::GetID() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

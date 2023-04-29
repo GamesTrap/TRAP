@@ -263,7 +263,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* const d
 
 	//Loop until every byte has been sent
 	int64_t result = 0;
-	for(sent = 0; sent < size; sent += result)
+	for(sent = 0; sent < size; sent += NumericCast<std::size_t>(result))
 	{
 		//Send a chunk of data
 		result = ::send(GetHandle(), static_cast<const char*>(data) + sent, NumericCast<size_t>(size - sent), flags);

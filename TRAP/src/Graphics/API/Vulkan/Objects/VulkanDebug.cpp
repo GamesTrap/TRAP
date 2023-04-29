@@ -7,7 +7,7 @@
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
-	: m_debugUtils(nullptr), m_debugReport(nullptr), m_instance(std::move(instance))
+	: m_instance(std::move(instance))
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

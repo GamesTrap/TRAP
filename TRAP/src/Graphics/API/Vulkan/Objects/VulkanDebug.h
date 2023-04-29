@@ -69,9 +69,11 @@ namespace TRAP::Graphics::API
 																	    int32_t messageCode,
 																	    std::string_view layerPrefix,
 																	    std::string_view message, void* userData);
-
-		VkDebugUtilsMessengerEXT m_debugUtils;
-		VkDebugReportCallbackEXT m_debugReport;
+#ifdef ENABLE_DEBUG_UTILS_EXTENSION
+		VkDebugUtilsMessengerEXT m_debugUtils = nullptr;
+#else
+		VkDebugReportCallbackEXT m_debugReport = nullptr;
+#endif
 
 		Ref<VulkanInstance> m_instance;
 	};

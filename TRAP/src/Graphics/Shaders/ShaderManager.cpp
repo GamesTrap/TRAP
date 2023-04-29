@@ -239,7 +239,7 @@ void TRAP::Graphics::ShaderManager::ReloadAll()
 
 	return std::any_of(Shaders.begin(), Shaders.end(), [path](const auto& element)
 	{
-		return FileSystem::IsEquivalent(element.second->GetFilePath(), path);
+		return !element.second->GetFilePath().empty() && FileSystem::IsEquivalent(element.second->GetFilePath(), path);
 	});
 }
 

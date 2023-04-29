@@ -130,7 +130,7 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	int32_t blendDescIndex = 0;
+	uint32_t blendDescIndex = 0;
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	for(uint32_t i = 0; i < 8; ++i)
@@ -162,8 +162,8 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 			VkBlendConstantTranslator[ToUnderlying(desc.DstAlphaFactors[blendDescIndex])] != VK_BLEND_FACTOR_ZERO
 		);
 
-		attachments[i].blendEnable = VkBool32((blendEnable != VK_FALSE) && ((ToUnderlying(desc.RenderTargetMask) & BIT(i)) != 0u));
-		attachments[i].colorWriteMask = desc.Masks[blendDescIndex];
+		attachments[i].blendEnable = static_cast<VkBool32>((blendEnable != VK_FALSE) && ((ToUnderlying(desc.RenderTargetMask) & BIT(i)) != 0u));
+		attachments[i].colorWriteMask = static_cast<VkColorComponentFlags>(desc.Masks[blendDescIndex]);
 		attachments[i].srcColorBlendFactor = VkBlendConstantTranslator[ToUnderlying(desc.SrcFactors[blendDescIndex])];
 		attachments[i].dstColorBlendFactor = VkBlendConstantTranslator[ToUnderlying(desc.DstFactors[blendDescIndex])];
 		attachments[i].colorBlendOp = VkBlendOpTranslator[ToUnderlying(desc.BlendModes[blendDescIndex])];

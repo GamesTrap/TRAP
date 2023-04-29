@@ -374,7 +374,7 @@ void TRAP::Graphics::TextureManager::ReloadAll()
 	{
 		if (texture->GetType() == TextureType::Texture2D)
 		{
-			if (FileSystem::IsEquivalent(texture->GetFilePath(), path))
+			if (!texture->GetFilePath().empty() && FileSystem::IsEquivalent(texture->GetFilePath(), path))
 				return true;
 		}
 		else if(texture->GetType() == TextureType::TextureCube)
@@ -382,7 +382,7 @@ void TRAP::Graphics::TextureManager::ReloadAll()
 			const std::array<std::filesystem::path, 6> imageFilePaths = texture->GetFilePaths();
 			for(const auto& filePath : imageFilePaths)
 			{
-				if (FileSystem::IsEquivalent(filePath, path))
+				if (!filePath.empty() && FileSystem::IsEquivalent(filePath, path))
 					return true;
 			}
 		}

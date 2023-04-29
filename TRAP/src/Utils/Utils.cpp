@@ -54,7 +54,7 @@
 		return {};
 
 	std::array<uint8_t, 16> result{};
-	for (const uint8_t i : uuid)
+	for (const char i : uuid)
 	{
 		if (i == '-')
 			continue;
@@ -64,7 +64,7 @@
 
 		if(firstDigit)
 		{
-			digit = i;
+			digit = NumericCast<uint8_t>(i);
 			firstDigit = false;
 		}
 		else
@@ -72,23 +72,30 @@
 			uint8_t charDigit = 0;
 			uint8_t uuidDigit = 0;
 
-			if (digit >= '0' && digit <= '9')
+			if (isdigit(digit) != 0)
 				charDigit = digit - '0';
-			else if (digit >= 'a' && digit <= 'f')
-				charDigit = 10 + digit - 'a';
-			else if (digit >= 'A' && digit <= 'F')
-				charDigit = 10 + digit - 'A';
+			else if (isalpha(digit) != 0)
+			{
+				if (islower(digit) != 0)
+					charDigit = 10 + digit - 'a';
+				else if(isupper(digit) != 0)
+					charDigit = 10 + digit - 'A';
+			}
 			else
 				charDigit = 0;
 
-			if (i >= '0' && i <= '9')
-				uuidDigit = i - '0';
-			else if (i >= 'a' && i <= 'f')
-				uuidDigit = 10 + i - 'a';
-			else if (i >= 'A' && i <= 'F')
-				uuidDigit = 10 + i - 'A';
+			if (isdigit(i) != 0)
+				uuidDigit = NumericCast<uint8_t>(i - '0');
+			else if (isalpha(i) != 0)
+			{
+				if (islower(i) != 0)
+					uuidDigit = NumericCast<uint8_t>(10 + i - 'a');
+				else if (isupper(i) != 0)
+					uuidDigit = NumericCast<uint8_t>(10 + i - 'A');
+			}
 			else
 				uuidDigit = 0;
+
 			result[index] = (static_cast<uint8_t>((charDigit << 4u)) | uuidDigit);
 			index++;
 			firstDigit = true;
@@ -159,15 +166,15 @@
 	{
 		if (HFS >= 11u)
 		{
-			int32_t numSMT = 0;
-			for (int32_t lvl = 0; lvl < MAX_INTEL_TOP_LVL; ++lvl)
+			uint32_t numSMT = 0;
+			for (uint32_t lvl = 0; lvl < MAX_INTEL_TOP_LVL; ++lvl)
 			{
-				const std::array<uint32_t, 4> regs1 = CPUID(0x0B, lvl);
+				const std::array<uint32_t, 4> regs1 = CPUID(0x0Bu, lvl);
 				const uint32_t currentLevel = (LVL_TYPE & std::get<2>(regs1)) >> 8u;
 				switch (currentLevel)
 				{
 				case BIT(0):
-					numSMT = NumericCast<int32_t>(LVL_CORES & std::get<1>(regs1));
+					numSMT = LVL_CORES & std::get<1>(regs1);
 					break;
 
 				case BIT(1):
@@ -258,15 +265,11 @@
 	}
 
 	std::size_t lastAlphaChar = 0;
-	for(auto it = cpu.Model.rbegin(); it != cpu.Model.rend(); ++it)
-	{
-		if (isalnum(*it) != 0)
-		{
-			lastAlphaChar = it - cpu.Model.rbegin();
-			break;
-		}
-	}
-	cpu.Model.erase(cpu.Model.end() - lastAlphaChar, cpu.Model.end());
+	const auto it = std::find_if(cpu.Model.rbegin(), cpu.Model.rend(), isalnum);
+	if(it != cpu.Model.rend())
+		lastAlphaChar = NumericCast<std::size_t>(it - cpu.Model.rbegin());
+
+	cpu.Model.erase(cpu.Model.end() - NumericCast<std::string::difference_type>(lastAlphaChar), cpu.Model.end());
 
 	return cpu;
 }

@@ -66,14 +66,14 @@ namespace TRAP::Graphics
 	class RendererAPI
 	{
 	public:
-		enum class CompareMode;
-		enum class StencilOp;
-		enum class CullMode;
-		enum class FillMode;
+		enum class CompareMode : uint32_t;
+		enum class StencilOp : uint32_t;
+		enum class CullMode : uint32_t;
+		enum class FillMode : uint32_t;
 		enum class PrimitiveTopology;
-		enum class FrontFace;
-		enum class BlendMode;
-		enum class BlendConstant;
+		enum class FrontFace : uint32_t;
+		enum class BlendMode : uint32_t;
+		enum class BlendConstant : uint32_t;
 		enum class IndexType;
 		enum class ClearBufferType : uint32_t;
 		enum class ShadingRate : uint32_t;
@@ -81,7 +81,7 @@ namespace TRAP::Graphics
 		enum class ResourceState : uint32_t;
 		enum class AntiAliasing;
 		enum class SampleCount;
-		enum class QueueType;
+		enum class QueueType : uint32_t;
 		enum class GPUVendor;
 		enum class LatencyMode : uint32_t;
 		struct Color;
@@ -1452,7 +1452,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different types of queues.
 		/// </summary>
-		enum class QueueType
+		enum class QueueType : uint32_t
 		{
 			Graphics = 0,
 			Transfer,
@@ -1497,7 +1497,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different types of load actions.
 		/// </summary>
-		enum class LoadActionType
+		enum class LoadActionType : uint32_t
 		{
 			DontCare,
 			Load,
@@ -1509,7 +1509,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different types of store actions.
 		/// </summary>
-		enum class StoreActionType
+		enum class StoreActionType : uint32_t
 		{
 			//Store is the most common use case so keep that as default
 			Store,
@@ -1820,7 +1820,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different compare modes used by depth/stencil testing and samplers.
 		/// </summary>
-		enum class CompareMode
+		enum class CompareMode : uint32_t
 		{
 			Never,
 			Less,
@@ -1871,7 +1871,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different pipeline types.
 		/// </summary>
-		enum class PipelineType
+		enum class PipelineType : uint32_t
 		{
 			Undefined = 0,
 			Compute,
@@ -1893,7 +1893,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different blend constants used for blending.
 		/// </summary>
-		enum class BlendConstant
+		enum class BlendConstant : uint32_t
 		{
 			Zero = 0,
 			One,
@@ -1915,7 +1915,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different blend modes/functions used for blending.
 		/// </summary>
-		enum class BlendMode
+		enum class BlendMode : uint32_t
 		{
 			Add,
 			Subtract,
@@ -1946,7 +1946,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different stencil/depth operations.
 		/// </summary>
-		enum class StencilOp
+		enum class StencilOp : uint32_t
 		{
 			Keep,
 			SetZero,
@@ -1963,7 +1963,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different cull modes.
 		/// </summary>
-		enum class CullMode
+		enum class CullMode : uint32_t
 		{
 			None = 0,
 			Back,
@@ -1976,7 +1976,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different front face winding orders.
 		/// </summary>
-		enum class FrontFace
+		enum class FrontFace : uint32_t
 		{
 			CounterClockwise = 0,
 			Clockwise
@@ -1985,7 +1985,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different fill modes.
 		/// </summary>
-		enum class FillMode
+		enum class FillMode : uint32_t
 		{
 			Solid,
 			Line,

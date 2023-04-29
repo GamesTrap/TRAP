@@ -54,7 +54,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the render target's ID.
 		/// </summary>
 		/// <returns>Render target ID.</returns>
-		[[nodiscard]] uint32_t GetID() const noexcept;
+		[[nodiscard]] uint64_t GetID() const noexcept;
 
 	private:
 		friend void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector<RendererAPI::BufferBarrier>* bufferBarriers,
@@ -84,9 +84,9 @@ namespace TRAP::Graphics::API
 		std::vector<VkImageView> m_vkSliceDescriptors;
 		volatile uint32_t m_used;
 
-		uint32_t m_ID;
+		uint64_t m_ID;
 
-		static std::atomic<int32_t> s_RenderTargetIDs;
+		static std::atomic<uint64_t> s_RenderTargetIDs;
 	};
 }
 

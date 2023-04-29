@@ -284,8 +284,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		};
 
 		renderPassHash = HashAlg<uint32_t>(hashValues.data(), 4, renderPassHash);
-		const uint32_t ID = std::dynamic_pointer_cast<VulkanRenderTarget>(renderTargets[i])->GetID();
-		frameBufferHash = HashAlg<uint32_t>(&ID, 1, frameBufferHash);
+		const uint64_t ID = std::dynamic_pointer_cast<VulkanRenderTarget>(renderTargets[i])->GetID();
+		frameBufferHash = HashAlg<uint64_t>(&ID, 1, frameBufferHash);
 	}
 	if(depthStencil)
 	{
@@ -313,8 +313,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 			NumericCast<uint32_t>(ToUnderlying(stencilStoreAction))
 		};
 		renderPassHash = HashAlg<uint32_t>(hashValues.data(), 6, renderPassHash);
-		const uint32_t ID = dStencil->GetID();
-		frameBufferHash = HashAlg<uint32_t>(&ID, 1, frameBufferHash);
+		const uint64_t ID = dStencil->GetID();
+		frameBufferHash = HashAlg<uint64_t>(&ID, 1, frameBufferHash);
 	}
 	if (colorArraySlices != nullptr)
 		frameBufferHash = HashAlg<uint32_t>(colorArraySlices->data(), renderTargets.size(), frameBufferHash);
@@ -330,8 +330,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 
 		const uint32_t hashValue = NumericCast<uint32_t>(ToUnderlying(shadingRate->GetImageFormat()));
 		renderPassHash = HashAlg<uint32_t>(&hashValue, 1, renderPassHash);
-		const uint32_t ID = std::dynamic_pointer_cast<VulkanRenderTarget>(shadingRate)->GetID();
-		frameBufferHash = HashAlg<uint32_t>(&ID, 1, frameBufferHash);
+		const uint64_t ID = std::dynamic_pointer_cast<VulkanRenderTarget>(shadingRate)->GetID();
+		frameBufferHash = HashAlg<uint64_t>(&ID, 1, frameBufferHash);
 	}
 
 	RendererAPI::SampleCount sampleCount = RendererAPI::SampleCount::One;

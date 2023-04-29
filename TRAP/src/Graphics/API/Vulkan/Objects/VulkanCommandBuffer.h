@@ -393,7 +393,7 @@ namespace TRAP::Graphics::API
 			uint32_t result = static_cast<uint32_t>(prev);
 
 			while (size--)
-				result = (result * 16777619) ^ *mem++;
+				result = static_cast<uint32_t>((result * 16777619) ^ *mem++);
 
 			return NumericCast<std::size_t>(result);
 		}

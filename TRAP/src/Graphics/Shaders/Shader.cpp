@@ -76,8 +76,8 @@ bool TRAP::Graphics::Shader::Reload()
 		const auto loadedData = FileSystem::ReadFile(m_filepath);
 		if(loadedData)
 		{
-			SPIRVSource.resize((*loadedData).size() / sizeof(uint32_t));
-			Utils::Memory::ConvertBytes((*loadedData).begin(), (*loadedData).end(), SPIRVSource.begin());
+			SPIRVSource.resize(loadedData->size() / sizeof(uint32_t));
+			Utils::Memory::ConvertBytes(loadedData->begin(), loadedData->end(), SPIRVSource.begin());
 			// SPIRVSource = Convert8To32(*loadedData);
 		}
 	}
@@ -885,8 +885,8 @@ bool TRAP::Graphics::Shader::Reload()
 			const auto loadedData = FileSystem::ReadFile(filePath);
 			if(loadedData)
 			{
-				SPIRVSource.resize((*loadedData).size() / sizeof(uint32_t));
-				Utils::Memory::ConvertBytes((*loadedData).begin(), (*loadedData).end(), SPIRVSource.begin());
+				SPIRVSource.resize(loadedData->size() / sizeof(uint32_t));
+				Utils::Memory::ConvertBytes(loadedData->begin(), loadedData->end(), SPIRVSource.begin());
 				//SPIRVSource = Convert8To32(*loadedData);
 			}
 		}

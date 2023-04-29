@@ -117,7 +117,7 @@ namespace TRAP::Utils::Memory
 		{
 			//Is size a multiple of OutputIts type
 			const auto size = std::distance(begin, end);
-			if(size % sizeof(output_type) != 0)
+			if(NumericCast<uint64_t>(size) % sizeof(output_type) != 0)
 			{
 				TRAP_ASSERT(false, "Memory::ConvertBytes(): Size of input type is not a multiple of output type");
 				return;

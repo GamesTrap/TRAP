@@ -917,7 +917,7 @@ namespace TRAP
 		/// <param name="con">Controller to handle event.</param>
 		/// <param name="code">Event code.</param>
 		/// <param name="value">Event value.</param>
-		static void HandleKeyEventLinux(ControllerInternal* con, int32_t code, int32_t value);
+		static void HandleKeyEventLinux(ControllerInternal* con, uint32_t code, int32_t value);
 		struct ControllerLinuxLibrary
 		{
 			int32_t INotify = 0;
