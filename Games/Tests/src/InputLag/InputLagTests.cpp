@@ -3,9 +3,7 @@
 InputLagTests::InputLagTests()
 	: Layer("InputLag"), m_cursorMethod(CursorMethod::SyncQuery),
 	  m_vsync(TRAP::Application::GetWindow()->GetVSync()),
-	  m_cursorNew(), m_cursorPos(), m_cursorVelocity(), m_showForecasts(true), m_latencyMode(), m_totalHistory(),
-	  m_simulationDeltaHistory(), m_renderDeltaHistory(), m_presentDeltaHistory(), m_driverDeltaHistory(),
-	  m_OSRenderQueueDeltaHistory(), m_GPURenderDeltaHistory()
+	  m_cursorNew(), m_cursorPos(), m_cursorVelocity(), m_showForecasts(true), m_latencyMode()
 {
 }
 
@@ -30,7 +28,7 @@ void InputLagTests::OnImGuiRender()
 	ImGui::Separator();
 	//Draw indicators on mouse pos
 	for(int32_t lead = m_showForecasts ? 3 : 0; lead >= 0; --lead)
-		DrawMarker(lead, TRAP::Math::Vec2(m_cursorPos + m_cursorVelocity * NumericCast<float>(lead)));
+		DrawMarker(NumericCast<uint32_t>(lead), TRAP::Math::Vec2(m_cursorPos + m_cursorVelocity * NumericCast<float>(lead)));
 	//Draw instructions
 	ImGui::Text("Move mouse uniformly and check marker under cursor:");
 	for(uint32_t lead = 0; lead <= 3; ++lead)
@@ -234,7 +232,7 @@ void InputLagTests::SampleInput()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void InputLagTests::DrawMarker(const int32_t lead, TRAP::Math::Vec2 pos)
+void InputLagTests::DrawMarker(const uint32_t lead, TRAP::Math::Vec2 pos)
 {
 	static constexpr std::array<ImColor, 4> colors{ImColor(1.0f, 0.0f, 0.0f), ImColor(1.0f, 1.0f, 0.0f), ImColor(0.0f, 1.0f, 0.0), ImColor(0.0f, 0.376f, 1.0f)};
 

@@ -278,7 +278,7 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 		{
 			for (uint32_t i = 0; i < projectionTypeStrings.size(); i++)
 			{
-				const bool isSelected = currentProjectionTypeString == projectionTypeStrings[i];
+				const bool isSelected = std::string_view(currentProjectionTypeString) == projectionTypeStrings[i];
 				if (ImGui::Selectable(projectionTypeStrings[i].data(), isSelected))
 				{
 					currentProjectionTypeString = projectionTypeStrings[i].data();
@@ -339,9 +339,9 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 		const char* currentBodyTypeString = bodyTypeStrings[ToUnderlying(component.Type)].data();
 		if(ImGui::BeginCombo("Body Type", currentBodyTypeString))
 		{
-			for(int32_t i = 0; i < 3; ++i)
+			for(uint32_t i = 0; i < bodyTypeStrings.size(); ++i)
 			{
-				bool isSelected = currentBodyTypeString == bodyTypeStrings[i];
+				bool isSelected = std::string_view(currentBodyTypeString) == bodyTypeStrings[i];
 				if(ImGui::Selectable(bodyTypeStrings[i].data(), isSelected))
 				{
 					currentBodyTypeString = bodyTypeStrings[i].data();

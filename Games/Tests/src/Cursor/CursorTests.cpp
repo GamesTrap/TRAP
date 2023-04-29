@@ -21,7 +21,7 @@ float CursorTests::Star(const uint32_t x, const uint32_t y, const float t)
 
 TRAP::Scope<TRAP::Image> CursorTests::CreateCursorFrame(const float t)
 {
-	int32_t i = 0;
+	uint32_t i = 0;
 	std::vector<uint8_t> buffer(64ull * 64ull * 4ull, 0);
 
 	for(uint32_t y = 0; y < 64; y++)
@@ -255,12 +255,12 @@ bool CursorTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 		[[fallthrough]];
 	case TRAP::Input::Key::Nine:
 	{
-		uint32_t index = ToUnderlying(event.GetKey()) - ToUnderlying(TRAP::Input::Key::One);
+		int32_t index = ToUnderlying(event.GetKey()) - ToUnderlying(TRAP::Input::Key::One);
 		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Shift) ||
 			TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_Shift))
 			index += 9;
 
-		if (index <= ToUnderlying(TRAP::Window::CursorType::NotAllowed))
+		if (index <= NumericCast<int32_t>(ToUnderlying(TRAP::Window::CursorType::NotAllowed)))
 			TRAP::Application::GetWindow()->SetCursorType(static_cast<TRAP::Window::CursorType>(index));
 
 		break;

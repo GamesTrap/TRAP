@@ -333,7 +333,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(InternalWindow& window
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformCreateCursor(InternalCursor& cursor, const Image& image,
-                                                        const int32_t xHotspot, const int32_t yHotspot)
+                                                        const uint32_t xHotspot, const uint32_t yHotspot)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -1051,7 +1051,7 @@ TRAP::Input::Key TRAP::INTERNAL::WindowingAPI::TranslateKey(const int32_t scanCo
 	if(scanCode < 0 || scanCode >= NumericCast<int32_t>(s_Data.KeyCodes.size()))
 		return Input::Key::Unknown;
 
-	return s_Data.KeyCodes[scanCode];
+	return s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

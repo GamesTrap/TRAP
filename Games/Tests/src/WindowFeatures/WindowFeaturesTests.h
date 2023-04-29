@@ -22,8 +22,6 @@ private:
 	TRAP::Math::Vec2ui m_maxWindowSize;
 	TRAP::Math::Vec2i m_aspect;
 
-	bool m_fullscreen;
-	bool m_limitAspectRatio;
 	bool m_limitMinSize;
 	bool m_limitMaxSize;
 };

@@ -29,7 +29,7 @@
 
 namespace TRAP::Graphics::API
 {
-    enum class ImageFormat
+    enum class ImageFormat : uint32_t
     {
         Undefined = 0,
         R1_UNORM = 1,

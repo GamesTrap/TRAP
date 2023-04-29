@@ -9,7 +9,7 @@ namespace TRAP
 	class SceneCamera : public Graphics::Camera
 	{
 	public:
-		enum class ProjectionType
+		enum class ProjectionType : uint32_t
 		{
 			Perspective = 0,
 			Orthographic = 1

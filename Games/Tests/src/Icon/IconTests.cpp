@@ -87,20 +87,20 @@ void IconTests::SetIcon(const TRAP::Window& window, const uint32_t iconColor)
 	std::vector<uint8_t> pixels(16ull * 16ull * 4ull, 0);
 	std::size_t target = 0;
 
-	for(int32_t y = 0; y < 16; y++)
+	for(uint32_t y = 0; y < 16u; y++)
 	{
-		for(int32_t x = 0; x < 16; x++)
+		for(uint32_t x = 0; x < 16u; x++)
 		{
 			if (IconStrings[y][x] == '0')
 				memcpy(&pixels[target], IconColors[iconColor].data(), 4);
 			else
-				memset(&pixels[target], 0, 4);
+				memset(&pixels[target], 0, 4u);
 
-			target += 4;
+			target += 4u;
 		}
 	}
 
-	window.SetIcon(TRAP::Image::LoadFromMemory(16, 16, TRAP::Image::ColorFormat::RGBA, pixels).get());
+	window.SetIcon(TRAP::Image::LoadFromMemory(16u, 16u, TRAP::Image::ColorFormat::RGBA, pixels).get());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

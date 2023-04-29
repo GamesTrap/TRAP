@@ -3933,4 +3933,4 @@ SITREP 04/28/2023|23w17a4
 
 SITREP 04/29/2023|23w17a5
     - Changed TRAP Engine version to 23w17a5(0.9.24)
-    - Resolved Build-CI Clang warnings ~>60 mins
+    - Resolved Build-CI Clang warnings ~>120 mins

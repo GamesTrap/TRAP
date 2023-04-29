@@ -110,7 +110,7 @@ void TRAP::Window::OnUpdate()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return m_data.Width;
+	return NumericCast<uint32_t>(m_data.Width);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -119,7 +119,7 @@ void TRAP::Window::OnUpdate()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return m_data.Height;
+	return NumericCast<uint32_t>(m_data.Height);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -451,8 +451,8 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 			//Resolution pair is still invalid so use native/default resolution
 			if (!valid)
 			{
-				width = s_baseVideoModes[m_data.Monitor].Width;
-				height = s_baseVideoModes[m_data.Monitor].Height;
+				width = NumericCast<uint32_t>(s_baseVideoModes[m_data.Monitor].Width);
+				height = NumericCast<uint32_t>(s_baseVideoModes[m_data.Monitor].Height);
 				refreshRate = s_baseVideoModes[m_data.Monitor].RefreshRate;
 			}
 
@@ -501,7 +501,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 
 void TRAP::Window::SetDisplayMode(const DisplayMode displayMode, const Monitor::VideoMode& videoMode)
 {
-	SetDisplayMode(displayMode, videoMode.Width, videoMode.Height, videoMode.RefreshRate);
+	SetDisplayMode(displayMode, NumericCast<uint32_t>(videoMode.Width), NumericCast<uint32_t>(videoMode.Height), videoMode.RefreshRate);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -529,7 +529,8 @@ void TRAP::Window::SetMonitor(Monitor& monitor)
 		SetDisplayMode(DisplayMode::Windowed, 0, 0, 0);
 	}
 	else
-		SetDisplayMode(m_data.displayMode, m_data.Width, m_data.Height, m_data.RefreshRate);
+		SetDisplayMode(m_data.displayMode, NumericCast<uint32_t>(m_data.Width), NumericCast<uint32_t>(m_data.Height),
+		               m_data.RefreshRate);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -752,7 +753,8 @@ void TRAP::Window::SetAspectRatio(const uint32_t numerator, const uint32_t denom
 	if(numerator == 0 && denominator == 0) //Disable aspect ratio
 		INTERNAL::WindowingAPI::SetWindowAspectRatio(*m_window, -1, -1);
 	else //Enable aspect ratio
-		INTERNAL::WindowingAPI::SetWindowAspectRatio(*m_window, numerator, denominator);
+		INTERNAL::WindowingAPI::SetWindowAspectRatio(*m_window, NumericCast<int32_t>(numerator),
+		                                             NumericCast<int32_t>(denominator));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -761,10 +763,10 @@ void TRAP::Window::SetPosition(const uint32_t x, const uint32_t y)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
-	INTERNAL::WindowingAPI::SetWindowPos(*m_window, x, y);
+	INTERNAL::WindowingAPI::SetWindowPos(*m_window, NumericCast<int32_t>(x), NumericCast<int32_t>(y));
 
-	m_data.windowModeParams.XPos = x;
-	m_data.windowModeParams.YPos = y;
+	m_data.windowModeParams.XPos = NumericCast<int32_t>(x);
+	m_data.windowModeParams.YPos = NumericCast<int32_t>(y);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1028,7 +1030,8 @@ void TRAP::Window::Init(const WindowProps& props)
 		m_data.Height = MinimumSupportedWindowHeight;
 	}
 
-	m_window = INTERNAL::WindowingAPI::CreateWindow(m_data.Width, m_data.Height,
+	m_window = INTERNAL::WindowingAPI::CreateWindow(NumericCast<uint32_t>(m_data.Width),
+	                                                NumericCast<uint32_t>(m_data.Height),
 		                                            newTitle, nullptr);
 
 	if (m_window == nullptr)
@@ -1069,7 +1072,8 @@ void TRAP::Window::Init(const WindowProps& props)
 													m_data.MaxWidth, m_data.MaxHeight);
 	}
 
-	SetDisplayMode(props.DisplayMode, m_data.Width, m_data.Height, m_data.RefreshRate);
+	SetDisplayMode(props.DisplayMode, NumericCast<uint32_t>(m_data.Width), NumericCast<uint32_t>(m_data.Height),
+	               m_data.RefreshRate);
 
 	m_data.Win = this;
 
@@ -1127,7 +1131,7 @@ void TRAP::Window::SetupEventCallbacks()
 			if (!data->EventCallback)
 				return;
 
-			Events::WindowResizeEvent event(w, h, data->Win);
+			Events::WindowResizeEvent event(NumericCast<uint32_t>(w), NumericCast<uint32_t>(h), data->Win);
 			data->EventCallback(event);
 		}
 	);
@@ -1356,7 +1360,7 @@ void TRAP::Window::SetupEventCallbacks()
 			if (!data->EventCallback || w == 0 || h == 0)
 				return;
 
-			Events::FrameBufferResizeEvent event(w, h, data->Win);
+			Events::FrameBufferResizeEvent event(NumericCast<uint32_t>(w), NumericCast<uint32_t>(h), data->Win);
 			data->EventCallback(event);
 		}
 	);

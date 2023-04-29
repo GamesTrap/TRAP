@@ -1626,7 +1626,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowProgressIndicator(const InternalWind
 		return Input::KeyState::Released;
 	}
 
-	return window.Keys[ToUnderlying(key)];
+	return window.Keys[NumericCast<std::size_t>(ToUnderlying(key))];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2237,13 +2237,13 @@ void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow& window, Input::Key k
 	{
 		bool repeated = false;
 
-		if(state == Input::KeyState::Released && window.Keys[ToUnderlying(key)] == Input::KeyState::Released)
+		if(state == Input::KeyState::Released && window.Keys[NumericCast<std::size_t>(ToUnderlying(key))] == Input::KeyState::Released)
 			return;
 
-		if(state == Input::KeyState::Pressed && window.Keys[ToUnderlying(key)] == Input::KeyState::Pressed)
+		if(state == Input::KeyState::Pressed && window.Keys[NumericCast<std::size_t>(ToUnderlying(key))] == Input::KeyState::Pressed)
 			repeated = true;
 
-		window.Keys[ToUnderlying(key)] = state;
+		window.Keys[NumericCast<std::size_t>(ToUnderlying(key))] = state;
 
 		if(repeated)
 			state = Input::KeyState::Repeat;
@@ -2479,16 +2479,16 @@ void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 		uint32_t colorDiff = 0;
 
 		if (desired.RedBits != -1)
-			colorDiff += abs(mode.RedBits - desired.RedBits);
+			colorDiff += NumericCast<uint32_t>(abs(mode.RedBits - desired.RedBits));
 		if (desired.GreenBits != -1)
-			colorDiff += abs(mode.GreenBits - desired.GreenBits);
+			colorDiff += NumericCast<uint32_t>(abs(mode.GreenBits - desired.GreenBits));
 		if (desired.BlueBits != -1)
-			colorDiff += abs(mode.BlueBits - desired.BlueBits);
+			colorDiff += NumericCast<uint32_t>(abs(mode.BlueBits - desired.BlueBits));
 
-		const uint32_t sizeDiff = abs((mode.Width - desired.Width) *
+		const uint32_t sizeDiff = NumericCast<uint32_t>(abs((mode.Width - desired.Width) *
 			(mode.Width - desired.Width) +
 			(mode.Height - desired.Height) *
-			(mode.Height - desired.Height));
+			(mode.Height - desired.Height)));
 
 		if (desired.RefreshRate != -1.0)
 			rateDiff = abs(mode.RefreshRate - desired.RefreshRate);

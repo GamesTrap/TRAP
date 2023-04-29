@@ -1777,8 +1777,8 @@ void CALLBACK TRAP::INTERNAL::WindowingAPI::MessageFiberProc([[maybe_unused]] LP
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Creates an RGBA icon or cursor
-[[nodiscard]] HICON TRAP::INTERNAL::WindowingAPI::CreateIcon(const Image& image, const int32_t xHot,
-	                                                         const int32_t yHot, const bool icon)
+[[nodiscard]] HICON TRAP::INTERNAL::WindowingAPI::CreateIcon(const Image& image, const uint32_t xHot,
+	                                                         const uint32_t yHot, const bool icon)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2541,7 +2541,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(InternalWindow& window
 
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::PlatformCreateCursor(InternalCursor& cursor,
 	                                                                  const Image& image,
-                                                                      const int32_t xHotspot, const int32_t yHotspot)
+                                                                      const uint32_t xHotspot,
+																	  const uint32_t yHotspot)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2722,7 +2723,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIcon(InternalWindow& window,
 
 	if (image)
 	{
-		bigIcon = CreateIcon(*image, 0, 0, true);
+		bigIcon = CreateIcon(*image, 0u, 0u, true);
 		smallIcon = bigIcon;
 	}
 	else

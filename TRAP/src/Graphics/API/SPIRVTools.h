@@ -42,7 +42,7 @@ namespace TRAP::Graphics::API::SPIRVTools
 	/// <summary>
 	/// Type of resource.
 	/// </summary>
-	enum class ResourceType
+	enum class ResourceType : uint32_t
 	{
 		Inputs = 0,
 		Outputs,
@@ -64,7 +64,7 @@ namespace TRAP::Graphics::API::SPIRVTools
 	/// <summary>
 	/// Texture dimension.
 	/// </summary>
-	enum class ResourceTextureDimension
+	enum class ResourceTextureDimension : uint32_t
 	{
 		Undefined = 0,
 		Buffer = 1,

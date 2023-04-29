@@ -48,7 +48,7 @@ namespace TRAP::Graphics::API
 
 	namespace ShaderReflection
 	{
-		enum class TextureDimension;
+		enum class TextureDimension : uint32_t;
 	}
 }
 

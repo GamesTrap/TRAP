@@ -2,8 +2,7 @@
 
 WindowFeaturesTests::WindowFeaturesTests()
 	: Layer("WindowFeatures"), m_lastWindowPos(), m_lastWindowSize(),
-	  m_minWindowSize(400), m_maxWindowSize(400), m_aspect(1), m_fullscreen(false),
-	  m_limitAspectRatio(false), m_limitMinSize(false), m_limitMaxSize(false)
+	  m_minWindowSize(400), m_maxWindowSize(400), m_aspect(1), m_limitMinSize(false), m_limitMaxSize(false)
 {
 }
 
@@ -74,7 +73,7 @@ void WindowFeaturesTests::OnImGuiRender()
 
 		if(changed != 0)
 		{
-			TRAP::Application::GetWindow()->SetPosition(winPos.x, winPos.y);
+			TRAP::Application::GetWindow()->SetPosition(NumericCast<uint32_t>(winPos.x), NumericCast<uint32_t>(winPos.y));
 			m_lastWindowPos = winPos;
 		}
 	}

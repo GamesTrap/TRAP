@@ -133,7 +133,7 @@ void TRAP::INTERNAL::WindowingAPI::DataSourceHandleSend([[maybe_unused]] void* c
             break;
         }
 
-        length -= result;
+        length -= NumericCast<std::size_t>(result);
         string += result;
     }
 
@@ -1595,7 +1595,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesWayland()
     for (std::size_t scancode = 0; scancode < s_Data.KeyCodes.size();  scancode++)
     {
         if (s_Data.KeyCodes[scancode] != TRAP::Input::Key::Unknown)
-            s_Data.ScanCodes[ToUnderlying(s_Data.KeyCodes[scancode])] = NumericCast<int16_t>(scancode);
+            s_Data.ScanCodes[NumericCast<uint32_t>(ToUnderlying(s_Data.KeyCodes[scancode]))] = NumericCast<int16_t>(scancode);
     }
 }
 
@@ -1680,7 +1680,7 @@ std::optional<std::string> TRAP::INTERNAL::WindowingAPI::ReadDataOfferAsString(w
             return std::nullopt;
         }
 
-        length += result;
+        length += NumericCast<std::size_t>(result);
     }
 
     close(std::get<0>(fds));
@@ -1748,10 +1748,11 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorWayland(const InternalWindow& window
         return;
 
     wl_pointer_set_cursor(s_Data.Wayland.Pointer, s_Data.Wayland.PointerEnterSerial,
-                          surface, image->hotspot_x / scale, image->hotspot_y / scale);
+                          surface, NumericCast<int32_t>(image->hotspot_x) / scale,
+                          NumericCast<int32_t>(image->hotspot_y) / scale);
     wl_surface_set_buffer_scale(surface, scale);
     wl_surface_attach(surface, buffer, 0, 0);
-    wl_surface_damage(surface, 0, 0, image->width, image->height);
+    wl_surface_damage(surface, 0, 0, NumericCast<int32_t>(image->width), NumericCast<int32_t>(image->height));
     wl_surface_commit(surface);
 
     s_Data.Wayland.CursorPreviousName = name;
@@ -1952,8 +1953,8 @@ wl_buffer* TRAP::INTERNAL::WindowingAPI::CreateShmBufferWayland(const Image& ima
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-    const int32_t stride = image.GetWidth() * 4u;
-    const int32_t length = image.GetWidth() * image.GetHeight() * 4u;
+    const int32_t stride = NumericCast<int32_t>(image.GetWidth()) * 4;
+    const int32_t length = NumericCast<int32_t>(image.GetWidth() * image.GetHeight() * 4u);
 
     const std::optional<int32_t> fd = CreateAnonymousFileWayland(length);
     if(!fd)
@@ -1963,7 +1964,7 @@ wl_buffer* TRAP::INTERNAL::WindowingAPI::CreateShmBufferWayland(const Image& ima
         return nullptr;
     }
 
-    void* data = mmap(nullptr, length, PROT_READ | PROT_WRITE, MAP_SHARED, *fd, 0);
+    void* data = mmap(nullptr, NumericCast<std::size_t>(length), PROT_READ | PROT_WRITE, MAP_SHARED, *fd, 0);
     if(data == MAP_FAILED)
     {
         InputError(Error::Platform_Error, "[Wayland] Failed to map file: " + Utils::String::GetStrError());
@@ -1987,9 +1988,10 @@ wl_buffer* TRAP::INTERNAL::WindowingAPI::CreateShmBufferWayland(const Image& ima
         *target++ = NumericCast<uint8_t>(alpha);
     }
 
-    wl_buffer* const buffer = wl_shm_pool_create_buffer(pool, 0, image.GetWidth(), image.GetHeight(), stride,
+    wl_buffer* const buffer = wl_shm_pool_create_buffer(pool, 0, NumericCast<int32_t>(image.GetWidth()),
+                                                        NumericCast<int32_t>(image.GetHeight()), stride,
                                                         WL_SHM_FORMAT_ARGB8888);
-    munmap(data, length);
+    munmap(data, NumericCast<std::size_t>(length));
     wl_shm_pool_destroy(pool);
 
     return buffer;
@@ -2487,8 +2489,8 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeSurfaceWayland(InternalWindow& wi
     s_Data.Wayland.WaylandClient.ProxySetTag(reinterpret_cast<wl_proxy*>(window.Wayland.Surface), &s_Data.Wayland.TagCStr);
     wl_surface_add_listener(window.Wayland.Surface, &SurfaceListener, &window);
 
-    window.Width = WNDConfig.Width;
-    window.Height = WNDConfig.Height;
+    window.Width = NumericCast<int32_t>(WNDConfig.Width);
+    window.Height = NumericCast<int32_t>(WNDConfig.Height);
     window.Wayland.ContentScale = 1;
     window.Wayland.Title = WNDConfig.Title;
     window.Wayland.AppID = WNDConfig.Wayland.AppID;
@@ -2598,10 +2600,10 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorImageWayland(const InternalWindow& w
         timer.it_value.tv_nsec = (static_cast<__syscall_slong_t>(image->delay % 1000) * 1000000);
         timerfd_settime(s_Data.Wayland.CursorTimerFD, 0, &timer, nullptr);
 
-        cursorWayland.Width = image->width;
-        cursorWayland.Height = image->height;
-        cursorWayland.XHotspot = image->hotspot_x;
-        cursorWayland.YHotspot = image->hotspot_y;
+        cursorWayland.Width = NumericCast<int32_t>(image->width);
+        cursorWayland.Height = NumericCast<int32_t>(image->height);
+        cursorWayland.XHotspot = NumericCast<int32_t>(image->hotspot_x);
+        cursorWayland.YHotspot = NumericCast<int32_t>(image->hotspot_y);
     }
 
     wl_surface* const surface = s_Data.Wayland.CursorSurface;
@@ -2682,7 +2684,8 @@ void TRAP::INTERNAL::WindowingAPI::HandleEventsWayland(double* const timeout)
                              TranslateKey(s_Data.Wayland.KeyRepeatScancode),
                              s_Data.Wayland.KeyRepeatScancode, Input::KeyState::Pressed);
 
-                    InputTextWayland(*s_Data.Wayland.KeyboardFocus, s_Data.Wayland.KeyRepeatScancode);
+                    InputTextWayland(*s_Data.Wayland.KeyboardFocus,
+                                     NumericCast<uint32_t>(s_Data.Wayland.KeyRepeatScancode));
                 }
 
                 event = true;
@@ -3252,8 +3255,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitleWayland(InternalWindow&
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformCreateCursorWayland(InternalCursor& cursor,
-                                                               const Image& image, const int32_t xHotspot,
-                                                               const int32_t yHotspot)
+                                                               const Image& image, const uint32_t xHotspot,
+                                                               const uint32_t yHotspot)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -3261,10 +3264,10 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateCursorWayland(InternalCursor& c
     if(cursor.Wayland.Buffer == nullptr)
         return false;
 
-    cursor.Wayland.Width = image.GetWidth();
-    cursor.Wayland.Height = image.GetHeight();
-    cursor.Wayland.XHotspot = xHotspot;
-    cursor.Wayland.YHotspot = yHotspot;
+    cursor.Wayland.Width = NumericCast<int32_t>(image.GetWidth());
+    cursor.Wayland.Height = NumericCast<int32_t>(image.GetHeight());
+    cursor.Wayland.XHotspot = NumericCast<int32_t>(xHotspot);
+    cursor.Wayland.YHotspot = NumericCast<int32_t>(yHotspot);
 
     return true;
 }
@@ -3681,7 +3684,7 @@ int32_t TRAP::INTERNAL::WindowingAPI::PlatformGetKeyScanCodeWayland(const Input:
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-    return s_Data.ScanCodes[ToUnderlying(key)];
+    return s_Data.ScanCodes[NumericCast<std::size_t>(ToUnderlying(key))];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3690,14 +3693,14 @@ const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeNameWayland(const i
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-    if(scanCode < 0 || scanCode > 255 || s_Data.KeyCodes[scanCode] == Input::Key::Unknown)
+    if(scanCode < 0 || scanCode > 255 || s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)] == Input::Key::Unknown)
     {
         InputError(Error::Invalid_Value, "[Wayland] Invalid scancode " + std::to_string(scanCode));
         return nullptr;
     }
 
-    const Input::Key key = s_Data.KeyCodes[scanCode];
-    const xkb_keycode_t keycode = scanCode + 8;
+    const Input::Key key = s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)];
+    const xkb_keycode_t keycode = NumericCast<uint32_t>(scanCode) + 8u;
     const xkb_layout_index_t layout = s_Data.Wayland.WaylandXKB.StateKeyGetLayout(s_Data.Wayland.WaylandXKB.State, keycode);
     if(layout == XKB_LAYOUT_INVALID)
     {
@@ -3727,11 +3730,11 @@ const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeNameWayland(const i
 		return nullptr;
     }
 	for(std::size_t i = 0; i < utf8Str.size(); ++i)
-		s_Data.KeyNames[ToUnderlying(key)][i] = utf8Str[i];
+		s_Data.KeyNames[NumericCast<std::size_t>(ToUnderlying(key))][i] = utf8Str[i];
 
-	s_Data.KeyNames[ToUnderlying(key)][utf8Str.size()] = '\0';
+	s_Data.KeyNames[NumericCast<std::size_t>(ToUnderlying(key))][utf8Str.size()] = '\0';
 
-    return s_Data.KeyNames[ToUnderlying(key)].data();;
+    return s_Data.KeyNames[NumericCast<std::size_t>(ToUnderlying(key))].data();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

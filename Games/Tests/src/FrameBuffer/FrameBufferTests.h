@@ -40,7 +40,6 @@ private:
 
     TRAP::Ref<TRAP::Graphics::RenderTarget> m_renderTarget;
     TRAP::Ref<TRAP::Graphics::RenderTarget> m_resolveTarget;
-    bool m_renderedFrame = false;
     bool m_MSAAEnabled = false;
 
     std::array<float, 50> m_frameTimeHistory{};

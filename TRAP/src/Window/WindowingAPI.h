@@ -3598,12 +3598,12 @@ namespace TRAP::INTERNAL
 		/// <param name="xHotspot">Center x coordinate of the image.</param>
 		/// <param name="yHotspot">Center y coordinate of the image.</param>
 		/// <returns>True if the cursor was created successfully.</returns>
-		[[nodiscard]] static bool PlatformCreateCursor(InternalCursor& cursor, const Image& image, int32_t xHotspot,
-		                                               int32_t yHotspot);
-		[[nodiscard]] static bool PlatformCreateCursorX11(InternalCursor& cursor, const Image& image, int32_t xHotspot,
-		                                                  int32_t yHotspot);
-		[[nodiscard]] static bool PlatformCreateCursorWayland(InternalCursor& cursor, const Image& image, int32_t xHotspot,
-		                                                      int32_t yHotspot);
+		[[nodiscard]] static bool PlatformCreateCursor(InternalCursor& cursor, const Image& image, uint32_t xHotspot,
+		                                               uint32_t yHotspot);
+		[[nodiscard]] static bool PlatformCreateCursorX11(InternalCursor& cursor, const Image& image, uint32_t xHotspot,
+		                                                  uint32_t yHotspot);
+		[[nodiscard]] static bool PlatformCreateCursorWayland(InternalCursor& cursor, const Image& image, uint32_t xHotspot,
+		                                                      uint32_t yHotspot);
 		/// <summary>
 		/// Creates a cursor with a standard shape.
 		///
@@ -4679,7 +4679,7 @@ namespace TRAP::INTERNAL
 		/// <param name="yHot">Center y coordinate of the image.</param>
 		/// <param name="icon">Whether it is an icon or a cursor.</param>
 		/// <returns>Handle to the icon.</returns>
-		[[nodiscard]] static HICON CreateIcon(const Image& image, int32_t xHot, int32_t yHot, bool icon);
+		[[nodiscard]] static HICON CreateIcon(const Image& image, uint32_t xHot, uint32_t yHot, bool icon);
 		/// <summary>
 		/// Enfore the content area aspect ratio based on which edge is being dragged.
 		/// </summary>
@@ -4957,7 +4957,7 @@ namespace TRAP::INTERNAL
 		/// <param name="xHotSpot">X center coordinate of the given image.</param>
 		/// <param name="yHotSpot">Y center coordinate of the given image.</param>
 		/// <returns>Newly created cursor on success, empty optional otherwise.</returns>
-		[[nodiscard]] static std::optional<Cursor> CreateCursorX11(const TRAP::Image& image, int32_t xHotSpot, int32_t yHotSpot);
+		[[nodiscard]] static std::optional<Cursor> CreateCursorX11(const TRAP::Image& image, uint32_t xHotSpot, uint32_t yHotSpot);
 		/// <summary>
 		/// Returns whether the window is iconified/minimized
 		/// </summary>
