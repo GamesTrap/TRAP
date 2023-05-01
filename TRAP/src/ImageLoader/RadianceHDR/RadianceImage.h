@@ -3,6 +3,8 @@
 
 #include "ImageLoader/Image.h"
 
+#include <optional>
+
 namespace TRAP::INTERNAL
 {
 	class RadianceImage final : public Image
@@ -46,6 +48,8 @@ namespace TRAP::INTERNAL
 		[[nodiscard]] uint64_t GetPixelDataSize() const noexcept override;
 
 	private:
+		using RGBE = std::array<uint8_t, 4>;
+
 		/// <summary>
 		/// Convert exponent and value to floating point.
 		/// As specified in the Radiance HDR specification.
@@ -62,8 +66,7 @@ namespace TRAP::INTERNAL
 		/// <param name="length">Scanline length.</param>
 		/// <param name="file">Open Radiance HDR file.</param>
 		/// <returns>True if successful, false otherwise.</returns>
-		[[nodiscard]] static bool Decrunch(std::vector<std::array<uint8_t, 4>>& scanline,
-		                                   uint32_t length, std::ifstream& file);
+		[[nodiscard]] static bool Decrunch(std::vector<RGBE>& scanline, uint32_t length, std::ifstream& file);
 		/// <summary>
 		/// Decode the given scanline.
 		/// Used for old RLE encoding.
@@ -73,18 +76,45 @@ namespace TRAP::INTERNAL
 		/// <param name="length">Scanline length.</param>
 		/// <param name="file">Open Radiance HDR file.</param>
 		/// <returns>True if successful, false otherwise.</returns>
-		[[nodiscard]] static bool OldDecrunch(std::vector<std::array<uint8_t, 4>>& scanline, uint32_t scanlineIndex,
+		[[nodiscard]] static bool OldDecrunch(std::vector<RGBE>& scanline, uint32_t scanlineIndex,
 		                                      uint32_t length, std::ifstream& file);
 		/// <summary>
 		/// Extract color values from the scanlines.
 		/// </summary>
-		/// <param name="scanlines">Scanlines.</param>
+		/// <param name="scanline">Scanlines.</param>
 		/// <param name="data">Output storage for color data.</param>
 		/// <param name="dataIndex">Index in the output storage to store data at.</param>
-		void WorkOnRGBE(std::vector<std::array<uint8_t, 4>>& scanline,
-		                std::vector<float>& data, uint32_t dataIndex);
+		void WorkOnRGBE(std::vector<RGBE>& scanline, std::vector<float>& data, uint64_t dataIndex);
 
-		int8_t eMax, eMin;
+		/// <summary>
+		/// Check if file contains the magic number "#?".
+		/// </summary>
+		/// <param name="file">File to check.</param>
+		/// <returns>True if magic number was found, false otherwise.</returns>
+		[[nodiscard]] static bool ContainsMagicNumber(std::ifstream& file);
+
+		/// <summary>
+		/// Check if file contains a valid/known format.
+		/// Currently only "32-bit_rle_rgbe" is supported.
+		/// </summary>
+		/// <param name="file">File to check.</param>
+		/// <returns>True if valid/known format was found, false otherwise.</returns>
+		[[nodiscard]] static bool ContainsSupportedFormat(std::ifstream& file);
+
+		/// <summary>
+		/// Skip lines which are not used for decoding.
+		/// </summary>
+		/// <param name="file">File to skip lines.</param>
+		static void SkipUnusedLines(std::ifstream& file);
+
+		/// <summary>
+		/// Retrieve the resolution data from file.
+		/// </summary>
+		/// <param name="file">File to retrieve data from.</param>
+		/// <param name="outNeedXFlip">True if image needs to be flipped on X axis.</param>
+		/// <param name="outNeedYFlip">True if image needs to be flipped on Y axis.</param>
+		/// <returns>Image resolution on success, empty optional otherwise.</returns>
+		[[nodiscard]] static std::optional<TRAP::Math::Vec2ui> RetrieveImageResolution(std::ifstream& file, bool& outNeedXFlip, bool& outNeedYFlip);
 
 		std::vector<float> m_data;
 

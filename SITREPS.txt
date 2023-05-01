@@ -3934,3 +3934,8 @@ SITREP 04/28/2023|23w17a4
 SITREP 04/29/2023|23w17a5
     - Changed TRAP Engine version to 23w17a5(0.9.24)
     - Resolved Build-CI Clang warnings ~>120 mins
+
+SITREP 05/01/2023|23w18a1
+    - Changed TRAP Engine version to 23w18a1(0.9.25)
+    - Fixed crash when loading an RadianceImage ~<10 mins
+    - Updated RadianceImage implementation ~>40 mins

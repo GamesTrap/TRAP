@@ -6,7 +6,6 @@
 #include "FileSystem/FileSystem.h"
 
 TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
-	: eMax(-127), eMin(127)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -29,68 +28,32 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 		return;
 	}
 
-	//Magic Number check
-	std::string str;
-	std::getline(file, str);
-	//Magic Number = 23 3F 52 41 44 49 41 4E 43 45 0A == #?RADIANCE
-	//Magic Number = 23 3F 52 47 42 45 == #?RGBE
-	if(str.find("#?RADIANCE") == std::string::npos && str.find("#?RGBE") == std::string::npos)
+	if(!ContainsMagicNumber(file))
 	{
-		file.close();
-		TP_ERROR(Log::ImageRadiancePrefix, "Invalid magic number ", str, "!");
+		TP_ERROR(Log::ImageRadiancePrefix, "Couldn't find magic number \"#?\"!");
 		TP_WARN(Log::ImageRadiancePrefix, "Using default image!");
 		return;
 	}
 
-	bool formatFound = false;
-	do
+	if(!ContainsSupportedFormat(file))
 	{
-		std::getline(file, str);
-		if (str.find("FORMAT=32-bit_rle_rgbe") != std::string::npos)
-			formatFound = true;
-	} while (!str.empty());
-
-	if(!formatFound)
-	{
-		file.close();
-		TP_ERROR(Log::ImageRadiancePrefix, "Invalid file format", str, "!");
+		TP_ERROR(Log::ImageRadiancePrefix, "Unknown or unsupported file format!");
 		TP_WARN(Log::ImageRadiancePrefix, "Using default image!");
 		return;
 	}
 
-	const char signOne = NumericCast<char>(file.get());
-	const char axisOne = NumericCast<char>(file.get());
-	file >> m_width;
-	file.ignore();
-	const char signTwo = NumericCast<char>(file.get());
-	const char axisTwo = NumericCast<char>(file.get());
-	file >> m_height;
-	file.ignore();
+	SkipUnusedLines(file);
 
-	bool needYFlip = false;
-	bool needXFlip = false;
-	if(axisOne == 'Y' && axisTwo == 'X')
+	bool needXFlip = false, needYFlip = false;
+	const std::optional<TRAP::Math::Vec2ui> resolution = RetrieveImageResolution(file, needXFlip, needYFlip);
+	if(!resolution)
 	{
-		if (signOne == '+' && signTwo != '+')
-			needYFlip = true;
-		else if (signTwo == '-' && signOne != '-')
-			needXFlip = true;
-	}
-	else if(axisOne == 'X' && axisTwo == 'Y')
-	{
-		if (signOne == '-' && signTwo != '-')
-			needXFlip = true;
-		else if (signTwo == '+' && signOne != '+')
-			needYFlip = true;
-	}
-	else
-	{
-		file.close();
-		TP_ERROR(Log::ImageRadiancePrefix, "Invalid resolution ", signOne, axisOne, ' ',
-		         signTwo, axisTwo, "!");
 		TP_WARN(Log::ImageRadiancePrefix, "Using default image!");
 		return;
 	}
+
+	m_width = resolution->x;
+	m_height = resolution->y;
 
 	if(m_width == 0)
 	{
@@ -108,25 +71,23 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 		return;
 	}
 
-	m_data.resize(NumericCast<std::size_t>(m_width) * m_height * 3, 0.0f);
-	uint32_t dataIndex = 0;
+	m_data.resize(NumericCast<std::size_t>(m_width) * m_height * ToUnderlying(m_colorFormat), 0.0f);
+	uint64_t dataIndex = 0;
 
-	std::vector<std::array<uint8_t, 4>> scanline;
-	scanline.resize(m_width);
+	std::vector<RGBE> scanline(m_width);
 
 	//Convert image
-	for(int32_t y = NumericCast<int32_t>(m_height) - 1; y >= 0; y--)
+	for(int64_t y = m_height - 1; y >= 0; y--)
 	{
 		if (!Decrunch(scanline, m_width, file))
 		{
 			m_data.clear();
-			file.close();
 			TP_ERROR(Log::ImageRadiancePrefix, "Decrunching failed!");
 			TP_WARN(Log::ImageRadiancePrefix, "Using default image!");
 			return;
 		}
 		WorkOnRGBE(scanline, m_data, dataIndex);
-		dataIndex += m_width * 3;
+		dataIndex += NumericCast<uint64_t>(m_width) * ToUnderlying(m_colorFormat);
 	}
 
 	file.close();
@@ -161,9 +122,6 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if (exponent == -128)
-		return 0.0f;
-
 	const float v = NumericCast<float>(value) / 256.0f;
 	const float d = Math::Pow(2.0f, NumericCast<float>(exponent));
 
@@ -172,53 +130,50 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::INTERNAL::RadianceImage::Decrunch(std::vector<std::array<uint8_t, 4>>& scanline,
-                                                           const uint32_t length,
+[[nodiscard]] bool TRAP::INTERNAL::RadianceImage::Decrunch(std::vector<RGBE>& scanline, const uint32_t length,
                                                            std::ifstream& file)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
-
 	if (length < MinEncodingLength || length > MaxEncodingLength)
-		return OldDecrunch(scanline, 0, length, file);
+		return OldDecrunch(scanline, 0u, length, file);
 
-	uint8_t i = NumericCast<uint8_t>(file.get());
-	if(i != 2u)
+	int32_t i = NumericCast<int32_t>(file.get());
+	if (i != 2)
 	{
-		file.seekg(-1, std::ifstream::cur);
-		return OldDecrunch(scanline, 0, length, file);
+		file.seekg(-1, std::ios::cur);
+		return OldDecrunch(scanline, 0u, length, file);
 	}
 
-	scanline[0][G] = NumericCast<uint8_t>(file.get());
-	scanline[0][B] = NumericCast<uint8_t>(file.get());
-	i = NumericCast<uint8_t>(file.get());
+	scanline[0u][G] = NumericCast<uint8_t>(file.get());
+	scanline[0u][B] = NumericCast<uint8_t>(file.get());
+	i = file.get();
 
-	if(scanline[0][G] != 2 || ((scanline[0][B] & 128u) != 0u))
+	if (scanline[0u][G] != 2u || (scanline[0][B] & 128u) != 0u)
 	{
-		scanline[0][R] = 2;
-		scanline[0][E] = i;
-		return OldDecrunch(scanline, 1, length - 1, file);
+		scanline[0u][R] = 2u;
+		scanline[0u][E] = NumericCast<uint8_t>(i);
+		return OldDecrunch(scanline, 1u, length - 1u, file);
 	}
 
-	//read each component
-	for(i = 0u; i < 4u; i++)
+	// read each component
+	for (i = 0; i < 4; i++)
 	{
-		for(uint32_t j = 0; j < length;)
+	    for (uint32_t j = 0; j < length; )
 		{
 			uint8_t code = NumericCast<uint8_t>(file.get());
-			if(code > 128) //RLE
+			if (code > 128u) //RLE
 			{
-				code &= 127u;
-				const uint8_t value = NumericCast<uint8_t>(file.get());
-				while ((code--) != 0u)
+			    code &= 127u;
+			    const uint8_t value = NumericCast<uint8_t>(file.get());
+			    while ((code--) != 0u)
 					scanline[j++][i] = value;
 			}
-			else //Non-RLE
+			else //Dump
 			{
-				while ((code--) != 0u)
+			    while((code--) != 0u)
 					scanline[j++][i] = NumericCast<uint8_t>(file.get());
 			}
 		}
-	}
+    }
 
 	return !file.eof();
 }
@@ -226,65 +181,185 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Old RLE
-[[nodiscard]] bool TRAP::INTERNAL::RadianceImage::OldDecrunch(std::vector<std::array<uint8_t, 4>>& scanline,
-                                                              uint32_t scanlineIndex, uint32_t length, std::ifstream& file)
+[[nodiscard]] bool TRAP::INTERNAL::RadianceImage::OldDecrunch(std::vector<RGBE>& scanline, uint32_t scanlineIndex,
+                                                              uint32_t length, std::ifstream& file)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
-	uint32_t rshift = 0;
+	uint32_t rshift = 0u;
 
-	while (length > 0)
+	while (length > 0u)
 	{
-		scanline[0 + scanlineIndex][R] = NumericCast<uint8_t>(file.get());
-		scanline[0 + scanlineIndex][G] = NumericCast<uint8_t>(file.get());
-		scanline[0 + scanlineIndex][B] = NumericCast<uint8_t>(file.get());
-		scanline[0 + scanlineIndex][E] = NumericCast<uint8_t>(file.get());
+		scanline[scanlineIndex][R] = NumericCast<uint8_t>(file.get());
+		scanline[scanlineIndex][G] = NumericCast<uint8_t>(file.get());
+		scanline[scanlineIndex][B] = NumericCast<uint8_t>(file.get());
+		scanline[scanlineIndex][E] = NumericCast<uint8_t>(file.get());
 		if (file.eof())
 			return false;
 
-		if(scanline[0 + scanlineIndex][R] == 1 && scanline[0 + scanlineIndex][G] == 1 && scanline[0 + scanlineIndex][B] == 1)
+		if (scanline[scanlineIndex][R] == 1u &&
+			scanline[scanlineIndex][G] == 1u &&
+			scanline[scanlineIndex][B] == 1u)
 		{
-			for(int32_t i = scanline[0 + scanlineIndex][E] << rshift; i > 0; i--)
+			for (uint32_t i = scanline[scanlineIndex][E] << rshift; i > 0u; i--)
 			{
-				std::copy_n(scanline[NumericCast<std::size_t>(-1 + scanlineIndex)].data(), 4, scanline[0 + scanlineIndex].data());
+				memcpy(&scanline[0][0], &scanline[-1][0], 4u * sizeof(uint8_t));
 				scanlineIndex++;
 				length--;
 			}
 			rshift += 8u;
 		}
-		else
-		{
+		else {
 			scanlineIndex++;
 			length--;
 			rshift = 0u;
 		}
 	}
-
 	return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::RadianceImage::WorkOnRGBE(std::vector<std::array<uint8_t, 4>>& scanline,
-                                               std::vector<float>& data, uint32_t dataIndex)
+void TRAP::INTERNAL::RadianceImage::WorkOnRGBE(std::vector<RGBE>& scanline, std::vector<float>& data,
+                                               uint64_t dataIndex)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
-	int32_t length = NumericCast<int32_t>(m_width);
+	uint32_t length = m_width;
 	uint32_t scanlineIndex = 0;
 
-	while(length-- > 0)
+	while (length-- > 0u)
 	{
-		const int8_t exponent = NumericCast<int8_t>(scanline[0 + scanlineIndex][E] - 128);
-		if (exponent > eMax)
-			eMax = exponent;
-		if (exponent != -128 && exponent < eMin)
-			eMin = exponent;
-
-		data[0 + dataIndex] = ConvertComponent(exponent, scanline[0 + scanlineIndex][R]);
-		data[1 + dataIndex] = ConvertComponent(exponent, scanline[0 + scanlineIndex][G]);
-		data[2 + dataIndex] = ConvertComponent(exponent, scanline[0 + scanlineIndex][B]);
+		const int8_t exponent = NumericCast<int8_t>(scanline[scanlineIndex][E] - 128);
+		data[0 + dataIndex] = ConvertComponent(exponent, scanline[scanlineIndex][R]);
+		data[1 + dataIndex] = ConvertComponent(exponent, scanline[scanlineIndex][G]);
+		data[2 + dataIndex] = ConvertComponent(exponent, scanline[scanlineIndex][B]);
 		dataIndex += 3;
 		scanlineIndex++;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] bool TRAP::INTERNAL::RadianceImage::ContainsMagicNumber(std::ifstream& file)
+{
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
+	//Magic Numbers: "#?RGBE" or "#?RADIANCE"
+	//Some software uses #? and then its own name... so we have to just check for #?
+
+	std::string tmp;
+	std::getline(file, tmp);
+
+	return tmp.find("#?") != std::string::npos;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] bool TRAP::INTERNAL::RadianceImage::ContainsSupportedFormat(std::ifstream& file)
+{
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
+	//We only support the "32-bit_rle_rgbe" format
+
+	std::string tmp{};
+	while(!file.eof())
+	{
+		std::getline(file, tmp);
+		if(tmp.find("FORMAT=32-bit_rle_rgbe") != std::string::npos)
+			return true;
+	}
+
+	return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::RadianceImage::SkipUnusedLines(std::ifstream& file)
+{
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
+	if(file.eof())
+		return;
+
+	std::string tmp{};
+	do
+	{
+		std::getline(file, tmp);
+	} while(!tmp.empty());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] std::optional<TRAP::Math::Vec2ui> TRAP::INTERNAL::RadianceImage::RetrieveImageResolution(std::ifstream& file,
+                                                                                                       bool& outNeedXFlip,
+																									   bool& outNeedYFlip)
+{
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
+	std::string resStr{};
+	std::getline(file, resStr);
+
+	std::size_t yIndex = resStr.find("Y ");
+	std::size_t xIndex = resStr.find("X ");
+
+	if(yIndex == std::string::npos || xIndex == std::string::npos ||
+	   NumericCast<int64_t>(yIndex - 1) < 0 || NumericCast<int64_t>(xIndex - 1) < 0)
+	{
+		TP_ERROR(Log::ImageRadiancePrefix, "Failed to retrieve image resolution!");
+		return std::nullopt;
+	}
+
+	if(yIndex < xIndex) //Y is before X
+	{
+		if(resStr[yIndex - 1] == '-')
+			outNeedYFlip = false;
+		else if(resStr[yIndex - 1] == '+')
+			outNeedYFlip = true;
+		else
+		{
+			TP_ERROR(Log::ImageRadiancePrefix, "Failed to retrieve image resolution!");
+			return std::nullopt;
+		}
+
+		if(resStr[xIndex - 1] == '-')
+			outNeedXFlip = true;
+		else if(resStr[xIndex - 1] == '+')
+			outNeedXFlip = false;
+		else
+		{
+			TP_ERROR(Log::ImageRadiancePrefix, "Failed to retrieve image resolution!");
+			return std::nullopt;
+		}
+	}
+	else //X is before Y
+	{
+		//TODO Add support for this
+		//See https://radsite.lbl.gov/radiance/refer/filefmts.pdf
+
+		TP_ERROR(Log::ImageRadiancePrefix, "Column order images are unsupported!");
+		return std::nullopt;
+	}
+
+	yIndex += 2;
+	xIndex += 2;
+
+	std::size_t yEnd = yIndex;
+	while(yEnd < resStr.size() && isdigit(resStr[yEnd]) != 0)
+		++yEnd;
+
+	std::size_t xEnd = xIndex;
+	while(xEnd < resStr.size() && isdigit(resStr[xEnd]) != 0)
+		++xEnd;
+
+	try
+	{
+		return TRAP::Math::Vec2ui(std::stoul(std::string(resStr.begin() + NumericCast<std::ptrdiff_t>(xIndex), resStr.begin() + NumericCast<std::ptrdiff_t>(xEnd))),
+		                          std::stoul(std::string(resStr.begin() + NumericCast<std::ptrdiff_t>(yIndex), resStr.begin() + NumericCast<std::ptrdiff_t>(yEnd))));
+	}
+	catch(...)
+	{
+		TP_ERROR(Log::ImageRadiancePrefix, "Failed to retrieve image resolution!");
+		return std::nullopt;
 	}
 }
