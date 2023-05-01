@@ -1,6 +1,7 @@
 #ifndef TRAP_IMAGE_H
 #define TRAP_IMAGE_H
 
+#include <algorithm>
 #include <vector>
 
 #include "Maths/Math.h"
@@ -203,19 +204,31 @@ namespace TRAP
 		/// Flip an image on its X axis.
 		/// </summary>
 		/// <param name="img">Image to flip.</param>
-		/// <returns>Flipped image</returns>
+		/// <returns>Flipped image.</returns>
 		[[nodiscard]] static Scope<Image> FlipX(const Image* img);
 		/// <summary>
 		/// Flip an image on its Y axis.
 		/// </summary>
 		/// <param name="img">Image to flip.</param>
-		/// <returns>Flipped image</returns>
+		/// <returns>Flipped image.</returns>
 		[[nodiscard]] static Scope<Image> FlipY(const Image* img);
+		/// <summary>
+		/// Rotate an image by 90 degrees clockwise.
+		/// </summary>
+		/// <param name="img">Image to flip.</param>
+		/// <returns>Rotated image.</returns>
+		[[nodiscard]] static Scope<Image> Rotate90Clockwise(const Image* img);
+		/// <summary>
+		/// Rotate an image by 90 degrees counter clockwise.
+		/// </summary>
+		/// <param name="img">Image to flip.</param>
+		/// <returns>Rotated image.</returns>
+		[[nodiscard]] static Scope<Image> Rotate90CounterClockwise(const Image* img);
 		/// <summary>
 		/// Convert a RGB image to RGBA.
 		/// </summary>
 		/// <param name="img">Image to convert.</param>
-		/// <returns>Converted image</returns>
+		/// <returns>Converted image.</returns>
 		[[nodiscard]] static Scope<Image> ConvertRGBToRGBA(const Image* img);
 
 		inline static constexpr std::array<std::string_view, 15> SupportedImageFormatSuffixes
@@ -251,6 +264,28 @@ namespace TRAP
 		/// <returns>Flipped raw pixel data</returns>
 		template<typename T>
 		[[nodiscard]] static std::vector<T> FlipY(uint32_t width, uint32_t height, ColorFormat format, const T* data);
+		/// <summary>
+		/// Rotate raw pixel data by 90 degrees clockwise.
+		/// </summary>
+		/// <typeparam name="T">uint8_t, uint16_t or float.</typeparam>
+		/// <param name="width">Width of image in pixels.</param>
+		/// <param name="height">Height of image in pixels.</param>
+		/// <param name="format">Color format of the image data.</param>
+		/// <param name="data">Raw pixel data.</param>
+		/// <returns>Rotated raw pixel data</returns>
+		template<typename T>
+		[[nodiscard]] static std::vector<T> Rotate90Clockwise(uint32_t width, uint32_t height, ColorFormat format, const T* data);
+		/// <summary>
+		/// Rotate raw pixel data by 90 degrees counter clockwise.
+		/// </summary>
+		/// <typeparam name="T">uint8_t, uint16_t or float.</typeparam>
+		/// <param name="width">Width of image in pixels.</param>
+		/// <param name="height">Height of image in pixels.</param>
+		/// <param name="format">Color format of the image data.</param>
+		/// <param name="data">Raw pixel data.</param>
+		/// <returns>Rotate raw pixel data</returns>
+		template<typename T>
+		[[nodiscard]] static std::vector<T> Rotate90CounterClockwise(uint32_t width, uint32_t height, ColorFormat format, const T* data);
 		/// <summary>
 		/// Converts raw RGB pixel data to RGBA.
 		/// </summary>
@@ -407,6 +442,94 @@ template <typename T>
 	}
 
 	return newData;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+[[nodiscard]] std::vector<T> TRAP::Image::Rotate90Clockwise(const uint32_t width, const uint32_t height,
+                                                            const ColorFormat format, const T* const data)
+{
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
+	static_assert(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
+	              std::is_same<T, float>::value, "Invalid type!");
+
+	if (format == ColorFormat::NONE)
+	{
+		TRAP_ASSERT(false, "Image::Rotate90Clockwise(): Invalid color format!");
+		return std::vector<T>();
+	}
+	if(!data)
+	{
+		TRAP_ASSERT(false, "Image::Rotate90Clockwise: Raw pixel data is nullptr!");
+		return std::vector<T>();
+	}
+
+	std::vector<T> rotated(width * height * ToUnderlying(format));
+
+	for(uint32_t y = 0, destCol = height - 1; y < height; ++y, --destCol)
+	{
+		const uint32_t offset = y * width;
+
+		for(uint32_t x = 0; x < width; ++x)
+		{
+			for(uint32_t channel = 0; channel < ToUnderlying(format); ++channel)
+			{
+				rotated[(x * height + destCol) * ToUnderlying(format) + channel] =
+				data[(offset + x) * ToUnderlying(format) + channel];
+			}
+		}
+	}
+
+	return rotated;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+[[nodiscard]] std::vector<T> TRAP::Image::Rotate90CounterClockwise(const uint32_t width, const uint32_t height,
+                                                                   const ColorFormat format, const T* const data)
+{
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
+	static_assert(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
+	              std::is_same<T, float>::value, "Invalid type!");
+
+	if (format == ColorFormat::NONE)
+	{
+		TRAP_ASSERT(false, "Image::Rotate90CounterClockwise(): Invalid color format!");
+		return std::vector<T>();
+	}
+	if(!data)
+	{
+		TRAP_ASSERT(false, "Image::Rotate90CounterClockwise: Raw pixel data is nullptr!");
+		return std::vector<T>();
+	}
+
+	std::vector<T> rotated(NumericCast<std::size_t>(width) * height * ToUnderlying(format));
+	std::copy_n(data, rotated.size(), rotated.begin());
+	for(uint32_t x = 0; x < width; ++x)
+	{
+		for(uint32_t y = 0; y < height; ++y)
+		{
+			uint32_t I = y;
+			uint32_t J = width - 1 - x;
+			while((x * height + y) > (I * width + J))
+			{
+				const uint32_t p = I * width + J;
+				I = p % height;
+				J = width - 1 - (p / height);
+			}
+			for(uint32_t channel = 0; channel < ToUnderlying(format); ++channel)
+			{
+				std::swap(rotated[(x * height + y) * ToUnderlying(format) + channel],
+						  rotated[(I * width + J) * ToUnderlying(format) + channel]);
+			}
+		}
+	}
+
+	return rotated;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

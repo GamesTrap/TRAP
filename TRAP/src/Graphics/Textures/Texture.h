@@ -346,18 +346,6 @@ namespace TRAP::Graphics
 		/// <param name="imageFormat">Image format.</param>
 		/// <returns>Bits per channel.</returns>
 		[[nodiscard]] static constexpr uint32_t GetBitsPerChannelFromImageFormat(API::ImageFormat imageFormat) noexcept;
-		/// <summary>
-		/// Rotate image 90 degrees clockwise.
-		/// </summary>
-		/// <param name="img">Image to rotate.</param>
-		/// <returns>Rotated image.</returns>
-		[[nodiscard]] static TRAP::Scope<TRAP::Image> Rotate90Clockwise(const TRAP::Image* img);
-		/// <summary>
-		/// Rotate image 90 degrees counter clockwise.
-		/// </summary>
-		/// <param name="img">Image to rotate.</param>
-		/// <returns>Rotated image.</returns>
-		[[nodiscard]] static TRAP::Scope<TRAP::Image> Rotate90CounterClockwise(const TRAP::Image* img);
 
 		/// <summary>
 		/// Constructor.
@@ -502,8 +490,10 @@ template<typename T>
 	{
 		std::get<0>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<2>(cubeTextureData)); //+X
 		std::get<1>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<5>(cubeTextureData)); //-X
-		std::get<2>(images) = Rotate90CounterClockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<0>(cubeTextureData)).get()); //+Y
-		std::get<3>(images) = Rotate90Clockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<4>(cubeTextureData)).get()); //-Y
+		// std::get<2>(images) = Rotate90CounterClockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<0>(cubeTextureData)).get()); //+Y
+		// std::get<3>(images) = Rotate90Clockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<4>(cubeTextureData)).get()); //-Y
+		std::get<2>(images) = TRAP::Image::Rotate90CounterClockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<0>(cubeTextureData)).get()); //+Y
+		std::get<3>(images) = TRAP::Image::Rotate90Clockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<4>(cubeTextureData)).get()); //-Y
 		std::get<4>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<1>(cubeTextureData)); //+Z
 		std::get<5>(images) = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), std::get<3>(cubeTextureData)); //-Z
 	}

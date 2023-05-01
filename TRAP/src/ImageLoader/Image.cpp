@@ -417,6 +417,84 @@ TRAP::Image::Image() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Image::Rotate90Clockwise(const Image* const img)
+{
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
+	if (img == nullptr)
+		return nullptr;
+
+	Scope<Image> result;
+
+	if (img->IsHDR() && img->GetBytesPerChannel() == 4)
+	{
+		const std::vector<float> rotated = Rotate90Clockwise(img->GetWidth(), img->GetHeight(),
+		                                                     img->GetColorFormat(),
+		                                                     static_cast<const float*>(img->GetPixelData()));
+
+		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), rotated);
+	}
+	else if (img->IsLDR() && img->GetBytesPerChannel() == 2)
+	{
+		const std::vector<uint16_t> rotated = Rotate90Clockwise(img->GetWidth(), img->GetHeight(),
+		                                                        img->GetColorFormat(),
+		                                                        static_cast<const uint16_t*>(img->GetPixelData()));
+
+		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), rotated);
+	}
+	else /*if(img->IsLDR() && img->GetBytesPerChannel() == 1)*/
+	{
+		const std::vector<uint8_t> rotated = Rotate90Clockwise(img->GetWidth(), img->GetHeight(),
+		                                                       img->GetColorFormat(),
+		                                                       static_cast<const uint8_t*>(img->GetPixelData()));
+
+		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), rotated);
+	}
+
+	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Image::Rotate90CounterClockwise(const Image* const img)
+{
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
+	if (img == nullptr)
+		return nullptr;
+
+	Scope<Image> result;
+
+	if (img->IsHDR() && img->GetBytesPerChannel() == 4)
+	{
+		const std::vector<float> rotated = Rotate90CounterClockwise(img->GetWidth(), img->GetHeight(),
+		                                                            img->GetColorFormat(),
+		                                                            static_cast<const float*>(img->GetPixelData()));
+
+		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), rotated);
+	}
+	else if (img->IsLDR() && img->GetBytesPerChannel() == 2)
+	{
+		const std::vector<uint16_t> rotated = Rotate90CounterClockwise(img->GetWidth(), img->GetHeight(),
+		                                                               img->GetColorFormat(),
+		                                                               static_cast<const uint16_t*>(img->GetPixelData()));
+
+		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), rotated);
+	}
+	else /*if(img->IsLDR() && img->GetBytesPerChannel() == 1)*/
+	{
+		const std::vector<uint8_t> rotated = Rotate90CounterClockwise(img->GetWidth(), img->GetHeight(),
+		                                                              img->GetColorFormat(),
+																	  static_cast<const uint8_t*>(img->GetPixelData()));
+
+		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), rotated);
+	}
+
+	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] TRAP::Scope<TRAP::Image> TRAP::Image::ConvertRGBToRGBA(const Image* const img)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);

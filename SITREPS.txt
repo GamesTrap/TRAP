@@ -3940,3 +3940,7 @@ SITREP 05/01/2023|23w18a1
     - Fixed crash when loading an RadianceImage ~<10 mins
     - Updated RadianceImage implementation ~>40 mins
     - GenerateDocs Reverted pip break-system-packages flag and enabled pip output ~<5 mins
+
+SITREP 05/02/2023|23w18a2
+    - Changed TRAP Engine version to 23w18a2(0.9.26)
+    - Texture Moved Rotate90Clockwise() and Rotate90CounterClockwise() to Image ~<20 mins
