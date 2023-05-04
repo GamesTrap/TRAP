@@ -285,7 +285,11 @@ namespace TRAP::Graphics
 		[[nodiscard]] static Ref<Shader> CreateFromSource(const std::string& name, const std::string& glslSource,
 		                                                  const std::vector<Macro>* userMacros = nullptr);
 
-		inline static constexpr std::array<std::string_view, 2> SupportedShaderFormatSuffixes{".shader", ".spirv"};
+		inline static constexpr std::array<std::string_view, 3> SupportedShaderFormatSuffixes{".shader", ".glsl", ".tp-spv"};
+		inline static constexpr uint32_t SPIRVMagicNumber = 0x07230203u;
+		inline static constexpr std::string_view ShaderMagicNumber = "TRAP_SPV";
+		inline static constexpr std::size_t ShaderHeaderOffset = ShaderMagicNumber.size() + sizeof(uint32_t) +
+		                                                         sizeof(uint8_t) + sizeof(std::size_t) + sizeof(uint8_t);
 
 	protected:
 		/// <summary>
@@ -308,11 +312,11 @@ namespace TRAP::Graphics
 
 	private:
 		/// <summary>
-		/// Check if given file contains SPIRV magic number.
+		/// Check if given file contains the TRAP Shader magic number.
 		/// </summary>
 		/// <param name="filePath">File path of the shader.</param>
-		/// <returns>True if file has SPIRV magic number, false otherwise.</returns>
-		[[nodiscard]] static bool CheckSPIRVMagicNumber(const std::filesystem::path& filePath);
+		/// <returns>True if file has TRAP Shader magic number, false otherwise.</returns>
+		[[nodiscard]] static bool CheckTRAPShaderMagicNumber(const std::filesystem::path& filePath);
 
 		/// <summary>
 		/// Pre process GLSL source code.
@@ -333,29 +337,18 @@ namespace TRAP::Graphics
 		                                         RendererAPI::ShaderStage& shaderStages,
 								                 const std::vector<Macro>* userMacros);
 		/// <summary>
-		/// Pre process GLSL for SPIRV conversion with glslang.
-		/// Creates glslang::TShader objects needed for SPIRV conversion.
-		/// </summary>
-		/// <param name="source">Final GLSL source code.</param>
-		/// <param name="stage">Shader stages contained in the GLSL source code.</param>
-		/// <param name="preProcessedSource">Output: Pre processed GLSL source code.</param>
-		/// <returns>glslang::TShader object.</returns>
-		[[nodiscard]] static TRAP::Scope<glslang::TShader> PreProcessGLSLForSPIRVConversion(const char* source,
-		                                                                 	                RendererAPI::ShaderStage stage,
-																		 	                std::string& preProcessedSource);
-		/// <summary>
 		/// Parse a glslang::TShader object.
 		/// </summary>
 		/// <param name="shader">glslang::TShader object.</param>
 		/// <returns>True if parsing was successful, false otherwise.</returns>
-		[[nodiscard]] static bool ParseGLSLang(glslang::TShader* shader);
+		[[nodiscard]] static bool ParseGLSLang(glslang::TShader& shader);
 		/// <summary>
 		/// Link a glslang::TShader to a glslang::TProgram object.
 		/// </summary>
 		/// <param name="shader">glslang::TShader object.</param>
 		/// <param name="program">glslang::TProgram object to link with.</param>
 		/// <returns>True if linking was successful, false otherwise.</returns>
-		[[nodiscard]] static bool LinkGLSLang(glslang::TShader* shader, glslang::TProgram& program);
+		[[nodiscard]] static bool LinkGLSLang(glslang::TShader& shader, glslang::TProgram& program);
 		/// <summary>
 		/// Validate that the given shader stages are a valid combination.
 		///
@@ -388,7 +381,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="SPIRV">SPIRV binary data.</param>
 		/// <returns>RendererAPI::BinaryShaderDesc containing loaded SPIRV binary data.</returns>
-		[[nodiscard]] static RendererAPI::BinaryShaderDesc LoadSPIRV(std::vector<uint32_t>& SPIRV);
+		[[nodiscard]] static RendererAPI::BinaryShaderDesc LoadSPIRV(std::vector<uint8_t>& SPIRV);
 		/// <summary>
 		/// Check if the ending of the given path is a supported shader file ending.
 		/// </summary>

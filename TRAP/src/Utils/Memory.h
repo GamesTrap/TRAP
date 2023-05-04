@@ -71,19 +71,19 @@ namespace TRAP::Utils::Memory
 		{
 			if constexpr (sizeof(T) == 2)
 			{
-				return (static_cast<T>(source[0]) << 8u) | static_cast<T>(source[1]);
+				return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u);
 			}
 			else if constexpr (sizeof(T) == 4)
 			{
-				return (static_cast<T>(source[0]) << 24u) | (static_cast<T>(source[1]) << 16u) |
-				       (static_cast<T>(source[2]) << 8u) | static_cast<T>(source[3]);
+				return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u) |
+				       (static_cast<T>(source[2]) << 16u) | (static_cast<T>(source[3]) << 24u);
 			}
 			else if constexpr (sizeof(T) == 8)
 			{
-				return (static_cast<T>(source[0]) << 56u) | (static_cast<T>(source[1]) << 48u) |
-				       (static_cast<T>(source[2]) << 40u) | (static_cast<T>(source[3]) << 32u) |
-				       (static_cast<T>(source[4]) << 24u) | (static_cast<T>(source[5]) << 16u) |
-				       (static_cast<T>(source[6]) << 8u) | static_cast<T>(source[7]);
+				return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u) |
+				       (static_cast<T>(source[2]) << 16u) | (static_cast<T>(source[3]) << 24u) |
+				       (static_cast<T>(source[4]) << 32u) | (static_cast<T>(source[5]) << 40u) |
+				       (static_cast<T>(source[6]) << 48u) | (static_cast<T>(source[7]) << 56u);
 			}
 		}
 		else

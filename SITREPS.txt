@@ -3066,7 +3066,7 @@ SITREP 08/11/2022|22w32c1
 SITREP 08/11/2022|22w32c2
     - Changed TRAP Engine version to 22w32c2(0.8.23)
     - Shader now automatically detects correct endianess for SPIRV files ~<5 mins
-    - Tests Added SPIRVTest (to test if ConverToSPIRV utility works correctly) ~<20 mins
+    - Tests Added SPIRVTest (to test if ConvertToSPIRV utility works correctly) ~<20 mins
     - ConvertToSPIRV Fixed MSVC compiler error ~<5 mins
 
 SITREP 08/13/2022|22w32c2
@@ -3944,3 +3944,10 @@ SITREP 05/01/2023|23w18a1
 SITREP 05/02/2023|23w18a2
     - Changed TRAP Engine version to 23w18a2(0.9.26)
     - Texture Moved Rotate90Clockwise() and Rotate90CounterClockwise() to Image ~<20 mins
+
+SITREP 05/05/2023|23w18b1
+    - Changed TRAP Engine version to 23w18b1(0.9.27)
+    - Changed SPIRV Shader file format from ".spirv" to ".tp-spv" ~<5 mins
+    - Added file format specification for TRAP-SPIRV (TP-SPV) files to ConvertToSPIRV ~<10 mins
+    - Updated ConvertToSPIRV utility ~>120 mins
+    - Updated engine side Shader implementation ~>60 mins

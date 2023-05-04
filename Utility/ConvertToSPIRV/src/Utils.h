@@ -120,4 +120,12 @@ template <typename T>
     return string;
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename Enum>
+[[nodiscard]] inline constexpr std::underlying_type_t<Enum> ToUnderlying(const Enum e) noexcept
+{
+	return static_cast<std::underlying_type_t<Enum>>(e);
+}
+
 #endif /*CONVERTTOSPIRV_UTILS_H*/

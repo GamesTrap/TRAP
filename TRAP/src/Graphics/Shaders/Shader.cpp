@@ -7,37 +7,44 @@
 #include "Utils/String/String.h"
 #include "Utils/Memory.h"
 
-static const std::unordered_map<TRAP::Graphics::RendererAPI::ShaderStage, std::string> StageToStr
+struct ShaderStageData
 {
-	{TRAP::Graphics::RendererAPI::ShaderStage::Vertex, "Vertex"},
-	{TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl, "TessellationControl"},
-	{TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation, "TessellationEvaluation"},
-	{TRAP::Graphics::RendererAPI::ShaderStage::Geometry, "Geometry"},
-	{TRAP::Graphics::RendererAPI::ShaderStage::Fragment, "Fragment"},
-	{TRAP::Graphics::RendererAPI::ShaderStage::Compute, "Compute"},
-	{TRAP::Graphics::RendererAPI::ShaderStage::RayTracing, "RayTracing"}
+	TRAP::Graphics::RendererAPI::ShaderStage Stage;
+	std::string_view StageString;
+	EShLanguage StageGLSLang;
 };
 
-static const std::unordered_map<TRAP::Graphics::RendererAPI::ShaderStage, EShLanguage> StageToEShLang
+const std::array<ShaderStageData, ToUnderlying(TRAP::Graphics::RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> ShaderStages
 {
-	{TRAP::Graphics::RendererAPI::ShaderStage::Vertex, EShLangVertex},
-	{TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl, EShLangTessControl},
-	{TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation, EShLangTessEvaluation},
-	{TRAP::Graphics::RendererAPI::ShaderStage::Geometry, EShLangGeometry},
-	{TRAP::Graphics::RendererAPI::ShaderStage::Fragment, EShLangFragment},
-	{TRAP::Graphics::RendererAPI::ShaderStage::Compute, EShLangCompute}
+	{
+		{TRAP::Graphics::RendererAPI::ShaderStage::Vertex, "Vertex", EShLanguage::EShLangVertex},
+		{TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl, "TessellationControl", EShLanguage::EShLangTessControl},
+		{TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation, "TessellationEvaluation", EShLanguage::EShLangTessEvaluation},
+		{TRAP::Graphics::RendererAPI::ShaderStage::Geometry, "Geometry", EShLanguage::EShLangGeometry},
+		{TRAP::Graphics::RendererAPI::ShaderStage::Fragment, "Fragment", EShLanguage::EShLangFragment},
+		{TRAP::Graphics::RendererAPI::ShaderStage::Compute, "Compute", EShLanguage::EShLangCompute}
+	}
 };
 
-static const std::vector<TRAP::Graphics::RendererAPI::ShaderStage> IndexToStage
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string_view ShaderStageToString(const TRAP::Graphics::RendererAPI::ShaderStage stage)
 {
-	TRAP::Graphics::RendererAPI::ShaderStage::Vertex,
-	TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl,
-	TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation,
-	TRAP::Graphics::RendererAPI::ShaderStage::Geometry,
-	TRAP::Graphics::RendererAPI::ShaderStage::Fragment,
-	TRAP::Graphics::RendererAPI::ShaderStage::Compute,
-	TRAP::Graphics::RendererAPI::ShaderStage::RayTracing
-};
+	const auto* const it = std::find_if(ShaderStages.begin(), ShaderStages.end(),
+	                                    [stage](const ShaderStageData& element){return stage == element.Stage;});
+	return it->StageString;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+EShLanguage ShaderStageToEShLanguage(const TRAP::Graphics::RendererAPI::ShaderStage stage)
+{
+	const auto *const it = std::find_if(ShaderStages.begin(), ShaderStages.end(),
+	                                    [stage](const auto& element){return stage == element.Stage;});
+	return it->StageGLSLang;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Graphics::Shader::s_glslangInitialized = false;
 
@@ -58,12 +65,12 @@ bool TRAP::Graphics::Shader::Reload()
 	std::string glslSource;
 	bool isSPIRV = false;
 	RendererAPI::BinaryShaderDesc desc;
-	std::vector<uint32_t> SPIRVSource{};
+	std::vector<uint8_t> SPIRVSource{};
 
 	if(!IsFileEndingSupported(m_filepath))
 		return false;
 
-	isSPIRV = CheckSPIRVMagicNumber(m_filepath);
+	isSPIRV = CheckTRAPShaderMagicNumber(m_filepath);
 
 	if (!isSPIRV)
 	{
@@ -73,13 +80,9 @@ bool TRAP::Graphics::Shader::Reload()
 	}
 	else
 	{
-		const auto loadedData = FileSystem::ReadFile(m_filepath);
+		auto loadedData = FileSystem::ReadFile(m_filepath);
 		if(loadedData)
-		{
-			SPIRVSource.resize(loadedData->size() / sizeof(uint32_t));
-			Utils::Memory::ConvertBytes(loadedData->begin(), loadedData->end(), SPIRVSource.begin());
-			// SPIRVSource = Convert8To32(*loadedData);
-		}
+			SPIRVSource = std::move(*loadedData);
 	}
 
 	if(isSPIRV && SPIRVSource.empty())
@@ -324,11 +327,11 @@ bool TRAP::Graphics::Shader::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::filesystem::path& filePath)
+[[nodiscard]] bool TRAP::Graphics::Shader::CheckTRAPShaderMagicNumber(const std::filesystem::path& filePath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	//Check SPIRV Magic Number
+	//Check Shader Magic Number
 	if (!FileSystem::Exists(filePath))
 		return false;
 
@@ -340,22 +343,11 @@ bool TRAP::Graphics::Shader::Reload()
 		return false;
 	}
 
-	//SPIRV Magic Number:
-	//0x07230203
-
-	uint32_t magicNumber = 0;
-	file.seekg(sizeof(uint32_t) * 3, std::ios::cur); //Skip 3 uint32_ts
-	file.read(reinterpret_cast<char*>(&magicNumber), sizeof(uint32_t)); //SPIRV Magic Number
+	std::string magicNumber(8, '\0');
+	file.read(magicNumber.data(), NumericCast<std::streamsize>(magicNumber.size()));
 	file.close();
 
-	bool isMagic = magicNumber == 0x07230203;
-	if (!isMagic) //Test again with swapped endianness
-	{
-		Utils::Memory::SwapBytes(magicNumber);
-		isMagic = magicNumber == 0x07230203;
-	}
-
-	return isMagic;
+	return magicNumber == ShaderMagicNumber;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -446,9 +438,9 @@ bool TRAP::Graphics::Shader::Reload()
 	{
 		if (Utils::String::ToLower(shaders[i]).find("main") == std::string::npos)
 		{
-			if ((IndexToStage[i] & shaderStages) != RendererAPI::ShaderStage::None)
+			if ((ShaderStages[i].Stage & shaderStages) != RendererAPI::ShaderStage::None)
 			{
-				TP_ERROR(Log::ShaderGLSLPrefix, StageToStr.at(IndexToStage[i]), " shader couldn't find \"main\" function!");
+				TP_ERROR(Log::ShaderGLSLPrefix, ShaderStages[i].StageString, " shader couldn't find \"main\" function!");
 				return false;
 			}
 		}
@@ -489,55 +481,18 @@ bool TRAP::Graphics::Shader::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Scope<glslang::TShader> TRAP::Graphics::Shader::PreProcessGLSLForSPIRVConversion(const char* const source,
-	                                                                              	                 const RendererAPI::ShaderStage stage,
-	                                                                              	                 std::string& preProcessedSource)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-	TRAP::Scope<glslang::TShader> shader = TRAP::MakeScope<glslang::TShader>(StageToEShLang.at(stage));
-	shader->setStrings(&source, 1);
-	shader->setEnvInput(glslang::EShSourceGlsl, StageToEShLang.at(stage), glslang::EShClientVulkan, 460);
-
-	//TODO RayTracing
-
-	if(!shader)
-		return nullptr;
-
-	shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
-	shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3);
-	glslang::TShader::ForbidIncluder includer;
-
-	const TBuiltInResource* const DefaultTBuiltInResource = GetDefaultResources();
-
-	if(!shader->preprocess(DefaultTBuiltInResource, 460, ECoreProfile, true, true,
-		                   static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules),
-		                   &preProcessedSource, includer))
-	{
-		TP_ERROR(Log::ShaderSPIRVPrefix, "GLSL -> SPIR-V conversion preprocessing failed!");
-		TP_ERROR(Log::ShaderSPIRVPrefix, shader->getInfoLog());
-		TP_ERROR(Log::ShaderSPIRVPrefix, shader->getInfoDebugLog());
-
-		return nullptr;
-	}
-
-	return shader;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] bool TRAP::Graphics::Shader::ParseGLSLang(glslang::TShader* const shader)
+[[nodiscard]] bool TRAP::Graphics::Shader::ParseGLSLang(glslang::TShader& shader)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	const TBuiltInResource* const DefaultTBuiltInResource = GetDefaultResources();
 
-	if(!shader->parse(DefaultTBuiltInResource, 460, true,
+	if(!shader.parse(DefaultTBuiltInResource, 460, true,
 	                  static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
 	{
 		TP_ERROR(Log::ShaderGLSLPrefix, "Parsing failed: ");
-		TP_ERROR(Log::ShaderGLSLPrefix, shader->getInfoLog());
-		TP_ERROR(Log::ShaderGLSLPrefix, shader->getInfoDebugLog());
+		TP_ERROR(Log::ShaderGLSLPrefix, shader.getInfoLog());
+		TP_ERROR(Log::ShaderGLSLPrefix, shader.getInfoDebugLog());
 
 		return false;
 	}
@@ -547,12 +502,11 @@ bool TRAP::Graphics::Shader::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::Graphics::Shader::LinkGLSLang(glslang::TShader* const shader, glslang::TProgram& program)
+[[nodiscard]] bool TRAP::Graphics::Shader::LinkGLSLang(glslang::TShader& shader, glslang::TProgram& program)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	if(shader != nullptr)
-		program.addShader(shader);
+	program.addShader(&shader);
 
 	if(!program.link(static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
 	{
@@ -644,7 +598,7 @@ bool TRAP::Graphics::Shader::Reload()
 		s_glslangInitialized = true;
 	}
 
-	std::array<TRAP::Scope<glslang::TShader>, ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> glslShaders{};
+	// std::vector<glslang::TShader> glslShaders{};
 	RendererAPI::BinaryShaderDesc desc{};
 	desc.Stages = shaderStages;
 
@@ -653,35 +607,33 @@ bool TRAP::Graphics::Shader::Reload()
 		if(shaders[i].empty())
 			continue;
 
+		const char* const shaderCStr = shaders[i].c_str();
+		glslang::TShader glslShader(ShaderStageToEShLanguage(ShaderStages[i].Stage));
+		glslShader.setStrings(&shaderCStr, 1);
+		glslShader.setEnvInput(glslang::EShSourceGlsl, ShaderStageToEShLanguage(ShaderStages[i].Stage), glslang::EShClientVulkan, 460);
+
+	//TODO RayTracing
+
+		glslShader.setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
+		glslShader.setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
-		TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing ", StageToStr.at(IndexToStage[i]), " shader");
+		TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing ", ShaderStages[i].StageString, " shader");
 #endif /*ENABLE_GRAPHICS_DEBUG*/
-		std::string preProcessedSource;
-		glslShaders[i] = PreProcessGLSLForSPIRVConversion(shaders[i].data(), IndexToStage[i],
-															preProcessedSource);
-		if (preProcessedSource.empty())
+		if (!ParseGLSLang(glslShader))
 			return{};
 
-		const char* const preProcessedCStr = preProcessedSource.c_str();
-		glslShaders[i]->setStrings(&preProcessedCStr, 1);
-
 #ifdef ENABLE_GRAPHICS_DEBUG
-		TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing ", StageToStr.at(IndexToStage[i]), " shader");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-		if (!ParseGLSLang(glslShaders[i].get()))
-			return{};
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-		TP_DEBUG(Log::ShaderGLSLPrefix, "Linking ", StageToStr.at(IndexToStage[i]), " shader");
+		TP_DEBUG(Log::ShaderGLSLPrefix, "Linking ", ShaderStages[i].StageString, " shader");
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 		glslang::TProgram program;
-		if (!LinkGLSLang(glslShaders[i].get(), program))
+		if (!LinkGLSLang(glslShader, program))
 			return{};
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 		TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
 #endif /*ENABLE_GRAPHICS_DEBUG*/
-		const std::vector<uint32_t> SPIRV = ConvertToSPIRV(IndexToStage[i], program);
+		const std::vector<uint32_t> SPIRV = ConvertToSPIRV(ShaderStages[i].Stage, program);
 
 		switch(i)
 		{
@@ -740,9 +692,9 @@ bool TRAP::Graphics::Shader::Reload()
 	spvOptions.optimizeSize = true;
 #endif
 
-	glslang::GlslangToSpv(*program.getIntermediate(StageToEShLang.at(stage)), SPIRV, &logger, &spvOptions);
+	glslang::GlslangToSpv(*program.getIntermediate(ShaderStageToEShLanguage(stage)), SPIRV, &logger, &spvOptions);
 	if (logger.getAllMessages().length() > 0)
-		TP_ERROR(Log::ShaderSPIRVPrefix, StageToStr.at(stage), " shader: ", logger.getAllMessages());
+		TP_ERROR(Log::ShaderSPIRVPrefix, ShaderStageToString(stage), " shader: ", logger.getAllMessages());
 
 	//TODO RayTracing shaders
 
@@ -751,7 +703,7 @@ bool TRAP::Graphics::Shader::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::LoadSPIRV(std::vector<uint32_t>& SPIRV)
+[[nodiscard]] TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::LoadSPIRV(std::vector<uint8_t>& SPIRV)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -759,55 +711,71 @@ bool TRAP::Graphics::Shader::Reload()
 	TP_DEBUG(Log::ShaderSPIRVPrefix, "Loading SPIRV");
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
-	//Check endianness of byte strea
-	bool needsEndianSwap = false;
-	if (SPIRV[3] != 0x07230203)
-		needsEndianSwap = true;
-	if (needsEndianSwap) //Convert endianness if needed
-		Utils::Memory::SwapBytes(SPIRV.begin(), SPIRV.end());
+	if(SPIRV.empty() || SPIRV.size() < (ShaderHeaderOffset + sizeof(SPIRVMagicNumber)))
+		return {};
+
+	const uint32_t magicNumber = Utils::Memory::ConvertByte<uint32_t>(SPIRV.data() + ShaderHeaderOffset);
+
+	//Check endianness of byte stream
+	if (magicNumber != SPIRVMagicNumber)
+	{
+		Utils::Memory::SwapBytes(SPIRV.begin(), SPIRV.end()); //Convert endianness if needed
+		if (magicNumber != SPIRVMagicNumber) //Recheck if SPIRV Magic Number is present
+			return {};
+	}
 
 	RendererAPI::BinaryShaderDesc desc{};
-	uint32_t index = 0;
-	const uint32_t SPIRVSubShaderCount = SPIRV[index++];
+	std::size_t index = ShaderMagicNumber.size() + sizeof(uint32_t);
+	const uint8_t SPIRVSubShaderCount = SPIRV[index++];
 
 	for(uint32_t i = 0; i < SPIRVSubShaderCount; ++i)
 	{
-		const uint32_t SPIRVSize = SPIRV[index++];
+		std::size_t SPIRVSize = Utils::Memory::ConvertByte<std::size_t>(SPIRV.data() + NumericCast<std::ptrdiff_t>(index));
+		index += sizeof(std::size_t);
+
 		const RendererAPI::ShaderStage stage = static_cast<RendererAPI::ShaderStage>(SPIRV[index++]);
 		desc.Stages |= stage;
+
+		const uint32_t spvMagicNumber  = Utils::Memory::ConvertByte<uint32_t>(SPIRV.data() + NumericCast<std::ptrdiff_t>(index));
+		if(spvMagicNumber != SPIRVMagicNumber || (SPIRV.size() - index) < SPIRVSize)
+			return {};
 
 		switch(stage)
 		{
 		case RendererAPI::ShaderStage::Vertex:
-			desc.Vertex.ByteCode = std::vector<uint32_t>(SPIRV.begin() + index, SPIRV.begin() + index + SPIRVSize);
-			index += SPIRVSize;
+			desc.Vertex.ByteCode.resize(SPIRVSize);
+			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.Vertex.ByteCode.begin());
+			index += SPIRVSize * sizeof(uint32_t);
 			break;
 
 		case RendererAPI::ShaderStage::TessellationControl:
-			desc.TessellationControl.ByteCode = std::vector<uint32_t>(SPIRV.begin() + index,
-			                                                          SPIRV.begin() + index + SPIRVSize);
-			index += SPIRVSize;
+			desc.TessellationControl.ByteCode.resize(SPIRVSize);
+			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.TessellationControl.ByteCode.begin());
+			index += SPIRVSize * sizeof(uint32_t);
 			break;
 
 		case RendererAPI::ShaderStage::TessellationEvaluation:
-			desc.TessellationEvaluation.ByteCode = std::vector<uint32_t>(SPIRV.begin() + index,
-			                                                             SPIRV.begin() + index + SPIRVSize);
-			index += SPIRVSize;
+			desc.TessellationEvaluation.ByteCode.resize(SPIRVSize);
+			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.TessellationEvaluation.ByteCode.begin());
+			index += SPIRVSize * sizeof(uint32_t);
 			break;
 
 		case RendererAPI::ShaderStage::Geometry:
-			desc.Geometry.ByteCode = std::vector<uint32_t>(SPIRV.begin() + index, SPIRV.begin() + index + SPIRVSize);
-			index += SPIRVSize;
+			desc.Geometry.ByteCode.resize(SPIRVSize);
+			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.Geometry.ByteCode.begin());
+			index += SPIRVSize * sizeof(uint32_t);
 			break;
 
 		case RendererAPI::ShaderStage::Fragment:
-			desc.Fragment.ByteCode = std::vector<uint32_t>(SPIRV.begin() + index, SPIRV.begin() + index + SPIRVSize);
-			index += SPIRVSize;
+			desc.Fragment.ByteCode.resize(SPIRVSize);
+			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.Fragment.ByteCode.begin());
+			index += SPIRVSize * sizeof(uint32_t);
 			break;
 
 		case RendererAPI::ShaderStage::Compute:
-			desc.Compute.ByteCode = std::vector<uint32_t>(SPIRV.begin() + index, SPIRV.begin() + index + SPIRVSize);
-			index += SPIRVSize;
+			desc.Compute.ByteCode.resize(SPIRVSize);
+			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.Compute.ByteCode.begin());
+			index += SPIRVSize * sizeof(uint32_t);
 			break;
 
 		//case RendererAPI::ShaderStage::RayTracing:
@@ -866,13 +834,13 @@ bool TRAP::Graphics::Shader::Reload()
 
 	std::string glslSource;
 	bool isSPIRV = false;
-	std::vector<uint32_t> SPIRVSource{};
+	std::vector<uint8_t> SPIRVSource{};
 	if (!filePath.empty())
 	{
 		if(!IsFileEndingSupported(filePath))
 			return false;
 
-		isSPIRV = CheckSPIRVMagicNumber(filePath);
+		isSPIRV = CheckTRAPShaderMagicNumber(filePath);
 
 		if (!isSPIRV)
 		{
@@ -882,13 +850,9 @@ bool TRAP::Graphics::Shader::Reload()
 		}
 		else
 		{
-			const auto loadedData = FileSystem::ReadFile(filePath);
+			auto loadedData = FileSystem::ReadFile(filePath);
 			if(loadedData)
-			{
-				SPIRVSource.resize(loadedData->size() / sizeof(uint32_t));
-				Utils::Memory::ConvertBytes(loadedData->begin(), loadedData->end(), SPIRVSource.begin());
-				//SPIRVSource = Convert8To32(*loadedData);
-			}
+				SPIRVSource = std::move(*loadedData);
 		}
 	}
 

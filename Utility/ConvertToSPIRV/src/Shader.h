@@ -10,7 +10,34 @@
 
 #include "Utils.h"
 
-inline std::array<std::array<std::string, 2>, 2> DefaultShaderMacros
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Format Specification as of 03.05.2023:
+
+//1. Magic Number ("TRAP_SPV")
+//2. Version number (uint32_t)
+//2. Number of contained shader stages (uint8_t)
+//For each SPIRV shader:
+//    3. Size of SPIRV bytecode in bytes (std::size_t)
+//    4. Shader type (ShaderStage/uint32_t)
+//    5. SPIRV bytecode (std::size_t)
+
+//The TRAP_SPV file may not contain:
+//    - Multiple SPIRV shaders of the same type (i.e. 2 Vertex shaders in a single file).
+//    - Incompatible shader types (i.e. a Vertex and a Compute shader).
+//    - Empty SPIRV shaders (i.e. no bytecode).
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+using Macro = std::pair<std::string, std::string>;
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline constexpr std::array<std::pair<std::string_view, std::string_view>, 2> DefaultShaderMacros
 {
 	{
 		{"UpdateFreqStatic", "set = 0"},
@@ -21,6 +48,13 @@ inline std::array<std::array<std::string, 2>, 2> DefaultShaderMacros
 //-------------------------------------------------------------------------------------------------------------------//
 
 static bool s_glslangInitialized = false;
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline constexpr std::string_view MagicNumber = "TRAP_SPV";
+inline constexpr uint32_t VersionNumber = 1u;
+inline constexpr int32_t GLSLVersion = 460;
+inline constexpr std::string_view ShaderFileEnding = "tp-spv";
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -44,12 +78,11 @@ enum class ShaderStage : uint32_t
 	SHADER_STAGE_COUNT = 7
 };
 
-static inline ShaderStage operator|(ShaderStage a, ShaderStage b) noexcept { return static_cast<ShaderStage>(static_cast<std::underlying_type<ShaderStage>::type>(a) |
-																		                                     static_cast<std::underlying_type<ShaderStage>::type>(b)); }
-static inline ShaderStage operator&(ShaderStage a, ShaderStage b) noexcept { return static_cast<ShaderStage>(static_cast<std::underlying_type<ShaderStage>::type>(a) &
-																		                                     static_cast<std::underlying_type<ShaderStage>::type>(b)); }
+static inline ShaderStage operator|(ShaderStage a, ShaderStage b) noexcept { return static_cast<ShaderStage>(ToUnderlying(a) |
+																		                                     ToUnderlying(b)); }
+static inline ShaderStage operator&(ShaderStage a, ShaderStage b) noexcept { return static_cast<ShaderStage>(ToUnderlying(a) &
+																		                                     ToUnderlying(b)); }
 static inline ShaderStage operator|=(ShaderStage& a, ShaderStage b) noexcept { return a = (a | b); }
-// static inline ShaderStage operator&=(ShaderStage& a, ShaderStage b) noexcept { return a = (a & b); }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -61,86 +94,69 @@ struct Shader
 
     struct SubShader
     {
+		ShaderStage Stage;
         std::string Source;
         std::vector<uint32_t> SPIRV{};
     };
 
-	std::array<SubShader, static_cast<uint32_t>(ShaderStage::SHADER_STAGE_COUNT)> SubShaderSources{};
+	std::vector<SubShader> SubShaderSources{};
 };
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const std::unordered_map<ShaderStage, std::string_view> ShaderStageToString
+struct ShaderStageData
 {
-    {ShaderStage::Vertex, "Vertex"},
-    {ShaderStage::Fragment, "Fragment"},
-    {ShaderStage::Geometry, "Geometry"},
-    {ShaderStage::TessellationControl, "TessellationControl"},
-    {ShaderStage::TessellationEvaluation, "TessellationEvaluation"},
-    {ShaderStage::Compute, "Compute"}
+	ShaderStage Stage;
+	std::string_view StageString;
+	std::vector<std::string_view> StageIdentifierStrs;
+	EShLanguage StageGLSLang;
+};
+
+inline const std::array<ShaderStageData, ToUnderlying(ShaderStage::SHADER_STAGE_COUNT)> ShaderStages
+{
+	{
+		{ShaderStage::Vertex, "Vertex", {"vertex"}, EShLanguage::EShLangVertex},
+		{ShaderStage::TessellationControl, "TessellationControl", {"tessellationcontrol", "tessellation control"}, EShLanguage::EShLangTessControl},
+		{ShaderStage::TessellationEvaluation, "TessellationEvaluation", {"tessellationevaluation", "tessellation evaluation"}, EShLanguage::EShLangTessEvaluation},
+		{ShaderStage::Geometry, "Geometry", {"geometry"}, EShLanguage::EShLangGeometry},
+		{ShaderStage::Fragment, "Fragment", {"fragment", "pixel"}, EShLanguage::EShLangFragment},
+		{ShaderStage::Compute, "Compute", {"compute"}, EShLanguage::EShLangCompute}
+	}
 };
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline constexpr std::array<ShaderStage, 7> IndexToShaderStage
+inline std::string_view ShaderStageToString(const ShaderStage stage)
 {
-    ShaderStage::Vertex,
-    ShaderStage::TessellationControl,
-    ShaderStage::TessellationEvaluation,
-    ShaderStage::Geometry,
-    ShaderStage::Fragment,
-    ShaderStage::Compute
-};
+	const auto *const it = std::find_if(ShaderStages.begin(), ShaderStages.end(),
+	                                    [stage](const auto& element){return stage == element.Stage;});
+	return it->StageString;
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const std::unordered_map<ShaderStage, uint32_t> ShaderStageToIndex
+inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 {
-    { ShaderStage::Vertex, 0 },
-    { ShaderStage::TessellationControl, 1 },
-    { ShaderStage::TessellationEvaluation, 2 },
-    { ShaderStage::Geometry, 3 },
-    { ShaderStage::Fragment, 4 },
-    { ShaderStage::Compute, 5 }
-};
+	const auto *const it = std::find_if(ShaderStages.begin(), ShaderStages.end(),
+	                                    [stage](const auto& element){return stage == element.Stage;});
+	return it->StageGLSLang;
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const std::unordered_map<ShaderStage, EShLanguage> ShaderStageToEShLanguage
+[[nodiscard]] inline std::optional<ShaderStage> DetectShaderStage(const std::string_view identifyString)
 {
-    { ShaderStage::Vertex, EShLangVertex },
-    { ShaderStage::TessellationControl, EShLangTessControl },
-    { ShaderStage::TessellationEvaluation, EShLangTessEvaluation },
-    { ShaderStage::Geometry, EShLangGeometry },
-    { ShaderStage::Fragment, EShLangFragment },
-    { ShaderStage::Compute, EShLangCompute }
-};
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] inline ShaderStage DetectShaderStage(const std::string_view identifyString)
-{
-    static const std::unordered_map<std::string_view, ShaderStage> stages
-    {
-        {"vertex", ShaderStage::Vertex},
-        {"fragment", ShaderStage::Fragment},
-        {"pixel", ShaderStage::Fragment},
-        {"geometry", ShaderStage::Geometry},
-        {"tessellationcontrol", ShaderStage::TessellationControl},
-        {"tessellation control", ShaderStage::TessellationControl},
-        {"tessellationevaluation", ShaderStage::TessellationEvaluation},
-        {"tessellation evaluation", ShaderStage::TessellationEvaluation},
-        {"compute", ShaderStage::Compute}
-    };
-
     //Detect shader type
-    for(const auto& [str, stage] : stages)
+    for(const auto& shaderStageData : ShaderStages)
     {
-        if(identifyString.find(str) != std::string_view::npos)
-            return stage;
+		for(const std::string_view shaderStageIdentifier : shaderStageData.StageIdentifierStrs)
+		{
+			if(identifyString.find(shaderStageIdentifier) != std::string_view::npos)
+				return shaderStageData.Stage;
+		}
     }
 
-    return ShaderStage::None;
+    return std::nullopt;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -164,20 +180,20 @@ inline const std::unordered_map<ShaderStage, EShLanguage> ShaderStageToEShLangua
 	}
 
 	//Check for "Normal" Shader Stages combined with Compute
-	if (((static_cast<uint32_t>(ShaderStage::Vertex                 & stages) != 0u) ||
-		 (static_cast<uint32_t>(ShaderStage::Fragment               & stages) != 0u) ||
-		 (static_cast<uint32_t>(ShaderStage::TessellationControl    & stages) != 0u) ||
-		 (static_cast<uint32_t>(ShaderStage::TessellationEvaluation & stages) != 0u) ||
-		 (static_cast<uint32_t>(ShaderStage::Geometry               & stages) != 0u)) &&
-		 (static_cast<uint32_t>(ShaderStage::Compute                & stages) != 0u))
+	if (((ShaderStage::Vertex                 & stages) != ShaderStage::None ||
+		 (ShaderStage::Fragment               & stages) != ShaderStage::None ||
+		 (ShaderStage::TessellationControl    & stages) != ShaderStage::None ||
+		 (ShaderStage::TessellationEvaluation & stages) != ShaderStage::None ||
+		 (ShaderStage::Geometry               & stages) != ShaderStage::None) &&
+		 (ShaderStage::Compute                & stages) != ShaderStage::None)
 	{
 		std::cerr << "[GLSL] Rasterizer Shader Stages combined with Compute stage!" << '\n';
 		return false;
 	}
 
 	//Check for Vertex Shader Stage & required Fragment/Pixel Shader Stage
-	if (  (static_cast<uint32_t>(ShaderStage::Vertex   & stages) != 0u) &&
-		((static_cast<uint32_t>(ShaderStage::Fragment & stages)) == 0u))
+	if ((ShaderStage::Vertex   & stages) != ShaderStage::None &&
+		(ShaderStage::Fragment & stages) == ShaderStage::None)
 	{
 		std::cerr << "[GLSL] Only Vertex Shader Stage provided! Missing Fragment/Pixel Shader Stage" << '\n';
 		return false;
@@ -189,13 +205,14 @@ inline const std::unordered_map<ShaderStage, EShLanguage> ShaderStageToEShLangua
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline bool PreProcessGLSL(Shader& shader, const std::vector<std::array<std::string, 2>>& customMacros)
+[[nodiscard]] inline bool PreProcessGLSL(Shader& shader,
+                                         const std::vector<Macro>& customMacros)
 {
-	ShaderStage currentShaderStage = ShaderStage::None;
+	std::optional<ShaderStage> currentShaderStage = std::nullopt;
 	const std::vector<std::string> lines = GetLines(shader.Source);
 
 	//Go through every line of the shader source
-	for (uint32_t i = 0; i < lines.size(); ++i)
+	for (std::size_t i = 0; i < lines.size(); ++i)
 	{
 		//Make it easier to parse
 		const std::string lowerLine = ToLower(lines[i]);
@@ -205,52 +222,53 @@ inline const std::unordered_map<ShaderStage, EShLanguage> ShaderStageToEShLangua
 		{
             //Get Shader stage type
             currentShaderStage = DetectShaderStage(lowerLine);
-            if(currentShaderStage != ShaderStage::None)
-                std::cout << "[GLSL] Adding " << ShaderStageToString.at(currentShaderStage) << " Shader to \"" << shader.FilePath << "\"" << '\n';
-            else
+            if(!currentShaderStage)
             {
                 std::cerr << "[GLSL] Failed to detect valid shader stage\n";
                 std::cerr << "[GLSL] Skipping unknown shader stage\n";
                 continue;
             }
 
+			std::cout << "[GLSL] Adding " << ShaderStageToString(*currentShaderStage) << " Shader to \"" << shader.FilePath << "\"" << '\n';
+
 			//Check for duplicate "#shader XXX" defines
-			if (static_cast<uint32_t>(shader.Stages & currentShaderStage) != 0u)
+			if (static_cast<uint32_t>(shader.Stages & *currentShaderStage) != 0u)
 			{
 				std::cerr << "[GLSL] Found duplicate \"#shader\" define: " << lines[i] << '\n';
                 std::cerr << "[GLSL] Skipping duplicated shader stage\n";
+				currentShaderStage = std::nullopt;
 				continue;
 			}
 
-			shader.Stages |= currentShaderStage;
+			shader.Stages |= *currentShaderStage;
+			shader.SubShaderSources.push_back(Shader::SubShader{*currentShaderStage, "", std::vector<uint32_t>{}});
 		}
 		else if (lowerLine.find("#version") != std::string::npos) //Check for unnecessary "#version" define
 			std::cout << "[GLSL] Found Tag: \"" << lines[i] << "\" this is unnecessary! Skipping Line: " << i << '\n';
-		else if (currentShaderStage != ShaderStage::None) //Add shader code to detected shader stage
-            shader.SubShaderSources[ShaderStageToIndex.at(currentShaderStage)].Source.append(lines[i] + '\n');
+		else if (currentShaderStage) //Add shader code to detected shader stage
+            shader.SubShaderSources.back().Source.append(lines[i] + '\n');
 	}
 
-	for(std::size_t i = 0; i < shader.SubShaderSources.size(); ++i)
+	for(auto& subShader : shader.SubShaderSources)
 	{
-        if(!FindEntryPoint(shader.SubShaderSources[i].Source) &&
-           (static_cast<uint32_t>(IndexToShaderStage.at(i) & shader.Stages) != 0u))
+        if(!FindEntryPoint(subShader.Source))
         {
-            std::cerr << "[GLSL] " << ShaderStageToString.at(IndexToShaderStage.at(i)) << " Shader Couldn't find \"main\" function!\n";
+            std::cerr << "[GLSL] " << ShaderStageToString(subShader.Stage) << " Shader Couldn't find \"main\" function!\n";
             return false;
         }
 
-		if (!shader.SubShaderSources[i].Source.empty())
+		//Found main function
+		//Add GLSL version before any shader code
+		std::string tmp = subShader.Source;
+		subShader.Source = "#version 460 core\n";
+		for(const auto& [name, value] : DefaultShaderMacros)
+			subShader.Source += "#define " + std::string(name) + " " + std::string(value) + '\n';
+		for(const auto& [name, value] : customMacros)
 		{
-			//Found main function
-			//Add GLSL version before any shader code
-			std::string tmp = shader.SubShaderSources[i].Source;
-			shader.SubShaderSources[i].Source = "#version 460 core\n";
-			for(const auto& macro : DefaultShaderMacros)
-				shader.SubShaderSources[i].Source += "#define " + std::get<0>(macro) + " " + std::get<1>(macro) + '\n';
-            for(const auto& macro : customMacros)
-                shader.SubShaderSources[i].Source += "#define " + std::get<0>(macro) + " " + std::get<1>(macro) + '\n';
-			shader.SubShaderSources[i].Source += tmp;
+			subShader.Source += "#define " + name + " ";
+			subShader.Source += value + '\n';
 		}
+		subShader.Source += tmp;
 	}
 
 	return true;
@@ -258,51 +276,15 @@ inline const std::unordered_map<ShaderStage, EShLanguage> ShaderStageToEShLangua
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline constexpr int32_t GLSLVersion = 460;
-
-[[nodiscard]] inline std::unique_ptr<glslang::TShader> PreProcessGLSLForConversion(const char* source, const ShaderStage stage,
-                                                                                   std::string& preProcessedSource)
-{
-	std::unique_ptr<glslang::TShader> shader = nullptr;
-
-	shader = std::make_unique<glslang::TShader>(ShaderStageToEShLanguage.at(stage));
-	shader->setStrings(&source, 1);
-	shader->setEnvInput(glslang::EShSourceGlsl, ShaderStageToEShLanguage.at(stage), glslang::EShClientVulkan, GLSLVersion);
-
-	shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
-	shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3);
-	glslang::TShader::ForbidIncluder includer;
-	const TBuiltInResource* const DefaultTBuiltInResource = GetDefaultResources();
-	if (!shader->preprocess(DefaultTBuiltInResource,
-		GLSLVersion,
-		ECoreProfile,
-		true,
-		true,
-		static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules),
-		&preProcessedSource,
-		includer))
-	{
-		std::cerr << "[GLSL] GLSL -> SPIR-V Preprocessing failed!\n";
-		std::cerr << "[GLSL] " << shader->getInfoLog() << '\n';
-		std::cerr << "[GLSL] " << shader->getInfoDebugLog() << '\n';
-
-		return nullptr;
-	}
-
-	return shader;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] inline bool ParseGLSL(glslang::TShader* shader)
+[[nodiscard]] inline bool ParseGLSL(glslang::TShader& shader)
 {
 	const TBuiltInResource* const DefaultTBuiltInResource = GetDefaultResources();
-	if (!shader->parse(DefaultTBuiltInResource, GLSLVersion, true,
-                       static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
+	if (!shader.parse(DefaultTBuiltInResource, GLSLVersion, true,
+                      static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
 	{
 		std::cerr << "[GLSL] Parsing failed:\n";
-		std::cerr << "[GLSL] " << shader->getInfoLog() << '\n';
-		std::cerr << "[GLSL] " << shader->getInfoDebugLog() << '\n';
+		std::cerr << "[GLSL] " << shader.getInfoLog() << '\n';
+		std::cerr << "[GLSL] " << shader.getInfoDebugLog() << '\n';
 
 		return false;
 	}
@@ -312,10 +294,9 @@ inline constexpr int32_t GLSLVersion = 460;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline bool LinkGLSL(glslang::TShader* shader, glslang::TProgram& program)
+[[nodiscard]] inline bool LinkGLSL(glslang::TShader& shader, glslang::TProgram& program)
 {
-	if (shader != nullptr)
-		program.addShader(shader);
+	program.addShader(&shader);
 
 	if (!program.link(static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
 	{
@@ -331,29 +312,25 @@ inline constexpr int32_t GLSLVersion = 460;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline std::vector<uint32_t> ConvertToSPIRV(glslang::TShader* shader, const ShaderStage stage,
-                                                          glslang::TProgram& program)
+[[nodiscard]] inline std::vector<uint32_t> ConvertToSPIRV(const ShaderStage stage, glslang::TProgram& program)
 {
 	std::vector<uint32_t> SPIRV{};
-
-    if(shader == nullptr)
-        return SPIRV;
 
     spv::SpvBuildLogger logger{};
     glslang::SpvOptions spvOptions{};
     spvOptions.disableOptimizer = false;
     spvOptions.optimizeSize = true;
 
-    glslang::GlslangToSpv(*program.getIntermediate(ShaderStageToEShLanguage.at(stage)), SPIRV, &logger, &spvOptions);
+    glslang::GlslangToSpv(*program.getIntermediate(ShaderStageToEShLanguage(stage)), SPIRV, &logger, &spvOptions);
     if (logger.getAllMessages().length() > 0)
-        std::cout << "[SPIRV] " << ShaderStageToString.at(stage) << " Shader: " << logger.getAllMessages() << '\n';
+        std::cout << "[SPIRV] " << ShaderStageToString(stage) << " Shader: " << logger.getAllMessages() << '\n';
 
     return SPIRV;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline bool CompileGLSLToSPIRV(Shader& shader)
+[[nodiscard]] inline bool InitializeGLSLang()
 {
 	if (!s_glslangInitialized)
 	{
@@ -365,34 +342,40 @@ inline constexpr int32_t GLSLVersion = 460;
 		s_glslangInitialized = true;
 	}
 
-	std::array<std::unique_ptr<glslang::TShader>, static_cast<uint32_t>(ShaderStage::SHADER_STAGE_COUNT)> glslShaders{};
-	for (uint32_t i = 0; i < shader.SubShaderSources.size(); ++i)
-	{
-        if(shader.SubShaderSources[i].Source.empty())
-            continue;
+	return true;
+}
 
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] inline bool CompileGLSLToSPIRV(Shader& shader)
+{
+	if(!InitializeGLSLang())
+		return false;
+
+	for (auto& subShaderSource : shader.SubShaderSources)
+	{
         glslang::TProgram program;
 
-        std::string preProcessedSource;
+		const char* srcCStr = subShaderSource.Source.c_str();
 
-        std::cout << "[GLSL] Pre-Processing " << ShaderStageToString.at(IndexToShaderStage.at(i)) << " Shader\n";
-        glslShaders[i] = PreProcessGLSLForConversion(shader.SubShaderSources[i].Source.c_str(), IndexToShaderStage.at(i), preProcessedSource);
-        if (preProcessedSource.empty())
+		glslang::TShader glslShader = glslang::TShader(ShaderStageToEShLanguage(subShaderSource.Stage));
+		glslShader.setStrings(&srcCStr, 1);
+		glslShader.setEnvInput(glslang::EShSourceGlsl, ShaderStageToEShLanguage(subShaderSource.Stage), glslang::EShClientVulkan, GLSLVersion);
+		glslShader.setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
+		glslShader.setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3);
+
+        std::cout << "[GLSL] Parsing " << ShaderStageToString(subShaderSource.Stage) << " Shader\n";
+        if (!ParseGLSL(glslShader))
             return false;
 
-        const char* preProcessedCStr = preProcessedSource.c_str();
-        glslShaders[i]->setStrings(&preProcessedCStr, 1);
-
-        std::cout << "[GLSL] Parsing " << ShaderStageToString.at(IndexToShaderStage.at(i)) << " Shader\n";
-        if (!ParseGLSL(glslShaders[i].get()))
-            return false;
-
-        std::cout << "[GLSL] Linking " << ShaderStageToString.at(IndexToShaderStage.at(i)) << " Shader\n";
-        if (!LinkGLSL(glslShaders[i].get(), program))
+        std::cout << "[GLSL] Linking " << ShaderStageToString(subShaderSource.Stage) << " Shader\n";
+        if (!LinkGLSL(glslShader, program))
             return false;
 
         std::cout << "[SPIRV] Converting GLSL -> SPIR-V\n";
-        shader.SubShaderSources[i].SPIRV = ConvertToSPIRV(glslShaders[i].get(), IndexToShaderStage.at(i), program);
+        subShaderSource.SPIRV = ConvertToSPIRV(subShaderSource.Stage, program);
+		if(subShaderSource.SPIRV.empty())
+			return false;
 	}
 
 	return true;
@@ -400,46 +383,42 @@ inline constexpr int32_t GLSLVersion = 460;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline bool SaveSPIRV(Shader& shader, const std::filesystem::path& customOutput)
+[[nodiscard]] inline bool SaveSPIRV(Shader& shader, std::optional<std::filesystem::path> customOutput)
 {
-    std::filesystem::path filePath{};
-    if(!customOutput.empty())
-    {
-        filePath = customOutput;
-        if(!customOutput.has_extension())
-            filePath += ".spirv";
-    }
-    else
-        filePath = shader.FilePath + ".spirv";
+	if(shader.Stages == ShaderStage::None || shader.SubShaderSources.empty())
+	{
+		std::cerr << "Can't save empty shader!" << '\n';
+		return false;
+	}
 
-    std::cout << "[SPIRV] Saving Shader: \"" << filePath.u8string() << "\"" << '\n';
+	if(!customOutput)
+        customOutput = shader.FilePath;
 
-	std::ofstream file(filePath, std::ios::binary);
+	customOutput->replace_extension(ShaderFileEnding);
+
+    std::cout << "[SPIRV] Saving Shader: \"" << customOutput->u8string() << "\"" << '\n';
+
+	std::ofstream file(*customOutput, std::ios::binary);
 	if (!file.is_open())
     {
-		std::cerr << "Couldn't open file: " << filePath.u8string() << '\n';
+		std::cerr << "Couldn't open file: " << customOutput->u8string() << '\n';
         return false;
     }
 
-    uint32_t SPIRVSubShadersCount = 0;
+	file.write(MagicNumber.data(), MagicNumber.size());
+	file.write(reinterpret_cast<const char*>(&VersionNumber), sizeof(VersionNumber));
+
+    const uint8_t SPIRVSubShadersCount = static_cast<uint8_t>(shader.SubShaderSources.size());
+    file.write(reinterpret_cast<const char*>(&SPIRVSubShadersCount), sizeof(SPIRVSubShadersCount));
+
     for(const auto& subShader : shader.SubShaderSources)
     {
-        if (!subShader.SPIRV.empty())
-            ++SPIRVSubShadersCount;
-    }
-    file.write(reinterpret_cast<char*>(&SPIRVSubShadersCount), sizeof(uint32_t));
+		const std::size_t SPIRVSize = subShader.SPIRV.size();
+		const uint8_t type = static_cast<uint8_t>(ToUnderlying(subShader.Stage));
 
-    for(std::size_t i = 0; i < shader.SubShaderSources.size(); ++i)
-    {
-        if(!shader.SubShaderSources[i].SPIRV.empty())
-        {
-            const uint32_t SPIRVSize = static_cast<uint32_t>(shader.SubShaderSources[i].SPIRV.size());
-            const uint32_t type = static_cast<uint32_t>(IndexToShaderStage.at(i));
-
-            file.write(reinterpret_cast<const char*>(&SPIRVSize), sizeof(uint32_t));
-            file.write(reinterpret_cast<const char*>(&type), sizeof(uint32_t));
-            file.write(reinterpret_cast<const char*>(shader.SubShaderSources[i].SPIRV.data()), static_cast<std::streamsize>(shader.SubShaderSources[i].SPIRV.size() * sizeof(uint32_t)));
-        }
+		file.write(reinterpret_cast<const char*>(&SPIRVSize), sizeof(SPIRVSize));
+		file.write(reinterpret_cast<const char*>(&type), sizeof(type));
+		file.write(reinterpret_cast<const char*>(subShader.SPIRV.data()), static_cast<std::streamsize>(subShader.SPIRV.size() * sizeof(decltype(subShader.SPIRV)::value_type)));
     }
 
     file.close();
@@ -457,23 +436,13 @@ inline constexpr int32_t GLSLVersion = 460;
 		return false;
 	}
 
-	if (ToLower(GetSuffix(filePath.u8string())) == "shader")
-	{
-		std::optional<std::string> source = ReadTextFile(filePath);
-		if (source)
-		{
-			std::string newPath = filePath.u8string();
-			newPath = newPath.substr(0, newPath.size() - 7);
-			outShader = Shader{newPath, *source, ShaderStage::None};
-		}
-		else
-			return false;
-	}
-	else
-	{
-		std::cerr << "File: \"" << filePath.u8string() << "\" suffix is not \".shader\"!\n";
+	const std::optional<std::string> source = ReadTextFile(filePath);
+	if (!source)
 		return false;
-	}
+
+	std::string newPath = filePath.u8string();
+	newPath = newPath.substr(0, newPath.size() - 7);
+	outShader = Shader{newPath, *source, ShaderStage::None};
 
 	return true;
 }

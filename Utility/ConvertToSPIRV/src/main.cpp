@@ -6,8 +6,9 @@
 
 using namespace std::string_view_literals;
 
-[[nodiscard]] bool CheckForParameters(const std::vector<std::string_view>& args, std::filesystem::path& outOutputPath,
-                                      std::vector<std::array<std::string, 2>>& outCustomMacros);
+[[nodiscard]] bool CheckForParameters(const std::vector<std::string_view>& args,
+                                      std::optional<std::filesystem::path>& outOutputPath,
+                                      std::vector<Macro>& outCustomMacros);
 void PrintUsage(const std::filesystem::path& programName);
 void PrintVersion();
 
@@ -15,16 +16,12 @@ void PrintVersion();
 
 int main(const int argc, const char* const* const argv)
 {
-	std::vector<std::string_view> args(argv, std::next(argv, static_cast<std::ptrdiff_t>(argc)));
+	const std::vector<std::string_view> args(argv, std::next(argv, static_cast<std::ptrdiff_t>(argc)));
 
-	std::filesystem::path outputPath{};
-	std::vector<std::array<std::string, 2>> customMacros{};
+	std::optional<std::filesystem::path> outputPath{};
+	std::vector<Macro> customMacros{};
 	if(!CheckForParameters(args, outputPath, customMacros))
 		return 0;
-
-	//Print all customMacros
-	for(const auto& macro : customMacros)
-		std::cout << std::get<0>(macro) << " " << std::get<1>(macro) << std::endl;
 
 	Shader shader{};
 	if(!LoadShader(args[1], shader))
@@ -32,15 +29,14 @@ int main(const int argc, const char* const* const argv)
 
 	if(!PreProcessGLSL(shader, customMacros))
 		return -1;
+
 	if(!ValidateShaderStages(shader))
 		return -1;
 
-	if(CompileGLSLToSPIRV(shader))
-	{
-		if(!SaveSPIRV(shader, outputPath))
-			return -1;
-	}
-	else
+	if(!CompileGLSLToSPIRV(shader))
+		return -1;
+
+	if(!SaveSPIRV(shader, outputPath))
 		return -1;
 
 	return 0;
@@ -48,8 +44,108 @@ int main(const int argc, const char* const* const argv)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool CheckForParameters(const std::vector<std::string_view>& args, std::filesystem::path& outOutputPath,
-                                      std::vector<std::array<std::string, 2>>& outCustomMacros)
+[[nodiscard]] bool CheckForHelpParameter(const std::vector<std::string_view>& args)
+{
+	if(std::any_of(args.begin(), args.end(), [](const auto arg){return arg == "-h"sv || arg == "--help"sv;}))
+	{
+		PrintUsage(args[0]);
+		return true;
+	}
+
+	return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] bool CheckForVersionParameter(const std::vector<std::string_view>& args)
+{
+	if(std::any_of(args.begin(), args.end(), [](const auto arg){return arg == "--version"sv;}))
+	{
+		PrintVersion();
+		return true;
+	}
+
+	return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] bool CheckForOutputFilePath(const std::vector<std::string_view>& args,
+                                          std::optional<std::filesystem::path>& outOutputPath)
+{
+	outOutputPath = std::nullopt;
+
+	auto it = std::find_if(args.begin(), args.end(),
+	                       [](const auto str){return str == "-o"sv || str == "--output"sv;});
+
+	if(it == args.end())
+		return false;
+
+	++it;
+
+	if(it == args.end())
+	{
+		std::cerr << "No output file name specified!\n";
+		return true;
+	}
+
+	outOutputPath = *it;
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] std::optional<Macro> SplitMacro(const std::string_view macro)
+{
+	const std::size_t equalSign = macro.find('=');
+	if(equalSign == std::string::npos)
+	{
+		std::cerr << "Invalid macro: \"" << macro << "\"\n";
+		std::cerr << "Skipping macro\n";
+		return std::nullopt;
+	}
+
+	const std::string_view name = macro.substr(0, equalSign);
+	const std::string_view value = macro.substr(equalSign + 1);
+
+	return Macro{name, value};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] bool CheckForCustomMacros(const std::vector<std::string_view>& args,
+                                        std::vector<Macro>& outCustomMacros)
+{
+	outCustomMacros.clear();
+
+	for(auto it = args.begin(); it != args.end(); ++it)
+	{
+		if(*it != "-m"sv && *it != "--macro"sv)
+			continue;
+
+		++it;
+
+		if(it == args.end())
+		{
+			std::cerr << "No macro specified!\n";
+			return true;
+		}
+
+		const auto macro = SplitMacro(*it);
+		if(!macro)
+			continue;
+
+		outCustomMacros.push_back(*macro);
+	}
+
+	return !outCustomMacros.empty();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] bool CheckForParameters(const std::vector<std::string_view>& args,
+                                      std::optional<std::filesystem::path>& outOutputPath,
+                                      std::vector<Macro>& outCustomMacros)
 {
 	//Check for no parameters
 	if (args.size() < 2)
@@ -58,69 +154,17 @@ int main(const int argc, const char* const* const argv)
 		return false;
 	}
 
-	//Check for help flag
-	for(std::size_t i = 0; i < args.size(); ++i)
-	{
-		if(args[i] == "-h"sv || args[i] == "--help"sv)
-		{
-			PrintUsage(args[0]);
-			return false;
-		}
-	}
+	if(CheckForHelpParameter(args))
+		return false;
 
-	//Check for version flag
-	for(const std::string_view arg : args)
-	{
-		if(arg == "--version"sv)
-		{
-			PrintVersion();
-			return false;
-		}
-	}
+	if(CheckForVersionParameter(args))
+		return false;
 
-	//Check for custom output file name
-	for(std::size_t i = 0; i < args.size(); ++i)
-	{
-		if(args[i] == "-o"sv || args[i] == "--output"sv)
-		{
-			if(i + 1 < args.size())
-			{
-				outOutputPath = args[i + 1];
-				break;
-			}
+	if(CheckForOutputFilePath(args, outOutputPath) && !outOutputPath)
+		return false;
 
-			std::cerr << "No output file name specified!\n";
-			return false;
-		}
-	}
-
-	//Check for custom macros
-	for(std::size_t i = 0; i < args.size(); ++i)
-	{
-		if(args[i] == "-m"sv || args[i] == "--macro"sv)
-		{
-			if(i + 1 < args.size())
-			{
-				std::string macro = std::string(args[i + 1]);
-				std::size_t equalSign = macro.find('=');
-				if(equalSign == std::string::npos)
-				{
-					std::cerr << "Invalid macro: \"" << macro << "\"\n";
-					std::cerr << "Skipping macro\n";
-					continue;
-				}
-
-				std::string name = macro.substr(0, equalSign);
-				std::string value = macro.substr(equalSign + 1);
-				outCustomMacros.push_back({ name, value });
-			}
-			else
-			{
-				std::cerr << "No macro specified!\n";
-				return false;
-			}
-		}
-	}
+	if(CheckForCustomMacros(args, outCustomMacros) && outCustomMacros.empty())
+		return false;
 
 	return true;
 }
@@ -142,6 +186,6 @@ void PrintUsage(const std::filesystem::path& programName)
 void PrintVersion()
 {
 	std::cout << "ConvertToSPIRV " << CONVERTTOSPIRV_VERSION_MAJOR(CONVERTTOSPIRV_VERSION) << '.'
-	          << CONVERTTOSPIRV_VERSION_MINOR(CONVERTTOSPIRV_VERSION) << '.'
-			  << CONVERTTOSPIRV_VERSION_PATCH(CONVERTTOSPIRV_VERSION) << std::endl;
+	                               << CONVERTTOSPIRV_VERSION_MINOR(CONVERTTOSPIRV_VERSION) << '.'
+			                       << CONVERTTOSPIRV_VERSION_PATCH(CONVERTTOSPIRV_VERSION) << std::endl;
 }
