@@ -128,8 +128,8 @@ inline const std::array<ShaderStageData, ToUnderlying(ShaderStage::SHADER_STAGE_
 
 inline std::string_view ShaderStageToString(const ShaderStage stage)
 {
-	const auto *const it = std::find_if(ShaderStages.begin(), ShaderStages.end(),
-	                                    [stage](const auto& element){return stage == element.Stage;});
+	const auto it = std::find_if(ShaderStages.begin(), ShaderStages.end(),
+	                             [stage](const auto& element){return stage == element.Stage;});
 	return it->StageString;
 }
 
@@ -137,8 +137,8 @@ inline std::string_view ShaderStageToString(const ShaderStage stage)
 
 inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 {
-	const auto *const it = std::find_if(ShaderStages.begin(), ShaderStages.end(),
-	                                    [stage](const auto& element){return stage == element.Stage;});
+	const auto it = std::find_if(ShaderStages.begin(), ShaderStages.end(),
+	                             [stage](const auto& element){return stage == element.Stage;});
 	return it->StageGLSLang;
 }
 

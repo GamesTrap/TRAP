@@ -482,7 +482,7 @@ void RunValidTests()
                 const auto size = file.tellg();
                 file.close();
 
-                fileSize += NumericCast<uintmax_t>(size);
+                fileSize += static_cast<uintmax_t>(size);
             }
         }
         TRAP_ASSERT(*res4 == fileSize, "GetSize() failed!");
@@ -503,7 +503,7 @@ void RunValidTests()
                 const auto size = file.tellg();
                 file.close();
 
-                fileSize += NumericCast<uintmax_t>(size);
+                fileSize += static_cast<uintmax_t>(size);
             }
         }
         TRAP_ASSERT(*res5 == fileSize, "GetSize() failed!");
