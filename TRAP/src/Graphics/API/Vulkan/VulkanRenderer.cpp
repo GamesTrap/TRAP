@@ -63,6 +63,7 @@ bool TRAP::Graphics::API::VulkanRenderer::s_shadingRate = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_timelineSemaphore = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_multiView = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_renderPass2 = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_SPIRV1_4 = false;
 
 bool TRAP::Graphics::API::VulkanRenderer::s_debugMarkerSupport = false;
 
@@ -3174,6 +3175,13 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 		s_renderPass2 = true;
 	}
 
+	if(physicalDevice->IsExtensionSupported(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME) &&
+	   physicalDevice->IsExtensionSupported(VK_KHR_SPIRV_1_4_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_KHR_SPIRV_1_4_EXTENSION_NAME);
+		s_SPIRV1_4 = true;
+	}
+
 #ifdef TRAP_PLATFORM_WINDOWS
 	if (physicalDevice->IsExtensionSupported(VK_KHR_EXTERNAL_MEMORY_WIN32_EXTENSION_NAME))
 	{
@@ -3198,16 +3206,15 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 	if(s_descriptorIndexingExtension &&
 	   physicalDevice->IsExtensionSupported(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME) &&
 	   s_bufferDeviceAddressExtension &&
+	   s_SPIRV1_4 &&
 	   physicalDevice->IsExtensionSupported(VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME) &&
 	   physicalDevice->IsExtensionSupported(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME) &&
-	   physicalDevice->IsExtensionSupported(VK_KHR_SPIRV_1_4_EXTENSION_NAME) &&
 	   physicalDevice->IsExtensionSupported(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME) &&
 	   physicalDevice->IsExtensionSupported(VK_KHR_RAY_QUERY_EXTENSION_NAME))
 	{
 		extensions.emplace_back(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME);
 		extensions.emplace_back(VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME);
 		extensions.emplace_back(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME);
-		extensions.emplace_back(VK_KHR_SPIRV_1_4_EXTENSION_NAME);
 		extensions.emplace_back(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME);
 		extensions.emplace_back(VK_KHR_RAY_QUERY_EXTENSION_NAME);
 		s_rayTracingExtension = true;

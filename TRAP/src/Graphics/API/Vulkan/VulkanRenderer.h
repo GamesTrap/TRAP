@@ -1156,6 +1156,7 @@ namespace TRAP::Graphics::API
 		static bool s_timelineSemaphore;
 		static bool s_multiView;
 		static bool s_renderPass2;
+		static bool s_SPIRV1_4;
 
 		static bool s_debugMarkerSupport;
 

@@ -587,7 +587,7 @@ bool TRAP::Graphics::Shader::Reload()
 	//TODO RayTracing
 
 		glslShader.setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
-		glslShader.setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3);
+		glslShader.setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_4);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 		TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing ", ShaderStageToString(stage), " shader");

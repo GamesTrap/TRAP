@@ -6,9 +6,9 @@ name: Build-CI
 on:
   # Run on all pull requests
   pull_request:
-  # Run on master and dev branches
+  # Run on main, master and dev branches
   push:
-    branches: [ master, dev ]
+    branches: [ main, master, dev ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 

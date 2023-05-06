@@ -550,13 +550,29 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		VkCall(vkEnumerateDeviceExtensionProperties(dev, nullptr, &extensionsCount, extensions.data()));
 		score += extensionsCount * 50;
 
+		// Required: Check if PhysicalDevice supports SPIRV 1.4
+		const auto spirv1_4Result = std::find_if(extensions.begin(), extensions.end(), [](const VkExtensionProperties& props)
+		{
+			return std::strcmp(VK_KHR_SPIRV_1_4_EXTENSION_NAME, props.extensionName) == 0;
+		});
+		const auto shaderFloatControlsResult = std::find_if(extensions.begin(), extensions.end(), [](const VkExtensionProperties& props)
+		{
+			return std::strcmp(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME, props.extensionName) == 0;
+		});
+		if(spirv1_4Result == extensions.end() || shaderFloatControlsResult == extensions.end())
+		{
+			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
+					 "\" Failed Required PhysicalDevice SPIRV 1.4 Extensions Test!");
+			continue;
+		}
+
 		// Required: Check if PhysicalDevice supports swapchains
 		// Disabled in Headless mode.
 #ifndef TRAP_HEADLESS_MODE
-		const auto result = std::find_if(extensions.begin(), extensions.end(), [](const VkExtensionProperties &props)
-										 { return std::strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME, props.extensionName) == 0; });
+		const auto swapChainResult = std::find_if(extensions.begin(), extensions.end(), [](const VkExtensionProperties &props)
+										          { return std::strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME, props.extensionName) == 0; });
 
-		if (result == extensions.end())
+		if (swapChainResult == extensions.end())
 		{
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
 					 "\" Failed Required PhysicalDevice Extensions Test!");

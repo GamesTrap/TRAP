@@ -363,7 +363,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 		glslShader.setStrings(&srcCStr, 1);
 		glslShader.setEnvInput(glslang::EShSourceGlsl, ShaderStageToEShLanguage(subShaderSource.Stage), glslang::EShClientVulkan, GLSLVersion);
 		glslShader.setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
-		glslShader.setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3);
+		glslShader.setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_4);
 
         std::cout << "[GLSL] Parsing " << ShaderStageToString(subShaderSource.Stage) << " Shader\n";
         if (!ParseGLSL(glslShader))

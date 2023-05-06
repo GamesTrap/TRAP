@@ -4,9 +4,9 @@ name: Build-Docs
 
 # Controls when the workflow will run
 on:
-  # Run on master branch
+  # Run on main and master branch
   push:
-    branches: [ master ]
+    branches: [ main, master ]
   # Allow to run this action manually
   workflow_dispatch:
 
