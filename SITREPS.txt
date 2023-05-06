@@ -3951,3 +3951,7 @@ SITREP 05/05/2023|23w18b1
     - Added file format specification for TRAP-SPIRV (TP-SPV) files to ConvertToSPIRV ~<10 mins
     - Updated ConvertToSPIRV utility ~>120 mins
     - Updated engine side Shader implementation ~>60 mins
+
+SITREP 05/06/2023|23w18b2
+    - Changed TRAP Engine version to 23w18b2(0.9.28)
+    - ConvertToSPIRV Added info parameter to query generated shader files ~<45 mins

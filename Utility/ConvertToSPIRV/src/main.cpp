@@ -11,6 +11,7 @@ using namespace std::string_view_literals;
                                       std::vector<Macro>& outCustomMacros);
 void PrintUsage(const std::filesystem::path& programName);
 void PrintVersion();
+void PrintInfo(const std::filesystem::path& filePath);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -62,6 +63,20 @@ int main(const int argc, const char* const* const argv)
 	if(std::any_of(args.begin(), args.end(), [](const auto arg){return arg == "--version"sv;}))
 	{
 		PrintVersion();
+		return true;
+	}
+
+	return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] bool CheckForInfoParameter(const std::vector<std::string_view>& args)
+{
+	if(std::any_of(args.begin(), args.end(), [](const auto arg){return arg == "--info"sv;}) ||
+	   std::filesystem::path(args[1]).extension() == (std::string(".") + std::string(ShaderFileEnding)))
+	{
+		PrintInfo(args[1]);
 		return true;
 	}
 
@@ -160,6 +175,9 @@ int main(const int argc, const char* const* const argv)
 	if(CheckForVersionParameter(args))
 		return false;
 
+	if(CheckForInfoParameter(args))
+		return false;
+
 	if(CheckForOutputFilePath(args, outOutputPath) && !outOutputPath)
 		return false;
 
@@ -177,6 +195,7 @@ void PrintUsage(const std::filesystem::path& programName)
 	             "Options:\n" <<
 				 "-h | --help                    | Print this help\n" <<
 				 "   | --version                 | Print the version number\n" <<
+				 "   | --info                    | Retrieve information from an TP-SPV file\n" <<
 				 "-o | --output <file>           | Set a custom output file name\n" <<
 				 "-m | --macro \"<key>\"=\"<value>\" | Set custom macro(s)" << std::endl;
 }
@@ -188,4 +207,52 @@ void PrintVersion()
 	std::cout << "ConvertToSPIRV " << CONVERTTOSPIRV_VERSION_MAJOR(CONVERTTOSPIRV_VERSION) << '.'
 	                               << CONVERTTOSPIRV_VERSION_MINOR(CONVERTTOSPIRV_VERSION) << '.'
 			                       << CONVERTTOSPIRV_VERSION_PATCH(CONVERTTOSPIRV_VERSION) << std::endl;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void PrintTPSPVShaderInfo(const std::filesystem::path& filePath, const Shader& shader, const uint32_t versionNumber)
+{
+	std::cout << "File: " << filePath << '\n'
+	          << "Format: TRAP-SPIRV v" << versionNumber << '\n'
+	          << "Number of contained Shaders: " << shader.SubShaderSources.size() << "\n\n";
+
+	for(std::size_t i = 0; i < shader.SubShaderSources.size(); ++i)
+	{
+		std::cout << (i + 1) << ". Shader:" << '\n'
+		          << "    Stage: " << ShaderStageToString(shader.SubShaderSources[i].Stage) << '\n'
+				  << "    Size in bytes: " << shader.SubShaderSources[i].SPIRV.size() * sizeof(decltype(shader.SubShaderSources[i].SPIRV)::value_type) << '\n';
+
+		if(i < (shader.SubShaderSources.size() - 1))
+			std::cout << '\n';
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void PrintInfo(const std::filesystem::path& filePath)
+{
+	const auto hasExtension = FileHasExtension(filePath, std::string("." + std::string(ShaderFileEnding)));
+	if(!hasExtension)
+		return;
+	if(!hasExtension.value())
+	{
+		std::cerr << "Unsupported file extension for file \"" << filePath << "\"!" << std::endl;
+		return;
+	}
+
+	const auto fileData = ReadFile(filePath);
+	if(!fileData)
+		return;
+
+	Shader shader;
+	uint32_t shaderVersion = 0;
+	const bool res = ParseTPSPVShader(*fileData, shader, shaderVersion);
+	if(!res)
+	{
+		std::cerr << "Invalid or corrupted shader!" << std::endl;
+		return;
+	}
+
+	PrintTPSPVShaderInfo(filePath, shader, shaderVersion);
 }

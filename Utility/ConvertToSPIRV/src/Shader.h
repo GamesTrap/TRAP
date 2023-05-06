@@ -55,6 +55,7 @@ inline constexpr std::string_view MagicNumber = "TRAP_SPV";
 inline constexpr uint32_t VersionNumber = 1u;
 inline constexpr int32_t GLSLVersion = 460;
 inline constexpr std::string_view ShaderFileEnding = "tp-spv";
+inline constexpr uint32_t SPIRVMagicNumber = 0x07230203u;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -443,6 +444,66 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 	std::string newPath = filePath.u8string();
 	newPath = newPath.substr(0, newPath.size() - 7);
 	outShader = Shader{newPath, *source, ShaderStage::None};
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] inline bool CheckShaderMagicNumber(const std::vector<uint8_t>& shaderData)
+{
+	return (shaderData.size() >= MagicNumber.size() &&
+	        std::string_view(reinterpret_cast<const char*>(shaderData.data()), MagicNumber.size()) == MagicNumber);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] inline bool ParseTPSPVShader(const std::vector<uint8_t>& shaderData, Shader& outShader, uint32_t& outVersion)
+{
+	if(shaderData.size() <= (MagicNumber.size() + sizeof(VersionNumber) + sizeof(uint8_t)))
+	{
+		std::cerr << "Invalid or corrupted shader!" << std::endl;
+		return false;
+	}
+	if(!CheckShaderMagicNumber(shaderData))
+	{
+		std::cerr << "Invalid or corrupted shader!" << std::endl;
+		return false;
+	}
+
+	std::size_t currIndex = MagicNumber.size();
+
+	outVersion = ConvertByte<uint32_t>(&shaderData[currIndex]);
+	currIndex += sizeof(VersionNumber);
+
+	const uint8_t shaderCount = shaderData[currIndex++];
+
+	outShader.SubShaderSources.resize(shaderCount);
+
+	for(uint8_t i = 0; i < shaderCount; ++i)
+	{
+		if(shaderData.size() <= (currIndex + sizeof(std::size_t) + sizeof(uint8_t)))
+			break;
+
+		Shader::SubShader& subShader = outShader.SubShaderSources[i];
+
+		const std::size_t SPIRVSize = ConvertByte<std::size_t>(&shaderData[currIndex]);
+		currIndex += sizeof(SPIRVSize);
+
+		subShader.SPIRV.resize(SPIRVSize);
+		subShader.Stage = static_cast<ShaderStage>(shaderData[currIndex++]);
+
+		outShader.Stages |= subShader.Stage;
+
+		if(shaderData.size() < (currIndex + (subShader.SPIRV.size() * sizeof(decltype(subShader.SPIRV)::value_type))))
+			break;
+
+		const uint32_t SPIRVMagic = ConvertByte<uint32_t>(&shaderData[currIndex]);
+		if(SPIRVMagic != SPIRVMagicNumber)
+			std::cerr << "[SPIRV] shader stage " << ShaderStageToString(subShader.Stage) << " contains invalid magic number!" << std::endl;
+
+		currIndex += subShader.SPIRV.size() * sizeof(decltype(subShader.SPIRV)::value_type);
+	}
 
 	return true;
 }

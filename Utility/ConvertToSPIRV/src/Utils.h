@@ -36,6 +36,20 @@ template <typename T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] inline std::optional<bool> FileHasExtension(const std::filesystem::path& filePath,
+                                                          const std::string_view extension)
+{
+    if(!FileOrFolderExists(filePath))
+    {
+		std::cerr << "File \"" << filePath << "\" doesn't exist!" << std::endl;
+        return std::nullopt;
+    }
+
+    return filePath.extension() == extension;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] inline std::optional<std::string> ReadTextFile(const std::filesystem::path& filePath)
 {
     if(!FileOrFolderExists(filePath))
@@ -59,6 +73,30 @@ template <typename T>
     file.close();
 
     return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] inline std::optional<std::vector<uint8_t>> ReadFile(const std::filesystem::path& filePath)
+{
+    if(!FileOrFolderExists(filePath))
+        return std::nullopt;
+
+    std::ifstream file(filePath, std::ios::binary | std::ios::ate);
+    if(!file.is_open() || !file.good())
+    {
+		std::cerr << "Couldn't open file: \"" << filePath.u8string() << "\"\n";
+        return std::nullopt;
+    }
+
+    const std::size_t fileSize = static_cast<std::size_t>(file.tellg());
+
+    file.seekg(std::ios::beg);
+
+    std::vector<uint8_t> data(fileSize);
+    file.read(reinterpret_cast<char*>(data.data()), static_cast<std::streamsize>(data.size()) * sizeof(decltype(data)::value_type));
+
+    return data;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -126,6 +164,38 @@ template<typename Enum>
 [[nodiscard]] inline constexpr std::underlying_type_t<Enum> ToUnderlying(const Enum e) noexcept
 {
 	return static_cast<std::underlying_type_t<Enum>>(e);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+[[nodiscard]] inline static T ConvertByte(const uint8_t* const source)
+{
+    if constexpr(std::is_unsigned_v<T> && (std::is_same_v<T, uint16_t> ||
+                    std::is_same_v<T, uint32_t> || std::is_same_v<T, uint64_t>))
+    {
+        if constexpr (sizeof(T) == 2)
+        {
+            return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u);
+        }
+        else if constexpr (sizeof(T) == 4)
+        {
+            return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u) |
+                    (static_cast<T>(source[2]) << 16u) | (static_cast<T>(source[3]) << 24u);
+        }
+        else if constexpr (sizeof(T) == 8)
+        {
+            return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u) |
+                    (static_cast<T>(source[2]) << 16u) | (static_cast<T>(source[3]) << 24u) |
+                    (static_cast<T>(source[4]) << 32u) | (static_cast<T>(source[5]) << 40u) |
+                    (static_cast<T>(source[6]) << 48u) | (static_cast<T>(source[7]) << 56u);
+        }
+    }
+    else
+    {
+        static_assert(sizeof(T) == 0, "T must be unsigned interger type (not uint8_t");
+        return {};
+    }
 }
 
 #endif /*CONVERTTOSPIRV_UTILS_H*/
