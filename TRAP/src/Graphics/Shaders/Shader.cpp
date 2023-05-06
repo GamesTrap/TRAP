@@ -99,15 +99,15 @@ bool TRAP::Graphics::Shader::Reload()
 	m_shaderStages = RendererAPI::ShaderStage::None;
 	if (!isSPIRV)
 	{
-		std::array<std::string, ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> shaders{};
-		if (!PreProcessGLSL(glslSource, shaders, m_shaderStages, &m_macros) || !ValidateShaderStages(m_shaderStages))
+		std::vector<std::pair<std::string, RendererAPI::ShaderStage>> shaders{};
+		if (!PreProcessGLSL(glslSource, shaders, &m_macros) || !ValidateShaderStages(shaders))
 		{
 			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", m_name, "\" using fallback shader");
 			m_valid = false;
 			return false;
 		}
 
-		desc = ConvertGLSLToSPIRV(shaders, m_shaderStages);
+		desc = ConvertGLSLToSPIRV(shaders);
 	}
 	else
 		desc = LoadSPIRV(SPIRVSource);
@@ -294,20 +294,14 @@ bool TRAP::Graphics::Shader::Reload()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	std::array<std::string, ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> shaders{};
-	RendererAPI::ShaderStage shaderStages = RendererAPI::ShaderStage::None;
-	if(!PreProcessGLSL(glslSource, shaders, shaderStages, userMacros))
-	{
-		TP_WARN(Log::ShaderPrefix, "Shader: \"", name, "\" using fallback shader");
-		return nullptr;
-	}
-	if(!ValidateShaderStages(shaderStages))
+	std::vector<std::pair<std::string, RendererAPI::ShaderStage>> shaders{};
+	if(!PreProcessGLSL(glslSource, shaders, userMacros) || !ValidateShaderStages(shaders))
 	{
 		TP_WARN(Log::ShaderPrefix, "Shader: \"", name, "\" using fallback shader");
 		return nullptr;
 	}
 
-	const RendererAPI::BinaryShaderDesc desc = ConvertGLSLToSPIRV(shaders, shaderStages);
+	const RendererAPI::BinaryShaderDesc desc = ConvertGLSLToSPIRV(shaders);
 	if (desc.Stages == RendererAPI::ShaderStage::None)
 		return nullptr;
 
@@ -353,8 +347,7 @@ bool TRAP::Graphics::Shader::Reload()
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
-                                                          std::array<std::string, ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& shaders,
-                                                          RendererAPI::ShaderStage& shaderStages,
+                                                          std::vector<std::pair<std::string, RendererAPI::ShaderStage>>& shaders,
 											              const std::vector<Macro>* const userMacros)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
@@ -392,61 +385,44 @@ bool TRAP::Graphics::Shader::Reload()
 			//TODO RayTracing Shaders i.e. "RayGen" "AnyHit" "ClosestHit" "Miss" "Intersection" ("Callable")
 
 			//Check for duplicate "#shader XXX" defines
-			if ((shaderStages & currentShaderStage) != RendererAPI::ShaderStage::None)
+			if (std::any_of(shaders.begin(), shaders.end(),
+			    [currentShaderStage](const auto& element){return (element.second & currentShaderStage) != RendererAPI::ShaderStage::None;}))
 			{
 				TP_ERROR(Log::ShaderGLSLPrefix, "Found duplicate \"#shader\" define: ", lines[i]);
 				return false;
 			}
 
-			shaderStages |= currentShaderStage;
+			shaders.emplace_back("", currentShaderStage);
 		}
 		else if(lowerLine.find("#version") != std::string::npos) //Check for unnecessary "#version" define
 			TP_WARN(Log::ShaderGLSLPrefix, "Found tag: \"", lines[i], "\" this is unnecessary! Skipping line: ", i);
 		else if(currentShaderStage != RendererAPI::ShaderStage::None) //Add shader code to detected shader stage
 		{
-			static const std::unordered_map<RendererAPI::ShaderStage, uint32_t> stageToIndex
+			if(currentShaderStage == RendererAPI::ShaderStage::RayTracing)
 			{
-				{RendererAPI::ShaderStage::Vertex, 0},
-				{RendererAPI::ShaderStage::TessellationControl, 1},
-				{RendererAPI::ShaderStage::TessellationEvaluation, 2},
-				{RendererAPI::ShaderStage::Geometry, 3},
-				{RendererAPI::ShaderStage::Fragment, 4},
-				{RendererAPI::ShaderStage::Compute, 5},
-				{RendererAPI::ShaderStage::RayTracing, 6}
-			};
-
-			const auto it = stageToIndex.find(currentShaderStage);
-			if(it != stageToIndex.end())
-			{
-				if(currentShaderStage == RendererAPI::ShaderStage::RayTracing)
-				{
-					TP_WARN(Log::ShaderGLSLPrefix, "RayTracing shader support is WIP!");
-					return false;
-				}
-				if(currentShaderStage == RendererAPI::ShaderStage::None)
-				{
-					TP_ERROR(Log::ShaderGLSLPrefix, "Unsupported shader type!");
-					return false;
-				}
-
-				shaders[it->second].append(lines[i] + '\n');
+				TP_WARN(Log::ShaderGLSLPrefix, "RayTracing shader support is WIP!");
+				return false;
 			}
+			if(currentShaderStage == RendererAPI::ShaderStage::None)
+			{
+				TP_ERROR(Log::ShaderGLSLPrefix, "Unsupported shader type!");
+				return false;
+			}
+
+			shaders.back().first.append(lines[i] + '\n');
 		}
 	}
 
 	for(std::size_t i = 0; i < shaders.size(); i++)
 	{
-		if (Utils::String::ToLower(shaders[i]).find("main") == std::string::npos)
+		if (Utils::String::ToLower(shaders[i].first).find("main") == std::string::npos)
 		{
-			if ((ShaderStages[i].Stage & shaderStages) != RendererAPI::ShaderStage::None)
-			{
-				TP_ERROR(Log::ShaderGLSLPrefix, ShaderStages[i].StageString, " shader couldn't find \"main\" function!");
-				return false;
-			}
+			TP_ERROR(Log::ShaderGLSLPrefix, ShaderStageToString(shaders[i].second), " shader couldn't find \"main\" function!");
+			return false;
 		}
 
 		std::string preprocessed;
-		if (!shaders[i].empty() && TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
+		if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 		{
 			//Found main function
 			//Add GLSL version before any shader code &
@@ -455,25 +431,21 @@ bool TRAP::Graphics::Shader::Reload()
 			for(const Macro& macro : s_defaultShaderMacrosVulkan)
 				preprocessed += "#define " + macro.Definition + " " + macro.Value + '\n';
 		}
-		else if(!shaders[i].empty() &&
-		        TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::Vulkan)
+		else if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::Vulkan)
 		{
 			//Found main function
 			//Add GLSL version before any shader code
 			preprocessed = "#version 460 core\n";
 		}
 
-		if(!shaders[i].empty())
+		if(userMacros != nullptr)
 		{
-			if(userMacros != nullptr)
-			{
-				for(const Macro& macro : *userMacros)
-					preprocessed += "#define " + macro.Definition + " " + macro.Value + '\n';
-			}
-
-			//Add preprocessed macros to shader
-			shaders[i] = preprocessed + shaders[i];
+			for(const Macro& macro : *userMacros)
+				preprocessed += "#define " + macro.Definition + " " + macro.Value + '\n';
 		}
+
+		//Add preprocessed macros to shader
+		shaders[i].first = preprocessed + shaders[i].first;
 	}
 
 	return true;
@@ -522,59 +494,63 @@ bool TRAP::Graphics::Shader::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::Graphics::Shader::ValidateShaderStages(const RendererAPI::ShaderStage& shaderStages)
+[[nodiscard]] bool TRAP::Graphics::Shader::ValidateShaderStages(const std::vector<std::pair<std::string, RendererAPI::ShaderStage>>& shaders)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
+	RendererAPI::ShaderStage combinedStages = RendererAPI::ShaderStage::None;
+	for(const auto& [glsl, stage] : shaders)
+		combinedStages |= stage;
+
 	//Check if any Shader Stage is set
-	if (RendererAPI::ShaderStage::None == shaderStages)
+	if (RendererAPI::ShaderStage::None == combinedStages)
 	{
 		TP_ERROR(Log::ShaderGLSLPrefix, "No shader stage found!");
 		return false;
 	}
 
 	//Check for "Normal" Shader Stages combined with Compute
-	if((((RendererAPI::ShaderStage::Vertex & shaderStages) != RendererAPI::ShaderStage::None) ||
-		((RendererAPI::ShaderStage::Fragment & shaderStages) != RendererAPI::ShaderStage::None) ||
-		((RendererAPI::ShaderStage::TessellationControl & shaderStages) != RendererAPI::ShaderStage::None) ||
-		((RendererAPI::ShaderStage::TessellationEvaluation & shaderStages) != RendererAPI::ShaderStage::None) ||
-		((RendererAPI::ShaderStage::Geometry & shaderStages) != RendererAPI::ShaderStage::None)) &&
-		((RendererAPI::ShaderStage::Compute & shaderStages) != RendererAPI::ShaderStage::None))
+	if((((RendererAPI::ShaderStage::Vertex & combinedStages) != RendererAPI::ShaderStage::None) ||
+		((RendererAPI::ShaderStage::Fragment & combinedStages) != RendererAPI::ShaderStage::None) ||
+		((RendererAPI::ShaderStage::TessellationControl & combinedStages) != RendererAPI::ShaderStage::None) ||
+		((RendererAPI::ShaderStage::TessellationEvaluation & combinedStages) != RendererAPI::ShaderStage::None) ||
+		((RendererAPI::ShaderStage::Geometry & combinedStages) != RendererAPI::ShaderStage::None)) &&
+		((RendererAPI::ShaderStage::Compute & combinedStages) != RendererAPI::ShaderStage::None))
 	{
 		TP_ERROR(Log::ShaderGLSLPrefix, "Rasterizer shader stages combined with compute stage!");
 		return false;
 	}
 
 	//Check for "Normal" Shader Stages combined with RayTracing
-	if((((RendererAPI::ShaderStage::Vertex & shaderStages) != RendererAPI::ShaderStage::None) ||
-	    ((RendererAPI::ShaderStage::Fragment & shaderStages) != RendererAPI::ShaderStage::None) ||
-		((RendererAPI::ShaderStage::TessellationControl & shaderStages) != RendererAPI::ShaderStage::None) ||
-		((RendererAPI::ShaderStage::TessellationEvaluation & shaderStages) != RendererAPI::ShaderStage::None) ||
-		((RendererAPI::ShaderStage::Geometry & shaderStages) != RendererAPI::ShaderStage::None)) &&
-		((RendererAPI::ShaderStage::RayTracing & shaderStages) != RendererAPI::ShaderStage::None))
+	if((((RendererAPI::ShaderStage::Vertex & combinedStages) != RendererAPI::ShaderStage::None) ||
+	    ((RendererAPI::ShaderStage::Fragment & combinedStages) != RendererAPI::ShaderStage::None) ||
+		((RendererAPI::ShaderStage::TessellationControl & combinedStages) != RendererAPI::ShaderStage::None) ||
+		((RendererAPI::ShaderStage::TessellationEvaluation & combinedStages) != RendererAPI::ShaderStage::None) ||
+		((RendererAPI::ShaderStage::Geometry & combinedStages) != RendererAPI::ShaderStage::None)) &&
+		((RendererAPI::ShaderStage::RayTracing & combinedStages) != RendererAPI::ShaderStage::None))
 	{
 		TP_ERROR(Log::ShaderGLSLPrefix, "Rasterizer shader stages combined with ray tracing stage!");
 		return false;
 	}
 
 	//Check for Compute Shader Stage combined with RayTracing
-	if (((RendererAPI::ShaderStage::Compute & shaderStages) != RendererAPI::ShaderStage::None) &&
-		((RendererAPI::ShaderStage::RayTracing & shaderStages) != RendererAPI::ShaderStage::None))
+	if (((RendererAPI::ShaderStage::Compute & combinedStages) != RendererAPI::ShaderStage::None) &&
+		((RendererAPI::ShaderStage::RayTracing & combinedStages) != RendererAPI::ShaderStage::None))
 	{
 		TP_ERROR(Log::ShaderGLSLPrefix, "Compute shader stage combined with ray tracing stage!");
 		return false;
 	}
 
 	//Check for Vertex Shader Stage & required Fragment/Pixel Shader Stage
-	if(((RendererAPI::ShaderStage::Vertex & shaderStages) != RendererAPI::ShaderStage::None) &&
-	   (((RendererAPI::ShaderStage::Fragment & shaderStages)) == RendererAPI::ShaderStage::None))
+	if(((RendererAPI::ShaderStage::Vertex & combinedStages) != RendererAPI::ShaderStage::None) &&
+	   (((RendererAPI::ShaderStage::Fragment & combinedStages)) == RendererAPI::ShaderStage::None))
 	{
 		TP_ERROR(Log::ShaderGLSLPrefix, "Only vertex shader stage provided! Missing fragment/pixel shader stage");
 		return false;
 	}
 	//Check for Fragment/Pixel Shader Stage & required Vertex Shader Stage
-	if(((RendererAPI::ShaderStage::Fragment & shaderStages) != RendererAPI::ShaderStage::None) &&
-	   (((RendererAPI::ShaderStage::Vertex & shaderStages)) == RendererAPI::ShaderStage::None))
+	if(((RendererAPI::ShaderStage::Fragment & combinedStages) != RendererAPI::ShaderStage::None) &&
+	   (((RendererAPI::ShaderStage::Vertex & combinedStages)) == RendererAPI::ShaderStage::None))
 	{
 		TP_ERROR(Log::ShaderGLSLPrefix, "Only fragment/pixel shader stage provided! Missing vertex shader stage");
 		return false;
@@ -586,8 +562,7 @@ bool TRAP::Graphics::Shader::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLSLToSPIRV(const std::array<std::string, ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& shaders,
-	                                                                                                   const RendererAPI::ShaderStage& shaderStages)
+[[nodiscard]] TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLSLToSPIRV(const std::vector<std::pair<std::string, RendererAPI::ShaderStage>>& shaders)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -598,19 +573,16 @@ bool TRAP::Graphics::Shader::Reload()
 		s_glslangInitialized = true;
 	}
 
-	// std::vector<glslang::TShader> glslShaders{};
 	RendererAPI::BinaryShaderDesc desc{};
-	desc.Stages = shaderStages;
 
-	for(std::size_t i = 0; i < shaders.size(); ++i)
+	for(const auto& [glsl, stage] : shaders)
 	{
-		if(shaders[i].empty())
-			continue;
+		desc.Stages |= stage;
 
-		const char* const shaderCStr = shaders[i].c_str();
-		glslang::TShader glslShader(ShaderStageToEShLanguage(ShaderStages[i].Stage));
+		const char* const shaderCStr = glsl.c_str();
+		glslang::TShader glslShader(ShaderStageToEShLanguage(stage));
 		glslShader.setStrings(&shaderCStr, 1);
-		glslShader.setEnvInput(glslang::EShSourceGlsl, ShaderStageToEShLanguage(ShaderStages[i].Stage), glslang::EShClientVulkan, 460);
+		glslShader.setEnvInput(glslang::EShSourceGlsl, ShaderStageToEShLanguage(stage), glslang::EShClientVulkan, 460);
 
 	//TODO RayTracing
 
@@ -618,13 +590,13 @@ bool TRAP::Graphics::Shader::Reload()
 		glslShader.setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
-		TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing ", ShaderStages[i].StageString, " shader");
+		TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing ", ShaderStageToString(stage), " shader");
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 		if (!ParseGLSLang(glslShader))
 			return{};
 
 #ifdef ENABLE_GRAPHICS_DEBUG
-		TP_DEBUG(Log::ShaderGLSLPrefix, "Linking ", ShaderStages[i].StageString, " shader");
+		TP_DEBUG(Log::ShaderGLSLPrefix, "Linking ", ShaderStageToString(stage), " shader");
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 		glslang::TProgram program;
 		if (!LinkGLSLang(glslShader, program))
@@ -633,39 +605,20 @@ bool TRAP::Graphics::Shader::Reload()
 #ifdef ENABLE_GRAPHICS_DEBUG
 		TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
 #endif /*ENABLE_GRAPHICS_DEBUG*/
-		const std::vector<uint32_t> SPIRV = ConvertToSPIRV(ShaderStages[i].Stage, program);
+		const std::vector<uint32_t> SPIRV = ConvertToSPIRV(stage, program);
 
-		switch(i)
-		{
-		case 0:
+		if((stage & RendererAPI::ShaderStage::Vertex) != RendererAPI::ShaderStage::None)
 			desc.Vertex = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
-			break;
-
-		case 1:
+		else if((stage & RendererAPI::ShaderStage::TessellationControl) != RendererAPI::ShaderStage::None)
 			desc.TessellationControl = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
-			break;
-
-		case 2:
+		else if((stage & RendererAPI::ShaderStage::TessellationEvaluation) != RendererAPI::ShaderStage::None)
 			desc.TessellationEvaluation = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
-			break;
-
-		case 3:
+		else if((stage & RendererAPI::ShaderStage::Geometry) != RendererAPI::ShaderStage::None)
 			desc.Geometry = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
-			break;
-
-		case 4:
+		else if((stage & RendererAPI::ShaderStage::Fragment) != RendererAPI::ShaderStage::None)
 			desc.Fragment = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
-			break;
-
-		case 5:
+		else if((stage & RendererAPI::ShaderStage::Compute) != RendererAPI::ShaderStage::None)
 			desc.Compute = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
-			break;
-
-			//TODO RayTracing Shaders
-
-		default:
-			break;
-		}
 	}
 
 	return desc;
@@ -873,11 +826,10 @@ bool TRAP::Graphics::Shader::Reload()
 		return false;
 	}
 
-	RendererAPI::ShaderStage shaderStages = RendererAPI::ShaderStage::None;
 	if (!isSPIRV)
 	{
-		std::array<std::string, ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> shaders{};
-		if (!PreProcessGLSL(glslSource, shaders, shaderStages, userMacros))
+		std::vector<std::pair<std::string, RendererAPI::ShaderStage>> shaders{};
+		if (!PreProcessGLSL(glslSource, shaders, userMacros))
 		{
 			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader");
 			if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
@@ -885,7 +837,7 @@ bool TRAP::Graphics::Shader::Reload()
 
 			return false;
 		}
-		if (!ValidateShaderStages(shaderStages))
+		if (!ValidateShaderStages(shaders))
 		{
 			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader");
 			if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
@@ -894,7 +846,7 @@ bool TRAP::Graphics::Shader::Reload()
 			return false;
 		}
 
-		outShaderDesc = ConvertGLSLToSPIRV(shaders, shaderStages);
+		outShaderDesc = ConvertGLSLToSPIRV(shaders);
 	}
 	else
 		outShaderDesc = LoadSPIRV(SPIRVSource);
@@ -902,7 +854,7 @@ bool TRAP::Graphics::Shader::Reload()
 	if (outShaderDesc.Stages == RendererAPI::ShaderStage::None)
 	{
 		if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
-			outFailShader = TRAP::MakeRef<TRAP::Graphics::API::VulkanShader>(name, filePath, userMacros, shaderStages);
+			outFailShader = TRAP::MakeRef<TRAP::Graphics::API::VulkanShader>(name, filePath, userMacros);
 
 		return false;
 	}

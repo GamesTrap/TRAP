@@ -329,12 +329,10 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="glslSource">GLSL source code.</param>
 		/// <param name="shaders"Output: Splitted shaders.</param>
-		/// <param name="shaderStages">Output: Used shader stages.</param>
 		/// <param name="userMacros">Optional: User defined macros.</param>
 		/// <returns>True if pre processing was successful, false otherwise.</returns>
 		[[nodiscard]] static bool PreProcessGLSL(const std::string& glslSource,
-		                                         std::array<std::string, ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& shaders,
-		                                         RendererAPI::ShaderStage& shaderStages,
+		                                         std::vector<std::pair<std::string, RendererAPI::ShaderStage>>& shaders,
 								                 const std::vector<Macro>* userMacros);
 		/// <summary>
 		/// Parse a glslang::TShader object.
@@ -357,17 +355,15 @@ namespace TRAP::Graphics
 		/// 3. Checks if Compute shader is combined with RayTracing shaders.
 		/// 4. Checks if Vertex and Fragment shaders are combined.
 		/// </summary>
-		/// <param name="shaderStages">Shader stages to validate.</param>
+		/// <param name="shaders">Shader stages to validate.</param>
 		/// <returns>True if validation was successful, false otherwise.</returns>
-		[[nodiscard]] static bool ValidateShaderStages(const RendererAPI::ShaderStage& shaderStages);
+		[[nodiscard]] static bool ValidateShaderStages(const std::vector<std::pair<std::string, RendererAPI::ShaderStage>>& shaders);
 		/// <summary>
 		/// Convert GLSL shaders to SPIRV.
 		/// </summary>
 		/// <param name="shaders">GLSL shader(s) to convert.</param>
-		/// <param name="shaderStages">Shader stages contained in shaders parameter.</param>
 		/// <returns>RendererAPI::BinaryShaderDesc containing SPIRV binary data.</returns>
-		[[nodiscard]] static RendererAPI::BinaryShaderDesc ConvertGLSLToSPIRV(const std::array<std::string, ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& shaders,
-									                                          const RendererAPI::ShaderStage& shaderStages);
+		[[nodiscard]] static RendererAPI::BinaryShaderDesc ConvertGLSLToSPIRV(const std::vector<std::pair<std::string, RendererAPI::ShaderStage>>& shaders);
 		/// <summary>
 		/// Convert a glslang::TProgram object to SPIRV binary data.
 		/// </summary>
