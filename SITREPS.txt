@@ -3957,3 +3957,7 @@ SITREP 05/06/2023|23w18b2
     - ConvertToSPIRV Added info parameter to query generated shader files ~<45 mins
     - Shader Replaced fixed-size std::arrays with std::vector ~<60 mins
     - VulkanRenderer now requires SPIRV 1.4 ~<15 mins
+
+SITREP 05/09/2023|23w19a1
+    - Changed TRAP Engine version to 23w19a1(0.9.29)
+    - Enabled Link time optimization (Interprocedural optimization) by default ~<5 mins

@@ -26,6 +26,7 @@ workspace "TRAP"
 		}
 
 	flags "MultiProcessorCompile"
+	flags "LinkTimeOptimization"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
