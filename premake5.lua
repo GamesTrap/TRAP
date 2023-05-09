@@ -16,6 +16,9 @@ workspace "TRAP"
 		"Profiling"
 	}
 
+	flags "MultiProcessorCompile"
+	flags "LinkTimeOptimization"
+
 	filter "system:linux"
 		configurations
 		{
@@ -25,8 +28,17 @@ workspace "TRAP"
 			-- "TSan" -- Not working, crashes in thread from libnvidia-glcore.so
 		}
 
-	flags "MultiProcessorCompile"
-	flags "LinkTimeOptimization"
+
+	filter { "toolset:gcc" or "toolset:clang"}
+		local result, errorCode = os.outputof("mold -v")
+		local moldInstalled = false
+		if errorCode == 0 and string.len(result) > 0 then
+			moldInstalled = true
+		end
+
+		if moldInstalled then
+			linkoptions "-fuse-ld=mold"
+		end
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
