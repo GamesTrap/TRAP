@@ -34,10 +34,10 @@ jobs:
     - name: Install Wayland dependencies
       run: sudo apt install -y libwayland-dev libxkbcommon-dev wayland-protocols
     # Setup the Vulkan SDK
-    - name: Prepare latest Vulkan SDK
+    - name: Prepare Vulkan SDK 1.3.246.0
       uses: humbletim/setup-vulkan-sdk@v1.2.0
       with:
-        vulkan-query-version: latest
+        vulkan-query-version: 1.3.246.0
         vulkan-components: Vulkan-Headers, Vulkan-Loader
         vulkan-use-cache: true
     # Make scripts and premake executable
@@ -91,10 +91,10 @@ jobs:
     - name: Install Wayland dependencies
       run: sudo apt install -y libwayland-dev libxkbcommon-dev wayland-protocols
     # Setup the Vulkan SDK
-    - name: Prepare latest Vulkan SDK
+    - name: Prepare Vulkan SDK 1.3.246.0
       uses: humbletim/setup-vulkan-sdk@v1.2.0
       with:
-        vulkan-query-version: latest
+        vulkan-query-version: 1.3.246.0
         vulkan-components: Vulkan-Headers, Vulkan-Loader
         vulkan-use-cache: true
     # Make scripts and premake executable
@@ -136,10 +136,10 @@ jobs:
       with:
         submodules: 'true'
     # Setup the Vulkan SDK
-    - name: Prepare latest Vulkan SDK
+    - name: Prepare Vulkan SDK 1.3.246.0
       uses: humbletim/setup-vulkan-sdk@v1.2.0
       with:
-        vulkan-query-version: latest
+        vulkan-query-version: 1.3.246.0
         vulkan-components: Vulkan-Headers, Vulkan-Loader
         vulkan-use-cache: true
     # Setup msbuild
@@ -177,10 +177,10 @@ jobs:
       with:
         submodules: 'true'
     # Setup the Vulkan SDK
-    - name: Prepare latest Vulkan SDK
+    - name: Prepare Vulkan SDK 1.3.246.0
       uses: humbletim/setup-vulkan-sdk@v1.2.0
       with:
-        vulkan-query-version: latest
+        vulkan-query-version: 1.3.246.0
         vulkan-components: Vulkan-Headers, Vulkan-Loader
         vulkan-use-cache: true
     # Setup msbuild

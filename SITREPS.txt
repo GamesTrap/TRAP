@@ -3961,3 +3961,4 @@ SITREP 05/06/2023|23w18b2
 SITREP 05/09/2023|23w19a1
     - Changed TRAP Engine version to 23w19a1(0.9.29)
     - Enabled Link time optimization (Interprocedural optimization) by default ~<5 mins
+    - Build-CI changed used Vulkan SDK version from latest to 1.3.246.0 ~<5 mins
