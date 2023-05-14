@@ -1556,7 +1556,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different GPU vendors.
 		/// </summary>
-		enum class GPUVendor
+		enum class GPUVendor : int32_t
 		{
 			Unknown     = -1,
 			AMD         = 0x1002,

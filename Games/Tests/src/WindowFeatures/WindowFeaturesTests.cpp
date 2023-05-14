@@ -67,9 +67,9 @@ void WindowFeaturesTests::OnImGuiRender()
 
 		ImGui::Text("Position");
 		ImGui::SameLine();
-		changed += NumericCast<uint32_t>(ImGui::InputInt("##PosX", &std::get<0>(winPos), 0, ImGuiInputTextFlags_EnterReturnsTrue));
+		changed += NumericCast<uint32_t>(ImGui::InputInt("##PosX", &winPos.x, 0, ImGuiInputTextFlags_EnterReturnsTrue));
 		ImGui::SameLine();
-		changed += NumericCast<uint32_t>(ImGui::InputInt("##PosY", &std::get<1>(winPos), 0, ImGuiInputTextFlags_EnterReturnsTrue));
+		changed += NumericCast<uint32_t>(ImGui::InputInt("##PosY", &winPos.y, 0, ImGuiInputTextFlags_EnterReturnsTrue));
 
 		if(changed != 0)
 		{
@@ -84,9 +84,9 @@ void WindowFeaturesTests::OnImGuiRender()
 
 		ImGui::Text("Size");
 		ImGui::SameLine();
-		changed += NumericCast<uint32_t>(ImGui::InputScalar("##SizeX", ImGuiDataType_U32, &std::get<0>(winSize), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
+		changed += NumericCast<uint32_t>(ImGui::InputScalar("##SizeX", ImGuiDataType_U32, &winSize.x, nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
 		ImGui::SameLine();
-		changed += NumericCast<uint32_t>(ImGui::InputScalar("##SizeY", ImGuiDataType_U32, &std::get<1>(winSize), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
+		changed += NumericCast<uint32_t>(ImGui::InputScalar("##SizeY", ImGuiDataType_U32, &winSize.y, nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
 
 		if(changed != 0)
 		{
@@ -102,9 +102,9 @@ void WindowFeaturesTests::OnImGuiRender()
 			updateSizeLimit = true;
 
 		ImGui::SameLine();
-		changed += NumericCast<uint32_t>(ImGui::InputScalar("##MinSizeX", ImGuiDataType_U32, &std::get<0>(m_minWindowSize), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
+		changed += NumericCast<uint32_t>(ImGui::InputScalar("##MinSizeX", ImGuiDataType_U32, &m_minWindowSize.x, nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
 		ImGui::SameLine();
-		changed += NumericCast<uint32_t>(ImGui::InputScalar("##MinSizeY", ImGuiDataType_U32, &std::get<1>(m_minWindowSize), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
+		changed += NumericCast<uint32_t>(ImGui::InputScalar("##MinSizeY", ImGuiDataType_U32, &m_minWindowSize.y, nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
 
 		if(changed != 0)
 			updateSizeLimit = true;
@@ -125,9 +125,9 @@ void WindowFeaturesTests::OnImGuiRender()
 			updateSizeLimit = true;
 
 		ImGui::SameLine();
-		changed += NumericCast<uint32_t>(ImGui::InputScalar("##MaxSizeX", ImGuiDataType_U32, &std::get<0>(m_maxWindowSize), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
+		changed += NumericCast<uint32_t>(ImGui::InputScalar("##MaxSizeX", ImGuiDataType_U32, &m_maxWindowSize.x, nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
 		ImGui::SameLine();
-		changed += NumericCast<uint32_t>(ImGui::InputScalar("##MaxSizeY", ImGuiDataType_U32, &std::get<1>(m_maxWindowSize), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
+		changed += NumericCast<uint32_t>(ImGui::InputScalar("##MaxSizeY", ImGuiDataType_U32, &m_maxWindowSize.y, nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
 
 		if(changed != 0)
 			updateSizeLimit = true;

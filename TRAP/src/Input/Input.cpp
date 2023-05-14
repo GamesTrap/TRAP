@@ -1161,7 +1161,7 @@ void TRAP::Input::InitControllerMappings()
 	{
 		const float value = con->Axes[e->Index] * NumericCast<float>(e->AxisScale) +
 		                    NumericCast<float>(e->AxisOffset);
-		return Math::Min(Math::Max(value, -1.0f), 1.0f);
+		return Math::Clamp(value, -1.0f, 1.0f);
 	}
 	if(e->Type == 2) //Button
 		return con->Buttons[e->Index] ? 1.0f : -1.0f;

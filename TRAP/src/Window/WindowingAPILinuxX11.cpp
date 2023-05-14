@@ -2738,7 +2738,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbarX11([[maybe_unus
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	float opacity = -1.0f;
+	std::optional<float> opacity = std::nullopt;
 
 	if(s_Data.X11.XLIB.GetSelectionOwner(s_Data.X11.display, s_Data.X11.NET_WM_CM_Sx) != 0u)
 	{
@@ -2754,10 +2754,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbarX11([[maybe_unus
 			s_Data.X11.XLIB.Free(value);
 	}
 
-	if(opacity != -1.0f)
-		return opacity;
-
-	return std::nullopt;
+	return opacity;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

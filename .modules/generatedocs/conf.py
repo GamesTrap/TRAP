@@ -78,7 +78,7 @@ html_theme_path = ['_themes']
 # html_logo = 'Branding/TRAPWhiteLogo.png'
 html_favicon = 'Branding/TRAPWhiteLogo64x64.ico'
 # html_theme_options = {
-#     'analytics_id': 'UA-154200595-2',  #  Provided by Google in your dashboard
+#     'analytics_id': '',  #  Provided by Google in your dashboard
 #     'display_version': True,
 #     'prev_next_buttons_location': 'none',
 #     'style_external_links': False,
