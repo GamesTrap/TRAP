@@ -123,6 +123,18 @@ namespace TRAP
 		/// <returns>Current FPS limit.</returns>
 		[[nodiscard]] static uint32_t GetFPSLimit();
 		/// <summary>
+		/// Set a FPS limit when not focused.
+		/// Note: Valid FPS range is 10 - 500. 0 sets unlimited FPS.
+		/// </summary>
+		/// <param name="targetFPS">FPS to limit to.</param>
+		static void SetUnfocusedFPSLimit(uint32_t targetFPS);
+		/// <summary>
+		/// Retrieve the current FPS limit when unfocused.
+		/// Note: 0 means unlimited FPS.
+		/// </summary>
+		/// <returns>Current FPS limit.</returns>
+		[[nodiscard]] static uint32_t GetUnfocusedFPSLimit();
+		/// <summary>
 		/// Get the current CPU frame time.
 		/// </summary>
 		/// <returns>Current CPU frame time.</returns>
@@ -329,16 +341,20 @@ namespace TRAP
 		/// <param name="config">Config to update.</param>
 		/// <param name="window">Optional: Main Window to query data from.</param>
 		/// <param name="fpsLimit">FPS limit to save.</param>
+		/// <param name="unfocusedFPSLimit">Unfocused FPS limit to save.</param>
 		/// <param name="renderAPI">RenderAPI to save.</param>
-		static void UpdateTRAPConfig(Utils::Config& config, const Window* window, uint32_t fpsLimit, Graphics::RenderAPI renderAPI);
+		static void UpdateTRAPConfig(Utils::Config& config, const Window* window, uint32_t fpsLimit,
+		                             uint32_t unfocusedFPSLimit, Graphics::RenderAPI renderAPI);
 #else
 		/// <summary>
 		/// Update the engine.cfg file.
 		/// </summary>
 		/// <param name="config">Config to update.</param>
 		/// <param name="fpsLimit">FPS limit to save.</param>
+		/// <param name="unfocusedFPSLimit">Unfocused FPS limit to save.</param>
 		/// <param name="renderAPI">RenderAPI to save.</param>
-		static void UpdateTRAPConfig(Utils::Config& config, uint32_t fpsLimit, Graphics::RenderAPI renderAPI);
+		static void UpdateTRAPConfig(Utils::Config& config, uint32_t fpsLimit, uint32_t unfocusedFPSLimit,
+		                             Graphics::RenderAPI renderAPI);
 #endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
@@ -464,6 +480,7 @@ namespace TRAP
 		Utils::Timer m_timer{};
 		float m_FrameTime = 0.0f;
 		uint32_t m_fpsLimit = 0;
+		uint32_t m_unfocusedFPSLimit = 0;
 		uint32_t m_tickRate = 64;
 		float m_timeScale = 1.0f;
 		std::string m_gameName = "TRAP™";

@@ -89,6 +89,7 @@ TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std:
 	}
 
 	SetFPSLimit(m_config.Get<uint32_t>("FPSLimit").value_or(0u));
+	SetUnfocusedFPSLimit(m_config.Get<uint32_t>("UnfocusedFPSLimit").value_or(30u));
 
 #ifndef TRAP_HEADLESS_MODE
 	InitializeInput();
@@ -117,9 +118,9 @@ TRAP::Application::~Application()
 
 	Input::Shutdown();
 
-	UpdateTRAPConfig(m_config, m_window.get(), m_fpsLimit, m_newRenderAPI);
+	UpdateTRAPConfig(m_config, m_window.get(), m_fpsLimit, m_unfocusedFPSLimit, m_newRenderAPI);
 #else
-	UpdateTRAPConfig(m_config, m_fpsLimit, m_newRenderAPI);
+	UpdateTRAPConfig(m_config, m_fpsLimit, m_unfocusedFPSLimit, m_newRenderAPI);
 #endif /*TRAP_HEADLESS_MODE*/
 	SaveTRAPConfig(m_config);
 
@@ -168,7 +169,7 @@ void TRAP::Application::Run()
 		if(Window::GetActiveWindows() == 1 && !m_window->IsFocused() &&
 		   !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow))
 		{
-			UnfocusedLimitFPS(30, limiterTimer);
+			UnfocusedLimitFPS(m_unfocusedFPSLimit, limiterTimer);
 		}
 		else if(m_fpsLimit != 0u)
 			LimitFPS(m_fpsLimit, limiterTimer);
@@ -386,6 +387,30 @@ void TRAP::Application::SetFPSLimit(const uint32_t targetFPS)
 	TRAP_ASSERT(s_Instance, "Application::GetFPSLimit(): Application is nullptr!");
 
 	return s_Instance->m_fpsLimit;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+static constexpr uint32_t MinUnfocusedFPS = 10u;
+
+void TRAP::Application::SetUnfocusedFPSLimit(const uint32_t targetFPS)
+{
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(s_Instance, "Application::SetFPSLimit(): Application is nullptr!");
+
+	s_Instance->m_unfocusedFPSLimit = (targetFPS != 0) ? TRAP::Math::Clamp(targetFPS, MinUnfocusedFPS, MaxLimitedFPS) : 0u;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] uint32_t TRAP::Application::GetUnfocusedFPSLimit()
+{
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(s_Instance, "Application::GetFPSLimit(): Application is nullptr!");
+
+	return s_Instance->m_unfocusedFPSLimit;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -847,9 +872,11 @@ TRAP::Utils::Config TRAP::Application::LoadTRAPConfig()
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Application::UpdateTRAPConfig(Utils::Config& config, const TRAP::Window* const window,
-                                         const uint32_t fpsLimit, const Graphics::RenderAPI renderAPI)
+                                         const uint32_t fpsLimit, const uint32_t unfocusedFPSLimit,
+										 const Graphics::RenderAPI renderAPI)
 #else
 void TRAP::Application::UpdateTRAPConfig(Utils::Config& config, const uint32_t fpsLimit,
+                                         const uint32_t unfocusedFPSLimit,
                                          const Graphics::RenderAPI renderAPI)
 #endif /*TRAP_HEADLESS_MODE*/
 {
@@ -874,6 +901,7 @@ void TRAP::Application::UpdateTRAPConfig(Utils::Config& config, const uint32_t f
 #endif /*TRAP_HEADLESS_MODE*/
 
 	config.Set("FPSLimit", fpsLimit);
+	config.Set("UnfocusedFPSLimit", unfocusedFPSLimit);
 	config.Set("RenderAPI", (renderAPI != Graphics::RenderAPI::NONE) ? renderAPI :
 	                                                                   Graphics::RendererAPI::GetRenderAPI());
 
