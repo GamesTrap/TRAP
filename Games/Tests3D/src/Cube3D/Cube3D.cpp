@@ -509,9 +509,6 @@ bool Cube3D::OnKeyPress(TRAP::Events::KeyPressEvent& event)
         return true;
     }
 
-    if(event.GetRepeatCount() != 0)
-        return false;
-
     if(event.GetKey() == TRAP::Input::Key::F1)
 	{
         m_currentShader = (m_currentShader + 1) % NumericCast<uint32_t>(m_shaderNames.size());

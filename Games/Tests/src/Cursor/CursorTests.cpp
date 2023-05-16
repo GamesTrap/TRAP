@@ -116,9 +116,6 @@ void CursorTests::OnEvent(TRAP::Events::Event& event)
 
 bool CursorTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 {
-	if(event.GetRepeatCount() > 0)
-		return true;
-
 	switch (event.GetKey())
 	{
 	case TRAP::Input::Key::A:

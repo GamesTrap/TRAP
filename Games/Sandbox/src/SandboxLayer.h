@@ -206,9 +206,6 @@ public:
 		if (event.GetKey() == TRAP::Input::Key::Escape)
 			TRAP::Application::Shutdown();
 
-		if(event.GetRepeatCount() != 0)
-			return false;
-
 		if (event.GetKey() == TRAP::Input::Key::F5) //Make Window windowed
 			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Windowed, 1280, 720);
 		if (event.GetKey() == TRAP::Input::Key::F6) //Make Window Borderless Fullscreen

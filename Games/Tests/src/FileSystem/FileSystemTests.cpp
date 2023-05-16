@@ -42,9 +42,6 @@ void FileSystemTests::OnEvent(TRAP::Events::Event& event)
 
 bool FileSystemTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 {
-	if (event.GetRepeatCount() > 0)
-		return true;
-
 	switch(event.GetKey())
 	{
 	case TRAP::Input::Key::Escape:

@@ -17,9 +17,8 @@
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, const uint32_t repeatCount,
-                                           TRAP::Window* window)
-	: KeyEvent(key), m_repeatCount(repeatCount), m_window(window)
+TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, TRAP::Window* window)
+	: KeyEvent(key), m_window(window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -34,8 +33,7 @@ TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, const uint32_t 
 
 	const std::string name = TRAP::Input::GetKeyName(m_key);
 
-	return "KeyPressEvent: " + name + "(" + std::to_string(ToUnderlying(m_key)) + ") (" +
-	       std::to_string(m_repeatCount) + " repeats)";
+	return "KeyPressEvent: " + name + "(" + std::to_string(ToUnderlying(m_key)) + ")";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -54,6 +52,47 @@ TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, const uint32_t 
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "KeyPress";
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Events::KeyRepeatEvent::KeyRepeatEvent(const Input::Key key, TRAP::Window* window)
+	: KeyEvent(key), m_window(window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(window, "Events::KeyRepeatEvent(): Window is nullptr!");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] std::string TRAP::Events::KeyRepeatEvent::ToString() const
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	const std::string name = TRAP::Input::GetKeyName(m_key);
+
+	return "KeyRepeatEvent: " + name + "(" + std::to_string(ToUnderlying(m_key)) + ")";
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::Events::EventType TRAP::Events::KeyRepeatEvent::GetEventType() const noexcept
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	return GetStaticType();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] std::string TRAP::Events::KeyRepeatEvent::GetName() const
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	return "KeyRepeat";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

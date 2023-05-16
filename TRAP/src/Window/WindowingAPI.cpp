@@ -2233,21 +2233,21 @@ void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow& window, Input::Key k
 	TRAP_ASSERT(key != Input::Key::Unknown, "WindowingAPI::InputKey(): Key is unknown!");
 	TRAP_ASSERT(state == Input::KeyState::Pressed || state == Input::KeyState::Released, "WindowingAPI::InputKey(): KeyState is invalid!");
 
-	if(key != Input::Key::Unknown)
-	{
-		bool repeated = false;
+	if(key == Input::Key::Unknown)
+		return;
 
-		if(state == Input::KeyState::Released && window.Keys[NumericCast<std::size_t>(ToUnderlying(key))] == Input::KeyState::Released)
-			return;
+	bool repeated = false;
 
-		if(state == Input::KeyState::Pressed && window.Keys[NumericCast<std::size_t>(ToUnderlying(key))] == Input::KeyState::Pressed)
-			repeated = true;
+	if(state == Input::KeyState::Released && window.Keys[NumericCast<std::size_t>(ToUnderlying(key))] == Input::KeyState::Released)
+		return;
 
-		window.Keys[NumericCast<std::size_t>(ToUnderlying(key))] = state;
+	if(state == Input::KeyState::Pressed && window.Keys[NumericCast<std::size_t>(ToUnderlying(key))] == Input::KeyState::Pressed)
+		repeated = true;
 
-		if(repeated)
-			state = Input::KeyState::Repeat;
-	}
+	window.Keys[NumericCast<std::size_t>(ToUnderlying(key))] = state;
+
+	if(repeated)
+		state = Input::KeyState::Repeat;
 
 	if (window.Callbacks.Key != nullptr)
 		window.Callbacks.Key(window, key, state);

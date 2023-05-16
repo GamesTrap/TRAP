@@ -82,9 +82,6 @@ bool WindowStateTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 {
 	TP_TRACE(event.ToString());
 
-	if (event.GetRepeatCount() > 0)
-		return true;
-
 	const TRAP::Window* const window = TRAP::Application::GetWindow();
 
 	switch(event.GetKey())

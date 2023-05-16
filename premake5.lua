@@ -17,7 +17,7 @@ workspace "TRAP"
 	}
 
 	flags "MultiProcessorCompile"
-	flags "LinkTimeOptimization"
+	-- flags "LinkTimeOptimization"
 
 	filter "system:linux"
 		configurations
@@ -40,11 +40,11 @@ workspace "TRAP"
 			linkoptions "-fuse-ld=mold"
 		end
 
-	filter { "toolset:gcc" }
-		if moldInstalled then
-			linkoptions "-flto=auto"
-			buildoptions "-flto=auto"
-		end
+	-- filter { "toolset:gcc" }
+	-- 	if moldInstalled then
+	-- 		linkoptions "-flto=auto"
+	-- 		buildoptions "-flto=auto"
+	-- 	end
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 

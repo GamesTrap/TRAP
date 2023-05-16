@@ -148,14 +148,14 @@ void Sandbox2D::OnEvent(TRAP::Events::Event& event)
 
 bool Sandbox2D::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 {
-	if (event.GetKey() == TRAP::Input::Key::F10 && event.GetRepeatCount() < 1) //Enable/Disable WireFrame Mode
+	if (event.GetKey() == TRAP::Input::Key::F10) //Enable/Disable WireFrame Mode
 	{
 		m_wireFrame = !m_wireFrame;
 		TRAP::Graphics::RenderCommand::SetFillMode(m_wireFrame ? TRAP::Graphics::FillMode::Line :
 			                                                     TRAP::Graphics::FillMode::Solid);
 	}
 
-	if (event.GetKey() == TRAP::Input::Key::F11 && event.GetRepeatCount() < 1)
+	if (event.GetKey() == TRAP::Input::Key::F11)
 		TRAP::Utils::Dialogs::ShowMsgBox("Just a prank bro!", "Critical Error");
 
 	return true;

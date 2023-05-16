@@ -408,9 +408,6 @@ namespace TRAP
 			bool VSync{};
 			DisplayMode displayMode{};
 			uint32_t Monitor{};
-			CursorMode cursorMode{};
-			bool RawMouseInput{};
-			std::unordered_map<TRAP::Input::Key, uint32_t> KeyRepeatCounts;
 
 			EventCallbackFn EventCallback;
 

@@ -186,26 +186,23 @@ void SpriteSheetTests::OnEvent(TRAP::Events::Event& event)
 
 bool SpriteSheetTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 {
-    if (event.GetKey() == TRAP::Input::Key::Escape && event.GetRepeatCount() < 1)
+    if (event.GetKey() == TRAP::Input::Key::Escape)
         TRAP::Application::Shutdown();
 
-    if (event.GetRepeatCount() < 1)
+    if (event.GetKey() == TRAP::Input::Key::P && TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Shift))
     {
-        if (event.GetKey() == TRAP::Input::Key::P && TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Shift))
-        {
-            m_animation->Pause();
-            m_animation2->Pause();
-        }
-        else if (event.GetKey() == TRAP::Input::Key::P)
-        {
-            m_animation->Play();
-            m_animation2->Play();
-        }
-        else if (event.GetKey() == TRAP::Input::Key::R)
-        {
-            m_animation->Stop();
-            m_animation2->Stop();
-        }
+        m_animation->Pause();
+        m_animation2->Pause();
+    }
+    else if (event.GetKey() == TRAP::Input::Key::P)
+    {
+        m_animation->Play();
+        m_animation2->Play();
+    }
+    else if (event.GetKey() == TRAP::Input::Key::R)
+    {
+        m_animation->Stop();
+        m_animation2->Stop();
     }
 
     return true;

@@ -458,8 +458,6 @@ void TRAPEditorLayer::OnEvent(TRAP::Events::Event& event)
 bool TRAPEditorLayer::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 {
 	//Shortcuts
-	if (event.GetRepeatCount() > 0)
-		return false;
 
 	const bool ctrlPressed = TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Control) || TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_Control);
 	const bool shiftPressed = TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Shift) || TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_Shift);

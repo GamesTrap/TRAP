@@ -141,7 +141,7 @@ bool AntiAliasingTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 {
 	if (e.GetKey() == TRAP::Input::Key::Escape)
 		TRAP::Application::Shutdown();
-	if (e.GetKey() == TRAP::Input::Key::P && e.GetRepeatCount() == 0 && TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Control))
+	if (e.GetKey() == TRAP::Input::Key::P && TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Control))
 	{
         //Screenshot
 	    TRAP::Scope<TRAP::Image> testImage = TRAP::Graphics::RenderCommand::CaptureScreenshot();

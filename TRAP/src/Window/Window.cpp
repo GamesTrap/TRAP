@@ -189,7 +189,7 @@ void TRAP::Window::OnUpdate()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return m_data.cursorMode;
+	return INTERNAL::WindowingAPI::GetCursorMode(*m_window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -198,7 +198,7 @@ void TRAP::Window::OnUpdate()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return m_data.RawMouseInput;
+	return INTERNAL::WindowingAPI::GetRawMouseMotionMode(*m_window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -551,7 +551,6 @@ void TRAP::Window::SetCursorMode(const CursorMode& mode)
 #endif /*TRAP_RELEASE*/
 
 	INTERNAL::WindowingAPI::SetCursorMode(*m_window, mode);
-	m_data.cursorMode = mode;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -587,14 +586,12 @@ void TRAP::Window::SetRawMouseInput(const bool enabled)
 
 	if(Input::IsRawMouseInputSupported())
 	{
-		m_data.RawMouseInput = enabled;
 		INTERNAL::WindowingAPI::SetRawMouseMotionMode(*m_window, enabled);
 		TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" Raw mouse input: ", enabled ? "Enabled" : "Disabled");
 	}
 	else
 	{
 		TP_ERROR(Log::WindowPrefix, "\"", m_data.Title, "\" Raw mouse input is unsupported!");
-		m_data.RawMouseInput = false;
 	}
 }
 
@@ -939,8 +936,6 @@ void TRAP::Window::Init(const WindowProps& props)
 	m_data.RefreshRate = props.RefreshRate;
 	m_data.VSync = props.VSync;
 	m_data.Monitor = props.Monitor;
-	m_data.cursorMode = props.Advanced.CursorMode;
-	m_data.RawMouseInput = props.Advanced.RawMouseInput;
 
 	if (!s_WindowingAPIInitialized)
 	{
@@ -1081,14 +1076,13 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	SetIcon();
 
-	INTERNAL::WindowingAPI::SetCursorMode(*m_window, m_data.cursorMode);
+	INTERNAL::WindowingAPI::SetCursorMode(*m_window, props.Advanced.CursorMode);
 
 	if (Input::IsRawMouseInputSupported())
-		INTERNAL::WindowingAPI::SetRawMouseMotionMode(*m_window, m_data.RawMouseInput);
+		INTERNAL::WindowingAPI::SetRawMouseMotionMode(*m_window, props.Advanced.RawMouseInput);
 	else
 	{
 		TP_ERROR(Log::WindowPrefix, "\"", m_data.Title, "\" Raw mouse input is unsupported!");
-		m_data.RawMouseInput = false;
 	}
 
 	SetupEventCallbacks();
@@ -1241,33 +1235,24 @@ void TRAP::Window::SetupEventCallbacks()
 			if(data == nullptr)
 				return;
 
-			if(state == Input::KeyState::Pressed || state == Input::KeyState::Repeat)
+			if(state == Input::KeyState::Pressed)
 			{
-				if(data->KeyRepeatCounts.find(key) == data->KeyRepeatCounts.end())
-				{
-					data->KeyRepeatCounts[key] = 0;
+				if (!data->EventCallback)
+					return;
 
-					if (!data->EventCallback)
-						return;
-
-					Events::KeyPressEvent event(key, 0, data->Win);
-					data->EventCallback(event);
-				}
-				else
-				{
-					data->KeyRepeatCounts[key]++;
-
-					if (!data->EventCallback)
-						return;
-
-					Events::KeyPressEvent event(key, data->KeyRepeatCounts[key], data->Win);
-					data->EventCallback(event);
-				}
+				Events::KeyPressEvent event(key, data->Win);
+				data->EventCallback(event);
 			}
-			else
+			else if(state == Input::KeyState::Repeat)
 			{
-				data->KeyRepeatCounts.erase(key);
+				if (!data->EventCallback)
+					return;
 
+				Events::KeyRepeatEvent event(key, data->Win);
+				data->EventCallback(event);
+			}
+			else /*if(state == Input::KeyState::Released)*/
+			{
 				if (!data->EventCallback)
 					return;
 

@@ -81,7 +81,7 @@ void RenderScaleTests::OnEvent(TRAP::Events::Event& event)
 
 bool RenderScaleTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 {
-	if (event.GetKey() == TRAP::Input::Key::Escape && event.GetRepeatCount() < 1)
+	if (event.GetKey() == TRAP::Input::Key::Escape)
         TRAP::Application::Shutdown();
 
 	return true;

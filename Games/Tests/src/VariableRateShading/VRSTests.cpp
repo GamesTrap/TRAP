@@ -164,7 +164,7 @@ void VRSTests::OnEvent(TRAP::Events::Event& event)
 
 bool VRSTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 {
-	if (event.GetKey() == TRAP::Input::Key::Escape && event.GetRepeatCount() < 1)
+	if (event.GetKey() == TRAP::Input::Key::Escape)
         TRAP::Application::Shutdown();
 
 	return true;

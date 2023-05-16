@@ -664,7 +664,7 @@ bool TRAP::Application::OnKeyPress([[maybe_unused]] Events::KeyPressEvent& event
 		return false;
 
 	if ((event.GetKey() == Input::Key::Enter || event.GetKey() == Input::Key::KP_Enter) &&
-	    Input::IsKeyPressed(Input::Key::Left_ALT, event.GetWindow()) && event.GetRepeatCount() < 1)
+	    Input::IsKeyPressed(Input::Key::Left_ALT, event.GetWindow()))
 	{
 		if (event.GetWindow()->GetDisplayMode() == Window::DisplayMode::Windowed ||
 			event.GetWindow()->GetDisplayMode() == Window::DisplayMode::Borderless)

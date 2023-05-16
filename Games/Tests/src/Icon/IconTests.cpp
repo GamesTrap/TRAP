@@ -107,9 +107,6 @@ void IconTests::SetIcon(const TRAP::Window& window, const uint32_t iconColor)
 
 bool IconTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 {
-	if (event.GetRepeatCount() > 0)
-		return true;
-
 	switch(event.GetKey())
 	{
 	case TRAP::Input::Key::Escape:

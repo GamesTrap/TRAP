@@ -3967,3 +3967,6 @@ SITREP 05/09/2023|23w19a1
 SITREP 05/16/2023|23w20a1
     - Changed TRAP Engine version to 23w20a1(0.9.30)
     - Application exposed unfocused FPS limit via config and getter/setter ~<5 mins
+    - Disabled LTO because it makes GDB start very slowly ~<5 mins
+    - Events Added KeyRepeatEvent ~<10 mins
+    - Window Removed redundant WindowData ~<5 mins
