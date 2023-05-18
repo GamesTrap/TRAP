@@ -956,7 +956,7 @@ void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKey([[maybe_unused]] void* cons
         const xkb_keycode_t keycode = scanCode + 8;
 
         if((s_Data.Wayland.WaylandXKB.KeyMapKeyRepeats(s_Data.Wayland.WaylandXKB.KeyMap, keycode) != 0) &&
-           s_Data.Wayland.KeyRepeatScancode > 0)
+           s_Data.Wayland.KeyRepeatRate > 0)
         {
             s_Data.Wayland.KeyRepeatScancode = NumericCast<int32_t>(scanCode);
             if(s_Data.Wayland.KeyRepeatRate > 1)

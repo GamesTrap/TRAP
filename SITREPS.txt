@@ -3970,3 +3970,7 @@ SITREP 05/16/2023|23w20a1
     - Disabled LTO because it makes GDB start very slowly ~<5 mins
     - Events Added KeyRepeatEvent ~<10 mins
     - Window Removed redundant WindowData ~<5 mins
+
+SITREP 05/18/2023|23w20a2
+    - Changed TRAP Engine version to 23w20a2(0.9.31)
+    - WindowingAPILinuxWayland Fixed key repeats not working ~<5 mins
