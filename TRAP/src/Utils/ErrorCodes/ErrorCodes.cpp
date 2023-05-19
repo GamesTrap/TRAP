@@ -48,5 +48,7 @@ void TRAP::Utils::DisplayError(const ErrorCode error)
 
     TP_CRITICAL(errorData.LogPrefix, errorData.LogMessage);
 
+    TRAP_ASSERT(false, errorData.LogPrefix, errorData.LogMessage);
+
     exit(ToUnderlying(error));
 }

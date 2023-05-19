@@ -626,7 +626,7 @@ void TRAP::INTERNAL::WindowingAPI::AddEmulatedVideoModes(InternalMonitor& monito
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-    const InternalVideoMode& nativeMode = monitor.CurrentMode;
+    const InternalVideoMode& nativeMode = monitor.NativeMode.value_or(monitor.CurrentMode);
     std::vector<InternalVideoMode>& modes = monitor.Modes;
 
     const bool rot90 = nativeMode.Width < nativeMode.Height; //Reverse width / height for portrait displays.
@@ -716,7 +716,11 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleMode(void* const userData, [[mayb
     if(ele != monitor->Modes.cend())
     {
         if((flags & WL_OUTPUT_MODE_CURRENT) != 0u)
+        {
+            if(!monitor->NativeMode)
+                monitor->NativeMode = mode;
             monitor->CurrentMode = mode;
+        }
     }
     else
     {
@@ -724,6 +728,8 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleMode(void* const userData, [[mayb
 
         if((flags & WL_OUTPUT_MODE_CURRENT) != 0u)
         {
+            if(!monitor->NativeMode)
+                monitor->NativeMode = mode;
             monitor->CurrentMode = monitor->Modes.back();
             AddEmulatedVideoModes(*monitor);
         }

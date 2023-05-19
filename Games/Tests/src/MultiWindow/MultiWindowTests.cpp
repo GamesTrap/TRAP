@@ -34,7 +34,6 @@ void MultiWindowTests::OnAttach()
 	winProps.VSync = false;
 	winProps.DisplayMode = TRAP::Window::DisplayMode::Windowed;
 	winProps.Advanced = advWinProps;
-	winProps.Monitor = 0;
 
 	m_window = TRAP::MakeScope<TRAP::Window>(winProps);
 

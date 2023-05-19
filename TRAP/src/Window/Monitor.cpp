@@ -1,14 +1,16 @@
 #include "TRAPPCH.h"
 #include "Monitor.h"
 
+#include "Utils/ErrorCodes/ErrorCodes.h"
+
 #ifndef TRAP_HEADLESS_MODE
 
-TRAP::Monitor::Monitor(const uint32_t monitor)
+TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
+	: m_handle(monitor)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
-	const std::vector<INTERNAL::WindowingAPI::InternalMonitor*> monitors = INTERNAL::WindowingAPI::GetMonitors();
-	m_handle = monitors[monitor];
+	TRAP_ASSERT(m_handle, "Monitor::Monitor(): monitor is nullptr!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -33,6 +35,28 @@ TRAP::Monitor::Monitor(const uint32_t monitor)
 		modes.emplace_back(i->Width, i->Height, i->RefreshRate);
 
 	return modes;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] std::optional<TRAP::Monitor::VideoMode> TRAP::Monitor::GetNativeVideoMode() const noexcept
+{
+	const auto nativeVideoMode = INTERNAL::WindowingAPI::GetNativeVideoMode(*m_handle);
+	if(!nativeVideoMode)
+		return std::nullopt;
+
+	return VideoMode{ nativeVideoMode->Width, nativeVideoMode->Height, nativeVideoMode->RefreshRate };
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] std::optional<TRAP::Monitor::VideoMode> TRAP::Monitor::GetCurrentVideoMode() const noexcept
+{
+	const auto currVideoMode = INTERNAL::WindowingAPI::GetVideoMode(*m_handle);
+	if(!currVideoMode)
+		return std::nullopt;
+
+	return VideoMode{ currVideoMode->Width, currVideoMode->Height, currVideoMode->RefreshRate };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -166,10 +190,12 @@ TRAP::Monitor::Monitor(const uint32_t monitor)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
+	if (!INTERNAL::WindowingAPI::Init())
+		Utils::DisplayError(Utils::ErrorCode::WindowingAPIFailedInitialization);
+
 	std::vector<Monitor> monitors{};
-	const std::size_t monitorSize = INTERNAL::WindowingAPI::GetMonitors().size();
-	for (std::size_t i = 0; i < monitorSize; i++)
-		monitors.emplace_back(Monitor(NumericCast<uint32_t>(i)));
+	for(auto *internalMonitor : INTERNAL::WindowingAPI::GetMonitors())
+		monitors.push_back(Monitor(internalMonitor));
 
 	return monitors;
 }
@@ -180,7 +206,10 @@ TRAP::Monitor::Monitor(const uint32_t monitor)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return Monitor(0);
+	if (!INTERNAL::WindowingAPI::Init())
+		Utils::DisplayError(Utils::ErrorCode::WindowingAPIFailedInitialization);
+
+	return Monitor(INTERNAL::WindowingAPI::GetPrimaryMonitor());
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

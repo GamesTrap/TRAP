@@ -3974,3 +3974,13 @@ SITREP 05/16/2023|23w20a1
 SITREP 05/18/2023|23w20a2
     - Changed TRAP Engine version to 23w20a2(0.9.31)
     - WindowingAPILinuxWayland Fixed key repeats not working ~<5 mins
+
+SITREP 05/19/2023|23w20a3
+    - Changed TRAP Engine version to 23w20a3(0.9.32)
+    - WindowingAPI Added GetNativeMode() for monitors ~<10 mins
+    - Monitor Added GetNativeMode() ~<5 mins
+    - Monitor Changed constructor ~<5 mins
+    - Monitor VideoMode Added equality operators ~<5 mins
+    - Window Added GetFrameBufferWidth() and GetFrameBufferHeight() ~<5 mins
+    - Window Reduced stored data ~>20 mins
+    - MonitorTests Removed caching of monitor data ~<10 mins

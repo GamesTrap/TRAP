@@ -309,6 +309,24 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] std::optional<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::GetNativeVideoMode(InternalMonitor& monitor)
+{
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::GetNativeVideoMode(): must only be called from main thread");
+
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return {};
+	}
+
+	return monitor.NativeMode;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::GetVideoModes(InternalMonitor& monitor)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
@@ -2521,6 +2539,9 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, 
 
 	if (connected)
 	{
+		if(!monitor->NativeMode)
+			monitor->NativeMode = PlatformGetVideoMode(*monitor);
+
 		const InternalMonitor* mon = nullptr;
 
 		if (placement == 0)

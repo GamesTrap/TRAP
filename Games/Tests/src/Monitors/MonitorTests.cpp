@@ -1,9 +1,5 @@
 #include "MonitorTests.h"
 
-std::vector<MonitorTests::MonitorInfo> MonitorTests::s_monitorInfos{};
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 MonitorTests::MonitorTests()
 	: Layer("Monitor")
 {
@@ -14,40 +10,77 @@ MonitorTests::MonitorTests()
 void MonitorTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Monitor");
-
-	std::vector<TRAP::Monitor> monitors = TRAP::Monitor::GetAllMonitors();
-
-	for (const TRAP::Monitor& monitor : monitors)
-		ListModes(monitor);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void MonitorTests::OnImGuiRender()
 {
-	for(const MonitorInfo& monitor : s_monitorInfos)
+	const uint32_t primaryID = TRAP::Monitor::GetPrimaryMonitor().GetID();
+
+	for(const TRAP::Monitor& monitor : TRAP::Monitor::GetAllMonitors())
 	{
-		ImGui::Begin(monitor.Name.c_str());
-		ImGui::Text("Name: %s", monitor.Name.c_str());
-		ImGui::Text("Primary: %s", (monitor.ID == TRAP::Monitor::GetPrimaryMonitor().GetID() ? "True" : "False"));
-		ImGui::Text("Current VideoMode: %s", FormatMode(monitor.CurrentVideoMode).c_str());
-		ImGui::Text("Virtual Position: %i %i", monitor.Position.x, monitor.Position.y);
-		ImGui::Text("Content Scale: %f %f", monitor.Scale.x, monitor.Scale.y);
-		ImGui::Text("Monitor Work Area: %i %i Starting @ %i %i", monitor.WorkArea.x, monitor.WorkArea.y,
-		            monitor.WorkArea.z, monitor.WorkArea.w);
+		const std::string name = monitor.GetName();
+		const std::string uniqueName = name + " (" + std::to_string(monitor.GetID()) + ")";
+		const uint32_t ID = monitor.GetID();
+		const auto nativeMode = monitor.GetNativeVideoMode();
+		const auto currentMode = monitor.GetCurrentVideoMode();
+		const auto position = monitor.GetPosition();
+		const auto scale = monitor.GetContentScale();
+		const auto workArea = monitor.GetWorkArea();
+		const auto videoModes = monitor.GetVideoModes();
+
+		ImGui::Begin(uniqueName.c_str());
+		ImGui::Text("Name: %s", name.c_str());
+		ImGui::Text("Primary: %s", (ID == primaryID ? "True" : "False"));
+		ImGui::Text("Native VideoMode: %s", nativeMode ? FormatMode(*nativeMode).c_str() : "Unknown");
+		ImGui::Text("Current VideoMode: %s", currentMode ? FormatMode(*currentMode).c_str() : "Unknown");
+		ImGui::Text("Virtual Position: %i %i", position.x, position.y);
+		ImGui::Text("Content Scale: %f %f", scale.x, scale.y);
+		ImGui::Text("Monitor Work Area: %i %i Starting @ %i %i", workArea.x, workArea.y,
+		            workArea.z, workArea.w);
 		ImGui::Separator();
 		ImGui::Text("Supported VideoModes:");
-		for(const TRAP::Monitor::VideoMode& videoMode : monitor.VideoModes)
+		for(const TRAP::Monitor::VideoMode& videoMode : videoModes)
 		{
-			if (monitor.CurrentVideoMode.Width == videoMode.Width &&
-			    monitor.CurrentVideoMode.Height == videoMode.Height &&
-				monitor.CurrentVideoMode.RefreshRate == videoMode.RefreshRate)
-				ImGui::Text("%s (Current)", FormatMode(videoMode).c_str());
-			else
-				ImGui::Text("%s", FormatMode(videoMode).c_str());
+			std::string tmp = FormatMode(videoMode);
+
+			if (currentMode && *currentMode == videoMode)
+				tmp += " (current)";
+			if (nativeMode && *nativeMode == videoMode)
+				tmp += " (native)";
+
+			ImGui::Text("%s", tmp.c_str());
 		}
 		ImGui::End();
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void MonitorTests::OnEvent(TRAP::Events::Event& event)
+{
+	TRAP::Events::EventDispatcher dispatcher(event);
+	dispatcher.Dispatch<TRAP::Events::MonitorConnectEvent>([](TRAP::Events::MonitorConnectEvent& e) { return OnMonitorConnect(e); });
+	dispatcher.Dispatch<TRAP::Events::MonitorDisconnectEvent>([](TRAP::Events::MonitorDisconnectEvent& e) { return OnMonitorDisconnect(e); });
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool MonitorTests::OnMonitorConnect(const TRAP::Events::MonitorConnectEvent& event)
+{
+	TP_TRACE(event.ToString());
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool MonitorTests::OnMonitorDisconnect(const TRAP::Events::MonitorDisconnectEvent& event)
+{
+	TP_TRACE(event.ToString());
+
+	return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -68,46 +101,4 @@ std::string MonitorTests::FormatMode(const TRAP::Monitor::VideoMode& mode)
 		                 std::to_string(mode.RefreshRate) + "Hz";
 
 	return buffer;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void MonitorTests::ListModes(const TRAP::Monitor& monitor)
-{
-	const TRAP::Monitor::VideoMode& mode = monitor.GetCurrentVideoMode();
-	const std::vector<TRAP::Monitor::VideoMode>& modes = monitor.GetVideoModes();
-
-	const TRAP::Math::Vec2i position = monitor.GetPosition();
-	const TRAP::Math::Vec2 scale = monitor.GetContentScale();
-	const TRAP::Math::Vec4i workArea = monitor.GetWorkArea();
-
-	TP_TRACE("Name: ", monitor.GetName(), "(", (TRAP::Monitor::GetPrimaryMonitor().GetID() == monitor.GetID() ?
-	                                            "primary" : "secondary"), ")");
-	TP_TRACE("Current mode: ", FormatMode(mode));
-	TP_TRACE("Virtual position: ", position.x, ", ", position.y);
-	TP_TRACE("Content scale: ", scale.x, "x", scale.y);
-	TP_TRACE("Monitor work area: ", workArea.x, "x", workArea.y, " starting at ", workArea.z, ", ", workArea.w);
-
-	TP_TRACE("Modes:");
-
-	for(std::size_t i = 0; i < modes.size(); i++)
-	{
-		if (mode.Width == modes[i].Width && mode.Height == modes[i].Height &&
-		    mode.RefreshRate == modes[i].RefreshRate)
-			TP_TRACE(i, ": ", FormatMode(modes[i]), " (current mode)");
-		else
-			TP_TRACE(i, ": ", FormatMode(modes[i]));
-	}
-
-	MonitorInfo monitorInfo
-	{
-		monitor.GetName(),
-		monitor.GetID(),
-		mode,
-		modes,
-		position,
-		scale,
-		workArea
-	};
-	s_monitorInfos.emplace_back(monitorInfo);
 }

@@ -29,6 +29,7 @@
 #include "../src/Events/FileEvent.h"
 #ifndef TRAP_HEADLESS_MODE
 #include "../src/Events/WindowEvent.h"
+#include "../src/Events/MonitorEvent.h"
 #include "../src/Events/KeyEvent.h"
 #include "../src/Events/MouseEvent.h"
 #include "../src/Events/ControllerEvent.h"

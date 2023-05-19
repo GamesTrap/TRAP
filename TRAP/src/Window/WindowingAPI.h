@@ -1557,6 +1557,7 @@ namespace TRAP::INTERNAL
 
 			std::vector<InternalVideoMode> Modes{};
 			InternalVideoMode CurrentMode{};
+			std::optional<InternalVideoMode> NativeMode = std::nullopt;
 
 #ifdef TRAP_PLATFORM_WINDOWS
 			HMONITOR Handle = nullptr;
@@ -1902,6 +1903,18 @@ namespace TRAP::INTERNAL
 		/// </returns>
 		[[nodiscard]] static std::optional<InternalVideoMode> GetVideoMode(InternalMonitor& monitor);
 		/// <summary>
+		/// This function returns the native video mode of the specified monitor.
+		/// The return value depends on the operating systems monitor settings.
+		///
+		/// Errors: Possible errors include Error::Not_Initialized and Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="monitor">Internal monitor to get internal video mode from.</param>
+		/// <returns>
+		/// Native video mode of the specified monitor, or an empty optional if an error occurred.
+		/// </returns>
+		[[nodiscard]] static std::optional<InternalVideoMode> GetNativeVideoMode(InternalMonitor& monitor);
+		/// <summary>
 		/// This function returns a vector of all video modes supported by the specified monitor.
 		/// The returned vector is sorted in ascending order, first by color bit depth
 		/// (the sum of all channel depths) and then by resolution area (the product of
@@ -2130,7 +2143,7 @@ namespace TRAP::INTERNAL
 		/// This function sets the size, in screen coordinates, of the content area of the specified window.
 		///
 		/// For full screen windows, this function updates the resolution of its desired video mode
-		/// and switches to the video mdoe closest to it.
+		/// and switches to the video mode closest to it.
 		///
 		/// If you wish to update the refresh rate of the desired video mode in addition
 		/// to its resolution, see WindowingAPI::SetWindowMonitor.

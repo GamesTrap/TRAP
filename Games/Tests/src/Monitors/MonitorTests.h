@@ -11,22 +11,14 @@ public:
 	void OnAttach() override;
 	void OnImGuiRender() override;
 
+	void OnEvent(TRAP::Events::Event& event) override;
+
 private:
+	static bool OnMonitorConnect(const TRAP::Events::MonitorConnectEvent& event);
+	static bool OnMonitorDisconnect(const TRAP::Events::MonitorDisconnectEvent& event);
+
 	static int32_t Euclid(int32_t a, int32_t b);
 	static std::string FormatMode(const TRAP::Monitor::VideoMode& mode);
-	static void ListModes(const TRAP::Monitor& monitor);
-
-	struct MonitorInfo
-	{
-		std::string Name{};
-		uint32_t ID{};
-		TRAP::Monitor::VideoMode CurrentVideoMode;
-		std::vector<TRAP::Monitor::VideoMode> VideoModes{};
-		TRAP::Math::Vec2i Position{};
-		TRAP::Math::Vec2 Scale{};
-		TRAP::Math::Vec4i WorkArea{};
-	};
-	static std::vector<MonitorInfo> s_monitorInfos;
 };
 
 #endif /*GAMESTRAP_MONITORTESTS_H*/

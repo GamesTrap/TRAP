@@ -106,6 +106,16 @@ namespace TRAP
 		/// <returns>Vec2ui containing the width and height of the window.</returns>
 		[[nodiscard]] Math::Vec2ui GetSize() const noexcept;
 		/// <summary>
+		/// Get the current framebuffer width of the window.
+		/// </summary>
+		/// <returns>Framebuffer width of the window.</returns>
+		[[nodiscard]] uint32_t GetFrameBufferWidth() const;
+		/// <summary>
+		/// Get the current framebuffer height of the window.
+		/// </summary>
+		/// <returns>Framebuffer height of the window.</returns>
+		[[nodiscard]] uint32_t GetFrameBufferHeight() const;
+		/// <summary>
 		/// Get the current framebuffer width and height of the window.
 		/// </summary>
 		/// <returns>Vec2ui containing the framebuffer width and height of the window.</returns>
@@ -199,7 +209,7 @@ namespace TRAP
 		/// Set a new monitor for the window.
 		/// </summary>
 		/// <param name="monitor">Monitor object to be used from now on.</param>
-		void SetMonitor(Monitor& monitor);
+		void SetMonitor(const Monitor& monitor);
 		/// <summary>
 		/// Set the cursor mode for the window.
 		/// </summary>
@@ -383,8 +393,7 @@ namespace TRAP
 		/// </summary>
 		void SetupEventCallbacks();
 
-		INTERNAL::WindowingAPI::InternalWindow* m_window;
-		INTERNAL::WindowingAPI::InternalMonitor* m_useMonitor; //Stores a reference to the monitor
+		INTERNAL::WindowingAPI::InternalWindow* m_window; //Handle to the internal window
 		//Stores the underlying video mode being used by the OS for every monitor
 		static std::unordered_map<std::size_t, INTERNAL::WindowingAPI::InternalVideoMode> s_baseVideoModes;
 
@@ -407,7 +416,7 @@ namespace TRAP
 			int32_t MaxWidth = -1, MaxHeight = -1;
 			bool VSync{};
 			DisplayMode displayMode{};
-			uint32_t Monitor{};
+			TRAP::Monitor Monitor = TRAP::Monitor::GetPrimaryMonitor();
 
 			EventCallbackFn EventCallback;
 
@@ -416,8 +425,6 @@ namespace TRAP
 		} m_data;
 
 		static uint32_t s_windows;
-		static bool s_WindowingAPIInitialized;
-		static std::vector<Window*> s_fullscreenWindows;
 
 		inline static constexpr int32_t MinimumSupportedWindowWidth = 2;
 		inline static constexpr int32_t MinimumSupportedWindowHeight = 2;
@@ -434,7 +441,7 @@ namespace TRAP
 		double RefreshRate;
 		bool VSync;
 		Window::DisplayMode DisplayMode;
-		uint32_t Monitor;
+		TRAP::Monitor Monitor;
 
 		/// <summary>
 		/// More advanced(optional) window properties.
@@ -489,7 +496,7 @@ namespace TRAP
 							 bool vsync = false,
 							 Window::DisplayMode displayMode = Window::DisplayMode::Windowed,
 							 AdvancedProps advanced = AdvancedProps{},
-		                     uint32_t monitor = 0) noexcept;
+							 const TRAP::Monitor& monitor = TRAP::Monitor::GetPrimaryMonitor()) noexcept;
 	};
 }
 

@@ -1005,8 +1005,8 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 			for(j = 0; j < NumericCast<std::size_t>(screenCount); j++)
 			{
 				if(screens[j].x_org == ci->x && screens[j].y_org == ci->y &&
-				NumericCast<uint32_t>(screens[j].width) == ci->width &&
-				NumericCast<uint32_t>(screens[j].height) == ci->height)
+				   NumericCast<uint32_t>(screens[j].width) == ci->width &&
+				   NumericCast<uint32_t>(screens[j].height) == ci->height)
 				{
 					monitor->X11.Index = NumericCast<int32_t>(j);
 					break;

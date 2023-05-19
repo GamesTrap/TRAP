@@ -13,6 +13,7 @@
 #include "Graphics/Textures/SpriteManager.h"
 #include "Graphics/Textures/Texture.h"
 #include "Graphics/Renderer.h"
+#include "Utils/ErrorCodes/ErrorCodes.h"
 #include "Utils/String/String.h"
 #include "Utils/Dialogs/Dialogs.h"
 #include "Events/KeyEvent.h"
@@ -980,7 +981,15 @@ TRAP::WindowProps TRAP::Application::LoadWindowProps(const TRAP::Utils::Config& 
 	props.RefreshRate = config.Get<double>("RefreshRate").value_or(DefaultWindowRefreshRate);
 	props.VSync = config.Get<bool>("VSync").value_or(false);
 	props.DisplayMode = config.Get<TRAP::Window::DisplayMode>("DisplayMode").value_or(TRAP::Window::DisplayMode::Windowed);
-	props.Monitor = config.Get<uint32_t>("Monitor").value_or(0u);
+	const auto monitors = TRAP::Monitor::GetAllMonitors();
+	const uint32_t monitorIdx = config.Get<uint32_t>("Monitor").value_or(0u);
+	if(monitors.empty())
+		Utils::DisplayError(Utils::ErrorCode::MonitorNoneFound);
+	else if(monitorIdx < monitors.size())
+		props.Monitor = TRAP::Monitor::GetAllMonitors()[config.Get<uint32_t>("Monitor").value_or(0u)];
+	else //Fallback to primary monitor
+		props.Monitor = TRAP::Monitor::GetAllMonitors()[0];
+
 	props.Advanced = LoadAdvancedWindowProps(config);
 
 	return props;

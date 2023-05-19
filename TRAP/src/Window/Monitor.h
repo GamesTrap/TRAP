@@ -68,10 +68,15 @@ namespace TRAP
 		/// <returns>Vector of video modes.</returns>
 		[[nodiscard]] std::vector<VideoMode> GetVideoModes() const;
 		/// <summary>
+		/// Retrieve the native video mode.
+		/// </summary>
+		/// <returns>Native video mode on success, empty optional otherwise.</returns>
+		[[nodiscard]] std::optional<TRAP::Monitor::VideoMode> GetNativeVideoMode() const noexcept;
+		/// <summary>
 		/// Retrieve the current video mode.
 		/// </summary>
-		/// <returns>Current video mode</returns>
-		[[nodiscard]] constexpr VideoMode GetCurrentVideoMode() const noexcept;
+		/// <returns>Current video mode on success, empty optional otherwise.</returns>
+		[[nodiscard]] std::optional<TRAP::Monitor::VideoMode> GetCurrentVideoMode() const noexcept;
 		/// <summary>
 		/// Retrieve the monitors content scale.
 		/// </summary>
@@ -163,8 +168,8 @@ namespace TRAP
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="monitor">Monitor ID.</param>
-		explicit Monitor(uint32_t monitor);
+		/// <param name="monitor">Pointer to the InternalMonitor handle.</param>
+		explicit Monitor(INTERNAL::WindowingAPI::InternalMonitor* monitor);
 
 		INTERNAL::WindowingAPI::InternalMonitor* m_handle{};
 	};
@@ -178,24 +183,33 @@ constexpr TRAP::Monitor::VideoMode::VideoMode(const int32_t width, const int32_t
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Monitor::VideoMode TRAP::Monitor::GetCurrentVideoMode() const noexcept
-{
-	return VideoMode{ m_handle->CurrentMode.Width, m_handle->CurrentMode.Height,
-	                  m_handle->CurrentMode.RefreshRate };
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr bool TRAP::Monitor::IsInUse() const noexcept
+[[nodiscard]] inline constexpr bool TRAP::Monitor::IsInUse() const noexcept
 {
 	return m_handle->Window != nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr void* TRAP::Monitor::GetInternalMonitor() const noexcept
+[[nodiscard]] inline constexpr void* TRAP::Monitor::GetInternalMonitor() const noexcept
 {
 	return m_handle;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] inline constexpr bool operator==(const TRAP::Monitor::VideoMode& lhs,
+                                               const TRAP::Monitor::VideoMode& rhs)
+{
+	return lhs.Width == rhs.Width && lhs.Height == rhs.Height &&
+	       TRAP::Math::Equal(lhs.RefreshRate, rhs.RefreshRate, TRAP::Math::Epsilon<double>());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] inline constexpr bool operator!=(const TRAP::Monitor::VideoMode& lhs,
+                                               const TRAP::Monitor::VideoMode& rhs)
+{
+	return !(lhs == rhs);
 }
 
 #endif /*TRAP_HEADLESS_MODE*/
