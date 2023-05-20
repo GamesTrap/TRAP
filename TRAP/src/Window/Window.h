@@ -185,28 +185,37 @@ namespace TRAP
 		/// <param name="title">New window title.</param>
 		void SetTitle(const std::string& title);
 		/// <summary>
-		/// Set a new display mode and or a new size/refresh rate for the window.
+		/// Set the window to fullscreen display mode using
+		/// the monitors native video mode.
 		/// </summary>
-		/// <param name="mode">New display mode for the window.</param>
-		/// <param name="width">New width (ignored when used with display mode borderless).</param>
-		/// <param name="height">New height (ignored when used with display mode borderless).</param>
-		/// <param name="refreshRate">
-		/// New refresh rate (ignored when used with display modes Borderless or Windowed).
-		/// </param>
-		void SetDisplayMode(const DisplayMode& mode,
-			                uint32_t width = 0,
-			                uint32_t height = 0,
-			                double refreshRate = 0);
+		void SetFullscreen();
 		/// <summary>
-		/// Set a new display mode and or a new video mode for the window.
+		/// Set the window to fullscreen display mode using the given video mode.
 		///
-		/// See also: SetDisplayMode(const DisplayMode&, uint32_t, uint32_t, double).
+		/// Note: If the given video mode is not supported by the monitor
+		///       then this function does nothing.
 		/// </summary>
-		/// <param name="displayMode">New display mode for the window.</param>
-		/// <param name="videoMode">New video mode for the window.</param>
-		void SetDisplayMode(DisplayMode displayMode, const Monitor::VideoMode& videoMode);
+		/// <param name="videoMode">Video mode to use.</param>
+		void SetFullscreen(const Monitor::VideoMode& videoMode);
+		/// <summary>
+		/// Set the window to fullscreen borderless display mode.
+		/// </summary>
+		void SetFullscreenBorderless();
+		/// <summary>
+		/// Set the window to windowed display mode using the previously used window size.
+		/// </summary>
+		void SetWindowed();
+		/// <summary>
+		/// Set the Windowed object
+		/// </summary>
+		/// <param name="width">New window width.</param>
+		/// <param name="height">New window height.</param>
+		void SetWindowed(uint32_t width, uint32_t height);
 		/// <summary>
 		/// Set a new monitor for the window.
+		///
+		/// Note: If the current display mode is fullscreen or fullscreen borderless,
+		///       the window will use the new monitors native resolution.
 		/// </summary>
 		/// <param name="monitor">Monitor object to be used from now on.</param>
 		void SetMonitor(const Monitor& monitor);
@@ -394,8 +403,6 @@ namespace TRAP
 		void SetupEventCallbacks();
 
 		INTERNAL::WindowingAPI::InternalWindow* m_window; //Handle to the internal window
-		//Stores the underlying video mode being used by the OS for every monitor
-		static std::unordered_map<std::size_t, INTERNAL::WindowingAPI::InternalVideoMode> s_baseVideoModes;
 
 		/// <summary>
 		/// Used when switched back from fullscreen to windowed mode.
@@ -403,19 +410,16 @@ namespace TRAP
 		struct WindowedModeParams
 		{
 			int32_t Width = 800, Height = 600;
-			double RefreshRate;
 			int32_t XPos, YPos;
 		};
 
 		struct WindowData
 		{
 			std::string Title;
-			int32_t Width{}, Height{};
-			double RefreshRate{};
 			int32_t MinWidth = -1, MinHeight = -1;
 			int32_t MaxWidth = -1, MaxHeight = -1;
 			bool VSync{};
-			DisplayMode displayMode{};
+			DisplayMode displayMode = DisplayMode::Windowed;
 			TRAP::Monitor Monitor = TRAP::Monitor::GetPrimaryMonitor();
 
 			EventCallbackFn EventCallback;

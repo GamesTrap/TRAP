@@ -29,11 +29,11 @@ void WindowFeaturesTests::OnImGuiRender()
 	if(ImGui::BeginCombo("Display Mode", TRAP::Utils::String::ConvertToString<TRAP::Window::DisplayMode>(TRAP::Application::GetWindow()->GetDisplayMode()).c_str()))
 	{
 		if(ImGui::Selectable(TRAP::Utils::String::ConvertToString<TRAP::Window::DisplayMode>(TRAP::Window::DisplayMode::Windowed).c_str(), TRAP::Application::GetWindow()->GetDisplayMode() == TRAP::Window::DisplayMode::Windowed))
-			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Windowed);
+			TRAP::Application::GetWindow()->SetWindowed();
 		if(ImGui::Selectable(TRAP::Utils::String::ConvertToString<TRAP::Window::DisplayMode>(TRAP::Window::DisplayMode::Borderless).c_str(), TRAP::Application::GetWindow()->GetDisplayMode() == TRAP::Window::DisplayMode::Borderless))
-			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Borderless);
+			TRAP::Application::GetWindow()->SetFullscreenBorderless();
 		if(ImGui::Selectable(TRAP::Utils::String::ConvertToString<TRAP::Window::DisplayMode>(TRAP::Window::DisplayMode::Fullscreen).c_str(), TRAP::Application::GetWindow()->GetDisplayMode() == TRAP::Window::DisplayMode::Fullscreen))
-			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Fullscreen);
+			TRAP::Application::GetWindow()->SetFullscreen();
 
 		ImGui::EndCombo();
 	}
@@ -90,7 +90,7 @@ void WindowFeaturesTests::OnImGuiRender()
 
 		if(changed != 0)
 		{
-			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Windowed, winSize.x, winSize.y);
+			TRAP::Application::GetWindow()->SetWindowed(winSize.x, winSize.y);
 			m_lastWindowSize = winSize;
 		}
 	}

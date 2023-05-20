@@ -28,10 +28,6 @@ uint32_t TRAP::Window::s_windows = 0;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unordered_map<std::size_t, TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::Window::s_baseVideoModes{};
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Window::Window(const WindowProps &props)
 	: m_window(nullptr)
 {
@@ -310,183 +306,107 @@ void TRAP::Window::SetTitle(const std::string& title)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint32_t height, double refreshRate)
+void TRAP::Window::SetFullscreen()
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
-
-	if(mode == DisplayMode::Windowed) //Check if new mode will also be windowed
-	{
-		if(m_data.displayMode == DisplayMode::Windowed)
-		{
-			//Check for invalid parameters
-			if(width == 0 || height == 0)
-			{
-				TP_ERROR(Log::WindowPrefix, "\"", m_data.Title, "\" SetDisplayMode with invalid resolution ", width,
-				         'x', height, '@', refreshRate, "Hz called!");
-				return;
-			}
-
-			//Check if refresh rate differs from current
-			if(m_data.RefreshRate != refreshRate && refreshRate > 0.0)
-			{
-				//Update refresh rate for Fullscreen or Boderless use
-				m_data.windowModeParams.RefreshRate = m_data.RefreshRate;
-				m_data.RefreshRate = refreshRate;
-			}
-
-			//Check if width or height differs from current
-			if(m_data.Width != NumericCast<int32_t>(width) || m_data.Height != NumericCast<int32_t>(height))
-			{
-				//Set new window resolution
-				m_data.windowModeParams.Width = m_data.Width;
-				m_data.Width = NumericCast<int32_t>(width);
-				m_data.windowModeParams.Height = m_data.Height;
-				m_data.Height = NumericCast<int32_t>(height);
-				INTERNAL::WindowingAPI::SetWindowSize(*m_window, m_data.Width,
-				                                      m_data.Height);
-			}
-
-			return;
-		}
-
-		//else
-		{
-			//Check if old resolution should be re-used
-			if (width == 0 || height == 0 || refreshRate == 0.0)
-			{
-				//Use old window width, height and refresh rate if none provided
-				m_data.Width = m_data.windowModeParams.Width;
-				m_data.Height = m_data.windowModeParams.Height;
-				m_data.RefreshRate = m_data.windowModeParams.RefreshRate;
-			}
-			else
-			{
-				//Use provided window width, height and refresh rate
-				m_data.Width = NumericCast<int32_t>(width);
-				m_data.Height = NumericCast<int32_t>(height);
-				m_data.RefreshRate = refreshRate;
-			}
-
-			INTERNAL::WindowingAPI::SetWindowMonitor(*m_window, nullptr, m_data.windowModeParams.XPos,
-			                                         m_data.windowModeParams.YPos, m_data.Width,
-													 m_data.Height, m_data.RefreshRate);
-		}
-	}
-	else
-	{
-		//Stash the current resolution & position of the window
-		if (m_data.displayMode == DisplayMode::Windowed)
-		{
-			m_data.windowModeParams.Width = m_data.Width;
-			m_data.windowModeParams.Height = m_data.Height;
-			m_data.windowModeParams.RefreshRate = m_data.RefreshRate;
-			INTERNAL::WindowingAPI::GetWindowPos(*m_window, m_data.windowModeParams.XPos,
-			                                     m_data.windowModeParams.YPos);
-		}
-
-		if(mode == DisplayMode::Borderless)
-		{
-			//For borderless fullscreen, the new width, height and refresh rate will be the
-			//default/native video modes width, height and refresh rate
-			m_data.Width = s_baseVideoModes[m_data.Monitor.GetID()].Width;
-			m_data.Height = s_baseVideoModes[m_data.Monitor.GetID()].Height;
-			m_data.RefreshRate = s_baseVideoModes[m_data.Monitor.GetID()].RefreshRate;
-		}
-		else /*if(mode == DisplayMode::Fullscreen)*/
-		{
-			//Reset windows monitor usage
-			if(m_data.displayMode == DisplayMode::Borderless)
-			{
-				INTERNAL::WindowingAPI::SetWindowMonitor(*m_window,
-					                                     nullptr,
-					                                     m_data.windowModeParams.XPos,
-					                                     m_data.windowModeParams.YPos,
-					                                     m_data.windowModeParams.Width,
-					                                     m_data.windowModeParams.Height,
-					                                     m_data.windowModeParams.RefreshRate);
-			}
-
-			bool valid = false;
-			if (width != 0 && height != 0 && refreshRate != 0.0)
-			{
-				//Check if current running mode is same as target mode
-				if (NumericCast<uint32_t>(s_baseVideoModes[m_data.Monitor.GetID()].Width) == width &&
-					NumericCast<uint32_t>(s_baseVideoModes[m_data.Monitor.GetID()].Height) == height &&
-					s_baseVideoModes[m_data.Monitor.GetID()].RefreshRate == refreshRate)
-					valid = true;
-
-				if (!valid) //If not check every video mode of the monitor
-				{
-					for (const auto& monitorVideoMode : m_data.Monitor.GetVideoModes())
-					{
-						//Check if resolution pair is valid and break if found
-						if (NumericCast<uint32_t>(monitorVideoMode.Width) == width &&
-							NumericCast<uint32_t>(monitorVideoMode.Height) == height &&
-							monitorVideoMode.RefreshRate == refreshRate)
-						{
-							valid = true;
-							break;
-						}
-					}
-				}
-			}
-
-			//Resolution pair is still invalid so use native/default resolution
-			if (!valid)
-			{
-				width = NumericCast<uint32_t>(s_baseVideoModes[m_data.Monitor.GetID()].Width);
-				height = NumericCast<uint32_t>(s_baseVideoModes[m_data.Monitor.GetID()].Height);
-				refreshRate = s_baseVideoModes[m_data.Monitor.GetID()].RefreshRate;
-			}
-
-			m_data.Width = NumericCast<int32_t>(width);
-			m_data.Height = NumericCast<int32_t>(height);
-			m_data.RefreshRate = refreshRate;
-		}
-
-		//Prevent RefreshRate = 0 inside Engine.cfg
-		if (m_data.RefreshRate <= 0.0)
-		{
-			const auto videoMode = m_data.Monitor.GetCurrentVideoMode();
-			if(videoMode)
-				m_data.RefreshRate = videoMode->RefreshRate;
-			else
-				m_data.RefreshRate = 60.0; //Default to 60Hz if mode is empty
-		}
-
-		TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" using monitor: \"", m_data.Monitor.GetName(),
-				 "\"(", m_data.Monitor.GetID(), ')');
-
-		if(mode == DisplayMode::Borderless)
-		{
-			INTERNAL::WindowingAPI::SetWindowMonitorBorderless(*m_window, *static_cast<INTERNAL::WindowingAPI::InternalMonitor*>(m_data.Monitor.GetInternalMonitor()));
-		}
-		else /*if(mode == DisplayMode::Fullscreen)*/
-		{
-			INTERNAL::WindowingAPI::SetWindowMonitor(*m_window,
-				                                     static_cast<INTERNAL::WindowingAPI::InternalMonitor*>(m_data.Monitor.GetInternalMonitor()),
-				                                     m_data.windowModeParams.XPos,
-				                                     m_data.windowModeParams.YPos,
-				                                     m_data.Width,
-				                                     m_data.Height,
-				                                     m_data.RefreshRate);
-		}
-	}
-
-	TP_INFO(Log::WindowPrefix, "\"", m_data.Title, "\" changing display mode from ",
-	        Utils::String::ConvertToString(m_data.displayMode), " to ",
-			Utils::String::ConvertToString(mode), ": ",
-	        m_data.Width, 'x', m_data.Height, '@', m_data.RefreshRate, "Hz");
-
-	//Save new display mode
-	m_data.displayMode = mode;
+	const auto nativeMode = m_data.Monitor.GetNativeVideoMode();
+	if(nativeMode)
+		SetFullscreen(*nativeMode);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Window::SetDisplayMode(const DisplayMode displayMode, const Monitor::VideoMode& videoMode)
+void TRAP::Window::SetFullscreen(const Monitor::VideoMode& videoMode)
 {
-	SetDisplayMode(displayMode, NumericCast<uint32_t>(videoMode.Width), NumericCast<uint32_t>(videoMode.Height), videoMode.RefreshRate);
+	//Do nothing if already fullscreen using the given video mode
+	const auto currVideoMode = m_data.Monitor.GetCurrentVideoMode();
+	if(m_data.displayMode == DisplayMode::Fullscreen && currVideoMode && videoMode == *currVideoMode)
+		return;
+
+	if(m_data.displayMode == DisplayMode::Windowed) //Stash current window position
+		INTERNAL::WindowingAPI::GetWindowPos(*m_window, m_data.windowModeParams.XPos, m_data.windowModeParams.YPos);
+
+	//Check if given video mode is supported by monitor
+	const auto monitorVideoModes = m_data.Monitor.GetVideoModes();
+	if(std::find(monitorVideoModes.begin(), monitorVideoModes.end(), videoMode) == monitorVideoModes.end())
+	{
+		TP_ERROR(Log::WindowPrefix, "Unsupported video mode provided to set on monitor \"", m_data.Monitor.GetName(), "\"!");
+		return;
+	}
+
+	TP_INFO(Log::WindowPrefix, "\"", m_data.Title, "\" changing display mode from ",
+	        Utils::String::ConvertToString(m_data.displayMode), " to ",
+			Utils::String::ConvertToString(DisplayMode::Fullscreen), ": ",
+	        videoMode.Width, 'x', videoMode.Height, '@', videoMode.RefreshRate, "Hz");
+
+	INTERNAL::WindowingAPI::SetWindowMonitor(*m_window, static_cast<INTERNAL::WindowingAPI::InternalMonitor*>(m_data.Monitor.GetInternalMonitor()),
+	                                         0, 0, videoMode.Width, videoMode.Height, videoMode.RefreshRate);
+
+	m_data.displayMode = DisplayMode::Fullscreen;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::SetFullscreenBorderless()
+{
+	const auto nativeMode = m_data.Monitor.GetNativeVideoMode();
+	if(!nativeMode)
+	{
+		TP_ERROR(Log::WindowPrefix, "Failed to retrieve native video mode from monitor \"", m_data.Monitor.GetName(), "\"!");
+		return;
+	}
+
+	if(m_data.displayMode == DisplayMode::Fullscreen) //Un-fullscreen before applying fullscreen borderless
+		SetWindowed();
+
+	if(m_data.displayMode == DisplayMode::Windowed) //Stash current window position
+		INTERNAL::WindowingAPI::GetWindowPos(*m_window, m_data.windowModeParams.XPos, m_data.windowModeParams.YPos);
+
+	TP_INFO(Log::WindowPrefix, "\"", m_data.Title, "\" changing display mode from ",
+	        Utils::String::ConvertToString(m_data.displayMode), " to ",
+			Utils::String::ConvertToString(DisplayMode::Borderless), ": ",
+	        nativeMode->Width, 'x', nativeMode->Height, '@', nativeMode->RefreshRate, "Hz");
+
+	INTERNAL::WindowingAPI::SetWindowMonitorBorderless(*m_window, *static_cast<INTERNAL::WindowingAPI::InternalMonitor*>(m_data.Monitor.GetInternalMonitor()));
+
+	m_data.displayMode = DisplayMode::Borderless;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::SetWindowed()
+{
+	if(m_data.displayMode == DisplayMode::Windowed)
+		return;
+
+	SetWindowed(m_data.windowModeParams.Width, m_data.windowModeParams.Height);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::SetWindowed(const uint32_t width, const uint32_t height)
+{
+	//Check for invalid parameters
+	if(width < MinimumSupportedWindowWidth || height < MinimumSupportedWindowHeight)
+	{
+		TP_ERROR(Log::WindowPrefix, "\"", m_data.Title, "\" SetWindowed() with invalid resolution ", width,
+					'x', height, " called!");
+		return;
+	}
+
+	if(m_data.displayMode != DisplayMode::Windowed) //Change to windowed and resize
+	{
+		TP_INFO(Log::WindowPrefix, "\"", m_data.Title, "\" changing display mode from ",
+				Utils::String::ConvertToString(m_data.displayMode), " to ",
+				Utils::String::ConvertToString(DisplayMode::Windowed), ": ", width, 'x', height);
+
+		INTERNAL::WindowingAPI::SetWindowMonitor(*m_window, nullptr, m_data.windowModeParams.XPos,
+												 m_data.windowModeParams.YPos, NumericCast<int32_t>(width),
+												 NumericCast<int32_t>(height), -1.0);
+
+		m_data.displayMode = DisplayMode::Windowed;
+	}
+	else /*if(m_data.displayMode == DisplayMode::Windowed)*/ //Normal resize
+		INTERNAL::WindowingAPI::SetWindowSize(*m_window, NumericCast<int32_t>(width), NumericCast<int32_t>(height));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -502,8 +422,16 @@ void TRAP::Window::SetMonitor(const Monitor& monitor)
 	if (m_data.displayMode == DisplayMode::Windowed)
 		return;
 
-	SetDisplayMode(m_data.displayMode, NumericCast<uint32_t>(m_data.Width), NumericCast<uint32_t>(m_data.Height),
-				   m_data.RefreshRate);
+	if(m_data.displayMode == DisplayMode::Fullscreen)
+	{
+		const auto nativeVideoMode = m_data.Monitor.GetNativeVideoMode();
+		if(!nativeVideoMode)
+			return;
+
+		SetFullscreen(*nativeVideoMode);
+	}
+	else if(m_data.displayMode == DisplayMode::Borderless)
+		SetFullscreenBorderless();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -903,10 +831,9 @@ void TRAP::Window::Init(const WindowProps& props)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
+	uint32_t width = props.Width;
+	uint32_t height = props.Height;
 	m_data.Title = props.Title;
-	m_data.Width = NumericCast<int32_t>(props.Width);
-	m_data.Height = NumericCast<int32_t>(props.Height);
-	m_data.RefreshRate = props.RefreshRate;
 	m_data.VSync = props.VSync;
 	m_data.Monitor = props.Monitor;
 
@@ -941,25 +868,23 @@ void TRAP::Window::Init(const WindowProps& props)
 	std::string newTitle = m_data.Title;
 #endif
 
-	if(m_data.Width < MinimumSupportedWindowWidth)
+	if(width < MinimumSupportedWindowWidth)
 	{
 		TP_WARN(Log::WindowPrefix, "Specified window width is smaller than the minimum supported!");
-		m_data.Width = MinimumSupportedWindowWidth;
+		width = MinimumSupportedWindowWidth;
 	}
-	if(m_data.Height < MinimumSupportedWindowHeight)
+	if(height < MinimumSupportedWindowHeight)
 	{
 		TP_WARN(Log::WindowPrefix, "Specified window height is smaller than the minimum supported!");
-		m_data.Height = MinimumSupportedWindowHeight;
+		height = MinimumSupportedWindowHeight;
 	}
 
-	m_window = INTERNAL::WindowingAPI::CreateWindow(NumericCast<uint32_t>(m_data.Width),
-	                                                NumericCast<uint32_t>(m_data.Height),
-		                                            newTitle, nullptr);
+	m_window = INTERNAL::WindowingAPI::CreateWindow(width, height, newTitle, nullptr);
 
 	if (m_window == nullptr)
 		Utils::DisplayError(Utils::ErrorCode::WindowingAPIWindowCreationFailed);
 
-	INTERNAL::WindowingAPI::GetWindowSize(*m_window, m_data.Width, m_data.Height);
+	INTERNAL::WindowingAPI::GetWindowSize(*m_window, m_data.windowModeParams.Width, m_data.windowModeParams.Height);
 
 	s_windows++;
 	if (s_windows > 1)
@@ -976,26 +901,14 @@ void TRAP::Window::Init(const WindowProps& props)
 		INTERNAL::WindowingAPI::SetWindowTitle(*m_window, newTitle);
 	}
 
-	//If currently windowed, stash the current size and position of the window
-	if (m_data.displayMode == DisplayMode::Windowed)
-	{
-		//Prevent RefreshRate = 0 inside Engine.cfg
-		if (m_data.RefreshRate <= 0.0)
-		{
-			const auto videoMode = m_data.Monitor.GetCurrentVideoMode();
-			if(videoMode)
-				m_data.RefreshRate = videoMode->RefreshRate;
-			else
-				m_data.RefreshRate = 60.0;
-		}
+	INTERNAL::WindowingAPI::SetWindowSizeLimits(*m_window,
+												MinimumSupportedWindowWidth, MinimumSupportedWindowHeight,
+												m_data.MaxWidth, m_data.MaxHeight);
 
-		INTERNAL::WindowingAPI::SetWindowSizeLimits(*m_window,
-													MinimumSupportedWindowWidth, MinimumSupportedWindowHeight,
-													m_data.MaxWidth, m_data.MaxHeight);
-	}
-
-	SetDisplayMode(props.DisplayMode, NumericCast<uint32_t>(m_data.Width), NumericCast<uint32_t>(m_data.Height),
-	               m_data.RefreshRate);
+	if(props.DisplayMode == DisplayMode::Fullscreen)
+		SetFullscreen(Monitor::VideoMode(NumericCast<int32_t>(width), NumericCast<int32_t>(height), props.RefreshRate));
+	else if(props.DisplayMode == DisplayMode::Borderless)
+		SetFullscreenBorderless();
 
 	m_data.Win = this;
 
@@ -1042,9 +955,6 @@ void TRAP::Window::SetupEventCallbacks()
 			WindowData* const data = static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 			if(data == nullptr)
 				return;
-
-			data->Width = w;
-			data->Height = h;
 
 			if (!data->EventCallback)
 				return;
@@ -1263,9 +1173,6 @@ void TRAP::Window::SetupEventCallbacks()
 			if(data == nullptr)
 				return;
 
-			data->Width = w;
-			data->Height = h;
-
 			if (!data->EventCallback || w == 0 || h == 0)
 				return;
 
@@ -1339,8 +1246,7 @@ void TRAP::Window::SetupEventCallbacks()
 		{
 			data->Monitor = Monitor::GetPrimaryMonitor();
 			data->Win->Restore();
-			data->Win->SetDisplayMode(DisplayMode::Windowed, data->Win->GetWidth(), data->Win->GetHeight(),
-								      data->Win->GetRefreshRate());
+			data->Win->SetWindowed(data->Win->GetWidth(), data->Win->GetHeight());
 		}
 
 		if (!data->EventCallback)

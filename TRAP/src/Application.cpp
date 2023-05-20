@@ -669,9 +669,11 @@ bool TRAP::Application::OnKeyPress([[maybe_unused]] Events::KeyPressEvent& event
 	{
 		if (event.GetWindow()->GetDisplayMode() == Window::DisplayMode::Windowed ||
 			event.GetWindow()->GetDisplayMode() == Window::DisplayMode::Borderless)
-			event.GetWindow()->SetDisplayMode(Window::DisplayMode::Fullscreen, 0, 0, 0);
+		{
+			event.GetWindow()->SetFullscreen();
+		}
 		else if (event.GetWindow()->GetDisplayMode() == Window::DisplayMode::Fullscreen)
-			event.GetWindow()->SetDisplayMode(Window::DisplayMode::Windowed, 0, 0, 0);
+			event.GetWindow()->SetWindowed();
 
 		return true;
 	}

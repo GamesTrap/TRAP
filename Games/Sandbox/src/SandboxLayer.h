@@ -207,11 +207,11 @@ public:
 			TRAP::Application::Shutdown();
 
 		if (event.GetKey() == TRAP::Input::Key::F5) //Make Window windowed
-			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Windowed, 1280, 720);
+			TRAP::Application::GetWindow()->SetWindowed();
 		if (event.GetKey() == TRAP::Input::Key::F6) //Make Window Borderless Fullscreen
-			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Borderless);
+			TRAP::Application::GetWindow()->SetFullscreenBorderless();
 		if (event.GetKey() == TRAP::Input::Key::F7) //Make Window Exclusive Fullscreen
-			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Fullscreen);
+			TRAP::Application::GetWindow()->SetFullscreen();
 
 		if (event.GetKey() == TRAP::Input::Key::F1) //Enable/Disable WireFrame Mode
 			m_wireFrame = !m_wireFrame;

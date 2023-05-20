@@ -33,6 +33,9 @@ namespace TRAP
 			int32_t Width = 0;
 			int32_t Height = 0;
 			double RefreshRate = 0;
+
+			[[nodiscard]] constexpr bool operator==(const VideoMode& mode) const;
+			[[nodiscard]] constexpr bool operator!=(const VideoMode& mode) const;
 		};
 
 
@@ -197,19 +200,17 @@ constexpr TRAP::Monitor::VideoMode::VideoMode(const int32_t width, const int32_t
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline constexpr bool operator==(const TRAP::Monitor::VideoMode& lhs,
-                                               const TRAP::Monitor::VideoMode& rhs)
+[[nodiscard]] inline constexpr bool TRAP::Monitor::VideoMode::operator==(const VideoMode& mode) const
 {
-	return lhs.Width == rhs.Width && lhs.Height == rhs.Height &&
-	       TRAP::Math::Equal(lhs.RefreshRate, rhs.RefreshRate, TRAP::Math::Epsilon<double>());
+	return Width == mode.Width && Height == mode.Height &&
+	       TRAP::Math::Equal(RefreshRate, mode.RefreshRate, TRAP::Math::Epsilon<double>());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline constexpr bool operator!=(const TRAP::Monitor::VideoMode& lhs,
-                                               const TRAP::Monitor::VideoMode& rhs)
+[[nodiscard]] inline constexpr bool TRAP::Monitor::VideoMode::operator!=(const VideoMode& mode) const
 {
-	return !(lhs == rhs);
+	return !(*this == mode);
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

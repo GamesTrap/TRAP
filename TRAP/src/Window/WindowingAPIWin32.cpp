@@ -2166,11 +2166,11 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
+	if(window.Monitor != nullptr)
+		ReleaseMonitor(window);
+
 	window.BorderlessFullscreen = true;
 	window.Monitor = &monitor;
-
-	if(!window.Monitor)
-		return;
 
 	MONITORINFO mi = { sizeof(mi) };
 	UINT flags = SWP_SHOWWINDOW | SWP_NOACTIVATE | SWP_NOCOPYBITS;

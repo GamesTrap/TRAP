@@ -1788,12 +1788,12 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessX11(Interna
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
+	if(window.Monitor != nullptr)
+		ReleaseMonitor(window);
+
 	window.BorderlessFullscreen = true;
 	window.Monitor = &monitor;
 	UpdateNormalHints(window, 0, 0);
-
-	if(window.Monitor == nullptr)
-		return;
 
 	if(!PlatformWindowVisibleX11(window))
 	{
@@ -4237,7 +4237,7 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitorBorderless(InternalWindow& wind
 		if(window.Monitor != nullptr)
 		{
 			PlatformGetMonitorPosX11(*window.Monitor, xPos, yPos);
-			const std::optional<InternalVideoMode> mode = PlatformGetVideoModeX11(*window.Monitor);
+			const std::optional<InternalVideoMode> mode = window.Monitor->NativeMode;
 			if(mode)
 				s_Data.X11.XLIB.MoveResizeWindow(s_Data.X11.display, window.X11.Handle, xPos, yPos,
 				                                 NumericCast<uint32_t>(mode->Width),

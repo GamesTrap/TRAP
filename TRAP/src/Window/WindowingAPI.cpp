@@ -1078,12 +1078,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitorBorderless(InternalWindow& wi
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowMonitorBorderless(): must only be called from main thread");
 
-	window.videoMode.Width = monitor.CurrentMode.Width;
-	window.videoMode.Height = monitor.CurrentMode.Height;
-	window.videoMode.RefreshRate = monitor.CurrentMode.RefreshRate;
-	window.videoMode.RedBits = monitor.CurrentMode.RedBits;
-	window.videoMode.GreenBits = monitor.CurrentMode.GreenBits;
-	window.videoMode.BlueBits = monitor.CurrentMode.BlueBits;
+	window.videoMode = monitor.NativeMode.value_or(monitor.CurrentMode);
 
 	PlatformSetWindowMonitorBorderless(window, monitor);
 }
