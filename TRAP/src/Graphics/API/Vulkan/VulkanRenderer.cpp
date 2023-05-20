@@ -3175,6 +3175,9 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 		s_renderPass2 = true;
 	}
 
+	if(physicalDevice->IsExtensionSupported(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME))
+		extensions.emplace_back(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME);
+
 	if(physicalDevice->IsExtensionSupported(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME) &&
 	   physicalDevice->IsExtensionSupported(VK_KHR_SPIRV_1_4_EXTENSION_NAME))
 	{
@@ -3212,7 +3215,6 @@ void TRAP::Graphics::API::VulkanRenderer::WaitIdle() const
 	   physicalDevice->IsExtensionSupported(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME) &&
 	   physicalDevice->IsExtensionSupported(VK_KHR_RAY_QUERY_EXTENSION_NAME))
 	{
-		extensions.emplace_back(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME);
 		extensions.emplace_back(VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME);
 		extensions.emplace_back(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME);
 		extensions.emplace_back(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME);

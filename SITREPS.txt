@@ -3990,3 +3990,4 @@ SITREP 05/20/2023|23w20b1
     - Changed TRAP Engine version to 23w20b1(0.9.33)
     - Monitor changed equality operators ~<5 mins
     - Window Refactored SetDisplayMode() into SetFullScreen(), SetFullscreenBorderless() and SetWindowed() ~>30 mins
+    - VulkanRenderer Fixed VK_KHR_shader_float_controls extension not always applied ~<5 mins
