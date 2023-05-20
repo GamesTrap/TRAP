@@ -2,8 +2,8 @@
 
 ## Installation
 
-1. Get the version 1.55 of the Steamworks SDK from https://partner.steamgames.com/.
-2. Extract the contents of the steamworks_sdk_155.zip file into this folder.
+1. Get the version 1.57 of the Steamworks SDK from https://partner.steamgames.com/.
+2. Extract the contents of the steamworks_sdk_157.zip file into this folder.
 
 TRAP will then automatically detect if the Steamworks SDK is installed properly on the next run of any GenerateProject script.  
 If everything went right, feel free to use the TRAP::Utils::Steam namespace.

@@ -3991,3 +3991,10 @@ SITREP 05/20/2023|23w20b1
     - Monitor changed equality operators ~<5 mins
     - Window Refactored SetDisplayMode() into SetFullScreen(), SetFullscreenBorderless() and SetWindowed() ~>30 mins
     - VulkanRenderer Fixed VK_KHR_shader_float_controls extension not always applied ~<5 mins
+    - Updated GLSLang submodule ~<5 mins
+    - Updated SPIRV-Cross submodule ~<5 mins
+    - Updated Steamworks SDK support ~<5 mins
+    - Updated VulkanMemoryAllocator submodule ~<5 mins
+    - Updated YAMLCpp submodule ~<5 mins
+    - Updated controller mappings ~<5 mins
+    - Updated Vulkan loader ~<5 mins
