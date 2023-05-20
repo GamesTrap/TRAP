@@ -66,6 +66,10 @@ namespace TRAP
 		/// Sets a dark theme for ImGui.
 		/// </summary>
 		static void SetDarkThemeColors();
+		/// <summary>
+		/// Sets the style for ImGuizmo.
+		/// </summary>
+		static void SetImGuizmoStyle();
 	private:
 		bool m_blockEvents;
 

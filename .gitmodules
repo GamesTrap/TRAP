@@ -29,3 +29,6 @@
 [submodule ".modules/vscode"]
 	path = .modules/vscode
 	url = https://github.com/GamesTrap/Premake-VSCodeGen
+[submodule "Dependencies/ImGuizmo"]
+	path = Dependencies/ImGuizmo
+	url = https://github.com/CedricGuillemet/ImGuizmo.git

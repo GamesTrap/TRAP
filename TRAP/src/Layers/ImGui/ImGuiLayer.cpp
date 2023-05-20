@@ -131,6 +131,7 @@ void TRAP::ImGuiLayer::OnAttach()
 	}
 
 	SetDarkThemeColors();
+	SetImGuizmoStyle();
 
 	INTERNAL::WindowingAPI::InternalWindow* const window = static_cast<INTERNAL::WindowingAPI::InternalWindow*>
 	(
@@ -373,6 +374,32 @@ void TRAP::ImGuiLayer::SetDarkThemeColors()
 	colors[ImGuiCol_TitleBg] = ImVec4(0.15f, 0.1505f, 0.151f, 1.0f);
 	colors[ImGuiCol_TitleBgActive] = ImVec4(0.15f, 0.1505f, 0.151f, 1.0f);
 	colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.15f, 0.1505f, 0.151f, 1.0f);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::ImGuiLayer::SetImGuizmoStyle()
+{
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
+	ImGuizmo::Style& style = ImGuizmo::GetStyle();
+
+	constexpr float ScaleFactor = 2.0f;
+
+	style.TranslationLineThickness *= ScaleFactor;
+	style.TranslationLineArrowSize *= ScaleFactor;
+	style.RotationLineThickness *= ScaleFactor;
+	style.RotationOuterLineThickness *= ScaleFactor;
+	style.ScaleLineThickness *= ScaleFactor;
+	style.ScaleLineCircleSize *= ScaleFactor;
+
+	style.Colors[ImGuizmo::COLOR::DIRECTION_X] = ImVec4(0.847f, 0.369f, 0.443f, 1.000f);
+	style.Colors[ImGuizmo::COLOR::DIRECTION_Y] = ImVec4(0.145f, 0.666f, 0.145f, 1.000f);
+	style.Colors[ImGuizmo::COLOR::DIRECTION_Z] = ImVec4(0.173f, 0.325f, 0.800f, 1.000f);
+	style.Colors[ImGuizmo::COLOR::PLANE_X] = ImVec4(0.847f, 0.408f, 0.478f, 1.000f);
+	style.Colors[ImGuizmo::COLOR::PLANE_Y] = ImVec4(0.333f, 0.671f, 0.333f, 1.000f);
+	style.Colors[ImGuizmo::COLOR::PLANE_Z] = ImVec4(0.259f, 0.404f, 0.851f, 1.000f);
+	style.Colors[ImGuizmo::COLOR::SELECTION] = ImVec4(0.800f, 0.666f, 0.126f, 1.000f);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
