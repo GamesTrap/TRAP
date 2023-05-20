@@ -4000,3 +4000,4 @@ SITREP 05/20/2023|23w20b1
     - Updated Vulkan loader ~<5 mins
     - Added ImGuizmo as submodule ~<5 mins
     - ImGuiLayer Added SetImGuizmoStyle() ~<5 mins
+    - WindowingAPILinuxWayland SetAspectRatio() now also emits a window resize event ~<5 mins

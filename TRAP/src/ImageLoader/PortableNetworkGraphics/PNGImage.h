@@ -1,7 +1,7 @@
 /*
-LodePNG version 20221108
+LodePNG version 20230410
 
-Copyright (c) 2005-2022 Lode Vandevenne
+Copyright (c) 2005-2023 Lode Vandevenne
 
 This software is provided 'as-is', without any express or implied
 warranty. In no event will the authors be held liable for any damages

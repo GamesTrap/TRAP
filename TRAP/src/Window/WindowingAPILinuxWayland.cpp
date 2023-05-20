@@ -3977,17 +3977,26 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowAspectRatioWayland(InternalW
     if(window.Maximized || window.Wayland.Fullscreen)
         return;
 
+    int32_t width = window.Width, height = window.Height;
+
     if(numerator == -1 || denominator == -1)
-		return;
+    {
+        const float aspectRatio = NumericCast<float>(width) / NumericCast<float>(height);
+        const float targetRatio = NumericCast<float>(numerator) / NumericCast<float>(denominator);
+        if(aspectRatio < targetRatio)
+            height = NumericCast<int32_t>(NumericCast<float>(height) / targetRatio);
+        else if(aspectRatio > targetRatio)
+            width = NumericCast<int32_t>(NumericCast<float>(width) * targetRatio);
+    }
 
-    const float aspectRatio = NumericCast<float>(window.Width) / NumericCast<float>(window.Height);
-    const float targetRatio = NumericCast<float>(numerator) / NumericCast<float>(denominator);
-    if(aspectRatio < targetRatio)
-        window.Height = NumericCast<int32_t>(NumericCast<float>(window.Width) / targetRatio);
-    else if(aspectRatio > targetRatio)
-        window.Width = NumericCast<int32_t>(NumericCast<float>(window.Height) * targetRatio);
+    if(width != window.Width || height != window.Height)
+    {
+        window.Width = width;
+        window.Height = height;
+        ResizeWindowWayland(window);
 
-    ResizeWindowWayland(window);
+        InputWindowSize(window, width, height);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
