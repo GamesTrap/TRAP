@@ -33,9 +33,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 // This needs to be used along with a Platform Backend (e.g. GLFW, SDL, Win32, custom..)
 
 // Implemented features:
-//  [X] Renderer: Large meshes support (64+k vertices) with 16-bit indices.
+//  [X] Renderer: Large meshes support (64k+ vertices) with 16-bit indices.
 //  [x] Renderer: Multi-viewport / platform windows. With issues (flickering when creating a new viewport).
-//  [X] Renderer: User texture binding. See ImGuiLayer for more details.
 
 // You can use unmodified imgui_impl_* files in your project. See examples/ folder for examples of using this.
 // Prefer including the entire imgui/ repository into your project (either as a copy or as a submodule), and only build the backends you need.
@@ -83,19 +82,20 @@ struct ImGui_ImplVulkan_InitInfo
 };
 
 // Called by user code
-              IMGUI_IMPL_API bool           ImGui_ImplVulkan_Init(ImGui_ImplVulkan_InitInfo* info, VkRenderPass render_pass);
-              IMGUI_IMPL_API void           ImGui_ImplVulkan_Shutdown();
-              IMGUI_IMPL_API void           ImGui_ImplVulkan_NewFrame();
-              IMGUI_IMPL_API void           ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer command_buffer, VkPipeline pipeline = VK_NULL_HANDLE);
-              // IMGUI_IMPL_API bool           ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer);
-              // IMGUI_IMPL_API void           ImGui_ImplVulkan_DestroyFontsTexture();
-              IMGUI_IMPL_API void           ImGui_ImplVulkan_UploadFontsTexture();
-              IMGUI_IMPL_API void           ImGui_ImplVulkan_DestroyFontUploadObjects();
-              IMGUI_IMPL_API void           ImGui_ImplVulkan_SetMinImageCount(uint32_t min_image_count); // To override MinImageCount after initialization (e.g. if swap chain is recreated)
-[[nodiscard]] IMGUI_IMPL_API ImTextureID    ImGui_ImplVulkan_AddTexture(VkSampler sampler, VkImageView image_view, VkImageLayout image_layout);
-              IMGUI_IMPL_API ImTextureID    ImGui_ImplVulkan_UpdateTextureInfo(VkDescriptorSet descriptorSet, VkSampler sampler, VkImageView image_view, VkImageLayout image_layout);
-              IMGUI_IMPL_API void           ImGui_ImplVulkan_ClearCache() noexcept;
-              IMGUI_IMPL_API void           ImGui_ImplVulkan_SetMSAASamples(VkSampleCountFlagBits sampleCount);
+              IMGUI_IMPL_API bool        ImGui_ImplVulkan_Init(ImGui_ImplVulkan_InitInfo* info, VkRenderPass render_pass);
+              IMGUI_IMPL_API void        ImGui_ImplVulkan_Shutdown();
+              IMGUI_IMPL_API void        ImGui_ImplVulkan_NewFrame();
+              IMGUI_IMPL_API void        ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer command_buffer, VkPipeline pipeline = VK_NULL_HANDLE);
+              // IMGUI_IMPL_API bool        ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer);
+              // IMGUI_IMPL_API void        ImGui_ImplVulkan_DestroyFontsTexture();
+              IMGUI_IMPL_API void        ImGui_ImplVulkan_UploadFontsTexture();
+              IMGUI_IMPL_API void        ImGui_ImplVulkan_DestroyFontUploadObjects();
+              IMGUI_IMPL_API void        ImGui_ImplVulkan_SetMinImageCount(uint32_t min_image_count); // To override MinImageCount after initialization (e.g. if swap chain is recreated)
+[[nodiscard]] IMGUI_IMPL_API ImTextureID ImGui_ImplVulkan_AddTexture(VkSampler sampler, VkImageView image_view, VkImageLayout image_layout);
+              IMGUI_IMPL_API void        ImGui_ImplVulkan_RemoveTexture(VkImageView image_view);
+              IMGUI_IMPL_API ImTextureID ImGui_ImplVulkan_UpdateTextureInfo(VkDescriptorSet descriptorSet, VkSampler sampler, VkImageView image_view, VkImageLayout image_layout);
+              IMGUI_IMPL_API void        ImGui_ImplVulkan_ClearCache() noexcept;
+              IMGUI_IMPL_API void        ImGui_ImplVulkan_SetMSAASamples(VkSampleCountFlagBits sampleCount);
 
 //-------------------------------------------------------------------------
 // Internal / Miscellaneous Vulkan Helpers
@@ -104,8 +104,8 @@ struct ImGui_ImplVulkan_InitInfo
 // You probably do NOT need to use or care about those functions.
 // Those functions only exist because:
 //   1) they facilitate the readability and maintenance of the multiple main.cpp examples files.
-//   2) the upcoming multi-viewport feature will need them internally.
-// Generally we avoid exposing any kind of superfluous high-level helpers in the backends,
+//   2) the multi-viewport / platform window implementation needs them internally.
+// Generally we avoid exposing any kind of superfluous high-level helpers in the bindings,
 // but it is too much code to duplicate everywhere so we exceptionally expose them.
 //
 // Your engine/app will likely _already_ have code to setup all that stuff (swap chain, render pass, frame buffers, etc.).

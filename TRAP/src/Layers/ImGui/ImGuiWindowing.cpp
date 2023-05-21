@@ -167,7 +167,7 @@ void TRAP::INTERNAL::ImGuiWindowing::NewFrame()
 
 	//Setup time step
 	const double currentTime = static_cast<double>(Application::GetTime());
-	io.DeltaTime = TRAP::Math::Max(NumericCast<float>(currentTime - bd->Time), 1e-4f);
+	io.DeltaTime = bd->Time > 0.0 ? NumericCast<float>(currentTime - bd->Time) : (1.0f / 60.0f);
 	bd->Time = currentTime;
 
 	UpdateMouseData();
@@ -301,11 +301,10 @@ void TRAP::INTERNAL::ImGuiWindowing::CursorEnterCallback(const WindowingAPI::Int
 	if (bd->PrevUserCallbackCursorEnter != nullptr && ShouldChainCallback(&window))
 		bd->PrevUserCallbackCursorEnter(window, entered);
 
-	ImGuiIO& io = ImGui::GetIO();
-
-	if((io.ConfigFlags & ImGuiConfigFlags_NoMouse) != 0)
+	if(INTERNAL::WindowingAPI::GetCursorMode(window) == INTERNAL::WindowingAPI::CursorMode::Disabled)
 		return;
 
+	ImGuiIO& io = ImGui::GetIO();
 	if(entered)
 	{
 		bd->MouseWindow = &window;
@@ -330,11 +329,10 @@ void TRAP::INTERNAL::ImGuiWindowing::CursorPosCallback(const WindowingAPI::Inter
 	if (bd->PrevUserCallbackCursorPos != nullptr && ShouldChainCallback(&window))
 		bd->PrevUserCallbackCursorPos(window, xPos, yPos);
 
-	ImGuiIO& io = ImGui::GetIO();
-
-	if((io.ConfigFlags & ImGuiConfigFlags_NoMouse) != 0)
+	if(INTERNAL::WindowingAPI::GetCursorMode(window) == INTERNAL::WindowingAPI::CursorMode::Disabled)
 		return;
 
+	ImGuiIO& io = ImGui::GetIO();
 	if((io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) != 0)
 	{
 		int32_t windowX = 0, windowY = 0;
@@ -342,8 +340,8 @@ void TRAP::INTERNAL::ImGuiWindowing::CursorPosCallback(const WindowingAPI::Inter
 		xPos += windowX;
 		yPos += windowY;
 	}
-	bd->LastValidMousePos = ImVec2(NumericCast<float>(xPos), NumericCast<float>(yPos));
 	io.AddMousePosEvent(bd->LastValidMousePos.x, bd->LastValidMousePos.y);
+	bd->LastValidMousePos = ImVec2(NumericCast<float>(xPos), NumericCast<float>(yPos));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -357,12 +355,9 @@ void TRAP::INTERNAL::ImGuiWindowing::MouseButtonCallback(const WindowingAPI::Int
 	if (bd->PrevUserCallbackMouseButton != nullptr && ShouldChainCallback(&window))
 		bd->PrevUserCallbackMouseButton(window, mouseButton, state);
 
-	ImGuiIO& io = ImGui::GetIO();
-	if((io.ConfigFlags & ImGuiConfigFlags_NoMouse) != 0)
-		return;
-
 	UpdateKeyModifiers(bd->Window);
 
+	ImGuiIO& io = ImGui::GetIO();
 	if(ToUnderlying(mouseButton) < ImGuiMouseButton_COUNT)
 		io.AddMouseButtonEvent(NumericCast<int32_t>(ToUnderlying(mouseButton)), (state == Input::KeyState::Pressed));
 }
@@ -379,9 +374,6 @@ void TRAP::INTERNAL::ImGuiWindowing::ScrollCallback(const WindowingAPI::Internal
 		bd->PrevUserCallbackScroll(window, xOffset, yOffset);
 
 	ImGuiIO& io = ImGui::GetIO();
-	if((io.ConfigFlags & ImGuiConfigFlags_NoMouse) != 0)
-		return;
-
 	io.AddMouseWheelEvent(NumericCast<float>(xOffset), NumericCast<float>(yOffset));
 }
 
@@ -409,9 +401,7 @@ void TRAP::INTERNAL::ImGuiWindowing::KeyCallback(const WindowingAPI::InternalWin
 	ImGuiIO& io = ImGui::GetIO();
 	const ImGuiKey imguiKey = KeyToImGuiKey(key);
 	io.AddKeyEvent(imguiKey, (state == Input::KeyState::Pressed));
-
-	//We don't support the old API
-	//io.SetKeyEventNativeData();
+	//io.SetKeyEventNativeData(); //We don't support the old API (< 1.87 user code)
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -651,8 +641,11 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMouseData()
 	ImGuiIO& io = ImGui::GetIO();
 	const ImGuiPlatformIO& platformIO = ImGui::GetPlatformIO();
 
-	if((io.ConfigFlags & ImGuiConfigFlags_NoMouse) != 0)
+	if((bd->Window != nullptr) && INTERNAL::WindowingAPI::GetCursorMode(*bd->Window) == INTERNAL::WindowingAPI::CursorMode::Disabled)
+	{
+		io.AddMousePosEvent(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
 		return;
+	}
 
 	ImGuiID mouseViewportID = 0;
 	const ImVec2 mousePosPrev = io.MousePos;
@@ -716,17 +709,16 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMouseCursor()
 	const ImGuiIO& io = ImGui::GetIO();
 	const ImGuiTRAPData* const bd = GetBackendData();
 	if (((io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) != 0) ||
-	    (WindowingAPI::GetCursorMode(*bd->Window) == WindowingAPI::CursorMode::Disabled ||
-		 WindowingAPI::GetCursorMode(*bd->Window) == WindowingAPI::CursorMode::Hidden))
+	    WindowingAPI::GetCursorMode(*bd->Window) == WindowingAPI::CursorMode::Disabled)
 		return;
 
 	const ImGuiMouseCursor imguiCursor = ImGui::GetMouseCursor();
 	const ImGuiPlatformIO& platformIO = ImGui::GetPlatformIO();
-	for(int32_t n = 0; n < platformIO.Viewports.Size; n++)
+	for(const ImGuiViewport* viewport : platformIO.Viewports)
 	{
 		WindowingAPI::InternalWindow* const windowPtr = static_cast<WindowingAPI::InternalWindow*>
 		(
-			platformIO.Viewports[n]->PlatformHandle
+			viewport->PlatformHandle
 		);
 
 		if(imguiCursor == ImGuiMouseCursor_None || io.MouseDrawCursor)
@@ -767,7 +759,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateGamepads()
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
 	ImGuiIO& io = ImGui::GetIO();
-	if((io.ConfigFlags & ImGuiConfigFlags_NavEnableGamepad) == 0)
+	if((io.ConfigFlags & ImGuiConfigFlags_NavEnableGamepad) == 0) // FIXME: Technically feeding gamepad shouldn't depend on this now that they are regular inputs.
 		return;
 
 	io.BackendFlags &= ~ImGuiBackendFlags_HasGamepad;
@@ -819,6 +811,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMonitors()
 	ImGuiPlatformIO& platformIO = ImGui::GetPlatformIO();
 	const auto& monitors = WindowingAPI::GetMonitors();
 	platformIO.Monitors.resize(0);
+	bd->WantUpdateMonitors = false;
 	for (const auto& n : monitors)
 	{
 		if(n == nullptr)
@@ -828,14 +821,17 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMonitors()
 		int32_t x = 0, y = 0;
 		WindowingAPI::GetMonitorPos(*n, x, y);
 		const std::optional<WindowingAPI::InternalVideoMode> videoMode = WindowingAPI::GetVideoMode(*n);
-		if(videoMode)
-			monitor.MainSize = ImVec2(NumericCast<float>(videoMode->Width), NumericCast<float>(videoMode->Height));
-
-		monitor.MainPos = ImVec2(NumericCast<float>(x), NumericCast<float>(y));
+		if(!videoMode)
+			continue; // Failed to get Video mode
+		monitor.MainPos = monitor.WorkPos = ImVec2(NumericCast<float>(x), NumericCast<float>(y));
+		monitor.MainSize = monitor.WorkSize = ImVec2(NumericCast<float>(videoMode->Width), NumericCast<float>(videoMode->Height));
 		int32_t width = 0, height = 0;
 		WindowingAPI::GetMonitorWorkArea(*n, x, y, width, height);
-		monitor.WorkPos = ImVec2(NumericCast<float>(x), NumericCast<float>(y));
-		monitor.WorkSize = ImVec2(NumericCast<float>(width), NumericCast<float>(height));
+		if(width > 0 && height > 0)
+		{
+			monitor.WorkPos = ImVec2(NumericCast<float>(x), NumericCast<float>(y));
+			monitor.WorkSize = ImVec2(NumericCast<float>(width), NumericCast<float>(height));
+		}
 
 		//Warning: The validity of monitor DPI information on Windows depends on the application
 		//DPI awareness settings,
@@ -843,9 +839,9 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMonitors()
 		float xScale = 0.0f, yScale = 0.0f;
 		WindowingAPI::GetMonitorContentScale(*n, xScale, yScale);
 		monitor.DpiScale = xScale;
+
 		platformIO.Monitors.push_back(monitor);
 	}
-	bd->WantUpdateMonitors = false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

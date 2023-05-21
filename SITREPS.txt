@@ -4001,3 +4001,8 @@ SITREP 05/20/2023|23w20b1
     - Added ImGuizmo as submodule ~<5 mins
     - ImGuiLayer Added SetImGuizmoStyle() ~<5 mins
     - WindowingAPILinuxWayland SetAspectRatio() now also emits a window resize event ~<5 mins
+
+SITREP 05/21/2023|23w20b2
+    - Changed TRAP Engine version to 23w20b1(0.9.34)
+    - Updated ImGui submodule ~<5 mins
+    - Updated ImGuiVulkanBackend and ImGuiWindowing ~>20 mins
