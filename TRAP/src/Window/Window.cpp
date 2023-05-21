@@ -239,7 +239,7 @@ void TRAP::Window::OnUpdate()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return m_data.VSync;
+	return Graphics::RendererAPI::GetRenderer()->GetVSync(this);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -690,11 +690,10 @@ void TRAP::Window::SetDragAndDrop(const bool enabled) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Window::SetVSync(const bool enabled)
+void TRAP::Window::SetVSync(const bool enabled) const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
-	m_data.VSync = enabled;
 	TRAP::Graphics::RendererAPI::GetRenderer()->SetVSync(enabled, this);
 }
 
@@ -834,7 +833,6 @@ void TRAP::Window::Init(const WindowProps& props)
 	uint32_t width = props.Width;
 	uint32_t height = props.Height;
 	m_data.Title = props.Title;
-	m_data.VSync = props.VSync;
 	m_data.Monitor = props.Monitor;
 
 	if (!INTERNAL::WindowingAPI::Init())
@@ -860,12 +858,19 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	//Create Window
 #ifndef TRAP_RELEASE
-	std::string newTitle = m_data.Title + " - TRAP™ V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) +
-	                       "." + std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) +
-						   "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-						   "[INDEV]" + Log::WindowVersion;
+	const std::string newTitle = m_data.Title + " - TRAP™ V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) +
+	                             "." + std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) +
+						         "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
+						         "[INDEV]" + Log::WindowVersion + Graphics::RendererAPI::GetRenderer()->GetTitle() +
+#ifdef TRAP_PLATFORM_LINUX
+						         "[" + Utils::String::ConvertToString(Utils::GetLinuxWindowManager()) + "]";
+#elif defined(TRAP_PLATFORM_LINUX)
+						         "[Win32]";
 #else
-	std::string newTitle = m_data.Title;
+						         "[Unknown]";
+#endif
+#else
+	const std::string newTitle = m_data.Title;
 #endif
 
 	if(width < MinimumSupportedWindowWidth)
@@ -884,22 +889,9 @@ void TRAP::Window::Init(const WindowProps& props)
 	if (m_window == nullptr)
 		Utils::DisplayError(Utils::ErrorCode::WindowingAPIWindowCreationFailed);
 
-	INTERNAL::WindowingAPI::GetWindowSize(*m_window, m_data.windowModeParams.Width, m_data.windowModeParams.Height);
-
 	s_windows++;
-	if (s_windows > 1)
-	{
-		//Update Window Title
-	#ifndef TRAP_RELEASE
-		newTitle += Graphics::RendererAPI::GetRenderer()->GetTitle();
-	#ifdef TRAP_PLATFORM_LINUX
-		newTitle += "[" + Utils::String::ConvertToString(Utils::GetLinuxWindowManager()) + "]";
-	#elif defined(TRAP_PLATFORM_WINDOWS)
-		newTitle += "[Win32]";
-	#endif
-	#endif /*TRAP_RELEASE*/
-		INTERNAL::WindowingAPI::SetWindowTitle(*m_window, newTitle);
-	}
+
+	INTERNAL::WindowingAPI::GetWindowSize(*m_window, m_data.windowModeParams.Width, m_data.windowModeParams.Height);
 
 	INTERNAL::WindowingAPI::SetWindowSizeLimits(*m_window,
 												MinimumSupportedWindowWidth, MinimumSupportedWindowHeight,
@@ -927,7 +919,7 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	SetupEventCallbacks();
 
-	TRAP::Graphics::RendererAPI::GetRenderer()->InitPerViewportData(this);
+	TRAP::Graphics::RendererAPI::GetRenderer()->InitPerViewportData(this, props.VSync);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

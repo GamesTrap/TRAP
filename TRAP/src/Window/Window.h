@@ -164,6 +164,8 @@ namespace TRAP
 		[[nodiscard]] std::optional<float> GetOpacity() const;
 		/// <summary>
 		/// Get whether VSync is enabled or disabled.
+		///
+		/// Same as calling TRAP::Graphics::RendererAPI::GetRenderer()->GetVSync().
 		/// </summary>
 		/// <returns>True if VSync is enabled, false otherwise.</returns>
 		[[nodiscard]] bool GetVSync() const noexcept;
@@ -316,9 +318,11 @@ namespace TRAP
 		void SetDragAndDrop(bool enabled) const;
 		/// <summary>
 		/// Enable or disable VSync for the window.
+		///
+		/// Same as calling TRAP::Graphics::RendererAPI::GetRenderer()->SetVSync().
 		/// </summary>
 		/// <param name="enabled">Whether to enable VSync or not.</param>
-		void SetVSync(bool enabled);
+		void SetVSync(bool enabled) const;
 
 		/// <summary>
 		/// Query whether the window is maximized or not.
@@ -405,20 +409,19 @@ namespace TRAP
 		INTERNAL::WindowingAPI::InternalWindow* m_window; //Handle to the internal window
 
 		/// <summary>
-		/// Used when switched back from fullscreen to windowed mode.
+		/// Used when switching between fullscreen <-> windowed mode.
 		/// </summary>
 		struct WindowedModeParams
 		{
 			int32_t Width = 800, Height = 600;
-			int32_t XPos, YPos;
+			int32_t XPos = 0, YPos = 0;
 		};
 
 		struct WindowData
 		{
-			std::string Title;
+			std::string Title = "TRAP™";
 			int32_t MinWidth = -1, MinHeight = -1;
 			int32_t MaxWidth = -1, MaxHeight = -1;
-			bool VSync{};
 			DisplayMode displayMode = DisplayMode::Windowed;
 			TRAP::Monitor Monitor = TRAP::Monitor::GetPrimaryMonitor();
 

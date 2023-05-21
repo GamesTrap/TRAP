@@ -1395,7 +1395,8 @@ namespace TRAP::Graphics
 		/// Initialize the internal rendering data of the given window.
 		/// </summary>
 		/// <param name="window">Window to initialize the internal rendering data for.</param>
-		virtual void InitPerViewportData(Window* window) const = 0;
+		/// <param name="VSyncEnabled">Whether to enable or disable VSync.</param>
+		virtual void InitPerViewportData(Window* window, bool VSyncEnabled) const = 0;
 #else
 		/// <summary>
 		/// Initialize the internal rendering data.

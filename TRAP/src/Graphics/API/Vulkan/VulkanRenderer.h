@@ -1111,7 +1111,8 @@ namespace TRAP::Graphics::API
 		/// Initialize the internal rendering data of the given window.
 		/// </summary>
 		/// <param name="window">Window to initialize the internal rendering data for.</param>
-		void InitPerViewportData(Window* window) const override;
+		/// <param name="VSyncEnabled">Whether to enable or disable VSync.</param>
+		void InitPerViewportData(Window* window, bool VSyncEnabled) const override;
 #else
 		/// <summary>
 		/// Initialize the internal rendering data.

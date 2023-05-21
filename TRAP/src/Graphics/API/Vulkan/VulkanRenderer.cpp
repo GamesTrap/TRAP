@@ -2744,7 +2744,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetLatencyMode([[maybe_unused]] const 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(Window* const window) const
+void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(Window* const window, const bool VSyncEnabled) const
 #else
 void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const uint32_t width, const uint32_t height) const
 #endif /*TRAP_HEADLESS_MODE*/
@@ -2825,7 +2825,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const uint32_t wid
 	p->ImageAcquiredSemaphore = Semaphore::Create();
 
 	//Create Swapchain
-	p->CurrentVSync = p->NewVSync = window->GetVSync();
+	p->CurrentVSync = p->NewVSync = VSyncEnabled;
 	SwapChainDesc swapChainDesc{};
 	swapChainDesc.Window = window;
 	swapChainDesc.PresentQueues = { s_graphicQueue };

@@ -1057,13 +1057,7 @@ std::unique_ptr<TRAP::Window> TRAP::Application::CreateMainWindow(const TRAP::Wi
 {
 	std::unique_ptr<TRAP::Window> window = std::make_unique<TRAP::Window>(winProps);
 	if(window)
-	{
 		window->SetEventCallback([](TRAP::Events::Event& event) { s_Instance->OnEvent(event); });
-
-		//Update Window Title (Debug/RelWithDebInfo)
-		if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
-			window->SetTitle(window->GetTitle() + TRAP::Graphics::RendererAPI::GetRenderer()->GetTitle());
-	}
 
 	return window;
 }
