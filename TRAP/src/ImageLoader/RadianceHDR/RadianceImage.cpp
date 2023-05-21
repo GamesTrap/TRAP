@@ -44,8 +44,9 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 
 	SkipUnusedLines(file);
 
-	bool needXFlip = false, needYFlip = false;
-	const std::optional<TRAP::Math::Vec2ui> resolution = RetrieveImageResolution(file, needXFlip, needYFlip);
+	bool needXFlip = false, needYFlip = false, need90RotateCW = false, need90RotateCCW = false;
+	const std::optional<TRAP::Math::Vec2ui> resolution = RetrieveImageResolution(file, needXFlip, needYFlip,
+	                                                                             need90RotateCW, need90RotateCCW);
 	if(!resolution)
 	{
 		TP_WARN(Log::ImageRadiancePrefix, "Using default image!");
@@ -96,6 +97,11 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 		m_data = FlipX(m_width, m_height, m_colorFormat, m_data.data());
 	if (needYFlip)
 		m_data = FlipY(m_width, m_height, m_colorFormat, m_data.data());
+
+	if(need90RotateCW)
+		m_data = Rotate90Clockwise(m_width, m_height, m_colorFormat, m_data.data());
+	if(need90RotateCCW)
+		m_data = Rotate90CounterClockwise(m_width, m_height, m_colorFormat, m_data.data());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -293,9 +299,16 @@ void TRAP::INTERNAL::RadianceImage::SkipUnusedLines(std::ifstream& file)
 
 [[nodiscard]] std::optional<TRAP::Math::Vec2ui> TRAP::INTERNAL::RadianceImage::RetrieveImageResolution(std::ifstream& file,
                                                                                                        bool& outNeedXFlip,
-																									   bool& outNeedYFlip)
+																									   bool& outNeedYFlip,
+																									   bool& outNeedRotateClockwise,
+																									   bool& outNeedRotateCounterClockwise)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
+	outNeedXFlip = false;
+	outNeedYFlip = false;
+	outNeedRotateClockwise = false;
+	outNeedRotateCounterClockwise = false;
 
 	std::string resStr{};
 	std::getline(file, resStr);
@@ -334,11 +347,29 @@ void TRAP::INTERNAL::RadianceImage::SkipUnusedLines(std::ifstream& file)
 	}
 	else //X is before Y
 	{
-		//TODO Add support for this
-		//See https://radsite.lbl.gov/radiance/refer/filefmts.pdf
-
-		TP_ERROR(Log::ImageRadiancePrefix, "Column order images are unsupported!");
-		return std::nullopt;
+		if(resStr[xIndex - 1] == '+' && resStr[yIndex - 1] == '+')
+		{
+			outNeedRotateCounterClockwise = true;
+		}
+		else if(resStr[xIndex - 1] == '-' && resStr[yIndex - 1] == '+')
+		{
+			outNeedRotateCounterClockwise = true;
+			outNeedYFlip = true;
+		}
+		else if(resStr[xIndex - 1] == '-' && resStr[yIndex - 1] == '-')
+		{
+			outNeedRotateClockwise = true;
+		}
+		else if(resStr[xIndex - 1] == '+' && resStr[yIndex - 1] == '-')
+		{
+			outNeedRotateClockwise = true;
+			outNeedYFlip = true;
+		}
+		else
+		{
+			TP_ERROR(Log::ImageRadiancePrefix, "Failed to retrieve image resolution!");
+			return std::nullopt;
+		}
 	}
 
 	yIndex += 2;

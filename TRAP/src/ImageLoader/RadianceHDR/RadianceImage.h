@@ -113,8 +113,11 @@ namespace TRAP::INTERNAL
 		/// <param name="file">File to retrieve data from.</param>
 		/// <param name="outNeedXFlip">True if image needs to be flipped on X axis.</param>
 		/// <param name="outNeedYFlip">True if image needs to be flipped on Y axis.</param>
+		/// <param name="outNeedRotateClockwise">True if image needs to be rotated 90 degrees clockwise.</param>
+		/// <param name="outNeedRotateCounterClockwise">True if image needs to be rotated 90 degrees counter clockwise.</param>
 		/// <returns>Image resolution on success, empty optional otherwise.</returns>
-		[[nodiscard]] static std::optional<TRAP::Math::Vec2ui> RetrieveImageResolution(std::ifstream& file, bool& outNeedXFlip, bool& outNeedYFlip);
+		[[nodiscard]] static std::optional<TRAP::Math::Vec2ui> RetrieveImageResolution(std::ifstream& file, bool& outNeedXFlip, bool& outNeedYFlip,
+		                                                                               bool& outNeedRotateClockwise, bool& outNeedRotateCounterClockwise);
 
 		std::vector<float> m_data;
 
