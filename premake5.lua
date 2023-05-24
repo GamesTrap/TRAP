@@ -5,8 +5,12 @@ require "ecc"
 require "vscode"
 
 workspace "TRAP"
-	architecture "x86_64"
 	startproject "Sandbox"
+	architecture "x86_64"
+	cppdialect "C++17"
+	staticruntime "off"
+	systemversion "latest"
+	vectorextensions "AVX2"
 
 	configurations
 	{
@@ -19,6 +23,26 @@ workspace "TRAP"
 	flags "MultiProcessorCompile"
 	-- flags "LinkTimeOptimization"
 
+	filter {"language:C or C++", "configurations:Debug" }
+		runtime "Debug"
+		symbols "On"
+
+	filter {"language:C or C++", "configurations:Release"}
+		runtime "Release"
+		optimize "Full"
+
+	filter {"language:C or C++", "configurations:RelWithDebInfo"}
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+
+	filter {"language:C or C++", "configurations:Profiling"}
+		defines "TRACY_ENABLE"
+		editandcontinue "Off"
+		runtime "Release"
+		optimize "Full"
+		symbols "On"
+
 	filter "system:linux"
 		configurations
 		{
@@ -28,6 +52,65 @@ workspace "TRAP"
 			-- "TSan" -- Not working, crashes in thread from libnvidia-glcore.so
 		}
 
+	filter {"language:C or C++", "configurations:ASAN"}
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=address",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=address",
+			"-static-libasan"
+		}
+
+	filter {"language:C or C++", "configurations:UBSAN"}
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=undefined",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=undefined",
+			"-static-libubsan"
+		}
+
+	filter {"language:C or C++", "configurations:LSAN"}
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=leak",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions "-fsanitize=leak"
+
+	filter {"language:C or C++", "configurations:TSAN"}
+		runtime "Release"
+		optimize "Debug"
+		symbols "On"
+		buildoptions
+		{
+			"-fsanitize=thread",
+			"-fno-omit-frame-pointer",
+			"-g"
+		}
+		linkoptions
+		{
+			"-fsanitize=thread",
+			"-static-libtsan"
+		}
 
 	filter { "toolset:gcc" or "toolset:clang"}
 		local result, errorCode = os.outputof("mold -v")

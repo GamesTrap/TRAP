@@ -4,12 +4,7 @@ project "TRAP"
 	location "."
 	kind "StaticLib"
 	language "C++"
-	staticruntime "off"
-	cppdialect "C++17"
-	systemversion "latest"
-	vectorextensions "AVX2"
 	warnings "Extra"
-	architecture "x86_64"
 
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
@@ -204,10 +199,7 @@ project "TRAP"
 		end
 
 		wayland.GenerateWayland()
-		externalincludedirs
-		{
-			"%{IncludeDir.WAYLAND}"
-		}
+		externalincludedirs "%{IncludeDir.WAYLAND}"
 
 	filter { "action:gmake*", "toolset:gcc" }
 		buildoptions
@@ -217,50 +209,25 @@ project "TRAP"
 
 	filter "configurations:Debug"
 		defines "TRAP_DEBUG"
-		runtime "Debug"
-		symbols "On"
 
 	filter "configurations:Release"
 		defines "TRAP_RELEASE"
-		runtime "Release"
-		optimize "Full"
 
 	filter "configurations:RelWithDebInfo"
 		defines "TRAP_RELWITHDEBINFO"
-		runtime "Release"
-		optimize "Debug"
-		symbols "On"
 
 	filter "configurations:Profiling"
-		editandcontinue "Off"
 		defines
 		{
 			"TRAP_RELEASE",
 			"TRACY_ENABLE"
 		}
-		runtime "Release"
-		optimize "Full"
-		symbols "On"
 
 	filter "configurations:ASAN"
 		defines
 		{
 			"TRAP_RELWITHDEBINFO",
 			"TRAP_ASAN"
-		}
-		runtime "Release"
-		optimize "Debug"
-		symbols "On"
-		buildoptions
-		{
-			"-fsanitize=address",
-			"-fno-omit-frame-pointer",
-			"-g"
-		}
-		linkoptions
-		{
-			"-fsanitize=address",
-			"-static-libasan"
 		}
 
 	filter "configurations:UBSAN"
@@ -269,20 +236,6 @@ project "TRAP"
 			"TRAP_RELWITHDEBINFO",
 			"TRAP_UBSAN"
 		}
-		runtime "Release"
-		optimize "Debug"
-		symbols "On"
-		buildoptions
-		{
-			"-fsanitize=undefined",
-			"-fno-omit-frame-pointer",
-			"-g"
-		}
-		linkoptions
-		{
-			"-fsanitize=undefined",
-			"-static-libubsan"
-		}
 
 	filter "configurations:LSAN"
 		defines
@@ -290,52 +243,19 @@ project "TRAP"
 			"TRAP_RELWITHDEBINFO",
 			"TRAP_LSAN"
 		}
-		runtime "Release"
-		optimize "Debug"
-		symbols "On"
-		buildoptions
-		{
-			"-fsanitize=leak",
-			"-fno-omit-frame-pointer",
-			"-g"
-		}
-		linkoptions
-		{
-			"-fsanitize=leak"
-		}
 
 	filter "configurations:TSAN"
-		staticruntime "off"
 		defines
 		{
 			"TRAP_RELWITHDEBINFO",
 			"TRAP_TSAN"
-		}
-		runtime "Release"
-		optimize "Debug"
-		symbols "On"
-		buildoptions
-		{
-			"-fsanitize=thread",
-			"-fno-omit-frame-pointer",
-			"-g"
-		}
-		linkoptions
-		{
-			"-fsanitize=thread",
-			"-static-libtsan"
 		}
 
 project "TRAP-Headless"
 	location "."
 	kind "StaticLib"
 	language "C++"
-	staticruntime "off"
-	cppdialect "C++17"
-	systemversion "latest"
-	vectorextensions "AVX2"
 	warnings "Extra"
-	architecture "x86_64"
 
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
@@ -461,10 +381,7 @@ project "TRAP-Headless"
 		}
 
 		wayland.GenerateWayland()
-		externalincludedirs
-		{
-			"%{IncludeDir.WAYLAND}"
-		}
+		externalincludedirs "%{IncludeDir.WAYLAND}"
 
 		-- Nsight Aftermath stuff
 		if os.isfile("../Dependencies/Nsight-Aftermath/lib/x64/libGFSDK_Aftermath_Lib.x64.so") and
@@ -494,19 +411,12 @@ project "TRAP-Headless"
 
 	filter "configurations:Debug"
 		defines "TRAP_DEBUG"
-		runtime "Debug"
-		symbols "On"
 
 	filter "configurations:Release"
 		defines "TRAP_RELEASE"
-		runtime "Release"
-		optimize "Full"
 
 	filter "configurations:RelWithDebInfo"
 		defines "TRAP_RELWITHDEBINFO"
-		runtime "Release"
-		optimize "Debug"
-		symbols "On"
 
 	filter "configurations:Profiling"
 		defines
@@ -514,7 +424,3 @@ project "TRAP-Headless"
 			"TRAP_RELEASE",
 			"TRACY_ENABLE"
 		}
-		editandcontinue "Off"
-		runtime "Release"
-		optimize "Full"
-		symbols "On"
