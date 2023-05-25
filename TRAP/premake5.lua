@@ -1,4 +1,5 @@
 local wayland = require "generatewayland"
+local thirdparty = require "includethirdparty"
 
 project "TRAP"
 	location "."
@@ -76,6 +77,17 @@ project "TRAP"
 
 	defines "YAML_CPP_STATIC_DEFINE"
 
+	-- Discord Game SDK stuff
+	if(thirdparty.IncludeDiscordGameSDK()) then
+		dofileopt("../Dependencies/DiscordGameSDK/Compatibility")
+	end
+	-- Nsight Aftermath stuff
+	thirdparty.IncludeNsightAftermathSDK()
+	-- Steamworks SDK stuff
+	thirdparty.IncludeSteamworksSDK()
+	-- NVIDIA Reflex SDK stuff
+	thirdparty.IncludeNVIDIAReflexSDK()
+
 	filter "system:windows"
 		files
 		{
@@ -86,62 +98,6 @@ project "TRAP"
 			"src/Network/Sockets/Platform/SocketImplWinAPI.h",
 			"src/Network/Sockets/Platform/SocketImplWinAPI.cpp"
 		}
-
-		-- Discord Game SDK stuff
-		if os.isfile("../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.dll.lib") and
-		   os.isfile("../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.dll") and
-		   os.isdir("../Dependencies/DiscordGameSDK/cpp") and
-		   os.isfile("../Dependencies/DiscordGameSDK/cpp/discord.h") then
-			externalincludedirs "%{IncludeDir.DISCORDGAMESDK}"
-
-			files
-			{
-				"%{IncludeDir.DISCORDGAMESDK}/**.h",
-				"%{IncludeDir.DISCORDGAMESDK}/**.cpp"
-			}
-
-			dofileopt("../Dependencies/DiscordGameSDK/Compatibility")
-
-			defines "USE_DISCORD_GAME_SDK"
-		end
-
-		-- Nsight Aftermath stuff
-		if os.isfile("../Dependencies/Nsight-Aftermath/lib/x64/GFSDK_Aftermath_Lib.x64.dll") and
-		   os.isfile("../Dependencies/Nsight-Aftermath/lib/x64/GFSDK_Aftermath_Lib.x64.lib") and
-		   os.isfile("../Dependencies/Nsight-Aftermath/lib/x64/llvm_7_0_1.dll") and
-		   os.isdir("../Dependencies/Nsight-Aftermath/include") and
-		   os.isfile("../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
-			externalincludedirs "%{IncludeDir.NSIGHTAFTERMATH}"
-
-			defines "NSIGHT_AFTERMATH_AVAILABLE"
-		end
-
-		-- Steamworks SDK stuff
-		if os.isfile("../Dependencies/SteamworksSDK/sdk/redistributable_bin/win64/steam_api64.dll") and
-		   os.isfile("../Dependencies/SteamworksSDK/sdk/redistributable_bin/win64/steam_api64.lib") and
-		   os.isdir("../Dependencies/SteamworksSDK/sdk/public/steam") then
-			externalincludedirs "%{IncludeDir.STEAMWORKSSDK}"
-
-			files "%{IncludeDir.DISCORDGAMESDK}/**.h"
-
-			defines "USE_STEAMWORKS_SDK"
-		end
-
-		-- NVIDIA Reflex SDK stuff
-		local NVReflexNvLowLatencyVkHeader = os.matchfiles(_MAIN_SCRIPT_DIR .. "/Dependencies/NVIDIA-Reflex/**NvLowLatencyVk.h")
-		local NVReflexNvLowLatencyVkLibrary = os.matchfiles(_MAIN_SCRIPT_DIR .. "/Dependencies/NVIDIA-Reflex/**NvLowLatencyVk.lib")
-		local NVReflexNvLowLatencyVkDLL = os.matchfiles(_MAIN_SCRIPT_DIR .. "/Dependencies/NVIDIA-Reflex/**NvLowLatencyVk.dll")
-		local NVReflexStatsFiles = os.matchfiles(_MAIN_SCRIPT_DIR .. "/Dependencies/NVIDIA-Reflex/**pclstats.h")
-		if next(NVReflexNvLowLatencyVkHeader) ~= nil and next(NVReflexNvLowLatencyVkLibrary) ~= nil and
-		   next(NVReflexNvLowLatencyVkDLL) ~= nil and next(NVReflexStatsFiles) ~= nil then
-			externalincludedirs
-			{
-				"%{IncludeDir.NVIDIAREFLEX}",
-				"%{IncludeDir.NVIDIAREFLEXSTATS}"
-			}
-
-			defines "NVIDIA_REFLEX_AVAILABLE"
-		end
 
 	filter "system:linux"
 		-- Add Linux-specific files
@@ -158,45 +114,6 @@ project "TRAP"
 
 			"%{IncludeDir.WAYLAND}/**.h"
 		}
-
-		-- Discord Game SDK stuff
-		if (os.isfile("../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.so") or
-		    os.isfile("../Dependencies/DiscordGameSDK/lib/x86_64/libdiscord_game_sdk.so")) and
-			os.isdir("../Dependencies/DiscordGameSDK/cpp") and
-			os.isfile("../Dependencies/DiscordGameSDK/cpp/discord.h") then
-
-			externalincludedirs "%{IncludeDir.DISCORDGAMESDK}"
-
-			files
-			{
-				"%{IncludeDir.DISCORDGAMESDK}/**.h",
-				"%{IncludeDir.DISCORDGAMESDK}/**.cpp"
-			}
-
-			dofileopt("../Dependencies/DiscordGameSDK/Compatibility")
-
-			defines "USE_DISCORD_GAME_SDK"
-		end
-
-		-- Nsight Aftermath stuff
-		if os.isfile("../Dependencies/Nsight-Aftermath/lib/x64/libGFSDK_Aftermath_Lib.x64.so") and
-		   os.isdir("../Dependencies/Nsight-Aftermath/include") and
-		   os.isfile("../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
-
-			externalincludedirs "%{IncludeDir.NSIGHTAFTERMATH}"
-
-			defines "NSIGHT_AFTERMATH_AVAILABLE"
-		end
-
-		-- Steamworks SDK stuff
-		if os.isfile("../Dependencies/SteamworksSDK/sdk/redistributable_bin/linux64/libsteam_api.so") and
-		   os.isdir("../Dependencies/SteamworksSDK/sdk/public/steam") then
-			externalincludedirs "%{IncludeDir.STEAMWORKSSDK}"
-
-			files "%{IncludeDir.DISCORDGAMESDK}/**.h"
-
-			defines "USE_STEAMWORKS_SDK"
-		end
 
 		wayland.GenerateWayland()
 		externalincludedirs "%{IncludeDir.WAYLAND}"
@@ -326,6 +243,11 @@ project "TRAP-Headless"
 		"YAML_CPP_STATIC_DEFINE"
 	}
 
+	-- Nsight Aftermath stuff
+	thirdparty.IncludeNsightAftermathSDK()
+	-- Steamworks SDK stuff
+	thirdparty.IncludeSteamworksSDK()
+
 	filter "system:windows"
 		files
 		{
@@ -342,28 +264,6 @@ project "TRAP-Headless"
 			"Imm32",
 			"ws2_32"
 		}
-
-		-- Nsight Aftermath stuff
-		if os.isfile("../Dependencies/Nsight-Aftermath/lib/x64/GFSDK_Aftermath_Lib.x64.dll") and
-		   os.isfile("../Dependencies/Nsight-Aftermath/lib/x64/GFSDK_Aftermath_Lib.x64.lib") and
-		   os.isfile("../Dependencies/Nsight-Aftermath/lib/x64/llvm_7_0_1.dll") and
-		   os.isdir("../Dependencies/Nsight-Aftermath/include") and
-		   os.isfile("../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
-			externalincludedirs "%{IncludeDir.NSIGHTAFTERMATH}"
-
-			defines "NSIGHT_AFTERMATH_AVAILABLE"
-		end
-
-		-- Steamworks SDK stuff
-		if os.isfile("../Dependencies/SteamworksSDK/sdk/redistributable_bin/win64/steam_api64.dll") and
-		   os.isfile("../Dependencies/SteamworksSDK/sdk/redistributable_bin/win64/steam_api64.lib") and
-		   os.isdir("../Dependencies/SteamworksSDK/sdk/public/steam") then
-			externalincludedirs "%{IncludeDir.STEAMWORKSSDK}"
-
-			files "%{IncludeDir.DISCORDGAMESDK}/**.h"
-
-			defines "USE_STEAMWORKS_SDK"
-		end
 
 	filter "system:linux"
 		-- Add Linux-specific files
@@ -382,26 +282,6 @@ project "TRAP-Headless"
 
 		wayland.GenerateWayland()
 		externalincludedirs "%{IncludeDir.WAYLAND}"
-
-		-- Nsight Aftermath stuff
-		if os.isfile("../Dependencies/Nsight-Aftermath/lib/x64/libGFSDK_Aftermath_Lib.x64.so") and
-		   os.isdir("../Dependencies/Nsight-Aftermath/include") and
-		   os.isfile("../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
-
-			externalincludedirs "%{IncludeDir.NSIGHTAFTERMATH}"
-
-			defines "NSIGHT_AFTERMATH_AVAILABLE"
-		end
-
-		-- Steamworks SDK stuff
-		if os.isfile("../Dependencies/SteamworksSDK/sdk/redistributable_bin/linux64/libsteam_api.so") and
-		   os.isdir("../Dependencies/SteamworksSDK/sdk/public/steam") then
-			externalincludedirs "%{IncludeDir.STEAMWORKSSDK}"
-
-			files "%{IncludeDir.DISCORDGAMESDK}/**.h"
-
-			defines "USE_STEAMWORKS_SDK"
-		end
 
 	filter { "action:gmake*", "toolset:gcc" }
 		buildoptions

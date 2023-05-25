@@ -1,3 +1,5 @@
+local thirdparty = require "includethirdparty"
+
 project "Headless-Tests"
 	location "."
 	kind "ConsoleApp"
@@ -35,6 +37,11 @@ project "Headless-Tests"
 
 	defines "TRAP_HEADLESS_MODE"
 
+	-- Nsight Aftermath stuff
+	thirdparty.IncludeNsightAftermathSDK()
+	-- Steamworks SDK stuff
+	thirdparty.IncludeSteamworksSDK()
+
 	filter "system:linux"
 		links
 		{
@@ -66,32 +73,6 @@ project "Headless-Tests"
 
 		externalincludedirs "%{IncludeDir.WAYLAND}"
 
-		-- Nsight Aftermath stuff
-		if os.isfile("../../Dependencies/Nsight-Aftermath/lib/x64/libGFSDK_Aftermath_Lib.x64.so") and
-		   os.isdir("../../Dependencies/Nsight-Aftermath/include") and
-		   os.isfile("../../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
-			externalincludedirs "%{IncludeDir.NSIGHTAFTERMATH}"
-
-			postbuildcommands "{COPYFILE} %{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/libGFSDK_Aftermath_Lib.x64.so %{cfg.targetdir}"
-
-			defines "NSIGHT_AFTERMATH_AVAILABLE"
-		end
-
-		-- Steamworks SDK stuff
-		if os.isfile("../../Dependencies/SteamworksSDK/sdk/redistributable_bin/linux64/libsteam_api.so") and
-		   os.isdir("../../Dependencies/SteamworksSDK/sdk/public/steam") then
-			externalincludedirs "%{IncludeDir.STEAMWORKSSDK}"
-
-			links "steam_api"
-			libdirs "%{IncludeDir.STEAMWORKSSDK}/../../redistributable_bin/linux64"
-
-			postbuildcommands "{COPYFILE} %{IncludeDir.STEAMWORKSSDK}/../../redistributable_bin/linux64/libsteam_api.so %{cfg.targetdir}"
-
-			files "%{IncludeDir.STEAMWORKSSDK}/**.h"
-
-			defines "USE_STEAMWORKS_SDK"
-		end
-
 	filter "system:windows"
 		links
 		{
@@ -99,34 +80,6 @@ project "Headless-Tests"
 			"ws2_32",
 			"wsock32"
 		}
-
-		-- Nsight Aftermath stuff
-		if os.isfile("../../Dependencies/Nsight-Aftermath/lib/x64/GFSDK_Aftermath_Lib.x64.dll") and
-		   os.isfile("../../Dependencies/Nsight-Aftermath/lib/x64/GFSDK_Aftermath_Lib.x64.lib") and
-		   os.isfile("../../Dependencies/Nsight-Aftermath/lib/x64/llvm_7_0_1.dll") and
-		   os.isdir("../../Dependencies/Nsight-Aftermath/include") and
-		   os.isfile("../../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
-			externalincludedirs "%{IncludeDir.NSIGHTAFTERMATH}"
-
-			postbuildcommands "{COPYDIR} %{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/GFSDK_Aftermath_Lib.x64.dll %{cfg.targetdir}"
-
-			defines "NSIGHT_AFTERMATH_AVAILABLE"
-		end
-
-		-- Steamworks SDK stuff
-		if os.isfile("../../Dependencies/SteamworksSDK/sdk/redistributable_bin/win64/steam_api64.dll") and
-		   os.isfile("../../Dependencies/SteamworksSDK/sdk/redistributable_bin/win64/steam_api64.lib") and
-		   os.isdir("../../Dependencies/SteamworksSDK/sdk/public/steam") then
-			externalincludedirs "%{IncludeDir.STEAMWORKSSDK}"
-
-			links "%{IncludeDir.STEAMWORKSSDK}/../../redistributable_bin/win64/steam_api64.lib"
-
-			postbuildcommands "{COPYDIR} %{IncludeDir.STEAMWORKSSDK}/../../redistributable_bin/win64/steam_api64.dll %{cfg.targetdir}"
-
-			files "%{IncludeDir.STEAMWORKSSDK}/**.h"
-
-			defines "USE_STEAMWORKS_SDK"
-		end
 
 	filter { "action:gmake*", "toolset:gcc" }
 		buildoptions

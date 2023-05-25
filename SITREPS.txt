@@ -4012,3 +4012,7 @@ SITREP 05/21/2023|23w20b2
 SITREP 05/24/2023|23w21a1
     - Changed TRAP Engine version to 23w21a1(0.9.35)
     - Premake scripts reduced redundancy ~<15 mins
+
+SITREP 05/25/2023|23w21a2
+    - Changed TRAP Engine version to 23w21a2(0.9.36)
+    - Premake scripts reduced redundancy of optional third party dependencies ~<15 mins
