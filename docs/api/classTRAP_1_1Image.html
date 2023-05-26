@@ -13,10 +13,10 @@
 <meta name="description" content="Defined in File Image.h. Inheritance Relationships: Derived Types: public TRAP::INTERNAL::BMPImage( Class BMPImage), public TRAP::INTERNAL::CustomImage( Class CustomImage), public TRAP::INTERNAL::P..." />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Class ImGuiLayer" href="classTRAP_1_1ImGuiLayer.html" /><link rel="prev" title="Class VertexBufferLayout" href="classTRAP_1_1Graphics_1_1VertexBufferLayout.html" />
 
-    <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><!-- Generated with Sphinx 6.2.1 and Furo 2023.03.27 -->
+    <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><!-- Generated with Sphinx 6.2.1 and Furo 2023.05.20 -->
         <title>Class Image - TRAP documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
@@ -180,7 +180,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../pages/gettingstarted.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pages/changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pages/eula.html">TRAP™ Engine End User License Agreement</a></li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="library_root.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="library_root.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="namespace_discord.html">Namespace discord</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_ImGui.html">Namespace ImGui</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_std.html">Namespace std</a></li>
@@ -385,6 +385,7 @@
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyLayoutEvent.html">Class KeyLayoutEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyPressEvent.html">Class KeyPressEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyReleaseEvent.html">Class KeyReleaseEvent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyRepeatEvent.html">Class KeyRepeatEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyTypeEvent.html">Class KeyTypeEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1MonitorConnectEvent.html">Class MonitorConnectEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1MonitorDisconnectEvent.html">Class MonitorDisconnectEvent</a></li>
@@ -553,6 +554,7 @@
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a9d953844162b3e7632455f2eb3dfff43.html">Function ImGui_ImplVulkan_DestroyFontUploadObjects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ad4daa307d203af914786f8631a307ec6.html">Function ImGui_ImplVulkan_Init</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a1140b281b5df05d3a20b07d979ee0250.html">Function ImGui_ImplVulkan_NewFrame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a999cf60ee1d7b819164c685e9dd1c18a.html">Function ImGui_ImplVulkan_RemoveTexture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ab20cc208b1400091be27ed1e57c8ce41.html">Function ImGui_ImplVulkan_RenderDrawData</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ab6c61e9c9d8e8c314866e5d9b48b58b5.html">Function ImGui_ImplVulkan_SetMinImageCount</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ab8a288c1e4fa698cd1a83ae466d497ef.html">Function ImGui_ImplVulkan_SetMSAASamples</a></li>
@@ -1875,7 +1877,7 @@
 <dd class="field-odd"><p><strong>img</strong> – <a class="reference internal" href="#classTRAP_1_1Image"><span class="std std-ref">Image</span></a> to flip.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Flipped image</p>
+<dd class="field-even"><p>Flipped image.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1889,7 +1891,35 @@
 <dd class="field-odd"><p><strong>img</strong> – <a class="reference internal" href="#classTRAP_1_1Image"><span class="std std-ref">Image</span></a> to flip.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Flipped image</p>
+<dd class="field-even"><p>Flipped image.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP5Image17Rotate90ClockwiseEPK5Image">
+<span id="_CPPv3N4TRAP5Image17Rotate90ClockwiseEPK5Image"></span><span id="_CPPv2N4TRAP5Image17Rotate90ClockwiseEPK5Image"></span><span id="TRAP::Image::Rotate90Clockwise__ImageCP"></span><span class="target" id="classTRAP_1_1Image_1ab8c8ef93b823b6857be57973081869a7"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><a class="reference internal" href="typedef_namespaceTRAP_1a2db5e63ad48f48221f6cf4c77eb34d77.html#_CPPv4I0EN4TRAP5ScopeE" title="TRAP::Scope"><span class="n"><span class="pre">Scope</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N4TRAP5ImageE" title="TRAP::Image"><span class="n"><span class="pre">Image</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Rotate90Clockwise</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4TRAP5ImageE" title="TRAP::Image"><span class="n"><span class="pre">Image</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">img</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP5Image17Rotate90ClockwiseEPK5Image" title="Permalink to this definition">#</a><br /></dt>
+<dd><p>Rotate an image by 90 degrees clockwise. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>img</strong> – <a class="reference internal" href="#classTRAP_1_1Image"><span class="std std-ref">Image</span></a> to flip.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Rotated image.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP5Image24Rotate90CounterClockwiseEPK5Image">
+<span id="_CPPv3N4TRAP5Image24Rotate90CounterClockwiseEPK5Image"></span><span id="_CPPv2N4TRAP5Image24Rotate90CounterClockwiseEPK5Image"></span><span id="TRAP::Image::Rotate90CounterClockwise__ImageCP"></span><span class="target" id="classTRAP_1_1Image_1afa341741b6ca8b0969570abd02485fa9"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><a class="reference internal" href="typedef_namespaceTRAP_1a2db5e63ad48f48221f6cf4c77eb34d77.html#_CPPv4I0EN4TRAP5ScopeE" title="TRAP::Scope"><span class="n"><span class="pre">Scope</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N4TRAP5ImageE" title="TRAP::Image"><span class="n"><span class="pre">Image</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Rotate90CounterClockwise</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4TRAP5ImageE" title="TRAP::Image"><span class="n"><span class="pre">Image</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">img</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP5Image24Rotate90CounterClockwiseEPK5Image" title="Permalink to this definition">#</a><br /></dt>
+<dd><p>Rotate an image by 90 degrees counter clockwise. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>img</strong> – <a class="reference internal" href="#classTRAP_1_1Image"><span class="std std-ref">Image</span></a> to flip.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Rotated image.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1903,7 +1933,7 @@
 <dd class="field-odd"><p><strong>img</strong> – <a class="reference internal" href="#classTRAP_1_1Image"><span class="std std-ref">Image</span></a> to convert.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Converted image</p>
+<dd class="field-even"><p>Converted image.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2001,6 +2031,50 @@
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Flipped raw pixel data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN4TRAP5Image17Rotate90ClockwiseENSt6vectorI1TEE8uint32_t8uint32_t11ColorFormatPK1T">
+<span id="_CPPv3I0EN4TRAP5Image17Rotate90ClockwiseE8uint32_t8uint32_t11ColorFormatPK1T"></span><span id="_CPPv2I0EN4TRAP5Image17Rotate90ClockwiseE8uint32_t8uint32_t11ColorFormatPK1T"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classTRAP_1_1Image_1abfc079f049e0bb74cc913c7fd02e6af1"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4TRAP5Image17Rotate90ClockwiseENSt6vectorI1TEE8uint32_t8uint32_t11ColorFormatPK1T" title="TRAP::Image::Rotate90Clockwise::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Rotate90Clockwise</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">width</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">height</span></span>, <a class="reference internal" href="#_CPPv4N4TRAP5Image11ColorFormatE" title="TRAP::Image::ColorFormat"><span class="n"><span class="pre">ColorFormat</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">format</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4TRAP5Image17Rotate90ClockwiseENSt6vectorI1TEE8uint32_t8uint32_t11ColorFormatPK1T" title="TRAP::Image::Rotate90Clockwise::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP5Image17Rotate90ClockwiseENSt6vectorI1TEE8uint32_t8uint32_t11ColorFormatPK1T" title="Permalink to this definition">#</a><br /></dt>
+<dd><p>Rotate raw pixel data by 90 degrees clockwise. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>T</strong> – uint8_t, uint16_t or float.</p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>width</strong> – Width of image in pixels.</p></li>
+<li><p><strong>height</strong> – Height of image in pixels.</p></li>
+<li><p><strong>format</strong> – Color format of the image data.</p></li>
+<li><p><strong>data</strong> – Raw pixel data.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Rotated raw pixel data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN4TRAP5Image24Rotate90CounterClockwiseENSt6vectorI1TEE8uint32_t8uint32_t11ColorFormatPK1T">
+<span id="_CPPv3I0EN4TRAP5Image24Rotate90CounterClockwiseE8uint32_t8uint32_t11ColorFormatPK1T"></span><span id="_CPPv2I0EN4TRAP5Image24Rotate90CounterClockwiseE8uint32_t8uint32_t11ColorFormatPK1T"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classTRAP_1_1Image_1ac2ba03083a950983f62416bc5bfea34c"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4TRAP5Image24Rotate90CounterClockwiseENSt6vectorI1TEE8uint32_t8uint32_t11ColorFormatPK1T" title="TRAP::Image::Rotate90CounterClockwise::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Rotate90CounterClockwise</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">width</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">height</span></span>, <a class="reference internal" href="#_CPPv4N4TRAP5Image11ColorFormatE" title="TRAP::Image::ColorFormat"><span class="n"><span class="pre">ColorFormat</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">format</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4TRAP5Image24Rotate90CounterClockwiseENSt6vectorI1TEE8uint32_t8uint32_t11ColorFormatPK1T" title="TRAP::Image::Rotate90CounterClockwise::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP5Image24Rotate90CounterClockwiseENSt6vectorI1TEE8uint32_t8uint32_t11ColorFormatPK1T" title="Permalink to this definition">#</a><br /></dt>
+<dd><p>Rotate raw pixel data by 90 degrees counter clockwise. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>T</strong> – uint8_t, uint16_t or float.</p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>width</strong> – Width of image in pixels.</p></li>
+<li><p><strong>height</strong> – Height of image in pixels.</p></li>
+<li><p><strong>format</strong> – Color format of the image data.</p></li>
+<li><p><strong>data</strong> – Raw pixel data.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Rotate raw pixel data</p>
 </dd>
 </dl>
 </dd></dl>

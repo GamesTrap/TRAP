@@ -13,10 +13,10 @@
 <meta name="description" content="Defined in File KeyEvent.h. Inheritance Relationships: Base Type: public TRAP::Events::KeyEvent( Class KeyEvent). Class Documentation:" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Class KeyReleaseEvent" href="classTRAP_1_1Events_1_1KeyReleaseEvent.html" /><link rel="prev" title="Class KeyLayoutEvent" href="classTRAP_1_1Events_1_1KeyLayoutEvent.html" />
 
-    <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><!-- Generated with Sphinx 6.2.1 and Furo 2023.03.27 -->
+    <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><!-- Generated with Sphinx 6.2.1 and Furo 2023.05.20 -->
         <title>Class KeyPressEvent - TRAP documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
@@ -180,7 +180,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../pages/gettingstarted.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pages/changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pages/eula.html">TRAP™ Engine End User License Agreement</a></li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="library_root.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="library_root.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="namespace_discord.html">Namespace discord</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_ImGui.html">Namespace ImGui</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_std.html">Namespace std</a></li>
@@ -385,6 +385,7 @@
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyLayoutEvent.html">Class KeyLayoutEvent</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Class KeyPressEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyReleaseEvent.html">Class KeyReleaseEvent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyRepeatEvent.html">Class KeyRepeatEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyTypeEvent.html">Class KeyTypeEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1MonitorConnectEvent.html">Class MonitorConnectEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1MonitorDisconnectEvent.html">Class MonitorDisconnectEvent</a></li>
@@ -553,6 +554,7 @@
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a9d953844162b3e7632455f2eb3dfff43.html">Function ImGui_ImplVulkan_DestroyFontUploadObjects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ad4daa307d203af914786f8631a307ec6.html">Function ImGui_ImplVulkan_Init</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a1140b281b5df05d3a20b07d979ee0250.html">Function ImGui_ImplVulkan_NewFrame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a999cf60ee1d7b819164c685e9dd1c18a.html">Function ImGui_ImplVulkan_RemoveTexture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ab20cc208b1400091be27ed1e57c8ce41.html">Function ImGui_ImplVulkan_RenderDrawData</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ab6c61e9c9d8e8c314866e5d9b48b58b5.html">Function ImGui_ImplVulkan_SetMinImageCount</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ab8a288c1e4fa698cd1a83ae466d497ef.html">Function ImGui_ImplVulkan_SetMSAASamples</a></li>
@@ -1509,14 +1511,13 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N4TRAP6Events13KeyPressEvent13KeyPressEventEN5Input3KeyE8uint32_tPN4TRAP6WindowE">
-<span id="_CPPv3N4TRAP6Events13KeyPressEvent13KeyPressEventEN5Input3KeyE8uint32_tPN4TRAP6WindowE"></span><span id="_CPPv2N4TRAP6Events13KeyPressEvent13KeyPressEventEN5Input3KeyE8uint32_tPN4TRAP6WindowE"></span><span id="TRAP::Events::KeyPressEvent::KeyPressEvent__Input::Key.uint32_t.TRAP::WindowP"></span><span class="target" id="classTRAP_1_1Events_1_1KeyPressEvent_1a85e2de6179cd038f5655fcd90d9abfac"></span><span class="sig-name descname"><span class="n"><span class="pre">KeyPressEvent</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="classTRAP_1_1Input.html#_CPPv4N4TRAP5InputE" title="TRAP::Input"><span class="n"><span class="pre">Input</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="classTRAP_1_1Input.html#_CPPv4N4TRAP5Input3KeyE" title="TRAP::Input::Key"><span class="n"><span class="pre">Key</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">key</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">repeatCount</span></span>, <span class="n"><span class="pre">TRAP</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="classTRAP_1_1Window.html#_CPPv4N4TRAP6WindowE" title="TRAP::Window"><span class="n"><span class="pre">Window</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">window</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Events13KeyPressEvent13KeyPressEventEN5Input3KeyE8uint32_tPN4TRAP6WindowE" title="Permalink to this definition">#</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP6Events13KeyPressEvent13KeyPressEventEN5Input3KeyEPN4TRAP6WindowE">
+<span id="_CPPv3N4TRAP6Events13KeyPressEvent13KeyPressEventEN5Input3KeyEPN4TRAP6WindowE"></span><span id="_CPPv2N4TRAP6Events13KeyPressEvent13KeyPressEventEN5Input3KeyEPN4TRAP6WindowE"></span><span id="TRAP::Events::KeyPressEvent::KeyPressEvent__Input::Key.TRAP::WindowP"></span><span class="target" id="classTRAP_1_1Events_1_1KeyPressEvent_1a30e43a69fc5cb9decbd0a1de96c280e8"></span><span class="sig-name descname"><span class="n"><span class="pre">KeyPressEvent</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="classTRAP_1_1Input.html#_CPPv4N4TRAP5InputE" title="TRAP::Input"><span class="n"><span class="pre">Input</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="classTRAP_1_1Input.html#_CPPv4N4TRAP5Input3KeyE" title="TRAP::Input::Key"><span class="n"><span class="pre">Key</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">key</span></span>, <span class="n"><span class="pre">TRAP</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="classTRAP_1_1Window.html#_CPPv4N4TRAP6WindowE" title="TRAP::Window"><span class="n"><span class="pre">Window</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">window</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Events13KeyPressEvent13KeyPressEventEN5Input3KeyEPN4TRAP6WindowE" title="Permalink to this definition">#</a><br /></dt>
 <dd><p>Constructor. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>key</strong> – Pressed key.</p></li>
-<li><p><strong>repeatCount</strong> – Amount of key press repeats.</p></li>
 <li><p><strong>window</strong> – Pointer to the affected window.</p></li>
 </ul>
 </dd>
@@ -1551,17 +1552,6 @@
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP6Events13KeyPressEventaSERR13KeyPressEvent">
 <span id="_CPPv3N4TRAP6Events13KeyPressEventaSERR13KeyPressEvent"></span><span id="_CPPv2N4TRAP6Events13KeyPressEventaSERR13KeyPressEvent"></span><span id="TRAP::Events::KeyPressEvent::assign-operator__KeyPressEventRR"></span><span class="target" id="classTRAP_1_1Events_1_1KeyPressEvent_1ab863047244825e045440e4a8da9ce9d2"></span><a class="reference internal" href="#_CPPv4N4TRAP6Events13KeyPressEventE" title="TRAP::Events::KeyPressEvent"><span class="n"><span class="pre">KeyPressEvent</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">=</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N4TRAP6Events13KeyPressEventE" title="TRAP::Events::KeyPressEvent"><span class="n"><span class="pre">KeyPressEvent</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">default</span></span><a class="headerlink" href="#_CPPv4N4TRAP6Events13KeyPressEventaSERR13KeyPressEvent" title="Permalink to this definition">#</a><br /></dt>
 <dd><p>Move assignment operator. </p>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4NK4TRAP6Events13KeyPressEvent14GetRepeatCountEv">
-<span id="_CPPv3NK4TRAP6Events13KeyPressEvent14GetRepeatCountEv"></span><span id="_CPPv2NK4TRAP6Events13KeyPressEvent14GetRepeatCountEv"></span><span id="TRAP::Events::KeyPressEvent::GetRepeatCountCCE"></span><span class="target" id="classTRAP_1_1Events_1_1KeyPressEvent_1a31f7d7be3d6b673c80c1058c57e645ab"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GetRepeatCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4TRAP6Events13KeyPressEvent14GetRepeatCountEv" title="Permalink to this definition">#</a><br /></dt>
-<dd><p>Retrieve tha amount of key press repeats. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Repeat count.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="cpp function">

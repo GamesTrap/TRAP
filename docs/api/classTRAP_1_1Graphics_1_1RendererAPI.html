@@ -13,10 +13,10 @@
 <meta name="description" content="Defined in File RendererAPI.h. Nested Relationships: Nested Types: Struct RendererAPI::BinaryShaderDesc, Struct RendererAPI::BinaryShaderStageDesc, Struct RendererAPI::BlendStateDesc, Struct Render..." />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Class RenderTarget" href="classTRAP_1_1Graphics_1_1RenderTarget.html" /><link rel="prev" title="Class Renderer2D" href="classTRAP_1_1Graphics_1_1Renderer2D.html" />
 
-    <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><!-- Generated with Sphinx 6.2.1 and Furo 2023.03.27 -->
+    <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><!-- Generated with Sphinx 6.2.1 and Furo 2023.05.20 -->
         <title>Class RendererAPI - TRAP documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
@@ -180,7 +180,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../pages/gettingstarted.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pages/changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pages/eula.html">TRAP™ Engine End User License Agreement</a></li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="library_root.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="library_root.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="namespace_discord.html">Namespace discord</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_ImGui.html">Namespace ImGui</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_std.html">Namespace std</a></li>
@@ -385,6 +385,7 @@
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyLayoutEvent.html">Class KeyLayoutEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyPressEvent.html">Class KeyPressEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyReleaseEvent.html">Class KeyReleaseEvent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyRepeatEvent.html">Class KeyRepeatEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyTypeEvent.html">Class KeyTypeEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1MonitorConnectEvent.html">Class MonitorConnectEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1MonitorDisconnectEvent.html">Class MonitorDisconnectEvent</a></li>
@@ -553,6 +554,7 @@
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a9d953844162b3e7632455f2eb3dfff43.html">Function ImGui_ImplVulkan_DestroyFontUploadObjects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ad4daa307d203af914786f8631a307ec6.html">Function ImGui_ImplVulkan_Init</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a1140b281b5df05d3a20b07d979ee0250.html">Function ImGui_ImplVulkan_NewFrame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a999cf60ee1d7b819164c685e9dd1c18a.html">Function ImGui_ImplVulkan_RemoveTexture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ab20cc208b1400091be27ed1e57c8ce41.html">Function ImGui_ImplVulkan_RenderDrawData</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ab6c61e9c9d8e8c314866e5d9b48b58b5.html">Function ImGui_ImplVulkan_SetMinImageCount</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ab8a288c1e4fa698cd1a83ae466d497ef.html">Function ImGui_ImplVulkan_SetMSAASamples</a></li>
@@ -1857,77 +1859,77 @@
 
 <dl class="cpp enum-class">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendorE">
-<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendorE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendorE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1a16281b67ff673c9c2a17e958426dee45"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GPUVendor</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendorE" title="Permalink to this definition">#</a><br /></dt>
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendorE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendorE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1ac8d6898b83030eef9420bbac544ca5a0"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GPUVendor</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int32_t</span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendorE" title="Permalink to this definition">#</a><br /></dt>
 <dd><p>Enum describing the different GPU vendors. </p>
 <p><em>Values:</em></p>
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor7UnknownE">
-<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor7UnknownE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor7UnknownE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1a16281b67ff673c9c2a17e958426dee45a88183b946cc5f0e8c96b2e66e1c74a7e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Unknown</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor7UnknownE" title="Permalink to this definition">#</a><br /></dt>
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor7UnknownE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor7UnknownE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1ac8d6898b83030eef9420bbac544ca5a0a88183b946cc5f0e8c96b2e66e1c74a7e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Unknown</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor7UnknownE" title="Permalink to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor3AMDE">
-<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor3AMDE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor3AMDE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1a16281b67ff673c9c2a17e958426dee45a48af4341f745163f945fa838eeabb062"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AMD</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor3AMDE" title="Permalink to this definition">#</a><br /></dt>
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor3AMDE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor3AMDE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1ac8d6898b83030eef9420bbac544ca5a0a48af4341f745163f945fa838eeabb062"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AMD</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor3AMDE" title="Permalink to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor6ImgTecE">
-<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor6ImgTecE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor6ImgTecE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1a16281b67ff673c9c2a17e958426dee45ac7ff8fed27512349191d99d2cae85702"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ImgTec</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor6ImgTecE" title="Permalink to this definition">#</a><br /></dt>
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor6ImgTecE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor6ImgTecE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1ac8d6898b83030eef9420bbac544ca5a0ac7ff8fed27512349191d99d2cae85702"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ImgTec</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor6ImgTecE" title="Permalink to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor6NVIDIAE">
-<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor6NVIDIAE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor6NVIDIAE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1a16281b67ff673c9c2a17e958426dee45aa2fe9051fe051f819bd739ef3e340377"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">NVIDIA</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor6NVIDIAE" title="Permalink to this definition">#</a><br /></dt>
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor6NVIDIAE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor6NVIDIAE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1ac8d6898b83030eef9420bbac544ca5a0aa2fe9051fe051f819bd739ef3e340377"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">NVIDIA</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor6NVIDIAE" title="Permalink to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor3ARME">
-<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor3ARME"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor3ARME"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1a16281b67ff673c9c2a17e958426dee45a47f45e65244c17ec9fa8771a5c6d60e1"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ARM</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor3ARME" title="Permalink to this definition">#</a><br /></dt>
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor3ARME"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor3ARME"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1ac8d6898b83030eef9420bbac544ca5a0a47f45e65244c17ec9fa8771a5c6d60e1"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ARM</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor3ARME" title="Permalink to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor8BroadcomE">
-<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor8BroadcomE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor8BroadcomE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1a16281b67ff673c9c2a17e958426dee45a93933c6ca68705cf2c6eee19987428b0"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Broadcom</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor8BroadcomE" title="Permalink to this definition">#</a><br /></dt>
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor8BroadcomE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor8BroadcomE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1ac8d6898b83030eef9420bbac544ca5a0a93933c6ca68705cf2c6eee19987428b0"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Broadcom</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor8BroadcomE" title="Permalink to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor8QualcommE">
-<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor8QualcommE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor8QualcommE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1a16281b67ff673c9c2a17e958426dee45ac9b0cb53646238b8c03fb69b8f331220"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Qualcomm</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor8QualcommE" title="Permalink to this definition">#</a><br /></dt>
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor8QualcommE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor8QualcommE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1ac8d6898b83030eef9420bbac544ca5a0ac9b0cb53646238b8c03fb69b8f331220"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Qualcomm</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor8QualcommE" title="Permalink to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor5IntelE">
-<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor5IntelE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor5IntelE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1a16281b67ff673c9c2a17e958426dee45aff97a9fdede09eaf6e1c8ec9f6a61dd5"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Intel</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor5IntelE" title="Permalink to this definition">#</a><br /></dt>
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor5IntelE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor5IntelE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1ac8d6898b83030eef9420bbac544ca5a0aff97a9fdede09eaf6e1c8ec9f6a61dd5"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Intel</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor5IntelE" title="Permalink to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor5AppleE">
-<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor5AppleE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor5AppleE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1a16281b67ff673c9c2a17e958426dee45a9f6290f4436e5a2351f12e03b6433c3c"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Apple</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor5AppleE" title="Permalink to this definition">#</a><br /></dt>
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor5AppleE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor5AppleE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1ac8d6898b83030eef9420bbac544ca5a0a9f6290f4436e5a2351f12e03b6433c3c"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Apple</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor5AppleE" title="Permalink to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor7VivanteE">
-<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor7VivanteE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor7VivanteE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1a16281b67ff673c9c2a17e958426dee45a758541adeb0d17c3fbc10a89fa2763a2"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Vivante</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor7VivanteE" title="Permalink to this definition">#</a><br /></dt>
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor7VivanteE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor7VivanteE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1ac8d6898b83030eef9420bbac544ca5a0a758541adeb0d17c3fbc10a89fa2763a2"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Vivante</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor7VivanteE" title="Permalink to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor11VeriSiliconE">
-<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor11VeriSiliconE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor11VeriSiliconE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1a16281b67ff673c9c2a17e958426dee45a8433a30a0abaeb3d5a60d6041003828e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">VeriSilicon</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor11VeriSiliconE" title="Permalink to this definition">#</a><br /></dt>
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor11VeriSiliconE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor11VeriSiliconE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1ac8d6898b83030eef9420bbac544ca5a0a8433a30a0abaeb3d5a60d6041003828e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">VeriSilicon</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor11VeriSiliconE" title="Permalink to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor5KazanE">
-<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor5KazanE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor5KazanE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1a16281b67ff673c9c2a17e958426dee45a8a3752e9533d538016ce6ce86fe2a9be"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Kazan</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor5KazanE" title="Permalink to this definition">#</a><br /></dt>
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor5KazanE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor5KazanE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1ac8d6898b83030eef9420bbac544ca5a0a8a3752e9533d538016ce6ce86fe2a9be"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Kazan</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor5KazanE" title="Permalink to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor8CodeplayE">
-<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor8CodeplayE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor8CodeplayE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1a16281b67ff673c9c2a17e958426dee45af985240d813b5955959367dc195d2188"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Codeplay</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor8CodeplayE" title="Permalink to this definition">#</a><br /></dt>
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor8CodeplayE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor8CodeplayE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1ac8d6898b83030eef9420bbac544ca5a0af985240d813b5955959367dc195d2188"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Codeplay</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor8CodeplayE" title="Permalink to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor4MesaE">
-<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor4MesaE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor4MesaE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1a16281b67ff673c9c2a17e958426dee45a2260b669d1c515bc489704f350fe023f"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Mesa</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor4MesaE" title="Permalink to this definition">#</a><br /></dt>
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI9GPUVendor4MesaE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI9GPUVendor4MesaE"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1ac8d6898b83030eef9420bbac544ca5a0a2260b669d1c515bc489704f350fe023f"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Mesa</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI9GPUVendor4MesaE" title="Permalink to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -4285,12 +4287,15 @@
 </dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4NK4TRAP8Graphics11RendererAPI19InitPerViewportDataEP6Window">
-<span id="_CPPv3NK4TRAP8Graphics11RendererAPI19InitPerViewportDataEP6Window"></span><span id="_CPPv2NK4TRAP8Graphics11RendererAPI19InitPerViewportDataEP6Window"></span><span id="TRAP::Graphics::RendererAPI::InitPerViewportData__WindowPC"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1aad7dc0b08ea7229953ba466aa14114fe"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">InitPerViewportData</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="classTRAP_1_1Window.html#_CPPv4N4TRAP6WindowE" title="TRAP::Window"><span class="n"><span class="pre">Window</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">window</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4NK4TRAP8Graphics11RendererAPI19InitPerViewportDataEP6Window" title="Permalink to this definition">#</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4NK4TRAP8Graphics11RendererAPI19InitPerViewportDataEP6Windowb">
+<span id="_CPPv3NK4TRAP8Graphics11RendererAPI19InitPerViewportDataEP6Windowb"></span><span id="_CPPv2NK4TRAP8Graphics11RendererAPI19InitPerViewportDataEP6Windowb"></span><span id="TRAP::Graphics::RendererAPI::InitPerViewportData__WindowP.bC"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1a16e522dad0631a74f3141c3f838ecdf6"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">InitPerViewportData</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="classTRAP_1_1Window.html#_CPPv4N4TRAP6WindowE" title="TRAP::Window"><span class="n"><span class="pre">Window</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">window</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">VSyncEnabled</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4NK4TRAP8Graphics11RendererAPI19InitPerViewportDataEP6Windowb" title="Permalink to this definition">#</a><br /></dt>
 <dd><p>Initialize the internal rendering data of the given window. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>window</strong> – <a class="reference internal" href="classTRAP_1_1Window.html#classTRAP_1_1Window"><span class="std std-ref">Window</span></a> to initialize the internal rendering data for.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>window</strong> – <a class="reference internal" href="classTRAP_1_1Window.html#classTRAP_1_1Window"><span class="std std-ref">Window</span></a> to initialize the internal rendering data for.</p></li>
+<li><p><strong>VSyncEnabled</strong> – Whether to enable or disable VSync.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

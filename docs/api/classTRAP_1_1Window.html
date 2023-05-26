@@ -13,10 +13,10 @@
 <meta name="description" content="Defined in File Window.h. Nested Relationships: Nested Types: Struct Window::WindowData, Struct Window::WindowedModeParams. Class Documentation:" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Enum ProfileSystems" href="enum_Base_8h_1ab78091141ca3817c8bb44dd067a663df.html" /><link rel="prev" title="Class UID" href="classTRAP_1_1Utils_1_1UID.html" />
 
-    <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><!-- Generated with Sphinx 6.2.1 and Furo 2023.03.27 -->
+    <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><!-- Generated with Sphinx 6.2.1 and Furo 2023.05.20 -->
         <title>Class Window - TRAP documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
@@ -180,7 +180,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../pages/gettingstarted.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pages/changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pages/eula.html">TRAP™ Engine End User License Agreement</a></li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="library_root.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="library_root.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="namespace_discord.html">Namespace discord</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_ImGui.html">Namespace ImGui</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_std.html">Namespace std</a></li>
@@ -385,6 +385,7 @@
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyLayoutEvent.html">Class KeyLayoutEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyPressEvent.html">Class KeyPressEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyReleaseEvent.html">Class KeyReleaseEvent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyRepeatEvent.html">Class KeyRepeatEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyTypeEvent.html">Class KeyTypeEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1MonitorConnectEvent.html">Class MonitorConnectEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1MonitorDisconnectEvent.html">Class MonitorDisconnectEvent</a></li>
@@ -553,6 +554,7 @@
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a9d953844162b3e7632455f2eb3dfff43.html">Function ImGui_ImplVulkan_DestroyFontUploadObjects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ad4daa307d203af914786f8631a307ec6.html">Function ImGui_ImplVulkan_Init</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a1140b281b5df05d3a20b07d979ee0250.html">Function ImGui_ImplVulkan_NewFrame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a999cf60ee1d7b819164c685e9dd1c18a.html">Function ImGui_ImplVulkan_RemoveTexture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ab20cc208b1400091be27ed1e57c8ce41.html">Function ImGui_ImplVulkan_RenderDrawData</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ab6c61e9c9d8e8c314866e5d9b48b58b5.html">Function ImGui_ImplVulkan_SetMinImageCount</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ab8a288c1e4fa698cd1a83ae466d497ef.html">Function ImGui_ImplVulkan_SetMSAASamples</a></li>
@@ -1646,6 +1648,28 @@
 </dd></dl>
 
 <dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4TRAP6Window19GetFrameBufferWidthEv">
+<span id="_CPPv3NK4TRAP6Window19GetFrameBufferWidthEv"></span><span id="_CPPv2NK4TRAP6Window19GetFrameBufferWidthEv"></span><span id="TRAP::Window::GetFrameBufferWidthC"></span><span class="target" id="classTRAP_1_1Window_1ad734649e8067365e6eaef9bcb1c2eded"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GetFrameBufferWidth</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK4TRAP6Window19GetFrameBufferWidthEv" title="Permalink to this definition">#</a><br /></dt>
+<dd><p>Get the current framebuffer width of the window. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Framebuffer width of the window.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4TRAP6Window20GetFrameBufferHeightEv">
+<span id="_CPPv3NK4TRAP6Window20GetFrameBufferHeightEv"></span><span id="_CPPv2NK4TRAP6Window20GetFrameBufferHeightEv"></span><span id="TRAP::Window::GetFrameBufferHeightC"></span><span class="target" id="classTRAP_1_1Window_1ab11a0831191ba7b7d50f485558532c99"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GetFrameBufferHeight</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK4TRAP6Window20GetFrameBufferHeightEv" title="Permalink to this definition">#</a><br /></dt>
+<dd><p>Get the current framebuffer height of the window. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Framebuffer height of the window.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4NK4TRAP6Window18GetFrameBufferSizeEv">
 <span id="_CPPv3NK4TRAP6Window18GetFrameBufferSizeEv"></span><span id="_CPPv2NK4TRAP6Window18GetFrameBufferSizeEv"></span><span id="TRAP::Window::GetFrameBufferSizeC"></span><span class="target" id="classTRAP_1_1Window_1a09de385930761a65bd971b75d5ce83bd"></span><span class="n"><span class="pre">Math</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="typedef_Types_8h_1ab7e284fee572756ce3bc890e059b3337.html#_CPPv4N4TRAP4Math6Vec2uiE" title="TRAP::Math::Vec2ui"><span class="n"><span class="pre">Vec2ui</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GetFrameBufferSize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK4TRAP6Window18GetFrameBufferSizeEv" title="Permalink to this definition">#</a><br /></dt>
 <dd><p>Get the current framebuffer width and height of the window. </p>
@@ -1748,6 +1772,7 @@
 <dt class="sig sig-object cpp" id="_CPPv4NK4TRAP6Window8GetVSyncEv">
 <span id="_CPPv3NK4TRAP6Window8GetVSyncEv"></span><span id="_CPPv2NK4TRAP6Window8GetVSyncEv"></span><span id="TRAP::Window::GetVSyncC"></span><span class="target" id="classTRAP_1_1Window_1a0ba4236d8a8abcf5377acd9405f77c3d"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GetVSync</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4TRAP6Window8GetVSyncEv" title="Permalink to this definition">#</a><br /></dt>
 <dd><p>Get whether VSync is enabled or disabled. </p>
+<p>Same as calling <a class="reference internal" href="classTRAP_1_1Graphics_1_1RendererAPI.html#classTRAP_1_1Graphics_1_1RendererAPI_1aafe8a8fcb39d70ba71e961d219dc2b86"><span class="std std-ref">TRAP::Graphics::RendererAPI::GetRenderer()</span></a>-&gt;<a class="reference internal" href="#classTRAP_1_1Window_1a0ba4236d8a8abcf5377acd9405f77c3d"><span class="std std-ref">GetVSync()</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if VSync is enabled, false otherwise.</p>
@@ -1789,40 +1814,54 @@
 </dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N4TRAP6Window14SetDisplayModeERK11DisplayMode8uint32_t8uint32_td">
-<span id="_CPPv3N4TRAP6Window14SetDisplayModeERK11DisplayMode8uint32_t8uint32_td"></span><span id="_CPPv2N4TRAP6Window14SetDisplayModeERK11DisplayMode8uint32_t8uint32_td"></span><span id="TRAP::Window::SetDisplayMode__DisplayModeCR.uint32_t.uint32_t.double"></span><span class="target" id="classTRAP_1_1Window_1a38d6607cb7e97649147a775642be38ef"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SetDisplayMode</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4TRAP6Window11DisplayModeE" title="TRAP::Window::DisplayMode"><span class="n"><span class="pre">DisplayMode</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">mode</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">width</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">height</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">refreshRate</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Window14SetDisplayModeERK11DisplayMode8uint32_t8uint32_td" title="Permalink to this definition">#</a><br /></dt>
-<dd><p>Set a new display mode and or a new size/refresh rate for the window. </p>
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP6Window13SetFullscreenEv">
+<span id="_CPPv3N4TRAP6Window13SetFullscreenEv"></span><span id="_CPPv2N4TRAP6Window13SetFullscreenEv"></span><span id="TRAP::Window::SetFullscreen"></span><span class="target" id="classTRAP_1_1Window_1a1de3eadf7ae993b08e8a1c4b45003776"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SetFullscreen</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Window13SetFullscreenEv" title="Permalink to this definition">#</a><br /></dt>
+<dd><p>Set the window to fullscreen display mode using the monitors native video mode. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP6Window13SetFullscreenERKN7Monitor9VideoModeE">
+<span id="_CPPv3N4TRAP6Window13SetFullscreenERKN7Monitor9VideoModeE"></span><span id="_CPPv2N4TRAP6Window13SetFullscreenERKN7Monitor9VideoModeE"></span><span id="TRAP::Window::SetFullscreen__Monitor::VideoModeCR"></span><span class="target" id="classTRAP_1_1Window_1a9e55bc6f88b286fe3629d3469191bf2e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SetFullscreen</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="classTRAP_1_1Monitor.html#_CPPv4N4TRAP7MonitorE" title="TRAP::Monitor"><span class="n"><span class="pre">Monitor</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="classTRAP_1_1Monitor.html#_CPPv4N4TRAP7Monitor9VideoModeE" title="TRAP::Monitor::VideoMode"><span class="n"><span class="pre">VideoMode</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">videoMode</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Window13SetFullscreenERKN7Monitor9VideoModeE" title="Permalink to this definition">#</a><br /></dt>
+<dd><p>Set the window to fullscreen display mode using the given video mode. </p>
+<p>Note: If the given video mode is not supported by the monitor then this function does nothing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>videoMode</strong> – Video mode to use.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP6Window23SetFullscreenBorderlessEv">
+<span id="_CPPv3N4TRAP6Window23SetFullscreenBorderlessEv"></span><span id="_CPPv2N4TRAP6Window23SetFullscreenBorderlessEv"></span><span id="TRAP::Window::SetFullscreenBorderless"></span><span class="target" id="classTRAP_1_1Window_1a07560ead2e158caaab5bd73a37db43df"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SetFullscreenBorderless</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Window23SetFullscreenBorderlessEv" title="Permalink to this definition">#</a><br /></dt>
+<dd><p>Set the window to fullscreen borderless display mode. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP6Window11SetWindowedEv">
+<span id="_CPPv3N4TRAP6Window11SetWindowedEv"></span><span id="_CPPv2N4TRAP6Window11SetWindowedEv"></span><span id="TRAP::Window::SetWindowed"></span><span class="target" id="classTRAP_1_1Window_1a30e11acc05774398a43c059455bce39b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SetWindowed</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Window11SetWindowedEv" title="Permalink to this definition">#</a><br /></dt>
+<dd><p>Set the window to windowed display mode using the previously used window size. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP6Window11SetWindowedE8uint32_t8uint32_t">
+<span id="_CPPv3N4TRAP6Window11SetWindowedE8uint32_t8uint32_t"></span><span id="_CPPv2N4TRAP6Window11SetWindowedE8uint32_t8uint32_t"></span><span id="TRAP::Window::SetWindowed__uint32_t.uint32_t"></span><span class="target" id="classTRAP_1_1Window_1a3f3a3a9e13e99388a64e8823102572d2"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SetWindowed</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">width</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">height</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Window11SetWindowedE8uint32_t8uint32_t" title="Permalink to this definition">#</a><br /></dt>
+<dd><p>Set the Windowed object </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mode</strong> – New display mode for the window.</p></li>
-<li><p><strong>width</strong> – New width (ignored when used with display mode borderless).</p></li>
-<li><p><strong>height</strong> – New height (ignored when used with display mode borderless).</p></li>
-<li><p><strong>refreshRate</strong> – New refresh rate (ignored when used with display modes Borderless or Windowed). </p></li>
+<li><p><strong>width</strong> – New window width.</p></li>
+<li><p><strong>height</strong> – New window height.</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N4TRAP6Window14SetDisplayModeE11DisplayModeRKN7Monitor9VideoModeE">
-<span id="_CPPv3N4TRAP6Window14SetDisplayModeE11DisplayModeRKN7Monitor9VideoModeE"></span><span id="_CPPv2N4TRAP6Window14SetDisplayModeE11DisplayModeRKN7Monitor9VideoModeE"></span><span id="TRAP::Window::SetDisplayMode__DisplayMode.Monitor::VideoModeCR"></span><span class="target" id="classTRAP_1_1Window_1a35b539df45944f9d35f8b948c7e57d93"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SetDisplayMode</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N4TRAP6Window11DisplayModeE" title="TRAP::Window::DisplayMode"><span class="n"><span class="pre">DisplayMode</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">displayMode</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="classTRAP_1_1Monitor.html#_CPPv4N4TRAP7MonitorE" title="TRAP::Monitor"><span class="n"><span class="pre">Monitor</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="classTRAP_1_1Monitor.html#_CPPv4N4TRAP7Monitor9VideoModeE" title="TRAP::Monitor::VideoMode"><span class="n"><span class="pre">VideoMode</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">videoMode</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Window14SetDisplayModeE11DisplayModeRKN7Monitor9VideoModeE" title="Permalink to this definition">#</a><br /></dt>
-<dd><p>Set a new display mode and or a new video mode for the window. </p>
-<p>See also: <a class="reference internal" href="#classTRAP_1_1Window_1a38d6607cb7e97649147a775642be38ef"><span class="std std-ref">SetDisplayMode(const DisplayMode&amp;, uint32_t, uint32_t, double)</span></a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>displayMode</strong> – New display mode for the window.</p></li>
-<li><p><strong>videoMode</strong> – New video mode for the window.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N4TRAP6Window10SetMonitorER7Monitor">
-<span id="_CPPv3N4TRAP6Window10SetMonitorER7Monitor"></span><span id="_CPPv2N4TRAP6Window10SetMonitorER7Monitor"></span><span id="TRAP::Window::SetMonitor__MonitorR"></span><span class="target" id="classTRAP_1_1Window_1a3251d39967a79e61e332c3c21e1e6e52"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SetMonitor</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="classTRAP_1_1Monitor.html#_CPPv4N4TRAP7MonitorE" title="TRAP::Monitor"><span class="n"><span class="pre">Monitor</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">monitor</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Window10SetMonitorER7Monitor" title="Permalink to this definition">#</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP6Window10SetMonitorERK7Monitor">
+<span id="_CPPv3N4TRAP6Window10SetMonitorERK7Monitor"></span><span id="_CPPv2N4TRAP6Window10SetMonitorERK7Monitor"></span><span id="TRAP::Window::SetMonitor__MonitorCR"></span><span class="target" id="classTRAP_1_1Window_1ad91e11011541463bc72c866556271308"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SetMonitor</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="classTRAP_1_1Monitor.html#_CPPv4N4TRAP7MonitorE" title="TRAP::Monitor"><span class="n"><span class="pre">Monitor</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">monitor</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Window10SetMonitorERK7Monitor" title="Permalink to this definition">#</a><br /></dt>
 <dd><p>Set a new monitor for the window. </p>
+<p>Note: If the current display mode is fullscreen or fullscreen borderless, the window will use the new monitors native resolution.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>monitor</strong> – <a class="reference internal" href="classTRAP_1_1Monitor.html#classTRAP_1_1Monitor"><span class="std std-ref">Monitor</span></a> object to be used from now on.</p>
@@ -2013,9 +2052,10 @@
 </dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N4TRAP6Window8SetVSyncEb">
-<span id="_CPPv3N4TRAP6Window8SetVSyncEb"></span><span id="_CPPv2N4TRAP6Window8SetVSyncEb"></span><span id="TRAP::Window::SetVSync__b"></span><span class="target" id="classTRAP_1_1Window_1a365a79c52ece777d194b022667024743"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SetVSync</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">enabled</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Window8SetVSyncEb" title="Permalink to this definition">#</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4NK4TRAP6Window8SetVSyncEb">
+<span id="_CPPv3NK4TRAP6Window8SetVSyncEb"></span><span id="_CPPv2NK4TRAP6Window8SetVSyncEb"></span><span id="TRAP::Window::SetVSync__bC"></span><span class="target" id="classTRAP_1_1Window_1ad735d1078657d9f6731fcd2f2dfe5739"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SetVSync</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">enabled</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK4TRAP6Window8SetVSyncEb" title="Permalink to this definition">#</a><br /></dt>
 <dd><p>Enable or disable VSync for the window. </p>
+<p>Same as calling <a class="reference internal" href="classTRAP_1_1Graphics_1_1RendererAPI.html#classTRAP_1_1Graphics_1_1RendererAPI_1aafe8a8fcb39d70ba71e961d219dc2b86"><span class="std std-ref">TRAP::Graphics::RendererAPI::GetRenderer()</span></a>-&gt;<a class="reference internal" href="#classTRAP_1_1Window_1ad735d1078657d9f6731fcd2f2dfe5739"><span class="std std-ref">SetVSync()</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>enabled</strong> – Whether to enable VSync or not.</p>

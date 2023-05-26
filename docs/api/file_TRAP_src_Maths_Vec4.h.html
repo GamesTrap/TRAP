@@ -13,10 +13,10 @@
 <meta name="description" content="↰ Parent directory( TRAP/src/Maths) Contents: Definition ( TRAP/src/Maths/Vec4.h), Includes, Included By, Namespaces, Classes, Functions. Definition ( TRAP/src/Maths/Vec4.h): Includes: Core/Base.h(..." />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" />
 
-    <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><!-- Generated with Sphinx 6.2.1 and Furo 2023.03.27 -->
+    <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><!-- Generated with Sphinx 6.2.1 and Furo 2023.05.20 -->
         <title>File Vec4.h - TRAP documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
@@ -180,7 +180,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../pages/gettingstarted.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pages/changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pages/eula.html">TRAP™ Engine End User License Agreement</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="library_root.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="library_root.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="namespace_discord.html">Namespace discord</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_ImGui.html">Namespace ImGui</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_std.html">Namespace std</a></li>
@@ -385,6 +385,7 @@
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyLayoutEvent.html">Class KeyLayoutEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyPressEvent.html">Class KeyPressEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyReleaseEvent.html">Class KeyReleaseEvent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyRepeatEvent.html">Class KeyRepeatEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyTypeEvent.html">Class KeyTypeEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1MonitorConnectEvent.html">Class MonitorConnectEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1MonitorDisconnectEvent.html">Class MonitorDisconnectEvent</a></li>
@@ -553,6 +554,7 @@
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a9d953844162b3e7632455f2eb3dfff43.html">Function ImGui_ImplVulkan_DestroyFontUploadObjects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ad4daa307d203af914786f8631a307ec6.html">Function ImGui_ImplVulkan_Init</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a1140b281b5df05d3a20b07d979ee0250.html">Function ImGui_ImplVulkan_NewFrame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a999cf60ee1d7b819164c685e9dd1c18a.html">Function ImGui_ImplVulkan_RemoveTexture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ab20cc208b1400091be27ed1e57c8ce41.html">Function ImGui_ImplVulkan_RenderDrawData</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ab6c61e9c9d8e8c314866e5d9b48b58b5.html">Function ImGui_ImplVulkan_SetMinImageCount</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ab8a288c1e4fa698cd1a83ae466d497ef.html">Function ImGui_ImplVulkan_SetMSAASamples</a></li>
@@ -1538,17 +1540,17 @@
 <section id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
+<li><p><a class="reference internal" href="function_Vec4_8h_1ac95f5c03cbe40616cf36df94036eedb0.html#exhale-function-vec4-8h-1ac95f5c03cbe40616cf36df94036eedb0"><span class="std std-ref">Template Function std::get(TRAP::Math::Vec&lt;4, T&gt;&amp;)</span></a></p></li>
 <li><p><a class="reference internal" href="function_Vec4_8h_1ae803308534cff7119b19c32eddeaa9e3.html#exhale-function-vec4-8h-1ae803308534cff7119b19c32eddeaa9e3"><span class="std std-ref">Template Function std::get(TRAP::Math::Vec&lt;4, T&gt;&amp;&amp;)</span></a></p></li>
 <li><p><a class="reference internal" href="function_Vec4_8h_1af10216a5857525f9d07e398af9a89b50.html#exhale-function-vec4-8h-1af10216a5857525f9d07e398af9a89b50"><span class="std std-ref">Template Function std::get(const TRAP::Math::Vec&lt;4, T&gt;&amp;)</span></a></p></li>
 <li><p><a class="reference internal" href="function_Vec4_8h_1a9f7bda27c2ae71b5049be7284544114a.html#exhale-function-vec4-8h-1a9f7bda27c2ae71b5049be7284544114a"><span class="std std-ref">Template Function std::get(const TRAP::Math::Vec&lt;4, T&gt;&amp;&amp;)</span></a></p></li>
-<li><p><a class="reference internal" href="function_Vec4_8h_1ac95f5c03cbe40616cf36df94036eedb0.html#exhale-function-vec4-8h-1ac95f5c03cbe40616cf36df94036eedb0"><span class="std std-ref">Template Function std::get(TRAP::Math::Vec&lt;4, T&gt;&amp;)</span></a></p></li>
 <li><p><a class="reference internal" href="function_Vec4_8h_1a013dc08b245077948f354deddc61e42f.html#exhale-function-vec4-8h-1a013dc08b245077948f354deddc61e42f"><span class="std std-ref">Template Function TRAP::Math::operator!=(const Vec&lt;4, T&gt;&amp;, const Vec&lt;4, T&gt;&amp;)</span></a></p></li>
 <li><p><a class="reference internal" href="function_Vec4_8h_1aa241c64e47f392fd76d25d5ac70708c3.html#exhale-function-vec4-8h-1aa241c64e47f392fd76d25d5ac70708c3"><span class="std std-ref">Template Function TRAP::Math::operator%(const Vec&lt;4, T&gt;&amp;, T)</span></a></p></li>
 <li><p><a class="reference internal" href="function_Vec4_8h_1af133389b175b12932f7530f4fd67b668.html#exhale-function-vec4-8h-1af133389b175b12932f7530f4fd67b668"><span class="std std-ref">Template Function TRAP::Math::operator%(T, const Vec&lt;4, T&gt;&amp;)</span></a></p></li>
 <li><p><a class="reference internal" href="function_Vec4_8h_1a5a9ddaea8d943efbb694f2aae674a084.html#exhale-function-vec4-8h-1a5a9ddaea8d943efbb694f2aae674a084"><span class="std std-ref">Template Function TRAP::Math::operator%(const Vec&lt;4, T&gt;&amp;, const Vec&lt;4, T&gt;&amp;)</span></a></p></li>
-<li><p><a class="reference internal" href="function_Vec4_8h_1abc1ad0dbb85790f38df9490ef3a4c54d.html#exhale-function-vec4-8h-1abc1ad0dbb85790f38df9490ef3a4c54d"><span class="std std-ref">Template Function TRAP::Math::operator&amp;(const Vec&lt;4, T&gt;&amp;, T)</span></a></p></li>
 <li><p><a class="reference internal" href="function_Vec4_8h_1a0dccecca9ad36cc612f8d1445360a6c2.html#exhale-function-vec4-8h-1a0dccecca9ad36cc612f8d1445360a6c2"><span class="std std-ref">Template Function TRAP::Math::operator&amp;(T, const Vec&lt;4, T&gt;&amp;)</span></a></p></li>
 <li><p><a class="reference internal" href="function_Vec4_8h_1a8c111a6498afc2b59408c42ba0735c65.html#exhale-function-vec4-8h-1a8c111a6498afc2b59408c42ba0735c65"><span class="std std-ref">Template Function TRAP::Math::operator&amp;(const Vec&lt;4, T&gt;&amp;, const Vec&lt;4, T&gt;&amp;)</span></a></p></li>
+<li><p><a class="reference internal" href="function_Vec4_8h_1abc1ad0dbb85790f38df9490ef3a4c54d.html#exhale-function-vec4-8h-1abc1ad0dbb85790f38df9490ef3a4c54d"><span class="std std-ref">Template Function TRAP::Math::operator&amp;(const Vec&lt;4, T&gt;&amp;, T)</span></a></p></li>
 <li><p><a class="reference internal" href="function_Vec4_8h_1a68b8e4a1bc379c777204dc9487ffe075.html#exhale-function-vec4-8h-1a68b8e4a1bc379c777204dc9487ffe075"><span class="std std-ref">Function TRAP::Math::operator&amp;&amp;(const Vec&lt;4, bool&gt;&amp;, const Vec&lt;4, bool&gt;&amp;)</span></a></p></li>
 <li><p><a class="reference internal" href="function_Vec4_8h_1abb89b27ffb41a62fda0b022fbdcfb939.html#exhale-function-vec4-8h-1abb89b27ffb41a62fda0b022fbdcfb939"><span class="std std-ref">Template Function TRAP::Math::operator*(const Vec&lt;4, T&gt;&amp;, const T&amp;)</span></a></p></li>
 <li><p><a class="reference internal" href="function_Vec4_8h_1a2ce8e9173a34bd2fd3406b71e49b9807.html#exhale-function-vec4-8h-1a2ce8e9173a34bd2fd3406b71e49b9807"><span class="std std-ref">Template Function TRAP::Math::operator*(T, const Vec&lt;4, T&gt;&amp;)</span></a></p></li>

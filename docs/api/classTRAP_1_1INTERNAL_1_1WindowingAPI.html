@@ -13,10 +13,10 @@
 <meta name="description" content="Defined in File WindowingAPI.h. Nested Relationships: Nested Types: Struct WindowingAPI::Data, Struct WindowingAPI::InternalCursor, Struct WindowingAPI::InternalMonitor, Struct WindowingAPI::Intern..." />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Class Layer" href="classTRAP_1_1Layer.html" /><link rel="prev" title="Class TGAImage" href="classTRAP_1_1INTERNAL_1_1TGAImage.html" />
 
-    <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><!-- Generated with Sphinx 6.2.1 and Furo 2023.03.27 -->
+    <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><!-- Generated with Sphinx 6.2.1 and Furo 2023.05.20 -->
         <title>Class WindowingAPI - TRAP documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
@@ -180,7 +180,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../pages/gettingstarted.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pages/changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pages/eula.html">TRAP™ Engine End User License Agreement</a></li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="library_root.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="library_root.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="namespace_discord.html">Namespace discord</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_ImGui.html">Namespace ImGui</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_std.html">Namespace std</a></li>
@@ -385,6 +385,7 @@
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyLayoutEvent.html">Class KeyLayoutEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyPressEvent.html">Class KeyPressEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyReleaseEvent.html">Class KeyReleaseEvent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyRepeatEvent.html">Class KeyRepeatEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1KeyTypeEvent.html">Class KeyTypeEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1MonitorConnectEvent.html">Class MonitorConnectEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1MonitorDisconnectEvent.html">Class MonitorDisconnectEvent</a></li>
@@ -553,6 +554,7 @@
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a9d953844162b3e7632455f2eb3dfff43.html">Function ImGui_ImplVulkan_DestroyFontUploadObjects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ad4daa307d203af914786f8631a307ec6.html">Function ImGui_ImplVulkan_Init</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a1140b281b5df05d3a20b07d979ee0250.html">Function ImGui_ImplVulkan_NewFrame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a999cf60ee1d7b819164c685e9dd1c18a.html">Function ImGui_ImplVulkan_RemoveTexture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ab20cc208b1400091be27ed1e57c8ce41.html">Function ImGui_ImplVulkan_RenderDrawData</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ab6c61e9c9d8e8c314866e5d9b48b58b5.html">Function ImGui_ImplVulkan_SetMinImageCount</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ab8a288c1e4fa698cd1a83ae466d497ef.html">Function ImGui_ImplVulkan_SetMSAASamples</a></li>
@@ -2146,6 +2148,21 @@
 </dd></dl>
 
 <dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8INTERNAL12WindowingAPI18GetNativeVideoModeER15InternalMonitor">
+<span id="_CPPv3N4TRAP8INTERNAL12WindowingAPI18GetNativeVideoModeER15InternalMonitor"></span><span id="_CPPv2N4TRAP8INTERNAL12WindowingAPI18GetNativeVideoModeER15InternalMonitor"></span><span id="TRAP::INTERNAL::WindowingAPI::GetNativeVideoMode__InternalMonitorR"></span><span class="target" id="classTRAP_1_1INTERNAL_1_1WindowingAPI_1ad4f0c2cf778b512b34348e0b3145d9d8"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">optional</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N4TRAP8INTERNAL12WindowingAPI17InternalVideoModeE" title="TRAP::INTERNAL::WindowingAPI::InternalVideoMode"><span class="n"><span class="pre">InternalVideoMode</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GetNativeVideoMode</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N4TRAP8INTERNAL12WindowingAPI15InternalMonitorE" title="TRAP::INTERNAL::WindowingAPI::InternalMonitor"><span class="n"><span class="pre">InternalMonitor</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">monitor</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP8INTERNAL12WindowingAPI18GetNativeVideoModeER15InternalMonitor" title="Permalink to this definition">#</a><br /></dt>
+<dd><p>This function returns the native video mode of the specified monitor. The return value depends on the operating systems monitor settings. </p>
+<p>Errors: Possible errors include Error::Not_Initialized and Error::Platform_Error. Thread safety: This function must only be called from the main thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>monitor</strong> – Internal monitor to get internal video mode from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Native video mode of the specified monitor, or an empty optional if an error occurred. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8INTERNAL12WindowingAPI13GetVideoModesER15InternalMonitor">
 <span id="_CPPv3N4TRAP8INTERNAL12WindowingAPI13GetVideoModesER15InternalMonitor"></span><span id="_CPPv2N4TRAP8INTERNAL12WindowingAPI13GetVideoModesER15InternalMonitor"></span><span id="TRAP::INTERNAL::WindowingAPI::GetVideoModes__InternalMonitorR"></span><span class="target" id="classTRAP_1_1INTERNAL_1_1WindowingAPI_1a7ec228ddeb15b7746cd570d1279f5038"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N4TRAP8INTERNAL12WindowingAPI17InternalVideoModeE" title="TRAP::INTERNAL::WindowingAPI::InternalVideoMode"><span class="n"><span class="pre">InternalVideoMode</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GetVideoModes</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N4TRAP8INTERNAL12WindowingAPI15InternalMonitorE" title="TRAP::INTERNAL::WindowingAPI::InternalMonitor"><span class="n"><span class="pre">InternalMonitor</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">monitor</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP8INTERNAL12WindowingAPI13GetVideoModesER15InternalMonitor" title="Permalink to this definition">#</a><br /></dt>
 <dd><p>This function returns a vector of all video modes supported by the specified monitor. The returned vector is sorted in ascending order, first by color bit depth (the sum of all channel depths) and then by resolution area (the product of width and height). </p>
@@ -2354,7 +2371,7 @@
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8INTERNAL12WindowingAPI13SetWindowSizeER14InternalWindow7int32_t7int32_t">
 <span id="_CPPv3N4TRAP8INTERNAL12WindowingAPI13SetWindowSizeER14InternalWindow7int32_t7int32_t"></span><span id="_CPPv2N4TRAP8INTERNAL12WindowingAPI13SetWindowSizeER14InternalWindow7int32_t7int32_t"></span><span id="TRAP::INTERNAL::WindowingAPI::SetWindowSize__InternalWindowR.int32_t.int32_t"></span><span class="target" id="classTRAP_1_1INTERNAL_1_1WindowingAPI_1a8a0f8c0721c0f1f6ccbaf12ac0c6992c"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SetWindowSize</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N4TRAP8INTERNAL12WindowingAPI14InternalWindowE" title="TRAP::INTERNAL::WindowingAPI::InternalWindow"><span class="n"><span class="pre">InternalWindow</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">window</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">width</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">height</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP8INTERNAL12WindowingAPI13SetWindowSizeER14InternalWindow7int32_t7int32_t" title="Permalink to this definition">#</a><br /></dt>
 <dd><p>This function sets the size, in screen coordinates, of the content area of the specified window. </p>
-<p>For full screen windows, this function updates the resolution of its desired video mode and switches to the video mdoe closest to it.</p>
+<p>For full screen windows, this function updates the resolution of its desired video mode and switches to the video mode closest to it.</p>
 <p>If you wish to update the refresh rate of the desired video mode in addition to its resolution, see <a class="reference internal" href="#classTRAP_1_1INTERNAL_1_1WindowingAPI_1aaf7bd57499b6069fc98e86a0392e9a23"><span class="std std-ref">WindowingAPI::SetWindowMonitor</span></a>.</p>
 <p>The window manager may put limits on what sizes are allowed. The <a class="reference internal" href="#classTRAP_1_1INTERNAL_1_1WindowingAPI"><span class="std std-ref">WindowingAPI</span></a> cannot and should not override these limits.</p>
 <p>Errors: Possible errors include Error::Not_Initialized and Error::Platform_Error. Remarks: Wayland: A full screen window will not attempt to change the mode, no matter what the requested size. Thread safety: This function must only be called from the main thread.</p>
@@ -3526,6 +3543,11 @@
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8INTERNAL12WindowingAPI15InternalMonitor11CurrentModeE">
 <span id="_CPPv3N4TRAP8INTERNAL12WindowingAPI15InternalMonitor11CurrentModeE"></span><span id="_CPPv2N4TRAP8INTERNAL12WindowingAPI15InternalMonitor11CurrentModeE"></span><span id="TRAP::INTERNAL::WindowingAPI::InternalMonitor::CurrentMode__InternalVideoMode"></span><span class="target" id="structTRAP_1_1INTERNAL_1_1WindowingAPI_1_1InternalMonitor_1a5a79ab0a11469f53ba6ddf22a44b027d"></span><a class="reference internal" href="#_CPPv4N4TRAP8INTERNAL12WindowingAPI17InternalVideoModeE" title="TRAP::INTERNAL::WindowingAPI::InternalVideoMode"><span class="n"><span class="pre">InternalVideoMode</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CurrentMode</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N4TRAP8INTERNAL12WindowingAPI15InternalMonitor11CurrentModeE" title="Permalink to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8INTERNAL12WindowingAPI15InternalMonitor10NativeModeE">
+<span id="_CPPv3N4TRAP8INTERNAL12WindowingAPI15InternalMonitor10NativeModeE"></span><span id="_CPPv2N4TRAP8INTERNAL12WindowingAPI15InternalMonitor10NativeModeE"></span><span id="TRAP::INTERNAL::WindowingAPI::InternalMonitor::NativeMode__std::optional:InternalVideoMode:"></span><span class="target" id="structTRAP_1_1INTERNAL_1_1WindowingAPI_1_1InternalMonitor_1ae3990af55841e920020109110f1fa90a"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">optional</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N4TRAP8INTERNAL12WindowingAPI17InternalVideoModeE" title="TRAP::INTERNAL::WindowingAPI::InternalVideoMode"><span class="n"><span class="pre">InternalVideoMode</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">NativeMode</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">nullopt</span></span><a class="headerlink" href="#_CPPv4N4TRAP8INTERNAL12WindowingAPI15InternalMonitor10NativeModeE" title="Permalink to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 </div>
