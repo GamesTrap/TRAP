@@ -30,9 +30,6 @@ jobs:
     # Update package list
     - name: Update package list
       run: sudo apt update
-    # Install GCC 12
-    - name: Install GCC 12
-      run: sudo DEBIAN_FRONTEND=noninteractive apt install -yq --no-install-recommends g++-12 gcc-12
     # Install mold
     - name: Install mold
       run: sudo apt install -y mold
@@ -79,20 +76,26 @@ jobs:
           bin/Release-linux-x86_64/Games
           bin/Release-linux-x86_64/Utility
           bin/Release-linux-x86_64/Redists
-  build-linux-clang-12:
-    name: Build Linux Clang 12
+  build-linux-clang-14:
+    name: Build Linux Clang 14
     runs-on: ubuntu-22.04
     env:
-      CC: clang-12
-      CXX: clang++-12
+      CC: clang-14
+      CXX: clang++-14
     steps:
     # Check-out repository and submodules under $GITHUB_WORKSPACE
     - uses: actions/checkout@v3
       with:
         submodules: 'true'
+    # Add toolchain ppa
+    - name: Add toolchain ppa
+      run: sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/ppa
     # Update package list
     - name: Update package list
       run: sudo apt update
+    # Install mold
+    - name: Install mold
+      run: sudo apt install -y mold
     # Install X11 dependencies
     - name: Install X11 dependencies
       run: sudo apt install -y xorg-dev
@@ -116,7 +119,7 @@ jobs:
         cd GeneratorScripts/
         ./GenerateProjectMake.sh
         cd ..
-    - name: Compile code using clang++-12
+    - name: Compile code
       run: config=release make all -j2
     - name: Copy Assets (and other data)
       run: |
@@ -173,47 +176,6 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Windows MSVC 2022 Release Executables
-        path: |
-          bin/Release-windows-x86_64/Games
-          bin/Release-windows-x86_64/Utility
-          bin/Release-windows-x86_64/Redists
-  build-windows-msvc-2019:
-    name: Build Windows MSVC 2019
-    runs-on: windows-2019
-    steps:
-    # Check-out repository and submodules under $GITHUB_WORKSPACE
-    - uses: actions/checkout@v3
-      with:
-        submodules: 'true'
-    # Setup the Vulkan SDK
-    - name: Prepare Vulkan SDK 1.3.243.0
-      uses: humbletim/setup-vulkan-sdk@v1.2.0
-      with:
-        vulkan-query-version: 1.3.243.0
-        vulkan-components: Vulkan-Headers, Vulkan-Loader
-        vulkan-use-cache: true
-    # Setup msbuild
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.1
-    # Generate the Visual Studio 2019 Project files
-    - name: Generate Visual Studio 2019 Project files
-      run: cd GeneratorScripts && .\GenerateProjectVS2019.bat && cd ..
-    - name: Compile code
-      run: msbuild /m TRAP.sln /property:Configuration=Release
-    - name: Copy Assets (and other data)
-      run: |
-        Xcopy Games\Headless-Tests\Assets bin\Release-windows-x86_64\Games\Headless-Tests\Assets /I /H /E /C
-        Xcopy Games\Sandbox\Assets bin\Release-windows-x86_64\Games\Sandbox\Assets /I /H /E /C
-        Xcopy Games\Tests\Assets bin\Release-windows-x86_64\Games\Tests\Assets /I /H /E /C
-        Xcopy Games\Tests3D\Assets bin\Release-windows-x86_64\Games\Tests3D\Assets /I /H /E /C
-        Xcopy Games\TRAP-Editor\Assets bin\Release-windows-x86_64\Games\TRAP-Editor\Assets /I /H /E /C
-        Xcopy Games\TRAP-Editor\Resources bin\Release-windows-x86_64\Games\TRAP-Editor\Resources /I /H /E /C
-        Xcopy Utility\QOIConv bin\Release-windows-x86_64\Utility\QOIConv /I /H /E /C
-        Xcopy Redists bin\Release-windows-x86_64\Redists /I /H /E /C
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: Windows MSVC 2019 Release Executables
         path: |
           bin/Release-windows-x86_64/Games
           bin/Release-windows-x86_64/Utility
