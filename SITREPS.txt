@@ -4016,3 +4016,7 @@ SITREP 05/24/2023|23w21a1
 SITREP 05/25/2023|23w21a2
     - Changed TRAP Engine version to 23w21a2(0.9.36)
     - Premake scripts reduced redundancy of optional third party dependencies ~<15 mins
+
+SITREP 05/26/2023|23w21b1
+    - Changed TRAP Engine version to 23w21b1(0.9.37)
+    - Build-CI Ubuntu 22.04 replaced GCC 10 with GCC 12 ~<5 mins

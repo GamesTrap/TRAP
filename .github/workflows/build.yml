@@ -13,20 +13,29 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-linux-gcc-10:
-    name: Build Linux GCC 10
+  build-linux-gcc-12:
+    name: Build Linux GCC 12
     runs-on: ubuntu-22.04
     env:
-      CC: gcc-10
-      CXX: g++-10
+      CC: gcc-12
+      CXX: g++-12
     steps:
     # Check-out repository and submodules under $GITHUB_WORKSPACE
     - uses: actions/checkout@v3
       with:
         submodules: 'true'
+    # Add toolchain ppa
+    - name: Add toolchain ppa
+      run: sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/ppa
     # Update package list
     - name: Update package list
       run: sudo apt update
+    # Install GCC 12
+    - name: Install GCC 12
+      run: sudo DEBIAN_FRONTEND=noninteractive apt install -yq --no-install-recommends g++-12 gcc-12
+    # Install mold
+    - name: Install mold
+      run: sudo apt install -y mold
     # Install X11 dependencies
     - name: Install X11 dependencies
       run: sudo apt install -y xorg-dev
@@ -50,7 +59,7 @@ jobs:
        cd GeneratorScripts/
        ./GenerateProjectMake.sh
        cd ..
-    - name: Compile code using g++-10
+    - name: Compile code
       run: config=release make all -j2
     - name: Copy Assets (and other data)
       run: |
