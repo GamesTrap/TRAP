@@ -4027,3 +4027,4 @@ SITREP 05/26/2023|23w21b1
 SITREP 05/27/2023|23w21b2
     - Changed TRAP Engine version to 23w21b2(0.9.38)
     - Replaced std::filesystem::path::u8string() with std::filesystem::path::string() ~<15 mins
+    - Premake switched to C++20 ~<5 mins
