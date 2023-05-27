@@ -1,6 +1,7 @@
 #ifndef TRAP_UTILS_H
 #define TRAP_UTILS_H
 
+#include <cstdint>
 #include <array>
 #include <string>
 #include <type_traits>
@@ -96,29 +97,6 @@ namespace TRAP::Utils
 	/// is not Linux based).
 	/// </returns>
 	LinuxWindowManager GetLinuxWindowManager();
-
-	//-------------------------------------------------------------------------------------------------------------------//
-
-#ifdef __cpp_lib_bit_cast
-	using BitCast = std::bit_cast;
-#else
-	template<typename To, typename From>
-	[[nodiscard]] inline To BitCast(const From& from) noexcept
-	{
-		static_assert(sizeof(From) == sizeof(To));
-		static_assert(std::is_trivially_copyable_v<From>);
-		static_assert(std::is_trivially_copyable_v<To>);
-
-		union U
-		{
-			U() = default;
-			char storage[sizeof(To)]{};
-			typename std::remove_const<To>::type dest;
-		} u; //Instead of To dest; because To doesn't require DefaultConstructible.
-		memcpy(&u.dest, &from, sizeof(from));
-		return u.dest;
-	}
-#endif
 
 	//-------------------------------------------------------------------------------------------------------------------//
 

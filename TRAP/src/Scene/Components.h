@@ -27,6 +27,9 @@ namespace TRAP
 		TRAP::Utils::UID UID;
 
 		UIDComponent() = default;
+		explicit UIDComponent(TRAP::Utils::UID uid)
+			: UID(std::move(uid))
+		{}
 	};
 
 	/// <summary>

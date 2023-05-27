@@ -265,8 +265,8 @@ void TRAP::Graphics::API::VulkanQueue::SetQueueName(const std::string_view name)
 		return;
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	VkSetObjectName(m_device->GetVkDevice(), Utils::BitCast<uint64_t>(m_vkQueue), VK_OBJECT_TYPE_QUEUE, name);
+	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<uint64_t>(m_vkQueue), VK_OBJECT_TYPE_QUEUE, name);
 #else
-	VkSetObjectName(m_device->GetVkDevice(), Utils::BitCast<uint64_t>(m_vkQueue), VK_DEBUG_REPORT_OBJECT_TYPE_QUEUE_EXT, name);
+	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<uint64_t>(m_vkQueue), VK_DEBUG_REPORT_OBJECT_TYPE_QUEUE_EXT, name);
 #endif
 }

@@ -83,19 +83,19 @@ void TRAP::Log::Save() const
 	const auto fileEnding = FileSystem::GetFileEnding(m_path);
 	if(!folderPath || !fileName || !fileEnding)
 	{
-		TP_ERROR(LoggerPrefix, "Failed to save: ", m_path.generic_u8string());
+		TP_ERROR(LoggerPrefix, "Failed to save: ", m_path.generic_string());
 		return;
 	}
 	const std::filesystem::path logFile = *folderPath / ((*fileName) + "-" + GetDateTimeStamp() + *fileEnding);
 
-	TP_INFO(LoggerPrefix, "Saving ", logFile.generic_u8string());
+	TP_INFO(LoggerPrefix, "Saving ", logFile.generic_string());
 	std::string output;
 
 	for (const auto& [level, message] : m_buffer)
 		output += message + '\n';
 
 	if(!TRAP::FileSystem::WriteTextFile(logFile, output))
-		TP_ERROR(LoggerPrefix, "Failed to save: ", logFile.generic_u8string());
+		TP_ERROR(LoggerPrefix, "Failed to save: ", logFile.generic_string());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

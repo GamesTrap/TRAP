@@ -56,7 +56,7 @@ TRAP::Network::TCPListener::TCPListener() noexcept
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in);
 	if (getsockname(GetHandle(), &address, &size) != -1)
 	{
-		uint16_t res = Utils::BitCast<sockaddr_in>(address).sin_port;
+		uint16_t res = std::bit_cast<sockaddr_in>(address).sin_port;
 
 		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(res);
@@ -85,7 +85,7 @@ TRAP::Network::TCPListener::TCPListener() noexcept
 
 	//Bind the socket to the specified port
 	const sockaddr_in addr = INTERNAL::Network::SocketImpl::CreateAddress(address.ToInteger(), port);
-	const sockaddr finalAddr = Utils::BitCast<const sockaddr>(addr);
+	const sockaddr finalAddr = std::bit_cast<const sockaddr>(addr);
 	if(bind(GetHandle(), &finalAddr, sizeof(sockaddr_in)) == -1)
 	{
 		//Not likely to happen, but...

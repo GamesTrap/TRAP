@@ -4028,3 +4028,8 @@ SITREP 05/27/2023|23w21b2
     - Changed TRAP Engine version to 23w21b2(0.9.38)
     - Replaced std::filesystem::path::u8string() with std::filesystem::path::string() ~<15 mins
     - Premake switched to C++20 ~<5 mins
+    - Replaced TRAP::Utils::BitCast with std::bit_cast ~<5 mins
+    - Fixed entt compiler error ~<5 mins
+    - Log Replaced in place variadic unfolding hack ~<5 mins
+    - Replaced std::filesystem::path::generic_u8string() with generic_string() ~<5 mins
+    - Scene Replaced deprecated implicit this in lambdas ~<5 mins

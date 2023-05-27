@@ -301,7 +301,7 @@ void TRAP::Scene::OnUpdateRuntime(const Utils::TimeStep deltaTime)
 
 	//Update scripts
 	{
-		m_registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+		m_registry.view<NativeScriptComponent>().each([this, deltaTime](auto entity, auto& nsc)
 		{
 			//TODO For now create and instantiate every native script.
 			//Bug Memory leak OnDestroy is never called!
@@ -403,7 +403,7 @@ void TRAP::Scene::OnTick(const TRAP::Utils::TimeStep& deltaTime)
 
 	//Update scripts
 	{
-		m_registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+		m_registry.view<NativeScriptComponent>().each([this, deltaTime](auto entity, auto& nsc)
 		{
 			//TODO For now create and instantiate every native script.
 			//Bug Memory leak OnDestroy is never called!

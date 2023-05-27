@@ -355,17 +355,17 @@ namespace TRAP::Graphics::API
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef TRAP_DEBUG
-#if __cplusplus > 201703L
-	//Utility to check VkResult for errors and log them.
-	#define VkCall(x) std::source_location loc = std::source_location::current();\
-	                  ::TRAP::Graphics::API::ErrorCheck(x, #x, loc.file_name, loc.line);
-#else
+// #if __cplusplus > 201703L
+// 	//Utility to check VkResult for errors and log them.
+// 	#define VkCall(x) std::source_location loc = std::source_location::current();
+// 	                  ::TRAP::Graphics::API::ErrorCheck(x, #x, loc.file_name(), loc.line());
+// #else
 	//Utility to check VkResult for errors and log them.
 	#define VkCall(x) ::TRAP::Graphics::API::ErrorCheck(x, #x, __FILE__, __LINE__);
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 	#define VkReflexCall(x) ::TRAP::Graphics::API::ReflexErrorCheck(x, #x, __FILE__, __LINE__);
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
-#endif
+// #endif
 #else
 	/// <summary>
 	/// Utility to check VkResult for errors and log them.

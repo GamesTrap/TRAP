@@ -112,11 +112,11 @@
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	//Check if machine is using little-endian or big-endian
-	const int32_t intVal = 1;
-	const uint8_t* const uVal = reinterpret_cast<const uint8_t*>(&intVal);
 #if __cpp_lib_endian
 	static Endian endian = static_cast<Endian>(std::endian::native == std::endian::little);
 #else
+	const int32_t intVal = 1;
+	const uint8_t* const uVal = reinterpret_cast<const uint8_t*>(&intVal);
 	static Endian endian = static_cast<Endian>(uVal[0] == 1);
 #endif
 
@@ -145,7 +145,7 @@
 				: "a" (funcID), "c" (subFuncID));
 	#endif
 
-		return Utils::BitCast<std::array<uint32_t, 4>>(regs);
+		return std::bit_cast<std::array<uint32_t, 4>>(regs);
 	};
 
 	std::array<uint32_t, 4> regs = CPUID(0, 0);
@@ -522,7 +522,7 @@ static TRAP::Utils::NTDLL s_ntdll;
 			TRAP::Utils::Memory::SwapBytes(name.sin_addr.s_addr);
 		}
 
-		sockaddr convertedSock = TRAP::Utils::BitCast<sockaddr>(name); //Prevent usage of reinterpret_cast
+		sockaddr convertedSock = std::bit_cast<sockaddr>(name); //Prevent usage of reinterpret_cast
 		rc = bind(socketFD, &convertedSock, sizeof(name));
 		if(rc < 0)
 		{

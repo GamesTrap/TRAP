@@ -904,7 +904,7 @@ bool TRAP::FileSystem::OpenExternally(const std::filesystem::path& p)
         if(comInitializer.IsInitialized())
         {
             res = ShellExecuteW(nullptr, L"open", absPath->c_str(), nullptr, nullptr, SW_SHOWNORMAL);
-            if(TRAP::Utils::BitCast<INT_PTR>(res) <= 32)
+            if(std::bit_cast<INT_PTR>(res) <= 32)
             {
                 TP_ERROR(Log::FileSystemPrefix, "Couldn't open externally: ", p, "!");
                 TP_ERROR(Log::FileSystemPrefix, Utils::String::GetStrError());
@@ -917,7 +917,7 @@ bool TRAP::FileSystem::OpenExternally(const std::filesystem::path& p)
         }
     }
 
-    return TRAP::Utils::BitCast<INT_PTR>(res) > 32;
+    return std::bit_cast<INT_PTR>(res) > 32;
 #elif defined(TRAP_PLATFORM_LINUX)
     std::string cmd = "xdg-open ";
     cmd += absPath->native();
@@ -970,7 +970,7 @@ bool OpenFolderInFileBrowser(const std::filesystem::path& p)
         if(comInitializer.IsInitialized())
         {
             res = ShellExecuteW(nullptr, L"explore", absPath->c_str(), nullptr, nullptr, SW_SHOWNORMAL);
-            if(TRAP::Utils::BitCast<INT_PTR>(res) <= 32)
+            if(std::bit_cast<INT_PTR>(res) <= 32)
             {
                 TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: ", p, "!");
                 TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
@@ -983,7 +983,7 @@ bool OpenFolderInFileBrowser(const std::filesystem::path& p)
         }
     }
 
-    return TRAP::Utils::BitCast<INT_PTR>(res) > 32;
+    return std::bit_cast<INT_PTR>(res) > 32;
 #elif defined(TRAP_PLATFORM_LINUX)
     std::string cmd = "xdg-open ";
     cmd += absPath->string();

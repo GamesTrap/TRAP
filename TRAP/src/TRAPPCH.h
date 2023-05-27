@@ -40,6 +40,8 @@
 #include <variant>
 #include <mutex>
 #include <shared_mutex>
+#include <bit>
+#include <source_location>
 
 #ifdef _MSC_VER
 	#pragma warning(push, 0)

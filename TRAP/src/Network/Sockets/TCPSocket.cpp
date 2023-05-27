@@ -72,7 +72,7 @@ TRAP::Network::TCPSocket::TCPSocket() noexcept
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in);
 	if (getsockname(GetHandle(), &address, &size) != -1)
 	{
-		uint16_t port = Utils::BitCast<sockaddr_in>(address).sin_port;
+		uint16_t port = std::bit_cast<sockaddr_in>(address).sin_port;
 
 		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(port);
@@ -98,7 +98,7 @@ TRAP::Network::TCPSocket::TCPSocket() noexcept
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in);
 	if (getpeername(GetHandle(), &address, &size) != -1)
 	{
-		uint32_t addr = Utils::BitCast<sockaddr_in>(address).sin_addr.s_addr;
+		uint32_t addr = std::bit_cast<sockaddr_in>(address).sin_addr.s_addr;
 
 		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(addr);
@@ -123,7 +123,7 @@ TRAP::Network::TCPSocket::TCPSocket() noexcept
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in);
 	if (getpeername(GetHandle(), &address, &size) != -1)
 	{
-		uint16_t port = Utils::BitCast<sockaddr_in>(address).sin_port;
+		uint16_t port = std::bit_cast<sockaddr_in>(address).sin_port;
 
 		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(port);
@@ -149,7 +149,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Connect(const IPv4Addres
 
 	//Create the remote address
 	const sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(remoteAddress.ToInteger(), remotePort);
-	const sockaddr convertedAddr = Utils::BitCast<sockaddr>(address);
+	const sockaddr convertedAddr = std::bit_cast<sockaddr>(address);
 
 	if(timeout <= Utils::TimeStep(0.0f))
 	{

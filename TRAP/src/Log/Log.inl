@@ -10,7 +10,8 @@ void TRAP::Log::Trace(Args&& ... args)
 
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Trace]";
-	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
+	(stream << ... << args);
+	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
@@ -41,7 +42,8 @@ void TRAP::Log::Debug(Args&& ... args)
 
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Debug]";
-	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
+	(stream << ... << args);
+	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
@@ -72,7 +74,8 @@ void TRAP::Log::Info(Args&& ... args)
 
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Info]";
-	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
+	(stream << ... << args);
+	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
@@ -103,7 +106,8 @@ void TRAP::Log::Warn(Args&& ... args)
 
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Warn]";
-	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
+	(stream << ... << args);
+	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
@@ -134,7 +138,8 @@ void TRAP::Log::Error(Args&& ... args)
 
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Error]";
-	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
+	(stream << ... << args);
+	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
@@ -165,7 +170,8 @@ void TRAP::Log::Critical(Args&& ... args)
 
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Critical]";
-	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
+	(stream << ... << args);
+	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
@@ -198,7 +204,8 @@ void TRAP::Log::Trace(Args&& ... args)
 
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Trace]";
-	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
+	(stream << ... << args);
+	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
@@ -230,7 +237,8 @@ void TRAP::Log::Debug(Args&& ... args)
 
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Debug]";
-	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
+	(stream << ... << args);
+	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
@@ -262,7 +270,8 @@ void TRAP::Log::Info(Args&& ... args)
 
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Info]";
-	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
+	(stream << ... << args);
+	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
@@ -294,7 +303,8 @@ void TRAP::Log::Warn(Args&& ... args)
 
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Warn]";
-	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
+	(stream << ... << args);
+	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
@@ -326,7 +336,8 @@ void TRAP::Log::Error(Args&& ... args)
 
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Error]";
-	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
+	(stream << ... << args);
+	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
@@ -358,7 +369,8 @@ void TRAP::Log::Critical(Args&& ... args)
 
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Critical]";
-	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
+	(stream << ... << args);
+	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);

@@ -54,7 +54,7 @@ TRAP::Network::UDPSocket::UDPSocket()
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in);
 	if (getsockname(GetHandle(), &address, &size) != -1)
 	{
-		uint16_t port = Utils::BitCast<sockaddr_in>(address).sin_port;
+		uint16_t port = std::bit_cast<sockaddr_in>(address).sin_port;
 
 		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(port);
@@ -83,7 +83,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Bind(const uint16_t port
 
 	//Bind the socket
 	const sockaddr_in addr = INTERNAL::Network::SocketImpl::CreateAddress(address.ToInteger(), port);
-	const sockaddr finalAddr = Utils::BitCast<sockaddr>(addr);
+	const sockaddr finalAddr = std::bit_cast<sockaddr>(addr);
 	if(::bind(GetHandle(), &finalAddr, sizeof(addr)) == -1)
 	{
 		TP_ERROR(Log::NetworkUDPSocketPrefix, "Failed to bind socket to port");
@@ -124,7 +124,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(const void* const d
 
 	//Build the target address
 	const sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(remoteAddress.ToInteger(), remotePort);
-	const sockaddr finalAddress = Utils::BitCast<sockaddr>(address);
+	const sockaddr finalAddress = std::bit_cast<sockaddr>(address);
 
 	//Send the data (unlike TCP, all the data is always sent in one call)
 	const int64_t sent = sendto(GetHandle(), static_cast<const char*>(data), size, 0,
@@ -160,7 +160,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* const data
 
 	//Data that will be filled with the other computer's address
 	sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(INADDR_ANY, 0);
-	sockaddr convertedAddress = Utils::BitCast<sockaddr>(address);
+	sockaddr convertedAddress = std::bit_cast<sockaddr>(address);
 
 	//Receive a chunk of bytes
 	INTERNAL::Network::SocketImpl::AddressLength addressSize = sizeof(sockaddr_in);
@@ -174,7 +174,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* const data
 	//Fill the sender information
 	received = NumericCast<std::size_t>(sizeReceived);
 
-	address = Utils::BitCast<sockaddr_in>(convertedAddress);
+	address = std::bit_cast<sockaddr_in>(convertedAddress);
 	uint32_t addr = address.sin_addr.s_addr;
 	uint16_t port = address.sin_port;
 
