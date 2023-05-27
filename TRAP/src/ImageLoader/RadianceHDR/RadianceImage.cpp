@@ -14,8 +14,7 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 	m_bitsPerPixel = 96;
 	m_colorFormat = ColorFormat::RGB;
 
-	TP_DEBUG(Log::ImageRadiancePrefix, "Loading image: \"",
-	         m_filepath.u8string(), "\"");
+	TP_DEBUG(Log::ImageRadiancePrefix, "Loading image: ", m_filepath);
 
 	if (!FileSystem::Exists(m_filepath))
 		return;
@@ -23,7 +22,7 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 	std::ifstream file(m_filepath, std::ios::binary);
 	if (!file.is_open())
 	{
-		TP_ERROR(Log::ImageRadiancePrefix, "Couldn't open file path: ", m_filepath.u8string(), "!");
+		TP_ERROR(Log::ImageRadiancePrefix, "Couldn't open file path: ", m_filepath, "!");
 		TP_WARN(Log::ImageRadiancePrefix, "Using default image!");
 		return;
 	}

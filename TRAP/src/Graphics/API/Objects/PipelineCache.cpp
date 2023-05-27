@@ -40,8 +40,7 @@ void TRAP::Graphics::PipelineCache::Save(const std::filesystem::path& path) cons
 	GetPipelineCacheData(&dataSize, data.data());
 
 	if (!TRAP::FileSystem::WriteFile(path, data))
-		TP_ERROR(Log::RendererPipelineCachePrefix, "Saving of PipelineCache to path: \"",
-		         path.u8string(), "\" failed!");
+		TP_ERROR(Log::RendererPipelineCachePrefix, "Saving of PipelineCache to path: ", path, " failed!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

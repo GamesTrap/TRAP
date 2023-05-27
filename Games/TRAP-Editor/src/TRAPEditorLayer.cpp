@@ -244,7 +244,7 @@ void TRAPEditorLayer::OnAttach()
 		if(!TRAP::FileSystem::Exists(imguiIniPath))
 		{
 			if(TRAP::FileSystem::Copy("./Resources/Layouts/Default.ini", imguiIniPath))
-				ImGui::LoadIniSettingsFromDisk(imguiIniPath.u8string().c_str());
+				ImGui::LoadIniSettingsFromDisk(imguiIniPath.string().c_str());
 		}
 	}
 
@@ -769,7 +769,7 @@ void TRAPEditorLayer::DuplicateEntity()
 void TRAPEditorLayer::SerializeScene(TRAP::Ref<TRAP::Scene> scene, const std::filesystem::path& path)
 {
 	TRAP::SceneSerializer serializer(std::move(scene));
-	serializer.Serialize(path.u8string());
+	serializer.Serialize(path);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

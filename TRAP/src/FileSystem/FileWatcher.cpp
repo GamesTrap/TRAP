@@ -164,7 +164,7 @@ void TRAP::FileSystem::FileWatcher::RemoveFolders(const std::vector<std::filesys
         if(!absPath) //Skip empty path
             continue;
 
-        m_paths.erase(std::remove(m_paths.begin(), m_paths.end(), (*absPath).u8string()),
+        m_paths.erase(std::remove(m_paths.begin(), m_paths.end(), *absPath),
                       m_paths.end());
     }
 
@@ -443,7 +443,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
 
     for(const auto& path : m_paths)
     {
-        const int32_t wd = inotify_add_watch(std::get<0>(fileDescriptors).fd, path.u8string().c_str(),
+        const int32_t wd = inotify_add_watch(std::get<0>(fileDescriptors).fd, path.string().c_str(),
                                              IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO);
 
         if(wd < 0)
@@ -464,7 +464,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
 
             for(const auto& p : it)
             {
-                const int32_t wd1 = inotify_add_watch(std::get<0>(fileDescriptors).fd, p.path().u8string().c_str(),
+                const int32_t wd1 = inotify_add_watch(std::get<0>(fileDescriptors).fd, p.path().string().c_str(),
                                                       IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO);
 
                 if(wd1 < 0)
@@ -556,7 +556,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
             {
                 if(isDir && m_recursive) //Add to tracking list
                 {
-                    const int32_t wd = inotify_add_watch(std::get<0>(fileDescriptors).fd, filePath.u8string().c_str(),
+                    const int32_t wd = inotify_add_watch(std::get<0>(fileDescriptors).fd, filePath.string().c_str(),
                                                             IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO);
 
                     if(wd < 0)

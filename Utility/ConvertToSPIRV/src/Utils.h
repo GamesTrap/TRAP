@@ -27,7 +27,7 @@ template <typename T>
 
     if(ec)
     {
-        std::cerr << "Couldn't check if file or folder exists: \"" << path.u8string() << "\" (" << ec.message() << ")\n";
+        std::cerr << "Couldn't check if file or folder exists: " << path << " (" << ec.message() << ")\n";
         return false;
     }
 
@@ -58,7 +58,7 @@ template <typename T>
     std::ifstream file(filePath);
     if(!file.is_open() || !file.good())
     {
-		std::cerr << "Couldn't open file: \"" << filePath.u8string() << "\"\n";
+		std::cerr << "Couldn't open file: " << filePath << "\n";
         return std::nullopt;
     }
 
@@ -85,7 +85,7 @@ template <typename T>
     std::ifstream file(filePath, std::ios::binary | std::ios::ate);
     if(!file.is_open() || !file.good())
     {
-		std::cerr << "Couldn't open file: \"" << filePath.u8string() << "\"\n";
+		std::cerr << "Couldn't open file: " << filePath << "\n";
         return std::nullopt;
     }
 

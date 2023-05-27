@@ -186,8 +186,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Reload(const st
 			}
 		}
 
-		TP_WARN(Log::ShaderManagerPrefix, "Couldn't find shader: \"",
-		        std::filesystem::path(nameOrPath).u8string(), "\" to reload.");
+		TP_WARN(Log::ShaderManagerPrefix, "Couldn't find shader: ", std::filesystem::path(nameOrPath), " to reload.");
 	}
 
 	return nullptr;

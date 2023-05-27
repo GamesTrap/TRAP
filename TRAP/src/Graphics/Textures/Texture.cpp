@@ -308,7 +308,7 @@
 	if(name.empty() && !img->GetFilePath().empty())
 	{
 		TP_WARN(Log::TexturePrefix, "Name is empty! Using filename as name!");
-		name = img->GetFilePath().filename().u8string();
+		name = img->GetFilePath().filename().string();
 	}
 
 	TRAP::Ref<Texture> texture = nullptr;

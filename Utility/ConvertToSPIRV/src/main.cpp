@@ -191,7 +191,7 @@ int main(const int argc, const char* const* const argv)
 
 void PrintUsage(const std::filesystem::path& programName)
 {
-	std::cout << programName.filename().u8string() << " <file> [options]" << "\n\n" <<
+	std::cout << programName.filename().string() << " <file> [options]" << "\n\n" <<
 	             "Options:\n" <<
 				 "-h | --help                    | Print this help\n" <<
 				 "   | --version                 | Print the version number\n" <<

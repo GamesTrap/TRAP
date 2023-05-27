@@ -397,12 +397,12 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 
 	customOutput->replace_extension(ShaderFileEnding);
 
-    std::cout << "[SPIRV] Saving Shader: \"" << customOutput->u8string() << "\"" << '\n';
+    std::cout << "[SPIRV] Saving Shader: " << *customOutput <<'\n';
 
 	std::ofstream file(*customOutput, std::ios::binary);
 	if (!file.is_open())
     {
-		std::cerr << "Couldn't open file: " << customOutput->u8string() << '\n';
+		std::cerr << "Couldn't open file: " << *customOutput << '\n';
         return false;
     }
 
@@ -433,7 +433,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 {
 	if (!FileOrFolderExists(filePath))
 	{
-		std::cerr << "Couldn't find file or folder: \"" << filePath.u8string() << "\"\n";
+		std::cerr << "Couldn't find file or folder: " << filePath << "\n";
 		return false;
 	}
 
@@ -441,7 +441,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 	if (!source)
 		return false;
 
-	std::string newPath = filePath.u8string();
+	std::string newPath = filePath.string();
 	newPath = newPath.substr(0, newPath.size() - 7);
 	outShader = Shader{newPath, *source, ShaderStage::None};
 

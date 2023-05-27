@@ -13,7 +13,7 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::filesystem::path filepath)
 	m_filepath = std::move(filepath);
 	m_isHDR = true;
 
-	TP_DEBUG(Log::ImagePFMPrefix, "Loading image: \"", m_filepath.u8string(), "\"");
+	TP_DEBUG(Log::ImagePFMPrefix, "Loading image: ", m_filepath);
 
 	if (!FileSystem::Exists(m_filepath))
 		return;
@@ -21,7 +21,7 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::filesystem::path filepath)
 	std::ifstream file(m_filepath, std::ios::binary);
 	if (!file.is_open())
 	{
-		TP_ERROR(Log::ImagePFMPrefix, "Couldn't open file path: ", m_filepath.u8string(), "!");
+		TP_ERROR(Log::ImagePFMPrefix, "Couldn't open file path: ", m_filepath, "!");
 		TP_WARN(Log::ImagePFMPrefix, "Using default image!");
 		return;
 	}

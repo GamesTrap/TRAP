@@ -182,8 +182,7 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Reload(co
             }
 		}
 
-		TP_WARN(Log::SpriteManagerPrefix, "Couldn't find sprite: \"",
-		        std::filesystem::path(nameOrPath).u8string(), "\" to reload.");
+		TP_WARN(Log::SpriteManagerPrefix, "Couldn't find sprite: ", std::filesystem::path(nameOrPath), " to reload.");
 	}
 
 	return nullptr;

@@ -44,7 +44,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 
 	m_filepath = std::move(filepath);
 
-	TP_DEBUG(Log::ImagePNGPrefix, "Loading image: \"", m_filepath.u8string(), "\"");
+	TP_DEBUG(Log::ImagePNGPrefix, "Loading image: ", m_filepath);
 
 	if (!FileSystem::Exists(m_filepath))
 		return;
@@ -52,7 +52,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 	std::ifstream file(m_filepath, std::ios::binary);
 	if (!file.is_open())
 	{
-		TP_ERROR(Log::ImagePNGPrefix, "Couldn't open file path: ", m_filepath.u8string(), "!");
+		TP_ERROR(Log::ImagePNGPrefix, "Couldn't open file path: ", m_filepath, "!");
 		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
 		return;
 	}

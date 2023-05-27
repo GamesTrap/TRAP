@@ -58,11 +58,11 @@ void TRAP_ASSERT_IMPL_LOG(const std::string_view expressionStr, const std::strin
 {
 	if constexpr(sizeof...(Args) > 1)
 	{
-		TP_CRITICAL("Assertion '", expressionStr, "' failed: ", args..., " @ ", std::filesystem::absolute(file).u8string(), ':', line);
+		TP_CRITICAL("Assertion '", expressionStr, "' failed: ", args..., " @ ", std::filesystem::absolute(file).string(), ':', line);
 	}
 	else
 	{
-		TP_CRITICAL("Assertion '", expressionStr, "' failed @ ", std::filesystem::absolute(file).u8string(), ':', line);
+		TP_CRITICAL("Assertion '", expressionStr, "' failed @ ", std::filesystem::absolute(file).string(), ':', line);
 	}
 }
 

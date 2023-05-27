@@ -333,7 +333,7 @@ bool TRAP::Graphics::Shader::Reload()
 
 	if(!file.is_open())
 	{
-		TP_ERROR(Log::FileSystemPrefix, "Couldn't open file: ", filePath.u8string());
+		TP_ERROR(Log::FileSystemPrefix, "Couldn't open file: ", filePath);
 		return false;
 	}
 
@@ -769,7 +769,7 @@ bool TRAP::Graphics::Shader::Reload()
 
 	if(!supportedFormat)
 	{
-		TP_ERROR(Log::ShaderPrefix, "File: \"", filePath.u8string(), "\" suffix is not supported!");
+		TP_ERROR(Log::ShaderPrefix, "File: ", filePath, " suffix is not supported!");
 		TP_WARN(Log::ShaderPrefix, "Skipping unrecognized file");
 		return false;
 	}

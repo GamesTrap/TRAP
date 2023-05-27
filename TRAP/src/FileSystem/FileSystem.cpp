@@ -28,7 +28,7 @@ void TRAP::FileSystem::Init()
     if(gameTempFolder && !Exists(*gameTempFolder))
     {
         if(!CreateFolder(*gameTempFolder))
-            TP_ERROR(Log::FileSystemPrefix, "Failed to create game temp folder: \"", gameTempFolder->u8string(), "\"!");
+            TP_ERROR(Log::FileSystemPrefix, "Failed to create game temp folder: ", *gameTempFolder, "!");
     }
 
     //Create game document folder
@@ -37,7 +37,7 @@ void TRAP::FileSystem::Init()
     if(gameDocsFolder && !Exists(*gameDocsFolder))
     {
         if(!CreateFolder(*gameDocsFolder))
-            TP_ERROR(Log::FileSystemPrefix, "Failed to create game documents folder: \"", gameDocsFolder->u8string(), "\"!");
+            TP_ERROR(Log::FileSystemPrefix, "Failed to create game documents folder: ", *gameDocsFolder, "!");
     }
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -46,7 +46,7 @@ void TRAP::FileSystem::Init()
     if(gameLogFolder && !Exists(*gameLogFolder))
     {
         if(!CreateFolder(*gameLogFolder))
-            TP_ERROR(Log::FileSystemPrefix, "Failed to create game log folder: \"", gameLogFolder->u8string(), "\"!");
+            TP_ERROR(Log::FileSystemPrefix, "Failed to create game log folder: ", *gameLogFolder, "!");
     }
 }
 
@@ -63,7 +63,7 @@ void TRAP::FileSystem::Init()
     std::ifstream file(path, std::ios::binary);
     if(!file.is_open() || !file.good())
     {
-		TP_ERROR(Log::FileSystemPrefix, "Couldn't read file: \"", path.u8string(), "\" (failed to open file)!");
+		TP_ERROR(Log::FileSystemPrefix, "Couldn't read file: ", path, " (failed to open file)!");
         return std::nullopt;
     }
 
@@ -95,7 +95,7 @@ void TRAP::FileSystem::Init()
     std::ifstream file(path, std::ios::binary);
     if(!file.is_open() || !file.good())
     {
-		TP_ERROR(Log::FileSystemPrefix, "Couldn't read file: \"", path.u8string(), "\" (failed to open file)!");
+		TP_ERROR(Log::FileSystemPrefix, "Couldn't read file: ", path, " (failed to open file)!");
         return std::nullopt;
     }
 
@@ -129,7 +129,7 @@ bool TRAP::FileSystem::WriteFile(const std::filesystem::path& path, const std::v
     std::ofstream file(path, modeFlags);
     if(!file.is_open() || !file.good())
     {
-	    TP_ERROR(Log::FileSystemPrefix, "Couldn't write file: \"", path.u8string(), "\" (failed to open file)!");
+	    TP_ERROR(Log::FileSystemPrefix, "Couldn't write file: ", path, " (failed to open file)!");
         return false;
     }
 
@@ -151,7 +151,7 @@ bool TRAP::FileSystem::WriteTextFile(const std::filesystem::path& path, const st
     std::ofstream file(path, modeFlags);
     if(!file.is_open() || !file.good())
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't write file: \"", path.u8string(), "\" (failed to open file)!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't write file: ", path, " (failed to open file)!");
         return false;
     }
 
@@ -177,7 +177,7 @@ bool TRAP::FileSystem::CreateFolder(const std::filesystem::path& path)
 
     if(ec)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't create folder: \"", path.u8string(), "\" (", ec.message(), ")!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't create folder: ", path, " (", ec.message(), ")!");
         return false;
     }
 
@@ -196,8 +196,7 @@ bool TRAP::FileSystem::Delete(const std::filesystem::path& path)
     const bool res = std::filesystem::remove_all(path, ec) >= 1;
     if(ec)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't delete file or folder: \"", path.u8string(),
-                    "\" (", ec.message(), ")!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't delete file or folder: ", path, " (", ec.message(), ")!");
         return false;
     }
 
@@ -218,8 +217,8 @@ bool TRAP::FileSystem::Move(const std::filesystem::path& oldPath, const std::fil
 
     if(ec)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't move from: \"", oldPath.u8string(),
-                 "\" to \"", newPath.u8string(), "\" (", ec.message(), ")!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't move from: ", oldPath,
+                 " to ", newPath, " (", ec.message(), ")!");
         return false;
     }
 
@@ -246,8 +245,8 @@ bool TRAP::FileSystem::Copy(const std::filesystem::path& source, const std::file
 
     if(ec)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't copy folder: \"", source.u8string(), "\" to \"", destination.u8string(),
-                 "\" (", ec.message(), ")!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't copy folder: ", source, " to ", destination,
+                 " (", ec.message(), ")!");
         return false;
     }
 
@@ -270,7 +269,7 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
     }
     catch(const std::exception& e)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't rename file or folder: \"", oldPath.u8string(), "\" to \"", newName,
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't rename file or folder: ", oldPath, " to \"", newName,
                  "\" (", e.what(), ")!");
         return false;
     }
@@ -291,8 +290,8 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
 
     if(ec)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if file or folder exists: \"", path.u8string(),
-                 "\" (", ec.message(), ")!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if file or folder exists: ", path,
+                 " (", ec.message(), ")!");
         return false;
     }
 
@@ -315,15 +314,14 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
 
         if(ec)
         {
-            TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", path.u8string(),
-                     "\" (", ec.message(), ")!");
+            TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: ", path, " (", ec.message(), ")!");
             return std::nullopt;
         }
 
         if(size == std::numeric_limits<uintmax_t>::max())
         {
-            TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", path.u8string(),
-                     "\" (size is ", std::numeric_limits<uintmax_t>::max(), ")!");
+            TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: ", path,
+                     " (size is ", std::numeric_limits<uintmax_t>::max(), ")!");
             return std::nullopt;
         }
 
@@ -341,8 +339,8 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
             const std::filesystem::recursive_directory_iterator rDIt(path, ec);
             if(ec)
             {
-                TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", path.u8string(),
-                        "\" (", ec.message(), ")!");
+                TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: ", path,
+                        " (", ec.message(), ")!");
                 return std::nullopt;
             }
 
@@ -351,8 +349,8 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
                 res = entry.is_regular_file(ec);
                 if(ec)
                 {
-                    TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", entry.path().u8string(),
-                            "\" (", ec.message(), ")!");
+                    TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: ", entry.path(),
+                            " (", ec.message(), ")!");
                     return std::nullopt;
                 }
                 if(res)
@@ -360,15 +358,15 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
                     const uintmax_t fileSize = entry.file_size(ec);
                     if(ec)
                     {
-                        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", entry.path().u8string(),
-                                "\" (", ec.message(), ")!");
+                        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: ", entry.path(),
+                                " (", ec.message(), ")!");
                         return std::nullopt;
                     }
 
                     if(fileSize == std::numeric_limits<uintmax_t>::max())
                     {
-                        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", entry.path().u8string(),
-                                "\" (size is ", std::numeric_limits<uintmax_t>::max(), ")!");
+                        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: ", entry.path(),
+                                " (size is ", std::numeric_limits<uintmax_t>::max(), ")!");
                         return std::nullopt;
                     }
                     size += fileSize;
@@ -380,8 +378,8 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
             const std::filesystem::directory_iterator dIt(path, ec);
             if(ec)
             {
-                TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", path.u8string(),
-                        "\" (", ec.message(), ")!");
+                TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: ", path,
+                        " (", ec.message(), ")!");
                 return std::nullopt;
             }
 
@@ -390,8 +388,8 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
                 res = entry.is_regular_file(ec);
                 if(ec)
                 {
-                    TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", entry.path().u8string(),
-                            "\" (", ec.message(), ")!");
+                    TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: ", entry.path(),
+                            " (", ec.message(), ")!");
                     return std::nullopt;
                 }
                 if(res)
@@ -399,15 +397,15 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
                     const uintmax_t fileSize = entry.file_size(ec);
                     if(ec)
                     {
-                        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", entry.path().u8string(),
-                                "\" (", ec.message(), ")!");
+                        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: ", entry.path(),
+                                " (", ec.message(), ")!");
                         return std::nullopt;
                     }
 
                     if(fileSize == std::numeric_limits<uintmax_t>::max())
                     {
-                        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", entry.path().u8string(),
-                                "\" (size is ", std::numeric_limits<uintmax_t>::max(), ")!");
+                        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: ", entry.path(),
+                                " (size is ", std::numeric_limits<uintmax_t>::max(), ")!");
                         return std::nullopt;
                     }
                     size += fileSize;
@@ -433,15 +431,13 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
     const auto res = std::filesystem::last_write_time(path, ec);
     if(ec)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't get last write time: \"", path.u8string(),
-                 "\" (", ec.message(), ")!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't get last write time: ", path, " (", ec.message(), ")!");
         return std::nullopt;
     }
 
     if(res == std::filesystem::file_time_type::min())
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't get last write time: \"", path.u8string(),
-                 "\" (time is min)!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't get last write time: ", path, " (time is min)!");
         return std::nullopt;
     }
 
@@ -459,12 +455,11 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
     std::string res{};
     try //filename() may throw implementation defined exceptions
     {
-        res = path.filename().u8string();
+        res = path.filename().string();
     }
     catch(const std::exception& e)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file name with ending: \"", path.u8string(),
-                 "\" (", e.what(), ")!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file name with ending: ", path, " (", e.what(), ")!");
         return std::nullopt;
     }
 
@@ -485,12 +480,11 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
     std::string res{};
     try //stem() may throw implementation defined exceptions
     {
-        res = path.stem().u8string();
+        res = path.stem().string();
     }
     catch(const std::exception& e)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file name: \"", path.u8string(),
-                 "\" (", e.what(), ")!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file name: ", path, " (", e.what(), ")!");
         return std::nullopt;
     }
 
@@ -511,12 +505,11 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
     std::string res{};
     try //extension() may throw implementation defined exceptions
     {
-        res = path.extension().u8string();
+        res = path.extension().string();
     }
     catch(const std::exception& e)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file ending: \"", path.u8string(),
-                 "\" (", e.what(), ")!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file ending: ", path, " (", e.what(), ")!");
         return std::nullopt;
     }
 
@@ -541,8 +534,7 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
     }
     catch(const std::exception& e)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't get folder path: \"", filePath.u8string(),
-                 "\" (", e.what(), ")!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't get folder path: ", filePath, " (", e.what(), ")!");
         return std::nullopt;
     }
 
@@ -680,8 +672,8 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
 
     if(ec)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Error while checking if paths are equivalent: \"", p1.u8string(), "\" and \"",
-                 p2.u8string(), "\" (", ec.message(), ")!");
+        TP_ERROR(Log::FileSystemPrefix, "Error while checking if paths are equivalent: ", p1, " and ",
+                 p2, " (", ec.message(), ")!");
         return false;
     }
 
@@ -701,7 +693,7 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
 
     if(ec)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if path leads to a folder: \"", p.u8string(), "\" (", ec.message(), ")!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if path leads to a folder: ", p, " (", ec.message(), ")!");
         return false;
     }
 
@@ -721,7 +713,7 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
 
     if(ec)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if path leads to a regular file: \"", p.u8string(), "\" (", ec.message(), ")!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if path leads to a regular file: ", p, " (", ec.message(), ")!");
         return false;
     }
 
@@ -741,7 +733,7 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
 
     if(ec)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if path leads to an empty file or folder: \"", p.u8string(), "\" (", ec.message(), ")!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if path leads to an empty file or folder: ", p, " (", ec.message(), ")!");
         return false;
     }
 
@@ -764,7 +756,7 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
     }
     catch(const std::exception& e)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if path is absolute: \"", p.u8string(), "\" (", e.what(), ")!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if path is absolute: ", p, " (", e.what(), ")!");
         return false;
     }
 
@@ -787,7 +779,7 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
     }
     catch(const std::exception& e)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if path is relative: \"", p.u8string(), "\" (", e.what(), ")!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if path is relative: ", p, " (", e.what(), ")!");
         return false;
     }
 
@@ -807,7 +799,7 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
 
     if(ec)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Error while converting path to absolute: \"", p.u8string(), "\" (", ec.message(), ")!");
+        TP_ERROR(Log::FileSystemPrefix, "Error while converting path to absolute: ", p, " (", ec.message(), ")!");
         return std::nullopt;
     }
 
@@ -830,7 +822,7 @@ bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::s
 
     if(ec)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Error while converting path to relative: \"", p.u8string(), "\" (", ec.message(), ")!");
+        TP_ERROR(Log::FileSystemPrefix, "Error while converting path to relative: ", p, " (", ec.message(), ")!");
         return std::nullopt;
     }
 
@@ -853,7 +845,7 @@ bool TRAP::FileSystem::SetCurrentFolderPath(const std::filesystem::path &p)
 
     if(ec)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Error while settings current path: \"", p.u8string(), "\" (", ec.message(), ")!");
+        TP_ERROR(Log::FileSystemPrefix, "Error while settings current path: ", p, " (", ec.message(), ")!");
         return false;
     }
 
@@ -870,7 +862,7 @@ bool TRAP::FileSystem::OpenInFileBrowser(const std::filesystem::path& p)
 
     if(!Exists(p))
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't open file/folder in file browser: \"", p.u8string(), "\" (file/folder doesn't exist)!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't open file/folder in file browser: ", p, " (file/folder doesn't exist)!");
         return false;
     }
     if(IsFile(p))
@@ -878,7 +870,7 @@ bool TRAP::FileSystem::OpenInFileBrowser(const std::filesystem::path& p)
     if(IsFolder(p))
         return OpenFolderInFileBrowser(p);
 
-    TP_ERROR(Log::FileSystemPrefix, "Couldn't open file/folder in file browser: \"", p.u8string(), "\" (path doesn't lead to a file/folder)!");
+    TP_ERROR(Log::FileSystemPrefix, "Couldn't open file/folder in file browser: ", p, " (path doesn't lead to a file/folder)!");
     return false;
 }
 
@@ -892,14 +884,14 @@ bool TRAP::FileSystem::OpenExternally(const std::filesystem::path& p)
 
     if(!Exists(p))
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't open externally: \"", p.u8string(), "\" (file/folder doesn't exist)!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't open externally: ", p, " (file/folder doesn't exist)!");
         return false;
     }
 
     auto absPath = ToAbsolutePath(p);
     if(!absPath)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't open externally: \"", p.u8string(), "\" (failed to convert path to absolute format)!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't open externally: ", p, " (failed to convert path to absolute format)!");
         return false;
     }
 
@@ -914,13 +906,13 @@ bool TRAP::FileSystem::OpenExternally(const std::filesystem::path& p)
             res = ShellExecuteW(nullptr, L"open", absPath->c_str(), nullptr, nullptr, SW_SHOWNORMAL);
             if(TRAP::Utils::BitCast<INT_PTR>(res) <= 32)
             {
-                TP_ERROR(Log::FileSystemPrefix, "Couldn't open externally: \"", p.u8string(), "\"!");
+                TP_ERROR(Log::FileSystemPrefix, "Couldn't open externally: ", p, "!");
                 TP_ERROR(Log::FileSystemPrefix, Utils::String::GetStrError());
             }
         }
         else
         {
-            TP_ERROR(Log::FileSystemPrefix, "Couldn't open externally: \"", p.u8string(), "\" (COM initialization failed)!");
+            TP_ERROR(Log::FileSystemPrefix, "Couldn't open externally: ", p, " (COM initialization failed)!");
             return false;
         }
     }
@@ -932,7 +924,7 @@ bool TRAP::FileSystem::OpenExternally(const std::filesystem::path& p)
     FILE* const xdg = popen(cmd.c_str(), "r");
     if(xdg == nullptr)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't open externally: \"", p.u8string(), "\"!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't open externally: ", p, "!");
         TP_ERROR(Log::FileSystemPrefix, Utils::String::GetStrError());
         return false;
     }
@@ -965,7 +957,7 @@ bool OpenFolderInFileBrowser(const std::filesystem::path& p)
     auto absPath = TRAP::FileSystem::ToAbsolutePath(p);
     if(!absPath)
     {
-        TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: \"", p.u8string(), "\" (failed to convert path to absolute format)!");
+        TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: ", p, " (failed to convert path to absolute format)!");
         return false;
     }
 
@@ -980,13 +972,13 @@ bool OpenFolderInFileBrowser(const std::filesystem::path& p)
             res = ShellExecuteW(nullptr, L"explore", absPath->c_str(), nullptr, nullptr, SW_SHOWNORMAL);
             if(TRAP::Utils::BitCast<INT_PTR>(res) <= 32)
             {
-                TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: \"", p.u8string(), "\"!");
+                TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: ", p, "!");
                 TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
             }
         }
         else
         {
-            TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: \"", p.u8string(), "\" (COM initialization failed)!");
+            TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: ", p, " (COM initialization failed)!");
             return false;
         }
     }
@@ -994,11 +986,11 @@ bool OpenFolderInFileBrowser(const std::filesystem::path& p)
     return TRAP::Utils::BitCast<INT_PTR>(res) > 32;
 #elif defined(TRAP_PLATFORM_LINUX)
     std::string cmd = "xdg-open ";
-    cmd += (*absPath).u8string();
+    cmd += absPath->string();
     FILE* const xdg = popen(cmd.c_str(), "r");
     if(xdg == nullptr)
     {
-        TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: \"", p.u8string(), "\"!");
+        TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: ", p, "!");
         TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
         return false;
     }
@@ -1030,7 +1022,7 @@ bool OpenFileInFileBrowser(const std::filesystem::path& p)
     auto absPath = TRAP::FileSystem::ToAbsolutePath(p);
     if(!absPath)
     {
-        TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: \"", p.u8string(), "\" (failed to convert path to absolute format)!");
+        TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: ", p, " (failed to convert path to absolute format)!");
         return false;
     }
 
@@ -1045,7 +1037,7 @@ bool OpenFileInFileBrowser(const std::filesystem::path& p)
             LPITEMIDLIST pidl = nullptr;
             if (SHParseDisplayName(openPath.c_str(), nullptr, &pidl, 0, nullptr) != S_OK)
             {
-                TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: \"", p.u8string(), "\"!");
+                TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: ", p, "!");
                 TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
                 return false;
             }
@@ -1053,13 +1045,13 @@ bool OpenFileInFileBrowser(const std::filesystem::path& p)
             const HRESULT res = SHOpenFolderAndSelectItems(pidl, 0, nullptr, 0);
             if(res != S_OK)
             {
-                TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: \"", p.u8string(), "\"!");
+                TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: ", p, "!");
                 TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
             }
         }
         else
         {
-            TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: \"", p.u8string(), "\" (COM initialization failed)!");
+            TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: ", p, " (COM initialization failed)!");
             return false;
         }
     }
@@ -1067,11 +1059,11 @@ bool OpenFileInFileBrowser(const std::filesystem::path& p)
     return res == S_OK;
 #elif defined(TRAP_PLATFORM_LINUX)
     std::string cmd = "xdg-open ";
-    cmd += absPath->parent_path().u8string();
+    cmd += absPath->parent_path().string();
     FILE* const xdg = popen(cmd.c_str(), "r");
     if(xdg == nullptr)
     {
-        TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: \"", p.u8string(), "\"!");
+        TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: ", p, "!");
         TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
         return false;
     }
@@ -1220,7 +1212,7 @@ bool OpenFileInFileBrowser(const std::filesystem::path& p)
     }
     file.close();
 
-    if(documentsDir.u8string().compare(0, 5, "$HOME") == 0)
+    if(documentsDir.string().compare(0, 5, "$HOME") == 0)
     {
         const auto homeFolder = GetHomeFolderPathLinux();
         if(!homeFolder)
@@ -1228,7 +1220,7 @@ bool OpenFileInFileBrowser(const std::filesystem::path& p)
             TP_ERROR(TRAP::Log::FileSystemPrefix, "Failed to get documents folder path (failed to retrieve home directory path)!");
             return std::nullopt;
         }
-        documentsDir = (*homeFolder).u8string() + documentsDir.u8string().substr(5, std::string::npos);
+        documentsDir = homeFolder->string() + documentsDir.string().substr(5, std::string::npos);
     }
 
     return documentsDir;
