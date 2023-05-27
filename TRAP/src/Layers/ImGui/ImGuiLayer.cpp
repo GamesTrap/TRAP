@@ -100,7 +100,7 @@ void TRAP::ImGuiLayer::OnAttach()
 		m_imguiIniPath = (*docsFolder / "imgui.ini");
 	else //Fallback
 		m_imguiIniPath = "imgui.ini";
-	io.IniFilename = m_imguiIniPath.c_str();
+	io.IniFilename = m_imguiIniPath.string().c_str();
 
 	const auto contentScale = Application::GetWindow()->GetContentScale();
 	float scaleFactor = 1.0f;
