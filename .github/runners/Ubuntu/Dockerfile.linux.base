@@ -1,0 +1,56 @@
+# Shared basis for all linux based action runner images
+
+FROM ubuntu:lunar
+LABEL maintainer="gamestrap@trappedgames.de"
+
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+ENV DEBIAN_FRONTEND=noninteractive
+RUN echo en_US.UTF-8 UTF-8 >> /etc/locale.gen \
+  && apt update \
+  && apt upgrade -y \
+  && apt install -y --no-install-recommends \
+    gnupg \
+    lsb-release \
+    curl \
+    tar \
+    unzip \
+    zip \
+    apt-transport-https \
+    ca-certificates \
+    sudo \
+    gpg-agent \
+    software-properties-common \
+    zlib1g-dev \
+    zstd \
+    gettext \
+    libcurl4-openssl-dev \
+    inetutils-ping \
+    jq \
+    wget \
+    dirmngr \
+    openssh-client \
+    locales \
+    python3-pip \
+    python3-setuptools \
+    python3 \
+    dumb-init \
+    rsync \
+    libpq-dev \
+    gosu \
+    git \
+    git-man \
+    git-lfs \
+  && DPKG_ARCH="$(dpkg --print-architecture)" \
+  && LSB_RELEASE_CODENAME="$(lsb_release --codename | cut -f2)" \
+  && sed -e 's/Defaults.*env_reset/Defaults env_keep = "HTTP_PROXY HTTPS_PROXY NO_PROXY FTP_PROXY http_proxy https_proxy no_proxy ftp_proxy"/' -i /etc/sudoers \
+  && distro=$(lsb_release -is | awk '{print tolower($0)}') \
+  && version=$(lsb_release -cs | sed 's/bookworm\|n\/a/bullseye/g') \
+  && rm -rf /var/lib/apt/lists/* \
+  && rm -rf /tmp/* \
+  && groupadd -g 121 runner \
+  && useradd -mr -d /home/runner -u 1001 -g 121 runner \
+  && usermod -aG sudo runner \
+  && echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers

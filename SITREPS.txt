@@ -4044,3 +4044,7 @@ SITREP 06/09/2023|23w23a1
     - Build-CI Removed PDB files from Windows build artifacts ~<5 mins
     - Build-CI Removed Redists from Linux artifacts ~<5 mins
     - Build-CI Added cleanup step ~<5 mins
+
+SITREP 06/12/2023|23w24a1
+    - Changed TRAP Engine version to 23w24a1(0.9.40)
+    - Added Dockerfiles and scripts used by self-hosted GitHub Actions Runner ~<5 mins

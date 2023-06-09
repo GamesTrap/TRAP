@@ -1,0 +1,17 @@
+# escape=`
+
+FROM mcr.microsoft.com/windows/servercore:ltsc2022
+LABEL maintainer="gamestrap@trappedgames.de"
+
+ARG GH_RUNNER_VERSION="2.304.0"
+
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop';"]
+
+#Set working directory
+WORKDIR /actions-runner
+
+ADD setup_image.ps1 install_powershellmodules.ps1 initialize-image.ps1 configure-antivirus.ps1 install_choco.ps1 install_software.ps1 disable-jitdebugger.ps1 finalize-image.ps1 start.ps1 cleanup_runners.ps1 ./
+
+RUN .\setup_image.ps1
+
+ENTRYPOINT ["powershell", "./start.ps1"]

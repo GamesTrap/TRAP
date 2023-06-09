@@ -1,0 +1,21 @@
+version: '3'
+services:
+  worker:
+    restart: unless-stopped
+    image: trappedgames/github-actions-runner-linux:latest
+    environment:
+      REPO_URL: https://github.com/gamestrap/trap
+      RUNNER_NAME_PREFIX: ubuntu-v4-cpu
+      RANDOM_RUNNER_SUFFIX: true
+      ACCESS_TOKEN: <PAT_TOKEN>
+      RUNNER_WORKDIR: /tmp/runner/work
+      RUNNER_SCOPE: 'repo'
+      LABELS: linux,x64,ubuntu,23.04,cpu
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '/tmp/runner:/tmp/runner'
+    deploy:
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: "8G"
