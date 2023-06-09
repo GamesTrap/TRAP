@@ -13,12 +13,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-linux-gcc-12:
-    name: Build Linux GCC 12
-    runs-on: ubuntu-22.04
+  build-linux-gcc-13:
+    name: Build Linux GCC 13
+    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
     env:
-      CC: gcc-12
-      CXX: g++-12
+      CC: gcc-13
+      CXX: g++-13
     steps:
     # Check-out repository and submodules under $GITHUB_WORKSPACE
     - uses: actions/checkout@v3
@@ -30,6 +30,9 @@ jobs:
     # Update package list
     - name: Update package list
       run: sudo apt update
+    # Install g++
+    - name: Install g++
+      run: sudo apt install -y g++-13
     # Install mold
     - name: Install mold
       run: sudo apt install -y mold
@@ -40,10 +43,10 @@ jobs:
     - name: Install Wayland dependencies
       run: sudo apt install -y libwayland-dev libxkbcommon-dev wayland-protocols
     # Setup the Vulkan SDK
-    - name: Prepare Vulkan SDK 1.3.243.0
+    - name: Prepare latest Vulkan SDK
       uses: humbletim/setup-vulkan-sdk@v1.2.0
       with:
-        vulkan-query-version: 1.3.243.0
+        vulkan-query-version: latest
         vulkan-components: Vulkan-Headers, Vulkan-Loader
         vulkan-use-cache: true
     # Make scripts and premake executable
@@ -57,7 +60,7 @@ jobs:
        ./GenerateProjectMake.sh
        cd ..
     - name: Compile code
-      run: config=release make all -j2
+      run: config=release make all -j$(nproc)
     - name: Copy Assets (and other data)
       run: |
         cp -r Games/Headless-Tests/Assets bin/Release-linux-x86_64/Games/Headless-Tests/
@@ -76,12 +79,12 @@ jobs:
           bin/Release-linux-x86_64/Games
           bin/Release-linux-x86_64/Utility
           bin/Release-linux-x86_64/Redists
-  build-linux-clang-14:
-    name: Build Linux Clang 14
-    runs-on: ubuntu-22.04
+  build-linux-clang-16:
+    name: Build Linux Clang 16
+    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
     env:
-      CC: clang-14
-      CXX: clang++-14
+      CC: clang-16
+      CXX: clang++-16
     steps:
     # Check-out repository and submodules under $GITHUB_WORKSPACE
     - uses: actions/checkout@v3
@@ -93,6 +96,9 @@ jobs:
     # Update package list
     - name: Update package list
       run: sudo apt update
+    # Install clang
+    - name: Install clang
+      run: sudo apt install -y clang-16
     # Install mold
     - name: Install mold
       run: sudo apt install -y mold
@@ -103,10 +109,10 @@ jobs:
     - name: Install Wayland dependencies
       run: sudo apt install -y libwayland-dev libxkbcommon-dev wayland-protocols
     # Setup the Vulkan SDK
-    - name: Prepare Vulkan SDK 1.3.243.0
+    - name: Prepare latest Vulkan SDK
       uses: humbletim/setup-vulkan-sdk@v1.2.0
       with:
-        vulkan-query-version: 1.3.243.0
+        vulkan-query-version: latest
         vulkan-components: Vulkan-Headers, Vulkan-Loader
         vulkan-use-cache: true
     # Make scripts and premake executable
@@ -120,7 +126,7 @@ jobs:
         ./GenerateProjectMake.sh
         cd ..
     - name: Compile code
-      run: config=release make all -j2
+      run: config=release make all -j$(nproc)
     - name: Copy Assets (and other data)
       run: |
         cp -r Games/Headless-Tests/Assets bin/Release-linux-x86_64/Games/Headless-Tests/
@@ -141,17 +147,17 @@ jobs:
           bin/Release-linux-x86_64/Redists
   build-windows-msvc-2022:
     name: Build Windows MSVC 2022
-    runs-on: windows-2022
+    runs-on: [self-hosted, windows, X64, cpu]
     steps:
     # Check-out repository and submodules under $GITHUB_WORKSPACE
     - uses: actions/checkout@v3
       with:
         submodules: 'true'
     # Setup the Vulkan SDK
-    - name: Prepare Vulkan SDK 1.3.243.0
+    - name: Prepare latest Vulkan SDK
       uses: humbletim/setup-vulkan-sdk@v1.2.0
       with:
-        vulkan-query-version: 1.3.243.0
+        vulkan-query-version: latest
         vulkan-components: Vulkan-Headers, Vulkan-Loader
         vulkan-use-cache: true
     # Setup msbuild

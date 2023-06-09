@@ -4033,3 +4033,10 @@ SITREP 05/27/2023|23w21b2
     - Log Replaced in place variadic unfolding hack ~<5 mins
     - Replaced std::filesystem::path::generic_u8string() with generic_string() ~<5 mins
     - Scene Replaced deprecated implicit this in lambdas ~<5 mins
+
+SITREP 06/09/2023|23w23a1
+    - Changed TRAP Engine version to 23w23a1(0.9.39)
+    - Switched to self-hosted GitHub Action runners ~<5 mins
+    - Updated Build-CI and Build-Docs workflows ~<15 mins
+    - Build-CI now builds using GCC 13 and Clang 16 ~<5 mins
+    - Build-CI switched back to using latest Vulkan SDK release ~<5 mins

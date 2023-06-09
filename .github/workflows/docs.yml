@@ -13,7 +13,7 @@ on:
 jobs:
   build-docs-linux:
     name: Build Docs Linux
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
     # env:
     steps:
     # Check-out repository and submodules under $GITHUB_WORKSPACE
@@ -23,6 +23,9 @@ jobs:
     # Install doxygen
     - name: Install doxygen
       run: sudo apt install doxygen
+    # Install pip
+    - name: Install pip
+      run: sudo apt install pip
     # Install Sphinx
     - name: Install Sphinx
       run: sudo apt install python3-sphinx
