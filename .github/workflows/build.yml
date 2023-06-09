@@ -20,6 +20,8 @@ jobs:
       CC: gcc-13
       CXX: g++-13
     steps:
+    - name: Cleanup workspace
+      run: rm -rf ${{ github.workspace }}/*
     - name: Checkout repository and submodules
       uses: actions/checkout@v3
       with:
@@ -56,6 +58,7 @@ jobs:
         cp -r Games/TRAP-Editor/Assets bin/Release-linux-x86_64/Games/TRAP-Editor/
         cp -r Games/TRAP-Editor/Resources bin/Release-linux-x86_64/Games/TRAP-Editor/
         cp -r Utility/QOIConv bin/Release-linux-x86_64/Utility/
+        rm bin/Release-linux-x86_64/Utility/QOIConv/QOIConv.exe
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
@@ -111,7 +114,7 @@ jobs:
         cp -r Games/TRAP-Editor/Assets bin/Release-linux-x86_64/Games/TRAP-Editor/
         cp -r Games/TRAP-Editor/Resources bin/Release-linux-x86_64/Games/TRAP-Editor/
         cp -r Utility/QOIConv bin/Release-linux-x86_64/Utility/
-        rm bin/Release-linux-x86_64/Utility/QOIConv.exe
+        rm bin/Release-linux-x86_64/Utility/QOIConv/QOIConv.exe
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
