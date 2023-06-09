@@ -32,7 +32,7 @@ jobs:
       run: sudo apt update
     # Install all dependencies
     - name: Install dependencies
-      run: sudo apt install -y g++-13 mold xorg-dev libwayland-dev libxkbcommon-dev wayland-protocols
+      run: sudo apt install -y cmake jq g++-13 mold xorg-dev libwayland-dev libxkbcommon-dev wayland-protocols
     # Setup the Vulkan SDK
     - name: Prepare latest Vulkan SDK
       uses: humbletim/setup-vulkan-sdk@v1.2.0
@@ -89,7 +89,7 @@ jobs:
       run: sudo apt update
     # Install all dependencies
     - name: Install dependencies
-      run: sudo apt install -y clang-16 mold xorg-dev libwayland-dev libxkbcommon-dev wayland-protocols
+      run: sudo apt install -y cmake jq clang-16 mold xorg-dev libwayland-dev libxkbcommon-dev wayland-protocols
     # Setup the Vulkan SDK
     - name: Prepare latest Vulkan SDK
       uses: humbletim/setup-vulkan-sdk@v1.2.0

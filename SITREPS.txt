@@ -4040,3 +4040,4 @@ SITREP 06/09/2023|23w23a1
     - Updated Build-CI and Build-Docs workflows ~<15 mins
     - Build-CI now builds using GCC 13 and Clang 16 ~<5 mins
     - Build-CI switched back to using latest Vulkan SDK release ~<5 mins
+    - Build-CI Added missing dependencies for Ubuntu ~<5 mins
