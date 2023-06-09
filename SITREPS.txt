@@ -4041,3 +4041,6 @@ SITREP 06/09/2023|23w23a1
     - Build-CI now builds using GCC 13 and Clang 16 ~<5 mins
     - Build-CI switched back to using latest Vulkan SDK release ~<5 mins
     - Build-CI Added missing dependencies for Ubuntu ~<5 mins
+    - Build-CI Removed PDB files from Windows build artifacts ~<5 mins
+    - Build-CI Removed Redists from Linux artifacts ~<5 mins
+    - Build-CI Added cleanup step ~<5 mins
