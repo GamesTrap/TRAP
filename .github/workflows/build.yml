@@ -30,18 +30,9 @@ jobs:
     # Update package list
     - name: Update package list
       run: sudo apt update
-    # Install g++
-    - name: Install g++
-      run: sudo apt install -y g++-13
-    # Install mold
-    - name: Install mold
-      run: sudo apt install -y mold
-    # Install X11 dependencies
-    - name: Install X11 dependencies
-      run: sudo apt install -y xorg-dev
-    # Install Wayland dependencies
-    - name: Install Wayland dependencies
-      run: sudo apt install -y libwayland-dev libxkbcommon-dev wayland-protocols
+    # Install all dependencies
+    - name: Install dependencies
+      run: sudo apt install -y g++-13 mold xorg-dev libwayland-dev libxkbcommon-dev wayland-protocols
     # Setup the Vulkan SDK
     - name: Prepare latest Vulkan SDK
       uses: humbletim/setup-vulkan-sdk@v1.2.0
@@ -96,18 +87,9 @@ jobs:
     # Update package list
     - name: Update package list
       run: sudo apt update
-    # Install clang
-    - name: Install clang
-      run: sudo apt install -y clang-16
-    # Install mold
-    - name: Install mold
-      run: sudo apt install -y mold
-    # Install X11 dependencies
-    - name: Install X11 dependencies
-      run: sudo apt install -y xorg-dev
-    # Install Wayland dependencies
-    - name: Install Wayland dependencies
-      run: sudo apt install -y libwayland-dev libxkbcommon-dev wayland-protocols
+    # Install all dependencies
+    - name: Install dependencies
+      run: sudo apt install -y clang-16 mold xorg-dev libwayland-dev libxkbcommon-dev wayland-protocols
     # Setup the Vulkan SDK
     - name: Prepare latest Vulkan SDK
       uses: humbletim/setup-vulkan-sdk@v1.2.0
@@ -165,7 +147,10 @@ jobs:
       uses: microsoft/setup-msbuild@v1.1
     # Generate the Visual Studio 2022 Project files
     - name: Generate Visual Studio 2022 Project files
-      run: cd GeneratorScripts && .\GenerateProjectVS2022.bat && cd ..
+      run: |
+        cd GeneratorScripts
+        .\GenerateProjectVS2022.bat
+        cd ..
     - name: Compile code
       run: msbuild /m TRAP.sln /property:Configuration=Release
     - name: Copy Assets (and other data)
