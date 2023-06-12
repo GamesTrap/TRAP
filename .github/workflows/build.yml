@@ -22,6 +22,10 @@ jobs:
     steps:
     - name: Cleanup workspace
       run: rm -rf ${{ github.workspace }}/*
+    - name: Post Cleanup workspace
+      uses: webiny/action-post-run@2.0.1
+      with:
+        run: rm -rf ${{ github.workspace }}/*
     - name: Checkout repository and submodules
       uses: actions/checkout@v3
       with:
@@ -66,9 +70,6 @@ jobs:
         path: |
           bin/Release-linux-x86_64/Games
           bin/Release-linux-x86_64/Utility
-    - name: Cleanup workspace
-      if: always()
-      run: rm -rf ${{ github.workspace }}/*
   build-linux-clang-16:
     name: Build Linux Clang 16
     runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
@@ -78,6 +79,11 @@ jobs:
     steps:
     - name: Cleanup workspace
       run: rm -rf ${{ github.workspace }}/*
+    - name: Post Cleanup workspace
+      if: always()
+      uses: webiny/action-post-run@2.0.1
+      with:
+        run: rm -rf ${{ github.workspace }}/*
     - name: Checkout repository and submodules
       uses: actions/checkout@v3
       with:
@@ -122,15 +128,17 @@ jobs:
         path: |
           bin/Release-linux-x86_64/Games
           bin/Release-linux-x86_64/Utility
-    - name: Cleanup workspace
-      if: always()
-      run: rm -rf ${{ github.workspace }}/*
   build-windows-msvc-2022:
     name: Build Windows MSVC 2022
     runs-on: [self-hosted, windows, X64, cpu]
     steps:
     - name: Cleanup workspace
       run: Remove-Item -Path "${{github.workspace}}\*" -Recurse -Force
+    - name: Post Cleanup workspace
+      if: always()
+      uses: webiny/action-post-run@2.0.1
+      with:
+        run: Remove-Item -Path "${{github.workspace}}\*" -Recurse -Force
     - name: Checkout repository and submodules
       uses: actions/checkout@v3
       with:
@@ -170,6 +178,3 @@ jobs:
           bin/Release-windows-x86_64/Games
           bin/Release-windows-x86_64/Utility
           bin/Release-windows-x86_64/Redists
-    - name: Cleanup workspace
-      if: always()
-      run: Remove-Item -Path "${{github.workspace}}\*" -Recurse -Force
