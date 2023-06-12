@@ -41,6 +41,7 @@ Software:
 - git
 - git-man
 - git-lfs
+- NodeJS 12.22.12 (needed for actions/cache@v2)
 
 ### Final Image
 
@@ -72,6 +73,7 @@ Software:
 - CMake
 - VCRedists
 - Visual Studio 2022 Build Tools (C++ workload only)
+- NodeJS 12.22.12 (Needed for actions/cache@v2)
 - GitHub Action Runner
 
 Scripts (in execution order):
