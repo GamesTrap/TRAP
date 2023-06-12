@@ -18,11 +18,6 @@ jobs:
     steps:
     - name: Cleanup workspace
       run: rm -rf ${{ github.workspace }}/*
-    - name: Post Cleanup workspace
-      if: always()
-      uses: webiny/action-post-run@2.0.1
-      with:
-        run: rm -rf ${{ github.workspace }}/*
     # Check-out repository and submodules under $GITHUB_WORKSPACE
     - uses: actions/checkout@v3
       with:
