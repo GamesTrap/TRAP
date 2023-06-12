@@ -63,7 +63,9 @@ jobs:
     - name: Cache build dependencies
       uses: actions/cache@v2
       with:
-        path: bin/Release-linux-x86_64/Dependencies/**
+        path: |
+          bin/Release-linux-x86_64/Dependencies/**
+          bin-int/Release-linux-x86_64/Dependencies/**
         key: ${{runner.os}}-dependencies-${{steps.gen-dependency-hash.outputs.dependencyHash}}
     - name: Compile code
       run: config=release make all -j$(nproc)
