@@ -17,8 +17,6 @@ jobs:
     # env:
     steps:
     - name: Cleanup workspace
-      run: rm -rf ${{ github.workspace }}/*
-    - name: Cleanup workspace
       uses: gamestrap/gha-workspace-cleanup@v1.2.3
     # Check-out repository and submodules under $GITHUB_WORKSPACE
     - uses: actions/checkout@v3

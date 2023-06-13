@@ -21,8 +21,6 @@ jobs:
       CXX: g++-13
     steps:
     - name: Cleanup workspace
-      run: rm -rf ${{ github.workspace }}/*
-    - name: Cleanup workspace
       uses: gamestrap/gha-workspace-cleanup@v1.2.3
     - name: Checkout repository and submodules
       uses: actions/checkout@v3
@@ -76,8 +74,6 @@ jobs:
       CXX: clang++-16
     steps:
     - name: Cleanup workspace
-      run: rm -rf ${{ github.workspace }}/*
-    - name: Cleanup workspace
       uses: gamestrap/gha-workspace-cleanup@v1.2.3
     - name: Checkout repository and submodules
       uses: actions/checkout@v3
@@ -127,8 +123,6 @@ jobs:
     name: Build Windows MSVC 2022
     runs-on: [self-hosted, windows, X64, cpu]
     steps:
-    - name: Cleanup workspace
-      run: Remove-Item -Path "${{github.workspace}}\*" -Recurse -Force
     - name: Cleanup workspace
       uses: gamestrap/gha-workspace-cleanup@v1.2.3
     - name: Checkout repository and submodules
