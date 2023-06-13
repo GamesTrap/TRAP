@@ -23,7 +23,7 @@ jobs:
     - name: Cleanup workspace
       run: rm -rf ${{ github.workspace }}/*
     - name: Cleanup workspace
-      uses: gamestrap/gha-workspace-cleanup@1.2.2
+      uses: gamestrap/gha-workspace-cleanup@v1.2.2
     - name: Checkout repository and submodules
       uses: actions/checkout@v3
       with:
@@ -78,7 +78,7 @@ jobs:
     - name: Cleanup workspace
       run: rm -rf ${{ github.workspace }}/*
     - name: Cleanup workspace
-      uses: gamestrap/gha-workspace-cleanup@1.2.2
+      uses: gamestrap/gha-workspace-cleanup@v1.2.2
     - name: Checkout repository and submodules
       uses: actions/checkout@v3
       with:
@@ -130,7 +130,7 @@ jobs:
     - name: Cleanup workspace
       run: Remove-Item -Path "${{github.workspace}}\*" -Recurse -Force
     - name: Cleanup workspace
-      uses: gamestrap/gha-workspace-cleanup@1.2.2
+      uses: gamestrap/gha-workspace-cleanup@v1.2.2
     - name: Checkout repository and submodules
       uses: actions/checkout@v3
       with:
