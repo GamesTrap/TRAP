@@ -47,26 +47,6 @@ jobs:
        cd GeneratorScripts/
        ./GenerateProjectMake.sh
        cd ..
-    - name: Generate dependency hash
-      id: gen-dependency-hash
-      run: |
-       Box2DHash=$(git -C Dependencies/Box2D/ rev-parse HEAD)
-       GLSLangHash=$(git -C Dependencies/GLSLang/ rev-parse HEAD)
-       ImGuiHash=$(git -C Dependencies/ImGui/ rev-parse HEAD)
-       ImGuizmoHash=$(git -C Dependencies/ImGuizmo/ rev-parse HEAD)
-       ModernDialogsHash=$(git -C Dependencies/ModernDialogs/ rev-parse HEAD)
-       SPIRVCrossHash=$(git -C Dependencies/SPIRV-Cross/ rev-parse HEAD)
-       TracyHash=$(git -C Dependencies/Tracy/ rev-parse HEAD)
-       YAMLCpp=$(git -C Dependencies/YAMLCpp/ rev-parse HEAD)
-       DependencyHash=$(echo -n "$Box2DHash$GLSLangHash$ImGuiHash$ImGuizmoHash$ModernDialogsHash$SPIRVCrossHash$TracyHash$YAMLCpp" | sha256sum | awk '{print $1}')
-       echo "dependencyHash=$DependencyHash" >> "$GITHUB_OUTPUT"
-    - name: Cache build dependencies
-      uses: actions/cache@v2
-      with:
-        path: |
-          bin/Release-linux-x86_64/Dependencies/**
-          bin-int/Release-linux-x86_64/Dependencies/**
-        key: ${{runner.os}}-dependencies-${{steps.gen-dependency-hash.outputs.dependencyHash}}
     - name: Compile code
       run: config=release make all -j$(nproc)
     - name: Finalize data for artifact
