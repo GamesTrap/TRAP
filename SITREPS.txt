@@ -4059,3 +4059,7 @@ SITREP 06/13/2023|23w24a2
     - Build-CI Reverted experimenal caching of build dependencies ~<5 mins
     - Build-CI Added new cleanup step ~<5 mins
     - Build-CI Removed old cleanup step ~<5 mins
+
+SITREP 06/14/2023|23w24a3
+    - Changed TRAP Engine version to 23w24a3(0.9.42)
+    - Added workflow to automatically update the Vulkan Loader ~<5 mins

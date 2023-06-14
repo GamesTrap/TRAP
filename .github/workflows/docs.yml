@@ -52,7 +52,7 @@ jobs:
     - name: Setup git config
       run: |
         git config user.name "GitHub Actions Bot"
-        git config user.email "<>"
+        git config user.email "<noreply@github.com>"
     # Commit & push updated docs to master
     - name: Commit & push changes to master
       run: |
