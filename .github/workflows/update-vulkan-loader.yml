@@ -19,6 +19,12 @@ jobs:
         with:
           submodules: 'false'
           ref: dev
+      - name: Install dependencies
+        run: sudo apt install -y python3 pip
+      - name: Make python3 available as python
+        run: sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
+      - name: Make pip3 available as pip
+        run: sudo update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10
       - uses: tibdex/github-app-token@v1
         id: generate-token
         with:
@@ -27,7 +33,7 @@ jobs:
       - name: Make scripts and premake executable
         run: |
           chmod +x libs/premake5/linux/premake5
-          chmod +x GenerateVulkanLoader.sh
+          chmod +x GeneratorScripts/GenerateVulkanLoader.sh
       - name: Update Vulkan Loader
         run: |
           cd GeneratorScripts/

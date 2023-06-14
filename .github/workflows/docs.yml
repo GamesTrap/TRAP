@@ -14,47 +14,33 @@ jobs:
   build-docs-linux:
     name: Build Docs Linux
     runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
-    # env:
     steps:
     - name: Cleanup workspace
       if: ${{ always() }}
       uses: gamestrap/gha-workspace-cleanup@v1.2.3
-    # Check-out repository and submodules under $GITHUB_WORKSPACE
-    - uses: actions/checkout@v3
+    - name: Check-out repository
+      uses: actions/checkout@v3
       with:
         submodules: 'true'
-    # Install doxygen
-    - name: Install doxygen
-      run: sudo apt install doxygen
-    # Install pip
-    - name: Install pip
-      run: sudo apt install pip
-    # Install Sphinx
-    - name: Install Sphinx
-      run: sudo apt install python3-sphinx
-    # Make python 3 available as python
+    - name: Install dependencies
+      run: sudo apt install -y doxygen pip python3-sphinx
     - name: Make python3 available as python
       run: sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
-    # Make pip3 available as pip
     - name: Make pip3 available as pip
       run: sudo update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10
-    # Make scripts and premake executable
     - name: Set Execute flags
       run: |
         chmod +x libs/premake5/linux/premake5
         chmod +x GeneratorScripts/GenerateDocumentation.sh
-    # Generate docs
     - name: Generate Documentation
       run: |
         cd GeneratorScripts/
         ./GenerateDocumentation.sh
         cd ..
-    # Setup git config
     - name: Setup git config
       run: |
         git config user.name "GitHub Actions Bot"
         git config user.email "<noreply@github.com>"
-    # Commit & push updated docs to master
     - name: Commit & push changes to master
       run: |
         git add docs/**
