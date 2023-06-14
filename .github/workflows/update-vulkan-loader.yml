@@ -12,6 +12,7 @@ jobs:
     runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
     steps:
       - name: Cleanup workspace
+        if: ${{ always() }}
         uses: gamestrap/gha-workspace-cleanup@v1.2.3
       - name: Checkout repository
         uses: actions/checkout@v3

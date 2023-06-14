@@ -21,6 +21,7 @@ jobs:
       CXX: g++-13
     steps:
     - name: Cleanup workspace
+      if: ${{ always() }}
       uses: gamestrap/gha-workspace-cleanup@v1.2.3
     - name: Checkout repository and submodules
       uses: actions/checkout@v3
@@ -74,6 +75,7 @@ jobs:
       CXX: clang++-16
     steps:
     - name: Cleanup workspace
+      if: ${{ always() }}
       uses: gamestrap/gha-workspace-cleanup@v1.2.3
     - name: Checkout repository and submodules
       uses: actions/checkout@v3
@@ -124,6 +126,7 @@ jobs:
     runs-on: [self-hosted, windows, X64, cpu]
     steps:
     - name: Cleanup workspace
+      if: ${{ always() }}
       uses: gamestrap/gha-workspace-cleanup@v1.2.3
     - name: Checkout repository and submodules
       uses: actions/checkout@v3
