@@ -22,6 +22,13 @@ jobs:
       uses: actions/checkout@v3
       with:
         submodules: 'true'
+    - uses: crazy-max/ghaction-import-gpg@v5
+      with:
+        gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+        passphrase: ${{ secrets.GPG_PASSPHRASE }}
+        git_user_signingkey: true
+        git_commit_gpgsign: true
+        git_committer_name: TRAP CI/CD
     - name: Install dependencies
       run: sudo apt install -y doxygen pip python3-sphinx
     - name: Make python3 available as python
@@ -37,12 +44,25 @@ jobs:
         cd GeneratorScripts/
         ./GenerateDocumentation.sh
         cd ..
-    - name: Setup git config
-      run: |
-        git config user.name "GitHub Actions Bot"
-        git config user.email "<noreply@github.com>"
-    - name: Commit & push changes to master
-      run: |
-        git add docs/**
-        git commit -m "[CI] Updated docs"
-        git push
+    - uses: tibdex/github-app-token@v1
+      id: generate-token
+      with:
+        app_id: ${{ secrets.APP_ID }}
+        private_key: ${{ secrets.APP_PRIVATE_KEY }}
+    - name: Retrieve new docs version
+      id: get-docs-version
+      run: echo "DOCS_VERSION=$(grep -oP -m 1 '\d+w\d+[a-zA-Z]+\d+' .modules/generatedocs/pages/changelog.md)" >> "$GITHUB_OUTPUT"
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        branch: docs-update/${{steps.get-vulkan-version.outputs.DOCS_VERSION}}
+        delete-branch: true
+        add-paths: docs/**
+        commit-message: "Update Documentation to ${{steps.get-vulkan-version.outputs.DOCS_VERSION}}"
+        title: "Update Documentation to ${{steps.get-vulkan-version.outputs.DOCS_VERSION}}"
+        labels: "CI/CD, Documentation, Update"
+        assignees: "GamesTrap"
+        milestone: 5
+        token: ${{steps.generate-token.outputs.token}}
+        author: "TRAP CI/CD <gamestrap@web.de>"
+        committer: "TRAP CI/CD <gamestrap@web.de>"

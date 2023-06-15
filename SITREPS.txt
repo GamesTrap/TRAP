@@ -4070,3 +4070,4 @@ SITREP 06/15/2023|23w24a4
     - Update-Vulkan-Loader Added signing of commits ~<5 mins
     - Make some premake generation scripts independent from the project files ~<10 mins
     - Set execute flags for Premake5 and GeneratorScripts ~<5 mins
+    - Build-Docs workflow now creates PRs instead of directly commiting ~<10 mins
