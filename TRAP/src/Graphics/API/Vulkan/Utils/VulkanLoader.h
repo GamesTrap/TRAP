@@ -16,7 +16,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 250
+#define VULKANLOADER_HEADER_VERSION 253
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -709,6 +709,7 @@ struct VkDeviceTable
 #endif /* defined(VK_KHR_video_decode_queue) */
 #if defined(VK_KHR_video_encode_queue)
 	PFN_vkCmdEncodeVideoKHR vkCmdEncodeVideoKHR;
+	PFN_vkGetEncodedVideoSessionParametersKHR vkGetEncodedVideoSessionParametersKHR;
 #endif /* defined(VK_KHR_video_encode_queue) */
 #if defined(VK_KHR_video_queue)
 	PFN_vkBindVideoSessionMemoryKHR vkBindVideoSessionMemoryKHR;
@@ -805,6 +806,9 @@ struct VkDeviceTable
 	PFN_vkGetDynamicRenderingTilePropertiesQCOM vkGetDynamicRenderingTilePropertiesQCOM;
 	PFN_vkGetFramebufferTilePropertiesQCOM vkGetFramebufferTilePropertiesQCOM;
 #endif /* defined(VK_QCOM_tile_properties) */
+#if defined(VK_QNX_external_memory_screen_buffer)
+	PFN_vkGetScreenBufferPropertiesQNX vkGetScreenBufferPropertiesQNX;
+#endif /* defined(VK_QNX_external_memory_screen_buffer) */
 #if defined(VK_VALVE_descriptor_set_host_mapping)
 	PFN_vkGetDescriptorSetHostMappingVALVE vkGetDescriptorSetHostMappingVALVE;
 	PFN_vkGetDescriptorSetLayoutHostMappingInfoVALVE vkGetDescriptorSetLayoutHostMappingInfoVALVE;
@@ -1598,6 +1602,8 @@ extern PFN_vkCmdDecodeVideoKHR vkCmdDecodeVideoKHR;
 #endif /* defined(VK_KHR_video_decode_queue) */
 #if defined(VK_KHR_video_encode_queue)
 extern PFN_vkCmdEncodeVideoKHR vkCmdEncodeVideoKHR;
+extern PFN_vkGetEncodedVideoSessionParametersKHR vkGetEncodedVideoSessionParametersKHR;
+extern PFN_vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR;
 #endif /* defined(VK_KHR_video_encode_queue) */
 #if defined(VK_KHR_video_queue)
 extern PFN_vkBindVideoSessionMemoryKHR vkBindVideoSessionMemoryKHR;
@@ -1735,6 +1741,9 @@ extern PFN_vkCmdSetViewportShadingRatePaletteNV vkCmdSetViewportShadingRatePalet
 extern PFN_vkGetDynamicRenderingTilePropertiesQCOM vkGetDynamicRenderingTilePropertiesQCOM;
 extern PFN_vkGetFramebufferTilePropertiesQCOM vkGetFramebufferTilePropertiesQCOM;
 #endif /* defined(VK_QCOM_tile_properties) */
+#if defined(VK_QNX_external_memory_screen_buffer)
+extern PFN_vkGetScreenBufferPropertiesQNX vkGetScreenBufferPropertiesQNX;
+#endif /* defined(VK_QNX_external_memory_screen_buffer) */
 #if defined(VK_QNX_screen_surface)
 extern PFN_vkCreateScreenSurfaceQNX vkCreateScreenSurfaceQNX;
 extern PFN_vkGetPhysicalDeviceScreenPresentationSupportQNX vkGetPhysicalDeviceScreenPresentationSupportQNX;
@@ -2115,6 +2124,9 @@ static void VkGenLoadInstance(void* context, PFN_vkVoidFunction (*load)(void*, c
 	vkGetPhysicalDeviceSurfacePresentModesKHR = (PFN_vkGetPhysicalDeviceSurfacePresentModesKHR)load(context, "vkGetPhysicalDeviceSurfacePresentModesKHR");
 	vkGetPhysicalDeviceSurfaceSupportKHR = (PFN_vkGetPhysicalDeviceSurfaceSupportKHR)load(context, "vkGetPhysicalDeviceSurfaceSupportKHR");
 #endif /* defined(VK_KHR_surface) */
+#if defined(VK_KHR_video_encode_queue)
+	vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR = (PFN_vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR)load(context, "vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR");
+#endif /* defined(VK_KHR_video_encode_queue) */
 #if defined(VK_KHR_video_queue)
 	vkGetPhysicalDeviceVideoCapabilitiesKHR = (PFN_vkGetPhysicalDeviceVideoCapabilitiesKHR)load(context, "vkGetPhysicalDeviceVideoCapabilitiesKHR");
 	vkGetPhysicalDeviceVideoFormatPropertiesKHR = (PFN_vkGetPhysicalDeviceVideoFormatPropertiesKHR)load(context, "vkGetPhysicalDeviceVideoFormatPropertiesKHR");
@@ -2751,6 +2763,7 @@ static void VkGenLoadDevice(void* context, PFN_vkVoidFunction (*load)(void*, con
 #endif /* defined(VK_KHR_video_decode_queue) */
 #if defined(VK_KHR_video_encode_queue)
 	vkCmdEncodeVideoKHR = (PFN_vkCmdEncodeVideoKHR)load(context, "vkCmdEncodeVideoKHR");
+	vkGetEncodedVideoSessionParametersKHR = (PFN_vkGetEncodedVideoSessionParametersKHR)load(context, "vkGetEncodedVideoSessionParametersKHR");
 #endif /* defined(VK_KHR_video_encode_queue) */
 #if defined(VK_KHR_video_queue)
 	vkBindVideoSessionMemoryKHR = (PFN_vkBindVideoSessionMemoryKHR)load(context, "vkBindVideoSessionMemoryKHR");
@@ -2847,6 +2860,9 @@ static void VkGenLoadDevice(void* context, PFN_vkVoidFunction (*load)(void*, con
 	vkGetDynamicRenderingTilePropertiesQCOM = (PFN_vkGetDynamicRenderingTilePropertiesQCOM)load(context, "vkGetDynamicRenderingTilePropertiesQCOM");
 	vkGetFramebufferTilePropertiesQCOM = (PFN_vkGetFramebufferTilePropertiesQCOM)load(context, "vkGetFramebufferTilePropertiesQCOM");
 #endif /* defined(VK_QCOM_tile_properties) */
+#if defined(VK_QNX_external_memory_screen_buffer)
+	vkGetScreenBufferPropertiesQNX = (PFN_vkGetScreenBufferPropertiesQNX)load(context, "vkGetScreenBufferPropertiesQNX");
+#endif /* defined(VK_QNX_external_memory_screen_buffer) */
 #if defined(VK_VALVE_descriptor_set_host_mapping)
 	vkGetDescriptorSetHostMappingVALVE = (PFN_vkGetDescriptorSetHostMappingVALVE)load(context, "vkGetDescriptorSetHostMappingVALVE");
 	vkGetDescriptorSetLayoutHostMappingInfoVALVE = (PFN_vkGetDescriptorSetLayoutHostMappingInfoVALVE)load(context, "vkGetDescriptorSetLayoutHostMappingInfoVALVE");
@@ -3505,6 +3521,7 @@ static void VkGenLoadDeviceTable(struct VkDeviceTable* table, void* context, PFN
 #endif /* defined(VK_KHR_video_decode_queue) */
 #if defined(VK_KHR_video_encode_queue)
 	table->vkCmdEncodeVideoKHR = (PFN_vkCmdEncodeVideoKHR)load(context, "vkCmdEncodeVideoKHR");
+	table->vkGetEncodedVideoSessionParametersKHR = (PFN_vkGetEncodedVideoSessionParametersKHR)load(context, "vkGetEncodedVideoSessionParametersKHR");
 #endif /* defined(VK_KHR_video_encode_queue) */
 #if defined(VK_KHR_video_queue)
 	table->vkBindVideoSessionMemoryKHR = (PFN_vkBindVideoSessionMemoryKHR)load(context, "vkBindVideoSessionMemoryKHR");
@@ -3601,6 +3618,9 @@ static void VkGenLoadDeviceTable(struct VkDeviceTable* table, void* context, PFN
 	table->vkGetDynamicRenderingTilePropertiesQCOM = (PFN_vkGetDynamicRenderingTilePropertiesQCOM)load(context, "vkGetDynamicRenderingTilePropertiesQCOM");
 	table->vkGetFramebufferTilePropertiesQCOM = (PFN_vkGetFramebufferTilePropertiesQCOM)load(context, "vkGetFramebufferTilePropertiesQCOM");
 #endif /* defined(VK_QCOM_tile_properties) */
+#if defined(VK_QNX_external_memory_screen_buffer)
+	table->vkGetScreenBufferPropertiesQNX = (PFN_vkGetScreenBufferPropertiesQNX)load(context, "vkGetScreenBufferPropertiesQNX");
+#endif /* defined(VK_QNX_external_memory_screen_buffer) */
 #if defined(VK_VALVE_descriptor_set_host_mapping)
 	table->vkGetDescriptorSetHostMappingVALVE = (PFN_vkGetDescriptorSetHostMappingVALVE)load(context, "vkGetDescriptorSetHostMappingVALVE");
 	table->vkGetDescriptorSetLayoutHostMappingInfoVALVE = (PFN_vkGetDescriptorSetLayoutHostMappingInfoVALVE)load(context, "vkGetDescriptorSetLayoutHostMappingInfoVALVE");
@@ -4402,6 +4422,8 @@ inline PFN_vkCmdDecodeVideoKHR vkCmdDecodeVideoKHR;
 #endif /* defined(VK_KHR_video_decode_queue) */
 #if defined(VK_KHR_video_encode_queue)
 inline PFN_vkCmdEncodeVideoKHR vkCmdEncodeVideoKHR;
+inline PFN_vkGetEncodedVideoSessionParametersKHR vkGetEncodedVideoSessionParametersKHR;
+inline PFN_vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR;
 #endif /* defined(VK_KHR_video_encode_queue) */
 #if defined(VK_KHR_video_queue)
 inline PFN_vkBindVideoSessionMemoryKHR vkBindVideoSessionMemoryKHR;
@@ -4539,6 +4561,9 @@ inline PFN_vkCmdSetViewportShadingRatePaletteNV vkCmdSetViewportShadingRatePalet
 inline PFN_vkGetDynamicRenderingTilePropertiesQCOM vkGetDynamicRenderingTilePropertiesQCOM;
 inline PFN_vkGetFramebufferTilePropertiesQCOM vkGetFramebufferTilePropertiesQCOM;
 #endif /* defined(VK_QCOM_tile_properties) */
+#if defined(VK_QNX_external_memory_screen_buffer)
+inline PFN_vkGetScreenBufferPropertiesQNX vkGetScreenBufferPropertiesQNX;
+#endif /* defined(VK_QNX_external_memory_screen_buffer) */
 #if defined(VK_QNX_screen_surface)
 inline PFN_vkCreateScreenSurfaceQNX vkCreateScreenSurfaceQNX;
 inline PFN_vkGetPhysicalDeviceScreenPresentationSupportQNX vkGetPhysicalDeviceScreenPresentationSupportQNX;
