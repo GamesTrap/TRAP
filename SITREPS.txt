@@ -4067,3 +4067,6 @@ SITREP 06/14/2023|23w24a3
 SITREP 06/15/2023|23w24a4
     - Changed TRAP Engine version to 23w24a4(0.9.43)
     - Update-Vulkan-Loader enabled cloning of submodules ~<5 mins
+    - Update-Vulkan-Loader Added signing of commits ~<5 mins
+    - Make some premake generation scripts independent from the project files ~<10 mins
+    - Set execute flags for Premake5 and GeneratorScripts ~<5 mins

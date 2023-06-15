@@ -1,6 +1,3 @@
-require "generatecontrollermappings"
-require "generatedocs"
-require "generatevulkanloader"
 require "ecc"
 require "vscode"
 

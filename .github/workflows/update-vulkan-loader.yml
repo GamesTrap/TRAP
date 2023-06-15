@@ -17,8 +17,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          submodules: 'true'
+          submodules: 'false'
           ref: dev
+      - uses: crazy-max/ghaction-import-gpg@v3
+        with:
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git-user-signingkey: true
+          git-commit-gpgsign: true
       - name: Install dependencies
         run: sudo apt install -y python3 pip
       - name: Make python3 available as python
@@ -52,5 +58,7 @@ jobs:
           title: Update Vulkan Loader to 1.3.${{steps.get-vulkan-version.outputs.VULKAN_VERSION}}
           labels: CI/CD, Vulkan, Update
           assignees: GamesTrap
-          milestone: Auto-Updates
+          milestone: 5
           token: ${{steps.generate-token.outputs.token}}
+          author: TRAP CI/CD <gamestrap@web.de>
+          committer: TRAP CI/CD <gamestrap@web.de>

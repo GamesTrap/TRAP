@@ -16,9 +16,9 @@ newaction
 
         -- Variables & Paths
         local sourceURL = "https://raw.githubusercontent.com/gabomdq/SDL_GameControllerDB/master/gamecontrollerdb.txt"
-        local sourcePath = _MAIN_SCRIPT_DIR .. "/GeneratorScripts/gamecontrollerdb.txt"
-        local templatePath = _MAIN_SCRIPT_DIR .. "/TRAP/src/Input/ControllerMappings.h.in"
-        local targetPath = _MAIN_SCRIPT_DIR .. "/TRAP/src/Input/ControllerMappings.h"
+        local sourcePath = "../.modules/generatecontrollermappings/gamecontrollerdb.txt"
+        local templatePath = "../.modules/generatecontrollermappings/TControllerMappings.h"
+        local targetPath = "../TRAP/src/Input/ControllerMappings.h"
 
         -- Check if template File can be opened
         local templateFile = io.open(templatePath, "r")
@@ -33,7 +33,7 @@ newaction
         end
 
         -- Download mappings from SDL
-        http.download(sourceURL, "gamecontrollerdb.txt")
+        http.download(sourceURL, sourcePath)
 
         -- Check if mapping File can be opened
         local sourceFile = io.open(sourcePath, "r")
