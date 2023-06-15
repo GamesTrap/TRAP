@@ -4063,3 +4063,7 @@ SITREP 06/13/2023|23w24a2
 SITREP 06/14/2023|23w24a3
     - Changed TRAP Engine version to 23w24a3(0.9.42)
     - Added workflow to automatically update the Vulkan Loader ~<5 mins
+
+SITREP 06/15/2023|23w24a4
+    - Changed TRAP Engine version to 23w24a4(0.9.43)
+    - Update-Vulkan-Loader enabled cloning of submodules ~<5 mins

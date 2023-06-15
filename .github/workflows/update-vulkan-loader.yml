@@ -17,7 +17,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          submodules: 'false'
+          submodules: 'true'
           ref: dev
       - name: Install dependencies
         run: sudo apt install -y python3 pip
