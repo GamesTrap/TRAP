@@ -55,11 +55,11 @@ jobs:
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5
       with:
-        branch: docs-update/${{steps.get-vulkan-version.outputs.DOCS_VERSION}}
+        branch: docs-update/${{steps.get-docs-version.outputs.DOCS_VERSION}}
         delete-branch: true
         add-paths: docs/**
-        commit-message: "Update Documentation to ${{steps.get-vulkan-version.outputs.DOCS_VERSION}}"
-        title: "Update Documentation to ${{steps.get-vulkan-version.outputs.DOCS_VERSION}}"
+        commit-message: "Update Documentation to ${{steps.get-docs-version.outputs.DOCS_VERSION}}"
+        title: "Update Documentation to ${{steps.get-docs-version.outputs.DOCS_VERSION}}"
         labels: "CI/CD, Documentation, Update"
         assignees: "GamesTrap"
         milestone: 5

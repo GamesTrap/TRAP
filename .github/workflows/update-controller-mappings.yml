@@ -1,0 +1,65 @@
+name: Update Controller Mappings
+
+on:
+  schedule:
+    - cron: '0 16 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-vulkan-loader:
+    name: Update Controller Mappings
+    if: github.repository == 'GamesTrap/TRAP'
+    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
+    steps:
+      - name: Cleanup workspace
+        if: ${{ always() }}
+        uses: gamestrap/gha-workspace-cleanup@v1.2.3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: 'false'
+          ref: dev
+      - uses: crazy-max/ghaction-import-gpg@v5
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_committer_name: TRAP CI/CD
+      - name: Install dependencies
+        run: sudo apt install -y python3 pip
+      - name: Make python3 available as python
+        run: sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
+      - name: Make pip3 available as pip
+        run: sudo update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10
+      - uses: tibdex/github-app-token@v1
+        id: generate-token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+      - name: Make scripts and premake executable
+        run: |
+          chmod +x libs/premake5/linux/premake5
+          chmod +x GeneratorScripts/GenerateControllerMappings.sh
+      - name: Update Controller Mappings
+        run: |
+          cd GeneratorScripts/
+          ./GenerateControllerMappings.sh
+          cd ..
+      - name: Retrieve new controller mappings version
+        id: get-controller-mappings-version
+        run: echo "CONTROLLER_MAPPINGS_VERSION=$(grep -oP -m 1 '\d{4}-\d{2}-\d{2}' TRAP/src/Input/ControllerMappings.h)" >> "$GITHUB_OUTPUT"
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          base: dev
+          branch: controller-mappings-update/${{steps.get-controller-mappings-version.outputs.CONTROLLER_MAPPINGS_VERSION}}
+          delete-branch: true
+          commit-message: "Update Controller Mappings to ${{steps.get-controller-mappings-version.outputs.CONTROLLER_MAPPINGS_VERSION}}"
+          title: "Update Controller Mappings to ${{steps.get-controller-mappings-version.outputs.CONTROLLER_MAPPINGS_VERSION}}"
+          labels: "CI/CD, Input, Update"
+          assignees: "GamesTrap"
+          milestone: 5
+          token: ${{steps.generate-token.outputs.token}}
+          author: "TRAP CI/CD <gamestrap@web.de>"
+          committer: "TRAP CI/CD <gamestrap@web.de>"

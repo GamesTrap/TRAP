@@ -4071,3 +4071,7 @@ SITREP 06/15/2023|23w24a4
     - Make some premake generation scripts independent from the project files ~<10 mins
     - Set execute flags for Premake5 and GeneratorScripts ~<5 mins
     - Build-Docs workflow now creates PRs instead of directly commiting ~<10 mins
+
+SITREP 06/16/2023|23w24a5
+    - Changed TRAP Engine version to 23w24a5(0.9.44)
+    - Added workflow to automatically update the controller mappings ~<5 mins
