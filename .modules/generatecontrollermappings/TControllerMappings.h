@@ -27,7 +27,7 @@ freely, subject to the following restrictions:
 
 */
 //Updates can be found at: https://github.com/gabomdq/SDL_GameControllerDB
-//Modified by Jan "GamesTrap" Schuerkamp @MODIFICATION_DATE@
+//Modified by Jan "GamesTrap" Schuerkamp 2023
 
 namespace TRAP::Embed
 {

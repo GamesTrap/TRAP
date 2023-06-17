@@ -77,8 +77,8 @@ newaction
         instr = instr:gsub("@TRAP_LINUX_MAPPINGS@", "")
 
         -- Set timestamp
-        local timestamp = os.date("%Y-%m-%d");
-        instr = instr:gsub("@MODIFICATION_DATE@", timestamp)
+        -- local timestamp = os.date("%Y-%m-%d");
+        -- instr = instr:gsub("@MODIFICATION_DATE@", timestamp)
 
         -- Write final mapping file
         outfile = io.open(targetPath, "w")

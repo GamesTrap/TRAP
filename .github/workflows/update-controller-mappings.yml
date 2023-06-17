@@ -46,17 +46,14 @@ jobs:
           cd GeneratorScripts/
           ./GenerateControllerMappings.sh
           cd ..
-      - name: Retrieve new controller mappings version
-        id: get-controller-mappings-version
-        run: echo "CONTROLLER_MAPPINGS_VERSION=$(grep -oP -m 1 '\d{4}-\d{2}-\d{2}' TRAP/src/Input/ControllerMappings.h)" >> "$GITHUB_OUTPUT"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
           base: dev
-          branch: controller-mappings-update/${{steps.get-controller-mappings-version.outputs.CONTROLLER_MAPPINGS_VERSION}}
+          branch: controller-mappings-update/$(date '+%Y-%m-%d')
           delete-branch: true
-          commit-message: "Update Controller Mappings to ${{steps.get-controller-mappings-version.outputs.CONTROLLER_MAPPINGS_VERSION}}"
-          title: "Update Controller Mappings to ${{steps.get-controller-mappings-version.outputs.CONTROLLER_MAPPINGS_VERSION}}"
+          commit-message: "Update Controller Mappings to $(date '+%Y-%m-%d')"
+          title: "Update Controller Mappings to $(date '+%Y-%m-%d')"
           labels: "CI/CD, Input, Update"
           assignees: "GamesTrap"
           milestone: 5
