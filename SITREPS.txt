@@ -4081,3 +4081,4 @@ SITREP 06/17/2023|23w24b1
     - ControllerMappings Removed modification date ~<5 mins
     - Updated generatedocs.lua ~<20 mins
     - Build-Docs now uses virtual python enviroment for packages ~<5 mins
+    - Build-Docs Added missing graphviz dependenciy ~<5 mins
