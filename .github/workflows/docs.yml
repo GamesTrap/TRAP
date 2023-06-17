@@ -30,7 +30,7 @@ jobs:
         git_commit_gpgsign: true
         git_committer_name: TRAP CI/CD
     - name: Install dependencies
-      run: sudo apt install -y doxygen pip python3-sphinx
+      run: sudo apt install -y doxygen python3 python3-pip python3-venv
     - name: Make python3 available as python
       run: sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
     - name: Make pip3 available as pip

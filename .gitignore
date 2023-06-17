@@ -204,3 +204,4 @@ compile_commands.json
 .cache/**
 Dependencies/Wayland/**.h
 **steam_appid.txt**
+.penv/**

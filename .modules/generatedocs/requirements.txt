@@ -1,0 +1,11 @@
+sphinx==4.5.0
+sphinxcontrib-inlinesyntaxhighlight
+exhale
+breathe
+furo==2022.09.29
+sphinx-inline-tabs
+sphinxext-opengraph
+sphinx-copybutton
+myst-parser==0.18.1
+Pygments
+sphinx-design

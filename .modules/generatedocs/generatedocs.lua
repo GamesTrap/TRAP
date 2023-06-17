@@ -3,16 +3,31 @@ local m = premake.modules.generatedocs
 
 local p = premake
 
-success = true
-doxygenPath = "Dependencies/Docs/Doxygen"
-doxygenBinPath = doxygenPath .. "/bin/"
-tempSphinxEmbedPath = "../.modules/generatedocs/sphinx/embed"
+mainRepoPath = "../"
+generateDocsPath = mainRepoPath .. ".modules/generatedocs/"
+tempSphinxEmbedPath = generateDocsPath .. "sphinx/embed"
+pythonRequirementsPath = generateDocsPath .. "requirements.txt"
+pythonEnvPath = mainRepoPath .. ".penv/"
+pipPath = pythonEnvPath .. "bin/pip"
+sphinxBuildPath = pythonEnvPath .. "bin/sphinx-build"
+
+function SetupPaths()
+    if(os.host() == "windows") then
+        mainRepoPath = path.translate(mainRepoPath)
+        generateDocsPath = path.translate(generateDocsPath)
+        tempSphinxEmbedPath = path.translate(tempSphinxEmbedPath)
+        pythonRequirementsPath = path.translate(pythonRequirementsPath)
+        pythonEnvPath = path.translate(pythonEnvPath)
+        pipPath = path.translate(pythonEnvPath .. "Scripts/./pip.exe")
+        sphinxBuildPath = path.translate(pythonEnvPath .. "Scripts/./sphinx-build.exe")
+    end
+end
 
 function GenerateChangelog()
     print("Generating Changelog...")
 
     -- Check if SITREPS.txt exists
-    if not os.isfile("../SITREPS.txt") then
+    if not os.isfile(mainRepoPath .. "SITREPS.txt") then
         term.setTextColor(term.errorColor)
         print("Unable to find SITREPS.txt in root folder!")
         term.setTextColor(nil)
@@ -20,12 +35,12 @@ function GenerateChangelog()
     end
 
     -- Delete existing changelog.md if it exists
-    if os.isfile("../.modules/generatedocs/pages/changelog.md") then
-        os.remove("../.modules/generatedocs/pages/changelog.md")
+    if os.isfile(generateDocsPath .. "pages/changelog.md") then
+        os.remove(generateDocsPath .. "pages/changelog.md")
     end
 
     -- Open SITREPS.txt
-    local sitrep = io.readfile("../SITREPS.txt")
+    local sitrep = io.readfile(mainRepoPath .. "SITREPS.txt")
     -- Explode SITREPS.txt into lines
     local sitrepLines = string.explode(sitrep, "\n")
 
@@ -134,7 +149,7 @@ function GenerateChangelog()
     changelog = changelog .. "::::\n"
 
     -- Write changelog
-    io.writefile("../.modules/generatedocs/pages/changelog.md", changelog)
+    io.writefile(generateDocsPath .. "pages/changelog.md", changelog)
 
     return true
 end
@@ -145,17 +160,17 @@ newaction
     description = "Generate Documentation",
 
     execute = function()
+        SetupPaths()
+
         print("Checking Dependencies")
-        if(os.host() == "linux") then
+        if(os.host() == "linux" or os.host() == "windows") then
             print("Checking Doxygen")
             local out, errorCode = os.outputof("doxygen --version")
             if(errorCode ~= 0) then
                 term.setTextColor(term.errorColor)
                 print("Unable to find Doxygen")
                 term.setTextColor(nil)
-                success = false
                 return
-
             end
 
             print("Checking Python")
@@ -164,7 +179,6 @@ newaction
                 term.setTextColor(term.errorColor)
                 print("Unable to find Python 3")
                 term.setTextColor(nil)
-                success = false
                 return
             end
 
@@ -174,256 +188,34 @@ newaction
                 term.setTextColor(term.errorColor)
                 print("Unable to find pip")
                 term.setTextColor(nil)
-                success = false
                 return
-            end
-
-            print("Checking Sphinx")
-            local out, errorCode = os.outputof("sphinx-build --version")
-            if(errorCode ~= 0) then
-                term.setTextColor(term.warningColor)
-                print("Unable to find sphinx-build!")
-                term.setTextColor(nil)
-                success = false
-                return
-            end
-
-            print("Checking Sphinx-Extensions")
-            -- local out, errorCode = os.outputof("pip list | grep -F sphinxcontrib-inlinesyntaxhighlight")
-            -- if(errorCode ~= 0) then
-            --     term.setTextColor(term.warningColor)
-            --     print("Sphinx-InlineSyntaxHighlight is not installed!")
-            --     term.setTextColor(nil)
-            --     print("Installing Sphinx-InlineSyntaxHighlight...")
-            --     os.execute("pip install -U sphinxcontrib-inlinesyntaxhighlight")
-            -- end
-
-            local out, errorCode = os.outputof("pip list | grep -F exhale")
-            if(errorCode ~= 0) then
-                term.setTextColor(term.warningColor)
-                print("Exhale is not installed!")
-                term.setTextColor(nil)
-                print("Installing Exhale...")
-                os.execute("pip install -U exhale")
-            end
-
-            local out, errorCode = os.outputof("pip list | grep -F breathe")
-            if(errorCode ~= 0) then
-                term.setTextColor(term.warningColor)
-                print("Breathe is not installed!")
-                term.setTextColor(nil)
-                print("Installing Breathe...")
-                os.execute("pip install -U breathe")
-            end
-
-            local out, errorCode = os.outputof("pip list | grep -F furo")
-            if(errorCode ~= 0) then
-                term.setTextColor(term.warningColor)
-                print("Furo theme is not installed!")
-                term.setTextColor(nil)
-                print("Installing Furo theme...")
-                os.execute("pip install -U furo")
-            end
-
-            local out, errorCode = os.outputof("pip list | grep -F sphinx_inline_tabs")
-            local out2, errorCode2 = os.outputof("pip list | grep -F sphinx-inline-tabs")
-            if(errorCode ~= 0 and errorCode2 ~= 0) then
-                term.setTextColor(term.warningColor)
-                print("Sphinx-Inline-Tabs is not installed!")
-                term.setTextColor(nil)
-                print("Installing Sphinx-Inline-Tabs...")
-                os.execute("pip install -U sphinx-inline-tabs")
-            end
-
-            local out, errorCode = os.outputof("pip list | grep -F sphinxext-opengraph")
-            if(errorCode ~= 0) then
-                term.setTextColor(term.warningColor)
-                print("SphinxExt-OpenGraph is not installed!")
-                term.setTextColor(nil)
-                print("Installing SphinxExt-OpenGraph...")
-                os.execute("pip install -U sphinxext-opengraph")
-            end
-
-            local out, errorCode = os.outputof("pip list | grep -F sphinx-copybutton")
-            if(errorCode ~= 0) then
-                term.setTextColor(term.warningColor)
-                print("Sphinx-CopyButton is not installed!")
-                term.setTextColor(nil)
-                print("Installing Sphinx-CopyButton...")
-                os.execute("pip install -U sphinx-copybutton")
-            end
-
-            local out, errorCode = os.outputof("pip list | grep -F myst-parser")
-            if(errorCode ~= 0) then
-                term.setTextColor(term.warningColor)
-                print("MyST-Parser is not installed!")
-                term.setTextColor(nil)
-                print("Installing MyST-Parser...")
-                os.execute("pip install -U myst-parser")
-            end
-
-            local out, errorCode = os.outputof("pip list | grep -F Pygments")
-            if(errorCode ~= 0) then
-                term.setTextColor(term.warningColor)
-                print("Pygments is not installed!")
-                term.setTextColor(nil)
-                print("Installing Pygments...")
-                os.execute("pip install -U Pygments")
-            end
-
-            local out, errorCode = os.outputof("pip list | grep -F sphinx-design")
-            local out2, errorCode2 = os.outputof("pip list | grep -F sphinx_design")
-            if(errorCode ~= 0 and errorCode2 ~= 0) then
-                term.setTextColor(term.warningColor)
-                print("Sphinx-Design is not installed!")
-                term.setTextColor(nil)
-                print("Installing Sphinx-Design...")
-                os.execute("pip install -U sphinx-design")
-            end
-
-        elseif(os.host() == "windows") then
-            print("Checking Doxygen")
-            local out, errorCode = os.outputof("doxygen --version")
-            if(errorCode ~= 0) then
-                term.setTextColor(term.errorColor)
-                print("Unable to find Doxygen")
-                term.setTextColor(nil)
-                success = false
-                return
-            end
-
-            print("Checking Python")
-            local out, errorCode = os.outputof("python --version")
-            if(errorCode ~= 0) then
-                term.setTextColor(term.errorColor)
-                print("Unable to find Python")
-                term.setTextColor(nil)
-                success = false
-                return
-            end
-
-            print("Checking pip")
-            local out, errorCode = os.outputof("pip --version")
-            if(errorCode ~= 0) then
-                term.setTextColor(term.errorColor)
-                print("Unable to find pip")
-                term.setTextColor(nil)
-                success = false
-                return
-            end
-
-            print("Checking Sphinx")
-            local out, errorCode = os.outputof("sphinx-build --version")
-            if(errorCode ~= 0) then
-                term.setTextColor(term.warningColor)
-                print("Unable to find sphinx-build!")
-                term.setTextColor(nil)
-                success = false
-                return
-            end
-
-            print("Checking Sphinx-Extensions")
-            -- local out, errorCode = os.outputof("pip list | findstr sphinxcontrib-inlinesyntaxhighlight")
-            -- if(errorCode ~= 0) then
-            --     term.setTextColor(term.warningColor)
-            --     print("Sphinx-InlineSyntaxHighlight is not installed!")
-            --     term.setTextColor(nil)
-            --     print("Installing Sphinx-InlineSyntaxHighlight...")
-            --     os.execute("pip install -U sphinxcontrib-inlinesyntaxhighlight")
-            -- end
-
-            local out, errorCode = os.outputof("pip list | findstr exhale")
-            if(errorCode ~= 0) then
-                term.setTextColor(term.warningColor)
-                print("Exhale is not installed!")
-                term.setTextColor(nil)
-                print("Installing Exhale...")
-                os.execute("pip install -U exhale")
-            end
-
-            local out, errorCode = os.outputof("pip list | findstr breathe")
-            if(errorCode ~= 0) then
-                term.setTextColor(term.warningColor)
-                print("Breathe is not installed!")
-                term.setTextColor(nil)
-                print("Installing Breathe...")
-                os.execute("pip install -U breathe")
-            end
-
-            local out, errorCode = os.outputof("pip list | findstr furo")
-            if(errorCode ~= 0) then
-                term.setTextColor(term.warningColor)
-                print("Furo theme is not installed!")
-                term.setTextColor(nil)
-                print("Installing Furo theme...")
-                os.execute("pip install -U furo")
-            end
-
-            local out, errorCode = os.outputof("pip list | findstr sphinx_inline_tabs")
-            local out2, errorCode2 = os.outputof("pip list | findstr sphinx-inline-tabs")
-            if(errorCode ~= 0 and errorCode2 ~= 0) then
-                term.setTextColor(term.warningColor)
-                print("Sphinx-Inline-Tabs is not installed!")
-                term.setTextColor(nil)
-                print("Installing Sphinx-Inline-Tabs...")
-                os.execute("pip install -U sphinx-inline-tabs")
-            end
-
-            local out, errorCode = os.outputof("pip list | findstr sphinxext-opengraph")
-            if(errorCode ~= 0) then
-                term.setTextColor(term.warningColor)
-                print("SphinxExt-OpenGraph is not installed!")
-                term.setTextColor(nil)
-                print("Installing SphinxExt-OpenGraph...")
-                os.execute("pip install -U sphinxext-opengraph")
-            end
-
-            local out, errorCode = os.outputof("pip list | findstr sphinx-copybutton")
-            if(errorCode ~= 0) then
-                term.setTextColor(term.warningColor)
-                print("Sphinx-CopyButton is not installed!")
-                term.setTextColor(nil)
-                print("Installing Sphinx-CopyButton...")
-                os.execute("pip install -U sphinx-copybutton")
-            end
-
-            local out, errorCode = os.outputof("pip list | findstr myst-parser")
-            if(errorCode ~= 0) then
-                term.setTextColor(term.warningColor)
-                print("MyST-Parser is not installed!")
-                term.setTextColor(nil)
-                print("Installing MyST-Parser...")
-                os.execute("pip install -U myst-parser")
-            end
-
-            local out, errorCode = os.outputof("pip list | findstr Pygments")
-            if(errorCode ~= 0) then
-                term.setTextColor(term.warningColor)
-                print("Pygments is not installed!")
-                term.setTextColor(nil)
-                print("Installing Pygments...")
-                os.execute("pip install -U Pygments")
-            end
-
-            local out, errorCode = os.outputof("pip list | findstr sphinx-design")
-            local out2, errorCode2 = os.outputof("pip list | findstr sphinx_design")
-            if(errorCode ~= 0 and errorCode2 ~= 0) then
-                term.setTextColor(term.warningColor)
-                print("Sphinx-Design is not installed!")
-                term.setTextColor(nil)
-                print("Installing Sphinx-Design...")
-                os.execute("pip install -U sphinx-design")
             end
         else
             term.setTextColor(term.errorColor)
             print("Unsupported OS: " .. os.host())
             term.setTextColor(nil)
-            success = false
+            return
+        end
+
+        -- Create new python evironment
+        result, errorCode = os.outputof("python -m venv " .. pythonEnvPath)
+        if(errorCode ~= 0) then
+            term.setTextColor(term.errorColor)
+            print("Failed to create new python enviroment (" .. pythonEnvPath .. ")")
+            term.setTextColor(nil)
+            return
+        end
+
+        -- Install all python requirements
+        result, errorCode = os.outputof(pipPath .. " install -r " .. pythonRequirementsPath)
+        if(errorCode ~= 0 and not os.host() == "windows") then --On Windows I get return code 1 instead of expected 0 although all packages were successfully installed :/
+            term.setTextColor(term.errorColor)
+            print("Failed to install requirements from " .. pythonRequirementsPath)
+            term.setTextColor(nil)
             return
         end
 
         if not GenerateChangelog() then
-            success = false
             return
         end
 
@@ -434,57 +226,34 @@ newaction
         end
 
         --Generate Doxygen pages
-        if(os.host() == "windows") then
-            os.execute("doxygen ..\\.modules\\generatedocs\\Doxyfile-prj.cfg")
-        elseif(os.host() == "linux") then
-            os.execute("doxygen ../.modules/generatedocs/Doxyfile-prj.cfg > /dev/null 2>&1")
-        end
+        os.execute("doxygen " .. generateDocsPath .. "Doxyfile-prj.cfg")
 
         print("Generating Sphinx pages...")
-        if(os.host() == "windows") then
-            os.execute("sphinx-build ..\\.modules\\generatedocs\\ ..\\.modules\\generatedocs\\sphinx -b html -j 16 -q") --Generate Sphinx pages
-        elseif(os.host() == "linux") then
-            os.execute("sphinx-build ../.modules/generatedocs/ ../.modules/generatedocs/sphinx -b html -j 16 -q") --Generate Sphinx pages
-        end
+        os.execute(sphinxBuildPath .. " " .. generateDocsPath .. " " .. generateDocsPath .. "sphinx -b html -j 16 -q")
 
         print("Copying .nojekyll")
-        os.copyfile("../.modules/generatedocs/.nojekyll", "../.modules/generatedocs/sphinx") --Needed for GitHub Pages to display correctly as a static page
+        os.copyfile(generateDocsPath .. ".nojekyll", generateDocsPath .. "sphinx") --Needed for GitHub Pages to display correctly as a static page
 
         print("Copying fonts")
         if(os.host() == "linux") then
-            os.execute("cp -r ../.modules/generatedocs/fonts ../.modules/generatedocs/sphinx/fonts")
+            os.execute("cp -r " .. generateDocsPath .. "fonts " .. generateDocsPath .. "sphinx/fonts")
         elseif(os.host() == "windows") then
-            os.execute("xcopy ..\\.modules\\generatedocs\\fonts ..\\.modules\\generatedocs\\sphinx\\fonts > NUL")
+            os.execute("xcopy " .. generateDocsPath .. "fonts " .. generateDocsPath .. "sphinx\\fonts /E /I")
         end
 
-        if(os.host() == "linux") then
-            os.rmdir("../docs") --Delete old pages
-        elseif(os.host() == "windows") then
-            os.rmdir("..\\docs") --Delete old pages
-        end
+        --Delete old pages
+        os.rmdir(mainRepoPath .. "docs")
 
         print("Copying files to docs folder...")
         if(os.host() == "linux") then
-            os.mkdir("../docs") --Recreate final docs folder
-            os.execute("mv ../.modules/generatedocs/sphinx/** ../docs/")
-            os.execute("mv ../.modules/generatedocs/sphinx/.** ../docs/ > /dev/null 2>&1")
+            os.mkdir(mainRepoPath .. "docs") --Recreate final docs folder
+            os.execute("mv " .. generateDocsPath .. "sphinx/** " .. mainRepoPath .. "docs/")
+            os.execute("mv " .. generateDocsPath .. "sphinx/.** " .. mainRepoPath .. "docs/")
         elseif(os.host() == "windows") then
-            os.execute("move ..\\.modules\\generatedocs\\sphinx ..\\ > NUL")
-            os.execute("rename ..\\sphinx docs > NUL")
+            os.execute("move " .. generateDocsPath .. "sphinx " .. mainRepoPath)
+            os.execute("rename " .. mainRepoPath .. "sphinx docs")
         end
     end,
-
-    onEnd = function()
-        if(success == true) then
-            term.setTextColor(term.infoColor)
-            print("Documentation generated successfully")
-            term.setTextColor(nil)
-        else
-            term.setTextColor(term.errorColor)
-            print("Documentation generation failed")
-            term.setTextColor(nil)
-        end
-    end
 }
 
 return m
