@@ -8,7 +8,6 @@
 #include "VulkanRootSignature.h"
 #include "VulkanTexture.h"
 #include "Graphics/Textures/Texture.h"
-#include <memory>
 
 TRAP::Graphics::API::VulkanDescriptorSet::VulkanDescriptorSet(TRAP::Ref<VulkanDevice> device,
 	                                                          std::vector<VkDescriptorSet> vkDescriptorSetHandles,
@@ -104,13 +103,14 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
-#define VALIDATE_DESCRIPTOR(descriptor, ...)                                                  \
-	if(!(descriptor))                                                                         \
-	{                                                                                         \
-		const std::string msg = __FUNCTION__ + std::string(" : ") + std::string(__VA_ARGS__); \
-		TP_ERROR(Log::RendererVulkanDescriptorSetPrefix, msg);                                \
-		TRAP_ASSERT(false, msg);                                                              \
-		continue;                                                                             \
+#define VALIDATE_DESCRIPTOR(descriptor, ...)                                                                      \
+	if(!(descriptor))                                                                                             \
+	{                                                                                                             \
+	    constexpr std::source_location descLoc = std::source_location::current();                                     \
+		const std::string msg = std::string(descLoc.function_name()) + std::string(" : ") + std::string(__VA_ARGS__); \
+		TP_ERROR(Log::RendererVulkanDescriptorSetPrefix, msg);                                                    \
+		TRAP_ASSERT(false, msg);                                                                                  \
+		continue;                                                                                                 \
 	}
 #else
 #define VALIDATE_DESCRIPTOR(descriptor, ...)

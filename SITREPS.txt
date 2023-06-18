@@ -4095,3 +4095,4 @@ SITREP 06/19/2023|23w25a1
     - VulkanCommon VkCall() and VkReflexCall() now use std::source_location ~<10 mins
     - Replaced deprecated EnTT functions ~<5 mins
     - TRAP_ASSERT now uses std::source_location ~<10 mins
+    - Utils Deprecated GetEndian() ~<5 mins

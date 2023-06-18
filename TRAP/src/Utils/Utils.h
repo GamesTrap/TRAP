@@ -52,6 +52,7 @@ namespace TRAP::Utils
 	/// Get the endianness of the system.
 	/// </summary>
 	/// <returns>TRAP::Utils::Endian::Little or TRAP::Utils::Endian::Big.</returns>
+	[[deprecated("Use C++20 std::endian instead")]]
 	[[nodiscard]] Endian GetEndian();
 
 	//-------------------------------------------------------------------------------------------------------------------//

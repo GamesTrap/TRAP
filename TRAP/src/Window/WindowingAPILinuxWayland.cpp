@@ -971,7 +971,7 @@ void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKey([[maybe_unused]] void* cons
                 timer.it_interval.tv_sec = 1;
 
             timer.it_value.tv_sec = s_Data.Wayland.KeyRepeatDelay / 1000;
-            timer.it_value.tv_nsec = (static_cast<__syscall_slong_t>(s_Data.Wayland.KeyRepeatDelay % 1000) * 1000000);
+            timer.it_value.tv_nsec = (static_cast<long>(s_Data.Wayland.KeyRepeatDelay % 1000) * 1000000);
         }
     }
 
@@ -2603,7 +2603,7 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorImageWayland(const InternalWindow& w
 
         itimerspec timer{};
         timer.it_value.tv_sec = image->delay / 1000;
-        timer.it_value.tv_nsec = (static_cast<__syscall_slong_t>(image->delay % 1000) * 1000000);
+        timer.it_value.tv_nsec = (static_cast<long>(image->delay % 1000) * 1000000);
         timerfd_settime(s_Data.Wayland.CursorTimerFD, 0, &timer, nullptr);
 
         cursorWayland.Width = NumericCast<int32_t>(image->width);
