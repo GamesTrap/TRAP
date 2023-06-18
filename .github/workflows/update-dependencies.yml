@@ -34,6 +34,7 @@ jobs:
       - name: Update Box2D
         id: box2d
         run: |
+          git checkout dev
           cd Dependencies/Box2D/
           git fetch origin main
           git pull origin main
@@ -43,7 +44,6 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           base: dev
-          add-paths: "Dependencies/Box2D/**"
           branch: box2d-update/${{steps.box2d.outputs.BOX2D_VERSION}}
           delete-branch: true
           commit-message: "Update Box2D to ${{steps.box2d.outputs.BOX2D_VERSION}}"
@@ -57,6 +57,7 @@ jobs:
       - name: Update EnTT
         id: entt
         run: |
+            git checkout dev
             cd Dependencies/EnTT/
             git fetch --tags
             git checkout $(git rev-list --tags --max-count=1)
@@ -66,7 +67,6 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
             base: dev
-            add-paths: "Dependencies/EnTT/**"
             branch: entt-update/${{steps.entt.outputs.ENTT_VERSION}}
             delete-branch: true
             commit-message: "Update EnTT to ${{steps.entt.outputs.ENTT_VERSION}}"
@@ -80,6 +80,7 @@ jobs:
       - name: Update GLSLang
         id: glslang
         run: |
+            git checkout dev
             cd Dependencies/GLSLang/
             git fetch --tags
             git checkout $(git tag -l "sdk-*" --sort=-v:refname | head -n 1)
@@ -89,7 +90,6 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
             base: dev
-            add-paths: "Dependencies/GLSLang/**"
             branch: glslang-update/${{steps.glslang.outputs.GLSLANG_VERSION}}
             delete-branch: true
             commit-message: "Update GLSLang to ${{steps.glslang.outputs.GLSLANG_VERSION}}"
@@ -103,9 +103,11 @@ jobs:
       - name: Update ImGui
         id: imgui
         run: |
+            git checkout dev
             cd Dependencies/ImGui/
+            git fetch origin docking
+            git pull origin docking
             git fetch --tags
-            git checkout origin/docking
             git reset --hard $(git describe --tags $(git rev-list --tags --max-count=1))
             echo "IMGUI_VERSION=$(git describe --tags $(git rev-list --tags --max-count=1))" >> "$GITHUB_OUTPUT"
             cd ../..
@@ -113,7 +115,6 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
             base: dev
-            add-paths: "Dependencies/ImGui/**"
             branch: imgui-update/${{steps.imgui.outputs.IMGUI_VERSION}}
             delete-branch: true
             commit-message: "Update ImGui to ${{steps.imgui.outputs.IMGUI_VERSION}}"
@@ -127,6 +128,7 @@ jobs:
       - name: Update ImGuizmo
         id: imguizmo
         run: |
+            git checkout dev
             cd Dependencies/ImGuizmo/
             git fetch origin master
             git pull origin master
@@ -136,7 +138,6 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
             base: dev
-            add-paths: "Dependencies/ImGuizmo/**"
             branch: imguizmo-update/${{steps.imguizmo.outputs.IMGUIZMO_VERSION}}
             delete-branch: true
             commit-message: "Update ImGuizmo to ${{steps.imguizmo.outputs.IMGUIZMO_VERSION}}"
@@ -150,6 +151,7 @@ jobs:
       - name: Update ModernDialogs
         id: moderndialogs
         run: |
+            git checkout dev
             cd Dependencies/ModernDialogs/
             git fetch --tags
             git checkout $(git rev-list --tags --max-count=1)
@@ -159,7 +161,6 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
             base: dev
-            add-paths: "Dependencies/ModernDialog/**"
             branch: moderndialogs-update/${{steps.moderndialogs.outputs.MODERNDIALOGS_VERSION}}
             delete-branch: true
             commit-message: "Update ModernDialogs to ${{steps.moderndialogs.outputs.MODERNDIALOGS_VERSION}}"
@@ -173,6 +174,7 @@ jobs:
       - name: Update SPIRV-Cross
         id: spirvcross
         run: |
+            git checkout dev
             cd Dependencies/SPIRV-Cross/
             git fetch --tags
             git checkout $(git tag -l "sdk-*" --sort=-v:refname | head -n 1)
@@ -182,7 +184,6 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
             base: dev
-            add-paths: "Dependencies/SPIRV-Cross/**"
             branch: spirvcross-update/${{steps.spirvcross.outputs.SPIRVCROSS_VERSION}}
             delete-branch: true
             commit-message: "Update SPIRV-Cross to ${{steps.spirvcross.outputs.SPIRVCROSS_VERSION}}"
@@ -196,6 +197,7 @@ jobs:
       - name: Update Tracy
         id: tracy
         run: |
+            git checkout dev
             cd Dependencies/Tracy/
             git fetch --tags
             git checkout $(git rev-list --tags --max-count=1)
@@ -205,7 +207,6 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
             base: dev
-            add-paths: "Dependencies/Tracy/**"
             branch: tracy-update/${{steps.tracy.outputs.TRACY_VERSION}}
             delete-branch: true
             commit-message: "Update Tracy to ${{steps.tracy.outputs.TRACY_VERSION}}"
@@ -219,6 +220,7 @@ jobs:
       - name: Update VulkanMemoryAllocator
         id: vma
         run: |
+            git checkout dev
             cd Dependencies/VulkanMemoryAllocator/
             git fetch origin master
             git pull origin master
@@ -228,7 +230,6 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
             base: dev
-            add-paths: "Dependencies/VulkanMemoryAllocator/**"
             branch: vma-update/${{steps.vma.outputs.VMA_VERSION}}
             delete-branch: true
             commit-message: "Update VulkanMemoryAllocator to ${{steps.vma.outputs.VMA_VERSION}}"
@@ -242,6 +243,7 @@ jobs:
       - name: Update YAMLCpp
         id: yamlcpp
         run: |
+            git checkout dev
             cd Dependencies/YAMLCpp/
             git fetch origin master
             git pull origin master
@@ -251,7 +253,6 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
             base: dev
-            add-paths: "Dependencies/YAMLCpp/**"
             branch: yamlcpp-update/${{steps.yamlcpp.outputs.YAMLCPP_VERSION}}
             delete-branch: true
             commit-message: "Update YAMLCpp to ${{steps.yamlcpp.outputs.YAMLCPP_VERSION}}"
