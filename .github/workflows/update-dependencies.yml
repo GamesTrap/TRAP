@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-dependencies:
-    name: Update Dependencies
+  update-box2d:
+    name: Update Box2D
     if: github.repository == 'GamesTrap/TRAP'
     runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
     steps:
@@ -54,6 +54,32 @@ jobs:
           token: ${{steps.generate-token.outputs.token}}
           author: "TRAP CI/CD <gamestrap@web.de>"
           committer: "TRAP CI/CD <gamestrap@web.de>"
+
+  update-entt:
+    name: Update EnTT
+    if: github.repository == 'GamesTrap/TRAP'
+    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
+    steps:
+      - name: Cleanup workspace
+        if: ${{ always() }}
+        uses: gamestrap/gha-workspace-cleanup@v1.2.3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+          ref: dev
+      - uses: crazy-max/ghaction-import-gpg@v5
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_committer_name: TRAP CI/CD
+      - uses: tibdex/github-app-token@v1
+        id: generate-token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Update EnTT
         id: entt
         run: |
@@ -77,6 +103,32 @@ jobs:
             token: ${{steps.generate-token.outputs.token}}
             author: "TRAP CI/CD <gamestrap@web.de>"
             committer: "TRAP CI/CD <gamestrap@web.de>"
+
+  update-glslang:
+    name: Update GLSLang
+    if: github.repository == 'GamesTrap/TRAP'
+    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
+    steps:
+      - name: Cleanup workspace
+        if: ${{ always() }}
+        uses: gamestrap/gha-workspace-cleanup@v1.2.3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+          ref: dev
+      - uses: crazy-max/ghaction-import-gpg@v5
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_committer_name: TRAP CI/CD
+      - uses: tibdex/github-app-token@v1
+        id: generate-token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Update GLSLang
         id: glslang
         run: |
@@ -100,6 +152,32 @@ jobs:
             token: ${{steps.generate-token.outputs.token}}
             author: "TRAP CI/CD <gamestrap@web.de>"
             committer: "TRAP CI/CD <gamestrap@web.de>"
+
+  update-imgui:
+    name: Update ImGui
+    if: github.repository == 'GamesTrap/TRAP'
+    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
+    steps:
+      - name: Cleanup workspace
+        if: ${{ always() }}
+        uses: gamestrap/gha-workspace-cleanup@v1.2.3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+          ref: dev
+      - uses: crazy-max/ghaction-import-gpg@v5
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_committer_name: TRAP CI/CD
+      - uses: tibdex/github-app-token@v1
+        id: generate-token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Update ImGui
         id: imgui
         run: |
@@ -125,6 +203,32 @@ jobs:
             token: ${{steps.generate-token.outputs.token}}
             author: "TRAP CI/CD <gamestrap@web.de>"
             committer: "TRAP CI/CD <gamestrap@web.de>"
+
+  update-imguizmo:
+    name: Update ImGuizmo
+    if: github.repository == 'GamesTrap/TRAP'
+    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
+    steps:
+      - name: Cleanup workspace
+        if: ${{ always() }}
+        uses: gamestrap/gha-workspace-cleanup@v1.2.3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+          ref: dev
+      - uses: crazy-max/ghaction-import-gpg@v5
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_committer_name: TRAP CI/CD
+      - uses: tibdex/github-app-token@v1
+        id: generate-token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Update ImGuizmo
         id: imguizmo
         run: |
@@ -148,6 +252,32 @@ jobs:
             token: ${{steps.generate-token.outputs.token}}
             author: "TRAP CI/CD <gamestrap@web.de>"
             committer: "TRAP CI/CD <gamestrap@web.de>"
+
+  update-moderndialogs:
+    name: Update ModernDialogs
+    if: github.repository == 'GamesTrap/TRAP'
+    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
+    steps:
+      - name: Cleanup workspace
+        if: ${{ always() }}
+        uses: gamestrap/gha-workspace-cleanup@v1.2.3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+          ref: dev
+      - uses: crazy-max/ghaction-import-gpg@v5
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_committer_name: TRAP CI/CD
+      - uses: tibdex/github-app-token@v1
+        id: generate-token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Update ModernDialogs
         id: moderndialogs
         run: |
@@ -171,6 +301,32 @@ jobs:
             token: ${{steps.generate-token.outputs.token}}
             author: "TRAP CI/CD <gamestrap@web.de>"
             committer: "TRAP CI/CD <gamestrap@web.de>"
+
+  update-spirvcross:
+    name: Update SPIRV-Cross
+    if: github.repository == 'GamesTrap/TRAP'
+    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
+    steps:
+      - name: Cleanup workspace
+        if: ${{ always() }}
+        uses: gamestrap/gha-workspace-cleanup@v1.2.3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+          ref: dev
+      - uses: crazy-max/ghaction-import-gpg@v5
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_committer_name: TRAP CI/CD
+      - uses: tibdex/github-app-token@v1
+        id: generate-token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Update SPIRV-Cross
         id: spirvcross
         run: |
@@ -194,6 +350,32 @@ jobs:
             token: ${{steps.generate-token.outputs.token}}
             author: "TRAP CI/CD <gamestrap@web.de>"
             committer: "TRAP CI/CD <gamestrap@web.de>"
+
+  update-tracy:
+    name: Update Tracy
+    if: github.repository == 'GamesTrap/TRAP'
+    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
+    steps:
+      - name: Cleanup workspace
+        if: ${{ always() }}
+        uses: gamestrap/gha-workspace-cleanup@v1.2.3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+          ref: dev
+      - uses: crazy-max/ghaction-import-gpg@v5
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_committer_name: TRAP CI/CD
+      - uses: tibdex/github-app-token@v1
+        id: generate-token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Update Tracy
         id: tracy
         run: |
@@ -217,6 +399,32 @@ jobs:
             token: ${{steps.generate-token.outputs.token}}
             author: "TRAP CI/CD <gamestrap@web.de>"
             committer: "TRAP CI/CD <gamestrap@web.de>"
+
+  update-vma:
+    name: Update VulkanMemoryAllocator
+    if: github.repository == 'GamesTrap/TRAP'
+    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
+    steps:
+      - name: Cleanup workspace
+        if: ${{ always() }}
+        uses: gamestrap/gha-workspace-cleanup@v1.2.3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+          ref: dev
+      - uses: crazy-max/ghaction-import-gpg@v5
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_committer_name: TRAP CI/CD
+      - uses: tibdex/github-app-token@v1
+        id: generate-token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Update VulkanMemoryAllocator
         id: vma
         run: |
@@ -240,6 +448,32 @@ jobs:
             token: ${{steps.generate-token.outputs.token}}
             author: "TRAP CI/CD <gamestrap@web.de>"
             committer: "TRAP CI/CD <gamestrap@web.de>"
+
+  update-yamlcpp:
+    name: Update YAMLCpp
+    if: github.repository == 'GamesTrap/TRAP'
+    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
+    steps:
+      - name: Cleanup workspace
+        if: ${{ always() }}
+        uses: gamestrap/gha-workspace-cleanup@v1.2.3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+          ref: dev
+      - uses: crazy-max/ghaction-import-gpg@v5
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_committer_name: TRAP CI/CD
+      - uses: tibdex/github-app-token@v1
+        id: generate-token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Update YAMLCpp
         id: yamlcpp
         run: |
