@@ -133,7 +133,15 @@ enum class ProfileSystems : uint32_t
 /// <param name="minor">Minor version number.</param>
 /// <param name="patch">Patch version number.</param>
 /// <returns>Version number packed into a single uint32_t.</returns>
-[[nodiscard]] uint32_t TRAP_MAKE_VERSION(uint32_t major, uint32_t minor, uint32_t patch);
+template<uint32_t major, uint32_t minor, uint32_t patch>
+[[nodiscard]] consteval uint32_t TRAP_MAKE_VERSION()
+{
+	static_assert(major < 1024, "Major version number must be less than 1024.");
+	static_assert(minor < 1024,"Minor version number must be less than 1024.");
+	static_assert(patch < 4096, "Patch version number must be less than 4096.");
+
+	return major << 22u | minor << 12u | patch;
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -142,7 +150,7 @@ enum class ProfileSystems : uint32_t
 /// </summary>
 /// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
 /// <returns>Major version number.</returns>
-[[nodiscard]] inline constexpr uint32_t TRAP_VERSION_MAJOR(const uint32_t version) noexcept
+[[nodiscard]] inline consteval uint32_t TRAP_VERSION_MAJOR(const uint32_t version) noexcept
 {
 	return version >> 22u;
 }
@@ -154,7 +162,7 @@ enum class ProfileSystems : uint32_t
 /// </summary>
 /// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
 /// <returns>Minor version number.</returns>
-[[nodiscard]] inline constexpr uint32_t TRAP_VERSION_MINOR(const uint32_t version) noexcept
+[[nodiscard]] inline consteval uint32_t TRAP_VERSION_MINOR(const uint32_t version) noexcept
 {
 	return version >> 12u;
 }
@@ -166,7 +174,7 @@ enum class ProfileSystems : uint32_t
 /// </summary>
 /// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
 /// <returns>Patch version number.</returns>
-[[nodiscard]] inline constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version) noexcept
+[[nodiscard]] inline consteval uint32_t TRAP_VERSION_PATCH(const uint32_t version) noexcept
 {
 	return version & 0xFFFu;
 }
@@ -176,7 +184,7 @@ enum class ProfileSystems : uint32_t
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-const uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 9, 45);
+inline constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION<0, 9, 45>();
 
 //-------------------------------------------------------------------------------------------------------------------//
 
