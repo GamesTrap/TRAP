@@ -179,11 +179,12 @@ jobs:
         id: imgui
         run: |
             cd Dependencies/ImGui/
-            git fetch origin docking
+            git fetch
+            git checkout origin/docking
             git pull origin docking
-            git fetch --tags
-            git reset --hard $(git describe --tags $(git rev-list --tags --max-count=1))
-            echo "IMGUI_VERSION=$(git describe --tags $(git rev-list --tags --max-count=1))" >> "$GITHUB_OUTPUT"
+            newest_commit=$(git log --grep="Merge branch 'master' into docking" --pretty=format:'%H' --max-count=1)
+            git reset --hard $newest_commit
+            echo "IMGUI_VERSION=${newest_commit}" >> "$GITHUB_OUTPUT"
             cd ../..
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
