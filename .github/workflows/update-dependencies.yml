@@ -179,7 +179,6 @@ jobs:
         id: imgui
         run: |
             cd Dependencies/ImGui/
-            git pull
             git checkout docking
             git pull origin docking
             newest_commit=$(git log --grep="Merge branch 'master' into docking" --pretty=format:'%H' --max-count=1)
