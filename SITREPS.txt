@@ -4086,3 +4086,4 @@ SITREP 06/17/2023|23w24b1
 SITREP 06/18/2023|23w24b2
     - Changed TRAP Engine version to 23w24b2(0.9.46)
     - TRAP version is now consteval ~<5 mins
+    - GitHub Actions reduced update checks to once a week ~<5 mins
