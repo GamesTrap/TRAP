@@ -44,8 +44,10 @@ namespace TRAP::Graphics::API
 	/// <param name="function">Name of the function that called the error checker.</param>
 	/// <param name="file">Name of the file where the function is in that called the error checker.</param>
 	/// <param name="line">Line number of the error check call.</param>
+	/// <param name="column">Column number of the error check call.</param>
 	/// <returns>True for non error codes, otherwise false.</returns>
-	constexpr bool ErrorCheck(VkResult result, std::string_view function, std::string_view file, int32_t line);
+	constexpr bool ErrorCheck(VkResult result, std::string_view function, std::string_view file,
+	                          std::uint_least32_t line, std::uint_least32_t column);
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 	/// <summary>
 	/// Check the if given NvLL_VK_Status contains an error.
@@ -55,8 +57,10 @@ namespace TRAP::Graphics::API
 	/// <param name="function">Name of the function that called the error checker.</param>
 	/// <param name="file">Name of the file where the function is in that called the error checker.</param>
 	/// <param name="line">Line number of the error check call.</param>
+	/// <param name="column">Column number of the error check call.</param>
 	/// <returns>True for non error codes, otherwise false.</returns>
-	constexpr bool ReflexErrorCheck(NvLL_VK_Status result, std::string_view function, std::string_view file, int32_t line);
+	constexpr bool ReflexErrorCheck(NvLL_VK_Status result, std::string_view function, std::string_view file,
+	                                std::uint_least32_t line, std::uint_least32_t column);
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 	/// <summary>
 	/// Convert the RendererAPI::QueueType to VkQueueFlags.
@@ -355,17 +359,13 @@ namespace TRAP::Graphics::API
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef TRAP_DEBUG
-// #if __cplusplus > 201703L
-// 	//Utility to check VkResult for errors and log them.
-// 	#define VkCall(x) std::source_location loc = std::source_location::current();
-// 	                  ::TRAP::Graphics::API::ErrorCheck(x, #x, loc.file_name(), loc.line());
-// #else
-	//Utility to check VkResult for errors and log them.
-	#define VkCall(x) ::TRAP::Graphics::API::ErrorCheck(x, #x, __FILE__, __LINE__);
+ 	//Utility to check VkResult for errors and log them.
+ 	#define VkCall(x) { constexpr std::source_location loc = std::source_location::current(); \
+ 	                    ::TRAP::Graphics::API::ErrorCheck(x, loc.function_name(), loc.file_name(), loc.line(), loc.column()); }
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-	#define VkReflexCall(x) ::TRAP::Graphics::API::ReflexErrorCheck(x, #x, __FILE__, __LINE__);
+	#define VkReflexCall(x) { constexpr std::source_location loc = std::source_location::current(); \
+ 	                          ::TRAP::Graphics::API::ReflexErrorCheck(x, loc.function_name(), loc.file_name(), loc.line(), loc.column()); }
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
-// #endif
 #else
 	/// <summary>
 	/// Utility to check VkResult for errors and log them.
@@ -381,7 +381,8 @@ namespace TRAP::Graphics::API
 //-------------------------------------------------------------------------------------------------------------------//
 
 constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std::string_view function,
-                                               const std::string_view file, const int32_t line)
+                                               const std::string_view file, const std::uint_least32_t line,
+											   const std::uint_least32_t column)
 {
 	if(result >= 0)
 		return true;
@@ -389,66 +390,59 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 	switch (result)
 	{
 	case VK_ERROR_OUT_OF_HOST_MEMORY:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_OUT_OF_HOST_MEMORY: ", function, " @[", file, ':', line, ']');
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_OUT_OF_HOST_MEMORY: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case VK_ERROR_OUT_OF_DEVICE_MEMORY:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_OUT_OF_DEVICE_MEMORY: ", function, " @[", file, ':', line,
-				']');
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_OUT_OF_DEVICE_MEMORY: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case VK_ERROR_INITIALIZATION_FAILED:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_INITIALIZATION_FAILED: ", function, " @[", file, ':', line,
-				']');
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_INITIALIZATION_FAILED: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case VK_ERROR_DEVICE_LOST:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_DEVICE_LOST: ", function, " @[", file, ':', line, ']');
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_DEVICE_LOST: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case VK_ERROR_MEMORY_MAP_FAILED:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_MEMORY_MAP_FAILED: ", function, " @[", file, ':', line, ']');
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_MEMORY_MAP_FAILED: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case VK_ERROR_LAYER_NOT_PRESENT:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_LAYER_NOT_PRESENT: ", function, " @[", file, ':', line, ']');
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_LAYER_NOT_PRESENT: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case VK_ERROR_EXTENSION_NOT_PRESENT:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_EXTENSION_NOT_PRESENT: ", function, " @[", file, ':', line,
-				']');
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_EXTENSION_NOT_PRESENT: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case VK_ERROR_FEATURE_NOT_PRESENT:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_FEATURE_NOT_PRESENT: ", function, " @[", file, ':', line, ']');
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_FEATURE_NOT_PRESENT: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case VK_ERROR_INCOMPATIBLE_DRIVER:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_INCOMPATIBLE_DRIVER: ", function, " @[", file, ':', line, ']');
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_INCOMPATIBLE_DRIVER: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case VK_ERROR_TOO_MANY_OBJECTS:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_TOO_MANY_OBJECTS: ", function, " @[", file, ':', line, ']');
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_TOO_MANY_OBJECTS: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case VK_ERROR_FORMAT_NOT_SUPPORTED:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_FORMAT_NOT_SUPPORTED: ", function, " @[", file, ':', line,
-				']');
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_FORMAT_NOT_SUPPORTED: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case VK_ERROR_SURFACE_LOST_KHR:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_SURFACE_LOST_KHR: ", function, " @[", file, ':', line, ']');
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_SURFACE_LOST_KHR: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case VK_ERROR_NATIVE_WINDOW_IN_USE_KHR:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_NATIVE_WINDOW_IN_USE_KHR: ", function, " @[", file, ':', line,
-				']');
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_NATIVE_WINDOW_IN_USE_KHR: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case VK_SUBOPTIMAL_KHR:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_SUBOPTIMAL_KHR: ", function, " @[", file, ':', line, ']');
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_SUBOPTIMAL_KHR: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case VK_ERROR_OUT_OF_DATE_KHR:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_OUT_OF_DATE_KHR: ", function, " @[", file, ':', line, ']');
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_OUT_OF_DATE_KHR: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case VK_ERROR_INCOMPATIBLE_DISPLAY_KHR:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_INCOMPATIBLE_DISPLAY_KHR: ", function, " @[", file, ':', line,
-				']');
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_INCOMPATIBLE_DISPLAY_KHR: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case VK_ERROR_VALIDATION_FAILED_EXT:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_VALIDATION_FAILED_EXT: ", function, " @[", file, ':', line,
-				']');
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_VALIDATION_FAILED_EXT: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 
 	default:
-		TP_ERROR(Log::RendererVulkanPrefix, "Unknown error: ", function, " @[", file, ':', line, ']');
+		TP_ERROR(Log::RendererVulkanPrefix, "Unknown error: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	}
 
@@ -459,7 +453,8 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result, const std::string_view function,
-                                                     const std::string_view file, const int32_t line)
+                                                     const std::string_view file, const std::uint_least32_t line,
+													 const std::uint_least32_t column)
 {
 	if(result == NVLL_VK_OK)
 		return true;
@@ -467,45 +462,41 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 	switch (result)
 	{
 	case NVLL_VK_ERROR:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_ERROR: ", function, " @[", file, ':', line, ']');
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_ERROR: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case NVLL_VK_LIBRARY_NOT_FOUND:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_LIBRARY_NOT_FOUND: ", function, " @[", file, ':', line,
-				']');
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_LIBRARY_NOT_FOUND: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case NVLL_VK_NO_IMPLEMENTATION:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_NO_IMPLEMENTATION: ", function, " @[", file, ':', line,
-				']');
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_NO_IMPLEMENTATION: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case NVLL_VK_API_NOT_INITIALIZED:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_API_NOT_INITIALIZED: ", function, " @[", file, ':', line, ']');
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_API_NOT_INITIALIZED: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case NVLL_VK_INVALID_ARGUMENT:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_INVALID_ARGUMENT: ", function, " @[", file, ':', line, ']');
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_INVALID_ARGUMENT: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case NVLL_VK_INVALID_HANDLE:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_INVALID_HANDLE: ", function, " @[", file, ':', line, ']');
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_INVALID_HANDLE: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case NVLL_VK_INCOMPATIBLE_STRUCT_VERSION:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_INCOMPATIBLE_STRUCT_VERSION: ", function, " @[", file, ':', line,
-				']');
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_INCOMPATIBLE_STRUCT_VERSION: ", function, " @[", file, ':', column, ':', line, ']');
 		break;
 	case NVLL_VK_INVALID_POINTER:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_INVALID_POINTER: ", function, " @[", file, ':', line, ']');
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_INVALID_POINTER: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case NVLL_VK_OUT_OF_MEMORY:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_OUT_OF_MEMORY: ", function, " @[", file, ':', line, ']');
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_OUT_OF_MEMORY: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case NVLL_VK_API_IN_USE:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_API_IN_USE: ", function, " @[", file, ':', line, ']');
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_API_IN_USE: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	case NVLL_VK_NO_VULKAN:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_NO_VULKAN: ", function, " @[", file, ':', line,
-				']');
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_NO_VULKAN: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 
 	default:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "Unknown error: ", function, " @[", file, ':', line, ']');
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "Unknown error: ", function, " @[", file, ':', line, ':', column, ']');
 		break;
 	}
 

@@ -4089,3 +4089,7 @@ SITREP 06/18/2023|23w24b2
     - GitHub Actions reduced update checks to once a week ~<5 mins
     - GitHub Actions Added Update-Dependencies workflow ~<30 mins
     - ImGuiLayer Fixed loading of imgui.ini not working ~<5 mins
+
+SITREP 06/19/2023|23w25a1
+    - Changed TRAP Engine version to 23w25a1(0.9.47)
+    - VulkanCommon VkCall() and VkReflexCall() now use std::source_location ~<10 mins
