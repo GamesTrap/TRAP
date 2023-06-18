@@ -73,7 +73,7 @@ namespace TRAP
 	private:
 		bool m_blockEvents;
 
-		std::filesystem::path m_imguiIniPath;
+		std::string m_imguiIniPath;
 
 		TRAP::Ref<TRAP::Graphics::PipelineCache> m_imguiPipelineCache;
 		VkDescriptorPool m_imguiDescriptorPool;

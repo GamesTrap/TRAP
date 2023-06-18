@@ -97,7 +97,7 @@ void TRAP::ImGuiLayer::OnAttach()
 	//Set imgui.ini path
 	const auto docsFolder = TRAP::FileSystem::GetGameDocumentsFolderPath();
 	if(docsFolder)
-		m_imguiIniPath = (*docsFolder / "imgui.ini");
+		m_imguiIniPath = (*docsFolder / "imgui.ini").generic_string();
 	else //Fallback
 		m_imguiIniPath = "imgui.ini";
 	io.IniFilename = m_imguiIniPath.c_str();
