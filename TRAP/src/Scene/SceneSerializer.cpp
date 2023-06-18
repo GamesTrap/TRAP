@@ -280,14 +280,16 @@ void TRAP::SceneSerializer::Serialize(const std::filesystem::path& filepath)
 	out << YAML::BeginMap;
 	out << YAML::Key << "Scene" << YAML::Value << "Untitled";
 	out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
-	m_scene->m_registry.each([&](auto entityID)
+
+	for(const auto entityID : m_scene->m_registry.storage<entt::entity>())
 	{
 		const Entity entity = { entityID, m_scene.get() };
 		if (!entity)
 			return;
 
 		SerializeEntity(out, entity);
-	});
+	};
+
 	out << YAML::EndSeq;
 	out << YAML::EndMap;
 

@@ -26,11 +26,11 @@ void TRAP::SceneGraphPanel::OnImGuiRender()
 
 	if(m_context)
 	{
-		m_context->m_registry.each([&](auto entityID)
+		for(const auto entityID : m_context->m_registry.storage<entt::entity>())
 		{
 			const Entity entity{ entityID, m_context.get() };
 			DrawEntityNode(entity);
-		});
+		};
 
 		if(ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
 			m_selectionContext = {};
