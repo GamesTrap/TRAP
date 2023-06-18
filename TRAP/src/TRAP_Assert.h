@@ -4,6 +4,7 @@
 #include "Core/PlatformDetection.h"
 #include "Log/Log.h"
 #include <filesystem>
+#include <source_location>
 
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
 	#define TRAP_ENABLE_ASSERTS
@@ -54,19 +55,23 @@
 #ifdef TRAP_ENABLE_ASSERTS
 
 template<typename... Args>
-void TRAP_ASSERT_IMPL_LOG(const std::string_view expressionStr, const std::string_view file, const uint64_t line, [[maybe_unused]] const Args... args)
+void TRAP_ASSERT_IMPL_LOG(const std::string_view expressionStr, const std::string_view filename,
+                          const std::string_view function, const std::uint_least32_t line,
+						  const std::uint_least32_t column, [[maybe_unused]] const Args... args)
 {
 	if constexpr(sizeof...(Args) > 1)
 	{
-		TP_CRITICAL("Assertion '", expressionStr, "' failed: ", args..., " @ ", std::filesystem::absolute(file).string(), ':', line);
+		TP_CRITICAL("Assertion '", expressionStr, "' failed: \"", args..., "\" in ", std::filesystem::absolute(filename).string(), " @ ", function, ':', line, ':', column);
 	}
 	else
 	{
-		TP_CRITICAL("Assertion '", expressionStr, "' failed @ ", std::filesystem::absolute(file).string(), ':', line);
+		TP_CRITICAL("Assertion '", expressionStr, "' failed in ", std::filesystem::absolute(filename).string(), " @ ", function, ':', line, ':', column);
 	}
 }
 
-#define TRAP_ASSERT_IMPL(check, ...) { if(!(check)) { TRAP_ASSERT_IMPL_LOG(TRAP_STRINGIFY_MACRO(check), __FILE__, __LINE__, __VA_ARGS__); TRAP_DEBUG_BREAK(); } }
+#define TRAP_ASSERT_IMPL(check, ...) { if(!(check)) { constexpr std::source_location loc = std::source_location::current(); \
+                                                      TRAP_ASSERT_IMPL_LOG(TRAP_STRINGIFY_MACRO(check), loc.file_name(), loc.function_name(), loc.line(), loc.column(), __VA_ARGS__); \
+													  TRAP_DEBUG_BREAK(); } }
 
 //Currently accepts at least the condition and one additional parameter (the message) being optional
 #define TRAP_ASSERT(...) TRAP_EXPAND_MACRO(TRAP_ASSERT_IMPL(__VA_ARGS__, ""))
