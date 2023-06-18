@@ -180,8 +180,8 @@ jobs:
         run: |
             cd Dependencies/ImGui/
             git fetch
-            git checkout origin/docking
-            git pull origin docking
+            git checkout docking
+            git pull
             newest_commit=$(git log --grep="Merge branch 'master' into docking" --pretty=format:'%H' --max-count=1)
             git reset --hard $newest_commit
             echo "IMGUI_VERSION=${newest_commit}" >> "$GITHUB_OUTPUT"
