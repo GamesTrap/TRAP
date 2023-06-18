@@ -4088,3 +4088,4 @@ SITREP 06/18/2023|23w24b2
     - TRAP version is now consteval ~<5 mins
     - GitHub Actions reduced update checks to once a week ~<5 mins
     - GitHub Actions Added Update-Dependencies workflow ~<30 mins
+    - ImGuiLayer Fixed loading of imgui.ini not working ~<5 mins
