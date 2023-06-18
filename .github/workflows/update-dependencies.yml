@@ -34,7 +34,6 @@ jobs:
       - name: Update Box2D
         id: box2d
         run: |
-          git checkout dev
           cd Dependencies/Box2D/
           git fetch origin main
           git pull origin main
@@ -83,7 +82,6 @@ jobs:
       - name: Update EnTT
         id: entt
         run: |
-            git checkout dev
             cd Dependencies/EnTT/
             git fetch --tags
             git checkout $(git rev-list --tags --max-count=1)
@@ -132,7 +130,6 @@ jobs:
       - name: Update GLSLang
         id: glslang
         run: |
-            git checkout dev
             cd Dependencies/GLSLang/
             git fetch --tags
             git checkout $(git tag -l "sdk-*" --sort=-v:refname | head -n 1)
@@ -181,7 +178,6 @@ jobs:
       - name: Update ImGui
         id: imgui
         run: |
-            git checkout dev
             cd Dependencies/ImGui/
             git fetch origin docking
             git pull origin docking
@@ -232,7 +228,6 @@ jobs:
       - name: Update ImGuizmo
         id: imguizmo
         run: |
-            git checkout dev
             cd Dependencies/ImGuizmo/
             git fetch origin master
             git pull origin master
@@ -281,7 +276,6 @@ jobs:
       - name: Update ModernDialogs
         id: moderndialogs
         run: |
-            git checkout dev
             cd Dependencies/ModernDialogs/
             git fetch --tags
             git checkout $(git rev-list --tags --max-count=1)
@@ -330,7 +324,6 @@ jobs:
       - name: Update SPIRV-Cross
         id: spirvcross
         run: |
-            git checkout dev
             cd Dependencies/SPIRV-Cross/
             git fetch --tags
             git checkout $(git tag -l "sdk-*" --sort=-v:refname | head -n 1)
@@ -379,7 +372,6 @@ jobs:
       - name: Update Tracy
         id: tracy
         run: |
-            git checkout dev
             cd Dependencies/Tracy/
             git fetch --tags
             git checkout $(git rev-list --tags --max-count=1)
@@ -428,9 +420,8 @@ jobs:
       - name: Update VulkanMemoryAllocator
         id: vma
         run: |
-            git checkout dev
             cd Dependencies/VulkanMemoryAllocator/
-            git fetch origin master
+            git checkout master
             git pull origin master
             echo "VMA_VERSION=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
             cd ../..
@@ -477,7 +468,6 @@ jobs:
       - name: Update YAMLCpp
         id: yamlcpp
         run: |
-            git checkout dev
             cd Dependencies/YAMLCpp/
             git fetch origin master
             git pull origin master
