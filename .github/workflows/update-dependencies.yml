@@ -1,0 +1,264 @@
+name: Update Dependencies
+
+on:
+  schedule:
+    - cron: '0 16 * * 0'
+  workflow_dispatch:
+
+jobs:
+  update-dependencies:
+    name: Update Dependencies
+    if: github.repository == 'GamesTrap/TRAP'
+    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
+    steps:
+      - name: Cleanup workspace
+        if: ${{ always() }}
+        uses: gamestrap/gha-workspace-cleanup@v1.2.3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+          ref: dev
+      - uses: crazy-max/ghaction-import-gpg@v5
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_committer_name: TRAP CI/CD
+      - uses: tibdex/github-app-token@v1
+        id: generate-token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+      - name: Update Box2D
+        id: box2d
+        run: |
+          cd Dependencies/Box2D/
+          git fetch origin main
+          git pull origin main
+          echo "BOX2D_VERSION=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          cd ../..
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          base: dev
+          add-paths: "Dependencies/Box2D/**"
+          branch: box2d-update/${{steps.box2d.outputs.BOX2D_VERSION}}
+          delete-branch: true
+          commit-message: "Update Box2D to ${{steps.box2d.outputs.BOX2D_VERSION}}"
+          title: "Update Box2D to ${{steps.box2d.outputs.BOX2D_VERSION}}"
+          labels: "CI/CD, External, Update"
+          assignees: "GamesTrap"
+          milestone: 5
+          token: ${{steps.generate-token.outputs.token}}
+          author: "TRAP CI/CD <gamestrap@web.de>"
+          committer: "TRAP CI/CD <gamestrap@web.de>"
+      - name: Update EnTT
+        id: entt
+        run: |
+            cd Dependencies/EnTT/
+            git fetch --tags
+            git checkout $(git rev-list --tags --max-count=1)
+            echo "ENTT_VERSION=$(git describe --tags --exact-match)" >> "$GITHUB_OUTPUT"
+            cd ../..
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+            base: dev
+            add-paths: "Dependencies/EnTT/**"
+            branch: entt-update/${{steps.entt.outputs.ENTT_VERSION}}
+            delete-branch: true
+            commit-message: "Update EnTT to ${{steps.entt.outputs.ENTT_VERSION}}"
+            title: "Update EnTT to ${{steps.entt.outputs.ENTT_VERSION}}"
+            labels: "CI/CD, External, Update"
+            assignees: "GamesTrap"
+            milestone: 5
+            token: ${{steps.generate-token.outputs.token}}
+            author: "TRAP CI/CD <gamestrap@web.de>"
+            committer: "TRAP CI/CD <gamestrap@web.de>"
+      - name: Update GLSLang
+        id: glslang
+        run: |
+            cd Dependencies/GLSLang/
+            git fetch --tags
+            git checkout $(git tag -l "sdk-*" --sort=-v:refname | head -n 1)
+            echo "GLSLANG_VERSION=$(git tag -l "sdk-*" --sort=-v:refname | head -n 1)" >> "$GITHUB_OUTPUT"
+            cd ../..
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+            base: dev
+            add-paths: "Dependencies/GLSLang/**"
+            branch: glslang-update/${{steps.glslang.outputs.GLSLANG_VERSION}}
+            delete-branch: true
+            commit-message: "Update GLSLang to ${{steps.glslang.outputs.GLSLANG_VERSION}}"
+            title: "Update GLSLang to ${{steps.glslang.outputs.GLSLANG_VERSION}}"
+            labels: "CI/CD, External, Update"
+            assignees: "GamesTrap"
+            milestone: 5
+            token: ${{steps.generate-token.outputs.token}}
+            author: "TRAP CI/CD <gamestrap@web.de>"
+            committer: "TRAP CI/CD <gamestrap@web.de>"
+      - name: Update ImGui
+        id: imgui
+        run: |
+            cd Dependencies/ImGui/
+            git fetch --tags
+            git checkout origin/docking
+            git reset --hard $(git describe --tags $(git rev-list --tags --max-count=1))
+            echo "IMGUI_VERSION=$(git describe --tags $(git rev-list --tags --max-count=1))" >> "$GITHUB_OUTPUT"
+            cd ../..
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+            base: dev
+            add-paths: "Dependencies/ImGui/**"
+            branch: imgui-update/${{steps.imgui.outputs.IMGUI_VERSION}}
+            delete-branch: true
+            commit-message: "Update ImGui to ${{steps.imgui.outputs.IMGUI_VERSION}}"
+            title: "Update ImGui to ${{steps.imgui.outputs.IMGUI_VERSION}}"
+            labels: "CI/CD, External, Update"
+            assignees: "GamesTrap"
+            milestone: 5
+            token: ${{steps.generate-token.outputs.token}}
+            author: "TRAP CI/CD <gamestrap@web.de>"
+            committer: "TRAP CI/CD <gamestrap@web.de>"
+      - name: Update ImGuizmo
+        id: imguizmo
+        run: |
+            cd Dependencies/ImGuizmo/
+            git fetch origin master
+            git pull origin master
+            echo "IMGUIZMO_VERSION=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+            cd ../..
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+            base: dev
+            add-paths: "Dependencies/ImGuizmo/**"
+            branch: imguizmo-update/${{steps.imguizmo.outputs.IMGUIZMO_VERSION}}
+            delete-branch: true
+            commit-message: "Update ImGuizmo to ${{steps.imguizmo.outputs.IMGUIZMO_VERSION}}"
+            title: "Update ImGuizmo to ${{steps.imguizmo.outputs.IMGUIZMO_VERSION}}"
+            labels: "CI/CD, External, Update"
+            assignees: "GamesTrap"
+            milestone: 5
+            token: ${{steps.generate-token.outputs.token}}
+            author: "TRAP CI/CD <gamestrap@web.de>"
+            committer: "TRAP CI/CD <gamestrap@web.de>"
+      - name: Update ModernDialogs
+        id: moderndialogs
+        run: |
+            cd Dependencies/ModernDialogs/
+            git fetch --tags
+            git checkout $(git rev-list --tags --max-count=1)
+            echo "MODERNDIALOGS_VERSION=$(git describe --tags --exact-match)" >> "$GITHUB_OUTPUT"
+            cd ../..
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+            base: dev
+            add-paths: "Dependencies/ModernDialog/**"
+            branch: moderndialogs-update/${{steps.moderndialogs.outputs.MODERNDIALOGS_VERSION}}
+            delete-branch: true
+            commit-message: "Update ModernDialogs to ${{steps.moderndialogs.outputs.MODERNDIALOGS_VERSION}}"
+            title: "Update ModernDialogs to ${{steps.moderndialogs.outputs.MODERNDIALOGS_VERSION}}"
+            labels: "CI/CD, External, Update"
+            assignees: "GamesTrap"
+            milestone: 5
+            token: ${{steps.generate-token.outputs.token}}
+            author: "TRAP CI/CD <gamestrap@web.de>"
+            committer: "TRAP CI/CD <gamestrap@web.de>"
+      - name: Update SPIRV-Cross
+        id: spirvcross
+        run: |
+            cd Dependencies/SPIRV-Cross/
+            git fetch --tags
+            git checkout $(git tag -l "sdk-*" --sort=-v:refname | head -n 1)
+            echo "SPIRVCROSS_VERSION=$(git tag -l "sdk-*" --sort=-v:refname | head -n 1)" >> "$GITHUB_OUTPUT"
+            cd ../..
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+            base: dev
+            add-paths: "Dependencies/SPIRV-Cross/**"
+            branch: spirvcross-update/${{steps.spirvcross.outputs.SPIRVCROSS_VERSION}}
+            delete-branch: true
+            commit-message: "Update SPIRV-Cross to ${{steps.spirvcross.outputs.SPIRVCROSS_VERSION}}"
+            title: "Update SPIRV-Cross to ${{steps.spirvcross.outputs.SPIRVCROSS_VERSION}}"
+            labels: "CI/CD, External, Update"
+            assignees: "GamesTrap"
+            milestone: 5
+            token: ${{steps.generate-token.outputs.token}}
+            author: "TRAP CI/CD <gamestrap@web.de>"
+            committer: "TRAP CI/CD <gamestrap@web.de>"
+      - name: Update Tracy
+        id: tracy
+        run: |
+            cd Dependencies/Tracy/
+            git fetch --tags
+            git checkout $(git rev-list --tags --max-count=1)
+            echo "TRACY_VERSION=$(git describe --tags --exact-match)" >> "$GITHUB_OUTPUT"
+            cd ../..
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+            base: dev
+            add-paths: "Dependencies/Tracy/**"
+            branch: tracy-update/${{steps.tracy.outputs.TRACY_VERSION}}
+            delete-branch: true
+            commit-message: "Update Tracy to ${{steps.tracy.outputs.TRACY_VERSION}}"
+            title: "Update Tracy to ${{steps.tracy.outputs.TRACY_VERSION}}"
+            labels: "CI/CD, External, Update"
+            assignees: "GamesTrap"
+            milestone: 5
+            token: ${{steps.generate-token.outputs.token}}
+            author: "TRAP CI/CD <gamestrap@web.de>"
+            committer: "TRAP CI/CD <gamestrap@web.de>"
+      - name: Update VulkanMemoryAllocator
+        id: vma
+        run: |
+            cd Dependencies/VulkanMemoryAllocator/
+            git fetch origin master
+            git pull origin master
+            echo "VMA_VERSION=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+            cd ../..
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+            base: dev
+            add-paths: "Dependencies/VulkanMemoryAllocator/**"
+            branch: vma-update/${{steps.vma.outputs.VMA_VERSION}}
+            delete-branch: true
+            commit-message: "Update VulkanMemoryAllocator to ${{steps.vma.outputs.VMA_VERSION}}"
+            title: "Update VulkanMemoryAllocator to ${{steps.vma.outputs.VMA_VERSION}}"
+            labels: "CI/CD, External, Update"
+            assignees: "GamesTrap"
+            milestone: 5
+            token: ${{steps.generate-token.outputs.token}}
+            author: "TRAP CI/CD <gamestrap@web.de>"
+            committer: "TRAP CI/CD <gamestrap@web.de>"
+      - name: Update YAMLCpp
+        id: yamlcpp
+        run: |
+            cd Dependencies/YAMLCpp/
+            git fetch origin master
+            git pull origin master
+            echo "YAMLCPP_VERSION=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+            cd ../..
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+            base: dev
+            add-paths: "Dependencies/YAMLCpp/**"
+            branch: yamlcpp-update/${{steps.yamlcpp.outputs.YAMLCPP_VERSION}}
+            delete-branch: true
+            commit-message: "Update YAMLCpp to ${{steps.yamlcpp.outputs.YAMLCPP_VERSION}}"
+            title: "Update YAMLCpp to ${{steps.yamlcpp.outputs.YAMLCPP_VERSION}}"
+            labels: "CI/CD, External, Update"
+            assignees: "GamesTrap"
+            milestone: 5
+            token: ${{steps.generate-token.outputs.token}}
+            author: "TRAP CI/CD <gamestrap@web.de>"
+            committer: "TRAP CI/CD <gamestrap@web.de>"
