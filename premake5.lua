@@ -154,6 +154,7 @@ if next(NVReflexStatsFiles) ~= nil then
 end
 IncludeDir["BOX2D"] = "%{wks.location}/Dependencies/Box2D/include"
 IncludeDir["TRACY"] = "%{wks.location}/Dependencies/Tracy/public"
+IncludeDir["FMT"] = "%{wks.location}/Dependencies/fmt/include"
 
 include "TRAP"
 
@@ -164,6 +165,7 @@ group "Dependencies"
 	include "Dependencies/ModernDialogs.lua"
 	include "Dependencies/Box2D.lua"
 	include "Dependencies/Tracy.lua"
+	include "Dependencies/fmt.lua"
 	group "Dependencies/GLSLang"
 		include "Dependencies/GLSLang.lua"
 	group "Dependencies/SPIRV-Cross"

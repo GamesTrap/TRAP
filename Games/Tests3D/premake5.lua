@@ -32,7 +32,8 @@ project "Tests3D"
 		"%{IncludeDir.MODERNDIALOGS}",
 		"%{IncludeDir.VMA}",
 		"%{IncludeDir.BOX2D}",
-		"%{IncludeDir.TRACY}"
+		"%{IncludeDir.TRACY}",
+		"%{IncludeDir.FMT}"
 	}
 
 	links "TRAP"
@@ -58,6 +59,7 @@ project "Tests3D"
 			"GLSLang-Default-Resource-Limits",
 			"Box2D",
 			"TracyClient",
+			"fmt",
 
 			"dl",
 			"pthread",

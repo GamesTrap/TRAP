@@ -32,7 +32,8 @@ project "TRAP-Editor"
 		"%{IncludeDir.MODERNDIALOGS}",
 		"%{IncludeDir.VMA}",
 		"%{IncludeDir.BOX2D}",
-		"%{IncludeDir.TRACY}"
+		"%{IncludeDir.TRACY}",
+		"%{IncludeDir.FMT}"
 	}
 
 	links "TRAP"
@@ -58,6 +59,7 @@ project "TRAP-Editor"
 			"GLSLang-Default-Resource-Limits",
 			"Box2D",
 			"TracyClient",
+			"fmt",
 
 			"dl",
 			"pthread",

@@ -32,3 +32,6 @@
 [submodule "Dependencies/ImGuizmo"]
 	path = Dependencies/ImGuizmo
 	url = https://github.com/CedricGuillemet/ImGuizmo.git
+[submodule "Dependencies/fmt"]
+	path = Dependencies/fmt
+	url = https://github.com/fmtlib/fmt

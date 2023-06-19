@@ -56,7 +56,8 @@ project "TRAP"
 		"%{IncludeDir.MODERNDIALOGS}",
 		"%{IncludeDir.VMA}",
 		"%{IncludeDir.BOX2D}",
-		"%{IncludeDir.TRACY}"
+		"%{IncludeDir.TRACY}",
+		"%{IncludeDir.FMT}"
 	}
 
 	links
@@ -72,7 +73,8 @@ project "TRAP"
 		"SPIRV-Cross-HLSL",
 		"Box2D",
 		"TracyClient",
-		"GLSLang-Default-Resource-Limits"
+		"GLSLang-Default-Resource-Limits",
+		"fmt"
 	}
 
 	defines "YAML_CPP_STATIC_DEFINE"
@@ -220,7 +222,8 @@ project "TRAP-Headless"
 		"%{IncludeDir.MODERNDIALOGS}",
 		"%{IncludeDir.VMA}",
 		"%{IncludeDir.BOX2D}",
-		"%{IncludeDir.TRACY}"
+		"%{IncludeDir.TRACY}",
+		"%{IncludeDir.FMT}"
 	}
 
 	links
@@ -234,7 +237,8 @@ project "TRAP-Headless"
 		"SPIRV-Cross-HLSL",
 		"Box2D",
 		"TracyClient",
-		"GLSLang-Default-Resource-Limits"
+		"GLSLang-Default-Resource-Limits",
+		"fmt"
 	}
 
 	defines

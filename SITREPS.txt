@@ -4096,3 +4096,8 @@ SITREP 06/19/2023|23w25a1
     - Replaced deprecated EnTT functions ~<5 mins
     - TRAP_ASSERT now uses std::source_location ~<10 mins
     - Utils Deprecated GetEndian() ~<5 mins
+
+SITREP 06/20/2023|23w25a2
+    - Changed TRAP Engine version to 23w25a2(0.9.48)
+    - Added {fmt} as submodule ~<5 mins
+    - Updated premake scripts ~<5 mins

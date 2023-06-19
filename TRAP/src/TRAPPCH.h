@@ -47,6 +47,10 @@
 	#pragma warning(push, 0)
 #endif /*_MSC_VER*/
 
+#include <fmt/format.h>
+#include <fmt/color.h>
+#include <fmt/ostream.h>
+
 //Tracy - Profiler
 #include <tracy/Tracy.hpp>
 
