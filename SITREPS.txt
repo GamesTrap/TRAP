@@ -4101,3 +4101,4 @@ SITREP 06/20/2023|23w25a2
     - Changed TRAP Engine version to 23w25a2(0.9.48)
     - Added {fmt} as submodule ~<5 mins
     - Updated premake scripts ~<5 mins
+    - Added fmt::formatter for existing std::ostream specialization ~<5 mins
