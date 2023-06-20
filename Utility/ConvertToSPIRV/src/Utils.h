@@ -30,7 +30,7 @@ template <typename T>
 
     if(ec)
     {
-        fmt::print(fg(fmt::color::red), "Couldn't check if file or folder exists: \"{}\" ({})\n", path.string(), ec.message());
+        fmt::print(fg(fmt::color::red), "Couldn't check if file or folder exists: {} ({})\n", path, ec.message());
         return false;
     }
 
@@ -44,7 +44,7 @@ template <typename T>
 {
     if(!FileOrFolderExists(filePath))
     {
-        fmt::print(fg(fmt::color::red), "File \"{}\" doesn't exist!\n", filePath.string());
+        fmt::print(fg(fmt::color::red), "File {} doesn't exist!\n", filePath);
         return std::nullopt;
     }
 
@@ -88,7 +88,7 @@ template <typename T>
     std::ifstream file(filePath, std::ios::binary | std::ios::ate);
     if(!file.is_open() || !file.good())
     {
-        fmt::print(fg(fmt::color::red), "Couldn't open file: \"{}\"\n", filePath.string());
+        fmt::print(fg(fmt::color::red), "Couldn't open file: {}\n", filePath);
         return std::nullopt;
     }
 

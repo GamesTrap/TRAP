@@ -4105,3 +4105,4 @@ SITREP 06/20/2023|23w25a2
     - Replaced std::cout with fmt::print ~<20 mins
     - Replaced std::cerr with fmt::print ~<10 mins
     - TRAP::Log now uses fmt::format and fmt::print ~<20 mins
+    - Added fmt/std.h ~<5 mins

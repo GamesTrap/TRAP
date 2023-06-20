@@ -92,7 +92,7 @@ bool TRAP::Graphics::Shader::Reload()
 
 	if ((glslSource.empty() && !isSPIRV) || (SPIRVSource.empty() && isSPIRV))
 	{
-		TP_WARN(Log::ShaderPrefix, "Skipping unrecognized file \"", m_filepath, "\"");
+		TP_WARN(Log::ShaderPrefix, "Skipping unrecognized file ", m_filepath);
 		return false;
 	}
 
@@ -822,7 +822,7 @@ bool TRAP::Graphics::Shader::Reload()
 
 	if ((glslSource.empty() && !isSPIRV) || (SPIRVSource.empty() && isSPIRV))
 	{
-		TP_WARN(Log::ShaderPrefix, "Skipping unrecognized file \"", filePath, "\"");
+		TP_WARN(Log::ShaderPrefix, "Skipping unrecognized file ", filePath);
 		return false;
 	}
 

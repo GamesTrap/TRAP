@@ -2,6 +2,7 @@
 #define CONVERTTOSPIRV_SHADER_H
 
 #include <fmt/format.h>
+#include <fmt/std.h>
 
 #include <glslang/Public/ResourceLimits.h>
 #include <glslang/Public/ShaderLang.h>
@@ -402,12 +403,12 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 
 	customOutput->replace_extension(ShaderFileEnding);
 
-	fmt::println("{}Saving Shader: \"{}\"", SPIRVPrefix, customOutput->string());
+	fmt::println("{}Saving Shader: {}", SPIRVPrefix, *customOutput);
 
 	std::ofstream file(*customOutput, std::ios::binary);
 	if (!file.is_open())
     {
-		fmt::print(fg(fmt::color::red), "Couldn't open file: \"{}\"\n", customOutput->string());
+		fmt::print(fg(fmt::color::red), "Couldn't open file: {}\n", *customOutput);
         return false;
     }
 
@@ -438,7 +439,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 {
 	if (!FileOrFolderExists(filePath))
 	{
-		fmt::print(fg(fmt::color::red), "Couldn't find file or folder: \"{}\"\n", filePath.string());
+		fmt::print(fg(fmt::color::red), "Couldn't find file or folder: {}\n", filePath);
 		return false;
 	}
 

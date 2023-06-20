@@ -240,7 +240,7 @@ void PrintInfo(const std::filesystem::path& filePath)
 		return;
 	if(!hasExtension.value())
 	{
-		fmt::print(fg(fmt::color::red), "Unsupported file extension for file \"{}\"!\n", filePath.string());
+		fmt::print(fg(fmt::color::red), "Unsupported file extension for file {}!\n", filePath);
 		return;
 	}
 
