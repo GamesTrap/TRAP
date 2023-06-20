@@ -4102,3 +4102,4 @@ SITREP 06/20/2023|23w25a2
     - Added {fmt} as submodule ~<5 mins
     - Updated premake scripts ~<5 mins
     - Added fmt::formatter for existing std::ostream specialization ~<5 mins
+    - Replaced std::cout with fmt::print ~<20 mins

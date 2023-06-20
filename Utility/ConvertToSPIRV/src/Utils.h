@@ -41,7 +41,7 @@ template <typename T>
 {
     if(!FileOrFolderExists(filePath))
     {
-		std::cerr << "File \"" << filePath << "\" doesn't exist!" << std::endl;
+		std::cerr << "File " << filePath << " doesn't exist!" << std::endl;
         return std::nullopt;
     }
 

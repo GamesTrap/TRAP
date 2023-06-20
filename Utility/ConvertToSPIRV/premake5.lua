@@ -16,7 +16,8 @@ project "ConvertToSPIRV"
 	externalincludedirs
 	{
 		"%{IncludeDir.GLSLANG}",
-		"%{IncludeDir.SPIRV}"
+		"%{IncludeDir.SPIRV}",
+		"%{IncludeDir.FMT}"
 	}
 
 	links
@@ -24,6 +25,7 @@ project "ConvertToSPIRV"
 		"GLSLang",
 		"SPIRV",
 		"GLSLang-Default-Resource-Limits",
+		"fmt"
 	}
 
 	filter "system:linux"

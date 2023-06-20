@@ -1,9 +1,15 @@
 #include "FTPTests.h"
 
-std::ostream& operator<<(std::ostream& stream, const TRAP::Network::FTP::Response& response)
-{
-	return stream << ToUnderlying(response.GetStatus()) << response.GetMessage();
-}
+#include <fmt/format.h>
+#include <fmt/ostream.h>
+
+// template<>
+// struct fmt::formatter<TRAP::Network::FTP::DirectoryResponse> : fmt::ostream_formatter
+// {};
+
+// template<>
+// struct fmt::formatter<TRAP::Network::FTP::ListingResponse> : fmt::ostream_formatter
+// {};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -30,33 +36,38 @@ void FTPTests::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+namespace
+{
+	constexpr std::string_view NetWorkFTPPrefix = "[Network][FTP] ";
+}
+
 void FTPTests::FTP()
 {
 	//Choose the server address
 	TRAP::Network::IPv4Address address{};
 	do
 	{
-		std::cout << "[Network][FTP] Enter the FTP server address: ";
+		fmt::print("{}Enter the FTP server address: ", NetWorkFTPPrefix);
 		std::cin >> address;
 	} while (address == TRAP::Network::IPv4Address::None);
 
 	//Connect to the server
 	TRAP::Network::FTP server;
 	TRAP::Network::FTP::Response connectResponse = server.Connect(address);
-	std::cout << "[Network][FTP] " << connectResponse << std::endl;
+	fmt::println("{}{}", NetWorkFTPPrefix, connectResponse);
 	if (!connectResponse.IsOK())
 		return;
 
 	//Ask for user name and password
 	std::string user, password;
-	std::cout << "[Network][FTP] User: ";
+	fmt::print("{}User: ", NetWorkFTPPrefix);
 	std::cin >> user;
-	std::cout << "[Network][FTP] Password: ";
+	fmt::print("{}Password: ", NetWorkFTPPrefix);
 	std::cin >> password;
 
 	//Login to the server
 	TRAP::Network::FTP::Response loginResponse = server.Login(user, password);
-	std::cout << "[Network][FTP] " << loginResponse << std::endl;
+	fmt::println("{}{}: ", NetWorkFTPPrefix, loginResponse);
 	if (!loginResponse.IsOK())
 		return;
 
@@ -65,23 +76,23 @@ void FTPTests::FTP()
 	do
 	{
 		//Main FTP menu
-		std::cout << std::endl;
-		std::cout << "[Network][FTP] Choose an action:" << std::endl;
-		std::cout << "[Network][FTP] 1. Print working directory" << std::endl;
-		std::cout << "[Network][FTP] 2. Print contents of working directory" << std::endl;
-		std::cout << "[Network][FTP] 3. Change directory" << std::endl;
-		std::cout << "[Network][FTP] 4. Create directory" << std::endl;
-		std::cout << "[Network][FTP] 5. Delete directory" << std::endl;
-		std::cout << "[Network][FTP] 6. Rename file" << std::endl;
-		std::cout << "[Network][FTP] 7. Remove file" << std::endl;
-		std::cout << "[Network][FTP] 8. Download file" << std::endl;
-		std::cout << "[Network][FTP] 9. Upload file" << std::endl;
-		std::cout << "[Network][FTP] 0. Disconnect" << std::endl;
-		std::cout << std::endl;
+		fmt::println("");
+		fmt::println("{}Choose an action:", NetWorkFTPPrefix);
+		fmt::println("{}1. Print working directory", NetWorkFTPPrefix);
+		fmt::println("{}2. Print contents of working directory", NetWorkFTPPrefix);
+		fmt::println("{}3. Change directory", NetWorkFTPPrefix);
+		fmt::println("{}4. Create directory", NetWorkFTPPrefix);
+		fmt::println("{}5. Delete directory", NetWorkFTPPrefix);
+		fmt::println("{}6. Rename file", NetWorkFTPPrefix);
+		fmt::println("{}7. Remove file", NetWorkFTPPrefix);
+		fmt::println("{}8. Download file", NetWorkFTPPrefix);
+		fmt::println("{}9. Upload file", NetWorkFTPPrefix);
+		fmt::println("{}0. Disconnect", NetWorkFTPPrefix);
+		fmt::println("");
 
-		std::cout << "[Network][FTP] Your choice: ";
+		fmt::print("{}Your choice: ", NetWorkFTPPrefix);
 		std::cin >> choice;
-		std::cout << std::endl;
+		fmt::println("");
 
 		switch(choice)
 		{
@@ -89,8 +100,8 @@ void FTPTests::FTP()
 		{
 			//Print the current server directory
 			TRAP::Network::FTP::DirectoryResponse response = server.GetWorkingDirectory();
-			std::cout << "[Network][FTP] " << response << std::endl;
-			std::cout << "[Network][FTP] Current directory: " << response.GetDirectory().string() << std::endl;
+			fmt::println("{}{}", NetWorkFTPPrefix, response);
+			fmt::println("{}Current directory: {}", NetWorkFTPPrefix, response.GetDirectory().string());
 			break;
 		}
 
@@ -98,10 +109,10 @@ void FTPTests::FTP()
 		{
 			//Print the contents of the current server directory
 			TRAP::Network::FTP::ListingResponse response = server.GetDirectoryListing();
-			std::cout << "[Network][FTP] " << response << std::endl;
+			fmt::println("{}{}", NetWorkFTPPrefix, response);
 			const std::vector<std::filesystem::path>& names = response.GetListing();
 			for (const std::filesystem::path& name : names)
-				std::cout << "[Network][FTP] " << name.string() << std::endl;
+				fmt::println("{}{}", NetWorkFTPPrefix, name.string());
 			break;
 		}
 
@@ -109,9 +120,9 @@ void FTPTests::FTP()
 		{
 			//Change the current directory
 			std::filesystem::path directory;
-			std::cout << "[Network][FTP] Choose a directory: ";
+			fmt::print("{}Choose a directory: ", NetWorkFTPPrefix);
 			std::cin >> directory;
-			std::cout << "[Network][FTP] " << server.ChangeDirectory(directory) << std::endl;
+			fmt::println("{}{}", NetWorkFTPPrefix, server.ChangeDirectory(directory));
 			break;
 		}
 
@@ -119,9 +130,9 @@ void FTPTests::FTP()
 		{
 			//Create a new directory
 			std::filesystem::path directory;
-			std::cout << "[Network][FTP] Name of the directory to create: ";
+			fmt::print("{}Name of the directory to create: ", NetWorkFTPPrefix);
 			std::cin >> directory;
-			std::cout << "[Network][FTP] " << server.CreateDirectory(directory) << std::endl;
+			fmt::println("{}{}", NetWorkFTPPrefix, server.CreateDirectory(directory));
 			break;
 		}
 
@@ -129,9 +140,9 @@ void FTPTests::FTP()
 		{
 			//Remove an existing directory
 			std::filesystem::path directory;
-			std::cout << "[Network][FTP] Name of the directory to remove: ";
+			fmt::print("{}Name of the directory to remove: ", NetWorkFTPPrefix);
 			std::cin >> directory;
-			std::cout << "[Network][FTP] " << server.DeleteDirectory(directory) << std::endl;
+			fmt::println("{}{}", NetWorkFTPPrefix, server.DeleteDirectory(directory));
 			break;
 		}
 
@@ -139,11 +150,11 @@ void FTPTests::FTP()
 		{
 			//Rename a file
 			std::filesystem::path source, destination;
-			std::cout << "[Network][FTP] Name of the file to rename: ";
+			fmt::print("{}Name of the file to rename: ", NetWorkFTPPrefix);
 			std::cin >> source;
-			std::cout << "[Network][FTP] " << "New name: ";
+			fmt::print("{}New name: ", NetWorkFTPPrefix);
 			std::cin >> destination;
-			std::cout << "[Network][FTP] " << server.RenameFile(source, destination) << std::endl;
+			fmt::println("{}{}", NetWorkFTPPrefix, server.RenameFile(source, destination));
 			break;
 		}
 
@@ -151,9 +162,9 @@ void FTPTests::FTP()
 		{
 			//Remove an existing file
 			std::filesystem::path filename;
-			std::cout << "[Network][FTP] Name of the file to remove: ";
+			fmt::print("{}Name of the file to remove: ", NetWorkFTPPrefix);
 			std::cin >> filename;
-			std::cout << "[Network][FTP] " << server.DeleteFile(filename) << std::endl;
+			fmt::println("{}{}", NetWorkFTPPrefix, server.DeleteFile(filename));
 			break;
 		}
 
@@ -161,11 +172,11 @@ void FTPTests::FTP()
 		{
 			//Download a file from server
 			std::filesystem::path filename, directory;
-			std::cout << "[Network][FTP] Filename of the file to download (relative to current directory): ";
+			fmt::print("{}Filename of the file to download (relative to current directory): ", NetWorkFTPPrefix);
 			std::cin >> filename;
-			std::cout << "[Network][FTP] Directory to download the file to: ";
+			fmt::print("{}Directory to download the file to: ", NetWorkFTPPrefix);
 			std::cin >> directory;
-			std::cout << "[Network][FTP] " << server.Download(filename, directory) << std::endl;
+			fmt::println("{}{}", NetWorkFTPPrefix, server.Download(filename, directory));
 			break;
 		}
 
@@ -173,11 +184,11 @@ void FTPTests::FTP()
 		{
 			//Upload a file to server
 			std::filesystem::path filename, directory;
-			std::cout << "[Network][FTP] Path of the file to upload (absolute or relative to working directory): ";
+			fmt::print("{}Path of the file to upload (absolute or relative to working directory): ", NetWorkFTPPrefix);
 			std::cin >> filename;
-			std::cout << "[Network][FTP] Directory to upload the file to (relative to current directory): ";
+			fmt::print("{}Directory to upload the file to (relative to current directory): ", NetWorkFTPPrefix);
 			std::cin >> directory;
-			std::cout << server.Upload(filename, directory) << std::endl;
+			fmt::println("{}{}", NetWorkFTPPrefix, server.Upload(filename, directory));
 			break;
 		}
 
@@ -189,7 +200,7 @@ void FTPTests::FTP()
 
 		default:
 			//Wrong choice
-			std::cout << "[Network][FTP] Invalid choice!" << std::endl;
+			fmt::println("{}Invalid choice!", NetWorkFTPPrefix);
 			std::cin.clear();
 			std::cin.ignore(10000, '\n');
 			break;
@@ -197,6 +208,6 @@ void FTPTests::FTP()
 	} while (choice != 0);
 
 	//Disconnect from the server
-	std::cout << "[Network][FTP] Disconnecting from server..." << std::endl;
-	std::cout << "[Network][FTP] " << server.Disconnect() << std::endl;
+	fmt::println("{}Disconnecting from server...", NetWorkFTPPrefix);
+	fmt::println("{}{}", NetWorkFTPPrefix, server.Disconnect());
 }

@@ -1,5 +1,7 @@
 #include <filesystem>
 
+#include <fmt/format.h>
+
 #include "Version.h"
 #include "Utils.h"
 #include "Shader.h"
@@ -191,40 +193,40 @@ int main(const int argc, const char* const* const argv)
 
 void PrintUsage(const std::filesystem::path& programName)
 {
-	std::cout << programName.filename().string() << " <file> [options]" << "\n\n" <<
-	             "Options:\n" <<
-				 "-h | --help                    | Print this help\n" <<
-				 "   | --version                 | Print the version number\n" <<
-				 "   | --info                    | Retrieve information from an TP-SPV file\n" <<
-				 "-o | --output <file>           | Set a custom output file name\n" <<
-				 "-m | --macro \"<key>\"=\"<value>\" | Set custom macro(s)" << std::endl;
+	fmt::println("{} <file> [options]\n", programName.filename().string());
+	fmt::println("Options:");
+	fmt::println("-h | --help                    | Print this help");
+	fmt::println("   | --version                 | Print the version number");
+	fmt::println("   | --info                    | Retrieve information from an TP-SPV file");
+	fmt::println("-o | --output <file>           | Set a custom output file name");
+	fmt::println("-m | --macro \"<key>\"=\"<value>\" | Set custom macro(s)");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void PrintVersion()
 {
-	std::cout << "ConvertToSPIRV " << CONVERTTOSPIRV_VERSION_MAJOR(CONVERTTOSPIRV_VERSION) << '.'
-	                               << CONVERTTOSPIRV_VERSION_MINOR(CONVERTTOSPIRV_VERSION) << '.'
-			                       << CONVERTTOSPIRV_VERSION_PATCH(CONVERTTOSPIRV_VERSION) << std::endl;
+	fmt::println("ConvertToSPIRV {}.{}.{}", CONVERTTOSPIRV_VERSION_MAJOR(CONVERTTOSPIRV_VERSION),
+	                                        CONVERTTOSPIRV_VERSION_MINOR(CONVERTTOSPIRV_VERSION),
+				                            CONVERTTOSPIRV_VERSION_PATCH(CONVERTTOSPIRV_VERSION));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void PrintTPSPVShaderInfo(const std::filesystem::path& filePath, const Shader& shader, const uint32_t versionNumber)
 {
-	std::cout << "File: " << filePath << '\n'
-	          << "Format: TRAP-SPIRV v" << versionNumber << '\n'
-	          << "Number of contained Shaders: " << shader.SubShaderSources.size() << "\n\n";
+	fmt::println("File: {}", filePath.string());
+	fmt::println("Format: TRAP-SPIRV v{}", versionNumber);
+	fmt::println("Number of contained Shaders: {}\n", shader.SubShaderSources.size());
 
 	for(std::size_t i = 0; i < shader.SubShaderSources.size(); ++i)
 	{
-		std::cout << (i + 1) << ". Shader:" << '\n'
-		          << "    Stage: " << ShaderStageToString(shader.SubShaderSources[i].Stage) << '\n'
-				  << "    Size in bytes: " << shader.SubShaderSources[i].SPIRV.size() * sizeof(decltype(shader.SubShaderSources[i].SPIRV)::value_type) << '\n';
+		fmt::println("{}. Shader:", (i + 1));
+		fmt::println("    Stage: {}", ShaderStageToString(shader.SubShaderSources[i].Stage));
+		fmt::println("    Size in bytes: {}", shader.SubShaderSources[i].SPIRV.size() * sizeof(decltype(shader.SubShaderSources[i].SPIRV)::value_type));
 
 		if(i < (shader.SubShaderSources.size() - 1))
-			std::cout << '\n';
+			fmt::println("");
 	}
 }
 
