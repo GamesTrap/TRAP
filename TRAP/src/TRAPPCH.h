@@ -50,6 +50,7 @@
 #include <fmt/format.h>
 #include <fmt/color.h>
 #include <fmt/ostream.h>
+#include <fmt/std.h>
 
 //Tracy - Profiler
 #include <tracy/Tracy.hpp>

@@ -27,8 +27,6 @@ project "TRAP"
 	{
 		"src/Utils/Win.h",
 		"src/Utils/Linux.h",
-		"src/Log/ANSILog.cpp",
-		"src/Log/WindowsLog.cpp",
 		"src/Input/WindowsInput.cpp",
 		"src/Input/LinuxInput.cpp",
 		"src/Window/WindowingAPIWin32.cpp",
@@ -94,7 +92,6 @@ project "TRAP"
 		files
 		{
 			"src/Utils/Win.h",
-			"src/Log/WindowsLog.cpp",
 			"src/Input/WindowsInput.cpp",
 			"src/Window/WindowingAPIWin32.cpp",
 			"src/Network/Sockets/Platform/SocketImplWinAPI.h",
@@ -106,7 +103,6 @@ project "TRAP"
         files
         {
 			"src/Utils/Linux.h",
-			"src/Log/ANSILog.cpp",
 			"src/Input/LinuxInput.cpp",
 			"src/Window/WindowingAPILinux.cpp",
 			"src/Window/WindowingAPILinuxX11.cpp",
@@ -195,8 +191,6 @@ project "TRAP-Headless"
 	removefiles
 	{
 		"src/Utils/Win.h",
-		"src/Log/ANSILog.cpp",
-		"src/Log/WindowsLog.cpp",
 		"src/Input/WindowsInput.cpp",
 		"src/Input/LinuxInput.cpp",
 		"src/Window/WindowingAPIWin32.cpp",
@@ -256,7 +250,6 @@ project "TRAP-Headless"
 		files
 		{
 			"src/Utils/Win.h",
-			"src/Log/WindowsLog.cpp",
 			"src/Input/WindowsInput.cpp",
 			"src/Window/WindowingAPIWin32.cpp",
 			"src/Network/Sockets/Platform/SocketImplWinAPI.h",
@@ -273,7 +266,6 @@ project "TRAP-Headless"
 		-- Add Linux-specific files
 		files
 		{
-			"src/Log/ANSILog.cpp",
 			"src/Input/LinuxInput.cpp",
 			"src/Window/WindowingAPILinux.cpp",
 			"src/Window/WindowingAPILinuxX11.cpp",

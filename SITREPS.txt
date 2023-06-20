@@ -4104,3 +4104,4 @@ SITREP 06/20/2023|23w25a2
     - Added fmt::formatter for existing std::ostream specialization ~<5 mins
     - Replaced std::cout with fmt::print ~<20 mins
     - Replaced std::cerr with fmt::print ~<10 mins
+    - TRAP::Log now uses fmt::format and fmt::print ~<20 mins
