@@ -1,6 +1,7 @@
 #include <filesystem>
 
 #include <fmt/format.h>
+#include <fmt/color.h>
 
 #include "Version.h"
 #include "Utils.h"
@@ -102,7 +103,7 @@ int main(const int argc, const char* const* const argv)
 
 	if(it == args.end())
 	{
-		std::cerr << "No output file name specified!\n";
+		fmt::print(fg(fmt::color::red), "No output file name specified!\n");
 		return true;
 	}
 
@@ -117,8 +118,8 @@ int main(const int argc, const char* const* const argv)
 	const std::size_t equalSign = macro.find('=');
 	if(equalSign == std::string::npos)
 	{
-		std::cerr << "Invalid macro: \"" << macro << "\"\n";
-		std::cerr << "Skipping macro\n";
+		fmt::print(fg(fmt::color::red), "Invalid macro:\"{}\"\n", macro);
+		fmt::println("Skipping macro");
 		return std::nullopt;
 	}
 
@@ -144,7 +145,7 @@ int main(const int argc, const char* const* const argv)
 
 		if(it == args.end())
 		{
-			std::cerr << "No macro specified!\n";
+			fmt::print(fg(fmt::color::red), "No macro specified!\n");
 			return true;
 		}
 
@@ -239,7 +240,7 @@ void PrintInfo(const std::filesystem::path& filePath)
 		return;
 	if(!hasExtension.value())
 	{
-		std::cerr << "Unsupported file extension for file \"" << filePath << "\"!" << std::endl;
+		fmt::print(fg(fmt::color::red), "Unsupported file extension for file \"{}\"!\n", filePath.string());
 		return;
 	}
 
@@ -252,7 +253,7 @@ void PrintInfo(const std::filesystem::path& filePath)
 	const bool res = ParseTPSPVShader(*fileData, shader, shaderVersion);
 	if(!res)
 	{
-		std::cerr << "Invalid or corrupted shader!" << std::endl;
+		fmt::print(fg(fmt::color::red), "Invalid or corrupted shader!\n");
 		return;
 	}
 
