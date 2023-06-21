@@ -77,7 +77,7 @@ int main(const int argc, const char* const* const argv)
 [[nodiscard]] bool CheckForInfoParameter(const std::vector<std::string_view>& args)
 {
 	if(std::any_of(args.begin(), args.end(), [](const auto arg){return arg == "--info"sv;}) ||
-	   std::filesystem::path(args[1]).extension() == (std::string(".") + std::string(ShaderFileEnding)))
+	   std::filesystem::path(args[1]).extension() == fmt::format(".{}", ShaderFileEnding))
 	{
 		PrintInfo(args[1]);
 		return true;
@@ -235,7 +235,7 @@ void PrintTPSPVShaderInfo(const std::filesystem::path& filePath, const Shader& s
 
 void PrintInfo(const std::filesystem::path& filePath)
 {
-	const auto hasExtension = FileHasExtension(filePath, std::string("." + std::string(ShaderFileEnding)));
+	const auto hasExtension = FileHasExtension(filePath, fmt::format(".{}", ShaderFileEnding));
 	if(!hasExtension)
 		return;
 	if(!hasExtension.value())

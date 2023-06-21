@@ -486,10 +486,8 @@ template<typename T>
 	else
 		return "Unknown type";
 
-	return "Mat3" + postfix + "((" + std::to_string(value[0][0]) + ", " + std::to_string(value[0][1]) + ", " +
-	       std::to_string(value[0][2]) + "), (" + std::to_string(value[1][0]) + ", " + std::to_string(value[1][1]) +
-		   ", " + std::to_string(value[1][2]) + "), (" + std::to_string(value[2][0]) + ", " +
-		   std::to_string(value[2][1]) + ", " + std::to_string(value[2][2]) + "))";
+	return fmt::format("Mat3{}(({},{},{}), ({},{},{}), ({},{},{}))", postfix, value[0][0], value[0][1],
+	                   value[0][2], value[1][0], value[1][1], value[1][2], value[2][0], value[2][1], value[2][2]);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -623,27 +623,27 @@ template<typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if constexpr(std::is_same_v<T, float>)
-		return "Vec2f(" + std::to_string(x) + ", " + std::to_string(y) + ")";
+		return fmt::format("Vec2f({}, {})", x, y);
 	else if constexpr(std::is_same_v<T, double>)
-		return "Vec2d(" + std::to_string(x) + ", " + std::to_string(y) + ")";
+		return fmt::format("Vec2d({}, {})", x, y);
 	else if constexpr(std::is_same_v<T, bool>)
-		return std::string("Vec2b(") + (x ? "true" : "false") + ", " + (y ? "true" : "false") + ")";
+		return fmt::format("Vec2b({}, {})", (x ? "true" : "false"), (y ? "true" : "false"));
 	else if constexpr(std::is_same_v<T, int8_t>)
-		return "Vec2i8(" + std::to_string(x) + ", " + std::to_string(y) + ")";
+		return fmt::format("Vec2i8({}, {})", x, y);
 	else if constexpr(std::is_same_v<T, int16_t>)
-		return "Vec2i16(" + std::to_string(x) + ", " + std::to_string(y) + ")";
+		return fmt::format("Vec2i16({}, {})", x, y);
 	else if constexpr(std::is_same_v<T, int32_t>)
-		return "Vec2i32(" + std::to_string(x) + ", " + std::to_string(y) + ")";
+		return fmt::format("Vec2i32({}, {})", x, y);
 	else if constexpr(std::is_same_v<T, int64_t>)
-		return "Vec2i64(" + std::to_string(x) + ", " + std::to_string(y) + ")";
+		return fmt::format("Vec2i64({}, {})", x, y);
 	else if constexpr(std::is_same_v<T, uint8_t>)
-		return "Vec2ui8(" + std::to_string(x) + ", " + std::to_string(y) + ")";
+		return fmt::format("Vec2ui8({}, {})", x, y);
 	else if constexpr(std::is_same_v<T, uint16_t>)
-		return "Vec2ui16(" + std::to_string(x) + ", " + std::to_string(y) + ")";
+		return fmt::format("Vec2ui16({}, {})", x, y);
 	else if constexpr(std::is_same_v<T, uint32_t>)
-		return "Vec2ui32(" + std::to_string(x) + ", " + std::to_string(y) + ")";
+		return fmt::format("Vec2ui32({}, {})", x, y);
 	else if constexpr(std::is_same_v<T, uint64_t>)
-		return "Vec2ui64(" + std::to_string(x) + ", " + std::to_string(y) + ")";
+		return fmt::format("Vec2ui64({}, {})", x, y);
 	else
 		return "Unknown type";
 }

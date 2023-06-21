@@ -548,13 +548,10 @@ template<typename T>
 	else
 		return "Unknown type";
 
-	return "Mat4" + postfix + "((" + std::to_string(value[0][0]) + ", " + std::to_string(value[0][1]) + ", " +
-	       std::to_string(value[0][2]) + ", " + std::to_string(value[0][3]) + "), (" + std::to_string(value[1][0]) +
-		   ", " + std::to_string(value[1][1]) + ", " + std::to_string(value[1][2]) + ", " +
-		   std::to_string(value[1][3]) + "), (" + std::to_string(value[2][0]) + ", " + std::to_string(value[2][1]) +
-		   ", " + std::to_string(value[2][2]) + ", " + std::to_string(value[2][3]) + "), (" +
-		   std::to_string(value[3][0]) + ", " + std::to_string(value[3][1]) + ", " + std::to_string(value[3][2]) +
-		   ", " + std::to_string(value[3][3]) + "))";
+	return fmt::format("Mat4{}(({},{},{},{}), ({},{},{},{}), ({},{},{},{}), ({},{},{},{}))", postfix, value[0][0],
+	                   value[0][1], value[0][2], value[0][3], value[1][0], value[1][1], value[1][2], value[1][3],
+					   value[2][0], value[2][1], value[2][2], value[2][3], value[3][0], value[3][1], value[3][2],
+					   value[3][3]);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

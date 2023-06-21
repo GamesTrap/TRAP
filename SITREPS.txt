@@ -4106,3 +4106,7 @@ SITREP 06/20/2023|23w25a2
     - Replaced std::cerr with fmt::print ~<10 mins
     - TRAP::Log now uses fmt::format and fmt::print ~<20 mins
     - Added fmt/std.h ~<5 mins
+
+SITREP 06/21/2023|23w25a3
+    - Changed TRAP Engine version to 23w25a3(0.9.49)
+    - Replaced string concatenation chains with fmt::format() ~>30 mins

@@ -742,7 +742,7 @@ void TRAP::INTERNAL::WindowingAPI::SetProgressIndicator(const ProgressState stat
 	s_Data.DBUS.MessageIterInitAppend(msg, &args);
 
 	//Set app_uri paramter
-	const std::string desktopName = std::string("application://") + TRAP::Application::GetGameName() + ".desktop";
+	const std::string desktopName = fmt::format("application://{}.desktop", TRAP::Application::GetGameName());
 	const char* const desktopNameCStr = desktopName.c_str();
 	s_Data.DBUS.MessageIterAppendBasic(&args, DBUS_TYPE_STRING, &desktopNameCStr); //Desktop file name
 

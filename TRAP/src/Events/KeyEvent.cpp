@@ -33,7 +33,7 @@ TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, TRAP::Window* w
 
 	const std::string name = TRAP::Input::GetKeyName(m_key);
 
-	return "KeyPressEvent: " + name + "(" + std::to_string(ToUnderlying(m_key)) + ")";
+	return fmt::format("KeyPressEvent: {}({})", name, ToUnderlying(m_key));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -74,7 +74,7 @@ TRAP::Events::KeyRepeatEvent::KeyRepeatEvent(const Input::Key key, TRAP::Window*
 
 	const std::string name = TRAP::Input::GetKeyName(m_key);
 
-	return "KeyRepeatEvent: " + name + "(" + std::to_string(ToUnderlying(m_key)) + ")";
+	return fmt::format("KeyRepeatEvent: {}({})", name, ToUnderlying(m_key));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -115,7 +115,7 @@ TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, TRAP::Windo
 
 	const std::string name = TRAP::Input::GetKeyName(m_key);
 
-	return "KeyReleaseEvent: " + name + "(" + std::to_string(ToUnderlying(m_key)) + ")";
+	return fmt::format("KeyReleaseEvent: {}({})", name, ToUnderlying(m_key));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -154,7 +154,7 @@ TRAP::Events::KeyTypeEvent::KeyTypeEvent(const uint32_t codePoint, TRAP::Window*
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return "KeyTypeEvent: " + Utils::String::EncodeUTF8(m_codePoint) + "(" + std::to_string(m_codePoint) + ")";
+	return fmt::format("KeyTypeEvent: {}({})", Utils::String::EncodeUTF8(m_codePoint), m_codePoint);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -207,7 +207,7 @@ TRAP::Events::KeyLayoutEvent::KeyLayoutEvent(std::string layout) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return "KeyLayoutEvent: " + m_layout;
+	return fmt::format("KeyLayoutEvent: {}", m_layout);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

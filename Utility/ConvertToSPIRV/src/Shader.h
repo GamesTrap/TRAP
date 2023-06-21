@@ -269,12 +269,9 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 		std::string tmp = subShader.Source;
 		subShader.Source = "#version 460 core\n";
 		for(const auto& [name, value] : DefaultShaderMacros)
-			subShader.Source += "#define " + std::string(name) + " " + std::string(value) + '\n';
+			subShader.Source += fmt::format("#define {} {}\n", name, value);
 		for(const auto& [name, value] : customMacros)
-		{
-			subShader.Source += "#define " + name + " ";
-			subShader.Source += value + '\n';
-		}
+			subShader.Source += fmt::format("#define {} {}\n", name, value);
 		subShader.Source += tmp;
 	}
 

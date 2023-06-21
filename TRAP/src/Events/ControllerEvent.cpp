@@ -34,7 +34,7 @@ TRAP::Events::ControllerConnectEvent::ControllerConnectEvent(const Input::Contro
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return "ControllerConnectEvent: " + std::to_string(ToUnderlying(m_controller) + 1u);
+	return fmt::format("ControllerConnectEvent: {}", (ToUnderlying(m_controller) + 1));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -69,7 +69,7 @@ TRAP::Events::ControllerDisconnectEvent::ControllerDisconnectEvent(const Input::
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return "ControllerDisconnectEvent: " + std::to_string(ToUnderlying(m_controller) + 1u);
+	return fmt::format("ControllerDisconnectEvent: {}", (ToUnderlying(m_controller) + 1u));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

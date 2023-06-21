@@ -27,7 +27,7 @@
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return "MonitorConnectEvent: " + m_monitor.GetName() + " (" + std::to_string(m_monitor.GetID()) + ')';
+	return fmt::format("MonitorConnectEvent: {} ({})", m_monitor.GetName(), m_monitor.GetID());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -54,7 +54,7 @@
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return "MonitorDisconnectEvent: " + m_monitor.GetName() + " (" + std::to_string(m_monitor.GetID()) + ')';
+	return fmt::format("MonitorDisconnectEvent: {} ({})", m_monitor.GetName(), m_monitor.GetID());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

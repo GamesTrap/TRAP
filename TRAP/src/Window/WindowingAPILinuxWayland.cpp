@@ -2037,8 +2037,7 @@ std::optional<int32_t> TRAP::INTERNAL::WindowingAPI::CreateAnonymousFileWayland(
             return std::nullopt;
         }
 
-        std::string name = path;
-        name += temp;
+        std::string name = fmt::format("{}{}", path, temp);
 
         fd = CreateTmpFileCloexec(std::move(name)).value_or(-1);
         if(fd < 0)

@@ -35,8 +35,9 @@ TRAP::Events::FileChangeEvent::FileChangeEvent(TRAP::FileSystem::FileStatus stat
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-    return "FileChangeEvent: Path: \"" + m_path.string() + "\" Status: " +
-           Utils::String::ConvertToString<FileSystem::FileStatus>(m_status) + (!m_oldName ? "" : " OldName: " + m_oldName->string());
+	return fmt::format("FileChangeEvent: Path: {} Status: {}{}",
+	                   m_path, Utils::String::ConvertToString<FileSystem::FileStatus>(m_status),
+					   (!m_oldName ? "" : " OldName: " + m_oldName->string()));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

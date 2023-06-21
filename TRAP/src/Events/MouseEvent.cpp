@@ -19,7 +19,7 @@ TRAP::Events::MouseMoveEvent::MouseMoveEvent(const float x, const float y, TRAP:
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return "MouseMoveEvent: " + std::to_string(m_mouseX) + ", " + std::to_string(m_mouseY);
+	return fmt::format("MouseMoveEvent: {}, {}", m_mouseX, m_mouseY);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -68,7 +68,7 @@ TRAP::Events::MouseScrollEvent::MouseScrollEvent(const float xOffset, const floa
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return "MouseScrollEvent: " + std::to_string(GetXOffset()) + ", " + std::to_string(GetYOffset());
+	return fmt::format("MouseScrollEvent: {}, {}", GetXOffset(), GetYOffset());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -128,8 +128,8 @@ TRAP::Events::MouseButtonPressEvent::MouseButtonPressEvent(const Input::MouseBut
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return "MouseButtonPressEvent: " + Utils::String::ConvertToString<Input::MouseButton>(m_button) +
-	       "(" + std::to_string(ToUnderlying(m_button)) + ')';
+	return fmt::format("MouseButtonPressEvent: {}({})", Utils::String::ConvertToString<Input::MouseButton>(m_button),
+	                   ToUnderlying(m_button));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -169,8 +169,8 @@ TRAP::Events::MouseButtonReleaseEvent::MouseButtonReleaseEvent(const Input::Mous
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return "MouseButtonReleaseEvent: " + Utils::String::ConvertToString<Input::MouseButton>(m_button) +
-	       "(" + std::to_string(ToUnderlying(m_button)) + ')';
+	return fmt::format("MouseButtonReleaseEvent: {}({})",
+	                   Utils::String::ConvertToString<Input::MouseButton>(m_button), ToUnderlying(m_button));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

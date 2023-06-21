@@ -73,8 +73,8 @@ void ControllerTests::OnImGuiRender()
 
 		for(std::size_t i = 0; i < dpads.size(); i++)
 		{
-			std::string dpadText = "DPad " + std::to_string(i) + ": ";
-			dpadText += GetDPadDirection(dpads[i]);
+			const std::string dpadText = fmt::format("DPad {}: {}", i, GetDPadDirection(dpads[i]));
+
 			bool dpadPressed = dpads[i] != TRAP::Input::ControllerDPad::Centered;
 			ImGui::Checkbox(dpadText.c_str(), &dpadPressed);
 			if (i % 2 == 0)
@@ -136,7 +136,7 @@ void ControllerTests::OnImGuiRender()
 			ImGui::Checkbox("Guide", &guide);
 
 			TRAP::Input::ControllerDPad dpad = TRAP::Input::GetControllerDPad(controller, 0);
-			std::string dpadText = "DPad: " + GetDPadDirection(dpad);
+			const std::string dpadText = fmt::format("DPad: {}", GetDPadDirection(dpad));
 			bool dpadPressed = dpad != TRAP::Input::ControllerDPad::Centered;
 			ImGui::Checkbox(dpadText.c_str(), &dpadPressed);
 

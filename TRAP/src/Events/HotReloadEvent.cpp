@@ -27,7 +27,7 @@ TRAP::Events::TextureReloadEvent::TextureReloadEvent(TRAP::Ref<TRAP::Graphics::T
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-    return "TextureReloadEvent: " + m_texture->GetName();
+    return fmt::format("TextureReloadEvent: {}", m_texture->GetName());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -84,7 +84,7 @@ TRAP::Events::ShaderReloadEvent::ShaderReloadEvent(TRAP::Ref<TRAP::Graphics::Sha
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-    return "ShaderReloadEvent: " + m_shader->GetName();
+    return fmt::format("ShaderReloadEvent: {}", m_shader->GetName());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
