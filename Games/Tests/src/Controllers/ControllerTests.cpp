@@ -34,12 +34,11 @@ void ControllerTests::OnImGuiRender()
 		ImGui::Checkbox("DPad Buttons", &s_dpadButtons);
 		for (const TRAP::Input::Controller& controller : s_controllers)
 		{
-			if (ImGui::Button((std::to_string(ToUnderlying(controller) + 1) + ". " +
-			                   TRAP::Input::GetControllerName(controller)).c_str()))
-			{
-				ImGui::SetWindowFocus((std::to_string(ToUnderlying(controller) + 1) + ". " +
-				                       TRAP::Input::GetControllerName(controller)).c_str());
-			}
+			const std::string controllerName = fmt::format("{}. {}", (ToUnderlying(controller) + 1),
+			                                               TRAP::Input::GetControllerName(controller));
+
+			if (ImGui::Button(controllerName.c_str()))
+				ImGui::SetWindowFocus(controllerName.c_str());
 		}
 	}
 	else
@@ -52,8 +51,9 @@ void ControllerTests::OnImGuiRender()
 		std::vector<bool> buttons = TRAP::Input::GetAllControllerButtons(controller);
 		std::vector<TRAP::Input::ControllerDPad> dpads = TRAP::Input::GetAllControllerDPads(controller);
 
-		ImGui::Begin((std::to_string(ToUnderlying(controller) + 1) + ". " +
-		              TRAP::Input::GetControllerName(controller)).c_str());
+		const std::string controllerName = fmt::format("{}. {}", (ToUnderlying(controller) + 1),
+														TRAP::Input::GetControllerName(controller));
+		ImGui::Begin(controllerName.c_str());
 		ImGui::Text("Hardware GUID: %s", TRAP::Input::GetControllerGUID(controller).c_str());
 		ImGui::NewLine();
 		ImGui::Text("Controller Battery Status: %s", GetBatteryStatus(controller).c_str());
@@ -73,8 +73,8 @@ void ControllerTests::OnImGuiRender()
 
 		for(std::size_t i = 0; i < dpads.size(); i++)
 		{
-			std::string dpadText = "DPad " + std::to_string(i) + ": ";
-			dpadText += GetDPadDirection(dpads[i]);
+			const std::string dpadText = fmt::format("DPad {}: {}", i, GetDPadDirection(dpads[i]));
+
 			bool dpadPressed = dpads[i] != TRAP::Input::ControllerDPad::Centered;
 			ImGui::Checkbox(dpadText.c_str(), &dpadPressed);
 			if (i % 2 == 0)
@@ -136,7 +136,7 @@ void ControllerTests::OnImGuiRender()
 			ImGui::Checkbox("Guide", &guide);
 
 			TRAP::Input::ControllerDPad dpad = TRAP::Input::GetControllerDPad(controller, 0);
-			std::string dpadText = "DPad: " + GetDPadDirection(dpad);
+			const std::string dpadText = fmt::format("DPad: {}", GetDPadDirection(dpad));
 			bool dpadPressed = dpad != TRAP::Input::ControllerDPad::Centered;
 			ImGui::Checkbox(dpadText.c_str(), &dpadPressed);
 

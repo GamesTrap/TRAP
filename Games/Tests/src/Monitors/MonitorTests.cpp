@@ -21,7 +21,7 @@ void MonitorTests::OnImGuiRender()
 	for(const TRAP::Monitor& monitor : TRAP::Monitor::GetAllMonitors())
 	{
 		const std::string name = monitor.GetName();
-		const std::string uniqueName = name + " (" + std::to_string(monitor.GetID()) + ")";
+		const std::string uniqueName = fmt::format("{} ({})", name, monitor.GetID());
 		const uint32_t ID = monitor.GetID();
 		const auto nativeMode = monitor.GetNativeVideoMode();
 		const auto currentMode = monitor.GetCurrentVideoMode();
@@ -96,9 +96,6 @@ std::string MonitorTests::FormatMode(const TRAP::Monitor::VideoMode& mode)
 {
 	const int32_t gcd = Euclid(mode.Width, mode.Height);
 
-	std::string buffer = std::to_string(mode.Width) + "x" + std::to_string(mode.Height) + "(" +
-		                 std::to_string(mode.Width / gcd) + ":" + std::to_string(mode.Height / gcd) + ") " +
-		                 std::to_string(mode.RefreshRate) + "Hz";
-
-	return buffer;
+	return fmt::format("{}x{}({}:{}) {}Hz", mode.Width, mode.Height, (mode.Width / gcd), (mode.Height / gcd),
+	                   mode.RefreshRate);
 }

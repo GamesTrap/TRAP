@@ -149,7 +149,7 @@ TRAP::Entity TRAP::Scene::CreateEntityWithUID(Utils::UID uid, const std::string&
 	entity.AddComponent<UIDComponent>(uid);
 	entity.AddComponent<TransformComponent>();
 	auto& tag = entity.AddComponent<TagComponent>();
-	tag.Tag = name.empty() ? tag.Tag = "Entity" : tag.Tag = name;
+	tag.Tag = name.empty() ? "Entity" : name;
 	return entity;
 }
 

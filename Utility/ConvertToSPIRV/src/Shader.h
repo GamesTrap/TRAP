@@ -1,6 +1,9 @@
 #ifndef CONVERTTOSPIRV_SHADER_H
 #define CONVERTTOSPIRV_SHADER_H
 
+#include <fmt/format.h>
+#include <fmt/std.h>
+
 #include <glslang/Public/ResourceLimits.h>
 #include <glslang/Public/ShaderLang.h>
 #include <GlslangToSpv.h>
@@ -32,6 +35,9 @@
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
+
+inline constexpr std::string_view GLSLPrefix = "[GLSL] ";
+inline constexpr std::string_view SPIRVPrefix = "[SPIRV] ";
 
 using Macro = std::pair<std::string, std::string>;
 
@@ -176,7 +182,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 	//Check if any Shader Stage is set
 	if(ShaderStage::None == stages)
 	{
-		std::cerr << "[GLSL] No Shader Stage found!" << '\n';
+		fmt::print(fg(fmt::color::red), "{}No Shader Stage found!\n", GLSLPrefix);
 		return false;
 	}
 
@@ -188,7 +194,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 		 (ShaderStage::Geometry               & stages) != ShaderStage::None) &&
 		 (ShaderStage::Compute                & stages) != ShaderStage::None)
 	{
-		std::cerr << "[GLSL] Rasterizer Shader Stages combined with Compute stage!" << '\n';
+		fmt::print(fg(fmt::color::red), "{}Rasterizer Shader Stages combined with Compute stage!\n", GLSLPrefix);
 		return false;
 	}
 
@@ -196,7 +202,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 	if ((ShaderStage::Vertex   & stages) != ShaderStage::None &&
 		(ShaderStage::Fragment & stages) == ShaderStage::None)
 	{
-		std::cerr << "[GLSL] Only Vertex Shader Stage provided! Missing Fragment/Pixel Shader Stage" << '\n';
+		fmt::print(fg(fmt::color::red), "{}Only Vertex Shader Stage provided! Missing Fragment/Pixel Shader Stage\n", GLSLPrefix);
 		return false;
 	}
 
@@ -225,18 +231,18 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
             currentShaderStage = DetectShaderStage(lowerLine);
             if(!currentShaderStage)
             {
-                std::cerr << "[GLSL] Failed to detect valid shader stage\n";
-                std::cerr << "[GLSL] Skipping unknown shader stage\n";
+				fmt::print(fg(fmt::color::red), "{}Failed to detect valid shader stage\n", GLSLPrefix);
+				fmt::println("{}Skipping unknown shader stage", GLSLPrefix);
                 continue;
             }
 
-			std::cout << "[GLSL] Adding " << ShaderStageToString(*currentShaderStage) << " Shader to \"" << shader.FilePath << "\"" << '\n';
+			fmt::println("{}Adding Shader to \"{}\"", GLSLPrefix, ShaderStageToString(*currentShaderStage), shader.FilePath);
 
 			//Check for duplicate "#shader XXX" defines
 			if (static_cast<uint32_t>(shader.Stages & *currentShaderStage) != 0u)
 			{
-				std::cerr << "[GLSL] Found duplicate \"#shader\" define: " << lines[i] << '\n';
-                std::cerr << "[GLSL] Skipping duplicated shader stage\n";
+				fmt::print(fg(fmt::color::yellow), "{}Found duplicate \"#shader\" define: {}\n", GLSLPrefix, lines[i]);
+				fmt::println("{}Skipping duplicated shader stage", GLSLPrefix);
 				currentShaderStage = std::nullopt;
 				continue;
 			}
@@ -245,7 +251,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 			shader.SubShaderSources.push_back(Shader::SubShader{*currentShaderStage, "", std::vector<uint32_t>{}});
 		}
 		else if (lowerLine.find("#version") != std::string::npos) //Check for unnecessary "#version" define
-			std::cout << "[GLSL] Found Tag: \"" << lines[i] << "\" this is unnecessary! Skipping Line: " << i << '\n';
+			fmt::println("{}Found Tag: \"{}\" this is unnecessary! Skipping Line: {}", GLSLPrefix, lines[i], i);
 		else if (currentShaderStage) //Add shader code to detected shader stage
             shader.SubShaderSources.back().Source.append(lines[i] + '\n');
 	}
@@ -254,7 +260,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 	{
         if(!FindEntryPoint(subShader.Source))
         {
-            std::cerr << "[GLSL] " << ShaderStageToString(subShader.Stage) << " Shader Couldn't find \"main\" function!\n";
+			fmt::print(fg(fmt::color::red), "{}{} Shader Couldn't find \"main\" function!\n", GLSLPrefix, ShaderStageToString(subShader.Stage));
             return false;
         }
 
@@ -263,12 +269,9 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 		std::string tmp = subShader.Source;
 		subShader.Source = "#version 460 core\n";
 		for(const auto& [name, value] : DefaultShaderMacros)
-			subShader.Source += "#define " + std::string(name) + " " + std::string(value) + '\n';
+			subShader.Source += fmt::format("#define {} {}\n", name, value);
 		for(const auto& [name, value] : customMacros)
-		{
-			subShader.Source += "#define " + name + " ";
-			subShader.Source += value + '\n';
-		}
+			subShader.Source += fmt::format("#define {} {}\n", name, value);
 		subShader.Source += tmp;
 	}
 
@@ -283,9 +286,9 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 	if (!shader.parse(DefaultTBuiltInResource, GLSLVersion, true,
                       static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
 	{
-		std::cerr << "[GLSL] Parsing failed:\n";
-		std::cerr << "[GLSL] " << shader.getInfoLog() << '\n';
-		std::cerr << "[GLSL] " << shader.getInfoDebugLog() << '\n';
+		fmt::print(fg(fmt::color::red), "{}Parsing failed:\n", GLSLPrefix);
+		fmt::print(fg(fmt::color::red), "{}{}\n", GLSLPrefix, shader.getInfoLog());
+		fmt::print(fg(fmt::color::red), "{}{}\n", GLSLPrefix, shader.getInfoDebugLog());
 
 		return false;
 	}
@@ -301,9 +304,9 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 
 	if (!program.link(static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
 	{
-		std::cerr << "[GLSL] Linking failed:\n";
-		std::cerr << "[GLSL] " << program.getInfoLog() << '\n';
-		std::cerr << "[GLSL] " << program.getInfoDebugLog() << '\n';
+		fmt::print(fg(fmt::color::red), "{}Linking failed:\n", GLSLPrefix);
+		fmt::print(fg(fmt::color::red), "{}{}\n", GLSLPrefix, program.getInfoLog());
+		fmt::print(fg(fmt::color::red), "{}{}\n", GLSLPrefix, program.getInfoDebugLog());
 
 		return false;
 	}
@@ -324,7 +327,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 
     glslang::GlslangToSpv(*program.getIntermediate(ShaderStageToEShLanguage(stage)), SPIRV, &logger, &spvOptions);
     if (logger.getAllMessages().length() > 0)
-        std::cout << "[SPIRV] " << ShaderStageToString(stage) << " Shader: " << logger.getAllMessages() << '\n';
+		fmt::println("{}{} Shader: {}", SPIRVPrefix, ShaderStageToString(stage), logger.getAllMessages());
 
     return SPIRV;
 }
@@ -337,7 +340,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 	{
 		if (!glslang::InitializeProcess())
 		{
-			std::cerr << "[GLSL] GLSLang initialization failed!\n";
+			fmt::print(fg(fmt::color::red), "{}GLSLang initialization failed!\n", GLSLPrefix);
 			return false;
 		}
 		s_glslangInitialized = true;
@@ -365,15 +368,15 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 		glslShader.setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
 		glslShader.setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_4);
 
-        std::cout << "[GLSL] Parsing " << ShaderStageToString(subShaderSource.Stage) << " Shader\n";
+		fmt::println("{}Parsing {} Shader", GLSLPrefix, ShaderStageToString(subShaderSource.Stage));
         if (!ParseGLSL(glslShader))
             return false;
 
-        std::cout << "[GLSL] Linking " << ShaderStageToString(subShaderSource.Stage) << " Shader\n";
+		fmt::println("{}Linking {} Shader", GLSLPrefix, ShaderStageToString(subShaderSource.Stage));
         if (!LinkGLSL(glslShader, program))
             return false;
 
-        std::cout << "[SPIRV] Converting GLSL -> SPIR-V\n";
+		fmt::println("{}Converting GLSL -> SPIR-V", SPIRVPrefix);
         subShaderSource.SPIRV = ConvertToSPIRV(subShaderSource.Stage, program);
 		if(subShaderSource.SPIRV.empty())
 			return false;
@@ -388,7 +391,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 {
 	if(shader.Stages == ShaderStage::None || shader.SubShaderSources.empty())
 	{
-		std::cerr << "Can't save empty shader!" << '\n';
+		fmt::print(fg(fmt::color::red), "Can't save empty shader!\n");
 		return false;
 	}
 
@@ -397,12 +400,12 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 
 	customOutput->replace_extension(ShaderFileEnding);
 
-    std::cout << "[SPIRV] Saving Shader: " << *customOutput <<'\n';
+	fmt::println("{}Saving Shader: {}", SPIRVPrefix, *customOutput);
 
 	std::ofstream file(*customOutput, std::ios::binary);
 	if (!file.is_open())
     {
-		std::cerr << "Couldn't open file: " << *customOutput << '\n';
+		fmt::print(fg(fmt::color::red), "Couldn't open file: {}\n", *customOutput);
         return false;
     }
 
@@ -433,7 +436,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 {
 	if (!FileOrFolderExists(filePath))
 	{
-		std::cerr << "Couldn't find file or folder: " << filePath << "\n";
+		fmt::print(fg(fmt::color::red), "Couldn't find file or folder: {}\n", filePath);
 		return false;
 	}
 
@@ -462,12 +465,12 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 {
 	if(shaderData.size() <= (MagicNumber.size() + sizeof(VersionNumber) + sizeof(uint8_t)))
 	{
-		std::cerr << "Invalid or corrupted shader!" << std::endl;
+		fmt::print(fg(fmt::color::red), "Invalid or corrupted shader!\n");
 		return false;
 	}
 	if(!CheckShaderMagicNumber(shaderData))
 	{
-		std::cerr << "Invalid or corrupted shader!" << std::endl;
+		fmt::print(fg(fmt::color::red), "Invalid or corrupted shader!\n");
 		return false;
 	}
 
@@ -500,7 +503,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 
 		const uint32_t SPIRVMagic = ConvertByte<uint32_t>(&shaderData[currIndex]);
 		if(SPIRVMagic != SPIRVMagicNumber)
-			std::cerr << "[SPIRV] shader stage " << ShaderStageToString(subShader.Stage) << " contains invalid magic number!" << std::endl;
+			fmt::print(fg(fmt::color::yellow), "{}shader stage {} contains invalid magic number!", SPIRVPrefix, ShaderStageToString(subShader.Stage));
 
 		currIndex += subShader.SPIRV.size() * sizeof(decltype(subShader.SPIRV)::value_type);
 	}

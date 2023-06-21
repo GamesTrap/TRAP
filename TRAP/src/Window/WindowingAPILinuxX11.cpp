@@ -701,8 +701,8 @@ void TRAP::INTERNAL::WindowingAPI::GetSystemContentScale(float& xScale, float& y
 
 	//The compositing manager selection name contains the screen number
 	s_Data.X11.NET_WM_CM_Sx = s_Data.X11.XLIB.InternAtom(s_Data.X11.display,
-	                                                     std::string("_NET_WM_CM_S" + std::to_string(s_Data.X11.Screen)).c_str(),
-												         0);
+	                                                     fmt::format("_NET_WM_CM_S{}", s_Data.X11.Screen).c_str(),
+														 0);
 
 	//Detect whether an EWMH-conformant window manager is running
 	DetectEWMH();
@@ -2041,7 +2041,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessX11(Interna
 	{
 		const char* const display = getenv("DISPLAY");
 		if(display != nullptr)
-			InputError(Error::Platform_Error, std::string("[X11] Failed to open display: ") + display);
+			InputError(Error::Platform_Error, fmt::format("[X11] Failed to open display: {}", display));
 		else
 			InputError(Error::Platform_Error, "[X11] The DISPLAY environment variable is missing!");
 
@@ -3069,7 +3069,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionX11(const InternalWi
 
 	if(scanCode < 0 || scanCode > 0xFF || s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)] == Input::Key::Unknown)
 	{
-		InputError(Error::Invalid_Value, "Invalid scancode" + std::to_string(scanCode));
+		InputError(Error::Invalid_Value, fmt::format("Invalid scancode {}", scanCode));
 		return nullptr;
 	}
 
@@ -3179,8 +3179,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensionsX11(std:
 
 		const VkResult err = vkCreateXcbSurfaceKHR(instance, &sci, allocator, &surface);
 		if(err != 0)
-			InputError(Error::Platform_Error,
-			           std::string("[X11] Failed to create Vulkan XCB surface: ") + GetVulkanResultString(err));
+			InputError(Error::Platform_Error, fmt::format("[X11] Failed to create Vulkan XCB surface: {}", GetVulkanResultString(err)));
 
 		return err;
 	}
@@ -3203,8 +3202,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensionsX11(std:
 	const VkResult err = vkCreateXlibSurfaceKHR(instance, &sci, allocator, &surface);
 	if(err != 0)
 	{
-		InputError(Error::Platform_Error,
-					std::string("[X11] Failed to create Vulkan X11 surface: ") + GetVulkanResultString(err));
+		InputError(Error::Platform_Error, fmt::format("[X11] Failed to create Vulkan X11 surface: {}", GetVulkanResultString(err)));
 	}
 
 	return err;
@@ -3419,7 +3417,7 @@ void TRAP::INTERNAL::WindowingAPI::InputErrorX11(const Error error, const std::s
 
 	buffer.erase(std::find(buffer.begin(), buffer.end(), '\0'), buffer.end());
 
-	InputError(error, "[X11] " + message + ": " + buffer.data());
+	InputError(error, fmt::format("[X11] {}: {}", message, buffer.data()));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

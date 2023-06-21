@@ -147,8 +147,8 @@ void TRAP::Input::UpdateControllerGUID(std::string& guid)
 	{
 		const std::string original = guid;
 
-		guid = "03000000" + std::string(original.begin(), original.begin() + 4) + "0000" +
-		       std::string(original.begin() + 4, original.begin() + 4 + 4) + "000000000000";
+		guid = fmt::format("03000000{}0000{}000000000000", std::string(original.begin(), original.begin() + 4),
+		                   std::string(original.begin() + 4, original.begin() + 4 + 4));
 	}
 }
 

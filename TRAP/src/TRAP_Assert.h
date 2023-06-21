@@ -61,11 +61,11 @@ void TRAP_ASSERT_IMPL_LOG(const std::string_view expressionStr, const std::strin
 {
 	if constexpr(sizeof...(Args) > 1)
 	{
-		TP_CRITICAL("Assertion '", expressionStr, "' failed: \"", args..., "\" in ", std::filesystem::absolute(filename).string(), " @ ", function, ':', line, ':', column);
+		TP_CRITICAL("Assertion '", expressionStr, "' failed: \"", args..., "\" in ", std::filesystem::absolute(filename), " @ ", function, ':', line, ':', column);
 	}
 	else
 	{
-		TP_CRITICAL("Assertion '", expressionStr, "' failed in ", std::filesystem::absolute(filename).string(), " @ ", function, ':', line, ':', column);
+		TP_CRITICAL("Assertion '", expressionStr, "' failed in ", std::filesystem::absolute(filename), " @ ", function, ':', line, ':', column);
 	}
 }
 

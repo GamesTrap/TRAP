@@ -1,5 +1,8 @@
 #include <filesystem>
 
+#include <fmt/format.h>
+#include <fmt/color.h>
+
 #include "Version.h"
 #include "Utils.h"
 #include "Shader.h"
@@ -74,7 +77,7 @@ int main(const int argc, const char* const* const argv)
 [[nodiscard]] bool CheckForInfoParameter(const std::vector<std::string_view>& args)
 {
 	if(std::any_of(args.begin(), args.end(), [](const auto arg){return arg == "--info"sv;}) ||
-	   std::filesystem::path(args[1]).extension() == (std::string(".") + std::string(ShaderFileEnding)))
+	   std::filesystem::path(args[1]).extension() == fmt::format(".{}", ShaderFileEnding))
 	{
 		PrintInfo(args[1]);
 		return true;
@@ -100,7 +103,7 @@ int main(const int argc, const char* const* const argv)
 
 	if(it == args.end())
 	{
-		std::cerr << "No output file name specified!\n";
+		fmt::print(fg(fmt::color::red), "No output file name specified!\n");
 		return true;
 	}
 
@@ -115,8 +118,8 @@ int main(const int argc, const char* const* const argv)
 	const std::size_t equalSign = macro.find('=');
 	if(equalSign == std::string::npos)
 	{
-		std::cerr << "Invalid macro: \"" << macro << "\"\n";
-		std::cerr << "Skipping macro\n";
+		fmt::print(fg(fmt::color::red), "Invalid macro:\"{}\"\n", macro);
+		fmt::println("Skipping macro");
 		return std::nullopt;
 	}
 
@@ -142,7 +145,7 @@ int main(const int argc, const char* const* const argv)
 
 		if(it == args.end())
 		{
-			std::cerr << "No macro specified!\n";
+			fmt::print(fg(fmt::color::red), "No macro specified!\n");
 			return true;
 		}
 
@@ -191,40 +194,40 @@ int main(const int argc, const char* const* const argv)
 
 void PrintUsage(const std::filesystem::path& programName)
 {
-	std::cout << programName.filename().string() << " <file> [options]" << "\n\n" <<
-	             "Options:\n" <<
-				 "-h | --help                    | Print this help\n" <<
-				 "   | --version                 | Print the version number\n" <<
-				 "   | --info                    | Retrieve information from an TP-SPV file\n" <<
-				 "-o | --output <file>           | Set a custom output file name\n" <<
-				 "-m | --macro \"<key>\"=\"<value>\" | Set custom macro(s)" << std::endl;
+	fmt::println("{} <file> [options]\n", programName.filename().string());
+	fmt::println("Options:");
+	fmt::println("-h | --help                    | Print this help");
+	fmt::println("   | --version                 | Print the version number");
+	fmt::println("   | --info                    | Retrieve information from an TP-SPV file");
+	fmt::println("-o | --output <file>           | Set a custom output file name");
+	fmt::println("-m | --macro \"<key>\"=\"<value>\" | Set custom macro(s)");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void PrintVersion()
 {
-	std::cout << "ConvertToSPIRV " << CONVERTTOSPIRV_VERSION_MAJOR(CONVERTTOSPIRV_VERSION) << '.'
-	                               << CONVERTTOSPIRV_VERSION_MINOR(CONVERTTOSPIRV_VERSION) << '.'
-			                       << CONVERTTOSPIRV_VERSION_PATCH(CONVERTTOSPIRV_VERSION) << std::endl;
+	fmt::println("ConvertToSPIRV {}.{}.{}", CONVERTTOSPIRV_VERSION_MAJOR(CONVERTTOSPIRV_VERSION),
+	                                        CONVERTTOSPIRV_VERSION_MINOR(CONVERTTOSPIRV_VERSION),
+				                            CONVERTTOSPIRV_VERSION_PATCH(CONVERTTOSPIRV_VERSION));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void PrintTPSPVShaderInfo(const std::filesystem::path& filePath, const Shader& shader, const uint32_t versionNumber)
 {
-	std::cout << "File: " << filePath << '\n'
-	          << "Format: TRAP-SPIRV v" << versionNumber << '\n'
-	          << "Number of contained Shaders: " << shader.SubShaderSources.size() << "\n\n";
+	fmt::println("File: {}", filePath.string());
+	fmt::println("Format: TRAP-SPIRV v{}", versionNumber);
+	fmt::println("Number of contained Shaders: {}\n", shader.SubShaderSources.size());
 
 	for(std::size_t i = 0; i < shader.SubShaderSources.size(); ++i)
 	{
-		std::cout << (i + 1) << ". Shader:" << '\n'
-		          << "    Stage: " << ShaderStageToString(shader.SubShaderSources[i].Stage) << '\n'
-				  << "    Size in bytes: " << shader.SubShaderSources[i].SPIRV.size() * sizeof(decltype(shader.SubShaderSources[i].SPIRV)::value_type) << '\n';
+		fmt::println("{}. Shader:", (i + 1));
+		fmt::println("    Stage: {}", ShaderStageToString(shader.SubShaderSources[i].Stage));
+		fmt::println("    Size in bytes: {}", shader.SubShaderSources[i].SPIRV.size() * sizeof(decltype(shader.SubShaderSources[i].SPIRV)::value_type));
 
 		if(i < (shader.SubShaderSources.size() - 1))
-			std::cout << '\n';
+			fmt::println("");
 	}
 }
 
@@ -232,12 +235,12 @@ void PrintTPSPVShaderInfo(const std::filesystem::path& filePath, const Shader& s
 
 void PrintInfo(const std::filesystem::path& filePath)
 {
-	const auto hasExtension = FileHasExtension(filePath, std::string("." + std::string(ShaderFileEnding)));
+	const auto hasExtension = FileHasExtension(filePath, fmt::format(".{}", ShaderFileEnding));
 	if(!hasExtension)
 		return;
 	if(!hasExtension.value())
 	{
-		std::cerr << "Unsupported file extension for file \"" << filePath << "\"!" << std::endl;
+		fmt::print(fg(fmt::color::red), "Unsupported file extension for file {}!\n", filePath);
 		return;
 	}
 
@@ -250,7 +253,7 @@ void PrintInfo(const std::filesystem::path& filePath)
 	const bool res = ParseTPSPVShader(*fileData, shader, shaderVersion);
 	if(!res)
 	{
-		std::cerr << "Invalid or corrupted shader!" << std::endl;
+		fmt::print(fg(fmt::color::red), "Invalid or corrupted shader!\n");
 		return;
 	}
 

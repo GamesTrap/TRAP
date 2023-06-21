@@ -144,7 +144,7 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 			if(!cache)
 				continue;
 
-			cache->Save(*tempFolder / (std::to_string(hash) + ".cache"));
+			cache->Save(*tempFolder / fmt::format("{}.cache", hash));
 			cache.reset();
 		}
 	}
@@ -513,9 +513,10 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 	        VK_VERSION_MINOR(devProps.driverVersion), '.', VK_VERSION_PATCH(devProps.driverVersion));
 	TP_INFO(Log::RendererVulkanPrefix, "----------------------------------");
 
-	m_rendererTitle = "[Vulkan " + std::to_string(VK_VERSION_MAJOR(devProps.apiVersion)) + "." +
-							       std::to_string(VK_VERSION_MINOR(devProps.apiVersion)) + "." +
-								   std::to_string(VK_VERSION_PATCH(devProps.apiVersion)) + "]";
+	m_rendererTitle = fmt::format("[Vulkan {}.{}.{}]",
+	                              VK_VERSION_MAJOR(devProps.apiVersion),
+	                              VK_VERSION_MINOR(devProps.apiVersion),
+								  VK_VERSION_PATCH(devProps.apiVersion));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3562,7 +3563,7 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::
 		if (cacheIt == s_pipelineCaches.end())
 		{
 			PipelineCacheLoadDesc cacheDesc{};
-			cacheDesc.Path = *tempFolder / (std::to_string(hash) + ".cache");
+			cacheDesc.Path = *tempFolder / fmt::format("{}.cache", hash);
 			res = s_pipelineCaches.try_emplace(hash, PipelineCache::Create(cacheDesc));
 		}
 

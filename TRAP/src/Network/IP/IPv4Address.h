@@ -29,7 +29,10 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_IPV4ADDRESS_H
 #define TRAP_IPV4ADDRESS_H
 
+#include <cstdint>
 #include <string_view>
+
+#include <fmt/ostream.h>
 
 #include "Utils/Time/TimeStep.h"
 
@@ -216,5 +219,9 @@ namespace TRAP::Network
 	/// <returns>Reference to the output stream.</returns>
 	std::ostream& operator<<(std::ostream& stream, const IPv4Address& address);
 }
+
+template<>
+struct fmt::formatter<TRAP::Network::IPv4Address> : fmt::ostream_formatter
+{};
 
 #endif /*TRAP_IPV4ADDRESS_H*/

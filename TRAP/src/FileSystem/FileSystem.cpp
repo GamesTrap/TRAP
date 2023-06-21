@@ -919,8 +919,7 @@ bool TRAP::FileSystem::OpenExternally(const std::filesystem::path& p)
 
     return std::bit_cast<INT_PTR>(res) > 32;
 #elif defined(TRAP_PLATFORM_LINUX)
-    std::string cmd = "xdg-open ";
-    cmd += absPath->native();
+    const std::string cmd = fmt::format("xdg-open {}", absPath->native());
     FILE* const xdg = popen(cmd.c_str(), "r");
     if(xdg == nullptr)
     {
@@ -985,8 +984,7 @@ bool OpenFolderInFileBrowser(const std::filesystem::path& p)
 
     return std::bit_cast<INT_PTR>(res) > 32;
 #elif defined(TRAP_PLATFORM_LINUX)
-    std::string cmd = "xdg-open ";
-    cmd += absPath->string();
+    const std::string cmd = fmt::format("xdg-open {}", absPath->string());
     FILE* const xdg = popen(cmd.c_str(), "r");
     if(xdg == nullptr)
     {
@@ -1058,8 +1056,7 @@ bool OpenFileInFileBrowser(const std::filesystem::path& p)
 
     return res == S_OK;
 #elif defined(TRAP_PLATFORM_LINUX)
-    std::string cmd = "xdg-open ";
-    cmd += absPath->parent_path().string();
+    const std::string cmd = fmt::format("xdg-open {}", absPath->parent_path().string());
     FILE* const xdg = popen(cmd.c_str(), "r");
     if(xdg == nullptr)
     {

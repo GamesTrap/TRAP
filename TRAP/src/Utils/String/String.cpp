@@ -287,7 +287,7 @@
 
 	SetLastError(0); //Clear
 
-	return errorStr + " (" + std::to_string(error) + ")";
+	return fmt::format("{} ({})", errorStr, error);
 }
 #endif
 

@@ -241,7 +241,7 @@ TRAP::Image::Image() noexcept
 
 	if(!IsSupportedImageFile(filepath))
 	{
-		TP_ERROR(Log::ImagePrefix, "Unsupported or unknown image \"", filepath, "\"!");
+		TP_ERROR(Log::ImagePrefix, "Unsupported or unknown image ", filepath, "!");
 		TP_WARN(Log::ImagePrefix, "Using default image!");
 		return MakeScope<INTERNAL::CustomImage>(filepath, 32, 32, ColorFormat::RGBA, std::vector<uint8_t>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
 	}

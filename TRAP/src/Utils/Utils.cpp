@@ -250,10 +250,11 @@
 	for (uint32_t i = 0x80000002u; i < 0x80000005u; ++i)
 	{
 		std::array<uint32_t, 4> regs1 = CPUID(i, 0);
-		cpu.Model += std::string(reinterpret_cast<char*>(&std::get<0>(regs1)), sizeof(uint32_t));
-		cpu.Model += std::string(reinterpret_cast<char*>(&std::get<1>(regs1)), sizeof(uint32_t));
-		cpu.Model += std::string(reinterpret_cast<char*>(&std::get<2>(regs1)), sizeof(uint32_t));
-		cpu.Model += std::string(reinterpret_cast<char*>(&std::get<3>(regs1)), sizeof(uint32_t));
+		cpu.Model += fmt::format("{}{}{}{}",
+		                         std::string(reinterpret_cast<char*>(&std::get<0>(regs1)), sizeof(uint32_t)),
+		                         std::string(reinterpret_cast<char*>(&std::get<1>(regs1)), sizeof(uint32_t)),
+		                         std::string(reinterpret_cast<char*>(&std::get<2>(regs1)), sizeof(uint32_t)),
+		                         std::string(reinterpret_cast<char*>(&std::get<3>(regs1)), sizeof(uint32_t)));
 	}
 
 	std::size_t lastAlphaChar = 0;

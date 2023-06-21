@@ -1,230 +1,29 @@
 #ifndef TRAP_LOG_INL
 #define TRAP_LOG_INL
 
-#ifdef TRAP_PLATFORM_WINDOWS
+#include <fmt/format.h>
+#include <fmt/color.h>
+#include <fmt/std.h>
 
 template <typename ... Args>
 void TRAP::Log::Trace(Args&& ... args)
 {
 	ZoneScoped;
 
-	std::ostringstream stream;
-	stream << GetTimeStamp() << "[Trace]";
-	(stream << ... << args);
-	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
+	const std::string result = GetTimeStamp() + "[Trace]" + (fmt::format("{}", args) + ...);
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
+#if !defined(TRAP_RELEASE)
 		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Trace))
-		{
-#if !defined(TRAP_RELEASE)
-			SetColor(FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_BLUE);
-			//Standard Magenta
-			std::cout << stream.str() << '\n';
-			ResetColor();
+			fmt::print(fg(fmt::color::magenta), "{}\n", result);
 #endif
-		}
 
 #ifdef TRACY_ENABLE
-		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::Magenta);
+		TracyMessageC(result.c_str(), result.size(), tracy::Color::Magenta);
 #endif
 
-		m_buffer.emplace_back(Level::Trace, stream.str());
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <typename ... Args>
-void TRAP::Log::Debug(Args&& ... args)
-{
-	ZoneScoped;
-
-	std::ostringstream stream;
-	stream << GetTimeStamp() << "[Debug]";
-	(stream << ... << args);
-	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
-
-	{
-		std::lock_guard<std::mutex> lock(m_mtx);
-		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Debug))
-		{
-#if !defined(TRAP_RELEASE)
-			//Standard Cyan
-			SetColor(FOREGROUND_GREEN | FOREGROUND_BLUE);
-			std::cout << stream.str() << '\n';
-			ResetColor();
-#endif
-		}
-
-#ifdef TRACY_ENABLE
-		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::Cyan);
-#endif
-
-		m_buffer.emplace_back(Level::Debug, stream.str());
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <typename ... Args>
-void TRAP::Log::Info(Args&& ... args)
-{
-	ZoneScoped;
-
-	std::ostringstream stream;
-	stream << GetTimeStamp() << "[Info]";
-	(stream << ... << args);
-	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
-
-	{
-		std::lock_guard<std::mutex> lock(m_mtx);
-		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Info))
-		{
-#if !defined(TRAP_RELEASE)
-			//Standard Green
-			SetColor(FOREGROUND_GREEN);
-			std::cout << stream.str() << '\n';
-			ResetColor();
-#endif
-		}
-
-#ifdef TRACY_ENABLE
-		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::Green);
-#endif
-
-		m_buffer.emplace_back(Level::Info, stream.str());
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <typename ... Args>
-void TRAP::Log::Warn(Args&& ... args)
-{
-	ZoneScoped;
-
-	std::ostringstream stream;
-	stream << GetTimeStamp() << "[Warn]";
-	(stream << ... << args);
-	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
-
-	{
-		std::lock_guard<std::mutex> lock(m_mtx);
-		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Warn))
-		{
-#if !defined(TRAP_RELEASE)
-			//Bold Yellow
-			SetColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-			std::cout << stream.str() << '\n';
-			ResetColor();
-#endif
-		}
-
-#ifdef TRACY_ENABLE
-		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::Yellow);
-#endif
-
-		m_buffer.emplace_back(Level::Warn, stream.str());
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <typename ... Args>
-void TRAP::Log::Error(Args&& ... args)
-{
-	ZoneScoped;
-
-	std::ostringstream stream;
-	stream << GetTimeStamp() << "[Error]";
-	(stream << ... << args);
-	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
-
-	{
-		std::lock_guard<std::mutex> lock(m_mtx);
-		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Error))
-		{
-#if !defined(TRAP_RELEASE)
-			//Bold Red
-			SetColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
-			std::cout << stream.str() << '\n';
-			ResetColor();
-#endif
-		}
-
-#ifdef TRACY_ENABLE
-		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::Red);
-#endif
-
-		m_buffer.emplace_back(Level::Error, stream.str());
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <typename ... Args>
-void TRAP::Log::Critical(Args&& ... args)
-{
-	ZoneScoped;
-
-	std::ostringstream stream;
-	stream << GetTimeStamp() << "[Critical]";
-	(stream << ... << args);
-	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
-
-	{
-		std::lock_guard<std::mutex> lock(m_mtx);
-		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Critical))
-		{
-#if !defined(TRAP_RELEASE)
-			//Bold White on Red
-			SetColor(BACKGROUND_RED | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-			std::cout << stream.str() << '\n';
-			ResetColor();
-#endif
-		}
-
-#ifdef TRACY_ENABLE
-		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::DarkRed);
-#endif
-
-		m_buffer.emplace_back(Level::Critical, stream.str());
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#else
-
-template <typename ... Args>
-void TRAP::Log::Trace(Args&& ... args)
-{
-	ZoneScoped;
-
-	std::ostringstream stream;
-	stream << GetTimeStamp() << "[Trace]";
-	(stream << ... << args);
-	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
-
-	{
-		std::lock_guard<std::mutex> lock(m_mtx);
-		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Trace))
-		{
-#if !defined(TRAP_RELEASE)
-			//Standard Magenta
-			if(IsColorTerminal())
-				std::cout << "\033[35m" << stream.str() << "\033[m" << '\n';
-			else
-				std::cout << stream.str() << '\n';
-#endif
-		}
-
-#ifdef TRACY_ENABLE
-		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::Magenta);
-#endif
-
-		m_buffer.emplace_back(Level::Trace, stream.str());
+		m_buffer.emplace_back(Level::Trace, result);
 	}
 }
 
@@ -235,29 +34,20 @@ void TRAP::Log::Debug(Args&& ... args)
 {
 	ZoneScoped;
 
-	std::ostringstream stream;
-	stream << GetTimeStamp() << "[Debug]";
-	(stream << ... << args);
-	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
+	const std::string result = GetTimeStamp() + "[Debug]" + (fmt::format("{}", args) + ...);
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
-		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Debug))
-		{
 #if !defined(TRAP_RELEASE)
-			//Standard Cyan
-			if(IsColorTerminal())
-				std::cout << "\033[36m" << stream.str() << "\033[m" << '\n';
-			else
-				std::cout << stream.str() << '\n';
+		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Debug))
+			fmt::print(fg(fmt::color::cyan), "{}\n", result);
 #endif
-		}
 
 #ifdef TRACY_ENABLE
-		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::Cyan);
+		TracyMessageC(result.c_str(), result.size(), tracy::Color::Cyan);
 #endif
 
-		m_buffer.emplace_back(Level::Debug, stream.str());
+		m_buffer.emplace_back(Level::Debug, result);
 	}
 }
 
@@ -268,29 +58,20 @@ void TRAP::Log::Info(Args&& ... args)
 {
 	ZoneScoped;
 
-	std::ostringstream stream;
-	stream << GetTimeStamp() << "[Info]";
-	(stream << ... << args);
-	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
+	const std::string result = GetTimeStamp() + "[Info]" + (fmt::format("{}", args) + ...);
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
-		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Info))
-		{
 #if !defined(TRAP_RELEASE)
-			//Standard Green
-			if(IsColorTerminal())
-				std::cout << "\033[32m" << stream.str() << "\033[m" << '\n';
-			else
-				std::cout << stream.str() << '\n';
+		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Info))
+			fmt::print(fg(fmt::color::green), "{}\n", result);
 #endif
-		}
 
 #ifdef TRACY_ENABLE
-		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::Green);
+		TracyMessageC(result.c_str(), result.size(), tracy::Color::Green);
 #endif
 
-		m_buffer.emplace_back(Level::Info, stream.str());
+		m_buffer.emplace_back(Level::Info, result);
 	}
 }
 
@@ -301,29 +82,20 @@ void TRAP::Log::Warn(Args&& ... args)
 {
 	ZoneScoped;
 
-	std::ostringstream stream;
-	stream << GetTimeStamp() << "[Warn]";
-	(stream << ... << args);
-	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
+	const std::string result = GetTimeStamp() + "[Warn]" + (fmt::format("{}", args) + ...);
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
-		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Warn))
-		{
 #if !defined(TRAP_RELEASE)
-			//Bold Yellow
-			if(IsColorTerminal())
-				std::cout << "\033[33m" << "\033[1m" << stream.str() << "\033[m" << '\n';
-			else
-				std::cout << stream.str() << '\n';
+		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Warn))
+			fmt::print(fg(fmt::color::yellow), "{}\n", result);
 #endif
-		}
 
 #ifdef TRACY_ENABLE
-		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::Yellow);
+		TracyMessageC(result.c_str(), result.size(), tracy::Color::Yellow);
 #endif
 
-		m_buffer.emplace_back(Level::Warn, stream.str());
+		m_buffer.emplace_back(Level::Warn, result);
 	}
 }
 
@@ -334,29 +106,20 @@ void TRAP::Log::Error(Args&& ... args)
 {
 	ZoneScoped;
 
-	std::ostringstream stream;
-	stream << GetTimeStamp() << "[Error]";
-	(stream << ... << args);
-	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
+	const std::string result = GetTimeStamp() + "[Error]" + (fmt::format("{}", args) + ...);
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
-		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Error))
-		{
 #if !defined(TRAP_RELEASE)
-			//Bold Red
-			if(IsColorTerminal())
-				std::cout << "\033[31m" << "\033[1m" << stream.str() << "\033[m" << '\n';
-			else
-				std::cout << stream.str() << '\n';
+		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Error))
+			fmt::print(fg(fmt::color::red), "{}\n", result);
 #endif
-		}
 
 #ifdef TRACY_ENABLE
-		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::Red);
+		TracyMessageC(result.c_str(), result.size(), tracy::Color::Red);
 #endif
 
-		m_buffer.emplace_back(Level::Error, stream.str());
+		m_buffer.emplace_back(Level::Error, result);
 	}
 }
 
@@ -367,32 +130,22 @@ void TRAP::Log::Critical(Args&& ... args)
 {
 	ZoneScoped;
 
-	std::ostringstream stream;
-	stream << GetTimeStamp() << "[Critical]";
-	(stream << ... << args);
-	// (void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
+	const std::string result = GetTimeStamp() + "[Critical]" + (fmt::format("{}", args) + ...);
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
-		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Critical))
-		{
 #if !defined(TRAP_RELEASE)
-			//Bold White on Red
-			if(IsColorTerminal())
-				std::cout << "\033[41m" << "\033[1m" << stream.str() << "\033[m" << '\n';
-			else
-				std::cout << stream.str() << '\n';
+		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Critical))
+			fmt::print(fg(fmt::color::dark_red), "{}\n", result);
 #endif
-		}
 
 #ifdef TRACY_ENABLE
-		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::DarkRed);
+		TracyMessageC(result.c_str(), result.size(), tracy::Color::DarkRed);
 #endif
 
-		m_buffer.emplace_back(Level::Critical, stream.str());
+		m_buffer.emplace_back(Level::Critical, result);
 	}
 }
-#endif
 
 //-------------------------------------------------------------------------------------------------------------------//
 //Math ToString for streams

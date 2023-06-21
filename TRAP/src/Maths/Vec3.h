@@ -682,27 +682,27 @@ template<typename T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if constexpr(std::is_same_v<T, float>)
-		return "Vec3f(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")";
+		return fmt::format("Vec3f({}, {}, {})", x, y, z);
 	else if constexpr(std::is_same_v<T, double>)
-		return "Vec3d(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")";
+		return fmt::format("Vec3d({}, {}, {})", x, y, z);
 	else if constexpr(std::is_same_v<T, bool>)
-		return std::string("Vec3b(") + (x ? "true" : "false") + ", " + (y ? "true" : "false") + ", " + (z ? "true" : "false") + ")";
+		return fmt::format("Vec3b({}, {}, {})", (x ? "true" : "false"), (y ? "true" : "false"), (z ? "true" : "false"));
 	else if constexpr(std::is_same_v<T, int8_t>)
-		return "Vec3i8(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")";
+		return fmt::format("Vec3i8({}, {}, {})", x, y, z);
 	else if constexpr(std::is_same_v<T, int16_t>)
-		return "Vec3i16(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")";
+		return fmt::format("Vec3i16({}, {}, {})", x, y, z);
 	else if constexpr(std::is_same_v<T, int32_t>)
-		return "Vec3i32(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")";
+		return fmt::format("Vec3i32({}, {}, {})", x, y, z);
 	else if constexpr(std::is_same_v<T, int64_t>)
-		return "Vec3i64(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")";
+		return fmt::format("Vec3i64({}, {}, {})", x, y, z);
 	else if constexpr(std::is_same_v<T, uint8_t>)
-		return "Vec3ui8(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")";
+		return fmt::format("Vec3ui8({}, {}, {})", x, y, z);
 	else if constexpr(std::is_same_v<T, uint16_t>)
-		return "Vec3ui16(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")";
+		return fmt::format("Vec3ui16({}, {}, {})", x, y, z);
 	else if constexpr(std::is_same_v<T, uint32_t>)
-		return "Vec3ui32(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")";
+		return fmt::format("Vec3ui32({}, {}, {})", x, y, z);
 	else if constexpr(std::is_same_v<T, uint64_t>)
-		return "Vec3ui64(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")";
+		return fmt::format("Vec3ui64({}, {}, {})", x, y, z);
 	else
 		return "Unknown type";
 }

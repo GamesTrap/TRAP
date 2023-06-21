@@ -4096,3 +4096,23 @@ SITREP 06/19/2023|23w25a1
     - Replaced deprecated EnTT functions ~<5 mins
     - TRAP_ASSERT now uses std::source_location ~<10 mins
     - Utils Deprecated GetEndian() ~<5 mins
+
+SITREP 06/20/2023|23w25a2
+    - Changed TRAP Engine version to 23w25a2(0.9.48)
+    - Added {fmt} as submodule ~<5 mins
+    - Updated premake scripts ~<5 mins
+    - Added fmt::formatter for existing std::ostream specialization ~<5 mins
+    - Replaced std::cout with fmt::print ~<20 mins
+    - Replaced std::cerr with fmt::print ~<10 mins
+    - TRAP::Log now uses fmt::format and fmt::print ~<20 mins
+    - Added fmt/std.h ~<5 mins
+
+SITREP 06/21/2023|23w25a3
+    - Changed TRAP Engine version to 23w25a3(0.9.49)
+    - Replaced string concatenation chains with fmt::format() ~>30 mins
+
+SITREP 06/22/2023|23w25a4
+    - Changed TRAP Engine version to 23w25a4(0.9.50)
+    - Replaced more string concatenation chains with fmt::format() ~>45 mins
+    - Changed fmt submodule to tag 10.0.0 ~<5 mins
+    - Update-Dependencies Added fmt update job ~<5 mins

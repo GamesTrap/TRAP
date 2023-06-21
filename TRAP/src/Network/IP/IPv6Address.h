@@ -1,8 +1,11 @@
 #ifndef TRAP_IPV6ADDRESS_H
 #define TRAP_IPV6ADDRESS_H
 
+#include <cstdint>
 #include <array>
 #include <string>
+
+#include <fmt/ostream.h>
 
 #include "Utils/Time/TimeStep.h"
 
@@ -178,7 +181,14 @@ namespace TRAP::Network
 	/// <param name="address">IP address to print.</param>
 	/// <returns>Reference to the output stream.</returns>
 	std::ostream& operator<<(std::ostream& stream, const IPv6Address& address);
+
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+struct fmt::formatter<TRAP::Network::IPv6Address> : fmt::ostream_formatter
+{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 

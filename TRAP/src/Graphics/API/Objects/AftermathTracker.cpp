@@ -42,7 +42,7 @@ void OnGPUCrashDump([[maybe_unused]] const void* gpuCrashDump,
     std::replace(dateTimeStamp.begin(), dateTimeStamp.end(), ':', '-');
 
     const std::filesystem::path folderPath = *targetFolder / "crash-dumps";
-    const std::filesystem::path filePath = folderPath / ("crash_" + dateTimeStamp + ".nv-gpudmp");
+    const std::filesystem::path filePath = folderPath / fmt::format("crash_{}.nv-gpudmp", dateTimeStamp);
     std::lock_guard lock(AftermathMutex);
     LockMark(AftermathMutex);
     std::vector<uint8_t> buffer(gpuCrashDumpSize);

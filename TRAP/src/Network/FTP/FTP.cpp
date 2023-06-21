@@ -423,9 +423,9 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::SendCommand(const std::string& 
 	//Build the command string
 	std::string commandStr;
 	if (!parameter.empty())
-		commandStr = command + " " + parameter + "\r\n";
+		commandStr = fmt::format("{} {}\r\n", command, parameter);
 	else
-		commandStr = command + "\r\n";
+		commandStr = fmt::format("{}\r\n", command);
 
 	//Send it to the server
 	if (m_commandSocket.Send(commandStr.c_str(), commandStr.length()) != Socket::Status::Done)
@@ -493,7 +493,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::SendCommand(const std::string& 
 
 					//Remove the ending '\r' (all lines are terminated by "\r\n")
 					message.erase(message.length() - 1);
-					message = separator + message + '\n';
+					message = fmt::format("{}{}\n", separator, message);
 				}
 				else
 				{

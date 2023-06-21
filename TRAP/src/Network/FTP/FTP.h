@@ -32,6 +32,9 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include <filesystem>
 #include <string>
 
+#include <fmt/ostream.h>
+
+#include "Core/Base.h"
 #include "Network/Sockets/TCPSocket.h"
 
 namespace TRAP::Network
@@ -155,6 +158,11 @@ namespace TRAP::Network
 			Status m_status; //Status code returned from the server
 			std::string m_message; //Last message received from the server
 		};
+
+		friend std::ostream& operator<<(std::ostream& stream, const Response& response)
+		{
+			return stream << std::to_string(ToUnderlying(response.GetStatus())) << response.GetMessage();
+		}
 
 		/// <summary>
 		/// Specialization of FTP response returning a directory.
@@ -445,5 +453,17 @@ namespace TRAP::Network
 		std::string m_receiveBuffer; //Received command data that is yet to be processed
 	};
 }
+
+template<>
+struct fmt::formatter<TRAP::Network::FTP::Response> : fmt::ostream_formatter
+{};
+
+template<>
+struct fmt::formatter<TRAP::Network::FTP::DirectoryResponse> : fmt::ostream_formatter
+{};
+
+template<>
+struct fmt::formatter<TRAP::Network::FTP::ListingResponse> : fmt::ostream_formatter
+{};
 
 #endif /*TRAP_FTP_H*/

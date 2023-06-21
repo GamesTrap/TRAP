@@ -274,12 +274,12 @@ void TRAP::Window::SetTitle(const std::string& title)
 		m_data.Title = "TRAP™";
 
 #ifndef TRAP_RELEASE
-	std::string newTitle = m_data.Title + " - TRAP™ V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) +
-	                       "." + std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) +
-						   "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		                   "[INDEV]" + Log::WindowVersion + Graphics::RendererAPI::GetRenderer()->GetTitle();
+	std::string newTitle = fmt::format("{} - TRAP™ V{}.{}.{}[INDEV]{}{}", m_data.Title,
+	                                   TRAP_VERSION_MAJOR(TRAP_VERSION), TRAP_VERSION_MINOR(TRAP_VERSION),
+									   TRAP_VERSION_PATCH(TRAP_VERSION), Log::WindowVersion,
+									   Graphics::RendererAPI::GetRenderer()->GetTitle());
 #ifdef TRAP_PLATFORM_LINUX
-		newTitle += "[" + Utils::String::ConvertToString(Utils::GetLinuxWindowManager()) + "]";
+		newTitle += fmt::format("[{}]", Utils::String::ConvertToString(Utils::GetLinuxWindowManager()));
 #elif defined(TRAP_PLATFORM_WINDOWS)
 		newTitle += "[Win32]";
 #endif
@@ -858,17 +858,20 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	//Create Window
 #ifndef TRAP_RELEASE
-	const std::string newTitle = m_data.Title + " - TRAP™ V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) +
-	                             "." + std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) +
-						         "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-						         "[INDEV]" + Log::WindowVersion + Graphics::RendererAPI::GetRenderer()->GetTitle() +
+	const std::string newTitle = fmt::format("{} - TRAP™ V{}.{}.{}[INDEV]{}{}[{}]", m_data.Title,
+	                                         TRAP_VERSION_MAJOR(TRAP_VERSION),
+											 TRAP_VERSION_MINOR(TRAP_VERSION),
+											 TRAP_VERSION_PATCH(TRAP_VERSION), Log::WindowVersion,
+											 Graphics::RendererAPI::GetRenderer()->GetTitle(),
+
 #ifdef TRAP_PLATFORM_LINUX
-						         "[" + Utils::String::ConvertToString(Utils::GetLinuxWindowManager()) + "]";
+						         Utils::String::ConvertToString(Utils::GetLinuxWindowManager())
 #elif defined(TRAP_PLATFORM_LINUX)
-						         "[Win32]";
+						         "[Win32]"
 #else
-						         "[Unknown]";
+						         "[Unknown]"
 #endif
+	);
 #else
 	const std::string newTitle = m_data.Title;
 #endif

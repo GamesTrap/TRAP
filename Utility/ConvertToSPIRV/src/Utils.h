@@ -9,6 +9,9 @@
 #include <fstream>
 #include <algorithm>
 
+#include <fmt/format.h>
+#include <fmt/color.h>
+
 template <typename T>
 [[nodiscard]] constexpr T BIT(T x) noexcept
 {
@@ -27,7 +30,7 @@ template <typename T>
 
     if(ec)
     {
-        std::cerr << "Couldn't check if file or folder exists: " << path << " (" << ec.message() << ")\n";
+        fmt::print(fg(fmt::color::red), "Couldn't check if file or folder exists: {} ({})\n", path, ec.message());
         return false;
     }
 
@@ -41,7 +44,7 @@ template <typename T>
 {
     if(!FileOrFolderExists(filePath))
     {
-		std::cerr << "File \"" << filePath << "\" doesn't exist!" << std::endl;
+        fmt::print(fg(fmt::color::red), "File {} doesn't exist!\n", filePath);
         return std::nullopt;
     }
 
@@ -58,7 +61,7 @@ template <typename T>
     std::ifstream file(filePath);
     if(!file.is_open() || !file.good())
     {
-		std::cerr << "Couldn't open file: " << filePath << "\n";
+        fmt::print(fg(fmt::color::red), "Couldn't open file: {}\n", filePath.string());
         return std::nullopt;
     }
 
@@ -85,7 +88,7 @@ template <typename T>
     std::ifstream file(filePath, std::ios::binary | std::ios::ate);
     if(!file.is_open() || !file.good())
     {
-		std::cerr << "Couldn't open file: " << filePath << "\n";
+        fmt::print(fg(fmt::color::red), "Couldn't open file: {}\n", filePath);
         return std::nullopt;
     }
 

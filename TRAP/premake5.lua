@@ -27,8 +27,6 @@ project "TRAP"
 	{
 		"src/Utils/Win.h",
 		"src/Utils/Linux.h",
-		"src/Log/ANSILog.cpp",
-		"src/Log/WindowsLog.cpp",
 		"src/Input/WindowsInput.cpp",
 		"src/Input/LinuxInput.cpp",
 		"src/Window/WindowingAPIWin32.cpp",
@@ -56,7 +54,8 @@ project "TRAP"
 		"%{IncludeDir.MODERNDIALOGS}",
 		"%{IncludeDir.VMA}",
 		"%{IncludeDir.BOX2D}",
-		"%{IncludeDir.TRACY}"
+		"%{IncludeDir.TRACY}",
+		"%{IncludeDir.FMT}"
 	}
 
 	links
@@ -72,7 +71,8 @@ project "TRAP"
 		"SPIRV-Cross-HLSL",
 		"Box2D",
 		"TracyClient",
-		"GLSLang-Default-Resource-Limits"
+		"GLSLang-Default-Resource-Limits",
+		"fmt"
 	}
 
 	defines "YAML_CPP_STATIC_DEFINE"
@@ -92,7 +92,6 @@ project "TRAP"
 		files
 		{
 			"src/Utils/Win.h",
-			"src/Log/WindowsLog.cpp",
 			"src/Input/WindowsInput.cpp",
 			"src/Window/WindowingAPIWin32.cpp",
 			"src/Network/Sockets/Platform/SocketImplWinAPI.h",
@@ -104,7 +103,6 @@ project "TRAP"
         files
         {
 			"src/Utils/Linux.h",
-			"src/Log/ANSILog.cpp",
 			"src/Input/LinuxInput.cpp",
 			"src/Window/WindowingAPILinux.cpp",
 			"src/Window/WindowingAPILinuxX11.cpp",
@@ -193,8 +191,6 @@ project "TRAP-Headless"
 	removefiles
 	{
 		"src/Utils/Win.h",
-		"src/Log/ANSILog.cpp",
-		"src/Log/WindowsLog.cpp",
 		"src/Input/WindowsInput.cpp",
 		"src/Input/LinuxInput.cpp",
 		"src/Window/WindowingAPIWin32.cpp",
@@ -220,7 +216,8 @@ project "TRAP-Headless"
 		"%{IncludeDir.MODERNDIALOGS}",
 		"%{IncludeDir.VMA}",
 		"%{IncludeDir.BOX2D}",
-		"%{IncludeDir.TRACY}"
+		"%{IncludeDir.TRACY}",
+		"%{IncludeDir.FMT}"
 	}
 
 	links
@@ -234,7 +231,8 @@ project "TRAP-Headless"
 		"SPIRV-Cross-HLSL",
 		"Box2D",
 		"TracyClient",
-		"GLSLang-Default-Resource-Limits"
+		"GLSLang-Default-Resource-Limits",
+		"fmt"
 	}
 
 	defines
@@ -252,7 +250,6 @@ project "TRAP-Headless"
 		files
 		{
 			"src/Utils/Win.h",
-			"src/Log/WindowsLog.cpp",
 			"src/Input/WindowsInput.cpp",
 			"src/Window/WindowingAPIWin32.cpp",
 			"src/Network/Sockets/Platform/SocketImplWinAPI.h",
@@ -269,7 +266,6 @@ project "TRAP-Headless"
 		-- Add Linux-specific files
 		files
 		{
-			"src/Log/ANSILog.cpp",
 			"src/Input/LinuxInput.cpp",
 			"src/Window/WindowingAPILinux.cpp",
 			"src/Window/WindowingAPILinuxX11.cpp",

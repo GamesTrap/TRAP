@@ -911,7 +911,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		// Copy UUID
 		std::copy_n(physicalDeviceIDProperties.deviceUUID, physicalDeviceUUID.size(), physicalDeviceUUID.begin());
 
-		TP_INFO(Log::RendererVulkanPrefix, "Found GPU: \"", devProps.deviceName, '(', TRAP::Utils::UUIDToString(physicalDeviceUUID), ')', "\" Score: ", score);
+		TP_INFO(Log::RendererVulkanPrefix, "Found GPU: \"", devProps.deviceName, "\"(", TRAP::Utils::UUIDToString(physicalDeviceUUID), ')', " Score: ", score);
 		s_availablePhysicalDeviceUUIDs.emplace(score, physicalDeviceUUID);
 		score = 0;
 	}

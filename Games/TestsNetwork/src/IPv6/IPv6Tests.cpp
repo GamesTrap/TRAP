@@ -23,23 +23,26 @@ void IPv6Tests::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+namespace
+{
+	constexpr std::string_view NetworkIPv6Prefix = "[Network][IPv6] ";
+}
+
 void IPv6Tests::IPv6()
 {
 	//Print out the local IP
-	std::cout << "[EXPERIMENTAL][Network][IPv6] Local Address: " <<
-	             TRAP::Network::IPv6Address::GetLocalAddress() << std::endl;
+	fmt::println("{}Local Address: {}", NetworkIPv6Prefix, TRAP::Network::IPv6Address::GetLocalAddress());
 	//Print out the public IP
-	std::cout << "[EXPERIMENTAL][Network][IPv6] Public Address: " <<
-	             TRAP::Network::IPv6Address::GetPublicAddress() << std::endl;
+	fmt::println("{}Public Address: {}", NetworkIPv6Prefix, TRAP::Network::IPv6Address::GetPublicAddress());
 
 	//Ask for the server address
 	TRAP::Network::IPv6Address server{};
 	do
 	{
-		std::cout << "[EXPERIMENTAL][Network][IPv6] Type the address or name of a server: ";
+		fmt::print("{}Type the address or name of a server: ", NetworkIPv6Prefix);
 		std::cin >> server;
 	} while (server == TRAP::Network::IPv6Address::None);
 
 	//Print out the IP
-	std::cout << "[EXPERIMENTAL][Network][IPv6] Entered IP: " << server << std::endl;
+	fmt::println("{}Entered IP: ", NetworkIPv6Prefix, server);
 }

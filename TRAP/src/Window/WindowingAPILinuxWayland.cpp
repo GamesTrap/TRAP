@@ -684,7 +684,7 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleGeometry(void* const userData,
     monitor->Wayland.Y = yPos;
 
     if((make != nullptr) && (model != nullptr))
-        monitor->Name = std::string(make) + " " + std::string(model);
+        monitor->Name = fmt::format("{} {}", make, model);
     else if(make != nullptr)
         monitor->Name = make;
     else if(model != nullptr)
@@ -1466,8 +1466,7 @@ void TRAP::INTERNAL::WindowingAPI::LibDecorHandleError([[maybe_unused]] libdecor
     if(message == nullptr)
         return;
 
-    InputError(Error::Platform_Error, "[Wayland] libdecor error: " + std::string(message) + " (" +
-                                      std::to_string(ToUnderlying(error)) + ")");
+    InputError(Error::Platform_Error, fmt::format("[Wayland] libdecor error: {} ({})", message, ToUnderlying(error)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1651,7 +1650,7 @@ std::optional<std::string> TRAP::INTERNAL::WindowingAPI::ReadDataOfferAsString(w
 
     if(pipe2(fds.data(), O_CLOEXEC) == -1)
     {
-        InputError(Error::Platform_Error, "[Wayland] Failed to create pipe for data offer: " + Utils::String::GetStrError());
+        InputError(Error::Platform_Error, fmt::format("[Wayland] Failed to create pipe for data offer: {}", Utils::String::GetStrError()));
         return std::nullopt;
     }
 
@@ -1681,7 +1680,7 @@ std::optional<std::string> TRAP::INTERNAL::WindowingAPI::ReadDataOfferAsString(w
             if(errno == EINTR)
                 continue;
 
-            InputError(Error::Platform_Error, "[Wayland] Failed to read data offer pipe: " + Utils::String::GetStrError());
+            InputError(Error::Platform_Error, fmt::format("[Wayland] Failed to read data offer pipe: {}", Utils::String::GetStrError()));
             close(std::get<0>(fds));
             return std::nullopt;
         }
@@ -1965,15 +1964,15 @@ wl_buffer* TRAP::INTERNAL::WindowingAPI::CreateShmBufferWayland(const Image& ima
     const std::optional<int32_t> fd = CreateAnonymousFileWayland(length);
     if(!fd)
     {
-        InputError(Error::Platform_Error, "[Wayland] Failed to create buffer file of size " +
-                   std::to_string(length) + ": " + Utils::String::GetStrError());
+        InputError(Error::Platform_Error, fmt::format("[Wayland] Failed to create buffer file of size {}: {}",
+                                                      length, Utils::String::GetStrError()));
         return nullptr;
     }
 
     void* data = mmap(nullptr, NumericCast<std::size_t>(length), PROT_READ | PROT_WRITE, MAP_SHARED, *fd, 0);
     if(data == MAP_FAILED)
     {
-        InputError(Error::Platform_Error, "[Wayland] Failed to map file: " + Utils::String::GetStrError());
+        InputError(Error::Platform_Error, fmt::format("[Wayland] Failed to map file: {}", Utils::String::GetStrError()));
         close(*fd);
         return nullptr;
     }
@@ -2037,8 +2036,7 @@ std::optional<int32_t> TRAP::INTERNAL::WindowingAPI::CreateAnonymousFileWayland(
             return std::nullopt;
         }
 
-        std::string name = path;
-        name += temp;
+        std::string name = fmt::format("{}{}", path, temp);
 
         fd = CreateTmpFileCloexec(std::move(name)).value_or(-1);
         if(fd < 0)
@@ -2817,9 +2815,10 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInitWayland()
     s_Data.Wayland.KeyRepeatTimerFD = -1;
     s_Data.Wayland.CursorTimerFD = -1;
 
-    s_Data.Wayland.Tag = std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
-                         std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." +
-                         std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) + " Wayland";
+    s_Data.Wayland.Tag = fmt::format("{}.{}.{} Wayland",
+                                     TRAP_VERSION_MAJOR(TRAP_VERSION),
+                                     TRAP_VERSION_MINOR(TRAP_VERSION),
+                                     TRAP_VERSION_PATCH(TRAP_VERSION));
     s_Data.Wayland.TagCStr = s_Data.Wayland.Tag.c_str();
 
     {
@@ -3361,7 +3360,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursorWayland(InternalC
         cursor.Wayland.CursorWL = s_Data.Wayland.WaylandCursor.ThemeGetCursor(s_Data.Wayland.CursorTheme, name.c_str());
         if(cursor.Wayland.CursorWL == nullptr)
         {
-            InputError(Error::Cursor_Unavailable, "[Wayland] Failed to create standard cursor \"" + name + "\"");
+            InputError(Error::Cursor_Unavailable, fmt::format("[Wayland] Failed to create standard cursor \"{}\"", name));
             return false;
         }
 
@@ -3701,7 +3700,7 @@ const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeNameWayland(const i
 
     if(scanCode < 0 || scanCode > 255 || s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)] == Input::Key::Unknown)
     {
-        InputError(Error::Invalid_Value, "[Wayland] Invalid scancode " + std::to_string(scanCode));
+        InputError(Error::Invalid_Value, fmt::format("[Wayland] Invalid scancode {}", scanCode));
         return nullptr;
     }
 
@@ -3827,7 +3826,7 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurfaceWayland(VkInst
 
     VkResult err = vkCreateWaylandSurfaceKHR(instance, &sci, allocator, &surface);
     if(err != 0)
-        InputError(Error::Platform_Error, "[Wayland] Failed to create Vulkan surface: " + GetVulkanResultString(err));
+        InputError(Error::Platform_Error, fmt::format("[Wayland] Failed to create Vulkan surface: {}", GetVulkanResultString(err)));
 
     return err;
 }

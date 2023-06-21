@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include <fmt/ostream.h>
+
 #include "Core/Base.h"
 
 namespace TRAP::Events
@@ -200,5 +202,11 @@ MAKE_ENUM_FLAG(TRAP::Events::EventCategory)
 
 	return lhs;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+struct fmt::formatter<TRAP::Events::Event> : fmt::ostream_formatter
+{};
 
 #endif /*TRAP_EVENT_H*/
