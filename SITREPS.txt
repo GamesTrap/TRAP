@@ -4114,3 +4114,5 @@ SITREP 06/21/2023|23w25a3
 SITREP 06/22/2023|23w25a4
     - Changed TRAP Engine version to 23w25a4(0.9.50)
     - Replaced more string concatenation chains with fmt::format() ~>45 mins
+    - Changed fmt submodule to tag 10.0.0 ~<5 mins
+    - Update-Dependencies Added fmt update job ~<5 mins
