@@ -165,7 +165,7 @@ void TRAP::INTERNAL::WindowingAPI::InputErrorWin32(const Error error, const std:
 
 	message.erase(message.find('\0'));
 
-	InputError(error, description + ": " + message);
+	InputError(error, fmt::format("{}: {}", description, message));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

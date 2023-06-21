@@ -369,8 +369,7 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 
 	if(width <= 0 || height <= 0)
 	{
-		InputError(Error::Invalid_Value, " Invalid window size: " + std::to_string(width) + "x" +
-		           std::to_string(height));
+		InputError(Error::Invalid_Value, fmt::format(" Invalid window size: {}x{}", width, height));
 		return nullptr;
 	}
 
@@ -862,7 +861,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowOpacity(const InternalWindow& window
 
 	if(opacity < 0.0f || opacity > 1.0f)
 	{
-		InputError(Error::Invalid_Value, " Invalid window opacity: " + std::to_string(opacity));
+		InputError(Error::Invalid_Value, fmt::format(" Invalid window opacity: {}", opacity));
 		return;
 	}
 
@@ -1050,14 +1049,13 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitor(InternalWindow& window,
 
 	if (width <= 0 || height <= 0)
 	{
-		InputError(Error::Invalid_Value, " Invalid window size " + std::to_string(width) + "x" +
-		           std::to_string(height));
+		InputError(Error::Invalid_Value, fmt::format(" Invalid window size {}x{}", width, height));
 		return;
 	}
 
 	if (refreshRate < 0.0 && refreshRate != -1.0)
 	{
-		InputError(Error::Invalid_Value, " Invalid refresh rate " + std::to_string(refreshRate));
+		InputError(Error::Invalid_Value, fmt::format(" Invalid refresh rate {}", refreshRate));
 		return;
 	}
 
@@ -1635,7 +1633,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowProgressIndicator(const InternalWind
 
 	if (key < Input::Key::Space || key > Input::Key::Menu)
 	{
-		InputError(Error::Invalid_Enum, " Invalid key: " + std::to_string(ToUnderlying(key)));
+		InputError(Error::Invalid_Enum, fmt::format(" Invalid key: {}", ToUnderlying(key)));
 		return Input::KeyState::Released;
 	}
 
@@ -1680,8 +1678,7 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorPos(InternalWindow& window, const do
 	if (xPos < -DBL_MAX || xPos > DBL_MAX ||
 	    yPos < -DBL_MAX || yPos > DBL_MAX)
 	{
-		InputError(Error::Invalid_Value, " Invalid cursor position: " + std::to_string(xPos) + "x" +
-		           std::to_string(yPos));
+		InputError(Error::Invalid_Value, fmt::format(" Invalid cursor position: {}x{}", xPos, yPos));
 		return;
 	}
 
@@ -1976,8 +1973,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowAspectRatio(InternalWindow& window, 
 	{
 		if(numerator < 0 || denominator < 0)
 		{
-			InputError(Error::Invalid_Value, " Invalid window aspect ratio " +
-			           std::to_string(numerator) + ":" + std::to_string(denominator) + "!");
+			InputError(Error::Invalid_Value, fmt::format(" Invalid window aspect ratio {}:{}!", numerator, denominator));
 			return;
 		}
 	}

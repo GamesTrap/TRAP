@@ -415,7 +415,7 @@ TRAP::Events::WindowDropEvent::WindowDropEvent(std::vector<std::string> paths, T
 
 	std::string result = "WindowDropEvent: ";
 	for (uint32_t i = 0; i < m_paths.size(); i++)
-		result += "Path " + std::to_string(i) + ": " + m_paths[i] + '\n';
+		result += fmt::format("Path {}: {}\n", i, m_paths[i]);
 	result.pop_back();
 	return result;
 }

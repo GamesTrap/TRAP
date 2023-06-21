@@ -72,7 +72,7 @@ void TRAP::INTERNAL::WindowingAPI::LoadDBus()
         {
             if(s_Data.DBUS.ErrorIsSet(&s_Data.DBUS.Error) != 0u)
             {
-                InputError(Error::Platform_Error, std::string("[DBus] Failed to connect to D-Bus: ") + s_Data.DBUS.Error.message);
+                InputError(Error::Platform_Error, fmt::format("[DBus] Failed to connect to D-Bus: {}", s_Data.DBUS.Error.message));
                 s_Data.DBUS.ErrorFree(&s_Data.DBUS.Error);
             }
             else
@@ -91,7 +91,7 @@ void TRAP::INTERNAL::WindowingAPI::LoadDBus()
             {
                 if(s_Data.DBUS.ErrorIsSet(&s_Data.DBUS.Error) != 0u)
                 {
-                    InputError(Error::Platform_Error, std::string("[DBus] Failed to request D-Bus name: ") + s_Data.DBUS.Error.message);
+                    InputError(Error::Platform_Error, fmt::format("[DBus] Failed to request D-Bus name: {}", s_Data.DBUS.Error.message));
                     s_Data.DBUS.ErrorFree(&s_Data.DBUS.Error);
                 }
                 else

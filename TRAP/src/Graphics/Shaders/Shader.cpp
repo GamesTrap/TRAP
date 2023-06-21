@@ -429,7 +429,7 @@ bool TRAP::Graphics::Shader::Reload()
 			//Add Descriptor defines
 			preprocessed = "#version 460 core\n";
 			for(const Macro& macro : s_defaultShaderMacrosVulkan)
-				preprocessed += "#define " + macro.Definition + " " + macro.Value + '\n';
+				preprocessed += fmt::format("#define {} {}\n", macro.Definition, macro.Value);
 		}
 		else if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::Vulkan)
 		{
@@ -441,7 +441,7 @@ bool TRAP::Graphics::Shader::Reload()
 		if(userMacros != nullptr)
 		{
 			for(const Macro& macro : *userMacros)
-				preprocessed += "#define " + macro.Definition + " " + macro.Value + '\n';
+				preprocessed += fmt::format("#defnie {} {}\n", macro.Definition, macro.Value);
 		}
 
 		//Add preprocessed macros to shader
