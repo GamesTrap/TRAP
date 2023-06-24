@@ -10,15 +10,6 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::Events::Event::IsInCategory(const EventCategory category) const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return (GetCategoryFlags() & category) != EventCategory::None;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 std::ostream& operator<<(std::ostream& os, const TRAP::Events::Event& e)
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

@@ -4126,3 +4126,7 @@ SITREP 06/24/2023|23w25b1
     - Replaced operators in some classes with the spaceship operator ~<20 mins
     - TRAP::Utils::String Replaced StartsWith() with std::string::starts_with() ~<5 mins
     - TRAP::Utils::String Replaced EndsWith() with std::string::ends_with() ~<5 mins
+
+SITREP 06/25/2023|23w25b2
+    - Changed TRAP Engine version to 23w25b2(0.9.52)
+    - Events Added constexpr to virtual functions ~>25 mins

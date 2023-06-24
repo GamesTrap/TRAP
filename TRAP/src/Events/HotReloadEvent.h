@@ -64,17 +64,17 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		[[nodiscard]] EventType GetEventType() const noexcept override;
+		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		[[nodiscard]] std::string GetName() const override;
+		[[nodiscard]] constexpr std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		[[nodiscard]] EventCategory GetCategoryFlags() const noexcept override;
+		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
         TRAP::Ref<TRAP::Graphics::Texture> m_texture;
@@ -133,17 +133,17 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		[[nodiscard]] EventType GetEventType() const noexcept override;
+		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		[[nodiscard]] std::string GetName() const override;
+		[[nodiscard]] constexpr std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		[[nodiscard]] EventCategory GetCategoryFlags() const noexcept override;
+		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
         TRAP::Ref<TRAP::Graphics::Shader> m_shader;
@@ -158,12 +158,54 @@ namespace TRAP::Events
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::TextureReloadEvent::GetEventType() const noexcept
+{
+	return GetStaticType();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::string TRAP::Events::TextureReloadEvent::GetName() const
+{
+	return "TextureReload";
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Events::EventCategory TRAP::Events::TextureReloadEvent::GetCategoryFlags() const noexcept
+{
+	return EventCategory::HotReload;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::ShaderReloadEvent::GetStaticType() noexcept
 {
 	return EventType::ShaderReload;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::ShaderReloadEvent::GetEventType() const noexcept
+{
+	return GetStaticType();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::string TRAP::Events::ShaderReloadEvent::GetName() const
+{
+	return "ShaderReload";
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Events::EventCategory TRAP::Events::ShaderReloadEvent::GetCategoryFlags() const noexcept
+{
+	return EventCategory::HotReload;
 }
 
 #endif /*TRAP_HOTRELOADEVENT_H*/

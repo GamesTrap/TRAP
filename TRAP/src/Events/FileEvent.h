@@ -79,17 +79,17 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		[[nodiscard]] EventType GetEventType() const noexcept override;
+		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		[[nodiscard]] std::string GetName() const override;
+		[[nodiscard]] constexpr std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		[[nodiscard]] EventCategory GetCategoryFlags() const noexcept override;
+		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
         TRAP::FileSystem::FileStatus m_status;
@@ -110,6 +110,27 @@ namespace TRAP::Events
 [[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetStaticType() noexcept
 {
 	return EventType::FileChange;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetEventType() const noexcept
+{
+	return GetStaticType();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::string TRAP::Events::FileChangeEvent::GetName() const
+{
+	return "FileChange";
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Events::EventCategory TRAP::Events::FileChangeEvent::GetCategoryFlags() const noexcept
+{
+	return EventCategory::FileChange;
 }
 
 #endif /*TRAP_FILEEVENT_H*/

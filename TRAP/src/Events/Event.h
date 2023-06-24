@@ -55,29 +55,29 @@ namespace TRAP::Events
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		Event() noexcept = default;
+		constexpr Event() noexcept = default;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Event(const Event&) noexcept = default;
+		constexpr Event(const Event&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Event& operator=(const Event&) noexcept = default;
+		constexpr Event& operator=(const Event&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Event(Event&&) noexcept = default;
+		constexpr Event(Event&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Event& operator=(Event&&) noexcept = default;
+		constexpr Event& operator=(Event&&) noexcept = default;
 
 	public:
 		/// <summary>
 		/// Virtual destructor.
 		/// </summary>
-		virtual ~Event() = default;
+		constexpr virtual ~Event() = default;
 
 		/// <summary>
 		/// If set to true then this event won't be passed on to other event handlers.
@@ -94,24 +94,24 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		[[nodiscard]] virtual EventType GetEventType() const noexcept = 0;
+		[[nodiscard]] constexpr virtual EventType GetEventType() const noexcept = 0;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		[[nodiscard]] virtual std::string GetName() const = 0;
+		[[nodiscard]] constexpr virtual std::string GetName() const = 0;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		[[nodiscard]] virtual EventCategory GetCategoryFlags() const noexcept = 0;
+		[[nodiscard]] constexpr virtual EventCategory GetCategoryFlags() const noexcept = 0;
 
 		/// <summary>
 		/// Check if an event is in the specified category.
 		/// </summary>
 		/// <param name="category">Category to check.</param>
 		/// <returns>True if event is in the category, false otherwise.</returns>
-		[[nodiscard]] bool IsInCategory(EventCategory category) const noexcept;
+		[[nodiscard]] constexpr bool IsInCategory(EventCategory category) const noexcept;
 	};
 
 	/// <summary>
@@ -128,23 +128,23 @@ namespace TRAP::Events
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		~EventDispatcher() = default;
+		constexpr ~EventDispatcher() = default;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		EventDispatcher(const EventDispatcher&) noexcept = default;
+		constexpr EventDispatcher(const EventDispatcher&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		EventDispatcher& operator=(const EventDispatcher&) noexcept = delete;
+		constexpr EventDispatcher& operator=(const EventDispatcher&) noexcept = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		EventDispatcher(EventDispatcher&&) noexcept = default;
+		constexpr EventDispatcher(EventDispatcher&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		EventDispatcher& operator=(EventDispatcher&&) noexcept = delete;
+		constexpr EventDispatcher& operator=(EventDispatcher&&) noexcept = delete;
 
 		/// <summary>
 		/// Dispatch a specific event to a function.
@@ -201,6 +201,13 @@ MAKE_ENUM_FLAG(TRAP::Events::EventCategory)
 	lhs = lhs ^ rhs;
 
 	return lhs;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Events::Event::IsInCategory(const EventCategory category) const noexcept
+{
+	return (GetCategoryFlags() & category) != EventCategory::None;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -89,7 +89,7 @@ namespace TRAP
 		/// Get the current title of the window.
 		/// </summary>
 		/// <returns>Title of the window.</returns>
-		[[nodiscard]] std::string GetTitle() const noexcept;
+		[[nodiscard]] constexpr std::string GetTitle() const noexcept;
 		/// <summary>
 		/// Get the current width of the window.
 		/// </summary>
@@ -505,6 +505,13 @@ namespace TRAP
 							 AdvancedProps advanced = AdvancedProps{},
 							 const TRAP::Monitor& monitor = TRAP::Monitor::GetPrimaryMonitor()) noexcept;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::string TRAP::Window::GetTitle() const noexcept
+{
+	return m_data.Title;
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

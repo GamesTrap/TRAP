@@ -17,7 +17,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		~MonitorEvent() override = default;
+		constexpr ~MonitorEvent() override = default;
 
 		/// <summary>
 		/// Retrieve the affected monitor.
@@ -29,7 +29,7 @@ namespace TRAP::Events
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		[[nodiscard]] EventCategory GetCategoryFlags() const noexcept override;
+		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
 
 	protected:
 		/// <summary>
@@ -41,7 +41,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		MonitorEvent(const MonitorEvent&) noexcept = default;
+		constexpr MonitorEvent(const MonitorEvent&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -49,7 +49,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		MonitorEvent(MonitorEvent&&) noexcept = default;
+		constexpr MonitorEvent(MonitorEvent&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
@@ -73,11 +73,11 @@ namespace TRAP::Events
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		~MonitorConnectEvent() override = default;
+		constexpr ~MonitorConnectEvent() override = default;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		MonitorConnectEvent(const MonitorConnectEvent&) noexcept = default;
+		constexpr MonitorConnectEvent(const MonitorConnectEvent&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -85,7 +85,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		MonitorConnectEvent(MonitorConnectEvent&&) noexcept = default;
+		constexpr MonitorConnectEvent(MonitorConnectEvent&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
@@ -106,12 +106,12 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		[[nodiscard]] EventType GetEventType() const noexcept override;
+		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		[[nodiscard]] std::string GetName() const override;
+		[[nodiscard]] constexpr std::string GetName() const override;
 	};
 
 	/// <summary>
@@ -129,11 +129,11 @@ namespace TRAP::Events
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		~MonitorDisconnectEvent() override = default;
+		constexpr ~MonitorDisconnectEvent() override = default;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		MonitorDisconnectEvent(const MonitorDisconnectEvent&) noexcept = default;
+		constexpr MonitorDisconnectEvent(const MonitorDisconnectEvent&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -141,7 +141,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		MonitorDisconnectEvent(MonitorDisconnectEvent&&) noexcept = default;
+		constexpr MonitorDisconnectEvent(MonitorDisconnectEvent&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
@@ -162,12 +162,12 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		[[nodiscard]] EventType GetEventType() const noexcept override;
+		[[nodiscard]] constexpr EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		[[nodiscard]] std::string GetName() const override;
+		[[nodiscard]] constexpr std::string GetName() const override;
 	};
 }
 
@@ -176,6 +176,13 @@ namespace TRAP::Events
 constexpr TRAP::Events::MonitorEvent::MonitorEvent(const Monitor& monitor) noexcept
 	: m_monitor(monitor)
 {}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Events::EventCategory TRAP::Events::MonitorEvent::GetCategoryFlags() const noexcept
+{
+	return EventCategory::Window;
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
@@ -193,6 +200,20 @@ constexpr TRAP::Events::MonitorConnectEvent::MonitorConnectEvent(const Monitor& 
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::MonitorConnectEvent::GetEventType() const noexcept
+{
+	return GetStaticType();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::string TRAP::Events::MonitorConnectEvent::GetName() const
+{
+	return "MonitorConnect";
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -205,6 +226,20 @@ constexpr TRAP::Events::MonitorDisconnectEvent::MonitorDisconnectEvent(const Mon
 [[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::MonitorDisconnectEvent::GetStaticType() noexcept
 {
 	return EventType::MonitorDisconnect;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Events::EventType TRAP::Events::MonitorDisconnectEvent::GetEventType() const noexcept
+{
+	return GetStaticType();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::string TRAP::Events::MonitorDisconnectEvent::GetName() const
+{
+	return "MonitorDisconnect";
 }
 
 #endif /*TRAP_HEADLESS_MODE*/
