@@ -63,12 +63,44 @@ namespace TRAP::Utils::String
 	[[nodiscard]] bool StartsWith(std::string_view str, std::string_view start);
 
 	/// <summary>
+	/// Check if a string begins with the given prefix.
+	/// </summary>
+	/// <param name="string">String to check.</param>
+	/// <param name="c">Prefix to check.</param>
+	/// <returns>True if the string begins with the provided prefix, false otherwise.</returns>
+	[[nodiscard]] bool StartsWith(std::string_view str, char c);
+
+	/// <summary>
+	/// Check if a string begins with the given prefix.
+	/// </summary>
+	/// <param name="string">String to check.</param>
+	/// <param name="cstr">Prefix to check.</param>
+	/// <returns>True if the string begins with the provided prefix, false otherwise.</returns>
+	[[nodiscard]] bool StartsWith(std::string_view str, const char* cstr);
+
+	/// <summary>
 	/// Check if a string ends with the given suffix.
 	/// </summary>
 	/// <param name="string">String to check.</param>
 	/// <param name="end">Suffix to check.</param>
 	/// <returns>True if the string ends with the provided suffix, false otherwise.</returns>
 	[[nodiscard]] bool EndsWith(std::string_view str, std::string_view end);
+
+	/// <summary>
+	/// Check if a string ends with the given suffix.
+	/// </summary>
+	/// <param name="string">String to check.</param>
+	/// <param name="c">Suffix to check.</param>
+	/// <returns>True if the string ends with the provided suffix, false otherwise.</returns>
+	[[nodiscard]] bool EndsWith(std::string_view str, char c);
+
+	/// <summary>
+	/// Check if a string ends with the given suffix.
+	/// </summary>
+	/// <param name="string">String to check.</param>
+	/// <param name="cstr">Suffix to check.</param>
+	/// <returns>True if the string ends with the provided suffix, false otherwise.</returns>
+	[[nodiscard]] bool EndsWith(std::string_view str, const char* cstr);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 

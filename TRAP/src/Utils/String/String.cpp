@@ -106,7 +106,25 @@
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	return str.substr(0, start.size()) == start;
+	return str.starts_with(start);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] bool TRAP::Utils::String::StartsWith(const std::string_view str, const char c)
+{
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
+	return str.starts_with(c);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] bool TRAP::Utils::String::StartsWith(const std::string_view str, const char* cstr)
+{
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
+	return str.starts_with(cstr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -115,10 +133,25 @@
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	if (end.size() > str.size())
-		return false;
+	return str.ends_with(end);
+}
 
-	return str.size() >= end.size() && str.compare(str.size() - end.size(), std::string_view::npos, end) == 0;
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] bool TRAP::Utils::String::EndsWith(const std::string_view str, const char c)
+{
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
+	return str.ends_with(c);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] bool TRAP::Utils::String::EndsWith(const std::string_view str, const char* cstr)
+{
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
+	return str.ends_with(cstr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
