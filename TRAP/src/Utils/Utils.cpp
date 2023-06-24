@@ -107,16 +107,6 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Utils::Endian TRAP::Utils::GetEndian()
-{
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
-
-	//Check if machine is using little-endian or big-endian
-	return static_cast<Endian>(std::endian::native == std::endian::little);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);

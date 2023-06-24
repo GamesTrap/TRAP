@@ -52,8 +52,7 @@ namespace TRAP::Utils
 	/// Get the endianness of the system.
 	/// </summary>
 	/// <returns>TRAP::Utils::Endian::Little or TRAP::Utils::Endian::Big.</returns>
-	[[deprecated("Use C++20 std::endian instead")]]
-	[[nodiscard]] Endian GetEndian();
+	[[nodiscard]] constexpr Endian GetEndian();
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -174,6 +173,14 @@ namespace TRAP::Utils
 	/// </summary>
 	void RegisterSIGINTCallback();
 #endif /*TRAP_HEADLESS_MODE*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] inline constexpr TRAP::Utils::Endian TRAP::Utils::GetEndian()
+{
+	//Check if machine is using little-endian or big-endian
+	return static_cast<Endian>(std::endian::native == std::endian::little);
 }
 
 #endif /*TRAP_UTILS_H*/
