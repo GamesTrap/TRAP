@@ -4130,3 +4130,4 @@ SITREP 06/24/2023|23w25b1
 SITREP 06/25/2023|23w25b2
     - Changed TRAP Engine version to 23w25b2(0.9.52)
     - Events Added constexpr to virtual functions ~>25 mins
+    - (Vulkan)Buffer Added constexpr ~<15 mins

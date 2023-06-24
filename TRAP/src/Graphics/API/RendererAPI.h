@@ -96,28 +96,28 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		RendererAPI() noexcept = default;
+		constexpr RendererAPI() noexcept = default;
 	public:
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		virtual ~RendererAPI() = default;
+		constexpr virtual ~RendererAPI() = default;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		RendererAPI(const RendererAPI&) = delete;
+		constexpr RendererAPI(const RendererAPI&) = delete;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		RendererAPI& operator=(const RendererAPI&) = delete;
+		constexpr RendererAPI& operator=(const RendererAPI&) = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		RendererAPI(RendererAPI&&) = delete;
+		constexpr RendererAPI(RendererAPI&&) = delete;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		RendererAPI& operator=(RendererAPI&&) = delete;
+		constexpr RendererAPI& operator=(RendererAPI&&) = delete;
 
 		/// <summary>
 		/// Initialize the Renderer.

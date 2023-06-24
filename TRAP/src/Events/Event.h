@@ -88,7 +88,7 @@ namespace TRAP::Events
 		/// Get a string representation of the event.
 		/// </summary>
 		/// <returns>String representation.</returns>
-		[[nodiscard]] virtual std::string ToString() const;
+		[[nodiscard]] constexpr virtual std::string ToString() const;
 
 		/// <summary>
 		/// Retrieve the EventType of the event.
@@ -159,6 +159,13 @@ namespace TRAP::Events
 	private:
 		Event& m_event;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::string TRAP::Events::Event::ToString() const
+{
+	return GetName();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

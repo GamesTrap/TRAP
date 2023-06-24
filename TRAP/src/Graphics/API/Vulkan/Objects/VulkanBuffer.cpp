@@ -10,13 +10,9 @@
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& desc)
-	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
-	  m_VMA(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetVMA()),
-	  m_vkBuffer(VK_NULL_HANDLE),
-	  m_vkStorageTexelView(VK_NULL_HANDLE),
-	  m_vkUniformTexelView(VK_NULL_HANDLE),
-	  m_allocation(VK_NULL_HANDLE),
-	  m_offset()
+	: TRAP::Graphics::Buffer(desc.Size, desc.Descriptors, desc.MemoryUsage),
+	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
+	  m_VMA(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetVMA())
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -26,11 +22,6 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanBufferPrefix, "Creating Buffer");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
-
-	m_CPUMappedAddress = nullptr;
-	m_size = desc.Size;
-	m_descriptors = desc.Descriptors;
-	m_memoryUsage = desc.MemoryUsage;
 
 	uint64_t allocationSize = desc.Size;
 	//Align the buffer size to multiples of the dynamic uniform buffer minimum size
@@ -145,42 +136,6 @@ TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 
 	if(m_allocation != nullptr)
 		vmaDestroyBuffer(m_VMA->GetVMAAllocator(), m_vkBuffer, m_allocation);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkBuffer TRAP::Graphics::API::VulkanBuffer::GetVkBuffer() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_vkBuffer;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkBufferView TRAP::Graphics::API::VulkanBuffer::GetStorageTexelView() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_vkStorageTexelView;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkBufferView TRAP::Graphics::API::VulkanBuffer::GetUniformTexelView() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_vkUniformTexelView;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] uint64_t TRAP::Graphics::API::VulkanBuffer::GetOffset() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_offset;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

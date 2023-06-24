@@ -44,22 +44,22 @@ namespace TRAP::Graphics::API
 		/// Retrieve the VkBuffer handle.
 		/// </summary>
 		/// <returns>VkBuffer handle.</returns>
-		[[nodiscard]] VkBuffer GetVkBuffer() const noexcept;
+		[[nodiscard]] constexpr VkBuffer GetVkBuffer() const noexcept;
 		/// <summary>
 		/// Retrieve the storage texel view.
 		/// </summary>
 		/// <returns>VkBufferView for storage texel.</returns>
-		[[nodiscard]] VkBufferView GetStorageTexelView() const noexcept;
+		[[nodiscard]] constexpr VkBufferView GetStorageTexelView() const noexcept;
 		/// <summary>
 		/// Retrieve the uniform texel view.
 		/// </summary>
 		/// <returns>VkBufferView for uniform texel.</returns>
-		[[nodiscard]] VkBufferView GetUniformTexelView() const noexcept;
+		[[nodiscard]] constexpr VkBufferView GetUniformTexelView() const noexcept;
 		/// <summary>
 		/// Retrieve the byte offset to the first element in the buffer.
 		/// </summary>
 		/// <returns>Byte offset to the first element in the buffer.</returns>
-		[[nodiscard]] uint64_t GetOffset() const noexcept;
+		[[nodiscard]] constexpr uint64_t GetOffset() const noexcept;
 		/// <summary>
 		/// Retrieve the VkDeviceMemory handle.
 		/// </summary>
@@ -96,14 +96,42 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanMemoryAllocator> m_VMA;
 
 		//Native handle of the underlying resource
-		VkBuffer m_vkBuffer;
+		VkBuffer m_vkBuffer = VK_NULL_HANDLE;
 		//Buffer view
-		VkBufferView m_vkStorageTexelView;
-		VkBufferView m_vkUniformTexelView;
+		VkBufferView m_vkStorageTexelView = VK_NULL_HANDLE;
+		VkBufferView m_vkUniformTexelView = VK_NULL_HANDLE;
 		//Contains resource allocation info such as parent heap, offset in heap
-		VmaAllocation m_allocation;
-		uint64_t m_offset;
+		VmaAllocation m_allocation = VK_NULL_HANDLE;
+		uint64_t m_offset = 0;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkBuffer TRAP::Graphics::API::VulkanBuffer::GetVkBuffer() const noexcept
+{
+	return m_vkBuffer;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkBufferView TRAP::Graphics::API::VulkanBuffer::GetStorageTexelView() const noexcept
+{
+	return m_vkStorageTexelView;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkBufferView TRAP::Graphics::API::VulkanBuffer::GetUniformTexelView() const noexcept
+{
+	return m_vkUniformTexelView;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint64_t TRAP::Graphics::API::VulkanBuffer::GetOffset() const noexcept
+{
+	return m_offset;
 }
 
 #endif /*TRAP_VULKANBUFFER_H*/
