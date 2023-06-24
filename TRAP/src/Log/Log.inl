@@ -15,7 +15,7 @@ void TRAP::Log::Trace(Args&& ... args)
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
 #if !defined(TRAP_RELEASE)
-		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Trace))
+		if ((m_importance & Level::Trace) != Level::None)
 			fmt::print(fg(fmt::color::magenta), "{}\n", result);
 #endif
 
@@ -39,7 +39,7 @@ void TRAP::Log::Debug(Args&& ... args)
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
 #if !defined(TRAP_RELEASE)
-		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Debug))
+		if ((m_importance & Level::Debug) != Level::None)
 			fmt::print(fg(fmt::color::cyan), "{}\n", result);
 #endif
 
@@ -63,7 +63,7 @@ void TRAP::Log::Info(Args&& ... args)
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
 #if !defined(TRAP_RELEASE)
-		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Info))
+		if ((m_importance & Level::Info) != Level::None)
 			fmt::print(fg(fmt::color::green), "{}\n", result);
 #endif
 
@@ -87,7 +87,7 @@ void TRAP::Log::Warn(Args&& ... args)
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
 #if !defined(TRAP_RELEASE)
-		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Warn))
+		if ((m_importance & Level::Warn) != Level::None)
 			fmt::print(fg(fmt::color::yellow), "{}\n", result);
 #endif
 
@@ -111,7 +111,7 @@ void TRAP::Log::Error(Args&& ... args)
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
 #if !defined(TRAP_RELEASE)
-		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Error))
+		if ((m_importance & Level::Error) != Level::None)
 			fmt::print(fg(fmt::color::red), "{}\n", result);
 #endif
 
@@ -135,7 +135,7 @@ void TRAP::Log::Critical(Args&& ... args)
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
 #if !defined(TRAP_RELEASE)
-		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Critical))
+		if ((m_importance & Level::Critical) != Level::None)
 			fmt::print(fg(fmt::color::dark_red), "{}\n", result);
 #endif
 

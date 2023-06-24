@@ -4120,3 +4120,4 @@ SITREP 06/22/2023|23w25a4
 SITREP 06/24/2023|23w25b1
     - Changed TRAP Engine version to 23w25b1(0.9.51)
     - Utils un-deprecated GetEndian() ~<5 mins
+    - Log Changed Log::Level checks ~<5 mins
