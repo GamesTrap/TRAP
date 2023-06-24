@@ -105,9 +105,17 @@ namespace TRAP::Network
 		static const IPv6Address Any; //Value representing any address (0000:0000:0000:0000:0000:0000:0000:0000)
 		static const IPv6Address LocalHost; //The "localhost" address (for connecting a computer to itself locally)
 
-	private:
-		friend bool operator<(const IPv6Address& left, const IPv6Address& right);
+		[[nodiscard]] friend constexpr auto operator<=>(const IPv6Address& lhs, const IPv6Address& rhs)
+		{
+			return lhs.m_address <=> rhs.m_address;
+		};
 
+		[[nodiscard]] friend constexpr bool operator==(const IPv6Address& lhs, const IPv6Address& rhs)
+		{
+			return lhs.m_address == rhs.m_address;
+		}
+
+	private:
 		/// <summary>
 		/// Resolve the given address string.
 		/// </summary>
@@ -118,53 +126,7 @@ namespace TRAP::Network
 		bool m_valid; //Is the address valid?
 	};
 
-	/// <summary>
-	/// Overload of == operator to compare two IP addresses.
-	/// </summary>
-	/// <param name="left">Left operand (a IP address).</param>
-	/// <param name="right">Right operand (a IP address).</param>
-	/// <returns>True if both addresses are equal.</returns>
-	bool operator==(const IPv6Address& left, const IPv6Address& right);
-
-	/// <summary>
-	/// Overload of != operator to compare two IP addresses.
-	/// </summary>
-	/// <param name="left">Left operand (a IP address).</param>
-	/// <param name="right">Right operand (a IP address).</param>
-	/// <returns>True if both addresses are not equal.</returns>
-	bool operator!=(const IPv6Address& left, const IPv6Address& right);
-
-	/// <summary>
-	/// Overload of < operator to compare two IP addresses.
-	/// </summary>
-	/// <param name="left">Left operand (a IP address).</param>
-	/// <param name="right">Right operand (a IP address).</param>
-	/// <returns>True if left is lesser than right.</returns>
-	bool operator<(const IPv6Address& left, const IPv6Address& right);
-
-	/// <summary>
-	/// Overload of > operator to compare two IP addresses.
-	/// </summary>
-	/// <param name="left">Left operand (a IP address).</param>
-	/// <param name="right">Right operand (a IP address).</param>
-	/// <returns>True if left is greater than right.</returns>
-	bool operator>(const IPv6Address& left, const IPv6Address& right);
-
-	/// <summary>
-	/// Overload of <= operator to compare two IP addresses.
-	/// </summary>
-	/// <param name="left">Left operand (a IP address).</param>
-	/// <param name="right">Right operand (a IP address).</param>
-	/// <returns>True if left is lesser or equal than right.</returns>
-	bool operator<=(const IPv6Address& left, const IPv6Address& right);
-
-	/// <summary>
-	/// Overload of >= operator to compare two IP addresses.
-	/// </summary>
-	/// <param name="left">Left operand (a IP address).</param>
-	/// <param name="right">Right operand (a IP address).</param>
-	/// <returns>True if left is greater or equal than right.</returns>
-	bool operator>=(const IPv6Address& left, const IPv6Address& right);
+	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
 	/// Overload of >> operator to extract an IP address from input stream.
@@ -172,7 +134,9 @@ namespace TRAP::Network
 	/// <param name="stream">Input stream.</param>
 	/// <param name="address">IP address to extract.</param>
 	/// <returns>Reference to the input stream.</returns>
-	std::istream& operator>>(std::istream& stream, IPv6Address& address);
+	std::istream& operator>>(std::istream& stream, TRAP::Network::IPv6Address& address);
+
+	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
 	/// Overload of << operator to print an IP address to an output stream.
@@ -180,8 +144,7 @@ namespace TRAP::Network
 	/// <param name="stream">Output stream.</param>
 	/// <param name="address">IP address to print.</param>
 	/// <returns>Reference to the output stream.</returns>
-	std::ostream& operator<<(std::ostream& stream, const IPv6Address& address);
-
+	std::ostream& operator<<(std::ostream& stream, const TRAP::Network::IPv6Address& address);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -4123,3 +4123,4 @@ SITREP 06/24/2023|23w25b1
     - Log Changed Log::Level checks ~<5 mins
     - Utils Added fixed-size, compilte-time and thread safe ConstexprMap container ~<30 mins
     - VulkanCommon ErrorCheck() and ReflexErrorCheck() now use ConstexprMap ~<10 mins
+    - Replaced operators in some classes with the spaceship operator ~<20 mins

@@ -92,13 +92,29 @@ namespace TRAP
 		operator uint32_t() const noexcept;
 		operator entt::entity() const noexcept;
 
-		bool operator==(Entity other) const noexcept;
-		bool operator!=(Entity other) const noexcept;
+		constexpr bool operator==(Entity other) const noexcept;
+		constexpr bool operator!=(Entity other) const noexcept;
 
 	private:
 		entt::entity m_entityHandle{ entt::null };
 		Scene* m_scene = nullptr;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline constexpr bool TRAP::Entity::operator==(Entity other) const noexcept
+{
+	return m_entityHandle == other.m_entityHandle && m_scene == other.m_scene;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline constexpr bool TRAP::Entity::operator!=(Entity other) const noexcept
+{
+	return !(*this == other);
 }
 
 #endif /*TRAP_ENTITY_H*/

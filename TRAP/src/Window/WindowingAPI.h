@@ -1530,19 +1530,7 @@ namespace TRAP::INTERNAL
 			//The refresh rate, in Hz, of the video mode.
 			double RefreshRate = 0;
 
-			inline constexpr bool operator==(const InternalVideoMode& other) const
-			{
-				return Width == other.Width &&
-				       Height == other.Height &&
-					   RedBits == other.RedBits &&
-					   GreenBits == other.GreenBits &&
-					   BlueBits == other.BlueBits &&
-					   RefreshRate == other.RefreshRate;
-			}
-			inline constexpr bool operator!=(const InternalVideoMode& other) const
-			{
-				return !(*this == other);
-			}
+			[[nodiscard]] constexpr auto operator<=>(const InternalVideoMode& other) const = default;
 		};
 
 		/// <summary>

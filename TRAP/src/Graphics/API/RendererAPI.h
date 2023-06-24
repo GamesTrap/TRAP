@@ -2350,9 +2350,11 @@ namespace TRAP::Graphics
 				bool ForceExplicitReconstruction;
 
 				constexpr bool operator==(const SamplerConversionDesc& s) const noexcept;
+				constexpr bool operator!=(const SamplerConversionDesc& s) const noexcept;
 			} SamplerConversionDesc{};
 
 			constexpr bool operator==(const SamplerDesc& s) const noexcept;
+			constexpr bool operator!=(const SamplerDesc& s) const noexcept;
 		};
 
 		/// <summary>
@@ -3356,6 +3358,13 @@ constexpr bool TRAP::Graphics::RendererAPI::SamplerDesc::operator==(const Sample
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+constexpr bool TRAP::Graphics::RendererAPI::SamplerDesc::operator!=(const SamplerDesc& s) const noexcept
+{
+	return !(*this == s);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 constexpr bool TRAP::Graphics::RendererAPI::SamplerDesc::SamplerConversionDesc::operator==(const SamplerConversionDesc& s) const noexcept
 {
 	//Deep equality
@@ -3363,6 +3372,13 @@ constexpr bool TRAP::Graphics::RendererAPI::SamplerDesc::SamplerConversionDesc::
 	       this->ChromaOffsetX == s.ChromaOffsetX && this->ChromaOffsetY == s.ChromaOffsetY &&
 		   this->ChromaFilter == s.ChromaFilter &&
 		   this->ForceExplicitReconstruction == s.ForceExplicitReconstruction;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr bool TRAP::Graphics::RendererAPI::SamplerDesc::SamplerConversionDesc::operator!=(const SamplerConversionDesc& s) const noexcept
+{
+	return !(*this == s);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

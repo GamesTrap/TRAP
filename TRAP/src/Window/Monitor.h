@@ -34,8 +34,7 @@ namespace TRAP
 			int32_t Height = 0;
 			double RefreshRate = 0;
 
-			[[nodiscard]] constexpr bool operator==(const VideoMode& mode) const;
-			[[nodiscard]] constexpr bool operator!=(const VideoMode& mode) const;
+			[[nodiscard]] constexpr auto operator<=>(const VideoMode& mode) const = default;
 		};
 
 
@@ -196,21 +195,6 @@ constexpr TRAP::Monitor::VideoMode::VideoMode(const int32_t width, const int32_t
 [[nodiscard]] inline constexpr void* TRAP::Monitor::GetInternalMonitor() const noexcept
 {
 	return m_handle;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] inline constexpr bool TRAP::Monitor::VideoMode::operator==(const VideoMode& mode) const
-{
-	return Width == mode.Width && Height == mode.Height &&
-	       TRAP::Math::Equal(RefreshRate, mode.RefreshRate, TRAP::Math::Epsilon<double>());
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] inline constexpr bool TRAP::Monitor::VideoMode::operator!=(const VideoMode& mode) const
-{
-	return !(*this == mode);
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

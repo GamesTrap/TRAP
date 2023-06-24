@@ -56,23 +56,3 @@ TRAP::Entity::operator entt::entity() const noexcept
 
 	return m_entityHandle;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::Entity::operator==(const Entity other) const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_entityHandle == other.m_entityHandle && m_scene == other.m_scene;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::Entity::operator!=(const Entity other) const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return !operator==(other);
-}
