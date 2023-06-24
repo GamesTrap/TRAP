@@ -30,6 +30,7 @@
 #define TRAP_VULKANCOMMON_H
 
 #include "Graphics/API/RendererAPI.h"
+#include "Utils/ConstexprMap.h"
 
 namespace TRAP::Graphics::API
 {
@@ -380,6 +381,75 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+namespace TRAP::INTERNAL
+{
+	inline constexpr Utils::ConstexprMap<VkResult, std::string_view, 35> VkResultToString
+	{
+		{
+			{
+				{VK_ERROR_OUT_OF_HOST_MEMORY, "VK_ERROR_OUT_OF_HOST_MEMORY"},
+				{VK_ERROR_OUT_OF_DEVICE_MEMORY, "VK_ERROR_OUT_OF_DEVICE_MEMORY"},
+				{VK_ERROR_INITIALIZATION_FAILED, "VK_ERROR_INITIALIZATION_FAILED"},
+				{VK_ERROR_DEVICE_LOST, "VK_ERROR_DEVICE_LOST"},
+				{VK_ERROR_MEMORY_MAP_FAILED, "VK_ERROR_MEMORY_MAP_FAILED"},
+				{VK_ERROR_LAYER_NOT_PRESENT, "VK_ERROR_LAYER_NOT_PRESENT"},
+				{VK_ERROR_EXTENSION_NOT_PRESENT, "VK_ERROR_EXTENSION_NOT_PRESENT"},
+				{VK_ERROR_FEATURE_NOT_PRESENT, "VK_ERROR_FEATURE_NOT_PRESENT"},
+				{VK_ERROR_INCOMPATIBLE_DRIVER, "VK_ERROR_INCOMPATIBLE_DRIVER"},
+				{VK_ERROR_TOO_MANY_OBJECTS, "VK_ERROR_TOO_MANY_OBJECTS"},
+				{VK_ERROR_FORMAT_NOT_SUPPORTED, "VK_ERROR_FORMAT_NOT_SUPPORTED"},
+				{VK_ERROR_SURFACE_LOST_KHR, "VK_ERROR_SURFACE_LOST_KHR"},
+				{VK_ERROR_NATIVE_WINDOW_IN_USE_KHR, "VK_ERROR_NATIVE_WINDOW_IN_USE_KHR"},
+				{VK_SUBOPTIMAL_KHR, "VK_SUBOPTIMAL_KHR"},
+				{VK_ERROR_OUT_OF_DATE_KHR, "VK_ERROR_OUT_OF_DATE_KHR"},
+				{VK_ERROR_INCOMPATIBLE_DISPLAY_KHR, "VK_ERROR_INCOMPATIBLE_DISPLAY_KHR"},
+				{VK_ERROR_VALIDATION_FAILED_EXT, "VK_ERROR_VALIDATION_FAILED_EXT"},
+				{VK_ERROR_FRAGMENTED_POOL, "VK_ERROR_FRAGMENTED_POOL"},
+				{VK_ERROR_UNKNOWN, "VK_ERROR_UNKNOWN"},
+				{VK_ERROR_OUT_OF_POOL_MEMORY, "VK_ERROR_OUT_OF_POOL_MEMORY"},
+				{VK_ERROR_INVALID_EXTERNAL_HANDLE, "VK_ERROR_INVALID_EXTERNAL_HANDLE"},
+				{VK_ERROR_FRAGMENTATION, "VK_ERROR_FRAGMENTATION"},
+				{VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS, "VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS"},
+				{VK_PIPELINE_COMPILE_REQUIRED, "VK_PIPELINE_COMPILE_REQUIRED"},
+				{VK_ERROR_INVALID_SHADER_NV, "VK_ERROR_INVALID_SHADER_NV"},
+				{VK_ERROR_IMAGE_USAGE_NOT_SUPPORTED_KHR, "VK_ERROR_IMAGE_USAGE_NOT_SUPPORTED_KHR"},
+				{VK_ERROR_VIDEO_PICTURE_LAYOUT_NOT_SUPPORTED_KHR, "VK_ERROR_VIDEO_PICTURE_LAYOUT_NOT_SUPPORTED_KHR"},
+				{VK_ERROR_VIDEO_PROFILE_OPERATION_NOT_SUPPORTED_KHR, "VK_ERROR_VIDEO_PROFILE_OPERATION_NOT_SUPPORTED_KHR"},
+				{VK_ERROR_VIDEO_PROFILE_FORMAT_NOT_SUPPORTED_KHR, "VK_ERROR_VIDEO_PROFILE_FORMAT_NOT_SUPPORTED_KHR"},
+				{VK_ERROR_VIDEO_PROFILE_CODEC_NOT_SUPPORTED_KHR, "VK_ERROR_VIDEO_PROFILE_CODEC_NOT_SUPPORTED_KHR"},
+				{VK_ERROR_VIDEO_STD_VERSION_NOT_SUPPORTED_KHR, "VK_ERROR_VIDEO_STD_VERSION_NOT_SUPPORTED_KHR"},
+				{VK_ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT, "VK_ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT"},
+				{VK_ERROR_NOT_PERMITTED_KHR, "VK_ERROR_NOT_PERMITTED_KHR"},
+				{VK_ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT, "VK_ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT"},
+				{VK_ERROR_COMPRESSION_EXHAUSTED_EXT, "VK_ERROR_COMPRESSION_EXHAUSTED_EXT"}
+			}
+		}
+	};
+
+#if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
+	inline constexpr Utils::ConstexprMap<NvLL_VK_Status, std::string_view, 11> NvLLVKStatusToString
+	{
+		{
+			{
+				{NVLL_VK_ERROR, "NVLL_VK_ERROR"},
+				{NVLL_VK_LIBRARY_NOT_FOUND, "NVLL_VK_LIBRARY_NOT_FOUND"},
+				{NVLL_VK_NO_IMPLEMENTATION, "NVLL_VK_NO_IMPLEMENTATION"},
+				{NVLL_VK_API_NOT_INITIALIZED, "NVLL_VK_API_NOT_INITIALIZED"},
+				{NVLL_VK_INVALID_ARGUMENT, "NVLL_VK_INVALID_ARGUMENT"},
+				{NVLL_VK_INVALID_HANDLE, "NVLL_VK_INVALID_HANDLE"},
+				{NVLL_VK_INCOMPATIBLE_STRUCT_VERSION, "NVLL_VK_INCOMPATIBLE_STRUCT_VERSION"},
+				{NVLL_VK_INVALID_POINTER, "NVLL_VK_INVALID_POINTER"},
+				{NVLL_VK_OUT_OF_MEMORY, "NVLL_VK_OUT_OF_MEMORY"},
+				{NVLL_VK_API_IN_USE, "NVLL_VK_API_IN_USE"},
+				{NVLL_VK_NO_VULKAN, "NVLL_VK_NO_VULKAN"}
+			}
+		}
+	};
+#endif /*defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std::string_view function,
                                                const std::string_view file, const std::uint_least32_t line,
 											   const std::uint_least32_t column)
@@ -387,64 +457,8 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 	if(result >= 0)
 		return true;
 
-	switch (result)
-	{
-	case VK_ERROR_OUT_OF_HOST_MEMORY:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_OUT_OF_HOST_MEMORY: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case VK_ERROR_OUT_OF_DEVICE_MEMORY:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_OUT_OF_DEVICE_MEMORY: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case VK_ERROR_INITIALIZATION_FAILED:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_INITIALIZATION_FAILED: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case VK_ERROR_DEVICE_LOST:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_DEVICE_LOST: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case VK_ERROR_MEMORY_MAP_FAILED:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_MEMORY_MAP_FAILED: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case VK_ERROR_LAYER_NOT_PRESENT:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_LAYER_NOT_PRESENT: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case VK_ERROR_EXTENSION_NOT_PRESENT:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_EXTENSION_NOT_PRESENT: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case VK_ERROR_FEATURE_NOT_PRESENT:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_FEATURE_NOT_PRESENT: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case VK_ERROR_INCOMPATIBLE_DRIVER:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_INCOMPATIBLE_DRIVER: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case VK_ERROR_TOO_MANY_OBJECTS:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_TOO_MANY_OBJECTS: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case VK_ERROR_FORMAT_NOT_SUPPORTED:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_FORMAT_NOT_SUPPORTED: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case VK_ERROR_SURFACE_LOST_KHR:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_SURFACE_LOST_KHR: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case VK_ERROR_NATIVE_WINDOW_IN_USE_KHR:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_NATIVE_WINDOW_IN_USE_KHR: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case VK_SUBOPTIMAL_KHR:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_SUBOPTIMAL_KHR: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case VK_ERROR_OUT_OF_DATE_KHR:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_OUT_OF_DATE_KHR: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case VK_ERROR_INCOMPATIBLE_DISPLAY_KHR:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_INCOMPATIBLE_DISPLAY_KHR: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case VK_ERROR_VALIDATION_FAILED_EXT:
-		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_VALIDATION_FAILED_EXT: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-
-	default:
-		TP_ERROR(Log::RendererVulkanPrefix, "Unknown error: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	}
+	TP_ERROR(Log::RendererVulkanPrefix, INTERNAL::VkResultToString.at(result).value_or("Unknown error"),
+	         ": ", function, " @[", file, ':', line, ':', column, ']');
 
 	return false;
 }
@@ -459,46 +473,8 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 	if(result == NVLL_VK_OK)
 		return true;
 
-	switch (result)
-	{
-	case NVLL_VK_ERROR:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_ERROR: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case NVLL_VK_LIBRARY_NOT_FOUND:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_LIBRARY_NOT_FOUND: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case NVLL_VK_NO_IMPLEMENTATION:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_NO_IMPLEMENTATION: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case NVLL_VK_API_NOT_INITIALIZED:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_API_NOT_INITIALIZED: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case NVLL_VK_INVALID_ARGUMENT:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_INVALID_ARGUMENT: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case NVLL_VK_INVALID_HANDLE:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_INVALID_HANDLE: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case NVLL_VK_INCOMPATIBLE_STRUCT_VERSION:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_INCOMPATIBLE_STRUCT_VERSION: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case NVLL_VK_INVALID_POINTER:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_INVALID_POINTER: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case NVLL_VK_OUT_OF_MEMORY:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_OUT_OF_MEMORY: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case NVLL_VK_API_IN_USE:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_API_IN_USE: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	case NVLL_VK_NO_VULKAN:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_NO_VULKAN: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-
-	default:
-		TP_ERROR(Log::RendererVulkanReflexPrefix, "Unknown error: ", function, " @[", file, ':', line, ':', column, ']');
-		break;
-	}
+	TP_ERROR(Log::RendererVulkanReflexPrefix, INTERNAL::NvLLVKStatusToString.at(result).value_or("Unknown error"),
+	         ": ", function, " @[", file, ':', line, ':', column, ']');
 
 	return false;
 }

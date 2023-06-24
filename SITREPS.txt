@@ -4121,3 +4121,5 @@ SITREP 06/24/2023|23w25b1
     - Changed TRAP Engine version to 23w25b1(0.9.51)
     - Utils un-deprecated GetEndian() ~<5 mins
     - Log Changed Log::Level checks ~<5 mins
+    - Utils Added fixed-size, compilte-time and thread safe ConstexprMap container ~<30 mins
+    - VulkanCommon ErrorCheck() and ReflexErrorCheck() now use ConstexprMap ~<10 mins
