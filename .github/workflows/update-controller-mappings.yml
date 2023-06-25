@@ -46,14 +46,17 @@ jobs:
           cd GeneratorScripts/
           ./GenerateControllerMappings.sh
           cd ..
+      - name: Retrieve todays date
+        id: get-date
+        run: echo "CURRENT_DATE=$(date '+%Y-%m-%d')" >> "$GITHUB_OUTPUT"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
           base: dev
-          branch: controller-mappings-update/$(date '+%Y-%m-%d')
+          branch: controller-mappings-update/${{steps.get-date.outputs.CURRENT_DATE}}
           delete-branch: true
-          commit-message: "Update Controller Mappings to $(date '+%Y-%m-%d')"
-          title: "Update Controller Mappings to $(date '+%Y-%m-%d')"
+          commit-message: "Update Controller Mappings to ${{steps.get-date.outputs.CURRENT_DATE}}"
+          title: "Update Controller Mappings to ${{steps.get-date.outputs.CURRENT_DATE}}"
           labels: "CI/CD, Input, Update"
           assignees: "GamesTrap"
           milestone: 5
