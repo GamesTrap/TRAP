@@ -136,24 +136,6 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const void* TRAP::INTERNAL::QOIImage::GetPixelData() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_data.data();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] uint64_t TRAP::INTERNAL::QOIImage::GetPixelDataSize() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_data.size();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 struct Pixel
 {
     uint8_t Red;

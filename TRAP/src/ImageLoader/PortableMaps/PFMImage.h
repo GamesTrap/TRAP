@@ -38,12 +38,12 @@ namespace TRAP::INTERNAL
 		/// Retrieve the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Constant pointer to the raw pixel data.</returns>
-		[[nodiscard]] const void* GetPixelData() const noexcept override;
+		[[nodiscard]] constexpr const void* GetPixelData() const noexcept override;
 		/// <summary>
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		[[nodiscard]] uint64_t GetPixelDataSize() const noexcept override;
+		[[nodiscard]] constexpr uint64_t GetPixelDataSize() const noexcept override;
 
 	private:
 		std::vector<float> m_data;
@@ -56,6 +56,20 @@ namespace TRAP::INTERNAL
 			float ByteOrder = 0.0f;
 		};
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const void* TRAP::INTERNAL::PFMImage::GetPixelData() const noexcept
+{
+	return m_data.data();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint64_t TRAP::INTERNAL::PFMImage::GetPixelDataSize() const noexcept
+{
+	return m_data.size() * sizeof(float);
 }
 
 #endif /*TRAP_PFMIMAGE_H*/

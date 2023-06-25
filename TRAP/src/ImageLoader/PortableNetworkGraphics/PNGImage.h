@@ -67,12 +67,12 @@ namespace TRAP::INTERNAL
 		/// Retrieve the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Constant pointer to the raw pixel data.</returns>
-		[[nodiscard]] const void* GetPixelData() const noexcept override;
+		[[nodiscard]] constexpr const void* GetPixelData() const noexcept override;
 		/// <summary>
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		[[nodiscard]] uint64_t GetPixelDataSize() const noexcept override;
+		[[nodiscard]] constexpr uint64_t GetPixelDataSize() const noexcept override;
 
 	private:
 		struct RGBA
@@ -337,6 +337,26 @@ namespace TRAP::INTERNAL
 		[[nodiscard]] static std::vector<uint8_t> ResolveIndexed(std::vector<uint8_t>& raw, uint32_t width, uint32_t height,
 		                                                         const Data& data);
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const void* TRAP::INTERNAL::PNGImage::GetPixelData() const noexcept
+{
+	if (!m_data2Byte.empty())
+		return m_data2Byte.data();
+
+	return m_data.data();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint64_t TRAP::INTERNAL::PNGImage::GetPixelDataSize() const noexcept
+{
+	if (!m_data2Byte.empty())
+		return m_data2Byte.size() * sizeof(uint16_t);
+
+	return m_data.size();
 }
 
 #endif /*TRAP_PNGIMAGE_H*/

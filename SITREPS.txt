@@ -4132,3 +4132,4 @@ SITREP 06/25/2023|23w25b2
     - Events Added constexpr to virtual functions ~>25 mins
     - (Vulkan)Buffer Added constexpr ~<15 mins
     - ScriptableEntity, Socket, Packet, Layer Added constexpr to virtual ~<30 mins
+    - Image Added constexpr to virtual ~>30 mins

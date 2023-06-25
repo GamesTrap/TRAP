@@ -30,7 +30,7 @@ namespace TRAP
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		Image() noexcept;
+		constexpr Image() noexcept = default;
 	public:
 		/// <summary>
 		/// Copy constructor.
@@ -57,72 +57,72 @@ namespace TRAP
 		/// Retrieve the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Constant pointer to the raw pixel data.</returns>
-		[[nodiscard]] virtual const void* GetPixelData() const noexcept = 0;
+		[[nodiscard]] virtual constexpr const void* GetPixelData() const noexcept = 0;
 		/// <summary>
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		[[nodiscard]] virtual uint64_t GetPixelDataSize() const noexcept = 0;
+		[[nodiscard]] virtual constexpr uint64_t GetPixelDataSize() const noexcept = 0;
 		/// <summary>
 		/// Retrieve the amount of bits used for a single pixel in the image.
 		/// </summary>
 		/// <returns>Amount of bits.</returns>
-		[[nodiscard]] uint32_t GetBitsPerPixel() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetBitsPerPixel() const noexcept;
 		/// <summary>
 		/// Retrieve the amount of bytes used for a single pixel in the image.
 		/// </summary>
 		/// <returns>Amount of bytes.</returns>
-		[[nodiscard]] uint32_t GetBytesPerPixel() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetBytesPerPixel() const noexcept;
 		/// <summary>
 		/// Retrieve the amount of bits used for a single channel of a pixel in the image.
 		/// </summary>
 		/// <returns>Amount of bits.</returns>
-		[[nodiscard]] uint32_t GetBitsPerChannel() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetBitsPerChannel() const noexcept;
 		/// <summary>
 		/// Retrieve the amount of bytes used for a single channel of a pixel in the image.
 		/// </summary>
 		/// <returns>Amount of bytes.</returns>
-		[[nodiscard]] uint32_t GetBytesPerChannel() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetBytesPerChannel() const noexcept;
 		/// <summary>
 		/// Retrieve the width of the image.
 		/// </summary>
 		/// <returns>Width of the image.</returns>
-		[[nodiscard]] uint32_t GetWidth() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetWidth() const noexcept;
 		/// <summary>
 		/// Retrieve the height of the image.
 		/// </summary>
 		/// <returns>Height of the image.</returns>
-		[[nodiscard]] uint32_t GetHeight() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetHeight() const noexcept;
 		/// <summary>
 		/// Retrieve the size of the image.
 		/// </summary>
 		/// <returns>Size of the image as a Math::Vec2ui.</returns>
-		[[nodiscard]] Math::Vec2ui GetSize() const noexcept;
+		[[nodiscard]] constexpr Math::Vec2ui GetSize() const noexcept;
 		/// <summary>
 		/// Retrieve whether the image has an alpha channel or not.
 		/// </summary>
 		/// <returns>True if image has an alpha channel, false otherwise.</returns>
-		[[nodiscard]] bool HasAlphaChannel() const noexcept;
+		[[nodiscard]] constexpr bool HasAlphaChannel() const noexcept;
 		/// <summary>
 		/// Retrieve whether the image is gray scale or not.
 		/// </summary>
 		/// <returns>True if image is gray scale, false otherwise.</returns>
-		[[nodiscard]] bool IsImageGrayScale() const noexcept;
+		[[nodiscard]] constexpr bool IsImageGrayScale() const noexcept;
 		/// <summary>
 		/// Retrieve whether the image is colored or not.
 		/// </summary>
 		/// <returns>True if image is colored, false otherwise.</returns>
-		[[nodiscard]] bool IsImageColored() const noexcept;
+		[[nodiscard]] constexpr bool IsImageColored() const noexcept;
 		/// <summary>
 		/// Retrieve whether the image is HDR(High Dynamic Range) or not.
 		/// </summary>
 		/// <returns>True if image is HDR, false otherwise.</returns>
-		[[nodiscard]] bool IsHDR() const noexcept;
+		[[nodiscard]] constexpr bool IsHDR() const noexcept;
 		/// <summary>
 		/// Retrieve whether the image is LDR(Low Dynamic Range) or not.
 		/// </summary>
 		/// <returns>True if image is LDR, false otherwise.</returns>
-		[[nodiscard]] bool IsLDR() const noexcept;
+		[[nodiscard]] constexpr bool IsLDR() const noexcept;
 		/// <summary>
 		/// Retrieve the file path of the image.
 		/// </summary>
@@ -132,7 +132,7 @@ namespace TRAP
 		/// Retrieve the color format used by the image.
 		/// </summary>
 		/// <returns>Color format of the image.</returns>
-		[[nodiscard]] ColorFormat GetColorFormat() const noexcept;
+		[[nodiscard]] constexpr ColorFormat GetColorFormat() const noexcept;
 
 		/// <summary>
 		/// Load an image from disk.
@@ -252,7 +252,7 @@ namespace TRAP
 		/// <param name="data">Raw pixel data.</param>
 		/// <returns>Flipped raw pixel data</returns>
 		template<typename T>
-		[[nodiscard]] static std::vector<T> FlipX(uint32_t width, uint32_t height, ColorFormat format, const T* data);
+		[[nodiscard]] static constexpr std::vector<T> FlipX(uint32_t width, uint32_t height, ColorFormat format, const T* data);
 		/// <summary>
 		/// Flip raw pixel data on Y axis.
 		/// </summary>
@@ -263,7 +263,7 @@ namespace TRAP
 		/// <param name="data">Raw pixel data.</param>
 		/// <returns>Flipped raw pixel data</returns>
 		template<typename T>
-		[[nodiscard]] static std::vector<T> FlipY(uint32_t width, uint32_t height, ColorFormat format, const T* data);
+		[[nodiscard]] static constexpr std::vector<T> FlipY(uint32_t width, uint32_t height, ColorFormat format, const T* data);
 		/// <summary>
 		/// Rotate raw pixel data by 90 degrees clockwise.
 		/// </summary>
@@ -274,7 +274,7 @@ namespace TRAP
 		/// <param name="data">Raw pixel data.</param>
 		/// <returns>Rotated raw pixel data</returns>
 		template<typename T>
-		[[nodiscard]] static std::vector<T> Rotate90Clockwise(uint32_t width, uint32_t height, ColorFormat format, const T* data);
+		[[nodiscard]] static constexpr std::vector<T> Rotate90Clockwise(uint32_t width, uint32_t height, ColorFormat format, const T* data);
 		/// <summary>
 		/// Rotate raw pixel data by 90 degrees counter clockwise.
 		/// </summary>
@@ -285,7 +285,7 @@ namespace TRAP
 		/// <param name="data">Raw pixel data.</param>
 		/// <returns>Rotate raw pixel data</returns>
 		template<typename T>
-		[[nodiscard]] static std::vector<T> Rotate90CounterClockwise(uint32_t width, uint32_t height, ColorFormat format, const T* data);
+		[[nodiscard]] static constexpr std::vector<T> Rotate90CounterClockwise(uint32_t width, uint32_t height, ColorFormat format, const T* data);
 		/// <summary>
 		/// Converts raw RGB pixel data to RGBA.
 		/// </summary>
@@ -296,7 +296,7 @@ namespace TRAP
 		/// <param name="data">Raw pixel data.</param>
 		/// <returns>Converted RGBA raw pixel data</returns>
 		template<typename T>
-		[[nodiscard]] static std::vector<T> ConvertRGBToRGBA(uint32_t width, uint32_t height, ColorFormat format, const T* data);
+		[[nodiscard]] static constexpr std::vector<T> ConvertRGBToRGBA(uint32_t width, uint32_t height, ColorFormat format, const T* data);
 		/// <summary>
 		/// Converts raw RGBA pixel data to RGB.
 		/// </summary>
@@ -307,7 +307,7 @@ namespace TRAP
 		/// <param name="data">Raw pixel data.</param>
 		/// <returns>Converted RGB raw pixel data</returns>
 		template<typename T>
-		[[nodiscard]] static std::vector<T> ConvertRGBAToRGB(uint32_t width, uint32_t height, ColorFormat format, const T* data);
+		[[nodiscard]] static constexpr std::vector<T> ConvertRGBAToRGB(uint32_t width, uint32_t height, ColorFormat format, const T* data);
 
 		/// <summary>
 		/// Converts BGR16 pixel data to RGB24.
@@ -316,8 +316,8 @@ namespace TRAP
 		/// <param name="width">Width of the image.</param>
 		/// <param name="height">Height of the image.</param>
 		/// <returns>RGB24 pixel data.</returns>
-		[[nodiscard]] static std::vector<uint8_t> ConvertBGR16ToRGB24(std::vector<uint8_t>& source,
-		                                                              uint32_t width, uint32_t height);
+		[[nodiscard]] static constexpr std::vector<uint8_t> ConvertBGR16ToRGB24(std::vector<uint8_t>& source,
+		                                                                        uint32_t width, uint32_t height);
 		/// <summary>
 		/// Converts BGR24 pixel data to RGB24.
 		/// </summary>
@@ -325,8 +325,8 @@ namespace TRAP
 		/// <param name="width">Width of the image.</param>
 		/// <param name="height">Height of the image.</param>
 		/// <returns>RGB24 pixel data.</returns>
-		[[nodiscard]] static std::vector<uint8_t> ConvertBGR24ToRGB24(std::vector<uint8_t>& source,
-		                                                              uint32_t width, uint32_t height);
+		[[nodiscard]] static constexpr std::vector<uint8_t> ConvertBGR24ToRGB24(std::vector<uint8_t>& source,
+		                                                                        uint32_t width, uint32_t height);
 		/// <summary>
 		/// Converts BGR32 pixel data to RGB32.
 		/// </summary>
@@ -334,8 +334,8 @@ namespace TRAP
 		/// <param name="width">Width of the image.</param>
 		/// <param name="height">Height of the image.</param>
 		/// <returns>RGB32 pixel data.</returns>
-		[[nodiscard]] static std::vector<uint8_t> ConvertBGRA32ToRGBA32(std::vector<uint8_t>& source,
-		                                                                uint32_t width, uint32_t height);
+		[[nodiscard]] static constexpr std::vector<uint8_t> ConvertBGRA32ToRGBA32(std::vector<uint8_t>& source,
+		                                                                          uint32_t width, uint32_t height);
 		/// <summary>
 		/// Decode BGRA indexed pixel data to RGBA.
 		/// Output format depends on channel count, if it is 4, output is RGBA, if it is 3, output is RGB and so on.
@@ -346,23 +346,114 @@ namespace TRAP
 		/// <param name="channels">Amount of channels, i.e. 4 = RGBA, 3 = RGB.</param>
 		/// <param name="colorMap">Color table.</param>
 		/// <returns>Decoded pixel data.</returns>
-		[[nodiscard]] static std::vector<uint8_t> DecodeBGRAMap(std::vector<uint8_t>& source, uint32_t width, uint32_t height,
-		                                                        uint32_t channels, std::vector<uint8_t>& colorMap);
+		[[nodiscard]] constexpr static std::vector<uint8_t> DecodeBGRAMap(std::vector<uint8_t>& source, uint32_t width, uint32_t height,
+		                                                                  uint32_t channels, std::vector<uint8_t>& colorMap);
 
-		uint32_t m_width;
-		uint32_t m_height;
-		bool m_isHDR;
-		ColorFormat m_colorFormat;
-		std::filesystem::path m_filepath;
-		uint32_t m_bitsPerPixel;
+		uint32_t m_width = 0;
+		uint32_t m_height = 0;
+		bool m_isHDR = false;
+		ColorFormat m_colorFormat = ColorFormat::NONE;
+		std::filesystem::path m_filepath{};
+		uint32_t m_bitsPerPixel = 0;
 	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] constexpr uint32_t TRAP::Image::GetBitsPerPixel() const noexcept
+{
+	return m_bitsPerPixel;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Image::GetBytesPerPixel() const noexcept
+{
+	return m_bitsPerPixel / 8;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Image::GetBitsPerChannel() const noexcept
+{
+	return m_bitsPerPixel / ToUnderlying(m_colorFormat);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Image::GetBytesPerChannel() const noexcept
+{
+	return GetBytesPerPixel() / ToUnderlying(m_colorFormat);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Image::GetWidth() const noexcept
+{
+	return m_width;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Image::GetHeight() const noexcept
+{
+	return m_height;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Math::Vec2ui TRAP::Image::GetSize() const noexcept
+{
+	return Math::Vec2ui{ m_width, m_height };
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Image::HasAlphaChannel() const noexcept
+{
+	return m_colorFormat == ColorFormat::GrayScaleAlpha || m_colorFormat == ColorFormat::RGBA;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Image::IsImageGrayScale() const noexcept
+{
+	return m_colorFormat == ColorFormat::GrayScale || m_colorFormat == ColorFormat::GrayScaleAlpha;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Image::IsImageColored() const noexcept
+{
+	return m_colorFormat == ColorFormat::RGB || m_colorFormat == ColorFormat::RGBA;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Image::IsHDR() const noexcept
+{
+	return m_isHDR;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Image::IsLDR() const noexcept
+{
+	return !m_isHDR;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Image::ColorFormat TRAP::Image::GetColorFormat() const noexcept
+{
+	return m_colorFormat;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 template <typename T>
-[[nodiscard]] std::vector<T> TRAP::Image::FlipX(const uint32_t width, const uint32_t height, const ColorFormat format,
-                                                const T* data)
+[[nodiscard]] constexpr std::vector<T> TRAP::Image::FlipX(const uint32_t width, const uint32_t height, const ColorFormat format,
+                                                          const T* data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -404,8 +495,8 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-[[nodiscard]] std::vector<T> TRAP::Image::FlipY(const uint32_t width, const uint32_t height, const ColorFormat format,
-                                                const T* data)
+[[nodiscard]] constexpr std::vector<T> TRAP::Image::FlipY(const uint32_t width, const uint32_t height, const ColorFormat format,
+                                                          const T* data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -447,8 +538,8 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] std::vector<T> TRAP::Image::Rotate90Clockwise(const uint32_t width, const uint32_t height,
-                                                            const ColorFormat format, const T* const data)
+[[nodiscard]] constexpr std::vector<T> TRAP::Image::Rotate90Clockwise(const uint32_t width, const uint32_t height,
+                                                                      const ColorFormat format, const T* const data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -488,8 +579,8 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] std::vector<T> TRAP::Image::Rotate90CounterClockwise(const uint32_t width, const uint32_t height,
-                                                                   const ColorFormat format, const T* const data)
+[[nodiscard]] constexpr std::vector<T> TRAP::Image::Rotate90CounterClockwise(const uint32_t width, const uint32_t height,
+                                                                             const ColorFormat format, const T* const data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -535,8 +626,8 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-[[nodiscard]] std::vector<T> TRAP::Image::ConvertRGBToRGBA(const uint32_t width, const uint32_t height, const ColorFormat format,
-									                       const T* data)
+[[nodiscard]] constexpr std::vector<T> TRAP::Image::ConvertRGBToRGBA(const uint32_t width, const uint32_t height, const ColorFormat format,
+									                                 const T* data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -578,8 +669,8 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-[[nodiscard]] std::vector<T> TRAP::Image::ConvertRGBAToRGB(const uint32_t width, const uint32_t height, const ColorFormat format,
-									                       const T* data)
+[[nodiscard]] constexpr std::vector<T> TRAP::Image::ConvertRGBAToRGB(const uint32_t width, const uint32_t height, const ColorFormat format,
+									                                 const T* data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -609,6 +700,84 @@ template <typename T>
 	}
 
 	return newData;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::vector<uint8_t> TRAP::Image::ConvertBGR16ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
+{
+	std::vector<uint8_t> data{};
+	data.resize(NumericCast<std::size_t>(width) * height * 3);
+
+	uint32_t index = 0;
+	for (uint32_t i = 0; i < width * height * 2; i += 2)
+	{
+		data[index++] = NumericCast<uint8_t>(source[i + 1u] << 1u) & 0xF8u;
+		data[index++] = NumericCast<uint8_t>(NumericCast<uint8_t>((source[i + 1u]) << 6u) | NumericCast<uint8_t>(source[i] >> 2u)) & 0xF8u;
+		data[index++] = NumericCast<uint8_t>(source[i] << 3u) & 0xF8u;
+	}
+
+	return data;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::vector<uint8_t> TRAP::Image::DecodeBGRAMap(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height, const uint32_t channels, std::vector<uint8_t>& colorMap)
+{
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
+	std::vector<uint8_t> data{};
+	data.resize(NumericCast<std::size_t>(width) * height * channels);
+
+	uint32_t index = 0;
+	for (uint32_t i = 0; i < width * height; i++)
+	{
+		if (channels == 1)
+			data[index++] = colorMap[NumericCast<std::size_t>(source[i]) * channels];
+		else if (channels == 2)
+		{
+			data[index++] = NumericCast<uint8_t>(colorMap[NumericCast<std::size_t>(source[i]) * channels + 1u] << 1u) & 0xF8u;
+			data[index++] = NumericCast<uint8_t>(NumericCast<uint8_t>(colorMap[NumericCast<std::size_t>(source[i]) * channels + 1u] << 6u) | NumericCast<uint8_t>(colorMap[NumericCast<std::size_t>(source[i]) * channels] >> 2u)) & 0xF8u;
+			data[index++] = NumericCast<uint8_t>(colorMap[NumericCast<std::size_t>(source[i]) * channels] << 3u) & 0xF8u;
+		}
+		else if (channels == 3)
+		{
+			data[index++] = colorMap[NumericCast<std::size_t>(source[i]) * channels + 2];
+			data[index++] = colorMap[NumericCast<std::size_t>(source[i]) * channels + 1];
+			data[index++] = colorMap[NumericCast<std::size_t>(source[i]) * channels + 0];
+		}
+		else if (channels == 4)
+		{
+			data[index++] = colorMap[NumericCast<std::size_t>(source[i]) * channels + 2];
+			data[index++] = colorMap[NumericCast<std::size_t>(source[i]) * channels + 1];
+			data[index++] = colorMap[NumericCast<std::size_t>(source[i]) * channels + 0];
+			data[index++] = colorMap[NumericCast<std::size_t>(source[i]) * channels + 3];
+		}
+	}
+
+	return data;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::vector<uint8_t> TRAP::Image::ConvertBGR24ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
+{
+	for (uint32_t i = 0; i < width * height * 3; i += 3)
+		source[i] ^= source[i + 2] ^= source[i] ^= source[i + 2];
+
+	return source;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::vector<uint8_t> TRAP::Image::ConvertBGRA32ToRGBA32(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
+{
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
+	for (uint32_t i = 0; i < width * height * 4; i += 4)
+		source[i] ^= source[i + 2] ^= source[i] ^= source[i + 2];
+
+	return source;
 }
 
 #endif /*TRAP_IMAGE_H*/

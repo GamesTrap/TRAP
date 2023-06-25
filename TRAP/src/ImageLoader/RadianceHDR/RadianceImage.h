@@ -40,12 +40,12 @@ namespace TRAP::INTERNAL
 		/// Retrieve the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Constant pointer to the raw pixel data.</returns>
-		[[nodiscard]] const void* GetPixelData() const noexcept override;
+		[[nodiscard]] constexpr const void* GetPixelData() const noexcept override;
 		/// <summary>
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		[[nodiscard]] uint64_t GetPixelDataSize() const noexcept override;
+		[[nodiscard]] constexpr uint64_t GetPixelDataSize() const noexcept override;
 
 	private:
 		using RGBE = std::array<uint8_t, 4>;
@@ -128,6 +128,20 @@ namespace TRAP::INTERNAL
 		inline static constexpr uint32_t B = 2;
 		inline static constexpr uint32_t E = 3;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const void* TRAP::INTERNAL::RadianceImage::GetPixelData() const noexcept
+{
+	return m_data.data();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint64_t TRAP::INTERNAL::RadianceImage::GetPixelDataSize() const noexcept
+{
+	return m_data.size() * sizeof(float);
 }
 
 #endif /*TRAP_IMAGE_RADIANCE_H*/

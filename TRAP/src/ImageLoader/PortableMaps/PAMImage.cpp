@@ -162,27 +162,3 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::filesystem::path filepath)
 		file.close();
 	}
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const void* TRAP::INTERNAL::PAMImage::GetPixelData() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	if (!m_data2Byte.empty())
-		return m_data2Byte.data();
-
-	return m_data.data();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] uint64_t TRAP::INTERNAL::PAMImage::GetPixelDataSize() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	if (!m_data2Byte.empty())
-		return m_data2Byte.size() * sizeof(uint16_t);
-
-	return m_data.size();
-}

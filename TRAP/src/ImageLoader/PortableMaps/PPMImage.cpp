@@ -106,30 +106,6 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const void* TRAP::INTERNAL::PPMImage::GetPixelData() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	if (!m_data2Byte.empty())
-		return m_data2Byte.data();
-
-	return m_data.data();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] uint64_t TRAP::INTERNAL::PPMImage::GetPixelDataSize() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	if (!m_data2Byte.empty())
-		return m_data2Byte.size() * sizeof(uint16_t);
-
-	return m_data.size();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::INTERNAL::PPMImage::Save(const Image* const img, const std::filesystem::path& filepath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);

@@ -117,21 +117,3 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::filesystem::path filepath)
 		}
 	}
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const void* TRAP::INTERNAL::PFMImage::GetPixelData() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_data.data();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] uint64_t TRAP::INTERNAL::PFMImage::GetPixelDataSize() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_data.size() * sizeof(float);
-}

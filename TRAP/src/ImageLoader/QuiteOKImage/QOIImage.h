@@ -48,12 +48,12 @@ namespace TRAP::INTERNAL
 		/// Retrieve the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Constant pointer to the raw pixel data.</returns>
-		[[nodiscard]] const void* GetPixelData() const noexcept override;
+		[[nodiscard]] constexpr const void* GetPixelData() const noexcept override;
 		/// <summary>
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		[[nodiscard]] uint64_t GetPixelDataSize() const noexcept override;
+		[[nodiscard]] constexpr uint64_t GetPixelDataSize() const noexcept override;
 
 	private:
         /// <summary>
@@ -73,6 +73,20 @@ namespace TRAP::INTERNAL
             uint8_t ColorSpace = 0;
 		};
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const void* TRAP::INTERNAL::QOIImage::GetPixelData() const noexcept
+{
+	return m_data.data();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint64_t TRAP::INTERNAL::QOIImage::GetPixelDataSize() const noexcept
+{
+	return m_data.size();
 }
 
 #endif /*TRAP_QOIIMAGE_H*/

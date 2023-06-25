@@ -38,12 +38,12 @@ namespace TRAP::INTERNAL
 		/// Retrieve the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Constant pointer to the raw pixel data.</returns>
-		[[nodiscard]] const void* GetPixelData() const noexcept override;
+		[[nodiscard]] constexpr const void* GetPixelData() const noexcept override;
 		/// <summary>
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		[[nodiscard]] uint64_t GetPixelDataSize() const noexcept override;
+		[[nodiscard]] constexpr uint64_t GetPixelDataSize() const noexcept override;
 
 	private:
 		std::vector<uint8_t> m_data;
@@ -59,6 +59,26 @@ namespace TRAP::INTERNAL
 			std::string TuplType;
 		};
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const void* TRAP::INTERNAL::PAMImage::GetPixelData() const noexcept
+{
+	if (!m_data2Byte.empty())
+		return m_data2Byte.data();
+
+	return m_data.data();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint64_t TRAP::INTERNAL::PAMImage::GetPixelDataSize() const noexcept
+{
+	if (!m_data2Byte.empty())
+		return m_data2Byte.size() * sizeof(uint16_t);
+
+	return m_data.size();
 }
 
 #endif /*TRAP_PAMIMAGE_H*/

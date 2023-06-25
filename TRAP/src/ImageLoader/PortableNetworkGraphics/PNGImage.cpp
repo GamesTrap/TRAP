@@ -329,30 +329,6 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const void* TRAP::INTERNAL::PNGImage::GetPixelData() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	if (!m_data2Byte.empty())
-		return m_data2Byte.data();
-
-	return m_data.data();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] uint64_t TRAP::INTERNAL::PNGImage::GetPixelDataSize() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	if (!m_data2Byte.empty())
-		return m_data2Byte.size() * sizeof(uint16_t);
-
-	return m_data.size();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 inline constexpr std::array<std::string_view, 11> UnusedChunks
 {
 	"cHRM", "gAMA", "iCCP", "hIST", "pHYs", "sPLT", "tIME", "iTXt", "tEXt", "zTXt", "eXIf"
