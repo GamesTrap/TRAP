@@ -4140,5 +4140,6 @@ SITREP 06/25/2023|23w25b2
     - Replaced std::thread with std::jthread where it makes sense ~<5 mins
     - Added constexpr to destructors where possible ~<10 mins
     - Math is now more constexpr ~<15 mins
+    - Updated ImGuiWindowing ~<5 mins
     - Added constinit where appilcable ~>30 mins
     - Update-Controller-Mappings Fixed invalid PR branch name ~<5 mins
