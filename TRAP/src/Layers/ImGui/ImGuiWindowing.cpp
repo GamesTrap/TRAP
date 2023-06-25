@@ -166,7 +166,9 @@ void TRAP::INTERNAL::ImGuiWindowing::NewFrame()
 		UpdateMonitors();
 
 	//Setup time step
-	const double currentTime = static_cast<double>(Application::GetTime());
+	double currentTime = static_cast<double>(Application::GetTime());
+	if(currentTime <= bd->Time)
+		currentTime = bd->Time + 0.00001f;
 	io.DeltaTime = bd->Time > 0.0 ? NumericCast<float>(currentTime - bd->Time) : (1.0f / 60.0f);
 	bd->Time = currentTime;
 
