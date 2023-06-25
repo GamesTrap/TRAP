@@ -43,11 +43,11 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Shader(const Shader&) = delete;
+		constexpr Shader(const Shader&) = delete;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Shader& operator=(const Shader&) = delete;
+		constexpr Shader& operator=(const Shader&) = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
@@ -255,7 +255,7 @@ namespace TRAP::Graphics
 		/// Retrieve the shaders thread count per work group.
 		/// </summary>
 		/// <returns>Shaders thread count per work group.</returns>
-		[[nodiscard]] virtual const std::array<uint32_t, 3>& GetNumThreadsPerGroup() const noexcept = 0;
+		[[nodiscard]] virtual constexpr std::array<uint32_t, 3> GetNumThreadsPerGroup() const noexcept = 0;
 
 		/// <summary>
 		/// Create a shader from file.

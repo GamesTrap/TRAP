@@ -49,29 +49,6 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-TRAP::Graphics::SwapChain::SwapChain()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererSwapChainPrefix, "Creating SwapChain");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::SwapChain::~SwapChain()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererSwapChainPrefix, "Destroying SwapChain");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-
-	m_renderTargets.clear();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] const std::vector<TRAP::Ref<TRAP::Graphics::RenderTarget>>& TRAP::Graphics::SwapChain::GetRenderTargets() const noexcept
 {

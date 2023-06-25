@@ -18,7 +18,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		virtual ~Sampler();
+		constexpr virtual ~Sampler();
 
 		/// <summary>
 		/// Copy constructor.
@@ -114,6 +114,17 @@ namespace TRAP::Graphics
 		static std::unordered_map<RendererAPI::SamplerDesc, TRAP::Ref<Sampler>> s_cachedSamplers;
 	};
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::Sampler::~Sampler()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererSamplerPrefix, "Destroying Sampler");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 
 namespace std
 {

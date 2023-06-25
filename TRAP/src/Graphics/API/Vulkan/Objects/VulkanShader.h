@@ -229,7 +229,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the shaders thread count per work group.
 		/// </summary>
 		/// <returns>Shaders thread count per work group.</returns>
-		[[nodiscard]] const std::array<uint32_t, 3>& GetNumThreadsPerGroup() const noexcept override;
+		[[nodiscard]] constexpr std::array<uint32_t, 3> GetNumThreadsPerGroup() const noexcept override;
 
 	protected:
 		/// <summary>
@@ -297,6 +297,13 @@ namespace TRAP::Graphics::API
 		std::array<std::vector<TRAP::Scope<DescriptorSet>>, RendererAPI::ImageCount> m_cleanedDescriptorSets;
 		uint32_t m_lastImageIndex;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::array<uint32_t, 3> TRAP::Graphics::API::VulkanShader::GetNumThreadsPerGroup() const noexcept
+{
+	return m_numThreadsPerGroup;
 }
 
 #endif /*TRAP_VULKANSHADER_H*/

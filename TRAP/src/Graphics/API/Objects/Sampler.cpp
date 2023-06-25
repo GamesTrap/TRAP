@@ -19,17 +19,6 @@ TRAP::Graphics::Sampler::Sampler()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Sampler::~Sampler()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererSamplerPrefix, "Destroying Sampler");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(RendererAPI::SamplerDesc desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

@@ -18,7 +18,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		virtual ~QueryPool();
+		constexpr virtual ~QueryPool();
 
 		/// <summary>
 		/// Copy constructor.
@@ -45,6 +45,15 @@ namespace TRAP::Graphics
 
 		//No Graphic API independent data
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::QueryPool::~QueryPool()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererQueryPoolPrefix, "Destroying QueryPool");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 #endif /*TRAP_QUERYPOOL_H*/

@@ -33,13 +33,13 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		virtual ~SwapChain();
+		constexpr virtual ~SwapChain();
 
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		SwapChain(const SwapChain&) noexcept = default;
+		constexpr SwapChain(const SwapChain&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -47,7 +47,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		SwapChain(SwapChain&&) noexcept = default;
+		constexpr SwapChain(SwapChain&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
@@ -82,12 +82,36 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		SwapChain();
+		constexpr SwapChain();
 
 		//Render targets created from the swapchain back buffers
 		std::vector<TRAP::Ref<RenderTarget>> m_renderTargets;
 #endif /*TRAP_HEADLESS_MODE*/
 	};
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifndef TRAP_HEADLESS_MODE
+constexpr TRAP::Graphics::SwapChain::SwapChain()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererSwapChainPrefix, "Creating SwapChain");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+}
+#endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifndef TRAP_HEADLESS_MODE
+constexpr TRAP::Graphics::SwapChain::~SwapChain()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererSwapChainPrefix, "Destroying SwapChain");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+
+	m_renderTargets.clear();
+}
+#endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_SWAPCHAIN_H*/

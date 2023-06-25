@@ -11,43 +11,57 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		Camera() noexcept = default;
+		constexpr Camera() noexcept = default;
 		/// <summary>
 		/// Constructor.
 		/// </summary>
 		/// <param name="projection">Projection matrix.</param>
-		explicit Camera(const Math::Mat4& projection) noexcept;
+		constexpr explicit Camera(const Math::Mat4& projection) noexcept;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		virtual ~Camera() = default;
+		constexpr virtual ~Camera() = default;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Camera(const Camera&) noexcept = default;
+		constexpr Camera(const Camera&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Camera(Camera&&) noexcept = default;
+		constexpr Camera(Camera&&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Camera& operator=(const Camera&) noexcept = default;
+		constexpr Camera& operator=(const Camera&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Camera& operator=(Camera&&) noexcept = default;
+		constexpr Camera& operator=(Camera&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the projection matrix.
 		/// </summary>
 		/// <returns>Projection matrix.</returns>
-		[[nodiscard]] const Math::Mat4& GetProjectionMatrix() const noexcept;
+		[[nodiscard]] constexpr Math::Mat4 GetProjectionMatrix() const noexcept;
 
 	protected:
 		//Projection matrix, identity by default.
 		Math::Mat4 m_projection = Math::Mat4(1.0f);
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::Camera::Camera(const TRAP::Math::Mat4& projection) noexcept
+	: m_projection(projection)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Math::Mat4 TRAP::Graphics::Camera::GetProjectionMatrix() const noexcept
+{
+	return m_projection;
 }
 
 #endif /*TRAP_CAMERA_H*/

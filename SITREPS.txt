@@ -4133,3 +4133,4 @@ SITREP 06/25/2023|23w25b2
     - (Vulkan)Buffer Added constexpr ~<15 mins
     - ScriptableEntity, Socket, Packet, Layer Added constexpr to virtual ~<30 mins
     - Image Added constexpr to virtual ~>30 mins
+    - Shader, Camera, SwapChain, Semaphore, Sampler, QueryPool Added constexpr to virtual ~>30 mins

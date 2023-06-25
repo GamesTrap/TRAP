@@ -493,15 +493,6 @@ void TRAP::Graphics::API::VulkanShader::UseSSBO(const uint32_t set, const uint32
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const std::array<uint32_t, 3>& TRAP::Graphics::API::VulkanShader::GetNumThreadsPerGroup() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_numThreadsPerGroup;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc& desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);

@@ -35,17 +35,6 @@ TRAP::Graphics::Semaphore::Semaphore()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Semaphore::~Semaphore()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererSemaphorePrefix, "Destroying Semaphore");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] bool TRAP::Graphics::Semaphore::IsSignaled() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

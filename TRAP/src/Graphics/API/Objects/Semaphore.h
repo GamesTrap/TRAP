@@ -18,7 +18,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		virtual ~Semaphore();
+		constexpr virtual ~Semaphore();
 
 		/// <summary>
 		/// Copy constructor.
@@ -58,6 +58,15 @@ namespace TRAP::Graphics
 		friend TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Present(const RendererAPI::QueuePresentDesc& desc) const;
 #endif /*TRAP_HEADLESS_MODE*/
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::Semaphore::~Semaphore()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererSemaphorePrefix, "Destroying Semaphore");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 #endif /*TRAP_SEMAPHORE_H*/
