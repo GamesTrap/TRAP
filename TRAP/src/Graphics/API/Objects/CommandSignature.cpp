@@ -14,17 +14,6 @@ TRAP::Graphics::CommandSignature::CommandSignature()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::CommandSignature::~CommandSignature()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererCommandSignaturePrefix, "Destroying CommandSignature");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::CommandSignature> TRAP::Graphics::CommandSignature::Create(const RendererAPI::CommandSignatureDesc& desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

@@ -18,7 +18,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		virtual ~DescriptorPool();
+		constexpr virtual ~DescriptorPool();
 
 		/// <summary>
 		/// Copy constructor.
@@ -64,6 +64,15 @@ namespace TRAP::Graphics
 
 		uint32_t m_numDescriptorSets;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::DescriptorPool::~DescriptorPool()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererDescriptorPoolPrefix, "Destroying DescriptorPool");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 #endif /*TRAP_DESCRIPTORPOOL_H*/

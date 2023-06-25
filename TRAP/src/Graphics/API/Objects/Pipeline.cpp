@@ -14,17 +14,6 @@ TRAP::Graphics::Pipeline::Pipeline()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Pipeline::~Pipeline()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererPipelinePrefix, "Destroying Pipeline");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::Pipeline> TRAP::Graphics::Pipeline::Create(const RendererAPI::PipelineDesc& desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

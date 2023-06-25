@@ -37,17 +37,6 @@ TRAP::Graphics::DescriptorPool::DescriptorPool()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::DescriptorPool::~DescriptorPool()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererDescriptorPoolPrefix, "Destroying DescriptorPool");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] uint32_t TRAP::Graphics::DescriptorPool::GetDescriptorSetsNum() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

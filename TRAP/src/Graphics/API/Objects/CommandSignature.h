@@ -18,7 +18,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		virtual ~CommandSignature();
+		constexpr virtual ~CommandSignature();
 
 		/// <summary>
 		/// Copy constructor.
@@ -45,6 +45,15 @@ namespace TRAP::Graphics
 
 		//No Graphic API independent data
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::CommandSignature::~CommandSignature()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererCommandSignaturePrefix, "Destroying CommandSignature");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 #endif /*TRAP_COMMANDSIGNATURE_H*/

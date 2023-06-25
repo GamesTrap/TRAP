@@ -15,17 +15,6 @@ TRAP::Graphics::PipelineCache::PipelineCache()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::PipelineCache::~PipelineCache()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererPipelineCachePrefix, "Destroying PipelineCache");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::PipelineCache::Save(const std::filesystem::path& path) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);

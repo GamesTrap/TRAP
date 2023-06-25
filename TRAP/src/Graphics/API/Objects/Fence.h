@@ -19,7 +19,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		virtual ~Fence();
+		constexpr virtual ~Fence();
 
 		/// <summary>
 		/// Copy constructor.
@@ -79,6 +79,15 @@ namespace TRAP::Graphics
 		friend TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Present(const RendererAPI::QueuePresentDesc& desc) const;
 #endif /*TRAP_HEADLESS_MODE*/
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::Fence::~Fence()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererFencePrefix, "Destroying Fence");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 #endif /*TRAP_FENCE_H*/

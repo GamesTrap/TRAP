@@ -24,7 +24,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		virtual ~PipelineCache();
+		constexpr virtual ~PipelineCache();
 
 		/// <summary>
 		/// Copy constructor.
@@ -66,6 +66,15 @@ namespace TRAP::Graphics
 
 		//No Graphic API independent data
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::PipelineCache::~PipelineCache()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererPipelineCachePrefix, "Destroying PipelineCache");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 #endif /*TRAP_PIPELINECACHE_H*/

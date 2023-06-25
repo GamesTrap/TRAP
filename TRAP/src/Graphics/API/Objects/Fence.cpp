@@ -35,17 +35,6 @@ TRAP::Graphics::Fence::Fence()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Fence::~Fence()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererFencePrefix, "Destroying Fence");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] bool TRAP::Graphics::Fence::IsSubmitted() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
