@@ -39,7 +39,7 @@ void VRSTests::OnImGuiRender()
 
     if(m_supportsPerDrawVRS && m_perDrawActive)
     {
-        static std::size_t selectedPerDrawShadingRate = 0;
+        constinit static std::size_t selectedPerDrawShadingRate = 0;
         if(ImGui::BeginCombo("##Shading rate", m_shadingRates[selectedPerDrawShadingRate].Name.c_str()))
         {
             for(std::size_t i = 0; i < m_shadingRates.size(); ++i)

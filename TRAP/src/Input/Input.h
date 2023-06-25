@@ -1016,7 +1016,7 @@ namespace TRAP
 		///////////
 		//Mapping//
 		///////////
-		static std::vector<Mapping> s_mappings;
+		inline constinit static std::vector<Mapping> s_mappings{};
 
 		/// <summary>
 		/// Initializes controller mappings.

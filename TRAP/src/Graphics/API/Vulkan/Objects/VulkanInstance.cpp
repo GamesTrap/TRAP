@@ -8,12 +8,6 @@
 #include "Utils/Dialogs/Dialogs.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 
-uint32_t TRAP::Graphics::API::VulkanInstance::s_instanceVersion = 0;
-std::vector<VkLayerProperties> TRAP::Graphics::API::VulkanInstance::s_availableInstanceLayers{};
-std::vector<VkExtensionProperties> TRAP::Graphics::API::VulkanInstance::s_availableInstanceExtensions{};
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appName,
 													std::vector<std::string> instanceLayers,
                                                     std::vector<std::string> instanceExtensions)

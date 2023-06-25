@@ -151,7 +151,7 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
     if (m_titleTimer.Elapsed() >= 0.025f)
     {
         m_titleTimer.Reset();
-        static std::size_t frameTimeIndex = 0;
+        constinit static std::size_t frameTimeIndex = 0;
         if (frameTimeIndex < m_frameTimeHistory.size() - 1)
         {
             m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
@@ -184,7 +184,7 @@ void ComputeTests::OnImGuiRender()
     ImGui::Separator();
     constexpr std::array<std::string_view, 4> shaders{"Disabled", "Sharpen", "Emboss", "Edge Detection"};
     constexpr std::array<const char*, 4> shadersC{std::get<0>(shaders).data(), std::get<1>(shaders).data(), std::get<2>(shaders).data(), std::get<3>(shaders).data()};
-    static int32_t currentItem = 0;
+    constinit static int32_t currentItem = 0;
     int32_t oldItem = currentItem;
     ImGui::Combo("##Compute shader", &currentItem, shadersC.data(), shadersC.size());
     if(currentItem != oldItem)

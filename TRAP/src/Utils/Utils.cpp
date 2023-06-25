@@ -111,7 +111,7 @@
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	static CPUInfo cpu{};
+	constinit static CPUInfo cpu{};
 
 	if(!cpu.Model.empty())
 		return cpu;
@@ -263,7 +263,7 @@ TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	static LinuxWindowManager windowManager = LinuxWindowManager::Unknown;
+	constinit static LinuxWindowManager windowManager = LinuxWindowManager::Unknown;
 
 #ifdef TRAP_PLATFORM_LINUX
 	if(windowManager != LinuxWindowManager::Unknown)
@@ -477,8 +477,8 @@ static TRAP::Utils::NTDLL s_ntdll;
 {
 	ZoneScoped;
 
-	static int32_t socketFD = -1;
-	static int32_t rc = 1;
+	constinit static int32_t socketFD = -1;
+	constinit static int32_t rc = 1;
 	static constexpr uint16_t port = 49420; //Just a free (hopefully) random port
 
 	if(socketFD == -1 || (rc != 0))

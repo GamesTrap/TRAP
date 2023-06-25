@@ -46,10 +46,6 @@ EShLanguage ShaderStageToEShLanguage(const TRAP::Graphics::RendererAPI::ShaderSt
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::Shader::s_glslangInitialized = false;
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 bool TRAP::Graphics::Shader::Reload()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);

@@ -431,7 +431,7 @@ namespace TRAP
 			Window* Win = nullptr;
 		} m_data;
 
-		static uint32_t s_windows;
+		inline constinit static uint32_t s_windows = 0;
 
 		inline static constexpr int32_t MinimumSupportedWindowWidth = 2;
 		inline static constexpr int32_t MinimumSupportedWindowHeight = 2;

@@ -86,7 +86,7 @@ namespace TRAP::Graphics::API
 
 		uint64_t m_ID;
 
-		static std::atomic<uint64_t> s_RenderTargetIDs;
+		inline constinit static std::atomic<uint64_t> s_RenderTargetIDs = 1;
 	};
 }
 

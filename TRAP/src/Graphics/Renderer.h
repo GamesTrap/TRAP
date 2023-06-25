@@ -71,8 +71,8 @@ namespace TRAP::Graphics
 		static Scope<StorageBuffer> s_sceneStorageBuffer;
 		static Scope<StorageBuffer> s_modelStorageBuffer;
 
-		static uint32_t s_maxDrawCalls;
-		static uint32_t s_currentDrawCalls;
+		inline constinit static uint32_t s_maxDrawCalls = 1000;
+		inline constinit static uint32_t s_currentDrawCalls = 0;
 	};
 }
 

@@ -3214,14 +3214,14 @@ namespace TRAP::Graphics
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
 		//GPU crash dump tracker using Nsight Aftermath instrumentation
-		static bool s_aftermathSupport;
-		static bool s_diagnosticsConfigSupport;
-		static bool s_diagnosticCheckPointsSupport;
+		inline constinit static bool s_aftermathSupport = false;
+		inline constinit static bool s_diagnosticsConfigSupport = false;
+		inline constinit static bool s_diagnosticCheckPointsSupport = false;
 #endif /*ENABLE_NSIGHT_AFTERMATH*/
 
 	protected:
 		static TRAP::Scope<RendererAPI> s_Renderer;
-		static RenderAPI s_RenderAPI;
+		inline constinit static RenderAPI s_RenderAPI = RenderAPI::NONE;
 		static TRAP::Scope<API::ResourceLoader> s_ResourceLoader;
 
 		static TRAP::Ref<DescriptorPool> s_descriptorPool;
@@ -3229,13 +3229,13 @@ namespace TRAP::Graphics
 		static TRAP::Ref<Queue> s_computeQueue;
 		static TRAP::Ref<Queue> s_transferQueue;
 
-		static RendererAPI::SampleCount s_currentSampleCount;
-		static RendererAPI::AntiAliasing s_currentAntiAliasing;
-		static RendererAPI::SampleCount s_newSampleCount;
-		static RendererAPI::AntiAliasing s_newAntiAliasing;
-		static RendererAPI::SampleCount s_Anisotropy;
+		inline constinit static RendererAPI::SampleCount s_currentSampleCount = RendererAPI::SampleCount::Two;
+		inline constinit static RendererAPI::AntiAliasing s_currentAntiAliasing = RendererAPI::AntiAliasing::Off;
+		inline constinit static RendererAPI::SampleCount s_newSampleCount = RendererAPI::SampleCount::Two;
+		inline constinit static RendererAPI::AntiAliasing s_newAntiAliasing = RendererAPI::AntiAliasing::Off;
+		inline constinit static RendererAPI::SampleCount s_Anisotropy = RendererAPI::SampleCount::Sixteen;
 
-		static std::array<uint8_t, 16> s_newGPUUUID;
+		inline constinit static std::array<uint8_t, 16> s_newGPUUUID{};
 
 	public:
 		enum class PerWindowState
@@ -3339,8 +3339,8 @@ namespace TRAP::Graphics
 #endif /*TRAP_HEADLESS_MODE*/
 
 	private:
-		static bool s_isVulkanCapable;
-		static bool s_isVulkanCapableFirstTest;
+		inline constinit static bool s_isVulkanCapable = true;
+		inline constinit static bool s_isVulkanCapableFirstTest = true;
 	};
 }
 

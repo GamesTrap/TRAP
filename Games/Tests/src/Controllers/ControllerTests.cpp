@@ -1,10 +1,5 @@
 #include "ControllerTests.h"
 
-std::vector<TRAP::Input::Controller> ControllerTests::s_controllers{};
-bool ControllerTests::s_dpadButtons = false;
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 ControllerTests::ControllerTests()
 	: Layer("Controllers")
 {
@@ -141,7 +136,7 @@ void ControllerTests::OnImGuiRender()
 			ImGui::Checkbox(dpadText.c_str(), &dpadPressed);
 
 			ImGui::NewLine();
-			static bool vibration = false;
+			constinit static bool vibration = false;
 			if(ImGui::Checkbox("Vibration Test", &vibration))
 			{
 				if (vibration)

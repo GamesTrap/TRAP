@@ -33,7 +33,7 @@ void AntiAliasingTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& d
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::NONE)
 		return;
 
-	static uint32_t frames = 0;
+	constinit static uint32_t frames = 0;
     if(frames == 3)
     {
         //Screenshot

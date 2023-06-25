@@ -68,7 +68,7 @@ void SPIRVTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTim
     if (m_titleTimer.Elapsed() >= 0.025f)
     {
         m_titleTimer.Reset();
-        static std::size_t frameTimeIndex = 0;
+        constinit static std::size_t frameTimeIndex = 0;
         if (frameTimeIndex < m_frameTimeHistory.size() - 1)
         {
             m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();

@@ -403,7 +403,7 @@ namespace TRAP::Graphics
 		/// </returns>
 		[[nodiscard]] static bool PreInit(const std::string& name, const std::filesystem::path& filePath, const std::vector<Macro>* userMacros, RendererAPI::BinaryShaderDesc& outShaderDesc, Ref<Shader>& outFailShader);
 
-		static bool s_glslangInitialized;
+		inline constinit static bool s_glslangInitialized = false;
 
 		//Macros which are always provided by default.
 		inline static std::array<Macro, 2> s_defaultShaderMacrosVulkan

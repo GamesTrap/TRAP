@@ -29,10 +29,6 @@
 #include "Utils/Time/TimeStep.h"
 #include "Layers/ImGui/ImGuiLayer.h"
 
-TRAP::Application* TRAP::Application::s_Instance = nullptr;
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std::optional<uint32_t> appID)
 	: m_threadPool(Utils::GetCPUInfo().LogicalCores > 1 ? (Utils::GetCPUInfo().LogicalCores - 1) :
 	               std::thread::hardware_concurrency()),

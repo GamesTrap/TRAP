@@ -72,7 +72,7 @@ public:
 		if (m_updateFPSTimer.Elapsed() >= 0.025f)
 		{
 			m_updateFPSTimer.Reset();
-			static std::size_t frameTimeIndex = 0;
+			constinit static std::size_t frameTimeIndex = 0;
 			if (frameTimeIndex < m_frameTimeHistory.size() - 1)
 			{
 				m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();

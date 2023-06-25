@@ -199,7 +199,7 @@ namespace TRAP::Graphics
 		//-------------------------------------------------------------------------------------------------------------------//
 		//-------------------------------------------------------------------------------------------------------------------//
 
-		inline static Renderer2D::Statistics Stats{};
+		inline constinit static Renderer2D::Statistics Stats{};
 
 		Scope<UniformBuffer> CameraUniformBuffer;
 		struct UniformCamera
@@ -226,7 +226,6 @@ TRAP::Graphics::Renderer2DData::Renderer2DData()
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::vector<TRAP::Graphics::Renderer2DData> TRAP::Graphics::Renderer2D::s_data{};
-uint32_t TRAP::Graphics::Renderer2D::s_dataIndex = 0;
 
 //-------------------------------------------------------------------------------------------------------------------//
 //QuadData-----------------------------------------------------------------------------------------------------------//

@@ -46,7 +46,6 @@ The above license only applies to some of the Controller specific parts of this 
 
 TRAP::Input::EventCallbackFn TRAP::Input::s_eventCallback{};
 std::array<TRAP::Input::ControllerInternal, 16> TRAP::Input::s_controllerInternal{};
-std::vector<TRAP::Input::Mapping> TRAP::Input::s_mappings{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
