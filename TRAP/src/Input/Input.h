@@ -67,7 +67,7 @@ namespace TRAP
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		~Input() = default;
+		constexpr ~Input() = default;
 
 		/// <summary>
 		/// Copy constructor.

@@ -43,7 +43,7 @@ namespace TRAP::Graphics
         /// <summary>
         /// Destructor
         /// </summary>
-        ~EditorCamera() override = default;
+        constexpr ~EditorCamera() override = default;
         /// <summary>
         /// Copy constructor.
         /// </summary>

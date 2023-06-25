@@ -18,7 +18,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		virtual ~Queue();
+		constexpr virtual ~Queue();
 
 		/// <summary>
 		/// Copy constructor.
@@ -65,6 +65,15 @@ namespace TRAP::Graphics
 
 		//No Graphic API independent data
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::Queue::~Queue()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererQueuePrefix, "Destroying Queue");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 #endif /*TRAP_QUEUE_H*/

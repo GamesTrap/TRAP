@@ -51,7 +51,7 @@ namespace TRAP::Math
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		~tQuat() = default;
+		constexpr ~tQuat() = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>

@@ -54,7 +54,7 @@ namespace TRAP::Math
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		~Mat() = default;
+		constexpr ~Mat() = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>

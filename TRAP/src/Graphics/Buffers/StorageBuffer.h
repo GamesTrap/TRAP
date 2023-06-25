@@ -42,7 +42,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		~StorageBuffer();
+		constexpr ~StorageBuffer() = default;
 
 		/// <summary>
 		/// Retrieve the byte size of the SSBO.

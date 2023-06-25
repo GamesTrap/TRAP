@@ -38,15 +38,6 @@ TRAP::Graphics::StorageBuffer::StorageBuffer(const RendererAPI::DescriptorUpdate
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::StorageBuffer::~StorageBuffer()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-	m_storageBuffers = {};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] uint64_t TRAP::Graphics::StorageBuffer::GetSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

@@ -42,17 +42,6 @@ TRAP::Graphics::API::VulkanCommandSignature::VulkanCommandSignature(const Render
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanCommandSignature::~VulkanCommandSignature()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-#ifdef VERBOSE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererVulkanCommandSignaturePrefix, "Destroying CommandSignature");
-#endif /*VERBOSE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] TRAP::Graphics::RendererAPI::IndirectArgumentType TRAP::Graphics::API::VulkanCommandSignature::GetDrawType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

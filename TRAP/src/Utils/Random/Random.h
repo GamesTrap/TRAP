@@ -56,7 +56,7 @@ namespace TRAP::Utils
     	/// <summary>
     	/// Destructor.
     	/// </summary>
-        ~BasicRandomStatic() = delete;
+        constexpr ~BasicRandomStatic() = delete;
         /// <summary>
         /// Copy constructor.
         /// </summary>
@@ -521,7 +521,7 @@ namespace TRAP::Utils
         /// <summary>
         /// Destructor.
         /// </summary>
-        ~BasicRandomThreadLocal() = delete;
+        constexpr ~BasicRandomThreadLocal() = delete;
         /// <summary>
         /// Copy constructor.
         /// </summary>

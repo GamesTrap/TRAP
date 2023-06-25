@@ -41,7 +41,7 @@ namespace TRAP
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		~Monitor() = default;
+		constexpr ~Monitor() = default;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>

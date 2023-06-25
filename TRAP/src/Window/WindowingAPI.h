@@ -57,7 +57,7 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		~WindowingAPI() = default;
+		constexpr ~WindowingAPI() = default;
 
 		/// <summary>
 		/// Copy constructor.

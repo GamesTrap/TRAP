@@ -16,7 +16,7 @@ namespace TRAP
 		};
 
 		SceneCamera();
-		~SceneCamera() override = default;
+		constexpr ~SceneCamera() override = default;
 
 		SceneCamera(const SceneCamera&) noexcept = default;
 		SceneCamera(SceneCamera&&) noexcept = default;

@@ -82,7 +82,7 @@ namespace TRAP::Math
 		explicit constexpr Vec(const Vec<3, U> & v) noexcept;
 
 		constexpr Vec(Vec&&) noexcept = default;
-		~Vec() = default;
+		constexpr ~Vec() = default;
 		constexpr Vec<3, T>& operator=(Vec&&) noexcept = default;
 
 		/// <summary>

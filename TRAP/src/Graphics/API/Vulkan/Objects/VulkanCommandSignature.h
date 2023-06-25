@@ -17,7 +17,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		~VulkanCommandSignature() override;
+		constexpr ~VulkanCommandSignature() override;
 
 		/// <summary>
 		/// Copy constructor.
@@ -51,6 +51,15 @@ namespace TRAP::Graphics::API
 		RendererAPI::IndirectArgumentType m_drawType;
 		uint32_t m_stride;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::API::VulkanCommandSignature::~VulkanCommandSignature()
+{
+#ifdef VERBOSE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererVulkanCommandSignaturePrefix, "Destroying CommandSignature");
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 }
 
 #endif /*TRAP_VULKANINDIRECTCOMMANDSIGNATURE_H*/

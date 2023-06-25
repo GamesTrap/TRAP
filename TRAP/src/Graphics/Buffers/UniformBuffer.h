@@ -40,7 +40,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		~UniformBuffer();
+		constexpr ~UniformBuffer() = default;
 
 		/// <summary>
 		/// Retrieve the byte size of the UBO.

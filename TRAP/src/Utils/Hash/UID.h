@@ -13,7 +13,7 @@ namespace TRAP::Utils
         UID();
         explicit UID(uint64_t uid) noexcept;
 
-        ~UID() = default;
+        constexpr ~UID() = default;
 
         UID(const UID& other) noexcept;
         UID(UID&& other) noexcept;

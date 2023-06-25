@@ -4138,3 +4138,4 @@ SITREP 06/25/2023|23w25b2
     - RendererAPI Added constexpr to virtual ~<15 mins
     - Replaced some find() != end() calls with contains() ~<10 mins
     - Replaced std::thread with std::jthread where it makes sense ~<5 mins
+    - Added constexpr to destructors where possible ~<10 mins

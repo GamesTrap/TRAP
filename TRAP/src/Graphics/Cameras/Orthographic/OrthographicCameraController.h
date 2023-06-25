@@ -43,7 +43,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		~OrthographicCameraController() = default;
+		constexpr ~OrthographicCameraController() = default;
 
 		/// <summary>
 		/// Copy constructor.

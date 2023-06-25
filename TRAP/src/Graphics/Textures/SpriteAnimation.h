@@ -54,7 +54,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		~SpriteAnimation() = default;
+		constexpr ~SpriteAnimation() = default;
 
 		/// <summary>
 		/// Update the sprite animation.
