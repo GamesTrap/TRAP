@@ -2008,7 +2008,7 @@ std::optional<int32_t> TRAP::INTERNAL::WindowingAPI::CreateAnonymousFileWayland(
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-    static const char temp[] = "/trap-shared-XXXXXX";
+    constinit static const char temp[] = "/trap-shared-XXXXXX";
     int32_t fd = 0;
     int32_t ret = 0;
 

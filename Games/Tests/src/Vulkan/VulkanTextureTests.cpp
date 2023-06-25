@@ -87,7 +87,7 @@ void VulkanTextureTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
     if(m_cycleMips)
     {
-        static float time = 0.0f;
+        constinit static float time = 0.0f;
         time += deltaTime.GetMilliseconds();
         if(time > 1000.0f)
         {

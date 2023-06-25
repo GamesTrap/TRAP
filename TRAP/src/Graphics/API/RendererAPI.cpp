@@ -20,7 +20,6 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::RendererAPI> TRAP::Graphics::RendererAPI::s_Renderer = nullptr;
-TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::s_RenderAPI = TRAP::Graphics::RenderAPI::NONE;
 TRAP::Scope<TRAP::Graphics::API::ResourceLoader> TRAP::Graphics::RendererAPI::s_ResourceLoader = nullptr;
 #ifndef TRAP_HEADLESS_MODE
 std::unordered_map<const TRAP::Window*,
@@ -28,26 +27,10 @@ std::unordered_map<const TRAP::Window*,
 #else
 TRAP::Scope<TRAP::Graphics::RendererAPI::PerViewportData> TRAP::Graphics::RendererAPI::s_perViewportData = nullptr;
 #endif /*TRAP_HEADLESS_MODE*/
-bool TRAP::Graphics::RendererAPI::s_isVulkanCapable = true;
-bool TRAP::Graphics::RendererAPI::s_isVulkanCapableFirstTest = true;
 TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::s_descriptorPool = nullptr;
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_graphicQueue = nullptr;
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_computeQueue = nullptr;
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_transferQueue = nullptr;
-
-TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::RendererAPI::s_currentSampleCount = TRAP::Graphics::RendererAPI::SampleCount::Two;
-TRAP::Graphics::RendererAPI::AntiAliasing TRAP::Graphics::RendererAPI::s_currentAntiAliasing = TRAP::Graphics::RendererAPI::AntiAliasing::Off;
-TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::RendererAPI::s_newSampleCount = TRAP::Graphics::RendererAPI::SampleCount::Two;
-TRAP::Graphics::RendererAPI::AntiAliasing TRAP::Graphics::RendererAPI::s_newAntiAliasing = TRAP::Graphics::RendererAPI::AntiAliasing::Off;
-TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::RendererAPI::s_Anisotropy = TRAP::Graphics::RendererAPI::SampleCount::Sixteen;
-
-std::array<uint8_t, 16> TRAP::Graphics::RendererAPI::s_newGPUUUID{};
-
-#ifdef ENABLE_NSIGHT_AFTERMATH
-bool TRAP::Graphics::RendererAPI::s_aftermathSupport = false;
-bool TRAP::Graphics::RendererAPI::s_diagnosticsConfigSupport = false;
-bool TRAP::Graphics::RendererAPI::s_diagnosticCheckPointsSupport = false;
-#endif /*ENABLE_NSIGHT_AFTERMATH*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -632,7 +615,7 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 #ifndef TRAP_HEADLESS_MODE
 	if (INTERNAL::WindowingAPI::VulkanSupported())
 #else
-	static VkResult initRes = VkInitialize();
+	static const VkResult initRes = VkInitialize();
 	if(initRes == VK_SUCCESS)
 #endif /*TRAP_HEADLESS_MODE*/
 	{

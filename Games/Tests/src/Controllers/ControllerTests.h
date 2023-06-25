@@ -20,8 +20,8 @@ private:
 	static std::string GetDPadDirection(const TRAP::Input::ControllerDPad& dpad);
 	static std::string GetBatteryStatus(TRAP::Input::Controller controller);
 
-	static std::vector<TRAP::Input::Controller> s_controllers;
-	static bool s_dpadButtons;
+	inline constinit static std::vector<TRAP::Input::Controller> s_controllers{};
+	inline constinit static bool s_dpadButtons = false;
 };
 
 #endif /*GAMESTRAP_CONTROLLERTESTS_H*/

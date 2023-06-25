@@ -201,7 +201,7 @@ namespace TRAP::Graphics
 
 	private:
 		static std::vector<Renderer2DData> s_data;
-		static uint32_t s_dataIndex;
+		inline constinit static uint32_t s_dataIndex = 0;
 	};
 }
 

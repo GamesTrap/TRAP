@@ -25,7 +25,7 @@ void HeadlessTests::OnAttach()
 void HeadlessTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 {
 	//Give engine time to update resolution
-	static int count = 0;
+	constinit static int count = 0;
 	if(++count > 3)
 	{
 		TRAP::Scope<TRAP::Image> testImage = TRAP::Graphics::RenderCommand::CaptureScreenshot();

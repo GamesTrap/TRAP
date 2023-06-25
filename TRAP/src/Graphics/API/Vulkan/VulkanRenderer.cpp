@@ -42,40 +42,7 @@
 #include "Graphics/Shaders/ShaderManager.h"
 #include "Graphics/Textures/Texture.h"
 
-TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::s_renderer = nullptr;
-//Instance Extensions
-bool TRAP::Graphics::API::VulkanRenderer::s_debugUtilsExtension = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_debugReportExtension = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_validationFeaturesExtension = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_swapchainColorSpaceExtension = false;
-//Device Extensions
-bool TRAP::Graphics::API::VulkanRenderer::s_shaderDrawParameters = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_fragmentShaderInterlockExtension = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_drawIndirectCountExtension = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_descriptorIndexingExtension = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_rayTracingExtension = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_samplerYcbcrConversionExtension = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_bufferDeviceAddressExtension = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_memoryBudgetExtension = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_maintenance4Extension = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_externalMemory = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_shadingRate = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_timelineSemaphore = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_multiView = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_renderPass2 = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_SPIRV1_4 = false;
-
-bool TRAP::Graphics::API::VulkanRenderer::s_debugMarkerSupport = false;
-
-bool TRAP::Graphics::API::VulkanRenderer::s_externalMemoryWin32Extension = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_externalFenceWin32Extension = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_externalSemaphoreWin32Extension = false;
-
-std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API::VulkanRenderer::s_usableGPUs{};
-
 TRAP::Scope<TRAP::Graphics::API::VulkanRenderer::NullDescriptors> TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors = nullptr;
-
-TRAP::Graphics::API::VulkanRenderer::GPUCapBits TRAP::Graphics::API::VulkanRenderer::s_GPUCapBits{};
 
 std::vector<VkPipelineColorBlendAttachmentState> TRAP::Graphics::API::VulkanRenderer::DefaultBlendAttachments(8);
 VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::VulkanRenderer::DefaultRasterizerDesc = UtilToRasterizerDesc

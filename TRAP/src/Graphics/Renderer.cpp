@@ -17,8 +17,6 @@ TRAP::Scope<TRAP::Graphics::Renderer::SceneData> TRAP::Graphics::Renderer::s_sce
 
 TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::Renderer::s_sceneStorageBuffer = nullptr;
 TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::Renderer::s_modelStorageBuffer = nullptr;
-uint32_t TRAP::Graphics::Renderer::s_maxDrawCalls = 1000;
-uint32_t TRAP::Graphics::Renderer::s_currentDrawCalls = 0;
 
 //-------------------------------------------------------------------------------------------------------------------//
 

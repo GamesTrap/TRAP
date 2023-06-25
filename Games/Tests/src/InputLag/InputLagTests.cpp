@@ -127,7 +127,7 @@ void InputLagTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& delta
 		const float OSRenderQueueDeltaMs = (curr.osRenderQueueEndTime - curr.osRenderQueueStartTime) / 1000.0f;
 		const float GPURenderDeltaMs = (curr.gpuRenderEndTime - curr.gpuRenderStartTime) / 1000.0f;
 
-		static std::size_t frameTimeIndex = 0;
+		constinit static std::size_t frameTimeIndex = 0;
 		m_updateLatencyTimer.Reset();
 		if (frameTimeIndex < m_totalHistory.size() - 1)
 		{

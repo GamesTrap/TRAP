@@ -10,10 +10,6 @@
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 #include <memory>
 
-std::atomic<uint64_t> TRAP::Graphics::API::VulkanRenderTarget::s_RenderTargetIDs = 1;
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::RenderTargetDesc& desc)
 	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
 	  m_vkDescriptor(VK_NULL_HANDLE),

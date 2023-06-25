@@ -92,15 +92,15 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		static void LoadAllInstanceExtensions();
 
-		static uint32_t s_instanceVersion;
+		inline constinit static uint32_t s_instanceVersion = 0;
 
 		VkInstance m_instance;
 
 		std::vector<std::string> m_instanceLayers;
 		std::vector<std::string> m_instanceExtensions;
 
-		static std::vector<VkLayerProperties> s_availableInstanceLayers;
-		static std::vector<VkExtensionProperties> s_availableInstanceExtensions;
+		inline constinit static std::vector<VkLayerProperties> s_availableInstanceLayers{};
+		inline constinit static std::vector<VkExtensionProperties> s_availableInstanceExtensions{};
 	};
 }
 

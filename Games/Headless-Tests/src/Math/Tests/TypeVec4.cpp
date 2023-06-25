@@ -166,6 +166,9 @@ namespace TypeVec4
         error += TRAP::Math::Vec4::Length() == 4 ? 0 : 1;
         error += TRAP::Math::Vec4d::Length() == 4 ? 0 : 1;
 
+        static constexpr std::size_t length = TRAP::Math::Vec4::Length();
+        error += length == 4 ? 0 : 1;
+
         return error;
     }
 

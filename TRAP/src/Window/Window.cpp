@@ -22,12 +22,6 @@
 #include "Application.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::Window::s_windows = 0;
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Window::Window(const WindowProps &props)
 	: m_window(nullptr)
 {

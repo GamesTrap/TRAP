@@ -26,7 +26,7 @@ private:
 
 	TRAP::Graphics::OrthographicCamera m_camera;
 
-	static std::vector<TRAP::Graphics::AntiAliasing> AntiAliasingMethods;
+	std::vector<TRAP::Graphics::AntiAliasing> m_antiAliasingMethods;
 
 	struct SampleData
 	{

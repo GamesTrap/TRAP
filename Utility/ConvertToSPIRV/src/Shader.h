@@ -53,7 +53,7 @@ inline constexpr std::array<std::pair<std::string_view, std::string_view>, 2> De
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-static bool s_glslangInitialized = false;
+inline constinit static bool s_glslangInitialized = false;
 
 //-------------------------------------------------------------------------------------------------------------------//
 

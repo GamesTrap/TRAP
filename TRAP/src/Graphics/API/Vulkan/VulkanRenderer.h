@@ -1137,40 +1137,40 @@ namespace TRAP::Graphics::API
 		void WaitIdle() const override;
 
 		//Instance Extensions
-		static bool s_debugUtilsExtension;
-		static bool s_debugReportExtension;
-		static bool s_validationFeaturesExtension;
-		static bool s_swapchainColorSpaceExtension;
+		inline constinit static bool s_debugUtilsExtension = false;
+		inline constinit static bool s_debugReportExtension = false;
+		inline constinit static bool s_validationFeaturesExtension = false;
+		inline constinit static bool s_swapchainColorSpaceExtension = false;
 
 		//Device Extensions
-		static bool s_shaderDrawParameters;
-		static bool s_fragmentShaderInterlockExtension;
-		static bool s_drawIndirectCountExtension;
-		static bool s_descriptorIndexingExtension;
-		static bool s_rayTracingExtension;
-		static bool s_samplerYcbcrConversionExtension;
-		static bool s_bufferDeviceAddressExtension;
-		static bool s_memoryBudgetExtension;
-		static bool s_maintenance4Extension;
-		static bool s_externalMemory;
-		static bool s_shadingRate;
-		static bool s_timelineSemaphore;
-		static bool s_multiView;
-		static bool s_renderPass2;
-		static bool s_SPIRV1_4;
+		inline constinit static bool s_shaderDrawParameters = false;
+		inline constinit static bool s_fragmentShaderInterlockExtension = false;
+		inline constinit static bool s_drawIndirectCountExtension = false;
+		inline constinit static bool s_descriptorIndexingExtension = false;
+		inline constinit static bool s_rayTracingExtension = false;
+		inline constinit static bool s_samplerYcbcrConversionExtension = false;
+		inline constinit static bool s_bufferDeviceAddressExtension = false;
+		inline constinit static bool s_memoryBudgetExtension = false;
+		inline constinit static bool s_maintenance4Extension = false;
+		inline constinit static bool s_externalMemory = false;
+		inline constinit static bool s_shadingRate = false;
+		inline constinit static bool s_timelineSemaphore = false;
+		inline constinit static bool s_multiView = false;
+		inline constinit static bool s_renderPass2 = false;
+		inline constinit static bool s_SPIRV1_4 = false;
 
-		static bool s_debugMarkerSupport;
+		inline constinit static bool s_debugMarkerSupport = false;
 
-		static bool s_externalMemoryWin32Extension;
-		static bool s_externalFenceWin32Extension;
-		static bool s_externalSemaphoreWin32Extension;
+		inline constinit static bool s_externalMemoryWin32Extension = false;
+		inline constinit static bool s_externalFenceWin32Extension = false;
+		inline constinit static bool s_externalSemaphoreWin32Extension = false;
 
-		static struct GPUCapBits
+		inline constinit static struct GPUCapBits
 		{
 			std::array<bool, ToUnderlying(ImageFormat::IMAGE_FORMAT_COUNT)> CanShaderReadFrom{};
 			std::array<bool, ToUnderlying(ImageFormat::IMAGE_FORMAT_COUNT)> CanShaderWriteTo{};
 			std::array<bool, ToUnderlying(ImageFormat::IMAGE_FORMAT_COUNT)> CanRenderTargetWriteTo{};
-		} s_GPUCapBits;
+		} s_GPUCapBits{{}, {}, {}};
 
 		struct SizeOffset
 		{
@@ -1435,11 +1435,11 @@ namespace TRAP::Graphics::API
 		static std::unordered_map<std::thread::id, FrameBufferMap> s_frameBufferMap;
 		inline static TracyLockable(std::mutex, s_renderPassMutex);
 
-		static std::vector<std::pair<std::string, std::array<uint8_t, 16>>> s_usableGPUs;
+		inline constinit static std::vector<std::pair<std::string, std::array<uint8_t, 16>>> s_usableGPUs{};
 		static std::unordered_map<uint64_t, TRAP::Ref<Pipeline>> s_pipelines;
 		static std::unordered_map<uint64_t, TRAP::Ref<PipelineCache>> s_pipelineCaches;
 
-		static VulkanRenderer* s_renderer;
+		inline constinit static VulkanRenderer* s_renderer = nullptr;
 	};
 }
 

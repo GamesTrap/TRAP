@@ -33,10 +33,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Maths/Math.h"
 #include "Utils/Time/TimeStep.h"
 
-std::string TRAP::INTERNAL::ImGuiWindowing::s_clipboardText{};
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] bool TRAP::INTERNAL::ImGuiWindowing::Init(WindowingAPI::InternalWindow* const window, const bool installCallbacks,
                                                         const TRAP::Graphics::RenderAPI renderAPI)
 {
@@ -612,7 +608,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateKeyModifiers(const WindowingAPI::Inte
 	const std::string keyName = TRAP::Input::GetKeyName(key);
 	if(!keyName.empty() && keyName[0] != 0 && keyName[1] == 0)
 	{
-		static const std::array<char, 11> charNames{'`', '-', '=', '[', ']', '\\', ',', ';', '\'', '.', '/'};
+		static constexpr std::array<char, 11> charNames{'`', '-', '=', '[', ']', '\\', ',', ';', '\'', '.', '/'};
 		static constexpr std::array<TRAP::Input::Key, 11> charKeys{TRAP::Input::Key::Grave_Accent, TRAP::Input::Key::Minus,
 		                                                           TRAP::Input::Key::Equal, TRAP::Input::Key::Left_Bracket,
 																   TRAP::Input::Key::Right_Bracket, TRAP::Input::Key::Backslash,

@@ -488,7 +488,7 @@ namespace TRAP
 		Graphics::RenderAPI m_newRenderAPI = Graphics::RenderAPI::NONE;
 
 		//Singleton instance
-		static Application* s_Instance;
+		inline constinit static Application* s_Instance = nullptr;
 
 		friend int ::main(int32_t argc, const char* const*  argv);
 	};

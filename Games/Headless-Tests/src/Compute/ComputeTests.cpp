@@ -82,7 +82,7 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
 
     TRAP::Graphics::ShaderManager::Get("Texture")->UseSampler(0, 1, m_textureSampler.get());
 
-    static uint32_t frames = 0;
+    constinit static uint32_t frames = 0;
     if(frames == 3)
     {
 
@@ -99,7 +99,7 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
     //Async compute Stuff------------------------------------------------------------------------------------------------//
     //-------------------------------------------------------------------------------------------------------------------//
 
-    static bool once = true;
+    constinit static bool once = true;
     if(once)
     {
         once = false;

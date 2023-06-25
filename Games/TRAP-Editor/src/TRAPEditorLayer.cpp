@@ -25,10 +25,10 @@ TRAPEditorLayer::TRAPEditorLayer()
 
 void TRAPEditorLayer::OnImGuiRender()
 {
-	static bool dockspaceOpen = true;
-	static bool optFullscreenPersistent = true;
+	constinit static bool dockspaceOpen = true;
+	constinit static bool optFullscreenPersistent = true;
 	const bool optFullscreen = optFullscreenPersistent;
-	static ImGuiDockNodeFlags dockspaceFlags = ImGuiDockNodeFlags_None;
+	constinit static ImGuiDockNodeFlags dockspaceFlags = ImGuiDockNodeFlags_None;
 
 	if(ImGui::IsMouseClicked(ImGuiMouseButton_Left) ||
 	   (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && !m_startedCameraMovement))
