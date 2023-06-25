@@ -55,17 +55,17 @@
 #ifdef TRAP_ENABLE_ASSERTS
 
 template<typename... Args>
-void TRAP_ASSERT_IMPL_LOG(const std::string_view expressionStr, const std::string_view filename,
-                          const std::string_view function, const std::uint_least32_t line,
-						  const std::uint_least32_t column, [[maybe_unused]] const Args... args)
+constexpr void TRAP_ASSERT_IMPL_LOG(const std::string_view expressionStr, const std::string_view filename,
+                                    const std::string_view function, const std::uint_least32_t line,
+						            const std::uint_least32_t column, [[maybe_unused]] const Args... args)
 {
 	if constexpr(sizeof...(Args) > 1)
 	{
-		TP_CRITICAL("Assertion '", expressionStr, "' failed: \"", args..., "\" in ", std::filesystem::absolute(filename), " @ ", function, ':', line, ':', column);
+		TP_CRITICAL("Assertion '", expressionStr, "' failed: \"", args..., "\" in ", filename, " @ ", function, ':', line, ':', column);
 	}
 	else
 	{
-		TP_CRITICAL("Assertion '", expressionStr, "' failed in ", std::filesystem::absolute(filename), " @ ", function, ':', line, ':', column);
+		TP_CRITICAL("Assertion '", expressionStr, "' failed in ", filename, " @ ", function, ':', line, ':', column);
 	}
 }
 

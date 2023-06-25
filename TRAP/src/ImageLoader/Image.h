@@ -455,8 +455,6 @@ template <typename T>
 [[nodiscard]] constexpr std::vector<T> TRAP::Image::FlipX(const uint32_t width, const uint32_t height, const ColorFormat format,
                                                           const T* data)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
-
 	static_assert(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
 	              std::is_same<T, float>::value, "Invalid type!");
 
@@ -498,8 +496,6 @@ template <typename T>
 [[nodiscard]] constexpr std::vector<T> TRAP::Image::FlipY(const uint32_t width, const uint32_t height, const ColorFormat format,
                                                           const T* data)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
-
 	static_assert(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
 	              std::is_same<T, float>::value, "Invalid type!");
 
@@ -541,8 +537,6 @@ template<typename T>
 [[nodiscard]] constexpr std::vector<T> TRAP::Image::Rotate90Clockwise(const uint32_t width, const uint32_t height,
                                                                       const ColorFormat format, const T* const data)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
-
 	static_assert(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
 	              std::is_same<T, float>::value, "Invalid type!");
 
@@ -582,8 +576,6 @@ template<typename T>
 [[nodiscard]] constexpr std::vector<T> TRAP::Image::Rotate90CounterClockwise(const uint32_t width, const uint32_t height,
                                                                              const ColorFormat format, const T* const data)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
-
 	static_assert(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
 	              std::is_same<T, float>::value, "Invalid type!");
 
@@ -629,8 +621,6 @@ template <typename T>
 [[nodiscard]] constexpr std::vector<T> TRAP::Image::ConvertRGBToRGBA(const uint32_t width, const uint32_t height, const ColorFormat format,
 									                                 const T* data)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
-
 	static_assert(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
 	              std::is_same<T, float>::value, "Invalid type!");
 
@@ -672,8 +662,6 @@ template <typename T>
 [[nodiscard]] constexpr std::vector<T> TRAP::Image::ConvertRGBAToRGB(const uint32_t width, const uint32_t height, const ColorFormat format,
 									                                 const T* data)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
-
 	static_assert(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
 	              std::is_same<T, float>::value, "Invalid type!");
 
@@ -724,8 +712,6 @@ template <typename T>
 
 [[nodiscard]] constexpr std::vector<uint8_t> TRAP::Image::DecodeBGRAMap(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height, const uint32_t channels, std::vector<uint8_t>& colorMap)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
-
 	std::vector<uint8_t> data{};
 	data.resize(NumericCast<std::size_t>(width) * height * channels);
 
@@ -772,8 +758,6 @@ template <typename T>
 
 [[nodiscard]] constexpr std::vector<uint8_t> TRAP::Image::ConvertBGRA32ToRGBA32(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
-	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
-
 	for (uint32_t i = 0; i < width * height * 4; i += 4)
 		source[i] ^= source[i + 2] ^= source[i] ^= source[i + 2];
 

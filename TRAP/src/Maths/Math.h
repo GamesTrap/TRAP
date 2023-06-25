@@ -44,6 +44,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include <cmath>
 #include <limits>
+#include <numbers>
 
 namespace TRAP::Math
 {
@@ -701,7 +702,7 @@ namespace TRAP::Math
 	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<typename genType>
-	[[nodiscard]] int32_t IRound(const genType& x);
+	[[nodiscard]] constexpr int32_t IRound(const genType& x);
 
 	/// <summary>
 	/// Returns a value equal to the nearest integer to x.
@@ -713,7 +714,7 @@ namespace TRAP::Math
 	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<uint32_t L, typename T>
-	[[nodiscard]] Vec<L, int32_t> IRound(const Vec<L, T>& x);
+	[[nodiscard]] constexpr Vec<L, int32_t> IRound(const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -727,7 +728,7 @@ namespace TRAP::Math
 	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<typename genType>
-	[[nodiscard]] uint32_t URound(const genType& x);
+	[[nodiscard]] constexpr uint32_t URound(const genType& x);
 
 	/// <summary>
 	/// Returns a value equal to the nearest integer to x.
@@ -739,7 +740,7 @@ namespace TRAP::Math
 	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<uint32_t L, typename T>
-	[[nodiscard]] Vec<L, uint32_t> URound(const Vec<L, T>& x);
+	[[nodiscard]] constexpr Vec<L, uint32_t> URound(const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1183,7 +1184,7 @@ namespace TRAP::Math
 	/// <param name="value">Specify the value to evaluate.</param>
 	/// <returns>True if the value is a power of two number.</returns>
 	template<typename genType>
-	[[nodiscard]] bool IsPowerOfTwo(genType value);
+	[[nodiscard]] constexpr bool IsPowerOfTwo(genType value);
 
 	/// <summary>
 	/// Check if value is a power of two number.
@@ -1192,7 +1193,7 @@ namespace TRAP::Math
 	/// <param name="v">Specify the value to evaluate.</param>
 	/// <returns>True if the value is a power of two number.</returns>
 	template<uint32_t L, typename T>
-	[[nodiscard]] Vec<L, bool> IsPowerOfTwo(const Vec<L, T>& v);
+	[[nodiscard]] constexpr Vec<L, bool> IsPowerOfTwo(const Vec<L, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1225,7 +1226,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar or vector types.</typeparam>
 	/// <returns>Linear interpolation.</returns>
 	template<typename T>
-	[[nodiscard]] T Lerp(T x, T y, T a);
+	[[nodiscard]] constexpr T Lerp(T x, T y, T a);
 
 	/// <summary>
 	/// Linear interpolation.
@@ -1233,7 +1234,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>Linear interpolation.</returns>
 	template<uint32_t L, typename T>
-	[[nodiscard]] Vec<L, T> Lerp(const Vec<L, T>& x, const Vec<L, T>& y, T a);
+	[[nodiscard]] constexpr Vec<L, T> Lerp(const Vec<L, T>& x, const Vec<L, T>& y, T a);
 
 	/// <summary>
 	/// Linear interpolation.
@@ -1241,7 +1242,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>Linear interpolation.</returns>
 	template<uint32_t L, typename T>
-	[[nodiscard]] Vec<L, T> Lerp(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, T>& a);
+	[[nodiscard]] constexpr Vec<L, T> Lerp(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, T>& a);
 
 	/// <summary>
 	/// Linear interpolation of two quaternions.
@@ -1490,7 +1491,7 @@ namespace TRAP::Math
 	/// <param name="x">Specifies a value of which to calculate the length.</param>
 	/// <returns>Length of x, i.e., Sqrt(x * x).</returns>
 	template<typename genType>
-	[[nodiscard]] genType Length(genType x);
+	[[nodiscard]] constexpr genType Length(genType x);
 
 	/// <summary>
 	/// Calculates the length of a vector.
@@ -1520,7 +1521,7 @@ namespace TRAP::Math
 	/// <param name="p1">Specifies the second of two points.</param>
 	/// <returns>Distance between p0 and p1, i.e., Length(p0 - p1).</returns>
 	template<typename genType>
-	[[nodiscard]] genType Distance(const genType& p0, const genType& p1);
+	[[nodiscard]] constexpr genType Distance(const genType& p0, const genType& p1);
 
 	/// <summary>
 	/// Calculate the distance between two points.
@@ -1627,7 +1628,7 @@ namespace TRAP::Math
 	/// <param name="NRef">Specifies the reference value.</param>
 	/// <returns>If Dot(NRef, I) < 0.0, returns N, otherwise; returns -N.</returns>
 	template<typename genType>
-	[[nodiscard]] genType FaceForward(const genType& N, const genType& I, const genType& NRef);
+	[[nodiscard]] constexpr genType FaceForward(const genType& N, const genType& I, const genType& NRef);
 
 	/// <summary>
 	/// Retrieve a vector pointing in the same direction as another.
@@ -1638,7 +1639,7 @@ namespace TRAP::Math
 	/// <param name="NRef">Specifies the reference vector.</param>
 	/// <returns>If Dot(NRef, I) < 0.0, returns N, otherwise; returns -N.</returns>
 	template<uint32_t L, typename T>
-	[[nodiscard]] Vec<L, T> FaceForward(const Vec<L, T>& N, const Vec<L, T>& I, const Vec<L, T>& NRef);
+	[[nodiscard]] constexpr Vec<L, T> FaceForward(const Vec<L, T>& N, const Vec<L, T>& I, const Vec<L, T>& NRef);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1653,7 +1654,7 @@ namespace TRAP::Math
 	/// returns the reflection direction: result = I - 2.0 * Dot(N, I) * N.
 	/// </returns>
 	template<typename genType>
-	[[nodiscard]] genType Reflect(const genType& I, const genType& N);
+	[[nodiscard]] constexpr genType Reflect(const genType& I, const genType& N);
 
 	/// <summary>
 	/// Calculate the reflection direction for an incident vector.
@@ -1666,7 +1667,7 @@ namespace TRAP::Math
 	/// returns the reflection direction: result = I - 2.0 * Dot(N, I) * N.
 	/// </returns>
 	template<uint32_t L, typename T>
-	[[nodiscard]] Vec<L, T> Reflect(const Vec<L, T>& I, const Vec<L, T>& N);
+	[[nodiscard]] constexpr Vec<L, T> Reflect(const Vec<L, T>& I, const Vec<L, T>& N);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1782,7 +1783,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second matrix multiplicand.</param>
 	/// <returns>Multiplied matrix.</returns>
 	template<uint32_t L, typename T>
-	[[nodiscard]] Mat<L, L, T> MatrixCompMult(const Mat<L, L, T>& x, const Mat<L, L, T>& y);
+	[[nodiscard]] constexpr Mat<L, L, T> MatrixCompMult(const Mat<L, L, T>& x, const Mat<L, L, T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1797,7 +1798,7 @@ namespace TRAP::Math
 	/// <param name="r">Specifies the parameter to be treated as a row matrix.</param>
 	/// <returns>Multiplied matrix.</returns>
 	template<uint32_t L, typename T>
-	[[nodiscard]] Mat<L, L, T> OuterProduct(const Vec<L, T>& c, const Vec<L, T>& r);
+	[[nodiscard]] constexpr Mat<L, L, T> OuterProduct(const Vec<L, T>& c, const Vec<L, T>& r);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1808,7 +1809,7 @@ namespace TRAP::Math
 	/// <param name="m">Specifies the matrix of which to take the transpose.</param>
 	/// <returns>Transposed matrix of m.</returns>
 	template<typename T>
-	[[nodiscard]] typename Mat<3, 3, T>::transposeType Transpose(const Mat<3, 3, T>& m);
+	[[nodiscard]] constexpr typename Mat<3, 3, T>::transposeType Transpose(const Mat<3, 3, T>& m);
 	/// <summary>
 	/// Calculate the transpose of a matrix.
 	/// </summary>
@@ -1816,7 +1817,7 @@ namespace TRAP::Math
 	/// <param name="m">Specifies the matrix of which to take the transpose.</param>
 	/// <returns>Transposed matrix of m.</returns>
 	template<typename T>
-	[[nodiscard]] typename Mat<4, 4, T>::transposeType Transpose(const Mat<4, 4, T>& m);
+	[[nodiscard]] constexpr typename Mat<4, 4, T>::transposeType Transpose(const Mat<4, 4, T>& m);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1827,7 +1828,7 @@ namespace TRAP::Math
 	/// <param name="m">Specifies the matrix of which to take the determinant.</param>
 	/// <returns>Determinant of a squared matrix.</returns>
 	template<typename T>
-	[[nodiscard]] T Determinant(const Mat<3, 3, T>& m);
+	[[nodiscard]] constexpr T Determinant(const Mat<3, 3, T>& m);
 	/// <summary>
 	/// Calculate the determinant of a matrix.
 	/// </summary>
@@ -1835,7 +1836,7 @@ namespace TRAP::Math
 	/// <param name="m">Specifies the matrix of which to take the determinant.</param>
 	/// <returns>Determinant of a squared matrix.</returns>
 	template<typename T>
-	[[nodiscard]] T Determinant(const Mat<4, 4, T>& m);
+	[[nodiscard]] constexpr T Determinant(const Mat<4, 4, T>& m);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1846,7 +1847,7 @@ namespace TRAP::Math
 	/// <param name="m">Specifies the matrix of which to take the inverse.</param>
 	/// <returns>Inverse of a squared matrix.</returns>
 	template<typename T>
-	[[nodiscard]] Mat<3, 3, T> Inverse(const Mat<3, 3, T>& m);
+	[[nodiscard]] constexpr Mat<3, 3, T> Inverse(const Mat<3, 3, T>& m);
 	/// <summary>
 	/// Calculate the inverse of a matrix.
 	/// </summary>
@@ -1854,7 +1855,7 @@ namespace TRAP::Math
 	/// <param name="m">Specifies the matrix of which to take the inverse.</param>
 	/// <returns>Inverse of a squared matrix.</returns>
 	template<typename T>
-	[[nodiscard]] Mat<4, 4, T> Inverse(const Mat<4, 4, T>& m);
+	[[nodiscard]] constexpr Mat<4, 4, T> Inverse(const Mat<4, 4, T>& m);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1864,14 +1865,14 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <returns>Projection matrix.</returns>
 	template<typename T>
-	[[nodiscard]] Mat<4, 4, T> Orthographic(T left, T right, T bottom, T top) noexcept;
+	[[nodiscard]] constexpr Mat<4, 4, T> Orthographic(T left, T right, T bottom, T top) noexcept;
 	/// <summary>
 	/// Create a matrix for an orthographic parallel viewing volume.
 	/// </summary>
 	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <returns>Projection matrix.</returns>
 	template<typename T>
-	[[nodiscard]] Mat<4, 4, T> Orthographic(T left, T right, T bottom, T top, T zNear, T zFar) noexcept;
+	[[nodiscard]] constexpr Mat<4, 4, T> Orthographic(T left, T right, T bottom, T top, T zNear, T zFar) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1881,7 +1882,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <returns>Frustum matrix.</returns>
 	template<typename T>
-	[[nodiscard]] Mat<4, 4, T> Frustum(T left, T right, T bottom, T top, T nearVal, T farVal) noexcept;
+	[[nodiscard]] constexpr Mat<4, 4, T> Frustum(T left, T right, T bottom, T top, T nearVal, T farVal) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1963,7 +1964,7 @@ namespace TRAP::Math
 	/// <param name="a">Specify the value to use to interpolate between x and y.</param>
 	/// <returns>See description.</returns>
 	template<uint32_t L, typename T, typename U>
-	[[nodiscard]] Mat<L, L, T> Mix(const Mat<L, L, T>& x, const Mat<L, L, T>& y, const Mat<L, L, U>& a);
+	[[nodiscard]] constexpr Mat<L, L, T> Mix(const Mat<L, L, T>& x, const Mat<L, L, T>& y, const Mat<L, L, U>& a);
 
 	/// <summary>
 	/// Linearly interpolate.
@@ -1988,7 +1989,7 @@ namespace TRAP::Math
 	/// <param name="a">Specify the value to use to interpolate between x and y.</param>
 	/// <returns>See description.</returns>
 	template<uint32_t L, typename T, typename U>
-	[[nodiscard]] Mat<L, L, T> Mix(const Mat<L, L, T>& x, const Mat<L, L, T>& y, U a);
+	[[nodiscard]] constexpr Mat<L, L, T> Mix(const Mat<L, L, T>& x, const Mat<L, L, T>& y, U a);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2044,7 +2045,7 @@ namespace TRAP::Math
 	/// <param name="v">Ratio of scaling for each axis.</param>
 	/// <returns>Scaled matrix.</returns>
 	template<typename T>
-	[[nodiscard]] Mat<4, 4, T> Scale(const Mat<4, 4, T>& m, const Vec<3, T>& v) noexcept;
+	[[nodiscard]] constexpr Mat<4, 4, T> Scale(const Mat<4, 4, T>& m, const Vec<3, T>& v) noexcept;
 
 	/// <summary>
 	/// Transforms a matrix with a scale 4 * 4 matrix created from a vector of 3 components.
@@ -2053,7 +2054,7 @@ namespace TRAP::Math
 	/// <param name="v">3 Component vector.</param>
 	/// <returns>Scaled matrix.</returns>
 	template<typename T>
-	[[nodiscard]] Mat<4, 4, T> Scale(const Vec<3, T>& v) noexcept;
+	[[nodiscard]] constexpr Mat<4, 4, T> Scale(const Vec<3, T>& v) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2078,7 +2079,7 @@ namespace TRAP::Math
 	/// <param name="index">Row index to retrieve.</param>
 	/// <returns>Row vector.</returns>
 	template<typename T>
-	[[nodiscard]] typename T::rowType Row(const T& m, std::size_t index);
+	[[nodiscard]] constexpr typename T::rowType Row(const T& m, std::size_t index);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2091,7 +2092,7 @@ namespace TRAP::Math
 	/// <param name="x">New row data.</param>
 	/// <returns>Matrix with new row data.</returns>
 	template<typename T>
-	[[nodiscard]] T Row(const T& m, std::size_t index, const typename T::rowType& x);
+	[[nodiscard]] constexpr T Row(const T& m, std::size_t index, const typename T::rowType& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2103,7 +2104,7 @@ namespace TRAP::Math
 	/// <param name="index">Column index to retrieve.</param>
 	/// <returns>Column vector.</returns>
 	template<typename T>
-	[[nodiscard]] typename T::colType Column(const T& m, std::size_t index);
+	[[nodiscard]] constexpr typename T::colType Column(const T& m, std::size_t index);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2116,7 +2117,7 @@ namespace TRAP::Math
 	/// <param name="x">New column data.</param>
 	/// <returns>Matrix with new column data.</returns>
 	template<typename T>
-	[[nodiscard]] T Column(const T& m, std::size_t index, const typename T::colType& x);
+	[[nodiscard]] constexpr T Column(const T& m, std::size_t index, const typename T::colType& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2238,7 +2239,7 @@ namespace TRAP::Math
 	/// <param name="q">Quaternion to convert.</param>
 	/// <returns>Converted matrix.</returns>
 	template<typename T>
-	[[nodiscard]] Mat<3, 3, T> Mat3Cast(const tQuat<T>& q) noexcept;
+	[[nodiscard]] constexpr Mat<3, 3, T> Mat3Cast(const tQuat<T>& q) noexcept;
 	/// <summary>
 	/// Converts a quaternion to a 4 * 4 matrix.
 	/// </summary>
@@ -2246,7 +2247,7 @@ namespace TRAP::Math
 	/// <param name="q">Quaternion to convert.</param>
 	/// <returns>Converted matrix.</returns>
 	template<typename T>
-	[[nodiscard]] Mat<4, 4, T> Mat4Cast(const tQuat<T>& q) noexcept;
+	[[nodiscard]] constexpr Mat<4, 4, T> Mat4Cast(const tQuat<T>& q) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2337,7 +2338,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second quaternion to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison of result x == y.</returns>
 	template<typename T>
-	[[nodiscard]] Vec<4, bool> Equal(const tQuat<T>& x, const tQuat<T>& y) noexcept;
+	[[nodiscard]] constexpr Vec<4, bool> Equal(const tQuat<T>& x, const tQuat<T>& y) noexcept;
 
 	/// <summary>
 	/// Perform a component-wise equal-to comparison of two quaternions taking epsilon into account.
@@ -2348,7 +2349,7 @@ namespace TRAP::Math
 	/// <param name="epsilon"></param>
 	/// <returns>Component-wise comparison of |x - y| < epsilon.</returns>
 	template<typename T>
-	[[nodiscard]] Vec<4, bool> Equal(const tQuat<T>& x, const tQuat<T>& y, T epsilon);
+	[[nodiscard]] constexpr Vec<4, bool> Equal(const tQuat<T>& x, const tQuat<T>& y, T epsilon);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2360,7 +2361,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second quaternion to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison of result x != y.</returns>
 	template<typename T>
-	[[nodiscard]] Vec<4, bool> NotEqual(const tQuat<T>& x, const tQuat<T>& y) noexcept;
+	[[nodiscard]] constexpr Vec<4, bool> NotEqual(const tQuat<T>& x, const tQuat<T>& y) noexcept;
 
 	/// <summary>
 	/// Perform a component-wise not-equal-to comparison of two quaternions taking epsilon into account.
@@ -2371,7 +2372,7 @@ namespace TRAP::Math
 	/// <param name="epsilon"></param>
 	/// <returns>Component-wise comparison of |x - y| >= epsilon.</returns>
 	template<typename T>
-	[[nodiscard]] Vec<4, bool> NotEqual(const tQuat<T>& x, const tQuat<T>& y, T epsilon);
+	[[nodiscard]] constexpr Vec<4, bool> NotEqual(const tQuat<T>& x, const tQuat<T>& y, T epsilon);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -3486,10 +3487,8 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-[[nodiscard]] int32_t TRAP::Math::IRound(const genType& x)
+[[nodiscard]] constexpr int32_t TRAP::Math::IRound(const genType& x)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	static_assert(std::numeric_limits<genType>::is_iec559, "'IRound' only accepts floating-point inputs");
 	TRAP_ASSERT(static_cast<genType>(0) <= x, "Math::IRound(): x must be positive!");
 
@@ -3497,10 +3496,8 @@ template<typename genType>
 }
 
 template<uint32_t L, typename T>
-[[nodiscard]] TRAP::Math::Vec<L, int32_t> TRAP::Math::IRound(const Vec<L, T>& x)
+[[nodiscard]] constexpr TRAP::Math::Vec<L, int32_t> TRAP::Math::IRound(const Vec<L, T>& x)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	static_assert(std::numeric_limits<T>::is_iec559, "'IRound' only accepts floating-point inputs");
 	TRAP_ASSERT(All(LessThanEqual(Vec<L, T>(static_cast<T>(0)), x)), "Math::IRound(): x must be positive!");
 
@@ -3510,10 +3507,8 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-[[nodiscard]] uint32_t TRAP::Math::URound(const genType& x)
+[[nodiscard]] constexpr uint32_t TRAP::Math::URound(const genType& x)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	static_assert(std::numeric_limits<genType>::is_iec559, "'URound' only accepts floating-point inputs");
 	TRAP_ASSERT(static_cast<genType>(0) <= x, "Math::URound(): x must be positive!");
 
@@ -3521,10 +3516,8 @@ template<typename genType>
 }
 
 template<uint32_t L, typename T>
-[[nodiscard]] TRAP::Math::Vec<L, uint32_t> TRAP::Math::URound(const Vec<L, T>& x)
+[[nodiscard]] constexpr TRAP::Math::Vec<L, uint32_t> TRAP::Math::URound(const Vec<L, T>& x)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	static_assert(std::numeric_limits<T>::is_iec559, "'URound' only accepts floating-point inputs");
 	TRAP_ASSERT(All(LessThanEqual(Vec<L, T>(static_cast<T>(0)), x)), "Math::URound(): x must be positive!");
 
@@ -3855,10 +3848,8 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-[[nodiscard]] bool TRAP::Math::IsPowerOfTwo(const genType value)
+[[nodiscard]] constexpr bool TRAP::Math::IsPowerOfTwo(const genType value)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	static_assert(std::numeric_limits<genType>::is_integer, "'IsPowerOfTwo' only accepts integer inputs");
 
 	const genType result = Abs(value);
@@ -3867,10 +3858,8 @@ template<typename genType>
 }
 
 template<uint32_t L, typename T>
-[[nodiscard]] TRAP::Math::Vec<L, bool> TRAP::Math::IsPowerOfTwo(const Vec<L, T>& v)
+[[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::IsPowerOfTwo(const Vec<L, T>& v)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	static_assert(std::numeric_limits<T>::is_integer, "'IsPowerOfTwo' only accepts integer inputs");
 
 	const Vec<L, T> result(Abs(v));
@@ -3913,26 +3902,20 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] T TRAP::Math::Lerp(const T x, const T y, const T a)
+[[nodiscard]] constexpr T TRAP::Math::Lerp(const T x, const T y, const T a)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	return Mix(x, y, a);
 }
 
 template<uint32_t L, typename T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Lerp(const Vec<L, T>& x, const Vec<L, T>& y, T a)
+[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Lerp(const Vec<L, T>& x, const Vec<L, T>& y, T a)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	return Mix(x, y, a);
 }
 
 template<uint32_t L, typename T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Lerp(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, T>& a)
+[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Lerp(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, T>& a)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	return Mix(x, y, a);
 }
 
@@ -4195,10 +4178,8 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-[[nodiscard]] genType TRAP::Math::Length(const genType x)
+[[nodiscard]] constexpr genType TRAP::Math::Length(const genType x)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	static_assert(std::numeric_limits<genType>::is_iec559, "'Length' accepts only floating-point inputs");
 
 	return Abs(x);
@@ -4225,10 +4206,8 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-[[nodiscard]] genType TRAP::Math::Distance(const genType& p0, const genType& p1)
+[[nodiscard]] constexpr genType TRAP::Math::Distance(const genType& p0, const genType& p1)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	static_assert(std::numeric_limits<genType>::is_iec559, "'Distance' accepts only floating-point inputs");
 
 	return Length(p1 - p0);
@@ -4331,18 +4310,14 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-[[nodiscard]] genType TRAP::Math::FaceForward(const genType& N, const genType& I, const genType& NRef)
+[[nodiscard]] constexpr genType TRAP::Math::FaceForward(const genType& N, const genType& I, const genType& NRef)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	return Dot(NRef, I) < static_cast<genType>(0) ? N : -N;
 }
 
 template<uint32_t L, typename T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::FaceForward(const Vec<L, T>& N, const Vec<L, T>& I, const Vec<L, T>& NRef)
+[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::FaceForward(const Vec<L, T>& N, const Vec<L, T>& I, const Vec<L, T>& NRef)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	static_assert(std::numeric_limits<T>::is_iec559, "'Normalize' accepts only floating-point inputs");
 
 	return Dot(NRef, I) < static_cast<T>(0) ? N : -N;
@@ -4351,18 +4326,14 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-[[nodiscard]] genType TRAP::Math::Reflect(const genType& I, const genType& N)
+[[nodiscard]] constexpr genType TRAP::Math::Reflect(const genType& I, const genType& N)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	return I - N * Dot(N, I) * static_cast<genType>(2);
 }
 
 template<uint32_t L, typename T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Reflect(const Vec<L, T>& I, const Vec<L, T>& N)
+[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Reflect(const Vec<L, T>& I, const Vec<L, T>& N)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	return I - N * Dot(N, I) * static_cast<T>(2);
 }
 
@@ -4454,10 +4425,8 @@ template <uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L, typename T>
-[[nodiscard]] TRAP::Math::Mat<L, L, T> TRAP::Math::MatrixCompMult(const Mat<L, L, T>& x, const Mat<L, L, T>& y)
+[[nodiscard]] constexpr TRAP::Math::Mat<L, L, T> TRAP::Math::MatrixCompMult(const Mat<L, L, T>& x, const Mat<L, L, T>& y)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	static_assert(std::numeric_limits<T>::is_iec559, "'MatrixCompMult' only accepts floating-point inputs");
 
 	Mat<L, L, T> result;
@@ -4469,10 +4438,8 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L, typename T>
-[[nodiscard]] TRAP::Math::Mat<L, L, T> TRAP::Math::OuterProduct(const Vec<L, T>& c, const Vec<L, T>& r)
+[[nodiscard]] constexpr TRAP::Math::Mat<L, L, T> TRAP::Math::OuterProduct(const Vec<L, T>& c, const Vec<L, T>& r)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	static_assert(std::numeric_limits<T>::is_iec559, "'OuterProduct' only accepts floating-point inputs");
 
 	Mat<L, L, T> m;
@@ -4484,10 +4451,8 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-[[nodiscard]] typename TRAP::Math::Mat<3, 3, T>::transposeType TRAP::Math::Transpose(const Mat<3, 3, T>& m)
+[[nodiscard]] constexpr typename TRAP::Math::Mat<3, 3, T>::transposeType TRAP::Math::Transpose(const Mat<3, 3, T>& m)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	static_assert(std::numeric_limits<T>::is_iec559, "'Transpose' only accepts floating-point inputs");
 
 	Mat<3, 3, T> result;
@@ -4506,11 +4471,10 @@ template <typename T>
 
 	return result;
 }
-template <typename T>
-[[nodiscard]] typename TRAP::Math::Mat<4, 4, T>::transposeType TRAP::Math::Transpose(const Mat<4, 4, T>& m)
-{
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
+template <typename T>
+[[nodiscard]] constexpr typename TRAP::Math::Mat<4, 4, T>::transposeType TRAP::Math::Transpose(const Mat<4, 4, T>& m)
+{
 	static_assert(std::numeric_limits<T>::is_iec559, "'Transpose' only accepts floating-point inputs");
 
 	Mat<4, 4, T> result;
@@ -4541,10 +4505,8 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] T TRAP::Math::Determinant(const Mat<3, 3, T>& m)
+[[nodiscard]] constexpr T TRAP::Math::Determinant(const Mat<3, 3, T>& m)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	static_assert(std::numeric_limits<T>::is_iec559, "'Determinant' only accepts floating-point inputs");
 
 	return + m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2])
@@ -4552,10 +4514,8 @@ template<typename T>
 		   + m[2][0] * (m[0][1] * m[1][2] - m[1][1] * m[0][2]);
 }
 template<typename T>
-[[nodiscard]] T TRAP::Math::Determinant(const Mat<4, 4, T>& m)
+[[nodiscard]] constexpr T TRAP::Math::Determinant(const Mat<4, 4, T>& m)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	static_assert(std::numeric_limits<T>::is_iec559, "'Determinant' only accepts floating-point inputs");
 
 	const T subFactor00 = m[2][2] * m[3][3] - m[3][2] * m[2][3];
@@ -4577,10 +4537,8 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] TRAP::Math::Mat<3, 3, T> TRAP::Math::Inverse(const Mat<3, 3, T>& m)
+[[nodiscard]] constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::Inverse(const Mat<3, 3, T>& m)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	static_assert(std::numeric_limits<T>::is_iec559, "'Inverse' only accepts floating-points inputs");
 
 	const T oneOverDeterminant = static_cast<T>(1) / (+ m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2])
@@ -4600,11 +4558,10 @@ template<typename T>
 
 	return inverse;
 }
-template<typename T>
-[[nodiscard]] TRAP::Math::Mat<4, 4, T> TRAP::Math::Inverse(const Mat<4, 4, T>& m)
-{
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
+template<typename T>
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Inverse(const Mat<4, 4, T>& m)
+{
 	static_assert(std::numeric_limits<T>::is_iec559, "'Inverse' only accepts floating-points inputs");
 
 	const T coef00 = m[2][2] * m[3][3] - m[3][2] * m[2][3];
@@ -4665,10 +4622,9 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] TRAP::Math::Mat<4, 4, T> TRAP::Math::Orthographic(const T left, const T right, const T bottom, const T top) noexcept
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Orthographic(const T left, const T right,
+                                                                          const T bottom, const T top) noexcept
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	Mat<4, 4, T> result(static_cast<T>(1));
 
 	result[0][0] = static_cast<T>(2) / (right - left);
@@ -4681,11 +4637,10 @@ template<typename T>
 }
 
 template<typename T>
-[[nodiscard]] TRAP::Math::Mat<4, 4, T> TRAP::Math::Orthographic(const T left, const T right, const T bottom, const T top,
-                                                                const T zNear, const T zFar) noexcept
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Orthographic(const T left, const T right,
+                                                                          const T bottom, const T top,
+                                                                          const T zNear, const T zFar) noexcept
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	Mat<4, 4, T> result(static_cast<T>(1));
 
 	result[0][0] = static_cast<T>(2) / (right - left);
@@ -4701,11 +4656,10 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] TRAP::Math::Mat<4, 4, T> TRAP::Math::Frustum(const T left, const T right, const T bottom, const T top,
-                                                           const T nearVal, const T farVal) noexcept
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Frustum(const T left, const T right,
+                                                                     const T bottom, const T top,
+                                                                     const T nearVal, const T farVal) noexcept
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	Mat<4, 4, T> result(static_cast<T>(0));
 
 	result[0][0] = (static_cast<T>(2) * nearVal) / (right - left);
@@ -4795,18 +4749,14 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L, typename T, typename U>
-[[nodiscard]] TRAP::Math::Mat<L, L, T> TRAP::Math::Mix(const Mat<L, L, T>& x, const Mat<L, L, T>& y, U a)
+[[nodiscard]] constexpr TRAP::Math::Mat<L, L, T> TRAP::Math::Mix(const Mat<L, L, T>& x, const Mat<L, L, T>& y, U a)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	return Mat<L, L, U>(x) * (static_cast<U>(1) - a) + Mat<L, L, U>(y) * a;
 }
 
 template<uint32_t L, typename T, typename U>
-[[nodiscard]] TRAP::Math::Mat<L, L, T> TRAP::Math::Mix(const Mat<L, L, T>& x, const Mat<L, L, T>& y, const Mat<L, L, U>& a)
+[[nodiscard]] constexpr TRAP::Math::Mat<L, L, T> TRAP::Math::Mix(const Mat<L, L, T>& x, const Mat<L, L, T>& y, const Mat<L, L, U>& a)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	return MatrixCompMult(Mat<L, L, U>(x), static_cast<U>(1) - a) + MatrixCompMult(Mat<L, L, U>(y), a);
 }
 
@@ -4910,10 +4860,8 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-[[nodiscard]] TRAP::Math::Mat<4, 4, T> TRAP::Math::Scale(const Mat<4, 4, T>& m, const Vec<3, T>& v) noexcept
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Scale(const Mat<4, 4, T>& m, const Vec<3, T>& v) noexcept
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	Mat<4, 4, T> result;
 
 	result[0] = m[0] * std::get<0>(v);
@@ -4925,10 +4873,8 @@ template <typename T>
 }
 
 template <typename T>
-[[nodiscard]] TRAP::Math::Mat<4, 4, T> TRAP::Math::Scale(const Vec<3, T>& v) noexcept
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Scale(const Vec<3, T>& v) noexcept
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	Mat<4, 4, T> result(static_cast<T>(1.0f));
 
 	result[0] *= std::get<0>(v);
@@ -4970,10 +4916,8 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] T TRAP::Math::Row(const T& m, const std::size_t index, const typename T::rowType& x)
+[[nodiscard]] constexpr T TRAP::Math::Row(const T& m, const std::size_t index, const typename T::rowType& x)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	TRAP_ASSERT(index < m[0].Length(), "Math::Row(): Index out of range!");
 
 	T result = m;
@@ -4987,10 +4931,8 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] typename T::rowType TRAP::Math::Row(const T& m, const std::size_t index)
+[[nodiscard]] constexpr typename T::rowType TRAP::Math::Row(const T& m, const std::size_t index)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	TRAP_ASSERT(index < m[0].Length(), "Math::Row(): Index out of range!");
 
 	typename T::rowType result(0);
@@ -5004,10 +4946,8 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] T TRAP::Math::Column(const T& m, const std::size_t index, const typename T::colType& x)
+[[nodiscard]] constexpr T TRAP::Math::Column(const T& m, const std::size_t index, const typename T::colType& x)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	TRAP_ASSERT(index < m.Length(), "Math::Column(): Index out of range!");
 
 	T result = m;
@@ -5019,10 +4959,8 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] typename T::colType TRAP::Math::Column(const T& m, const std::size_t index)
+[[nodiscard]] constexpr typename T::colType TRAP::Math::Column(const T& m, const std::size_t index)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	TRAP_ASSERT(index < m.Length(), "Math::Column(): Index out of range!");
 
 	return m[index];
@@ -5242,10 +5180,8 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-[[nodiscard]] TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat3Cast(const tQuat<T>& q) noexcept
+[[nodiscard]] constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat3Cast(const tQuat<T>& q) noexcept
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	Mat<3, 3, T> result(static_cast<T>(1));
 	const T qxx(q.x * q.x);
 	const T qyy(q.y * q.y);
@@ -5273,10 +5209,8 @@ template <typename T>
 }
 
 template <typename T>
-[[nodiscard]] TRAP::Math::Mat<4, 4, T> TRAP::Math::Mat4Cast(const tQuat<T>& q) noexcept
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Mat4Cast(const tQuat<T>& q) noexcept
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	return Mat<4, 4, T>(Mat3Cast(q));
 }
 
@@ -5411,10 +5345,8 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-[[nodiscard]] TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const tQuat<T>& x, const tQuat<T>& y) noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const tQuat<T>& x, const tQuat<T>& y) noexcept
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	Vec<4, bool> result{};
 	for (std::size_t i = 0u; i < x.Length(); ++i)
 		result[i] = x[i] == y[i];
@@ -5423,10 +5355,8 @@ template <typename T>
 }
 
 template <typename T>
-[[nodiscard]] TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const tQuat<T>& x, const tQuat<T>& y, const T epsilon)
+[[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const tQuat<T>& x, const tQuat<T>& y, const T epsilon)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	Vec<4, T> v(x.x - y.x, x.y - y.y, x.z - y.z, x.w - y.w);
 	return LessThan(Abs(v), Vec<4, T>(epsilon));
 }
@@ -5434,10 +5364,8 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-[[nodiscard]] TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const tQuat<T>& x, const tQuat<T>& y) noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const tQuat<T>& x, const tQuat<T>& y) noexcept
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	Vec<4, bool> result{};
 	for (std::size_t i = 0u; i < x.Length(); ++i)
 		result[i] = x[i] != y[i];
@@ -5446,10 +5374,8 @@ template <typename T>
 }
 
 template <typename T>
-[[nodiscard]] TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const tQuat<T>& x, const tQuat<T>& y, const T epsilon)
+[[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const tQuat<T>& x, const tQuat<T>& y, const T epsilon)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	const Vec<4, T> v(x.x - y.x, x.y - y.y, x.z - y.z, x.w - y.w);
 	return GreaterThanEqual(Abs(v), Vec<4, T>(epsilon));
 }
