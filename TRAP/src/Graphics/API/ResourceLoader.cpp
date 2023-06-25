@@ -363,7 +363,7 @@ TRAP::Graphics::API::ResourceLoader::ResourceLoader(const RendererAPI::ResourceL
 	SetupCopyEngine();
 
 	//Create dedicated resource loader thread.
-	m_thread = std::thread(StreamerThreadFunc, this);
+	m_thread = std::jthread(StreamerThreadFunc, this);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -375,7 +375,8 @@ TRAP::Graphics::API::ResourceLoader::~ResourceLoader()
 	m_run = false;
 
 	m_queueCond.notify_one();
-	m_thread.join();
+	if(m_thread.joinable())
+		m_thread.join();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

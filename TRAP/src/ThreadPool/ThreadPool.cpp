@@ -49,7 +49,4 @@ TRAP::ThreadPool::~ThreadPool()
 
 	for (Queue& queue : m_queues)
 		queue.Done();
-
-	for (std::thread& thread : m_threads)
-		thread.join();
 }

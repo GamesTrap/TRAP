@@ -4137,3 +4137,4 @@ SITREP 06/25/2023|23w25b2
     - PipelineCache, Fence, DescriptorSet, DescriptorPool, CommandSignature Added constexpr to virtual ~>30 mins
     - RendererAPI Added constexpr to virtual ~<15 mins
     - Replaced some find() != end() calls with contains() ~<10 mins
+    - Replaced std::thread with std::jthread where it makes sense ~<5 mins

@@ -4,6 +4,7 @@
 #include <functional>
 #include <future>
 #include <atomic>
+#include <thread>
 
 #include "BlockingQueue.h"
 
@@ -70,7 +71,7 @@ namespace TRAP
 		using Queues = std::vector<Queue>;
 		Queues m_queues;
 
-		using Threads = std::vector<std::thread>;
+		using Threads = std::vector<std::jthread>;
 		Threads m_threads;
 
 		uint32_t m_maxThreadsCount;

@@ -419,7 +419,7 @@ namespace TRAP::Graphics::API
 		RendererAPI::ResourceLoaderDesc m_desc;
 
 		std::atomic<bool> m_run;
-		std::thread m_thread;
+		std::jthread m_thread;
 
 		TracyLockable(std::mutex, m_queueMutex);
 		std::condition_variable_any m_queueCond;

@@ -111,7 +111,7 @@ namespace TRAP::FileSystem
         /// </summary>
         void Watch();
 
-        std::thread m_thread;
+        std::jthread m_thread;
         EventCallbackFn m_callback;
         std::vector<std::filesystem::path> m_paths; //No synchronization needed since it's only changed when m_thread is not running.
         bool m_recursive;

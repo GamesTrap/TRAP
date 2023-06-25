@@ -200,7 +200,7 @@ void TRAP::FileSystem::FileWatcher::Init()
     if(m_killEvent < 0)
         TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to create kill event (", Utils::String::GetStrError(), ")!");
 #endif
-    m_thread = std::thread(&TRAP::FileSystem::FileWatcher::Watch, this);
+    m_thread = std::jthread(&TRAP::FileSystem::FileWatcher::Watch, this);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
