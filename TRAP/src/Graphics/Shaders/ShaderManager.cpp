@@ -227,7 +227,7 @@ void TRAP::Graphics::ShaderManager::ReloadAll()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	return Shaders.find(name) != Shaders.end();
+	return Shaders.contains(name);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

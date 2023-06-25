@@ -2744,8 +2744,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const uint32_t wid
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifndef TRAP_HEADLESS_MODE
-	if (s_perViewportDataMap.find(window) != s_perViewportDataMap.end())
-		//Window is already in map
+	if (s_perViewportDataMap.contains(window)) //Window is already in map
 		return;
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -2963,7 +2962,7 @@ void TRAP::Graphics::API::VulkanRenderer::RemovePerViewportData() const
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifndef TRAP_HEADLESS_MODE
-	if (s_perViewportDataMap.find(window) != s_perViewportDataMap.end())
+	if (s_perViewportDataMap.contains(window))
 		s_perViewportDataMap.erase(window);
 #else
 	s_perViewportData.reset();
@@ -3545,13 +3544,11 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::
 	if(pipelineIt != s_pipelines.end())
 		return pipelineIt->second;
 
-	const auto cacheIt = s_pipelineCaches.find(hash);
-
 	const auto tempFolder = TRAP::FileSystem::GetGameTempFolderPath();
 	if(tempFolder)
 	{
 		std::pair<std::unordered_map<uint64_t, TRAP::Ref<PipelineCache>>::iterator, bool> res;
-		if (cacheIt == s_pipelineCaches.end())
+		if (!s_pipelineCaches.contains(hash))
 		{
 			PipelineCacheLoadDesc cacheDesc{};
 			cacheDesc.Path = *tempFolder / fmt::format("{}.cache", hash);

@@ -804,9 +804,9 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 
 	const std::string fEnding = Utils::String::ToLower(*fileEnding);
 
-	bool texture = std::find(Image::SupportedImageFormatSuffixes.begin(),
-	                         Image::SupportedImageFormatSuffixes.end(),
-							 fEnding) != Image::SupportedImageFormatSuffixes.end();
+	const bool texture = std::find(Image::SupportedImageFormatSuffixes.begin(),
+	                               Image::SupportedImageFormatSuffixes.end(),
+							       fEnding) != Image::SupportedImageFormatSuffixes.end();
 
 	bool shader = false;
 	if(!texture)

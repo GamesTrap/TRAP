@@ -4136,3 +4136,4 @@ SITREP 06/25/2023|23w25b2
     - Shader, Camera, SwapChain, Semaphore, Sampler, QueryPool Added constexpr to virtual ~>30 mins
     - PipelineCache, Fence, DescriptorSet, DescriptorPool, CommandSignature Added constexpr to virtual ~>30 mins
     - RendererAPI Added constexpr to virtual ~<15 mins
+    - Replaced some find() != end() calls with contains() ~<10 mins

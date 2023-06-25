@@ -1642,7 +1642,7 @@ static std::unordered_map<void*, VkDetails> s_VulkanTextureCache;
 {
     ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
-    if(s_VulkanTextureCache.find((void*)image_view) == s_VulkanTextureCache.end())
+    if(!s_VulkanTextureCache.contains((void*)image_view))
     {
         VkDetails& vulkanDetails = s_VulkanTextureCache[(void*)image_view];
         vulkanDetails.Sampler = sampler;

@@ -188,8 +188,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 			const std::vector<Ref<TRAP::Graphics::Texture>>& textures = std::get<std::vector<Ref<TRAP::Graphics::Texture>>>(param.Resource);
 			VALIDATE_DESCRIPTOR(!textures.empty(), fmt::format("Empty Texture ({})", desc->Name));
 
-			const std::unordered_map<std::string, uint32_t>::const_iterator it = m_rootSignature->GetDescriptorNameToIndexMap().find(desc->Name);
-			if(it == m_rootSignature->GetDescriptorNameToIndexMap().end())
+			if(!m_rootSignature->GetDescriptorNameToIndexMap().contains(desc->Name))
 			{
 				TP_ERROR(Log::RendererVulkanDescriptorSetPrefix, "No Static Sampler called (", desc->Name, ")");
 				TRAP_ASSERT(false, "VulkanDescriptorSet::Update(): No Static Sampler called (" + desc->Name + ")");

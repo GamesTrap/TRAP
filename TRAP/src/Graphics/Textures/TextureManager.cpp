@@ -360,7 +360,7 @@ void TRAP::Graphics::TextureManager::ReloadAll()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	return Textures.find(name) != Textures.end();
+	return Textures.contains(name);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

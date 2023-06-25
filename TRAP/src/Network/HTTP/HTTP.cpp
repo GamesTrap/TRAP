@@ -149,7 +149,7 @@ void TRAP::Network::HTTP::Request::SetBody(std::string body)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return m_fields.find(Utils::String::ToLower(field)) != m_fields.end();
+	return m_fields.contains(Utils::String::ToLower(field));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

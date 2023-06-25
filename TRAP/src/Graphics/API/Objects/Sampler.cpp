@@ -38,7 +38,7 @@ TRAP::Graphics::Sampler::Sampler()
 	}
 
 	//Try to use cached Sampler
-	if(s_cachedSamplers.find(desc) != s_cachedSamplers.end())
+	if(s_cachedSamplers.contains(desc))
 		return s_cachedSamplers[desc];
 
 	TRAP_ASSERT(s_cachedSamplers.size() != RendererAPI::GPUSettings.MaxSamplerAllocationCount, "Sampler::Create(): Exceeded max simultaneously allowed samplers!");

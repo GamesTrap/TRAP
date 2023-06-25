@@ -223,7 +223,7 @@ void TRAP::Graphics::SpriteManager::ReloadAll()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	return Sprites.find(name) != Sprites.end();
+	return Sprites.contains(name);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
