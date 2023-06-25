@@ -4121,7 +4121,7 @@ SITREP 06/24/2023|23w25b1
     - Changed TRAP Engine version to 23w25b1(0.9.51)
     - Utils un-deprecated GetEndian() ~<5 mins
     - Log Changed Log::Level checks ~<5 mins
-    - Utils Added fixed-size, compilte-time and thread safe ConstexprMap container ~<30 mins
+    - Utils Added fixed-size, compile-time and thread safe ConstexprMap container ~<30 mins
     - VulkanCommon ErrorCheck() and ReflexErrorCheck() now use ConstexprMap ~<10 mins
     - Replaced operators in some classes with the spaceship operator ~<20 mins
     - TRAP::Utils::String Replaced StartsWith() with std::string::starts_with() ~<5 mins
@@ -4131,3 +4131,4 @@ SITREP 06/25/2023|23w25b2
     - Changed TRAP Engine version to 23w25b2(0.9.52)
     - Events Added constexpr to virtual functions ~>25 mins
     - (Vulkan)Buffer Added constexpr ~<15 mins
+    - ScriptableEntity, Socket, Packet, Layer Added constexpr to virtual ~<30 mins

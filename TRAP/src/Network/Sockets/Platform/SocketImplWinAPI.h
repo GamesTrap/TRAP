@@ -69,7 +69,7 @@ namespace TRAP::INTERNAL::Network
 		/// Return the value of the invalid socket.
 		/// </summary>
 		/// <returns>Special value of the invalid socket.</returns>
-		[[nodiscard]] static TRAP::Network::SocketHandle InvalidSocket() noexcept;
+		[[nodiscard]] static constexpr TRAP::Network::SocketHandle InvalidSocket() noexcept;
 
 		/// <summary>
 		/// Close and destroy a socket.
@@ -90,6 +90,13 @@ namespace TRAP::INTERNAL::Network
 		/// <returns>Status corresponding to the last socket error.</returns>
 		[[nodiscard]] static TRAP::Network::Socket::Status GetErrorStatus();
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Network::SocketHandle TRAP::INTERNAL::Network::SocketImpl::InvalidSocket() noexcept
+{
+	return INVALID_SOCKET;
 }
 
 #endif /*TRAP_PLATFORM_WINDOWS*/

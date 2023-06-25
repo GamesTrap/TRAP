@@ -31,14 +31,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "SocketImpl.h"
 
-TRAP::Network::Socket::Socket(const Type type) noexcept
-	: m_type(type), m_socket(INTERNAL::Network::SocketImpl::InvalidSocket())
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Network::Socket::~Socket()
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
@@ -58,24 +50,6 @@ void TRAP::Network::Socket::SetBlocking(const bool blocking)
 		INTERNAL::Network::SocketImpl::SetBlocking(m_socket, blocking);
 
 	m_isBlocking = blocking;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] bool TRAP::Network::Socket::IsBlocking() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_isBlocking;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Network::SocketHandle TRAP::Network::Socket::GetHandle() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_socket;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

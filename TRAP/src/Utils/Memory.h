@@ -17,10 +17,8 @@ namespace TRAP::Utils::Memory
 	/// <typeparam name="T">Primitive data type.</typeparam>
 	/// <param name="t">Primitive data type.</param>
 	template<typename T>
-	inline static void SwapBytes(T& t)
+	inline constexpr static void SwapBytes(T& t)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
-
 		if constexpr (std::is_integral_v<T> || std::is_floating_point_v<T>)
 		{
 		    uint8_t* const ptr = reinterpret_cast<uint8_t*>(&t);
@@ -45,10 +43,8 @@ namespace TRAP::Utils::Memory
 	/// <param name="begin">Start of the container.</param>
 	/// <param name="end">End of the container.</param>
 	template<typename Iter>
-	inline static void SwapBytes(Iter begin, Iter end)
+	inline constexpr static void SwapBytes(Iter begin, Iter end)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 		for(; begin != end; ++begin)
 			SwapBytes(*begin);
 	}

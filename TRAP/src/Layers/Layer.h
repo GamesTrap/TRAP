@@ -19,27 +19,27 @@ namespace TRAP
 		/// Constructor.
 		/// </summary>
 		/// <param name="debugName">Layer name for debugging.</param>
-		explicit Layer(std::string debugName = "Layer") noexcept;
+		constexpr explicit Layer(std::string debugName = "Layer") noexcept;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Layer(const Layer&) noexcept = default;
+		constexpr Layer(const Layer&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Layer& operator=(const Layer&) noexcept = default;
+		constexpr Layer& operator=(const Layer&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Layer(Layer&&) noexcept = default;
+		constexpr Layer(Layer&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Layer& operator=(Layer&&) noexcept = default;
+		constexpr Layer& operator=(Layer&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		virtual ~Layer() = default;
+		constexpr virtual ~Layer() = default;
 
 		/// <summary>
 		/// Called when Layer gets pushed to a layer stack.
@@ -74,11 +74,25 @@ namespace TRAP
 		/// Retrieve the debug name of the layer.
 		/// </summary>
 		/// <returns>Name of the layer.</returns>
-		[[nodiscard]] std::string GetName() const noexcept;
+		[[nodiscard]] constexpr std::string GetName() const noexcept;
 
 	protected:
 		std::string m_DebugName;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Layer::Layer(std::string debugName) noexcept
+	: m_DebugName(std::move(debugName))
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::string TRAP::Layer::GetName() const noexcept
+{
+	return m_DebugName;
 }
 
 #endif /*TRAP_LAYER_H*/

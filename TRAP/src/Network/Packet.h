@@ -29,6 +29,11 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_NETWORK_PACKET_H
 #define TRAP_NETWORK_PACKET_H
 
+#include "Core/Base.h"
+#include "Utils/Utils.h"
+#include "Utils/Memory.h"
+
+#include <algorithm>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -51,49 +56,49 @@ namespace TRAP::Network
 		/// Constructor.
 		/// Creates an empty packet.
 		/// </summary>
-		Packet() noexcept;
+		constexpr Packet() noexcept = default;
 
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		virtual ~Packet() = default;
+		constexpr virtual ~Packet() = default;
 
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Packet(const Packet&) noexcept = default;
+		constexpr Packet(const Packet&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Packet& operator=(const Packet&) noexcept = default;
+		constexpr Packet& operator=(const Packet&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Packet(Packet&&) noexcept = default;
+		constexpr Packet(Packet&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Packet& operator=(Packet&&) noexcept = default;
+		constexpr Packet& operator=(Packet&&) noexcept = default;
 
 		/// <summary>
 		/// Append data to the end of the packet.
 		/// </summary>
 		/// <param name="data">Pointer to the sequence of bytes to append.</param>
 		/// <param name="sizeInBytes">Number of bytes to append.</param>
-		void Append(const void* data, std::size_t sizeInBytes);
+		constexpr void Append(const void* data, std::size_t sizeInBytes);
 
 		/// <summary>
 		/// Get the current reading position in the packet.
 		/// The next read operation will read data from this position.
 		/// </summary>
 		/// <returns>The bytes offset of the current read position.</returns>
-		[[nodiscard]] std::size_t GetReadPosition() const noexcept;
+		[[nodiscard]] constexpr std::size_t GetReadPosition() const noexcept;
 
 		/// <summary>
 		/// Clear the packet.
 		/// After calling Clear, the packet is empty.
 		/// </summary>
-		void Clear() noexcept;
+		constexpr void Clear() noexcept;
 
 		/// <summary>
 		/// Get a pointer to the data contained in the packet.
@@ -104,7 +109,7 @@ namespace TRAP::Network
 		/// The return pointer is nullptr if the packet is empty.
 		/// </summary>
 		/// <returns>Pointer to the data.</returns>
-		[[nodiscard]] const void* GetData() const;
+		[[nodiscard]] constexpr const void* GetData() const;
 
 		/// <summary>
 		/// Get the size of the data contained in the packet.
@@ -113,7 +118,7 @@ namespace TRAP::Network
 		/// what GetData returns.
 		/// </summary>
 		/// <returns>Data size, in bytes.</returns>
-		[[nodiscard]] std::size_t GetDataSize() const noexcept;
+		[[nodiscard]] constexpr std::size_t GetDataSize() const noexcept;
 
 		/// <summary>
 		/// Tell if the reading position has reached the
@@ -123,7 +128,7 @@ namespace TRAP::Network
 		/// left to be read, without actually reading it.
 		/// </summary>
 		/// <returns>True if all data was read, false otherwise.</returns>
-		[[nodiscard]] bool EndOfPacket() const noexcept;
+		[[nodiscard]] constexpr bool EndOfPacket() const noexcept;
 
 		/// <summary>
 		/// Test the validity of the packet, for reading.
@@ -141,7 +146,7 @@ namespace TRAP::Network
 		/// pointer types.
 		/// </summary>
 		/// <returns>True if last data extraction from packet was successful.</returns>
-		explicit operator bool() const noexcept;
+		constexpr explicit operator bool() const noexcept;
 
 		/// <summary>
 		/// Overload of operator >> to read data from the packet.
@@ -165,19 +170,19 @@ namespace TRAP::Network
 		/// <summary>
 		/// Overload of operator << to write data into the packet.
 		/// </summary>
-		Packet& operator<<(bool data);
-		Packet& operator<<(int8_t data);
-		Packet& operator<<(uint8_t data);
-		Packet& operator<<(int16_t data);
-		Packet& operator<<(uint16_t data);
-		Packet& operator<<(int32_t data);
-		Packet& operator<<(uint32_t data);
-		Packet& operator<<(int64_t data);
-		Packet& operator<<(uint64_t data);
-		Packet& operator<<(float data);
-		Packet& operator<<(double data);
-		Packet& operator<<(std::string_view data);
-		Packet& operator<<(std::wstring_view data);
+		constexpr Packet& operator<<(bool data);
+		constexpr Packet& operator<<(int8_t data);
+		constexpr Packet& operator<<(uint8_t data);
+		constexpr Packet& operator<<(int16_t data);
+		constexpr Packet& operator<<(uint16_t data);
+		constexpr Packet& operator<<(int32_t data);
+		constexpr Packet& operator<<(uint32_t data);
+		constexpr Packet& operator<<(int64_t data);
+		constexpr Packet& operator<<(uint64_t data);
+		constexpr Packet& operator<<(float data);
+		constexpr Packet& operator<<(double data);
+		constexpr Packet& operator<<(std::string_view data);
+		constexpr Packet& operator<<(std::wstring_view data);
 
 	protected:
 		friend class TCPSocket;
@@ -219,11 +224,11 @@ namespace TRAP::Network
 		/// <summary>
 		/// Disallow comparisons between packets.
 		/// </summary>
-		bool operator==(const Packet& right) const = delete;
+		constexpr bool operator==(const Packet& right) const = delete;
 		/// <summary>
 		/// Disallow comparisons between packets.
 		/// </summary>
-		bool operator!=(const Packet & right) const = delete;
+		constexpr bool operator!=(const Packet & right) const = delete;
 
 	private:
 		/// <summary>
@@ -233,13 +238,214 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="size">Size to check.</param>
 		/// <returns>True if size bytes can be read from the packet.</returns>
-		[[nodiscard]] bool CheckSize(std::size_t size) noexcept;
+		[[nodiscard]] constexpr bool CheckSize(std::size_t size) noexcept;
 
-		std::vector<char> m_data; //Data stored in the packet
-		std::size_t m_readPos;    //Current reading position in the packet
-		std::size_t m_sendPos;    //Current send position in the packet (for handling partial sends)
-		bool m_isValid;           //Reading state of the packet
+		std::vector<char> m_data{}; //Data stored in the packet
+		std::size_t m_readPos = 0;  //Current reading position in the packet
+		std::size_t m_sendPos = 0;  //Current send position in the packet (for handling partial sends)
+		bool m_isValid = true;      //Reading state of the packet
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Network::Packet::Append(const void* const data, const std::size_t sizeInBytes)
+{
+	if((data == nullptr) || (sizeInBytes == 0))
+		return;
+
+	const auto start = std::ssize(m_data);
+	m_data.resize(m_data.size() + sizeInBytes);
+	std::copy_n(static_cast<const char*>(data), sizeInBytes, std::next(m_data.begin(), start));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::size_t TRAP::Network::Packet::GetReadPosition() const noexcept
+{
+	return m_readPos;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Network::Packet::Clear() noexcept
+{
+	m_data.clear();
+	m_readPos = 0;
+	m_isValid = true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const void* TRAP::Network::Packet::GetData() const
+{
+	return !m_data.empty() ? m_data.data() : nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::size_t TRAP::Network::Packet::GetDataSize() const noexcept
+{
+	return m_data.size();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Network::Packet::EndOfPacket() const noexcept
+{
+	return m_readPos >= m_data.size();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet::operator bool() const noexcept
+{
+	return m_isValid;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Network::Packet::CheckSize(const std::size_t size) noexcept
+{
+	m_isValid = m_isValid && (m_readPos + size <= m_data.size());
+
+	return m_isValid;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const bool data)
+{
+	*this << static_cast<uint8_t>(data);
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int8_t data)
+{
+	Append(&data, sizeof(int8_t));
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint8_t data)
+{
+	Append(&data, sizeof(uint8_t));
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(int16_t data)
+{
+	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
+		TRAP::Utils::Memory::SwapBytes(data); //Need to convert to big endian
+
+	Append(&data, sizeof(int16_t));
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(uint16_t data)
+{
+	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
+		TRAP::Utils::Memory::SwapBytes(data); //Need to convert to big endian
+
+	Append(&data, sizeof(uint16_t));
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(int32_t data)
+{
+	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
+		TRAP::Utils::Memory::SwapBytes(data); //Need to convert to big endian
+
+	Append(&data, sizeof(int32_t));
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(uint32_t data)
+{
+	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
+		TRAP::Utils::Memory::SwapBytes(data); //Need to convert to big endian
+
+	Append(&data, sizeof(uint32_t));
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(int64_t data)
+{
+	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
+		TRAP::Utils::Memory::SwapBytes(data); //Need to convert to big endian
+
+	Append(&data, sizeof(int64_t));
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(uint64_t data)
+{
+	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
+		TRAP::Utils::Memory::SwapBytes(data); //Need to convert to big endian
+
+	Append(&data, sizeof(uint64_t));
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const float data)
+{
+	Append(&data, sizeof(float));
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const double data)
+{
+	Append(&data, sizeof(double));
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::string_view data)
+{
+	//First insert string length
+	const std::size_t length = data.size();
+	*this << length;
+
+	//Then insert characters
+	if (length > 0)
+		Append(data.data(), length * sizeof(std::string_view::value_type));
+
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::wstring_view data)
+{
+	//First insert string length
+	const std::size_t length = data.size();
+	*this << length;
+
+	//Then insert characters
+	if (length > 0)
+		Append(data.data(), length * sizeof(std::wstring::value_type));
+
+	return *this;
 }
 
 #endif /*TRAP_NETWORK_PACKET_H*/

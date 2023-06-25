@@ -41,11 +41,11 @@ namespace TRAP::Network
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		Socket() noexcept = default;
+		constexpr Socket() noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Socket(Socket&&) noexcept = default;
+		constexpr Socket(Socket&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
@@ -53,11 +53,11 @@ namespace TRAP::Network
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Socket(const Socket&) = delete;
+		constexpr Socket(const Socket&) = delete;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Socket& operator=(const Socket&) = delete;
+		constexpr Socket& operator=(const Socket&) = delete;
 
 		/// <summary>
 		/// Status codes that may be returned by socket functions.
@@ -104,7 +104,7 @@ namespace TRAP::Network
 		/// Tell whether the socket is in blocking or non-blocking mode.
 		/// </summary>
 		/// <returns>True if the socket is blocking, false otherwise.</returns>
-		[[nodiscard]] bool IsBlocking() const noexcept;
+		[[nodiscard]] constexpr bool IsBlocking() const noexcept;
 
 	protected:
 		/// <summary>
@@ -122,7 +122,7 @@ namespace TRAP::Network
 		/// This constructor can only be accessed by derived classes.
 		/// </summary>
 		/// <param name="type">Type of the socket (TCP or UDP).</param>
-		explicit Socket(Type type) noexcept;
+		constexpr explicit Socket(Type type) noexcept;
 
 		/// <summary>
 		/// Return the internal handle of the socket.
@@ -132,7 +132,7 @@ namespace TRAP::Network
 		/// This function can only be accessed by derived classes.
 		/// </summary>
 		/// <returns>The internal (OS-specific) handle of the socket.</returns>
-		[[nodiscard]] SocketHandle GetHandle() const noexcept;
+		[[nodiscard]] constexpr SocketHandle GetHandle() const noexcept;
 
 		/// <summary>
 		/// Create the internal representation of the socket.
@@ -175,6 +175,27 @@ namespace TRAP::Network
 #endif
 		bool m_isBlocking = true; //Current blocking mode of the socket
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Socket::Socket(const Type type) noexcept
+	: m_type(type)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Network::Socket::IsBlocking() const noexcept
+{
+	return m_isBlocking;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Network::SocketHandle TRAP::Network::Socket::GetHandle() const noexcept
+{
+	return m_socket;
 }
 
 #endif /*TRAP_NETWORK_SOCKET_H*/
