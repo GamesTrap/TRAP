@@ -1108,7 +1108,7 @@ namespace TRAP::Graphics
 		/// Example title: "[Vulkan 1.3.0]".
 		/// </summary>
 		/// <returns>Renderer title.</returns>
-		[[nodiscard]] virtual std::string GetTitle() const noexcept = 0;
+		[[nodiscard]] constexpr virtual std::string GetTitle() const noexcept = 0;
 
 		/// <summary>
 		/// Retrieve the currently used GPUs UUID.

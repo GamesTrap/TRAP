@@ -996,7 +996,7 @@ namespace TRAP::Graphics::API
 		/// Example title: "[Vulkan 1.3.0]".
 		/// </summary>
 		/// <returns>Renderer title.</returns>
-		[[nodiscard]] std::string GetTitle() const noexcept override;
+		[[nodiscard]] constexpr std::string GetTitle() const noexcept override;
 
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -1441,6 +1441,13 @@ namespace TRAP::Graphics::API
 
 		static VulkanRenderer* s_renderer;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::string TRAP::Graphics::API::VulkanRenderer::GetTitle() const noexcept
+{
+	return m_rendererTitle;
 }
 
 #endif /*TRAP_VULKANRENDERER_H*/

@@ -2184,15 +2184,6 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::string TRAP::Graphics::API::VulkanRenderer::GetTitle() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_rendererTitle;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 #ifndef TRAP_HEADLESS_MODE
 [[nodiscard]] bool TRAP::Graphics::API::VulkanRenderer::GetVSync(const Window* const window) const
 {
