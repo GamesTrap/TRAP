@@ -42,9 +42,9 @@ void ControllerTests::OnImGuiRender()
 
 	for(const TRAP::Input::Controller& controller : s_controllers)
 	{
-		std::vector<float> axes = TRAP::Input::GetAllControllerAxes(controller);
-		std::vector<bool> buttons = TRAP::Input::GetAllControllerButtons(controller);
-		std::vector<TRAP::Input::ControllerDPad> dpads = TRAP::Input::GetAllControllerDPads(controller);
+		const std::vector<float> axes = TRAP::Input::GetAllControllerAxes(controller);
+		const std::vector<bool> buttons = TRAP::Input::GetAllControllerButtons(controller);
+		const std::vector<TRAP::Input::ControllerDPad> dpads = TRAP::Input::GetAllControllerDPads(controller);
 
 		const std::string controllerName = fmt::format("{}. {}", (ToUnderlying(controller) + 1),
 														TRAP::Input::GetControllerName(controller));
@@ -205,7 +205,7 @@ bool ControllerTests::OnControllerDisconnect(const TRAP::Events::ControllerDisco
 
 bool ControllerTests::OnWindowDrop(const TRAP::Events::WindowDropEvent& event)
 {
-	std::vector<std::string> paths = event.GetPaths();
+	const std::vector<std::string> paths = event.GetPaths();
 
 	for (const std::string_view path : paths)
 	{

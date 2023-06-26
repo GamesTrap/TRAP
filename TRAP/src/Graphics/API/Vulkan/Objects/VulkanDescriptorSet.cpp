@@ -33,15 +33,6 @@ TRAP::Graphics::API::VulkanDescriptorSet::VulkanDescriptorSet(TRAP::Ref<VulkanDe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const std::vector<VkDescriptorSet>& TRAP::Graphics::API::VulkanDescriptorSet::GetVkDescriptorSets() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_vkDescriptorSetHandles;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::API::VulkanRootSignature> TRAP::Graphics::API::VulkanDescriptorSet::GetRootSignature() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -66,15 +57,6 @@ TRAP::Graphics::API::VulkanDescriptorSet::VulkanDescriptorSet(TRAP::Ref<VulkanDe
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_dynamicOffsetCount;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] std::vector<TRAP::Graphics::API::VulkanRenderer::SizeOffset> TRAP::Graphics::API::VulkanDescriptorSet::GetDynamicSizeOffsets() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_dynamicSizeOffsets;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -58,7 +58,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the descriptor pool sizes for each descriptor type.
 		/// </summary>
 		/// <returns>Descriptor pool sizes.</returns>
-		[[nodiscard]] const std::vector<VkDescriptorPoolSize>& GetDescriptorPoolSizes() const noexcept;
+		[[nodiscard]] constexpr const std::vector<VkDescriptorPoolSize>& GetDescriptorPoolSizes() const noexcept;
 		/// <summary>
 		/// Retrieve the count of used descriptor sets.
 		/// </summary>
@@ -109,6 +109,13 @@ namespace TRAP::Graphics::API
 		friend VulkanDescriptorSet;
 		friend VulkanRootSignature;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<VkDescriptorPoolSize>& TRAP::Graphics::API::VulkanDescriptorPool::GetDescriptorPoolSizes() const noexcept
+{
+	return m_descriptorPoolSizes;
 }
 
 #endif /*TRAP_VULKANDESCRIPTORPOOL_H*/

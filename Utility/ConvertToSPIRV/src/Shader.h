@@ -453,7 +453,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline bool CheckShaderMagicNumber(const std::vector<uint8_t>& shaderData)
+[[nodiscard]] inline constexpr bool CheckShaderMagicNumber(const std::vector<uint8_t>& shaderData)
 {
 	return (shaderData.size() >= MagicNumber.size() &&
 	        std::string_view(reinterpret_cast<const char*>(shaderData.data()), MagicNumber.size()) == MagicNumber);

@@ -70,7 +70,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan shader module handles of each contained shader stage.
 		/// </summary>
 		/// <returns>Vulkan shader module handles.</returns>
-		[[nodiscard]] const std::vector<VkShaderModule>& GetVkShaderModules() const noexcept;
+		[[nodiscard]] constexpr const std::vector<VkShaderModule>& GetVkShaderModules() const noexcept;
 		/// <summary>
 		/// Retrieve the reflection data of each contained shader stage.
 		/// </summary>
@@ -80,7 +80,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the entry point names used by each contained shader stage.
 		/// </summary>
 		/// <returns>Entry point names.</returns>
-		[[nodiscard]] const std::vector<std::string>& GetEntryNames() const noexcept;
+		[[nodiscard]] constexpr const std::vector<std::string>& GetEntryNames() const noexcept;
 
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -297,6 +297,20 @@ namespace TRAP::Graphics::API
 		std::array<std::vector<TRAP::Scope<DescriptorSet>>, RendererAPI::ImageCount> m_cleanedDescriptorSets;
 		uint32_t m_lastImageIndex;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<VkShaderModule>& TRAP::Graphics::API::VulkanShader::GetVkShaderModules() const noexcept
+{
+	return m_shaderModules;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<std::string>& TRAP::Graphics::API::VulkanShader::GetEntryNames() const noexcept
+{
+	return m_entryNames;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

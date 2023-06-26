@@ -30,7 +30,7 @@ void SPIRVTests::OnAttach()
     m_indexBuffer->AwaitLoading();
 
     //Load Shader
-	std::vector<TRAP::Graphics::Shader::Macro> macros
+	const std::vector<TRAP::Graphics::Shader::Macro> macros
 	{
 		{"HALF", "0.5f"},
 		{"COLOR", "vec3(1.0f, 0.0f, 0.0f)"}

@@ -182,13 +182,13 @@ namespace TRAP::Graphics::API::SPIRVTools
 		/// Retrieve the shader resources.
 		/// </summary>
 		/// <returns>Shader resources.</returns>
-		[[nodiscard]] const std::vector<Resource>& GetShaderResources() const noexcept;
+		[[nodiscard]] constexpr const std::vector<Resource>& GetShaderResources() const noexcept;
 
 		/// <summary>
 		/// Retrieve the uniform variables.
 		/// </summary>
 		/// <returns>Uniform variables.</returns>
-		[[nodiscard]] const std::vector<Variable>& GetUniformVariables() const noexcept;
+		[[nodiscard]] constexpr const std::vector<Variable>& GetUniformVariables() const noexcept;
 
 		/// <summary>
 		/// Rertieve the name of the entry point.
@@ -208,6 +208,20 @@ namespace TRAP::Graphics::API::SPIRVTools
 
 		std::string m_entryPoint;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<TRAP::Graphics::API::SPIRVTools::Resource>& TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetShaderResources() const noexcept
+{
+	return m_shaderResources;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<TRAP::Graphics::API::SPIRVTools::Variable>& TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetUniformVariables() const noexcept
+{
+	return m_uniformVariables;
 }
 
 #endif /*TRAP_SPIRVTOOLS_H*/

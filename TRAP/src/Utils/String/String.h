@@ -14,28 +14,28 @@ namespace TRAP::Utils::String
 	/// <param name="string">String to split up.</param>
 	/// <param name="delimiters">Delimiter(s) to split source string with.</param>
 	/// <returns>Vector of strings splitted by the given delimiter(s).</returns>
-	[[nodiscard]] std::vector<std::string_view> SplitStringView(std::string_view str, std::string_view delimiters);
+	[[nodiscard]] constexpr std::vector<std::string_view> SplitStringView(std::string_view str, std::string_view delimiters);
 	/// <summary>
 	/// Split a string by the delimiter.
 	/// </summary>
 	/// <param name="string">String to split up.</param>
 	/// <param name="delimiter">Delimiter to split source string with.</param>
 	/// <returns>Vector of strings splitted by the given delimiter.</returns>
-	[[nodiscard]] std::vector<std::string_view> SplitStringView(std::string_view str, char delimiter);
+	[[nodiscard]] constexpr std::vector<std::string_view> SplitStringView(std::string_view str, char delimiter);
 	/// <summary>
 	/// Split a string by the delimiter(s).
 	/// </summary>
 	/// <param name="string">String to split up.</param>
 	/// <param name="delimiters">Delimiter(s) to split source string with.</param>
 	/// <returns>Vector of strings splitted by the given delimiter(s).</returns>
-	[[nodiscard]] std::vector<std::string> SplitString(const std::string& str, std::string_view delimiters);
+	[[nodiscard]] constexpr std::vector<std::string> SplitString(const std::string& str, std::string_view delimiters);
 	/// <summary>
 	/// Split a string by the delimiter.
 	/// </summary>
 	/// <param name="string">String to split up.</param>
 	/// <param name="delimiter">Delimiter to split source string with.</param>
 	/// <returns>Vector of strings splitted by the given delimiter.</returns>
-	[[nodiscard]] std::vector<std::string> SplitString(const std::string& str, char delimiter);
+	[[nodiscard]] constexpr std::vector<std::string> SplitString(const std::string& str, char delimiter);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -44,13 +44,13 @@ namespace TRAP::Utils::String
 	/// </summary>
 	/// <param name="string">String to split up.</param>
 	/// <returns>Vector of strings splitted by new lines.</returns>
-	[[nodiscard]] std::vector<std::string_view> GetLinesStringView(std::string_view str);
+	[[nodiscard]] constexpr std::vector<std::string_view> GetLinesStringView(std::string_view str);
 	/// <summary>
 	/// Split a string on new line.
 	/// </summary>
 	/// <param name="string">String to split up.</param>
 	/// <returns>Vector of strings splitted by new lines.</returns>
-	[[nodiscard]] std::vector<std::string> GetLines(const std::string& str);
+	[[nodiscard]] constexpr std::vector<std::string> GetLines(const std::string& str);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -222,6 +222,93 @@ namespace TRAP::Utils::String
 	/// <returns>Wide string representation of the given UTF-8 string.</returns>
 	[[nodiscard]] std::wstring CreateWideStringFromUTF8StringWin32(std::string_view str);
 #endif /*TRAP_PLATFORM_WINDOWS*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::string_view str,
+                                                                                           const std::string_view delimiters)
+{
+	std::size_t start = 0;
+	std::size_t end = str.find_first_of(delimiters);
+
+	std::vector<std::string_view> result;
+
+	while (end <= std::string_view::npos && start < str.size())
+	{
+		std::string_view token;
+		if (end != std::string_view::npos)
+			token = std::string_view(str.data() + start, end - start);
+		else
+			token = std::string_view(str.data() + start, str.size() - start);
+
+		if (!token.empty())
+			result.push_back(token);
+
+		if (end == std::string_view::npos)
+			break;
+
+		start = end + 1;
+		end = str.find_first_of(delimiters, start);
+	}
+
+	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::string_view str,
+                                                                                           const char delimiter)
+{
+	return SplitStringView(str, std::string_view(&delimiter, 1));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::vector<std::string> TRAP::Utils::String::SplitString(const std::string& str,
+                                                                                  const std::string_view delimiters)
+{
+	std::size_t start = 0;
+	std::size_t end = str.find_first_of(delimiters);
+
+	std::vector<std::string> result;
+
+	while (end <= std::string::npos)
+	{
+		const std::string token = str.substr(start, end - start);
+
+		if (!token.empty())
+			result.push_back(token);
+
+		if (end == std::string::npos)
+			break;
+
+		start = end + 1;
+		end = str.find_first_of(delimiters, start);
+	}
+
+	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::vector<std::string> TRAP::Utils::String::SplitString(const std::string& str, const char delimiter)
+{
+	return SplitString(str, std::string_view(&delimiter, 1));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::vector<std::string_view> TRAP::Utils::String::GetLinesStringView(const std::string_view str)
+{
+	return SplitStringView(str, "\n");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::vector<std::string> TRAP::Utils::String::GetLines(const std::string& str)
+{
+	return SplitString(str, "\n");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -56,15 +56,6 @@ TRAP::Graphics::StorageBuffer::StorageBuffer(const RendererAPI::DescriptorUpdate
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& TRAP::Graphics::StorageBuffer::GetSSBOs() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_storageBuffers;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::StorageBuffer::SetData(const void* const data, const uint64_t size, const uint64_t offset)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);

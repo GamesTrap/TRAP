@@ -56,7 +56,7 @@ namespace TRAP::Graphics
 		/// Retrieve the underlying buffers.
 		/// </summary>
 		/// <returns>Underlying buffers.</returns>
-		[[nodiscard]] const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& GetUBOs() const noexcept;
+		[[nodiscard]] constexpr const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& GetUBOs() const noexcept;
 
 		/// <summary>
 		/// Update data of the UBO.
@@ -112,6 +112,13 @@ namespace TRAP::Graphics
 
 		std::vector<API::SyncToken> m_tokens;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& TRAP::Graphics::UniformBuffer::GetUBOs() const noexcept
+{
+	return m_uniformBuffers;
 }
 
 #endif /*TRAP_UNIFORMBUFFER_H*/

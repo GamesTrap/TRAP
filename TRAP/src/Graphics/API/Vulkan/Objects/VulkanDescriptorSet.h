@@ -52,7 +52,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the VkDescriptorSet handles.
 		/// </summary>
 		/// <returns>VkDescriptorSet handles.</returns>
-		[[nodiscard]] const std::vector<VkDescriptorSet>& GetVkDescriptorSets() const noexcept;
+		[[nodiscard]] constexpr const std::vector<VkDescriptorSet>& GetVkDescriptorSets() const noexcept;
 		/// <summary>
 		/// Retrieve the root signature.
 		/// </summary>
@@ -72,7 +72,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the dynamic size offsets used by the descriptor set.
 		/// </summary>
 		/// <returns>Dynamic size offsets.</returns>
-		[[nodiscard]] std::vector<VulkanRenderer::SizeOffset> GetDynamicSizeOffsets() const noexcept;
+		[[nodiscard]] constexpr const std::vector<VulkanRenderer::SizeOffset>& GetDynamicSizeOffsets() const noexcept;
 		/// <summary>
 		/// Retrieve the max number of sets for the descriptor set.
 		/// </summary>
@@ -104,6 +104,20 @@ namespace TRAP::Graphics::API
 
 		TRAP::Ref<VulkanDevice> m_device;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<VkDescriptorSet>& TRAP::Graphics::API::VulkanDescriptorSet::GetVkDescriptorSets() const noexcept
+{
+	return m_vkDescriptorSetHandles;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<TRAP::Graphics::API::VulkanRenderer::SizeOffset>& TRAP::Graphics::API::VulkanDescriptorSet::GetDynamicSizeOffsets() const noexcept
+{
+	return m_dynamicSizeOffsets;
 }
 
 #endif /*TRAP_VULKANDESCRIPTORSET_H*/

@@ -47,15 +47,6 @@ void TRAP::Graphics::SpriteAnimation::OnUpdate(const Utils::TimeStep& deltaTime)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const std::vector<TRAP::Ref<TRAP::Graphics::SubTexture2D>>& TRAP::Graphics::SpriteAnimation::GetAllSprites() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_sprites;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteAnimation::GetCurrentSprite()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

@@ -451,15 +451,6 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const std::vector<VkImageView> &TRAP::Graphics::API::VulkanTexture::GetUAVVkImageViews() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_vkUAVDescriptors;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] VkImage TRAP::Graphics::API::VulkanTexture::GetVkImage() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

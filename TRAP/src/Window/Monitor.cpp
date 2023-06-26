@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "Monitor.h"
 
+#include <ranges>
+
 #include "Utils/ErrorCodes/ErrorCodes.h"
 
 #ifndef TRAP_HEADLESS_MODE
@@ -31,8 +33,8 @@ TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
 	std::vector<VideoMode> modes{};
 	const std::vector<INTERNAL::WindowingAPI::InternalVideoMode>& internalModes = INTERNAL::WindowingAPI::GetVideoModes(*m_handle);
 
-	for(auto i = internalModes.rbegin(); i != internalModes.rend(); ++i)
-		modes.emplace_back(i->Width, i->Height, i->RefreshRate);
+	for(const auto& internalMode : std::ranges::reverse_view(internalModes))
+		modes.emplace_back(internalMode.Width, internalMode.Height, internalMode.RefreshRate);
 
 	return modes;
 }

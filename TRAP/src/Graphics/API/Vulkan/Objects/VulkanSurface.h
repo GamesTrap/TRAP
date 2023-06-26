@@ -58,12 +58,12 @@ namespace TRAP::Graphics::API
 		/// Retrieve all formats supported by the surface.
 		/// </summary>
 		/// <returns>All formats supported by the surface.</returns>
-		[[nodiscard]] const std::vector<VkSurfaceFormatKHR>& GetVkSurfaceFormats() const noexcept;
+		[[nodiscard]] constexpr const std::vector<VkSurfaceFormatKHR>& GetVkSurfaceFormats() const noexcept;
 		/// <summary>
 		/// Retrieve all present modes supported by the surface.
 		/// </summary>
 		/// <returns>All present modes supported by the surface.</returns>
-		[[nodiscard]] const std::vector<VkPresentModeKHR>& GetVkSurfacePresentModes() const noexcept;
+		[[nodiscard]] constexpr const std::vector<VkPresentModeKHR>& GetVkSurfacePresentModes() const noexcept;
 
 	private:
 		VkSurfaceKHR m_surface;
@@ -74,6 +74,20 @@ namespace TRAP::Graphics::API
 
 		TRAP::Ref<VulkanInstance> m_instance;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<VkSurfaceFormatKHR>& TRAP::Graphics::API::VulkanSurface::GetVkSurfaceFormats() const noexcept
+{
+	return m_surfaceFormats;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<VkPresentModeKHR>& TRAP::Graphics::API::VulkanSurface::GetVkSurfacePresentModes() const noexcept
+{
+	return m_surfacePresentModes;
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

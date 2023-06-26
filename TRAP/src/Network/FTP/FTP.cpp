@@ -139,15 +139,6 @@ TRAP::Network::FTP::ListingResponse::ListingResponse(const Response& response, c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const std::vector<std::filesystem::path>& TRAP::Network::FTP::ListingResponse::GetListing() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_listing;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Network::FTP::~FTP()
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);

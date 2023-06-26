@@ -86,7 +86,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan queue family properties of each queue family.
 		/// </summary>
 		/// <returns>List of VkQueueFamilyProperties.</returns>
-		[[nodiscard]] const std::vector<VkQueueFamilyProperties>& GetQueueFamilyProperties() const noexcept;
+		[[nodiscard]] constexpr const std::vector<VkQueueFamilyProperties>& GetQueueFamilyProperties() const noexcept;
 		/// <summary>
 		/// Check whether an extension is supported by the physical device or not.
 		/// </summary>
@@ -211,6 +211,13 @@ namespace TRAP::Graphics::API
 
 		static std::multimap<uint32_t, std::array<uint8_t, 16>> s_availablePhysicalDeviceUUIDs;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<VkQueueFamilyProperties> &TRAP::Graphics::API::VulkanPhysicalDevice::GetQueueFamilyProperties() const noexcept
+{
+	return m_queueFamilyProperties;
 }
 
 #endif /*TRAP_VULKANPHYSICALDEVICE_H*/

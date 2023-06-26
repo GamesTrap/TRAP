@@ -104,7 +104,7 @@ template <typename T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline std::vector<std::string> SplitString(const std::string& string, const std::string& delimiters)
+[[nodiscard]] inline constexpr std::vector<std::string> SplitString(const std::string& string, const std::string& delimiters)
 {
 	std::size_t start = 0;
 	std::size_t end = string.find_first_of(delimiters);
@@ -130,21 +130,21 @@ template <typename T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline std::vector<std::string> GetLines(const std::string& string)
+[[nodiscard]] inline constexpr std::vector<std::string> GetLines(const std::string& string)
 {
 	return SplitString(string, "\n");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline bool StartsWith(const std::string_view string, const std::string_view start)
+[[nodiscard]] inline constexpr bool StartsWith(const std::string_view string, const std::string_view start)
 {
 	return string.substr(0, start.size()) == start;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline std::string GetSuffix(const std::string& name)
+[[nodiscard]] inline constexpr std::string GetSuffix(const std::string& name)
 {
 	const std::size_t pos = name.rfind('.');
 
@@ -172,7 +172,7 @@ template<typename Enum>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] inline static T ConvertByte(const uint8_t* const source)
+[[nodiscard]] inline static constexpr T ConvertByte(const uint8_t* const source)
 {
     if constexpr(std::is_unsigned_v<T> && (std::is_same_v<T, uint16_t> ||
                     std::is_same_v<T, uint32_t> || std::is_same_v<T, uint64_t>))

@@ -100,24 +100,6 @@ TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const std::vector<std::string>& TRAP::Graphics::API::VulkanInstance::GetUsedInstanceLayers() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_instanceLayers;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const std::vector<std::string>& TRAP::Graphics::API::VulkanInstance::GetUsedInstanceExtensions() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_instanceExtensions;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] uint32_t TRAP::Graphics::API::VulkanInstance::GetInstanceVersion()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

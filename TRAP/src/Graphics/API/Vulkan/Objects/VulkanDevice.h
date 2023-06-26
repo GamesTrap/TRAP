@@ -62,7 +62,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve a list of all used physical device extensions.
 		/// </summary>
 		/// <returns>List of physical device extensions.</returns>
-		[[nodiscard]] const std::vector<std::string>& GetUsedPhysicalDeviceExtensions() const noexcept;
+		[[nodiscard]] constexpr const std::vector<std::string>& GetUsedPhysicalDeviceExtensions() const noexcept;
 
 		/// <summary>
 		/// Find a queue family index for each queue type.
@@ -171,6 +171,13 @@ namespace TRAP::Graphics::API
 
 		VkDevice m_device;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<std::string>& TRAP::Graphics::API::VulkanDevice::GetUsedPhysicalDeviceExtensions() const noexcept
+{
+	return m_deviceExtensions;
 }
 
 #endif /*TRAP_VULKANDEVICE_H*/

@@ -203,7 +203,7 @@ namespace TRAP::Network
 			/// Return the array of directory/file names.
 			/// </summary>
 			/// <returns>Array containing the requested listing.</returns>
-			[[nodiscard]] const std::vector<std::filesystem::path>& GetListing() const noexcept;
+			[[nodiscard]] constexpr const std::vector<std::filesystem::path>& GetListing() const noexcept;
 
 		private:
 			std::vector<std::filesystem::path> m_listing; //Directory/file names extracted from the data
@@ -454,6 +454,8 @@ namespace TRAP::Network
 	};
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+
 template<>
 struct fmt::formatter<TRAP::Network::FTP::Response> : fmt::ostream_formatter
 {};
@@ -465,5 +467,12 @@ struct fmt::formatter<TRAP::Network::FTP::DirectoryResponse> : fmt::ostream_form
 template<>
 struct fmt::formatter<TRAP::Network::FTP::ListingResponse> : fmt::ostream_formatter
 {};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<std::filesystem::path>& TRAP::Network::FTP::ListingResponse::GetListing() const noexcept
+{
+	return m_listing;
+}
 
 #endif /*TRAP_FTP_H*/

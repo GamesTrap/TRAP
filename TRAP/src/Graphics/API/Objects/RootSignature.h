@@ -50,7 +50,7 @@ namespace TRAP::Graphics
 		/// Retrieve the list of descriptors contained in the root signature.
 		/// </summary>
 		/// <returns>List of descriptors.</returns>
-		[[nodiscard]] const std::vector<RendererAPI::DescriptorInfo>& GetDescriptors() const noexcept;
+		[[nodiscard]] constexpr const std::vector<RendererAPI::DescriptorInfo>& GetDescriptors() const noexcept;
 		/// <summary>
 		/// Retrieve the map which converts a descriptor name to its index.
 		/// </summary>
@@ -70,6 +70,13 @@ namespace TRAP::Graphics
 		//Translates hash of descriptor name to descriptor index in m_descriptors array
 		RendererAPI::DescriptorIndexMap m_descriptorNameToIndexMap;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<TRAP::Graphics::RendererAPI::DescriptorInfo>& TRAP::Graphics::RootSignature::GetDescriptors() const noexcept
+{
+	return m_descriptors;
 }
 
 #endif /*TRAP_ROOTSIGNATURE_H*/

@@ -45,16 +45,3 @@
 		return TRAP::Graphics::API::ImageFormat::Undefined;
 	}
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#ifndef TRAP_HEADLESS_MODE
-
-[[nodiscard]] const std::vector<TRAP::Ref<TRAP::Graphics::RenderTarget>>& TRAP::Graphics::SwapChain::GetRenderTargets() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_renderTargets;
-}
-
-#endif /*TRAP_HEADLESS_MODE*/

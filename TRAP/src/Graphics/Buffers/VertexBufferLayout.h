@@ -82,7 +82,7 @@ namespace TRAP::Graphics
 		/// Retrieve the vertex buffer elements described by this layout.
 		/// </summary>
 		/// <returns>Vertex buffer elements.</returns>
-		[[nodiscard]] const std::vector<VertexBufferElement>& GetElements() const noexcept;
+		[[nodiscard]] constexpr const std::vector<VertexBufferElement>& GetElements() const noexcept;
 
 		[[nodiscard]] std::vector<VertexBufferElement>::iterator begin() noexcept;
 		[[nodiscard]] std::vector<VertexBufferElement>::iterator end() noexcept;
@@ -125,6 +125,13 @@ namespace TRAP::Graphics
 		TRAP_ASSERT(false, "ShaderDataTypeSize(): Unknown shader data type!");
 		return 0;
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<TRAP::Graphics::VertexBufferElement>& TRAP::Graphics::VertexBufferLayout::GetElements() const noexcept
+{
+	return m_elements;
 }
 
 #endif /*TRAP_VERTEXBUFFERLAYOUT_H*/

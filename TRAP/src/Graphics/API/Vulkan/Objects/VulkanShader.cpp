@@ -118,29 +118,11 @@ TRAP::Graphics::API::VulkanShader::~VulkanShader()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const std::vector<VkShaderModule>& TRAP::Graphics::API::VulkanShader::GetVkShaderModules() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_shaderModules;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graphics::API::VulkanShader::GetReflection() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_reflection;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const std::vector<std::string>& TRAP::Graphics::API::VulkanShader::GetEntryNames() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_entryNames;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

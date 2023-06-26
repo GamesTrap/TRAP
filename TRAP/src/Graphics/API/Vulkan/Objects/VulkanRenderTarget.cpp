@@ -206,15 +206,6 @@ TRAP::Graphics::API::VulkanRenderTarget::~VulkanRenderTarget()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const std::vector<VkImageView>& TRAP::Graphics::API::VulkanRenderTarget::GetVkImageViewSlices() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_vkSliceDescriptors;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] uint64_t TRAP::Graphics::API::VulkanRenderTarget::GetID() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

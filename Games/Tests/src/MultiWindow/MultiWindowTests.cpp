@@ -73,7 +73,7 @@ void MultiWindowTests::OnAttach()
 
 	//Load Shaders
 	TRAP::Graphics::ShaderManager::LoadFile("Test", "./Assets/Shaders/test.shader");
-	std::vector<TRAP::Graphics::Shader::Macro> macros{{"TEST", "0.5f"}};
+	const std::vector<TRAP::Graphics::Shader::Macro> macros{{"TEST", "0.5f"}};
 	TRAP::Graphics::ShaderManager::LoadFile("TestUBO", "./Assets/Shaders/testubo.shader", &macros);
 
 	//Wait for all pending resources (just in case)

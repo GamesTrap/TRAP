@@ -79,22 +79,4 @@ TRAP::Graphics::API::VulkanSurface::~VulkanSurface()
 	return m_surfaceCapabilities;
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const std::vector<VkSurfaceFormatKHR>& TRAP::Graphics::API::VulkanSurface::GetVkSurfaceFormats() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_surfaceFormats;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const std::vector<VkPresentModeKHR>& TRAP::Graphics::API::VulkanSurface::GetVkSurfacePresentModes() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_surfacePresentModes;
-}
-
 #endif /*TRAP_HEADLESS_MODE*/

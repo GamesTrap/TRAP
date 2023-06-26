@@ -58,7 +58,7 @@ namespace TRAP::Graphics
 		/// Retrieve the underlying buffers.
 		/// </summary>
 		/// <returns>Underlying buffers.</returns>
-		[[nodiscard]] const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& GetSSBOs() const noexcept;
+		[[nodiscard]] constexpr const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& GetSSBOs() const noexcept;
 
 		/// <summary>
 		/// Update data of the SSBO.
@@ -175,4 +175,12 @@ inline void TRAP::Graphics::StorageBuffer::GetData(const T* const data, const ui
 	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_tokens[imageIndex]);
 }
 #endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& TRAP::Graphics::StorageBuffer::GetSSBOs() const noexcept
+{
+	return m_storageBuffers;
+}
+
 #endif /*TRAP_STORAGEBUFFER_H*/

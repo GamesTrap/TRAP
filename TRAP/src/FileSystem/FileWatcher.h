@@ -94,7 +94,7 @@ namespace TRAP::FileSystem
         /// Returns the paths that are being watched.
         /// </summary>
         /// <returns>The paths that are being watched.</returns>
-        [[nodiscard]] std::vector<std::filesystem::path> GetFolders() const noexcept;
+        [[nodiscard]] constexpr const std::vector<std::filesystem::path>& GetFolders() const noexcept;
 
     private:
         /// <summary>
@@ -124,6 +124,13 @@ namespace TRAP::FileSystem
         int32_t m_killEvent = 0;
 #endif
     };
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<std::filesystem::path>& TRAP::FileSystem::FileWatcher::GetFolders() const noexcept
+{
+    return m_paths;
 }
 
 #endif /*TRAP_FILEWATCHER_H*/

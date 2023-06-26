@@ -4143,3 +4143,7 @@ SITREP 06/25/2023|23w25b2
     - Updated ImGuiWindowing ~<5 mins
     - Added constinit where appilcable ~>30 mins
     - Update-Controller-Mappings Fixed invalid PR branch name ~<5 mins
+
+SITREP 06/26/2023|23w26a1
+    - Changed TRAP Engine version to 23w26a1(0.9.53)
+    - Added constexpr to functions containing std::vector ~>60 mins

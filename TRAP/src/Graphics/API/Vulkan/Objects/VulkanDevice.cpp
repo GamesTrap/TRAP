@@ -266,15 +266,6 @@ TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const std::vector<std::string>& TRAP::Graphics::API::VulkanDevice::GetUsedPhysicalDeviceExtensions() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_deviceExtensions;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndices()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);

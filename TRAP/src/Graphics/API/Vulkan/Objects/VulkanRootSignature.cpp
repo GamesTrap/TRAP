@@ -565,17 +565,6 @@ const std::array<VkDescriptorSetLayout, TRAP::Graphics::RendererAPI::MaxDescript
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplateData() const noexcept ->
-	const std::array<std::vector<TRAP::Graphics::API::VulkanRenderer::DescriptorUpdateData>,
-	                 TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_updateTemplateData;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const char* const resName)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

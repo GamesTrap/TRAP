@@ -49,7 +49,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the render target's Vulkan image view slices.
 		/// </summary>
 		/// <returns>Vulkan image view slices.</returns>
-		[[nodiscard]] const std::vector<VkImageView>& GetVkImageViewSlices() const noexcept;
+		[[nodiscard]] constexpr const std::vector<VkImageView>& GetVkImageViewSlices() const noexcept;
 		/// <summary>
 		/// Retrieve the render target's ID.
 		/// </summary>
@@ -88,6 +88,13 @@ namespace TRAP::Graphics::API
 
 		inline constinit static std::atomic<uint64_t> s_RenderTargetIDs = 1;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<VkImageView>& TRAP::Graphics::API::VulkanRenderTarget::GetVkImageViewSlices() const noexcept
+{
+	return m_vkSliceDescriptors;
 }
 
 #endif /*TRAP_VULKANRENDERTARGET_H*/

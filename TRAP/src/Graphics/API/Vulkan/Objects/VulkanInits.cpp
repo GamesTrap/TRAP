@@ -25,28 +25,6 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] VkInstanceCreateInfo TRAP::Graphics::API::VulkanInits::InstanceCreateInfo(const VkApplicationInfo& appInfo,
-	                                                                                    const std::vector<const char*>& instanceLayers,
-	                                                                                    const std::vector<const char*>& instanceExtensions) noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	VkInstanceCreateInfo info{};
-
-	info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-	info.pNext = nullptr;
-	info.flags = 0;
-	info.pApplicationInfo = &appInfo;
-	info.enabledLayerCount = NumericCast<uint32_t>(instanceLayers.size());
-	info.ppEnabledLayerNames = instanceLayers.data();
-	info.enabledExtensionCount = NumericCast<uint32_t>(instanceExtensions.size());
-	info.ppEnabledExtensionNames = instanceExtensions.data();
-
-	return info;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] VkDebugUtilsMessengerCreateInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsMessengerCreateInfo(const PFN_vkDebugUtilsMessengerCallbackEXT callback)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -179,32 +157,6 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] VkDeviceCreateInfo TRAP::Graphics::API::VulkanInits::DeviceCreateInfo(const void* const pNext,
-                                                                                    const std::vector<VkDeviceQueueCreateInfo>& queueCreateInfos,
-																	                const std::vector<const char*>& deviceExtensions)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	TRAP_ASSERT(!queueCreateInfos.empty(), "VulkanInits::DeviceCreateInfo(): QueueCreateInfos can't be empty!");
-
-	VkDeviceCreateInfo info{};
-
-	info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-	info.pNext = pNext;
-	info.flags = 0;
-	info.queueCreateInfoCount = NumericCast<uint32_t>(queueCreateInfos.size());
-	info.pQueueCreateInfos = queueCreateInfos.data();
-	info.enabledLayerCount = 0;
-	info.ppEnabledLayerNames = nullptr;
-	info.enabledExtensionCount = NumericCast<uint32_t>(deviceExtensions.size());
-	info.ppEnabledExtensionNames = deviceExtensions.data();
-	info.pEnabledFeatures = nullptr;
-
-	return info;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] VmaAllocatorCreateInfo TRAP::Graphics::API::VulkanInits::VMAAllocatorCreateInfo(VkDevice device,
 	                                                                                          VkPhysicalDevice physicalDevice,
 	                                                                                          VkInstance instance,
@@ -236,27 +188,6 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] VkDescriptorPoolCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorPoolCreateInfo(const std::vector<VkDescriptorPoolSize>& descriptorPoolSizes,
-                                                                                                    const uint32_t numDescriptorSets)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	TRAP_ASSERT(numDescriptorSets != 0, "VulkanInits::DescriptorPoolCreateInfo(): NumDescriptorSets can't be 0!");
-
-	VkDescriptorPoolCreateInfo info{};
-
-	info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-	info.pNext = nullptr;
-	info.flags = 0;
-	info.poolSizeCount = NumericCast<uint32_t>(descriptorPoolSizes.size());
-	info.pPoolSizes = descriptorPoolSizes.data();
-	info.maxSets = numDescriptorSets;
-
-	return info;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] VkDescriptorSetAllocateInfo TRAP::Graphics::API::VulkanInits::DescriptorSetAllocateInfo(VkDescriptorPool descriptorPool,
 	                                                                                                  const VkDescriptorSetLayout& descriptorLayout)
 {
@@ -272,23 +203,6 @@
 	info.descriptorPool = descriptorPool;
 	info.descriptorSetCount = 1;
 	info.pSetLayouts = &descriptorLayout;
-
-	return info;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkDescriptorSetLayoutCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorSetLayoutCreateInfo(const std::vector<VkDescriptorSetLayoutBinding>& bindings) noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	VkDescriptorSetLayoutCreateInfo info{};
-
-	info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-	info.pNext = nullptr;
-	info.flags = 0;
-	info.bindingCount = NumericCast<uint32_t>(bindings.size());
-	info.pBindings = bindings.data();
 
 	return info;
 }
@@ -461,257 +375,6 @@
 	desc.finalLayout = finalLayout;
 
 	return desc;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkSubpassDescription TRAP::Graphics::API::VulkanInits::SubPassDescription(const VkPipelineBindPoint bindPoint,
-	                                                                                    const std::vector<VkAttachmentReference>& inputAttachments,
-	                                                                                    const std::vector<VkAttachmentReference>& colorAttachments,
-	                                                                                    VkAttachmentReference& depthStencilAttachment) noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	VkSubpassDescription subpass{};
-
-	subpass.flags = 0;
-	subpass.pipelineBindPoint = bindPoint;
-	subpass.inputAttachmentCount = NumericCast<uint32_t>(inputAttachments.size());
-	subpass.pInputAttachments = inputAttachments.data();
-	subpass.colorAttachmentCount = NumericCast<uint32_t>(colorAttachments.size());
-	subpass.pColorAttachments = colorAttachments.data();
-	subpass.pResolveAttachments = nullptr;
-	subpass.pDepthStencilAttachment = &depthStencilAttachment;
-	subpass.preserveAttachmentCount = 0;
-	subpass.pPreserveAttachments = nullptr;
-
-	return subpass;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkSubpassDescription TRAP::Graphics::API::VulkanInits::SubPassDescription(const VkPipelineBindPoint bindPoint,
-	                                                                                    const std::vector<VkAttachmentReference>& inputAttachments,
-	                                                                                    const std::vector<VkAttachmentReference>& colorAttachments) noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	VkSubpassDescription subpass{};
-
-	subpass.flags = 0;
-	subpass.pipelineBindPoint = bindPoint;
-	subpass.inputAttachmentCount = NumericCast<uint32_t>(inputAttachments.size());
-	subpass.pInputAttachments = inputAttachments.data();
-	subpass.colorAttachmentCount = NumericCast<uint32_t>(colorAttachments.size());
-	subpass.pColorAttachments = colorAttachments.data();
-	subpass.pResolveAttachments = nullptr;
-	subpass.pDepthStencilAttachment = nullptr;
-	subpass.preserveAttachmentCount = 0;
-	subpass.pPreserveAttachments = nullptr;
-
-	return subpass;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkSubpassDescription2KHR TRAP::Graphics::API::VulkanInits::SubPassDescription(const VkPipelineBindPoint bindPoint,
-	                                                                                        const std::vector<VkAttachmentReference2KHR>& inputAttachments,
-	                                                                                        const std::vector<VkAttachmentReference2KHR>& colorAttachments,
-	                                                                                        VkAttachmentReference2KHR& depthStencilAttachment,
-												                                            const VkFragmentShadingRateAttachmentInfoKHR* const shadingRateAttachment) noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	VkSubpassDescription2KHR subpass{};
-
-	subpass.sType = VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_2_KHR;
-	subpass.pNext = shadingRateAttachment != nullptr ? shadingRateAttachment : nullptr;
-	subpass.flags = 0;
-	subpass.pipelineBindPoint = bindPoint;
-	subpass.viewMask = 0;
-	subpass.inputAttachmentCount = NumericCast<uint32_t>(inputAttachments.size());
-	subpass.pInputAttachments = inputAttachments.data();
-	subpass.colorAttachmentCount = NumericCast<uint32_t>(colorAttachments.size());
-	subpass.pColorAttachments = colorAttachments.data();
-	subpass.pResolveAttachments = nullptr;
-	subpass.pDepthStencilAttachment = &depthStencilAttachment;
-	subpass.preserveAttachmentCount = 0;
-	subpass.pPreserveAttachments = nullptr;
-
-	return subpass;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkSubpassDescription2KHR TRAP::Graphics::API::VulkanInits::SubPassDescription(const VkPipelineBindPoint bindPoint,
-	                                                                                        const std::vector<VkAttachmentReference2KHR>& inputAttachments,
-	                                                                                        const std::vector<VkAttachmentReference2KHR>& colorAttachments,
-																			                const VkFragmentShadingRateAttachmentInfoKHR* const shadingRateAttachment) noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	VkSubpassDescription2KHR subpass{};
-
-	subpass.sType = VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_2_KHR;
-	subpass.pNext = shadingRateAttachment != nullptr ? shadingRateAttachment : nullptr;
-	subpass.flags = 0;
-	subpass.pipelineBindPoint = bindPoint;
-	subpass.viewMask = 0;
-	subpass.inputAttachmentCount = NumericCast<uint32_t>(inputAttachments.size());
-	subpass.pInputAttachments = inputAttachments.data();
-	subpass.colorAttachmentCount = NumericCast<uint32_t>(colorAttachments.size());
-	subpass.pColorAttachments = colorAttachments.data();
-	subpass.pResolveAttachments = nullptr;
-	subpass.pDepthStencilAttachment = nullptr;
-	subpass.preserveAttachmentCount = 0;
-	subpass.pPreserveAttachments = nullptr;
-
-	return subpass;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription>& attachmentDescriptions,
-	                                                                                        const VkSubpassDescription& subpassDescription) noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	VkRenderPassCreateInfo info{};
-
-	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-	info.pNext = nullptr;
-	info.flags = 0;
-	info.attachmentCount = NumericCast<uint32_t>(attachmentDescriptions.size());
-	info.pAttachments = attachmentDescriptions.data();
-	info.subpassCount = 1;
-	info.pSubpasses = &subpassDescription;
-	info.dependencyCount = 0;
-	info.pDependencies = nullptr;
-
-	return info;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription>& attachmentDescriptions) noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	VkRenderPassCreateInfo info{};
-
-	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-	info.pNext = nullptr;
-	info.flags = 0;
-	info.attachmentCount = NumericCast<uint32_t>(attachmentDescriptions.size());
-	info.pAttachments = attachmentDescriptions.data();
-	info.subpassCount = 0;
-	info.pSubpasses = nullptr;
-	info.dependencyCount = 0;
-	info.pDependencies = nullptr;
-
-	return info;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkRenderPassCreateInfo2KHR TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription2KHR>& attachmentDescriptions,
-	                                                                                            const VkSubpassDescription2KHR& subpassDescription) noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	VkRenderPassCreateInfo2KHR info{};
-
-	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2_KHR;
-	info.pNext = nullptr;
-	info.flags = 0;
-	info.attachmentCount = NumericCast<uint32_t>(attachmentDescriptions.size());
-	info.pAttachments = attachmentDescriptions.data();
-	info.subpassCount = 1;
-	info.pSubpasses = &subpassDescription;
-	info.dependencyCount = 0;
-	info.pDependencies = nullptr;
-	info.correlatedViewMaskCount = 0;
-	info.pCorrelatedViewMasks = nullptr;
-
-	return info;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkRenderPassCreateInfo2KHR TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription2KHR>& attachmentDescriptions) noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	VkRenderPassCreateInfo2KHR info{};
-
-	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2_KHR;
-	info.pNext = nullptr;
-	info.flags = 0;
-	info.attachmentCount = NumericCast<uint32_t>(attachmentDescriptions.size());
-	info.pAttachments = attachmentDescriptions.data();
-	info.subpassCount = 0;
-	info.pSubpasses = nullptr;
-	info.dependencyCount = 0;
-	info.pDependencies = nullptr;
-	info.correlatedViewMaskCount = 0;
-	info.pCorrelatedViewMasks = nullptr;
-
-	return info;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkRenderPassBeginInfo TRAP::Graphics::API::VulkanInits::RenderPassBeginInfo(VkRenderPass renderPass,
-	                                                                                      VkFramebuffer frameBuffer,
-	                                                                                      const VkRect2D renderArea,
-	                                                                                      const std::vector<VkClearValue>& colorValues)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	TRAP_ASSERT(renderPass != VK_NULL_HANDLE, "VulkanInits::RenderPassBeginInfo(): RenderPass can't be VK_NULL_HANDLE!");
-	TRAP_ASSERT(frameBuffer != VK_NULL_HANDLE, "VulkanInits::RenderPassBeginInfo(): FrameBuffer can't be VK_NULL_HANDLE!");
-
-	VkRenderPassBeginInfo info{};
-
-	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-	info.pNext = nullptr;
-	info.renderPass = renderPass;
-	info.framebuffer = frameBuffer;
-	info.renderArea = renderArea;
-	info.clearValueCount = NumericCast<uint32_t>(colorValues.size());
-	info.pClearValues = colorValues.data();
-
-	return info;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkFramebufferCreateInfo TRAP::Graphics::API::VulkanInits::FramebufferCreateInfo(VkRenderPass renderPass,
-	                                                                                          const std::vector<VkImageView>& attachments,
-	                                                                                          const uint32_t width,
-	                                                                                          const uint32_t height,
-	                                                                                          const uint32_t layerCount)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	TRAP_ASSERT(width != 0, "VulkanInits::FramebufferCreateInfo(): Width can't be 0!");
-	TRAP_ASSERT(height != 0, "VulkanInits::FramebufferCreateInfo(): Height can't be 0!");
-	TRAP_ASSERT(layerCount != 0, "VulkanInits::FramebufferCreateInfo(): LayerCount can't be 0!");
-	TRAP_ASSERT(renderPass != VK_NULL_HANDLE, "VulkanInits::FramebufferCreateInfo(): RenderPass can't be VK_NULL_HANDLE!");
-
-	VkFramebufferCreateInfo info{};
-
-	info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-	info.pNext = nullptr;
-	info.flags = 0;
-	info.renderPass = renderPass;
-	info.attachmentCount = NumericCast<uint32_t>(attachments.size());
-	info.pAttachments = attachments.data();
-	info.width = width;
-	info.height = height;
-	info.layers = layerCount;
-
-	return info;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1011,75 +674,6 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineColorBlendStateCreateInfo(const std::vector<VkPipelineColorBlendAttachmentState>& attachments) noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	VkPipelineColorBlendStateCreateInfo info{};
-
-	info.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
-	info.pNext = nullptr;
-	info.flags = 0;
-	info.logicOpEnable = VK_FALSE;
-	info.logicOp = VK_LOGIC_OP_CLEAR;
-	info.attachmentCount = NumericCast<uint32_t>(attachments.size());
-	info.pAttachments = attachments.data();
-	info.blendConstants[0] = 0.0f;
-	info.blendConstants[1] = 0.0f;
-	info.blendConstants[2] = 0.0f;
-	info.blendConstants[3] = 0.0f;
-
-	return info;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineColorBlendStateCreateInfo(const VkLogicOp logicOp,
-	                                                                                                                  const std::vector<VkPipelineColorBlendAttachmentState>& attachments,
-	                                                                                                                  const float blendConstR,
-	                                                                                                                  const float blendConstG,
-	                                                                                                                  const float blendConstB,
-	                                                                                                                  const float blendConstA) noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	VkPipelineColorBlendStateCreateInfo info{};
-
-	info.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
-	info.pNext = nullptr;
-	info.flags = 0;
-	info.logicOpEnable = VK_TRUE;
-	info.logicOp = logicOp;
-	info.attachmentCount = NumericCast<uint32_t>(attachments.size());
-	info.pAttachments = attachments.data();
-	info.blendConstants[0] = blendConstR;
-	info.blendConstants[1] = blendConstG;
-	info.blendConstants[2] = blendConstB;
-	info.blendConstants[3] = blendConstA;
-
-	return info;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkPipelineCacheCreateInfo TRAP::Graphics::API::VulkanInits::PipelineCacheCreateInfo(const std::vector<uint8_t>& data,
-	                                                                                              const VkPipelineCacheCreateFlags flags) noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	VkPipelineCacheCreateInfo info{};
-
-	info.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
-	info.pNext = nullptr;
-	info.initialDataSize = data.size();
-	info.pInitialData = data.data();
-	info.flags = flags;
-
-	return info;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] VkPipelineShaderStageCreateInfo TRAP::Graphics::API::VulkanInits::PipelineShaderStageCreateInfo(const VkShaderStageFlagBits stage,
 	                                                                                                          VkShaderModule module,
 	                                                                                                          const std::string_view name)
@@ -1219,23 +813,6 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] VkPipelineDynamicStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineDynamicStateCreateInfo(const std::vector<VkDynamicState>& dynamicStates) noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	VkPipelineDynamicStateCreateInfo info{};
-
-	info.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-	info.pNext = nullptr;
-	info.flags = 0;
-	info.dynamicStateCount = NumericCast<uint32_t>(dynamicStates.size());
-	info.pDynamicStates = dynamicStates.data();
-
-	return info;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] VkComputePipelineCreateInfo TRAP::Graphics::API::VulkanInits::ComputePipelineCreateInfo(const VkPipelineShaderStageCreateInfo& stage,
 	                                                                                                  VkPipelineLayout layout)
 {
@@ -1302,32 +879,6 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] VkSubmitInfo TRAP::Graphics::API::VulkanInits::SubmitInfo(const std::vector<VkSemaphore>& waitSemaphores,
-														                const uint32_t waitCount,
-                                                                        const std::vector<VkPipelineStageFlags>& waitMasks,
-                                                                        const std::vector<VkCommandBuffer>& cmds,
-                                                                        const std::vector<VkSemaphore>& signalSemaphores,
-														                const uint32_t signalCount) noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	VkSubmitInfo info{};
-
-	info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-	info.pNext = nullptr;
-	info.waitSemaphoreCount = waitCount;
-	info.pWaitSemaphores = waitSemaphores.data();
-	info.pWaitDstStageMask = waitMasks.data();
-	info.commandBufferCount = NumericCast<uint32_t>(cmds.size());
-	info.pCommandBuffers = cmds.data();
-	info.signalSemaphoreCount = signalCount;
-	info.pSignalSemaphores = signalSemaphores.data();
-
-	return info;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] VkQueryPoolCreateInfo TRAP::Graphics::API::VulkanInits::QueryPoolCreateInfo(const uint32_t count,
                                                                                           const VkQueryType queryType) noexcept
 {
@@ -1383,28 +934,6 @@
 	info.presentMode = presentMode;
 	info.clipped = VK_TRUE;
 	info.oldSwapchain = nullptr;
-
-	return info;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkPresentInfoKHR TRAP::Graphics::API::VulkanInits::PresentInfo(const std::vector<VkSemaphore>& waitSemaphores,
-                                                                             const VkSwapchainKHR& swapChain,
-															                 uint32_t& presentIndex) noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	VkPresentInfoKHR info{};
-
-	info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-	info.pNext = nullptr;
-	info.waitSemaphoreCount = NumericCast<uint32_t>(waitSemaphores.size());
-	info.pWaitSemaphores = !waitSemaphores.empty() ? waitSemaphores.data() : nullptr;
-	info.swapchainCount = 1;
-	info.pSwapchains = &swapChain;
-	info.pImageIndices = &presentIndex;
-	info.pResults = nullptr;
 
 	return info;
 }

@@ -44,15 +44,6 @@ TRAP::Graphics::RootSignature::~RootSignature()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const std::vector<TRAP::Graphics::RendererAPI::DescriptorInfo>& TRAP::Graphics::RootSignature::GetDescriptors() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_descriptors;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] const TRAP::Graphics::RendererAPI::DescriptorIndexMap& TRAP::Graphics::RootSignature::GetDescriptorNameToIndexMap() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

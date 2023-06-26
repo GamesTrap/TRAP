@@ -49,12 +49,12 @@ namespace TRAP::Graphics::API
 		/// Retrieve the used color formats.
 		/// </summary>
 		/// <returns>Used color formats.</returns>
-		[[nodiscard]] const std::vector<TRAP::Graphics::API::ImageFormat>& GetColorFormats() const noexcept;
+		[[nodiscard]] constexpr const std::vector<TRAP::Graphics::API::ImageFormat>& GetColorFormats() const noexcept;
 		/// <summary>
 		/// Retrieve the used color load action types.
 		/// </summary>
 		/// <returns>Used color load action types.</returns>
-		[[nodiscard]] const std::vector<RendererAPI::LoadActionType>& GetLoadActionsColor() const noexcept;
+		[[nodiscard]] constexpr const std::vector<RendererAPI::LoadActionType>& GetLoadActionsColor() const noexcept;
 		/// <summary>
 		/// Retrieve the number of used render targets.
 		/// </summary>
@@ -97,6 +97,20 @@ namespace TRAP::Graphics::API
 
 		TRAP::Ref<VulkanDevice> m_device;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<TRAP::Graphics::API::ImageFormat>& TRAP::Graphics::API::VulkanRenderPass::GetColorFormats() const noexcept
+{
+	return m_colorFormats;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<TRAP::Graphics::RendererAPI::LoadActionType>& TRAP::Graphics::API::VulkanRenderPass::GetLoadActionsColor() const noexcept
+{
+	return m_loadActionsColor;
 }
 
 #endif /*TRAP_VULKANRENDERPASS_H*/

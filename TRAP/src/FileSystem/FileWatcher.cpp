@@ -173,15 +173,6 @@ void TRAP::FileSystem::FileWatcher::RemoveFolders(const std::vector<std::filesys
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::vector<std::filesystem::path> TRAP::FileSystem::FileWatcher::GetFolders() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Blue, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem) || (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-    return m_paths;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::FileSystem::FileWatcher::Init()
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);

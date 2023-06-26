@@ -349,24 +349,6 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderVariables()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const std::vector<TRAP::Graphics::API::SPIRVTools::Resource>& TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetShaderResources() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_shaderResources;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const std::vector<TRAP::Graphics::API::SPIRVTools::Variable>& TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetUniformVariables() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_uniformVariables;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] std::string TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetEntryPoint() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

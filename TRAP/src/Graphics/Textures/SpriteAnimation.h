@@ -66,7 +66,7 @@ namespace TRAP::Graphics
 		/// Retrieve all sprites used by the animation.
 		/// </summary>
 		/// <returns>List of sprites.</returns>
-		[[nodiscard]] const std::vector<TRAP::Ref<SubTexture2D>>& GetAllSprites() const noexcept;
+		[[nodiscard]] constexpr const std::vector<TRAP::Ref<SubTexture2D>>& GetAllSprites() const noexcept;
 
 		/// <summary>
 		/// Retrieve the current sprite of the animation.
@@ -107,6 +107,13 @@ namespace TRAP::Graphics
 		uint64_t m_currentSpriteIndex;
 		bool m_stopped;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<TRAP::Ref<TRAP::Graphics::SubTexture2D>>& TRAP::Graphics::SpriteAnimation::GetAllSprites() const noexcept
+{
+	return m_sprites;
 }
 
 #endif /*TRAP_SPRITEANIMATION_H*/

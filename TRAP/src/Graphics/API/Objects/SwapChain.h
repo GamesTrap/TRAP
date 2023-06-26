@@ -66,7 +66,7 @@ namespace TRAP::Graphics
 		/// Retrieve the render targets used by the swapchain.
 		/// </summary>
 		/// <returns>Render targets used by the swapchain.</returns>
-		[[nodiscard]] const std::vector<TRAP::Ref<RenderTarget>>& GetRenderTargets() const noexcept;
+		[[nodiscard]] constexpr const std::vector<TRAP::Ref<RenderTarget>>& GetRenderTargets() const noexcept;
 
 		/// <summary>
 		/// Toggle Vsync on and off.
@@ -112,6 +112,17 @@ constexpr TRAP::Graphics::SwapChain::~SwapChain()
 
 	m_renderTargets.clear();
 }
+#endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifndef TRAP_HEADLESS_MODE
+
+[[nodiscard]] constexpr const std::vector<TRAP::Ref<TRAP::Graphics::RenderTarget>>& TRAP::Graphics::SwapChain::GetRenderTargets() const noexcept
+{
+	return m_renderTargets;
+}
+
 #endif /*TRAP_HEADLESS_MODE*/
 
 #endif /*TRAP_SWAPCHAIN_H*/

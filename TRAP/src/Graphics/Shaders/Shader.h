@@ -89,7 +89,7 @@ namespace TRAP::Graphics
 		/// Retrieve the used macros of the shader.
 		/// </summary>
 		/// <returns>Used macros.</returns>
-		[[nodiscard]] const std::vector<Macro>& GetMacros() const noexcept;
+		[[nodiscard]] constexpr const std::vector<Macro>& GetMacros() const noexcept;
 
 		/// <summary>
 		/// Retrieve the root signature of the shader.
@@ -414,6 +414,13 @@ namespace TRAP::Graphics
 			}
 		};
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<TRAP::Graphics::Shader::Macro>& TRAP::Graphics::Shader::GetMacros() const noexcept
+{
+	return m_macros;
 }
 
 #endif /*TRAP_SHADER_H*/

@@ -79,7 +79,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve all read-writable Vulkan image view handles of the texture.
 		/// </summary>
 		/// <returns>
-		[[nodiscard]] const std::vector<VkImageView>& GetUAVVkImageViews() const noexcept;
+		[[nodiscard]] constexpr const std::vector<VkImageView>& GetUAVVkImageViews() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan image handle.
 		/// </summary>
@@ -143,6 +143,13 @@ namespace TRAP::Graphics::API
 
 		bool m_lazilyAllocated;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<VkImageView> &TRAP::Graphics::API::VulkanTexture::GetUAVVkImageViews() const noexcept
+{
+	return m_vkUAVDescriptors;
 }
 
 #endif /*TRAP_VULKANTEXTURE_H*/

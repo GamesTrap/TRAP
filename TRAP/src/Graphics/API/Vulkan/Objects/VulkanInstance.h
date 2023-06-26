@@ -47,12 +47,12 @@ namespace TRAP::Graphics::API
 		/// Retrieve a list of used instance layers.
 		/// </summary>
 		/// <returns>List of used instance layers.</returns>
-		[[nodiscard]] const std::vector<std::string>& GetUsedInstanceLayers() const noexcept;
+		[[nodiscard]] constexpr const std::vector<std::string>& GetUsedInstanceLayers() const noexcept;
 		/// <summary>
 		/// Retrieve a list of used instance extensions.
 		/// </summary>
 		/// <returns>List of used instance extensions.</returns>
-		[[nodiscard]] const std::vector<std::string>& GetUsedInstanceExtensions() const noexcept;
+		[[nodiscard]] constexpr const std::vector<std::string>& GetUsedInstanceExtensions() const noexcept;
 
 		/// <summary>
 		/// Retrieve the Vulkan instance version packed by VK_MAKE_API_VERSION.
@@ -102,6 +102,20 @@ namespace TRAP::Graphics::API
 		inline constinit static std::vector<VkLayerProperties> s_availableInstanceLayers{};
 		inline constinit static std::vector<VkExtensionProperties> s_availableInstanceExtensions{};
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<std::string>& TRAP::Graphics::API::VulkanInstance::GetUsedInstanceLayers() const noexcept
+{
+	return m_instanceLayers;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<std::string>& TRAP::Graphics::API::VulkanInstance::GetUsedInstanceExtensions() const noexcept
+{
+	return m_instanceExtensions;
 }
 
 #endif /*TRAP_VULKANINSTANCE_H*/

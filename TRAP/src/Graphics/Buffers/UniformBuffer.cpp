@@ -57,15 +57,6 @@ TRAP::Graphics::UniformBuffer::UniformBuffer(const RendererAPI::DescriptorUpdate
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& TRAP::Graphics::UniformBuffer::GetUBOs() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_uniformBuffers;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::UniformBuffer::SetData(const void* const data, const uint64_t size, const uint64_t offset)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);

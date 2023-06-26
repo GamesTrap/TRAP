@@ -89,7 +89,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the root signature's descriptor update data.
 		/// </summary>
 		/// <returns>Descriptor update data.</returns>
-		[[nodiscard]] const std::array<std::vector<VulkanRenderer::DescriptorUpdateData>,
+		[[nodiscard]] constexpr const std::array<std::vector<VulkanRenderer::DescriptorUpdateData>,
 		                               RendererAPI::MaxDescriptorSets>& GetUpdateTemplateData() const noexcept;
 
 		/// <summary>
@@ -124,6 +124,15 @@ namespace TRAP::Graphics::API
 		           RendererAPI::MaxDescriptorSets> m_updateTemplateData;
 		uint32_t m_vkPushConstantCount;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplateData() const noexcept ->
+	const std::array<std::vector<TRAP::Graphics::API::VulkanRenderer::DescriptorUpdateData>,
+	                 TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
+{
+	return m_updateTemplateData;
 }
 
 #endif /*TRAP_VULKANROOTSIGNATURE_H*/
