@@ -217,43 +217,6 @@ bool ControllerTests::OnWindowDrop(const TRAP::Events::WindowDropEvent& event)
 	return true;
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string ControllerTests::GetDPadDirection(const TRAP::Input::ControllerDPad& dpad)
-{
-	switch (dpad)
-	{
-	case TRAP::Input::ControllerDPad::Centered:
-		return "Centered";
-
-	case TRAP::Input::ControllerDPad::Up:
-		return "Up";
-
-	case TRAP::Input::ControllerDPad::Right:
-		return "Right";
-
-	case TRAP::Input::ControllerDPad::Down:
-		return "Down";
-
-	case TRAP::Input::ControllerDPad::Left:
-		return "Left";
-
-	case TRAP::Input::ControllerDPad::Right_Up:
-		return "Right Up";
-
-	case TRAP::Input::ControllerDPad::Right_Down:
-		return "Right Down";
-
-	case TRAP::Input::ControllerDPad::Left_Up:
-		return "Left Up";
-
-	case TRAP::Input::ControllerDPad::Left_Down:
-		return "Left Down";
-
-	default:
-		return "";
-	}
-}
 
 //-------------------------------------------------------------------------------------------------------------------//
 

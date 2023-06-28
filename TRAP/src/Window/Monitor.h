@@ -63,7 +63,7 @@ namespace TRAP
 		/// Retrieve the name of a monitor.
 		/// </summary>
 		/// <returns>Name of the monitor.</returns>
-		[[nodiscard]] std::string GetName() const noexcept;
+		[[nodiscard]] constexpr std::string GetName() const noexcept;
 		/// <summary>
 		/// Retrieve a list of available video modes for the monitor.
 		/// </summary>
@@ -182,6 +182,13 @@ namespace TRAP
 constexpr TRAP::Monitor::VideoMode::VideoMode(const int32_t width, const int32_t height, const double refreshRate) noexcept
 	: Width(width), Height(height), RefreshRate(refreshRate)
 {}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] inline constexpr std::string TRAP::Monitor::GetName() const noexcept
+{
+	return m_handle->Name;
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 

@@ -264,10 +264,8 @@ void TRAP::Input::Shutdown()
 /// </summary>
 /// <param name="key">Key to get.</param>
 /// <returns>String representation.</returns>
-[[nodiscard]] std::string NonPrintableKeyToString(const TRAP::Input::Key key) noexcept
+[[nodiscard]] constexpr std::string NonPrintableKeyToString(const TRAP::Input::Key key) noexcept
 {
-	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	switch(key)
 	{
 	case TRAP::Input::Key::Unknown:

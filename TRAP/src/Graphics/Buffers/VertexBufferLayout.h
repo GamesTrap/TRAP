@@ -48,7 +48,7 @@ namespace TRAP::Graphics
 		/// <param name="type">Shader data type.</param>
 		/// <param name="name">Name of the vertex attribute.</param>
 		/// <param name="normalized">Whether data is normalized.</param>
-		VertexBufferElement(ShaderDataType type, std::string name, bool normalized = false) noexcept;
+		constexpr VertexBufferElement(ShaderDataType type, std::string name, bool normalized = false) noexcept;
 
 		/// <summary>
 		/// Retrieve the component count of this vertex attribute.
@@ -101,6 +101,15 @@ namespace TRAP::Graphics
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::VertexBufferElement::VertexBufferElement(const ShaderDataType type, std::string name,
+                                                                   const bool normalized) noexcept
+	: Name(std::move(name)), Type(type), Size(ShaderDataTypeSize(type)), Normalized(normalized)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 
 [[nodiscard]] constexpr uint32_t TRAP::Graphics::ShaderDataTypeSize(const ShaderDataType type)
 {

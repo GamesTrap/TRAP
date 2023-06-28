@@ -153,10 +153,17 @@ template <typename T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline std::string ToLower(std::string string)
+[[nodiscard]] inline constexpr char ToLower(const char c)
+{
+	return (c >= 'A' && c <= 'Z') ? static_cast<char>(c - 'A' + 'a') : c;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] inline constexpr std::string ToLower(std::string string)
 {
     for(char& c : string)
-        c = static_cast<char>(::tolower(c));
+        c = static_cast<char>(ToLower(c));
 
     return string;
 }

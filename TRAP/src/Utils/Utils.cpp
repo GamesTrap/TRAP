@@ -269,8 +269,8 @@ TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 	if(windowManager != LinuxWindowManager::Unknown)
 		return windowManager;
 
-	const std::string wl = "wayland";
-	const std::string x11 = "x11";
+	static constexpr std::string wl = "wayland";
+	static constexpr std::string x11 = "x11";
 	std::string session;
 
 	//TRAP_WM env var allows the user to override the window manager detection

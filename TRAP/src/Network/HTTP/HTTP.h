@@ -105,7 +105,7 @@ namespace TRAP::Network
 			/// The URI is "/" (the root page) by default.
 			/// </summary>
 			/// <param name="uri">URI to request, relative to the host.</param>
-			void SetURI(std::string uri);
+			constexpr void SetURI(std::string uri);
 
 			/// <summary>
 			/// Set the HTTP version for the request.
@@ -125,7 +125,7 @@ namespace TRAP::Network
 			/// The body is empty by default.
 			/// </summary>
 			/// <param name="body">Content of the body.</param>
-			void SetBody(std::string body);
+			constexpr void SetBody(std::string body);
 
 		private:
 			friend class HTTP;
@@ -252,7 +252,7 @@ namespace TRAP::Network
 			/// - an error message (in case of an error)
 			/// </summary>
 			/// <returns>The response body.</returns>
-			[[nodiscard]] std::string GetBody() const noexcept;
+			[[nodiscard]] constexpr std::string GetBody() const noexcept;
 
 		private:
 			friend class HTTP;
@@ -364,6 +364,31 @@ namespace TRAP::Network
 		std::string m_hostName;         //Web host name
 		uint16_t m_port;                //Port used for connection with host
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Network::HTTP::Request::SetURI(std::string uri)
+{
+	m_uri = std::move(uri);
+
+	//Make sure it starts with a '/'
+	if (m_uri.empty() || (m_uri[0] != '/'))
+		m_uri.insert(0, "/");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Network::HTTP::Request::SetBody(std::string body)
+{
+	m_body = std::move(body);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::string TRAP::Network::HTTP::Response::GetBody() const noexcept
+{
+	return m_body;
 }
 
 #endif /*TRAP_NETWORK_HTTP_H*/

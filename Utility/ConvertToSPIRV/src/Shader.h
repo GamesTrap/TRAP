@@ -168,7 +168,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline bool FindEntryPoint(const std::string& shaderStr)
+[[nodiscard]] inline constexpr bool FindEntryPoint(const std::string& shaderStr)
 {
     return ToLower(shaderStr).find("main") != std::string::npos;
 }

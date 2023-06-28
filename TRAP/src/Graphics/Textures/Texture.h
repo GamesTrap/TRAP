@@ -154,7 +154,7 @@ namespace TRAP::Graphics
 		/// Retrieve the name of the texture.
 		/// </summary>
 		/// <returns>Name of the texture.</returns>
-		[[nodiscard]] std::string GetName() const noexcept;
+		[[nodiscard]] constexpr std::string GetName() const noexcept;
 		/// <summary>
 		/// Retrieve the texture type.
 		/// </summary>
@@ -369,6 +369,13 @@ namespace TRAP::Graphics
 		std::array<std::filesystem::path, 6> m_filepaths;
 		TextureCubeFormat m_textureCubeFormat;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::string TRAP::Graphics::Texture::GetName() const noexcept
+{
+	return m_name;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

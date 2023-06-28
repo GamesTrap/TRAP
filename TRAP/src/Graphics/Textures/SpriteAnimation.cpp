@@ -21,14 +21,6 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::SpriteAnimation::SpriteAnimation(std::string name, std::vector<TRAP::Ref<SubTexture2D>> sprites, float speed) noexcept
-	: m_name(std::move(name)), m_sprites(std::move(sprites)), m_speed(speed), m_currentTime(0), m_currentSpriteIndex(0), m_stopped(false)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::SpriteAnimation::OnUpdate(const Utils::TimeStep& deltaTime) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);

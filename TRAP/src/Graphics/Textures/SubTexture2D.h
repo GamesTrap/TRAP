@@ -88,18 +88,32 @@ namespace TRAP::Graphics
         /// Retrieve the name of the sprite.
         /// </summary>
         /// <returns>Name of the sprite.</returns>
-        [[nodiscard]] std::string GetName() noexcept;
+        [[nodiscard]] constexpr std::string GetName() noexcept;
         /// <summary>
         /// Retrieve the name of the sprite.
         /// </summary>
         /// <returns>Name of the sprite.</returns>
-        [[nodiscard]] const std::string& GetName() const noexcept;
+        [[nodiscard]] constexpr const std::string& GetName() const noexcept;
 
     private:
         Ref<TRAP::Graphics::Texture> m_texture;
         std::array<TRAP::Math::Vec2, 4> m_texCoords;
         std::string m_name;
     };
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::string TRAP::Graphics::SubTexture2D::GetName() noexcept
+{
+    return m_name;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::string& TRAP::Graphics::SubTexture2D::GetName() const noexcept
+{
+    return m_name;
 }
 
 #endif /*TRAP_SUBTEXTURE2D_H*/

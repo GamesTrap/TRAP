@@ -17,15 +17,6 @@ TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::string TRAP::Monitor::GetName() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_handle->Name;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] std::vector<TRAP::Monitor::VideoMode> TRAP::Monitor::GetVideoModes() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);

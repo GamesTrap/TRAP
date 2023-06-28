@@ -60,7 +60,7 @@ namespace TRAP::Utils::String
 	/// <param name="string">String to check.</param>
 	/// <param name="start">Prefix to check.</param>
 	/// <returns>True if the string begins with the provided prefix, false otherwise.</returns>
-	[[nodiscard]] bool StartsWith(std::string_view str, std::string_view start);
+	[[nodiscard]] constexpr bool StartsWith(std::string_view str, std::string_view start);
 
 	/// <summary>
 	/// Check if a string begins with the given prefix.
@@ -68,7 +68,7 @@ namespace TRAP::Utils::String
 	/// <param name="string">String to check.</param>
 	/// <param name="c">Prefix to check.</param>
 	/// <returns>True if the string begins with the provided prefix, false otherwise.</returns>
-	[[nodiscard]] bool StartsWith(std::string_view str, char c);
+	[[nodiscard]] constexpr bool StartsWith(std::string_view str, char c);
 
 	/// <summary>
 	/// Check if a string begins with the given prefix.
@@ -76,7 +76,7 @@ namespace TRAP::Utils::String
 	/// <param name="string">String to check.</param>
 	/// <param name="cstr">Prefix to check.</param>
 	/// <returns>True if the string begins with the provided prefix, false otherwise.</returns>
-	[[nodiscard]] bool StartsWith(std::string_view str, const char* cstr);
+	[[nodiscard]] constexpr bool StartsWith(std::string_view str, const char* cstr);
 
 	/// <summary>
 	/// Check if a string ends with the given suffix.
@@ -84,7 +84,7 @@ namespace TRAP::Utils::String
 	/// <param name="string">String to check.</param>
 	/// <param name="end">Suffix to check.</param>
 	/// <returns>True if the string ends with the provided suffix, false otherwise.</returns>
-	[[nodiscard]] bool EndsWith(std::string_view str, std::string_view end);
+	[[nodiscard]] constexpr bool EndsWith(std::string_view str, std::string_view end);
 
 	/// <summary>
 	/// Check if a string ends with the given suffix.
@@ -92,7 +92,7 @@ namespace TRAP::Utils::String
 	/// <param name="string">String to check.</param>
 	/// <param name="c">Suffix to check.</param>
 	/// <returns>True if the string ends with the provided suffix, false otherwise.</returns>
-	[[nodiscard]] bool EndsWith(std::string_view str, char c);
+	[[nodiscard]] constexpr bool EndsWith(std::string_view str, char c);
 
 	/// <summary>
 	/// Check if a string ends with the given suffix.
@@ -100,7 +100,7 @@ namespace TRAP::Utils::String
 	/// <param name="string">String to check.</param>
 	/// <param name="cstr">Suffix to check.</param>
 	/// <returns>True if the string ends with the provided suffix, false otherwise.</returns>
-	[[nodiscard]] bool EndsWith(std::string_view str, const char* cstr);
+	[[nodiscard]] constexpr bool EndsWith(std::string_view str, const char* cstr);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -109,13 +109,13 @@ namespace TRAP::Utils::String
 	/// </summary>
 	/// <param name="name">String to get suffix from.</param>
 	/// <returns>Suffix if found, nullptr otherwise.</returns>
-	[[nodiscard]] std::string_view GetSuffixStringView(std::string_view name);
+	[[nodiscard]] constexpr std::string_view GetSuffixStringView(std::string_view name);
 	/// <summary>
 	/// Get the suffix of a string(everything after the last '.' in the string).
 	/// </summary>
 	/// <param name="name">String to get suffix from.</param>
 	/// <returns>Suffix if found, empty string otherwise.</returns>
-	[[nodiscard]] std::string GetSuffix(const std::string& name);
+	[[nodiscard]] constexpr std::string GetSuffix(const std::string& name);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -124,7 +124,14 @@ namespace TRAP::Utils::String
 	/// </summary>
 	/// <param name="string">String to convert.</param>
 	/// <returns>Lower case version of the given string.</returns>
-	[[nodiscard]] std::string ToLower(std::string str);
+	[[nodiscard]] constexpr std::string ToLower(std::string str);
+
+	/// <summary>
+	/// Convert a character to lower case.
+	/// </summary>
+	/// <param name="c">Character to convert.</param>
+	/// <returns>Lower case version of the given character.</returns>
+	[[nodiscard]] constexpr char ToLower(char c);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -133,7 +140,14 @@ namespace TRAP::Utils::String
 	/// </summary>
 	/// <param name="string">String to convert.</param>
 	/// <returns>Upper case version of the given string.</returns>
-	[[nodiscard]] std::string ToUpper(std::string str);
+	[[nodiscard]] constexpr std::string ToUpper(std::string str);
+
+	/// <summary>
+	/// Convert a character to upper case.
+	/// </summary>
+	/// <param name="c">Character to convert.</param>
+	/// <returns>Upper case version of the given character.</returns>
+	[[nodiscard]] constexpr char ToUpper(char c);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -143,7 +157,7 @@ namespace TRAP::Utils::String
 	/// <param name="string">String to count occurrences.</param>
 	/// <param name="delimiter">Delimiter to find.</param>
 	/// <returns>Number of occurrences of the delimiter inside the given string.</returns>
-	[[nodiscard]] int64_t GetCount(std::string_view str, char delimiter);
+	[[nodiscard]] constexpr int64_t GetCount(std::string_view str, char delimiter);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -153,7 +167,7 @@ namespace TRAP::Utils::String
 	/// <param name="left">String to check.</param>
 	/// <param name="right">String to check.</param>
 	/// <returns>True if both strings are equal, false otherwise</returns>
-	[[nodiscard]] bool CompareAnyCase(std::string_view left, std::string_view right);
+	[[nodiscard]] constexpr bool CompareAnyCase(std::string_view left, std::string_view right);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -204,7 +218,7 @@ namespace TRAP::Utils::String
 	/// </summary>
 	/// <param name="codePoint">Unicode code point</param>
 	/// <returns>UTF-8 chars.</returns>
-	[[nodiscard]] std::string EncodeUTF8(uint32_t codePoint);
+	[[nodiscard]] constexpr std::string EncodeUTF8(uint32_t codePoint);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -309,6 +323,154 @@ namespace TRAP::Utils::String
 [[nodiscard]] constexpr std::vector<std::string> TRAP::Utils::String::GetLines(const std::string& str)
 {
 	return SplitString(str, "\n");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Utils::String::StartsWith(const std::string_view str, const std::string_view start)
+{
+	return str.starts_with(start);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Utils::String::StartsWith(const std::string_view str, const char c)
+{
+	return str.starts_with(c);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Utils::String::StartsWith(const std::string_view str, const char* cstr)
+{
+	return str.starts_with(cstr);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Utils::String::EndsWith(const std::string_view str, const std::string_view end)
+{
+	return str.ends_with(end);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Utils::String::EndsWith(const std::string_view str, const char c)
+{
+	return str.ends_with(c);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Utils::String::EndsWith(const std::string_view str, const char* cstr)
+{
+	return str.ends_with(cstr);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::string_view TRAP::Utils::String::GetSuffixStringView(const std::string_view name)
+{
+	const std::size_t pos = name.rfind('.');
+
+	return (pos == std::string::npos) ? std::string_view() : name.substr(pos + 1);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::string TRAP::Utils::String::GetSuffix(const std::string& name)
+{
+	const std::size_t pos = name.rfind('.');
+
+	return (pos == std::string::npos) ? "" : name.substr(pos + 1);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::string TRAP::Utils::String::ToLower(std::string str)
+{
+	for(char& c : str)
+		c = NumericCast<char>(::tolower(c));
+
+	return str;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr char TRAP::Utils::String::ToLower(const char c)
+{
+	return (c >= 'A' && c <= 'Z') ? NumericCast<char>(c - 'A' + 'a') : c;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr char TRAP::Utils::String::ToUpper(const char c)
+{
+	return (c >= 'a' && c <= 'z') ? NumericCast<char>(c - 'a' + 'A') : c;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::string TRAP::Utils::String::ToUpper(std::string str)
+{
+	for(char& c : str)
+		c = NumericCast<char>(::toupper(c));
+
+	return str;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr int64_t TRAP::Utils::String::GetCount(const std::string_view str, const char delimiter)
+{
+	return std::count(str.begin(), str.end(), delimiter);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Utils::String::CompareAnyCase(const std::string_view left, const std::string_view right)
+{
+	if (left.size() != right.size())
+		return false;
+
+	for (auto c1 = left.cbegin(), c2 = right.cbegin(); c1 != left.cend(); ++c1, ++c2)
+	{
+		if (ToLower(*c1) != ToLower(*c2))
+			return false;
+	}
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::string TRAP::Utils::String::EncodeUTF8(const uint32_t codePoint)
+{
+	std::string result{};
+	result.reserve(4);
+
+	if (codePoint < 0x80u)
+		result.push_back(NumericCast<char>(codePoint));
+	else if (codePoint < 0x800u)
+	{
+		result.push_back(NumericCast<char>((codePoint >> 6u) | 0xC0u));
+		result.push_back(NumericCast<char>((codePoint & 0x3Fu) | 0x80u));
+	}
+	else if (codePoint < 0x10000u)
+	{
+		result.push_back(NumericCast<char>((codePoint >> 12u) | 0xE0u));
+		result.push_back(NumericCast<char>(((codePoint >> 6u) & 0x3Fu) | 0x80u));
+		result.push_back(NumericCast<char>((codePoint & 0x3Fu) | 0x80u));
+	}
+	else if (codePoint < 0x110000u)
+	{
+		result.push_back(NumericCast<char>((codePoint >> 18u) | 0xF0u));
+		result.push_back(NumericCast<char>(((codePoint >> 12u) & 0x3Fu) | 0x80u));
+		result.push_back(NumericCast<char>(((codePoint >> 6u) & 0x3Fu) | 0x80u));
+		result.push_back(NumericCast<char>((codePoint & 0x3Fu) | 0x80u));
+	}
+
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -1,15 +1,6 @@
 #include "TRAPPCH.h"
 #include "VertexBufferLayout.h"
 
-TRAP::Graphics::VertexBufferElement::VertexBufferElement(const ShaderDataType type, std::string name,
-                                                         const bool normalized) noexcept
-	: Name(std::move(name)), Type(type), Size(ShaderDataTypeSize(type)), Normalized(normalized)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] uint32_t TRAP::Graphics::VertexBufferElement::GetComponentCount() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

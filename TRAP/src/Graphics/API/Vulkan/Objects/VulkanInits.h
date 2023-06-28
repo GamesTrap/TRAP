@@ -13,7 +13,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// </summary>
 	/// <param name="appName">Application name.</param>
 	/// <returns>VkApplicationInfo.</returns>
-	[[nodiscard]] VkApplicationInfo ApplicationInfo(std::string_view appName);
+	[[nodiscard]] constexpr VkApplicationInfo ApplicationInfo(std::string_view appName);
 
 	/// <summary>
 	/// Create a Vulkan instance create info from app info, instance layers and extensions.
@@ -49,8 +49,8 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="handle">Vulkan handle.</param>
 	/// <param name="name">Debug object name to set.</param>
 	/// <returns>VkDebugUtilsObjectNameInfoEXT.</returns>
-	[[nodiscard]] VkDebugUtilsObjectNameInfoEXT DebugUtilsObjectNameInfo(VkObjectType type, uint64_t handle,
-	                                                                     std::string_view name);
+	[[nodiscard]] constexpr VkDebugUtilsObjectNameInfoEXT DebugUtilsObjectNameInfo(VkObjectType type, uint64_t handle,
+	                                                                               std::string_view name);
 
 	/// <summary>
 	/// Create a Vulkan debug marker object name info.
@@ -59,8 +59,8 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="handle">Vulkan handle.</param>
 	/// <param name="name">Debug object name to set.</param>
 	/// <returns>VkDebugMarkerObjectNameInfoEXT.</returns>
-	[[nodiscard]] VkDebugMarkerObjectNameInfoEXT DebugMarkerObjectNameInfo(VkDebugReportObjectTypeEXT type, uint64_t handle,
-	                                                                       std::string_view name);
+	[[nodiscard]] constexpr VkDebugMarkerObjectNameInfoEXT DebugMarkerObjectNameInfo(VkDebugReportObjectTypeEXT type, uint64_t handle,
+	                                                                                 std::string_view name);
 
 	/// <summary>
 	/// Create a Vulkan debug utils label.
@@ -70,7 +70,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="b">Blue color.</param>
 	/// <param name="name">Name for the label.</param>
 	/// <returns>VkDebugUtilsLabelEXT.</returns>
-	[[nodiscard]] VkDebugUtilsLabelEXT DebugUtilsLabelExt(float r, float g, float b, std::string_view name);
+	[[nodiscard]] constexpr VkDebugUtilsLabelEXT DebugUtilsLabelExt(float r, float g, float b, std::string_view name);
 
 	/// <summary>
 	/// Create a Vulkan debug marker.
@@ -80,7 +80,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="b">Blue color.</param>
 	/// <param name="name">Name for the label.</param>
 	/// <returns>VkDebugMarkerMarkerInfoEXT.</returns>
-	[[nodiscard]] VkDebugMarkerMarkerInfoEXT DebugMarkerMarkerInfo(float r, float g, float b, std::string_view name);
+	[[nodiscard]] constexpr VkDebugMarkerMarkerInfoEXT DebugMarkerMarkerInfo(float r, float g, float b, std::string_view name);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -508,8 +508,8 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="module">Vulkan shader module.</param>
 	/// <param name="name">Shader entry point name.</param>
 	/// <returns>VkPipelineShaderStageCreateInfo.</returns>
-	[[nodiscard]] VkPipelineShaderStageCreateInfo PipelineShaderStageCreateInfo(VkShaderStageFlagBits stage, VkShaderModule module,
-	                                                                            std::string_view name);
+	[[nodiscard]] constexpr VkPipelineShaderStageCreateInfo PipelineShaderStageCreateInfo(VkShaderStageFlagBits stage, VkShaderModule module,
+	                                                                                      std::string_view name);
 
 	/// <summary>
 	/// Create a Vulkan pipeline vertex input state create info.
@@ -686,6 +686,25 @@ namespace TRAP::Graphics::API::VulkanInits
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	[[nodiscard]] VkClearColorValue ClearColorValue(const RendererAPI::Color& color, ImageFormat format);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkApplicationInfo TRAP::Graphics::API::VulkanInits::ApplicationInfo(const std::string_view appName)
+{
+	TRAP_ASSERT(!appName.empty(), "VulkanInits::ApplicationInfo(): Application name can't be empty!");
+
+	VkApplicationInfo info{};
+
+	info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+	info.pNext = nullptr;
+	info.pApplicationName = appName.data();
+	info.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+	info.pEngineName = "TRAP";
+	info.engineVersion = TRAP_VERSION;
+	info.apiVersion = VK_API_VERSION_1_1;
+
+	return info;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1115,6 +1134,106 @@ namespace TRAP::Graphics::API::VulkanInits
 	info.pSwapchains = &swapChain;
 	info.pImageIndices = &presentIndex;
 	info.pResults = nullptr;
+
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkDebugUtilsObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsObjectNameInfo(const VkObjectType type,
+	                                                                                                             const uint64_t handle,
+	                                                                                                             const std::string_view name)
+{
+	TRAP_ASSERT(!name.empty(), "VulkanInits::DebugUtilsObjectNameInfo(): Name can't be empty!");
+	TRAP_ASSERT(!(type == VK_OBJECT_TYPE_UNKNOWN && handle == 0), "VulkanInits::DebugUtilsObjectNameInfo(): Type and Handle can't be VK_OBJECT_TYPE_UNKNOWN and VK_NULL_HANDLE!");
+
+	VkDebugUtilsObjectNameInfoEXT info{};
+
+	info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
+	info.pNext = nullptr;
+	info.objectType = type;
+	info.objectHandle = handle;
+	info.pObjectName = name.data();
+
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkDebugMarkerObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugMarkerObjectNameInfo(const VkDebugReportObjectTypeEXT type,
+	                                                                                                               const uint64_t handle,
+	                                                                                                               const std::string_view name)
+{
+	TRAP_ASSERT(!name.empty(), "VulkanInits::DebugMarkerObjectNameInfo(): Name can't be empty!");
+	TRAP_ASSERT(type != VK_DEBUG_REPORT_OBJECT_TYPE_UNKNOWN_EXT, "VulkanInits::DebugMarkerObjectNameInfo(): Type can't be VK_DEBUG_REPORT_OBJECT_TYPE_UNKNOWN_EXT!");
+	TRAP_ASSERT(handle != 0, "VulkanInits::DebugMarkerObjectNameInfo(): Handle can't be VK_NULL_HANDLE!");
+
+	VkDebugMarkerObjectNameInfoEXT info{};
+
+	info.sType = VK_STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_NAME_INFO_EXT;
+	info.pNext = nullptr;
+	info.objectType = type;
+	info.object = handle;
+	info.pObjectName = name.data();
+
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkDebugUtilsLabelEXT TRAP::Graphics::API::VulkanInits::DebugUtilsLabelExt(const float r, const float g,
+                                                                                                  const float b, const std::string_view name)
+{
+	TRAP_ASSERT(!name.empty(), "VulkanInits::DebugUtilsLabelExt(): Name can't be empty!");
+
+	VkDebugUtilsLabelEXT info{};
+
+	info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT;
+	info.color[0] = r;
+	info.color[1] = g;
+	info.color[2] = b;
+	info.color[3] = 1.0f;
+	info.pLabelName = name.data();
+
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkDebugMarkerMarkerInfoEXT TRAP::Graphics::API::VulkanInits::DebugMarkerMarkerInfo(const float r, const float g,
+                                                                                                           const float b, const std::string_view name)
+{
+	TRAP_ASSERT(!name.empty(), "VulkanInits::DebugMarkerMarkerInfo(): Name can't be empty!");
+
+	VkDebugMarkerMarkerInfoEXT info{};
+
+	info.sType = VK_STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT;
+	info.color[0] = r;
+	info.color[1] = g;
+	info.color[2] = b;
+	info.color[3] = 1.0f;
+	info.pMarkerName = name.data();
+
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkPipelineShaderStageCreateInfo TRAP::Graphics::API::VulkanInits::PipelineShaderStageCreateInfo(const VkShaderStageFlagBits stage,
+	                                                                                                                    VkShaderModule module,
+	                                                                                                                    const std::string_view name)
+{
+	TRAP_ASSERT(!name.empty(), "VulkanInits::PipelineShaderStageCreateInfo(): Shader name can not be empty!");
+
+	VkPipelineShaderStageCreateInfo info{};
+
+	info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.stage = stage;
+	info.module = module;
+	info.pName = name.data();
+	info.pSpecializationInfo = nullptr;
 
 	return info;
 }

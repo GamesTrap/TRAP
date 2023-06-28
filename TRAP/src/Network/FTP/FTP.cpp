@@ -60,37 +60,11 @@ namespace TRAP::Network
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::FTP::Response::Response(const Status code, std::string message) noexcept
-	: m_status(code), m_message(std::move(message))
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] bool TRAP::Network::FTP::Response::IsOK() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return  ToUnderlying(m_status) < 400;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] TRAP::Network::FTP::Response::Status TRAP::Network::FTP::Response::GetStatus() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_status;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] std::string TRAP::Network::FTP::Response::GetMessage() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_message;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -116,25 +90,6 @@ TRAP::Network::FTP::DirectoryResponse::DirectoryResponse(const Response& respons
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_directory;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Network::FTP::ListingResponse::ListingResponse(const Response& response, const std::string_view data)
-	: Response(response)
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
-
-	if(!IsOK())
-		return;
-
-	//Fill the array of strings
-	std::string::size_type lastPos = 0;
-	for(std::string::size_type pos = data.find("\r\n"); pos != std::string::npos; pos = data.find("\r\n", lastPos))
-	{
-		m_listing.emplace_back(data.substr(lastPos, pos - lastPos));
-		lastPos = pos + 2;
-	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

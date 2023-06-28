@@ -14,7 +14,7 @@ struct ShaderStageData
 	EShLanguage StageGLSLang;
 };
 
-const std::array<ShaderStageData, ToUnderlying(TRAP::Graphics::RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> ShaderStages
+static constexpr std::array<ShaderStageData, ToUnderlying(TRAP::Graphics::RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> ShaderStages
 {
 	{
 		{TRAP::Graphics::RendererAPI::ShaderStage::Vertex, "Vertex", EShLanguage::EShLangVertex},
@@ -28,10 +28,10 @@ const std::array<ShaderStageData, ToUnderlying(TRAP::Graphics::RendererAPI::Shad
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view ShaderStageToString(const TRAP::Graphics::RendererAPI::ShaderStage stage)
+constexpr std::string_view ShaderStageToString(const TRAP::Graphics::RendererAPI::ShaderStage stage)
 {
-	const auto it = std::find_if(ShaderStages.begin(), ShaderStages.end(),
-	                             [stage](const ShaderStageData& element){return stage == element.Stage;});
+	const auto *const it = std::find_if(ShaderStages.begin(), ShaderStages.end(),
+	                                    [stage](const ShaderStageData& element){return stage == element.Stage;});
 	return it->StageString;
 }
 
@@ -39,8 +39,8 @@ std::string_view ShaderStageToString(const TRAP::Graphics::RendererAPI::ShaderSt
 
 EShLanguage ShaderStageToEShLanguage(const TRAP::Graphics::RendererAPI::ShaderStage stage)
 {
-	const auto it = std::find_if(ShaderStages.begin(), ShaderStages.end(),
-	                             [stage](const auto& element){return stage == element.Stage;});
+	const auto *const it = std::find_if(ShaderStages.begin(), ShaderStages.end(),
+	                                    [stage](const auto& element){return stage == element.Stage;});
 	return it->StageGLSLang;
 }
 
@@ -122,16 +122,6 @@ bool TRAP::Graphics::Shader::Reload()
 
 	return true;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] std::string TRAP::Graphics::Shader::GetName() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_name;
-}
-
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] std::filesystem::path TRAP::Graphics::Shader::GetFilePath() const noexcept

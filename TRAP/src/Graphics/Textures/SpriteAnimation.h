@@ -33,7 +33,7 @@ namespace TRAP::Graphics
 		/// <param name="name">Name for the animation.</param>
 		/// <param name="sprites">Sprites used by the animation.</param>
 		/// <param name="speed">Speed of the animation in seconds.</param>
-		SpriteAnimation(std::string name, std::vector<TRAP::Ref<SubTexture2D>> sprites, float speed) noexcept;
+		constexpr SpriteAnimation(std::string name, std::vector<TRAP::Ref<SubTexture2D>> sprites, float speed) noexcept;
 		/// <summary>
 		/// Copy Constructor.
 		/// </summary>
@@ -103,10 +103,17 @@ namespace TRAP::Graphics
 		std::string m_name;
 		std::vector<TRAP::Ref<SubTexture2D>> m_sprites;
 		float m_speed;
-		float m_currentTime;
-		uint64_t m_currentSpriteIndex;
-		bool m_stopped;
+		float m_currentTime = 0;
+		uint64_t m_currentSpriteIndex = 0;
+		bool m_stopped = false;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::SpriteAnimation::SpriteAnimation(std::string name, std::vector<TRAP::Ref<SubTexture2D>> sprites, float speed) noexcept
+	: m_name(std::move(name)), m_sprites(std::move(sprites)), m_speed(speed)
+{
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

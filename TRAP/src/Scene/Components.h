@@ -42,7 +42,7 @@ namespace TRAP
 		std::string Tag;
 
 		TagComponent() noexcept = default;
-		explicit TagComponent(std::string tag) noexcept
+		inline constexpr explicit TagComponent(std::string tag) noexcept
 			: Tag(std::move(tag))
 		{}
 	};

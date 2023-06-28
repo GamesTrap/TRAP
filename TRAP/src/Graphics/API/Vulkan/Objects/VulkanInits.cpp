@@ -4,27 +4,6 @@
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
-[[nodiscard]] VkApplicationInfo TRAP::Graphics::API::VulkanInits::ApplicationInfo(const std::string_view appName)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	TRAP_ASSERT(!appName.empty(), "VulkanInits::ApplicationInfo(): Application name can't be empty!");
-
-	VkApplicationInfo info{};
-
-	info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-	info.pNext = nullptr;
-	info.pApplicationName = appName.data();
-	info.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-	info.pEngineName = "TRAP";
-	info.engineVersion = TRAP_VERSION;
-	info.apiVersion = VK_API_VERSION_1_1;
-
-	return info;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] VkDebugUtilsMessengerCreateInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsMessengerCreateInfo(const PFN_vkDebugUtilsMessengerCallbackEXT callback)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -64,93 +43,6 @@
 	             VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_DEBUG_BIT_EXT;
 	info.pfnCallback = callback;
 	info.pUserData = nullptr;
-
-	return info;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkDebugUtilsObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsObjectNameInfo(const VkObjectType type,
-	                                                                                                   const uint64_t handle,
-	                                                                                                   const std::string_view name)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	TRAP_ASSERT(!name.empty(), "VulkanInits::DebugUtilsObjectNameInfo(): Name can't be empty!");
-	TRAP_ASSERT(!(type == VK_OBJECT_TYPE_UNKNOWN && handle == 0), "VulkanInits::DebugUtilsObjectNameInfo(): Type and Handle can't be VK_OBJECT_TYPE_UNKNOWN and VK_NULL_HANDLE!");
-
-	VkDebugUtilsObjectNameInfoEXT info{};
-
-	info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
-	info.pNext = nullptr;
-	info.objectType = type;
-	info.objectHandle = handle;
-	info.pObjectName = name.data();
-
-	return info;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkDebugMarkerObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugMarkerObjectNameInfo(const VkDebugReportObjectTypeEXT type,
-	                                                                                                     const uint64_t handle,
-	                                                                                                     const std::string_view name)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	TRAP_ASSERT(!name.empty(), "VulkanInits::DebugMarkerObjectNameInfo(): Name can't be empty!");
-	TRAP_ASSERT(type != VK_DEBUG_REPORT_OBJECT_TYPE_UNKNOWN_EXT, "VulkanInits::DebugMarkerObjectNameInfo(): Type can't be VK_DEBUG_REPORT_OBJECT_TYPE_UNKNOWN_EXT!");
-	TRAP_ASSERT(handle != 0, "VulkanInits::DebugMarkerObjectNameInfo(): Handle can't be VK_NULL_HANDLE!");
-
-	VkDebugMarkerObjectNameInfoEXT info{};
-
-	info.sType = VK_STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_NAME_INFO_EXT;
-	info.pNext = nullptr;
-	info.objectType = type;
-	info.object = handle;
-	info.pObjectName = name.data();
-
-	return info;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkDebugUtilsLabelEXT TRAP::Graphics::API::VulkanInits::DebugUtilsLabelExt(const float r, const float g,
-                                                                                        const float b, const std::string_view name)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	TRAP_ASSERT(!name.empty(), "VulkanInits::DebugUtilsLabelExt(): Name can't be empty!");
-
-	VkDebugUtilsLabelEXT info{};
-
-	info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT;
-	info.color[0] = r;
-	info.color[1] = g;
-	info.color[2] = b;
-	info.color[3] = 1.0f;
-	info.pLabelName = name.data();
-
-	return info;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkDebugMarkerMarkerInfoEXT TRAP::Graphics::API::VulkanInits::DebugMarkerMarkerInfo(const float r, const float g,
-                                                                                                 const float b, const std::string_view name)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	TRAP_ASSERT(!name.empty(), "VulkanInits::DebugMarkerMarkerInfo(): Name can't be empty!");
-
-	VkDebugMarkerMarkerInfoEXT info{};
-
-	info.sType = VK_STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT;
-	info.color[0] = r;
-	info.color[1] = g;
-	info.color[2] = b;
-	info.color[3] = 1.0f;
-	info.pMarkerName = name.data();
 
 	return info;
 }
@@ -668,29 +560,6 @@
 	info.pSetLayouts = layouts;
 	info.pushConstantRangeCount = pushConstantRangeCount;
 	info.pPushConstantRanges = pushConstants;
-
-	return info;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkPipelineShaderStageCreateInfo TRAP::Graphics::API::VulkanInits::PipelineShaderStageCreateInfo(const VkShaderStageFlagBits stage,
-	                                                                                                          VkShaderModule module,
-	                                                                                                          const std::string_view name)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	TRAP_ASSERT(!name.empty(), "VulkanInits::PipelineShaderStageCreateInfo(): Shader name can not be empty!");
-
-	VkPipelineShaderStageCreateInfo info{};
-
-	info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-	info.pNext = nullptr;
-	info.flags = 0;
-	info.stage = stage;
-	info.module = module;
-	info.pName = name.data();
-	info.pSpecializationInfo = nullptr;
 
 	return info;
 }

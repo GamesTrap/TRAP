@@ -194,7 +194,7 @@ namespace TRAP::Graphics::API::SPIRVTools
 		/// Rertieve the name of the entry point.
 		/// </summary>
 		/// <returns>Name of entry point.</returns>
-		[[nodiscard]] std::string GetEntryPoint() const noexcept;
+		[[nodiscard]] constexpr std::string GetEntryPoint() const noexcept;
 
 	private:
 		//This points to the internal compiler class
@@ -222,6 +222,13 @@ namespace TRAP::Graphics::API::SPIRVTools
 [[nodiscard]] constexpr const std::vector<TRAP::Graphics::API::SPIRVTools::Variable>& TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetUniformVariables() const noexcept
 {
 	return m_uniformVariables;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::string TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetEntryPoint() const noexcept
+{
+	return m_entryPoint;
 }
 
 #endif /*TRAP_SPIRVTOOLS_H*/

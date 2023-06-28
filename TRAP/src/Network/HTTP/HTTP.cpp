@@ -59,34 +59,12 @@ void TRAP::Network::HTTP::Request::SetMethod(const Method method) noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Network::HTTP::Request::SetURI(std::string uri)
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	m_uri = std::move(uri);
-
-	//Make sure it starts with a '/'
-	if (m_uri.empty() || (m_uri[0] != '/'))
-		m_uri.insert(0, "/");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Network::HTTP::Request::SetHTTPVersion(const uint32_t major, const uint32_t minor) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	m_majorVersion = major;
 	m_minorVersion = minor;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Network::HTTP::Request::SetBody(std::string body)
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	m_body = std::move(body);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -200,15 +178,6 @@ TRAP::Network::HTTP::Response::Response() noexcept
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_minorVersion;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] std::string TRAP::Network::HTTP::Response::GetBody() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_body;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

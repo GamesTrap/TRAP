@@ -341,7 +341,7 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 		{
 			for(uint32_t i = 0; i < bodyTypeStrings.size(); ++i)
 			{
-				bool isSelected = std::string_view(currentBodyTypeString) == bodyTypeStrings[i];
+				const bool isSelected = std::string_view(currentBodyTypeString) == bodyTypeStrings[i];
 				if(ImGui::Selectable(bodyTypeStrings[i].data(), isSelected))
 				{
 					currentBodyTypeString = bodyTypeStrings[i].data();

@@ -3,133 +3,6 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::Utils::String::StartsWith(const std::string_view str, const std::string_view start)
-{
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
-
-	return str.starts_with(start);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] bool TRAP::Utils::String::StartsWith(const std::string_view str, const char c)
-{
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
-
-	return str.starts_with(c);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] bool TRAP::Utils::String::StartsWith(const std::string_view str, const char* cstr)
-{
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
-
-	return str.starts_with(cstr);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] bool TRAP::Utils::String::EndsWith(const std::string_view str, const std::string_view end)
-{
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
-
-	return str.ends_with(end);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] bool TRAP::Utils::String::EndsWith(const std::string_view str, const char c)
-{
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
-
-	return str.ends_with(c);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] bool TRAP::Utils::String::EndsWith(const std::string_view str, const char* cstr)
-{
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
-
-	return str.ends_with(cstr);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] std::string_view TRAP::Utils::String::GetSuffixStringView(const std::string_view name)
-{
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
-
-	const std::size_t pos = name.rfind('.');
-
-	return (pos == std::string::npos) ? std::string_view() : name.substr(pos + 1);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] std::string TRAP::Utils::String::GetSuffix(const std::string& name)
-{
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
-
-	const std::size_t pos = name.rfind('.');
-
-	return (pos == std::string::npos) ? "" : name.substr(pos + 1);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] std::string TRAP::Utils::String::ToLower(std::string str)
-{
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
-
-	for(char& c : str)
-		c = NumericCast<char>(::tolower(c));
-
-	return str;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] std::string TRAP::Utils::String::ToUpper(std::string str)
-{
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
-
-	for(char& c : str)
-		c = NumericCast<char>(::toupper(c));
-
-	return str;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] int64_t TRAP::Utils::String::GetCount(const std::string_view str, const char delimiter)
-{
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
-
-	return std::count(str.begin(), str.end(), delimiter);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] bool TRAP::Utils::String::CompareAnyCase(const std::string_view left, const std::string_view right)
-{
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
-
-	if (left.size() != right.size())
-		return false;
-
-	for (auto c1 = left.cbegin(), c2 = right.cbegin(); c1 != left.cend(); ++c1, ++c2)
-	{
-		if (::tolower(*c1) != ::tolower(*c2))
-			return false;
-	}
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] std::string TRAP::Utils::String::GetTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& timePoint) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
@@ -203,8 +76,8 @@
 
 	LPWSTR lpMsgBuf = nullptr;
 	DWORD bufLen = FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
-	                             FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, error,
-								 MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), reinterpret_cast<LPWSTR>(&lpMsgBuf), 0, nullptr);
+	                              FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, error,
+								  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), reinterpret_cast<LPWSTR>(&lpMsgBuf), 0, nullptr);
 	if(!bufLen)
 		return "";
 
@@ -224,39 +97,6 @@
 	return fmt::format("{} ({})", errorStr, error);
 }
 #endif
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] std::string TRAP::Utils::String::EncodeUTF8(const uint32_t codePoint)
-{
-	ZoneNamedC(__tracy, tracy::Color::Purple, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events);
-
-	std::string result{};
-	result.reserve(4);
-
-	if (codePoint < 0x80u)
-		result.push_back(NumericCast<char>(codePoint));
-	else if (codePoint < 0x800u)
-	{
-		result.push_back(NumericCast<char>((codePoint >> 6u) | 0xC0u));
-		result.push_back(NumericCast<char>((codePoint & 0x3Fu) | 0x80u));
-	}
-	else if (codePoint < 0x10000u)
-	{
-		result.push_back(NumericCast<char>((codePoint >> 12u) | 0xE0u));
-		result.push_back(NumericCast<char>(((codePoint >> 6u) & 0x3Fu) | 0x80u));
-		result.push_back(NumericCast<char>((codePoint & 0x3Fu) | 0x80u));
-	}
-	else if (codePoint < 0x110000u)
-	{
-		result.push_back(NumericCast<char>((codePoint >> 18u) | 0xF0u));
-		result.push_back(NumericCast<char>(((codePoint >> 12u) & 0x3Fu) | 0x80u));
-		result.push_back(NumericCast<char>(((codePoint >> 6u) & 0x3Fu) | 0x80u));
-		result.push_back(NumericCast<char>((codePoint & 0x3Fu) | 0x80u));
-	}
-
-	return result;
-}
 
 //-------------------------------------------------------------------------------------------------------------------//
 

@@ -558,15 +558,6 @@ bool TRAP::Graphics::Texture::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::string TRAP::Graphics::Texture::GetName() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_name;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] TRAP::Graphics::TextureType TRAP::Graphics::Texture::GetType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

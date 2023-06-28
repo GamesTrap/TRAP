@@ -131,7 +131,7 @@ namespace TRAP::Network
 			/// </summary>
 			/// <param name="code">Response status code.</param>
 			/// <param name="message">Response message.</param>
-			explicit Response(Status code = Status::InvalidResponse, std::string message = "") noexcept;
+			constexpr explicit Response(Status code = Status::InvalidResponse, std::string message = "") noexcept;
 
 			/// <summary>
 			/// Check if the status code means a success.
@@ -140,7 +140,7 @@ namespace TRAP::Network
 			/// equivalent to testing if the status code is < 400.
 			/// </summary>
 			/// <returns>True if the status is a success, false if it is a failure.</returns>
-			[[nodiscard]] bool IsOK() const noexcept;
+			[[nodiscard]] constexpr bool IsOK() const noexcept;
 
 			/// <summary>
 			/// Get the status code of the response.
@@ -152,7 +152,7 @@ namespace TRAP::Network
 			/// Get the full message contained in the response.
 			/// </summary>
 			/// <returns>The response message.</returns>
-			[[nodiscard]] std::string GetMessage() const noexcept;
+			[[nodiscard]] constexpr std::string GetMessage() const noexcept;
 
 		private:
 			Status m_status; //Status code returned from the server
@@ -197,7 +197,7 @@ namespace TRAP::Network
 			/// </summary>
 			/// <param name="response">Source response.</param>
 			/// <param name="data">Data containing the raw listing.</param>
-			ListingResponse(const Response& response, std::string_view data);
+			constexpr ListingResponse(const Response& response, std::string_view data);
 
 			/// <summary>
 			/// Return the array of directory/file names.
@@ -467,6 +467,45 @@ struct fmt::formatter<TRAP::Network::FTP::DirectoryResponse> : fmt::ostream_form
 template<>
 struct fmt::formatter<TRAP::Network::FTP::ListingResponse> : fmt::ostream_formatter
 {};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::FTP::Response::Response(const Status code, std::string message) noexcept
+	: m_status(code), m_message(std::move(message))
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Network::FTP::Response::IsOK() const noexcept
+{
+	return ToUnderlying(m_status) < 400;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::string TRAP::Network::FTP::Response::GetMessage() const noexcept
+{
+	return m_message;
+}
+
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::FTP::ListingResponse::ListingResponse(const Response& response, const std::string_view data)
+	: Response(response)
+{
+	if(!IsOK())
+		return;
+
+	//Fill the array of strings
+	std::string::size_type lastPos = 0;
+	for(std::string::size_type pos = data.find("\r\n"); pos != std::string::npos; pos = data.find("\r\n", lastPos))
+	{
+		m_listing.emplace_back(data.substr(lastPos, pos - lastPos));
+		lastPos = pos + 2;
+	}
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 

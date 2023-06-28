@@ -71,7 +71,7 @@ namespace TRAP::Graphics
 		/// Retrieve the name of the shader.
 		/// </summary>
 		/// <returns>Name of the shader.</returns>
-		[[nodiscard]] std::string GetName() const noexcept;
+		[[nodiscard]] constexpr std::string GetName() const noexcept;
 
 		/// <summary>
 		/// Retrieve the file path of the shader.
@@ -414,6 +414,13 @@ namespace TRAP::Graphics
 			}
 		};
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::string TRAP::Graphics::Shader::GetName() const noexcept
+{
+	return m_name;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

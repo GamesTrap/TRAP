@@ -784,7 +784,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 
 		// Big Optionally: Check if Variable Rate Shading is supported and Tier 1/Tier 2
 		bool VRS = true;
-		const std::array<std::string_view, 2> VRSExt =
+		constexpr std::array<std::string_view, 2> VRSExt =
 		{
 			VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME,
 			VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME

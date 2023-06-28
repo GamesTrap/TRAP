@@ -86,21 +86,3 @@ TRAP::Graphics::SubTexture2D::SubTexture2D(std::string name, Ref<TRAP::Graphics:
 
     return m_texCoords;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] std::string TRAP::Graphics::SubTexture2D::GetName() noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-    return m_name;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const std::string& TRAP::Graphics::SubTexture2D::GetName() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-    return m_name;
-}

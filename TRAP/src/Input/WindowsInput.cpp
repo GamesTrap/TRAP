@@ -72,7 +72,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 	{
 		if (!s_xinput.Instance)
 		{
-			constexpr std::array<std::string_view, 5> names =
+			static constexpr std::array<std::string_view, 5> names =
 			{
 				"xinput1_4.dll",
 				"xinput1_3.dll",

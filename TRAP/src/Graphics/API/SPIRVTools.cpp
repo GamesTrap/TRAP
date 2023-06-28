@@ -346,12 +346,3 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderVariables()
 
 	return controlPoints;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] std::string TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetEntryPoint() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_entryPoint;
-}
