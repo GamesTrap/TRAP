@@ -103,7 +103,7 @@ namespace TRAP::Utils
 		/// </summary>
 		/// <param name="line">Line to parse.</param>
 		/// <returns>Pair of key and value.</returns>
-		[[nodiscard]] std::pair<std::string, std::string> ParseLine(std::string_view line) const;
+		[[nodiscard]] static constexpr std::pair<std::string, std::string> ParseLine(std::string_view line);
 
 		bool m_hasChanged;
 		std::vector<std::pair<std::string, std::string>> m_data;
@@ -210,6 +210,45 @@ void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T>& valu
 		//If not it creates a new element
 		m_data.emplace_back(key, valueAsString);
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//This method parses a line from out format("key = value") into a std::pair<std::string, std::string>
+//containing the key and the value.
+//If the line is empty or a comment(starts with a '#') an empty pair is returned.
+[[nodiscard]] inline constexpr std::pair<std::string, std::string> TRAP::Utils::Config::ParseLine(const std::string_view line)
+{
+	//If this line is empty or a comment, return an empty pair
+	if(line.empty() || line[0] == '#')
+		return { "", "" };
+
+	std::size_t index = 0;
+	//Trim leading whitespace
+	while (Utils::String::IsSpace(line[index]))
+		index++;
+	//Get the key string
+	const std::size_t beginKeyString = index;
+	while (!Utils::String::IsSpace(line[index]) && line[index] != '=')
+		index++;
+	const std::string key(line.data() + beginKeyString, index - beginKeyString);
+
+	//Skip the assignment
+	while (Utils::String::IsSpace(line[index]) || line[index] == '=')
+	{
+		index++;
+		if(index >= line.size())
+		{
+			//Out of range so line only contains key
+			return { key, "" };
+		}
+	}
+
+	//Get the value string
+	const std::string value(line.data() + index, line.size() - index);
+
+	//Return the key value pair
+	return { key, value };
 }
 
 #endif /*TRAP_CONFIG_H*/

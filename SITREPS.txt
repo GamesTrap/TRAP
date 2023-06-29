@@ -4154,3 +4154,4 @@ SITREP 06/29/2023|23w26a2
     - Simplified UUIDFromString() ~<5 mins
     - Made ConvertHashToString() constexpr ~<5 mins
     - Utils::String Added IsSpace(), IsAlpha(), IsAlphaNumeric() ~<20 mins
+    - Config::ParseLine() is now constexpr ~<5 mins
