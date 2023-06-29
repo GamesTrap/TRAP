@@ -46,60 +46,27 @@
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	uint8_t digit = 0;
-	bool firstDigit = true;
-	std::size_t index = 0;
+	std::array<uint8_t, 16> result{};
 
-	if (uuid.empty())
+	if(uuid.empty())
 		return {};
 
-	std::array<uint8_t, 16> result{};
-	for (const char i : uuid)
+	std::size_t index = 0;
+	for(const char c : uuid)
 	{
-		if (i == '-')
+		if(!String::IsHexDigit(c)) //Ignore non hex characters
 			continue;
 
-		if (index >= 16u || (std::isxdigit(i) == 0))
+		if(index >= 32) //Out of bounds
 			return {};
 
-		if(firstDigit)
-		{
-			digit = NumericCast<uint8_t>(i);
-			firstDigit = false;
-		}
+		const uint8_t convertedCharacter = NumericCast<uint8_t>(String::IsDigit(c) ? c - '0' : String::ToLower(c) - 'a' + 10u);
+		if(index % 2 == 0)
+			result[index / 2] = convertedCharacter << 4u;
 		else
-		{
-			uint8_t charDigit = 0;
-			uint8_t uuidDigit = 0;
+			result[index / 2] |= convertedCharacter;
 
-			if (isdigit(digit) != 0)
-				charDigit = digit - '0';
-			else if (isalpha(digit) != 0)
-			{
-				if (islower(digit) != 0)
-					charDigit = 10 + digit - 'a';
-				else if(isupper(digit) != 0)
-					charDigit = 10 + digit - 'A';
-			}
-			else
-				charDigit = 0;
-
-			if (isdigit(i) != 0)
-				uuidDigit = NumericCast<uint8_t>(i - '0');
-			else if (isalpha(i) != 0)
-			{
-				if (islower(i) != 0)
-					uuidDigit = NumericCast<uint8_t>(10 + i - 'a');
-				else if (isupper(i) != 0)
-					uuidDigit = NumericCast<uint8_t>(10 + i - 'A');
-			}
-			else
-				uuidDigit = 0;
-
-			result[index] = (static_cast<uint8_t>((charDigit << 4u)) | uuidDigit);
-			index++;
-			firstDigit = true;
-		}
+		++index;
 	}
 
 	return result;

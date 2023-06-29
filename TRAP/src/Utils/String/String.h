@@ -152,6 +152,24 @@ namespace TRAP::Utils::String
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
+	/// Check if a character is a digit (0123456789).
+	/// </summary>
+	/// <param name="c">Character to check.</param>
+	/// <returns>True if characters is a digit, false otherwise.</returns>
+	[[nodiscard]] constexpr bool IsDigit(char c);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// <summary>
+	/// Check if a character is a hexdecimal digit (0123456789abcdefABCDEF).
+	/// </summary>
+	/// <param name="c">Character to check.</param>
+	/// <returns>True if characters is a hexdecimal digit, false otherwise.</returns>
+	[[nodiscard]] constexpr bool IsHexDigit(char c);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// <summary>
 	/// Count the occurrences of the given delimiter in a string.
 	/// </summary>
 	/// <param name="string">String to count occurrences.</param>
@@ -417,6 +435,20 @@ namespace TRAP::Utils::String
 		c = NumericCast<char>(::toupper(c));
 
 	return str;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Utils::String::IsDigit(const char c)
+{
+	return (c >= '0' && c <= '9');
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Utils::String::IsHexDigit(const char c)
+{
+	return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

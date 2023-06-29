@@ -4151,3 +4151,4 @@ SITREP 06/26/2023|23w26a1
 SITREP 06/29/2023|23w26a2
     - Changed TRAP Engine version to 23w26a2(0.9.54)
     - Added constexpr to functions containing std::string ~>60 mins
+    - Simplified UUIDFromString() ~<5 mins
