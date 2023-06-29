@@ -26,18 +26,20 @@ namespace TRAP::Utils::Hash
 	/// <param name="hash">N-sized array of bytes.</param>
 	/// <returns>String representation of given hash.</returns>
 	template<std::size_t N>
-	[[nodiscard]] std::string ConvertHashToString(const std::array<uint8_t, N>& hash)
+	[[nodiscard]] constexpr std::string ConvertHashToString(const std::array<uint8_t, N>& hash)
 	{
     	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-		std::stringstream ss{};
-		for (const uint8_t& i : hash)
+		constexpr std::array<char, 16> hexDigits{'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+		std::string result(hash.size() * 2, '\0');
+
+		for(std::size_t i = 0; i < hash.size(); ++i)
 		{
-			ss << std::hex << std::setfill('0') << std::setw(2) << std::nouppercase
-			   << NumericCast<uint32_t>(i);
+			result[i * 2] = hexDigits[hash[i] >> 4u];
+			result[i * 2 + 1] = hexDigits[hash[i] & 0xF];
 		}
 
-		return ss.str();
+		return result;
 	}
 }
 
