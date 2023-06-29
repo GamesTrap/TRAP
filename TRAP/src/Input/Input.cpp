@@ -933,7 +933,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 				        splittedString[1]);
 				return false;
 			}
-			if (std::isalnum(NumericCast<int8_t>(c)) == 0)
+			if (!Utils::String::IsAlphaNumeric(c))
 			{
 				TP_ERROR(Log::InputControllerPrefix, "Invalid char inside field: ", NumericCast<uint32_t>(i),
 				         "! Mapping: ", splittedString[1]);

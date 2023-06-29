@@ -357,11 +357,11 @@ void TRAP::INTERNAL::RadianceImage::SkipUnusedLines(std::ifstream& file)
 	xIndex += 2;
 
 	std::size_t yEnd = yIndex;
-	while(yEnd < resStr.size() && isdigit(resStr[yEnd]) != 0)
+	while(yEnd < resStr.size() && Utils::String::IsDigit(resStr[yEnd]))
 		++yEnd;
 
 	std::size_t xEnd = xIndex;
-	while(xEnd < resStr.size() && isdigit(resStr[xEnd]) != 0)
+	while(xEnd < resStr.size() && Utils::String::IsDigit(resStr[xEnd]))
 		++xEnd;
 
 	try

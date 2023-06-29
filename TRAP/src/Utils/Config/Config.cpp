@@ -170,16 +170,16 @@ void TRAP::Utils::Config::Print() const
 	{
 		std::size_t index = 0;
 		//Trim leading whitespace
-		while (std::isspace(line[index], m_locale))
+		while (Utils::String::IsSpace(line[index]))
 			index++;
 		//Get the key string
 		const std::size_t beginKeyString = index;
-		while (!std::isspace(line[index], m_locale) && line[index] != '=')
+		while (!Utils::String::IsSpace(line[index]) && line[index] != '=')
 			index++;
 		const std::string key(line.data() + beginKeyString, index - beginKeyString);
 
 		//Skip the assignment
-		while (std::isspace(line[index], m_locale) || line[index] == '=')
+		while (Utils::String::IsSpace(line[index]) || line[index] == '=')
 		{
 			index++;
 			if(index >= line.size())

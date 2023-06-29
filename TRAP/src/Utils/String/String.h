@@ -155,7 +155,7 @@ namespace TRAP::Utils::String
 	/// Check if a character is a digit (0123456789).
 	/// </summary>
 	/// <param name="c">Character to check.</param>
-	/// <returns>True if characters is a digit, false otherwise.</returns>
+	/// <returns>True if character is a digit, false otherwise.</returns>
 	[[nodiscard]] constexpr bool IsDigit(char c);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -164,8 +164,35 @@ namespace TRAP::Utils::String
 	/// Check if a character is a hexdecimal digit (0123456789abcdefABCDEF).
 	/// </summary>
 	/// <param name="c">Character to check.</param>
-	/// <returns>True if characters is a hexdecimal digit, false otherwise.</returns>
+	/// <returns>True if character is a hexdecimal digit, false otherwise.</returns>
 	[[nodiscard]] constexpr bool IsHexDigit(char c);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// <summary>
+	/// Check if a character is a whitespace character.
+	/// </summary>
+	/// <param name="c">Character to check.</param>
+	/// <returns>True if character is a whitespace character, false otherwise.</returns>
+	[[nodiscard]] constexpr bool IsSpace(char c);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// <summary>
+	/// Check if a character is an alphabetic character.
+	/// </summary>
+	/// <param name="c">Character to check.</param>
+	/// <returns>True if character is an alphabetic character, false otherwise.</returns>
+	[[nodiscard]] constexpr bool IsAlpha(char c);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// <summary>
+	/// Check if a character is an alphanumeric character.
+	/// </summary>
+	/// <param name="c">Character to check.</param>
+	/// <returns>True if character is an alphanumeric character, false otherwise.</returns>
+	[[nodiscard]] constexpr bool IsAlphaNumeric(char c);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -449,6 +476,27 @@ namespace TRAP::Utils::String
 [[nodiscard]] constexpr bool TRAP::Utils::String::IsHexDigit(const char c)
 {
 	return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Utils::String::IsSpace(const char c)
+{
+	return c == ' ' || c == '\f' || c == '\n' || c == '\r' || c == '\t' || c == '\v';
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Utils::String::IsAlpha(const char c)
+{
+	return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Utils::String::IsAlphaNumeric(const char c)
+{
+	return (c >= '0' && c <= '9') || IsAlpha(c);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

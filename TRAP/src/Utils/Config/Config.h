@@ -107,7 +107,6 @@ namespace TRAP::Utils
 
 		bool m_hasChanged;
 		std::vector<std::pair<std::string, std::string>> m_data;
-		std::locale m_locale;
 	};
 }
 

@@ -30,6 +30,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "FTP.h"
 
 #include "Network/IP/IPv4Address.h"
+#include "Utils/String/String.h"
 #include "Utils/Time/TimeStep.h"
 #include "FileSystem/FileSystem.h"
 
@@ -548,7 +549,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::DataChannel::Open(const Transfe
 			for (uint8_t& i : data)
 			{
 				//Extract the current number
-				while(std::isdigit(str[index]) != 0)
+				while(Utils::String::IsDigit(str[index]))
 				{
 					i = NumericCast<uint8_t>(NumericCast<uint8_t>(i * 10u) + NumericCast<uint8_t>(str[index] - '0'));
 					index++;

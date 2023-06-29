@@ -215,7 +215,7 @@
 	}
 
 	std::size_t lastAlphaChar = 0;
-	const auto it = std::find_if(cpu.Model.rbegin(), cpu.Model.rend(), isalnum);
+	const auto it = std::find_if(cpu.Model.rbegin(), cpu.Model.rend(), Utils::String::IsAlphaNumeric);
 	if(it != cpu.Model.rend())
 		lastAlphaChar = NumericCast<std::size_t>(it - cpu.Model.rbegin());
 
