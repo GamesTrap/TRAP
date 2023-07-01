@@ -163,7 +163,7 @@ void TRAP::INTERNAL::WindowingAPI::InputErrorWin32(const Error error, const std:
 	WideCharToMultiByte(CP_UTF8, 0, buffer.data(), -1, message.data(), NumericCast<int32_t>(message.size()),
 	                    nullptr, nullptr);
 
-	message.erase(message.find('\0'));
+	std::erase(message, '\0');
 
 	InputError(error, fmt::format("{}: {}", description, message));
 }

@@ -3415,7 +3415,7 @@ void TRAP::INTERNAL::WindowingAPI::InputErrorX11(const Error error, const std::s
 	std::vector<char> buffer(1024, '\0');
 	s_Data.X11.XLIB.GetErrorText(s_Data.X11.display, s_Data.X11.ErrorCode, buffer.data(), NumericCast<int32_t>(buffer.size()));
 
-	buffer.erase(std::find(buffer.begin(), buffer.end(), '\0'), buffer.end());
+	std::erase(buffer, '\0');
 
 	InputError(error, fmt::format("[X11] {}: {}", message, buffer.data()));
 }

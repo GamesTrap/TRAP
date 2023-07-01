@@ -186,14 +186,7 @@ bool ControllerTests::OnControllerConnect(const TRAP::Events::ControllerConnectE
 
 bool ControllerTests::OnControllerDisconnect(const TRAP::Events::ControllerDisconnectEvent& event)
 {
-	for(std::size_t i = 0; i < s_controllers.size(); i++)
-	{
-		if(s_controllers[i] == event.GetController())
-		{
-			s_controllers.erase(s_controllers.begin() + NumericCast<ptrdiff_t>(i));
-			break;
-		}
-	}
+	std::erase_if(s_controllers, [&event](const auto& element){return element == event.GetController();});
 
 	if (!TRAP::Application::GetWindow()->IsFocused())
 		TRAP::Application::GetWindow()->RequestAttention();

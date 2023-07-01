@@ -83,7 +83,7 @@ TRAP::Network::IPv4Address::IPv4Address(const uint32_t address)
 
 	std::string str(16, '\0');
 	inet_ntop(AF_INET, &address, str.data(), NumericCast<uint32_t>(str.size()));
-	str.erase(std::find(str.begin(), str.end(), '\0'), str.end());
+	std::erase(str, '\0');
 	return str;
 }
 

@@ -2439,7 +2439,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, 
 		if (s_Data.Callbacks.Monitor != nullptr)
 			s_Data.Callbacks.Monitor(*monitor, connected);
 
-		s_Data.Monitors.erase(std::remove(s_Data.Monitors.begin(), s_Data.Monitors.end(), monitor), s_Data.Monitors.end());
+		std::erase(s_Data.Monitors, monitor);
 	}
 }
 
@@ -2457,7 +2457,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitorDisconnect(const uint32_t monitor
 		s_Data.Callbacks.Monitor(*monitor, false);
 
 	//Remove monitor from monitors list
-	s_Data.Monitors.erase(std::remove(s_Data.Monitors.begin(), s_Data.Monitors.end(), monitor), s_Data.Monitors.end());
+	std::erase(s_Data.Monitors, monitor);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

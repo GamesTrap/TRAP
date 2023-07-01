@@ -770,7 +770,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 		);
 	}
 
-	name.erase(std::find(name.begin(), name.end(), '\0'), name.end());
+	std::erase(name, '\0');
 
 	controller = AddInternalController(name, guid, NumericCast<uint32_t>(data.AxisCount + data.SliderCount),
 	                                   NumericCast<uint32_t>(data.ButtonCount),

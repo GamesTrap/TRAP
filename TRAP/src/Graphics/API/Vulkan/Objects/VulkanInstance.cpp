@@ -17,23 +17,16 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appNa
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+	std::erase_if(m_instanceLayers, [](const std::string_view layer){return !IsLayerSupported(layer);});
+	std::erase_if(m_instanceExtensions, [](const std::string_view extension){return !IsExtensionSupported(extension);});
+
 	std::vector<const char*> layers(m_instanceLayers.size());
-	for (uint32_t i = 0; i < m_instanceLayers.size(); i++)
-	{
-		if(IsLayerSupported(m_instanceLayers[i]))
-			layers[i] = m_instanceLayers[i].c_str();
-		else
-			m_instanceLayers.erase(m_instanceLayers.begin() + i);
-	}
+	for (std::size_t i = 0; i < m_instanceLayers.size(); i++)
+		layers[i] = m_instanceLayers[i].c_str();
 
 	std::vector<const char*> extensions(m_instanceExtensions.size());
-	for (uint32_t i = 0; i < m_instanceExtensions.size(); i++)
-	{
-		if (IsExtensionSupported(m_instanceExtensions[i]))
-			extensions[i] = m_instanceExtensions[i].c_str();
-		else
-			m_instanceExtensions.erase(m_instanceExtensions.begin() + i);
-	}
+	for (std::size_t i = 0; i < m_instanceExtensions.size(); i++)
+		extensions[i] = m_instanceExtensions[i].c_str();
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanInstancePrefix, "Creating Instance");

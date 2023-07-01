@@ -134,8 +134,7 @@ void TRAP::FileSystem::FileWatcher::RemoveFolder(const std::filesystem::path& pa
     if(std::find(m_paths.begin(), m_paths.end(), *absPath) != m_paths.end())
     {
         Shutdown();
-        m_paths.erase(std::remove(m_paths.begin(), m_paths.end(), (*absPath)),
-                        m_paths.end());
+        std::erase(m_paths, *absPath);
         Init();
     }
 }
@@ -164,8 +163,7 @@ void TRAP::FileSystem::FileWatcher::RemoveFolders(const std::vector<std::filesys
         if(!absPath) //Skip empty path
             continue;
 
-        m_paths.erase(std::remove(m_paths.begin(), m_paths.end(), *absPath),
-                      m_paths.end());
+        std::erase(m_paths, *absPath);
     }
 
     Init();

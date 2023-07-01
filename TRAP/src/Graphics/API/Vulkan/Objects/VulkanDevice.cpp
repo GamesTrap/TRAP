@@ -31,14 +31,12 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Creating Device");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	std::vector<const char*> extensions{};
-	for (uint32_t i = 0; i < m_deviceExtensions.size(); i++)
-	{
-		if (m_physicalDevice->IsExtensionSupported(m_deviceExtensions[i]))
-			extensions.push_back(m_deviceExtensions[i].c_str());
-		else
-			m_deviceExtensions.erase(m_deviceExtensions.begin() + i);
-	}
+	//Remove all extensions unsupported by this device
+	std::erase_if(m_deviceExtensions, [this](const std::string_view extension){return !m_physicalDevice->IsExtensionSupported(extension);});
+
+	std::vector<const char*> extensions(m_deviceExtensions.size());
+	for(std::size_t i = 0; i < m_deviceExtensions.size(); ++i)
+		extensions[i] = m_deviceExtensions[i].c_str();
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	if (!m_deviceExtensions.empty())
@@ -49,10 +47,8 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	}
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	if (std::find_if(extensions.begin(), extensions.end(), [](const char* const ext)
-		{
-			return std::strcmp(ext, VK_EXT_FRAGMENT_SHADER_INTERLOCK_EXTENSION_NAME) == 0;
-		}) != extensions.end())
+	if(std::find(m_deviceExtensions.begin(), m_deviceExtensions.end(),
+	             VK_EXT_FRAGMENT_SHADER_INTERLOCK_EXTENSION_NAME) != m_deviceExtensions.end())
 	{
 		m_physicalDevice->RetrievePhysicalDeviceFragmentShaderInterlockFeatures();
 	}

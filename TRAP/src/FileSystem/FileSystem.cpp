@@ -111,7 +111,7 @@ void TRAP::FileSystem::Init()
     file.read(result.data(), NumericCast<std::streamsize>(*fileSize));
     file.close();
 
-    result.erase(std::remove(result.begin(), result.end(), '\r'), result.end());
+    std::erase(result, '\r');
 
     return result;
 }

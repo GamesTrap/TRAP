@@ -2929,8 +2929,7 @@ void TRAP::Graphics::API::VulkanRenderer::RemovePerViewportData() const
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifndef TRAP_HEADLESS_MODE
-	if (s_perViewportDataMap.contains(window))
-		s_perViewportDataMap.erase(window);
+	s_perViewportDataMap.erase(window);
 #else
 	s_perViewportData.reset();
 #endif /*TRAP_HEADLESS_MODE*/
