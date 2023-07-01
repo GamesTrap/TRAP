@@ -182,6 +182,28 @@ namespace std
 }
 
 #endif /*__cpp_lib_to_underlying*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool Contains(std::string_view str, std::string_view substr) noexcept
+{
+	return str.find(substr) != std::string_view::npos;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool Contains(std::string_view str, char c) noexcept
+{
+	return str.find(c) != std::string_view::npos;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool Contains(std::string_view str, const char* substr)
+{
+	return str.find(substr) != std::string_view::npos;
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>

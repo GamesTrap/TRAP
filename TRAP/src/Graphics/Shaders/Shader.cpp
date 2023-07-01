@@ -342,22 +342,22 @@ bool TRAP::Graphics::Shader::Reload()
 		if(Utils::String::StartsWith(lowerLine, "#shader"))
 		{
 			//Detect shader type
-			if (lowerLine.find("vertex") != std::string::npos)
+			if (Utils::String::Contains(lowerLine, "vertex"))
 				currentShaderStage = RendererAPI::ShaderStage::Vertex;
-			else if (lowerLine.find("fragment") != std::string::npos ||
-				     lowerLine.find("pixel") != std::string::npos)
+			else if (Utils::String::Contains(lowerLine, "fragment") ||
+				     Utils::String::Contains(lowerLine, "pixel"))
 				currentShaderStage = RendererAPI::ShaderStage::Fragment;
-			else if (lowerLine.find("geometry") != std::string::npos)
+			else if (Utils::String::Contains(lowerLine, "geometry"))
 				currentShaderStage = RendererAPI::ShaderStage::Geometry;
-			else if (lowerLine.find("tessellation") != std::string::npos)
+			else if (Utils::String::Contains(lowerLine, "tessellation"))
 			{
 				//Either Control or Evaluation
-				if (lowerLine.find("control") != std::string::npos)
+				if (Utils::String::Contains(lowerLine, "control"))
 					currentShaderStage = RendererAPI::ShaderStage::TessellationControl;
-				else if (lowerLine.find("evaluation") != std::string::npos)
+				else if (Utils::String::Contains(lowerLine, "evaluation"))
 					currentShaderStage = RendererAPI::ShaderStage::TessellationEvaluation;
 			}
-			else if (lowerLine.find("compute") != std::string::npos)
+			else if (Utils::String::Contains(lowerLine, "compute"))
 				currentShaderStage = RendererAPI::ShaderStage::Compute;
 			//TODO RayTracing Shaders i.e. "RayGen" "AnyHit" "ClosestHit" "Miss" "Intersection" ("Callable")
 
@@ -371,7 +371,7 @@ bool TRAP::Graphics::Shader::Reload()
 
 			shaders.emplace_back("", currentShaderStage);
 		}
-		else if(lowerLine.find("#version") != std::string::npos) //Check for unnecessary "#version" define
+		else if(Utils::String::Contains(lowerLine, "#version")) //Check for unnecessary "#version" define
 			TP_WARN(Log::ShaderGLSLPrefix, "Found tag: \"", lines[i], "\" this is unnecessary! Skipping line: ", i);
 		else if(currentShaderStage != RendererAPI::ShaderStage::None) //Add shader code to detected shader stage
 		{
@@ -392,7 +392,7 @@ bool TRAP::Graphics::Shader::Reload()
 
 	for(std::size_t i = 0; i < shaders.size(); i++)
 	{
-		if (Utils::String::ToLower(shaders[i].first).find("main") == std::string::npos)
+		if (!Utils::String::Contains(Utils::String::ToLower(shaders[i].first), "main"))
 		{
 			TP_ERROR(Log::ShaderGLSLPrefix, ShaderStageToString(shaders[i].second), " shader couldn't find \"main\" function!");
 			return false;

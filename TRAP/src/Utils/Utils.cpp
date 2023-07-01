@@ -111,7 +111,7 @@
 	static constexpr int32_t MAX_INTEL_TOP_LVL = 4;
 	static constexpr uint32_t LVL_TYPE = 0x0000FF00;
 	static constexpr uint32_t LVL_CORES = 0x0000FFFF;
-	if (upVendorID.find("INTEL") != std::string::npos)
+	if (Utils::String::Contains(upVendorID, "INTEL"))
 	{
 		if (HFS >= 11u)
 		{
@@ -159,7 +159,7 @@
 				cpu.Cores = cpu.LogicalCores = 1;
 		}
 	}
-	else if (upVendorID.find("AMD") != std::string::npos)
+	else if (Utils::String::Contains(upVendorID, "AMD"))
 	{
 		uint32_t extFamily = 0;
 		if (((std::get<0>(regs) >> 8u) & 0xFu) < 0xFu)

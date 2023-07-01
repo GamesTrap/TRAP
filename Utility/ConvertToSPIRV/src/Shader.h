@@ -158,7 +158,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
     {
 		for(const std::string_view shaderStageIdentifier : shaderStageData.StageIdentifierStrs)
 		{
-			if(identifyString.find(shaderStageIdentifier) != std::string_view::npos)
+			if(Contains(identifyString, shaderStageIdentifier))
 				return shaderStageData.Stage;
 		}
     }
@@ -170,7 +170,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 
 [[nodiscard]] inline constexpr bool FindEntryPoint(const std::string& shaderStr)
 {
-    return ToLower(shaderStr).find("main") != std::string::npos;
+	return Contains(ToLower(shaderStr), "main");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -250,7 +250,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 			shader.Stages |= *currentShaderStage;
 			shader.SubShaderSources.push_back(Shader::SubShader{*currentShaderStage, "", std::vector<uint32_t>{}});
 		}
-		else if (lowerLine.find("#version") != std::string::npos) //Check for unnecessary "#version" define
+		else if (Contains(lowerLine, "#version")) //Check for unnecessary "#version" define
 			fmt::println("{}Found Tag: \"{}\" this is unnecessary! Skipping Line: {}", GLSLPrefix, lines[i], i);
 		else if (currentShaderStage) //Add shader code to detected shader stage
             shader.SubShaderSources.back().Source.append(lines[i] + '\n');

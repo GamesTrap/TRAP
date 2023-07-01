@@ -238,7 +238,7 @@ void TRAP::INTERNAL::RadianceImage::WorkOnRGBE(std::vector<RGBE>& scanline, std:
 	std::string tmp;
 	std::getline(file, tmp);
 
-	return tmp.find("#?") != std::string::npos;
+	return Utils::String::Contains(tmp, "#?");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -253,7 +253,7 @@ void TRAP::INTERNAL::RadianceImage::WorkOnRGBE(std::vector<RGBE>& scanline, std:
 	while(!file.eof())
 	{
 		std::getline(file, tmp);
-		if(tmp.find("FORMAT=32-bit_rle_rgbe") != std::string::npos)
+		if(Utils::String::Contains(tmp, "FORMAT=32-bit_rle_rgbe"))
 			return true;
 	}
 

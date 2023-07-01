@@ -1184,7 +1184,7 @@ bool OpenFileInFileBrowser(const std::filesystem::path& p)
         while(std::getline(file, line))
         {
             //Skip invalid entries and comments
-            if(line.empty() || line.starts_with('#') || line.starts_with("XDG_") || line.find("_DIR") == std::string::npos)
+            if(line.empty() || line.starts_with('#') || line.starts_with("XDG_") || !TRAP::Utils::String::Contains(line, "_DIR"))
                 continue;
             const std::size_t splitPos = line.find('=');
             if(splitPos == std::string::npos)
