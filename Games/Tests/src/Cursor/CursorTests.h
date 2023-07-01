@@ -13,8 +13,8 @@ public:
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnEvent(TRAP::Events::Event& event) override;
 
-	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
-	bool OnMouseMove(TRAP::Events::MouseMoveEvent& event);
+	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
+	bool OnMouseMove(const TRAP::Events::MouseMoveEvent& event);
 
 private:
 	static float Star(uint32_t x, uint32_t y, float t);

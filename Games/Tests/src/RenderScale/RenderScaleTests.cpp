@@ -73,13 +73,13 @@ void RenderScaleTests::OnEvent(TRAP::Events::Event& event)
 	m_cameraController.OnEvent(event);
 
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e) { return OnKeyPress(e); });
-	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>([this](TRAP::Events::FrameBufferResizeEvent& e) { return OnFrameBufferResize(e); });
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &RenderScaleTests::OnKeyPress);
+	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(this, &RenderScaleTests::OnFrameBufferResize);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool RenderScaleTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
+bool RenderScaleTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 {
 	if (event.GetKey() == TRAP::Input::Key::Escape)
         TRAP::Application::Shutdown();
@@ -89,7 +89,7 @@ bool RenderScaleTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool RenderScaleTests::OnFrameBufferResize([[maybe_unused]] TRAP::Events::FrameBufferResizeEvent& event)
+bool RenderScaleTests::OnFrameBufferResize([[maybe_unused]] const TRAP::Events::FrameBufferResizeEvent& event)
 {
     return false;
 }

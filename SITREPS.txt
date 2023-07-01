@@ -4164,3 +4164,6 @@ SITREP 07/01/2023|23w26a3
     - Replaced std::strcmp with string_view comparisons ~<10 mins
     - WindowingAPI::ParseUriList() Fixed prefix not getting removed ~<5 mins
     - Refactored WindowingAPI::ParseUriList() ~<20 mins
+    - EventDispatcher Dispatch() Added support for member function parameters ~<5 mins
+    - Updated EventDispatcher::Dispatch() usage ~<15 mins
+    - Changed captures of lambdas ~<15 mins

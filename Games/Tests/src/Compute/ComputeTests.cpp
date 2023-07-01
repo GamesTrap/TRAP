@@ -213,12 +213,12 @@ void ComputeTests::OnImGuiRender()
 void ComputeTests::OnEvent(TRAP::Events::Event& event)
 {
     TRAP::Events::EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e){return OnKeyPress(e);});
+    dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &ComputeTests::OnKeyPress);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ComputeTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
+bool ComputeTests::OnKeyPress(const TRAP::Events::KeyPressEvent& e)
 {
     if(e.GetKey() == TRAP::Input::Key::Escape)
         TRAP::Application::Shutdown();

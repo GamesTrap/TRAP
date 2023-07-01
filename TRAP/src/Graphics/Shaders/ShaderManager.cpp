@@ -236,7 +236,7 @@ void TRAP::Graphics::ShaderManager::ReloadAll()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	return std::any_of(Shaders.begin(), Shaders.end(), [path](const auto& element)
+	return std::any_of(Shaders.begin(), Shaders.end(), [&path](const auto& element)
 	{
 		return !element.second->GetFilePath().empty() && FileSystem::IsEquivalent(element.second->GetFilePath(), path);
 	});

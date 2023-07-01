@@ -276,20 +276,11 @@ void TRAP::Application::OnEvent(Events::Event& event)
 
 	Events::EventDispatcher dispatcher(event);
 #ifndef TRAP_HEADLESS_MODE
-	dispatcher.Dispatch<Events::FrameBufferResizeEvent>([](Events::FrameBufferResizeEvent& fbrEvent)
-		{
-			return OnFrameBufferResize(fbrEvent);
-		});
-	dispatcher.Dispatch<Events::WindowCloseEvent>([this](Events::WindowCloseEvent& wcEvent)
-		{
-			return OnWindowClose(wcEvent);
-		});
-	dispatcher.Dispatch<Events::KeyPressEvent>([](Events::KeyPressEvent& kpEvent) {return OnKeyPress(kpEvent); });
+	dispatcher.Dispatch<Events::FrameBufferResizeEvent>(OnFrameBufferResize);
+	dispatcher.Dispatch<Events::WindowCloseEvent>(this, &Application::OnWindowClose);
+	dispatcher.Dispatch<Events::KeyPressEvent>(OnKeyPress);
 #endif /*TRAP_HEADLESS_MODE*/
-	dispatcher.Dispatch<Events::FileChangeEvent>([this](Events::FileChangeEvent& fcEvent)
-		{
-			return OnFileChangeEvent(fcEvent);
-		});
+	dispatcher.Dispatch<Events::FileChangeEvent>(this, &Application::OnFileChangeEvent);
 
 	for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it)
 	{

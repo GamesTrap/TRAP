@@ -750,7 +750,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			const auto extRes = std::find_if(extensions.begin(), extensions.end(),
 											 [str](const VkExtensionProperties &props)
 											 {
-												 return str.compare(props.extensionName) == 0;
+												 return str == props.extensionName;
 											 });
 
 			if (extRes == extensions.end())
@@ -794,7 +794,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			const auto extRes = std::find_if(extensions.begin(), extensions.end(),
 											 [str](const VkExtensionProperties &props)
 											 {
-												 return str.compare(props.extensionName) == 0;
+												 return str == props.extensionName;
 											 });
 
 			if (extRes == extensions.end())

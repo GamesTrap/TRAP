@@ -156,6 +156,18 @@ namespace TRAP::Events
 		template<typename T, typename F>
 		constexpr bool Dispatch(const F& func) noexcept;
 
+
+		/// <summary>
+		/// Dispatch a specific event to a member function.
+		/// </summary>
+		/// <typeparam name="T">Event to dispatch.</typeparam>
+		/// <typeparam name="ClassType">Pointer to class from which to call member function.</typeparam>
+		/// <typeparam name="F">Member function to call.</typeparam>
+		/// <param name="func">Member function to call.</param>
+		/// <returns>True if the received event matches the event to dispatch, false otherwise.</returns>
+		template<typename T, typename ClassType, typename F>
+		constexpr bool Dispatch(ClassType* obj, const F& func) noexcept;
+
 	private:
 		Event& m_event;
 	};
@@ -183,6 +195,19 @@ constexpr bool TRAP::Events::EventDispatcher::Dispatch(const F& func) noexcept
 		return false;
 
 	m_event.Handled = func(static_cast<T&>(m_event));
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template <typename T, typename ClassType, typename F>
+constexpr bool TRAP::Events::EventDispatcher::Dispatch(ClassType* const obj, const F& func) noexcept
+{
+	if (m_event.GetEventType() != T::GetStaticType() || m_event.Handled)
+		return false;
+
+	m_event.Handled = (obj->*func)(static_cast<T&>(m_event));
 
 	return true;
 }

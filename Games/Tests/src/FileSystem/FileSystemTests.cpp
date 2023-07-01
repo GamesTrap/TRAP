@@ -32,15 +32,12 @@ void FileSystemTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
 
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([](TRAP::Events::KeyPressEvent& e)
-	{
-		return OnKeyPress(e);
-	});
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(OnKeyPress);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool FileSystemTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
+bool FileSystemTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 {
 	switch(event.GetKey())
 	{

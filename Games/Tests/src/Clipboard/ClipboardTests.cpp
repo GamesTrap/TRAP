@@ -35,15 +35,12 @@ void ClipboardTests::OnImGuiRender()
 void ClipboardTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e)
-	{
-		return OnKeyPress(e);
-	});
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &ClipboardTests::OnKeyPress);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ClipboardTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
+bool ClipboardTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 {
 	switch(event.GetKey())
 	{

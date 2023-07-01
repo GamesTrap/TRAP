@@ -132,15 +132,12 @@ void IcoSphereTests::OnImGuiRender()
 void IcoSphereTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e)
-	{
-		return OnKeyPress(e);
-	});
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &IcoSphereTests::OnKeyPress);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool IcoSphereTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
+bool IcoSphereTests::OnKeyPress(const TRAP::Events::KeyPressEvent& e)
 {
 	if (e.GetKey() == TRAP::Input::Key::F1)
 	{

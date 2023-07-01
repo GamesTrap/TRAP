@@ -154,14 +154,8 @@ void TRAP::Graphics::OrthographicCameraController::OnEvent(Events::Event& e)
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Events::EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<Events::MouseScrollEvent>([this](Events::MouseScrollEvent& event)
-		{
-			return OnMouseScroll(event);
-		});
-	dispatcher.Dispatch<Events::FrameBufferResizeEvent>([this](Events::FrameBufferResizeEvent& event)
-		{
-			return OnFrameBufferResize(event);
-		});
+	dispatcher.Dispatch<Events::MouseScrollEvent>(this, &OrthographicCameraController::OnMouseScroll);
+	dispatcher.Dispatch<Events::FrameBufferResizeEvent>(this, &OrthographicCameraController::OnFrameBufferResize);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

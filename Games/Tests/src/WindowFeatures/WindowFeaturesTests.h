@@ -13,7 +13,7 @@ public:
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnEvent(TRAP::Events::Event& event) override;
 
-	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
+	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
 
 private:
 	TRAP::Math::Vec2i m_lastWindowPos;

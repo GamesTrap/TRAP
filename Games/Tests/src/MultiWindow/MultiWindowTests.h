@@ -16,8 +16,8 @@ public:
 	void OnEvent(TRAP::Events::Event& event) override;
 
 private:
-	bool OnWindowClose(TRAP::Events::WindowCloseEvent& e);
-	bool OnKeyPress(TRAP::Events::KeyPressEvent& e);
+	bool OnWindowClose(const TRAP::Events::WindowCloseEvent& e);
+	bool OnKeyPress(const TRAP::Events::KeyPressEvent& e);
 
 	TRAP::Utils::Timer m_fpsTimer;
 

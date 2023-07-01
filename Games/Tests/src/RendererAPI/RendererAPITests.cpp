@@ -205,15 +205,12 @@ void RendererAPITests::OnImGuiRender()
 void RendererAPITests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e)
-	{
-		return OnKeyPress(e);
-	});
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &RendererAPITests::OnKeyPress);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool RendererAPITests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
+bool RendererAPITests::OnKeyPress(const TRAP::Events::KeyPressEvent& e)
 {
 	if (e.GetKey() == TRAP::Input::Key::F1)
 	{

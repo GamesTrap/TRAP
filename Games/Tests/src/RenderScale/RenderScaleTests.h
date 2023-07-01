@@ -14,8 +14,8 @@ public:
 	void OnEvent(TRAP::Events::Event& event) override;
 
 private:
-	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
-	bool OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent& event);
+	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
+	bool OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& event);
 
 	TRAP::Graphics::OrthographicCameraController m_cameraController;
 };

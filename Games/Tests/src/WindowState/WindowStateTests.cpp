@@ -42,38 +42,14 @@ void WindowStateTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
 
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([](TRAP::Events::KeyPressEvent& e)
-	{
-		return OnKeyPress(e);
-	});
-	dispatcher.Dispatch<TRAP::Events::WindowResizeEvent>([](TRAP::Events::WindowResizeEvent& e)
-	{
-		return OnWindowResize(e);
-	});
-	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>([](TRAP::Events::FrameBufferResizeEvent& e)
-	{
-		return OnFrameBufferResize(e);
-	});
-	dispatcher.Dispatch<TRAP::Events::WindowFocusEvent>([](TRAP::Events::WindowFocusEvent& e)
-	{
-		return OnWindowFocus(e);
-	});
-	dispatcher.Dispatch<TRAP::Events::WindowLostFocusEvent>([](TRAP::Events::WindowLostFocusEvent& e)
-	{
-		return OnWindowLostFocus(e);
-	});
-	dispatcher.Dispatch<TRAP::Events::WindowMinimizeEvent>([](TRAP::Events::WindowMinimizeEvent& e)
-	{
-		return OnWindowMinimize(e);
-	});
-	dispatcher.Dispatch<TRAP::Events::WindowMaximizeEvent>([](TRAP::Events::WindowMaximizeEvent& e)
-	{
-		return OnWindowMaximize(e);
-	});
-	dispatcher.Dispatch<TRAP::Events::WindowRestoreEvent>([](TRAP::Events::WindowRestoreEvent& e)
-	{
-		return OnWindowRestore(e);
-	});
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(OnKeyPress);
+	dispatcher.Dispatch<TRAP::Events::WindowResizeEvent>(OnWindowResize);
+	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(OnFrameBufferResize);
+	dispatcher.Dispatch<TRAP::Events::WindowFocusEvent>(OnWindowFocus);
+	dispatcher.Dispatch<TRAP::Events::WindowLostFocusEvent>(OnWindowLostFocus);
+	dispatcher.Dispatch<TRAP::Events::WindowMinimizeEvent>(OnWindowMinimize);
+	dispatcher.Dispatch<TRAP::Events::WindowMaximizeEvent>(OnWindowMaximize);
+	dispatcher.Dispatch<TRAP::Events::WindowRestoreEvent>(OnWindowRestore);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

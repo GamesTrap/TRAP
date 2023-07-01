@@ -201,7 +201,7 @@ public:
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	bool OnKeyPress(TRAP::Events::KeyPressEvent& event)
+	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 	{
 		if (event.GetKey() == TRAP::Input::Key::Escape)
 			TRAP::Application::Shutdown();
@@ -223,7 +223,7 @@ public:
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	bool OnTextureReload(TRAP::Events::TextureReloadEvent& event)
+	bool OnTextureReload(const TRAP::Events::TextureReloadEvent& event)
 	{
 		m_texture = event.GetTexture();
 		m_shader->UseTexture(0, 0, m_texture);
@@ -232,7 +232,7 @@ public:
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	bool OnShaderReload(TRAP::Events::ShaderReloadEvent& event)
+	bool OnShaderReload(const TRAP::Events::ShaderReloadEvent& event)
 	{
 		m_shader = event.GetShader();
 		m_shader->UseTexture(0, 0, m_texture);
@@ -248,18 +248,9 @@ public:
 		m_cameraController.OnEvent(event);
 
 		TRAP::Events::EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e)
-		{
-			return OnKeyPress(e);
-		});
-		dispatcher.Dispatch<TRAP::Events::TextureReloadEvent>([this](TRAP::Events::TextureReloadEvent& e)
-		{
-			return OnTextureReload(e);
-		});
-		dispatcher.Dispatch<TRAP::Events::ShaderReloadEvent>([this](TRAP::Events::ShaderReloadEvent& e)
-		{
-			return OnShaderReload(e);
-		});
+		dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &SandboxLayer::OnKeyPress);
+		dispatcher.Dispatch<TRAP::Events::TextureReloadEvent>(this, &SandboxLayer::OnTextureReload);
+		dispatcher.Dispatch<TRAP::Events::ShaderReloadEvent>(this, &SandboxLayer::OnShaderReload);
 	}
 
 private:

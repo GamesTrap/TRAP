@@ -179,12 +179,12 @@ void SpriteSheetTests::OnEvent(TRAP::Events::Event& event)
 	m_cameraController.OnEvent(event);
 
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e) { return OnKeyPress(e); });
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &SpriteSheetTests::OnKeyPress);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool SpriteSheetTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
+bool SpriteSheetTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 {
     if (event.GetKey() == TRAP::Input::Key::Escape)
         TRAP::Application::Shutdown();

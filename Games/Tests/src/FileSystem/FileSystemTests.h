@@ -12,7 +12,7 @@ public:
 	void OnImGuiRender() override;
 	void OnEvent(TRAP::Events::Event& event) override;
 
-	static bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
+	static bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
 };
 
 #endif /*GAMESTRAP_FILESYSTEMTESTS_H*/

@@ -336,19 +336,13 @@ void ImageLoaderTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 void ImageLoaderTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>([this](TRAP::Events::FrameBufferResizeEvent& e)
-	{
-		return OnFrameBufferResize(e);
-	});
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e)
-	{
-		return OnKeyPress(e);
-	});
+	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(this, &ImageLoaderTests::OnFrameBufferResize);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &ImageLoaderTests::OnKeyPress);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ImageLoaderTests::OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent& event)
+bool ImageLoaderTests::OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& event)
 {
 	m_camera.SetProjection(-event.GetAspectRatio(),
 		                   event.GetAspectRatio(),
@@ -359,7 +353,7 @@ bool ImageLoaderTests::OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ImageLoaderTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
+bool ImageLoaderTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 {
 	if(event.GetKey() == TRAP::Input::Key::Escape)
 	{

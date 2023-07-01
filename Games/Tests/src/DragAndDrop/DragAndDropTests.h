@@ -13,8 +13,8 @@ public:
 	void OnEvent(TRAP::Events::Event& event) override;
 
 private:
-	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
-	bool OnDrop(TRAP::Events::WindowDropEvent& event);
+	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
+	bool OnDrop(const TRAP::Events::WindowDropEvent& event);
 
 	bool m_dragAndDrop;
 	std::vector<std::string> m_dropData;

@@ -417,13 +417,14 @@ void TRAP::FileSystem::FileWatcher::Watch()
     std::unordered_map<int32_t, std::filesystem::path> watchDescriptors;
 
     //Lambda function for shutting down when an error has occurred
-    const auto ErrorShutdown = [this, watchDescriptors, fileDescriptors]()
+    const auto ErrorShutdown = [this, &watchDescriptors, &fileDescriptors]()
     {
         for(const auto& [wDesc, path] : watchDescriptors)
         {
             if(inotify_rm_watch(std::get<0>(fileDescriptors).fd, wDesc) < 0)
                 TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to remove watch descriptor of path: ", path, " (", Utils::String::GetStrError(), ")");
         }
+        watchDescriptors.clear();
         if(close(std::get<0>(fileDescriptors).fd) < 0)
             TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to close inotify file descriptor (", Utils::String::GetStrError(), ")");
         if(close(m_killEvent) < 0)

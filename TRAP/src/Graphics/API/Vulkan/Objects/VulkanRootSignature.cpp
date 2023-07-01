@@ -73,7 +73,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 			if(resNameIt == indexMap.end())
 			{
 				const auto resIt = std::find_if(shaderResources.begin(), shaderResources.end(),
-				                                [res](const ShaderReflection::ShaderResource& a)
+				                                [&res](const ShaderReflection::ShaderResource& a)
 				{
 					return (a.Type == res.Type) && (a.UsedStages == res.UsedStages) &&
 					       (((a.Reg ^ res.Reg) | (a.Set ^ res.Set)) == 0);

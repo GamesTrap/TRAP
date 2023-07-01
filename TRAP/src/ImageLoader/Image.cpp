@@ -129,7 +129,7 @@
 
 	const std::string fileFormat = Utils::String::ToLower(*fileEnding);
 
-	return std::any_of(SupportedImageFormatSuffixes.cbegin(), SupportedImageFormatSuffixes.cend(), [fileFormat](const std::string_view suffix)
+	return std::any_of(SupportedImageFormatSuffixes.cbegin(), SupportedImageFormatSuffixes.cend(), [&fileFormat](const std::string_view suffix)
 	{
 		return fileFormat == suffix;
 	});

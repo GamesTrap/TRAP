@@ -191,19 +191,13 @@ void MultiWindowTests::OnImGuiRender()
 void MultiWindowTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::WindowCloseEvent>([this](TRAP::Events::WindowCloseEvent& e)
-	{
-		return OnWindowClose(e);
-	});
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e)
-	{
-		return OnKeyPress(e);
-	});
+	dispatcher.Dispatch<TRAP::Events::WindowCloseEvent>(this, &MultiWindowTests::OnWindowClose);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &MultiWindowTests::OnKeyPress);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool MultiWindowTests::OnWindowClose(TRAP::Events::WindowCloseEvent& e)
+bool MultiWindowTests::OnWindowClose(const TRAP::Events::WindowCloseEvent& e)
 {
 	if (m_window && e.GetWindow() == m_window.get())
 		m_window.reset();
@@ -213,7 +207,7 @@ bool MultiWindowTests::OnWindowClose(TRAP::Events::WindowCloseEvent& e)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool MultiWindowTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
+bool MultiWindowTests::OnKeyPress(const TRAP::Events::KeyPressEvent& e)
 {
 	if (e.GetKey() == TRAP::Input::Key::F1)
 	{

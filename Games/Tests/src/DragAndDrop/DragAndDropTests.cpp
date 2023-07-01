@@ -41,19 +41,13 @@ void DragAndDropTests::OnAttach()
 void DragAndDropTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e)
-	{
-		return OnKeyPress(e);
-	});
-	dispatcher.Dispatch<TRAP::Events::WindowDropEvent>([this](TRAP::Events::WindowDropEvent& e)
-	{
-		return OnDrop(e);
-	});
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &DragAndDropTests::OnKeyPress);
+	dispatcher.Dispatch<TRAP::Events::WindowDropEvent>(this, &DragAndDropTests::OnDrop);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool DragAndDropTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
+bool DragAndDropTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 {
 	if(event.GetKey() == TRAP::Input::Key::Escape)
 	{
@@ -73,7 +67,7 @@ bool DragAndDropTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool DragAndDropTests::OnDrop(TRAP::Events::WindowDropEvent& event)
+bool DragAndDropTests::OnDrop(const TRAP::Events::WindowDropEvent& event)
 {
 	m_dropData = event.GetPaths();
 

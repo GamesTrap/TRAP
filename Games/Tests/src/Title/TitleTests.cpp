@@ -27,15 +27,12 @@ void TitleTests::OnAttach()
 void TitleTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([](TRAP::Events::KeyPressEvent& e)
-	{
-		return OnKeyPress(e);
-	});
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(OnKeyPress);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TitleTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
+bool TitleTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 {
 	if (event.GetKey() == TRAP::Input::Key::Escape)
 	{

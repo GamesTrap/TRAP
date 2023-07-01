@@ -109,19 +109,13 @@ void AnisotropyTests::OnImGuiRender()
 void AnisotropyTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e)
-	{
-		return OnKeyPress(e);
-	});
-	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>([this](TRAP::Events::FrameBufferResizeEvent& e)
-	{
-		return OnFrameBufferResize(e);
-	});
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &AnisotropyTests::OnKeyPress);
+	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(this, &AnisotropyTests::OnFrameBufferResize);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool AnisotropyTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
+bool AnisotropyTests::OnKeyPress(const TRAP::Events::KeyPressEvent& e)
 {
 	if (e.GetKey() == TRAP::Input::Key::Escape)
 		TRAP::Application::Shutdown();
@@ -131,7 +125,7 @@ bool AnisotropyTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool AnisotropyTests::OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent& e)
+bool AnisotropyTests::OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& e)
 {
 	m_camera.SetViewportSize(e.GetWidth(), e.GetHeight());
 

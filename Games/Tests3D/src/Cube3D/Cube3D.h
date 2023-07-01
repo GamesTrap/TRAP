@@ -14,9 +14,9 @@ public:
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnEvent(TRAP::Events::Event& event) override;
 
-	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
-	bool OnMouseMove(TRAP::Events::MouseMoveEvent& event);
-	bool OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent& event);
+	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
+	bool OnMouseMove(const TRAP::Events::MouseMoveEvent& event);
+	bool OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& event);
 
 private:
 	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_cubeVertexBuffer;

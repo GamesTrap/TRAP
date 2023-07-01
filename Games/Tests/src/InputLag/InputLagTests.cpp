@@ -172,19 +172,13 @@ void InputLagTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& delta
 void InputLagTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e)
-	{
-		return OnKeyPress(e);
-	});
-	dispatcher.Dispatch<TRAP::Events::MouseMoveEvent>([this](TRAP::Events::MouseMoveEvent& e)
-	{
-		return OnMouseMove(e);
-	});
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &InputLagTests::OnKeyPress);
+	dispatcher.Dispatch<TRAP::Events::MouseMoveEvent>(this, &InputLagTests::OnMouseMove);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool InputLagTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
+bool InputLagTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 {
 	switch(event.GetKey())
 	{
@@ -209,7 +203,7 @@ bool InputLagTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool InputLagTests::OnMouseMove(TRAP::Events::MouseMoveEvent& event)
+bool InputLagTests::OnMouseMove(const TRAP::Events::MouseMoveEvent& event)
 {
 	if(m_cursorMethod == CursorMethod::InputMessage)
 		m_cursorNew = event.GetPosition();

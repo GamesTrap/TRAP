@@ -707,7 +707,7 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleMode(void* const userData, [[mayb
 
     const InternalVideoMode mode{width, height, 8, 8, 8, refresh / 1000.0};
 
-    const auto ele = std::find_if(monitor->Modes.cbegin(), monitor->Modes.cend(), [mode](const InternalVideoMode& e)
+    const auto ele = std::find_if(monitor->Modes.cbegin(), monitor->Modes.cend(), [&mode](const InternalVideoMode& e)
     {
         return mode.Width == e.Width && mode.Height == e.Height && mode.RedBits == e.RedBits &&
                mode.GreenBits == e.GreenBits && mode.BlueBits == e.BlueBits && mode.RefreshRate == e.RefreshRate;

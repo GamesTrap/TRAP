@@ -21,8 +21,8 @@ private:
 		bool Supported;
 	};
 
-	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
-	bool OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent& event);
+	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
+	bool OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& event);
 
 	TRAP::Ref<TRAP::Graphics::RenderTarget> CreateShadingRateTexture(uint32_t framebufferWidth, uint32_t framebufferHeight);
 

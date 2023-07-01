@@ -15,7 +15,7 @@ public:
 	void OnEvent(TRAP::Events::Event& event) override;
 
 private:
-	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
+	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
 
 	bool m_wireFrame;
 

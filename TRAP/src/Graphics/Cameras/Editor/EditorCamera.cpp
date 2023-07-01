@@ -150,7 +150,7 @@ void TRAP::Graphics::EditorCamera::OnEvent(Events::Event& event)
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
     Events::EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<Events::MouseScrollEvent>([this](Events::MouseScrollEvent& e){return EditorCamera::OnMouseScroll(e);});
+    dispatcher.Dispatch<Events::MouseScrollEvent>(this, &EditorCamera::OnMouseScroll);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

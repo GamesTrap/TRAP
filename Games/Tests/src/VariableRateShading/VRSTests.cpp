@@ -156,13 +156,13 @@ void VRSTests::OnEvent(TRAP::Events::Event& event)
 	m_cameraController.OnEvent(event);
 
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e) { return OnKeyPress(e); });
-	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>([this](TRAP::Events::FrameBufferResizeEvent& e) { return OnFrameBufferResize(e); });
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &VRSTests::OnKeyPress);
+	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(this, &VRSTests::OnFrameBufferResize);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool VRSTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
+bool VRSTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 {
 	if (event.GetKey() == TRAP::Input::Key::Escape)
         TRAP::Application::Shutdown();
@@ -172,7 +172,7 @@ bool VRSTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool VRSTests::OnFrameBufferResize([[maybe_unused]] TRAP::Events::FrameBufferResizeEvent& event)
+bool VRSTests::OnFrameBufferResize([[maybe_unused]] const TRAP::Events::FrameBufferResizeEvent& event)
 {
     if(m_supportsPerTileVRS)
     {

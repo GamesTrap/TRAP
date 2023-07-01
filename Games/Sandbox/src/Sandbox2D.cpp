@@ -141,12 +141,12 @@ void Sandbox2D::OnEvent(TRAP::Events::Event& event)
 	m_cameraController.OnEvent(event);
 
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e) { return OnKeyPress(e); });
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &Sandbox2D::OnKeyPress);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool Sandbox2D::OnKeyPress(TRAP::Events::KeyPressEvent& event)
+bool Sandbox2D::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 {
 	if (event.GetKey() == TRAP::Input::Key::F10) //Enable/Disable WireFrame Mode
 	{

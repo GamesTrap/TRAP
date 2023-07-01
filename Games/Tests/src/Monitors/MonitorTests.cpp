@@ -61,8 +61,8 @@ void MonitorTests::OnImGuiRender()
 void MonitorTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::MonitorConnectEvent>([](TRAP::Events::MonitorConnectEvent& e) { return OnMonitorConnect(e); });
-	dispatcher.Dispatch<TRAP::Events::MonitorDisconnectEvent>([](TRAP::Events::MonitorDisconnectEvent& e) { return OnMonitorDisconnect(e); });
+	dispatcher.Dispatch<TRAP::Events::MonitorConnectEvent>(OnMonitorConnect);
+	dispatcher.Dispatch<TRAP::Events::MonitorDisconnectEvent>(OnMonitorDisconnect);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

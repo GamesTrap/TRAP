@@ -232,7 +232,7 @@ void TRAP::Graphics::SpriteManager::ReloadAll()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	return std::any_of(Sprites.begin(), Sprites.end(), [path](const auto& element)
+	return std::any_of(Sprites.begin(), Sprites.end(), [&path](const auto& element)
 	{
 		return FileSystem::IsEquivalent(element.second->GetTexture()->GetFilePath(), path);
 	});

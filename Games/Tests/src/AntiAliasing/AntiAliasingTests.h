@@ -16,8 +16,8 @@ public:
 	void OnEvent(TRAP::Events::Event& event) override;
 
 private:
-	bool OnKeyPress(TRAP::Events::KeyPressEvent& e);
-	bool OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent& e);
+	bool OnKeyPress(const TRAP::Events::KeyPressEvent& e);
+	bool OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& e);
 
 	TRAP::Utils::Timer m_fpsTimer;
 

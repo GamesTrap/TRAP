@@ -449,23 +449,14 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 void Cube3D::OnEvent(TRAP::Events::Event& event)
 {
     TRAP::Events::EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e)
-    {
-        return OnKeyPress(e);
-    });
-    dispatcher.Dispatch<TRAP::Events::MouseMoveEvent>([this](TRAP::Events::MouseMoveEvent& e)
-    {
-        return OnMouseMove(e);
-    });
-    dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>([this](TRAP::Events::FrameBufferResizeEvent& e)
-    {
-        return OnFrameBufferResize(e);
-    });
+    dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &Cube3D::OnKeyPress);
+    dispatcher.Dispatch<TRAP::Events::MouseMoveEvent>(this, &Cube3D::OnMouseMove);
+    dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>(this, &Cube3D::OnFrameBufferResize);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool Cube3D::OnMouseMove(TRAP::Events::MouseMoveEvent& event)
+bool Cube3D::OnMouseMove(const TRAP::Events::MouseMoveEvent& event)
 {
     if(!m_ignoreImGui)
         return false;
@@ -501,7 +492,7 @@ bool Cube3D::OnMouseMove(TRAP::Events::MouseMoveEvent& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool Cube3D::OnKeyPress(TRAP::Events::KeyPressEvent& event)
+bool Cube3D::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 {
     if (event.GetKey() == TRAP::Input::Key::Escape)
     {
@@ -545,7 +536,7 @@ bool Cube3D::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool Cube3D::OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent& event)
+bool Cube3D::OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& event)
 {
     m_camera.SetViewportSize(event.GetWidth(), event.GetHeight());
 

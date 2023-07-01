@@ -108,15 +108,12 @@ void SPIRVTests::OnImGuiRender()
 void SPIRVTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e)
-	{
-		return OnKeyPress(e);
-	});
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &SPIRVTests::OnKeyPress);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool SPIRVTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
+bool SPIRVTests::OnKeyPress(const TRAP::Events::KeyPressEvent& e)
 {
 	if (e.GetKey() == TRAP::Input::Key::Escape)
 		TRAP::Application::Shutdown();

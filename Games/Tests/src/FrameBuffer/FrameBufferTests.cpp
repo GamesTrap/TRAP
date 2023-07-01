@@ -203,12 +203,12 @@ void FrameBufferTests::OnImGuiRender()
 void FrameBufferTests::OnEvent(TRAP::Events::Event& event)
 {
     TRAP::Events::EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([](TRAP::Events::KeyPressEvent& e){return OnKeyPress(e);});
+    dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(OnKeyPress);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool FrameBufferTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
+bool FrameBufferTests::OnKeyPress(const TRAP::Events::KeyPressEvent& e)
 {
     if(e.GetKey() == TRAP::Input::Key::Escape)
         TRAP::Application::Shutdown();

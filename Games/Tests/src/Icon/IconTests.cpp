@@ -70,10 +70,7 @@ void IconTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
 
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([](TRAP::Events::KeyPressEvent& e)
-	{
-		return OnKeyPress(e);
-	});
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(OnKeyPress);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -101,7 +98,7 @@ void IconTests::SetIcon(const TRAP::Window& window, const uint32_t iconColor)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool IconTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
+bool IconTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 {
 	switch(event.GetKey())
 	{

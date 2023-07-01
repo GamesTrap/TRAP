@@ -12,8 +12,8 @@ public:
 	void OnAttach() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnEvent(TRAP::Events::Event& event) override;
-	bool OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent& event);
-	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
+	bool OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& event);
+	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
 
 private:
 	TRAP::Graphics::OrthographicCamera m_camera;

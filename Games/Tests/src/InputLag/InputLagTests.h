@@ -20,8 +20,8 @@ public:
 	};
 
 private:
-	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
-	bool OnMouseMove(TRAP::Events::MouseMoveEvent& event);
+	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
+	bool OnMouseMove(const TRAP::Events::MouseMoveEvent& event);
 
 	void SampleInput();
 	void DrawMarker(uint32_t lead, TRAP::Math::Vec2 pos);

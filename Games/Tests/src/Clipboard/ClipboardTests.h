@@ -12,7 +12,7 @@ public:
 	void OnImGuiRender() override;
 	void OnEvent(TRAP::Events::Event& event) override;
 
-	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
+	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
 
 private:
 	std::string m_clipboard;

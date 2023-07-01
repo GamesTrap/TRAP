@@ -450,12 +450,12 @@ void TRAPEditorLayer::OnEvent(TRAP::Events::Event& event)
 		m_editorCamera.OnEvent(event);
 
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e) {return OnKeyPress(e); });
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>(this, &TRAPEditorLayer::OnKeyPress);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAPEditorLayer::OnKeyPress(TRAP::Events::KeyPressEvent& event)
+bool TRAPEditorLayer::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 {
 	//Shortcuts
 
