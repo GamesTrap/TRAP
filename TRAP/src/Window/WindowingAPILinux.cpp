@@ -992,52 +992,42 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow& window
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Splits and translates a text/uri-list into separate file paths
-[[nodiscard]] std::vector<std::string> TRAP::INTERNAL::WindowingAPI::ParseUriList(char* text)
+[[nodiscard]] std::vector<std::string> TRAP::INTERNAL::WindowingAPI::ParseUriList(const std::string_view text)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	const std::string prefix = "file://";
+    if(text.empty())
+        return {};
+
+    static constexpr std::string_view prefix = "file://";
 	std::vector<std::string> paths{};
-	const char* line = nullptr;
 
-	std::size_t count = 0;
+    for(std::string_view line : TRAP::Utils::String::SplitStringView(text, "\r\n"))
+    {
+        if(line.empty() || line[0] == '#') //Ignore empty lines and comments
+            continue;
 
-	while((line = std::strtok(text, "\r\n")) != nullptr)
-	{
-		text = nullptr;
+        std::size_t prefixOffset = 0;
+        if(line.starts_with(prefix))
+            prefixOffset = line.find_first_of('/', prefix.size());
 
-		if(line[0] == '#')
-			continue;
+        std::string path;
+        path.reserve(line.size() - prefixOffset);
 
-		if(prefix == line)
-		{
-			line += prefix.size();
-			while(*line != '/')
-				line++;
-		}
+        //Copy path without prefix and the "%<hex><hex>" stuff
+        for(std::size_t i = prefixOffset; i < line.size(); ++i)
+        {
+            if(line[i] == '%' && Utils::String::IsHexDigit(line[i + 1]) && Utils::String::IsHexDigit(line[i + 2]))
+            {
+                path.push_back(NumericCast<char>(std::stoi(std::string{line[i + 1], line[i + 2]}, nullptr, 16)));
+                i += 2;
+            }
+            else
+                path.push_back(line[i]);
+        }
 
-		count++;
-
-		std::string path(std::strlen(line) + 1, '\0');
-		paths.resize(count);
-		paths[count - 1] = path;
-		char* pathPtr = paths[count - 1].data();
-
-		while(*line != 0)
-		{
-			if(line[0] == '%' && line[1] && line[2])
-			{
-				const std::array<char, 3> digits = { line[1], line[2], '\0'};
-				*pathPtr = NumericCast<char>(strtol(digits.data(), nullptr, 16));
-				line += 2;
-			}
-			else
-				*pathPtr = *line;
-
-			pathPtr++;
-			line++;
-		}
-	}
+        paths.push_back(path);
+    }
 
 	return paths;
 }

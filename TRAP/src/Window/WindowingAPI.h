@@ -5021,7 +5021,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="text">Text to split.</param>
 		/// <returns>Vector of file paths.</returns>
-		[[nodiscard]] static std::vector<std::string> ParseUriList(char* text);
+		[[nodiscard]] static std::vector<std::string> ParseUriList(std::string_view text);
 		/// <summary>
 		/// Set the current video mode for the specified monitor.
 		/// </summary>

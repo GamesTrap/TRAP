@@ -540,7 +540,7 @@ void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleDrop([[maybe_unused]] void* c
     std::optional<std::string> string = ReadDataOfferAsString(*s_Data.Wayland.DragOffer, "text/uri-list");
     if(string && !string->empty())
     {
-        const std::vector<std::string> paths = ParseUriList(string->data());
+        const std::vector<std::string> paths = ParseUriList(*string);
         if(!paths.empty())
             InputDrop(*s_Data.Wayland.DragFocus, paths);
     }

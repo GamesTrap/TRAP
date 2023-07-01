@@ -4162,3 +4162,5 @@ SITREP 07/01/2023|23w26a3
     - Made UID constexpr ~<5 mins
     - Replaced ".erase(std::remove())" calls with std::erase(_if) ~<15 mins
     - Replaced std::strcmp with string_view comparisons ~<10 mins
+    - WindowingAPI::ParseUriList() Fixed prefix not getting removed ~<5 mins
+    - Refactored WindowingAPI::ParseUriList() ~<20 mins
