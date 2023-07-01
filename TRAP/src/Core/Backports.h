@@ -3,7 +3,6 @@
 
 #include <utility>
 #include <version>
-#include <bits/c++config.h>
 
 #ifndef __cpp_lib_to_underlying
 
