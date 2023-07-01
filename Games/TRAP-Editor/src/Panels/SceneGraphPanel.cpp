@@ -273,7 +273,7 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 		ImGui::Checkbox("Primary", &component.Primary);
 
 		static constexpr std::array<std::string_view, 2> projectionTypeStrings = { "Perspective", "Orthographic" };
-		const char* currentProjectionTypeString = projectionTypeStrings[ToUnderlying(camera.GetProjectionType())].data();
+		const char* currentProjectionTypeString = projectionTypeStrings[std::to_underlying(camera.GetProjectionType())].data();
 		if (ImGui::BeginCombo("Projection", currentProjectionTypeString))
 		{
 			for (uint32_t i = 0; i < projectionTypeStrings.size(); i++)
@@ -336,7 +336,7 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 	DrawComponent<Rigidbody2DComponent>("Rigidbody 2D", entity, [](auto& component)
 	{
 		static constexpr std::array<std::string_view, 3> bodyTypeStrings{"Static", "Dynamic", "Kinematic"};
-		const char* currentBodyTypeString = bodyTypeStrings[ToUnderlying(component.Type)].data();
+		const char* currentBodyTypeString = bodyTypeStrings[std::to_underlying(component.Type)].data();
 		if(ImGui::BeginCombo("Body Type", currentBodyTypeString))
 		{
 			for(uint32_t i = 0; i < bodyTypeStrings.size(); ++i)

@@ -159,7 +159,7 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	return s_controllerInternal[ToUnderlying(controller)].Connected;
+	return s_controllerInternal[std::to_underlying(controller)].Connected;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -168,13 +168,13 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!s_controllerInternal[ToUnderlying(controller)].Connected)
+	if (!s_controllerInternal[std::to_underlying(controller)].Connected)
 		return false;
 
 	if (!PollController(controller, PollMode::Presence))
 		return false;
 
-	return s_controllerInternal[ToUnderlying(controller)].mapping != nullptr;
+	return s_controllerInternal[std::to_underlying(controller)].mapping != nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -462,7 +462,7 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!s_controllerInternal[ToUnderlying(controller)].Connected)
+	if (!s_controllerInternal[std::to_underlying(controller)].Connected)
 		return 0.0f;
 
 	return GetMappedControllerAxis(controller, axis);
@@ -474,7 +474,7 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!s_controllerInternal[ToUnderlying(controller)].Connected)
+	if (!s_controllerInternal[std::to_underlying(controller)].Connected)
 		return ControllerDPad::Centered;
 
 	return GetMappedControllerDPad(controller, dpad);
@@ -486,7 +486,7 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!s_controllerInternal[ToUnderlying(controller)].Connected)
+	if (!s_controllerInternal[std::to_underlying(controller)].Connected)
 		return false;
 
 	return GetMappedControllerButton(controller, button);
@@ -498,16 +498,16 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!s_controllerInternal[ToUnderlying(controller)].Connected)
+	if (!s_controllerInternal[std::to_underlying(controller)].Connected)
 		return "";
 
 	if (!PollController(controller, PollMode::Presence))
 		return "";
 
-	if(s_controllerInternal[ToUnderlying(controller)].mapping == nullptr)
-		return s_controllerInternal[ToUnderlying(controller)].Name;
+	if(s_controllerInternal[std::to_underlying(controller)].mapping == nullptr)
+		return s_controllerInternal[std::to_underlying(controller)].Name;
 
-	return s_controllerInternal[ToUnderlying(controller)].mapping->Name;
+	return s_controllerInternal[std::to_underlying(controller)].mapping->Name;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -516,13 +516,13 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!s_controllerInternal[ToUnderlying(controller)].Connected)
+	if (!s_controllerInternal[std::to_underlying(controller)].Connected)
 		return "";
 
 	if (!PollController(controller, PollMode::Presence))
 		return "";
 
-	return s_controllerInternal[ToUnderlying(controller)].guid;
+	return s_controllerInternal[std::to_underlying(controller)].guid;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -531,13 +531,13 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!s_controllerInternal[ToUnderlying(controller)].Connected)
+	if (!s_controllerInternal[std::to_underlying(controller)].Connected)
 		return {};
 
 	if (!PollController(controller, PollMode::Axes))
 		return {};
 
-	return s_controllerInternal[ToUnderlying(controller)].Axes;
+	return s_controllerInternal[std::to_underlying(controller)].Axes;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -546,13 +546,13 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!s_controllerInternal[ToUnderlying(controller)].Connected)
+	if (!s_controllerInternal[std::to_underlying(controller)].Connected)
 		return {};
 
 	if (!PollController(controller, PollMode::Buttons))
 		return {};
 
-	return s_controllerInternal[ToUnderlying(controller)].Buttons;
+	return s_controllerInternal[std::to_underlying(controller)].Buttons;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -561,13 +561,13 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!s_controllerInternal[ToUnderlying(controller)].Connected)
+	if (!s_controllerInternal[std::to_underlying(controller)].Connected)
 		return {};
 
 	if (!PollController(controller, PollMode::Buttons))
 		return {};
 
-	return s_controllerInternal[ToUnderlying(controller)].DPads;
+	return s_controllerInternal[std::to_underlying(controller)].DPads;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -576,17 +576,17 @@ void TRAP::Input::SetControllerVibration(const Controller controller, const floa
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!s_controllerInternal[ToUnderlying(controller)].Connected)
+	if (!s_controllerInternal[std::to_underlying(controller)].Connected)
 		return;
 
 	if (!PollController(controller, PollMode::Presence))
 		return;
 
-	if (leftMotor != s_controllerInternal[ToUnderlying(controller)].LeftMotor ||
-		rightMotor != s_controllerInternal[ToUnderlying(controller)].RightMotor)
+	if (leftMotor != s_controllerInternal[std::to_underlying(controller)].LeftMotor ||
+		rightMotor != s_controllerInternal[std::to_underlying(controller)].RightMotor)
 	{
-		s_controllerInternal[ToUnderlying(controller)].LeftMotor = leftMotor;
-		s_controllerInternal[ToUnderlying(controller)].RightMotor = rightMotor;
+		s_controllerInternal[std::to_underlying(controller)].LeftMotor = leftMotor;
+		s_controllerInternal[std::to_underlying(controller)].RightMotor = rightMotor;
 		SetControllerVibrationInternal(controller, leftMotor, rightMotor);
 	}
 }
@@ -597,17 +597,17 @@ void TRAP::Input::SetControllerVibration(const Controller controller, const Math
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (!s_controllerInternal[ToUnderlying(controller)].Connected)
+	if (!s_controllerInternal[std::to_underlying(controller)].Connected)
 		return;
 
 	if (!PollController(controller, PollMode::Presence))
 		return;
 
-	if (intensity.x != s_controllerInternal[ToUnderlying(controller)].LeftMotor ||
-		intensity.y != s_controllerInternal[ToUnderlying(controller)].RightMotor)
+	if (intensity.x != s_controllerInternal[std::to_underlying(controller)].LeftMotor ||
+		intensity.y != s_controllerInternal[std::to_underlying(controller)].RightMotor)
 	{
-		s_controllerInternal[ToUnderlying(controller)].LeftMotor = intensity.x;
-		s_controllerInternal[ToUnderlying(controller)].RightMotor = intensity.y;
+		s_controllerInternal[std::to_underlying(controller)].LeftMotor = intensity.x;
+		s_controllerInternal[std::to_underlying(controller)].RightMotor = intensity.y;
 		SetControllerVibrationInternal(controller, intensity.x, intensity.y);
 	}
 }
@@ -618,7 +618,7 @@ void TRAP::Input::SetControllerVibration(const Controller controller, const Math
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if(!s_controllerInternal[ToUnderlying(controller)].Connected)
+	if(!s_controllerInternal[std::to_underlying(controller)].Connected)
 		return ControllerBatteryStatus::Wired;
 
 	if(!PollController(controller, PollMode::Presence))
@@ -723,7 +723,7 @@ void TRAP::Input::UpdateControllerMappings(const std::string& map)
 			s_mappings.push_back(mapping);
 	}
 
-	for(uint32_t cID = 0; cID <= ToUnderlying(Controller::Sixteen); cID++)
+	for(uint32_t cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
 	{
 		ControllerInternal* const con = &s_controllerInternal[cID];
 		if(s_controllerInternal[cID].Connected)
@@ -751,13 +751,13 @@ TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(std::string 
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	uint32_t cID = 0;
-	for(cID = 0; cID <= ToUnderlying(Controller::Sixteen); cID++)
+	for(cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
 	{
 		if (!s_controllerInternal[cID].Connected)
 			break;
 	}
 
-	if (cID > ToUnderlying(Controller::Sixteen))
+	if (cID > std::to_underlying(Controller::Sixteen))
 		return nullptr;
 
 	ControllerInternal* const con = &s_controllerInternal[cID];
@@ -846,27 +846,27 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 	{
 		{
 			{"platform", nullptr},
-			{"a", &mapping.Buttons[ToUnderlying(ControllerButton::A)]},
-			{"b", &mapping.Buttons[ToUnderlying(ControllerButton::B)]},
-			{"x", &mapping.Buttons[ToUnderlying(ControllerButton::X)]},
-			{"y", &mapping.Buttons[ToUnderlying(ControllerButton::Y)]},
-			{"back", &mapping.Buttons[ToUnderlying(ControllerButton::Back)]},
-			{"start", &mapping.Buttons[ToUnderlying(ControllerButton::Start)]},
-			{"guide", &mapping.Buttons[ToUnderlying(ControllerButton::Guide)]},
-			{"leftshoulder", &mapping.Buttons[ToUnderlying(ControllerButton::Left_Bumper)]},
-			{"rightshoulder", &mapping.Buttons[ToUnderlying(ControllerButton::Right_Bumper)]},
-			{"leftstick", &mapping.Buttons[ToUnderlying(ControllerButton::Left_Thumb)]},
-			{"rightstick", &mapping.Buttons[ToUnderlying(ControllerButton::Right_Thumb)]},
-			{"dpup", &mapping.Buttons[ToUnderlying(ControllerButton::DPad_Up)]},
-			{"dpright", &mapping.Buttons[ToUnderlying(ControllerButton::DPad_Right)]},
-			{"dpdown", &mapping.Buttons[ToUnderlying(ControllerButton::DPad_Down)]},
-			{"dpleft", &mapping.Buttons[ToUnderlying(ControllerButton::DPad_Left)]},
-			{"lefttrigger", &mapping.Axes[ToUnderlying(ControllerAxis::Left_Trigger)]},
-			{"righttrigger", &mapping.Axes[ToUnderlying(ControllerAxis::Right_Trigger)]},
-			{"leftx", &mapping.Axes[ToUnderlying(ControllerAxis::Left_X)]},
-			{"lefty", &mapping.Axes[ToUnderlying(ControllerAxis::Left_Y)]},
-			{"rightx", &mapping.Axes[ToUnderlying(ControllerAxis::Right_X)]},
-			{"righty", &mapping.Axes[ToUnderlying(ControllerAxis::Right_Y)]}
+			{"a", &mapping.Buttons[std::to_underlying(ControllerButton::A)]},
+			{"b", &mapping.Buttons[std::to_underlying(ControllerButton::B)]},
+			{"x", &mapping.Buttons[std::to_underlying(ControllerButton::X)]},
+			{"y", &mapping.Buttons[std::to_underlying(ControllerButton::Y)]},
+			{"back", &mapping.Buttons[std::to_underlying(ControllerButton::Back)]},
+			{"start", &mapping.Buttons[std::to_underlying(ControllerButton::Start)]},
+			{"guide", &mapping.Buttons[std::to_underlying(ControllerButton::Guide)]},
+			{"leftshoulder", &mapping.Buttons[std::to_underlying(ControllerButton::Left_Bumper)]},
+			{"rightshoulder", &mapping.Buttons[std::to_underlying(ControllerButton::Right_Bumper)]},
+			{"leftstick", &mapping.Buttons[std::to_underlying(ControllerButton::Left_Thumb)]},
+			{"rightstick", &mapping.Buttons[std::to_underlying(ControllerButton::Right_Thumb)]},
+			{"dpup", &mapping.Buttons[std::to_underlying(ControllerButton::DPad_Up)]},
+			{"dpright", &mapping.Buttons[std::to_underlying(ControllerButton::DPad_Right)]},
+			{"dpdown", &mapping.Buttons[std::to_underlying(ControllerButton::DPad_Down)]},
+			{"dpleft", &mapping.Buttons[std::to_underlying(ControllerButton::DPad_Left)]},
+			{"lefttrigger", &mapping.Axes[std::to_underlying(ControllerAxis::Left_Trigger)]},
+			{"righttrigger", &mapping.Axes[std::to_underlying(ControllerAxis::Right_Trigger)]},
+			{"leftx", &mapping.Axes[std::to_underlying(ControllerAxis::Left_X)]},
+			{"lefty", &mapping.Axes[std::to_underlying(ControllerAxis::Left_Y)]},
+			{"rightx", &mapping.Axes[std::to_underlying(ControllerAxis::Right_X)]},
+			{"righty", &mapping.Axes[std::to_underlying(ControllerAxis::Right_Y)]}
 		}
 	};
 
@@ -1055,7 +1055,7 @@ void TRAP::Input::InitControllerMappings()
 
 	uint32_t i = 0;
 
-	for(i = 0; i <= ToUnderlying(ControllerButton::DPad_Left); i++)
+	for(i = 0; i <= std::to_underlying(ControllerButton::DPad_Left); i++)
 	{
 		if(!IsValidElementForController(&mapping->Buttons[i], con))
 		{
@@ -1065,7 +1065,7 @@ void TRAP::Input::InitControllerMappings()
 		}
 	}
 
-	for(i = 0; i <= ToUnderlying(ControllerAxis::Right_Trigger); i++)
+	for(i = 0; i <= std::to_underlying(ControllerAxis::Right_Trigger); i++)
 	{
 		if(!IsValidElementForController(&mapping->Axes[i], con))
 		{
@@ -1104,12 +1104,12 @@ void TRAP::Input::InitControllerMappings()
 	if (!PollController(controller, PollMode::Buttons))
 		return false;
 
-	const ControllerInternal* const con = &s_controllerInternal[ToUnderlying(controller)];
+	const ControllerInternal* const con = &s_controllerInternal[std::to_underlying(controller)];
 
 	if (con->mapping == nullptr)
 		return false;
 
-	const MapElement* const e = &con->mapping->Buttons[ToUnderlying(button)];
+	const MapElement* const e = &con->mapping->Buttons[std::to_underlying(button)];
 	if (e->Index < con->ButtonCount)
 	{
 		if (e->Type == 2) //Button
@@ -1148,12 +1148,12 @@ void TRAP::Input::InitControllerMappings()
 	if(!PollController(controller, PollMode::Axes))
 		return 0.0f;
 
-	const ControllerInternal* const con = &s_controllerInternal[ToUnderlying(controller)];
+	const ControllerInternal* const con = &s_controllerInternal[std::to_underlying(controller)];
 
 	if(con->mapping == nullptr)
 		return 0.0f;
 
-	const MapElement* const e = &con->mapping->Axes[ToUnderlying(axis)];
+	const MapElement* const e = &con->mapping->Axes[std::to_underlying(axis)];
 	if(e->Type == 1) //Axis
 	{
 		const float value = con->Axes[e->Index] * NumericCast<float>(e->AxisScale) +
@@ -1182,7 +1182,7 @@ void TRAP::Input::InitControllerMappings()
 	if(!PollController(controller, PollMode::All))
 		return ControllerDPad::Centered;
 
-	const ControllerInternal* const con = &s_controllerInternal[ToUnderlying(controller)];
+	const ControllerInternal* const con = &s_controllerInternal[std::to_underlying(controller)];
 
 	if (con->mapping == nullptr)
 		return ControllerDPad::Centered;

@@ -110,7 +110,7 @@ namespace TRAP::INTERNAL
 			const WindowingAPI::InternalWindow* MouseWindow{};
 			std::array<WindowingAPI::InternalCursor*, ImGuiMouseCursor_COUNT> MouseCursors{};
 			ImVec2 LastValidMousePos = ImVec2(0.0f, 0.0f);
-			std::vector<const WindowingAPI::InternalWindow*> KeyOwnerWindows = std::vector<const WindowingAPI::InternalWindow*>(ToUnderlying(TRAP::Input::Key::Menu), nullptr);
+			std::vector<const WindowingAPI::InternalWindow*> KeyOwnerWindows = std::vector<const WindowingAPI::InternalWindow*>(std::to_underlying(TRAP::Input::Key::Menu), nullptr);
 			bool InstalledCallbacks{};
 			bool CallbacksChainForAllWindows{};
 			bool WantUpdateMonitors{};

@@ -14,7 +14,7 @@ struct ShaderStageData
 	EShLanguage StageGLSLang;
 };
 
-static constexpr std::array<ShaderStageData, ToUnderlying(TRAP::Graphics::RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> ShaderStages
+static constexpr std::array<ShaderStageData, std::to_underlying(TRAP::Graphics::RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> ShaderStages
 {
 	{
 		{TRAP::Graphics::RendererAPI::ShaderStage::Vertex, "Vertex", EShLanguage::EShLangVertex},

@@ -170,12 +170,18 @@ template <typename T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<typename Enum>
-[[nodiscard]] inline constexpr std::underlying_type_t<Enum> ToUnderlying(const Enum e) noexcept
+#ifndef __cpp_lib_to_underlying
+
+namespace std
 {
-	return static_cast<std::underlying_type_t<Enum>>(e);
+    template<class Enum>
+    constexpr std::underlying_type_t<Enum> to_underlying(Enum e) noexcept
+    {
+        return static_cast<std::underlying_type_t<Enum>>(e);
+    }
 }
 
+#endif /*__cpp_lib_to_underlying*/
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>

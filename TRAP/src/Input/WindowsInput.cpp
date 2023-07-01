@@ -130,7 +130,7 @@ void TRAP::Input::ShutdownController()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	for (uint32_t cID = 0; cID <= ToUnderlying(Controller::Sixteen); cID++)
+	for (uint32_t cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
 			CloseController(static_cast<Controller>(cID));
 
 	if (s_dinput8.API)
@@ -167,7 +167,7 @@ void TRAP::Input::DetectControllerConnectionWin32()
 			guid.resize(33);
 			XINPUT_CAPABILITIES xic;
 
-			for(cID = 0; cID <= ToUnderlying(Controller::Sixteen); cID++)
+			for(cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
 			{
 				if (!s_controllerInternal[cID].Connected &&
 					s_controllerInternal[cID].WinCon.Device == nullptr &&
@@ -175,7 +175,7 @@ void TRAP::Input::DetectControllerConnectionWin32()
 					break;
 			}
 
-			if (cID > ToUnderlying(Controller::Sixteen))
+			if (cID > std::to_underlying(Controller::Sixteen))
 				continue;
 
 			if (s_xinput.GetCapabilities(index, 0, &xic) != ERROR_SUCCESS)
@@ -215,7 +215,7 @@ void TRAP::Input::DetectControllerDisconnectionWin32()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	for (uint32_t cID = 0; cID <= ToUnderlying(Controller::Sixteen); cID++)
+	for (uint32_t cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
 	{
 		if (s_controllerInternal[cID].Connected)
 			PollController(static_cast<Controller>(cID), PollMode::Presence);
@@ -229,16 +229,16 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if(!s_controllerInternal[ToUnderlying(controller)].WinCon.XInput)
+	if(!s_controllerInternal[std::to_underlying(controller)].WinCon.XInput)
 		return;
 
 	const uint16_t left = NumericCast<uint16_t>(NumericCast<float>(std::numeric_limits<uint16_t>::max()) * leftMotor);
 	const uint16_t right = NumericCast<uint16_t>(NumericCast<float>(std::numeric_limits<uint16_t>::max()) * rightMotor);
 	XINPUT_VIBRATION vibration{ left, right };
-	const uint32_t result = s_xinput.SetState(NumericCast<DWORD>(ToUnderlying(controller)), &vibration);
+	const uint32_t result = s_xinput.SetState(NumericCast<DWORD>(std::to_underlying(controller)), &vibration);
 	if (result != ERROR_SUCCESS)
 	{
-		TP_ERROR(Log::InputControllerXInputPrefix, "ID: ", ToUnderlying(controller), " Error: ",
+		TP_ERROR(Log::InputControllerXInputPrefix, "ID: ", std::to_underlying(controller), " Error: ",
 					result, " while setting vibration!");
 	}
 }
@@ -249,11 +249,11 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if(!s_controllerInternal[ToUnderlying(controller)].WinCon.XInput)
+	if(!s_controllerInternal[std::to_underlying(controller)].WinCon.XInput)
 		return ControllerBatteryStatus::Wired;
 
 	XINPUT_BATTERY_INFORMATION batteryInformation{};
-	s_xinput.GetBatteryInformation(NumericCast<DWORD>(ToUnderlying(controller)), TRAP_XINPUT_DEVTYPE_GAMEPAD, &batteryInformation);
+	s_xinput.GetBatteryInformation(NumericCast<DWORD>(std::to_underlying(controller)), TRAP_XINPUT_DEVTYPE_GAMEPAD, &batteryInformation);
 
 	if(batteryInformation.BatteryType == TRAP_XINPUT_BATTERY_TYPE_WIRED)
 		return ControllerBatteryStatus::Wired;
@@ -279,7 +279,7 @@ bool TRAP::Input::PollController(const Controller controller, const PollMode mod
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	ControllerInternal* con = &s_controllerInternal[ToUnderlying(controller)];
+	ControllerInternal* con = &s_controllerInternal[std::to_underlying(controller)];
 	if (con->WinCon.Device)
 	{
 		int ai = 0, bi = 0, pi = 0;
@@ -332,15 +332,15 @@ bool TRAP::Input::PollController(const Controller controller, const PollMode mod
 			{
 				static constexpr std::array<uint8_t, 9> states =
 				{
-					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Up)),
-					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Right_Up)),
-					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Right)),
-					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Right_Down)),
-					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Down)),
-					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Left_Down)),
-					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Left)),
-					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Left_Up)),
-					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Centered))
+					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Up)),
+					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Right_Up)),
+					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Right)),
+					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Right_Down)),
+					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Down)),
+					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Left_Down)),
+					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Left)),
+					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Left_Up)),
+					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Centered))
 				};
 
 				//Screams of horror are appropriate at this point
@@ -414,13 +414,13 @@ bool TRAP::Input::PollController(const Controller controller, const PollMode mod
 		}
 
 		if (xis.Gamepad.wButtons & TRAP_XINPUT_GAMEPAD_DPAD_UP)
-			dpad |= ToUnderlying(ControllerDPad::Up);
+			dpad |= std::to_underlying(ControllerDPad::Up);
 		if (xis.Gamepad.wButtons & TRAP_XINPUT_GAMEPAD_DPAD_RIGHT)
-			dpad |= ToUnderlying(ControllerDPad::Right);
+			dpad |= std::to_underlying(ControllerDPad::Right);
 		if (xis.Gamepad.wButtons & TRAP_XINPUT_GAMEPAD_DPAD_DOWN)
-			dpad |= ToUnderlying(ControllerDPad::Down);
+			dpad |= std::to_underlying(ControllerDPad::Down);
 		if (xis.Gamepad.wButtons & TRAP_XINPUT_GAMEPAD_DPAD_LEFT)
-			dpad |= ToUnderlying(ControllerDPad::Left);
+			dpad |= std::to_underlying(ControllerDPad::Left);
 
 		InternalInputControllerDPad(con, 0, NumericCast<uint8_t>(dpad));
 	}
@@ -434,24 +434,24 @@ void TRAP::Input::CloseController(Controller controller)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if (s_controllerInternal[ToUnderlying(controller)].WinCon.Device)
+	if (s_controllerInternal[std::to_underlying(controller)].WinCon.Device)
 	{
-		IDirectInputDevice8_Unacquire(s_controllerInternal[ToUnderlying(controller)].WinCon.Device);
-		IDirectInputDevice8_Release(s_controllerInternal[ToUnderlying(controller)].WinCon.Device);
+		IDirectInputDevice8_Unacquire(s_controllerInternal[std::to_underlying(controller)].WinCon.Device);
+		IDirectInputDevice8_Release(s_controllerInternal[std::to_underlying(controller)].WinCon.Device);
 	}
 
-	const bool connected = s_controllerInternal[ToUnderlying(controller)].Connected;
+	const bool connected = s_controllerInternal[std::to_underlying(controller)].Connected;
 
 	if(connected)
 	{
 		TP_INFO(Log::InputControllerPrefix, "Controller: ",
-		        (s_controllerInternal[ToUnderlying(controller)].mapping
-			         ? s_controllerInternal[ToUnderlying(controller)].mapping->Name
-			         : s_controllerInternal[ToUnderlying(controller)].Name),
-		        " (", ToUnderlying(controller), ") disconnected!");
+		        (s_controllerInternal[std::to_underlying(controller)].mapping
+			         ? s_controllerInternal[std::to_underlying(controller)].mapping->Name
+			         : s_controllerInternal[std::to_underlying(controller)].Name),
+		        " (", std::to_underlying(controller), ") disconnected!");
 	}
 
-	s_controllerInternal[ToUnderlying(controller)] = {};
+	s_controllerInternal[std::to_underlying(controller)] = {};
 
 	if (!s_eventCallback)
 		return;
@@ -649,7 +649,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 	std::string name;
 	name.resize(256);
 
-	for (uint32_t cID = 0; cID <= ToUnderlying(Controller::Sixteen); cID++)
+	for (uint32_t cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
 	{
 		controller = &s_controllerInternal[cID];
 		if (s_controllerInternal[cID].Connected)
@@ -794,7 +794,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 
 	//Get index of our ControllerInternal
 	uint32_t index;
-	for (index = 0; index <= ToUnderlying(Controller::Sixteen); index++)
+	for (index = 0; index <= std::to_underlying(Controller::Sixteen); index++)
 		if (&s_controllerInternal[index] == controller)
 			break;
 

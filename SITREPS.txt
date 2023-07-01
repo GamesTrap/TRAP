@@ -4167,3 +4167,7 @@ SITREP 07/01/2023|23w26a3
     - EventDispatcher Dispatch() Added support for member function parameters ~<5 mins
     - Updated EventDispatcher::Dispatch() usage ~<15 mins
     - Changed captures of lambdas ~<15 mins
+
+SITREP 07/02/2023|23w26a4
+    - Changed TRAP Engine version to 23w26a4(0.9.56)
+    - Moved ToUnderlying() as std::to_underlying() to Core/Backports.h ~<15 mins

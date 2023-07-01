@@ -43,6 +43,8 @@
 #include <bit>
 #include <source_location>
 
+#include "Core/Backports.h"
+
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
 #endif /*_MSC_VER*/

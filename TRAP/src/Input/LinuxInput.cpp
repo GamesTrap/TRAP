@@ -90,7 +90,7 @@ void TRAP::Input::ShutdownController()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	for(uint32_t cID = 0; cID <= ToUnderlying(Controller::Sixteen); cID++)
+	for(uint32_t cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
 	{
 		if(s_controllerInternal[cID].LinuxCon.CurrentVibration)
 			SetControllerVibration(static_cast<Controller>(cID), 0.0f, 0.0f);
@@ -128,7 +128,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 	if(!PollController(controller, PollMode::Presence))
 		return;
 
-	ControllerInternal* const con = &s_controllerInternal[ToUnderlying(controller)];
+	ControllerInternal* const con = &s_controllerInternal[std::to_underlying(controller)];
 
 	if(!con->LinuxCon.VibrationSupported)
 		return;
@@ -212,7 +212,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(std::filesystem::path path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	for(uint32_t cID = 0; cID <= ToUnderlying(Controller::Sixteen); cID++)
+	for(uint32_t cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
 	{
 		if (!s_controllerInternal[cID].Connected)
 			continue;
@@ -355,7 +355,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(std::filesystem::path path)
 
 	//Get index of our ControllerInternal
 	uint32_t index = 0;
-	for (index = 0; index <= ToUnderlying(Controller::Sixteen); index++)
+	for (index = 0; index <= std::to_underlying(Controller::Sixteen); index++)
 	{
 		if (&s_controllerInternal[index] == con)
 			break;
@@ -374,7 +374,7 @@ void TRAP::Input::CloseController(Controller controller)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	ControllerInternal* const con = &s_controllerInternal[ToUnderlying(controller)];
+	ControllerInternal* const con = &s_controllerInternal[std::to_underlying(controller)];
 
 	if(close(con->LinuxCon.FD) < 0)
 	{
@@ -390,7 +390,7 @@ void TRAP::Input::CloseController(Controller controller)
 		        (con->mapping != nullptr
 			        ? con->mapping->Name
 			        : con->Name),
-		        " (", ToUnderlying(controller), ") disconnected!");
+		        " (", std::to_underlying(controller), ") disconnected!");
 	}
 
 	*con = {};
@@ -433,7 +433,7 @@ void TRAP::Input::DetectControllerConnectionLinux()
 			OpenControllerDeviceLinux(path);
 		else if((e->mask & IN_DELETE) != 0u)
 		{
-			for(uint32_t cID = 0; cID <= ToUnderlying(Controller::Sixteen); cID++)
+			for(uint32_t cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
 			{
 				if(s_controllerInternal[cID].LinuxCon.Path == path)
 				{
@@ -451,9 +451,9 @@ bool TRAP::Input::PollController(Controller controller, [[maybe_unused]] PollMod
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	if(s_controllerInternal[ToUnderlying(controller)].Connected)
+	if(s_controllerInternal[std::to_underlying(controller)].Connected)
 	{
-		ControllerInternal* const con = &s_controllerInternal[ToUnderlying(controller)];
+		ControllerInternal* const con = &s_controllerInternal[std::to_underlying(controller)];
 
 		//Read all queued events (non-blocking)
 		while(true)
@@ -491,7 +491,7 @@ bool TRAP::Input::PollController(Controller controller, [[maybe_unused]] PollMod
 		}
 	}
 
-	return s_controllerInternal[ToUnderlying(controller)].Connected;
+	return s_controllerInternal[std::to_underlying(controller)].Connected;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -530,19 +530,19 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* const con, uint32_t co
 		{
 			{
 				{
-					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Centered)),
-					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Up)),
-					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Down))
+					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Centered)),
+					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Up)),
+					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Down))
 				},
 				{
-					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Left)),
-					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Left_Up)),
-					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Left_Down))
+					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Left)),
+					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Left_Up)),
+					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Left_Down))
 				},
 				{
-					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Right)),
-					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Right_Up)),
-					NumericCast<uint8_t>(ToUnderlying(ControllerDPad::Right_Down))
+					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Right)),
+					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Right_Up)),
+					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Right_Down))
 				}
 			}
 		};

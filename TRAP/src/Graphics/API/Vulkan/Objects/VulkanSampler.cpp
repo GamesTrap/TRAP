@@ -82,7 +82,7 @@ void TRAP::Graphics::API::VulkanSampler::Init()
 															  minSamplerLod,
 															  maxSampledLod,
 		                                                      m_samplerDesc.EnableAnisotropy ? m_samplerDesc.OverrideAnisotropyLevel : 0.0f,
-		                                                      VkComparisonFuncTranslator[ToUnderlying(m_samplerDesc.CompareFunc)]);
+		                                                      VkComparisonFuncTranslator[std::to_underlying(m_samplerDesc.CompareFunc)]);
 
 	if(!TRAP::Graphics::API::ImageFormatIsPlanar(m_samplerDesc.SamplerConversionDesc.Format))
 	{

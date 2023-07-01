@@ -85,10 +85,10 @@ enum class ShaderStage : uint32_t
 	SHADER_STAGE_COUNT = 7
 };
 
-static inline ShaderStage operator|(ShaderStage a, ShaderStage b) noexcept { return static_cast<ShaderStage>(ToUnderlying(a) |
-																		                                     ToUnderlying(b)); }
-static inline ShaderStage operator&(ShaderStage a, ShaderStage b) noexcept { return static_cast<ShaderStage>(ToUnderlying(a) &
-																		                                     ToUnderlying(b)); }
+static inline ShaderStage operator|(ShaderStage a, ShaderStage b) noexcept { return static_cast<ShaderStage>(std::to_underlying(a) |
+																		                                     std::to_underlying(b)); }
+static inline ShaderStage operator&(ShaderStage a, ShaderStage b) noexcept { return static_cast<ShaderStage>(std::to_underlying(a) &
+																		                                     std::to_underlying(b)); }
 static inline ShaderStage operator|=(ShaderStage& a, ShaderStage b) noexcept { return a = (a | b); }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -119,7 +119,7 @@ struct ShaderStageData
 	EShLanguage StageGLSLang;
 };
 
-inline const std::array<ShaderStageData, ToUnderlying(ShaderStage::SHADER_STAGE_COUNT)> ShaderStages
+inline const std::array<ShaderStageData, std::to_underlying(ShaderStage::SHADER_STAGE_COUNT)> ShaderStages
 {
 	{
 		{ShaderStage::Vertex, "Vertex", {"vertex"}, EShLanguage::EShLangVertex},
@@ -418,7 +418,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
     for(const auto& subShader : shader.SubShaderSources)
     {
 		const std::size_t SPIRVSize = subShader.SPIRV.size();
-		const uint8_t type = static_cast<uint8_t>(ToUnderlying(subShader.Stage));
+		const uint8_t type = static_cast<uint8_t>(std::to_underlying(subShader.Stage));
 
 		file.write(reinterpret_cast<const char*>(&SPIRVSize), sizeof(SPIRVSize));
 		file.write(reinterpret_cast<const char*>(&type), sizeof(type));

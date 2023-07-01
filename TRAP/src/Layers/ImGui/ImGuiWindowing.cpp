@@ -356,8 +356,8 @@ void TRAP::INTERNAL::ImGuiWindowing::MouseButtonCallback(const WindowingAPI::Int
 	UpdateKeyModifiers(bd->Window);
 
 	ImGuiIO& io = ImGui::GetIO();
-	if(ToUnderlying(mouseButton) < ImGuiMouseButton_COUNT)
-		io.AddMouseButtonEvent(NumericCast<int32_t>(ToUnderlying(mouseButton)), (state == Input::KeyState::Pressed));
+	if(std::to_underlying(mouseButton) < ImGuiMouseButton_COUNT)
+		io.AddMouseButtonEvent(NumericCast<int32_t>(std::to_underlying(mouseButton)), (state == Input::KeyState::Pressed));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -391,8 +391,8 @@ void TRAP::INTERNAL::ImGuiWindowing::KeyCallback(const WindowingAPI::InternalWin
 
 	UpdateKeyModifiers(bd->Window);
 
-	if(ToUnderlying(key) >= 0 && ToUnderlying(key) < NumericCast<int32_t>(bd->KeyOwnerWindows.size()))
-		bd->KeyOwnerWindows[NumericCast<std::size_t>(ToUnderlying(key))] = (state == Input::KeyState::Pressed) ? &window : nullptr;
+	if(std::to_underlying(key) >= 0 && std::to_underlying(key) < NumericCast<int32_t>(bd->KeyOwnerWindows.size()))
+		bd->KeyOwnerWindows[NumericCast<std::size_t>(std::to_underlying(key))] = (state == Input::KeyState::Pressed) ? &window : nullptr;
 
 	key = TranslateUntranslateKey(key);
 
@@ -617,11 +617,11 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateKeyModifiers(const WindowingAPI::Inte
 																   TRAP::Input::Key::Slash};
 		const std::array<char, 11>::const_iterator it = std::find(charNames.cbegin(), charNames.cend(), keyName[0]);
 		if(keyName[0] >= '0' && keyName[0] <= '9')
-			key = static_cast<TRAP::Input::Key>(ToUnderlying(TRAP::Input::Key::Zero) + (keyName[0] - '0'));
+			key = static_cast<TRAP::Input::Key>(std::to_underlying(TRAP::Input::Key::Zero) + (keyName[0] - '0'));
 		else if(keyName[0] >= 'A' && keyName[0] <= 'Z')
-			key = static_cast<TRAP::Input::Key>(ToUnderlying(TRAP::Input::Key::A) + (keyName[0] - 'A'));
+			key = static_cast<TRAP::Input::Key>(std::to_underlying(TRAP::Input::Key::A) + (keyName[0] - 'A'));
 		else if(keyName[0] >= 'a' && keyName[0] <= 'z')
-			key = static_cast<TRAP::Input::Key>(ToUnderlying(TRAP::Input::Key::A) + (keyName[0] - 'a'));
+			key = static_cast<TRAP::Input::Key>(std::to_underlying(TRAP::Input::Key::A) + (keyName[0] - 'a'));
 		else if(it != charNames.cend())
 			key = charKeys[NumericCast<std::size_t>(it - charNames.cbegin())];
 	}

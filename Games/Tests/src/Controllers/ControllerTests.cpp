@@ -11,8 +11,8 @@ void ControllerTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Controllers");
 
-	for(uint32_t controller = ToUnderlying(TRAP::Input::Controller::One);
-	    controller <= ToUnderlying(TRAP::Input::Controller::Sixteen); controller++)
+	for(uint32_t controller = std::to_underlying(TRAP::Input::Controller::One);
+	    controller <= std::to_underlying(TRAP::Input::Controller::Sixteen); controller++)
 	{
 		if (TRAP::Input::IsControllerConnected(static_cast<TRAP::Input::Controller>(controller)))
 			s_controllers.push_back(static_cast<TRAP::Input::Controller>(controller));
@@ -29,7 +29,7 @@ void ControllerTests::OnImGuiRender()
 		ImGui::Checkbox("DPad Buttons", &s_dpadButtons);
 		for (const TRAP::Input::Controller& controller : s_controllers)
 		{
-			const std::string controllerName = fmt::format("{}. {}", (ToUnderlying(controller) + 1),
+			const std::string controllerName = fmt::format("{}. {}", (std::to_underlying(controller) + 1),
 			                                               TRAP::Input::GetControllerName(controller));
 
 			if (ImGui::Button(controllerName.c_str()))
@@ -46,7 +46,7 @@ void ControllerTests::OnImGuiRender()
 		const std::vector<bool> buttons = TRAP::Input::GetAllControllerButtons(controller);
 		const std::vector<TRAP::Input::ControllerDPad> dpads = TRAP::Input::GetAllControllerDPads(controller);
 
-		const std::string controllerName = fmt::format("{}. {}", (ToUnderlying(controller) + 1),
+		const std::string controllerName = fmt::format("{}. {}", (std::to_underlying(controller) + 1),
 														TRAP::Input::GetControllerName(controller));
 		ImGui::Begin(controllerName.c_str());
 		ImGui::Text("Hardware GUID: %s", TRAP::Input::GetControllerGUID(controller).c_str());

@@ -36,7 +36,7 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graphics::API::ShaderReflection::CreatePipelineReflection(
-	const std::array<ShaderReflection, ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& reflection,
+	const std::array<ShaderReflection, std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& reflection,
 	const uint32_t stageCount)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);

@@ -78,7 +78,7 @@ TRAP::INTERNAL::CustomImage::CustomImage(std::filesystem::path filepath, const u
 		return;
 	}
 
-	m_bitsPerPixel = sizeof(T) * 8u * ToUnderlying(format);
+	m_bitsPerPixel = sizeof(T) * 8u * std::to_underlying(format);
 
 	m_width = width;
 	m_height = height;

@@ -7,7 +7,7 @@
 #include "Utils/String/String.h"
 
 constexpr std::array<TRAP::Graphics::RendererAPI::DescriptorType,
-                     ToUnderlying(TRAP::Graphics::API::SPIRVTools::ResourceType::RESOURCE_TYPE_COUNT)> SPIRVToDescriptorType =
+                     std::to_underlying(TRAP::Graphics::API::SPIRVTools::ResourceType::RESOURCE_TYPE_COUNT)> SPIRVToDescriptorType =
 {
 	TRAP::Graphics::RendererAPI::DescriptorType::Undefined, TRAP::Graphics::RendererAPI::DescriptorType::Undefined,
 	TRAP::Graphics::RendererAPI::DescriptorType::UniformBuffer,
@@ -24,7 +24,7 @@ constexpr std::array<TRAP::Graphics::RendererAPI::DescriptorType,
 //-------------------------------------------------------------------------------------------------------------------//
 
 constexpr std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
-                     ToUnderlying(TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::RESOURCE_TEXTURE_DIMENSION_COUNT)> SPIRVToTextureDimension =
+                     std::to_underlying(TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::RESOURCE_TEXTURE_DIMENSION_COUNT)> SPIRVToTextureDimension =
 {
 	TRAP::Graphics::API::ShaderReflection::TextureDimension::TextureDimUndefined,
 	TRAP::Graphics::API::ShaderReflection::TextureDimension::TextureDimUndefined,
@@ -167,14 +167,14 @@ constexpr std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
 				//Set new index
 				indexRemap[i] = NumericCast<uint32_t>(j);
 
-				resources[j].Type = SPIRVToDescriptorType[ToUnderlying(resource.Type)];
+				resources[j].Type = SPIRVToDescriptorType[std::to_underlying(resource.Type)];
 				resources[j].Set = resource.Set;
 				resources[j].Reg = resource.Binding;
 				resources[j].Size = resource.Size;
 				resources[j].UsedStages = shaderStage;
 
 				resources[j].Name = resource.Name;
-				resources[j].Dim = SPIRVToTextureDimension[ToUnderlying(resource.Dimension)];
+				resources[j].Dim = SPIRVToTextureDimension[std::to_underlying(resource.Dimension)];
 
 				++j;
 			}

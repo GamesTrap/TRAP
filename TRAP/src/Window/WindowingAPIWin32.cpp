@@ -179,7 +179,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateKeyNamesWin32()
 
 	s_Data.KeyNames = {};
 
-	for (uint32_t key = ToUnderlying(Input::Key::Space); key <= ToUnderlying(Input::Key::Menu); key++)
+	for (uint32_t key = std::to_underlying(Input::Key::Space); key <= std::to_underlying(Input::Key::Menu); key++)
 	{
 		uint32_t virtualKey;
 
@@ -187,7 +187,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateKeyNamesWin32()
 		if (scanCode == -1)
 			continue;
 
-		if (key >= ToUnderlying(Input::Key::KP_0) && key <= ToUnderlying(Input::Key::KP_Add))
+		if (key >= std::to_underlying(Input::Key::KP_0) && key <= std::to_underlying(Input::Key::KP_Add))
 		{
 			static constexpr std::array<uint32_t, 15> virtualKeys =
 			{
@@ -197,7 +197,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateKeyNamesWin32()
 				VK_MULTIPLY, VK_SUBTRACT, VK_ADD
 			};
 
-			virtualKey = virtualKeys[key - ToUnderlying(Input::Key::KP_0)];
+			virtualKey = virtualKeys[key - std::to_underlying(Input::Key::KP_0)];
 		}
 		else
 			virtualKey = MapVirtualKeyW(scanCode, MAPVK_VSC_TO_VK);
@@ -516,20 +516,20 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 			state = Input::KeyState::Released;
 
 		uint32_t i;
-		for (i = 0; i <= ToUnderlying(Input::MouseButton::Eight); i++)
+		for (i = 0; i <= std::to_underlying(Input::MouseButton::Eight); i++)
 			if (windowPtr->MouseButtons[i] == Input::KeyState::Pressed)
 				break;
 
-		if (i > ToUnderlying(Input::MouseButton::Eight))
+		if (i > std::to_underlying(Input::MouseButton::Eight))
 			SetCapture(hWnd);
 
 		InputMouseClick(*windowPtr, button, state);
 
-		for (i = 0; i <= ToUnderlying(Input::MouseButton::Eight); i++)
+		for (i = 0; i <= std::to_underlying(Input::MouseButton::Eight); i++)
 			if (windowPtr->MouseButtons[i] == Input::KeyState::Pressed)
 				break;
 
-		if (i > ToUnderlying(TRAP::Input::MouseButton::Eight))
+		if (i > std::to_underlying(TRAP::Input::MouseButton::Eight))
 			ReleaseCapture();
 
 		if (uMsg == WM_XBUTTONDOWN || uMsg == WM_XBUTTONUP)
@@ -2988,10 +2988,10 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 			constexpr std::array<std::array<int32_t, 2>, 4> keys =
 			{
 				{
-					{ VK_LSHIFT, ToUnderlying(Input::Key::Left_Shift)},
-					{ VK_RSHIFT, ToUnderlying(Input::Key::Right_Super)},
-					{ VK_LWIN, ToUnderlying(Input::Key::Left_Super)},
-					{ VK_RWIN, ToUnderlying(Input::Key::Right_Super)}
+					{ VK_LSHIFT, std::to_underlying(Input::Key::Left_Shift)},
+					{ VK_RSHIFT, std::to_underlying(Input::Key::Right_Super)},
+					{ VK_LWIN, std::to_underlying(Input::Key::Left_Super)},
+					{ VK_RWIN, std::to_underlying(Input::Key::Right_Super)}
 				}
 			};
 
@@ -3143,7 +3143,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowProgressIndicator(const Inte
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return s_Data.ScanCodes[ToUnderlying(key)];
+	return s_Data.ScanCodes[std::to_underlying(key)];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3152,7 +3152,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowProgressIndicator(const Inte
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return s_Data.KeyNames[ToUnderlying(s_Data.KeyCodes[scanCode])].data();
+	return s_Data.KeyNames[std::to_underlying(s_Data.KeyCodes[scanCode])].data();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3548,8 +3548,8 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesWin32()
 
 	for (uint32_t scanCode = 0; scanCode < 512; scanCode++)
 	{
-		if (ToUnderlying(s_Data.KeyCodes[scanCode]) > 0)
-			s_Data.ScanCodes[ToUnderlying(s_Data.KeyCodes[scanCode])] = NumericCast<int16_t>(scanCode);
+		if (std::to_underlying(s_Data.KeyCodes[scanCode]) > 0)
+			s_Data.ScanCodes[std::to_underlying(s_Data.KeyCodes[scanCode])] = NumericCast<int16_t>(scanCode);
 	}
 }
 

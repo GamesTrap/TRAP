@@ -1167,9 +1167,9 @@ namespace TRAP::Graphics::API
 
 		inline constinit static struct GPUCapBits
 		{
-			std::array<bool, ToUnderlying(ImageFormat::IMAGE_FORMAT_COUNT)> CanShaderReadFrom{};
-			std::array<bool, ToUnderlying(ImageFormat::IMAGE_FORMAT_COUNT)> CanShaderWriteTo{};
-			std::array<bool, ToUnderlying(ImageFormat::IMAGE_FORMAT_COUNT)> CanRenderTargetWriteTo{};
+			std::array<bool, std::to_underlying(ImageFormat::IMAGE_FORMAT_COUNT)> CanShaderReadFrom{};
+			std::array<bool, std::to_underlying(ImageFormat::IMAGE_FORMAT_COUNT)> CanShaderWriteTo{};
+			std::array<bool, std::to_underlying(ImageFormat::IMAGE_FORMAT_COUNT)> CanRenderTargetWriteTo{};
 		} s_GPUCapBits{{}, {}, {}};
 
 		struct SizeOffset
@@ -1248,9 +1248,9 @@ namespace TRAP::Graphics::API
 		struct NullDescriptors
 		{
 			std::array<TRAP::Ref<TRAP::Graphics::Texture>,
-			           ToUnderlying(ShaderReflection::TextureDimension::TextureDimCount)> DefaultTextureSRV;
+			           std::to_underlying(ShaderReflection::TextureDimension::TextureDimCount)> DefaultTextureSRV;
 			std::array<TRAP::Ref<TRAP::Graphics::Texture>,
-			           ToUnderlying(ShaderReflection::TextureDimension::TextureDimCount)> DefaultTextureUAV;
+			           std::to_underlying(ShaderReflection::TextureDimension::TextureDimCount)> DefaultTextureUAV;
 			TRAP::Ref<VulkanBuffer> DefaultBufferSRV;
 			TRAP::Ref<VulkanBuffer> DefaultBufferUAV;
 			TRAP::Ref<VulkanSampler> DefaultSampler;

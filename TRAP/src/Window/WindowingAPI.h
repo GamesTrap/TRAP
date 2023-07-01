@@ -945,8 +945,8 @@ namespace TRAP::INTERNAL
 			} VK{};
 
 			std::string ClipboardString{};
-			std::array<std::array<char, 5>, ToUnderlying(Input::Key::Menu) + 1> KeyNames{};
-			std::array<int16_t, ToUnderlying(Input::Key::Menu) + 1> ScanCodes{};
+			std::array<std::array<char, 5>, std::to_underlying(Input::Key::Menu) + 1> KeyNames{};
+			std::array<int16_t, std::to_underlying(Input::Key::Menu) + 1> ScanCodes{};
 			//Where to place the cursor when re-enabled
 			double RestoreCursorPosX = 0.0, RestoreCursorPosY = 0.0;
 			//The window whose disabled cursor mode is active
@@ -1626,8 +1626,8 @@ namespace TRAP::INTERNAL
 			int32_t Numerator = -1, Denominator = -1;
 
 			CursorMode cursorMode = CursorMode::Normal;
-			std::array<TRAP::Input::KeyState, ToUnderlying(TRAP::Input::MouseButton::Eight) + 1> MouseButtons{};
-			std::array<TRAP::Input::KeyState, ToUnderlying(TRAP::Input::Key::Menu) + 1> Keys{};
+			std::array<TRAP::Input::KeyState, std::to_underlying(TRAP::Input::MouseButton::Eight) + 1> MouseButtons{};
+			std::array<TRAP::Input::KeyState, std::to_underlying(TRAP::Input::Key::Menu) + 1> Keys{};
 			//Virtual cursor position when cursor is disabled
 			double VirtualCursorPosX = 0.0, VirtualCursorPosY = 0.0;
 			bool RawMouseMotion = false;

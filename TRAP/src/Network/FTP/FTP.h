@@ -161,7 +161,7 @@ namespace TRAP::Network
 
 		friend std::ostream& operator<<(std::ostream& stream, const Response& response)
 		{
-			return stream << std::to_string(ToUnderlying(response.GetStatus())) << response.GetMessage();
+			return stream << std::to_string(std::to_underlying(response.GetStatus())) << response.GetMessage();
 		}
 
 		/// <summary>
@@ -479,7 +479,7 @@ constexpr TRAP::Network::FTP::Response::Response(const Status code, std::string 
 
 [[nodiscard]] constexpr bool TRAP::Network::FTP::Response::IsOK() const noexcept
 {
-	return ToUnderlying(m_status) < 400;
+	return std::to_underlying(m_status) < 400;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

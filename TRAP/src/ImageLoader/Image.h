@@ -376,14 +376,14 @@ namespace TRAP
 
 [[nodiscard]] constexpr uint32_t TRAP::Image::GetBitsPerChannel() const noexcept
 {
-	return m_bitsPerPixel / ToUnderlying(m_colorFormat);
+	return m_bitsPerPixel / std::to_underlying(m_colorFormat);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr uint32_t TRAP::Image::GetBytesPerChannel() const noexcept
 {
-	return GetBytesPerPixel() / ToUnderlying(m_colorFormat);
+	return GetBytesPerPixel() / std::to_underlying(m_colorFormat);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -471,7 +471,7 @@ template <typename T>
 
 	std::vector<T> newData{};
 	uint32_t stride = 0;
-	const uint32_t multiplier = ToUnderlying(format);
+	const uint32_t multiplier = std::to_underlying(format);
 
 	newData.assign(data, data + NumericCast<uint64_t>(width) * height * multiplier);
 	stride = height * multiplier;
@@ -512,7 +512,7 @@ template <typename T>
 
 	std::vector<T> newData{};
 	uint32_t stride = 0;
-	const uint32_t multiplier = ToUnderlying(format);
+	const uint32_t multiplier = std::to_underlying(format);
 
 	newData.assign(data, data + NumericCast<uint64_t>(width) * height * multiplier);
 	stride = width * multiplier;
@@ -551,7 +551,7 @@ template<typename T>
 		return std::vector<T>();
 	}
 
-	std::vector<T> rotated(width * height * ToUnderlying(format));
+	std::vector<T> rotated(width * height * std::to_underlying(format));
 
 	for(uint32_t y = 0, destCol = height - 1; y < height; ++y, --destCol)
 	{
@@ -559,10 +559,10 @@ template<typename T>
 
 		for(uint32_t x = 0; x < width; ++x)
 		{
-			for(uint32_t channel = 0; channel < ToUnderlying(format); ++channel)
+			for(uint32_t channel = 0; channel < std::to_underlying(format); ++channel)
 			{
-				rotated[(x * height + destCol) * ToUnderlying(format) + channel] =
-				data[(offset + x) * ToUnderlying(format) + channel];
+				rotated[(x * height + destCol) * std::to_underlying(format) + channel] =
+				data[(offset + x) * std::to_underlying(format) + channel];
 			}
 		}
 	}
@@ -590,7 +590,7 @@ template<typename T>
 		return std::vector<T>();
 	}
 
-	std::vector<T> rotated(NumericCast<std::size_t>(width) * height * ToUnderlying(format));
+	std::vector<T> rotated(NumericCast<std::size_t>(width) * height * std::to_underlying(format));
 	std::copy_n(data, rotated.size(), rotated.begin());
 	for(uint32_t x = 0; x < width; ++x)
 	{
@@ -604,10 +604,10 @@ template<typename T>
 				I = p % height;
 				J = width - 1 - (p / height);
 			}
-			for(uint32_t channel = 0; channel < ToUnderlying(format); ++channel)
+			for(uint32_t channel = 0; channel < std::to_underlying(format); ++channel)
 			{
-				std::swap(rotated[(x * height + y) * ToUnderlying(format) + channel],
-						  rotated[(I * width + J) * ToUnderlying(format) + channel]);
+				std::swap(rotated[(x * height + y) * std::to_underlying(format) + channel],
+						  rotated[(I * width + J) * std::to_underlying(format) + channel]);
 			}
 		}
 	}
@@ -641,9 +641,9 @@ template <typename T>
 	else
 		whitePixelColor = 1.0f;
 
-	std::vector<T> newData(width * height * ToUnderlying(ColorFormat::RGBA));
+	std::vector<T> newData(width * height * std::to_underlying(ColorFormat::RGBA));
 	std::size_t newDataIndex = 0;
-	for(std::size_t oldDataIndex = 0; oldDataIndex < NumericCast<std::size_t>(width) * height * ToUnderlying(ColorFormat::RGB);
+	for(std::size_t oldDataIndex = 0; oldDataIndex < NumericCast<std::size_t>(width) * height * std::to_underlying(ColorFormat::RGB);
 		oldDataIndex += 3)
 	{
 		newData[newDataIndex + 0] = data[oldDataIndex + 0];
@@ -676,9 +676,9 @@ template <typename T>
 		return std::vector<T>();
 	}
 
-	std::vector<T> newData(width * height * ToUnderlying(ColorFormat::RGB));
+	std::vector<T> newData(width * height * std::to_underlying(ColorFormat::RGB));
 	std::size_t newDataIndex = 0;
-	for(std::size_t oldDataIndex = 0; oldDataIndex < NumericCast<std::size_t>(width) * height * ToUnderlying(ColorFormat::RGBA);
+	for(std::size_t oldDataIndex = 0; oldDataIndex < NumericCast<std::size_t>(width) * height * std::to_underlying(ColorFormat::RGBA);
 		oldDataIndex += 4)
 	{
 		newData[newDataIndex + 0] = data[oldDataIndex + 0];

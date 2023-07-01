@@ -12,7 +12,7 @@
 
 	const std::string name = TRAP::Input::GetKeyName(m_key);
 
-	return fmt::format("KeyPressEvent: {}({})", name, ToUnderlying(m_key));
+	return fmt::format("KeyPressEvent: {}({})", name, std::to_underlying(m_key));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -25,7 +25,7 @@
 
 	const std::string name = TRAP::Input::GetKeyName(m_key);
 
-	return fmt::format("KeyRepeatEvent: {}({})", name, ToUnderlying(m_key));
+	return fmt::format("KeyRepeatEvent: {}({})", name, std::to_underlying(m_key));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -38,7 +38,7 @@
 
 	const std::string name = TRAP::Input::GetKeyName(m_key);
 
-	return fmt::format("KeyReleaseEvent: {}({})", name, ToUnderlying(m_key));
+	return fmt::format("KeyReleaseEvent: {}({})", name, std::to_underlying(m_key));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

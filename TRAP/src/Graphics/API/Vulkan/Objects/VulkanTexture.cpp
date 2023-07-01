@@ -200,7 +200,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 			info.usage |= (VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT);
 		}
 
-		TRAP_ASSERT(VulkanRenderer::s_GPUCapBits.CanShaderReadFrom[ToUnderlying(desc.Format)],
+		TRAP_ASSERT(VulkanRenderer::s_GPUCapBits.CanShaderReadFrom[std::to_underlying(desc.Format)],
 					"VulkanTexture::Init(): GPU shader can't read from this format");
 
 		const VkFormatFeatureFlags formatFeatures = VkImageUsageToFormatFeatures(info.usage);

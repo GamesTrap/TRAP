@@ -50,5 +50,5 @@ void TRAP::Utils::DisplayError(const ErrorCode error)
 
     TRAP_ASSERT(false, errorData.LogPrefix, errorData.LogMessage);
 
-    exit(ToUnderlying(error));
+    exit(std::to_underlying(error));
 }

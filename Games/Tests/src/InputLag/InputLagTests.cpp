@@ -71,9 +71,9 @@ void InputLagTests::OnImGuiRender()
 
 		if(ImGui::BeginCombo("Latency Mode", TRAP::Utils::String::ConvertToString(m_latencyMode).c_str()))
 		{
-			for(uint32_t i = 0; i <= ToUnderlying(TRAP::Graphics::LatencyMode::EnabledBoost); ++i)
+			for(uint32_t i = 0; i <= std::to_underlying(TRAP::Graphics::LatencyMode::EnabledBoost); ++i)
 			{
-				const bool isSelected = (ToUnderlying(m_latencyMode) == i);
+				const bool isSelected = (std::to_underlying(m_latencyMode) == i);
 				if(ImGui::Selectable(TRAP::Utils::String::ConvertToString(static_cast<TRAP::Graphics::LatencyMode>(i)).c_str(), isSelected))
 				{
 					TRAP::Graphics::RenderCommand::SetLatencyMode(static_cast<TRAP::Graphics::LatencyMode>(i));

@@ -68,7 +68,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	std::copy_n(m_physicalDeviceIDProperties.deviceUUID, m_deviceUUID.size(), m_deviceUUID.begin());
 
 	// Capabilities for VulkanRenderer
-	for (uint32_t i = 0; i < ToUnderlying(TRAP::Graphics::API::ImageFormat::IMAGE_FORMAT_COUNT); ++i)
+	for (uint32_t i = 0; i < std::to_underlying(TRAP::Graphics::API::ImageFormat::IMAGE_FORMAT_COUNT); ++i)
 	{
 		const VkFormat fmt = ImageFormatToVkFormat(static_cast<TRAP::Graphics::API::ImageFormat>(i));
 		if (fmt == VK_FORMAT_UNDEFINED)

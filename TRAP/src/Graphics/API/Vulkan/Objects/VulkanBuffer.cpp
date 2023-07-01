@@ -88,7 +88,7 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 		const VkFormatProperties formatProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(viewInfo.format);
 		if ((formatProps.bufferFeatures & VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT) == 0u)
 			TP_WARN(Log::RendererVulkanBufferPrefix, "Failed to create uniform texel buffer view for format ",
-			        ToUnderlying(desc.Format));
+			        std::to_underlying(desc.Format));
 		else
 			VkCall(vkCreateBufferView(m_device->GetVkDevice(), &viewInfo, nullptr, &m_vkUniformTexelView));
 	}
@@ -101,7 +101,7 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 		const VkFormatProperties formatProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(viewInfo.format);
 		if ((formatProps.bufferFeatures & VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT) == 0u)
 			TP_WARN(Log::RendererVulkanBufferPrefix, "Failed to create storage texel buffer view for format ",
-			        ToUnderlying(desc.Format));
+			        std::to_underlying(desc.Format));
 		else
 			VkCall(vkCreateBufferView(m_device->GetVkDevice(), &viewInfo, nullptr, &m_vkStorageTexelView));
 	}

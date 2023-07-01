@@ -246,12 +246,12 @@ bool CursorTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 		[[fallthrough]];
 	case TRAP::Input::Key::Nine:
 	{
-		int32_t index = ToUnderlying(event.GetKey()) - ToUnderlying(TRAP::Input::Key::One);
+		int32_t index = std::to_underlying(event.GetKey()) - std::to_underlying(TRAP::Input::Key::One);
 		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Shift) ||
 			TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_Shift))
 			index += 9;
 
-		if (index <= NumericCast<int32_t>(ToUnderlying(TRAP::Window::CursorType::NotAllowed)))
+		if (index <= NumericCast<int32_t>(std::to_underlying(TRAP::Window::CursorType::NotAllowed)))
 			TRAP::Application::GetWindow()->SetCursorType(static_cast<TRAP::Window::CursorType>(index));
 
 		break;

@@ -107,7 +107,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 			{
 				textureDesc.Format = TRAP::Graphics::API::ImageFormat::D16_UNORM;
 				TP_WARN(Log::RendererVulkanRenderTargetPrefix, "Depth stencil format (",
-				        ToUnderlying(desc.Format), ") is not supported. Falling back to D16 format");
+				        std::to_underlying(desc.Format), ") is not supported. Falling back to D16 format");
 			}
 		}
 	}

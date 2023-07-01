@@ -3057,7 +3057,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionX11(const InternalWi
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return s_Data.ScanCodes[NumericCast<std::size_t>(ToUnderlying(key))];
+	return s_Data.ScanCodes[NumericCast<std::size_t>(std::to_underlying(key))];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3089,11 +3089,11 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionX11(const InternalWi
 	if(utf8Str.empty())
 		return nullptr;
 	for(std::size_t i = 0; i < utf8Str.size(); ++i)
-		s_Data.KeyNames[NumericCast<uint32_t>(ToUnderlying(key))][i] = utf8Str[i];
+		s_Data.KeyNames[NumericCast<uint32_t>(std::to_underlying(key))][i] = utf8Str[i];
 
-	s_Data.KeyNames[NumericCast<uint32_t>(ToUnderlying(key))][utf8Str.size()] = '\0';
+	s_Data.KeyNames[NumericCast<uint32_t>(std::to_underlying(key))][utf8Str.size()] = '\0';
 
-	return s_Data.KeyNames[NumericCast<uint32_t>(ToUnderlying(key))].data();
+	return s_Data.KeyNames[NumericCast<uint32_t>(std::to_underlying(key))].data();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4490,7 +4490,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesX11()
 	for(scanCode = scanCodeMin; scanCode <= scanCodeMax; scanCode++)
 	{
 		//Translate the un-translated key codes using traditional X11 KeySym lookups
-		if(ToUnderlying(s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)]) < 0)
+		if(std::to_underlying(s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)]) < 0)
 		{
 			const std::size_t base = NumericCast<std::size_t>((scanCode - scanCodeMin)) * NumericCast<std::size_t>(width);
 			const std::vector<KeySym> keySymsVec(&keySyms[base], &keySyms[base] + width);
@@ -4498,8 +4498,8 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesX11()
 		}
 
 		//Store the reverse translation for faster key name lookup
-		if(ToUnderlying(s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)]) > 0)
-			s_Data.ScanCodes[NumericCast<uint32_t>(ToUnderlying(s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)]))] = NumericCast<int16_t>(scanCode);
+		if(std::to_underlying(s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)]) > 0)
+			s_Data.ScanCodes[NumericCast<uint32_t>(std::to_underlying(s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)]))] = NumericCast<int16_t>(scanCode);
 	}
 
 	s_Data.X11.XLIB.Free(keySyms);

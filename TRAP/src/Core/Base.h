@@ -16,6 +16,7 @@
 
 #include "PlatformDetection.h"
 #include "TRAP_Assert.h"
+#include "Backports.h"
 
 //Set this define to enable RenderDoc layer
 //#define USE_RENDER_DOC
@@ -110,8 +111,8 @@ enum class ProfileSystems : uint32_t
 
 [[nodiscard]] inline constexpr bool operator&(const ProfileSystems lhs, const ProfileSystems rhs) noexcept
 {
-	return static_cast<bool>(static_cast<std::underlying_type_t<ProfileSystems>>(lhs) &
-			                 static_cast<std::underlying_type_t<ProfileSystems>>(rhs));
+	return static_cast<bool>(std::to_underlying(lhs) &
+			                 std::to_underlying(rhs));
 }
 
 //Set this macro to specify which systems should be profiled.
@@ -184,7 +185,7 @@ template<uint32_t major, uint32_t minor, uint32_t patch>
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-inline constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION<0, 9, 55>();
+inline constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION<0, 9, 56>();
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -192,13 +193,13 @@ inline constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION<0, 9, 55>();
 #define MAKE_ENUM_FLAG(ENUM_TYPE) \
 	[[nodiscard]] inline constexpr ENUM_TYPE operator|(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
 	{ \
-		return static_cast<ENUM_TYPE>(static_cast<std::underlying_type_t<ENUM_TYPE>>(a) | \
-		 							  static_cast<std::underlying_type_t<ENUM_TYPE>>(b)); \
+		return static_cast<ENUM_TYPE>(std::to_underlying(a) | \
+		 							  std::to_underlying(b)); \
 	} \
 	[[nodiscard]] inline constexpr ENUM_TYPE operator&(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
 	{ \
-		return static_cast<ENUM_TYPE>(static_cast<std::underlying_type_t<ENUM_TYPE>>(a) & \
-									  static_cast<std::underlying_type_t<ENUM_TYPE>>(b)); \
+		return static_cast<ENUM_TYPE>(std::to_underlying(a) & \
+									  std::to_underlying(b)); \
 	} \
 	inline constexpr ENUM_TYPE operator|=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a | b); }\
 	inline constexpr ENUM_TYPE operator&=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a & b); }
@@ -286,20 +287,6 @@ template<typename To, typename From>
 #endif /*TRAP_DEBUG*/
 
 	return static_cast<To>(value);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-/// <summary>
-/// Retrieve a value of Enum using its underlying data type.
-/// </summary>
-/// <typeparam name="Enum">Enum to get value from</typeparam>
-/// <param name="e">Enum value to retrieve.</param>
-/// <returns>Enum value represented with its underlying data type.</returns>
-template<typename Enum>
-[[nodiscard]] inline constexpr std::underlying_type_t<Enum> ToUnderlying(const Enum e) noexcept
-{
-	return static_cast<std::underlying_type_t<Enum>>(e);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

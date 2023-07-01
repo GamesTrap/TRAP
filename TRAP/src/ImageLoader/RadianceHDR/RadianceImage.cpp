@@ -71,7 +71,7 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 		return;
 	}
 
-	m_data.resize(NumericCast<std::size_t>(m_width) * m_height * ToUnderlying(m_colorFormat), 0.0f);
+	m_data.resize(NumericCast<std::size_t>(m_width) * m_height * std::to_underlying(m_colorFormat), 0.0f);
 	uint64_t dataIndex = 0;
 
 	std::vector<RGBE> scanline(m_width);
@@ -87,7 +87,7 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 			return;
 		}
 		WorkOnRGBE(scanline, m_data, dataIndex);
-		dataIndex += NumericCast<uint64_t>(m_width) * ToUnderlying(m_colorFormat);
+		dataIndex += NumericCast<uint64_t>(m_width) * std::to_underlying(m_colorFormat);
 	}
 
 	file.close();

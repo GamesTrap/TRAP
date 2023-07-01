@@ -1466,7 +1466,7 @@ void TRAP::INTERNAL::WindowingAPI::LibDecorHandleError([[maybe_unused]] libdecor
     if(message == nullptr)
         return;
 
-    InputError(Error::Platform_Error, fmt::format("[Wayland] libdecor error: {} ({})", message, ToUnderlying(error)));
+    InputError(Error::Platform_Error, fmt::format("[Wayland] libdecor error: {} ({})", message, std::to_underlying(error)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1600,7 +1600,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesWayland()
     for (std::size_t scancode = 0; scancode < s_Data.KeyCodes.size();  scancode++)
     {
         if (s_Data.KeyCodes[scancode] != TRAP::Input::Key::Unknown)
-            s_Data.ScanCodes[NumericCast<uint32_t>(ToUnderlying(s_Data.KeyCodes[scancode]))] = NumericCast<int16_t>(scancode);
+            s_Data.ScanCodes[NumericCast<uint32_t>(std::to_underlying(s_Data.KeyCodes[scancode]))] = NumericCast<int16_t>(scancode);
     }
 }
 
@@ -2197,9 +2197,9 @@ void TRAP::INTERNAL::WindowingAPI::LibDecorFrameHandleConfigure(libdecor_frame* 
 
     if(s_Data.Wayland.LibDecor.ConfigurationGetWindowState(config, &windowState))
     {
-        fullscreen = (ToUnderlying(windowState) & ToUnderlying(libdecor_window_state::Fullscreen)) != 0u;
-        activated = (ToUnderlying(windowState) & ToUnderlying(libdecor_window_state::Active)) != 0u;
-        maximized = (ToUnderlying(windowState) & ToUnderlying(libdecor_window_state::Maximized)) != 0u;
+        fullscreen = (std::to_underlying(windowState) & std::to_underlying(libdecor_window_state::Fullscreen)) != 0u;
+        activated = (std::to_underlying(windowState) & std::to_underlying(libdecor_window_state::Active)) != 0u;
+        maximized = (std::to_underlying(windowState) & std::to_underlying(libdecor_window_state::Maximized)) != 0u;
     }
     else
     {
@@ -3689,7 +3689,7 @@ int32_t TRAP::INTERNAL::WindowingAPI::PlatformGetKeyScanCodeWayland(const Input:
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-    return s_Data.ScanCodes[NumericCast<std::size_t>(ToUnderlying(key))];
+    return s_Data.ScanCodes[NumericCast<std::size_t>(std::to_underlying(key))];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3735,11 +3735,11 @@ const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeNameWayland(const i
 		return nullptr;
     }
 	for(std::size_t i = 0; i < utf8Str.size(); ++i)
-		s_Data.KeyNames[NumericCast<std::size_t>(ToUnderlying(key))][i] = utf8Str[i];
+		s_Data.KeyNames[NumericCast<std::size_t>(std::to_underlying(key))][i] = utf8Str[i];
 
-	s_Data.KeyNames[NumericCast<std::size_t>(ToUnderlying(key))][utf8Str.size()] = '\0';
+	s_Data.KeyNames[NumericCast<std::size_t>(std::to_underlying(key))][utf8Str.size()] = '\0';
 
-    return s_Data.KeyNames[NumericCast<std::size_t>(ToUnderlying(key))].data();
+    return s_Data.KeyNames[NumericCast<std::size_t>(std::to_underlying(key))].data();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

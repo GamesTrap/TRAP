@@ -679,7 +679,7 @@ bool TRAP::Graphics::Texture::Reload()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return GetBitsPerChannel() * ToUnderlying(m_colorFormat);
+	return GetBitsPerChannel() * std::to_underlying(m_colorFormat);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

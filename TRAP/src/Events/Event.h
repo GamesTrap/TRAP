@@ -221,11 +221,11 @@ MAKE_ENUM_FLAG(TRAP::Events::EventCategory)
 [[nodiscard]] constexpr TRAP::Events::EventCategory operator ^(const TRAP::Events::EventCategory lhs,
                                                                const TRAP::Events::EventCategory rhs) noexcept
 {
-	return static_cast<TRAP::Events::EventCategory>(ToUnderlying(lhs) ^ ToUnderlying(rhs));
+	return static_cast<TRAP::Events::EventCategory>(std::to_underlying(lhs) ^ std::to_underlying(rhs));
 }
 [[nodiscard]] constexpr TRAP::Events::EventCategory operator ~(const TRAP::Events::EventCategory rhs) noexcept
 {
-	return static_cast<TRAP::Events::EventCategory>(~ToUnderlying(rhs));
+	return static_cast<TRAP::Events::EventCategory>(~std::to_underlying(rhs));
 }
 [[nodiscard]] constexpr TRAP::Events::EventCategory& operator ^=(TRAP::Events::EventCategory& lhs,
                                                                  const TRAP::Events::EventCategory rhs) noexcept

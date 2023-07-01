@@ -138,10 +138,10 @@ TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 			attachments[ssidx] = VulkanInits::AttachmentDescription(ImageFormatToVkFormat(desc.ColorFormats[i]),
 				                                                    sampleCount,
 				                                                    !desc.LoadActionsColor.empty() ?
-																	VkAttachmentLoadOpTranslator[ToUnderlying(desc.LoadActionsColor[i])] :
+																	VkAttachmentLoadOpTranslator[std::to_underlying(desc.LoadActionsColor[i])] :
 																	VK_ATTACHMENT_LOAD_OP_DONT_CARE,
 				                                                    !desc.StoreActionsColor.empty() ?
-																	VkAttachmentStoreOpTranslator[ToUnderlying(desc.StoreActionsColor[i])] :
+																	VkAttachmentStoreOpTranslator[std::to_underlying(desc.StoreActionsColor[i])] :
 																	VK_ATTACHMENT_STORE_OP_STORE,
 				                                                    VK_ATTACHMENT_LOAD_OP_DONT_CARE,
 				                                                    VK_ATTACHMENT_STORE_OP_STORE,
@@ -161,10 +161,10 @@ TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 		const uint32_t idx = colorAttachmentCount;
 		attachments[idx] = VulkanInits::AttachmentDescription(ImageFormatToVkFormat(desc.DepthStencilFormat),
 															  sampleCount,
-															  VkAttachmentLoadOpTranslator[ToUnderlying(desc.LoadActionDepth)],
-															  VkAttachmentStoreOpTranslator[ToUnderlying(desc.StoreActionDepth)],
-															  VkAttachmentLoadOpTranslator[ToUnderlying(desc.LoadActionStencil)],
-															  VkAttachmentStoreOpTranslator[ToUnderlying(desc.StoreActionStencil)],
+															  VkAttachmentLoadOpTranslator[std::to_underlying(desc.LoadActionDepth)],
+															  VkAttachmentStoreOpTranslator[std::to_underlying(desc.StoreActionDepth)],
+															  VkAttachmentLoadOpTranslator[std::to_underlying(desc.LoadActionStencil)],
+															  VkAttachmentStoreOpTranslator[std::to_underlying(desc.StoreActionStencil)],
 															  VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
 															  VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
 		);
@@ -226,10 +226,10 @@ TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 			attachments[ssidx] = VulkanInits::AttachmentDescription2(ImageFormatToVkFormat(desc.ColorFormats[i]),
 				                                                     sampleCount,
 				                                                     !desc.LoadActionsColor.empty() ?
-																	 VkAttachmentLoadOpTranslator[ToUnderlying(desc.LoadActionsColor[i])] :
+																	 VkAttachmentLoadOpTranslator[std::to_underlying(desc.LoadActionsColor[i])] :
 																	 VK_ATTACHMENT_LOAD_OP_DONT_CARE,
 				                                                     !desc.StoreActionsColor.empty() ?
-																	 VkAttachmentStoreOpTranslator[ToUnderlying(desc.StoreActionsColor[i])] :
+																	 VkAttachmentStoreOpTranslator[std::to_underlying(desc.StoreActionsColor[i])] :
 																	 VK_ATTACHMENT_STORE_OP_STORE,
 				                                                     VK_ATTACHMENT_LOAD_OP_DONT_CARE,
 				                                                     VK_ATTACHMENT_STORE_OP_STORE,
@@ -251,10 +251,10 @@ TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 		const uint32_t idx = colorAttachmentCount;
 		attachments[idx] = VulkanInits::AttachmentDescription2(ImageFormatToVkFormat(desc.DepthStencilFormat),
 															   sampleCount,
-															   VkAttachmentLoadOpTranslator[ToUnderlying(desc.LoadActionDepth)],
-															   VkAttachmentStoreOpTranslator[ToUnderlying(desc.StoreActionDepth)],
-															   VkAttachmentLoadOpTranslator[ToUnderlying(desc.LoadActionStencil)],
-															   VkAttachmentStoreOpTranslator[ToUnderlying(desc.StoreActionStencil)],
+															   VkAttachmentLoadOpTranslator[std::to_underlying(desc.LoadActionDepth)],
+															   VkAttachmentStoreOpTranslator[std::to_underlying(desc.StoreActionDepth)],
+															   VkAttachmentLoadOpTranslator[std::to_underlying(desc.LoadActionStencil)],
+															   VkAttachmentStoreOpTranslator[std::to_underlying(desc.StoreActionStencil)],
 															   VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
 															   VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
 		);

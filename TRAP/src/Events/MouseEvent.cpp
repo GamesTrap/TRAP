@@ -32,7 +32,7 @@
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return fmt::format("MouseButtonPressEvent: {}({})", Utils::String::ConvertToString<Input::MouseButton>(m_button),
-	                   ToUnderlying(m_button));
+	                   std::to_underlying(m_button));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -44,7 +44,7 @@
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return fmt::format("MouseButtonReleaseEvent: {}({})",
-	                   Utils::String::ConvertToString<Input::MouseButton>(m_button), ToUnderlying(m_button));
+	                   Utils::String::ConvertToString<Input::MouseButton>(m_button), std::to_underlying(m_button));
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

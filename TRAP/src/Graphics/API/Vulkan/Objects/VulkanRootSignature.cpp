@@ -35,7 +35,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 	static constexpr uint32_t maxLayoutCount = RendererAPI::MaxDescriptorSets;
 	std::array<VulkanRenderer::UpdateFrequencyLayoutInfo, maxLayoutCount> layouts{};
-	std::array<VkPushConstantRange, ToUnderlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> pushConstants{};
+	std::array<VkPushConstantRange, std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> pushConstants{};
 	uint32_t pushConstantCount = 0;
 	std::vector<ShaderReflection::ShaderResource> shaderResources{};
 	std::unordered_map<std::string, TRAP::Ref<VulkanSampler>> staticSamplerMap;
@@ -90,8 +90,8 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 					{
 						TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Failed to create root signature");
 						TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Shared shader resources ", res.Name,
-						         " and ", resIt->Name, " have mismatching types (", ToUnderlying(res.Type),
-							     ") and (", ToUnderlying(resIt->Type),
+						         " and ", resIt->Name, " have mismatching types (", std::to_underlying(res.Type),
+							     ") and (", std::to_underlying(resIt->Type),
 								 "). All shader resources sharing the same",
 								 "register and space RootSignature must have the same type");
 						return;
@@ -373,7 +373,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 						updateData[descInfo->HandleIndex + NumericCast<std::size_t>(arr)].ImageInfo =
 						{
 							VK_NULL_HANDLE,
-							std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(VulkanRenderer::s_NullDescriptors->DefaultTextureSRV[ToUnderlying(descInfo->Dimension)])->GetSRVVkImageView(),
+							std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(VulkanRenderer::s_NullDescriptors->DefaultTextureSRV[std::to_underlying(descInfo->Dimension)])->GetSRVVkImageView(),
 							VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
 						};
 					}
@@ -385,7 +385,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 						updateData[descInfo->HandleIndex + NumericCast<std::size_t>(arr)].ImageInfo =
 						{
 							VK_NULL_HANDLE,
-							std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(VulkanRenderer::s_NullDescriptors->DefaultTextureUAV[ToUnderlying(descInfo->Dimension)])->GetUAVVkImageViews()[0],
+							std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(VulkanRenderer::s_NullDescriptors->DefaultTextureUAV[std::to_underlying(descInfo->Dimension)])->GetUAVVkImageViews()[0],
 							VK_IMAGE_LAYOUT_GENERAL
 						};
 					}
@@ -441,7 +441,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 			const VkDescriptorUpdateTemplateCreateInfo createInfo = VulkanInits::DescriptorUpdateTemplateCreateInfo
 			(
 				m_vkDescriptorSetLayouts[setIndex], entryCount, entries.data(),
-				VkPipelineBindPointTranslator[ToUnderlying(m_pipelineType)],
+				VkPipelineBindPointTranslator[std::to_underlying(m_pipelineType)],
 				m_pipelineLayout, setIndex
 			);
 			VkCall(vkCreateDescriptorUpdateTemplate(m_device->GetVkDevice(), &createInfo, nullptr,

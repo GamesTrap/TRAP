@@ -33,7 +33,7 @@ TRAP::Graphics::Sampler::Sampler()
 	bool injectedAnisotropy = false;
 	if(desc.EnableAnisotropy && desc.OverrideAnisotropyLevel == 0.0f)
 	{
-		desc.OverrideAnisotropyLevel = NumericCast<float>(ToUnderlying(RendererAPI::GetAnisotropyLevel()));
+		desc.OverrideAnisotropyLevel = NumericCast<float>(std::to_underlying(RendererAPI::GetAnisotropyLevel()));
 		injectedAnisotropy = true;
 	}
 
@@ -184,7 +184,7 @@ void TRAP::Graphics::Sampler::UpdateSamplers()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	const float usedSamples = NumericCast<float>(ToUnderlying(RenderCommand::GetAnisotropyLevel()));
+	const float usedSamples = NumericCast<float>(std::to_underlying(RenderCommand::GetAnisotropyLevel()));
 
 	std::vector<Ref<Sampler>> samplersToUpdate{};
 	for(const auto& [desc, sampler] : s_cachedSamplers)

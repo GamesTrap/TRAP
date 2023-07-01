@@ -514,7 +514,7 @@ void TRAP::INTERNAL::WindowingAPI::InputError(const Error code, const std::strin
 			description += " UNKNOWN WINDOWING ERROR";
 	}
 
-	TP_ERROR(description, " Code(", ToUnderlying(code), ")");
+	TP_ERROR(description, " Code(", std::to_underlying(code), ")");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1633,11 +1633,11 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowProgressIndicator(const InternalWind
 
 	if (key < Input::Key::Space || key > Input::Key::Menu)
 	{
-		InputError(Error::Invalid_Enum, fmt::format(" Invalid key: {}", ToUnderlying(key)));
+		InputError(Error::Invalid_Enum, fmt::format(" Invalid key: {}", std::to_underlying(key)));
 		return Input::KeyState::Released;
 	}
 
-	return window.Keys[NumericCast<std::size_t>(ToUnderlying(key))];
+	return window.Keys[NumericCast<std::size_t>(std::to_underlying(key))];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1656,7 +1656,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowProgressIndicator(const InternalWind
 		return Input::KeyState::Released;
 	}
 
-	return window.MouseButtons[ToUnderlying(button)];
+	return window.MouseButtons[std::to_underlying(button)];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2132,13 +2132,13 @@ void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow& window, Input::Key k
 
 	bool repeated = false;
 
-	if(state == Input::KeyState::Released && window.Keys[NumericCast<std::size_t>(ToUnderlying(key))] == Input::KeyState::Released)
+	if(state == Input::KeyState::Released && window.Keys[NumericCast<std::size_t>(std::to_underlying(key))] == Input::KeyState::Released)
 		return;
 
-	if(state == Input::KeyState::Pressed && window.Keys[NumericCast<std::size_t>(ToUnderlying(key))] == Input::KeyState::Pressed)
+	if(state == Input::KeyState::Pressed && window.Keys[NumericCast<std::size_t>(std::to_underlying(key))] == Input::KeyState::Pressed)
 		repeated = true;
 
-	window.Keys[NumericCast<std::size_t>(ToUnderlying(key))] = state;
+	window.Keys[NumericCast<std::size_t>(std::to_underlying(key))] = state;
 
 	if(repeated)
 		state = Input::KeyState::Repeat;
@@ -2160,7 +2160,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMouseClick(InternalWindow& window, const
 	if(button > Input::MouseButton::Eight)
 		return;
 
-	window.MouseButtons[ToUnderlying(button)] = state;
+	window.MouseButtons[std::to_underlying(button)] = state;
 
 	if (window.Callbacks.MouseButton != nullptr)
 		window.Callbacks.MouseButton(window, button, state);
@@ -2228,7 +2228,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowFocus(InternalWindow& window, cons
 	if(focused)
 		return;
 
-	for (uint32_t key = 0; key <= ToUnderlying(Input::Key::Menu); key++)
+	for (uint32_t key = 0; key <= std::to_underlying(Input::Key::Menu); key++)
 	{
 		if (window.Keys[key] == Input::KeyState::Pressed)
 		{
@@ -2237,7 +2237,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowFocus(InternalWindow& window, cons
 		}
 	}
 
-	for (uint32_t button = 0; button <= ToUnderlying(Input::MouseButton::Eight); button++)
+	for (uint32_t button = 0; button <= std::to_underlying(Input::MouseButton::Eight); button++)
 	{
 		if (window.MouseButtons[button] == Input::KeyState::Pressed)
 			InputMouseClick(window, static_cast<Input::MouseButton>(button), Input::KeyState::Pressed);
