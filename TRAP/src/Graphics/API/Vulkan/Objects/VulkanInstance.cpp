@@ -137,9 +137,9 @@ TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 		LoadAllInstanceLayers();
 
 	const auto result = std::find_if(s_availableInstanceLayers.begin(), s_availableInstanceLayers.end(),
-		                             [layer](VkLayerProperties prop)
+		                             [layer](const VkLayerProperties& prop)
 		{
-			return std::strcmp(prop.layerName, layer.data()) == 0;
+			return layer == prop.layerName;
 		});
 
 	if (result == s_availableInstanceLayers.end())
@@ -166,9 +166,10 @@ TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 		LoadAllInstanceExtensions();
 
 	const auto result = std::find_if(s_availableInstanceExtensions.begin(),
-	                              s_availableInstanceExtensions.end(),
-	                              [extension](VkExtensionProperties prop)
-								  { return std::strcmp(prop.extensionName, extension.data()) == 0; });
+	                                 s_availableInstanceExtensions.end(),
+	                                 [extension](const VkExtensionProperties& prop)
+								     { return extension == prop.extensionName; });
+
 	if (result == s_availableInstanceExtensions.end())
 	{
 		if (extension == VK_EXT_DEBUG_UTILS_EXTENSION_NAME)

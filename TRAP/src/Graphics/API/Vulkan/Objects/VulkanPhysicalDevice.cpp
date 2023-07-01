@@ -290,9 +290,9 @@ TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 
 	const auto result = std::find_if(m_availablePhysicalDeviceExtensions.begin(),
 									 m_availablePhysicalDeviceExtensions.end(),
-									 [extension](const VkExtensionProperties &props)
+									 [extension](const VkExtensionProperties& props)
 									 {
-										 return std::strcmp(extension.data(), props.extensionName) == 0;
+										 return extension == props.extensionName;
 									 });
 
 	if (result == m_availablePhysicalDeviceExtensions.end())
@@ -544,11 +544,11 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		// Required: Check if PhysicalDevice supports SPIRV 1.4
 		const auto spirv1_4Result = std::find_if(extensions.begin(), extensions.end(), [](const VkExtensionProperties& props)
 		{
-			return std::strcmp(VK_KHR_SPIRV_1_4_EXTENSION_NAME, props.extensionName) == 0;
+			return std::string_view(VK_KHR_SPIRV_1_4_EXTENSION_NAME) == props.extensionName;
 		});
 		const auto shaderFloatControlsResult = std::find_if(extensions.begin(), extensions.end(), [](const VkExtensionProperties& props)
 		{
-			return std::strcmp(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME, props.extensionName) == 0;
+			return std::string_view(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME) == props.extensionName;
 		});
 		if(spirv1_4Result == extensions.end() || shaderFloatControlsResult == extensions.end())
 		{
@@ -560,8 +560,8 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		// Required: Check if PhysicalDevice supports swapchains
 		// Disabled in Headless mode.
 #ifndef TRAP_HEADLESS_MODE
-		const auto swapChainResult = std::find_if(extensions.begin(), extensions.end(), [](const VkExtensionProperties &props)
-										          { return std::strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME, props.extensionName) == 0; });
+		const auto swapChainResult = std::find_if(extensions.begin(), extensions.end(), [](const VkExtensionProperties& props)
+										          { return std::string_view(VK_KHR_SWAPCHAIN_EXTENSION_NAME) == props.extensionName; });
 
 		if (swapChainResult == extensions.end())
 		{

@@ -4161,3 +4161,4 @@ SITREP 07/01/2023|23w26a3
     - Made custom std::hash operators constexpr ~<5 mins
     - Made UID constexpr ~<5 mins
     - Replaced ".erase(std::remove())" calls with std::erase(_if) ~<15 mins
+    - Replaced std::strcmp with string_view comparisons ~<10 mins

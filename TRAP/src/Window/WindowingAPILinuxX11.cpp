@@ -380,6 +380,8 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowMode(InternalWindow& window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+using namespace std::string_view_literals;
+
 //Retrieve system content scale via folklore heuristics
 void TRAP::INTERNAL::WindowingAPI::GetSystemContentScale(float& xScale, float& yScale)
 {
@@ -403,7 +405,7 @@ void TRAP::INTERNAL::WindowingAPI::GetSystemContentScale(float& xScale, float& y
 
 			if(s_Data.X11.XRM.GetResource(db, "Xft.dpi", "Xft.Dpi", &type, &value) != 0)
 			{
-				if((type != nullptr) && strcmp(type, "String") == 0)
+				if((type != nullptr) && "String"sv == type)
 				{
 					char* strEnd = nullptr;
 					xDPI = yDPI = NumericCast<float>(std::strtod(value.addr, &strEnd));
@@ -1879,7 +1881,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessX11(Interna
 	//      locale in the hope that it's both available and not "C"
 	//      This is done because the "C" locale breaks wide character input, which is what we fall back on
 	//      when UTF-8 support is missing
-	if(strcmp(setLocale(LC_CTYPE, nullptr), "C") == 0)
+	if("C"sv == setLocale(LC_CTYPE, nullptr))
 		setLocale(LC_CTYPE, "");
 #endif /*!X_HAVE_UTF8_STRING*/
 
