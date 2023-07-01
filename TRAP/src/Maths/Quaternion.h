@@ -196,7 +196,7 @@ namespace std
 	template<typename T>
 	struct hash<TRAP::Math::tQuat<T>>
 	{
-		constexpr std::size_t operator()(const TRAP::Math::tQuat<T>& q) const noexcept
+		[[nodiscard]] constexpr std::size_t operator()(const TRAP::Math::tQuat<T>& q) const noexcept
 		{
 			std::size_t seed = 0;
 			hash<T> hasher;

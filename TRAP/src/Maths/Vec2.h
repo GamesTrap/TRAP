@@ -275,7 +275,7 @@ namespace std
 	template<typename T>
 	struct hash<TRAP::Math::Vec<2, T>>
 	{
-		constexpr std::size_t operator()(const TRAP::Math::Vec<2, T>& v) const noexcept
+		[[nodiscard]] constexpr std::size_t operator()(const TRAP::Math::Vec<2, T>& v) const noexcept
 		{
 			std::size_t seed = 0;
 			hash<T> hasher;
@@ -893,7 +893,7 @@ namespace std
 	/// <param name="v">Vector whose contents to extract.</param>
 	/// <returns>A reference to the Ith element of v.</returns>
 	template<std::size_t I, typename T>
-	constexpr T& get(TRAP::Math::Vec<2, T>& v) noexcept
+	[[nodiscard]] constexpr T& get(TRAP::Math::Vec<2, T>& v) noexcept
 	{
 		static_assert(I < TRAP::Math::Vec<2, T>::Length());
 
@@ -908,7 +908,7 @@ namespace std
 	/// <param name="v">Vector whose contents to extract.</param>
 	/// <returns>A reference to the Ith element of v.</returns>
 	template<std::size_t I, typename T>
-	constexpr T&& get(TRAP::Math::Vec<2, T>&& v) noexcept
+	[[nodiscard]] constexpr T&& get(TRAP::Math::Vec<2, T>&& v) noexcept
 	{
 		static_assert(I < TRAP::Math::Vec<2, T>::Length());
 
@@ -923,7 +923,7 @@ namespace std
 	/// <param name="v">Vector whose contents to extract.</param>
 	/// <returns>A reference to the Ith element of v.</returns>
 	template<std::size_t I, typename T>
-	constexpr const T& get(const TRAP::Math::Vec<2, T>& v) noexcept
+	[[nodiscard]] constexpr const T& get(const TRAP::Math::Vec<2, T>& v) noexcept
 	{
 		static_assert(I < TRAP::Math::Vec<2, T>::Length());
 
@@ -938,7 +938,7 @@ namespace std
 	/// <param name="v">Vector whose contents to extract.</param>
 	/// <returns>A reference to the Ith element of v.</returns>
 	template<std::size_t I, typename T>
-	constexpr const T&& get(const TRAP::Math::Vec<2, T>&& v) noexcept
+	[[nodiscard]] constexpr const T&& get(const TRAP::Math::Vec<2, T>&& v) noexcept
 	{
 		static_assert(I < TRAP::Math::Vec<2, T>::Length());
 

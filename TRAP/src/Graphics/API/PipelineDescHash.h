@@ -8,7 +8,7 @@ namespace std
 	template<>
     struct hash<TRAP::Graphics::RendererAPI::PipelineDesc>
 	{
-		std::size_t operator()(const TRAP::Graphics::RendererAPI::PipelineDesc& p) const noexcept
+		[[nodiscard]] constexpr std::size_t operator()(const TRAP::Graphics::RendererAPI::PipelineDesc& p) const noexcept
 		{
 			std::size_t res = 0;
 

@@ -247,7 +247,7 @@ namespace std
 	template<typename T>
 	struct hash<TRAP::Math::Mat<4, 4, T>>
 	{
-		constexpr std::size_t operator()(const TRAP::Math::Mat<4, 4, T>& m) const noexcept
+		[[nodiscard]] constexpr std::size_t operator()(const TRAP::Math::Mat<4, 4, T>& m) const noexcept
 		{
 			std::size_t seed = 0;
 			hash<TRAP::Math::Vec<4, T>> hasher;

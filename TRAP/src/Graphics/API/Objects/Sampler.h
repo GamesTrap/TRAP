@@ -131,7 +131,39 @@ namespace std
 	template <>
  	struct hash<TRAP::Graphics::RendererAPI::SamplerDesc>
 	{
-		std::size_t operator()(const TRAP::Graphics::RendererAPI::SamplerDesc& desc) const noexcept;
+		[[nodiscard]] constexpr std::size_t operator()(const TRAP::Graphics::RendererAPI::SamplerDesc& desc) const noexcept
+		{
+			std::size_t res = 0;
+
+			TRAP::Utils::HashCombine
+			(
+				res,
+				desc.MinFilter,
+				desc.MagFilter,
+				desc.MipMapMode,
+				desc.AddressU,
+				desc.AddressV,
+				desc.AddressW,
+				desc.MipLodBias,
+				desc.EnableAnisotropy,
+				desc.OverrideAnisotropyLevel,
+				desc.CompareFunc
+			);
+
+			TRAP::Utils::HashCombine
+			(
+				res,
+				desc.SamplerConversionDesc.Format,
+				desc.SamplerConversionDesc.Model,
+				desc.SamplerConversionDesc.Range,
+				desc.SamplerConversionDesc.ChromaOffsetX,
+				desc.SamplerConversionDesc.ChromaOffsetY,
+				desc.SamplerConversionDesc.ChromaFilter,
+				desc.SamplerConversionDesc.ForceExplicitReconstruction
+			);
+
+			return res;
+		}
 	};
 }
 
