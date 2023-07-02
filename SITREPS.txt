@@ -4172,3 +4172,5 @@ SITREP 07/02/2023|23w26a4
     - Changed TRAP Engine version to 23w26a4(0.9.56)
     - Moved ToUnderlying() as std::to_underlying() to Core/Backports.h ~<15 mins
     - Utils String Added Contains() function (backported from C++23) ~<10 mins
+    - Backported C++23s std::byteswap() ~<5 mins
+    - Utils Replaced Memory::SwapBytes implementation with std::byteswap ~<5 mins

@@ -19,19 +19,7 @@ namespace TRAP::Utils::Memory
 	template<typename T>
 	inline constexpr static void SwapBytes(T& t)
 	{
-		if constexpr (std::is_integral_v<T> || std::is_floating_point_v<T>)
-		{
-		    uint8_t* const ptr = reinterpret_cast<uint8_t*>(&t);
-			std::array<std::uint8_t, sizeof(T)> raw_src, raw_dst;
-
-			std::copy_n(ptr, sizeof(T), raw_src.data());
-			std::reverse_copy(raw_src.begin(), raw_src.end(), raw_dst.begin());
-			std::copy_n(raw_dst.data(), sizeof(T), ptr);
-		}
-		else
-		{
-			static_assert(sizeof(T) == 0, "T must be a primitive type");
-		}
+		t = std::byteswap(t);
 	}
 
 	/// <summary>

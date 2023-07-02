@@ -84,12 +84,6 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::filesystem::path filepath)
 		}
 
 		file.close();
-
-		if (needSwap)
-		{
-			for (float& element : m_data)
-				Utils::Memory::SwapBytes(element);
-		}
 	}
 	else if(header.MagicNumber == "Pf")
 	{
@@ -109,11 +103,5 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::filesystem::path filepath)
 		}
 
 		file.close();
-
-		if (needSwap)
-		{
-			for (float& element : m_data)
-				Utils::Memory::SwapBytes(element);
-		}
 	}
 }
