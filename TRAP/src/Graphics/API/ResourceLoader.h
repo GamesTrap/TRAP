@@ -379,8 +379,8 @@ namespace TRAP::Graphics::API
 
 		enum class MappedRangeFlag : uint32_t
 		{
-			UnMapBuffer = BIT(0),
-			TempBuffer = BIT(1)
+			UnMapBuffer = BIT(0u),
+			TempBuffer = BIT(1u)
 		};
 
 		/// <summary>

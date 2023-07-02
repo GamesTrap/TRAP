@@ -13,7 +13,8 @@
 #include <fmt/color.h>
 
 template <typename T>
-[[nodiscard]] constexpr T BIT(T x) noexcept
+requires ( std::is_unsigned_v<T> && std::is_integral_v<T>)
+[[nodiscard]] constexpr T BIT(const T x) noexcept
 {
 	return T(1) << x;
 }

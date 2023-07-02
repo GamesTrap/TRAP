@@ -313,10 +313,10 @@ namespace TRAP
 		enum class ControllerDPad : uint32_t
 		{
 			Centered   = 0,
-			Up         = BIT(0),
-			Right      = BIT(1),
-			Down       = BIT(2),
-			Left       = BIT(3),
+			Up         = BIT(0u),
+			Right      = BIT(1u),
+			Down       = BIT(2u),
+			Left       = BIT(3u),
 			Right_Up   = Right | Up,
 			Right_Down = Right | Down,
 			Left_Up    = Left | Up,

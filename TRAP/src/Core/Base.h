@@ -116,7 +116,7 @@ enum class ProfileSystems : uint32_t
 }
 
 //Set this macro to specify which systems should be profiled.
-[[nodiscard]] inline constexpr ProfileSystems TRAP_PROFILE_SYSTEMS() noexcept
+[[nodiscard]] inline consteval ProfileSystems TRAP_PROFILE_SYSTEMS() noexcept
 {
 	return ProfileSystems::All;
 }
@@ -214,6 +214,7 @@ inline constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION<0, 9, 56>();
 /// <param name="x">Amount to shift.</param>
 /// <returns>Shifted value.</returns>
 template <typename T>
+requires ( std::is_unsigned_v<T> && std::is_integral_v<T>)
 [[nodiscard]] inline constexpr T BIT(const T x) noexcept
 {
 	return T(1) << x;

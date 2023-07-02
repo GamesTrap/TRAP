@@ -1437,15 +1437,15 @@ namespace TRAP::Graphics
 		enum class WaveOpsSupportFlags : uint32_t
 		{
 			None = 0x0,
-			Basic = BIT(0),
-			Vote = BIT(1),
-			Arithmetic = BIT(2),
-			Ballot = BIT(3),
-			Shuffle = BIT(4),
-			ShuffleRelative = BIT(5),
-			Clustered = BIT(6),
-			Quad = BIT(7),
-			PartitionedNV = BIT(8),
+			Basic = BIT(0u),
+			Vote = BIT(1u),
+			Arithmetic = BIT(2u),
+			Ballot = BIT(3u),
+			Shuffle = BIT(4u),
+			ShuffleRelative = BIT(5u),
+			Clustered = BIT(6u),
+			Quad = BIT(7u),
+			PartitionedNV = BIT(8u),
 
 			WAVE_OPS_SUPPORT_FLAG_ALL = 0x7FFFFFFF
 		};
@@ -1468,7 +1468,7 @@ namespace TRAP::Graphics
 		enum class QueueFlag : uint32_t
 		{
 			None = 0x0,
-			DisableGPUTimeout = BIT(0), //Disable the GPU timeout for this command queue (DirectX 12)
+			DisableGPUTimeout = BIT(0u), //Disable the GPU timeout for this command queue (DirectX 12)
 
 			MAX_QUEUE_FLAG = 0xFFFFFFFF
 		};
@@ -1538,11 +1538,11 @@ namespace TRAP::Graphics
 		/// </summary>
 		enum class SampleCount
 		{
-			One = BIT(0),
-			Two = BIT(1),
-			Four = BIT(2),
-			Eight = BIT(3),
-			Sixteen = BIT(4)
+			One = BIT(0u),
+			Two = BIT(1u),
+			Four = BIT(2u),
+			Eight = BIT(3u),
+			Sixteen = BIT(4u)
 		};
 
 		/// <summary>
@@ -1583,33 +1583,33 @@ namespace TRAP::Graphics
 			//Default flag (Texture will use default allocation strategy decided by the API specific allocator)
 			None = 0x0,
 			//Texture will allocate its own memory (COMMITTED resource)
-			OwnMemory = BIT(0),
+			OwnMemory = BIT(0u),
 			//Texture will be allocated in memory which can be shared among multiple processes
-			Export = BIT(1),
+			Export = BIT(1u),
 			//Texture will be allocated in memory which can be shared among multiple GPUs
-			ExportAdapter = BIT(2),
+			ExportAdapter = BIT(2u),
 			//Texture will be imported from a handle created in another process
-			Import = BIT(3),
+			Import = BIT(3u),
 			//Use ESRAM to store this texture
-			ESRAM = BIT(4),
+			ESRAM = BIT(4u),
 			//Use on-tile memory to store this texture
-			OnTile = BIT(5),
+			OnTile = BIT(5u),
 			//Force 2D instead of automatically determining dimension based on width, height, depth
-			Force2D = BIT(7),
+			Force2D = BIT(7u),
 			//Force 3D instead of automatically determining dimension based on width, height, depth
-			Force3D = BIT(8),
+			Force3D = BIT(8u),
 			//Display target
-			AllowDisplayTarget = BIT(9),
+			AllowDisplayTarget = BIT(9u),
 			//Create an sRGB texture
-			SRGB = BIT(10),
+			SRGB = BIT(10u),
 			//Create a normal map texture
-			NormalMap = BIT(11),
+			NormalMap = BIT(11u),
 			//Fast clear
-			FastClear = BIT(12),
+			FastClear = BIT(12u),
 			//Fragment mask
-			FragMask = BIT(13),
+			FragMask = BIT(13u),
 			//Create a storage texture
-			Storage = BIT(14)
+			Storage = BIT(14u)
 		};
 
 		/// <summary>
@@ -1618,24 +1618,24 @@ namespace TRAP::Graphics
 		enum class ResourceState : uint32_t
 		{
 			Undefined = 0x0,
-			VertexAndConstantBuffer = BIT(0),
-			IndexBuffer = BIT(1),
-			RenderTarget = BIT(2),
-			UnorderedAccess = BIT(3),
-			DepthWrite = BIT(4),
-			DepthRead = BIT(5),
-			NonPixelShaderResource = BIT(6),
-			PixelShaderResource = BIT(7),
+			VertexAndConstantBuffer = BIT(0u),
+			IndexBuffer = BIT(1u),
+			RenderTarget = BIT(2u),
+			UnorderedAccess = BIT(3u),
+			DepthWrite = BIT(4u),
+			DepthRead = BIT(5u),
+			NonPixelShaderResource = BIT(6u),
+			PixelShaderResource = BIT(7u),
 			ShaderResource = BIT(6u) | BIT(7u),
-			StreamOut = BIT(8),
-			IndirectArgument = BIT(9),
-			CopyDestination = BIT(10),
-			CopySource = BIT(11),
+			StreamOut = BIT(8u),
+			IndirectArgument = BIT(9u),
+			CopyDestination = BIT(10u),
+			CopySource = BIT(11u),
 			GenericRead = (((((BIT(0u) | BIT(1u)) | BIT(6u)) | BIT(7u)) | BIT(9u)) | BIT(11u)),
-			Present = BIT(12),
-			Common = BIT(13),
-			RayTracingAccelerationStructure = BIT(14),
-			ShadingRateSource = BIT(15)
+			Present = BIT(12u),
+			Common = BIT(13u),
+			RayTracingAccelerationStructure = BIT(14u),
+			ShadingRateSource = BIT(15u)
 		};
 
 		/// <summary>
@@ -1644,47 +1644,47 @@ namespace TRAP::Graphics
 		enum class DescriptorType : uint32_t
 		{
 			Undefined = 0,
-			Sampler = BIT(0),
+			Sampler = BIT(0u),
 			//SRV read only Texture
-			Texture = BIT(1),
+			Texture = BIT(1u),
 			//UAV Texture
-			RWTexture = BIT(2),
+			RWTexture = BIT(2u),
 			//SRV read only Buffer
-			Buffer = BIT(3),
+			Buffer = BIT(3u),
 			BufferRaw = (Buffer | (Buffer << 1u)),
 			//UAV Buffer
-			RWBuffer = BIT(5),
+			RWBuffer = BIT(5u),
 			RWBufferRaw = (RWBuffer | (RWBuffer << 1u)),
 			//Uniform buffer
-			UniformBuffer = BIT(7),
+			UniformBuffer = BIT(7u),
 			//Push constant / Root constant
-			RootConstant = BIT(8),
+			RootConstant = BIT(8u),
 			//IA
-			VertexBuffer = BIT(9),
-			IndexBuffer = BIT(10),
-			IndirectBuffer = BIT(11),
+			VertexBuffer = BIT(9u),
+			IndexBuffer = BIT(10u),
+			IndirectBuffer = BIT(11u),
 			//Cubemap SRV
 			TextureCube = (Texture | (IndirectBuffer << 1u)),
 			//RTV / DSV per mip slice
-			RenderTargetMipSlices = BIT(13),
+			RenderTargetMipSlices = BIT(13u),
 			//RTV / DSV per array slice
-			RenderTargetArraySlices = BIT(14),
+			RenderTargetArraySlices = BIT(14u),
 			//RTV / DSV per depth sice
-			RenderTargetDepthSlices = BIT(15),
-			RayTracing = BIT(16),
+			RenderTargetDepthSlices = BIT(15u),
+			RayTracing = BIT(16u),
 
 			//Vulkan
 			//Subpass input (descriptor type only available in Vulkan)
-			InputAttachment = BIT(17),
-			TexelBuffer = BIT(18),
-			RWTexelBuffer = BIT(19),
-			CombinedImageSampler = BIT(20),
+			InputAttachment = BIT(17u),
+			TexelBuffer = BIT(18u),
+			RWTexelBuffer = BIT(19u),
+			CombinedImageSampler = BIT(20u),
 
 			//Khronos ray tracing extension
-			AccelerationStructure = BIT(21),
-			AccelerationStructureBuildInput = BIT(22),
-			ShaderDeviceAddress  = BIT(23),
-			ShaderBindingTable = BIT(24)
+			AccelerationStructure = BIT(21u),
+			AccelerationStructureBuildInput = BIT(22u),
+			ShaderDeviceAddress  = BIT(23u),
+			ShaderBindingTable = BIT(24u)
 		};
 
 		//Choosing Memory Type
@@ -1719,13 +1719,13 @@ namespace TRAP::Graphics
 			//is called)
 			None = 0x0,
 			//Buffer will allocate its own memory (COMMITTED resource)
-			OwnMemory = BIT(0),
+			OwnMemory = BIT(0u),
 			//Buffer will be persistently mapped
-			PersistentMap = BIT(1),
+			PersistentMap = BIT(1u),
 			//Use ESRAM to store this buffer
-			ESRAM = BIT(2),
+			ESRAM = BIT(2u),
 			//Flag to specify not to allocate descriptors for the resource
-			NoDescriptorViewCreation = BIT(3),
+			NoDescriptorViewCreation = BIT(3u),
 
 			//Vulkan
 			HostVisible = 0x100,
@@ -1738,9 +1738,9 @@ namespace TRAP::Graphics
 		enum class ClearBufferType : uint32_t
 		{
 			NONE = 0,
-			Color = BIT(0),
-			Depth = BIT(1),
-			Stencil = BIT(2),
+			Color = BIT(0u),
+			Depth = BIT(1u),
+			Stencil = BIT(2u),
 			Color_Depth = Color | Depth,
 			Color_Stencil = Color | Stencil,
 			Color_Depth_Stencil = Color | Stencil | Depth,
@@ -1841,13 +1841,13 @@ namespace TRAP::Graphics
 		enum class ShaderStage : uint32_t
 		{
 			None = 0,
-			Vertex = BIT(0),
-			TessellationControl = BIT(1),
-			TessellationEvaluation = BIT(2),
-			Geometry = BIT(3),
-			Fragment = BIT(4),
-			Compute = BIT(5),
-			RayTracing = BIT(6),
+			Vertex = BIT(0u),
+			TessellationControl = BIT(1u),
+			TessellationEvaluation = BIT(2u),
+			Geometry = BIT(3u),
+			Fragment = BIT(4u),
+			Compute = BIT(5u),
+			RayTracing = BIT(6u),
 
 			AllGraphics = (static_cast<uint32_t>(Vertex) | static_cast<uint32_t>(TessellationControl) |
 			               static_cast<uint32_t>(TessellationEvaluation) | static_cast<uint32_t>(Geometry) |
@@ -1866,7 +1866,7 @@ namespace TRAP::Graphics
 			//Default flag
 			None = 0,
 			//Local root signature used mainly in raytracing shaders
-			Local = BIT(0)
+			Local = BIT(0u)
 		};
 
 		/// <summary>
@@ -1932,14 +1932,14 @@ namespace TRAP::Graphics
 		/// </summary>
 		enum class BlendStateTargets : uint32_t
 		{
-			BlendStateTarget0 = BIT(0),
-			BlendStateTarget1 = BIT(1),
-			BlendStateTarget2 = BIT(2),
-			BlendStateTarget3 = BIT(3),
-			BlendStateTarget4 = BIT(4),
-			BlendStateTarget5 = BIT(5),
-			BlendStateTarget6 = BIT(6),
-			BlendStateTarget7 = BIT(7),
+			BlendStateTarget0 = BIT(0u),
+			BlendStateTarget1 = BIT(1u),
+			BlendStateTarget2 = BIT(2u),
+			BlendStateTarget3 = BIT(3u),
+			BlendStateTarget4 = BIT(4u),
+			BlendStateTarget5 = BIT(5u),
+			BlendStateTarget6 = BIT(6u),
+			BlendStateTarget7 = BIT(7u),
 
 			BlendStateTargetAll = 0xFF,
 		};
@@ -2001,7 +2001,7 @@ namespace TRAP::Graphics
 		enum class PipelineCacheFlags : uint32_t
 		{
 			None = 0x0,
-			ExternallySynchronized = BIT(0)
+			ExternallySynchronized = BIT(0u)
 		};
 
 		/// <summary>
@@ -2089,14 +2089,14 @@ namespace TRAP::Graphics
 		enum class ShadingRate : uint32_t
 		{
 			NotSupported = 0x0,
-			Full = BIT(0),
-			Half = BIT(1),
-			Quarter = BIT(2),
-			Eighth = BIT(3),
-			OneXTwo = BIT(4),
-			TwoXOne = BIT(5),
-			TwoXFour = BIT(6),
-			FourXTwo = BIT(7)
+			Full = BIT(0u),
+			Half = BIT(1u),
+			Quarter = BIT(2u),
+			Eighth = BIT(3u),
+			OneXTwo = BIT(4u),
+			TwoXOne = BIT(5u),
+			TwoXFour = BIT(6u),
+			FourXTwo = BIT(7u)
 		};
 
 		/// <summary>
@@ -2104,11 +2104,11 @@ namespace TRAP::Graphics
 		/// </summary>
 		enum class ShadingRateCombiner : uint32_t
 		{
-			Passthrough = BIT(0),
-			Override = BIT(1),
-			Min = BIT(2),
-			Max = BIT(3),
-			Sum = BIT(4)
+			Passthrough = BIT(0u),
+			Override = BIT(1u),
+			Min = BIT(2u),
+			Max = BIT(3u),
+			Sum = BIT(4u)
 		};
 
 		/// <summary>
@@ -2117,11 +2117,11 @@ namespace TRAP::Graphics
 		enum class ShadingRateCaps : uint32_t
 		{
 			NotSupported = 0x0,
-			PerDraw = BIT(0),
-			PerTile = BIT(1),
+			PerDraw = BIT(0u),
+			PerTile = BIT(1u),
 
 			//Vulkan only
-			PerPrimitive = BIT(2)
+			PerPrimitive = BIT(2u)
 		};
 
 

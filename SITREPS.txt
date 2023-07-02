@@ -4174,3 +4174,4 @@ SITREP 07/02/2023|23w26a4
     - Utils String Added Contains() function (backported from C++23) ~<10 mins
     - Backported C++23s std::byteswap() ~<5 mins
     - Utils Replaced Memory::SwapBytes implementation with std::byteswap ~<5 mins
+    - Base Added constraints to BIT() ~<5 mins

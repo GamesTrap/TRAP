@@ -56,14 +56,6 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::filesystem::path filepath)
 	m_width = header.Width;
 	m_height = header.Height;
 
-	//Determine endianness
-	const bool isFileLittleEndian = (header.ByteOrder < 0.0f); //If true little-endian is used else if false big-endian is used
-	bool needSwap = false;
-	if(isFileLittleEndian)
-		needSwap = Utils::GetEndian() != Utils::Endian::Little;
-	else
-		needSwap = Utils::GetEndian() != Utils::Endian::Big;
-
 	file.ignore(256, '\n'); //Skip ahead to the pixel data
 
 	if (header.MagicNumber == "PF")

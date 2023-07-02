@@ -36,14 +36,14 @@ namespace TRAP::Events
 	enum class EventCategory : uint32_t
 	{
 		None        = 0,
-		Window      = BIT(0),
-		Input       = BIT(1),
-		Keyboard    = BIT(2),
-		Mouse       = BIT(3),
-		Controller  = BIT(4),
-		MouseButton = BIT(5),
-		HotReload   = BIT(6),
-		FileChange  = BIT(7)
+		Window      = BIT(0u),
+		Input       = BIT(1u),
+		Keyboard    = BIT(2u),
+		Mouse       = BIT(3u),
+		Controller  = BIT(4u),
+		MouseButton = BIT(5u),
+		HotReload   = BIT(6u),
+		FileChange  = BIT(7u)
 	};
 
 	/// <summary>

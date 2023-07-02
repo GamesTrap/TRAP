@@ -699,22 +699,22 @@ namespace TRAP::INTERNAL
 		enum class libdecor_window_state : uint32_t
 		{
 			None = 0,
-			Active = BIT(0),
-			Maximized = BIT(1),
-			Fullscreen = BIT(2),
-			TiledLeft = BIT(3),
-			TiledRight = BIT(4),
-			TiledTop = BIT(5),
-			TiledBottom = BIT(6),
+			Active = BIT(0u),
+			Maximized = BIT(1u),
+			Fullscreen = BIT(2u),
+			TiledLeft = BIT(3u),
+			TiledRight = BIT(4u),
+			TiledTop = BIT(5u),
+			TiledBottom = BIT(6u),
 		};
 
 		enum class libdecor_capabilities
 		{
-			ActionMove = BIT(0),
-			ActionResize = BIT(1),
-			ActionMinimize = BIT(2),
-			ActionFullscreen = BIT(3),
-			ActionClose = BIT(4),
+			ActionMove = BIT(0u),
+			ActionResize = BIT(1u),
+			ActionMinimize = BIT(2u),
+			ActionFullscreen = BIT(3u),
+			ActionClose = BIT(4u),
 		};
 #endif /*TRAP_PLATFORM_LINUX*/
 		//-------------------------------------------------------------------------------------------------------------------//

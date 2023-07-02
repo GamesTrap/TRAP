@@ -122,11 +122,11 @@
 				const uint32_t currentLevel = (LVL_TYPE & std::get<2>(regs1)) >> 8u;
 				switch (currentLevel)
 				{
-				case BIT(0):
+				case BIT(0u):
 					numSMT = LVL_CORES & std::get<1>(regs1);
 					break;
 
-				case BIT(1):
+				case BIT(1u):
 					cpu.LogicalCores = LVL_CORES & std::get<1>(regs1);
 					break;
 

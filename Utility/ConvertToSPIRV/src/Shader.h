@@ -68,13 +68,13 @@ inline constexpr uint32_t SPIRVMagicNumber = 0x07230203u;
 enum class ShaderStage : uint32_t
 {
 	None                   = 0,
-	Vertex                 = BIT(0),
-	TessellationControl    = BIT(1),
-	TessellationEvaluation = BIT(2),
-	Geometry               = BIT(3),
-	Fragment               = BIT(4),
-	Compute                = BIT(5),
-	// RayTracing             = BIT(6),
+	Vertex                 = BIT(0u),
+	TessellationControl    = BIT(1u),
+	TessellationEvaluation = BIT(2u),
+	Geometry               = BIT(3u),
+	Fragment               = BIT(4u),
+	Compute                = BIT(5u),
+	// RayTracing             = BIT(6u),
 
 	AllGraphics = (static_cast<uint32_t>(Vertex) | static_cast<uint32_t>(TessellationControl) |
 	               static_cast<uint32_t>(TessellationEvaluation) | static_cast<uint32_t>(Geometry) |
