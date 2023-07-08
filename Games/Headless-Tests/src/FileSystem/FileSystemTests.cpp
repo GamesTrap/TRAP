@@ -838,7 +838,7 @@ void RunInvalidTests()
 #ifdef TRAP_PLATFORM_WINDOWS
         //Test
         //Folder with characters that are not allowed on Windows/NTFS
-        constexpr std::string path = "\\/:*?\"<>|";
+        constexpr std::string_view path = "\\/:*?\"<>|";
         const auto res = TRAP::FileSystem::CreateFolder(path);
         TRAP_ASSERT(!res, "CreateFolder() failed!");
 #endif /*TRAP_PLATFORM_WINDOWS*/
@@ -1009,7 +1009,7 @@ void RunInvalidTests()
 #ifdef TRAP_PLATFORM_WINDOWS
         //Test
         //Folder with characters that are not allowed on Windows/NTFS
-        constexpr std::string path = "\\/:*?\"<>|";
+        constexpr std::string_view path = "\\/:*?\"<>|";
         const auto res = TRAP::FileSystem::Exists(path);
         TRAP_ASSERT(!res, "Exists() failed!");
 #endif /*TRAP_PLATFORM_WINDOWS*/

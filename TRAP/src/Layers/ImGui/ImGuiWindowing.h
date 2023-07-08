@@ -97,7 +97,7 @@ namespace TRAP::INTERNAL
 		static bool ShouldChainCallback(const WindowingAPI::InternalWindow* window);
 
 	private:
-		inline constinit static std::string s_clipboardText{};
+		inline static std::string s_clipboardText{};
 
 		/// <summary>
 		/// Data struct for ImGui user data.

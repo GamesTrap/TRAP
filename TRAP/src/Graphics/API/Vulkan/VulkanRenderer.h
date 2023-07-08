@@ -1436,7 +1436,7 @@ namespace TRAP::Graphics::API
 		static std::unordered_map<std::thread::id, FrameBufferMap> s_frameBufferMap;
 		inline static TracyLockable(std::mutex, s_renderPassMutex);
 
-		inline constinit static std::vector<std::pair<std::string, std::array<uint8_t, 16>>> s_usableGPUs{};
+		inline static std::vector<std::pair<std::string, std::array<uint8_t, 16>>> s_usableGPUs{};
 		static std::unordered_map<uint64_t, TRAP::Ref<Pipeline>> s_pipelines;
 		static std::unordered_map<uint64_t, TRAP::Ref<PipelineCache>> s_pipelineCaches;
 

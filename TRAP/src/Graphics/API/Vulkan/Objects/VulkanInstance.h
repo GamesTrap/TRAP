@@ -99,8 +99,8 @@ namespace TRAP::Graphics::API
 		std::vector<std::string> m_instanceLayers;
 		std::vector<std::string> m_instanceExtensions;
 
-		inline constinit static std::vector<VkLayerProperties> s_availableInstanceLayers{};
-		inline constinit static std::vector<VkExtensionProperties> s_availableInstanceExtensions{};
+		inline static std::vector<VkLayerProperties> s_availableInstanceLayers{};
+		inline static std::vector<VkExtensionProperties> s_availableInstanceExtensions{};
 	};
 }
 

@@ -1,3 +1,4 @@
+#include "TRAPPCH.h"
 #include "VertexBufferLayout.h"
 
 TRAP::Graphics::VertexBufferElement::VertexBufferElement(const ShaderDataType type, std::string name,

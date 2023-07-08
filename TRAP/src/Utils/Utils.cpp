@@ -78,7 +78,7 @@
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	constinit static CPUInfo cpu{};
+	static CPUInfo cpu{};
 
 	if(!cpu.Model.empty())
 		return cpu;
