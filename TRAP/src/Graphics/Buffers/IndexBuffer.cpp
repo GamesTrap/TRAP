@@ -34,14 +34,6 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::IndexBuffer::IndexBuffer(const RendererAPI::IndexType indexType) noexcept
-	: m_indexBuffer(nullptr), m_token(), m_indexType(indexType)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Graphics::IndexBuffer::~IndexBuffer()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);

@@ -142,6 +142,18 @@ namespace TRAP::Math
 		/// <param name="i">Column to retrieve.</param>
 		[[nodiscard]] constexpr const colType& operator[](std::size_t i) const;
 
+
+		/// <summary>
+		/// Retrieve a column of the matrix.
+		/// </summary>
+		/// <param name="i">Column to retrieve.</param>
+		[[nodiscard]] colType& at(std::size_t i);
+		/// <summary>
+		/// Retrieve a column of the matrix.
+		/// </summary>
+		/// <param name="i">Column to retrieve.</param>
+		[[nodiscard]] const colType& at(std::size_t i) const;
+
 		//Unary arithmetic operators
 		template<typename U>
 		constexpr Mat<3, 3, T>& operator=(const Mat<3, 3, U>& m) noexcept;
@@ -323,13 +335,25 @@ template <typename T>
 template<typename T>
 [[nodiscard]] constexpr typename TRAP::Math::Mat<3, 3, T>::colType& TRAP::Math::Mat<3, 3, T>::operator[](const std::size_t i)
 {
+	return this->value[i];
+}
+
+template<typename T>
+[[nodiscard]] constexpr const typename TRAP::Math::Mat<3, 3, T>::colType& TRAP::Math::Mat<3, 3, T>::operator[](const std::size_t i) const
+{
+	return this->value[i];
+}
+
+template<typename T>
+[[nodiscard]] typename TRAP::Math::Mat<3, 3, T>::colType& TRAP::Math::Mat<3, 3, T>::at(const std::size_t i)
+{
 	TRAP_ASSERT(i < this->Length(), "Math::Mat<3, 3, T>::operator[]: index out of range");
 
 	return this->value[i];
 }
 
 template<typename T>
-[[nodiscard]] constexpr const typename TRAP::Math::Mat<3, 3, T>::colType& TRAP::Math::Mat<3, 3, T>::operator[](const std::size_t i) const
+[[nodiscard]] const typename TRAP::Math::Mat<3, 3, T>::colType& TRAP::Math::Mat<3, 3, T>::at(const std::size_t i) const
 {
 	TRAP_ASSERT(i < this->Length(), "Math::Mat<3, 3, T>::operator[]: index out of range");
 

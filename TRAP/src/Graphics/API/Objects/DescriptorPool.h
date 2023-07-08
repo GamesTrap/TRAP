@@ -18,12 +18,12 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		constexpr virtual ~DescriptorPool();
+		virtual ~DescriptorPool();
 
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		DescriptorPool(const DescriptorPool&) noexcept = default;
+		constexpr DescriptorPool(const DescriptorPool&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -31,7 +31,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		DescriptorPool(DescriptorPool&&) noexcept = default;
+		constexpr DescriptorPool(DescriptorPool&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
@@ -47,7 +47,7 @@ namespace TRAP::Graphics
 		/// Max number of descriptor sets managed by the pool.
 		/// </summary>
 		/// <returns>
-		[[nodiscard]] uint32_t GetDescriptorSetsNum() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetDescriptorSetsNum() const noexcept;
 
 		/// <summary>
 		/// Retrieve a new descriptor set from description.
@@ -62,17 +62,15 @@ namespace TRAP::Graphics
 		/// </summary>
 		DescriptorPool();
 
-		uint32_t m_numDescriptorSets;
+		uint32_t m_numDescriptorSets = 0;
 	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::DescriptorPool::~DescriptorPool()
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::DescriptorPool::GetDescriptorSetsNum() const noexcept
 {
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererDescriptorPoolPrefix, "Destroying DescriptorPool");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
+	return m_numDescriptorSets;
 }
 
 #endif /*TRAP_DESCRIPTORPOOL_H*/

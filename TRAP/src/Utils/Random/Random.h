@@ -52,7 +52,7 @@ namespace TRAP::Utils
         /// <summary>
         /// Constructor.
         /// </summary>
-        BasicRandomStatic() = delete;
+        constexpr BasicRandomStatic() = delete;
     	/// <summary>
     	/// Destructor.
     	/// </summary>
@@ -60,19 +60,19 @@ namespace TRAP::Utils
         /// <summary>
         /// Copy constructor.
         /// </summary>
-        BasicRandomStatic(const BasicRandomStatic&) = delete;
+        constexpr BasicRandomStatic(const BasicRandomStatic&) = delete;
         /// <summary>
         /// Copy assignment operator.
         /// </summary>
-        BasicRandomStatic operator=(const BasicRandomStatic&) = delete;
+        constexpr BasicRandomStatic operator=(const BasicRandomStatic&) = delete;
         /// <summary>
         /// Move constructor.
         /// </summary>
-        BasicRandomStatic(BasicRandomStatic&&) = delete;
+        constexpr BasicRandomStatic(BasicRandomStatic&&) = delete;
         /// <summary>
         /// Move assignment operator.
         /// </summary>
-        BasicRandomStatic operator=(BasicRandomStatic&&) = delete;
+        constexpr BasicRandomStatic operator=(BasicRandomStatic&&) = delete;
 
         /// <summary>
         /// Type of used random number engine.
@@ -517,7 +517,7 @@ namespace TRAP::Utils
         /// <summary>
         /// Constructor.
         /// </summary>
-        BasicRandomThreadLocal() = delete;
+        constexpr BasicRandomThreadLocal() = delete;
         /// <summary>
         /// Destructor.
         /// </summary>
@@ -525,19 +525,19 @@ namespace TRAP::Utils
         /// <summary>
         /// Copy constructor.
         /// </summary>
-        BasicRandomThreadLocal(const BasicRandomThreadLocal&) = delete;
+        constexpr BasicRandomThreadLocal(const BasicRandomThreadLocal&) = delete;
         /// <summary>
         /// Copy assignment operator.
         /// </summary>
-        BasicRandomThreadLocal operator=(const BasicRandomThreadLocal&) = delete;
+        constexpr BasicRandomThreadLocal operator=(const BasicRandomThreadLocal&) = delete;
         /// <summary>
         /// Move constructor.
         /// </summary>
-        BasicRandomThreadLocal(BasicRandomThreadLocal&&) = delete;
+        constexpr BasicRandomThreadLocal(BasicRandomThreadLocal&&) = delete;
         /// <summary>
         /// Move assignment operator.
         /// </summary>
-        BasicRandomThreadLocal operator=(BasicRandomThreadLocal&&) = delete;
+        constexpr BasicRandomThreadLocal operator=(BasicRandomThreadLocal&&) = delete;
 
         /// <summary>
         /// Type of used random number engine.

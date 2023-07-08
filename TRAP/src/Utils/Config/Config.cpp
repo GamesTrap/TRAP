@@ -4,16 +4,6 @@
 #include "Utils/String/String.h"
 #include "FileSystem/FileSystem.h"
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Utils::Config::Config() noexcept
-	: m_hasChanged(false)
-{
-	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 bool TRAP::Utils::Config::LoadFromFile(const std::filesystem::path& file)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
@@ -134,15 +124,6 @@ bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 	}
 
 	return FileSystem::WriteTextFile(file, ss.str());
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] bool TRAP::Utils::Config::HasChanged() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_hasChanged;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -17,7 +17,7 @@ namespace TRAP::Network
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		TCPListenerIPv6() noexcept;
+		constexpr TCPListenerIPv6() noexcept;
 
 		/// <summary>
 		/// Get the port to which the socket is bound locally.
@@ -64,6 +64,13 @@ namespace TRAP::Network
 		/// <returns>Status code.</returns>
 		[[nodiscard]] Status Accept(TCPSocketIPv6& socket) const;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::TCPListenerIPv6::TCPListenerIPv6() noexcept
+	: Socket(Type::TCP)
+{
 }
 
 #endif /*TRAP_NETWORK_TCPLISTENERIPV6_H*/

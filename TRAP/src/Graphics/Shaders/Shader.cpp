@@ -37,7 +37,7 @@ constexpr std::string_view ShaderStageToString(const TRAP::Graphics::RendererAPI
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-EShLanguage ShaderStageToEShLanguage(const TRAP::Graphics::RendererAPI::ShaderStage stage)
+constexpr EShLanguage ShaderStageToEShLanguage(const TRAP::Graphics::RendererAPI::ShaderStage stage)
 {
 	const auto it = std::find_if(ShaderStages.begin(), ShaderStages.end(),
 	                             [stage](const auto& element){return stage == element.Stage;});
@@ -133,39 +133,11 @@ bool TRAP::Graphics::Shader::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Graphics::RendererAPI::ShaderStage TRAP::Graphics::Shader::GetShaderStages() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_shaderStages;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::Shader::GetRootSignature() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_rootSignature;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const std::array<TRAP::Scope<TRAP::Graphics::DescriptorSet>,
-                               TRAP::Graphics::RendererAPI::MaxDescriptorSets>& TRAP::Graphics::Shader::GetDescriptorSets() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_descriptorSets;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] bool TRAP::Graphics::Shader::IsShaderValid() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_valid;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -471,74 +443,6 @@ bool TRAP::Graphics::Shader::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::Graphics::Shader::ValidateShaderStages(const std::vector<std::pair<std::string, RendererAPI::ShaderStage>>& shaders)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	RendererAPI::ShaderStage combinedStages = RendererAPI::ShaderStage::None;
-	for(const auto& [glsl, stage] : shaders)
-		combinedStages |= stage;
-
-	//Check if any Shader Stage is set
-	if (RendererAPI::ShaderStage::None == combinedStages)
-	{
-		TP_ERROR(Log::ShaderGLSLPrefix, "No shader stage found!");
-		return false;
-	}
-
-	//Check for "Normal" Shader Stages combined with Compute
-	if((((RendererAPI::ShaderStage::Vertex & combinedStages) != RendererAPI::ShaderStage::None) ||
-		((RendererAPI::ShaderStage::Fragment & combinedStages) != RendererAPI::ShaderStage::None) ||
-		((RendererAPI::ShaderStage::TessellationControl & combinedStages) != RendererAPI::ShaderStage::None) ||
-		((RendererAPI::ShaderStage::TessellationEvaluation & combinedStages) != RendererAPI::ShaderStage::None) ||
-		((RendererAPI::ShaderStage::Geometry & combinedStages) != RendererAPI::ShaderStage::None)) &&
-		((RendererAPI::ShaderStage::Compute & combinedStages) != RendererAPI::ShaderStage::None))
-	{
-		TP_ERROR(Log::ShaderGLSLPrefix, "Rasterizer shader stages combined with compute stage!");
-		return false;
-	}
-
-	//Check for "Normal" Shader Stages combined with RayTracing
-	if((((RendererAPI::ShaderStage::Vertex & combinedStages) != RendererAPI::ShaderStage::None) ||
-	    ((RendererAPI::ShaderStage::Fragment & combinedStages) != RendererAPI::ShaderStage::None) ||
-		((RendererAPI::ShaderStage::TessellationControl & combinedStages) != RendererAPI::ShaderStage::None) ||
-		((RendererAPI::ShaderStage::TessellationEvaluation & combinedStages) != RendererAPI::ShaderStage::None) ||
-		((RendererAPI::ShaderStage::Geometry & combinedStages) != RendererAPI::ShaderStage::None)) &&
-		((RendererAPI::ShaderStage::RayTracing & combinedStages) != RendererAPI::ShaderStage::None))
-	{
-		TP_ERROR(Log::ShaderGLSLPrefix, "Rasterizer shader stages combined with ray tracing stage!");
-		return false;
-	}
-
-	//Check for Compute Shader Stage combined with RayTracing
-	if (((RendererAPI::ShaderStage::Compute & combinedStages) != RendererAPI::ShaderStage::None) &&
-		((RendererAPI::ShaderStage::RayTracing & combinedStages) != RendererAPI::ShaderStage::None))
-	{
-		TP_ERROR(Log::ShaderGLSLPrefix, "Compute shader stage combined with ray tracing stage!");
-		return false;
-	}
-
-	//Check for Vertex Shader Stage & required Fragment/Pixel Shader Stage
-	if(((RendererAPI::ShaderStage::Vertex & combinedStages) != RendererAPI::ShaderStage::None) &&
-	   (((RendererAPI::ShaderStage::Fragment & combinedStages)) == RendererAPI::ShaderStage::None))
-	{
-		TP_ERROR(Log::ShaderGLSLPrefix, "Only vertex shader stage provided! Missing fragment/pixel shader stage");
-		return false;
-	}
-	//Check for Fragment/Pixel Shader Stage & required Vertex Shader Stage
-	if(((RendererAPI::ShaderStage::Fragment & combinedStages) != RendererAPI::ShaderStage::None) &&
-	   (((RendererAPI::ShaderStage::Vertex & combinedStages)) == RendererAPI::ShaderStage::None))
-	{
-		TP_ERROR(Log::ShaderGLSLPrefix, "Only fragment/pixel shader stage provided! Missing vertex shader stage");
-		return false;
-	}
-
-	//Shader Stages should be valid
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLSLToSPIRV(const std::vector<std::pair<std::string, RendererAPI::ShaderStage>>& shaders)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
@@ -629,98 +533,6 @@ bool TRAP::Graphics::Shader::Reload()
 	//TODO RayTracing shaders
 
 	return SPIRV;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::LoadSPIRV(std::vector<uint8_t>& SPIRV)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::ShaderSPIRVPrefix, "Loading SPIRV");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-
-	if(SPIRV.empty() || SPIRV.size() < (ShaderHeaderOffset + sizeof(SPIRVMagicNumber)))
-		return {};
-
-	const uint32_t magicNumber = Utils::Memory::ConvertByte<uint32_t>(SPIRV.data() + ShaderHeaderOffset);
-
-	//Check endianness of byte stream
-	if (magicNumber != SPIRVMagicNumber)
-	{
-		Utils::Memory::SwapBytes(SPIRV.begin(), SPIRV.end()); //Convert endianness if needed
-		if (magicNumber != SPIRVMagicNumber) //Recheck if SPIRV Magic Number is present
-			return {};
-	}
-
-	RendererAPI::BinaryShaderDesc desc{};
-	std::size_t index = ShaderMagicNumber.size() + sizeof(uint32_t);
-	const uint8_t SPIRVSubShaderCount = SPIRV[index++];
-
-	for(uint32_t i = 0; i < SPIRVSubShaderCount; ++i)
-	{
-		std::size_t SPIRVSize = Utils::Memory::ConvertByte<std::size_t>(SPIRV.data() + NumericCast<std::ptrdiff_t>(index));
-		index += sizeof(std::size_t);
-
-		const RendererAPI::ShaderStage stage = static_cast<RendererAPI::ShaderStage>(SPIRV[index++]);
-		desc.Stages |= stage;
-
-		const uint32_t spvMagicNumber  = Utils::Memory::ConvertByte<uint32_t>(SPIRV.data() + NumericCast<std::ptrdiff_t>(index));
-		if(spvMagicNumber != SPIRVMagicNumber || (SPIRV.size() - index) < SPIRVSize)
-			return {};
-
-		switch(stage)
-		{
-		case RendererAPI::ShaderStage::Vertex:
-			desc.Vertex.ByteCode.resize(SPIRVSize);
-			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.Vertex.ByteCode.begin());
-			index += SPIRVSize * sizeof(uint32_t);
-			break;
-
-		case RendererAPI::ShaderStage::TessellationControl:
-			desc.TessellationControl.ByteCode.resize(SPIRVSize);
-			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.TessellationControl.ByteCode.begin());
-			index += SPIRVSize * sizeof(uint32_t);
-			break;
-
-		case RendererAPI::ShaderStage::TessellationEvaluation:
-			desc.TessellationEvaluation.ByteCode.resize(SPIRVSize);
-			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.TessellationEvaluation.ByteCode.begin());
-			index += SPIRVSize * sizeof(uint32_t);
-			break;
-
-		case RendererAPI::ShaderStage::Geometry:
-			desc.Geometry.ByteCode.resize(SPIRVSize);
-			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.Geometry.ByteCode.begin());
-			index += SPIRVSize * sizeof(uint32_t);
-			break;
-
-		case RendererAPI::ShaderStage::Fragment:
-			desc.Fragment.ByteCode.resize(SPIRVSize);
-			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.Fragment.ByteCode.begin());
-			index += SPIRVSize * sizeof(uint32_t);
-			break;
-
-		case RendererAPI::ShaderStage::Compute:
-			desc.Compute.ByteCode.resize(SPIRVSize);
-			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.Compute.ByteCode.begin());
-			index += SPIRVSize * sizeof(uint32_t);
-			break;
-
-		//case RendererAPI::ShaderStage::RayTracing:
-			//TODO RayTracing
-
-		case RendererAPI::ShaderStage::None:
-			[[fallthrough]];
-		case RendererAPI::ShaderStage::SHADER_STAGE_COUNT:
-			[[fallthrough]];
-		default:
-			break;
-		}
-	}
-
-	return desc;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -837,4 +649,94 @@ bool TRAP::Graphics::Shader::Reload()
 	}
 
 	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::LoadSPIRV(std::vector<uint8_t>& SPIRV)
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::ShaderSPIRVPrefix, "Loading SPIRV");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+
+	if(SPIRV.empty() || SPIRV.size() < (ShaderHeaderOffset + sizeof(SPIRVMagicNumber)))
+		return {};
+
+	const uint32_t magicNumber = Utils::Memory::ConvertByte<uint32_t>(SPIRV.data() + ShaderHeaderOffset);
+
+	//Check endianness of byte stream
+	if (magicNumber != SPIRVMagicNumber)
+	{
+		Utils::Memory::SwapBytes(SPIRV.begin(), SPIRV.end()); //Convert endianness if needed
+		if (magicNumber != SPIRVMagicNumber) //Recheck if SPIRV Magic Number is present
+			return {};
+	}
+
+	RendererAPI::BinaryShaderDesc desc{};
+	std::size_t index = ShaderMagicNumber.size() + sizeof(uint32_t);
+	const uint8_t SPIRVSubShaderCount = SPIRV[index++];
+
+	for(uint32_t i = 0; i < SPIRVSubShaderCount; ++i)
+	{
+		std::size_t SPIRVSize = Utils::Memory::ConvertByte<std::size_t>(SPIRV.data() + NumericCast<std::ptrdiff_t>(index));
+		index += sizeof(std::size_t);
+
+		const RendererAPI::ShaderStage stage = static_cast<RendererAPI::ShaderStage>(SPIRV[index++]);
+		desc.Stages |= stage;
+
+		const uint32_t spvMagicNumber  = Utils::Memory::ConvertByte<uint32_t>(SPIRV.data() + NumericCast<std::ptrdiff_t>(index));
+		if(spvMagicNumber != SPIRVMagicNumber || (SPIRV.size() - index) < SPIRVSize)
+			return {};
+
+		switch(stage)
+		{
+		case RendererAPI::ShaderStage::Vertex:
+			desc.Vertex.ByteCode.resize(SPIRVSize);
+			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.Vertex.ByteCode.begin());
+			index += SPIRVSize * sizeof(uint32_t);
+			break;
+
+		case RendererAPI::ShaderStage::TessellationControl:
+			desc.TessellationControl.ByteCode.resize(SPIRVSize);
+			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.TessellationControl.ByteCode.begin());
+			index += SPIRVSize * sizeof(uint32_t);
+			break;
+
+		case RendererAPI::ShaderStage::TessellationEvaluation:
+			desc.TessellationEvaluation.ByteCode.resize(SPIRVSize);
+			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.TessellationEvaluation.ByteCode.begin());
+			index += SPIRVSize * sizeof(uint32_t);
+			break;
+
+		case RendererAPI::ShaderStage::Geometry:
+			desc.Geometry.ByteCode.resize(SPIRVSize);
+			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.Geometry.ByteCode.begin());
+			index += SPIRVSize * sizeof(uint32_t);
+			break;
+
+		case RendererAPI::ShaderStage::Fragment:
+			desc.Fragment.ByteCode.resize(SPIRVSize);
+			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.Fragment.ByteCode.begin());
+			index += SPIRVSize * sizeof(uint32_t);
+			break;
+
+		case RendererAPI::ShaderStage::Compute:
+			desc.Compute.ByteCode.resize(SPIRVSize);
+			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.Compute.ByteCode.begin());
+			index += SPIRVSize * sizeof(uint32_t);
+			break;
+
+		//case RendererAPI::ShaderStage::RayTracing:
+			//TODO RayTracing
+
+		case RendererAPI::ShaderStage::None:
+			[[fallthrough]];
+		case RendererAPI::ShaderStage::SHADER_STAGE_COUNT:
+			[[fallthrough]];
+		default:
+			break;
+		}
+	}
+
+	return desc;
 }

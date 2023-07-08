@@ -47,11 +47,11 @@ namespace TRAP::Graphics
         /// <summary>
         /// Copy constructor.
         /// </summary>
-        EditorCamera(const EditorCamera&) noexcept = default;
+        constexpr EditorCamera(const EditorCamera&) noexcept = default;
         /// <summary>
         /// Move constructor.
         /// </summary>
-        EditorCamera(EditorCamera&&) noexcept = default;
+        constexpr EditorCamera(EditorCamera&&) noexcept = default;
 
         /// <summary>
         /// Copy assignment operator.
@@ -89,35 +89,35 @@ namespace TRAP::Graphics
         /// Retrieve whether the camera is active or not.
         /// </summary>
         /// <returns>True if camera is active, false otherwise.</returns>
-        [[nodiscard]] bool IsActive() const noexcept;
+        [[nodiscard]] constexpr bool IsActive() const noexcept;
         /// <summary>
         /// Set camera active or inactive
         /// </summary>
         /// <param name="active">Active or inactive.</param>
-        void SetActive(bool active) noexcept;
+        constexpr void SetActive(bool active) noexcept;
 
         /// <summary>
         /// Retrieve the current mode of the camera.
         /// </summary>
         /// <returns>Current mode of the camera.</returns>
-        [[nodiscard]] CameraMode GetCurrentMode() const noexcept;
+        [[nodiscard]] constexpr CameraMode GetCurrentMode() const noexcept;
 
         /// <summary>
         /// Retrieve the distance between the camera and the focal point.
         /// </summary>
         /// <returns>Distance.</returns>
-        [[nodiscard]] float GetDistance() const noexcept;
+        [[nodiscard]] constexpr float GetDistance() const noexcept;
         /// <summary>
         /// Set the distance between the camera and the focal point.
         /// </summary>
         /// <param name="distance">Distance to set.</param>
-        void SetDistance(float distance) noexcept;
+        constexpr void SetDistance(float distance) noexcept;
 
         /// <summary>
         /// Retrieve the current focal point of the camera.
         /// </summary>
         /// <returns>Current focal point.</returns>
-        [[nodiscard]] const TRAP::Math::Vec3& GetFocalPoint() const noexcept;
+        [[nodiscard]] constexpr const TRAP::Math::Vec3& GetFocalPoint() const noexcept;
 
         /// <summary>
         /// Set the viewport of the camera.
@@ -131,61 +131,61 @@ namespace TRAP::Graphics
         /// Retrieve the view matrix.
         /// </summary>
         /// <returns>View matrix.</returns>
-        [[nodiscard]] const TRAP::Math::Mat4& GetViewMatrix() const noexcept;
+        [[nodiscard]] constexpr const TRAP::Math::Mat4& GetViewMatrix() const noexcept;
 
         /// <summary>
         /// Retrieve the current up direction.
         /// </summary>
         /// <returns>Up direction.</returns>
-        [[nodiscard]] TRAP::Math::Vec3 GetUpDirection() const;
+        [[nodiscard]] constexpr TRAP::Math::Vec3 GetUpDirection() const;
         /// <summary>
         /// Retrieve the current right direction.
         /// </summary>
         /// <returns>Right direction.</returns>
-        [[nodiscard]] TRAP::Math::Vec3 GetRightDirection() const;
+        [[nodiscard]] constexpr TRAP::Math::Vec3 GetRightDirection() const;
         /// <summary>
         /// Retrieve the current forward direction.
         /// </summary>
         /// <returns>Forward direction.</returns>
-        [[nodiscard]] TRAP::Math::Vec3 GetForwardDirection() const;
+        [[nodiscard]] constexpr TRAP::Math::Vec3 GetForwardDirection() const;
 
         /// <summary>
         /// Retrieve the current camera position.
         /// </summary>
         /// <returns>Camera position.</returns>
-        [[nodiscard]] const TRAP::Math::Vec3& GetPosition() const noexcept;
+        [[nodiscard]] constexpr const TRAP::Math::Vec3& GetPosition() const noexcept;
 
         /// <summary>
         /// Retrieve the current camera orientation.
         /// </summary>
         /// <returns>Camera orientation.</returns>
-        [[nodiscard]] TRAP::Math::Quat GetOrientation() const;
+        [[nodiscard]] constexpr TRAP::Math::Quat GetOrientation() const;
 
         /// <summary>
         /// Retrieve the current field of view in degrees.
         /// </summary>
         /// <returns>Field of view in degrees.</returns>
-        [[nodiscard]] float GetFOV() const noexcept;
+        [[nodiscard]] constexpr float GetFOV() const noexcept;
         /// <summary>
         /// Retrieve the current aspect ration.
         /// </summary>
         /// <returns>Aspect ratio.</returns>
-        [[nodiscard]] float GetAspectRatio() const noexcept;
+        [[nodiscard]] constexpr float GetAspectRatio() const noexcept;
         /// <summary>
         /// Retrieve the nera clip plane.
         /// </summary>
         /// <returns>Near clip plane.</returns>
-        [[nodiscard]] float GetNearClip() const noexcept;
+        [[nodiscard]] constexpr float GetNearClip() const noexcept;
         /// <summary>
         /// Retrieve the camera pitch.
         /// </summary>
         /// <returns>Pitch.</returns>
-        [[nodiscard]] float GetPitch() const noexcept;
+        [[nodiscard]] constexpr float GetPitch() const noexcept;
         /// <summary>
         /// Retrieve the camera yaw.
         /// </summary>
         /// <returns>Yaw.</returns>
-        [[nodiscard]] float GetYaw() const noexcept;
+        [[nodiscard]] constexpr float GetYaw() const noexcept;
         /// <summary>
         /// Retrieve the current camera speed.
         /// </summary>
@@ -214,12 +214,12 @@ namespace TRAP::Graphics
         /// Pan the camera via the given mouse delta.
         /// </summary>
         /// <param name="delta">Mouse delta.</param>
-        void MousePan(const TRAP::Math::Vec2& delta);
+        constexpr void MousePan(const TRAP::Math::Vec2& delta);
         /// <summary>
         /// Rotate the camera via the given mouse pitch and yaw delta.
         /// </summary>
         /// <param name="delta">Mouse pitch and yaw delta.</param>
-        void MouseRotate(const TRAP::Math::Vec2& delta);
+        constexpr void MouseRotate(const TRAP::Math::Vec2& delta);
         /// <summary>
         /// Zoom the camera with the given mouse delta.
         /// </summary>
@@ -230,13 +230,13 @@ namespace TRAP::Graphics
         /// Calculate the current camera position.
         /// </summary>
         /// <returns>Camera position.</returns>
-        [[nodiscard]] TRAP::Math::Vec3 CalculatePosition() const;
+        [[nodiscard]] constexpr TRAP::Math::Vec3 CalculatePosition() const;
 
         /// <summary>
         /// Retrieve the pan speed to use.
         /// </summary>
         /// <returns>Pan speed.</returns>
-        [[nodiscard]] TRAP::Math::Vec2 PanSpeed() const;
+        [[nodiscard]] constexpr TRAP::Math::Vec2 PanSpeed() const;
         /// <summary>
         /// Retrieve the rotation speed to use.
         /// </summary>
@@ -297,6 +297,163 @@ namespace TRAP::Graphics
 
         friend class ::TRAPEditorLayer;
     };
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Graphics::EditorCamera::IsActive() const noexcept
+{
+    return m_isActive;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Graphics::EditorCamera::SetActive(const bool active) noexcept
+{
+    m_isActive = active;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Graphics::EditorCamera::CameraMode TRAP::Graphics::EditorCamera::GetCurrentMode() const noexcept
+{
+    return m_cameraMode;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr float TRAP::Graphics::EditorCamera::GetDistance() const noexcept
+{
+    return m_distance;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Graphics::EditorCamera::SetDistance(const float distance) noexcept
+{
+    m_distance = distance;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const TRAP::Math::Vec3& TRAP::Graphics::EditorCamera::GetFocalPoint() const noexcept
+{
+    return m_focalPoint;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const TRAP::Math::Mat4& TRAP::Graphics::EditorCamera::GetViewMatrix() const noexcept
+{
+    return m_viewMatrix;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Math::Vec3 TRAP::Graphics::EditorCamera::GetUpDirection() const
+{
+    return GetOrientation() * TRAP::Math::Vec3(0.0f, 1.0f, 0.0f);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Math::Vec3 TRAP::Graphics::EditorCamera::GetRightDirection() const
+{
+    return GetOrientation() * TRAP::Math::Vec3(1.0f, 0.0f, 0.0f);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Math::Vec3 TRAP::Graphics::EditorCamera::GetForwardDirection() const
+{
+    return GetOrientation() * TRAP::Math::Vec3(0.0f, 0.0f, -1.0f);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const TRAP::Math::Vec3& TRAP::Graphics::EditorCamera::GetPosition() const noexcept
+{
+    return m_position;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Math::Quat TRAP::Graphics::EditorCamera::GetOrientation() const
+{
+    return TRAP::Math::Quat(TRAP::Math::Vec3(-m_pitch - m_pitchDelta, -m_yaw - m_yawDelta, 0.0f));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr float TRAP::Graphics::EditorCamera::GetFOV() const noexcept
+{
+    return m_fov;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr float TRAP::Graphics::EditorCamera::GetAspectRatio() const noexcept
+{
+    return m_aspectRatio;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr float TRAP::Graphics::EditorCamera::GetNearClip() const noexcept
+{
+    return m_nearClip;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr float TRAP::Graphics::EditorCamera::GetPitch() const noexcept
+{
+    return m_pitch;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr float TRAP::Graphics::EditorCamera::GetYaw() const noexcept
+{
+    return m_yaw;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Graphics::EditorCamera::MousePan(const TRAP::Math::Vec2& delta)
+{
+    const TRAP::Math::Vec2 panSpeed = PanSpeed();
+    m_focalPoint -= GetRightDirection() * delta.x * panSpeed.x * m_distance;
+    m_focalPoint += GetUpDirection() * delta.y * panSpeed.y * m_distance;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Graphics::EditorCamera::MouseRotate(const TRAP::Math::Vec2& delta)
+{
+    const float yawSign = GetUpDirection().y < 0.0f ? -1.0f : 1.0f;
+    m_yawDelta += yawSign * delta.x * RotationSpeed();
+    m_pitchDelta += delta.y * RotationSpeed();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Math::Vec3 TRAP::Graphics::EditorCamera::CalculatePosition() const
+{
+    return m_focalPoint - GetForwardDirection() * m_distance + m_positionDelta;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Math::Vec2 TRAP::Graphics::EditorCamera::PanSpeed() const
+{
+    const float x = TRAP::Math::Min(m_viewportWidth / 1000.0f, 2.4f); //Max = 2.4f
+    const float xFactor = 0.0366f * (x * x) - 0.1778f * x + 0.3021f;
+
+    const float y = TRAP::Math::Min(m_viewportHeight / 1000.0f, 2.4f); //Max = 2.4f
+    const float yFactor = 0.0366f * (y * y) - 0.1778f * y + 0.3021f;
+
+    return {xFactor, yFactor};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

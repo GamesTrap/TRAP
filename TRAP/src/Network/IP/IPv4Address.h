@@ -34,6 +34,9 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include <fmt/ostream.h>
 
+#include "Core/Base.h"
+#include "Utils/Utils.h"
+#include "Utils/Memory.h"
 #include "Utils/Time/TimeStep.h"
 
 namespace TRAP::Network
@@ -49,7 +52,7 @@ namespace TRAP::Network
 		/// <summary>
 		/// This constructor creates an empty (invalid) address.
 		/// </summary>
-		IPv4Address() noexcept = default;
+		constexpr IPv4Address() noexcept = default;
 
 		/// <summary>
 		/// Construct the address from a string.
@@ -71,7 +74,7 @@ namespace TRAP::Network
 		/// <param name="byte1">Second byte of the address.</param>
 		/// <param name="byte2">Third byte of the address.</param>
 		/// <param name="byte3">Fourth byte of the address.</param>
-		IPv4Address(uint8_t byte0, uint8_t byte1, uint8_t byte2, uint8_t byte3);
+		constexpr IPv4Address(uint8_t byte0, uint8_t byte1, uint8_t byte2, uint8_t byte3);
 
 		/// <summary>
 		/// Construct the address from a 32 bit integer.
@@ -82,7 +85,7 @@ namespace TRAP::Network
 		/// get that representation from IPv4Address::ToInteger().
 		/// </summary>
 		/// <param name="address">4 Bytes of the address packed into a 32 bit integer.</param>
-		explicit IPv4Address(uint32_t address);
+		constexpr explicit IPv4Address(uint32_t address);
 
 		/// <summary>
 		/// Get a string representation of the address.
@@ -104,7 +107,7 @@ namespace TRAP::Network
 		/// back to a TRAP::Network::IPv4Address with the proper constructor.
 		/// </summary>
 		/// <returns>32 bit unsigned integer representation of the address.</returns>
-		[[nodiscard]] uint32_t ToInteger() const;
+		[[nodiscard]] constexpr uint32_t ToInteger() const;
 
 		/// <summary>
 		/// Get the computer's local address.
@@ -182,6 +185,37 @@ namespace TRAP::Network
 	/// <param name="address">IP address to print.</param>
 	/// <returns>Reference to the output stream.</returns>
 	std::ostream& operator<<(std::ostream& stream, const TRAP::Network::IPv4Address& address);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::IPv4Address::IPv4Address(const uint8_t byte0, const uint8_t byte1, const uint8_t byte2,
+                                                  const uint8_t byte3)
+	: m_address(NumericCast<uint32_t>((byte0 << 24u) | (byte1 << 16u) | (byte2 << 8u) | byte3)), m_valid(true)
+{
+	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+		TRAP::Utils::Memory::SwapBytes(m_address);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::IPv4Address::IPv4Address(const uint32_t address)
+	: m_address(address), m_valid(true)
+{
+	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+		TRAP::Utils::Memory::SwapBytes(m_address);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Network::IPv4Address::ToInteger() const
+{
+	uint32_t address = m_address;
+
+	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+		TRAP::Utils::Memory::SwapBytes(address);
+
+	return address;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

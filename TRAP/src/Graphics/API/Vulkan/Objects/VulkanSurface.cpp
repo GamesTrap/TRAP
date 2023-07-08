@@ -61,22 +61,4 @@ TRAP::Graphics::API::VulkanSurface::~VulkanSurface()
 	m_surface = nullptr;
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkSurfaceKHR TRAP::Graphics::API::VulkanSurface::GetVkSurface() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_surface;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkSurfaceCapabilitiesKHR TRAP::Graphics::API::VulkanSurface::GetVkSurfaceCapabilities() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_surfaceCapabilities;
-}
-
 #endif /*TRAP_HEADLESS_MODE*/

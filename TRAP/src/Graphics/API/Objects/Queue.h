@@ -18,12 +18,12 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		constexpr virtual ~Queue();
+		virtual ~Queue();
 
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Queue(const Queue&) noexcept = default;
+		constexpr Queue(const Queue&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -31,7 +31,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Queue(Queue&&) noexcept = default;
+		constexpr Queue(Queue&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
@@ -48,6 +48,12 @@ namespace TRAP::Graphics
 		/// <param name="desc">Queue submit description.</param>
 		virtual void Submit(const RendererAPI::QueueSubmitDesc& desc) const = 0;
 
+		/// <summary>
+		/// Retrieve the queue type.
+		/// </summary>
+		/// <returns>Queue type.</returns>
+		[[nodiscard]] constexpr RendererAPI::QueueType GetQueueType() const noexcept;
+
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Queue an image for presentation.
@@ -63,17 +69,15 @@ namespace TRAP::Graphics
 		/// </summary>
 		Queue();
 
-		//No Graphic API independent data
+		RendererAPI::QueueType m_type = RendererAPI::QueueType::Graphics;
 	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::Queue::~Queue()
+[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::QueueType TRAP::Graphics::Queue::GetQueueType() const noexcept
 {
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererQueuePrefix, "Destroying Queue");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
+	return m_type;
 }
 
 #endif /*TRAP_QUEUE_H*/

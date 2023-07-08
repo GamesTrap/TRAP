@@ -77,12 +77,3 @@ TRAP::Graphics::SubTexture2D::SubTexture2D(std::string name, Ref<TRAP::Graphics:
 
     return m_texture;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const std::array<TRAP::Math::Vec2, 4>& TRAP::Graphics::SubTexture2D::GetTexCoords() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-    return m_texCoords;
-}

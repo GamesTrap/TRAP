@@ -55,9 +55,9 @@
 #ifdef TRAP_ENABLE_ASSERTS
 
 template<typename... Args>
-constexpr void TRAP_ASSERT_IMPL_LOG(const std::string_view expressionStr, const std::string_view filename,
-                                    const std::string_view function, const std::uint_least32_t line,
-						            const std::uint_least32_t column, [[maybe_unused]] const Args... args)
+void TRAP_ASSERT_IMPL_LOG(const std::string_view expressionStr, const std::string_view filename,
+                          const std::string_view function, const std::uint_least32_t line,
+						  const std::uint_least32_t column, [[maybe_unused]] const Args... args)
 {
 	if constexpr(sizeof...(Args) > 1)
 	{

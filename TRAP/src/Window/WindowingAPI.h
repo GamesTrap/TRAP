@@ -53,7 +53,7 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		WindowingAPI() = delete;
+		constexpr WindowingAPI() = delete;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -62,19 +62,19 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		WindowingAPI(const WindowingAPI&) = delete;
+		constexpr WindowingAPI(const WindowingAPI&) = delete;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		WindowingAPI& operator=(const WindowingAPI&) = delete;
+		constexpr WindowingAPI& operator=(const WindowingAPI&) = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		WindowingAPI(WindowingAPI&&) = delete;
+		constexpr WindowingAPI(WindowingAPI&&) = delete;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		WindowingAPI& operator=(WindowingAPI&&) = delete;
+		constexpr WindowingAPI& operator=(WindowingAPI&&) = delete;
 
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Forward Declarations-----------------------------------------------------------------------------------------------//

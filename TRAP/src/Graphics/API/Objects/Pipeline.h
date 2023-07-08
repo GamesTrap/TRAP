@@ -18,12 +18,12 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		constexpr virtual ~Pipeline();
+		virtual ~Pipeline();
 
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Pipeline(const Pipeline&) noexcept = default;
+		constexpr Pipeline(const Pipeline&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -31,7 +31,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Pipeline(Pipeline&&) noexcept = default;
+		constexpr Pipeline(Pipeline&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
@@ -45,15 +45,6 @@ namespace TRAP::Graphics
 
 		//No Graphic API independent data
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-constexpr TRAP::Graphics::Pipeline::~Pipeline()
-{
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererPipelinePrefix, "Destroying Pipeline");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 #endif /*TRAP_PIPELINE_H*/

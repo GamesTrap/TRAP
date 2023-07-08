@@ -36,12 +36,3 @@ TRAP::Graphics::API::VulkanSemaphore::~VulkanSemaphore()
 	vkDestroySemaphore(m_device->GetVkDevice(), m_semaphore, nullptr);
 	m_semaphore = nullptr;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkSemaphore TRAP::Graphics::API::VulkanSemaphore::GetVkSemaphore() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_semaphore;
-}

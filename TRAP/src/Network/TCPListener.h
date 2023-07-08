@@ -45,7 +45,7 @@ namespace TRAP::Network
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		TCPListener() noexcept;
+		constexpr TCPListener() noexcept;
 
 		/// <summary>
 		/// Get the port to which the socket is bound locally.
@@ -92,6 +92,13 @@ namespace TRAP::Network
 		/// <returns>Status code.</returns>
 		[[nodiscard]] Status Accept(TCPSocket& socket) const;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::TCPListener::TCPListener() noexcept
+	: Socket(Type::TCP)
+{
 }
 
 #endif /*TRAP_NETWORK_TCPLISTENER_H*/

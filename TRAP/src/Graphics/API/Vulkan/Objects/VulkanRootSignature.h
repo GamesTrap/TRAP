@@ -23,11 +23,11 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanRootSignature(const VulkanRootSignature&) = delete;
+		constexpr VulkanRootSignature(const VulkanRootSignature&) = delete;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanRootSignature& operator=(const VulkanRootSignature&) = delete;
+		constexpr VulkanRootSignature& operator=(const VulkanRootSignature&) = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
@@ -41,49 +41,49 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan pipeline layout.
 		/// </summary>
 		/// <returns>Vulkan pipeline layout.</returns>
-		[[nodiscard]] VkPipelineLayout GetVkPipelineLayout() const noexcept;
+		[[nodiscard]] constexpr VkPipelineLayout GetVkPipelineLayout() const noexcept;
 		/// <summary>
 		/// Retrieve the root signature's Vulkan descriptor set layouts.
 		/// </summary>
 		/// <returns>Vulkan descriptor set layouts.</returns>
-		[[nodiscard]] const std::array<VkDescriptorSetLayout,
+		[[nodiscard]] constexpr const std::array<VkDescriptorSetLayout,
 		                               RendererAPI::MaxDescriptorSets>& GetVkDescriptorSetLayouts() const noexcept;
 		/// <summary>
 		/// Retrieve the root signature's Vulkan cumulative descriptor counts.
 		/// </summary>
 		/// <returns>Vulkan cumulative descriptor counts.</returns>
-		[[nodiscard]] const std::array<uint32_t,
+		[[nodiscard]] constexpr const std::array<uint32_t,
 		                               RendererAPI::MaxDescriptorSets>& GetVkCumulativeDescriptorCounts() const noexcept;
 		/// <summary>
 		/// Retrieve the root signature's Vulkan descriptor counts.
 		/// </summary>
 		/// <returns>Vulkan descriptor counts.</returns>
-		[[nodiscard]] const std::array<uint16_t,
+		[[nodiscard]] constexpr const std::array<uint16_t,
 		                               RendererAPI::MaxDescriptorSets>& GetVkDescriptorCounts() const noexcept;
 		/// <summary>
 		/// Retrieve the root signature's Vulkan dynamic descriptor counts.
 		/// </summary>
 		/// <returns>Vulkan dynamic descriptor counts.</returns>
-		[[nodiscard]] const std::array<uint8_t,
+		[[nodiscard]] constexpr const std::array<uint8_t,
 		                               RendererAPI::MaxDescriptorSets>& GetVkDynamicDescriptorCounts() const noexcept;
 		/// <summary>
 		/// Retrieve the root signature's Vulkan RayTracing descriptor counts.
 		/// </summary>
 		/// <returns>Vulkan RayTracing descriptor counts.</returns>
-		[[nodiscard]] const std::array<uint8_t,
+		[[nodiscard]] constexpr const std::array<uint8_t,
 		                               RendererAPI::MaxDescriptorSets>& GetVkRayTracingDescriptorCounts() const noexcept;
 
 		/// <summary>
 		/// Retrieve the root signature's Vulkan descriptor update templates.
 		/// </summary>
 		/// <returns>Vulkan descriptor update templates.</returns>
-		[[nodiscard]] const std::array<VkDescriptorUpdateTemplate,
+		[[nodiscard]] constexpr const std::array<VkDescriptorUpdateTemplate,
 		                               RendererAPI::MaxDescriptorSets>& GetUpdateTemplates() const noexcept;
 		/// <summary>
 		/// Retrieve the root signature's empty Vulkan descriptor sets.
 		/// </summary>
 		/// <returns>Vulkan empty descriptor sets.</returns>
-		[[nodiscard]] const std::array<VkDescriptorSet,
+		[[nodiscard]] constexpr const std::array<VkDescriptorSet,
 		                               RendererAPI::MaxDescriptorSets>& GetVkEmptyDescriptorSets() const noexcept;
 		/// <summary>
 		/// Retrieve the root signature's descriptor update data.
@@ -133,6 +133,69 @@ namespace TRAP::Graphics::API
 	                 TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
 	return m_updateTemplateData;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkPipelineLayout TRAP::Graphics::API::VulkanRootSignature::GetVkPipelineLayout() const noexcept
+{
+	return m_pipelineLayout;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr auto TRAP::Graphics::API::VulkanRootSignature::GetVkDescriptorSetLayouts() const noexcept ->
+              const std::array<VkDescriptorSetLayout, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
+{
+	return m_vkDescriptorSetLayouts;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr auto TRAP::Graphics::API::VulkanRootSignature::GetVkCumulativeDescriptorCounts() const noexcept ->
+	          const std::array<uint32_t, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
+{
+	return m_vkCumulativeDescriptorsCounts;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr auto TRAP::Graphics::API::VulkanRootSignature::GetVkDescriptorCounts() const noexcept ->
+	          const std::array<uint16_t, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
+{
+	return m_vkDescriptorCounts;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr auto TRAP::Graphics::API::VulkanRootSignature::GetVkDynamicDescriptorCounts() const noexcept ->
+	          const std::array<uint8_t, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
+{
+	return m_vkDynamicDescriptorCounts;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr auto TRAP::Graphics::API::VulkanRootSignature::GetVkRayTracingDescriptorCounts() const noexcept ->
+	          const std::array<uint8_t, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
+{
+	return m_vkRayTracingDescriptorCounts;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplates() const noexcept ->
+	          const std::array<VkDescriptorUpdateTemplate, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
+{
+	return m_updateTemplates;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr auto TRAP::Graphics::API::VulkanRootSignature::GetVkEmptyDescriptorSets() const noexcept ->
+	          const std::array<VkDescriptorSet, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
+{
+	return m_vkEmptyDescriptorSets;
 }
 
 #endif /*TRAP_VULKANROOTSIGNATURE_H*/

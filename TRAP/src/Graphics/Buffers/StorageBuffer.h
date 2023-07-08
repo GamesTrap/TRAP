@@ -20,23 +20,23 @@ namespace TRAP::Graphics
 		/// Constructor.
 		/// </summary>
 		/// <param name="updateFrequency">Update frequency for the storage buffer.</param>
-		explicit StorageBuffer(RendererAPI::DescriptorUpdateFrequency updateFrequency);
+		constexpr explicit StorageBuffer(RendererAPI::DescriptorUpdateFrequency updateFrequency);
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		StorageBuffer(const StorageBuffer&) noexcept = default;
+		constexpr StorageBuffer(const StorageBuffer&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		StorageBuffer& operator=(const StorageBuffer&) noexcept = default;
+		constexpr StorageBuffer& operator=(const StorageBuffer&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		StorageBuffer(StorageBuffer&&) noexcept = default;
+		constexpr StorageBuffer(StorageBuffer&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		StorageBuffer& operator=(StorageBuffer&&) noexcept = default;
+		constexpr StorageBuffer& operator=(StorageBuffer&&) noexcept = default;
 
 	public:
 		/// <summary>
@@ -53,7 +53,7 @@ namespace TRAP::Graphics
 		/// Retrieve the update frequency of the SSBO.
 		/// </summary>
 		/// <returns>Update frequency of the SSBO.</returns>
-		[[nodiscard]] UpdateFrequency GetUpdateFrequency() const noexcept;
+		[[nodiscard]] constexpr UpdateFrequency GetUpdateFrequency() const noexcept;
 		/// <summary>
 		/// Retrieve the underlying buffers.
 		/// </summary>
@@ -136,6 +136,23 @@ namespace TRAP::Graphics
 		std::vector<API::SyncToken> m_tokens;
 	};
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::StorageBuffer::StorageBuffer(const RendererAPI::DescriptorUpdateFrequency updateFrequency)
+{
+	m_tokens.resize(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount);
+	m_storageBuffers.resize(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Graphics::UpdateFrequency TRAP::Graphics::StorageBuffer::GetUpdateFrequency() const noexcept
+{
+	return m_storageBuffers.size() == 1 ? UpdateFrequency::Static : UpdateFrequency::Dynamic;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
 template<typename T>

@@ -132,6 +132,9 @@ namespace TRAP::Math
 		[[nodiscard]] constexpr T& operator[](std::size_t i);
 		[[nodiscard]] constexpr const T& operator[](std::size_t i) const;
 
+		[[nodiscard]] T& at(std::size_t i);
+		[[nodiscard]] const T& at(std::size_t i) const;
+
 		[[nodiscard]] std::string ToString() const;
 	};
 
@@ -381,6 +384,20 @@ template <typename T>
 template <typename T>
 [[nodiscard]] constexpr T& TRAP::Math::tQuat<T>::operator[](const std::size_t i)
 {
+	return (&x)[i];
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template <typename T>
+[[nodiscard]] constexpr const T& TRAP::Math::tQuat<T>::operator[](const std::size_t i) const
+{
+	return (&x)[i];
+}
+
+template <typename T>
+[[nodiscard]] T& TRAP::Math::tQuat<T>::at(const std::size_t i)
+{
 	TRAP_ASSERT(i < this->Length(), "Math::tQuat<T>::operator[]: Index out of range!");
 
 	return (&x)[i];
@@ -389,7 +406,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-[[nodiscard]] constexpr const T& TRAP::Math::tQuat<T>::operator[](const std::size_t i) const
+[[nodiscard]] const T& TRAP::Math::tQuat<T>::at(const std::size_t i) const
 {
 	TRAP_ASSERT(i < this->Length(), "Math::tQuat<T>::operator[]: Index out of range!");
 

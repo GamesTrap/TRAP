@@ -33,7 +33,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanMemoryAllocator(const VulkanMemoryAllocator&) noexcept = default;
+		constexpr VulkanMemoryAllocator(const VulkanMemoryAllocator&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -41,7 +41,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanMemoryAllocator(VulkanMemoryAllocator&&) noexcept = default;
+		constexpr VulkanMemoryAllocator(VulkanMemoryAllocator&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
@@ -51,11 +51,18 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan memory allocator (VMA) allocator handle.
 		/// </summary>
 		/// <returns>VMA allocator handle.</returns>
-		[[nodiscard]] VmaAllocator GetVMAAllocator() const noexcept;
+		[[nodiscard]] constexpr VmaAllocator GetVMAAllocator() const noexcept;
 
 	private:
 		VmaAllocator m_allocator;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VmaAllocator TRAP::Graphics::API::VulkanMemoryAllocator::GetVMAAllocator() const noexcept
+{
+	return m_allocator;
 }
 
 #endif /*TRAP_VULKANMEMORYALLOCATOR_H*/

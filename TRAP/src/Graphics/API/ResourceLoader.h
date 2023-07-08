@@ -38,19 +38,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		ResourceLoader(const ResourceLoader&) = delete;
+		constexpr ResourceLoader(const ResourceLoader&) = delete;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		ResourceLoader& operator=(const ResourceLoader&) = delete;
+		constexpr ResourceLoader& operator=(const ResourceLoader&) = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		ResourceLoader(ResourceLoader&&) = delete;
+		constexpr ResourceLoader(ResourceLoader&&) = delete;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		ResourceLoader& operator=(ResourceLoader&&) = delete;
+		constexpr ResourceLoader& operator=(ResourceLoader&&) = delete;
 
 		//Adding and updating resources can be done using a AddResource or BeginUpdateResource/EndUpdateResource
 		//pair.
@@ -230,10 +230,10 @@ namespace TRAP::Graphics::API
 		/// <param name="baseArrayLayer">Base array layer of the texture.</param>
 		/// <param name="arrayLayers">Number of array layers of the texture.</param>
 		/// <returns>Total surface size of the texture.</returns>
-		[[nodiscard]] static uint32_t UtilGetSurfaceSize(TRAP::Graphics::API::ImageFormat fmt, uint32_t width, uint32_t height,
-		                                                 uint32_t depth, uint32_t rowStride, uint32_t sliceStride,
-										                 uint32_t baseMipLevel, uint32_t mipLevels, uint32_t baseArrayLayer,
-										                 uint32_t arrayLayers) noexcept;
+		[[nodiscard]] static constexpr uint32_t UtilGetSurfaceSize(TRAP::Graphics::API::ImageFormat fmt, uint32_t width, uint32_t height,
+		                                                           uint32_t depth, uint32_t rowStride, uint32_t sliceStride,
+										                           uint32_t baseMipLevel, uint32_t mipLevels, uint32_t baseArrayLayer,
+										                           uint32_t arrayLayers) noexcept;
 		/// <summary>
 		/// Retrieve information about a texture.
 		/// </summary>
@@ -244,8 +244,8 @@ namespace TRAP::Graphics::API
 		/// <param name="outRowBytes">Optional output for the number of bytes in a row of the texture.</param>
 		/// <param name="outNumRows">Optional output for the number of rows in the texture.</param>
 		/// <returns>True on successful retrieval, false otherwise.</returns>
-		[[nodiscard]] static bool UtilGetSurfaceInfo(uint32_t width, uint32_t height, TRAP::Graphics::API::ImageFormat fmt,
-		                                             uint32_t* outNumBytes, uint32_t* outRowBytes, uint32_t* outNumRows);
+		[[nodiscard]] static constexpr bool UtilGetSurfaceInfo(uint32_t width, uint32_t height, TRAP::Graphics::API::ImageFormat fmt,
+		                                                       uint32_t* outNumBytes, uint32_t* outRowBytes, uint32_t* outNumRows);
 		/// <summary>
 		/// Allocate a new staging buffer.
 		/// </summary>
@@ -344,7 +344,7 @@ namespace TRAP::Graphics::API
 		/// Check whether there are tasks pending for the resource loader.
 		/// </summary>
 		/// <returns>True if there are tasks pending, false otherwise.</returns>
-		[[nodiscard]] bool AreTasksAvailable() const noexcept;
+		[[nodiscard]] constexpr bool AreTasksAvailable() const noexcept;
 
 		/// <summary>
 		/// Determine the resources start state from a buffer description.
@@ -441,17 +441,17 @@ namespace TRAP::Graphics::API
 			/// Constructor for buffer update request.
 			/// </summary>
 			/// <param name="buffer">Description of buffer update.</param>
-			explicit UpdateRequest(const RendererAPI::BufferUpdateDesc& buffer) noexcept;
+			constexpr explicit UpdateRequest(const RendererAPI::BufferUpdateDesc& buffer) noexcept;
 			/// <summary>
 			/// Constructor for texture load request.
 			/// </summary>
 			/// <param name="texture">Description of texture load.</param>
-			explicit UpdateRequest(const RendererAPI::TextureLoadDesc& texture) noexcept;
+			constexpr explicit UpdateRequest(const RendererAPI::TextureLoadDesc& texture) noexcept;
 			/// <summary>
 			/// Constructor for texture copy request.
 			/// </summary>
 			/// <param name="texture">Description of texture copy.</param>
-			explicit UpdateRequest(const RendererAPI::TextureCopyDesc& textureCopy) noexcept;
+			constexpr explicit UpdateRequest(const RendererAPI::TextureCopyDesc& textureCopy) noexcept;
 			/// <summary>
 			/// Constructor for texture update request.
 			/// </summary>
@@ -461,12 +461,12 @@ namespace TRAP::Graphics::API
 			/// Constructor for buffer barrier request.
 			/// </summary>
 			/// <param name="buffer">Description of buffer barrier.</param>
-			explicit UpdateRequest(const RendererAPI::BufferBarrier& barrier) noexcept;
+			constexpr explicit UpdateRequest(const RendererAPI::BufferBarrier& barrier) noexcept;
 			/// <summary>
 			/// Constructor for texture barrier request.
 			/// </summary>
 			/// <param name="texture">Description of texture barrier.</param>
-			explicit UpdateRequest(const RendererAPI::TextureBarrier& barrier) noexcept;
+			constexpr explicit UpdateRequest(const RendererAPI::TextureBarrier& barrier) noexcept;
 
 			UpdateRequestType Type = UpdateRequestType::Invalid;
 			uint64_t WaitIndex = 0;
@@ -558,5 +558,165 @@ namespace TRAP::Graphics::API
 
 	return RendererAPI::ResourceState::ShaderResource;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceSize(const TRAP::Graphics::API::ImageFormat fmt,
+                                                                                         const uint32_t width, const uint32_t height,
+																                         const uint32_t depth, const uint32_t rowStride,
+																                         const uint32_t sliceStride,
+																                         const uint32_t baseMipLevel,
+																                         const uint32_t mipLevels,
+																                         const uint32_t baseArrayLayer,
+																                         const uint32_t arrayLayers) noexcept
+{
+	uint32_t requiredSize = 0;
+
+	for(uint32_t s = baseArrayLayer; s < baseArrayLayer + arrayLayers; ++s)
+	{
+		uint32_t w = width;
+		uint32_t h = height;
+		uint32_t d = depth;
+
+		for(uint32_t m = baseMipLevel; m < (baseMipLevel + mipLevels); ++m)
+		{
+			uint32_t rowBytes = 0;
+			uint32_t numRows = 0;
+
+			if(!UtilGetSurfaceInfo(w, h, fmt, nullptr, &rowBytes, &numRows))
+				return 0u;
+
+			const uint32_t temp = ((rowBytes + rowStride - 1) / rowStride) * rowStride;
+			requiredSize += (((d * temp * numRows) + sliceStride - 1) / sliceStride) * sliceStride;
+
+			w = w >> 1u;
+			h = h >> 1u;
+			d = d >> 1u;
+			if(w == 0)
+				w = 1;
+			if(h == 0)
+				h = 1;
+			if(d == 0)
+				d = 1;
+		}
+	}
+
+	return requiredSize;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceInfo(const uint32_t width, const uint32_t height,
+	                                                                                 const TRAP::Graphics::API::ImageFormat fmt,
+															                         uint32_t* const outNumBytes, uint32_t* const outRowBytes,
+															                         uint32_t* const outNumRows)
+{
+	uint64_t numBytes = 0;
+	uint64_t rowBytes = 0;
+	uint64_t numRows = 0;
+
+	const uint32_t bpp = TRAP::Graphics::API::ImageFormatBitSizeOfBlock(fmt);
+	const bool compressed = TRAP::Graphics::API::ImageFormatIsCompressed(fmt);
+	const bool planar = TRAP::Graphics::API::ImageFormatIsPlanar(fmt);
+
+	const bool packed = false; //TODO
+
+	if(compressed)
+	{
+		const uint32_t blockWidth = TRAP::Graphics::API::ImageFormatWidthOfBlock(fmt);
+		const uint32_t blockHeight = TRAP::Graphics::API::ImageFormatHeightOfBlock(fmt);
+		uint32_t numBlocksWide = 0;
+		uint32_t numBlocksHigh = 0;
+		if(width > 0)
+			numBlocksWide = Math::Max(1u, (width + (blockWidth - 1)) / blockWidth);
+		if(height > 0)
+			numBlocksHigh = Math::Max(1u, (height + (blockHeight - 1)) / blockHeight);
+
+		rowBytes = NumericCast<uint64_t>(numBlocksWide) * (bpp >> 3u);
+		numRows = numBlocksHigh;
+		numBytes = rowBytes * numBlocksHigh;
+	}
+	else if(packed)
+	{
+		TP_ERROR(Log::TexturePrefix, "Packed not implemented!");
+		return false;
+	}
+	else if(planar)
+	{
+		const uint32_t numOfPlanes = TRAP::Graphics::API::ImageFormatNumOfPlanes(fmt);
+
+		for(uint32_t i = 0; i < numOfPlanes; ++i)
+		{
+			numBytes += NumericCast<uint64_t>(TRAP::Graphics::API::ImageFormatPlaneWidth(fmt, i, width)) *
+			            TRAP::Graphics::API::ImageFormatPlaneHeight(fmt, i, height) *
+						TRAP::Graphics::API::ImageFormatPlaneSizeOfBlock(fmt, i);
+		}
+
+		numRows = 1;
+		rowBytes = numBytes;
+	}
+	else
+	{
+		if(bpp == 0u)
+			return false;
+
+		rowBytes = (NumericCast<uint64_t>(width) * bpp + 7u) / 8u; //Round up to nearest byte
+		numRows = NumericCast<uint64_t>(height);
+		numBytes = rowBytes * height;
+	}
+
+	if(numBytes > std::numeric_limits<uint32_t>::max() ||
+	   rowBytes > std::numeric_limits<uint32_t>::max() ||
+	   numRows > std::numeric_limits<uint32_t>::max())
+	{
+		return false;
+	}
+
+	if(outNumBytes != nullptr)
+		*outNumBytes = NumericCast<uint32_t>(numBytes);
+	if(outRowBytes != nullptr)
+		*outRowBytes = NumericCast<uint32_t>(rowBytes);
+	if(outNumRows != nullptr)
+		*outNumRows = NumericCast<uint32_t>(numRows);
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Graphics::API::ResourceLoader::AreTasksAvailable() const noexcept
+{
+	return !m_requestQueue.empty();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::BufferUpdateDesc& buffer) noexcept
+	: Type(UpdateRequestType::UpdateBuffer), Desc(buffer)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::TextureLoadDesc& texture) noexcept
+	: Type(UpdateRequestType::LoadTexture), Desc(texture)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::TextureCopyDesc& textureCopy) noexcept
+	: Type(UpdateRequestType::CopyTexture), Desc(textureCopy)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::BufferBarrier& barrier) noexcept
+	: Type(UpdateRequestType::BufferBarrier), Desc(barrier)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::TextureBarrier& barrier) noexcept
+	: Type(UpdateRequestType::TextureBarrier), Desc(barrier)
+{}
 
 #endif /*TRAP_RESOURCELOADER_H*/

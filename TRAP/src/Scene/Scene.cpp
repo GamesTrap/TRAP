@@ -21,10 +21,8 @@
 	#pragma warning(pop)
 #endif /*_MSC_VER*/
 
-[[nodiscard]] static b2BodyType TRAPRigidbody2DTypeToBox2DBody(TRAP::Rigidbody2DComponent::BodyType bodyType)
+[[nodiscard]] static constexpr b2BodyType TRAPRigidbody2DTypeToBox2DBody(TRAP::Rigidbody2DComponent::BodyType bodyType)
 {
-	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	switch(bodyType)
 	{
 	case TRAP::Rigidbody2DComponent::BodyType::Static:

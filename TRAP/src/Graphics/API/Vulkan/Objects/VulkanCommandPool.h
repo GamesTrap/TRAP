@@ -44,7 +44,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the VkCommandPool handle.
 		/// </summary>
 		/// <returns>VkCommandPool handle.</returns>
-		[[nodiscard]] VkCommandPool GetVkCommandPool() const noexcept;
+		[[nodiscard]] constexpr VkCommandPool GetVkCommandPool() const noexcept;
 
 		/// <summary>
 		/// Allocate a new command buffer.
@@ -68,6 +68,13 @@ namespace TRAP::Graphics::API
 
 		VkCommandPool m_vkCommandPool;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkCommandPool TRAP::Graphics::API::VulkanCommandPool::GetVkCommandPool() const noexcept
+{
+	return m_vkCommandPool;
 }
 
 #endif /*TRAP_VULKANCOMMANDPOOL_H*/

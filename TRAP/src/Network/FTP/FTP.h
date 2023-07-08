@@ -146,7 +146,7 @@ namespace TRAP::Network
 			/// Get the status code of the response.
 			/// </summary>
 			/// <returns>Status code.</returns>
-			[[nodiscard]] Status GetStatus() const noexcept;
+			[[nodiscard]] constexpr Status GetStatus() const noexcept;
 
 			/// <summary>
 			/// Get the full message contained in the response.
@@ -222,17 +222,17 @@ namespace TRAP::Network
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		FTP(const FTP&) = delete;
+		constexpr FTP(const FTP&) = delete;
 
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		FTP& operator=(const FTP&) = delete;
+		constexpr FTP& operator=(const FTP&) = delete;
 
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		FTP(FTP&&) noexcept = default;
+		constexpr FTP(FTP&&) noexcept = default;
 
 		/// <summary>
 		/// Move assignment operator.
@@ -484,11 +484,17 @@ constexpr TRAP::Network::FTP::Response::Response(const Status code, std::string 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] constexpr TRAP::Network::FTP::Response::Status TRAP::Network::FTP::Response::GetStatus() const noexcept
+{
+	return m_status;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr std::string TRAP::Network::FTP::Response::GetMessage() const noexcept
 {
 	return m_message;
 }
-
 
 //-------------------------------------------------------------------------------------------------------------------//
 

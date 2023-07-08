@@ -15,7 +15,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		VertexBuffer() noexcept;
+		constexpr VertexBuffer() noexcept = default;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
@@ -43,12 +43,12 @@ namespace TRAP::Graphics
 		/// Retrieve the vertex buffer layout of this buffer.
 		/// </summary>
 		/// <returns>Vertex buffer layout.</returns>
-		[[nodiscard]] const VertexBufferLayout& GetLayout() const noexcept;
+		[[nodiscard]] constexpr const VertexBufferLayout& GetLayout() const noexcept;
 		/// <summary>
 		/// Set the vertex buffer layout to be used by this buffer.
 		/// </summary>
 		/// <param name="layout">New vertex buffer layout.</param>
-		void SetLayout(const VertexBufferLayout& layout);
+		constexpr void SetLayout(const VertexBufferLayout& layout);
 		/// <summary>
 		/// Retrieve the total byte size of the buffer.
 		/// </summary>
@@ -122,11 +122,25 @@ namespace TRAP::Graphics
 		/// <returns>New vertex buffer.</returns>
 		[[nodiscard]] static Scope<VertexBuffer> Init(const float* vertices, uint64_t size, UpdateFrequency updateFrequency);
 
-		TRAP::Ref<TRAP::Graphics::Buffer> m_vertexBuffer;
+		TRAP::Ref<TRAP::Graphics::Buffer> m_vertexBuffer = nullptr;
 
 		VertexBufferLayout m_bufferLayout;
-		API::SyncToken m_token;
+		API::SyncToken m_token{};
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const TRAP::Graphics::VertexBufferLayout& TRAP::Graphics::VertexBuffer::GetLayout() const noexcept
+{
+	return m_bufferLayout;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Graphics::VertexBuffer::SetLayout(const VertexBufferLayout& layout)
+{
+	m_bufferLayout = layout;
 }
 
 #endif /*TRAP_VERTEXBUFFER_H*/

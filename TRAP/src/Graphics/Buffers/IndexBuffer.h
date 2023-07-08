@@ -15,7 +15,7 @@ namespace TRAP::Graphics
 		/// Constructor.
 		/// </summary>
 		/// <param name="indexType">Index type of the index buffer.</param>
-		explicit IndexBuffer(RendererAPI::IndexType indexType) noexcept;
+		constexpr explicit IndexBuffer(RendererAPI::IndexType indexType) noexcept;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
@@ -137,12 +137,19 @@ namespace TRAP::Graphics
 		template<typename T>
 		void SetDataInternal(const T* indices, uint64_t size, uint64_t offset = 0);
 
-		TRAP::Ref<TRAP::Graphics::Buffer> m_indexBuffer;
+		TRAP::Ref<TRAP::Graphics::Buffer> m_indexBuffer = nullptr;
 
-		API::SyncToken m_token;
+		API::SyncToken m_token{};
 
 		RendererAPI::IndexType m_indexType;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::IndexBuffer::IndexBuffer(const RendererAPI::IndexType indexType) noexcept
+	: m_indexType(indexType)
+{
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -433,51 +433,6 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVVkImageView() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_vkSRVDescriptor;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVStencilVkImageView() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_vkSRVStencilDescriptor;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkImage TRAP::Graphics::API::VulkanTexture::GetVkImage() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_vkImage;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VmaAllocation TRAP::Graphics::API::VulkanTexture::GetVMAAllocation() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_vkAllocation;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] bool TRAP::Graphics::API::VulkanTexture::IsLazilyAllocated() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_lazilyAllocated;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::API::VulkanTexture::SetTextureName(const std::string_view name) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -559,8 +514,6 @@ void TRAP::Graphics::API::VulkanTexture::PreInit()
 														                 const VkPhysicalDeviceMemoryProperties &memProps,
 														                 const VkMemoryPropertyFlags props, VkBool32* const memTypeFound)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
 	for (uint32_t i = 0; i < memProps.memoryTypeCount; i++)
 	{
 		if ((typeBits & 1u) == 1)

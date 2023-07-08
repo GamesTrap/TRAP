@@ -39,10 +39,10 @@ namespace TRAP::Network
 	class FTP::DataChannel
 	{
 	public:
-		DataChannel(const DataChannel&) = delete;
-		DataChannel& operator=(const DataChannel&) = delete;
-		DataChannel(DataChannel&&) noexcept = default;
-		DataChannel& operator=(DataChannel&&) noexcept = delete;
+		constexpr DataChannel(const DataChannel&) = delete;
+		constexpr DataChannel& operator=(const DataChannel&) = delete;
+		constexpr DataChannel(DataChannel&&) noexcept = default;
+		constexpr DataChannel& operator=(DataChannel&&) noexcept = delete;
 		~DataChannel() = default;
 
 		explicit DataChannel(FTP& owner) noexcept;
@@ -57,15 +57,6 @@ namespace TRAP::Network
 		FTP& m_ftp; //Reference to the owner FTP instance
 		TCPSocket m_dataSocket{}; //Socket used for data transfers
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Network::FTP::Response::Status TRAP::Network::FTP::Response::GetStatus() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_status;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

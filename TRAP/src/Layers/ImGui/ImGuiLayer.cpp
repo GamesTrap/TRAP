@@ -70,14 +70,6 @@ static int32_t InputTextCallback(ImGuiInputTextCallbackData* const data)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::ImGuiLayer::ImGuiLayer()
-	: Layer("ImGuiLayer"), m_blockEvents(true), m_imguiPipelineCache(nullptr), m_imguiDescriptorPool(nullptr)
-{
-	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::ImGuiLayer::OnAttach()
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -328,15 +320,6 @@ void TRAP::ImGuiLayer::End()
 		ImGui::UpdatePlatformWindows();
 		ImGui::RenderPlatformWindowsDefault();
 	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::ImGuiLayer::BlockEvents(const bool block) noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	m_blockEvents = block;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

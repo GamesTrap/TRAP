@@ -3,17 +3,6 @@
 
 #include "Graphics/API/Vulkan/Objects/VulkanQueryPool.h"
 
-TRAP::Graphics::QueryPool::QueryPool()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererQueryPoolPrefix, "Creating QueryPool");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::QueryPool> TRAP::Graphics::QueryPool::Create(const RendererAPI::QueryPoolDesc& desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -30,4 +19,22 @@ TRAP::Graphics::QueryPool::QueryPool()
 		TRAP_ASSERT(false, "QueryPool::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::QueryPool::~QueryPool()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererQueryPoolPrefix, "Destroying QueryPool");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::QueryPool::QueryPool()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererQueryPoolPrefix, "Creating QueryPool");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }

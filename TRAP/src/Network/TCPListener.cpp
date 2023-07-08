@@ -36,14 +36,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Utils/Utils.h"
 #include "Utils/Memory.h"
 
-TRAP::Network::TCPListener::TCPListener() noexcept
-	: Socket(Type::TCP)
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] uint16_t TRAP::Network::TCPListener::GetLocalPort() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);

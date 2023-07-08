@@ -9,7 +9,7 @@ TRAP::Log TRAP::TRAPLog{};
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Log::Log()
-	: m_path("trap.log"), m_importance(Level::Trace | Level::Debug | Level::Info | Level::Warn | Level::Error | Level::Critical)
+	: m_importance(Level::Trace | Level::Debug | Level::Info | Level::Warn | Level::Error | Level::Critical)
 {
 	ZoneScoped;
 
@@ -19,7 +19,8 @@ TRAP::Log::Log()
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Log::Log(std::filesystem::path filePath)
-	: m_path(std::move(filePath)), m_importance(Level::Trace | Level::Debug | Level::Info | Level::Warn | Level::Error | Level::Critical)
+	: m_path(std::move(filePath)),
+	  m_importance(Level::Trace | Level::Debug | Level::Info | Level::Warn | Level::Error | Level::Critical)
 {
 	ZoneScoped;
 
@@ -55,24 +56,6 @@ void TRAP::Log::SetFilePath(std::filesystem::path filePath) noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Log::SetImportance(const Level level) noexcept
-{
-	ZoneScoped;
-
-	m_importance = level;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const std::vector<std::pair<TRAP::Log::Level, std::string>>& TRAP::Log::GetBuffer() const noexcept
-{
-	ZoneScoped;
-
-	return m_buffer;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Log::Save() const
 {
 	ZoneScoped;
@@ -96,15 +79,6 @@ void TRAP::Log::Save() const
 
 	if(!TRAP::FileSystem::WriteTextFile(logFile, output))
 		TP_ERROR(LoggerPrefix, "Failed to save: ", logFile.generic_string());
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Log::Clear() noexcept
-{
-	ZoneScoped;
-
-	m_buffer.clear();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

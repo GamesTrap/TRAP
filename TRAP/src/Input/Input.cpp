@@ -155,15 +155,6 @@ void TRAP::Input::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::Input::IsControllerConnected(const Controller controller)
-{
-	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
-
-	return s_controllerInternal[std::to_underlying(controller)].Connected;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] bool TRAP::Input::IsControllerGamepad(const Controller controller)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
@@ -778,60 +769,6 @@ TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(std::string 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Notifies shared code of the new value of a controller DPad
-void TRAP::Input::InternalInputControllerDPad(ControllerInternal* const con, const int32_t dpad, const uint8_t value)
-{
-	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
-
-	const uint32_t base = NumericCast<uint32_t>(con->ButtonCount) + NumericCast<uint32_t>(dpad) * 4u;
-
-	con->Buttons[base + 0u] = ((value & BIT(0u)) != 0u); //Up
-	con->Buttons[base + 1u] = ((value & BIT(1u)) != 0u); //Right
-	con->Buttons[base + 2u] = ((value & BIT(2u)) != 0u); //Down
-	con->Buttons[base + 3u] = ((value & BIT(3u)) != 0u); //Left
-
-	if (con->Buttons[base + 1u] && con->Buttons[base + 0u])
-		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Right_Up;
-	else if (con->Buttons[base + 1u] && con->Buttons[base + 2u])
-		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Right_Down;
-	else if (con->Buttons[base + 3u] && con->Buttons[base + 0u])
-		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Left_Up;
-	else if (con->Buttons[base + 3u] && con->Buttons[base + 2u])
-		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Left_Down;
-	else if (con->Buttons[base + 0u])
-		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Up;
-	else if (con->Buttons[base + 1u])
-		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Right;
-	else if (con->Buttons[base + 2u])
-		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Down;
-	else if (con->Buttons[base + 3u])
-		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Left;
-	else
-		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Centered;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Notifies shared code of the new value of a controller axis
-void TRAP::Input::InternalInputControllerAxis(ControllerInternal* const con, const int32_t axis, const float value)
-{
-	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
-
-	con->Axes[NumericCast<std::size_t>(axis)] = value;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Notifies shared code of the new value of a controller button
-void TRAP::Input::InternalInputControllerButton(ControllerInternal* const con, const int32_t button, const bool pressed)
-{
-	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
-
-	con->Buttons[NumericCast<std::size_t>(button)] = pressed;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Parse an SDL_GameControllerDB line and adds it to the mapping list
 bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 {
@@ -1023,76 +960,6 @@ void TRAP::Input::InitControllerMappings()
 
 	for(std::size_t i = 0; i < Embed::ControllerMappings.size(); ++i)
 		ParseMapping(s_mappings[i], Embed::ControllerMappings[i]);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Find a mapping based on controller GUID
-[[nodiscard]] TRAP::Input::Mapping* TRAP::Input::FindMapping(const std::string_view guid)
-{
-	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
-
-	for (auto& Mapping : s_mappings)
-	{
-		if(Mapping.guid == guid)
-			return &Mapping;
-	}
-
-	return nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Finds a mapping based on controller GUID and verifies element indices
-[[nodiscard]] TRAP::Input::Mapping* TRAP::Input::FindValidMapping(const ControllerInternal* const con)
-{
-	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
-
-	Mapping* const mapping = FindMapping(con->guid);
-
-	if(mapping == nullptr)
-		return nullptr;
-
-	uint32_t i = 0;
-
-	for(i = 0; i <= std::to_underlying(ControllerButton::DPad_Left); i++)
-	{
-		if(!IsValidElementForController(&mapping->Buttons[i], con))
-		{
-			TP_ERROR(Log::InputControllerPrefix, "Invalid button in controller mapping: ", mapping->guid,
-						" ", mapping->Name);
-			return nullptr;
-		}
-	}
-
-	for(i = 0; i <= std::to_underlying(ControllerAxis::Right_Trigger); i++)
-	{
-		if(!IsValidElementForController(&mapping->Axes[i], con))
-		{
-			TP_ERROR(Log::InputControllerPrefix, "Invalid axis in controller mapping: ", mapping->guid,
-						" ", mapping->Name);
-			return nullptr;
-		}
-	}
-
-	return mapping;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Checks whether a controller mapping element is present in the hardware
-[[nodiscard]] bool TRAP::Input::IsValidElementForController(const MapElement* const e, const ControllerInternal* const con)
-{
-	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	if(e->Type == 3 && (e->Index >> 4u) >= NumericCast<int32_t>(con->DPads.size() + 1))
-		return false;
-	if(e->Type == 2 && e->Index >= (con->Buttons.size() + 1))
-		return false;
-	if(e->Type == 1 && e->Index >= (con->Axes.size() + 1))
-		return false;
-
-	return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

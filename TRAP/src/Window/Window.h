@@ -56,11 +56,11 @@ namespace TRAP
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Window(const Window&) = delete;
+		constexpr Window(const Window&) = delete;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Window& operator=(const Window&) = delete;
+		constexpr Window& operator=(const Window&) = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
@@ -135,7 +135,7 @@ namespace TRAP
 		/// Get the current display mode of the window.
 		/// </summary>
 		/// <returns>Display mode of the window.</returns>
-		[[nodiscard]] DisplayMode GetDisplayMode() const noexcept;
+		[[nodiscard]] constexpr DisplayMode GetDisplayMode() const noexcept;
 		/// <summary>
 		/// Get the current monitor used by the window
 		/// (only for display modes fullscreen and borderless).
@@ -179,7 +179,7 @@ namespace TRAP
 		/// Get the internal handle of the window.
 		/// </summary>
 		/// <returns>Pointer to the internal window handle.</returns>
-		[[nodiscard]] void* GetInternalWindow() const noexcept;
+		[[nodiscard]] constexpr void* GetInternalWindow() const noexcept;
 
 		/// <summary>
 		/// Set a new title for the window.
@@ -475,14 +475,14 @@ namespace TRAP
 			/// <param name="decorated">Whether the window should be decorated or not.</param>
 			/// <param name="rawMouseInput">Whether the window should use raw mouse input or not.</param>
 			/// <param name="cursorMode">Cursor mode to be used by the window.</param>
-			explicit AdvancedProps(bool resizable = true,
-			                       bool maximized = false,
-			                       bool visible = true,
-			                       bool focused = true,
-			                       bool focusOnShow = true,
-			                       bool decorated = true,
-			                       bool rawMouseInput = false,
-			                       Window::CursorMode cursorMode = Window::CursorMode::Normal) noexcept;
+			constexpr explicit AdvancedProps(bool resizable = true,
+			                                 bool maximized = false,
+			                                 bool visible = true,
+			                                 bool focused = true,
+			                                 bool focusOnShow = true,
+			                                 bool decorated = true,
+			                                 bool rawMouseInput = false,
+			                                 Window::CursorMode cursorMode = Window::CursorMode::Normal) noexcept;
 		} Advanced{};
 
 		/// <summary>
@@ -512,6 +512,41 @@ namespace TRAP
 [[nodiscard]] constexpr std::string TRAP::Window::GetTitle() const noexcept
 {
 	return m_data.Title;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Window::DisplayMode TRAP::Window::GetDisplayMode() const noexcept
+{
+	return m_data.displayMode;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr void* TRAP::Window::GetInternalWindow() const noexcept
+{
+	return m_window;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::WindowProps::AdvancedProps::AdvancedProps(const bool resizable,
+                                                          const bool maximized,
+                                                          const bool visible,
+                                                          const bool focused,
+                                                          const bool focusOnShow,
+                                                          const bool decorated,
+                                                          const bool rawMouseInput,
+                                                          const Window::CursorMode cursorMode) noexcept
+	: Resizable(resizable),
+	  Maximized(maximized),
+	  Visible(visible),
+	  Focused(focused),
+	  FocusOnShow(focusOnShow),
+	  Decorated(decorated),
+	  RawMouseInput(rawMouseInput),
+	  CursorMode(cursorMode)
+{
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

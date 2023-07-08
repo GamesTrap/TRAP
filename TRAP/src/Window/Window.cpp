@@ -163,29 +163,18 @@ void TRAP::Window::OnUpdate()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Window::DisplayMode TRAP::Window::GetDisplayMode() const noexcept
+[[nodiscard]] TRAP::Window::CursorMode TRAP::Window::GetCursorMode() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return m_data.displayMode;
+	return INTERNAL::WindowingAPI::GetCursorMode(*m_window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] TRAP::Monitor TRAP::Window::GetMonitor() const
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	return m_data.Monitor;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Window::CursorMode TRAP::Window::GetCursorMode() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return INTERNAL::WindowingAPI::GetCursorMode(*m_window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -236,15 +225,6 @@ void TRAP::Window::OnUpdate()
 	const auto frameBufferSize = GetFrameBufferSize();
 
 	return NumericCast<float>(frameBufferSize.x) / NumericCast<float>(frameBufferSize.y);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] void* TRAP::Window::GetInternalWindow() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1271,28 +1251,6 @@ TRAP::WindowProps::WindowProps(std::string title,
 	  DisplayMode(displayMode),
 	  Monitor(monitor),
 	  Advanced{advanced}
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::WindowProps::AdvancedProps::AdvancedProps(const bool resizable,
-                                                const bool maximized,
-                                                const bool visible,
-                                                const bool focused,
-                                                const bool focusOnShow,
-                                                const bool decorated,
-                                                const bool rawMouseInput,
-                                                const Window::CursorMode cursorMode) noexcept
-	: Resizable(resizable),
-	  Maximized(maximized),
-	  Visible(visible),
-	  Focused(focused),
-	  FocusOnShow(focusOnShow),
-	  Decorated(decorated),
-	  RawMouseInput(rawMouseInput),
-	  CursorMode(cursorMode)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 }

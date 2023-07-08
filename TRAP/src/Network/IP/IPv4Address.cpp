@@ -34,10 +34,10 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Utils/Utils.h"
 #include "Utils/Memory.h"
 
-const TRAP::Network::IPv4Address TRAP::Network::IPv4Address::None{};
-const TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Any(0, 0, 0, 0);
-const TRAP::Network::IPv4Address TRAP::Network::IPv4Address::LocalHost(127, 0, 0, 1);
-const TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Broadcast(255, 255, 255, 255);
+constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::None{};
+constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Any(0, 0, 0, 0);
+constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::LocalHost(127, 0, 0, 1);
+constexpr TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Broadcast(255, 255, 255, 255);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -47,29 +47,6 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string_view address)
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
 	Resolve(address);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Network::IPv4Address::IPv4Address(const uint8_t byte0, const uint8_t byte1, const uint8_t byte2,
-                                        const uint8_t byte3)
-	: m_address(NumericCast<uint32_t>((byte0 << 24u) | (byte1 << 16u) | (byte2 << 8u) | byte3)), m_valid(true)
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
-		TRAP::Utils::Memory::SwapBytes(m_address);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Network::IPv4Address::IPv4Address(const uint32_t address)
-	: m_address(address), m_valid(true)
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
-		TRAP::Utils::Memory::SwapBytes(m_address);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -85,20 +62,6 @@ TRAP::Network::IPv4Address::IPv4Address(const uint32_t address)
 	inet_ntop(AF_INET, &address, str.data(), NumericCast<uint32_t>(str.size()));
 	std::erase(str, '\0');
 	return str;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] uint32_t TRAP::Network::IPv4Address::ToInteger() const
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	uint32_t address = m_address;
-
-	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
-		TRAP::Utils::Memory::SwapBytes(address);
-
-	return address;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

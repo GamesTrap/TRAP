@@ -182,12 +182,12 @@ namespace TRAP::Graphics
 			/// Retrieve the current total number of vertices.
 			/// </summary>
 			/// <returns>Total vertices count.</returns>
-			[[nodiscard]] uint32_t GetTotalVertexCount() const noexcept;
+			[[nodiscard]] constexpr uint32_t GetTotalVertexCount() const noexcept;
 			/// <summary>
 			/// Retrieve the current total number of indices.
 			/// </summary>
 			/// <returns>Total indices count.</returns>
-			[[nodiscard]] uint32_t GetTotalIndexCount() const noexcept;
+			[[nodiscard]] constexpr uint32_t GetTotalIndexCount() const noexcept;
 		};
 		/// <summary>
 		/// Retrieve the current Renderer2D statistics.
@@ -203,6 +203,20 @@ namespace TRAP::Graphics
 		static std::vector<Renderer2DData> s_data;
 		inline constinit static uint32_t s_dataIndex = 0;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::Renderer2D::Statistics::GetTotalVertexCount() const noexcept
+{
+	return (QuadCount * 4) + (CircleCount * 4) + (LineCount * 2);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::Renderer2D::Statistics::GetTotalIndexCount() const noexcept
+{
+	return (QuadCount * 6) + (CircleCount * 6);
 }
 
 #endif /*TRAP_RENDERER2D_H*/

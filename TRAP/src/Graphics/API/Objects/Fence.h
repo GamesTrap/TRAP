@@ -19,12 +19,12 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		constexpr virtual ~Fence();
+		virtual ~Fence();
 
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Fence(const Fence&) noexcept = default;
+		constexpr Fence(const Fence&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -32,7 +32,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Fence(Fence&&) noexcept = default;
+		constexpr Fence(Fence&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
@@ -42,7 +42,7 @@ namespace TRAP::Graphics
 		/// Retrieve whether the Fence was submitted or not.
 		/// </summary>
 		/// <returns>True if Fence was submitted, false otherwise.</returns>
-		[[nodiscard]] bool IsSubmitted() const noexcept;
+		[[nodiscard]] constexpr bool IsSubmitted() const noexcept;
 
 		/// <summary>
 		/// Retrieve the current status of the fence.
@@ -70,7 +70,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		Fence();
 
-		bool m_submitted;
+		bool m_submitted = false;
 
 	private:
 		friend void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc& desc) const;
@@ -83,11 +83,9 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::Fence::~Fence()
+[[nodiscard]] constexpr bool TRAP::Graphics::Fence::IsSubmitted() const noexcept
 {
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererFencePrefix, "Destroying Fence");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
+	return m_submitted;
 }
 
 #endif /*TRAP_FENCE_H*/

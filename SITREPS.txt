@@ -4175,3 +4175,7 @@ SITREP 07/02/2023|23w26a4
     - Backported C++23s std::byteswap() ~<5 mins
     - Utils Replaced Memory::SwapBytes implementation with std::byteswap ~<5 mins
     - Base Added constraints to BIT() ~<5 mins
+
+SITREP 07/08/2023|23w27a1
+    - Changed TRAP Engine version to 23w27a1(0.9.57)
+    - Added constexpr to functions where possible now since C++20 ~>180 mins

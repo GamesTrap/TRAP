@@ -16,19 +16,19 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		DescriptorSet(const DescriptorSet&) noexcept = default;
+		constexpr DescriptorSet(const DescriptorSet&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		DescriptorSet& operator=(const DescriptorSet&) noexcept = default;
+		constexpr DescriptorSet& operator=(const DescriptorSet&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		DescriptorSet(DescriptorSet&&) noexcept = default;
+		constexpr DescriptorSet(DescriptorSet&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		DescriptorSet& operator=(DescriptorSet&&) noexcept = default;
+		constexpr DescriptorSet& operator=(DescriptorSet&&) noexcept = default;
 
 		/// <summary>
 		/// Update the descriptor set.
@@ -41,7 +41,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		DescriptorSet() noexcept = default;
+		constexpr DescriptorSet() noexcept = default;
 	};
 }
 

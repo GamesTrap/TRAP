@@ -51,13 +51,20 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan pipeline cache handle.
 		/// </summary>
 		/// <returns>Vulkan pipeline cache handle</returns>
-		[[nodiscard]] VkPipelineCache GetVkPipelineCache() const noexcept;
+		[[nodiscard]] constexpr VkPipelineCache GetVkPipelineCache() const noexcept;
 
 	private:
 		VkPipelineCache m_cache;
 
 		TRAP::Ref<VulkanDevice> m_device;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkPipelineCache TRAP::Graphics::API::VulkanPipelineCache::GetVkPipelineCache() const noexcept
+{
+	return m_cache;
 }
 
 #endif /*TRAP_VULKANPIPELINECACHE_H*/

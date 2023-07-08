@@ -46,10 +46,8 @@ namespace TRAP::Utils::Memory
 	/// <param name="source">Bytes to convert.</param>
 	/// <returns>Converted bytes.</returns>
 	template<typename T>
-	[[nodiscard]] inline static T ConvertByte(const uint8_t* const source)
+	[[nodiscard]] inline static constexpr T ConvertByte(const uint8_t* const source)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 		if constexpr(std::is_unsigned_v<T> && (std::is_same_v<T, uint16_t> ||
 		             std::is_same_v<T, uint32_t> || std::is_same_v<T, uint64_t>))
 		{
@@ -92,8 +90,6 @@ namespace TRAP::Utils::Memory
 	template<typename InputIt, typename OutputIt>
 	inline static void ConvertBytes(InputIt begin, InputIt end, OutputIt output)
 	{
-		ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 		using input_type = typename std::iterator_traits<InputIt>::value_type;
 		using output_type = typename std::iterator_traits<OutputIt>::value_type;
 

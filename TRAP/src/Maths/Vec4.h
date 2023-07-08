@@ -104,6 +104,9 @@ namespace TRAP::Math
 		[[nodiscard]] constexpr T& operator[](std::size_t i);
 		[[nodiscard]] constexpr const T& operator[](std::size_t i) const;
 
+		[[nodiscard]] T& at(std::size_t i);
+		[[nodiscard]] const T& at(std::size_t i) const;
+
 		//Unary arithmetic operators
 		constexpr Vec<4, T>& operator=(const Vec<4, T> & v) noexcept = default;
 
@@ -396,8 +399,51 @@ template <typename T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 //Component accesses
+
 template<typename T>
 [[nodiscard]] constexpr T& TRAP::Math::Vec<4, T>::operator[](const std::size_t i)
+{
+	switch (i)
+	{
+	default:
+		[[fallthrough]];
+	case 0:
+		return x;
+
+	case 1:
+		return y;
+
+	case 2:
+		return z;
+
+	case 3:
+		return w;
+	}
+}
+
+template<typename T>
+[[nodiscard]] constexpr const T& TRAP::Math::Vec<4, T>::operator[](const std::size_t i) const
+{
+	switch (i)
+	{
+	default:
+		[[fallthrough]];
+	case 0:
+		return x;
+
+	case 1:
+		return y;
+
+	case 2:
+		return z;
+
+	case 3:
+		return w;
+	}
+}
+
+template<typename T>
+[[nodiscard]] T& TRAP::Math::Vec<4, T>::at(const std::size_t i)
 {
 	TRAP_ASSERT(i < this->Length(), "Math::Vec<4, T>::operator[]: index out of range!");
 
@@ -420,7 +466,7 @@ template<typename T>
 }
 
 template<typename T>
-[[nodiscard]] constexpr const T& TRAP::Math::Vec<4, T>::operator[](const std::size_t i) const
+[[nodiscard]] const T& TRAP::Math::Vec<4, T>::at(const std::size_t i) const
 {
 	TRAP_ASSERT(i < this->Length(), "Math::Vec<4, T>::operator[]: index out of range!");
 

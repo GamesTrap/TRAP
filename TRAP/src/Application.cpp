@@ -958,9 +958,9 @@ TRAP::WindowProps::AdvancedProps TRAP::Application::LoadAdvancedWindowProps(cons
 #ifndef TRAP_HEADLESS_MODE
 TRAP::WindowProps TRAP::Application::LoadWindowProps(const TRAP::Utils::Config& config)
 {
-	constexpr uint32_t DefaultWindowWidth = 1280;
-	constexpr uint32_t DefaultWindowHeight = 720;
-	constexpr uint32_t DefaultWindowRefreshRate = 60;
+	static constexpr uint32_t DefaultWindowWidth = 1280;
+	static constexpr uint32_t DefaultWindowHeight = 720;
+	static constexpr uint32_t DefaultWindowRefreshRate = 60;
 
 	TRAP::WindowProps props{};
 

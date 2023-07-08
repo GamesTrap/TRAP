@@ -144,39 +144,3 @@ TRAP::Graphics::API::VulkanFrameBuffer::~VulkanFrameBuffer()
 	vkDestroyFramebuffer(m_device->GetVkDevice(), m_framebuffer, nullptr);
 	m_framebuffer = nullptr;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkFramebuffer TRAP::Graphics::API::VulkanFrameBuffer::GetVkFrameBuffer() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_framebuffer;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetWidth() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_width;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetHeight() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_height;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetArraySize() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_arraySize;
-}

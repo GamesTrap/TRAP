@@ -66,12 +66,12 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan swap chain handle.
 		/// </summary>
 		/// <returns>Vulkan swap chain handle.</returns>
-		[[nodiscard]] VkSwapchainKHR GetVkSwapChain() const noexcept;
+		[[nodiscard]] constexpr VkSwapchainKHR GetVkSwapChain() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan queue used for presentation.
 		/// </summary>
 		/// <returns>Vulkan queue used for presentation.</returns>
-		[[nodiscard]] VkQueue GetPresentVkQueue() const noexcept;
+		[[nodiscard]] constexpr VkQueue GetPresentVkQueue() const noexcept;
 
 	private:
 		/// <summary>
@@ -99,6 +99,20 @@ namespace TRAP::Graphics::API
 
 		RendererAPI::SwapChainDesc m_desc;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkSwapchainKHR TRAP::Graphics::API::VulkanSwapChain::GetVkSwapChain() const noexcept
+{
+	return m_swapChain;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkQueue TRAP::Graphics::API::VulkanSwapChain::GetPresentVkQueue() const noexcept
+{
+	return m_presentQueue;
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

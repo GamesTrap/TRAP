@@ -25,37 +25,11 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::VertexBuffer::VertexBuffer() noexcept
-	: m_vertexBuffer(nullptr), m_token()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Graphics::VertexBuffer::~VertexBuffer()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	m_vertexBuffer.reset();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const TRAP::Graphics::VertexBufferLayout& TRAP::Graphics::VertexBuffer::GetLayout() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_bufferLayout;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::VertexBuffer::SetLayout(const VertexBufferLayout& layout)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	m_bufferLayout = layout;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

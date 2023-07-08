@@ -371,7 +371,7 @@ namespace TRAP
 		/// </summary>
 		/// <param name="controller">Controller to check</param>
 		/// <returns>True if provided controller is connected, false otherwise.</returns>
-		[[nodiscard]] static bool IsControllerConnected(Controller controller);
+		[[nodiscard]] static constexpr bool IsControllerConnected(Controller controller);
 		/// <summary>
 		/// Check if a controller is a Gamepad (is able to map to an XBox like controller).
 		/// </summary>
@@ -997,21 +997,21 @@ namespace TRAP
 		/// <param name="con">Which controller.</param>
 		/// <param name="dpad">Which DPad.</param>
 		/// <param name="value">New state.</param>
-		static void InternalInputControllerDPad(ControllerInternal* con, int32_t dpad, uint8_t value);
+		static constexpr void InternalInputControllerDPad(ControllerInternal* con, int32_t dpad, uint8_t value);
 		/// <summary>
 		/// Internally axis input processing.
 		/// </summary>
 		/// <param name="con">Which controller</param>
 		/// <param name="axis">Which axis.</param>
 		/// <param name="value">New axis value.</param>
-		static void InternalInputControllerAxis(ControllerInternal* con, int32_t axis, float value);
+		static constexpr void InternalInputControllerAxis(ControllerInternal* con, int32_t axis, float value);
 		/// <summary>
 		/// Internally button input processing.
 		/// </summary>
 		/// <param name="con">Which controller.</param>
 		/// <param name="button">Which button.</param>
 		/// <param name="pressed">New state, pressed or not pressed.</param>
-		static void InternalInputControllerButton(ControllerInternal* con, int32_t button, bool pressed);
+		static constexpr void InternalInputControllerButton(ControllerInternal* con, int32_t button, bool pressed);
 
 		///////////
 		//Mapping//
@@ -1034,20 +1034,20 @@ namespace TRAP
 		/// </summary>
 		/// <param name="guid">GUID to search for.</param>
 		/// <returns>When found pointer to mapping, nullptr otherwise.</returns>
-		[[nodiscard]] static Mapping* FindMapping(std::string_view guid);
+		[[nodiscard]] static constexpr Mapping* FindMapping(std::string_view guid);
 		/// <summary>
 		/// Find a mapping based on controller GUID and verifies validity.
 		/// </summary>
 		/// <param name="con">Controller from which to use GUID.</param>
 		/// <returns>When found and valid pointer to mapping, nullptr otherwise.</returns>
-		[[nodiscard]] static Mapping* FindValidMapping(const ControllerInternal* con);
+		[[nodiscard]] static constexpr Mapping* FindValidMapping(const ControllerInternal* con);
 		/// <summary>
 		/// Checks whether a controller mapping element is present in the hardware.
 		/// </summary>
 		/// <param name="e">Map element to check.</param>
 		/// <param name="con">Controller to validate with.</param>
 		/// <returns>True if map element is present in hardware, false otherwise.</returns>
-		[[nodiscard]] static bool IsValidElementForController(const MapElement* e, const ControllerInternal* con);
+		[[nodiscard]] static constexpr bool IsValidElementForController(const MapElement* e, const ControllerInternal* con);
 		/// <summary>
 		/// Retrieve state of a specific button from a controller.
 		/// </summary>
@@ -1071,6 +1071,127 @@ namespace TRAP
 		[[nodiscard]] static ControllerDPad GetMappedControllerDPad(Controller controller, uint32_t dpad);
 	};
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Input::IsControllerConnected(const Controller controller)
+{
+	return s_controllerInternal[std::to_underlying(controller)].Connected;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Notifies shared code of the new value of a controller DPad
+constexpr void TRAP::Input::InternalInputControllerDPad(ControllerInternal* const con, const int32_t dpad, const uint8_t value)
+{
+	const uint32_t base = NumericCast<uint32_t>(con->ButtonCount) + NumericCast<uint32_t>(dpad) * 4u;
+
+	con->Buttons[base + 0u] = ((value & BIT(0u)) != 0u); //Up
+	con->Buttons[base + 1u] = ((value & BIT(1u)) != 0u); //Right
+	con->Buttons[base + 2u] = ((value & BIT(2u)) != 0u); //Down
+	con->Buttons[base + 3u] = ((value & BIT(3u)) != 0u); //Left
+
+	if (con->Buttons[base + 1u] && con->Buttons[base + 0u])
+		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Right_Up;
+	else if (con->Buttons[base + 1u] && con->Buttons[base + 2u])
+		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Right_Down;
+	else if (con->Buttons[base + 3u] && con->Buttons[base + 0u])
+		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Left_Up;
+	else if (con->Buttons[base + 3u] && con->Buttons[base + 2u])
+		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Left_Down;
+	else if (con->Buttons[base + 0u])
+		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Up;
+	else if (con->Buttons[base + 1u])
+		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Right;
+	else if (con->Buttons[base + 2u])
+		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Down;
+	else if (con->Buttons[base + 3u])
+		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Left;
+	else
+		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Centered;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Notifies shared code of the new value of a controller axis
+constexpr void TRAP::Input::InternalInputControllerAxis(ControllerInternal* const con, const int32_t axis, const float value)
+{
+	con->Axes[NumericCast<std::size_t>(axis)] = value;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Notifies shared code of the new value of a controller button
+constexpr void TRAP::Input::InternalInputControllerButton(ControllerInternal* const con, const int32_t button, const bool pressed)
+{
+	con->Buttons[NumericCast<std::size_t>(button)] = pressed;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Find a mapping based on controller GUID
+[[nodiscard]] constexpr TRAP::Input::Mapping* TRAP::Input::FindMapping(const std::string_view guid)
+{
+	for (auto& Mapping : s_mappings)
+	{
+		if(Mapping.guid == guid)
+			return &Mapping;
+	}
+
+	return nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Finds a mapping based on controller GUID and verifies element indices
+[[nodiscard]] constexpr TRAP::Input::Mapping* TRAP::Input::FindValidMapping(const ControllerInternal* const con)
+{
+	Mapping* const mapping = FindMapping(con->guid);
+
+	if(mapping == nullptr)
+		return nullptr;
+
+	uint32_t i = 0;
+
+	for(i = 0; i <= std::to_underlying(ControllerButton::DPad_Left); i++)
+	{
+		if(!IsValidElementForController(&mapping->Buttons[i], con))
+		{
+			TP_ERROR(Log::InputControllerPrefix, "Invalid button in controller mapping: ", mapping->guid,
+						" ", mapping->Name);
+			return nullptr;
+		}
+	}
+
+	for(i = 0; i <= std::to_underlying(ControllerAxis::Right_Trigger); i++)
+	{
+		if(!IsValidElementForController(&mapping->Axes[i], con))
+		{
+			TP_ERROR(Log::InputControllerPrefix, "Invalid axis in controller mapping: ", mapping->guid,
+						" ", mapping->Name);
+			return nullptr;
+		}
+	}
+
+	return mapping;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Checks whether a controller mapping element is present in the hardware
+[[nodiscard]] constexpr bool TRAP::Input::IsValidElementForController(const MapElement* const e, const ControllerInternal* const con)
+{
+	if(e->Type == 3 && (e->Index >> 4u) >= NumericCast<int32_t>(con->DPads.size() + 1))
+		return false;
+	if(e->Type == 2 && e->Index >= (con->Buttons.size() + 1))
+		return false;
+	if(e->Type == 1 && e->Index >= (con->Axes.size() + 1))
+		return false;
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 
 MAKE_ENUM_FLAG(TRAP::Input::ControllerDPad)
 

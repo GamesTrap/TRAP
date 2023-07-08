@@ -38,19 +38,19 @@ namespace TRAP
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Log(const Log&) = delete;
+		constexpr Log(const Log&) = delete;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Log& operator=(const Log&) = delete;
+		constexpr Log& operator=(const Log&) = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Log(Log&&) = delete;
+		constexpr Log(Log&&) = delete;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Log& operator=(Log&&) = delete;
+		constexpr Log& operator=(Log&&) = delete;
 
 		/// <summary>
 		/// Get the current used file path for saving.
@@ -88,7 +88,7 @@ namespace TRAP
 		///       off the importance level.
 		/// </summary>
 		/// <param name="level">Importance level to use.</param>
-		void SetImportance(Level level) noexcept;
+		constexpr void SetImportance(Level level) noexcept;
 
 		/// <summary>
 		/// Log a trace message.
@@ -136,7 +136,7 @@ namespace TRAP
 		/// Get all saved log messages and their associated importance level.
 		/// </summary>
 		/// <returns>Messages with importance level.</returns>
-		[[nodiscard]] const std::vector<std::pair<Level, std::string>>& GetBuffer() const noexcept;
+		[[nodiscard]] constexpr const std::vector<std::pair<Level, std::string>>& GetBuffer() const noexcept;
 
 		/// <summary>
 		/// Save all collected messages to file.
@@ -145,9 +145,9 @@ namespace TRAP
 		/// <summary>
 		/// Clears all buffered messages.
 		/// </summary>
-		void Clear() noexcept;
+		constexpr void Clear() noexcept;
 
-		inline static constexpr auto WindowVersion =                        "[23w26a4]";
+		inline static constexpr auto WindowVersion =                        "[23w27a1]";
 		inline static constexpr auto WindowPrefix =                         "[Window] ";
 		inline static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		inline static constexpr auto ConfigPrefix =                         "[Config] ";
@@ -292,12 +292,33 @@ namespace TRAP
 
 		std::mutex m_mtx;
 
-		std::filesystem::path m_path;
+		std::filesystem::path m_path = "trap.log";
 
 		Level m_importance;
 	};
 
 	extern Log TRAPLog;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Log::SetImportance(const Level level) noexcept
+{
+	m_importance = level;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::vector<std::pair<TRAP::Log::Level, std::string>>& TRAP::Log::GetBuffer() const noexcept
+{
+	return m_buffer;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Log::Clear() noexcept
+{
+	m_buffer.clear();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -326,7 +347,7 @@ static constexpr inline TRAP::Log::Level operator&=(TRAP::Log::Level& a, const T
 /// </summary>
 /// <typeparam name="...Args">Message to log.</typeparam>
 template<typename... Args>
-constexpr void TP_TRACE(const Args& ... args)
+void TP_TRACE(const Args& ... args)
 {
 	TRAP::TRAPLog.Trace(args...);
 }
@@ -340,7 +361,7 @@ constexpr void TP_TRACE(const Args& ... args)
 /// </summary>
 /// <typeparam name="...Args">Message to log.</typeparam>
 template<typename... Args>
-constexpr void TP_DEBUG(const Args& ... args)
+void TP_DEBUG(const Args& ... args)
 {
 	TRAP::TRAPLog.Debug(args...);
 }
@@ -353,7 +374,7 @@ constexpr void TP_DEBUG(const Args& ... args)
 /// </summary>
 /// <typeparam name="...Args">Message to log.</typeparam>
 template<typename... Args>
-constexpr void TP_DEBUG([[maybe_unused]] const Args& ... args)
+void TP_DEBUG([[maybe_unused]] const Args& ... args)
 {
 }
 #endif
@@ -365,7 +386,7 @@ constexpr void TP_DEBUG([[maybe_unused]] const Args& ... args)
 /// </summary>
 /// <typeparam name="...Args">Message to log.</typeparam>
 template<typename... Args>
-constexpr void TP_INFO(const Args& ... args)
+void TP_INFO(const Args& ... args)
 {
 	TRAP::TRAPLog.Info(args...);
 }
@@ -377,7 +398,7 @@ constexpr void TP_INFO(const Args& ... args)
 /// </summary>
 /// <typeparam name="...Args">Message to log.</typeparam>
 template<typename... Args>
-constexpr void TP_WARN(const Args& ... args)
+void TP_WARN(const Args& ... args)
 {
 	TRAP::TRAPLog.Warn(args...);
 }
@@ -389,7 +410,7 @@ constexpr void TP_WARN(const Args& ... args)
 /// </summary>
 /// <typeparam name="...Args">Message to log.</typeparam>
 template<typename... Args>
-constexpr void TP_ERROR(const Args& ... args)
+void TP_ERROR(const Args& ... args)
 {
 	TRAP::TRAPLog.Error(args...);
 }
@@ -401,7 +422,7 @@ constexpr void TP_ERROR(const Args& ... args)
 /// </summary>
 /// <typeparam name="...Args">Message to log.</typeparam>
 template<typename... Args>
-constexpr void TP_CRITICAL(const Args& ... args)
+void TP_CRITICAL(const Args& ... args)
 {
 	TRAP::TRAPLog.Critical(args...);
 }

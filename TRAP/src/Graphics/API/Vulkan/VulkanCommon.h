@@ -29,6 +29,7 @@
 #ifndef TRAP_VULKANCOMMON_H
 #define TRAP_VULKANCOMMON_H
 
+#include "Core/PlatformDetection.h"
 #include "Graphics/API/RendererAPI.h"
 #include "Utils/ConstexprMap.h"
 
@@ -68,7 +69,7 @@ namespace TRAP::Graphics::API
 	/// </summary>
 	/// <param name="queueType">QueueType to convert.</param>
 	/// <returns>Converted VkQueueFlags.</returns>
-	[[nodiscard]] constexpr VkQueueFlags QueueTypeToVkQueueFlags(RendererAPI::QueueType queueType) noexcept;
+	[[nodiscard]] VkQueueFlags QueueTypeToVkQueueFlags(RendererAPI::QueueType queueType) noexcept;
 
 	/// <summary>
 	/// Convert the RendererAPI::SampleCount to VkSampleCountFlagBits.
@@ -119,7 +120,7 @@ namespace TRAP::Graphics::API
 	/// </summary>
 	/// <param name="mipMapMode">MipMapMode to convert.</param>
 	/// <returns>Converted VkSamplerMipmapMode.</returns>
-	[[nodiscard]] constexpr VkSamplerMipmapMode MipMapModeToVkMipMapMode(RendererAPI::MipMapMode mipMapMode) noexcept;
+	[[nodiscard]] VkSamplerMipmapMode MipMapModeToVkMipMapMode(RendererAPI::MipMapMode mipMapMode) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::AddressMode to VkSamplerAddressMode.
 	/// </summary>
@@ -131,13 +132,13 @@ namespace TRAP::Graphics::API
 	/// </summary>
 	/// <param name="type">DescriptorType to convert.</param>
 	/// <returns>Converted VkDescriptorType.</returns>
-	[[nodiscard]] constexpr VkDescriptorType DescriptorTypeToVkDescriptorType(RendererAPI::DescriptorType type) noexcept;
+	[[nodiscard]] VkDescriptorType DescriptorTypeToVkDescriptorType(RendererAPI::DescriptorType type) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::ShaderStage to VkShaderStageFlags.
 	/// </summary>
 	/// <param name="stages">ShaderStage(s) to convert.</param>
 	/// <returns>Converted VkShaderStageFlags.</returns>
-	[[nodiscard]] constexpr VkShaderStageFlags ShaderStageToVkShaderStageFlags(RendererAPI::ShaderStage stages) noexcept;
+	[[nodiscard]] VkShaderStageFlags ShaderStageToVkShaderStageFlags(RendererAPI::ShaderStage stages) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::PipelineCacheFlags to VkPipelineCacheCreateFlags.
 	/// </summary>
@@ -168,7 +169,7 @@ namespace TRAP::Graphics::API
 	/// </summary>
 	/// <param name="type">QueryType to convert.</param>
 	/// <returns>Converted VkQueryType.</returns>
-	[[nodiscard]] constexpr VkQueryType QueryTypeToVkQueryType(RendererAPI::QueryType type) noexcept;
+	[[nodiscard]] VkQueryType QueryTypeToVkQueryType(RendererAPI::QueryType type) noexcept;
 
 	/// <summary>
 	/// Utility to create the VkPipelineColorBlendStateCreateInfo struct from
@@ -209,14 +210,14 @@ namespace TRAP::Graphics::API
 	/// </summary>
 	/// <param name="combiner">ShadingRateCombiner.</param>
 	/// <returns>Converted VkFragmentShadingRateCombinerOpKHR.</returns>
-	[[nodiscard]] constexpr VkFragmentShadingRateCombinerOpKHR ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(const RendererAPI::ShadingRateCombiner& combiner);
+	[[nodiscard]] VkFragmentShadingRateCombinerOpKHR ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(const RendererAPI::ShadingRateCombiner& combiner);
 	/// <summary>
 	/// Utility to create the VkExtent2D (fragment size) from
 	/// a RendererAPI::ShadingRate.
 	/// </summary>
 	/// <param name="rate">ShadingRate.</param>
 	/// <returns>Converted VkExtent2D.</returns>
-	[[nodiscard]] constexpr VkExtent2D ShadingRateToVkExtent2D(const RendererAPI::ShadingRate& rate);
+	[[nodiscard]] VkExtent2D ShadingRateToVkExtent2D(const RendererAPI::ShadingRate& rate);
 
 	/// <summary>
 	/// Retrieve the recommended swapchain format for Vulkan.
@@ -224,7 +225,7 @@ namespace TRAP::Graphics::API
 	/// <param name="HDR">True if HDR is desired.</param>
 	/// <param name="SRGB">True if SRGB is desired.</param>
 	/// <returns>Recommended swapchain format.</returns>
-	[[nodiscard]] TRAP::Graphics::API::ImageFormat VulkanGetRecommendedSwapchainFormat(bool HDR, bool SRGB) noexcept;
+	[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat VulkanGetRecommendedSwapchainFormat(bool HDR, bool SRGB) noexcept;
 
 	/// <summary>
 	/// Convert the VkFormat to ImageFormat.
@@ -479,27 +480,6 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 	return false;
 }
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr VkQueueFlags TRAP::Graphics::API::QueueTypeToVkQueueFlags(const RendererAPI::QueueType queueType) noexcept
-{
-	switch(queueType)
-	{
-	case RendererAPI::QueueType::Graphics:
-		return VK_QUEUE_GRAPHICS_BIT;
-
-	case RendererAPI::QueueType::Transfer:
-		return VK_QUEUE_TRANSFER_BIT;
-
-	case RendererAPI::QueueType::Compute:
-		return VK_QUEUE_COMPUTE_BIT;
-
-	default:
-		// TRAP_ASSERT(false, "QueueTypeToVkQueueFlags(): Invalid Queue Type");
-		return VK_QUEUE_FLAG_BITS_MAX_ENUM;
-	}
-}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -861,24 +841,6 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkSamplerMipmapMode TRAP::Graphics::API::MipMapModeToVkMipMapMode(const RendererAPI::MipMapMode mipMapMode) noexcept
-{
-	switch (mipMapMode)
-	{
-	case RendererAPI::MipMapMode::Nearest:
-		return VK_SAMPLER_MIPMAP_MODE_NEAREST;
-
-	case RendererAPI::MipMapMode::Linear:
-		return VK_SAMPLER_MIPMAP_MODE_LINEAR;
-
-	default:
-		// TRAP_ASSERT(false, "MipMapModeToVkMipMapMode(): Invalid Mip Map Mode");
-		return VK_SAMPLER_MIPMAP_MODE_MAX_ENUM;
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] constexpr VkSamplerAddressMode TRAP::Graphics::API::AddressModeToVkAddressMode(const RendererAPI::AddressMode addressMode) noexcept
 {
 	switch(addressMode)
@@ -898,85 +860,6 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 	default:
 		return VK_SAMPLER_ADDRESS_MODE_REPEAT;
 	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr VkDescriptorType TRAP::Graphics::API::DescriptorTypeToVkDescriptorType(const RendererAPI::DescriptorType type) noexcept
-{
-	switch(type)
-	{
-	case RendererAPI::DescriptorType::Undefined:
-		// TRAP_ASSERT(false, "DescriptorTypeToVkDescriptorType(): Invalid DescriptorInfo Type");
-		return VK_DESCRIPTOR_TYPE_MAX_ENUM;
-
-	case RendererAPI::DescriptorType::Sampler:
-		return VK_DESCRIPTOR_TYPE_SAMPLER;
-
-	case RendererAPI::DescriptorType::Texture:
-		return VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
-
-	case RendererAPI::DescriptorType::UniformBuffer:
-		return VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-
-	case RendererAPI::DescriptorType::RWTexture:
-		return VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
-
-	case RendererAPI::DescriptorType::Buffer:
-	case RendererAPI::DescriptorType::RWBuffer:
-		return VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-
-	case RendererAPI::DescriptorType::InputAttachment:
-		return VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
-
-	case RendererAPI::DescriptorType::TexelBuffer:
-		return VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
-
-	case RendererAPI::DescriptorType::RWTexelBuffer:
-		return VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
-
-	case RendererAPI::DescriptorType::CombinedImageSampler:
-		return VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-
-	//RayTracing
-	case RendererAPI::DescriptorType::RayTracing:
-		return VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR;
-
-	default:
-		// TRAP_ASSERT(false, "DescriptorTypeToVkDescriptorType(): Invalid DescriptorInfo Type");
-		return VK_DESCRIPTOR_TYPE_MAX_ENUM;
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr VkShaderStageFlags TRAP::Graphics::API::ShaderStageToVkShaderStageFlags(const RendererAPI::ShaderStage stages) noexcept
-{
-	VkShaderStageFlags res = 0;
-
-	if ((stages & RendererAPI::ShaderStage::AllGraphics) != RendererAPI::ShaderStage::None)
-		return VK_SHADER_STAGE_ALL_GRAPHICS;
-
-	if ((stages & RendererAPI::ShaderStage::Vertex) != RendererAPI::ShaderStage::None)
-		res |= VK_SHADER_STAGE_VERTEX_BIT;
-	if ((stages & RendererAPI::ShaderStage::Geometry) != RendererAPI::ShaderStage::None)
-		res |= VK_SHADER_STAGE_GEOMETRY_BIT;
-	if ((stages & RendererAPI::ShaderStage::TessellationEvaluation) != RendererAPI::ShaderStage::None)
-		res |= VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
-	if ((stages & RendererAPI::ShaderStage::TessellationControl) != RendererAPI::ShaderStage::None)
-		res |= VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
-	if ((stages & RendererAPI::ShaderStage::Fragment) != RendererAPI::ShaderStage::None)
-		res |= VK_SHADER_STAGE_FRAGMENT_BIT;
-	if ((stages & RendererAPI::ShaderStage::Compute) != RendererAPI::ShaderStage::None)
-		res |= VK_SHADER_STAGE_COMPUTE_BIT;
-	//RayTracing
-	if ((stages & RendererAPI::ShaderStage::RayTracing) != RendererAPI::ShaderStage::None)
-		res |= (VK_SHADER_STAGE_RAYGEN_BIT_KHR | VK_SHADER_STAGE_ANY_HIT_BIT_KHR |
-			    VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR | VK_SHADER_STAGE_MISS_BIT_KHR |
-			    VK_SHADER_STAGE_INTERSECTION_BIT_KHR | VK_SHADER_STAGE_CALLABLE_BIT_KHR);
-
-	// TRAP_ASSERT(res != 0, "ShaderStageToVkShaderStageFlags(): Invalid ShaderStage combination");
-	return res;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1057,27 +940,6 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 		return VK_IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR;
 
 	return VK_IMAGE_LAYOUT_UNDEFINED;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr VkQueryType TRAP::Graphics::API::QueryTypeToVkQueryType(const RendererAPI::QueryType type) noexcept
-{
-	switch(type)
-	{
-	case RendererAPI::QueryType::Timestamp:
-		return VK_QUERY_TYPE_TIMESTAMP;
-
-	case RendererAPI::QueryType::PipelineStatistics:
-		return VK_QUERY_TYPE_PIPELINE_STATISTICS;
-
-	case RendererAPI::QueryType::Occlusion:
-		return VK_QUERY_TYPE_OCCLUSION;
-
-	default:
-		// TRAP_ASSERT(false, "QueryTypeToVkQueryType(): Invalid query heap type");
-		return VK_QUERY_TYPE_MAX_ENUM;
-	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1325,54 +1187,20 @@ constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkFragmentShadingRateCombinerOpKHR TRAP::Graphics::API::ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(const RendererAPI::ShadingRateCombiner& combiner)
+[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::VulkanGetRecommendedSwapchainFormat([[maybe_unused]] const bool HDR,
+																						                          const bool SRGB) noexcept
 {
-	switch(combiner)
-	{
-	case RendererAPI::ShadingRateCombiner::Passthrough:
-		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_KEEP_KHR;
-	case RendererAPI::ShadingRateCombiner::Override:
-		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_REPLACE_KHR;
-	case RendererAPI::ShadingRateCombiner::Min:
-		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_MIN_KHR;
-	case RendererAPI::ShadingRateCombiner::Max:
-		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_MAX_KHR;
-	case RendererAPI::ShadingRateCombiner::Sum:
-		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_MUL_KHR;
+#ifndef TRAP_PLATFORM_ANDROID
+	if(SRGB)
+		return TRAP::Graphics::API::ImageFormat::B8G8R8A8_SRGB;
 
-	default:
-		TRAP_ASSERT(false, "ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(): Invalid shading rate combiner type");
-		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_KEEP_KHR;
-	}
-}
+	return TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM;
+#else
+	if(SRGB)
+		return TRAP::Graphics::API::ImageFormat::R8G8B8A8_SRGB;
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr VkExtent2D TRAP::Graphics::API::ShadingRateToVkExtent2D(const RendererAPI::ShadingRate& rate)
-{
-	switch(rate)
-	{
-	case RendererAPI::ShadingRate::Full:
-		return VkExtent2D{ 1, 1 };
-	case RendererAPI::ShadingRate::Half:
-		return VkExtent2D{ 2, 2 };
-	case RendererAPI::ShadingRate::Quarter:
-		return VkExtent2D{ 4, 4 };
-	case RendererAPI::ShadingRate::Eighth:
-		return VkExtent2D{ 8, 8 };
-	case RendererAPI::ShadingRate::OneXTwo:
-		return VkExtent2D{ 1, 2 };
-	case RendererAPI::ShadingRate::TwoXOne:
-		return VkExtent2D{ 2, 1 };
-	case RendererAPI::ShadingRate::TwoXFour:
-		return VkExtent2D{ 2, 4 };
-	case RendererAPI::ShadingRate::FourXTwo:
-		return VkExtent2D{ 4, 2 };
-
-	default:
-		TRAP_ASSERT(false, "ShadingRateToVkExtent2D(): Invalid shading rate");
-		return VkExtent2D{ 1, 1 };
-	}
+	return TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
+#endif
 }
 
 #endif /*TRAP_VULKANCOMMON_H*/

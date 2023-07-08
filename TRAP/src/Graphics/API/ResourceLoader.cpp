@@ -222,133 +222,6 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint32_t TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceSize(const TRAP::Graphics::API::ImageFormat fmt,
-                                                                               const uint32_t width, const uint32_t height,
-																               const uint32_t depth, const uint32_t rowStride,
-																               const uint32_t sliceStride,
-																               const uint32_t baseMipLevel,
-																               const uint32_t mipLevels,
-																               const uint32_t baseArrayLayer,
-																               const uint32_t arrayLayers) noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	uint32_t requiredSize = 0;
-
-	for(uint32_t s = baseArrayLayer; s < baseArrayLayer + arrayLayers; ++s)
-	{
-		uint32_t w = width;
-		uint32_t h = height;
-		uint32_t d = depth;
-
-		for(uint32_t m = baseMipLevel; m < (baseMipLevel + mipLevels); ++m)
-		{
-			uint32_t rowBytes = 0;
-			uint32_t numRows = 0;
-
-			if(!UtilGetSurfaceInfo(w, h, fmt, nullptr, &rowBytes, &numRows))
-				return 0u;
-
-			const uint32_t temp = ((rowBytes + rowStride - 1) / rowStride) * rowStride;
-			requiredSize += (((d * temp * numRows) + sliceStride - 1) / sliceStride) * sliceStride;
-
-			w = w >> 1u;
-			h = h >> 1u;
-			d = d >> 1u;
-			if(w == 0)
-				w = 1;
-			if(h == 0)
-				h = 1;
-			if(d == 0)
-				d = 1;
-		}
-	}
-
-	return requiredSize;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] bool TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceInfo(const uint32_t width, const uint32_t height,
-	                                                                       const TRAP::Graphics::API::ImageFormat fmt,
-															               uint32_t* const outNumBytes, uint32_t* const outRowBytes,
-															               uint32_t* const outNumRows)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-	uint64_t numBytes = 0;
-	uint64_t rowBytes = 0;
-	uint64_t numRows = 0;
-
-	const uint32_t bpp = TRAP::Graphics::API::ImageFormatBitSizeOfBlock(fmt);
-	const bool compressed = TRAP::Graphics::API::ImageFormatIsCompressed(fmt);
-	const bool planar = TRAP::Graphics::API::ImageFormatIsPlanar(fmt);
-
-	const bool packed = false; //TODO
-
-	if(compressed)
-	{
-		const uint32_t blockWidth = TRAP::Graphics::API::ImageFormatWidthOfBlock(fmt);
-		const uint32_t blockHeight = TRAP::Graphics::API::ImageFormatHeightOfBlock(fmt);
-		uint32_t numBlocksWide = 0;
-		uint32_t numBlocksHigh = 0;
-		if(width > 0)
-			numBlocksWide = Math::Max(1u, (width + (blockWidth - 1)) / blockWidth);
-		if(height > 0)
-			numBlocksHigh = Math::Max(1u, (height + (blockHeight - 1)) / blockHeight);
-
-		rowBytes = NumericCast<uint64_t>(numBlocksWide) * (bpp >> 3u);
-		numRows = numBlocksHigh;
-		numBytes = rowBytes * numBlocksHigh;
-	}
-	else if(packed)
-	{
-		TP_ERROR(Log::TexturePrefix, "Packed not implemented!");
-		return false;
-	}
-	else if(planar)
-	{
-		const uint32_t numOfPlanes = TRAP::Graphics::API::ImageFormatNumOfPlanes(fmt);
-
-		for(uint32_t i = 0; i < numOfPlanes; ++i)
-		{
-			numBytes += NumericCast<uint64_t>(TRAP::Graphics::API::ImageFormatPlaneWidth(fmt, i, width)) *
-			            TRAP::Graphics::API::ImageFormatPlaneHeight(fmt, i, height) *
-						TRAP::Graphics::API::ImageFormatPlaneSizeOfBlock(fmt, i);
-		}
-
-		numRows = 1;
-		rowBytes = numBytes;
-	}
-	else
-	{
-		if(bpp == 0u)
-			return false;
-
-		rowBytes = (NumericCast<uint64_t>(width) * bpp + 7u) / 8u; //Round up to nearest byte
-		numRows = NumericCast<uint64_t>(height);
-		numBytes = rowBytes * height;
-	}
-
-	if(numBytes > std::numeric_limits<uint32_t>::max() ||
-	   rowBytes > std::numeric_limits<uint32_t>::max() ||
-	   numRows > std::numeric_limits<uint32_t>::max())
-	{
-		return false;
-	}
-
-	if(outNumBytes != nullptr)
-		*outNumBytes = NumericCast<uint32_t>(numBytes);
-	if(outRowBytes != nullptr)
-		*outRowBytes = NumericCast<uint32_t>(rowBytes);
-	if(outNumRows != nullptr)
-		*outNumRows = NumericCast<uint32_t>(numRows);
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Graphics::API::ResourceLoader::ResourceLoader(const RendererAPI::ResourceLoaderDesc* const desc)
 	: m_desc(desc != nullptr ? *desc : DefaultResourceLoaderDesc),
 	  m_run(true),
@@ -1059,15 +932,6 @@ void TRAP::Graphics::API::ResourceLoader::StreamerFlush(const std::size_t active
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::Graphics::API::ResourceLoader::AreTasksAvailable() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return !m_requestQueue.empty();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::Texture* const texture,
                                                                 CommandBuffer* const cmd)
 {
@@ -1649,36 +1513,6 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::BufferUpdateDesc& buffer) noexcept
-	: Type(UpdateRequestType::UpdateBuffer), Desc(buffer)
-{}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::TextureLoadDesc& texture) noexcept
-	: Type(UpdateRequestType::LoadTexture), Desc(texture)
-{}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::TextureCopyDesc& textureCopy) noexcept
-	: Type(UpdateRequestType::CopyTexture), Desc(textureCopy)
-{}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(TRAP::Graphics::API::ResourceLoader::TextureUpdateDescInternal texture) noexcept
 	: Type(UpdateRequestType::UpdateTexture), Desc(texture)
-{}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::BufferBarrier& barrier) noexcept
-	: Type(UpdateRequestType::BufferBarrier), Desc(barrier)
-{}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::TextureBarrier& barrier) noexcept
-	: Type(UpdateRequestType::TextureBarrier), Desc(barrier)
 {}

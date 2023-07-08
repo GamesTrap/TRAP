@@ -13,29 +13,29 @@ namespace TRAP::Utils
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		Config() noexcept;
+		constexpr Config() noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		~Config() = default;
+		constexpr ~Config() = default;
 
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Config(const Config&) = delete;
+		constexpr Config(const Config&) = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Config(Config&&) = default;
+		constexpr Config(Config&&) = default;
 
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Config& operator=(const Config&) = delete;
+		constexpr Config& operator=(const Config&) = delete;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Config& operator=(Config&&) = default;
+		constexpr Config& operator=(Config&&) = default;
 
 		/// <summary>
 		/// Load a config file from disk.
@@ -54,7 +54,7 @@ namespace TRAP::Utils
 		/// Check if config has changed after last load/save.
 		/// </summary>
 		/// <returns>True if config has changed, false otherwise.</returns>
-		[[nodiscard]] bool HasChanged() const noexcept;
+		[[nodiscard]] constexpr bool HasChanged() const noexcept;
 
 		/// <summary>
 		/// Retrieve the value of a specific key in the config.
@@ -105,8 +105,8 @@ namespace TRAP::Utils
 		/// <returns>Pair of key and value.</returns>
 		[[nodiscard]] static constexpr std::pair<std::string, std::string> ParseLine(std::string_view line);
 
-		bool m_hasChanged;
-		std::vector<std::pair<std::string, std::string>> m_data;
+		bool m_hasChanged = false;
+		std::vector<std::pair<std::string, std::string>> m_data{};
 	};
 }
 
@@ -210,6 +210,13 @@ void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T>& valu
 		//If not it creates a new element
 		m_data.emplace_back(key, valueAsString);
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Utils::Config::HasChanged() const noexcept
+{
+	return m_hasChanged;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

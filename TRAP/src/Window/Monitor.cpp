@@ -1,8 +1,6 @@
 #include "TRAPPCH.h"
 #include "Monitor.h"
 
-#include <ranges>
-
 #include "Utils/ErrorCodes/ErrorCodes.h"
 
 #ifndef TRAP_HEADLESS_MODE
@@ -10,8 +8,6 @@
 TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
 	: m_handle(monitor)
 {
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
-
 	TRAP_ASSERT(m_handle, "Monitor::Monitor(): monitor is nullptr!");
 }
 

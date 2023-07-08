@@ -151,21 +151,21 @@ namespace TRAP::Network
 		/// <summary>
 		/// Overload of operator >> to read data from the packet.
 		/// </summary>
-		Packet& operator>>(bool& data);
-		Packet& operator>>(int8_t& data);
-		Packet& operator>>(uint8_t& data);
-		Packet& operator>>(int16_t& data);
-		Packet& operator>>(uint16_t& data);
-		Packet& operator>>(int32_t& data);
-		Packet& operator>>(uint32_t& data);
-		Packet& operator>>(int64_t& data);
-		Packet& operator>>(uint64_t& data);
-		Packet& operator>>(float& data);
-		Packet& operator>>(double& data);
-		Packet& operator>>(char* data);
-		Packet& operator>>(std::string& data);
-		Packet& operator>>(wchar_t* data);
-		Packet& operator>>(std::wstring& data);
+		constexpr Packet& operator>>(bool& data);
+		constexpr Packet& operator>>(int8_t& data);
+		constexpr Packet& operator>>(uint8_t& data);
+		constexpr Packet& operator>>(int16_t& data);
+		constexpr Packet& operator>>(uint16_t& data);
+		constexpr Packet& operator>>(int32_t& data);
+		constexpr Packet& operator>>(uint32_t& data);
+		constexpr Packet& operator>>(int64_t& data);
+		constexpr Packet& operator>>(uint64_t& data);
+		constexpr Packet& operator>>(float& data);
+		constexpr Packet& operator>>(double& data);
+		constexpr Packet& operator>>(char* data);
+		constexpr Packet& operator>>(std::string& data);
+		constexpr Packet& operator>>(wchar_t* data);
+		constexpr Packet& operator>>(std::wstring& data);
 
 		/// <summary>
 		/// Overload of operator << to write data into the packet.
@@ -218,7 +218,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="data">Pointer to the received bytes.</param>
 		/// <param name="size">Number of bytes.</param>
-		virtual void OnReceive(const void* data, std::size_t size);
+		constexpr virtual void OnReceive(const void* data, std::size_t size);
 
 	public:
 		/// <summary>
@@ -310,6 +310,258 @@ constexpr TRAP::Network::Packet::operator bool() const noexcept
 	m_isValid = m_isValid && (m_readPos + size <= m_data.size());
 
 	return m_isValid;
+}
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(bool& data)
+{
+	uint8_t value = 0;
+	if (*this >> value)
+		data = (value != 0);
+
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int8_t& data)
+{
+	if(CheckSize(sizeof(int8_t)))
+	{
+		std::copy_n(&m_data[m_readPos], sizeof(int8_t), &data);
+		m_readPos += sizeof(int8_t);
+	}
+
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint8_t& data)
+{
+	if(CheckSize(sizeof(uint8_t)))
+	{
+		std::copy_n(&m_data[m_readPos], sizeof(uint8_t), &data);
+		m_readPos += sizeof(uint8_t);
+	}
+
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int16_t& data)
+{
+	if(CheckSize(sizeof(int16_t)))
+	{
+		std::copy_n(&m_data[m_readPos], sizeof(int16_t), &data);
+
+		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
+			TRAP::Utils::Memory::SwapBytes(data);
+
+		m_readPos += sizeof(int16_t);
+	}
+
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint16_t& data)
+{
+	if (CheckSize(sizeof(uint16_t)))
+	{
+		std::copy_n(&m_data[m_readPos], sizeof(uint16_t), &data);
+
+		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
+			TRAP::Utils::Memory::SwapBytes(data);
+
+		m_readPos += sizeof(uint16_t);
+	}
+
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int32_t& data)
+{
+	if (CheckSize(sizeof(int32_t)))
+	{
+		std::copy_n(&m_data[m_readPos], sizeof(int32_t), &data);
+
+		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
+			TRAP::Utils::Memory::SwapBytes(data);
+
+		m_readPos += sizeof(int32_t);
+	}
+
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint32_t& data)
+{
+	if (CheckSize(sizeof(uint32_t)))
+	{
+		std::copy_n(&m_data[m_readPos], sizeof(uint32_t), &data);
+
+		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
+			TRAP::Utils::Memory::SwapBytes(data);
+
+		m_readPos += sizeof(uint32_t);
+	}
+
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int64_t& data)
+{
+	if(CheckSize(sizeof(int64_t)))
+	{
+		std::copy_n(&m_data[m_readPos], sizeof(int64_t), &data);
+
+		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
+			TRAP::Utils::Memory::SwapBytes(data);
+
+		m_readPos += sizeof(int64_t);
+	}
+
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint64_t& data)
+{
+	if (CheckSize(sizeof(uint64_t)))
+	{
+		std::copy_n(&m_data[m_readPos], sizeof(uint64_t), &data);
+
+		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
+			TRAP::Utils::Memory::SwapBytes(data);
+
+		m_readPos += sizeof(uint64_t);
+	}
+
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(float& data)
+{
+	if(CheckSize(sizeof(float)))
+	{
+		std::copy_n(&m_data[m_readPos], sizeof(float), &data);
+		m_readPos += sizeof(float);
+	}
+
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(double& data)
+{
+	if (CheckSize(sizeof(double)))
+	{
+		std::copy_n(&m_data[m_readPos], sizeof(double), &data);
+		m_readPos += sizeof(double);
+	}
+
+	return *this;
+}
+
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(char* const data)
+{
+	//First extract string length
+	uint32_t length = 0;
+	*this >> length;
+
+	if((length > 0) && CheckSize(length))
+	{
+		//Then extract characters
+		std::copy_n(&m_data[m_readPos], length, data);
+		data[length] = '\0';
+
+		//Update reading position
+		m_readPos += length;
+	}
+
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(std::string& data)
+{
+	//First extract string length
+	uint32_t length = 0;
+	*this >> length;
+
+	data.clear();
+	if((length > 0) && CheckSize(length))
+	{
+		//Then extract characters
+		data.assign(&m_data[m_readPos], length);
+
+		//Update reading position
+		m_readPos += length;
+	}
+
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(wchar_t* const data)
+{
+	//First extract string length
+	uint32_t length = 0;
+	*this >> length;
+
+	if((length > 0) && CheckSize(length * sizeof(uint32_t)))
+	{
+		//Then extract characters
+		for(uint32_t i = 0; i < length; ++i)
+		{
+			uint32_t character = 0;
+			*this >> character;
+			data[i] = static_cast<wchar_t>(character);
+		}
+		data[length] = L'\0';
+	}
+
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(std::wstring& data)
+{
+	//First extract the string length
+	uint32_t length = 0;
+	*this >> length;
+
+	data.clear();
+	if((length > 0) && CheckSize(length * sizeof(uint32_t)))
+	{
+		//Then extract characters
+		for(uint32_t i = 0; i < length; ++i)
+		{
+			uint32_t character = 0;
+			*this >> character;
+			data += static_cast<wchar_t>(character);
+		}
+	}
+
+	return *this;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -446,6 +698,13 @@ constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::ws
 		Append(data.data(), length * sizeof(std::wstring::value_type));
 
 	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Network::Packet::OnReceive(const void* const data, const std::size_t size)
+{
+	Append(data, size);
 }
 
 #endif /*TRAP_NETWORK_PACKET_H*/

@@ -24,7 +24,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanQueryPool(const VulkanQueryPool&) noexcept = default;
+		constexpr VulkanQueryPool(const VulkanQueryPool&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -32,7 +32,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanQueryPool(VulkanQueryPool&&) noexcept = default;
+		constexpr VulkanQueryPool(VulkanQueryPool&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
@@ -42,23 +42,44 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan query pool handle.
 		/// </summary>
 		/// <returns>Vulkan query pool handle</returns>
-		[[nodiscard]] VkQueryPool GetVkQueryPool() const noexcept;
+		[[nodiscard]] constexpr VkQueryPool GetVkQueryPool() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan query type.
 		/// </summary>
 		/// <returns>Vulkan query type</returns>
-		[[nodiscard]] VkQueryType GetVkQueryType() const noexcept;
+		[[nodiscard]] constexpr VkQueryType GetVkQueryType() const noexcept;
 		/// <summary>
 		/// Retrieve the number of queries managed by the pool.
 		/// </summary>
 		/// <returns>Number of queries</returns>
-		[[nodiscard]] uint32_t GetCount() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetCount() const noexcept;
 
 	private:
 		VkQueryPool m_vkQueryPool;
 		VkQueryType m_type;
 		uint32_t m_count;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkQueryPool TRAP::Graphics::API::VulkanQueryPool::GetVkQueryPool() const noexcept
+{
+	return m_vkQueryPool;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkQueryType TRAP::Graphics::API::VulkanQueryPool::GetVkQueryType() const noexcept
+{
+	return m_type;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::API::VulkanQueryPool::GetCount() const noexcept
+{
+	return m_count;
 }
 
 #endif /*TRAP_VULKANQUERYPOOL_H*/

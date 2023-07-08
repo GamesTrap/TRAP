@@ -34,14 +34,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Utils/Utils.h"
 #include "Utils/Memory.h"
 
-TRAP::Network::UDPSocket::UDPSocket()
-	: Socket(Type::UDP), m_buffer(MaxDatagramSize)
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] uint16_t TRAP::Network::UDPSocket::GetLocalPort() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);

@@ -68,7 +68,7 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="key">Pressed key.</param>
 		/// <param name="window">Pointer to the affected window.</param>
-		constexpr KeyPressEvent(Input::Key key, TRAP::Window* window);
+		KeyPressEvent(Input::Key key, TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -80,7 +80,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		constexpr KeyPressEvent& operator=(const KeyPressEvent&) noexcept = default;
+		KeyPressEvent& operator=(const KeyPressEvent&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
@@ -88,7 +88,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		constexpr KeyPressEvent& operator=(KeyPressEvent&&) noexcept = default;
+		KeyPressEvent& operator=(KeyPressEvent&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve a pointer to the affected window.
@@ -133,7 +133,7 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="key">Repeated key.</param>
 		/// <param name="window">Pointer to the affected window.</param>
-		constexpr KeyRepeatEvent(Input::Key key, TRAP::Window* window);
+		KeyRepeatEvent(Input::Key key, TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -145,7 +145,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		constexpr KeyRepeatEvent& operator=(const KeyRepeatEvent&) noexcept = default;
+		KeyRepeatEvent& operator=(const KeyRepeatEvent&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
@@ -153,7 +153,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		constexpr KeyRepeatEvent& operator=(KeyRepeatEvent&&) noexcept = default;
+		KeyRepeatEvent& operator=(KeyRepeatEvent&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve a pointer to the affected window.
@@ -198,7 +198,7 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="key">Released key.</param>
 		/// <param name="window">Pointer to the affected window.</param>
-		constexpr explicit KeyReleaseEvent(Input::Key key, TRAP::Window* window);
+		explicit KeyReleaseEvent(Input::Key key, TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -210,7 +210,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		constexpr KeyReleaseEvent& operator=(const KeyReleaseEvent&) noexcept = default;
+		KeyReleaseEvent& operator=(const KeyReleaseEvent&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
@@ -218,7 +218,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		constexpr KeyReleaseEvent& operator=(KeyReleaseEvent&&) noexcept = default;
+		KeyReleaseEvent& operator=(KeyReleaseEvent&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve a pointer to the affected window.
@@ -263,7 +263,7 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="codePoint">Unicode code point entered.</param>
 		/// <param name="window">Pointer to the affected window.</param>
-		constexpr explicit KeyTypeEvent(uint32_t codePoint, TRAP::Window* window);
+		explicit KeyTypeEvent(uint32_t codePoint, TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -275,7 +275,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		constexpr KeyTypeEvent& operator=(const KeyTypeEvent&) noexcept = default;
+		KeyTypeEvent& operator=(const KeyTypeEvent&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
@@ -283,7 +283,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		constexpr KeyTypeEvent& operator=(KeyTypeEvent&&) noexcept = default;
+		KeyTypeEvent& operator=(KeyTypeEvent&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve a pointer to the affected window.
@@ -422,14 +422,6 @@ constexpr TRAP::Events::KeyEvent::KeyEvent(const Input::Key key) noexcept
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, TRAP::Window* window)
-	: KeyEvent(key), m_window(window)
-{
-	TRAP_ASSERT(window, "Events::KeyPressEvent(): Window is nullptr!");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] constexpr TRAP::Window* TRAP::Events::KeyPressEvent::GetWindow() const noexcept
 {
 	return m_window;
@@ -458,14 +450,6 @@ constexpr TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, TRAP:
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-
-constexpr TRAP::Events::KeyRepeatEvent::KeyRepeatEvent(const Input::Key key, TRAP::Window* window)
-	: KeyEvent(key), m_window(window)
-{
-	TRAP_ASSERT(window, "Events::KeyRepeatEvent(): Window is nullptr!");
-}
-
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr TRAP::Window* TRAP::Events::KeyRepeatEvent::GetWindow() const noexcept
@@ -498,14 +482,6 @@ constexpr TRAP::Events::KeyRepeatEvent::KeyRepeatEvent(const Input::Key key, TRA
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, TRAP::Window* window)
-	: KeyEvent(key), m_window(window)
-{
-	TRAP_ASSERT(window, "Events::KeyReleaseEvent(): Window is nullptr!");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] constexpr TRAP::Window* TRAP::Events::KeyReleaseEvent::GetWindow() const noexcept
 {
 	return m_window;
@@ -534,14 +510,6 @@ constexpr TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, T
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-
-constexpr TRAP::Events::KeyTypeEvent::KeyTypeEvent(const uint32_t codePoint, TRAP::Window* window)
-	: m_window(window), m_codePoint(codePoint)
-{
-	TRAP_ASSERT(window, "Events::KeyTypeEvent(): Window is nullptr!");
-}
-
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr TRAP::Window* TRAP::Events::KeyTypeEvent::GetWindow() const noexcept

@@ -252,7 +252,7 @@ namespace TRAP
 		/// <param name="data">Raw pixel data.</param>
 		/// <returns>Flipped raw pixel data</returns>
 		template<typename T>
-		[[nodiscard]] static constexpr std::vector<T> FlipX(uint32_t width, uint32_t height, ColorFormat format, const T* data);
+		[[nodiscard]] static std::vector<T> FlipX(uint32_t width, uint32_t height, ColorFormat format, const T* data);
 		/// <summary>
 		/// Flip raw pixel data on Y axis.
 		/// </summary>
@@ -263,7 +263,7 @@ namespace TRAP
 		/// <param name="data">Raw pixel data.</param>
 		/// <returns>Flipped raw pixel data</returns>
 		template<typename T>
-		[[nodiscard]] static constexpr std::vector<T> FlipY(uint32_t width, uint32_t height, ColorFormat format, const T* data);
+		[[nodiscard]] static std::vector<T> FlipY(uint32_t width, uint32_t height, ColorFormat format, const T* data);
 		/// <summary>
 		/// Rotate raw pixel data by 90 degrees clockwise.
 		/// </summary>
@@ -274,7 +274,7 @@ namespace TRAP
 		/// <param name="data">Raw pixel data.</param>
 		/// <returns>Rotated raw pixel data</returns>
 		template<typename T>
-		[[nodiscard]] static constexpr std::vector<T> Rotate90Clockwise(uint32_t width, uint32_t height, ColorFormat format, const T* data);
+		[[nodiscard]] static std::vector<T> Rotate90Clockwise(uint32_t width, uint32_t height, ColorFormat format, const T* data);
 		/// <summary>
 		/// Rotate raw pixel data by 90 degrees counter clockwise.
 		/// </summary>
@@ -285,7 +285,7 @@ namespace TRAP
 		/// <param name="data">Raw pixel data.</param>
 		/// <returns>Rotate raw pixel data</returns>
 		template<typename T>
-		[[nodiscard]] static constexpr std::vector<T> Rotate90CounterClockwise(uint32_t width, uint32_t height, ColorFormat format, const T* data);
+		[[nodiscard]] static std::vector<T> Rotate90CounterClockwise(uint32_t width, uint32_t height, ColorFormat format, const T* data);
 		/// <summary>
 		/// Converts raw RGB pixel data to RGBA.
 		/// </summary>
@@ -296,7 +296,7 @@ namespace TRAP
 		/// <param name="data">Raw pixel data.</param>
 		/// <returns>Converted RGBA raw pixel data</returns>
 		template<typename T>
-		[[nodiscard]] static constexpr std::vector<T> ConvertRGBToRGBA(uint32_t width, uint32_t height, ColorFormat format, const T* data);
+		[[nodiscard]] static std::vector<T> ConvertRGBToRGBA(uint32_t width, uint32_t height, ColorFormat format, const T* data);
 		/// <summary>
 		/// Converts raw RGBA pixel data to RGB.
 		/// </summary>
@@ -307,7 +307,7 @@ namespace TRAP
 		/// <param name="data">Raw pixel data.</param>
 		/// <returns>Converted RGB raw pixel data</returns>
 		template<typename T>
-		[[nodiscard]] static constexpr std::vector<T> ConvertRGBAToRGB(uint32_t width, uint32_t height, ColorFormat format, const T* data);
+		[[nodiscard]] static std::vector<T> ConvertRGBAToRGB(uint32_t width, uint32_t height, ColorFormat format, const T* data);
 
 		/// <summary>
 		/// Converts BGR16 pixel data to RGB24.
@@ -452,8 +452,8 @@ namespace TRAP
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-[[nodiscard]] constexpr std::vector<T> TRAP::Image::FlipX(const uint32_t width, const uint32_t height, const ColorFormat format,
-                                                          const T* data)
+[[nodiscard]] std::vector<T> TRAP::Image::FlipX(const uint32_t width, const uint32_t height, const ColorFormat format,
+                                                const T* data)
 {
 	static_assert(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
 	              std::is_same<T, float>::value, "Invalid type!");
@@ -493,8 +493,8 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-[[nodiscard]] constexpr std::vector<T> TRAP::Image::FlipY(const uint32_t width, const uint32_t height, const ColorFormat format,
-                                                          const T* data)
+[[nodiscard]] std::vector<T> TRAP::Image::FlipY(const uint32_t width, const uint32_t height, const ColorFormat format,
+                                                const T* data)
 {
 	static_assert(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
 	              std::is_same<T, float>::value, "Invalid type!");
@@ -534,8 +534,8 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] constexpr std::vector<T> TRAP::Image::Rotate90Clockwise(const uint32_t width, const uint32_t height,
-                                                                      const ColorFormat format, const T* const data)
+[[nodiscard]] std::vector<T> TRAP::Image::Rotate90Clockwise(const uint32_t width, const uint32_t height,
+                                                            const ColorFormat format, const T* const data)
 {
 	static_assert(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
 	              std::is_same<T, float>::value, "Invalid type!");
@@ -573,8 +573,8 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] constexpr std::vector<T> TRAP::Image::Rotate90CounterClockwise(const uint32_t width, const uint32_t height,
-                                                                             const ColorFormat format, const T* const data)
+[[nodiscard]] std::vector<T> TRAP::Image::Rotate90CounterClockwise(const uint32_t width, const uint32_t height,
+                                                                   const ColorFormat format, const T* const data)
 {
 	static_assert(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
 	              std::is_same<T, float>::value, "Invalid type!");
@@ -618,8 +618,8 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-[[nodiscard]] constexpr std::vector<T> TRAP::Image::ConvertRGBToRGBA(const uint32_t width, const uint32_t height, const ColorFormat format,
-									                                 const T* data)
+[[nodiscard]] std::vector<T> TRAP::Image::ConvertRGBToRGBA(const uint32_t width, const uint32_t height, const ColorFormat format,
+									                       const T* data)
 {
 	static_assert(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
 	              std::is_same<T, float>::value, "Invalid type!");
@@ -659,8 +659,8 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-[[nodiscard]] constexpr std::vector<T> TRAP::Image::ConvertRGBAToRGB(const uint32_t width, const uint32_t height, const ColorFormat format,
-									                                 const T* data)
+[[nodiscard]] std::vector<T> TRAP::Image::ConvertRGBAToRGB(const uint32_t width, const uint32_t height, const ColorFormat format,
+									                       const T* data)
 {
 	static_assert(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
 	              std::is_same<T, float>::value, "Invalid type!");

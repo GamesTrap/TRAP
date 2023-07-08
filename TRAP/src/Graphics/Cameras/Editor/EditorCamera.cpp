@@ -155,60 +155,6 @@ void TRAP::Graphics::EditorCamera::OnEvent(Events::Event& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::Graphics::EditorCamera::IsActive() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-    return m_isActive;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::EditorCamera::SetActive(const bool active) noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-    m_isActive = active;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Graphics::EditorCamera::CameraMode TRAP::Graphics::EditorCamera::GetCurrentMode() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-    return m_cameraMode;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] float TRAP::Graphics::EditorCamera::GetDistance() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-    return m_distance;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::EditorCamera::SetDistance(const float distance) noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-    m_distance = distance;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const TRAP::Math::Vec3& TRAP::Graphics::EditorCamera::GetFocalPoint() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-    return m_focalPoint;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::EditorCamera::SetViewportSize(const float width, const float height)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
@@ -220,105 +166,6 @@ void TRAP::Graphics::EditorCamera::SetViewportSize(const float width, const floa
     m_viewportHeight = height;
 
     UpdateProjection();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const TRAP::Math::Mat4& TRAP::Graphics::EditorCamera::GetViewMatrix() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-    return m_viewMatrix;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Math::Vec3 TRAP::Graphics::EditorCamera::GetUpDirection() const
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-    return GetOrientation() * TRAP::Math::Vec3(0.0f, 1.0f, 0.0f);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Math::Vec3 TRAP::Graphics::EditorCamera::GetRightDirection() const
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-    return GetOrientation() * TRAP::Math::Vec3(1.0f, 0.0f, 0.0f);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Math::Vec3 TRAP::Graphics::EditorCamera::GetForwardDirection() const
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-    return GetOrientation() * TRAP::Math::Vec3(0.0f, 0.0f, -1.0f);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const TRAP::Math::Vec3& TRAP::Graphics::EditorCamera::GetPosition() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-    return m_position;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Math::Quat TRAP::Graphics::EditorCamera::GetOrientation() const
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-    return TRAP::Math::Quat(TRAP::Math::Vec3(-m_pitch - m_pitchDelta, -m_yaw - m_yawDelta, 0.0f));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] float TRAP::Graphics::EditorCamera::GetFOV() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-    return m_fov;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] float TRAP::Graphics::EditorCamera::GetAspectRatio() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-    return m_aspectRatio;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] float TRAP::Graphics::EditorCamera::GetNearClip() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-    return m_nearClip;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] float TRAP::Graphics::EditorCamera::GetPitch() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-    return m_pitch;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] float TRAP::Graphics::EditorCamera::GetYaw() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-    return m_yaw;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -397,28 +244,6 @@ bool TRAP::Graphics::EditorCamera::OnMouseScroll(Events::MouseScrollEvent& event
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::EditorCamera::MousePan(const TRAP::Math::Vec2& delta)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-    const TRAP::Math::Vec2 panSpeed = PanSpeed();
-    m_focalPoint -= GetRightDirection() * delta.x * panSpeed.x * m_distance;
-    m_focalPoint += GetUpDirection() * delta.y * panSpeed.y * m_distance;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::EditorCamera::MouseRotate(const TRAP::Math::Vec2& delta)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-    const float yawSign = GetUpDirection().y < 0.0f ? -1.0f : 1.0f;
-    m_yawDelta += yawSign * delta.x * RotationSpeed();
-    m_pitchDelta += delta.y * RotationSpeed();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::EditorCamera::MouseZoom(const float delta)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
@@ -433,30 +258,6 @@ void TRAP::Graphics::EditorCamera::MouseZoom(const float delta)
         m_distance = 1.0f;
     }
     m_positionDelta += delta * ZoomSpeed() * forwardDir;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Math::Vec3 TRAP::Graphics::EditorCamera::CalculatePosition() const
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-    return m_focalPoint - GetForwardDirection() * m_distance + m_positionDelta;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Math::Vec2 TRAP::Graphics::EditorCamera::PanSpeed() const
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-    const float x = TRAP::Math::Min(m_viewportWidth / 1000.0f, 2.4f); //Max = 2.4f
-    const float xFactor = 0.0366f * (x * x) - 0.1778f * x + 0.3021f;
-
-    const float y = TRAP::Math::Min(m_viewportHeight / 1000.0f, 2.4f); //Max = 2.4f
-    const float yFactor = 0.0366f * (y * y) - 0.1778f * y + 0.3021f;
-
-    return {xFactor, yFactor};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -52,14 +52,6 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::TCPSocket::TCPSocket() noexcept
-	: Socket(Type::TCP)
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] uint16_t TRAP::Network::TCPSocket::GetLocalPort() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
@@ -430,14 +422,6 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(Packet& packet)
 	m_pendingPacket = PendingPacket();
 
 	return Status::Done;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Network::TCPSocket::PendingPacket::PendingPacket() noexcept
-	: Size(0), SizeReceived(0)
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

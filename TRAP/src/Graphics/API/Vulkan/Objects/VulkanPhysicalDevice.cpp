@@ -195,21 +195,10 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 
 TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPhysicalDevicePrefix, "Destroying PhysicalDevice");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 	m_physicalDevice = nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDevice() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_physicalDevice;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -223,60 +212,6 @@ TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 	vkGetPhysicalDeviceFormatProperties(m_physicalDevice, format, &formatProps);
 
 	return formatProps;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const VkPhysicalDeviceProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceProperties() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_physicalDeviceProperties;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const VkPhysicalDeviceSubgroupProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceSubgroupProperties() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_physicalDeviceSubgroupProperties;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const VkPhysicalDeviceIDProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceIDProperties() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_physicalDeviceIDProperties;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const VkPhysicalDeviceMemoryProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceMemoryProperties() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_physicalDeviceMemoryProperties;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const VkPhysicalDeviceFeatures &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFeatures() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_physicalDeviceFeatures;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFragmentShaderInterlockFeatures() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_physicalDeviceFragmentShaderInterlockFeatures;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -323,15 +258,6 @@ TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const std::array<uint8_t, 16> &TRAP::Graphics::API::VulkanPhysicalDevice::GetPhysicalDeviceUUID() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_deviceUUID;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentShaderInterlockFeatures()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -348,46 +274,6 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 		RendererAPI::GPUSettings.ROVsSupported = m_physicalDeviceFragmentShaderInterlockFeatures.fragmentShaderPixelInterlock;
 	}
 	RendererAPI::GPUSettings.ROVsSupported = 0u;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Graphics::RendererAPI::GPUVendor TRAP::Graphics::API::VulkanPhysicalDevice::GetVendor() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	switch(m_physicalDeviceProperties.vendorID)
-	{
-	case 0x1002:
-		[[fallthrough]];
-	case 0x1010:
-		[[fallthrough]];
-	case 0x10DE:
-		[[fallthrough]];
-	case 0x13B5:
-		[[fallthrough]];
-	case 0x14E4:
-		[[fallthrough]];
-	case 0x5143:
-		[[fallthrough]];
-	case 0x8086:
-		[[fallthrough]];
-	case 0x106B:
-		[[fallthrough]];
-	case 0x7A05:
-		[[fallthrough]];
-	case 0x1EB1:
-		[[fallthrough]];
-	case 0x10003:
-		[[fallthrough]];
-	case 0x10004:
-		[[fallthrough]];
-	case 0x10005:
-		return static_cast<RendererAPI::GPUVendor>(m_physicalDeviceProperties.vendorID);
-
-	default:
-		return RendererAPI::GPUVendor::Unknown;
-	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -414,7 +300,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::FindPhysicalDeviceViaUUID(const TRAP::Ref<VulkanInstance> &instance,
-																					  const std::array<uint8_t, 16> &physicalDeviceUUID)
+																					                const std::array<uint8_t, 16> &physicalDeviceUUID)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -919,30 +805,4 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::LoadAllPhysicalDeviceExtensions(
 	m_availablePhysicalDeviceExtensions.resize(extensionsCount);
 	VkCall(vkEnumerateDeviceExtensionProperties(m_physicalDevice, nullptr, &extensionsCount,
 												m_availablePhysicalDeviceExtensions.data()));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanPhysicalDevice::GetMaxUsableMSAASampleCount() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	VkSampleCountFlags sampleCounts = TRAP::Math::Min(m_physicalDeviceProperties.limits.framebufferColorSampleCounts,
-	                                                  m_physicalDeviceProperties.limits.framebufferDepthSampleCounts);
-	sampleCounts = TRAP::Math::Min(sampleCounts, m_physicalDeviceProperties.limits.framebufferStencilSampleCounts);
-
-	if((sampleCounts & VK_SAMPLE_COUNT_64_BIT) != 0u)
-		return VK_SAMPLE_COUNT_64_BIT;
-	if((sampleCounts & VK_SAMPLE_COUNT_32_BIT) != 0u)
-		return VK_SAMPLE_COUNT_32_BIT;
-	if((sampleCounts & VK_SAMPLE_COUNT_16_BIT) != 0u)
-		return VK_SAMPLE_COUNT_16_BIT;
-	if((sampleCounts & VK_SAMPLE_COUNT_8_BIT) != 0u)
-		return VK_SAMPLE_COUNT_8_BIT;
-	if((sampleCounts & VK_SAMPLE_COUNT_4_BIT) != 0u)
-		return VK_SAMPLE_COUNT_4_BIT;
-	if((sampleCounts & VK_SAMPLE_COUNT_2_BIT) != 0u)
-		return VK_SAMPLE_COUNT_2_BIT;
-
-	return VK_SAMPLE_COUNT_1_BIT;
 }

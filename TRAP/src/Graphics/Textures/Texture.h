@@ -159,97 +159,97 @@ namespace TRAP::Graphics
 		/// Retrieve the texture type.
 		/// </summary>
 		/// <returns>Texture type.</returns>
-		[[nodiscard]] TextureType GetType() const noexcept;
+		[[nodiscard]] constexpr TextureType GetType() const noexcept;
 		/// <summary>
 		/// Retrieve the texture width.
 		/// </summary>
 		/// <returns>Texture width.</returns>
-		[[nodiscard]] uint32_t GetWidth() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetWidth() const noexcept;
 		/// <summary>
 		/// Retrieve the texture height.
 		/// </summary>
 		/// <returns>Texture height.</returns>
-		[[nodiscard]] uint32_t GetHeight() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetHeight() const noexcept;
 		/// <summary>
 		/// Retrieve the texture size.
 		/// </summary>
 		/// <returns>Texture size.</returns>
-		[[nodiscard]] Math::Vec2ui GetSize() const noexcept;
+		[[nodiscard]] constexpr Math::Vec2ui GetSize() const noexcept;
 		/// <summary>
 		/// Retrieve the texture depth.
 		/// </summary>
 		/// <returns>Texture depth.</returns>
-		[[nodiscard]] uint32_t GetDepth() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetDepth() const noexcept;
 		/// <summary>
 		/// Retrieve the texture array size.
 		/// </summary>
 		/// <returns>Texture array size.</returns>
-		[[nodiscard]] uint32_t GetArraySize() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetArraySize() const noexcept;
 		/// <summary>
 		/// Retrieve the textures mip level count.
 		/// </summary>
 		/// <returns>Textures mip level count.</returns>
-		[[nodiscard]] uint32_t GetMipLevels() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetMipLevels() const noexcept;
 		/// <summary>
 		/// Retrieve the textures aspect mask.
 		/// Aspect mask specifies which aspects (Color, Depth, Stencil) are included in the texture.
 		/// </summary>
 		/// <returns>Aspect mask.</returns>
-		[[nodiscard]] uint32_t GetAspectMask() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetAspectMask() const noexcept;
 		/// <summary>
 		/// Retrieve the textures color format.
 		/// </summary>
 		/// <returns>Textures color format.</returns>
-		[[nodiscard]] Image::ColorFormat GetColorFormat() const noexcept;
+		[[nodiscard]] constexpr Image::ColorFormat GetColorFormat() const noexcept;
 		/// <summary>
 		/// Retrieve the textures image format.
 		/// </summary>
 		/// <returns>Image format.</returns>
-		[[nodiscard]] TRAP::Graphics::API::ImageFormat GetImageFormat() const noexcept;
+		[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat GetImageFormat() const noexcept;
 		/// <summary>
 		/// Retrieve the textures used descriptor types.
 		/// </summary>
 		/// <returns>Used descriptor types.</returns>
-		[[nodiscard]] RendererAPI::DescriptorType GetDescriptorTypes() const noexcept;
+		[[nodiscard]] constexpr RendererAPI::DescriptorType GetDescriptorTypes() const noexcept;
 
 		/// <summary>
 		/// Retrieve the textures bits per channel.
 		/// </summary>
 		/// <returns>Textures bits per channel.</returns>
-		[[nodiscard]] uint32_t GetBitsPerChannel() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetBitsPerChannel() const noexcept;
 		/// <summary>
 		/// Retrieve the textures bytes per channel.
 		/// </summary>
 		/// <returns>Textures bytes per channel.</returns>
-		[[nodiscard]] uint32_t GetBytesPerChannel() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetBytesPerChannel() const noexcept;
 		/// <summary>
 		/// Retrieve the textures bits per pixel.
 		/// </summary>
 		/// <returns>Textures bits per pixel.</returns>
-		[[nodiscard]] uint32_t GetBitsPerPixel() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetBitsPerPixel() const noexcept;
 		/// <summary>
 		/// Retrieve the textures bytes per pixel.
 		/// </summary>
 		/// <returns>Textures bytes per pixel.</returns>
-		[[nodiscard]] uint32_t GetBytesPerPixel() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetBytesPerPixel() const noexcept;
 		/// <summary>
 		/// Retrieve the textures mip width of a specific level.
 		/// </summary>
 		/// <param name="mipLevel">Mip level.</param>
 		/// <returns>Mip width.</returns>
-		[[nodiscard]] uint32_t GetMipWidth(uint32_t mipLevel) const;
+		[[nodiscard]] constexpr uint32_t GetMipWidth(uint32_t mipLevel) const;
 		/// <summary>
 		/// Retrieve the textures mip height of a specific level.
 		/// </summary>
 		/// <param name="mipLevel">Mip level.</param>
 		/// <returns>Mip height.</returns>
-		[[nodiscard]] uint32_t GetMipHeight(uint32_t mipLevel) const;
+		[[nodiscard]] constexpr uint32_t GetMipHeight(uint32_t mipLevel) const;
 		/// <summary>
 		/// Retrieve the textures mip size of a specific level.
 		/// </summary>
 		/// <param name="mipLevel">Mip level.</param>
 		/// <returns>Mip size.</returns>
-		[[nodiscard]] Math::Vec2ui GetMipSize(uint32_t mipLevel) const;
+		[[nodiscard]] constexpr Math::Vec2ui GetMipSize(uint32_t mipLevel) const;
 		/// <summary>
 		/// Retrieve the file path of the texture.
 		/// </summary>
@@ -259,12 +259,12 @@ namespace TRAP::Graphics
 		/// Retrieve the file path of the texture.
 		/// </summary>
 		/// <returns>File path of the texture.</returns>
-		[[nodiscard]] const std::array<std::filesystem::path, 6>& GetFilePaths() const noexcept;
+		[[nodiscard]] constexpr const std::array<std::filesystem::path, 6>& GetFilePaths() const noexcept;
 		/// <summary>
 		/// Retrieve the cube format of the texture.
 		/// </summary>
 		/// <returns>Cube format of the texture.</returns>
-		[[nodiscard]] TextureCubeFormat GetCubeFormat() const noexcept;
+		[[nodiscard]] constexpr TextureCubeFormat GetCubeFormat() const noexcept;
 
 		/// <summary>
 		/// Update the texture with raw pixel data.
@@ -287,7 +287,7 @@ namespace TRAP::Graphics
 		/// Retrieve whether the texture owns the image data.
 		/// </summary>
 		/// <returns>True if texture owns the image data, false otherwise.</returns>
-		[[nodiscard]] bool OwnsImage() const noexcept;
+		[[nodiscard]] constexpr bool OwnsImage() const noexcept;
 
 		/// <summary>
 		/// Check if texture finished loading.
@@ -333,7 +333,7 @@ namespace TRAP::Graphics
 		/// <param name="colorFormat">Color format.</param>
 		/// <param name="bpp">Bits per pixel.</param>
 		/// <returns>Image format.</returns>
-		[[nodiscard]] static constexpr API::ImageFormat ColorFormatBitsPerPixelToImageFormat(Image::ColorFormat colorFormat, uint32_t bpp);
+		[[nodiscard]] static API::ImageFormat ColorFormatBitsPerPixelToImageFormat(Image::ColorFormat colorFormat, uint32_t bpp);
 		/// <summary>
 		/// Convert image format to color format.
 		/// </summary>
@@ -376,6 +376,159 @@ namespace TRAP::Graphics
 [[nodiscard]] constexpr std::string TRAP::Graphics::Texture::GetName() const noexcept
 {
 	return m_name;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Graphics::TextureType TRAP::Graphics::Texture::GetType() const noexcept
+{
+	return m_textureType;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetWidth() const noexcept
+{
+	return m_width;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetHeight() const noexcept
+{
+	return m_height;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Math::Vec2ui TRAP::Graphics::Texture::GetSize() const noexcept
+{
+	return Math::Vec2ui(m_width, m_height);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetDepth() const noexcept
+{
+	return m_depth;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetArraySize() const noexcept
+{
+	return m_arraySize;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetMipLevels() const noexcept
+{
+	return m_mipLevels;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetAspectMask() const noexcept
+{
+	return m_aspectMask;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Image::ColorFormat TRAP::Graphics::Texture::GetColorFormat() const noexcept
+{
+	return ImageFormatToColorFormat(m_imageFormat);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::GetImageFormat() const noexcept
+{
+	return m_imageFormat;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::Texture::GetDescriptorTypes() const noexcept
+{
+	return m_descriptorTypes;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetBitsPerChannel() const noexcept
+{
+	return GetBitsPerChannelFromImageFormat(m_imageFormat);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetBytesPerChannel() const noexcept
+{
+	return GetBitsPerChannel() / 8;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetBitsPerPixel() const noexcept
+{
+	return GetBitsPerChannel() * std::to_underlying(m_colorFormat);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetBytesPerPixel() const noexcept
+{
+	return GetBitsPerPixel() / 8u;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetMipWidth(const uint32_t mipLevel) const
+{
+	if(mipLevel >= m_mipLevels)
+		TP_ERROR(Log::TexturePrefix, "GetMipWidth: Invalid mip level provided!");
+
+	return Math::Max(1u, m_width >> mipLevel);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetMipHeight(const uint32_t mipLevel) const
+{
+	if(mipLevel >= m_mipLevels)
+		TP_ERROR(Log::TexturePrefix, "GetMipHeight: Invalid mip level provided!");
+
+	return Math::Max(1u, m_height >> mipLevel);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Math::Vec2ui TRAP::Graphics::Texture::GetMipSize(const uint32_t mipLevel) const
+{
+	return TRAP::Math::Vec2ui{GetMipWidth(mipLevel), GetMipHeight(mipLevel)};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::array<std::filesystem::path, 6>& TRAP::Graphics::Texture::GetFilePaths() const noexcept
+{
+	return m_filepaths;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Graphics::TextureCubeFormat TRAP::Graphics::Texture::GetCubeFormat() const noexcept
+{
+	return m_textureCubeFormat;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Graphics::Texture::OwnsImage() const noexcept
+{
+	return m_ownsImage;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -506,57 +659,6 @@ template<typename T>
 	}
 
 	return images;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::ColorFormatBitsPerPixelToImageFormat(const Image::ColorFormat colorFormat,
-	                             											                                           const uint32_t bpp)
-{
-	if(colorFormat == Image::ColorFormat::GrayScale)
-	{
-		if(bpp == 8)
-			return API::ImageFormat::R8_UNORM;
-		if(bpp == 16)
-			return API::ImageFormat::R16_UNORM;
-		if(bpp == 32)
-			return API::ImageFormat::R32_SFLOAT;
-
-		TRAP_ASSERT(false, "Texture::ColorFormatBitsPerPixelToImageFormat(): Invalid bits per pixel & color format combination provided!");
-		return API::ImageFormat::Undefined;
-	}
-	if(colorFormat == Image::ColorFormat::GrayScaleAlpha)
-	{
-		if(bpp == 16)
-			return API::ImageFormat::R8G8_UNORM;
-		if(bpp == 32)
-		    return API::ImageFormat::R16G16_UNORM;
-		if(bpp == 64)
-		    return API::ImageFormat::R32G32_SFLOAT;
-
-		TRAP_ASSERT(false, "Texture::ColorFormatBitsPerPixelToImageFormat(): Invalid bits per pixel & color format combination provided!");
-		return API::ImageFormat::Undefined;
-	}
-	if(colorFormat == Image::ColorFormat::RGB)
-	{
-		TRAP_ASSERT(false, "Texture::ColorFormatBitsPerPixelToImageFormat(): Color format RGB is not allowed on empty textures as GPU needs an alpha channel!");
-		return API::ImageFormat::Undefined;
-	}
-	if(colorFormat == Image::ColorFormat::RGBA)
-	{
-		if(bpp == 32)
-			return API::ImageFormat::R8G8B8A8_UNORM;
-		if(bpp == 64)
-			return API::ImageFormat::R16G16B16A16_UNORM;
-		if(bpp == 128)
-			return API::ImageFormat::R32G32B32A32_SFLOAT;
-
-		TRAP_ASSERT(false, "Texture::ColorFormatBitsPerPixelToImageFormat(): Invalid bits per pixel & color format combination provided!");
-		return API::ImageFormat::Undefined;
-	}
-
-	TRAP_ASSERT(false, "Texture::ColorFormatBitsPerPixelToImageFormat(): Invalid color format provided!");
-	return API::ImageFormat::Undefined;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

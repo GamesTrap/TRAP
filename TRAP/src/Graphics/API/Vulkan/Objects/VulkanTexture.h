@@ -69,12 +69,12 @@ namespace TRAP::Graphics::API
 		/// Retrieve the read only color Vulkan image view handle of the texture.
 		/// </summary>
 		/// <returns>Vulkan image view handle.</returns>
-		[[nodiscard]] VkImageView GetSRVVkImageView() const noexcept;
+		[[nodiscard]] constexpr VkImageView GetSRVVkImageView() const noexcept;
 		/// <summary>
 		/// Retrieve the read only  stencil Vulkan image view handle of the texture.
 		/// </summary>
 		/// <returns>Vulkan image view handle.</returns>
-		[[nodiscard]] VkImageView GetSRVStencilVkImageView() const noexcept;
+		[[nodiscard]] constexpr VkImageView GetSRVStencilVkImageView() const noexcept;
 		/// <summary>
 		/// Retrieve all read-writable Vulkan image view handles of the texture.
 		/// </summary>
@@ -84,18 +84,18 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan image handle.
 		/// </summary>
 		/// <returns>Vulkan image handle.</returns>
-		[[nodiscard]] VkImage GetVkImage() const noexcept;
+		[[nodiscard]] constexpr VkImage GetVkImage() const noexcept;
 		/// <summary>
 		/// Retrieve the VMA allocation handle used by the texture.
 		/// </summary>
 		/// <returns>VMA allocation handle.</returns>
-		[[nodiscard]] VmaAllocation GetVMAAllocation() const noexcept;
+		[[nodiscard]] constexpr VmaAllocation GetVMAAllocation() const noexcept;
 
 		/// <summary>
 		/// Retrieve whether the texture is lazily allocated or not.
 		/// </summary>
 		/// <returns>True if the texture is lazily allocated, false otherwise.</returns>
-		[[nodiscard]] bool IsLazilyAllocated() const noexcept;
+		[[nodiscard]] constexpr bool IsLazilyAllocated() const noexcept;
 
 		/// <summary>
 		/// Set the name of the texture.
@@ -150,6 +150,41 @@ namespace TRAP::Graphics::API
 [[nodiscard]] constexpr const std::vector<VkImageView> &TRAP::Graphics::API::VulkanTexture::GetUAVVkImageViews() const noexcept
 {
 	return m_vkUAVDescriptors;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVVkImageView() const noexcept
+{
+	return m_vkSRVDescriptor;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVStencilVkImageView() const noexcept
+{
+	return m_vkSRVStencilDescriptor;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkImage TRAP::Graphics::API::VulkanTexture::GetVkImage() const noexcept
+{
+	return m_vkImage;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VmaAllocation TRAP::Graphics::API::VulkanTexture::GetVMAAllocation() const noexcept
+{
+	return m_vkAllocation;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Graphics::API::VulkanTexture::IsLazilyAllocated() const noexcept
+{
+	return m_lazilyAllocated;
 }
 
 #endif /*TRAP_VULKANTEXTURE_H*/

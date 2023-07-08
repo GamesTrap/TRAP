@@ -27,8 +27,8 @@ namespace TRAP
 		TRAP::Utils::UID UID;
 
 		UIDComponent() = default;
-		explicit UIDComponent(TRAP::Utils::UID uid)
-			: UID(std::move(uid))
+		constexpr explicit UIDComponent(TRAP::Utils::UID uid)
+			: UID(uid)
 		{}
 	};
 
@@ -41,7 +41,7 @@ namespace TRAP
 	{
 		std::string Tag;
 
-		TagComponent() noexcept = default;
+		constexpr TagComponent() noexcept = default;
 		inline constexpr explicit TagComponent(std::string tag) noexcept
 			: Tag(std::move(tag))
 		{}
@@ -57,15 +57,15 @@ namespace TRAP
 		Math::Vec3 Rotation{ 0.0f, 0.0f, 0.0f };
 		Math::Vec3 Scale{ 1.0f, 1.0f, 1.0f };
 
-		TransformComponent() noexcept = default;
+		constexpr TransformComponent() noexcept = default;
 		explicit TransformComponent(const TRAP::Math::Vec3& position) noexcept
 			: Position(position)
 		{}
-		TransformComponent(const TRAP::Math::Vec3& position, const TRAP::Math::Vec3& rotationInRadians) noexcept
+		constexpr TransformComponent(const TRAP::Math::Vec3& position, const TRAP::Math::Vec3& rotationInRadians) noexcept
 			: Position(position), Rotation(rotationInRadians)
 		{}
-		TransformComponent(const TRAP::Math::Vec3& position, const TRAP::Math::Vec3& rotationInRadians,
-		                   const TRAP::Math::Vec3& scale) noexcept
+		constexpr TransformComponent(const TRAP::Math::Vec3& position, const TRAP::Math::Vec3& rotationInRadians,
+		                             const TRAP::Math::Vec3& scale) noexcept
 			: Position(position), Rotation(rotationInRadians), Scale(scale)
 		{}
 
@@ -73,7 +73,7 @@ namespace TRAP
 		/// Retrieve the transform calculated from current position, rotation and scale.
 		/// </summary>
 		/// <returns>Transform as Math::Mat4.</returns>
-		[[nodiscard]] Math::Mat4 GetTransform() const noexcept
+		[[nodiscard]] constexpr Math::Mat4 GetTransform() const noexcept
 		{
 			if(Rotation.x != 0.0f || Rotation.y != 0.0f || Rotation.z != 0.0f)
 			{
@@ -93,8 +93,8 @@ namespace TRAP
 	{
 		Math::Vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
 
-		SpriteRendererComponent() noexcept = default;
-		explicit SpriteRendererComponent(const TRAP::Math::Vec4& color) noexcept
+		constexpr SpriteRendererComponent() noexcept = default;
+		constexpr explicit SpriteRendererComponent(const TRAP::Math::Vec4& color) noexcept
 			: Color(color)
 		{}
 	};
@@ -109,7 +109,7 @@ namespace TRAP
 		float Thickness = 1.0f;
 		float Fade = 0.005f;
 
-		CircleRendererComponent() noexcept = default;
+		constexpr CircleRendererComponent() noexcept = default;
 	};
 
 	/// <summary>
@@ -160,7 +160,7 @@ namespace TRAP
 		//Storage for runtime data
 		b2Body* RuntimeBody = nullptr;
 
-		Rigidbody2DComponent() noexcept = default;
+		constexpr Rigidbody2DComponent() noexcept = default;
 	};
 
 	struct BoxCollider2DComponent
@@ -177,7 +177,7 @@ namespace TRAP
 		//Storage for runtime data
 		b2Fixture* RuntimeFixture = nullptr;
 
-		BoxCollider2DComponent() noexcept = default;
+		constexpr BoxCollider2DComponent() noexcept = default;
 	};
 
 	struct CircleCollider2DComponent
@@ -194,7 +194,7 @@ namespace TRAP
 		//Storage for runtime data
 		b2Fixture* RuntimeFixture = nullptr;
 
-		CircleCollider2DComponent() noexcept = default;
+		constexpr CircleCollider2DComponent() noexcept = default;
 	};
 
 	template<typename... Component>

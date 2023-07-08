@@ -33,7 +33,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		constexpr virtual ~SwapChain();
+		virtual ~SwapChain();
 
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -82,37 +82,13 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		constexpr SwapChain();
+		SwapChain();
 
 		//Render targets created from the swapchain back buffers
 		std::vector<TRAP::Ref<RenderTarget>> m_renderTargets;
 #endif /*TRAP_HEADLESS_MODE*/
 	};
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#ifndef TRAP_HEADLESS_MODE
-constexpr TRAP::Graphics::SwapChain::SwapChain()
-{
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererSwapChainPrefix, "Creating SwapChain");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-#endif /*TRAP_HEADLESS_MODE*/
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#ifndef TRAP_HEADLESS_MODE
-constexpr TRAP::Graphics::SwapChain::~SwapChain()
-{
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererSwapChainPrefix, "Destroying SwapChain");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-
-	m_renderTargets.clear();
-}
-#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

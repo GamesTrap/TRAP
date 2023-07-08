@@ -48,12 +48,12 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan surface handle.
 		/// </summary>
 		/// <returns>Vulkan surface handle.</returns>
-		[[nodiscard]] VkSurfaceKHR GetVkSurface() const noexcept;
+		[[nodiscard]] constexpr VkSurfaceKHR GetVkSurface() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan surface capabilities.
 		/// </summary>
 		/// <returns>Vulkan surface capabilities.</returns>
-		[[nodiscard]] VkSurfaceCapabilitiesKHR GetVkSurfaceCapabilities() const noexcept;
+		[[nodiscard]] constexpr VkSurfaceCapabilitiesKHR GetVkSurfaceCapabilities() const noexcept;
 		/// <summary>
 		/// Retrieve all formats supported by the surface.
 		/// </summary>
@@ -74,6 +74,20 @@ namespace TRAP::Graphics::API
 
 		TRAP::Ref<VulkanInstance> m_instance;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkSurfaceKHR TRAP::Graphics::API::VulkanSurface::GetVkSurface() const noexcept
+{
+	return m_surface;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkSurfaceCapabilitiesKHR TRAP::Graphics::API::VulkanSurface::GetVkSurfaceCapabilities() const noexcept
+{
+	return m_surfaceCapabilities;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

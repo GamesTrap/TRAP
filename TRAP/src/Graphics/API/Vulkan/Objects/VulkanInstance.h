@@ -24,7 +24,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanInstance(const VulkanInstance&) noexcept = default;
+		constexpr VulkanInstance(const VulkanInstance&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -32,7 +32,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanInstance(VulkanInstance&&) noexcept = default;
+		constexpr VulkanInstance(VulkanInstance&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
@@ -42,7 +42,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan instance handle.
 		/// </summary>
 		/// <returns>Vulkan instance handle.</returns>
-		[[nodiscard]] VkInstance GetVkInstance() const noexcept;
+		[[nodiscard]] constexpr VkInstance GetVkInstance() const noexcept;
 		/// <summary>
 		/// Retrieve a list of used instance layers.
 		/// </summary>
@@ -102,6 +102,13 @@ namespace TRAP::Graphics::API
 		inline constinit static std::vector<VkLayerProperties> s_availableInstanceLayers{};
 		inline constinit static std::vector<VkExtensionProperties> s_availableInstanceExtensions{};
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkInstance TRAP::Graphics::API::VulkanInstance::GetVkInstance() const noexcept
+{
+	return m_instance;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

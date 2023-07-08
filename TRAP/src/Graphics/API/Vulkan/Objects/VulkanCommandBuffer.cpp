@@ -14,9 +14,9 @@
 #include "Graphics/API/Objects/DescriptorSet.h"
 #include "VulkanDescriptorSet.h"
 #include "VulkanRootSignature.h"
+#include "VulkanQueue.h"
 #include "VulkanDevice.h"
 #include "VulkanInits.h"
-#include "VulkanQueue.h"
 #include "VulkanTexture.h"
 
 TRAP::Graphics::API::VulkanCommandBuffer::~VulkanCommandBuffer()
@@ -62,29 +62,9 @@ TRAP::Graphics::API::VulkanCommandBuffer::VulkanCommandBuffer(TRAP::Ref<VulkanDe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] VkCommandBuffer TRAP::Graphics::API::VulkanCommandBuffer::GetVkCommandBuffer() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_vkCommandBuffer;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] TRAP::Graphics::RendererAPI::QueueType TRAP::Graphics::API::VulkanCommandBuffer::GetQueueType() const
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return std::dynamic_pointer_cast<VulkanQueue>(m_queue)->GetQueueType();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] bool TRAP::Graphics::API::VulkanCommandBuffer::IsSecondary() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_secondary;
+	return m_queue->GetQueueType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1493,13 +1473,4 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResolveImage(const Ref<TRAP::Grap
 
 	vkCmdResolveImage(m_vkCommandBuffer, srcImage->GetVkImage(), ResourceStateToVkImageLayout(srcState),
 	                  dstImage->GetVkImage(), ResourceStateToVkImageLayout(dstState), 1, &imageResolve);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkRenderPass TRAP::Graphics::API::VulkanCommandBuffer::GetActiveVkRenderPass() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_activeRenderPass;
 }

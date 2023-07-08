@@ -23,21 +23,18 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Semaphore::Semaphore()
-	: m_signaled(false)
+TRAP::Graphics::Semaphore::~Semaphore()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
 #ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererSemaphorePrefix, "Creating Semaphore");
+	TP_DEBUG(Log::RendererSemaphorePrefix, "Destroying Semaphore");
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::Graphics::Semaphore::IsSignaled() const noexcept
+TRAP::Graphics::Semaphore::Semaphore()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_signaled;
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererSemaphorePrefix, "Creating Semaphore");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }

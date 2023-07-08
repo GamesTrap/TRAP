@@ -13,9 +13,11 @@
 	#pragma warning(pop)
 #endif /*_MSC_VER*/
 
+#include "Core/Base.h"
 #include "Application.h"
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/DescriptorSet.h"
+#include "Utils/Memory.h"
 
 namespace TRAP::Graphics
 {
@@ -83,7 +85,7 @@ namespace TRAP::Graphics
 		/// Retrieve the shader stages of the shader.
 		/// <summary>
 		/// <returns>Shader stages of the shader.</returns>
-		[[nodiscard]] RendererAPI::ShaderStage GetShaderStages() const noexcept;
+		[[nodiscard]] constexpr RendererAPI::ShaderStage GetShaderStages() const noexcept;
 
 		/// <summary>
 		/// Retrieve the used macros of the shader.
@@ -100,13 +102,13 @@ namespace TRAP::Graphics
 		/// Retrieve the descriptor sets of the shader.
 		/// </summary>
 		/// <returns>Descriptor sets of the shader.</returns>
-		[[nodiscard]] const std::array<TRAP::Scope<DescriptorSet>, RendererAPI::MaxDescriptorSets>& GetDescriptorSets() const noexcept;
+		[[nodiscard]] constexpr const std::array<TRAP::Scope<DescriptorSet>, RendererAPI::MaxDescriptorSets>& GetDescriptorSets() const noexcept;
 
 		/// <summary>
 		/// Retrieve whether the shader is valid (i.e. loaded and compiled) or not.
 		/// </summary>
 		/// <returns>True if shader is valid, false otherwise.</returns>
-		[[nodiscard]] bool IsShaderValid() const noexcept;
+		[[nodiscard]] constexpr bool IsShaderValid() const noexcept;
 
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -357,7 +359,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="shaders">Shader stages to validate.</param>
 		/// <returns>True if validation was successful, false otherwise.</returns>
-		[[nodiscard]] static bool ValidateShaderStages(const std::vector<std::pair<std::string, RendererAPI::ShaderStage>>& shaders);
+		[[nodiscard]] static constexpr bool ValidateShaderStages(const std::vector<std::pair<std::string, RendererAPI::ShaderStage>>& shaders);
 		/// <summary>
 		/// Convert GLSL shaders to SPIRV.
 		/// </summary>
@@ -425,9 +427,97 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::ShaderStage TRAP::Graphics::Shader::GetShaderStages() const noexcept
+{
+	return m_shaderStages;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr const std::vector<TRAP::Graphics::Shader::Macro>& TRAP::Graphics::Shader::GetMacros() const noexcept
 {
 	return m_macros;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::array<TRAP::Scope<TRAP::Graphics::DescriptorSet>,
+                                         TRAP::Graphics::RendererAPI::MaxDescriptorSets>& TRAP::Graphics::Shader::GetDescriptorSets() const noexcept
+{
+	return m_descriptorSets;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Graphics::Shader::IsShaderValid() const noexcept
+{
+	return m_valid;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Graphics::Shader::ValidateShaderStages(const std::vector<std::pair<std::string, RendererAPI::ShaderStage>>& shaders)
+{
+	RendererAPI::ShaderStage combinedStages = RendererAPI::ShaderStage::None;
+	for(const auto& [glsl, stage] : shaders)
+		combinedStages |= stage;
+
+	//Check if any Shader Stage is set
+	if (RendererAPI::ShaderStage::None == combinedStages)
+	{
+		TP_ERROR(Log::ShaderGLSLPrefix, "No shader stage found!");
+		return false;
+	}
+
+	//Check for "Normal" Shader Stages combined with Compute
+	if((((RendererAPI::ShaderStage::Vertex & combinedStages) != RendererAPI::ShaderStage::None) ||
+		((RendererAPI::ShaderStage::Fragment & combinedStages) != RendererAPI::ShaderStage::None) ||
+		((RendererAPI::ShaderStage::TessellationControl & combinedStages) != RendererAPI::ShaderStage::None) ||
+		((RendererAPI::ShaderStage::TessellationEvaluation & combinedStages) != RendererAPI::ShaderStage::None) ||
+		((RendererAPI::ShaderStage::Geometry & combinedStages) != RendererAPI::ShaderStage::None)) &&
+		((RendererAPI::ShaderStage::Compute & combinedStages) != RendererAPI::ShaderStage::None))
+	{
+		TP_ERROR(Log::ShaderGLSLPrefix, "Rasterizer shader stages combined with compute stage!");
+		return false;
+	}
+
+	//Check for "Normal" Shader Stages combined with RayTracing
+	if((((RendererAPI::ShaderStage::Vertex & combinedStages) != RendererAPI::ShaderStage::None) ||
+	    ((RendererAPI::ShaderStage::Fragment & combinedStages) != RendererAPI::ShaderStage::None) ||
+		((RendererAPI::ShaderStage::TessellationControl & combinedStages) != RendererAPI::ShaderStage::None) ||
+		((RendererAPI::ShaderStage::TessellationEvaluation & combinedStages) != RendererAPI::ShaderStage::None) ||
+		((RendererAPI::ShaderStage::Geometry & combinedStages) != RendererAPI::ShaderStage::None)) &&
+		((RendererAPI::ShaderStage::RayTracing & combinedStages) != RendererAPI::ShaderStage::None))
+	{
+		TP_ERROR(Log::ShaderGLSLPrefix, "Rasterizer shader stages combined with ray tracing stage!");
+		return false;
+	}
+
+	//Check for Compute Shader Stage combined with RayTracing
+	if (((RendererAPI::ShaderStage::Compute & combinedStages) != RendererAPI::ShaderStage::None) &&
+		((RendererAPI::ShaderStage::RayTracing & combinedStages) != RendererAPI::ShaderStage::None))
+	{
+		TP_ERROR(Log::ShaderGLSLPrefix, "Compute shader stage combined with ray tracing stage!");
+		return false;
+	}
+
+	//Check for Vertex Shader Stage & required Fragment/Pixel Shader Stage
+	if(((RendererAPI::ShaderStage::Vertex & combinedStages) != RendererAPI::ShaderStage::None) &&
+	   (((RendererAPI::ShaderStage::Fragment & combinedStages)) == RendererAPI::ShaderStage::None))
+	{
+		TP_ERROR(Log::ShaderGLSLPrefix, "Only vertex shader stage provided! Missing fragment/pixel shader stage");
+		return false;
+	}
+	//Check for Fragment/Pixel Shader Stage & required Vertex Shader Stage
+	if(((RendererAPI::ShaderStage::Fragment & combinedStages) != RendererAPI::ShaderStage::None) &&
+	   (((RendererAPI::ShaderStage::Vertex & combinedStages)) == RendererAPI::ShaderStage::None))
+	{
+		TP_ERROR(Log::ShaderGLSLPrefix, "Only fragment/pixel shader stage provided! Missing vertex shader stage");
+		return false;
+	}
+
+	//Shader Stages should be valid
+	return true;
 }
 
 #endif /*TRAP_SHADER_H*/

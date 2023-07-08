@@ -62,12 +62,12 @@ namespace TRAP::Graphics::API
 		/// Retrieve the update frequency used by the descriptor set.
 		/// </summary>
 		/// <returns>Update frequency.</returns>
-		[[nodiscard]] RendererAPI::DescriptorUpdateFrequency GetUpdateFrequency() const noexcept;
+		[[nodiscard]] constexpr RendererAPI::DescriptorUpdateFrequency GetUpdateFrequency() const noexcept;
 		/// <summary>
 		/// Retrieve the amount of dynamic offsets used by the descriptor set.
 		/// </summary>
 		/// <returns>Amount of dynamic offsets.</returns>
-		[[nodiscard]] uint8_t GetDynamicOffsetCount() const noexcept;
+		[[nodiscard]] constexpr uint8_t GetDynamicOffsetCount() const noexcept;
 		/// <summary>
 		/// Retrieve the dynamic size offsets used by the descriptor set.
 		/// </summary>
@@ -77,12 +77,12 @@ namespace TRAP::Graphics::API
 		/// Retrieve the max number of sets for the descriptor set.
 		/// </summary>
 		/// <returns>Max number of sets.</returns>
-		[[nodiscard]] uint32_t GetMaxSets() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetMaxSets() const noexcept;
 		/// <summary>
 		/// Retrieve the index of the set for the descriptor set.
 		/// </summary>
 		/// <returns>Index of the set.</returns>
-		[[nodiscard]] uint32_t GetSet() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetSet() const noexcept;
 
 		/// <summary>
 		/// Update the descriptor set.
@@ -118,6 +118,35 @@ namespace TRAP::Graphics::API
 [[nodiscard]] constexpr const std::vector<TRAP::Graphics::API::VulkanRenderer::SizeOffset>& TRAP::Graphics::API::VulkanDescriptorSet::GetDynamicSizeOffsets() const noexcept
 {
 	return m_dynamicSizeOffsets;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency TRAP::Graphics::API::VulkanDescriptorSet::GetUpdateFrequency() const noexcept
+{
+	return m_set > 0 ? RendererAPI::DescriptorUpdateFrequency::Dynamic :
+	                   RendererAPI::DescriptorUpdateFrequency::Static;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint8_t TRAP::Graphics::API::VulkanDescriptorSet::GetDynamicOffsetCount() const noexcept
+{
+	return m_dynamicOffsetCount;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::API::VulkanDescriptorSet::GetMaxSets() const noexcept
+{
+	return m_maxSets;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::API::VulkanDescriptorSet::GetSet() const noexcept
+{
+	return m_set;
 }
 
 #endif /*TRAP_VULKANDESCRIPTORSET_H*/

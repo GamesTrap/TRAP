@@ -23,23 +23,20 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Fence::Fence()
-	: m_submitted(false)
+TRAP::Graphics::Fence::~Fence()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
 #ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererFencePrefix, "Creating Fence");
+	TP_DEBUG(Log::RendererFencePrefix, "Destroying Fence");
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::Graphics::Fence::IsSubmitted() const noexcept
+TRAP::Graphics::Fence::Fence()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_submitted;
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererFencePrefix, "Creating Fence");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

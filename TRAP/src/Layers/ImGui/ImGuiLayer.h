@@ -31,7 +31,7 @@ namespace TRAP
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		ImGuiLayer();
+		constexpr ImGuiLayer();
 
 		/// <summary>
 		/// Called when pushed to a layer stack.
@@ -60,7 +60,7 @@ namespace TRAP
 		/// Block ImGui event handling.
 		/// </summary>
 		/// <param name="block">Whether to block events or not</param>
-		void BlockEvents(bool block) noexcept;
+		constexpr void BlockEvents(bool block) noexcept;
 
 		/// <summary>
 		/// Sets a dark theme for ImGui.
@@ -71,12 +71,12 @@ namespace TRAP
 		/// </summary>
 		static void SetImGuizmoStyle();
 	private:
-		bool m_blockEvents;
+		bool m_blockEvents = true;
 
 		std::string m_imguiIniPath;
 
-		TRAP::Ref<TRAP::Graphics::PipelineCache> m_imguiPipelineCache;
-		VkDescriptorPool m_imguiDescriptorPool;
+		TRAP::Ref<TRAP::Graphics::PipelineCache> m_imguiPipelineCache = nullptr;
+		VkDescriptorPool m_imguiDescriptorPool = VK_NULL_HANDLE;
 
 		const std::vector<VkDescriptorPoolSize> m_descriptorPoolSizes =
 		{
@@ -208,6 +208,20 @@ namespace ImGui
 	/// </summary>
 	/// <param name="enable">Enable or disable.</param>
 	void SetInputEnabled(bool enable);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::ImGuiLayer::ImGuiLayer()
+	: Layer("ImGuiLayer")
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::ImGuiLayer::BlockEvents(const bool block) noexcept
+{
+	m_blockEvents = block;
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

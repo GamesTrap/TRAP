@@ -22,11 +22,11 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		RootSignature(const RootSignature&) = delete;
+		constexpr RootSignature(const RootSignature&) = delete;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		RootSignature& operator=(const RootSignature&) = delete;
+		constexpr RootSignature& operator=(const RootSignature&) = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
@@ -40,12 +40,12 @@ namespace TRAP::Graphics
 		/// Retrieve the pipeline type used by the shaders of the root signature.
 		/// </summary>
 		/// <returns>Pipeline type.</returns>
-		[[nodiscard]] RendererAPI::PipelineType GetPipelineType() const noexcept;
+		[[nodiscard]] constexpr RendererAPI::PipelineType GetPipelineType() const noexcept;
 		/// <summary>
 		/// Retrieve the amount of descriptors contained in the root signature.
 		/// </summary>
 		/// <returns>Amount of descriptors.</returns>
-		[[nodiscard]] uint64_t GetDescriptorCount() const noexcept;
+		[[nodiscard]] constexpr uint64_t GetDescriptorCount() const noexcept;
 		/// <summary>
 		/// Retrieve the list of descriptors contained in the root signature.
 		/// </summary>
@@ -64,12 +64,26 @@ namespace TRAP::Graphics
 		RootSignature();
 
 		//Graphics or Compute
-		RendererAPI::PipelineType m_pipelineType;
+		RendererAPI::PipelineType m_pipelineType = RendererAPI::PipelineType::Undefined;
 		//Array of all descriptors declared in the root signature layout
-		std::vector<RendererAPI::DescriptorInfo> m_descriptors;
+		std::vector<RendererAPI::DescriptorInfo> m_descriptors{};
 		//Translates hash of descriptor name to descriptor index in m_descriptors array
-		RendererAPI::DescriptorIndexMap m_descriptorNameToIndexMap;
+		RendererAPI::DescriptorIndexMap m_descriptorNameToIndexMap{};
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::RootSignature::GetPipelineType() const noexcept
+{
+	return m_pipelineType;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint64_t TRAP::Graphics::RootSignature::GetDescriptorCount() const noexcept
+{
+	return m_descriptors.size();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

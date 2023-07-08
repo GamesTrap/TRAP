@@ -3,17 +3,6 @@
 
 #include "Graphics/API/Vulkan/Objects/VulkanCommandSignature.h"
 
-TRAP::Graphics::CommandSignature::CommandSignature()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererCommandSignaturePrefix, "Creating CommandSignature");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::CommandSignature> TRAP::Graphics::CommandSignature::Create(const RendererAPI::CommandSignatureDesc& desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -30,4 +19,22 @@ TRAP::Graphics::CommandSignature::CommandSignature()
 		TRAP_ASSERT(false, "CommandSignature::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::CommandSignature::CommandSignature()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererCommandSignaturePrefix, "Creating CommandSignature");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::CommandSignature::~CommandSignature()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererCommandSignaturePrefix, "Destroying CommandSignature");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }

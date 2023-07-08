@@ -95,7 +95,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI:
 		(
 			 VK_SHADER_STAGE_COMPUTE_BIT,
 			 vShader->GetVkShaderModules()[0],
-			 std::get<0>(vShader->GetReflection()->StageReflections).EntryPoint.data()
+			 std::get<0>(vShader->GetReflection()->StageReflections).EntryPoint
 		);
 
 		const VkComputePipelineCreateInfo info = VulkanInits::ComputePipelineCreateInfo
@@ -374,24 +374,6 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 
 		renderPass.reset();
 	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkPipeline TRAP::Graphics::API::VulkanPipeline::GetVkPipeline() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_vkPipeline;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::API::VulkanPipeline::GetPipelineType() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_type;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

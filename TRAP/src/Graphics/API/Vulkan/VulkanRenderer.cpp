@@ -23,7 +23,6 @@
 #include "Objects/VulkanDevice.h"
 #include "Objects/VulkanPhysicalDevice.h"
 #include "Objects/VulkanInstance.h"
-#include "Objects/VulkanDebug.h"
 #include "Objects/VulkanRootSignature.h"
 #include "Objects/VulkanTexture.h"
 #include "Objects/VulkanInits.h"
@@ -67,19 +66,6 @@ std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::FrameBu
 std::unordered_map<uint64_t, TRAP::Ref<TRAP::Graphics::Pipeline>> TRAP::Graphics::API::VulkanRenderer::s_pipelines{};
 std::unordered_map<uint64_t,
                    TRAP::Ref<TRAP::Graphics::PipelineCache>> TRAP::Graphics::API::VulkanRenderer::s_pipelineCaches{};
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::API::VulkanRenderer::VulkanRenderer() noexcept
-	: m_instance(nullptr),
-	  m_debug(nullptr),
-	  m_device(nullptr),
-	  m_vma(nullptr)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	s_renderer = this;
-}
 
 //-------------------------------------------------------------------------------------------------------------------//
 

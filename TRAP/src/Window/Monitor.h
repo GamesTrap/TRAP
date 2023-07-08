@@ -45,7 +45,7 @@ namespace TRAP
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Monitor(const Monitor&) noexcept = default;
+		constexpr Monitor(const Monitor&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -53,7 +53,7 @@ namespace TRAP
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Monitor(Monitor&&) noexcept = default;
+		constexpr Monitor(Monitor&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>

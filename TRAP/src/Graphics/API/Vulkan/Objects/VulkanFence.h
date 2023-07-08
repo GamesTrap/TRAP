@@ -44,7 +44,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the VkFence handle.
 		/// </summary>
 		/// <returns>VkFence handle.</returns>
-		[[nodiscard]] VkFence GetVkFence() const noexcept;
+		[[nodiscard]] constexpr VkFence GetVkFence() const noexcept;
 
 		/// <summary>
 		/// Retrieve the current status of the fence.
@@ -69,6 +69,13 @@ namespace TRAP::Graphics::API
 		VkFence m_fence;
 		TRAP::Ref<VulkanDevice> m_device;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkFence TRAP::Graphics::API::VulkanFence::GetVkFence() const noexcept
+{
+	return m_fence;
 }
 
 #endif /*TRAP_VULKANFENCE_H*/

@@ -23,8 +23,8 @@ namespace TRAP::Graphics
 	struct Renderer2DData
 	{
 		Renderer2DData();
-		Renderer2DData(const Renderer2DData&) = delete;
-		Renderer2DData& operator=(const Renderer2DData&) = delete;
+		constexpr Renderer2DData(const Renderer2DData&) = delete;
+		constexpr Renderer2DData& operator=(const Renderer2DData&) = delete;
 		Renderer2DData(Renderer2DData&&) noexcept = default;
 		Renderer2DData& operator=(Renderer2DData&&) noexcept = default;
 		~Renderer2DData() = default;
@@ -1135,24 +1135,6 @@ void TRAP::Graphics::Renderer2D::DrawRect(const TRAP::Math::Mat4& transform, con
 	DrawLine(std::get<1>(lineVertices), std::get<2>(lineVertices), color, entityID);
 	DrawLine(std::get<2>(lineVertices), std::get<3>(lineVertices), color, entityID);
 	DrawLine(std::get<3>(lineVertices), std::get<0>(lineVertices), color, entityID);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] uint32_t TRAP::Graphics::Renderer2D::Statistics::GetTotalVertexCount() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return (QuadCount * 4) + (CircleCount * 4) + (LineCount * 2);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] uint32_t TRAP::Graphics::Renderer2D::Statistics::GetTotalIndexCount() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return (QuadCount * 6) + (CircleCount * 6);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

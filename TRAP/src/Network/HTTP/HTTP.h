@@ -95,7 +95,7 @@ namespace TRAP::Network
 			/// The method is HTTP::Request::GET by default.
 			/// </summary>
 			/// <param name="method">Method to use for the request.</param>
-			void SetMethod(Method method) noexcept;
+			constexpr void SetMethod(Method method) noexcept;
 
 			/// <summary>
 			/// Set the requested URI.
@@ -114,7 +114,7 @@ namespace TRAP::Network
 			/// </summary>
 			/// <param name="major">Major HTTP version number.</param>
 			/// <param name="minor">Minor HTTP version number.</param>
-			void SetHTTPVersion(uint32_t major, uint32_t minor) noexcept;
+			constexpr void SetHTTPVersion(uint32_t major, uint32_t minor) noexcept;
 
 			/// <summary>
 			/// Set the body of the request.
@@ -228,19 +228,19 @@ namespace TRAP::Network
 			/// enumeration).
 			/// </summary>
 			/// <returns>Status code of the response.</returns>
-			[[nodiscard]] Status GetStatus() const noexcept;
+			[[nodiscard]] constexpr Status GetStatus() const noexcept;
 
 			/// <summary>
 			/// Get the major HTTP version number of the response.
 			/// </summary>
 			/// <returns>Major HTTP version number.</returns>
-			[[nodiscard]] uint32_t GetMajorHTTPVersion() const noexcept;
+			[[nodiscard]] constexpr uint32_t GetMajorHTTPVersion() const noexcept;
 
 			/// <summary>
 			/// Get the minor HTTP version number of the response.
 			/// </summary>
 			/// <returns>Minor HTTP version number.</returns>
-			[[nodiscard]] uint32_t GetMinorHTTPVersion() const noexcept;
+			[[nodiscard]] constexpr uint32_t GetMinorHTTPVersion() const noexcept;
 
 			/// <summary>
 			/// Get the body of the response.
@@ -368,6 +368,13 @@ namespace TRAP::Network
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+constexpr void TRAP::Network::HTTP::Request::SetMethod(const Method method) noexcept
+{
+	m_method = method;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 constexpr void TRAP::Network::HTTP::Request::SetURI(std::string uri)
 {
 	m_uri = std::move(uri);
@@ -379,9 +386,38 @@ constexpr void TRAP::Network::HTTP::Request::SetURI(std::string uri)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+constexpr void TRAP::Network::HTTP::Request::SetHTTPVersion(const uint32_t major, const uint32_t minor) noexcept
+{
+	m_majorVersion = major;
+	m_minorVersion = minor;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 constexpr void TRAP::Network::HTTP::Request::SetBody(std::string body)
 {
 	m_body = std::move(body);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Network::HTTP::Response::Status TRAP::Network::HTTP::Response::GetStatus() const noexcept
+{
+	return m_status;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Network::HTTP::Response::GetMajorHTTPVersion() const noexcept
+{
+	return m_majorVersion;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Network::HTTP::Response::GetMinorHTTPVersion() const noexcept
+{
+	return m_minorVersion;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

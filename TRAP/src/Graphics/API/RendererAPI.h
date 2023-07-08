@@ -163,7 +163,7 @@ namespace TRAP::Graphics
 		/// Note: This only takes effect after a restart of the engine.
 		/// </summary>
 		/// <param name="GPUUUID">UUID of the GPU to use.</param>
-		static void SetNewGPU(const std::array<uint8_t, 16>& GPUUUID) noexcept;
+		static constexpr void SetNewGPU(const std::array<uint8_t, 16>& GPUUUID) noexcept;
 		/// <summary>
 		/// Get the UUID of the new GPU to use.
 		///
@@ -3398,5 +3398,12 @@ MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCaps)
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCombiner)
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ClearBufferType)
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::LatencyMode)
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Graphics::RendererAPI::SetNewGPU(const std::array<uint8_t, 16>& GPUUUID) noexcept
+{
+	s_newGPUUUID = GPUUUID;
+}
 
 #endif /*TRAP_RENDERERAPI_H*/

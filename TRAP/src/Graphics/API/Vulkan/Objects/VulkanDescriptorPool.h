@@ -53,7 +53,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the current VkDescriptorPool handle.
 		/// </summary>
 		/// <returns>VkDescriptorPool handle.</returns>
-		[[nodiscard]] VkDescriptorPool GetCurrentVkDescriptorPool() const noexcept;
+		[[nodiscard]] constexpr VkDescriptorPool GetCurrentVkDescriptorPool() const noexcept;
 		/// <summary>
 		/// Retrieve the descriptor pool sizes for each descriptor type.
 		/// </summary>
@@ -63,7 +63,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the count of used descriptor sets.
 		/// </summary>
 		/// <returns>Count of used descriptor sets.</returns>
-		[[nodiscard]] uint32_t GetUsedDescriptorSetsCount() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetUsedDescriptorSetsCount() const noexcept;
 
 		/// <summary>
 		/// Retrieve a new descriptor set from description.
@@ -113,9 +113,23 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] constexpr VkDescriptorPool TRAP::Graphics::API::VulkanDescriptorPool::GetCurrentVkDescriptorPool() const noexcept
+{
+	return m_currentPool;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr const std::vector<VkDescriptorPoolSize>& TRAP::Graphics::API::VulkanDescriptorPool::GetDescriptorPoolSizes() const noexcept
 {
 	return m_descriptorPoolSizes;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::API::VulkanDescriptorPool::GetUsedDescriptorSetsCount() const noexcept
+{
+	return m_usedDescriptorSetCount;
 }
 
 #endif /*TRAP_VULKANDESCRIPTORPOOL_H*/

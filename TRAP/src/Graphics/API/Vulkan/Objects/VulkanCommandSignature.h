@@ -17,12 +17,12 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		constexpr ~VulkanCommandSignature() override;
+		~VulkanCommandSignature() override;
 
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanCommandSignature(const VulkanCommandSignature&) noexcept = default;
+		constexpr VulkanCommandSignature(const VulkanCommandSignature&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -30,7 +30,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanCommandSignature(VulkanCommandSignature&&) noexcept = default;
+		constexpr VulkanCommandSignature(VulkanCommandSignature&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
@@ -40,26 +40,31 @@ namespace TRAP::Graphics::API
 		/// Retrieve the draw type used for indirect drawing.
 		/// </summary>
 		/// <returns>Draw type.</returns>
-		[[nodiscard]] RendererAPI::IndirectArgumentType GetDrawType() const noexcept;
+		[[nodiscard]] constexpr RendererAPI::IndirectArgumentType GetDrawType() const noexcept;
 		/// <summary>
 		/// Retrieve the byte stride between successive sets of draw parameters.
 		/// </summary>
 		/// <returns>Byte stride.</returns>
-		[[nodiscard]] uint32_t GetStride() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetStride() const noexcept;
 
 	private:
-		RendererAPI::IndirectArgumentType m_drawType;
-		uint32_t m_stride;
+		RendererAPI::IndirectArgumentType m_drawType{};
+		uint32_t m_stride{};
 	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::API::VulkanCommandSignature::~VulkanCommandSignature()
+[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::IndirectArgumentType TRAP::Graphics::API::VulkanCommandSignature::GetDrawType() const noexcept
 {
-#ifdef VERBOSE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererVulkanCommandSignaturePrefix, "Destroying CommandSignature");
-#endif /*VERBOSE_GRAPHICS_DEBUG*/
+	return m_drawType;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::API::VulkanCommandSignature::GetStride() const noexcept
+{
+	return m_stride;
 }
 
 #endif /*TRAP_VULKANINDIRECTCOMMANDSIGNATURE_H*/

@@ -18,12 +18,12 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		constexpr virtual ~QueryPool();
+		virtual ~QueryPool();
 
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		QueryPool(const QueryPool&) noexcept = default;
+		constexpr QueryPool(const QueryPool&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -31,7 +31,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		QueryPool(QueryPool&&) noexcept = default;
+		constexpr QueryPool(QueryPool&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
@@ -45,15 +45,6 @@ namespace TRAP::Graphics
 
 		//No Graphic API independent data
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-constexpr TRAP::Graphics::QueryPool::~QueryPool()
-{
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererQueryPoolPrefix, "Destroying QueryPool");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 #endif /*TRAP_QUERYPOOL_H*/

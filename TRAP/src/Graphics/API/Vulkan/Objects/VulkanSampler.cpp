@@ -33,15 +33,6 @@ TRAP::Graphics::API::VulkanSampler::~VulkanSampler()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] VkSampler TRAP::Graphics::API::VulkanSampler::GetVkSampler() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_vkSampler;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::API::VulkanSampler::UpdateAnisotropy(const float anisotropy)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

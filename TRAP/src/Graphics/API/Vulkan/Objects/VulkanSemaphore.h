@@ -42,7 +42,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan semaphore handle.
 		/// </summary>
 		/// <returns>Vulkan semaphore handle.</returns>
-		[[nodiscard]] VkSemaphore GetVkSemaphore() const noexcept;
+		[[nodiscard]] constexpr VkSemaphore GetVkSemaphore() const noexcept;
 
 	private:
 #ifndef TRAP_HEADLESS_MODE
@@ -54,6 +54,13 @@ namespace TRAP::Graphics::API
 
 		TRAP::Ref<VulkanDevice> m_device;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkSemaphore TRAP::Graphics::API::VulkanSemaphore::GetVkSemaphore() const noexcept
+{
+	return m_semaphore;
 }
 
 #endif /*TRAP_VULKANSEMAPHORE_H*/

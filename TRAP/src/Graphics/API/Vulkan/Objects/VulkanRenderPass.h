@@ -43,7 +43,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan render pass handle.
 		/// </summary>
 		/// <returns>Vulkan render pass handle.</returns>
-		[[nodiscard]] VkRenderPass GetVkRenderPass() const noexcept;
+		[[nodiscard]] constexpr VkRenderPass GetVkRenderPass() const noexcept;
 
 		/// <summary>
 		/// Retrieve the used color formats.
@@ -59,27 +59,27 @@ namespace TRAP::Graphics::API
 		/// Retrieve the number of used render targets.
 		/// </summary>
 		/// <returns>Number of used render targets.</returns>
-		[[nodiscard]] uint32_t GetRenderTargetCount() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetRenderTargetCount() const noexcept;
 		/// <summary>
 		/// Retrieve the used sample count.
 		/// </summary>
 		/// <returns>Used sample count.</returns>
-		[[nodiscard]] RendererAPI::SampleCount GetSampleCount() const noexcept;
+		[[nodiscard]] constexpr RendererAPI::SampleCount GetSampleCount() const noexcept;
 		/// <summary>
 		/// Retrieve the used depth stencil format.
 		/// </summary>
 		/// <returns>Used depth stencil format.</returns>
-		[[nodiscard]] TRAP::Graphics::API::ImageFormat GetDepthStencilFormat() const noexcept;
+		[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat GetDepthStencilFormat() const noexcept;
 		/// <summary>
 		/// Retrieve the used depth load action type.
 		/// </summary>
 		/// <returns>Used depth load action type.</returns>
-		[[nodiscard]] RendererAPI::LoadActionType GetLoadActionTypeDepth() const noexcept;
+		[[nodiscard]] constexpr RendererAPI::LoadActionType GetLoadActionTypeDepth() const noexcept;
 		/// <summary>
 		/// Retrieve the used stencil load action type.
 		/// </summary>
 		/// <returns>Used stencil load action type.</returns>
-		[[nodiscard]] RendererAPI::LoadActionType GetLoadActionTypeStencil() const noexcept;
+		[[nodiscard]] constexpr RendererAPI::LoadActionType GetLoadActionTypeStencil() const noexcept;
 
 	private:
 		[[nodiscard]] static VkRenderPass CreateRenderPass(const TRAP::Ref<VulkanDevice>& device, const VulkanRenderer::RenderPassDesc& desc);
@@ -111,6 +111,48 @@ namespace TRAP::Graphics::API
 [[nodiscard]] constexpr const std::vector<TRAP::Graphics::RendererAPI::LoadActionType>& TRAP::Graphics::API::VulkanRenderPass::GetLoadActionsColor() const noexcept
 {
 	return m_loadActionsColor;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkRenderPass TRAP::Graphics::API::VulkanRenderPass::GetVkRenderPass() const noexcept
+{
+	return m_renderPass;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::API::VulkanRenderPass::GetRenderTargetCount() const noexcept
+{
+	return m_renderTargetCount;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::API::VulkanRenderPass::GetSampleCount() const noexcept
+{
+	return m_sampleCount;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::VulkanRenderPass::GetDepthStencilFormat() const noexcept
+{
+	return m_depthStencilFormat;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::LoadActionType TRAP::Graphics::API::VulkanRenderPass::GetLoadActionTypeDepth() const noexcept
+{
+	return m_loadActionDepth;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::LoadActionType TRAP::Graphics::API::VulkanRenderPass::GetLoadActionTypeStencil() const noexcept
+{
+	return m_loadActionStencil;
 }
 
 #endif /*TRAP_VULKANRENDERPASS_H*/

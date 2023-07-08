@@ -27,7 +27,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanPhysicalDevice(const VulkanPhysicalDevice&) noexcept = default;
+		constexpr VulkanPhysicalDevice(const VulkanPhysicalDevice&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -35,7 +35,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanPhysicalDevice(VulkanPhysicalDevice&&) noexcept = default;
+		constexpr VulkanPhysicalDevice(VulkanPhysicalDevice&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
@@ -45,7 +45,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan physical device handle.
 		/// </summary>
 		/// <returns>Vulkan physical device handle.</returns>
-		[[nodiscard]] VkPhysicalDevice GetVkPhysicalDevice() const noexcept;
+		[[nodiscard]] constexpr VkPhysicalDevice GetVkPhysicalDevice() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan physical device format properties for a specific format.
 		/// </summary>
@@ -56,32 +56,32 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan physical device properties.
 		/// </summary>
 		/// <returns>VkPhysicalDeviceProperties.</returns>
-		[[nodiscard]] const VkPhysicalDeviceProperties& GetVkPhysicalDeviceProperties() const noexcept;
+		[[nodiscard]] constexpr const VkPhysicalDeviceProperties& GetVkPhysicalDeviceProperties() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan physical device subgroup properties.
 		/// </summary>
 		/// <returns>VkPhysicalDeviceSubgroupProperties.</returns>
-		[[nodiscard]] const VkPhysicalDeviceSubgroupProperties& GetVkPhysicalDeviceSubgroupProperties() const noexcept;
+		[[nodiscard]] constexpr const VkPhysicalDeviceSubgroupProperties& GetVkPhysicalDeviceSubgroupProperties() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan physical device id properties.
 		/// </summary>
 		/// <returns>VkPhysicalDeviceIDProperties.</returns>
-		[[nodiscard]] const VkPhysicalDeviceIDProperties& GetVkPhysicalDeviceIDProperties() const noexcept;
+		[[nodiscard]] constexpr const VkPhysicalDeviceIDProperties& GetVkPhysicalDeviceIDProperties() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan physical device memory properties.
 		/// </summary>
 		/// <returns>VkPhysicalDeviceMemoryProperties.</returns>
-		[[nodiscard]] const VkPhysicalDeviceMemoryProperties& GetVkPhysicalDeviceMemoryProperties() const noexcept;
+		[[nodiscard]] constexpr const VkPhysicalDeviceMemoryProperties& GetVkPhysicalDeviceMemoryProperties() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan physical device features.
 		/// </summary>
 		/// <returns>VkPhysicalDeviceFeatures.</returns>
-		[[nodiscard]] const VkPhysicalDeviceFeatures& GetVkPhysicalDeviceFeatures() const noexcept;
+		[[nodiscard]] constexpr const VkPhysicalDeviceFeatures& GetVkPhysicalDeviceFeatures() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan physical device fragment shader interlock features.
 		/// </summary>
 		/// <returns>VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT.</returns>
-		[[nodiscard]] const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT& GetVkPhysicalDeviceFragmentShaderInterlockFeatures() const noexcept;
+		[[nodiscard]] constexpr const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT& GetVkPhysicalDeviceFragmentShaderInterlockFeatures() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan queue family properties of each queue family.
 		/// </summary>
@@ -104,7 +104,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the physical device's UUID.
 		/// </summary>
 		/// <returns>Physical device UUID.</returns>
-		[[nodiscard]] const std::array<uint8_t, 16>& GetPhysicalDeviceUUID() const noexcept;
+		[[nodiscard]] constexpr const std::array<uint8_t, 16>& GetPhysicalDeviceUUID() const noexcept;
 
 		/// <summary>
 		/// Retrieve the physical device fragment shader interlock features.
@@ -116,7 +116,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the vendor of the physical device.
 		/// </summary>
 		/// <returns>Vendor.</returns>
-		[[nodiscard]] RendererAPI::GPUVendor GetVendor() const noexcept;
+		[[nodiscard]] constexpr RendererAPI::GPUVendor GetVendor() const noexcept;
 
 		/// <summary>
 		/// Retrieve a list of all rated physical devices.
@@ -194,7 +194,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the max usable MSAA sample count for the GPU.
 		/// </summary>
 		/// <returns>Max usable MSAA sample count.</returns>
-		[[nodiscard]] uint32_t GetMaxUsableMSAASampleCount() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetMaxUsableMSAASampleCount() const noexcept;
 
 		VkPhysicalDevice m_physicalDevice;
 		VkPhysicalDeviceProperties m_physicalDeviceProperties;
@@ -215,9 +215,127 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] constexpr VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDevice() const noexcept
+{
+	return m_physicalDevice;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr const std::vector<VkQueueFamilyProperties> &TRAP::Graphics::API::VulkanPhysicalDevice::GetQueueFamilyProperties() const noexcept
 {
 	return m_queueFamilyProperties;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const VkPhysicalDeviceProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceProperties() const noexcept
+{
+	return m_physicalDeviceProperties;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const VkPhysicalDeviceSubgroupProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceSubgroupProperties() const noexcept
+{
+	return m_physicalDeviceSubgroupProperties;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const VkPhysicalDeviceIDProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceIDProperties() const noexcept
+{
+	return m_physicalDeviceIDProperties;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const VkPhysicalDeviceMemoryProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceMemoryProperties() const noexcept
+{
+	return m_physicalDeviceMemoryProperties;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const VkPhysicalDeviceFeatures &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFeatures() const noexcept
+{
+	return m_physicalDeviceFeatures;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFragmentShaderInterlockFeatures() const noexcept
+{
+	return m_physicalDeviceFragmentShaderInterlockFeatures;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::array<uint8_t, 16> &TRAP::Graphics::API::VulkanPhysicalDevice::GetPhysicalDeviceUUID() const noexcept
+{
+	return m_deviceUUID;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::GPUVendor TRAP::Graphics::API::VulkanPhysicalDevice::GetVendor() const noexcept
+{
+	switch(m_physicalDeviceProperties.vendorID)
+	{
+	case 0x1002:
+		[[fallthrough]];
+	case 0x1010:
+		[[fallthrough]];
+	case 0x10DE:
+		[[fallthrough]];
+	case 0x13B5:
+		[[fallthrough]];
+	case 0x14E4:
+		[[fallthrough]];
+	case 0x5143:
+		[[fallthrough]];
+	case 0x8086:
+		[[fallthrough]];
+	case 0x106B:
+		[[fallthrough]];
+	case 0x7A05:
+		[[fallthrough]];
+	case 0x1EB1:
+		[[fallthrough]];
+	case 0x10003:
+		[[fallthrough]];
+	case 0x10004:
+		[[fallthrough]];
+	case 0x10005:
+		return static_cast<RendererAPI::GPUVendor>(m_physicalDeviceProperties.vendorID);
+
+	default:
+		return RendererAPI::GPUVendor::Unknown;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::API::VulkanPhysicalDevice::GetMaxUsableMSAASampleCount() const noexcept
+{
+	VkSampleCountFlags sampleCounts = TRAP::Math::Min(m_physicalDeviceProperties.limits.framebufferColorSampleCounts,
+	                                                  m_physicalDeviceProperties.limits.framebufferDepthSampleCounts);
+	sampleCounts = TRAP::Math::Min(sampleCounts, m_physicalDeviceProperties.limits.framebufferStencilSampleCounts);
+
+	if((sampleCounts & VK_SAMPLE_COUNT_64_BIT) != 0u)
+		return VK_SAMPLE_COUNT_64_BIT;
+	if((sampleCounts & VK_SAMPLE_COUNT_32_BIT) != 0u)
+		return VK_SAMPLE_COUNT_32_BIT;
+	if((sampleCounts & VK_SAMPLE_COUNT_16_BIT) != 0u)
+		return VK_SAMPLE_COUNT_16_BIT;
+	if((sampleCounts & VK_SAMPLE_COUNT_8_BIT) != 0u)
+		return VK_SAMPLE_COUNT_8_BIT;
+	if((sampleCounts & VK_SAMPLE_COUNT_4_BIT) != 0u)
+		return VK_SAMPLE_COUNT_4_BIT;
+	if((sampleCounts & VK_SAMPLE_COUNT_2_BIT) != 0u)
+		return VK_SAMPLE_COUNT_2_BIT;
+
+	return VK_SAMPLE_COUNT_1_BIT;
 }
 
 #endif /*TRAP_VULKANPHYSICALDEVICE_H*/

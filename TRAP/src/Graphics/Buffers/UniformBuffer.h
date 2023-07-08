@@ -18,23 +18,23 @@ namespace TRAP::Graphics
 		/// Constructor.
 		/// </summary>
 		/// <param name="updateFrequency">Update frequency of the uniform buffer.</param>
-		explicit UniformBuffer(RendererAPI::DescriptorUpdateFrequency updateFrequency);
+		constexpr explicit UniformBuffer(RendererAPI::DescriptorUpdateFrequency updateFrequency);
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		UniformBuffer(const UniformBuffer&) noexcept = default;
+		constexpr UniformBuffer(const UniformBuffer&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		UniformBuffer& operator=(const UniformBuffer&) noexcept = default;
+		constexpr UniformBuffer& operator=(const UniformBuffer&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		UniformBuffer(UniformBuffer&&) noexcept = default;
+		constexpr UniformBuffer(UniformBuffer&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		UniformBuffer& operator=(UniformBuffer&&) noexcept = default;
+		constexpr UniformBuffer& operator=(UniformBuffer&&) noexcept = default;
 
 	public:
 		/// <summary>
@@ -51,7 +51,7 @@ namespace TRAP::Graphics
 		/// Retrieve the update frequency of the UBO.
 		/// </summary>
 		/// <returns>Update frequency of the UBO.</returns>
-		[[nodiscard]] UpdateFrequency GetUpdateFrequency() const noexcept;
+		[[nodiscard]] constexpr UpdateFrequency GetUpdateFrequency() const noexcept;
 		/// <summary>
 		/// Retrieve the underlying buffers.
 		/// </summary>
@@ -112,6 +112,21 @@ namespace TRAP::Graphics
 
 		std::vector<API::SyncToken> m_tokens;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::UniformBuffer::UniformBuffer(const RendererAPI::DescriptorUpdateFrequency updateFrequency)
+{
+	m_tokens.resize(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount);
+	m_uniformBuffers.resize(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Graphics::UpdateFrequency TRAP::Graphics::UniformBuffer::GetUpdateFrequency() const noexcept
+{
+	return m_uniformBuffers.size() == 1 ? UpdateFrequency::Static : UpdateFrequency::Dynamic;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

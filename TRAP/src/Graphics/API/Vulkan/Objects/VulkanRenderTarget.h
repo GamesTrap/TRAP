@@ -26,11 +26,11 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanRenderTarget(const VulkanRenderTarget&) = delete;
+		constexpr VulkanRenderTarget(const VulkanRenderTarget&) = delete;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanRenderTarget& operator=(const VulkanRenderTarget&) = delete;
+		constexpr VulkanRenderTarget& operator=(const VulkanRenderTarget&) = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
@@ -44,7 +44,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the render target's Vulkan image view.
 		/// </summary>
 		/// <returns>Vulkan image view.</returns>
-		[[nodiscard]] VkImageView GetVkImageView() const noexcept;
+		[[nodiscard]] constexpr VkImageView GetVkImageView() const noexcept;
 		/// <summary>
 		/// Retrieve the render target's Vulkan image view slices.
 		/// </summary>
@@ -54,7 +54,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the render target's ID.
 		/// </summary>
 		/// <returns>Render target ID.</returns>
-		[[nodiscard]] uint64_t GetID() const noexcept;
+		[[nodiscard]] constexpr uint64_t GetID() const noexcept;
 
 	private:
 		friend void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector<RendererAPI::BufferBarrier>* bufferBarriers,
@@ -92,9 +92,23 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] constexpr VkImageView TRAP::Graphics::API::VulkanRenderTarget::GetVkImageView() const noexcept
+{
+	return m_vkDescriptor;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr const std::vector<VkImageView>& TRAP::Graphics::API::VulkanRenderTarget::GetVkImageViewSlices() const noexcept
 {
 	return m_vkSliceDescriptors;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint64_t TRAP::Graphics::API::VulkanRenderTarget::GetID() const noexcept
+{
+	return m_ID;
 }
 
 #endif /*TRAP_VULKANRENDERTARGET_H*/

@@ -18,12 +18,12 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		constexpr virtual ~CommandSignature();
+		virtual ~CommandSignature();
 
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		CommandSignature(const CommandSignature&) noexcept = default;
+		constexpr CommandSignature(const CommandSignature&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -31,7 +31,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		CommandSignature(CommandSignature&&) noexcept = default;
+		constexpr CommandSignature(CommandSignature&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
@@ -45,15 +45,6 @@ namespace TRAP::Graphics
 
 		//No Graphic API independent data
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-constexpr TRAP::Graphics::CommandSignature::~CommandSignature()
-{
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererCommandSignaturePrefix, "Destroying CommandSignature");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 #endif /*TRAP_COMMANDSIGNATURE_H*/

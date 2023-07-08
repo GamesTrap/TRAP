@@ -166,13 +166,6 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RendererAPI::SetNewGPU(const std::array<uint8_t, 16>& GPUUUID) noexcept
-{
-	s_newGPUUUID = GPUUUID;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] std::array<uint8_t, 16> TRAP::Graphics::RendererAPI::GetNewGPU() noexcept
 {
 	return s_newGPUUUID;

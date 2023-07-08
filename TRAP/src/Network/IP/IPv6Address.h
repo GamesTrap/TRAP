@@ -22,7 +22,7 @@ namespace TRAP::Network
 		/// <summary>
 		/// This constructor creates an empty (invalid) address.
 		/// </summary>
-		IPv6Address() noexcept = default;
+		constexpr IPv6Address() noexcept = default;
 
 		/// <summary>
 		/// Construct the address from a string.
@@ -69,7 +69,7 @@ namespace TRAP::Network
 		/// from a host name.
 		/// </summary>
 		/// <returns>Byte representation of the address.</returns>
-		[[nodiscard]] std::array<uint8_t, 16> ToArray() const noexcept;
+		[[nodiscard]] constexpr std::array<uint8_t, 16> ToArray() const noexcept;
 
 		/// <summary>
 		/// Get the computer's local address.
@@ -158,6 +158,13 @@ struct fmt::formatter<TRAP::Network::IPv6Address> : fmt::ostream_formatter
 inline constexpr TRAP::Network::IPv6Address::IPv6Address(const std::array<uint8_t, 16>& addressBytes) noexcept
 	: m_address(addressBytes), m_valid(true)
 {
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr std::array<uint8_t, 16> TRAP::Network::IPv6Address::ToArray() const noexcept
+{
+	return m_address;
 }
 
 #endif /*TRAP_IPV6ADDRESS_H*/

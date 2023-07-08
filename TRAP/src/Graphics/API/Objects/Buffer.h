@@ -18,7 +18,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		constexpr virtual ~Buffer();
+		virtual ~Buffer();
 
 		/// <summary>
 		/// Copy constructor.
@@ -27,7 +27,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		constexpr Buffer& operator=(const Buffer&) noexcept = default;
+		Buffer& operator=(const Buffer&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
@@ -35,7 +35,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		constexpr Buffer& operator=(Buffer&&) noexcept = default;
+		Buffer& operator=(Buffer&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the size of the buffer in bytes.
@@ -79,7 +79,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		constexpr Buffer(uint64_t size, RendererAPI::DescriptorType descriptorType, RendererAPI::ResourceMemoryUsage memoryUsage);
+		Buffer(uint64_t size, RendererAPI::DescriptorType descriptorType, RendererAPI::ResourceMemoryUsage memoryUsage);
 
 		//CPU address of the mapped buffer (applicable to buffers created in CPU accessible heaps
 		//(CPU, CPUToGPU, GPUToCPU))
@@ -89,26 +89,6 @@ namespace TRAP::Graphics
 		RendererAPI::DescriptorType m_descriptors;
 		RendererAPI::ResourceMemoryUsage m_memoryUsage;
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-constexpr TRAP::Graphics::Buffer::Buffer(const uint64_t size, const RendererAPI::DescriptorType descriptorType,
-                                         const RendererAPI::ResourceMemoryUsage memoryUsage)
-	: m_size(size), m_descriptors(descriptorType), m_memoryUsage(memoryUsage)
-{
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererBufferPrefix, "Creating Buffer");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-constexpr TRAP::Graphics::Buffer::~Buffer()
-{
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererBufferPrefix, "Destroying Buffer");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

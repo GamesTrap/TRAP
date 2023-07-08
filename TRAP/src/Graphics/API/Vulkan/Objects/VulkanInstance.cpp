@@ -84,15 +84,6 @@ TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] VkInstance TRAP::Graphics::API::VulkanInstance::GetVkInstance() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_instance;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] uint32_t TRAP::Graphics::API::VulkanInstance::GetInstanceVersion()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

@@ -62,19 +62,19 @@ namespace TRAP
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Application(const Application&) = delete;
+		constexpr Application(const Application&) = delete;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Application& operator=(const Application&) = delete;
+		constexpr Application& operator=(const Application&) = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Application(Application&&) = delete;
+		constexpr Application(Application&&) = delete;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Application& operator=(Application&&) = delete;
+		constexpr Application& operator=(Application&&) = delete;
 
 		/// <summary>
 		/// Pushes a layer to the applications layer stack.

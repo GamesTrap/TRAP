@@ -30,19 +30,19 @@ namespace TRAP
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		ThreadPool(const ThreadPool&) = delete;
+		constexpr ThreadPool(const ThreadPool&) = delete;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		ThreadPool& operator=(const ThreadPool&) = delete;
+		constexpr ThreadPool& operator=(const ThreadPool&) = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		ThreadPool(ThreadPool&&) = delete;
+		constexpr ThreadPool(ThreadPool&&) = delete;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		ThreadPool& operator=(ThreadPool&&) = delete;
+		constexpr ThreadPool& operator=(ThreadPool&&) = delete;
 
 		/// <summary>
 		/// Enqueue work (Call given function on separate thread).

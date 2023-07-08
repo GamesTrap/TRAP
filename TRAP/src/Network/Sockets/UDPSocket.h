@@ -44,15 +44,12 @@ namespace TRAP::Network
 		/// <summary>
 		/// Constants.
 		/// </summary>
-		enum
-		{
-			MaxDatagramSize = 65507 //The maximum number of bytes that can be sent in a single UDP datagram
-		};
+		static constinit const uint32_t MaxDatagramSize = 65507; //The maximum number of bytes that can be sent in a single UDP datagram
 
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		UDPSocket();
+		constexpr UDPSocket();
 
 		/// <summary>
 		/// Get the port to which the socket is bound locally.
@@ -153,6 +150,13 @@ namespace TRAP::Network
 	private:
 		std::vector<char> m_buffer; //Temporary buffer holding the received data in Receive(Packet)
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Network::UDPSocket::UDPSocket()
+	: Socket(Type::UDP), m_buffer(MaxDatagramSize)
+{
 }
 
 #endif /*TRAP_NETWORK_UDPSOCKET_H*/

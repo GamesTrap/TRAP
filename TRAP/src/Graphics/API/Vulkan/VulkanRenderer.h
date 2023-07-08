@@ -4,6 +4,7 @@
 #include <thread>
 
 #include "Graphics/API/ShaderReflection.h"
+#include "Objects/VulkanDebug.h"
 
 namespace TRAP::Graphics
 {
@@ -34,7 +35,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		explicit VulkanRenderer() noexcept;
+		constexpr VulkanRenderer() noexcept;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -43,19 +44,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanRenderer(const VulkanRenderer&) = delete;
+		constexpr VulkanRenderer(const VulkanRenderer&) = delete;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanRenderer& operator=(const VulkanRenderer&) = delete;
+		constexpr VulkanRenderer& operator=(const VulkanRenderer&) = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanRenderer(VulkanRenderer&&) noexcept = delete;
+		constexpr VulkanRenderer(VulkanRenderer&&) noexcept = delete;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanRenderer& operator=(VulkanRenderer&&) noexcept = delete;
+		constexpr VulkanRenderer& operator=(VulkanRenderer&&) noexcept = delete;
 
 		/// <summary>
 		/// Initialize the internal Vulkan renderer.
@@ -1441,6 +1442,17 @@ namespace TRAP::Graphics::API
 
 		inline constinit static VulkanRenderer* s_renderer = nullptr;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::API::VulkanRenderer::VulkanRenderer() noexcept
+	: m_instance(nullptr),
+	  m_debug(nullptr),
+	  m_device(nullptr),
+	  m_vma(nullptr)
+{
+	s_renderer = this;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

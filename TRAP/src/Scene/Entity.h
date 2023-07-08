@@ -27,14 +27,14 @@ namespace TRAP
 	class Entity
 	{
 	public:
-		Entity() noexcept = default;
+		constexpr Entity() noexcept = default;
 		/// <summary>
 		/// Constructor.
 		/// Creates a new Entity.
 		/// </summary>
 		/// <param name="handle">Handle to entt::entity.</param>
 		/// <param name="scene">Scene which the new Entity is associated with.</param>
-		Entity(entt::entity handle, Scene* scene) noexcept;
+		constexpr Entity(entt::entity handle, Scene* scene) noexcept;
 
 		template<typename T, typename... Args>
 		T& AddComponent(Args&&... args)
@@ -88,9 +88,9 @@ namespace TRAP
 		[[nodiscard]] Utils::UID GetUID();
 		[[nodiscard]] const std::string& GetName();
 
-		operator bool() const noexcept;
-		operator uint32_t() const noexcept;
-		operator entt::entity() const noexcept;
+		constexpr operator bool() const noexcept;
+		constexpr operator uint32_t() const noexcept;
+		constexpr operator entt::entity() const noexcept;
 
 		constexpr bool operator==(Entity other) const noexcept;
 		constexpr bool operator!=(Entity other) const noexcept;
@@ -103,6 +103,34 @@ namespace TRAP
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Entity::Entity(const entt::entity handle, Scene* const scene) noexcept
+	: m_entityHandle(handle), m_scene(scene)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Entity::operator bool() const noexcept
+{
+	return m_entityHandle != entt::null;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Entity::operator uint32_t() const noexcept
+{
+	return static_cast<uint32_t>(m_entityHandle);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Entity::operator entt::entity() const noexcept
+{
+	return m_entityHandle;
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 inline constexpr bool TRAP::Entity::operator==(Entity other) const noexcept

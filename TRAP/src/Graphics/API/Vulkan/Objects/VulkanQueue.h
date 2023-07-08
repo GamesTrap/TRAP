@@ -28,7 +28,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanQueue& operator=(const VulkanQueue&) = delete;
+		constexpr VulkanQueue& operator=(const VulkanQueue&) = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
@@ -36,46 +36,41 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanQueue& operator=(VulkanQueue&&) = delete;
+		constexpr VulkanQueue& operator=(VulkanQueue&&) = delete;
 
 		/// <summary>
 		/// Retrieve the Vulkan queue handle.
 		/// </summary>
 		/// <returns>Vulkan queue handle.</returns>
-		[[nodiscard]] VkQueue GetVkQueue() const noexcept;
+		[[nodiscard]] constexpr VkQueue GetVkQueue() const noexcept;
 		/// <summary>
 		/// Retrieve the queue family index.
 		/// </summary>
 		/// <returns>Queue family index.</returns>
-		[[nodiscard]] uint8_t GetQueueFamilyIndex() const noexcept;
+		[[nodiscard]] constexpr uint8_t GetQueueFamilyIndex() const noexcept;
 		/// <summary>
 		/// Retrieve the queue index.
 		/// </summary>
 		/// <returns>Queue index.</returns>
-		[[nodiscard]] uint8_t GetQueueIndex() const noexcept;
-		/// <summary>
-		/// Retrieve the queue type.
-		/// </summary>
-		/// <returns>Queue type.</returns>
-		[[nodiscard]] RendererAPI::QueueType GetQueueType() const noexcept;
+		[[nodiscard]] constexpr uint8_t GetQueueIndex() const noexcept;
 		/// <summary>
 		/// Retrieve the queue flags.
 		/// Indicates capabilities of the queue.
 		/// </summary>
 		/// <returns>Queue flags.</returns>
-		[[nodiscard]] uint32_t GetFlags() const noexcept;
+		[[nodiscard]] constexpr uint32_t GetFlags() const noexcept;
 		/// <summary>
 		/// Retrieve the number of nanoseconds required
 		/// for a timestamp to be incremented by 1.
 		/// </summary>
 		/// <returns>Nanoseconds per timestamp increment.</returns>
-		[[nodiscard]] float GetTimestampPeriod() const noexcept;
+		[[nodiscard]] constexpr float GetTimestampPeriod() const noexcept;
 		/// <summary>
 		/// Retrieve the number of ticks per second
 		/// required to increment a timestamp by 1.
 		/// </summary>
 		/// <returns>Ticks per second.</returns>
-		[[nodiscard]] double GetTimestampFrequency() const noexcept;
+		[[nodiscard]] constexpr double GetTimestampFrequency() const noexcept;
 
 		/// <summary>
 		/// Wait for the queue to finish all submitted commands.
@@ -114,10 +109,55 @@ namespace TRAP::Graphics::API
 #endif
 		uint8_t m_vkQueueFamilyIndex;
 		uint8_t m_vkQueueIndex;
-		RendererAPI::QueueType m_type;
 		uint32_t m_flags;
 		float m_timestampPeriod;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkQueue TRAP::Graphics::API::VulkanQueue::GetVkQueue() const noexcept
+{
+	return m_vkQueue;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint8_t TRAP::Graphics::API::VulkanQueue::GetQueueFamilyIndex() const noexcept
+{
+	return m_vkQueueFamilyIndex;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint8_t TRAP::Graphics::API::VulkanQueue::GetQueueIndex() const noexcept
+{
+	return m_vkQueueIndex;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr uint32_t TRAP::Graphics::API::VulkanQueue::GetFlags() const noexcept
+{
+	return m_flags;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr float TRAP::Graphics::API::VulkanQueue::GetTimestampPeriod() const noexcept
+{
+	return m_timestampPeriod;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr double TRAP::Graphics::API::VulkanQueue::GetTimestampFrequency() const noexcept
+{
+	//The engine is using ticks per sec as frequency.
+	//Vulkan is nano sec per tick.
+	//Handle the conversion logic here.
+
+	return 1.0 / (NumericCast<double>(m_timestampPeriod) * 1e-9);
 }
 
 #endif /*TRAP_VULKANQUEUE_H*/

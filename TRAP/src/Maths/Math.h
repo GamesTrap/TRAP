@@ -702,7 +702,7 @@ namespace TRAP::Math
 	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<typename genType>
-	[[nodiscard]] constexpr int32_t IRound(const genType& x);
+	[[nodiscard]] int32_t IRound(const genType& x);
 
 	/// <summary>
 	/// Returns a value equal to the nearest integer to x.
@@ -714,7 +714,7 @@ namespace TRAP::Math
 	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<uint32_t L, typename T>
-	[[nodiscard]] constexpr Vec<L, int32_t> IRound(const Vec<L, T>& x);
+	[[nodiscard]] Vec<L, int32_t> IRound(const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -728,7 +728,7 @@ namespace TRAP::Math
 	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<typename genType>
-	[[nodiscard]] constexpr uint32_t URound(const genType& x);
+	[[nodiscard]] uint32_t URound(const genType& x);
 
 	/// <summary>
 	/// Returns a value equal to the nearest integer to x.
@@ -740,7 +740,7 @@ namespace TRAP::Math
 	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<uint32_t L, typename T>
-	[[nodiscard]] constexpr Vec<L, uint32_t> URound(const Vec<L, T>& x);
+	[[nodiscard]] Vec<L, uint32_t> URound(const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1254,7 +1254,7 @@ namespace TRAP::Math
 	/// <param name="a">Interpolation factor. The interpolation is defined in the range [0, 1].</param>
 	/// <returns>Linear interpolation of two quaternions.</returns>
 	template<typename T>
-	[[nodiscard]] constexpr tQuat<T> Lerp(const tQuat<T>& x, const tQuat<T>& y, T a);
+	[[nodiscard]] tQuat<T> Lerp(const tQuat<T>& x, const tQuat<T>& y, T a);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	//Exponential--------------------------------------------------------------------------------------------------------//
@@ -2079,7 +2079,7 @@ namespace TRAP::Math
 	/// <param name="index">Row index to retrieve.</param>
 	/// <returns>Row vector.</returns>
 	template<typename T>
-	[[nodiscard]] constexpr typename T::rowType Row(const T& m, std::size_t index);
+	[[nodiscard]] typename T::rowType Row(const T& m, std::size_t index);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2092,7 +2092,7 @@ namespace TRAP::Math
 	/// <param name="x">New row data.</param>
 	/// <returns>Matrix with new row data.</returns>
 	template<typename T>
-	[[nodiscard]] constexpr T Row(const T& m, std::size_t index, const typename T::rowType& x);
+	[[nodiscard]] T Row(const T& m, std::size_t index, const typename T::rowType& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2104,7 +2104,7 @@ namespace TRAP::Math
 	/// <param name="index">Column index to retrieve.</param>
 	/// <returns>Column vector.</returns>
 	template<typename T>
-	[[nodiscard]] constexpr typename T::colType Column(const T& m, std::size_t index);
+	[[nodiscard]] typename T::colType Column(const T& m, std::size_t index);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2117,7 +2117,7 @@ namespace TRAP::Math
 	/// <param name="x">New column data.</param>
 	/// <returns>Matrix with new column data.</returns>
 	template<typename T>
-	[[nodiscard]] constexpr T Column(const T& m, std::size_t index, const typename T::colType& x);
+	[[nodiscard]] T Column(const T& m, std::size_t index, const typename T::colType& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -3487,7 +3487,7 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-[[nodiscard]] constexpr int32_t TRAP::Math::IRound(const genType& x)
+[[nodiscard]] int32_t TRAP::Math::IRound(const genType& x)
 {
 	static_assert(std::numeric_limits<genType>::is_iec559, "'IRound' only accepts floating-point inputs");
 	TRAP_ASSERT(static_cast<genType>(0) <= x, "Math::IRound(): x must be positive!");
@@ -3496,7 +3496,7 @@ template<typename genType>
 }
 
 template<uint32_t L, typename T>
-[[nodiscard]] constexpr TRAP::Math::Vec<L, int32_t> TRAP::Math::IRound(const Vec<L, T>& x)
+[[nodiscard]] TRAP::Math::Vec<L, int32_t> TRAP::Math::IRound(const Vec<L, T>& x)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'IRound' only accepts floating-point inputs");
 	TRAP_ASSERT(All(LessThanEqual(Vec<L, T>(static_cast<T>(0)), x)), "Math::IRound(): x must be positive!");
@@ -3507,7 +3507,7 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-[[nodiscard]] constexpr uint32_t TRAP::Math::URound(const genType& x)
+[[nodiscard]] uint32_t TRAP::Math::URound(const genType& x)
 {
 	static_assert(std::numeric_limits<genType>::is_iec559, "'URound' only accepts floating-point inputs");
 	TRAP_ASSERT(static_cast<genType>(0) <= x, "Math::URound(): x must be positive!");
@@ -3516,7 +3516,7 @@ template<typename genType>
 }
 
 template<uint32_t L, typename T>
-[[nodiscard]] constexpr TRAP::Math::Vec<L, uint32_t> TRAP::Math::URound(const Vec<L, T>& x)
+[[nodiscard]] TRAP::Math::Vec<L, uint32_t> TRAP::Math::URound(const Vec<L, T>& x)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'URound' only accepts floating-point inputs");
 	TRAP_ASSERT(All(LessThanEqual(Vec<L, T>(static_cast<T>(0)), x)), "Math::URound(): x must be positive!");
@@ -3920,7 +3920,7 @@ template<uint32_t L, typename T>
 }
 
 template <typename T>
-[[nodiscard]] constexpr TRAP::Math::tQuat<T> TRAP::Math::Lerp(const tQuat<T>& x, const tQuat<T>& y, T a)
+[[nodiscard]] TRAP::Math::tQuat<T> TRAP::Math::Lerp(const tQuat<T>& x, const tQuat<T>& y, T a)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'lerp' only accepts floating-point inputs");
 
@@ -4916,7 +4916,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] constexpr T TRAP::Math::Row(const T& m, const std::size_t index, const typename T::rowType& x)
+[[nodiscard]] T TRAP::Math::Row(const T& m, const std::size_t index, const typename T::rowType& x)
 {
 	TRAP_ASSERT(index < m[0].Length(), "Math::Row(): Index out of range!");
 
@@ -4931,7 +4931,7 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] constexpr typename T::rowType TRAP::Math::Row(const T& m, const std::size_t index)
+[[nodiscard]] typename T::rowType TRAP::Math::Row(const T& m, const std::size_t index)
 {
 	TRAP_ASSERT(index < m[0].Length(), "Math::Row(): Index out of range!");
 
@@ -4946,7 +4946,7 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] constexpr T TRAP::Math::Column(const T& m, const std::size_t index, const typename T::colType& x)
+[[nodiscard]] T TRAP::Math::Column(const T& m, const std::size_t index, const typename T::colType& x)
 {
 	TRAP_ASSERT(index < m.Length(), "Math::Column(): Index out of range!");
 
@@ -4959,7 +4959,7 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-[[nodiscard]] constexpr typename T::colType TRAP::Math::Column(const T& m, const std::size_t index)
+[[nodiscard]] typename T::colType TRAP::Math::Column(const T& m, const std::size_t index)
 {
 	TRAP_ASSERT(index < m.Length(), "Math::Column(): Index out of range!");
 

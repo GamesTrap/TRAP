@@ -205,17 +205,17 @@ namespace TRAP::Utils::Windows
 		/// Retrieve whether the COM library was successfully initialized or not.
 		/// </summary>
 		/// <returns>True on successful COM library initialization, false otherwise.</returns>
-		[[nodiscard]] bool IsInitialized() const noexcept
+		[[nodiscard]] constexpr bool IsInitialized() const noexcept
 		{
 			return m_COMInitialized;
 		}
 
 		//Explicitly delete the copy constructor and copy assignment operator
-		COMInitializer(const COMInitializer&) = delete;
-		COMInitializer& operator=(const COMInitializer&) = delete;
+		constexpr COMInitializer(const COMInitializer&) = delete;
+		constexpr COMInitializer& operator=(const COMInitializer&) = delete;
 
-		COMInitializer(COMInitializer&&) noexcept = default;
-		COMInitializer& operator=(COMInitializer&&) noexcept = default;
+		constexpr COMInitializer(COMInitializer&&) noexcept = default;
+		constexpr COMInitializer& operator=(COMInitializer&&) noexcept = default;
 
 	private:
 		//Flags whether COM was properly initialized or not

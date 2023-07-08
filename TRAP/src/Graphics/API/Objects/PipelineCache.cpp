@@ -4,17 +4,6 @@
 #include "Graphics/API/Vulkan/Objects/VulkanPipelineCache.h"
 #include "FileSystem/FileSystem.h"
 
-TRAP::Graphics::PipelineCache::PipelineCache()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererPipelineCachePrefix, "Creating PipelineCache");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::PipelineCache::Save(const std::filesystem::path& path) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -83,4 +72,22 @@ void TRAP::Graphics::PipelineCache::Save(const std::filesystem::path& path) cons
 		TRAP_ASSERT(false, "PipelineCache::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::PipelineCache::~PipelineCache()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererPipelineCachePrefix, "Destroying PipelineCache");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::PipelineCache::PipelineCache()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererPipelineCachePrefix, "Creating PipelineCache");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }

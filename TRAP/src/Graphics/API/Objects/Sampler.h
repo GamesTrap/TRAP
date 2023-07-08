@@ -18,12 +18,12 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		constexpr virtual ~Sampler();
+		virtual ~Sampler();
 
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Sampler(const Sampler&) noexcept = default;
+		constexpr Sampler(const Sampler&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -31,7 +31,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Sampler(Sampler&&) noexcept = default;
+		constexpr Sampler(Sampler&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
@@ -41,52 +41,52 @@ namespace TRAP::Graphics
 		/// Retrieve the minification filter of the sampler.
 		/// </summary>
 		/// <returns>Minification filter.</returns>
-		[[nodiscard]] FilterType GetMinFilter() const noexcept;
+		[[nodiscard]] constexpr FilterType GetMinFilter() const noexcept;
 		/// <summary>
 		/// Retrieve the magnification filter of the sampler.
 		/// </summary>
 		/// <returns>Magnification filter.</returns>
-		[[nodiscard]] FilterType GetMagFilter() const noexcept;
+		[[nodiscard]] constexpr FilterType GetMagFilter() const noexcept;
 		/// <summary>
 		/// Retrieve the mip map mode of the sampler.
 		/// </summary>
 		/// <returns>Mip map mode.</returns>
-		[[nodiscard]] MipMapMode GetMipMapMode() const noexcept;
+		[[nodiscard]] constexpr MipMapMode GetMipMapMode() const noexcept;
 		/// <summary>
 		/// Retrieve the address mode of the U coordinate of the sampler.
 		/// </summary>
 		/// <returns>Address mode.</returns>
-		[[nodiscard]] AddressMode GetAddressU() const noexcept;
+		[[nodiscard]] constexpr AddressMode GetAddressU() const noexcept;
 		/// <summary>
 		/// Retrieve the address mode of the V coordinate of the sampler.
 		/// </summary>
 		/// <returns>Address mode.</returns>
-		[[nodiscard]] AddressMode GetAddressV() const noexcept;
+		[[nodiscard]] constexpr AddressMode GetAddressV() const noexcept;
 		/// <summary>
 		/// Retrieve the address mode of the W coordinate of the sampler.
 		/// </summary>
 		/// <returns>Address mode.</returns>
-		[[nodiscard]] AddressMode GetAddressW() const noexcept;
+		[[nodiscard]] constexpr AddressMode GetAddressW() const noexcept;
 		/// <summary>
 		/// Retrieve the mip lod bias of the sampler.
 		/// </summary>
 		/// <returns>Address mode.</returns>
-		[[nodiscard]] float GetMipLodBias() const noexcept;
+		[[nodiscard]] constexpr float GetMipLodBias() const noexcept;
 		/// <summary>
 		/// Retrieve the max anisotropy of the sampler.
 		/// </summary>
 		/// <returns>Max anisotropy.</returns>
-		[[nodiscard]] float GetAnisotropyLevel() const noexcept;
+		[[nodiscard]] constexpr float GetAnisotropyLevel() const noexcept;
 		/// <summary>
 		/// Retrieve the compare function of the sampler.
 		/// </summary>
 		/// <returns>Compare function.</returns>
-		[[nodiscard]] CompareMode GetCompareFunc() const noexcept;
+		[[nodiscard]] constexpr CompareMode GetCompareFunc() const noexcept;
 		/// <summary>
 		/// Retrieve whether the sampler uses the engines anisotropy level or not.
 		/// </summary>
 		/// <returns>True if engine set anisotropy level is used, false otherwise.</returns>
-		[[nodiscard]] bool UsesEngineAnisotropyLevel() const noexcept;
+		[[nodiscard]] constexpr bool UsesEngineAnisotropyLevel() const noexcept;
 
 		/// <summary>
 		/// Clear all cached samplers.
@@ -107,7 +107,7 @@ namespace TRAP::Graphics
 
 		virtual void UpdateAnisotropy(float anisotropy) = 0;
 
-		RendererAPI::SamplerDesc m_samplerDesc;
+		RendererAPI::SamplerDesc m_samplerDesc{};
 		bool m_usesEngineAnisotropyLevel = false;
 
 	private:
@@ -117,11 +117,75 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::Sampler::~Sampler()
+[[nodiscard]] constexpr TRAP::Graphics::FilterType TRAP::Graphics::Sampler::GetMinFilter() const noexcept
 {
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererSamplerPrefix, "Destroying Sampler");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
+	return m_samplerDesc.MinFilter;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Graphics::FilterType TRAP::Graphics::Sampler::GetMagFilter() const noexcept
+{
+	return m_samplerDesc.MagFilter;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Graphics::MipMapMode TRAP::Graphics::Sampler::GetMipMapMode() const noexcept
+{
+	return m_samplerDesc.MipMapMode;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Graphics::AddressMode TRAP::Graphics::Sampler::GetAddressU() const noexcept
+{
+	return m_samplerDesc.AddressU;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Graphics::AddressMode TRAP::Graphics::Sampler::GetAddressV() const noexcept
+{
+	return m_samplerDesc.AddressV;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Graphics::AddressMode TRAP::Graphics::Sampler::GetAddressW() const noexcept
+{
+	return m_samplerDesc.AddressW;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr float TRAP::Graphics::Sampler::GetMipLodBias() const noexcept
+{
+	return m_samplerDesc.MipLodBias;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr float TRAP::Graphics::Sampler::GetAnisotropyLevel() const noexcept
+{
+	if(!m_samplerDesc.EnableAnisotropy)
+		return 0.0f;
+
+	return m_samplerDesc.OverrideAnisotropyLevel;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Graphics::CompareMode TRAP::Graphics::Sampler::GetCompareFunc() const noexcept
+{
+	return m_samplerDesc.CompareFunc;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Graphics::Sampler::UsesEngineAnisotropyLevel() const noexcept
+{
+	return m_usesEngineAnisotropyLevel;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

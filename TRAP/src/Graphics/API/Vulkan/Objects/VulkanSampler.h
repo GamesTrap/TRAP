@@ -42,7 +42,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan sampler handle.
 		/// </summary>
 		/// <returns>Vulkan sampler handle.</returns>
-		[[nodiscard]] VkSampler GetVkSampler() const noexcept;
+		[[nodiscard]] constexpr VkSampler GetVkSampler() const noexcept;
 
 	private:
 		void UpdateAnisotropy(float anisotropy) override;
@@ -57,6 +57,13 @@ namespace TRAP::Graphics::API
 		VkSamplerYcbcrConversion m_vkSamplerYcbcrConversion;
 		VkSamplerYcbcrConversionInfo m_vkSamplerYcbcrConversionInfo;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkSampler TRAP::Graphics::API::VulkanSampler::GetVkSampler() const noexcept
+{
+	return m_vkSampler;
 }
 
 #endif /*TRAP_VULKANSAMPLER_H*/

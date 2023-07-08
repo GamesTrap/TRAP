@@ -18,12 +18,12 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		constexpr virtual ~Semaphore();
+		virtual ~Semaphore();
 
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Semaphore(const Semaphore&) noexcept = default;
+		constexpr Semaphore(const Semaphore&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -31,7 +31,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Semaphore(Semaphore&&) noexcept = default;
+		constexpr Semaphore(Semaphore&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
@@ -41,7 +41,7 @@ namespace TRAP::Graphics
 		/// Is the semaphore signaled?
 		/// </summary>
 		/// <returns>True if the semaphore is signaled, false otherwise.</returns>
-		[[nodiscard]] bool IsSignaled() const noexcept;
+		[[nodiscard]] constexpr bool IsSignaled() const noexcept;
 
 	protected:
 		/// <summary>
@@ -49,7 +49,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		Semaphore();
 
-		bool m_signaled;
+		bool m_signaled = false;
 
 	private:
 		friend void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc& desc) const;
@@ -62,11 +62,9 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::Semaphore::~Semaphore()
+[[nodiscard]] constexpr bool TRAP::Graphics::Semaphore::IsSignaled() const noexcept
 {
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererSemaphorePrefix, "Destroying Semaphore");
-#endif /*ENABLE_GRAPHICS_DEBUG*/
+	return m_signaled;
 }
 
 #endif /*TRAP_SEMAPHORE_H*/

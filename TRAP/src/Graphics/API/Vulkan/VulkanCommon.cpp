@@ -8,6 +8,126 @@
 #include "Graphics/RenderCommand.h"
 #include "Objects/VulkanInits.h"
 
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] VkQueueFlags TRAP::Graphics::API::QueueTypeToVkQueueFlags(const RendererAPI::QueueType queueType) noexcept
+{
+	switch(queueType)
+	{
+	case RendererAPI::QueueType::Graphics:
+		return VK_QUEUE_GRAPHICS_BIT;
+
+	case RendererAPI::QueueType::Transfer:
+		return VK_QUEUE_TRANSFER_BIT;
+
+	case RendererAPI::QueueType::Compute:
+		return VK_QUEUE_COMPUTE_BIT;
+
+	default:
+		TRAP_ASSERT(false, "QueueTypeToVkQueueFlags(): Invalid Queue Type");
+		return VK_QUEUE_FLAG_BITS_MAX_ENUM;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] VkSamplerMipmapMode TRAP::Graphics::API::MipMapModeToVkMipMapMode(const RendererAPI::MipMapMode mipMapMode) noexcept
+{
+	switch (mipMapMode)
+	{
+	case RendererAPI::MipMapMode::Nearest:
+		return VK_SAMPLER_MIPMAP_MODE_NEAREST;
+
+	case RendererAPI::MipMapMode::Linear:
+		return VK_SAMPLER_MIPMAP_MODE_LINEAR;
+
+	default:
+		TRAP_ASSERT(false, "MipMapModeToVkMipMapMode(): Invalid Mip Map Mode");
+		return VK_SAMPLER_MIPMAP_MODE_MAX_ENUM;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] VkDescriptorType TRAP::Graphics::API::DescriptorTypeToVkDescriptorType(const RendererAPI::DescriptorType type) noexcept
+{
+	switch(type)
+	{
+	case RendererAPI::DescriptorType::Undefined:
+		TRAP_ASSERT(false, "DescriptorTypeToVkDescriptorType(): Invalid DescriptorInfo Type");
+		return VK_DESCRIPTOR_TYPE_MAX_ENUM;
+
+	case RendererAPI::DescriptorType::Sampler:
+		return VK_DESCRIPTOR_TYPE_SAMPLER;
+
+	case RendererAPI::DescriptorType::Texture:
+		return VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+
+	case RendererAPI::DescriptorType::UniformBuffer:
+		return VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+
+	case RendererAPI::DescriptorType::RWTexture:
+		return VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+
+	case RendererAPI::DescriptorType::Buffer:
+	case RendererAPI::DescriptorType::RWBuffer:
+		return VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+
+	case RendererAPI::DescriptorType::InputAttachment:
+		return VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
+
+	case RendererAPI::DescriptorType::TexelBuffer:
+		return VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
+
+	case RendererAPI::DescriptorType::RWTexelBuffer:
+		return VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
+
+	case RendererAPI::DescriptorType::CombinedImageSampler:
+		return VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+
+	//RayTracing
+	case RendererAPI::DescriptorType::RayTracing:
+		return VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR;
+
+	default:
+		TRAP_ASSERT(false, "DescriptorTypeToVkDescriptorType(): Invalid DescriptorInfo Type");
+		return VK_DESCRIPTOR_TYPE_MAX_ENUM;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] VkShaderStageFlags TRAP::Graphics::API::ShaderStageToVkShaderStageFlags(const RendererAPI::ShaderStage stages) noexcept
+{
+	VkShaderStageFlags res = 0;
+
+	if ((stages & RendererAPI::ShaderStage::AllGraphics) != RendererAPI::ShaderStage::None)
+		return VK_SHADER_STAGE_ALL_GRAPHICS;
+
+	if ((stages & RendererAPI::ShaderStage::Vertex) != RendererAPI::ShaderStage::None)
+		res |= VK_SHADER_STAGE_VERTEX_BIT;
+	if ((stages & RendererAPI::ShaderStage::Geometry) != RendererAPI::ShaderStage::None)
+		res |= VK_SHADER_STAGE_GEOMETRY_BIT;
+	if ((stages & RendererAPI::ShaderStage::TessellationEvaluation) != RendererAPI::ShaderStage::None)
+		res |= VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
+	if ((stages & RendererAPI::ShaderStage::TessellationControl) != RendererAPI::ShaderStage::None)
+		res |= VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
+	if ((stages & RendererAPI::ShaderStage::Fragment) != RendererAPI::ShaderStage::None)
+		res |= VK_SHADER_STAGE_FRAGMENT_BIT;
+	if ((stages & RendererAPI::ShaderStage::Compute) != RendererAPI::ShaderStage::None)
+		res |= VK_SHADER_STAGE_COMPUTE_BIT;
+	//RayTracing
+	if ((stages & RendererAPI::ShaderStage::RayTracing) != RendererAPI::ShaderStage::None)
+		res |= (VK_SHADER_STAGE_RAYGEN_BIT_KHR | VK_SHADER_STAGE_ANY_HIT_BIT_KHR |
+			    VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR | VK_SHADER_STAGE_MISS_BIT_KHR |
+			    VK_SHADER_STAGE_INTERSECTION_BIT_KHR | VK_SHADER_STAGE_CALLABLE_BIT_KHR);
+
+	TRAP_ASSERT(res != 0, "ShaderStageToVkShaderStageFlags(): Invalid ShaderStage combination");
+	return res;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
 void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[maybe_unused]] const uint64_t handle,
 										  [[maybe_unused]] const VkObjectType type, [[maybe_unused]] const std::string_view name)
@@ -125,11 +245,30 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] VkQueryType TRAP::Graphics::API::QueryTypeToVkQueryType(const RendererAPI::QueryType type) noexcept
+{
+	switch(type)
+	{
+	case RendererAPI::QueryType::Timestamp:
+		return VK_QUERY_TYPE_TIMESTAMP;
+
+	case RendererAPI::QueryType::PipelineStatistics:
+		return VK_QUERY_TYPE_PIPELINE_STATISTICS;
+
+	case RendererAPI::QueryType::Occlusion:
+		return VK_QUERY_TYPE_OCCLUSION;
+
+	default:
+		TRAP_ASSERT(false, "QueryTypeToVkQueryType(): Invalid query heap type");
+		return VK_QUERY_TYPE_MAX_ENUM;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc,
 	                                                                                   std::vector<VkPipelineColorBlendAttachmentState>& attachments)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
 	uint32_t blendDescIndex = 0;
 
 #ifdef ENABLE_GRAPHICS_DEBUG
@@ -182,8 +321,6 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 
 [[nodiscard]] VkPipelineDepthStencilStateCreateInfo TRAP::Graphics::API::UtilToDepthDesc(const RendererAPI::DepthStateDesc& desc)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
 	TRAP_ASSERT(desc.DepthFunc < RendererAPI::CompareMode::MAX_COMPARE_MODES, "UtilToDepthDesc(): Invalid DepthFunc!");
 	TRAP_ASSERT(desc.StencilFrontFunc < RendererAPI::CompareMode::MAX_COMPARE_MODES, "UtilToDepthDesc(): Invalid StencilFrontFunc!");
 	TRAP_ASSERT(desc.StencilFrontFail < RendererAPI::StencilOp::MAX_STENCIL_OPS, "UtilToDepthDesc(): Invalid StencilFrontFail!");
@@ -230,8 +367,6 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 
 [[nodiscard]] VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::UtilToRasterizerDesc(const RendererAPI::RasterizerStateDesc& desc)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
 	TRAP_ASSERT(desc.FillMode < RendererAPI::FillMode::MAX_FILL_MODES, "UtilToRasterizerDesc(): Invalid FillMode!");
 	TRAP_ASSERT(desc.CullMode < RendererAPI::CullMode::MAX_CULL_MODES, "UtilToRasterizerDesc(): Invalid CullMode!");
 
@@ -295,20 +430,52 @@ void TRAP::Graphics::API::UtilGetPlanarVkImageMemoryRequirement(VkDevice device,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::VulkanGetRecommendedSwapchainFormat([[maybe_unused]] const bool HDR,
-																						                const bool SRGB) noexcept
+[[nodiscard]] VkFragmentShadingRateCombinerOpKHR TRAP::Graphics::API::ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(const RendererAPI::ShadingRateCombiner& combiner)
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+	switch(combiner)
+	{
+	case RendererAPI::ShadingRateCombiner::Passthrough:
+		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_KEEP_KHR;
+	case RendererAPI::ShadingRateCombiner::Override:
+		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_REPLACE_KHR;
+	case RendererAPI::ShadingRateCombiner::Min:
+		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_MIN_KHR;
+	case RendererAPI::ShadingRateCombiner::Max:
+		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_MAX_KHR;
+	case RendererAPI::ShadingRateCombiner::Sum:
+		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_MUL_KHR;
 
-#ifndef TRAP_PLATFORM_ANDROID
-	if(SRGB)
-		return TRAP::Graphics::API::ImageFormat::B8G8R8A8_SRGB;
+	default:
+		TRAP_ASSERT(false, "ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(): Invalid shading rate combiner type");
+		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_KEEP_KHR;
+	}
+}
 
-	return TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM;
-#else
-	if(SRGB)
-		return TRAP::Graphics::API::ImageFormat::R8G8B8A8_SRGB;
+//-------------------------------------------------------------------------------------------------------------------//
 
-	return TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
-#endif
+[[nodiscard]] VkExtent2D TRAP::Graphics::API::ShadingRateToVkExtent2D(const RendererAPI::ShadingRate& rate)
+{
+	switch(rate)
+	{
+	case RendererAPI::ShadingRate::Full:
+		return VkExtent2D{ 1, 1 };
+	case RendererAPI::ShadingRate::Half:
+		return VkExtent2D{ 2, 2 };
+	case RendererAPI::ShadingRate::Quarter:
+		return VkExtent2D{ 4, 4 };
+	case RendererAPI::ShadingRate::Eighth:
+		return VkExtent2D{ 8, 8 };
+	case RendererAPI::ShadingRate::OneXTwo:
+		return VkExtent2D{ 1, 2 };
+	case RendererAPI::ShadingRate::TwoXOne:
+		return VkExtent2D{ 2, 1 };
+	case RendererAPI::ShadingRate::TwoXFour:
+		return VkExtent2D{ 2, 4 };
+	case RendererAPI::ShadingRate::FourXTwo:
+		return VkExtent2D{ 4, 2 };
+
+	default:
+		TRAP_ASSERT(false, "ShadingRateToVkExtent2D(): Invalid shading rate");
+		return VkExtent2D{ 1, 1 };
+	}
 }

@@ -17,7 +17,6 @@ TRAP::Graphics::API::VulkanQueue::VulkanQueue(const RendererAPI::QueueDesc& desc
 	  m_submitMutex(VulkanRenderer::s_NullDescriptors->SubmitMutex),
 	  m_vkQueueFamilyIndex(std::numeric_limits<uint8_t>::max()),
 	  m_vkQueueIndex(std::numeric_limits<uint8_t>::max()),
-	  m_type(desc.Type),
 	  m_flags(),
 	  m_timestampPeriod(m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties().limits.timestampPeriod)
 {
@@ -28,6 +27,8 @@ TRAP::Graphics::API::VulkanQueue::VulkanQueue(const RendererAPI::QueueDesc& desc
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanQueuePrefix, "Creating Queue");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
+
+	m_type = desc.Type;
 
 	VkQueueFamilyProperties queueProps = {};
 
@@ -69,73 +70,6 @@ TRAP::Graphics::API::VulkanQueue::~VulkanQueue()
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	--m_device->m_usedQueueCount[m_flags];
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkQueue TRAP::Graphics::API::VulkanQueue::GetVkQueue() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_vkQueue;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] uint8_t TRAP::Graphics::API::VulkanQueue::GetQueueFamilyIndex() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_vkQueueFamilyIndex;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] uint8_t TRAP::Graphics::API::VulkanQueue::GetQueueIndex() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_vkQueueIndex;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Graphics::RendererAPI::QueueType TRAP::Graphics::API::VulkanQueue::GetQueueType() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_type;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanQueue::GetFlags() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_flags;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] float TRAP::Graphics::API::VulkanQueue::GetTimestampPeriod() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_timestampPeriod;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] double TRAP::Graphics::API::VulkanQueue::GetTimestampFrequency() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	//The engine is using ticks per sec as frequency.
-	//Vulkan is nano sec per tick.
-	//Handle the conversion logic here.
-
-	return 1.0 / (NumericCast<double>(m_timestampPeriod) * 1e-9);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

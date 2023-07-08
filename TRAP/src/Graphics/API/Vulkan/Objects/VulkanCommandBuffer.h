@@ -3,6 +3,7 @@
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/CommandBuffer.h"
+#include "Graphics/API/Objects/Queue.h"
 
 namespace TRAP::Graphics::API
 {
@@ -12,7 +13,6 @@ namespace TRAP::Graphics::API
 	class VulkanDescriptorSet;
 	class VulkanCommandPool;
 	class VulkanDevice;
-	class VulkanQueue;
 	class VulkanTexture;
 
 	class VulkanCommandBuffer final : public CommandBuffer
@@ -40,7 +40,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanCommandBuffer& operator=(const VulkanCommandBuffer&) noexcept = delete;
+		constexpr VulkanCommandBuffer& operator=(const VulkanCommandBuffer&) noexcept = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
@@ -48,13 +48,13 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanCommandBuffer& operator=(VulkanCommandBuffer&&) noexcept = delete;
+		constexpr VulkanCommandBuffer& operator=(VulkanCommandBuffer&&) noexcept = delete;
 
 		/// <summary>
 		/// Retrieve the VkCommandBuffer handle.
 		/// </summary>
 		/// <returns>VkCommandBuffer handle.</returns>
-		[[nodiscard]] VkCommandBuffer GetVkCommandBuffer() const noexcept;
+		[[nodiscard]] constexpr VkCommandBuffer GetVkCommandBuffer() const noexcept;
 		/// <summary>
 		/// Retrieve the queue type used for resource barriers.
 		/// </summary>
@@ -64,7 +64,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve whether this is a secondary command buffer.
 		/// </summary>
 		/// <returns>True of this is a secondary command buffer, false otherwise.</returns>
-		[[nodiscard]] bool IsSecondary() const noexcept;
+		[[nodiscard]] constexpr bool IsSecondary() const noexcept;
 
 		/// <summary>
 		/// Bind push constant buffer data to the command buffer.
@@ -372,7 +372,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the currently active VkRenderPass.
 		/// </summary>
 		/// <returns>Currently active VkRenderPass.</returns>
-		[[nodiscard]] VkRenderPass GetActiveVkRenderPass() const noexcept;
+		[[nodiscard]] constexpr VkRenderPass GetActiveVkRenderPass() const noexcept;
 
 	private:
 		/// <summary>
@@ -408,6 +408,27 @@ namespace TRAP::Graphics::API
 		VkRenderPass m_activeRenderPass;
 		VkPipelineLayout m_boundPipelineLayout;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkCommandBuffer TRAP::Graphics::API::VulkanCommandBuffer::GetVkCommandBuffer() const noexcept
+{
+	return m_vkCommandBuffer;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr bool TRAP::Graphics::API::VulkanCommandBuffer::IsSecondary() const noexcept
+{
+	return m_secondary;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkRenderPass TRAP::Graphics::API::VulkanCommandBuffer::GetActiveVkRenderPass() const noexcept
+{
+	return m_activeRenderPass;
 }
 
 #endif /*TRAP_VULKANCOMMANDBUFFER_H*/

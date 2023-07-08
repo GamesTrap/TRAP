@@ -33,9 +33,9 @@ namespace TRAP
 		Scene() noexcept = default;
 		~Scene() noexcept = default;
 
-		Scene(const Scene&) = delete;
+		constexpr Scene(const Scene&) = delete;
 		Scene(Scene&&) noexcept = default;
-		Scene& operator=(const Scene&) = delete;
+		constexpr Scene& operator=(const Scene&) = delete;
 		Scene& operator=(Scene&&) noexcept = default;
 
 		static TRAP::Ref<Scene> Copy(const Ref<Scene>& other);

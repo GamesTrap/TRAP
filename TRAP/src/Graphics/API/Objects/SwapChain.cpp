@@ -29,6 +29,30 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
+TRAP::Graphics::SwapChain::SwapChain()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererSwapChainPrefix, "Creating SwapChain");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+}
+#endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifndef TRAP_HEADLESS_MODE
+TRAP::Graphics::SwapChain::~SwapChain()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererSwapChainPrefix, "Destroying SwapChain");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+
+	m_renderTargets.clear();
+}
+#endif /*TRAP_HEADLESS_MODE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] TRAP::Graphics::API::ImageFormat TRAP::Graphics::SwapChain::GetRecommendedSwapchainFormat(const bool HDR,
                                                                                                         const bool SRGB) noexcept
 {

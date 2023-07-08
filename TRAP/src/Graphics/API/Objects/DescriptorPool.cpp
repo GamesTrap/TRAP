@@ -25,21 +25,18 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::DescriptorPool::DescriptorPool()
-	: m_numDescriptorSets()
+TRAP::Graphics::DescriptorPool::~DescriptorPool()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
 #ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererDescriptorPoolPrefix, "Creating DescriptorPool");
+	TP_DEBUG(Log::RendererDescriptorPoolPrefix, "Destroying DescriptorPool");
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint32_t TRAP::Graphics::DescriptorPool::GetDescriptorSetsNum() const noexcept
+TRAP::Graphics::DescriptorPool::DescriptorPool()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_numDescriptorSets;
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererDescriptorPoolPrefix, "Creating DescriptorPool");
+#endif /*ENABLE_GRAPHICS_DEBUG*/
 }

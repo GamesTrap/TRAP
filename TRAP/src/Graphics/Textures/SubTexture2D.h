@@ -82,7 +82,7 @@ namespace TRAP::Graphics
         /// Retrieve the texture coordinates for this sub texture.
         /// </summary>
         /// <returns>Texture coordinates.</returns>
-        [[nodiscard]] const std::array<TRAP::Math::Vec2, 4>& GetTexCoords() const noexcept;
+        [[nodiscard]] constexpr const std::array<TRAP::Math::Vec2, 4>& GetTexCoords() const noexcept;
 
         /// <summary>
         /// Retrieve the name of the sprite.
@@ -100,6 +100,13 @@ namespace TRAP::Graphics
         std::array<TRAP::Math::Vec2, 4> m_texCoords;
         std::string m_name;
     };
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const std::array<TRAP::Math::Vec2, 4>& TRAP::Graphics::SubTexture2D::GetTexCoords() const noexcept
+{
+    return m_texCoords;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -40,7 +40,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// End a running Renderer scene.
 		/// </summary>
-		static void EndScene() noexcept;
+		static constexpr void EndScene() noexcept;
 
 		/// <summary>
 		/// Submit a non-indexed draw call.
@@ -74,6 +74,12 @@ namespace TRAP::Graphics
 		inline constinit static uint32_t s_maxDrawCalls = 1000;
 		inline constinit static uint32_t s_currentDrawCalls = 0;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Graphics::Renderer::EndScene() noexcept
+{
 }
 
 #endif /*TRAP_RENDERER_H*/

@@ -403,22 +403,4 @@ void TRAP::Graphics::API::VulkanSwapChain::UpdateFramebufferSize()
 	InitSwapchain(m_desc);
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkSwapchainKHR TRAP::Graphics::API::VulkanSwapChain::GetVkSwapChain() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_swapChain;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkQueue TRAP::Graphics::API::VulkanSwapChain::GetPresentVkQueue() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_presentQueue;
-}
-
 #endif /*TRAP_HEADLESS_MODE*/

@@ -42,12 +42,12 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan pipeline handle.
 		/// </summary>
 		/// <returns>Vulkan pipeline handle</returns>
-		[[nodiscard]] VkPipeline GetVkPipeline() const noexcept;
+		[[nodiscard]] constexpr VkPipeline GetVkPipeline() const noexcept;
 		/// <summary>
 		/// Retrieve the pipeline type.
 		/// </summary>
 		/// <returns>Pipeline type</returns>
-		[[nodiscard]] RendererAPI::PipelineType GetPipelineType() const noexcept;
+		[[nodiscard]] constexpr RendererAPI::PipelineType GetPipelineType() const noexcept;
 
 	private:
 		/// <summary>
@@ -75,6 +75,20 @@ namespace TRAP::Graphics::API
 
 		TRAP::Ref<VulkanDevice> m_device;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr VkPipeline TRAP::Graphics::API::VulkanPipeline::GetVkPipeline() const noexcept
+{
+	return m_vkPipeline;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::API::VulkanPipeline::GetPipelineType() const noexcept
+{
+	return m_type;
 }
 
 #endif /*TRAP_VULKANPIPELINE_H*/

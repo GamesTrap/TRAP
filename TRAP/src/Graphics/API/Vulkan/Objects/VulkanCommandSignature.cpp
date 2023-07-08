@@ -1,11 +1,9 @@
-#include "TRAPPCH.h"
 #include "VulkanCommandSignature.h"
 
-TRAP::Graphics::API::VulkanCommandSignature::VulkanCommandSignature(const RendererAPI::CommandSignatureDesc& desc)
-	: m_drawType(), m_stride()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+//-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Graphics::API::VulkanCommandSignature::VulkanCommandSignature(const RendererAPI::CommandSignatureDesc& desc)
+{
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandSignaturePrefix, "Creating CommandSignature");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
@@ -42,18 +40,9 @@ TRAP::Graphics::API::VulkanCommandSignature::VulkanCommandSignature(const Render
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Graphics::RendererAPI::IndirectArgumentType TRAP::Graphics::API::VulkanCommandSignature::GetDrawType() const noexcept
+TRAP::Graphics::API::VulkanCommandSignature::~VulkanCommandSignature()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_drawType;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanCommandSignature::GetStride() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_stride;
+#ifdef VERBOSE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererVulkanCommandSignaturePrefix, "Destroying CommandSignature");
+#endif /*VERBOSE_GRAPHICS_DEBUG*/
 }

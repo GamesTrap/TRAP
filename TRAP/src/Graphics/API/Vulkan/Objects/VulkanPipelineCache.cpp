@@ -46,12 +46,3 @@ void TRAP::Graphics::API::VulkanPipelineCache::GetPipelineCacheData(std::size_t*
 	if(m_cache != nullptr)
 		VkCall(vkGetPipelineCacheData(m_device->GetVkDevice(), m_cache, size, data));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] VkPipelineCache TRAP::Graphics::API::VulkanPipelineCache::GetVkPipelineCache() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_cache;
-}
