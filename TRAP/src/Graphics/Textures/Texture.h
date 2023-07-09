@@ -312,6 +312,7 @@ namespace TRAP::Graphics
 		/// <param name="image">Image to split.</param>
 		/// <returns>Array of splitted textures.</returns>
 		template<typename T>
+		requires std::same_as<T, std::uint8_t> || std::same_as<T, std::uint16_t> || std::same_as<T, float>
 		[[nodiscard]] static std::array<TRAP::Scope<TRAP::Image>, 6> SplitImageFromCross(const TRAP::Image* image);
 
 	protected:
@@ -534,6 +535,7 @@ namespace TRAP::Graphics
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::same_as<T, std::uint8_t> || std::same_as<T, std::uint16_t> || std::same_as<T, float>
 [[nodiscard]] std::array<TRAP::Scope<TRAP::Image>, 6> TRAP::Graphics::Texture::SplitImageFromCross(const TRAP::Image* const image)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);

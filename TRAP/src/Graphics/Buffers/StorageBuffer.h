@@ -75,8 +75,7 @@ namespace TRAP::Graphics
 		/// <param name="size">Byte size for data storage.</param>
 		/// <param name="offset">Offset into the currently used data.</param>
 		/// <param name="window">Window to use for the data retrieval. Default: Main Window.</param>
-		template<typename T>
-		void GetData(const T* data, uint64_t size, uint64_t offset = 0,
+		void GetData(const auto* data, uint64_t size, uint64_t offset = 0,
 		             const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
@@ -85,8 +84,7 @@ namespace TRAP::Graphics
 		/// <param name="data">Pointer to store data in.</param>
 		/// <param name="size">Byte size for data storage.</param>
 		/// <param name="offset">Offset into the currently used data.</param>
-		template<typename T>
-		void GetData(const T* data, uint64_t size, uint64_t offset = 0);
+		void GetData(const auto* data, uint64_t size, uint64_t offset = 0);
 #endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
@@ -155,8 +153,7 @@ constexpr TRAP::Graphics::StorageBuffer::StorageBuffer(const RendererAPI::Descri
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-template<typename T>
-inline void TRAP::Graphics::StorageBuffer::GetData(const T* const data, const uint64_t size, const uint64_t offset, const Window* const window)
+inline void TRAP::Graphics::StorageBuffer::GetData(const auto* const data, const uint64_t size, const uint64_t offset, const Window* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -174,8 +171,7 @@ inline void TRAP::Graphics::StorageBuffer::GetData(const T* const data, const ui
 	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_tokens[imageIndex]);
 }
 #else
-template<typename T>
-inline void TRAP::Graphics::StorageBuffer::GetData(const T* const data, const uint64_t size, const uint64_t offset)
+inline void TRAP::Graphics::StorageBuffer::GetData(const auto* const data, const uint64_t size, const uint64_t offset)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 

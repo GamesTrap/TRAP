@@ -204,6 +204,12 @@ namespace TRAP
 	                                     CircleRendererComponent, CameraComponent,
 										 NativeScriptComponent, Rigidbody2DComponent,
 										 BoxCollider2DComponent, CircleCollider2DComponent>;
+
+	template<typename T>
+	concept IsComponent = std::same_as<T, TransformComponent>      || std::same_as<T, SpriteRendererComponent> ||
+	                      std::same_as<T, CircleRendererComponent> || std::same_as<T, CameraComponent>         ||
+						  std::same_as<T, NativeScriptComponent>   || std::same_as<T, Rigidbody2DComponent>    ||
+						  std::same_as<T, BoxCollider2DComponent>  || std::same_as<T, CircleCollider2DComponent>;
 }
 
 #endif /*TRAP_COMPONENTS_H*/

@@ -154,8 +154,8 @@ namespace TRAP::Events
 		/// <param name="func">Function to call.</param>
 		/// <returns>True if the received event matches the event to dispatch, false otherwise.</returns>
 		template<typename T, typename F>
+		requires std::is_invocable_r_v<bool, F, T&>
 		constexpr bool Dispatch(const F& func) noexcept;
-
 
 		/// <summary>
 		/// Dispatch a specific event to a member function.
@@ -166,7 +166,9 @@ namespace TRAP::Events
 		/// <param name="func">Member function to call.</param>
 		/// <returns>True if the received event matches the event to dispatch, false otherwise.</returns>
 		template<typename T, typename ClassType, typename F>
-		constexpr bool Dispatch(ClassType* obj, const F& func) noexcept;
+		requires std::is_class_v<ClassType> && std::is_member_function_pointer_v<F> &&
+		         std::is_invocable_r_v<bool, typename std::remove_pointer_t<F>, ClassType*, T&>
+		bool Dispatch(ClassType* obj, const F& func) noexcept;
 
 	private:
 		Event& m_event;
@@ -189,6 +191,7 @@ constexpr TRAP::Events::EventDispatcher::EventDispatcher(Event& event) noexcept
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T, typename F>
+requires std::is_invocable_r_v<bool, F, T&>
 constexpr bool TRAP::Events::EventDispatcher::Dispatch(const F& func) noexcept
 {
 	if (m_event.GetEventType() != T::GetStaticType() || m_event.Handled)
@@ -202,8 +205,12 @@ constexpr bool TRAP::Events::EventDispatcher::Dispatch(const F& func) noexcept
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T, typename ClassType, typename F>
-constexpr bool TRAP::Events::EventDispatcher::Dispatch(ClassType* const obj, const F& func) noexcept
+requires std::is_class_v<ClassType> && std::is_member_function_pointer_v<F> &&
+         std::is_invocable_r_v<bool, typename std::remove_pointer_t<F>, ClassType*, T&>
+inline bool TRAP::Events::EventDispatcher::Dispatch(ClassType* obj, const F& func) noexcept
 {
+	TRAP_ASSERT(obj, "EventDispatcher::Dispatch(): obj is nullptr!");
+
 	if (m_event.GetEventType() != T::GetStaticType() || m_event.Handled)
 		return false;
 

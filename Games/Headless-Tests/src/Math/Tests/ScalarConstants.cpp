@@ -5,6 +5,7 @@
 namespace ScalarConstants
 {
     template<typename valType>
+    requires std::floating_point<valType>
     int32_t TestEpsilon()
     {
         int32_t error = 0;
@@ -18,6 +19,7 @@ namespace ScalarConstants
 //-------------------------------------------------------------------------------------------------------------------//
 
     template<typename valType>
+    requires std::floating_point<valType>
     int32_t TestPI()
     {
         int32_t error = 0;

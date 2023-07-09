@@ -127,6 +127,7 @@ namespace TypeQuaternion
 //-------------------------------------------------------------------------------------------------------------------//
 
     template<typename quatType, typename vecType>
+    requires TRAP::Math::IsQuat<quatType> && TRAP::Math::IsVec3<vecType>
     int32_t TestLog()
     {
         using T = typename quatType::valueType;
@@ -147,6 +148,7 @@ namespace TypeQuaternion
 //-------------------------------------------------------------------------------------------------------------------//
 
     template<typename quatType, typename vecType>
+    requires TRAP::Math::IsQuat<quatType> && TRAP::Math::IsVec3<vecType>
     int32_t TestPow()
     {
         using T = typename quatType::valueType;

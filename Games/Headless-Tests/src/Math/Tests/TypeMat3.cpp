@@ -5,6 +5,7 @@
 namespace TypeMat3
 {
     template<typename genType>
+    requires TRAP::Math::IsMat<genType>
     int32_t EntryCast()
     {
         int32_t error = 0;

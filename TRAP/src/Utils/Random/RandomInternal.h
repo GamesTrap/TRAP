@@ -17,63 +17,46 @@ namespace TRAP::Utils::INTERNAL
     /// </summary>
     /// <typeparam name="T">Type applicable by std::uniform_int_distribution.</typeparam>
     template<typename T>
-    struct IsUniformInt
-    {
-        static constexpr bool value = std::is_same<T,  int16_t>::value ||
-                                      std::is_same<T,  int32_t>::value ||
-                                      std::is_same<T,  int64_t>::value ||
-                                      std::is_same<T, uint16_t>::value ||
-                                      std::is_same<T, uint32_t>::value ||
-                                      std::is_same<T, uint64_t>::value;
-    };
+    concept IsUniformInt = std::same_as<T,  int16_t> ||
+                           std::same_as<T,  int32_t> ||
+                           std::same_as<T,  int64_t> ||
+                           std::same_as<T, uint16_t> ||
+                           std::same_as<T, uint32_t> ||
+                           std::same_as<T, uint64_t>;
 
     /// <summary>
     /// True if type T is applicable by a std::uniform_real_distribution.
     /// </summary>
     /// <typeparam name="T">Type applicable by std::uniform_real_distribution.</typeparam>
     template<typename T>
-    struct IsUniformReal
-    {
-        static constexpr bool value = std::is_same<T,       float>::value ||
-                                      std::is_same<T,      double>::value ||
-                                      std::is_same<T, long double>::value;
-    };
+    concept IsUniformReal = std::same_as<T,       float> ||
+                            std::same_as<T,      double> ||
+                            std::same_as<T, long double>;
 
     /// <summary>
     /// True if type T is plain byte.
     /// </summary>
     /// <typeparam name="T">Byte type.</typeparam>
     template<typename T>
-    struct IsByte
-    {
-        static constexpr bool value = std::is_same<T,  int8_t>::value ||
-                                      std::is_same<T, uint8_t>::value;
-    };
+    concept IsByte = std::same_as<T,  int8_t> ||
+                     std::same_as<T, uint8_t>;
 
     /// <summary>
     /// True if type T is plain number type.
     /// </summary>
     /// <typeparam name="T">Number type.</typeparam>
     template<typename T>
-    struct IsSupportedNumber
-    {
-        static constexpr bool value = IsByte<T>::value ||
-                                      IsUniformReal<T>::value ||
-                                      IsUniformInt <T>::value;
-    };
+    concept IsSupportedNumber = IsByte<T> || IsUniformReal<T> || IsUniformInt<T>;
 
     /// <summary>
     /// True if type T is character type.
     /// </summary>
     /// <typeparam name="T">Character type.</typeparam>
     template<typename T>
-    struct IsSupportedCharacter
-    {
-        static constexpr bool value = std::is_same<T,     char>::value ||
-                                      std::is_same<T,  wchar_t>::value ||
-                                      std::is_same<T, char16_t>::value ||
-                                      std::is_same<T, char32_t>::value;
-    };
+    concept IsSupportedCharacter = std::same_as<T,     char> ||
+                                   std::same_as<T,  wchar_t> ||
+                                   std::same_as<T, char16_t> ||
+                                   std::same_as<T, char32_t>;
 
     /// <summary>
     /// True if type T is iterator
@@ -92,7 +75,7 @@ namespace TRAP::Utils::INTERNAL
                               typename = typename std::iterator_traits<U>::iterator_category>
         static long Test([[maybe_unused]] U&& other) noexcept { return 0; }
     public:
-        static constexpr bool value = std::is_same<decltype(Test(std::declval<T>())), long>::value;
+        static constexpr bool value = std::same_as<decltype(Test(std::declval<T>())), long>;
     };
 }
 

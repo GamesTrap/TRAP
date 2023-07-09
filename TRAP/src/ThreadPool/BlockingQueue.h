@@ -25,16 +25,16 @@ namespace TRAP
 		/// </summary>
 		/// <param name="item">Item to push.</param>
 		template<typename Q = T>
-		typename std::enable_if<std::is_copy_constructible<Q>::value, void>::type
-		Push(const T& item);
+		requires std::copy_constructible<Q>
+		void Push(const T& item);
 
 		/// <summary>
 		/// Push a move constructable item to the queue.
 		/// </summary>
 		/// <param name="item">Item to push.</param>
 		template<typename Q = T>
-		typename std::enable_if<std::is_move_constructible<Q>::value, void>::type
-		Push(T&& item);
+		requires std::move_constructible<Q>
+		void Push(T&& item);
 
 		/// <summary>
 		/// Try to push a copy constructable item to the queue.
@@ -42,8 +42,8 @@ namespace TRAP
 		/// <param name="item">Item to push.</param>
 		/// <returns>True on success, false otherwise.</returns>
 		template<typename Q = T>
-		typename std::enable_if<std::is_copy_constructible<Q>::value, bool>::type
-		TryPush(const T& item);
+		requires std::copy_constructible<Q>
+		bool TryPush(const T& item);
 
 		/// <summary>
 		/// Try to push a move constructable item to the queue.
@@ -51,24 +51,24 @@ namespace TRAP
 		/// <param name="item">Item to push.</param>
 		/// <returns>True on success, false otherwise.</returns>
 		template<typename Q = T>
-		typename std::enable_if<std::is_move_constructible<Q>::value, bool>::type
-		TryPush(T&& item);
+		requires std::move_constructible<Q>
+		bool TryPush(T&& item);
 
 		/// <summary>
 		/// Pop a copy assignable item from the queue.
 		/// </summary>
 		/// <param name="item">Item to pop.</param>
 		template<typename Q = T>
-		typename std::enable_if<std::is_copy_assignable<Q>::value && !std::is_move_assignable<Q>::value, bool>::type
-		Pop(T& item);
+		requires (std::is_copy_assignable_v<Q> && !std::is_move_assignable_v<Q>)
+		bool Pop(T& item);
 
 		/// <summary>
 		/// Pop a move assignable item from the queue.
 		/// </summary>
 		/// <param name="item">Item to pop.</param>
 		template<typename Q = T>
-		typename std::enable_if<std::is_move_assignable<Q>::value, bool>::type
-		Pop(T& item);
+		requires std::is_move_assignable_v<Q>
+		bool Pop(T& item);
 
 		/// <summary>
 		/// Try to pop a copy assignable item from the queue.
@@ -76,8 +76,8 @@ namespace TRAP
 		/// <param name="item">Item to pop.</param>
 		/// <returns>True on success, false otherwise.</returns>
 		template<typename Q = T>
-		typename std::enable_if<std::is_copy_assignable<Q>::value && !std::is_move_assignable<Q>::value, bool>::type
-		TryPop(T& item);
+		requires (std::is_copy_assignable_v<Q> && !std::is_move_assignable_v<Q>)
+		bool TryPop(T& item);
 
 		/// <summary>
 		/// Try to pop a move assignable item from the queue.
@@ -85,8 +85,8 @@ namespace TRAP
 		/// <param name="item">Item to pop.</param>
 		/// <returns>True on success, false otherwise.</returns>
 		template<typename Q = T>
-		typename std::enable_if<std::is_move_assignable<Q>::value, bool>::type
-		TryPop(T& item);
+		requires std::is_move_assignable_v<Q>
+		bool TryPop(T& item);
 
 		/// <summary>
 		/// Mark the queue as done.
@@ -117,7 +117,8 @@ namespace TRAP
 
 template <typename T>
 template <typename Q>
-typename std::enable_if<std::is_copy_constructible<Q>::value, void>::type TRAP::BlockingQueue<T>::Push(const T& item)
+requires std::copy_constructible<Q>
+void TRAP::BlockingQueue<T>::Push(const T& item)
 {
 	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -134,7 +135,8 @@ typename std::enable_if<std::is_copy_constructible<Q>::value, void>::type TRAP::
 
 template <typename T>
 template <typename Q>
-typename std::enable_if<std::is_move_constructible<Q>::value, void>::type TRAP::BlockingQueue<T>::Push(T&& item)
+requires std::move_constructible<Q>
+void TRAP::BlockingQueue<T>::Push(T&& item)
 {
 	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -151,10 +153,8 @@ typename std::enable_if<std::is_move_constructible<Q>::value, void>::type TRAP::
 
 template <typename T>
 template <typename Q>
-typename std::enable_if<std::is_copy_constructible<Q>::value, bool>::type TRAP::BlockingQueue<T>::TryPush
-(
-	const T& item
-)
+requires std::copy_constructible<Q>
+bool TRAP::BlockingQueue<T>::TryPush(const T& item)
 {
 	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -175,7 +175,8 @@ typename std::enable_if<std::is_copy_constructible<Q>::value, bool>::type TRAP::
 
 template <typename T>
 template <typename Q>
-typename std::enable_if<std::is_move_constructible<Q>::value, bool>::type TRAP::BlockingQueue<T>::TryPush(T&& item)
+requires std::move_constructible<Q>
+bool TRAP::BlockingQueue<T>::TryPush(T&& item)
 {
 	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -196,8 +197,8 @@ typename std::enable_if<std::is_move_constructible<Q>::value, bool>::type TRAP::
 
 template <typename T>
 template <typename Q>
-typename std::enable_if<std::is_copy_assignable<Q>::value && !std::is_move_assignable<Q>::value, bool>::type
-TRAP::BlockingQueue<T>::Pop(T& item)
+requires (std::is_copy_assignable_v<Q> && !std::is_move_assignable_v<Q>)
+bool TRAP::BlockingQueue<T>::Pop(T& item)
 {
 	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -219,7 +220,8 @@ TRAP::BlockingQueue<T>::Pop(T& item)
 
 template <typename T>
 template <typename Q>
-typename std::enable_if<std::is_move_assignable<Q>::value, bool>::type TRAP::BlockingQueue<T>::Pop(T& item)
+requires std::is_move_assignable_v<Q>
+bool TRAP::BlockingQueue<T>::Pop(T& item)
 {
 	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -241,8 +243,8 @@ typename std::enable_if<std::is_move_assignable<Q>::value, bool>::type TRAP::Blo
 
 template <typename T>
 template <typename Q>
-typename std::enable_if<std::is_copy_assignable<Q>::value && !std::is_move_assignable<Q>::value, bool>::type
-TRAP::BlockingQueue<T>::TryPop(T& item)
+requires (std::is_copy_assignable_v<Q> && !std::is_move_assignable_v<Q>)
+bool TRAP::BlockingQueue<T>::TryPop(T& item)
 {
 	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -260,7 +262,8 @@ TRAP::BlockingQueue<T>::TryPop(T& item)
 
 template <typename T>
 template <typename Q>
-typename std::enable_if<std::is_move_assignable<Q>::value, bool>::type TRAP::BlockingQueue<T>::TryPop(T& item)
+requires std::is_move_assignable_v<Q>
+bool TRAP::BlockingQueue<T>::TryPop(T& item)
 {
 	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 

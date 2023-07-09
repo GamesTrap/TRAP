@@ -73,6 +73,7 @@ namespace TypeMat4
 //-------------------------------------------------------------------------------------------------------------------//
 
     template<typename matType, typename vecType>
+    requires TRAP::Math::IsMat4<matType> && TRAP::Math::IsVec4<vecType>
     int32_t TestOperators()
     {
         using valueType = typename matType::valueType;
@@ -112,6 +113,7 @@ namespace TypeMat4
 //-------------------------------------------------------------------------------------------------------------------//
 
     template<typename matType>
+    requires TRAP::Math::IsMat4<matType>
     int32_t TestInverse()
     {
         using valueType = typename matType::valueType;

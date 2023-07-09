@@ -85,6 +85,7 @@ namespace FuncMatrix
 //-------------------------------------------------------------------------------------------------------------------//
 
     template<typename matType, typename vecType>
+    requires TRAP::Math::IsMat<matType> && TRAP::Math::IsVec<vecType>
     int32_t TestEqual()
     {
         using valType = typename matType::valueType;
@@ -104,6 +105,7 @@ namespace FuncMatrix
 //-------------------------------------------------------------------------------------------------------------------//
 
     template<typename matType, typename vecType>
+    requires TRAP::Math::IsMat<matType> && TRAP::Math::IsVec<vecType>
     int32_t TestNotEqual()
     {
         using valType = typename matType::valueType;
