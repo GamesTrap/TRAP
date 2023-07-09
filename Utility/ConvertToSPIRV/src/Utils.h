@@ -171,11 +171,32 @@ requires ( std::is_unsigned_v<T> && std::is_integral_v<T>)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef __cpp_lib_is_scoped_enum
+
+namespace std
+{
+    template<typename E>
+    struct is_scoped_enum : std::bool_constant<requires
+    {
+        requires std::is_enum_v<E>;
+        requires !std::is_convertible_v<E, std::underlying_type_t<E>>;
+    }>
+    {};
+
+    template<class T>
+    inline constexpr bool is_scoped_enum_v = is_scoped_enum<T>::value;
+}
+
+#endif
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 #ifndef __cpp_lib_to_underlying
 
 namespace std
 {
     template<class Enum>
+    requires std::is_enum_v<Enum> || std::is_scoped_enum_v<Enum>
     constexpr std::underlying_type_t<Enum> to_underlying(Enum e) noexcept
     {
         return static_cast<std::underlying_type_t<Enum>>(e);
@@ -208,31 +229,28 @@ namespace std
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires (std::unsigned_integral<T> && !std::same_as<T, uint8_t>)
 [[nodiscard]] inline static constexpr T ConvertByte(const uint8_t* const source)
 {
-    if constexpr(std::is_unsigned_v<T> && (std::is_same_v<T, uint16_t> ||
-                    std::is_same_v<T, uint32_t> || std::is_same_v<T, uint64_t>))
+    if constexpr (sizeof(T) == 2)
     {
-        if constexpr (sizeof(T) == 2)
-        {
-            return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u);
-        }
-        else if constexpr (sizeof(T) == 4)
-        {
-            return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u) |
-                    (static_cast<T>(source[2]) << 16u) | (static_cast<T>(source[3]) << 24u);
-        }
-        else if constexpr (sizeof(T) == 8)
-        {
-            return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u) |
-                    (static_cast<T>(source[2]) << 16u) | (static_cast<T>(source[3]) << 24u) |
-                    (static_cast<T>(source[4]) << 32u) | (static_cast<T>(source[5]) << 40u) |
-                    (static_cast<T>(source[6]) << 48u) | (static_cast<T>(source[7]) << 56u);
-        }
+        return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u);
+    }
+    else if constexpr (sizeof(T) == 4)
+    {
+        return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u) |
+                (static_cast<T>(source[2]) << 16u) | (static_cast<T>(source[3]) << 24u);
+    }
+    else if constexpr (sizeof(T) == 8)
+    {
+        return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u) |
+                (static_cast<T>(source[2]) << 16u) | (static_cast<T>(source[3]) << 24u) |
+                (static_cast<T>(source[4]) << 32u) | (static_cast<T>(source[5]) << 40u) |
+                (static_cast<T>(source[6]) << 48u) | (static_cast<T>(source[7]) << 56u);
     }
     else
     {
-        static_assert(sizeof(T) == 0, "T must be unsigned interger type (not uint8_t");
+        static_assert(sizeof(T) == 0, "T has unknown size for unsigned interger type");
         return {};
     }
 }

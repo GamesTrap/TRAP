@@ -5,6 +5,7 @@
 namespace ScalarInteger
 {
     template<typename genType>
+    requires std::integral<genType>
     struct TypeIsPowerOfTwo
     {
         genType Value;

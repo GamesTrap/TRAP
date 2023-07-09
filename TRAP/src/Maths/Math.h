@@ -51,13 +51,11 @@ namespace TRAP::Math
 	//Constants
 
 	/// <summary>
-	/// Return the epsilon constant for floating point types.
+	/// Return the epsilon constant.
 	/// </summary>
 	template<typename T>
 	[[nodiscard]] constexpr T Epsilon()
 	{
-		static_assert(std::numeric_limits<T>::is_iec559, "'epsilon' only accepts floating-point inputs");
-
 		return std::numeric_limits<T>::epsilon();
 	}
 	/// <summary>
@@ -72,14 +70,16 @@ namespace TRAP::Math
 	/// Return the pi constant.
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T PI() noexcept
 	{
-		return T(3.1415926535897932384626433832795);
+		return std::numbers::pi_v<T>;
 	}
 	/// <summary>
 	/// Return tau = 2 * pi.
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T TAU() noexcept
 	{
 		return T(6.2831853071795864769252867665581);
@@ -88,6 +88,7 @@ namespace TRAP::Math
 	/// Return pi * 2, same as TAU.
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T TwoPI() noexcept
 	{
 		return T(6.28318530717958647692528676655900576);
@@ -96,6 +97,7 @@ namespace TRAP::Math
 	/// Return square root of pi.
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T RootPI() noexcept
 	{
 		return T(1.772453850905516027);
@@ -104,6 +106,7 @@ namespace TRAP::Math
 	/// Return pi / 2.
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T HalfPI() noexcept
 	{
 		return T(1.57079632679489661923132169163975144);
@@ -112,6 +115,7 @@ namespace TRAP::Math
 	/// Return pi / 2 * 3.
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T ThreeOverTwoPI() noexcept
 	{
 		return T(4.71238898038468985769396507491925432);
@@ -120,6 +124,7 @@ namespace TRAP::Math
 	/// Return pi / 4.
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T QuarterPI() noexcept
 	{
 		return T(0.785398163397448309615660845819875721);
@@ -128,14 +133,16 @@ namespace TRAP::Math
 	/// Return 1 / pi.
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T OneOverPI() noexcept
 	{
-		return T(0.318309886183790671537767526745028724);
+		return std::numbers::inv_pi_v<T>;
 	}
 	/// <summary>
 	/// Return 1 / (pi * 2).
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T OneOverTwoPI() noexcept
 	{
 		return T(0.159154943091895335768883763372514362);
@@ -144,6 +151,7 @@ namespace TRAP::Math
 	/// Return 2 / pi.
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T TwoOverPI() noexcept
 	{
 		return T(0.636619772367581343075535053490057448);
@@ -152,6 +160,7 @@ namespace TRAP::Math
 	/// Return 4 / pi.
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T FourOverPI() noexcept
 	{
 		return T(1.273239544735162686151070106980114898);
@@ -160,6 +169,7 @@ namespace TRAP::Math
 	/// Return 2 / sqrt(pi).
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T TwoOverRootPI() noexcept
 	{
 		return T(1.12837916709551257389615890312154517);
@@ -168,6 +178,7 @@ namespace TRAP::Math
 	/// Return 1 / sqrt(2).
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T OneOverRootTwo() noexcept
 	{
 		return T(0.707106781186547524400844362104849039);
@@ -176,6 +187,7 @@ namespace TRAP::Math
 	/// Return sqrt(pi / 2).
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T RootHalfPI() noexcept
 	{
 		return T(1.253314137315500251);
@@ -184,6 +196,7 @@ namespace TRAP::Math
 	/// Return sqrt(2 * pi).
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T RootTwoPI() noexcept
 	{
 		return T(2.506628274631000502);
@@ -192,6 +205,7 @@ namespace TRAP::Math
 	/// Return sqrt(ln(4)).
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T RootLnFour() noexcept
 	{
 		return T(1.17741002251547469);
@@ -200,14 +214,16 @@ namespace TRAP::Math
 	/// Return e constant.
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T e() noexcept
 	{
-		return T(2.71828182845904523536);
+		return std::numbers::e_v<T>;
 	}
 	/// <summary>
 	/// Return Euler's constant.
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T Euler() noexcept
 	{
 		return T(0.577215664901532860606);
@@ -216,22 +232,25 @@ namespace TRAP::Math
 	/// Return sqrt(2).
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T RootTwo() noexcept
 	{
-		return T(1.41421356237309504880168872420969808);
+		return std::numbers::sqrt2_v<T>;
 	}
 	/// <summary>
 	/// Return sqrt(3).
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T RootThree() noexcept
 	{
-		return T(1.73205080756887729352744634150587236);
+		return std::numbers::sqrt3_v<T>;
 	}
 	/// <summary>
 	/// Return sqrt(5).
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T RootFive() noexcept
 	{
 		return T(2.23606797749978969640917366873127623);
@@ -240,22 +259,25 @@ namespace TRAP::Math
 	/// Return ln(2).
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T LnTwo() noexcept
 	{
-		return T(0.693147180559945309417232121458176568);
+		return std::numbers::ln2_v<T>;
 	}
 	/// <summary>
 	/// Return ln(10).
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T LnTen() noexcept
 	{
-		return T(2.30258509299404568401799145468436421);
+		return std::numbers::ln10_v<T>;
 	}
 	/// <summary>
 	/// Return ln(ln(2)).
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T LnLnTwo() noexcept
 	{
 		return T(-0.3665129205816643);
@@ -264,6 +286,7 @@ namespace TRAP::Math
 	/// Return 1 / 3.
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T Third() noexcept
 	{
 		return T(0.3333333333333333333333333333333333333333);
@@ -272,6 +295,7 @@ namespace TRAP::Math
 	/// Return 2 / 3.
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T TwoThirds() noexcept
 	{
 		return T(0.666666666666666666666666666666666666667);
@@ -280,9 +304,10 @@ namespace TRAP::Math
 	/// Return the golden ratio constant.
 	/// </summary>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T GoldenRatio() noexcept
 	{
-		return T(1.61803398874989484820458683436563811);
+		return std::numbers::phi_v<T>;
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -297,6 +322,7 @@ namespace TRAP::Math
 	/// <param name="y">Specify the second value to compare.</param>
 	/// <returns>y if y < x; otherwise it returns x.</returns>
 	template<typename genType>
+	requires std::is_arithmetic_v<genType>
 	[[nodiscard]] constexpr genType Min(genType x, genType y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -309,6 +335,7 @@ namespace TRAP::Math
 	/// <param name="y">Specify the second value to compare.</param>
 	/// <returns>y if x < y; otherwise it returns x.</returns>
 	template<typename genType>
+	requires std::is_arithmetic_v<genType>
 	[[nodiscard]] constexpr genType Max(genType x, genType y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -324,6 +351,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] genType Round(genType x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -337,6 +365,7 @@ namespace TRAP::Math
 	/// Value equal to the nearest integer to x whose absolute value is not larger than the absolute value of x.
 	/// </returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] genType Trunc(genType x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -348,6 +377,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value of which to return the absolute.</param>
 	/// <returns>x if x >= 0; otherwise it returns -x.</returns>
 	template<typename genFIType>
+	requires std::is_arithmetic_v<genFIType>
 	[[nodiscard]] constexpr genFIType Abs(genFIType x);
 
 	/// <summary>
@@ -357,6 +387,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value of which to return the absolute.</param>
 	/// <returns>x if x >= 0; otherwise it returns -x.</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, T> Abs(const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -366,19 +397,21 @@ namespace TRAP::Math
 	/// <summary>
 	/// Extract the sign of x.
 	/// </summary>
-	/// <typeparam name="genFIType">Floating-point scalar or vector types.</typeparam>
+	/// <typeparam name="genFIType">Floating-point or signed integer scalar or vector types.</typeparam>
 	/// <param name="x">Specify the value from which to extract the sign.</param>
 	/// <returns>1.0f if x > 0, 0.0 if x == 0, or -1.0 if x < 0.</returns>
 	template<typename genFIType>
+	requires std::floating_point<genFIType> || std::signed_integral<genFIType>
 	[[nodiscard]] constexpr genFIType Sign(genFIType x);
 
 	/// <summary>
 	/// Extract the sign of x.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <typeparam name="T">Floating-point or signed integer scalar or vector types.</typeparam>
 	/// <param name="x">Specify the value from which to extract the sign.</param>
 	/// <returns>1.0f if x > 0, 0.0 if x == 0, or -1.0 if x < 0.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T> || std::signed_integral<T>
 	[[nodiscard]] constexpr Vec<L, T> Sign(const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -390,6 +423,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>Value equal to the nearest integer that is less then or equal to x.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T Floor(T x);
 
 	/// <summary>
@@ -399,6 +433,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>Value equal to the nearest integer that is less then or equal to x.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Floor(const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -412,6 +447,7 @@ namespace TRAP::Math
 	/// Value equal to the nearest integer to x whose absolute value is not larger than the absolute value of x.
 	/// </returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Trunc(const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -427,6 +463,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Round(const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -441,6 +478,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] genType RoundEven(genType x);
 
 	/// <summary>
@@ -453,6 +491,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> RoundEven(const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -464,6 +503,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>Value equal to the nearest integer that is greater than or equal to x.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T Ceil(T x);
 
 	/// <summary>
@@ -473,6 +513,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>Value equal to the nearest integer that is greater than or equal to x.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Ceil(const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -484,6 +525,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>x - Floor(x).</returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] genType Fract(genType x);
 
 	/// <summary>
@@ -493,6 +535,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>x - Floor(x).</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Fract(const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -503,6 +546,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>x - y * Floor(x / y) for each component in x using the floating point value y.</returns>
 	template<typename genType>
+	requires std::floating_point<genType> || std::integral<genType>
 	[[nodiscard]] genType Mod(genType x, genType y);
 
 	/// <summary>
@@ -512,6 +556,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>x - y * Floor(x / y) for each component in x using the floating point value y.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Mod(const Vec<L, T>& x, T y);
 
 	/// <summary>
@@ -521,6 +566,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>x - y * Floor(x / y) for each component in x using the floating point value y.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Mod(const Vec<L, T>& x, const Vec<L, T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -537,6 +583,7 @@ namespace TRAP::Math
 	/// Fractional part of x and sets i to the integer part (as a whole number floating point value).
 	/// </returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] genType Modf(genType x, genType& i);
 
 	/// <summary>
@@ -551,6 +598,7 @@ namespace TRAP::Math
 	/// Fractional part of x and sets i to the integer part (as a whole number floating point value).
 	/// </returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Modf(const Vec<L, T>& x, Vec<L, T>& i);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -563,6 +611,7 @@ namespace TRAP::Math
 	/// <param name="b">Specify the second value to compare.</param>
 	/// <returns>y if y < x; otherwise it returns x.</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, T> Min(const Vec<L, T>& a, T b);
 
 	/// <summary>
@@ -573,6 +622,7 @@ namespace TRAP::Math
 	/// <param name="b">Specify the second value to compare.</param>
 	/// <returns>y if y < x; otherwise it returns x.</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, T> Min(const Vec<L, T>& a, const Vec<L, T>& b);
 
 	/// <summary>
@@ -587,6 +637,7 @@ namespace TRAP::Math
 	/// <param name="c">Specify the third value to compare.</param>
 	/// <returns>Returns the minimum component-wise values of 3 inputs</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, T> Min(const Vec<L, T>& a, const Vec<L, T>& b, const Vec<L, T>& c);
 
 	/// <summary>
@@ -602,6 +653,7 @@ namespace TRAP::Math
 	/// <param name="d">Specify the fourth value to compare.</param>
 	/// <returns>Returns the minimum component-wise values of 4 inputs</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, T> Min(const Vec<L, T>& a, const Vec<L, T>& b, const Vec<L, T>& c, const Vec<L, T>& d);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -614,6 +666,7 @@ namespace TRAP::Math
 	/// <param name="b">Specify the second value to compare.</param>
 	/// <returns>y if x < y; otherwise it returns x.</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, T> Max(const Vec<L, T>& a, T b);
 
 	/// <summary>
@@ -624,6 +677,7 @@ namespace TRAP::Math
 	/// <param name="b">Specify the second value to compare.</param>
 	/// <returns>y if x < y; otherwise it returns x.</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, T> Max(const Vec<L, T>& a, const Vec<L, T>& b);
 
 	/// <summary>Returns the maximum component-wise values of 3 inputs</summary>
@@ -635,6 +689,7 @@ namespace TRAP::Math
 	/// <param name="c">Specify the third value to compare.</param>
 	/// <returns>Returns the maximum component-wise values of 3 inputs</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, T> Max(const Vec<L, T>& a, const Vec<L, T>& b, const Vec<L, T>& c);
 
 	/// <summary>Returns the maximum component-wise values of 4 inputs</summary>
@@ -647,6 +702,7 @@ namespace TRAP::Math
 	/// <param name="d">Specify the fourth value to compare.</param>
 	/// <returns>Returns the maximum component-wise values of 4 inputs</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, T> Max(const Vec<L, T>& a, const Vec<L, T>& b, const Vec<L, T>& c, const Vec<L, T>& d);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -662,6 +718,7 @@ namespace TRAP::Math
 	/// Min(Max(x, minval), maxVal) for each component in x using the floating-point values minval and maxVal.
 	/// </returns>
 	template<typename genType>
+	requires std::is_arithmetic_v<genType>
 	[[nodiscard]] constexpr genType Clamp(genType x, genType minVal, genType maxVal);
 
 	/// <summary>
@@ -675,6 +732,7 @@ namespace TRAP::Math
 	/// Min(Max(x, minval), maxVal) for each component in x using the floating-point values minval and maxVal.
 	/// </returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, T> Clamp(const Vec<L, T>& x, T minVal, T maxVal);
 
 	/// <summary>
@@ -688,6 +746,7 @@ namespace TRAP::Math
 	/// Min(Max(x, minval), maxVal) for each component in x using the floating-point values minval and maxVal.
 	/// </returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, T> Clamp(const Vec<L, T>& x, const Vec<L, T>& minVal, const Vec<L, T>& maxVal);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -702,6 +761,7 @@ namespace TRAP::Math
 	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] int32_t IRound(const genType& x);
 
 	/// <summary>
@@ -714,6 +774,7 @@ namespace TRAP::Math
 	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, int32_t> IRound(const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -728,6 +789,7 @@ namespace TRAP::Math
 	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] uint32_t URound(const genType& x);
 
 	/// <summary>
@@ -740,6 +802,7 @@ namespace TRAP::Math
 	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, uint32_t> URound(const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -767,6 +830,7 @@ namespace TRAP::Math
 	/// <param name="a">SPecify the value to use to interpolate between x and y.</param>
 	/// <returns>See description.</returns>
 	template<typename genTypeT, typename genTypeU>
+	requires std::floating_point<genTypeU> || std::same_as<genTypeU, bool>
 	[[nodiscard]] constexpr genTypeT Mix(genTypeT x, genTypeT y, genTypeU a);
 
 	/// <summary>
@@ -792,6 +856,7 @@ namespace TRAP::Math
 	/// <param name="a">SPecify the value to use to interpolate between x and y.</param>
 	/// <returns>See description.</returns>
 	template<uint32_t L, typename T, typename U>
+	requires std::floating_point<U> || std::same_as<U, bool>
 	[[nodiscard]] constexpr Vec<L, T> Mix(const Vec<L, T>& x, const Vec<L, T>& y, U a);
 
 	/// <summary>
@@ -817,6 +882,7 @@ namespace TRAP::Math
 	/// <param name="a">SPecify the value to use to interpolate between x and y.</param>
 	/// <returns>See description.</returns>
 	template<uint32_t L, typename T, typename U>
+	requires std::floating_point<U> || std::same_as<U, bool>
 	[[nodiscard]] constexpr Vec<L, T> Mix(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, U>& a);
 
 	/// <summary>
@@ -830,6 +896,7 @@ namespace TRAP::Math
 	/// <param name="a">Interpolation factor. The interpolation is defined beyond the range [0, 1].</param>
 	/// <returns>Spherical linear interpolation of two quaternions.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] tQuat<T> Mix(const tQuat<T>& x, const tQuat<T>& y, T a);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -842,6 +909,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second value to be used in the comparison operation.</param>
 	/// <returns>Comparison result of x == y.</returns>
 	template<typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr bool Equal(T x, T y) noexcept;
 
 	/// <summary>
@@ -853,6 +921,7 @@ namespace TRAP::Math
 	/// <param name="epsilon"></param>
 	/// <returns>Comparison of |x - y| < epsilon. True if this expression is satisfied.</returns>
 	template<typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr bool Equal(T x, T y, T epsilon);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -865,6 +934,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second value to be used in the comparison operation.</param>
 	/// <returns>Comparison result of x != y.</returns>
 	template<typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr bool NotEqual(T x, T y) noexcept;
 
 	/// <summary>
@@ -876,6 +946,7 @@ namespace TRAP::Math
 	/// <param name="epsilon"></param>
 	/// <returns>Comparison result of x != y.</returns>
 	template<typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr bool NotEqual(T x, T y, T epsilon);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -888,6 +959,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second value to be used in the comparison operation.</param>
 	/// <returns>Comparison result of x > y.</returns>
 	template<typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr bool GreaterThan(T x, T y) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -900,6 +972,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second value to be used in the comparison operation.</param>
 	/// <returns>Comparison result of x >= y.</returns>
 	template<typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr bool GreaterThanEqual(T x, T y) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -912,6 +985,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second value to be used in the comparison operation.</param>
 	/// <returns>Comparison result of x < y.</returns>
 	template<typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr bool LessThan(T x, T y) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -924,6 +998,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second values to be used in the comparison operation.</param>
 	/// <returns>Comparison result of x <= y.</returns>
 	template<typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr bool LessThanEqual(T x, T y) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -944,6 +1019,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value to be used to generate the step function.</param>
 	/// <returns>0.0 if x < edge, otherwise it returns 1.0 for each component of a genType.</returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] genType Step(genType edge, genType x);
 
 	/// <summary>
@@ -954,6 +1030,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value to be used to generate the step function.</param>
 	/// <returns>0.0 if x < edge, otherwise it returns 1.0.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Step(T edge, const Vec<L, T>& x);
 
 	/// <summary>
@@ -964,6 +1041,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value to be used to generate the step function.</param>
 	/// <returns>0.0 if x < edge, otherwise it returns 1.0.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Step(const Vec<L, T>& edge, const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -983,6 +1061,7 @@ namespace TRAP::Math
 	/// 0.0 if x <= edge0 and 1.0 if x >= edge1 and performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1.
 	/// </returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] genType SmoothStep(genType edge0, genType edge1, genType x);
 
 	/// <summary>
@@ -1000,6 +1079,7 @@ namespace TRAP::Math
 	/// 0.0 if x <= edge0 and 1.0 if x >= edge1 and performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1.
 	/// </returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> SmoothStep(T edge0, T edge1, const Vec<L, T>& x);
 
 	/// <summary>
@@ -1017,6 +1097,7 @@ namespace TRAP::Math
 	/// 0.0 if x <= edge0 and 1.0 if x >= edge1 and performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1.
 	/// </returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> SmoothStep(const Vec<L, T>& edge0, const Vec<L, T>& edge1, const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1034,6 +1115,7 @@ namespace TRAP::Math
 	/// False otherwise, including for implementations with no NaN representations.
 	/// </returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] constexpr bool IsNaN(genType x) noexcept;
 
 	/// <summary>
@@ -1049,6 +1131,7 @@ namespace TRAP::Math
 	/// False otherwise, including for implementations with no NaN representations.
 	/// </returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, bool> IsNaN(const Vec<L, T>& v);
 
 	/// <summary>
@@ -1064,6 +1147,7 @@ namespace TRAP::Math
 	/// False otherwise, including for implementations with no NaN representations.
 	/// </returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<4, bool> IsNaN(const tQuat<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1079,6 +1163,7 @@ namespace TRAP::Math
 	/// False otherwise, including for implementations with no infinity representations.
 	/// </returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] constexpr bool IsInf(genType x) noexcept;
 
 	/// <summary>
@@ -1092,6 +1177,7 @@ namespace TRAP::Math
 	/// False otherwise, including for implementations with no infinity representations.
 	/// </returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, bool> IsInf(const Vec<L, T>& v);
 
 	/// <summary>
@@ -1105,6 +1191,7 @@ namespace TRAP::Math
 	/// False otherwise, including for implementations with no infinity representations.
 	/// </returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<4, bool> IsInf(const tQuat<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1118,7 +1205,8 @@ namespace TRAP::Math
 	/// <param name="c">Specifies the value to be added to the result.</param>
 	/// <returns>Computes and returns a * b + c.</returns>
 	template<typename genType>
-	[[nodiscard]] genType FMA(const genType& a, const genType& b, const genType& c);
+	requires std::floating_point<genType>
+	[[nodiscard]] genType FMA(genType a, genType b, genType c);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1134,6 +1222,7 @@ namespace TRAP::Math
 	/// <param name="exp">Out specifies the variable into which to place the exponent.</param>
 	/// <returns>See description.</returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] genType FrExp(genType x, int32_t& exp);
 
 	/// <summary>
@@ -1148,6 +1237,7 @@ namespace TRAP::Math
 	/// <param name="exp">Out specifies the variable into which to place the exponent.</param>
 	/// <returns>See description.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> FrExp(const Vec<L, T>& v, Vec<L, int32_t>& exp);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1162,6 +1252,7 @@ namespace TRAP::Math
 	/// <param name="exp">Specifies the value to be used as a source of exponent.</param>
 	/// <returns>See description.</returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] genType LdExp(const genType& x, const int32_t& exp);
 
 	/// <summary>
@@ -1174,6 +1265,7 @@ namespace TRAP::Math
 	/// <param name="exp">Specifies the value to be used as a source of exponent.</param>
 	/// <returns>See description.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> LdExp(const Vec<L, T>& v, const Vec<L, int32_t>& exp);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1184,6 +1276,7 @@ namespace TRAP::Math
 	/// <param name="value">Specify the value to evaluate.</param>
 	/// <returns>True if the value is a power of two number.</returns>
 	template<typename genType>
+	requires std::integral<genType>
 	[[nodiscard]] constexpr bool IsPowerOfTwo(genType value);
 
 	/// <summary>
@@ -1193,6 +1286,7 @@ namespace TRAP::Math
 	/// <param name="v">Specify the value to evaluate.</param>
 	/// <returns>True if the value is a power of two number.</returns>
 	template<uint32_t L, typename T>
+	requires std::integral<T>
 	[[nodiscard]] constexpr Vec<L, bool> IsPowerOfTwo(const Vec<L, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1201,14 +1295,16 @@ namespace TRAP::Math
 	/// Similar to 'Mod' but with a different rounding and integer support.
 	/// </summary>
 	/// <returns>'x - y * Trunc(x / y)' instead of 'x - y * Floor(x / y)'.</returns>
-	template<typename genType>
-	[[nodiscard]] genType FMod(genType x, genType y);
+	template<typename T>
+	requires std::is_arithmetic_v<T>
+	[[nodiscard]] T FMod(T x, T y);
 
 	/// <summary>
 	/// Similar to 'Mod' but with a different rounding and integer support.
 	/// </summary>
 	/// <returns>'x - y * Trunc(x / y)' instead of 'x - y * Floor(x / y)'.</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] Vec<L, T> FMod(const Vec<L, T>& x, T y);
 
 	/// <summary>
@@ -1216,6 +1312,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <returns>'x - y * Trunc(x / y)' instead of 'x - y * Floor(x / y)'.</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] Vec<L, T> FMod(const Vec<L, T>& x, const Vec<L, T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1226,6 +1323,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar or vector types.</typeparam>
 	/// <returns>Linear interpolation.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T Lerp(T x, T y, T a);
 
 	/// <summary>
@@ -1234,6 +1332,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>Linear interpolation.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Lerp(const Vec<L, T>& x, const Vec<L, T>& y, T a);
 
 	/// <summary>
@@ -1242,6 +1341,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>Linear interpolation.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Lerp(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, T>& a);
 
 	/// <summary>
@@ -1254,6 +1354,7 @@ namespace TRAP::Math
 	/// <param name="a">Interpolation factor. The interpolation is defined in the range [0, 1].</param>
 	/// <returns>Linear interpolation of two quaternions.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] tQuat<T> Lerp(const tQuat<T>& x, const tQuat<T>& y, T a);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1271,6 +1372,7 @@ namespace TRAP::Math
 	/// <param name="exponent">Floating-point value representing the 'exponent'.</param>
 	/// <returns>'base' raised to the power 'exponent'.</returns>
 	template<typename T>
+	requires std::floating_point<T> || std::integral<T>
 	[[nodiscard]] T Pow(T base, T exponent);
 
 	/// <summary>
@@ -1284,6 +1386,7 @@ namespace TRAP::Math
 	/// <param name="exponent">Floating-point value representing the 'exponent'.</param>
 	/// <returns>'base' raised to the power 'exponent'.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Pow(const Vec<L, T>& base, const Vec<L, T>& exponent);
 
 	/// <summary>
@@ -1292,6 +1395,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <returns>Quaternion raised to a power.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] tQuat<T> Pow(const tQuat<T>& x, T y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1306,6 +1410,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value to exponentiate.</param>
 	/// <returns>Natural exponentiation of x. i.e., e^x.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T Exp(T x);
 
 	/// <summary>
@@ -1318,6 +1423,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value to exponentiate.</param>
 	/// <returns>Natural exponentiation of x. i.e., e^x.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Exp(const Vec<L, T>& x);
 
 	/// <summary>
@@ -1327,6 +1433,7 @@ namespace TRAP::Math
 	/// <param name="q">Specify the value to exponentiate.</param>
 	/// <returns>Exponential of a quaternion.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] tQuat<T> Exp(const tQuat<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1341,6 +1448,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value of which to take the natural logarithm.</param>
 	/// <returns>Natural logarithm of x, i.e., returns the value y which satisfies the equation x = e^y.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T Log(T x);
 
 	/// <summary>
@@ -1356,6 +1464,7 @@ namespace TRAP::Math
 	/// Note: Results are undefined if x <= 0!
 	/// </returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Log(const Vec<L, T>& x);
 
 	/// <summary>
@@ -1365,6 +1474,7 @@ namespace TRAP::Math
 	/// <param name="q">Specify the value of which to take the natural logarithm.</param>
 	/// <returns>Logarithm of a quaternion.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] tQuat<T> Log(const tQuat<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1379,6 +1489,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value of the power to which 2 will be raised.</param>
 	/// <returns>2 raised to the x power.</returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] genType Exp2(genType x);
 
 	/// <summary>
@@ -1391,6 +1502,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value of the power to which 2 will be raised.</param>
 	/// <returns>2 raised to the x power.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Exp2(const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1405,6 +1517,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value of which to take the base 2 logarithm.</param>
 	/// <returns>Base 2 log of x, i.e., returns the value y, which satisfies the equation x = 2^y.</returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] genType Log2(genType x);
 
 	/// <summary>
@@ -1417,6 +1530,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value of which to take the base 2 logarithm.</param>
 	/// <returns>Base 2 log of x, i.e., returns the value y, which satisfies the equation x = 2^y.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Log2(const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1431,6 +1545,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value of which to take the square root.</param>
 	/// <returns>Positive square root of x.</returns>
 	template<typename T>
+	requires std::floating_point<T> || std::integral<T>
 	[[nodiscard]] T Sqrt(T x);
 
 	/// <summary>
@@ -1443,6 +1558,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value of which to take the square root.</param>
 	/// <returns>Positive square root of x.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Sqrt(const Vec<L, T>& x);
 
 	/// <summary>
@@ -1452,6 +1568,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value of which to take the square root.</param>
 	/// <returns>Square root of a quaternion.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] tQuat<T> Sqrt(const tQuat<T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1466,6 +1583,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value of which to take the inverse of the square root.</param>
 	/// <returns>Inverse of the square root of x.</returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] genType InverseSqrt(genType x);
 
 	/// <summary>
@@ -1478,6 +1596,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value of which to take the inverse of the square root.</param>
 	/// <returns>Inverse of the square root of x.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> InverseSqrt(const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1491,6 +1610,7 @@ namespace TRAP::Math
 	/// <param name="x">Specifies a value of which to calculate the length.</param>
 	/// <returns>Length of x, i.e., Sqrt(x * x).</returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] constexpr genType Length(genType x);
 
 	/// <summary>
@@ -1500,6 +1620,7 @@ namespace TRAP::Math
 	/// <param name="v">Specifies a vector of which to calculate the length.</param>
 	/// <returns>Length of x, i.e., Sqrt(x * x).</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T Length(const Vec<L, T>& v);
 
 	/// <summary>
@@ -1509,6 +1630,7 @@ namespace TRAP::Math
 	/// <param name="q">Specifies a quaternion of which to calculate the length.</param>
 	/// <returns>Norm of a quaternion.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T Length(const tQuat<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1521,6 +1643,7 @@ namespace TRAP::Math
 	/// <param name="p1">Specifies the second of two points.</param>
 	/// <returns>Distance between p0 and p1, i.e., Length(p0 - p1).</returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] constexpr genType Distance(const genType& p0, const genType& p1);
 
 	/// <summary>
@@ -1531,6 +1654,7 @@ namespace TRAP::Math
 	/// <param name="p1">Specifies the second of two points.</param>
 	/// <returns>Distance between p0 and p1, i.e., Length(p0 - p1).</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T Distance(const Vec<L, T>& p0, const Vec<L, T>& p1);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1543,6 +1667,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second of two values.</param>
 	/// <returns>Dot product of x and y, i.e., result = x * y.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T Dot(T x, T y);
 
 	/// <summary>
@@ -1553,6 +1678,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second of two vectors.</param>
 	/// <returns>Dot product of x and y, i.e., result = x * y.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T Dot(const Vec<L, T>& x, const Vec<L, T>& y);
 
 	/// <summary>
@@ -1563,6 +1689,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second of two quaternions.</param>
 	/// <returns>Compute a cross product.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T Dot(const tQuat<T>& x, const tQuat<T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1575,6 +1702,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second of two vectors.</param>
 	/// <returns>Cross product of x and y.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<2, T> Cross(const Vec<2, T>& x, const Vec<2, T>& y);
 
 	/// <summary>
@@ -1585,6 +1713,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second of two vectors.</param>
 	/// <returns>Cross product of x and y.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<3, T> Cross(const Vec<3, T>& x, const Vec<3, T>& y);
 
 	/// <summary>
@@ -1595,6 +1724,7 @@ namespace TRAP::Math
 	/// <param name="q2">Specifies the second of two quaternions.</param>
 	/// <returns>Compute a cross product.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr tQuat<T> Cross(const tQuat<T>& q1, const tQuat<T>& q2) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1606,6 +1736,7 @@ namespace TRAP::Math
 	/// <param name="x">Specifies the vector to normalize.</param>
 	/// <returns>Vector in the same direction as x but with a length of 1.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Normalize(const Vec<L, T>& x);
 
 	/// <summary>
@@ -1615,6 +1746,7 @@ namespace TRAP::Math
 	/// <param name="q">Specifies the quaternion to normalize.</param>
 	/// <returns>Normalized quaternion.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] tQuat<T> Normalize(const tQuat<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1628,6 +1760,7 @@ namespace TRAP::Math
 	/// <param name="NRef">Specifies the reference value.</param>
 	/// <returns>If Dot(NRef, I) < 0.0, returns N, otherwise; returns -N.</returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] constexpr genType FaceForward(const genType& N, const genType& I, const genType& NRef);
 
 	/// <summary>
@@ -1639,6 +1772,7 @@ namespace TRAP::Math
 	/// <param name="NRef">Specifies the reference vector.</param>
 	/// <returns>If Dot(NRef, I) < 0.0, returns N, otherwise; returns -N.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> FaceForward(const Vec<L, T>& N, const Vec<L, T>& I, const Vec<L, T>& NRef);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1654,6 +1788,7 @@ namespace TRAP::Math
 	/// returns the reflection direction: result = I - 2.0 * Dot(N, I) * N.
 	/// </returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] constexpr genType Reflect(const genType& I, const genType& N);
 
 	/// <summary>
@@ -1667,6 +1802,7 @@ namespace TRAP::Math
 	/// returns the reflection direction: result = I - 2.0 * Dot(N, I) * N.
 	/// </returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Reflect(const Vec<L, T>& I, const Vec<L, T>& N);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1683,6 +1819,7 @@ namespace TRAP::Math
 	/// and the ratio of indices of refraction eta, returns the refraction vector.
 	/// </returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] genType Refract(const genType& I, const genType& N, genType eta);
 
 	/// <summary>
@@ -1697,6 +1834,7 @@ namespace TRAP::Math
 	/// and the ratio of indices of refraction eta, returns the refraction vector.
 	/// </returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Refract(const Vec<L, T>& I, const Vec<L, T>& N, T eta);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1711,6 +1849,7 @@ namespace TRAP::Math
 	/// Boolean vector which components value is true if this expression is satisfied per column of the matrices.
 	/// </returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 	[[nodiscard]] constexpr Vec<L, bool> Equal(const Mat<L, L, T>& x, const Mat<L, L, T>& y);
 
 	/// <summary>
@@ -1722,6 +1861,7 @@ namespace TRAP::Math
 	/// <param name="epsilon">Specifies the epsilon to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison of |x - y| < epsilon. True if this expression is satisfied.</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 	[[nodiscard]] constexpr Vec<L, bool> Equal(const Mat<L, L, T>& x, const Mat<L, L, T>& y, T epsilon);
 
 	/// <summary>
@@ -1733,6 +1873,7 @@ namespace TRAP::Math
 	/// <param name="epsilon">Specifies the epsilon to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison of |x - y| < epsilon. True if this expression is satisfied.</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 	[[nodiscard]] constexpr Vec<L, bool> Equal(const Mat<L, L, T>& x, const Mat<L, L, T>& y, const Vec<L, T>& epsilon);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1747,6 +1888,7 @@ namespace TRAP::Math
 	/// Boolean vector which components value is true if this expression is satisfied per column of the matrices.
 	/// </returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 	[[nodiscard]] constexpr Vec<L, bool> NotEqual(const Mat<L, L, T>& x, const Mat<L, L, T>& y);
 
 	/// <summary>
@@ -1758,6 +1900,7 @@ namespace TRAP::Math
 	/// <param name="epsilon">Specifies the epsilon to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison of |x - y| >= epsilon. True if this expression is not satisfied.</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 	[[nodiscard]] constexpr Vec<L, bool> NotEqual(const Mat<L, L, T>& x, const Mat<L, L, T>& y, T epsilon);
 
 	/// <summary>
@@ -1769,6 +1912,7 @@ namespace TRAP::Math
 	/// <param name="epsilon">Specifies the epsilon to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison of |x - y| >= epsilon. True if this expression is not satisfied.</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 	[[nodiscard]] constexpr Vec<L, bool> NotEqual(const Mat<L, L, T>& x, const Mat<L, L, T>& y, const Vec<L, T>& epsilon);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1783,6 +1927,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second matrix multiplicand.</param>
 	/// <returns>Multiplied matrix.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Mat<L, L, T> MatrixCompMult(const Mat<L, L, T>& x, const Mat<L, L, T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1798,6 +1943,7 @@ namespace TRAP::Math
 	/// <param name="r">Specifies the parameter to be treated as a row matrix.</param>
 	/// <returns>Multiplied matrix.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Mat<L, L, T> OuterProduct(const Vec<L, T>& c, const Vec<L, T>& r);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1809,6 +1955,7 @@ namespace TRAP::Math
 	/// <param name="m">Specifies the matrix of which to take the transpose.</param>
 	/// <returns>Transposed matrix of m.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr typename Mat<3, 3, T>::transposeType Transpose(const Mat<3, 3, T>& m);
 	/// <summary>
 	/// Calculate the transpose of a matrix.
@@ -1817,6 +1964,7 @@ namespace TRAP::Math
 	/// <param name="m">Specifies the matrix of which to take the transpose.</param>
 	/// <returns>Transposed matrix of m.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr typename Mat<4, 4, T>::transposeType Transpose(const Mat<4, 4, T>& m);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1828,6 +1976,7 @@ namespace TRAP::Math
 	/// <param name="m">Specifies the matrix of which to take the determinant.</param>
 	/// <returns>Determinant of a squared matrix.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T Determinant(const Mat<3, 3, T>& m);
 	/// <summary>
 	/// Calculate the determinant of a matrix.
@@ -1836,6 +1985,7 @@ namespace TRAP::Math
 	/// <param name="m">Specifies the matrix of which to take the determinant.</param>
 	/// <returns>Determinant of a squared matrix.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr T Determinant(const Mat<4, 4, T>& m);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1847,6 +1997,7 @@ namespace TRAP::Math
 	/// <param name="m">Specifies the matrix of which to take the inverse.</param>
 	/// <returns>Inverse of a squared matrix.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Mat<3, 3, T> Inverse(const Mat<3, 3, T>& m);
 	/// <summary>
 	/// Calculate the inverse of a matrix.
@@ -1855,6 +2006,7 @@ namespace TRAP::Math
 	/// <param name="m">Specifies the matrix of which to take the inverse.</param>
 	/// <returns>Inverse of a squared matrix.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Mat<4, 4, T> Inverse(const Mat<4, 4, T>& m);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1865,6 +2017,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <returns>Projection matrix.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Mat<4, 4, T> Orthographic(T left, T right, T bottom, T top) noexcept;
 	/// <summary>
 	/// Create a matrix for an orthographic parallel viewing volume.
@@ -1872,6 +2025,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <returns>Projection matrix.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Mat<4, 4, T> Orthographic(T left, T right, T bottom, T top, T zNear, T zFar) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1882,6 +2036,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <returns>Frustum matrix.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Mat<4, 4, T> Frustum(T left, T right, T bottom, T top, T nearVal, T farVal) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1903,6 +2058,7 @@ namespace TRAP::Math
 	/// </param>
 	/// <returns>Perspective-view matrix.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Mat<4, 4, T> Perspective(T fovY, T aspect, T zNear, T zFar);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1922,6 +2078,7 @@ namespace TRAP::Math
 	/// </param>
 	/// <returns>Field of view based perspective projection matrix.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Mat<4, 4, T> PerspectiveFoV(T fov, T width, T height, T zNear, T zFar);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1933,10 +2090,14 @@ namespace TRAP::Math
 	/// <param name="fovY">
 	/// Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
 	/// </param>
-	/// <param name="aspect"></param>
-	/// <param name="zNear"></param>
+	/// <param name="aspect">
+	/// Specifies the aspect ratio that determines the field of view in the x direction.
+	/// The aspect ratio is the ratio of x (width) to y (height).
+	/// </param>
+	/// <param name="zNear">Specifies the distance from the viewer to the near clipping plane (always positive).</param>
 	/// <returns>Symmetric perspective matrix.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Mat<4, 4, T> InfinitePerspective(T fovY, T aspect, T zNear);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1964,6 +2125,7 @@ namespace TRAP::Math
 	/// <param name="a">Specify the value to use to interpolate between x and y.</param>
 	/// <returns>See description.</returns>
 	template<uint32_t L, typename T, typename U>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Mat<L, L, T> Mix(const Mat<L, L, T>& x, const Mat<L, L, T>& y, const Mat<L, L, U>& a);
 
 	/// <summary>
@@ -1989,6 +2151,7 @@ namespace TRAP::Math
 	/// <param name="a">Specify the value to use to interpolate between x and y.</param>
 	/// <returns>See description.</returns>
 	template<uint32_t L, typename T, typename U>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Mat<L, L, T> Mix(const Mat<L, L, T>& x, const Mat<L, L, T>& y, U a);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2001,6 +2164,7 @@ namespace TRAP::Math
 	/// <param name="v">Coordinates of a translation vector.</param>
 	/// <returns>Translation matrix.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Mat<4, 4, T> Translate(const Mat<4, 4, T>& m, const Vec<3, T>& v) noexcept;
 
 	/// <summary>
@@ -2010,6 +2174,7 @@ namespace TRAP::Math
 	/// <param name="v">Coordinate of a translation vector.</param>
 	/// <returns>Transformation matrix.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Mat<4, 4, T> Translate(const Vec<3, T>& v) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2023,6 +2188,7 @@ namespace TRAP::Math
 	/// <param name="v">Rotation axis, recommended to be normalized.</param>
 	/// <returns>Rotation matrix.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Mat<4, 4, T> Rotate(const Mat<4, 4, T>& m, T angleInRadians, const Vec<3, T>& v);
 
 	/// <summary>
@@ -2033,6 +2199,7 @@ namespace TRAP::Math
 	/// <param name="v">Scalar</param>
 	/// <returns>Rotation matrix.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Mat<4, 4, T> Rotate(T angleInRadians, const Vec<3, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2045,6 +2212,7 @@ namespace TRAP::Math
 	/// <param name="v">Ratio of scaling for each axis.</param>
 	/// <returns>Scaled matrix.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Mat<4, 4, T> Scale(const Mat<4, 4, T>& m, const Vec<3, T>& v) noexcept;
 
 	/// <summary>
@@ -2054,6 +2222,7 @@ namespace TRAP::Math
 	/// <param name="v">3 Component vector.</param>
 	/// <returns>Scaled matrix.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Mat<4, 4, T> Scale(const Vec<3, T>& v) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2067,6 +2236,7 @@ namespace TRAP::Math
 	/// <param name="up">Normalized up vector, how the camera is oriented. Typically (0, 0, 1).</param>
 	/// <returns>Look at view matrix.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Mat<4, 4, T> LookAt(const Vec<3, T>& eye, const Vec<3, T>& center, const Vec<3, T>& up);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2079,6 +2249,7 @@ namespace TRAP::Math
 	/// <param name="index">Row index to retrieve.</param>
 	/// <returns>Row vector.</returns>
 	template<typename T>
+	requires IsMat<T>
 	[[nodiscard]] typename T::rowType Row(const T& m, std::size_t index);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2092,6 +2263,7 @@ namespace TRAP::Math
 	/// <param name="x">New row data.</param>
 	/// <returns>Matrix with new row data.</returns>
 	template<typename T>
+	requires IsMat<T>
 	[[nodiscard]] T Row(const T& m, std::size_t index, const typename T::rowType& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2104,6 +2276,7 @@ namespace TRAP::Math
 	/// <param name="index">Column index to retrieve.</param>
 	/// <returns>Column vector.</returns>
 	template<typename T>
+	requires IsMat<T>
 	[[nodiscard]] typename T::colType Column(const T& m, std::size_t index);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2117,6 +2290,7 @@ namespace TRAP::Math
 	/// <param name="x">New column data.</param>
 	/// <returns>Matrix with new column data.</returns>
 	template<typename T>
+	requires IsMat<T>
 	[[nodiscard]] T Column(const T& m, std::size_t index, const typename T::colType& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2130,6 +2304,7 @@ namespace TRAP::Math
 	/// <param name="outScale">Output for the scale.</param>
 	/// <returns>True on successful decompose, false otherwise.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] bool Decompose(Mat<4, 4, T> m, Vec<3, T>& outPosition, Vec<3, T>& outRotation, Vec<3, T>& outScale);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2145,6 +2320,7 @@ namespace TRAP::Math
 	/// <param name="a">Interpolation factor. The interpolation is defined beyond the range [0, 1].</param>
 	/// <returns>Interpolated quaternions.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] tQuat<T> SLerp(const tQuat<T>& x, const tQuat<T>& y, T a);
 
 	/// <summary>
@@ -2162,6 +2338,7 @@ namespace TRAP::Math
 	/// <param name="k">Additional spin count. If value is negative interpolation will be on "long" path.</param>
 	/// <returns>Interpolated quaternions.</returns>
 	template<typename T, typename S>
+	requires std::floating_point<T> && std::integral<S>
 	[[nodiscard]] tQuat<T> SLerp(const tQuat<T>& x, const tQuat<T>& y, T a, S k);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2173,6 +2350,7 @@ namespace TRAP::Math
 	/// <param name="q">Quaternion to conjugate.</param>
 	/// <returns>Conjugated quaternion.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr tQuat<T> Conjugate(const tQuat<T>& q) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2184,6 +2362,7 @@ namespace TRAP::Math
 	/// <param name="q">Specifies the quaternion of which to take the inverse.</param>
 	/// <returns>Inverted quaternion.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr tQuat<T> Inverse(const tQuat<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2195,6 +2374,7 @@ namespace TRAP::Math
 	/// <param name="q">Quaternion to retrieve Euler angles from.</param>
 	/// <returns>Euler angles, pitch as x, yaw as y, roll as z. The result is expressed in radians.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<3, T> EulerAngles(const tQuat<T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2206,6 +2386,7 @@ namespace TRAP::Math
 	/// <param name="q">Quaternion to retrieve Euler angle from.</param>
 	/// <returns>Roll value of euler angles expressed in radians.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T Roll(const tQuat<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2217,6 +2398,7 @@ namespace TRAP::Math
 	/// <param name="q">Quaternion to retrieve Euler angle from.</param>
 	/// <returns>Pitch value of euler angles expressed in radians.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T Pitch(const tQuat<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2228,6 +2410,7 @@ namespace TRAP::Math
 	/// <param name="q">Quaternion to retrieve Euler angle from.</param>
 	/// <returns>Yaw value of euler angles expressed in radians.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T Yaw(const tQuat<T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2239,6 +2422,7 @@ namespace TRAP::Math
 	/// <param name="q">Quaternion to convert.</param>
 	/// <returns>Converted matrix.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Mat<3, 3, T> Mat3Cast(const tQuat<T>& q) noexcept;
 	/// <summary>
 	/// Converts a quaternion to a 4 * 4 matrix.
@@ -2247,6 +2431,7 @@ namespace TRAP::Math
 	/// <param name="q">Quaternion to convert.</param>
 	/// <returns>Converted matrix.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Mat<4, 4, T> Mat4Cast(const tQuat<T>& q) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2258,6 +2443,7 @@ namespace TRAP::Math
 	/// <param name="m">Pure rotation matrix to convert.</param>
 	/// <returns>Converted quaternion.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] tQuat<T> QuaternionCast(const Mat<3, 3, T>& m);
 	/// <summary>
 	/// Converts a pure rotation 4 * 4 matrix to a quaternion.
@@ -2266,6 +2452,7 @@ namespace TRAP::Math
 	/// <param name="m">Pure rotation matrix to convert.</param>
 	/// <returns>Converted quaternion.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] tQuat<T> QuaternionCast(const Mat<4, 4, T>& m);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2278,6 +2465,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second quaternion to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x < y.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<4, bool> LessThan(const tQuat<T>& x, const tQuat<T>& y) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2290,6 +2478,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second quaternion to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x <= y.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<4, bool> LessThanEqual(const tQuat<T>& x, const tQuat<T>& y) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2302,6 +2491,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second quaternion to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x > y.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<4, bool> GreaterThan(const tQuat<T>& x, const tQuat<T>& y) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2314,6 +2504,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second quaternion to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x >= y.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<4, bool> GreaterThanEqual(const tQuat<T>& x, const tQuat<T>& y) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2326,6 +2517,7 @@ namespace TRAP::Math
 	/// <param name="up">Up vector, how the camera is oriented. Typically (0, 1, 0).</param>
 	/// <returns>Look at quaternion.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] tQuat<T> QuaternionLookAt(const Vec<3, T>& direction, const Vec<3, T>& up);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2338,6 +2530,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second quaternion to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison of result x == y.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<4, bool> Equal(const tQuat<T>& x, const tQuat<T>& y) noexcept;
 
 	/// <summary>
@@ -2349,6 +2542,7 @@ namespace TRAP::Math
 	/// <param name="epsilon"></param>
 	/// <returns>Component-wise comparison of |x - y| < epsilon.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<4, bool> Equal(const tQuat<T>& x, const tQuat<T>& y, T epsilon);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2361,6 +2555,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second quaternion to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison of result x != y.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<4, bool> NotEqual(const tQuat<T>& x, const tQuat<T>& y) noexcept;
 
 	/// <summary>
@@ -2372,6 +2567,7 @@ namespace TRAP::Math
 	/// <param name="epsilon"></param>
 	/// <returns>Component-wise comparison of |x - y| >= epsilon.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<4, bool> NotEqual(const tQuat<T>& x, const tQuat<T>& y, T epsilon);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2383,6 +2579,7 @@ namespace TRAP::Math
 	/// <param name="x">Quaternion.</param>
 	/// <returns>Quaternion rotation angle.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T Angle(const tQuat<T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2394,6 +2591,7 @@ namespace TRAP::Math
 	/// <param name="x">Quaternion.</param>
 	/// <returns>Rotation axis.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<3, T> Axis(const tQuat<T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2406,6 +2604,7 @@ namespace TRAP::Math
 	/// <param name="v">Axis of the quaternion, must be normalized.</param>
 	/// <returns>Quaternion.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] tQuat<T> AngleAxis(const T& angle, const Vec<3, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2419,6 +2618,7 @@ namespace TRAP::Math
 	/// <param name="v">Axis of the rotation.</param>
 	/// <returns>Rotated quaternion.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] tQuat<T> Rotate(const tQuat<T>& q, const T& angle, const Vec<3, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2430,6 +2630,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <returns>Normalized rotation vector for the x-axis.</returns>
 	template<typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<3, T> XAxis() noexcept;
 
 	/// <summary>
@@ -2437,6 +2638,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <returns>Normalized rotation vector for the y-axis.</returns>
 	template<typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<3, T> YAxis() noexcept;
 
 	/// <summary>
@@ -2444,6 +2646,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <returns>Normalized rotation vector for the z-axis.</returns>
 	template<typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<3, T> ZAxis() noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2456,6 +2659,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x < y.</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, bool> LessThan(const Vec<L, T>& x, const Vec<L, T>& y) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2468,6 +2672,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x <= y.</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, bool> LessThanEqual(const Vec<L, T>& x, const Vec<L, T>& y) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2480,6 +2685,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x > y.</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, bool> GreaterThan(const Vec<L, T>& x, const Vec<L, T>& y) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2492,6 +2698,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x >= y.</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, bool> GreaterThanEqual(const Vec<L, T>& x, const Vec<L, T>& y) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2504,6 +2711,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x == y.</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, bool> Equal(const Vec<L, T>& x, const Vec<L, T>& y) noexcept;
 
 	/// <summary>
@@ -2515,6 +2723,7 @@ namespace TRAP::Math
 	/// <param name="epsilon"></param>
 	/// <returns>Component-wise comparison of |x - y| < epsilon. True if this expression is satisfied.</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, bool> Equal(const Vec<L, T>& x, const Vec<L, T>& y, T epsilon);
 
 	/// <summary>
@@ -2526,6 +2735,7 @@ namespace TRAP::Math
 	/// <param name="epsilon"></param>
 	/// <returns>Component-wise comparison of |x - y| < epsilon. True if this expression is satisfied.</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, bool> Equal(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, T>& epsilon);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2538,6 +2748,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x != y.</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, bool> NotEqual(const Vec<L, T>& x, const Vec<L, T>& y) noexcept;
 
 	/// <summary>
@@ -2549,6 +2760,7 @@ namespace TRAP::Math
 	/// <param name="epsilon"></param>
 	/// <returns>Component-wise comparison result of x != y.</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, bool> NotEqual(const Vec<L, T>& x, const Vec<L, T>& y, T epsilon);
 
 	/// <summary>
@@ -2560,6 +2772,7 @@ namespace TRAP::Math
 	/// <param name="epsilon"></param>
 	/// <returns>Component-wise comparison result of x != y.</returns>
 	template<uint32_t L, typename T>
+	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, bool> NotEqual(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, T>& epsilon);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2603,6 +2816,7 @@ namespace TRAP::Math
 	/// <param name="degrees">Specify the quantity, in degrees, to be converted to radians.</param>
 	/// <returns>Radians.</returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] constexpr genType Radians(genType degrees);
 
 	/// <summary>
@@ -2612,6 +2826,7 @@ namespace TRAP::Math
 	/// <param name="v">Specify the quantity, in degrees, to be converted to radians.</param>
 	/// <returns>Radians.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Radians(const Vec<L, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2623,6 +2838,7 @@ namespace TRAP::Math
 	/// <param name="radians">Specify the quantity, in radians, to be converted to degrees.</param>
 	/// <returns>Degrees.</returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] constexpr genType Degrees(genType radians);
 
 	/// <summary>
@@ -2632,6 +2848,7 @@ namespace TRAP::Math
 	/// <param name="v">Specify the quantity, in radians, to be converted to degrees.</param>
 	/// <returns>Degrees.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Degrees(const Vec<L, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2644,6 +2861,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the quantity, in radians, of which to return the sine.</param>
 	/// <returns>Sine.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T Sin(T x);
 
 	/// <summary>
@@ -2654,6 +2872,7 @@ namespace TRAP::Math
 	/// <param name="v">Specify the quantity, in radians, of which to return the sine.</param>
 	/// <returns>Sine.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Sin(const Vec<L, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2666,6 +2885,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the quantity, in radians, of which to return the cosine.</param>
 	/// <returns>Cosine.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T Cos(T x);
 
 	/// <summary>
@@ -2676,6 +2896,7 @@ namespace TRAP::Math
 	/// <param name="v">Specify the quantity, in radians, of which to return the cosine.</param>
 	/// <returns>Cosine.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Cos(const Vec<L, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2687,6 +2908,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the quantity, in radians, of which to return the tangent.</param>
 	/// <returns>Tangent.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T Tan(T x);
 
 	/// <summary>
@@ -2696,6 +2918,7 @@ namespace TRAP::Math
 	/// <param name="v">Specify the quantity, in radians, of which to return the tangent.</param>
 	/// <returns>Tangent.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Tan(const Vec<L, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2710,6 +2933,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value whose arcsine to return.</param>
 	/// <returns>Angle whose sine is x.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T ASin(T x);
 
 	/// <summary>
@@ -2722,6 +2946,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value whose arcsine to return.</param>
 	/// <returns>Angle whose sine is x.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> ASin(const Vec<L, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2736,6 +2961,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value whose arccosine to return.</param>
 	/// <returns>Angle whose cosine is x.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T ACos(T x);
 
 	/// <summary>
@@ -2748,6 +2974,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value whose arccosine to return.</param>
 	/// <returns>Angle whose cosine is x.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> ACos(const Vec<L, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2766,6 +2993,7 @@ namespace TRAP::Math
 	/// The signs of x and y are used to determine what quadrant the angle is in.
 	/// </returns>
 	template<typename genType>
+	requires std::floating_point<genType>
 	[[nodiscard]] genType ATan(genType y, genType x);
 
 	/// <summary>
@@ -2782,6 +3010,7 @@ namespace TRAP::Math
 	/// The signs of x and y are used to determine what quadrant the angle is in.
 	/// </returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> ATan(const Vec<L, T>& a, const Vec<L, T>& b);
 
 	/// <summary>
@@ -2792,6 +3021,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the fraction whose arctangent to return.</param>
 	/// <returns>Angle whose tangent is y over x.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T ATan(T x);
 
 	/// <summary>
@@ -2802,6 +3032,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the fraction whose arctangent to return.</param>
 	/// <returns>Angle whose tangent is y over x.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> ATan(const Vec<L, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2813,6 +3044,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value whose hyperbolic sine to return.</param>
 	/// <returns>Hyperbolic sine function, (Exp(x) - Exp(-x)) / 2.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T SinH(T x);
 
 	/// <summary>
@@ -2822,6 +3054,7 @@ namespace TRAP::Math
 	/// <param name="v">Specify the value whose hyperbolic sine to return.</param>
 	/// <returns>Hyperbolic sine function, (Exp(x) - Exp(-x)) / 2.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> SinH(const Vec<L, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2833,6 +3066,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value whose hyperbolic cosine to return.</param>
 	/// <returns>Hyperbolic cosine function, (Exp(x) + Exp(-x)) / 2.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T CosH(T x);
 
 	/// <summary>
@@ -2842,6 +3076,7 @@ namespace TRAP::Math
 	/// <param name="v">Specify the value whose hyperbolic cosine to return.</param>
 	/// <returns>Hyperbolic cosine function, (Exp(x) + Exp(-x)) / 2.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> CosH(const Vec<L, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2853,6 +3088,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value whose hyperbolic tangent to return.</param>
 	/// <returns>Hyperbolic tangent function, SinH(angle) / CosH(angle).</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T TanH(T x);
 
 	/// <summary>
@@ -2862,6 +3098,7 @@ namespace TRAP::Math
 	/// <param name="v">Specify the value whose hyperbolic tangent to return.</param>
 	/// <returns>Hyperbolic tangent function, SinH(angle) / CosH(angle).</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> TanH(const Vec<L, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2873,6 +3110,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value whose arc hyperbolic sine to return.</param>
 	/// <returns>Inverse of SinH.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T ASinH(T x);
 
 	/// <summary>
@@ -2882,6 +3120,7 @@ namespace TRAP::Math
 	/// <param name="v">Specify the value whose arc hyperbolic sine to return.</param>
 	/// <returns>Inverse of SinH.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> ASinH(const Vec<L, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2893,6 +3132,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value whose arc hyperbolic cosine to return.</param>
 	/// <returns>Non-negative inverse of CosH.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T ACosH(T x);
 
 	/// <summary>
@@ -2902,6 +3142,7 @@ namespace TRAP::Math
 	/// <param name="v">Specify the value whose arc hyperbolic cosine to return.</param>
 	/// <returns>Non-negative inverse of CosH.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> ACosH(const Vec<L, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2913,6 +3154,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value whose arc hyperbolic tangent to return.</param>
 	/// <returns>Inverse of TanH. Note: Results are undefined if Abs(x) >= 1!</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] T ATanH(T x);
 
 	/// <summary>
@@ -2922,6 +3164,7 @@ namespace TRAP::Math
 	/// <param name="v">Specify the value whose arc hyperbolic tangent to return.</param>
 	/// <returns>Inverse of TanH. Note: Results are undefined if Abs(x) >= 1!</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> ATanH(const Vec<L, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2931,7 +3174,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Converts a color from HSV color space to its color in RGB color space.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="hsvValue">Specifies the color in HSV color space.</param>
 	/// <returns>The color in RGB color space.</returns>
 	template<typename T>
@@ -2940,7 +3182,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Converts a color from RGB color space to its color in HSV color space.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="rgbValue">Specifies the color in RGB color space.</param>
 	/// <returns>The color in HSV color space.</returns>
 	template<typename T>
@@ -2949,7 +3190,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Build a saturation matrix.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="s"></param>
 	/// <returns>Saturation matrix.</returns>
 	template<typename T>
@@ -2958,7 +3198,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Modify the saturation of a color.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="s">New saturation value.</param>
 	/// <param name="color">Color to modify.</param>
 	/// <returns>Color with new saturation.</returns>
@@ -2968,7 +3207,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Modify the saturation of a color.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="s">New saturation value.</param>
 	/// <param name="color">Color to modify.</param>
 	/// <returns>Color with new saturation.</returns>
@@ -2978,7 +3216,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Compute color luminosity associating ratios (0.33, 0.59, 0.11) to RGB canals.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="s"></param>
 	/// <returns>Saturation matrix.</returns>
 	template<typename T>
@@ -3030,8 +3267,8 @@ namespace TRAP::Math
 	/// <param name="x">Integer to check.</param>
 	/// <returns>True if the given integer is odd, false otherwise.</returns>
 	template<typename T>
+	requires std::integral<T>
 	[[nodiscard]] constexpr bool IsOdd(T x);
-
 
 	/// <summary>
 	/// Returns whether the given integers are odd or not.
@@ -3039,6 +3276,7 @@ namespace TRAP::Math
 	/// <param name="x">Integers to check.</param>
 	/// <returns>Vector containing True if a given integer is odd, false otherwise.</returns>
 	template<uint32_t L, typename T>
+	requires std::integral<T>
 	[[nodiscard]] constexpr Vec<L, bool> IsOdd(const Vec<L, T>& x) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -3049,8 +3287,8 @@ namespace TRAP::Math
 	/// <param name="x">Integer to check.</param>
 	/// <returns>True if the given integer is even, false otherwise.</returns>
 	template<typename T>
+	requires std::integral<T>
 	[[nodiscard]] constexpr bool IsEven(T x);
-
 
 	/// <summary>
 	/// Returns whether the given integers are even or not.
@@ -3058,6 +3296,7 @@ namespace TRAP::Math
 	/// <param name="x">Integers to check.</param>
 	/// <returns>Vector containing True if a given integer is even, false otherwise.</returns>
 	template<uint32_t L, typename T>
+	requires std::integral<T>
 	[[nodiscard]] constexpr Vec<L, bool> IsEven(const Vec<L, T>& x) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -3068,6 +3307,7 @@ namespace TRAP::Math
 	/// <param name="x">Number to check.</param>
 	/// <returns>True if the given number is finite, false otherwise.</returns>
 	template<typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr bool IsFinite(T x) noexcept;
 
 	/// <summary>
@@ -3076,6 +3316,7 @@ namespace TRAP::Math
 	/// <param name="x">Numbers to check.</param>
 	/// <returns>True if a given number is finite, false otherwise.</returns>
 	template<uint32_t L, typename T>
+	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, bool> IsFinite(const Vec<L, T>& x) noexcept;
 }
 
@@ -3084,28 +3325,25 @@ namespace TRAP::Math
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::is_arithmetic_v<genType>
 [[nodiscard]] constexpr genType TRAP::Math::Min(const genType x, const genType y)
 {
-	static_assert(std::numeric_limits<genType>::is_iec559 || std::numeric_limits<genType>::is_integer,
-	              "'Min' only accepts floating-point or integer inputs");
-
 	return (y < x) ? y : x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::is_arithmetic_v<genType>
 [[nodiscard]] constexpr genType TRAP::Math::Max(const genType x, const genType y)
 {
-	static_assert(std::numeric_limits<genType>::is_iec559 || std::numeric_limits<genType>::is_integer,
-	              "'Max' only accepts floating-point or integer inputs");
-
 	return (x < y) ? y : x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] genType TRAP::Math::Round(const genType x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -3116,6 +3354,7 @@ template<typename genType>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] genType TRAP::Math::Trunc(const genType x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -3126,16 +3365,14 @@ template<typename genType>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genFIType>
+requires std::is_arithmetic_v<genFIType>
 [[nodiscard]] constexpr genFIType TRAP::Math::Abs(const genFIType x)
 {
 	if constexpr (std::numeric_limits<genFIType>::is_signed)
 	{
-		static_assert(std::numeric_limits<genFIType>::is_iec559 || std::numeric_limits<genFIType>::is_signed,
-		              "'Abs' only accepts floating-point and integer scalar or vector inputs");
-
-		if constexpr (std::is_same_v<int32_t, genFIType>)
+		if constexpr (std::signed_integral<genFIType>)
 		{
-			const int32_t y = x >> (sizeof(int32_t) * 8u - 1u);
+			const genFIType y = x >> (sizeof(genFIType) * 8u - 1u);
 			return (x ^ y) - y;
 		}
 		else
@@ -3148,6 +3385,7 @@ template<typename genFIType>
 }
 
 template<uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Abs(const Vec<L, T>& x)
 {
 	Vec<L, T> result{};
@@ -3159,23 +3397,17 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genFIType>
+requires std::floating_point<genFIType> || std::signed_integral<genFIType>
 [[nodiscard]] constexpr genFIType TRAP::Math::Sign(const genFIType x)
 {
-	static_assert(std::numeric_limits<genFIType>::is_iec559 ||
-	              (std::numeric_limits<genFIType>::is_signed && std::numeric_limits<genFIType>::is_integer),
-				  "'Sign' only accepts signed inputs");
-
 	return static_cast<genFIType>(static_cast<genFIType>(0) < x) -
 	       static_cast<genFIType>(x < static_cast<genFIType>(0));
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T> || std::signed_integral<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Sign(const Vec<L, T>& x)
 {
-	static_assert(std::numeric_limits<T>::is_iec559 ||
-	              (std::numeric_limits<T>::is_signed && std::numeric_limits<T>::is_integer),
-				  "'Sign' only accepts signed inputs");
-
 	return Vec<L, T>(LessThan(Vec<L, T>(static_cast<T>(0)), x)) -
 	       Vec<L, T>(LessThan(x, Vec<L, T>(static_cast<T>(0))));
 }
@@ -3183,6 +3415,7 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::Floor(const T x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -3191,11 +3424,10 @@ template<typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Floor(const Vec<L, T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<T>::is_iec559, "'Floor' only accepts floating-point inputs.");
 
 	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
@@ -3206,11 +3438,10 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Trunc(const Vec<L, T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<T>::is_iec559, "'Trunc' only accepts floating-point inputs.");
 
 	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
@@ -3221,11 +3452,10 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------/
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Round(const Vec<L, T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<T>::is_iec559, "'Round' only accepts floating-point inputs.");
 
 	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
@@ -3236,11 +3466,10 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] genType TRAP::Math::RoundEven(const genType x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<genType>::is_iec559, "'RoundEven' only accepts floating-point inputs");
 
 	const int32_t integer = static_cast<int32_t>(x);
 	const genType integerPart = static_cast<genType>(integer);
@@ -3257,11 +3486,10 @@ template<typename genType>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::RoundEven(const Vec<L, T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<T>::is_iec559, "'RoundEven' only accepts floating-point inputs");
 
 	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
@@ -3272,6 +3500,7 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::Ceil(const T x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -3280,11 +3509,10 @@ template<typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Ceil(const Vec<L, T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<T>::is_iec559, "'Ceil' only accepts floating-point inputs");
 
 	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
@@ -3295,6 +3523,7 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] genType TRAP::Math::Fract(const genType x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -3303,11 +3532,10 @@ template<typename genType>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Fract(const Vec<L, T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<T>::is_iec559, "'Fract' only accepts floating-point inputs");
 
 	return x - Floor(x);
 }
@@ -3315,6 +3543,7 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType> || std::integral<genType>
 [[nodiscard]] genType TRAP::Math::Mod(const genType x, const genType y)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -3323,21 +3552,19 @@ template<typename genType>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Mod(const Vec<L, T>& x, T y)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<T>::is_iec559, "'Mod' only accepts floating-point inputs.");
 
 	return x - Vec<L, T>(y) * Floor(x / Vec<L, T>(y));
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Mod(const Vec<L, T>& x, const Vec<L, T>& y)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<T>::is_iec559, "'Mod' only accepts floating-point inputs.");
 
 	return x - y * Floor(x / y);
 }
@@ -3345,16 +3572,16 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] genType TRAP::Math::Modf(const genType x, genType& i)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<genType>::is_iec559, "'Modf' only accepts floating-point inputs");
 
 	return std::modf(x, &i);
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Modf(const Vec<L, T>& x, Vec<L, T>& i)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -3368,11 +3595,9 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Min(const Vec<L, T>& a, T b)
 {
-	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer,
-	              "'Min' only accepts floating-point or integer inputs");
-
 	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
 		result[i] = Min(a[i], b);
@@ -3380,11 +3605,9 @@ template<uint32_t L, typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Min(const Vec<L, T>& a, const Vec<L, T>& b)
 {
-	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer,
-	              "'Min' only accepts floating-point or integer inputs");
-
 	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
 		result[i] = Min(a[i], b[i]);
@@ -3392,31 +3615,26 @@ template<uint32_t L, typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Min(const Vec<L, T>&a, const Vec<L, T>& b, const Vec<L, T>& c)
 {
-	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer,
-	              "'Min' only accepts floating-point or integer inputs");
-
 	return Min(Min(a, b), c);
 }
 
 template<uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Min(const Vec<L, T>&a, const Vec<L, T>& b, const Vec<L, T>& c,
                                                               const Vec<L, T>& d)
 {
-	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer,
-	              "'Min' only accepts floating-point or integer inputs");
 	return Min(Min(a, b), Min(c, d));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<uint32_t L, typename T >
+template<uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Max(const Vec<L, T>& a, T b)
 {
-	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer,
-	              "'Max' only accepts floating-point or integer inputs");
-
 	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
 		result[i] = Max(a[i], b);
@@ -3424,11 +3642,9 @@ template<uint32_t L, typename T >
 }
 
 template<uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Max(const Vec<L, T>& a, const Vec<L, T>& b)
 {
-	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer,
-	              "'Max' only accepts floating-point or integer inputs");
-
 	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
 		result[i] = Max(a[i], b[i]);
@@ -3436,69 +3652,59 @@ template<uint32_t L, typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Max(const Vec<L, T>& a, const Vec<L, T>& b, const Vec<L, T>& c)
 {
-	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer,
-	              "'Max' only accepts floating-point or integer inputs");
-
 	return Max(Max(a, b), c);
 }
 
 template<uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Max(const Vec<L, T>& a, const Vec<L, T>& b, const Vec<L, T>& c,
                                                               const Vec<L, T>& d)
 {
-	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer,
-	              "'Max' only accepts floating-point or integer inputs");
-
 	return Max(Max(a, b), Max(c, d));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::is_arithmetic_v<genType>
 [[nodiscard]] constexpr genType TRAP::Math::Clamp(const genType x, const genType minVal, const genType maxVal)
 {
-	static_assert(std::numeric_limits<genType>::is_iec559 || std::numeric_limits<genType>::is_integer,
-	              "'Clamp' only accepts floating-point or integer inputs");
-
 	return Min(Max(x, minVal), maxVal);
 }
 
 template<uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Clamp(const Vec<L, T>& x, const T minVal, const T maxVal)
 {
-	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer,
-	              "'Clamp' only accepts floating-point or integer inputs");
-
 	return Vec<L, T>(Min(Max(x, Vec<L, T>(minVal)), Vec<L, T>(maxVal)));
 }
 
 template<uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Clamp(const Vec<L, T>& x, const Vec<L, T>& minVal,
                                                                 const Vec<L, T>& maxVal)
 {
-	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer,
-	              "'Clamp' only accepts floating-point or integer inputs");
-
 	return Vec<L, T>(Min(Max(x, minVal), maxVal));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] int32_t TRAP::Math::IRound(const genType& x)
 {
-	static_assert(std::numeric_limits<genType>::is_iec559, "'IRound' only accepts floating-point inputs");
 	TRAP_ASSERT(static_cast<genType>(0) <= x, "Math::IRound(): x must be positive!");
 
 	return static_cast<int32_t>(x + static_cast<genType>(0.5));
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, int32_t> TRAP::Math::IRound(const Vec<L, T>& x)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'IRound' only accepts floating-point inputs");
 	TRAP_ASSERT(All(LessThanEqual(Vec<L, T>(static_cast<T>(0)), x)), "Math::IRound(): x must be positive!");
 
 	return Vec<L, int32_t>(x + static_cast<T>(0.5));
@@ -3507,18 +3713,18 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] uint32_t TRAP::Math::URound(const genType& x)
 {
-	static_assert(std::numeric_limits<genType>::is_iec559, "'URound' only accepts floating-point inputs");
 	TRAP_ASSERT(static_cast<genType>(0) <= x, "Math::URound(): x must be positive!");
 
 	return static_cast<uint32_t>(x + static_cast<genType>(0.5));
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, uint32_t> TRAP::Math::URound(const Vec<L, T>& x)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'URound' only accepts floating-point inputs");
 	TRAP_ASSERT(All(LessThanEqual(Vec<L, T>(static_cast<T>(0)), x)), "Math::URound(): x must be positive!");
 
 	return Vec<L, uint32_t>(x + static_cast<T>(0.5));
@@ -3527,14 +3733,13 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genTypeT, typename genTypeU>
+requires std::floating_point<genTypeU> || std::same_as<genTypeU, bool>
 [[nodiscard]] constexpr genTypeT TRAP::Math::Mix(const genTypeT x, const genTypeT y, const genTypeU a)
 {
-	if constexpr (std::is_same_v<genTypeU, bool>)
+	if constexpr (std::same_as<genTypeU, bool>)
 		return a ? y : x;
 	else
 	{
-		static_assert(std::numeric_limits<genTypeU>::is_iec559,
-					"'Mix' only accepts floating-point inputs for the interpolator a");
 		return static_cast<genTypeT>(static_cast<genTypeU>(x) *
 									(static_cast<genTypeU>(1) - a) + static_cast<genTypeU>(y) * a);
 
@@ -3542,23 +3747,22 @@ template<typename genTypeT, typename genTypeU>
 }
 
 template<uint32_t L, typename T, typename U>
+requires std::floating_point<U> || std::same_as<U, bool>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Mix(const Vec<L, T>& x, const Vec<L, T>& y, U a)
 {
-	if constexpr (std::is_same_v<U, bool>)
+	if constexpr (std::same_as<U, bool>)
 		return a ? y : x;
 	else
 	{
-		static_assert(std::numeric_limits<U>::is_iec559,
-					"'Mix' only accepts floating-point inputs for the interpolator a");
-
 		return Vec<L, T>(Vec<L, U>(x) * (static_cast<U>(1) - a) + Vec<L, U>(y) * a);
 	}
 }
 
 template<uint32_t L, typename T, typename U>
+requires std::floating_point<U> || std::same_as<U, bool>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Mix(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, U>& a)
 {
-	if constexpr (std::is_same_v<U, bool>)
+	if constexpr (std::same_as<U, bool>)
 	{
 		Vec<L, T> result{};
 		for (uint32_t i = 0; i < L; ++i)
@@ -3567,19 +3771,15 @@ template<uint32_t L, typename T, typename U>
 	}
 	else
 	{
-		static_assert(std::numeric_limits<U>::is_iec559,
-					"'Mix' only accepts floating-point inputs for the interpolator a");
-
 		return Vec<L, T>(Vec<L, U>(x) * (static_cast<U>(1) - a) + Vec<L, U>(y) * a);
 	}
 }
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::tQuat<T> TRAP::Math::Mix(const tQuat<T>& x, const tQuat<T>& y, const T a)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<T>::is_iec559, "'mix' only accepts floating-point inputs");
 
 	const T cosTheta = Dot(x, y);
 
@@ -3597,7 +3797,8 @@ template<typename T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <typename T>
+template<typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr bool TRAP::Math::Equal(const T x, const T y) noexcept
 {
 	return x == y;
@@ -3605,7 +3806,8 @@ template <typename T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <typename T>
+template<typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr bool TRAP::Math::Equal(const T x, const T y, const T epsilon)
 {
 	return LessThanEqual(Abs(x - y), epsilon);
@@ -3613,7 +3815,8 @@ template <typename T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <typename T>
+template<typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr bool TRAP::Math::NotEqual(const T x, const T y) noexcept
 {
 	return x != y;
@@ -3622,6 +3825,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr bool TRAP::Math::NotEqual(const T x, const T y, const T epsilon)
 {
 	return GreaterThan(Abs(x - y), epsilon);
@@ -3629,7 +3833,8 @@ template<typename T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <typename T>
+template<typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr bool TRAP::Math::GreaterThan(const T x, const T y) noexcept
 {
 	return x > y;
@@ -3637,7 +3842,8 @@ template <typename T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <typename T>
+template<typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr bool TRAP::Math::GreaterThanEqual(const T x, const T y) noexcept
 {
 	return x >= y;
@@ -3646,6 +3852,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr bool TRAP::Math::LessThan(const T x, const T y) noexcept
 {
 	return x < y;
@@ -3653,7 +3860,8 @@ template<typename T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <typename T>
+template<typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr bool TRAP::Math::LessThanEqual(const T x, const T y) noexcept
 {
 	return x <= y;
@@ -3669,6 +3877,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] genType TRAP::Math::Step(const genType edge, const genType x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -3677,6 +3886,7 @@ template<typename genType>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Step(const T edge, const Vec<L, T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -3685,6 +3895,7 @@ template<uint32_t L, typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Step(const Vec<L, T>& edge, const Vec<L, T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -3695,11 +3906,10 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] genType TRAP::Math::SmoothStep(const genType edge0, const genType edge1, const genType x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<genType>::is_iec559, "'SmoothStep' only accepts floating-point inputs");
 
 	const genType tmp(Clamp((x - edge0) / (edge1 - edge0), static_cast<genType>(0), static_cast<genType>(1)));
 
@@ -3707,11 +3917,10 @@ template<typename genType>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::SmoothStep(const T edge0, const T edge1, const Vec<L, T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<T>::is_iec559, "'SmoothStep' only accepts floating-point inputs");
 
 	const Vec<L, T> tmp(Clamp((x - Vec<L, T>(edge0)) / (Vec<L, T>(edge1) - Vec<L, T>(edge0)),
 	                    static_cast<T>(0), static_cast<T>(1)));
@@ -3720,11 +3929,10 @@ template<uint32_t L, typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::SmoothStep(const Vec<L, T>& edge0, const Vec<L, T>& edge1, const Vec<L, T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<T>::is_iec559, "'SmoothStep' only accepts floating-point inputs");
 
 	const Vec<L, T> tmp(Clamp((x - edge0) / (edge1 - edge0), static_cast<T>(0), static_cast<T>(1)));
 
@@ -3734,16 +3942,16 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] constexpr bool TRAP::Math::IsNaN(const genType x) noexcept
 {
 	return x != x;
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::IsNaN(const Vec<L, T>& v)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'IsNaN' only accepts floating-point inputs");
-
 	Vec<L, bool> result;
 	for (uint32_t i = 0u; i < L; ++i)
 		result[i] = TRAP::Math::IsNaN(v[i]);
@@ -3751,26 +3959,25 @@ template<uint32_t L, typename T>
 }
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::IsNaN(const tQuat<T>& q)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'IsNan' only accepts floating-point inputs");
-
 	return Vec<4, bool>(TRAP::Math::IsNaN(q.x), TRAP::Math::IsNaN(q.y), TRAP::Math::IsNaN(q.z), TRAP::Math::IsNaN(q.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-[[nodiscard]] constexpr bool TRAP::Math::IsInf(const genType x) noexcept
+requires std::floating_point<genType>
+[[nodiscard]] inline constexpr bool TRAP::Math::IsInf(const genType x) noexcept
 {
-	return x == std::numeric_limits<genType>::infinity() || x == -std::numeric_limits<genType>::infinity();
+	return x == std::numeric_limits<decltype(x)>::infinity() || x == -std::numeric_limits<decltype(x)>::infinity();
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::IsInf(const Vec<L, T>& v)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'IsInf' only accepts floating-point inputs");
-
 	Vec<L, bool> result;
 	for (uint32_t i = 0u; i < L; ++i)
 		result[i] = TRAP::Math::IsInf(v[i]);
@@ -3778,17 +3985,17 @@ template<uint32_t L, typename T>
 }
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::IsInf(const tQuat<T>& q)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'IsInf' only accepts floating-point inputs");
-
 	return Vec<4, bool>(TRAP::Math::IsInf(q.x), TRAP::Math::IsInf(q.y), TRAP::Math::IsInf(q.z), TRAP::Math::IsInf(q.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-[[nodiscard]] genType TRAP::Math::FMA(const genType& a, const genType& b, const genType& c)
+requires std::floating_point<genType>
+[[nodiscard]] genType TRAP::Math::FMA(const genType a, const genType b, const genType c)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -3798,21 +4005,19 @@ template<typename genType>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] genType TRAP::Math::FrExp(const genType x, int32_t& exp)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<genType>::is_iec559, "'FrExp' only accepts floating-point inputs");
 
 	return std::frexp(x, &exp);
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::FrExp(const Vec<L, T>& v, Vec<L, int32_t>& exp)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<T>::is_iec559, "'FrExp' only accepts floating-point inputs");
 
 	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; ++i)
@@ -3823,21 +4028,19 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] genType TRAP::Math::LdExp(const genType& x, const int32_t& exp)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<genType>::is_iec559, "'LdExp' only accepts floating-point inputs");
 
 	return std::ldexp(x, exp);
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::LdExp(const Vec<L, T>& v, const Vec<L, int32_t>& exp)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<T>::is_iec559, "'LdExp' only accepts floating-point inputs");
 
 	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; ++i)
@@ -3848,20 +4051,18 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::integral<genType>
 [[nodiscard]] constexpr bool TRAP::Math::IsPowerOfTwo(const genType value)
 {
-	static_assert(std::numeric_limits<genType>::is_integer, "'IsPowerOfTwo' only accepts integer inputs");
-
 	const genType result = Abs(value);
 
 	return !(result & (result - 1));
 }
 
 template<uint32_t L, typename T>
+requires std::integral<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::IsPowerOfTwo(const Vec<L, T>& v)
 {
-	static_assert(std::numeric_limits<T>::is_integer, "'IsPowerOfTwo' only accepts integer inputs");
-
 	const Vec<L, T> result(Abs(v));
 
 	return Equal(result & (result - Vec<L, T>(static_cast<T>(1))), Vec<L, T>(static_cast<T>(0)));
@@ -3869,8 +4070,9 @@ template<uint32_t L, typename T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<typename genType>
-[[nodiscard]] genType TRAP::Math::FMod(const genType x, const genType y)
+template<typename T>
+requires std::is_arithmetic_v<T>
+[[nodiscard]] inline T TRAP::Math::FMod(const T x, const T y)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -3878,6 +4080,7 @@ template<typename genType>
 }
 
 template<uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::FMod(const Vec<L, T>& x, T y)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -3889,6 +4092,7 @@ template<uint32_t L, typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::FMod(const Vec<L, T>& x, const Vec<L, T>& y)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -3902,24 +4106,28 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr T TRAP::Math::Lerp(const T x, const T y, const T a)
 {
 	return Mix(x, y, a);
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Lerp(const Vec<L, T>& x, const Vec<L, T>& y, T a)
 {
 	return Mix(x, y, a);
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Lerp(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, T>& a)
 {
 	return Mix(x, y, a);
 }
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::tQuat<T> TRAP::Math::Lerp(const tQuat<T>& x, const tQuat<T>& y, T a)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'lerp' only accepts floating-point inputs");
@@ -3936,25 +4144,28 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T> || std::integral<T>
 [[nodiscard]] T TRAP::Math::Pow(const T base, const T exponent)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return static_cast<T>(std::pow(static_cast<float>(base), static_cast<float>(exponent)));
+	return static_cast<T>(std::pow(base, exponent));
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Pow(const Vec<L, T>& base, const Vec<L, T>& exponent)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = static_cast<T>(std::pow(static_cast<float>(base[i]), static_cast<float>(exponent[i])));
+		result[i] = static_cast<T>(std::pow(base[i], exponent[i]));
 	return result;
 }
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::tQuat<T> TRAP::Math::Pow(const tQuat<T>& x, const T y)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4001,6 +4212,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::Exp(const T x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4009,6 +4221,7 @@ template<typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Exp(const Vec<L, T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4020,6 +4233,7 @@ template<uint32_t L, typename T>
 }
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::tQuat<T> TRAP::Math::Exp(const tQuat<T>& q)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4036,6 +4250,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::Log(const T x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4044,6 +4259,7 @@ template<typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Log(const Vec<L, T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4055,6 +4271,7 @@ template<uint32_t L, typename T>
 }
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::tQuat<T> TRAP::Math::Log(const tQuat<T>& q)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4080,6 +4297,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] genType TRAP::Math::Exp2(const genType x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4088,6 +4306,7 @@ template<typename genType>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Exp2(const Vec<L, T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4101,6 +4320,7 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] genType TRAP::Math::Log2(const genType x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4109,6 +4329,7 @@ template<typename genType>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Log2(const Vec<L, T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4122,6 +4343,7 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T> || std::integral<T>
 [[nodiscard]] T TRAP::Math::Sqrt(const T x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4130,11 +4352,10 @@ template<typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Sqrt(const Vec<L, T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<T>::is_iec559, "'Sqrt' only accepts floating-point inputs");
 
 	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
@@ -4143,6 +4364,7 @@ template<uint32_t L, typename T>
 }
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::tQuat<T> TRAP::Math::Sqrt(const tQuat<T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4153,6 +4375,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] genType TRAP::Math::InverseSqrt(const genType x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4161,11 +4384,10 @@ template<typename genType>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::InverseSqrt(const Vec<L, T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<T>::is_iec559, "'InverseSqrt' only accepts floating-point inputs");
 
 	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
@@ -4178,24 +4400,23 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] constexpr genType TRAP::Math::Length(const genType x)
 {
-	static_assert(std::numeric_limits<genType>::is_iec559, "'Length' accepts only floating-point inputs");
-
 	return Abs(x);
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::Length(const Vec<L, T>& v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<T>::is_iec559, "'Length' accepts only floating-point inputs");
 
 	return Sqrt(Dot(v, v));
 }
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::Length(const tQuat<T>& q)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4206,14 +4427,14 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] constexpr genType TRAP::Math::Distance(const genType& p0, const genType& p1)
 {
-	static_assert(std::numeric_limits<genType>::is_iec559, "'Distance' accepts only floating-point inputs");
-
 	return Length(p1 - p0);
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::Distance(const Vec<L, T>& p0, const Vec<L, T>& p1)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4224,18 +4445,16 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr T TRAP::Math::Dot(const T x, const T y)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'Dot' accepts only floating-point inputs");
-
 	return x * y;
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr T TRAP::Math::Dot(const Vec<L, T>& x, const Vec<L, T>& y)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'Dot' accepts only floating-point inputs");
-
 	T result = 0;
 	const Vec<L, T> tmp(x * y);
 	for (uint32_t i = 0u; i < L; i++)
@@ -4244,10 +4463,9 @@ template<uint32_t L, typename T>
 }
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr T TRAP::Math::Dot(const tQuat<T>& x, const tQuat<T>& y)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'Dot' accepts only floating-point inputs");
-
 	const Vec<4, T> tmp(x.w * y.w, x.x * y.x, x.y * y.y, x.z * y.z);
 
 	return (tmp.x + tmp.y) + (tmp.z + tmp.w);
@@ -4256,24 +4474,23 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::Cross(const Vec<2, T>& x, const Vec<2, T>& y)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'Cross' accepts only floating-point inputs");
-
 	return Vec<2, T>(x.x * y.y - y.x * x.y);
 }
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<3, T> TRAP::Math::Cross(const Vec<3, T>& x, const Vec<3, T>& y)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'Cross' accepts only floating-point inputs");
-
 	return Vec<3, T>(x.y * y.z - y.y * x.z,
 					 x.z * y.x - y.z * x.x,
 					 x.x * y.y - y.x * x.y);
 }
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::tQuat<T> TRAP::Math::Cross(const tQuat<T>& q1, const tQuat<T>& q2) noexcept
 {
 	return tQuat<T>(q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z,
@@ -4285,16 +4502,16 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Normalize(const Vec<L, T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<T>::is_iec559, "'Normalize' accepts only floating-point inputs");
 
 	return x * InverseSqrt(Dot(x, x));
 }
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::tQuat<T> TRAP::Math::Normalize(const tQuat<T>& q)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4310,28 +4527,30 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] constexpr genType TRAP::Math::FaceForward(const genType& N, const genType& I, const genType& NRef)
 {
 	return Dot(NRef, I) < static_cast<genType>(0) ? N : -N;
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::FaceForward(const Vec<L, T>& N, const Vec<L, T>& I, const Vec<L, T>& NRef)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'Normalize' accepts only floating-point inputs");
-
 	return Dot(NRef, I) < static_cast<T>(0) ? N : -N;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] constexpr genType TRAP::Math::Reflect(const genType& I, const genType& N)
 {
 	return I - N * Dot(N, I) * static_cast<genType>(2);
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Reflect(const Vec<L, T>& I, const Vec<L, T>& N)
 {
 	return I - N * Dot(N, I) * static_cast<T>(2);
@@ -4340,11 +4559,10 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] genType TRAP::Math::Refract(const genType& I, const genType& N, genType eta)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<genType>::is_iec559, "'Refract' accepts only floating-point inputs");
 
 	const genType dotValue(Dot(N, I));
 	const genType k(static_cast<genType>(1) - eta * eta * (static_cast<genType>(1) - dotValue * dotValue));
@@ -4353,11 +4571,10 @@ template<typename genType>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Refract(const Vec<L, T>& I, const Vec<L, T>& N, T eta)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<T>::is_iec559, "'Refract' accepts only floating-point inputs");
 
 	const T dotValue(Dot(N, I));
 	const T k(static_cast<T>(1) - eta * eta * (static_cast<T>(1) - dotValue * dotValue));
@@ -4369,6 +4586,7 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <uint32_t L, typename T>
+requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Mat<L, L, T>& x, const Mat<L, L, T>& y)
 {
 	Vec<L, bool> result(true);
@@ -4378,12 +4596,14 @@ template <uint32_t L, typename T>
 }
 
 template <uint32_t L, typename T>
+requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Mat<L, L, T>& x, const Mat<L, L, T>& y, T epsilon)
 {
 	return Equal(x, y, Vec<L, T>(epsilon));
 }
 
 template <uint32_t L, typename T>
+requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Mat<L, L, T>& x, const Mat<L, L, T>& y,
                                                                    const Vec<L, T>& epsilon)
 {
@@ -4396,6 +4616,7 @@ template <uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <uint32_t L, typename T>
+requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Mat<L, L, T>& x, const Mat<L, L, T>& y)
 {
 	Vec<L, bool> result(true);
@@ -4405,12 +4626,14 @@ template <uint32_t L, typename T>
 }
 
 template <uint32_t L, typename T>
+requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Mat<L, L, T>& x, const Mat<L, L, T>& y, T epsilon)
 {
 	return NotEqual(x, y, Vec<L, T>(epsilon));
 }
 
 template <uint32_t L, typename T>
+requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Mat<L, L, T>& x, const Mat<L, L, T>& y,
                                                                       const Vec<L, T>& epsilon)
 {
@@ -4425,10 +4648,9 @@ template <uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<L, L, T> TRAP::Math::MatrixCompMult(const Mat<L, L, T>& x, const Mat<L, L, T>& y)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'MatrixCompMult' only accepts floating-point inputs");
-
 	Mat<L, L, T> result;
 	for (std::size_t i = 0u; i < result.Length(); ++i)
 		result[i] = x[i] * y[i];
@@ -4438,10 +4660,9 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<L, L, T> TRAP::Math::OuterProduct(const Vec<L, T>& c, const Vec<L, T>& r)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'OuterProduct' only accepts floating-point inputs");
-
 	Mat<L, L, T> m;
 	for (std::size_t i = 0u; i < m.Length(); ++i)
 		m[i] = c * r[i];
@@ -4451,10 +4672,9 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr typename TRAP::Math::Mat<3, 3, T>::transposeType TRAP::Math::Transpose(const Mat<3, 3, T>& m)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'Transpose' only accepts floating-point inputs");
-
 	Mat<3, 3, T> result;
 
 	result[0][0] = m[0][0];
@@ -4473,10 +4693,9 @@ template <typename T>
 }
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr typename TRAP::Math::Mat<4, 4, T>::transposeType TRAP::Math::Transpose(const Mat<4, 4, T>& m)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'Transpose' only accepts floating-point inputs");
-
 	Mat<4, 4, T> result;
 
 	result[0][0] = m[0][0];
@@ -4505,19 +4724,17 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr T TRAP::Math::Determinant(const Mat<3, 3, T>& m)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'Determinant' only accepts floating-point inputs");
-
 	return + m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2])
 		   - m[1][0] * (m[0][1] * m[2][2] - m[2][1] * m[0][2])
 		   + m[2][0] * (m[0][1] * m[1][2] - m[1][1] * m[0][2]);
 }
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr T TRAP::Math::Determinant(const Mat<4, 4, T>& m)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'Determinant' only accepts floating-point inputs");
-
 	const T subFactor00 = m[2][2] * m[3][3] - m[3][2] * m[2][3];
 	const T subFactor01 = m[2][1] * m[3][3] - m[3][1] * m[2][3];
 	const T subFactor02 = m[2][1] * m[3][2] - m[3][1] * m[2][2];
@@ -4537,10 +4754,9 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::Inverse(const Mat<3, 3, T>& m)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'Inverse' only accepts floating-points inputs");
-
 	const T oneOverDeterminant = static_cast<T>(1) / (+ m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2])
 		                                              - m[1][0] * (m[0][1] * m[2][2] - m[2][1] * m[0][2])
 		                                              + m[2][0] * (m[0][1] * m[1][2] - m[1][1] * m[0][2]));
@@ -4560,10 +4776,9 @@ template<typename T>
 }
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Inverse(const Mat<4, 4, T>& m)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'Inverse' only accepts floating-points inputs");
-
 	const T coef00 = m[2][2] * m[3][3] - m[3][2] * m[2][3];
 	const T coef02 = m[1][2] * m[3][3] - m[3][2] * m[1][3];
 	const T coef03 = m[1][2] * m[2][3] - m[2][2] * m[1][3];
@@ -4622,6 +4837,7 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Orthographic(const T left, const T right,
                                                                           const T bottom, const T top) noexcept
 {
@@ -4637,6 +4853,7 @@ template<typename T>
 }
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Orthographic(const T left, const T right,
                                                                           const T bottom, const T top,
                                                                           const T zNear, const T zFar) noexcept
@@ -4656,6 +4873,7 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Frustum(const T left, const T right,
                                                                      const T bottom, const T top,
                                                                      const T nearVal, const T farVal) noexcept
@@ -4676,6 +4894,7 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Mat<4, 4, T> TRAP::Math::Perspective(const T fovY, const T aspect, const T zNear, const T zFar)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4698,6 +4917,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Mat<4, 4, T> TRAP::Math::PerspectiveFoV(const T fov, const T width, const T height, const T zNear,
                                                                   const T zFar)
 {
@@ -4725,6 +4945,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Mat<4, 4, T> TRAP::Math::InfinitePerspective(const T fovY, const T aspect, const T zNear)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4749,12 +4970,14 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L, typename T, typename U>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<L, L, T> TRAP::Math::Mix(const Mat<L, L, T>& x, const Mat<L, L, T>& y, U a)
 {
 	return Mat<L, L, U>(x) * (static_cast<U>(1) - a) + Mat<L, L, U>(y) * a;
 }
 
 template<uint32_t L, typename T, typename U>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<L, L, T> TRAP::Math::Mix(const Mat<L, L, T>& x, const Mat<L, L, T>& y, const Mat<L, L, U>& a)
 {
 	return MatrixCompMult(Mat<L, L, U>(x), static_cast<U>(1) - a) + MatrixCompMult(Mat<L, L, U>(y), a);
@@ -4763,6 +4986,7 @@ template<uint32_t L, typename T, typename U>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Translate(const Mat<4, 4, T>& m, const Vec<3, T>& v) noexcept
 {
 	Mat<4, 4, T> result(m);
@@ -4773,6 +4997,7 @@ template <typename T>
 }
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Translate(const Vec<3, T>& v) noexcept
 {
 	Mat<4, 4, T> result(static_cast<T>(1.0));
@@ -4785,6 +5010,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Mat<4, 4, T> TRAP::Math::Rotate(const Mat<4, 4, T>& m, const T angleInRadians, const Vec<3, T>& v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4821,6 +5047,7 @@ template<typename T>
 }
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Mat<4, 4, T> TRAP::Math::Rotate(const T angleInRadians, const Vec<3, T>& v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4860,6 +5087,7 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Scale(const Mat<4, 4, T>& m, const Vec<3, T>& v) noexcept
 {
 	Mat<4, 4, T> result;
@@ -4873,6 +5101,7 @@ template <typename T>
 }
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Scale(const Vec<3, T>& v) noexcept
 {
 	Mat<4, 4, T> result(static_cast<T>(1.0f));
@@ -4887,6 +5116,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Mat<4, 4, T> TRAP::Math::LookAt(const Vec<3, T>& eye, const Vec<3, T>& center, const Vec<3, T>& up)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4916,6 +5146,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires TRAP::Math::IsMat<T>
 [[nodiscard]] T TRAP::Math::Row(const T& m, const std::size_t index, const typename T::rowType& x)
 {
 	TRAP_ASSERT(index < m[0].Length(), "Math::Row(): Index out of range!");
@@ -4931,6 +5162,7 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires TRAP::Math::IsMat<T>
 [[nodiscard]] typename T::rowType TRAP::Math::Row(const T& m, const std::size_t index)
 {
 	TRAP_ASSERT(index < m[0].Length(), "Math::Row(): Index out of range!");
@@ -4946,6 +5178,7 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires TRAP::Math::IsMat<T>
 [[nodiscard]] T TRAP::Math::Column(const T& m, const std::size_t index, const typename T::colType& x)
 {
 	TRAP_ASSERT(index < m.Length(), "Math::Column(): Index out of range!");
@@ -4959,6 +5192,7 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires TRAP::Math::IsMat<T>
 [[nodiscard]] typename T::colType TRAP::Math::Column(const T& m, const std::size_t index)
 {
 	TRAP_ASSERT(index < m.Length(), "Math::Column(): Index out of range!");
@@ -4969,6 +5203,7 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] bool TRAP::Math::Decompose(Mat<4, 4, T> m, Vec<3, T>& outPosition, Vec<3, T>& outRotation, Vec<3, T>& outScale)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5043,11 +5278,10 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::tQuat<T> TRAP::Math::SLerp(const tQuat<T>& x, const tQuat<T>& y, const T a)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<T>::is_iec559, "'SLerp' only accepts floating-point inputs");
 
 	tQuat<T> z = y;
 
@@ -5076,12 +5310,10 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T, typename S>
+requires std::floating_point<T> && std::integral<S>
 [[nodiscard]] TRAP::Math::tQuat<T> TRAP::Math::SLerp(const tQuat<T>& x, const tQuat<T>& y, const T a, const S k)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<T>::is_iec559, "'SLerp' only accepts floating-point inputs");
-	static_assert(std::numeric_limits<S>::is_integer, "'SLerp' only accepts integers for spin count");
 
 	tQuat<T> z = y;
 
@@ -5112,6 +5344,7 @@ template<typename T, typename S>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::tQuat<T> TRAP::Math::Conjugate(const tQuat<T>& q) noexcept
 {
 	return tQuat<T>(q.w, -q.x, -q.y, -q.z);
@@ -5120,6 +5353,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::tQuat<T> TRAP::Math::Inverse(const tQuat<T>& q)
 {
 	return Conjugate(q) / Dot(q, q);
@@ -5128,6 +5362,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<3, T> TRAP::Math::EulerAngles(const tQuat<T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5138,6 +5373,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::Roll(const tQuat<T>& q)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5154,6 +5390,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::Pitch(const tQuat<T>& q)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5170,6 +5407,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::Yaw(const tQuat<T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5180,6 +5418,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat3Cast(const tQuat<T>& q) noexcept
 {
 	Mat<3, 3, T> result(static_cast<T>(1));
@@ -5209,12 +5448,14 @@ template <typename T>
 }
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Mat4Cast(const tQuat<T>& q) noexcept
 {
 	return Mat<4, 4, T>(Mat3Cast(q));
 }
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::tQuat<T> TRAP::Math::QuaternionCast(const Mat<3, 3, T>& m)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5270,6 +5511,7 @@ template <typename T>
 }
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::tQuat<T> TRAP::Math::QuaternionCast(const Mat<4, 4, T>& m)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5280,6 +5522,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::LessThan(const tQuat<T>& x, const tQuat<T>& y) noexcept
 {
 	Vec<4, bool> result(false, false, false, false);
@@ -5292,6 +5535,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::LessThanEqual(const tQuat<T>& x, const tQuat<T>& y) noexcept
 {
 	Vec<4, bool> result(false, false, false, false);
@@ -5304,6 +5548,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::GreaterThan(const tQuat<T>& x, const tQuat<T>& y) noexcept
 {
 	Vec<4, bool> result(false, false, false, false);
@@ -5316,6 +5561,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::GreaterThanEqual(const tQuat<T>& x, const tQuat<T>& y) noexcept
 {
 	Vec<4, bool> result(false, false, false, false);
@@ -5328,6 +5574,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::tQuat<T> TRAP::Math::QuaternionLookAt(const Vec<3, T>& direction, const Vec<3, T>& up)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5345,6 +5592,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const tQuat<T>& x, const tQuat<T>& y) noexcept
 {
 	Vec<4, bool> result{};
@@ -5355,6 +5603,7 @@ template <typename T>
 }
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const tQuat<T>& x, const tQuat<T>& y, const T epsilon)
 {
 	Vec<4, T> v(x.x - y.x, x.y - y.y, x.z - y.z, x.w - y.w);
@@ -5364,6 +5613,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const tQuat<T>& x, const tQuat<T>& y) noexcept
 {
 	Vec<4, bool> result{};
@@ -5374,6 +5624,7 @@ template <typename T>
 }
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const tQuat<T>& x, const tQuat<T>& y, const T epsilon)
 {
 	const Vec<4, T> v(x.x - y.x, x.y - y.y, x.z - y.z, x.w - y.w);
@@ -5383,6 +5634,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::Angle(const tQuat<T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5396,6 +5648,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<3, T> TRAP::Math::Axis(const tQuat<T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5412,6 +5665,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::tQuat<T> TRAP::Math::AngleAxis(const T& angle, const Vec<3, T>& v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5425,6 +5679,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::tQuat<T> TRAP::Math::Rotate(const tQuat<T>& q, const T& angle, const Vec<3, T>& v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5452,18 +5707,21 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<3, T> TRAP::Math::XAxis() noexcept
 {
 	return Vec<3, T>(static_cast<T>(1.0), static_cast<T>(0.0), static_cast<T>(0.0));
 }
 
 template<typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<3, T> TRAP::Math::YAxis() noexcept
 {
 	return Vec<3, T>(static_cast<T>(0.0), static_cast<T>(1.0), static_cast<T>(0.0));
 }
 
 template<typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<3, T> TRAP::Math::ZAxis() noexcept
 {
 	return Vec<3, T>(static_cast<T>(0.0), static_cast<T>(0.0), static_cast<T>(1.0));
@@ -5472,6 +5730,7 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::LessThan(const Vec<L, T>& x, const Vec<L, T>& y) noexcept
 {
 	Vec<L, bool> result(true);
@@ -5483,6 +5742,7 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::LessThanEqual(const Vec<L, T>& x, const Vec<L, T>& y) noexcept
 {
 	Vec<L, bool> result(true);
@@ -5494,6 +5754,7 @@ template <uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::GreaterThan(const Vec<L, T>& x, const Vec<L, T>& y) noexcept
 {
 	Vec<L, bool> result(true);
@@ -5505,6 +5766,7 @@ template <uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::GreaterThanEqual(const Vec<L, T>& x, const Vec<L, T>& y) noexcept
 {
 	Vec<L, bool> result(true);
@@ -5516,6 +5778,7 @@ template <uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Vec<L, T>& x, const Vec<L, T>& y) noexcept
 {
 	Vec<L, bool> result(true);
@@ -5527,6 +5790,7 @@ template <uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Vec<L, T>& x, const Vec<L, T>& y, const T epsilon)
 {
 	return Equal(x, y, Vec<L, T>(epsilon));
@@ -5535,6 +5799,7 @@ template <uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Vec<L, T>& x, const Vec<L, T>& y,
                                                                    const Vec<L, T>& epsilon)
 {
@@ -5544,6 +5809,7 @@ template <uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Vec<L, T>& x, const Vec<L, T>& y) noexcept
 {
 	Vec<L, bool> result(true);
@@ -5555,6 +5821,7 @@ template <uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Vec<L, T>& x, const Vec<L, T>& y, const T epsilon)
 {
 	return NotEqual(x, y, Vec<L, T>(epsilon));
@@ -5563,6 +5830,7 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L, typename T>
+requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Vec<L, T>& x, const Vec<L, T>& y,
                                                                       const Vec<L, T>& epsilon)
 {
@@ -5607,14 +5875,14 @@ template<uint32_t L>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] constexpr genType TRAP::Math::Radians(const genType degrees)
 {
-	static_assert(std::numeric_limits<genType>::is_iec559, "'Radians' only accepts floating-point inputs");
-
 	return degrees * static_cast<genType>(0.01745329251994329576923690768489);
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Radians(const Vec<L, T>& v)
 {
 	Vec<L, T> result{};
@@ -5626,14 +5894,14 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] constexpr genType TRAP::Math::Degrees(const genType radians)
 {
-	static_assert(std::numeric_limits<genType>::is_iec559, "'Degrees' only accepts floating-point inputs");
-
 	return radians * static_cast<genType>(57.295779513082320876798154814105);
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Degrees(const Vec<L, T>& v)
 {
 	Vec<L, T> result;
@@ -5645,6 +5913,7 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::Sin(const T x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5653,6 +5922,7 @@ template<typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Sin(const Vec<L, T>& v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5666,6 +5936,7 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::Cos(const T x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5674,6 +5945,7 @@ template<typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Cos(const Vec<L, T>& v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5687,6 +5959,7 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::Tan(const T x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5695,6 +5968,7 @@ template<typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Tan(const Vec<L, T>& v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5708,6 +5982,7 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::ASin(const T x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5716,6 +5991,7 @@ template<typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ASin(const Vec<L, T>& v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5729,6 +6005,7 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::ACos(const T x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5737,6 +6014,7 @@ template<typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ACos(const Vec<L, T>& v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5750,16 +6028,16 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
+requires std::floating_point<genType>
 [[nodiscard]] genType TRAP::Math::ATan(const genType y, const genType x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	static_assert(std::numeric_limits<genType>::is_iec559, "'ATan' only accepts floating-point inputs");
 
 	return std::atan2(y, x);
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ATan(const Vec<L, T>& a, const Vec<L, T>& b)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5771,6 +6049,7 @@ template<uint32_t L, typename T>
 }
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::ATan(const T x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5779,6 +6058,7 @@ template<typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ATan(const Vec<L, T>& v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5792,6 +6072,7 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::SinH(const T x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5800,6 +6081,7 @@ template<typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::SinH(const Vec<L, T>& v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5813,6 +6095,7 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::CosH(const T x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5821,6 +6104,7 @@ template<typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::CosH(const Vec<L, T>& v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5834,6 +6118,7 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::TanH(const T x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5842,6 +6127,7 @@ template<typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::TanH(const Vec<L, T>& v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5855,6 +6141,7 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::ASinH(const T x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5863,6 +6150,7 @@ template<typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ASinH(const Vec<L, T>& v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5876,6 +6164,7 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::ACosH(const T x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5884,6 +6173,7 @@ template<typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ACosH(const Vec<L, T>& v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5897,6 +6187,7 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::ATanH(const T x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -5905,6 +6196,7 @@ template<typename T>
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ATanH(const Vec<L, T>& v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -6160,14 +6452,14 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::integral<T>
 [[nodiscard]] constexpr bool TRAP::Math::IsOdd(const T x)
 {
-	static_assert(std::is_integral_v<T>, "IsOdd only works with integral types");
-
 	return (x & 1u) != 0;
 }
 
 template<uint32_t L, typename T>
+requires std::integral<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::IsOdd(const Vec<L, T>& x) noexcept
 {
 	Vec<L, bool> result{};
@@ -6181,14 +6473,14 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::integral<T>
 [[nodiscard]] constexpr bool TRAP::Math::IsEven(const T x)
 {
-	static_assert(std::is_integral_v<T>, "IsOdd only works with integral types");
-
 	return !IsOdd(x);
 }
 
 template<uint32_t L, typename T>
+requires std::integral<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::IsEven(const Vec<L, T>& x) noexcept
 {
 	Vec<L, bool> result{};
@@ -6202,12 +6494,14 @@ template<uint32_t L, typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr bool TRAP::Math::IsFinite(const T x) noexcept
 {
 	return (!IsNaN(x)) && (!IsInf(x));
 }
 
 template<uint32_t L, typename T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::IsFinite(const Vec<L, T>& x) noexcept
 {
 	Vec<L, bool> result{};

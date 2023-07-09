@@ -381,8 +381,7 @@ namespace TRAP::Graphics::API
 		/// <param name="mem">Pointer to data to hash.</param>
 		/// <param name="size">Size of data to hash.</param>
 		/// <param name="prev">Previous hash value.</param>
-		template<typename T>
-		static std::size_t HashAlg(const T* mem, std::size_t size, const std::size_t prev = 2166136261U)
+		static std::size_t HashAlg(const auto* mem, std::size_t size, const std::size_t prev = 2166136261U)
 		{
 			ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

@@ -1,6 +1,7 @@
 #ifndef TRAPEDITOR_SCENEGRAPHPANEL_H
 #define TRAPEDITOR_SCENEGRAPHPANEL_H
 
+#include <Scene/Components.h>
 #include <Scene/Scene.h>
 #include <Core/Base.h>
 #include <Scene/Entity.h>
@@ -22,6 +23,7 @@ namespace TRAP
 
 	private:
 		template<typename T>
+		requires TRAP::IsComponent<T>
 		void DisplayAddComponentEntry(const std::string& entryName);
 
 		void DrawEntityNode(Entity entity);

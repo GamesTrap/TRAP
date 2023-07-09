@@ -185,7 +185,7 @@ template<uint32_t major, uint32_t minor, uint32_t patch>
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-inline constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION<0, 9, 57>();
+inline constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION<0, 9, 58>();
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -213,11 +213,9 @@ inline constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION<0, 9, 57>();
 /// <typeparam name="T">DataType of variable.</typeparam>
 /// <param name="x">Amount to shift.</param>
 /// <returns>Shifted value.</returns>
-template <typename T>
-requires ( std::is_unsigned_v<T> && std::is_integral_v<T>)
-[[nodiscard]] inline constexpr T BIT(const T x) noexcept
+[[nodiscard]] inline constexpr std::unsigned_integral auto BIT(const std::unsigned_integral auto x) noexcept
 {
-	return T(1) << x;
+	return decltype(x)(1) << x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

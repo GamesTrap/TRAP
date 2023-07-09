@@ -14,10 +14,8 @@ namespace TRAP::Utils::Memory
 	/// Converts primitive data types from big->little or little->big endian depending on
 	/// given parameters endianness.
 	/// </summary>
-	/// <typeparam name="T">Primitive data type.</typeparam>
 	/// <param name="t">Primitive data type.</param>
-	template<typename T>
-	inline constexpr static void SwapBytes(T& t)
+	inline constexpr static void SwapBytes(std::integral auto& t)
 	{
 		t = std::byteswap(t);
 	}
@@ -31,6 +29,7 @@ namespace TRAP::Utils::Memory
 	/// <param name="begin">Start of the container.</param>
 	/// <param name="end">End of the container.</param>
 	template<typename Iter>
+	requires std::integral<typename std::iterator_traits<Iter>::value_type>
 	inline constexpr static void SwapBytes(Iter begin, Iter end)
 	{
 		for(; begin != end; ++begin)
@@ -46,31 +45,28 @@ namespace TRAP::Utils::Memory
 	/// <param name="source">Bytes to convert.</param>
 	/// <returns>Converted bytes.</returns>
 	template<typename T>
+	requires (std::unsigned_integral<T> && !std::same_as<T, uint8_t>)
 	[[nodiscard]] inline static constexpr T ConvertByte(const uint8_t* const source)
 	{
-		if constexpr(std::is_unsigned_v<T> && (std::is_same_v<T, uint16_t> ||
-		             std::is_same_v<T, uint32_t> || std::is_same_v<T, uint64_t>))
+		if constexpr (sizeof(T) == 2)
 		{
-			if constexpr (sizeof(T) == 2)
-			{
-				return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u);
-			}
-			else if constexpr (sizeof(T) == 4)
-			{
-				return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u) |
-				       (static_cast<T>(source[2]) << 16u) | (static_cast<T>(source[3]) << 24u);
-			}
-			else if constexpr (sizeof(T) == 8)
-			{
-				return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u) |
-				       (static_cast<T>(source[2]) << 16u) | (static_cast<T>(source[3]) << 24u) |
-				       (static_cast<T>(source[4]) << 32u) | (static_cast<T>(source[5]) << 40u) |
-				       (static_cast<T>(source[6]) << 48u) | (static_cast<T>(source[7]) << 56u);
-			}
+			return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u);
+		}
+		else if constexpr (sizeof(T) == 4)
+		{
+			return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u) |
+					(static_cast<T>(source[2]) << 16u) | (static_cast<T>(source[3]) << 24u);
+		}
+		else if constexpr (sizeof(T) == 8)
+		{
+			return (static_cast<T>(source[0])) | (static_cast<T>(source[1]) << 8u) |
+					(static_cast<T>(source[2]) << 16u) | (static_cast<T>(source[3]) << 24u) |
+					(static_cast<T>(source[4]) << 32u) | (static_cast<T>(source[5]) << 40u) |
+					(static_cast<T>(source[6]) << 48u) | (static_cast<T>(source[7]) << 56u);
 		}
 		else
 		{
-			static_assert(sizeof(T) == 0, "T must be unsigned interger type (not uint8_t");
+			static_assert(sizeof(T) == 0, "T has unknown byte size for unsigned interger type");
 			return {};
 		}
 	}
@@ -88,28 +84,21 @@ namespace TRAP::Utils::Memory
 	/// <param name="end">End of the input container.</param>
 	/// <param name="output">Type to convert to and store the converted data.</param>
 	template<typename InputIt, typename OutputIt>
+	requires std::same_as<typename std::iterator_traits<InputIt>::value_type, uint8_t>
 	inline static void ConvertBytes(InputIt begin, InputIt end, OutputIt output)
 	{
-		using input_type = typename std::iterator_traits<InputIt>::value_type;
 		using output_type = typename std::iterator_traits<OutputIt>::value_type;
 
-		if constexpr(std::is_same_v<input_type, uint8_t>)
+		//Is size a multiple of OutputIts type
+		const auto size = std::distance(begin, end);
+		if(NumericCast<uint64_t>(size) % sizeof(output_type) != 0)
 		{
-			//Is size a multiple of OutputIts type
-			const auto size = std::distance(begin, end);
-			if(NumericCast<uint64_t>(size) % sizeof(output_type) != 0)
-			{
-				TRAP_ASSERT(false, "Memory::ConvertBytes(): Size of input type is not a multiple of output type");
-				return;
-			}
+			TRAP_ASSERT(false, "Memory::ConvertBytes(): Size of input type is not a multiple of output type");
+			return;
+		}
 
-			for(; begin != end; begin += sizeof(output_type), ++output)
-				*output = ConvertByte<output_type>(&(*begin));
-		}
-		else
-		{
-			static_assert(sizeof(InputIt) == 0, "InputIt must be a of type uint8_t");
-		}
+		for(; begin != end; begin += sizeof(output_type), ++output)
+			*output = ConvertByte<output_type>(&(*begin));
 	}
 }
 

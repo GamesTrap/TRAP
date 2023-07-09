@@ -6,7 +6,7 @@ template<typename T>
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	if constexpr(std::is_integral_v<T> && std::is_signed_v<T> && !std::is_same_v<T, char> && !std::is_same_v<T, bool>) //Integers
+	if constexpr(std::signed_integral<T> && !std::same_as<T, char> && !std::same_as<T, bool>) //Integers
 	{
 		try
 		{
@@ -23,7 +23,7 @@ template<typename T>
 			return 0;
 		}
 	}
-	else if constexpr(std::is_integral_v<T> && !std::is_signed_v<T> && !std::is_same_v<T, char> && !std::is_same_v<T, bool>) //Unsigned integers
+	else if constexpr(std::unsigned_integral<T> && !std::same_as<T, char> && !std::same_as<T, bool>) //Unsigned integers
 	{
 		try
 		{
@@ -40,7 +40,7 @@ template<typename T>
 			return 0;
 		}
 	}
-	else if constexpr(std::is_same_v<T, float>) //Float
+	else if constexpr(std::same_as<T, float>) //Float
 	{
 		try
 		{
@@ -52,7 +52,7 @@ template<typename T>
 			return 0.0f;
 		}
 	}
-	else if constexpr(std::is_same_v<T, double>) //Double
+	else if constexpr(std::same_as<T, double>) //Double
 	{
 		try
 		{
@@ -64,23 +64,23 @@ template<typename T>
 			return 0.0;
 		}
 	}
-	else if constexpr(std::is_same_v<T, bool>) //Bool
+	else if constexpr(std::same_as<T, bool>) //Bool
 	{
 		if (String::CompareAnyCase("TRUE", input))
 			return true;
 
 		return false;
 	}
-	else if constexpr(std::is_same_v<T, char>) //Char
+	else if constexpr(std::same_as<T, char>) //Char
 	{
 		return input[0];
 	}
-	else if constexpr(std::is_same_v<T, std::string> || std::is_same_v<T, std::string_view>) //String
+	else if constexpr(std::same_as<T, std::string> || std::same_as<T, std::string_view>) //String
 	{
 		return input;
 	}
 #ifndef TRAP_HEADLESS_MODE
-	else if constexpr(std::is_same_v<T, TRAP::Window::DisplayMode>) //DisplayMode
+	else if constexpr(std::same_as<T, TRAP::Window::DisplayMode>) //DisplayMode
 	{
 		if (Utils::String::CompareAnyCase("Windowed", input))
 			return Window::DisplayMode::Windowed;
@@ -93,7 +93,7 @@ template<typename T>
 		return Window::DisplayMode::Windowed;
 	}
 #endif /*TRAP_HEADLESS_MODE*/
-	else if constexpr(std::is_same_v<T, TRAP::Graphics::RenderAPI>) //RenderAPI
+	else if constexpr(std::same_as<T, TRAP::Graphics::RenderAPI>) //RenderAPI
 	{
 		if (Utils::String::CompareAnyCase("Vulkan", input) || Utils::String::CompareAnyCase("VulkanAPI", input))
 			return Graphics::RenderAPI::Vulkan;
@@ -104,7 +104,7 @@ template<typename T>
 		TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::RenderAPI!");
 		return Graphics::RenderAPI::NONE;
 	}
-	else if constexpr(std::is_same_v<T, TRAP::Graphics::RendererAPI::AntiAliasing>) //AntiAliasing
+	else if constexpr(std::same_as<T, TRAP::Graphics::RendererAPI::AntiAliasing>) //AntiAliasing
 	{
 		if (Utils::String::CompareAnyCase("Off", input))
 			return Graphics::RendererAPI::AntiAliasing::Off;
@@ -115,7 +115,7 @@ template<typename T>
 		TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::RendererAPI::AntiAliasing!");
 		return Graphics::RendererAPI::AntiAliasing::Off;
 	}
-	else if constexpr(std::is_same_v<T, TRAP::Graphics::RendererAPI::SampleCount>) //SampleCount
+	else if constexpr(std::same_as<T, TRAP::Graphics::RendererAPI::SampleCount>) //SampleCount
 	{
 		if (Utils::String::CompareAnyCase("1", input))
 			return Graphics::RendererAPI::SampleCount::One;
@@ -135,7 +135,7 @@ template<typename T>
 		TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::RendererAPI::SampleCount!");
 		return Graphics::RendererAPI::SampleCount::One;
 	}
-	else if constexpr(std::is_same_v<T, TRAP::Utils::LinuxWindowManager>) //LinuxWindowManager
+	else if constexpr(std::same_as<T, TRAP::Utils::LinuxWindowManager>) //LinuxWindowManager
 	{
 		if(Utils::String::CompareAnyCase("X11", input))
 			return Utils::LinuxWindowManager::X11;
@@ -145,7 +145,7 @@ template<typename T>
 
 		return Utils::LinuxWindowManager::Unknown;
 	}
-	else if constexpr(std::is_same_v<T, TRAP::Graphics::RendererAPI::GPUVendor>) //GPUVendor
+	else if constexpr(std::same_as<T, TRAP::Graphics::RendererAPI::GPUVendor>) //GPUVendor
 	{
 		if(Utils::String::CompareAnyCase("AMD", input))
 			return Graphics::RendererAPI::GPUVendor::AMD;
@@ -189,7 +189,7 @@ template<typename T>
 		return Graphics::RendererAPI::GPUVendor::Unknown;
 	}
 #ifndef TRAP_HEADLESS_MODE
-	else if constexpr(std::is_same_v<T, TRAP::Graphics::RendererAPI::LatencyMode>) //LatencyMode
+	else if constexpr(std::same_as<T, TRAP::Graphics::RendererAPI::LatencyMode>) //LatencyMode
 	{
 		if(Utils::String::CompareAnyCase("Enabled", input))
 			return Graphics::RendererAPI::LatencyMode::Enabled;
@@ -202,7 +202,7 @@ template<typename T>
 		return Graphics::RendererAPI::LatencyMode::Disabled;
 	}
 #endif /*TRAP_HEADLESS_MODE*/
-	else if constexpr(std::is_same_v<T, TRAP::FileSystem::FileStatus>) //FileStatus
+	else if constexpr(std::same_as<T, TRAP::FileSystem::FileStatus>) //FileStatus
 	{
 		if(Utils::String::CompareAnyCase("Created", input))
 			return FileSystem::FileStatus::Created;
@@ -217,7 +217,7 @@ template<typename T>
 		throw std::invalid_argument("Exception while converting string to TRAP::FileSystem::FileStatus!");
 	}
 #ifndef TRAP_HEADLESS_MODE
-	else if constexpr(std::is_same_v<T, TRAP::Input::MouseButton>) //MouseButton
+	else if constexpr(std::same_as<T, TRAP::Input::MouseButton>) //MouseButton
 	{
 		if(Utils::String::CompareAnyCase("Left", input))
 			return Input::MouseButton::Left;
@@ -246,7 +246,7 @@ template<typename T>
 		throw std::invalid_argument("Exception while converting string to TRAP::Input::MouseButton!");
 	}
 #endif /*TRAP_HEADLESS_MODE*/
-	else if constexpr(std::is_same_v<T, TRAP::Rigidbody2DComponent::BodyType>) //Rigidbody2DComponent::BodyType
+	else if constexpr(std::same_as<T, TRAP::Rigidbody2DComponent::BodyType>) //Rigidbody2DComponent::BodyType
 	{
 		if(Utils::String::CompareAnyCase("Static", input))
 			return Rigidbody2DComponent::BodyType::Static;
@@ -258,7 +258,7 @@ template<typename T>
 		TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Rigidbody2DComponent::BodyType!");
 		throw std::invalid_argument("Exception while converting string to TRAP::Rigidbody2DComponent::BodyType!");
 	}
-	else if constexpr(std::is_same_v<T, TRAP::Graphics::RendererAPI::ResourceState>)
+	else if constexpr(std::same_as<T, TRAP::Graphics::RendererAPI::ResourceState>)
 	{
 		if(Utils::String::CompareAnyCase("Undefined", input))
 			return TRAP::Graphics::RendererAPI::ResourceState::Undefined;
@@ -302,7 +302,7 @@ template<typename T>
 		TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::RendererAPI::ResourceState!");
 		throw std::invalid_argument("Exception while converting string to TRAP::Graphics::RendererAPI::ResourceState!");
 	}
-	else if constexpr(std::is_same_v<T, TRAP::Graphics::RendererAPI::QueueType>) //QueueType
+	else if constexpr(std::same_as<T, TRAP::Graphics::RendererAPI::QueueType>) //QueueType
 	{
 		if (Utils::String::CompareAnyCase("Graphics", input))
 			return TRAP::Graphics::RendererAPI::QueueType::Graphics;
@@ -328,28 +328,28 @@ template<typename T>
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	if constexpr(std::is_same_v<T, std::string>)
+	if constexpr(std::same_as<T, std::string>)
 	{
 		return value;
 	}
-	else if constexpr(std::is_same_v<T, const char*>)
+	else if constexpr(std::same_as<T, const char*>)
 	{
 		return std::string(value);
 	}
-	else if constexpr(std::is_same_v<T, bool>)
+	else if constexpr(std::same_as<T, bool>)
 	{
 		return (value) ? "True" : "False";
 	}
-	else if constexpr(std::is_same_v<T, char>)
+	else if constexpr(std::same_as<T, char>)
 	{
 		return std::string(1, value);
 	}
-	else if constexpr(std::is_integral_v<T> || std::is_floating_point_v<T>)
+	else if constexpr(std::is_arithmetic_v<T>)
 	{
 		return std::to_string(value);
 	}
 #ifndef TRAP_HEADLESS_MODE
-	else if constexpr(std::is_same_v<T, TRAP::Window::DisplayMode>)
+	else if constexpr(std::same_as<T, TRAP::Window::DisplayMode>)
 	{
 		switch (value)
 		{
@@ -367,7 +367,7 @@ template<typename T>
 		}
 	}
 #endif /*TRAP_HEADLESS_MODE*/
-	else if constexpr(std::is_same_v<T, TRAP::Graphics::RenderAPI>)
+	else if constexpr(std::same_as<T, TRAP::Graphics::RenderAPI>)
 	{
 		switch (value)
 		{
@@ -381,7 +381,7 @@ template<typename T>
 			return "";
 		}
 	}
-	else if constexpr(std::is_same_v<T, TRAP::Graphics::RendererAPI::AntiAliasing>)
+	else if constexpr(std::same_as<T, TRAP::Graphics::RendererAPI::AntiAliasing>)
 	{
 		switch (value)
 		{
@@ -395,7 +395,7 @@ template<typename T>
 			return "";
 		}
 	}
-	else if constexpr(std::is_same_v<T, TRAP::Graphics::RendererAPI::SampleCount>)
+	else if constexpr(std::same_as<T, TRAP::Graphics::RendererAPI::SampleCount>)
 	{
 		switch (value)
 		{
@@ -418,7 +418,7 @@ template<typename T>
 			return "";
 		}
 	}
-	else if constexpr(std::is_same_v<T, TRAP::Utils::LinuxWindowManager>)
+	else if constexpr(std::same_as<T, TRAP::Utils::LinuxWindowManager>)
 	{
 		switch(value)
 		{
@@ -432,7 +432,7 @@ template<typename T>
 			return "Unknown";
 		}
 	}
-	else if constexpr(std::is_same_v<T, TRAP::Graphics::RendererAPI::GPUVendor>) //GPUVendor
+	else if constexpr(std::same_as<T, TRAP::Graphics::RendererAPI::GPUVendor>) //GPUVendor
 	{
 		switch(value)
 		{
@@ -468,7 +468,7 @@ template<typename T>
 		}
 	}
 #ifndef TRAP_HEADLESS_MODE
-	else if constexpr(std::is_same_v<T, TRAP::Graphics::RendererAPI::LatencyMode>) //LatencyMode
+	else if constexpr(std::same_as<T, TRAP::Graphics::RendererAPI::LatencyMode>) //LatencyMode
 	{
 		switch(value)
 		{
@@ -484,7 +484,7 @@ template<typename T>
 		}
 	}
 #endif /*TRAP_HEADLESS_MODE*/
-	else if constexpr(std::is_same_v<T, TRAP::FileSystem::FileStatus>) //FileStatus
+	else if constexpr(std::same_as<T, TRAP::FileSystem::FileStatus>) //FileStatus
 	{
 		switch(value)
 		{
@@ -505,7 +505,7 @@ template<typename T>
 		}
 	}
 #ifndef TRAP_HEADLESS_MODE
-	else if constexpr(std::is_same_v<T, TRAP::Input::MouseButton>) //MouseButton
+	else if constexpr(std::same_as<T, TRAP::Input::MouseButton>) //MouseButton
 	{
 		switch(value)
 		{
@@ -547,7 +547,7 @@ template<typename T>
 		}
 	}
 #endif /*TRAP_HEADLESS_MODE*/
-	else if constexpr(std::is_same_v<T, TRAP::Rigidbody2DComponent::BodyType>) //Rigidbody2DComponent::BodyType
+	else if constexpr(std::same_as<T, TRAP::Rigidbody2DComponent::BodyType>) //Rigidbody2DComponent::BodyType
 	{
 		switch(value)
 		{
@@ -564,7 +564,7 @@ template<typename T>
 			return "";
 		}
 	}
-	else if constexpr(std::is_same_v<T, TRAP::Graphics::RendererAPI::ResourceState>)
+	else if constexpr(std::same_as<T, TRAP::Graphics::RendererAPI::ResourceState>)
 	{
 		switch(value)
 		{
@@ -611,7 +611,7 @@ template<typename T>
 			return "";
 		}
 	}
-	else if constexpr(std::is_same_v<T, TRAP::Graphics::RendererAPI::QueueType>) //QueueType
+	else if constexpr(std::same_as<T, TRAP::Graphics::RendererAPI::QueueType>) //QueueType
 	{
 		switch(value)
 		{

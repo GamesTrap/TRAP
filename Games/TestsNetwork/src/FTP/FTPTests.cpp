@@ -3,16 +3,6 @@
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 
-// template<>
-// struct fmt::formatter<TRAP::Network::FTP::DirectoryResponse> : fmt::ostream_formatter
-// {};
-
-// template<>
-// struct fmt::formatter<TRAP::Network::FTP::ListingResponse> : fmt::ostream_formatter
-// {};
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 FTPTests::FTPTests()
 	: Layer("FTPTests"), m_ftpThread(nullptr)
 {

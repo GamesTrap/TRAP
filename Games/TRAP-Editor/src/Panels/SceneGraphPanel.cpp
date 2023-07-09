@@ -172,6 +172,8 @@ static void DrawVec3Control(const std::string& label, //TODO can be replaced wit
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T, typename UIFunction>
+requires TRAP::IsComponent<T> && std::is_invocable_r_v<void, UIFunction, T&>
+// requires TRAP::IsComponent<T> && std::is_invocable_r_v<void, UIFunction, T&>
 void DrawComponent(const std::string& name, TRAP::Entity& entity, UIFunction func) //TODO name can be replaced by std::string_view
 {
 	static constexpr ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap |
@@ -188,7 +190,7 @@ void DrawComponent(const std::string& name, TRAP::Entity& entity, UIFunction fun
 		const bool open = ImGui::TreeNodeEx(reinterpret_cast<void*>(typeid(T).hash_code()), treeNodeFlags, "%s", name.c_str());
 		ImGui::PopStyleVar();
 		bool removeComponent = false;
-		if(!std::is_same_v<T, TRAP::TransformComponent>)
+		if(!std::same_as<T, TRAP::TransformComponent>)
 		{
 			ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
 			if (ImGui::Button(":", ImVec2{ lineHeight, lineHeight }))
@@ -209,7 +211,7 @@ void DrawComponent(const std::string& name, TRAP::Entity& entity, UIFunction fun
 			func(component);
 			ImGui::TreePop();
 		}
-		if(!std::is_same_v<T, TRAP::TransformComponent>)
+		if(!std::same_as<T, TRAP::TransformComponent>)
 		{
 			if (removeComponent)
 				entity.RemoveComponent<T>();
@@ -382,6 +384,7 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires TRAP::IsComponent<T>
 void TRAP::SceneGraphPanel::DisplayAddComponentEntry(const std::string& entryName)
 {
 	if(!m_selectionContext.HasComponent<T>())

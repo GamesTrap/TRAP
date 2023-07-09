@@ -4179,3 +4179,7 @@ SITREP 07/02/2023|23w26a4
 SITREP 07/08/2023|23w27a1
     - Changed TRAP Engine version to 23w27a1(0.9.57)
     - Added constexpr to functions where possible now since C++20 ~>180 mins
+
+SITREP 07/09/2023|23w27a2
+    - Changed TRAP Engine version to 23w27a2(0.9.58)
+    - Addded concepts/requires to template functions ~>60 mins

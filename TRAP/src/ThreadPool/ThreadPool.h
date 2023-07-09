@@ -52,6 +52,7 @@ namespace TRAP
 		/// <param name="f">Functor to work on.</param>
 		/// <param name="args">Optional arguments.</param>
 		template<typename F, typename... Args>
+		requires std::invocable<F, Args...>
 		void EnqueueWork(F&& f, Args&&... args);
 
 		/// <summary>
@@ -63,6 +64,7 @@ namespace TRAP
 		/// <param name="args">Optional arguments.</param>
 		/// <returns>Future for the result of the given functor.</returns>
 		template<typename F, typename... Args>
+		requires std::invocable<F, Args...>
 		[[nodiscard]] auto EnqueueTask(F&& f, Args&&... args) -> std::future<std::invoke_result_t<F, Args...>>;
 
 	private:
@@ -84,6 +86,7 @@ namespace TRAP
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename F, typename ... Args>
+requires std::invocable<F, Args...>
 void TRAP::ThreadPool::EnqueueWork(F&& f, Args&&... args)
 {
 	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
@@ -106,6 +109,7 @@ void TRAP::ThreadPool::EnqueueWork(F&& f, Args&&... args)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename F, typename ... Args>
+requires std::invocable<F, Args...>
 [[nodiscard]] auto TRAP::ThreadPool::EnqueueTask(F&& f, Args&&... args) -> std::future<std::invoke_result_t<F, Args...>>
 {
 	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);

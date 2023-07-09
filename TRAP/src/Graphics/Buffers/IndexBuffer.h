@@ -126,6 +126,7 @@ namespace TRAP::Graphics
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New index buffer.</returns>
 		template<typename T>
+		requires std::same_as<T, std::uint16_t> || std::same_as<T, std::uint32_t>
 		[[nodiscard]] static TRAP::Scope<IndexBuffer> Init(const T* indices, uint64_t size, UpdateFrequency updateFrequency);
 
 		/// <summary>
@@ -135,6 +136,7 @@ namespace TRAP::Graphics
 		/// <param name="size">Byte size of the data to upload.</param>
 		/// <param name="offset">Byte offset into the currently used index data.</param>
 		template<typename T>
+		requires std::same_as<T, std::uint16_t> || std::same_as<T, std::uint32_t>
 		void SetDataInternal(const T* indices, uint64_t size, uint64_t offset = 0);
 
 		TRAP::Ref<TRAP::Graphics::Buffer> m_indexBuffer = nullptr;
@@ -155,20 +157,18 @@ constexpr TRAP::Graphics::IndexBuffer::IndexBuffer(const RendererAPI::IndexType 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::same_as<T, std::uint16_t> || std::same_as<T, std::uint32_t>
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Init(const T* const indices, const uint64_t size,
                                                                                          const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	static_assert(std::is_same_v<T, uint16_t> || std::is_same_v<T, uint32_t>,
-	              "Trying to initialize index buffer with wrong index type!");
-
 	RendererAPI::IndexType indexType = {};
 	if(indices)
 	{
-		if constexpr(std::is_same_v<T, uint16_t>)
+		if constexpr(std::same_as<T, uint16_t>)
 			indexType = RendererAPI::IndexType::UInt16;
-		else if constexpr(std::is_same_v<T, uint32_t>)
+		else if constexpr(std::same_as<T, uint32_t>)
 			indexType = RendererAPI::IndexType::UInt32;
 	}
 	else
@@ -200,13 +200,11 @@ template<typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
+requires std::same_as<T, std::uint16_t> || std::same_as<T, std::uint32_t>
 void TRAP::Graphics::IndexBuffer::SetDataInternal(const T* const indices, const uint64_t size,
                                                   const uint64_t offset)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-	static_assert(std::is_same_v<T, uint16_t> || std::is_same_v<T, uint32_t>,
-	              "Trying to initialize index buffer with wrong index type!");
 
 	TRAP_ASSERT(indices, "IndexBuffer::SetDataInternal(): Indices is nullptr!");
 	TRAP_ASSERT(size + offset <= m_indexBuffer->GetSize(), "IndexBuffer::SetDataInternal(): Out of bounds!");
@@ -218,9 +216,9 @@ void TRAP::Graphics::IndexBuffer::SetDataInternal(const T* const indices, const 
 	std::copy_n(indices, size / sizeof(T), static_cast<T*>(desc.MappedData));
 	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_token);
 
-	if constexpr(std::is_same_v<T, uint16_t>)
+	if constexpr(std::same_as<T, uint16_t>)
 		m_indexType = RendererAPI::IndexType::UInt16;
-	else if constexpr(std::is_same_v<T, uint32_t>)
+	else if constexpr(std::same_as<T, uint32_t>)
 		m_indexType = RendererAPI::IndexType::UInt32;
 }
 

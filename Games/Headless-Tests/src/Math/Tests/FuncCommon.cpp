@@ -15,6 +15,12 @@ namespace FuncCommon
 //-------------------------------------------------------------------------------------------------------------------//
 
     template<typename T>
+    concept ArithmeticOrVector = std::integral<T> || std::floating_point<T> || TRAP::Math::IsVec<T>;
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+    template<typename T>
+    requires ArithmeticOrVector<T>
     struct Type
     {
         T Value;
@@ -241,6 +247,7 @@ namespace FuncCommon
 //-------------------------------------------------------------------------------------------------------------------//
 
     template<typename T, typename B>
+    requires ArithmeticOrVector<T> && ArithmeticOrVector<B>
     struct MixEntry
     {
         T x;
@@ -459,6 +466,7 @@ namespace FuncCommon
 //-------------------------------------------------------------------------------------------------------------------//
 
     template<typename EDGE, typename VEC>
+    requires ArithmeticOrVector<EDGE> && TRAP::Math::IsVec<VEC>
     struct StepEntry
     {
         EDGE edge;

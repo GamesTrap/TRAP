@@ -17,6 +17,7 @@ namespace TRAP::INTERNAL
 		/// <param name="format">Color format of the pixel data.</param>
 		/// <param name="pixelData">Raw pixel data.</param>
 		template<typename T>
+		requires std::same_as<T, std::uint8_t> || std::same_as<T, std::uint16_t> || std::same_as<T, float>
 		CustomImage(std::filesystem::path filepath, uint32_t width, uint32_t height, ColorFormat format,
 		            std::vector<T> pixelData);
 		/// <summary>
@@ -59,13 +60,11 @@ namespace TRAP::INTERNAL
 }
 
 template<typename T>
+requires std::same_as<T, std::uint8_t> || std::same_as<T, std::uint16_t> || std::same_as<T, float>
 TRAP::INTERNAL::CustomImage::CustomImage(std::filesystem::path filepath, const uint32_t width, const uint32_t height,
                                          const ColorFormat format, std::vector<T> pixelData)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
-
-	static_assert(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
-	              std::is_same<T, float>::value, "Invalid type!");
 
 	if (format == ColorFormat::NONE)
 	{
@@ -85,12 +84,12 @@ TRAP::INTERNAL::CustomImage::CustomImage(std::filesystem::path filepath, const u
 	m_colorFormat = format;
 	m_filepath = std::move(filepath);
 
-	if constexpr(std::is_same<T, float>::value)
+	if constexpr(std::same_as<T, float>)
 	{
 		m_isHDR = true;
 		m_dataHDR = std::move(pixelData);
 	}
-	else if constexpr (std::is_same<T, uint16_t>::value)
+	else if constexpr (std::same_as<T, uint16_t>)
 	{
 		m_isHDR = false;
 		m_data2Byte = std::move(pixelData);

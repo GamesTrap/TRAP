@@ -23,6 +23,9 @@ namespace TRAP::Utils
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	template<typename T>
+	concept Hashable = requires(T obj) { {std::hash<T>{}(obj) } -> std::convertible_to<std::size_t>; };
+
 	/// <summary>
 	/// Called repeatedly to incrementally create a hash value from several variables.
 	/// Based on https://www.boost.org/doc/libs/1_55_0/doc/html/hash/reference.html#boost.hash_combine
@@ -31,6 +34,7 @@ namespace TRAP::Utils
 	/// <param name="v">Value to hash.</param>
 	/// <param name="rest">Optional variadic for more values.</param>
 	template<typename T, typename... Rest>
+	requires (Hashable<T> && ... && Hashable<Rest>)
 	constexpr void HashCombine(std::size_t& seed, const T& v, Rest... rest) noexcept
 	{
 		seed ^= std::hash<T>()(v) + 0x9E3779B9u + (seed << 6u) + (seed >> 2u);

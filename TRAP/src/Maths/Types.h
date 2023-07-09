@@ -2,12 +2,13 @@
 #define TRAP_TYPES_H
 
 #include <cstdint>
+#include <concepts>
 
 namespace TRAP::Math
 {
 	template<uint32_t L, typename T> struct Vec;
 	template<uint32_t C, uint32_t R, typename T> struct Mat;
-	template<typename T> struct tQuat;
+	template<typename T> requires std::is_arithmetic_v<T> struct tQuat;
 
 	template <typename T> using tVec2 = Vec<2, T>;
 	template <typename T> using tVec3 = Vec<3, T>;
@@ -71,6 +72,62 @@ namespace TRAP::Math
 	using Quat  = tQuat<float>;
 	using Quatf = tQuat<float>;
 	using Quatd = tQuat<double>;
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	//-------------------------------------------------------------------------------------------------------------------//
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	//Concepts
+
+	/// <summary>
+	/// Concept which evaluates to true if T is of type TRAP::Math::tVec2<>
+	/// </summary>
+	template<typename T>
+	concept IsVec2 = std::same_as<T, tVec2<typename T::valueType>>;
+
+	/// <summary>
+	/// Concept which evaluates to true if T is of type TRAP::Math::tVec3<>
+	/// </summary>
+	template<typename T>
+	concept IsVec3 = std::same_as<T, tVec3<typename T::valueType>>;
+
+	/// <summary>
+	/// Concept which evaluates to true if T is of type TRAP::Math::tVec4<>
+	/// </summary>
+	template<typename T>
+	concept IsVec4 = std::same_as<T, tVec4<typename T::valueType>>;
+
+	/// <summary>
+	/// Concept which evaluates to true if T is any of type
+	/// TRAP::Math::tVec2<>, TRAP::Math::tVec3<> or TRAP::Math::tVec4<>
+	/// </summary>
+	template<typename T>
+	concept IsVec = IsVec2<T> || IsVec3<T> || IsVec4<T>;
+
+	/// <summary>
+	/// Concept which evaluates to true if T is of type TRAP::Math::tMat3<>
+	/// </summary>
+	template<typename T>
+	concept IsMat3 = std::same_as<T, tMat3<typename T::valueType>>;
+
+	/// <summary>
+	/// Concept which evaluates to true if T is of type TRAP::Math::tMat4<>
+	/// </summary>
+	template<typename T>
+	concept IsMat4 = std::same_as<T, tMat4<typename T::valueType>>;
+
+	/// <summary>
+	/// Concept which evaluates to true if T is any of type
+	/// TRAP::Math::tMat3<> or TRAP::Math::tMat4<>
+	/// </summary>
+	template<typename T>
+	concept IsMat = IsMat3<T> || IsMat4<T>;
+
+	/// <summary>
+	/// Concept which evaluates to true if T is of type TRAP::Math::tQuat<>
+	/// </summary>
+	template<typename T>
+	concept IsQuat = std::same_as<T, tQuat<typename T::valueType>>;
 }
 
 #endif /*TRAP_TYPES_H*/

@@ -234,8 +234,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>A random integer number in a [from; to] range.</returns>
         template<typename T>
-        [[nodiscard]] static typename std::enable_if<INTERNAL::IsUniformInt<T>::value, T>::type
-    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
+        requires INTERNAL::IsUniformInt<T>
+        [[nodiscard]] static T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -252,8 +252,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>A random real number in a [from; to] range.</returns>
         template<typename T>
-        [[nodiscard]] static typename std::enable_if<INTERNAL::IsUniformReal<T>::value, T>::type
-    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
+        requires INTERNAL::IsUniformReal<T>
+        [[nodiscard]] static T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -270,8 +270,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>A random byte number in a [from; to] range.</returns>
         template<typename T>
-        [[nodiscard]] static typename std::enable_if<INTERNAL::IsByte<T>::value, T>::type
-    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
+        requires INTERNAL::IsByte<T>
+        [[nodiscard]] static T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -295,13 +295,9 @@ namespace TRAP::Utils
                  typename A,
                  typename B,
                  typename C = typename std::common_type<A, B>::type>
-        [[nodiscard]] static typename std::enable_if<std::is_same<Key, Common>::value &&
-                                                     INTERNAL::IsSupportedNumber<A>::value &&
-                                                     INTERNAL::IsSupportedNumber<B>::value &&
-                                                     //Prevent implicit type conversion from singed to unsigned types
-                                                     std::is_signed<A>::value != std::is_unsigned<B>::value, C>::type
-    	Get(A from = std::numeric_limits<A>::min(),
-            B to = std::numeric_limits<B>::max())
+        requires (std::same_as<Key, Common> && INTERNAL::IsSupportedNumber<A> &&
+                  INTERNAL::IsSupportedNumber<B> && std::is_signed_v<A> != std::is_unsigned_v<B>)
+        [[nodiscard]] static C Get(A from = std::numeric_limits<A>::min(), B to = std::numeric_limits<B>::max())
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -315,8 +311,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>A random character in a [from; to] range.</returns>
         template<typename T>
-        [[nodiscard]] static typename std::enable_if<INTERNAL::IsSupportedCharacter<T>::value, T>::type
-    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
+        requires INTERNAL::IsSupportedCharacter<T>
+        [[nodiscard]] static T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -336,8 +332,8 @@ namespace TRAP::Utils
         /// </param>
         /// <returns>'true' with 'probability' probability ('false' otherwise).</returns>
         template<typename T>
-        [[nodiscard]] static typename std::enable_if<std::is_same<T, bool>::value, bool>::type
-    	Get(const double probability = 0.5)
+        requires std::same_as<T, bool>
+        [[nodiscard]] static bool Get(const double probability = 0.5)
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -368,8 +364,8 @@ namespace TRAP::Utils
         /// <param name="last">Range of elements.</param>
         /// <returns>Random iterator from [first, last) range.</returns>
         template<typename InputIt>
-        [[nodiscard]] static typename std::enable_if<INTERNAL::IsIterator<InputIt>::value, InputIt>::type
-    	Get(InputIt first, InputIt last)
+        requires INTERNAL::IsIterator<InputIt>::value
+        [[nodiscard]] static InputIt Get(InputIt first, InputIt last)
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -386,10 +382,8 @@ namespace TRAP::Utils
         /// <param name="container">Container with elements.</param>
         /// <returns>Random iterator from container.</returns>
         template<typename Container>
-        [[nodiscard]] static auto Get(Container& container) ->
-            typename std::enable_if<INTERNAL::IsIterator<
-            decltype(std::begin(container))>::value,
-    		decltype(std::begin(container))>::type
+        requires requires (Container& container) {INTERNAL::IsIterator<decltype(std::begin(container))>::value; }
+        [[nodiscard]] static decltype(Container::iterator) Get(Container& container)
         {
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -695,8 +689,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>Random integer number in a [from; to] range.</returns>
         template<typename T>
-        [[nodiscard]] static typename std::enable_if<INTERNAL::IsUniformInt<T>::value, T>::type
-    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
+        requires INTERNAL::IsUniformInt<T>
+        [[nodiscard]] static T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -713,8 +707,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>Random real number in a [from; to] range.</returns>
         template<typename T>
-        [[nodiscard]] static typename std::enable_if<INTERNAL::IsUniformReal<T>::value, T>::type
-    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
+        requires INTERNAL::IsUniformReal<T>
+        [[nodiscard]] static T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -731,8 +725,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>Random byte number in a [from; to] range.</returns>
         template<typename T>
-        [[nodiscard]] static typename std::enable_if<INTERNAL::IsByte<T>::value, T>::type
-    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
+        requires INTERNAL::IsByte<T>
+        [[nodiscard]] static T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -756,12 +750,9 @@ namespace TRAP::Utils
                  typename A,
                  typename B,
                  typename C = typename std::common_type<A, B>::type>
-        [[nodiscard]] static typename std::enable_if<std::is_same<Key, Common>::value &&
-                                       INTERNAL::IsSupportedNumber<A>::value &&
-                                       INTERNAL::IsSupportedNumber<B>::value &&
-			                           //Prevent implicit type conversion from singed to unsigned types
-			                           std::is_signed<A>::value != std::is_unsigned<B>::value, C>::type
-    	Get(A from = std::numeric_limits<A>::min(), B to = std::numeric_limits<B>::max())
+        requires (std::same_as<Key, Common> && INTERNAL::IsSupportedNumber<A> &&
+                  INTERNAL::IsSupportedNumber<B> && std::is_signed_v<A> != std::is_unsigned_v<B>)
+        [[nodiscard]] static C Get(A from = std::numeric_limits<A>::min(), B to = std::numeric_limits<B>::max())
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -775,8 +766,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>Random character in a [from; to] range.</returns>
         template<typename T>
-        [[nodiscard]] static typename std::enable_if<INTERNAL::IsSupportedCharacter<T>::value, T>::type
-    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
+        requires INTERNAL::IsSupportedCharacter<T>
+        [[nodiscard]] static T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -796,8 +787,8 @@ namespace TRAP::Utils
         /// </param>
         /// <returns>'True' with 'probability' probability ('False' otherwise).</returns>
         template<typename T>
-        [[nodiscard]] static typename std::enable_if<std::is_same<T, bool>::value, bool>::type
-    	Get(const double probability = 0.5)
+        requires std::same_as<T, bool>
+        [[nodiscard]] static bool Get(const double probability = 0.5)
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -826,8 +817,8 @@ namespace TRAP::Utils
         /// <param name="last">Range of elements.</param>
         /// <returns>Random iterator from [first, last) range.</returns>
         template<typename InputIt>
-        [[nodiscard]] static typename std::enable_if<INTERNAL::IsIterator<InputIt>::value, InputIt>::type
-    	Get(InputIt first, InputIt last)
+        requires INTERNAL::IsIterator<InputIt>::value
+        [[nodiscard]] static InputIt Get(InputIt first, InputIt last)
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -844,9 +835,8 @@ namespace TRAP::Utils
         /// <param name="container">Container with elements.</param>
         /// <returns>Random iterator from container.</returns>
         template<typename Container>
-        [[nodiscard]] static auto Get(Container& container) ->
-            typename std::enable_if<INTERNAL::IsIterator<decltype(std::begin(container))>::value,
-    		decltype(std::begin(container))>::type
+        requires requires (Container& container) {INTERNAL::IsIterator<decltype(std::begin(container))>::value;}
+        [[nodiscard]] static Container::iterator Get(Container& container)
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -1127,8 +1117,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>Random integer number in a [from; to] range.</returns>
         template<typename T>
-        [[nodiscard]] typename std::enable_if<INTERNAL::IsUniformInt<T>::value, T>::type
-    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
+        requires INTERNAL::IsUniformInt<T>
+        [[nodiscard]] T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -1145,8 +1135,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>Random real number in a [from; to] range.</returns>
         template<typename T>
-        [[nodiscard]] typename std::enable_if<INTERNAL::IsUniformReal<T>::value, T>::type
-    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
+        requires INTERNAL::IsUniformReal<T>
+        [[nodiscard]] T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -1163,8 +1153,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>Random byte number in a [from; to] range.</returns>
         template<typename T>
-        [[nodiscard]] typename std::enable_if<INTERNAL::IsByte<T>::value, T>::type
-    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
+        requires INTERNAL::IsByte<T>
+        [[nodiscard]] T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -1188,12 +1178,9 @@ namespace TRAP::Utils
                  typename A,
                  typename B,
                  typename C = typename std::common_type<A, B>::type>
-        [[nodiscard]] typename std::enable_if<std::is_same<Key, Common>::value &&
-                                INTERNAL::IsSupportedNumber<A>::value &&
-                                INTERNAL::IsSupportedNumber<B>::value &&
-			                    //Prevent implicit type conversion from singed to unsigned types
-			                    std::is_signed<A>::value != std::is_unsigned<B>::value, C>::type
-    	Get(A from = std::numeric_limits<A>::min(), B to = std::numeric_limits<B>::max())
+        requires (std::same_as<Key, Common> && INTERNAL::IsSupportedNumber<A> &&
+                  INTERNAL::IsSupportedNumber<B> && std::is_signed_v<A> != std::is_unsigned_v<B>)
+        [[nodiscard]] C Get(A from = std::numeric_limits<A>::min(), B to = std::numeric_limits<B>::max())
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -1207,8 +1194,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>Random character in a [from; to] range.</returns>
         template<typename T>
-        [[nodiscard]] typename std::enable_if<INTERNAL::IsSupportedCharacter<T>::value, T>::type
-    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
+        requires INTERNAL::IsSupportedCharacter<T>
+        [[nodiscard]] T Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -1229,8 +1216,8 @@ namespace TRAP::Utils
         /// </param>
         /// <returns>'true' with 'probability' probability ('false' otherwise).</returns>
         template<typename T>
-        [[nodiscard]] typename std::enable_if<std::is_same<T, bool>::value, bool>::type
-    	Get(const double probability = 0.5)
+        requires std::same_as<T, bool>
+        [[nodiscard]] bool Get(const double probability = 0.5)
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -1259,8 +1246,8 @@ namespace TRAP::Utils
         /// <param name="last">Range of elements.</param>
         /// <returns>Random iterator from [first, last) range.</returns>
         template<typename InputIt>
-        [[nodiscard]] typename std::enable_if<INTERNAL::IsIterator<InputIt>::value, InputIt>::type
-    	Get(InputIt first, InputIt last)
+        requires INTERNAL::IsIterator<InputIt>::value
+        [[nodiscard]] InputIt Get(InputIt first, InputIt last)
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -1278,9 +1265,8 @@ namespace TRAP::Utils
         /// <param name="container">Container with elements.</param>
         /// <returns>Random iterator from container.</returns>
         template<typename Container>
-        [[nodiscard]] auto Get(Container& container) ->
-            typename std::enable_if<INTERNAL::IsIterator<decltype(std::begin(container))>::value,
-    		decltype(std::begin(container))>::type
+        requires requires (Container& container) {INTERNAL::IsIterator<decltype(std::begin(container))>::value;}
+        [[nodiscard]] Container::iterator Get(Container& container)
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 

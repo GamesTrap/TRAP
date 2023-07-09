@@ -5,6 +5,7 @@
 namespace ScalarCommon
 {
     template<typename T>
+    requires std::floating_point<T>
     int32_t TestMin()
     {
         int32_t error = 0;
@@ -20,6 +21,7 @@ namespace ScalarCommon
 //-------------------------------------------------------------------------------------------------------------------//
 
     template<typename T>
+    requires std::floating_point<T>
     int32_t TestMinNaN()
     {
         int32_t error = 0;
@@ -35,6 +37,7 @@ namespace ScalarCommon
 //-------------------------------------------------------------------------------------------------------------------//
 
     template<typename T>
+    requires std::floating_point<T>
     int32_t TestMax()
     {
         int32_t error = 0;
@@ -50,6 +53,7 @@ namespace ScalarCommon
 //-------------------------------------------------------------------------------------------------------------------//
 
     template<typename T>
+    requires std::floating_point<T>
     int32_t TestMaxNaN()
     {
         int32_t error = 0;
