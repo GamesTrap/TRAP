@@ -15,7 +15,7 @@ namespace TRAP::Utils::Memory
 	/// given parameters endianness.
 	/// </summary>
 	/// <param name="t">Primitive data type.</param>
-	inline constexpr static void SwapBytes(std::integral auto& t)
+	inline constexpr void SwapBytes(std::integral auto& t)
 	{
 		t = std::byteswap(t);
 	}
@@ -30,7 +30,7 @@ namespace TRAP::Utils::Memory
 	/// <param name="end">End of the container.</param>
 	template<typename Iter>
 	requires std::integral<typename std::iterator_traits<Iter>::value_type>
-	inline constexpr static void SwapBytes(Iter begin, Iter end)
+	inline constexpr void SwapBytes(Iter begin, Iter end)
 	{
 		for(; begin != end; ++begin)
 			SwapBytes(*begin);
@@ -46,7 +46,7 @@ namespace TRAP::Utils::Memory
 	/// <returns>Converted bytes.</returns>
 	template<typename T>
 	requires (std::unsigned_integral<T> && !std::same_as<T, uint8_t>)
-	[[nodiscard]] inline static constexpr T ConvertByte(const uint8_t* const source)
+	[[nodiscard]] inline constexpr T ConvertByte(const uint8_t* const source)
 	{
 		if constexpr (sizeof(T) == 2)
 		{

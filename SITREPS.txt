@@ -4183,3 +4183,4 @@ SITREP 07/08/2023|23w27a1
 SITREP 07/09/2023|23w27a2
     - Changed TRAP Engine version to 23w27a2(0.9.58)
     - Addded concepts/requires to template functions ~>60 mins
+    - Removed static from free standing constexpr functions in headers ~<5 mins

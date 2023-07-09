@@ -12,7 +12,7 @@ namespace discord
 
 namespace TRAP::Utils::Discord
 {
-    static constexpr int64_t TRAPDiscordAppID = 639903785971613728;
+    constexpr int64_t TRAPDiscordAppID = 639903785971613728;
 
     /// <summary>
     /// Activity used by Discord Game SDK.

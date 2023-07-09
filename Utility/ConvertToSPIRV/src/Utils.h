@@ -230,7 +230,7 @@ namespace std
 
 template<typename T>
 requires (std::unsigned_integral<T> && !std::same_as<T, uint8_t>)
-[[nodiscard]] inline static constexpr T ConvertByte(const uint8_t* const source)
+[[nodiscard]] inline constexpr T ConvertByte(const uint8_t* const source)
 {
     if constexpr (sizeof(T) == 2)
     {
