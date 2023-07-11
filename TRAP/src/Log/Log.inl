@@ -88,7 +88,7 @@ void TRAP::Log::Warn(Args&& ... args)
 		std::lock_guard<std::mutex> lock(m_mtx);
 #if !defined(TRAP_RELEASE)
 		if ((m_importance & Level::Warn) != Level::None)
-			fmt::print(fg(fmt::color::yellow), "{}\n", result);
+			fmt::print(std::cerr, "{}\n", fmt::styled(result, fmt::fg(fmt::color::yellow)));
 #endif
 
 #ifdef TRACY_ENABLE
@@ -112,7 +112,7 @@ void TRAP::Log::Error(Args&& ... args)
 		std::lock_guard<std::mutex> lock(m_mtx);
 #if !defined(TRAP_RELEASE)
 		if ((m_importance & Level::Error) != Level::None)
-			fmt::print(fg(fmt::color::red), "{}\n", result);
+			fmt::print(std::cerr, "{}\n", fmt::styled(result, fmt::fg(fmt::color::red)));
 #endif
 
 #ifdef TRACY_ENABLE
@@ -136,7 +136,7 @@ void TRAP::Log::Critical(Args&& ... args)
 		std::lock_guard<std::mutex> lock(m_mtx);
 #if !defined(TRAP_RELEASE)
 		if ((m_importance & Level::Critical) != Level::None)
-			fmt::print(fg(fmt::color::dark_red), "{}\n", result);
+			fmt::print(std::cerr, "{}\n", fmt::styled(result, fmt::fg(fmt::color::dark_red)));
 #endif
 
 #ifdef TRACY_ENABLE
