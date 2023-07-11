@@ -110,18 +110,18 @@ namespace TypeMat3
             const TRAP::Math::Mat3 inverse = TRAP::Math::Inverse(m);
             const TRAP::Math::Mat3 identity = m * inverse;
 
-            error += TRAP::Math::All(TRAP::Math::Equal(identity[0], TRAP::Math::Vec3(1.0f, 0.0f, 0.0f), TRAP::Math::Vec3(0.01f))) ? 0 : 1;
-            error += TRAP::Math::All(TRAP::Math::Equal(identity[1], TRAP::Math::Vec3(0.0f, 1.0f, 0.0f), TRAP::Math::Vec3(0.01f))) ? 0 : 1;
-            error += TRAP::Math::All(TRAP::Math::Equal(identity[2], TRAP::Math::Vec3(0.0f, 0.0f, 1.0f), TRAP::Math::Vec3(0.01f))) ? 0 : 1;
+            error += TRAP::Math::All(TRAP::Math::Equal(identity[0], TRAP::Math::XAxis<float>(), TRAP::Math::Vec3(0.01f))) ? 0 : 1;
+            error += TRAP::Math::All(TRAP::Math::Equal(identity[1], TRAP::Math::YAxis<float>(), TRAP::Math::Vec3(0.01f))) ? 0 : 1;
+            error += TRAP::Math::All(TRAP::Math::Equal(identity[2], TRAP::Math::ZAxis<float>(), TRAP::Math::Vec3(0.01f))) ? 0 : 1;
         }
 
         {
             const TRAP::Math::Mat3 m(TRAP::Math::Vec3(0.6f, 0.2f, 0.3f), TRAP::Math::Vec3(0.2f, 0.7f, 0.5f), TRAP::Math::Vec3(0.3f, 0.5f, 0.7f));
             const TRAP::Math::Mat3 identity = m / m;
 
-            error += TRAP::Math::All(TRAP::Math::Equal(identity[0], TRAP::Math::Vec3(1.0f, 0.0f, 0.0f), TRAP::Math::Vec3(0.01f))) ? 0 : 1;
-            error += TRAP::Math::All(TRAP::Math::Equal(identity[1], TRAP::Math::Vec3(0.0f, 1.0f, 0.0f), TRAP::Math::Vec3(0.01f))) ? 0 : 1;
-            error += TRAP::Math::All(TRAP::Math::Equal(identity[2], TRAP::Math::Vec3(0.0f, 0.0f, 1.0f), TRAP::Math::Vec3(0.01f))) ? 0 : 1;
+            error += TRAP::Math::All(TRAP::Math::Equal(identity[0], TRAP::Math::XAxis<float>(), TRAP::Math::Vec3(0.01f))) ? 0 : 1;
+            error += TRAP::Math::All(TRAP::Math::Equal(identity[1], TRAP::Math::YAxis<float>(), TRAP::Math::Vec3(0.01f))) ? 0 : 1;
+            error += TRAP::Math::All(TRAP::Math::Equal(identity[2], TRAP::Math::ZAxis<float>(), TRAP::Math::Vec3(0.01f))) ? 0 : 1;
         }
 
         return error;

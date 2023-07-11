@@ -410,7 +410,7 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
                                       TRAP::Math::Conjugate(orientation);
     const TRAP::Math::Vec3 front = { qF.x, qF.y, qF.z };
     const TRAP::Math::Vec3 right = TRAP::Math::Normalize(TRAP::Math::Cross(front,
-                                                                           TRAP::Math::Vec3(0.0f, 1.0f, 0.0f)));
+                                                                           TRAP::Math::YAxis<float>()));
 
     //Keyboard Position
     if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::A))

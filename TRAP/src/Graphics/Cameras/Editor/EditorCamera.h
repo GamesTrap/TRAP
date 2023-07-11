@@ -352,21 +352,21 @@ constexpr void TRAP::Graphics::EditorCamera::SetDistance(const float distance) n
 
 [[nodiscard]] constexpr TRAP::Math::Vec3 TRAP::Graphics::EditorCamera::GetUpDirection() const
 {
-    return GetOrientation() * TRAP::Math::Vec3(0.0f, 1.0f, 0.0f);
+    return GetOrientation() * TRAP::Math::YAxis<float>();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr TRAP::Math::Vec3 TRAP::Graphics::EditorCamera::GetRightDirection() const
 {
-    return GetOrientation() * TRAP::Math::Vec3(1.0f, 0.0f, 0.0f);
+    return GetOrientation() * TRAP::Math::XAxis<float>();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr TRAP::Math::Vec3 TRAP::Graphics::EditorCamera::GetForwardDirection() const
 {
-    return GetOrientation() * TRAP::Math::Vec3(0.0f, 0.0f, -1.0f);
+    return GetOrientation() * -TRAP::Math::ZAxis<float>();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -615,7 +615,7 @@ void TRAPEditorLayer::OnOverlayRender()
 
 		//Get forward direction from camera
 		const TRAP::Math::Quat orientation = TRAP::Math::Quat(transformComponent.Rotation);
-		const TRAP::Math::Vec3 forwardDirection = orientation * TRAP::Math::Vec3(0.0f, 0.0f, 1.0f);
+		const TRAP::Math::Vec3 forwardDirection = orientation * TRAP::Math::ZAxis<float>();
 		colliderProjectionZ = forwardDirection.z * zIndex;
 
 		TRAP::Graphics::Renderer2D::BeginScene(camera.GetComponent<TRAP::CameraComponent>().Camera,

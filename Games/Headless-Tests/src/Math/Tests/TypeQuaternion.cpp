@@ -394,7 +394,7 @@ namespace TypeQuaternion
     {
         int32_t error = 0;
 
-        TRAP::Math::Quat a = TRAP::Math::AngleAxis(0.0f, TRAP::Math::Vec3(0.0f, 0.0f, 1.0f));
+        TRAP::Math::Quat a = TRAP::Math::AngleAxis(0.0f, TRAP::Math::ZAxis<float>());
         TRAP::Math::Quat b = TRAP::Math::AngleAxis(TRAP::Math::PI<float>() * 0.5f, TRAP::Math::Vec3(0, 0, 1));
         TRAP::Math::Quat c = TRAP::Math::Mix(a, b, 0.5f);
         TRAP::Math::Quat d = TRAP::Math::AngleAxis(TRAP::Math::PI<float>() * 0.25f, TRAP::Math::Vec3(0, 0, 1));
@@ -502,7 +502,7 @@ namespace TypeQuaternion
         float xz90Angle = TRAP::Math::Angle(xz90Rot);
         error += TRAP::Math::Equal(xz90Angle, TRAP::Math::PI<float>() * 0.25f, epsilon) ? 0 : 1;
 
-        [[maybe_unused]] TRAP::Math::Quat almostId = TRAP::Math::SLerp(id, TRAP::Math::AngleAxis(0.1f, TRAP::Math::Vec3(0.0f, 1.0f, 0.0f)), 0.5f);
+        [[maybe_unused]] TRAP::Math::Quat almostId = TRAP::Math::SLerp(id, TRAP::Math::AngleAxis(0.1f, TRAP::Math::YAxis<float>()), 0.5f);
 
         {
             TRAP::Math::Quat a(-1, 0, 0, 0);
