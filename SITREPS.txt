@@ -4190,3 +4190,4 @@ SITREP 07/11/2023|23w28a1
     - TRAP::Log now prints warnings, errors and critical errors to std::cerr ~<5 mins
     - RendererAPI Added size parameter to push constants to allow for validation with shader reflection ~<15 mins
     - Use predefined TRAP::Math::X/Y/ZAxis<T>() instead of manual Vec3 construction ~<5 mins
+    - Shader fixed typo in #define when using user defined macros ~<5 mins

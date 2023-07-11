@@ -390,7 +390,7 @@ bool TRAP::Graphics::Shader::Reload()
 		if(userMacros != nullptr)
 		{
 			for(const Macro& macro : *userMacros)
-				preprocessed += fmt::format("#defnie {} {}\n", macro.Definition, macro.Value);
+				preprocessed += fmt::format("#define {} {}\n", macro.Definition, macro.Value);
 		}
 
 		//Add preprocessed macros to shader
