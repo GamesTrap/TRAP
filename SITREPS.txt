@@ -4188,3 +4188,4 @@ SITREP 07/09/2023|23w27a2
 SITREP 07/11/2023|23w28a1
     - Changed TRAP Engine version to 23w28a1(0.9.59)
     - TRAP::Log now prints warnings, errors and critical errors to std::cerr ~<5 mins
+    - RendererAPI Added size parameter to push constants to allow for validation with shader reflection ~<15 mins

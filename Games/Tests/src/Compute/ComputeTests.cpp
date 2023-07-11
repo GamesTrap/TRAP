@@ -114,7 +114,8 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
 
         //Set push constants
         static constexpr float brightness = 1.0f;
-        TRAP::Graphics::RenderCommand::SetPushConstants("BrightnessRootConstant", &brightness, TRAP::Graphics::QueueType::Compute);
+        TRAP::Graphics::RenderCommand::SetPushConstants("BrightnessRootConstant", &brightness, sizeof(brightness),
+                                                        TRAP::Graphics::QueueType::Compute);
 
         //Dispatch work
         TRAP::Graphics::RenderCommand::Dispatch({m_compTex->GetWidth(), m_compTex->GetHeight(), 1});

@@ -575,15 +575,17 @@ void TRAP::Graphics::RenderCommand::Dispatch(const std::array<uint32_t, 3>& work
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::RenderCommand::SetPushConstants(const char* name, const void* data, const QueueType queueType,
+void TRAP::Graphics::RenderCommand::SetPushConstants(const std::string_view name, const void* data,
+                                                     const std::size_t length, const QueueType queueType,
                                                      const Window* const window)
 {
-	RendererAPI::GetRenderer()->BindPushConstants(name, data, queueType, window);
+	RendererAPI::GetRenderer()->BindPushConstants(name, data, length, queueType, window);
 }
 #else
-void TRAP::Graphics::RenderCommand::SetPushConstants(const char* name, const void* data, const QueueType queueType)
+void TRAP::Graphics::RenderCommand::SetPushConstants(const std::string_view name, const void* data,
+                                                     const std::size_t length, const QueueType queueType)
 {
-	RendererAPI::GetRenderer()->BindPushConstants(name, data, queueType);
+	RendererAPI::GetRenderer()->BindPushConstants(name, data, length, queueType);
 }
 #endif /*TRAP_HEADLESS_MODE*/
 

@@ -769,9 +769,10 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="name">Name of the push constant.</param>
 		/// <param name="data">Data to set push constant to.</param>
+		/// <param name="length">Length in bytes of the provided data to set push constant to.</param>
 		/// <param name="queueType">Queue type on which to perform the operation. Default: Graphics.</param>
 		/// <param name="window">Window to set push constant for. Default: Main Window.</param>
-		static void SetPushConstants(const char* name, const void* data,
+		static void SetPushConstants(std::string_view name, const void* data, std::size_t length,
 		                             QueueType queueType = QueueType::Graphics, const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
@@ -780,8 +781,9 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="name">Name of the push constant.</param>
 		/// <param name="data">Data to set push constant to.</param>
+		/// <param name="length">Length in bytes of the provided data to set push constant to.</param>
 		/// <param name="queueType">Queue type on which to perform the operation. Default: Graphics.</param>
-		static void SetPushConstants(const char* name, const void* data,
+		static void SetPushConstants(std::string_view name, const void* data, std::size_t length,
 		                             QueueType queueType = QueueType::Graphics);
 #endif /*TRAP_HEADLESS_MODE*/
 

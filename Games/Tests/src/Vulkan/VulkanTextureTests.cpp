@@ -114,7 +114,7 @@ void VulkanTextureTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
     //Use Push Constants
     //Upload mip level index
-    TRAP::Graphics::RenderCommand::SetPushConstants("SamplerRootConstant", &m_currentMipLevel);
+    TRAP::Graphics::RenderCommand::SetPushConstants("SamplerRootConstant", &m_currentMipLevel, sizeof(m_currentMipLevel));
 
     //Render Quad
     TRAP::Graphics::RenderCommand::DrawIndexed(m_indexBuffer->GetCount());

@@ -9,9 +9,9 @@ TRAP::Graphics::API::VulkanCommandSignature::VulkanCommandSignature(const Render
 	TP_DEBUG(Log::RendererVulkanCommandSignaturePrefix, "Creating CommandSignature");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	for(uint32_t i = 0; i < desc.IndirectArgCount; ++i) //Counting for all types
+	for(const auto& ArgDesc : desc.ArgDescs) //Counting for all types
 	{
-		switch(desc.ArgDescs[i].Type)
+		switch(ArgDesc.Type)
 		{
 		case RendererAPI::IndirectArgumentType::IndirectDraw:
 			m_drawType = RendererAPI::IndirectArgumentType::IndirectDraw;

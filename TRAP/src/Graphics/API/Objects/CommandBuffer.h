@@ -53,16 +53,18 @@ namespace TRAP::Graphics
 		/// <param name="rootSignature">Root signature containing the push constant block.</param>
 		/// <param name="name">Name of the push constant block.</param>
 		/// <param name="constants">Pointer to the constant buffer data.</param>
-		virtual void BindPushConstants(const TRAP::Ref<RootSignature>& rootSignature, const char* name,
-		                               const void* constants) const = 0;
+		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
+		virtual void BindPushConstants(const TRAP::Ref<RootSignature>& rootSignature, std::string_view name,
+		                               const void* constants, std::size_t constantsLength) const = 0;
 		/// <summary>
 		/// Bind push constant buffer data to the command buffer.
 		/// </summary>
 		/// <param name="rootSignature">Root signature containing the push constant block.</param>
 		/// <param name="paramIndex">Index of the push constant block in the RootSignatures descriptors array.</param>
 		/// <param name="constants">Pointer to the constant buffer data.</param>
+		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
 		virtual void BindPushConstantsByIndex(const TRAP::Ref<RootSignature>& rootSignature, uint32_t paramIndex,
-		                                      const void* constants) const = 0;
+		                                      const void* constants, std::size_t constantsLength) const = 0;
 		/// <summary>
 		/// Bind a descriptor set to the command buffer.
 		/// </summary>

@@ -96,12 +96,12 @@ namespace TRAP::Graphics::API
 		/// Retrieve a descriptor via its name.
 		/// </summary>
 		/// <returns>Descriptor if found, nullptr otherwise.</returns>
-		[[nodiscard]] RendererAPI::DescriptorInfo* GetDescriptor(const char* resName);
+		[[nodiscard]] RendererAPI::DescriptorInfo* GetDescriptor(std::string_view resName);
 		/// <summary>
 		/// Retrieve a descriptor via its name.
 		/// </summary>
 		/// <returns>Descriptor if found, nullptr otherwise.</returns>
-		[[nodiscard]] const RendererAPI::DescriptorInfo* GetDescriptor(const char* resName) const;
+		[[nodiscard]] const RendererAPI::DescriptorInfo* GetDescriptor(std::string_view resName) const;
 	private:
 		TRAP::Ref<VulkanDevice> m_device;
 

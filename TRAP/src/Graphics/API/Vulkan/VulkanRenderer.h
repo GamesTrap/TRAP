@@ -744,10 +744,11 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="name">Name of the push constant block.</param>
 		/// <param name="constantsData">Pointer to the constant buffer data.</param>
+		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		/// <param name="window">Window to bind the push constants for.</param>
-		void BindPushConstants(const char* name, const void* constantsData,
-		                       QueueType queueType /*= QueueType::Graphics*/,
+		void BindPushConstants(std::string_view name, const void* constantsData,
+		                       std::size_t constantsLength, QueueType queueType /*= QueueType::Graphics*/,
 							   const Window* window) const override;
 #else
 		/// <summary>
@@ -757,9 +758,10 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="name">Name of the push constant block.</param>
 		/// <param name="constantsData">Pointer to the constant buffer data.</param>
+		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
-		void BindPushConstants(const char* name, const void* constantsData,
-		                       QueueType queueType /*= QueueType::Graphics*/) const override;
+		void BindPushConstants(std::string_view name, const void* constantsData,
+		                       std::size_t constantsLength, QueueType queueType /*= QueueType::Graphics*/) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -767,10 +769,11 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="paramIndex">Index of the push constant block in the RootSignatures descriptors array.</param>
 		/// <param name="constantsData">Pointer to the constant buffer data.</param>
+		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		/// <param name="window">Window to bind the push constants for.</param>
 		void BindPushConstantsByIndex(uint32_t paramIndex, const void* constantsData,
-									  QueueType queueType /*= QueueType::Graphics*/,
+		                              std::size_t constantsLength, QueueType queueType /*= QueueType::Graphics*/,
 									  const Window* window) const override;
 #else
 		/// <summary>
@@ -778,9 +781,10 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="paramIndex">Index of the push constant block in the RootSignatures descriptors array.</param>
 		/// <param name="constantsData">Pointer to the constant buffer data.</param>
+		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		void BindPushConstantsByIndex(uint32_t paramIndex, const void* constantsData,
-									  QueueType queueType /*= QueueType::Graphics*/) const override;
+		                              std::size_t constantsLength, QueueType queueType /*= QueueType::Graphics*/) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>

@@ -70,13 +70,14 @@ TRAP::Graphics::API::VulkanCommandBuffer::VulkanCommandBuffer(TRAP::Ref<VulkanDe
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstants(const TRAP::Ref<RootSignature>& rootSignature,
-                                                                 const char* const name, const void* const constants) const
+                                                                 const std::string_view name, const void* constants,
+																 const std::size_t constantsLength) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(constants, "VulkanCommandBuffer::BindPushConstants(): Constants is nullptr");
 	TRAP_ASSERT(rootSignature, "VulkanCommandBuffer::BindPushConstants(): RootSignature is nullptr");
-	TRAP_ASSERT(name, "VulkanCommandBuffer::BindPushConstants(): Name is nullptr");
+	TRAP_ASSERT(!name.empty(), "VulkanCommandBuffer::BindPushConstants(): Name is empty");
+	TRAP_ASSERT(constants, "VulkanCommandBuffer::BindPushConstants(): Constants are nullptr");
 
 	const Ref<VulkanRootSignature> rSig = std::dynamic_pointer_cast<VulkanRootSignature>(rootSignature);
 
@@ -89,6 +90,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstants(const TRAP::Ref
 	}
 
 	TRAP_ASSERT(desc->Type == RendererAPI::DescriptorType::RootConstant, "VulkanCommandBuffer::BindPushConstants(): Descriptor is not a RootConstant!");
+	TRAP_ASSERT(desc->Size == constantsLength, "VulkanCommandBuffer::BindPushConstants(): Size of constants don't match that of Descriptor!")
 
 	vkCmdPushConstants(m_vkCommandBuffer, rSig->GetVkPipelineLayout(), desc->VkStages, 0, desc->Size, constants);
 }
@@ -96,14 +98,14 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstants(const TRAP::Ref
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstantsByIndex(const TRAP::Ref<RootSignature>& rootSignature,
-	                                                                    const uint32_t paramIndex,
-																		const void* const constants) const
+	                                                                    const uint32_t paramIndex, const void* constants,
+																		const std::size_t constantsLength) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(constants, "VulkanCommandBuffer::BindPushConstantsByIndex(): Constants is nullptr");
 	TRAP_ASSERT(rootSignature, "VulkanCommandBuffer::BindPushConstantsByIndex(): RootSignature is nullptr");
 	TRAP_ASSERT(paramIndex < rootSignature->GetDescriptorCount(), "VulkanCommandBuffer::BindPushConstantsByIndex(): Index out of bounds!");
+	TRAP_ASSERT(constants, "VulkanCommandBuffer::BindPushConstantsByIndex(): Constants are nullptr");
 
 	const RendererAPI::DescriptorInfo* const desc = &rootSignature->GetDescriptors()[paramIndex];
 
@@ -114,6 +116,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstantsByIndex(const TR
 	}
 
 	TRAP_ASSERT(desc->Type == RendererAPI::DescriptorType::RootConstant, "VulkanCommandBuffer::BindPushConstantsByIndex(): Descriptor is not a RootConstant!");
+	TRAP_ASSERT(desc->Size == constantsLength, "VulkanCommandBuffer::BindPushConstantsByIndex(): Size of constants don't match that of Descriptor!");
 
 	vkCmdPushConstants(m_vkCommandBuffer,
 					   std::dynamic_pointer_cast<VulkanRootSignature>(rootSignature)->GetVkPipelineLayout(),

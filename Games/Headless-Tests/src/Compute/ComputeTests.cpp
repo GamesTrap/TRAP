@@ -113,7 +113,8 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
         shader->Use();
 
         static constexpr float brightness = 1.0f;
-        TRAP::Graphics::RenderCommand::SetPushConstants("BrightnessRootConstant", &brightness, TRAP::Graphics::QueueType::Compute);
+        TRAP::Graphics::RenderCommand::SetPushConstants("BrightnessRootConstant", &brightness, sizeof(brightness),
+                                                        TRAP::Graphics::QueueType::Compute);
 
         //Dispatch compute work (local thread group sizes are retrieved through automatic reflection)
         TRAP::Graphics::RenderCommand::Dispatch({m_compTex->GetWidth(), m_compTex->GetHeight(), 1});

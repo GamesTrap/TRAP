@@ -486,11 +486,12 @@ TRAP::Graphics::API::VulkanRootSignature::~VulkanRootSignature()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const char* const resName)
+[[nodiscard]] TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const std::string_view resName)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	const auto it = m_descriptorNameToIndexMap.find(resName);
+	const auto it = std::find_if(m_descriptorNameToIndexMap.cbegin(), m_descriptorNameToIndexMap.cend(),
+	                            [resName](const auto& pair){return pair.first == resName;});
 	if (it != m_descriptorNameToIndexMap.end())
 		return &m_descriptors[it->second];
 
@@ -499,11 +500,12 @@ TRAP::Graphics::API::VulkanRootSignature::~VulkanRootSignature()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const char* const resName) const
+[[nodiscard]] const TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const std::string_view resName) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	const auto it = m_descriptorNameToIndexMap.find(resName);
+	const auto it = std::find_if(m_descriptorNameToIndexMap.cbegin(), m_descriptorNameToIndexMap.cend(),
+	                            [resName](const auto& pair){return pair.first == resName;});
 	if (it != m_descriptorNameToIndexMap.end())
 		return &m_descriptors[it->second];
 

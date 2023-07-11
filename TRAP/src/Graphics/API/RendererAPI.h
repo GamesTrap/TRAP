@@ -855,10 +855,11 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="name">Name of the push constant block.</param>
 		/// <param name="constantsData">Pointer to the constant buffer data.</param>
+		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		/// <param name="window">Window to bind the push constants for.</param>
-		virtual void BindPushConstants(const char* name, const void* constantsData,
-		                               QueueType queueType /*= QueueType::Graphics*/,
+		virtual void BindPushConstants(std::string_view name, const void* constantsData,
+							           std::size_t constantsLength, QueueType queueType /*= QueueType::Graphics*/,
 									   const Window* window) const = 0;
 #else
 		/// <summary>
@@ -868,8 +869,10 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="name">Name of the push constant block.</param>
 		/// <param name="constantsData">Pointer to the constant buffer data.</param>
+		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
-		virtual void BindPushConstants(const char* name, const void* constantsData,
+		virtual void BindPushConstants(std::string_view name, const void* constantsData,
+		                               std::size_t constantsLength,
 		                               QueueType queueType /*= QueueType::Graphics*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
@@ -878,10 +881,11 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="paramIndex">Index of the push constant block in the RootSignatures descriptors array.</param>
 		/// <param name="constantsData">Pointer to the constant buffer data.</param>
+		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		/// <param name="window">Window to bind the push constants for.</param>
 		virtual void BindPushConstantsByIndex(uint32_t paramIndex, const void* constantsData,
-											  QueueType queueType /*= QueueType::Graphics*/,
+										      std::size_t constantsLength, QueueType queueType /*= QueueType::Graphics*/,
 											  const Window* window) const = 0;
 #else
 		/// <summary>
@@ -889,8 +893,10 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="paramIndex">Index of the push constant block in the RootSignatures descriptors array.</param>
 		/// <param name="constantsData">Pointer to the constant buffer data.</param>
+		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		virtual void BindPushConstantsByIndex(uint32_t paramIndex, const void* constantsData,
+		                                      std::size_t constantsLength,
 											  QueueType queueType /*= QueueType::Graphics*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
@@ -2793,8 +2799,6 @@ namespace TRAP::Graphics
 		{
 			//Root signature.
 			TRAP::Ref<TRAP::Graphics::RootSignature> RootSignature{};
-			//Count of indirect arguments
-			uint32_t IndirectArgCount{};
 			//Indirect argument descriptions
 			std::vector<IndirectArgumentDescriptor> ArgDescs{};
 			//Set to true if indirect argument struct should not be aligned to 16 bytes

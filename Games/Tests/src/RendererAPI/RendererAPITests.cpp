@@ -127,7 +127,7 @@ void RendererAPITests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 
 		TRAP::Graphics::ShaderManager::Get("TestPushConstant")->Use();
 
-		TRAP::Graphics::RenderCommand::SetPushConstants("ColorRootConstant", &m_colorData);
+		TRAP::Graphics::RenderCommand::SetPushConstants("ColorRootConstant", &m_colorData, sizeof(m_colorData));
 	}
 	else if(m_pushConstantOrUBO == 2)
 	{
