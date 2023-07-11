@@ -90,7 +90,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstants(const TRAP::Ref
 	}
 
 	TRAP_ASSERT(desc->Type == RendererAPI::DescriptorType::RootConstant, "VulkanCommandBuffer::BindPushConstants(): Descriptor is not a RootConstant!");
-	TRAP_ASSERT(desc->Size == constantsLength, "VulkanCommandBuffer::BindPushConstants(): Size of constants don't match that of Descriptor!")
+	TRAP_ASSERT(desc->Size == constantsLength, "VulkanCommandBuffer::BindPushConstants(): Size of constants don't match that of Descriptor!");
 
 	vkCmdPushConstants(m_vkCommandBuffer, rSig->GetVkPipelineLayout(), desc->VkStages, 0, desc->Size, constants);
 }
