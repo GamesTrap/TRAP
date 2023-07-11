@@ -362,11 +362,11 @@ bool TRAP::Graphics::Shader::Reload()
 		}
 	}
 
-	for(std::size_t i = 0; i < shaders.size(); i++)
+	for(auto& [shaderCode, shaderStage] : shaders)
 	{
-		if (!Utils::String::Contains(Utils::String::ToLower(shaders[i].first), "main"))
+		if (!Utils::String::Contains(Utils::String::ToLower(shaderCode), "main"))
 		{
-			TP_ERROR(Log::ShaderGLSLPrefix, ShaderStageToString(shaders[i].second), " shader couldn't find \"main\" function!");
+			TP_ERROR(Log::ShaderGLSLPrefix, ShaderStageToString(shaderStage), " shader couldn't find \"main\" function!");
 			return false;
 		}
 
@@ -394,7 +394,7 @@ bool TRAP::Graphics::Shader::Reload()
 		}
 
 		//Add preprocessed macros to shader
-		shaders[i].first = preprocessed + shaders[i].first;
+		shaderCode = preprocessed + shaderCode;
 	}
 
 	return true;

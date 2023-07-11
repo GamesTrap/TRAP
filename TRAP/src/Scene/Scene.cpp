@@ -17,11 +17,12 @@
 #include <box2d/b2_fixture.h>
 #include <box2d/b2_polygon_shape.h>
 #include <box2d/b2_circle_shape.h>
+
 #ifdef _MSC_VER
 	#pragma warning(pop)
 #endif /*_MSC_VER*/
 
-[[nodiscard]] static constexpr b2BodyType TRAPRigidbody2DTypeToBox2DBody(TRAP::Rigidbody2DComponent::BodyType bodyType)
+[[nodiscard]] static constexpr b2BodyType TRAPRigidbody2DTypeToBox2DBody(const TRAP::Rigidbody2DComponent::BodyType bodyType)
 {
 	switch(bodyType)
 	{
@@ -114,10 +115,10 @@ static void CopyComponentIfExists([[maybe_unused]] TRAP::ComponentGroup<Componen
 	//Create entities with UID and Tag in newScene for each entity with an UID component in other scene.
 	//Reversed so the entities have the same order as in the original scene.
 	auto UIDView = srcSceneRegistry.view<UIDComponent>();
-	for(auto it = UIDView.rbegin(); it != UIDView.rend(); ++it)
+	for(auto it : std::ranges::reverse_view(UIDView))
 	{
-		Utils::UID uid = srcSceneRegistry.get<UIDComponent>(*it).UID;
-		const auto& name = srcSceneRegistry.get<TagComponent>(*it).Tag;
+		Utils::UID uid = srcSceneRegistry.get<UIDComponent>(it).UID;
+		const auto& name = srcSceneRegistry.get<TagComponent>(it).Tag;
 		Entity newEntity = newScene->CreateEntityWithUID(uid, name);
 		enttMap[uid] = static_cast<entt::entity>(newEntity);
 	}

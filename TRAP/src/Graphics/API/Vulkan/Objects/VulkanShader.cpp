@@ -184,9 +184,9 @@ void TRAP::Graphics::API::VulkanShader::Use()
 		}
 		else //Fast path
 		{
-			for(auto it = m_descriptorSets.rbegin(); it != m_descriptorSets.rend(); ++it)
+			for(auto& m_descriptorSet : std::ranges::reverse_view(m_descriptorSets))
 			{
-				*it = std::move(m_cleanedDescriptorSets[currImageIndex].back());
+				m_descriptorSet = std::move(m_cleanedDescriptorSets[currImageIndex].back());
 				m_cleanedDescriptorSets[currImageIndex].pop_back();
 			}
 		}

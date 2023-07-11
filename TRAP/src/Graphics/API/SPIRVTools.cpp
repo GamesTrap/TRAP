@@ -22,7 +22,7 @@ void ReflectBoundResources(spirv_cross::Compiler& compiler,
 
 		resource.Type = SPIRVtype;
 
-		resource.IsUsed = (usedResources.count(resource.SPIRVCode.ID) != 0);
+		resource.IsUsed = (usedResources.contains(resource.SPIRVCode.ID));
 
 		resource.Set = compiler.get_decoration(resource.SPIRVCode.ID, spv::DecorationDescriptorSet);
 		resource.Binding = compiler.get_decoration(resource.SPIRVCode.ID, spv::DecorationBinding);
@@ -165,7 +165,7 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderResources()
 
 		resource.Type = ResourceType::Inputs;
 
-		resource.IsUsed = usedResources.count(resource.SPIRVCode.ID) != 0;
+		resource.IsUsed = usedResources.contains(resource.SPIRVCode.ID);
 
 		resource.Set = std::numeric_limits<uint32_t>::max(); //Stage inputs dont have sets
 		//Location is the binding point for inputs
@@ -189,7 +189,7 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderResources()
 
 		resource.Type = ResourceType::Outputs;
 
-		resource.IsUsed = usedResources.count(resource.SPIRVCode.ID) != 0;
+		resource.IsUsed = usedResources.contains(resource.SPIRVCode.ID);
 
 		resource.Set = std::numeric_limits<uint32_t>::max();
 		//Location is the binding point for outputs
@@ -233,7 +233,7 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderResources()
 
 		resource.Type = ResourceType::PushConstant;
 
-		resource.IsUsed = usedResources.count(resource.SPIRVCode.ID) != 0;
+		resource.IsUsed = usedResources.contains(resource.SPIRVCode.ID);
 
 		resource.Set = std::numeric_limits<uint32_t>::max(); //Push constants dont have sets
 		resource.Binding = std::numeric_limits<uint32_t>::max(); //Push constants dont have bindings
@@ -304,8 +304,8 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderVariables()
 
 		const spirv_cross::SmallVector<spirv_cross::BufferRange> range = m_compiler.get_active_buffer_ranges(resource.SPIRVCode.ID);
 
-		for(std::size_t j = 0; j < range.size(); ++j)
-			variables[startOfBlock + range[j].index].IsUsed = true;
+		for(const auto& j : range)
+			variables[startOfBlock + j.index].IsUsed = true;
 	}
 
 	m_uniformVariables = variables;

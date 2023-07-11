@@ -4185,9 +4185,12 @@ SITREP 07/09/2023|23w27a2
     - Addded concepts/requires to template functions ~>60 mins
     - Removed static from free standing constexpr functions in headers ~<5 mins
     - Updated ImGuiVulkanBackend ~<20 mins
+
 SITREP 07/11/2023|23w28a1
     - Changed TRAP Engine version to 23w28a1(0.9.59)
     - TRAP::Log now prints warnings, errors and critical errors to std::cerr ~<5 mins
     - RendererAPI Added size parameter to push constants to allow for validation with shader reflection ~<15 mins
     - Use predefined TRAP::Math::X/Y/ZAxis<T>() instead of manual Vec3 construction ~<5 mins
     - Shader fixed typo in #define when using user defined macros ~<5 mins
+    - Replaced reverse iterators with std::ranges::reverse_view() ~<5 mins
+    - SPIRVTools Replaced .count() with .contains() ~<5 mins

@@ -282,11 +282,11 @@ void TRAP::Application::OnEvent(Events::Event& event)
 #endif /*TRAP_HEADLESS_MODE*/
 	dispatcher.Dispatch<Events::FileChangeEvent>(this, &Application::OnFileChangeEvent);
 
-	for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it)
+	for (auto& it : std::ranges::reverse_view(m_layerStack))
 	{
 		if (event.Handled)
 			break;
-		(*it)->OnEvent(event);
+		it->OnEvent(event);
 	}
 }
 
