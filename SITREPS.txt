@@ -4194,3 +4194,8 @@ SITREP 07/11/2023|23w28a1
     - Shader fixed typo in #define when using user defined macros ~<5 mins
     - Replaced reverse iterators with std::ranges::reverse_view() ~<5 mins
     - SPIRVTools Replaced .count() with .contains() ~<5 mins
+
+SITREP 07/12/2023|23w28a2
+    - Changed TRAP Engine version to 23w28a2(0.9.60)
+    - VulkanPhysicalDevice Added support for VkPhysicalDeviceDriverProperties ~<5 mins
+    - VulkanRenderer Changed device and driver logging ~<5 mins

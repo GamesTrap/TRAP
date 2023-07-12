@@ -452,18 +452,19 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 
 	s_ResourceLoader = TRAP::MakeScope<ResourceLoader>();
 
-	const VkPhysicalDeviceProperties devProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties();
+	const VkPhysicalDeviceProperties& devProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties();
+	const VkPhysicalDeviceDriverProperties& devDriverProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceDriverProperties();
 	TP_INFO(Log::RendererVulkanPrefix, "----------------------------------");
-	TP_INFO(Log::RendererVulkanPrefix, "Vulkan:");
-	TP_INFO(Log::RendererVulkanPrefix, "Instance Version: ",
+	TP_INFO(Log::RendererVulkanPrefix, "Vulkan Instance Version: ",
 		VK_VERSION_MAJOR(VulkanInstance::GetInstanceVersion()), '.',
 		VK_VERSION_MINOR(VulkanInstance::GetInstanceVersion()), '.',
 		VK_VERSION_PATCH(VulkanInstance::GetInstanceVersion()));
-	TP_INFO(Log::RendererVulkanPrefix, "Driver Vulkan Version: ", VK_VERSION_MAJOR(devProps.apiVersion), '.',
+	TP_INFO(Log::RendererVulkanPrefix, "Vulkan Device Version: ", VK_VERSION_MAJOR(devProps.apiVersion), '.',
 	        VK_VERSION_MINOR(devProps.apiVersion), '.', VK_VERSION_PATCH(devProps.apiVersion));
-	TP_INFO(Log::RendererVulkanPrefix, "Renderer: ", devProps.deviceName);
-	TP_INFO(Log::RendererVulkanPrefix, "Driver: ", VK_VERSION_MAJOR(devProps.driverVersion), '.',
+	TP_INFO(Log::RendererVulkanPrefix, "Driver Version: ", VK_VERSION_MAJOR(devProps.driverVersion), '.',
 	        VK_VERSION_MINOR(devProps.driverVersion), '.', VK_VERSION_PATCH(devProps.driverVersion));
+	TP_INFO(Log::RendererVulkanPrefix, "Driver: ", devDriverProps.driverName, " (", devDriverProps.driverInfo, ')');
+	TP_INFO(Log::RendererVulkanPrefix, "Renderer: ", devProps.deviceName);
 	TP_INFO(Log::RendererVulkanPrefix, "----------------------------------");
 
 	m_rendererTitle = fmt::format("[Vulkan {}.{}.{}]",

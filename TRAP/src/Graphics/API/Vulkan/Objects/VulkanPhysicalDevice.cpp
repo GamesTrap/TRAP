@@ -24,6 +24,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	  m_physicalDeviceMemoryProperties(),
 	  m_physicalDeviceFeatures(),
 	  m_physicalDeviceFragmentShaderInterlockFeatures(),
+	  m_physicalDeviceDriverProperties(),
 	  m_deviceUUID()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -57,6 +58,13 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	m_physicalDeviceSubgroupProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_PROPERTIES;
 	m_physicalDeviceSubgroupProperties.pNext = nullptr;
 	vkGetPhysicalDeviceProperties2(m_physicalDevice, &props);
+
+	VkPhysicalDeviceProperties2 propsDriver{};
+	propsDriver.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+	propsDriver.pNext = &m_physicalDeviceDriverProperties;
+	m_physicalDeviceDriverProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES;
+	m_physicalDeviceDriverProperties.pNext = nullptr;
+	vkGetPhysicalDeviceProperties2(m_physicalDevice, &propsDriver);
 
 	uint32_t queueFamilyPropertyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevice, &queueFamilyPropertyCount, nullptr);

@@ -83,6 +83,11 @@ namespace TRAP::Graphics::API
 		/// <returns>VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT.</returns>
 		[[nodiscard]] constexpr const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT& GetVkPhysicalDeviceFragmentShaderInterlockFeatures() const noexcept;
 		/// <summary>
+		/// Retrieve the Vulkan physical device driver properties.
+		/// </summary>
+		/// <returns>VkPhysicalDeviceDriverProperties.</returns>
+		[[nodiscard]] constexpr const VkPhysicalDeviceDriverProperties& GetVkPhysicalDeviceDriverProperties() const noexcept;
+		/// <summary>
 		/// Retrieve the Vulkan queue family properties of each queue family.
 		/// </summary>
 		/// <returns>List of VkQueueFamilyProperties.</returns>
@@ -203,6 +208,7 @@ namespace TRAP::Graphics::API
 		VkPhysicalDeviceMemoryProperties m_physicalDeviceMemoryProperties;
 		VkPhysicalDeviceFeatures m_physicalDeviceFeatures;
 		VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT m_physicalDeviceFragmentShaderInterlockFeatures;
+		VkPhysicalDeviceDriverProperties m_physicalDeviceDriverProperties;
 		std::vector<VkQueueFamilyProperties> m_queueFamilyProperties;
 
 		std::array<uint8_t, 16> m_deviceUUID;
@@ -267,6 +273,13 @@ namespace TRAP::Graphics::API
 [[nodiscard]] constexpr const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFragmentShaderInterlockFeatures() const noexcept
 {
 	return m_physicalDeviceFragmentShaderInterlockFeatures;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] constexpr const VkPhysicalDeviceDriverProperties& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceDriverProperties() const noexcept
+{
+	return m_physicalDeviceDriverProperties;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
