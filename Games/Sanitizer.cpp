@@ -155,50 +155,22 @@ SANITIZER_HOOK_ATTRIBUTE const char* __tsan_default_options()
            "print_suppressions=1 "
            "history_size=7 "
            "strip_path_prefix=/../../ "
-           "external_symbolizer_path=/usr/bin/llvm-symbolizer-15";
+           "external_symbolizer_path=/usr/bin/llvm-symbolizer-15 "
+           //"log_path=./tsan.log"
+           ;
 }
 
 SANITIZER_HOOK_ATTRIBUTE const char* __tsan_default_suppressions()
 {
+    //The suppressions probably need to be adjusted to hardware, OS and driver combination
+
     return "# Add suppressions here\n"
 
-           "race:libdbus*\n"
+        //    "race:*\n"
 
-           "deadlock:libGLX*\n"
-           "deadlock:libnvidia-glsi*\n"
+        //    "deadlock:*\n"
 
-           "called_from_lib:libGFSDK_Aftermath_Lib*\n"
-           "called_from_lib:libdiscord_game_sdk*\n"
-           "called_from_lib:libxcb.*\n"
-           "called_from_lib:libxcb-glx*\n"
-           "called_from_lib:libxcb-shm*\n"
-           "called_from_lib:libxcb-randr*\n"
-           "called_from_lib:libxcb-sync*\n"
-           "called_from_lib:libxcb-xfixes*\n"
-           "called_from_lib:libxcb-present*\n"
-           "called_from_lib:libxcb-dri3*\n"
-           "called_from_lib:libX11-xcb*\n"
-           "called_from_lib:libXinerama*\n"
-           "called_from_lib:libXcursor*\n"
-           "called_from_lib:libXrender*\n"
-           "called_from_lib:libXext*\n"
-           "called_from_lib:libXrandr*\n"
-           "called_from_lib:libX11.*\n"
-           "called_from_lib:libXfixes*\n"
-           "called_from_lib:libXi.*\n"
-           "called_from_lib:libnvidia-rtcore*\n"
-           "called_from_lib:libnvidia-glvkspirv*\n"
-           "called_from_lib:libnvidia-glcore*\n"
-           "called_from_lib:libnvidia-glsi*\n"
-           "called_from_lib:libnvidia-tls*\n"
-           "called_from_lib:libGLX_nvidia*\n"
-           "called_from_lib:libcuda*\n"
-           "called_from_lib:libVkLayer_khronos_validation*\n"
-           "called_from_lib:libVkLayer_MESA_device_select*\n"
-           "called_from_lib:libvulkan_lvp*\n"
-           "called_from_lib:libvulkan.*\n"
-           "called_from_lib:libdbus*\n"
-           "called_from_lib:libwayland-client*\n"
+            "called_from_lib:libvulkan_radeon*\n"
 
         //End of suppressions.
         ; //Please keep this semicolon.

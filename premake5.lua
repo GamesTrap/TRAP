@@ -46,7 +46,7 @@ workspace "TRAP"
 			"ASan",
 			"UBSan",
 			"LSan",
-			-- "TSan" -- Not working, crashes in thread from libnvidia-glcore.so
+			"TSan" -- Works using RADV, crashes with libnvidia-glcore.so
 		}
 
 	filter {"language:C or C++", "configurations:ASAN"}
