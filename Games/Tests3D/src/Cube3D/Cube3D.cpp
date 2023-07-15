@@ -438,7 +438,7 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
         }
         else
         {
-            std::ranges::move(std::ranges::drop_view(m_frameTimeHistory, 1), m_frameTimeHistory.begin());
+            std::shift_left(m_frameTimeHistory.begin(), m_frameTimeHistory.end(), 1);
             m_frameTimeHistory.back() = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
         }
     }

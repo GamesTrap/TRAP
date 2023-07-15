@@ -111,8 +111,7 @@ enum class ProfileSystems : uint32_t
 
 [[nodiscard]] inline constexpr bool operator&(const ProfileSystems lhs, const ProfileSystems rhs) noexcept
 {
-	return static_cast<bool>(std::to_underlying(lhs) &
-			                 std::to_underlying(rhs));
+	return static_cast<bool>(std::to_underlying(lhs) & std::to_underlying(rhs));
 }
 
 //Set this macro to specify which systems should be profiled.
@@ -193,13 +192,11 @@ inline constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION<0, 9, 61>();
 #define MAKE_ENUM_FLAG(ENUM_TYPE) \
 	[[nodiscard]] inline constexpr ENUM_TYPE operator|(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
 	{ \
-		return static_cast<ENUM_TYPE>(std::to_underlying(a) | \
-		 							  std::to_underlying(b)); \
+		return static_cast<ENUM_TYPE>(std::to_underlying(a) | std::to_underlying(b)); \
 	} \
 	[[nodiscard]] inline constexpr ENUM_TYPE operator&(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
 	{ \
-		return static_cast<ENUM_TYPE>(std::to_underlying(a) & \
-									  std::to_underlying(b)); \
+		return static_cast<ENUM_TYPE>(std::to_underlying(a) & std::to_underlying(b)); \
 	} \
 	inline constexpr ENUM_TYPE operator|=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a | b); }\
 	inline constexpr ENUM_TYPE operator&=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a & b); }

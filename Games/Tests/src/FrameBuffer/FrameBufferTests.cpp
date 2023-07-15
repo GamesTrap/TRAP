@@ -157,7 +157,7 @@ void FrameBufferTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
         }
         else
         {
-            std::ranges::move(std::ranges::drop_view(m_frameTimeHistory, 1), m_frameTimeHistory.begin());
+            std::shift_left(m_frameTimeHistory.begin(), m_frameTimeHistory.end(), 1);
             m_frameTimeHistory.back() = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
         }
     }

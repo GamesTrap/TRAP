@@ -147,19 +147,19 @@ void InputLagTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& delta
 		{
 			if(curr.gpuRenderEndTime != 0)
 			{
-				std::ranges::move(std::ranges::drop_view(m_totalHistory, 1), m_totalHistory.begin());
+				std::shift_left(m_totalHistory.begin(), m_totalHistory.end(), 1);
 				m_totalHistory.back() = totalGameToRenderLatencyMs;
-				std::ranges::move(std::ranges::drop_view(m_simulationDeltaHistory, 1), m_simulationDeltaHistory.begin());
+				std::shift_left(m_simulationDeltaHistory.begin(), m_simulationDeltaHistory.end(), 1);
 				m_simulationDeltaHistory.back() = simulationDeltaMs;
-				std::ranges::move(std::ranges::drop_view(m_renderDeltaHistory, 1), m_renderDeltaHistory.begin());
+				std::shift_left(m_renderDeltaHistory.begin(), m_renderDeltaHistory.end(), 1);
 				m_renderDeltaHistory.back() = renderDeltaMs;
-				std::ranges::move(std::ranges::drop_view(m_presentDeltaHistory, 1), m_presentDeltaHistory.begin());
+				std::shift_left(m_presentDeltaHistory.begin(), m_presentDeltaHistory.end(), 1);
 				m_presentDeltaHistory.back() = presentDeltaMs;
-				std::ranges::move(std::ranges::drop_view(m_driverDeltaHistory, 1), m_driverDeltaHistory.begin());
+				std::shift_left(m_driverDeltaHistory.begin(), m_driverDeltaHistory.end(), 1);
 				m_driverDeltaHistory.back() = driverDeltaMs;
-				std::ranges::move(std::ranges::drop_view(m_OSRenderQueueDeltaHistory, 1), m_OSRenderQueueDeltaHistory.begin());
+				std::shift_left(m_OSRenderQueueDeltaHistory.begin(), m_OSRenderQueueDeltaHistory.end(), 1);
 				m_OSRenderQueueDeltaHistory.back() = OSRenderQueueDeltaMs;
-				std::ranges::move(std::ranges::drop_view(m_GPURenderDeltaHistory, 1), m_GPURenderDeltaHistory.begin());
+				std::shift_left(m_GPURenderDeltaHistory.begin(), m_GPURenderDeltaHistory.end(), 1);
 				m_GPURenderDeltaHistory.back() = GPURenderDeltaMs;
 			}
 		}
