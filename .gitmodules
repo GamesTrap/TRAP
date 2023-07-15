@@ -35,3 +35,6 @@
 [submodule "Dependencies/fmt"]
 	path = Dependencies/fmt
 	url = https://github.com/fmtlib/fmt
+[submodule "Dependencies/GoogleTest"]
+	path = Dependencies/GoogleTest
+	url = https://github.com/google/googletest

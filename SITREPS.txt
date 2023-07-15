@@ -4207,3 +4207,5 @@ SITREP 07/15/2023|23w28b1
     - Use std::ranges algorithms where possible ~<20 mins
     - Replaced std::ranges::move() with std::shift_left() ~<5 mins
     - Re-enabled TSAN builds as it works with RADV ~<5 mins
+    - Added GoogleTest as submodule ~<5 mins
+    - Update-Dependencies Added auto updating for GoogleTest dependency ~<5 mins
