@@ -2279,7 +2279,7 @@ void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 	if (modes.empty())
 		return false;
 
-	std::sort(modes.begin(), modes.end(), CompareVideoModes);
+	std::ranges::sort(modes, CompareVideoModes);
 
 	monitor.Modes = modes;
 

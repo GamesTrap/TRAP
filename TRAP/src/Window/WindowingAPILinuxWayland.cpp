@@ -707,7 +707,7 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleMode(void* const userData, [[mayb
 
     const InternalVideoMode mode{width, height, 8, 8, 8, refresh / 1000.0};
 
-    const auto ele = std::find_if(monitor->Modes.cbegin(), monitor->Modes.cend(), [&mode](const InternalVideoMode& e)
+    const auto ele = std::ranges::find_if(monitor->Modes, [&mode](const InternalVideoMode& e)
     {
         return mode.Width == e.Width && mode.Height == e.Height && mode.RedBits == e.RedBits &&
                mode.GreenBits == e.GreenBits && mode.BlueBits == e.BlueBits && mode.RefreshRate == e.RefreshRate;
@@ -735,7 +735,7 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleMode(void* const userData, [[mayb
         }
     }
 
-	std::sort(monitor->Modes.begin(), monitor->Modes.end(), CompareVideoModes);
+	std::ranges::sort(monitor->Modes, CompareVideoModes);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1475,8 +1475,8 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesWayland()
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	std::fill(s_Data.KeyCodes.begin(), s_Data.KeyCodes.end(), Input::Key::Unknown);
-	std::fill(s_Data.ScanCodes.begin(), s_Data.ScanCodes.end(), -1);
+	std::ranges::fill(s_Data.KeyCodes, Input::Key::Unknown);
+	std::ranges::fill(s_Data.ScanCodes, -1);
 
     s_Data.KeyCodes[KEY_GRAVE]      = Input::Key::Grave_Accent;
     s_Data.KeyCodes[KEY_1]          = Input::Key::One;

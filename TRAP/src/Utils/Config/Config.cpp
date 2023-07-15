@@ -68,7 +68,7 @@ bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 			if (!key.empty())
 			{
 				//Check if the key is found in the vector
-				const auto it = std::find_if(m_data.begin(), m_data.end(),
+				const auto it = std::ranges::find_if(m_data,
 					[&pLine](const std::pair<std::string, std::string>& element)
 					{
 						return Utils::String::CompareAnyCase(element.first, pLine.first);
@@ -98,7 +98,7 @@ bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 	for (const std::pair<std::string, std::string>& pair : m_data)
 	{
 		//Check if the key is found in the vector
-		const auto it = std::find_if(fileContents.begin(), fileContents.end(),
+		const auto it = std::ranges::find_if(fileContents,
 			[&pair](const std::pair<std::string, std::string>& element)
 			{
 				return Utils::String::CompareAnyCase(element.first, pair.first);

@@ -30,7 +30,7 @@ static constexpr std::array<ShaderStageData, std::to_underlying(TRAP::Graphics::
 
 constexpr std::string_view ShaderStageToString(const TRAP::Graphics::RendererAPI::ShaderStage stage)
 {
-	const auto it = std::find_if(ShaderStages.begin(), ShaderStages.end(),
+	const auto it = std::ranges::find_if(ShaderStages,
 	                             [stage](const ShaderStageData& element){return stage == element.Stage;});
 	return it->StageString;
 }
@@ -39,7 +39,7 @@ constexpr std::string_view ShaderStageToString(const TRAP::Graphics::RendererAPI
 
 constexpr EShLanguage ShaderStageToEShLanguage(const TRAP::Graphics::RendererAPI::ShaderStage stage)
 {
-	const auto it = std::find_if(ShaderStages.begin(), ShaderStages.end(),
+	const auto it = std::ranges::find_if(ShaderStages,
 	                             [stage](const auto& element){return stage == element.Stage;});
 	return it->StageGLSLang;
 }
@@ -334,7 +334,7 @@ bool TRAP::Graphics::Shader::Reload()
 			//TODO RayTracing Shaders i.e. "RayGen" "AnyHit" "ClosestHit" "Miss" "Intersection" ("Callable")
 
 			//Check for duplicate "#shader XXX" defines
-			if (std::any_of(shaders.begin(), shaders.end(),
+			if (std::ranges::any_of(shaders,
 			    [currentShaderStage](const auto& element){return (element.second & currentShaderStage) != RendererAPI::ShaderStage::None;}))
 			{
 				TP_ERROR(Log::ShaderGLSLPrefix, "Found duplicate \"#shader\" define: ", lines[i]);

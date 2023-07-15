@@ -117,7 +117,7 @@ template<typename T>
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	const auto it = std::find_if(m_data.begin(), m_data.end(),
+	const auto it = std::ranges::find_if(m_data,
 		[key](const std::pair<std::string, std::string>& element)
 		{
 			return Utils::String::CompareAnyCase(element.first, key);
@@ -138,7 +138,7 @@ template<typename T>
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	const auto it = std::find_if(m_data.begin(), m_data.end(),
+	const auto it = std::ranges::find_if(m_data,
 		[key](const std::pair<std::string, std::string>& element)
 		{
 			return element.first == key;
@@ -169,7 +169,7 @@ void TRAP::Utils::Config::Set(const std::string& key, const T value)
 
 	//Replaces the value if the key is found
 	m_hasChanged = true;
-	auto elementIterator = std::find_if(m_data.begin(), m_data.end(),
+	auto elementIterator = std::ranges::find_if(m_data,
 		[&key](const std::pair<std::string, std::string>& test)
 		{
 			return Utils::String::CompareAnyCase(test.first, key);
@@ -198,7 +198,7 @@ void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T>& valu
 
 	//Replace the value if the key is found
 	m_hasChanged = true;
-	auto elementIterator = std::find_if(m_data.begin(), m_data.end(),
+	auto elementIterator = std::ranges::find_if(m_data,
 		[&key](const std::pair<std::string, std::string>& test)
 		{
 			return Utils::String::CompareAnyCase(test.first, key);

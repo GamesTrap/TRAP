@@ -347,7 +347,7 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 
 	if (alreadyLoaded.IHDR)
 	{
-		const bool unusedChunk = std::any_of(UnusedChunks.begin(), UnusedChunks.end(), [&nextChunk](const std::string_view magicNum)
+		const bool unusedChunk = std::ranges::any_of(UnusedChunks, [&nextChunk](const std::string_view magicNum)
 		{
 			return magicNum == nextChunk.MagicNumber;
 		});

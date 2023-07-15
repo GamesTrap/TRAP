@@ -188,7 +188,7 @@ void TRAP::INTERNAL::WindowingAPI::DrainEmptyEvents()
 		return false;
 	}
 
-	if(!std::all_of(s_Data.EmptyEventPipe.begin(), s_Data.EmptyEventPipe.end(), SetEventFlags))
+	if(!std::ranges::all_of(s_Data.EmptyEventPipe, SetEventFlags))
 		return false;
 
 	return true;
@@ -835,7 +835,7 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseErrorHandlerX11()
 
 	const Atom searchAtom = s_Data.X11.XLIB.InternAtom(s_Data.X11.display, atomName.data(), 0);
 
-	const auto res = std::find(supportedAtoms.begin(), supportedAtoms.end(), searchAtom);
+	const auto res = std::ranges::find(supportedAtoms, searchAtom);
 	if(res != supportedAtoms.end())
 		return *res;
 
@@ -1836,7 +1836,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessX11(Interna
 				if(!mode)
 					continue;
 
-				const auto pos = std::distance(result.begin(), std::find(result.begin(), result.end(), *mode));
+				const auto pos = std::distance(result.begin(), std::ranges::find(result, *mode));
 
 				//Skip duplicate modes
 				if(pos < count)
@@ -4351,8 +4351,8 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesX11()
 
 	int32_t scanCode = 0, scanCodeMin = 0, scanCodeMax = 0;
 
-	std::fill(s_Data.KeyCodes.begin(), s_Data.KeyCodes.end(), Input::Key::Unknown);
-	std::fill(s_Data.ScanCodes.begin(), s_Data.ScanCodes.end(), -1);
+	std::ranges::fill(s_Data.KeyCodes, Input::Key::Unknown);
+	std::ranges::fill(s_Data.ScanCodes, -1);
 
 	if(s_Data.X11.XKB.Available)
 	{

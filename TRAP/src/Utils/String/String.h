@@ -552,7 +552,7 @@ namespace TRAP::Utils::String
 
 [[nodiscard]] constexpr int64_t TRAP::Utils::String::GetCount(const std::string_view str, const char delimiter)
 {
-	return std::count(str.begin(), str.end(), delimiter);
+	return std::ranges::count(str, delimiter);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

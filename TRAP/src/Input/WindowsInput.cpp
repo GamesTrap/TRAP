@@ -741,7 +741,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 		return DIENUM_CONTINUE;
 	}
 
-	std::sort(data.Objects.begin(), data.Objects.end(), CompareControllerObjects);
+	std::ranges::sort(data.Objects, CompareControllerObjects);
 
 	if (!WideCharToMultiByte(CP_UTF8, 0, deviceInstance->tszInstanceName, -1, name.data(),
 	                         NumericCast<int32_t>(name.size()), nullptr, nullptr))

@@ -6707,11 +6707,11 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionWay
 	if((keySym & 0xFF000000u) == 0x01000000u)
 		return keySym & 0x00FFFFFFu;
 
-	if(std::binary_search(KeySymTab.cbegin(), KeySymTab.cend(), CodePair{static_cast<uint16_t>(keySym), 0u},
+	if(std::ranges::binary_search(KeySymTab, CodePair{static_cast<uint16_t>(keySym), 0u},
 	                      [](const CodePair& lhs, const CodePair& rhs){ return lhs.keySym < rhs.keySym; }))
 	{
-		const auto *const it = std::lower_bound(KeySymTab.cbegin(), KeySymTab.cend(), CodePair{static_cast<uint16_t>(keySym), 0u},
-		                                        [](const CodePair& lhs, const CodePair& rhs){ return lhs.keySym < rhs.keySym; });
+		const auto *const it = std::ranges::lower_bound(KeySymTab, CodePair{static_cast<uint16_t>(keySym), 0u},
+		                                                [](const CodePair& lhs, const CodePair& rhs){ return lhs.keySym < rhs.keySym; });
 		return it->UCS;
 	}
 

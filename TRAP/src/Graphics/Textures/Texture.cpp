@@ -224,8 +224,8 @@
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(std::none_of(imgs.cbegin(), imgs.cend(),
-	            [](const Image* const img) { return img == nullptr; }), "Texture::CreateFromImages(): An Image is nullptr!");
+	TRAP_ASSERT(std::ranges::none_of(imgs, [](const Image* const img) { return img == nullptr; }),
+	            "Texture::CreateFromImages(): An Image is nullptr!");
 
 	if(name.empty())
 	{

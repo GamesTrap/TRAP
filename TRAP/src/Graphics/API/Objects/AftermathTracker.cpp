@@ -42,7 +42,7 @@ void OnGPUCrashDump([[maybe_unused]] const void* gpuCrashDump,
         return;
 
     std::string dateTimeStamp = TRAP::Utils::String::GetDateTimeStamp(std::chrono::system_clock::now());
-    std::replace(dateTimeStamp.begin(), dateTimeStamp.end(), ':', '-');
+    std::ranges::replace(dateTimeStamp, ':', '-');
 
     const std::filesystem::path folderPath = *targetFolder / "crash-dumps";
     const std::filesystem::path filePath = folderPath / fmt::format("crash_{}.nv-gpudmp", dateTimeStamp);

@@ -284,8 +284,7 @@ void TRAP::Graphics::Renderer2DData::QuadData::InitBuffers()
 																	 UpdateFrequency::Dynamic);
 		buffers[DataBufferIndex].VertexBuffer->SetLayout(VertexLayout);
 
-		std::fill(buffers[DataBufferIndex].TextureSlots.begin(),
-	              buffers[DataBufferIndex].TextureSlots.end(), WhiteTexture);
+		std::ranges::fill(buffers[DataBufferIndex].TextureSlots, WhiteTexture);
 	}
 
 #ifndef TRAP_HEADLESS_MODE
@@ -325,9 +324,7 @@ void TRAP::Graphics::Renderer2DData::QuadData::Reset()
 	{
 		VertexBufferPtr = DataBuffers[imageIndex][DataBufferIndex].Vertices.data();
 
-		std::fill(DataBuffers[imageIndex][DataBufferIndex].TextureSlots.begin(),
-				  DataBuffers[imageIndex][DataBufferIndex].TextureSlots.end(),
-				  Renderer2DData::QuadData::WhiteTexture);
+		std::ranges::fill(DataBuffers[imageIndex][DataBufferIndex].TextureSlots, WhiteTexture);
 	}
 
 	TextureSlotIndex = 1;
@@ -358,8 +355,7 @@ void TRAP::Graphics::Renderer2DData::QuadData::ExtendBuffers()
 	                                                            TRAP::Graphics::UpdateFrequency::Dynamic);
 	buffers.VertexBuffer->SetLayout(VertexLayout);
 
-	std::fill(DataBuffers[imageIndex][DataBufferIndex].TextureSlots.begin(),
-	          DataBuffers[imageIndex][DataBufferIndex].TextureSlots.end(), WhiteTexture);
+	std::ranges::fill(DataBuffers[imageIndex][DataBufferIndex].TextureSlots, WhiteTexture);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -429,8 +425,7 @@ uint32_t TRAP::Graphics::Renderer2DData::QuadData::DrawBuffers(UniformBuffer* ca
 	const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
 
-	const auto res = std::find(DataBuffers[imageIndex][DataBufferIndex].TextureSlots.begin(),
-	                           DataBuffers[imageIndex][DataBufferIndex].TextureSlots.end(), texture);
+	const auto res = std::ranges::find(DataBuffers[imageIndex][DataBufferIndex].TextureSlots, texture);
 
 	if(res == DataBuffers[imageIndex][DataBufferIndex].TextureSlots.end())
 	{

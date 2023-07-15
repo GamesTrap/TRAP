@@ -63,7 +63,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
 	sockaddr_in6 addr{};
-	std::copy(address.begin(), address.end(), addr.sin6_addr.u.Byte);
+	std::ranges::copy(address, addr.sin6_addr.u.Byte);
 	addr.sin6_family = AF_INET6;
 
 	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)

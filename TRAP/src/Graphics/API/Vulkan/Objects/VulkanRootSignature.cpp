@@ -72,7 +72,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 			const auto resNameIt = indexMap.find(res.Name);
 			if(resNameIt == indexMap.end())
 			{
-				const auto resIt = std::find_if(shaderResources.begin(), shaderResources.end(),
+				const auto resIt = std::ranges::find_if(shaderResources,
 				                                [&res](const ShaderReflection::ShaderResource& a)
 				{
 					return (a.Type == res.Type) && (a.UsedStages == res.UsedStages) &&
@@ -242,13 +242,13 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		if(!layout.Bindings.empty())
 		{
 			//Sort table by type (CBV/SRV/UAV) by register
-			std::sort(layout.Bindings.begin(), layout.Bindings.end(), [](const VkDescriptorSetLayoutBinding& lhs,
-			                                                             const VkDescriptorSetLayoutBinding& rhs)
+			std::ranges::sort(layout.Bindings, [](const VkDescriptorSetLayoutBinding& lhs,
+			                                      const VkDescriptorSetLayoutBinding& rhs)
 			{
 				return lhs.binding > rhs.binding;
 			});
-			std::sort(layout.Bindings.begin(), layout.Bindings.end(), [](const VkDescriptorSetLayoutBinding& lhs,
-			                                                             const VkDescriptorSetLayoutBinding& rhs)
+			std::ranges::sort(layout.Bindings, [](const VkDescriptorSetLayoutBinding& lhs,
+			                                      const VkDescriptorSetLayoutBinding& rhs)
 			{
 				return lhs.descriptorType > rhs.descriptorType;
 			});
@@ -490,8 +490,7 @@ TRAP::Graphics::API::VulkanRootSignature::~VulkanRootSignature()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	const auto it = std::find_if(m_descriptorNameToIndexMap.cbegin(), m_descriptorNameToIndexMap.cend(),
-	                            [resName](const auto& pair){return pair.first == resName;});
+	const auto it = std::ranges::find_if(m_descriptorNameToIndexMap, [resName](const auto& pair){return pair.first == resName;});
 	if (it != m_descriptorNameToIndexMap.end())
 		return &m_descriptors[it->second];
 
@@ -504,8 +503,7 @@ TRAP::Graphics::API::VulkanRootSignature::~VulkanRootSignature()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	const auto it = std::find_if(m_descriptorNameToIndexMap.cbegin(), m_descriptorNameToIndexMap.cend(),
-	                            [resName](const auto& pair){return pair.first == resName;});
+	const auto it = std::ranges::find_if(m_descriptorNameToIndexMap, [resName](const auto& pair){return pair.first == resName;});
 	if (it != m_descriptorNameToIndexMap.end())
 		return &m_descriptors[it->second];
 

@@ -399,7 +399,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::SendCommand(const std::string& 
 		}
 		else
 		{
-			std::copy(m_receiveBuffer.begin(), m_receiveBuffer.end(), buffer.begin());
+			std::ranges::copy(m_receiveBuffer, buffer.begin());
 			length = m_receiveBuffer.size();
 			m_receiveBuffer.clear();
 		}

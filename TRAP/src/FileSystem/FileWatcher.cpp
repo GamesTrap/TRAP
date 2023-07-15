@@ -359,7 +359,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
             } while(notify->NextEntryOffset);
 
             //Clear buffer
-            std::fill(bufs[i].begin(), bufs[i].end(), '\0');
+            std::ranges::fill(bufs[i], '\0');
         }
 
         if(!events.empty())
@@ -601,7 +601,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
             offset += sizeof(inotify_event) + event->len;
         }
 
-        std::fill(buf.begin(), buf.end(), 0);
+        std::ranges::fill(buf, '\0');
 
         if(!events.empty())
         {

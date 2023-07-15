@@ -35,7 +35,7 @@ namespace TRAP::Utils
         /// <returns>Mapped value of the requested element or empty optional if not found.</returns>
         [[nodiscard]] constexpr std::optional<mapped_type> at(const key_type& key) const
         {
-            const auto iterator = std::find_if(data.cbegin(), data.cend(), [&key](const auto& val){return val.first == key;});
+            const auto iterator = std::ranges::find_if(data, [&key](const auto& val){return val.first == key;});
 
             if(iterator != data.cend())
                 return iterator->second;
@@ -52,7 +52,7 @@ namespace TRAP::Utils
         /// <returns>True if there is such an element, false otherwise.</returns>
         [[nodiscard]] constexpr bool contains(const key_type& key) const
         {
-            const auto iterator = std::find_if(data.cbegin(), data.cend(), [&key](const auto& val){return val.first == key;});
+            const auto iterator = std::ranges::find_if(data, [&key](const auto& val){return val.first == key;});
 
             return iterator != data.end();
         }

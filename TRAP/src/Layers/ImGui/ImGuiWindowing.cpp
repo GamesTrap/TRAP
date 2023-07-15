@@ -496,7 +496,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateKeyModifiers(const WindowingAPI::Inte
 																   TRAP::Input::Key::Comma, TRAP::Input::Key::Semicolon,
 																   TRAP::Input::Key::Apostrophe, TRAP::Input::Key::Period,
 																   TRAP::Input::Key::Slash};
-		const std::array<char, 11>::const_iterator it = std::find(charNames.cbegin(), charNames.cend(), keyName[0]);
+		const std::array<char, 11>::const_iterator it = std::ranges::find(charNames, keyName[0]);
 		if(keyName[0] >= '0' && keyName[0] <= '9')
 			key = static_cast<TRAP::Input::Key>(std::to_underlying(TRAP::Input::Key::Zero) + (keyName[0] - '0'));
 		else if(keyName[0] >= 'A' && keyName[0] <= 'Z')

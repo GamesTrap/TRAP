@@ -3421,8 +3421,8 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesWin32()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	std::fill(s_Data.KeyCodes.begin(), s_Data.KeyCodes.end(), Input::Key::Unknown);
-	std::fill(s_Data.ScanCodes.begin(), s_Data.ScanCodes.end(), std::numeric_limits<int16_t>::max());
+	std::ranges::fill(s_Data.KeyCodes, Input::Key::Unknown);
+	std::ranges::fill(s_Data.ScanCodes, std::numeric_limits<int16_t>::max());
 
 	std::get<0x00B>(s_Data.KeyCodes) = Input::Key::Zero;
 	std::get<0x002>(s_Data.KeyCodes) = Input::Key::One;

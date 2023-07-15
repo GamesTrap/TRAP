@@ -1091,7 +1091,7 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 		}
 	}
 
-	std::copy(result.begin(), result.end(), destination);
+	std::ranges::copy(result, destination);
 
 	return true;
 }

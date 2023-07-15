@@ -215,7 +215,7 @@
 	}
 
 	std::size_t lastAlphaChar = 0;
-	const auto it = std::find_if(cpu.Model.rbegin(), cpu.Model.rend(), Utils::String::IsAlphaNumeric);
+	const auto it = std::ranges::find_if(std::ranges::reverse_view(cpu.Model), Utils::String::IsAlphaNumeric);
 	if(it != cpu.Model.rend())
 		lastAlphaChar = NumericCast<std::size_t>(it - cpu.Model.rbegin());
 

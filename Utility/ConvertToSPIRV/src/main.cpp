@@ -50,7 +50,7 @@ int main(const int argc, const char* const* const argv)
 
 [[nodiscard]] bool CheckForHelpParameter(const std::vector<std::string_view>& args)
 {
-	if(std::any_of(args.begin(), args.end(), [](const auto arg){return arg == "-h"sv || arg == "--help"sv;}))
+	if(std::ranges::any_of(args, [](const auto arg){return arg == "-h"sv || arg == "--help"sv;}))
 	{
 		PrintUsage(args[0]);
 		return true;
@@ -63,7 +63,7 @@ int main(const int argc, const char* const* const argv)
 
 [[nodiscard]] bool CheckForVersionParameter(const std::vector<std::string_view>& args)
 {
-	if(std::any_of(args.begin(), args.end(), [](const auto arg){return arg == "--version"sv;}))
+	if(std::ranges::any_of(args, [](const auto arg){return arg == "--version"sv;}))
 	{
 		PrintVersion();
 		return true;
@@ -76,7 +76,7 @@ int main(const int argc, const char* const* const argv)
 
 [[nodiscard]] bool CheckForInfoParameter(const std::vector<std::string_view>& args)
 {
-	if(std::any_of(args.begin(), args.end(), [](const auto arg){return arg == "--info"sv;}) ||
+	if(std::ranges::any_of(args, [](const auto arg){return arg == "--info"sv;}) ||
 	   std::filesystem::path(args[1]).extension() == fmt::format(".{}", ShaderFileEnding))
 	{
 		PrintInfo(args[1]);
@@ -93,8 +93,7 @@ int main(const int argc, const char* const* const argv)
 {
 	outOutputPath = std::nullopt;
 
-	auto it = std::find_if(args.begin(), args.end(),
-	                       [](const auto str){return str == "-o"sv || str == "--output"sv;});
+	auto it = std::ranges::find_if(args, [](const auto str){return str == "-o"sv || str == "--output"sv;});
 
 	if(it == args.end())
 		return false;

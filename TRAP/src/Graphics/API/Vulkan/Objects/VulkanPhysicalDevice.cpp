@@ -73,7 +73,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 											 m_queueFamilyProperties.data());
 
 	// Copy UUID
-	std::copy_n(m_physicalDeviceIDProperties.deviceUUID, m_deviceUUID.size(), m_deviceUUID.begin());
+	std::ranges::copy(m_physicalDeviceIDProperties.deviceUUID, m_deviceUUID.begin());
 
 	// Capabilities for VulkanRenderer
 	for (uint32_t i = 0; i < std::to_underlying(TRAP::Graphics::API::ImageFormat::IMAGE_FORMAT_COUNT); ++i)
@@ -231,12 +231,11 @@ TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 	if (m_availablePhysicalDeviceExtensions.empty())
 		LoadAllPhysicalDeviceExtensions();
 
-	const auto result = std::find_if(m_availablePhysicalDeviceExtensions.begin(),
-									 m_availablePhysicalDeviceExtensions.end(),
-									 [extension](const VkExtensionProperties& props)
-									 {
-										 return extension == props.extensionName;
-									 });
+	const auto result = std::ranges::find_if(m_availablePhysicalDeviceExtensions,
+									         [extension](const VkExtensionProperties& props)
+									         {
+								                 return extension == props.extensionName;
+									         });
 
 	if (result == m_availablePhysicalDeviceExtensions.end())
 	{
@@ -329,7 +328,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 		vkGetPhysicalDeviceProperties2(device, &props2);
 
 		// Copy UUID
-		std::copy_n(physicalDeviceIDProperties.deviceUUID, testUUID.size(), testUUID.begin());
+		std::ranges::copy(physicalDeviceIDProperties.deviceUUID, testUUID.begin());
 
 		bool same = true;
 		for (uint32_t i = 0; i < physicalDeviceUUID.size(); i++)
@@ -436,11 +435,11 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		score += extensionsCount * 50;
 
 		// Required: Check if PhysicalDevice supports SPIRV 1.4
-		const auto spirv1_4Result = std::find_if(extensions.begin(), extensions.end(), [](const VkExtensionProperties& props)
+		const auto spirv1_4Result = std::ranges::find_if(extensions, [](const VkExtensionProperties& props)
 		{
 			return std::string_view(VK_KHR_SPIRV_1_4_EXTENSION_NAME) == props.extensionName;
 		});
-		const auto shaderFloatControlsResult = std::find_if(extensions.begin(), extensions.end(), [](const VkExtensionProperties& props)
+		const auto shaderFloatControlsResult = std::ranges::find_if(extensions, [](const VkExtensionProperties& props)
 		{
 			return std::string_view(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME) == props.extensionName;
 		});
@@ -454,8 +453,10 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		// Required: Check if PhysicalDevice supports swapchains
 		// Disabled in Headless mode.
 #ifndef TRAP_HEADLESS_MODE
-		const auto swapChainResult = std::find_if(extensions.begin(), extensions.end(), [](const VkExtensionProperties& props)
-										          { return std::string_view(VK_KHR_SWAPCHAIN_EXTENSION_NAME) == props.extensionName; });
+		const auto swapChainResult = std::ranges::find_if(extensions, [](const VkExtensionProperties& props)
+        {
+			return std::string_view(VK_KHR_SWAPCHAIN_EXTENSION_NAME) == props.extensionName;
+		});
 
 		if (swapChainResult == extensions.end())
 		{
@@ -627,7 +628,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Transfer Queue Test!");
 
 		// Big Optionally: Check if Raytracing extensions are supported
-		bool raytracing = true;
+		bool raytracing = false;
 		constexpr std::array<std::string_view, 8> raytracingExt =
 		{
 			VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
@@ -639,9 +640,11 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME,
 			VK_KHR_RAY_QUERY_EXTENSION_NAME
 		};
+
+
 		for (const std::string_view str : raytracingExt)
 		{
-			const auto extRes = std::find_if(extensions.begin(), extensions.end(),
+			const auto extRes = std::ranges::find_if(extensions,
 											 [str](const VkExtensionProperties &props)
 											 {
 												 return str == props.extensionName;
@@ -685,7 +688,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		};
 		for (const std::string_view str : VRSExt)
 		{
-			const auto extRes = std::find_if(extensions.begin(), extensions.end(),
+			const auto extRes = std::ranges::find_if(extensions,
 											 [str](const VkExtensionProperties &props)
 											 {
 												 return str == props.extensionName;
@@ -794,7 +797,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		vkGetPhysicalDeviceProperties2(dev, &props2);
 
 		// Copy UUID
-		std::copy_n(physicalDeviceIDProperties.deviceUUID, physicalDeviceUUID.size(), physicalDeviceUUID.begin());
+		std::ranges::copy(physicalDeviceIDProperties.deviceUUID, physicalDeviceUUID.begin());
 
 		TP_INFO(Log::RendererVulkanPrefix, "Found GPU: \"", devProps.deviceName, "\"(", TRAP::Utils::UUIDToString(physicalDeviceUUID), ')', " Score: ", score);
 		s_availablePhysicalDeviceUUIDs.emplace(score, physicalDeviceUUID);

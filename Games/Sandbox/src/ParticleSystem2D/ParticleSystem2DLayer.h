@@ -80,8 +80,8 @@ public:
 			}
 			else
 			{
-				std::move(m_frameTimeHistory.begin() + 1, m_frameTimeHistory.end(), m_frameTimeHistory.begin());
-				m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
+				std::ranges::move(std::ranges::drop_view(m_frameTimeHistory, 1), m_frameTimeHistory.begin());
+				m_frameTimeHistory.back() = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
 			}
 		}
 	}

@@ -47,9 +47,9 @@ TRAP::Network::IPv6Address::IPv6Address(const char* const address)
 
 	in6_addr address{};
 #ifdef TRAP_PLATFORM_WINDOWS
-	std::copy(m_address.begin(), m_address.end(), address.u.Byte);
+	std::ranges::copy(m_address, address.u.Byte);
 #else
-	std::copy(m_address.begin(), m_address.end(), address.s6_addr);
+	std::ranges::copy(m_address, address.s6_addr);
 #endif
 
 	//8 * 4 = 8 Blocks 4 Values each | 7 = 7 times ':'
