@@ -754,7 +754,7 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleDone(void* const userData, [[mayb
     TRAP::Scope<InternalMonitor> scopedMonitor(monitor);
 
     //Check if monitor already exists
-    if(std::find(s_Data.Monitors.cbegin(), s_Data.Monitors.cend(), scopedMonitor) != s_Data.Monitors.cend())
+    if(std::ranges::contains(s_Data.Monitors, scopedMonitor))
         return;
 
     InputMonitor(std::move(scopedMonitor), true, 1);

@@ -47,11 +47,8 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	}
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	if(std::find(m_deviceExtensions.begin(), m_deviceExtensions.end(),
-	             VK_EXT_FRAGMENT_SHADER_INTERLOCK_EXTENSION_NAME) != m_deviceExtensions.end())
-	{
+	if(std::ranges::contains(m_deviceExtensions, VK_EXT_FRAGMENT_SHADER_INTERLOCK_EXTENSION_NAME))
 		m_physicalDevice->RetrievePhysicalDeviceFragmentShaderInterlockFeatures();
-	}
 
 	//Enable features of the device extensions
 	VkPhysicalDeviceFeatures2 devFeatures2{};

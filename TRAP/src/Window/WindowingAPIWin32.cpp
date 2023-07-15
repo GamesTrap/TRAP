@@ -2256,7 +2256,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 		SplitBPP(dm.dmBitsPerPel, mode.RedBits, mode.GreenBits, mode.BlueBits);
 
 		//Skip duplicate modes
-		if (std::find(result.begin(), result.end(), mode) != result.end())
+		if(std::ranges::contains(result, mode))
 			continue;
 
 		//I do not see any difference with this enabled other than WinAPI lagging while doing this call

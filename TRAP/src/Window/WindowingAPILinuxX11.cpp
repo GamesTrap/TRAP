@@ -1106,7 +1106,7 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 
 		for(uint64_t i = 0; i < count; i += 2)
 		{
-			if(std::find(formats.begin(), formats.end(), targets[i]) != formats.end())
+			if(std::ranges::contains(formats, targets[i]))
 			{
 				s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, request.requestor, targets[i + 1], targets[i], 8,
 				                               PropModeReplace, reinterpret_cast<uint8_t*>(selectionString.data()),
@@ -1137,7 +1137,7 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 
 	//Conversion to a data target was requested
 
-	if(std::find(formats.begin(), formats.end(), request.target) != formats.end())
+	if(std::ranges::contains(formats, request.target))
 	{
 		//The requested target is one we support
 

@@ -292,7 +292,7 @@ void TRAP::Window::SetFullscreen(const Monitor::VideoMode& videoMode)
 
 	//Check if given video mode is supported by monitor
 	const auto monitorVideoModes = m_data.Monitor.GetVideoModes();
-	if(std::find(monitorVideoModes.begin(), monitorVideoModes.end(), videoMode) == monitorVideoModes.end())
+	if(!std::ranges::contains(monitorVideoModes, videoMode))
 	{
 		TP_ERROR(Log::WindowPrefix, "Unsupported video mode provided to set on monitor \"", m_data.Monitor.GetName(), "\"!");
 		return;

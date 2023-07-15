@@ -791,19 +791,7 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 
 	const std::string fEnding = Utils::String::ToLower(*fileEnding);
 
-	const bool texture = std::find(Image::SupportedImageFormatSuffixes.begin(),
-	                               Image::SupportedImageFormatSuffixes.end(),
-							       fEnding) != Image::SupportedImageFormatSuffixes.end();
-
-	bool shader = false;
-	if(!texture)
-	{
-		shader = std::find(Graphics::Shader::SupportedShaderFormatSuffixes.begin(),
-	                       Graphics::Shader::SupportedShaderFormatSuffixes.end(),
-						   fEnding) != Graphics::Shader::SupportedShaderFormatSuffixes.end();
-	}
-
-	if(texture)
+	if(std::ranges::contains(Image::SupportedImageFormatSuffixes, fEnding))
 	{
 		std::lock_guard lock(m_hotReloadingMutex); //Hot code
 		LockMark(m_hotReloadingMutex);
@@ -817,7 +805,7 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 
 		m_hotReloadingTexturePaths.push_back(event.GetPath());
 	}
-	else if(shader)
+	else if(std::ranges::contains(Graphics::Shader::SupportedShaderFormatSuffixes, fEnding))
 	{
 		std::lock_guard lock(m_hotReloadingMutex); //Hot code
 		LockMark(m_hotReloadingMutex);

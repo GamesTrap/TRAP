@@ -70,7 +70,7 @@ void TRAP::FileSystem::FileWatcher::AddFolder(const std::filesystem::path& path)
         return;
 
     //Only add if not already in list
-    if(std::find(m_paths.begin(), m_paths.end(), *absPath) == m_paths.end())
+    if(!std::ranges::contains(m_paths, *absPath))
     {
         Shutdown();
         m_paths.push_back(*absPath);
@@ -103,7 +103,7 @@ void TRAP::FileSystem::FileWatcher::AddFolders(const std::vector<std::filesystem
             continue;
 
         //Only add if not already in list
-        if(std::find(m_paths.begin(), m_paths.end(), *absPath) == m_paths.end())
+        if(!std::ranges::contains(m_paths, *absPath))
             m_paths.push_back(*absPath);
     }
 
@@ -131,7 +131,7 @@ void TRAP::FileSystem::FileWatcher::RemoveFolder(const std::filesystem::path& pa
         return;
 
     //Check if folder is in the list
-    if(std::find(m_paths.begin(), m_paths.end(), *absPath) != m_paths.end())
+    if(std::ranges::contains(m_paths, *absPath))
     {
         Shutdown();
         std::erase(m_paths, *absPath);

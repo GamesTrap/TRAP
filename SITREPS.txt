@@ -4182,7 +4182,7 @@ SITREP 07/08/2023|23w27a1
 
 SITREP 07/09/2023|23w27a2
     - Changed TRAP Engine version to 23w27a2(0.9.58)
-    - Addded concepts/requires to template functions ~>60 mins
+    - Added concepts/requires to template functions ~>60 mins
     - Removed static from free standing constexpr functions in headers ~<5 mins
     - Updated ImGuiVulkanBackend ~<20 mins
 
@@ -4199,3 +4199,8 @@ SITREP 07/12/2023|23w28a2
     - Changed TRAP Engine version to 23w28a2(0.9.60)
     - VulkanPhysicalDevice Added support for VkPhysicalDeviceDriverProperties ~<5 mins
     - VulkanRenderer Changed device and driver logging ~<5 mins
+
+SITREP 07/15/2023|23w28b1
+    - Changed TRAP Engine version to 23w28b1(0.9.61)
+    - Backported std::ranges::contains() from C++23 ~<15 mins
+    - Used std::ranges::contains() where possible ~<10 mins
