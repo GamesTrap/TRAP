@@ -155,8 +155,10 @@ end
 IncludeDir["BOX2D"] = "%{wks.location}/Dependencies/Box2D/include"
 IncludeDir["TRACY"] = "%{wks.location}/Dependencies/Tracy/public"
 IncludeDir["FMT"] = "%{wks.location}/Dependencies/fmt/include"
+IncludeDir["GOOGLETEST"] = "%{wks.location}/Dependencies/GoogleTest/googletest/include"
 
 include "TRAP"
+include "UnitTests"
 
 group "Dependencies"
 	include "Dependencies/ImGui.lua"
