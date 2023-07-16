@@ -1,20 +1,51 @@
+#include <concepts>
+#include <numeric>
+#include <limits>
+#include <cmath>
+
 #include <catch_amalgamated.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
-TEMPLATE_TEST_CASE("TRAP::Math::Sin()", "[math][generic]", double, float)
+template<typename T>
+requires std::floating_point<T>
+void RunSinTests(const T val)
 {
-    constexpr TestType NaN = std::numeric_limits<TestType>::quiet_NaN();
-    constexpr TestType Epsilon = std::numeric_limits<TestType>::epsilon();
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    SECTION("NaN")
+    REQUIRE_THAT(TRAP::Math::Sin(val), Catch::Matchers::WithinRel(std::sin(val), Epsilon));
+}
+
+template<typename T>
+requires std::floating_point<T>
+void RunSinNaNTests(const T val)
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    REQUIRE_THAT(TRAP::Math::Sin(val), !Catch::Matchers::WithinRel(std::sin(val), Epsilon));
+}
+
+TEST_CASE("TRAP::Math::Sin()", "[math][generic][sin]")
+{
+    SECTION("NaN - double")
     {
-        REQUIRE_THAT(TRAP::Math::Sin(NaN), !Catch::Matchers::WithinRel(std::sin(NaN), Epsilon));
+        constexpr double NaN = std::numeric_limits<double>::quiet_NaN();
+        RunSinNaNTests(NaN);
+    }
+    SECTION("NaN - float")
+    {
+        constexpr float NaN = std::numeric_limits<float>::quiet_NaN();
+        RunSinNaNTests(NaN);
     }
 
-    SECTION("Scalar")
+    const double val = static_cast<double>(GENERATE(values({-1.5, 0.0, 0.001, 1.001, 1.5, 11.1, 50.0, 150.0})));
+
+    SECTION("Scalar - double")
     {
-        const TestType val = static_cast<TestType>(GENERATE(values({-1.5, 0.0, 0.001, 1.001, 1.5, 11.1, 50.0, 150.0})));
-        REQUIRE_THAT(TRAP::Math::Sin(val), Catch::Matchers::WithinRel(std::sin(val), Epsilon));
+        RunSinTests(val);
+    }
+    SECTION("Scalar - float")
+    {
+        RunSinTests(static_cast<float>(val));
     }
 }
