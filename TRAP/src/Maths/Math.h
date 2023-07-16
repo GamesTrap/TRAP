@@ -3810,7 +3810,7 @@ template<typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr bool TRAP::Math::Equal(const T x, const T y, const T epsilon)
 {
-	return LessThanEqual(Abs(x - y), epsilon);
+	return LessThanEqual(Abs(NumericCast<T>(x - y)), epsilon);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -536,8 +536,8 @@ jobs:
             author: "TRAP CI/CD <gamestrap@web.de>"
             committer: "TRAP CI/CD <gamestrap@web.de>"
 
-  update-googletest:
-    name: Update GoogleTest
+  update-catch2:
+    name: Update Catch2
     if: github.repository == 'GamesTrap/TRAP'
     runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
     steps:
@@ -561,22 +561,22 @@ jobs:
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
-      - name: Update GoogleTest
-        id: googletest
+      - name: Update Catch2
+        id: catch2
         run: |
-            cd Dependencies/GoogleTest/
-            git fetch origin main
-            git pull origin main
-            echo "GOOGLETEST_VERSION=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+            cd Dependencies/Catch2/
+            git fetch --tags
+            git checkout $(git rev-list --tags --max-count=1)
+            echo "CATCH2_VERSION=$(git describe --tags --exact-match)" >> "$GITHUB_OUTPUT"
             cd ../..
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
             base: dev
-            branch: googletest-update/${{steps.googletest.outputs.GOOGLETEST_VERSION}}
+            branch: catch2-update/${{steps.catch2.outputs.CATCH2_VERSION}}
             delete-branch: true
-            commit-message: "Update GoogleTest to ${{steps.googletest.outputs.GOOGLETEST_VERSION}}"
-            title: "Update GoogleTest to ${{steps.googletest.outputs.GOOGLETEST_VERSION}}"
+            commit-message: "Update Catch2 to ${{steps.catch2.outputs.CATCH2_VERSION}}"
+            title: "Update Catch2 to ${{steps.catch2.outputs.CATCH2_VERSION}}"
             labels: "CI/CD, External, Update"
             assignees: "GamesTrap"
             milestone: 5

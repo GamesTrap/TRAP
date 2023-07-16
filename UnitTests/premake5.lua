@@ -14,29 +14,33 @@ project "UnitTests"
 		"src/**.hpp",
 		"src/**.cpp",
 
-		"%{IncludeDir.GOOGLETEST}/../**.h",
-		"%{IncludeDir.GOOGLETEST}/../**.hpp",
-		"%{IncludeDir.GOOGLETEST}/../src/gtest-all.cc",
+		"%{IncludeDir.CATCH2}/catch_amalgamated.cpp",
 	}
 
 	--Exclude all folders in Platform, since not all platforms need all of these
 	removefiles
 	{
-		"%{IncludeDir.GOOGLETEST}/../test",
 	}
 
-	includedirs	"src"
+	includedirs
+	{
+		"src",
+
+		"%{wks.location}/TRAP/src",
+		"%{wks.location}",
+
+		"%{IncludeDir.TRACY}",
+		"%{IncludeDir.FMT}",
+	}
 
 	externalincludedirs
 	{
-		"%{IncludeDir.GOOGLETEST}",
-		"%{IncludeDir.GOOGLETEST}/../",
+		"%{IncludeDir.CATCH2}"
 	}
 
 	links
 	{
 	}
-
 
 	filter "system:linux"
 		runpathdirs

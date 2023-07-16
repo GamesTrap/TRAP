@@ -4210,3 +4210,8 @@ SITREP 07/15/2023|23w28b1
     - Added GoogleTest as submodule ~<5 mins
     - Update-Dependencies Added auto updating for GoogleTest dependency ~<5 mins
     - Added UnitTest project using GoogleTest ~<20 mins
+
+SITREP 07/16/2023|23w28b2
+    - Changed TRAP Engine version to 23w28b2(0.9.62)
+    - Replaced GoogleTest with Catch2 ~<10 mins
+    - Added first unit tests for TRAP::Math::Sin() and TRAP::Math::Min() ~<30 mins
