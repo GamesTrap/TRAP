@@ -44,7 +44,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 namespace TRAP::Math
 {
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	struct tQuat
 	{
 		/// <summary>
@@ -90,7 +90,7 @@ namespace TRAP::Math
 		//Conversion constructors
 
 		template<typename U>
-		requires std::is_arithmetic_v<U>
+		requires std::floating_point<U>
 		explicit constexpr tQuat(const tQuat<U>& q) noexcept;
 
 		//Explicit conversion operators
@@ -114,16 +114,16 @@ namespace TRAP::Math
 		constexpr tQuat<T>& operator=(const tQuat<T>& q) noexcept = default;
 
 		template<typename U>
-		requires std::is_arithmetic_v<U>
+		requires std::floating_point<U>
 		constexpr tQuat<T>& operator=(const tQuat<U>& q) noexcept;
 		template<typename U>
-		requires std::is_arithmetic_v<U>
+		requires std::floating_point<U>
 		constexpr tQuat<T>& operator+=(const tQuat<U>& q) noexcept;
 		template<typename U>
-		requires std::is_arithmetic_v<U>
+		requires std::floating_point<U>
 		constexpr tQuat<T>& operator-=(const tQuat<U>& q) noexcept;
 		template<typename U>
-		requires std::is_arithmetic_v<U>
+		requires std::floating_point<U>
 		constexpr tQuat<T>& operator*=(const tQuat<U>& r) noexcept;
 		template<typename U>
 		constexpr tQuat<T>& operator*=(U s) noexcept;
@@ -150,65 +150,65 @@ namespace TRAP::Math
 	//Unary bit operators
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr tQuat<T> operator+(const tQuat<T>& q) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr tQuat<T> operator-(const tQuat<T>& q) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	//Binary operators
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr tQuat<T> operator+(const tQuat<T>& q, const tQuat<T>& p) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr tQuat<T> operator-(const tQuat<T>& q, const tQuat<T>& p) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr tQuat<T> operator*(const tQuat<T>& q, const tQuat<T>& p) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr Vec<3, T> operator*(const tQuat<T>& q, const Vec<3, T>& v);
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr Vec<3, T> operator*(const Vec<3, T>& v, const tQuat<T>& q);
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr Vec<4, T> operator*(const tQuat<T>& q, const Vec<4, T>& v) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr Vec<4, T> operator*(const Vec<4, T>& v, const tQuat<T>& q);
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr tQuat<T> operator*(const tQuat<T>& q, const T& s) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr tQuat<T> operator*(const T& s, const tQuat<T>& q) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr tQuat<T> operator/(const tQuat<T>& q, const T& s) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	//Boolean operators
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr bool operator==(const tQuat<T>& q1, const tQuat<T>& q2) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr bool operator!=(const tQuat<T>& q1, const tQuat<T>& q2) noexcept;
 }
 
@@ -219,7 +219,7 @@ namespace TRAP::Math
 namespace std
 {
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	struct hash<TRAP::Math::tQuat<T>>
 	{
 		[[nodiscard]] constexpr std::size_t operator()(const TRAP::Math::tQuat<T>& q) const noexcept
@@ -235,14 +235,14 @@ namespace std
 //-------------------------------------------------------------------------------------------------------------------//
 //Explicit basic constructors
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::tQuat<T>::tQuat(const T s, const Vec<3, T>& v) noexcept
 	: x(v.x), y(v.y), z(v.z), w(s)
 {
 }
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::tQuat<T>::tQuat(const T w_, const T x_, const T y_, const T z_) noexcept
 	: x(x_), y(y_), z(z_), w(w_)
 {
@@ -252,9 +252,9 @@ constexpr TRAP::Math::tQuat<T>::tQuat(const T w_, const T x_, const T y_, const 
 //Conversion constructors
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 template <typename U>
-requires std::is_arithmetic_v<U>
+requires std::floating_point<U>
 constexpr TRAP::Math::tQuat<T>::tQuat(const tQuat<U>& q) noexcept
 	: x(static_cast<T>(q.x)), y(static_cast<T>(q.y)), z(static_cast<T>(q.z)), w(static_cast<T>(q.w))
 {
@@ -264,14 +264,14 @@ constexpr TRAP::Math::tQuat<T>::tQuat(const tQuat<U>& q) noexcept
 //Explicit conversion operators
 
 /*template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 TRAP::Math::tQuat<T>::operator Mat<3, 3, T>() const
 {
 	return Mat3Cast(*this);
 }
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 TRAP::Math::tQuat<T>::operator Mat<4, 4, T>() const
 {
 	return Mat4Cast(*this);
@@ -280,7 +280,7 @@ TRAP::Math::tQuat<T>::operator Mat<4, 4, T>() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& u, const Vec<3, T>& v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -311,7 +311,7 @@ TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& u, const Vec<3, T>& v)
 //Build quaternion from euler angles
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& eulerAnglesInRadians)
 {
 	const Vec<3, T> c = Cos(eulerAnglesInRadians * static_cast<T>(0.5));
@@ -324,7 +324,7 @@ constexpr TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& eulerAnglesInRadians)
 }
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 TRAP::Math::tQuat<T>::tQuat(const Mat<3, 3, T>& m)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -333,7 +333,7 @@ TRAP::Math::tQuat<T>::tQuat(const Mat<3, 3, T>& m)
 }
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 TRAP::Math::tQuat<T>::tQuat(const Mat<4, 4, T>& m)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -345,9 +345,9 @@ TRAP::Math::tQuat<T>::tQuat(const Mat<4, 4, T>& m)
 //Unary arithmetic operators
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 template <typename U>
-requires std::is_arithmetic_v<U>
+requires std::floating_point<U>
 constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator=(const tQuat<U>& q) noexcept
 {
 	this->w = static_cast<T>(q.w);
@@ -359,9 +359,9 @@ constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator=(const tQuat<U>& 
 }
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 template <typename U>
-requires std::is_arithmetic_v<U>
+requires std::floating_point<U>
 constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator+=(const tQuat<U>& q) noexcept
 {
 	const tQuat<T> p(q);
@@ -370,9 +370,9 @@ constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator+=(const tQuat<U>&
 }
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 template <typename U>
-requires std::is_arithmetic_v<U>
+requires std::floating_point<U>
 constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator-=(const tQuat<U>& q) noexcept
 {
 	const tQuat<T> p(q);
@@ -381,9 +381,9 @@ constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator-=(const tQuat<U>&
 }
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 template <typename U>
-requires std::is_arithmetic_v<U>
+requires std::floating_point<U>
 constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator*=(const tQuat<U>& r) noexcept
 {
 	const tQuat<T> p(*this);
@@ -398,7 +398,7 @@ constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator*=(const tQuat<U>&
 }
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 template <typename U>
 constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator*=(const U s) noexcept
 {
@@ -406,7 +406,7 @@ constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator*=(const U s) noex
 }
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 template <typename U>
 constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator/=(const U s) noexcept
 {
@@ -416,7 +416,7 @@ constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator/=(const U s) noex
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr std::size_t TRAP::Math::tQuat<T>::Length() noexcept
 {
 	return 4;
@@ -426,7 +426,7 @@ requires std::is_arithmetic_v<T>
 //Component Access
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr T& TRAP::Math::tQuat<T>::operator[](const std::size_t i)
 {
 	return (&x)[i];
@@ -435,14 +435,14 @@ requires std::is_arithmetic_v<T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr const T& TRAP::Math::tQuat<T>::operator[](const std::size_t i) const
 {
 	return (&x)[i];
 }
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 [[nodiscard]] T& TRAP::Math::tQuat<T>::at(const std::size_t i)
 {
 	TRAP_ASSERT(i < this->Length(), "Math::tQuat<T>::operator[]: Index out of range!");
@@ -453,7 +453,7 @@ requires std::is_arithmetic_v<T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 [[nodiscard]] const T& TRAP::Math::tQuat<T>::at(const std::size_t i) const
 {
 	TRAP_ASSERT(i < this->Length(), "Math::tQuat<T>::operator[]: Index out of range!");
@@ -464,7 +464,7 @@ requires std::is_arithmetic_v<T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 [[nodiscard]] std::string TRAP::Math::tQuat<T>::ToString() const
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -489,14 +489,14 @@ requires std::is_arithmetic_v<T>
 //Unary bit operators
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::tQuat<T> TRAP::Math::operator+(const tQuat<T>& q) noexcept
 {
 	return q;
 }
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::tQuat<T> TRAP::Math::operator-(const tQuat<T>& q) noexcept
 {
 	return tQuat<T>(-q.w, -q.x, -q.y, -q.z);
@@ -506,28 +506,28 @@ constexpr TRAP::Math::tQuat<T> TRAP::Math::operator-(const tQuat<T>& q) noexcept
 //Binary operators
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::tQuat<T> TRAP::Math::operator+(const tQuat<T>& q, const tQuat<T>& p) noexcept
 {
 	return tQuat<T>(q) += p;
 }
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::tQuat<T> TRAP::Math::operator-(const tQuat<T>& q, const tQuat<T>& p) noexcept
 {
 	return tQuat<T>(q) -= p;
 }
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::tQuat<T> TRAP::Math::operator*(const tQuat<T>& q, const tQuat<T>& p) noexcept
 {
 	return tQuat<T>(q) *= p;
 }
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Vec<3, T> TRAP::Math::operator*(const tQuat<T>& q, const Vec<3, T>& v)
 {
 	const Vec<3, T> quaternionVector(q.x, q.y, q.z);
@@ -538,42 +538,42 @@ constexpr TRAP::Math::Vec<3, T> TRAP::Math::operator*(const tQuat<T>& q, const V
 }
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Vec<3, T> TRAP::Math::operator*(const Vec<3, T>& v, const tQuat<T>& q)
 {
 	return Inverse(q) * v;
 }
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const tQuat<T>& q, const Vec<4, T>& v) noexcept
 {
 	return Vec<4, T>(q * Vec<3, T>(v), v.w);
 }
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const Vec<4, T>& v, const tQuat<T>& q)
 {
 	return Inverse(q) * v;
 }
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::tQuat<T> TRAP::Math::operator*(const tQuat<T>& q, const T& s) noexcept
 {
 	return tQuat<T>(q.w * s, q.x * s, q.y * s, q.z * s);
 }
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::tQuat<T> TRAP::Math::operator*(const T& s, const tQuat<T>& q) noexcept
 {
 	return q * s;
 }
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::tQuat<T> TRAP::Math::operator/(const tQuat<T>& q, const T& s) noexcept
 {
 	return tQuat<T>(q.w / s, q.x / s, q.y / s, q.z / s);
@@ -583,14 +583,14 @@ constexpr TRAP::Math::tQuat<T> TRAP::Math::operator/(const tQuat<T>& q, const T&
 //Boolean operators
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr bool TRAP::Math::operator==(const tQuat<T>& q1, const tQuat<T>& q2) noexcept
 {
 	return q1.x == q2.x && q1.y == q2.y && q1.z == q2.z && q1.w == q2.w;
 }
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr bool TRAP::Math::operator!=(const tQuat<T>& q1, const tQuat<T>& q2) noexcept
 {
 	return q1.x != q2.x && q1.y != q2.y && q1.z != q2.z && q1.w != q2.w;

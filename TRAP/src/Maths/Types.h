@@ -6,9 +6,9 @@
 
 namespace TRAP::Math
 {
-	template<uint32_t L, typename T> struct Vec;
-	template<uint32_t C, uint32_t R, typename T> struct Mat;
-	template<typename T> requires std::is_arithmetic_v<T> struct tQuat;
+	template<uint32_t L, typename T> requires std::is_arithmetic_v<T> struct Vec;
+	template<uint32_t C, uint32_t R, typename T> requires std::floating_point<T> struct Mat;
+	template<typename T> requires std::floating_point<T> struct tQuat;
 
 	template <typename T> using tVec2 = Vec<2, T>;
 	template <typename T> using tVec3 = Vec<3, T>;

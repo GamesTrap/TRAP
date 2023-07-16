@@ -45,7 +45,7 @@ namespace TRAP::Math
 	/// Struct for a 3x3 matrix.
 	/// </summary>
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	struct Mat<3, 3, T>
 	{
 		/// <summary>
@@ -119,7 +119,7 @@ namespace TRAP::Math
 		/// Copy conversion constructor.
 		/// </summary>
 		template<typename U>
-		requires std::is_arithmetic_v<U>
+		requires std::floating_point<U>
 		constexpr Mat(const Mat<3, 3, U> & m) noexcept;
 
 		/// <summary>
@@ -158,27 +158,27 @@ namespace TRAP::Math
 
 		//Unary arithmetic operators
 		template<typename U>
-		requires std::is_arithmetic_v<U>
+		requires std::floating_point<U>
 		constexpr Mat<3, 3, T>& operator=(const Mat<3, 3, U>& m) noexcept;
 		template<typename U>
 		constexpr Mat<3, 3, T>& operator+=(U s) noexcept;
 		template<typename U>
-		requires std::is_arithmetic_v<U>
+		requires std::floating_point<U>
 		constexpr Mat<3, 3, T>& operator+=(const Mat<3, 3, U>& m) noexcept;
 		template<typename U>
 		constexpr Mat<3, 3, T>& operator-=(U s) noexcept;
 		template<typename U>
-		requires std::is_arithmetic_v<U>
+		requires std::floating_point<U>
 		constexpr Mat<3, 3, T>& operator-=(const Mat<3, 3, U>& m) noexcept;
 		template<typename U>
 		constexpr Mat<3, 3, T>& operator*=(U s) noexcept;
 		template<typename U>
-		requires std::is_arithmetic_v<U>
+		requires std::floating_point<U>
 		constexpr Mat<3, 3, T>& operator*=(const Mat<3, 3, U>& m) noexcept;
 		template<typename U>
 		constexpr Mat<3, 3, T>& operator/=(U s) noexcept;
 		template<typename U>
-		requires std::is_arithmetic_v<U>
+		requires std::floating_point<U>
 		constexpr Mat<3, 3, T>& operator/=(const Mat<3, 3, U>& m) ;
 
 		//Increment and decrement operators
@@ -192,85 +192,85 @@ namespace TRAP::Math
 
 	//Unary operators
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr Mat<3, 3, T> operator+(const Mat<3, 3, T>& m) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr Mat<3, 3, T> operator-(const Mat<3, 3, T>& m) noexcept;
 
 	//Binary operators
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr Mat<3, 3, T> operator+(const Mat<3, 3, T>& m, T scalar) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr Mat<3, 3, T> operator+(T scalar, const Mat<3, 3, T>& m) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr Mat<3, 3, T> operator+(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr Mat<3, 3, T> operator-(const Mat<3, 3, T>& m, T scalar) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr Mat<3, 3, T> operator-(T scalar, const Mat<3, 3, T>& m) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr Mat<3, 3, T> operator-(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr Mat<3, 3, T> operator*(const Mat<3, 3, T>& m, T scalar) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr Mat<3, 3, T> operator*(T scalar, const Mat<3, 3, T>& m) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr typename Mat<3, 3, T>::colType operator*(const Mat<3, 3, T>& m, const typename Mat<3, 3, T>::rowType& v) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr typename Mat<3, 3, T>::rowType operator*(const typename Mat<3, 3, T>::colType& v, const Mat<3, 3, T>& m) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr Mat<3, 3, T> operator*(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr Mat<3, 3, T> operator/(const Mat<3, 3, T>& m, T scalar) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr Mat<3, 3, T> operator/(T scalar, const Mat<3, 3, T>& m) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr typename Mat<3, 3, T>::colType operator/(const Mat<3, 3, T>& m, const typename Mat<3, 3, T>::rowType& v);
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr typename Mat<3, 3, T>::rowType operator/(const typename Mat<3, 3, T>::colType& v, const Mat<3, 3, T>& m);
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr Mat<3, 3, T> operator/(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept;
 
 	//Boolean operators
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr bool operator==(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept;
 
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	constexpr bool operator!=(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept;
 }
 
@@ -281,7 +281,7 @@ namespace TRAP::Math
 namespace std
 {
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	struct hash<TRAP::Math::Mat<3, 3, T>>
 	{
 		[[nodiscard]] constexpr std::size_t operator()(const TRAP::Math::Mat<3, 3, T>& m) const noexcept
@@ -301,13 +301,13 @@ namespace std
 //Constructors
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Mat<3, 3, T>::Mat(const T scalar) noexcept
 	: value{ colType(scalar, 0, 0), colType(0, scalar, 0), colType(0, 0, scalar) }
 {}
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Mat<3, 3, T>::Mat(const T x0, const T y0, const T z0,
 	                                    const T x1, const T y1, const T z1,
 	                                    const T x2, const T y2, const T z2) noexcept
@@ -315,7 +315,7 @@ constexpr TRAP::Math::Mat<3, 3, T>::Mat(const T x0, const T y0, const T z0,
 {}
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Mat<3, 3, T>::Mat(const colType& v0, const colType& v1, const colType& v2) noexcept
 	: value{ colType(v0), colType(v1), colType(v2) }
 {}
@@ -324,7 +324,7 @@ constexpr TRAP::Math::Mat<3, 3, T>::Mat(const colType& v0, const colType& v1, co
 //Conversion constructors
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 template<typename X1, typename Y1, typename Z1,
 	     typename X2, typename Y2, typename Z2,
 	     typename X3, typename Y3, typename Z3>
@@ -335,7 +335,7 @@ constexpr TRAP::Math::Mat<3, 3, T>::Mat(const X1 x1, const Y1 y1, const Z1 z1,
 {}
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 template<typename V1, typename V2, typename V3>
 constexpr TRAP::Math::Mat<3, 3, T>::Mat(const Vec<3, V1>& v1, const Vec<3, V2>& v2, const Vec<3, V3>& v3) noexcept
 	: value{ colType(v1), colType(v2), colType(v3) }
@@ -344,15 +344,15 @@ constexpr TRAP::Math::Mat<3, 3, T>::Mat(const Vec<3, V1>& v1, const Vec<3, V2>& 
 //-------------------------------------------------------------------------------------------------------------------//
 //Matrix conversions
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 template<typename U>
-requires std::is_arithmetic_v<U>
+requires std::floating_point<U>
 constexpr TRAP::Math::Mat<3, 3, T>::Mat(const Mat<3, 3, U>& m) noexcept
 	: value{ colType(m[0]), colType(m[1]), colType(m[2]) }
 {}
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Mat<3, 3, T>::Mat(const Mat<4, 4, T>& x) noexcept
 	: value{ colType(x[0]), colType(x[1]), colType(x[2]) }
 {}
@@ -360,7 +360,7 @@ constexpr TRAP::Math::Mat<3, 3, T>::Mat(const Mat<4, 4, T>& x) noexcept
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr std::size_t TRAP::Math::Mat<3, 3, T>::Length() noexcept
 {
 	return 3;
@@ -370,21 +370,21 @@ requires std::is_arithmetic_v<T>
 //Accesses
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr typename TRAP::Math::Mat<3, 3, T>::colType& TRAP::Math::Mat<3, 3, T>::operator[](const std::size_t i)
 {
 	return this->value[i];
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 [[nodiscard]] constexpr const typename TRAP::Math::Mat<3, 3, T>::colType& TRAP::Math::Mat<3, 3, T>::operator[](const std::size_t i) const
 {
 	return this->value[i];
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 [[nodiscard]] typename TRAP::Math::Mat<3, 3, T>::colType& TRAP::Math::Mat<3, 3, T>::at(const std::size_t i)
 {
 	TRAP_ASSERT(i < this->Length(), "Math::Mat<3, 3, T>::operator[]: index out of range");
@@ -393,7 +393,7 @@ requires std::is_arithmetic_v<T>
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 [[nodiscard]] const typename TRAP::Math::Mat<3, 3, T>::colType& TRAP::Math::Mat<3, 3, T>::at(const std::size_t i) const
 {
 	TRAP_ASSERT(i < this->Length(), "Math::Mat<3, 3, T>::operator[]: index out of range");
@@ -405,9 +405,9 @@ requires std::is_arithmetic_v<T>
 //Unary updatable operators
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 template<typename U>
-requires std::is_arithmetic_v<U>
+requires std::floating_point<U>
 constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator=(const Mat<3, 3, U>& m) noexcept
 {
 	std::get<0>(this->value) = m[0];
@@ -418,7 +418,7 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator=(const Ma
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 template<typename U>
 constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator+=(const U s) noexcept
 {
@@ -430,9 +430,9 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator+=(const U
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 template<typename U>
-requires std::is_arithmetic_v<U>
+requires std::floating_point<U>
 constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator+=(const Mat<3, 3, U>& m) noexcept
 {
 	std::get<0>(this->value) += m[0];
@@ -443,7 +443,7 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator+=(const M
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 template<typename U>
 constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator-=(const U s) noexcept
 {
@@ -455,9 +455,9 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator-=(const U
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 template<typename U>
-requires std::is_arithmetic_v<U>
+requires std::floating_point<U>
 constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator-=(const Mat<3, 3, U>& m) noexcept
 {
 	std::get<0>(this->value) -= m[0];
@@ -468,7 +468,7 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator-=(const M
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 template<typename U>
 constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator*=(const U s) noexcept
 {
@@ -480,16 +480,16 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator*=(const U
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 template<typename U>
-requires std::is_arithmetic_v<U>
+requires std::floating_point<U>
 constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator*=(const Mat<3, 3, U>& m) noexcept
 {
 	return (*this = *this * m);
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 template<typename U>
 constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator/=(const U s) noexcept
 {
@@ -501,9 +501,9 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator/=(const U
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 template<typename U>
-requires std::is_arithmetic_v<U>
+requires std::floating_point<U>
 constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator/=(const Mat<3, 3, U>& m)
 {
 	return *this *= Inverse(m);
@@ -513,7 +513,7 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator/=(const M
 //Increment and decrement operators
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator++() noexcept
 {
 	++std::get<0>(this->value);
@@ -524,7 +524,7 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator++() noexc
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator--() noexcept
 {
 	--std::get<0>(this->value);
@@ -535,7 +535,7 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator--() noexc
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr const TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator++(int) noexcept
 {
 	Mat<3, 3, T> result(*this);
@@ -545,7 +545,7 @@ constexpr const TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator++(in
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr const TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator--(int) noexcept
 {
 	Mat<3, 3, T> result(*this);
@@ -557,7 +557,7 @@ constexpr const TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator--(in
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 [[nodiscard]] std::string TRAP::Math::Mat<3, 3, T>::ToString() const
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -578,14 +578,14 @@ requires std::is_arithmetic_v<T>
 //Unary arithmetic operators
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator+(const Mat<3, 3, T>& m) noexcept
 {
 	return m;
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator-(const Mat<3, 3, T>& m) noexcept
 {
 	return Mat<3, 3, T>(-m[0], -m[1], -m[2]);
@@ -595,63 +595,63 @@ constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator-(const Mat<3, 3, T>& m) 
 //Binary arithmetic operators
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator+(const Mat<3, 3, T>& m, const T scalar) noexcept
 {
 	return Mat<3, 3, T>(m[0] + scalar, m[1] + scalar, m[2] + scalar);
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator+(const T scalar, const Mat<3, 3, T>& m) noexcept
 {
 	return Mat<3, 3, T>(m[0] + scalar, m[1] + scalar, m[2] + scalar);
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator+(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept
 {
 	return Mat<3, 3, T>(m1[0] + m2[0], m1[1] + m2[1], m1[2] + m2[2]);
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator-(const Mat<3, 3, T>& m, const T scalar) noexcept
 {
 	return Mat<3, 3, T>(m[0] - scalar, m[1] - scalar, m[2] - scalar);
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator-(const T scalar, const Mat<3, 3, T>& m) noexcept
 {
 	return Mat<3, 3, T>(scalar - m[0], scalar - m[1], scalar - m[2]);
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator-(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept
 {
 	return Mat<3, 3, T>(m1[0] - m2[0], m1[1] - m2[1], m1[2] - m2[2]);
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator*(const Mat<3, 3, T>& m, const T scalar) noexcept
 {
 	return Mat<3, 3, T>(m[0] * scalar, m[1] * scalar, m[2] * scalar);
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator*(const T scalar, const Mat<3, 3, T>& m) noexcept
 {
 	return Mat<3, 3, T>(m[0] * scalar, m[1] * scalar, m[2] * scalar);
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr typename TRAP::Math::Mat<3, 3, T>::colType TRAP::Math::operator*(const Mat<3, 3, T>& m,
                                                                            const typename Mat<3, 3, T>::rowType& v) noexcept
 {
@@ -661,7 +661,7 @@ constexpr typename TRAP::Math::Mat<3, 3, T>::colType TRAP::Math::operator*(const
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr typename TRAP::Math::Mat<3, 3, T>::rowType TRAP::Math::operator*(const typename Mat<3, 3, T>::colType& v,
                                                                            const Mat<3, 3, T>& m) noexcept
 {
@@ -671,7 +671,7 @@ constexpr typename TRAP::Math::Mat<3, 3, T>::rowType TRAP::Math::operator*(const
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator*(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept
 {
 	const T srcA00 = m1[0][0];
@@ -709,21 +709,21 @@ constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator*(const Mat<3, 3, T>& m1,
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator/(const Mat<3, 3, T>& m, const T scalar) noexcept
 {
 	return Mat<3, 3, T>(m[0] / scalar, m[1] / scalar, m[2] / scalar);
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator/(const T scalar, const Mat<3, 3, T>& m) noexcept
 {
 	return Mat<3, 3, T>(scalar / m[0], scalar / m[1], scalar / m[2]);
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr typename TRAP::Math::Mat<3, 3, T>::colType TRAP::Math::operator/(const Mat<3, 3, T>& m,
                                                                            const typename Mat<3, 3, T>::rowType& v)
 {
@@ -731,7 +731,7 @@ constexpr typename TRAP::Math::Mat<3, 3, T>::colType TRAP::Math::operator/(const
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr typename TRAP::Math::Mat<3, 3, T>::rowType TRAP::Math::operator/(const typename Mat<3, 3, T>::colType& v,
                                                                            const Mat<3, 3, T>& m)
 {
@@ -739,7 +739,7 @@ constexpr typename TRAP::Math::Mat<3, 3, T>::rowType TRAP::Math::operator/(const
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator/(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept
 {
 	Mat<3, 3, T> m1Copy(m1);
@@ -751,14 +751,14 @@ constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator/(const Mat<3, 3, T>& m1,
 //Boolean operators
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr bool TRAP::Math::operator==(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept
 {
 	return (m1[0] == m2[0]) && (m1[1] == m2[1]) && (m1[2] == m2[2]);
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 constexpr bool TRAP::Math::operator!=(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept
 {
 	return (m1[0] != m2[0]) || (m1[1] != m2[1]) || (m1[2] != m2[2]);
