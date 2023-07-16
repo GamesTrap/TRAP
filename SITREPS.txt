@@ -4215,3 +4215,4 @@ SITREP 07/16/2023|23w28b2
     - Changed TRAP Engine version to 23w28b2(0.9.62)
     - Replaced GoogleTest with Catch2 ~<10 mins
     - Added first unit tests for TRAP::Math::Sin() and TRAP::Math::Min() ~<30 mins
+    - Added tests for Math::Abs(), Math::Max(), Math::Round() and Math::Trunc() ~<45 mins
