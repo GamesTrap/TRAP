@@ -4217,3 +4217,12 @@ SITREP 07/16/2023|23w28b2
     - Added first unit tests for TRAP::Math::Sin() and TRAP::Math::Min() ~<30 mins
     - Added tests for Math::Abs(), Math::Max(), Math::Round() and Math::Trunc() ~<45 mins
     - Constrained Mat4, Mat3 and Quaternion to floating-point types ~<10 mins
+    - Math Added Abs() support for matrix types ~<5 mins
+    - Extended tests for Math::Abs() with matrix types ~<10 mins
+
+SITREP 07/17/2023|23w29a1
+    - Changed TRAP Engine version to 23w29a1(0.9.63)
+    - Math Added missing integral specialization of Math::Mod() ~<10 mins
+    - Math Resolved some compiler warnings ~<10 mins
+    - Added test for Math::Ceil(), Math::Floor(), Math::Fract(), Math::Mod(), Math::Modf(), Math::RoundEven() and Math::Sign() ~>60 mins
+    - Extended tests for Math::Round() and Math::Trunc() ~<30 mins

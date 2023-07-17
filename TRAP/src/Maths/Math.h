@@ -373,7 +373,7 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the absolute value of x.
 	/// </summary>
-	/// <typeparam name="genFIType">Floating-point or signed integer; scalar or vector types.</typeparam>
+	/// <typeparam name="genFIType">Floating-point or integer; scalar or vector types.</typeparam>
 	/// <param name="x">Specify the value of which to return the absolute.</param>
 	/// <returns>x if x >= 0; otherwise it returns -x.</returns>
 	template<typename genFIType>
@@ -383,12 +383,22 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the absolute value of x.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or signed integer scalar types.</typeparam>
+	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
 	/// <param name="x">Specify the value of which to return the absolute.</param>
 	/// <returns>x if x >= 0; otherwise it returns -x.</returns>
 	template<uint32_t L, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, T> Abs(const Vec<L, T>& x);
+
+	/// <summary>
+	/// Retrieve the absolute value of x.
+	/// </summary>
+	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
+	/// <param name="x">Specify the value of which to return the absolute.</param>
+	/// <returns>x if x >= 0; otherwise it returns -x.</returns>
+	template<uint32_t C, uint32_t R, typename T>
+	requires std::floating_point<T>
+	[[nodiscard]] constexpr Mat<C, R, T> Abs(const Mat<C, R, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -546,7 +556,25 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>x - y * Floor(x / y) for each component in x using the floating point value y.</returns>
 	template<typename genType>
-	requires std::floating_point<genType> || std::integral<genType>
+	requires std::floating_point<genType>
+	[[nodiscard]] genType Mod(genType x, genType y);
+
+	/// <summary>
+	/// Retrieve value of x modulo y.
+	/// </summary>
+	/// <param name="x">Specify the value to evaluate.</param>
+	/// <returns>x - y * Floor(x / y) for each component in x using the floating point value y.</returns>
+	template<typename genType>
+	requires std::signed_integral<genType>
+	[[nodiscard]] genType Mod(genType x, genType y);
+
+	/// <summary>
+	/// Retrieve value of x modulo y.
+	/// </summary>
+	/// <param name="x">Specify the value to evaluate.</param>
+	/// <returns>x - y * Floor(x / y) for each component in x using the floating point value y.</returns>
+	template<typename genType>
+	requires std::unsigned_integral<genType>
 	[[nodiscard]] genType Mod(genType x, genType y);
 
 	/// <summary>
@@ -3394,14 +3422,31 @@ requires std::is_arithmetic_v<T>
 	return result;
 }
 
+template<uint32_t C, uint32_t R, typename T>
+requires std::floating_point<T>
+[[nodiscard]] constexpr TRAP::Math::Mat<C, R, T> TRAP::Math::Abs(const Mat<C, R, T>& x)
+{
+	Mat<C, R, T> result{};
+
+	for(uint32_t i = 0; i < C; ++i)
+	{
+		for(uint32_t j = 0; j < R; ++j)
+		{
+			result[i][j] = Abs(x[i][j]);
+		}
+	}
+
+	return result;
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genFIType>
 requires std::floating_point<genFIType> || std::signed_integral<genFIType>
 [[nodiscard]] constexpr genFIType TRAP::Math::Sign(const genFIType x)
 {
-	return static_cast<genFIType>(static_cast<genFIType>(0) < x) -
-	       static_cast<genFIType>(x < static_cast<genFIType>(0));
+	return static_cast<genFIType>(static_cast<genFIType>(static_cast<genFIType>(0) < x) -
+	                              static_cast<genFIType>(x < static_cast<genFIType>(0)));
 }
 
 template<uint32_t L, typename T>
@@ -3543,12 +3588,26 @@ requires std::floating_point<T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-requires std::floating_point<genType> || std::integral<genType>
+requires std::floating_point<genType>
 [[nodiscard]] genType TRAP::Math::Mod(const genType x, const genType y)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return x - y * Floor(x / y);
+}
+
+template<typename genType>
+requires std::signed_integral<genType>
+[[nodiscard]] genType TRAP::Math::Mod(const genType x, const genType y)
+{
+	return static_cast<genType>(static_cast<genType>(static_cast<genType>(x % y) + y) % y);
+}
+
+template<typename genType>
+requires std::unsigned_integral<genType>
+[[nodiscard]] genType TRAP::Math::Mod(const genType x, const genType y)
+{
+	return static_cast<genType>(static_cast<genType>(x - y) * static_cast<genType>(x / y));
 }
 
 template<uint32_t L, typename T>

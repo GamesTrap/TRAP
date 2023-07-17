@@ -8,11 +8,18 @@
 #include "TRAP/src/Maths/Math.h"
 
 template<typename T>
-requires std::floating_point<T>
+requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>)
 void RunRoundTests(const T val)
 {
     constexpr T Epsilon = std::numeric_limits<T>::epsilon();
-    REQUIRE_THAT(TRAP::Math::Round(val), Catch::Matchers::WithinRel(std::round(val), Epsilon));
+    if constexpr(std::floating_point<T>)
+    {
+        REQUIRE_THAT(TRAP::Math::Round(val), Catch::Matchers::WithinRel(std::round(val), Epsilon));
+    }
+    else if constexpr(TRAP::Math::IsVec<T>)
+    {
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Round(val), T(std::round(val[0])), Epsilon)));
+    }
 }
 
 TEST_CASE("TRAP::Math::Round()", "[math][generic][round]")
@@ -45,5 +52,32 @@ TEST_CASE("TRAP::Math::Round()", "[math][generic][round]")
     SECTION("Scalar - float")
     {
         RunRoundTests(static_cast<float>(val));
+    }
+
+    SECTION("Vec2 - double")
+    {
+        RunRoundTests(TRAP::Math::Vec2d(static_cast<double>(val)));
+    }
+    SECTION("Vec2 - float")
+    {
+        RunRoundTests(TRAP::Math::Vec2f(static_cast<float>(val)));
+    }
+
+    SECTION("Vec3 - double")
+    {
+        RunRoundTests(TRAP::Math::Vec3d(static_cast<double>(val)));
+    }
+    SECTION("Vec3 - float")
+    {
+        RunRoundTests(TRAP::Math::Vec3f(static_cast<float>(val)));
+    }
+
+    SECTION("Vec4 - double")
+    {
+        RunRoundTests(TRAP::Math::Vec4d(static_cast<double>(val)));
+    }
+    SECTION("Vec4 - float")
+    {
+        RunRoundTests(TRAP::Math::Vec4f(static_cast<float>(val)));
     }
 }

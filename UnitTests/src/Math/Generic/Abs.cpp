@@ -37,12 +37,18 @@ constexpr void RunConstexprAbsTests()
 {
     constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    static_assert(TRAP::Math::Equal(TRAP::Math::Abs(static_cast<T>(0.0)), static_cast<T>(0.0), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Abs(static_cast<T>(-0.0)), static_cast<T>(0.0), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Abs(static_cast<T>(1.0)), static_cast<T>(1.0), Epsilon));
     if constexpr(std::signed_integral<T> || std::floating_point<T>)
     {
+        static_assert(TRAP::Math::Equal(TRAP::Math::Abs(static_cast<T>(0.0)), static_cast<T>(0.0), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Abs(static_cast<T>(-0.0)), static_cast<T>(0.0), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Abs(static_cast<T>(1.0)), static_cast<T>(1.0), Epsilon));
         static_assert(TRAP::Math::Equal(TRAP::Math::Abs(static_cast<T>(-1.0)), static_cast<T>(1.0), Epsilon));
+    }
+    else
+    {
+        static_assert(TRAP::Math::Equal(TRAP::Math::Abs(static_cast<T>(0.0)), static_cast<T>(0.0), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Abs(static_cast<T>(-0.0)), static_cast<T>(0.0), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Abs(static_cast<T>(1.0)), static_cast<T>(1.0), Epsilon));
     }
 }
 
@@ -52,13 +58,81 @@ constexpr void RunConstexprAbsVecTests()
 {
     constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(0.0))), T(static_cast<T::valueType>(0.0)), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(-0.0))), T(static_cast<T::valueType>(0.0)), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(1.0))), T(static_cast<T::valueType>(1.0)), Epsilon)));
     if constexpr((std::signed_integral<typename T::valueType> || std::floating_point<typename T::valueType>))
     {
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(0.0))), T(static_cast<T::valueType>(0.0)), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(-0.0))), T(static_cast<T::valueType>(0.0)), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(1.0))), T(static_cast<T::valueType>(1.0)), Epsilon)));
         static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(-1.0))), T(static_cast<T::valueType>(1.0)), Epsilon)));
     }
+    else
+    {
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(0.0))), T(static_cast<T::valueType>(0.0)), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(-0.0))), T(static_cast<T::valueType>(0.0)), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(1.0))), T(static_cast<T::valueType>(1.0)), Epsilon)));
+    }
+}
+
+template<typename T>
+requires TRAP::Math::IsMat3<T>
+constexpr void RunConstexprAbsMat3Tests()
+{
+    constexpr T A
+    (
+        typename T::valueType(3.0), typename T::valueType(1.0), typename T::valueType(5.2),
+        typename T::valueType(1.4), typename T::valueType(0.5), typename T::valueType(9.3),
+        typename T::valueType(6.8), typename T::valueType(8.4), typename T::valueType(4.3)
+    );
+    constexpr T B
+    (
+        typename T::valueType( 1.0), typename T::valueType(-1.0), typename T::valueType( 1.0),
+        typename T::valueType(-1.0), typename T::valueType( 1.0), typename T::valueType( 1.0),
+        typename T::valueType( 1.0), typename T::valueType(-1.0), typename T::valueType(-1.0)
+    );
+
+    constexpr T C = TRAP::Math::MatrixCompMult(A, B);
+    constexpr T D = TRAP::Math::Abs(C);
+
+    constexpr TRAP::Math::Vec3b col1 = TRAP::Math::Equal(D[0], A[0]);
+    constexpr TRAP::Math::Vec3b col2 = TRAP::Math::Equal(D[1], A[1]);
+    constexpr TRAP::Math::Vec3b col3 = TRAP::Math::Equal(D[2], A[2]);
+
+    static_assert(TRAP::Math::All(TRAP::Math::Vec3b{TRAP::Math::All(col1),
+                                                    TRAP::Math::All(col2),
+                                                    TRAP::Math::All(col3)}));
+}
+
+template<typename T>
+requires TRAP::Math::IsMat4<T>
+constexpr void RunConstexprAbsMat4Tests()
+{
+    constexpr T A
+    (
+        typename T::valueType(3.0), typename T::valueType(1.0), typename T::valueType(5.2), typename T::valueType(4.9),
+        typename T::valueType(1.4), typename T::valueType(0.5), typename T::valueType(9.3), typename T::valueType(3.7),
+        typename T::valueType(6.8), typename T::valueType(8.4), typename T::valueType(4.3), typename T::valueType(3.9),
+        typename T::valueType(5.6), typename T::valueType(7.2), typename T::valueType(1.1), typename T::valueType(4.4)
+    );
+    constexpr T B
+    (
+        typename T::valueType( 1.0), typename T::valueType(-1.0), typename T::valueType( 1.0), typename T::valueType( 1.0),
+        typename T::valueType(-1.0), typename T::valueType( 1.0), typename T::valueType( 1.0), typename T::valueType(-1.0),
+        typename T::valueType( 1.0), typename T::valueType(-1.0), typename T::valueType(-1.0), typename T::valueType(-1.0),
+        typename T::valueType(-1.0), typename T::valueType(-1.0), typename T::valueType( 1.0), typename T::valueType( 1.0)
+    );
+
+    constexpr T C = TRAP::Math::MatrixCompMult(A, B);
+    constexpr T D = TRAP::Math::Abs(C);
+
+    constexpr TRAP::Math::Vec4b col1 = TRAP::Math::Equal(D[0], A[0]);
+    constexpr TRAP::Math::Vec4b col2 = TRAP::Math::Equal(D[1], A[1]);
+    constexpr TRAP::Math::Vec4b col3 = TRAP::Math::Equal(D[2], A[2]);
+    constexpr TRAP::Math::Vec4b col4 = TRAP::Math::Equal(D[3], A[3]);
+
+    static_assert(TRAP::Math::All(TRAP::Math::Vec4b{TRAP::Math::All(col1),
+                                                    TRAP::Math::All(col2),
+                                                    TRAP::Math::All(col3),
+                                                    TRAP::Math::All(col4)}));
 }
 
 TEST_CASE("TRAP::Math::Abs()", "[math][generic][abs]")
@@ -251,5 +325,23 @@ TEST_CASE("TRAP::Math::Abs()", "[math][generic][abs]")
     SECTION("Vec4 - float")
     {
         RunConstexprAbsVecTests<TRAP::Math::Vec4f>();
+    }
+
+    SECTION("Mat3 - double")
+    {
+        RunConstexprAbsMat3Tests<TRAP::Math::Mat3d>();
+    }
+    SECTION("Mat3 - float")
+    {
+        RunConstexprAbsMat3Tests<TRAP::Math::Mat3f>();
+    }
+
+    SECTION("Mat4 - double")
+    {
+        RunConstexprAbsMat4Tests<TRAP::Math::Mat4d>();
+    }
+    SECTION("Mat4 - float")
+    {
+        RunConstexprAbsMat4Tests<TRAP::Math::Mat4f>();
     }
 }
