@@ -4226,3 +4226,11 @@ SITREP 07/17/2023|23w29a1
     - Math Resolved some compiler warnings ~<10 mins
     - Added test for Math::Ceil(), Math::Floor(), Math::Fract(), Math::Mod(), Math::Modf(), Math::RoundEven() and Math::Sign() ~>60 mins
     - Extended tests for Math::Round() and Math::Trunc() ~<30 mins
+
+SITREP 07/20/2023|23w29a2
+    - Changed TRAP Engine version to 23w29a2(0.9.64)
+    - Math Added Min() and Max() with up to 4 parameters ~<10 mins
+    - Extended tests for Math::Min() and Math::Max() ~<30 mins
+    - Added test for Math::Clamp() ~<10 mins
+    - Math Added debug assert for Math::Clamp() ~<5 mins
+    - Premake Added TRAP-UnitTests configuration ~<10 mins

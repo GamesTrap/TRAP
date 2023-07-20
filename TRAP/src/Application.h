@@ -9,9 +9,9 @@
 #include "ThreadPool/ThreadPool.h"
 #include "Utils/Time/Timer.h"
 
-#if !defined(DOXYGEN_DOCUMENTATION_BUILD)
+#if !defined(DOXYGEN_DOCUMENTATION_BUILD) && !defined(TRAP_UNITTESTS)
 int main(int32_t argc, const char* const* argv);
-#endif /*!DOXYGEN_DOCUMENTATION_BUILD*/
+#endif /*!DOXYGEN_DOCUMENTATION_BUILD && !TRAP_UNITTESTS*/
 
 namespace TRAP
 {
@@ -490,7 +490,9 @@ namespace TRAP
 		//Singleton instance
 		inline constinit static Application* s_Instance = nullptr;
 
+#ifndef TRAP_UNITTESTS
 		friend int ::main(int32_t argc, const char* const*  argv);
+#endif /*TRAP_UNITTESTS*/
 	};
 
 	/// <summary>

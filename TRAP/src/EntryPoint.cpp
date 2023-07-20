@@ -3,6 +3,8 @@
 #include "Application.h"
 #include "Core/PlatformDetection.h"
 
+#ifndef TRAP_UNITTESTS
+
 int main(const int32_t argc, const char* const* const argv)
 {
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -16,3 +18,5 @@ int main(const int32_t argc, const char* const* const argv)
 
 	return 0;
 }
+
+#endif /*TRAP_UNITTESTS*/
