@@ -434,7 +434,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value of which to return the absolute.</param>
 	/// <returns>x if x >= 0; otherwise it returns -x.</returns>
 	template<typename genFIType>
-	requires std::is_arithmetic_v<genFIType>
+	requires std::signed_integral<genFIType> || std::floating_point<genFIType>
 	[[nodiscard]] constexpr genFIType Abs(genFIType x);
 
 	/// <summary>
@@ -444,7 +444,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value of which to return the absolute.</param>
 	/// <returns>x if x >= 0; otherwise it returns -x.</returns>
 	template<uint32_t L, typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::signed_integral<T> || std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Abs(const Vec<L, T>& x);
 
 	/// <summary>
@@ -859,7 +859,11 @@ namespace TRAP::Math
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<typename genType>
 	requires std::floating_point<genType>
-	[[nodiscard]] int32_t IRound(const genType& x);
+	[[nodiscard]]
+#ifndef TRAP_ENABLE_ASSERTS
+	constexpr
+#endif /*TRAP_ENABLE_ASSERTS*/
+	int32_t IRound(const genType& x);
 
 	/// <summary>
 	/// Returns a value equal to the nearest integer to x.
@@ -872,7 +876,11 @@ namespace TRAP::Math
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, int32_t> IRound(const Vec<L, T>& x);
+	[[nodiscard]]
+#ifndef TRAP_ENABLE_ASSERTS
+	constexpr
+#endif /*TRAP_ENABLE_ASSERTS*/
+	Vec<L, int32_t> IRound(const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -3498,27 +3506,22 @@ requires std::floating_point<genType>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genFIType>
-requires std::is_arithmetic_v<genFIType>
+requires std::signed_integral<genFIType> || std::floating_point<genFIType>
 [[nodiscard]] constexpr genFIType TRAP::Math::Abs(const genFIType x)
 {
-	if constexpr (std::numeric_limits<genFIType>::is_signed)
+	if constexpr (std::signed_integral<genFIType>)
 	{
-		if constexpr (std::signed_integral<genFIType>)
-		{
-			const genFIType y = x >> (sizeof(genFIType) * 8u - 1u);
-			return (x ^ y) - y;
-		}
-		else
-		{
-			return x >= static_cast<genFIType>(0) ? x : -x;
-		}
+		const genFIType y = x >> (sizeof(genFIType) * 8u - 1u);
+		return (x ^ y) - y;
 	}
 	else
-		return x;
+	{
+		return x >= static_cast<genFIType>(0) ? x : -x;
+	}
 }
 
 template<uint32_t L, typename T>
-requires std::is_arithmetic_v<T>
+requires std::signed_integral<T> || std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Abs(const Vec<L, T>& x)
 {
 	Vec<L, T> result{};
@@ -3876,7 +3879,11 @@ TRAP::Math::Vec<L, T> TRAP::Math::Clamp(const Vec<L, T>& x, const Vec<L, T>& min
 
 template<typename genType>
 requires std::floating_point<genType>
-[[nodiscard]] int32_t TRAP::Math::IRound(const genType& x)
+[[nodiscard]]
+#ifndef TRAP_ENABLE_ASSERTS
+constexpr
+#endif /*TRAP_ENABLE_ASSERTS*/
+int32_t TRAP::Math::IRound(const genType& x)
 {
 	TRAP_ASSERT(static_cast<genType>(0) <= x, "Math::IRound(): x must be positive!");
 
@@ -3885,7 +3892,11 @@ requires std::floating_point<genType>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, int32_t> TRAP::Math::IRound(const Vec<L, T>& x)
+[[nodiscard]]
+#ifndef TRAP_ENABLE_ASSERTS
+constexpr
+#endif /*TRAP_ENABLE_ASSERTS*/
+TRAP::Math::Vec<L, int32_t> TRAP::Math::IRound(const Vec<L, T>& x)
 {
 	TRAP_ASSERT(All(LessThanEqual(Vec<L, T>(static_cast<T>(0)), x)), "Math::IRound(): x must be positive!");
 
@@ -3992,7 +4003,14 @@ template<typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr bool TRAP::Math::Equal(const T x, const T y, const T epsilon)
 {
-	return LessThanEqual(Abs(NumericCast<T>(x - y)), epsilon);
+	if constexpr(std::signed_integral<T> || std::floating_point<T>)
+	{
+		return LessThanEqual(Abs(NumericCast<T>(x - y)), epsilon);
+	}
+	else if constexpr(std::unsigned_integral<T>)
+	{
+		return LessThanEqual(NumericCast<T>(x - y), epsilon);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4010,7 +4028,14 @@ template<typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr bool TRAP::Math::NotEqual(const T x, const T y, const T epsilon)
 {
-	return GreaterThan(Abs(x - y), epsilon);
+	if constexpr(std::signed_integral<T> || std::floating_point<T>)
+	{
+		return GreaterThan(Abs(x - y), epsilon);
+	}
+	else if constexpr(std::unsigned_integral<T>)
+	{
+		return GreaterThan(x - y, epsilon);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4236,18 +4261,32 @@ template<typename genType>
 requires std::integral<genType>
 [[nodiscard]] constexpr bool TRAP::Math::IsPowerOfTwo(const genType value)
 {
-	const genType result = Abs(value);
+	if constexpr(std::signed_integral<genType>)
+	{
+		const genType result = Abs(value);
 
-	return !(result & (result - 1));
+		return !(result & (result - 1));
+	}
+	else if constexpr(std::unsigned_integral<genType>)
+	{
+		return !(value & (value - 1));
+	}
 }
 
 template<uint32_t L, typename T>
 requires std::integral<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::IsPowerOfTwo(const Vec<L, T>& v)
 {
-	const Vec<L, T> result(Abs(v));
+	if constexpr(std::signed_integral<T>)
+	{
+		const Vec<L, T> result(Abs(v));
 
-	return Equal(result & (result - Vec<L, T>(static_cast<T>(1))), Vec<L, T>(static_cast<T>(0)));
+		return Equal(result & (result - Vec<L, T>(static_cast<T>(1))), Vec<L, T>(static_cast<T>(0)));
+	}
+	else if constexpr(std::unsigned_integral<T>)
+	{
+		return Equal(v & (v - Vec<L, T>(static_cast<T>(1))), Vec<L, T>(static_cast<T>(0)));
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5985,7 +6024,14 @@ requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Vec<L, T>& x, const Vec<L, T>& y,
                                                                    const Vec<L, T>& epsilon)
 {
-	return LessThanEqual(Abs(x - y), epsilon);
+	if constexpr(std::signed_integral<T> || std::floating_point<T>)
+	{
+		return LessThanEqual(Abs(x - y), epsilon);
+	}
+	else if constexpr(std::unsigned_integral<T>)
+	{
+		return LessThanEqual(x - y, epsilon);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -6016,7 +6062,14 @@ requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Vec<L, T>& x, const Vec<L, T>& y,
                                                                       const Vec<L, T>& epsilon)
 {
-	return GreaterThan(Abs(x - y), epsilon);
+	if constexpr(std::signed_integral<T> || std::floating_point<T>)
+	{
+		return GreaterThan(Abs(x - y), epsilon);
+	}
+	else if constexpr(std::unsigned_integral<T>)
+	{
+		return GreaterThan(x - y, epsilon);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

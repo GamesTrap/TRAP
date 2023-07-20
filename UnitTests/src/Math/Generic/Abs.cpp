@@ -9,7 +9,7 @@
 #include "TRAP/src/Maths/Math.h"
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::signed_integral<T> || std::floating_point<T>
 void RunAbsTests()
 {
     const std::array<T, 4> values
@@ -20,57 +20,32 @@ void RunAbsTests()
     constexpr T Epsilon = std::numeric_limits<T>::epsilon();
     for(const T val : values)
     {
-        if constexpr(std::signed_integral<T> || std::floating_point<T>)
-        {
-            REQUIRE(TRAP::Math::Equal(TRAP::Math::Abs(val), static_cast<T>(std::abs(val)), Epsilon));
-        }
-        else
-        {
-            REQUIRE(TRAP::Math::Equal(TRAP::Math::Abs(val), val, Epsilon));
-        }
+        REQUIRE(TRAP::Math::Equal(TRAP::Math::Abs(val), static_cast<T>(std::abs(val)), Epsilon));
     }
 }
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::signed_integral<T> || std::floating_point<T>
 constexpr void RunConstexprAbsTests()
 {
     constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    if constexpr(std::signed_integral<T> || std::floating_point<T>)
-    {
-        static_assert(TRAP::Math::Equal(TRAP::Math::Abs(static_cast<T>(0.0)), static_cast<T>(0.0), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Abs(static_cast<T>(-0.0)), static_cast<T>(0.0), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Abs(static_cast<T>(1.0)), static_cast<T>(1.0), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Abs(static_cast<T>(-1.0)), static_cast<T>(1.0), Epsilon));
-    }
-    else
-    {
-        static_assert(TRAP::Math::Equal(TRAP::Math::Abs(static_cast<T>(0.0)), static_cast<T>(0.0), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Abs(static_cast<T>(-0.0)), static_cast<T>(0.0), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Abs(static_cast<T>(1.0)), static_cast<T>(1.0), Epsilon));
-    }
+    static_assert(TRAP::Math::Equal(TRAP::Math::Abs(static_cast<T>(0.0)), static_cast<T>(0.0), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Abs(static_cast<T>(-0.0)), static_cast<T>(0.0), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Abs(static_cast<T>(1.0)), static_cast<T>(1.0), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Abs(static_cast<T>(-1.0)), static_cast<T>(1.0), Epsilon));
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T>
+requires TRAP::Math::IsVec<T> && (std::signed_integral<typename T::valueType> || std::floating_point<typename T::valueType>)
 constexpr void RunConstexprAbsVecTests()
 {
     constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    if constexpr((std::signed_integral<typename T::valueType> || std::floating_point<typename T::valueType>))
-    {
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(0.0))), T(static_cast<T::valueType>(0.0)), Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(-0.0))), T(static_cast<T::valueType>(0.0)), Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(1.0))), T(static_cast<T::valueType>(1.0)), Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(-1.0))), T(static_cast<T::valueType>(1.0)), Epsilon)));
-    }
-    else
-    {
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(0.0))), T(static_cast<T::valueType>(0.0)), Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(-0.0))), T(static_cast<T::valueType>(0.0)), Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(1.0))), T(static_cast<T::valueType>(1.0)), Epsilon)));
-    }
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(0.0))), T(static_cast<T::valueType>(0.0)), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(-0.0))), T(static_cast<T::valueType>(0.0)), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(1.0))), T(static_cast<T::valueType>(1.0)), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(-1.0))), T(static_cast<T::valueType>(1.0)), Epsilon)));
 }
 
 template<typename T>
@@ -158,40 +133,20 @@ TEST_CASE("TRAP::Math::Abs()", "[math][generic][abs]")
         RunAbsTests<int8_t>();
         RunConstexprAbsTests<int8_t>();
     }
-    SECTION("Scalar - uint8_t")
-    {
-        RunAbsTests<uint8_t>();
-        RunConstexprAbsTests<uint8_t>();
-    }
     SECTION("Scalar - int16_t")
     {
         RunAbsTests<int16_t>();
         RunConstexprAbsTests<int16_t>();
-    }
-    SECTION("Scalar - uint16_t")
-    {
-        RunAbsTests<uint16_t>();
-        RunConstexprAbsTests<uint16_t>();
     }
     SECTION("Scalar - int32_t")
     {
         RunAbsTests<int32_t>();
         RunConstexprAbsTests<int32_t>();
     }
-    SECTION("Scalar - uint32_t")
-    {
-        RunAbsTests<uint32_t>();
-        RunConstexprAbsTests<uint32_t>();
-    }
     SECTION("Scalar - int64_t")
     {
         RunAbsTests<int64_t>();
         RunConstexprAbsTests<int64_t>();
-    }
-    SECTION("Scalar - uint64_t")
-    {
-        RunAbsTests<uint64_t>();
-        RunConstexprAbsTests<uint64_t>();
     }
     SECTION("Scalar - double")
     {
@@ -208,33 +163,17 @@ TEST_CASE("TRAP::Math::Abs()", "[math][generic][abs]")
     {
         RunConstexprAbsVecTests<TRAP::Math::Vec2i8>();
     }
-    SECTION("Vec2 - uint8_t")
-    {
-        RunConstexprAbsVecTests<TRAP::Math::Vec2ui8>();
-    }
     SECTION("Vec2 - int16_t")
     {
         RunConstexprAbsVecTests<TRAP::Math::Vec2i16>();
-    }
-    SECTION("Vec2 - uint16_t")
-    {
-        RunConstexprAbsVecTests<TRAP::Math::Vec2ui16>();
     }
     SECTION("Vec2 - int32_t")
     {
         RunConstexprAbsVecTests<TRAP::Math::Vec2i32>();
     }
-    SECTION("Vec2 - uint32_t")
-    {
-        RunConstexprAbsVecTests<TRAP::Math::Vec2ui32>();
-    }
     SECTION("Vec2 - int64_t")
     {
         RunConstexprAbsVecTests<TRAP::Math::Vec2i64>();
-    }
-    SECTION("Vec2 - uint64_t")
-    {
-        RunConstexprAbsVecTests<TRAP::Math::Vec2ui64>();
     }
     SECTION("Vec2 - double")
     {
@@ -249,33 +188,17 @@ TEST_CASE("TRAP::Math::Abs()", "[math][generic][abs]")
     {
         RunConstexprAbsVecTests<TRAP::Math::Vec3i8>();
     }
-    SECTION("Vec3 - uint8_t")
-    {
-        RunConstexprAbsVecTests<TRAP::Math::Vec3ui8>();
-    }
     SECTION("Vec3 - int16_t")
     {
         RunConstexprAbsVecTests<TRAP::Math::Vec3i16>();
-    }
-    SECTION("Vec3 - uint16_t")
-    {
-        RunConstexprAbsVecTests<TRAP::Math::Vec3ui16>();
     }
     SECTION("Vec3 - int32_t")
     {
         RunConstexprAbsVecTests<TRAP::Math::Vec3i32>();
     }
-    SECTION("Vec3 - uint32_t")
-    {
-        RunConstexprAbsVecTests<TRAP::Math::Vec3ui32>();
-    }
     SECTION("Vec3 - int64_t")
     {
         RunConstexprAbsVecTests<TRAP::Math::Vec3i64>();
-    }
-    SECTION("Vec3 - uint64_t")
-    {
-        RunConstexprAbsVecTests<TRAP::Math::Vec3ui64>();
     }
     SECTION("Vec3 - double")
     {
@@ -290,33 +213,17 @@ TEST_CASE("TRAP::Math::Abs()", "[math][generic][abs]")
     {
         RunConstexprAbsVecTests<TRAP::Math::Vec4i8>();
     }
-    SECTION("Vec4 - uint8_t")
-    {
-        RunConstexprAbsVecTests<TRAP::Math::Vec4ui8>();
-    }
     SECTION("Vec4 - int16_t")
     {
         RunConstexprAbsVecTests<TRAP::Math::Vec4i16>();
-    }
-    SECTION("Vec4 - uint16_t")
-    {
-        RunConstexprAbsVecTests<TRAP::Math::Vec4ui16>();
     }
     SECTION("Vec4 - int32_t")
     {
         RunConstexprAbsVecTests<TRAP::Math::Vec4i32>();
     }
-    SECTION("Vec4 - uint32_t")
-    {
-        RunConstexprAbsVecTests<TRAP::Math::Vec4ui32>();
-    }
     SECTION("Vec4 - int64_t")
     {
         RunConstexprAbsVecTests<TRAP::Math::Vec4i64>();
-    }
-    SECTION("Vec4 - uint64_t")
-    {
-        RunConstexprAbsVecTests<TRAP::Math::Vec4ui64>();
     }
     SECTION("Vec4 - double")
     {

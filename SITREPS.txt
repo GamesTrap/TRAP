@@ -4234,3 +4234,7 @@ SITREP 07/20/2023|23w29a2
     - Added test for Math::Clamp() ~<10 mins
     - Math Added debug assert for Math::Clamp() ~<5 mins
     - Premake Added TRAP-UnitTests configuration ~<10 mins
+
+SITREP 07/21/2023|23w29a3
+    - Changed TRAP Engine version to 23w29a3(0.9.65)
+    - Math constrained Abs() to signed types ~<10 mins
