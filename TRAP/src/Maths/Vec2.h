@@ -1050,7 +1050,14 @@ namespace std
 	{
 		static_assert(I < TRAP::Math::Vec<2, T>::Length());
 
-		return I == 0 ? v.x : v.y;
+		if constexpr(I == 0)
+		{
+			return v.x;
+		}
+		else if constexpr(I == 1)
+		{
+			return v.y;
+		}
 	}
 
 	/// <summary>
@@ -1066,7 +1073,14 @@ namespace std
 	{
 		static_assert(I < TRAP::Math::Vec<2, T>::Length());
 
-		return I == 0 ? v.x : v.y;
+		if constexpr(I == 0)
+		{
+			return v.x;
+		}
+		else if constexpr(I == 1)
+		{
+			return v.y;
+		}
 	}
 
 	/// <summary>
@@ -1082,7 +1096,14 @@ namespace std
 	{
 		static_assert(I < TRAP::Math::Vec<2, T>::Length());
 
-		return I == 0 ? v.x : v.y;
+		if constexpr(I == 0)
+		{
+			return v.x;
+		}
+		else if constexpr(I == 1)
+		{
+			return v.y;
+		}
 	}
 
 	/// <summary>
@@ -1098,7 +1119,14 @@ namespace std
 	{
 		static_assert(I < TRAP::Math::Vec<2, T>::Length());
 
-		return I == 0 ? v.x : v.y;
+		if constexpr(I == 0)
+		{
+			return v.x;
+		}
+		else if constexpr(I == 1)
+		{
+			return v.y;
+		}
 	}
 }
 

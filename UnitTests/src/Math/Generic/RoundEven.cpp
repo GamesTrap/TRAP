@@ -15,30 +15,30 @@ void RunRoundEvenTests()
 
     constexpr std::array<std::pair<T, T>, 48> values
     {
-        std::pair<T, T>{-1.5, -2.0}, std::pair<T, T>{ 1.5,  2.0}, std::pair<T, T>{-2.5, -2.0},
-        std::pair<T, T>{ 2.5,  2.0}, std::pair<T, T>{-3.5, -4.0}, std::pair<T, T>{ 3.5,  4.0},
-        std::pair<T, T>{-4.5, -4.0}, std::pair<T, T>{ 4.5,  4.0}, std::pair<T, T>{-5.5, -6.0},
-        std::pair<T, T>{ 5.5,  6.0}, std::pair<T, T>{-6.5, -6.0}, std::pair<T, T>{ 6.5,  6.0},
-        std::pair<T, T>{-7.5, -8.0}, std::pair<T, T>{ 7.5,  8.0},
+        std::pair<T, T>{T(-1.5f), T(-2.0f)}, std::pair<T, T>{T( 1.5f), T( 2.0f)}, std::pair<T, T>{T(-2.5f), T(-2.0f)},
+        std::pair<T, T>{T( 2.5f), T( 2.0f)}, std::pair<T, T>{T(-3.5f), T(-4.0f)}, std::pair<T, T>{T( 3.5f), T( 4.0f)},
+        std::pair<T, T>{T(-4.5f), T(-4.0f)}, std::pair<T, T>{T( 4.5f), T( 4.0f)}, std::pair<T, T>{T(-5.5f), T(-6.0f)},
+        std::pair<T, T>{T( 5.5f), T( 6.0f)}, std::pair<T, T>{T(-6.5f), T(-6.0f)}, std::pair<T, T>{T( 6.5f), T( 6.0f)},
+        std::pair<T, T>{T(-7.5f), T(-8.0f)}, std::pair<T, T>{T( 7.5f), T( 8.0f)},
 
-        std::pair<T, T>{-2.4, -2.0}, std::pair<T, T>{ 2.4,  2.0}, std::pair<T, T>{-2.6, -3.0},
-        std::pair<T, T>{ 2.6,  3.0}, std::pair<T, T>{-2.0, -2.0}, std::pair<T, T>{ 2.0,  2.0},
+        std::pair<T, T>{T(-2.4f), T(-2.0f)}, std::pair<T, T>{T( 2.4f), T( 2.0f)}, std::pair<T, T>{T(-2.6f), T(-3.0f)},
+        std::pair<T, T>{T( 2.6f), T( 3.0f)}, std::pair<T, T>{T(-2.0f), T(-2.0f)}, std::pair<T, T>{T( 2.0f), T( 2.0f)},
 
-        std::pair<T, T>{ 0.0,  0.0}, std::pair<T, T>{ 0.5,  0.0}, std::pair<T, T>{ 1.0,  1.0},
-        std::pair<T, T>{ 0.1,  0.0}, std::pair<T, T>{ 0.9,  1.0}, std::pair<T, T>{ 1.5,  2.0},
-        std::pair<T, T>{ 1.9,  2.0},
+        std::pair<T, T>{T( 0.0f), T( 0.0f)}, std::pair<T, T>{T( 0.5f), T( 0.0f)}, std::pair<T, T>{T( 1.0f), T( 1.0f)},
+        std::pair<T, T>{T( 0.1f), T( 0.0f)}, std::pair<T, T>{T( 0.9f), T( 1.0f)}, std::pair<T, T>{T( 1.5f), T( 2.0f)},
+        std::pair<T, T>{T( 1.9f), T( 2.0f)},
 
-        std::pair<T, T>{-0.0,  0.0}, std::pair<T, T>{-0.5, -0.0}, std::pair<T, T>{-1.0, -1.0},
-        std::pair<T, T>{-0.1,  0.0}, std::pair<T, T>{-0.9, -1.0}, std::pair<T, T>{-1.5, -2.0},
-        std::pair<T, T>{-1.9, -2.0},
+        std::pair<T, T>{T(-0.0f), T( 0.0f)}, std::pair<T, T>{T(-0.5f), T(-0.0f)}, std::pair<T, T>{T(-1.0f), T(-1.0f)},
+        std::pair<T, T>{T(-0.1f), T( 0.0f)}, std::pair<T, T>{T(-0.9f), T(-1.0f)}, std::pair<T, T>{T(-1.5f), T(-2.0f)},
+        std::pair<T, T>{T(-1.9f), T(-2.0f)},
 
-        std::pair<T, T>{ 1.5,  2.0}, std::pair<T, T>{ 2.5,  2.0}, std::pair<T, T>{ 3.5,  4.0},
-        std::pair<T, T>{ 4.5,  4.0}, std::pair<T, T>{ 5.5,  6.0}, std::pair<T, T>{ 6.5,  6.0},
-        std::pair<T, T>{ 7.5,  8.0},
+        std::pair<T, T>{T( 1.5f), T( 2.0f)}, std::pair<T, T>{T( 2.5f), T( 2.0f)}, std::pair<T, T>{T( 3.5f), T( 4.0f)},
+        std::pair<T, T>{T( 4.5f), T( 4.0f)}, std::pair<T, T>{T( 5.5f), T( 6.0f)}, std::pair<T, T>{T( 6.5f), T( 6.0f)},
+        std::pair<T, T>{T( 7.5f), T( 8.0f)},
 
-        std::pair<T, T>{-1.5, -2.0}, std::pair<T, T>{-2.5, -2.0}, std::pair<T, T>{-3.5, -4.0},
-        std::pair<T, T>{-4.5, -4.0}, std::pair<T, T>{-5.5, -6.0}, std::pair<T, T>{-6.5, -6.0},
-        std::pair<T, T>{-7.5, -8.0},
+        std::pair<T, T>{T(-1.5f), T(-2.0f)}, std::pair<T, T>{T(-2.5f), T(-2.0f)}, std::pair<T, T>{T(-3.5f), T(-4.0f)},
+        std::pair<T, T>{T(-4.5f), T(-4.0f)}, std::pair<T, T>{T(-5.5f), T(-6.0f)}, std::pair<T, T>{T(-6.5f), T(-6.0f)},
+        std::pair<T, T>{T(-7.5f), T(-8.0f)},
     };
 
     for(const auto& [val, expected] : values)

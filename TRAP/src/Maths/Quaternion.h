@@ -429,7 +429,22 @@ template <typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr T& TRAP::Math::tQuat<T>::operator[](const std::size_t i)
 {
-	return (&x)[i];
+	switch (i)
+	{
+	default:
+		[[fallthrough]];
+	case 0:
+		return x;
+
+	case 1:
+		return y;
+
+	case 2:
+		return z;
+
+	case 3:
+		return w;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -438,7 +453,22 @@ template <typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr const T& TRAP::Math::tQuat<T>::operator[](const std::size_t i) const
 {
-	return (&x)[i];
+	switch (i)
+	{
+	default:
+		[[fallthrough]];
+	case 0:
+		return x;
+
+	case 1:
+		return y;
+
+	case 2:
+		return z;
+
+	case 3:
+		return w;
+	}
 }
 
 template <typename T>
@@ -447,7 +477,22 @@ requires std::floating_point<T>
 {
 	TRAP_ASSERT(i < this->Length(), "Math::tQuat<T>::operator[]: Index out of range!");
 
-	return (&x)[i];
+	switch (i)
+	{
+	default:
+		[[fallthrough]];
+	case 0:
+		return x;
+
+	case 1:
+		return y;
+
+	case 2:
+		return z;
+
+	case 3:
+		return w;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -458,7 +503,22 @@ requires std::floating_point<T>
 {
 	TRAP_ASSERT(i < this->Length(), "Math::tQuat<T>::operator[]: Index out of range!");
 
-	return (&x)[i];
+	switch (i)
+	{
+	default:
+		[[fallthrough]];
+	case 0:
+		return x;
+
+	case 1:
+		return y;
+
+	case 2:
+		return z;
+
+	case 3:
+		return w;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

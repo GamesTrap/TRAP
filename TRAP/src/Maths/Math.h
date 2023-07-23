@@ -849,70 +849,6 @@ namespace TRAP::Math
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
-	/// Returns a value equal to the nearest integer to x.
-	/// The fraction 0.5 will round in a direction chosen by the
-	/// implementation, presumably the direction that is fastest.
-	/// </summary>
-	///
-	/// <typeparam name="genType">Floating-point scalar type.</typeparam>
-	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
-	/// <returns>Value equal to the nearest integer to x.</returns>
-	template<typename genType>
-	requires std::floating_point<genType>
-	[[nodiscard]]
-#ifndef TRAP_ENABLE_ASSERTS
-	constexpr
-#endif /*TRAP_ENABLE_ASSERTS*/
-	int32_t IRound(const genType& x);
-
-	/// <summary>
-	/// Returns a value equal to the nearest integer to x.
-	/// The fraction 0.5 will round in a direction chosen by the
-	/// implementation, presumably the direction that is fastest.
-	/// </summary>
-	///
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
-	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
-	/// <returns>Value equal to the nearest integer to x.</returns>
-	template<uint32_t L, typename T>
-	requires std::floating_point<T>
-	[[nodiscard]]
-#ifndef TRAP_ENABLE_ASSERTS
-	constexpr
-#endif /*TRAP_ENABLE_ASSERTS*/
-	Vec<L, int32_t> IRound(const Vec<L, T>& x);
-
-	//-------------------------------------------------------------------------------------------------------------------//
-
-	/// <summary>
-	/// Returns a value equal to the nearest integer to x.
-	/// The fraction 0.5 will round in a direction chosen by the
-	/// implementation, presumably the direction that is fastest.
-	/// </summary>
-	///
-	/// <typeparam name="genType">Floating-point scalar type.</typeparam>
-	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
-	/// <returns>Value equal to the nearest integer to x.</returns>
-	template<typename genType>
-	requires std::floating_point<genType>
-	[[nodiscard]] uint32_t URound(const genType& x);
-
-	/// <summary>
-	/// Returns a value equal to the nearest integer to x.
-	/// The fraction 0.5 will round in a direction chosen by the
-	/// implementation, presumably the direction that is fastest.
-	/// </summary>
-	///
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
-	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
-	/// <returns>Value equal to the nearest integer to x.</returns>
-	template<uint32_t L, typename T>
-	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, uint32_t> URound(const Vec<L, T>& x);
-
-	//-------------------------------------------------------------------------------------------------------------------//
-
-	/// <summary>
 	/// Linearly interpolate between the values.
 	///
 	/// If genTypeU is a floating scalar or vector:
@@ -3888,54 +3824,6 @@ TRAP::Math::Vec<L, T> TRAP::Math::Clamp(const Vec<L, T>& x, const Vec<L, T>& min
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<typename genType>
-requires std::floating_point<genType>
-[[nodiscard]]
-#ifndef TRAP_ENABLE_ASSERTS
-constexpr
-#endif /*TRAP_ENABLE_ASSERTS*/
-int32_t TRAP::Math::IRound(const genType& x)
-{
-	TRAP_ASSERT(static_cast<genType>(0) <= x, "Math::IRound(): x must be positive!");
-
-	return static_cast<int32_t>(x + static_cast<genType>(0.5));
-}
-
-template<uint32_t L, typename T>
-requires std::floating_point<T>
-[[nodiscard]]
-#ifndef TRAP_ENABLE_ASSERTS
-constexpr
-#endif /*TRAP_ENABLE_ASSERTS*/
-TRAP::Math::Vec<L, int32_t> TRAP::Math::IRound(const Vec<L, T>& x)
-{
-	TRAP_ASSERT(All(LessThanEqual(Vec<L, T>(static_cast<T>(0)), x)), "Math::IRound(): x must be positive!");
-
-	return Vec<L, int32_t>(x + static_cast<T>(0.5));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template<typename genType>
-requires std::floating_point<genType>
-[[nodiscard]] uint32_t TRAP::Math::URound(const genType& x)
-{
-	TRAP_ASSERT(static_cast<genType>(0) <= x, "Math::URound(): x must be positive!");
-
-	return static_cast<uint32_t>(x + static_cast<genType>(0.5));
-}
-
-template<uint32_t L, typename T>
-requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, uint32_t> TRAP::Math::URound(const Vec<L, T>& x)
-{
-	TRAP_ASSERT(All(LessThanEqual(Vec<L, T>(static_cast<T>(0)), x)), "Math::URound(): x must be positive!");
-
-	return Vec<L, uint32_t>(x + static_cast<T>(0.5));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 template<typename genTypeT, typename genTypeU>
 requires std::floating_point<genTypeU> || std::same_as<genTypeU, bool>
 [[nodiscard]] constexpr genTypeT TRAP::Math::Mix(const genTypeT x, const genTypeT y, const genTypeU a)
@@ -4016,11 +3904,11 @@ requires std::is_arithmetic_v<T>
 {
 	if constexpr(std::signed_integral<T> || std::floating_point<T>)
 	{
-		return LessThanEqual(Abs(NumericCast<T>(x - y)), epsilon);
+		return Abs(NumericCast<T>(x - y)) <= epsilon;
 	}
 	else if constexpr(std::unsigned_integral<T>)
 	{
-		return LessThanEqual(NumericCast<T>(x - y), epsilon);
+		return NumericCast<T>(x - y) <= epsilon;
 	}
 }
 
@@ -4041,11 +3929,11 @@ requires std::is_arithmetic_v<T>
 {
 	if constexpr(std::signed_integral<T> || std::floating_point<T>)
 	{
-		return GreaterThan(Abs(x - y), epsilon);
+		return Abs(NumericCast<T>(x - y)) > epsilon;
 	}
 	else if constexpr(std::unsigned_integral<T>)
 	{
-		return GreaterThan(x - y, epsilon);
+		return NumericCast<T>(x - y) > epsilon;
 	}
 }
 

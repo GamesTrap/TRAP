@@ -18,7 +18,7 @@ void RunModfTests()
 
         constexpr std::array<std::tuple<T, T, T>, 1> values
         {
-            std::tuple{1.5, 0.5, 1.0}
+            std::tuple{T(1.5), T(0.5), T(1.0)}
         };
 
         for(const auto& [val, expected, expectedI] : values)
