@@ -17,7 +17,7 @@ void RunFractTests()
 
         constexpr std::array<std::pair<T, T>, 1> values
         {
-            std::pair{1.5, 0.5}
+            std::pair{T(1.5), T(0.5)}
         };
 
         for(const auto& [val, expected] : values)

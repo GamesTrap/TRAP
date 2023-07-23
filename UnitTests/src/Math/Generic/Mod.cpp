@@ -14,9 +14,9 @@ void RunModTests()
 {
     constexpr std::array<std::tuple<T, X, T>, 3> values
     {
-        std::tuple<T, X, T>{ 1.5,  1.0,  0.5},
-        std::tuple<T, X, T>{-0.2,  1.0, -0.2},
-        std::tuple<T, X, T>{ 3.0,  2.0,  1.0},
+        std::tuple<T, X, T>{T( 1.5f), X(1.0f), T( 0.5f)},
+        std::tuple<T, X, T>{T(-0.2f), X(1.0f), T(-0.2f)},
+        std::tuple<T, X, T>{T( 3.0f), X(2.0f), T( 1.0f)},
     };
 
     for(const auto& [val1, val2, expected] : values)

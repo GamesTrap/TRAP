@@ -65,38 +65,6 @@ namespace ScalarCommon
 
         return error;
     }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-    int32_t TestIRound()
-    {
-        int32_t error = 0;
-
-        for(float f = 0.0f; f < 3.1f; f += 0.05f)
-        {
-            int32_t roundFast = static_cast<int32_t>(TRAP::Math::IRound(f));
-            int32_t roundStd = static_cast<int32_t>(TRAP::Math::Round(f));
-            error += roundFast == roundStd ? 0 : 1;
-        }
-
-        return error;
-    }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-    int32_t TestURound()
-    {
-        int32_t error = 0;
-
-        for(float f = 0.0f; f < 3.1f; f += 0.05f)
-        {
-            int32_t roundFast = static_cast<int32_t>(TRAP::Math::URound(f));
-            int32_t roundStd = static_cast<int32_t>(TRAP::Math::URound(f));
-            error += roundFast == roundStd ? 0 : 1;
-        }
-
-        return error;
-    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -114,9 +82,6 @@ int32_t RunScalarCommonTests()
     error += ScalarCommon::TestMax<double>();
     error += ScalarCommon::TestMaxNaN<float>();
     error += ScalarCommon::TestMaxNaN<double>();
-
-    error += ScalarCommon::TestIRound();
-    error += ScalarCommon::TestURound();
 
     return error;
 }

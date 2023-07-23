@@ -79,38 +79,6 @@ namespace VectorCommon
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-    int32_t TestIRound()
-    {
-        int32_t error = 0;
-
-        for(float f = 0.0f; f < 3.1f; f += 0.05f)
-        {
-            int32_t roundFast = static_cast<int32_t>(TRAP::Math::IRound(f));
-            int32_t roundStd = static_cast<int32_t>(TRAP::Math::Round(f));
-            error += roundFast == roundStd ? 0 : 1;
-        }
-
-        return error;
-    }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-    int32_t TestURound()
-    {
-        int32_t error = 0;
-
-        for(float f = 0.0f; f < 3.1f; f += 0.05f)
-        {
-            int32_t roundFast = static_cast<int32_t>(TRAP::Math::URound(f));
-            int32_t roundStd = static_cast<int32_t>(TRAP::Math::Round(f));
-            error += roundFast == roundStd ? 0 : 1;
-        }
-
-        return error;
-    }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
     int32_t TestLog2()
     {
         int32_t error = 0;
@@ -320,9 +288,6 @@ int32_t RunVectorCommonTests()
     error += VectorCommon::TestMax<TRAP::Math::Vec2>();
     error += VectorCommon::TestMaxNaN<TRAP::Math::Vec3>();
     error += VectorCommon::TestMaxNaN<TRAP::Math::Vec2>();
-
-    error += VectorCommon::TestIRound();
-    error += VectorCommon::TestURound();
 
     error += VectorCommon::TestLog2();
 

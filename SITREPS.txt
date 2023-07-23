@@ -4245,3 +4245,7 @@ SITREP 07/23/2023|23w29a4
     - UnitTests Changed various edge case tests ~<20 mins
     - Math Fixed unsigned integral Mod() giving wrong results ~<5 mins
     - Math Replaced floating-point Mod() implementation with std::fmod() ~<5 mins
+    - Math Removed IRound() and URound() ~<5 mins
+    - Math Fixed NotEqual() sometimes not returning the correct value ~<5 mins
+    - Quaternion Fixed UB on dereferencing w component ~<5 mins
+    - UnitTests Added tests for Math::Mix(), Math::Equal(), Math::NotEqual(), Math::GreaterThan(), Math::GreaterThanEqual() ~>105 mins

@@ -1122,20 +1122,20 @@ namespace std
 	{
 		static_assert(I < TRAP::Math::Vec<4, T>::Length());
 
-		switch (I)
+		if constexpr(I == 0)
 		{
-		default:
-			[[fallthrough]];
-		case 0:
 			return v.x;
-
-		case 1:
+		}
+		else if constexpr(I == 1)
+		{
 			return v.y;
-
-		case 2:
+		}
+		else if constexpr(I == 2)
+		{
 			return v.z;
-
-		case 3:
+		}
+		else if constexpr(I == 3)
+		{
 			return v.w;
 		}
 	}
@@ -1153,20 +1153,20 @@ namespace std
 	{
 		static_assert(I < TRAP::Math::Vec<4, T>::Length());
 
-		switch (I)
+		if constexpr(I == 0)
 		{
-		default:
-			[[fallthrough]];
-		case 0:
 			return v.x;
-
-		case 1:
+		}
+		else if constexpr(I == 1)
+		{
 			return v.y;
-
-		case 2:
+		}
+		else if constexpr(I == 2)
+		{
 			return v.z;
-
-		case 3:
+		}
+		else if constexpr(I == 3)
+		{
 			return v.w;
 		}
 	}
@@ -1184,20 +1184,20 @@ namespace std
 	{
 		static_assert(I < TRAP::Math::Vec<4, T>::Length());
 
-		switch (I)
+		if constexpr(I == 0)
 		{
-		default:
-			[[fallthrough]];
-		case 0:
 			return v.x;
-
-		case 1:
+		}
+		else if constexpr(I == 1)
+		{
 			return v.y;
-
-		case 2:
+		}
+		else if constexpr(I == 2)
+		{
 			return v.z;
-
-		case 3:
+		}
+		else if constexpr(I == 3)
+		{
 			return v.w;
 		}
 	}
@@ -1215,20 +1215,20 @@ namespace std
 	{
 		static_assert(I < TRAP::Math::Vec<4, T>::Length());
 
-		switch (I)
+		if constexpr(I == 0)
 		{
-		default:
-			[[fallthrough]];
-		case 0:
 			return v.x;
-
-		case 1:
+		}
+		else if constexpr(I == 1)
+		{
 			return v.y;
-
-		case 2:
+		}
+		else if constexpr(I == 2)
+		{
 			return v.z;
-
-		case 3:
+		}
+		else if constexpr(I == 3)
+		{
 			return v.w;
 		}
 	}
