@@ -175,7 +175,7 @@ template <typename T, typename UIFunction>
 requires TRAP::IsComponent<T> && std::is_invocable_r_v<void, UIFunction, T&>
 void DrawComponent(const std::string& name, TRAP::Entity& entity, UIFunction func) //TODO name can be replaced by std::string_view
 {
-	static constexpr ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap |
+	static constexpr ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowOverlap |
 		ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_FramePadding;
 
 	if (entity.HasComponent<T>())

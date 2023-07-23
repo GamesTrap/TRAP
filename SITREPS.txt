@@ -4249,3 +4249,8 @@ SITREP 07/23/2023|23w29a4
     - Math Fixed NotEqual() sometimes not returning the correct value ~<5 mins
     - Quaternion Fixed UB on dereferencing w component ~<5 mins
     - UnitTests Added tests for Math::Mix(), Math::Equal(), Math::NotEqual(), Math::GreaterThan(), Math::GreaterThanEqual() ~>105 mins
+
+SITREP 07/24/2023|23w30a1
+    - Changed TRAP Engine version to 23w30a1(0.9.67)
+    - ImGui disabled deprecated/obsolete functions ~<5 mins
+    - Updated ImGuiWindowing ~<5 mins

@@ -299,9 +299,6 @@ void TRAP::INTERNAL::ImGuiWindowing::CursorEnterCallback(const WindowingAPI::Int
 	if (bd->PrevUserCallbackCursorEnter != nullptr && ShouldChainCallback(&window))
 		bd->PrevUserCallbackCursorEnter(window, entered);
 
-	if(INTERNAL::WindowingAPI::GetCursorMode(window) == INTERNAL::WindowingAPI::CursorMode::Disabled)
-		return;
-
 	ImGuiIO& io = ImGui::GetIO();
 	if(entered)
 	{
@@ -326,9 +323,6 @@ void TRAP::INTERNAL::ImGuiWindowing::CursorPosCallback(const WindowingAPI::Inter
 	ImGuiTRAPData* const bd = GetBackendData();
 	if (bd->PrevUserCallbackCursorPos != nullptr && ShouldChainCallback(&window))
 		bd->PrevUserCallbackCursorPos(window, xPos, yPos);
-
-	if(INTERNAL::WindowingAPI::GetCursorMode(window) == INTERNAL::WindowingAPI::CursorMode::Disabled)
-		return;
 
 	ImGuiIO& io = ImGui::GetIO();
 	if((io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) != 0)
@@ -468,13 +462,13 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateKeyModifiers(const WindowingAPI::Inte
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
 	ImGuiIO& io = ImGui::GetIO();
-	io.AddKeyEvent(ImGuiKey_ModCtrl, WindowingAPI::GetKey(*window, Input::Key::Left_Control) != Input::KeyState::Released ||
+	io.AddKeyEvent(ImGuiMod_Ctrl, WindowingAPI::GetKey(*window, Input::Key::Left_Control) != Input::KeyState::Released ||
 		                             WindowingAPI::GetKey(*window, Input::Key::Right_Control) != Input::KeyState::Released);
-	io.AddKeyEvent(ImGuiKey_ModShift, WindowingAPI::GetKey(*window, Input::Key::Left_Shift) != Input::KeyState::Released ||
+	io.AddKeyEvent(ImGuiMod_Shift, WindowingAPI::GetKey(*window, Input::Key::Left_Shift) != Input::KeyState::Released ||
 									  WindowingAPI::GetKey(*window, Input::Key::Right_Shift) != Input::KeyState::Released);
-	io.AddKeyEvent(ImGuiKey_ModAlt, WindowingAPI::GetKey(*window, Input::Key::Left_ALT) != Input::KeyState::Released ||
+	io.AddKeyEvent(ImGuiMod_Alt, WindowingAPI::GetKey(*window, Input::Key::Left_ALT) != Input::KeyState::Released ||
 									WindowingAPI::GetKey(*window, Input::Key::Right_ALT) != Input::KeyState::Released);
-	io.AddKeyEvent(ImGuiKey_ModSuper, WindowingAPI::GetKey(*window, Input::Key::Left_Super) != Input::KeyState::Released ||
+	io.AddKeyEvent(ImGuiMod_Super, WindowingAPI::GetKey(*window, Input::Key::Left_Super) != Input::KeyState::Released ||
 									  WindowingAPI::GetKey(*window, Input::Key::Right_Super) != Input::KeyState::Released);
 }
 
@@ -519,12 +513,6 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMouseData()
 	ImGuiTRAPData* const bd = GetBackendData();
 	ImGuiIO& io = ImGui::GetIO();
 	const ImGuiPlatformIO& platformIO = ImGui::GetPlatformIO();
-
-	if((bd->Window != nullptr) && INTERNAL::WindowingAPI::GetCursorMode(*bd->Window) == INTERNAL::WindowingAPI::CursorMode::Disabled)
-	{
-		io.AddMousePosEvent(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
-		return;
-	}
 
 	ImGuiID mouseViewportID = 0;
 	const ImVec2 mousePosPrev = io.MousePos;
