@@ -4238,3 +4238,10 @@ SITREP 07/20/2023|23w29a2
 SITREP 07/21/2023|23w29a3
     - Changed TRAP Engine version to 23w29a3(0.9.65)
     - Math constrained Abs() to signed types ~<10 mins
+
+SITREP 07/23/2023|23w29a4
+    - Changed TRAP Engine version to 23w29a4(0.9.66)
+    - UnitTests Fixed some tests always using int8_t ~<5 mins
+    - UnitTests Changed various edge case tests ~<20 mins
+    - Math Fixed unsigned integral Mod() giving wrong results ~<5 mins
+    - Math Replaced floating-point Mod() implementation with std::fmod() ~<5 mins

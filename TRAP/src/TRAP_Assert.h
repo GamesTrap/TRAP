@@ -6,7 +6,7 @@
 #include <filesystem>
 #include <source_location>
 
-#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
+#if (defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)) && !defined(TRAP_UNITTESTS)
 	#define TRAP_ENABLE_ASSERTS
 #endif /*TRAP_DEBUG || TRAP_RELWITHDEBINFO*/
 

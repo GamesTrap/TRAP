@@ -10,23 +10,32 @@
 
 template<typename T>
 requires std::signed_integral<T> || std::floating_point<T>
-void RunAbsTests()
+consteval void RunCompileTimeAbsEdgeTests()
 {
-    const std::array<T, 4> values
-    {
-        T(0.0), T(-0.0), T(1.0), T(-1.0)
-    };
-
     constexpr T Epsilon = std::numeric_limits<T>::epsilon();
-    for(const T val : values)
+
+    constexpr T max = std::numeric_limits<T>::max();
+    static_assert(TRAP::Math::Equal(TRAP::Math::Abs(max), max, Epsilon));
+    constexpr T nmax = -std::numeric_limits<T>::max();
+    static_assert(TRAP::Math::Equal(TRAP::Math::Abs(nmax), max, Epsilon));
+    if constexpr(std::floating_point<T>)
     {
-        REQUIRE(TRAP::Math::Equal(TRAP::Math::Abs(val), static_cast<T>(std::abs(val)), Epsilon));
+        constexpr T min = std::numeric_limits<T>::lowest();
+        static_assert(TRAP::Math::Abs(min) == max);
+        constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+        static_assert(TRAP::Math::IsNaN(TRAP::Math::Abs(nan)));
+        constexpr T inf = std::numeric_limits<T>::infinity();
+        static_assert(TRAP::Math::Abs(inf) == inf);
+        constexpr T ninf = -std::numeric_limits<T>::infinity();
+        static_assert(TRAP::Math::Abs(ninf) == inf);
+        constexpr T dmin = std::numeric_limits<T>::denorm_min();
+        static_assert(TRAP::Math::Abs(dmin) == dmin);
     }
 }
 
 template<typename T>
 requires std::signed_integral<T> || std::floating_point<T>
-constexpr void RunConstexprAbsTests()
+consteval void RunCompileTimeAbsTests()
 {
     constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -38,7 +47,7 @@ constexpr void RunConstexprAbsTests()
 
 template<typename T>
 requires TRAP::Math::IsVec<T> && (std::signed_integral<typename T::valueType> || std::floating_point<typename T::valueType>)
-constexpr void RunConstexprAbsVecTests()
+consteval void RunCompileTimeAbsVecTests()
 {
     constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -50,7 +59,7 @@ constexpr void RunConstexprAbsVecTests()
 
 template<typename T>
 requires TRAP::Math::IsMat3<T>
-constexpr void RunConstexprAbsMat3Tests()
+consteval void RunCompileTimeAbsMat3Tests()
 {
     constexpr T A
     (
@@ -79,7 +88,7 @@ constexpr void RunConstexprAbsMat3Tests()
 
 template<typename T>
 requires TRAP::Math::IsMat4<T>
-constexpr void RunConstexprAbsMat4Tests()
+consteval void RunCompileTimeAbsMat4Tests()
 {
     constexpr T A
     (
@@ -112,143 +121,127 @@ constexpr void RunConstexprAbsMat4Tests()
 
 TEST_CASE("TRAP::Math::Abs()", "[math][generic][abs]")
 {
-    SECTION("Edge cases")
-    {
-        constexpr double Epsilon = std::numeric_limits<double>::epsilon();
-        constexpr int64_t imin = std::numeric_limits<int64_t>::min();
-        constexpr int64_t imax = std::numeric_limits<int64_t>::max();
-        constexpr double ninf = -std::numeric_limits<double>::infinity();
-        constexpr double inf = std::numeric_limits<double>::infinity();
-        constexpr double nan = std::numeric_limits<double>::quiet_NaN();
-
-        REQUIRE(TRAP::Math::Abs(imin) == std::abs(imin));
-        REQUIRE(TRAP::Math::Abs(imax) == std::abs(imax));
-        REQUIRE((TRAP::Math::IsNaN(TRAP::Math::Abs(nan)) && std::isnan(std::abs(nan))));
-        REQUIRE_THAT(TRAP::Math::Abs(ninf), Catch::Matchers::WithinRel(std::abs(ninf), Epsilon));
-        REQUIRE_THAT(TRAP::Math::Abs(inf), Catch::Matchers::WithinRel(std::abs(inf), Epsilon));
-    }
-
     SECTION("Scalar - int8_t")
     {
-        RunAbsTests<int8_t>();
-        RunConstexprAbsTests<int8_t>();
+        RunCompileTimeAbsEdgeTests<int8_t>();
+        RunCompileTimeAbsTests<int8_t>();
     }
     SECTION("Scalar - int16_t")
     {
-        RunAbsTests<int16_t>();
-        RunConstexprAbsTests<int16_t>();
+        RunCompileTimeAbsEdgeTests<int16_t>();
+        RunCompileTimeAbsTests<int16_t>();
     }
     SECTION("Scalar - int32_t")
     {
-        RunAbsTests<int32_t>();
-        RunConstexprAbsTests<int32_t>();
+        RunCompileTimeAbsEdgeTests<int32_t>();
+        RunCompileTimeAbsTests<int32_t>();
     }
     SECTION("Scalar - int64_t")
     {
-        RunAbsTests<int64_t>();
-        RunConstexprAbsTests<int64_t>();
+        RunCompileTimeAbsEdgeTests<int64_t>();
+        RunCompileTimeAbsTests<int64_t>();
     }
     SECTION("Scalar - double")
     {
-        RunAbsTests<double>();
-        RunConstexprAbsTests<double>();
+        RunCompileTimeAbsEdgeTests<double>();
+        RunCompileTimeAbsTests<double>();
     }
     SECTION("Scalar - float")
     {
-        RunAbsTests<float>();
-        RunConstexprAbsTests<float>();
+        RunCompileTimeAbsEdgeTests<float>();
+        RunCompileTimeAbsTests<float>();
     }
 
     SECTION("Vec2 - int8_t")
     {
-        RunConstexprAbsVecTests<TRAP::Math::Vec2i8>();
+        RunCompileTimeAbsVecTests<TRAP::Math::Vec2i8>();
     }
     SECTION("Vec2 - int16_t")
     {
-        RunConstexprAbsVecTests<TRAP::Math::Vec2i16>();
+        RunCompileTimeAbsVecTests<TRAP::Math::Vec2i16>();
     }
     SECTION("Vec2 - int32_t")
     {
-        RunConstexprAbsVecTests<TRAP::Math::Vec2i32>();
+        RunCompileTimeAbsVecTests<TRAP::Math::Vec2i32>();
     }
     SECTION("Vec2 - int64_t")
     {
-        RunConstexprAbsVecTests<TRAP::Math::Vec2i64>();
+        RunCompileTimeAbsVecTests<TRAP::Math::Vec2i64>();
     }
     SECTION("Vec2 - double")
     {
-        RunConstexprAbsVecTests<TRAP::Math::Vec2d>();
+        RunCompileTimeAbsVecTests<TRAP::Math::Vec2d>();
     }
     SECTION("Vec2 - float")
     {
-        RunConstexprAbsVecTests<TRAP::Math::Vec2f>();
+        RunCompileTimeAbsVecTests<TRAP::Math::Vec2f>();
     }
 
     SECTION("Vec3 - int8_t")
     {
-        RunConstexprAbsVecTests<TRAP::Math::Vec3i8>();
+        RunCompileTimeAbsVecTests<TRAP::Math::Vec3i8>();
     }
     SECTION("Vec3 - int16_t")
     {
-        RunConstexprAbsVecTests<TRAP::Math::Vec3i16>();
+        RunCompileTimeAbsVecTests<TRAP::Math::Vec3i16>();
     }
     SECTION("Vec3 - int32_t")
     {
-        RunConstexprAbsVecTests<TRAP::Math::Vec3i32>();
+        RunCompileTimeAbsVecTests<TRAP::Math::Vec3i32>();
     }
     SECTION("Vec3 - int64_t")
     {
-        RunConstexprAbsVecTests<TRAP::Math::Vec3i64>();
+        RunCompileTimeAbsVecTests<TRAP::Math::Vec3i64>();
     }
     SECTION("Vec3 - double")
     {
-        RunConstexprAbsVecTests<TRAP::Math::Vec3d>();
+        RunCompileTimeAbsVecTests<TRAP::Math::Vec3d>();
     }
     SECTION("Vec3 - float")
     {
-        RunConstexprAbsVecTests<TRAP::Math::Vec3f>();
+        RunCompileTimeAbsVecTests<TRAP::Math::Vec3f>();
     }
 
     SECTION("Vec4 - int8_t")
     {
-        RunConstexprAbsVecTests<TRAP::Math::Vec4i8>();
+        RunCompileTimeAbsVecTests<TRAP::Math::Vec4i8>();
     }
     SECTION("Vec4 - int16_t")
     {
-        RunConstexprAbsVecTests<TRAP::Math::Vec4i16>();
+        RunCompileTimeAbsVecTests<TRAP::Math::Vec4i16>();
     }
     SECTION("Vec4 - int32_t")
     {
-        RunConstexprAbsVecTests<TRAP::Math::Vec4i32>();
+        RunCompileTimeAbsVecTests<TRAP::Math::Vec4i32>();
     }
     SECTION("Vec4 - int64_t")
     {
-        RunConstexprAbsVecTests<TRAP::Math::Vec4i64>();
+        RunCompileTimeAbsVecTests<TRAP::Math::Vec4i64>();
     }
     SECTION("Vec4 - double")
     {
-        RunConstexprAbsVecTests<TRAP::Math::Vec4d>();
+        RunCompileTimeAbsVecTests<TRAP::Math::Vec4d>();
     }
     SECTION("Vec4 - float")
     {
-        RunConstexprAbsVecTests<TRAP::Math::Vec4f>();
+        RunCompileTimeAbsVecTests<TRAP::Math::Vec4f>();
     }
 
     SECTION("Mat3 - double")
     {
-        RunConstexprAbsMat3Tests<TRAP::Math::Mat3d>();
+        RunCompileTimeAbsMat3Tests<TRAP::Math::Mat3d>();
     }
     SECTION("Mat3 - float")
     {
-        RunConstexprAbsMat3Tests<TRAP::Math::Mat3f>();
+        RunCompileTimeAbsMat3Tests<TRAP::Math::Mat3f>();
     }
 
     SECTION("Mat4 - double")
     {
-        RunConstexprAbsMat4Tests<TRAP::Math::Mat4d>();
+        RunCompileTimeAbsMat4Tests<TRAP::Math::Mat4d>();
     }
     SECTION("Mat4 - float")
     {
-        RunConstexprAbsMat4Tests<TRAP::Math::Mat4f>();
+        RunCompileTimeAbsMat4Tests<TRAP::Math::Mat4f>();
     }
 }

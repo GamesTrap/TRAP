@@ -3624,6 +3624,9 @@ requires std::floating_point<genType>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
+	TRAP_ASSERT(!IsNaN(x), "Math::RoundEven(): x is NaN!");
+	TRAP_ASSERT(!IsInf(x), "Math::RoundEven(): x is Inf!");
+
 	const int32_t integer = static_cast<int32_t>(x);
 	const genType integerPart = static_cast<genType>(integer);
 	const genType fractionalPart = Fract(x);
@@ -3701,7 +3704,7 @@ requires std::floating_point<genType>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return x - y * Floor(x / y);
+	return std::fmod(x, y);
 }
 
 template<typename genType>
@@ -3715,7 +3718,7 @@ template<typename genType>
 requires std::unsigned_integral<genType>
 [[nodiscard]] genType TRAP::Math::Mod(const genType x, const genType y)
 {
-	return static_cast<genType>(static_cast<genType>(x - y) * static_cast<genType>(x / y));
+	return static_cast<genType>(x - y * (x / y));
 }
 
 template<uint32_t L, typename T>
@@ -3724,7 +3727,11 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return x - Vec<L, T>(y) * Floor(x / Vec<L, T>(y));
+	Vec<L, T> res{};
+	for(uint32_t i = 0; i < L; ++i)
+		res[i] = std::fmod(x[i], y);
+
+	return res;
 }
 
 template<uint32_t L, typename T>
@@ -3733,7 +3740,11 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return x - y * Floor(x / y);
+	Vec<L, T> res{};
+	for(uint32_t i = 0; i < L; ++i)
+		res[i] = std::fmod(x[i], y[i]);
+
+	return res;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

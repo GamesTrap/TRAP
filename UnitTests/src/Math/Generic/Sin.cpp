@@ -9,43 +9,44 @@
 
 template<typename T>
 requires std::floating_point<T>
-void RunSinTests(const T val)
+void RunSinTests()
 {
     constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    REQUIRE_THAT(TRAP::Math::Sin(val), Catch::Matchers::WithinRel(std::sin(val), Epsilon));
+    constexpr std::array<T, 8> values
+    {
+        T(-1.5), T(0.0), T(0.001), T(1.001), T(1.5), T(11.1), T(50.0), T(150.0)
+    };
+
+    for(const T val : values)
+    {
+        REQUIRE_THAT(TRAP::Math::Sin(val), Catch::Matchers::WithinRel(std::sin(val), Epsilon));
+    }
 }
 
 template<typename T>
 requires std::floating_point<T>
-void RunSinNaNTests(const T val)
+void RunSinEdgeTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    constexpr T inf = std::numeric_limits<T>::infinity();
+    constexpr T ninf = -std::numeric_limits<T>::infinity();
 
-    REQUIRE_THAT(TRAP::Math::Sin(val), !Catch::Matchers::WithinRel(std::sin(val), Epsilon));
+    REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Sin(nan)));
+    REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Sin(inf)));
+    REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Sin(ninf)));
 }
 
 TEST_CASE("TRAP::Math::Sin()", "[math][generic][sin]")
 {
-    SECTION("NaN - double")
-    {
-        constexpr double NaN = std::numeric_limits<double>::quiet_NaN();
-        RunSinNaNTests(NaN);
-    }
-    SECTION("NaN - float")
-    {
-        constexpr float NaN = std::numeric_limits<float>::quiet_NaN();
-        RunSinNaNTests(NaN);
-    }
-
-    const double val = static_cast<double>(GENERATE(values({-1.5, 0.0, 0.001, 1.001, 1.5, 11.1, 50.0, 150.0})));
-
     SECTION("Scalar - double")
     {
-        RunSinTests(val);
+        RunSinTests<double>();
+        RunSinEdgeTests<double>();
     }
     SECTION("Scalar - float")
     {
-        RunSinTests(static_cast<float>(val));
+        RunSinTests<float>();
+        RunSinEdgeTests<float>();
     }
 }
