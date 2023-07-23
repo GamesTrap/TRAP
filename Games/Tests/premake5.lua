@@ -38,6 +38,13 @@ project "Tests"
 
 	links "TRAP"
 
+	defines
+	{
+		"YAML_CPP_STATIC_DEFINE",
+		"IMGUI_DISABLE_OBSOLETE_FUNCTIONS",
+		"IMGUI_DISABLE_OBSOLETE_KEYIO",
+	}
+
 	-- Discord Game SDK stuff
 	thirdparty.IncludeDiscordGameSDK()
 	-- Nsight Aftermath stuff

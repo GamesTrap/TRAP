@@ -75,7 +75,12 @@ project "TRAP"
 		"fmt"
 	}
 
-	defines "YAML_CPP_STATIC_DEFINE"
+	defines
+	{
+		"YAML_CPP_STATIC_DEFINE",
+		"IMGUI_DISABLE_OBSOLETE_FUNCTIONS",
+		"IMGUI_DISABLE_OBSOLETE_KEYIO"
+	}
 
 	-- Discord Game SDK stuff
 	if(thirdparty.IncludeDiscordGameSDK()) then
@@ -245,6 +250,8 @@ project "TRAP-UnitTests"
 	defines
 	{
 		"YAML_CPP_STATIC_DEFINE",
+		"IMGUI_DISABLE_OBSOLETE_FUNCTIONS",
+		"IMGUI_DISABLE_OBSOLETE_KEYIO",
 		"TRAP_UNITTESTS"
 	}
 
