@@ -36,28 +36,28 @@ consteval void RunCompileTimeMaxScalarTest()
 
 template<typename T>
 requires std::floating_point<T>
-consteval void RunCompileTimeMaxNaNTest()
+void RunMaxNaNTest()
 {
     constexpr T NaN = std::numeric_limits<T>::quiet_NaN();
     constexpr T B = static_cast<T>(1);
-    static_assert(TRAP::Math::IsNaN(TRAP::Math::Max(NaN, B)));
-    static_assert(!TRAP::Math::IsNaN(TRAP::Math::Max(B, NaN)));
+    REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Max(NaN, B)));
+    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Max(B, NaN)));
 
     constexpr T C = static_cast<T>(2);
-    static_assert( TRAP::Math::IsNaN(TRAP::Math::Max(NaN, B, C)));
-    static_assert(!TRAP::Math::IsNaN(TRAP::Math::Max(B, NaN, C)));
-    static_assert(!TRAP::Math::IsNaN(TRAP::Math::Max(C, NaN, B)));
-    static_assert(!TRAP::Math::IsNaN(TRAP::Math::Max(C, B, NaN)));
-    static_assert(!TRAP::Math::IsNaN(TRAP::Math::Max(B, C, NaN)));
-    static_assert( TRAP::Math::IsNaN(TRAP::Math::Max(NaN, C, B)));
+    REQUIRE( TRAP::Math::IsNaN(TRAP::Math::Max(NaN, B, C)));
+    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Max(B, NaN, C)));
+    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Max(C, NaN, B)));
+    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Max(C, B, NaN)));
+    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Max(B, C, NaN)));
+    REQUIRE( TRAP::Math::IsNaN(TRAP::Math::Max(NaN, C, B)));
 
     constexpr T D = static_cast<T>(3);
-    static_assert(!TRAP::Math::IsNaN(TRAP::Math::Max(D, NaN, B, C)));
-    static_assert(!TRAP::Math::IsNaN(TRAP::Math::Max(B, D, NaN, C)));
-    static_assert(!TRAP::Math::IsNaN(TRAP::Math::Max(C, NaN, D, B)));
-    static_assert(!TRAP::Math::IsNaN(TRAP::Math::Max(C, B, D, NaN)));
-    static_assert(!TRAP::Math::IsNaN(TRAP::Math::Max(B, C, NaN, D)));
-    static_assert( TRAP::Math::IsNaN(TRAP::Math::Max(NaN, C, B, D)));
+    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Max(D, NaN, B, C)));
+    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Max(B, D, NaN, C)));
+    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Max(C, NaN, D, B)));
+    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Max(C, B, D, NaN)));
+    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Max(B, C, NaN, D)));
+    REQUIRE( TRAP::Math::IsNaN(TRAP::Math::Max(NaN, C, B, D)));
 }
 
 template<typename T>
@@ -126,12 +126,12 @@ TEST_CASE("TRAP::Math::Max()", "[math][generic][max]")
     SECTION("Scalar - double")
     {
         RunCompileTimeMaxScalarTest<double>();
-        RunCompileTimeMaxNaNTest<double>();
+        RunMaxNaNTest<double>();
     }
     SECTION("Scalar - float")
     {
         RunCompileTimeMaxScalarTest<float>();
-        RunCompileTimeMaxNaNTest<float>();
+        RunMaxNaNTest<float>();
     }
 
     SECTION("Vec2 - int8_t")

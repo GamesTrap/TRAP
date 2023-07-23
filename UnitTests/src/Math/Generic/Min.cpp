@@ -35,28 +35,28 @@ consteval void RunCompileTimeMinScalarTest()
 
 template<typename T>
 requires std::floating_point<T>
-consteval void RunCompileTimeMinNaNTest()
+void RunMinNaNTest()
 {
     constexpr T NaN = std::numeric_limits<T>::quiet_NaN();
     constexpr T B = static_cast<T>(1);
-    static_assert(TRAP::Math::IsNaN(TRAP::Math::Min(NaN, B)));
-    static_assert(!TRAP::Math::IsNaN(TRAP::Math::Min(B, NaN)));
+    REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Min(NaN, B)));
+    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(B, NaN)));
 
     constexpr T C = static_cast<T>(2);
-    static_assert( TRAP::Math::IsNaN(TRAP::Math::Min(NaN, B, C)));
-    static_assert(!TRAP::Math::IsNaN(TRAP::Math::Min(B, NaN, C)));
-    static_assert(!TRAP::Math::IsNaN(TRAP::Math::Min(C, NaN, B)));
-    static_assert(!TRAP::Math::IsNaN(TRAP::Math::Min(C, B, NaN)));
-    static_assert(!TRAP::Math::IsNaN(TRAP::Math::Min(B, C, NaN)));
-    static_assert( TRAP::Math::IsNaN(TRAP::Math::Min(NaN, C, B)));
+    REQUIRE( TRAP::Math::IsNaN(TRAP::Math::Min(NaN, B, C)));
+    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(B, NaN, C)));
+    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(C, NaN, B)));
+    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(C, B, NaN)));
+    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(B, C, NaN)));
+    REQUIRE( TRAP::Math::IsNaN(TRAP::Math::Min(NaN, C, B)));
 
     constexpr T D = static_cast<T>(3);
-    static_assert(!TRAP::Math::IsNaN(TRAP::Math::Min(D, NaN, B, C)));
-    static_assert(!TRAP::Math::IsNaN(TRAP::Math::Min(B, D, NaN, C)));
-    static_assert(!TRAP::Math::IsNaN(TRAP::Math::Min(C, NaN, D, B)));
-    static_assert(!TRAP::Math::IsNaN(TRAP::Math::Min(C, B, D, NaN)));
-    static_assert(!TRAP::Math::IsNaN(TRAP::Math::Min(B, C, NaN, D)));
-    static_assert( TRAP::Math::IsNaN(TRAP::Math::Min(NaN, C, B, D)));
+    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(D, NaN, B, C)));
+    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(B, D, NaN, C)));
+    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(C, NaN, D, B)));
+    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(C, B, D, NaN)));
+    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(B, C, NaN, D)));
+    REQUIRE( TRAP::Math::IsNaN(TRAP::Math::Min(NaN, C, B, D)));
 }
 
 template<typename T>
@@ -125,12 +125,12 @@ TEST_CASE("TRAP::Math::Min()", "[math][generic][min]")
     SECTION("Scalar - double")
     {
         RunCompileTimeMinScalarTest<double>();
-        RunCompileTimeMinNaNTest<double>();
+        RunMinNaNTest<double>();
     }
     SECTION("Scalar - float")
     {
         RunCompileTimeMinScalarTest<float>();
-        RunCompileTimeMinNaNTest<float>();
+        RunMinNaNTest<float>();
     }
 
     SECTION("Vec2 - int8_t")

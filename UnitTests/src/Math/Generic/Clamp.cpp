@@ -46,7 +46,7 @@ consteval void RunCompileTimeClampVecTest()
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-consteval void RunCompileTimeClampEdgeTests()
+void RunClampEdgeTests()
 {
     constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -57,7 +57,7 @@ consteval void RunCompileTimeClampEdgeTests()
     static_assert(TRAP::Math::Equal(TRAP::Math::Clamp(max, min, max), max, Epsilon));
     if constexpr(std::floating_point<T>)
     {
-        static_assert(TRAP::Math::IsNaN(TRAP::Math::Clamp(nan, T(0.0), T(1.0))));
+        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Clamp(nan, T(0.0), T(1.0))));
         static_assert(TRAP::Math::Equal(TRAP::Math::Clamp(T(5.0), nan, nan), T(5.0), Epsilon));
     }
 }
@@ -67,52 +67,52 @@ TEST_CASE("TRAP::Math::Clamp()", "[math][generic][clamp]")
     SECTION("Scalar - int8_t")
     {
         RunCompileTimeClampScalarTest<int8_t>();
-        RunCompileTimeClampEdgeTests<int8_t>();
+        RunClampEdgeTests<int8_t>();
     }
     SECTION("Scalar - uint8_t")
     {
         RunCompileTimeClampScalarTest<uint8_t>();
-        RunCompileTimeClampEdgeTests<uint8_t>();
+        RunClampEdgeTests<uint8_t>();
     }
     SECTION("Scalar - int16_t")
     {
         RunCompileTimeClampScalarTest<int16_t>();
-        RunCompileTimeClampEdgeTests<int16_t>();
+        RunClampEdgeTests<int16_t>();
     }
     SECTION("Scalar - uint16_t")
     {
         RunCompileTimeClampScalarTest<uint16_t>();
-        RunCompileTimeClampEdgeTests<uint16_t>();
+        RunClampEdgeTests<uint16_t>();
     }
     SECTION("Scalar - int32_t")
     {
         RunCompileTimeClampScalarTest<int32_t>();
-        RunCompileTimeClampEdgeTests<int32_t>();
+        RunClampEdgeTests<int32_t>();
     }
     SECTION("Scalar - uint32_t")
     {
         RunCompileTimeClampScalarTest<uint32_t>();
-        RunCompileTimeClampEdgeTests<uint32_t>();
+        RunClampEdgeTests<uint32_t>();
     }
     SECTION("Scalar - int64_t")
     {
         RunCompileTimeClampScalarTest<int64_t>();
-        RunCompileTimeClampEdgeTests<int64_t>();
+        RunClampEdgeTests<int64_t>();
     }
     SECTION("Scalar - uint64_t")
     {
         RunCompileTimeClampScalarTest<uint64_t>();
-        RunCompileTimeClampEdgeTests<uint64_t>();
+        RunClampEdgeTests<uint64_t>();
     }
     SECTION("Scalar - double")
     {
         RunCompileTimeClampScalarTest<double>();
-        RunCompileTimeClampEdgeTests<double>();
+        RunClampEdgeTests<double>();
     }
     SECTION("Scalar - float")
     {
         RunCompileTimeClampScalarTest<float>();
-        RunCompileTimeClampEdgeTests<float>();
+        RunClampEdgeTests<float>();
     }
 
     SECTION("Vec2 - int8_t")
