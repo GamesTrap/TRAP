@@ -67,6 +67,7 @@ jobs:
         path: |
           bin/Release-linux-x86_64/Games
           bin/Release-linux-x86_64/Utility
+          bin/Release-linux-x86_64/UnitTests
   build-linux-clang-16:
     name: Build Linux Clang 16
     runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
@@ -121,6 +122,7 @@ jobs:
         path: |
           bin/Release-linux-x86_64/Games
           bin/Release-linux-x86_64/Utility
+          bin/Release-linux-x86_64/UnitTests
   build-windows-msvc-2022:
     name: Build Windows MSVC 2022
     runs-on: [self-hosted, windows, X64, cpu]
@@ -167,3 +169,4 @@ jobs:
           bin/Release-windows-x86_64/Games
           bin/Release-windows-x86_64/Utility
           bin/Release-windows-x86_64/Redists
+          bin/Release-windows-x86_64/UnitTests
