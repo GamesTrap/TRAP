@@ -4254,3 +4254,8 @@ SITREP 07/24/2023|23w30a1
     - Changed TRAP Engine version to 23w30a1(0.9.67)
     - ImGui disabled deprecated/obsolete functions ~<5 mins
     - Updated ImGuiWindowing ~<5 mins
+    - UnitTests Added tests for Math::LessThan(), Math::LessThanEqual(), Math::Not() ~>20 mins
+
+SITREP 07/25/2023|23w30a2
+    - Changed TRAP Engine version to 23w30a2(0.9.68)
+    - UnitTests Added tests for Math::Step() ~<20 mins
