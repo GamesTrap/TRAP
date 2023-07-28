@@ -1061,7 +1061,7 @@ namespace TRAP::Math
 	/// <returns>0.0 if x < edge, otherwise it returns 1.0 for each component of a genType.</returns>
 	template<typename genType>
 	requires std::floating_point<genType>
-	[[nodiscard]] genType Step(genType edge, genType x);
+	[[nodiscard]] constexpr genType Step(genType edge, genType x);
 
 	/// <summary>
 	/// Generate a step function by comparing x to edgee.
@@ -1072,7 +1072,7 @@ namespace TRAP::Math
 	/// <returns>0.0 if x < edge, otherwise it returns 1.0.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> Step(T edge, const Vec<L, T>& x);
+	[[nodiscard]] constexpr Vec<L, T> Step(T edge, const Vec<L, T>& x);
 
 	/// <summary>
 	/// Generate a step function by comparing x to edgee.
@@ -1083,7 +1083,7 @@ namespace TRAP::Math
 	/// <returns>0.0 if x < edge, otherwise it returns 1.0.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> Step(const Vec<L, T>& edge, const Vec<L, T>& x);
+	[[nodiscard]] constexpr Vec<L, T> Step(const Vec<L, T>& edge, const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1103,7 +1103,7 @@ namespace TRAP::Math
 	/// </returns>
 	template<typename genType>
 	requires std::floating_point<genType>
-	[[nodiscard]] genType SmoothStep(genType edge0, genType edge1, genType x);
+	[[nodiscard]] constexpr genType SmoothStep(genType edge0, genType edge1, genType x);
 
 	/// <summary>
 	/// Perform Hermite interpolation between 0 and 1 when edge0 < x < edge1.
@@ -1121,7 +1121,7 @@ namespace TRAP::Math
 	/// </returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> SmoothStep(T edge0, T edge1, const Vec<L, T>& x);
+	[[nodiscard]] constexpr Vec<L, T> SmoothStep(T edge0, T edge1, const Vec<L, T>& x);
 
 	/// <summary>
 	/// Perform Hermite interpolation between 0 and 1 when edge0 < x < edge1.
@@ -1139,7 +1139,7 @@ namespace TRAP::Math
 	/// </returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> SmoothStep(const Vec<L, T>& edge0, const Vec<L, T>& edge1, const Vec<L, T>& x);
+	[[nodiscard]] constexpr Vec<L, T> SmoothStep(const Vec<L, T>& edge0, const Vec<L, T>& edge1, const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -3984,28 +3984,22 @@ requires std::is_arithmetic_v<T>
 
 template<typename genType>
 requires std::floating_point<genType>
-[[nodiscard]] genType TRAP::Math::Step(const genType edge, const genType x)
+[[nodiscard]] constexpr genType TRAP::Math::Step(const genType edge, const genType x)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	return Mix(static_cast<genType>(1), static_cast<genType>(0), x < edge);
 }
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Step(const T edge, const Vec<L, T>& x)
+[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Step(const T edge, const Vec<L, T>& x)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	return Mix(Vec<L, T>(static_cast<T>(1)), Vec<L, T>(static_cast<T>(0)), LessThan(x, Vec<L, T>(edge)));
 }
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Step(const Vec<L, T>& edge, const Vec<L, T>& x)
+[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Step(const Vec<L, T>& edge, const Vec<L, T>& x)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	return Mix(Vec<L, T>(static_cast<T>(1)), Vec<L, T>(static_cast<T>(0)), LessThan(x, edge));
 }
 
@@ -4013,10 +4007,8 @@ requires std::floating_point<T>
 
 template<typename genType>
 requires std::floating_point<genType>
-[[nodiscard]] genType TRAP::Math::SmoothStep(const genType edge0, const genType edge1, const genType x)
+[[nodiscard]] constexpr genType TRAP::Math::SmoothStep(const genType edge0, const genType edge1, const genType x)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	const genType tmp(Clamp((x - edge0) / (edge1 - edge0), static_cast<genType>(0), static_cast<genType>(1)));
 
 	return tmp * tmp * (static_cast<genType>(3) - static_cast<genType>(2) * tmp);
@@ -4024,10 +4016,8 @@ requires std::floating_point<genType>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::SmoothStep(const T edge0, const T edge1, const Vec<L, T>& x)
+[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::SmoothStep(const T edge0, const T edge1, const Vec<L, T>& x)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	const Vec<L, T> tmp(Clamp((x - Vec<L, T>(edge0)) / (Vec<L, T>(edge1) - Vec<L, T>(edge0)),
 	                    static_cast<T>(0), static_cast<T>(1)));
 
@@ -4036,10 +4026,8 @@ requires std::floating_point<T>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::SmoothStep(const Vec<L, T>& edge0, const Vec<L, T>& edge1, const Vec<L, T>& x)
+[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::SmoothStep(const Vec<L, T>& edge0, const Vec<L, T>& edge1, const Vec<L, T>& x)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	const Vec<L, T> tmp(Clamp((x - edge0) / (edge1 - edge0), static_cast<T>(0), static_cast<T>(1)));
 
 	return tmp * tmp * (static_cast<T>(3) - static_cast<T>(2) * tmp);

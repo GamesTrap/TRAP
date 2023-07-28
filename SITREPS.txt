@@ -4260,3 +4260,8 @@ SITREP 07/25/2023|23w30a2
     - Changed TRAP Engine version to 23w30a2(0.9.68)
     - UnitTests Added tests for Math::Step() ~<20 mins
     - Build-CI Added UnitTests executable to artifacts ~<5 mins
+
+SITREP 07/28/2023|23w30a3
+    - Changed TRAP Engine version to 23w30a3(0.9.69)
+    - UnitTests made Math::Step() tests run at compile time ~<5 mins
+    - UnitTests Added tests for Math::SmoothStep(), Math::IsNaN(), Math::IsInf(), Math::FMA() ~>45 mins
