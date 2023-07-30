@@ -4265,3 +4265,10 @@ SITREP 07/28/2023|23w30a3
     - Changed TRAP Engine version to 23w30a3(0.9.69)
     - UnitTests made Math::Step() tests run at compile time ~<5 mins
     - UnitTests Added tests for Math::SmoothStep(), Math::IsNaN(), Math::IsInf(), Math::FMA() ~>45 mins
+
+SITREP 07/30/2023|23w30a4
+    - Changed TRAP Engine version to 23w30a4(0.9.70)
+    - UnitTests Added tests for Math::FrExp(), Math::LdExp(), Math::FMod(), Math::Lerp(), Math::Pow(), Math::Exp() ~>90 mins
+    - Math IsPowerOfTwo() now requires an unsigned integral ~<5 mins
+    - Math FMod() and Pow() now requires floating point ~<5 mins
+    - Math Fixed a bug in Math::Lerp(Quat, Quat, Scalar) ~<5 mins

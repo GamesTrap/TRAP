@@ -1314,20 +1314,21 @@ namespace TRAP::Math
 	/// <summary>
 	/// Check if value is a power of two number.
 	/// </summary>
+	/// <typeparam name="genType">Unsigned integer scalar types.</typeparam>
 	/// <param name="value">Specify the value to evaluate.</param>
 	/// <returns>True if the value is a power of two number.</returns>
 	template<typename genType>
-	requires std::integral<genType>
+	requires std::unsigned_integral<genType>
 	[[nodiscard]] constexpr bool IsPowerOfTwo(genType value);
 
 	/// <summary>
 	/// Check if value is a power of two number.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
+	/// <typeparam name="T">Unsigned integer scalar types.</typeparam>
 	/// <param name="v">Specify the value to evaluate.</param>
 	/// <returns>True if the value is a power of two number.</returns>
 	template<uint32_t L, typename T>
-	requires std::integral<T>
+	requires std::unsigned_integral<T>
 	[[nodiscard]] constexpr Vec<L, bool> IsPowerOfTwo(const Vec<L, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1337,7 +1338,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <returns>'x - y * Trunc(x / y)' instead of 'x - y * Floor(x / y)'.</returns>
 	template<typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	[[nodiscard]] T FMod(T x, T y);
 
 	/// <summary>
@@ -1345,7 +1346,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <returns>'x - y * Trunc(x / y)' instead of 'x - y * Floor(x / y)'.</returns>
 	template<uint32_t L, typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> FMod(const Vec<L, T>& x, T y);
 
 	/// <summary>
@@ -1353,7 +1354,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <returns>'x - y * Trunc(x / y)' instead of 'x - y * Floor(x / y)'.</returns>
 	template<uint32_t L, typename T>
-	requires std::is_arithmetic_v<T>
+	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> FMod(const Vec<L, T>& x, const Vec<L, T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1396,7 +1397,7 @@ namespace TRAP::Math
 	/// <returns>Linear interpolation of two quaternions.</returns>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] tQuat<T> Lerp(const tQuat<T>& x, const tQuat<T>& y, T a);
+	[[nodiscard]] constexpr tQuat<T> Lerp(const tQuat<T>& x, const tQuat<T>& y, T a);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	//Exponential--------------------------------------------------------------------------------------------------------//
@@ -1413,7 +1414,7 @@ namespace TRAP::Math
 	/// <param name="exponent">Floating-point value representing the 'exponent'.</param>
 	/// <returns>'base' raised to the power 'exponent'.</returns>
 	template<typename T>
-	requires std::floating_point<T> || std::integral<T>
+	requires std::floating_point<T>
 	[[nodiscard]] T Pow(T base, T exponent);
 
 	/// <summary>
@@ -4145,41 +4146,27 @@ requires std::floating_point<T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-requires std::integral<genType>
+requires std::unsigned_integral<genType>
 [[nodiscard]] constexpr bool TRAP::Math::IsPowerOfTwo(const genType value)
 {
-	if constexpr(std::signed_integral<genType>)
-	{
-		const genType result = Abs(value);
-
-		return !(result & (result - 1));
-	}
-	else if constexpr(std::unsigned_integral<genType>)
-	{
-		return !(value & (value - 1));
-	}
+	return std::has_single_bit(value);
 }
 
 template<uint32_t L, typename T>
-requires std::integral<T>
+requires std::unsigned_integral<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::IsPowerOfTwo(const Vec<L, T>& v)
 {
-	if constexpr(std::signed_integral<T>)
-	{
-		const Vec<L, T> result(Abs(v));
+	TRAP::Math::Vec<L, bool> res{};
+	for(uint32_t i = 0; i < L; ++i)
+		res[i] = std::has_single_bit(v[i]);
 
-		return Equal(result & (result - Vec<L, T>(static_cast<T>(1))), Vec<L, T>(static_cast<T>(0)));
-	}
-	else if constexpr(std::unsigned_integral<T>)
-	{
-		return Equal(v & (v - Vec<L, T>(static_cast<T>(1))), Vec<L, T>(static_cast<T>(0)));
-	}
+	return res;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 [[nodiscard]] inline T TRAP::Math::FMod(const T x, const T y)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4188,7 +4175,7 @@ requires std::is_arithmetic_v<T>
 }
 
 template<uint32_t L, typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::FMod(const Vec<L, T>& x, T y)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4200,7 +4187,7 @@ requires std::is_arithmetic_v<T>
 }
 
 template<uint32_t L, typename T>
-requires std::is_arithmetic_v<T>
+requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::FMod(const Vec<L, T>& x, const Vec<L, T>& y)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4236,15 +4223,9 @@ requires std::floating_point<T>
 
 template <typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::tQuat<T> TRAP::Math::Lerp(const tQuat<T>& x, const tQuat<T>& y, T a)
+[[nodiscard]] constexpr TRAP::Math::tQuat<T> TRAP::Math::Lerp(const tQuat<T>& x, const tQuat<T>& y, T a)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'lerp' only accepts floating-point inputs");
-
-	//Lerp is only defined in [0, 1]
-	TRAP_ASSERT(a >= static_cast<T>(0), "Math::Lerp(): 'a' must be greater or equal to 0!");
-	TRAP_ASSERT(a <= static_cast<T>(1), "Math::Lerp(): 'a' must be less or equal to 1!");
-
-	return x * (static_cast<T>(1) - static_cast<T>(1)) + (y * a);
+	return x * (static_cast<T>(1) - static_cast<T>(a)) + (y * a);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4252,7 +4233,7 @@ requires std::floating_point<T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-requires std::floating_point<T> || std::integral<T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::Pow(const T base, const T exponent)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

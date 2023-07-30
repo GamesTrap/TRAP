@@ -918,18 +918,6 @@ namespace FuncCommon
             const TRAP::Math::Vec4 c2 = TRAP::Math::FMod(a2, b2);
 
             error += TRAP::Math::All(TRAP::Math::Equal(c2, TRAP::Math::Vec4(1.0f), 0.00001f)) ? 0 : 1;
-
-            const TRAP::Math::Vec4i a3(3);
-            const int32_t b3(2);
-            const TRAP::Math::Vec4i c3 = TRAP::Math::FMod(a3, b3);
-
-            error += TRAP::Math::All(TRAP::Math::Equal(c3, TRAP::Math::Vec4i(1))) ? 0 : 1;
-
-            const TRAP::Math::Vec4i a4(3);
-            const TRAP::Math::Vec4i b4(2);
-            const TRAP::Math::Vec4i c4 = TRAP::Math::FMod(a4, b4);
-
-            error += TRAP::Math::All(TRAP::Math::Equal(c4, TRAP::Math::Vec4i(1))) ? 0 : 1;
         }
 
         {
@@ -950,18 +938,6 @@ namespace FuncCommon
             const TRAP::Math::Vec4 c2 = TRAP::Math::FMod(a2, b2);
 
             error += TRAP::Math::All(TRAP::Math::Equal(c2, TRAP::Math::Vec4(2.0f), 0.00001f)) ? 0 : 1;
-
-            const TRAP::Math::Vec4i a3(22);
-            const int32_t b3(-10);
-            const TRAP::Math::Vec4i c3 = TRAP::Math::FMod(a3, b3);
-
-            error += TRAP::Math::All(TRAP::Math::Equal(c3, TRAP::Math::Vec4i(2))) ? 0 : 1;
-
-            const TRAP::Math::Vec4i a4(22);
-            const TRAP::Math::Vec4i b4(-10);
-            const TRAP::Math::Vec4i c4 = TRAP::Math::FMod(a4, b4);
-
-            error += TRAP::Math::All(TRAP::Math::Equal(c4, TRAP::Math::Vec4i(2))) ? 0 : 1;
         }
 
         return error;

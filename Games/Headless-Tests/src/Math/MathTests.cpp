@@ -16,7 +16,6 @@
 #include "Tests/TypeQuaternion.h"
 #include "Tests/ScalarCommon.h"
 #include "Tests/ScalarConstants.h"
-#include "Tests/ScalarInteger.h"
 #include "Tests/ScalarRelational.h"
 #include "Tests/VectorCommon.h"
 #include "Tests/VectorSized.h"
@@ -49,7 +48,6 @@ void MathTests::OnAttach()
 	error += RunTypeQuaternionTests();
 	error += RunScalarCommonTests();
 	error += RunScalarConstantsTests();
-	error += RunScalarIntegerTests();
 	error += RunScalarRelationalTests();
 	error += RunVectorCommonTests();
 	error += RunVectorSizedTests();

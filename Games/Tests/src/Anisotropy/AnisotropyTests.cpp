@@ -87,7 +87,7 @@ void AnisotropyTests::OnImGuiRender()
 						TRAP::Graphics::RenderCommand::SetAnisotropyLevel(TRAP::Graphics::SampleCount::One);
 					else
 					{
-						const TRAP::Graphics::SampleCount samples = static_cast<TRAP::Graphics::SampleCount>(TRAP::Math::Pow(2u, m_currAnisotropyLevelIdx));
+						const TRAP::Graphics::SampleCount samples = static_cast<TRAP::Graphics::SampleCount>(TRAP::Math::Pow(2.0f, NumericCast<float>(m_currAnisotropyLevelIdx)));
 						TRAP::Graphics::RenderCommand::SetAnisotropyLevel(samples);
 					}
 				}
