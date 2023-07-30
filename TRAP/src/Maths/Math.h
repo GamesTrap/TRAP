@@ -1587,7 +1587,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value of which to take the square root.</param>
 	/// <returns>Positive square root of x.</returns>
 	template<typename T>
-	requires std::floating_point<T> || std::integral<T>
+	requires std::floating_point<T>
 	[[nodiscard]] T Sqrt(T x);
 
 	/// <summary>
@@ -1648,16 +1648,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Calculates the length of a vector.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar or vector type.</typeparam>
-	/// <param name="x">Specifies a value of which to calculate the length.</param>
-	/// <returns>Length of x, i.e., Sqrt(x * x).</returns>
-	template<typename genType>
-	requires std::floating_point<genType>
-	[[nodiscard]] constexpr genType Length(genType x);
-
-	/// <summary>
-	/// Calculates the length of a vector.
-	/// </summary>
 	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="v">Specifies a vector of which to calculate the length.</param>
 	/// <returns>Length of x, i.e., Sqrt(x * x).</returns>
@@ -1676,17 +1666,6 @@ namespace TRAP::Math
 	[[nodiscard]] T Length(const tQuat<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
-
-	/// <summary>
-	/// Calculate the distance between two points.
-	/// </summary>
-	/// <typeparam name="T">Floating-point scalar or vector type.</typeparam>
-	/// <param name="p0">Specifies the first of two points.</param>
-	/// <param name="p1">Specifies the second of two points.</param>
-	/// <returns>Distance between p0 and p1, i.e., Length(p0 - p1).</returns>
-	template<typename genType>
-	requires std::floating_point<genType>
-	[[nodiscard]] constexpr genType Distance(const genType& p0, const genType& p1);
 
 	/// <summary>
 	/// Calculate the distance between two points.
@@ -4432,7 +4411,7 @@ requires std::floating_point<T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-requires std::floating_point<T> || std::integral<T>
+requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::Sqrt(const T x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -4488,13 +4467,6 @@ requires std::floating_point<T>
 //Geometric----------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<typename genType>
-requires std::floating_point<genType>
-[[nodiscard]] constexpr genType TRAP::Math::Length(const genType x)
-{
-	return Abs(x);
-}
-
 template<uint32_t L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] T TRAP::Math::Length(const Vec<L, T>& v)
@@ -4514,13 +4486,6 @@ requires std::floating_point<T>
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
-
-template<typename genType>
-requires std::floating_point<genType>
-[[nodiscard]] constexpr genType TRAP::Math::Distance(const genType& p0, const genType& p1)
-{
-	return Length(p1 - p0);
-}
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>

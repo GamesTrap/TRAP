@@ -4272,3 +4272,4 @@ SITREP 07/30/2023|23w30a4
     - Math IsPowerOfTwo() now requires an unsigned integral ~<5 mins
     - Math FMod() and Pow() now requires floating point ~<5 mins
     - Math Fixed a bug in Math::Lerp(Quat, Quat, Scalar) ~<5 mins
+    - UnitTests Added tests for Math::Log(), Math::Exp2(), Math::Log2(), Math::Sqrt(), Math::InverseSqrt(), Math::Length(), Math::Distance() ~>85 mins

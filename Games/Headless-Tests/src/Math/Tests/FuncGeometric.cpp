@@ -8,12 +8,10 @@ namespace FuncGeometric
     {
         int32_t error = 0;
 
-        float length1 = TRAP::Math::Length(1.0f);
         float length2 = TRAP::Math::Length(TRAP::Math::Vec2(1, 0));
         float length3 = TRAP::Math::Length(TRAP::Math::Vec3(1, 0, 0));
         float length4 = TRAP::Math::Length(TRAP::Math::Vec4(1, 0, 0, 0));
 
-        error += TRAP::Math::Equal(length1, 1.0f, TRAP::Math::Epsilon<float>()) ? 0 : 1;
         error += TRAP::Math::Equal(length2, 1.0f, TRAP::Math::Epsilon<float>()) ? 0 : 1;
         error += TRAP::Math::Equal(length3, 1.0f, TRAP::Math::Epsilon<float>()) ? 0 : 1;
         error += TRAP::Math::Equal(length4, 1.0f, TRAP::Math::Epsilon<float>()) ? 0 : 1;
@@ -27,12 +25,10 @@ namespace FuncGeometric
     {
         int32_t error = 0;
 
-        float distance1 = TRAP::Math::Distance(1.0f, 1.0f);
         float distance2 = TRAP::Math::Distance(TRAP::Math::Vec2(1, 0), TRAP::Math::Vec2(1, 0));
         float distance3 = TRAP::Math::Distance(TRAP::Math::Vec3(1, 0, 0), TRAP::Math::Vec3(1, 0, 0));
         float distance4 = TRAP::Math::Distance(TRAP::Math::Vec4(1, 0, 0, 0), TRAP::Math::Vec4(1, 0, 0, 0));
 
-        error += TRAP::Math::Equal(distance1, 0.0f, TRAP::Math::Epsilon<float>()) ? 0 : 1;
         error += TRAP::Math::Equal(distance2, 0.0f, TRAP::Math::Epsilon<float>()) ? 0 : 1;
         error += TRAP::Math::Equal(distance3, 0.0f, TRAP::Math::Epsilon<float>()) ? 0 : 1;
         error += TRAP::Math::Equal(distance4, 0.0f, TRAP::Math::Epsilon<float>()) ? 0 : 1;
