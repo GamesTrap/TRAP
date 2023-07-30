@@ -469,7 +469,7 @@ jobs:
         id: yamlcpp
         run: |
             cd Dependencies/YAMLCpp/
-            git fetch origin master
+            git fetch origin master --no-rebase --ff-only
             git pull origin master --no-rebase --ff-only
             echo "YAMLCPP_VERSION=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
             cd ../..
