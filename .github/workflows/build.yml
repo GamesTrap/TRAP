@@ -174,6 +174,19 @@ jobs:
   test-windows:
     name: Unit-Test Windows
     runs-on: [self-hosted, windows, X64, cpu]
+    needs: [build-windows-msvc-2022]
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: Windows MSVC 2022 Release Executables
+      - name: Run Tests
+        run: |
+          cd UnitTests
+          .\UnitTests
+  test-linux:
+    name: Unit-Test Linux
+    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
     needs: [build-linux-clang-16]
     steps:
       - name: Download artifact
@@ -185,16 +198,3 @@ jobs:
           cd UnitTests
           chmod +x UnitTests
           ./UnitTests
-  test-linux:
-    name: Unit-Test Linux
-    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
-    needs: [build-windows-msvc-2022]
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: Windows MSVC 2022 Release Executables
-      - name: Run Tests
-        run: |
-          cd UnitTests
-          .\UnitTests
