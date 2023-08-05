@@ -317,7 +317,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the minimum value of x and y.
 	/// </summary>
-	/// <typeparam name="genType">Floating-point or integer; scalar or vector types.</typeparam>
 	/// <param name="x">Specify the first value to compare.</param>
 	/// <param name="y">Specify the second value to compare.</param>
 	/// <returns>y if y < x; otherwise it returns x.</returns>
@@ -330,7 +329,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the minimum value of x, y and z.
 	/// </summary>
-	/// <typeparam name="genType">Floating-point or integer; scalar or vector types.</typeparam>
 	/// <param name="x">Specify the first value to compare.</param>
 	/// <param name="y">Specify the second value to compare.</param>
 	/// <param name="z">Specify the third value to compare.</param>
@@ -344,7 +342,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the minimum value of x, y, z and w.
 	/// </summary>
-	/// <typeparam name="genType">Floating-point or integer; scalar or vector types.</typeparam>
 	/// <param name="x">Specify the first value to compare.</param>
 	/// <param name="y">Specify the second value to compare.</param>
 	/// <param name="z">Specify the third value to compare.</param>
@@ -359,7 +356,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the maximum value of x and y.
 	/// </summary>
-	/// <typeparam name="genType">Floating-point or integer; scalar or vector types.</typeparam>
 	/// <param name="x">Specify the first value to compare.</param>
 	/// <param name="y">Specify the second value to compare.</param>
 	/// <returns>y if x < y; otherwise it returns x.</returns>
@@ -372,7 +368,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the maximum value of x, y and z.
 	/// </summary>
-	/// <typeparam name="genType">Floating-point or integer; scalar or vector types.</typeparam>
 	/// <param name="x">Specify the first value to compare.</param>
 	/// <param name="y">Specify the second value to compare.</param>
 	/// <param name="z">Specify the third value to compare.</param>
@@ -386,7 +381,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the maximum value of x, y, z and w.
 	/// </summary>
-	/// <typeparam name="genType">Floating-point or integer; scalar or vector types.</typeparam>
 	/// <param name="x">Specify the first value to compare.</param>
 	/// <param name="y">Specify the second value to compare.</param>
 	/// <param name="z">Specify the third value to compare.</param>
@@ -404,7 +398,6 @@ namespace TRAP::Math
 	/// presumably the direction that is fastest.
 	/// This includes the possibility that Round(x) returns the same value as RoundEven(x) for all values of x.
 	/// </summary>
-	/// <typeparam name="genType">Floating-point types.</typeparam>
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<typename genType>
@@ -416,7 +409,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Find the nearest integer less than or equal to x.
 	/// </summary>
-	/// <typeparam name="genType">Floating-point types.</typeparam>
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>
 	/// Value equal to the nearest integer to x whose absolute value is not larger than the absolute value of x.
@@ -430,7 +422,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the absolute value of x.
 	/// </summary>
-	/// <typeparam name="genFIType">Floating-point or integer; scalar or vector types.</typeparam>
 	/// <param name="x">Specify the value of which to return the absolute.</param>
 	/// <returns>x if x >= 0; otherwise it returns -x.</returns>
 	template<typename genFIType>
@@ -440,7 +431,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the absolute value of x.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
 	/// <param name="x">Specify the value of which to return the absolute.</param>
 	/// <returns>x if x >= 0; otherwise it returns -x.</returns>
 	template<uint32_t L, typename T>
@@ -450,7 +440,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the absolute value of x.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
 	/// <param name="x">Specify the value of which to return the absolute.</param>
 	/// <returns>x if x >= 0; otherwise it returns -x.</returns>
 	template<uint32_t C, uint32_t R, typename T>
@@ -464,7 +453,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Extract the sign of x.
 	/// </summary>
-	/// <typeparam name="genFIType">Floating-point or signed integer scalar or vector types.</typeparam>
 	/// <param name="x">Specify the value from which to extract the sign.</param>
 	/// <returns>1.0f if x > 0, 0.0 if x == 0, or -1.0 if x < 0.</returns>
 	template<typename genFIType>
@@ -474,7 +462,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Extract the sign of x.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or signed integer scalar or vector types.</typeparam>
 	/// <param name="x">Specify the value from which to extract the sign.</param>
 	/// <returns>1.0f if x > 0, 0.0 if x == 0, or -1.0 if x < 0.</returns>
 	template<uint32_t L, typename T>
@@ -486,7 +473,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Find the nearest integer less than or equal to x.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar or vector types.</typeparam>
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>Value equal to the nearest integer that is less then or equal to x.</returns>
 	template<typename T>
@@ -496,7 +482,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Find the nearest integer less than or equal to x.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>Value equal to the nearest integer that is less then or equal to x.</returns>
 	template<uint32_t L, typename T>
@@ -508,7 +493,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Truncate value.
 	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>
 	/// Value equal to the nearest integer to x whose absolute value is not larger than the absolute value of x.
@@ -526,7 +510,6 @@ namespace TRAP::Math
 	/// presumably the direction that is fastest.
 	/// This includes the possibility that Round(x) returns the same value as RoundEven(x) for all values of x.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<uint32_t L, typename T>
@@ -541,7 +524,6 @@ namespace TRAP::Math
 	/// A fractional part of 0.5 will round toward the nearest even integer.
 	/// (Both 3.5 and 4.5 for x will return 4.0).
 	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<typename genType>
@@ -554,7 +536,6 @@ namespace TRAP::Math
 	/// A fractional part of 0.5 will round toward the nearest even integer.
 	/// (Both 3.5 and 4.5 for x will return 4.0).
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<uint32_t L, typename T>
@@ -566,7 +547,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Find the nearest integer that is greater than or equal to x.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar or vector types.</typeparam>
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>Value equal to the nearest integer that is greater than or equal to x.</returns>
 	template<typename T>
@@ -576,7 +556,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Find the nearest integer that is greater than or equal to x.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>Value equal to the nearest integer that is greater than or equal to x.</returns>
 	template<uint32_t L, typename T>
@@ -588,7 +567,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve fractional part of x.
 	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>x - Floor(x).</returns>
 	template<typename genType>
@@ -598,7 +576,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve fractional part of x.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>x - Floor(x).</returns>
 	template<uint32_t L, typename T>
@@ -637,7 +614,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve value of x modulo y.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>x - y * Floor(x / y) for each component in x using the floating point value y.</returns>
 	template<uint32_t L, typename T>
@@ -647,7 +623,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve value of x modulo y.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>x - y * Floor(x / y) for each component in x using the floating point value y.</returns>
 	template<uint32_t L, typename T>
@@ -661,7 +636,6 @@ namespace TRAP::Math
 	///
 	/// Both the return value and the output parameter will have the same sign as x.
 	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
 	/// <param name="x">Specify the value to separate.</param>
 	/// <param name="i">Out variable that receives the integer part of the argument.</param>
 	/// <returns>
@@ -676,7 +650,6 @@ namespace TRAP::Math
 	///
 	/// Both the return value and the output parameter will have the same sign as x.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the value to separate.</param>
 	/// <param name="i">Out variable that receives the integer part of the argument.</param>
 	/// <returns>
@@ -691,7 +664,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the minimum value of x and y.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
 	/// <param name="a">Specify the first value to compare.</param>
 	/// <param name="b">Specify the second value to compare.</param>
 	/// <returns>y if y < x; otherwise it returns x.</returns>
@@ -702,7 +674,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the minimum value of x and y.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
 	/// <param name="a">Specify the first value to compare.</param>
 	/// <param name="b">Specify the second value to compare.</param>
 	/// <returns>y if y < x; otherwise it returns x.</returns>
@@ -715,8 +686,6 @@ namespace TRAP::Math
 	/// </summary>
 	/// <summary>Returns the minimum component-wise values of 3 inputs</summary>
 	///
-	/// <typeparam name="L">Integer between 1 and 4.</typeparam>
-	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
 	/// <param name="a">Specify the first value to compare.</param>
 	/// <param name="b">Specify the second value to compare.</param>
 	/// <param name="c">Specify the third value to compare.</param>
@@ -730,8 +699,6 @@ namespace TRAP::Math
 	/// </summary>
 	/// <summary>Returns the minimum component-wise values of 4 inputs</summary>
 	///
-	/// <typeparam name="L">Integer between 1 and 4.</typeparam>
-	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
 	/// <param name="a">Specify the first value to compare.</param>
 	/// <param name="b">Specify the second value to compare.</param>
 	/// <param name="c">Specify the third value to compare.</param>
@@ -746,7 +713,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the maximum value of x and y.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
 	/// <param name="a">Specify the first value to compare.</param>
 	/// <param name="b">Specify the second value to compare.</param>
 	/// <returns>y if x < y; otherwise it returns x.</returns>
@@ -757,7 +723,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the maximum value of x and y.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
 	/// <param name="a">Specify the first value to compare.</param>
 	/// <param name="b">Specify the second value to compare.</param>
 	/// <returns>y if x < y; otherwise it returns x.</returns>
@@ -767,8 +732,6 @@ namespace TRAP::Math
 
 	/// <summary>Returns the maximum component-wise values of 3 inputs</summary>
 	///
-	/// <typeparam name="L">Integer between 1 and 4.</typeparam>
-	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
 	/// <param name="a">Specify the first value to compare.</param>
 	/// <param name="b">Specify the second value to compare.</param>
 	/// <param name="c">Specify the third value to compare.</param>
@@ -779,8 +742,6 @@ namespace TRAP::Math
 
 	/// <summary>Returns the maximum component-wise values of 4 inputs</summary>
 	///
-	/// <typeparam name="L">Integer between 1 and 4.</typeparam>
-	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
 	/// <param name="a">Specify the first value to compare.</param>
 	/// <param name="b">Specify the second value to compare.</param>
 	/// <param name="c">Specify the third value to compare.</param>
@@ -795,7 +756,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Constrain x to lie between minVal and maxVal.
 	/// </summary>
-	/// <typeparam name="genType">Floating-point or integer; scalar or vector types.</typeparam>
 	/// <param name="x">Specify the value to constrain.</param>
 	/// <param name="minVal">Specify the lower end of the range into which to constrain x.</param>
 	/// <param name="maxVal">Specify the upper end of the range into which to constrain x.</param>
@@ -813,7 +773,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Constrain x to lie between minVal and maxVal.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
 	/// <param name="x">Specify the value to constrain.</param>
 	/// <param name="minVal">Specify the lower end of the range into which to constrain x.</param>
 	/// <param name="maxVal">Specify the upper end of the range into which to constrain x.</param>
@@ -831,7 +790,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Constrain x to lie between minVal and maxVal.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
 	/// <param name="x">Specify the value to constrain.</param>
 	/// <param name="minVal">Specify the lower end of the range into which to constrain x.</param>
 	/// <param name="maxVal">Specify the upper end of the range into which to constrain x.</param>
@@ -862,10 +820,6 @@ namespace TRAP::Math
 	/// Components of 'x' and 'y' that are not selected are allowed to be invalid floating point
 	/// values and will have no effect on the results.
 	/// </summary>
-	/// <typeparam name="genTypeT">Floating-point scalar or vector.</typeparam>
-	/// <typeparam name="genTypeU">
-	/// Floating-point or boolean scalar or vector. It can't be a vector if it is the length of genTypeT!
-	/// </typeparam>
 	/// <param name="x">Specify the start of the range in which to interpolate.</param>
 	/// <param name="y">Specify the end of the range in which to interpolate.</param>
 	/// <param name="a">SPecify the value to use to interpolate between x and y.</param>
@@ -888,10 +842,6 @@ namespace TRAP::Math
 	/// Components of 'x' and 'y' that are not selected are allowed to be invalid floating point
 	/// values and will have no effect on the results.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar or vector.</typeparam>
-	/// <typeparam name="U">
-	/// Floating-point or boolean scalar or vector. It can't be a vector if it is the length of genTypeT!
-	/// </typeparam>
 	/// <param name="x">Specify the start of the range in which to interpolate.</param>
 	/// <param name="y">Specify the end of the range in which to interpolate.</param>
 	/// <param name="a">SPecify the value to use to interpolate between x and y.</param>
@@ -914,10 +864,6 @@ namespace TRAP::Math
 	/// Components of 'x' and 'y' that are not selected are allowed to be invalid floating point
 	/// values and will have no effect on the results.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar or vector.</typeparam>
-	/// <typeparam name="U">
-	/// Floating-point or boolean scalar or vector. It can't be a vector if it is the length of genTypeT!
-	/// </typeparam>
 	/// <param name="x">Specify the start of the range in which to interpolate.</param>
 	/// <param name="y">Specify the end of the range in which to interpolate.</param>
 	/// <param name="a">SPecify the value to use to interpolate between x and y.</param>
@@ -931,7 +877,6 @@ namespace TRAP::Math
 	/// The interpolation is oriented and the rotation is performed at constant speed.
 	/// For short path spherical linear interpolation, use the Slerp function.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="x">A quaternion.</param>
 	/// <param name="y">A quaternion.</param>
 	/// <param name="a">Interpolation factor. The interpolation is defined beyond the range [0, 1].</param>
@@ -945,7 +890,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a equal-to comparison of two values.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
 	/// <param name="x">Specifies the first value to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second value to be used in the comparison operation.</param>
 	/// <returns>Comparison result of x == y.</returns>
@@ -956,7 +900,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a equal-to comparison of two values taking epsilon into account.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
 	/// <param name="x">Specifies the first value to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second value to be used in the comparison operation.</param>
 	/// <param name="epsilon"></param>
@@ -970,7 +913,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a not-equal-to comparison of two values.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
 	/// <param name="x">Specifies the first value to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second value to be used in the comparison operation.</param>
 	/// <returns>Comparison result of x != y.</returns>
@@ -981,7 +923,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a not-equal-to comparison of two values taking epsilon into account.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
 	/// <param name="x">Specifies the first value to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second value to be used in the comparison operation.</param>
 	/// <param name="epsilon"></param>
@@ -995,7 +936,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a greater-than comparison of two values.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
 	/// <param name="x">Specifies the first value to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second value to be used in the comparison operation.</param>
 	/// <returns>Comparison result of x > y.</returns>
@@ -1008,7 +948,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a greater-than-or-equal comparison of two values.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
 	/// <param name="x">Specifies the first value to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second value to be used in the comparison operation.</param>
 	/// <returns>Comparison result of x >= y.</returns>
@@ -1021,7 +960,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a less-than comparison of two values.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
 	/// <param name="x">Specifies the first value to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second value to be used in the comparison operation.</param>
 	/// <returns>Comparison result of x < y.</returns>
@@ -1034,7 +972,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a less-than-or-equal comparison of two values.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
 	/// <param name="x">Specifies the first values to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second values to be used in the comparison operation.</param>
 	/// <returns>Comparison result of x <= y.</returns>
@@ -1066,7 +1003,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Generate a step function by comparing x to edgee.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="edge">Specifies the location of the edge of the step function.</param>
 	/// <param name="x">Specify the value to be used to generate the step function.</param>
 	/// <returns>0.0 if x < edge, otherwise it returns 1.0.</returns>
@@ -1077,7 +1013,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Generate a step function by comparing x to edgee.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="edge">Specifies the location of the edge of the step function.</param>
 	/// <param name="x">Specify the value to be used to generate the step function.</param>
 	/// <returns>0.0 if x < edge, otherwise it returns 1.0.</returns>
@@ -1094,7 +1029,6 @@ namespace TRAP::Math
 	/// This is equivalent to: genType t; t = Clamp((x - edge0) / (edge1 - edge0), 0, 1); return t * t * (3 - 2 * t);
 	/// Note: Results are undefined if edge0 >= edge1!
 	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
 	/// <param name="edge0">Specifies the value of the lower edge of the Hermite function.</param>
 	/// <param name="edge1">Specifies the value of the upper edge of the Hermite function.</param>
 	/// <param name="x">Specifies the source value for interpolation.</param>
@@ -1112,7 +1046,6 @@ namespace TRAP::Math
 	/// This is equivalent to: genType t; t = Clamp((x - edge0) / (edge1 - edge0), 0, 1); return t * t * (3 - 2 * t);
 	/// Note: Results are undefined if edge0 >= edge1!
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar or vector types.</typeparam>
 	/// <param name="edge0">Specifies the value of the lower edge of the Hermite function.</param>
 	/// <param name="edge1">Specifies the value of the upper edge of the Hermite function.</param>
 	/// <param name="x">Specifies the source value for interpolation.</param>
@@ -1130,7 +1063,6 @@ namespace TRAP::Math
 	/// This is equivalent to: genType t; t = Clamp((x - edge0) / (edge1 - edge0), 0, 1); return t * t * (3 - 2 * t);
 	/// Note: Results are undefined if edge0 >= edge1!
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar or vector types.</typeparam>
 	/// <param name="edge0">Specifies the value of the lower edge of the Hermite function.</param>
 	/// <param name="edge1">Specifies the value of the upper edge of the Hermite function.</param>
 	/// <param name="x">Specifies the source value for interpolation.</param>
@@ -1148,7 +1080,6 @@ namespace TRAP::Math
 	///
 	/// Note: When using compiler fast math, this function may fail!
 	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specifies the value to test for NaN.</param>
 	/// <returns>
 	/// True if x hold a NaN (not a number) representation in the underlying implementation's
@@ -1164,7 +1095,6 @@ namespace TRAP::Math
 	///
 	/// Note: When using compiler fast math, this function may fail!
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="v">Specifies the value to test for NaN.</param>
 	/// <returns>
 	/// True if x hold a NaN (not a number) representation in the underlying implementation's
@@ -1180,7 +1110,6 @@ namespace TRAP::Math
 	///
 	/// Note: When using compiler fast math, this function may fail!
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="q">Specifies the value to test for NaN.</param>
 	/// <returns>
 	/// True if x hold a NaN (not a number) representation in the underlying implementation's
@@ -1196,7 +1125,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Determine whether the paramter is positive or negative infinity
 	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specifies the value to test for infinity.</param>
 	/// <returns>
 	/// True if x holds a positive infinity or negative infinity representation in the underlying implementation's
@@ -1210,7 +1138,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Determine whether the paramter is positive or negative infinity
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="v">Specifies the value to test for infinity.</param>
 	/// <returns>
 	/// True if x holds a positive infinity or negative infinity representation in the underlying implementation's
@@ -1224,7 +1151,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Determine whether the paramter is positive or negative infinity
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="q">Specifies the value to test for infinity.</param>
 	/// <returns>
 	/// True if x holds a positive infinity or negative infinity representation in the underlying implementation's
@@ -1240,7 +1166,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Computes and returns a * b + c.
 	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
 	/// <param name="a">Specifies the first multiplicand.</param>
 	/// <param name="b">Specifies the second multiplicand.</param>
 	/// <param name="c">Specifies the value to be added to the result.</param>
@@ -1258,7 +1183,6 @@ namespace TRAP::Math
 	/// For a floating-point value of zero, the significant and exponent are both zero.
 	/// Note: For a floating-point value that is an infinity or is not a number, the results are undefined!
 	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
 	/// <param name="x">Specifies the value from which significand and exponent are to be extracted.</param>
 	/// <param name="exp">Out specifies the variable into which to place the exponent.</param>
 	/// <returns>See description.</returns>
@@ -1273,7 +1197,6 @@ namespace TRAP::Math
 	/// For a floating-point value of zero, the significant and exponent are both zero.
 	/// Note: For a floating-point value that is an infinity or is not a number, the results are undefined!
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar or vector types.</typeparam>
 	/// <param name="v">Specifies the value from which significand and exponent are to be extracted.</param>
 	/// <param name="exp">Out specifies the variable into which to place the exponent.</param>
 	/// <returns>See description.</returns>
@@ -1288,7 +1211,6 @@ namespace TRAP::Math
 	/// significant * Exp(2, exponent).
 	/// Note: If this product is too large to be represented in the floating-point type, the result is undefined!
 	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
 	/// <param name="x">Specifies the value to be used as a source of significand.</param>
 	/// <param name="exp">Specifies the value to be used as a source of exponent.</param>
 	/// <returns>See description.</returns>
@@ -1301,7 +1223,6 @@ namespace TRAP::Math
 	/// significant * Exp(2, exponent).
 	/// Note: If this product is too large to be represented in the floating-point type, the result is undefined!
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar or vector types.</typeparam>
 	/// <param name="v">Specifies the value to be used as a source of significand.</param>
 	/// <param name="exp">Specifies the value to be used as a source of exponent.</param>
 	/// <returns>See description.</returns>
@@ -1314,7 +1235,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Check if value is a power of two number.
 	/// </summary>
-	/// <typeparam name="genType">Unsigned integer scalar types.</typeparam>
 	/// <param name="value">Specify the value to evaluate.</param>
 	/// <returns>True if the value is a power of two number.</returns>
 	template<typename genType>
@@ -1324,7 +1244,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Check if value is a power of two number.
 	/// </summary>
-	/// <typeparam name="T">Unsigned integer scalar types.</typeparam>
 	/// <param name="v">Specify the value to evaluate.</param>
 	/// <returns>True if the value is a power of two number.</returns>
 	template<uint32_t L, typename T>
@@ -1362,7 +1281,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Linear interpolation.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar or vector types.</typeparam>
 	/// <returns>Linear interpolation.</returns>
 	template<typename T>
 	requires std::floating_point<T>
@@ -1371,7 +1289,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Linear interpolation.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>Linear interpolation.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
@@ -1380,7 +1297,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Linear interpolation.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>Linear interpolation.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
@@ -1390,7 +1306,6 @@ namespace TRAP::Math
 	/// Linear interpolation of two quaternions.
 	/// The interpolation is oriented.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="x">A quaternion.</param>
 	/// <param name="y">A quaternion.</param>
 	/// <param name="a">Interpolation factor. The interpolation is defined in the range [0, 1].</param>
@@ -1406,7 +1321,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the value of the first parameter raised to the power of the second.
 	/// </summary>
-	/// <typeparam name="T">Floating-point value.</typeparam>
 	/// <param name="base">
 	/// Pow function is defined for input values of 'base' defined in the range (inf-, inf+)
 	/// in the limit of the type qualifier.
@@ -1434,7 +1348,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the value of the first parameter raised to the power of the second.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <returns>Quaternion raised to a power.</returns>
 	template<typename T>
 	requires std::floating_point<T>
@@ -1448,7 +1361,6 @@ namespace TRAP::Math
 	/// Exp function is defined for input values of x defined in the range (inf-, inf+)
 	/// in the limit of the type qualifier.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar or vector type.</typeparam>
 	/// <param name="x">Specify the value to exponentiate.</param>
 	/// <returns>Natural exponentiation of x. i.e., e^x.</returns>
 	template<typename T>
@@ -1461,7 +1373,6 @@ namespace TRAP::Math
 	/// Exp function is defined for input values of x defined in the range (inf-, inf+)
 	/// in the limit of the type qualifier.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the value to exponentiate.</param>
 	/// <returns>Natural exponentiation of x. i.e., e^x.</returns>
 	template<uint32_t L, typename T>
@@ -1471,7 +1382,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the natural exponentiation of the parameter.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="q">Specify the value to exponentiate.</param>
 	/// <returns>Exponential of a quaternion.</returns>
 	template<typename T>
@@ -1486,7 +1396,6 @@ namespace TRAP::Math
 	/// Log function is defined for input values of x defined in the range (0, inf+)
 	/// in the limit of the type qualifier.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar or vector type.</typeparam>
 	/// <param name="x">Specify the value of which to take the natural logarithm.</param>
 	/// <returns>Natural logarithm of x, i.e., returns the value y which satisfies the equation x = e^y.</returns>
 	template<typename T>
@@ -1499,7 +1408,6 @@ namespace TRAP::Math
 	/// Log function is defined for input values of x defined in the range (0, inf+)
 	/// in the limit of the type qualifier.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the value of which to take the natural logarithm.</param>
 	/// <returns>
 	/// Natural logarithm of x, i.e., returns the value y which satisfies the equation x = e^y.
@@ -1512,7 +1420,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the natural logarithm of the parameter
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="q">Specify the value of which to take the natural logarithm.</param>
 	/// <returns>Logarithm of a quaternion.</returns>
 	template<typename T>
@@ -1527,7 +1434,6 @@ namespace TRAP::Math
 	/// Exp2 function is defined for input values of x defined in the range (inf-, inf+)
 	/// in the limit of the type qualifier.
 	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar or vector type.</typeparam>
 	/// <param name="x">Specify the value of the power to which 2 will be raised.</param>
 	/// <returns>2 raised to the x power.</returns>
 	template<typename genType>
@@ -1540,7 +1446,6 @@ namespace TRAP::Math
 	/// Exp2 function is defined for input values of x defined in the range (inf-, inf+)
 	/// in the limit of the type qualifier.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="x">Specify the value of the power to which 2 will be raised.</param>
 	/// <returns>2 raised to the x power.</returns>
 	template<uint32_t L, typename T>
@@ -1555,7 +1460,6 @@ namespace TRAP::Math
 	/// Log2 function is defined for input values of x defined in the range (0, inf+)
 	/// in the limit of the type qualifier.
 	/// </summary>
-	/// <typeparam name="genType">Floating point scalar or vector type.</typeparam>
 	/// <param name="x">Specify the value of which to take the base 2 logarithm.</param>
 	/// <returns>Base 2 log of x, i.e., returns the value y, which satisfies the equation x = 2^y.</returns>
 	template<typename genType>
@@ -1568,7 +1472,6 @@ namespace TRAP::Math
 	/// Log2 function is defined for input values of x defined in the range (0, inf+)
 	/// in the limit of the type qualifier.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the value of which to take the base 2 logarithm.</param>
 	/// <returns>Base 2 log of x, i.e., returns the value y, which satisfies the equation x = 2^y.</returns>
 	template<uint32_t L, typename T>
@@ -1583,7 +1486,6 @@ namespace TRAP::Math
 	/// Sqrt function is defined for input values of x defined in the range [0, inf+)
 	/// in the limit of the type qualifier.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar or vector type.</typeparam>
 	/// <param name="x">Specify the value of which to take the square root.</param>
 	/// <returns>Positive square root of x.</returns>
 	template<typename T>
@@ -1596,7 +1498,6 @@ namespace TRAP::Math
 	/// Sqrt function is defined for input values of x defined in the range [0, inf+)
 	/// in the limit of the type qualifier.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the value of which to take the square root.</param>
 	/// <returns>Positive square root of x.</returns>
 	template<uint32_t L, typename T>
@@ -1606,7 +1507,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the square root of the parameter.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="x">Specify the value of which to take the square root.</param>
 	/// <returns>Square root of a quaternion.</returns>
 	template<typename T>
@@ -1621,7 +1521,6 @@ namespace TRAP::Math
 	/// InverseSqrt function is defined for input values of x defined in the range [0, inf+)
 	/// in the limit of the type qualifier.
 	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar or vector type.</typeparam>
 	/// <param name="x">Specify the value of which to take the inverse of the square root.</param>
 	/// <returns>Inverse of the square root of x.</returns>
 	template<typename genType>
@@ -1634,7 +1533,6 @@ namespace TRAP::Math
 	/// InverseSqrt function is defined for input values of x defined in the range [0, inf+)
 	/// in the limit of the type qualifier.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the value of which to take the inverse of the square root.</param>
 	/// <returns>Inverse of the square root of x.</returns>
 	template<uint32_t L, typename T>
@@ -1648,7 +1546,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Calculates the length of a vector.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="v">Specifies a vector of which to calculate the length.</param>
 	/// <returns>Length of x, i.e., Sqrt(x * x).</returns>
 	template<uint32_t L, typename T>
@@ -1658,7 +1555,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Calculates the length of a vector.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="q">Specifies a quaternion of which to calculate the length.</param>
 	/// <returns>Norm of a quaternion.</returns>
 	template<typename T>
@@ -1670,7 +1566,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Calculate the distance between two points.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="p0">Specifies the first of two points.</param>
 	/// <param name="p1">Specifies the second of two points.</param>
 	/// <returns>Distance between p0 and p1, i.e., Length(p0 - p1).</returns>
@@ -1683,18 +1578,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Calculate the dot product.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar or vector type.</typeparam>
-	/// <param name="x">Specifies the first of two values.</param>
-	/// <param name="y">Specifies the second of two values.</param>
-	/// <returns>Dot product of x and y, i.e., result = x * y.</returns>
-	template<typename T>
-	requires std::floating_point<T>
-	[[nodiscard]] constexpr T Dot(T x, T y);
-
-	/// <summary>
-	/// Calculate the dot product.
-	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specifies the first of two vectors.</param>
 	/// <param name="y">Specifies the second of two vectors.</param>
 	/// <returns>Dot product of x and y, i.e., result = x * y.</returns>
@@ -1705,7 +1588,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Calculate the dot product.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specifies the first of two quaternions.</param>
 	/// <param name="y">Specifies the second of two quaternions.</param>
 	/// <returns>Compute a cross product.</returns>
@@ -1718,18 +1600,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Calculate the cross product.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
-	/// <param name="x">Specifies the first of two vectors.</param>
-	/// <param name="y">Specifies the second of two vectors.</param>
-	/// <returns>Cross product of x and y.</returns>
-	template<typename T>
-	requires std::floating_point<T>
-	[[nodiscard]] constexpr Vec<2, T> Cross(const Vec<2, T>& x, const Vec<2, T>& y);
-
-	/// <summary>
-	/// Calculate the cross product.
-	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specifies the first of two vectors.</param>
 	/// <param name="y">Specifies the second of two vectors.</param>
 	/// <returns>Cross product of x and y.</returns>
@@ -1753,7 +1623,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Calculate the normalized product.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specifies the vector to normalize.</param>
 	/// <returns>Vector in the same direction as x but with a length of 1.</returns>
 	template<uint32_t L, typename T>
@@ -1763,7 +1632,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Calculate the normalized product.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="q">Specifies the quaternion to normalize.</param>
 	/// <returns>Normalized quaternion.</returns>
 	template<typename T>
@@ -1775,19 +1643,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve a vector pointing in the same direction as another.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
-	/// <param name="N">Specifies the value to orient.</param>
-	/// <param name="I">Specifies the incident value.</param>
-	/// <param name="NRef">Specifies the reference value.</param>
-	/// <returns>If Dot(NRef, I) < 0.0, returns N, otherwise; returns -N.</returns>
-	template<typename genType>
-	requires std::floating_point<genType>
-	[[nodiscard]] constexpr genType FaceForward(const genType& N, const genType& I, const genType& NRef);
-
-	/// <summary>
-	/// Retrieve a vector pointing in the same direction as another.
-	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="N">Specifies the vector to orient.</param>
 	/// <param name="I">Specifies the incident vector.</param>
 	/// <param name="NRef">Specifies the reference vector.</param>
@@ -1801,21 +1656,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Calculate the reflection direction for an incident vector.
 	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
-	/// <param name="I">Specifies the incident value.</param>
-	/// <param name="N">Specifies the normal value.</param>
-	/// <returns>
-	/// For the incident vector I and surface orientation N,
-	/// returns the reflection direction: result = I - 2.0 * Dot(N, I) * N.
-	/// </returns>
-	template<typename genType>
-	requires std::floating_point<genType>
-	[[nodiscard]] constexpr genType Reflect(const genType& I, const genType& N);
-
-	/// <summary>
-	/// Calculate the reflection direction for an incident vector.
-	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="I">Specifies the incident vector.</param>
 	/// <param name="N">Specifies the normal vector.</param>
 	/// <returns>
@@ -1831,22 +1671,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Calculate the refraction direction for an incident vector.
 	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
-	/// <param name="I">Specifies the incident value.</param>
-	/// <param name="N">Specifies the normal value.</param>
-	/// <param name="eta">Specifies the ratio of indices of refraction.</param>
-	/// <returns>
-	/// For the incident vector I and surface normal N,
-	/// and the ratio of indices of refraction eta, returns the refraction vector.
-	/// </returns>
-	template<typename genType>
-	requires std::floating_point<genType>
-	[[nodiscard]] genType Refract(const genType& I, const genType& N, genType eta);
-
-	/// <summary>
-	/// Calculate the refraction direction for an incident vector.
-	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
 	/// <param name="I">Specifies the incident vector.</param>
 	/// <param name="N">Specifies the normal vector.</param>
 	/// <param name="eta">Specifies the ratio of indices of refraction.</param>
@@ -1863,7 +1687,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise equal-to comparison of two matrices.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
 	/// <param name="x">Specifies the first matrix to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second matrix to be used in the comparison operation.</param>
 	/// <returns>
@@ -1876,7 +1699,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise equal-to comparison of two matrices taking epsilon into account.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
 	/// <param name="x">Specifies the first matrix to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second matrix to be used in the comparison operation.</param>
 	/// <param name="epsilon">Specifies the epsilon to be used in the comparison operation.</param>
@@ -1888,7 +1710,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise equal-to comparison of two matrices taking epsilon into account.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
 	/// <param name="x">Specifies the first matrix to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second matrix to be used in the comparison operation.</param>
 	/// <param name="epsilon">Specifies the epsilon to be used in the comparison operation.</param>
@@ -1902,7 +1723,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise-not-equal-to comparison of two matrices.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
 	/// <param name="x">Specifies the first matrix to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second matrix to be used in the comparison operation.</param>
 	/// <returns>
@@ -1915,7 +1735,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise-not-equal-to comparison of two matrices taking epsilon into account.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
 	/// <param name="x">Specifies the first matrix to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second matrix to be used in the comparison operation.</param>
 	/// <param name="epsilon">Specifies the epsilon to be used in the comparison operation.</param>
@@ -1927,7 +1746,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise-not-equal-to comparison of two matrices taking epsilon into account.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
 	/// <param name="x">Specifies the first matrix to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second matrix to be used in the comparison operation.</param>
 	/// <param name="epsilon">Specifies the epsilon to be used in the comparison operation.</param>
@@ -1943,7 +1761,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Multiply matrix x by matrix y component-wise, i.e., result[i][j] is the scalar product of x[i][j] and y[i][j].
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specifies the first matrix multiplicand.</param>
 	/// <param name="y">Specifies the second matrix multiplicand.</param>
 	/// <returns>Multiplied matrix.</returns>
@@ -1959,7 +1776,6 @@ namespace TRAP::Math
 	/// Treats the first parameter c as a column vector and the second parameter r as a row
 	/// vector and does a linear algebraic matrix multiply c * r.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="c">Specifies the parameter to be treated as a column matrix.</param>
 	/// <param name="r">Specifies the parameter to be treated as a row matrix.</param>
 	/// <returns>Multiplied matrix.</returns>
@@ -1972,7 +1788,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Calculate the transpose of a matrix.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="m">Specifies the matrix of which to take the transpose.</param>
 	/// <returns>Transposed matrix of m.</returns>
 	template<typename T>
@@ -1981,7 +1796,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Calculate the transpose of a matrix.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="m">Specifies the matrix of which to take the transpose.</param>
 	/// <returns>Transposed matrix of m.</returns>
 	template<typename T>
@@ -1993,7 +1807,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Calculate the determinant of a matrix.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="m">Specifies the matrix of which to take the determinant.</param>
 	/// <returns>Determinant of a squared matrix.</returns>
 	template<typename T>
@@ -2002,7 +1815,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Calculate the determinant of a matrix.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="m">Specifies the matrix of which to take the determinant.</param>
 	/// <returns>Determinant of a squared matrix.</returns>
 	template<typename T>
@@ -2014,7 +1826,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Calculate the inverse of a matrix.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="m">Specifies the matrix of which to take the inverse.</param>
 	/// <returns>Inverse of a squared matrix.</returns>
 	template<typename T>
@@ -2023,7 +1834,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Calculate the inverse of a matrix.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="m">Specifies the matrix of which to take the inverse.</param>
 	/// <returns>Inverse of a squared matrix.</returns>
 	template<typename T>
@@ -2035,7 +1845,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Create a matrix for projecting two-dimensional coordinates onto the screen.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <returns>Projection matrix.</returns>
 	template<typename T>
 	requires std::floating_point<T>
@@ -2043,7 +1852,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Create a matrix for an orthographic parallel viewing volume.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <returns>Projection matrix.</returns>
 	template<typename T>
 	requires std::floating_point<T>
@@ -2054,7 +1862,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Creates a frustum matrix.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <returns>Frustum matrix.</returns>
 	template<typename T>
 	requires std::floating_point<T>
@@ -2065,7 +1872,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Creates a matrix for a symmetric perspective-view frustum.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="fovY">Specifies the field of view angle in the y direction. Expressed in radians.</param>
 	/// <param name="aspect">
 	/// Specified the aspect ratio that determines the field of view in the x direction.
@@ -2087,7 +1893,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Builds a perspective projection matrix based on a field of view.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="fov">Expressed in radians.</param>
 	/// <param name="width">Width of the viewport.</param>
 	/// <param name="height">Height of the viewport.</param>
@@ -2107,7 +1912,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Creates a matrix for a symmetric perspective-view frustum with far plane at infinite.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="fovY">
 	/// Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
 	/// </param>
@@ -2137,10 +1941,6 @@ namespace TRAP::Math
 	/// Components of 'x' and 'y' that are not selected are allowed to be invalid floating point
 	/// values and will have no effect on the results.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar or vector.</typeparam>
-	/// <typeparam name="U">
-	/// Floating-point or boolean scalar or vector. It can't be a vector if it is the length of genTypeT!
-	/// </typeparam>
 	/// <param name="x">Specify the start of the range in which to interpolate.</param>
 	/// <param name="y">Specify the end of the range in which to interpolate.</param>
 	/// <param name="a">Specify the value to use to interpolate between x and y.</param>
@@ -2163,10 +1963,6 @@ namespace TRAP::Math
 	/// Components of 'x' and 'y' that are not selected are allowed to be invalid floating point
 	/// values and will have no effect on the results.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar or vector.</typeparam>
-	/// <typeparam name="U">
-	/// Floating-point or boolean scalar or vector. It can't be a vector if it is the length of genTypeT!
-	/// </typeparam>
 	/// <param name="x">Specify the start of the range in which to interpolate.</param>
 	/// <param name="y">Specify the end of the range in which to interpolate.</param>
 	/// <param name="a">Specify the value to use to interpolate between x and y.</param>
@@ -2180,7 +1976,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Builds a translation 4 * 4 matrix created from a vector of 3 components.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="m">Input matrix multiplied by this translation matrix.</param>
 	/// <param name="v">Coordinates of a translation vector.</param>
 	/// <returns>Translation matrix.</returns>
@@ -2191,7 +1986,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Transforms a matrix with a translation 4 * 4 matrix created from 3 scalars.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="v">Coordinate of a translation vector.</param>
 	/// <returns>Transformation matrix.</returns>
 	template<typename T>
@@ -2203,7 +1997,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Builds a rotation 4 * 4 matrix created from an axis vector and an angle.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="m">Input matrix multiplied by this rotation matrix.</param>
 	/// <param name="angleInRadians">Rotation angle expressed in radians.</param>
 	/// <param name="v">Rotation axis, recommended to be normalized.</param>
@@ -2215,7 +2008,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Builds a rotation 4 * 4 matrix created from an axis of 3 scalars and an angle expressed in radians.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="angleInRadians">Rotation angle expressed in radians.</param>
 	/// <param name="v">Scalar</param>
 	/// <returns>Rotation matrix.</returns>
@@ -2228,7 +2020,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Builds a scale 4 * 4 matrix created from 3 scalars.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="m">Input matrix multiplied by this scale matrix.</param>
 	/// <param name="v">Ratio of scaling for each axis.</param>
 	/// <returns>Scaled matrix.</returns>
@@ -2239,7 +2030,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Transforms a matrix with a scale 4 * 4 matrix created from a vector of 3 components.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="v">3 Component vector.</param>
 	/// <returns>Scaled matrix.</returns>
 	template<typename T>
@@ -2251,7 +2041,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Build a look at view matrix.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="eye">Position of the camera.</param>
 	/// <param name="center">Position where the camera is looking at.</param>
 	/// <param name="up">Normalized up vector, how the camera is oriented. Typically (0, 0, 1).</param>
@@ -2265,7 +2054,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Get a specific row of a matrix.
 	/// </summary>
-	/// <typeparam name="T">Matrix type.</typeparam>
 	/// <param name="m">Matrix to retrieve row from.</param>
 	/// <param name="index">Row index to retrieve.</param>
 	/// <returns>Row vector.</returns>
@@ -2278,7 +2066,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Set a specific row to a matrix.
 	/// </summary>
-	/// <typeparam name="T">Matrix type.</typeparam>
 	/// <param name="m">Matrix to set row for.</param>
 	/// <param name="index">Row index to set.</param>
 	/// <param name="x">New row data.</param>
@@ -2292,7 +2079,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Get a specific column of a matrix.
 	/// </summary>
-	/// <typeparam name="T">Matrix type.</typeparam>
 	/// <param name="m">Matrix to retrieve column from.</param>
 	/// <param name="index">Column index to retrieve.</param>
 	/// <returns>Column vector.</returns>
@@ -2305,7 +2091,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Set a specific column to a matrix.
 	/// </summary>
-	/// <typeparam name="T">Matrix type.</typeparam>
 	/// <param name="m">Matrix to set column for.</param>
 	/// <param name="index">Column index to set.</param>
 	/// <param name="x">New column data.</param>
@@ -2335,7 +2120,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Spherical linear interpolation of two quaternions.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="x">A quaternion.</param>
 	/// <param name="y">A quaternion.</param>
 	/// <param name="a">Interpolation factor. The interpolation is defined beyond the range [0, 1].</param>
@@ -2351,8 +2135,6 @@ namespace TRAP::Math
 	/// Rotation is performed at constant speed.
 	/// </summary>
 	///
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
-	/// <typeparam name="S">Integer scalar type.</typeparam>
 	/// <param name="x">A quaternion.</param>
 	/// <param name="y">A quaternion.</param>
 	/// <param name="a">Interpolation factor. The interpolation is defined beyond the range [0, 1].</param>
@@ -2367,7 +2149,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Conjugate a quaternion.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="q">Quaternion to conjugate.</param>
 	/// <returns>Conjugated quaternion.</returns>
 	template<typename T>
@@ -2379,7 +2160,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Calculate the inverse of a quaternion.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="q">Specifies the quaternion of which to take the inverse.</param>
 	/// <returns>Inverted quaternion.</returns>
 	template<typename T>
@@ -2391,7 +2171,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve Euler angles from a quaternion.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="q">Quaternion to retrieve Euler angles from.</param>
 	/// <returns>Euler angles, pitch as x, yaw as y, roll as z. The result is expressed in radians.</returns>
 	template<typename T>
@@ -2403,7 +2182,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve roll from a quaternion.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="q">Quaternion to retrieve Euler angle from.</param>
 	/// <returns>Roll value of euler angles expressed in radians.</returns>
 	template<typename T>
@@ -2415,7 +2193,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve pitch from a quaternion.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="q">Quaternion to retrieve Euler angle from.</param>
 	/// <returns>Pitch value of euler angles expressed in radians.</returns>
 	template<typename T>
@@ -2427,7 +2204,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve yaw from a quaternion.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="q">Quaternion to retrieve Euler angle from.</param>
 	/// <returns>Yaw value of euler angles expressed in radians.</returns>
 	template<typename T>
@@ -2439,7 +2215,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Converts a quaternion to a 3 * 3 matrix.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="q">Quaternion to convert.</param>
 	/// <returns>Converted matrix.</returns>
 	template<typename T>
@@ -2448,7 +2223,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Converts a quaternion to a 4 * 4 matrix.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="q">Quaternion to convert.</param>
 	/// <returns>Converted matrix.</returns>
 	template<typename T>
@@ -2460,7 +2234,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Converts a pure rotation 3 * 3 matrix to a quaternion.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="m">Pure rotation matrix to convert.</param>
 	/// <returns>Converted quaternion.</returns>
 	template<typename T>
@@ -2469,7 +2242,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Converts a pure rotation 4 * 4 matrix to a quaternion.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="m">Pure rotation matrix to convert.</param>
 	/// <returns>Converted quaternion.</returns>
 	template<typename T>
@@ -2481,7 +2253,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise less-than comparison of two quaternions.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specifies the first quaternion to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second quaternion to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x < y.</returns>
@@ -2494,7 +2265,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise less-than-or-equal comparison of two quaternions.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specifies the first quaternion to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second quaternion to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x <= y.</returns>
@@ -2507,7 +2277,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise greater-than comparison of two quaternions.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specifies the first quaternion to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second quaternion to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x > y.</returns>
@@ -2520,7 +2289,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise greater-than-or-equal comparison of two quaternions.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specifies the first quaternion to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second quaternion to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x >= y.</returns>
@@ -2533,7 +2301,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Build a look at quaternion.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="direction">Desired forward direction. Needs to be normalized.</param>
 	/// <param name="up">Up vector, how the camera is oriented. Typically (0, 1, 0).</param>
 	/// <returns>Look at quaternion.</returns>
@@ -2546,7 +2313,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise equal-to comparison of two quaternions.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specifies the first quaternion to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second quaternion to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison of result x == y.</returns>
@@ -2557,7 +2323,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise equal-to comparison of two quaternions taking epsilon into account.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specifies the first quaternion to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second quaternion to be used in the comparison operation.</param>
 	/// <param name="epsilon"></param>
@@ -2571,7 +2336,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise not-equal-to comparison of two quaternions.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specifies the first quaternion to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second quaternion to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison of result x != y.</returns>
@@ -2582,7 +2346,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise not-equal-to comparison of two quaternions taking epsilon into account.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specifies the first quaternion to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second quaternion to be used in the comparison operation.</param>
 	/// <param name="epsilon"></param>
@@ -2596,7 +2359,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the rotation angle of a quaternion.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="x">Quaternion.</param>
 	/// <returns>Quaternion rotation angle.</returns>
 	template<typename T>
@@ -2608,7 +2370,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the rotation axis of a quaternion.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="x">Quaternion.</param>
 	/// <returns>Rotation axis.</returns>
 	template<typename T>
@@ -2620,7 +2381,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Build a quaternion from an angle and a normalized axis.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="angle">Angle expressed in radians.</param>
 	/// <param name="v">Axis of the quaternion, must be normalized.</param>
 	/// <returns>Quaternion.</returns>
@@ -2633,7 +2393,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Rotates a quaternion from a vector of 3 components axis and an angle.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="q">Source orientation.</param>
 	/// <param name="angle">Angle expressed in radians.</param>
 	/// <param name="v">Axis of the rotation.</param>
@@ -2675,7 +2434,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise less-than comparison of two vectors.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
 	/// <param name="x">Specifies the first vector to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x < y.</returns>
@@ -2688,7 +2446,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise less-than-or-equal comparison of two vectors.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
 	/// <param name="x">Specifies the first vector to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x <= y.</returns>
@@ -2701,7 +2458,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise greater-than comparison of two vectors.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
 	/// <param name="x">Specifies the first vector to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x > y.</returns>
@@ -2714,7 +2470,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise greater-than-or-equal comparison of two vectors.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
 	/// <param name="x">Specifies the first vector to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x >= y.</returns>
@@ -2727,7 +2482,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise equal-to comparison of two vectors.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
 	/// <param name="x">Specifies the first vector to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x == y.</returns>
@@ -2738,7 +2492,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise equal-to comparison of two vectors taking epsilon into account.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
 	/// <param name="x">Specifies the first vector to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <param name="epsilon"></param>
@@ -2750,7 +2503,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise equal-to comparison of two vectors taking epsilon into account.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
 	/// <param name="x">Specifies the first vector to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <param name="epsilon"></param>
@@ -2764,7 +2516,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise not-equal-to comparison of two vectors.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
 	/// <param name="x">Specifies the first vector to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x != y.</returns>
@@ -2775,7 +2526,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise not-equal-to comparison of two vectors taking epsilon into account.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
 	/// <param name="x">Specifies the first vector to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <param name="epsilon"></param>
@@ -2787,7 +2537,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Perform a component-wise not-equal-to comparison of two vectors taking epsilon into account.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
 	/// <param name="x">Specifies the first vector to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <param name="epsilon"></param>
@@ -2833,7 +2582,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Converts degrees to radians and returns the result.
 	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
 	/// <param name="degrees">Specify the quantity, in degrees, to be converted to radians.</param>
 	/// <returns>Radians.</returns>
 	template<typename genType>
@@ -2843,7 +2591,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Converts degrees to radians and returns the result.
 	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
 	/// <param name="v">Specify the quantity, in degrees, to be converted to radians.</param>
 	/// <returns>Radians.</returns>
 	template<uint32_t L, typename T>
@@ -2855,7 +2602,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Converts radians to degrees and returns the result.
 	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
 	/// <param name="radians">Specify the quantity, in radians, to be converted to degrees.</param>
 	/// <returns>Degrees.</returns>
 	template<typename genType>
@@ -2865,7 +2611,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Converts radians to degrees and returns the result.
 	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
 	/// <param name="v">Specify the quantity, in radians, to be converted to degrees.</param>
 	/// <returns>Degrees.</returns>
 	template<uint32_t L, typename T>
@@ -2878,7 +2623,6 @@ namespace TRAP::Math
 	/// Standard trigonometric sine function.
 	/// Values returned by this function will range from [-1, 1].
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the quantity, in radians, of which to return the sine.</param>
 	/// <returns>Sine.</returns>
 	template<typename T>
@@ -2889,7 +2633,6 @@ namespace TRAP::Math
 	/// Standard trigonometric sine function.
 	/// Values returned by this function will range from [-1, 1].
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="v">Specify the quantity, in radians, of which to return the sine.</param>
 	/// <returns>Sine.</returns>
 	template<uint32_t L, typename T>
@@ -2902,7 +2645,6 @@ namespace TRAP::Math
 	/// Standard trigonometric cosine function.
 	/// Values returned by this function will range from [-1, 1].
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the quantity, in radians, of which to return the cosine.</param>
 	/// <returns>Cosine.</returns>
 	template<typename T>
@@ -2913,7 +2655,6 @@ namespace TRAP::Math
 	/// Standard trigonometric cosine function.
 	/// Values returned by this function will range from [-1, 1].
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="v">Specify the quantity, in radians, of which to return the cosine.</param>
 	/// <returns>Cosine.</returns>
 	template<uint32_t L, typename T>
@@ -2925,7 +2666,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Standard trigonometric tangent function.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the quantity, in radians, of which to return the tangent.</param>
 	/// <returns>Tangent.</returns>
 	template<typename T>
@@ -2935,7 +2675,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Standard trigonometric tangent function.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="v">Specify the quantity, in radians, of which to return the tangent.</param>
 	/// <returns>Tangent.</returns>
 	template<uint32_t L, typename T>
@@ -2950,7 +2689,6 @@ namespace TRAP::Math
 	///
 	/// Note: Results are undefined if |x| > 1!
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="x">Specify the value whose arcsine to return.</param>
 	/// <returns>Angle whose sine is x.</returns>
 	template<typename T>
@@ -2963,7 +2701,6 @@ namespace TRAP::Math
 	///
 	/// Note: Results are undefined if |x| > 1!
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="x">Specify the value whose arcsine to return.</param>
 	/// <returns>Angle whose sine is x.</returns>
 	template<uint32_t L, typename T>
@@ -2978,7 +2715,6 @@ namespace TRAP::Math
 	///
 	/// Note: Results are undefined if |x| > 1!
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="x">Specify the value whose arccosine to return.</param>
 	/// <returns>Angle whose cosine is x.</returns>
 	template<typename T>
@@ -2991,7 +2727,6 @@ namespace TRAP::Math
 	///
 	/// Note: Results are undefined if |x| > 1!
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="x">Specify the value whose arccosine to return.</param>
 	/// <returns>Angle whose cosine is x.</returns>
 	template<uint32_t L, typename T>
@@ -3006,7 +2741,6 @@ namespace TRAP::Math
 	///
 	/// Note: Results are undefined if x and y are both 0!
 	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
 	/// <param name="y">Specify the numerator of the fraction whose arctangent to return.</param>
 	/// <param name="x">Specify the denominator of the fraction whose arctangent to return.</param>
 	/// <returns>
@@ -3023,7 +2757,6 @@ namespace TRAP::Math
 	///
 	/// Note: Results are undefined if x and y are both 0!
 	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
 	/// <param name="y">Specify the numerator of the fraction whose arctangent to return.</param>
 	/// <param name="x">Specify the denominator of the fraction whose arctangent to return.</param>
 	/// <returns>
@@ -3038,7 +2771,6 @@ namespace TRAP::Math
 	/// Arc tangent.
 	/// The range of values returned by this function is [-PI / 2, PI / 2].
 	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the fraction whose arctangent to return.</param>
 	/// <returns>Angle whose tangent is y over x.</returns>
 	template<typename T>
@@ -3049,7 +2781,6 @@ namespace TRAP::Math
 	/// Arc tangent.
 	/// The range of values returned by this function is [-PI / 2, PI / 2].
 	/// </summary>
-	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the fraction whose arctangent to return.</param>
 	/// <returns>Angle whose tangent is y over x.</returns>
 	template<uint32_t L, typename T>
@@ -3061,7 +2792,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the hyperbolic sine of the parameter.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the value whose hyperbolic sine to return.</param>
 	/// <returns>Hyperbolic sine function, (Exp(x) - Exp(-x)) / 2.</returns>
 	template<typename T>
@@ -3071,7 +2801,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the hyperbolic sine of the parameter.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="v">Specify the value whose hyperbolic sine to return.</param>
 	/// <returns>Hyperbolic sine function, (Exp(x) - Exp(-x)) / 2.</returns>
 	template<uint32_t L, typename T>
@@ -3083,7 +2812,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the hyperbolic cosine of the parameter.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the value whose hyperbolic cosine to return.</param>
 	/// <returns>Hyperbolic cosine function, (Exp(x) + Exp(-x)) / 2.</returns>
 	template<typename T>
@@ -3093,7 +2821,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the hyperbolic cosine of the parameter.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="v">Specify the value whose hyperbolic cosine to return.</param>
 	/// <returns>Hyperbolic cosine function, (Exp(x) + Exp(-x)) / 2.</returns>
 	template<uint32_t L, typename T>
@@ -3105,7 +2832,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the hyperbolic tangent of the parameter.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the value whose hyperbolic tangent to return.</param>
 	/// <returns>Hyperbolic tangent function, SinH(angle) / CosH(angle).</returns>
 	template<typename T>
@@ -3115,7 +2841,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Retrieve the hyperbolic tangent of the parameter.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="v">Specify the value whose hyperbolic tangent to return.</param>
 	/// <returns>Hyperbolic tangent function, SinH(angle) / CosH(angle).</returns>
 	template<uint32_t L, typename T>
@@ -3127,7 +2852,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Ary hyperbolic sine.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the value whose arc hyperbolic sine to return.</param>
 	/// <returns>Inverse of SinH.</returns>
 	template<typename T>
@@ -3137,7 +2861,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Ary hyperbolic sine.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="v">Specify the value whose arc hyperbolic sine to return.</param>
 	/// <returns>Inverse of SinH.</returns>
 	template<uint32_t L, typename T>
@@ -3149,7 +2872,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Arc hyperbolic cosine.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the value whose arc hyperbolic cosine to return.</param>
 	/// <returns>Non-negative inverse of CosH.</returns>
 	template<typename T>
@@ -3159,7 +2881,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Arc hyperbolic cosine.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="v">Specify the value whose arc hyperbolic cosine to return.</param>
 	/// <returns>Non-negative inverse of CosH.</returns>
 	template<uint32_t L, typename T>
@@ -3171,7 +2892,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Arc hyperbolic tangent.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="x">Specify the value whose arc hyperbolic tangent to return.</param>
 	/// <returns>Inverse of TanH. Note: Results are undefined if Abs(x) >= 1!</returns>
 	template<typename T>
@@ -3181,7 +2901,6 @@ namespace TRAP::Math
 	/// <summary>
 	/// Arc hyperbolic tangent.
 	/// </summary>
-	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <param name="v">Specify the value whose arc hyperbolic tangent to return.</param>
 	/// <returns>Inverse of TanH. Note: Results are undefined if Abs(x) >= 1!</returns>
 	template<uint32_t L, typename T>
@@ -4498,13 +4217,6 @@ requires std::floating_point<T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<typename T>
-requires std::floating_point<T>
-[[nodiscard]] constexpr T TRAP::Math::Dot(const T x, const T y)
-{
-	return x * y;
-}
-
 template<uint32_t L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr T TRAP::Math::Dot(const Vec<L, T>& x, const Vec<L, T>& y)
@@ -4526,13 +4238,6 @@ requires std::floating_point<T>
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
-
-template<typename T>
-requires std::floating_point<T>
-[[nodiscard]] constexpr TRAP::Math::Vec<2, T> TRAP::Math::Cross(const Vec<2, T>& x, const Vec<2, T>& y)
-{
-	return Vec<2, T>(x.x * y.y - y.x * x.y);
-}
 
 template<typename T>
 requires std::floating_point<T>
@@ -4580,13 +4285,6 @@ requires std::floating_point<T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<typename genType>
-requires std::floating_point<genType>
-[[nodiscard]] constexpr genType TRAP::Math::FaceForward(const genType& N, const genType& I, const genType& NRef)
-{
-	return Dot(NRef, I) < static_cast<genType>(0) ? N : -N;
-}
-
 template<uint32_t L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::FaceForward(const Vec<L, T>& N, const Vec<L, T>& I, const Vec<L, T>& NRef)
@@ -4596,13 +4294,6 @@ requires std::floating_point<T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<typename genType>
-requires std::floating_point<genType>
-[[nodiscard]] constexpr genType TRAP::Math::Reflect(const genType& I, const genType& N)
-{
-	return I - N * Dot(N, I) * static_cast<genType>(2);
-}
-
 template<uint32_t L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Reflect(const Vec<L, T>& I, const Vec<L, T>& N)
@@ -4611,18 +4302,6 @@ requires std::floating_point<T>
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
-
-template<typename genType>
-requires std::floating_point<genType>
-[[nodiscard]] genType TRAP::Math::Refract(const genType& I, const genType& N, genType eta)
-{
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	const genType dotValue(Dot(N, I));
-	const genType k(static_cast<genType>(1) - eta * eta * (static_cast<genType>(1) - dotValue * dotValue));
-
-	return (eta * I - (eta * dotValue + Sqrt(k)) * N) * static_cast<genType>(k >= static_cast<genType>(0));
-}
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>

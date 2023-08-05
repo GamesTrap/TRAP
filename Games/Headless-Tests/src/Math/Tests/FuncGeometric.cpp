@@ -42,12 +42,10 @@ namespace FuncGeometric
     {
         int32_t error = 0;
 
-        float dot1 = TRAP::Math::Dot(1.0f, 1.0f);
         float dot2 = TRAP::Math::Dot(TRAP::Math::Vec2(1), TRAP::Math::Vec2(1));
         float dot3 = TRAP::Math::Dot(TRAP::Math::Vec3(1), TRAP::Math::Vec3(1));
         float dot4 = TRAP::Math::Dot(TRAP::Math::Vec4(1), TRAP::Math::Vec4(1));
 
-        error += TRAP::Math::Equal(dot1, 1.0f, TRAP::Math::Epsilon<float>()) ? 0 : 1;
         error += TRAP::Math::Equal(dot2, 2.0f, TRAP::Math::Epsilon<float>()) ? 0 : 1;
         error += TRAP::Math::Equal(dot3, 3.0f, TRAP::Math::Epsilon<float>()) ? 0 : 1;
         error += TRAP::Math::Equal(dot4, 4.0f, TRAP::Math::Epsilon<float>()) ? 0 : 1;
@@ -130,13 +128,6 @@ namespace FuncGeometric
     int32_t TestRefract()
     {
         int32_t error = 0;
-
-        {
-            float a(-1.0f);
-            float b(1.0f);
-            float c = TRAP::Math::Refract(a, b, 0.5f);
-            error += TRAP::Math::Equal(c, -1.0f, 0.0001f) ? 0 : 1;
-        }
 
         {
             TRAP::Math::Vec2 a(0.0f, -1.0f);
