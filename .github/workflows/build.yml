@@ -183,7 +183,7 @@ jobs:
       - name: Run Tests
         run: |
           cd UnitTests
-          .\UnitTests
+          $env:TRACY_NO_INVARIANT_CHECK=1; .\UnitTests.exe; Remove-Item Env:\TRACY_NO_INVARIANT_CHECK
   test-linux:
     name: Unit-Test Linux
     runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
@@ -197,4 +197,4 @@ jobs:
         run: |
           cd UnitTests
           chmod +x UnitTests
-          ./UnitTests
+          TRACY_NO_INVARIANT_CHECK=1 ./UnitTests
