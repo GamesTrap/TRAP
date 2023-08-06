@@ -84,7 +84,7 @@ namespace TRAP::Graphics
 
 constexpr TRAP::Graphics::OrthographicCamera::OrthographicCamera(const float left, const float right, const float bottom,
                                                                  const float top, const float near, const float far)
-	: m_projectionMatrix(Math::Orthographic(left, right, bottom, top, far, near))
+	: m_projectionMatrix(Math::OrthographicReverseZ(left, right, bottom, top, near, far))
 {
 }
 
@@ -93,7 +93,7 @@ constexpr TRAP::Graphics::OrthographicCamera::OrthographicCamera(const float lef
 constexpr void TRAP::Graphics::OrthographicCamera::SetProjection(const float left, const float right, const float bottom,
                                                                  const float top, const float near, const float far)
 {
-	m_projectionMatrix = Math::Orthographic(left, right, bottom, top, far, near);
+	m_projectionMatrix = Math::OrthographicReverseZ(left, right, bottom, top, near, far);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

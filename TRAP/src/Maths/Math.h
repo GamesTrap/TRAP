@@ -1843,19 +1843,19 @@ namespace TRAP::Math
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
-	/// Create a matrix for projecting two-dimensional coordinates onto the screen.
-	/// </summary>
-	/// <returns>Projection matrix.</returns>
-	template<typename T>
-	requires std::floating_point<T>
-	[[nodiscard]] constexpr Mat<4, 4, T> Orthographic(T left, T right, T bottom, T top) noexcept;
-	/// <summary>
 	/// Create a matrix for an orthographic parallel viewing volume.
 	/// </summary>
 	/// <returns>Projection matrix.</returns>
 	template<typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Mat<4, 4, T> Orthographic(T left, T right, T bottom, T top, T zNear, T zFar) noexcept;
+	/// <summary>
+	/// Create a matrix for an orthographic parallel viewing volume.
+	/// </summary>
+	/// <returns>Projection matrix with a reversed Z axis.</returns>
+	template<typename T>
+	requires std::floating_point<T>
+	[[nodiscard]] constexpr Mat<4, 4, T> OrthographicReverseZ(T left, T right, T bottom, T top, T zNear, T zFar) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1866,6 +1866,14 @@ namespace TRAP::Math
 	template<typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Mat<4, 4, T> Frustum(T left, T right, T bottom, T top, T nearVal, T farVal) noexcept;
+
+	/// <summary>
+	/// Creates a frustum matrix.
+	/// </summary>
+	/// <returns>Frustum matrix with a reversed Z axis.</returns>
+	template<typename T>
+	requires std::floating_point<T>
+	[[nodiscard]] constexpr Mat<4, 4, T> FrustumReverseZ(T left, T right, T bottom, T top, T nearVal, T farVal) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1888,6 +1896,25 @@ namespace TRAP::Math
 	requires std::floating_point<T>
 	[[nodiscard]] Mat<4, 4, T> Perspective(T fovY, T aspect, T zNear, T zFar);
 
+	/// <summary>
+	/// Creates a matrix for a symmetric perspective-view frustum.
+	/// </summary>
+	/// <param name="fovY">Specifies the field of view angle in the y direction. Expressed in radians.</param>
+	/// <param name="aspect">
+	/// Specified the aspect ratio that determines the field of view in the x direction.
+	/// The aspect ratio is the ratio of x(width) to y(height).
+	/// </param>
+	/// <param name="zNear">
+	/// Specifies the distance from the viewer to the near clipping plange (always positive).
+	/// </param>
+	/// <param name="zFar">
+	/// Specifies the distance from the viewer to the far clipping plane (always positive).
+	/// </param>
+	/// <returns>Perspective-view matrix with a reversed Z axis.</returns>
+	template <typename T>
+	requires std::floating_point<T>
+	[[nodiscard]] Mat<4, 4, T> PerspectiveReverseZ(T fovY, T aspect, T zNear, T zFar);
+
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
@@ -1906,6 +1933,23 @@ namespace TRAP::Math
 	template<typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] Mat<4, 4, T> PerspectiveFoV(T fov, T width, T height, T zNear, T zFar);
+
+	/// <summary>
+	/// Builds a perspective projection matrix based on a field of view.
+	/// </summary>
+	/// <param name="fov">Expressed in radians.</param>
+	/// <param name="width">Width of the viewport.</param>
+	/// <param name="height">Height of the viewport.</param>
+	/// <param name="zNear">
+	/// Specifies the distance from the viewer to the near clipping plane (always positive).
+	/// </param>
+	/// <param name="zFar">
+	/// Specifies the distance from the viewer to the far clipping plane (always positive).
+	/// </param>
+	/// <returns>Field of view based perspective projection matrix with reversed Z axis.</returns>
+	template<typename T>
+	requires std::floating_point<T>
+	[[nodiscard]] Mat<4, 4, T> PerspectiveFoVReverseZ(T fov, T width, T height, T zNear, T zFar);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -4572,25 +4616,10 @@ requires std::floating_point<T>
 template<typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Orthographic(const T left, const T right,
-                                                                          const T bottom, const T top) noexcept
-{
-	Mat<4, 4, T> result(static_cast<T>(1));
-
-	result[0][0] = static_cast<T>(2) / (right - left);
-	result[1][1] = static_cast<T>(2) / (top - bottom);
-	result[2][2] = -static_cast<T>(1);
-	result[3][0] = -(right + left) / (right - left);
-	result[3][1] = -(top + bottom) / (top - bottom);
-
-	return result;
-}
-
-template<typename T>
-requires std::floating_point<T>
-[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Orthographic(const T left, const T right,
                                                                           const T bottom, const T top,
                                                                           const T zNear, const T zFar) noexcept
 {
+	//RH_ZO
 	Mat<4, 4, T> result(static_cast<T>(1));
 
 	result[0][0] = static_cast<T>(2) / (right - left);
@@ -4603,6 +4632,15 @@ requires std::floating_point<T>
 	return result;
 }
 
+template<typename T>
+requires std::floating_point<T>
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::OrthographicReverseZ(const T left, const T right,
+                                                                                  const T bottom, const T top,
+                                                                                  const T zNear, const T zFar) noexcept
+{
+	return Orthographic(left, right, bottom, top, zFar, zNear);
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
@@ -4611,6 +4649,7 @@ requires std::floating_point<T>
                                                                      const T bottom, const T top,
                                                                      const T nearVal, const T farVal) noexcept
 {
+	//RH_ZO
 	Mat<4, 4, T> result(static_cast<T>(0));
 
 	result[0][0] = (static_cast<T>(2) * nearVal) / (right - left);
@@ -4624,6 +4663,15 @@ requires std::floating_point<T>
 	return result;
 }
 
+template<typename T>
+requires std::floating_point<T>
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::FrustumReverseZ(const T left, const T right,
+                                                                             const T bottom, const T top,
+                                                                             const T nearVal, const T farVal) noexcept
+{
+	return Frustum(left, right, bottom, top, farVal, nearVal);
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
@@ -4632,9 +4680,9 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(std::abs(aspect - std::numeric_limits<T>::epsilon()) > static_cast<T>(0), "Math::Perspective(): Division by zero!");
+	TRAP_ASSERT(Abs(aspect - Epsilon<T>()) > static_cast<T>(0), "Math::Perspective(): Division by zero!");
 
-	const T tanHalfFoVY = std::tan(fovY / static_cast<T>(2));
+	const T tanHalfFoVY = Tan(fovY / static_cast<T>(2));
 
 	Mat<4, 4, T> result(static_cast<T>(0));
 
@@ -4647,12 +4695,19 @@ requires std::floating_point<T>
 	return result;
 }
 
+template <typename T>
+requires std::floating_point<T>
+[[nodiscard]] TRAP::Math::Mat<4, 4, T> TRAP::Math::PerspectiveReverseZ(const T fovY, const T aspect, const T zNear, const T zFar)
+{
+	return Perspective(fovY, aspect, zFar, zNear);
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Mat<4, 4, T> TRAP::Math::PerspectiveFoV(const T fov, const T width, const T height, const T zNear,
-                                                                  const T zFar)
+[[nodiscard]] TRAP::Math::Mat<4, 4, T> TRAP::Math::PerspectiveFoV(const T fov, const T width, const T height,
+                                                                  const T zNear, const T zFar)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -4675,6 +4730,15 @@ requires std::floating_point<T>
 	return result;
 }
 
+
+template <typename T>
+requires std::floating_point<T>
+[[nodiscard]] TRAP::Math::Mat<4, 4, T> TRAP::Math::PerspectiveFoVReverseZ(const T fov, const T width, const T height,
+                                                                          const T zNear, const T zFar)
+{
+	return PerspectiveFoV(fov, width, height, zFar, zNear);
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
@@ -4683,7 +4747,7 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	const T range = std::tan(fovY / static_cast<T>(2)) * zNear;
+	const T range = Tan(fovY / static_cast<T>(2)) * zNear;
 	const T left = -range * aspect;
 	const T right = range * aspect;
 	const T bottom = -range;
