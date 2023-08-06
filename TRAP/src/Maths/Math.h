@@ -1765,7 +1765,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second matrix multiplicand.</param>
 	/// <returns>Multiplied matrix.</returns>
 	template<uint32_t L, typename T>
-	requires std::floating_point<T>
+	requires (std::floating_point<T> && L > 2)
 	[[nodiscard]] constexpr Mat<L, L, T> MatrixCompMult(const Mat<L, L, T>& x, const Mat<L, L, T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1780,7 +1780,7 @@ namespace TRAP::Math
 	/// <param name="r">Specifies the parameter to be treated as a row matrix.</param>
 	/// <returns>Multiplied matrix.</returns>
 	template<uint32_t L, typename T>
-	requires std::floating_point<T>
+	requires (std::floating_point<T> && L > 2)
 	[[nodiscard]] constexpr Mat<L, L, T> OuterProduct(const Vec<L, T>& c, const Vec<L, T>& r);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -4381,7 +4381,7 @@ requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L, typename T>
-requires std::floating_point<T>
+requires (std::floating_point<T> && L > 2)
 [[nodiscard]] constexpr TRAP::Math::Mat<L, L, T> TRAP::Math::MatrixCompMult(const Mat<L, L, T>& x, const Mat<L, L, T>& y)
 {
 	Mat<L, L, T> result;
@@ -4393,7 +4393,7 @@ requires std::floating_point<T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L, typename T>
-requires std::floating_point<T>
+requires (std::floating_point<T> && L > 2)
 [[nodiscard]] constexpr TRAP::Math::Mat<L, L, T> TRAP::Math::OuterProduct(const Vec<L, T>& c, const Vec<L, T>& r)
 {
 	Mat<L, L, T> m;
