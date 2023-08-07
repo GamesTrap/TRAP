@@ -4287,3 +4287,7 @@ SITREP 08/06/2023|23w31a2
 SITREP 08/07/2023|23w32a1
     - Changed TRAP Engine version to 23w32a1(0.9.73)
     - UnitTests Added tests for Math::InfinitePerspective() ~<15 mins
+
+SITREP 08/08/2023|23w32a2
+    - Changed TRAP Engine version to 23w32a2(0.9.74)
+    - UnitTests Added tests for Math::Translate(), Math::Rotate() ~<30 mins
