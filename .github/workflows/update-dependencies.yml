@@ -469,8 +469,8 @@ jobs:
         id: yamlcpp
         run: |
             cd Dependencies/YAMLCpp/
-            git fetch origin master --no-rebase --ff-only
-            git pull origin master --no-rebase --ff-only
+            git checkout master
+            git pull origin master
             echo "YAMLCPP_VERSION=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
             cd ../..
       - name: Create Pull Request

@@ -4678,6 +4678,7 @@ template <typename T>
 requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Mat<4, 4, T> TRAP::Math::Perspective(const T fovY, const T aspect, const T zNear, const T zFar)
 {
+	//RH_ZO
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(Abs(aspect - Epsilon<T>()) > static_cast<T>(0), "Math::Perspective(): Division by zero!");
@@ -4709,6 +4710,7 @@ requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Mat<4, 4, T> TRAP::Math::PerspectiveFoV(const T fov, const T width, const T height,
                                                                   const T zNear, const T zFar)
 {
+	//RH_ZO
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(width > static_cast<T>(0), "Math::PerspectiveFoV(): Width must be greater than zero!");
@@ -4745,6 +4747,7 @@ template <typename T>
 requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Mat<4, 4, T> TRAP::Math::InfinitePerspective(const T fovY, const T aspect, const T zNear)
 {
+	//RH
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	const T range = Tan(fovY / static_cast<T>(2)) * zNear;

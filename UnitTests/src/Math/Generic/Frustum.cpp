@@ -62,15 +62,15 @@ void RunFrustumEdgeTests()
     }
     {
         const TRAP::Math::tMat4<T> m = TRAP::Math::Frustum<T>(inf, 1.0f, inf, 1.0f, 1.0f, 10.0f);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(m[3])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(m[2])));
     }
     {
         const TRAP::Math::tMat4<T> m = TRAP::Math::Frustum<T>(ninf, 1.0f, ninf, 1.0f, 1.0f, 10.0f);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(m[3])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(m[2])));
     }
     {
         const TRAP::Math::tMat4<T> m = TRAP::Math::Frustum<T>(nan, 1.0f, nan, 1.0f, 1.0f, 10.0f);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(m[3])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(m[2])));
     }
 }
 

@@ -4283,3 +4283,7 @@ SITREP 08/06/2023|23w31a2
     - Changed TRAP Engine version to 23w31a2(0.9.72)
     - UnitTests Added tests for Math::Refract(), Math::MatrixCompMult(), Math::OuterProduct(), Math::Transpose(), Math::Determinant ~<75 mins
     - UnitTests Added tests for Math::Inverse(), Math::Orthographic(), Math::Frustum(), Math::Perspective(), Math::PerspectiveFoV() ~<75 mins
+
+SITREP 08/07/2023|23w32a1
+    - Changed TRAP Engine version to 23w32a1(0.9.73)
+    - UnitTests Added tests for Math::InfinitePerspective() ~<15 mins
