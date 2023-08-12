@@ -4291,3 +4291,8 @@ SITREP 08/07/2023|23w32a1
 SITREP 08/08/2023|23w32a2
     - Changed TRAP Engine version to 23w32a2(0.9.74)
     - UnitTests Added tests for Math::Translate(), Math::Rotate() ~<30 mins
+
+SITREP 08/12/2023|23w32a3
+    - Changed TRAP Engine version to 23w32a3(0.9.75)
+    - UnitTests Added tests for Math::Scale(), Math::LookAt(), Math::Row(), Math::Column(), Math::Decompose() ~<75 mins
+    - Math Changed implementation of Decompose() ~<20 mins
