@@ -4300,4 +4300,5 @@ SITREP 08/12/2023|23w32a3
 SITREP 08/14/2023|23w33a1
     - Changed TRAP Engine version to 23w33a1(0.9.76)
     - UnitTests Added tests for Math::SLerp(), Math::Conjugate(), Math::EulerAngles() ~<60 mins
-    - UnitTests Added tests for Math::Roll(), Math::Pitch(), Math::Yaw(), Math::Mat3Cast(), Math::Mat4Cast ~<30 mins
+    - UnitTests Added tests for Math::Roll(), Math::Pitch(), Math::Yaw(), Math::Mat3Cast(), Math::Mat4Cast() ~<30 mins
+    - UnitTests Added tests for Math::QuaternionCast() ~<15 mins
