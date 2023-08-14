@@ -5562,10 +5562,11 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
+	//RH
 	Mat<3, 3, T> result;
 
 	result[2] = -direction;
-	const Vec<3, T>& right = Cross(up, result[2]);
+	const Vec<3, T> right = Cross(up, result[2]);
 	result[0] = right * InverseSqrt(Max(static_cast<T>(0.00001), Dot(right, right)));
 	result[1] = Cross(result[2], result[0]);
 
