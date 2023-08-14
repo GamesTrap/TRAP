@@ -4281,7 +4281,7 @@ SITREP 08/05/2023|23w31a1
 
 SITREP 08/06/2023|23w31a2
     - Changed TRAP Engine version to 23w31a2(0.9.72)
-    - UnitTests Added tests for Math::Refract(), Math::MatrixCompMult(), Math::OuterProduct(), Math::Transpose(), Math::Determinant ~<75 mins
+    - UnitTests Added tests for Math::Refract(), Math::MatrixCompMult(), Math::OuterProduct(), Math::Transpose(), Math::Determinant() ~<75 mins
     - UnitTests Added tests for Math::Inverse(), Math::Orthographic(), Math::Frustum(), Math::Perspective(), Math::PerspectiveFoV() ~<75 mins
 
 SITREP 08/07/2023|23w32a1
@@ -4296,3 +4296,8 @@ SITREP 08/12/2023|23w32a3
     - Changed TRAP Engine version to 23w32a3(0.9.75)
     - UnitTests Added tests for Math::Scale(), Math::LookAt(), Math::Row(), Math::Column(), Math::Decompose() ~<75 mins
     - Math Changed implementation of Decompose() ~<20 mins
+
+SITREP 08/14/2023|23w33a1
+    - Changed TRAP Engine version to 23w33a1(0.9.76)
+    - UnitTests Added tests for Math::SLerp(), Math::Conjugate(), Math::EulerAngles() ~<60 mins
+    - UnitTests Added tests for Math::Roll(), Math::Pitch(), Math::Yaw(), Math::Mat3Cast(), Math::Mat4Cast ~<30 mins
