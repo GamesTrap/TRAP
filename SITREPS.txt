@@ -4312,3 +4312,5 @@ SITREP 08/19/2023|23w33a3
     - UnitTests Added tests for Math::Degrees(), Math::Cos(), Math::Tan() ~<35 mins
     - Updated YAMLCpp ~<5 mins
     - Quaternion changed data order to WXYZ ~<5 mins
+    - Math Added Recompose() ~<5 mins
+    - UnitTests Added tests for Math::Recompose() ~<10 mins

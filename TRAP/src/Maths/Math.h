@@ -2161,12 +2161,36 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="m">Matrix to decompose.</param>
 	/// <param name="outPosition">Output for the position.</param>
-	/// <param name="outRotation">Output for the rotation (in euler angles).</param>
+	/// <param name="outRotation">Output for the rotation (in euler angles, degrees).</param>
 	/// <param name="outScale">Output for the scale.</param>
 	/// <returns>True on successful decompose, false otherwise.</returns>
 	template<typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] bool Decompose(Mat<4, 4, T> m, Vec<3, T>& outPosition, Vec<3, T>& outRotation, Vec<3, T>& outScale);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// <summary>
+	/// Recomopse a matrix from its position, rotation and scale components.
+	/// </summary>
+	/// <param name="position">Position to recompose.</param>
+	/// <param name="rotation">Rotation to recompose.</param>
+	/// <param name="scale">Scale to recompose.</param>
+	/// <returns>Recomposed matrix.</returns>
+	template<typename T>
+	requires std::floating_point<T>
+	[[nodiscard]] constexpr Mat<4, 4, T> Recompose(const Vec<3, T>& position, const tQuat<T>& rotation, const Vec<3, T>& scale);
+
+	/// <summary>
+	/// Recomopse a matrix from its position, rotation and scale components.
+	/// </summary>
+	/// <param name="position">Position to recompose.</param>
+	/// <param name="rotation">Rotation (in euler angles, radians) to recompose.</param>
+	/// <param name="scale">Scale to recompose.</param>
+	/// <returns>Recomposed matrix.</returns>
+	template<typename T>
+	requires std::floating_point<T>
+	[[nodiscard]] Mat<4, 4, T> Recompose(const Vec<3, T>& position, const Vec<3, T>& rotation, const Vec<3, T>& scale);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	//Quaternion---------------------------------------------------------------------------------------------------------//
@@ -5254,6 +5278,24 @@ requires std::floating_point<T>
 	}
 
 	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+requires std::floating_point<T>
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Recompose(const Vec<3, T>& position, const tQuat<T>& rotation,
+                                                                       const Vec<3, T>& scale)
+{
+	return Mat<4, 4, T>(static_cast<T>(1.0)) * Translate(position) * Mat4Cast(rotation) * Scale(scale);
+}
+
+template<typename T>
+requires std::floating_point<T>
+[[nodiscard]] TRAP::Math::Mat<4, 4, T> TRAP::Math::Recompose(const Vec<3, T>& position, const Vec<3, T>& rotation,
+                                                             const Vec<3, T>& scale)
+{
+	return Mat<4, 4, T>(static_cast<T>(1.0)) * Translate(position) * Mat4Cast(tQuat<T>(Radians(rotation))) * Scale(scale);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

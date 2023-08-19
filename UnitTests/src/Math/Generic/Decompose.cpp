@@ -31,8 +31,10 @@ void RunDecomposeTests()
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(translation, expectedTranslation, Epsilon)));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(rotation, expectedRotation, T(0.0000001f))));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(scale, expectedScale, Epsilon)));
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(m, TRAP::Math::Recompose(translation, rotation, scale), Epsilon)));
         REQUIRE(TRAP::Math::Decompose(m, translation, rotationQuat, scale));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(rotationQuat, expectedRotationQuat, Epsilon)));
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(m, TRAP::Math::Recompose(translation, rotationQuat, scale), Epsilon)));
     }
     {
         constexpr TRAP::Math::tVec3<T> expectedTranslation(5.0f, 10.0f, 15.0f);
@@ -51,8 +53,10 @@ void RunDecomposeTests()
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(translation, expectedTranslation, Epsilon)));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(rotation, expectedRotation, T(0.0000001f))));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(scale, expectedScale, Epsilon)));
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(m, TRAP::Math::Recompose(translation, rotation, scale), Epsilon)));
         REQUIRE(TRAP::Math::Decompose(m, translation, rotationQuat, scale));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(rotationQuat, expectedRotationQuat, Epsilon)));
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(m, TRAP::Math::Recompose(translation, rotationQuat, scale), Epsilon)));
     }
     {
         constexpr TRAP::Math::tVec3<T> expectedTranslation(10.0f, 20.0f, 30.0f);
@@ -71,8 +75,10 @@ void RunDecomposeTests()
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(translation, expectedTranslation, Epsilon)));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(rotation, expectedRotation, T(0.0001f))));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(scale, expectedScale, Epsilon)));
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(m, TRAP::Math::Recompose(translation, rotation, scale), T(0.000001f))));
         REQUIRE(TRAP::Math::Decompose(m, translation, rotationQuat, scale));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(rotationQuat, expectedRotationQuat, Epsilon)));
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(m, TRAP::Math::Recompose(translation, rotationQuat, scale), Epsilon)));
     }
 }
 
