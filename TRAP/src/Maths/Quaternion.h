@@ -65,7 +65,7 @@ namespace TRAP::Math
 		using type = tQuat<T>;
 
 		//Data
-		T x, y, z, w;
+		T w, x, y, z;
 
 		//Implicit basic constructors
 
@@ -106,7 +106,7 @@ namespace TRAP::Math
 		/// Build a quaternion from euler angles (pitch, yaw, roll).
 		/// </summary>
 		/// <param name="eulerAnglesInRadians">Euler angles (pitch, yaw, roll).</param>
-		explicit constexpr tQuat(const Vec<3, T>& eulerAnglesInRadians);
+		explicit tQuat(const Vec<3, T>& eulerAnglesInRadians);
 		explicit tQuat(const Mat<3, 3, T>& m);
 		explicit tQuat(const Mat<4, 4, T>& m);
 
@@ -237,14 +237,14 @@ namespace std
 template <typename T>
 requires std::floating_point<T>
 constexpr TRAP::Math::tQuat<T>::tQuat(const T s, const Vec<3, T>& v) noexcept
-	: x(v.x), y(v.y), z(v.z), w(s)
+	: w(s), x(v.x), y(v.y), z(v.z)
 {
 }
 
 template <typename T>
 requires std::floating_point<T>
 constexpr TRAP::Math::tQuat<T>::tQuat(const T w_, const T x_, const T y_, const T z_) noexcept
-	: x(x_), y(y_), z(z_), w(w_)
+	: w(w_), x(x_), y(y_), z(z_)
 {
 }
 
@@ -256,7 +256,7 @@ requires std::floating_point<T>
 template <typename U>
 requires std::floating_point<U>
 constexpr TRAP::Math::tQuat<T>::tQuat(const tQuat<U>& q) noexcept
-	: x(static_cast<T>(q.x)), y(static_cast<T>(q.y)), z(static_cast<T>(q.z)), w(static_cast<T>(q.w))
+	: w(static_cast<T>(q.w)), x(static_cast<T>(q.x)), y(static_cast<T>(q.y)), z(static_cast<T>(q.z))
 {
 }
 
@@ -312,7 +312,7 @@ TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& u, const Vec<3, T>& v)
 
 template <typename T>
 requires std::floating_point<T>
-constexpr TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& eulerAnglesInRadians)
+TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& eulerAnglesInRadians)
 {
 	const Vec<3, T> c = Cos(eulerAnglesInRadians * static_cast<T>(0.5));
 	const Vec<3, T> s = Sin(eulerAnglesInRadians * static_cast<T>(0.5));
@@ -434,16 +434,16 @@ requires std::floating_point<T>
 	default:
 		[[fallthrough]];
 	case 0:
-		return x;
+		return w;
 
 	case 1:
-		return y;
+		return x;
 
 	case 2:
-		return z;
+		return y;
 
 	case 3:
-		return w;
+		return z;
 	}
 }
 
@@ -458,16 +458,16 @@ requires std::floating_point<T>
 	default:
 		[[fallthrough]];
 	case 0:
-		return x;
+		return w;
 
 	case 1:
-		return y;
+		return x;
 
 	case 2:
-		return z;
+		return y;
 
 	case 3:
-		return w;
+		return z;
 	}
 }
 
@@ -482,16 +482,16 @@ requires std::floating_point<T>
 	default:
 		[[fallthrough]];
 	case 0:
-		return x;
+		return w;
 
 	case 1:
-		return y;
+		return x;
 
 	case 2:
-		return z;
+		return y;
 
 	case 3:
-		return w;
+		return z;
 	}
 }
 
@@ -508,16 +508,16 @@ requires std::floating_point<T>
 	default:
 		[[fallthrough]];
 	case 0:
-		return x;
+		return w;
 
 	case 1:
-		return y;
+		return x;
 
 	case 2:
-		return z;
+		return y;
 
 	case 3:
-		return w;
+		return z;
 	}
 }
 
@@ -646,14 +646,14 @@ template <typename T>
 requires std::floating_point<T>
 constexpr bool TRAP::Math::operator==(const tQuat<T>& q1, const tQuat<T>& q2) noexcept
 {
-	return q1.x == q2.x && q1.y == q2.y && q1.z == q2.z && q1.w == q2.w;
+	return q1.w == q2.w && q1.x == q2.x && q1.y == q2.y && q1.z == q2.z;
 }
 
 template <typename T>
 requires std::floating_point<T>
 constexpr bool TRAP::Math::operator!=(const tQuat<T>& q1, const tQuat<T>& q2) noexcept
 {
-	return q1.x != q2.x && q1.y != q2.y && q1.z != q2.z && q1.w != q2.w;
+	return q1.w != q2.w && q1.x != q2.x && q1.y != q2.y && q1.z != q2.z;
 }
 
 #endif /*TRAP_QUATERNION_H*/

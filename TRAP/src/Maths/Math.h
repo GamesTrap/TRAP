@@ -6036,13 +6036,13 @@ requires std::floating_point<genType>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ATan(const Vec<L, T>& a, const Vec<L, T>& b)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ATan(const Vec<L, T>& y, const Vec<L, T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = std::atan2(a[i], b[i]);
+		result[i] = std::atan2(y[i], x[i]);
 	return result;
 }
 

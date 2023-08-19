@@ -195,7 +195,7 @@ namespace TRAP::Math
 	//Binary operators
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	constexpr Vec<4, T> operator+(const Vec<4, T>& v, const T& scalar) noexcept;
+	constexpr Vec<4, T> operator+(const Vec<4, T>& v, T scalar) noexcept;
 
 	template<typename T>
 	requires std::is_arithmetic_v<T>
@@ -207,7 +207,7 @@ namespace TRAP::Math
 
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	constexpr Vec<4, T> operator-(const Vec<4, T>& v, const T& scalar) noexcept;
+	constexpr Vec<4, T> operator-(const Vec<4, T>& v, T scalar) noexcept;
 
 	template<typename T>
 	requires std::is_arithmetic_v<T>
@@ -219,7 +219,7 @@ namespace TRAP::Math
 
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	constexpr Vec<4, T> operator*(const Vec<4, T>& v, const T& scalar) noexcept;
+	constexpr Vec<4, T> operator*(const Vec<4, T>& v, T scalar) noexcept;
 
 	template<typename T>
 	requires std::is_arithmetic_v<T>
@@ -231,7 +231,7 @@ namespace TRAP::Math
 
 	template<typename T>
 	requires std::is_arithmetic_v<T>
-	constexpr Vec<4, T> operator/(const Vec<4, T>& v, const T& scalar) noexcept;
+	constexpr Vec<4, T> operator/(const Vec<4, T>& v, T scalar) noexcept;
 
 	template<typename T>
 	requires std::is_arithmetic_v<T>
@@ -679,7 +679,7 @@ constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator--() noexcept
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr const TRAP::Math::Vec<4, T> TRAP::Math::Vec<4, T>::operator++(const int) noexcept
+constexpr const TRAP::Math::Vec<4, T> TRAP::Math::Vec<4, T>::operator++(const int32_t) noexcept
 {
 	Vec<4, T> Result(*this);
 	++*this;
@@ -689,7 +689,7 @@ constexpr const TRAP::Math::Vec<4, T> TRAP::Math::Vec<4, T>::operator++(const in
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr const TRAP::Math::Vec<4, T> TRAP::Math::Vec<4, T>::operator--(const int) noexcept
+constexpr const TRAP::Math::Vec<4, T> TRAP::Math::Vec<4, T>::operator--(const int32_t) noexcept
 {
 	Vec<4, T> Result(*this);
 	--*this;
@@ -858,7 +858,7 @@ constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator-(const Vec<4, T>& v) noexce
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator+(const Vec<4, T>& v, const T& scalar) noexcept
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator+(const Vec<4, T>& v, const T scalar) noexcept
 {
 	return Vec<4, T>(v) += scalar;
 }
@@ -879,7 +879,7 @@ constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator+(const Vec<4, T>& v1, const
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator-(const Vec<4, T>& v, const T& scalar) noexcept
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator-(const Vec<4, T>& v, const T scalar) noexcept
 {
 	return Vec<4, T>(v) -= scalar;
 }
@@ -900,7 +900,7 @@ constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator-(const Vec<4, T>& v1, const
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const Vec<4, T>& v, const T& scalar) noexcept
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const Vec<4, T>& v, const T scalar) noexcept
 {
 	return Vec<4, T>(v) *= scalar;
 }
@@ -921,7 +921,7 @@ constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const Vec<4, T>& v1, const
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator/(const Vec<4, T>& v, const T& scalar) noexcept
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator/(const Vec<4, T>& v, const T scalar) noexcept
 {
 	return Vec<4, T>(v) /= scalar;
 }

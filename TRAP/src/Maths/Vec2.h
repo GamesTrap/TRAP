@@ -129,8 +129,8 @@ namespace TRAP::Math
 		//Increment and decrement operators
 		constexpr Vec<2, T>& operator++() noexcept;
 		constexpr Vec<2, T>& operator--() noexcept;
-		constexpr const Vec<2, T> operator++(int) noexcept;
-		constexpr const Vec<2, T> operator--(int) noexcept;
+		constexpr const Vec<2, T> operator++(int32_t) noexcept;
+		constexpr const Vec<2, T> operator--(int32_t) noexcept;
 
 		//Unary bit operators
 		template<typename U>
@@ -572,7 +572,7 @@ constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator--() noexcept
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr const TRAP::Math::Vec<2, T> TRAP::Math::Vec<2, T>::operator++(int) noexcept
+constexpr const TRAP::Math::Vec<2, T> TRAP::Math::Vec<2, T>::operator++(int32_t) noexcept
 {
 	Vec<2, T> result(*this);
 	++*this;
@@ -582,7 +582,7 @@ constexpr const TRAP::Math::Vec<2, T> TRAP::Math::Vec<2, T>::operator++(int) noe
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr const TRAP::Math::Vec<2, T> TRAP::Math::Vec<2, T>::operator--(int) noexcept
+constexpr const TRAP::Math::Vec<2, T> TRAP::Math::Vec<2, T>::operator--(int32_t) noexcept
 {
 	Vec<2, T> result(*this);
 	--*this;
