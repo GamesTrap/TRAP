@@ -170,6 +170,34 @@ void TRAP::Graphics::EditorCamera::SetViewportSize(const float width, const floa
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] TRAP::Math::Vec3 TRAP::Graphics::EditorCamera::GetUpDirection() const
+{
+    return GetOrientation() * TRAP::Math::YAxis<float>();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::Math::Vec3 TRAP::Graphics::EditorCamera::GetRightDirection() const
+{
+    return GetOrientation() * TRAP::Math::XAxis<float>();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::Math::Vec3 TRAP::Graphics::EditorCamera::GetForwardDirection() const
+{
+    return GetOrientation() * -TRAP::Math::ZAxis<float>();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::Math::Quat TRAP::Graphics::EditorCamera::GetOrientation() const
+{
+    return TRAP::Math::Quat(TRAP::Math::Vec3(-m_pitch - m_pitchDelta, -m_yaw - m_yawDelta, 0.0f));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] float TRAP::Graphics::EditorCamera::GetCameraSpeed() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
@@ -244,6 +272,24 @@ bool TRAP::Graphics::EditorCamera::OnMouseScroll(Events::MouseScrollEvent& event
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::EditorCamera::MousePan(const TRAP::Math::Vec2& delta)
+{
+    const TRAP::Math::Vec2 panSpeed = PanSpeed();
+    m_focalPoint -= GetRightDirection() * delta.x * panSpeed.x * m_distance;
+    m_focalPoint += GetUpDirection() * delta.y * panSpeed.y * m_distance;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::EditorCamera::MouseRotate(const TRAP::Math::Vec2& delta)
+{
+    const float yawSign = GetUpDirection().y < 0.0f ? -1.0f : 1.0f;
+    m_yawDelta += yawSign * delta.x * RotationSpeed();
+    m_pitchDelta += delta.y * RotationSpeed();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::EditorCamera::MouseZoom(const float delta)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
@@ -258,6 +304,13 @@ void TRAP::Graphics::EditorCamera::MouseZoom(const float delta)
         m_distance = 1.0f;
     }
     m_positionDelta += delta * ZoomSpeed() * forwardDir;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] TRAP::Math::Vec3 TRAP::Graphics::EditorCamera::CalculatePosition() const
+{
+    return m_focalPoint - GetForwardDirection() * m_distance + m_positionDelta;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

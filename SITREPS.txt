@@ -4314,3 +4314,4 @@ SITREP 08/19/2023|23w33a3
     - Quaternion changed data order to WXYZ ~<5 mins
     - Math Added Recompose() ~<5 mins
     - UnitTests Added tests for Math::Recompose() ~<10 mins
+    - EditorCamera/OrthographicCamera Removed invalid constexpr ~<5 mins
