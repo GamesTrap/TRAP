@@ -2844,7 +2844,7 @@ namespace TRAP::Math
 	/// </returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> ATan(const Vec<L, T>& a, const Vec<L, T>& b);
+	[[nodiscard]] Vec<L, T> ATan(const Vec<L, T>& y, const Vec<L, T>& x);
 
 	/// <summary>
 	/// Arc tangent.

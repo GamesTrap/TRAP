@@ -4315,3 +4315,7 @@ SITREP 08/19/2023|23w33a3
     - Math Added Recompose() ~<5 mins
     - UnitTests Added tests for Math::Recompose() ~<10 mins
     - EditorCamera/OrthographicCamera Removed invalid constexpr ~<5 mins
+
+SITREP 08/20/2023|23w33a4
+    - Changed TRAP Engine version to 23w33a4(0.9.79)
+    - UnitTests Added tests for Math::ASin(), Math::ACos(), Math::ATan() ~<35 mins
