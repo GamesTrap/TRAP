@@ -4320,3 +4320,4 @@ SITREP 08/20/2023|23w33a4
     - Changed TRAP Engine version to 23w33a4(0.9.79)
     - UnitTests Added tests for Math::ASin(), Math::ACos(), Math::ATan() ~<35 mins
     - UnitTests Added tests for Math::SinH(), Math::CosH(), Math::TanH() ~<35 mins
+    - UnitTests Added tests for Math::ASinH(), Math::ACosH(), Math::ATanH() ~<35 mins
