@@ -4306,3 +4306,7 @@ SITREP 08/14/2023|23w33a1
 SITREP 08/16/2023|23w33a2
     - Changed TRAP Engine version to 23w33a2(0.9.77)
     - UnitTests Added tests for Math::AngleAxis(), Math::XAxis(), Math::YAxis(), Math::ZAxis(), Math::Any(), Math::All(), Math::Radians() ~<55 mins
+
+SITREP 08/19/2023|23w33a3
+    - Changed TRAP Engine version to 23w33a3(0.9.78)
+    - UnitTests Added tests for Math::Degrees(), Math::Cos(), Math::Tan() ~<35 mins
