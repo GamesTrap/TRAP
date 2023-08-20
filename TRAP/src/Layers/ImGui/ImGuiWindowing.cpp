@@ -332,8 +332,8 @@ void TRAP::INTERNAL::ImGuiWindowing::CursorPosCallback(const WindowingAPI::Inter
 		xPos += windowX;
 		yPos += windowY;
 	}
-	io.AddMousePosEvent(bd->LastValidMousePos.x, bd->LastValidMousePos.y);
 	bd->LastValidMousePos = ImVec2(NumericCast<float>(xPos), NumericCast<float>(yPos));
+	io.AddMousePosEvent(bd->LastValidMousePos.x, bd->LastValidMousePos.y);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
