@@ -4325,3 +4325,4 @@ SITREP 08/20/2023|23w33a4
     - UnitTests Added tests for Math::ConvertLinearToSRGB(), Math::ConvertSRGBToLinear() ~<10 mins
     - UnitTests Added tests for Math::IsOdd(), Math::IsEven(), Math::IsFinite() ~<15 mins
     - HeadlessTests Removed Math tests ~<5 mins
+    - ImGuizmo Fixed usage of wrong pre-processor macros ~<30 mins

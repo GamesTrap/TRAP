@@ -14,4 +14,8 @@ project "ImGuizmo"
 
     includedirs "%{IncludeDir.IMGUI}"
 
-    defines "IMGUI_DISABLE_OBSOLETE_FUNCTIONS"
+    defines
+    {
+        "IMGUI_DISABLE_OBSOLETE_FUNCTIONS",
+        "IMGUI_DISABLE_OBSOLETE_KEYIO",
+    }
