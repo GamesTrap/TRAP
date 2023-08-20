@@ -38,3 +38,6 @@
 [submodule "Dependencies/Catch2"]
 	path = Dependencies/Catch2
 	url = https://github.com/catchorg/Catch2
+[submodule "Dependencies/Vulkan-Headers"]
+	path = Dependencies/Vulkan-Headers
+	url = https://github.com/KhronosGroup/Vulkan-Headers

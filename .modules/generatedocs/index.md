@@ -51,7 +51,7 @@ They are provided in the TRAP™ repository.
 - [GLFW](https://github.com/glfw/glfw) integrated as TRAP::INTERNAL::WindowingAPI
 - [GLM](https://github.com/g-truc/glm) integrated as TRAP::Math
 - [GLSLang](https://github.com/GamesTrap/glslang)
-- [ImGui](https://github.com/GamesTrap/imgui)
+- [ImGui](https://github.com/GamesTrap/imgui) (docking branch)
 - [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo)
 - [LibDecor](https://gitlab.freedesktop.org/libdecor/libdecor) - Linux Wayland client-side decorations
 - [LodePNG](https://github.com/lvandeve/lodepng) integrated as TRAP::INTERNAL::PNGImage and TRAP::Utils::Decompress::Inflate()
@@ -67,7 +67,7 @@ They are provided in the TRAP™ repository.
 - [Tracy](https://github.com/wolfpld/tracy) only client integration is used
 - [Volk](https://github.com/zeux/volk) integrated as VulkanLoader
 - [VulkanMemoryAllocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator)
-- [VulkanSDK](https://vulkan.lunarg.com/sdk/home)
+- [Vulkan-Headers](https://github.com/KhronosGroup/Vulkan-Headers)
 - [YAMLCpp](https://github.com/jbeder/yaml-cpp)
 :::
 :::{tab} Additional

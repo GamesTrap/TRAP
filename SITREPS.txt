@@ -4327,3 +4327,11 @@ SITREP 08/20/2023|23w33a4
     - HeadlessTests Removed Math tests ~<5 mins
     - ImGuizmo Fixed usage of wrong pre-processor macros ~<30 mins
     - ImGuiWindowing Changed CursorPosCallback() to send current position instead of position from last call ~<5 mins
+
+SITREP 08/21/2023|23w34a1
+    - Changed TRAP Engine version to 23w34a1(0.9.80)
+    - Added Vulkan-Headers as submodule, removing the need for the VulkanSDK ~<5 mins
+    - Updated premake scripts ~<5 mins
+    - Update-Dependencies Added Vulkan-Headers update job ~<5 mins
+    - Build-CI Removed VulkanSDK step ~<5 mins
+    - Updated Documentation ~<5 mins
