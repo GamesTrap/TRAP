@@ -2997,6 +2997,7 @@ namespace TRAP::Math
 	/// <param name="colorLinear">Color in linear space.</param>
 	/// <returns>Color in sRGB space.</returns>
 	template<uint32_t L, typename T>
+	requires (L == 3 || L == 4) && std::floating_point<T>
 	[[nodiscard]] Vec<L, T> ConvertLinearToSRGB(const Vec<L, T>& colorLinear);
 
 	/// <summary>
@@ -3006,6 +3007,7 @@ namespace TRAP::Math
 	/// <param name="colorLinear">Color in linear space.</param>
 	/// <returns>Color in sRGB space.</returns>
 	template<uint32_t L, typename T>
+	requires (L == 3 || L == 4) && std::floating_point<T>
 	[[nodiscard]] Vec<L, T> ConvertLinearToSRGB(const Vec<L, T>& colorLinear, T gamma);
 
 	/// <summary>
@@ -3015,6 +3017,7 @@ namespace TRAP::Math
 	/// <param name="colorSRGB">Color in sRGB space.</param>
 	/// <returns>Color in linear space.</returns>
 	template<uint32_t L, typename T>
+	requires (L == 3 || L == 4) && std::floating_point<T>
 	[[nodiscard]] Vec<L, T> ConvertSRGBToLinear(const Vec<L, T>& colorSRGB);
 
 	/// <summary>
@@ -3024,6 +3027,7 @@ namespace TRAP::Math
 	/// <param name="colorSRGB">Color in sRGB space.</param>
 	/// <returns>Color in linear space.</returns>
 	template<uint32_t L, typename T>
+	requires (L == 3 || L == 4) && std::floating_point<T>
 	[[nodiscard]] Vec<L, T> ConvertSRGBToLinear(const Vec<L, T>& colorSRGB, T gamma);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -6202,6 +6206,7 @@ requires std::floating_point<T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L, typename T>
+requires (L == 3 || L == 4) && std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ConvertLinearToSRGB(const Vec<L, T>& colorLinear)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -6227,6 +6232,7 @@ template<uint32_t L, typename T>
 }
 
 template<uint32_t L, typename T>
+requires (L == 3 || L == 4) && std::floating_point<T>
 TRAP::Math::Vec<L, T> TRAP::Math::ConvertLinearToSRGB(const Vec<L, T>& colorLinear, const T gamma)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -6254,6 +6260,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::ConvertLinearToSRGB(const Vec<L, T>& colorLine
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L, typename T>
+requires (L == 3 || L == 4) && std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ConvertSRGBToLinear(const Vec<L, T>& colorSRGB)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -6277,6 +6284,7 @@ template<uint32_t L, typename T>
 }
 
 template<uint32_t L, typename T>
+requires (L == 3 || L == 4) && std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ConvertSRGBToLinear(const Vec<L, T>& colorSRGB, const T gamma)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -6334,7 +6342,7 @@ requires std::integral<T>
 	Vec<L, bool> result{};
 
 	for(uint32_t i = 0u; i < L; ++i)
-		result[i] = !IsOdd(x);
+		result[i] = !IsOdd(x[i]);
 
 	return result;
 }
