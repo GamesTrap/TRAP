@@ -6,7 +6,6 @@
 #include "Hash/HashTests.h"
 #include "Headless/HeadlessTests.h"
 #include "IPAddress/IPAddressTests.h"
-#include "Math/MathTests.h"
 
 class HeadlessTestsApp final : public TRAP::Application
 {
@@ -20,7 +19,6 @@ public:
 		// PushLayer(std::make_unique<HeadlessTests>());
 		// PushLayer(std::make_unique<HashTests>());
 		// PushLayer(std::make_unique<IPAddressTests>());
-		// PushLayer(std::make_unique<MathTests>());
 	}
 };
 
