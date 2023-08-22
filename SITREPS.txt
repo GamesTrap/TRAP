@@ -4335,3 +4335,8 @@ SITREP 08/21/2023|23w34a1
     - Update-Dependencies Added Vulkan-Headers update job ~<5 mins
     - Build-CI Removed VulkanSDK step ~<5 mins
     - Updated Documentation ~<5 mins
+
+SITREP 08/23/2023|23w34a2
+    - Changed TRAP Engine version to 23w34a2(0.9.81)
+    - Build-Docs target main branch again ~<5 mins
+    - Build-Docs Added action skip for documentation PRs ~<5 mins

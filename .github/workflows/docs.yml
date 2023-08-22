@@ -56,11 +56,10 @@ jobs:
       uses: peter-evans/create-pull-request@v5
       with:
         branch: docs-update/${{steps.get-docs-version.outputs.DOCS_VERSION}}
-        base: dev
         delete-branch: true
         add-paths: docs/**
-        commit-message: "Update Documentation to ${{steps.get-docs-version.outputs.DOCS_VERSION}}"
-        title: "Update Documentation to ${{steps.get-docs-version.outputs.DOCS_VERSION}}"
+        commit-message: "Update Documentation to ${{steps.get-docs-version.outputs.DOCS_VERSION}} [skip ci]"
+        title: "Update Documentation to ${{steps.get-docs-version.outputs.DOCS_VERSION}} [skip ci]"
         labels: "CI/CD, Documentation, Update"
         assignees: "GamesTrap"
         milestone: 5
