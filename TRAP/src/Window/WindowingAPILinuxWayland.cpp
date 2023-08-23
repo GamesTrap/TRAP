@@ -3694,14 +3694,14 @@ int32_t TRAP::INTERNAL::WindowingAPI::PlatformGetKeyScanCodeWayland(const Input:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeNameWayland(const int32_t scanCode)
+std::optional<std::string> TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeNameWayland(const int32_t scanCode)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
     if(scanCode < 0 || scanCode > 255 || s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)] == Input::Key::Unknown)
     {
         InputError(Error::Invalid_Value, fmt::format("[Wayland] Invalid scancode {}", scanCode));
-        return nullptr;
+        return std::nullopt;
     }
 
     const Input::Key key = s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)];
@@ -3710,7 +3710,7 @@ const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeNameWayland(const i
     if(layout == XKB_LAYOUT_INVALID)
     {
         InputError(Error::Platform_Error, "[Wayland] Failed to retrieve layout for the key name");
-        return nullptr;
+        return std::nullopt;
     }
 
     const xkb_keysym_t* keysyms = nullptr;
@@ -3718,28 +3718,27 @@ const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeNameWayland(const i
     if(keysyms == nullptr)
     {
         InputError(Error::Platform_Error, "[Wayland] Failed to retrieve keysym for key name");
-        return nullptr;
+        return std::nullopt;
     }
 
     const std::optional<uint32_t> codePoint = KeySymToUnicode(keysyms[0]);
     if(!codePoint)
     {
         InputError(Error::Platform_Error, "[Wayland] Failed to retrieve codepoint for key name");
-        return nullptr;
+        return std::nullopt;
     }
 
     const std::string utf8Str = Utils::String::EncodeUTF8(*codePoint);
 	if(utf8Str.empty())
     {
         InputError(Error::Platform_Error, "[Wayland] Failed to encode codepoint for key name");
-		return nullptr;
+		return std::nullopt;
     }
-	for(std::size_t i = 0; i < utf8Str.size(); ++i)
-		s_Data.KeyNames[NumericCast<std::size_t>(std::to_underlying(key))][i] = utf8Str[i];
 
-	s_Data.KeyNames[NumericCast<std::size_t>(std::to_underlying(key))][utf8Str.size()] = '\0';
+    std::string& keyStr = s_Data.KeyNames[NumericCast<std::size_t>(std::to_underlying(key))];
+    keyStr = utf8Str;
 
-    return s_Data.KeyNames[NumericCast<std::size_t>(std::to_underlying(key))].data();
+    return keyStr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

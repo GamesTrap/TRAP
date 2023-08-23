@@ -439,12 +439,7 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	const char* const name = INTERNAL::WindowingAPI::GetKeyName(key, 0);
-
-	if (name == nullptr)
-		return NonPrintableKeyToString(key);
-
-	return name;
+	return INTERNAL::WindowingAPI::GetKeyName(key, 0).value_or(NonPrintableKeyToString(key));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

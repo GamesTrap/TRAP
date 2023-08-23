@@ -1589,7 +1589,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowProgressIndicator(const InternalWind
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the layout-specific name of the specified printable key.
-[[nodiscard]] const char* TRAP::INTERNAL::WindowingAPI::GetKeyName(const Input::Key key, int32_t scanCode)
+[[nodiscard]] std::optional<std::string> TRAP::INTERNAL::WindowingAPI::GetKeyName(const Input::Key key, int32_t scanCode)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -1599,7 +1599,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowProgressIndicator(const InternalWind
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
-		return nullptr;
+		return std::nullopt;
 	}
 
 	if (key != Input::Key::Unknown)
@@ -1607,7 +1607,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowProgressIndicator(const InternalWind
 		if (key != Input::Key::KP_Equal &&
 			(key < Input::Key::KP_0 || key > Input::Key::KP_Add) &&
 			(key < Input::Key::Apostrophe || key > Input::Key::World_2))
-			return nullptr;
+			return std::nullopt;
 
 		scanCode = PlatformGetKeyScanCode(key);
 	}

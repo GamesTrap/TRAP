@@ -807,7 +807,7 @@ int32_t TRAP::INTERNAL::WindowingAPI::PlatformGetKeyScanCode(const Input::Key ke
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeName(const int32_t scanCode)
+std::optional<std::string> TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeName(const int32_t scanCode)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 

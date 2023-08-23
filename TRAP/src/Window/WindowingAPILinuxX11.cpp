@@ -3062,38 +3062,38 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionX11(const InternalWi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeNameX11(const int32_t scanCode)
+[[nodiscard]] std::optional<std::string> TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeNameX11(const int32_t scanCode)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	if(!s_Data.X11.XKB.Available)
-		return nullptr;
+		return std::nullopt;
 
 	if(scanCode < 0 || scanCode > 0xFF || s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)] == Input::Key::Unknown)
 	{
 		InputError(Error::Invalid_Value, fmt::format("Invalid scancode {}", scanCode));
-		return nullptr;
+		return std::nullopt;
 	}
 
 	const TRAP::Input::Key key = s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)];
 	const KeySym keySym = s_Data.X11.XKB.KeycodeToKeysym(s_Data.X11.display, static_cast<KeyCode>(scanCode),
 											             NumericCast<int32_t>(s_Data.X11.XKB.Group), 0);
 	if(keySym == NoSymbol)
-		return nullptr;
+		return std::nullopt;
 
 	const std::optional<uint32_t> ch = KeySymToUnicode(static_cast<uint32_t>(keySym));
 	if(!ch)
-		return nullptr;
+		return std::nullopt;
 
 	const std::string utf8Str = Utils::String::EncodeUTF8(*ch);
 	if(utf8Str.empty())
-		return nullptr;
-	for(std::size_t i = 0; i < utf8Str.size(); ++i)
-		s_Data.KeyNames[NumericCast<uint32_t>(std::to_underlying(key))][i] = utf8Str[i];
+		return std::nullopt;
 
-	s_Data.KeyNames[NumericCast<uint32_t>(std::to_underlying(key))][utf8Str.size()] = '\0';
 
-	return s_Data.KeyNames[NumericCast<uint32_t>(std::to_underlying(key))].data();
+	std::string& keyStr = s_Data.KeyNames[NumericCast<uint32_t>(std::to_underlying(key))];
+	keyStr = utf8Str;
+
+	return keyStr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

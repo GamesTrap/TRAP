@@ -3148,11 +3148,11 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowProgressIndicator(const Inte
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeName(const int32_t scanCode)
+[[nodiscard]] std::optional<std::string> TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeName(const int32_t scanCode)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return s_Data.KeyNames[std::to_underlying(s_Data.KeyCodes[scanCode])].data();
+	return s_Data.KeyNames[std::to_underlying(s_Data.KeyCodes[scanCode])];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

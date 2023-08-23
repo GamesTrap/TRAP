@@ -945,7 +945,7 @@ namespace TRAP::INTERNAL
 			} VK{};
 
 			std::string ClipboardString{};
-			std::array<std::array<char, 5>, std::to_underlying(Input::Key::Menu) + 1> KeyNames{};
+			std::array<std::string, std::to_underlying(Input::Key::Menu) + 1> KeyNames{};
 			std::array<int16_t, std::to_underlying(Input::Key::Menu) + 1> ScanCodes{};
 			//Where to place the cursor when re-enabled
 			double RestoreCursorPosX = 0.0, RestoreCursorPosY = 0.0;
@@ -2846,7 +2846,7 @@ namespace TRAP::INTERNAL
 		/// <param name="key">Key to get layout-specific name from.</param>
 		/// <param name="scanCode">Optional scan code to get layout-specific name from.</param>
 		/// <returns>UTF-8 encoded, layout-specific name of the given key or nullptr.</returns>
-		[[nodiscard]] static const char* GetKeyName(Input::Key key, int32_t scanCode);
+		[[nodiscard]] static std::optional<std::string> GetKeyName(Input::Key key, int32_t scanCode);
 		/// <summary>
 		/// This function returns the last state reported for the specified key to the
 		/// specified window. The returned state is KeyState::Pressed or KeyState::Released.
@@ -4113,9 +4113,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="scanCode">Scancode to get string representation for.</param>
 		/// <returns>String representation of scancode or nullptr if an error occured.</returns>
-		[[nodiscard]] static const char* PlatformGetScanCodeName(int32_t scanCode);
-		[[nodiscard]] static const char* PlatformGetScanCodeNameX11(int32_t scanCode);
-		[[nodiscard]] static const char* PlatformGetScanCodeNameWayland(int32_t scanCode);
+		[[nodiscard]] static std::optional<std::string> PlatformGetScanCodeName(int32_t scanCode);
+		[[nodiscard]] static std::optional<std::string> PlatformGetScanCodeNameX11(int32_t scanCode);
+		[[nodiscard]] static std::optional<std::string> PlatformGetScanCodeNameWayland(int32_t scanCode);
 		/// <summary>
 		/// This function sets the system clipboard to the specified, UTF-8 encoded string.
 		///

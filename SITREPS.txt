@@ -4342,3 +4342,4 @@ SITREP 08/23/2023|23w34a2
     - Build-Docs Added action skip for documentation PRs ~<5 mins
     - GenerateDocs Replaced fixed 16 threads with auto ~<5 mins
     - Docs Removed .doctrees folder ~<5 mins
+    - WindowingAPI Resolved warnings with PlatformGetScanCodeNameXXX() ~<10 mins
