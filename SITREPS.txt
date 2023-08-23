@@ -4340,3 +4340,5 @@ SITREP 08/23/2023|23w34a2
     - Changed TRAP Engine version to 23w34a2(0.9.81)
     - Build-Docs target main branch again ~<5 mins
     - Build-Docs Added action skip for documentation PRs ~<5 mins
+    - GenerateDocs Replaced fixed 16 threads with auto ~<5 mins
+    - Docs Removed .doctrees folder ~<5 mins

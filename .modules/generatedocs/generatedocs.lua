@@ -229,7 +229,10 @@ newaction
         os.execute("doxygen " .. generateDocsPath .. "Doxyfile-prj.cfg")
 
         print("Generating Sphinx pages...")
-        os.execute(sphinxBuildPath .. " " .. generateDocsPath .. " " .. generateDocsPath .. "sphinx -b html -j 16 -q")
+        os.execute(sphinxBuildPath .. " " .. generateDocsPath .. " " .. generateDocsPath .. "sphinx -b html -j auto -q")
+
+        --Delete .doctrees folder
+        os.rmdir(generateDocsPath .. "sphinx/.doctrees")
 
         print("Copying .nojekyll")
         os.copyfile(generateDocsPath .. ".nojekyll", generateDocsPath .. "sphinx") --Needed for GitHub Pages to display correctly as a static page
