@@ -98,7 +98,7 @@ requires ( std::is_unsigned_v<T> && std::is_integral_v<T>)
     file.seekg(std::ios::beg);
 
     std::vector<uint8_t> data(fileSize);
-    file.read(reinterpret_cast<char*>(data.data()), static_cast<std::streamsize>(data.size()) * sizeof(decltype(data)::value_type));
+    file.read(reinterpret_cast<char*>(data.data()), static_cast<std::streamsize>(data.size() * sizeof(uint8_t)));
 
     return data;
 }

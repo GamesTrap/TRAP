@@ -4705,6 +4705,7 @@ requires std::floating_point<T>
 	TRAP_ASSERT(width > static_cast<T>(0), "Math::PerspectiveFoV(): Width must be greater than zero!");
 	TRAP_ASSERT(height > static_cast<T>(0), "Math::PerspectiveFoV(): Height must be greater than zero!");
 	TRAP_ASSERT(fov > static_cast<T>(0), "Math::PerspectiveFoV(): FOV must be greater than zero!");
+	TRAP_ASSERT((zNear - zFar) != static_cast<T>(0), "Math::PerspectiveFoV(): zNear - zFar must not be zero!");
 
 	const T rad = fov;
 	const T h = Cos(static_cast<T>(0.5) * rad) / Sin(static_cast<T>(0.5) * rad);
@@ -5100,14 +5101,14 @@ requires std::floating_point<T>
 	}
 	else
 	{
-		constexpr static std::array<int32_t, 3> next{1, 2, 0};
-		int32_t i = 0;
+		constexpr static std::array<uint32_t, 3> next{1, 2, 0};
+		uint8_t i = 0;
 		if(row[2].z > row[i][i])
 			i = 2;
 		else if(row[1].y > row[0].x)
 			i = 1;
-		const int32_t j = next[i];
-		const int32_t k = next[j];
+		const uint32_t j = next[i];
+		const uint32_t k = next[j];
 
 		T root = Sqrt(row[i][i] - row[j][j] - row[k][k] + static_cast<T>(1.0f));
 
@@ -6311,7 +6312,7 @@ template<typename T>
 requires std::integral<T>
 [[nodiscard]] constexpr bool TRAP::Math::IsOdd(const T x)
 {
-	return (x & 1u) != 0;
+	return (x & static_cast<T>(1u)) != 0;
 }
 
 template<uint32_t L, typename T>
@@ -6321,7 +6322,7 @@ requires std::integral<T>
 	Vec<L, bool> result{};
 
 	for(uint32_t i = 0u; i < L; ++i)
-		result[i] = (x[i] & 1u) != 0;
+		result[i] = (static_cast<T>(x[i]) & 1u) != 0;
 
 	return result;
 }

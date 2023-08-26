@@ -9,9 +9,8 @@ namespace
 {
     bool AftermathInitialized = false;
 
-    TracyLockable(std::mutex, AftermathMutex);
-
 #ifdef ENABLE_NSIGHT_AFTERMATH
+    TracyLockable(std::mutex, AftermathMutex);
     void* AftermathHandle = nullptr;
     PFN_GFSDK_Aftermath_EnableGpuCrashDumps AftermathEnableGPUCrashDumps = nullptr;
     PFN_GFSDK_Aftermath_DisableGpuCrashDumps AftermathDisableGPUCrashDumps = nullptr;

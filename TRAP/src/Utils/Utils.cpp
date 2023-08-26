@@ -60,9 +60,10 @@
 		if(index >= 32) //Out of bounds
 			return {};
 
-		const uint8_t convertedCharacter = NumericCast<uint8_t>(String::IsDigit(c) ? c - '0' : String::ToLower(c) - 'a' + 10u);
+		const uint8_t convertedCharacter = String::IsDigit(c) ? NumericCast<uint8_t>(c - '0') :
+		                                                        NumericCast<uint8_t>(String::ToLower(c) - 'a' + 10u);
 		if(index % 2 == 0)
-			result[index / 2] = convertedCharacter << 4u;
+			result[index / 2] = NumericCast<uint8_t>(convertedCharacter << 4u);
 		else
 			result[index / 2] |= convertedCharacter;
 

@@ -88,7 +88,7 @@ void CursorTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTi
 		const uint32_t i = NumericCast<uint32_t>(TRAP::Application::GetTime() * 30.0f) % 60;
 		if (m_currentFrame != m_starCursors[i].get())
 		{
-			TRAP::Application::GetWindow()->SetCursorIcon(m_starCursors[i].get(), 32, 32);
+			TRAP::Application::GetWindow()->SetCursorIcon(m_starCursors[i].get(), 32u, 32u);
 			m_currentFrame = m_starCursors[i].get();
 		}
 	}

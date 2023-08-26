@@ -589,7 +589,7 @@ requires std::same_as<T, std::uint8_t> || std::same_as<T, std::uint16_t> || std:
 	}
 
 	std::vector<T> rotated(NumericCast<std::size_t>(width) * height * std::to_underlying(format));
-	std::ranges::copy_n(data, rotated.size(), rotated.begin());
+	std::ranges::copy_n(data, static_cast<std::iter_difference_t<decltype(data)>>(rotated.size()), rotated.begin());
 	for(uint32_t x = 0; x < width; ++x)
 	{
 		for(uint32_t y = 0; y < height; ++y)

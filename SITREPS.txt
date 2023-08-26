@@ -4343,3 +4343,7 @@ SITREP 08/23/2023|23w34a2
     - GenerateDocs Replaced fixed 16 threads with auto ~<5 mins
     - Docs Removed .doctrees folder ~<5 mins
     - WindowingAPI Resolved warnings with PlatformGetScanCodeNameXXX() ~<10 mins
+
+SITREP 08/26/2023|23w34a3
+    - Changed TRAP Engine version to 23w34a3(0.9.82)
+    - Fixed GCC, Clang and MSVC warnings ~<15 mins

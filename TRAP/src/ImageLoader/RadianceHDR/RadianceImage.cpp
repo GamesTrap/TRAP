@@ -123,7 +123,7 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 	if (length < MinEncodingLength || length > MaxEncodingLength)
 		return OldDecrunch(scanline, 0u, length, file);
 
-	int32_t i = NumericCast<int32_t>(file.get());
+	int32_t i = file.get();
 	if (i != 2)
 	{
 		file.seekg(-1, std::ios::cur);
@@ -152,12 +152,12 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 			    code &= 127u;
 			    const uint8_t value = NumericCast<uint8_t>(file.get());
 			    while ((code--) != 0u)
-					scanline[j++][i] = value;
+					scanline[j++][NumericCast<std::size_t>(i)] = value;
 			}
 			else //Dump
 			{
 			    while((code--) != 0u)
-					scanline[j++][i] = NumericCast<uint8_t>(file.get());
+					scanline[j++][NumericCast<std::size_t>(i)] = NumericCast<uint8_t>(file.get());
 			}
 		}
     }
@@ -188,9 +188,9 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 			scanline[scanlineIndex][G] == 1u &&
 			scanline[scanlineIndex][B] == 1u)
 		{
-			for (uint32_t i = scanline[scanlineIndex][E] << rshift; i > 0u; i--)
+			for (uint32_t i = NumericCast<uint32_t>(scanline[scanlineIndex][E] << rshift); i > 0u; i--)
 			{
-				memcpy(&scanline[0][0], &scanline[-1][0], 4u * sizeof(uint8_t));
+				memcpy(scanline[scanlineIndex].data(), scanline[scanlineIndex - 1].data(), 4u * sizeof(uint8_t));
 				scanlineIndex++;
 				length--;
 			}

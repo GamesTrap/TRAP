@@ -343,7 +343,7 @@ void TRAP::Window::SetWindowed()
 	if(m_data.displayMode == DisplayMode::Windowed)
 		return;
 
-	SetWindowed(m_data.windowModeParams.Width, m_data.windowModeParams.Height);
+	SetWindowed(NumericCast<uint32_t>(m_data.windowModeParams.Width), NumericCast<uint32_t>(m_data.windowModeParams.Height));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -432,7 +432,7 @@ void TRAP::Window::SetCursorType(const CursorType& cursor) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Window::SetCursorIcon(const Image* const image, const int32_t xHotspot, const int32_t yHotspot) const
+void TRAP::Window::SetCursorIcon(const Image* const image, const uint32_t xHotspot, const uint32_t yHotspot) const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 

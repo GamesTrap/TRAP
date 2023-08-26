@@ -237,7 +237,7 @@ namespace TRAP
 		/// <param name="image">Image to be used as a cursor.</param>
 		/// <param name="xHotspot">X hotspot of the image.</param>
 		/// <param name="yHotspot">Y hotspot of the image.</param>
-		void SetCursorIcon(const Image* image, int32_t xHotspot = 0, int32_t yHotspot = 0) const;
+		void SetCursorIcon(const Image* image, uint32_t xHotspot = 0, uint32_t yHotspot = 0) const;
 		/// <summary>
 		/// Set if raw mouse input should be used.
 		/// </summary>
