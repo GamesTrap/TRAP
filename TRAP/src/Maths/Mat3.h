@@ -105,6 +105,9 @@ namespace TRAP::Math
 		template<typename X1, typename Y1, typename Z1,
 			     typename X2, typename Y2, typename Z2,
 			     typename X3, typename Y3, typename Z3>
+		requires std::floating_point<X1> && std::floating_point<Y1> && std::floating_point<Z1> &&
+				 std::floating_point<X2> && std::floating_point<Y2> && std::floating_point<Z2> &&
+				 std::floating_point<X3> && std::floating_point<Y3> && std::floating_point<Z3>
 		constexpr Mat(X1 x1, Y1 y1, Z1 z1,
 			          X2 x2, Y2 y2, Z2 z2,
 			          X3 x3, Y3 y3, Z3 z3) noexcept;
@@ -113,6 +116,7 @@ namespace TRAP::Math
 		/// Column conversion constructor.
 		/// </summary>
 		template<typename V1, typename V2, typename V3>
+		requires std::floating_point<V1> && std::floating_point<V2> && std::floating_point<V3>
 		constexpr Mat(const Vec<3, V1> & v1, const Vec<3, V2> & v2, const Vec<3, V3> & v3) noexcept;
 
 		/// <summary>
@@ -328,6 +332,9 @@ requires std::floating_point<T>
 template<typename X1, typename Y1, typename Z1,
 	     typename X2, typename Y2, typename Z2,
 	     typename X3, typename Y3, typename Z3>
+requires std::floating_point<X1> && std::floating_point<Y1> && std::floating_point<Z1> &&
+         std::floating_point<X2> && std::floating_point<Y2> && std::floating_point<Z2> &&
+         std::floating_point<X3> && std::floating_point<Y3> && std::floating_point<Z3>
 constexpr TRAP::Math::Mat<3, 3, T>::Mat(const X1 x1, const Y1 y1, const Z1 z1,
 	                                    const X2 x2, const Y2 y2, const Z2 z2,
 	                                    const X3 x3, const Y3 y3, const Z3 z3) noexcept
@@ -337,6 +344,7 @@ constexpr TRAP::Math::Mat<3, 3, T>::Mat(const X1 x1, const Y1 y1, const Z1 z1,
 template<typename T>
 requires std::floating_point<T>
 template<typename V1, typename V2, typename V3>
+requires std::floating_point<V1> && std::floating_point<V2> && std::floating_point<V3>
 constexpr TRAP::Math::Mat<3, 3, T>::Mat(const Vec<3, V1>& v1, const Vec<3, V2>& v2, const Vec<3, V3>& v3) noexcept
 	: value{ colType(v1), colType(v2), colType(v3) }
 {}

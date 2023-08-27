@@ -107,6 +107,10 @@ namespace TRAP::Math
 				 typename X2, typename Y2, typename Z2, typename W2,
 				 typename X3, typename Y3, typename Z3, typename W3,
 				 typename X4, typename Y4, typename Z4, typename W4>
+		requires std::floating_point<X1> && std::floating_point<Y1> && std::floating_point<Z1> && std::floating_point<W1> &&
+		         std::floating_point<X2> && std::floating_point<Y2> && std::floating_point<Z2> && std::floating_point<W2> &&
+		         std::floating_point<X3> && std::floating_point<Y3> && std::floating_point<Z3> && std::floating_point<W3> &&
+		         std::floating_point<X4> && std::floating_point<Y4> && std::floating_point<Z4> && std::floating_point<W4>
 		constexpr Mat(X1 x1, Y1 y1, Z1 z1, W1 w1,
 			          X2 x2, Y2 y2, Z2 z2, W2 w2,
 			          X3 x3, Y3 y3, Z3 z3, W3 w3,
@@ -116,6 +120,7 @@ namespace TRAP::Math
 		/// Column conversion constructor.
 		/// </summary>
 		template<typename V1, typename V2, typename V3, typename V4>
+		requires std::floating_point<V1> && std::floating_point<V2> && std::floating_point<V3> && std::floating_point<V4>
 		constexpr Mat(const Vec<4, V1> & v1, const Vec<4, V2> & v2, const Vec<4, V3> & v3, const Vec<4, V4> & v4);
 
 		/// <summary>
@@ -334,64 +339,26 @@ template<typename X1, typename Y1, typename Z1, typename W1,
 	     typename X2, typename Y2, typename Z2, typename W2,
 	     typename X3, typename Y3, typename Z3, typename W3,
 	     typename X4, typename Y4, typename Z4, typename W4>
+requires std::floating_point<X1> && std::floating_point<Y1> && std::floating_point<Z1> && std::floating_point<W1> &&
+		 std::floating_point<X2> && std::floating_point<Y2> && std::floating_point<Z2> && std::floating_point<W2> &&
+		 std::floating_point<X3> && std::floating_point<Y3> && std::floating_point<Z3> && std::floating_point<W3> &&
+		 std::floating_point<X4> && std::floating_point<Y4> && std::floating_point<Z4> && std::floating_point<W4>
 constexpr TRAP::Math::Mat<4, 4, T>::Mat(const X1 x1, const Y1 y1, const Z1 z1, const W1 w1,
 	                                    const X2 x2, const Y2 y2, const Z2 z2, const W2 w2,
 	                                    const X3 x3, const Y3 y3, const Z3 z3, const W3 w3,
 	                                    const X4 x4, const Y4 y4, const Z4 z4, const W4 w4)
 	: value{ colType(x1, y1, z1, w1), colType(x2, y2, z2, w2), colType(x3, y3, z3, w3), colType(x4, y4, z4, w4) }
 {
-	static_assert(std::numeric_limits<X1>::is_iec559 || std::numeric_limits<X1>::is_integer,
-	              "*Mat4x4 constructor only takes float and integer types, 1st parameter type invalid.");
-	static_assert(std::numeric_limits<Y1>::is_iec559 || std::numeric_limits<Y1>::is_integer,
-	              "*Mat4x4 constructor only takes float and integer types, 2nd parameter type invalid.");
-	static_assert(std::numeric_limits<Z1>::is_iec559 || std::numeric_limits<Z1>::is_integer,
-	              "*Mat4x4 constructor only takes float and integer types, 3rd parameter type invalid.");
-	static_assert(std::numeric_limits<W1>::is_iec559 || std::numeric_limits<W1>::is_integer,
-	              "*Mat4x4 constructor only takes float and integer types, 4th parameter type invalid.");
-
-	static_assert(std::numeric_limits<X2>::is_iec559 || std::numeric_limits<X2>::is_integer,
-	              "*Mat4x4 constructor only takes float and integer types, 5th parameter type invalid.");
-	static_assert(std::numeric_limits<Y2>::is_iec559 || std::numeric_limits<Y2>::is_integer,
-	              "*Mat4x4 constructor only takes float and integer types, 6th parameter type invalid.");
-	static_assert(std::numeric_limits<Z2>::is_iec559 || std::numeric_limits<Z2>::is_integer,
-	              "*Mat4x4 constructor only takes float and integer types, 7th parameter type invalid.");
-	static_assert(std::numeric_limits<W2>::is_iec559 || std::numeric_limits<W2>::is_integer,
-	              "*Mat4x4 constructor only takes float and integer types, 8th parameter type invalid.");
-
-	static_assert(std::numeric_limits<X3>::is_iec559 || std::numeric_limits<X3>::is_integer,
-	              "*Mat4x4 constructor only takes float and integer types, 9th parameter type invalid.");
-	static_assert(std::numeric_limits<Y3>::is_iec559 || std::numeric_limits<Y3>::is_integer,
-	              "*Mat4x4 constructor only takes float and integer types, 10th parameter type invalid.");
-	static_assert(std::numeric_limits<Z3>::is_iec559 || std::numeric_limits<Z3>::is_integer,
-	              "*Mat4x4 constructor only takes float and integer types, 11th parameter type invalid.");
-	static_assert(std::numeric_limits<W3>::is_iec559 || std::numeric_limits<W3>::is_integer,
-	              "*Mat4x4 constructor only takes float and integer types, 12th parameter type invalid.");
-
-	static_assert(std::numeric_limits<X4>::is_iec559 || std::numeric_limits<X4>::is_integer,
-	              "*Mat4x4 constructor only takes float and integer types, 13th parameter type invalid.");
-	static_assert(std::numeric_limits<Y4>::is_iec559 || std::numeric_limits<Y4>::is_integer,
-	              "*Mat4x4 constructor only takes float and integer types, 14th parameter type invalid.");
-	static_assert(std::numeric_limits<Z4>::is_iec559 || std::numeric_limits<Z4>::is_integer,
-	              "*Mat4x4 constructor only takes float and integer types, 15th parameter type invalid.");
-	static_assert(std::numeric_limits<W4>::is_iec559 || std::numeric_limits<W4>::is_integer,
-	              "*Mat4x4 constructor only takes float and integer types, 16th parameter type invalid.");
 }
 
 template<typename T>
 requires std::floating_point<T>
 template<typename V1, typename V2, typename V3, typename V4>
+requires std::floating_point<V1> && std::floating_point<V2> && std::floating_point<V3> && std::floating_point<V4>
 constexpr TRAP::Math::Mat<4, 4, T>::Mat(const Vec<4, V1>& v1, const Vec<4, V2>& v2, const Vec<4, V3>& v3,
                                         const Vec<4, V4>& v4)
 	: value{ colType(v1), colType(v2), colType(v3), colType(v4) }
 {
-	static_assert(std::numeric_limits<V1>::is_iec559 || std::numeric_limits<V1>::is_integer,
-	              "*Mat4x4 constructor only takes float and integer types, 1st parameter type invalid.");
-	static_assert(std::numeric_limits<V2>::is_iec559 || std::numeric_limits<V2>::is_integer,
-	              "*Mat4x4 constructor only takes float and integer types, 2nd parameter type invalid.");
-	static_assert(std::numeric_limits<V3>::is_iec559 || std::numeric_limits<V3>::is_integer,
-	              "*Mat4x4 constructor only takes float and integer types, 3rd parameter type invalid.");
-	static_assert(std::numeric_limits<V4>::is_iec559 || std::numeric_limits<V4>::is_integer,
-	              "*Mat4x4 constructor only takes float and integer types, 4th parameter type invalid.");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

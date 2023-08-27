@@ -65,7 +65,7 @@ void TRAP::Graphics::EditorCamera::OnUpdate(const Utils::TimeStep& deltaTime)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-    const TRAP::Math::Vec2& mouse = TRAP::Input::GetMousePosition();
+    const TRAP::Math::Vec2 mouse = TRAP::Input::GetMousePosition();
     const TRAP::Math::Vec2 delta = (mouse - m_initialMousePosition) * 0.002f;
 
     if(!m_isActive)
