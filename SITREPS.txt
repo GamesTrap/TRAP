@@ -4351,3 +4351,4 @@ SITREP 08/26/2023|23w34a3
 SITREP 08/27/2023|23w34b1
     - Changed TRAP Engine version to 23w34b1(0.9.83)
     - Mat3/4 updated value and column constructors ~<5 mins
+    - Math small adjustments ~<30 mins

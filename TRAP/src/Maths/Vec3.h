@@ -64,17 +64,18 @@ namespace TRAP::Math
 
 		//Explicit conversions
 		template<typename X, typename Y, typename Z>
+		requires std::is_arithmetic_v<X> && std::is_arithmetic_v<Y> && std::is_arithmetic_v<Z>
 		constexpr Vec(X x_, Y y_, Z z_) noexcept;
 
 		//Conversion vector constructors
 
 		//Explicit conversions
 		template<typename A, typename B>
-		requires std::is_arithmetic_v<A>
+		requires std::is_arithmetic_v<A> && std::is_arithmetic_v<B>
 		constexpr Vec(const Vec<2, A> & xy, B z_) noexcept;
 		//Explicit conversions
 		template<typename A, typename B>
-		requires std::is_arithmetic_v<B>
+		requires std::is_arithmetic_v<A> && std::is_arithmetic_v<B>
 		constexpr Vec(A x_, const Vec<2, B> & yz) noexcept;
 		//Explicit conversions
 		template<typename U>
@@ -362,6 +363,7 @@ constexpr TRAP::Math::Vec<3, T>::Vec(T x_, T y_, T z_) noexcept
 template<typename T>
 requires std::is_arithmetic_v<T>
 template<typename X, typename Y, typename Z>
+requires std::is_arithmetic_v<X> && std::is_arithmetic_v<Y> && std::is_arithmetic_v<Z>
 constexpr TRAP::Math::Vec<3, T>::Vec(const X x_, const Y y_, const Z z_) noexcept
 	: x(static_cast<T>(x_)),
 	  y(static_cast<T>(y_)),
@@ -374,7 +376,7 @@ constexpr TRAP::Math::Vec<3, T>::Vec(const X x_, const Y y_, const Z z_) noexcep
 template<typename T>
 requires std::is_arithmetic_v<T>
 template<typename A, typename B>
-requires std::is_arithmetic_v<A>
+requires std::is_arithmetic_v<A> && std::is_arithmetic_v<B>
 constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<2, A>& xy, const B z_) noexcept
 	: x(static_cast<T>(xy.x)),
 	  y(static_cast<T>(xy.y)),
@@ -384,7 +386,7 @@ constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<2, A>& xy, const B z_) noexcept
 template<typename T>
 requires std::is_arithmetic_v<T>
 template<typename A, typename B>
-requires std::is_arithmetic_v<B>
+requires std::is_arithmetic_v<A> && std::is_arithmetic_v<B>
 constexpr TRAP::Math::Vec<3, T>::Vec(const A x_, const Vec<2, B>& yz) noexcept
 	: x(static_cast<T>(x_)),
 	  y(static_cast<T>(yz.x)),
