@@ -80,17 +80,17 @@ void RunScaleEdgeTests()
     {
         constexpr TRAP::Math::tVec3<T> val(inf);
         const TRAP::Math::tMat4<T> res = TRAP::Math::Scale(TRAP::Math::tMat4<T>(1.0f), val);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(res[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
     {
         constexpr TRAP::Math::tVec3<T> val(ninf);
         const TRAP::Math::tMat4<T> res = TRAP::Math::Scale(TRAP::Math::tMat4<T>(1.0f), val);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(res[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
     {
         constexpr TRAP::Math::tVec3<T> val(nan);
         const TRAP::Math::tMat4<T> res = TRAP::Math::Scale(TRAP::Math::tMat4<T>(1.0f), val);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(res[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
 }
 

@@ -28,7 +28,7 @@ void RunTruncTests()
         }
         else if constexpr(TRAP::Math::IsVec<T>)
         {
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(val), T(std::trunc(val[0])), Epsilon)));
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(val), T(std::trunc(std::get<0>(val))), Epsilon)));
         }
     }
 }

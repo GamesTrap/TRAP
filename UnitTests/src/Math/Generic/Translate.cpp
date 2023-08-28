@@ -89,20 +89,20 @@ void RunTranslateEdgeTests()
     {
         const auto t = TRAP::Math::Translate(TRAP::Math::tMat4<T>(1.0f), TRAP::Math::tVec3<T>(inf, 1.0f, 1.0f));
         const auto t2 = TRAP::Math::Translate(TRAP::Math::tVec3<T>(inf, 1.0f, 1.0f));
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(t[3])));
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(t2[3])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<3>(t))));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<3>(t2))));
     }
     {
         const auto t = TRAP::Math::Translate(TRAP::Math::tMat4<T>(1.0f), TRAP::Math::tVec3<T>(ninf, 1.0f, 1.0f));
         const auto t2 = TRAP::Math::Translate(TRAP::Math::tVec3<T>(ninf, 1.0f, 1.0f));
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(t[3])));
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(t2[3])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<3>(t))));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<3>(t2))));
     }
     {
         const auto t = TRAP::Math::Translate(TRAP::Math::tMat4<T>(1.0f), TRAP::Math::tVec3<T>(nan, 1.0f, 1.0f));
         const auto t2 = TRAP::Math::Translate(TRAP::Math::tVec3<T>(nan, 1.0f, 1.0f));
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(t[3])));
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(t2[3])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<3>(t))));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<3>(t2))));
     }
 }
 

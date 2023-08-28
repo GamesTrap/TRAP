@@ -52,25 +52,25 @@ void RunPerspectiveFoVEdgeTests()
 
     {
         const auto p = TRAP::Math::PerspectiveFoV<T>(TRAP::Math::Radians<T>(0.001f), min, min, min, min);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsInf(p[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsInf(std::get<0>(p))));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(p, TRAP::Math::PerspectiveFoVReverseZ<T>(TRAP::Math::Radians<T>(0.001f), min, min, min, min))));
     }
     {
         const auto p = TRAP::Math::PerspectiveFoV<T>(TRAP::Math::Radians<T>(170.0f), max, max, max, max);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsInf(p[3])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsInf(std::get<3>(p))));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(p, TRAP::Math::PerspectiveFoVReverseZ<T>(TRAP::Math::Radians<T>(170.0f), max, max, max, max))));
     }
     {
         const auto p = TRAP::Math::PerspectiveFoV<T>(inf, inf, inf, inf, inf);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(p[3])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<3>(p))));
     }
     {
         const auto p = TRAP::Math::PerspectiveFoV<T>(ninf, ninf, ninf, ninf, ninf);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(p[3])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<3>(p))));
     }
     {
         const auto p = TRAP::Math::PerspectiveFoV<T>(nan, nan, nan, nan, nan);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(p[3])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<3>(p))));
     }
 }
 

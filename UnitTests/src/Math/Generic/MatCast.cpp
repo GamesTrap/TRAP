@@ -47,27 +47,27 @@ void RunMat3CastEdgeTests()
     {
         constexpr TRAP::Math::tQuat<T> q1(min, min, min, min);
         const TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(res[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
     {
         constexpr TRAP::Math::tQuat<T> q1(max, max, max, max);
         const TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(res[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
     {
         constexpr TRAP::Math::tQuat<T> q1(inf, inf, inf, inf);
         const TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(res[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
     {
         constexpr TRAP::Math::tQuat<T> q1(ninf, ninf, ninf, ninf);
         const TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(res[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
     {
         constexpr TRAP::Math::tQuat<T> q1(nan, nan, nan, nan);
         const TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(res[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
 }
 
@@ -110,27 +110,27 @@ void RunMat4CastEdgeTests()
     {
         constexpr TRAP::Math::tQuat<T> q1(min, min, min, min);
         const TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(res[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
     {
         constexpr TRAP::Math::tQuat<T> q1(max, max, max, max);
         const TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(res[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
     {
         constexpr TRAP::Math::tQuat<T> q1(inf, inf, inf, inf);
         const TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(res[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
     {
         constexpr TRAP::Math::tQuat<T> q1(ninf, ninf, ninf, ninf);
         const TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(res[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
     {
         constexpr TRAP::Math::tQuat<T> q1(nan, nan, nan, nan);
         const TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(res[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
 }
 

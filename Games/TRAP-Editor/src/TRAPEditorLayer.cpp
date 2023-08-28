@@ -200,9 +200,9 @@ void TRAPEditorLayer::OnImGuiRender()
 		//Disable gizmo while entity was just changed and the left mouse button is still pressed
 		ImGuizmo::Enable(!m_entityChanged || m_leftMouseBtnRepeatCount == 0);
 
-		const bool manipulated = ImGuizmo::Manipulate(&cameraView[0].x, &cameraProj[0].x,
+		const bool manipulated = ImGuizmo::Manipulate(&std::get<0>(cameraView).x, &std::get<0>(cameraProj).x,
 														static_cast<ImGuizmo::OPERATION>(m_gizmoType),
-														ImGuizmo::LOCAL, &transform[0].x,
+														ImGuizmo::LOCAL, &std::get<0>(transform).x,
 														nullptr, snap ? snapValues.data() : nullptr);
 
 		if (manipulated &&

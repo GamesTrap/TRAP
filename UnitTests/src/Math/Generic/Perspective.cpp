@@ -72,7 +72,7 @@ void RunPerspectiveEdgeTests()
 
     {
         const auto p = TRAP::Math::Perspective<T>(0.0f, T(2.0f), 1.0f, 100.0f);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsInf(p[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsInf(std::get<0>(p))));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(p, TRAP::Math::PerspectiveReverseZ<T>(0.0f, T(2.0f), 100.0f, 1.0f))));
     }
     {
@@ -104,16 +104,16 @@ void RunPerspectiveEdgeTests()
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(p, TRAP::Math::PerspectiveReverseZ<T>(max, 1.0f, 100.0f, 1.0f), Epsilon)));
     }
     {
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(TRAP::Math::Perspective<T>(inf, 1.0f, 1.0f, 100.0f)[0])));
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(TRAP::Math::PerspectiveReverseZ<T>(inf, 1.0f, 100.0f, 1.0f)[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(TRAP::Math::Perspective<T>(inf, 1.0f, 1.0f, 100.0f)))));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(TRAP::Math::PerspectiveReverseZ<T>(inf, 1.0f, 100.0f, 1.0f)))));
     }
     {
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(TRAP::Math::Perspective<T>(ninf, 1.0f, 1.0f, 100.0f)[0])));
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(TRAP::Math::PerspectiveReverseZ<T>(ninf, 1.0f, 100.0f, 1.0f)[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(TRAP::Math::Perspective<T>(ninf, 1.0f, 1.0f, 100.0f)))));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(TRAP::Math::PerspectiveReverseZ<T>(ninf, 1.0f, 100.0f, 1.0f)))));
     }
     {
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(TRAP::Math::Perspective<T>(nan, 1.0f, 1.0f, 100.0f)[0])));
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(TRAP::Math::PerspectiveReverseZ<T>(nan, 1.0f, 100.0f, 1.0f)[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(TRAP::Math::Perspective<T>(nan, 1.0f, 1.0f, 100.0f)))));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(TRAP::Math::PerspectiveReverseZ<T>(nan, 1.0f, 100.0f, 1.0f)))));
     }
 }
 

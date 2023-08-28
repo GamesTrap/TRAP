@@ -30,7 +30,7 @@ void RunCeilTests()
         }
         else if constexpr(TRAP::Math::IsVec<T>)
         {
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(val), T(std::ceil(val[0])), Epsilon)));
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(val), T(std::ceil(std::get<0>(val))), Epsilon)));
         }
     }
 }

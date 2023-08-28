@@ -77,9 +77,9 @@ consteval void RunCompileTimeAbsMat3Tests()
     constexpr T C = TRAP::Math::MatrixCompMult(A, B);
     constexpr T D = TRAP::Math::Abs(C);
 
-    constexpr TRAP::Math::Vec3b col1 = TRAP::Math::Equal(D[0], A[0]);
-    constexpr TRAP::Math::Vec3b col2 = TRAP::Math::Equal(D[1], A[1]);
-    constexpr TRAP::Math::Vec3b col3 = TRAP::Math::Equal(D[2], A[2]);
+    constexpr TRAP::Math::Vec3b col1 = TRAP::Math::Equal(std::get<0>(D), std::get<0>(A));
+    constexpr TRAP::Math::Vec3b col2 = TRAP::Math::Equal(std::get<1>(D), std::get<1>(A));
+    constexpr TRAP::Math::Vec3b col3 = TRAP::Math::Equal(std::get<2>(D), std::get<2>(A));
 
     static_assert(TRAP::Math::All(TRAP::Math::Vec3b{TRAP::Math::All(col1),
                                                     TRAP::Math::All(col2),
@@ -108,10 +108,10 @@ consteval void RunCompileTimeAbsMat4Tests()
     constexpr T C = TRAP::Math::MatrixCompMult(A, B);
     constexpr T D = TRAP::Math::Abs(C);
 
-    constexpr TRAP::Math::Vec4b col1 = TRAP::Math::Equal(D[0], A[0]);
-    constexpr TRAP::Math::Vec4b col2 = TRAP::Math::Equal(D[1], A[1]);
-    constexpr TRAP::Math::Vec4b col3 = TRAP::Math::Equal(D[2], A[2]);
-    constexpr TRAP::Math::Vec4b col4 = TRAP::Math::Equal(D[3], A[3]);
+    constexpr TRAP::Math::Vec4b col1 = TRAP::Math::Equal(std::get<0>(D), std::get<0>(A));
+    constexpr TRAP::Math::Vec4b col2 = TRAP::Math::Equal(std::get<1>(D), std::get<1>(A));
+    constexpr TRAP::Math::Vec4b col3 = TRAP::Math::Equal(std::get<2>(D), std::get<2>(A));
+    constexpr TRAP::Math::Vec4b col4 = TRAP::Math::Equal(std::get<3>(D), std::get<3>(A));
 
     static_assert(TRAP::Math::All(TRAP::Math::Vec4b{TRAP::Math::All(col1),
                                                     TRAP::Math::All(col2),

@@ -72,15 +72,15 @@ void RunOrthographicEdgeTests()
     }
     {
         const TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(inf, 1.0f, inf, 1.0f, 0.0f, 1.0f);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(ortho[3])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<3>(ortho))));
     }
     {
         const TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(ninf, 1.0f, ninf, 1.0f, 0.0f, 1.0f);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(ortho[3])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<3>(ortho))));
     }
     {
         const TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(nan, 1.0f, nan, 1.0f, 0.0f, 1.0f);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(ortho[3])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<3>(ortho))));
     }
 }
 

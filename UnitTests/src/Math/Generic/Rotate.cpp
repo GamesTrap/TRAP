@@ -80,20 +80,20 @@ void RunRotateEdgeTests()
     {
         const auto t = TRAP::Math::Rotate(TRAP::Math::tMat4<T>(1.0f), TRAP::Math::Radians<T>(90.0f), TRAP::Math::tVec3<T>(inf, 1.0f, 1.0f));
         const auto t2 = TRAP::Math::Rotate(TRAP::Math::Radians<T>(90.0f), TRAP::Math::tVec3<T>(inf, 1.0f, 1.0f));
-        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(t[0])));
-        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(t2[0])));
+        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(std::get<0>(t))));
+        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(std::get<0>(t2))));
     }
     {
         const auto t = TRAP::Math::Rotate(TRAP::Math::tMat4<T>(1.0f), TRAP::Math::Radians<T>(90.0f), TRAP::Math::tVec3<T>(ninf, 1.0f, 1.0f));
         const auto t2 = TRAP::Math::Rotate(TRAP::Math::Radians<T>(90.0f), TRAP::Math::tVec3<T>(ninf, 1.0f, 1.0f));
-        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(t[0])));
-        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(t2[0])));
+        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(std::get<0>(t))));
+        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(std::get<0>(t2))));
     }
     {
         const auto t = TRAP::Math::Rotate(TRAP::Math::tMat4<T>(1.0f), TRAP::Math::Radians<T>(90.0f), TRAP::Math::tVec3<T>(nan, 1.0f, 1.0f));
         const auto t2 = TRAP::Math::Rotate(TRAP::Math::Radians<T>(90.0f), TRAP::Math::tVec3<T>(nan, 1.0f, 1.0f));
-        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(t[0])));
-        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(t2[0])));
+        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(std::get<0>(t))));
+        REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(std::get<0>(t2))));
     }
 }
 

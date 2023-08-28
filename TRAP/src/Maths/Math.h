@@ -4443,17 +4443,17 @@ requires std::floating_point<T>
 {
 	Mat<3, 3, T> result;
 
-	result[0][0] = m[0][0];
-	result[0][1] = m[1][0];
-	result[0][2] = m[2][0];
+	std::get<0>(std::get<0>(result)) = std::get<0>(std::get<0>(m));
+	std::get<1>(std::get<0>(result)) = std::get<0>(std::get<1>(m));
+	std::get<2>(std::get<0>(result)) = std::get<0>(std::get<2>(m));
 
-	result[1][0] = m[0][1];
-	result[1][1] = m[1][1];
-	result[1][2] = m[2][1];
+	std::get<0>(std::get<1>(result)) = std::get<1>(std::get<0>(m));
+	std::get<1>(std::get<1>(result)) = std::get<1>(std::get<1>(m));
+	std::get<2>(std::get<1>(result)) = std::get<1>(std::get<2>(m));
 
-	result[2][0] = m[0][2];
-	result[2][1] = m[1][2];
-	result[2][2] = m[2][2];
+	std::get<0>(std::get<2>(result)) = std::get<2>(std::get<0>(m));
+	std::get<1>(std::get<2>(result)) = std::get<2>(std::get<1>(m));
+	std::get<2>(std::get<2>(result)) = std::get<2>(std::get<2>(m));
 
 	return result;
 }
@@ -4464,25 +4464,25 @@ requires std::floating_point<T>
 {
 	Mat<4, 4, T> result;
 
-	result[0][0] = m[0][0];
-	result[0][1] = m[1][0];
-	result[0][2] = m[2][0];
-	result[0][3] = m[3][0];
+	std::get<0>(std::get<0>(result)) = std::get<0>(std::get<0>(m));
+	std::get<1>(std::get<0>(result)) = std::get<0>(std::get<1>(m));
+	std::get<2>(std::get<0>(result)) = std::get<0>(std::get<2>(m));
+	std::get<3>(std::get<0>(result)) = std::get<0>(std::get<3>(m));
 
-	result[1][0] = m[0][1];
-	result[1][1] = m[1][1];
-	result[1][2] = m[2][1];
-	result[1][3] = m[3][1];
+	std::get<0>(std::get<1>(result)) = std::get<1>(std::get<0>(m));
+	std::get<1>(std::get<1>(result)) = std::get<1>(std::get<1>(m));
+	std::get<2>(std::get<1>(result)) = std::get<1>(std::get<2>(m));
+	std::get<3>(std::get<1>(result)) = std::get<1>(std::get<3>(m));
 
-	result[2][0] = m[0][2];
-	result[2][1] = m[1][2];
-	result[2][2] = m[2][2];
-	result[2][3] = m[3][2];
+	std::get<0>(std::get<2>(result)) = std::get<2>(std::get<0>(m));
+	std::get<1>(std::get<2>(result)) = std::get<2>(std::get<1>(m));
+	std::get<2>(std::get<2>(result)) = std::get<2>(std::get<2>(m));
+	std::get<3>(std::get<2>(result)) = std::get<2>(std::get<3>(m));
 
-	result[3][0] = m[0][3];
-	result[3][1] = m[1][3];
-	result[3][2] = m[2][3];
-	result[3][3] = m[3][3];
+	std::get<0>(std::get<3>(result)) = std::get<3>(std::get<0>(m));
+	std::get<1>(std::get<3>(result)) = std::get<3>(std::get<1>(m));
+	std::get<2>(std::get<3>(result)) = std::get<3>(std::get<2>(m));
+	std::get<3>(std::get<3>(result)) = std::get<3>(std::get<3>(m));
 
 	return result;
 }
@@ -4493,28 +4493,28 @@ template<typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr T TRAP::Math::Determinant(const Mat<3, 3, T>& m)
 {
-	return + m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2])
-		   - m[1][0] * (m[0][1] * m[2][2] - m[2][1] * m[0][2])
-		   + m[2][0] * (m[0][1] * m[1][2] - m[1][1] * m[0][2]);
+	return + std::get<0>(std::get<0>(m)) * (std::get<1>(std::get<1>(m)) * std::get<2>(std::get<2>(m)) - std::get<1>(std::get<2>(m)) * std::get<2>(std::get<1>(m)))
+		   - std::get<0>(std::get<1>(m)) * (std::get<1>(std::get<0>(m)) * std::get<2>(std::get<2>(m)) - std::get<1>(std::get<2>(m)) * std::get<2>(std::get<0>(m)))
+		   + std::get<0>(std::get<2>(m)) * (std::get<1>(std::get<0>(m)) * std::get<2>(std::get<1>(m)) - std::get<1>(std::get<1>(m)) * std::get<2>(std::get<0>(m)));
 }
 template<typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr T TRAP::Math::Determinant(const Mat<4, 4, T>& m)
 {
-	const T subFactor00 = m[2][2] * m[3][3] - m[3][2] * m[2][3];
-	const T subFactor01 = m[2][1] * m[3][3] - m[3][1] * m[2][3];
-	const T subFactor02 = m[2][1] * m[3][2] - m[3][1] * m[2][2];
-	const T subFactor03 = m[2][0] * m[3][3] - m[3][0] * m[2][3];
-	const T subFactor04 = m[2][0] * m[3][2] - m[3][0] * m[2][2];
-	const T subFactor05 = m[2][0] * m[3][1] - m[3][0] * m[2][1];
+	const T subFactor00 = std::get<2>(std::get<2>(m)) * std::get<3>(std::get<3>(m)) - std::get<2>(std::get<3>(m)) * std::get<3>(std::get<2>(m));
+	const T subFactor01 = std::get<1>(std::get<2>(m)) * std::get<3>(std::get<3>(m)) - std::get<1>(std::get<3>(m)) * std::get<3>(std::get<2>(m));
+	const T subFactor02 = std::get<1>(std::get<2>(m)) * std::get<2>(std::get<3>(m)) - std::get<1>(std::get<3>(m)) * std::get<2>(std::get<2>(m));
+	const T subFactor03 = std::get<0>(std::get<2>(m)) * std::get<3>(std::get<3>(m)) - std::get<0>(std::get<3>(m)) * std::get<3>(std::get<2>(m));
+	const T subFactor04 = std::get<0>(std::get<2>(m)) * std::get<2>(std::get<3>(m)) - std::get<0>(std::get<3>(m)) * std::get<2>(std::get<2>(m));
+	const T subFactor05 = std::get<0>(std::get<2>(m)) * std::get<1>(std::get<3>(m)) - std::get<0>(std::get<3>(m)) * std::get<1>(std::get<2>(m));
 
-	const Vec<4, T> detCof(+(m[1][1] * subFactor00 - m[1][2] * subFactor01 + m[1][3] * subFactor02),
-		                   -(m[1][0] * subFactor00 - m[1][2] * subFactor03 + m[1][3] * subFactor04),
-		                   +(m[1][0] * subFactor01 - m[1][1] * subFactor03 + m[1][3] * subFactor05),
-		                   -(m[1][0] * subFactor02 - m[1][1] * subFactor04 + m[1][2] * subFactor05));
+	const Vec<4, T> detCof(+(std::get<1>(std::get<1>(m)) * subFactor00 - std::get<2>(std::get<1>(m)) * subFactor01 + std::get<3>(std::get<1>(m)) * subFactor02),
+		                   -(std::get<0>(std::get<1>(m)) * subFactor00 - std::get<2>(std::get<1>(m)) * subFactor03 + std::get<3>(std::get<1>(m)) * subFactor04),
+		                   +(std::get<0>(std::get<1>(m)) * subFactor01 - std::get<1>(std::get<1>(m)) * subFactor03 + std::get<3>(std::get<1>(m)) * subFactor05),
+		                   -(std::get<0>(std::get<1>(m)) * subFactor02 - std::get<1>(std::get<1>(m)) * subFactor04 + std::get<2>(std::get<1>(m)) * subFactor05));
 
-	return m[0][0] * detCof[0] + m[0][1] * detCof[1] +
-		   m[0][2] * detCof[2] + m[0][3] * detCof[3];
+	return std::get<0>(std::get<0>(m)) * std::get<0>(detCof) + std::get<1>(std::get<0>(m)) * std::get<1>(detCof) +
+		   std::get<2>(std::get<0>(m)) * std::get<2>(detCof) + std::get<3>(std::get<0>(m)) * std::get<3>(detCof);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4523,20 +4523,20 @@ template<typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::Inverse(const Mat<3, 3, T>& m)
 {
-	const T oneOverDeterminant = static_cast<T>(1) / (+ m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2])
-		                                              - m[1][0] * (m[0][1] * m[2][2] - m[2][1] * m[0][2])
-		                                              + m[2][0] * (m[0][1] * m[1][2] - m[1][1] * m[0][2]));
+	const T oneOverDeterminant = static_cast<T>(1) / (+ std::get<0>(std::get<0>(m)) * (std::get<1>(std::get<1>(m)) * std::get<2>(std::get<2>(m)) - std::get<1>(std::get<2>(m)) * std::get<2>(std::get<1>(m)))
+		                                              - std::get<0>(std::get<1>(m)) * (std::get<1>(std::get<0>(m)) * std::get<2>(std::get<2>(m)) - std::get<1>(std::get<2>(m)) * std::get<2>(std::get<0>(m)))
+		                                              + std::get<0>(std::get<2>(m)) * (std::get<1>(std::get<0>(m)) * std::get<2>(std::get<1>(m)) - std::get<1>(std::get<1>(m)) * std::get<2>(std::get<0>(m))));
 
 	Mat<3, 3, T> inverse;
-	inverse[0][0] = +(m[1][1] * m[2][2] - m[2][1] * m[1][2]) * oneOverDeterminant;
-	inverse[1][0] = -(m[1][0] * m[2][2] - m[2][0] * m[1][2]) * oneOverDeterminant;
-	inverse[2][0] = +(m[1][0] * m[2][1] - m[2][0] * m[1][1]) * oneOverDeterminant;
-	inverse[0][1] = -(m[0][1] * m[2][2] - m[2][1] * m[0][2]) * oneOverDeterminant;
-	inverse[1][1] = +(m[0][0] * m[2][2] - m[2][0] * m[0][2]) * oneOverDeterminant;
-	inverse[2][1] = -(m[0][0] * m[2][1] - m[2][0] * m[0][1]) * oneOverDeterminant;
-	inverse[0][2] = +(m[0][1] * m[1][2] - m[1][1] * m[0][2]) * oneOverDeterminant;
-	inverse[1][2] = -(m[0][0] * m[1][2] - m[1][0] * m[0][2]) * oneOverDeterminant;
-	inverse[2][2] = +(m[0][0] * m[1][1] - m[1][0] * m[0][1]) * oneOverDeterminant;
+	std::get<0>(std::get<0>(inverse)) = +(std::get<1>(std::get<1>(m)) * std::get<2>(std::get<2>(m)) - std::get<1>(std::get<2>(m)) * std::get<2>(std::get<1>(m))) * oneOverDeterminant;
+	std::get<0>(std::get<1>(inverse)) = -(std::get<0>(std::get<1>(m)) * std::get<2>(std::get<2>(m)) - std::get<0>(std::get<2>(m)) * std::get<2>(std::get<1>(m))) * oneOverDeterminant;
+	std::get<0>(std::get<2>(inverse)) = +(std::get<0>(std::get<1>(m)) * std::get<1>(std::get<2>(m)) - std::get<0>(std::get<2>(m)) * std::get<1>(std::get<1>(m))) * oneOverDeterminant;
+	std::get<1>(std::get<0>(inverse)) = -(std::get<1>(std::get<0>(m)) * std::get<2>(std::get<2>(m)) - std::get<1>(std::get<2>(m)) * std::get<2>(std::get<0>(m))) * oneOverDeterminant;
+	std::get<1>(std::get<1>(inverse)) = +(std::get<0>(std::get<0>(m)) * std::get<2>(std::get<2>(m)) - std::get<0>(std::get<2>(m)) * std::get<2>(std::get<0>(m))) * oneOverDeterminant;
+	std::get<1>(std::get<2>(inverse)) = -(std::get<0>(std::get<0>(m)) * std::get<1>(std::get<2>(m)) - std::get<0>(std::get<2>(m)) * std::get<1>(std::get<0>(m))) * oneOverDeterminant;
+	std::get<2>(std::get<0>(inverse)) = +(std::get<1>(std::get<0>(m)) * std::get<2>(std::get<1>(m)) - std::get<1>(std::get<1>(m)) * std::get<2>(std::get<0>(m))) * oneOverDeterminant;
+	std::get<2>(std::get<1>(inverse)) = -(std::get<0>(std::get<0>(m)) * std::get<2>(std::get<1>(m)) - std::get<0>(std::get<1>(m)) * std::get<2>(std::get<0>(m))) * oneOverDeterminant;
+	std::get<2>(std::get<2>(inverse)) = +(std::get<0>(std::get<0>(m)) * std::get<1>(std::get<1>(m)) - std::get<0>(std::get<1>(m)) * std::get<1>(std::get<0>(m))) * oneOverDeterminant;
 
 	return inverse;
 }
@@ -4545,29 +4545,29 @@ template<typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Inverse(const Mat<4, 4, T>& m)
 {
-	const T coef00 = m[2][2] * m[3][3] - m[3][2] * m[2][3];
-	const T coef02 = m[1][2] * m[3][3] - m[3][2] * m[1][3];
-	const T coef03 = m[1][2] * m[2][3] - m[2][2] * m[1][3];
+	const T coef00 = std::get<2>(std::get<2>(m)) * std::get<3>(std::get<3>(m)) - std::get<2>(std::get<3>(m)) * std::get<3>(std::get<2>(m));
+	const T coef02 = std::get<2>(std::get<1>(m)) * std::get<3>(std::get<3>(m)) - std::get<2>(std::get<3>(m)) * std::get<3>(std::get<1>(m));
+	const T coef03 = std::get<2>(std::get<1>(m)) * std::get<3>(std::get<2>(m)) - std::get<2>(std::get<2>(m)) * std::get<3>(std::get<1>(m));
 
-	const T coef04 = m[2][1] * m[3][3] - m[3][1] * m[2][3];
-	const T coef06 = m[1][1] * m[3][3] - m[3][1] * m[1][3];
-	const T coef07 = m[1][1] * m[2][3] - m[2][1] * m[1][3];
+	const T coef04 = std::get<1>(std::get<2>(m)) * std::get<3>(std::get<3>(m)) - std::get<1>(std::get<3>(m)) * std::get<3>(std::get<2>(m));
+	const T coef06 = std::get<1>(std::get<1>(m)) * std::get<3>(std::get<3>(m)) - std::get<1>(std::get<3>(m)) * std::get<3>(std::get<1>(m));
+	const T coef07 = std::get<1>(std::get<1>(m)) * std::get<3>(std::get<2>(m)) - std::get<1>(std::get<2>(m)) * std::get<3>(std::get<1>(m));
 
-	const T coef08 = m[2][1] * m[3][2] - m[3][1] * m[2][2];
-	const T coef10 = m[1][1] * m[3][2] - m[3][1] * m[1][2];
-	const T coef11 = m[1][1] * m[2][2] - m[2][1] * m[1][2];
+	const T coef08 = std::get<1>(std::get<2>(m)) * std::get<2>(std::get<3>(m)) - std::get<1>(std::get<3>(m)) * std::get<2>(std::get<2>(m));
+	const T coef10 = std::get<1>(std::get<1>(m)) * std::get<2>(std::get<3>(m)) - std::get<1>(std::get<3>(m)) * std::get<2>(std::get<1>(m));
+	const T coef11 = std::get<1>(std::get<1>(m)) * std::get<2>(std::get<2>(m)) - std::get<1>(std::get<2>(m)) * std::get<2>(std::get<1>(m));
 
-	const T coef12 = m[2][0] * m[3][3] - m[3][0] * m[2][3];
-	const T coef14 = m[1][0] * m[3][3] - m[3][0] * m[1][3];
-	const T coef15 = m[1][0] * m[2][3] - m[2][0] * m[1][3];
+	const T coef12 = std::get<0>(std::get<2>(m)) * std::get<3>(std::get<3>(m)) - std::get<0>(std::get<3>(m)) * std::get<3>(std::get<2>(m));
+	const T coef14 = std::get<0>(std::get<1>(m)) * std::get<3>(std::get<3>(m)) - std::get<0>(std::get<3>(m)) * std::get<3>(std::get<1>(m));
+	const T coef15 = std::get<0>(std::get<1>(m)) * std::get<3>(std::get<2>(m)) - std::get<0>(std::get<2>(m)) * std::get<3>(std::get<1>(m));
 
-	const T coef16 = m[2][0] * m[3][2] - m[3][0] * m[2][2];
-	const T coef18 = m[1][0] * m[3][2] - m[3][0] * m[1][2];
-	const T coef19 = m[1][0] * m[2][2] - m[2][0] * m[1][2];
+	const T coef16 = std::get<0>(std::get<2>(m)) * std::get<2>(std::get<3>(m)) - std::get<0>(std::get<3>(m)) * std::get<2>(std::get<2>(m));
+	const T coef18 = std::get<0>(std::get<1>(m)) * std::get<2>(std::get<3>(m)) - std::get<0>(std::get<3>(m)) * std::get<2>(std::get<1>(m));
+	const T coef19 = std::get<0>(std::get<1>(m)) * std::get<2>(std::get<2>(m)) - std::get<0>(std::get<2>(m)) * std::get<2>(std::get<1>(m));
 
-	const T coef20 = m[2][0] * m[3][1] - m[3][0] * m[2][1];
-	const T coef22 = m[1][0] * m[3][1] - m[3][0] * m[1][1];
-	const T coef23 = m[1][0] * m[2][1] - m[2][0] * m[1][1];
+	const T coef20 = std::get<0>(std::get<2>(m)) * std::get<1>(std::get<3>(m)) - std::get<0>(std::get<3>(m)) * std::get<1>(std::get<2>(m));
+	const T coef22 = std::get<0>(std::get<1>(m)) * std::get<1>(std::get<3>(m)) - std::get<0>(std::get<3>(m)) * std::get<1>(std::get<1>(m));
+	const T coef23 = std::get<0>(std::get<1>(m)) * std::get<1>(std::get<2>(m)) - std::get<0>(std::get<2>(m)) * std::get<1>(std::get<1>(m));
 
 	const Vec<4, T> fac0(coef00, coef00, coef02, coef03);
 	const Vec<4, T> fac1(coef04, coef04, coef06, coef07);
@@ -4576,10 +4576,10 @@ requires std::floating_point<T>
 	const Vec<4, T> fac4(coef16, coef16, coef18, coef19);
 	const Vec<4, T> fac5(coef20, coef20, coef22, coef23);
 
-	const Vec<4, T> vec0(m[1][0], m[0][0], m[0][0], m[0][0]);
-	const Vec<4, T> vec1(m[1][1], m[0][1], m[0][1], m[0][1]);
-	const Vec<4, T> vec2(m[1][2], m[0][2], m[0][2], m[0][2]);
-	const Vec<4, T> vec3(m[1][3], m[0][3], m[0][3], m[0][3]);
+	const Vec<4, T> vec0(std::get<0>(std::get<1>(m)), std::get<0>(std::get<0>(m)), std::get<0>(std::get<0>(m)), std::get<0>(std::get<0>(m)));
+	const Vec<4, T> vec1(std::get<1>(std::get<1>(m)), std::get<1>(std::get<0>(m)), std::get<1>(std::get<0>(m)), std::get<1>(std::get<0>(m)));
+	const Vec<4, T> vec2(std::get<2>(std::get<1>(m)), std::get<2>(std::get<0>(m)), std::get<2>(std::get<0>(m)), std::get<2>(std::get<0>(m)));
+	const Vec<4, T> vec3(std::get<3>(std::get<1>(m)), std::get<3>(std::get<0>(m)), std::get<3>(std::get<0>(m)), std::get<3>(std::get<0>(m)));
 
 	const Vec<4, T> inv0(vec1 * fac0 - vec2 * fac1 + vec3 * fac2);
 	const Vec<4, T> inv1(vec0 * fac0 - vec2 * fac3 + vec3 * fac4);
@@ -4590,9 +4590,9 @@ requires std::floating_point<T>
 	const Vec<4, T> signB(static_cast<T>(-1), static_cast<T>(+1), static_cast<T>(-1), static_cast<T>(+1));
 	const Mat<4, 4, T> inverse(inv0 * signA, inv1 * signB, inv2 * signA, inv3 * signB);
 
-	const Vec<4, T> row0(inverse[0][0], inverse[1][0], inverse[2][0], inverse[3][0]);
+	const Vec<4, T> row0(std::get<0>(std::get<0>(inverse)), std::get<0>(std::get<1>(inverse)), std::get<0>(std::get<2>(inverse)), std::get<0>(std::get<3>(inverse)));
 
-	const Vec<4, T> dot0(m[0] * row0);
+	const Vec<4, T> dot0(std::get<0>(m) * row0);
 	const T dot1 = (dot0.x + dot0.y) + (dot0.z + dot0.w);
 
 	const T oneOverDeterminant = static_cast<T>(1) / dot1;
@@ -4611,12 +4611,12 @@ requires std::floating_point<T>
 	//RH_ZO
 	Mat<4, 4, T> result(static_cast<T>(1));
 
-	result[0][0] = static_cast<T>(2) / (right - left);
-	result[1][1] = static_cast<T>(2) / (top - bottom);
-	result[2][2] = -static_cast<T>(1) / (zFar - zNear);
-	result[3][0] = -(right + left) / (right - left);
-	result[3][1] = -(top + bottom) / (top - bottom);
-	result[3][2] = -zNear / (zFar - zNear);
+	std::get<0>(std::get<0>(result)) = static_cast<T>(2) / (right - left);
+	std::get<1>(std::get<1>(result)) = static_cast<T>(2) / (top - bottom);
+	std::get<2>(std::get<2>(result)) = -static_cast<T>(1) / (zFar - zNear);
+	std::get<0>(std::get<3>(result)) = -(right + left) / (right - left);
+	std::get<1>(std::get<3>(result)) = -(top + bottom) / (top - bottom);
+	std::get<2>(std::get<3>(result)) = -zNear / (zFar - zNear);
 
 	return result;
 }
@@ -4641,13 +4641,13 @@ requires std::floating_point<T>
 	//RH_ZO
 	Mat<4, 4, T> result(static_cast<T>(0));
 
-	result[0][0] = (static_cast<T>(2) * nearVal) / (right - left);
-	result[1][1] = (static_cast<T>(2) * nearVal) / (top - bottom);
-	result[2][0] = (right + left) / (right - left);
-	result[2][1] = (top + bottom) / (top - bottom);
-	result[2][2] = farVal / (nearVal - farVal);
-	result[2][3] = static_cast<T>(-1);
-	result[3][2] = -(farVal * nearVal) / (farVal - nearVal);
+	std::get<0>(std::get<0>(result)) = (static_cast<T>(2) * nearVal) / (right - left);
+	std::get<1>(std::get<1>(result)) = (static_cast<T>(2) * nearVal) / (top - bottom);
+	std::get<0>(std::get<2>(result)) = (right + left) / (right - left);
+	std::get<1>(std::get<2>(result)) = (top + bottom) / (top - bottom);
+	std::get<2>(std::get<2>(result)) = farVal / (nearVal - farVal);
+	std::get<3>(std::get<2>(result)) = static_cast<T>(-1);
+	std::get<2>(std::get<3>(result)) = -(farVal * nearVal) / (farVal - nearVal);
 
 	return result;
 }
@@ -4676,11 +4676,11 @@ requires std::floating_point<T>
 
 	Mat<4, 4, T> result(static_cast<T>(0));
 
-	result[0][0] = static_cast<T>(1) / (aspect * tanHalfFoVY);
-	result[1][1] = static_cast<T>(1) / (tanHalfFoVY);
-	result[2][2] = zFar / (zNear - zFar);
-	result[2][3] = -static_cast<T>(1);
-	result[3][2] = -(zFar * zNear) / (zFar - zNear);
+	std::get<0>(std::get<0>(result)) = static_cast<T>(1) / (aspect * tanHalfFoVY);
+	std::get<1>(std::get<1>(result)) = static_cast<T>(1) / (tanHalfFoVY);
+	std::get<2>(std::get<2>(result)) = zFar / (zNear - zFar);
+	std::get<3>(std::get<2>(result)) = -static_cast<T>(1);
+	std::get<2>(std::get<3>(result)) = -(zFar * zNear) / (zFar - zNear);
 
 	return result;
 }
@@ -4713,11 +4713,11 @@ requires std::floating_point<T>
 
 	Mat<4, 4, T> result(static_cast<T>(0));
 
-	result[0][0] = w;
-	result[1][1] = h;
-	result[2][2] = zFar / (zNear - zFar);
-	result[2][3] = -static_cast<T>(1);
-	result[3][2] = -(zFar * zNear) / (zFar - zNear);
+	std::get<0>(std::get<0>(result)) = w;
+	std::get<1>(std::get<1>(result)) = h;
+	std::get<2>(std::get<2>(result)) = zFar / (zNear - zFar);
+	std::get<3>(std::get<2>(result)) = -static_cast<T>(1);
+	std::get<2>(std::get<3>(result)) = -(zFar * zNear) / (zFar - zNear);
 
 	return result;
 }
@@ -4748,11 +4748,11 @@ requires std::floating_point<T>
 
 	Mat<4, 4, T> result(static_cast<T>(0));
 
-	result[0][0] = (static_cast<T>(2) * zNear) / (right - left);
-	result[1][1] = (static_cast<T>(2) * zNear) / (top - bottom);
-	result[2][2] = -static_cast<T>(1);
-	result[2][3] = -static_cast<T>(1);
-	result[3][2] = -static_cast<T>(2) * zNear;
+	std::get<0>(std::get<0>(result)) = (static_cast<T>(2) * zNear) / (right - left);
+	std::get<1>(std::get<1>(result)) = (static_cast<T>(2) * zNear) / (top - bottom);
+	std::get<2>(std::get<2>(result)) = -static_cast<T>(1);
+	std::get<3>(std::get<2>(result)) = -static_cast<T>(1);
+	std::get<2>(std::get<3>(result)) = -static_cast<T>(2) * zNear;
 
 	return result;
 }
@@ -4781,7 +4781,7 @@ requires std::floating_point<T>
 {
 	Mat<4, 4, T> result(m);
 
-	result[3] = m[0] * std::get<0>(v) + m[1] * std::get<1>(v) + m[2] * std::get<2>(v) + m[3];
+	std::get<3>(result) = std::get<0>(m) * std::get<0>(v) + std::get<1>(m) * std::get<1>(v) + std::get<2>(m) * std::get<2>(v) + std::get<3>(m);
 
 	return result;
 }
@@ -4792,7 +4792,7 @@ requires std::floating_point<T>
 {
 	Mat<4, 4, T> result(static_cast<T>(1.0));
 
-	result[3] = result[0] * std::get<0>(v) + result[1] * std::get<1>(v) + result[2] * std::get<2>(v) + result[3];
+	std::get<3>(result) = std::get<0>(result) * std::get<0>(v) + std::get<1>(result) * std::get<1>(v) + std::get<2>(result) * std::get<2>(v) + std::get<3>(result);
 
 	return result;
 }
@@ -4814,24 +4814,24 @@ requires std::floating_point<T>
 
 	Mat<4, 4, T> rotate;
 
-	rotate[0][0] = c + std::get<0>(temp) * std::get<0>(axis);
-	rotate[0][1] = std::get<0>(temp) * std::get<1>(axis) + s * std::get<2>(axis);
-	rotate[0][2] = std::get<0>(temp) * std::get<2>(axis) - s * std::get<1>(axis);
+	std::get<0>(std::get<0>(rotate)) = c + std::get<0>(temp) * std::get<0>(axis);
+	std::get<1>(std::get<0>(rotate)) = std::get<0>(temp) * std::get<1>(axis) + s * std::get<2>(axis);
+	std::get<2>(std::get<0>(rotate)) = std::get<0>(temp) * std::get<2>(axis) - s * std::get<1>(axis);
 
-	rotate[1][0] = std::get<1>(temp) * std::get<0>(axis) - s * std::get<2>(axis);
-	rotate[1][1] = c + std::get<1>(temp) * std::get<1>(axis);
-	rotate[1][2] = std::get<1>(temp) * std::get<2>(axis) + s * std::get<0>(axis);
+	std::get<0>(std::get<1>(rotate)) = std::get<1>(temp) * std::get<0>(axis) - s * std::get<2>(axis);
+	std::get<1>(std::get<1>(rotate)) = c + std::get<1>(temp) * std::get<1>(axis);
+	std::get<2>(std::get<1>(rotate)) = std::get<1>(temp) * std::get<2>(axis) + s * std::get<0>(axis);
 
-	rotate[2][0] = std::get<2>(temp) * std::get<0>(axis) + s * std::get<1>(axis);
-	rotate[2][1] = std::get<2>(temp) * std::get<1>(axis) - s * std::get<0>(axis);
-	rotate[2][2] = c + std::get<2>(temp) * std::get<2>(axis);
+	std::get<0>(std::get<2>(rotate)) = std::get<2>(temp) * std::get<0>(axis) + s * std::get<1>(axis);
+	std::get<1>(std::get<2>(rotate)) = std::get<2>(temp) * std::get<1>(axis) - s * std::get<0>(axis);
+	std::get<2>(std::get<2>(rotate)) = c + std::get<2>(temp) * std::get<2>(axis);
 
 	Mat<4, 4, T> result;
 
-	result[0] = m[0] * rotate[0][0] + m[1] * rotate[0][1] + m[2] * rotate[0][2];
-	result[1] = m[0] * rotate[1][0] + m[1] * rotate[1][1] + m[2] * rotate[1][2];
-	result[2] = m[0] * rotate[2][0] + m[1] * rotate[2][1] + m[2] * rotate[2][2];
-	result[3] = m[3];
+	std::get<0>(result) = std::get<0>(m) * std::get<0>(std::get<0>(rotate)) + std::get<1>(m) * std::get<1>(std::get<0>(rotate)) + std::get<2>(m) * std::get<2>(std::get<0>(rotate));
+	std::get<1>(result) = std::get<0>(m) * std::get<0>(std::get<1>(rotate)) + std::get<1>(m) * std::get<1>(std::get<1>(rotate)) + std::get<2>(m) * std::get<2>(std::get<1>(rotate));
+	std::get<2>(result) = std::get<0>(m) * std::get<0>(std::get<2>(rotate)) + std::get<1>(m) * std::get<1>(std::get<2>(rotate)) + std::get<2>(m) * std::get<2>(std::get<2>(rotate));
+	std::get<3>(result) = std::get<3>(m);
 
 	return result;
 }
@@ -4851,25 +4851,25 @@ requires std::floating_point<T>
 
 	Mat<4, 4, T> rotate;
 
-	rotate[0][0] = c + std::get<0>(temp) * std::get<0>(axis);
-	rotate[0][1] = std::get<0>(temp) * std::get<1>(axis) + s * std::get<2>(axis);
-	rotate[0][2] = std::get<0>(temp) * std::get<2>(axis) - s * std::get<1>(axis);
+	std::get<0>(std::get<0>(rotate)) = c + std::get<0>(temp) * std::get<0>(axis);
+	std::get<1>(std::get<0>(rotate)) = std::get<0>(temp) * std::get<1>(axis) + s * std::get<2>(axis);
+	std::get<2>(std::get<0>(rotate)) = std::get<0>(temp) * std::get<2>(axis) - s * std::get<1>(axis);
 
-	rotate[1][0] = std::get<1>(temp) * std::get<0>(axis) - s * std::get<2>(axis);
-	rotate[1][1] = c + std::get<1>(temp) * std::get<1>(axis);
-	rotate[1][2] = std::get<1>(temp) * std::get<2>(axis) + s * std::get<0>(axis);
+	std::get<0>(std::get<1>(rotate)) = std::get<1>(temp) * std::get<0>(axis) - s * std::get<2>(axis);
+	std::get<1>(std::get<1>(rotate)) = c + std::get<1>(temp) * std::get<1>(axis);
+	std::get<2>(std::get<1>(rotate)) = std::get<1>(temp) * std::get<2>(axis) + s * std::get<0>(axis);
 
-	rotate[2][0] = std::get<2>(temp) * std::get<0>(axis) + s * std::get<1>(axis);
-	rotate[2][1] = std::get<2>(temp) * std::get<1>(axis) - s * std::get<0>(axis);
-	rotate[2][2] = c + std::get<2>(temp) * std::get<2>(axis);
+	std::get<0>(std::get<2>(rotate)) = std::get<2>(temp) * std::get<0>(axis) + s * std::get<1>(axis);
+	std::get<1>(std::get<2>(rotate)) = std::get<2>(temp) * std::get<1>(axis) - s * std::get<0>(axis);
+	std::get<2>(std::get<2>(rotate)) = c + std::get<2>(temp) * std::get<2>(axis);
 
 	const Mat<4, 4, T> identity(static_cast<T>(1.0));
 	Mat<4, 4, T> result;
 
-	result[0] = identity[0] * rotate[0][0] + identity[1] * rotate[0][1] + identity[2] * rotate[0][2];
-	result[1] = identity[0] * rotate[1][0] + identity[1] * rotate[1][1] + identity[2] * rotate[1][2];
-	result[2] = identity[0] * rotate[2][0] + identity[1] * rotate[2][1] + identity[2] * rotate[2][2];
-	result[3] = identity[3];
+	std::get<0>(result) = std::get<0>(identity) * std::get<0>(std::get<0>(rotate)) + std::get<1>(identity) * std::get<1>(std::get<0>(rotate)) + std::get<2>(identity) * std::get<2>(std::get<0>(rotate));
+	std::get<1>(result) = std::get<0>(identity) * std::get<0>(std::get<1>(rotate)) + std::get<1>(identity) * std::get<1>(std::get<1>(rotate)) + std::get<2>(identity) * std::get<2>(std::get<1>(rotate));
+	std::get<2>(result) = std::get<0>(identity) * std::get<0>(std::get<2>(rotate)) + std::get<1>(identity) * std::get<1>(std::get<2>(rotate)) + std::get<2>(identity) * std::get<2>(std::get<2>(rotate));
+	std::get<3>(result) = std::get<3>(identity);
 
 	return result;
 }
@@ -4882,10 +4882,10 @@ requires std::floating_point<T>
 {
 	Mat<4, 4, T> result;
 
-	result[0] = m[0] * std::get<0>(v);
-	result[1] = m[1] * std::get<1>(v);
-	result[2] = m[2] * std::get<2>(v);
-	result[3] = m[3];
+	std::get<0>(result) = std::get<0>(m) * std::get<0>(v);
+	std::get<1>(result) = std::get<1>(m) * std::get<1>(v);
+	std::get<2>(result) = std::get<2>(m) * std::get<2>(v);
+	std::get<3>(result) = std::get<3>(m);
 
 	return result;
 }
@@ -4896,9 +4896,9 @@ requires std::floating_point<T>
 {
 	Mat<4, 4, T> result(static_cast<T>(1.0f));
 
-	result[0] *= std::get<0>(v);
-	result[1] *= std::get<1>(v);
-	result[2] *= std::get<2>(v);
+	std::get<0>(result) *= std::get<0>(v);
+	std::get<1>(result) *= std::get<1>(v);
+	std::get<2>(result) *= std::get<2>(v);
 
 	return result;
 }
@@ -4918,18 +4918,18 @@ requires std::floating_point<T>
 
 	Mat<4, 4, T> result(static_cast<T>(1));
 
-	result[0][0] = s.x;
-	result[1][0] = s.y;
-	result[2][0] = s.z;
-	result[0][1] = u.x;
-	result[1][1] = u.y;
-	result[2][1] = u.z;
-	result[0][2] = -f.x;
-	result[1][2] = -f.y;
-	result[2][2] = -f.z;
-	result[3][0] = -Dot(s, eye);
-	result[3][1] = -Dot(u, eye);
-	result[3][2] = Dot(f, eye);
+	std::get<0>(std::get<0>(result)) = s.x;
+	std::get<0>(std::get<1>(result)) = s.y;
+	std::get<0>(std::get<2>(result)) = s.z;
+	std::get<1>(std::get<0>(result)) = u.x;
+	std::get<1>(std::get<1>(result)) = u.y;
+	std::get<1>(std::get<2>(result)) = u.z;
+	std::get<2>(std::get<0>(result)) = -f.x;
+	std::get<2>(std::get<1>(result)) = -f.y;
+	std::get<2>(std::get<2>(result)) = -f.z;
+	std::get<0>(std::get<3>(result)) = -Dot(s, eye);
+	std::get<1>(std::get<3>(result)) = -Dot(u, eye);
+	std::get<2>(std::get<3>(result)) = Dot(f, eye);
 
 	return result;
 }
@@ -4940,7 +4940,7 @@ template<typename T>
 requires TRAP::Math::IsMat<T>
 [[nodiscard]] T TRAP::Math::Row(const T& m, const std::size_t index, const typename T::rowType& x)
 {
-	TRAP_ASSERT(index < m[0].Length(), "Math::Row(): Index out of range!");
+	TRAP_ASSERT(index < std::get<0>(m).Length(), "Math::Row(): Index out of range!");
 
 	T result = m;
 
@@ -4956,7 +4956,7 @@ template<typename T>
 requires TRAP::Math::IsMat<T>
 [[nodiscard]] typename T::rowType TRAP::Math::Row(const T& m, const std::size_t index)
 {
-	TRAP_ASSERT(index < m[0].Length(), "Math::Row(): Index out of range!");
+	TRAP_ASSERT(index < std::get<0>(m).Length(), "Math::Row(): Index out of range!");
 
 	typename T::rowType result(0);
 
@@ -5009,13 +5009,13 @@ requires std::floating_point<T>
 	};
 
 	//Normalize the matrix
-	if(Equal(m[3][3], static_cast<T>(0.0f), Epsilon<T>()))
+	if(Equal(std::get<3>(std::get<3>(m)), static_cast<T>(0.0f), Epsilon<T>()))
 		return false;
 
 	for(uint32_t i = 0; i < 4; ++i)
 	{
 		for(uint32_t j = 0; j < 4; ++j)
-			m[i][j] /= m[3][3];
+			m[i][j] /= std::get<3>(std::get<3>(m));
 	}
 
 	//perspectiveMatrix is used to solve for perspective, but it also provides
@@ -5023,25 +5023,25 @@ requires std::floating_point<T>
 	Mat<4, 4, T> perspectiveMatrix(m);
 
 	for(uint32_t i = 0; i < 3; ++i)
-		perspectiveMatrix[i][3] = static_cast<T>(0.0f);
-	perspectiveMatrix[3][3] = static_cast<T>(1.0f);
+		std::get<3>(perspectiveMatrix[i]) = static_cast<T>(0.0f);
+	std::get<3>(std::get<3>(perspectiveMatrix)) = static_cast<T>(1.0f);
 
 	if(Equal(Determinant(perspectiveMatrix), static_cast<T>(0.0f), Epsilon<T>()))
 		return false;
 
 	//First, isolate perspective.
-	if(NotEqual(m[0][3], static_cast<T>(0.0f), Epsilon<T>()) ||
-	   NotEqual(m[1][3], static_cast<T>(0.0f), Epsilon<T>()) ||
-	   NotEqual(m[2][3], static_cast<T>(0.0f), Epsilon<T>()))
+	if(NotEqual(std::get<3>(std::get<0>(m)), static_cast<T>(0.0f), Epsilon<T>()) ||
+	   NotEqual(std::get<3>(std::get<1>(m)), static_cast<T>(0.0f), Epsilon<T>()) ||
+	   NotEqual(std::get<3>(std::get<2>(m)), static_cast<T>(0.0f), Epsilon<T>()))
 	{
 		//Clear the perspective partition
-		m[0][3] = m[1][3] = m[2][3] = static_cast<T>(0.0f);
-		m[3][3] = static_cast<T>(1.0f);
+		std::get<3>(std::get<0>(m)) = std::get<3>(std::get<1>(m)) = std::get<3>(std::get<2>(m)) = static_cast<T>(0.0f);
+		std::get<3>(std::get<3>(m)) = static_cast<T>(1.0f);
 	}
 
 	//Take care of translation
-	outPosition = Vec<3, T>(m[3]);
-	m[3] = Vec<4, T>(0.0f, 0.0f, 0.0f, m[3].w);
+	outPosition = Vec<3, T>(std::get<3>(m));
+	std::get<3>(m) = Vec<4, T>(0.0f, 0.0f, 0.0f, std::get<3>(m).w);
 
 	std::array<Vec<3, T>, 3> row{};
 
@@ -5053,33 +5053,33 @@ requires std::floating_point<T>
 	}
 
 	//Compute X scale factor and normalize first row
-	outScale.x = Length(row[0]);
+	outScale.x = Length(std::get<0>(row));
 
-	row[0] = LocalScale(row[0], static_cast<T>(1.0f));
+	std::get<0>(row) = LocalScale(std::get<0>(row), static_cast<T>(1.0f));
 
 	//Compute XY shear factor and make 2nd row orthogonal to 1st.
-	const T skewZ = Dot(row[0], row[1]);
-	row[1] = LocalCombine(row[1], row[0], static_cast<T>(1.0f), -skewZ);
+	const T skewZ = Dot(std::get<0>(row), std::get<1>(row));
+	std::get<1>(row) = LocalCombine(std::get<1>(row), std::get<0>(row), static_cast<T>(1.0f), -skewZ);
 
 	//Now, comute Y scale and normalize 2nd row.
-	outScale.y = Length(row[1]);
-	row[1] = LocalScale(row[1], static_cast<T>(1.0f));
+	outScale.y = Length(std::get<1>(row));
+	std::get<1>(row) = LocalScale(std::get<1>(row), static_cast<T>(1.0f));
 
 	//Compute XZ and YZ shears, orthogonalize 3rd row.
-	const T skewY = Dot(row[0], row[2]);
-	row[2] = LocalCombine(row[2], row[0], static_cast<T>(1.0f), -skewY);
-	const T skewX = Dot(row[1], row[2]);
-	row[2] = LocalCombine(row[2], row[1], static_cast<T>(1.0f), -skewX);
+	const T skewY = Dot(std::get<0>(row), std::get<2>(row));
+	std::get<2>(row) = LocalCombine(std::get<2>(row), std::get<0>(row), static_cast<T>(1.0f), -skewY);
+	const T skewX = Dot(std::get<1>(row), std::get<2>(row));
+	std::get<2>(row) = LocalCombine(std::get<2>(row), std::get<1>(row), static_cast<T>(1.0f), -skewX);
 
 	//Next, get Z scale and normalize 3rd row.
-	outScale.z = Length(row[2]);
-	row[2] = LocalScale(row[2], static_cast<T>(1.0f));
+	outScale.z = Length(std::get<2>(row));
+	std::get<2>(row) = LocalScale(std::get<2>(row), static_cast<T>(1.0f));
 
 	//At this point, the matrix (in rows[]) is orthonormal.
 	//Check for a coordinate system flip, If the determinant is -1,
 	//then negate the matrix and the scaling factors.
-	Vec<3, T> pdum3 = Cross(row[1], row[2]);
-	if(Dot(row[0], pdum3) < 0)
+	Vec<3, T> pdum3 = Cross(std::get<1>(row), std::get<2>(row));
+	if(Dot(std::get<0>(row), pdum3) < 0)
 	{
 		for(uint32_t i = 0; i < 3; ++i)
 		{
@@ -5089,23 +5089,23 @@ requires std::floating_point<T>
 	}
 
 	//Now, get the rotations out.
-	const T trace = row[0].x + row[1].y + row[2].z;
+	const T trace = std::get<0>(row).x + std::get<1>(row).y + std::get<2>(row).z;
 	if(trace > static_cast<T>(0.0f))
 	{
 		T root = Sqrt(trace + static_cast<T>(1.0f));
 		outRotation.w = static_cast<T>(0.5f) * root;
 		root = static_cast<T>(0.5f) / root;
-		outRotation.x = root * (row[1].z - row[2].y);
-		outRotation.y = root * (row[2].x - row[0].z);
-		outRotation.z = root * (row[0].y - row[1].x);
+		outRotation.x = root * (std::get<1>(row).z - std::get<2>(row).y);
+		outRotation.y = root * (std::get<2>(row).x - std::get<0>(row).z);
+		outRotation.z = root * (std::get<0>(row).y - std::get<1>(row).x);
 	}
 	else
 	{
 		constexpr static std::array<uint32_t, 3> next{1, 2, 0};
 		uint8_t i = 0;
-		if(row[2].z > row[i][i])
+		if(std::get<2>(row).z > row[i][i])
 			i = 2;
-		else if(row[1].y > row[0].x)
+		else if(std::get<1>(row).y > std::get<0>(row).x)
 			i = 1;
 		const uint32_t j = next[i];
 		const uint32_t k = next[j];
@@ -5140,13 +5140,13 @@ requires std::floating_point<T>
 	};
 
 	//Normalize the matrix
-	if(Equal(m[3][3], static_cast<T>(0.0f), Epsilon<T>()))
+	if(Equal(std::get<3>(std::get<3>(m)), static_cast<T>(0.0f), Epsilon<T>()))
 		return false;
 
 	for(uint32_t i = 0; i < 4; ++i)
 	{
 		for(uint32_t j = 0; j < 4; ++j)
-			m[i][j] /= m[3][3];
+			m[i][j] /= std::get<3>(std::get<3>(m));
 	}
 
 	//perspectiveMatrix is used to solve for perspective, but it also provides
@@ -5154,25 +5154,25 @@ requires std::floating_point<T>
 	Mat<4, 4, T> perspectiveMatrix(m);
 
 	for(uint32_t i = 0; i < 3; ++i)
-		perspectiveMatrix[i][3] = static_cast<T>(0.0f);
-	perspectiveMatrix[3][3] = static_cast<T>(1.0f);
+		std::get<3>(perspectiveMatrix[i]) = static_cast<T>(0.0f);
+	std::get<3>(std::get<3>(perspectiveMatrix)) = static_cast<T>(1.0f);
 
 	if(Equal(Determinant(perspectiveMatrix), static_cast<T>(0.0f), Epsilon<T>()))
 		return false;
 
 	//First, isolate perspective.
-	if(NotEqual(m[0][3], static_cast<T>(0.0f), Epsilon<T>()) ||
-	   NotEqual(m[1][3], static_cast<T>(0.0f), Epsilon<T>()) ||
-	   NotEqual(m[2][3], static_cast<T>(0.0f), Epsilon<T>()))
+	if(NotEqual(std::get<3>(std::get<0>(m)), static_cast<T>(0.0f), Epsilon<T>()) ||
+	   NotEqual(std::get<3>(std::get<1>(m)), static_cast<T>(0.0f), Epsilon<T>()) ||
+	   NotEqual(std::get<3>(std::get<2>(m)), static_cast<T>(0.0f), Epsilon<T>()))
 	{
 		//Clear the perspective partition
-		m[0][3] = m[1][3] = m[2][3] = static_cast<T>(0.0f);
-		m[3][3] = static_cast<T>(1.0f);
+		std::get<3>(std::get<0>(m)) = std::get<3>(std::get<1>(m)) = std::get<3>(std::get<2>(m)) = static_cast<T>(0.0f);
+		std::get<3>(std::get<3>(m)) = static_cast<T>(1.0f);
 	}
 
 	//Take care of translation
-	outPosition = Vec<3, T>(m[3]);
-	m[3] = Vec<4, T>(0.0f, 0.0f, 0.0f, m[3].w);
+	outPosition = Vec<3, T>(std::get<3>(m));
+	std::get<3>(m) = Vec<4, T>(0.0f, 0.0f, 0.0f, std::get<3>(m).w);
 
 	std::array<Vec<3, T>, 3> row{};
 
@@ -5184,33 +5184,33 @@ requires std::floating_point<T>
 	}
 
 	//Compute X scale factor and normalize first row
-	outScale.x = Length(row[0]);
+	outScale.x = Length(std::get<0>(row));
 
-	row[0] = LocalScale(row[0], static_cast<T>(1.0f));
+	std::get<0>(row) = LocalScale(std::get<0>(row), static_cast<T>(1.0f));
 
 	//Compute XY shear factor and make 2nd row orthogonal to 1st.
-	const T skewZ = Dot(row[0], row[1]);
-	row[1] = LocalCombine(row[1], row[0], static_cast<T>(1.0f), -skewZ);
+	const T skewZ = Dot(std::get<0>(row), std::get<1>(row));
+	std::get<1>(row) = LocalCombine(std::get<1>(row), std::get<0>(row), static_cast<T>(1.0f), -skewZ);
 
 	//Now, comute Y scale and normalize 2nd row.
-	outScale.y = Length(row[1]);
-	row[1] = LocalScale(row[1], static_cast<T>(1.0f));
+	outScale.y = Length(std::get<1>(row));
+	std::get<1>(row) = LocalScale(std::get<1>(row), static_cast<T>(1.0f));
 
 	//Compute XZ and YZ shears, orthogonalize 3rd row.
-	const T skewY = Dot(row[0], row[2]);
-	row[2] = LocalCombine(row[2], row[0], static_cast<T>(1.0f), -skewY);
-	const T skewX = Dot(row[1], row[2]);
-	row[2] = LocalCombine(row[2], row[1], static_cast<T>(1.0f), -skewX);
+	const T skewY = Dot(std::get<0>(row), std::get<2>(row));
+	std::get<2>(row) = LocalCombine(std::get<2>(row), std::get<0>(row), static_cast<T>(1.0f), -skewY);
+	const T skewX = Dot(std::get<1>(row), std::get<2>(row));
+	std::get<2>(row) = LocalCombine(std::get<2>(row), std::get<1>(row), static_cast<T>(1.0f), -skewX);
 
 	//Next, get Z scale and normalize 3rd row.
-	outScale.z = Length(row[2]);
-	row[2] = LocalScale(row[2], static_cast<T>(1.0f));
+	outScale.z = Length(std::get<2>(row));
+	std::get<2>(row) = LocalScale(std::get<2>(row), static_cast<T>(1.0f));
 
 	//At this point, the matrix (in rows[]) is orthonormal.
 	//Check for a coordinate system flip, If the determinant is -1,
 	//then negate the matrix and the scaling factors.
-	Vec<3, T> pdum3 = Cross(row[1], row[2]);
-	if(Dot(row[0], pdum3) < 0)
+	Vec<3, T> pdum3 = Cross(std::get<1>(row), std::get<2>(row));
+	if(Dot(std::get<0>(row), pdum3) < 0)
 	{
 		for(uint32_t i = 0; i < 3; ++i)
 		{
@@ -5220,15 +5220,15 @@ requires std::floating_point<T>
 	}
 
 	//Now, get the rotations (euler angles) out.
-	outRotation.y = Degrees(ASin(-row[0][2]));
+	outRotation.y = Degrees(ASin(-std::get<2>(std::get<0>(row))));
 	if(Cos(outRotation.y) != T(0.0f))
 	{
-		outRotation.x = Degrees(ATan(row[1][2], row[2][2]));
-		outRotation.z = Degrees(ATan(row[0][1], row[0][0]));
+		outRotation.x = Degrees(ATan(std::get<2>(std::get<1>(row)), std::get<2>(std::get<2>(row))));
+		outRotation.z = Degrees(ATan(std::get<1>(std::get<0>(row)), std::get<0>(std::get<0>(row))));
 	}
 	else
 	{
-		outRotation.x = Degrees(ATan(-row[2][0], row[1][1]));
+		outRotation.x = Degrees(ATan(-std::get<0>(std::get<2>(row)), std::get<1>(std::get<1>(row))));
 		outRotation.z = T(0.0f);
 	}
 
@@ -5412,17 +5412,17 @@ requires std::floating_point<T>
 	const T qwy(q.w * q.y);
 	const T qwz(q.w * q.z);
 
-	result[0][0] = static_cast<T>(1) - static_cast<T>(2) * (qyy + qzz);
-	result[0][1] = static_cast<T>(2) * (qxy + qwz);
-	result[0][2] = static_cast<T>(2) * (qxz - qwy);
+	std::get<0>(std::get<0>(result)) = static_cast<T>(1) - static_cast<T>(2) * (qyy + qzz);
+	std::get<1>(std::get<0>(result)) = static_cast<T>(2) * (qxy + qwz);
+	std::get<2>(std::get<0>(result)) = static_cast<T>(2) * (qxz - qwy);
 
-	result[1][0] = static_cast<T>(2) * (qxy - qwz);
-	result[1][1] = static_cast<T>(1) - static_cast<T>(2) * (qxx + qzz);
-	result[1][2] = static_cast<T>(2) * (qyz + qwx);
+	std::get<0>(std::get<1>(result)) = static_cast<T>(2) * (qxy - qwz);
+	std::get<1>(std::get<1>(result)) = static_cast<T>(1) - static_cast<T>(2) * (qxx + qzz);
+	std::get<2>(std::get<1>(result)) = static_cast<T>(2) * (qyz + qwx);
 
-	result[2][0] = static_cast<T>(2) * (qxz + qwy);
-	result[2][1] = static_cast<T>(2) * (qyz - qwx);
-	result[2][2] = static_cast<T>(1) - static_cast<T>(2) * (qxx + qyy);
+	std::get<0>(std::get<2>(result)) = static_cast<T>(2) * (qxz + qwy);
+	std::get<1>(std::get<2>(result)) = static_cast<T>(2) * (qyz - qwx);
+	std::get<2>(std::get<2>(result)) = static_cast<T>(1) - static_cast<T>(2) * (qxx + qyy);
 
 	return result;
 }
@@ -5440,10 +5440,10 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	const T fourXSquaredMinus1 = m[0][0] - m[1][1] - m[2][2];
-	const T fourYSquaredMinus1 = m[1][1] - m[0][0] - m[2][2];
-	const T fourZSquaredMinus1 = m[2][2] - m[0][0] - m[1][1];
-	const T fourWSquaredMinus1 = m[0][0] + m[1][1] + m[2][2];
+	const T fourXSquaredMinus1 = std::get<0>(std::get<0>(m)) - std::get<1>(std::get<1>(m)) - std::get<2>(std::get<2>(m));
+	const T fourYSquaredMinus1 = std::get<1>(std::get<1>(m)) - std::get<0>(std::get<0>(m)) - std::get<2>(std::get<2>(m));
+	const T fourZSquaredMinus1 = std::get<2>(std::get<2>(m)) - std::get<0>(std::get<0>(m)) - std::get<1>(std::get<1>(m));
+	const T fourWSquaredMinus1 = std::get<0>(std::get<0>(m)) + std::get<1>(std::get<1>(m)) + std::get<2>(std::get<2>(m));
 
 	uint32_t biggestIndex = 0;
 	T fourBiggestSquaredMinus1 = fourWSquaredMinus1;
@@ -5469,19 +5469,24 @@ requires std::floating_point<T>
 	switch (biggestIndex)
 	{
 	case 0:
-		return tQuat<T>(biggestVal, (m[1][2] - m[2][1]) * mult, (m[2][0] - m[0][2]) * mult,
-		                (m[0][1] - m[1][0]) * mult);
+		return tQuat<T>(biggestVal, (std::get<2>(std::get<1>(m)) - std::get<1>(std::get<2>(m))) * mult,
+		                            (std::get<0>(std::get<2>(m)) - std::get<2>(std::get<0>(m))) * mult,
+		                            (std::get<1>(std::get<0>(m)) - std::get<0>(std::get<1>(m))) * mult);
 
 	case 1:
-		return tQuat<T>((m[1][2] - m[2][1]) * mult, biggestVal, (m[0][1] + m[1][0]) * mult,
-		                (m[2][0] + m[0][2]) * mult);
+		return tQuat<T>((std::get<2>(std::get<1>(m)) - std::get<1>(std::get<2>(m))) * mult, biggestVal,
+		                (std::get<1>(std::get<0>(m)) + std::get<0>(std::get<1>(m))) * mult,
+		                (std::get<0>(std::get<2>(m)) + std::get<2>(std::get<0>(m))) * mult);
 
 	case 2:
-		return tQuat<T>((m[2][0] - m[0][2]) * mult, (m[0][1] + m[1][0]) * mult, biggestVal,
-		                (m[1][2] + m[2][1]) * mult);
+		return tQuat<T>((std::get<0>(std::get<2>(m)) - std::get<2>(std::get<0>(m))) * mult,
+		                (std::get<1>(std::get<0>(m)) + std::get<0>(std::get<1>(m))) * mult, biggestVal,
+		                (std::get<2>(std::get<1>(m)) + std::get<1>(std::get<2>(m))) * mult);
 
 	case 3:
-		return tQuat<T>((m[0][1] - m[1][0]) * mult, (m[2][0] + m[0][2]) * mult, (m[1][2] + m[2][1]) * mult,
+		return tQuat<T>((std::get<1>(std::get<0>(m)) - std::get<0>(std::get<1>(m))) * mult,
+		                (std::get<0>(std::get<2>(m)) + std::get<2>(std::get<0>(m))) * mult,
+						(std::get<2>(std::get<1>(m)) + std::get<1>(std::get<2>(m))) * mult,
 		                biggestVal);
 
 	default:
@@ -5562,10 +5567,10 @@ requires std::floating_point<T>
 	//RH
 	Mat<3, 3, T> result;
 
-	result[2] = -direction;
-	const Vec<3, T> right = Cross(up, result[2]);
-	result[0] = right * InverseSqrt(Max(static_cast<T>(0.00001), Dot(right, right)));
-	result[1] = Cross(result[2], result[0]);
+	std::get<2>(result) = -direction;
+	const Vec<3, T> right = Cross(up, std::get<2>(result));
+	std::get<0>(result) = right * InverseSqrt(Max(static_cast<T>(0.00001), Dot(right, right)));
+	std::get<1>(result) = Cross(std::get<2>(result), std::get<0>(result));
 
 	return QuaternionCast(result);
 }

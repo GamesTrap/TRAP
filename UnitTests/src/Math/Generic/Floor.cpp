@@ -28,7 +28,7 @@ void RunFloorTests()
         }
         else if constexpr(TRAP::Math::IsVec<T>)
         {
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(val), T(std::floor(val[0])), Epsilon)));
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(val), T(std::floor(std::get<0>(val))), Epsilon)));
         }
     }
 }

@@ -41,28 +41,28 @@ void RunInfinitePerspectiveEdgeTests()
 
     {
         const auto p = TRAP::Math::InfinitePerspective<T>(min, min, min);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(p[0])));
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsInf(p[3])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(p))));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsInf(std::get<3>(p))));
     }
     {
         const auto p = TRAP::Math::InfinitePerspective<T>(max, max, max);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(p[0])));
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsInf(p[3])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(p))));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsInf(std::get<3>(p))));
     }
     {
         const auto p = TRAP::Math::InfinitePerspective<T>(inf, 1.0f, 0.1f);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(p[0])));
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(p[1])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(p))));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<1>(p))));
     }
     {
         const auto p = TRAP::Math::InfinitePerspective<T>(ninf, 1.0f, 0.1f);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(p[0])));
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(p[1])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(p))));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<1>(p))));
     }
     {
         const auto p = TRAP::Math::InfinitePerspective<T>(TRAP::Math::Radians(90.0f), 1.0f, nan);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(p[0])));
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(p[1])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(p))));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<1>(p))));
     }
 }
 

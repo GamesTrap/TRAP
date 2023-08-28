@@ -59,7 +59,7 @@ void RunLookAtEdgeTests()
         constexpr TRAP::Math::tVec3<T> up(0.0f, 1.0f, 0.0f);
 
         const TRAP::Math::tMat4<T> res = TRAP::Math::LookAt(eye, center, up);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(res[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
     {
         constexpr TRAP::Math::tVec3<T> eye(max, 0.0f, 0.0f);
@@ -67,7 +67,7 @@ void RunLookAtEdgeTests()
         constexpr TRAP::Math::tVec3<T> up(0.0f, 1.0f, 0.0f);
 
         const TRAP::Math::tMat4<T> res = TRAP::Math::LookAt(eye, center, up);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(res[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
     {
         constexpr TRAP::Math::tVec3<T> eye(inf, 0.0f, 0.0f);
@@ -75,7 +75,7 @@ void RunLookAtEdgeTests()
         constexpr TRAP::Math::tVec3<T> up(0.0f, 1.0f, 0.0f);
 
         const TRAP::Math::tMat4<T> res = TRAP::Math::LookAt(eye, center, up);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(res[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
     {
         constexpr TRAP::Math::tVec3<T> eye(ninf, 0.0f, 0.0f);
@@ -83,7 +83,7 @@ void RunLookAtEdgeTests()
         constexpr TRAP::Math::tVec3<T> up(0.0f, 1.0f, 0.0f);
 
         const TRAP::Math::tMat4<T> res = TRAP::Math::LookAt(eye, center, up);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(res[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
     {
         constexpr TRAP::Math::tVec3<T> eye(nan, 0.0f, 0.0f);
@@ -91,7 +91,7 @@ void RunLookAtEdgeTests()
         constexpr TRAP::Math::tVec3<T> up(0.0f, 1.0f, 0.0f);
 
         const TRAP::Math::tMat4<T> res = TRAP::Math::LookAt(eye, center, up);
-        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(res[0])));
+        REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
 }
 

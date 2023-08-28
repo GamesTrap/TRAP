@@ -39,74 +39,27 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Core/Base.h"
 #include "TRAP_Assert.h"
 
-//-------------------------------------------------------------------------------------------------------------------//
-//std::get support
+template<typename T>
+requires std::floating_point<T>
+struct TRAP::Math::Mat<4, 4, T>;
 
 namespace std
 {
-	/// <summary>
-	/// Extracts the Ith element from the vector.
-	/// I must be an integer value in range [0, 4).
-	/// This is enforced at compile time!
-	/// </summary>
-	/// <param name="v">Vector whose contents to extract.</param>
-	/// <returns>A reference to the Ith element of v.</returns>
 	template<std::size_t I, typename T>
 	requires std::is_arithmetic_v<T>
-	[[nodiscard]] constexpr typename TRAP::Math::Mat<4, 4, T>::colType& get(TRAP::Math::Mat<4, 4, T>& m) noexcept
-	{
-		static_assert(I < TRAP::Math::Mat<4, 4, T>::Length());
+	[[nodiscard]] constexpr typename TRAP::Math::Mat<4, 4, T>::colType& get(TRAP::Math::Mat<4, 4, T>& m) noexcept;
 
-		return std::get<I>(m.value);
-	}
-
-	/// <summary>
-	/// Extracts the Ith element from the vector.
-	/// I must be an integer value in range [0, 4).
-	/// This is enforced at compile time!
-	/// </summary>
-	/// <param name="v">Vector whose contents to extract.</param>
-	/// <returns>A reference to the Ith element of v.</returns>
 	template<std::size_t I, typename T>
 	requires std::is_arithmetic_v<T>
-	[[nodiscard]] constexpr typename TRAP::Math::Mat<4, 4, T>::colType&& get(TRAP::Math::Mat<4, 4, T>&& m) noexcept
-	{
-		static_assert(I < TRAP::Math::Mat<4, 4, T>::Length());
+	[[nodiscard]] constexpr typename TRAP::Math::Mat<4, 4, T>::colType&& get(TRAP::Math::Mat<4, 4, T>&& m) noexcept;
 
-		return std::get<I>(m.value);
-	}
-
-	/// <summary>
-	/// Extracts the Ith element from the vector.
-	/// I must be an integer value in range [0, 4).
-	/// This is enforced at compile time!
-	/// </summary>
-	/// <param name="v">Vector whose contents to extract.</param>
-	/// <returns>A reference to the Ith element of v.</returns>
 	template<std::size_t I, typename T>
 	requires std::is_arithmetic_v<T>
-	[[nodiscard]] constexpr const typename TRAP::Math::Mat<4, 4, T>::colType& get(const TRAP::Math::Mat<4, 4, T>& m) noexcept
-	{
-		static_assert(I < TRAP::Math::Mat<4, 4, T>::Length());
+	[[nodiscard]] constexpr const typename TRAP::Math::Mat<4, 4, T>::colType& get(const TRAP::Math::Mat<4, 4, T>& m) noexcept;
 
-		return std::get<I>(m.value);
-	}
-
-	/// <summary>
-	/// Extracts the Ith element from the vector.
-	/// I must be an integer value in range [0, 4).
-	/// This is enforced at compile time!
-	/// </summary>
-	/// <param name="v">Vector whose contents to extract.</param>
-	/// <returns>A reference to the Ith element of v.</returns>
 	template<std::size_t I, typename T>
 	requires std::is_arithmetic_v<T>
-	[[nodiscard]] constexpr const typename TRAP::Math::Mat<4, 4, T>::colType&& get(const TRAP::Math::Mat<4, 4, T>&& m) noexcept
-	{
-		static_assert(I < TRAP::Math::Mat<4, 4, T>::Length());
-
-		return std::get<I>(m.value);
-	}
+	[[nodiscard]] constexpr const typename TRAP::Math::Mat<4, 4, T>::colType&& get(const TRAP::Math::Mat<4, 4, T>&& m) noexcept;
 }
 
 namespace TRAP::Math
@@ -143,19 +96,6 @@ namespace TRAP::Math
 
 	private:
 		std::array<colType, 4> value{};
-
-		template<std::size_t I, typename X>
-		requires std::is_arithmetic_v<X>
-		friend constexpr typename TRAP::Math::Mat<4, 4, X>::colType& std::get(TRAP::Math::Mat<4, 4, X>& m) noexcept;
-		template<std::size_t I, typename X>
-		requires std::is_arithmetic_v<X>
-		friend constexpr typename TRAP::Math::Mat<4, 4, X>::colType&& std::get(TRAP::Math::Mat<4, 4, X>&& m) noexcept;
-		template<std::size_t I, typename X>
-		requires std::is_arithmetic_v<X>
-		friend constexpr const typename TRAP::Math::Mat<4, 4, X>::colType& std::get(const TRAP::Math::Mat<4, 4, X>& m) noexcept;
-		template<std::size_t I, typename X>
-		requires std::is_arithmetic_v<X>
-		friend constexpr const typename TRAP::Math::Mat<4, 4, X>::colType&& std::get(const TRAP::Math::Mat<4, 4, X>&& m) noexcept;
 
 	public:
 		/// <summary>
@@ -875,6 +815,75 @@ requires std::floating_point<T>
 constexpr bool TRAP::Math::operator!=(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2) noexcept
 {
 	return (std::get<0>(m1) != std::get<0>(m2)) || (std::get<1>(m1) != std::get<1>(m2)) || (std::get<2>(m1) != std::get<2>(m2)) || (std::get<3>(m1) != std::get<3>(m2));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//std::get support
+namespace std
+{
+	/// <summary>
+	/// Extracts the Ith element from the vector.
+	/// I must be an integer value in range [0, 4).
+	/// This is enforced at compile time!
+	/// </summary>
+	/// <param name="v">Vector whose contents to extract.</param>
+	/// <returns>A reference to the Ith element of v.</returns>
+	template<std::size_t I, typename T>
+	requires std::is_arithmetic_v<T>
+	[[nodiscard]] constexpr typename TRAP::Math::Mat<4, 4, T>::colType& get(TRAP::Math::Mat<4, 4, T>& m) noexcept
+	{
+		static_assert(I < TRAP::Math::Mat<4, 4, T>::Length());
+
+		return m[I];
+	}
+
+	/// <summary>
+	/// Extracts the Ith element from the vector.
+	/// I must be an integer value in range [0, 4).
+	/// This is enforced at compile time!
+	/// </summary>
+	/// <param name="v">Vector whose contents to extract.</param>
+	/// <returns>A reference to the Ith element of v.</returns>
+	template<std::size_t I, typename T>
+	requires std::is_arithmetic_v<T>
+	[[nodiscard]] constexpr typename TRAP::Math::Mat<4, 4, T>::colType&& get(TRAP::Math::Mat<4, 4, T>&& m) noexcept
+	{
+		static_assert(I < TRAP::Math::Mat<4, 4, T>::Length());
+
+		return std::move(m[I]);
+	}
+
+	/// <summary>
+	/// Extracts the Ith element from the vector.
+	/// I must be an integer value in range [0, 4).
+	/// This is enforced at compile time!
+	/// </summary>
+	/// <param name="v">Vector whose contents to extract.</param>
+	/// <returns>A reference to the Ith element of v.</returns>
+	template<std::size_t I, typename T>
+	requires std::is_arithmetic_v<T>
+	[[nodiscard]] constexpr const typename TRAP::Math::Mat<4, 4, T>::colType& get(const TRAP::Math::Mat<4, 4, T>& m) noexcept
+	{
+		static_assert(I < TRAP::Math::Mat<4, 4, T>::Length());
+
+		return m[I];
+	}
+
+	/// <summary>
+	/// Extracts the Ith element from the vector.
+	/// I must be an integer value in range [0, 4).
+	/// This is enforced at compile time!
+	/// </summary>
+	/// <param name="v">Vector whose contents to extract.</param>
+	/// <returns>A reference to the Ith element of v.</returns>
+	template<std::size_t I, typename T>
+	requires std::is_arithmetic_v<T>
+	[[nodiscard]] constexpr const typename TRAP::Math::Mat<4, 4, T>::colType&& get(const TRAP::Math::Mat<4, 4, T>&& m) noexcept
+	{
+		static_assert(I < TRAP::Math::Mat<4, 4, T>::Length());
+
+		return std::move(m[I]);
+	}
 }
 
 #endif /*TRAP_MAT4_H*/

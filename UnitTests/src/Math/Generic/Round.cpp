@@ -28,7 +28,7 @@ void RunRoundTests()
         }
         else if constexpr(TRAP::Math::IsVec<T>)
         {
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Round(val), T(std::round(val[0])), Epsilon)));
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Round(val), T(std::round(std::get<0>(val))), Epsilon)));
         }
     }
 }
