@@ -6,6 +6,18 @@ local m = premake.modules.generatecontrollermappings
 local p = premake
 local success = true
 
+function DownloadProgress(total, current)
+    local ratio = current / total;
+    ratio = math.min(math.max(ratio, 0), 1);
+    local percent = math.floor(ratio * 100);
+
+    local downloadedStr = ("%d/%d"):format(current, total)
+    local progressBar = ("[" .. ("="):rep(math.floor(percent / 2)) .. (" "):rep(50 - math.floor(percent / 2)) .. "]")
+
+    io.write(("\rProgress: %s %s %.2f%%"):format(progressBar, downloadedStr, percent))
+    io.flush()
+end
+
 newaction
 {
     trigger = "genconmappings",
@@ -33,7 +45,8 @@ newaction
         end
 
         -- Download mappings from SDL
-        http.download(sourceURL, sourcePath)
+        http.download(sourceURL, sourcePath, {progress = DownloadProgress})
+        print()
 
         -- Check if mapping File can be opened
         local sourceFile = io.open(sourcePath, "r")
