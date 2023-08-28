@@ -435,7 +435,7 @@ namespace TRAP::Math
 	/// <returns>x if x >= 0; otherwise it returns -x.</returns>
 	template<uint32_t L, typename T>
 	requires std::signed_integral<T> || std::floating_point<T>
-	[[nodiscard]] constexpr Vec<L, T> Abs(const Vec<L, T>& x);
+	[[nodiscard]] constexpr Vec<L, T> Abs(Vec<L, T> x);
 
 	/// <summary>
 	/// Retrieve the absolute value of x.
@@ -444,7 +444,7 @@ namespace TRAP::Math
 	/// <returns>x if x >= 0; otherwise it returns -x.</returns>
 	template<uint32_t C, uint32_t R, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] constexpr Mat<C, R, T> Abs(const Mat<C, R, T>& x);
+	[[nodiscard]] constexpr Mat<C, R, T> Abs(Mat<C, R, T> x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -486,7 +486,7 @@ namespace TRAP::Math
 	/// <returns>Value equal to the nearest integer that is less then or equal to x.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> Floor(const Vec<L, T>& x);
+	[[nodiscard]] Vec<L, T> Floor(Vec<L, T> x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -499,7 +499,7 @@ namespace TRAP::Math
 	/// </returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> Trunc(const Vec<L, T>& x);
+	[[nodiscard]] Vec<L, T> Trunc(Vec<L, T> x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -514,7 +514,7 @@ namespace TRAP::Math
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> Round(const Vec<L, T>& x);
+	[[nodiscard]] Vec<L, T> Round(Vec<L, T> x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -540,7 +540,7 @@ namespace TRAP::Math
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> RoundEven(const Vec<L, T>& x);
+	[[nodiscard]] Vec<L, T> RoundEven(Vec<L, T> x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -560,7 +560,7 @@ namespace TRAP::Math
 	/// <returns>Value equal to the nearest integer that is greater than or equal to x.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> Ceil(const Vec<L, T>& x);
+	[[nodiscard]] Vec<L, T> Ceil(Vec<L, T> x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -618,7 +618,7 @@ namespace TRAP::Math
 	/// <returns>x - y * Floor(x / y) for each component in x using the floating point value y.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> Mod(const Vec<L, T>& x, T y);
+	[[nodiscard]] Vec<L, T> Mod(Vec<L, T> x, T y);
 
 	/// <summary>
 	/// Retrieve value of x modulo y.
@@ -627,7 +627,7 @@ namespace TRAP::Math
 	/// <returns>x - y * Floor(x / y) for each component in x using the floating point value y.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> Mod(const Vec<L, T>& x, const Vec<L, T>& y);
+	[[nodiscard]] Vec<L, T> Mod(Vec<L, T> x, const Vec<L, T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -657,7 +657,7 @@ namespace TRAP::Math
 	/// </returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> Modf(const Vec<L, T>& x, Vec<L, T>& i);
+	[[nodiscard]] Vec<L, T> Modf(Vec<L, T> x, Vec<L, T>& i);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -669,7 +669,7 @@ namespace TRAP::Math
 	/// <returns>y if y < x; otherwise it returns x.</returns>
 	template<uint32_t L, typename T>
 	requires std::is_arithmetic_v<T>
-	[[nodiscard]] constexpr Vec<L, T> Min(const Vec<L, T>& a, T b);
+	[[nodiscard]] constexpr Vec<L, T> Min(Vec<L, T> a, T b);
 
 	/// <summary>
 	/// Retrieve the minimum value of x and y.
@@ -679,7 +679,7 @@ namespace TRAP::Math
 	/// <returns>y if y < x; otherwise it returns x.</returns>
 	template<uint32_t L, typename T>
 	requires std::is_arithmetic_v<T>
-	[[nodiscard]] constexpr Vec<L, T> Min(const Vec<L, T>& a, const Vec<L, T>& b);
+	[[nodiscard]] constexpr Vec<L, T> Min(Vec<L, T> a, const Vec<L, T>& b);
 
 	/// <summary>
 	/// Retrieve the minimum value of x and y.
@@ -718,7 +718,7 @@ namespace TRAP::Math
 	/// <returns>y if x < y; otherwise it returns x.</returns>
 	template<uint32_t L, typename T>
 	requires std::is_arithmetic_v<T>
-	[[nodiscard]] constexpr Vec<L, T> Max(const Vec<L, T>& a, T b);
+	[[nodiscard]] constexpr Vec<L, T> Max(Vec<L, T> a, T b);
 
 	/// <summary>
 	/// Retrieve the maximum value of x and y.
@@ -728,7 +728,7 @@ namespace TRAP::Math
 	/// <returns>y if x < y; otherwise it returns x.</returns>
 	template<uint32_t L, typename T>
 	requires std::is_arithmetic_v<T>
-	[[nodiscard]] constexpr Vec<L, T> Max(const Vec<L, T>& a, const Vec<L, T>& b);
+	[[nodiscard]] constexpr Vec<L, T> Max(Vec<L, T> a, const Vec<L, T>& b);
 
 	/// <summary>Returns the maximum component-wise values of 3 inputs</summary>
 	///
@@ -1202,7 +1202,7 @@ namespace TRAP::Math
 	/// <returns>See description.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> FrExp(const Vec<L, T>& v, Vec<L, int32_t>& exp);
+	[[nodiscard]] Vec<L, T> FrExp(Vec<L, T> v, Vec<L, int32_t>& exp);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1228,7 +1228,7 @@ namespace TRAP::Math
 	/// <returns>See description.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> LdExp(const Vec<L, T>& v, const Vec<L, int32_t>& exp);
+	[[nodiscard]] Vec<L, T> LdExp(Vec<L, T> v, const Vec<L, int32_t>& exp);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1266,7 +1266,7 @@ namespace TRAP::Math
 	/// <returns>'x - y * Trunc(x / y)' instead of 'x - y * Floor(x / y)'.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> FMod(const Vec<L, T>& x, T y);
+	[[nodiscard]] Vec<L, T> FMod(Vec<L, T> x, T y);
 
 	/// <summary>
 	/// Similar to 'Mod' but with a different rounding and integer support.
@@ -1274,7 +1274,7 @@ namespace TRAP::Math
 	/// <returns>'x - y * Trunc(x / y)' instead of 'x - y * Floor(x / y)'.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> FMod(const Vec<L, T>& x, const Vec<L, T>& y);
+	[[nodiscard]] Vec<L, T> FMod(Vec<L, T> x, const Vec<L, T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1343,7 +1343,7 @@ namespace TRAP::Math
 	/// <returns>'base' raised to the power 'exponent'.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> Pow(const Vec<L, T>& base, const Vec<L, T>& exponent);
+	[[nodiscard]] Vec<L, T> Pow(Vec<L, T> base, const Vec<L, T>& exponent);
 
 	/// <summary>
 	/// Retrieve the value of the first parameter raised to the power of the second.
@@ -1377,7 +1377,7 @@ namespace TRAP::Math
 	/// <returns>Natural exponentiation of x. i.e., e^x.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> Exp(const Vec<L, T>& x);
+	[[nodiscard]] Vec<L, T> Exp(Vec<L, T> x);
 
 	/// <summary>
 	/// Retrieve the natural exponentiation of the parameter.
@@ -1415,7 +1415,7 @@ namespace TRAP::Math
 	/// </returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> Log(const Vec<L, T>& x);
+	[[nodiscard]] Vec<L, T> Log(Vec<L, T> x);
 
 	/// <summary>
 	/// Retrieve the natural logarithm of the parameter
@@ -1450,7 +1450,7 @@ namespace TRAP::Math
 	/// <returns>2 raised to the x power.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> Exp2(const Vec<L, T>& x);
+	[[nodiscard]] Vec<L, T> Exp2(Vec<L, T> x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1476,7 +1476,7 @@ namespace TRAP::Math
 	/// <returns>Base 2 log of x, i.e., returns the value y, which satisfies the equation x = 2^y.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> Log2(const Vec<L, T>& x);
+	[[nodiscard]] Vec<L, T> Log2(Vec<L, T> x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1502,7 +1502,7 @@ namespace TRAP::Math
 	/// <returns>Positive square root of x.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> Sqrt(const Vec<L, T>& x);
+	[[nodiscard]] Vec<L, T> Sqrt(Vec<L, T> x);
 
 	/// <summary>
 	/// Retrieve the square root of the parameter.
@@ -1537,7 +1537,7 @@ namespace TRAP::Math
 	/// <returns>Inverse of the square root of x.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> InverseSqrt(const Vec<L, T>& x);
+	[[nodiscard]] Vec<L, T> InverseSqrt(Vec<L, T> x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	//Geometric----------------------------------------------------------------------------------------------------------//
@@ -1766,7 +1766,7 @@ namespace TRAP::Math
 	/// <returns>Multiplied matrix.</returns>
 	template<uint32_t L, typename T>
 	requires (std::floating_point<T> && L > 2)
-	[[nodiscard]] constexpr Mat<L, L, T> MatrixCompMult(const Mat<L, L, T>& x, const Mat<L, L, T>& y);
+	[[nodiscard]] constexpr Mat<L, L, T> MatrixCompMult(Mat<L, L, T> x, const Mat<L, L, T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2141,7 +2141,7 @@ namespace TRAP::Math
 	/// <returns>Matrix with new column data.</returns>
 	template<typename T>
 	requires IsMat<T>
-	[[nodiscard]] T Column(const T& m, std::size_t index, const typename T::colType& x);
+	[[nodiscard]] T Column(T m, std::size_t index, const typename T::colType& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2652,7 +2652,7 @@ namespace TRAP::Math
 	/// <param name="v">Specifies the vector to be inverted.</param>
 	/// <returns>Component-wise logical complement of x.</returns>
 	template<uint32_t L>
-	[[nodiscard]] constexpr Vec<L, bool> Not(const Vec<L, bool>& v) noexcept;
+	[[nodiscard]] constexpr Vec<L, bool> Not(Vec<L, bool> v) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	//Trigonometric------------------------------------------------------------------------------------------------------//
@@ -2674,7 +2674,7 @@ namespace TRAP::Math
 	/// <returns>Radians.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] constexpr Vec<L, T> Radians(const Vec<L, T>& v);
+	[[nodiscard]] constexpr Vec<L, T> Radians(Vec<L, T> v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2694,7 +2694,7 @@ namespace TRAP::Math
 	/// <returns>Degrees.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] constexpr Vec<L, T> Degrees(const Vec<L, T>& v);
+	[[nodiscard]] constexpr Vec<L, T> Degrees(Vec<L, T> v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2716,7 +2716,7 @@ namespace TRAP::Math
 	/// <returns>Sine.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> Sin(const Vec<L, T>& v);
+	[[nodiscard]] Vec<L, T> Sin(Vec<L, T> v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2738,7 +2738,7 @@ namespace TRAP::Math
 	/// <returns>Cosine.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> Cos(const Vec<L, T>& v);
+	[[nodiscard]] Vec<L, T> Cos(Vec<L, T> v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2758,7 +2758,7 @@ namespace TRAP::Math
 	/// <returns>Tangent.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> Tan(const Vec<L, T>& v);
+	[[nodiscard]] Vec<L, T> Tan(Vec<L, T> v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2784,7 +2784,7 @@ namespace TRAP::Math
 	/// <returns>Angle whose sine is x.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> ASin(const Vec<L, T>& v);
+	[[nodiscard]] Vec<L, T> ASin(Vec<L, T> v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2810,7 +2810,7 @@ namespace TRAP::Math
 	/// <returns>Angle whose cosine is x.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> ACos(const Vec<L, T>& v);
+	[[nodiscard]] Vec<L, T> ACos(Vec<L, T> v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2844,7 +2844,7 @@ namespace TRAP::Math
 	/// </returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> ATan(const Vec<L, T>& y, const Vec<L, T>& x);
+	[[nodiscard]] Vec<L, T> ATan(Vec<L, T> y, const Vec<L, T>& x);
 
 	/// <summary>
 	/// Arc tangent.
@@ -2864,7 +2864,7 @@ namespace TRAP::Math
 	/// <returns>Angle whose tangent is y over x.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> ATan(const Vec<L, T>& v);
+	[[nodiscard]] Vec<L, T> ATan(Vec<L, T> v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2884,7 +2884,7 @@ namespace TRAP::Math
 	/// <returns>Hyperbolic sine function, (Exp(x) - Exp(-x)) / 2.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> SinH(const Vec<L, T>& v);
+	[[nodiscard]] Vec<L, T> SinH(Vec<L, T> v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2904,7 +2904,7 @@ namespace TRAP::Math
 	/// <returns>Hyperbolic cosine function, (Exp(x) + Exp(-x)) / 2.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> CosH(const Vec<L, T>& v);
+	[[nodiscard]] Vec<L, T> CosH(Vec<L, T> v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2924,7 +2924,7 @@ namespace TRAP::Math
 	/// <returns>Hyperbolic tangent function, SinH(angle) / CosH(angle).</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> TanH(const Vec<L, T>& v);
+	[[nodiscard]] Vec<L, T> TanH(Vec<L, T> v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2944,7 +2944,7 @@ namespace TRAP::Math
 	/// <returns>Inverse of SinH.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> ASinH(const Vec<L, T>& v);
+	[[nodiscard]] Vec<L, T> ASinH(Vec<L, T> v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2964,7 +2964,7 @@ namespace TRAP::Math
 	/// <returns>Non-negative inverse of CosH.</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> ACosH(const Vec<L, T>& v);
+	[[nodiscard]] Vec<L, T> ACosH(Vec<L, T> v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2984,7 +2984,7 @@ namespace TRAP::Math
 	/// <returns>Inverse of TanH. Note: Results are undefined if Abs(x) >= 1!</returns>
 	template<uint32_t L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> ATanH(const Vec<L, T>& v);
+	[[nodiscard]] Vec<L, T> ATanH(Vec<L, T> v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	//Color space--------------------------------------------------------------------------------------------------------//
@@ -3190,29 +3190,27 @@ requires std::signed_integral<genFIType> || std::floating_point<genFIType>
 
 template<uint32_t L, typename T>
 requires std::signed_integral<T> || std::floating_point<T>
-[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Abs(const Vec<L, T>& x)
+[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Abs(Vec<L, T> x)
 {
-	Vec<L, T> result{};
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = Abs(x[i]);
-	return result;
+		x[i] = Abs(x[i]);
+
+	return x;
 }
 
 template<uint32_t C, uint32_t R, typename T>
 requires std::floating_point<T>
-[[nodiscard]] constexpr TRAP::Math::Mat<C, R, T> TRAP::Math::Abs(const Mat<C, R, T>& x)
+[[nodiscard]] constexpr TRAP::Math::Mat<C, R, T> TRAP::Math::Abs(Mat<C, R, T> x)
 {
-	Mat<C, R, T> result{};
-
 	for(uint32_t i = 0; i < C; ++i)
 	{
 		for(uint32_t j = 0; j < R; ++j)
 		{
-			result[i][j] = Abs(x[i][j]);
+			x[i][j] = Abs(x[i][j]);
 		}
 	}
 
-	return result;
+	return x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3246,42 +3244,42 @@ requires std::floating_point<T>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Floor(const Vec<L, T>& x)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Floor(Vec<L, T> x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = std::floor(x[i]);
-	return result;
+		x[i] = std::floor(x[i]);
+
+	return x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Trunc(const Vec<L, T>& x)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Trunc(Vec<L, T> x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = std::trunc(x[i]);
-	return result;
+		x[i] = std::trunc(x[i]);
+
+	return x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------/
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Round(const Vec<L, T>& x)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Round(Vec<L, T> x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = std::round(x[i]);
-	return result;
+		x[i] = std::round(x[i]);
+
+	return x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3311,14 +3309,14 @@ requires std::floating_point<genType>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::RoundEven(const Vec<L, T>& x)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::RoundEven(Vec<L, T> x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = RoundEven(x[i]);
-	return result;
+		x[i] = RoundEven(x[i]);
+
+	return x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3334,14 +3332,14 @@ requires std::floating_point<T>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Ceil(const Vec<L, T>& x)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Ceil(Vec<L, T> x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = std::ceil(x[i]);
-	return result;
+		x[i] = std::ceil(x[i]);
+
+	return x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3391,28 +3389,26 @@ requires std::unsigned_integral<genType>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Mod(const Vec<L, T>& x, T y)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Mod(Vec<L, T> x, const T y)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> res{};
 	for(uint32_t i = 0; i < L; ++i)
-		res[i] = std::fmod(x[i], y);
+		x[i] = std::fmod(x[i], y);
 
-	return res;
+	return x;
 }
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Mod(const Vec<L, T>& x, const Vec<L, T>& y)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Mod(Vec<L, T> x, const Vec<L, T>& y)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> res{};
 	for(uint32_t i = 0; i < L; ++i)
-		res[i] = std::fmod(x[i], y[i]);
+		x[i] = std::fmod(x[i], y[i]);
 
-	return res;
+	return x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3428,36 +3424,36 @@ requires std::floating_point<genType>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Modf(const Vec<L, T>& x, Vec<L, T>& i)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Modf(Vec<L, T> x, Vec<L, T>& i)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t j = 0u; j < L; j++)
-		result[j] = std::modf(x[j], &i[j]);
-	return result;
+		x[j] = std::modf(x[j], &i[j]);
+
+	return x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L, typename T>
 requires std::is_arithmetic_v<T>
-[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Min(const Vec<L, T>& a, T b)
+[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Min(Vec<L, T> a, const T b)
 {
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = Min(a[i], b);
-	return result;
+		a[i] = Min(a[i], b);
+
+	return a;
 }
 
 template<uint32_t L, typename T>
 requires std::is_arithmetic_v<T>
-[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Min(const Vec<L, T>& a, const Vec<L, T>& b)
+[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Min(Vec<L, T> a, const Vec<L, T>& b)
 {
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = Min(a[i], b[i]);
-	return result;
+		a[i] = Min(a[i], b[i]);
+
+	return a;
 }
 
 template<uint32_t L, typename T>
@@ -3479,22 +3475,22 @@ requires std::is_arithmetic_v<T>
 
 template<uint32_t L, typename T>
 requires std::is_arithmetic_v<T>
-[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Max(const Vec<L, T>& a, T b)
+[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Max(Vec<L, T> a, const T b)
 {
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = Max(a[i], b);
-	return result;
+		a[i] = Max(a[i], b);
+
+	return a;
 }
 
 template<uint32_t L, typename T>
 requires std::is_arithmetic_v<T>
-[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Max(const Vec<L, T>& a, const Vec<L, T>& b)
+[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Max(Vec<L, T> a, const Vec<L, T>& b)
 {
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = Max(a[i], b[i]);
-	return result;
+		a[i] = Max(a[i], b[i]);
+
+	return a;
 }
 
 template<uint32_t L, typename T>
@@ -3841,14 +3837,14 @@ requires std::floating_point<genType>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::FrExp(const Vec<L, T>& v, Vec<L, int32_t>& exp)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::FrExp(Vec<L, T> v, Vec<L, int32_t>& exp)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; ++i)
-		result[i] = std::frexp(v[i], &exp[i]);
-	return result;
+		v[i] = std::frexp(v[i], &exp[i]);
+
+	return v;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3864,14 +3860,14 @@ requires std::floating_point<genType>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::LdExp(const Vec<L, T>& v, const Vec<L, int32_t>& exp)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::LdExp(Vec<L, T> v, const Vec<L, int32_t>& exp)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; ++i)
-		result[i] = std::ldexp(v[i], exp[i]);
-	return result;
+		v[i] = std::ldexp(v[i], exp[i]);
+
+	return v;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3907,26 +3903,26 @@ requires std::floating_point<T>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::FMod(const Vec<L, T>& x, T y)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::FMod(Vec<L, T> x, const T y)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = static_cast<T>(std::fmod(x[i], y));
-	return result;
+		x[i] = static_cast<T>(std::fmod(x[i], y));
+
+	return x;
 }
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::FMod(const Vec<L, T>& x, const Vec<L, T>& y)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::FMod(Vec<L, T> x, const Vec<L, T>& y)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = static_cast<T>(std::fmod(x[i], y[i]));
-	return result;
+		x[i] = static_cast<T>(std::fmod(x[i], y[i]));
+
+	return x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3974,14 +3970,14 @@ requires std::floating_point<T>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Pow(const Vec<L, T>& base, const Vec<L, T>& exponent)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Pow(Vec<L, T> base, const Vec<L, T>& exponent)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = static_cast<T>(std::pow(base[i], exponent[i]));
-	return result;
+		base[i] = static_cast<T>(std::pow(base[i], exponent[i]));
+
+	return base;
 }
 
 template <typename T>
@@ -4042,14 +4038,14 @@ requires std::floating_point<T>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Exp(const Vec<L, T>& x)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Exp(Vec<L, T> x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = std::exp(x[i]);
-	return result;
+		x[i] = std::exp(x[i]);
+
+	return x;
 }
 
 template <typename T>
@@ -4080,14 +4076,14 @@ requires std::floating_point<T>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Log(const Vec<L, T>& x)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Log(Vec<L, T> x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = std::log(x[i]);
-	return result;
+		x[i] = std::log(x[i]);
+
+	return x;
 }
 
 template <typename T>
@@ -4127,14 +4123,14 @@ requires std::floating_point<genType>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Exp2(const Vec<L, T>& x)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Exp2(Vec<L, T> x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = std::exp2(x[i]);
-	return result;
+		x[i] = std::exp2(x[i]);
+
+	return x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4150,14 +4146,14 @@ requires std::floating_point<genType>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Log2(const Vec<L, T>& x)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Log2(Vec<L, T> x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = static_cast<T>(std::log2(x[i]));
-	return result;
+		x[i] = static_cast<T>(std::log2(x[i]));
+
+	return x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4173,14 +4169,14 @@ requires std::floating_point<T>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Sqrt(const Vec<L, T>& x)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Sqrt(Vec<L, T> x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = std::sqrt(x[i]);
-	return result;
+		x[i] = std::sqrt(x[i]);
+
+	return x;
 }
 
 template <typename T>
@@ -4205,14 +4201,14 @@ requires std::floating_point<genType>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::InverseSqrt(const Vec<L, T>& x)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::InverseSqrt(Vec<L, T> x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = static_cast<T>(1) / Sqrt(x[i]);
-	return result;
+		x[i] = static_cast<T>(1) / Sqrt(x[i]);
+
+	return x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4258,6 +4254,7 @@ requires std::floating_point<T>
 	const Vec<L, T> tmp(x * y);
 	for (uint32_t i = 0u; i < L; i++)
 		result += tmp[i];
+
 	return result;
 }
 
@@ -4415,12 +4412,12 @@ requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 
 template<uint32_t L, typename T>
 requires (std::floating_point<T> && L > 2)
-[[nodiscard]] constexpr TRAP::Math::Mat<L, L, T> TRAP::Math::MatrixCompMult(const Mat<L, L, T>& x, const Mat<L, L, T>& y)
+[[nodiscard]] constexpr TRAP::Math::Mat<L, L, T> TRAP::Math::MatrixCompMult(Mat<L, L, T> x, const Mat<L, L, T>& y)
 {
-	Mat<L, L, T> result;
-	for (std::size_t i = 0u; i < result.Length(); ++i)
-		result[i] = x[i] * y[i];
-	return result;
+	for (std::size_t i = 0u; i < x.Length(); ++i)
+		x[i] *= y[i];
+
+	return x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4970,14 +4967,13 @@ requires TRAP::Math::IsMat<T>
 
 template<typename T>
 requires TRAP::Math::IsMat<T>
-[[nodiscard]] T TRAP::Math::Column(const T& m, const std::size_t index, const typename T::colType& x)
+[[nodiscard]] T TRAP::Math::Column(T m, const std::size_t index, const typename T::colType& x)
 {
 	TRAP_ASSERT(index < m.Length(), "Math::Column(): Index out of range!");
 
-	T result = m;
-	result[index] = x;
+	m[index] = x;
 
-	return result;
+	return m;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5862,12 +5858,12 @@ template<uint32_t L>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L>
-[[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Not(const Vec<L, bool>& v) noexcept
+[[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Not(Vec<L, bool> v) noexcept
 {
-	Vec<L, bool> result(true);
 	for (uint32_t i = 0u; i < L; ++i)
-		result[i] = !v[i];
-	return result;
+		v[i] = !v[i];
+
+	return v;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5883,12 +5879,12 @@ requires std::floating_point<genType>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Radians(const Vec<L, T>& v)
+[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Radians(Vec<L, T> v)
 {
-	Vec<L, T> result{};
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = Radians(v[i]);
-	return result;
+		v[i] = Radians(v[i]);
+
+	return v;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5902,12 +5898,12 @@ requires std::floating_point<genType>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Degrees(const Vec<L, T>& v)
+[[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Degrees(Vec<L, T> v)
 {
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = Degrees(v[i]);
-	return result;
+		v[i] = Degrees(v[i]);
+
+	return v;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5923,14 +5919,14 @@ requires std::floating_point<T>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Sin(const Vec<L, T>& v)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Sin(Vec<L, T> v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result{};
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = std::sin(v[i]);
-	return result;
+		v[i] = std::sin(v[i]);
+
+	return v;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5946,14 +5942,14 @@ requires std::floating_point<T>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Cos(const Vec<L, T>& v)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Cos(Vec<L, T> v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result{};
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = std::cos(v[i]);
-	return result;
+		v[i] = std::cos(v[i]);
+
+	return v;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5969,14 +5965,14 @@ requires std::floating_point<T>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Tan(const Vec<L, T>& v)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Tan(Vec<L, T> v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = std::tan(v[i]);
-	return result;
+		v[i] = std::tan(v[i]);
+
+	return v;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5992,14 +5988,14 @@ requires std::floating_point<T>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ASin(const Vec<L, T>& v)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ASin(Vec<L, T> v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = std::asin(v[i]);
-	return result;
+		v[i] = std::asin(v[i]);
+
+	return v;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -6015,14 +6011,14 @@ requires std::floating_point<T>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ACos(const Vec<L, T>& v)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ACos(Vec<L, T> v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = std::acos(v[i]);
-	return result;
+		v[i] = std::acos(v[i]);
+
+	return v;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -6038,14 +6034,14 @@ requires std::floating_point<genType>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ATan(const Vec<L, T>& y, const Vec<L, T>& x)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ATan(Vec<L, T> y, const Vec<L, T>& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = std::atan2(y[i], x[i]);
-	return result;
+		y[i] = std::atan2(y[i], x[i]);
+
+	return y;
 }
 
 template<typename T>
@@ -6059,14 +6055,14 @@ requires std::floating_point<T>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ATan(const Vec<L, T>& v)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ATan(Vec<L, T> v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = std::atan(v[i]);
-	return result;
+		v[i] = std::atan(v[i]);
+
+	return v;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -6082,14 +6078,14 @@ requires std::floating_point<T>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::SinH(const Vec<L, T>& v)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::SinH(Vec<L, T> v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = std::sinh(v[i]);
-	return result;
+		v[i] = std::sinh(v[i]);
+
+	return v;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -6105,14 +6101,14 @@ requires std::floating_point<T>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::CosH(const Vec<L, T>& v)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::CosH(Vec<L, T> v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = std::cosh(v[i]);
-	return result;
+		v[i] = std::cosh(v[i]);
+
+	return v;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -6128,14 +6124,14 @@ requires std::floating_point<T>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::TanH(const Vec<L, T>& v)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::TanH(Vec<L, T> v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = std::tanh(v[i]);
-	return result;
+		v[i] = std::tanh(v[i]);
+
+	return v;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -6151,14 +6147,14 @@ requires std::floating_point<T>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ASinH(const Vec<L, T>& v)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ASinH(Vec<L, T> v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = std::asinh(v[i]);
-	return result;
+		v[i] = std::asinh(v[i]);
+
+	return v;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -6174,14 +6170,14 @@ requires std::floating_point<T>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ACosH(const Vec<L, T>& v)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ACosH(Vec<L, T> v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = std::acosh(v[i]);
-	return result;
+		v[i] = std::acosh(v[i]);
+
+	return v;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -6197,14 +6193,14 @@ requires std::floating_point<T>
 
 template<uint32_t L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ATanH(const Vec<L, T>& v)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::ATanH(Vec<L, T> v)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<L, T> result;
 	for (uint32_t i = 0u; i < L; i++)
-		result[i] = std::atanh(v[i]);
-	return result;
+		v[i] = std::atanh(v[i]);
+
+	return v;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
