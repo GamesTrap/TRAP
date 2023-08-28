@@ -304,7 +304,7 @@ TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& u, const Vec<3, T>& v)
 		t = Cross(u, v);
 	}
 
-	*this = Normalize(tQuat<T>(realPart, t.x, t.y, t.z));
+	*this = Normalize(tQuat<T>(realPart, t));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -364,9 +364,8 @@ template <typename U>
 requires std::floating_point<U>
 constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator+=(const tQuat<U>& q) noexcept
 {
-	const tQuat<T> p(q);
-
-	return (*this = tQuat<T>(this->w + p.w, this->x + p.x, this->y + p.y, this->z + p.z));
+	return (*this = tQuat<T>(this->w + static_cast<T>(q.w), this->x + static_cast<T>(q.x),
+	                         this->y + static_cast<T>(q.y), this->z + static_cast<T>(q.z)));
 }
 
 template <typename T>
@@ -375,9 +374,8 @@ template <typename U>
 requires std::floating_point<U>
 constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator-=(const tQuat<U>& q) noexcept
 {
-	const tQuat<T> p(q);
-
-	return (*this = tQuat<T>(this->w - p.w, this->x - p.x, this->y - p.y, this->z - p.z));
+	return (*this = tQuat<T>(this->w - static_cast<T>(q.w), this->x - static_cast<T>(q.x),
+	                         this->y - static_cast<T>(q.y), this->z - static_cast<T>(q.z)));
 }
 
 template <typename T>
@@ -387,12 +385,11 @@ requires std::floating_point<U>
 constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator*=(const tQuat<U>& r) noexcept
 {
 	const tQuat<T> p(*this);
-	const tQuat<T> q(r);
 
-	this->w = p.w * q.w - p.x * q.x - p.y * q.y - p.z * q.z;
-	this->x = p.w * q.x + p.x * q.w + p.y * q.z - p.z * q.y;
-	this->y = p.w * q.y + p.y * q.w + p.z * q.x - p.x * q.z;
-	this->z = p.w * q.z + p.z * q.w + p.x * q.y - p.y * q.x;
+	this->w = p.w * static_cast<T>(r.w) - p.x * static_cast<T>(r.x) - p.y * static_cast<T>(r.y) - p.z * static_cast<T>(r.z);
+	this->x = p.w * static_cast<T>(r.x) + p.x * static_cast<T>(r.w) + p.y * static_cast<T>(r.z) - p.z * static_cast<T>(r.y);
+	this->y = p.w * static_cast<T>(r.y) + p.y * static_cast<T>(r.w) + p.z * static_cast<T>(r.x) - p.x * static_cast<T>(r.z);
+	this->z = p.w * static_cast<T>(r.z) + p.z * static_cast<T>(r.w) + p.x * static_cast<T>(r.y) - p.y * static_cast<T>(r.x);
 
 	return *this;
 }
@@ -402,7 +399,8 @@ requires std::floating_point<T>
 template <typename U>
 constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator*=(const U s) noexcept
 {
-	return (*this = tQuat<T>(this->w * s, this->x * s, this->y * s, this->z * s));
+	return (*this = tQuat<T>(this->w * static_cast<T>(s), this->x * static_cast<T>(s),
+	                         this->y * static_cast<T>(s), this->z * static_cast<T>(s)));
 }
 
 template <typename T>
@@ -410,7 +408,8 @@ requires std::floating_point<T>
 template <typename U>
 constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator/=(const U s) noexcept
 {
-	return (*this = tQuat<T>(this->w / s, this->x / s, this->y / s, this->z / s));
+	return (*this = tQuat<T>(this->w / static_cast<T>(s), this->x / static_cast<T>(s),
+	                         this->y / static_cast<T>(s), this->z / static_cast<T>(s)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -537,8 +536,7 @@ requires std::floating_point<T>
 	else
 		return "Unknown type";
 
-	return "Quat" + postfix + "(" + std::to_string(w) + ", {" + std::to_string(x) + ", " +
-	       std::to_string(y) + ", " + std::to_string(z) + "})";
+	return fmt::format("Quat{}({}, {{}, {}, {}}})", postfix, w, x, y, z);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

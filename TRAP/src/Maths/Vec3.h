@@ -467,7 +467,7 @@ template<typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] T& TRAP::Math::Vec<3, T>::at(const std::size_t i)
 {
-	TRAP_ASSERT(i < this->Length(), "Math::Vec<3, T>::operator[]: Index out of range!");
+	TRAP_ASSERT(i < this->Length(), "Math::Vec<3, T>::at(): Index out of range!");
 
 	switch (i)
 	{
@@ -488,7 +488,7 @@ template<typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] const T& TRAP::Math::Vec<3, T>::at(const std::size_t i) const
 {
-	TRAP_ASSERT(i < this->Length(), "Math::Vec<3, T>::operator[]: Index out of range!");
+	TRAP_ASSERT(i < this->Length(), "Math::Vec<3, T>::at(): Index out of range!");
 
 	switch (i)
 	{
@@ -650,7 +650,7 @@ template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr const TRAP::Math::Vec<3, T> TRAP::Math::Vec<3, T>::operator++(const int32_t) noexcept
 {
-	Vec<3, T> result(*this);
+	const Vec<3, T> result(*this);
 	++*this;
 
 	return result;
@@ -660,7 +660,7 @@ template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr const TRAP::Math::Vec<3, T> TRAP::Math::Vec<3, T>::operator--(const int32_t) noexcept
 {
-	Vec<3, T> result(*this);
+	const Vec<3, T> result(*this);
 	--*this;
 
 	return result;

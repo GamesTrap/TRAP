@@ -4352,3 +4352,8 @@ SITREP 08/27/2023|23w34b1
     - Changed TRAP Engine version to 23w34b1(0.9.83)
     - Mat3/4 updated value and column constructors ~<5 mins
     - Math small adjustments ~<30 mins
+
+SITREP 08/28/2023|23w35a1
+    - Changed TRAP Engine version to 23w35a1(0.9.84)
+    - Mat3/Mat4 Added support for std::get() ~<15 mins
+    - Mat3/Mat4 Use std::get() where possible ~>30 mins

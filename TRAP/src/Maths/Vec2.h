@@ -428,7 +428,7 @@ template<typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] T& TRAP::Math::Vec<2, T>::at(const std::size_t i)
 {
-	TRAP_ASSERT(i < this->Length(), "Math::Vec<2, T>::operator[]: Index out of range!");
+	TRAP_ASSERT(i < this->Length(), "Math::Vec<2, T>::at(): Index out of range!");
 
 	return i == 0 ? x : y;
 }
@@ -437,7 +437,7 @@ template<typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] const T& TRAP::Math::Vec<2, T>::at(const std::size_t i) const
 {
-	TRAP_ASSERT(i < this->Length(), "Math::Vec<2, T>::operator[]: Index out of range!");
+	TRAP_ASSERT(i < this->Length(), "Math::Vec<2, T>::at(): Index out of range!");
 
 	return i == 0 ? x : y;
 }
@@ -574,9 +574,9 @@ constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator--() noexcept
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr const TRAP::Math::Vec<2, T> TRAP::Math::Vec<2, T>::operator++(int32_t) noexcept
+constexpr const TRAP::Math::Vec<2, T> TRAP::Math::Vec<2, T>::operator++(const int32_t) noexcept
 {
-	Vec<2, T> result(*this);
+	const Vec<2, T> result(*this);
 	++*this;
 
 	return result;
@@ -584,9 +584,9 @@ constexpr const TRAP::Math::Vec<2, T> TRAP::Math::Vec<2, T>::operator++(int32_t)
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr const TRAP::Math::Vec<2, T> TRAP::Math::Vec<2, T>::operator--(int32_t) noexcept
+constexpr const TRAP::Math::Vec<2, T> TRAP::Math::Vec<2, T>::operator--(const int32_t) noexcept
 {
-	Vec<2, T> result(*this);
+	const Vec<2, T> result(*this);
 	--*this;
 
 	return result;
