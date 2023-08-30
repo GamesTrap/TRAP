@@ -164,8 +164,8 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData*
 	const auto internalRes = GetInternalRenderResolution();
 #endif /*TRAP_HEADLESS_MODE*/
 	if(p->NewShadingRateTexture &&
-	   p->NewShadingRateTexture->GetWidth() >= NumericCast<uint32_t>(TRAP::Math::Ceil(NumericCast<float>(internalRes.x) / NumericCast<float>(GPUSettings.ShadingRateTexelWidth))) &&
-	   p->NewShadingRateTexture->GetHeight() >= NumericCast<uint32_t>(TRAP::Math::Ceil(NumericCast<float>(internalRes.y) / NumericCast<float>(GPUSettings.ShadingRateTexelHeight))))
+	   p->NewShadingRateTexture->GetWidth() >= NumericCast<uint32_t>(TRAP::Math::Ceil(NumericCast<float>(internalRes.x()) / NumericCast<float>(GPUSettings.ShadingRateTexelWidth))) &&
+	   p->NewShadingRateTexture->GetHeight() >= NumericCast<uint32_t>(TRAP::Math::Ceil(NumericCast<float>(internalRes.y()) / NumericCast<float>(GPUSettings.ShadingRateTexelHeight))))
 	{
 		p->CachedShadingRateTextures[p->ImageIndex] = p->NewShadingRateTexture;
 		std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).ShadingRateTexture = p->NewShadingRateTexture;
@@ -1537,9 +1537,9 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader) const
 			cpd.RootSignature = shader->GetRootSignature();
 		}
 
-		data->CurrentComputeWorkGroupSize.x = std::get<0>(shader->GetNumThreadsPerGroup());
-		data->CurrentComputeWorkGroupSize.y = std::get<1>(shader->GetNumThreadsPerGroup());
-		data->CurrentComputeWorkGroupSize.z = std::get<2>(shader->GetNumThreadsPerGroup());
+		data->CurrentComputeWorkGroupSize.x() = std::get<0>(shader->GetNumThreadsPerGroup());
+		data->CurrentComputeWorkGroupSize.y() = std::get<1>(shader->GetNumThreadsPerGroup());
+		data->CurrentComputeWorkGroupSize.z() = std::get<2>(shader->GetNumThreadsPerGroup());
 
 		data->CurrentComputePipeline = GetPipeline(data->ComputePipelineDesc);
 		data->ComputeCommandBuffers[data->ImageIndex]->BindPipeline(data->CurrentComputePipeline);
@@ -2456,8 +2456,8 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 	if(viewportData->RenderScale != 1.0f && !std::get<0>(viewportData->InternalRenderTargets))
 		rebuild = true;
 	else if(std::get<0>(viewportData->InternalRenderTargets) &&
-	        (std::get<0>(viewportData->InternalRenderTargets)->GetWidth() != newInternalRes.x ||
-	         std::get<0>(viewportData->InternalRenderTargets)->GetHeight() != newInternalRes.y))
+	        (std::get<0>(viewportData->InternalRenderTargets)->GetWidth() != newInternalRes.x() ||
+	         std::get<0>(viewportData->InternalRenderTargets)->GetHeight() != newInternalRes.y()))
 	{
 		rebuild = true;
 	}
@@ -2483,8 +2483,8 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 		viewportData->InternalRenderTargets = {};
 
 		RendererAPI::RenderTargetDesc rTDesc{};
-		rTDesc.Width = newInternalRes.x;
-		rTDesc.Height = newInternalRes.y;
+		rTDesc.Width = newInternalRes.x();
+		rTDesc.Height = newInternalRes.y();
 		rTDesc.Depth = 1;
 		rTDesc.ArraySize = 1;
 		rTDesc.MipLevels = 1;
@@ -2778,8 +2778,8 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const uint32_t wid
 	SwapChainDesc swapChainDesc{};
 	swapChainDesc.Window = window;
 	swapChainDesc.PresentQueues = { s_graphicQueue };
-	swapChainDesc.Width = window->GetFrameBufferSize().x;
-	swapChainDesc.Height = window->GetFrameBufferSize().y;
+	swapChainDesc.Width = window->GetFrameBufferSize().x();
+	swapChainDesc.Height = window->GetFrameBufferSize().y();
 	swapChainDesc.ImageCount = RendererAPI::ImageCount;
 	swapChainDesc.ColorFormat = SwapChain::GetRecommendedSwapchainFormat(true, false);
 	swapChainDesc.EnableVSync = p->CurrentVSync;
@@ -2794,8 +2794,8 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const uint32_t wid
 	if(s_currentAntiAliasing == AntiAliasing::MSAA)
 	{
 		RendererAPI::RenderTargetDesc rTMSAADesc{};
-		rTMSAADesc.Width = window->GetFrameBufferSize().x;
-		rTMSAADesc.Height = window->GetFrameBufferSize().y;
+		rTMSAADesc.Width = window->GetFrameBufferSize().x();
+		rTMSAADesc.Height = window->GetFrameBufferSize().y();
 		rTMSAADesc.Depth = 1;
 		rTMSAADesc.ArraySize = 1;
 		rTMSAADesc.MipLevels = 1;

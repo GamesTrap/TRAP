@@ -50,27 +50,27 @@ void RunFModTests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunFModVecTests()
 {
-    constexpr std::array<std::tuple<typename T::valueType, typename T::valueType, typename T::valueType>, 10> values
+    constexpr std::array<std::tuple<typename T::value_type, typename T::value_type, typename T::value_type>, 10> values
     {
-        std::tuple(typename T::valueType( 5.3f), typename T::valueType( 2.0f), typename T::valueType( 1.3f)),
-        std::tuple(typename T::valueType(-5.3f), typename T::valueType( 2.0f), typename T::valueType(-1.3f)),
-        std::tuple(typename T::valueType( 5.3f), typename T::valueType(-2.0f), typename T::valueType( 1.3f)),
-        std::tuple(typename T::valueType(-5.3f), typename T::valueType(-2.0f), typename T::valueType(-1.3f)),
-        std::tuple(typename T::valueType( 18.5f), typename T::valueType( 4.2f), typename T::valueType( 1.7f)),
-        std::tuple(typename T::valueType(-18.5f), typename T::valueType( 4.2f), typename T::valueType(-1.7f)),
-        std::tuple(typename T::valueType( 18.5f), typename T::valueType(-4.2f), typename T::valueType( 1.7f)),
-        std::tuple(typename T::valueType(-18.5f), typename T::valueType(-4.2f), typename T::valueType(-1.7f)),
-        std::tuple(typename T::valueType(  3.0f), typename T::valueType(  2.0f), typename T::valueType(1.0f)),
-        std::tuple(typename T::valueType( 22.0f), typename T::valueType(-10.0f), typename T::valueType(2.0f)),
+        std::tuple(typename T::value_type( 5.3f), typename T::value_type( 2.0f), typename T::value_type( 1.3f)),
+        std::tuple(typename T::value_type(-5.3f), typename T::value_type( 2.0f), typename T::value_type(-1.3f)),
+        std::tuple(typename T::value_type( 5.3f), typename T::value_type(-2.0f), typename T::value_type( 1.3f)),
+        std::tuple(typename T::value_type(-5.3f), typename T::value_type(-2.0f), typename T::value_type(-1.3f)),
+        std::tuple(typename T::value_type( 18.5f), typename T::value_type( 4.2f), typename T::value_type( 1.7f)),
+        std::tuple(typename T::value_type(-18.5f), typename T::value_type( 4.2f), typename T::value_type(-1.7f)),
+        std::tuple(typename T::value_type( 18.5f), typename T::value_type(-4.2f), typename T::value_type( 1.7f)),
+        std::tuple(typename T::value_type(-18.5f), typename T::value_type(-4.2f), typename T::value_type(-1.7f)),
+        std::tuple(typename T::value_type(  3.0f), typename T::value_type(  2.0f), typename T::value_type(1.0f)),
+        std::tuple(typename T::value_type( 22.0f), typename T::value_type(-10.0f), typename T::value_type(2.0f)),
     };
 
     for(const auto& [x, y, expected] : values)
     {
         const T res = TRAP::Math::FMod(T(x), y);
-        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, T(expected), typename T::valueType(0.00001f))));
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, T(expected), typename T::value_type(0.00001f))));
 
         const T res1 = TRAP::Math::FMod(T(x), T(y));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res1, T(expected), T(0.00001f))));

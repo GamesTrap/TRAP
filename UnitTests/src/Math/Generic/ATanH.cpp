@@ -37,14 +37,14 @@ void RunATanHEdgeTests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunATanHVecTests()
 {
-    constexpr typename T::valueType Epsilon = std::numeric_limits<typename T::valueType>::epsilon();
+    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
     constexpr std::array<T, 3> values
     {
-        T(typename T::valueType(-0.99)), T(typename T::valueType(0.0)), T(typename T::valueType(0.001))
+        T(typename T::value_type(-0.99)), T(typename T::value_type(0.0)), T(typename T::value_type(0.001))
     };
 
     for(const T val : values)
@@ -56,15 +56,15 @@ void RunATanHVecTests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunATanHVecEdgeTests()
 {
-    constexpr typename T::valueType nan = std::numeric_limits<typename T::valueType>::quiet_NaN();
+    constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
 
     REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::ATanH(T(nan)))));
-    REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::ATanH(T(typename T::valueType(1.1))))));
-    REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::ATanH(T(typename T::valueType(-1.0))))));
-    REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::ATanH(T(typename T::valueType(1.0))))));
+    REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::ATanH(T(typename T::value_type(1.1))))));
+    REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::ATanH(T(typename T::value_type(-1.0))))));
+    REQUIRE(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::ATanH(T(typename T::value_type(1.0))))));
 }
 
 TEST_CASE("TRAP::Math::ATanH()", "[math][generic][atanh]")

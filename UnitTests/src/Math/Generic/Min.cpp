@@ -66,7 +66,7 @@ consteval void RunCompileTimeMinVecTest()
     constexpr T N = static_cast<T>(0);
     constexpr T B = static_cast<T>(1);
 
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(B, static_cast<T::valueType>(N.x)), N, TRAP::Math::Epsilon<typename T::valueType>())));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(B, static_cast<T::value_type>(N.x())), N, TRAP::Math::Epsilon<typename T::value_type>())));
 
     static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(N, B), N, TRAP::Math::Epsilon<T>())));
     static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(B, N), N, TRAP::Math::Epsilon<T>())));

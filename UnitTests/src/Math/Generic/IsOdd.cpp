@@ -72,16 +72,16 @@ consteval void RunCompileTimeIsOddEdgeTests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && std::integral<typename T::valueType>
+requires TRAP::Math::IsVec<T> && std::integral<typename T::value_type>
 consteval void RunCompileTimeIsOddVecTests()
 {
-    if constexpr(std::unsigned_integral<typename T::valueType>)
+    if constexpr(std::unsigned_integral<typename T::value_type>)
     {
         static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(1))));
         static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(2))));
         static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(37))));
 
-        if constexpr(sizeof(typename T::valueType) >= 4)
+        if constexpr(sizeof(typename T::value_type) >= 4)
         {
             static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(888))));
             static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(1001))));
@@ -89,13 +89,13 @@ consteval void RunCompileTimeIsOddVecTests()
             static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(987654321))));
             static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(1234567890))));
         }
-        else if constexpr(sizeof(typename T::valueType) >= 2)
+        else if constexpr(sizeof(typename T::value_type) >= 2)
         {
             static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(888))));
             static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(1001))));
         }
     }
-    else if constexpr(std::signed_integral<typename T::valueType>)
+    else if constexpr(std::signed_integral<typename T::value_type>)
     {
         static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(-2))));
         static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(-1))));
@@ -103,7 +103,7 @@ consteval void RunCompileTimeIsOddVecTests()
         static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(2))));
         static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(37))));
 
-        if constexpr(sizeof(typename T::valueType) >= 4)
+        if constexpr(sizeof(typename T::value_type) >= 4)
         {
             static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(-123456789))));
             static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(-999))));
@@ -113,7 +113,7 @@ consteval void RunCompileTimeIsOddVecTests()
             static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(987654321))));
             static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(1234567890))));
         }
-        else if constexpr(sizeof(typename T::valueType) >= 2)
+        else if constexpr(sizeof(typename T::value_type) >= 2)
         {
             static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(-999))));
             static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(888))));

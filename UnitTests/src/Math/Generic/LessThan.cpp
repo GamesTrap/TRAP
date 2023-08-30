@@ -30,15 +30,15 @@ template<typename T>
 requires TRAP::Math::IsVec<T>
 consteval void RunCompileTimeLessThanVecTests()
 {
-    constexpr T A(TRAP::Math::Vec<4, typename T::valueType>(2, 3, 4, 5));
-    constexpr T B(TRAP::Math::Vec<4, typename T::valueType>(1, 2, 3, 4));
+    constexpr T A(TRAP::Math::Vec<4, typename T::value_type>(2, 3, 4, 5));
+    constexpr T B(TRAP::Math::Vec<4, typename T::value_type>(1, 2, 3, 4));
 
     static_assert(!TRAP::Math::All(TRAP::Math::LessThan(A, B)));
     static_assert( TRAP::Math::All(TRAP::Math::LessThan(B, A)));
 
-    if constexpr(std::floating_point<typename T::valueType> || std::signed_integral<typename T::valueType>)
+    if constexpr(std::floating_point<typename T::value_type> || std::signed_integral<typename T::value_type>)
     {
-        constexpr T C(TRAP::Math::Vec<4, typename T::valueType>(-2, -3, -4, -5));
+        constexpr T C(TRAP::Math::Vec<4, typename T::value_type>(-2, -3, -4, -5));
 
         static_assert(!TRAP::Math::All(TRAP::Math::LessThan(A, C)));
         static_assert( TRAP::Math::All(TRAP::Math::LessThan(C, A)));

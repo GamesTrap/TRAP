@@ -28,7 +28,7 @@ void RunSqrtTests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunSqrtVecTests()
 {
     REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(T(4.0f)), T(2.0f), T(0.01f))));
@@ -38,25 +38,25 @@ template<typename T>
 requires TRAP::Math::IsQuat<T>
 void RunSqrtQuatTests()
 {
-    constexpr typename T::valueType Epsilon = typename T::valueType(0.001f);
+    constexpr typename T::value_type Epsilon = typename T::value_type(0.001f);
 
     {
-        constexpr T x(typename T::valueType(1.0f), typename T::valueType(0.0f), typename T::valueType(0.0f), typename T::valueType(0.0f));
-        constexpr T res(typename T::valueType(1.0f), typename T::valueType(0.0f), typename T::valueType(0.0f), typename T::valueType(0.0f));
+        constexpr T x(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
+        constexpr T res(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(x), res, Epsilon)));
     }
     {
-        constexpr T x(typename T::valueType(2.0f), typename T::valueType(3.0f), typename T::valueType(4.0f), typename T::valueType(5.0f));
-        constexpr T res(typename T::valueType(2.162f), typename T::valueType(0.693803f), typename T::valueType(0.92507f), typename T::valueType(1.15634f));
+        constexpr T x(typename T::value_type(2.0f), typename T::value_type(3.0f), typename T::value_type(4.0f), typename T::value_type(5.0f));
+        constexpr T res(typename T::value_type(2.162f), typename T::value_type(0.693803f), typename T::value_type(0.92507f), typename T::value_type(1.15634f));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(x), res, Epsilon)));
     }
     {
-        constexpr T x(typename T::valueType(-2.0f), typename T::valueType(-3.0f), typename T::valueType(-4.0f), typename T::valueType(-5.0f));
-        constexpr T res(typename T::valueType(1.63531f), typename T::valueType(-0.917258f), typename T::valueType(-1.22301f), typename T::valueType(-1.52876f));
+        constexpr T x(typename T::value_type(-2.0f), typename T::value_type(-3.0f), typename T::value_type(-4.0f), typename T::value_type(-5.0f));
+        constexpr T res(typename T::value_type(1.63531f), typename T::value_type(-0.917258f), typename T::value_type(-1.22301f), typename T::value_type(-1.52876f));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(x), res, Epsilon)));
     }
     {
-        constexpr T x(typename T::valueType(0.0f), typename T::valueType(0.0f), typename T::valueType(0.0f), typename T::valueType(0.0f));
+        constexpr T x(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
         REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Sqrt(x))));
     }
 }

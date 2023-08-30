@@ -9,50 +9,50 @@
 #include "TRAP/src/Maths/Math.h"
 
 template<typename T>
-requires ((TRAP::Math::IsMat3<T> || TRAP::Math::IsMat4<T>) && std::floating_point<typename T::valueType>)
+requires ((TRAP::Math::IsMat3<T> || TRAP::Math::IsMat4<T>) && std::floating_point<typename T::value_type>)
 consteval void RunCompileTimeDeterminantTests()
 {
-    constexpr typename T::valueType Epsilon = std::numeric_limits<typename T::valueType>::epsilon();
+    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
-    static_assert(TRAP::Math::Equal(TRAP::Math::Determinant(T(1.0f)), typename T::valueType(1.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Determinant(T(0.0f)), typename T::valueType(0.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Determinant(T(1.0f)), typename T::value_type(1.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Determinant(T(0.0f)), typename T::value_type(0.0f), Epsilon));
 
-    constexpr T input1(TRAP::Math::tMat4<typename T::valueType>(2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 4.0f, 0.0f, 0.0f, 0.0f, 0.0f, 5.0f));
-    constexpr T input2(TRAP::Math::tMat4<typename T::valueType>(2.0f, 4.0f, 1.0f, 3.0f, 1.0f, 2.0f, 4.0f, 6.0f, 3.0f, 1.0f, 2.0f, 2.0f, 5.0f, 7.0f, 3.0f, 1.0f));
-    constexpr T input3(TRAP::Math::tMat4<typename T::valueType>(1.0f, 2.0f, 3.0f, 4.0f, 2.0f, 4.0f, 6.0f, 8.0f, 3.0f, 6.0f, 9.0f, 12.0f, 4.0f, 8.0f, 12.0f, 16.0f));
-    constexpr T input4(TRAP::Math::tMat4<typename T::valueType>(-1.0f, 2.0f, -3.0f, 4.0f, -2.0f, 5.0f, -1.0f, 7.0f, -3.0f, 1.0f, -4.0f, 6.0f, -4.0f, 3.0f, -2.0f, 8.0f));
+    constexpr T input1(TRAP::Math::tMat4<typename T::value_type>(2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 4.0f, 0.0f, 0.0f, 0.0f, 0.0f, 5.0f));
+    constexpr T input2(TRAP::Math::tMat4<typename T::value_type>(2.0f, 4.0f, 1.0f, 3.0f, 1.0f, 2.0f, 4.0f, 6.0f, 3.0f, 1.0f, 2.0f, 2.0f, 5.0f, 7.0f, 3.0f, 1.0f));
+    constexpr T input3(TRAP::Math::tMat4<typename T::value_type>(1.0f, 2.0f, 3.0f, 4.0f, 2.0f, 4.0f, 6.0f, 8.0f, 3.0f, 6.0f, 9.0f, 12.0f, 4.0f, 8.0f, 12.0f, 16.0f));
+    constexpr T input4(TRAP::Math::tMat4<typename T::value_type>(-1.0f, 2.0f, -3.0f, 4.0f, -2.0f, 5.0f, -1.0f, 7.0f, -3.0f, 1.0f, -4.0f, 6.0f, -4.0f, 3.0f, -2.0f, 8.0f));
 
     if constexpr(TRAP::Math::IsMat4<T>)
     {
-        static_assert(TRAP::Math::Equal(TRAP::Math::Determinant(input1), typename T::valueType(120.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Determinant(input2), typename T::valueType(-184.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Determinant(input3), typename T::valueType(0.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Determinant(input4), typename T::valueType(5.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Determinant(input1), typename T::value_type(120.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Determinant(input2), typename T::value_type(-184.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Determinant(input3), typename T::value_type(0.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Determinant(input4), typename T::value_type(5.0f), Epsilon));
     }
     else if constexpr(TRAP::Math::IsMat3<T>)
     {
-        static_assert(TRAP::Math::Equal(TRAP::Math::Determinant(input1), typename T::valueType(24.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Determinant(input2), typename T::valueType(35.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Determinant(input3), typename T::valueType(0.0f), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Determinant(input4), typename T::valueType(-30.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Determinant(input1), typename T::value_type(24.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Determinant(input2), typename T::value_type(35.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Determinant(input3), typename T::value_type(0.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Determinant(input4), typename T::value_type(-30.0f), Epsilon));
     }
 }
 
 template<typename T>
-requires ((TRAP::Math::IsMat3<T> || TRAP::Math::IsMat4<T>) && std::floating_point<typename T::valueType>)
+requires ((TRAP::Math::IsMat3<T> || TRAP::Math::IsMat4<T>) && std::floating_point<typename T::value_type>)
 void RunDeterminantEdgeTests()
 {
-    constexpr typename T::valueType min = std::numeric_limits<typename T::valueType>::lowest();
-    constexpr typename T::valueType max = std::numeric_limits<typename T::valueType>::max();
-    constexpr typename T::valueType inf = std::numeric_limits<typename T::valueType>::infinity();
-    constexpr typename T::valueType ninf = -std::numeric_limits<typename T::valueType>::infinity();
-    constexpr typename T::valueType nan = std::numeric_limits<typename T::valueType>::quiet_NaN();
+    constexpr typename T::value_type min = std::numeric_limits<typename T::value_type>::lowest();
+    constexpr typename T::value_type max = std::numeric_limits<typename T::value_type>::max();
+    constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
+    constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
+    constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
 
-    constexpr T input1(TRAP::Math::tMat4<typename T::valueType>{min});
-    constexpr T input2(TRAP::Math::tMat4<typename T::valueType>{max});
-    constexpr T input3(TRAP::Math::tMat4<typename T::valueType>{inf});
-    constexpr T input4(TRAP::Math::tMat4<typename T::valueType>{ninf});
-    constexpr T input5(TRAP::Math::tMat4<typename T::valueType>{nan});
+    constexpr T input1(TRAP::Math::tMat4<typename T::value_type>{min});
+    constexpr T input2(TRAP::Math::tMat4<typename T::value_type>{max});
+    constexpr T input3(TRAP::Math::tMat4<typename T::value_type>{inf});
+    constexpr T input4(TRAP::Math::tMat4<typename T::value_type>{ninf});
+    constexpr T input5(TRAP::Math::tMat4<typename T::value_type>{nan});
 
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Determinant(input3)));
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Determinant(input4)));

@@ -34,11 +34,11 @@ consteval void RunCompileTimeIsEvenEdgeTests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 consteval void RunCompileTimeIsFiniteVecTests()
 {
-    static_assert(TRAP::Math::All(TRAP::Math::IsFinite(T(typename T::valueType(1.0)))));
-    static_assert(TRAP::Math::All(TRAP::Math::IsFinite(T(typename T::valueType(-1.0)))));
+    static_assert(TRAP::Math::All(TRAP::Math::IsFinite(T(typename T::value_type(1.0)))));
+    static_assert(TRAP::Math::All(TRAP::Math::IsFinite(T(typename T::value_type(-1.0)))));
 }
 
 TEST_CASE("TRAP::Math::IsFinite()", "[math][generic][isfinite]")

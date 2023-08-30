@@ -17,17 +17,17 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 			const float leftXAxis = Input::GetControllerAxis(m_controller, Input::ControllerAxis::Left_X);
 			if (leftXAxis < -0.1f || leftXAxis > 0.1f) //Dead zone
 			{
-				m_cameraPosition.x += leftXAxis * Math::Cos(Math::Radians(m_cameraRotation.z)) *
+				m_cameraPosition.x() += leftXAxis * Math::Cos(Math::Radians(m_cameraRotation.z())) *
 				                      m_cameraTranslationSpeed * deltaTime;
-				m_cameraPosition.y += leftXAxis * Math::Sin(Math::Radians(m_cameraRotation.z)) *
+				m_cameraPosition.y() += leftXAxis * Math::Sin(Math::Radians(m_cameraRotation.z())) *
 				                      m_cameraTranslationSpeed * deltaTime;
 			}
 			const float leftYAxis = Input::GetControllerAxis(m_controller, Input::ControllerAxis::Left_Y);
 			if (leftYAxis < -0.1f || leftYAxis > 0.1f) //Dead zone
 			{
-				m_cameraPosition.x -= leftYAxis * -Math::Sin(Math::Radians(m_cameraRotation.z)) *
+				m_cameraPosition.x() -= leftYAxis * -Math::Sin(Math::Radians(m_cameraRotation.z())) *
 				                      m_cameraTranslationSpeed * deltaTime;
-				m_cameraPosition.y -= leftYAxis * Math::Cos(Math::Radians(m_cameraRotation.z)) *
+				m_cameraPosition.y() -= leftYAxis * Math::Cos(Math::Radians(m_cameraRotation.z())) *
 				                      m_cameraTranslationSpeed * deltaTime;
 			}
 
@@ -56,7 +56,7 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 			{
 				const float rightXAxis = Input::GetControllerAxis(m_controller, Input::ControllerAxis::Right_X);
 				if (rightXAxis < -0.1f || rightXAxis > 0.1f) //Dead zone
-					m_cameraRotation.z += rightXAxis * m_cameraRotationSpeed * deltaTime;
+					m_cameraRotation.z() += rightXAxis * m_cameraRotationSpeed * deltaTime;
 			}
 		}
 	}
@@ -65,49 +65,49 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 		//Keyboard
 		if (Input::IsKeyPressed(Input::Key::A))
 		{
-			m_cameraPosition.x -= Math::Cos(Math::Radians(m_cameraRotation.z)) * m_cameraTranslationSpeed *
+			m_cameraPosition.x() -= Math::Cos(Math::Radians(m_cameraRotation.z())) * m_cameraTranslationSpeed *
 			                      deltaTime;
-			m_cameraPosition.y -= Math::Sin(Math::Radians(m_cameraRotation.z)) * m_cameraTranslationSpeed *
+			m_cameraPosition.y() -= Math::Sin(Math::Radians(m_cameraRotation.z())) * m_cameraTranslationSpeed *
 			                      deltaTime;
 		}
 		if (Input::IsKeyPressed(Input::Key::D))
 		{
-			m_cameraPosition.x += Math::Cos(Math::Radians(m_cameraRotation.z)) * m_cameraTranslationSpeed *
+			m_cameraPosition.x() += Math::Cos(Math::Radians(m_cameraRotation.z())) * m_cameraTranslationSpeed *
 			                      deltaTime;
-			m_cameraPosition.y += Math::Sin(Math::Radians(m_cameraRotation.z)) * m_cameraTranslationSpeed *
+			m_cameraPosition.y() += Math::Sin(Math::Radians(m_cameraRotation.z())) * m_cameraTranslationSpeed *
 			                      deltaTime;
 		}
 		if (Input::IsKeyPressed(Input::Key::W))
 		{
-			m_cameraPosition.x += -Math::Sin(Math::Radians(m_cameraRotation.z)) * m_cameraTranslationSpeed *
+			m_cameraPosition.x() += -Math::Sin(Math::Radians(m_cameraRotation.z())) * m_cameraTranslationSpeed *
 			                      deltaTime;
-			m_cameraPosition.y += Math::Cos(Math::Radians(m_cameraRotation.z)) * m_cameraTranslationSpeed *
+			m_cameraPosition.y() += Math::Cos(Math::Radians(m_cameraRotation.z())) * m_cameraTranslationSpeed *
 			                      deltaTime;
 		}
 		if (Input::IsKeyPressed(Input::Key::S))
 		{
-			m_cameraPosition.x -= -Math::Sin(Math::Radians(m_cameraRotation.z)) * m_cameraTranslationSpeed *
+			m_cameraPosition.x() -= -Math::Sin(Math::Radians(m_cameraRotation.z())) * m_cameraTranslationSpeed *
 			                      deltaTime;
-			m_cameraPosition.y -= Math::Cos(Math::Radians(m_cameraRotation.z)) * m_cameraTranslationSpeed *
+			m_cameraPosition.y() -= Math::Cos(Math::Radians(m_cameraRotation.z())) * m_cameraTranslationSpeed *
 			                      deltaTime;
 		}
 
 		if (m_rotation)
 		{
 			if (Input::IsKeyPressed(Input::Key::Comma))
-				m_cameraRotation.z += m_cameraRotationSpeed * deltaTime;
+				m_cameraRotation.z() += m_cameraRotationSpeed * deltaTime;
 			if (Input::IsKeyPressed(Input::Key::Period))
-				m_cameraRotation.z -= m_cameraRotationSpeed * deltaTime;
+				m_cameraRotation.z() -= m_cameraRotationSpeed * deltaTime;
 		}
 	}
 
 	m_camera.SetPosition(m_cameraPosition);
 	if (m_rotation)
 	{
-		if (m_cameraRotation.z > 180.0f)
+		if (m_cameraRotation.z() > 180.0f)
 			m_cameraRotation -= 360.0f;
-		else if (m_cameraRotation.z <= -180.0f)
-			m_cameraRotation.z += 360.0f;
+		else if (m_cameraRotation.z() <= -180.0f)
+			m_cameraRotation.z() += 360.0f;
 
 		m_camera.SetRotation(m_cameraRotation);
 	}

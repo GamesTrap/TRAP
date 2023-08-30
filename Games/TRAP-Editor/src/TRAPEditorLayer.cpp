@@ -151,10 +151,10 @@ void TRAPEditorLayer::OnImGuiRender()
 	const ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 	m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-	ImGui::Image(m_renderTarget->GetTexture(), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0.0f, 0.0f }, ImVec2{ 1.0f, 1.0f });
+	ImGui::Image(m_renderTarget->GetTexture(), ImVec2{ m_viewportSize.x(), m_viewportSize.y() }, ImVec2{ 0.0f, 0.0f }, ImVec2{ 1.0f, 1.0f });
 
-	m_allowViewportCameraEvents = (ImGui::IsMouseHoveringRect(ImVec2(std::get<0>(m_viewportBounds).x, std::get<0>(m_viewportBounds).y),
-	                                                          ImVec2(std::get<1>(m_viewportBounds).x, std::get<1>(m_viewportBounds).y)) && m_viewportFocused) || m_startedCameraMovement;
+	m_allowViewportCameraEvents = (ImGui::IsMouseHoveringRect(ImVec2(std::get<0>(m_viewportBounds).x(), std::get<0>(m_viewportBounds).y()),
+	                                                          ImVec2(std::get<1>(m_viewportBounds).x(), std::get<1>(m_viewportBounds).y())) && m_viewportFocused) || m_startedCameraMovement;
 
 	//Gizmos
 	TRAP::Entity selectedEntity = m_sceneGraphPanel.GetSelectedEntity();
@@ -184,9 +184,9 @@ void TRAPEditorLayer::OnImGuiRender()
 		ImGuizmo::SetOrthographic(false);
 		ImGuizmo::SetDrawlist();
 
-		ImGuizmo::SetRect(std::get<0>(m_viewportBounds).x, std::get<0>(m_viewportBounds).y,
-							std::get<1>(m_viewportBounds).x - std::get<0>(m_viewportBounds).x,
-							std::get<1>(m_viewportBounds).y - std::get<0>(m_viewportBounds).y);
+		ImGuizmo::SetRect(std::get<0>(m_viewportBounds).x(), std::get<0>(m_viewportBounds).y(),
+							std::get<1>(m_viewportBounds).x() - std::get<0>(m_viewportBounds).x(),
+							std::get<1>(m_viewportBounds).y() - std::get<0>(m_viewportBounds).y());
 
 		//Snapping
 		const bool snap = TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Control) ||
@@ -200,9 +200,9 @@ void TRAPEditorLayer::OnImGuiRender()
 		//Disable gizmo while entity was just changed and the left mouse button is still pressed
 		ImGuizmo::Enable(!m_entityChanged || m_leftMouseBtnRepeatCount == 0);
 
-		const bool manipulated = ImGuizmo::Manipulate(&std::get<0>(cameraView).x, &std::get<0>(cameraProj).x,
+		const bool manipulated = ImGuizmo::Manipulate(&std::get<0>(cameraView).x(), &std::get<0>(cameraProj).x(),
 														static_cast<ImGuizmo::OPERATION>(m_gizmoType),
-														ImGuizmo::LOCAL, &std::get<0>(transform).x,
+														ImGuizmo::LOCAL, &std::get<0>(transform).x(),
 														nullptr, snap ? snapValues.data() : nullptr);
 
 		if (manipulated &&
@@ -318,13 +318,13 @@ void TRAPEditorLayer::OnDetach()
 void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
 	//Resize Viewport
-	if (m_viewportSize.x > 0.0f && m_viewportSize.y > 0.0f && //Zero sized framebuffer is invalid
-		(m_renderTarget->GetWidth() != NumericCast<uint32_t>(m_viewportSize.x) ||
-		 m_renderTarget->GetHeight() != NumericCast<uint32_t>(m_viewportSize.y)))
+	if (m_viewportSize.x() > 0.0f && m_viewportSize.y() > 0.0f && //Zero sized framebuffer is invalid
+		(m_renderTarget->GetWidth() != NumericCast<uint32_t>(m_viewportSize.x()) ||
+		 m_renderTarget->GetHeight() != NumericCast<uint32_t>(m_viewportSize.y())))
 	{
 		//Update RenderTargets
-		m_renderTargetDesc.Width = NumericCast<uint32_t>(m_viewportSize.x);
-		m_renderTargetDesc.Height = NumericCast<uint32_t>(m_viewportSize.y);
+		m_renderTargetDesc.Width = NumericCast<uint32_t>(m_viewportSize.x());
+		m_renderTargetDesc.Height = NumericCast<uint32_t>(m_viewportSize.y());
     	m_renderTargetDesc.Format = TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM;
     	m_renderTargetDesc.Name = "Viewport Framebuffer";
 		m_renderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
@@ -336,9 +336,9 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 		m_mousePickBufferDesc.Size = NumericCast<uint64_t>(m_renderTargetDesc.Width) * m_renderTargetDesc.Height * sizeof(int32_t);
 		m_mousePickBuffer = TRAP::Graphics::Buffer::Create(m_mousePickBufferDesc);
 
-		m_editorCamera.SetViewportSize(m_viewportSize.x, m_viewportSize.y);
+		m_editorCamera.SetViewportSize(m_viewportSize.x(), m_viewportSize.y());
 
-		m_activeScene->OnViewportResize(NumericCast<uint32_t>(m_viewportSize.x), NumericCast<uint32_t>(m_viewportSize.y));
+		m_activeScene->OnViewportResize(NumericCast<uint32_t>(m_viewportSize.x()), NumericCast<uint32_t>(m_viewportSize.y()));
 	}
 
 	if((TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Right) ||
@@ -544,7 +544,7 @@ bool TRAPEditorLayer::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 void TRAPEditorLayer::NewScene()
 {
 	m_activeScene = TRAP::MakeRef<TRAP::Scene>();
-	m_activeScene->OnViewportResize(NumericCast<uint32_t>(m_viewportSize.x), NumericCast<uint32_t>(m_viewportSize.y));
+	m_activeScene->OnViewportResize(NumericCast<uint32_t>(m_viewportSize.x()), NumericCast<uint32_t>(m_viewportSize.y()));
 	m_sceneGraphPanel.SetContext(m_activeScene);
 
 	m_lastScenePath = "";
@@ -567,7 +567,7 @@ void TRAPEditorLayer::OpenScene()
 		if(serializer.Deserialize(m_lastScenePath))
 		{
 			m_editorScene = newScene;
-			m_editorScene->OnViewportResize(NumericCast<uint32_t>(m_viewportSize.x), NumericCast<uint32_t>(m_viewportSize.y));
+			m_editorScene->OnViewportResize(NumericCast<uint32_t>(m_viewportSize.x()), NumericCast<uint32_t>(m_viewportSize.y()));
 			m_sceneGraphPanel.SetContext(m_editorScene);
 
 			m_activeScene = m_editorScene;
@@ -616,14 +616,14 @@ void TRAPEditorLayer::OnOverlayRender()
 		//Get forward direction from camera
 		const TRAP::Math::Quat orientation = TRAP::Math::Quat(transformComponent.Rotation);
 		const TRAP::Math::Vec3 forwardDirection = orientation * TRAP::Math::ZAxis<float>();
-		colliderProjectionZ = forwardDirection.z * zIndex;
+		colliderProjectionZ = forwardDirection.z() * zIndex;
 
 		TRAP::Graphics::Renderer2D::BeginScene(camera.GetComponent<TRAP::CameraComponent>().Camera,
 		                                       camera.GetComponent<TRAP::TransformComponent>().GetTransform());
 	}
 	else
 	{
-		colliderProjectionZ = m_editorCamera.GetForwardDirection().z * zIndex;
+		colliderProjectionZ = m_editorCamera.GetForwardDirection().z() * zIndex;
 		TRAP::Graphics::Renderer2D::BeginScene(m_editorCamera);
 	}
 
@@ -637,7 +637,7 @@ void TRAPEditorLayer::OnOverlayRender()
 				auto [transform, boxCollider] = view.get<TRAP::TransformComponent, TRAP::BoxCollider2DComponent>(entity);
 
 				const TRAP::Math::Vec3 position = transform.Position + TRAP::Math::Vec3(boxCollider.Offset, -colliderProjectionZ);
-				const float rotation = transform.Rotation.z;
+				const float rotation = transform.Rotation.z();
 				const TRAP::Math::Vec3 scale = transform.Scale * TRAP::Math::Vec3(boxCollider.Size * 2.0f, 1.0f);
 
 				const TRAP::Math::Mat4 trans = TRAP::Math::Translate(position) *
@@ -681,14 +681,14 @@ void TRAPEditorLayer::MousePicking()
 
 		//Get mouse position relative to viewport
 		ImVec2 mousePos = ImGui::GetMousePos();
-		mousePos.x -= std::get<0>(m_viewportBounds).x;
-		mousePos.y -= std::get<0>(m_viewportBounds).y;
+		mousePos.x -= std::get<0>(m_viewportBounds).x();
+		mousePos.y -= std::get<0>(m_viewportBounds).y();
 		const TRAP::Math::Vec2 viewportSize = std::get<1>(m_viewportBounds) - std::get<0>(m_viewportBounds);
 		uint32_t mouseX = NumericCast<uint32_t>(mousePos.x);
 		uint32_t mouseY = NumericCast<uint32_t>(mousePos.y);
 
 		//Out of viewport bounds check (maybe redundant, doesnt hurt)
-		if(mouseX >= NumericCast<uint32_t>(viewportSize.x) || mouseY >= NumericCast<uint32_t>(viewportSize.y))
+		if(mouseX >= NumericCast<uint32_t>(viewportSize.x()) || mouseY >= NumericCast<uint32_t>(viewportSize.y()))
 			return;
 
 		//Copy the RenderTarget contents to our CPU visible buffer

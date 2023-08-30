@@ -96,8 +96,8 @@ void TRAP::ImGuiLayer::OnAttach()
 
 	const auto contentScale = Application::GetWindow()->GetContentScale();
 	float scaleFactor = 1.0f;
-	if (contentScale.x > 1.0f || contentScale.y > 1.0f)
-		scaleFactor = contentScale.x;
+	if (contentScale.x() > 1.0f || contentScale.y() > 1.0f)
+		scaleFactor = contentScale.x();
 
 	ImFontConfig fontConfig;
 	fontConfig.FontDataOwnedByAtlas = false; //This makes the const_cast below safe.
@@ -297,8 +297,8 @@ void TRAP::ImGuiLayer::End()
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
 	ImGuiIO& io = ImGui::GetIO();
-	io.DisplaySize = ImVec2(NumericCast<float>(Application::GetWindow()->GetFrameBufferSize().x),
-	                        NumericCast<float>(Application::GetWindow()->GetFrameBufferSize().y));
+	io.DisplaySize = ImVec2(NumericCast<float>(Application::GetWindow()->GetFrameBufferSize().x()),
+	                        NumericCast<float>(Application::GetWindow()->GetFrameBufferSize().y()));
 
 	//Rendering
 	ImGui::Render();

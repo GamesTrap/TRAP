@@ -180,8 +180,8 @@ void TRAP::Input::Shutdown()
 
 #ifdef TRAP_PLATFORM_WINDOWS
 	const TRAP::Math::Vec2i windowPos = Application::GetWindow()->GetPosition();
-	xPos += windowPos.x;
-	yPos += windowPos.y;
+	xPos += windowPos.x();
+	yPos += windowPos.y();
 #endif /*TRAP_PLATFORM_WINDOWS*/
 
 	return {NumericCast<float>(xPos), NumericCast<float>(yPos)};
@@ -205,8 +205,8 @@ void TRAP::Input::Shutdown()
 
 #ifdef TRAP_PLATFORM_WINDOWS
 	const TRAP::Math::Vec2i windowPos = window->GetPosition();
-	xPos += windowPos.x;
-	yPos += windowPos.y;
+	xPos += windowPos.x();
+	yPos += windowPos.y();
 #endif /*TRAP_PLATFORM_WINDOWS*/
 
 	return TRAP::Math::Vec2{ NumericCast<float>(xPos), NumericCast<float>(yPos) };
@@ -218,7 +218,7 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return GetMousePosition().x;
+	return GetMousePosition().x();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -227,7 +227,7 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return GetMousePosition().y;
+	return GetMousePosition().y();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -236,7 +236,7 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return GetMousePosition(window).x;
+	return GetMousePosition(window).x();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -245,7 +245,7 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return GetMousePosition(window).y;
+	return GetMousePosition(window).y();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -589,12 +589,12 @@ void TRAP::Input::SetControllerVibration(const Controller controller, const Math
 	if (!PollController(controller, PollMode::Presence))
 		return;
 
-	if (intensity.x != s_controllerInternal[std::to_underlying(controller)].LeftMotor ||
-		intensity.y != s_controllerInternal[std::to_underlying(controller)].RightMotor)
+	if (intensity.x() != s_controllerInternal[std::to_underlying(controller)].LeftMotor ||
+		intensity.y() != s_controllerInternal[std::to_underlying(controller)].RightMotor)
 	{
-		s_controllerInternal[std::to_underlying(controller)].LeftMotor = intensity.x;
-		s_controllerInternal[std::to_underlying(controller)].RightMotor = intensity.y;
-		SetControllerVibrationInternal(controller, intensity.x, intensity.y);
+		s_controllerInternal[std::to_underlying(controller)].LeftMotor = intensity.x();
+		s_controllerInternal[std::to_underlying(controller)].RightMotor = intensity.y();
+		SetControllerVibrationInternal(controller, intensity.x(), intensity.y());
 	}
 }
 
@@ -646,7 +646,7 @@ void TRAP::Input::SetMousePosition(const Math::Vec2& position)
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	INTERNAL::WindowingAPI::SetCursorPos(*static_cast<INTERNAL::WindowingAPI::InternalWindow*>
-	                                     (Application::GetWindow()->GetInternalWindow()), position.x, position.y);
+	                                     (Application::GetWindow()->GetInternalWindow()), position.x(), position.y());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -662,7 +662,7 @@ void TRAP::Input::SetMousePosition(const Math::Vec2& position, const Window* con
 	}
 
 	INTERNAL::WindowingAPI::SetCursorPos(*static_cast<INTERNAL::WindowingAPI::InternalWindow*>
-	                                     (window->GetInternalWindow()), position.x, position.y);
+	                                     (window->GetInternalWindow()), position.x(), position.y());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -47,7 +47,7 @@ template<typename T>
 requires TRAP::Math::IsVec<T>
 consteval void RunCompileTimeNotEqualVecTests()
 {
-    constexpr typename T::valueType Epsilon = std::numeric_limits<typename T::valueType>::epsilon();
+    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
     constexpr T A(T(0));
     constexpr T B(T(5));
@@ -67,7 +67,7 @@ consteval void RunCompileTimeNotEqualVecTests()
     static_assert( TRAP::Math::All(TRAP::Math::NotEqual(A, B, T(Epsilon))));
     static_assert( TRAP::Math::All(TRAP::Math::NotEqual(B, A, T(Epsilon))));
 
-    if constexpr(std::floating_point<typename T::valueType> || std::signed_integral<typename T::valueType>)
+    if constexpr(std::floating_point<typename T::value_type> || std::signed_integral<typename T::value_type>)
     {
         constexpr T C(T(-1));
         constexpr T D(T(-5));
@@ -93,7 +93,7 @@ template<typename T>
 requires TRAP::Math::IsMat<T>
 consteval void RunCompileTimeNotEqualMatTests()
 {
-    constexpr typename T::valueType Epsilon = std::numeric_limits<typename T::valueType>::epsilon();
+    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
     constexpr T A(0.0f);
     constexpr T B(5.0f);
@@ -114,19 +114,19 @@ consteval void RunCompileTimeNotEqualMatTests()
     static_assert( TRAP::Math::All(TRAP::Math::NotEqual(A, B, Epsilon)));
     static_assert( TRAP::Math::All(TRAP::Math::NotEqual(B, A, Epsilon)));
 
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(A, A, typename T::colType(Epsilon))));
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(B, B, typename T::colType(Epsilon))));
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(C, C, typename T::colType(Epsilon))));
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(D, D, typename T::colType(Epsilon))));
-    static_assert( TRAP::Math::All(TRAP::Math::NotEqual(A, B, typename T::colType(Epsilon))));
-    static_assert( TRAP::Math::All(TRAP::Math::NotEqual(B, A, typename T::colType(Epsilon))));
+    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(A, A, typename T::col_type(Epsilon))));
+    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(B, B, typename T::col_type(Epsilon))));
+    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(C, C, typename T::col_type(Epsilon))));
+    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(D, D, typename T::col_type(Epsilon))));
+    static_assert( TRAP::Math::All(TRAP::Math::NotEqual(A, B, typename T::col_type(Epsilon))));
+    static_assert( TRAP::Math::All(TRAP::Math::NotEqual(B, A, typename T::col_type(Epsilon))));
 }
 
 template<typename T>
 requires TRAP::Math::IsQuat<T>
 consteval void RunCompileTimeNotEqualQuatTests()
 {
-    constexpr typename T::valueType Epsilon = std::numeric_limits<typename T::valueType>::epsilon();
+    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
     constexpr T A(0.0f, 0.0f, 0.0f, 0.0f);
     constexpr T B(5.0f, 5.0f, 5.0f, 5.0f);

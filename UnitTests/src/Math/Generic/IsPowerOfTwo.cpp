@@ -31,7 +31,7 @@ consteval void RunCompileTimeIsPowerOfTwoTests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && std::unsigned_integral<typename T::valueType>
+requires TRAP::Math::IsVec<T> && std::unsigned_integral<typename T::value_type>
 consteval void RunCompileTimeIsPowerOfTwoVecTests()
 {
     static_assert(!TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x00))));

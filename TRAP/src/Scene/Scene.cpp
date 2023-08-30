@@ -178,8 +178,8 @@ void TRAP::Scene::OnRuntimeStart()
 
 		b2BodyDef bodyDef{};
 		bodyDef.type = TRAPRigidbody2DTypeToBox2DBody(rigidbody2D.Type);
-		bodyDef.position.Set(transform.Position.x, transform.Position.y);
-		bodyDef.angle = transform.Rotation.z;
+		bodyDef.position.Set(transform.Position.x(), transform.Position.y());
+		bodyDef.angle = transform.Rotation.z();
 
 		b2Body* body = m_physicsWorld->CreateBody(&bodyDef);
 		body->SetFixedRotation(rigidbody2D.FixedRotation);
@@ -190,7 +190,7 @@ void TRAP::Scene::OnRuntimeStart()
 			auto& boxCollider2D = entity.GetComponent<BoxCollider2DComponent>();
 
 			b2PolygonShape boxShape{};
-			boxShape.SetAsBox(boxCollider2D.Size.x * transform.Scale.x, boxCollider2D.Size.y * transform.Scale.y);
+			boxShape.SetAsBox(boxCollider2D.Size.x() * transform.Scale.x(), boxCollider2D.Size.y() * transform.Scale.y());
 
 			b2FixtureDef fixtureDef{};
 			fixtureDef.shape = &boxShape;
@@ -206,8 +206,8 @@ void TRAP::Scene::OnRuntimeStart()
 			auto& circleCollider2D = entity.GetComponent<CircleCollider2DComponent>();
 
 			b2CircleShape circleShape{};
-			circleShape.m_p.Set(circleCollider2D.Offset.x, circleCollider2D.Offset.y);
-			circleShape.m_radius = transform.Scale.x * circleCollider2D.Radius;
+			circleShape.m_p.Set(circleCollider2D.Offset.x(), circleCollider2D.Offset.y());
+			circleShape.m_radius = transform.Scale.x() * circleCollider2D.Radius;
 
 			b2FixtureDef fixtureDef{};
 			fixtureDef.shape = &circleShape;
@@ -286,9 +286,9 @@ void TRAP::Scene::OnTickRuntime(const Utils::TimeStep& deltaTime)
 
 		b2Body* body = rigidbody2D.RuntimeBody;
 		const auto& position = body->GetPosition();
-		transform.Position.x = position.x;
-		transform.Position.y = position.y;
-		transform.Rotation.z = body->GetAngle();
+		transform.Position.x() = position.x;
+		transform.Position.y() = position.y;
+		transform.Rotation.z() = body->GetAngle();
 	}
 }
 

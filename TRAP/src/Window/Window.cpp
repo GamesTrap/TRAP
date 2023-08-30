@@ -83,7 +83,7 @@ void TRAP::Window::OnUpdate()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return GetSize().x;
+	return GetSize().x();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -92,7 +92,7 @@ void TRAP::Window::OnUpdate()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return GetSize().y;
+	return GetSize().y();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -113,7 +113,7 @@ void TRAP::Window::OnUpdate()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
-	return GetFrameBufferSize().x;
+	return GetFrameBufferSize().x();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -122,7 +122,7 @@ void TRAP::Window::OnUpdate()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
-	return GetFrameBufferSize().y;
+	return GetFrameBufferSize().y();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -193,7 +193,7 @@ void TRAP::Window::OnUpdate()
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
 	Math::Vec2 contentScale{};
-	INTERNAL::WindowingAPI::GetWindowContentScale(*m_window, contentScale.x, contentScale.y);
+	INTERNAL::WindowingAPI::GetWindowContentScale(*m_window, contentScale.x(), contentScale.y());
 
 	return contentScale;
 }
@@ -224,7 +224,7 @@ void TRAP::Window::OnUpdate()
 
 	const auto frameBufferSize = GetFrameBufferSize();
 
-	return NumericCast<float>(frameBufferSize.x) / NumericCast<float>(frameBufferSize.y);
+	return NumericCast<float>(frameBufferSize.x()) / NumericCast<float>(frameBufferSize.y());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

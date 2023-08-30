@@ -304,21 +304,21 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 
 	const Math::Vec2 frameBufferSize
 	{
-		NumericCast<float>(window->GetFrameBufferSize().x),
-		NumericCast<float>(window->GetFrameBufferSize().y)
+		NumericCast<float>(window->GetFrameBufferSize().x()),
+		NumericCast<float>(window->GetFrameBufferSize().y())
 	};
-	const float aspectRatio = frameBufferSize.x / frameBufferSize.y;
+	const float aspectRatio = frameBufferSize.x() / frameBufferSize.y();
 
 	Math::Vec2ui finalRes = static_cast<Math::Vec2ui>(frameBufferSize * renderScale);
 
 	//Make sure the resolution is an integer scale of the framebuffer size.
 	//This is done to avoid scaling artifacts (like blurriness).
-	while((NumericCast<float>(finalRes.x) / NumericCast<float>(finalRes.y)) != aspectRatio)
+	while((NumericCast<float>(finalRes.x()) / NumericCast<float>(finalRes.y())) != aspectRatio)
 	{
-		if((NumericCast<float>(finalRes.x) / NumericCast<float>(finalRes.y)) <= aspectRatio)
-			++finalRes.x;
+		if((NumericCast<float>(finalRes.x()) / NumericCast<float>(finalRes.y())) <= aspectRatio)
+			++finalRes.x();
 		else
-			++finalRes.y;
+			++finalRes.y();
 	}
 
 	return finalRes;
@@ -338,18 +338,18 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 		NumericCast<float>(s_perViewportData->NewWidth),
 		NumericCast<float>(s_perViewportData->NewHeight),
 	};
-	const float aspectRatio = frameBufferSize.x / frameBufferSize.y;
+	const float aspectRatio = frameBufferSize.x() / frameBufferSize.y();
 
 	Math::Vec2ui finalRes = static_cast<Math::Vec2ui>(frameBufferSize * renderScale);
 
 	//Make sure the resolution is an integer scale of the framebuffer size.
 	//This is done to avoid scaling artifacts (like blurriness).
-	while((NumericCast<float>(finalRes.x) / NumericCast<float>(finalRes.y)) != aspectRatio)
+	while((NumericCast<float>(finalRes.x()) / NumericCast<float>(finalRes.y())) != aspectRatio)
 	{
-		if((NumericCast<float>(finalRes.x) / NumericCast<float>(finalRes.y)) <= aspectRatio)
-			++finalRes.x;
+		if((NumericCast<float>(finalRes.x()) / NumericCast<float>(finalRes.y())) <= aspectRatio)
+			++finalRes.x();
 		else
-			++finalRes.y;
+			++finalRes.y();
 	}
 
 	return finalRes;

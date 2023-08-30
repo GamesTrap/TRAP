@@ -126,12 +126,12 @@ static void DrawVec3Control(const std::string& label, //TODO can be replaced wit
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.8f, 0.1f, 0.15f, 1.0f));
 	ImGui::PushFont(boldFont);
 	if (ImGui::Button("X", buttonSize))
-		values.x = resetValues;
+		values.x() = resetValues;
 	ImGui::PopFont();
 	ImGui::PopStyleColor(3);
 
 	ImGui::SameLine();
-	ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::DragFloat("##X", &values.x(), 0.1f, 0.0f, 0.0f, "%.2f");
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
 
@@ -140,12 +140,12 @@ static void DrawVec3Control(const std::string& label, //TODO can be replaced wit
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.2f, 0.7f, 0.2f, 1.0f));
 	ImGui::PushFont(boldFont);
 	if (ImGui::Button("Y", buttonSize))
-		values.y = resetValues;
+		values.y() = resetValues;
 	ImGui::PopFont();
 	ImGui::PopStyleColor(3);
 
 	ImGui::SameLine();
-	ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::DragFloat("##Y", &values.y(), 0.1f, 0.0f, 0.0f, "%.2f");
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
 
@@ -154,12 +154,12 @@ static void DrawVec3Control(const std::string& label, //TODO can be replaced wit
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.18f, 0.25f, 0.8f, 1.0f));
 	ImGui::PushFont(boldFont);
 	if (ImGui::Button("Z", buttonSize))
-		values.z = resetValues;
+		values.z() = resetValues;
 	ImGui::PopFont();
 	ImGui::PopStyleColor(3);
 
 	ImGui::SameLine();
-	ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::DragFloat("##Z", &values.z(), 0.1f, 0.0f, 0.0f, "%.2f");
 	ImGui::PopItemWidth();
 
 	ImGui::PopStyleVar();

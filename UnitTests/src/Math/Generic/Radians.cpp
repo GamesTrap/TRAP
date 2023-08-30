@@ -40,33 +40,33 @@ consteval void RunCompileTimeRadiansScalarEdgeTests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 consteval void RunCompileTimeRadiansVecTests()
 {
     {
-        constexpr T degrees(TRAP::Math::tVec4<typename T::valueType>(0.0f, 45.0f, 90.0f, 180.0f));
-        constexpr T expected(TRAP::Math::tVec4<typename T::valueType>(0.0f, 0.785398f, 1.5708f, 3.14159f));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Radians(degrees), expected, typename T::valueType(0.00001f))));
+        constexpr T degrees(TRAP::Math::tVec4<typename T::value_type>(0.0f, 45.0f, 90.0f, 180.0f));
+        constexpr T expected(TRAP::Math::tVec4<typename T::value_type>(0.0f, 0.785398f, 1.5708f, 3.14159f));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Radians(degrees), expected, typename T::value_type(0.00001f))));
     }
     {
-        constexpr T degrees(TRAP::Math::tVec4<typename T::valueType>(270.0f, -45.0f, -90.0f, -180.0f));
-        constexpr T expected(TRAP::Math::tVec4<typename T::valueType>(4.71239f, -0.785398f, -1.5708f, -3.14159f));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Radians(degrees), expected, typename T::valueType(0.00001f))));
+        constexpr T degrees(TRAP::Math::tVec4<typename T::value_type>(270.0f, -45.0f, -90.0f, -180.0f));
+        constexpr T expected(TRAP::Math::tVec4<typename T::value_type>(4.71239f, -0.785398f, -1.5708f, -3.14159f));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Radians(degrees), expected, typename T::value_type(0.00001f))));
     }
     {
-        constexpr T degrees(TRAP::Math::tVec4<typename T::valueType>(-270.0f, 360.0f, 85.0f, -99.0f));
-        constexpr T expected(TRAP::Math::tVec4<typename T::valueType>(-4.71239f, 6.28319f, 1.48353f, -1.72788f));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Radians(degrees), expected, typename T::valueType(0.00001f))));
+        constexpr T degrees(TRAP::Math::tVec4<typename T::value_type>(-270.0f, 360.0f, 85.0f, -99.0f));
+        constexpr T expected(TRAP::Math::tVec4<typename T::value_type>(-4.71239f, 6.28319f, 1.48353f, -1.72788f));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Radians(degrees), expected, typename T::value_type(0.00001f))));
     }
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunCompileTimeRadiansVecEdgeTests()
 {
-    constexpr typename T::valueType nan = std::numeric_limits<typename T::valueType>::quiet_NaN();
-    constexpr typename T::valueType inf = std::numeric_limits<typename T::valueType>::infinity();
-    constexpr typename T::valueType ninf = -std::numeric_limits<typename T::valueType>::infinity();
+    constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
+    constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
+    constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
 
     {
         static_assert(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::Radians(T(inf)))));

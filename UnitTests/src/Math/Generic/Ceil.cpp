@@ -8,7 +8,7 @@
 #include "TRAP/src/Maths/Math.h"
 
 template<typename T>
-requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>)
+requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
 void RunCeilTests()
 {
     constexpr std::array<T, 24> values

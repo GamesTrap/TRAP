@@ -43,7 +43,7 @@ void ParticleSystem2D::OnRender()
 		const float size = TRAP::Math::Lerp(particle.SizeEnd, particle.SizeBegin, life);
 
 		//Render
-		TRAP::Graphics::Renderer2D::DrawQuad({ {particle.Position.x, particle.Position.y, 0.0f}, {particle.Rotation, 0.0f, 0.0f}, {size, size, 1.0f} }, color);
+		TRAP::Graphics::Renderer2D::DrawQuad({ {particle.Position.x(), particle.Position.y(), 0.0f}, {particle.Rotation, 0.0f, 0.0f}, {size, size, 1.0f} }, color);
 	}
 }
 
@@ -58,8 +58,8 @@ void ParticleSystem2D::Emit(const ParticleProps& particleProps)
 
 	//Velocity
 	particle.Velocity = particleProps.Velocity;
-	particle.Velocity.x += particleProps.VelocityVariation.x * (TRAP::Utils::Random::Get<float>(0.0f, 1.0f) - 0.5f);
-	particle.Velocity.y += particleProps.VelocityVariation.y * (TRAP::Utils::Random::Get<float>(0.0f, 1.0f) - 0.5f);
+	particle.Velocity.x() += particleProps.VelocityVariation.x() * (TRAP::Utils::Random::Get<float>(0.0f, 1.0f) - 0.5f);
+	particle.Velocity.y() += particleProps.VelocityVariation.y() * (TRAP::Utils::Random::Get<float>(0.0f, 1.0f) - 0.5f);
 
 	//Color
 	particle.ColorBegin = particleProps.ColorBegin;

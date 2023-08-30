@@ -52,8 +52,8 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 		return;
 	}
 
-	m_width = resolution->x;
-	m_height = resolution->y;
+	m_width = resolution->x();
+	m_height = resolution->y();
 
 	if(m_width == 0)
 	{

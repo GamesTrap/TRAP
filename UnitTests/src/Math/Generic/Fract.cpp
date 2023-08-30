@@ -8,7 +8,7 @@
 #include "TRAP/src/Maths/Math.h"
 
 template<typename T>
-requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>)
+requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
 void RunFractTests()
 {
     if constexpr(std::floating_point<T>)
@@ -25,14 +25,14 @@ void RunFractTests()
             REQUIRE_THAT(TRAP::Math::Fract(val), Catch::Matchers::WithinRel(expected, Epsilon));
         }
     }
-    else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>)
+    else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
     {
-        constexpr typename T::valueType Epsilon = std::numeric_limits<typename T::valueType>::epsilon();
+        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
         constexpr std::array<std::pair<T, T>, 1> values
         {
-            std::pair<T, T>{TRAP::Math::Vec<4, typename T::valueType>(1.1, 1.2, 1.5, 1.7),
-                            TRAP::Math::Vec<4, typename T::valueType>(0.1, 0.2, 0.5, 0.7)},
+            std::pair<T, T>{TRAP::Math::Vec<4, typename T::value_type>(1.1, 1.2, 1.5, 1.7),
+                            TRAP::Math::Vec<4, typename T::value_type>(0.1, 0.2, 0.5, 0.7)},
         };
 
         for(const auto& [val, expected] : values)

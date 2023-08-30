@@ -36,19 +36,19 @@ void RunATanEdgeTests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunATanVecTests()
 {
-    constexpr typename T::valueType Epsilon = std::numeric_limits<typename T::valueType>::epsilon();
+    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
     constexpr std::array<T, 23> values
     {
-        T(typename T::valueType(-1.5)),  T(typename T::valueType(-0.5)),  T(typename T::valueType(0.0)),   T(typename T::valueType(0.001)),
-        T(typename T::valueType(0.49)), T(typename T::valueType(0.99)), T(typename T::valueType(1.001)), T(typename T::valueType(1.49)),
-        T(typename T::valueType(1.5)), T(typename T::valueType(1.99)),  T(typename T::valueType(2.49)),  T(typename T::valueType(2.51)),
-        T(typename T::valueType(3.99)),   T(typename T::valueType(7.0)),  T(typename T::valueType(11.0)), T(typename T::valueType(11.1)),
-        T(typename T::valueType(25.0)), T(typename T::valueType(50.0)), T(typename T::valueType(101.0)), T(typename T::valueType(150.0)),
-        T(typename T::valueType(900.0)), T(typename T::valueType(1001.0)), T(typename T::valueType(1000000.0))
+        T(typename T::value_type(-1.5)),  T(typename T::value_type(-0.5)),  T(typename T::value_type(0.0)),   T(typename T::value_type(0.001)),
+        T(typename T::value_type(0.49)), T(typename T::value_type(0.99)), T(typename T::value_type(1.001)), T(typename T::value_type(1.49)),
+        T(typename T::value_type(1.5)), T(typename T::value_type(1.99)),  T(typename T::value_type(2.49)),  T(typename T::value_type(2.51)),
+        T(typename T::value_type(3.99)),   T(typename T::value_type(7.0)),  T(typename T::value_type(11.0)), T(typename T::value_type(11.1)),
+        T(typename T::value_type(25.0)), T(typename T::value_type(50.0)), T(typename T::value_type(101.0)), T(typename T::value_type(150.0)),
+        T(typename T::value_type(900.0)), T(typename T::value_type(1001.0)), T(typename T::value_type(1000000.0))
     };
 
     for(const T val : values)
@@ -60,10 +60,10 @@ void RunATanVecTests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunATanVecEdgeTests()
 {
-    constexpr typename T::valueType nan = std::numeric_limits<typename T::valueType>::quiet_NaN();
+    constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
 
     REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::ATan(T(nan)))));
 }

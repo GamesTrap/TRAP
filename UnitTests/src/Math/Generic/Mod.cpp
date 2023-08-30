@@ -8,8 +8,8 @@
 #include "TRAP/src/Maths/Math.h"
 
 template<typename T, typename X = T>
-requires (std::is_arithmetic_v<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>)) &&
-         (std::is_arithmetic_v<X> || (TRAP::Math::IsVec<X> && std::floating_point<typename X::valueType>))
+requires (std::is_arithmetic_v<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)) &&
+         (std::is_arithmetic_v<X> || (TRAP::Math::IsVec<X> && std::floating_point<typename X::value_type>))
 void RunModTests()
 {
     constexpr std::array<std::tuple<T, X, T>, 3> values
@@ -33,14 +33,14 @@ void RunModTests()
                 REQUIRE(TRAP::Math::Mod(val1, val2) == expected);
             }
         }
-        else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType> && TRAP::Math::IsVec<X>)
+        else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type> && TRAP::Math::IsVec<X>)
         {
-            constexpr typename T::valueType Epsilon = std::numeric_limits<typename T::valueType>::epsilon();
+            constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
             REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(val1, T(val2)), expected, Epsilon)));
         }
-        else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType> && std::floating_point<X>)
+        else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type> && std::floating_point<X>)
         {
-            constexpr typename T::valueType Epsilon = std::numeric_limits<typename T::valueType>::epsilon();
+            constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
             REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(val1, val2), expected, Epsilon)));
         }
     }

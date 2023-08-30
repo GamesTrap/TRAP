@@ -173,8 +173,8 @@ void Cube3D::OnAttach()
 
 	//Camera setup
     m_camera.SetPerspective(TRAP::Math::Radians(45.0f), 0.01f);
-    m_camera.SetViewportSize(TRAP::Application::GetWindow()->GetFrameBufferSize().x,
-                             TRAP::Application::GetWindow()->GetFrameBufferSize().y);
+    m_camera.SetViewportSize(TRAP::Application::GetWindow()->GetFrameBufferSize().x(),
+                             TRAP::Application::GetWindow()->GetFrameBufferSize().y());
 
     //Load diffuse reflection UniformBuffer
     const TRAP::Math::Mat4 inverseView = TRAP::Math::Inverse(m_cameraTransform.GetTransform());
@@ -250,8 +250,8 @@ void Cube3D::OnImGuiRender()
                      ImVec2(200, 50));
     ImGui::Separator();
     ImGui::Text("Camera");
-    ImGui::Text("Camera Position: %f %f %f", pos.x, pos.y, pos.z);
-    ImGui::Text("Camera Rotation: %f %f %f", rot.x, rot.y, rot.z);
+    ImGui::Text("Camera Position: %f %f %f", pos.x(), pos.y(), pos.z());
+    ImGui::Text("Camera Rotation: %f %f %f", rot.x(), rot.y(), rot.z());
     if(ImGui::SliderFloat("Camera FoV", &fov, 1.0f, 100.0f))
         m_camera.SetPerspectiveVerticalFOV(TRAP::Math::Radians(fov));
     if(ImGui::SliderFloat("Camera Sensitivity", &sensitivity, 0.01f, 50.0f))
@@ -396,19 +396,19 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
         TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get(m_shaderNames[m_currentShader]),
                                          m_cubeVertexBuffer.get(), m_cubeIndexBuffer.get(),
                                          TRAP::Math::Translate(m_cubePosition) *
-                                         TRAP::Math::Rotate(TRAP::Math::Radians(-m_cubeRotation.z), { 0.0f, 0.0f, 1.0f }) *
-                                         TRAP::Math::Rotate(TRAP::Math::Radians(-m_cubeRotation.y), { 0.0f, 1.0f, 0.0f }) *
-                                         TRAP::Math::Rotate(TRAP::Math::Radians(m_cubeRotation.x), {1.0f, 0.0f, 0.0f}) *
+                                         TRAP::Math::Rotate(TRAP::Math::Radians(-m_cubeRotation.z()), { 0.0f, 0.0f, 1.0f }) *
+                                         TRAP::Math::Rotate(TRAP::Math::Radians(-m_cubeRotation.y()), { 0.0f, 1.0f, 0.0f }) *
+                                         TRAP::Math::Rotate(TRAP::Math::Radians(m_cubeRotation.x()), {1.0f, 0.0f, 0.0f}) *
                                          TRAP::Math::Scale(m_cubeScale));
 	}
     TRAP::Graphics::Renderer::EndScene();
 
-    const TRAP::Math::Vec3 rotVec{ m_cameraTransform.Rotation.x, m_cameraTransform.Rotation.y,
-                                   m_cameraTransform.Rotation.z };
+    const TRAP::Math::Vec3 rotVec{ m_cameraTransform.Rotation.x(), m_cameraTransform.Rotation.y(),
+                                   m_cameraTransform.Rotation.z() };
     const TRAP::Math::Quat orientation = TRAP::Math::Quat(rotVec);
     const TRAP::Math::Quat qF = orientation * TRAP::Math::Quat(0.0f, 0.0f, 0.0f, -1.0f) *
                                       TRAP::Math::Conjugate(orientation);
-    const TRAP::Math::Vec3 front = { qF.x, qF.y, qF.z };
+    const TRAP::Math::Vec3 front = { qF.x(), qF.y(), qF.z() };
     const TRAP::Math::Vec3 right = TRAP::Math::Normalize(TRAP::Math::Cross(front,
                                                                            TRAP::Math::YAxis<float>()));
 
@@ -422,9 +422,9 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::S))
         m_cameraTransform.Position -= front * (m_translationSpeed * deltaTime);
     if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::Space))
-        m_cameraTransform.Position.y += m_translationSpeed * deltaTime;
+        m_cameraTransform.Position.y() += m_translationSpeed * deltaTime;
     if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Shift))
-        m_cameraTransform.Position.y -= m_translationSpeed * deltaTime;
+        m_cameraTransform.Position.y() -= m_translationSpeed * deltaTime;
 
     //Update FPS & FrameTime history
     if (m_titleTimer.Elapsed() >= 0.025f)
@@ -478,14 +478,14 @@ bool Cube3D::OnMouseMove(const TRAP::Events::MouseMoveEvent& event)
     pitch *= TRAP::Math::Radians(m_mouseSensitivity);
     yaw *= TRAP::Math::Radians(m_mouseSensitivity);
 
-    m_cameraTransform.Rotation.x += TRAP::Math::Radians(yaw);
-    m_cameraTransform.Rotation.y -= TRAP::Math::Radians(pitch);
+    m_cameraTransform.Rotation.x() += TRAP::Math::Radians(yaw);
+    m_cameraTransform.Rotation.y() -= TRAP::Math::Radians(pitch);
 
     //Limit pitch movement
-    if (m_cameraTransform.Rotation.x > TRAP::Math::Radians(89.0f))
-        m_cameraTransform.Rotation.x = TRAP::Math::Radians(89.0f);
-    if (m_cameraTransform.Rotation.x < TRAP::Math::Radians(-89.0f))
-        m_cameraTransform.Rotation.x = TRAP::Math::Radians(-89.0f);
+    if (m_cameraTransform.Rotation.x() > TRAP::Math::Radians(89.0f))
+        m_cameraTransform.Rotation.x() = TRAP::Math::Radians(89.0f);
+    if (m_cameraTransform.Rotation.x() < TRAP::Math::Radians(-89.0f))
+        m_cameraTransform.Rotation.x() = TRAP::Math::Radians(-89.0f);
 
     return true;
 }

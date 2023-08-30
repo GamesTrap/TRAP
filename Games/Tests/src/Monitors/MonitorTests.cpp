@@ -35,10 +35,10 @@ void MonitorTests::OnImGuiRender()
 		ImGui::Text("Primary: %s", (ID == primaryID ? "True" : "False"));
 		ImGui::Text("Native VideoMode: %s", nativeMode ? FormatMode(*nativeMode).c_str() : "Unknown");
 		ImGui::Text("Current VideoMode: %s", currentMode ? FormatMode(*currentMode).c_str() : "Unknown");
-		ImGui::Text("Virtual Position: %i %i", position.x, position.y);
-		ImGui::Text("Content Scale: %f %f", scale.x, scale.y);
-		ImGui::Text("Monitor Work Area: %i %i Starting @ %i %i", workArea.x, workArea.y,
-		            workArea.z, workArea.w);
+		ImGui::Text("Virtual Position: %i %i", position.x(), position.y());
+		ImGui::Text("Content Scale: %f %f", scale.x(), scale.y());
+		ImGui::Text("Monitor Work Area: %i %i Starting @ %i %i", workArea.x(), workArea.y(),
+		            workArea.z(), workArea.w());
 		ImGui::Separator();
 		ImGui::Text("Supported VideoModes:");
 		for(const TRAP::Monitor::VideoMode& videoMode : videoModes)

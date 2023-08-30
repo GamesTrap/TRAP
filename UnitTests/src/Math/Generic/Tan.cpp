@@ -38,15 +38,15 @@ void RunTanEdgeTests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunTanVecTests()
 {
-    constexpr typename T::valueType Epsilon = std::numeric_limits<typename T::valueType>::epsilon();
+    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
     constexpr std::array<T, 8> values
     {
-        T(typename T::valueType(-1.5)), T(typename T::valueType(0.0)), T(typename T::valueType(0.001)), T(typename T::valueType(1.001)),
-        T(typename T::valueType(1.5)), T(typename T::valueType(11.1)), T(typename T::valueType(50.0)), T(typename T::valueType(150.0))
+        T(typename T::value_type(-1.5)), T(typename T::value_type(0.0)), T(typename T::value_type(0.001)), T(typename T::value_type(1.001)),
+        T(typename T::value_type(1.5)), T(typename T::value_type(11.1)), T(typename T::value_type(50.0)), T(typename T::value_type(150.0))
     };
 
     for(const T val : values)
@@ -58,12 +58,12 @@ void RunTanVecTests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunTanVecEdgeTests()
 {
-    constexpr typename T::valueType nan = std::numeric_limits<typename T::valueType>::quiet_NaN();
-    constexpr typename T::valueType inf = std::numeric_limits<typename T::valueType>::infinity();
-    constexpr typename T::valueType ninf = -std::numeric_limits<typename T::valueType>::infinity();
+    constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
+    constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
+    constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
 
     REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Tan(T(nan)))));
     REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Tan(T(inf)))));

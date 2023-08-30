@@ -8,7 +8,7 @@
 #include "TRAP/src/Maths/Math.h"
 
 template<typename T>
-requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>)
+requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
 void RunRoundEvenTests()
 {
     constexpr T Epsilon = std::numeric_limits<T>::epsilon();

@@ -27,19 +27,19 @@ void RunLogTests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunLogVecTests()
 {
-    REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Log(T(TRAP::Math::e<typename T::valueType>())), T(1.0f), T(0.01f))));
+    REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Log(T(TRAP::Math::e<typename T::value_type>())), T(1.0f), T(0.01f))));
 }
 
 template<typename T>
 requires TRAP::Math::IsQuat<T>
 void RunLogQuatTests()
 {
-    constexpr typename T::valueType Epsilon = typename T::valueType(0.001f);
+    constexpr typename T::value_type Epsilon = typename T::value_type(0.001f);
 
-    const T q(TRAP::Math::Vec<3, typename T::valueType>(1.0f, 0.0f, 0.0f), TRAP::Math::Vec<3, typename T::valueType>(0.0f, 1.0f, 0.0f));
+    const T q(TRAP::Math::Vec<3, typename T::value_type>(1.0f, 0.0f, 0.0f), TRAP::Math::Vec<3, typename T::value_type>(0.0f, 1.0f, 0.0f));
     const T p = TRAP::Math::Log(q);
     REQUIRE(TRAP::Math::Any(TRAP::Math::NotEqual(q, p, Epsilon)));
 }

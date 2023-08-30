@@ -34,8 +34,8 @@ consteval void RunCompileTimeClampVecTest()
     static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(1), N, B), T(1), TRAP::Math::Epsilon<T>())));
     static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(10), N, B), T(10), TRAP::Math::Epsilon<T>())));
 
-    constexpr typename T::valueType N1 = static_cast<T::valueType>(1);
-    constexpr typename T::valueType B1 = static_cast<T::valueType>(10);
+    constexpr typename T::value_type N1 = static_cast<T::value_type>(1);
+    constexpr typename T::value_type B1 = static_cast<T::value_type>(10);
 
     static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(5), N1, B1), T(5), TRAP::Math::Epsilon<T>())));
     static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(0), N1, B1), T(1), TRAP::Math::Epsilon<T>())));

@@ -8,7 +8,7 @@
 #include "TRAP/src/Maths/Math.h"
 
 template<typename T>
-requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>)
+requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
 void RunModfTests()
 {
     if constexpr(std::floating_point<T>)
@@ -27,9 +27,9 @@ void RunModfTests()
             REQUIRE_THAT(i, Catch::Matchers::WithinRel(expectedI, Epsilon));
         }
     }
-    else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>)
+    else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
     {
-        constexpr typename T::valueType Epsilon = std::numeric_limits<typename T::valueType>::epsilon();
+        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
         T i{};
 
         constexpr std::array<std::tuple<T, T, T>, 1> values

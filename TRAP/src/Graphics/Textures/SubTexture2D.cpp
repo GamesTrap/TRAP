@@ -16,13 +16,13 @@
 
     const TRAP::Math::Vec2 min
     {
-        (coords.x * cellSize.x) / NumericCast<float>(texture->GetWidth()),
-        (coords.y * cellSize.y) / NumericCast<float>(texture->GetHeight())
+        (coords.x() * cellSize.x()) / NumericCast<float>(texture->GetWidth()),
+        (coords.y() * cellSize.y()) / NumericCast<float>(texture->GetHeight())
     };
     const TRAP::Math::Vec2 max
     {
-        ((coords.x + spriteSize.x) * cellSize.x) / NumericCast<float>(texture->GetWidth()),
-        ((coords.y + spriteSize.y) * cellSize.y) / NumericCast<float>(texture->GetHeight())
+        ((coords.x() + spriteSize.x()) * cellSize.x()) / NumericCast<float>(texture->GetWidth()),
+        ((coords.y() + spriteSize.y()) * cellSize.y()) / NumericCast<float>(texture->GetHeight())
     };
 
     return MakeRef<SubTexture2D>(std::move(name), std::move(texture), min, max);
@@ -43,13 +43,13 @@
 
     const TRAP::Math::Vec2 min
     {
-        pixelPos.x / NumericCast<float>(texture->GetWidth()),
-        pixelPos.y / NumericCast<float>(texture->GetHeight())
+        pixelPos.x() / NumericCast<float>(texture->GetWidth()),
+        pixelPos.y() / NumericCast<float>(texture->GetHeight())
     };
     const TRAP::Math::Vec2 max
     {
-        (pixelPos.x + spriteSize.x * pixelSize.x) / NumericCast<float>(texture->GetWidth()),
-        (pixelPos.y + spriteSize.y * pixelSize.y) / NumericCast<float>(texture->GetHeight())
+        (pixelPos.x() + spriteSize.x() * pixelSize.x()) / NumericCast<float>(texture->GetWidth()),
+        (pixelPos.y() + spriteSize.y() * pixelSize.y()) / NumericCast<float>(texture->GetHeight())
     };
 
     return MakeRef<SubTexture2D>(std::move(name), std::move(texture), min, max);
@@ -63,9 +63,9 @@ TRAP::Graphics::SubTexture2D::SubTexture2D(std::string name, Ref<TRAP::Graphics:
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-    std::get<0>(m_texCoords) = { min.x, max.y };
+    std::get<0>(m_texCoords) = { min.x(), max.y() };
     std::get<1>(m_texCoords) = max;
-    std::get<2>(m_texCoords) = { max.x, min.y};
+    std::get<2>(m_texCoords) = { max.x(), min.y()};
     std::get<3>(m_texCoords) = min;
 }
 

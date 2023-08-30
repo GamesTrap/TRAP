@@ -915,7 +915,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 		return;
 
 	Math::Mat4 transformation;
-	if (transform.Rotation.x != 0.0f || transform.Rotation.y != 0.0f || transform.Rotation.z != 0.0f)
+	if (transform.Rotation.x() != 0.0f || transform.Rotation.y() != 0.0f || transform.Rotation.z() != 0.0f)
 		transformation = Math::Translate(transform.Position) *
 		                 Mat4Cast(Math::Quat(Radians(transform.Rotation))) * Math::Scale(transform.Scale);
 	else
@@ -947,7 +947,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 		return;
 
 	Math::Mat4 transformation;
-	if (transform.Rotation.x != 0.0f || transform.Rotation.y != 0.0f || transform.Rotation.z != 0.0f)
+	if (transform.Rotation.x() != 0.0f || transform.Rotation.y() != 0.0f || transform.Rotation.z() != 0.0f)
 		transformation = Math::Translate(transform.Position) *
 		                 Mat4Cast(Math::Quat(Radians(transform.Rotation))) * Math::Scale(transform.Scale);
 	else
@@ -1104,10 +1104,10 @@ void TRAP::Graphics::Renderer2D::DrawRect(const TRAP::Math::Vec3& position, cons
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	const TRAP::Math::Vec3 p0 = position + TRAP::Math::Vec3(-size.x / 2.0f, -size.y / 2.0f, 0.0f);
-	const TRAP::Math::Vec3 p1 = position + TRAP::Math::Vec3( size.x / 2.0f, -size.y / 2.0f, 0.0f);
-	const TRAP::Math::Vec3 p2 = position + TRAP::Math::Vec3( size.x / 2.0f,  size.y / 2.0f, 0.0f);
-	const TRAP::Math::Vec3 p3 = position + TRAP::Math::Vec3(-size.x / 2.0f,  size.y / 2.0f, 0.0f);
+	const TRAP::Math::Vec3 p0 = position + TRAP::Math::Vec3(-size.x() / 2.0f, -size.y() / 2.0f, 0.0f);
+	const TRAP::Math::Vec3 p1 = position + TRAP::Math::Vec3( size.x() / 2.0f, -size.y() / 2.0f, 0.0f);
+	const TRAP::Math::Vec3 p2 = position + TRAP::Math::Vec3( size.x() / 2.0f,  size.y() / 2.0f, 0.0f);
+	const TRAP::Math::Vec3 p3 = position + TRAP::Math::Vec3(-size.x() / 2.0f,  size.y() / 2.0f, 0.0f);
 
 	DrawLine(p0, p1, color, entityID);
 	DrawLine(p1, p2, color, entityID);

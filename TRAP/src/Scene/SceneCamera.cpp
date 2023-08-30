@@ -79,8 +79,8 @@ void TRAP::SceneCamera::SetOrthographicClip(const Math::Vec2 clip)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
-	m_orthographicNear = clip.x;
-	m_orthographicFar = clip.y;
+	m_orthographicNear = clip.x();
+	m_orthographicFar = clip.y();
 	RecalculateProjection();
 }
 

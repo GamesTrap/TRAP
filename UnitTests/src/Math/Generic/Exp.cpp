@@ -33,36 +33,36 @@ void RunExpTests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunExpVecTests()
 {
     constexpr T Epsilon = std::numeric_limits<T>::epsilon();
-    REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(T(1.0f)), T(TRAP::Math::e<typename T::valueType>()), Epsilon)));
+    REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(T(1.0f)), T(TRAP::Math::e<typename T::value_type>()), Epsilon)));
 }
 
 template<typename T>
 requires TRAP::Math::IsQuat<T>
 void RunExpQuatTests()
 {
-    constexpr typename T::valueType Epsilon = std::numeric_limits<typename T::valueType>::epsilon();
+    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
-    const T q(typename T::valueType(1.0f), typename T::valueType(0.0f), typename T::valueType(0.0f), typename T::valueType(0.0f));
-    const T res(typename T::valueType(0.0f), typename T::valueType(0.0f), typename T::valueType(0.0f), typename T::valueType(0.0f));
+    const T q(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
+    const T res(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
     REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q), res, Epsilon)));
 
-    const T q2(typename T::valueType(0.0f), typename T::valueType(1.0f), typename T::valueType(0.0f), typename T::valueType(0.0f));
-    const T res2(TRAP::Math::Cos(typename T::valueType(1.0f)), TRAP::Math::Sin(typename T::valueType(1.0f)), typename T::valueType(0.0f), typename T::valueType(0.0f));
+    const T q2(typename T::value_type(0.0f), typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
+    const T res2(TRAP::Math::Cos(typename T::value_type(1.0f)), TRAP::Math::Sin(typename T::value_type(1.0f)), typename T::value_type(0.0f), typename T::value_type(0.0f));
     REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q2), res2, Epsilon)));
 
-    const T q3(typename T::valueType(0.0f), typename T::valueType(0.0f), typename T::valueType(1.0f), typename T::valueType(0.0f));
-    const T res3(TRAP::Math::Cos(typename T::valueType(1.0f)), typename T::valueType(0.0f), TRAP::Math::Sin(typename T::valueType(1.0f)), typename T::valueType(0.0f));
+    const T q3(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(1.0f), typename T::value_type(0.0f));
+    const T res3(TRAP::Math::Cos(typename T::value_type(1.0f)), typename T::value_type(0.0f), TRAP::Math::Sin(typename T::value_type(1.0f)), typename T::value_type(0.0f));
     REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q3), res3, Epsilon)));
 
-    const T q4(typename T::valueType(0.0f), typename T::valueType(0.0f), typename T::valueType(0.0f), typename T::valueType(1.0f));
-    const T res4(TRAP::Math::Cos(typename T::valueType(1.0f)), typename T::valueType(0.0f), typename T::valueType(0.0f), TRAP::Math::Sin(typename T::valueType(1.0f)));
+    const T q4(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(1.0f));
+    const T res4(TRAP::Math::Cos(typename T::value_type(1.0f)), typename T::value_type(0.0f), typename T::value_type(0.0f), TRAP::Math::Sin(typename T::value_type(1.0f)));
     REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q4), res4, Epsilon)));
 
-    const T q6(typename T::valueType(0.0f), typename T::valueType(0.0f), typename T::valueType(0.0f), typename T::valueType(0.0f));
+    const T q6(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
     REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(q6), q6, Epsilon)));
 }
 

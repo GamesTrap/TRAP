@@ -22,10 +22,10 @@ void RenderScaleTests::OnImGuiRender()
         TRAP::Graphics::RenderCommand::SetRenderScale(renderScale);
 
     const auto internalRes = TRAP::Graphics::RendererAPI::GetInternalRenderResolution(TRAP::Application::GetWindow());
-    ImGui::Text("Render Resolution: %ux%u", internalRes.x, internalRes.y);
+    ImGui::Text("Render Resolution: %ux%u", internalRes.x(), internalRes.y());
 
     const auto outputSize = TRAP::Application::GetWindow()->GetFrameBufferSize();
-    ImGui::Text("Output Resolution: %ux%u", outputSize.x, outputSize.y);
+    ImGui::Text("Output Resolution: %ux%u", outputSize.x(), outputSize.y());
 
     ImGui::End();
 }

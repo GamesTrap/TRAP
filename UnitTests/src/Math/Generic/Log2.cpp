@@ -27,11 +27,11 @@ void RunLog2Tests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunLog2VecTests()
 {
-    constexpr T x(TRAP::Math::Vec<4, typename T::valueType>(16.0f, 8.0f, 4.0f, 2.0f));
-    constexpr T res(TRAP::Math::Vec<4, typename T::valueType>(4.0f, 3.0f, 2.0f, 1.0f));
+    constexpr T x(TRAP::Math::Vec<4, typename T::value_type>(16.0f, 8.0f, 4.0f, 2.0f));
+    constexpr T res(TRAP::Math::Vec<4, typename T::value_type>(4.0f, 3.0f, 2.0f, 1.0f));
     REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Log2(x), res, T(0.01f))));
 }
 

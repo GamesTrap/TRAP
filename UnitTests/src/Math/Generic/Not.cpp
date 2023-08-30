@@ -14,7 +14,7 @@ consteval void RunCompileTimeNotTests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && std::same_as<typename T::valueType, bool>
+requires TRAP::Math::IsVec<T> && std::same_as<typename T::value_type, bool>
 consteval void RunCompileTimeNotVecTests()
 {
     constexpr T A(false);

@@ -55,9 +55,9 @@ public:
 			const TRAP::Graphics::OrthographicCameraBounds bounds = m_cameraController.GetBounds();
 			const TRAP::Math::Vec3 pos = m_cameraController.GetCamera().GetPosition();
 
-			const float x = (mousePosition.x / NumericCast<float>(resolution.x)) * bounds.GetWidth() - bounds.GetWidth() * 0.5f;
-			const float y = bounds.GetHeight() * 0.5f - (mousePosition.y / NumericCast<float>(resolution.y)) * bounds.GetHeight();
-			m_particle.Position = { x + pos.x, y + pos.y };
+			const float x = (mousePosition.x() / NumericCast<float>(resolution.x())) * bounds.GetWidth() - bounds.GetWidth() * 0.5f;
+			const float y = bounds.GetHeight() * 0.5f - (mousePosition.y() / NumericCast<float>(resolution.y())) * bounds.GetHeight();
+			m_particle.Position = { x + pos.x(), y + pos.y() };
 			for (uint32_t i = 0; i < 5; i++)
 				m_particleSystem.Emit(m_particle);
 		}

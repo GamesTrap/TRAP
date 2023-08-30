@@ -9,10 +9,10 @@
 #include "TRAP/src/Maths/Math.h"
 
 template<typename T>
-requires TRAP::Math::IsVec3<T> && std::floating_point<typename T::valueType>
+requires TRAP::Math::IsVec3<T> && std::floating_point<typename T::value_type>
 consteval void RunCompileTimeCrossVec3Tests()
 {
-    constexpr typename T::valueType Epsilon = TRAP::Math::Epsilon<typename T::valueType>();
+    constexpr typename T::value_type Epsilon = TRAP::Math::Epsilon<typename T::value_type>();
 
     constexpr T cross1 = TRAP::Math::Cross(T(1.0f, 0.0f, 0.0f), T(0.0f, 1.0f, 0.0f));
     constexpr T cross2 = TRAP::Math::Cross(T(0.0f, 1.0f, 0.0f), T(1.0f, 0.0f, 0.0f));
@@ -30,14 +30,14 @@ consteval void RunCompileTimeCrossVec3Tests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec3<T> && std::floating_point<typename T::valueType>
+requires TRAP::Math::IsVec3<T> && std::floating_point<typename T::value_type>
 void RunCrossVec3EdgeTests()
 {
-    constexpr typename T::valueType min = std::numeric_limits<typename T::valueType>::lowest();
-    constexpr typename T::valueType max = std::numeric_limits<typename T::valueType>::max();
-    constexpr typename T::valueType inf = std::numeric_limits<typename T::valueType>::infinity();
-    constexpr typename T::valueType ninf = -std::numeric_limits<typename T::valueType>::infinity();
-    constexpr typename T::valueType nan = std::numeric_limits<typename T::valueType>::quiet_NaN();
+    constexpr typename T::value_type min = std::numeric_limits<typename T::value_type>::lowest();
+    constexpr typename T::value_type max = std::numeric_limits<typename T::value_type>::max();
+    constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
+    constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
+    constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
 
     const T cross1 = TRAP::Math::Cross(T(min, 0.0f, 0.0f), T(0.0f, min, 0.0f));
     REQUIRE(TRAP::Math::Any(TRAP::Math::IsInf(cross1)));
@@ -52,10 +52,10 @@ void RunCrossVec3EdgeTests()
 }
 
 template<typename T>
-requires TRAP::Math::IsQuat<T> && std::floating_point<typename T::valueType>
+requires TRAP::Math::IsQuat<T> && std::floating_point<typename T::value_type>
 void RunCompileTimeCrossQuatTests()
 {
-    constexpr typename T::valueType Epsilon = TRAP::Math::Epsilon<typename T::valueType>();
+    constexpr typename T::value_type Epsilon = TRAP::Math::Epsilon<typename T::value_type>();
 
     constexpr T cross1 = TRAP::Math::Cross(T(1.0f, 0.0f, 0.0f, 0.0f), T( 1.0f, 0.0f, 0.0f, 0.0f));
     constexpr T cross2 = TRAP::Math::Cross(T(1.0f, 0.0f, 0.0f, 0.0f), T( 0.0f, 1.0f, 0.0f, 0.0f));

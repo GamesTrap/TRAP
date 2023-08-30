@@ -9,7 +9,7 @@
 #include "TRAP/src/Maths/Math.h"
 
 template<typename T>
-requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>)
+requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
 void RunLdExpTests()
 {
     if constexpr(std::floating_point<T>)
@@ -30,14 +30,14 @@ void RunLdExpTests()
             REQUIRE(TRAP::Math::Equal(res, expected, Epsilon));
         }
     }
-    else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>)
+    else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
     {
-        constexpr typename T::valueType Epsilon = std::numeric_limits<typename T::valueType>::epsilon();
+        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
-        constexpr T x(TRAP::Math::Vec<4, typename T::valueType>(0.5f, 0.96f, 0.0f, -0.665f));
+        constexpr T x(TRAP::Math::Vec<4, typename T::value_type>(0.5f, 0.96f, 0.0f, -0.665f));
         constexpr TRAP::Math::Vec<T::Length(), int32_t> exp(TRAP::Math::Vec<4, int32_t>(11, -2, 0, 1));
         const T res = TRAP::Math::LdExp(x, exp);
-        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, T(TRAP::Math::Vec<4, typename T::valueType>(1024.0f, 0.24f, 0.0f, -1.33f)), Epsilon)));
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, T(TRAP::Math::Vec<4, typename T::value_type>(1024.0f, 0.24f, 0.0f, -1.33f)), Epsilon)));
     }
 }
 

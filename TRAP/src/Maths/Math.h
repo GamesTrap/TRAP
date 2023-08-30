@@ -45,6 +45,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include <cmath>
 #include <limits>
 #include <numbers>
+#include <numeric>
 
 namespace TRAP::Math
 {
@@ -1792,7 +1793,7 @@ namespace TRAP::Math
 	/// <returns>Transposed matrix of m.</returns>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] constexpr typename Mat<3, 3, T>::transposeType Transpose(const Mat<3, 3, T>& m);
+	[[nodiscard]] constexpr Mat<3, 3, T> Transpose(const Mat<3, 3, T>& m);
 	/// <summary>
 	/// Calculate the transpose of a matrix.
 	/// </summary>
@@ -1800,7 +1801,7 @@ namespace TRAP::Math
 	/// <returns>Transposed matrix of m.</returns>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] constexpr typename Mat<4, 4, T>::transposeType Transpose(const Mat<4, 4, T>& m);
+	[[nodiscard]] constexpr Mat<4, 4, T> Transpose(const Mat<4, 4, T>& m);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2103,7 +2104,7 @@ namespace TRAP::Math
 	/// <returns>Row vector.</returns>
 	template<typename T>
 	requires IsMat<T>
-	[[nodiscard]] typename T::rowType Row(const T& m, std::size_t index);
+	[[nodiscard]] typename T::row_type Row(const T& m, std::size_t index);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2116,7 +2117,7 @@ namespace TRAP::Math
 	/// <returns>Matrix with new row data.</returns>
 	template<typename T>
 	requires IsMat<T>
-	[[nodiscard]] T Row(const T& m, std::size_t index, const typename T::rowType& x);
+	[[nodiscard]] T Row(const T& m, std::size_t index, const typename T::row_type& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2128,7 +2129,7 @@ namespace TRAP::Math
 	/// <returns>Column vector.</returns>
 	template<typename T>
 	requires IsMat<T>
-	[[nodiscard]] typename T::colType Column(const T& m, std::size_t index);
+	[[nodiscard]] typename T::col_type Column(const T& m, std::size_t index);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2141,7 +2142,7 @@ namespace TRAP::Math
 	/// <returns>Matrix with new column data.</returns>
 	template<typename T>
 	requires IsMat<T>
-	[[nodiscard]] T Column(T m, std::size_t index, const typename T::colType& x);
+	[[nodiscard]] T Column(T m, std::size_t index, const typename T::col_type& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -3192,8 +3193,8 @@ template<uint32_t L, typename T>
 requires std::signed_integral<T> || std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Abs(Vec<L, T> x)
 {
-	for (uint32_t i = 0u; i < L; i++)
-		x[i] = Abs(x[i]);
+	for(T& n : x)
+		n = Abs(n);
 
 	return x;
 }
@@ -3202,12 +3203,10 @@ template<uint32_t C, uint32_t R, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<C, R, T> TRAP::Math::Abs(Mat<C, R, T> x)
 {
-	for(uint32_t i = 0; i < C; ++i)
+	for(auto& col : x)
 	{
-		for(uint32_t j = 0; j < R; ++j)
-		{
-			x[i][j] = Abs(x[i][j]);
-		}
+		for(T& n : col)
+			n = Abs(n);
 	}
 
 	return x;
@@ -3248,8 +3247,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		x[i] = std::floor(x[i]);
+	for(T& n : x)
+		n = std::floor(n);
 
 	return x;
 }
@@ -3262,8 +3261,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		x[i] = std::trunc(x[i]);
+	for(T& n : x)
+		n = std::trunc(n);
 
 	return x;
 }
@@ -3276,8 +3275,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		x[i] = std::round(x[i]);
+	for(T& n : x)
+		n = std::round(n);
 
 	return x;
 }
@@ -3313,8 +3312,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		x[i] = RoundEven(x[i]);
+	for(T& n : x)
+		n = RoundEven(n);
 
 	return x;
 }
@@ -3336,8 +3335,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		x[i] = std::ceil(x[i]);
+	for(T& n : x)
+		n = std::ceil(n);
 
 	return x;
 }
@@ -3393,8 +3392,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for(uint32_t i = 0; i < L; ++i)
-		x[i] = std::fmod(x[i], y);
+	for(T& n : x)
+		n = std::fmod(n, y);
 
 	return x;
 }
@@ -3440,8 +3439,8 @@ template<uint32_t L, typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Min(Vec<L, T> a, const T b)
 {
-	for (uint32_t i = 0u; i < L; i++)
-		a[i] = Min(a[i], b);
+	for(T& n : a)
+		n = Min(n, b);
 
 	return a;
 }
@@ -3477,8 +3476,8 @@ template<uint32_t L, typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Max(Vec<L, T> a, const T b)
 {
-	for (uint32_t i = 0u; i < L; i++)
-		a[i] = Max(a[i], b);
+	for(T& n : a)
+		n = Max(n, b);
 
 	return a;
 }
@@ -3608,7 +3607,7 @@ requires std::floating_point<T>
 	if(cosTheta > static_cast<T>(1) - Epsilon<T>())
 	{
 		//Linear interpolation
-		return tQuat<T>(Mix(x.w, y.w, a), Mix(x.x, y.x, a), Mix(x.y, y.y, a), Mix(x.z, y.z, a));
+		return tQuat<T>(Mix(x.w(), y.w(), a), Mix(x.x(), y.x(), a), Mix(x.y(), y.y(), a), Mix(x.z(), y.z(), a));
 	}
 
 	const T angle = ACos(cosTheta);
@@ -3784,7 +3783,7 @@ template <typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::IsNaN(const tQuat<T>& q)
 {
-	return Vec<4, bool>(TRAP::Math::IsNaN(q.x), TRAP::Math::IsNaN(q.y), TRAP::Math::IsNaN(q.z), TRAP::Math::IsNaN(q.w));
+	return Vec<4, bool>(TRAP::Math::IsNaN(q.x()), TRAP::Math::IsNaN(q.y()), TRAP::Math::IsNaN(q.z()), TRAP::Math::IsNaN(q.w()));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3810,7 +3809,7 @@ template <typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::IsInf(const tQuat<T>& q)
 {
-	return Vec<4, bool>(TRAP::Math::IsInf(q.x), TRAP::Math::IsInf(q.y), TRAP::Math::IsInf(q.z), TRAP::Math::IsInf(q.w));
+	return Vec<4, bool>(TRAP::Math::IsInf(q.x()), TRAP::Math::IsInf(q.y()), TRAP::Math::IsInf(q.z()), TRAP::Math::IsInf(q.w()));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3907,8 +3906,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		x[i] = static_cast<T>(std::fmod(x[i], y));
+	for(T& n : x)
+		n = static_cast<T>(std::fmod(n, y));
 
 	return x;
 }
@@ -3992,23 +3991,23 @@ requires std::floating_point<T>
 		return tQuat<T>(static_cast<T>(1), static_cast<T>(0), static_cast<T>(0), static_cast<T>(0));
 
 	//To deal with non-unit quaternions
-	const T magnitude = Sqrt(x.x * x.x + x.y * x.y + x.z * x.z + x.w * x.w);
+	const T magnitude = Sqrt(x.x() * x.x() + x.y() * x.y() + x.z() * x.z() + x.w() * x.w());
 
 	T angle;
-	if(Abs(x.w / magnitude) > CosOneOverTwo<T>())
+	if(Abs(x.w() / magnitude) > CosOneOverTwo<T>())
 	{
 		//Scalar component is close to 1; using it to recover angle would lose precision
 		//Instead, we use the non-scalar components since Sin() is accurate around 0
 
 		//Prevent a division by 0 error later on
-		const T vectorMagnitude = x.x * x.x + x.y * x.y + x.z * x.z;
+		const T vectorMagnitude = x.x() * x.x() + x.y() * x.y() + x.z() * x.z();
 		//Despite the compiler might say, we actually want to compare vectorMagnitude ti 0.
 		//Here, we could use denorm_int() compiling a project with unsafe maths optimizations
 		//might make the comparison always false, even when vectorMagnitude is 0.
 		if(vectorMagnitude < std::numeric_limits<T>::min())
 		{
 			//Equivalent to raising a real number to a power
-			return tQuat<T>(Pow(x.w, y), static_cast<T>(0), static_cast<T>(0), static_cast<T>(0));
+			return tQuat<T>(Pow(x.w(), y), static_cast<T>(0), static_cast<T>(0), static_cast<T>(0));
 		}
 
 		angle = ASin(Sqrt(vectorMagnitude) / magnitude);
@@ -4016,13 +4015,13 @@ requires std::floating_point<T>
 	else
 	{
 		//Scalar component is small, shouldn't cause loss of precision
-		angle = ACos(x.w / magnitude);
+		angle = ACos(x.w() / magnitude);
 	}
 
 	const T newAngle = angle * y;
 	const T div = Sin(newAngle) / Sin(angle);
 	const T mag = Pow(magnitude, y - static_cast<T>(1));
-	return tQuat<T>(Cos(newAngle) * magnitude * mag, x.x * div * mag, x.y * div * mag, x.z * div * mag);
+	return tQuat<T>(Cos(newAngle) * magnitude * mag, x.x() * div * mag, x.y() * div * mag, x.z() * div * mag);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4042,8 +4041,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		x[i] = std::exp(x[i]);
+	for(T& n : x)
+		n = std::exp(n);
 
 	return x;
 }
@@ -4054,7 +4053,7 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<3, T> u(q.x, q.y, q.z);
+	Vec<3, T> u(q.x(), q.y(), q.z());
 	const T angle = Length(u);
 	if (angle < Epsilon<T>())
 		return tQuat<T>();
@@ -4080,8 +4079,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		x[i] = std::log(x[i]);
+	for(T& n : x)
+		n = std::log(n);
 
 	return x;
 }
@@ -4092,22 +4091,22 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Vec<3, T> u(q.x, q.y, q.z);
+	Vec<3, T> u(q.x(), q.y(), q.z());
 	const T vec3Len = Length(u);
 
 	if(vec3Len < Epsilon<T>())
 	{
-		if (q.w > static_cast<T>(0))
-			return tQuat<T>(Log(q.w), static_cast<T>(0), static_cast<T>(0), static_cast<T>(0));
-		if (q.w < static_cast<T>(0))
-			return tQuat<T>(Log(-q.w), PI<T>(), static_cast<T>(0), static_cast<T>(0));
+		if (q.w() > static_cast<T>(0))
+			return tQuat<T>(Log(q.w()), static_cast<T>(0), static_cast<T>(0), static_cast<T>(0));
+		if (q.w() < static_cast<T>(0))
+			return tQuat<T>(Log(-q.w()), PI<T>(), static_cast<T>(0), static_cast<T>(0));
 		return tQuat<T>(std::numeric_limits<T>::infinity(), std::numeric_limits<T>::infinity(),
 		                      std::numeric_limits<T>::infinity(), std::numeric_limits<T>::infinity());
 	}
 
-	const T t = ATan(vec3Len, T(q.w)) / vec3Len;
-	const T quatLen2 = vec3Len * vec3Len + q.w * q.w;
-	return tQuat<T>(static_cast<T>(0.5) * Log(quatLen2), t * q.x, t * q.y, t * q.z);
+	const T t = ATan(vec3Len, T(q.w())) / vec3Len;
+	const T quatLen2 = vec3Len * vec3Len + q.w() * q.w();
+	return tQuat<T>(static_cast<T>(0.5) * Log(quatLen2), t * q.x(), t * q.y(), t * q.z());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4127,8 +4126,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		x[i] = std::exp2(x[i]);
+	for(T& n : x)
+		n = std::exp2(n);
 
 	return x;
 }
@@ -4150,8 +4149,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		x[i] = static_cast<T>(std::log2(x[i]));
+	for(T& n : x)
+		n = static_cast<T>(std::log2(n));
 
 	return x;
 }
@@ -4173,8 +4172,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		x[i] = std::sqrt(x[i]);
+	for(T& n : x)
+		n = std::sqrt(n);
 
 	return x;
 }
@@ -4205,8 +4204,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		x[i] = static_cast<T>(1) / Sqrt(x[i]);
+	for(T& n : x)
+		n = static_cast<T>(1) / Sqrt(n);
 
 	return x;
 }
@@ -4250,21 +4249,18 @@ template<uint32_t L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr T TRAP::Math::Dot(const Vec<L, T>& x, const Vec<L, T>& y)
 {
-	T result = 0;
 	const Vec<L, T> tmp(x * y);
-	for (uint32_t i = 0u; i < L; i++)
-		result += tmp[i];
 
-	return result;
+	return std::accumulate(tmp.begin(), tmp.end(), static_cast<T>(0));
 }
 
 template <typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr T TRAP::Math::Dot(const tQuat<T>& x, const tQuat<T>& y)
 {
-	const Vec<4, T> tmp(x.w * y.w, x.x * y.x, x.y * y.y, x.z * y.z);
+	const Vec<4, T> tmp(x.w() * y.w(), x.x() * y.x(), x.y() * y.y(), x.z() * y.z());
 
-	return (tmp.x + tmp.y) + (tmp.z + tmp.w);
+	return (tmp.x() + tmp.y()) + (tmp.z() + tmp.w());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4273,19 +4269,19 @@ template<typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<3, T> TRAP::Math::Cross(const Vec<3, T>& x, const Vec<3, T>& y)
 {
-	return Vec<3, T>(x.y * y.z - y.y * x.z,
-					 x.z * y.x - y.z * x.x,
-					 x.x * y.y - y.x * x.y);
+	return Vec<3, T>(x.y() * y.z() - y.y() * x.z(),
+					 x.z() * y.x() - y.z() * x.x(),
+					 x.x() * y.y() - y.x() * x.y());
 }
 
 template <typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::tQuat<T> TRAP::Math::Cross(const tQuat<T>& q1, const tQuat<T>& q2) noexcept
 {
-	return tQuat<T>(q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z,
-					q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y,
-					q1.w * q2.y + q1.y * q2.w + q1.z * q2.x - q1.x * q2.z,
-					q1.w * q2.z + q1.z * q2.w + q1.x * q2.y - q1.y * q2.x);
+	return tQuat<T>(q1.w() * q2.w() - q1.x() * q2.x() - q1.y() * q2.y() - q1.z() * q2.z(),
+					q1.w() * q2.x() + q1.x() * q2.w() + q1.y() * q2.z() - q1.z() * q2.y(),
+					q1.w() * q2.y() + q1.y() * q2.w() + q1.z() * q2.x() - q1.x() * q2.z(),
+					q1.w() * q2.z() + q1.z() * q2.w() + q1.x() * q2.y() - q1.y() * q2.x());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4310,7 +4306,7 @@ requires std::floating_point<T>
 		return tQuat<T>(static_cast<T>(1), static_cast<T>(0), static_cast<T>(0), static_cast<T>(0));
 
 	const T oneOverLen = static_cast<T>(1) / len;
-	return tQuat<T>(q.w * oneOverLen, q.x * oneOverLen, q.y * oneOverLen, q.z * oneOverLen);
+	return tQuat<T>(q.w() * oneOverLen, q.x() * oneOverLen, q.y() * oneOverLen, q.z() * oneOverLen);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4436,7 +4432,7 @@ requires (std::floating_point<T> && L > 2)
 
 template <typename T>
 requires std::floating_point<T>
-[[nodiscard]] constexpr typename TRAP::Math::Mat<3, 3, T>::transposeType TRAP::Math::Transpose(const Mat<3, 3, T>& m)
+[[nodiscard]] constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::Transpose(const Mat<3, 3, T>& m)
 {
 	Mat<3, 3, T> result;
 
@@ -4457,7 +4453,7 @@ requires std::floating_point<T>
 
 template <typename T>
 requires std::floating_point<T>
-[[nodiscard]] constexpr typename TRAP::Math::Mat<4, 4, T>::transposeType TRAP::Math::Transpose(const Mat<4, 4, T>& m)
+[[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Transpose(const Mat<4, 4, T>& m)
 {
 	Mat<4, 4, T> result;
 
@@ -4590,7 +4586,7 @@ requires std::floating_point<T>
 	const Vec<4, T> row0(std::get<0>(std::get<0>(inverse)), std::get<0>(std::get<1>(inverse)), std::get<0>(std::get<2>(inverse)), std::get<0>(std::get<3>(inverse)));
 
 	const Vec<4, T> dot0(std::get<0>(m) * row0);
-	const T dot1 = (dot0.x + dot0.y) + (dot0.z + dot0.w);
+	const T dot1 = (dot0.x() + dot0.y()) + (dot0.z() + dot0.w());
 
 	const T oneOverDeterminant = static_cast<T>(1) / dot1;
 
@@ -4915,15 +4911,15 @@ requires std::floating_point<T>
 
 	Mat<4, 4, T> result(static_cast<T>(1));
 
-	std::get<0>(std::get<0>(result)) = s.x;
-	std::get<0>(std::get<1>(result)) = s.y;
-	std::get<0>(std::get<2>(result)) = s.z;
-	std::get<1>(std::get<0>(result)) = u.x;
-	std::get<1>(std::get<1>(result)) = u.y;
-	std::get<1>(std::get<2>(result)) = u.z;
-	std::get<2>(std::get<0>(result)) = -f.x;
-	std::get<2>(std::get<1>(result)) = -f.y;
-	std::get<2>(std::get<2>(result)) = -f.z;
+	std::get<0>(std::get<0>(result)) = s.x();
+	std::get<0>(std::get<1>(result)) = s.y();
+	std::get<0>(std::get<2>(result)) = s.z();
+	std::get<1>(std::get<0>(result)) = u.x();
+	std::get<1>(std::get<1>(result)) = u.y();
+	std::get<1>(std::get<2>(result)) = u.z();
+	std::get<2>(std::get<0>(result)) = -f.x();
+	std::get<2>(std::get<1>(result)) = -f.y();
+	std::get<2>(std::get<2>(result)) = -f.z();
 	std::get<0>(std::get<3>(result)) = -Dot(s, eye);
 	std::get<1>(std::get<3>(result)) = -Dot(u, eye);
 	std::get<2>(std::get<3>(result)) = Dot(f, eye);
@@ -4935,7 +4931,7 @@ requires std::floating_point<T>
 
 template<typename T>
 requires TRAP::Math::IsMat<T>
-[[nodiscard]] T TRAP::Math::Row(const T& m, const std::size_t index, const typename T::rowType& x)
+[[nodiscard]] T TRAP::Math::Row(const T& m, const std::size_t index, const typename T::row_type& x)
 {
 	TRAP_ASSERT(index < std::get<0>(m).Length(), "Math::Row(): Index out of range!");
 
@@ -4951,11 +4947,11 @@ requires TRAP::Math::IsMat<T>
 
 template<typename T>
 requires TRAP::Math::IsMat<T>
-[[nodiscard]] typename T::rowType TRAP::Math::Row(const T& m, const std::size_t index)
+[[nodiscard]] typename T::row_type TRAP::Math::Row(const T& m, const std::size_t index)
 {
 	TRAP_ASSERT(index < std::get<0>(m).Length(), "Math::Row(): Index out of range!");
 
-	typename T::rowType result(0);
+	typename T::row_type result(0);
 
 	for(std::size_t i = 0u; i < m.Length(); ++i)
 		result[i] = m[i][index];
@@ -4967,7 +4963,7 @@ requires TRAP::Math::IsMat<T>
 
 template<typename T>
 requires TRAP::Math::IsMat<T>
-[[nodiscard]] T TRAP::Math::Column(T m, const std::size_t index, const typename T::colType& x)
+[[nodiscard]] T TRAP::Math::Column(T m, const std::size_t index, const typename T::col_type& x)
 {
 	TRAP_ASSERT(index < m.Length(), "Math::Column(): Index out of range!");
 
@@ -4980,7 +4976,7 @@ requires TRAP::Math::IsMat<T>
 
 template<typename T>
 requires TRAP::Math::IsMat<T>
-[[nodiscard]] typename T::colType TRAP::Math::Column(const T& m, const std::size_t index)
+[[nodiscard]] typename T::col_type TRAP::Math::Column(const T& m, const std::size_t index)
 {
 	TRAP_ASSERT(index < m.Length(), "Math::Column(): Index out of range!");
 
@@ -5008,10 +5004,10 @@ requires std::floating_point<T>
 	if(Equal(std::get<3>(std::get<3>(m)), static_cast<T>(0.0f), Epsilon<T>()))
 		return false;
 
-	for(uint32_t i = 0; i < 4; ++i)
+	for(auto& col : m)
 	{
-		for(uint32_t j = 0; j < 4; ++j)
-			m[i][j] /= std::get<3>(std::get<3>(m));
+		for(T& n : col)
+			n /= std::get<3>(std::get<3>(m));
 	}
 
 	//perspectiveMatrix is used to solve for perspective, but it also provides
@@ -5037,19 +5033,19 @@ requires std::floating_point<T>
 
 	//Take care of translation
 	outPosition = Vec<3, T>(std::get<3>(m));
-	std::get<3>(m) = Vec<4, T>(0.0f, 0.0f, 0.0f, std::get<3>(m).w);
+	std::get<3>(m) = Vec<4, T>(0.0f, 0.0f, 0.0f, std::get<3>(m).w());
 
 	std::array<Vec<3, T>, 3> row{};
 
 	//Now get scale and shear.
-	for(uint32_t i = 0; i < 3; ++i)
+	for(uint32_t i = 0; i < row.size(); ++i)
 	{
-		for(uint32_t j = 0; j < 3; ++j)
+		for(uint32_t j = 0; j < row[i].Length(); ++j)
 			row[i][j] = m[i][j];
 	}
 
 	//Compute X scale factor and normalize first row
-	outScale.x = Length(std::get<0>(row));
+	outScale.x() = Length(std::get<0>(row));
 
 	std::get<0>(row) = LocalScale(std::get<0>(row), static_cast<T>(1.0f));
 
@@ -5058,7 +5054,7 @@ requires std::floating_point<T>
 	std::get<1>(row) = LocalCombine(std::get<1>(row), std::get<0>(row), static_cast<T>(1.0f), -skewZ);
 
 	//Now, comute Y scale and normalize 2nd row.
-	outScale.y = Length(std::get<1>(row));
+	outScale.y() = Length(std::get<1>(row));
 	std::get<1>(row) = LocalScale(std::get<1>(row), static_cast<T>(1.0f));
 
 	//Compute XZ and YZ shears, orthogonalize 3rd row.
@@ -5068,7 +5064,7 @@ requires std::floating_point<T>
 	std::get<2>(row) = LocalCombine(std::get<2>(row), std::get<1>(row), static_cast<T>(1.0f), -skewX);
 
 	//Next, get Z scale and normalize 3rd row.
-	outScale.z = Length(std::get<2>(row));
+	outScale.z() = Length(std::get<2>(row));
 	std::get<2>(row) = LocalScale(std::get<2>(row), static_cast<T>(1.0f));
 
 	//At this point, the matrix (in rows[]) is orthonormal.
@@ -5077,31 +5073,30 @@ requires std::floating_point<T>
 	Vec<3, T> pdum3 = Cross(std::get<1>(row), std::get<2>(row));
 	if(Dot(std::get<0>(row), pdum3) < 0)
 	{
-		for(uint32_t i = 0; i < 3; ++i)
-		{
-		    outScale[i] *= static_cast<T>(-1.0f);
-			row[i] *= static_cast<T>(-1.0f);
-		}
+		for(T& n : outScale)
+			n *= static_cast<T>(-1.0f);
+		for(auto& n : row)
+			n *= static_cast<T>(-1.0f);
 	}
 
 	//Now, get the rotations out.
-	const T trace = std::get<0>(row).x + std::get<1>(row).y + std::get<2>(row).z;
+	const T trace = std::get<0>(row).x() + std::get<1>(row).y() + std::get<2>(row).z();
 	if(trace > static_cast<T>(0.0f))
 	{
 		T root = Sqrt(trace + static_cast<T>(1.0f));
-		outRotation.w = static_cast<T>(0.5f) * root;
+		outRotation.w() = static_cast<T>(0.5f) * root;
 		root = static_cast<T>(0.5f) / root;
-		outRotation.x = root * (std::get<1>(row).z - std::get<2>(row).y);
-		outRotation.y = root * (std::get<2>(row).x - std::get<0>(row).z);
-		outRotation.z = root * (std::get<0>(row).y - std::get<1>(row).x);
+		outRotation.x() = root * (std::get<1>(row).z() - std::get<2>(row).y());
+		outRotation.y() = root * (std::get<2>(row).x() - std::get<0>(row).z());
+		outRotation.z() = root * (std::get<0>(row).y() - std::get<1>(row).x());
 	}
 	else
 	{
 		constexpr static std::array<uint32_t, 3> next{1, 2, 0};
 		uint8_t i = 0;
-		if(std::get<2>(row).z > row[i][i])
+		if(std::get<2>(row).z() > row[i][i])
 			i = 2;
-		else if(std::get<1>(row).y > std::get<0>(row).x)
+		else if(std::get<1>(row).y() > std::get<0>(row).x())
 			i = 1;
 		const uint32_t j = next[i];
 		const uint32_t k = next[j];
@@ -5112,7 +5107,7 @@ requires std::floating_point<T>
 		root = static_cast<T>(0.5f) / root;
 		outRotation[j + 1] = root * (row[i][j] + row[j][i]);
 		outRotation[k + 1] = root * (row[i][k] + row[k][i]);
-		outRotation.w = root * (row[j][k] - row[k][j]);
+		outRotation.w() = root * (row[j][k] - row[k][j]);
 	}
 
 	return true;
@@ -5139,10 +5134,10 @@ requires std::floating_point<T>
 	if(Equal(std::get<3>(std::get<3>(m)), static_cast<T>(0.0f), Epsilon<T>()))
 		return false;
 
-	for(uint32_t i = 0; i < 4; ++i)
+	for(auto& col : m)
 	{
-		for(uint32_t j = 0; j < 4; ++j)
-			m[i][j] /= std::get<3>(std::get<3>(m));
+		for(T& n : col)
+			n /= std::get<3>(std::get<3>(m));
 	}
 
 	//perspectiveMatrix is used to solve for perspective, but it also provides
@@ -5168,7 +5163,7 @@ requires std::floating_point<T>
 
 	//Take care of translation
 	outPosition = Vec<3, T>(std::get<3>(m));
-	std::get<3>(m) = Vec<4, T>(0.0f, 0.0f, 0.0f, std::get<3>(m).w);
+	std::get<3>(m) = Vec<4, T>(0.0f, 0.0f, 0.0f, std::get<3>(m).w());
 
 	std::array<Vec<3, T>, 3> row{};
 
@@ -5180,7 +5175,7 @@ requires std::floating_point<T>
 	}
 
 	//Compute X scale factor and normalize first row
-	outScale.x = Length(std::get<0>(row));
+	outScale.x() = Length(std::get<0>(row));
 
 	std::get<0>(row) = LocalScale(std::get<0>(row), static_cast<T>(1.0f));
 
@@ -5189,7 +5184,7 @@ requires std::floating_point<T>
 	std::get<1>(row) = LocalCombine(std::get<1>(row), std::get<0>(row), static_cast<T>(1.0f), -skewZ);
 
 	//Now, comute Y scale and normalize 2nd row.
-	outScale.y = Length(std::get<1>(row));
+	outScale.y() = Length(std::get<1>(row));
 	std::get<1>(row) = LocalScale(std::get<1>(row), static_cast<T>(1.0f));
 
 	//Compute XZ and YZ shears, orthogonalize 3rd row.
@@ -5199,7 +5194,7 @@ requires std::floating_point<T>
 	std::get<2>(row) = LocalCombine(std::get<2>(row), std::get<1>(row), static_cast<T>(1.0f), -skewX);
 
 	//Next, get Z scale and normalize 3rd row.
-	outScale.z = Length(std::get<2>(row));
+	outScale.z() = Length(std::get<2>(row));
 	std::get<2>(row) = LocalScale(std::get<2>(row), static_cast<T>(1.0f));
 
 	//At this point, the matrix (in rows[]) is orthonormal.
@@ -5208,24 +5203,23 @@ requires std::floating_point<T>
 	Vec<3, T> pdum3 = Cross(std::get<1>(row), std::get<2>(row));
 	if(Dot(std::get<0>(row), pdum3) < 0)
 	{
-		for(uint32_t i = 0; i < 3; ++i)
-		{
-		    outScale[i] *= static_cast<T>(-1.0f);
-			row[i] *= static_cast<T>(-1.0f);
-		}
+		for(T& n : outScale)
+			n *= static_cast<T>(-1.0f);
+		for(auto& n : row)
+			n *= static_cast<T>(-1.0f);
 	}
 
 	//Now, get the rotations (euler angles) out.
-	outRotation.y = Degrees(ASin(-std::get<2>(std::get<0>(row))));
-	if(Cos(outRotation.y) != T(0.0f))
+	outRotation.y() = Degrees(ASin(-std::get<2>(std::get<0>(row))));
+	if(Cos(outRotation.y()) != T(0.0f))
 	{
-		outRotation.x = Degrees(ATan(std::get<2>(std::get<1>(row)), std::get<2>(std::get<2>(row))));
-		outRotation.z = Degrees(ATan(std::get<1>(std::get<0>(row)), std::get<0>(std::get<0>(row))));
+		outRotation.x() = Degrees(ATan(std::get<2>(std::get<1>(row)), std::get<2>(std::get<2>(row))));
+		outRotation.z() = Degrees(ATan(std::get<1>(std::get<0>(row)), std::get<0>(std::get<0>(row))));
 	}
 	else
 	{
-		outRotation.x = Degrees(ATan(-std::get<0>(std::get<2>(row)), std::get<1>(std::get<1>(row))));
-		outRotation.z = T(0.0f);
+		outRotation.x() = Degrees(ATan(-std::get<0>(std::get<2>(row)), std::get<1>(std::get<1>(row))));
+		outRotation.z() = T(0.0f);
 	}
 
 	return true;
@@ -5276,7 +5270,7 @@ requires std::floating_point<T>
 	if (cosTheta > static_cast<T>(1) - Epsilon<T>())
 	{
 		//Linear interpolation
-		return tQuat<T>(Mix(x.w, z.w, a), Mix(x.x, z.x, a), Mix(x.y, z.y, a), Mix(x.z, z.z, a));
+		return tQuat<T>(Mix(x.w(), z.w(), a), Mix(x.x(), z.x(), a), Mix(x.y(), z.y(), a), Mix(x.z(), z.z(), a));
 	}
 
 	const T angle = ACos(cosTheta);
@@ -5308,7 +5302,7 @@ requires std::floating_point<T> && std::integral<S>
 	if(cosTheta > static_cast<T>(1) - Epsilon<T>())
 	{
 		//Linear interpolation
-		return tQuat<T>(Mix(x.w, z.w, a), Mix(x.x, z.x, a), Mix(x.y, z.y, a), Mix(x.z, z.z, a));
+		return tQuat<T>(Mix(x.w(), z.w(), a), Mix(x.x(), z.x(), a), Mix(x.y(), z.y(), a), Mix(x.z(), z.z(), a));
 	}
 
 	//Graphics Gems III, page 96
@@ -5323,7 +5317,7 @@ template <typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::tQuat<T> TRAP::Math::Conjugate(const tQuat<T>& q) noexcept
 {
-	return tQuat<T>(q.w, -q.x, -q.y, -q.z);
+	return tQuat<T>(q.w(), -q.x(), -q.y(), -q.z());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5354,8 +5348,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	const T y = static_cast<T>(2) * (q.x * q.y + q.w * q.z);
-	const T x = q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z;
+	const T y = static_cast<T>(2) * (q.x() * q.y() + q.w() * q.z());
+	const T x = q.w() * q.w() + q.x() * q.x() - q.y() * q.y() - q.z() * q.z();
 
 	if (All(Equal(tVec2<T>(x, y), tVec2<T>(static_cast<T>(0)), Epsilon<T>()))) //Avoid ATan2(0, 0) - handle singularity
 		return static_cast<T>(0);
@@ -5371,11 +5365,11 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	const T y = static_cast<T>(2) * (q.y * q.z + q.w * q.x);
-	const T x = q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z;
+	const T y = static_cast<T>(2) * (q.y() * q.z() + q.w() * q.x());
+	const T x = q.w() * q.w() - q.x() * q.x() - q.y() * q.y() + q.z() * q.z();
 
 	if (All(Equal(Vec<2, T>(x, y), Vec<2, T>(static_cast<T>(0)), Epsilon<T>())))
-		return static_cast<T>(static_cast<T>(2) * ATan(q.x, q.w));
+		return static_cast<T>(static_cast<T>(2) * ATan(q.x(), q.w()));
 
 	return static_cast<T>(ATan(y, x));
 }
@@ -5388,7 +5382,7 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return ASin(Clamp(static_cast<T>(-2) * (x.x * x.z - x.w * x.y), static_cast<T>(-1), static_cast<T>(1)));
+	return ASin(Clamp(static_cast<T>(-2) * (x.x() * x.z() - x.w() * x.y()), static_cast<T>(-1), static_cast<T>(1)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5398,15 +5392,15 @@ requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat3Cast(const tQuat<T>& q) noexcept
 {
 	Mat<3, 3, T> result(static_cast<T>(1));
-	const T qxx(q.x * q.x);
-	const T qyy(q.y * q.y);
-	const T qzz(q.z * q.z);
-	const T qxz(q.x * q.z);
-	const T qxy(q.x * q.y);
-	const T qyz(q.y * q.z);
-	const T qwx(q.w * q.x);
-	const T qwy(q.w * q.y);
-	const T qwz(q.w * q.z);
+	const T qxx(q.x() * q.x());
+	const T qyy(q.y() * q.y());
+	const T qzz(q.z() * q.z());
+	const T qxz(q.x() * q.z());
+	const T qxy(q.x() * q.y());
+	const T qyz(q.y() * q.z());
+	const T qwx(q.w() * q.x());
+	const T qwy(q.w() * q.y());
+	const T qwz(q.w() * q.z());
 
 	std::get<0>(std::get<0>(result)) = static_cast<T>(1) - static_cast<T>(2) * (qyy + qzz);
 	std::get<1>(std::get<0>(result)) = static_cast<T>(2) * (qxy + qwz);
@@ -5588,7 +5582,7 @@ template <typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const tQuat<T>& x, const tQuat<T>& y, const T epsilon)
 {
-	Vec<4, T> v(x.x - y.x, x.y - y.y, x.z - y.z, x.w - y.w);
+	Vec<4, T> v(x.x() - y.x(), x.y() - y.y(), x.z() - y.z(), x.w() - y.w());
 	return LessThan(Abs(v), Vec<4, T>(epsilon));
 }
 
@@ -5609,7 +5603,7 @@ template <typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const tQuat<T>& x, const tQuat<T>& y, const T epsilon)
 {
-	const Vec<4, T> v(x.x - y.x, x.y - y.y, x.z - y.z, x.w - y.w);
+	const Vec<4, T> v(x.x() - y.x(), x.y() - y.y(), x.z() - y.z(), x.w() - y.w());
 	return GreaterThanEqual(Abs(v), Vec<4, T>(epsilon));
 }
 
@@ -5621,10 +5615,10 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if (Abs(x.w) > CosOneOverTwo<T>())
-		return ASin(Sqrt(x.x * x.x + x.y * x.y + x.z * x.z)) * static_cast<T>(2);
+	if (Abs(x.w()) > CosOneOverTwo<T>())
+		return ASin(Sqrt(x.x() * x.x() + x.y() * x.y() + x.z() * x.z())) * static_cast<T>(2);
 
-	return ACos(x.w) * static_cast<T>(2);
+	return ACos(x.w()) * static_cast<T>(2);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5635,13 +5629,13 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	const T tmp1 = static_cast<T>(1) - x.w * x.w;
+	const T tmp1 = static_cast<T>(1) - x.w() * x.w();
 
 	if (tmp1 <= static_cast<T>(0))
 		return Vec<3, T>(static_cast<T>(0), static_cast<T>(0), static_cast<T>(1));
 
 	const T tmp2 = static_cast<T>(1) / Sqrt(tmp1);
-	return Vec<3, T>(x.x * tmp2, x.y * tmp2, x.z * tmp2);
+	return Vec<3, T>(x.x() * tmp2, x.y() * tmp2, x.z() * tmp2);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5673,15 +5667,15 @@ requires std::floating_point<T>
 	if(Abs(len - static_cast<T>(1)) > static_cast<T>(0.001))
 	{
 		const T oneOverLen = static_cast<T>(1) / len;
-		tmp.x *= oneOverLen;
-		tmp.y *= oneOverLen;
-		tmp.z *= oneOverLen;
+		tmp.x() *= oneOverLen;
+		tmp.y() *= oneOverLen;
+		tmp.z() *= oneOverLen;
 	}
 
 	const T angleRad(angle);
 	const T sin = Sin(angleRad * static_cast<T>(0.5));
 
-	return q * tQuat<T>(Cos(angleRad * static_cast<T>(0.5)), tmp.x * sin, tmp.y * sin, tmp.z * sin);
+	return q * tQuat<T>(Cos(angleRad * static_cast<T>(0.5)), tmp.x() * sin, tmp.y() * sin, tmp.z() * sin);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5839,8 +5833,8 @@ template<uint32_t L>
 [[nodiscard]] constexpr bool TRAP::Math::Any(const Vec<L, bool>& v) noexcept
 {
 	bool result = false;
-	for (uint32_t i = 0u; i < L; ++i)
-		result = result || v[i];
+	for(const bool n : v)
+		result = result || n;
 	return result;
 }
 
@@ -5850,8 +5844,8 @@ template<uint32_t L>
 [[nodiscard]] constexpr bool TRAP::Math::All(const Vec<L, bool>& v) noexcept
 {
 	bool result = true;
-	for (uint32_t i = 0u; i < L; ++i)
-		result = result && v[i];
+	for(const bool n : v)
+		result = result && n;
 	return result;
 }
 
@@ -5860,8 +5854,8 @@ template<uint32_t L>
 template<uint32_t L>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Not(Vec<L, bool> v) noexcept
 {
-	for (uint32_t i = 0u; i < L; ++i)
-		v[i] = !v[i];
+	for(bool& n : v)
+		n = !n;
 
 	return v;
 }
@@ -5881,8 +5875,8 @@ template<uint32_t L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Radians(Vec<L, T> v)
 {
-	for (uint32_t i = 0u; i < L; i++)
-		v[i] = Radians(v[i]);
+	for(T& n : v)
+		n = Radians(n);
 
 	return v;
 }
@@ -5900,8 +5894,8 @@ template<uint32_t L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Degrees(Vec<L, T> v)
 {
-	for (uint32_t i = 0u; i < L; i++)
-		v[i] = Degrees(v[i]);
+	for(T& n : v)
+		n = Degrees(n);
 
 	return v;
 }
@@ -5923,8 +5917,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		v[i] = std::sin(v[i]);
+	for(T& n : v)
+		n = std::sin(n);
 
 	return v;
 }
@@ -5946,8 +5940,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		v[i] = std::cos(v[i]);
+	for(T& n : v)
+		n = std::cos(n);
 
 	return v;
 }
@@ -5969,8 +5963,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		v[i] = std::tan(v[i]);
+	for(T& n : v)
+		n = std::tan(n);
 
 	return v;
 }
@@ -5992,8 +5986,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		v[i] = std::asin(v[i]);
+	for(T& n : v)
+		n = std::asin(n);
 
 	return v;
 }
@@ -6015,8 +6009,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		v[i] = std::acos(v[i]);
+	for(T& n : v)
+		n = std::acos(n);
 
 	return v;
 }
@@ -6059,8 +6053,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		v[i] = std::atan(v[i]);
+	for(T& n : v)
+		n = std::atan(n);
 
 	return v;
 }
@@ -6082,8 +6076,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		v[i] = std::sinh(v[i]);
+	for(T& n : v)
+		n = std::sinh(n);
 
 	return v;
 }
@@ -6105,8 +6099,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		v[i] = std::cosh(v[i]);
+	for(T& n : v)
+		n = std::cosh(n);
 
 	return v;
 }
@@ -6128,8 +6122,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		v[i] = std::tanh(v[i]);
+	for(T& n : v)
+		n = std::tanh(n);
 
 	return v;
 }
@@ -6151,8 +6145,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		v[i] = std::asinh(v[i]);
+	for(T& n : v)
+		n = std::asinh(n);
 
 	return v;
 }
@@ -6174,8 +6168,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		v[i] = std::acosh(v[i]);
+	for(T& n : v)
+		n = std::acosh(n);
 
 	return v;
 }
@@ -6197,8 +6191,8 @@ requires std::floating_point<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; i++)
-		v[i] = std::atanh(v[i]);
+	for(T& n : v)
+		n = std::atanh(n);
 
 	return v;
 }
@@ -6222,7 +6216,7 @@ requires (L == 3 || L == 4) && std::floating_point<T>
 		//Don't modify the alpha value
 		return Vec<L, T>(Mix(Pow(clampedColor, Vec<3, T>(gammaCorrection)) * static_cast<T>(1.055) - static_cast<T>(0.055),
 	                     clampedColor * static_cast<T>(12.92), LessThan(clampedColor, Vec<3, T>(static_cast<T>(0.0031308)))),
-						 colorLinear.w);
+						 colorLinear.w());
 	}
 	else
 	{
@@ -6248,7 +6242,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::ConvertLinearToSRGB(const Vec<L, T>& colorLine
 		//Don't modify the alpha value
 		return Vec<L, T>(Mix(Pow(clampedColor, Vec<3, T>(gammaCorrection)) * static_cast<T>(1.055) - static_cast<T>(0.055),
 	                     clampedColor * static_cast<T>(12.92), LessThan(clampedColor, Vec<3, T>(static_cast<T>(0.0031308)))),
-						 colorLinear.w);
+						 colorLinear.w());
 	}
 	else
 	{
@@ -6275,7 +6269,7 @@ requires (L == 3 || L == 4) && std::floating_point<T>
 
 		return Vec<L, T>(Mix(Pow((vec3ColorSRGB + static_cast<T>(0.055)) * static_cast<T>(0.94786729857819905213270142180095),
 	                             Vec<3, T>(gammaCorrection)), vec3ColorSRGB * static_cast<T>(0.07739938080495356037151702786378),
-			             LessThanEqual(vec3ColorSRGB, Vec<3, T>(static_cast<T>(0.04045)))), colorSRGB.w);
+			             LessThanEqual(vec3ColorSRGB, Vec<3, T>(static_cast<T>(0.04045)))), colorSRGB.w());
 	}
 	else
 	{
@@ -6297,7 +6291,7 @@ requires (L == 3 || L == 4) && std::floating_point<T>
 
 		return Vec<L, T>(Mix(Pow((vec3ColorSRGB + static_cast<T>(0.055)) * static_cast<T>(0.94786729857819905213270142180095),
 	                             Vec<3, T>(gamma)), vec3ColorSRGB * static_cast<T>(0.07739938080495356037151702786378),
-			             LessThanEqual(vec3ColorSRGB, Vec<3, T>(static_cast<T>(0.04045)))), colorSRGB.w);
+			             LessThanEqual(vec3ColorSRGB, Vec<3, T>(static_cast<T>(0.04045)))), colorSRGB.w());
 	}
 	else
 	{

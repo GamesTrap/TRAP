@@ -19,8 +19,8 @@ void AnisotropyTests::OnAttach()
 
 	//Camera setup
     m_camera.SetPerspective(TRAP::Math::Radians(45.0f), 0.01f);
-    m_camera.SetViewportSize(TRAP::Application::GetWindow()->GetFrameBufferSize().x,
-                             TRAP::Application::GetWindow()->GetFrameBufferSize().y);
+    m_camera.SetViewportSize(TRAP::Application::GetWindow()->GetFrameBufferSize().x(),
+                             TRAP::Application::GetWindow()->GetFrameBufferSize().y());
 
 	//Use a bilinear sampler for Renderer2D (makes anisotropic filtering stand out more than point filtering)
 	TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};

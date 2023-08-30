@@ -32,9 +32,9 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_VEC4_H
 #define TRAP_VEC4_H
 
-#include "Types.h"
 #include "Core/Base.h"
 #include "TRAP_Assert.h"
+#include "Types.h"
 #include "Utils/Utils.h"
 
 namespace TRAP::Math
@@ -47,13 +47,23 @@ namespace TRAP::Math
 	struct Vec<4, T>
 	{
 		//Implementation details
-		using valueType = T;
-		using type = Vec<4, T>;
-		using boolType = Vec<4, bool>;
+		using value_type = T;
+		using pointer = value_type*;
+		using const_pointer = const value_type*;
+		using reference = value_type&;
+		using const_reference = const value_type&;
+		using iterator = std::array<T, 4>::iterator;
+		using const_iterator = std::array<T, 4>::const_iterator;
+		using size_type = uint32_t;
+		using difference_type = std::ptrdiff_t;
+		using reverse_iterator = std::array<T, 4>::reverse_iterator;
+		using const_reverse_iterator = std::array<T, 4>::const_reverse_iterator;
 
+private:
 		//Data
-		T x, y, z, w;
+		std::array<T, 4> data;
 
+public:
 		//Implicit basic constructors
 		constexpr Vec() noexcept = default;
 		constexpr Vec(const Vec<4, T> & v) noexcept = default;
@@ -110,11 +120,34 @@ namespace TRAP::Math
 		[[nodiscard]] static constexpr std::size_t Length() noexcept;
 
 		//Component accesses
-		[[nodiscard]] constexpr T& operator[](std::size_t i);
-		[[nodiscard]] constexpr const T& operator[](std::size_t i) const;
+		[[nodiscard]] constexpr T& x() noexcept;
+		[[nodiscard]] constexpr const T& x() const noexcept;
+		[[nodiscard]] constexpr T& y() noexcept;
+		[[nodiscard]] constexpr const T& y() const noexcept;
+		[[nodiscard]] constexpr T& z() noexcept;
+		[[nodiscard]] constexpr const T& z() const noexcept;
+		[[nodiscard]] constexpr T& w() noexcept;
+		[[nodiscard]] constexpr const T& w() const noexcept;
+
+		[[nodiscard]] constexpr T& operator[](std::size_t i) noexcept;
+		[[nodiscard]] constexpr const T& operator[](std::size_t i) const noexcept;
 
 		[[nodiscard]] T& at(std::size_t i);
 		[[nodiscard]] const T& at(std::size_t i) const;
+
+		//Iterator
+		[[nodiscard]] constexpr const_iterator begin() const noexcept;
+		[[nodiscard]] constexpr iterator begin() noexcept;
+		[[nodiscard]] constexpr const_iterator cbegin() const noexcept;
+		[[nodiscard]] constexpr const_reverse_iterator rbegin() const noexcept;
+		[[nodiscard]] constexpr reverse_iterator rbegin() noexcept;
+		[[nodiscard]] constexpr const_reverse_iterator crbegin() const noexcept;
+		[[nodiscard]] constexpr const_iterator end() const noexcept;
+		[[nodiscard]] constexpr iterator end() noexcept;
+		[[nodiscard]] constexpr const_iterator cend() const noexcept;
+		[[nodiscard]] constexpr const_reverse_iterator rend() const noexcept;
+		[[nodiscard]] constexpr reverse_iterator rend() noexcept;
+		[[nodiscard]] constexpr const_reverse_iterator crend() const noexcept;
 
 		//Unary arithmetic operators
 		constexpr Vec<4, T>& operator=(const Vec<4, T> & v) noexcept = default;
@@ -346,7 +379,7 @@ namespace std
 		{
 			std::size_t seed = 0;
 			hash<T> hasher;
-			TRAP::Utils::HashCombine(seed, hasher(v.x), hasher(v.y), hasher(v.z), hasher(v.w));
+			TRAP::Utils::HashCombine(seed, hasher(v.x()), hasher(v.y()), hasher(v.z()), hasher(v.w()));
 			return seed;
 		}
 	};
@@ -360,13 +393,13 @@ namespace std
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T>::Vec(const T scalar) noexcept
-	: x(scalar), y(scalar), z(scalar), w(scalar)
+	: data{scalar, scalar, scalar, scalar}
 {}
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T>::Vec(T x_, T y_, T z_, T w_) noexcept
-	: x(x_), y(y_), z(z_), w(w_)
+	: data{x_, y_, z_, w_}
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -377,10 +410,7 @@ requires std::is_arithmetic_v<T>
 template<typename X, typename Y, typename Z, typename W>
 requires std::is_arithmetic_v<X> && std::is_arithmetic_v<Y> && std::is_arithmetic_v<Z> && std::is_arithmetic_v<W>
 constexpr TRAP::Math::Vec<4, T>::Vec(const X x_, const Y y_, const Z z_, const W w_) noexcept
-	: x(static_cast<T>(x_)),
-	  y(static_cast<T>(y_)),
-	  z(static_cast<T>(z_)),
-	  w(static_cast<T>(w_))
+	: data{static_cast<T>(x_), static_cast<T>(y_), static_cast<T>(z_), static_cast<T>(w_)}
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -391,10 +421,7 @@ requires std::is_arithmetic_v<T>
 template<typename A, typename B, typename C>
 requires std::is_arithmetic_v<A> && std::is_arithmetic_v<B> && std::is_arithmetic_v<C>
 constexpr TRAP::Math::Vec<4, T>::Vec(const Vec<2, A>& xy, const B z_, const C w_) noexcept
-	: x(static_cast<T>(xy.x)),
-	  y(static_cast<T>(xy.y)),
-	  z(static_cast<T>(z_)),
-	  w(static_cast<T>(w_))
+	: data{static_cast<T>(xy.x()), static_cast<T>(xy.y()), static_cast<T>(z_), static_cast<T>(w_)}
 {}
 
 template<typename T>
@@ -402,10 +429,7 @@ requires std::is_arithmetic_v<T>
 template<typename A, typename B, typename C>
 requires std::is_arithmetic_v<A> && std::is_arithmetic_v<B> && std::is_arithmetic_v<C>
 constexpr TRAP::Math::Vec<4, T>::Vec(const A x_, const Vec<2, B>& yz, const C w_) noexcept
-	: x(static_cast<T>(x_)),
-	  y(static_cast<T>(yz.x)),
-	  z(static_cast<T>(yz.y)),
-	  w(static_cast<T>(w_))
+	: data{static_cast<T>(x_), static_cast<T>(yz.x()), static_cast<T>(yz.y()), static_cast<T>(w_)}
 {}
 
 template<typename T>
@@ -413,10 +437,7 @@ requires std::is_arithmetic_v<T>
 template<typename A, typename B, typename C>
 requires std::is_arithmetic_v<A> && std::is_arithmetic_v<B> && std::is_arithmetic_v<C>
 constexpr TRAP::Math::Vec<4, T>::Vec(const A x_, const B y_, const Vec<2, C>& zw) noexcept
-	: x(static_cast<T>(x_)),
-	  y(static_cast<T>(y_)),
-	  z(static_cast<T>(zw.x)),
-	  w(static_cast<T>(zw.y))
+	: data{static_cast<T>(x_), static_cast<T>(y_), static_cast<T>(zw.x()), static_cast<T>(zw.y())}
 {}
 
 template<typename T>
@@ -424,10 +445,7 @@ requires std::is_arithmetic_v<T>
 template<typename A, typename B>
 requires std::is_arithmetic_v<A> && std::is_arithmetic_v<B>
 constexpr TRAP::Math::Vec<4, T>::Vec(const Vec<3, A>& xyz, const B w_) noexcept
-	: x(static_cast<T>(xyz.x)),
-	  y(static_cast<T>(xyz.y)),
-	  z(static_cast<T>(xyz.z)),
-	  w(static_cast<T>(w_))
+	: data{static_cast<T>(xyz.x()), static_cast<T>(xyz.y()), static_cast<T>(xyz.z()), static_cast<T>(w_)}
 {}
 
 template<typename T>
@@ -435,10 +453,7 @@ requires std::is_arithmetic_v<T>
 template<typename A, typename B>
 requires std::is_arithmetic_v<A> && std::is_arithmetic_v<B>
 constexpr TRAP::Math::Vec<4, T>::Vec(const A x_, const Vec<3, B>& yzw) noexcept
-	: x(static_cast<T>(x_)),
-	  y(static_cast<T>(yzw.x)),
-	  z(static_cast<T>(yzw.y)),
-	  w(static_cast<T>(yzw.z))
+	: data{static_cast<T>(x_), static_cast<T>(yzw.x()), static_cast<T>(yzw.y()), static_cast<T>(yzw.z())}
 {}
 
 template<typename T>
@@ -446,10 +461,7 @@ requires std::is_arithmetic_v<T>
 template<typename A, typename B>
 requires std::is_arithmetic_v<A> && std::is_arithmetic_v<B>
 constexpr TRAP::Math::Vec<4, T>::Vec(const Vec<2, A>& xy, const Vec<2, B>& zw) noexcept
-	: x(static_cast<T>(xy.x)),
-	  y(static_cast<T>(xy.y)),
-	  z(static_cast<T>(zw.x)),
-	  w(static_cast<T>(zw.y))
+	: data{static_cast<T>(xy.x()), static_cast<T>(xy.y()), static_cast<T>(zw.x()), static_cast<T>(zw.y())}
 {}
 
 template<typename T>
@@ -457,10 +469,7 @@ requires std::is_arithmetic_v<T>
 template<typename U>
 requires std::is_arithmetic_v<U>
 constexpr TRAP::Math::Vec<4, T>::Vec(const Vec<4, U>& v) noexcept
-	: x(static_cast<T>(v.x)),
-	  y(static_cast<T>(v.y)),
-	  z(static_cast<T>(v.z)),
-	  w(static_cast<T>(v.w))
+	: data{static_cast<T>(v.x()), static_cast<T>(v.y()), static_cast<T>(v.z()), static_cast<T>(v.w())}
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -477,46 +486,72 @@ requires std::is_arithmetic_v<T>
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-[[nodiscard]] constexpr T& TRAP::Math::Vec<4, T>::operator[](const std::size_t i)
+[[nodiscard]] constexpr T& TRAP::Math::Vec<4, T>::x() noexcept
 {
-	switch (i)
-	{
-	default:
-		[[fallthrough]];
-	case 0:
-		return x;
-
-	case 1:
-		return y;
-
-	case 2:
-		return z;
-
-	case 3:
-		return w;
-	}
+	return data[0];
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-[[nodiscard]] constexpr const T& TRAP::Math::Vec<4, T>::operator[](const std::size_t i) const
+[[nodiscard]] constexpr const T& TRAP::Math::Vec<4, T>::x() const noexcept
 {
-	switch (i)
-	{
-	default:
-		[[fallthrough]];
-	case 0:
-		return x;
+	return data[0];
+}
 
-	case 1:
-		return y;
+template<typename T>
+requires std::is_arithmetic_v<T>
+[[nodiscard]] constexpr T& TRAP::Math::Vec<4, T>::y() noexcept
+{
+	return data[1];
+}
 
-	case 2:
-		return z;
+template<typename T>
+requires std::is_arithmetic_v<T>
+[[nodiscard]] constexpr const T& TRAP::Math::Vec<4, T>::y() const noexcept
+{
+	return data[1];
+}
 
-	case 3:
-		return w;
-	}
+template<typename T>
+requires std::is_arithmetic_v<T>
+[[nodiscard]] constexpr T& TRAP::Math::Vec<4, T>::z() noexcept
+{
+	return data[2];
+}
+
+template<typename T>
+requires std::is_arithmetic_v<T>
+[[nodiscard]] constexpr const T& TRAP::Math::Vec<4, T>::z() const noexcept
+{
+	return data[2];
+}
+
+template<typename T>
+requires std::is_arithmetic_v<T>
+[[nodiscard]] constexpr T& TRAP::Math::Vec<4, T>::w() noexcept
+{
+	return data[3];
+}
+
+template<typename T>
+requires std::is_arithmetic_v<T>
+[[nodiscard]] constexpr const T& TRAP::Math::Vec<4, T>::w() const noexcept
+{
+	return data[3];
+}
+
+template<typename T>
+requires std::is_arithmetic_v<T>
+[[nodiscard]] constexpr T& TRAP::Math::Vec<4, T>::operator[](const std::size_t i) noexcept
+{
+	return data[i];
+}
+
+template<typename T>
+requires std::is_arithmetic_v<T>
+[[nodiscard]] constexpr const T& TRAP::Math::Vec<4, T>::operator[](const std::size_t i) const noexcept
+{
+	return data[i];
 }
 
 template<typename T>
@@ -525,22 +560,7 @@ requires std::is_arithmetic_v<T>
 {
 	TRAP_ASSERT(i < this->Length(), "Math::Vec<4, T>::at(): index out of range!");
 
-	switch (i)
-	{
-	default:
-		[[fallthrough]];
-	case 0:
-		return x;
-
-	case 1:
-		return y;
-
-	case 2:
-		return z;
-
-	case 3:
-		return w;
-	}
+	return data[i];
 }
 
 template<typename T>
@@ -549,22 +569,93 @@ requires std::is_arithmetic_v<T>
 {
 	TRAP_ASSERT(i < this->Length(), "Math::Vec<4, T>::at(): index out of range!");
 
-	switch (i)
-	{
-	default:
-		[[fallthrough]];
-	case 0:
-		return x;
+	return data[i];
+}
 
-	case 1:
-		return y;
+//-------------------------------------------------------------------------------------------------------------------//
 
-	case 2:
-		return z;
+template<class T>
+requires std::is_arithmetic_v<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<4, T>::const_iterator TRAP::Math::Vec<4, T>::begin() const noexcept
+{
+	return data.begin();
+}
 
-	case 3:
-		return w;
-	}
+template<class T>
+requires std::is_arithmetic_v<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<4, T>::iterator TRAP::Math::Vec<4, T>::begin() noexcept
+{
+	return data.begin();
+}
+
+template<class T>
+requires std::is_arithmetic_v<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<4, T>::const_iterator TRAP::Math::Vec<4, T>::cbegin() const noexcept
+{
+	return data.cbegin();
+}
+
+template<class T>
+requires std::is_arithmetic_v<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<4, T>::const_reverse_iterator TRAP::Math::Vec<4, T>::rbegin() const noexcept
+{
+	return data.rbegin();
+}
+
+template<class T>
+requires std::is_arithmetic_v<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<4, T>::reverse_iterator TRAP::Math::Vec<4, T>::rbegin() noexcept
+{
+	return data.rbegin();
+}
+
+template<class T>
+requires std::is_arithmetic_v<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<4, T>::const_reverse_iterator TRAP::Math::Vec<4, T>::crbegin() const noexcept
+{
+	return data.crbegin();
+}
+
+template<class T>
+requires std::is_arithmetic_v<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<4, T>::const_iterator TRAP::Math::Vec<4, T>::end() const noexcept
+{
+	return data.end();
+}
+
+template<class T>
+requires std::is_arithmetic_v<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<4, T>::iterator TRAP::Math::Vec<4, T>::end() noexcept
+{
+	return data.end();
+}
+
+template<class T>
+requires std::is_arithmetic_v<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<4, T>::const_iterator TRAP::Math::Vec<4, T>::cend() const noexcept
+{
+	return data.cend();
+}
+
+template<class T>
+requires std::is_arithmetic_v<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<4, T>::const_reverse_iterator TRAP::Math::Vec<4, T>::rend() const noexcept
+{
+	return data.rend();
+}
+
+template<class T>
+requires std::is_arithmetic_v<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<4, T>::reverse_iterator TRAP::Math::Vec<4, T>::rend() noexcept
+{
+	return data.rend();
+}
+
+template<class T>
+requires std::is_arithmetic_v<T>
+[[nodiscard]] constexpr TRAP::Math::Vec<4, T>::const_reverse_iterator TRAP::Math::Vec<4, T>::crend() const noexcept
+{
+	return data.crend();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -576,10 +667,10 @@ template<typename U>
 requires std::is_arithmetic_v<U>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator=(const Vec<4, U>& v) noexcept
 {
-	this->x = static_cast<T>(v.x);
-	this->y = static_cast<T>(v.y);
-	this->z = static_cast<T>(v.z);
-	this->w = static_cast<T>(v.w);
+	this->x() = static_cast<T>(v.x());
+	this->y() = static_cast<T>(v.y());
+	this->z() = static_cast<T>(v.z());
+	this->w() = static_cast<T>(v.w());
 
 	return *this;
 }
@@ -589,8 +680,8 @@ requires std::is_arithmetic_v<T>
 template<typename U>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator+=(const U scalar) noexcept
 {
-	return (*this = Vec<4, T>(this->x + static_cast<T>(scalar), this->y + static_cast<T>(scalar),
-	                          this->z + static_cast<T>(scalar), this->w + static_cast<T>(scalar)));
+	return (*this = Vec<4, T>(this->x() + static_cast<T>(scalar), this->y() + static_cast<T>(scalar),
+	                          this->z() + static_cast<T>(scalar), this->w() + static_cast<T>(scalar)));
 }
 
 template<typename T>
@@ -599,8 +690,8 @@ template<typename U>
 requires std::is_arithmetic_v<U>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator+=(const Vec<4, U>& v) noexcept
 {
-	return (*this = Vec<4, T>(this->x + static_cast<T>(v.x), this->y + static_cast<T>(v.y),
-	                          this->z + static_cast<T>(v.z), this->w + static_cast<T>(v.w)));
+	return (*this = Vec<4, T>(this->x() + static_cast<T>(v.x()), this->y() + static_cast<T>(v.y()),
+	                          this->z() + static_cast<T>(v.z()), this->w() + static_cast<T>(v.w())));
 }
 
 template<typename T>
@@ -608,8 +699,8 @@ requires std::is_arithmetic_v<T>
 template<typename U>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator-=(const U scalar) noexcept
 {
-	return (*this = Vec<4, T>(this->x - static_cast<T>(scalar), this->y - static_cast<T>(scalar),
-	                          this->z - static_cast<T>(scalar), this->w - static_cast<T>(scalar)));
+	return (*this = Vec<4, T>(this->x() - static_cast<T>(scalar), this->y() - static_cast<T>(scalar),
+	                          this->z() - static_cast<T>(scalar), this->w() - static_cast<T>(scalar)));
 }
 
 template<typename T>
@@ -618,8 +709,8 @@ template<typename U>
 requires std::is_arithmetic_v<U>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator-=(const Vec<4, U>& v) noexcept
 {
-	return (*this = Vec<4, T>(this->x - static_cast<T>(v.x), this->y - static_cast<T>(v.y),
-	                          this->z - static_cast<T>(v.z), this->w - static_cast<T>(v.w)));
+	return (*this = Vec<4, T>(this->x() - static_cast<T>(v.x()), this->y() - static_cast<T>(v.y()),
+	                          this->z() - static_cast<T>(v.z()), this->w() - static_cast<T>(v.w())));
 }
 
 template<typename T>
@@ -627,8 +718,8 @@ requires std::is_arithmetic_v<T>
 template<typename U>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator*=(const U scalar) noexcept
 {
-	return (*this = Vec<4, T>(this->x * static_cast<T>(scalar), this->y * static_cast<T>(scalar),
-	                          this->z * static_cast<T>(scalar), this->w * static_cast<T>(scalar)));
+	return (*this = Vec<4, T>(this->x() * static_cast<T>(scalar), this->y() * static_cast<T>(scalar),
+	                          this->z() * static_cast<T>(scalar), this->w() * static_cast<T>(scalar)));
 }
 
 template<typename T>
@@ -637,8 +728,8 @@ template<typename U>
 requires std::is_arithmetic_v<U>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator*=(const Vec<4, U>& v) noexcept
 {
-	return (*this = Vec<4, T>(this->x * static_cast<T>(v.x), this->y * static_cast<T>(v.y),
-	                          this->z * static_cast<T>(v.z), this->w * static_cast<T>(v.w)));
+	return (*this = Vec<4, T>(this->x() * static_cast<T>(v.x()), this->y() * static_cast<T>(v.y()),
+	                          this->z() * static_cast<T>(v.z()), this->w() * static_cast<T>(v.w())));
 }
 
 template<typename T>
@@ -646,8 +737,8 @@ requires std::is_arithmetic_v<T>
 template<typename U>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator/=(const U scalar) noexcept
 {
-	return (*this = Vec<4, T>(this->x / static_cast<T>(scalar), this->y / static_cast<T>(scalar),
-	                          this->z / static_cast<T>(scalar), this->w / static_cast<T>(scalar)));
+	return (*this = Vec<4, T>(this->x() / static_cast<T>(scalar), this->y() / static_cast<T>(scalar),
+	                          this->z() / static_cast<T>(scalar), this->w() / static_cast<T>(scalar)));
 }
 
 template<typename T>
@@ -656,8 +747,8 @@ template<typename U>
 requires std::is_arithmetic_v<U>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator/=(const Vec<4, U>& v) noexcept
 {
-	return (*this = Vec<4, T>(this->x / static_cast<T>(v.x), this->y / static_cast<T>(v.y),
-	                          this->z / static_cast<T>(v.z), this->w / static_cast<T>(v.w)));
+	return (*this = Vec<4, T>(this->x() / static_cast<T>(v.x()), this->y() / static_cast<T>(v.y()),
+	                          this->z() / static_cast<T>(v.z()), this->w() / static_cast<T>(v.w())));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -667,10 +758,10 @@ template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator++() noexcept
 {
-	++this->x;
-	++this->y;
-	++this->z;
-	++this->w;
+	++this->x();
+	++this->y();
+	++this->z();
+	++this->w();
 
 	return *this;
 }
@@ -679,10 +770,10 @@ template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator--() noexcept
 {
-	--this->x;
-	--this->y;
-	--this->z;
-	--this->w;
+	--this->x();
+	--this->y();
+	--this->z();
+	--this->w();
 
 	return *this;
 }
@@ -715,8 +806,8 @@ requires std::is_arithmetic_v<T>
 template<typename U>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator%=(const U scalar) noexcept
 {
-	return (*this = Vec<4, T>(this->x % static_cast<T>(scalar), this->y % static_cast<T>(scalar),
-	                          this->z % static_cast<T>(scalar), this->w % static_cast<T>(scalar)));
+	return (*this = Vec<4, T>(this->x() % static_cast<T>(scalar), this->y() % static_cast<T>(scalar),
+	                          this->z() % static_cast<T>(scalar), this->w() % static_cast<T>(scalar)));
 }
 
 template<typename T>
@@ -725,8 +816,8 @@ template<typename U>
 requires std::is_arithmetic_v<U>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator%=(const Vec<4, U>& v) noexcept
 {
-	return (*this = Vec<4, T>(this->x % static_cast<T>(v.x), this->y % static_cast<T>(v.y),
-	                          this->z % static_cast<T>(v.z), this->w % static_cast<T>(v.w)));
+	return (*this = Vec<4, T>(this->x() % static_cast<T>(v.x()), this->y() % static_cast<T>(v.y()),
+	                          this->z() % static_cast<T>(v.z()), this->w() % static_cast<T>(v.w())));
 }
 
 template<typename T>
@@ -734,8 +825,8 @@ requires std::is_arithmetic_v<T>
 template<typename U>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator&=(const U scalar) noexcept
 {
-	return (*this = Vec<4, T>(this->x & static_cast<T>(scalar), this->y & static_cast<T>(scalar),
-	                          this->z & static_cast<T>(scalar), this->w & static_cast<T>(scalar)));
+	return (*this = Vec<4, T>(this->x() & static_cast<T>(scalar), this->y() & static_cast<T>(scalar),
+	                          this->z() & static_cast<T>(scalar), this->w() & static_cast<T>(scalar)));
 }
 
 template<typename T>
@@ -744,8 +835,8 @@ template<typename U>
 requires std::is_arithmetic_v<U>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator&=(const Vec<4, U>& v) noexcept
 {
-	return (*this = Vec<4, T>(this->x & static_cast<T>(v.x), this->y & static_cast<T>(v.y),
-	                          this->z & static_cast<T>(v.z), this->w & static_cast<T>(v.w)));
+	return (*this = Vec<4, T>(this->x() & static_cast<T>(v.x()), this->y() & static_cast<T>(v.y()),
+	                          this->z() & static_cast<T>(v.z()), this->w() & static_cast<T>(v.w())));
 }
 
 template<typename T>
@@ -753,8 +844,8 @@ requires std::is_arithmetic_v<T>
 template<typename U>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator|=(const U scalar) noexcept
 {
-	return (*this = Vec<4, T>(this->x | static_cast<T>(scalar), this->y | static_cast<T>(scalar),
-	                          this->z | static_cast<T>(scalar), this->w | static_cast<T>(scalar)));
+	return (*this = Vec<4, T>(this->x() | static_cast<T>(scalar), this->y() | static_cast<T>(scalar),
+	                          this->z() | static_cast<T>(scalar), this->w() | static_cast<T>(scalar)));
 }
 
 template<typename T>
@@ -763,8 +854,8 @@ template<typename U>
 requires std::is_arithmetic_v<U>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator|=(const Vec<4, U>& v) noexcept
 {
-	return (*this = Vec<4, T>(this->x | static_cast<T>(v.x), this->y | static_cast<T>(v.y),
-	                          this->z | static_cast<T>(v.z), this->w | static_cast<T>(v.w)));
+	return (*this = Vec<4, T>(this->x() | static_cast<T>(v.x()), this->y() | static_cast<T>(v.y()),
+	                          this->z() | static_cast<T>(v.z()), this->w() | static_cast<T>(v.w())));
 }
 
 template<typename T>
@@ -772,8 +863,8 @@ requires std::is_arithmetic_v<T>
 template<typename U>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator^=(const U scalar) noexcept
 {
-	return (*this = Vec<4, T>(this->x ^ static_cast<T>(scalar), this->y ^ static_cast<T>(scalar),
-	                          this->z ^ static_cast<T>(scalar), this->w ^ static_cast<T>(scalar)));
+	return (*this = Vec<4, T>(this->x() ^ static_cast<T>(scalar), this->y() ^ static_cast<T>(scalar),
+	                          this->z() ^ static_cast<T>(scalar), this->w() ^ static_cast<T>(scalar)));
 }
 
 template<typename T>
@@ -782,8 +873,8 @@ template<typename U>
 requires std::is_arithmetic_v<U>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator^=(const Vec<4, U>& v) noexcept
 {
-	return (*this = Vec<4, T>(this->x ^ static_cast<T>(v.x), this->y ^ static_cast<T>(v.y),
-	                          this->z ^ static_cast<T>(v.z), this->w ^ static_cast<T>(v.w)));
+	return (*this = Vec<4, T>(this->x() ^ static_cast<T>(v.x()), this->y() ^ static_cast<T>(v.y()),
+	                          this->z() ^ static_cast<T>(v.z()), this->w() ^ static_cast<T>(v.w())));
 }
 
 template<typename T>
@@ -791,8 +882,8 @@ requires std::is_arithmetic_v<T>
 template<typename U>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator<<=(const U scalar) noexcept
 {
-	return (*this = Vec<4, T>(this->x << static_cast<T>(scalar), this->y << static_cast<T>(scalar),
-	                          this->z << static_cast<T>(scalar), this->w << static_cast<T>(scalar)));
+	return (*this = Vec<4, T>(this->x() << static_cast<T>(scalar), this->y() << static_cast<T>(scalar),
+	                          this->z() << static_cast<T>(scalar), this->w() << static_cast<T>(scalar)));
 }
 
 template<typename T>
@@ -801,8 +892,8 @@ template<typename U>
 requires std::is_arithmetic_v<U>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator<<=(const Vec<4, U>& v) noexcept
 {
-	return (*this = Vec<4, T>(this->x << static_cast<T>(v.x), this->y << static_cast<T>(v.y),
-	                          this->z << static_cast<T>(v.z), this->w << static_cast<T>(v.w)));
+	return (*this = Vec<4, T>(this->x() << static_cast<T>(v.x()), this->y() << static_cast<T>(v.y()),
+	                          this->z() << static_cast<T>(v.z()), this->w() << static_cast<T>(v.w())));
 }
 
 template<typename T>
@@ -810,8 +901,8 @@ requires std::is_arithmetic_v<T>
 template<typename U>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator>>=(const U scalar) noexcept
 {
-	return (*this = Vec<4, T>(this->x >> static_cast<T>(scalar), this->y >> static_cast<T>(scalar),
-	                          this->z >> static_cast<T>(scalar), this->w >> static_cast<T>(scalar)));
+	return (*this = Vec<4, T>(this->x() >> static_cast<T>(scalar), this->y() >> static_cast<T>(scalar),
+	                          this->z() >> static_cast<T>(scalar), this->w() >> static_cast<T>(scalar)));
 }
 
 template<typename T>
@@ -820,8 +911,8 @@ template<typename U>
 requires std::is_arithmetic_v<U>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator>>=(const Vec<4, U>& v) noexcept
 {
-	return (*this = Vec<4, T>(this->x >> static_cast<T>(v.x), this->y >> static_cast<T>(v.y),
-	                          this->z >> static_cast<T>(v.z), this->w >> static_cast<T>(v.w)));
+	return (*this = Vec<4, T>(this->x() >> static_cast<T>(v.x()), this->y() >> static_cast<T>(v.y()),
+	                          this->z() >> static_cast<T>(v.z()), this->w() >> static_cast<T>(v.w())));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -833,27 +924,27 @@ requires std::is_arithmetic_v<T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if constexpr(std::same_as<T, float>)
-		return fmt::format("Vec4f({}, {}, {}, {})", x, y, z, w);
+		return fmt::format("Vec4f({}, {}, {}, {})", x(), y(), z(), w());
 	else if constexpr(std::same_as<T, double>)
-		return fmt::format("Vec4d({}, {}, {}, {})", x, y, z, w);
+		return fmt::format("Vec4d({}, {}, {}, {})", x(), y(), z(), w());
 	else if constexpr(std::same_as<T, bool>)
-		return fmt::format("Vec4b({}, {}, {}, {})", (x ? "true" : "false"), (y ? "true" : "false"), (z ? "true" : "false"), (w ? "true" : "false"));
+		return fmt::format("Vec4b({}, {}, {}, {})", (x() ? "true" : "false"), (y() ? "true" : "false"), (z() ? "true" : "false"), (w() ? "true" : "false"));
 	else if constexpr(std::same_as<T, int8_t>)
-		return fmt::format("Vec4i8({}, {}, {}, {})", x, y, z, w);
+		return fmt::format("Vec4i8({}, {}, {}, {})", x(), y(), z(), w());
 	else if constexpr(std::same_as<T, int16_t>)
-		return fmt::format("Vec4i16({}, {}, {}, {})", x, y, z, w);
+		return fmt::format("Vec4i16({}, {}, {}, {})", x(), y(), z(), w());
 	else if constexpr(std::same_as<T, int32_t>)
-		return fmt::format("Vec4i32({}, {}, {}, {})", x, y, z, w);
+		return fmt::format("Vec4i32({}, {}, {}, {})", x(), y(), z(), w());
 	else if constexpr(std::same_as<T, int64_t>)
-		return fmt::format("Vec4i64({}, {}, {}, {})", x, y, z, w);
+		return fmt::format("Vec4i64({}, {}, {}, {})", x(), y(), z(), w());
 	else if constexpr(std::same_as<T, uint8_t>)
-		return fmt::format("Vec4ui8({}, {}, {}, {})", x, y, z, w);
+		return fmt::format("Vec4ui8({}, {}, {}, {})", x(), y(), z(), w());
 	else if constexpr(std::same_as<T, uint16_t>)
-		return fmt::format("Vec4ui16({}, {}, {}, {})", x, y, z, w);
+		return fmt::format("Vec4ui16({}, {}, {}, {})", x(), y(), z(), w());
 	else if constexpr(std::same_as<T, uint32_t>)
-		return fmt::format("Vec4ui32({}, {}, {}, {})", x, y, z, w);
+		return fmt::format("Vec4ui32({}, {}, {}, {})", x(), y(), z(), w());
 	else if constexpr(std::same_as<T, uint64_t>)
-		return fmt::format("Vec4ui64({}, {}, {}, {})", x, y, z, w);
+		return fmt::format("Vec4ui64({}, {}, {}, {})", x(), y(), z(), w());
 	else
 		return "Unknown type";
 }
@@ -872,7 +963,7 @@ template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator-(const Vec<4, T>& v) noexcept
 {
-	return Vec<4, T>(-v.x, -v.y, -v.z, -v.w);
+	return Vec<4, T>(-v.x(), -v.y(), -v.z(), -v.w());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -882,77 +973,77 @@ template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator+(const Vec<4, T>& v, const T scalar) noexcept
 {
-	return Vec<4, T>(v.x + scalar, v.y + scalar, v.z + scalar, v.w + scalar);
+	return Vec<4, T>(v.x() + scalar, v.y() + scalar, v.z() + scalar, v.w() + scalar);
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator+(const T scalar, const Vec<4, T>& v) noexcept
 {
-	return Vec<4, T>(scalar + v.x, scalar + v.y, scalar + v.z, scalar + v.w);
+	return Vec<4, T>(scalar + v.x(), scalar + v.y(), scalar + v.z(), scalar + v.w());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator+(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
-	return Vec<4, T>(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z, v1.w + v2.w);
+	return Vec<4, T>(v1.x() + v2.x(), v1.y() + v2.y(), v1.z() + v2.z(), v1.w() + v2.w());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator-(const Vec<4, T>& v, const T scalar) noexcept
 {
-	return Vec<4, T>(v.x - scalar, v.y - scalar, v.z - scalar, v.w - scalar);
+	return Vec<4, T>(v.x() - scalar, v.y() - scalar, v.z() - scalar, v.w() - scalar);
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator-(const T scalar, const Vec<4, T>& v) noexcept
 {
-	return Vec<4, T>(scalar - v.x, scalar - v.y, scalar - v.z, scalar - v.w);
+	return Vec<4, T>(scalar - v.x(), scalar - v.y(), scalar - v.z(), scalar - v.w());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator-(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
-	return Vec<4, T>(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z, v1.w - v2.w);
+	return Vec<4, T>(v1.x() - v2.x(), v1.y() - v2.y(), v1.z() - v2.z(), v1.w() - v2.w());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const Vec<4, T>& v, const T scalar) noexcept
 {
-	return Vec<4, T>(v.x * scalar, v.y * scalar, v.z * scalar, v.w * scalar);
+	return Vec<4, T>(v.x() * scalar, v.y() * scalar, v.z() * scalar, v.w() * scalar);
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const T scalar, const Vec<4, T>& v) noexcept
 {
-	return Vec<4, T>(scalar * v.x, scalar * v.y, scalar * v.z, scalar * v.w);
+	return Vec<4, T>(scalar * v.x(), scalar * v.y(), scalar * v.z(), scalar * v.w());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
-	return Vec<4, T>(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z, v1.w * v2.w);
+	return Vec<4, T>(v1.x() * v2.x(), v1.y() * v2.y(), v1.z() * v2.z(), v1.w() * v2.w());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator/(const Vec<4, T>& v, const T scalar) noexcept
 {
-	return Vec<4, T>(v.x / scalar, v.y / scalar, v.z / scalar, v.w / scalar);
+	return Vec<4, T>(v.x() / scalar, v.y() / scalar, v.z() / scalar, v.w() / scalar);
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator/(const T scalar, const Vec<4, T>& v) noexcept
 {
-	return Vec<4, T>(scalar / v.x, scalar / v.y, scalar / v.z, scalar / v.w);
+	return Vec<4, T>(scalar / v.x(), scalar / v.y(), scalar / v.z(), scalar / v.w());
 }
 
 
@@ -960,7 +1051,7 @@ template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator/(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
-	return Vec<4, T>(v1.x / v2.x, v1.y / v2.y, v1.z / v2.z, v1.w / v2.w);
+	return Vec<4, T>(v1.x() / v2.x(), v1.y() / v2.y(), v1.z() / v2.z(), v1.w() / v2.w());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -970,133 +1061,133 @@ template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator%(const Vec<4, T>& v, const T scalar) noexcept
 {
-	return Vec<4, T>(v.x % scalar, v.y % scalar, v.z % scalar, v.w % scalar);
+	return Vec<4, T>(v.x() % scalar, v.y() % scalar, v.z() % scalar, v.w() % scalar);
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator%(const T scalar, const Vec<4, T>& v) noexcept
 {
-	return Vec<4, T>(scalar % v.x, scalar % v.y, scalar % v.z, scalar % v.w);
+	return Vec<4, T>(scalar % v.x(), scalar % v.y(), scalar % v.z(), scalar % v.w());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator%(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
-	return Vec<4, T>(v1.x % v2.x, v1.y % v2.y, v1.z % v2.z, v1.w % v2.w);
+	return Vec<4, T>(v1.x() % v2.x(), v1.y() % v2.y(), v1.z() % v2.z(), v1.w() % v2.w());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator&(const Vec<4, T>& v, const T scalar) noexcept
 {
-	return Vec<4, T>(v.x & scalar, v.y & scalar, v.z & scalar, v.w & scalar);
+	return Vec<4, T>(v.x() & scalar, v.y() & scalar, v.z() & scalar, v.w() & scalar);
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator&(const T scalar, const Vec<4, T>& v) noexcept
 {
-	return Vec<4, T>(scalar & v.x, scalar & v.y, scalar & v.z, scalar & v.w);
+	return Vec<4, T>(scalar & v.x(), scalar & v.y(), scalar & v.z(), scalar & v.w());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator&(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
-	return Vec<4, T>(v1.x & v2.x, v1.y & v2.y, v1.z & v2.z, v1.w & v2.w);
+	return Vec<4, T>(v1.x() & v2.x(), v1.y() & v2.y(), v1.z() & v2.z(), v1.w() & v2.w());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator|(const Vec<4, T>& v, const T scalar) noexcept
 {
-	return Vec<4, T>(v.x | scalar, v.y | scalar, v.z | scalar, v.w | scalar);
+	return Vec<4, T>(v.x() | scalar, v.y() | scalar, v.z() | scalar, v.w() | scalar);
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator|(const T scalar, const Vec<4, T>& v) noexcept
 {
-	return Vec<4, T>(scalar | v.x, scalar | v.y, scalar | v.z, scalar | v.w);
+	return Vec<4, T>(scalar | v.x(), scalar | v.y(), scalar | v.z(), scalar | v.w());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator|(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
-	return Vec<4, T>(v1.x | v2.x, v1.y | v2.y, v1.z | v2.z, v1.w | v2.w);
+	return Vec<4, T>(v1.x() | v2.x(), v1.y() | v2.y(), v1.z() | v2.z(), v1.w() | v2.w());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator^(const Vec<4, T>& v, const T scalar) noexcept
 {
-	return Vec<4, T>(v.x ^ scalar, v.y ^ scalar, v.z ^ scalar, v.w ^ scalar);
+	return Vec<4, T>(v.x() ^ scalar, v.y() ^ scalar, v.z() ^ scalar, v.w() ^ scalar);
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator^(const T scalar, const Vec<4, T>& v) noexcept
 {
-	return Vec<4, T>(scalar ^ v.x, scalar ^ v.y, scalar ^ v.z, scalar ^ v.w);
+	return Vec<4, T>(scalar ^ v.x(), scalar ^ v.y(), scalar ^ v.z(), scalar ^ v.w());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator^(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
-	return Vec<4, T>(v1.x ^ v2.x, v1.y ^ v2.y, v1.z ^ v2.z, v1.w ^ v2.w);
+	return Vec<4, T>(v1.x() ^ v2.x(), v1.y() ^ v2.y(), v1.z() ^ v2.z(), v1.w() ^ v2.w());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator<<(const Vec<4, T>& v, const T scalar) noexcept
 {
-	return Vec<4, T>(v.x << scalar, v.y << scalar, v.z << scalar, v.w << scalar);
+	return Vec<4, T>(v.x() << scalar, v.y() << scalar, v.z() << scalar, v.w() << scalar);
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator<<(const T scalar, const Vec<4, T>& v) noexcept
 {
-	return Vec<4, T>(scalar << v.x, scalar << v.y, scalar << v.z, scalar << v.w);
+	return Vec<4, T>(scalar << v.x(), scalar << v.y(), scalar << v.z(), scalar << v.w());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator<<(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
-	return Vec<4, T>(v1.x << v2.x, v1.y << v2.y, v1.z << v2.z, v1.w << v2.w);
+	return Vec<4, T>(v1.x() << v2.x(), v1.y() << v2.y(), v1.z() << v2.z(), v1.w() << v2.w());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator>>(const Vec<4, T>& v, const T scalar) noexcept
 {
-	return Vec<4, T>(v.x >> scalar, v.y >> scalar, v.z >> scalar, v.w >> scalar);
+	return Vec<4, T>(v.x() >> scalar, v.y() >> scalar, v.z() >> scalar, v.w() >> scalar);
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator>>(const T scalar, const Vec<4, T>& v) noexcept
 {
-	return Vec<4, T>(scalar >> v.x, scalar >> v.y, scalar >> v.z, scalar >> v.w);
+	return Vec<4, T>(scalar >> v.x(), scalar >> v.y(), scalar >> v.z(), scalar >> v.w());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator>>(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
-	return Vec<4, T>(v1.x >> v2.x, v1.y >> v2.y, v1.z >> v2.z, v1.w >> v2.w);
+	return Vec<4, T>(v1.x() >> v2.x(), v1.y() >> v2.y(), v1.z() >> v2.z(), v1.w() >> v2.w());
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator~(const Vec<4, T>& v) noexcept
 {
-	return Vec<4, T>(~v.x, ~v.y, ~v.z, ~v.w);
+	return Vec<4, T>(~v.x(), ~v.y(), ~v.z(), ~v.w());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1106,7 +1197,7 @@ template<typename T>
 requires std::is_arithmetic_v<T>
 constexpr bool TRAP::Math::operator==(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
-	return v1.x == v2.x && v1.y == v2.y && v1.z == v2.z && v1.w == v2.w;
+	return v1.x() == v2.x() && v1.y() == v2.y() && v1.z() == v2.z() && v1.w() == v2.w();
 }
 
 template<typename T>
@@ -1118,12 +1209,12 @@ constexpr bool TRAP::Math::operator!=(const Vec<4, T>& v1, const Vec<4, T>& v2) 
 
 constexpr TRAP::Math::Vec<4, bool> TRAP::Math::operator&&(const Vec<4, bool>& v1, const Vec<4, bool>& v2) noexcept
 {
-	return Vec<4, bool>(v1.x && v2.x, v1.y && v2.y, v1.z && v2.z, v1.w && v2.w);
+	return Vec<4, bool>(v1.x() && v2.x(), v1.y() && v2.y(), v1.z() && v2.z(), v1.w() && v2.w());
 }
 
 constexpr TRAP::Math::Vec<4, bool> TRAP::Math::operator||(const Vec<4, bool>& v1, const Vec<4, bool>& v2) noexcept
 {
-	return Vec<4, bool>(v1.x || v2.x, v1.y || v2.y, v1.z || v2.z, v1.w || v2.w);
+	return Vec<4, bool>(v1.x() || v2.x(), v1.y() || v2.y(), v1.z() || v2.z(), v1.w() || v2.w());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1146,20 +1237,26 @@ namespace std
 
 		if constexpr(I == 0)
 		{
-			return v.x;
+			return v.x();
 		}
 		else if constexpr(I == 1)
 		{
-			return v.y;
+			return v.y();
 		}
 		else if constexpr(I == 2)
 		{
-			return v.z;
+			return v.z();
 		}
 		else if constexpr(I == 3)
 		{
-			return v.w;
+			return v.w();
 		}
+#if __cpp_lib_unreachable >= 202202L
+		else
+		{
+			std::unreachable();
+		}
+#endif /*__cpp_lib_unreachable >= 202202L*/
 	}
 
 	/// <summary>
@@ -1177,20 +1274,26 @@ namespace std
 
 		if constexpr(I == 0)
 		{
-			return v.x;
+			return v.x();
 		}
 		else if constexpr(I == 1)
 		{
-			return v.y;
+			return v.y();
 		}
 		else if constexpr(I == 2)
 		{
-			return v.z;
+			return v.z();
 		}
 		else if constexpr(I == 3)
 		{
-			return v.w;
+			return v.w();
 		}
+#if __cpp_lib_unreachable >= 202202L
+		else
+		{
+			std::unreachable();
+		}
+#endif /*__cpp_lib_unreachable >= 202202L*/
 	}
 
 	/// <summary>
@@ -1208,20 +1311,26 @@ namespace std
 
 		if constexpr(I == 0)
 		{
-			return v.x;
+			return v.x();
 		}
 		else if constexpr(I == 1)
 		{
-			return v.y;
+			return v.y();
 		}
 		else if constexpr(I == 2)
 		{
-			return v.z;
+			return v.z();
 		}
 		else if constexpr(I == 3)
 		{
-			return v.w;
+			return v.w();
 		}
+#if __cpp_lib_unreachable >= 202202L
+		else
+		{
+			std::unreachable();
+		}
+#endif /*__cpp_lib_unreachable >= 202202L*/
 	}
 
 	/// <summary>
@@ -1239,20 +1348,26 @@ namespace std
 
 		if constexpr(I == 0)
 		{
-			return v.x;
+			return v.x();
 		}
 		else if constexpr(I == 1)
 		{
-			return v.y;
+			return v.y();
 		}
 		else if constexpr(I == 2)
 		{
-			return v.z;
+			return v.z();
 		}
 		else if constexpr(I == 3)
 		{
-			return v.w;
+			return v.w();
 		}
+#if __cpp_lib_unreachable >= 202202L
+		else
+		{
+			std::unreachable();
+		}
+#endif /*__cpp_lib_unreachable >= 202202L*/
 	}
 }
 

@@ -9,8 +9,8 @@
 
 template<typename T>
 requires (std::floating_point<T> ||
-          (TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>) ||
-          (TRAP::Math::IsQuat<T> && std::floating_point<typename T::valueType>))
+          (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>) ||
+          (TRAP::Math::IsQuat<T> && std::floating_point<typename T::value_type>))
 consteval void RunCompileTimeIsInfTest()
 {
     if constexpr(std::floating_point<T>)
@@ -19,15 +19,15 @@ consteval void RunCompileTimeIsInfTest()
         static_assert(TRAP::Math::IsInf(inf));
         static_assert(TRAP::Math::IsInf(-inf));
     }
-    else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>)
+    else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
     {
-        constexpr typename T::valueType inf = std::numeric_limits<typename T::valueType>::infinity();
+        constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
         static_assert(TRAP::Math::Any(TRAP::Math::IsInf(T(inf))));
         static_assert(TRAP::Math::Any(TRAP::Math::IsInf(T(-inf))));
     }
-    else if constexpr(TRAP::Math::IsQuat<T> && std::floating_point<typename T::valueType>)
+    else if constexpr(TRAP::Math::IsQuat<T> && std::floating_point<typename T::value_type>)
     {
-        constexpr typename T::valueType inf = std::numeric_limits<typename T::valueType>::infinity();
+        constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
         static_assert(TRAP::Math::Any(TRAP::Math::IsInf(T(inf, inf, inf, inf))));
         static_assert(TRAP::Math::Any(TRAP::Math::IsInf(T(-inf, -inf, -inf, -inf))));
     }

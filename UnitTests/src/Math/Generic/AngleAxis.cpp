@@ -17,10 +17,10 @@ void RunAngleAxisTests()
     const TRAP::Math::tQuat<T> c = TRAP::Math::Mix(a, b, T(0.5f));
     const TRAP::Math::tQuat<T> d = TRAP::Math::AngleAxis(TRAP::Math::PI<T>() * T(0.25f), TRAP::Math::tVec3<T>(0.0f, 0.0f, 1.0f));
 
-    REQUIRE(TRAP::Math::Equal(c.x, d.x, T(0.01f)));
-    REQUIRE(TRAP::Math::Equal(c.y, d.y, T(0.01f)));
-    REQUIRE(TRAP::Math::Equal(c.z, d.z, T(0.01f)));
-    REQUIRE(TRAP::Math::Equal(c.w, d.w, T(0.01f)));
+    REQUIRE(TRAP::Math::Equal(c.x(), d.x(), T(0.01f)));
+    REQUIRE(TRAP::Math::Equal(c.y(), d.y(), T(0.01f)));
+    REQUIRE(TRAP::Math::Equal(c.z(), d.z(), T(0.01f)));
+    REQUIRE(TRAP::Math::Equal(c.w(), d.w(), T(0.01f)));
 }
 
 template<typename T>

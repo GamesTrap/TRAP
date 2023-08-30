@@ -27,7 +27,7 @@ void RunInverseSqrtTests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunInverseSqrtVecTests()
 {
     REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::InverseSqrt(T(16.0f)) * TRAP::Math::Sqrt(T(16.0f)), T(1.0f), T(0.01f))));

@@ -67,7 +67,7 @@ consteval void RunCompileTimeMaxVecTest()
     constexpr T N = static_cast<T>(0);
     constexpr T B = static_cast<T>(1);
 
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Max(B, static_cast<T::valueType>(N.x)), B, TRAP::Math::Epsilon<typename T::valueType>())));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Max(B, static_cast<T::value_type>(N.x())), B, TRAP::Math::Epsilon<typename T::value_type>())));
 
     static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Max(N, B), B, TRAP::Math::Epsilon<T>())));
     static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Max(B, N), B, TRAP::Math::Epsilon<T>())));

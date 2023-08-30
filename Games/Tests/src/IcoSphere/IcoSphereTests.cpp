@@ -49,8 +49,8 @@ void IcoSphereTests::OnAttach()
 
 	//Camera setup
 	m_camera.SetPerspective(TRAP::Math::Radians(m_FOV), 0.01f);
-	m_camera.SetViewportSize(TRAP::Application::GetWindow()->GetFrameBufferSize().x,
-	                         TRAP::Application::GetWindow()->GetFrameBufferSize().y);
+	m_camera.SetViewportSize(TRAP::Application::GetWindow()->GetFrameBufferSize().x(),
+	                         TRAP::Application::GetWindow()->GetFrameBufferSize().y());
 	m_cameraTransform.Position = TRAP::Math::Vec3(0.0f, 0.0f, 8.0f);
 
 	//Enable depth testing because this is 3D stuff

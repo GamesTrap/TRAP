@@ -76,7 +76,7 @@ void VRSTests::OnAttach()
     if(m_supportsPerTileVRS)
     {
         const auto texRes = TRAP::Graphics::RendererAPI::GetInternalRenderResolution(TRAP::Application::GetWindow());
-        m_shadingRateTexture = CreateShadingRateTexture(texRes.x, texRes.y);
+        m_shadingRateTexture = CreateShadingRateTexture(texRes.x(), texRes.y());
     }
 
     m_shadingRates.push_back({TRAP::Graphics::ShadingRate::Full, "1x1", (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Full) != TRAP::Graphics::ShadingRate::NotSupported});
@@ -117,7 +117,7 @@ void VRSTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
         m_currRenderScale = TRAP::Graphics::RenderCommand::GetRenderScale();
 
         const auto texRes = TRAP::Graphics::RendererAPI::GetInternalRenderResolution(TRAP::Application::GetWindow());
-        m_shadingRateTexture = CreateShadingRateTexture(texRes.x, texRes.y);
+        m_shadingRateTexture = CreateShadingRateTexture(texRes.x(), texRes.y());
     }
 
 	//Update
@@ -177,7 +177,7 @@ bool VRSTests::OnFrameBufferResize([[maybe_unused]] const TRAP::Events::FrameBuf
     if(m_supportsPerTileVRS)
     {
         const auto texRes = TRAP::Graphics::RendererAPI::GetInternalRenderResolution(TRAP::Application::GetWindow());
-        m_shadingRateTexture = CreateShadingRateTexture(texRes.x, texRes.y);
+        m_shadingRateTexture = CreateShadingRateTexture(texRes.x(), texRes.y());
     }
 
     return false;

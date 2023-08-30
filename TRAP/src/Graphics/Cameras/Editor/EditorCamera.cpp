@@ -80,7 +80,7 @@ void TRAP::Graphics::EditorCamera::OnUpdate(const Utils::TimeStep& deltaTime)
         m_cameraMode = CameraMode::FlyCam;
         DisableMouse();
 
-        const float yawSign = GetUpDirection().y < 0.0f ? -1.0f : 1.0f;
+        const float yawSign = GetUpDirection().y() < 0.0f ? -1.0f : 1.0f;
         const float speed = GetCameraSpeed();
 
         if(Input::IsKeyPressed(Input::Key::S))
@@ -93,8 +93,8 @@ void TRAP::Graphics::EditorCamera::OnUpdate(const Utils::TimeStep& deltaTime)
             m_positionDelta += deltaTime.GetMilliseconds() * speed * m_rightDirection;
 
         static constexpr float maxRate = 0.12f;
-        m_yawDelta += TRAP::Math::Clamp(yawSign * delta.x * RotationSpeed(), -maxRate, maxRate);
-        m_pitchDelta += TRAP::Math::Clamp(delta.y * RotationSpeed(), -maxRate, maxRate);
+        m_yawDelta += TRAP::Math::Clamp(yawSign * delta.x() * RotationSpeed(), -maxRate, maxRate);
+        m_pitchDelta += TRAP::Math::Clamp(delta.y() * RotationSpeed(), -maxRate, maxRate);
 
         m_rightDirection = TRAP::Math::Cross(m_direction, TRAP::Math::Vec3(0.0f, yawSign, 0.0f));
 
@@ -121,7 +121,7 @@ void TRAP::Graphics::EditorCamera::OnUpdate(const Utils::TimeStep& deltaTime)
                 Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Middle))
         {
             DisableMouse();
-            MouseZoom(delta.y);
+            MouseZoom(delta.y());
         }
         else if(Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Middle))
         {
@@ -223,7 +223,7 @@ void TRAP::Graphics::EditorCamera::UpdateView()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-    const float yawSign = GetUpDirection().y < 0.0f ? -1.0f : 1.0f;
+    const float yawSign = GetUpDirection().y() < 0.0f ? -1.0f : 1.0f;
 
     //Extra step to handle the problem when the camera direction is the same as the up vector
     const float cosAngle = TRAP::Math::Dot(GetForwardDirection(), GetUpDirection());
@@ -275,17 +275,17 @@ bool TRAP::Graphics::EditorCamera::OnMouseScroll(Events::MouseScrollEvent& event
 void TRAP::Graphics::EditorCamera::MousePan(const TRAP::Math::Vec2& delta)
 {
     const TRAP::Math::Vec2 panSpeed = PanSpeed();
-    m_focalPoint -= GetRightDirection() * delta.x * panSpeed.x * m_distance;
-    m_focalPoint += GetUpDirection() * delta.y * panSpeed.y * m_distance;
+    m_focalPoint -= GetRightDirection() * delta.x() * panSpeed.x() * m_distance;
+    m_focalPoint += GetUpDirection() * delta.y() * panSpeed.y() * m_distance;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::EditorCamera::MouseRotate(const TRAP::Math::Vec2& delta)
 {
-    const float yawSign = GetUpDirection().y < 0.0f ? -1.0f : 1.0f;
-    m_yawDelta += yawSign * delta.x * RotationSpeed();
-    m_pitchDelta += delta.y * RotationSpeed();
+    const float yawSign = GetUpDirection().y() < 0.0f ? -1.0f : 1.0f;
+    m_yawDelta += yawSign * delta.x() * RotationSpeed();
+    m_pitchDelta += delta.y() * RotationSpeed();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -832,7 +832,7 @@ void TRAP::Graphics::API::ResourceLoader::CleanupCopyEngine()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	for(uint32_t i = 0+1; i < m_copyEngine.BufferCount; ++i)
+	for(uint32_t i = 0; i < m_copyEngine.BufferCount; ++i)
 	{
 		CopyEngine::CopyResourceSet& resourceSet = m_copyEngine.ResourceSets[i];
 		resourceSet.Buffer.reset();

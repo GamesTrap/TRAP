@@ -9,8 +9,8 @@
 
 template<typename T>
 requires (std::floating_point<T> ||
-          (TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>) ||
-          (TRAP::Math::IsQuat<T> && std::floating_point<typename T::valueType>))
+          (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>) ||
+          (TRAP::Math::IsQuat<T> && std::floating_point<typename T::value_type>))
 consteval void RunCompileTimeIsNaNTest()
 {
     if constexpr(std::floating_point<T>)
@@ -19,15 +19,15 @@ consteval void RunCompileTimeIsNaNTest()
         static_assert(TRAP::Math::IsNaN(nan));
         static_assert(TRAP::Math::IsNaN(-nan));
     }
-    else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>)
+    else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
     {
-        constexpr typename T::valueType nan = std::numeric_limits<typename T::valueType>::quiet_NaN();
+        constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
         static_assert(TRAP::Math::Any(TRAP::Math::IsNaN(T(nan))));
         static_assert(TRAP::Math::Any(TRAP::Math::IsNaN(T(-nan))));
     }
-    else if constexpr(TRAP::Math::IsQuat<T> && std::floating_point<typename T::valueType>)
+    else if constexpr(TRAP::Math::IsQuat<T> && std::floating_point<typename T::value_type>)
     {
-        constexpr typename T::valueType nan = std::numeric_limits<typename T::valueType>::quiet_NaN();
+        constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
         static_assert(TRAP::Math::Any(TRAP::Math::IsNaN(T(nan, nan, nan, nan))));
         static_assert(TRAP::Math::Any(TRAP::Math::IsNaN(T(-nan, -nan, -nan, -nan))));
     }

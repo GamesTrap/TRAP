@@ -22,44 +22,44 @@ consteval void RunCompileTimeLerpTests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 consteval void RunCompileTimeLerpVecTests()
 {
     constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
     {
-        constexpr T x(TRAP::Math::Vec<4, typename T::valueType>(1.0f, 2.0f, 3.0f, 4.0f));
-        constexpr T y(TRAP::Math::Vec<4, typename T::valueType>(5.0f, 6.0f, 7.0f, 8.0f));
-        constexpr typename T::valueType a = 0.3f;
+        constexpr T x(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 2.0f, 3.0f, 4.0f));
+        constexpr T y(TRAP::Math::Vec<4, typename T::value_type>(5.0f, 6.0f, 7.0f, 8.0f));
+        constexpr typename T::value_type a = 0.3f;
         constexpr T a2(a);
-        constexpr T expected(TRAP::Math::Vec<4, typename T::valueType>(2.2f, 3.2f, 4.2f, 5.2f));
+        constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(2.2f, 3.2f, 4.2f, 5.2f));
         static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a), expected, T(0.000001f))));
         static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a2), expected, T(0.000001f))));
     }
     {
-        constexpr T x(TRAP::Math::Vec<4, typename T::valueType>(-1.0f, -2.0f, -3.0f, -4.0f));
-        constexpr T y(TRAP::Math::Vec<4, typename T::valueType>(-5.0f, -6.0f, -7.0f, -8.0f));
-        constexpr typename T::valueType a = 0.5f;
+        constexpr T x(TRAP::Math::Vec<4, typename T::value_type>(-1.0f, -2.0f, -3.0f, -4.0f));
+        constexpr T y(TRAP::Math::Vec<4, typename T::value_type>(-5.0f, -6.0f, -7.0f, -8.0f));
+        constexpr typename T::value_type a = 0.5f;
         constexpr T a2(a);
-        constexpr T expected(TRAP::Math::Vec<4, typename T::valueType>(-3.0f, -4.0f, -5.0f, -6.0f));
+        constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(-3.0f, -4.0f, -5.0f, -6.0f));
         static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a), expected, Epsilon)));
         static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a2), expected, Epsilon)));
     }
     {
-        constexpr T x(TRAP::Math::Vec<4, typename T::valueType>(-1.0f,  2.0f, -3.5f,  4.0f));
-        constexpr T y(TRAP::Math::Vec<4, typename T::valueType>( 4.0f, -3.0f,  1.5f, -2.0f));
-        constexpr typename T::valueType a = 0.6f;
+        constexpr T x(TRAP::Math::Vec<4, typename T::value_type>(-1.0f,  2.0f, -3.5f,  4.0f));
+        constexpr T y(TRAP::Math::Vec<4, typename T::value_type>( 4.0f, -3.0f,  1.5f, -2.0f));
+        constexpr typename T::value_type a = 0.6f;
         constexpr T a2(a);
-        constexpr T expected(TRAP::Math::Vec<4, typename T::valueType>(2.0f, -1.0f, -0.5f, 0.4f));
+        constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(2.0f, -1.0f, -0.5f, 0.4f));
         static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a), expected, T(0.000001f))));
         static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a2), expected, T(0.000001f))));
     }
     {
-        constexpr T x(TRAP::Math::Vec<4, typename T::valueType>(0.0f, 0.0f, 0.0f, 0.0f));
-        constexpr T y(TRAP::Math::Vec<4, typename T::valueType>(5.0f, 3.0f, 10.0f, 2.0f));
-        constexpr typename T::valueType a = 0.8f;
+        constexpr T x(TRAP::Math::Vec<4, typename T::value_type>(0.0f, 0.0f, 0.0f, 0.0f));
+        constexpr T y(TRAP::Math::Vec<4, typename T::value_type>(5.0f, 3.0f, 10.0f, 2.0f));
+        constexpr typename T::value_type a = 0.8f;
         constexpr T a2(a);
-        constexpr T expected(TRAP::Math::Vec<4, typename T::valueType>(4.0f, 2.4f, 8.0f, 1.6f));
+        constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(4.0f, 2.4f, 8.0f, 1.6f));
         static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a), expected, T(0.000001f))));
         static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(x, y, a2), expected, T(0.000001f))));
     }
@@ -69,32 +69,32 @@ template<typename T>
 requires TRAP::Math::IsQuat<T>
 consteval void RunCompileTimeLerpQuatTests()
 {
-    constexpr typename T::valueType Epsilon = std::numeric_limits<typename T::valueType>::epsilon();
+    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
     {
         constexpr T q1(1.0f, 2.0f, 3.0f, 4.0f);
         constexpr T q2(5.0f, 6.0f, 7.0f, 8.0f);
         constexpr T res(3.0f, 4.0f, 5.0f, 6.0f);
-        constexpr typename T::valueType a(0.5f);
+        constexpr typename T::value_type a(0.5f);
         static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(q1, q2, a), res, Epsilon)));
     }
     {
         constexpr T q(1.0f, 0.0f, 0.0f, 0.0f);
-        constexpr typename T::valueType a(0.3f);
+        constexpr typename T::value_type a(0.3f);
         static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(q, q, a), q, Epsilon)));
     }
     {
         constexpr T q1(1.0f, 0.0f, 0.0f, 0.0f);
         constexpr T q2(0.5f, 0.5f, 0.5f, 0.5f);
         constexpr T res(0.65f, 0.35f, 0.35f, 0.35f);
-        constexpr typename T::valueType a(0.7f);
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(q1, q2, a), res, typename T::valueType(0.0000001f))));
+        constexpr typename T::value_type a(0.7f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(q1, q2, a), res, typename T::value_type(0.0000001f))));
     }
     {
         constexpr T q1(-1.0f, -2.0f, -3.0f, -4.0f);
         constexpr T q2(-5.0f, -6.0f, -7.0f, -8.0f);
         constexpr T res(-2.0f, -3.0f, -4.0f, -5.0f);
-        constexpr typename T::valueType a(0.25f);
+        constexpr typename T::value_type a(0.25f);
         static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Lerp(q1, q2, a), res, Epsilon)));
     }
 }

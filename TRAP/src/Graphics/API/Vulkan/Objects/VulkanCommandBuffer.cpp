@@ -438,13 +438,13 @@ void TRAP::Graphics::API::VulkanCommandBuffer::AddDebugMarker(const TRAP::Math::
 	if(!VulkanRenderer::s_debugUtilsExtension)
 		return;
 
-	const VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(color.x, color.y, color.z, name);
+	const VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(color.x(), color.y(), color.z(), name);
 	vkCmdInsertDebugUtilsLabelEXT(m_vkCommandBuffer, &markerInfo);
 #else
 	if(!VulkanRenderer::s_debugReportExtension)
 		return;
 
-	const VkDebugMarkerMarkerInfoEXT markerInfo = VulkanInits::DebugMarkerMarkerInfo(color.x, color.y, color.z, name);
+	const VkDebugMarkerMarkerInfoEXT markerInfo = VulkanInits::DebugMarkerMarkerInfo(color.x(), color.y(), color.z(), name);
 	vkCmdDebugMarkerInsertEXT(m_vkCommandBuffer, &markerInfo);
 #endif
 
@@ -466,13 +466,13 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BeginDebugMarker(const TRAP::Math
 	if(!VulkanRenderer::s_debugUtilsExtension)
 		return;
 
-	const VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(color.x, color.y, color.z, name);
+	const VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(color.x(), color.y(), color.z(), name);
 	vkCmdBeginDebugUtilsLabelEXT(m_vkCommandBuffer, &markerInfo);
 #elif !defined(USE_RENDER_DOC)
 	if(!VulkanRenderer::s_debugReportExtension)
 		return;
 
-	const VkDebugMarkerMarkerInfoEXT markerInfo = VulkanInits::DebugMarkerMarkerInfo(color.x, color.y, color.z, name);
+	const VkDebugMarkerMarkerInfoEXT markerInfo = VulkanInits::DebugMarkerMarkerInfo(color.x(), color.y(), color.z(), name);
 	vkCmdDebugMarkerBeginEXT(m_vkCommandBuffer, &markerInfo);
 #endif
 }

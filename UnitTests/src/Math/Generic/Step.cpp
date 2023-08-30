@@ -22,25 +22,25 @@ consteval void RunCompileTimeStepTests()
 }
 
 template<typename EDGE, typename VEC>
-requires (std::floating_point<EDGE> || (TRAP::Math::IsVec<EDGE> && std::floating_point<typename  EDGE::valueType>)) && TRAP::Math::IsVec<VEC>
+requires (std::floating_point<EDGE> || (TRAP::Math::IsVec<EDGE> && std::floating_point<typename  EDGE::value_type>)) && TRAP::Math::IsVec<VEC>
 consteval void RunStepVecTests()
 {
     if constexpr(std::floating_point<EDGE>)
     {
         constexpr EDGE Epsilon = std::numeric_limits<EDGE>::epsilon();
 
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Step(EDGE(1.0f), VEC(TRAP::Math::Vec<4, typename VEC::valueType>( 1.0f,  2.0f,  3.0f,  4.0f))), VEC(1.0f), Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Step(EDGE(0.0f), VEC(TRAP::Math::Vec<4, typename VEC::valueType>( 1.0f,  2.0f,  3.0f,  4.0f))), VEC(1.0f), Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Step(EDGE(0.0f), VEC(TRAP::Math::Vec<4, typename VEC::valueType>(-1.0f, -2.0f, -3.0f, -4.0f))), VEC(0.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Step(EDGE(1.0f), VEC(TRAP::Math::Vec<4, typename VEC::value_type>( 1.0f,  2.0f,  3.0f,  4.0f))), VEC(1.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Step(EDGE(0.0f), VEC(TRAP::Math::Vec<4, typename VEC::value_type>( 1.0f,  2.0f,  3.0f,  4.0f))), VEC(1.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Step(EDGE(0.0f), VEC(TRAP::Math::Vec<4, typename VEC::value_type>(-1.0f, -2.0f, -3.0f, -4.0f))), VEC(0.0f), Epsilon)));
     }
-    else if constexpr(TRAP::Math::IsVec<EDGE> && std::floating_point<typename EDGE::valueType>)
+    else if constexpr(TRAP::Math::IsVec<EDGE> && std::floating_point<typename EDGE::value_type>)
     {
-        constexpr typename EDGE::valueType Epsilon = std::numeric_limits<typename EDGE::valueType>::epsilon();
+        constexpr typename EDGE::value_type Epsilon = std::numeric_limits<typename EDGE::value_type>::epsilon();
 
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Step(EDGE(TRAP::Math::Vec<4, typename EDGE::valueType>(-1.0f, -2.0f, -3.0f, -4.0f)), VEC(TRAP::Math::Vec<4, typename VEC::valueType>(-2.0f, -3.0f, -4.0f, -5.0f))), VEC(0.0f), Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Step(EDGE(TRAP::Math::Vec<4, typename EDGE::valueType>( 0.0f,  1.0f,  2.0f,  3.0f)), VEC(TRAP::Math::Vec<4, typename VEC::valueType>( 1.0f,  2.0f,  3.0f,  4.0f))), VEC(1.0f), Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Step(EDGE(TRAP::Math::Vec<4, typename EDGE::valueType>( 2.0f,  3.0f,  4.0f,  5.0f)), VEC(TRAP::Math::Vec<4, typename VEC::valueType>( 1.0f,  2.0f,  3.0f,  4.0f))), VEC(0.0f), Epsilon)));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Step(EDGE(TRAP::Math::Vec<4, typename EDGE::valueType>( 0.0f,  1.0f,  2.0f,  3.0f)), VEC(TRAP::Math::Vec<4, typename VEC::valueType>(-1.0f, -2.0f, -3.0f, -4.0f))), VEC(0.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Step(EDGE(TRAP::Math::Vec<4, typename EDGE::value_type>(-1.0f, -2.0f, -3.0f, -4.0f)), VEC(TRAP::Math::Vec<4, typename VEC::value_type>(-2.0f, -3.0f, -4.0f, -5.0f))), VEC(0.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Step(EDGE(TRAP::Math::Vec<4, typename EDGE::value_type>( 0.0f,  1.0f,  2.0f,  3.0f)), VEC(TRAP::Math::Vec<4, typename VEC::value_type>( 1.0f,  2.0f,  3.0f,  4.0f))), VEC(1.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Step(EDGE(TRAP::Math::Vec<4, typename EDGE::value_type>( 2.0f,  3.0f,  4.0f,  5.0f)), VEC(TRAP::Math::Vec<4, typename VEC::value_type>( 1.0f,  2.0f,  3.0f,  4.0f))), VEC(0.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Step(EDGE(TRAP::Math::Vec<4, typename EDGE::value_type>( 0.0f,  1.0f,  2.0f,  3.0f)), VEC(TRAP::Math::Vec<4, typename VEC::value_type>(-1.0f, -2.0f, -3.0f, -4.0f))), VEC(0.0f), Epsilon)));
     }
 }
 

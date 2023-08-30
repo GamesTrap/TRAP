@@ -29,7 +29,7 @@ void RunPowTests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunPowVecTests()
 {
     constexpr T Epsilon = std::numeric_limits<T>::epsilon();
@@ -40,17 +40,17 @@ template<typename T>
 requires TRAP::Math::IsQuat<T>
 void RunPowQuatTests()
 {
-    constexpr typename T::valueType Epsilon = typename T::valueType(0.001f);
+    constexpr typename T::value_type Epsilon = typename T::value_type(0.001f);
 
-    const T q(TRAP::Math::Vec<3, typename T::valueType>(1.0f, 0.0f, 0.0f), TRAP::Math::Vec<3, typename T::valueType>(0.0f, 1.0f, 0.0f));
+    const T q(TRAP::Math::Vec<3, typename T::value_type>(1.0f, 0.0f, 0.0f), TRAP::Math::Vec<3, typename T::value_type>(0.0f, 1.0f, 0.0f));
 
     {
-        const typename T::valueType one = typename T::valueType(1.0f);
+        const typename T::value_type one = typename T::value_type(1.0f);
         const T p = TRAP::Math::Pow(q, one);
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(q, p, Epsilon)));
     }
     {
-        const typename T::valueType two = typename T::valueType(2.0f);
+        const typename T::value_type two = typename T::value_type(2.0f);
         const T p = TRAP::Math::Pow(q, two);
         const T r = q * q;
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(p, r, Epsilon)));

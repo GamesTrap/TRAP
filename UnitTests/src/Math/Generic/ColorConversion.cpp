@@ -9,38 +9,38 @@
 #include "TRAP/src/Maths/Math.h"
 
 template<typename T>
-requires (TRAP::Math::IsVec3<T> || TRAP::Math::IsVec4<T>) && std::floating_point<typename T::valueType>
+requires (TRAP::Math::IsVec3<T> || TRAP::Math::IsVec4<T>) && std::floating_point<typename T::value_type>
 void RunConvertLinearToSRGBTests()
 {
-    const T colorSourceRGB(TRAP::Math::Vec<4, typename T::valueType>(1.0, 0.5, 0.0, 1.0));
+    const T colorSourceRGB(TRAP::Math::Vec<4, typename T::value_type>(1.0, 0.5, 0.0, 1.0));
 
     {
         const T colorSRGB = TRAP::Math::ConvertLinearToSRGB(colorSourceRGB);
-        const T expected(TRAP::Math::Vec<4, typename T::valueType>(1.0, 0.735361, 0.0, 1.0));
-        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(colorSRGB, expected, typename T::valueType(0.000001f))));
+        const T expected(TRAP::Math::Vec<4, typename T::value_type>(1.0, 0.735361, 0.0, 1.0));
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(colorSRGB, expected, typename T::value_type(0.000001f))));
     }
     {
-        const T colorSRGB = TRAP::Math::ConvertLinearToSRGB(colorSourceRGB, typename T::valueType(2.2f));
-        const T expected(TRAP::Math::Vec<4, typename T::valueType>(1.0, 0.714876, 0.0, 1.0));
-        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(colorSRGB, expected, typename T::valueType(0.000001f))));
+        const T colorSRGB = TRAP::Math::ConvertLinearToSRGB(colorSourceRGB, typename T::value_type(2.2f));
+        const T expected(TRAP::Math::Vec<4, typename T::value_type>(1.0, 0.714876, 0.0, 1.0));
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(colorSRGB, expected, typename T::value_type(0.000001f))));
     }
 }
 
 template<typename T>
-requires (TRAP::Math::IsVec3<T> || TRAP::Math::IsVec4<T>) && std::floating_point<typename T::valueType>
+requires (TRAP::Math::IsVec3<T> || TRAP::Math::IsVec4<T>) && std::floating_point<typename T::value_type>
 void RunConvertSRGBToLinearTests()
 {
-    const T colorSourceSRGB(TRAP::Math::Vec<4, typename T::valueType>(1.0, 0.714876, 0.0, 1.0));
+    const T colorSourceSRGB(TRAP::Math::Vec<4, typename T::value_type>(1.0, 0.714876, 0.0, 1.0));
 
     {
         const T colorRGB = TRAP::Math::ConvertSRGBToLinear(colorSourceSRGB);
-        const T expected(TRAP::Math::Vec<4, typename T::valueType>(1.0, 0.469466, 0.0, 1.0));
-        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(colorRGB, expected, typename T::valueType(0.000001f))));
+        const T expected(TRAP::Math::Vec<4, typename T::value_type>(1.0, 0.469466, 0.0, 1.0));
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(colorRGB, expected, typename T::value_type(0.000001f))));
     }
     {
-        const T colorRGB = TRAP::Math::ConvertSRGBToLinear(colorSourceSRGB, typename T::valueType(2.2f));
-        const T expected(TRAP::Math::Vec<4, typename T::valueType>(1.0, 0.5, 0.0, 1.0));
-        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(colorRGB, expected, typename T::valueType(0.000001f))));
+        const T colorRGB = TRAP::Math::ConvertSRGBToLinear(colorSourceSRGB, typename T::value_type(2.2f));
+        const T expected(TRAP::Math::Vec<4, typename T::value_type>(1.0, 0.5, 0.0, 1.0));
+        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(colorRGB, expected, typename T::value_type(0.000001f))));
     }
 }
 

@@ -46,15 +46,15 @@ consteval void RunCompileTimeAbsTests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && (std::signed_integral<typename T::valueType> || std::floating_point<typename T::valueType>)
+requires TRAP::Math::IsVec<T> && (std::signed_integral<typename T::value_type> || std::floating_point<typename T::value_type>)
 consteval void RunCompileTimeAbsVecTests()
 {
     constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(0.0))), T(static_cast<T::valueType>(0.0)), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(-0.0))), T(static_cast<T::valueType>(0.0)), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(1.0))), T(static_cast<T::valueType>(1.0)), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::valueType>(-1.0))), T(static_cast<T::valueType>(1.0)), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::value_type>(0.0))), T(static_cast<T::value_type>(0.0)), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::value_type>(-0.0))), T(static_cast<T::value_type>(0.0)), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::value_type>(1.0))), T(static_cast<T::value_type>(1.0)), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Abs(T(static_cast<T::value_type>(-1.0))), T(static_cast<T::value_type>(1.0)), Epsilon)));
 }
 
 template<typename T>
@@ -63,15 +63,15 @@ consteval void RunCompileTimeAbsMat3Tests()
 {
     constexpr T A
     (
-        typename T::valueType(3.0), typename T::valueType(1.0), typename T::valueType(5.2),
-        typename T::valueType(1.4), typename T::valueType(0.5), typename T::valueType(9.3),
-        typename T::valueType(6.8), typename T::valueType(8.4), typename T::valueType(4.3)
+        typename T::value_type(3.0), typename T::value_type(1.0), typename T::value_type(5.2),
+        typename T::value_type(1.4), typename T::value_type(0.5), typename T::value_type(9.3),
+        typename T::value_type(6.8), typename T::value_type(8.4), typename T::value_type(4.3)
     );
     constexpr T B
     (
-        typename T::valueType( 1.0), typename T::valueType(-1.0), typename T::valueType( 1.0),
-        typename T::valueType(-1.0), typename T::valueType( 1.0), typename T::valueType( 1.0),
-        typename T::valueType( 1.0), typename T::valueType(-1.0), typename T::valueType(-1.0)
+        typename T::value_type( 1.0), typename T::value_type(-1.0), typename T::value_type( 1.0),
+        typename T::value_type(-1.0), typename T::value_type( 1.0), typename T::value_type( 1.0),
+        typename T::value_type( 1.0), typename T::value_type(-1.0), typename T::value_type(-1.0)
     );
 
     constexpr T C = TRAP::Math::MatrixCompMult(A, B);
@@ -92,17 +92,17 @@ consteval void RunCompileTimeAbsMat4Tests()
 {
     constexpr T A
     (
-        typename T::valueType(3.0), typename T::valueType(1.0), typename T::valueType(5.2), typename T::valueType(4.9),
-        typename T::valueType(1.4), typename T::valueType(0.5), typename T::valueType(9.3), typename T::valueType(3.7),
-        typename T::valueType(6.8), typename T::valueType(8.4), typename T::valueType(4.3), typename T::valueType(3.9),
-        typename T::valueType(5.6), typename T::valueType(7.2), typename T::valueType(1.1), typename T::valueType(4.4)
+        typename T::value_type(3.0), typename T::value_type(1.0), typename T::value_type(5.2), typename T::value_type(4.9),
+        typename T::value_type(1.4), typename T::value_type(0.5), typename T::value_type(9.3), typename T::value_type(3.7),
+        typename T::value_type(6.8), typename T::value_type(8.4), typename T::value_type(4.3), typename T::value_type(3.9),
+        typename T::value_type(5.6), typename T::value_type(7.2), typename T::value_type(1.1), typename T::value_type(4.4)
     );
     constexpr T B
     (
-        typename T::valueType( 1.0), typename T::valueType(-1.0), typename T::valueType( 1.0), typename T::valueType( 1.0),
-        typename T::valueType(-1.0), typename T::valueType( 1.0), typename T::valueType( 1.0), typename T::valueType(-1.0),
-        typename T::valueType( 1.0), typename T::valueType(-1.0), typename T::valueType(-1.0), typename T::valueType(-1.0),
-        typename T::valueType(-1.0), typename T::valueType(-1.0), typename T::valueType( 1.0), typename T::valueType( 1.0)
+        typename T::value_type( 1.0), typename T::value_type(-1.0), typename T::value_type( 1.0), typename T::value_type( 1.0),
+        typename T::value_type(-1.0), typename T::value_type( 1.0), typename T::value_type( 1.0), typename T::value_type(-1.0),
+        typename T::value_type( 1.0), typename T::value_type(-1.0), typename T::value_type(-1.0), typename T::value_type(-1.0),
+        typename T::value_type(-1.0), typename T::value_type(-1.0), typename T::value_type( 1.0), typename T::value_type( 1.0)
     );
 
     constexpr T C = TRAP::Math::MatrixCompMult(A, B);

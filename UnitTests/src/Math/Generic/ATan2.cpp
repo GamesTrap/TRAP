@@ -41,29 +41,29 @@ void RunATanEdgeTests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunATanVecTests()
 {
-    constexpr typename T::valueType Epsilon = std::numeric_limits<typename T::valueType>::epsilon();
+    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
     constexpr std::array<std::pair<T, T>, 16> values
     {
-        std::pair(T(typename T::valueType(0.0)), T(typename T::valueType(0.0))),
-        std::pair(T(typename T::valueType(0.2)), T(typename T::valueType(0.0))),
-        std::pair(T(typename T::valueType(-0.2)), T(typename T::valueType(0.0))),
-        std::pair(T(typename T::valueType(0.001)), T(typename T::valueType(0.001))),
-        std::pair(T(typename T::valueType(0.49)), T(typename T::valueType(0.49))),
-        std::pair(T(typename T::valueType(-0.5)), T(typename T::valueType(-0.5))),
-        std::pair(T(typename T::valueType(0.5)), T(typename T::valueType(-0.5))),
-        std::pair(T(typename T::valueType(-0.5)), T(typename T::valueType(0.5))),
-        std::pair(T(typename T::valueType(9.6)), T(typename T::valueType(8.4))),
-        std::pair(T(typename T::valueType(1.0)), T(typename T::valueType(0.0))),
-        std::pair(T(typename T::valueType(0.0)), T(typename T::valueType(1.0))),
-        std::pair(T(typename T::valueType(-1.0)), T(typename T::valueType(0.0))),
-        std::pair(T(typename T::valueType(0.0)), T(typename T::valueType(-1.0))),
-        std::pair(T(typename T::valueType(1.0)), T(typename T::valueType(3.0))),
-        std::pair(T(typename T::valueType(-5.0)), T(typename T::valueType(2.5))),
-        std::pair(T(typename T::valueType(-1000.0)), T(typename T::valueType(-0.001))),
+        std::pair(T(typename T::value_type(0.0)), T(typename T::value_type(0.0))),
+        std::pair(T(typename T::value_type(0.2)), T(typename T::value_type(0.0))),
+        std::pair(T(typename T::value_type(-0.2)), T(typename T::value_type(0.0))),
+        std::pair(T(typename T::value_type(0.001)), T(typename T::value_type(0.001))),
+        std::pair(T(typename T::value_type(0.49)), T(typename T::value_type(0.49))),
+        std::pair(T(typename T::value_type(-0.5)), T(typename T::value_type(-0.5))),
+        std::pair(T(typename T::value_type(0.5)), T(typename T::value_type(-0.5))),
+        std::pair(T(typename T::value_type(-0.5)), T(typename T::value_type(0.5))),
+        std::pair(T(typename T::value_type(9.6)), T(typename T::value_type(8.4))),
+        std::pair(T(typename T::value_type(1.0)), T(typename T::value_type(0.0))),
+        std::pair(T(typename T::value_type(0.0)), T(typename T::value_type(1.0))),
+        std::pair(T(typename T::value_type(-1.0)), T(typename T::value_type(0.0))),
+        std::pair(T(typename T::value_type(0.0)), T(typename T::value_type(-1.0))),
+        std::pair(T(typename T::value_type(1.0)), T(typename T::value_type(3.0))),
+        std::pair(T(typename T::value_type(-5.0)), T(typename T::value_type(2.5))),
+        std::pair(T(typename T::value_type(-1000.0)), T(typename T::value_type(-0.001))),
     };
 
     for(const auto& [y, x] : values)
@@ -75,10 +75,10 @@ void RunATanVecTests()
 }
 
 template<typename T>
-requires TRAP::Math::IsVec<T> && std::floating_point<typename T::valueType>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunATanVecEdgeTests()
 {
-    constexpr typename T::valueType nan = std::numeric_limits<typename T::valueType>::quiet_NaN();
+    constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
 
     REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::ATan(T(nan), T(1.0)))));
     REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::ATan(T(1.0), T(nan)))));
