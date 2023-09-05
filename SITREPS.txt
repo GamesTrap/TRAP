@@ -4368,3 +4368,7 @@ SITREP 08/31/2023|23w35a3
     - Changed TRAP Engine version to 23w35a3(0.9.86)
     - Vec2/3/4 and Mat3/4 Added iterator support ~<30 mins
     - Updated codebase to use Vec2/3/4 and Mat3/4 iterators ~>120 mins
+
+SITREP 09/05/2023|23w36a1
+    - Changed TRAP Engine version to 23w36a1(0.9.87)
+    - Vec2/3/4, Mat3/4, Quaternion Added spaceship and equality operators ~<10 mins

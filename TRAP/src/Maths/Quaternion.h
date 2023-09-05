@@ -153,6 +153,10 @@ public:
 		[[nodiscard]] T& at(std::size_t i);
 		[[nodiscard]] const T& at(std::size_t i) const;
 
+		[[nodiscard]] constexpr auto operator<=>(const tQuat<T>& rhs) const = default;
+		[[nodiscard]] constexpr bool operator==(const tQuat<T>& rhs) const = default;
+		[[nodiscard]] constexpr bool operator!=(const tQuat<T>& rhs) const = default;
+
 		[[nodiscard]] std::string ToString() const;
 	};
 
