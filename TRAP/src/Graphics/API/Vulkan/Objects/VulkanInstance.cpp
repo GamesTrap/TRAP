@@ -35,13 +35,34 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appNa
 	{
 		TP_DEBUG(Log::RendererVulkanInstancePrefix, "Loading Instance Layer(s):");
 		for (const std::string_view str : m_instanceLayers)
-			TP_DEBUG(Log::RendererVulkanInstancePrefix, "    ", str);
+		{
+			const auto layerProps = GetInstanceLayerProperties(str);
+			if(layerProps)
+			{
+				TP_DEBUG(Log::RendererVulkanInstancePrefix, "    ", str, " (", layerProps->description, ") Spec: ",
+				         VK_API_VERSION_MAJOR(layerProps->specVersion), '.', VK_API_VERSION_MINOR(layerProps->specVersion), '.',
+						 VK_API_VERSION_PATCH(layerProps->specVersion), '.', VK_API_VERSION_VARIANT(layerProps->specVersion),
+						 " Rev: ", layerProps->implementationVersion);
+			}
+			else
+				TP_DEBUG(Log::RendererVulkanInstancePrefix, "    ", str);
+		}
 	}
 	if (!m_instanceExtensions.empty())
 	{
 		TP_DEBUG(Log::RendererVulkanInstancePrefix, "Loading Instance Extension(s):");
 		for (const std::string_view str : m_instanceExtensions)
-			TP_DEBUG(Log::RendererVulkanInstancePrefix, "    ", str);
+		{
+			const auto extensionProps = GetInstanceExtensionProperties(str);
+			if(extensionProps)
+			{
+				TP_DEBUG(Log::RendererVulkanInstancePrefix, "    ", str, " Spec: ",
+				         VK_API_VERSION_MAJOR(extensionProps->specVersion), '.', VK_API_VERSION_MINOR(extensionProps->specVersion), '.',
+						 VK_API_VERSION_PATCH(extensionProps->specVersion), '.', VK_API_VERSION_VARIANT(extensionProps->specVersion));
+			}
+			else
+				TP_DEBUG(Log::RendererVulkanInstancePrefix, "    ", str);
+		}
 	}
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
@@ -116,6 +137,34 @@ TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 		LoadAllInstanceExtensions();
 
 	return s_availableInstanceExtensions;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] std::optional<VkLayerProperties> TRAP::Graphics::API::VulkanInstance::GetInstanceLayerProperties(const std::string_view instanceLayer)
+{
+	const std::vector<VkLayerProperties>& instanceLayers = GetAvailableInstanceLayers();
+	auto res = std::ranges::find_if(instanceLayers, [instanceLayer](const VkLayerProperties& layerProps)
+	                                                {return instanceLayer == layerProps.layerName;});
+
+	if(res == std::ranges::end(instanceLayers))
+		return std::nullopt;
+
+	return *res;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+[[nodiscard]] std::optional<VkExtensionProperties> TRAP::Graphics::API::VulkanInstance::GetInstanceExtensionProperties(const std::string_view instanceExtension)
+{
+	const std::vector<VkExtensionProperties>& instanceExtensions = GetAvailableInstanceExtensions();
+	auto res = std::ranges::find_if(instanceExtensions, [instanceExtension](const VkExtensionProperties& extensionProps)
+	                                                {return instanceExtension == extensionProps.extensionName;});
+
+	if(res == std::ranges::end(instanceExtensions))
+		return std::nullopt;
+
+	return *res;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

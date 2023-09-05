@@ -265,6 +265,20 @@ TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] std::optional<VkExtensionProperties> TRAP::Graphics::API::VulkanPhysicalDevice::GetPhysicalDeviceExtensionProperties(const std::string_view physicalDeviceExtension)
+{
+	const std::vector<VkExtensionProperties>& physicalDeviceExtensions = GetAvailablePhysicalDeviceExtensions();
+	auto res = std::ranges::find_if(physicalDeviceExtensions, [physicalDeviceExtension](const VkExtensionProperties& extensionProps)
+	                                                          {return physicalDeviceExtension == extensionProps.extensionName;});
+
+	if(res == std::ranges::end(physicalDeviceExtensions))
+		return std::nullopt;
+
+	return *res;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentShaderInterlockFeatures()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);

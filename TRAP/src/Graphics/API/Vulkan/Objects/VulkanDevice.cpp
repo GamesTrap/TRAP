@@ -43,7 +43,17 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	{
 		TP_DEBUG(Log::RendererVulkanDevicePrefix, "Loading Device Extension(s):");
 		for (const std::string_view str : m_deviceExtensions)
-			TP_DEBUG(Log::RendererVulkanDevicePrefix, "    ", str);
+		{
+			const auto extensionProps = m_physicalDevice->GetPhysicalDeviceExtensionProperties(str);
+			if(extensionProps)
+			{
+				TP_DEBUG(Log::RendererVulkanDevicePrefix, "    ", str, " Spec: ",
+				         VK_API_VERSION_MAJOR(extensionProps->specVersion), '.', VK_API_VERSION_MINOR(extensionProps->specVersion), '.',
+						 VK_API_VERSION_PATCH(extensionProps->specVersion), '.', VK_API_VERSION_VARIANT(extensionProps->specVersion));
+			}
+			else
+				TP_DEBUG(Log::RendererVulkanDevicePrefix, "    ", str);
+		}
 	}
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 

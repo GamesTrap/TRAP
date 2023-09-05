@@ -3,6 +3,7 @@
 #include <Graphics/API/Vulkan/VulkanRenderer.h>
 #include <Graphics/API/Vulkan/Objects/VulkanDevice.h>
 #include <Graphics/API/Vulkan/Objects/VulkanInstance.h>
+#include <Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h>
 
 RendererAPIInfo::RendererAPIInfo()
 	: Layer("RendererAPIInfo")
@@ -94,6 +95,7 @@ void RendererAPIInfo::OnImGuiRender()
         const TRAP::Graphics::API::VulkanRenderer* const vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(TRAP::Graphics::RendererAPI::GetRenderer());
         const TRAP::Graphics::API::VulkanInstance* const vkInstance = vkRenderer->GetInstance().get();
         const TRAP::Graphics::API::VulkanDevice* const vkDev = vkRenderer->GetDevice().get();
+        TRAP::Graphics::API::VulkanPhysicalDevice* const vkPhysicalDev = vkDev->GetPhysicalDevice();
         const std::vector<std::string> instLayers = vkInstance->GetUsedInstanceLayers();
         const std::vector<std::string> instExts = vkInstance->GetUsedInstanceExtensions();
         const std::vector<std::string> devExts = vkDev->GetUsedPhysicalDeviceExtensions();
@@ -102,15 +104,46 @@ void RendererAPIInfo::OnImGuiRender()
 	                                   ImGuiWindowFlags_AlwaysAutoResize);
         ImGui::Text("Used Instance Layers:");
         for(const std::string& str : instLayers)
-            ImGui::Text("%s", str.c_str());
+        {
+            const auto layerProps = TRAP::Graphics::API::VulkanInstance::GetInstanceLayerProperties(str);
+            if(layerProps)
+            {
+                ImGui::Text("%s (%s) Spec: %i.%i.%i.%i Rev: %i", str.c_str(), layerProps->description,
+                            VK_API_VERSION_MAJOR(layerProps->specVersion), VK_API_VERSION_MINOR(layerProps->specVersion),
+                            VK_API_VERSION_PATCH(layerProps->specVersion), VK_API_VERSION_VARIANT(layerProps->specVersion),
+                            layerProps->implementationVersion);
+            }
+            else
+                ImGui::Text("%s", str.c_str());
+        }
         ImGui::Separator();
         ImGui::Text("Used Instance Extensions:");
         for(const std::string& str : instExts)
-            ImGui::Text("%s", str.c_str());
+        {
+            const auto extensionProps = TRAP::Graphics::API::VulkanInstance::GetInstanceExtensionProperties(str);
+            if(extensionProps)
+            {
+                ImGui::Text("%s Spec: %i.%i.%i.%i", str.c_str(), VK_API_VERSION_MAJOR(extensionProps->specVersion),
+                            VK_API_VERSION_MINOR(extensionProps->specVersion), VK_API_VERSION_PATCH(extensionProps->specVersion),
+                            VK_API_VERSION_VARIANT(extensionProps->specVersion));
+            }
+            else
+                ImGui::Text("%s", str.c_str());
+        }
         ImGui::Separator();
         ImGui::Text("Used Physical Device Extensions:");
         for(const std::string& str : devExts)
-            ImGui::Text("%s", str.c_str());
+        {
+            const auto extensionProps = vkPhysicalDev->GetPhysicalDeviceExtensionProperties(str);
+            if(extensionProps)
+            {
+                ImGui::Text("%s Spec: %i.%i.%i.%i", str.c_str(), VK_API_VERSION_MAJOR(extensionProps->specVersion),
+                            VK_API_VERSION_MINOR(extensionProps->specVersion), VK_API_VERSION_PATCH(extensionProps->specVersion),
+                            VK_API_VERSION_VARIANT(extensionProps->specVersion));
+            }
+            else
+                ImGui::Text("%s", str.c_str());
+        }
         ImGui::End();
     }
 }

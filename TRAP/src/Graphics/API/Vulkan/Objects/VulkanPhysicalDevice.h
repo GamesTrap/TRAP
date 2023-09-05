@@ -104,6 +104,12 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <returns>List of physical device extensions.</returns>
 		[[nodiscard]] const std::vector<VkExtensionProperties>& GetAvailablePhysicalDeviceExtensions();
+		/// <summary>
+		/// Retrieve the properties for the given physical device extension.
+		/// </summary>
+		/// <param name="physicalDeviceExtension">Physical device extension to get properties from.</param>
+		/// <returns>Physical device extension properties.</returns>
+		[[nodiscard]] std::optional<VkExtensionProperties> GetPhysicalDeviceExtensionProperties(std::string_view physicalDeviceExtension);
 
 		/// <summary>
 		/// Retrieve the physical device's UUID.

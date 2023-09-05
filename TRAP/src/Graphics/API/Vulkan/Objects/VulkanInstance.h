@@ -70,6 +70,18 @@ namespace TRAP::Graphics::API
 		/// <returns>List of available instance extensions.</returns>
 		[[nodiscard]] static const std::vector<VkExtensionProperties>& GetAvailableInstanceExtensions();
 		/// <summary>
+		/// Retrieve the properties for the given instance layer.
+		/// </summary>
+		/// <param name="instanceLayer">Instance layer to get properties from.</param>
+		/// <returns>Instance layer properties.</returns>
+		[[nodiscard]] static std::optional<VkLayerProperties> GetInstanceLayerProperties(std::string_view instanceLayer);
+		/// <summary>
+		/// Retrieve the properties for the given instance extension.
+		/// </summary>
+		/// <param name="instanceLayer">Instance extension to get properties from.</param>
+		/// <returns>Instance extension properties.</returns>
+		[[nodiscard]] static std::optional<VkExtensionProperties> GetInstanceExtensionProperties(std::string_view instanceExtension);
+		/// <summary>
 		/// Check whether an instance layer is supported or not.
 		/// </summary>
 		/// <param name="layer">Instance layer to check.</param>
