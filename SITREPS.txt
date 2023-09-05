@@ -4372,3 +4372,4 @@ SITREP 08/31/2023|23w35a3
 SITREP 09/05/2023|23w36a1
     - Changed TRAP Engine version to 23w36a1(0.9.87)
     - Vec2/3/4, Mat3/4, Quaternion Added spaceship and equality operators ~<10 mins
+    - Replaced ErrorCodes std::unordered_map with ConstexprMap ~<5 mins
