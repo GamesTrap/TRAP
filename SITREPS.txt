@@ -4378,3 +4378,4 @@ SITREP 09/06/2023|23w36a2
     - Changed TRAP Engine version to 23w36a2(0.9.88)
     - VulkanInstance/VulkanDevice Added more layer and extension information ~<10 mins
     - RendererAPIInfo Added more layer and extension information ~<5 mins
+    - VulkanInits now uses designated initializers ~<15 mins
