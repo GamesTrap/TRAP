@@ -4386,3 +4386,7 @@ SITREP 09/09/2023|23w36b1
     - ErrorCodes Added new error code VulkanNoMatchingMemoryTypeFound (0x0018) ~<5 mins
     - ErrorCodes Fixed wrong error code for VulkanDeviceLost ~<5 mins
     - Refactored ImGuiLayer and ImGuiVulkanBackend ~>60 mins
+
+SITREP 09/10/2023|23w36b2
+    - Changed TRAP Engine version to 23w36a2(0.9.90)
+    - Restructured ImGuiVulkanBackend ~>60 mins

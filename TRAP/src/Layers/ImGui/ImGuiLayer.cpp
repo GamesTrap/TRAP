@@ -35,6 +35,38 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
+namespace
+{
+	//Circumvent cert-err58-cpp
+	[[nodiscard]] const std::vector<VkDescriptorPoolSize>& GlobalDescriptorPoolSizes()
+	{
+		try
+		{
+			static const std::vector<VkDescriptorPoolSize> DescriptorPoolSizes =
+			{
+				{ VK_DESCRIPTOR_TYPE_SAMPLER, 1000 },
+				{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000 },
+				{ VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1000 },
+				{ VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1000 },
+				{ VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1000 },
+				{ VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1000 },
+				{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000 },
+				{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1000 },
+				{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000 },
+				{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000 },
+				{ VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 1000 }
+			};
+
+			return DescriptorPoolSizes;
+		}
+		catch (...)
+		{
+			TP_CRITICAL(TRAP::Log::ImGuiPrefix, "ImGuiVulkanBackend::GlobalDescriptorPoolSizes(): std::vector constructor threw an exception!");
+			std::terminate();
+		}
+	}
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 struct InputTextCallbackUserData
@@ -148,11 +180,6 @@ void TRAP::ImGuiLayer::OnAttach()
 			TRAP::Graphics::RendererAPI::GetRenderer()
 		);
 
-		const VkDescriptorPoolCreateInfo poolInfo = Graphics::API::VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes,
-		                                                                                                 1000);
-		VkCall(vkCreateDescriptorPool(renderer->GetDevice()->GetVkDevice(), &poolInfo, nullptr,
-		                              &m_imguiDescriptorPool));
-
 		const auto tempFolder = TRAP::FileSystem::GetGameTempFolderPath();
 		if(tempFolder)
 		{
@@ -179,14 +206,12 @@ void TRAP::ImGuiLayer::OnAttach()
 
 		const ImGui_ImplVulkan_InitInfo initInfo
 		{
-			.Instance = renderer->GetInstance()->GetVkInstance(),
-			.PhysicalDevice = renderer->GetDevice()->GetPhysicalDevice()->GetVkPhysicalDevice(),
-			.Device = renderer->GetDevice()->GetVkDevice(),
-			.QueueFamily = renderer->GetDevice()->GetGraphicsQueueFamilyIndex(),
-			.Queue = graphicsQueue->GetVkQueue(),
-			.PipelineCache = pipelineCache->GetVkPipelineCache(),
-			.DescriptorPool = m_imguiDescriptorPool,
-			.Subpass = 0,
+			.Instance = renderer->GetInstance(),
+			.Device = renderer->GetDevice(),
+			.Queue = graphicsQueue,
+			.PipelineCache = pipelineCache,
+			.DescriptorPoolSizes = GlobalDescriptorPoolSizes(),
+			.DescriptorPool = VK_NULL_HANDLE,
 			.MinImageCount = TRAP::Graphics::RendererAPI::ImageCount,
 			.ImageCount = TRAP::Graphics::RendererAPI::ImageCount,
 			.MSAASamples = aaMethod == TRAP::Graphics::AntiAliasing::MSAA ? static_cast<VkSampleCountFlagBits>(aaSamples) : VK_SAMPLE_COUNT_1_BIT,
@@ -225,16 +250,6 @@ void TRAP::ImGuiLayer::OnDetach()
 		if(tempFolder)
 			m_imguiPipelineCache->Save(*tempFolder / "ImGui.cache");
 		m_imguiPipelineCache.reset();
-		// const TRAP::Graphics::API::VulkanRenderer* const renderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
-		// (
-		// 	TRAP::Graphics::RendererAPI::GetRenderer()
-		// );
-		if(m_imguiDescriptorPool != nullptr)
-		{
-			//Gets cleard by ImGui_ImplVulkan_Shutdown()
-			// vkDestroyDescriptorPool(renderer->GetDevice()->GetVkDevice(), m_imguiDescriptorPool, nullptr);
-			m_imguiDescriptorPool = nullptr;
-		}
 		TP_TRACE(Log::ImGuiPrefix, "Finished Vulkan shutdown");
 
 		ImGui_ImplVulkan_Shutdown();
