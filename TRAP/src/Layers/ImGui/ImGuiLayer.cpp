@@ -39,34 +39,38 @@
 
 struct InputTextCallbackUserData
 {
-	std::string* Str;
-	ImGuiInputTextCallback ChainCallback;
-	void* ChainCallbackUserData;
+	std::string* Str = nullptr;
+	ImGuiInputTextCallback ChainCallback = nullptr;
+	void* ChainCallbackUserData = nullptr;
 };
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-static int32_t InputTextCallback(ImGuiInputTextCallbackData* const data)
+namespace
 {
-	const InputTextCallbackUserData* const userData = static_cast<InputTextCallbackUserData*>(data->UserData);
-	if(data->EventFlag == ImGuiInputTextFlags_CallbackResize)
+	[[nodiscard]] int32_t InputTextCallback(ImGuiInputTextCallbackData* const data)
 	{
-		//Resize string callback
-		//If for some reason we refuse the new length (BufTextLen) and/or capacity (BufSize) we need to set them back to what we want.
-		std::string* str = userData->Str;
-		IM_ASSERT(data->Buf == str->c_str());
-		str->resize(NumericCast<std::size_t>(data->BufTextLen));
-		data->Buf = str->data();
-	}
-	else if(userData->ChainCallback != nullptr)
-	{
-		//Forward to user callback, if any
-		data->UserData = userData->ChainCallbackUserData;
-		return userData->ChainCallback(data);
-	}
+		const InputTextCallbackUserData* const userData = static_cast<InputTextCallbackUserData*>(data->UserData);
+		if(data->EventFlag == ImGuiInputTextFlags_CallbackResize)
+		{
+			//Resize string callback
+			//If for some reason we refuse the new length (BufTextLen) and/or capacity (BufSize) we need to set them back to what we want.
+			std::string* const str = userData->Str;
+			TRAP_ASSERT(data->Buf == str->c_str(), "ImGuiLayer::InputTextCallback(): String pointers data->Buf and str->c_str() are the same!");
+			str->resize(NumericCast<std::size_t>(data->BufTextLen));
+			data->Buf = str->data();
+		}
+		else if(userData->ChainCallback != nullptr)
+		{
+			//Forward to user callback, if any
+			data->UserData = userData->ChainCallbackUserData;
+			return userData->ChainCallback(data);
+		}
 
-	return 0;
+		return 0;
+	}
 }
+
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -77,12 +81,12 @@ void TRAP::ImGuiLayer::OnAttach()
 	//Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; //Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; //Enable Gamepad Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; //Enable Docking
 #if !defined(TRAP_PLATFORM_LINUX) || !defined(ENABLE_WAYLAND_SUPPORT)
-	//On Wayland we are unable to track window and mouse positions, so we disable multi-viewport support
+	//On Wayland we are unable to track global window and mouse positions, so we disable multi-viewport support
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; //Enable Multi-Viewport / Platform Windows
 #endif /*!TRAP_PLATFORM_LINUX || !ENABLE_WAYLAND_SUPPORT*/
 
@@ -144,16 +148,16 @@ void TRAP::ImGuiLayer::OnAttach()
 			TRAP::Graphics::RendererAPI::GetRenderer()
 		);
 
-		VkDescriptorPoolCreateInfo poolInfo = Graphics::API::VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes,
-		                                                                                           1000);
+		const VkDescriptorPoolCreateInfo poolInfo = Graphics::API::VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes,
+		                                                                                                 1000);
 		VkCall(vkCreateDescriptorPool(renderer->GetDevice()->GetVkDevice(), &poolInfo, nullptr,
 		                              &m_imguiDescriptorPool));
 
 		const auto tempFolder = TRAP::FileSystem::GetGameTempFolderPath();
 		if(tempFolder)
 		{
-			TRAP::Graphics::RendererAPI::PipelineCacheLoadDesc cacheDesc{};
-			cacheDesc.Path = *tempFolder / "ImGui.cache";
+			const TRAP::Graphics::RendererAPI::PipelineCacheLoadDesc cacheDesc{.Path = *tempFolder / "ImGui.cache",
+			                                                                   .Flags = TRAP::Graphics::RendererAPI::PipelineCacheFlags::None};
 			m_imguiPipelineCache = TRAP::Graphics::PipelineCache::Create(cacheDesc);
 		}
 		else //Create empty cache as fallback
@@ -164,31 +168,40 @@ void TRAP::ImGuiLayer::OnAttach()
 		TRAP::Graphics::RenderCommand::GetAntiAliasing(aaMethod, aaSamples);
 
 		//This initializes ImGui for Vulkan
-		ImGui_ImplVulkan_InitInfo initInfo{};
-		initInfo.Instance = renderer->GetInstance()->GetVkInstance();
-		initInfo.PhysicalDevice = renderer->GetDevice()->GetPhysicalDevice()->GetVkPhysicalDevice();
-		initInfo.Device = renderer->GetDevice()->GetVkDevice();
-		initInfo.QueueFamily = renderer->GetDevice()->GetGraphicsQueueFamilyIndex();
-		initInfo.Queue = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanQueue>
+		const auto graphicsQueue = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanQueue>
 		(
 			TRAP::Graphics::RendererAPI::GetGraphicsQueue()
-		)->GetVkQueue();
-		initInfo.PipelineCache = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanPipelineCache>
+		);
+		const auto pipelineCache = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanPipelineCache>
 		(
 			m_imguiPipelineCache
-		)->GetVkPipelineCache();
-		initInfo.DescriptorPool = m_imguiDescriptorPool;
-		initInfo.Subpass = 0;
-		initInfo.MinImageCount = TRAP::Graphics::RendererAPI::ImageCount;
-		initInfo.ImageCount = TRAP::Graphics::RendererAPI::ImageCount;
-		initInfo.MSAASamples = aaMethod == TRAP::Graphics::AntiAliasing::MSAA ? static_cast<VkSampleCountFlagBits>(aaSamples) : VK_SAMPLE_COUNT_1_BIT;
-		initInfo.Allocator = nullptr;
-		initInfo.CheckVkResultFn = [](const VkResult res) {VkCall(res); };
+		);
 
-		ImGui_ImplVulkan_Init(&initInfo, dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
+		const ImGui_ImplVulkan_InitInfo initInfo
+		{
+			.Instance = renderer->GetInstance()->GetVkInstance(),
+			.PhysicalDevice = renderer->GetDevice()->GetPhysicalDevice()->GetVkPhysicalDevice(),
+			.Device = renderer->GetDevice()->GetVkDevice(),
+			.QueueFamily = renderer->GetDevice()->GetGraphicsQueueFamilyIndex(),
+			.Queue = graphicsQueue->GetVkQueue(),
+			.PipelineCache = pipelineCache->GetVkPipelineCache(),
+			.DescriptorPool = m_imguiDescriptorPool,
+			.Subpass = 0,
+			.MinImageCount = TRAP::Graphics::RendererAPI::ImageCount,
+			.ImageCount = TRAP::Graphics::RendererAPI::ImageCount,
+			.MSAASamples = aaMethod == TRAP::Graphics::AntiAliasing::MSAA ? static_cast<VkSampleCountFlagBits>(aaSamples) : VK_SAMPLE_COUNT_1_BIT,
+			.UseDynamicRendering = false,
+			.ColorAttachmentFormat = VK_FORMAT_UNDEFINED,
+			.Allocator = nullptr,
+			.CheckVkResultFn = [](const VkResult res){VkCall(res);}
+		};
+
+		const auto* cmdBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
 		(
 			viewportData.GraphicCommandBuffers[viewportData.ImageIndex]
-		)->GetActiveVkRenderPass());
+		);
+
+		ImGui_ImplVulkan_Init(&initInfo, cmdBuffer->GetActiveVkRenderPass());
 
 		ImGui_ImplVulkan_UploadFontsTexture();
 
@@ -272,8 +285,7 @@ void TRAP::ImGuiLayer::Begin()
 
 		//Cant use TRAP::Graphics::RenderCommand::StartRenderPass() here, because it would also bind the shading rate image
 		vkCmdBuffer->BindRenderTargets({ rT }, nullptr, nullptr, nullptr, nullptr,
-																				std::numeric_limits<uint32_t>::max(),
-																				std::numeric_limits<uint32_t>::max());
+		                               std::numeric_limits<uint32_t>::max(), std::numeric_limits<uint32_t>::max());
 
 		//Only apply MSAA if no RenderScale is used (else it got already resolved to a non-MSAA texture)
 		if(aaMethod == TRAP::Graphics::AntiAliasing::MSAA && viewportData.RenderScale == 1.0f)
@@ -307,11 +319,11 @@ void TRAP::ImGuiLayer::End()
 		const auto& viewportData = TRAP::Graphics::RendererAPI::GetViewportData(TRAP::Application::GetWindow());
 		if(!Application::GetWindow()->IsMinimized())
 		{
-			ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
-											dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
-											(
-												viewportData.GraphicCommandBuffers[viewportData.ImageIndex]
-											)->GetVkCommandBuffer());
+			const auto* cmdBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
+				(
+					viewportData.GraphicCommandBuffers[viewportData.ImageIndex]
+				);
+			ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), cmdBuffer->GetVkCommandBuffer());
 		}
 	}
 
@@ -367,7 +379,7 @@ void TRAP::ImGuiLayer::SetImGuizmoStyle()
 
 	ImGuizmo::Style& style = ImGuizmo::GetStyle();
 
-	constexpr float ScaleFactor = 2.0f;
+	static constexpr float ScaleFactor = 2.0f;
 
 	style.TranslationLineThickness *= ScaleFactor;
 	style.TranslationLineArrowSize *= ScaleFactor;
@@ -399,8 +411,8 @@ void ImGui::Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const TRAP::G
 	{
 		const auto vkImage = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(image);
 		const auto* const vkSampler = dynamic_cast<const TRAP::Graphics::API::VulkanSampler*>(sampler);
-		const ImTextureID texID = ImGui_ImplVulkan_AddTexture(vkSampler->GetVkSampler(), vkImage->GetSRVVkImageView(),
-		                                                      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		ImTextureID texID = ImGui_ImplVulkan_AddTexture(vkSampler->GetVkSampler(), vkImage->GetSRVVkImageView(),
+		                                                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		ImGui::Image(texID, size, uv0, uv1, tint_col, border_col);
 	}
 }
@@ -418,9 +430,9 @@ void ImGui::Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const ImVec2&
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 	{
 		const auto vkImage = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(image);
-		const ImTextureID texID = ImGui_ImplVulkan_AddTexture(TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler->GetVkSampler(),
-		                                                      vkImage->GetSRVVkImageView(),
-		                                                      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		ImTextureID texID = ImGui_ImplVulkan_AddTexture(TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler->GetVkSampler(),
+		                                                vkImage->GetSRVVkImageView(),
+														VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		ImGui::Image(texID, size, uv0, uv1, tint_col, border_col);
 	}
 }
@@ -438,9 +450,9 @@ bool ImGui::ImageButton(const TRAP::Ref<TRAP::Graphics::Texture>& image, const I
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 	{
 		const auto vkImage = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(image);
-		const ImTextureID texID = ImGui_ImplVulkan_AddTexture(TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler->GetVkSampler(),
-												              vkImage->GetSRVVkImageView(),
-		                                                      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		ImTextureID texID = ImGui_ImplVulkan_AddTexture(TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler->GetVkSampler(),
+												        vkImage->GetSRVVkImageView(),
+		                                                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 		VkImageView imgView = vkImage->GetSRVVkImageView();
 		std::size_t imgViewHash = 0;
@@ -455,10 +467,10 @@ bool ImGui::ImageButton(const TRAP::Ref<TRAP::Graphics::Texture>& image, const I
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ImGui::InputText(const std::string_view label, std::string* str, ImGuiInputTextFlags flags,
-                      const ImGuiInputTextCallback callback, void* userData)
+bool ImGui::InputText(const std::string_view label, std::string* const str, ImGuiInputTextFlags flags,
+                      const ImGuiInputTextCallback callback, void* const userData)
 {
-	IM_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0);
+	TRAP_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0, "ImGui::InputText(): Missing callback resize flag!");
 	flags |= ImGuiInputTextFlags_CallbackResize;
 
 	InputTextCallbackUserData cbUserData{str, callback, userData};
@@ -468,10 +480,11 @@ bool ImGui::InputText(const std::string_view label, std::string* str, ImGuiInput
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ImGui::InputTextMultiline(const std::string_view label, std::string* str, const ImVec2& size,
-                               ImGuiInputTextFlags flags, const ImGuiInputTextCallback callback, void* userData)
+bool ImGui::InputTextMultiline(const std::string_view label, std::string* const str, const ImVec2& size,
+                               ImGuiInputTextFlags flags, const ImGuiInputTextCallback callback,
+							   void* const userData)
 {
-	IM_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0);
+	TRAP_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0, "ImGui::InputTextMultiline(): Missing callback resize flag!");
 	flags |= ImGuiInputTextFlags_CallbackResize;
 
 	InputTextCallbackUserData cbUserData{str, callback, userData};
@@ -481,10 +494,10 @@ bool ImGui::InputTextMultiline(const std::string_view label, std::string* str, c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ImGui::InputTextWithHint(const std::string_view label, const std::string_view hint, std::string* str,
-                              ImGuiInputTextFlags flags, const ImGuiInputTextCallback callback, void* userData)
+bool ImGui::InputTextWithHint(const std::string_view label, const std::string_view hint, std::string* const str,
+                              ImGuiInputTextFlags flags, const ImGuiInputTextCallback callback, void* const userData)
 {
-	IM_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0);
+	TRAP_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0, "ImGui::InputTextWithHint(): Missing callback resize flag!");
 	flags |= ImGuiInputTextFlags_CallbackResize;
 
 	InputTextCallbackUserData cbUserData{str, callback, userData};
@@ -513,7 +526,7 @@ ImFont* ImGui::AddFontFromFileTTF(const std::string_view filename, const float s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ImFont* ImGui::AddFontFromMemoryTTF(void* fontData, const int32_t fontSize, const float sizePixels,
+ImFont* ImGui::AddFontFromMemoryTTF(void* const fontData, const int32_t fontSize, const float sizePixels,
 								    const ImFontConfig* const fontCfg, const ImWchar* const glyphRanges)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);

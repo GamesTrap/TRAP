@@ -29,6 +29,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifndef TRAP_HEADLESS_MODE
 
+#include <optional>
+
 // dear imgui: Renderer Backend for Vulkan
 // This needs to be used along with a Platform Backend (e.g. GLFW, SDL, Win32, custom..)
 
@@ -66,32 +68,34 @@ Modified by: Jan "GamesTrap" Schuerkamp
 // [Please zero-clear before use!]
 struct ImGui_ImplVulkan_InitInfo
 {
-    VkInstance                      Instance;
-    VkPhysicalDevice                PhysicalDevice;
-    VkDevice                        Device;
-    uint32_t                        QueueFamily;
-    VkQueue                         Queue;
-    VkPipelineCache                 PipelineCache;
-    VkDescriptorPool                DescriptorPool;
-    uint32_t                        Subpass;
-    uint32_t                        MinImageCount;          // >= 2
-    uint32_t                        ImageCount;             // >= MinImageCount
-    VkSampleCountFlagBits           MSAASamples;            // >= VK_SAMPLE_COUNT_1_BIT (0 -> default to VK_SAMPLE_COUNT_1_BIT)
+    using PFN_CheckVkResultFn = void(*)(VkResult err);
+
+    VkInstance                      Instance = VK_NULL_HANDLE;
+    VkPhysicalDevice                PhysicalDevice = VK_NULL_HANDLE;
+    VkDevice                        Device = VK_NULL_HANDLE;
+    uint32_t                        QueueFamily = 0;
+    VkQueue                         Queue = VK_NULL_HANDLE;
+    VkPipelineCache                 PipelineCache = VK_NULL_HANDLE;
+    VkDescriptorPool                DescriptorPool = VK_NULL_HANDLE;
+    uint32_t                        Subpass = 0;
+    uint32_t                        MinImageCount = 2;                   // >= 2
+    uint32_t                        ImageCount = 2;                      // >= MinImageCount
+    VkSampleCountFlagBits           MSAASamples = VK_SAMPLE_COUNT_1_BIT; // >= VK_SAMPLE_COUNT_1_BIT (0 -> default to VK_SAMPLE_COUNT_1_BIT)
 
     //Dynamic Rendering (Optional)
-    bool UseDynamicRendering; //Need to explicitly enable VK_KHR_dynamic_rendering extension to use this, even for Vulkan 1.3.
-    VkFormat ColorAttachmentFormat; //Required for dynamic rendering
+    bool UseDynamicRendering = false; //Need to explicitly enable VK_KHR_dynamic_rendering extension to use this, even for Vulkan 1.3.
+    VkFormat ColorAttachmentFormat = VK_FORMAT_UNDEFINED; //Required for dynamic rendering
 
     //Allocation, Debugging
-    const VkAllocationCallbacks*    Allocator;
-    void                            (*CheckVkResultFn)(VkResult err);
+    const VkAllocationCallbacks* Allocator = nullptr;
+    PFN_CheckVkResultFn CheckVkResultFn = nullptr;
 };
 
 // Called by user code
-              IMGUI_IMPL_API bool        ImGui_ImplVulkan_Init(ImGui_ImplVulkan_InitInfo* info, VkRenderPass render_pass);
+              IMGUI_IMPL_API void        ImGui_ImplVulkan_Init(const ImGui_ImplVulkan_InitInfo* info, VkRenderPass render_pass);
               IMGUI_IMPL_API void        ImGui_ImplVulkan_Shutdown();
               IMGUI_IMPL_API void        ImGui_ImplVulkan_NewFrame();
-              IMGUI_IMPL_API void        ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer command_buffer, VkPipeline pipeline = VK_NULL_HANDLE);
+              IMGUI_IMPL_API void        ImGui_ImplVulkan_RenderDrawData(const ImDrawData* draw_data, VkCommandBuffer command_buffer, VkPipeline pipeline = VK_NULL_HANDLE);
               // IMGUI_IMPL_API bool        ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer);
               // IMGUI_IMPL_API void        ImGui_ImplVulkan_DestroyFontsTexture();
               IMGUI_IMPL_API void        ImGui_ImplVulkan_UploadFontsTexture();
@@ -119,33 +123,32 @@ struct ImGui_ImplVulkan_InitInfo
 // (The ImGui_ImplVulkanH_XXX functions do not interact with any of the state used by the regular ImGui_ImplVulkan_XXX functions)
 //-------------------------------------------------------------------------
 
-struct ImGui_ImplVulkanH_Frame;
 struct ImGui_ImplVulkanH_Window;
 
 // Helpers
-              IMGUI_IMPL_API void                 ImGui_ImplVulkanH_CreateOrResizeWindow(VkInstance instance, VkPhysicalDevice physical_device, VkDevice device, ImGui_ImplVulkanH_Window* wnd, uint32_t queue_family, const VkAllocationCallbacks* allocator, int w, int h, uint32_t min_image_count);
-              IMGUI_IMPL_API void                 ImGui_ImplVulkanH_DestroyWindow(VkInstance instance, VkDevice device, ImGui_ImplVulkanH_Window* wnd, const VkAllocationCallbacks* allocator);
-[[nodiscard]] IMGUI_IMPL_API VkSurfaceFormatKHR   ImGui_ImplVulkanH_SelectSurfaceFormat(VkPhysicalDevice physical_device, VkSurfaceKHR surface, const VkFormat* request_formats, int request_formats_count, VkColorSpaceKHR request_color_space);
-[[nodiscard]] IMGUI_IMPL_API VkPresentModeKHR     ImGui_ImplVulkanH_SelectPresentMode(VkPhysicalDevice physical_device, VkSurfaceKHR surface, const VkPresentModeKHR* request_modes, int request_modes_count);
-[[nodiscard]] IMGUI_IMPL_API int                  ImGui_ImplVulkanH_GetMinImageCountFromPresentMode(VkPresentModeKHR present_mode);
+              IMGUI_IMPL_API void                   ImGui_ImplVulkanH_CreateOrResizeWindow(VkInstance instance, VkPhysicalDevice physical_device, VkDevice device, ImGui_ImplVulkanH_Window* wnd, uint32_t queue_family, const VkAllocationCallbacks* allocator, int32_t w, int32_t h, uint32_t min_image_count);
+              IMGUI_IMPL_API void                   ImGui_ImplVulkanH_DestroyWindow(VkInstance instance, VkDevice device, ImGui_ImplVulkanH_Window* wnd, const VkAllocationCallbacks* allocator);
+[[nodiscard]] IMGUI_IMPL_API VkSurfaceFormatKHR     ImGui_ImplVulkanH_SelectSurfaceFormat(VkPhysicalDevice physical_device, VkSurfaceKHR surface, const VkFormat* request_formats, int32_t request_formats_count, VkColorSpaceKHR request_color_space);
+[[nodiscard]] IMGUI_IMPL_API VkPresentModeKHR       ImGui_ImplVulkanH_SelectPresentMode(VkPhysicalDevice physical_device, VkSurfaceKHR surface, const VkPresentModeKHR* request_modes, int32_t request_modes_count);
+[[nodiscard]] IMGUI_IMPL_API std::optional<int32_t> ImGui_ImplVulkanH_GetMinImageCountFromPresentMode(VkPresentModeKHR present_mode);
 
 // Helper structure to hold the data needed by one rendering frame
 // (Used by example's main.cpp. Used by multi-viewport features. Probably NOT used by your own engine/app.)
 // [Please zero-clear before use!]
 struct ImGui_ImplVulkanH_Frame
 {
-    VkCommandPool       CommandPool;
-    VkCommandBuffer     CommandBuffer;
-    VkFence             Fence;
-    VkImage             Backbuffer;
-    VkImageView         BackbufferView;
-    VkFramebuffer       Framebuffer;
+    VkCommandPool       CommandPool = VK_NULL_HANDLE;
+    VkCommandBuffer     CommandBuffer = VK_NULL_HANDLE;
+    VkFence             Fence = VK_NULL_HANDLE;
+    VkImage             Backbuffer = VK_NULL_HANDLE;
+    VkImageView         BackbufferView = VK_NULL_HANDLE;
+    VkFramebuffer       Framebuffer = VK_NULL_HANDLE;
 };
 
 struct ImGui_ImplVulkanH_FrameSemaphores
 {
-    VkSemaphore         ImageAcquiredSemaphore;
-    VkSemaphore         RenderCompleteSemaphore;
+    VkSemaphore         ImageAcquiredSemaphore = VK_NULL_HANDLE;
+    VkSemaphore         RenderCompleteSemaphore = VK_NULL_HANDLE;
 };
 
 // Helper structure to hold the data needed by one rendering context into one OS window
@@ -154,12 +157,12 @@ struct ImGui_ImplVulkanH_Window
 {
     int                 Width{};
     int                 Height{};
-    VkSwapchainKHR      Swapchain{VK_NULL_HANDLE};
-    VkSurfaceKHR        Surface{VK_NULL_HANDLE};
+    VkSwapchainKHR      Swapchain = VK_NULL_HANDLE;
+    VkSurfaceKHR        Surface = VK_NULL_HANDLE;
     VkSurfaceFormatKHR  SurfaceFormat{};
-    VkPresentModeKHR    PresentMode{VK_PRESENT_MODE_MAX_ENUM_KHR};
-    VkRenderPass        RenderPass{VK_NULL_HANDLE};
-    VkPipeline          Pipeline{VK_NULL_HANDLE}; // The window pipeline may uses a different VkRenderPass than the one passed in ImGui_ImplVulkan_InitInfo
+    VkPresentModeKHR    PresentMode = VK_PRESENT_MODE_MAX_ENUM_KHR;
+    VkRenderPass        RenderPass = VK_NULL_HANDLE;
+    VkPipeline          Pipeline = VK_NULL_HANDLE; // The window pipeline may uses a different VkRenderPass than the one passed in ImGui_ImplVulkan_InitInfo
     bool                UseDynamicRendering = false;
     bool                ClearEnable = true;
     VkClearValue        ClearValue{};
@@ -168,8 +171,6 @@ struct ImGui_ImplVulkanH_Window
     uint32_t            SemaphoreIndex{}; // Current set of swapchain wait semaphores we're using (needs to be distinct from per frame data)
     ImGui_ImplVulkanH_Frame*            Frames = nullptr;
     ImGui_ImplVulkanH_FrameSemaphores*  FrameSemaphores = nullptr;
-
-    ImGui_ImplVulkanH_Window() noexcept = default;
 };
 
 #endif /*TRAP_HEADLESS_MODE*/

@@ -30,6 +30,7 @@ namespace TRAP::Utils
         ApplicationNotLaunchedWithSteam = 0x0015,
         SteamNotRunning = 0x0016,
         VulkanDeviceLost = 0x0017,
+        VulkanNoMatchingMemoryTypeFound = 0x0018,
     };
 
 //-------------------------------------------------------------------------------------------------------------------//

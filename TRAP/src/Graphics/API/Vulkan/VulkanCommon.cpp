@@ -335,11 +335,11 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 	ds.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 	ds.pNext = nullptr;
 	ds.flags = 0;
-	ds.depthTestEnable = desc.DepthTest ? VK_TRUE : VK_FALSE;
-	ds.depthWriteEnable = desc.DepthWrite ? VK_TRUE : VK_FALSE;
+	ds.depthTestEnable = NumericCast<VkBool32>(desc.DepthTest);
+	ds.depthWriteEnable = NumericCast<VkBool32>(desc.DepthWrite);
 	ds.depthCompareOp = VkComparisonFuncTranslator[std::to_underlying(desc.DepthFunc)];
 	ds.depthBoundsTestEnable = VK_FALSE;
-	ds.stencilTestEnable = desc.StencilTest ? VK_TRUE : VK_FALSE;
+	ds.stencilTestEnable = NumericCast<VkBool32>(desc.StencilTest);
 
 	ds.front.failOp = VkStencilOpTranslator[std::to_underlying(desc.StencilFrontFail)];
 	ds.front.passOp = VkStencilOpTranslator[std::to_underlying(desc.StencilFrontPass)];

@@ -4379,3 +4379,10 @@ SITREP 09/06/2023|23w36a2
     - VulkanInstance/VulkanDevice Added more layer and extension information ~<10 mins
     - RendererAPIInfo Added more layer and extension information ~<5 mins
     - VulkanInits now uses designated initializers ~<15 mins
+
+SITREP 09/09/2023|23w36b1
+    - Changed TRAP Engine version to 23w36a2(0.9.89)
+    - VulkanInits made SamplerCreateInfo() constexpr ~<5 mins
+    - ErrorCodes Added new error code VulkanNoMatchingMemoryTypeFound (0x0018) ~<5 mins
+    - ErrorCodes Fixed wrong error code for VulkanDeviceLost ~<5 mins
+    - Refactored ImGuiLayer and ImGuiVulkanBackend ~>60 mins

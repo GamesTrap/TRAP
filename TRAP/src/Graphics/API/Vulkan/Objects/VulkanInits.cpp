@@ -545,45 +545,6 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] VkSamplerCreateInfo TRAP::Graphics::API::VulkanInits::SamplerCreateInfo(const VkFilter magFilter,
-	                                                                                  const VkFilter minFilter,
-	                                                                                  const VkSamplerMipmapMode mipMapMode,
-	                                                                                  const VkSamplerAddressMode u,
-	                                                                                  const VkSamplerAddressMode v,
-	                                                                                  const VkSamplerAddressMode w,
-	                                                                                  const float mipLodBias,
-																		              const float minLod,
-																		              const float maxLod,
-	                                                                                  const float maxAnisotropy,
-	                                                                                  const VkCompareOp compareOp)
-{
-	TRAP_ASSERT(minLod <= maxLod, "VulkanInits::SamplerCreateInfo(): minLod can't be greater than maxLod!");
-
-	return VkSamplerCreateInfo
-	{
-		.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
-		.pNext = nullptr,
-		.flags = 0,
-		.magFilter = magFilter,
-		.minFilter = minFilter,
-		.mipmapMode = mipMapMode,
-		.addressModeU = u,
-		.addressModeV = v,
-		.addressModeW = w,
-		.mipLodBias = mipLodBias,
-		.anisotropyEnable = (maxAnisotropy > 0.0f) ? VK_TRUE : VK_FALSE,
-		.maxAnisotropy = maxAnisotropy,
-		.compareEnable = (compareOp != VK_COMPARE_OP_NEVER) ? VK_TRUE : VK_FALSE,
-		.compareOp = compareOp,
-		.minLod = minLod,
-		.maxLod = maxLod,
-		.borderColor = VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK,
-		.unnormalizedCoordinates = VK_FALSE
-	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] VkPipelineShaderStageCreateInfo TRAP::Graphics::API::VulkanInits::PipelineShaderStageCreateInfo(const VkShaderStageFlagBits stage,
 	                                                                                                          VkShaderModule module,
 	                                                                                                          const std::string_view name)

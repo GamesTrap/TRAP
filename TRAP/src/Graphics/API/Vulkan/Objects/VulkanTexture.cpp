@@ -10,6 +10,7 @@
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include "Utils/ErrorCodes/ErrorCodes.h"
 
 TRAP::Graphics::API::VulkanTexture::VulkanTexture()
 	: m_device(nullptr),
@@ -535,7 +536,6 @@ void TRAP::Graphics::API::VulkanTexture::PreInit()
 		return 0;
 	}
 
-	TP_ERROR(Log::RendererVulkanTexturePrefix, "VulkanTexture::GetMemoryType(): Could not find a matching memory type");
-	TRAP_ASSERT(false);
+	TRAP::Utils::DisplayError(TRAP::Utils::ErrorCode::VulkanNoMatchingMemoryTypeFound);
 	return 0;
 }

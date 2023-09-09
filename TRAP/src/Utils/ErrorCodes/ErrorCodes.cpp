@@ -13,7 +13,7 @@ struct ErrorData
     std::string_view LogMessage;
 };
 
-static const TRAP::Utils::ConstexprMap<TRAP::Utils::ErrorCode, ErrorData, 21> s_errorMap
+static const TRAP::Utils::ConstexprMap<TRAP::Utils::ErrorCode, ErrorData, 22> s_errorMap
 {
     {
         {
@@ -37,7 +37,8 @@ static const TRAP::Utils::ConstexprMap<TRAP::Utils::ErrorCode, ErrorData, 21> s_
             {TRAP::Utils::ErrorCode::VulkanSwapchainImageAcquireFailed, {"Vulkan API error", "Vulkan failed to acquire next swapchain image!\nError code: 0x0014", TRAP::Log::RendererVulkanPrefix, "Vulkan failed to acquire next swapchain image! (0x0014)"}},
             {TRAP::Utils::ErrorCode::ApplicationNotLaunchedWithSteam, {"Application error", "Please launch the game through Steam!\nError code: 0x0015", TRAP::Log::SteamworksSDKPrefix, "Application not launched through steam! (0x0015)"}},
             {TRAP::Utils::ErrorCode::SteamNotRunning, {"Application error", "Steam must be running to play the game!\nError code: 0x0016", TRAP::Log::SteamworksSDKPrefix, "Steam must be running to play the game! (0x0016)"}},
-            {TRAP::Utils::ErrorCode::VulkanDeviceLost, {"Vulkan API error", "Vulkan device was lost!\nError code: 0x000D", TRAP::Log::RendererVulkanPrefix, "Vulkan device lost! (0x000D)"}},
+            {TRAP::Utils::ErrorCode::VulkanDeviceLost, {"Vulkan API error", "Vulkan device was lost!\nError code: 0x0017", TRAP::Log::RendererVulkanPrefix, "Vulkan device lost! (0x0017)"}},
+            {TRAP::Utils::ErrorCode::VulkanNoMatchingMemoryTypeFound, {"Vulkan API error", "Vulkan failed to find a matching memory type!\nError code: 0x0018", TRAP::Log::RendererVulkanPrefix, "Vulkan failed to find a matching memory type! (0x0018)"}},
         }
     }
 };
