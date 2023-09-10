@@ -3,7 +3,7 @@
 FROM mcr.microsoft.com/windows/servercore:ltsc2022
 LABEL maintainer="gamestrap@trappedgames.de"
 
-ARG GH_RUNNER_VERSION="2.304.0"
+ARG GH_RUNNER_VERSION="2.309.0"
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop';"]
 

@@ -22,9 +22,9 @@ jobs:
     steps:
     - name: Cleanup workspace
       if: ${{ always() }}
-      uses: gamestrap/gha-workspace-cleanup@v1.2.3
+      uses: gamestrap/gha-workspace-cleanup@v1.2.4
     - name: Checkout repository and submodules
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         submodules: 'true'
     - name: Add toolchain ppa
@@ -71,9 +71,9 @@ jobs:
     steps:
     - name: Cleanup workspace
       if: ${{ always() }}
-      uses: gamestrap/gha-workspace-cleanup@v1.2.3
+      uses: gamestrap/gha-workspace-cleanup@v1.2.4
     - name: Checkout repository and submodules
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         submodules: 'true'
     - name: Add toolchain ppa
@@ -117,9 +117,9 @@ jobs:
     steps:
     - name: Cleanup workspace
       if: ${{ always() }}
-      uses: gamestrap/gha-workspace-cleanup@v1.2.3
+      uses: gamestrap/gha-workspace-cleanup@v1.2.4
     - name: Checkout repository and submodules
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         submodules: 'true'
     - name: Add msbuild to PATH

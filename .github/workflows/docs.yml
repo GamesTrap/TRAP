@@ -17,12 +17,12 @@ jobs:
     steps:
     - name: Cleanup workspace
       if: ${{ always() }}
-      uses: gamestrap/gha-workspace-cleanup@v1.2.3
+      uses: gamestrap/gha-workspace-cleanup@v1.2.4
     - name: Check-out repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         submodules: 'true'
-    - uses: crazy-max/ghaction-import-gpg@v5
+    - uses: crazy-max/ghaction-import-gpg@v6
       with:
         gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
         passphrase: ${{ secrets.GPG_PASSPHRASE }}
@@ -44,7 +44,7 @@ jobs:
         cd GeneratorScripts/
         ./GenerateDocumentation.sh
         cd ..
-    - uses: tibdex/github-app-token@v1
+    - uses: tibdex/github-app-token@v2
       id: generate-token
       with:
         app_id: ${{ secrets.APP_ID }}
