@@ -103,7 +103,6 @@ namespace
 	}
 }
 
-
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::ImGuiLayer::OnAttach()
@@ -204,7 +203,7 @@ void TRAP::ImGuiLayer::OnAttach()
 			m_imguiPipelineCache
 		);
 
-		const ImGui_ImplVulkan_InitInfo initInfo
+		const ImGui::INTERNAL::Vulkan::InitInfo initInfo
 		{
 			.Instance = renderer->GetInstance(),
 			.Device = renderer->GetDevice(),
@@ -226,12 +225,12 @@ void TRAP::ImGuiLayer::OnAttach()
 			viewportData.GraphicCommandBuffers[viewportData.ImageIndex]
 		);
 
-		ImGui_ImplVulkan_Init(&initInfo, cmdBuffer->GetActiveVkRenderPass());
+		ImGui::INTERNAL::Vulkan::Init(&initInfo, cmdBuffer->GetActiveVkRenderPass());
 
-		ImGui_ImplVulkan_UploadFontsTexture();
+		ImGui::INTERNAL::Vulkan::UploadFontsTexture();
 
 		//Clear font textures from CPU data
-		ImGui_ImplVulkan_DestroyFontUploadObjects();
+		ImGui::INTERNAL::Vulkan::DestroyFontUploadObjects();
 		TP_TRACE(Log::ImGuiPrefix, "Finished Vulkan init");
 	}
 }
@@ -252,7 +251,7 @@ void TRAP::ImGuiLayer::OnDetach()
 		m_imguiPipelineCache.reset();
 		TP_TRACE(Log::ImGuiPrefix, "Finished Vulkan shutdown");
 
-		ImGui_ImplVulkan_Shutdown();
+		ImGui::INTERNAL::Vulkan::Shutdown();
 		INTERNAL::ImGuiWindowing::Shutdown();
 	}
 
@@ -304,11 +303,11 @@ void TRAP::ImGuiLayer::Begin()
 
 		//Only apply MSAA if no RenderScale is used (else it got already resolved to a non-MSAA texture)
 		if(aaMethod == TRAP::Graphics::AntiAliasing::MSAA && viewportData.RenderScale == 1.0f)
-			ImGui_ImplVulkan_SetMSAASamples(static_cast<VkSampleCountFlagBits>(aaSamples));
+			ImGui::INTERNAL::Vulkan::SetMSAASamples(static_cast<VkSampleCountFlagBits>(aaSamples));
 		else
-			ImGui_ImplVulkan_SetMSAASamples(VK_SAMPLE_COUNT_1_BIT);
+			ImGui::INTERNAL::Vulkan::SetMSAASamples(VK_SAMPLE_COUNT_1_BIT);
 
-		ImGui_ImplVulkan_NewFrame();
+		ImGui::INTERNAL::Vulkan::NewFrame();
 	}
 
 	INTERNAL::ImGuiWindowing::NewFrame();
@@ -338,7 +337,7 @@ void TRAP::ImGuiLayer::End()
 				(
 					viewportData.GraphicCommandBuffers[viewportData.ImageIndex]
 				);
-			ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), cmdBuffer->GetVkCommandBuffer());
+			ImGui::INTERNAL::Vulkan::RenderDrawData(ImGui::GetDrawData(), cmdBuffer);
 		}
 	}
 
@@ -414,8 +413,9 @@ void TRAP::ImGuiLayer::SetImGuizmoStyle()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui::Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const TRAP::Graphics::Sampler* const sampler, const ImVec2& size,
-                  const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col)
+void ImGui::Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const TRAP::Ref<TRAP::Graphics::Sampler>& sampler,
+                  const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col,
+				  const ImVec4& border_col)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -425,17 +425,17 @@ void ImGui::Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const TRAP::G
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 	{
 		const auto vkImage = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(image);
-		const auto* const vkSampler = dynamic_cast<const TRAP::Graphics::API::VulkanSampler*>(sampler);
-		ImTextureID texID = ImGui_ImplVulkan_AddTexture(vkSampler->GetVkSampler(), vkImage->GetSRVVkImageView(),
-		                                                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		const auto vkSampler = dynamic_pointer_cast<TRAP::Graphics::API::VulkanSampler>(sampler);
+		ImTextureID texID = ImGui::INTERNAL::Vulkan::AddTexture(vkSampler, vkImage->GetSRVVkImageView(),
+		                                                        VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		ImGui::Image(texID, size, uv0, uv1, tint_col, border_col);
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui::Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1,
-			      const ImVec4& tint_col, const ImVec4& border_col)
+void ImGui::Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const ImVec2& size, const ImVec2& uv0,
+                  const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -445,7 +445,7 @@ void ImGui::Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const ImVec2&
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 	{
 		const auto vkImage = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(image);
-		ImTextureID texID = ImGui_ImplVulkan_AddTexture(TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler->GetVkSampler(),
+		ImTextureID texID = ImGui::INTERNAL::Vulkan::AddTexture(TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler,
 		                                                vkImage->GetSRVVkImageView(),
 														VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		ImGui::Image(texID, size, uv0, uv1, tint_col, border_col);
@@ -465,7 +465,7 @@ bool ImGui::ImageButton(const TRAP::Ref<TRAP::Graphics::Texture>& image, const I
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 	{
 		const auto vkImage = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(image);
-		ImTextureID texID = ImGui_ImplVulkan_AddTexture(TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler->GetVkSampler(),
+		ImTextureID texID = ImGui::INTERNAL::Vulkan::AddTexture(TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler,
 												        vkImage->GetSRVVkImageView(),
 		                                                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
@@ -531,10 +531,10 @@ ImFont* ImGui::AddFontFromFileTTF(const std::string_view filename, const float s
 	ImFont* const font = ImGui::GetIO().Fonts->AddFontFromFileTTF(filename.data(), sizePixels, fontCfgTemplate, glyphRanges);
 
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
-		ImGui_ImplVulkan_UploadFontsTexture();
+		ImGui::INTERNAL::Vulkan::UploadFontsTexture();
 
 	//Clear font textures from CPU data
-	ImGui_ImplVulkan_DestroyFontUploadObjects();
+	ImGui::INTERNAL::Vulkan::DestroyFontUploadObjects();
 
 	return font;
 }
@@ -550,10 +550,10 @@ ImFont* ImGui::AddFontFromMemoryTTF(void* const fontData, const int32_t fontSize
 	ImFont* const font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(fontData, fontSize, sizePixels, fontCfg, glyphRanges);
 
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
-		ImGui_ImplVulkan_UploadFontsTexture();
+		ImGui::INTERNAL::Vulkan::UploadFontsTexture();
 
 	//Clear font textures from CPU data
-	ImGui_ImplVulkan_DestroyFontUploadObjects();
+	ImGui::INTERNAL::Vulkan::DestroyFontUploadObjects();
 
 	return font;
 }

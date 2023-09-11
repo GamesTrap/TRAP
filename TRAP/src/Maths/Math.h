@@ -3517,7 +3517,7 @@ constexpr
 #endif /*TRAP_ENABLE_ASSERTS*/
 genType TRAP::Math::Clamp(const genType x, const genType minVal, const genType maxVal)
 {
-	TRAP_ASSERT(minVal < maxVal, "TRAP::Math::Clamp(): minVal is greater than maxVal!");
+	TRAP_ASSERT(minVal <= maxVal, "TRAP::Math::Clamp(): minVal is greater than maxVal!");
 
 	return Min(Max(x, minVal), maxVal);
 }
@@ -3530,7 +3530,7 @@ constexpr
 #endif /*TRAP_ENABLE_ASSERTS*/
 TRAP::Math::Vec<L, T> TRAP::Math::Clamp(const Vec<L, T>& x, const T minVal, const T maxVal)
 {
-	TRAP_ASSERT(minVal < maxVal, "TRAP::Math::Clamp(): minVal is greater than maxVal!");
+	TRAP_ASSERT(minVal <= maxVal, "TRAP::Math::Clamp(): minVal is greater than maxVal!");
 
 	return Vec<L, T>(Min(Max(x, Vec<L, T>(minVal)), Vec<L, T>(maxVal)));
 }

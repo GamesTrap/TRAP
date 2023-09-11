@@ -4388,8 +4388,12 @@ SITREP 09/09/2023|23w36b1
     - Refactored ImGuiLayer and ImGuiVulkanBackend ~>60 mins
 
 SITREP 09/10/2023|23w36b2
-    - Changed TRAP Engine version to 23w36a2(0.9.90)
+    - Changed TRAP Engine version to 23w36b2(0.9.90)
     - Restructured ImGuiVulkanBackend ~>60 mins
     - GitHub Action Runners updated to 2.309.0 ~<5 mins
     - Rebuild and deployed all GitHub Action Runner images ~>30 mins
     - Updated GitHub Action workflow dependencies ~<10 mins
+
+SITREP 09/11/2023|23w37a1
+    - Changed TRAP Engine version to 23w37a1(0.9.91)
+    - ImGuiVulkanBackend Replaced raw Vulkan with TRAP Vulkan classes ~>120 mins

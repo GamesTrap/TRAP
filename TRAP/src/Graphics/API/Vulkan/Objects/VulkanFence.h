@@ -17,7 +17,8 @@ namespace TRAP::Graphics::API
 		/// Constructor.
 		/// Fence is not signaled.
 		/// </summary>
-		explicit VulkanFence();
+		/// <param name="signalled">Whether the Fence should be in signalled state or not. Default: Not signalled.</param>
+		explicit VulkanFence(bool signalled = false);
 		/// <summary>
 		/// Destructor.
 		/// </summary>

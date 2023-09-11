@@ -10,7 +10,7 @@
 #include "Utils/Dialogs/Dialogs.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 
-TRAP::Graphics::API::VulkanFence::VulkanFence()
+TRAP::Graphics::API::VulkanFence::VulkanFence(const bool signalled)
 	: m_fence(VK_NULL_HANDLE), m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -21,7 +21,9 @@ TRAP::Graphics::API::VulkanFence::VulkanFence()
 	TP_DEBUG(Log::RendererVulkanFencePrefix, "Creating Fence");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	const VkFenceCreateInfo info = VulkanInits::FenceCreateInfo();
+	VkFenceCreateInfo info = VulkanInits::FenceCreateInfo();
+	if(signalled)
+		info.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 	VkCall(vkCreateFence(m_device->GetVkDevice(), &info, nullptr, &m_fence));
 	TRAP_ASSERT(m_fence, "VulkanFence(): Vulkan Fence is nullptr");
 }

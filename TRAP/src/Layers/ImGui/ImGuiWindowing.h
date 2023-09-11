@@ -37,6 +37,36 @@ Modified by: Jan "GamesTrap" Schuerkamp
 namespace TRAP::INTERNAL
 {
 	/// <summary>
+	/// Data struct for an ImGuiViewport.
+	/// </summary>
+	struct ImGuiViewportDataTRAP
+	{
+		WindowingAPI::InternalWindow* Window{};
+		bool WindowOwned{};
+		int32_t IgnoreWindowPosEventFrame = -1;
+		int32_t IgnoreWindowSizeEventFrame = -1;
+
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		constexpr ImGuiViewportDataTRAP() noexcept = default;
+
+		/// <summary>
+		/// Destructor
+		/// </summary>
+		~ImGuiViewportDataTRAP()
+		{
+			IM_ASSERT(Window == nullptr);
+		}
+
+		constexpr ImGuiViewportDataTRAP(const ImGuiViewportDataTRAP& other) = default;
+		constexpr ImGuiViewportDataTRAP(ImGuiViewportDataTRAP&& other) = default;
+
+		ImGuiViewportDataTRAP& operator=(const ImGuiViewportDataTRAP& other) = default;
+		ImGuiViewportDataTRAP& operator=(ImGuiViewportDataTRAP&& other) = default;
+	};
+
+	/// <summary>
 	/// Interfacing class between ImGui and the TRAP::INTERNAL::WindowingAPI.
 	/// </summary>
 	class ImGuiWindowing
@@ -127,36 +157,6 @@ namespace TRAP::INTERNAL
 			WindowingAPI::MonitorFunc PrevUserCallbackMonitor{};
 
 			ImGuiTRAPData() = default;
-		};
-
-		/// <summary>
-		/// Data struct for an ImGuiViewport.
-		/// </summary>
-		struct ImGuiViewportDataTRAP
-		{
-			WindowingAPI::InternalWindow* Window{};
-			bool WindowOwned{};
-			int32_t IgnoreWindowPosEventFrame = -1;
-			int32_t IgnoreWindowSizeEventFrame = -1;
-
-			/// <summary>
-			/// Constructor.
-			/// </summary>
-			constexpr ImGuiViewportDataTRAP() noexcept = default;
-
-			/// <summary>
-			/// Destructor
-			/// </summary>
-			~ImGuiViewportDataTRAP()
-			{
-				IM_ASSERT(Window == nullptr);
-			}
-
-			constexpr ImGuiViewportDataTRAP(const ImGuiViewportDataTRAP& other) = default;
-			constexpr ImGuiViewportDataTRAP(ImGuiViewportDataTRAP&& other) = default;
-
-			ImGuiViewportDataTRAP& operator=(const ImGuiViewportDataTRAP& other) = default;
-			ImGuiViewportDataTRAP& operator=(ImGuiViewportDataTRAP&& other) = default;
 		};
 
 		/// <summary>

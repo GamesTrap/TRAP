@@ -35,9 +35,19 @@ Modified by Jan "GamesTrap" Schuerkamp
 #include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"
 #include "Graphics/API/Vulkan/Objects/VulkanCommandPool.h"
 #include "Graphics/API/Vulkan/Objects/VulkanCommandBuffer.h"
+#include "Graphics/API/Vulkan/Objects/VulkanSemaphore.h"
+#include "Graphics/API/Vulkan/Objects/VulkanFence.h"
+#include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
+#include "Graphics/API/Vulkan/Objects/VulkanInstance.h"
+#include "Graphics/API/Vulkan/Objects/VulkanPipelineCache.h"
+#include "Graphics/API/Vulkan/Objects/VulkanSampler.h"
+#include "Graphics/API/Vulkan/Objects/VulkanBuffer.h"
+#include "Graphics/API/Vulkan/Objects/VulkanRenderTarget.h"
+#include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 #include "Graphics/API/Vulkan/Objects/VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Objects/Fence.h"
+#include "Graphics/Textures/Texture.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 
 // dear imgui: Renderer Backend for Vulkan
@@ -99,6 +109,8 @@ Modified by Jan "GamesTrap" Schuerkamp
 //  2016-11-13: Vulkan: Fix validation layer warnings and errors and redeclare gl_PerVertex.
 //  2016-10-18: Vulkan: Add location decorators & change to use structs as in/out in glsl, update embedded spv (produced with glslangValidator -x). Null the released resources.
 //  2016-08-27: Vulkan: Fix Vulkan example for use when a depth buffer is active.
+
+using namespace ImGui::INTERNAL::Vulkan;
 
 namespace
 {
@@ -222,18 +234,17 @@ namespace
     // (Used by multi-viewport features.)
     struct ImGui_ImplVulkanH_Frame
     {
-        VkCommandPool       CommandPool = VK_NULL_HANDLE;
-        VkCommandBuffer     CommandBuffer = VK_NULL_HANDLE;
-        VkFence             Fence = VK_NULL_HANDLE;
-        VkImage             Backbuffer = VK_NULL_HANDLE;
-        VkImageView         BackbufferView = VK_NULL_HANDLE;
+        TRAP::Scope<TRAP::Graphics::API::VulkanCommandPool> CommandPool = nullptr;
+        TRAP::Graphics::API::VulkanCommandBuffer* CommandBuffer = nullptr;
+        TRAP::Ref<TRAP::Graphics::API::VulkanFence> Fence = nullptr;
+        TRAP::Ref<TRAP::Graphics::API::VulkanRenderTarget> Backbuffer = nullptr;
         VkFramebuffer       Framebuffer = VK_NULL_HANDLE;
     };
 
     struct ImGui_ImplVulkanH_FrameSemaphores
     {
-        VkSemaphore         ImageAcquiredSemaphore = VK_NULL_HANDLE;
-        VkSemaphore         RenderCompleteSemaphore = VK_NULL_HANDLE;
+        TRAP::Ref<TRAP::Graphics::API::VulkanSemaphore> ImageAcquiredSemaphore = nullptr;
+        TRAP::Ref<TRAP::Graphics::API::VulkanSemaphore> RenderCompleteSemaphore = nullptr;
     };
 
     // Helper structure to hold the data needed by one rendering context into one OS window
@@ -254,48 +265,42 @@ namespace
         uint32_t            FrameIndex{}; // Current frame being rendered to (0 <= FrameIndex < FrameInFlightCount)
         uint32_t            ImageCount{}; // Number of simultaneous in-flight frames (returned by vkGetSwapchainImagesKHR, usually derived from min_image_count)
         uint32_t            SemaphoreIndex{}; // Current set of swapchain wait semaphores we're using (needs to be distinct from per frame data)
-        ImGui_ImplVulkanH_Frame*            Frames = nullptr;
-        ImGui_ImplVulkanH_FrameSemaphores*  FrameSemaphores = nullptr;
+        std::vector<ImGui_ImplVulkanH_Frame>            Frames{};
+        std::vector<ImGui_ImplVulkanH_FrameSemaphores>  FrameSemaphores{};
     };
 
     //-------------------------------------------------------------------------------------------------------------------//
     //-------------------------------------------------------------------------------------------------------------------//
     //-------------------------------------------------------------------------------------------------------------------//
 
-    struct VkDetails
+    struct VulkanTextureCacheEntry
     {
-        VkSampler Sampler;
+        TRAP::Ref<TRAP::Graphics::API::VulkanSampler> Sampler;
         VkImageView ImageView;
         VkImageLayout ImageLayout;
         VkDescriptorSet DescriptorSet;
     };
-    std::unordered_map<std::uintptr_t, VkDetails> s_VulkanTextureCache{};
+    std::unordered_map<std::uintptr_t, VulkanTextureCacheEntry> s_VulkanTextureCache{};
 
     //-------------------------------------------------------------------------------------------------------------------//
     //-------------------------------------------------------------------------------------------------------------------//
     //-------------------------------------------------------------------------------------------------------------------//
 
-    // Reusable buffers used for rendering 1 current in-flight frame, for ImGui_ImplVulkan_RenderDrawData()
-    // [Please zero-clear before use!]
+    // Reusable buffers used for rendering 1 current in-flight frame, for RenderDrawData()
     struct ImGui_ImplVulkanH_FrameRenderBuffers
     {
-        VkDeviceMemory      VertexBufferMemory = VK_NULL_HANDLE;
-        VkDeviceMemory      IndexBufferMemory = VK_NULL_HANDLE;
-        VkDeviceSize        VertexBufferSize = 0;
-        VkDeviceSize        IndexBufferSize = 0;
-        VkBuffer            VertexBuffer = VK_NULL_HANDLE;
-        VkBuffer            IndexBuffer = VK_NULL_HANDLE;
+        TRAP::Ref<TRAP::Graphics::API::VulkanBuffer> VertexBuffer = nullptr;
+        TRAP::Ref<TRAP::Graphics::API::VulkanBuffer> IndexBuffer = nullptr;
     };
 
     //-------------------------------------------------------------------------------------------------------------------//
 
     // Each viewport will hold 1 ImGui_ImplVulkanH_WindowRenderBuffers
-    // [Please zero-clear before use!]
     struct ImGui_ImplVulkanH_WindowRenderBuffers
     {
         uint32_t            Index = 0;
         uint32_t            Count = 0;
-        ImGui_ImplVulkanH_FrameRenderBuffers*   FrameRenderBuffers = nullptr;
+        std::vector<ImGui_ImplVulkanH_FrameRenderBuffers> FrameRenderBuffers{};
     };
 
     //-------------------------------------------------------------------------------------------------------------------//
@@ -314,9 +319,8 @@ namespace
     // Vulkan data
     struct ImGui_ImplVulkan_Data
     {
-        ImGui_ImplVulkan_InitInfo   VulkanInitInfo{};
+        InitInfo                    VulkanInitInfo{};
         VkRenderPass                RenderPass = VK_NULL_HANDLE;
-        VkDeviceSize                BufferMemoryAlignment = 256;
         VkPipelineCreateFlags       PipelineCreateFlags{};
         VkDescriptorSetLayout       DescriptorSetLayout = VK_NULL_HANDLE;
         VkPipelineLayout            PipelineLayout = VK_NULL_HANDLE;
@@ -326,13 +330,10 @@ namespace
         VkShaderModule              ShaderModuleFrag = VK_NULL_HANDLE;
 
         // Font data
-        VkSampler                   FontSampler = VK_NULL_HANDLE;
-        VkDeviceMemory              FontMemory = VK_NULL_HANDLE;
-        VkImage                     FontImage = VK_NULL_HANDLE;
-        VkImageView                 FontView = VK_NULL_HANDLE;
+        TRAP::Ref<TRAP::Graphics::API::VulkanSampler> FontSampler = nullptr;
+        TRAP::Ref<TRAP::Graphics::API::VulkanTexture> FontImage = nullptr;
         VkDescriptorSet             FontDescriptorSet = VK_NULL_HANDLE;
-        VkDeviceMemory              UploadBufferMemory = VK_NULL_HANDLE;
-        VkBuffer                    UploadBuffer = VK_NULL_HANDLE;
+        TRAP::Ref<TRAP::Graphics::API::VulkanBuffer> UploadBuffer = nullptr;
 
         // Render buffers for main window
         ImGui_ImplVulkanH_WindowRenderBuffers MainWindowRenderBuffers{};
@@ -345,11 +346,9 @@ namespace
     //-------------------------------------------------------------------------------------------------------------------//
 
     [[nodiscard]] ImGui_ImplVulkan_Data* GetBackendData();
-    [[nodiscard]] uint32_t RetrieveMemoryType(VkMemoryPropertyFlags properties, uint32_t type_bits);
     void CheckVkResult(VkResult err);
-    void CreateOrResizeBuffer(VkBuffer& buffer, VkDeviceMemory& buffer_memory, VkDeviceSize& p_buffer_size,
-                              std::size_t new_size, VkBufferUsageFlagBits usage);
-    void SetupRenderState(const ImDrawData* draw_data, VkPipeline pipeline, VkCommandBuffer command_buffer,
+    void SetupRenderState(const ImDrawData* draw_data, VkPipeline pipeline,
+                          const TRAP::Graphics::API::VulkanCommandBuffer* command_buffer,
                           const ImGui_ImplVulkanH_FrameRenderBuffers* rb, int32_t fb_width, int32_t fb_height);
     void CreateShaderModules(const TRAP::Ref<TRAP::Graphics::API::VulkanDevice>& device,
                              const VkAllocationCallbacks* allocator);
@@ -358,7 +357,7 @@ namespace
                                          const TRAP::Ref<TRAP::Graphics::API::VulkanPipelineCache>& pipelineCache,
                                          VkRenderPass renderPass, VkSampleCountFlagBits MSAASamples,
                                          VkPipeline* pipeline);
-    void CreateFontsTexture(VkCommandBuffer command_buffer);
+    void CreateFontsTexture(const TRAP::Graphics::API::VulkanCommandBuffer* command_buffer);
     void DestroyFontsTexture();
     void CreateDeviceObjects();
     void DestroyDeviceObjects();
@@ -371,31 +370,21 @@ namespace
                                                      VkSurfaceKHR surface, const VkPresentModeKHR* request_modes,
                                                      int32_t request_modes_count);
     void CreateWindowCommandBuffers(const TRAP::Ref<TRAP::Graphics::API::VulkanDevice>& device,
-                                    const ImGui_ImplVulkanH_Window* wd, uint32_t queue_family,
-                                    const VkAllocationCallbacks* allocator);
+                                    ImGui_ImplVulkanH_Window* wd, const TRAP::Ref<TRAP::Graphics::API::VulkanQueue>& queue);
     [[nodiscard]] std::optional<int32_t> GetMinImageCountFromPresentMode(VkPresentModeKHR present_mode);
     void CreateWindowSwapChain(const TRAP::Ref<TRAP::Graphics::API::VulkanDevice>& device,
                                ImGui_ImplVulkanH_Window* wd, const VkAllocationCallbacks* allocator,
                                int32_t w, int32_t h, uint32_t min_image_count);
     void CreateOrResizeWindow(const TRAP::Ref<TRAP::Graphics::API::VulkanDevice>& device,
-                              ImGui_ImplVulkanH_Window* wnd, uint32_t queue_family,
+                              ImGui_ImplVulkanH_Window* wnd, const TRAP::Ref<TRAP::Graphics::API::VulkanQueue>& queue_family,
                               const VkAllocationCallbacks* allocator, int32_t w, int32_t h, uint32_t min_image_count);
     void DestroyWindow(const TRAP::Ref<TRAP::Graphics::API::VulkanInstance>& instance,
                        const TRAP::Ref<TRAP::Graphics::API::VulkanDevice>& device, ImGui_ImplVulkanH_Window* wnd,
                        const VkAllocationCallbacks* allocator);
     void DestroyFrame(const TRAP::Ref<TRAP::Graphics::API::VulkanDevice>& device, ImGui_ImplVulkanH_Frame* fd,
                       const VkAllocationCallbacks* allocator);
-    void DestroyFrameSemaphores(const TRAP::Ref<TRAP::Graphics::API::VulkanDevice>& device,
-                                ImGui_ImplVulkanH_FrameSemaphores* fsd, const VkAllocationCallbacks* allocator);
-    void DestroyFrameRenderBuffers(const TRAP::Ref<TRAP::Graphics::API::VulkanDevice>& device,
-                                   ImGui_ImplVulkanH_FrameRenderBuffers* buffers,
-                                   const VkAllocationCallbacks* allocator);
-    void DestroyWindowRenderBuffers(const TRAP::Ref<TRAP::Graphics::API::VulkanDevice>& device,
-                                    ImGui_ImplVulkanH_WindowRenderBuffers* buffers,
-                                    const VkAllocationCallbacks* allocator);
     void CreateNewDescriptorPool();
-    void DestroyAllViewportsRenderBuffers(const TRAP::Ref<TRAP::Graphics::API::VulkanDevice>& device,
-                                                            const VkAllocationCallbacks* allocator);
+    void DestroyAllViewportsRenderBuffers();
 
     void CreateWindow(ImGuiViewport* viewport);
     void DestroyWindow(ImGuiViewport* viewport);
@@ -419,27 +408,6 @@ namespace
 
     //-------------------------------------------------------------------------------------------------------------------//
 
-    [[nodiscard]] uint32_t RetrieveMemoryType(const VkMemoryPropertyFlags properties, const uint32_t type_bits)
-    {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
-
-        const ImGui_ImplVulkan_Data* const bd = GetBackendData();
-        const ImGui_ImplVulkan_InitInfo* const v = &bd->VulkanInitInfo;
-
-        VkPhysicalDeviceMemoryProperties prop;
-        vkGetPhysicalDeviceMemoryProperties(v->Device->GetPhysicalDevice()->GetVkPhysicalDevice(), &prop);
-        for (uint32_t i = 0; i < prop.memoryTypeCount; i++)
-        {
-            if ((prop.memoryTypes[i].propertyFlags & properties) == properties && ((type_bits & BIT(i)) != 0u))
-                return i;
-        }
-
-		TRAP::Utils::DisplayError(TRAP::Utils::ErrorCode::VulkanNoMatchingMemoryTypeFound);
-        return 0;
-    }
-
-    //-------------------------------------------------------------------------------------------------------------------//
-
     void CheckVkResult(const VkResult err)
     {
         ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -447,47 +415,15 @@ namespace
         const ImGui_ImplVulkan_Data* const bd = GetBackendData();
         if (bd == nullptr)
             return;
-        const ImGui_ImplVulkan_InitInfo* const v = &bd->VulkanInitInfo;
+        const InitInfo* const v = &bd->VulkanInitInfo;
         if (v->CheckVkResultFn != nullptr)
             v->CheckVkResultFn(err);
     }
 
     //-------------------------------------------------------------------------------------------------------------------//
 
-    void CreateOrResizeBuffer(VkBuffer& buffer, VkDeviceMemory& buffer_memory, VkDeviceSize& p_buffer_size,
-                              const std::size_t new_size, const VkBufferUsageFlagBits usage)
-    {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
-
-        ImGui_ImplVulkan_Data* const bd = GetBackendData();
-        const ImGui_ImplVulkan_InitInfo* const v = &bd->VulkanInitInfo;
-        VkResult err = VK_SUCCESS;
-
-        if (buffer != VK_NULL_HANDLE)
-            vkDestroyBuffer(v->Device->GetVkDevice(), buffer, v->Allocator);
-        if (buffer_memory != VK_NULL_HANDLE)
-            vkFreeMemory(v->Device->GetVkDevice(), buffer_memory, v->Allocator);
-
-        const VkDeviceSize vertex_buffer_size_aligned = ((new_size - 1) / bd->BufferMemoryAlignment + 1) * bd->BufferMemoryAlignment;
-        const VkBufferCreateInfo buffer_info = TRAP::Graphics::API::VulkanInits::BufferCreateInfo(vertex_buffer_size_aligned, usage);
-        err = vkCreateBuffer(v->Device->GetVkDevice(), &buffer_info, v->Allocator, &buffer);
-        CheckVkResult(err);
-
-        VkMemoryRequirements req;
-        vkGetBufferMemoryRequirements(v->Device->GetVkDevice(), buffer, &req);
-        bd->BufferMemoryAlignment = (bd->BufferMemoryAlignment > req.alignment) ? bd->BufferMemoryAlignment : req.alignment;
-        const VkMemoryAllocateInfo alloc_info = TRAP::Graphics::API::VulkanInits::MemoryAllocateInfo(req.size, RetrieveMemoryType(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, req.memoryTypeBits));
-        err = vkAllocateMemory(v->Device->GetVkDevice(), &alloc_info, v->Allocator, &buffer_memory);
-        CheckVkResult(err);
-
-        err = vkBindBufferMemory(v->Device->GetVkDevice(), buffer, buffer_memory, 0);
-        CheckVkResult(err);
-        p_buffer_size = req.size;
-    }
-
-    //-------------------------------------------------------------------------------------------------------------------//
-
-    void SetupRenderState(const ImDrawData* const draw_data, VkPipeline pipeline, VkCommandBuffer command_buffer,
+    void SetupRenderState(const ImDrawData* const draw_data, VkPipeline pipeline,
+                          const TRAP::Graphics::API::VulkanCommandBuffer* const command_buffer,
                           const ImGui_ImplVulkanH_FrameRenderBuffers* const rb, const int32_t fb_width,
                           const int32_t fb_height)
     {
@@ -497,39 +433,27 @@ namespace
 
         // Bind pipeline
         {
-            vkCmdBindPipeline(command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+            vkCmdBindPipeline(command_buffer->GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
         }
 
         // Bind Vertex And Index Buffer:
         if (draw_data->TotalVtxCount > 0)
         {
-            VkBuffer vertex_buffers = rb->VertexBuffer;
-            static constexpr VkDeviceSize vertex_offset = 0;
-            vkCmdBindVertexBuffers(command_buffer, 0, 1, &vertex_buffers, &vertex_offset);
-            vkCmdBindIndexBuffer(command_buffer, rb->IndexBuffer, 0, sizeof(ImDrawIdx) == 2 ? VK_INDEX_TYPE_UINT16 : VK_INDEX_TYPE_UINT32);
+            command_buffer->BindVertexBuffer({rb->VertexBuffer}, {sizeof(TRAP::Math::Vec2) + sizeof(TRAP::Math::Vec2) + sizeof(TRAP::Math::Vec4)}, {0});
+            const auto indexType = sizeof(ImDrawIdx) == 2 ? TRAP::Graphics::RendererAPI::IndexType::UInt16 : TRAP::Graphics::RendererAPI::IndexType::UInt32;
+            command_buffer->BindIndexBuffer(rb->IndexBuffer, indexType, 0);
         }
 
         // Setup viewport:
-        {
-            const VkViewport viewport
-            {
-                .x = 0,
-                .y = 0,
-                .width = NumericCast<float>(fb_width),
-                .height = NumericCast<float>(fb_height),
-                .minDepth = 0.0f,
-                .maxDepth = 1.0f
-            };
-            vkCmdSetViewport(command_buffer, 0, 1, &viewport);
-        }
+        command_buffer->SetViewport(0.0f, 0.0f, NumericCast<float>(fb_width), NumericCast<float>(-fb_height), 0.0f, 1.0f);
 
         // Setup scale and translation:
         // Our visible imgui space lies from draw_data->DisplayPps (top left) to draw_data->DisplayPos+data_data->DisplaySize (bottom right). DisplayPos is (0,0) for single viewport apps.
         {
             const std::array<float, 2> scale{2.0f / draw_data->DisplaySize.x, 2.0f / draw_data->DisplaySize.y};
             const std::array<float, 2> translate{-1.0f - draw_data->DisplayPos.x * std::get<0>(scale), -1.0f - draw_data->DisplayPos.y * std::get<1>(scale)};
-            vkCmdPushConstants(command_buffer, bd->PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, sizeof(float) * 0, sizeof(float) * 2, scale.data());
-            vkCmdPushConstants(command_buffer, bd->PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, sizeof(float) * 2, sizeof(float) * 2, translate.data());
+            vkCmdPushConstants(command_buffer->GetVkCommandBuffer(), bd->PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, sizeof(float) * 0, sizeof(float) * 2, scale.data());
+            vkCmdPushConstants(command_buffer->GetVkCommandBuffer(), bd->PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, sizeof(float) * 2, sizeof(float) * 2, translate.data());
         }
     }
 
@@ -708,136 +632,110 @@ namespace
 
     //-------------------------------------------------------------------------------------------------------------------//
 
-    void CreateFontsTexture(VkCommandBuffer command_buffer)
+    void CreateFontsTexture(const TRAP::Graphics::API::VulkanCommandBuffer* const command_buffer)
     {
         ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
         const ImGuiIO& io = ImGui::GetIO();
         ImGui_ImplVulkan_Data* const bd = GetBackendData();
-        const ImGui_ImplVulkan_InitInfo* const v = &bd->VulkanInitInfo;
 
         unsigned char* pixels = nullptr;
         int width = 0, height = 0;
         io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
         const std::size_t upload_size = NumericCast<std::size_t>(width) * NumericCast<std::size_t>(height) * 4u * sizeof(char);
 
-        VkResult err = VK_SUCCESS;
-
         // Create the Image:
+        bd->FontImage = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>(TRAP::Graphics::TextureType::Texture2D);
+        const TRAP::Graphics::RendererAPI::TextureDesc fontDesc
         {
-            const VkImageCreateInfo info = TRAP::Graphics::API::VulkanInits::ImageCreateInfo(VK_IMAGE_TYPE_2D, VK_FORMAT_R8G8B8A8_UNORM,
-                                                                                            NumericCast<uint32_t>(width), NumericCast<uint32_t>(height),
-                                                                                            1, 1, 1, VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_TILING_OPTIMAL,
-                                                                                            VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT);
-            err = vkCreateImage(v->Device->GetVkDevice(), &info, v->Allocator, &bd->FontImage);
-            CheckVkResult(err);
-            VkMemoryRequirements req;
-            vkGetImageMemoryRequirements(v->Device->GetVkDevice(), bd->FontImage, &req);
-            const VkMemoryAllocateInfo alloc_info = TRAP::Graphics::API::VulkanInits::MemoryAllocateInfo(req.size, RetrieveMemoryType(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, req.memoryTypeBits));
-            err = vkAllocateMemory(v->Device->GetVkDevice(), &alloc_info, v->Allocator, &bd->FontMemory);
-            CheckVkResult(err);
-            err = vkBindImageMemory(v->Device->GetVkDevice(), bd->FontImage, bd->FontMemory, 0);
-            CheckVkResult(err);
-        }
-
-        // Create the Image View:
-        {
-            const VkImageViewCreateInfo info = TRAP::Graphics::API::VulkanInits::ImageViewCreateInfo(bd->FontImage, VK_IMAGE_VIEW_TYPE_2D, VK_FORMAT_R8G8B8A8_UNORM, 1, 1);
-            err = vkCreateImageView(v->Device->GetVkDevice(), &info, v->Allocator, &bd->FontView);
-            CheckVkResult(err);
-        }
+            .Flags = TRAP::Graphics::RendererAPI::TextureCreationFlags::None,
+            .Width = NumericCast<uint32_t>(width),
+            .Height = NumericCast<uint32_t>(height),
+            .Depth = 1,
+            .ArraySize = 1,
+            .SampleCount = TRAP::Graphics::RendererAPI::SampleCount::One,
+            .SampleQuality = 1,
+            .Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM,
+            .ClearValue = {},
+            .StartState = TRAP::Graphics::RendererAPI::ResourceState::Undefined,
+            .Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture,
+            .NativeHandle = nullptr,
+            .Name = "ImGui Font Texture",
+            .VkSamplerYcbcrConversionInfo = nullptr
+        };
+        bd->FontImage->Init(fontDesc);
 
         // Create the Descriptor Set:
-        bd->FontDescriptorSet = static_cast<VkDescriptorSet>(ImGui_ImplVulkan_AddTexture(bd->FontSampler, bd->FontView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
+        bd->FontDescriptorSet = static_cast<VkDescriptorSet>(AddTexture(bd->FontSampler, bd->FontImage->GetSRVVkImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
 
         // Create the Upload Buffer:
         {
-            const VkBufferCreateInfo buffer_info = TRAP::Graphics::API::VulkanInits::BufferCreateInfo(upload_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
-            err = vkCreateBuffer(v->Device->GetVkDevice(), &buffer_info, v->Allocator, &bd->UploadBuffer);
-            CheckVkResult(err);
-            VkMemoryRequirements req;
-            vkGetBufferMemoryRequirements(v->Device->GetVkDevice(), bd->UploadBuffer, &req);
-            bd->BufferMemoryAlignment = (bd->BufferMemoryAlignment > req.alignment) ? bd->BufferMemoryAlignment : req.alignment;
-            const VkMemoryAllocateInfo alloc_info = TRAP::Graphics::API::VulkanInits::MemoryAllocateInfo(req.size, RetrieveMemoryType(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, req.memoryTypeBits));
-            err = vkAllocateMemory(v->Device->GetVkDevice(), &alloc_info, v->Allocator, &bd->UploadBufferMemory);
-            CheckVkResult(err);
-            err = vkBindBufferMemory(v->Device->GetVkDevice(), bd->UploadBuffer, bd->UploadBufferMemory, 0);
-            CheckVkResult(err);
+            const TRAP::Graphics::RendererAPI::BufferDesc bufferDesc
+            {
+                .Size = upload_size,
+                .Alignment = 0,
+                .MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::CPUToGPU,
+                .Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::HostVisible,
+                .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
+                .StartState = TRAP::Graphics::RendererAPI::ResourceState::Undefined,
+                .FirstElement = 0,
+                .ElementCount = 0,
+                .StructStride = 0,
+                .ICBDrawType = {},
+                .ICBMaxVertexBufferBind = 0,
+                .ICBMaxFragmentBufferBind = 0,
+                .Format = TRAP::Graphics::API::ImageFormat::Undefined,
+                .Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Undefined,
+                .Name = "ImGui UploadBuffer"
+            };
+            bd->UploadBuffer = TRAP::MakeRef<TRAP::Graphics::API::VulkanBuffer>(bufferDesc);
         }
 
         // Upload to Buffer:
         {
             char* map = nullptr;
-            err = vkMapMemory(v->Device->GetVkDevice(), bd->UploadBufferMemory, 0, upload_size, 0, reinterpret_cast<void**>(&map));
-            CheckVkResult(err);
+            const TRAP::Graphics::RendererAPI::ReadRange readRange{.Offset = 0, .Range = upload_size};
+            bd->UploadBuffer->MapBuffer(&readRange);
+            map = reinterpret_cast<char*>(bd->UploadBuffer->GetCPUMappedAddress());
             std::copy_n(pixels, upload_size, map);
-
-            const VkMappedMemoryRange range
-            {
-                .sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
-                .pNext = nullptr,
-                .memory = bd->UploadBufferMemory,
-                .offset = 0,
-                .size = upload_size
-            };
-
-            err = vkFlushMappedMemoryRanges(v->Device->GetVkDevice(), 1, &range);
-            CheckVkResult(err);
-            vkUnmapMemory(v->Device->GetVkDevice(), bd->UploadBufferMemory);
+            bd->UploadBuffer->UnMapBuffer();
         }
 
         // Copy to Image:
         {
-            static constexpr VkImageSubresourceRange subRange
+            std::vector<TRAP::Graphics::RendererAPI::TextureBarrier> fontImageBarriers
             {
-                .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
-                .baseMipLevel = 0,
-                .levelCount = 1,
-                .baseArrayLayer = 0,
-                .layerCount = 1
+                TRAP::Graphics::RendererAPI::TextureBarrier
+                {
+                    .Texture = dynamic_cast<TRAP::Graphics::Texture*>(bd->FontImage.get()),
+                    .CurrentState = TRAP::Graphics::RendererAPI::ResourceState::Undefined,
+                    .NewState = TRAP::Graphics::RendererAPI::ResourceState::CopyDestination,
+                    .BeginOnly = false,
+                    .EndOnly = false,
+                    .Acquire = false,
+                    .Release = false,
+                    .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
+                    .SubresourceBarrier = false,
+                    .MipLevel = 0,
+                    .ArrayLayer = 0
+                }
             };
+            command_buffer->ResourceBarrier(nullptr, &fontImageBarriers, nullptr);
 
-            const VkImageMemoryBarrier copy_barrier
+            //TODO This currently only supports tightly packed (using image extent) textures
+            const TRAP::Graphics::RendererAPI::SubresourceDataDesc subresourceDesc
             {
-                .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
-                .pNext = nullptr,
-                .srcAccessMask = VK_ACCESS_NONE_KHR,
-                .dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT,
-                .oldLayout = VK_IMAGE_LAYOUT_UNDEFINED,
-                .newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-                .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-                .image = bd->FontImage,
-                .subresourceRange = subRange
+                .SrcOffset = 0,
+                .MipLevel = 0,
+                .ArrayLayer = 0,
+                .RowPitch = NumericCast<uint32_t>(width) * bd->FontImage->GetBytesPerPixel(),
+                .SlicePitch = 0
             };
+            command_buffer->UpdateSubresource(bd->FontImage.get(), dynamic_pointer_cast<TRAP::Graphics::Buffer>(bd->UploadBuffer), subresourceDesc);
 
-            vkCmdPipelineBarrier(command_buffer, VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, nullptr, 0, nullptr, 1, &copy_barrier);
-
-            static constexpr VkImageSubresourceLayers layers
-            {
-                .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
-                .mipLevel = 0,
-                .baseArrayLayer = 0,
-                .layerCount = 1,
-            };
-            const VkBufferImageCopy region = TRAP::Graphics::API::VulkanInits::ImageCopy(0, NumericCast<uint32_t>(width), NumericCast<uint32_t>(height), 1, layers);
-            vkCmdCopyBufferToImage(command_buffer, bd->UploadBuffer, bd->FontImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
-
-            const VkImageMemoryBarrier use_barrier
-            {
-                .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
-                .pNext = nullptr,
-                .srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT,
-                .dstAccessMask = VK_ACCESS_SHADER_READ_BIT,
-                .oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                .newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-                .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-                .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-                .image = bd->FontImage,
-                .subresourceRange = subRange
-            };
-
-            vkCmdPipelineBarrier(command_buffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &use_barrier);
+            fontImageBarriers[0].CurrentState = TRAP::Graphics::RendererAPI::ResourceState::CopyDestination;
+            fontImageBarriers[0].NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
+            command_buffer->ResourceBarrier(nullptr, &fontImageBarriers, nullptr);
         }
 
         // Store our identifier
@@ -850,15 +748,9 @@ namespace
     {
         ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
-        const ImGui_ImplVulkan_Data* const bd = GetBackendData();
-        const ImGui_ImplVulkan_InitInfo* const v = &bd->VulkanInitInfo;
+        ImGui_ImplVulkan_Data* const bd = GetBackendData();
 
-        if(bd->FontImage != nullptr)
-            vkDestroyImage(v->Device->GetVkDevice(), bd->FontImage, nullptr);
-        if(bd->FontMemory != nullptr)
-            vkFreeMemory(v->Device->GetVkDevice(), bd->FontMemory, nullptr);
-        if(bd->FontView != nullptr)
-            vkDestroyImageView(v->Device->GetVkDevice(), bd->FontView, nullptr);
+        bd->FontImage.reset();
     }
 
     //-------------------------------------------------------------------------------------------------------------------//
@@ -868,18 +760,30 @@ namespace
         ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
         ImGui_ImplVulkan_Data* const bd = GetBackendData();
-        const ImGui_ImplVulkan_InitInfo* const v = &bd->VulkanInitInfo;
+        const InitInfo* const v = &bd->VulkanInitInfo;
         VkResult err = VK_SUCCESS;
 
         if (bd->FontSampler == nullptr)
         {
             // Bilinear sampling is required by default. Set 'io.Fonts->Flags |= ImFontAtlasFlags_NoBakedLines' or 'style.AntiAliasedLinesUseTex = false' to allow point/nearest sampling.
-            static constexpr VkSamplerCreateInfo info = TRAP::Graphics::API::VulkanInits::SamplerCreateInfo(VK_FILTER_LINEAR, VK_FILTER_LINEAR, VK_SAMPLER_MIPMAP_MODE_LINEAR,
-                                                                                                            VK_SAMPLER_ADDRESS_MODE_REPEAT, VK_SAMPLER_ADDRESS_MODE_REPEAT,
-                                                                                                            VK_SAMPLER_ADDRESS_MODE_REPEAT, 0.0f, -1000.0f, 1000.0f, 1.0f,
-                                                                                                            VK_COMPARE_OP_NEVER);
-            err = vkCreateSampler(v->Device->GetVkDevice(), &info, v->Allocator, &bd->FontSampler);
-            CheckVkResult(err);
+            constexpr TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc
+            {
+                .MinFilter = TRAP::Graphics::RendererAPI::FilterType::Linear,
+                .MagFilter = TRAP::Graphics::RendererAPI::FilterType::Linear,
+                .MipMapMode = TRAP::Graphics::RendererAPI::MipMapMode::Linear,
+                .AddressU = TRAP::Graphics::RendererAPI::AddressMode::Repeat,
+                .AddressV = TRAP::Graphics::RendererAPI::AddressMode::Repeat,
+                .AddressW = TRAP::Graphics::RendererAPI::AddressMode::Repeat,
+                .MipLodBias = 0.0f,
+                .SetLodRange = true,
+                .MinLod = -1000.0f,
+                .MaxLod = 1000.0f,
+                .EnableAnisotropy = true,
+                .OverrideAnisotropyLevel = 1.0f,
+                .CompareFunc = TRAP::Graphics::RendererAPI::CompareMode::Never,
+                .SamplerConversionDesc = {}
+            };
+            bd->FontSampler = TRAP::MakeRef<TRAP::Graphics::API::VulkanSampler>(samplerDesc);
         }
 
         if (bd->DescriptorSetLayout == nullptr)
@@ -929,16 +833,14 @@ namespace
         ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
         ImGui_ImplVulkan_Data* const bd = GetBackendData();
-        const ImGui_ImplVulkan_InitInfo* const v = &bd->VulkanInitInfo;
-        DestroyAllViewportsRenderBuffers(v->Device, v->Allocator);
-        ImGui_ImplVulkan_DestroyFontUploadObjects();
+        const InitInfo* const v = &bd->VulkanInitInfo;
+        DestroyAllViewportsRenderBuffers();
+        DestroyFontUploadObjects();
 
         if (bd->ShaderModuleVert != nullptr)     { vkDestroyShaderModule(v->Device->GetVkDevice(), bd->ShaderModuleVert, v->Allocator); bd->ShaderModuleVert = VK_NULL_HANDLE; }
         if (bd->ShaderModuleFrag != nullptr)     { vkDestroyShaderModule(v->Device->GetVkDevice(), bd->ShaderModuleFrag, v->Allocator); bd->ShaderModuleFrag = VK_NULL_HANDLE; }
-        if (bd->FontView != nullptr)             { vkDestroyImageView(v->Device->GetVkDevice(), bd->FontView, v->Allocator); bd->FontView = VK_NULL_HANDLE; }
-        if (bd->FontImage != nullptr)            { vkDestroyImage(v->Device->GetVkDevice(), bd->FontImage, v->Allocator); bd->FontImage = VK_NULL_HANDLE; }
-        if (bd->FontMemory != nullptr)           { vkFreeMemory(v->Device->GetVkDevice(), bd->FontMemory, v->Allocator); bd->FontMemory = VK_NULL_HANDLE; }
-        if (bd->FontSampler != nullptr)          { vkDestroySampler(v->Device->GetVkDevice(), bd->FontSampler, v->Allocator); bd->FontSampler = VK_NULL_HANDLE; }
+        bd->FontImage.reset();
+        bd->FontSampler.reset();
         if (bd->DescriptorSetLayout != nullptr)  { vkDestroyDescriptorSetLayout(v->Device->GetVkDevice(), bd->DescriptorSetLayout, v->Allocator); bd->DescriptorSetLayout = VK_NULL_HANDLE; }
         if (bd->PipelineLayout != nullptr)       { vkDestroyPipelineLayout(v->Device->GetVkDevice(), bd->PipelineLayout, v->Allocator); bd->PipelineLayout = VK_NULL_HANDLE; }
         if (bd->Pipeline != nullptr)             { vkDestroyPipeline(v->Device->GetVkDevice(), bd->Pipeline, v->Allocator); bd->Pipeline = VK_NULL_HANDLE; }
@@ -1043,43 +945,30 @@ namespace
     //-------------------------------------------------------------------------------------------------------------------//
 
     void CreateWindowCommandBuffers(const TRAP::Ref<TRAP::Graphics::API::VulkanDevice>& device,
-                                    const ImGui_ImplVulkanH_Window* const wd, const uint32_t queue_family,
-                                    const VkAllocationCallbacks* const allocator)
+                                    ImGui_ImplVulkanH_Window* const wd,
+                                    const TRAP::Ref<TRAP::Graphics::API::VulkanQueue>& queue)
     {
         ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
         TRAP_ASSERT(device != VK_NULL_HANDLE, "ImGuiVulkanBackend::ImGui_ImplVulkanH_CreateWindowCommandBuffers(): device is nullptr!");
 
         // Create Command Buffers
-        VkResult err = VK_SUCCESS;
         for (uint32_t i = 0; i < wd->ImageCount; i++)
         {
             ImGui_ImplVulkanH_Frame* const fd = &wd->Frames[i];
             ImGui_ImplVulkanH_FrameSemaphores* const fsd = &wd->FrameSemaphores[i];
+            const TRAP::Graphics::RendererAPI::CommandPoolDesc cmdPoolDesc
             {
-                VkCommandPoolCreateInfo info = TRAP::Graphics::API::VulkanInits::CommandPoolCreateInfo(queue_family);
-                info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-                err = vkCreateCommandPool(device->GetVkDevice(), &info, allocator, &fd->CommandPool);
-                CheckVkResult(err);
-            }
-            {
-                const VkCommandBufferAllocateInfo info = TRAP::Graphics::API::VulkanInits::CommandBufferAllocateInfo(fd->CommandPool, false);
-                err = vkAllocateCommandBuffers(device->GetVkDevice(), &info, &fd->CommandBuffer);
-                CheckVkResult(err);
-            }
-            {
-                VkFenceCreateInfo info = TRAP::Graphics::API::VulkanInits::FenceCreateInfo();
-                info.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-                err = vkCreateFence(device->GetVkDevice(), &info, allocator, &fd->Fence);
-                CheckVkResult(err);
-            }
-            {
-                static constexpr VkSemaphoreCreateInfo info = TRAP::Graphics::API::VulkanInits::SemaphoreCreateInfo();
-                err = vkCreateSemaphore(device->GetVkDevice(), &info, allocator, &fsd->ImageAcquiredSemaphore);
-                CheckVkResult(err);
-                err = vkCreateSemaphore(device->GetVkDevice(), &info, allocator, &fsd->RenderCompleteSemaphore);
-                CheckVkResult(err);
-            }
+                .Queue = queue,
+                .Transient = true
+            };
+            fd->CommandPool = TRAP::MakeScope<TRAP::Graphics::API::VulkanCommandPool>(cmdPoolDesc);
+            fd->CommandBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>(fd->CommandPool->AllocateCommandBuffer(false));
+
+            fd->Fence = TRAP::MakeRef<TRAP::Graphics::API::VulkanFence>();
+
+            fsd->ImageAcquiredSemaphore = TRAP::MakeRef<TRAP::Graphics::API::VulkanSemaphore>();
+            fsd->RenderCompleteSemaphore = TRAP::MakeRef<TRAP::Graphics::API::VulkanSemaphore>();
         }
     }
 
@@ -1118,14 +1007,9 @@ namespace
         // We don't use ImGui_ImplVulkanH_DestroyWindow() because we want to preserve the old swapchain to create the new one.
         // Destroy old Framebuffer
         for (uint32_t i = 0; i < wd->ImageCount; i++)
-        {
             DestroyFrame(device, &wd->Frames[i], allocator);
-            DestroyFrameSemaphores(device, &wd->FrameSemaphores[i], allocator);
-        }
-        IM_FREE(wd->Frames);
-        IM_FREE(wd->FrameSemaphores);
-        wd->Frames = nullptr;
-        wd->FrameSemaphores = nullptr;
+        wd->Frames.clear();
+        wd->FrameSemaphores.clear();
         wd->ImageCount = 0;
         if (wd->RenderPass != nullptr)
             vkDestroyRenderPass(device->GetVkDevice(), wd->RenderPass, allocator);
@@ -1169,19 +1053,38 @@ namespace
             CheckVkResult(err);
             err = vkGetSwapchainImagesKHR(device->GetVkDevice(), wd->Swapchain, &wd->ImageCount, nullptr);
             CheckVkResult(err);
-            std::array<VkImage, 16> backbuffers{};
+            // std::array<VkImage, 16> backbuffers{};
             TRAP_ASSERT(wd->ImageCount >= min_image_count, "ImGuiVulkanBackend::ImGui_ImplVulkanH_CreateWindowSwapChain(): wd->ImageCount must be greater than or equal to min_image_count!");
-            TRAP_ASSERT(wd->ImageCount < backbuffers.size(), "ImGuiVulkanBackend::ImGui_ImplVulkanH_CreateWindowSwapChain(): wd->ImageCount must be smaller than backbuffers.size()!");
+            // TRAP_ASSERT(wd->ImageCount < backbuffers.size(), "ImGuiVulkanBackend::ImGui_ImplVulkanH_CreateWindowSwapChain(): wd->ImageCount must be smaller than backbuffers.size()!");
+            std::vector<VkImage> backbuffers(wd->ImageCount);
             err = vkGetSwapchainImagesKHR(device->GetVkDevice(), wd->Swapchain, &wd->ImageCount, backbuffers.data());
             CheckVkResult(err);
 
-            TRAP_ASSERT(wd->Frames == nullptr, "ImGuiVulkanBackend::ImGui_ImplVulkanH_CreateWindowSwapChain(): wd->Frames is nullptr!");
-            wd->Frames = static_cast<ImGui_ImplVulkanH_Frame*>(IM_ALLOC(sizeof(ImGui_ImplVulkanH_Frame) * wd->ImageCount));
-            wd->FrameSemaphores = static_cast<ImGui_ImplVulkanH_FrameSemaphores*>(IM_ALLOC(sizeof(ImGui_ImplVulkanH_FrameSemaphores) * wd->ImageCount));
-            std::fill_n(wd->Frames, wd->ImageCount, ImGui_ImplVulkanH_Frame());
-            std::fill_n(wd->FrameSemaphores, wd->ImageCount, ImGui_ImplVulkanH_FrameSemaphores());
+            TRAP_ASSERT(wd->Frames.empty(), "ImGuiVulkanBackend::ImGui_ImplVulkanH_CreateWindowSwapChain(): wd->Frames is not empty!");
+            TRAP_ASSERT(wd->FrameSemaphores.empty(), "ImGuiVulkanBackend::ImGui_ImplVulkanH_CreateWindowSwapChain(): wd->FrameSemaphores is not empty!");
+            wd->Frames.resize(wd->ImageCount);
+            wd->FrameSemaphores.resize(wd->ImageCount);
             for (uint32_t i = 0; i < wd->ImageCount; i++)
-                wd->Frames[i].Backbuffer = backbuffers[i];
+            {
+                const TRAP::Graphics::RendererAPI::RenderTargetDesc rtDesc
+                {
+                    .Flags = TRAP::Graphics::RendererAPI::TextureCreationFlags::None,
+                    .Width = NumericCast<uint32_t>(wd->Width),
+                    .Height = NumericCast<uint32_t>(wd->Height),
+                    .Depth = 1,
+                    .ArraySize = 1,
+                    .MipLevels = 0,
+                    .SampleCount = TRAP::Graphics::RendererAPI::SampleCount::One,
+                    .Format = TRAP::Graphics::API::ImageFormatFromVkFormat(wd->SurfaceFormat.format),
+                    .StartState = TRAP::Graphics::RendererAPI::ResourceState::Present,
+                    .ClearValue = {},
+                    .SampleQuality = 0,
+                    .Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Undefined,
+                    .Name = fmt::format("ImGui Backbuffer {}", i),
+                    .NativeHandle = backbuffers[i]
+                };
+                wd->Frames[i].Backbuffer = TRAP::MakeRef<TRAP::Graphics::API::VulkanRenderTarget>(rtDesc);
+            }
         }
         if (old_swapchain != nullptr)
             vkDestroySwapchainKHR(device->GetVkDevice(), old_swapchain, allocator);
@@ -1193,9 +1096,16 @@ namespace
                                                                                                                wd->ClearEnable ? VK_ATTACHMENT_LOAD_OP_CLEAR : VK_ATTACHMENT_LOAD_OP_DONT_CARE,
                                                                                                                VK_ATTACHMENT_STORE_OP_STORE, VK_ATTACHMENT_LOAD_OP_DONT_CARE, VK_ATTACHMENT_STORE_OP_DONT_CARE,
                                                                                                                VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+            constexpr VkAttachmentReference attachmentRef
+            {
+                .attachment = 0,
+                .layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
+            };
 
-            std::vector<VkAttachmentDescription> attachmentDescs{attachment};
-            const VkRenderPassCreateInfo info = TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(attachmentDescs);
+            const std::vector<VkAttachmentDescription> attachmentDescs{attachment};
+	        const std::vector<VkAttachmentReference> attachmentRefs{attachmentRef};
+	        const VkSubpassDescription subpass = TRAP::Graphics::API::VulkanInits::SubPassDescription(VK_PIPELINE_BIND_POINT_GRAPHICS, {}, attachmentRefs);
+            const VkRenderPassCreateInfo info = TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(attachmentDescs, subpass);
 
             err = vkCreateRenderPass(device->GetVkDevice(), &info, allocator, &wd->RenderPass);
             CheckVkResult(err);
@@ -1206,18 +1116,6 @@ namespace
             CreatePipeline(device, allocator, VK_NULL_HANDLE, wd->RenderPass, VK_SAMPLE_COUNT_1_BIT, &wd->Pipeline);
         }
 
-        // Create The Image Views
-        {
-            VkImageViewCreateInfo info = TRAP::Graphics::API::VulkanInits::ImageViewCreateInfo(VK_NULL_HANDLE, VK_IMAGE_VIEW_TYPE_2D,  wd->SurfaceFormat.format, 1, 1);
-            for (uint32_t i = 0; i < wd->ImageCount; i++)
-            {
-                ImGui_ImplVulkanH_Frame* const fd = &wd->Frames[i];
-                info.image = fd->Backbuffer;
-                err = vkCreateImageView(device->GetVkDevice(), &info, allocator, &fd->BackbufferView);
-                CheckVkResult(err);
-            }
-        }
-
         // Create Framebuffer
         if(!wd->UseDynamicRendering)
         {
@@ -1226,7 +1124,8 @@ namespace
             for (uint32_t i = 0; i < wd->ImageCount; i++)
             {
                 ImGui_ImplVulkanH_Frame* const fd = &wd->Frames[i];
-                info.pAttachments = &fd->BackbufferView;
+                VkImageView backbufferView = fd->Backbuffer->GetVkImageView();
+                info.pAttachments = &backbufferView;
                 err = vkCreateFramebuffer(device->GetVkDevice(), &info, allocator, &fd->Framebuffer);
                 CheckVkResult(err);
             }
@@ -1237,14 +1136,15 @@ namespace
 
     // Create or resize window
     void CreateOrResizeWindow(const TRAP::Ref<TRAP::Graphics::API::VulkanDevice>& device,
-                              ImGui_ImplVulkanH_Window* const wnd, const uint32_t queue_family,
+                              ImGui_ImplVulkanH_Window* const wnd,
+                              const TRAP::Ref<TRAP::Graphics::API::VulkanQueue>& queue,
                               const VkAllocationCallbacks* const allocator, const int32_t w, const int32_t h,
                               const uint32_t min_image_count)
     {
         ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
         CreateWindowSwapChain(device, wnd, allocator, w, h, min_image_count);
-        CreateWindowCommandBuffers(device, wnd, queue_family, allocator);
+        CreateWindowCommandBuffers(device, wnd, queue);
     }
 
     //-------------------------------------------------------------------------------------------------------------------//
@@ -1259,14 +1159,9 @@ namespace
         //vkQueueWaitIdle(bd->Queue);
 
         for (uint32_t i = 0; i < wnd->ImageCount; i++)
-        {
             DestroyFrame(device, &wnd->Frames[i], allocator);
-            DestroyFrameSemaphores(device, &wnd->FrameSemaphores[i], allocator);
-        }
-        IM_FREE(wnd->Frames);
-        IM_FREE(wnd->FrameSemaphores);
-        wnd->Frames = nullptr;
-        wnd->FrameSemaphores = nullptr;
+        wnd->Frames.clear();
+        wnd->FrameSemaphores.clear();
         vkDestroyPipeline(device->GetVkDevice(), wnd->Pipeline, allocator);
         vkDestroyRenderPass(device->GetVkDevice(), wnd->RenderPass, allocator);
         vkDestroySwapchainKHR(device->GetVkDevice(), wnd->Swapchain, allocator);
@@ -1282,62 +1177,13 @@ namespace
     {
         ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
-        vkDestroyFence(device->GetVkDevice(), fd->Fence, allocator);
-        vkFreeCommandBuffers(device->GetVkDevice(), fd->CommandPool, 1, &fd->CommandBuffer);
-        vkDestroyCommandPool(device->GetVkDevice(), fd->CommandPool, allocator);
-        fd->Fence = VK_NULL_HANDLE;
-        fd->CommandBuffer = VK_NULL_HANDLE;
-        fd->CommandPool = VK_NULL_HANDLE;
+        fd->Fence.reset();
+        fd->CommandPool.reset();
+        fd->CommandBuffer = nullptr;
 
-        vkDestroyImageView(device->GetVkDevice(), fd->BackbufferView, allocator);
-        fd->BackbufferView = VK_NULL_HANDLE;
+        fd->Backbuffer.reset();
         vkDestroyFramebuffer(device->GetVkDevice(), fd->Framebuffer, allocator);
         fd->Framebuffer = VK_NULL_HANDLE;
-    }
-
-    //-------------------------------------------------------------------------------------------------------------------//
-
-    void DestroyFrameSemaphores(const TRAP::Ref<TRAP::Graphics::API::VulkanDevice>& device,
-                                ImGui_ImplVulkanH_FrameSemaphores* const fsd,
-                                const VkAllocationCallbacks* const allocator)
-    {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
-
-        vkDestroySemaphore(device->GetVkDevice(), fsd->ImageAcquiredSemaphore, allocator);
-        vkDestroySemaphore(device->GetVkDevice(), fsd->RenderCompleteSemaphore, allocator);
-        fsd->ImageAcquiredSemaphore = fsd->RenderCompleteSemaphore = VK_NULL_HANDLE;
-    }
-
-    //-------------------------------------------------------------------------------------------------------------------//
-
-    void DestroyFrameRenderBuffers(const TRAP::Ref<TRAP::Graphics::API::VulkanDevice>& device,
-                                   ImGui_ImplVulkanH_FrameRenderBuffers* const buffers,
-                                   const VkAllocationCallbacks* const allocator)
-    {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
-
-        if (buffers->VertexBuffer != nullptr) { vkDestroyBuffer(device->GetVkDevice(), buffers->VertexBuffer, allocator); buffers->VertexBuffer = VK_NULL_HANDLE; }
-        if (buffers->VertexBufferMemory != nullptr) { vkFreeMemory(device->GetVkDevice(), buffers->VertexBufferMemory, allocator); buffers->VertexBufferMemory = VK_NULL_HANDLE; }
-        if (buffers->IndexBuffer != nullptr) { vkDestroyBuffer(device->GetVkDevice(), buffers->IndexBuffer, allocator); buffers->IndexBuffer = VK_NULL_HANDLE; }
-        if (buffers->IndexBufferMemory != nullptr) { vkFreeMemory(device->GetVkDevice(), buffers->IndexBufferMemory, allocator); buffers->IndexBufferMemory = VK_NULL_HANDLE; }
-        buffers->VertexBufferSize = 0;
-        buffers->IndexBufferSize = 0;
-    }
-
-    //-------------------------------------------------------------------------------------------------------------------//
-
-    void DestroyWindowRenderBuffers(const TRAP::Ref<TRAP::Graphics::API::VulkanDevice>& device,
-                                    ImGui_ImplVulkanH_WindowRenderBuffers* const buffers,
-                                    const VkAllocationCallbacks* const allocator)
-    {
-        ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
-
-        for (uint32_t n = 0; n < buffers->Count; n++)
-            DestroyFrameRenderBuffers(device, &buffers->FrameRenderBuffers[n], allocator);
-        IM_FREE(buffers->FrameRenderBuffers);
-        buffers->FrameRenderBuffers = nullptr;
-        buffers->Index = 0;
-        buffers->Count = 0;
     }
 
     //-------------------------------------------------------------------------------------------------------------------//
@@ -1347,7 +1193,7 @@ namespace
         ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
         ImGui_ImplVulkan_Data* const bd = GetBackendData();
-        ImGui_ImplVulkan_InitInfo* const v = &bd->VulkanInitInfo;
+        InitInfo* const v = &bd->VulkanInitInfo;
 
         const VkDescriptorPoolCreateInfo poolInfo = TRAP::Graphics::API::VulkanInits::DescriptorPoolCreateInfo(v->DescriptorPoolSizes,
                                                                                                                1000);
@@ -1361,8 +1207,7 @@ namespace
 
     //-------------------------------------------------------------------------------------------------------------------//
 
-    void DestroyAllViewportsRenderBuffers(const TRAP::Ref<TRAP::Graphics::API::VulkanDevice>& device,
-                                          const VkAllocationCallbacks* const allocator)
+    void DestroyAllViewportsRenderBuffers()
     {
         ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -1370,7 +1215,7 @@ namespace
         for (int n = 0; n < platform_io.Viewports.Size; n++)
         {
             if (ImGui_ImplVulkan_ViewportData* const vd = static_cast<ImGui_ImplVulkan_ViewportData*>(platform_io.Viewports[n]->RendererUserData))
-                DestroyWindowRenderBuffers(device, &vd->RenderBuffers, allocator);
+                vd->RenderBuffers = {};
         }
     }
 
@@ -1388,7 +1233,7 @@ namespace
         ImGui_ImplVulkan_ViewportData* const vd = IM_NEW(ImGui_ImplVulkan_ViewportData)();
         viewport->RendererUserData = vd;
          ImGui_ImplVulkanH_Window* const wd = &vd->Window;
-        const ImGui_ImplVulkan_InitInfo* const v = &bd->VulkanInitInfo;
+        const InitInfo* const v = &bd->VulkanInitInfo;
 
         // Create surface
         ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO();
@@ -1417,7 +1262,7 @@ namespace
         // Create SwapChain, RenderPass, Framebuffer, etc.
         wd->ClearEnable = (viewport->Flags & ImGuiViewportFlags_NoRendererClear) == 0;
         wd->UseDynamicRendering = v->UseDynamicRendering;
-        CreateOrResizeWindow(v->Device, wd, v->Queue->GetQueueFamilyIndex(), v->Allocator, NumericCast<int32_t>(viewport->Size.x), NumericCast<int32_t>(viewport->Size.y), v->MinImageCount);
+        CreateOrResizeWindow(v->Device, wd, v->Queue, v->Allocator, NumericCast<int32_t>(viewport->Size.x), NumericCast<int32_t>(viewport->Size.y), v->MinImageCount);
         vd->WindowOwned = true;
     }
 
@@ -1431,10 +1276,10 @@ namespace
         const ImGui_ImplVulkan_Data* const bd = GetBackendData();
         if (ImGui_ImplVulkan_ViewportData* const vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData))
         {
-            const ImGui_ImplVulkan_InitInfo* const v = &bd->VulkanInitInfo;
+            const InitInfo* const v = &bd->VulkanInitInfo;
             if (vd->WindowOwned)
                 DestroyWindow(v->Instance, v->Device, &vd->Window, v->Allocator);
-            DestroyWindowRenderBuffers(v->Device, &vd->RenderBuffers, v->Allocator);
+            vd->RenderBuffers = {};
             IM_DELETE(vd);
         }
         viewport->RendererUserData = nullptr;
@@ -1450,9 +1295,9 @@ namespace
         ImGui_ImplVulkan_ViewportData* const vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData);
         if (vd == nullptr) // This is nullptr for the main viewport (which is left to the user/app to handle)
             return;
-        const ImGui_ImplVulkan_InitInfo* const v = &bd->VulkanInitInfo;
+        const InitInfo* const v = &bd->VulkanInitInfo;
         vd->Window.ClearEnable = (viewport->Flags & ImGuiViewportFlags_NoRendererClear) == 0;
-        CreateOrResizeWindow(v->Device, &vd->Window, v->Queue->GetQueueFamilyIndex(), v->Allocator, NumericCast<int32_t>(size.x), NumericCast<int32_t>(size.y), v->MinImageCount);
+        CreateOrResizeWindow(v->Device, &vd->Window, v->Queue, v->Allocator, NumericCast<int32_t>(size.x), NumericCast<int32_t>(size.y), v->MinImageCount);
     }
 
     //-------------------------------------------------------------------------------------------------------------------//
@@ -1464,31 +1309,21 @@ namespace
         const ImGui_ImplVulkan_Data* const bd = GetBackendData();
         ImGui_ImplVulkan_ViewportData* const vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData);
         ImGui_ImplVulkanH_Window* const wd = &vd->Window;
-        const ImGui_ImplVulkan_InitInfo* const v = &bd->VulkanInitInfo;
+        const InitInfo* const v = &bd->VulkanInitInfo;
         VkResult err = VK_SUCCESS;
 
         const ImGui_ImplVulkanH_Frame* fd = &wd->Frames[wd->FrameIndex];
         const ImGui_ImplVulkanH_FrameSemaphores* const fsd = &wd->FrameSemaphores[wd->SemaphoreIndex];
         {
             {
-                err = vkAcquireNextImageKHR(v->Device->GetVkDevice(), wd->Swapchain, UINT64_MAX, fsd->ImageAcquiredSemaphore, VK_NULL_HANDLE, &wd->FrameIndex);
+                err = vkAcquireNextImageKHR(v->Device->GetVkDevice(), wd->Swapchain, UINT64_MAX, fsd->ImageAcquiredSemaphore->GetVkSemaphore(), VK_NULL_HANDLE, &wd->FrameIndex);
                 CheckVkResult(err);
                 fd = &wd->Frames[wd->FrameIndex];
             }
-            for (;;)
+            fd->Fence->Wait();
             {
-                err = vkWaitForFences(v->Device->GetVkDevice(), 1, &fd->Fence, VK_TRUE, 100);
-                if (err == VK_SUCCESS) break;
-                if (err == VK_TIMEOUT) continue;
-                CheckVkResult(err);
-            }
-            {
-                err = vkResetCommandPool(v->Device->GetVkDevice(), fd->CommandPool, 0);
-                CheckVkResult(err);
-                VkCommandBufferBeginInfo info = TRAP::Graphics::API::VulkanInits::CommandBufferBeginInfo();
-                info.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-                err = vkBeginCommandBuffer(fd->CommandBuffer, &info);
-                CheckVkResult(err);
+                fd->CommandPool->Reset();
+                fd->CommandBuffer->Begin();
             }
             {
                 static constexpr ImVec4 clear_color = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -1508,10 +1343,10 @@ namespace
                     .newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
                     .srcQueueFamilyIndex = 0,
                     .dstQueueFamilyIndex = 0,
-                    .image = fd->Backbuffer,
+                    .image = dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(fd->Backbuffer->GetTexture())->GetVkImage(),
                     .subresourceRange = VkImageSubresourceRange{.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT, .baseMipLevel = 0, .levelCount = 1, .baseArrayLayer = 0, .layerCount = 1}
                 };
-                vkCmdPipelineBarrier(fd->CommandBuffer, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                vkCmdPipelineBarrier(fd->CommandBuffer->GetVkCommandBuffer(), VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
                                     VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, 0, 0,
                                     nullptr, 0, nullptr, 1, &barrier);
 
@@ -1519,7 +1354,7 @@ namespace
                 {
                     .sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
                     .pNext = nullptr,
-                    .imageView = fd->BackbufferView,
+                    .imageView = fd->Backbuffer->GetVkImageView(),
                     .imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
                     .resolveMode = VK_RESOLVE_MODE_NONE,
                     .resolveImageView = VK_NULL_HANDLE,
@@ -1544,7 +1379,7 @@ namespace
                     .pStencilAttachment = nullptr
                 };
 
-                vkCmdBeginRenderingKHR(fd->CommandBuffer, &renderingInfo);
+                vkCmdBeginRenderingKHR(fd->CommandBuffer->GetVkCommandBuffer(), &renderingInfo);
             }
             else
     #endif /*IMGUI_IMPL_VULKAN_HAS_DYNAMIC_RENDERING*/
@@ -1557,17 +1392,17 @@ namespace
                 const VkRenderPassBeginInfo info = TRAP::Graphics::API::VulkanInits::RenderPassBeginInfo(wd->RenderPass, fd->Framebuffer,
                                                                                                         renderArea, (viewport->Flags & ImGuiViewportFlags_NoRendererClear) != 0 ? std::vector<VkClearValue>{} : std::vector<VkClearValue>{wd->ClearValue});
 
-                vkCmdBeginRenderPass(fd->CommandBuffer, &info, VK_SUBPASS_CONTENTS_INLINE);
+                vkCmdBeginRenderPass(fd->CommandBuffer->GetVkCommandBuffer(), &info, VK_SUBPASS_CONTENTS_INLINE);
             }
         }
 
-        ImGui_ImplVulkan_RenderDrawData(viewport->DrawData, fd->CommandBuffer, wd->Pipeline);
+        RenderDrawData(viewport->DrawData, fd->CommandBuffer, wd->Pipeline);
 
         {
     #ifdef IMGUI_IMPL_VULKAN_HAS_DYNAMIC_RENDERING
             if(v->UseDynamicRendering)
             {
-                vkCmdEndRenderingKHR(fd->CommandBuffer);
+                vkCmdEndRenderingKHR(fd->CommandBuffer->GetVkCommandBuffer());
 
                 //Transition image to a layout suitable for presentation
                 const VkImageMemoryBarrier barrier
@@ -1580,37 +1415,41 @@ namespace
                     .newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
                     .srcQueueFamilyIndex = 0,
                     .dstQueueFamilyIndex = 0,
-                    .image = fd->Backbuffer,
+                    .image = dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(fd->Backbuffer->GetTexture())->GetVkImage(),
                     .subresourceRange = VkImageSubresourceRange{.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT, .baseMipLevel = 0, .levelCount = 1, .baseArrayLayer = 0, .layerCount = 0}
                 };
-                vkCmdPipelineBarrier(fd->CommandBuffer, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                vkCmdPipelineBarrier(fd->CommandBuffer->GetVkCommandBuffer(), VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                                     VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier);
             }
             else
     #endif /*IMGUI_IMPL_VULKAN_HAS_DYNAMIC_RENDERING*/
             {
-                vkCmdEndRenderPass(fd->CommandBuffer);
+                vkCmdEndRenderPass(fd->CommandBuffer->GetVkCommandBuffer());
             }
             {
                 constexpr VkPipelineStageFlags wait_stage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+                VkSemaphore imageAcquiredSemaphore = fsd->ImageAcquiredSemaphore->GetVkSemaphore();
+                VkSemaphore renderCompleteSemaphore = fsd->RenderCompleteSemaphore->GetVkSemaphore();
+                VkCommandBuffer cmdBuffer = fd->CommandBuffer->GetVkCommandBuffer();
                 const VkSubmitInfo info
                 {
                     .sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
                     .pNext = nullptr,
                     .waitSemaphoreCount = 1,
-                    .pWaitSemaphores = &fsd->ImageAcquiredSemaphore,
+                    .pWaitSemaphores = &imageAcquiredSemaphore,
                     .pWaitDstStageMask = &wait_stage,
                     .commandBufferCount = 1,
-                    .pCommandBuffers = &fd->CommandBuffer,
+                    .pCommandBuffers = &cmdBuffer,
                     .signalSemaphoreCount = 1,
-                    .pSignalSemaphores = &fsd->RenderCompleteSemaphore
+                    .pSignalSemaphores = &renderCompleteSemaphore
                 };
 
-                err = vkEndCommandBuffer(fd->CommandBuffer);
+                VkFence fence = fd->Fence->GetVkFence();
+
+                fd->CommandBuffer->End();
+                err = vkResetFences(v->Device->GetVkDevice(), 1, &fence);
                 CheckVkResult(err);
-                err = vkResetFences(v->Device->GetVkDevice(), 1, &fd->Fence);
-                CheckVkResult(err);
-                err = vkQueueSubmit(v->Queue->GetVkQueue(), 1, &info, fd->Fence);
+                err = vkQueueSubmit(v->Queue->GetVkQueue(), 1, &info, fence);
                 CheckVkResult(err);
             }
         }
@@ -1625,18 +1464,18 @@ namespace
         const ImGui_ImplVulkan_Data* const bd = GetBackendData();
         ImGui_ImplVulkan_ViewportData* const vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData);
         ImGui_ImplVulkanH_Window* const wd = &vd->Window;
-        const ImGui_ImplVulkan_InitInfo* const v = &bd->VulkanInitInfo;
+        const InitInfo* const v = &bd->VulkanInitInfo;
 
         VkResult err = VK_SUCCESS;
         uint32_t present_index = wd->FrameIndex;
 
         const ImGui_ImplVulkanH_FrameSemaphores* const fsd = &wd->FrameSemaphores[wd->SemaphoreIndex];
-        const std::vector<VkSemaphore> waitSemaphores{fsd->RenderCompleteSemaphore};
+        const std::vector<VkSemaphore> waitSemaphores{fsd->RenderCompleteSemaphore->GetVkSemaphore()};
         const VkPresentInfoKHR info = TRAP::Graphics::API::VulkanInits::PresentInfo(waitSemaphores, wd->Swapchain, present_index);
 
         err = vkQueuePresentKHR(v->Queue->GetVkQueue(), &info);
         if (err == VK_ERROR_OUT_OF_DATE_KHR || err == VK_SUBOPTIMAL_KHR)
-            CreateOrResizeWindow(v->Device, &vd->Window, v->Queue->GetQueueFamilyIndex(), v->Allocator, NumericCast<int32_t>(viewport->Size.x), NumericCast<int32_t>(viewport->Size.y), v->MinImageCount);
+            CreateOrResizeWindow(v->Device, &vd->Window, v->Queue, v->Allocator, NumericCast<int32_t>(viewport->Size.x), NumericCast<int32_t>(viewport->Size.y), v->MinImageCount);
         else
             CheckVkResult(err);
 
@@ -1675,7 +1514,9 @@ namespace
 //-----------------------------------------------------------------------------
 
 // Render function
-void ImGui_ImplVulkan_RenderDrawData(const ImDrawData* const draw_data, VkCommandBuffer command_buffer, VkPipeline pipeline)
+void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData* const draw_data,
+                                             const TRAP::Graphics::API::VulkanCommandBuffer* const command_buffer,
+                                             VkPipeline pipeline)
 {
     ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -1686,7 +1527,7 @@ void ImGui_ImplVulkan_RenderDrawData(const ImDrawData* const draw_data, VkComman
         return;
 
     const ImGui_ImplVulkan_Data* const bd = GetBackendData();
-    const ImGui_ImplVulkan_InitInfo* const v = &bd->VulkanInitInfo;
+    const InitInfo* const v = &bd->VulkanInitInfo;
     if (pipeline == VK_NULL_HANDLE)
         pipeline = bd->Pipeline;
 
@@ -1694,12 +1535,11 @@ void ImGui_ImplVulkan_RenderDrawData(const ImDrawData* const draw_data, VkComman
     ImGui_ImplVulkan_ViewportData* const viewport_renderer_data = static_cast<ImGui_ImplVulkan_ViewportData*>(draw_data->OwnerViewport->RendererUserData);
     TRAP_ASSERT(viewport_renderer_data != nullptr, "ImGuiVulkanBackend::ImGui_ImplVulkan_RenderDrawData(): viewport_renderer_data is nullptr!");
     ImGui_ImplVulkanH_WindowRenderBuffers* const wrb = &viewport_renderer_data->RenderBuffers;
-    if (wrb->FrameRenderBuffers == nullptr)
+    if (wrb->FrameRenderBuffers.empty())
     {
         wrb->Index = 0;
         wrb->Count = v->ImageCount;
-        wrb->FrameRenderBuffers = static_cast<ImGui_ImplVulkanH_FrameRenderBuffers*>(IM_ALLOC(sizeof(ImGui_ImplVulkanH_FrameRenderBuffers) * wrb->Count));
-        std::fill_n(wrb->FrameRenderBuffers, wrb->Count, ImGui_ImplVulkanH_FrameRenderBuffers());
+        wrb->FrameRenderBuffers.resize(wrb->Count);
     }
     TRAP_ASSERT(viewport_renderer_data != nullptr, "ImGuiVulkanBackend::ImGui_ImplVulkan_RenderDrawData(): wrb->Count doesnt match v->ImageCount!");
     wrb->Index = (wrb->Index + 1) % wrb->Count;
@@ -1710,18 +1550,60 @@ void ImGui_ImplVulkan_RenderDrawData(const ImDrawData* const draw_data, VkComman
         // Create or resize the vertex/index buffers
         const std::size_t vertex_size = NumericCast<std::size_t>(draw_data->TotalVtxCount) * sizeof(ImDrawVert);
         const std::size_t index_size = NumericCast<std::size_t>(draw_data->TotalIdxCount) * sizeof(ImDrawIdx);
-        if (rb->VertexBuffer == VK_NULL_HANDLE || rb->VertexBufferSize < vertex_size)
-            CreateOrResizeBuffer(rb->VertexBuffer, rb->VertexBufferMemory, rb->VertexBufferSize, vertex_size, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
-        if (rb->IndexBuffer == VK_NULL_HANDLE || rb->IndexBufferSize < index_size)
-            CreateOrResizeBuffer(rb->IndexBuffer, rb->IndexBufferMemory, rb->IndexBufferSize, index_size, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+        if (rb->VertexBuffer == nullptr || rb->VertexBuffer->GetSize() < vertex_size)
+        {
+            const TRAP::Graphics::RendererAPI::BufferDesc bufferDesc
+            {
+                .Size = vertex_size,
+                .Alignment = 0,
+                .MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::CPUToGPU,
+                .Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::HostVisible,
+                .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
+                .StartState = TRAP::Graphics::RendererAPI::ResourceState::Undefined,
+                .FirstElement = 0,
+                .ElementCount = 0,
+                .StructStride = 0,
+                .ICBDrawType = {},
+                .ICBMaxVertexBufferBind = 0,
+                .ICBMaxFragmentBufferBind = 0,
+                .Format = TRAP::Graphics::API::ImageFormat::Undefined,
+                .Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::VertexBuffer,
+                .Name = "ImGui VertexBuffer"
+            };
+            rb->VertexBuffer = TRAP::MakeRef<TRAP::Graphics::API::VulkanBuffer>(bufferDesc);
+        }
+        if (rb->IndexBuffer == VK_NULL_HANDLE || rb->IndexBuffer->GetSize() < index_size)
+        {
+            const TRAP::Graphics::RendererAPI::BufferDesc bufferDesc
+            {
+                .Size = index_size,
+                .Alignment = 0,
+                .MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::CPUToGPU,
+                .Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::HostVisible,
+                .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
+                .StartState = TRAP::Graphics::RendererAPI::ResourceState::Undefined,
+                .FirstElement = 0,
+                .ElementCount = 0,
+                .StructStride = 0,
+                .ICBDrawType = {},
+                .ICBMaxVertexBufferBind = 0,
+                .ICBMaxFragmentBufferBind = 0,
+                .Format = TRAP::Graphics::API::ImageFormat::Undefined,
+                .Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::IndexBuffer,
+                .Name = "ImGui IndexBuffer"
+            };
+            rb->IndexBuffer = TRAP::MakeRef<TRAP::Graphics::API::VulkanBuffer>(bufferDesc);
+        }
 
         // Upload vertex/index data into a single contiguous GPU buffer
         ImDrawVert* vtx_dst = nullptr;
         ImDrawIdx* idx_dst = nullptr;
-        VkResult err = vkMapMemory(v->Device->GetVkDevice(), rb->VertexBufferMemory, 0, rb->VertexBufferSize, 0, reinterpret_cast<void**>(&vtx_dst));
-        CheckVkResult(err);
-        err = vkMapMemory(v->Device->GetVkDevice(), rb->IndexBufferMemory, 0, rb->IndexBufferSize, 0, reinterpret_cast<void**>(&idx_dst));
-        CheckVkResult(err);
+        const TRAP::Graphics::RendererAPI::ReadRange vtxReadRange{.Offset = 0, .Range = vertex_size};
+        const TRAP::Graphics::RendererAPI::ReadRange idxReadRange{.Offset = 0, .Range = index_size};
+        rb->VertexBuffer->MapBuffer(&vtxReadRange);
+        rb->IndexBuffer->MapBuffer(&idxReadRange);
+        vtx_dst = reinterpret_cast<ImDrawVert*>(rb->VertexBuffer->GetCPUMappedAddress());
+        idx_dst = reinterpret_cast<ImDrawIdx*>(rb->IndexBuffer->GetCPUMappedAddress());
         for (int n = 0; n < draw_data->CmdListsCount; n++)
         {
             const ImDrawList* const cmd_list = draw_data->CmdLists[n];
@@ -1730,29 +1612,8 @@ void ImGui_ImplVulkan_RenderDrawData(const ImDrawData* const draw_data, VkComman
             vtx_dst += cmd_list->VtxBuffer.Size;
             idx_dst += cmd_list->IdxBuffer.Size;
         }
-        const std::array<VkMappedMemoryRange, 2> range
-        {
-            VkMappedMemoryRange
-            {
-                .sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
-                .pNext = nullptr,
-                .memory = rb->VertexBufferMemory,
-                .offset = 0,
-                .size = VK_WHOLE_SIZE
-            },
-            VkMappedMemoryRange
-            {
-                .sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
-                .pNext = nullptr,
-                .memory = rb->IndexBufferMemory,
-                .offset = 0,
-                .size = VK_WHOLE_SIZE
-            }
-        };
-        err = vkFlushMappedMemoryRanges(v->Device->GetVkDevice(), 2, range.data());
-        CheckVkResult(err);
-        vkUnmapMemory(v->Device->GetVkDevice(), rb->VertexBufferMemory);
-        vkUnmapMemory(v->Device->GetVkDevice(), rb->IndexBufferMemory);
+        rb->IndexBuffer->UnMapBuffer();
+        rb->VertexBuffer->UnMapBuffer();
     }
 
     // Setup desired Vulkan state
@@ -1800,13 +1661,7 @@ void ImGui_ImplVulkan_RenderDrawData(const ImDrawData* const draw_data, VkComman
                     continue;
 
                 // Apply scissor/clipping rectangle
-                const VkRect2D scissor
-                {
-                    .offset = VkOffset2D{.x = NumericCast<int32_t>(clip_min.x), .y = NumericCast<int32_t>(clip_min.y)},
-                    .extent = VkExtent2D{.width = NumericCast<uint32_t>(TRAP::Math::Abs(clip_max.x - clip_min.x)),
-                                         .height = NumericCast<uint32_t>(TRAP::Math::Abs(clip_max.y - clip_min.y))}
-                };
-                vkCmdSetScissor(command_buffer, 0, 1, &scissor);
+                command_buffer->SetScissor(NumericCast<uint32_t>(clip_min.x), NumericCast<uint32_t>(clip_min.y), NumericCast<uint32_t>(TRAP::Math::Abs(clip_max.x - clip_min.x)), NumericCast<uint32_t>(TRAP::Math::Abs(clip_max.y - clip_min.y)));
 
                 // Bind descriptorset with font or user texture
                 VkDescriptorSet descSet = static_cast<VkDescriptorSet>(pcmd->TextureId);
@@ -1817,10 +1672,10 @@ void ImGui_ImplVulkan_RenderDrawData(const ImDrawData* const draw_data, VkComman
                     TRAP_ASSERT(pcmd->TextureId == static_cast<ImTextureID>(bd->FontDescriptorSet), "ImGuiVulkanBackend::ImGui_ImplVulkan_RenderDrawData(): ImTextureID must be at least 64 bits!");
                     descSet = bd->FontDescriptorSet;
                 }
-                vkCmdBindDescriptorSets(command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, bd->PipelineLayout, 0, 1, &descSet, 0, nullptr);
+                vkCmdBindDescriptorSets(command_buffer->GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, bd->PipelineLayout, 0, 1, &descSet, 0, nullptr);
 
                 // Draw
-                vkCmdDrawIndexed(command_buffer, pcmd->ElemCount, 1u, pcmd->IdxOffset + global_idx_offset, NumericCast<int32_t>(pcmd->VtxOffset) + global_vtx_offset, 0u);
+                command_buffer->DrawIndexed(pcmd->ElemCount, pcmd->IdxOffset + global_idx_offset, NumericCast<int32_t>(pcmd->VtxOffset) + global_vtx_offset);
             }
         }
         global_idx_offset += NumericCast<uint32_t>(cmd_list->IdxBuffer.Size);
@@ -1834,13 +1689,12 @@ void ImGui_ImplVulkan_RenderDrawData(const ImDrawData* const draw_data, VkComman
     // If you use VK_DYNAMIC_STATE_VIEWPORT or VK_DYNAMIC_STATE_SCISSOR you are responsible for setting the values before rendering.
     // In theory we should aim to backup/restore those values but I am not sure this is possible.
     // We perform a call to vkCmdSetScissor() to set back a full viewport which is likely to fix things for 99% users but technically this is not perfect. (See github #4644)
-    const VkRect2D scissor{.offset = VkOffset2D{.x = 0, .y = 0}, .extent = VkExtent2D{ .width = NumericCast<uint32_t>(fb_width), .height = NumericCast<uint32_t>(fb_height) } };
-    vkCmdSetScissor(command_buffer, 0, 1, &scissor);
+    command_buffer->SetScissor(0, 0, NumericCast<uint32_t>(fb_width), NumericCast<uint32_t>(fb_height));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui_ImplVulkan_UploadFontsTexture()
+void ImGui::INTERNAL::Vulkan::UploadFontsTexture()
 {
     ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -1851,8 +1705,7 @@ void ImGui_ImplVulkan_UploadFontsTexture()
     //Execute a GPU command to upload ImGui font textures
     TRAP::Graphics::CommandBuffer* const cmd = viewportData.GraphicCommandPools[viewportData.ImageIndex]->AllocateCommandBuffer(false);
     cmd->Begin();
-    CreateFontsTexture(dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
-                                        (cmd)->GetVkCommandBuffer());
+    CreateFontsTexture(dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>(cmd));
     cmd->End();
 
     const TRAP::Ref<TRAP::Graphics::Fence> submitFence = TRAP::Graphics::Fence::Create();
@@ -1865,7 +1718,7 @@ void ImGui_ImplVulkan_UploadFontsTexture()
     };
 
     ImGui_ImplVulkan_Data* const bd = GetBackendData();
-    const ImGui_ImplVulkan_InitInfo* const v = &bd->VulkanInitInfo;
+    const InitInfo* const v = &bd->VulkanInitInfo;
 
     v->Queue->Submit(submitDesc);
     submitFence->Wait();
@@ -1874,27 +1727,18 @@ void ImGui_ImplVulkan_UploadFontsTexture()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui_ImplVulkan_DestroyFontUploadObjects()
+void ImGui::INTERNAL::Vulkan::DestroyFontUploadObjects()
 {
     ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
     ImGui_ImplVulkan_Data* const bd = GetBackendData();
-    const ImGui_ImplVulkan_InitInfo* const v = &bd->VulkanInitInfo;
     if (bd->UploadBuffer != VK_NULL_HANDLE)
-    {
-        vkDestroyBuffer(v->Device->GetVkDevice(), bd->UploadBuffer, v->Allocator);
-        bd->UploadBuffer = VK_NULL_HANDLE;
-    }
-    if (bd->UploadBufferMemory != VK_NULL_HANDLE)
-    {
-        vkFreeMemory(v->Device->GetVkDevice(), bd->UploadBufferMemory, v->Allocator);
-        bd->UploadBufferMemory = VK_NULL_HANDLE;
-    }
+        bd->UploadBuffer.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui_ImplVulkan_Init(const ImGui_ImplVulkan_InitInfo* const info, VkRenderPass render_pass)
+void ImGui::INTERNAL::Vulkan::Init(const InitInfo* const info, VkRenderPass render_pass)
 {
     ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -1937,7 +1781,7 @@ void ImGui_ImplVulkan_Init(const ImGui_ImplVulkan_InitInfo* const info, VkRender
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui_ImplVulkan_Shutdown()
+void ImGui::INTERNAL::Vulkan::Shutdown()
 {
     ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -1945,7 +1789,7 @@ void ImGui_ImplVulkan_Shutdown()
 
     TRAP_ASSERT(bd != nullptr, "ImGuiVulkanBackend::ImGui_ImplVulkan_Shutdown(): Renderer backend is already shutdown!");
     ImGuiIO& io = ImGui::GetIO();
-    const ImGui_ImplVulkan_InitInfo* const v = &bd->VulkanInitInfo;
+    const InitInfo* const v = &bd->VulkanInitInfo;
 
     // First destroy objects in all viewports
     DestroyDeviceObjects();
@@ -1963,7 +1807,7 @@ void ImGui_ImplVulkan_Shutdown()
     // Clean up windows
     ShutdownPlatformInterface();
 
-    ImGui_ImplVulkan_ClearCache();
+    ClearCache();
 
     io.BackendRendererName = nullptr;
     io.BackendRendererUserData = nullptr;
@@ -1972,7 +1816,7 @@ void ImGui_ImplVulkan_Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui_ImplVulkan_NewFrame()
+void ImGui::INTERNAL::Vulkan::NewFrame()
 {
     ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1982,7 +1826,9 @@ void ImGui_ImplVulkan_NewFrame()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] ImTextureID ImGui_ImplVulkan_AddTexture(VkSampler sampler, VkImageView image_view, const VkImageLayout image_layout)
+[[nodiscard]] ImTextureID ImGui::INTERNAL::Vulkan::AddTexture(const TRAP::Ref<TRAP::Graphics::API::VulkanSampler>& sampler,
+                                                              VkImageView image_view,
+                                                              const VkImageLayout image_layout)
 {
     ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -1990,13 +1836,13 @@ void ImGui_ImplVulkan_NewFrame()
     if(it != s_VulkanTextureCache.end())
         return reinterpret_cast<ImTextureID>(it->second.DescriptorSet);
 
-    VkDetails& vulkanDetails = s_VulkanTextureCache[reinterpret_cast<std::uintptr_t>(image_view)];
+    VulkanTextureCacheEntry& vulkanDetails = s_VulkanTextureCache[reinterpret_cast<std::uintptr_t>(image_view)];
     vulkanDetails.Sampler = sampler;
     vulkanDetails.ImageView = image_view;
     vulkanDetails.ImageLayout = image_layout;
 
     const ImGui_ImplVulkan_Data* const bd = GetBackendData();
-    const ImGui_ImplVulkan_InitInfo* const v = &bd->VulkanInitInfo;
+    const InitInfo* const v = &bd->VulkanInitInfo;
     VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
 
     // Create Descriptor Set:
@@ -2017,14 +1863,14 @@ void ImGui_ImplVulkan_NewFrame()
     }
 
     vulkanDetails.DescriptorSet = descriptorSet;
-    ImGui_ImplVulkan_UpdateTextureInfo(vulkanDetails.DescriptorSet, vulkanDetails.Sampler, vulkanDetails.ImageView, vulkanDetails.ImageLayout);
+    UpdateTextureInfo(vulkanDetails.DescriptorSet, vulkanDetails.Sampler, vulkanDetails.ImageView, vulkanDetails.ImageLayout);
 
     return reinterpret_cast<ImTextureID>(vulkanDetails.DescriptorSet);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui_ImplVulkan_RemoveTexture(VkImageView image_view)
+void ImGui::INTERNAL::Vulkan::RemoveTexture(VkImageView image_view)
 {
     const auto it = s_VulkanTextureCache.find(reinterpret_cast<std::uintptr_t>(image_view));
 
@@ -2036,19 +1882,21 @@ void ImGui_ImplVulkan_RemoveTexture(VkImageView image_view)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] ImTextureID ImGui_ImplVulkan_UpdateTextureInfo(VkDescriptorSet descriptorSet, VkSampler sampler,
-                                                             VkImageView image_view, const VkImageLayout image_layout)
+[[nodiscard]] ImTextureID ImGui::INTERNAL::Vulkan::UpdateTextureInfo(VkDescriptorSet descriptorSet,
+                                                                     const TRAP::Ref<TRAP::Graphics::API::VulkanSampler>& sampler,
+                                                                     VkImageView image_view,
+                                                                     const VkImageLayout image_layout)
 {
     ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
     const ImGui_ImplVulkan_Data* const bd = GetBackendData();
-    const ImGui_ImplVulkan_InitInfo* const v = &bd->VulkanInitInfo;
+    const InitInfo* const v = &bd->VulkanInitInfo;
 
     // Update Descriptor Set:
     {
         const VkDescriptorImageInfo imageInfo
         {
-            .sampler = sampler,
+            .sampler = sampler->GetVkSampler(),
             .imageView = image_view,
             .imageLayout = image_layout
         };
@@ -2073,7 +1921,7 @@ void ImGui_ImplVulkan_RemoveTexture(VkImageView image_view)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui_ImplVulkan_ClearCache() noexcept
+void ImGui::INTERNAL::Vulkan::ClearCache() noexcept
 {
     ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -2082,13 +1930,13 @@ void ImGui_ImplVulkan_ClearCache() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui_ImplVulkan_SetMSAASamples(const VkSampleCountFlagBits sampleCount)
+void ImGui::INTERNAL::Vulkan::SetMSAASamples(const VkSampleCountFlagBits sampleCount)
 {
     ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
 	const auto& viewportData = TRAP::Graphics::RendererAPI::GetViewportData(TRAP::Application::GetWindow());
     ImGui_ImplVulkan_Data* const bd = GetBackendData();
-    ImGui_ImplVulkan_InitInfo* const v = &bd->VulkanInitInfo;
+    InitInfo* const v = &bd->VulkanInitInfo;
 
     if(sampleCount == v->MSAASamples)
         return;

@@ -289,24 +289,10 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// Create a Vulkan render pass create info.
 	/// </summary>
 	/// <param name="attachmentDescriptions">List of Vulkan attachment descriptions.</param>
-	/// <returns>VkRenderPassCreateInfo.</returns>
-	[[nodiscard]] constexpr VkRenderPassCreateInfo RenderPassCreateInfo(const std::vector<VkAttachmentDescription>& attachmentDescriptions) noexcept;
-
-	/// <summary>
-	/// Create a Vulkan render pass create info.
-	/// </summary>
-	/// <param name="attachmentDescriptions">List of Vulkan attachment descriptions.</param>
 	/// <param name="subpassDescription">Vulkan subpass description.</param>
 	/// <returns>VkRenderPassCreateInfo2KHR.</returns>
 	[[nodiscard]] constexpr VkRenderPassCreateInfo2KHR RenderPassCreateInfo(const std::vector<VkAttachmentDescription2KHR>& attachmentDescriptions,
 		                                                                    const VkSubpassDescription2KHR& subpassDescription) noexcept;
-
-	/// <summary>
-	/// Create a Vulkan render pass create info.
-	/// </summary>
-	/// <param name="attachmentDescriptions">List of Vulkan attachment descriptions.</param>
-	/// <returns>VkRenderPassCreateInfo2KHR.</returns>
-	[[nodiscard]] constexpr VkRenderPassCreateInfo2KHR RenderPassCreateInfo(const std::vector<VkAttachmentDescription2KHR>& attachmentDescriptions) noexcept;
 
 	/// <summary>
 	/// Create a Vulkan render pass begin info.
@@ -862,24 +848,6 @@ namespace TRAP::Graphics::API::VulkanInits
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription>& attachmentDescriptions) noexcept
-{
-	return VkRenderPassCreateInfo
-	{
-		.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
-		.pNext = nullptr,
-		.flags = 0,
-		.attachmentCount = NumericCast<uint32_t>(attachmentDescriptions.size()),
-		.pAttachments = attachmentDescriptions.data(),
-		.subpassCount = 0,
-		.pSubpasses = nullptr,
-		.dependencyCount = 0,
-		.pDependencies = nullptr
-	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] constexpr VkRenderPassCreateInfo2KHR TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription2KHR>& attachmentDescriptions,
 	                                                                                                      const VkSubpassDescription2KHR& subpassDescription) noexcept
 {
@@ -892,26 +860,6 @@ namespace TRAP::Graphics::API::VulkanInits
 		.pAttachments = attachmentDescriptions.data(),
 		.subpassCount = 1,
 		.pSubpasses = &subpassDescription,
-		.dependencyCount = 0,
-		.pDependencies = nullptr,
-		.correlatedViewMaskCount = 0,
-		.pCorrelatedViewMasks = nullptr
-	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr VkRenderPassCreateInfo2KHR TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription2KHR>& attachmentDescriptions) noexcept
-{
-	return VkRenderPassCreateInfo2KHR
-	{
-		.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2_KHR,
-		.pNext = nullptr,
-		.flags = 0,
-		.attachmentCount = NumericCast<uint32_t>(attachmentDescriptions.size()),
-		.pAttachments = attachmentDescriptions.data(),
-		.subpassCount = 0,
-		.pSubpasses = nullptr,
 		.dependencyCount = 0,
 		.pDependencies = nullptr,
 		.correlatedViewMaskCount = 0,
