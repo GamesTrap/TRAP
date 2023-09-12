@@ -426,7 +426,7 @@ void ImGui::Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const TRAP::R
 	{
 		const auto vkImage = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(image);
 		const auto vkSampler = dynamic_pointer_cast<TRAP::Graphics::API::VulkanSampler>(sampler);
-		ImTextureID texID = ImGui::INTERNAL::Vulkan::AddTexture(vkSampler, vkImage->GetSRVVkImageView(),
+		ImTextureID texID = ImGui::INTERNAL::Vulkan::AddTexture(vkSampler, vkImage,
 		                                                        VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		ImGui::Image(texID, size, uv0, uv1, tint_col, border_col);
 	}
@@ -446,8 +446,7 @@ void ImGui::Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const ImVec2&
 	{
 		const auto vkImage = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(image);
 		ImTextureID texID = ImGui::INTERNAL::Vulkan::AddTexture(TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler,
-		                                                vkImage->GetSRVVkImageView(),
-														VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		                                                        vkImage, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		ImGui::Image(texID, size, uv0, uv1, tint_col, border_col);
 	}
 }
@@ -466,8 +465,7 @@ bool ImGui::ImageButton(const TRAP::Ref<TRAP::Graphics::Texture>& image, const I
 	{
 		const auto vkImage = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(image);
 		ImTextureID texID = ImGui::INTERNAL::Vulkan::AddTexture(TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler,
-												        vkImage->GetSRVVkImageView(),
-		                                                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+												                vkImage, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 		VkImageView imgView = vkImage->GetSRVVkImageView();
 		std::size_t imgViewHash = 0;

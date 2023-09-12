@@ -74,6 +74,7 @@ namespace TRAP::Graphics::API
     class VulkanPipelineCache;
     class VulkanSampler;
     class VulkanCommandBuffer;
+    class VulkanTexture;
 };
 
 namespace ImGui::INTERNAL::Vulkan
@@ -109,8 +110,8 @@ namespace ImGui::INTERNAL::Vulkan
                   IMGUI_IMPL_API void        RenderDrawData(const ImDrawData* draw_data, const TRAP::Graphics::API::VulkanCommandBuffer* command_buffer, VkPipeline pipeline = VK_NULL_HANDLE);
                   IMGUI_IMPL_API void        UploadFontsTexture();
                   IMGUI_IMPL_API void        DestroyFontUploadObjects();
-    [[nodiscard]] IMGUI_IMPL_API ImTextureID AddTexture(const TRAP::Ref<TRAP::Graphics::API::VulkanSampler>& sampler, VkImageView image_view, VkImageLayout image_layout);
-                  IMGUI_IMPL_API void        RemoveTexture(VkImageView image_view);
+    [[nodiscard]] IMGUI_IMPL_API ImTextureID AddTexture(const TRAP::Ref<TRAP::Graphics::API::VulkanSampler>& sampler, const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& image, VkImageLayout image_layout);
+                  IMGUI_IMPL_API void        RemoveTexture(const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& image_view);
                   IMGUI_IMPL_API ImTextureID UpdateTextureInfo(VkDescriptorSet descriptorSet, const TRAP::Ref<TRAP::Graphics::API::VulkanSampler>& sampler, VkImageView image_view, VkImageLayout image_layout);
                   IMGUI_IMPL_API void        ClearCache() noexcept;
                   IMGUI_IMPL_API void        SetMSAASamples(VkSampleCountFlagBits sampleCount);

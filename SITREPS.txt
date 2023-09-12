@@ -4397,3 +4397,7 @@ SITREP 09/10/2023|23w36b2
 SITREP 09/11/2023|23w37a1
     - Changed TRAP Engine version to 23w37a1(0.9.91)
     - ImGuiVulkanBackend Replaced raw Vulkan with TRAP Vulkan classes ~>120 mins
+
+SITREP 09/13/2023|23w37a2
+    - Changed TRAP Engine version to 23w37a2(0.9.92)
+    - ImGuiVulkanBackend Texture cache now uses VulkanTexture class ~<5 mins

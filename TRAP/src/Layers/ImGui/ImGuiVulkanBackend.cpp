@@ -276,11 +276,10 @@ namespace
     struct VulkanTextureCacheEntry
     {
         TRAP::Ref<TRAP::Graphics::API::VulkanSampler> Sampler;
-        VkImageView ImageView;
         VkImageLayout ImageLayout;
         VkDescriptorSet DescriptorSet;
     };
-    std::unordered_map<std::uintptr_t, VulkanTextureCacheEntry> s_VulkanTextureCache{};
+    std::unordered_map<TRAP::Ref<TRAP::Graphics::API::VulkanTexture>, VulkanTextureCacheEntry> s_VulkanTextureCache{};
 
     //-------------------------------------------------------------------------------------------------------------------//
     //-------------------------------------------------------------------------------------------------------------------//
@@ -666,7 +665,7 @@ namespace
         bd->FontImage->Init(fontDesc);
 
         // Create the Descriptor Set:
-        bd->FontDescriptorSet = static_cast<VkDescriptorSet>(AddTexture(bd->FontSampler, bd->FontImage->GetSRVVkImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
+        bd->FontDescriptorSet = static_cast<VkDescriptorSet>(AddTexture(bd->FontSampler, bd->FontImage, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
 
         // Create the Upload Buffer:
         {
@@ -1333,22 +1332,24 @@ namespace
             if(v->UseDynamicRendering)
             {
                 //Transition swapchain image to a layout suitable for drawing.
-                const VkImageMemoryBarrier barrier
+                std::vector<TRAP::Graphics::RendererAPI::TextureBarrier> barriers
                 {
-                    .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
-                    .pNext = nullptr,
-                    .srcAccessMask = VK_ACCESS_NONE_KHR,
-                    .dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-                    .oldLayout = VK_IMAGE_LAYOUT_UNDEFINED,
-                    .newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-                    .srcQueueFamilyIndex = 0,
-                    .dstQueueFamilyIndex = 0,
-                    .image = dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(fd->Backbuffer->GetTexture())->GetVkImage(),
-                    .subresourceRange = VkImageSubresourceRange{.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT, .baseMipLevel = 0, .levelCount = 1, .baseArrayLayer = 0, .layerCount = 1}
+                    TRAP::Graphics::RendererAPI::TextureBarrier
+                    {
+                        .Texture = dynamic_cast<TRAP::Graphics::Texture*>(fd->Backbuffer->GetTexture().get()),
+                        .CurrentState = TRAP::Graphics::RendererAPI::ResourceState::Undefined,
+                        .NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource,
+                        .BeginOnly = false,
+                        .EndOnly = false,
+                        .Acquire = false,
+                        .Release = false,
+                        .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
+                        .SubresourceBarrier = false,
+                        .MipLevel = 0,
+                        .ArrayLayer = 0
+                    }
                 };
-                vkCmdPipelineBarrier(fd->CommandBuffer->GetVkCommandBuffer(), VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                                    VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, 0, 0,
-                                    nullptr, 0, nullptr, 1, &barrier);
+                fd->CommandBuffer->ResourceBarrier(nullptr, &barriers, nullptr);
 
                 const VkRenderingAttachmentInfo attachmentInfo =
                 {
@@ -1405,21 +1406,24 @@ namespace
                 vkCmdEndRenderingKHR(fd->CommandBuffer->GetVkCommandBuffer());
 
                 //Transition image to a layout suitable for presentation
-                const VkImageMemoryBarrier barrier
+                std::vector<TRAP::Graphics::RendererAPI::TextureBarrier> barriers
                 {
-                    .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
-                    .pNext = nullptr,
-                    .srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-                    .dstAccessMask = VK_ACCESS_NONE_KHR,
-                    .oldLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-                    .newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
-                    .srcQueueFamilyIndex = 0,
-                    .dstQueueFamilyIndex = 0,
-                    .image = dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(fd->Backbuffer->GetTexture())->GetVkImage(),
-                    .subresourceRange = VkImageSubresourceRange{.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT, .baseMipLevel = 0, .levelCount = 1, .baseArrayLayer = 0, .layerCount = 0}
+                    TRAP::Graphics::RendererAPI::TextureBarrier
+                    {
+                        .Texture = dynamic_cast<TRAP::Graphics::Texture*>(fd->Backbuffer->GetTexture().get()),
+                        .CurrentState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource,
+                        .NewState = TRAP::Graphics::RendererAPI::ResourceState::Present,
+                        .BeginOnly = false,
+                        .EndOnly = false,
+                        .Acquire = false,
+                        .Release = false,
+                        .QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics,
+                        .SubresourceBarrier = false,
+                        .MipLevel = 0,
+                        .ArrayLayer = 0
+                    }
                 };
-                vkCmdPipelineBarrier(fd->CommandBuffer->GetVkCommandBuffer(), VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                                    VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier);
+                fd->CommandBuffer->ResourceBarrier(nullptr, &barriers, nullptr);
             }
             else
     #endif /*IMGUI_IMPL_VULKAN_HAS_DYNAMIC_RENDERING*/
@@ -1827,18 +1831,17 @@ void ImGui::INTERNAL::Vulkan::NewFrame()
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] ImTextureID ImGui::INTERNAL::Vulkan::AddTexture(const TRAP::Ref<TRAP::Graphics::API::VulkanSampler>& sampler,
-                                                              VkImageView image_view,
+                                                              const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& image,
                                                               const VkImageLayout image_layout)
 {
     ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
-    const auto it = s_VulkanTextureCache.find(reinterpret_cast<std::uintptr_t>(image_view));
+    const auto it = s_VulkanTextureCache.find(image);
     if(it != s_VulkanTextureCache.end())
         return reinterpret_cast<ImTextureID>(it->second.DescriptorSet);
 
-    VulkanTextureCacheEntry& vulkanDetails = s_VulkanTextureCache[reinterpret_cast<std::uintptr_t>(image_view)];
+    VulkanTextureCacheEntry& vulkanDetails = s_VulkanTextureCache[image];
     vulkanDetails.Sampler = sampler;
-    vulkanDetails.ImageView = image_view;
     vulkanDetails.ImageLayout = image_layout;
 
     const ImGui_ImplVulkan_Data* const bd = GetBackendData();
@@ -1863,16 +1866,16 @@ void ImGui::INTERNAL::Vulkan::NewFrame()
     }
 
     vulkanDetails.DescriptorSet = descriptorSet;
-    UpdateTextureInfo(vulkanDetails.DescriptorSet, vulkanDetails.Sampler, vulkanDetails.ImageView, vulkanDetails.ImageLayout);
+    UpdateTextureInfo(vulkanDetails.DescriptorSet, vulkanDetails.Sampler, image->GetSRVVkImageView(), vulkanDetails.ImageLayout);
 
     return reinterpret_cast<ImTextureID>(vulkanDetails.DescriptorSet);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui::INTERNAL::Vulkan::RemoveTexture(VkImageView image_view)
+void ImGui::INTERNAL::Vulkan::RemoveTexture(const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& image)
 {
-    const auto it = s_VulkanTextureCache.find(reinterpret_cast<std::uintptr_t>(image_view));
+    const auto it = s_VulkanTextureCache.find(image);
 
     if(it == s_VulkanTextureCache.end())
         return;
