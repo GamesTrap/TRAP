@@ -879,7 +879,7 @@ namespace
 		vd->WindowOwned = true;
 		viewport->PlatformHandle = static_cast<void*>(vd->Window);
 	#ifdef TRAP_PLATFORM_WINDOWS
-		viewport->PlatformHandleRaw = WindowingAPI::GetWin32Window(*vd->Window);
+		viewport->PlatformHandleRaw = TRAP::INTERNAL::WindowingAPI::GetWin32Window(*vd->Window);
 	#endif /*TRAP_PLATFORM_WINDOWS*/
 		TRAP::INTERNAL::WindowingAPI::SetWindowPos(*vd->Window, NumericCast<int32_t>(viewport->Pos.x),
 								                   NumericCast<int32_t>(viewport->Pos.y));
