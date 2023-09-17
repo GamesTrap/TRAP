@@ -82,15 +82,24 @@ namespace
 {
 	[[nodiscard]] int32_t InputTextCallback(ImGuiInputTextCallbackData* const data)
 	{
+		TRAP_ASSERT(data != nullptr, "ImGuiLayer::InputTextCallback(): data is nullptr!");
+		if(data == nullptr)
+			return 0;
+
 		const InputTextCallbackUserData* const userData = static_cast<InputTextCallbackUserData*>(data->UserData);
+		TRAP_ASSERT(userData != nullptr, "ImGuiLayer::InputTextCallback(): userData is nullptr!");
+		if(userData == nullptr)
+			return 0;
+
 		if(data->EventFlag == ImGuiInputTextFlags_CallbackResize)
 		{
 			//Resize string callback
 			//If for some reason we refuse the new length (BufTextLen) and/or capacity (BufSize) we need to set them back to what we want.
-			std::string* const str = userData->Str;
-			TRAP_ASSERT(data->Buf == str->c_str(), "ImGuiLayer::InputTextCallback(): String pointers data->Buf and str->c_str() are the same!");
-			str->resize(NumericCast<std::size_t>(data->BufTextLen));
-			data->Buf = str->data();
+			TRAP_ASSERT(userData->Str != nullptr, "ImGuiLayer::InputTextCallback(): userData->Str is nullptr!");
+			std::string& str = *userData->Str;
+			TRAP_ASSERT(data->Buf == str.c_str(), "ImGuiLayer::InputTextCallback(): String pointers data->Buf and str.c_str() aren't the same!");
+			str.resize(NumericCast<std::size_t>(data->BufTextLen));
+			data->Buf = str.data();
 		}
 		else if(userData->ChainCallback != nullptr)
 		{
@@ -178,6 +187,7 @@ void TRAP::ImGuiLayer::OnAttach()
 		(
 			TRAP::Graphics::RendererAPI::GetRenderer()
 		);
+		TRAP_ASSERT(renderer != nullptr, "ImGuiLayer::OnAttach(): renderer is nullptr!");
 
 		const auto tempFolder = TRAP::FileSystem::GetGameTempFolderPath();
 		if(tempFolder)
@@ -224,8 +234,9 @@ void TRAP::ImGuiLayer::OnAttach()
 		(
 			viewportData.GraphicCommandBuffers[viewportData.ImageIndex]
 		);
+		TRAP_ASSERT(cmdBuffer != nullptr, "ImGuiLayer::OnAttach(): cmdBuffer is nullptr!");
 
-		ImGui::INTERNAL::Vulkan::Init(&initInfo, cmdBuffer->GetActiveVkRenderPass());
+		ImGui::INTERNAL::Vulkan::Init(initInfo, cmdBuffer->GetActiveVkRenderPass());
 
 		ImGui::INTERNAL::Vulkan::UploadFontsTexture();
 
@@ -286,6 +297,7 @@ void TRAP::ImGuiLayer::Begin()
 		(
 			viewportData.GraphicCommandBuffers[viewportData.ImageIndex]
 		);
+		TRAP_ASSERT(vkCmdBuffer != nullptr, "ImGuiLayer::Begin(): vkCmdBuffer is nullptr!");
 		TRAP::Graphics::AntiAliasing aaMethod = TRAP::Graphics::AntiAliasing::Off;
 		TRAP::Graphics::SampleCount aaSamples = TRAP::Graphics::SampleCount::Two;
 		TRAP::Graphics::RenderCommand::GetAntiAliasing(aaMethod, aaSamples);
@@ -337,7 +349,11 @@ void TRAP::ImGuiLayer::End()
 				(
 					viewportData.GraphicCommandBuffers[viewportData.ImageIndex]
 				);
-			ImGui::INTERNAL::Vulkan::RenderDrawData(ImGui::GetDrawData(), cmdBuffer);
+
+			TRAP_ASSERT(ImGui::GetDrawData() != nullptr, "ImGuiLayer::End(): ImGui::GetDrawData() is nullptr!");
+			TRAP_ASSERT(cmdBuffer != nullptr, "ImGuiLayer::End(): cmdBuffer is nullptr!");
+			if(const ImDrawData* const drawData = ImGui::GetDrawData(); cmdBuffer != nullptr && drawData != nullptr)
+				ImGui::INTERNAL::Vulkan::RenderDrawData(*drawData, *cmdBuffer);
 		}
 	}
 
@@ -419,6 +435,7 @@ void ImGui::Image(const TRAP::Ref<TRAP::Graphics::Texture>& image, const TRAP::R
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
+	TRAP_ASSERT(sampler != nullptr, "ImGui::Image(): Sampler is nullptr!");
 	TRAP_ASSERT(image != nullptr, "ImGui::Image(): Image is nullptr!");
 	TRAP_ASSERT(image->GetType() == TRAP::Graphics::TextureType::Texture2D, "ImGui::Image(): Image is not a Texture2D!");
 

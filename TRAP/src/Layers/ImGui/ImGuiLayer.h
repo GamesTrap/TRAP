@@ -12,7 +12,6 @@
 	#pragma warning(pop)
 #endif /*_MSC_VER*/
 
-#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 #include "Core/Base.h"
 #include "Layers/Layer.h"
 
