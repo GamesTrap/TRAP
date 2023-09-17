@@ -536,7 +536,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetViewport(const float x, const 
 
 	VkViewport viewport;
 	viewport.x = x;
-	viewport.y = y + height;
+	viewport.y = height >= 0 ? y + height : y;
 	viewport.width = width;
 	viewport.height = -height;
 	viewport.minDepth = minDepth;

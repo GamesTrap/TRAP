@@ -3,14 +3,14 @@
 
 #include "Graphics/API/Vulkan/Objects/VulkanFence.h"
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::Fence> TRAP::Graphics::Fence::Create()
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::Fence> TRAP::Graphics::Fence::Create(const bool signalled)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
-		return TRAP::MakeRef<API::VulkanFence>();
+		return TRAP::MakeRef<API::VulkanFence>(signalled);
 
 	case RenderAPI::NONE:
 		return nullptr;

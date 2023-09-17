@@ -197,7 +197,7 @@ Dependencies/SteamworksSDK/sdk/**
 Dependencies/NVIDIA-Reflex/**
 !Dependencies/NVIDIA-Reflex/Install.md
 !Dependencies/NVIDIA-Reflex/license.txt
-TRAP.TODO
+*.TODO
 compile_commands.json
 .modules/generatedocs/api/**
 .modules/generatedocs/doxygen_docs/**

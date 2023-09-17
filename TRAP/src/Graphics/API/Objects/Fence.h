@@ -14,7 +14,8 @@ namespace TRAP::Graphics
 		/// Fence is not signaled.
 		/// </summary>
 		/// <returns>Created fence.</returns>
-		[[nodiscard]] static TRAP::Ref<Fence> Create();
+		/// <param name="signalled">Whether the Fence should be in signalled state or not. Default: Not signalled.</param>
+		[[nodiscard]] static TRAP::Ref<Fence> Create(bool signalled = false);
 
 		/// <summary>
 		/// Destructor.

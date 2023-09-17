@@ -65,47 +65,57 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "Core/Base.h"
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
-#include "Graphics/API/Vulkan/Objects/VulkanInstance.h"
-#include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
-#include "Graphics/API/Vulkan/Objects/VulkanPipelineCache.h"
 
-// Initialization data, for ImGui_ImplVulkan_Init()
-// [Please zero-clear before use!]
-struct ImGui_ImplVulkan_InitInfo
+namespace TRAP::Graphics::API
 {
-    using PFN_CheckVkResultFn = void(*)(VkResult err);
-
-    TRAP::Ref<TRAP::Graphics::API::VulkanInstance> Instance = nullptr;
-    TRAP::Ref<TRAP::Graphics::API::VulkanDevice> Device = nullptr;
-    TRAP::Ref<TRAP::Graphics::API::VulkanQueue> Queue = nullptr;
-    TRAP::Ref<TRAP::Graphics::API::VulkanPipelineCache> PipelineCache = nullptr;
-    std::vector<VkDescriptorPoolSize> DescriptorPoolSizes{};
-    VkDescriptorPool                  DescriptorPool = VK_NULL_HANDLE;
-    uint32_t                          MinImageCount = 2;                   // >= 2
-    uint32_t                          ImageCount = 2;                      // >= MinImageCount
-    VkSampleCountFlagBits             MSAASamples = VK_SAMPLE_COUNT_1_BIT; // >= VK_SAMPLE_COUNT_1_BIT (0 -> default to VK_SAMPLE_COUNT_1_BIT)
-
-    //Dynamic Rendering (Optional)
-    bool UseDynamicRendering = false; //Need to explicitly enable VK_KHR_dynamic_rendering extension to use this, even for Vulkan 1.3.
-    VkFormat ColorAttachmentFormat = VK_FORMAT_UNDEFINED; //Required for dynamic rendering
-
-    //Allocation, Debugging
-    const VkAllocationCallbacks* Allocator = nullptr;
-    PFN_CheckVkResultFn CheckVkResultFn = nullptr;
+    class VulkanInstance;
+    class VulkanDevice;
+    class VulkanQueue;
+    class VulkanPipelineCache;
+    class VulkanSampler;
+    class VulkanCommandBuffer;
+    class VulkanTexture;
 };
 
-// Called by user code
-              IMGUI_IMPL_API void        ImGui_ImplVulkan_Init(const ImGui_ImplVulkan_InitInfo* info, VkRenderPass render_pass);
-              IMGUI_IMPL_API void        ImGui_ImplVulkan_Shutdown();
-              IMGUI_IMPL_API void        ImGui_ImplVulkan_NewFrame();
-              IMGUI_IMPL_API void        ImGui_ImplVulkan_RenderDrawData(const ImDrawData* draw_data, VkCommandBuffer command_buffer, VkPipeline pipeline = VK_NULL_HANDLE);
-              IMGUI_IMPL_API void        ImGui_ImplVulkan_UploadFontsTexture();
-              IMGUI_IMPL_API void        ImGui_ImplVulkan_DestroyFontUploadObjects();
-[[nodiscard]] IMGUI_IMPL_API ImTextureID ImGui_ImplVulkan_AddTexture(VkSampler sampler, VkImageView image_view, VkImageLayout image_layout);
-              IMGUI_IMPL_API void        ImGui_ImplVulkan_RemoveTexture(VkImageView image_view);
-              IMGUI_IMPL_API ImTextureID ImGui_ImplVulkan_UpdateTextureInfo(VkDescriptorSet descriptorSet, VkSampler sampler, VkImageView image_view, VkImageLayout image_layout);
-              IMGUI_IMPL_API void        ImGui_ImplVulkan_ClearCache() noexcept;
-              IMGUI_IMPL_API void        ImGui_ImplVulkan_SetMSAASamples(VkSampleCountFlagBits sampleCount);
+namespace ImGui::INTERNAL::Vulkan
+{
+    // Initialization data, for ImGui_ImplVulkan_Init()
+    struct InitInfo
+    {
+        using PFN_CheckVkResultFn = void(*)(VkResult err);
+
+        TRAP::Ref<TRAP::Graphics::API::VulkanInstance> Instance = nullptr;
+        TRAP::Ref<TRAP::Graphics::API::VulkanDevice> Device = nullptr;
+        TRAP::Ref<TRAP::Graphics::API::VulkanQueue> Queue = nullptr;
+        TRAP::Ref<TRAP::Graphics::API::VulkanPipelineCache> PipelineCache = nullptr;
+        std::vector<VkDescriptorPoolSize> DescriptorPoolSizes{};
+        VkDescriptorPool                  DescriptorPool = VK_NULL_HANDLE;
+        uint32_t                          MinImageCount = 2;                   // >= 2
+        uint32_t                          ImageCount = 2;                      // >= MinImageCount
+        VkSampleCountFlagBits             MSAASamples = VK_SAMPLE_COUNT_1_BIT; // >= VK_SAMPLE_COUNT_1_BIT (0 -> default to VK_SAMPLE_COUNT_1_BIT)
+
+        //Dynamic Rendering (Optional)
+        bool UseDynamicRendering = false; //Need to explicitly enable VK_KHR_dynamic_rendering extension to use this, even for Vulkan 1.3.
+        VkFormat ColorAttachmentFormat = VK_FORMAT_UNDEFINED; //Required for dynamic rendering
+
+        //Allocation, Debugging
+        const VkAllocationCallbacks* Allocator = nullptr;
+        PFN_CheckVkResultFn CheckVkResultFn = nullptr;
+    };
+
+    // Called by user code
+                  IMGUI_IMPL_API void        Init(const InitInfo& info, VkRenderPass render_pass);
+                  IMGUI_IMPL_API void        Shutdown();
+                  IMGUI_IMPL_API void        NewFrame();
+                  IMGUI_IMPL_API void        RenderDrawData(const ImDrawData& draw_data, const TRAP::Graphics::API::VulkanCommandBuffer& command_buffer, VkPipeline pipeline = VK_NULL_HANDLE);
+                  IMGUI_IMPL_API void        UploadFontsTexture();
+                  IMGUI_IMPL_API void        DestroyFontUploadObjects();
+    [[nodiscard]] IMGUI_IMPL_API ImTextureID AddTexture(const TRAP::Ref<TRAP::Graphics::API::VulkanSampler>& sampler, const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& image, VkImageLayout image_layout);
+                  IMGUI_IMPL_API void        RemoveTexture(const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& image_view);
+                  IMGUI_IMPL_API ImTextureID UpdateTextureInfo(VkDescriptorSet descriptorSet, const TRAP::Graphics::API::VulkanSampler& sampler, VkImageView image_view, VkImageLayout image_layout);
+                  IMGUI_IMPL_API void        ClearCache() noexcept;
+                  IMGUI_IMPL_API void        SetMSAASamples(VkSampleCountFlagBits sampleCount);
+};
 
 #endif /*TRAP_HEADLESS_MODE*/
 
