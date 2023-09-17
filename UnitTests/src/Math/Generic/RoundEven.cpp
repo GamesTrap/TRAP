@@ -11,9 +11,9 @@ template<typename T>
 requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
 void RunRoundEvenTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr std::array<std::pair<T, T>, 48> values
+    static constexpr std::array<std::pair<T, T>, 48> values
     {
         std::pair<T, T>{T(-1.5f), T(-2.0f)}, std::pair<T, T>{T( 1.5f), T( 2.0f)}, std::pair<T, T>{T(-2.5f), T(-2.0f)},
         std::pair<T, T>{T( 2.5f), T( 2.0f)}, std::pair<T, T>{T(-3.5f), T(-4.0f)}, std::pair<T, T>{T( 3.5f), T( 4.0f)},
@@ -58,10 +58,10 @@ template<typename T>
 requires std::floating_point<T>
 void RunRoundEvenEdgeTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T min = std::numeric_limits<T>::lowest();
+    static constexpr T max = std::numeric_limits<T>::max();
+    static constexpr T min = std::numeric_limits<T>::lowest();
 
     REQUIRE(TRAP::Math::Equal(TRAP::Math::RoundEven(max), max, Epsilon));
     REQUIRE(TRAP::Math::Equal(TRAP::Math::RoundEven(min), min, Epsilon));

@@ -103,12 +103,12 @@ template<typename T>
 requires std::floating_point<T>
 void RunLerpEdgeTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T max = std::numeric_limits<T>::max();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
 
     static_assert(TRAP::Math::Equal(TRAP::Math::Lerp(max, T(100.0f), T(0.5f)), (max / 2.0f), Epsilon));
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Lerp(nan, T(10.0f), T(0.3f))));

@@ -48,40 +48,40 @@ template<typename T>
 requires std::floating_point<T>
 void RunTranslateEdgeTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr T min = std::numeric_limits<T>::lowest();
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T min = std::numeric_limits<T>::lowest();
+    static constexpr T max = std::numeric_limits<T>::max();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
 
     {
-        constexpr auto t = TRAP::Math::Translate(TRAP::Math::tMat4<T>(1.0f), TRAP::Math::tVec3<T>(min, 1.0f, 1.0f));
-        constexpr auto t2 = TRAP::Math::Translate(TRAP::Math::tVec3<T>(min, 1.0f, 1.0f));
+        static constexpr auto t = TRAP::Math::Translate(TRAP::Math::tMat4<T>(1.0f), TRAP::Math::tVec3<T>(min, 1.0f, 1.0f));
+        static constexpr auto t2 = TRAP::Math::Translate(TRAP::Math::tVec3<T>(min, 1.0f, 1.0f));
         if constexpr(std::same_as<T, double>)
         {
-            constexpr TRAP::Math::tMat4<T> expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, -1.7976931348623157e+308, 1.0f, 1.0f, 1.0f);
+            static constexpr TRAP::Math::tMat4<T> expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, -1.7976931348623157e+308, 1.0f, 1.0f, 1.0f);
             REQUIRE(TRAP::Math::All(TRAP::Math::Equal(t, expected, Epsilon)));
         }
         else if constexpr(std::same_as<T, float>)
         {
-            constexpr TRAP::Math::tMat4<T> expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, -3.40282347e+38f, 1.0f, 1.0f, 1.0f);
+            static constexpr TRAP::Math::tMat4<T> expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, -3.40282347e+38f, 1.0f, 1.0f, 1.0f);
             REQUIRE(TRAP::Math::All(TRAP::Math::Equal(t, expected, Epsilon)));
         }
         static_assert(TRAP::Math::All(TRAP::Math::Equal(t, t2, Epsilon)));
     }
     {
-        constexpr auto t = TRAP::Math::Translate(TRAP::Math::tMat4<T>(1.0f), TRAP::Math::tVec3<T>(max, 1.0f, 1.0f));
-        constexpr auto t2 = TRAP::Math::Translate(TRAP::Math::tVec3<T>(max, 1.0f, 1.0f));
+        static constexpr auto t = TRAP::Math::Translate(TRAP::Math::tMat4<T>(1.0f), TRAP::Math::tVec3<T>(max, 1.0f, 1.0f));
+        static constexpr auto t2 = TRAP::Math::Translate(TRAP::Math::tVec3<T>(max, 1.0f, 1.0f));
         if constexpr(std::same_as<T, double>)
         {
-            constexpr TRAP::Math::tMat4<T> expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.7976931348623157e+308, 1.0f, 1.0f, 1.0f);
+            static constexpr TRAP::Math::tMat4<T> expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.7976931348623157e+308, 1.0f, 1.0f, 1.0f);
             REQUIRE(TRAP::Math::All(TRAP::Math::Equal(t, expected, Epsilon)));
         }
         else if constexpr(std::same_as<T, float>)
         {
-            constexpr TRAP::Math::tMat4<T> expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 3.40282347e+38f, 1.0f, 1.0f, 1.0f);
+            static constexpr TRAP::Math::tMat4<T> expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 3.40282347e+38f, 1.0f, 1.0f, 1.0f);
             REQUIRE(TRAP::Math::All(TRAP::Math::Equal(t, expected, Epsilon)));
         }
         static_assert(TRAP::Math::All(TRAP::Math::Equal(t, t2, Epsilon)));

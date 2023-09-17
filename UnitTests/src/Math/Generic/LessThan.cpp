@@ -63,11 +63,11 @@ template<typename T>
 requires std::floating_point<T>
 void RunLessThanEdgeTests()
 {
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T min = std::numeric_limits<T>::lowest();
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T max = std::numeric_limits<T>::max();
+    static constexpr T min = std::numeric_limits<T>::lowest();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
 
     static_assert(!TRAP::Math::LessThan(max, max));
     static_assert(!TRAP::Math::LessThan(min, min));

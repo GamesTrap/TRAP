@@ -12,9 +12,9 @@ template<typename T>
 requires std::floating_point<T>
 void RunPowTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr std::array<std::tuple<T, T, T>, 4> values
+    static constexpr std::array<std::tuple<T, T, T>, 4> values
     {
         std::tuple(T(0.5f), T(2.0f), T(0.25f)),
         std::tuple(T(1.5f), T(1.0f), T(1.5f)),
@@ -32,7 +32,7 @@ template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunPowVecTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
     REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Pow(T(2.0f), T(2.0f)), T(4.0f), Epsilon)));
 }
 
@@ -40,7 +40,7 @@ template<typename T>
 requires TRAP::Math::IsQuat<T>
 void RunPowQuatTests()
 {
-    constexpr typename T::value_type Epsilon = typename T::value_type(0.001f);
+    static constexpr typename T::value_type Epsilon = typename T::value_type(0.001f);
 
     const T q(TRAP::Math::Vec<3, typename T::value_type>(1.0f, 0.0f, 0.0f), TRAP::Math::Vec<3, typename T::value_type>(0.0f, 1.0f, 0.0f));
 
@@ -61,10 +61,10 @@ template<typename T>
 requires std::floating_point<T>
 void RunPowEdgeTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-    constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
 
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Pow(nan, T(2.0f))));
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Pow(T(2.0f), nan)));

@@ -127,7 +127,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	VkPresentModeKHR presentMode = VK_PRESENT_MODE_FIFO_KHR;
 	const std::vector<VkPresentModeKHR>& modes = surface->GetVkSurfacePresentModes();
 
-	constexpr std::array<VkPresentModeKHR, 4> preferredModeList =
+	static constexpr std::array<VkPresentModeKHR, 4> preferredModeList =
 	{
 		VK_PRESENT_MODE_IMMEDIATE_KHR,
 		VK_PRESENT_MODE_MAILBOX_KHR,
@@ -232,7 +232,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	else
 		preTransform = caps.currentTransform;
 
-	constexpr std::array<VkCompositeAlphaFlagBitsKHR, 4> compositeAlphaFlags =
+	static constexpr std::array<VkCompositeAlphaFlagBitsKHR, 4> compositeAlphaFlags =
 	{
 		VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR,
 		VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,

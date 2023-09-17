@@ -37,41 +37,41 @@ template<typename T>
 requires ((TRAP::Math::IsMat3<T> || TRAP::Math::IsMat4<T>) && std::floating_point<typename T::value_type>)
 void RunTransposeEdgeTests()
 {
-    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+    static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
-    constexpr typename T::value_type min = std::numeric_limits<typename T::value_type>::lowest();
-    constexpr typename T::value_type max = std::numeric_limits<typename T::value_type>::max();
-    constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
-    constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
-    constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
+    static constexpr typename T::value_type min = std::numeric_limits<typename T::value_type>::lowest();
+    static constexpr typename T::value_type max = std::numeric_limits<typename T::value_type>::max();
+    static constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
+    static constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
+    static constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
 
     {
-        constexpr T m(TRAP::Math::tMat4<typename T::value_type>(max, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
-        constexpr T t = TRAP::Math::Transpose(m);
-        constexpr T expected(TRAP::Math::tMat4<typename T::value_type>(max, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+        static constexpr T m(TRAP::Math::tMat4<typename T::value_type>(max, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+        static constexpr T t = TRAP::Math::Transpose(m);
+        static constexpr T expected(TRAP::Math::tMat4<typename T::value_type>(max, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
         static_assert(TRAP::Math::All(TRAP::Math::Equal(t, expected, Epsilon)));
     }
     {
-        constexpr T m(TRAP::Math::tMat4<typename T::value_type>(min, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
-        constexpr T t = TRAP::Math::Transpose(m);
-        constexpr T expected(TRAP::Math::tMat4<typename T::value_type>(min, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+        static constexpr T m(TRAP::Math::tMat4<typename T::value_type>(min, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+        static constexpr T t = TRAP::Math::Transpose(m);
+        static constexpr T expected(TRAP::Math::tMat4<typename T::value_type>(min, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
         static_assert(TRAP::Math::All(TRAP::Math::Equal(t, expected, Epsilon)));
     }
     {
-        constexpr T m(TRAP::Math::tMat4<typename T::value_type>(inf, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
-        constexpr T t = TRAP::Math::Transpose(m);
-        constexpr T expected(TRAP::Math::tMat4<typename T::value_type>(inf, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+        static constexpr T m(TRAP::Math::tMat4<typename T::value_type>(inf, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+        static constexpr T t = TRAP::Math::Transpose(m);
+        static constexpr T expected(TRAP::Math::tMat4<typename T::value_type>(inf, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
         static_assert(TRAP::Math::All(TRAP::Math::Equal(t, expected)));
     }
     {
-        constexpr T m(TRAP::Math::tMat4<typename T::value_type>(ninf, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
-        constexpr T t = TRAP::Math::Transpose(m);
-        constexpr T expected(TRAP::Math::tMat4<typename T::value_type>(ninf, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+        static constexpr T m(TRAP::Math::tMat4<typename T::value_type>(ninf, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+        static constexpr T t = TRAP::Math::Transpose(m);
+        static constexpr T expected(TRAP::Math::tMat4<typename T::value_type>(ninf, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
         static_assert(TRAP::Math::All(TRAP::Math::Equal(t, expected)));
     }
     {
-        constexpr T m(TRAP::Math::tMat4<typename T::value_type>(nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan));
-        constexpr T t = TRAP::Math::Transpose(m);
+        static constexpr T m(TRAP::Math::tMat4<typename T::value_type>(nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan));
+        static constexpr T t = TRAP::Math::Transpose(m);
         REQUIRE(TRAP::Math::All(TRAP::Math::Not(TRAP::Math::Equal(t, m))));
     }
 }

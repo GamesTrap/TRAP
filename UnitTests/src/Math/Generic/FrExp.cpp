@@ -14,9 +14,9 @@ void RunFrExpTests()
 {
     if constexpr(std::floating_point<T>)
     {
-        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-        constexpr std::array<std::tuple<T, T, int32_t>, 4> values
+        static constexpr std::array<std::tuple<T, T, int32_t>, 4> values
         {
             std::tuple(T(1024.0f), T(0.5f), 11),
             std::tuple(T(0.24f), T(0.96f), -2),
@@ -34,9 +34,9 @@ void RunFrExpTests()
     }
     else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
     {
-        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+        static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
-        constexpr T x(TRAP::Math::Vec<4, typename T::value_type>(1024.0f, 0.24f, 0.0f, -1.33f));
+        static constexpr T x(TRAP::Math::Vec<4, typename T::value_type>(1024.0f, 0.24f, 0.0f, -1.33f));
         TRAP::Math::Vec<T::Length(), int32_t> exp{};
         const T res = TRAP::Math::FrExp(x, exp);
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, T(TRAP::Math::Vec<4, typename T::value_type>(0.5f, 0.96f, 0.0f, -0.665f)), Epsilon)));
@@ -48,14 +48,14 @@ template<typename T>
 requires std::floating_point<T>
 void RunFrExpEdgeTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T min = std::numeric_limits<T>::denorm_min();
-    constexpr T nmin = -std::numeric_limits<T>::denorm_min();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T max = std::numeric_limits<T>::max();
+    static constexpr T min = std::numeric_limits<T>::denorm_min();
+    static constexpr T nmin = -std::numeric_limits<T>::denorm_min();
 
     int32_t exp{};
     T res{};

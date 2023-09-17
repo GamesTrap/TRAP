@@ -12,7 +12,7 @@ template<typename T>
 requires std::floating_point<T>
 void RunYawTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
     {
         const T expected = 0.0f;
@@ -50,9 +50,9 @@ template<typename T>
 requires std::floating_point<T>
 void RunYawEdgeTests()
 {
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
 
     {
         const T expected = inf;

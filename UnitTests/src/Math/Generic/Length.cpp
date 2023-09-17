@@ -40,9 +40,9 @@ template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunLengthVecEdgeTests()
 {
-    constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
-    constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
-    constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
+    static constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
+    static constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
+    static constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
 
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Length(T(TRAP::Math::Vec<4, typename T::value_type>(nan, 1.0f, 2.0f, 3.0f)))));
     REQUIRE(TRAP::Math::IsInf(TRAP::Math::Length(T(TRAP::Math::Vec<4, typename T::value_type>(inf, 4.0f, 6.0f, 8.0f)))));
@@ -53,7 +53,7 @@ template<typename T>
 requires TRAP::Math::IsQuat<T>
 void RunLengthQuatTests()
 {
-    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+    static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
     REQUIRE(TRAP::Math::Equal(TRAP::Math::Length(T(1.0f, 2.0f, 3.0f, 4.0f)), typename T::value_type(5.4772255750516612f), typename T::value_type(0.000001f)));
     REQUIRE(TRAP::Math::Equal(TRAP::Math::Length(T(-2.0f, -3.0f, -4.0f, -5.0f)), typename T::value_type(7.3484692283495345f), typename T::value_type(0.000001f)));

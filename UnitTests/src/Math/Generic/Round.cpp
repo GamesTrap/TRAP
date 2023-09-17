@@ -11,9 +11,9 @@ template<typename T>
 requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
 void RunRoundTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr std::array<T, 24> values
+    static constexpr std::array<T, 24> values
     {
         T(0.0f), T(-0.0f), T(0.1f), T(-0.1f), T(0.5f), T(-0.5f), T(0.9f), T(-0.9f), T(1.0f), T(-1.0f),
         T(1.5f), T(-1.5f), T(1.9f), T(-1.9f), T(4.2f), T(4.5f), T(4.7f), T(5.0f), T(-4.2f), T(-4.5f),
@@ -37,13 +37,13 @@ template<typename T>
 requires std::floating_point<T>
 void RunRoundEdgeTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T min = std::numeric_limits<T>::lowest();
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T max = std::numeric_limits<T>::max();
+    static constexpr T min = std::numeric_limits<T>::lowest();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
 
     REQUIRE(TRAP::Math::Equal(TRAP::Math::Round(max), max, Epsilon));
     REQUIRE(TRAP::Math::Equal(TRAP::Math::Round(min), min, Epsilon));

@@ -1262,7 +1262,7 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleAxis([[maybe_unused]] void* cons
     //Wayland scroll events are in pointer motion coordinate space
     //(think two finger scroll).
     //The factor 10 is commonly used to convert to "scroll step" means 1.0
-    constexpr double scrollFactor = 1.0 / 10.0;
+    static constexpr double scrollFactor = 1.0 / 10.0;
 
     if(axis == WL_POINTER_AXIS_HORIZONTAL_SCROLL)
         x = -wl_fixed_to_double(value) * scrollFactor;

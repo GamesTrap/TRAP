@@ -48,12 +48,12 @@ template<typename T>
 requires std::floating_point<T>
 void RunCompileTimeStepEdgeTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr T min = std::numeric_limits<T>::denorm_min();
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
-    constexpr T nan = -std::numeric_limits<T>::quiet_NaN();
+    static constexpr T min = std::numeric_limits<T>::denorm_min();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T nan = -std::numeric_limits<T>::quiet_NaN();
 
     static_assert(TRAP::Math::Equal(TRAP::Math::Step(T( 0.0f), min), T(1.0f), Epsilon));
     static_assert(TRAP::Math::Equal(TRAP::Math::Step(T(-1.0f), min), T(1.0f), Epsilon));

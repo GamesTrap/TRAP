@@ -19,8 +19,8 @@ static constexpr std::array<uint64_t, 24> RC =
 {
     ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	constexpr uint32_t thisSize = sizeof(uint64_t) * 8;
-	constexpr uint32_t mask = thisSize - 1;
+	static constexpr uint32_t thisSize = sizeof(uint64_t) * 8;
+	static constexpr uint32_t mask = thisSize - 1;
 	TRAP_ASSERT(y < thisSize, "Rotatel64(): y must be less than the size of the type!");
 
 	return (x << y) | (x >> (-y & mask));

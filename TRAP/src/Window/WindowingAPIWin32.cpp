@@ -2985,7 +2985,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 
 		if (windowPtr)
 		{
-			constexpr std::array<std::array<int32_t, 2>, 4> keys =
+			static constexpr std::array<std::array<int32_t, 2>, 4> keys =
 			{
 				{
 					{ VK_LSHIFT, std::to_underlying(Input::Key::Left_Shift)},

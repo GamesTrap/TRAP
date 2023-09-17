@@ -12,7 +12,7 @@ template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunNormalizeVecTests()
 {
-    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+    static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
     const T normalize1 = TRAP::Math::Normalize(T(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f)));
     REQUIRE(TRAP::Math::All(TRAP::Math::Equal(normalize1, T(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f)), T(Epsilon))));
@@ -43,9 +43,9 @@ template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunNormalizeVecEdgeTests()
 {
-    constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
-    constexpr typename T::value_type ninf = std::numeric_limits<typename T::value_type>::infinity();
-    constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
+    static constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
+    static constexpr typename T::value_type ninf = std::numeric_limits<typename T::value_type>::infinity();
+    static constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
 
     const T normalize1 = TRAP::Math::Normalize(T(TRAP::Math::Vec<4, typename T::value_type>(0.0f, 0.0f, 0.0f, 0.0f)));
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Length(normalize1)));
@@ -68,16 +68,16 @@ template<typename T>
 requires TRAP::Math::IsQuat<T> && std::floating_point<typename T::value_type>
 void RunNormalizeQuatTests()
 {
-    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
-    constexpr typename T::value_type PI = TRAP::Math::PI<typename T::value_type>();
+    static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+    static constexpr typename T::value_type PI = TRAP::Math::PI<typename T::value_type>();
 
     {
-        constexpr T a(1.0f, 0.0f, 0.0f, 0.0f);
+        static constexpr T a(1.0f, 0.0f, 0.0f, 0.0f);
         const T n = TRAP::Math::Normalize(a);
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(a, n, Epsilon)));
     }
     {
-        constexpr T a(1.0f, TRAP::Math::Vec<3, typename T::value_type>(0.0f));
+        static constexpr T a(1.0f, TRAP::Math::Vec<3, typename T::value_type>(0.0f));
         const T n = TRAP::Math::Normalize(a);
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(a, n, Epsilon)));
     }
@@ -102,11 +102,11 @@ template<typename T>
 requires TRAP::Math::IsQuat<T> && std::floating_point<typename T::value_type>
 void RunNormalizeQuatEdgeTests()
 {
-    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+    static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
-    constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
-    constexpr typename T::value_type ninf = std::numeric_limits<typename T::value_type>::infinity();
-    constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
+    static constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
+    static constexpr typename T::value_type ninf = std::numeric_limits<typename T::value_type>::infinity();
+    static constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
 
     const T normalize1 = TRAP::Math::Normalize(T(0.0f, 0.0f, 0.0f, 0.0f));
     REQUIRE(TRAP::Math::Equal(TRAP::Math::Length(normalize1), typename T::value_type(1.0f), Epsilon));

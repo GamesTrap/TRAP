@@ -12,7 +12,7 @@ requires (std::is_arithmetic_v<T> || (TRAP::Math::IsVec<T> && std::floating_poin
          (std::is_arithmetic_v<X> || (TRAP::Math::IsVec<X> && std::floating_point<typename X::value_type>))
 void RunModTests()
 {
-    constexpr std::array<std::tuple<T, X, T>, 3> values
+    static constexpr std::array<std::tuple<T, X, T>, 3> values
     {
         std::tuple<T, X, T>{T( 1.5f), X(1.0f), T( 0.5f)},
         std::tuple<T, X, T>{T(-0.2f), X(1.0f), T(-0.2f)},
@@ -25,7 +25,7 @@ void RunModTests()
         {
             if constexpr(std::floating_point<T>)
             {
-                constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+                static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
                 REQUIRE_THAT(TRAP::Math::Mod(val1, val2), Catch::Matchers::WithinRel(expected, Epsilon));
             }
             else if constexpr(std::integral<T>)
@@ -35,7 +35,7 @@ void RunModTests()
         }
         else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type> && TRAP::Math::IsVec<X>)
         {
-            constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+            static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
             REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(val1, T(val2)), expected, Epsilon)));
         }
         else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type> && std::floating_point<X>)
@@ -50,17 +50,17 @@ template<typename T>
 requires std::is_arithmetic_v<T>
 void RunModEdgeTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T min = std::numeric_limits<T>::lowest();
+    static constexpr T max = std::numeric_limits<T>::max();
+    static constexpr T min = std::numeric_limits<T>::lowest();
 
     if constexpr(std::floating_point<T>)
     {
         REQUIRE(TRAP::Math::Equal(TRAP::Math::Mod(max, T(100.0)), static_cast<T>(std::fmod(max, T(100))), Epsilon));
         REQUIRE(TRAP::Math::Equal(TRAP::Math::Mod(min, T(-50.0)), static_cast<T>(std::fmod(min, T(-50.0))), Epsilon));
 
-        constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
         REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Mod(T(15), T(0))));
         REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Mod(T(2.0), nan)));
     }

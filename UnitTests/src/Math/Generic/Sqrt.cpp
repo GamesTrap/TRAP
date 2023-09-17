@@ -12,7 +12,7 @@ template<typename T>
 requires std::floating_point<T>
 void RunSqrtTests()
 {
-    constexpr std::array<std::tuple<T, T>, 5> values
+    static constexpr std::array<std::tuple<T, T>, 5> values
     {
         std::tuple(T(0.5f), T(0.707107f)),
         std::tuple(T(1.5f), T(1.22474f)),
@@ -38,25 +38,25 @@ template<typename T>
 requires TRAP::Math::IsQuat<T>
 void RunSqrtQuatTests()
 {
-    constexpr typename T::value_type Epsilon = typename T::value_type(0.001f);
+    static constexpr typename T::value_type Epsilon = typename T::value_type(0.001f);
 
     {
-        constexpr T x(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
-        constexpr T res(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
+        static constexpr T x(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
+        static constexpr T res(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(x), res, Epsilon)));
     }
     {
-        constexpr T x(typename T::value_type(2.0f), typename T::value_type(3.0f), typename T::value_type(4.0f), typename T::value_type(5.0f));
-        constexpr T res(typename T::value_type(2.162f), typename T::value_type(0.693803f), typename T::value_type(0.92507f), typename T::value_type(1.15634f));
+        static constexpr T x(typename T::value_type(2.0f), typename T::value_type(3.0f), typename T::value_type(4.0f), typename T::value_type(5.0f));
+        static constexpr T res(typename T::value_type(2.162f), typename T::value_type(0.693803f), typename T::value_type(0.92507f), typename T::value_type(1.15634f));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(x), res, Epsilon)));
     }
     {
-        constexpr T x(typename T::value_type(-2.0f), typename T::value_type(-3.0f), typename T::value_type(-4.0f), typename T::value_type(-5.0f));
-        constexpr T res(typename T::value_type(1.63531f), typename T::value_type(-0.917258f), typename T::value_type(-1.22301f), typename T::value_type(-1.52876f));
+        static constexpr T x(typename T::value_type(-2.0f), typename T::value_type(-3.0f), typename T::value_type(-4.0f), typename T::value_type(-5.0f));
+        static constexpr T res(typename T::value_type(1.63531f), typename T::value_type(-0.917258f), typename T::value_type(-1.22301f), typename T::value_type(-1.52876f));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sqrt(x), res, Epsilon)));
     }
     {
-        constexpr T x(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
+        static constexpr T x(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
         REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::Sqrt(x))));
     }
 }
@@ -65,10 +65,10 @@ template<typename T>
 requires std::floating_point<T>
 void RunSqrtEdgeTests()
 {
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
-    constexpr T min = std::numeric_limits<T>::lowest();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T min = std::numeric_limits<T>::lowest();
 
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Sqrt(min)));
     REQUIRE(TRAP::Math::IsInf(TRAP::Math::Sqrt(inf)));

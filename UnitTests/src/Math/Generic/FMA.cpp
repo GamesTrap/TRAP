@@ -11,9 +11,9 @@ template<typename T>
 requires std::floating_point<T>
 void RunFMATest()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr std::array<std::tuple<T, T, T, T>, 6> values
+    static constexpr std::array<std::tuple<T, T, T, T>, 6> values
     {
         std::tuple{T( 2.0f), T( 3.5f), T( 1.25f), T( 8.25f)},
         std::tuple{T(-4.5f), T(-2.0f), T(-1.75f), T( 7.25f)},
@@ -33,12 +33,12 @@ template<typename T>
 requires std::floating_point<T>
 void RunFMAEdgeTest()
 {
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T min = std::numeric_limits<T>::lowest();
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T max = std::numeric_limits<T>::max();
+    static constexpr T min = std::numeric_limits<T>::lowest();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
 
-    constexpr std::array<std::tuple<T, T, T>, 7> values
+    static constexpr std::array<std::tuple<T, T, T>, 7> values
     {
         std::tuple{ max,  max,  max},
         std::tuple{ min,  min,  min},
@@ -55,7 +55,7 @@ void RunFMAEdgeTest()
         REQUIRE(TRAP::Math::IsInf(TRAP::Math::FMA(a, b, c)));
     }
 
-    constexpr std::array<std::tuple<T, T, T>, 3> values2
+    static constexpr std::array<std::tuple<T, T, T>, 3> values2
     {
         std::tuple{T(2.0f), nan, T(3.0f)},
         std::tuple{nan, T(2.5f), T(3.0f)},

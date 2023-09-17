@@ -11,7 +11,7 @@ template<typename T>
 requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
 void RunCeilTests()
 {
-    constexpr std::array<T, 24> values
+    static constexpr std::array<T, 24> values
     {
         static_cast<T>(0.0f), static_cast<T>(-0.0f), static_cast<T>(0.1f), static_cast<T>(-0.1f),
         static_cast<T>(0.5f), static_cast<T>(-0.5f), static_cast<T>(0.9f), static_cast<T>(-0.9f),
@@ -21,7 +21,7 @@ void RunCeilTests()
         static_cast<T>(-4.7f), static_cast<T>(-5.0f), static_cast<T>(42e32f), static_cast<T>(-42e32f)
     };
 
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
     for(const T val : values)
     {
         if constexpr(std::floating_point<T>)
@@ -39,17 +39,17 @@ template<typename T>
 requires std::floating_point<T>
 void RunCeilEdgeTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr T max = std::numeric_limits<T>::max();
+    static constexpr T max = std::numeric_limits<T>::max();
     REQUIRE_THAT(TRAP::Math::Ceil(max), Catch::Matchers::WithinRel(max, Epsilon));
-    constexpr T min = std::numeric_limits<T>::lowest();
+    static constexpr T min = std::numeric_limits<T>::lowest();
     REQUIRE_THAT(TRAP::Math::Ceil(min), Catch::Matchers::WithinRel(min, Epsilon));
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Ceil(nan)));
-    constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
     REQUIRE_THAT(TRAP::Math::Ceil(inf), Catch::Matchers::WithinRel(inf, Epsilon));
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
     REQUIRE_THAT(TRAP::Math::Ceil(ninf), Catch::Matchers::WithinRel(ninf, Epsilon));
 }
 

@@ -42,17 +42,17 @@ template<typename T>
 requires ((TRAP::Math::IsMat3<T> || TRAP::Math::IsMat4<T>) && std::floating_point<typename T::value_type>)
 void RunDeterminantEdgeTests()
 {
-    constexpr typename T::value_type min = std::numeric_limits<typename T::value_type>::lowest();
-    constexpr typename T::value_type max = std::numeric_limits<typename T::value_type>::max();
-    constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
-    constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
-    constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
+    static constexpr typename T::value_type min = std::numeric_limits<typename T::value_type>::lowest();
+    static constexpr typename T::value_type max = std::numeric_limits<typename T::value_type>::max();
+    static constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
+    static constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
+    static constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
 
-    constexpr T input1(TRAP::Math::tMat4<typename T::value_type>{min});
-    constexpr T input2(TRAP::Math::tMat4<typename T::value_type>{max});
-    constexpr T input3(TRAP::Math::tMat4<typename T::value_type>{inf});
-    constexpr T input4(TRAP::Math::tMat4<typename T::value_type>{ninf});
-    constexpr T input5(TRAP::Math::tMat4<typename T::value_type>{nan});
+    static constexpr T input1(TRAP::Math::tMat4<typename T::value_type>{min});
+    static constexpr T input2(TRAP::Math::tMat4<typename T::value_type>{max});
+    static constexpr T input3(TRAP::Math::tMat4<typename T::value_type>{inf});
+    static constexpr T input4(TRAP::Math::tMat4<typename T::value_type>{ninf});
+    static constexpr T input5(TRAP::Math::tMat4<typename T::value_type>{nan});
 
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Determinant(input3)));
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Determinant(input4)));

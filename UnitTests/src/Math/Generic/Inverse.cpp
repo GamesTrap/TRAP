@@ -58,70 +58,70 @@ template<typename T>
 requires ((TRAP::Math::IsMat3<T> || TRAP::Math::IsMat4<T> || TRAP::Math::IsQuat<T>) && std::floating_point<typename T::value_type>)
 void RunInverseEdgeTests()
 {
-    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+    static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
-    constexpr typename T::value_type min = std::numeric_limits<typename T::value_type>::lowest();
-    constexpr typename T::value_type max = std::numeric_limits<typename T::value_type>::max();
-    constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
-    constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
-    constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
+    static constexpr typename T::value_type min = std::numeric_limits<typename T::value_type>::lowest();
+    static constexpr typename T::value_type max = std::numeric_limits<typename T::value_type>::max();
+    static constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
+    static constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
+    static constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
 
     if constexpr(TRAP::Math::IsMat<T>)
     {
         {
-            constexpr T a(0.0f);
-            constexpr T b(TRAP::Math::tMat4<typename T::value_type>{nan});
+            static constexpr T a(0.0f);
+            static constexpr T b(TRAP::Math::tMat4<typename T::value_type>{nan});
             REQUIRE(TRAP::Math::All(TRAP::Math::Not(TRAP::Math::Equal(TRAP::Math::Inverse(a), b))));
         }
         {
-            constexpr T a(TRAP::Math::tMat4<typename T::value_type>{min});
-            constexpr T b(TRAP::Math::tMat4<typename T::value_type>{nan});
+            static constexpr T a(TRAP::Math::tMat4<typename T::value_type>{min});
+            static constexpr T b(TRAP::Math::tMat4<typename T::value_type>{nan});
             REQUIRE(TRAP::Math::All(TRAP::Math::Not(TRAP::Math::Equal(TRAP::Math::Inverse(a), b))));
         }
         {
-            constexpr T a(TRAP::Math::tMat4<typename T::value_type>{max});
-            constexpr T b(TRAP::Math::tMat4<typename T::value_type>{nan});
+            static constexpr T a(TRAP::Math::tMat4<typename T::value_type>{max});
+            static constexpr T b(TRAP::Math::tMat4<typename T::value_type>{nan});
             REQUIRE(TRAP::Math::All(TRAP::Math::Not(TRAP::Math::Equal(TRAP::Math::Inverse(a), b))));
         }
         {
-            constexpr T a(TRAP::Math::tMat4<typename T::value_type>{inf});
-            constexpr T b(TRAP::Math::tMat4<typename T::value_type>{nan});
+            static constexpr T a(TRAP::Math::tMat4<typename T::value_type>{inf});
+            static constexpr T b(TRAP::Math::tMat4<typename T::value_type>{nan});
             REQUIRE(TRAP::Math::All(TRAP::Math::Not(TRAP::Math::Equal(TRAP::Math::Inverse(a), b))));
         }
         {
-            constexpr T a(TRAP::Math::tMat4<typename T::value_type>{ninf});
-            constexpr T b(TRAP::Math::tMat4<typename T::value_type>{nan});
+            static constexpr T a(TRAP::Math::tMat4<typename T::value_type>{ninf});
+            static constexpr T b(TRAP::Math::tMat4<typename T::value_type>{nan});
             REQUIRE(TRAP::Math::All(TRAP::Math::Not(TRAP::Math::Equal(TRAP::Math::Inverse(a), b))));
         }
         {
-            constexpr T a(TRAP::Math::tMat4<typename T::value_type>{nan});
+            static constexpr T a(TRAP::Math::tMat4<typename T::value_type>{nan});
             REQUIRE(TRAP::Math::All(TRAP::Math::Not(TRAP::Math::Equal(TRAP::Math::Inverse(a), a))));
         }
     }
     else if constexpr(TRAP::Math::IsQuat<T>)
     {
         {
-            constexpr T q1(min, min, min, min);
+            static constexpr T q1(min, min, min, min);
             const T res = TRAP::Math::Inverse(q1);
             REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, T(0.0f, 0.0f, 0.0f, 0.0f), Epsilon)));
         }
         {
-            constexpr T q1(max, max, max, max);
+            static constexpr T q1(max, max, max, max);
             const T res = TRAP::Math::Inverse(q1);
             REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, T(0.0f, 0.0f, 0.0f, 0.0f), Epsilon)));
         }
         {
-            constexpr T q1(inf, inf, inf, inf);
+            static constexpr T q1(inf, inf, inf, inf);
             const T res = TRAP::Math::Inverse(q1);
             REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(res)));
         }
         {
-            constexpr T q1(ninf, ninf, ninf, ninf);
+            static constexpr T q1(ninf, ninf, ninf, ninf);
             const T res = TRAP::Math::Inverse(q1);
             REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(res)));
         }
         {
-            constexpr T q1(nan, nan, nan, nan);
+            static constexpr T q1(nan, nan, nan, nan);
             const T res = TRAP::Math::Inverse(q1);
             REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(res)));
         }

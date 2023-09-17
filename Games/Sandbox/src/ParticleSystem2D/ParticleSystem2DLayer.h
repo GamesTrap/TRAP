@@ -93,8 +93,8 @@ public:
 		ImGui::ColorEdit4("Decay Color", &std::get<0>(m_particle.ColorEnd));
 		ImGui::DragFloat("Life Time", &m_particle.LifeTime, 0.1f, 0.0f, 1000.0f);
 
-		constexpr uint32_t MinParticles = 1;
-		constexpr uint32_t MaxParticles = 100000;
+		static constexpr uint32_t MinParticles = 1;
+		static constexpr uint32_t MaxParticles = 100000;
 		if(ImGui::SliderScalar("Max Particles", ImGuiDataType_U32, &m_maxParticles, &MinParticles, &MaxParticles))
 			m_particleSystem.SetMaxParticles(m_maxParticles);
 		ImGui::End();

@@ -13,9 +13,9 @@ void RunFractTests()
 {
     if constexpr(std::floating_point<T>)
     {
-        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-        constexpr std::array<std::pair<T, T>, 1> values
+        static constexpr std::array<std::pair<T, T>, 1> values
         {
             std::pair{T(1.5), T(0.5)}
         };
@@ -27,9 +27,9 @@ void RunFractTests()
     }
     else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
     {
-        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+        static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
-        constexpr std::array<std::pair<T, T>, 1> values
+        static constexpr std::array<std::pair<T, T>, 1> values
         {
             std::pair<T, T>{TRAP::Math::Vec<4, typename T::value_type>(1.1, 1.2, 1.5, 1.7),
                             TRAP::Math::Vec<4, typename T::value_type>(0.1, 0.2, 0.5, 0.7)},
@@ -46,17 +46,17 @@ template<typename T>
 requires std::floating_point<T>
 void RunFractEdgeTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr T max = std::numeric_limits<T>::max();
+    static constexpr T max = std::numeric_limits<T>::max();
     REQUIRE(TRAP::Math::Equal(TRAP::Math::Fract(max), T(0.0), Epsilon));
-    constexpr T min = std::numeric_limits<T>::lowest();
+    static constexpr T min = std::numeric_limits<T>::lowest();
     REQUIRE(TRAP::Math::Equal(TRAP::Math::Fract(min), T(0.0), Epsilon));
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Fract(nan)));
-    constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Fract(inf)));
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Fract(ninf)));
 }
 

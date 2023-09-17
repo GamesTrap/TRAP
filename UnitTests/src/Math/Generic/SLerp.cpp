@@ -12,7 +12,7 @@ template<typename T>
 requires std::floating_point<T>
 void RunSLerpTests()
 {
-    constexpr T Epsilon = T(0.00001f);
+    static constexpr T Epsilon = T(0.00001f);
 
     {
         const TRAP::Math::tQuat<T> q1(TRAP::Math::tVec3<T>(1.0f, 0.0f, 0.0f), TRAP::Math::tVec3<T>(1.0f, 0.0f, 0.0f));
@@ -31,9 +31,9 @@ void RunSLerpTests()
 
 
     const T sqrt2 = TRAP::Math::Sqrt(T(2.0f)) / T(2.0f);
-    constexpr TRAP::Math::tQuat<T> id(static_cast<T>(1.0f), static_cast<T>(0.0f), static_cast<T>(0.0f), static_cast<float>(0.0f));
+    static constexpr TRAP::Math::tQuat<T> id(static_cast<T>(1.0f), static_cast<T>(0.0f), static_cast<T>(0.0f), static_cast<float>(0.0f));
     const TRAP::Math::tQuat<T> y90rot(sqrt2, 0.0f, sqrt2, 0.0f);
-    [[maybe_unused]] constexpr TRAP::Math::tQuat<T> y180rot(0.0f, 0.0f, 1.0f, 0.0f);
+    [[maybe_unused]] static constexpr TRAP::Math::tQuat<T> y180rot(0.0f, 0.0f, 1.0f, 0.0f);
 
     {
         const TRAP::Math::tQuat<T> id2 = TRAP::Math::SLerp(id, y90rot, T(0.0f));
@@ -72,7 +72,7 @@ void RunSLerpTests()
         [[maybe_unused]] const TRAP::Math::tQuat<T> almostid = TRAP::Math::SLerp(id, TRAP::Math::AngleAxis(T(0.1f), TRAP::Math::tVec3<T>(0.0f, 1.0f, 0.0f)), T(0.5f));
     }
     {
-        constexpr TRAP::Math::tQuat<T> a(-1.0f, 0.0f, 0.0f, 0.0f);
+        static constexpr TRAP::Math::tQuat<T> a(-1.0f, 0.0f, 0.0f, 0.0f);
         const TRAP::Math::tQuat<T> result = TRAP::Math::SLerp(a, id, T(0.5f));
         REQUIRE(TRAP::Math::Equal(TRAP::Math::Pow(TRAP::Math::Dot(id, result), T(2.0f)), T(1.0f), T(0.01f)));
     }
@@ -82,10 +82,10 @@ template<typename T, typename S>
 requires std::floating_point<T> && std::integral<S>
 void RunSLerpSpinTests()
 {
-    constexpr T Epsilon = T(0.00001f);
+    static constexpr T Epsilon = T(0.00001f);
 
     const T sqrt2 = TRAP::Math::Sqrt(T(2.0f)) / T(2.0f);
-    constexpr TRAP::Math::tQuat<T> id(static_cast<T>(1.0f), static_cast<T>(0.0f), static_cast<T>(0.0f), static_cast<T>(0.0f));
+    static constexpr TRAP::Math::tQuat<T> id(static_cast<T>(1.0f), static_cast<T>(0.0f), static_cast<T>(0.0f), static_cast<T>(0.0f));
     const TRAP::Math::tQuat<T> y90rot(sqrt2, 0.0f, sqrt2, 0.0f);
     const TRAP::Math::tQuat<T> y180rot(0.0f, 0.0f, 1.0f, 0.0f);
 
@@ -147,11 +147,11 @@ template<typename T>
 requires std::floating_point<T>
 void RunSLerpEdgeTests()
 {
-    constexpr T min = std::numeric_limits<T>::lowest();
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T min = std::numeric_limits<T>::lowest();
+    static constexpr T max = std::numeric_limits<T>::max();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
 
     {
         const TRAP::Math::tQuat<T> q1(TRAP::Math::tVec3<T>(1.0f, 0.0f, 0.0f), TRAP::Math::tVec3<T>(1.0f, 0.0f, 0.0f));
@@ -184,8 +184,8 @@ template<typename T, typename S>
 requires std::floating_point<T> && std::integral<S>
 void RunSLerpSpinEdgeTests()
 {
-    constexpr S min = std::numeric_limits<S>::min();
-    constexpr S max = std::numeric_limits<S>::max();
+    static constexpr S min = std::numeric_limits<S>::min();
+    static constexpr S max = std::numeric_limits<S>::max();
 
     {
         const TRAP::Math::tQuat<T> q1(TRAP::Math::tVec3<T>(1.0f, 0.0f, 0.0f), TRAP::Math::tVec3<T>(1.0f, 0.0f, 0.0f));

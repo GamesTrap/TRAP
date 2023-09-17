@@ -891,7 +891,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResolveQuery(const TRAP::Ref<Quer
 	TRAP_ASSERT(queryPool, "VulkanCommandBuffer::ResolveQuery(): Invalid QueryPool!");
 	TRAP_ASSERT(readBackBuffer, "VulkanCommandBuffer::ResolveQuery(): Invalid ReadBackBuffer!");
 
-	constexpr VkQueryResultFlags flags = VK_QUERY_RESULT_64_BIT | VK_QUERY_RESULT_WAIT_BIT;
+	static constexpr VkQueryResultFlags flags = VK_QUERY_RESULT_64_BIT | VK_QUERY_RESULT_WAIT_BIT;
 
 	vkCmdCopyQueryPoolResults(m_vkCommandBuffer,
 	                          std::dynamic_pointer_cast<VulkanQueryPool>(queryPool)->GetVkQueryPool(),

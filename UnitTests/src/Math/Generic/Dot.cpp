@@ -126,35 +126,35 @@ template<typename T>
 requires TRAP::Math::IsVec4<T> && std::floating_point<typename T::value_type>
 void RunDotVecEdgeTests()
 {
-    constexpr typename T::value_type max = std::numeric_limits<typename T::value_type>::max();
-    constexpr typename T::value_type min = std::numeric_limits<typename T::value_type>::lowest();
-    constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
-    constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
-    constexpr typename T::value_type nan = -std::numeric_limits<typename T::value_type>::quiet_NaN();
+    static constexpr typename T::value_type max = std::numeric_limits<typename T::value_type>::max();
+    static constexpr typename T::value_type min = std::numeric_limits<typename T::value_type>::lowest();
+    static constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
+    static constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
+    static constexpr typename T::value_type nan = -std::numeric_limits<typename T::value_type>::quiet_NaN();
 
     {
-        constexpr T x(max, 2.0f, 3.0f, 4.0f);
-        constexpr T y(5.0f, 6.0f, 7.0f, 8.0f);
+        static constexpr T x(max, 2.0f, 3.0f, 4.0f);
+        static constexpr T y(5.0f, 6.0f, 7.0f, 8.0f);
         REQUIRE(TRAP::Math::IsInf(TRAP::Math::Dot(x, y)));
     }
     {
-        constexpr T x(min, 2.0f, 3.0f, 4.0f);
-        constexpr T y(5.0f, 6.0f, 7.0f, 8.0f);
+        static constexpr T x(min, 2.0f, 3.0f, 4.0f);
+        static constexpr T y(5.0f, 6.0f, 7.0f, 8.0f);
         REQUIRE(TRAP::Math::IsInf(TRAP::Math::Dot(x, y)));
     }
     {
-        constexpr T x(inf, 2.0f, 3.0f, 4.0f);
-        constexpr T y(5.0f, 6.0f, 7.0f, 8.0f);
+        static constexpr T x(inf, 2.0f, 3.0f, 4.0f);
+        static constexpr T y(5.0f, 6.0f, 7.0f, 8.0f);
         static_assert(TRAP::Math::IsInf(TRAP::Math::Dot(x, y)));
     }
     {
-        constexpr T x(ninf, 2.0f, 3.0f, 4.0f);
-        constexpr T y(5.0f, 6.0f, 7.0f, 8.0f);
+        static constexpr T x(ninf, 2.0f, 3.0f, 4.0f);
+        static constexpr T y(5.0f, 6.0f, 7.0f, 8.0f);
         static_assert(TRAP::Math::IsInf(TRAP::Math::Dot(x, y)));
     }
     {
-        constexpr T x(nan, 2.0f, 3.0f, 4.0f);
-        constexpr T y(5.0f, 6.0f, 7.0f, 8.0f);
+        static constexpr T x(nan, 2.0f, 3.0f, 4.0f);
+        static constexpr T y(5.0f, 6.0f, 7.0f, 8.0f);
         REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Dot(x, y)));
     }
 }

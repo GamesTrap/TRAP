@@ -12,15 +12,15 @@ template<typename T>
 requires TRAP::Math::IsMat<T>
 void RunColumnTests()
 {
-    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+    static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
     //Get
     {
-        constexpr T m(1.0f);
-        constexpr typename T::col_type expectedA(TRAP::Math::tVec4<typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f));
-        constexpr typename T::col_type expectedB(TRAP::Math::tVec4<typename T::value_type>(0.0f, 1.0f, 0.0f, 0.0f));
-        constexpr typename T::col_type expectedC(TRAP::Math::tVec4<typename T::value_type>(0.0f, 0.0f, 1.0f, 0.0f));
-        constexpr typename T::col_type expectedD(TRAP::Math::tVec4<typename T::value_type>(0.0f, 0.0f, 0.0f, 1.0f));
+        static constexpr T m(1.0f);
+        static constexpr typename T::col_type expectedA(TRAP::Math::tVec4<typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f));
+        static constexpr typename T::col_type expectedB(TRAP::Math::tVec4<typename T::value_type>(0.0f, 1.0f, 0.0f, 0.0f));
+        static constexpr typename T::col_type expectedC(TRAP::Math::tVec4<typename T::value_type>(0.0f, 0.0f, 1.0f, 0.0f));
+        static constexpr typename T::col_type expectedD(TRAP::Math::tVec4<typename T::value_type>(0.0f, 0.0f, 0.0f, 1.0f));
 
         if constexpr(TRAP::Math::IsMat3<T>)
         {
@@ -41,10 +41,10 @@ void RunColumnTests()
     {
         T m(1.0f);
 
-        constexpr typename T::col_type expectedA(TRAP::Math::tVec4<typename T::value_type>(0.0f, 1.0f, 2.0f, 3.0f));
-        constexpr typename T::col_type expectedB(TRAP::Math::tVec4<typename T::value_type>(4.0f, 5.0f, 6.0f, 7.0f));
-        constexpr typename T::col_type expectedC(TRAP::Math::tVec4<typename T::value_type>(8.0f, 9.0f, 10.0f, 11.0f));
-        constexpr typename T::col_type expectedD(TRAP::Math::tVec4<typename T::value_type>(12.0f, 13.0f, 14.0f, 15.0f));
+        static constexpr typename T::col_type expectedA(TRAP::Math::tVec4<typename T::value_type>(0.0f, 1.0f, 2.0f, 3.0f));
+        static constexpr typename T::col_type expectedB(TRAP::Math::tVec4<typename T::value_type>(4.0f, 5.0f, 6.0f, 7.0f));
+        static constexpr typename T::col_type expectedC(TRAP::Math::tVec4<typename T::value_type>(8.0f, 9.0f, 10.0f, 11.0f));
+        static constexpr typename T::col_type expectedD(TRAP::Math::tVec4<typename T::value_type>(12.0f, 13.0f, 14.0f, 15.0f));
 
         if constexpr(TRAP::Math::IsMat3<T>)
         {

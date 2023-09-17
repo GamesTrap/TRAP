@@ -12,12 +12,12 @@ template<typename T>
 requires std::floating_point<T>
 void RunMat3CastTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
     {
-        constexpr TRAP::Math::tQuat<T> q1(1.0f, 0.0f, 0.0f, 0.0f);
-        constexpr TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
-        constexpr TRAP::Math::tMat3<T> expected(1.0f);
+        static constexpr TRAP::Math::tQuat<T> q1(1.0f, 0.0f, 0.0f, 0.0f);
+        static constexpr TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
+        static constexpr TRAP::Math::tMat3<T> expected(1.0f);
         static_assert(TRAP::Math::All(TRAP::Math::Equal(res, expected, Epsilon)));
     }
     {
@@ -27,9 +27,9 @@ void RunMat3CastTests()
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, Epsilon)));
     }
     {
-        constexpr TRAP::Math::tQuat<T> q1(0.7071f, 0.0f, 0.0f, 0.7071f);
-        constexpr TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
-        constexpr TRAP::Math::tMat3<T> expected(0.000019f, 0.999981f, 0.0f, -0.999981f, 0.000019f, 0.0f, 0.0f, 0.0f, 1.0f);
+        static constexpr TRAP::Math::tQuat<T> q1(0.7071f, 0.0f, 0.0f, 0.7071f);
+        static constexpr TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
+        static constexpr TRAP::Math::tMat3<T> expected(0.000019f, 0.999981f, 0.0f, -0.999981f, 0.000019f, 0.0f, 0.0f, 0.0f, 1.0f);
         static_assert(TRAP::Math::All(TRAP::Math::Equal(res, expected, T(0.000001f))));
     }
 }
@@ -38,34 +38,34 @@ template<typename T>
 requires std::floating_point<T>
 void RunMat3CastEdgeTests()
 {
-    constexpr T min = std::numeric_limits<T>::lowest();
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T min = std::numeric_limits<T>::lowest();
+    static constexpr T max = std::numeric_limits<T>::max();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
 
     {
-        constexpr TRAP::Math::tQuat<T> q1(min, min, min, min);
+        static constexpr TRAP::Math::tQuat<T> q1(min, min, min, min);
         const TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
         REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
     {
-        constexpr TRAP::Math::tQuat<T> q1(max, max, max, max);
+        static constexpr TRAP::Math::tQuat<T> q1(max, max, max, max);
         const TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
         REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
     {
-        constexpr TRAP::Math::tQuat<T> q1(inf, inf, inf, inf);
+        static constexpr TRAP::Math::tQuat<T> q1(inf, inf, inf, inf);
         const TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
         REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
     {
-        constexpr TRAP::Math::tQuat<T> q1(ninf, ninf, ninf, ninf);
+        static constexpr TRAP::Math::tQuat<T> q1(ninf, ninf, ninf, ninf);
         const TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
         REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
     {
-        constexpr TRAP::Math::tQuat<T> q1(nan, nan, nan, nan);
+        static constexpr TRAP::Math::tQuat<T> q1(nan, nan, nan, nan);
         const TRAP::Math::tMat3<T> res = TRAP::Math::Mat3Cast(q1);
         REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
@@ -75,12 +75,12 @@ template<typename T>
 requires std::floating_point<T>
 void RunMat4CastTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
     {
-        constexpr TRAP::Math::tQuat<T> q1(1.0f, 0.0f, 0.0f, 0.0f);
-        constexpr TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
-        constexpr TRAP::Math::tMat4<T> expected(1.0f);
+        static constexpr TRAP::Math::tQuat<T> q1(1.0f, 0.0f, 0.0f, 0.0f);
+        static constexpr TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
+        static constexpr TRAP::Math::tMat4<T> expected(1.0f);
         static_assert(TRAP::Math::All(TRAP::Math::Equal(res, expected, Epsilon)));
     }
     {
@@ -90,9 +90,9 @@ void RunMat4CastTests()
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, expected, Epsilon)));
     }
     {
-        constexpr TRAP::Math::tQuat<T> q1(0.7071f, 0.0f, 0.0f, 0.7071f);
-        constexpr TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
-        constexpr TRAP::Math::tMat4<T> expected(0.000019f, 0.999981f, 0.0f, 0.0f, -0.999981f, 0.000019f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+        static constexpr TRAP::Math::tQuat<T> q1(0.7071f, 0.0f, 0.0f, 0.7071f);
+        static constexpr TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
+        static constexpr TRAP::Math::tMat4<T> expected(0.000019f, 0.999981f, 0.0f, 0.0f, -0.999981f, 0.000019f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
         static_assert(TRAP::Math::All(TRAP::Math::Equal(res, expected, T(0.000001f))));
     }
 }
@@ -101,34 +101,34 @@ template<typename T>
 requires std::floating_point<T>
 void RunMat4CastEdgeTests()
 {
-    constexpr T min = std::numeric_limits<T>::lowest();
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T min = std::numeric_limits<T>::lowest();
+    static constexpr T max = std::numeric_limits<T>::max();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
 
     {
-        constexpr TRAP::Math::tQuat<T> q1(min, min, min, min);
+        static constexpr TRAP::Math::tQuat<T> q1(min, min, min, min);
         const TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
         REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
     {
-        constexpr TRAP::Math::tQuat<T> q1(max, max, max, max);
+        static constexpr TRAP::Math::tQuat<T> q1(max, max, max, max);
         const TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
         REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
     {
-        constexpr TRAP::Math::tQuat<T> q1(inf, inf, inf, inf);
+        static constexpr TRAP::Math::tQuat<T> q1(inf, inf, inf, inf);
         const TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
         REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
     {
-        constexpr TRAP::Math::tQuat<T> q1(ninf, ninf, ninf, ninf);
+        static constexpr TRAP::Math::tQuat<T> q1(ninf, ninf, ninf, ninf);
         const TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
         REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }
     {
-        constexpr TRAP::Math::tQuat<T> q1(nan, nan, nan, nan);
+        static constexpr TRAP::Math::tQuat<T> q1(nan, nan, nan, nan);
         const TRAP::Math::tMat4<T> res = TRAP::Math::Mat4Cast(q1);
         REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(std::get<0>(res))));
     }

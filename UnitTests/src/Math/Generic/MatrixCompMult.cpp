@@ -33,41 +33,41 @@ template<typename T>
 requires (TRAP::Math::IsMat<T> && std::floating_point<typename T::value_type> && T::Length() > 2)
 void RunMatrixCompMultEdgeTests()
 {
-    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+    static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
-    constexpr typename T::value_type min = std::numeric_limits<typename T::value_type>::lowest();
-    constexpr typename T::value_type max = std::numeric_limits<typename T::value_type>::max();
-    constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
-    constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
-    constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
+    static constexpr typename T::value_type min = std::numeric_limits<typename T::value_type>::lowest();
+    static constexpr typename T::value_type max = std::numeric_limits<typename T::value_type>::max();
+    static constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
+    static constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
+    static constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
 
     {
-        constexpr T m(TRAP::Math::tMat4<typename T::value_type>{min});
-        constexpr T m1(TRAP::Math::tMat4<typename T::value_type>(1.0f));
-        constexpr T n = TRAP::Math::MatrixCompMult(m, m1);
+        static constexpr T m(TRAP::Math::tMat4<typename T::value_type>{min});
+        static constexpr T m1(TRAP::Math::tMat4<typename T::value_type>(1.0f));
+        static constexpr T n = TRAP::Math::MatrixCompMult(m, m1);
         static_assert(TRAP::Math::All(TRAP::Math::Equal(n, m, Epsilon)));
     }
     {
-        constexpr T m(TRAP::Math::tMat4<typename T::value_type>{max});
-        constexpr T m1(TRAP::Math::tMat4<typename T::value_type>(1.0f));
-        constexpr T n = TRAP::Math::MatrixCompMult(m, m1);
+        static constexpr T m(TRAP::Math::tMat4<typename T::value_type>{max});
+        static constexpr T m1(TRAP::Math::tMat4<typename T::value_type>(1.0f));
+        static constexpr T n = TRAP::Math::MatrixCompMult(m, m1);
         static_assert(TRAP::Math::All(TRAP::Math::Equal(n, m, Epsilon)));
     }
     {
-        constexpr T m(TRAP::Math::tMat4<typename T::value_type>{inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf});
-        constexpr T m1(TRAP::Math::tMat4<typename T::value_type>(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
-        constexpr T n = TRAP::Math::MatrixCompMult(m, m1);
+        static constexpr T m(TRAP::Math::tMat4<typename T::value_type>{inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf});
+        static constexpr T m1(TRAP::Math::tMat4<typename T::value_type>(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+        static constexpr T n = TRAP::Math::MatrixCompMult(m, m1);
         static_assert(TRAP::Math::All(TRAP::Math::Equal(n, m)));
     }
     {
-        constexpr T m(TRAP::Math::tMat4<typename T::value_type>{ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf});
-        constexpr T m1(TRAP::Math::tMat4<typename T::value_type>(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
-        constexpr T n = TRAP::Math::MatrixCompMult(m, m1);
+        static constexpr T m(TRAP::Math::tMat4<typename T::value_type>{ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf});
+        static constexpr T m1(TRAP::Math::tMat4<typename T::value_type>(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+        static constexpr T n = TRAP::Math::MatrixCompMult(m, m1);
         static_assert(TRAP::Math::All(TRAP::Math::Equal(n, m)));
     }
     {
-        constexpr T m(TRAP::Math::tMat4<typename T::value_type>{nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan});
-        constexpr T m1(TRAP::Math::tMat4<typename T::value_type>(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+        static constexpr T m(TRAP::Math::tMat4<typename T::value_type>{nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan});
+        static constexpr T m1(TRAP::Math::tMat4<typename T::value_type>(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
         const T n = TRAP::Math::MatrixCompMult(m, m1);
         REQUIRE(TRAP::Math::All(TRAP::Math::NotEqual(n, m)));
     }

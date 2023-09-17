@@ -11,9 +11,9 @@ template<typename T>
 requires std::floating_point<T>
 void RunATanTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr std::array<std::pair<T, T>, 16> values
+    static constexpr std::array<std::pair<T, T>, 16> values
     {
         std::pair(T(0.0), T(0.0)), std::pair(T(0.2), T(0.0)), std::pair(T(-0.2), T(0.0)),
         std::pair(T(0.001), T(0.001)), std::pair(T(0.49), T(0.49)), std::pair(T(-0.5), T(-0.5)),
@@ -33,7 +33,7 @@ template<typename T>
 requires std::floating_point<T>
 void RunATanEdgeTests()
 {
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
 
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::ATan(nan, T(1.0))));
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::ATan(T(1.0), nan)));
@@ -44,9 +44,9 @@ template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunATanVecTests()
 {
-    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+    static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
-    constexpr std::array<std::pair<T, T>, 16> values
+    static constexpr std::array<std::pair<T, T>, 16> values
     {
         std::pair(T(typename T::value_type(0.0)), T(typename T::value_type(0.0))),
         std::pair(T(typename T::value_type(0.2)), T(typename T::value_type(0.0))),
@@ -78,7 +78,7 @@ template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunATanVecEdgeTests()
 {
-    constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
+    static constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
 
     REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::ATan(T(nan), T(1.0)))));
     REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::ATan(T(1.0), T(nan)))));

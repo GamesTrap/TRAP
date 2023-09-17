@@ -339,7 +339,7 @@
 {
 	TRAP_ASSERT(image != VK_NULL_HANDLE, "VulkanInits::ImageViewCreateInfo(): Image can't be VK_NULL_HANDLE!");
 
-	constexpr VkComponentMapping componentMapping
+	static constexpr VkComponentMapping componentMapping
 	{
         .r = VK_COMPONENT_SWIZZLE_R,
 		.g = VK_COMPONENT_SWIZZLE_G,
@@ -423,7 +423,7 @@
 	TRAP_ASSERT(height != 0, "VulkanInits::ImageCopy(): Height can't be 0!");
 	TRAP_ASSERT(depth != 0, "VulkanInits::ImageCopy(): Depth can't be 0!");
 
-	constexpr VkOffset3D offset
+	static constexpr VkOffset3D offset
 	{
 		.x = 0,
 		.y = 0,
@@ -459,7 +459,7 @@
 	TRAP_ASSERT(height != 0, "VulkanInits::ImageCopy(): Height can't be 0!");
 	TRAP_ASSERT(depth != 0, "VulkanInits::ImageCopy(): Depth can't be 0!");
 
-	constexpr VkOffset3D offset
+	static constexpr VkOffset3D offset
 	{
 		.x = 0,
 		.y = 0,

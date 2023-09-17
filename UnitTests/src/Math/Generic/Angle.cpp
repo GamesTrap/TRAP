@@ -59,34 +59,34 @@ template<typename T>
 requires std::floating_point<T>
 void RunAngleEdgeTests()
 {
-    constexpr T min = std::numeric_limits<T>::lowest();
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T min = std::numeric_limits<T>::lowest();
+    static constexpr T max = std::numeric_limits<T>::max();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
 
     {
-        constexpr TRAP::Math::tQuat<T> q(min, min, min, min);
+        static constexpr TRAP::Math::tQuat<T> q(min, min, min, min);
         const T a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
         REQUIRE(TRAP::Math::IsNaN(a));
     }
     {
-        constexpr TRAP::Math::tQuat<T> q(max, max, max, max);
+        static constexpr TRAP::Math::tQuat<T> q(max, max, max, max);
         const T a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
         REQUIRE(TRAP::Math::IsNaN(a));
     }
     {
-        constexpr TRAP::Math::tQuat<T> q(inf, inf, inf, inf);
+        static constexpr TRAP::Math::tQuat<T> q(inf, inf, inf, inf);
         const T a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
         REQUIRE(TRAP::Math::IsNaN(a));
     }
     {
-        constexpr TRAP::Math::tQuat<T> q(ninf, ninf, ninf, ninf);
+        static constexpr TRAP::Math::tQuat<T> q(ninf, ninf, ninf, ninf);
         const T a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
         REQUIRE(TRAP::Math::IsNaN(a));
     }
     {
-        constexpr TRAP::Math::tQuat<T> q(nan, nan, nan, nan);
+        static constexpr TRAP::Math::tQuat<T> q(nan, nan, nan, nan);
         const T a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
         REQUIRE(TRAP::Math::IsNaN(a));
     }

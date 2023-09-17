@@ -11,9 +11,9 @@ template<typename T>
 requires std::floating_point<T>
 void RunTanHTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr std::array<T, 6> values
+    static constexpr std::array<T, 6> values
     {
         T(-0.5), T(0.0), T(0.001), T(0.5), T(1.0), T(5.0)
     };
@@ -28,7 +28,7 @@ template<typename T>
 requires std::floating_point<T>
 void RunTanHEdgeTests()
 {
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
 
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::TanH(nan)));
 }
@@ -37,9 +37,9 @@ template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunTanHVecTests()
 {
-    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+    static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
-    constexpr std::array<T, 8> values
+    static constexpr std::array<T, 8> values
     {
         T(typename T::value_type(-0.5)), T(typename T::value_type(0.0)), T(typename T::value_type(0.001)),
         T(typename T::value_type(0.5)), T(typename T::value_type(1.0)), T(typename T::value_type(5.0))
@@ -57,7 +57,7 @@ template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunTanHVecEdgeTests()
 {
-    constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
+    static constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
 
     REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::TanH(T(nan)))));
 }

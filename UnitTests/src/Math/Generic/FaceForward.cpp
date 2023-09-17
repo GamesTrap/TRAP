@@ -62,9 +62,9 @@ template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunFaceForwardVecEdgeTests()
 {
-    constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
-    constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
-    constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
+    static constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
+    static constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
+    static constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
 
     static_assert(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::FaceForward(T(inf), T(ninf), T(inf)))));
     static_assert(TRAP::Math::All(TRAP::Math::IsInf(TRAP::Math::FaceForward(T(ninf), T(inf), T(ninf)))));

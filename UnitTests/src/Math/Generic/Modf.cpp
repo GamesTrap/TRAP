@@ -13,10 +13,10 @@ void RunModfTests()
 {
     if constexpr(std::floating_point<T>)
     {
-        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
         T i{};
 
-        constexpr std::array<std::tuple<T, T, T>, 1> values
+        static constexpr std::array<std::tuple<T, T, T>, 1> values
         {
             std::tuple{T(1.5), T(0.5), T(1.0)}
         };
@@ -29,10 +29,10 @@ void RunModfTests()
     }
     else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
     {
-        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+        static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
         T i{};
 
-        constexpr std::array<std::tuple<T, T, T>, 1> values
+        static constexpr std::array<std::tuple<T, T, T>, 1> values
         {
             std::tuple<T, T, T>{TRAP::Math::Vec4d{1.1, 1.2, 1.5, 1.7}, TRAP::Math::Vec4d{0.1, 0.2, 0.5, 0.7}, TRAP::Math::Vec4d(1.0)}
         };
@@ -49,12 +49,12 @@ template<typename T>
 requires std::floating_point<T>
 void RunModfEdgeTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T min = std::numeric_limits<T>::lowest();
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-    constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T max = std::numeric_limits<T>::max();
+    static constexpr T min = std::numeric_limits<T>::lowest();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
 
     T i{};
 

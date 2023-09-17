@@ -62,43 +62,43 @@ template<typename T>
 requires (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type> && T::Length() > 2)
 void RunOuterProductEdgeTests()
 {
-    constexpr typename T::value_type min = std::numeric_limits<typename T::value_type>::lowest();
-    constexpr typename T::value_type max = std::numeric_limits<typename T::value_type>::max();
-    constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
-    constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
-    constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
+    static constexpr typename T::value_type min = std::numeric_limits<typename T::value_type>::lowest();
+    static constexpr typename T::value_type max = std::numeric_limits<typename T::value_type>::max();
+    static constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
+    static constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
+    static constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
 
     {
-        constexpr T v1(TRAP::Math::Vec<4, typename T::value_type>{max});
-        constexpr T v2(TRAP::Math::Vec<4, typename T::value_type>{min});
+        static constexpr T v1(TRAP::Math::Vec<4, typename T::value_type>{max});
+        static constexpr T v2(TRAP::Math::Vec<4, typename T::value_type>{min});
         const auto result = TRAP::Math::OuterProduct(v1, v2);
-        constexpr decltype(result) expected(TRAP::Math::tMat4<typename T::value_type>(ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf));
+        static constexpr decltype(result) expected(TRAP::Math::tMat4<typename T::value_type>(ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(result, expected)));
     }
     {
-        constexpr T v(TRAP::Math::Vec<4, typename T::value_type>{inf});
-        constexpr auto result = TRAP::Math::OuterProduct(v, v);
-        constexpr decltype(result) expected(TRAP::Math::tMat4<typename T::value_type>(inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf));
+        static constexpr T v(TRAP::Math::Vec<4, typename T::value_type>{inf});
+        static constexpr auto result = TRAP::Math::OuterProduct(v, v);
+        static constexpr decltype(result) expected(TRAP::Math::tMat4<typename T::value_type>(inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf, inf));
         static_assert(TRAP::Math::All(TRAP::Math::Equal(result, expected)));
     }
     {
-        constexpr T v1(TRAP::Math::Vec<4, typename T::value_type>{inf});
-        constexpr T v2(TRAP::Math::Vec<4, typename T::value_type>{ninf});
-        constexpr auto result = TRAP::Math::OuterProduct(v1, v2);
-        constexpr decltype(result) expected(TRAP::Math::tMat4<typename T::value_type>(ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf));
+        static constexpr T v1(TRAP::Math::Vec<4, typename T::value_type>{inf});
+        static constexpr T v2(TRAP::Math::Vec<4, typename T::value_type>{ninf});
+        static constexpr auto result = TRAP::Math::OuterProduct(v1, v2);
+        static constexpr decltype(result) expected(TRAP::Math::tMat4<typename T::value_type>(ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf, ninf));
         static_assert(TRAP::Math::All(TRAP::Math::Equal(result, expected)));
     }
     {
-        constexpr T v1(TRAP::Math::Vec<4, typename T::value_type>{nan});
-        constexpr T v2(TRAP::Math::Vec<4, typename T::value_type>{1.f});
+        static constexpr T v1(TRAP::Math::Vec<4, typename T::value_type>{nan});
+        static constexpr T v2(TRAP::Math::Vec<4, typename T::value_type>{1.f});
         const auto result = TRAP::Math::OuterProduct(v1, v2);
-        constexpr decltype(result) expected(TRAP::Math::tMat4<typename T::value_type>(nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan));
+        static constexpr decltype(result) expected(TRAP::Math::tMat4<typename T::value_type>(nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan));
         REQUIRE(TRAP::Math::All(TRAP::Math::Not(TRAP::Math::Equal(result, expected))));
     }
     {
-        constexpr T v(TRAP::Math::Vec<4, typename T::value_type>{nan});
+        static constexpr T v(TRAP::Math::Vec<4, typename T::value_type>{nan});
         const auto result = TRAP::Math::OuterProduct(v, v);
-        constexpr decltype(result) expected(TRAP::Math::tMat4<typename T::value_type>(nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan));
+        static constexpr decltype(result) expected(TRAP::Math::tMat4<typename T::value_type>(nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan));
         REQUIRE(TRAP::Math::All(TRAP::Math::Not(TRAP::Math::Equal(result, expected))));
     }
 }

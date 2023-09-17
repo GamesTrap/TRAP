@@ -183,8 +183,8 @@ void ComputeTests::OnImGuiRender()
     ImGui::PlotLines("", m_frameTimeHistory.data(), NumericCast<int32_t>(m_frameTimeHistory.size()), 0, nullptr, 0,
                      33, ImVec2(200, 50));
     ImGui::Separator();
-    constexpr std::array<std::string_view, 4> shaders{"Disabled", "Sharpen", "Emboss", "Edge Detection"};
-    constexpr std::array<const char*, 4> shadersC{std::get<0>(shaders).data(), std::get<1>(shaders).data(), std::get<2>(shaders).data(), std::get<3>(shaders).data()};
+    static constexpr std::array<std::string_view, 4> shaders{"Disabled", "Sharpen", "Emboss", "Edge Detection"};
+    static constexpr std::array<const char*, 4> shadersC{std::get<0>(shaders).data(), std::get<1>(shaders).data(), std::get<2>(shaders).data(), std::get<3>(shaders).data()};
     constinit static int32_t currentItem = 0;
     int32_t oldItem = currentItem;
     ImGui::Combo("##Compute shader", &currentItem, shadersC.data(), shadersC.size());

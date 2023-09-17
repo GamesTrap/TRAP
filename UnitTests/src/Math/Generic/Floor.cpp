@@ -11,9 +11,9 @@ template<typename T>
 requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
 void RunFloorTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr std::array<T, 25> values
+    static constexpr std::array<T, 25> values
     {
         T(0.0f), T(-0.0f), T(0.1f), T(-0.1f), T(0.5f), T(-0.5f), T(0.9f), T(-0.9f), T(1.0f), T(-1.0f), T(1.1f),
         T(1.5f), T(-1.5f), T(1.9f), T(-1.9f), T(4.2f), T(4.5f), T(4.7f), T(5.0f), T(-4.2f), T(-4.5f),
@@ -37,17 +37,17 @@ template<typename T>
 requires std::floating_point<T>
 void RunFloorEdgeTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr T max = std::numeric_limits<T>::max();
+    static constexpr T max = std::numeric_limits<T>::max();
     REQUIRE_THAT(TRAP::Math::Floor(max), Catch::Matchers::WithinRel(max, Epsilon));
-    constexpr T min = std::numeric_limits<T>::lowest();
+    static constexpr T min = std::numeric_limits<T>::lowest();
     REQUIRE_THAT(TRAP::Math::Floor(min), Catch::Matchers::WithinRel(min, Epsilon));
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Floor(nan)));
-    constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
     REQUIRE_THAT(TRAP::Math::Floor(inf), Catch::Matchers::WithinRel(inf, Epsilon));
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
     REQUIRE_THAT(TRAP::Math::Floor(ninf), Catch::Matchers::WithinRel(ninf, Epsilon));
 }
 

@@ -13,7 +13,7 @@ struct ErrorData
     std::string_view LogMessage;
 };
 
-static const TRAP::Utils::ConstexprMap<TRAP::Utils::ErrorCode, ErrorData, 22> s_errorMap
+static constexpr TRAP::Utils::ConstexprMap<TRAP::Utils::ErrorCode, ErrorData, 22> s_errorMap
 {
     {
         {

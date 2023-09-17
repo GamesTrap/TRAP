@@ -27,9 +27,9 @@ template<typename T>
 requires std::floating_point<T>
 void RunAngleAxisEdgeTests()
 {
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
 
     {
         const TRAP::Math::tQuat<T> res = TRAP::Math::AngleAxis(inf, TRAP::Math::tVec3<T>(0.0f, 0.0f, 1.0f));

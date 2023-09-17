@@ -48,11 +48,11 @@ template<typename T>
 requires std::is_arithmetic_v<T>
 void RunClampEdgeTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T min = std::numeric_limits<T>::lowest();
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T max = std::numeric_limits<T>::max();
+    static constexpr T min = std::numeric_limits<T>::lowest();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
 
     static_assert(TRAP::Math::Equal(TRAP::Math::Clamp(max, min, max), max, Epsilon));
     if constexpr(std::floating_point<T>)

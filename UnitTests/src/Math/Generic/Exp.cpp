@@ -36,7 +36,7 @@ template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunExpVecTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
     REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp(T(1.0f)), T(TRAP::Math::e<typename T::value_type>()), Epsilon)));
 }
 
@@ -44,7 +44,7 @@ template<typename T>
 requires TRAP::Math::IsQuat<T>
 void RunExpQuatTests()
 {
-    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+    static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
     const T q(typename T::value_type(1.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
     const T res(typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f), typename T::value_type(0.0f));
@@ -70,13 +70,13 @@ template<typename T>
 requires std::floating_point<T>
 void RunExpEdgeTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T min = std::numeric_limits<T>::lowest();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T max = std::numeric_limits<T>::max();
+    static constexpr T min = std::numeric_limits<T>::lowest();
 
     REQUIRE(TRAP::Math::Equal(TRAP::Math::Exp(ninf), T(0.0f), Epsilon));
     REQUIRE(TRAP::Math::IsInf(TRAP::Math::Exp(inf)));

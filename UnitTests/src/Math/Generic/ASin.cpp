@@ -11,9 +11,9 @@ template<typename T>
 requires std::floating_point<T>
 void RunASinTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr std::array<T, 5> values
+    static constexpr std::array<T, 5> values
     {
         T(-0.5), T(0.0), T(0.001), T(0.5), T(1.0)
     };
@@ -28,9 +28,9 @@ template<typename T>
 requires std::floating_point<T>
 void RunASinEdgeTests()
 {
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
 
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::ASin(nan)));
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::ASin(inf)));
@@ -41,9 +41,9 @@ template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunASinVecTests()
 {
-    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+    static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
-    constexpr std::array<T, 5> values
+    static constexpr std::array<T, 5> values
     {
         T(typename T::value_type(-0.5)), T(typename T::value_type(0.0)), T(typename T::value_type(0.001)),
         T(typename T::value_type(0.5)), T(typename T::value_type(1.0))
@@ -61,9 +61,9 @@ template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunASinVecEdgeTests()
 {
-    constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
-    constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
-    constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
+    static constexpr typename T::value_type nan = std::numeric_limits<typename T::value_type>::quiet_NaN();
+    static constexpr typename T::value_type inf = std::numeric_limits<typename T::value_type>::infinity();
+    static constexpr typename T::value_type ninf = -std::numeric_limits<typename T::value_type>::infinity();
 
     REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::ASin(T(nan)))));
     REQUIRE(TRAP::Math::All(TRAP::Math::IsNaN(TRAP::Math::ASin(T(inf)))));

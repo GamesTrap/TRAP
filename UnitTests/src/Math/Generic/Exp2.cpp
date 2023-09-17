@@ -12,7 +12,7 @@ template<typename T>
 requires std::floating_point<T>
 void RunExp2Tests()
 {
-    constexpr std::array<std::tuple<T, T>, 6> values
+    static constexpr std::array<std::tuple<T, T>, 6> values
     {
         std::tuple(T(23.0f), T(8388608.f)),
         std::tuple(T(2.5f), T(5.65685f)),
@@ -33,8 +33,8 @@ template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunExp2VecTests()
 {
-    constexpr T x(TRAP::Math::Vec<4, typename T::value_type>(4.0f, 3.0f, 2.0f, 1.0f));
-    constexpr T res(TRAP::Math::Vec<4, typename T::value_type>(16.0f, 8.0f, 4.0f, 2.0f));
+    static constexpr T x(TRAP::Math::Vec<4, typename T::value_type>(4.0f, 3.0f, 2.0f, 1.0f));
+    static constexpr T res(TRAP::Math::Vec<4, typename T::value_type>(16.0f, 8.0f, 4.0f, 2.0f));
     REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Exp2(x), res, T(0.01f))));
 }
 
@@ -42,13 +42,13 @@ template<typename T>
 requires std::floating_point<T>
 void RunExp2EdgeTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T min = std::numeric_limits<T>::lowest();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T max = std::numeric_limits<T>::max();
+    static constexpr T min = std::numeric_limits<T>::lowest();
 
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Exp2(nan)));
     REQUIRE(TRAP::Math::IsInf(TRAP::Math::Exp2(inf)));

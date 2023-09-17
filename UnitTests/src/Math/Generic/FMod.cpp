@@ -12,7 +12,7 @@ template<typename T>
 requires std::floating_point<T>
 void RunFModTests()
 {
-    constexpr std::array<std::tuple<T, T, T>, 10> values
+    static constexpr std::array<std::tuple<T, T, T>, 10> values
     {
         std::tuple(T( 5.3f), T( 2.0f), T( 1.3f)),
         std::tuple(T(-5.3f), T( 2.0f), T(-1.3f)),
@@ -53,7 +53,7 @@ template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 void RunFModVecTests()
 {
-    constexpr std::array<std::tuple<typename T::value_type, typename T::value_type, typename T::value_type>, 10> values
+    static constexpr std::array<std::tuple<typename T::value_type, typename T::value_type, typename T::value_type>, 10> values
     {
         std::tuple(typename T::value_type( 5.3f), typename T::value_type( 2.0f), typename T::value_type( 1.3f)),
         std::tuple(typename T::value_type(-5.3f), typename T::value_type( 2.0f), typename T::value_type(-1.3f)),
@@ -81,9 +81,9 @@ template<typename T>
 requires std::floating_point<T>
 void RunFModEdgeTests()
 {
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
 
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(inf, T( 0.0f))));
     REQUIRE(TRAP::Math::IsNaN(TRAP::Math::FMod(inf, T(-1.0f))));

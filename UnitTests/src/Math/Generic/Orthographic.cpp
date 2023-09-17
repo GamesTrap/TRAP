@@ -50,23 +50,23 @@ template<typename T>
 requires std::floating_point<T>
 void RunOrthographicEdgeTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr T min = std::numeric_limits<T>::lowest();
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T min = std::numeric_limits<T>::lowest();
+    static constexpr T max = std::numeric_limits<T>::max();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
 
     {
-        constexpr TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(min, 1.0f, min, 1.0f, 0.0f, 1.0f);
-        constexpr TRAP::Math::tMat4<T> expected(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f);
+        static constexpr TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(min, 1.0f, min, 1.0f, 0.0f, 1.0f);
+        static constexpr TRAP::Math::tMat4<T> expected(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f);
         static_assert(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, Epsilon)));
         static_assert(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ(T(min), T(5.0f), T(min), T(5.0f), T(1.0f), T(0.0f)), Epsilon)));
     }
     {
-        constexpr TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(max, 1.0f, max, 1.0f, 0.0f, 1.0f);
-        constexpr TRAP::Math::tMat4<T> expected(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f);
+        static constexpr TRAP::Math::tMat4<T> ortho = TRAP::Math::Orthographic<T>(max, 1.0f, max, 1.0f, 0.0f, 1.0f);
+        static constexpr TRAP::Math::tMat4<T> expected(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f);
         static_assert(TRAP::Math::All(TRAP::Math::Equal(ortho, expected, Epsilon)));
         static_assert(TRAP::Math::All(TRAP::Math::Equal(ortho, TRAP::Math::OrthographicReverseZ(T(max), T(5.0f), T(max), T(5.0f), T(1.0f), T(0.0f)), Epsilon)));
     }

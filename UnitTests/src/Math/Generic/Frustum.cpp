@@ -42,21 +42,21 @@ template<typename T>
 requires std::floating_point<T>
 void RunFrustumEdgeTests()
 {
-    constexpr T min = std::numeric_limits<T>::lowest();
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T min = std::numeric_limits<T>::lowest();
+    static constexpr T max = std::numeric_limits<T>::max();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
 
     {
-        constexpr TRAP::Math::tMat4<T> m = TRAP::Math::Frustum<T>(min, 1.0f, min, 1.0f, 1.0f, 10.0f);
-        constexpr TRAP::Math::tMat4<T> expected(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, -1.0f, -1.111111f, -1.0f, 0.0f, 0.0f, -1.111111f, 0.0f);
+        static constexpr TRAP::Math::tMat4<T> m = TRAP::Math::Frustum<T>(min, 1.0f, min, 1.0f, 1.0f, 10.0f);
+        static constexpr TRAP::Math::tMat4<T> expected(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, -1.0f, -1.111111f, -1.0f, 0.0f, 0.0f, -1.111111f, 0.0f);
         static_assert(TRAP::Math::All(TRAP::Math::Equal(m, expected, T(0.000001f))));
         static_assert(TRAP::Math::All(TRAP::Math::Equal(m, TRAP::Math::FrustumReverseZ<T>(min, 1.0f, min, 1.0f, 10.0f, 1.0f), T(0.000001f))));
     }
     {
-        constexpr TRAP::Math::tMat4<T> m = TRAP::Math::Frustum<T>(max, 1.0f, max, 1.0f, 1.0f, 10.0f);
-        constexpr TRAP::Math::tMat4<T> expected(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, -1.0f, -1.111111f, -1.0f, 0.0f, 0.0f, -1.111111f, 0.0f);
+        static constexpr TRAP::Math::tMat4<T> m = TRAP::Math::Frustum<T>(max, 1.0f, max, 1.0f, 1.0f, 10.0f);
+        static constexpr TRAP::Math::tMat4<T> expected(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, -1.0f, -1.111111f, -1.0f, 0.0f, 0.0f, -1.111111f, 0.0f);
         static_assert(TRAP::Math::All(TRAP::Math::Equal(m, expected, T(0.000001f))));
         static_assert(TRAP::Math::All(TRAP::Math::Equal(m, TRAP::Math::FrustumReverseZ<T>(max, 1.0f, max, 1.0f, 10.0f, 1.0f), T(0.000001f))));
     }

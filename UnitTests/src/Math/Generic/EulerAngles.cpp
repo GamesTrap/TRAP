@@ -12,10 +12,10 @@ template<typename T>
 requires std::floating_point<T>
 void RunEulerAnglesTests()
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
     {
-        constexpr TRAP::Math::tQuat<T> q(1.0f, 0.0f, 0.0f, 1.0f);
+        static constexpr TRAP::Math::tQuat<T> q(1.0f, 0.0f, 0.0f, 1.0f);
         const T roll = TRAP::Math::Roll(q);
         const T pitch = TRAP::Math::Pitch(q);
         const T yaw = TRAP::Math::Yaw(q);
@@ -23,7 +23,7 @@ void RunEulerAnglesTests()
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(angles, TRAP::Math::tVec3<T>(pitch, yaw, roll), Epsilon)));
     }
     {
-        constexpr TRAP::Math::tQuat<T> q(1.0f, 1.0f, 1.0f, 1.0f);
+        static constexpr TRAP::Math::tQuat<T> q(1.0f, 1.0f, 1.0f, 1.0f);
         const T roll = TRAP::Math::Roll(q);
         const T pitch = TRAP::Math::Pitch(q);
         const T yaw = TRAP::Math::Yaw(q);
@@ -31,7 +31,7 @@ void RunEulerAnglesTests()
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(angles, TRAP::Math::tVec3<T>(pitch, yaw, roll), Epsilon)));
     }
     {
-        constexpr TRAP::Math::tQuat<T> q(1.0f, 1.0f, 1.0f, 0.5f);
+        static constexpr TRAP::Math::tQuat<T> q(1.0f, 1.0f, 1.0f, 0.5f);
         const T roll = TRAP::Math::Roll(q);
         const T pitch = TRAP::Math::Pitch(q);
         const T yaw = TRAP::Math::Yaw(q);
@@ -44,34 +44,34 @@ template<typename T>
 requires std::floating_point<T>
 void RunEulerAnglesEdgeTests()
 {
-    constexpr T min = std::numeric_limits<T>::lowest();
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static constexpr T min = std::numeric_limits<T>::lowest();
+    static constexpr T max = std::numeric_limits<T>::max();
+    static constexpr T inf = std::numeric_limits<T>::infinity();
+    static constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
 
     {
-        constexpr TRAP::Math::tQuat<T> q(min, min, 1.0f, 0.5f);
+        static constexpr TRAP::Math::tQuat<T> q(min, min, 1.0f, 0.5f);
         const TRAP::Math::tVec3<T> angles = TRAP::Math::EulerAngles(q);
         REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(angles)));
     }
     {
-        constexpr TRAP::Math::tQuat<T> q(max, max, 1.0f, 0.5f);
+        static constexpr TRAP::Math::tQuat<T> q(max, max, 1.0f, 0.5f);
         const TRAP::Math::tVec3<T> angles = TRAP::Math::EulerAngles(q);
         REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(angles)));
     }
     {
-        constexpr TRAP::Math::tQuat<T> q(inf, inf, 1.0f, 0.5f);
+        static constexpr TRAP::Math::tQuat<T> q(inf, inf, 1.0f, 0.5f);
         const TRAP::Math::tVec3<T> angles = TRAP::Math::EulerAngles(q);
         REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(angles)));
     }
     {
-        constexpr TRAP::Math::tQuat<T> q(ninf, ninf, 1.0f, 0.5f);
+        static constexpr TRAP::Math::tQuat<T> q(ninf, ninf, 1.0f, 0.5f);
         const TRAP::Math::tVec3<T> angles = TRAP::Math::EulerAngles(q);
         REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(angles)));
     }
     {
-        constexpr TRAP::Math::tQuat<T> q(nan, nan, 1.0f, 0.5f);
+        static constexpr TRAP::Math::tQuat<T> q(nan, nan, 1.0f, 0.5f);
         const TRAP::Math::tVec3<T> angles = TRAP::Math::EulerAngles(q);
         REQUIRE(TRAP::Math::Any(TRAP::Math::IsNaN(angles)));
     }

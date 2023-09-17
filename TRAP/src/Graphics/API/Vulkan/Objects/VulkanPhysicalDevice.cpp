@@ -643,7 +643,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 
 		// Big Optionally: Check if Raytracing extensions are supported
 		bool raytracing = false;
-		constexpr std::array<std::string_view, 8> raytracingExt =
+		static constexpr std::array<std::string_view, 8> raytracingExt =
 		{
 			VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
 			VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME,
@@ -695,7 +695,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 
 		// Big Optionally: Check if Variable Rate Shading is supported and Tier 1/Tier 2
 		bool VRS = true;
-		constexpr std::array<std::string_view, 2> VRSExt =
+		static constexpr std::array<std::string_view, 2> VRSExt =
 		{
 			VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME,
 			VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME
