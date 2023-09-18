@@ -22,7 +22,8 @@ static constexpr std::array<ShaderStageData, std::to_underlying(TRAP::Graphics::
 		{TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation, "TessellationEvaluation", EShLanguage::EShLangTessEvaluation},
 		{TRAP::Graphics::RendererAPI::ShaderStage::Geometry, "Geometry", EShLanguage::EShLangGeometry},
 		{TRAP::Graphics::RendererAPI::ShaderStage::Fragment, "Fragment", EShLanguage::EShLangFragment},
-		{TRAP::Graphics::RendererAPI::ShaderStage::Compute, "Compute", EShLanguage::EShLangCompute}
+		{TRAP::Graphics::RendererAPI::ShaderStage::Compute, "Compute", EShLanguage::EShLangCompute},
+		{TRAP::Graphics::RendererAPI::ShaderStage::RayTracing, "RayTracing", EShLanguage::EShLangCount} //TODO RayTracing Shader support
 	}
 };
 
@@ -271,7 +272,7 @@ bool TRAP::Graphics::Shader::Reload()
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::Shader::Shader(std::string name, const bool valid, const RendererAPI::ShaderStage stages,
-                               const std::vector<Macro>* const userMacros, const std::string& filepath)
+                               const std::vector<Macro>* const userMacros, const std::filesystem::path& filepath)
 	: m_name(std::move(name)), m_filepath(filepath), m_shaderStages(stages), m_valid(valid)
 {
 	if(userMacros != nullptr)

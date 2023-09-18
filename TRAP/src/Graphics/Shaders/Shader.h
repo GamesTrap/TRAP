@@ -40,7 +40,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		Shader(std::string name, bool valid, RendererAPI::ShaderStage stages, const std::vector<Macro>* userMacros = nullptr, const std::string& filepath = "");
+		Shader(std::string name, bool valid, RendererAPI::ShaderStage stages, const std::vector<Macro>* userMacros = nullptr, const std::filesystem::path& filepath = "");
 	public:
 		/// <summary>
 		/// Copy constructor.
