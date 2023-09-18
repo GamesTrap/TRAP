@@ -1,12 +1,5 @@
 #include "TitleTests.h"
 
-TitleTests::TitleTests()
-	: Layer("Title")
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TitleTests::OnImGuiRender()
 {
 	ImGui::Begin("Title", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |

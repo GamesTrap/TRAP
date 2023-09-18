@@ -1,12 +1,5 @@
 #include "EventTests.h"
 
-EventTests::EventTests()
-	: Layer("Events")
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void EventTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Events");

@@ -8,13 +8,6 @@ void RunInvalidTests();
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-FileSystemTests::FileSystemTests()
-    : Layer("HeadlessFileSystemTests")
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void FileSystemTests::OnAttach()
 {
     TP_INFO("Running FileSystemTests...");

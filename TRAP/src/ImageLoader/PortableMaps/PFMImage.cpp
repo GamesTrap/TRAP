@@ -7,10 +7,10 @@
 #include "Utils/Utils.h"
 
 TRAP::INTERNAL::PFMImage::PFMImage(std::filesystem::path filepath)
+	: Image(std::move(filepath))
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
-	m_filepath = std::move(filepath);
 	m_isHDR = true;
 
 	TP_DEBUG(Log::ImagePFMPrefix, "Loading image: ", m_filepath);

@@ -207,19 +207,19 @@ namespace TRAP::Graphics::API
 		/// <returns>Max usable MSAA sample count.</returns>
 		[[nodiscard]] constexpr uint32_t GetMaxUsableMSAASampleCount() const noexcept;
 
-		VkPhysicalDevice m_physicalDevice;
-		VkPhysicalDeviceProperties m_physicalDeviceProperties;
-		VkPhysicalDeviceSubgroupProperties m_physicalDeviceSubgroupProperties;
-		VkPhysicalDeviceIDProperties m_physicalDeviceIDProperties;
-		VkPhysicalDeviceMemoryProperties m_physicalDeviceMemoryProperties;
-		VkPhysicalDeviceFeatures m_physicalDeviceFeatures;
-		VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT m_physicalDeviceFragmentShaderInterlockFeatures;
-		VkPhysicalDeviceDriverProperties m_physicalDeviceDriverProperties;
-		std::vector<VkQueueFamilyProperties> m_queueFamilyProperties;
+		VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
+		VkPhysicalDeviceProperties m_physicalDeviceProperties{};
+		VkPhysicalDeviceSubgroupProperties m_physicalDeviceSubgroupProperties{};
+		VkPhysicalDeviceIDProperties m_physicalDeviceIDProperties{};
+		VkPhysicalDeviceMemoryProperties m_physicalDeviceMemoryProperties{};
+		VkPhysicalDeviceFeatures m_physicalDeviceFeatures{};
+		VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT m_physicalDeviceFragmentShaderInterlockFeatures{};
+		VkPhysicalDeviceDriverProperties m_physicalDeviceDriverProperties{};
+		std::vector<VkQueueFamilyProperties> m_queueFamilyProperties{};
 
-		std::array<uint8_t, 16> m_deviceUUID;
+		std::array<uint8_t, 16> m_deviceUUID{};
 
-		std::vector<VkExtensionProperties> m_availablePhysicalDeviceExtensions;
+		std::vector<VkExtensionProperties> m_availablePhysicalDeviceExtensions{};
 
 		static std::multimap<uint32_t, std::array<uint8_t, 16>> s_availablePhysicalDeviceUUIDs;
 	};

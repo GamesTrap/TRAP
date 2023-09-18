@@ -100,7 +100,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		RenderTarget();
+		explicit RenderTarget(const RendererAPI::RenderTargetDesc& desc);
 
 		TRAP::Ref<TRAP::Graphics::Texture> m_texture = nullptr;
 

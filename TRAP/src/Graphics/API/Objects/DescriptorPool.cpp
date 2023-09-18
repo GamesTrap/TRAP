@@ -34,8 +34,11 @@ TRAP::Graphics::DescriptorPool::~DescriptorPool()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::DescriptorPool::DescriptorPool()
+TRAP::Graphics::DescriptorPool::DescriptorPool(const uint32_t numDescriptorSets)
+	: m_numDescriptorSets(numDescriptorSets)
 {
+	TRAP_ASSERT(numDescriptorSets > 0, "DescriptorPool::DescriptorPool(): m_numDescriptorSets is 0");
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererDescriptorPoolPrefix, "Creating DescriptorPool");
 #endif /*ENABLE_GRAPHICS_DEBUG*/

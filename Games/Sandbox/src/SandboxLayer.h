@@ -7,9 +7,7 @@ class SandboxLayer final : public TRAP::Layer
 {
 public:
 	SandboxLayer()
-		: Layer("Sandbox"),
-		m_frameTimeHistory(),
-		m_cameraController(TRAP::Application::GetWindow()->GetAspectRatio())
+		: Layer("Sandbox")
 	{
 	}
 
@@ -123,16 +121,6 @@ public:
 		m_indexedVertexBuffer->Use();
 		m_indexBuffer->Use();
 		m_shader->Use();
-	}
-
-	//-------------------------------------------------------------------------------------------------------------------//
-
-	void OnDetach() override
-	{
-		m_sampler.reset();
-		m_indexBuffer.reset();
-		m_indexedVertexBuffer.reset();
-		m_vertexBuffer.reset();
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -254,13 +242,13 @@ public:
 	}
 
 private:
-	std::array<float, 50> m_frameTimeHistory;
-	TRAP::Utils::Timer m_fpsTimer;
-	TRAP::Utils::Timer m_titleTimer;
+	std::array<float, 50> m_frameTimeHistory{};
+	TRAP::Utils::Timer m_fpsTimer{};
+	TRAP::Utils::Timer m_titleTimer{};
 	bool m_wireFrame = false;
 	bool m_indexedDrawing = false;
 
-	TRAP::Graphics::OrthographicCameraController m_cameraController;
+	TRAP::Graphics::OrthographicCameraController m_cameraController{TRAP::Application::GetWindow()->GetAspectRatio()};
 
 	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_indexedVertexBuffer{};
 	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer{};

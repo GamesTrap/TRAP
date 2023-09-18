@@ -9,7 +9,6 @@ public:
 	AntiAliasingTests();
 
 	void OnAttach() override;
-	void OnDetach() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnImGuiRender() override;
 
@@ -19,14 +18,16 @@ private:
 	bool OnKeyPress(const TRAP::Events::KeyPressEvent& e);
 	bool OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& e);
 
-	TRAP::Utils::Timer m_fpsTimer;
+	TRAP::Utils::Timer m_fpsTimer{};
 
-	TRAP::Graphics::AntiAliasing m_antiAliasing;
-	TRAP::Graphics::SampleCount m_sampleCount;
+	TRAP::Graphics::AntiAliasing m_antiAliasing = TRAP::Graphics::AntiAliasing::Off;
+	TRAP::Graphics::SampleCount m_sampleCount = TRAP::Graphics::SampleCount::One;
 
-	TRAP::Graphics::OrthographicCamera m_camera;
+	TRAP::Graphics::OrthographicCamera m_camera{-TRAP::Application::GetWindow()->GetAspectRatio(),
+	                                            TRAP::Application::GetWindow()->GetAspectRatio(),
+	                                            -1.0f, 1.0f, -1.0f, 1.0f};
 
-	std::vector<TRAP::Graphics::AntiAliasing> m_antiAliasingMethods;
+	std::vector<TRAP::Graphics::AntiAliasing> m_antiAliasingMethods{};
 
 	struct SampleData
 	{

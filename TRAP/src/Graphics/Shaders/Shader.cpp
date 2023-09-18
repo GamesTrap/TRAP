@@ -270,6 +270,16 @@ bool TRAP::Graphics::Shader::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Graphics::Shader::Shader(std::string name, const bool valid, const RendererAPI::ShaderStage stages,
+                               const std::vector<Macro>* const userMacros, const std::string& filepath)
+	: m_name(std::move(name)), m_filepath(filepath), m_shaderStages(stages), m_valid(valid)
+{
+	if(userMacros != nullptr)
+		m_macros = *userMacros;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] bool TRAP::Graphics::Shader::CheckTRAPShaderMagicNumber(const std::filesystem::path& filePath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);

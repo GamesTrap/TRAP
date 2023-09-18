@@ -2,13 +2,6 @@
 
 #include <ImageLoader/PortableMaps/PPMImage.h>
 
-HeadlessTests::HeadlessTests()
-	: Layer("Headless")
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void HeadlessTests::OnAttach()
 {
 	TRAP::Graphics::RenderCommand::SetResolution(3840, 2160); //4K Resolution

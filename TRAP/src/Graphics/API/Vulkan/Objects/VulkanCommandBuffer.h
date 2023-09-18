@@ -401,13 +401,13 @@ namespace TRAP::Graphics::API
 
 		TRAP::Ref<API::VulkanDevice> m_device;
 
-		VkCommandBuffer m_vkCommandBuffer;
+		VkCommandBuffer m_vkCommandBuffer = VK_NULL_HANDLE;
 
 		VkCommandPool& m_vkCommandPool;
 		bool m_secondary;
 
-		VkRenderPass m_activeRenderPass;
-		VkPipelineLayout m_boundPipelineLayout;
+		VkRenderPass m_activeRenderPass = VK_NULL_HANDLE;
+		VkPipelineLayout m_boundPipelineLayout = VK_NULL_HANDLE;
 	};
 }
 

@@ -6,10 +6,17 @@
 class HeadlessTests final : public TRAP::Layer
 {
 public:
-	HeadlessTests();
+	constexpr HeadlessTests();
 
 	void OnAttach() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr HeadlessTests::HeadlessTests()
+	: Layer("Headless")
+{
+}
 
 #endif /*GAMESTRAP_HEADLESSTESTS_H*/

@@ -9,7 +9,6 @@ public:
 	IcoSphereTests();
 
 	void OnAttach() override;
-	void OnDetach() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnImGuiRender() override;
 
@@ -18,9 +17,9 @@ public:
 private:
 	bool OnKeyPress(const TRAP::Events::KeyPressEvent& e);
 
-	TRAP::Utils::Timer m_fpsTimer;
+	TRAP::Utils::Timer m_fpsTimer{};
 
-	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer;
+	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer = nullptr;
 	std::array<float, 12ull * 6> m_icoSphereVerticesIndexed
 	{
 		//XYZ RGB
@@ -40,7 +39,7 @@ private:
 		-((1.0f + TRAP::Math::Sqrt(5.0f)) / 2.0f), 0.0f,                                      1.0f,                                        0.0f, 0.0f, 1.0f
 	};
 
-	TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer;
+	TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer = nullptr;
 	inline static constexpr std::array<uint16_t, 20ull * 3> IcosphereIndices
 	{
 		0, 11, 5,
@@ -68,10 +67,10 @@ private:
 		9, 8, 1
 	};
 
-	bool m_wireFrame;
-	bool m_vsync;
+	bool m_wireFrame = false;
+	bool m_vsync = TRAP::Application::GetWindow()->GetVSync();
 
-	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_cameraUBO;
+	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_cameraUBO = nullptr;
 
 	struct CameraUBOData
 	{
@@ -79,12 +78,12 @@ private:
 		TRAP::Math::Mat4 View;
 		TRAP::Math::Mat4 Model;
 	};
-	float m_FOV;
-	float m_rotationSpeed;
-	TRAP::SceneCamera m_camera;
-	TRAP::TransformComponent m_cameraTransform;
+	float m_FOV = 45.0f;
+	float m_rotationSpeed = 20.0f;
+	TRAP::SceneCamera m_camera{};
+	TRAP::TransformComponent m_cameraTransform{};
 
-	TRAP::Ref<TRAP::Graphics::Shader> m_shader;
+	TRAP::Ref<TRAP::Graphics::Shader> m_shader = nullptr;
 };
 
 #endif /*GAMESTRAP_ICOSPHERETESTS_H*/

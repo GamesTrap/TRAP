@@ -1427,10 +1427,10 @@ namespace TRAP::Graphics::API
 
 		std::string m_rendererTitle;
 
-		TRAP::Ref<VulkanInstance> m_instance;
-		TRAP::Scope<VulkanDebug> m_debug;
-		TRAP::Ref<VulkanDevice> m_device;
-		TRAP::Ref<VulkanMemoryAllocator> m_vma;
+		TRAP::Ref<VulkanInstance> m_instance = nullptr;
+		TRAP::Scope<VulkanDebug> m_debug = nullptr;
+		TRAP::Ref<VulkanDevice> m_device = nullptr;
+		TRAP::Ref<VulkanMemoryAllocator> m_vma = nullptr;
 
 		//RenderPass map per thread (this will make lookups lock free and we only need a lock when inserting
 		//a RenderPass Map for the first time)
@@ -1451,10 +1451,6 @@ namespace TRAP::Graphics::API
 //-------------------------------------------------------------------------------------------------------------------//
 
 constexpr TRAP::Graphics::API::VulkanRenderer::VulkanRenderer() noexcept
-	: m_instance(nullptr),
-	  m_debug(nullptr),
-	  m_device(nullptr),
-	  m_vma(nullptr)
 {
 	s_renderer = this;
 }

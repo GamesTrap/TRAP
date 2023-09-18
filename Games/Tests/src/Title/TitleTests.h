@@ -6,7 +6,7 @@
 class TitleTests final : public TRAP::Layer
 {
 public:
-	TitleTests();
+	constexpr TitleTests();
 
 	void OnImGuiRender() override;
 	void OnAttach() override;
@@ -14,5 +14,12 @@ public:
 
 	static bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TitleTests::TitleTests()
+	: Layer("Title")
+{
+}
 
 #endif /*GAMESTRAP_TITLETESTS_H*/

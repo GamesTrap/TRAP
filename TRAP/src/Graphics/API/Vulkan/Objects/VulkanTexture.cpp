@@ -13,14 +13,6 @@
 #include "Utils/ErrorCodes/ErrorCodes.h"
 
 TRAP::Graphics::API::VulkanTexture::VulkanTexture()
-	: m_device(nullptr),
-	  m_vma(nullptr),
-	  m_vkSRVDescriptor(VK_NULL_HANDLE),
-	  m_vkSRVStencilDescriptor(VK_NULL_HANDLE),
-	  m_vkImage(VK_NULL_HANDLE),
-	  m_vkAllocation(),
-	  m_vkDeviceMemory(),
-	  m_lazilyAllocated(false)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -30,19 +22,9 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture()
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanTexture::VulkanTexture(std::string name, std::array<std::filesystem::path, 6> filepaths)
-	: m_device(nullptr),
-	  m_vma(nullptr),
-	  m_vkSRVDescriptor(VK_NULL_HANDLE),
-	  m_vkSRVStencilDescriptor(VK_NULL_HANDLE),
-	  m_vkImage(VK_NULL_HANDLE),
-	  m_vkAllocation(),
-	  m_vkDeviceMemory(),
-	  m_lazilyAllocated(false)
+	: Texture(std::move(name), std::move(filepaths))
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	m_name = std::move(name);
-	m_filepaths = std::move(filepaths);
 
 	PreInit();
 }
@@ -51,21 +33,9 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(std::string name, std::array<s
 
 TRAP::Graphics::API::VulkanTexture::VulkanTexture(std::string name, std::filesystem::path filepath,
 												  const TextureType type, const TextureCubeFormat cubeFormat)
-	: m_device(nullptr),
-	  m_vma(nullptr),
-	  m_vkSRVDescriptor(VK_NULL_HANDLE),
-	  m_vkSRVStencilDescriptor(VK_NULL_HANDLE),
-	  m_vkImage(VK_NULL_HANDLE),
-	  m_vkAllocation(),
-	  m_vkDeviceMemory(),
-	  m_lazilyAllocated(false)
+	: Texture(std::move(name), std::move(filepath), type, cubeFormat)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	m_name = std::move(name);
-	std::get<0>(m_filepaths) = std::move(filepath);
-	m_textureType = type;
-	m_textureCubeFormat = cubeFormat;
 
 	PreInit();
 }
@@ -73,18 +43,9 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(std::string name, std::filesys
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanTexture::VulkanTexture(const TextureType type)
-	: m_device(nullptr),
-	  m_vma(nullptr),
-	  m_vkSRVDescriptor(VK_NULL_HANDLE),
-	  m_vkSRVStencilDescriptor(VK_NULL_HANDLE),
-	  m_vkImage(VK_NULL_HANDLE),
-	  m_vkAllocation(),
-	  m_vkDeviceMemory(),
-	  m_lazilyAllocated(false)
+	: Texture(type)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	m_textureType = type;
 
 	PreInit();
 }

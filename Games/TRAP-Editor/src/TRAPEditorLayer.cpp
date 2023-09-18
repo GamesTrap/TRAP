@@ -3,21 +3,13 @@
 #include "Graphics/RenderCommand.h"
 #include "Scene/SceneSerializer.h"
 
-#include <ImGuizmo.h>
 #include <imgui.h>
 #include <imgui_internal.h>
 
 #include <utility>
 
 TRAPEditorLayer::TRAPEditorLayer()
-	: Layer("TRAPEditorLayer"), m_iconPlay(nullptr), m_iconStop(nullptr),
-	  m_renderTargetLoadActions(), m_renderTargetDesc(),
-	  m_renderTarget(nullptr), m_viewportSize(), m_viewportBounds(), m_viewportFocused(false),
-	  m_viewportHovered(false), m_gizmoType(ImGuizmo::OPERATION::TRANSLATE), m_enableGizmo(false),
-	  m_allowViewportCameraEvents(false), m_editorCamera(45.0f, 16.0f / 9.0f, 0.1f),
-	  m_startedCameraMovement(false), m_leftMouseBtnRepeatCount(0), m_entityChanged(false),
-	  m_mousePickBufferDesc(), m_mousePickBuffer(nullptr), m_IDRenderTarget(nullptr), m_activeScene(nullptr),
-	  m_editorScene(nullptr), m_sceneState(SceneState::Edit), m_showPhysicsColliders(false)
+	: Layer("TRAPEditorLayer")
 {
 }
 
@@ -301,16 +293,6 @@ void TRAPEditorLayer::OnAttach()
 														TRAP::Graphics::BlendConstant::OneMinusSrcAlpha); //Blending
 
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAPEditorLayer::OnDetach()
-{
-	m_mousePickBuffer.reset();
-	m_IDRenderTarget.reset();
-	m_renderTarget.reset();
-	m_activeScene.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

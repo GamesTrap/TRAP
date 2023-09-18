@@ -6,7 +6,7 @@
 class MonitorTests final : public TRAP::Layer
 {
 public:
-	MonitorTests();
+	constexpr MonitorTests();
 
 	void OnAttach() override;
 	void OnImGuiRender() override;
@@ -20,5 +20,12 @@ private:
 	static int32_t Euclid(int32_t a, int32_t b);
 	static std::string FormatMode(const TRAP::Monitor::VideoMode& mode);
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr MonitorTests::MonitorTests()
+	: Layer("Monitor")
+{
+}
 
 #endif /*GAMESTRAP_MONITORTESTS_H*/

@@ -14,16 +14,6 @@
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 
 TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI::RootSignatureDesc& desc)
-	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
-	  m_vkDescriptorSetLayouts(),
-	  m_vkCumulativeDescriptorsCounts(),
-	  m_vkDescriptorCounts(),
-	  m_vkDynamicDescriptorCounts(),
-	  m_vkRayTracingDescriptorCounts(),
-	  m_pipelineLayout(),
-	  m_updateTemplates(),
-	  m_vkEmptyDescriptorSets(),
-	  m_vkPushConstantCount()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

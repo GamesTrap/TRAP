@@ -1,12 +1,5 @@
 #include "MonitorTests.h"
 
-MonitorTests::MonitorTests()
-	: Layer("Monitor")
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void MonitorTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Monitor");

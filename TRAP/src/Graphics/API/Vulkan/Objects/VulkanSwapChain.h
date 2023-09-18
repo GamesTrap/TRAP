@@ -1,6 +1,7 @@
 #ifndef TRAP_VULKANSWAPCHAIN_H
 #define TRAP_VULKANSWAPCHAIN_H
 
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 #ifndef TRAP_HEADLESS_MODE
 
 #include "Graphics/API/RendererAPI.h"
@@ -84,20 +85,20 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		void DeInitSwapchain();
 
-		TRAP::Ref<VulkanMemoryAllocator> m_vma;
-		TRAP::Ref<VulkanInstance> m_instance;
-		TRAP::Ref<VulkanDevice> m_device;
+		TRAP::Ref<VulkanMemoryAllocator> m_vma = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetVMA();
+		TRAP::Ref<VulkanInstance> m_instance = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetInstance();
+		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 
 		//Present queue if one exists (queuePresent will use this queue if the hardware has a dedicated
 		//present queue)
-		VkQueue m_presentQueue;
-		VkSwapchainKHR m_swapChain;
-		TRAP::Ref<VulkanSurface> m_surface;
-		uint32_t m_presentQueueFamilyIndex;
-		uint32_t m_imageCount;
-		bool m_enableVSync;
+		VkQueue m_presentQueue = VK_NULL_HANDLE;
+		VkSwapchainKHR m_swapChain = VK_NULL_HANDLE;
+		TRAP::Ref<VulkanSurface> m_surface = nullptr;
+		uint32_t m_presentQueueFamilyIndex = 0;
+		uint32_t m_imageCount = 0;
+		bool m_enableVSync = false;
 
-		RendererAPI::SwapChainDesc m_desc;
+		RendererAPI::SwapChainDesc m_desc{};
 	};
 }
 

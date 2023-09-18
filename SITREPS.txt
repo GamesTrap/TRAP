@@ -4406,3 +4406,8 @@ SITREP 09/17/2023|23w37a3
     - Changed TRAP Engine version to 23w37a3(0.9.93)
     - ImGuiLayer/ImGuiWindowing/ImGuiVulkanBackend Added more asserts ~<10 mins
     - ImGuiLayer/ImGuiWindowing/ImGuiVulkanBackend Replaced pointers with references where possible ~>25 mins
+    - Added static to constexpr variables ~<10 mins
+
+SITREP 09/18/2023|23w38a1
+    - Changed TRAP Engine version to 23w38a1(0.9.94)
+    - Changed constructor initializations ~>20 mins

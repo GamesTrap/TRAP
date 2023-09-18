@@ -12,7 +12,7 @@
 TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> instance,
 												  const TRAP::Ref<VulkanDevice>& device,
                                                   const TRAP::Window* const window)
-	: m_surface(VK_NULL_HANDLE), m_surfaceCapabilities(), m_instance(std::move(instance))
+	: m_instance(std::move(instance))
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

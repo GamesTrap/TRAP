@@ -103,26 +103,26 @@ namespace TRAP::Graphics::API
 		/// <returns>Descriptor if found, nullptr otherwise.</returns>
 		[[nodiscard]] const RendererAPI::DescriptorInfo* GetDescriptor(std::string_view resName) const;
 	private:
-		TRAP::Ref<VulkanDevice> m_device;
+		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 
 		std::array<VkDescriptorSetLayout,
-		           RendererAPI::MaxDescriptorSets> m_vkDescriptorSetLayouts;
+		           RendererAPI::MaxDescriptorSets> m_vkDescriptorSetLayouts{};
 		std::array<uint32_t,
-		           RendererAPI::MaxDescriptorSets> m_vkCumulativeDescriptorsCounts;
+		           RendererAPI::MaxDescriptorSets> m_vkCumulativeDescriptorsCounts{};
 		std::array<uint16_t,
-		           RendererAPI::MaxDescriptorSets> m_vkDescriptorCounts;
+		           RendererAPI::MaxDescriptorSets> m_vkDescriptorCounts{};
 		std::array<uint8_t,
-		           RendererAPI::MaxDescriptorSets> m_vkDynamicDescriptorCounts;
+		           RendererAPI::MaxDescriptorSets> m_vkDynamicDescriptorCounts{};
 		std::array<uint8_t,
-		           RendererAPI::MaxDescriptorSets> m_vkRayTracingDescriptorCounts;
-		VkPipelineLayout m_pipelineLayout;
+		           RendererAPI::MaxDescriptorSets> m_vkRayTracingDescriptorCounts{};
+		VkPipelineLayout m_pipelineLayout = VK_NULL_HANDLE;
 		std::array<VkDescriptorUpdateTemplate,
-		           RendererAPI::MaxDescriptorSets> m_updateTemplates;
+		           RendererAPI::MaxDescriptorSets> m_updateTemplates{};
 		std::array<VkDescriptorSet,
-		           RendererAPI::MaxDescriptorSets> m_vkEmptyDescriptorSets;
+		           RendererAPI::MaxDescriptorSets> m_vkEmptyDescriptorSets{};
 		std::array<std::vector<VulkanRenderer::DescriptorUpdateData>,
-		           RendererAPI::MaxDescriptorSets> m_updateTemplateData;
-		uint32_t m_vkPushConstantCount;
+		           RendererAPI::MaxDescriptorSets> m_updateTemplateData{};
+		uint32_t m_vkPushConstantCount = 0;
 	};
 }
 

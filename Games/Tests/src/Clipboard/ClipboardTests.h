@@ -6,7 +6,7 @@
 class ClipboardTests final : public TRAP::Layer
 {
 public:
-	ClipboardTests();
+	constexpr ClipboardTests();
 
 	void OnAttach() override;
 	void OnImGuiRender() override;
@@ -17,5 +17,12 @@ public:
 private:
 	std::string m_clipboard;
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr ClipboardTests::ClipboardTests()
+	: Layer("Clipboard")
+{
+}
 
 #endif /*GAMESTRAP_CLIPBOARDTESTS_H*/

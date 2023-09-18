@@ -50,9 +50,9 @@ namespace TRAP::Graphics::API
 		                                                                                      const TRAP::Ref<Fence>& fence) const;
 #endif /*TRAP_HEADLESS_MODE*/
 
-		VkSemaphore m_semaphore;
+		VkSemaphore m_semaphore = VK_NULL_HANDLE;
 
-		TRAP::Ref<VulkanDevice> m_device;
+		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 	};
 }
 

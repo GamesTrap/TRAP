@@ -55,7 +55,7 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] constexpr uint32_t GetCount() const noexcept;
 
 	private:
-		VkQueryPool m_vkQueryPool;
+		VkQueryPool m_vkQueryPool = VK_NULL_HANDLE;
 		VkQueryType m_type;
 		uint32_t m_count;
 	};

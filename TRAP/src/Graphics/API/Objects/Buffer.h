@@ -85,9 +85,9 @@ namespace TRAP::Graphics
 		//(CPU, CPUToGPU, GPUToCPU))
 		void* m_CPUMappedAddress = nullptr;
 
-		uint64_t m_size;
-		RendererAPI::DescriptorType m_descriptors;
-		RendererAPI::ResourceMemoryUsage m_memoryUsage;
+		uint64_t m_size = 0;
+		RendererAPI::DescriptorType m_descriptors = RendererAPI::DescriptorType::Undefined;
+		RendererAPI::ResourceMemoryUsage m_memoryUsage = RendererAPI::ResourceMemoryUsage::Unknown;
 	};
 }
 

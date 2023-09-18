@@ -1,13 +1,5 @@
 #include "ParticleSystem2D.h"
 
-ParticleSystem2D::ParticleSystem2D()
-	: m_poolIndex(999), m_maxParticles(1000)
-{
-	m_particlePool.resize(1000);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void ParticleSystem2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
 	for(Particle& particle : m_particlePool)
@@ -75,7 +67,7 @@ void ParticleSystem2D::Emit(const ParticleProps& particleProps)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ParticleSystem2D::SetMaxParticles(uint32_t maxParticles)
+void ParticleSystem2D::SetMaxParticles(const uint32_t maxParticles)
 {
 	if(m_particlePool.size() < maxParticles)
 		m_particlePool.resize(maxParticles);

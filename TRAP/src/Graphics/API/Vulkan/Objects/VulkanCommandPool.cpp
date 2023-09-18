@@ -9,15 +9,11 @@
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const RendererAPI::CommandPoolDesc& desc)
-	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
-	  m_vkCommandPool(VK_NULL_HANDLE)
+	: CommandPool(desc.Queue)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	m_queue = desc.Queue;
-
 	TRAP_ASSERT(m_device, "VulkanCommandPool(): Vulkan Device is nullptr");
-	TRAP_ASSERT(m_queue, "VulkanCommandPool(): Queue is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandPoolPrefix, "Creating CommandPool");

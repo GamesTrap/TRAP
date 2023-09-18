@@ -10,21 +10,20 @@ public:
 
 	void OnImGuiRender() override;
 	void OnAttach() override;
-	void OnDetach() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnEvent(TRAP::Events::Event& event) override;
 
 private:
 	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
 
-	bool m_wireFrame;
+	bool m_wireFrame = false;
 
-	TRAP::Graphics::OrthographicCameraController m_cameraController;
+	TRAP::Graphics::OrthographicCameraController m_cameraController{TRAP::Application::GetWindow()->GetAspectRatio(), true};
 
-	TRAP::Ref<TRAP::Graphics::Texture> m_spriteSheet;
+	TRAP::Ref<TRAP::Graphics::Texture> m_spriteSheet = nullptr;
 
-	std::array<float, 50> m_frameTimeHistory;
-	TRAP::Utils::Timer m_updateFPSTimer;
+	std::array<float, 50> m_frameTimeHistory{};
+	TRAP::Utils::Timer m_updateFPSTimer{};
 };
 
 #endif /*GAMESTRAP_SANDBOX2D_H*/

@@ -38,13 +38,6 @@ inline constexpr std::array<std::array<uint8_t, 4>, 5> IconColors
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-IconTests::IconTests()
-	: Layer("Icon")
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void IconTests::OnImGuiRender()
 {
 	ImGui::Begin("Icon", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |

@@ -26,15 +26,15 @@ private:
 	void SampleInput();
 	void DrawMarker(uint32_t lead, TRAP::Math::Vec2 pos);
 
-	CursorMethod m_cursorMethod;
-	bool m_vsync;
-	TRAP::Math::Vec2 m_cursorNew;
-	TRAP::Math::Vec2 m_cursorPos;
-	TRAP::Math::Vec2 m_cursorVelocity;
-	bool m_showForecasts;
+	CursorMethod m_cursorMethod = CursorMethod::SyncQuery;
+	bool m_vsync = TRAP::Application::GetWindow()->GetVSync();
+	TRAP::Math::Vec2 m_cursorNew{};
+	TRAP::Math::Vec2 m_cursorPos{};
+	TRAP::Math::Vec2 m_cursorVelocity{};
+	bool m_showForecasts = true;
 
 	//NVIDIA-Relfex stuff
-	TRAP::Graphics::LatencyMode m_latencyMode;
+	TRAP::Graphics::LatencyMode m_latencyMode = TRAP::Graphics::LatencyMode::Disabled;
 
 #ifdef NVIDIA_REFLEX_AVAILABLE
 	std::array<float, 50> m_totalHistory{};
@@ -46,7 +46,7 @@ private:
 	std::array<float, 50> m_GPURenderDeltaHistory{};
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
 
-	TRAP::Utils::Timer m_updateLatencyTimer;
+	TRAP::Utils::Timer m_updateLatencyTimer{};
 };
 
 #endif /*GAMESTRAP_INPUTLAGTESTS_H*/

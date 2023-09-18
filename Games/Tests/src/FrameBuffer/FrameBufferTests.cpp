@@ -2,13 +2,7 @@
 #include "Graphics/RenderCommand.h"
 
 FrameBufferTests::FrameBufferTests()
-    : Layer("FrameBuffer"),
-      m_vertexBuffer(nullptr),
-      m_indexBuffer(nullptr),
-	  m_shader(nullptr),
-      m_texture(nullptr),
-      m_renderTarget(nullptr),
-      m_resolveTarget(nullptr)
+    : Layer("FrameBuffer")
 {
 }
 
@@ -79,19 +73,6 @@ void FrameBufferTests::OnAttach()
 
     desc.SampleCount = TRAP::Graphics::SampleCount::One;
     m_resolveTarget = TRAP::Graphics::RenderTarget::Create(desc);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void FrameBufferTests::OnDetach()
-{
-    //Maybe needs GPU idle
-    m_resolveTarget.reset();
-    m_renderTarget.reset();
-
-    m_textureSampler.reset();
-    m_indexBuffer.reset();
-    m_vertexBuffer.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

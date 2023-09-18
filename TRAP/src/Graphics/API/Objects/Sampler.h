@@ -103,7 +103,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		Sampler();
+		explicit Sampler(const RendererAPI::SamplerDesc& desc);
 
 		virtual void UpdateAnisotropy(float anisotropy) = 0;
 

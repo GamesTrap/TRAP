@@ -40,7 +40,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		Shader() noexcept = default;
+		Shader(std::string name, bool valid, RendererAPI::ShaderStage stages, const std::vector<Macro>* userMacros = nullptr, const std::string& filepath = "");
 	public:
 		/// <summary>
 		/// Copy constructor.

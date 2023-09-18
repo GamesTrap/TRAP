@@ -97,7 +97,7 @@ namespace TRAP::Graphics
 
     private:
         Ref<TRAP::Graphics::Texture> m_texture;
-        std::array<TRAP::Math::Vec2, 4> m_texCoords;
+        std::array<TRAP::Math::Vec2, 4> m_texCoords{};
         std::string m_name;
     };
 }

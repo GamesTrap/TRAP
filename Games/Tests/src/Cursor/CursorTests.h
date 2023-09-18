@@ -6,7 +6,7 @@
 class CursorTests final : public TRAP::Layer
 {
 public:
-	CursorTests();
+	constexpr CursorTests();
 
 	void OnImGuiRender() override;
 	void OnAttach() override;
@@ -20,11 +20,18 @@ private:
 	static float Star(uint32_t x, uint32_t y, float t);
 	static TRAP::Scope<TRAP::Image> CreateCursorFrame(float t);
 
-	float m_cursorX;
-	float m_cursorY;
-	bool m_animateCursor;
-	std::vector<TRAP::Scope<TRAP::Image>> m_starCursors;
-	TRAP::Image* m_currentFrame;
+	float m_cursorX = 0.0f;
+	float m_cursorY = 0.0f;
+	bool m_animateCursor = false;
+	std::vector<TRAP::Scope<TRAP::Image>> m_starCursors{};
+	TRAP::Image* m_currentFrame = nullptr;
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr CursorTests::CursorTests()
+	: Layer("Cursor")
+{
+}
 
 #endif /*GAMESTRAP_CURSORTESTS_H*/

@@ -106,10 +106,10 @@ namespace TRAP::Graphics::API
 
 		inline constinit static uint32_t s_instanceVersion = 0;
 
-		VkInstance m_instance;
+		VkInstance m_instance = VK_NULL_HANDLE;
 
-		std::vector<std::string> m_instanceLayers;
-		std::vector<std::string> m_instanceExtensions;
+		std::vector<std::string> m_instanceLayers{};
+		std::vector<std::string> m_instanceExtensions{};
 
 		inline static std::vector<VkLayerProperties> s_availableInstanceLayers{};
 		inline static std::vector<VkExtensionProperties> s_availableInstanceExtensions{};

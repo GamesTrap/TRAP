@@ -9,7 +9,6 @@ public:
 	MultiWindowTests();
 
 	void OnAttach() override;
-	void OnDetach() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnImGuiRender() override;
 
@@ -19,9 +18,9 @@ private:
 	bool OnWindowClose(const TRAP::Events::WindowCloseEvent& e);
 	bool OnKeyPress(const TRAP::Events::KeyPressEvent& e);
 
-	TRAP::Utils::Timer m_fpsTimer;
+	TRAP::Utils::Timer m_fpsTimer{};
 
-	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer;
+	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer = nullptr;
 	inline static constexpr std::array<float, 18> TriangleVertices
 	{
 		//XYZ RGB
@@ -30,30 +29,30 @@ private:
 		 0.5f, -0.5f, 0.0f,    0.0f, 0.0f, 1.0f,
 	};
 
-	TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer;
+	TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer = nullptr;
 	inline static constexpr std::array<uint16_t, 3> TriangleIndices
 	{
 		0, 1, 2
 	};
 
-	bool m_wireFrameMainWindow;
-	bool m_wireFrameSecondWindow;
+	bool m_wireFrameMainWindow = false;
+	bool m_wireFrameSecondWindow = false;
 
-	TRAP::Scope<TRAP::Window> m_window;
+	TRAP::Scope<TRAP::Window> m_window = nullptr;
 
 	struct ColorData
 	{
 		TRAP::Math::Vec3 Color;
-	} m_colorData;
+	} m_colorData{};
 	struct SizeMultiplicatorData
 	{
 		TRAP::Math::Vec3 Multiplier;
-	} m_sizeMultiplicatorData;
-	TRAP::Utils::Timer m_colorTimer;
-	TRAP::Utils::Timer m_vertexTimer;
-	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_colorUniformBuffer;
-	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_sizeMultiplicatorUniformBuffer;
-	bool m_useUBO;
+	} m_sizeMultiplicatorData{};
+	TRAP::Utils::Timer m_colorTimer{};
+	TRAP::Utils::Timer m_vertexTimer{};
+	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_colorUniformBuffer = nullptr;
+	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_sizeMultiplicatorUniformBuffer = nullptr;
+	bool m_useUBO = false;
 };
 
 #endif /*GAMESTRAP_MULTIWINDOWTESTS_H*/

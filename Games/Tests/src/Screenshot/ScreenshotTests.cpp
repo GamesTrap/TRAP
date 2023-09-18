@@ -3,7 +3,7 @@
 #include <ImageLoader/PortableMaps/PPMImage.h>
 
 ScreenshotTests::ScreenshotTests()
-	: Layer("Screenshot"), m_cameraController(TRAP::Application::GetWindow()->GetAspectRatio(), true)
+	: Layer("Screenshot")
 {
 }
 

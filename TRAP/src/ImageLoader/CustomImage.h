@@ -63,10 +63,11 @@ template<typename T>
 requires std::same_as<T, std::uint8_t> || std::same_as<T, std::uint16_t> || std::same_as<T, float>
 TRAP::INTERNAL::CustomImage::CustomImage(std::filesystem::path filepath, const uint32_t width, const uint32_t height,
                                          const ColorFormat format, std::vector<T> pixelData)
+	: Image(std::move(filepath), width, height, format)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
-	if (format == ColorFormat::NONE)
+	if (m_colorFormat == ColorFormat::NONE)
 	{
 		TRAP_ASSERT(false, "CustomImage(): Invalid color format!");
 		return;
@@ -77,12 +78,7 @@ TRAP::INTERNAL::CustomImage::CustomImage(std::filesystem::path filepath, const u
 		return;
 	}
 
-	m_bitsPerPixel = sizeof(T) * 8u * std::to_underlying(format);
-
-	m_width = width;
-	m_height = height;
-	m_colorFormat = format;
-	m_filepath = std::move(filepath);
+	m_bitsPerPixel = sizeof(T) * 8u * std::to_underlying(m_colorFormat);
 
 	if constexpr(std::same_as<T, float>)
 	{

@@ -1,22 +1,7 @@
 #include "Cube3D.h"
 
 Cube3D::Cube3D()
-    : Layer("Cube3D"),
-      m_textureSamplerDesc(),
-      m_diffuseReflectionDataBuffer(),
-	  m_phongLightningDataBuffer(),
-	  m_cubePosition(0.0f, 0.0f, -5.0f),
-	  m_cubeRotation(0.0f, 0.0f, 0.0f),
-	  m_cubeScale(1.0f, 1.0f, 1.0f),
-      m_frameTimeHistory(),
-      m_ignoreImGui(false),
-	  m_shaderNames{ "Base", "Color", "Texture", "Diffuse Reflection", "Phong Lightning" },
-	  m_currentShader(0),
-	  m_wireFrame(false),
-	  m_drawSkyBox(true),
-	  m_mouseSensitivity(5.0f),
-	  m_translationSpeed(2.5f),
-	  m_firstMouse(true)
+    : Layer("Cube3D")
 {
 }
 
@@ -205,18 +190,6 @@ void Cube3D::OnAttach()
 
     TRAP::Graphics::RenderCommand::SetDepthTesting(true);
     TRAP::Graphics::RenderCommand::SetDepthWriting(true);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void Cube3D::OnDetach()
-{
-    m_phongLightningUniformBuffer.reset();
-    m_diffuseReflectionUniformBuffer.reset();
-    m_textureSampler.reset();
-    m_skyBoxVertexBuffer.reset();
-    m_cubeIndexBuffer.reset();
-    m_cubeVertexBuffer.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

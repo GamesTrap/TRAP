@@ -260,37 +260,37 @@ namespace TRAP::Graphics
         void EnableMouse();
 
         TRAP::Math::Mat4 m_viewMatrix;
-        TRAP::Math::Vec3 m_position;
-        TRAP::Math::Vec3 m_direction;
-        TRAP::Math::Vec3 m_focalPoint;
+        TRAP::Math::Vec3 m_position{};
+        TRAP::Math::Vec3 m_direction{};
+        TRAP::Math::Vec3 m_focalPoint{};
 
         float m_fov;
         float m_aspectRatio;
         float m_nearClip;
 
-        bool m_isActive;
-        bool m_panning;
-        bool m_rotating;
-        TRAP::Math::Vec2 m_initialMousePosition;
-        TRAP::Math::Vec3 m_initialFocalPoint;
-        TRAP::Math::Vec3 m_initialRotation;
+        bool m_isActive = false;
+        bool m_panning = false;
+        bool m_rotating =  false;
+        TRAP::Math::Vec2 m_initialMousePosition{};
+        TRAP::Math::Vec3 m_initialFocalPoint{};
+        TRAP::Math::Vec3 m_initialRotation{};
 
-        float m_distance;
-        float m_normalSpeed;
+        float m_distance = 0.0f;
+        float m_normalSpeed = 0.002f;
 
-        float m_pitch;
-        float m_yaw;
-        float m_pitchDelta;
-        float m_yawDelta;
-        TRAP::Math::Vec3 m_positionDelta;
-        TRAP::Math::Vec3 m_rightDirection;
+        float m_pitch = 0.0f;
+        float m_yaw = 0.0f;
+        float m_pitchDelta = 0.0f;
+        float m_yawDelta = 0.0f;
+        TRAP::Math::Vec3 m_positionDelta{};
+        TRAP::Math::Vec3 m_rightDirection{};
 
-        CameraMode m_cameraMode;
+        CameraMode m_cameraMode = CameraMode::ArcBall;
 
-        float m_minFocusDistance;
+        float m_minFocusDistance = 100.0f;
 
-        float m_viewportWidth;
-        float m_viewportHeight;
+        float m_viewportWidth = 1280.0f;
+        float m_viewportHeight = 720.0f;
 
         constexpr static float MinSpeed = 0.002f;
         constexpr static float MaxSpeed = 2.5f;

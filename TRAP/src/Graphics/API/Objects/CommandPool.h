@@ -60,11 +60,11 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		CommandPool();
+		explicit CommandPool(TRAP::Ref<TRAP::Graphics::Queue> queue);
 
-		std::vector<TRAP::Scope<CommandBuffer>> m_commandBuffers;
+		std::vector<TRAP::Scope<CommandBuffer>> m_commandBuffers{};
 
-		TRAP::Ref<Queue> m_queue;
+		TRAP::Ref<Queue> m_queue = nullptr;
 	};
 }
 

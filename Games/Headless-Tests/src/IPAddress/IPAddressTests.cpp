@@ -3,13 +3,6 @@
 #include <sstream>
 #include <array>
 
-IPAddressTests::IPAddressTests()
-	: Layer("IPAddress")
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void IPAddressTests::OnAttach()
 {
     TestIPv4Construction();

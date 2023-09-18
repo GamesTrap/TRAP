@@ -3,6 +3,9 @@
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Queue.h"
+#include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
+#include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 namespace TRAP::Graphics::API
 {
@@ -99,18 +102,18 @@ namespace TRAP::Graphics::API
 		/// <param name="name">Name for the queue.</param>
 		void SetQueueName(std::string_view name) const;
 
-		TRAP::Ref<VulkanDevice> m_device;
+		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 
-		VkQueue m_vkQueue;
+		VkQueue m_vkQueue = VK_NULL_HANDLE;
 #ifdef TRACY_ENABLE
 		tracy::Lockable<std::mutex>& m_submitMutex;
 #else
-		std::mutex& m_submitMutex;
+		std::mutex& m_submitMutex = VulkanRenderer::s_NullDescriptors->SubmitMutex;
 #endif
-		uint8_t m_vkQueueFamilyIndex;
-		uint8_t m_vkQueueIndex;
-		uint32_t m_flags;
-		float m_timestampPeriod;
+		uint8_t m_vkQueueFamilyIndex = std::numeric_limits<uint8_t>::max();
+		uint8_t m_vkQueueIndex = std::numeric_limits<uint8_t>::max();
+		uint32_t m_flags = 0;
+		float m_timestampPeriod = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties().limits.timestampPeriod;
 	};
 }
 

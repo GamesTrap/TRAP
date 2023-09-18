@@ -748,19 +748,31 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::Texture::Texture() noexcept
-	: m_syncToken(0),
-	  m_textureType(TextureType::Texture2D),
-	  m_width(2),
-	  m_height(2),
-	  m_depth(1),
-	  m_arraySize(1),
-	  m_mipLevels(1),
-	  m_colorFormat(Image::ColorFormat::RGBA),
-	  m_imageFormat(API::ImageFormat::R8G8B8A8_UNORM),
-	  m_aspectMask(0),
-	  m_descriptorTypes(RendererAPI::DescriptorType::Texture),
-	  m_ownsImage(true),
-	  m_textureCubeFormat(TextureCubeFormat::NONE)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::Texture::Texture(std::string name, std::array<std::filesystem::path, 6> filepaths) noexcept
+	: m_name(std::move(name)), m_filepaths(std::move(filepaths))
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::Texture::Texture(std::string name, std::filesystem::path filepath, const TextureType type,
+                                 const TextureCubeFormat cubeFormat) noexcept
+	: m_name(std::move(name)), m_textureType(type), m_filepaths{std::move(filepath)}, m_textureCubeFormat(cubeFormat)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::Texture::Texture(const TextureType type) noexcept
+	: m_textureType(type)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 }

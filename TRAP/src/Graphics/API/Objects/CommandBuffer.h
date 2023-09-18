@@ -344,9 +344,9 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		CommandBuffer();
+		explicit CommandBuffer(TRAP::Ref<Queue> queue);
 
-		TRAP::Ref<Queue> m_queue;
+		TRAP::Ref<Queue> m_queue = nullptr;
 	};
 }
 

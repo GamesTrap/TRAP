@@ -30,10 +30,7 @@
 #include "Layers/ImGui/ImGuiLayer.h"
 
 TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std::optional<uint32_t> appID)
-	: m_threadPool(Utils::GetCPUInfo().LogicalCores > 1 ? (Utils::GetCPUInfo().LogicalCores - 1) :
-	               std::thread::hardware_concurrency()),
-	  m_mainThreadID(std::this_thread::get_id()),
-	  m_gameName(std::move(gameName))
+	: m_gameName(std::move(gameName))
 {
 	ZoneScoped;
 

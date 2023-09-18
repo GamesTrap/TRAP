@@ -5,13 +5,6 @@
 #include <Graphics/API/Vulkan/Objects/VulkanInstance.h>
 #include <Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h>
 
-RendererAPIInfo::RendererAPIInfo()
-	: Layer("RendererAPIInfo")
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void RendererAPIInfo::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("RendererAPI Info");

@@ -13,7 +13,7 @@ public:
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 
 private:
-	TRAP::Graphics::OrthographicCameraController m_cameraController;
+	TRAP::Graphics::OrthographicCameraController m_cameraController{TRAP::Application::GetWindow()->GetAspectRatio(), true};
 };
 
 #endif /*GAMESTRAP_SCREENSHOTTESTS_H*/

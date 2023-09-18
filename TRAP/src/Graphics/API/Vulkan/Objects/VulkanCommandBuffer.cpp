@@ -35,19 +35,14 @@ TRAP::Graphics::API::VulkanCommandBuffer::~VulkanCommandBuffer()
 
 TRAP::Graphics::API::VulkanCommandBuffer::VulkanCommandBuffer(TRAP::Ref<VulkanDevice> device, TRAP::Ref<Queue> queue,
                                                               VkCommandPool& commandPool, const bool secondary)
-	: m_device(std::move(device)),
-	  m_vkCommandBuffer(VK_NULL_HANDLE),
+	: CommandBuffer(std::move(queue)),
+	  m_device(std::move(device)),
 	  m_vkCommandPool(commandPool),
-	  m_secondary(secondary),
-	  m_activeRenderPass(VK_NULL_HANDLE),
-	  m_boundPipelineLayout(VK_NULL_HANDLE)
+	  m_secondary(secondary)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	m_queue = std::move(queue);
-
 	TRAP_ASSERT(m_device, "VulkanCommandBuffer(): Vulkan Device is nullptr");
-	TRAP_ASSERT(m_queue, "VulkanCommandBuffer(): Queue is nullptr");
 	TRAP_ASSERT(m_vkCommandPool, "VulkanCommandBuffer(): Vulkan CommandPool is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG

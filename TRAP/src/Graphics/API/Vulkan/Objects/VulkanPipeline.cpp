@@ -13,9 +13,6 @@
 #include "Graphics/API/Objects/RenderTarget.h"
 
 TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineDesc& desc)
-	: m_vkPipeline(VK_NULL_HANDLE),
-	  m_type(),
-	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

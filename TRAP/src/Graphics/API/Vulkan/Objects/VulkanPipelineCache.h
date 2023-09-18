@@ -3,6 +3,7 @@
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/PipelineCache.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 namespace TRAP::Graphics::API
 {
@@ -54,9 +55,9 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] constexpr VkPipelineCache GetVkPipelineCache() const noexcept;
 
 	private:
-		VkPipelineCache m_cache;
+		VkPipelineCache m_cache = VK_NULL_HANDLE;
 
-		TRAP::Ref<VulkanDevice> m_device;
+		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 	};
 }
 

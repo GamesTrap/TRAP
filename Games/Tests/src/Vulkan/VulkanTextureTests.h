@@ -6,10 +6,9 @@
 class VulkanTextureTests final : public TRAP::Layer
 {
 public:
-    VulkanTextureTests();
+    constexpr VulkanTextureTests();
 
     void OnAttach() override;
-    void OnDetach() override;
     void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
     void OnImGuiRender() override;
 
@@ -18,15 +17,15 @@ public:
 private:
     bool OnKeyPress(const TRAP::Events::KeyPressEvent& e);
 
-    TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer;
-    TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer;
-    TRAP::Ref<TRAP::Graphics::Sampler> m_textureSampler;
+    TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer = nullptr;
+    TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer = nullptr;
+    TRAP::Ref<TRAP::Graphics::Sampler> m_textureSampler = nullptr;
 
-    bool m_cycleMips;
-    uint32_t m_currentMipLevel;
-    uint32_t m_maxMipLevel;
-    bool m_updateTexture;
-    uint32_t m_currentTexture;
+    bool m_cycleMips = false;
+    uint32_t m_currentMipLevel = 0;
+    uint32_t m_maxMipLevel = 0;
+    bool m_updateTexture = false;
+    uint32_t m_currentTexture = 0;
 
     inline static constexpr std::array<float, 5ull * 4> QuadVerticesIndexed
 	{
@@ -41,10 +40,17 @@ private:
 		0, 1, 2, 2, 3, 0
 	};
 
-    TRAP::Ref<TRAP::Graphics::Shader> m_shader;
-    TRAP::Ref<TRAP::Graphics::Texture> m_texture;
-    TRAP::Scope<TRAP::Image> m_vulkanLogo;
-    TRAP::Scope<TRAP::Image> m_vulkanLogoTransparent;
+    TRAP::Ref<TRAP::Graphics::Shader> m_shader = nullptr;
+    TRAP::Ref<TRAP::Graphics::Texture> m_texture = nullptr;
+    TRAP::Scope<TRAP::Image> m_vulkanLogo = nullptr;
+    TRAP::Scope<TRAP::Image> m_vulkanLogoTransparent = nullptr;
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr VulkanTextureTests::VulkanTextureTests()
+    : Layer("VulkanTextureTests")
+{
+}
 
 #endif /*GAMESTRAP_VULKANTEXTURETESTS_H*/

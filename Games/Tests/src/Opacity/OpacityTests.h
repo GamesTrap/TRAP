@@ -6,7 +6,7 @@
 class OpacityTests final : public TRAP::Layer
 {
 public:
-	OpacityTests();
+	constexpr OpacityTests();
 
 	void OnImGuiRender() override;
 	void OnAttach() override;
@@ -17,5 +17,12 @@ public:
 private:
 	float m_opacity = 1.0f;
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr OpacityTests::OpacityTests()
+	: Layer("Opacity")
+{
+}
 
 #endif /*GAMESTRAP_OPACITYTESTS_H*/

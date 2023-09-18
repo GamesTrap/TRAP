@@ -6,9 +6,16 @@
 class FileSystemTests final : public TRAP::Layer
 {
 public:
-    FileSystemTests();
+    constexpr FileSystemTests();
 
     void OnAttach() override;
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr FileSystemTests::FileSystemTests()
+    : Layer("HeadlessFileSystemTests")
+{
+}
 
 #endif /*GAMESTRAP_FILESYSTEMTESTS_H*/

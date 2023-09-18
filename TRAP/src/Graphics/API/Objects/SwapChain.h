@@ -85,7 +85,7 @@ namespace TRAP::Graphics
 		SwapChain();
 
 		//Render targets created from the swapchain back buffers
-		std::vector<TRAP::Ref<RenderTarget>> m_renderTargets;
+		std::vector<TRAP::Ref<RenderTarget>> m_renderTargets{};
 #endif /*TRAP_HEADLESS_MODE*/
 	};
 }

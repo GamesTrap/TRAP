@@ -1,12 +1,5 @@
 #include "OpacityTests.h"
 
-OpacityTests::OpacityTests()
-	: Layer("Opacity")
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void OpacityTests::OnImGuiRender()
 {
 	ImGui::Begin("Opacity", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |

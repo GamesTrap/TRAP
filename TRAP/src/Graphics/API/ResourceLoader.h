@@ -418,8 +418,8 @@ namespace TRAP::Graphics::API
 
 		RendererAPI::ResourceLoaderDesc m_desc;
 
-		std::atomic<bool> m_run;
-		std::jthread m_thread;
+		std::atomic<bool> m_run = true;
+		std::jthread m_thread{};
 
 		TracyLockable(std::mutex, m_queueMutex);
 		std::condition_variable_any m_queueCond;
@@ -477,15 +477,15 @@ namespace TRAP::Graphics::API
 						 RendererAPI::TextureLoadDesc, RendererAPI::TextureCopyDesc,
 						 RendererAPI::BufferBarrier, RendererAPI::TextureBarrier> Desc;
 		};
-		std::vector<UpdateRequest> m_requestQueue;
+		std::vector<UpdateRequest> m_requestQueue{};
 
-		std::atomic<uint64_t> m_tokenCompleted;
-		std::atomic<uint64_t> m_tokenSubmitted;
-		std::atomic<uint64_t> m_tokenCounter;
+		std::atomic<uint64_t> m_tokenCompleted = 0;
+		std::atomic<uint64_t> m_tokenSubmitted = 0;
+		std::atomic<uint64_t> m_tokenCounter = 0;
 
 		TracyLockable(std::mutex, m_semaphoreMutex);
 
-		std::array<SyncToken, TRAP::Graphics::RendererAPI::ImageCount> m_currentTokenState;
+		std::array<SyncToken, TRAP::Graphics::RendererAPI::ImageCount> m_currentTokenState{};
 
 		struct CopyEngine
 		{
@@ -513,7 +513,7 @@ namespace TRAP::Graphics::API
 			//For reading back GPU generated textures, we need to ensure writes have completed before performing the copy.
 			std::vector<TRAP::Ref<Semaphore>> WaitSemaphores;
 		} m_copyEngine;
-		uint32_t m_nextSet;
+		uint32_t m_nextSet = 0;
 	};
 }
 

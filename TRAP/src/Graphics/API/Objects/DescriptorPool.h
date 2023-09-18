@@ -60,7 +60,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		DescriptorPool();
+		explicit DescriptorPool(uint32_t numDescriptorSets);
 
 		uint32_t m_numDescriptorSets = 0;
 	};

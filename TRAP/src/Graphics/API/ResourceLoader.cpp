@@ -223,13 +223,7 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* con
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::ResourceLoader::ResourceLoader(const RendererAPI::ResourceLoaderDesc* const desc)
-	: m_desc(desc != nullptr ? *desc : DefaultResourceLoaderDesc),
-	  m_run(true),
-	  m_tokenCompleted(0),
-	  m_tokenSubmitted(0),
-	  m_tokenCounter(0),
-	  m_currentTokenState(),
-      m_nextSet()
+	: m_desc(desc != nullptr ? *desc : DefaultResourceLoaderDesc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 

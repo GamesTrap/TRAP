@@ -54,7 +54,7 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] constexpr VmaAllocator GetVMAAllocator() const noexcept;
 
 	private:
-		VmaAllocator m_allocator;
+		VmaAllocator m_allocator = VK_NULL_HANDLE;
 	};
 }
 

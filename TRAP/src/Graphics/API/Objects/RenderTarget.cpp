@@ -6,7 +6,11 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RenderTarget::RenderTarget()
+TRAP::Graphics::RenderTarget::RenderTarget(const RendererAPI::RenderTargetDesc& desc)
+	: m_clearValue(desc.ClearValue), m_arraySize(desc.ArraySize), m_depth(desc.Depth), m_width(desc.Width),
+	  m_height(desc.Height), m_descriptors(desc.Descriptors),
+	  m_mipLevels(TRAP::Math::Max(1U, desc.MipLevels)), m_sampleQuality(desc.SampleQuality), m_format(desc.Format),
+	  m_sampleCount(desc.SampleCount)
 {
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererRenderTargetPrefix, "Creating RenderTarget");

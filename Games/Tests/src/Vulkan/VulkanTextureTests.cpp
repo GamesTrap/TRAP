@@ -1,21 +1,5 @@
 #include "VulkanTextureTests.h"
 
-VulkanTextureTests::VulkanTextureTests()
-    : Layer("VulkanTextureTests"),
-      m_vertexBuffer(nullptr),
-      m_indexBuffer(nullptr),
-      m_cycleMips(false),
-      m_currentMipLevel(0),
-      m_maxMipLevel(0),
-      m_updateTexture(false),
-      m_currentTexture(0),
-	  m_shader(nullptr),
-      m_texture(nullptr)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void VulkanTextureTests::OnAttach()
 {
     TRAP::Application::GetWindow()->SetTitle("Vulkan Texture Test");
@@ -64,15 +48,6 @@ void VulkanTextureTests::OnAttach()
 
     //Wait for all pending resources (Just in case)
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void VulkanTextureTests::OnDetach()
-{
-    m_textureSampler.reset();
-    m_indexBuffer.reset();
-    m_vertexBuffer.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

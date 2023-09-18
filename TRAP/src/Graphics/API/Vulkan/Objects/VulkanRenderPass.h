@@ -85,7 +85,7 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] static VkRenderPass CreateRenderPass(const TRAP::Ref<VulkanDevice>& device, const VulkanRenderer::RenderPassDesc& desc);
 		[[nodiscard]] static VkRenderPass CreateRenderPass2(const TRAP::Ref<VulkanDevice>& device, const VulkanRenderer::RenderPassDesc& desc);
 
-		VkRenderPass m_renderPass;
+		VkRenderPass m_renderPass = VK_NULL_HANDLE;
 
 		std::vector<TRAP::Graphics::API::ImageFormat> m_colorFormats;
 		std::vector<RendererAPI::LoadActionType> m_loadActionsColor;

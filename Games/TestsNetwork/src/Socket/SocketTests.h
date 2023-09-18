@@ -6,10 +6,9 @@
 class SocketTests final : public TRAP::Layer
 {
 public:
-	SocketTests();
+	constexpr SocketTests();
 
 	void OnAttach() override;
-	void OnDetach() override;
 
 private:
 	static void Sockets();
@@ -24,7 +23,14 @@ private:
 	static void RunUDPServerIPv6(uint16_t port);
 	static void RunUDPClientIPv6(uint16_t port);
 
-	std::unique_ptr<std::thread> m_socketThread;
+	std::unique_ptr<std::thread> m_socketThread = nullptr;
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr SocketTests::SocketTests()
+	: Layer("SocketTests")
+{
+}
 
 #endif /*GAMESTRAP_SOCKETTESTS_H*/

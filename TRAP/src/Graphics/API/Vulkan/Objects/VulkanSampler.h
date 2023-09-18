@@ -3,6 +3,7 @@
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Sampler.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 namespace TRAP::Graphics::API
 {
@@ -50,12 +51,12 @@ namespace TRAP::Graphics::API
 		void Init();
 		void Shutdown();
 
-		TRAP::Ref<VulkanDevice> m_device;
+		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 
 		//Native handle of the underlying resource
-		VkSampler m_vkSampler;
-		VkSamplerYcbcrConversion m_vkSamplerYcbcrConversion;
-		VkSamplerYcbcrConversionInfo m_vkSamplerYcbcrConversionInfo;
+		VkSampler m_vkSampler = VK_NULL_HANDLE;
+		VkSamplerYcbcrConversion m_vkSamplerYcbcrConversion{};
+		VkSamplerYcbcrConversionInfo m_vkSamplerYcbcrConversionInfo{};
 	};
 }
 

@@ -1,6 +1,7 @@
 #ifndef TRAP_VULKANRENDERTARGET_H
 #define TRAP_VULKANRENDERTARGET_H
 
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "VulkanCommandBuffer.h"
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/RenderTarget.h"
@@ -78,13 +79,13 @@ namespace TRAP::Graphics::API
 		/// <param name="name">Name to use.</param>
 		void SetRenderTargetName(std::string_view name) const;
 
-		TRAP::Ref<VulkanDevice> m_device;
+		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 
-		VkImageView m_vkDescriptor;
-		std::vector<VkImageView> m_vkSliceDescriptors;
-		volatile uint32_t m_used;
+		VkImageView m_vkDescriptor = VK_NULL_HANDLE;
+		std::vector<VkImageView> m_vkSliceDescriptors{};
+		volatile uint32_t m_used = 0;
 
-		uint64_t m_ID;
+		uint64_t m_ID = s_RenderTargetIDs++;
 
 		inline constinit static std::atomic<uint64_t> s_RenderTargetIDs = 1;
 	};

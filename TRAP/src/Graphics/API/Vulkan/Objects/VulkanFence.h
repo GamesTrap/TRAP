@@ -2,6 +2,7 @@
 #define TRAP_VULKANFENCE_H
 
 #include "VulkanSwapChain.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Fence.h"
 
@@ -67,8 +68,8 @@ namespace TRAP::Graphics::API
 		                                                                                      const TRAP::Ref<Fence>& fence) const;
 #endif /*TRAP_HEADLESS_MODE*/
 
-		VkFence m_fence;
-		TRAP::Ref<VulkanDevice> m_device;
+		VkFence m_fence = VK_NULL_HANDLE;
+		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 	};
 }
 

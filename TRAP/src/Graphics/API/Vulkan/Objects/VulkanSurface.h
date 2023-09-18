@@ -66,11 +66,11 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] constexpr const std::vector<VkPresentModeKHR>& GetVkSurfacePresentModes() const noexcept;
 
 	private:
-		VkSurfaceKHR m_surface;
+		VkSurfaceKHR m_surface = VK_NULL_HANDLE;
 
-		VkSurfaceCapabilitiesKHR m_surfaceCapabilities;
-		std::vector<VkSurfaceFormatKHR> m_surfaceFormats;
-		std::vector<VkPresentModeKHR> m_surfacePresentModes;
+		VkSurfaceCapabilitiesKHR m_surfaceCapabilities{};
+		std::vector<VkSurfaceFormatKHR> m_surfaceFormats{};
+		std::vector<VkPresentModeKHR> m_surfacePresentModes{};
 
 		TRAP::Ref<VulkanInstance> m_instance;
 	};

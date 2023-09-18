@@ -138,9 +138,9 @@ namespace TRAP::Graphics
 //-------------------------------------------------------------------------------------------------------------------//
 
 constexpr TRAP::Graphics::StorageBuffer::StorageBuffer(const RendererAPI::DescriptorUpdateFrequency updateFrequency)
+	: m_storageBuffers(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount),
+	  m_tokens(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount)
 {
-	m_tokens.resize(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount);
-	m_storageBuffers.resize(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

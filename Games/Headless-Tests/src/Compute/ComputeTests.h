@@ -6,16 +6,15 @@
 class ComputeTests final : public TRAP::Layer
 {
 public:
-    ComputeTests();
+    constexpr ComputeTests();
 
     void OnAttach() override;
-    void OnDetach() override;
     void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 
 private:
-    TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer;
-    TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer;
-    TRAP::Ref<TRAP::Graphics::Sampler> m_textureSampler;
+    TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer = nullptr;
+    TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer = nullptr;
+    TRAP::Ref<TRAP::Graphics::Sampler> m_textureSampler = nullptr;
 
     inline static constexpr std::array<float, 5ull * 4> m_quadVerticesIndexed
 	{
@@ -30,8 +29,15 @@ private:
 		0, 1, 2, 2, 3, 0
 	};
 
-    TRAP::Ref<TRAP::Graphics::Texture> m_colTex;
-    TRAP::Ref<TRAP::Graphics::Texture> m_compTex;
+    TRAP::Ref<TRAP::Graphics::Texture> m_colTex = nullptr;
+    TRAP::Ref<TRAP::Graphics::Texture> m_compTex = nullptr;
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr ComputeTests::ComputeTests()
+    : Layer("HeadlessComputeTests")
+{
+}
 
 #endif /*GAMESTRAP_COMPUTETESTS_H*/

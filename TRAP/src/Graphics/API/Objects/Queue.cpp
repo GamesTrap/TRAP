@@ -32,7 +32,8 @@ TRAP::Graphics::Queue::~Queue()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Queue::Queue()
+TRAP::Graphics::Queue::Queue(const RendererAPI::QueueType queueType)
+	: m_type(queueType)
 {
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererQueuePrefix, "Creating Queue");

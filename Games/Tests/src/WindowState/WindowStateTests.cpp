@@ -1,12 +1,5 @@
 #include "WindowStateTests.h"
 
-WindowStateTests::WindowStateTests()
-	: Layer("WindowState")
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void WindowStateTests::OnImGuiRender()
 {
 	ImGui::Begin("WindowState", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |

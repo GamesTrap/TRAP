@@ -3256,16 +3256,16 @@ namespace TRAP::Graphics
 			/// <summary>
 			/// Constructor.
 			/// </summary>
-			PerViewportData() = default;
+			constexpr PerViewportData() = default;
 
 			/// <summary>
 			/// Destructor.
 			/// </summary>
 			~PerViewportData();
 
-			PerViewportData(const PerViewportData&) = delete;
+			constexpr PerViewportData(const PerViewportData&) = delete;
 			PerViewportData(PerViewportData&&) = default;
-			PerViewportData& operator=(const PerViewportData &) = delete;
+			constexpr PerViewportData& operator=(const PerViewportData &) = delete;
 			PerViewportData& operator=(PerViewportData &&) = default;
 
 #ifndef TRAP_HEADLESS_MODE

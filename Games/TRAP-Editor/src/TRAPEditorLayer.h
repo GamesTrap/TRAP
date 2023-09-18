@@ -2,6 +2,7 @@
 #define GAMESTRAP_TRAPEDITORLAYER_H
 
 #include <TRAP.h>
+#include <ImGuizmo.h>
 
 #include "Panels/SceneGraphPanel.h"
 
@@ -12,7 +13,6 @@ public:
 
 	void OnImGuiRender() override;
 	void OnAttach() override;
-	void OnDetach() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnTick(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnEvent(TRAP::Events::Event& event) override;
@@ -40,43 +40,43 @@ private:
 	void UIToolbar();
 
 	//UI Icons
-	TRAP::Ref<TRAP::Graphics::Texture> m_iconPlay;
-	TRAP::Ref<TRAP::Graphics::Texture> m_iconStop;
+	TRAP::Ref<TRAP::Graphics::Texture> m_iconPlay = nullptr;
+	TRAP::Ref<TRAP::Graphics::Texture> m_iconStop = nullptr;
 
 	//Color RenderTarget
-	TRAP::Graphics::RendererAPI::LoadActionsDesc m_renderTargetLoadActions;
-	TRAP::Graphics::RendererAPI::RenderTargetDesc m_renderTargetDesc;
-	TRAP::Ref<TRAP::Graphics::RenderTarget> m_renderTarget;
+	TRAP::Graphics::RendererAPI::LoadActionsDesc m_renderTargetLoadActions{};
+	TRAP::Graphics::RendererAPI::RenderTargetDesc m_renderTargetDesc{};
+	TRAP::Ref<TRAP::Graphics::RenderTarget> m_renderTarget = nullptr;
 
 	//Viewport
-	TRAP::Math::Vec2 m_viewportSize;
-	std::array<TRAP::Math::Vec2, 2> m_viewportBounds;
-	bool m_viewportFocused;
-	bool m_viewportHovered;
+	TRAP::Math::Vec2 m_viewportSize{};
+	std::array<TRAP::Math::Vec2, 2> m_viewportBounds{};
+	bool m_viewportFocused = false;
+	bool m_viewportHovered = false;
 
 	//Gizmo
-	int32_t m_gizmoType;
-	bool m_enableGizmo;
-	bool m_allowViewportCameraEvents;
+	int32_t m_gizmoType = ImGuizmo::OPERATION::TRANSLATE;
+	bool m_enableGizmo = false;
+	bool m_allowViewportCameraEvents = false;
 
 	//Editor Camera
-	TRAP::Graphics::EditorCamera m_editorCamera;
-	bool m_startedCameraMovement;
+	TRAP::Graphics::EditorCamera m_editorCamera{45.0f, 16.0f / 9.0f, 0.1f};
+	bool m_startedCameraMovement = false;
 
 	//Mouse picking
-	uint32_t m_leftMouseBtnRepeatCount;
-	bool m_entityChanged;
-	TRAP::Graphics::RendererAPI::BufferDesc m_mousePickBufferDesc;
-	TRAP::Ref<TRAP::Graphics::Buffer> m_mousePickBuffer;
-	TRAP::Ref<TRAP::Graphics::RenderTarget> m_IDRenderTarget;
+	uint32_t m_leftMouseBtnRepeatCount = 0;
+	bool m_entityChanged = false;
+	TRAP::Graphics::RendererAPI::BufferDesc m_mousePickBufferDesc{};
+	TRAP::Ref<TRAP::Graphics::Buffer> m_mousePickBuffer = nullptr;
+	TRAP::Ref<TRAP::Graphics::RenderTarget> m_IDRenderTarget = nullptr;
 
 	//Panels
-	TRAP::SceneGraphPanel m_sceneGraphPanel;
-	std::string m_lastScenePath;
+	TRAP::SceneGraphPanel m_sceneGraphPanel{};
+	std::string m_lastScenePath{};
 
 	//Scene
-	TRAP::Ref<TRAP::Scene> m_activeScene;
-	TRAP::Ref<TRAP::Scene> m_editorScene;
+	TRAP::Ref<TRAP::Scene> m_activeScene = nullptr;
+	TRAP::Ref<TRAP::Scene> m_editorScene = nullptr;
 
 	enum class SceneState
 	{
@@ -85,10 +85,10 @@ private:
 		// Pause,
 		// Simulate
 	};
-	SceneState m_sceneState;
+	SceneState m_sceneState = SceneState::Edit;
 
 	//Other Settings
-	bool m_showPhysicsColliders;
+	bool m_showPhysicsColliders = false;
 };
 
 #endif /*GAMESTRAP_TRAPEDITORLAYER_H*/

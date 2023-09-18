@@ -1,9 +1,7 @@
 #include "ComputeTests.h"
 
 ComputeTests::ComputeTests()
-    : Layer("ComputeTests"),
-      m_vertexBuffer(nullptr), m_indexBuffer(nullptr), m_textureSampler(nullptr), m_colTex(nullptr),
-      m_compTex(nullptr), m_disabled(true), m_sharpen(false), m_emboss(false), m_edgedetect(false), m_reset(false)
+    : Layer("ComputeTests")
 {
 }
 
@@ -64,15 +62,6 @@ void ComputeTests::OnAttach()
 
     //Wait for all pending resources (Just in case)
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void ComputeTests::OnDetach()
-{
-    m_textureSampler.reset();
-    m_indexBuffer.reset();
-    m_vertexBuffer.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

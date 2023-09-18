@@ -6,7 +6,7 @@
 class ControllerTests final : public TRAP::Layer
 {
 public:
-	ControllerTests();
+	constexpr ControllerTests();
 
 	void OnAttach() override;
 	void OnImGuiRender() override;
@@ -23,6 +23,13 @@ private:
 	inline static std::vector<TRAP::Input::Controller> s_controllers{};
 	inline constinit static bool s_dpadButtons = false;
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr ControllerTests::ControllerTests()
+	: Layer("Controllers")
+{
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 

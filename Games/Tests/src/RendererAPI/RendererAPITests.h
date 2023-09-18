@@ -9,7 +9,6 @@ public:
 	RendererAPITests();
 
 	void OnAttach() override;
-	void OnDetach() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnImGuiRender() override;
 
@@ -18,10 +17,9 @@ public:
 private:
 	bool OnKeyPress(const TRAP::Events::KeyPressEvent& e);
 
-	TRAP::Utils::Timer m_fpsTimer;
+	TRAP::Utils::Timer m_fpsTimer{};
 
-
-	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer;
+	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer = nullptr;
 	inline static constexpr std::array<float, 18> TriangleVertices
 	{
 		//XYZ RGB
@@ -48,7 +46,7 @@ private:
 		-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f,    0.0f, 0.0f
 	};
 
-	TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer;
+	TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer = nullptr;
 	inline static constexpr std::array<uint16_t, 3> TriangleIndices
 	{
 		0, 1, 2
@@ -58,26 +56,26 @@ private:
 		0, 1, 2, 2, 3, 0
 	};
 
-	bool m_wireFrame;
-	bool m_quad;
-	bool m_indexed;
-	bool m_vsync;
-	uint8_t m_pushConstantOrUBO;
+	bool m_wireFrame = false;
+	bool m_quad = false;
+	bool m_indexed = false;
+	bool m_vsync = TRAP::Application::GetWindow()->GetVSync();
+	uint8_t m_pushConstantOrUBO = 0;
 
 	struct ColorData
 	{
 		TRAP::Math::Vec3 Color;
-	} m_colorData;
+	} m_colorData{};
 	struct SizeMultiplicatorData
 	{
 		TRAP::Math::Vec3 Multiplier;
-	} m_sizeMultiplicatorData;
+	} m_sizeMultiplicatorData{};
 
-	TRAP::Utils::Timer m_colorTimer;
-	TRAP::Utils::Timer m_vertexTimer;
+	TRAP::Utils::Timer m_colorTimer{};
+	TRAP::Utils::Timer m_vertexTimer{};
 
-	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_colorUniformBuffer;
-	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_sizeMultiplicatorUniformBuffer;
+	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_colorUniformBuffer = nullptr;
+	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_sizeMultiplicatorUniformBuffer = nullptr;
 };
 
 #endif /*GAMESTRAP_RENDERERAPITESTS_H*/

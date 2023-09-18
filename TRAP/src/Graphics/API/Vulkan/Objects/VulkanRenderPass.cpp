@@ -8,8 +8,7 @@
 
 TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> device,
                                                         const VulkanRenderer::RenderPassDesc& desc)
-	: m_renderPass(VK_NULL_HANDLE),
-	  m_colorFormats(desc.ColorFormats),
+	: m_colorFormats(desc.ColorFormats),
 	  m_loadActionsColor(desc.LoadActionsColor),
 	  m_renderTargetCount(desc.RenderTargetCount),
 	  m_sampleCount(desc.SampleCount),

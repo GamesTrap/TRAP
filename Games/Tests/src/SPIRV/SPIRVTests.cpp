@@ -1,7 +1,7 @@
 #include "SPIRVTests.h"
 
 SPIRVTests::SPIRVTests()
-	: Layer("SPIRV"), m_vertexBuffer(nullptr), m_indexBuffer(nullptr)
+	: Layer("SPIRV")
 {
 }
 
@@ -41,14 +41,6 @@ void SPIRVTests::OnAttach()
 
     //Wait for all pending resources (Just in case)
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void SPIRVTests::OnDetach()
-{
-    m_indexBuffer.reset();
-    m_vertexBuffer.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

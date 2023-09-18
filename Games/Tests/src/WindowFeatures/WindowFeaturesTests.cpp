@@ -1,13 +1,5 @@
 #include "WindowFeaturesTests.h"
 
-WindowFeaturesTests::WindowFeaturesTests()
-	: Layer("WindowFeatures"), m_lastWindowPos(), m_lastWindowSize(),
-	  m_minWindowSize(400), m_maxWindowSize(400), m_aspect(1), m_limitMinSize(false), m_limitMaxSize(false)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void WindowFeaturesTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Window Features");

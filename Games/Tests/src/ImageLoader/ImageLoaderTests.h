@@ -16,14 +16,16 @@ public:
 	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
 
 private:
-	TRAP::Graphics::OrthographicCamera m_camera;
+	TRAP::Graphics::OrthographicCamera m_camera{-TRAP::Application::GetWindow()->GetAspectRatio(),
+	                                             TRAP::Application::GetWindow()->GetAspectRatio(),
+	                                            -1.0f, 1.0f, -1.0f, 1.0f};
 
-	bool m_png;
-	bool m_tga;
-	bool m_bmp;
-	bool m_pm;
-	bool m_radiance;
-	bool m_qoi;
+	bool m_png = false;
+	bool m_tga = true;
+	bool m_bmp = false;
+	bool m_pm = false;
+	bool m_radiance = false;
+	bool m_qoi = false;
 };
 
 #endif /*GAMESTRAP_IMAGELOADERTESTS_H*/

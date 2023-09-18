@@ -8,16 +8,11 @@
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc& desc)
-	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
-	  m_vkSampler(VK_NULL_HANDLE),
-	  m_vkSamplerYcbcrConversion(),
-	  m_vkSamplerYcbcrConversionInfo()
+	: Sampler(desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_device, "VulkanSampler(): Vulkan Device is nullptr");
-
-	m_samplerDesc = desc;
 
 	Init();
 }

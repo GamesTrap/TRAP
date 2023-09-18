@@ -22,9 +22,9 @@ namespace TRAP::Graphics::API
 		/// Request all available queues.
 		/// Default: false (only 1 queue for each type).
 		/// </param>
-		explicit VulkanDevice(TRAP::Scope<VulkanPhysicalDevice> physicalDevice,
-		                      std::vector<std::string> deviceExtensions,
-		                      bool requestAllAvailableQueues = false);
+		VulkanDevice(TRAP::Scope<VulkanPhysicalDevice> physicalDevice,
+		             std::vector<std::string> deviceExtensions,
+		             bool requestAllAvailableQueues = false);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -158,19 +158,19 @@ namespace TRAP::Graphics::API
 		std::unordered_map<VkQueueFlags, uint32_t> m_availableQueueCount;
 		std::unordered_map<VkQueueFlags, uint32_t> m_usedQueueCount;
 
-		uint8_t m_graphicsQueueFamilyIndex;
-		uint8_t m_transferQueueFamilyIndex;
-		uint8_t m_computeQueueFamilyIndex;
+		uint8_t m_graphicsQueueFamilyIndex = 0;
+		uint8_t m_transferQueueFamilyIndex = 0;
+		uint8_t m_computeQueueFamilyIndex = 0;
 
-		uint8_t m_graphicsQueueIndex;
-		uint8_t m_transferQueueIndex;
-		uint8_t m_computeQueueIndex;
+		uint8_t m_graphicsQueueIndex = 0;
+		uint8_t m_transferQueueIndex = 0;
+		uint8_t m_computeQueueIndex = 0;
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 		VkSemaphore m_reflexSemaphore;
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
-		VkDevice m_device;
+		VkDevice m_device = VK_NULL_HANDLE;
 	};
 }
 

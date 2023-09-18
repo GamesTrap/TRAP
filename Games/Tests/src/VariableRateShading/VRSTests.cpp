@@ -1,13 +1,7 @@
 #include "VRSTests.h"
 
 VRSTests::VRSTests()
-	: Layer("Variable Rate Shading"),
-	m_cameraController(TRAP::Application::GetWindow()->GetAspectRatio(), true),
-    m_shadingRateTexture(nullptr), m_shadingRate(),
-    m_currRenderScale(1.0f),
-    m_supportsPerDrawVRS((TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerDraw) != TRAP::Graphics::RendererAPI::ShadingRateCaps::NotSupported),
-    m_supportsPerTileVRS((TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerTile) != TRAP::Graphics::RendererAPI::ShadingRateCaps::NotSupported),
-    m_perDrawActive(true), m_visualizeShadingRate(false)
+	: Layer("Variable Rate Shading")
 {
 }
 

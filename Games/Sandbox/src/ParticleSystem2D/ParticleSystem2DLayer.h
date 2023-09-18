@@ -9,10 +9,7 @@ class ParticleSystem2DLayer : public TRAP::Layer
 {
 public:
 	ParticleSystem2DLayer()
-		: Layer("ParticleSystem2D"),
-		  m_cameraController(TRAP::Application::GetWindow()->GetAspectRatio()),
-		  m_particle(),
-		  m_frameTimeHistory()
+		: Layer("ParticleSystem2D")
 	{
 	}
 
@@ -115,13 +112,13 @@ public:
 	}
 
 private:
-	TRAP::Graphics::OrthographicCameraController m_cameraController;
-	ParticleProps m_particle;
-	ParticleSystem2D m_particleSystem;
+	TRAP::Graphics::OrthographicCameraController m_cameraController{TRAP::Application::GetWindow()->GetAspectRatio()};
+	ParticleProps m_particle{};
+	ParticleSystem2D m_particleSystem{};
 	uint32_t m_maxParticles = 1000;
 
-	std::array<float, 50> m_frameTimeHistory;
-	TRAP::Utils::Timer m_updateFPSTimer;
+	std::array<float, 50> m_frameTimeHistory{};
+	TRAP::Utils::Timer m_updateFPSTimer{};
 };
 
 #endif /*GAMESTRAP_PARTICLESYSTEM2DLAYER_H*/

@@ -6,15 +6,21 @@
 class FTPTests final : public TRAP::Layer
 {
 public:
-	FTPTests();
+	constexpr FTPTests();
 
 	void OnAttach() override;
-	void OnDetach() override;
 
 private:
 	static void FTP();
 
-	std::unique_ptr<std::thread> m_ftpThread;
+	std::unique_ptr<std::thread> m_ftpThread = nullptr;
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr FTPTests::FTPTests()
+	: Layer("FTPTests")
+{
+}
 
 #endif /*GAMESTRAP_FTPTESTS_H*/

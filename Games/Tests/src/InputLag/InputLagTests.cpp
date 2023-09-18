@@ -1,9 +1,7 @@
 #include "InputLagTests.h"
 
 InputLagTests::InputLagTests()
-	: Layer("InputLag"), m_cursorMethod(CursorMethod::SyncQuery),
-	  m_vsync(TRAP::Application::GetWindow()->GetVSync()),
-	  m_cursorNew(), m_cursorPos(), m_cursorVelocity(), m_showForecasts(true), m_latencyMode()
+	: Layer("InputLag")
 {
 }
 

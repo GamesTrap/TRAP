@@ -22,10 +22,9 @@ constexpr std::array<uint8_t, 8> EndMarker{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
+    : Image(std::move(filepath))
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
-
-	m_filepath = std::move(filepath);
 
 	TP_DEBUG(Log::ImageQOIPrefix, "Loading image: ", m_filepath);
 

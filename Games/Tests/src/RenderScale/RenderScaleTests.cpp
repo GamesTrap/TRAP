@@ -3,8 +3,7 @@
 #include <imgui.h>
 
 RenderScaleTests::RenderScaleTests()
-	: Layer("Render Scaling"),
-	m_cameraController(TRAP::Application::GetWindow()->GetAspectRatio(), true)
+	: Layer("Render Scaling")
 {
 }
 

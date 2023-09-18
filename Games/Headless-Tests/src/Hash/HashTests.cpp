@@ -3,13 +3,6 @@
 #include "Utils/Hash/CRC32.h"
 #include "Utils/Hash/SHA-2.h"
 
-HashTests::HashTests()
-	: Layer("Hash")
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void HashTests::OnAttach()
 {
     TestAdler32();

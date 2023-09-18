@@ -7,7 +7,7 @@
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 TRAP::Graphics::API::VulkanQueryPool::VulkanQueryPool(const RendererAPI::QueryPoolDesc& desc)
-	: m_vkQueryPool(VK_NULL_HANDLE), m_type(), m_count()
+	: m_type(QueryTypeToVkQueryType(desc.Type)), m_count(desc.QueryCount)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -18,11 +18,7 @@ TRAP::Graphics::API::VulkanQueryPool::VulkanQueryPool(const RendererAPI::QueryPo
 	TP_DEBUG(Log::RendererVulkanQueryPoolPrefix, "Creating QueryPool");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	m_type = QueryTypeToVkQueryType(desc.Type);
-	m_count = desc.QueryCount;
-
-	const VkQueryPoolCreateInfo info = VulkanInits::QueryPoolCreateInfo(desc.QueryCount,
-	                                                                    QueryTypeToVkQueryType(desc.Type));
+	const VkQueryPoolCreateInfo info = VulkanInits::QueryPoolCreateInfo(m_count, m_type);
 	VkCall(vkCreateQueryPool(device->GetVkDevice(), &info, nullptr, &m_vkQueryPool));
 	TRAP_ASSERT(m_vkQueryPool, "VulkanQueryPool(): Vulkan QueryPool is nullptr!");
 }

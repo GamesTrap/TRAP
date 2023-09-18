@@ -5,7 +5,7 @@ constexpr std::array<const char*, 5> anisotropyLevels{"Off", "2x", "4x", "8x", "
 //-------------------------------------------------------------------------------------------------------------------//
 
 AnisotropyTests::AnisotropyTests()
-	: Layer("Anisotropy"), m_maxAnisotropyLevelIdx(0), m_currAnisotropyLevelIdx(0)
+	: Layer("Anisotropy")
 {
 }
 
@@ -39,12 +39,6 @@ void AnisotropyTests::OnAttach()
 		m_currAnisotropyLevelIdx = 0;
 	else
 		m_currAnisotropyLevelIdx = NumericCast<uint32_t>(TRAP::Math::Ceil(TRAP::Math::Sqrt(static_cast<float>(TRAP::Graphics::RenderCommand::GetAnisotropyLevel()))));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void AnisotropyTests::OnDetach()
-{
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

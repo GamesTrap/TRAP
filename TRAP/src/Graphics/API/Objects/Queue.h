@@ -67,7 +67,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		Queue();
+		explicit Queue(RendererAPI::QueueType queueType);
 
 		RendererAPI::QueueType m_type = RendererAPI::QueueType::Graphics;
 	};

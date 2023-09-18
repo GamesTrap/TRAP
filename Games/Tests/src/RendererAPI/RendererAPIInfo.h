@@ -6,10 +6,17 @@
 class RendererAPIInfo final : public TRAP::Layer
 {
 public:
-	RendererAPIInfo();
+	constexpr RendererAPIInfo();
 
 	void OnAttach() override;
 	void OnImGuiRender() override;
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr RendererAPIInfo::RendererAPIInfo()
+	: Layer("RendererAPIInfo")
+{
+}
 
 #endif /*GAMESTRAP_RENDERERAPIINFO_H*/

@@ -11,15 +11,15 @@ namespace TRAP
 	class SceneGraphPanel
 	{
 	public:
-		SceneGraphPanel() = default;
+		constexpr SceneGraphPanel() = default;
 		explicit SceneGraphPanel(const Ref<Scene>& context);
 
 		void SetContext(const Ref<Scene>& context);
 
 		void OnImGuiRender();
 
-		void SetSelectedEntity(const Entity& entity);
-		[[nodiscard]] Entity GetSelectedEntity() const;
+		constexpr void SetSelectedEntity(const Entity& entity);
+		[[nodiscard]] constexpr Entity GetSelectedEntity() const;
 
 	private:
 		template<typename T>
@@ -29,9 +29,23 @@ namespace TRAP
 		void DrawEntityNode(Entity entity);
 		void DrawComponents(Entity entity);
 
-		Ref<Scene> m_context;
-		Entity m_selectionContext;
+		Ref<Scene> m_context = nullptr;
+		Entity m_selectionContext{};
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::SceneGraphPanel::SetSelectedEntity(const Entity& entity)
+{
+	m_selectionContext = entity;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Entity TRAP::SceneGraphPanel::GetSelectedEntity() const
+{
+	return m_selectionContext;
 }
 
 #endif /*TRAPEDITOR_SCENEGRAPHPANEL_H*/

@@ -6,7 +6,7 @@
 class WindowStateTests final : public TRAP::Layer
 {
 public:
-	WindowStateTests();
+	constexpr WindowStateTests();
 
 	void OnImGuiRender() override;
 	void OnAttach() override;
@@ -22,5 +22,12 @@ private:
 	static bool OnWindowMaximize(const TRAP::Events::WindowMaximizeEvent& event);
 	static bool OnWindowRestore(const TRAP::Events::WindowRestoreEvent& event);
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr WindowStateTests::WindowStateTests()
+	: Layer("WindowState")
+{
+}
 
 #endif /*GAMESTRAP_MINIMIZETESTS_H*/

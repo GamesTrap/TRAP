@@ -17,15 +17,6 @@ std::multimap<uint32_t, std::array<uint8_t, 16>> TRAP::Graphics::API::VulkanPhys
 
 TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<VulkanInstance> &instance,
 																const std::array<uint8_t, 16> &physicalDeviceUUID)
-	: m_physicalDevice(VK_NULL_HANDLE),
-	  m_physicalDeviceProperties(),
-	  m_physicalDeviceSubgroupProperties(),
-	  m_physicalDeviceIDProperties(),
-	  m_physicalDeviceMemoryProperties(),
-	  m_physicalDeviceFeatures(),
-	  m_physicalDeviceFragmentShaderInterlockFeatures(),
-	  m_physicalDeviceDriverProperties(),
-	  m_deviceUUID()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

@@ -3,10 +3,7 @@
 #include <ImageLoader/PortableMaps/PPMImage.h>
 
 AntiAliasingTests::AntiAliasingTests()
-	: Layer("AntiAliasing"), m_antiAliasing(), m_sampleCount(),
-	  m_camera(-TRAP::Application::GetWindow()->GetAspectRatio(),
-	           TRAP::Application::GetWindow()->GetAspectRatio(),
-	           -1.0f, 1.0f, -1.0f, 1.0f)
+	: Layer("AntiAliasing")
 {
 }
 
@@ -20,12 +17,6 @@ void AntiAliasingTests::OnAttach()
 
 	for(uint32_t i = std::to_underlying(TRAP::Graphics::AntiAliasing::Off); i < (std::to_underlying(TRAP::Graphics::AntiAliasing::MSAA) + 1); ++i)
 		m_antiAliasingMethods.emplace_back(static_cast<TRAP::Graphics::AntiAliasing>(i));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void AntiAliasingTests::OnDetach()
-{
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

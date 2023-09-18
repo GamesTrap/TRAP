@@ -9,7 +9,6 @@ public:
 	SPIRVTests();
 
 	void OnAttach() override;
-	void OnDetach() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnImGuiRender() override;
 
@@ -18,8 +17,8 @@ public:
 private:
 	bool OnKeyPress(const TRAP::Events::KeyPressEvent& e);
 
-    TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer;
-    TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer;
+    TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer = nullptr;
+    TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer = nullptr;
 
     inline static constexpr std::array<float, 5ull * 4> QuadVerticesIndexed
 	{

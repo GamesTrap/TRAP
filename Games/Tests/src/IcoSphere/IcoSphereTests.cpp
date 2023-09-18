@@ -1,12 +1,7 @@
 #include "IcoSphereTests.h"
 
 IcoSphereTests::IcoSphereTests()
-	: Layer("IcoSphere"),
-	  m_wireFrame(false),
-	  m_vsync(TRAP::Application::GetWindow()->GetVSync()),
-	  m_FOV(45.0f),
-	  m_rotationSpeed(20.0f),
-	  m_shader(nullptr)
+	: Layer("IcoSphere")
 {
 }
 
@@ -55,15 +50,6 @@ void IcoSphereTests::OnAttach()
 
 	//Enable depth testing because this is 3D stuff
 	TRAP::Graphics::RenderCommand::SetDepthTesting(true);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void IcoSphereTests::OnDetach()
-{
-	m_cameraUBO.reset();
-	m_indexBuffer.reset();
-	m_vertexBuffer.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

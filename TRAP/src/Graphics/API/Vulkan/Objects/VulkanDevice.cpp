@@ -14,14 +14,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
                                                 std::vector<std::string> deviceExtensions,
                                                 const bool requestAllAvailableQueues)
 	: m_physicalDevice(std::move(physicalDevice)),
-      m_deviceExtensions(std::move(deviceExtensions)),
-      m_graphicsQueueFamilyIndex(0),
-	  m_transferQueueFamilyIndex(0),
-	  m_computeQueueFamilyIndex(0),
-	  m_graphicsQueueIndex(),
-	  m_transferQueueIndex(),
-	  m_computeQueueIndex(),
-	  m_device()
+      m_deviceExtensions(std::move(deviceExtensions))
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

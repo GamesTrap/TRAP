@@ -472,8 +472,9 @@ namespace TRAP
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 		//Multithreading
-		ThreadPool m_threadPool;
-		std::thread::id m_mainThreadID;
+		ThreadPool m_threadPool{Utils::GetCPUInfo().LogicalCores > 1 ? (Utils::GetCPUInfo().LogicalCores - 1) :
+	                            std::thread::hardware_concurrency()};
+		std::thread::id m_mainThreadID = std::this_thread::get_id();
 
 		//Other data
 		Utils::Config m_config{};

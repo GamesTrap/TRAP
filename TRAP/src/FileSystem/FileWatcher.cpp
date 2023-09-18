@@ -7,7 +7,7 @@
 #include "Utils/Utils.h"
 
 TRAP::FileSystem::FileWatcher::FileWatcher(std::string name, const bool recursive)
-    : m_recursive(recursive), m_run(false), m_name(std::move(name))
+    : m_recursive(recursive), m_name(std::move(name))
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 

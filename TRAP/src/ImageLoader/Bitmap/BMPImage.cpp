@@ -8,10 +8,9 @@
 #include "Utils/Utils.h"
 
 TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
+	: Image(std::move(filepath))
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
-
-	m_filepath = std::move(filepath);
 
 	TP_DEBUG(Log::ImageBMPPrefix, "Loading image: ", m_filepath);
 

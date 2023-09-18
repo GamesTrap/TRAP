@@ -4,9 +4,12 @@
 #include "Graphics/API/Objects/CommandBuffer.h"
 #include "Graphics/API/Vulkan/Objects/VulkanCommandPool.h"
 
-TRAP::Graphics::CommandPool::CommandPool()
+TRAP::Graphics::CommandPool::CommandPool(TRAP::Ref<TRAP::Graphics::Queue> queue)
+	: m_queue(std::move(queue))
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	TRAP_ASSERT(m_queue != nullptr, "CommandPool::CommandPool(): m_queue is nullptr!");
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererCommandPoolPrefix, "Creating CommandPool");

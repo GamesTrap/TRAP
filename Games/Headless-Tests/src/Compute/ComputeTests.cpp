@@ -3,14 +3,6 @@
 #include <Graphics/API/Objects/Queue.h>
 #include <ImageLoader/PortableMaps/PPMImage.h>
 
-ComputeTests::ComputeTests()
-    : Layer("HeadlessComputeTests"),
-      m_vertexBuffer(nullptr), m_indexBuffer(nullptr), m_colTex(nullptr), m_compTex(nullptr)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void ComputeTests::OnAttach()
 {
     if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::NONE)
@@ -62,15 +54,6 @@ void ComputeTests::OnAttach()
 
     //Wait for all pending resources (Just in case)
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void ComputeTests::OnDetach()
-{
-    m_textureSampler.reset();
-    m_indexBuffer.reset();
-    m_vertexBuffer.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

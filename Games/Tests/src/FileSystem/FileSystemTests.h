@@ -6,7 +6,7 @@
 class FileSystemTests final : public TRAP::Layer
 {
 public:
-	FileSystemTests();
+	constexpr FileSystemTests();
 
 	void OnAttach() override;
 	void OnImGuiRender() override;
@@ -14,5 +14,12 @@ public:
 
 	static bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr FileSystemTests::FileSystemTests()
+	: Layer("FileSystem")
+{
+}
 
 #endif /*GAMESTRAP_FILESYSTEMTESTS_H*/

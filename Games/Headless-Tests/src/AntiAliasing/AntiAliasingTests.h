@@ -6,14 +6,20 @@
 class AntiAliasingTests final : public TRAP::Layer
 {
 public:
-	AntiAliasingTests();
+	constexpr AntiAliasingTests();
 
 	void OnAttach() override;
-	void OnDetach() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 
 private:
-	TRAP::Graphics::OrthographicCamera m_camera;
+	inline static constexpr TRAP::Graphics::OrthographicCamera s_camera{-(2560.0f / 1440.0f), 2560.0f / 1440.0f, -1.0f, 1.0f, -1.0f, 1.0f};
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr AntiAliasingTests::AntiAliasingTests()
+	: Layer("AntiAliasing")
+{
+}
 
 #endif /*GAMESTRAP_ANTIALIASINGTESTS_H*/

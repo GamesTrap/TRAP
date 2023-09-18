@@ -6,7 +6,7 @@
 class IPAddressTests final : public TRAP::Layer
 {
 public:
-	IPAddressTests();
+	constexpr IPAddressTests();
 
 	void OnAttach() override;
 
@@ -23,5 +23,12 @@ private:
     void TestIPv4Operators();
     void TestIPv6Operators();
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr IPAddressTests::IPAddressTests()
+	: Layer("IPAddress")
+{
+}
 
 #endif /*GAMESTRAP_IPADDRESSTESTS_H*/

@@ -117,9 +117,9 @@ namespace TRAP::Graphics
 //-------------------------------------------------------------------------------------------------------------------//
 
 constexpr TRAP::Graphics::UniformBuffer::UniformBuffer(const RendererAPI::DescriptorUpdateFrequency updateFrequency)
+	: m_uniformBuffers(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount),
+	  m_tokens(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount)
 {
-	m_tokens.resize(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount);
-	m_uniformBuffers.resize(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -1,18 +1,7 @@
 #include "RendererAPITests.h"
 
 RendererAPITests::RendererAPITests()
-	: Layer("RendererAPITests"),
-	  m_vertexBuffer(nullptr),
-	  m_indexBuffer(nullptr),
-	  m_wireFrame(false),
-	  m_quad(false),
-	  m_indexed(false),
-	  m_vsync(TRAP::Application::GetWindow()->GetVSync()),
-	  m_pushConstantOrUBO(0),
-	  m_colorData(),
-	  m_sizeMultiplicatorData(),
-	  m_colorUniformBuffer(nullptr),
-	  m_sizeMultiplicatorUniformBuffer(nullptr)
+	: Layer("RendererAPITests")
 {
 }
 
@@ -57,16 +46,6 @@ void RendererAPITests::OnAttach()
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void RendererAPITests::OnDetach()
-{
-	m_colorUniformBuffer.reset();
-	m_sizeMultiplicatorUniformBuffer.reset();
-	m_indexBuffer.reset();
-	m_vertexBuffer.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

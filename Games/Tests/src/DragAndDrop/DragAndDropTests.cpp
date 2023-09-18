@@ -1,12 +1,5 @@
 #include "DragAndDropTests.h"
 
-DragAndDropTests::DragAndDropTests()
-	: Layer("DragAndDrop"), m_dragAndDrop(true)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void DragAndDropTests::OnImGuiRender()
 {
 	ImGui::Begin("Drag and Drop", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |

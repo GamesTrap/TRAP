@@ -76,7 +76,8 @@ TRAP::Graphics::Sampler::~Sampler()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Sampler::Sampler()
+TRAP::Graphics::Sampler::Sampler(const RendererAPI::SamplerDesc& desc)
+	: m_samplerDesc(desc)
 {
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererSamplerPrefix, "Creating Sampler");

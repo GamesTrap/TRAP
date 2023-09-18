@@ -126,22 +126,22 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] static uint32_t GetMemoryType(uint32_t typeBits, const VkPhysicalDeviceMemoryProperties& memProps,
 		                                            VkMemoryPropertyFlags props, VkBool32* memTypeFound = nullptr);
 
-		TRAP::Ref<VulkanDevice> m_device;
-		TRAP::Ref<VulkanMemoryAllocator> m_vma;
+		TRAP::Ref<VulkanDevice> m_device = nullptr;
+		TRAP::Ref<VulkanMemoryAllocator> m_vma = nullptr;
 
 		//Opaque handle used by shaders for doing read/write operations on the texture
-		VkImageView m_vkSRVDescriptor;
+		VkImageView m_vkSRVDescriptor = VK_NULL_HANDLE;
 		//Opaque handle used by shaders for doing read/write operations on the texture
-		std::vector<VkImageView> m_vkUAVDescriptors;
+		std::vector<VkImageView> m_vkUAVDescriptors{};
 		//Opaque handle used by shaders for doing read/write operations on the texture
-		VkImageView m_vkSRVStencilDescriptor;
+		VkImageView m_vkSRVStencilDescriptor = VK_NULL_HANDLE;
 		//Native handle of the underlying resource
-		VkImage m_vkImage;
+		VkImage m_vkImage = VK_NULL_HANDLE;
 		//Contains resource allocation info such as parent heap, offset in heap
-		VmaAllocation m_vkAllocation;
-		VkDeviceMemory m_vkDeviceMemory;
+		VmaAllocation m_vkAllocation = VK_NULL_HANDLE;
+		VkDeviceMemory m_vkDeviceMemory = VK_NULL_HANDLE;
 
-		bool m_lazilyAllocated;
+		bool m_lazilyAllocated = false;
 	};
 }
 

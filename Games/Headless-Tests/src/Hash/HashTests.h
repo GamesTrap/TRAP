@@ -6,7 +6,7 @@
 class HashTests final : public TRAP::Layer
 {
 public:
-	HashTests();
+	constexpr HashTests();
 
 	void OnAttach() override;
 
@@ -18,5 +18,12 @@ private:
     void TestSHA3_256();
     void TestSHA3_512();
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr HashTests::HashTests()
+	: Layer("Hash")
+{
+}
 
 #endif /*GAMESTRAP_HASHTESTS_H*/

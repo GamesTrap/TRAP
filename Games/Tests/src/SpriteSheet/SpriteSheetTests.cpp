@@ -2,8 +2,7 @@
 #include "Graphics/Textures/SpriteManager.h"
 
 SpriteSheetTests::SpriteSheetTests()
-	: Layer("Sprite Sheet Tests"),
-	m_cameraController(TRAP::Application::GetWindow()->GetAspectRatio(), true)
+	: Layer("Sprite Sheet Tests")
 {
 }
 
@@ -115,17 +114,6 @@ void SpriteSheetTests::OnAttach()
     frame3 = TRAP::Graphics::SubTexture2D::CreateFromCoords("", m_characterSheet, { 8.0f, 1.0f }, characterSpriteSize);
     sprites = {frame1, frame2, frame3};
     m_animation2 = TRAP::Graphics::SpriteAnimation::Create("TestAnim2", sprites, 0.35f);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void SpriteSheetTests::OnDetach()
-{
-    m_animation.reset();
-    m_animation2.reset();
-    m_backgroundSheet.reset();
-    m_foregroundSheet.reset();
-    m_characterSheet.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -21,26 +21,13 @@
 TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesystem::path filepath,
 												const RendererAPI::BinaryShaderDesc& desc,
                                                 const std::vector<Macro>* const userMacros, const bool valid)
-	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
-	  m_numThreadsPerGroup(),
+	: Shader(name, valid, desc.Stages, userMacros, filepath),
 	  m_shaderModules(std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
-	  m_reflection(nullptr),
-	  m_entryNames(std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
-	  m_dirtyDescriptorSets(),
-	  m_cleanedDescriptorSets(),
-	  m_lastImageIndex(std::numeric_limits<uint32_t>::max())
+	  m_entryNames(std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT))
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_device, "VulkanShader(): Vulkan Device is nullptr");
-
-	m_name = std::move(name);
-	m_filepath = std::move(filepath);
-	m_valid = valid;
-	m_shaderStages = desc.Stages;
-
-	if(userMacros != nullptr)
-		m_macros = *userMacros;
 
 	if(!m_valid)
 		return;
@@ -52,25 +39,13 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesyste
 
 TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const RendererAPI::BinaryShaderDesc& desc,
                                                 const std::vector<Macro>* const userMacros, const bool valid)
-	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
-	  m_numThreadsPerGroup(),
+	: Shader(name, valid, desc.Stages, userMacros),
 	  m_shaderModules(std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
-	  m_reflection(nullptr),
-	  m_entryNames(std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
-	  m_dirtyDescriptorSets(),
-	  m_cleanedDescriptorSets(),
-	  m_lastImageIndex(std::numeric_limits<uint32_t>::max())
+	  m_entryNames(std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT))
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_device, "VulkanShader(): Vulkan Device is nullptr");
-
-	m_name = std::move(name);
-	m_valid = valid;
-	m_shaderStages = desc.Stages;
-
-	if(userMacros != nullptr)
-		m_macros = *userMacros;
 
 	if(!m_valid)
 		return;
@@ -83,26 +58,13 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const Renderer
 TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesystem::path filepath,
                                                 const std::vector<Macro>* const userMacros,
 												const RendererAPI::ShaderStage stages)
-	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
-	  m_numThreadsPerGroup(),
+	: Shader(name, false, stages, userMacros, filepath),
 	  m_shaderModules(std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
-	  m_reflection(nullptr),
-	  m_entryNames(std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
-	  m_dirtyDescriptorSets(),
-	  m_cleanedDescriptorSets(),
-	  m_lastImageIndex(std::numeric_limits<uint32_t>::max())
+	  m_entryNames(std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT))
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_device, "VulkanShader(): Vulkan Device is nullptr");
-
-	m_name = std::move(name);
-	m_filepath = std::move(filepath);
-	m_valid = false;
-	m_shaderStages = stages;
-
-	if(userMacros != nullptr)
-		m_macros = *userMacros;
 
 	//Intentionally not calling InitShader() as this is always an invalid shader
 }

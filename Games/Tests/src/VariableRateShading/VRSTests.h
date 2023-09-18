@@ -26,20 +26,20 @@ private:
 
 	TRAP::Ref<TRAP::Graphics::RenderTarget> CreateShadingRateTexture(uint32_t framebufferWidth, uint32_t framebufferHeight);
 
-	TRAP::Graphics::OrthographicCameraController m_cameraController;
+	TRAP::Graphics::OrthographicCameraController m_cameraController{TRAP::Application::GetWindow()->GetAspectRatio(), true};
 
-	TRAP::Ref<TRAP::Graphics::RenderTarget> m_shadingRateTexture;
+	TRAP::Ref<TRAP::Graphics::RenderTarget> m_shadingRateTexture = nullptr;
 
-    TRAP::Graphics::ShadingRate m_shadingRate;
-    std::vector<RateData> m_shadingRates;
-    float m_currRenderScale;
+    TRAP::Graphics::ShadingRate m_shadingRate = TRAP::Graphics::ShadingRate::NotSupported;
+    std::vector<RateData> m_shadingRates{};
+    float m_currRenderScale = 1.0f;
 
-	bool m_supportsPerDrawVRS;
-	bool m_supportsPerTileVRS;
+	bool m_supportsPerDrawVRS = (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerDraw) != TRAP::Graphics::RendererAPI::ShadingRateCaps::NotSupported;
+	bool m_supportsPerTileVRS = (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerTile) != TRAP::Graphics::RendererAPI::ShadingRateCaps::NotSupported;
 
-	bool m_perDrawActive;
+	bool m_perDrawActive = true;
 
-	bool m_visualizeShadingRate;
+	bool m_visualizeShadingRate = false;
 };
 
 #endif /*GAMESTRAP_VRSTESTS_H*/

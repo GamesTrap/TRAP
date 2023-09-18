@@ -12,13 +12,7 @@
 #include <memory>
 
 TRAP::Graphics::API::VulkanQueue::VulkanQueue(const RendererAPI::QueueDesc& desc)
-	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
-	  m_vkQueue(VK_NULL_HANDLE),
-	  m_submitMutex(VulkanRenderer::s_NullDescriptors->SubmitMutex),
-	  m_vkQueueFamilyIndex(std::numeric_limits<uint8_t>::max()),
-	  m_vkQueueIndex(std::numeric_limits<uint8_t>::max()),
-	  m_flags(),
-	  m_timestampPeriod(m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties().limits.timestampPeriod)
+	: Queue(desc.Type)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -27,8 +21,6 @@ TRAP::Graphics::API::VulkanQueue::VulkanQueue(const RendererAPI::QueueDesc& desc
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanQueuePrefix, "Creating Queue");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
-
-	m_type = desc.Type;
 
 	VkQueueFamilyProperties queueProps = {};
 

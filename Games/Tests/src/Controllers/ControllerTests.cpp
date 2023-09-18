@@ -1,12 +1,5 @@
 #include "ControllerTests.h"
 
-ControllerTests::ControllerTests()
-	: Layer("Controllers")
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void ControllerTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Controllers");

@@ -61,11 +61,11 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] constexpr uint32_t GetArraySize() const noexcept;
 
 	private:
-		VkFramebuffer m_framebuffer;
+		VkFramebuffer m_framebuffer = VK_NULL_HANDLE;
 
-		uint32_t      m_width;
-		uint32_t      m_height;
-		uint32_t      m_arraySize;
+		uint32_t      m_width = 0;
+		uint32_t      m_height = 0;
+		uint32_t      m_arraySize = 0;
 
 		TRAP::Ref<VulkanDevice> m_device;
 	};

@@ -3,6 +3,7 @@
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/CommandPool.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 namespace TRAP::Graphics::API
 {
@@ -64,9 +65,9 @@ namespace TRAP::Graphics::API
 		void Reset() const override;
 
 	private:
-		TRAP::Ref<VulkanDevice> m_device;
+		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 
-		VkCommandPool m_vkCommandPool;
+		VkCommandPool m_vkCommandPool = VK_NULL_HANDLE;
 	};
 }
 

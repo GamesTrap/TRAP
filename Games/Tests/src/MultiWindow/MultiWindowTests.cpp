@@ -1,17 +1,7 @@
 #include "MultiWindowTests.h"
 
 MultiWindowTests::MultiWindowTests()
-	: Layer("MultiWindow"),
-	  m_vertexBuffer(nullptr),
-	  m_indexBuffer(nullptr),
-	  m_wireFrameMainWindow(false),
-	  m_wireFrameSecondWindow(false),
-	  m_window(nullptr),
-	  m_colorData(),
-	  m_sizeMultiplicatorData(),
-	  m_colorUniformBuffer(nullptr),
-	  m_sizeMultiplicatorUniformBuffer(nullptr),
-	  m_useUBO(false)
+	: Layer("MultiWindow")
 {
 }
 
@@ -78,19 +68,6 @@ void MultiWindowTests::OnAttach()
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void MultiWindowTests::OnDetach()
-{
-	if(m_window)
-		m_window.reset();
-
-	m_colorUniformBuffer.reset();
-	m_sizeMultiplicatorUniformBuffer.reset();
-	m_indexBuffer.reset();
-	m_vertexBuffer.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

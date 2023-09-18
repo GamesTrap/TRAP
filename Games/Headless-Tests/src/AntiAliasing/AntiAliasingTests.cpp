@@ -3,14 +3,6 @@
 #include <Graphics/API/Objects/Queue.h>
 #include <ImageLoader/PortableMaps/PPMImage.h>
 
-AntiAliasingTests::AntiAliasingTests()
-	: Layer("AntiAliasing"),
-	  m_camera(-(2560.0f / 1440.0f), 2560.0f / 1440.0f, -1.0f, 1.0f, -1.0f, 1.0f)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void AntiAliasingTests::OnAttach()
 {
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::NONE)
@@ -18,12 +10,6 @@ void AntiAliasingTests::OnAttach()
 
 	TRAP::Graphics::RenderCommand::SetResolution(2560, 1440);
 	TRAP::Graphics::RenderCommand::SetAntiAliasing(TRAP::Graphics::AntiAliasing::MSAA, TRAP::Graphics::SampleCount::Four);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void AntiAliasingTests::OnDetach()
-{
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -48,7 +34,7 @@ void AntiAliasingTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& d
 
 	const float angle = 22.8f;
 
-	TRAP::Graphics::Renderer2D::BeginScene(m_camera);
+	TRAP::Graphics::Renderer2D::BeginScene(s_camera);
 	TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, angle}, {1.0f, 1.0f, 1.0f} }, {1.0f, 1.0f, 1.0f, 1.0f});
 	TRAP::Graphics::Renderer2D::DrawQuad({ { 1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, angle}, {1.0f, 1.0f, 1.0f} }, {1.0f, 1.0f, 1.0f, 1.0f});
 	TRAP::Graphics::Renderer2D::EndScene();

@@ -5,6 +5,7 @@
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/ShaderReflection.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/Shaders/Shader.h"
 
 namespace TRAP::Graphics::API
@@ -285,17 +286,17 @@ namespace TRAP::Graphics::API
 		/// <returns>Descriptor's name if found, empty string otherwise.</returns>
 		[[nodiscard]] std::string RetrieveDescriptorName(uint32_t set, uint32_t binding, RendererAPI::DescriptorType type, bool* outUAV = nullptr, uint64_t size = 1) const;
 
-		TRAP::Ref<VulkanDevice> m_device;
+		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 
-		std::array<uint32_t, 3> m_numThreadsPerGroup;
+		std::array<uint32_t, 3> m_numThreadsPerGroup{};
 
-		std::vector<VkShaderModule> m_shaderModules;
-		TRAP::Ref<ShaderReflection::PipelineReflection> m_reflection;
-		std::vector<std::string> m_entryNames;
+		std::vector<VkShaderModule> m_shaderModules{};
+		TRAP::Ref<ShaderReflection::PipelineReflection> m_reflection = nullptr;
+		std::vector<std::string> m_entryNames{};
 
-		std::array<std::vector<TRAP::Scope<DescriptorSet>>, RendererAPI::ImageCount> m_dirtyDescriptorSets;
-		std::array<std::vector<TRAP::Scope<DescriptorSet>>, RendererAPI::ImageCount> m_cleanedDescriptorSets;
-		uint32_t m_lastImageIndex;
+		std::array<std::vector<TRAP::Scope<DescriptorSet>>, RendererAPI::ImageCount> m_dirtyDescriptorSets{};
+		std::array<std::vector<TRAP::Scope<DescriptorSet>>, RendererAPI::ImageCount> m_cleanedDescriptorSets{};
+		uint32_t m_lastImageIndex = std::numeric_limits<uint32_t>::max();
 	};
 }
 

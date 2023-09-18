@@ -9,7 +9,6 @@ public:
 	AnisotropyTests();
 
 	void OnAttach() override;
-	void OnDetach() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnImGuiRender() override;
 
@@ -19,12 +18,12 @@ private:
 	bool OnKeyPress(const TRAP::Events::KeyPressEvent& e);
 	bool OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& e);
 
-	TRAP::Utils::Timer m_fpsTimer;
+	TRAP::Utils::Timer m_fpsTimer{};
 
-	TRAP::SceneCamera m_camera;
+	TRAP::SceneCamera m_camera{};
 
-	uint32_t m_maxAnisotropyLevelIdx;
-	uint32_t m_currAnisotropyLevelIdx;
+	uint32_t m_maxAnisotropyLevelIdx = 0;
+	uint32_t m_currAnisotropyLevelIdx = 0;
 };
 
 #endif /*GAMESTRAP_ANISOTROPYESTS_H*/

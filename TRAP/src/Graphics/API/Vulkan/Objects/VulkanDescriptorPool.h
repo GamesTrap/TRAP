@@ -3,6 +3,7 @@
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/DescriptorPool.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 namespace TRAP::Graphics::API
 {
@@ -81,13 +82,13 @@ namespace TRAP::Graphics::API
 		/// <returns>VkDescriptorSet handle.</returns>
 		[[nodiscard]] VkDescriptorSet RetrieveVkDescriptorSet(VkDescriptorSetLayout layout);
 
-		VkDescriptorPool m_currentPool;
-		std::vector<VkDescriptorPool> m_descriptorPools;
+		VkDescriptorPool m_currentPool = VK_NULL_HANDLE;
+		std::vector<VkDescriptorPool> m_descriptorPools{};
 		std::vector<VkDescriptorPoolSize> m_descriptorPoolSizes;
-		uint32_t m_usedDescriptorSetCount;
+		uint32_t m_usedDescriptorSetCount = 0;
 		TracyLockable(std::mutex, m_mutex);
 
-		TRAP::Ref<VulkanDevice> m_device;
+		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 
 		inline constinit static std::array<VkDescriptorPoolSize, DESCRIPTOR_TYPE_RANGE_SIZE> s_descriptorPoolSizes
 		{

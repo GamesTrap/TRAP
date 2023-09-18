@@ -1,16 +1,7 @@
 #include "ImageLoaderTests.h"
 
 ImageLoaderTests::ImageLoaderTests()
-	: Layer("ImageLoader"),
-      m_camera(-TRAP::Application::GetWindow()->GetAspectRatio(),
-	           TRAP::Application::GetWindow()->GetAspectRatio(),
-	           -1.0f, 1.0f, -1.0f, 1.0f),
-      m_png(false),
-      m_tga(true),
-      m_bmp(false),
-      m_pm(false),
-	  m_radiance(false),
-	  m_qoi(false)
+	: Layer("ImageLoader")
 {
 }
 

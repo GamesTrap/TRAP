@@ -40,17 +40,6 @@ TRAP::Scope<TRAP::Image> CursorTests::CreateCursorFrame(const float t)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-CursorTests::CursorTests()
-	: Layer("Cursor"),
-	  m_cursorX(0.0f),
-	  m_cursorY(0.0f),
-	  m_animateCursor(false),
-	  m_currentFrame(nullptr)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void CursorTests::OnImGuiRender()
 {
 	ImGui::Begin("Cursor", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |

@@ -1,12 +1,5 @@
 #include "ClipboardTests.h"
 
-ClipboardTests::ClipboardTests()
-	: Layer("Clipboard")
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void ClipboardTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Clipboard");

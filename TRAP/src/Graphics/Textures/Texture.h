@@ -352,23 +352,35 @@ namespace TRAP::Graphics
 		/// Constructor.
 		/// </summary>
 		Texture() noexcept;
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		Texture(std::string name, std::array<std::filesystem::path, 6> filepaths) noexcept;
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		Texture(std::string name, std::filesystem::path filepath, TextureType type, TextureCubeFormat cubeFormat) noexcept;
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		explicit Texture(TextureType type) noexcept;
 
 		//RenderAPI independent data
-		std::string m_name;
-		API::SyncToken m_syncToken;
-		TextureType m_textureType;
-		uint32_t m_width;
-		uint32_t m_height;
-		uint32_t m_depth;
-		uint32_t m_arraySize;
-		uint32_t m_mipLevels;
-		Image::ColorFormat m_colorFormat;
-		Graphics::API::ImageFormat m_imageFormat;
-		uint32_t m_aspectMask;
-		RendererAPI::DescriptorType m_descriptorTypes;
-		bool m_ownsImage;
-		std::array<std::filesystem::path, 6> m_filepaths;
-		TextureCubeFormat m_textureCubeFormat;
+		std::string m_name{};
+		API::SyncToken m_syncToken = 0;
+		TextureType m_textureType = TextureType::Texture2D;
+		uint32_t m_width = 2;
+		uint32_t m_height = 2;
+		uint32_t m_depth = 1;
+		uint32_t m_arraySize = 1;
+		uint32_t m_mipLevels = 1;
+		Image::ColorFormat m_colorFormat = Image::ColorFormat::RGBA;
+		Graphics::API::ImageFormat m_imageFormat = Graphics::API::ImageFormat::R8G8B8A8_UNORM;
+		uint32_t m_aspectMask = 0;
+		RendererAPI::DescriptorType m_descriptorTypes = RendererAPI::DescriptorType::Texture;
+		bool m_ownsImage = true;
+		std::array<std::filesystem::path, 6> m_filepaths{};
+		TextureCubeFormat m_textureCubeFormat = TextureCubeFormat::NONE;
 	};
 }
 

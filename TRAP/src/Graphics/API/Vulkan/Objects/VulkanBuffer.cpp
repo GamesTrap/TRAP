@@ -10,9 +10,7 @@
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& desc)
-	: TRAP::Graphics::Buffer(desc.Size, desc.Descriptors, desc.MemoryUsage),
-	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
-	  m_VMA(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetVMA())
+	: TRAP::Graphics::Buffer(desc.Size, desc.Descriptors, desc.MemoryUsage)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

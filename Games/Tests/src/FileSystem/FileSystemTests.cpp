@@ -1,12 +1,5 @@
 #include "FileSystemTests.h"
 
-FileSystemTests::FileSystemTests()
-	: Layer("FileSystem")
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void FileSystemTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("FileSystem");

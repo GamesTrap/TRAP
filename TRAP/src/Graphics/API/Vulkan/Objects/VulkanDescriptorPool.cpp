@@ -10,14 +10,10 @@
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 
 TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const uint32_t numDescriptorSets)
-	: m_currentPool(VK_NULL_HANDLE),
-	  m_descriptorPoolSizes(DescriptorTypeRangeSize),
-	  m_usedDescriptorSetCount(0),
-	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
+	: DescriptorPool(numDescriptorSets), m_descriptorPoolSizes(DescriptorTypeRangeSize)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	m_numDescriptorSets = numDescriptorSets;
 	TRAP_ASSERT(m_device, "VulkanDescriptorPool(): Vulkan Device is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG

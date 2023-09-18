@@ -10,11 +10,7 @@
 
 TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice> device,
                                                           const VulkanRenderer::FrameBufferDesc& desc)
-	: m_framebuffer(VK_NULL_HANDLE),
-	  m_width(),
-	  m_height(),
-	  m_arraySize(),
-      m_device(std::move(device))
+	: m_device(std::move(device))
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

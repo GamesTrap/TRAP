@@ -3,6 +3,7 @@
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Pipeline.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 namespace TRAP::Graphics::API
 {
@@ -67,13 +68,13 @@ namespace TRAP::Graphics::API
 		/// <param name="name">Name for the pipeline.</param>
 		void SetPipelineName(std::string_view name) const;
 
-		VkPipeline m_vkPipeline;
-		RendererAPI::PipelineType m_type;
+		VkPipeline m_vkPipeline = VK_NULL_HANDLE;
+		RendererAPI::PipelineType m_type = TRAP::Graphics::RendererAPI::PipelineType::Undefined;
 		//In DX12 this information is stored in ID3D12StateObject.
 		//But for Vulkan we need to store it manually.
-		std::vector<std::string> m_shaderStageNames;
+		std::vector<std::string> m_shaderStageNames{};
 
-		TRAP::Ref<VulkanDevice> m_device;
+		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 	};
 }
 

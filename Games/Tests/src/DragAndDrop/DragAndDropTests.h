@@ -6,7 +6,7 @@
 class DragAndDropTests final : public TRAP::Layer
 {
 public:
-	DragAndDropTests();
+	constexpr DragAndDropTests();
 
 	void OnImGuiRender() override;
 	void OnAttach() override;
@@ -16,8 +16,15 @@ private:
 	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
 	bool OnDrop(const TRAP::Events::WindowDropEvent& event);
 
-	bool m_dragAndDrop;
-	std::vector<std::string> m_dropData;
+	bool m_dragAndDrop = true;
+	std::vector<std::string> m_dropData{};
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr DragAndDropTests::DragAndDropTests()
+	: Layer("DragAndDrop")
+{
+}
 
 #endif /*GAMESTRAP_DRAGANDDROPTESTS_H*/

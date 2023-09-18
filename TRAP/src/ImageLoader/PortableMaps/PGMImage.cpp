@@ -7,10 +7,10 @@
 #include "Utils/Utils.h"
 
 TRAP::INTERNAL::PGMImage::PGMImage(std::filesystem::path filepath)
+	: Image(std::move(filepath))
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
-	m_filepath = std::move(filepath);
 	m_colorFormat = ColorFormat::GrayScale;
 
 	TP_DEBUG(Log::ImagePGMPrefix, "Loading image: ", m_filepath);

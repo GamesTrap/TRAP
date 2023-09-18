@@ -9,7 +9,6 @@ public:
     ComputeTests();
 
     void OnAttach() override;
-    void OnDetach() override;
     void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
     void OnImGuiRender() override;
 
@@ -18,9 +17,9 @@ public:
 private:
     bool OnKeyPress(const TRAP::Events::KeyPressEvent& e);
 
-    TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer;
-    TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer;
-    TRAP::Ref<TRAP::Graphics::Sampler> m_textureSampler;
+    TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer = nullptr;
+    TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer = nullptr;
+    TRAP::Ref<TRAP::Graphics::Sampler> m_textureSampler = nullptr;
 
     inline static constexpr std::array<float, 5ull * 4> QuadVerticesIndexed
 	{
@@ -35,15 +34,15 @@ private:
 		0, 1, 2, 2, 3, 0
 	};
 
-    TRAP::Ref<TRAP::Graphics::Texture> m_colTex;
-    TRAP::Ref<TRAP::Graphics::Texture> m_compTex;
+    TRAP::Ref<TRAP::Graphics::Texture> m_colTex = nullptr;
+    TRAP::Ref<TRAP::Graphics::Texture> m_compTex = nullptr;
 
-    bool m_disabled;
-    bool m_sharpen;
-    bool m_emboss;
-    bool m_edgedetect;
+    bool m_disabled = true;
+    bool m_sharpen = false;
+    bool m_emboss = false;
+    bool m_edgedetect = false;
 
-    bool m_reset;
+    bool m_reset = false;
 
     std::array<float, 50> m_frameTimeHistory{};
 	TRAP::Utils::Timer m_fpsTimer{};

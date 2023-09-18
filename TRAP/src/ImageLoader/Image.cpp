@@ -119,6 +119,20 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Image::Image(std::filesystem::path filepath)
+	: m_filepath(std::move(filepath))
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Image::Image(std::filesystem::path filepath, uint32_t width, uint32_t height, ColorFormat format)
+	: m_width(width), m_height(height), m_colorFormat(format), m_filepath(std::move(filepath))
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] bool TRAP::Image::IsSupportedImageFile(const std::filesystem::path& filepath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);

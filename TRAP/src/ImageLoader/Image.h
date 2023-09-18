@@ -30,7 +30,11 @@ namespace TRAP
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		constexpr Image() noexcept = default;
+		explicit Image(std::filesystem::path filepath);
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		Image(std::filesystem::path filepath, uint32_t width, uint32_t height, ColorFormat format);
 	public:
 		/// <summary>
 		/// Copy constructor.

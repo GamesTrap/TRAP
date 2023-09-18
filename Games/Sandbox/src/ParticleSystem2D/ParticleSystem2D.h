@@ -15,7 +15,7 @@ struct ParticleProps
 class ParticleSystem2D
 {
 public:
-	ParticleSystem2D();
+	constexpr ParticleSystem2D() = default;
 
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime);
 	void OnRender();
@@ -39,9 +39,9 @@ private:
 		bool Active = false;
 	};
 
-	std::vector<Particle> m_particlePool;
-	uint32_t m_poolIndex;
-	uint32_t m_maxParticles;
+	uint32_t m_poolIndex = 999;
+	uint32_t m_maxParticles = 1000;
+	std::vector<Particle> m_particlePool = std::vector<Particle>(m_maxParticles);
 };
 
 #endif /*GAMESTRAP_PARTICLESYSTEM2D_H*/

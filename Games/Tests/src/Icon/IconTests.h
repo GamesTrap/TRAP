@@ -6,7 +6,7 @@
 class IconTests final : public TRAP::Layer
 {
 public:
-	IconTests();
+	constexpr IconTests();
 
 	void OnImGuiRender() override;
 	void OnAttach() override;
@@ -18,5 +18,12 @@ private:
 
 	inline constinit static uint32_t s_cursorIconColor = 0;
 };
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr IconTests::IconTests()
+	: Layer("Icon")
+{
+}
 
 #endif /*GAMESTRAP_ICONTESTS_H*/

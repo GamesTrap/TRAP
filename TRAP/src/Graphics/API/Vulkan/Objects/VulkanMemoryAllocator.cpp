@@ -19,7 +19,6 @@
 
 TRAP::Graphics::API::VulkanMemoryAllocator::VulkanMemoryAllocator(const TRAP::Ref<VulkanDevice>& device,
                                                                   const TRAP::Ref<VulkanInstance>& instance)
-	: m_allocator(nullptr)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

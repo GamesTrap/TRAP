@@ -201,12 +201,12 @@ namespace TRAP::Graphics::API::SPIRVTools
 		spirv_cross::Compiler m_compiler;
 
 		//Resources
-		std::vector<Resource> m_shaderResources;
+		std::vector<Resource> m_shaderResources{};
 
 		//Uniforms
-		std::vector<Variable> m_uniformVariables;
+		std::vector<Variable> m_uniformVariables{};
 
-		std::string m_entryPoint;
+		std::string m_entryPoint{};
 	};
 }
 

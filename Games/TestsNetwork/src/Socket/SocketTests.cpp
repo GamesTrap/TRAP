@@ -1,24 +1,10 @@
 #include "SocketTests.h"
 
-SocketTests::SocketTests()
-	: Layer("SocketTests")
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void SocketTests::OnAttach()
 {
 	m_socketThread = std::make_unique<std::thread>(Sockets);
 	if(m_socketThread)
 		m_socketThread->detach();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void SocketTests::OnDetach()
-{
-	m_socketThread.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -3,25 +3,11 @@
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 
-FTPTests::FTPTests()
-	: Layer("FTPTests"), m_ftpThread(nullptr)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void FTPTests::OnAttach()
 {
 	m_ftpThread = std::make_unique<std::thread>(FTP);
 	if(m_ftpThread)
 		m_ftpThread->detach();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void FTPTests::OnDetach()
-{
-	m_ftpThread.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

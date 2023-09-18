@@ -11,8 +11,7 @@
 TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appName,
 													std::vector<std::string> instanceLayers,
                                                     std::vector<std::string> instanceExtensions)
-	: m_instance(VK_NULL_HANDLE),
-	  m_instanceLayers(std::move(instanceLayers)),
+	: m_instanceLayers(std::move(instanceLayers)),
 	  m_instanceExtensions(std::move(instanceExtensions))
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);

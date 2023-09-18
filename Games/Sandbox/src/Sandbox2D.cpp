@@ -4,10 +4,7 @@
 #include "FileSystem/FileWatcher.h"
 
 Sandbox2D::Sandbox2D()
-	: Layer("Sandbox2D"),
-	m_wireFrame(false),
-	m_cameraController(TRAP::Application::GetWindow()->GetAspectRatio(), true),
-	m_frameTimeHistory()
+	: Layer("Sandbox2D")
 {
 }
 
@@ -68,12 +65,6 @@ void Sandbox2D::OnAttach()
 	TRAP::Graphics::SpriteManager::CreateFromCoords("BButton", m_spriteSheet, {5.0f, 0.0f}, {16.0f, 16.0f});
 	TRAP::Graphics::SpriteManager::CreateFromCoords("EnterKey", m_spriteSheet, {32.0f, 10.0f}, {16.0f, 16.0f}, {2, 2});
 	TRAP::Graphics::SpriteManager::CreateFromPixels("Circle", m_spriteSheet, {432.0f, 304.0f}, {16.0f, 16.0f});
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void Sandbox2D::OnDetach()
-{
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
