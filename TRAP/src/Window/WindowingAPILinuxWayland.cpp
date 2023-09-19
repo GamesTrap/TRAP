@@ -1738,10 +1738,7 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorWayland(const InternalWindow& window
 
     const wl_cursor* const cursor = s_Data.Wayland.WaylandCursor.ThemeGetCursor(theme, name.c_str());
     if(cursor == nullptr)
-    {
-        InputError(Error::Cursor_Unavailable, "[Wayland] Standard cursor shape unavailable");
         return;
-    }
 
     wl_cursor_image* const image = cursor->images[0];
 
