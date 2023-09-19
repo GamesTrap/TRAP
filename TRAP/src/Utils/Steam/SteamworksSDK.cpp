@@ -33,8 +33,25 @@ void TRAP::Utils::Steam::InitializeClient([[maybe_unused]] const uint32_t appID)
     if(SteamAPI_RestartAppIfNecessary(appID))
         Utils::DisplayError(Utils::ErrorCode::ApplicationNotLaunchedWithSteam);
 
-    if(!SteamAPI_Init())
+    switch(SteamAPI_InitEx(nullptr))
+    {
+    case k_ESteamAPIInitResult_FailedGeneric:
+        Utils::DisplayError(Utils::ErrorCode::SteamFailedGeneric);
+        break;
+
+    case k_ESteamAPIInitResult_NoSteamClient:
         Utils::DisplayError(Utils::ErrorCode::SteamNotRunning);
+        break;
+
+    case k_ESteamAPIInitResult_VersionMismatch:
+        Utils::DisplayError(Utils::ErrorCode::SteamVersionMismatch);
+        break;
+
+    case k_ESteamAPIInitResult_OK:
+        [[fallthrough]];
+    default:
+        break;
+    }
 
     steamClientInitialized = true;
 
@@ -52,10 +69,24 @@ bool TRAP::Utils::Steam::InitializeServer(const uint32_t bindIPv4, const uint16_
     if(steamServerInitialized)
         return true;
 
-    if(!SteamGameServer_Init(bindIPv4, gamePort, queryPort, authenticationMethod, version.c_str()))
+    switch(SteamGameServer_InitEx(bindIPv4, gamePort, queryPort, authenticationMethod, version.c_str(), nullptr))
     {
-        TP_ERROR(Log::SteamworksSDKPrefix, "Failed to initialize server!");
-        return false;
+    case k_ESteamAPIInitResult_FailedGeneric:
+        Utils::DisplayError(Utils::ErrorCode::SteamFailedGeneric);
+        break;
+
+    case k_ESteamAPIInitResult_NoSteamClient:
+        Utils::DisplayError(Utils::ErrorCode::SteamNotRunning);
+        break;
+
+    case k_ESteamAPIInitResult_VersionMismatch:
+        Utils::DisplayError(Utils::ErrorCode::SteamVersionMismatch);
+        break;
+
+    case k_ESteamAPIInitResult_OK:
+        [[fallthrough]];
+    default:
+        break;
     }
 
     SteamGameServerUtils()->SetWarningMessageHook(&SteamLogCallback);

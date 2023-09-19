@@ -4415,3 +4415,4 @@ SITREP 09/18/2023|23w38a1
 SITREP 09/19/2023|23w38a2
     - Changed TRAP Engine version to 23w38a2(0.9.95)
     - VulkanSwapChain Added reusage of old swapchain on recreation ~<20 mins
+    - Updated Steamworks SDK support to v1.58 ~<10 mins
