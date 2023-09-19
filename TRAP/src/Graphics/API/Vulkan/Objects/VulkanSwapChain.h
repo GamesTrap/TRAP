@@ -79,11 +79,16 @@ namespace TRAP::Graphics::API
 		/// Initialize the swap chain.
 		/// </summary>
 		/// <param name="desc">Swap chain description.</param>
-		void InitSwapchain(RendererAPI::SwapChainDesc& desc);
+		void InitSwapchain(RendererAPI::SwapChainDesc& desc, VkSwapchainKHR oldSwapChain = VK_NULL_HANDLE);
 		/// <summary>
 		/// Uninitialize the swap chain.
 		/// </summary>
-		void DeInitSwapchain();
+		/// <param name="allowSwapChainReuse">Don't destroy swap chain and surface to allow for reuse on new swap chain creation.</param>
+		void DeInitSwapchain(bool allowSwapChainReuse = false);
+		/// <summary>
+		/// Reinitialize the swap chain while reusing the old one.
+		/// </summary>
+		void ReInitSwapChain();
 
 		TRAP::Ref<VulkanMemoryAllocator> m_vma = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetVMA();
 		TRAP::Ref<VulkanInstance> m_instance = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetInstance();

@@ -640,6 +640,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="preTransform">Vulkan pre-transform to use.</param>
 	/// <param name="compositeAlpha">Vulkan composite alpha to use.</param>
 	/// <param name="presentMode">Vulkan present mode to use.</param>
+	/// <param name="oldSwapchain">Old Vulkan swapchain to aid in resource reusage. Default. VK_NULL_HANDLE</param>
 	/// <returns>VkSwapchainCreateInfoKHR.</returns>
 	[[nodiscard]] VkSwapchainCreateInfoKHR SwapchainCreateInfoKHR(VkSurfaceKHR surface, uint32_t imageCount,
 	                                                              VkSurfaceFormatKHR surfaceFormat, VkExtent2D imageExtent,
@@ -647,7 +648,8 @@ namespace TRAP::Graphics::API::VulkanInits
 	                                                              const std::array<uint32_t, 2>& queueFamilyIndices,
 	                                                              VkSurfaceTransformFlagBitsKHR preTransform,
 													              VkCompositeAlphaFlagBitsKHR compositeAlpha,
-													              VkPresentModeKHR presentMode);
+													              VkPresentModeKHR presentMode,
+																  VkSwapchainKHR oldSwapchain = VK_NULL_HANDLE);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 

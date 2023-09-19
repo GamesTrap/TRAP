@@ -4411,3 +4411,7 @@ SITREP 09/17/2023|23w37a3
 SITREP 09/18/2023|23w38a1
     - Changed TRAP Engine version to 23w38a1(0.9.94)
     - Changed constructor initializations ~>20 mins
+
+SITREP 09/19/2023|23w38a2
+    - Changed TRAP Engine version to 23w38a2(0.9.95)
+    - VulkanSwapChain Added reusage of old swapchain on recreation ~<20 mins

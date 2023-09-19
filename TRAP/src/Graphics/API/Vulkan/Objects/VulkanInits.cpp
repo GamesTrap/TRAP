@@ -593,7 +593,8 @@
 	                                                                                            const std::array<uint32_t, 2>& queueFamilyIndices,
 	                                                                                            const VkSurfaceTransformFlagBitsKHR preTransform,
 	                                                                                            const VkCompositeAlphaFlagBitsKHR compositeAlpha,
-	                                                                                            const VkPresentModeKHR presentMode)
+	                                                                                            const VkPresentModeKHR presentMode,
+																								VkSwapchainKHR oldSwapchain)
 {
 	TRAP_ASSERT(surface, "VulkanInits::SwapchainCreateInfoKHR(): Invalid Surface!");
 
@@ -618,7 +619,7 @@
 		.compositeAlpha = compositeAlpha,
 		.presentMode = presentMode,
 		.clipped = VK_TRUE,
-		.oldSwapchain = nullptr
+		.oldSwapchain = oldSwapchain
 	};
 }
 

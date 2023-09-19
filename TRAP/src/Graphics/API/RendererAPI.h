@@ -2828,6 +2828,9 @@ namespace TRAP::Graphics
 			bool EnableVSync{};
 			//Anti aliasing sample count (1 = no AA)
 			RendererAPI::SampleCount SampleCount = SampleCount::One;
+
+			//Old swapchain, may aid in resource reusage (Vulkan)
+			SwapChain* OldSwapChain = nullptr;
 		};
 
 		/// <summary>

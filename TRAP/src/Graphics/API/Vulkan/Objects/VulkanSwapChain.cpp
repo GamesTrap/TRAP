@@ -40,19 +40,26 @@ TRAP::Graphics::API::VulkanSwapChain::~VulkanSwapChain()
 	TP_DEBUG(Log::RendererVulkanSwapChainPrefix, "Destroying SwapChain");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	DeInitSwapchain();
+	m_device->WaitIdle();
+
+	m_renderTargets.clear();
+
+	vkDestroySwapchainKHR(m_device->GetVkDevice(), m_swapChain, nullptr);
+	m_surface.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainDesc& desc)
+void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainDesc& desc,
+                                                         VkSwapchainKHR oldSwapChain)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	//////////////////
 	//Create Surface//
 	//////////////////
-	const TRAP::Ref<VulkanSurface> surface = TRAP::MakeRef<VulkanSurface>(m_instance, m_device, desc.Window);
+	if(m_surface == nullptr)
+		m_surface = TRAP::MakeRef<VulkanSurface>(m_instance, m_device, desc.Window);
 
 	////////////////////
 	//Create SwapChain//
@@ -61,7 +68,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	if (desc.ImageCount == 0)
 		desc.ImageCount = 2;
 
-	const VkSurfaceCapabilitiesKHR caps = surface->GetVkSurfaceCapabilities();
+	const VkSurfaceCapabilitiesKHR caps = m_surface->GetVkSurfaceCapabilities();
 	if ((caps.maxImageCount > 0) && (desc.ImageCount > caps.maxImageCount))
 	{
 		TP_WARN(Log::RendererVulkanSwapChainPrefix, "Changed requested SwapChain images ", desc.ImageCount,
@@ -82,7 +89,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 
 	VkSurfaceFormatKHR surfaceFormat{};
 	surfaceFormat.format = VK_FORMAT_UNDEFINED;
-	const std::vector<VkSurfaceFormatKHR>& formats = surface->GetVkSurfaceFormats();
+	const std::vector<VkSurfaceFormatKHR>& formats = m_surface->GetVkSurfaceFormats();
 
 	if ((formats.size() == 1) && (formats[0].format == VK_FORMAT_UNDEFINED))
 	{
@@ -121,7 +128,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	//The VK_PRESENT_MODE_FIFO_KHR mode must always be present as per spec
 	//This mode waits for the vertical blank ("VSync")
 	VkPresentModeKHR presentMode = VK_PRESENT_MODE_FIFO_KHR;
-	const std::vector<VkPresentModeKHR>& modes = surface->GetVkSurfacePresentModes();
+	const std::vector<VkPresentModeKHR>& modes = m_surface->GetVkSurfacePresentModes();
 
 	static constexpr std::array<VkPresentModeKHR, 4> preferredModeList =
 	{
@@ -174,7 +181,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 		{
 			VkBool32 supportsPresent = VK_FALSE;
 			const VkResult res = vkGetPhysicalDeviceSurfaceSupportKHR(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(),
-			                                                          index, surface->GetVkSurface(),
+			                                                          index, m_surface->GetVkSurface(),
 																	  &supportsPresent);
 			if ((res == VK_SUCCESS) && (supportsPresent == VK_TRUE) &&
 			    std::dynamic_pointer_cast<VulkanQueue>(desc.PresentQueues[0])->GetQueueFamilyIndex() != index)
@@ -191,7 +198,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 			{
 				VkBool32 supportsPresent = VK_FALSE;
 				const VkResult res = vkGetPhysicalDeviceSurfaceSupportKHR(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(),
-				                                                          index, surface->GetVkSurface(),
+				                                                          index, m_surface->GetVkSurface(),
 																		  &supportsPresent);
 				if ((res == VK_SUCCESS) && (supportsPresent == VK_TRUE))
 				{
@@ -247,8 +254,11 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 
 	TRAP_ASSERT(compositeAlpha != VK_COMPOSITE_ALPHA_FLAG_BITS_MAX_ENUM_KHR, "VulkanSwapChain::InitSwapchain(): No composite alpha flag available!");
 
+	if(auto* oldVkSwapChain = dynamic_cast<VulkanSwapChain*>(desc.OldSwapChain); oldSwapChain == nullptr && desc.OldSwapChain != nullptr)
+		oldSwapChain = oldVkSwapChain->GetVkSwapChain();
+
 	VkSwapchainKHR swapChain = VK_NULL_HANDLE;
-	const VkSwapchainCreateInfoKHR swapChainCreateInfo = VulkanInits::SwapchainCreateInfoKHR(surface->GetVkSurface(),
+	const VkSwapchainCreateInfoKHR swapChainCreateInfo = VulkanInits::SwapchainCreateInfoKHR(m_surface->GetVkSurface(),
 		                                                                                     desc.ImageCount,
 		                                                                                     surfaceFormat,
 		                                                                                     extent,
@@ -257,7 +267,10 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 		                                                                                     queueFamilyIndices,
 		                                                                                     preTransform,
 		                                                                                     compositeAlpha,
-		                                                                                     presentMode);
+		                                                                                     presentMode,
+																							 oldSwapChain);
+
+	m_desc.OldSwapChain = nullptr;
 
 	VkCall(vkCreateSwapchainKHR(m_device->GetVkDevice(), &swapChainCreateInfo, nullptr, &swapChain));
 	TRAP_ASSERT(swapChain, "VulkanSwapChain::InitSwapchain(): Vulkan SwapChain is nullptr!");
@@ -296,7 +309,6 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	m_desc = desc;
 	m_enableVSync = desc.EnableVSync;
 	m_imageCount = imageCount;
-	m_surface = surface;
 	m_presentQueueFamilyIndex = finalPresentQueueFamilyIndex;
 	m_presentQueue = presentQueue;
 	m_swapChain = swapChain;
@@ -304,7 +316,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanSwapChain::DeInitSwapchain()
+void TRAP::Graphics::API::VulkanSwapChain::DeInitSwapchain(const bool allowSwapChainReuse)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -312,8 +324,23 @@ void TRAP::Graphics::API::VulkanSwapChain::DeInitSwapchain()
 
 	m_renderTargets.clear();
 
-	vkDestroySwapchainKHR(m_device->GetVkDevice(), m_swapChain, nullptr);
-	m_surface.reset();
+	if(!allowSwapChainReuse)
+	{
+		vkDestroySwapchainKHR(m_device->GetVkDevice(), m_swapChain, nullptr);
+		m_surface.reset();
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanSwapChain::ReInitSwapChain()
+{
+	VkSwapchainKHR oldSwapChain = m_swapChain;
+
+	DeInitSwapchain(true);
+	InitSwapchain(m_desc, m_swapChain);
+
+	vkDestroySwapchainKHR(m_device->GetVkDevice(), oldSwapChain, nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -377,8 +404,7 @@ void TRAP::Graphics::API::VulkanSwapChain::ToggleVSync()
 
 	//Toggle VSync on or off
 	//For Vulkan we need to remove the SwapChain and recreate it with correct VSync option
-	DeInitSwapchain();
-	InitSwapchain(m_desc);
+	ReInitSwapChain();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -395,8 +421,7 @@ void TRAP::Graphics::API::VulkanSwapChain::UpdateFramebufferSize()
 	m_desc.Width = fbSize.x();
 	m_desc.Height = fbSize.y();
 
-	DeInitSwapchain();
-	InitSwapchain(m_desc);
+	ReInitSwapChain();
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

@@ -2785,6 +2785,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const uint32_t wid
 	swapChainDesc.EnableVSync = p->CurrentVSync;
 	swapChainDesc.ClearValue = p->ClearColor;
 	swapChainDesc.SampleCount = SampleCount::One;
+	swapChainDesc.OldSwapChain = p->SwapChain.get();
 	p->SwapChain = SwapChain::Create(swapChainDesc);
 
 	if (!p->SwapChain)
