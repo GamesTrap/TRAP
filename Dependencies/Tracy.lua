@@ -10,4 +10,5 @@ project "TracyClient"
 
 	includedirs "%{IncludeDir.TRACY}"
 
-	defines "TRACY_ENABLE"
+	filter {"configurations:Profiling"}
+	    defines "TRACY_ENABLE"

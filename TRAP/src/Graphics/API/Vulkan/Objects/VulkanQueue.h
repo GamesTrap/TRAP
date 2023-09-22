@@ -106,7 +106,7 @@ namespace TRAP::Graphics::API
 
 		VkQueue m_vkQueue = VK_NULL_HANDLE;
 #ifdef TRACY_ENABLE
-		tracy::Lockable<std::mutex>& m_submitMutex;
+		tracy::Lockable<std::mutex>& m_submitMutex = VulkanRenderer::s_NullDescriptors->SubmitMutex;
 #else
 		std::mutex& m_submitMutex = VulkanRenderer::s_NullDescriptors->SubmitMutex;
 #endif

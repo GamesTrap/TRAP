@@ -4420,3 +4420,7 @@ SITREP 09/19/2023|23w38a2
 SITREP 09/20/2023|23w38a3
     - Changed TRAP Engine version to 23w38a3(0.9.96)
     - WindowingAPILinuxWayland Removed cursor unavailable error when setting cursor image ~<5 mins
+
+SITREP 09/23/2023|23w38b1
+    - Changed TRAP Engine version to 23w38b1(0.9.97)
+    - Tracy.lua Removed TRACY_ENABLE from non profiling configurations ~<5 mins
