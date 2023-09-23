@@ -1276,9 +1276,9 @@ namespace
             return;
 
         // The main viewport (owned by the application) will always have RendererUserData == nullptr since we didn't create the data for it.
-        const ImGui_ImplVulkan_Data* const bd = GetBackendData();
         if (ImGui_ImplVulkan_ViewportData* const vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData); vd)
         {
+            const ImGui_ImplVulkan_Data* const bd = GetBackendData();
             const InitInfo& v = bd->VulkanInitInfo;
             if (vd->WindowOwned)
                 DestroyWindow(*v.Instance, *v.Device, vd->Window, v.Allocator);

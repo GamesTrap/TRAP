@@ -909,13 +909,13 @@ namespace
 
 		TRAP_ASSERT(viewport != nullptr, "ImGuiWindowing::DestroyWindow(): viewport is nullptr!");
 
-		const ImGuiTRAPData* const bd = GetBackendData();
 		if(ImGuiViewportDataTRAP* const vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData); vd)
 		{
 			if(vd->WindowOwned)
 			{
 				//Release any keys that were pressed in the window being destroyed and are still held down,
 				//because we will not receive any release events after window is destroyed.
+				const ImGuiTRAPData* const bd = GetBackendData();
 				for(std::size_t i = 0; i < bd->KeyOwnerWindows.size(); ++i)
 				{
 					if(bd->KeyOwnerWindows[i] == vd->Window)

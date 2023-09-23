@@ -60,7 +60,9 @@ void TRAP::Utils::DisplayError(const ErrorCode error)
                                    Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
 
         TP_CRITICAL(Log::ApplicationPrefix, "Unknown error occurred!");
-        exit(-1);
+
+        throw std::runtime_error("Unknown error occurred!");
+        std::terminate(); //Make sure we exit program even when using try/catch
     }
 
     Utils::Dialogs::ShowMsgBox(std::string(errorData->Title), std::string(errorData->Description),
@@ -70,5 +72,6 @@ void TRAP::Utils::DisplayError(const ErrorCode error)
 
     TRAP_ASSERT(false, errorData->LogPrefix, errorData->LogMessage);
 
-    exit(std::to_underlying(error));
+    throw std::runtime_error(errorData->LogMessage.data());
+    std::terminate(); //Make sure we exit program even when using try/catch
 }
