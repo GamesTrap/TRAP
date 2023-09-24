@@ -679,3 +679,51 @@ jobs:
             token: ${{steps.generate-token.outputs.token}}
             author: "TRAP CI/CD <gamestrap@web.de>"
             committer: "TRAP CI/CD <gamestrap@web.de>"
+
+  update-premake-vscodegen:
+    name: Update Premake-VSCodeGen
+    if: github.repository == 'GamesTrap/TRAP'
+    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
+    steps:
+      - name: Cleanup workspace
+        if: ${{ always() }}
+        uses: gamestrap/gha-workspace-cleanup@v1.2.4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+          ref: dev
+      - uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_committer_name: TRAP CI/CD
+      - uses: tibdex/github-app-token@v2
+        id: generate-token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+      - name: Update Premake-VSCodeGen
+        id: premake-vscodegen
+        run: |
+            cd .modules/vscode/
+            git checkout main
+            git pull origin main
+            echo "PREMAKE-VSCODEGEN_VERSION=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+            cd ../..
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+            base: dev
+            branch: premake-vscodegen-update/${{steps.premake-vscodegen.outputs.PREMAKE-VSCODEGEN_VERSION}}
+            delete-branch: true
+            commit-message: "Update Premake-VSCodeGen to ${{steps.premake-vscodegen.outputs.PREMAKE-VSCODEGEN_VERSION}}"
+            title: "Update Premake-VSCodeGen to ${{steps.premake-vscodegen.outputs.PREMAKE-VSCODEGEN_VERSION}}"
+            labels: "CI/CD, External, Update"
+            assignees: "GamesTrap"
+            milestone: 5
+            token: ${{steps.generate-token.outputs.token}}
+            author: "TRAP CI/CD <gamestrap@web.de>"
+            committer: "TRAP CI/CD <gamestrap@web.de>"

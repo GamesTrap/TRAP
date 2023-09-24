@@ -4436,3 +4436,4 @@ SITREP 09/24/2023|23w38b2
     - Changed GCEM submodule to fork ~<5 mins
     - Fixed implicit conversion warnings in unit tests ~<30 mins
     - Update-Dependencies Added job for GCEM ~<5 mins
+    - Update-Dependencies Added job for Premake-VSCodeGen ~<5 mins
