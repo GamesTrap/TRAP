@@ -8,8 +8,72 @@
 #include "TRAP/src/Maths/Math.h"
 
 template<typename T>
+requires std::floating_point<T>
+consteval void RunTruncCompileTimeTests()
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(   0.0f)), T( 0.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(-  0.0f)), T( 0.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(   0.1f)), T( 0.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(-  0.1f)), T( 0.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(   0.5f)), T( 0.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(-  0.5f)), T( 0.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(   0.9f)), T( 0.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(-  0.9f)), T( 0.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(   1.0f)), T( 1.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(-  1.0f)), T(-1.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(   1.5f)), T( 1.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(-  1.5f)), T(-1.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(   1.9f)), T( 1.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(-  1.9f)), T(-1.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(   4.2f)), T( 4.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(   4.5f)), T( 4.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(   4.7f)), T( 4.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(   5.0f)), T( 5.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(-  4.2f)), T(-4.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(-  4.5f)), T(-4.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(-  4.7f)), T(-4.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(-  5.0f)), T(-5.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T( 42e32f)), T( 4.2e+33f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(T(-42e32f)), T(-4.2e+33f), Epsilon));
+}
+
+template<typename T>
+requires (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
+consteval void RunTruncVecCompileTimeTests()
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(   0.0f)), T( 0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(-  0.0f)), T( 0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(   0.1f)), T( 0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(-  0.1f)), T( 0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(   0.5f)), T( 0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(-  0.5f)), T( 0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(   0.9f)), T( 0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(-  0.9f)), T( 0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(   1.0f)), T( 1.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(-  1.0f)), T(-1.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(   1.5f)), T( 1.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(-  1.5f)), T(-1.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(   1.9f)), T( 1.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(-  1.9f)), T(-1.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(   4.2f)), T( 4.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(   4.5f)), T( 4.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(   4.7f)), T( 4.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(   5.0f)), T( 5.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(-  4.2f)), T(-4.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(-  4.5f)), T(-4.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(-  4.7f)), T(-4.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(-  5.0f)), T(-5.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T( 42e32f)), T( 4.2e+33f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Trunc(T(-42e32f)), T(-4.2e+33f), Epsilon)));
+}
+
+template<typename T>
 requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
-void RunTruncTests()
+void RunTruncRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -35,7 +99,26 @@ void RunTruncTests()
 
 template<typename T>
 requires std::floating_point<T>
-void RunTruncEdgeTests()
+consteval void RunTruncEdgeCompileTimeTests()
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    constexpr T max = std::numeric_limits<T>::max();
+    constexpr T min = std::numeric_limits<T>::lowest();
+    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    constexpr T inf = std::numeric_limits<T>::infinity();
+    constexpr T ninf = -std::numeric_limits<T>::infinity();
+
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(max), max, Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Trunc(min), min, Epsilon));
+    static_assert(TRAP::Math::IsNaN(TRAP::Math::Trunc(nan)));
+    static_assert(TRAP::Math::IsInf(TRAP::Math::Trunc(inf)));
+    static_assert(TRAP::Math::IsInf(TRAP::Math::Trunc(ninf)));
+}
+
+template<typename T>
+requires std::floating_point<T>
+void RunTruncEdgeRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -56,39 +139,49 @@ TEST_CASE("TRAP::Math::Trunc()", "[math][generic][trunc]")
 {
     SECTION("Scalar - double")
     {
-        RunTruncTests<double>();
-        RunTruncEdgeTests<double>();
+        RunTruncRunTimeTests<double>();
+        RunTruncCompileTimeTests<double>();
+        RunTruncEdgeCompileTimeTests<double>();
+        RunTruncEdgeRunTimeTests<double>();
     }
     SECTION("Scalar - float")
     {
-        RunTruncTests<float>();
-        RunTruncEdgeTests<float>();
+        RunTruncRunTimeTests<float>();
+        RunTruncCompileTimeTests<float>();
+        RunTruncEdgeCompileTimeTests<float>();
+        RunTruncEdgeRunTimeTests<float>();
     }
 
     SECTION("Vec2 - double")
     {
-        RunTruncTests<TRAP::Math::Vec2d>();
+        RunTruncRunTimeTests<TRAP::Math::Vec2d>();
+        RunTruncVecCompileTimeTests<TRAP::Math::Vec2d>();
     }
     SECTION("Vec2 - float")
     {
-        RunTruncTests<TRAP::Math::Vec2f>();
+        RunTruncRunTimeTests<TRAP::Math::Vec2f>();
+        RunTruncVecCompileTimeTests<TRAP::Math::Vec2f>();
     }
 
     SECTION("Vec3 - double")
     {
-        RunTruncTests<TRAP::Math::Vec3d>();
+        RunTruncRunTimeTests<TRAP::Math::Vec3d>();
+        RunTruncVecCompileTimeTests<TRAP::Math::Vec3d>();
     }
     SECTION("Vec3 - float")
     {
-        RunTruncTests<TRAP::Math::Vec3f>();
+        RunTruncRunTimeTests<TRAP::Math::Vec3f>();
+        RunTruncVecCompileTimeTests<TRAP::Math::Vec3f>();
     }
 
     SECTION("Vec4 - double")
     {
-        RunTruncTests<TRAP::Math::Vec4d>();
+        RunTruncRunTimeTests<TRAP::Math::Vec4d>();
+        RunTruncVecCompileTimeTests<TRAP::Math::Vec4d>();
     }
     SECTION("Vec4 - float")
     {
-        RunTruncTests<TRAP::Math::Vec4f>();
+        RunTruncRunTimeTests<TRAP::Math::Vec4f>();
+        RunTruncVecCompileTimeTests<TRAP::Math::Vec4f>();
     }
 }

@@ -10,7 +10,24 @@
 
 template<typename T>
 requires std::floating_point<T>
-void RunQuaternionLookAtTests()
+consteval void RunQuaternionLookAtCompileTimeTests()
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    constexpr TRAP::Math::tVec3<T> eye(0.0f);
+    constexpr TRAP::Math::tVec3<T> center(1.1f, -2.0f, 3.1416f);
+    constexpr TRAP::Math::tVec3<T> up(-0.17f, 7.23f, -1.744f);
+
+    constexpr TRAP::Math::tQuat<T> q = TRAP::Math::QuaternionLookAt(TRAP::Math::Normalize(center - eye), up);
+    constexpr TRAP::Math::tQuat<T> m = TRAP::Math::Conjugate(TRAP::Math::QuaternionCast(TRAP::Math::LookAt(eye, center, up)));
+
+    static_assert(TRAP::Math::Equal(TRAP::Math::Length(q), T(1.0f), Epsilon));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(-q, m, Epsilon)));
+}
+
+template<typename T>
+requires std::floating_point<T>
+void RunQuaternionLookAtRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -71,12 +88,14 @@ TEST_CASE("TRAP::Math::QuaternionLookAt()", "[math][generic][quaternionlookat]")
 {
     SECTION("Quat - double")
     {
-        RunQuaternionLookAtTests<double>();
+        RunQuaternionLookAtRunTimeTests<double>();
+        RunQuaternionLookAtCompileTimeTests<double>();
         RunQuaternionLookAtEdgeTests<double>();
     }
     SECTION("Quat - float")
     {
-        RunQuaternionLookAtTests<float>();
+        RunQuaternionLookAtRunTimeTests<float>();
+        RunQuaternionLookAtCompileTimeTests<float>();
         RunQuaternionLookAtEdgeTests<float>();
     }
 }

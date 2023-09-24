@@ -4427,3 +4427,9 @@ SITREP 09/23/2023|23w38b1
     - ErrorCodes Replaced call to std::exit() with std::terminate() ~<5 mins
     - Added CrashHandler class which allows to set custom exception handlers ~<5 mins
     - Added exception handlers that log the exception and save the log to disk ~<15 mins
+
+SITREP 09/24/2023|23w38b2
+    - Changed TRAP Engine version to 23w38b2(0.9.98)
+    - Added GCEM as submodule ~<5 mins
+    - Made many more math functions constexpr using GCEM ~>60 mins
+    - Updated unit tests for updated math functions ~>60 mins

@@ -10,7 +10,22 @@
 
 template<typename T>
 requires std::floating_point<T>
-void RunAngleAxisTests()
+consteval void RunAngleAxisCompileTimeTests()
+{
+    constexpr TRAP::Math::tQuat<T> a = TRAP::Math::AngleAxis(T(0.0f), TRAP::Math::tVec3<T>(0.0f, 0.0f, 1.0f));
+    constexpr TRAP::Math::tQuat<T> b = TRAP::Math::AngleAxis(TRAP::Math::PI<T>() * T(0.5f), TRAP::Math::tVec3<T>(0.0f, 0.0f, 1.0f));
+    constexpr TRAP::Math::tQuat<T> c = TRAP::Math::Mix(a, b, T(0.5f));
+    constexpr TRAP::Math::tQuat<T> d = TRAP::Math::AngleAxis(TRAP::Math::PI<T>() * T(0.25f), TRAP::Math::tVec3<T>(0.0f, 0.0f, 1.0f));
+
+    static_assert(TRAP::Math::Equal(c.x(), d.x(), T(0.01f)));
+    static_assert(TRAP::Math::Equal(c.y(), d.y(), T(0.01f)));
+    static_assert(TRAP::Math::Equal(c.z(), d.z(), T(0.01f)));
+    static_assert(TRAP::Math::Equal(c.w(), d.w(), T(0.01f)));
+}
+
+template<typename T>
+requires std::floating_point<T>
+void RunAngleAxisRunTimeTests()
 {
     const TRAP::Math::tQuat<T> a = TRAP::Math::AngleAxis(T(0.0f), TRAP::Math::tVec3<T>(0.0f, 0.0f, 1.0f));
     const TRAP::Math::tQuat<T> b = TRAP::Math::AngleAxis(TRAP::Math::PI<T>() * T(0.5f), TRAP::Math::tVec3<T>(0.0f, 0.0f, 1.0f));
@@ -49,12 +64,14 @@ TEST_CASE("TRAP::Math::AngleAxis()", "[math][generic][angleaxis]")
 {
     SECTION("Scalar - double")
     {
-        RunAngleAxisTests<double>();
+        RunAngleAxisRunTimeTests<double>();
+        RunAngleAxisCompileTimeTests<double>();
         RunAngleAxisEdgeTests<double>();
     }
     SECTION("Scalar - float")
     {
-        RunAngleAxisTests<float>();
+        RunAngleAxisRunTimeTests<float>();
+        RunAngleAxisCompileTimeTests<float>();
         RunAngleAxisEdgeTests<float>();
     }
 }

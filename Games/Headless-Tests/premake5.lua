@@ -31,7 +31,8 @@ project "Headless-Tests"
 		"%{IncludeDir.VMA}",
 		"%{IncludeDir.BOX2D}",
 		"%{IncludeDir.TRACY}",
-		"%{IncludeDir.FMT}"
+		"%{IncludeDir.FMT}",
+		"%{IncludeDir.GCEM}"
 	}
 
 	links "TRAP-Headless"

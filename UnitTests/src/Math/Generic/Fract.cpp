@@ -8,8 +8,26 @@
 #include "TRAP/src/Maths/Math.h"
 
 template<typename T>
+requires std::floating_point<T>
+consteval void RunFractCompileTimeTests()
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    static_assert(TRAP::Math::Equal(TRAP::Math::Fract(T(1.5)), T(0.5), Epsilon));
+}
+
+template<typename T>
+requires (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
+consteval void RunFractVecCompileTimeTests()
+{
+    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Fract(T(TRAP::Math::Vec<4, typename T::value_type>(1.1, 1.2, 1.5, 1.7))), T(TRAP::Math::Vec<4, typename T::value_type>(0.1, 0.2, 0.5, 0.7)), Epsilon)));
+}
+
+template<typename T>
 requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
-void RunFractTests()
+void RunFractRunTimeTests()
 {
     if constexpr(std::floating_point<T>)
     {
@@ -44,7 +62,7 @@ void RunFractTests()
 
 template<typename T>
 requires std::floating_point<T>
-void RunFractEdgeTests()
+void RunFractEdgeRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -64,39 +82,47 @@ TEST_CASE("TRAP::Math::Fract()", "[math][generic][fract]")
 {
     SECTION("Scalar - double")
     {
-        RunFractTests<double>();
-        RunFractEdgeTests<double>();
+        RunFractRunTimeTests<double>();
+        RunFractEdgeRunTimeTests<double>();
+        RunFractCompileTimeTests<double>();
     }
     SECTION("Scalar - float")
     {
-        RunFractTests<float>();
-        RunFractEdgeTests<float>();
+        RunFractRunTimeTests<float>();
+        RunFractEdgeRunTimeTests<float>();
+        RunFractCompileTimeTests<float>();
     }
 
     SECTION("Vec2 - double")
     {
-        RunFractTests<TRAP::Math::Vec2d>();
+        RunFractRunTimeTests<TRAP::Math::Vec2d>();
+        RunFractVecCompileTimeTests<TRAP::Math::Vec2d>();
     }
     SECTION("Vec2 - float")
     {
-        RunFractTests<TRAP::Math::Vec2f>();
+        RunFractRunTimeTests<TRAP::Math::Vec2f>();
+        RunFractVecCompileTimeTests<TRAP::Math::Vec2f>();
     }
 
     SECTION("Vec3 - double")
     {
-        RunFractTests<TRAP::Math::Vec3d>();
+        RunFractRunTimeTests<TRAP::Math::Vec3d>();
+        RunFractVecCompileTimeTests<TRAP::Math::Vec3d>();
     }
     SECTION("Vec3 - float")
     {
-        RunFractTests<TRAP::Math::Vec3f>();
+        RunFractRunTimeTests<TRAP::Math::Vec3f>();
+        RunFractVecCompileTimeTests<TRAP::Math::Vec3f>();
     }
 
     SECTION("Vec4 - double")
     {
-        RunFractTests<TRAP::Math::Vec4d>();
+        RunFractRunTimeTests<TRAP::Math::Vec4d>();
+        RunFractVecCompileTimeTests<TRAP::Math::Vec4d>();
     }
     SECTION("Vec4 - float")
     {
-        RunFractTests<TRAP::Math::Vec4f>();
+        RunFractRunTimeTests<TRAP::Math::Vec4f>();
+        RunFractVecCompileTimeTests<TRAP::Math::Vec4f>();
     }
 }

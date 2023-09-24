@@ -9,7 +9,18 @@
 
 template<typename T>
 requires std::floating_point<T>
-void RunATanHTests()
+consteval void RunATanHCompileTimeTests()
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATanH(T(-0.99)), T(-2.64665), T(0.00001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATanH(T(0.0)), T(0.0), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATanH(T(0.001)), T(0.001), T(0.000000001f)));
+}
+
+template<typename T>
+requires std::floating_point<T>
+void RunATanHRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -38,7 +49,18 @@ void RunATanHEdgeTests()
 
 template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-void RunATanHVecTests()
+consteval void RunATanHVecCompileTimeTests()
+{
+    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATanH(T(-0.99)), T(-2.64665), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATanH(T(0.0)), T(0.0), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATanH(T(0.001)), T(0.001), T(0.000000001f))));
+}
+
+template<typename T>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
+void RunATanHVecRunTimeTests()
 {
     static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
@@ -71,45 +93,53 @@ TEST_CASE("TRAP::Math::ATanH()", "[math][generic][atanh]")
 {
     SECTION("Scalar - double")
     {
-        RunATanHTests<double>();
+        RunATanHRunTimeTests<double>();
+        RunATanHCompileTimeTests<double>();
         RunATanHEdgeTests<double>();
     }
     SECTION("Scalar - float")
     {
-        RunATanHTests<float>();
+        RunATanHRunTimeTests<float>();
+        RunATanHCompileTimeTests<float>();
         RunATanHEdgeTests<float>();
     }
 
     SECTION("Vec2 - double")
     {
-        RunATanHVecTests<TRAP::Math::Vec2d>();
+        RunATanHVecRunTimeTests<TRAP::Math::Vec2d>();
+        RunATanHVecCompileTimeTests<TRAP::Math::Vec2d>();
         RunATanHVecEdgeTests<TRAP::Math::Vec2d>();
     }
     SECTION("Vec2 - float")
     {
-        RunATanHVecTests<TRAP::Math::Vec2f>();
+        RunATanHVecRunTimeTests<TRAP::Math::Vec2f>();
+        RunATanHVecCompileTimeTests<TRAP::Math::Vec2f>();
         RunATanHVecEdgeTests<TRAP::Math::Vec2f>();
     }
 
     SECTION("Vec3 - double")
     {
-        RunATanHVecTests<TRAP::Math::Vec3d>();
+        RunATanHVecRunTimeTests<TRAP::Math::Vec3d>();
+        RunATanHVecCompileTimeTests<TRAP::Math::Vec3d>();
         RunATanHVecEdgeTests<TRAP::Math::Vec3d>();
     }
     SECTION("Vec3 - float")
     {
-        RunATanHVecTests<TRAP::Math::Vec3f>();
+        RunATanHVecRunTimeTests<TRAP::Math::Vec3f>();
+        RunATanHVecCompileTimeTests<TRAP::Math::Vec3f>();
         RunATanHVecEdgeTests<TRAP::Math::Vec3f>();
     }
 
     SECTION("Vec4 - double")
     {
-        RunATanHVecTests<TRAP::Math::Vec4d>();
+        RunATanHVecRunTimeTests<TRAP::Math::Vec4d>();
+        RunATanHVecCompileTimeTests<TRAP::Math::Vec4d>();
         RunATanHVecEdgeTests<TRAP::Math::Vec4d>();
     }
     SECTION("Vec4 - float")
     {
-        RunATanHVecTests<TRAP::Math::Vec4f>();
+        RunATanHVecRunTimeTests<TRAP::Math::Vec4f>();
+        RunATanHVecCompileTimeTests<TRAP::Math::Vec4f>();
         RunATanHVecEdgeTests<TRAP::Math::Vec4f>();
     }
 }

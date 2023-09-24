@@ -160,7 +160,31 @@ consteval void RunCompileTimeMixMatTest()
 
 template<typename T>
 requires TRAP::Math::IsQuat<T> && std::floating_point<typename T::value_type>
-void RunCompileTimeMixQuatTest()
+consteval void RunCompileTimeMixQuatTest()
+{
+    constexpr T Q1(TRAP::Math::Vec<3, typename T::value_type>(1, 0, 0), TRAP::Math::Vec<3, typename T::value_type>(1, 0, 0));
+    constexpr T Q2(TRAP::Math::Vec<3, typename T::value_type>(1, 0, 0), TRAP::Math::Vec<3, typename T::value_type>(0, 1, 0));
+
+    constexpr T Q3 = TRAP::Math::Mix(Q1, Q2, static_cast<T::value_type>(0.5f));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Angle(Q3)), static_cast<T::value_type>(45.0f), static_cast<T::value_type>(0.001f)));
+
+    constexpr T Q4 = TRAP::Math::Mix(Q2, Q1, static_cast<T::value_type>(0.5f));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Degrees(TRAP::Math::Angle(Q4)), static_cast<T::value_type>(45.0f), static_cast<T::value_type>(0.001f)));
+
+    constexpr T A = TRAP::Math::AngleAxis(static_cast<T::value_type>(0.0f), TRAP::Math::Vec<3, typename T::value_type>(static_cast<T::value_type>(0.0f), static_cast<T::value_type>(0.0f), static_cast<T::value_type>(1.0f)));
+    constexpr T B = TRAP::Math::AngleAxis(TRAP::Math::PI<typename T::value_type>() * static_cast<T::value_type>(0.5f), TRAP::Math::Vec<3, typename T::value_type>(static_cast<T::value_type>(0.0f), static_cast<T::value_type>(0.0f), static_cast<T::value_type>(1.0f)));
+    constexpr T C = TRAP::Math::Mix(A, B, static_cast<T::value_type>(0.5f));
+    constexpr T D = TRAP::Math::AngleAxis(TRAP::Math::PI<typename T::value_type>() * static_cast<T::value_type>(0.25f), TRAP::Math::Vec<3, typename T::value_type>(static_cast<T::value_type>(0.0f), static_cast<T::value_type>(0.0f), static_cast<T::value_type>(1.0f)));
+
+    static_assert(TRAP::Math::Equal(C.x(), D.x(), static_cast<T::value_type>(0.01f)));
+    static_assert(TRAP::Math::Equal(C.y(), D.y(), static_cast<T::value_type>(0.01f)));
+    static_assert(TRAP::Math::Equal(C.z(), D.z(), static_cast<T::value_type>(0.01f)));
+    static_assert(TRAP::Math::Equal(C.w(), D.w(), static_cast<T::value_type>(0.01f)));
+}
+
+template<typename T>
+requires TRAP::Math::IsQuat<T> && std::floating_point<typename T::value_type>
+void RunRunTimeMixQuatTest()
 {
     const T Q1(TRAP::Math::Vec<3, typename T::value_type>(1, 0, 0), TRAP::Math::Vec<3, typename T::value_type>(1, 0, 0));
     const T Q2(TRAP::Math::Vec<3, typename T::value_type>(1, 0, 0), TRAP::Math::Vec<3, typename T::value_type>(0, 1, 0));
@@ -418,10 +442,12 @@ TEST_CASE("TRAP::Math::Mix()", "[math][generic][mix]")
 
     SECTION("Quat - double")
     {
+        RunRunTimeMixQuatTest<TRAP::Math::Quatd>();
         RunCompileTimeMixQuatTest<TRAP::Math::Quatd>();
     }
     SECTION("Quat - float")
     {
+        RunRunTimeMixQuatTest<TRAP::Math::Quatf>();
         RunCompileTimeMixQuatTest<TRAP::Math::Quatf>();
     }
 }

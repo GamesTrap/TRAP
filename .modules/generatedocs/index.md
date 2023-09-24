@@ -48,6 +48,8 @@ They are provided in the TRAP™ repository.
 
 - [Box2D](https://github.com/erincatto/box2d)
 - [Entt](https://github.com/skypjack/entt)
+- [fmt](https://github.com/fmtlib/fmt)
+- [GCEM](https://github.com/kthohr/gcem)
 - [GLFW](https://github.com/glfw/glfw) integrated as TRAP::INTERNAL::WindowingAPI
 - [GLM](https://github.com/g-truc/glm) integrated as TRAP::Math
 - [GLSLang](https://github.com/GamesTrap/glslang)

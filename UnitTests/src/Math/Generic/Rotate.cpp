@@ -10,7 +10,50 @@
 
 template<typename T>
 requires std::floating_point<T>
-void RunRotateTests()
+consteval void RunRotateCompileTimeTests()
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    {
+        constexpr auto t = TRAP::Math::Rotate(TRAP::Math::tMat4<T>(1.0f), TRAP::Math::Radians<T>(90.0f), TRAP::Math::tVec3<T>(1.0f));
+        constexpr auto t2 = TRAP::Math::Rotate(TRAP::Math::Radians<T>(90.0f), TRAP::Math::tVec3<T>(1.0f));
+        constexpr TRAP::Math::tMat4<T> expected(0.333333f, 0.910684f, -0.244017f, 0.0f, -0.244017f, 0.333333f, 0.910684f, 0.0f, 0.910684f, -0.244017f, 0.333333f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(t, expected, T(0.000001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(t, t2, Epsilon)));
+    }
+    {
+        constexpr auto t = TRAP::Math::Rotate(TRAP::Math::tMat4<T>(1.0f), TRAP::Math::Radians<T>(90.0f), TRAP::Math::tVec3<T>(1.0f, 0.0f, 0.0f));
+        constexpr auto t2 = TRAP::Math::Rotate(TRAP::Math::Radians<T>(90.0f), TRAP::Math::tVec3<T>(1.0f, 0.0f, 0.0f));
+        constexpr TRAP::Math::tMat4<T> expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(t, expected, T(0.000001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(t, t2, Epsilon)));
+    }
+    {
+        constexpr auto t = TRAP::Math::Rotate(TRAP::Math::tMat4<T>(1.0f), TRAP::Math::Radians<T>(45.0f), TRAP::Math::tVec3<T>(0.0f, 1.0f, 0.0f));
+        constexpr auto t2 = TRAP::Math::Rotate(TRAP::Math::Radians<T>(45.0f), TRAP::Math::tVec3<T>(0.0f, 1.0f, 0.0f));
+        constexpr TRAP::Math::tMat4<T> expected(0.707107f, 0.0f, -0.707107f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.707107f, 0.0f, 0.707107f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(t, expected, T(0.000001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(t, t2, Epsilon)));
+    }
+    {
+        constexpr auto t = TRAP::Math::Rotate(TRAP::Math::tMat4<T>(1.0f), TRAP::Math::Radians<T>(60.0f), TRAP::Math::tVec3<T>(0.0f, 0.0f, 1.0f));
+        constexpr auto t2 = TRAP::Math::Rotate(TRAP::Math::Radians<T>(60.0f), TRAP::Math::tVec3<T>(0.0f, 0.0f, 1.0f));
+        constexpr TRAP::Math::tMat4<T> expected(0.5f, 0.866025f, 0.0f, 0.0f, -0.866025f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(t, expected, T(0.000001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(t, t2, Epsilon)));
+    }
+    {
+        constexpr auto t = TRAP::Math::Rotate(TRAP::Math::tMat4<T>(1.0f), TRAP::Math::Radians<T>(60.0f), TRAP::Math::tVec3<T>(0.5f, 0.5f, 0.5f));
+        constexpr auto t2 = TRAP::Math::Rotate(TRAP::Math::Radians<T>(60.0f), TRAP::Math::tVec3<T>(0.5f, 0.5f, 0.5f));
+        constexpr TRAP::Math::tMat4<T> expected(0.666667f, 0.666667f, -0.333333f, 0.0f, -0.333333f, 0.666667f, 0.666667f, 0.0f, 0.666667f, -0.333333f, 0.666667f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(t, expected, T(0.000001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(t, t2, Epsilon)));
+    }
+}
+
+template<typename T>
+requires std::floating_point<T>
+void RunRotateRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -99,7 +142,55 @@ void RunRotateEdgeTests()
 
 template<typename T>
 requires std::floating_point<T>
-void RunRotateQuatTests()
+consteval void RunRotateQuatCompileTimeTests()
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    {
+        constexpr TRAP::Math::tQuat<T> q = TRAP::Math::AngleAxis(TRAP::Math::Radians(T(45.0f)), TRAP::Math::tVec3<T>(1.0f, 0.0f, 0.0f));
+        constexpr TRAP::Math::tVec3<T> axis(0.0f, 0.0f, 1.0f);
+        constexpr T angle = TRAP::Math::Radians(T(90.0f));
+        constexpr TRAP::Math::tQuat<T> rot = TRAP::Math::Rotate(q, angle, axis);
+        constexpr TRAP::Math::tQuat<T> expected(0.653281f, 0.270598f, -0.270598f, 0.653281f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(rot, expected, T(0.000001f))));
+    }
+    {
+        constexpr TRAP::Math::tQuat<T> q = TRAP::Math::AngleAxis(TRAP::Math::Radians(T(30.0f)), TRAP::Math::tVec3<T>(0.0f, 1.0f, 0.0f));
+        constexpr TRAP::Math::tVec3<T> axis(0.0f, 1.0f, 0.0f);
+        constexpr T angle = TRAP::Math::Radians(T(45.0f));
+        constexpr TRAP::Math::tQuat<T> rot = TRAP::Math::Rotate(q, angle, axis);
+        constexpr TRAP::Math::tQuat<T> expected(0.793353f, 0.0f, 0.608761f, 0.0f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(rot, expected, T(0.000001f))));
+    }
+    {
+        constexpr TRAP::Math::tQuat<T> q = TRAP::Math::AngleAxis(TRAP::Math::Radians(T(60.0f)), TRAP::Math::tVec3<T>(1.0f, 1.0f, 1.0f));
+        constexpr TRAP::Math::tVec3<T> axis(0.0f, 1.0f, 0.0f);
+        constexpr T angle = TRAP::Math::Radians(T(-30.0f));
+        constexpr TRAP::Math::tQuat<T> rot = TRAP::Math::Rotate(q, angle, axis);
+        constexpr TRAP::Math::tQuat<T> expected(0.965926f, 0.612372f, 0.258819f, 0.353553f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(rot, expected, T(0.000001f))));
+    }
+    {
+        constexpr TRAP::Math::tQuat<T> q = TRAP::Math::AngleAxis(TRAP::Math::Radians(T(90.0f)), TRAP::Math::tVec3<T>(0.0f, 1.0f, 0.0f));
+        constexpr TRAP::Math::tVec3<T> axis(1.0f, 0.0f, 0.0f);
+        constexpr T angle = TRAP::Math::Radians(T(0.0f));
+        constexpr TRAP::Math::tQuat<T> rot = TRAP::Math::Rotate(q, angle, axis);
+        constexpr TRAP::Math::tQuat<T> expected(0.707107f, 0.0f, 0.707107f, 0.0f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(rot, expected, T(0.000001f))));
+    }
+    {
+        constexpr TRAP::Math::tQuat<T> q = TRAP::Math::AngleAxis(TRAP::Math::Radians(T(0.0f)), TRAP::Math::tVec3<T>(0.0f, 1.0f, 0.0f));
+        constexpr TRAP::Math::tVec3<T> axis(1.0f, 0.0f, 0.0f);
+        constexpr T angle = TRAP::Math::Radians(T(180.0f));
+        constexpr TRAP::Math::tQuat<T> rot = TRAP::Math::Rotate(q, angle, axis);
+        constexpr TRAP::Math::tQuat<T> expected(0.0f, 1.0f, 0.0f, 0.0f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(rot, expected, Epsilon)));
+    }
+}
+
+template<typename T>
+requires std::floating_point<T>
+void RunRotateQuatRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -196,16 +287,20 @@ TEST_CASE("TRAP::Math::Rotate()", "[math][generic][rotate]")
 {
     SECTION("Scalar - double")
     {
-        RunRotateTests<double>();
+        RunRotateRunTimeTests<double>();
+        RunRotateCompileTimeTests<double>();
         RunRotateEdgeTests<double>();
-        RunRotateQuatTests<double>();
+        RunRotateQuatRunTimeTests<double>();
+        RunRotateQuatCompileTimeTests<double>();
         RunRotateQuatEdgeTests<double>();
     }
     SECTION("Scalar - float")
     {
-        RunRotateTests<float>();
+        RunRotateRunTimeTests<float>();
+        RunRotateCompileTimeTests<float>();
         RunRotateEdgeTests<float>();
-        RunRotateQuatTests<float>();
+        RunRotateQuatRunTimeTests<float>();
+        RunRotateQuatCompileTimeTests<float>();
         RunRotateQuatEdgeTests<float>();
     }
 }

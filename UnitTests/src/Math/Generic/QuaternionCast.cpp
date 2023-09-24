@@ -10,7 +10,52 @@
 
 template<typename T>
 requires (TRAP::Math::IsMat<T> && std::floating_point<typename T::value_type>)
-void RunQuaternionCastTests()
+consteval void RunQuaternionCastCompileTimeTests()
+{
+    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+
+    {
+        constexpr T m(1.0f);
+        constexpr TRAP::Math::tQuat<typename T::value_type> res = TRAP::Math::QuaternionCast(m);
+        constexpr TRAP::Math::tQuat<typename T::value_type> expected(1.0f, 0.0f, 0.0f, 0.0f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(res, expected, Epsilon)));
+    }
+    {
+        constexpr T rot(TRAP::Math::tMat4<typename T::value_type>(0.866f, -0.5f, 0.0f, 0.0f, 0.5f, 0.866f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
+        constexpr TRAP::Math::tQuat<typename T::value_type> res = TRAP::Math::QuaternionCast(rot);
+        constexpr TRAP::Math::tQuat<typename T::value_type> expected(0.965919f, 0.0f, 0.0f, -0.258821f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(res, expected, typename T::value_type(0.000001f))));
+    }
+
+    if constexpr(TRAP::Math::IsMat4<T>)
+    {
+        {
+            constexpr typename T::value_type angle = TRAP::Math::Radians(45.0f);
+            constexpr T rot = TRAP::Math::Rotate(T(1.0f), angle, TRAP::Math::tVec3<typename T::value_type>(1.0f, 0.0f, 0.0f));
+            constexpr TRAP::Math::tQuat<typename T::value_type> res = TRAP::Math::QuaternionCast(rot);
+            constexpr TRAP::Math::tQuat<typename T::value_type> expected(0.923880f, 0.382683f, 0.0f, 0.0f);
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(res, expected, typename T::value_type(0.000001f))));
+        }
+        {
+            constexpr typename T::value_type angle = TRAP::Math::Radians(90.0f);
+            constexpr T rot = TRAP::Math::Rotate(T(1.0f), angle, TRAP::Math::tVec3<typename T::value_type>(0.0f, 1.0f, 0.0f));
+            constexpr TRAP::Math::tQuat<typename T::value_type> res = TRAP::Math::QuaternionCast(rot);
+            constexpr TRAP::Math::tQuat<typename T::value_type> expected(0.707107f, 0.0f, 0.707107f, 0.0f);
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(res, expected, typename T::value_type(0.000001f))));
+        }
+        {
+            constexpr typename T::value_type angle = TRAP::Math::Radians(180.0f);
+            constexpr T rot = TRAP::Math::Rotate(T(1.0f), angle, TRAP::Math::tVec3<typename T::value_type>(0.0f, 0.0f, 1.0f));
+            constexpr TRAP::Math::tQuat<typename T::value_type> res = TRAP::Math::QuaternionCast(rot);
+            constexpr TRAP::Math::tQuat<typename T::value_type> expected(0.0f, 0.0f, 0.0f, 1.0f);
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(res, expected, typename T::value_type(0.000001f))));
+        }
+    }
+}
+
+template<typename T>
+requires (TRAP::Math::IsMat<T> && std::floating_point<typename T::value_type>)
+void RunQuaternionCastRunTimeTests()
 {
     static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
@@ -94,23 +139,27 @@ TEST_CASE("TRAP::Math::QuaternionCast()", "[math][generic][quaternioncast]")
 {
     SECTION("Mat3 - double")
     {
-        RunQuaternionCastTests<TRAP::Math::Mat3d>();
+        RunQuaternionCastRunTimeTests<TRAP::Math::Mat3d>();
+        RunQuaternionCastCompileTimeTests<TRAP::Math::Mat3d>();
         RunQuaternionCastEdgeTests<TRAP::Math::Mat3d>();
     }
     SECTION("Mat3 - float")
     {
-        RunQuaternionCastTests<TRAP::Math::Mat3f>();
+        RunQuaternionCastRunTimeTests<TRAP::Math::Mat3f>();
+        RunQuaternionCastCompileTimeTests<TRAP::Math::Mat3f>();
         RunQuaternionCastEdgeTests<TRAP::Math::Mat3f>();
     }
 
     SECTION("Mat4 - double")
     {
-        RunQuaternionCastTests<TRAP::Math::Mat4d>();
+        RunQuaternionCastRunTimeTests<TRAP::Math::Mat4d>();
+        RunQuaternionCastCompileTimeTests<TRAP::Math::Mat4d>();
         RunQuaternionCastEdgeTests<TRAP::Math::Mat4d>();
     }
     SECTION("Mat4 - float")
     {
-        RunQuaternionCastTests<TRAP::Math::Mat4f>();
+        RunQuaternionCastRunTimeTests<TRAP::Math::Mat4f>();
+        RunQuaternionCastCompileTimeTests<TRAP::Math::Mat4f>();
         RunQuaternionCastEdgeTests<TRAP::Math::Mat4f>();
     }
 }

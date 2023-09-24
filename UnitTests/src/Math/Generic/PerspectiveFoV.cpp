@@ -10,7 +10,39 @@
 
 template<typename T>
 requires std::floating_point<T>
-void RunPerspectiveFoVTests()
+consteval void RunPerspectiveFoVCompileTimeTests()
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    {
+        constexpr auto p = TRAP::Math::PerspectiveFoV<T>(TRAP::Math::Radians(45.0f), 800.0f, 600.0f, 0.1f, 100.0f);
+        constexpr TRAP::Math::tMat4<T> expected(1.810660f, 0.0f, 0.0f, 0.0f, 0.0f, 2.414213f, 0.0f, 0.0f, 0.0f, 0.0f, -1.001001f, -1.0f, 0.0f, 0.0f, -0.100100f, 0.0f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(p, expected, T(0.000001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(p, TRAP::Math::PerspectiveFoVReverseZ<T>(TRAP::Math::Radians(45.0f), 800.0f, 600.0f, 100.0f, 0.1f), Epsilon)));
+    }
+    {
+        constexpr auto p = TRAP::Math::PerspectiveFoV<T>(TRAP::Math::Radians(60.0f), 1024.0f, 768.0f, 0.5f, 200.0f);
+        constexpr TRAP::Math::tMat4<T> expected(1.299038f, 0.0f, 0.0f, 0.0f, 0.0f, 1.732051f, 0.0f, 0.0f, 0.0f, 0.0f, -1.002506f, -1.0f, 0.0f, 0.0f, -0.501253f, 0.0f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(p, expected, T(0.000001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(p, TRAP::Math::PerspectiveFoVReverseZ<T>(TRAP::Math::Radians(60.0f), 1024.0f, 768.0f, 200.0f, 0.5f), Epsilon)));
+    }
+    {
+        constexpr auto p = TRAP::Math::PerspectiveFoV<T>(TRAP::Math::Radians(90.0f), 640.0f, 480.0f, -1.0f, 1000.0f);
+        constexpr TRAP::Math::tMat4<T> expected(0.75f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.999001f, -1.0f, 0.0f, 0.0f, 0.999001f, 0.0f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(p, expected, T(0.000001f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(p, TRAP::Math::PerspectiveFoVReverseZ<T>(TRAP::Math::Radians(90.0f), 640.0f, 480.0f, 1000.0f, -1.0f), Epsilon)));
+    }
+    {
+        constexpr auto p = TRAP::Math::PerspectiveFoV<T>(TRAP::Math::Radians(0.001f), 0.001f, 0.001f, 0.0001f, 0.0002f);
+        constexpr TRAP::Math::tMat4<T> expected(114591.562500f, 0.0f, 0.0f, 0.0f, 0.0f, 114591.562500f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f, -1.0f, 0.0f, 0.0f, -0.000200f, 0.0f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(p, expected, T(0.01f))));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(p, TRAP::Math::PerspectiveFoVReverseZ<T>(TRAP::Math::Radians(0.001f), 0.001f, 0.001f, 0.0002f, 0.0001f), Epsilon)));
+    }
+}
+
+template<typename T>
+requires std::floating_point<T>
+void RunPerspectiveFoVRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -78,12 +110,14 @@ TEST_CASE("TRAP::Math::PerspectiveFoV()", "[math][generic][perspectivefov]")
 {
     SECTION("Mat4 - double")
     {
-        RunPerspectiveFoVTests<double>();
+        RunPerspectiveFoVRunTimeTests<double>();
+        RunPerspectiveFoVCompileTimeTests<double>();
         RunPerspectiveFoVEdgeTests<double>();
     }
     SECTION("Mat4 - float")
     {
-        RunPerspectiveFoVTests<float>();
+        RunPerspectiveFoVRunTimeTests<float>();
+        RunPerspectiveFoVCompileTimeTests<float>();
         RunPerspectiveFoVEdgeTests<float>();
     }
 }

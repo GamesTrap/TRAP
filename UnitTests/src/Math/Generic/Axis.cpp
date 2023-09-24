@@ -10,7 +10,33 @@
 
 template<typename T>
 requires std::floating_point<T>
-void RunAxisTests()
+consteval void RunAxisCompileTimeTests()
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    {
+        constexpr TRAP::Math::tQuat<T> q(1.0f, 0.0f, 0.0f, 0.0f);
+        constexpr TRAP::Math::tVec3<T> axis = TRAP::Math::Axis(q);
+        constexpr TRAP::Math::tVec3<T> expected(0.0f, 0.0f, 1.0f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(axis, expected, Epsilon)));
+    }
+    {
+        constexpr TRAP::Math::tQuat<T> q = TRAP::Math::AngleAxis(TRAP::Math::Radians(T(45.0f)), TRAP::Math::tVec3<T>(0.0f, 1.0f, 0.0f));
+        constexpr TRAP::Math::tVec3<T> axis = TRAP::Math::Axis(q);
+        constexpr TRAP::Math::tVec3<T> expected(0.0f, 1.0f, 0.0f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(axis, expected, T(0.000001f))));
+    }
+    {
+        constexpr TRAP::Math::tQuat<T> q = TRAP::Math::AngleAxis(TRAP::Math::Radians(T(-30.0f)), TRAP::Math::tVec3<T>(1.0f, 1.0f, 1.0f));
+        constexpr TRAP::Math::tVec3<T> axis = TRAP::Math::Axis(q);
+        constexpr TRAP::Math::tVec3<T> expected(-1.0f, -1.0f, -1.0f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(axis, expected, T(0.00001f))));
+    }
+}
+
+template<typename T>
+requires std::floating_point<T>
+void RunAxisRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -77,12 +103,14 @@ TEST_CASE("TRAP::Math::Axis()", "[math][generic][axis]")
 {
     SECTION("Quat - double")
     {
-        RunAxisTests<double>();
+        RunAxisRunTimeTests<double>();
+        RunAxisCompileTimeTests<double>();
         RunAxisEdgeTests<double>();
     }
     SECTION("Quat - float")
     {
-        RunAxisTests<float>();
+        RunAxisRunTimeTests<float>();
+        RunAxisCompileTimeTests<float>();
         RunAxisEdgeTests<float>();
     }
 }

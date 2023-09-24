@@ -10,7 +10,44 @@
 template<typename T, typename X = T>
 requires (std::is_arithmetic_v<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)) &&
          (std::is_arithmetic_v<X> || (TRAP::Math::IsVec<X> && std::floating_point<typename X::value_type>))
-void RunModTests()
+consteval void RunModCompileTimeTests()
+{
+    if constexpr(std::is_arithmetic_v<T>)
+    {
+        if constexpr(std::floating_point<T>)
+        {
+            constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+            static_assert(TRAP::Math::Equal(TRAP::Math::Mod(T( 1.5f), X(1.0f)), T( 0.5f), Epsilon));
+            static_assert(TRAP::Math::Equal(TRAP::Math::Mod(T(-0.2f), X(1.0f)), T(-0.2f), Epsilon));
+            static_assert(TRAP::Math::Equal(TRAP::Math::Mod(T( 3.0f), X(2.0f)), T( 1.0f), Epsilon));
+        }
+        else if constexpr(std::integral<T>)
+        {
+            static_assert(TRAP::Math::Mod(T( 1.5f), X(1.0f)) == T( 0.5f));
+            static_assert(TRAP::Math::Mod(T(-0.2f), X(1.0f)) == T(-0.2f));
+            static_assert(TRAP::Math::Mod(T( 3.0f), X(2.0f)) == T( 1.0f));
+        }
+    }
+    else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type> && TRAP::Math::IsVec<X>)
+    {
+        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(T( 1.5f), X(1.0f)), T( 0.5f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(T(-0.2f), X(1.0f)), T(-0.2f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(T( 3.0f), X(2.0f)), T( 1.0f), Epsilon)));
+    }
+    else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type> && std::floating_point<X>)
+    {
+        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(T( 1.5f), X(1.0f)), T( 0.5f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(T(-0.2f), X(1.0f)), T(-0.2f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Mod(T( 3.0f), X(2.0f)), T( 1.0f), Epsilon)));
+    }
+}
+
+template<typename T, typename X = T>
+requires (std::is_arithmetic_v<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)) &&
+         (std::is_arithmetic_v<X> || (TRAP::Math::IsVec<X> && std::floating_point<typename X::value_type>))
+void RunModRunTimeTests()
 {
     static constexpr std::array<std::tuple<T, X, T>, 3> values
     {
@@ -48,7 +85,7 @@ void RunModTests()
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-void RunModEdgeTests()
+void RunModEdgeRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -79,85 +116,107 @@ TEST_CASE("TRAP::Math::Mod()", "[math][generic][mod]")
 {
     SECTION("Scalar - int8_t")
     {
-        RunModTests<int8_t>();
-        RunModEdgeTests<int8_t>();
+        RunModRunTimeTests<int8_t>();
+        RunModCompileTimeTests<int8_t>();
+        RunModEdgeRunTimeTests<int8_t>();
     }
     SECTION("Scalar - uint8_t")
     {
-        RunModTests<uint8_t>();
-        RunModEdgeTests<uint8_t>();
+        RunModRunTimeTests<uint8_t>();
+        RunModCompileTimeTests<uint8_t>();
+        RunModEdgeRunTimeTests<uint8_t>();
     }
     SECTION("Scalar - int16_t")
     {
-        RunModTests<int16_t>();
-        RunModEdgeTests<int16_t>();
+        RunModRunTimeTests<int16_t>();
+        RunModCompileTimeTests<int16_t>();
+        RunModEdgeRunTimeTests<int16_t>();
     }
     SECTION("Scalar - uint16_t")
     {
-        RunModTests<uint16_t>();
-        RunModEdgeTests<uint16_t>();
+        RunModRunTimeTests<uint16_t>();
+        RunModCompileTimeTests<uint16_t>();
+        RunModEdgeRunTimeTests<uint16_t>();
     }
     SECTION("Scalar - int32_t")
     {
-        RunModTests<int32_t>();
-        RunModEdgeTests<int32_t>();
+        RunModRunTimeTests<int32_t>();
+        RunModCompileTimeTests<int32_t>();
+        RunModEdgeRunTimeTests<int32_t>();
     }
     SECTION("Scalar - uint32_t")
     {
-        RunModTests<uint32_t>();
-        RunModEdgeTests<uint32_t>();
+        RunModRunTimeTests<uint32_t>();
+        RunModCompileTimeTests<uint32_t>();
+        RunModEdgeRunTimeTests<uint32_t>();
     }
     SECTION("Scalar - int64_t")
     {
-        RunModTests<int64_t>();
-        RunModEdgeTests<int64_t>();
+        RunModRunTimeTests<int64_t>();
+        RunModCompileTimeTests<int64_t>();
+        RunModEdgeRunTimeTests<int64_t>();
     }
     SECTION("Scalar - uint64_t")
     {
-        RunModTests<uint64_t>();
-        RunModEdgeTests<uint64_t>();
+        RunModRunTimeTests<uint64_t>();
+        RunModCompileTimeTests<uint64_t>();
+        RunModEdgeRunTimeTests<uint64_t>();
     }
     SECTION("Scalar - double")
     {
-        RunModTests<double>();
-        RunModEdgeTests<double>();
+        RunModRunTimeTests<double>();
+        RunModCompileTimeTests<double>();
+        RunModEdgeRunTimeTests<double>();
     }
     SECTION("Scalar - float")
     {
-        RunModTests<float>();
-        RunModEdgeTests<float>();
+        RunModRunTimeTests<float>();
+        RunModCompileTimeTests<float>();
+        RunModEdgeRunTimeTests<float>();
     }
 
     SECTION("Vec2 - double")
     {
-        RunModTests<TRAP::Math::Vec2d>();
-        RunModTests<TRAP::Math::Vec2d, double>();
+        RunModRunTimeTests<TRAP::Math::Vec2d>();
+        RunModCompileTimeTests<TRAP::Math::Vec2d>();
+        RunModRunTimeTests<TRAP::Math::Vec2d, double>();
+        RunModCompileTimeTests<TRAP::Math::Vec2d, double>();
     }
     SECTION("Vec2 - float")
     {
-        RunModTests<TRAP::Math::Vec2f>();
-        RunModTests<TRAP::Math::Vec2f, float>();
+        RunModRunTimeTests<TRAP::Math::Vec2f>();
+        RunModCompileTimeTests<TRAP::Math::Vec2f>();
+        RunModRunTimeTests<TRAP::Math::Vec2f, float>();
+        RunModCompileTimeTests<TRAP::Math::Vec2f, float>();
     }
 
     SECTION("Vec3 - double")
     {
-        RunModTests<TRAP::Math::Vec3d>();
-        RunModTests<TRAP::Math::Vec3d, double>();
+        RunModRunTimeTests<TRAP::Math::Vec3d>();
+        RunModCompileTimeTests<TRAP::Math::Vec3d>();
+        RunModRunTimeTests<TRAP::Math::Vec3d, double>();
+        RunModCompileTimeTests<TRAP::Math::Vec3d, double>();
     }
     SECTION("Vec3 - float")
     {
-        RunModTests<TRAP::Math::Vec3f>();
-        RunModTests<TRAP::Math::Vec3f, float>();
+        RunModRunTimeTests<TRAP::Math::Vec3f>();
+        RunModCompileTimeTests<TRAP::Math::Vec3f>();
+        RunModRunTimeTests<TRAP::Math::Vec3f, float>();
+        RunModCompileTimeTests<TRAP::Math::Vec3f, float>();
     }
 
     SECTION("Vec4 - double")
     {
-        RunModTests<TRAP::Math::Vec4d>();
-        RunModTests<TRAP::Math::Vec4d, double>();
+        RunModRunTimeTests<TRAP::Math::Vec4d>();
+        RunModCompileTimeTests<TRAP::Math::Vec4d>();
+        RunModRunTimeTests<TRAP::Math::Vec4d, double>();
+        RunModCompileTimeTests<TRAP::Math::Vec4d, double>();
     }
     SECTION("Vec4 - float")
     {
-        RunModTests<TRAP::Math::Vec4f>();
-        RunModTests<TRAP::Math::Vec4f, float>();
+        RunModRunTimeTests<TRAP::Math::Vec4f>();
+        RunModCompileTimeTests<TRAP::Math::Vec4f>();
+        RunModRunTimeTests<TRAP::Math::Vec4f, float>();
+        RunModCompileTimeTests<TRAP::Math::Vec4f, float>();
     }
 }

@@ -8,8 +8,130 @@
 #include "TRAP/src/Maths/Math.h"
 
 template<typename T>
+requires (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
+consteval void RunRoundEvenVecCompileTimeTests()
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-1.5f)), T(-2.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 1.5f)), T( 2.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-2.5f)), T(-2.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 2.5f)), T( 2.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-3.5f)), T(-4.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 3.5f)), T( 4.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-4.5f)), T(-4.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 4.5f)), T( 4.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-5.5f)), T(-6.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 5.5f)), T( 6.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-6.5f)), T(-6.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 6.5f)), T( 6.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-7.5f)), T(-8.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 7.5f)), T( 8.0f), Epsilon)));
+
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-2.4f)), T(-2.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 2.4f)), T( 2.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-2.6f)), T(-3.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 2.6f)), T( 3.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-2.0f)), T(-2.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 2.0f)), T( 2.0f), Epsilon)));
+
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 0.0f)), T( 0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 0.5f)), T( 0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 1.0f)), T( 1.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 0.1f)), T( 0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 0.9f)), T( 1.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 1.5f)), T( 2.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 1.9f)), T( 2.0f), Epsilon)));
+
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-0.0f)), T( 0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-0.5f)), T(-0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-1.0f)), T(-1.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-0.1f)), T( 0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-0.9f)), T(-1.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-1.5f)), T(-2.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-1.9f)), T(-2.0f), Epsilon)));
+
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 1.5f)), T( 2.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 2.5f)), T( 2.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 3.5f)), T( 4.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 4.5f)), T( 4.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 5.5f)), T( 6.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 6.5f)), T( 6.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 7.5f)), T( 8.0f), Epsilon)));
+
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-1.5f)), T(-2.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-2.5f)), T(-2.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-3.5f)), T(-4.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-4.5f)), T(-4.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-5.5f)), T(-6.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-6.5f)), T(-6.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-7.5f)), T(-8.0f), Epsilon)));
+}
+
+template<typename T>
+requires std::floating_point<T>
+consteval void RunRoundEvenCompileTimeTests()
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-1.5f)), T(-2.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 1.5f)), T( 2.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-2.5f)), T(-2.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 2.5f)), T( 2.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-3.5f)), T(-4.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 3.5f)), T( 4.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-4.5f)), T(-4.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 4.5f)), T( 4.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-5.5f)), T(-6.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 5.5f)), T( 6.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-6.5f)), T(-6.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 6.5f)), T( 6.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-7.5f)), T(-8.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 7.5f)), T( 8.0f), Epsilon));
+
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-2.4f)), T(-2.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 2.4f)), T( 2.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-2.6f)), T(-3.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 2.6f)), T( 3.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-2.0f)), T(-2.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 2.0f)), T( 2.0f), Epsilon));
+
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 0.0f)), T( 0.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 0.5f)), T( 0.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 1.0f)), T( 1.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 0.1f)), T( 0.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 0.9f)), T( 1.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 1.5f)), T( 2.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 1.9f)), T( 2.0f), Epsilon));
+
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-0.0f)), T( 0.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-0.5f)), T(-0.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-1.0f)), T(-1.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-0.1f)), T( 0.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-0.9f)), T(-1.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-1.5f)), T(-2.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-1.9f)), T(-2.0f), Epsilon));
+
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 1.5f)), T( 2.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 2.5f)), T( 2.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 3.5f)), T( 4.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 4.5f)), T( 4.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 5.5f)), T( 6.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 6.5f)), T( 6.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T( 7.5f)), T( 8.0f), Epsilon));
+
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-1.5f)), T(-2.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-2.5f)), T(-2.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-3.5f)), T(-4.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-4.5f)), T(-4.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-5.5f)), T(-6.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-6.5f)), T(-6.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::RoundEven(T(-7.5f)), T(-8.0f), Epsilon));
+}
+
+template<typename T>
 requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
-void RunRoundEvenTests()
+void RunRoundEvenRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -56,7 +178,7 @@ void RunRoundEvenTests()
 
 template<typename T>
 requires std::floating_point<T>
-void RunRoundEvenEdgeTests()
+void RunRoundEvenEdgeRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -71,39 +193,47 @@ TEST_CASE("TRAP::Math::RoundEven()", "[math][generic][roundeven]")
 {
     SECTION("Scalar - double")
     {
-        RunRoundEvenTests<double>();
-        RunRoundEvenEdgeTests<double>();
+        RunRoundEvenRunTimeTests<double>();
+        RunRoundEvenCompileTimeTests<double>();
+        RunRoundEvenEdgeRunTimeTests<double>();
     }
     SECTION("Scalar - float")
     {
-        RunRoundEvenTests<float>();
-        RunRoundEvenEdgeTests<float>();
+        RunRoundEvenRunTimeTests<float>();
+        RunRoundEvenCompileTimeTests<float>();
+        RunRoundEvenEdgeRunTimeTests<float>();
     }
 
     SECTION("Vec2 - double")
     {
-        RunRoundEvenTests<TRAP::Math::Vec2d>();
+        RunRoundEvenRunTimeTests<TRAP::Math::Vec2d>();
+        RunRoundEvenVecCompileTimeTests<TRAP::Math::Vec2d>();
     }
     SECTION("Vec2 - float")
     {
-        RunRoundEvenTests<TRAP::Math::Vec2f>();
+        RunRoundEvenRunTimeTests<TRAP::Math::Vec2f>();
+        RunRoundEvenVecCompileTimeTests<TRAP::Math::Vec2f>();
     }
 
     SECTION("Vec3 - double")
     {
-        RunRoundEvenTests<TRAP::Math::Vec3d>();
+        RunRoundEvenRunTimeTests<TRAP::Math::Vec3d>();
+        RunRoundEvenVecCompileTimeTests<TRAP::Math::Vec3d>();
     }
     SECTION("Vec3 - float")
     {
-        RunRoundEvenTests<TRAP::Math::Vec3f>();
+        RunRoundEvenRunTimeTests<TRAP::Math::Vec3f>();
+        RunRoundEvenVecCompileTimeTests<TRAP::Math::Vec3f>();
     }
 
     SECTION("Vec4 - double")
     {
-        RunRoundEvenTests<TRAP::Math::Vec4d>();
+        RunRoundEvenRunTimeTests<TRAP::Math::Vec4d>();
+        RunRoundEvenVecCompileTimeTests<TRAP::Math::Vec4d>();
     }
     SECTION("Vec4 - float")
     {
-        RunRoundEvenTests<TRAP::Math::Vec4f>();
+        RunRoundEvenRunTimeTests<TRAP::Math::Vec4f>();
+        RunRoundEvenVecCompileTimeTests<TRAP::Math::Vec4f>();
     }
 }

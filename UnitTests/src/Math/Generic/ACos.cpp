@@ -9,7 +9,20 @@
 
 template<typename T>
 requires std::floating_point<T>
-void RunACosTests()
+consteval void RunACosCompileTimeTests()
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    static_assert(TRAP::Math::Equal(TRAP::Math::ACos(T(-0.5)), T(2.0944), T(0.00001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ACos(T(0.0)), T(1.5708), T(0.00001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ACos(T(0.001)), T(1.5698), T(0.00001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ACos(T(0.5)), T(1.0472), T(0.00001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ACos(T(1.0)), T(0.0), Epsilon));
+}
+
+template<typename T>
+requires std::floating_point<T>
+void RunACosRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -39,7 +52,20 @@ void RunACosEdgeTests()
 
 template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-void RunACosVecTests()
+consteval void RunACosVecCompileTimeTests()
+{
+    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACos(T(typename T::value_type(-0.5))), T(2.0944), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACos(T(typename T::value_type(0.0))), T(1.5708), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACos(T(typename T::value_type(0.001))), T(1.5698), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACos(T(typename T::value_type(0.5))), T(1.0472), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACos(T(typename T::value_type(1.0))), T(0.0), Epsilon)));
+}
+
+template<typename T>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
+void RunACosVecRunTimeTests()
 {
     static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
@@ -74,45 +100,53 @@ TEST_CASE("TRAP::Math::ACos()", "[math][generic][acos]")
 {
     SECTION("Scalar - double")
     {
-        RunACosTests<double>();
+        RunACosRunTimeTests<double>();
+        RunACosCompileTimeTests<double>();
         RunACosEdgeTests<double>();
     }
     SECTION("Scalar - float")
     {
-        RunACosTests<float>();
+        RunACosRunTimeTests<float>();
+        RunACosCompileTimeTests<float>();
         RunACosEdgeTests<float>();
     }
 
     SECTION("Vec2 - double")
     {
-        RunACosVecTests<TRAP::Math::Vec2d>();
+        RunACosVecRunTimeTests<TRAP::Math::Vec2d>();
+        RunACosVecCompileTimeTests<TRAP::Math::Vec2d>();
         RunACosVecEdgeTests<TRAP::Math::Vec2d>();
     }
     SECTION("Vec2 - float")
     {
-        RunACosVecTests<TRAP::Math::Vec2f>();
+        RunACosVecRunTimeTests<TRAP::Math::Vec2f>();
+        RunACosVecCompileTimeTests<TRAP::Math::Vec2f>();
         RunACosVecEdgeTests<TRAP::Math::Vec2f>();
     }
 
     SECTION("Vec3 - double")
     {
-        RunACosVecTests<TRAP::Math::Vec3d>();
+        RunACosVecRunTimeTests<TRAP::Math::Vec3d>();
+        RunACosVecCompileTimeTests<TRAP::Math::Vec3d>();
         RunACosVecEdgeTests<TRAP::Math::Vec3d>();
     }
     SECTION("Vec3 - float")
     {
-        RunACosVecTests<TRAP::Math::Vec3f>();
+        RunACosVecRunTimeTests<TRAP::Math::Vec3f>();
+        RunACosVecCompileTimeTests<TRAP::Math::Vec3f>();
         RunACosVecEdgeTests<TRAP::Math::Vec3f>();
     }
 
     SECTION("Vec4 - double")
     {
-        RunACosVecTests<TRAP::Math::Vec4d>();
+        RunACosVecRunTimeTests<TRAP::Math::Vec4d>();
+        RunACosVecCompileTimeTests<TRAP::Math::Vec4d>();
         RunACosVecEdgeTests<TRAP::Math::Vec4d>();
     }
     SECTION("Vec4 - float")
     {
-        RunACosVecTests<TRAP::Math::Vec4f>();
+        RunACosVecRunTimeTests<TRAP::Math::Vec4f>();
+        RunACosVecCompileTimeTests<TRAP::Math::Vec4f>();
         RunACosVecEdgeTests<TRAP::Math::Vec4f>();
     }
 }

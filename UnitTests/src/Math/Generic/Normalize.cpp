@@ -10,7 +10,38 @@
 
 template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-void RunNormalizeVecTests()
+consteval void RunNormalizeVecCompileTimeTests()
+{
+    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+
+    constexpr T normalize1 = TRAP::Math::Normalize(T(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(normalize1, T(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f)), T(Epsilon))));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Length(normalize1), typename T::value_type(1.0f), Epsilon));
+
+    constexpr T normalize2 = TRAP::Math::Normalize(T(TRAP::Math::Vec<4, typename T::value_type>(2.0f, 0.0f, 0.0f, 0.0f)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(normalize2, T(TRAP::Math::Vec<4, typename T::value_type>(1.0f, 0.0f, 0.0f, 0.0f)), T(Epsilon))));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Length(normalize2), typename T::value_type(1.0f), Epsilon));
+
+    constexpr T normalize3 = TRAP::Math::Normalize(T(TRAP::Math::Vec<4, typename T::value_type>(-0.6f, 0.7f, -0.5f, 0.8f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Length(normalize3), typename T::value_type(1.0f), Epsilon));
+
+    if constexpr(TRAP::Math::IsVec4<T>)
+    {
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(normalize3, T(TRAP::Math::Vec<4, typename T::value_type>(-0.45485884017063427f, 0.53066861674163057f, -0.37904901841347383f, 0.60647843849879091f)), T(0.0000001f))));
+    }
+    else if constexpr(TRAP::Math::IsVec3<T>)
+    {
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(normalize3, T(TRAP::Math::Vec<3, typename T::value_type>(-0.57207757317981289f, 0.66742379748924929f, -0.47673129203957787f)), T(0.0000001f))));
+    }
+    else if constexpr(TRAP::Math::IsVec2<T>)
+    {
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(normalize3, T(TRAP::Math::Vec<2, typename T::value_type>(-0.65079139475254222f, 0.75925658411108998f)), T(0.0000001f))));
+    }
+}
+
+template<typename T>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
+void RunNormalizeVecRunTimeTests()
 {
     static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
@@ -66,7 +97,41 @@ void RunNormalizeVecEdgeTests()
 
 template<typename T>
 requires TRAP::Math::IsQuat<T> && std::floating_point<typename T::value_type>
-void RunNormalizeQuatTests()
+consteval void RunNormalizeQuatCompileTimeTests()
+{
+    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+    constexpr typename T::value_type PI = TRAP::Math::PI<typename T::value_type>();
+
+    {
+        constexpr T a(1.0f, 0.0f, 0.0f, 0.0f);
+        constexpr T n = TRAP::Math::Normalize(a);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(a, n, Epsilon)));
+    }
+    {
+        constexpr T a(1.0f, TRAP::Math::Vec<3, typename T::value_type>(0.0f));
+        constexpr T n = TRAP::Math::Normalize(a);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(a, n, Epsilon)));
+    }
+    {
+        constexpr T q = TRAP::Math::AngleAxis(PI * typename T::value_type(0.25f), TRAP::Math::Vec<3, typename T::value_type>(0.0f, 0.0f, 1.0f));
+        constexpr T n = TRAP::Math::Normalize(q);
+        static_assert(TRAP::Math::Equal(TRAP::Math::Length(n), typename T::value_type(1.0f), Epsilon));
+    }
+    {
+        constexpr T q = TRAP::Math::AngleAxis(PI * typename T::value_type(0.25f), TRAP::Math::Vec<3, typename T::value_type>(0.0f, 0.0f, 2.0f));
+        constexpr T n = TRAP::Math::Normalize(q);
+        static_assert(TRAP::Math::Equal(TRAP::Math::Length(n), typename T::value_type(1.0f), Epsilon));
+    }
+    {
+        constexpr T q = TRAP::Math::AngleAxis(PI * typename T::value_type(0.25f), TRAP::Math::Vec<3, typename T::value_type>(1.0f, 2.0f, 3.0f));
+        constexpr T n = TRAP::Math::Normalize(q);
+        static_assert(TRAP::Math::Equal(TRAP::Math::Length(n), typename T::value_type(1.0f), Epsilon));
+    }
+}
+
+template<typename T>
+requires TRAP::Math::IsQuat<T> && std::floating_point<typename T::value_type>
+void RunNormalizeQuatRunTimeTests()
 {
     static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
     static constexpr typename T::value_type PI = TRAP::Math::PI<typename T::value_type>();
@@ -129,45 +194,53 @@ TEST_CASE("TRAP::Math::Normalize()", "[math][generic][normalize]")
 {
     SECTION("Vec4 - double")
     {
-        RunNormalizeVecTests<TRAP::Math::Vec4d>();
+        RunNormalizeVecRunTimeTests<TRAP::Math::Vec4d>();
+        RunNormalizeVecCompileTimeTests<TRAP::Math::Vec4d>();
         RunNormalizeVecEdgeTests<TRAP::Math::Vec4d>();
     }
     SECTION("Vec4 - float")
     {
-        RunNormalizeVecTests<TRAP::Math::Vec4f>();
+        RunNormalizeVecRunTimeTests<TRAP::Math::Vec4f>();
+        RunNormalizeVecCompileTimeTests<TRAP::Math::Vec4f>();
         RunNormalizeVecEdgeTests<TRAP::Math::Vec4f>();
     }
 
     SECTION("Vec3 - double")
     {
-        RunNormalizeVecTests<TRAP::Math::Vec3d>();
+        RunNormalizeVecRunTimeTests<TRAP::Math::Vec3d>();
+        RunNormalizeVecCompileTimeTests<TRAP::Math::Vec3d>();
         RunNormalizeVecEdgeTests<TRAP::Math::Vec3d>();
     }
     SECTION("Vec3 - float")
     {
-        RunNormalizeVecTests<TRAP::Math::Vec3f>();
+        RunNormalizeVecRunTimeTests<TRAP::Math::Vec3f>();
+        RunNormalizeVecCompileTimeTests<TRAP::Math::Vec3f>();
         RunNormalizeVecEdgeTests<TRAP::Math::Vec3f>();
     }
 
     SECTION("Vec2 - double")
     {
-        RunNormalizeVecTests<TRAP::Math::Vec2d>();
+        RunNormalizeVecRunTimeTests<TRAP::Math::Vec2d>();
+        RunNormalizeVecCompileTimeTests<TRAP::Math::Vec2d>();
         RunNormalizeVecEdgeTests<TRAP::Math::Vec2d>();
     }
     SECTION("Vec2 - float")
     {
-        RunNormalizeVecTests<TRAP::Math::Vec2f>();
+        RunNormalizeVecRunTimeTests<TRAP::Math::Vec2f>();
+        RunNormalizeVecCompileTimeTests<TRAP::Math::Vec2f>();
         RunNormalizeVecEdgeTests<TRAP::Math::Vec2f>();
     }
 
     SECTION("Quat - double")
     {
-        RunNormalizeQuatTests<TRAP::Math::Quatd>();
+        RunNormalizeQuatRunTimeTests<TRAP::Math::Quatd>();
+        RunNormalizeQuatCompileTimeTests<TRAP::Math::Quatd>();
         RunNormalizeQuatEdgeTests<TRAP::Math::Quatd>();
     }
     SECTION("Quat - float")
     {
-        RunNormalizeQuatTests<TRAP::Math::Quatf>();
+        RunNormalizeQuatRunTimeTests<TRAP::Math::Quatf>();
+        RunNormalizeQuatCompileTimeTests<TRAP::Math::Quatf>();
         RunNormalizeQuatEdgeTests<TRAP::Math::Quatf>();
     }
 }

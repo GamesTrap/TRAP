@@ -9,7 +9,38 @@
 
 template<typename T>
 requires std::floating_point<T>
-void RunATanTests()
+consteval void RunATanCompileTimeTests()
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(-1.5)), T(-0.982794), T(0.000001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(-0.5)), T(-0.463648), T(0.000001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(0.0)), T(0.0), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(0.001)), T(0.001), T(0.000000001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(0.49)), T(0.455616), T(0.000001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(0.99)), T(0.780373), T(0.000001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(1.001)), T(0.785898), T(0.0000001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(1.49)), T(0.979703), T(0.000001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(1.5)), T(0.982794), T(0.000001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(1.99)), T(1.10514), T(0.000001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(2.49)), T(1.18891), T(0.00001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(2.51)), T(1.19166), T(0.00001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(3.99)), T(1.32523), T(0.00001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(7.0)), T(1.4289), T(0.000001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(11.0)), T(1.48014), T(0.00001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(11.1)), T(1.48095), T(0.00001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(25.0)), T(1.53082), T(0.00001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(50.0)), T(1.5508), T(0.00001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(101.0)), T(1.5609), T(0.00001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(150.0)), T(1.56413), T(0.000001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(900.0)), T(1.56969), T(0.00001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(1001.0)), T(1.5698), T(0.00001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ATan(T(1000000.0)), T(1.5708), T(0.00001f)));
+}
+
+template<typename T>
+requires std::floating_point<T>
+void RunATanRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -37,7 +68,38 @@ void RunATanEdgeTests()
 
 template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-void RunATanVecTests()
+consteval void RunATanVecCompileTimeTests()
+{
+    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(-1.5)), T(-0.982794), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(-0.5)), T(-0.463648), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(0.0)), T(0.0), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(0.001)), T(0.001), T(0.000000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(0.49)), T(0.455616), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(0.99)), T(0.780373), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(1.001)), T(0.785898), T(0.0000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(1.49)), T(0.979703), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(1.5)), T(0.982794), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(1.99)), T(1.10514), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(2.49)), T(1.18891), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(2.51)), T(1.19166), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(3.99)), T(1.32523), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(7.0)), T(1.4289), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(11.0)), T(1.48014), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(11.1)), T(1.48095), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(25.0)), T(1.53082), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(50.0)), T(1.5508), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(101.0)), T(1.5609), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(150.0)), T(1.56413), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(900.0)), T(1.56969), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(1001.0)), T(1.5698), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(1000000.0)), T(1.5708), T(0.00001f))));
+}
+
+template<typename T>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
+void RunATanVecRunTimeTests()
 {
     static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
@@ -72,45 +134,53 @@ TEST_CASE("TRAP::Math::ATan(x)", "[math][generic][atan]")
 {
     SECTION("Scalar - double")
     {
-        RunATanTests<double>();
+        RunATanRunTimeTests<double>();
+        RunATanCompileTimeTests<double>();
         RunATanEdgeTests<double>();
     }
     SECTION("Scalar - float")
     {
-        RunATanTests<float>();
+        RunATanRunTimeTests<float>();
+        RunATanCompileTimeTests<float>();
         RunATanEdgeTests<float>();
     }
 
     SECTION("Vec2 - double")
     {
-        RunATanVecTests<TRAP::Math::Vec2d>();
+        RunATanVecRunTimeTests<TRAP::Math::Vec2d>();
+        RunATanVecCompileTimeTests<TRAP::Math::Vec2d>();
         RunATanVecEdgeTests<TRAP::Math::Vec2d>();
     }
     SECTION("Vec2 - float")
     {
-        RunATanVecTests<TRAP::Math::Vec2f>();
+        RunATanVecRunTimeTests<TRAP::Math::Vec2f>();
+        RunATanVecCompileTimeTests<TRAP::Math::Vec2f>();
         RunATanVecEdgeTests<TRAP::Math::Vec2f>();
     }
 
     SECTION("Vec3 - double")
     {
-        RunATanVecTests<TRAP::Math::Vec3d>();
+        RunATanVecRunTimeTests<TRAP::Math::Vec3d>();
+        RunATanVecCompileTimeTests<TRAP::Math::Vec3d>();
         RunATanVecEdgeTests<TRAP::Math::Vec3d>();
     }
     SECTION("Vec3 - float")
     {
-        RunATanVecTests<TRAP::Math::Vec3f>();
+        RunATanVecRunTimeTests<TRAP::Math::Vec3f>();
+        RunATanVecCompileTimeTests<TRAP::Math::Vec3f>();
         RunATanVecEdgeTests<TRAP::Math::Vec3f>();
     }
 
     SECTION("Vec4 - double")
     {
-        RunATanVecTests<TRAP::Math::Vec4d>();
+        RunATanVecRunTimeTests<TRAP::Math::Vec4d>();
+        RunATanVecCompileTimeTests<TRAP::Math::Vec4d>();
         RunATanVecEdgeTests<TRAP::Math::Vec4d>();
     }
     SECTION("Vec4 - float")
     {
-        RunATanVecTests<TRAP::Math::Vec4f>();
+        RunATanVecRunTimeTests<TRAP::Math::Vec4f>();
+        RunATanVecCompileTimeTests<TRAP::Math::Vec4f>();
         RunATanVecEdgeTests<TRAP::Math::Vec4f>();
     }
 }

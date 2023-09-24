@@ -55,7 +55,8 @@ project "TRAP"
 		"%{IncludeDir.VMA}",
 		"%{IncludeDir.BOX2D}",
 		"%{IncludeDir.TRACY}",
-		"%{IncludeDir.FMT}"
+		"%{IncludeDir.FMT}",
+		"%{IncludeDir.GCEM}"
 	}
 
 	links
@@ -227,7 +228,8 @@ project "TRAP-UnitTests"
 		"%{IncludeDir.VMA}",
 		"%{IncludeDir.BOX2D}",
 		"%{IncludeDir.TRACY}",
-		"%{IncludeDir.FMT}"
+		"%{IncludeDir.FMT}",
+		"%{IncludeDir.GCEM}"
 	}
 
 	links
@@ -395,7 +397,8 @@ project "TRAP-Headless"
 		"%{IncludeDir.VMA}",
 		"%{IncludeDir.BOX2D}",
 		"%{IncludeDir.TRACY}",
-		"%{IncludeDir.FMT}"
+		"%{IncludeDir.FMT}",
+		"%{IncludeDir.GCEM}"
 	}
 
 	links

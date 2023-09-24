@@ -10,7 +10,7 @@
 
 template<typename T>
 requires std::floating_point<T>
-void RunDecomposeTests()
+void RunDecomposeRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -86,10 +86,10 @@ TEST_CASE("TRAP::Math::Decompose()", "[math][generic][decompose]")
 {
     SECTION("Scalar - double")
     {
-        RunDecomposeTests<double>();
+        RunDecomposeRunTimeTests<double>();
     }
     SECTION("Scalar - float")
     {
-        RunDecomposeTests<float>();
+        RunDecomposeRunTimeTests<float>();
     }
 }

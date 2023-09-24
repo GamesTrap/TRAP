@@ -10,7 +10,25 @@
 
 template<typename T>
 requires (TRAP::Math::IsVec3<T> || TRAP::Math::IsVec4<T>) && std::floating_point<typename T::value_type>
-void RunConvertLinearToSRGBTests()
+consteval void RunConvertLinearToSRGBCompileTimeTests()
+{
+    constexpr T colorSourceRGB(TRAP::Math::Vec<4, typename T::value_type>(1.0, 0.5, 0.0, 1.0));
+
+    {
+        constexpr T colorSRGB = TRAP::Math::ConvertLinearToSRGB(colorSourceRGB);
+        constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(1.0, 0.735361, 0.0, 1.0));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(colorSRGB, expected, typename T::value_type(0.000001f))));
+    }
+    {
+        constexpr T colorSRGB = TRAP::Math::ConvertLinearToSRGB(colorSourceRGB, typename T::value_type(2.2f));
+        constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(1.0, 0.714876, 0.0, 1.0));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(colorSRGB, expected, typename T::value_type(0.000001f))));
+    }
+}
+
+template<typename T>
+requires (TRAP::Math::IsVec3<T> || TRAP::Math::IsVec4<T>) && std::floating_point<typename T::value_type>
+void RunConvertLinearToSRGBRunTimeTests()
 {
     const T colorSourceRGB(TRAP::Math::Vec<4, typename T::value_type>(1.0, 0.5, 0.0, 1.0));
 
@@ -28,7 +46,25 @@ void RunConvertLinearToSRGBTests()
 
 template<typename T>
 requires (TRAP::Math::IsVec3<T> || TRAP::Math::IsVec4<T>) && std::floating_point<typename T::value_type>
-void RunConvertSRGBToLinearTests()
+consteval void RunConvertSRGBToLinearCompileTimeTests()
+{
+    constexpr T colorSourceSRGB(TRAP::Math::Vec<4, typename T::value_type>(1.0, 0.714876, 0.0, 1.0));
+
+    {
+        constexpr T colorRGB = TRAP::Math::ConvertSRGBToLinear(colorSourceSRGB);
+        constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(1.0, 0.469466, 0.0, 1.0));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(colorRGB, expected, typename T::value_type(0.000001f))));
+    }
+    {
+        constexpr T colorRGB = TRAP::Math::ConvertSRGBToLinear(colorSourceSRGB, typename T::value_type(2.2f));
+        constexpr T expected(TRAP::Math::Vec<4, typename T::value_type>(1.0, 0.5, 0.0, 1.0));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(colorRGB, expected, typename T::value_type(0.000001f))));
+    }
+}
+
+template<typename T>
+requires (TRAP::Math::IsVec3<T> || TRAP::Math::IsVec4<T>) && std::floating_point<typename T::value_type>
+void RunConvertSRGBToLinearRunTimeTests()
 {
     const T colorSourceSRGB(TRAP::Math::Vec<4, typename T::value_type>(1.0, 0.714876, 0.0, 1.0));
 
@@ -48,20 +84,24 @@ TEST_CASE("TRAP::Math::ConvertLinearToSRGB()", "[math][generic][convertlineartos
 {
     SECTION("Vec3 - double")
     {
-        RunConvertLinearToSRGBTests<TRAP::Math::Vec3d>();
+        RunConvertLinearToSRGBRunTimeTests<TRAP::Math::Vec3d>();
+        RunConvertLinearToSRGBCompileTimeTests<TRAP::Math::Vec3d>();
     }
     SECTION("Vec3 - float")
     {
-        RunConvertLinearToSRGBTests<TRAP::Math::Vec3f>();
+        RunConvertLinearToSRGBRunTimeTests<TRAP::Math::Vec3f>();
+        RunConvertLinearToSRGBCompileTimeTests<TRAP::Math::Vec3f>();
     }
 
     SECTION("Vec4 - double")
     {
-        RunConvertLinearToSRGBTests<TRAP::Math::Vec4d>();
+        RunConvertLinearToSRGBRunTimeTests<TRAP::Math::Vec4d>();
+        RunConvertLinearToSRGBCompileTimeTests<TRAP::Math::Vec4d>();
     }
     SECTION("Vec4 - float")
     {
-        RunConvertLinearToSRGBTests<TRAP::Math::Vec4f>();
+        RunConvertLinearToSRGBRunTimeTests<TRAP::Math::Vec4f>();
+        RunConvertLinearToSRGBCompileTimeTests<TRAP::Math::Vec4f>();
     }
 }
 
@@ -69,19 +109,23 @@ TEST_CASE("TRAP::Math::ConvertSRGBToLinear()", "[math][generic][convertsrgbtolin
 {
     SECTION("Vec3 - double")
     {
-        RunConvertSRGBToLinearTests<TRAP::Math::Vec3d>();
+        RunConvertSRGBToLinearRunTimeTests<TRAP::Math::Vec3d>();
+        RunConvertSRGBToLinearCompileTimeTests<TRAP::Math::Vec3d>();
     }
     SECTION("Vec3 - float")
     {
-        RunConvertSRGBToLinearTests<TRAP::Math::Vec3f>();
+        RunConvertSRGBToLinearRunTimeTests<TRAP::Math::Vec3f>();
+        RunConvertSRGBToLinearCompileTimeTests<TRAP::Math::Vec3f>();
     }
 
     SECTION("Vec4 - double")
     {
-        RunConvertSRGBToLinearTests<TRAP::Math::Vec4d>();
+        RunConvertSRGBToLinearRunTimeTests<TRAP::Math::Vec4d>();
+        RunConvertSRGBToLinearCompileTimeTests<TRAP::Math::Vec4d>();
     }
     SECTION("Vec4 - float")
     {
-        RunConvertSRGBToLinearTests<TRAP::Math::Vec4f>();
+        RunConvertSRGBToLinearRunTimeTests<TRAP::Math::Vec4f>();
+        RunConvertSRGBToLinearCompileTimeTests<TRAP::Math::Vec4f>();
     }
 }

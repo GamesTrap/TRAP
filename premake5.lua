@@ -156,6 +156,7 @@ IncludeDir["BOX2D"] = "%{wks.location}/Dependencies/Box2D/include"
 IncludeDir["TRACY"] = "%{wks.location}/Dependencies/Tracy/public"
 IncludeDir["FMT"] = "%{wks.location}/Dependencies/fmt/include"
 IncludeDir["CATCH2"] = "%{wks.location}/Dependencies/Catch2/extras"
+IncludeDir["GCEM"] = "%{wks.location}/Dependencies/GCEM/include"
 
 include "TRAP"
 include "UnitTests"

@@ -56,7 +56,8 @@ project "UnitTests"
 		"%{IncludeDir.VMA}",
 		"%{IncludeDir.BOX2D}",
 		"%{IncludeDir.TRACY}",
-		"%{IncludeDir.FMT}"
+		"%{IncludeDir.FMT}",
+		"%{IncludeDir.GCEM}"
 	}
 
 	links

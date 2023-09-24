@@ -36,13 +36,23 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include <concepts>
 #include <type_traits>
 
-#include "Vec3.h"
 #include "Core/PlatformDetection.h"
 #include "Core/Base.h"
 #include "TRAP_Assert.h"
+#include "Utils/Utils.h"
+
+//Forward declarations
 
 namespace TRAP::Math
 {
+	template<typename T>
+	requires std::floating_point<T>
+	[[nodiscard]] constexpr T Sqrt(T x);
+
+	template<typename T>
+	requires std::signed_integral<T> || std::floating_point<T>
+	[[nodiscard]] constexpr T Abs( T x);
+
 	template<typename T>
 	requires std::floating_point<T>
 	struct tQuat
@@ -101,15 +111,15 @@ public:
 		/// <summary>
 		/// Create a quaternion from two normalized axis.
 		/// </summary>
-		tQuat(const Vec<3, T>& u, const Vec<3, T>& v);
+		constexpr tQuat(const Vec<3, T>& u, const Vec<3, T>& v);
 
 		/// <summary>
 		/// Build a quaternion from euler angles (pitch, yaw, roll).
 		/// </summary>
 		/// <param name="eulerAnglesInRadians">Euler angles (pitch, yaw, roll).</param>
-		explicit tQuat(const Vec<3, T>& eulerAnglesInRadians);
-		explicit tQuat(const Mat<3, 3, T>& m);
-		explicit tQuat(const Mat<4, 4, T>& m);
+		explicit constexpr tQuat(const Vec<3, T>& eulerAnglesInRadians);
+		explicit constexpr tQuat(const Mat<3, 3, T>& m);
+		explicit constexpr tQuat(const Mat<4, 4, T>& m);
 
 		//Unary arithmetic operators
 		constexpr tQuat<T>& operator=(const tQuat<T>& q) noexcept = default;
@@ -295,12 +305,9 @@ TRAP::Math::tQuat<T>::operator Mat<4, 4, T>() const
 
 template <typename T>
 requires std::floating_point<T>
-TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& u, const Vec<3, T>& v)
+constexpr TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& u, const Vec<3, T>& v)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	//TODO Can't use TRAP::Math::Sqrt here
-	const T normUNormV = std::sqrt(Dot(u, u) * Dot(v, v));
+	const T normUNormV = Sqrt(Dot(u, u) * Dot(v, v));
 	T realPart = normUNormV + Dot(u, v);
 	Vec<3, T> t;
 
@@ -309,8 +316,7 @@ TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& u, const Vec<3, T>& v)
 		//If u and v are exactly opposite, rotate 180 degrees around an arbitrary orthogonal axis.
 		//Axis normalization can happen later, when we normalize the quaternion.
 		realPart = static_cast<T>(0);
-		//TODO Can't use TRAP::Math::Abs here
-		t = std::abs(u.x()) > std::abs(u.z()) ? Vec<3, T>(-u.y(), u.x(), static_cast<T>(0)) : Vec<3, T>(static_cast<T>(0), -u.z(), u.y());
+		t = Abs(u.x()) > Abs(u.z()) ? Vec<3, T>(-u.y(), u.x(), static_cast<T>(0)) : Vec<3, T>(static_cast<T>(0), -u.z(), u.y());
 	}
 	else
 	{
@@ -326,7 +332,7 @@ TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& u, const Vec<3, T>& v)
 
 template <typename T>
 requires std::floating_point<T>
-TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& eulerAnglesInRadians)
+constexpr TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& eulerAnglesInRadians)
 {
 	const Vec<3, T> c = Cos(eulerAnglesInRadians * static_cast<T>(0.5));
 	const Vec<3, T> s = Sin(eulerAnglesInRadians * static_cast<T>(0.5));
@@ -339,19 +345,15 @@ TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& eulerAnglesInRadians)
 
 template <typename T>
 requires std::floating_point<T>
-TRAP::Math::tQuat<T>::tQuat(const Mat<3, 3, T>& m)
+constexpr TRAP::Math::tQuat<T>::tQuat(const Mat<3, 3, T>& m)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	*this = QuaternionCast(m);
 }
 
 template <typename T>
 requires std::floating_point<T>
-TRAP::Math::tQuat<T>::tQuat(const Mat<4, 4, T>& m)
+constexpr TRAP::Math::tQuat<T>::tQuat(const Mat<4, 4, T>& m)
 {
-	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
 	*this = QuaternionCast(m);
 }
 

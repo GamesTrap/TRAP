@@ -41,3 +41,6 @@
 [submodule "Dependencies/Vulkan-Headers"]
 	path = Dependencies/Vulkan-Headers
 	url = https://github.com/KhronosGroup/Vulkan-Headers
+[submodule "Dependencies/GCEM"]
+	path = Dependencies/GCEM
+	url = https://github.com/kthohr/gcem

@@ -9,7 +9,20 @@
 
 template<typename T>
 requires std::floating_point<T>
-void RunASinTests()
+consteval void RunASinCompileTimeTests()
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    static_assert(TRAP::Math::Equal(TRAP::Math::ASin(T(-0.5)), T(-0.523599), T(0.000001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ASin(T(0.0)), T(0.0), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ASin(T(0.001)), T(0.001), T(0.000000001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ASin(T(0.5)), T(0.523599), T(0.000001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ASin(T(1.0)), T(1.5708), T(0.00001f)));
+}
+
+template<typename T>
+requires std::floating_point<T>
+void RunASinRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -39,7 +52,20 @@ void RunASinEdgeTests()
 
 template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-void RunASinVecTests()
+void RunASinVecCompileTimeTests()
+{
+    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASin(T(typename T::value_type(-0.5))), T(-0.523599), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASin(T(typename T::value_type(0.0))), T(0.0), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASin(T(typename T::value_type(0.001))), T(0.001), T(0.000000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASin(T(typename T::value_type(0.5))), T(0.523599), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASin(T(typename T::value_type(1.0))), T(1.5708), T(0.00001f))));
+}
+
+template<typename T>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
+void RunASinVecRunTimeTests()
 {
     static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
@@ -74,45 +100,53 @@ TEST_CASE("TRAP::Math::ASin()", "[math][generic][asin]")
 {
     SECTION("Scalar - double")
     {
-        RunASinTests<double>();
+        RunASinRunTimeTests<double>();
+        RunASinCompileTimeTests<double>();
         RunASinEdgeTests<double>();
     }
     SECTION("Scalar - float")
     {
-        RunASinTests<float>();
+        RunASinRunTimeTests<float>();
+        RunASinCompileTimeTests<float>();
         RunASinEdgeTests<float>();
     }
 
     SECTION("Vec2 - double")
     {
-        RunASinVecTests<TRAP::Math::Vec2d>();
+        RunASinVecRunTimeTests<TRAP::Math::Vec2d>();
+        RunASinVecCompileTimeTests<TRAP::Math::Vec2d>();
         RunASinVecEdgeTests<TRAP::Math::Vec2d>();
     }
     SECTION("Vec2 - float")
     {
-        RunASinVecTests<TRAP::Math::Vec2f>();
+        RunASinVecRunTimeTests<TRAP::Math::Vec2f>();
+        RunASinVecCompileTimeTests<TRAP::Math::Vec2f>();
         RunASinVecEdgeTests<TRAP::Math::Vec2f>();
     }
 
     SECTION("Vec3 - double")
     {
-        RunASinVecTests<TRAP::Math::Vec3d>();
+        RunASinVecRunTimeTests<TRAP::Math::Vec3d>();
+        RunASinVecCompileTimeTests<TRAP::Math::Vec3d>();
         RunASinVecEdgeTests<TRAP::Math::Vec3d>();
     }
     SECTION("Vec3 - float")
     {
-        RunASinVecTests<TRAP::Math::Vec3f>();
+        RunASinVecRunTimeTests<TRAP::Math::Vec3f>();
+        RunASinVecCompileTimeTests<TRAP::Math::Vec3f>();
         RunASinVecEdgeTests<TRAP::Math::Vec3f>();
     }
 
     SECTION("Vec4 - double")
     {
-        RunASinVecTests<TRAP::Math::Vec4d>();
+        RunASinVecRunTimeTests<TRAP::Math::Vec4d>();
+        RunASinVecCompileTimeTests<TRAP::Math::Vec4d>();
         RunASinVecEdgeTests<TRAP::Math::Vec4d>();
     }
     SECTION("Vec4 - float")
     {
-        RunASinVecTests<TRAP::Math::Vec4f>();
+        RunASinVecRunTimeTests<TRAP::Math::Vec4f>();
+        RunASinVecCompileTimeTests<TRAP::Math::Vec4f>();
         RunASinVecEdgeTests<TRAP::Math::Vec4f>();
     }
 }

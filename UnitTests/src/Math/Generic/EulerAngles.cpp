@@ -10,7 +10,39 @@
 
 template<typename T>
 requires std::floating_point<T>
-void RunEulerAnglesTests()
+consteval void RunEulerAnglesCompileTimeTests()
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    {
+        constexpr TRAP::Math::tQuat<T> q(1.0f, 0.0f, 0.0f, 1.0f);
+        constexpr T roll = TRAP::Math::Roll(q);
+        constexpr T pitch = TRAP::Math::Pitch(q);
+        constexpr T yaw = TRAP::Math::Yaw(q);
+        constexpr TRAP::Math::tVec3<T> angles = TRAP::Math::EulerAngles(q);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(angles, TRAP::Math::tVec3<T>(pitch, yaw, roll), Epsilon)));
+    }
+    {
+        constexpr TRAP::Math::tQuat<T> q(1.0f, 1.0f, 1.0f, 1.0f);
+        constexpr T roll = TRAP::Math::Roll(q);
+        constexpr T pitch = TRAP::Math::Pitch(q);
+        constexpr T yaw = TRAP::Math::Yaw(q);
+        constexpr TRAP::Math::tVec3<T> angles = TRAP::Math::EulerAngles(q);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(angles, TRAP::Math::tVec3<T>(pitch, yaw, roll), Epsilon)));
+    }
+    {
+        constexpr TRAP::Math::tQuat<T> q(1.0f, 1.0f, 1.0f, 0.5f);
+        constexpr T roll = TRAP::Math::Roll(q);
+        constexpr T pitch = TRAP::Math::Pitch(q);
+        constexpr T yaw = TRAP::Math::Yaw(q);
+        constexpr TRAP::Math::tVec3<T> angles = TRAP::Math::EulerAngles(q);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(angles, TRAP::Math::tVec3<T>(pitch, yaw, roll), Epsilon)));
+    }
+}
+
+template<typename T>
+requires std::floating_point<T>
+void RunEulerAnglesRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -81,12 +113,14 @@ TEST_CASE("TRAP::Math::EulerAngles()", "[math][generic][eulerangles]")
 {
     SECTION("Quat - double")
     {
-        RunEulerAnglesTests<double>();
+        RunEulerAnglesRunTimeTests<double>();
+        RunEulerAnglesCompileTimeTests<double>();
         RunEulerAnglesEdgeTests<double>();
     }
     SECTION("Quat - float")
     {
-        RunEulerAnglesTests<float>();
+        RunEulerAnglesRunTimeTests<float>();
+        RunEulerAnglesCompileTimeTests<float>();
         RunEulerAnglesEdgeTests<float>();
     }
 }

@@ -8,8 +8,74 @@
 #include "TRAP/src/Maths/Math.h"
 
 template<typename T>
+requires std::floating_point<T>
+consteval void RunFloorCompileTimeTests()
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(   0.0f)), T(     0.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(-  0.0f)), T(     0.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(   0.1f)), T(     0.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(-  0.1f)), T(-    1.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(   0.5f)), T(     0.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(-  0.5f)), T(-    1.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(   0.9f)), T(     0.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(-  0.9f)), T(-    1.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(   1.0f)), T(     1.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(-  1.0f)), T(-    1.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(   1.1f)), T(     1.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(   1.5f)), T(     1.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(-  1.5f)), T(-    2.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(   1.9f)), T(     1.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(-  1.9f)), T(-    2.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(   4.2f)), T(     4.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(   4.5f)), T(     4.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(   4.7f)), T(     4.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(   5.0f)), T(     5.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(-  4.2f)), T(-    5.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(-  4.5f)), T(-    5.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(-  4.7f)), T(-    5.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(-  5.0f)), T(-    5.0f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T( 42e32f)), T( 4.2e+33f), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(T(-42e32f)), T(-4.2e+33f), Epsilon));
+}
+
+template<typename T>
+requires (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
+consteval void RunFloorVecCompileTimeTests()
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(   0.0f)), T(     0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(-  0.0f)), T(     0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(   0.1f)), T(     0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(-  0.1f)), T(-    1.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(   0.5f)), T(     0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(-  0.5f)), T(-    1.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(   0.9f)), T(     0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(-  0.9f)), T(-    1.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(   1.0f)), T(     1.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(-  1.0f)), T(-    1.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(   1.1f)), T(     1.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(   1.5f)), T(     1.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(-  1.5f)), T(-    2.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(   1.9f)), T(     1.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(-  1.9f)), T(-    2.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(   4.2f)), T(     4.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(   4.5f)), T(     4.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(   4.7f)), T(     4.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(   5.0f)), T(     5.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(-  4.2f)), T(-    5.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(-  4.5f)), T(-    5.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(-  4.7f)), T(-    5.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(-  5.0f)), T(-    5.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T( 42e32f)), T( 4.2e+33f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Floor(T(-42e32f)), T(-4.2e+33f), Epsilon)));
+}
+
+template<typename T>
 requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
-void RunFloorTests()
+void RunFloorRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -35,7 +101,25 @@ void RunFloorTests()
 
 template<typename T>
 requires std::floating_point<T>
-void RunFloorEdgeTests()
+consteval void RunFloorEdgeCompileTimeTests()
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    constexpr T max = std::numeric_limits<T>::max();
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(max), max, Epsilon));
+    constexpr T min = std::numeric_limits<T>::lowest();
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(min), min, Epsilon));
+    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+    static_assert(TRAP::Math::IsNaN(TRAP::Math::Floor(nan)));
+    constexpr T inf = std::numeric_limits<T>::infinity();
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(inf), inf));
+    constexpr T ninf = -std::numeric_limits<T>::infinity();
+    static_assert(TRAP::Math::Equal(TRAP::Math::Floor(ninf), ninf));
+}
+
+template<typename T>
+requires std::floating_point<T>
+void RunFloorEdgeRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -55,39 +139,49 @@ TEST_CASE("TRAP::Math::Floor()", "[math][generic][floor]")
 {
     SECTION("Scalar - double")
     {
-        RunFloorTests<double>();
-        RunFloorEdgeTests<double>();
+        RunFloorRunTimeTests<double>();
+        RunFloorCompileTimeTests<double>();
+        RunFloorEdgeCompileTimeTests<double>();
+        RunFloorEdgeRunTimeTests<double>();
     }
     SECTION("Scalar - float")
     {
-        RunFloorTests<float>();
-        RunFloorEdgeTests<float>();
+        RunFloorRunTimeTests<float>();
+        RunFloorCompileTimeTests<float>();
+        RunFloorEdgeCompileTimeTests<float>();
+        RunFloorEdgeRunTimeTests<float>();
     }
 
     SECTION("Vec2 - double")
     {
-        RunFloorTests<TRAP::Math::Vec2d>();
+        RunFloorRunTimeTests<TRAP::Math::Vec2d>();
+        RunFloorVecCompileTimeTests<TRAP::Math::Vec2d>();
     }
     SECTION("Vec2 - float")
     {
-        RunFloorTests<TRAP::Math::Vec2f>();
+        RunFloorRunTimeTests<TRAP::Math::Vec2f>();
+        RunFloorVecCompileTimeTests<TRAP::Math::Vec2f>();
     }
 
     SECTION("Vec3 - double")
     {
-        RunFloorTests<TRAP::Math::Vec3d>();
+        RunFloorRunTimeTests<TRAP::Math::Vec3d>();
+        RunFloorVecCompileTimeTests<TRAP::Math::Vec3d>();
     }
     SECTION("Vec3 - float")
     {
-        RunFloorTests<TRAP::Math::Vec3f>();
+        RunFloorRunTimeTests<TRAP::Math::Vec3f>();
+        RunFloorVecCompileTimeTests<TRAP::Math::Vec3f>();
     }
 
     SECTION("Vec4 - double")
     {
-        RunFloorTests<TRAP::Math::Vec4d>();
+        RunFloorRunTimeTests<TRAP::Math::Vec4d>();
+        RunFloorVecCompileTimeTests<TRAP::Math::Vec4d>();
     }
     SECTION("Vec4 - float")
     {
-        RunFloorTests<TRAP::Math::Vec4f>();
+        RunFloorRunTimeTests<TRAP::Math::Vec4f>();
+        RunFloorVecCompileTimeTests<TRAP::Math::Vec4f>();
     }
 }

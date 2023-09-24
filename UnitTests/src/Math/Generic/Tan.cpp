@@ -9,7 +9,23 @@
 
 template<typename T>
 requires std::floating_point<T>
-void RunTanTests()
+consteval void RunTanCompileTimeTests()
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    static_assert(TRAP::Math::Equal(TRAP::Math::Tan(T(-1.5)), T(-14.1014), T(0.0001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Tan(T(0.0)), T(0.0), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Tan(T(0.001)), T(0.001), T(0.000000001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Tan(T(1.001)), T(1.56084), T(0.00001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Tan(T(1.5)), T(14.1014), T(0.0001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Tan(T(11.1)), T(-9.54135), T(0.0001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Tan(T(50.0)), T(-0.271901), T(0.000001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::Tan(T(150.0)), T(-1.02235), T(0.0001f)));
+}
+
+template<typename T>
+requires std::floating_point<T>
+void RunTanRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -39,7 +55,23 @@ void RunTanEdgeTests()
 
 template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-void RunTanVecTests()
+consteval void RunTanVecCompileTimeTests()
+{
+    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(-1.5))), T(-14.1014), T(0.0001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(0.0))), T(0.0), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(0.001))), T(0.001), T(0.000000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(1.001))), T(1.56084), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(1.5))), T(14.1014), T(0.0001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(11.1))), T(-9.54135), T(0.0001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(50.0))), T(-0.271901), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(150.0))), T(-1.02235), T(0.0001f))));
+}
+
+template<typename T>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
+void RunTanVecRunTimeTests()
 {
     static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
@@ -74,45 +106,53 @@ TEST_CASE("TRAP::Math::Tan()", "[math][generic][tan]")
 {
     SECTION("Scalar - double")
     {
-        RunTanTests<double>();
+        RunTanRunTimeTests<double>();
+        RunTanCompileTimeTests<double>();
         RunTanEdgeTests<double>();
     }
     SECTION("Scalar - float")
     {
-        RunTanTests<float>();
+        RunTanRunTimeTests<float>();
+        RunTanCompileTimeTests<float>();
         RunTanEdgeTests<float>();
     }
 
     SECTION("Vec2 - double")
     {
-        RunTanVecTests<TRAP::Math::Vec2d>();
+        RunTanVecRunTimeTests<TRAP::Math::Vec2d>();
+        RunTanVecCompileTimeTests<TRAP::Math::Vec2d>();
         RunTanVecEdgeTests<TRAP::Math::Vec2d>();
     }
     SECTION("Vec2 - float")
     {
-        RunTanVecTests<TRAP::Math::Vec2f>();
+        RunTanVecRunTimeTests<TRAP::Math::Vec2f>();
+        RunTanVecCompileTimeTests<TRAP::Math::Vec2f>();
         RunTanVecEdgeTests<TRAP::Math::Vec2f>();
     }
 
     SECTION("Vec3 - double")
     {
-        RunTanVecTests<TRAP::Math::Vec3d>();
+        RunTanVecRunTimeTests<TRAP::Math::Vec3d>();
+        RunTanVecCompileTimeTests<TRAP::Math::Vec3d>();
         RunTanVecEdgeTests<TRAP::Math::Vec3d>();
     }
     SECTION("Vec3 - float")
     {
-        RunTanVecTests<TRAP::Math::Vec3f>();
+        RunTanVecRunTimeTests<TRAP::Math::Vec3f>();
+        RunTanVecCompileTimeTests<TRAP::Math::Vec3f>();
         RunTanVecEdgeTests<TRAP::Math::Vec3f>();
     }
 
     SECTION("Vec4 - double")
     {
-        RunTanVecTests<TRAP::Math::Vec4d>();
+        RunTanVecRunTimeTests<TRAP::Math::Vec4d>();
+        RunTanVecCompileTimeTests<TRAP::Math::Vec4d>();
         RunTanVecEdgeTests<TRAP::Math::Vec4d>();
     }
     SECTION("Vec4 - float")
     {
-        RunTanVecTests<TRAP::Math::Vec4f>();
+        RunTanVecRunTimeTests<TRAP::Math::Vec4f>();
+        RunTanVecCompileTimeTests<TRAP::Math::Vec4f>();
         RunTanVecEdgeTests<TRAP::Math::Vec4f>();
     }
 }

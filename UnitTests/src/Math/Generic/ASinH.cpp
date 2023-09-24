@@ -9,7 +9,22 @@
 
 template<typename T>
 requires std::floating_point<T>
-void RunASinHTests()
+consteval void RunASinHCompileTimeTests()
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    static_assert(TRAP::Math::Equal(TRAP::Math::ASinH(T(-1.5)), T(-1.19476), T(0.00001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ASinH(T(0.0)), T(0.0), Epsilon));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ASinH(T(0.001)), T(0.001), T(0.0000001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ASinH(T(1.001)), T(0.882081), T(0.000001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ASinH(T(1.5)), T(1.19476), T(0.00001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ASinH(T(11.1)), T(3.10212), T(0.00001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::ASinH(T(50.0)), T(4.60527), T(0.000001f)));
+}
+
+template<typename T>
+requires std::floating_point<T>
+void RunASinHRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -35,7 +50,22 @@ void RunASinHEdgeTests()
 
 template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-void RunASinHVecTests()
+consteval void RunASinHVecCompileTimeTests()
+{
+    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASinH(T(-1.5)), T(-1.19476), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASinH(T(0.0)), T(0.0), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASinH(T(0.001)), T(0.001), T(0.0000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASinH(T(1.001)), T(0.882081), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASinH(T(1.5)), T(1.19476), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASinH(T(11.1)), T(3.10212), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASinH(T(50.0)), T(4.60527), T(0.000001f))));
+}
+
+template<typename T>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
+void RunASinHVecRunTimeTests()
 {
     static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
@@ -67,45 +97,53 @@ TEST_CASE("TRAP::Math::ASinH()", "[math][generic][asinh]")
 {
     SECTION("Scalar - double")
     {
-        RunASinHTests<double>();
+        RunASinHRunTimeTests<double>();
+        RunASinHCompileTimeTests<double>();
         RunASinHEdgeTests<double>();
     }
     SECTION("Scalar - float")
     {
-        RunASinHTests<float>();
+        RunASinHRunTimeTests<float>();
+        RunASinHCompileTimeTests<float>();
         RunASinHEdgeTests<float>();
     }
 
     SECTION("Vec2 - double")
     {
-        RunASinHVecTests<TRAP::Math::Vec2d>();
+        RunASinHVecRunTimeTests<TRAP::Math::Vec2d>();
+        RunASinHVecCompileTimeTests<TRAP::Math::Vec2d>();
         RunASinHVecEdgeTests<TRAP::Math::Vec2d>();
     }
     SECTION("Vec2 - float")
     {
-        RunASinHVecTests<TRAP::Math::Vec2f>();
+        RunASinHVecRunTimeTests<TRAP::Math::Vec2f>();
+        RunASinHVecCompileTimeTests<TRAP::Math::Vec2f>();
         RunASinHVecEdgeTests<TRAP::Math::Vec2f>();
     }
 
     SECTION("Vec3 - double")
     {
-        RunASinHVecTests<TRAP::Math::Vec3d>();
+        RunASinHVecRunTimeTests<TRAP::Math::Vec3d>();
+        RunASinHVecCompileTimeTests<TRAP::Math::Vec3d>();
         RunASinHVecEdgeTests<TRAP::Math::Vec3d>();
     }
     SECTION("Vec3 - float")
     {
-        RunASinHVecTests<TRAP::Math::Vec3f>();
+        RunASinHVecRunTimeTests<TRAP::Math::Vec3f>();
+        RunASinHVecCompileTimeTests<TRAP::Math::Vec3f>();
         RunASinHVecEdgeTests<TRAP::Math::Vec3f>();
     }
 
     SECTION("Vec4 - double")
     {
-        RunASinHVecTests<TRAP::Math::Vec4d>();
+        RunASinHVecRunTimeTests<TRAP::Math::Vec4d>();
+        RunASinHVecCompileTimeTests<TRAP::Math::Vec4d>();
         RunASinHVecEdgeTests<TRAP::Math::Vec4d>();
     }
     SECTION("Vec4 - float")
     {
-        RunASinHVecTests<TRAP::Math::Vec4f>();
+        RunASinHVecRunTimeTests<TRAP::Math::Vec4f>();
+        RunASinHVecCompileTimeTests<TRAP::Math::Vec4f>();
         RunASinHVecEdgeTests<TRAP::Math::Vec4f>();
     }
 }

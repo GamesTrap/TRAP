@@ -10,7 +10,45 @@
 
 template<typename T>
 requires std::floating_point<T>
-void RunYawTests()
+consteval void RunYawCompileTimeTests()
+{
+    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+    {
+        constexpr T expected = 0.0f;
+        constexpr TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(0.0f, expected, 0.0f)));
+        constexpr T yaw = TRAP::Math::Degrees(TRAP::Math::Yaw(q));
+        static_assert(TRAP::Math::Equal(yaw, expected, Epsilon));
+    }
+    {
+        constexpr T expected = 90.0f;
+        constexpr TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(0.0f, expected, 0.0f)));
+        constexpr T yaw = TRAP::Math::Degrees(TRAP::Math::Yaw(q));
+        static_assert(TRAP::Math::Equal(yaw, expected, T(0.1f)));
+    }
+    {
+        constexpr T expected = 45.0f;
+        constexpr TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(0.0f, expected, 0.0f)));
+        constexpr T yaw = TRAP::Math::Degrees(TRAP::Math::Yaw(q));
+        static_assert(TRAP::Math::Equal(yaw, expected, T(0.0000000000001f)));
+    }
+    {
+        constexpr T expected = 180.0f;
+        constexpr TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(0.0f, expected, 0.0f)));
+        constexpr T yaw = TRAP::Math::Abs(TRAP::Math::Degrees(TRAP::Math::Yaw(q)));
+        static_assert(TRAP::Math::Equal(yaw, T(0.0f), Epsilon));
+    }
+    {
+        constexpr T expected = -45.0f;
+        constexpr TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(0.0f, expected, 0.0f)));
+        constexpr T yaw = TRAP::Math::Degrees(TRAP::Math::Yaw(q));
+        static_assert(TRAP::Math::Equal(yaw, expected, T(0.0000000000001f)));
+    }
+}
+
+template<typename T>
+requires std::floating_point<T>
+void RunYawRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -78,12 +116,14 @@ TEST_CASE("TRAP::Math::Yaw()", "[math][generic][yaw]")
 {
     SECTION("Quat - double")
     {
-        RunYawTests<double>();
+        RunYawRunTimeTests<double>();
+        RunYawCompileTimeTests<double>();
         RunYawEdgeTests<double>();
     }
     SECTION("Quat - float")
     {
-        RunYawTests<float>();
+        RunYawRunTimeTests<float>();
+        RunYawCompileTimeTests<float>();
         RunYawEdgeTests<float>();
     }
 }

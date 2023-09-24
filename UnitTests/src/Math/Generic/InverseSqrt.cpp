@@ -10,7 +10,17 @@
 
 template<typename T>
 requires std::floating_point<T>
-void RunInverseSqrtTests()
+consteval void RunInverseSqrtCompileTimeTests()
+{
+    static_assert(TRAP::Math::Equal(TRAP::Math::InverseSqrt(T(0.5f)), T(1.41421f), T(0.00001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::InverseSqrt(T(1.5f)), T(0.816497f), T(0.00001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::InverseSqrt(T(2.0f)), T(0.707107f), T(0.00001f)));
+    static_assert(TRAP::Math::Equal(TRAP::Math::InverseSqrt(T(41.5f)), T(0.15523f), T(0.00001f)));
+}
+
+template<typename T>
+requires std::floating_point<T>
+void RunInverseSqrtRunTimeTests()
 {
     static constexpr std::array<std::tuple<T, T>, 4> values
     {
@@ -28,7 +38,14 @@ void RunInverseSqrtTests()
 
 template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-void RunInverseSqrtVecTests()
+void RunInverseSqrtVecCompileTimeTests()
+{
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::InverseSqrt(T(16.0f)) * TRAP::Math::Sqrt(T(16.0f)), T(1.0f), T(0.01f))));
+}
+
+template<typename T>
+requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
+void RunInverseSqrtVecRunTimeTests()
 {
     REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::InverseSqrt(T(16.0f)) * TRAP::Math::Sqrt(T(16.0f)), T(1.0f), T(0.01f))));
 }
@@ -56,39 +73,47 @@ TEST_CASE("TRAP::Math::InverseSqrt()", "[math][generic][inversesqrt]")
 {
     SECTION("Scalar - double")
     {
-        RunInverseSqrtTests<double>();
+        RunInverseSqrtRunTimeTests<double>();
+        RunInverseSqrtCompileTimeTests<double>();
         RunInverseSqrtEdgeTests<double>();
     }
     SECTION("Scalar - float")
     {
-        RunInverseSqrtTests<float>();
+        RunInverseSqrtRunTimeTests<float>();
+        RunInverseSqrtCompileTimeTests<float>();
         RunInverseSqrtEdgeTests<float>();
     }
 
     SECTION("Vec2 - double")
     {
-        RunInverseSqrtVecTests<TRAP::Math::Vec2d>();
+        RunInverseSqrtVecRunTimeTests<TRAP::Math::Vec2d>();
+        RunInverseSqrtVecCompileTimeTests<TRAP::Math::Vec2d>();
     }
     SECTION("Vec2 - float")
     {
-        RunInverseSqrtVecTests<TRAP::Math::Vec2f>();
+        RunInverseSqrtVecRunTimeTests<TRAP::Math::Vec2f>();
+        RunInverseSqrtVecCompileTimeTests<TRAP::Math::Vec2f>();
     }
 
     SECTION("Vec3 - double")
     {
-        RunInverseSqrtVecTests<TRAP::Math::Vec3d>();
+        RunInverseSqrtVecRunTimeTests<TRAP::Math::Vec3d>();
+        RunInverseSqrtVecCompileTimeTests<TRAP::Math::Vec3d>();
     }
     SECTION("Vec3 - float")
     {
-        RunInverseSqrtVecTests<TRAP::Math::Vec3f>();
+        RunInverseSqrtVecRunTimeTests<TRAP::Math::Vec3f>();
+        RunInverseSqrtVecCompileTimeTests<TRAP::Math::Vec3f>();
     }
 
     SECTION("Vec4 - double")
     {
-        RunInverseSqrtVecTests<TRAP::Math::Vec4d>();
+        RunInverseSqrtVecRunTimeTests<TRAP::Math::Vec4d>();
+        RunInverseSqrtVecCompileTimeTests<TRAP::Math::Vec4d>();
     }
     SECTION("Vec4 - float")
     {
-        RunInverseSqrtVecTests<TRAP::Math::Vec4f>();
+        RunInverseSqrtVecRunTimeTests<TRAP::Math::Vec4f>();
+        RunInverseSqrtVecCompileTimeTests<TRAP::Math::Vec4f>();
     }
 }

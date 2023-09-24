@@ -10,7 +10,28 @@
 
 template<typename T>
 requires std::floating_point<T>
-void RunInfinitePerspectiveTests()
+consteval void RunInfinitePerspectiveCompileTimeTests()
+{
+    {
+        constexpr auto p = TRAP::Math::InfinitePerspective<T>(TRAP::Math::Radians<T>(45.0f), 1.0f, 0.1f);
+        constexpr TRAP::Math::tMat4<T> expected(2.414213f, 0.0f, 0.0f, 0.0f, 0.0f, 2.414213f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, -1.0f, 0.0f, 0.0f, -0.2f, 0.0f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(p, expected, T(0.000001f))));
+    }
+    {
+        constexpr auto p = TRAP::Math::InfinitePerspective<T>(TRAP::Math::Radians<T>(90.0f), 16.0f / 9.0f, 0.01f);
+        constexpr TRAP::Math::tMat4<T> expected(0.562500f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, -1.0f, 0.0f, 0.0f, -0.02f, 0.0f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(p, expected, T(0.000001f))));
+    }
+    {
+        constexpr auto p = TRAP::Math::InfinitePerspective<T>(TRAP::Math::Radians<T>(30.0f), 2.0f, 1.0f);
+        constexpr TRAP::Math::tMat4<T> expected(1.866025f, 0.0f, 0.0f, 0.0f, 0.0f, 3.732051f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, -1.0f, 0.0f, 0.0f, -2.0f, 0.0f);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(p, expected, T(0.000001f))));
+    }
+}
+
+template<typename T>
+requires std::floating_point<T>
+void RunInfinitePerspectiveRunTimeTests()
 {
     {
         const auto p = TRAP::Math::InfinitePerspective<T>(TRAP::Math::Radians<T>(45.0f), 1.0f, 0.1f);
@@ -70,12 +91,14 @@ TEST_CASE("TRAP::Math::InfinitePerspective()", "[math][generic][infiniteperspect
 {
     SECTION("Mat4 - double")
     {
-        RunInfinitePerspectiveTests<double>();
+        RunInfinitePerspectiveRunTimeTests<double>();
+        RunInfinitePerspectiveCompileTimeTests<double>();
         RunInfinitePerspectiveEdgeTests<double>();
     }
     SECTION("Mat4 - float")
     {
-        RunInfinitePerspectiveTests<float>();
+        RunInfinitePerspectiveRunTimeTests<float>();
+        RunInfinitePerspectiveCompileTimeTests<float>();
         RunInfinitePerspectiveEdgeTests<float>();
     }
 }
