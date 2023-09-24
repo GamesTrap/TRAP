@@ -41,7 +41,7 @@ namespace TRAP::Graphics
 		/// Set the camera position.
 		/// </summary>
 		/// <param name="position">New camera position.</param>
-		void SetPosition(const Math::Vec3& position);
+		constexpr void SetPosition(const Math::Vec3& position);
 
 		/// <summary>
 		/// Retrieve the current camera rotation.
@@ -52,7 +52,7 @@ namespace TRAP::Graphics
 		/// Set the camera rotation.
 		/// </summary>
 		/// <param name="rotation">New camera rotation.</param>
-		void SetRotation(const Math::Vec3& rotation);
+		constexpr void SetRotation(const Math::Vec3& rotation);
 
 		/// <summary>
 		/// Retrieve the projection matrix.
@@ -70,7 +70,7 @@ namespace TRAP::Graphics
 		/// Recalculate the view matrix.
 		/// This applies the camera position and rotation to the view matrix.
 		/// </summary>
-		void RecalculateViewMatrix();
+		constexpr void RecalculateViewMatrix();
 
 		Math::Mat4 m_projectionMatrix;
 		Math::Mat4 m_viewMatrix = Math::Mat4(1.0f);
@@ -105,9 +105,25 @@ constexpr void TRAP::Graphics::OrthographicCamera::SetProjection(const float lef
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+constexpr void TRAP::Graphics::OrthographicCamera::SetPosition(const Math::Vec3& position)
+{
+	m_position = position;
+	RecalculateViewMatrix();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] constexpr const TRAP::Math::Vec3& TRAP::Graphics::OrthographicCamera::GetRotation() const noexcept
 {
 	return m_rotation;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Graphics::OrthographicCamera::SetRotation(const Math::Vec3& rotation)
+{
+	m_rotation = rotation;
+	RecalculateViewMatrix();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -122,6 +138,15 @@ constexpr void TRAP::Graphics::OrthographicCamera::SetProjection(const float lef
 [[nodiscard]] constexpr const TRAP::Math::Mat4& TRAP::Graphics::OrthographicCamera::GetViewMatrix() const noexcept
 {
 	return m_viewMatrix;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::Graphics::OrthographicCamera::RecalculateViewMatrix()
+{
+	const Math::Mat4 transform = Translate(m_position) * Mat4Cast(Math::Quat(Radians(m_rotation)));
+
+	m_viewMatrix = Inverse(transform);
 }
 
 #endif /*TRAP_ORTHOGRAPHICCAMERA_H*/

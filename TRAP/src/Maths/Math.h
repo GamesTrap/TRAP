@@ -2158,7 +2158,7 @@ namespace TRAP::Math
 	/// <returns>True on successful decompose, false otherwise.</returns>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] bool Decompose(Mat<4, 4, T> m, Vec<3, T>& outPosition, tQuat<T>& outRotation, Vec<3, T>& outScale);
+	[[nodiscard]] constexpr bool Decompose(Mat<4, 4, T> m, Vec<3, T>& outPosition, tQuat<T>& outRotation, Vec<3, T>& outScale);
 	/// <summary>
 	/// Decompose a matrix into its position, rotation (euler angles) and scale components.
 	/// </summary>
@@ -2169,7 +2169,7 @@ namespace TRAP::Math
 	/// <returns>True on successful decompose, false otherwise.</returns>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] bool Decompose(Mat<4, 4, T> m, Vec<3, T>& outPosition, Vec<3, T>& outRotation, Vec<3, T>& outScale);
+	[[nodiscard]] constexpr bool Decompose(Mat<4, 4, T> m, Vec<3, T>& outPosition, Vec<3, T>& outRotation, Vec<3, T>& outScale);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -4930,7 +4930,7 @@ requires TRAP::Math::IsMat<T>
 
 template<typename T>
 requires std::floating_point<T>
-[[nodiscard]] bool TRAP::Math::Decompose(Mat<4, 4, T> m, Vec<3, T>& outPosition, tQuat<T>& outRotation, Vec<3, T>& outScale)
+[[nodiscard]] constexpr bool TRAP::Math::Decompose(Mat<4, 4, T> m, Vec<3, T>& outPosition, tQuat<T>& outRotation, Vec<3, T>& outScale)
 {
 	constexpr auto LocalScale = [](const Vec<3, T>& v, const T desiredLength)
 	{
@@ -5058,7 +5058,7 @@ requires std::floating_point<T>
 
 template<typename T>
 requires std::floating_point<T>
-[[nodiscard]] bool TRAP::Math::Decompose(Mat<4, 4, T> m, Vec<3, T>& outPosition, Vec<3, T>& outRotation, Vec<3, T>& outScale)
+[[nodiscard]] constexpr bool TRAP::Math::Decompose(Mat<4, 4, T> m, Vec<3, T>& outPosition, Vec<3, T>& outRotation, Vec<3, T>& outScale)
 {
 	constexpr auto LocalScale = [](const Vec<3, T>& v, const T desiredLength)
 	{
