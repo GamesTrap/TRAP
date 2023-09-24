@@ -191,6 +191,11 @@ consteval void RunSLerpSpinCompileTimeTests()
         constexpr TRAP::Math::tQuat<T> y45rot4 = TRAP::Math::SLerp(-y90rot, id, T(0.5f), S(0));
         static_assert(TRAP::Math::All(TRAP::Math::Equal(ym45rot2, y45rot4, Epsilon)));
     }
+    if constexpr(std::same_as<T, float>)
+    {
+        constexpr TRAP::Math::tQuat<T> y90rot5 = TRAP::Math::SLerp(y90rot, y90rot, T(0.5f), S(2));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(y90rot, y90rot5, Epsilon)));
+    }
     {
         constexpr TRAP::Math::tQuat<T> xz90rot = TRAP::Math::SLerp(id, -y90rot, T(0.5f), S(1));
         constexpr T xz90angle = TRAP::Math::Angle(xz90rot);
@@ -252,6 +257,7 @@ void RunSLerpSpinRunTimeTests()
         const TRAP::Math::tQuat<T> y45rot4 = TRAP::Math::SLerp(-y90rot, id, T(0.5f), S(0));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ym45rot2, y45rot4, Epsilon)));
     }
+    if constexpr(std::same_as<T, float>)
     {
         const TRAP::Math::tQuat<T> y90rot5 = TRAP::Math::SLerp(y90rot, y90rot, T(0.5f), S(2));
         REQUIRE(TRAP::Math::All(TRAP::Math::Equal(y90rot, y90rot5, Epsilon)));

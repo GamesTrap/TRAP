@@ -57,7 +57,7 @@ namespace TRAP::Math
 	/// Return the epsilon constant.
 	/// </summary>
 	template<typename T>
-	[[nodiscard]] consteval T Epsilon()
+	[[nodiscard]] constexpr T Epsilon()
 	{
 		return std::numeric_limits<T>::epsilon();
 	}
@@ -65,7 +65,7 @@ namespace TRAP::Math
 	/// Approximation of cos(1/2) in radians.
 	/// </summary>
 	template<typename T>
-	[[nodiscard]] consteval T CosOneOverTwo() noexcept
+	[[nodiscard]] constexpr T CosOneOverTwo() noexcept
 	{
 		return T(0.877582561890372716130286068203503191);
 	}
@@ -74,7 +74,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T PI() noexcept
+	[[nodiscard]] constexpr T PI() noexcept
 	{
 		return std::numbers::pi_v<T>;
 	}
@@ -83,7 +83,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T TAU() noexcept
+	[[nodiscard]] constexpr T TAU() noexcept
 	{
 		return T(6.2831853071795864769252867665581);
 	}
@@ -92,7 +92,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T TwoPI() noexcept
+	[[nodiscard]] constexpr T TwoPI() noexcept
 	{
 		return T(6.28318530717958647692528676655900576);
 	}
@@ -101,7 +101,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T RootPI() noexcept
+	[[nodiscard]] constexpr T RootPI() noexcept
 	{
 		return T(1.772453850905516027);
 	}
@@ -110,7 +110,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T HalfPI() noexcept
+	[[nodiscard]] constexpr T HalfPI() noexcept
 	{
 		return T(1.57079632679489661923132169163975144);
 	}
@@ -119,7 +119,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T ThreeOverTwoPI() noexcept
+	[[nodiscard]] constexpr T ThreeOverTwoPI() noexcept
 	{
 		return T(4.71238898038468985769396507491925432);
 	}
@@ -128,7 +128,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T QuarterPI() noexcept
+	[[nodiscard]] constexpr T QuarterPI() noexcept
 	{
 		return T(0.785398163397448309615660845819875721);
 	}
@@ -137,7 +137,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T OneOverPI() noexcept
+	[[nodiscard]] constexpr T OneOverPI() noexcept
 	{
 		return std::numbers::inv_pi_v<T>;
 	}
@@ -146,7 +146,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T OneOverTwoPI() noexcept
+	[[nodiscard]] constexpr T OneOverTwoPI() noexcept
 	{
 		return T(0.159154943091895335768883763372514362);
 	}
@@ -155,7 +155,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T TwoOverPI() noexcept
+	[[nodiscard]] constexpr T TwoOverPI() noexcept
 	{
 		return T(0.636619772367581343075535053490057448);
 	}
@@ -164,7 +164,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T FourOverPI() noexcept
+	[[nodiscard]] constexpr T FourOverPI() noexcept
 	{
 		return T(1.273239544735162686151070106980114898);
 	}
@@ -173,7 +173,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T TwoOverRootPI() noexcept
+	[[nodiscard]] constexpr T TwoOverRootPI() noexcept
 	{
 		return T(1.12837916709551257389615890312154517);
 	}
@@ -182,7 +182,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T OneOverRootTwo() noexcept
+	[[nodiscard]] constexpr T OneOverRootTwo() noexcept
 	{
 		return T(0.707106781186547524400844362104849039);
 	}
@@ -191,7 +191,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T RootHalfPI() noexcept
+	[[nodiscard]] constexpr T RootHalfPI() noexcept
 	{
 		return T(1.253314137315500251);
 	}
@@ -200,7 +200,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T RootTwoPI() noexcept
+	[[nodiscard]] constexpr T RootTwoPI() noexcept
 	{
 		return T(2.506628274631000502);
 	}
@@ -209,7 +209,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T RootLnFour() noexcept
+	[[nodiscard]] constexpr T RootLnFour() noexcept
 	{
 		return T(1.17741002251547469);
 	}
@@ -218,7 +218,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T e() noexcept
+	[[nodiscard]] constexpr T e() noexcept
 	{
 		return std::numbers::e_v<T>;
 	}
@@ -227,7 +227,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T Euler() noexcept
+	[[nodiscard]] constexpr T Euler() noexcept
 	{
 		return T(0.577215664901532860606);
 	}
@@ -236,7 +236,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T RootTwo() noexcept
+	[[nodiscard]] constexpr T RootTwo() noexcept
 	{
 		return std::numbers::sqrt2_v<T>;
 	}
@@ -245,7 +245,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T RootThree() noexcept
+	[[nodiscard]] constexpr T RootThree() noexcept
 	{
 		return std::numbers::sqrt3_v<T>;
 	}
@@ -254,7 +254,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T RootFive() noexcept
+	[[nodiscard]] constexpr T RootFive() noexcept
 	{
 		return T(2.23606797749978969640917366873127623);
 	}
@@ -263,7 +263,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T LnTwo() noexcept
+	[[nodiscard]] constexpr T LnTwo() noexcept
 	{
 		return std::numbers::ln2_v<T>;
 	}
@@ -272,7 +272,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T LnTen() noexcept
+	[[nodiscard]] constexpr T LnTen() noexcept
 	{
 		return std::numbers::ln10_v<T>;
 	}
@@ -281,7 +281,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T LnLnTwo() noexcept
+	[[nodiscard]] constexpr T LnLnTwo() noexcept
 	{
 		return T(-0.3665129205816643);
 	}
@@ -290,7 +290,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T Third() noexcept
+	[[nodiscard]] constexpr T Third() noexcept
 	{
 		return T(0.3333333333333333333333333333333333333333);
 	}
@@ -299,7 +299,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T TwoThirds() noexcept
+	[[nodiscard]] constexpr T TwoThirds() noexcept
 	{
 		return T(0.666666666666666666666666666666666666667);
 	}
@@ -308,7 +308,7 @@ namespace TRAP::Math
 	/// </summary>
 	template<typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] consteval T GoldenRatio() noexcept
+	[[nodiscard]] constexpr T GoldenRatio() noexcept
 	{
 		return std::numbers::phi_v<T>;
 	}
