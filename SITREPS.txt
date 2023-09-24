@@ -4433,3 +4433,4 @@ SITREP 09/24/2023|23w38b2
     - Added GCEM as submodule ~<5 mins
     - Made many more math functions constexpr using GCEM ~>60 mins
     - Updated unit tests for updated math functions ~>60 mins
+    - Changed GCEM submodule to fork ~<5 mins

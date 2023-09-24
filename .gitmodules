@@ -43,4 +43,4 @@
 	url = https://github.com/KhronosGroup/Vulkan-Headers
 [submodule "Dependencies/GCEM"]
 	path = Dependencies/GCEM
-	url = https://github.com/kthohr/gcem
+	url = https://github.com/GamesTrap/gcem
