@@ -5033,7 +5033,7 @@ requires std::floating_point<T>
 	}
 	else
 	{
-		constexpr static std::array<uint32_t, 3> next{1, 2, 0};
+		constexpr std::array<uint32_t, 3> next{1, 2, 0};
 		uint8_t i = 0;
 		if(std::get<2>(row).z() > row[i][i])
 			i = 2;
