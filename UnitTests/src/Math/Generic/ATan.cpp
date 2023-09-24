@@ -72,29 +72,29 @@ consteval void RunATanVecCompileTimeTests()
 {
     constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(-1.5)), T(-0.982794), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(-0.5)), T(-0.463648), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(0.0)), T(0.0), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(0.001)), T(0.001), T(0.000000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(0.49)), T(0.455616), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(0.99)), T(0.780373), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(1.001)), T(0.785898), T(0.0000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(1.49)), T(0.979703), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(1.5)), T(0.982794), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(1.99)), T(1.10514), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(2.49)), T(1.18891), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(2.51)), T(1.19166), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(3.99)), T(1.32523), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(7.0)), T(1.4289), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(11.0)), T(1.48014), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(11.1)), T(1.48095), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(25.0)), T(1.53082), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(50.0)), T(1.5508), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(101.0)), T(1.5609), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(150.0)), T(1.56413), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(900.0)), T(1.56969), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(1001.0)), T(1.5698), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(1000000.0)), T(1.5708), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(-1.5f)), T(-0.982794f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(-0.5f)), T(-0.463648f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(0.0f)), T(0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(0.001f)), T(0.001f), T(0.000000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(0.49f)), T(0.455616f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(0.99f)), T(0.780373f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(1.001f)), T(0.785898f), T(0.0000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(1.49f)), T(0.979703f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(1.5f)), T(0.982794f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(1.99f)), T(1.10514f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(2.49f)), T(1.18891f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(2.51f)), T(1.19166f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(3.99f)), T(1.32523f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(7.0f)), T(1.4289f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(11.0f)), T(1.48014f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(11.1f)), T(1.48095f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(25.0f)), T(1.53082f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(50.0f)), T(1.5508f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(101.0f)), T(1.5609f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(150.0f)), T(1.56413f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(900.0f)), T(1.56969f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(1001.0f)), T(1.5698f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(1000000.0f)), T(1.5708f), T(0.00001f))));
 }
 
 template<typename T>

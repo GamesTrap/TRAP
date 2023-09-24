@@ -6215,7 +6215,7 @@ requires std::integral<T>
 	Vec<L, bool> result{};
 
 	for(uint32_t i = 0u; i < L; ++i)
-		result[i] = (static_cast<T>(x[i]) & 1u) != 0;
+		result[i] = (x[i] & static_cast<T>(1u)) != 0;
 
 	return result;
 }

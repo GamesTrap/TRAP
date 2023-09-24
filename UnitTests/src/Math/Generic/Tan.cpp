@@ -59,14 +59,14 @@ consteval void RunTanVecCompileTimeTests()
 {
     constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(-1.5))), T(-14.1014), T(0.0001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(0.0))), T(0.0), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(0.001))), T(0.001), T(0.000000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(1.001))), T(1.56084), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(1.5))), T(14.1014), T(0.0001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(11.1))), T(-9.54135), T(0.0001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(50.0))), T(-0.271901), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(150.0))), T(-1.02235), T(0.0001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(-1.5f))), T(-14.1014f), T(0.0001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(0.0f))), T(0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(0.001f))), T(0.001f), T(0.000000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(1.001f))), T(1.56084f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(1.5f))), T(14.1014f), T(0.0001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(11.1f))), T(-9.54135f), T(0.0001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(50.0f))), T(-0.271901f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Tan(T(typename T::value_type(150.0f))), T(-1.02235f), T(0.0001f))));
 }
 
 template<typename T>

@@ -56,11 +56,11 @@ consteval void RunACosVecCompileTimeTests()
 {
     constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACos(T(typename T::value_type(-0.5))), T(2.0944), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACos(T(typename T::value_type(0.0))), T(1.5708), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACos(T(typename T::value_type(0.001))), T(1.5698), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACos(T(typename T::value_type(0.5))), T(1.0472), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACos(T(typename T::value_type(1.0))), T(0.0), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACos(T(typename T::value_type(-0.5f))), T(2.0944f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACos(T(typename T::value_type(0.0f))), T(1.5708f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACos(T(typename T::value_type(0.001f))), T(1.5698f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACos(T(typename T::value_type(0.5f))), T(1.0472f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACos(T(typename T::value_type(1.0f))), T(0.0f), Epsilon)));
 }
 
 template<typename T>

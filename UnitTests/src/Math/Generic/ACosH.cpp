@@ -48,10 +48,10 @@ template<typename T>
 requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
 consteval void RunACosHVecCompileTimeTests()
 {
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACosH(T(1.001)), T(0.0447176), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACosH(T(1.5)), T(0.962424), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACosH(T(11.1)), T(3.09806), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACosH(T(50.0)), T(4.60507), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACosH(T(1.001f)), T(0.0447176f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACosH(T(1.5f)), T(0.962424f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACosH(T(11.1f)), T(3.09806f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ACosH(T(50.0f)), T(4.60507f), T(0.000001f))));
 }
 
 template<typename T>

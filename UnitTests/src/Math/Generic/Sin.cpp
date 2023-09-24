@@ -59,14 +59,14 @@ consteval void RunSinVecCompileTimeTests()
 {
     constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sin(T(typename T::value_type(-1.5))), T(-0.997495), T(0.0000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sin(T(typename T::value_type(0.0))), T(0.0), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sin(T(typename T::value_type(0.001))), T(0.001), T(0.000000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sin(T(typename T::value_type(1.001))), T(0.842011), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sin(T(typename T::value_type(1.5))), T(0.997495), T(0.0000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sin(T(typename T::value_type(11.1))), T(-0.994553), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sin(T(typename T::value_type(50.0))), T(-0.262375), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sin(T(typename T::value_type(150.0))), T(-0.714876), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sin(T(typename T::value_type(-1.5f))), T(-0.997495f), T(0.0000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sin(T(typename T::value_type(0.0f))), T(0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sin(T(typename T::value_type(0.001f))), T(0.001f), T(0.000000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sin(T(typename T::value_type(1.001f))), T(0.842011f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sin(T(typename T::value_type(1.5f))), T(0.997495f), T(0.0000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sin(T(typename T::value_type(11.1f))), T(-0.994553f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sin(T(typename T::value_type(50.0f))), T(-0.262375f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sin(T(typename T::value_type(150.0f))), T(-0.714876f), T(0.00001f))));
 }
 
 template<typename T>

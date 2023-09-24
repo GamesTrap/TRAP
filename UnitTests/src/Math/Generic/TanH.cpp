@@ -53,12 +53,12 @@ consteval void RunTanHVecCompileTimeTests()
 {
     constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::TanH(T(-0.5)), T(-0.462117), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::TanH(T(0.0)), T(0.0), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::TanH(T(0.001)), T(0.001), T(0.000000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::TanH(T(0.5)), T(0.462117), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::TanH(T(1.0)), T(0.761594), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::TanH(T(5.0)), T(0.999909), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::TanH(T(-0.5f)), T(-0.462117f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::TanH(T(0.0f)), T(0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::TanH(T(0.001f)), T(0.001f), T(0.000000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::TanH(T(0.5f)), T(0.462117f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::TanH(T(1.0f)), T(0.761594f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::TanH(T(5.0f)), T(0.999909f), T(0.000001f))));
 }
 
 template<typename T>

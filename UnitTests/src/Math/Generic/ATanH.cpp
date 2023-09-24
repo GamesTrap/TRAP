@@ -53,9 +53,9 @@ consteval void RunATanHVecCompileTimeTests()
 {
     constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATanH(T(-0.99)), T(-2.64665), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATanH(T(0.0)), T(0.0), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATanH(T(0.001)), T(0.001), T(0.000000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATanH(T(-0.99f)), T(-2.64665f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATanH(T(0.0f)), T(0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATanH(T(0.001f)), T(0.001f), T(0.000000001f))));
 }
 
 template<typename T>

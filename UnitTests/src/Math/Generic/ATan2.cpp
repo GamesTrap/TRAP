@@ -69,21 +69,21 @@ consteval void RunATanVecCompileTimeTests()
 {
     constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(0.2)), T(typename T::value_type(0.0))), T(1.5708), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(-0.2)), T(typename T::value_type(0.0))), T(-1.5708), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(0.001)), T(typename T::value_type(0.001))), T(0.785398), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(0.49)), T(typename T::value_type(0.49))), T(0.785398), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(-0.5)), T(typename T::value_type(-0.5))), T(-2.35619), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(0.5)), T(typename T::value_type(-0.5))), T(2.35619), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(-0.5)), T(typename T::value_type(0.5))), T(-0.785398), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(9.6)), T(typename T::value_type(8.4))), T(0.851966), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(1.0)), T(typename T::value_type(0.0))), T(1.5708), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(0.0)), T(typename T::value_type(1.0))), T(0.0), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(-1.0)), T(typename T::value_type(0.0))), T(-1.5708), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(0.0)), T(typename T::value_type(-1.0))), T(3.14159), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(1.0)), T(typename T::value_type(3.0))), T(0.321751), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(-5.0)), T(typename T::value_type(2.5))), T(-1.10715), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(-1000.0)), T(typename T::value_type(-0.001))), T(-1.5708), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(0.2f)), T(typename T::value_type(0.0f))), T(1.5708f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(-0.2f)), T(typename T::value_type(0.0f))), T(-1.5708f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(0.001f)), T(typename T::value_type(0.001f))), T(0.785398f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(0.49f)), T(typename T::value_type(0.49f))), T(0.785398f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(-0.5f)), T(typename T::value_type(-0.5f))), T(-2.35619f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(0.5f)), T(typename T::value_type(-0.5f))), T(2.35619f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(-0.5f)), T(typename T::value_type(0.5f))), T(-0.785398f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(9.6f)), T(typename T::value_type(8.4f))), T(0.851966f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(1.0f)), T(typename T::value_type(0.0f))), T(1.5708f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(0.0f)), T(typename T::value_type(1.0f))), T(0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(-1.0f)), T(typename T::value_type(0.0f))), T(-1.5708f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(0.0f)), T(typename T::value_type(-1.0f))), T(3.14159f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(1.0f)), T(typename T::value_type(3.0f))), T(0.321751f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(-5.0f)), T(typename T::value_type(2.5f))), T(-1.10715f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ATan(T(typename T::value_type(-1000.0f)), T(typename T::value_type(-0.001f))), T(-1.5708f), T(0.00001f))));
 }
 
 template<typename T>

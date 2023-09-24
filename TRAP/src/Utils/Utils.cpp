@@ -61,7 +61,7 @@
 			return {};
 
 		const uint8_t convertedCharacter = String::IsDigit(c) ? NumericCast<uint8_t>(c - '0') :
-		                                                        NumericCast<uint8_t>(String::ToLower(c) - 'a' + 10u);
+		                                                        NumericCast<uint8_t>(String::ToLower(c) - 'a' + 10);
 		if(index % 2 == 0)
 			result[index / 2] = NumericCast<uint8_t>(convertedCharacter << 4u);
 		else

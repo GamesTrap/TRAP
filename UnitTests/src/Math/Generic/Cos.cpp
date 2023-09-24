@@ -59,14 +59,14 @@ consteval void RunCosVecCompileTimeTests()
 {
     constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(-1.5))), T(0.0707372), T(0.0000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(0.0))), T(1.0), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(0.001))), T(1.0), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(1.001))), T(0.539461), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(1.5))), T(0.0707372), T(0.0000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(11.1))), T(0.104236), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(50.0))), T(0.964966), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(150.0))), T(0.699251), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(-1.5f))), T(0.0707372f), T(0.0000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(0.0f))), T(1.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(0.001f))), T(1.0f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(1.001f))), T(0.539461f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(1.5f))), T(0.0707372f), T(0.0000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(11.1f))), T(0.104236f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(50.0f))), T(0.964966f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Cos(T(typename T::value_type(150.0f))), T(0.699251f), T(0.00001f))));
 }
 
 template<typename T>

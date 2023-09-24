@@ -54,13 +54,13 @@ consteval void RunASinHVecCompileTimeTests()
 {
     constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASinH(T(-1.5)), T(-1.19476), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASinH(T(0.0)), T(0.0), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASinH(T(0.001)), T(0.001), T(0.0000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASinH(T(1.001)), T(0.882081), T(0.000001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASinH(T(1.5)), T(1.19476), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASinH(T(11.1)), T(3.10212), T(0.00001f))));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASinH(T(50.0)), T(4.60527), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASinH(T(-1.5f)), T(-1.19476f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASinH(T(0.0f)), T(0.0f), Epsilon)));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASinH(T(0.001f)), T(0.001f), T(0.0000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASinH(T(1.001f)), T(0.882081f), T(0.000001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASinH(T(1.5f)), T(1.19476f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASinH(T(11.1f)), T(3.10212f), T(0.00001f))));
+    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ASinH(T(50.0f)), T(4.60527f), T(0.000001f))));
 }
 
 template<typename T>

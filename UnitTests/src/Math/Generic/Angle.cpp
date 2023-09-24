@@ -113,12 +113,12 @@ void RunAngleEdgeTests()
     static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
 
     {
-        static constexpr TRAP::Math::tQuat<T> q(min, min, min, min);
+        const TRAP::Math::tQuat<T> q(min, min, min, min);
         const T a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
         REQUIRE(TRAP::Math::IsNaN(a));
     }
     {
-        static constexpr TRAP::Math::tQuat<T> q(max, max, max, max);
+        const TRAP::Math::tQuat<T> q(max, max, max, max);
         const T a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
         REQUIRE(TRAP::Math::IsNaN(a));
     }
