@@ -122,6 +122,16 @@ project "UnitTests"
 			"-Wpedantic", "-Wconversion", "-Wshadow"
 		}
 
+	filter { "system:linux", "configurations:Debug", "action:gmake*", "toolset:gcc" }
+		buildoptions
+		{
+			"--coverage"
+		}
+		links
+		{
+			"gcov"
+		}
+
 	filter "configurations:Debug"
 		defines "TRAP_DEBUG"
 
