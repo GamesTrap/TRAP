@@ -4449,3 +4449,7 @@ SITREP 09/26/2023|23w39a2
 SITREP 09/28/2023|23w39a3
     - Changed TRAP Engine version to 23w39a3(0.9.101)
     - Made Utils::GetEndian() consteval and all calls to it now use if constexpr ~<5 mins
+
+SITREP 09/29/2023|23w39b1
+    - Changed TRAP Engine version to 23w39b1(0.9.102)
+    - Refactored Update-Dependencies using composite action ~>45 mins
