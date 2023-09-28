@@ -7,8 +7,8 @@ inputs:
     required: true
   branch:
     description: ""
-    required: true
-    default: "master"
+    required: false
+    default: "main"
   update-method:
     description: ""
     required: true
@@ -19,33 +19,12 @@ inputs:
   pr-branch-name:
     description: ""
     required: true
-  gpg_private_key:
-    description: 'GPG private key exported as an ASCII armored version or its base64 encoding'
-    required: true
-  passphrase:
-    description: 'Passphrase of the GPG private key'
-    required: false
-  app_id:
-    description: ID of the GitHub App.
-    required: true
-  private_key:
-    description: Private key of the GitHub App (can be Base64 encoded).
+  pr-token:
+    description: 'GITHUB_TOKEN or a `repo` scoped Personal Access Token (PAT)'
     required: true
 runs:
   using: "composite"
   steps:
-    - uses: crazy-max/ghaction-import-gpg@v6
-      with:
-        gpg_private_key: ${{ inputs.gpg_private_key }}
-        passphrase: ${{ inputs.passphrase }}
-        git_user_signingkey: true
-        git_commit_gpgsign: true
-        git_committer_name: TRAP CI/CD
-    - uses: tibdex/github-app-token@v2
-      id: generate-token
-      with:
-        app_id: ${{ inputs.app_id }}
-        private_key: ${{ inputs.private_key }}
     - name: Update Dependency
       shell: bash
       id: dependency
@@ -71,6 +50,6 @@ runs:
           labels: "CI/CD, External, Update"
           assignees: "GamesTrap"
           milestone: 5
-          token: ${{steps.generate-token.outputs.token}}
+          token: ${{inputs.pr-token}}
           author: "TRAP CI/CD <gamestrap@web.de>"
           committer: "TRAP CI/CD <gamestrap@web.de>"
