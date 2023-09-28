@@ -293,6 +293,9 @@ project "TRAP-UnitTests"
 			"%{IncludeDir.WAYLAND}/**.h"
 		}
 
+		wayland.GenerateWayland()
+		externalincludedirs "%{IncludeDir.WAYLAND}"
+
 	filter { "system:linux", "configurations:Debug", "action:gmake*", "toolset:gcc" }
 		buildoptions
 		{
@@ -303,8 +306,6 @@ project "TRAP-UnitTests"
 			"gcov"
 		}
 
-		wayland.GenerateWayland()
-		externalincludedirs "%{IncludeDir.WAYLAND}"
 
 	filter { "action:gmake*", "toolset:gcc" }
 		buildoptions
