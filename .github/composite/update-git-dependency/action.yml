@@ -48,7 +48,7 @@ runs:
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5
       with:
-          base: update-dependency-composite
+          base: dev
           add-paths: ${{inputs.dependency-path}}
           branch: ${{inputs.pr-branch-name}}/${{steps.dependency.outputs.DEPENDENCY_VERSION}}
           delete-branch: true
