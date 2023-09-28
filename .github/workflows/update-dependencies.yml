@@ -49,6 +49,7 @@ jobs:
         with:
           dependency-path: "Dependencies/EnTT"
           update-method: "latest-tag"
+          tag-regex: '^v[0-9]+\.[0-9]+\.[0-9]+$' #vX.X.X SemVer
           pr-title: "EnTT"
           pr-branch-name: "entt-update"
           pr-token: ${{steps.generate-token.outputs.token}}
@@ -70,6 +71,7 @@ jobs:
         with:
           dependency-path: "Dependencies/ModernDialogs"
           update-method: "latest-tag"
+          tag-regex: '^v[0-9]+\.[0-9]+\.[0-9]+$' #vX.X.X SemVer
           pr-title: "ModernDialogs"
           pr-branch-name: "moderndialogs-update"
           pr-token: ${{steps.generate-token.outputs.token}}
@@ -80,6 +82,7 @@ jobs:
         with:
           dependency-path: "Dependencies/Tracy"
           update-method: "latest-tag"
+          tag-regex: '^v[0-9]+\.[0-9]+\.[0-9]+$' #vX.X.X SemVer
           pr-title: "Tracy"
           pr-branch-name: "tracy-update"
           pr-token: ${{steps.generate-token.outputs.token}}
@@ -112,6 +115,7 @@ jobs:
         with:
           dependency-path: "Dependencies/fmt"
           update-method: "latest-tag"
+          tag-regex: '^[0-9]+\.[0-9]+\.[0-9]+$' #X.X.X SemVer
           pr-title: "{fmt}"
           pr-branch-name: "fmt-update"
           pr-token: ${{steps.generate-token.outputs.token}}
@@ -122,6 +126,7 @@ jobs:
         with:
           dependency-path: "Dependencies/Catch2"
           update-method: "latest-tag"
+          tag-regex: '^v[0-9]+\.[0-9]+\.[0-9]+$' #vX.X.X SemVer
           pr-title: "Catch2"
           pr-branch-name: "catch2-update"
           pr-token: ${{steps.generate-token.outputs.token}}
@@ -132,6 +137,7 @@ jobs:
         with:
           dependency-path: "Dependencies/Vulkan-Headers"
           update-method: "latest-tag"
+          tag-regex: '^sdk-[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' #sdk-X.X.X.X SemVer
           pr-title: "Vulkan-Headers"
           pr-branch-name: "vulkan-headers-update"
           pr-token: ${{steps.generate-token.outputs.token}}
@@ -158,148 +164,50 @@ jobs:
           pr-branch-name: "premake-vscodegen-update"
           pr-token: ${{steps.generate-token.outputs.token}}
 
-  # update-glslang:
-  #   name: Update GLSLang
-  #   if: github.repository == 'GamesTrap/TRAP'
-  #   runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
-  #   steps:
-  #     - name: Cleanup workspace
-  #       if: ${{ always() }}
-  #       uses: gamestrap/gha-workspace-cleanup@v1.2.4
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
-  #       with:
-  #         submodules: 'true'
-  #         ref: dev
-  #     - uses: crazy-max/ghaction-import-gpg@v6
-  #       with:
-  #         gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-  #         passphrase: ${{ secrets.GPG_PASSPHRASE }}
-  #         git_user_signingkey: true
-  #         git_commit_gpgsign: true
-  #         git_committer_name: TRAP CI/CD
-  #     - uses: tibdex/github-app-token@v2
-  #       id: generate-token
-  #       with:
-  #         app_id: ${{ secrets.APP_ID }}
-  #         private_key: ${{ secrets.APP_PRIVATE_KEY }}
-  #     - name: Update GLSLang
-  #       id: glslang
-  #       run: |
-  #           cd Dependencies/GLSLang/
-  #           git fetch --tags
-  #           git checkout $(git tag -l "sdk-*" --sort=-v:refname | head -n 1)
-  #           echo "GLSLANG_VERSION=$(git tag -l "sdk-*" --sort=-v:refname | head -n 1)" >> "$GITHUB_OUTPUT"
-  #           cd ../..
-  #     - name: Create Pull Request
-  #       uses: peter-evans/create-pull-request@v5
-  #       with:
-  #           base: dev
-  #           branch: glslang-update/${{steps.glslang.outputs.GLSLANG_VERSION}}
-  #           delete-branch: true
-  #           commit-message: "Update GLSLang to ${{steps.glslang.outputs.GLSLANG_VERSION}}"
-  #           title: "Update GLSLang to ${{steps.glslang.outputs.GLSLANG_VERSION}}"
-  #           labels: "CI/CD, External, Update"
-  #           assignees: "GamesTrap"
-  #           milestone: 5
-  #           token: ${{steps.generate-token.outputs.token}}
-  #           author: "TRAP CI/CD <gamestrap@web.de>"
-  #           committer: "TRAP CI/CD <gamestrap@web.de>"
+      - name: Update GLSLang
+        if: ${{ always() }}
+        uses: ./.github/composite/update-git-dependency
+        with:
+          dependency-path: "Dependencies/GLSLang"
+          update-method: "latest-tag"
+          tag-regex: '^sdk-[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' #sdk-X.X.X.X SemVer
+          pr-title: "GLSLang"
+          pr-branch-name: "glslang-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
 
-  # update-imgui:
-  #   name: Update ImGui
-  #   if: github.repository == 'GamesTrap/TRAP'
-  #   runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
-  #   steps:
-  #     - name: Cleanup workspace
-  #       if: ${{ always() }}
-  #       uses: gamestrap/gha-workspace-cleanup@v1.2.4
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
-  #       with:
-  #         submodules: 'true'
-  #         ref: dev
-  #     - uses: crazy-max/ghaction-import-gpg@v6
-  #       with:
-  #         gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-  #         passphrase: ${{ secrets.GPG_PASSPHRASE }}
-  #         git_user_signingkey: true
-  #         git_commit_gpgsign: true
-  #         git_committer_name: TRAP CI/CD
-  #     - uses: tibdex/github-app-token@v2
-  #       id: generate-token
-  #       with:
-  #         app_id: ${{ secrets.APP_ID }}
-  #         private_key: ${{ secrets.APP_PRIVATE_KEY }}
-  #     - name: Update ImGui
-  #       id: imgui
-  #       run: |
-  #           cd Dependencies/ImGui/
-  #           git fetch origin docking
-  #           git pull origin docking
-  #           newest_commit=$(git log --grep="Merge branch 'master' into docking" --pretty=format:'%H' --max-count=1)
-  #           git reset --hard $newest_commit
-  #           echo "IMGUI_VERSION=${newest_commit}" >> "$GITHUB_OUTPUT"
-  #           cd ../..
-  #     - name: Create Pull Request
-  #       uses: peter-evans/create-pull-request@v5
-  #       with:
-  #           base: dev
-  #           branch: imgui-update/${{steps.imgui.outputs.IMGUI_VERSION}}
-  #           delete-branch: true
-  #           commit-message: "Update ImGui to ${{steps.imgui.outputs.IMGUI_VERSION}}"
-  #           title: "Update ImGui to ${{steps.imgui.outputs.IMGUI_VERSION}}"
-  #           labels: "CI/CD, External, Update"
-  #           assignees: "GamesTrap"
-  #           milestone: 5
-  #           token: ${{steps.generate-token.outputs.token}}
-  #           author: "TRAP CI/CD <gamestrap@web.de>"
-  #           committer: "TRAP CI/CD <gamestrap@web.de>"
+      - name: Update SPIRV-Cross
+        if: ${{ always() }}
+        uses: ./.github/composite/update-git-dependency
+        with:
+          dependency-path: "Dependencies/SPIRV-Cross"
+          update-method: "latest-tag"
+          tag-regex: '^sdk-[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' #sdk-X.X.X.X SemVer
+          pr-title: "SPIRV-Cross"
+          pr-branch-name: "spirvcross-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
 
-  # update-spirvcross:
-  #   name: Update SPIRV-Cross
-  #   if: github.repository == 'GamesTrap/TRAP'
-  #   runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
-  #   steps:
-  #     - name: Cleanup workspace
-  #       if: ${{ always() }}
-  #       uses: gamestrap/gha-workspace-cleanup@v1.2.4
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
-  #       with:
-  #         submodules: 'true'
-  #         ref: dev
-  #     - uses: crazy-max/ghaction-import-gpg@v6
-  #       with:
-  #         gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-  #         passphrase: ${{ secrets.GPG_PASSPHRASE }}
-  #         git_user_signingkey: true
-  #         git_commit_gpgsign: true
-  #         git_committer_name: TRAP CI/CD
-  #     - uses: tibdex/github-app-token@v2
-  #       id: generate-token
-  #       with:
-  #         app_id: ${{ secrets.APP_ID }}
-  #         private_key: ${{ secrets.APP_PRIVATE_KEY }}
-  #     - name: Update SPIRV-Cross
-  #       id: spirvcross
-  #       run: |
-  #           cd Dependencies/SPIRV-Cross/
-  #           git fetch --tags
-  #           git checkout $(git tag -l "sdk-*" --sort=-v:refname | head -n 1)
-  #           echo "SPIRVCROSS_VERSION=$(git tag -l "sdk-*" --sort=-v:refname | head -n 1)" >> "$GITHUB_OUTPUT"
-  #           cd ../..
-  #     - name: Create Pull Request
-  #       uses: peter-evans/create-pull-request@v5
-  #       with:
-  #           base: dev
-  #           branch: spirvcross-update/${{steps.spirvcross.outputs.SPIRVCROSS_VERSION}}
-  #           delete-branch: true
-  #           commit-message: "Update SPIRV-Cross to ${{steps.spirvcross.outputs.SPIRVCROSS_VERSION}}"
-  #           title: "Update SPIRV-Cross to ${{steps.spirvcross.outputs.SPIRVCROSS_VERSION}}"
-  #           labels: "CI/CD, External, Update"
-  #           assignees: "GamesTrap"
-  #           milestone: 5
-  #           token: ${{steps.generate-token.outputs.token}}
-  #           author: "TRAP CI/CD <gamestrap@web.de>"
-  #           committer: "TRAP CI/CD <gamestrap@web.de>"
+      - name: Update ImGui
+        id: imgui
+        run: |
+            cd Dependencies/ImGui/
+            git fetch origin docking
+            git pull origin docking
+            newest_commit=$(git log --grep="Merge branch 'master' into docking" --pretty=format:'%H' --max-count=1)
+            git reset --hard $newest_commit
+            echo "IMGUI_VERSION=${newest_commit}" >> "$GITHUB_OUTPUT"
+            cd ../..
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+            base: update-dependency-composite
+            add-paths: Dependencies/ImGui
+            branch: imgui-update/${{steps.imgui.outputs.IMGUI_VERSION}}
+            delete-branch: true
+            commit-message: "Update ImGui to ${{steps.imgui.outputs.IMGUI_VERSION}}"
+            title: "Update ImGui to ${{steps.imgui.outputs.IMGUI_VERSION}}"
+            labels: "CI/CD, External, Update"
+            assignees: "GamesTrap"
+            milestone: 5
+            token: ${{steps.generate-token.outputs.token}}
+            author: "TRAP CI/CD <gamestrap@web.de>"
+            committer: "TRAP CI/CD <gamestrap@web.de>"

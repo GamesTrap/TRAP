@@ -9,6 +9,10 @@ inputs:
     description: ""
     required: false
     default: "main"
+  tag-regex:
+    description: ""
+    required: false
+    default: ""
   update-method:
     description: ""
     required: true
@@ -37,8 +41,8 @@ runs:
             echo "DEPENDENCY_VERSION=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           elif [[ ${{inputs.update-method}} == "latest-tag" ]]; then
             git fetch --tags
-            git checkout $(git rev-list --tags --max-count=1)
-            echo "DEPENDENCY_VERSION=$(git describe --tags --exact-match)" >> "$GITHUB_OUTPUT"
+            git checkout $(git tag --sort=-v:refname | grep -E ${{inputs.tag-regex}} | head -n 1)
+            echo "DEPENDENCY_VERSION=$(git tag --sort=-v:refname | grep -E ${{inputs.tag-regex}} | head -n 1)" >> "$GITHUB_OUTPUT"
           fi
           cd $homePath
     - name: Create Pull Request
