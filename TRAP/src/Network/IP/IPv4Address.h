@@ -193,7 +193,7 @@ constexpr TRAP::Network::IPv4Address::IPv4Address(const uint8_t byte0, const uin
                                                   const uint8_t byte3)
 	: m_address(NumericCast<uint32_t>((byte0 << 24u) | (byte1 << 16u) | (byte2 << 8u) | byte3)), m_valid(true)
 {
-	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(m_address);
 }
 
@@ -202,7 +202,7 @@ constexpr TRAP::Network::IPv4Address::IPv4Address(const uint8_t byte0, const uin
 constexpr TRAP::Network::IPv4Address::IPv4Address(const uint32_t address)
 	: m_address(address), m_valid(true)
 {
-	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(m_address);
 }
 
@@ -212,7 +212,7 @@ constexpr TRAP::Network::IPv4Address::IPv4Address(const uint32_t address)
 {
 	uint32_t address = m_address;
 
-	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(address);
 
 	return address;

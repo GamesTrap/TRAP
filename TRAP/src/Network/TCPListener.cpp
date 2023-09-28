@@ -50,7 +50,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 	{
 		uint16_t res = std::bit_cast<sockaddr_in>(address).sin_port;
 
-		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+		if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(res);
 
 		return res;

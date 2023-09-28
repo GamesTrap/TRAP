@@ -38,7 +38,7 @@ namespace
 	{
 		uint16_t port = address.sin6_port;
 
-		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+		if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(port);
 
 		return port;
@@ -89,7 +89,7 @@ namespace
 	{
 		uint16_t port = address.sin6_port;
 
-		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+		if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(port);
 
 		return port;
@@ -302,7 +302,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(Packet& packet)
 	//First convert the packet size to network byte order
 	std::size_t packetSize = size;
 
-	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(packetSize);
 
 	//Allocate memory for the data block to send
@@ -355,14 +355,14 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(Packet& pack
 
 		//The packet size has been fully received
 		packetSize = m_pendingPacket.Size;
-		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+		if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(packetSize);
 	}
 	else
 	{
 		//The packet size has already been received in a previous call
 		packetSize = m_pendingPacket.Size;
-		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+		if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(packetSize);
 	}
 

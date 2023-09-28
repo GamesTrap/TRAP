@@ -82,7 +82,7 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string_view address)
 	//Connect the socket to localhost on any port
 	uint32_t loopback = INADDR_LOOPBACK;
 
-	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(loopback);
 
 	const sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(loopback, 9);
@@ -107,7 +107,7 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string_view address)
 	//Finally build the IP address
 	uint32_t addr = std::bit_cast<sockaddr_in>(convertedAddress).sin_addr.s_addr;
 
-	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(addr);
 
 	return IPv4Address(addr);

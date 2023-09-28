@@ -42,7 +42,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 	sockaddr_in addr{};
 
-	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 	{
 		TRAP::Utils::Memory::SwapBytes(address);
 		TRAP::Utils::Memory::SwapBytes(port);
@@ -66,7 +66,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 	std::ranges::copy(address, addr.sin6_addr.u.Byte);
 	addr.sin6_family = AF_INET6;
 
-	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(port);
 
 	addr.sin6_port = port;

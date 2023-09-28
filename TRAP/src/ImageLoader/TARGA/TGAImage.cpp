@@ -42,7 +42,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 
 	//File uses little-endian
 	//Convert to machines endian
-	if (Utils::GetEndian() != Utils::Endian::Little)
+	if constexpr (Utils::GetEndian() != Utils::Endian::Little)
 	{
 		Utils::Memory::SwapBytes(header.ColorMapOffset);
 		Utils::Memory::SwapBytes(header.NumOfColorMaps);

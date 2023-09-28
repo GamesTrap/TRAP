@@ -101,7 +101,7 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::filesystem::path filepath)
 
 		//File uses big-endian
 		//Convert to machines endian
-		if (Utils::GetEndian() != Utils::Endian::Big)
+		if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 		{
 			for (uint16_t& element : m_data2Byte)
 				Utils::Memory::SwapBytes(element);

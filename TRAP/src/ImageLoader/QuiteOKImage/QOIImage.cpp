@@ -71,11 +71,8 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
         return;
     }
 
-	//Height and width uses big-endian
-	const bool needSwap = Utils::GetEndian() != Utils::Endian::Big;
-
     //Convert to machines endian
-    if(needSwap)
+    if constexpr (Utils::GetEndian() != Utils::Endian::Big)
     {
         Utils::Memory::SwapBytes(header.Width);
         Utils::Memory::SwapBytes(header.Height);

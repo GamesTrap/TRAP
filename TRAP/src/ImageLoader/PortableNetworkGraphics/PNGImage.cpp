@@ -75,9 +75,6 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 		return;
 	}
 
-	//File uses big-endian
-	const bool needSwap = Utils::GetEndian() != Utils::Endian::Big;
-
 	//Load Chunk
 	Data data{};
 	{
@@ -88,7 +85,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 		{
 			file.read(reinterpret_cast<char*>(&nextChunk.Length), sizeof(uint32_t));
 			file.read(nextChunk.MagicNumber.data(), NumericCast<std::streamsize>(nextChunk.MagicNumber.size()));
-			if (needSwap)
+			if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 				Utils::Memory::SwapBytes(nextChunk.Length);
 
 			if (nextChunk.Length > 2147483647)
@@ -99,7 +96,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 				return;
 			}
 
-			if (!ProcessChunk(nextChunk, file, data, alreadyLoaded, needSwap))
+			if (!ProcessChunk(nextChunk, file, data, alreadyLoaded))
 			{
 				file.close();
 				return;
@@ -333,14 +330,14 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 	"cHRM", "gAMA", "iCCP", "hIST", "pHYs", "sPLT", "tIME", "iTXt", "tEXt", "zTXt", "eXIf"
 };
 [[nodiscard]] bool TRAP::INTERNAL::PNGImage::ProcessChunk(NextChunk& nextChunk, std::ifstream& file, Data& data,
-                                                          AlreadyLoaded& alreadyLoaded, const bool needSwap)
+                                                          AlreadyLoaded& alreadyLoaded)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	if (nextChunk.MagicNumber == "IHDR" && !alreadyLoaded.IHDR)
 	{
 		alreadyLoaded.IHDR = true;
-		if (ProcessIHDR(file, data, needSwap))
+		if (ProcessIHDR(file, data))
 			return true;
 	}
 
@@ -401,7 +398,7 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::INTERNAL::PNGImage::ProcessIHDR(std::ifstream& file, Data& data, const bool needSwap)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::ProcessIHDR(std::ifstream& file, Data& data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -417,7 +414,7 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 	file.read(reinterpret_cast<char*>(ihdrChunk.CRC.data()), ihdrChunk.CRC.size());
 
 	//Convert to machines endian
-	if (needSwap)
+	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 	{
 		Utils::Memory::SwapBytes(ihdrChunk.Width);
 		Utils::Memory::SwapBytes(ihdrChunk.Height);
@@ -1323,7 +1320,7 @@ void TRAP::INTERNAL::PNGImage::Adam7DeInterlace(uint8_t* const out, const uint8_
 
 	std::vector<uint16_t> result(raw.size() / 2, 0);
 	uint32_t resultIndex = 0;
-	if (Utils::GetEndian() == Utils::Endian::Big)
+	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 	{
 		for (uint32_t i = 0; i < raw.size(); i += 2)
 		{

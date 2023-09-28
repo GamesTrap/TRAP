@@ -48,7 +48,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 	{
 		uint16_t port = std::bit_cast<sockaddr_in>(address).sin_port;
 
-		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+		if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(port);
 
 		return port;
@@ -170,7 +170,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* const data
 	uint32_t addr = address.sin_addr.s_addr;
 	uint16_t port = address.sin_port;
 
-	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 	{
 		TRAP::Utils::Memory::SwapBytes(addr);
 		TRAP::Utils::Memory::SwapBytes(port);

@@ -56,7 +56,7 @@ namespace TRAP::Utils
 	/// Get the endianness of the system.
 	/// </summary>
 	/// <returns>TRAP::Utils::Endian::Little or TRAP::Utils::Endian::Big.</returns>
-	[[nodiscard]] constexpr Endian GetEndian();
+	[[nodiscard]] consteval Endian GetEndian();
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -181,7 +181,7 @@ namespace TRAP::Utils
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline constexpr TRAP::Utils::Endian TRAP::Utils::GetEndian()
+[[nodiscard]] inline consteval TRAP::Utils::Endian TRAP::Utils::GetEndian()
 {
 	//Check if machine is using little-endian or big-endian
 	return static_cast<Endian>(std::endian::native == std::endian::little);

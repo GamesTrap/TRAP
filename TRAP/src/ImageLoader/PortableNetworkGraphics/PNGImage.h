@@ -115,10 +115,9 @@ namespace TRAP::INTERNAL
 		/// <param name="file">Open PNG file.</param>
 		/// <param name="data">Data containing information about the image.</param>
 		/// <param name="alreadyLoaded">Flags to indicate which chunks have already been loaded.</param>
-		/// <param name="needSwap">Flag to indicate if the data needs to be swapped.</param>
 		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
 		[[nodiscard]] static bool ProcessChunk(NextChunk& nextChunk, std::ifstream& file, Data& data,
-		                                       AlreadyLoaded& alreadyLoaded, bool needSwap);
+		                                       AlreadyLoaded& alreadyLoaded);
 
 		struct IHDRChunk
 		{
@@ -150,9 +149,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="file">Open PNG file.</param>
 		/// <param name="data">Data containing information about the image.</param>
-		/// <param name="needSwap">Flag to indicate if the data needs to be swapped.</param>
 		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
-		[[nodiscard]] static bool ProcessIHDR(std::ifstream& file, Data& data, bool needSwap);
+		[[nodiscard]] static bool ProcessIHDR(std::ifstream& file, Data& data);
 		/// <summary>
 		/// Process the optional sBIT chunk.
 		/// sBIT contains the significant bits for each sample.

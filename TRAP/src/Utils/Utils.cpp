@@ -467,7 +467,7 @@ static TRAP::Utils::NTDLL s_ntdll;
 		name.sin_port = port;
 		name.sin_addr.s_addr = INADDR_ANY;
 
-		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+		if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 		{
 			TRAP::Utils::Memory::SwapBytes(name.sin_port);
 			TRAP::Utils::Memory::SwapBytes(name.sin_addr.s_addr);

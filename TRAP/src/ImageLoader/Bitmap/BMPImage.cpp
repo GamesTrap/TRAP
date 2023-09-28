@@ -33,8 +33,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 
 	//File uses little-endian
 	//Convert to machines endian
-	const bool needSwap = Utils::GetEndian() != Utils::Endian::Little;
-	if (needSwap)
+	if constexpr (Utils::GetEndian() != Utils::Endian::Little)
 	{
 		Utils::Memory::SwapBytes(header.MagicNumber);
 		Utils::Memory::SwapBytes(header.Size);
@@ -62,7 +61,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 	file.read(reinterpret_cast<char*>(&infoHeader.CLRUsed), sizeof(uint32_t));
 	file.ignore(4);
 
-	if (needSwap)
+	if constexpr (Utils::GetEndian() != Utils::Endian::Little)
 	{
 		Utils::Memory::SwapBytes(infoHeader.Size);
 		Utils::Memory::SwapBytes(infoHeader.Width);
@@ -97,7 +96,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 		file.read(reinterpret_cast<char*>(&std::get<2>(masks)), sizeof(uint32_t));
 		file.read(reinterpret_cast<char*>(&std::get<3>(masks)), sizeof(uint32_t));
 
-		if (needSwap)
+		if constexpr (Utils::GetEndian() != Utils::Endian::Little)
 		{
 			Utils::Memory::SwapBytes(std::get<0>(masks));
 			Utils::Memory::SwapBytes(std::get<1>(masks));

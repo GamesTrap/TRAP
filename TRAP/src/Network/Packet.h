@@ -355,7 +355,7 @@ constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int16_t& data
 	{
 		std::copy_n(&m_data[m_readPos], sizeof(int16_t), &data);
 
-		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
+		if constexpr (Utils::GetEndian() == Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
 
 		m_readPos += sizeof(int16_t);
@@ -372,7 +372,7 @@ constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint16_t& dat
 	{
 		std::copy_n(&m_data[m_readPos], sizeof(uint16_t), &data);
 
-		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
+		if constexpr (Utils::GetEndian() == Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
 
 		m_readPos += sizeof(uint16_t);
@@ -389,7 +389,7 @@ constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int32_t& data
 	{
 		std::copy_n(&m_data[m_readPos], sizeof(int32_t), &data);
 
-		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
+		if constexpr (Utils::GetEndian() == Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
 
 		m_readPos += sizeof(int32_t);
@@ -406,7 +406,7 @@ constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint32_t& dat
 	{
 		std::copy_n(&m_data[m_readPos], sizeof(uint32_t), &data);
 
-		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
+		if constexpr (Utils::GetEndian() == Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
 
 		m_readPos += sizeof(uint32_t);
@@ -423,7 +423,7 @@ constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int64_t& data
 	{
 		std::copy_n(&m_data[m_readPos], sizeof(int64_t), &data);
 
-		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
+		if constexpr (Utils::GetEndian() == Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
 
 		m_readPos += sizeof(int64_t);
@@ -440,7 +440,7 @@ constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint64_t& dat
 	{
 		std::copy_n(&m_data[m_readPos], sizeof(uint64_t), &data);
 
-		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
+		if constexpr (Utils::GetEndian() == Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
 
 		m_readPos += sizeof(uint64_t);
@@ -592,7 +592,7 @@ constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint8_t
 
 constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(int16_t data)
 {
-	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
+	if constexpr (Utils::GetEndian() == Utils::Endian::Little)
 		TRAP::Utils::Memory::SwapBytes(data); //Need to convert to big endian
 
 	Append(&data, sizeof(int16_t));
@@ -603,7 +603,7 @@ constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(int16_t data)
 
 constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(uint16_t data)
 {
-	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
+	if constexpr (Utils::GetEndian() == Utils::Endian::Little)
 		TRAP::Utils::Memory::SwapBytes(data); //Need to convert to big endian
 
 	Append(&data, sizeof(uint16_t));
@@ -614,7 +614,7 @@ constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(uint16_t data
 
 constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(int32_t data)
 {
-	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
+	if constexpr (Utils::GetEndian() == Utils::Endian::Little)
 		TRAP::Utils::Memory::SwapBytes(data); //Need to convert to big endian
 
 	Append(&data, sizeof(int32_t));
@@ -625,7 +625,7 @@ constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(int32_t data)
 
 constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(uint32_t data)
 {
-	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
+	if constexpr (Utils::GetEndian() == Utils::Endian::Little)
 		TRAP::Utils::Memory::SwapBytes(data); //Need to convert to big endian
 
 	Append(&data, sizeof(uint32_t));
@@ -636,7 +636,7 @@ constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(uint32_t data
 
 constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(int64_t data)
 {
-	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
+	if constexpr (Utils::GetEndian() == Utils::Endian::Little)
 		TRAP::Utils::Memory::SwapBytes(data); //Need to convert to big endian
 
 	Append(&data, sizeof(int64_t));
@@ -647,7 +647,7 @@ constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(int64_t data)
 
 constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator<<(uint64_t data)
 {
-	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
+	if constexpr (Utils::GetEndian() == Utils::Endian::Little)
 		TRAP::Utils::Memory::SwapBytes(data); //Need to convert to big endian
 
 	Append(&data, sizeof(uint64_t));

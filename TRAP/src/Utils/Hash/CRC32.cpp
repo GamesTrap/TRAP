@@ -571,7 +571,7 @@ static constexpr std::array<std::array<uint32_t, 256>, 16> CRC32Lookup =
 	{
 		for (std::size_t unrolling = 0; unrolling < Unroll; unrolling++)
 		{
-			if (Utils::GetEndian() == Utils::Endian::Big)
+			if constexpr (Utils::GetEndian() == Utils::Endian::Big)
 			{
 				Memory::SwapBytes(crc);
 				const uint32_t one = *current++ ^ crc;
