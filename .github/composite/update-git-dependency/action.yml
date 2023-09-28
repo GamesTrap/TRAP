@@ -45,6 +45,7 @@ runs:
       uses: peter-evans/create-pull-request@v5
       with:
           base: update-dependency-composite
+          add-paths: ${{inputs.dependency-path}}
           branch: ${{inputs.pr-branch-name}}/${{steps.dependency.outputs.DEPENDENCY_VERSION}}
           delete-branch: true
           commit-message: "Update ${{inputs.pr-title}} to ${{steps.dependency.outputs.DEPENDENCY_VERSION}}"
