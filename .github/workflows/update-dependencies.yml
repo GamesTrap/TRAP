@@ -26,6 +26,10 @@ jobs:
           branch: "main"
           pr-title: "Box2D"
           pr-branch-name: "box2d-update"
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
   # update-entt:
   #   name: Update EnTT

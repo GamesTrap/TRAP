@@ -1,52 +1,69 @@
 name: "Update Git Dependency"
+author: Jan Schürkamp <gamestrap@trappedgames.de>
+description: ""
 inputs:
   dependency-path:
+    description: ""
     required: true
   branch:
+    description: ""
     required: true
     default: "master"
   update-method:
+    description: ""
     required: true
     default: "latest-commit"
   pr-title:
+    description: ""
     required: true
   pr-branch-name:
+    description: ""
+    required: true
+  gpg_private_key:
+    description: 'GPG private key exported as an ASCII armored version or its base64 encoding'
+    required: true
+  passphrase:
+    description: 'Passphrase of the GPG private key'
+    required: false
+  app_id:
+    description: ID of the GitHub App.
+    required: true
+  private_key:
+    description: Private key of the GitHub App (can be Base64 encoded).
     required: true
 runs:
   using: "composite"
   steps:
     - uses: crazy-max/ghaction-import-gpg@v6
       with:
-        gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-        passphrase: ${{ secrets.GPG_PASSPHRASE }}
+        gpg_private_key: ${{ inputs.gpg_private_key }}
+        passphrase: ${{ inputs.passphrase }}
         git_user_signingkey: true
         git_commit_gpgsign: true
         git_committer_name: TRAP CI/CD
     - uses: tibdex/github-app-token@v2
       id: generate-token
       with:
-        app_id: ${{ secrets.APP_ID }}
-        private_key: ${{ secrets.APP_PRIVATE_KEY }}
-    - name: Update Dependency (latest commit)
-      if: ${{inputs.update-method == "latest-commit"}}
+        app_id: ${{ inputs.app_id }}
+        private_key: ${{ inputs.private_key }}
+    - name: Update Dependency
+      shell: bash
       id: dependency
       run: |
           cd ${{inputs.dependency-path}}
-          git checkout ${{inputs.branch}}
-          git pull origin ${{inputs.branch}}
-          echo "DEPENDENCY_VERSION=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-    - name: Update Dependency (latest tag)
-      if: ${{inputs.update-method == "latest-tag"}}
-      id: dependency
-      run: |
-          cd ${{inputs.dependency-path}}
-          git fetch --tags
-          git checkout $(git rev-list --tags --max-count=1)
-          echo "DEPENDENCY_VERSION=$(git describe --tags --exact-match)" >> "$GITHUB_OUTPUT"
+          if [[ ${{inputs.update-method}} == "latest-commit" ]]; then
+            git checkout ${{inputs.branch}}
+            git pull origin ${{inputs.branch}}
+            echo "DEPENDENCY_VERSION=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          elif [[ ${{inputs.update-method}} == "latest-tag" ]]; then
+            git fetch --tags
+            git checkout $(git rev-list --tags --max-count=1)
+            echo "DEPENDENCY_VERSION=$(git describe --tags --exact-match)" >> "$GITHUB_OUTPUT"
+          fi
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5
       with:
-          base: dev
+          base: update-dependency-composite
           branch: ${{inputs.pr-branch-name}}/${{steps.dependency.outputs.DEPENDENCY_VERSION}}
           delete-branch: true
           commit-message: "Update ${{inputs.pr-title}} to ${{steps.dependency.outputs.DEPENDENCY_VERSION}}"
