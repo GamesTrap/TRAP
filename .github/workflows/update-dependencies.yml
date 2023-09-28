@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: 'true'
-          ref: dev
+          ref: update-dependency-composite
       - name: Update Box2D
         uses: ./.github/composite/update-git-dependency.yml
         with:
