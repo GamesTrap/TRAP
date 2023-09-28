@@ -19,40 +19,13 @@ jobs:
         with:
           submodules: 'true'
           ref: dev
-      - uses: crazy-max/ghaction-import-gpg@v6
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-          git_committer_name: TRAP CI/CD
-      - uses: tibdex/github-app-token@v2
-        id: generate-token
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Update Box2D
-        id: box2d
-        run: |
-          cd Dependencies/Box2D/
-          git fetch origin main
-          git pull origin main
-          echo "BOX2D_VERSION=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-          cd ../..
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
+        uses: ./.github/composite/update-git-dependency.yml
         with:
-          base: dev
-          branch: box2d-update/${{steps.box2d.outputs.BOX2D_VERSION}}
-          delete-branch: true
-          commit-message: "Update Box2D to ${{steps.box2d.outputs.BOX2D_VERSION}}"
-          title: "Update Box2D to ${{steps.box2d.outputs.BOX2D_VERSION}}"
-          labels: "CI/CD, External, Update"
-          assignees: "GamesTrap"
-          milestone: 5
-          token: ${{steps.generate-token.outputs.token}}
-          author: "TRAP CI/CD <gamestrap@web.de>"
-          committer: "TRAP CI/CD <gamestrap@web.de>"
+          dependency-path: "Dependencies/Box2D"
+          branch: "main"
+          pr-title: "Box2D"
+          pr-branch-name: "box2d-update"
 
   update-entt:
     name: Update EnTT

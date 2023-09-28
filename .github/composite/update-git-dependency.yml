@@ -1,0 +1,60 @@
+name: "Update Git Dependency"
+inputs:
+  dependency-path:
+    required: true
+  branch:
+    required: true
+    default: "master"
+  update-method:
+    required: true
+    default: "latest-commit"
+  pr-title:
+    required: true
+  pr-branch-name:
+    required: true
+outputs:
+runs:
+  using: "composite"
+  steps:
+    - uses: crazy-max/ghaction-import-gpg@v6
+      with:
+        gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+        passphrase: ${{ secrets.GPG_PASSPHRASE }}
+        git_user_signingkey: true
+        git_commit_gpgsign: true
+        git_committer_name: TRAP CI/CD
+    - uses: tibdex/github-app-token@v2
+      id: generate-token
+      with:
+        app_id: ${{ secrets.APP_ID }}
+        private_key: ${{ secrets.APP_PRIVATE_KEY }}
+    - name: Update Dependency (latest commit)
+      if: ${{inputs.update-method == "latest-commit"}}
+      id: dependency
+      run: |
+          cd ${{inputs.dependency-path}}
+          git checkout ${{inputs.branch}}
+          git pull origin ${{inputs.branch}}
+          echo "DEPENDENCY_VERSION=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+    - name: Update Dependency (latest tag)
+      if: ${{inputs.update-method == "latest-tag"}}
+      id: dependency
+      run: |
+          cd ${{inputs.dependency-path}}
+          git fetch --tags
+          git checkout $(git rev-list --tags --max-count=1)
+          echo "DEPENDENCY_VERSION=$(git describe --tags --exact-match)" >> "$GITHUB_OUTPUT"
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+          base: dev
+          branch: ${{inputs.pr-branch-name}}/${{steps.dependency.outputs.DEPENDENCY_VERSION}}
+          delete-branch: true
+          commit-message: "Update ${{inputs.pr-title}} to ${{steps.dependency.outputs.DEPENDENCY_VERSION}}"
+          title: "Update ${{inputs.pr-title}} to ${{steps.dependency.outputs.DEPENDENCY_VERSION}}"
+          labels: "CI/CD, External, Update"
+          assignees: "GamesTrap"
+          milestone: 5
+          token: ${{steps.generate-token.outputs.token}}
+          author: "TRAP CI/CD <gamestrap@web.de>"
+          committer: "TRAP CI/CD <gamestrap@web.de>"
