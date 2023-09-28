@@ -12,7 +12,6 @@ inputs:
     required: true
   pr-branch-name:
     required: true
-outputs:
 runs:
   using: "composite"
   steps:
