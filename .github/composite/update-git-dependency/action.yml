@@ -29,6 +29,7 @@ runs:
       shell: bash
       id: dependency
       run: |
+          homePath=$(pwd)
           cd ${{inputs.dependency-path}}
           if [[ ${{inputs.update-method}} == "latest-commit" ]]; then
             git checkout ${{inputs.branch}}
@@ -39,6 +40,7 @@ runs:
             git checkout $(git rev-list --tags --max-count=1)
             echo "DEPENDENCY_VERSION=$(git describe --tags --exact-match)" >> "$GITHUB_OUTPUT"
           fi
+          cd $homePath
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5
       with:
