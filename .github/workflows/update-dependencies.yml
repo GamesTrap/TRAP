@@ -20,7 +20,7 @@ jobs:
           submodules: 'true'
           ref: update-dependency-composite
       - name: Update Box2D
-        uses: ./.github/composite/update-git-dependency.yml
+        uses: ./.github/composite/update-git-dependency
         with:
           dependency-path: "Dependencies/Box2D"
           branch: "main"
