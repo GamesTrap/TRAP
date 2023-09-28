@@ -4442,6 +4442,6 @@ SITREP 09/25/2023|23w39a1
     - Changed TRAP Engine version to 23w39a1(0.9.99)
     - VulkanLoader Fix conflict between FARPROC definition and minwindef.h ~<5 mins
 
-SITREP 09/25/2023|23w39a1
-    - Changed TRAP Engine version to 23w39a1(0.9.100)
+SITREP 09/26/2023|23w39a1
+    - Changed TRAP Engine version to 23w39a2(0.9.100)
     - Linux Added support for generating code coverage reports using gcov and lcov ~<30 mins
