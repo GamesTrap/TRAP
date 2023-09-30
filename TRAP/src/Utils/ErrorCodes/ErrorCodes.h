@@ -16,7 +16,7 @@ namespace TRAP::Utils
         VulkanNoPhysicalDeviceFound = 0x0007,
         LinuxUnsupportedWindowManager = 0x0008,
         WindowingAPIWindowCreationFailed = 0x0009,
-        WindowsVersionOlderThanWindows7 = 0x000A,
+        // WindowsVersionOlderThanWindows7 = 0x000A, //Replaced by WindowsVersionOlderThanWindows10
         RenderAPINoSupportedFound = 0x000B,
         MonitorNoneFound = 0x000C,
         VulkanDeviceReset = 0x000D, //Usually happens while presenting (Nsight Aftermath may create a dump)
@@ -33,6 +33,7 @@ namespace TRAP::Utils
         VulkanNoMatchingMemoryTypeFound = 0x0018,
         SteamFailedGeneric = 0x0019,
         SteamVersionMismatch = 0x001A,
+        WindowsVersionOlderThanWindows10 = 0x001B,
     };
 
 //-------------------------------------------------------------------------------------------------------------------//

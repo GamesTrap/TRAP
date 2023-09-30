@@ -4457,3 +4457,7 @@ SITREP 09/29/2023|23w39b1
 SITREP 09/30/2023|23w39b2
     - Changed TRAP Engine version to 23w39b2(0.9.103)
     - Unittests Roll, Yaw and ATan2 now run the correct functions ~<5 mins
+
+SITREP 09/31/2023|23w39b3
+    - Changed TRAP Engine version to 23w39b3(0.9.104)
+    - Engine now requires Windows 10 or newer ~<10 mins

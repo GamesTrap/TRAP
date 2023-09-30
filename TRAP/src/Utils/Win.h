@@ -9,9 +9,12 @@
 	#define NOMINMAX
 #endif /*NOMINMAX*/
 
-//Target Windows 8 or later
+//Target Windows 10 or later
+#ifndef _WIN32_WINNT_WIN10
+	#define _WIN32_WINNT_WIN10 0x0A00
+#endif /*_WIN32_WINNT_WIN10*/
 #ifndef _WIN32_WINNT
-	#define _WIN32_WINNT 0x0602
+	#define _WIN32_WINNT _WIN32_WINNT_WIN10
 #endif /*_WIN32_WINNT*/
 #include <sdkddkver.h>
 

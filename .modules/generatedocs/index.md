@@ -21,7 +21,7 @@ To build TRAP™ follow the guide on this page: {ref}`buildingtrap`.
 
 :::{tab} Minimum
 
-- OS: Windows 7/Ubuntu 18.04.6 or newer (64-Bit versions only)
+- OS: Windows 10/Ubuntu 18.04.6 or newer (64-Bit versions only)
 - Processor: Intel or AMD CPU with AVX2 support
 - Graphics Card: AMD, NVIDIA with Vulkan 1.1 support (Intel untested)
 - Memory: 4 GB RAM
@@ -31,7 +31,7 @@ To build TRAP™ follow the guide on this page: {ref}`buildingtrap`.
 :::
 :::{tab} Recommended
 
-- OS: Windows 7/Ubuntu 18.04.6 or newer (64-Bit versions only)
+- OS: Windows 10/Ubuntu 18.04.6 or newer (64-Bit versions only)
 - Processor: Intel or AMD CPU with AVX2 support
 - Graphics Card: AMD, NVIDIA with Vulkan 1.1 support (Intel untested)
 - Memory: 4 GB RAM

@@ -134,30 +134,26 @@ namespace TRAP::Utils
 	/// <returns>Whether Windows 11 version is given build or newer.</returns>
 	[[nodiscard]] BOOL IsWindows11BuildOrGreaterWin32(const WORD build);
 	/// <summary>
-	/// Checks whether we are on at least Windows 10 Anniversary Update.
+	/// Checks whether we are on at least Windows 11 21H2 "Sun Valley" (10.0.22000).
+	/// </summary>
+	/// <returns>Whether Windows 11 version is given build or newer.</returns>
+	[[nodiscard]] BOOL IsWindows11OrGreaterWin32();
+
+	/// <summary>
+	/// Checks whether we are on at least Windows 10 Anniversary Update ("Redstone 1" / 1607 / 10.0.14393).
 	/// </summary>
 	/// <returns>Whether Windows 10 Anniversary version or newer.</returns>
 	[[nodiscard]] BOOL IsWindows10Version1607OrGreaterWin32();
 	/// <summary>
-	/// Checks whether we are on at least Windows 10 Creators Update.
+	/// Checks whether we are on at least Windows 10 Creators Update ("Redstone 2" / 1703 / 10.0.15063).
 	/// </summary>
 	/// <returns>Whether Window 10 Creators version or newer.</returns>
 	[[nodiscard]] BOOL IsWindows10Version1703OrGreaterWin32();
 	/// <summary>
-	/// Checks whether we are on at least Windows 8.1.
+	/// Checks whether we are on at least Windows 10 Threshold 1 (1507 / 10.0.10240).
 	/// </summary>
-	/// <returns>Whether Windows 8.1 version or newer.</returns>
-	[[nodiscard]] BOOL IsWindows8Point1OrGreaterWin32();
-	/// <summary>
-	/// Checks whether we are on at least Windows 8.
-	/// </summary>
-	/// <returns>Whether Windows 8 version or newer.</returns>
-	[[nodiscard]] BOOL IsWindows8OrGreaterWin32();
-	/// <summary>
-	/// Checks whether we are on at least Windows 7.
-	/// </summary>
-	/// <returns>Whether Windows 7 version or newer.</returns>
-	[[nodiscard]] BOOL IsWindows7OrGreaterWin32();
+	/// <returns>Whether Windows 10 version is given build or newer.</returns>
+	[[nodiscard]] BOOL IsWindows10OrGreaterWin32();
 #endif /*TRAP_PLATFORM_WINDOWS*/
 
 	//-------------------------------------------------------------------------------------------------------------------//

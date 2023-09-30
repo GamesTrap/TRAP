@@ -369,6 +369,15 @@ static TRAP::Utils::NTDLL s_ntdll;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+[[nodiscard]] BOOL TRAP::Utils::IsWindows11OrGreaterWin32()
+{
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	return IsWindows10BuildOrGreaterWin32(22000); //Windows 11 shares 10.0.XXXXX format with Windows 10
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] BOOL TRAP::Utils::IsWindows10Version1607OrGreaterWin32()
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -387,32 +396,11 @@ static TRAP::Utils::NTDLL s_ntdll;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] BOOL TRAP::Utils::IsWindows8Point1OrGreaterWin32()
+[[nodiscard]] BOOL TRAP::Utils::IsWindows10OrGreaterWin32()
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return IsWindowsVersionOrGreaterWin32(HIBYTE(_WIN32_WINNT_WINBLUE),
-		                                  LOBYTE(_WIN32_WINNT_WINBLUE), 0);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] BOOL TRAP::Utils::IsWindows8OrGreaterWin32()
-{
-	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return IsWindowsVersionOrGreaterWin32(HIBYTE(_WIN32_WINNT_WIN8),
-		                                  LOBYTE(_WIN32_WINNT_WIN8), 0);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] BOOL TRAP::Utils::IsWindows7OrGreaterWin32()
-{
-	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return IsWindowsVersionOrGreaterWin32(HIBYTE(_WIN32_WINNT_WIN7),
-		                                  LOBYTE(_WIN32_WINNT_WIN7), 0);
+	return IsWindows10BuildOrGreaterWin32(10240);
 }
 
 #endif /*TRAP_PLATFORM_WINDOWS*/

@@ -108,10 +108,10 @@ Modified by: Jan "GamesTrap" Schuerkamp
 																											 "GetDpiForMonitor");
 	}
 
-	if (Utils::IsWindows7OrGreaterWin32())
+	if (Utils::IsWindows10OrGreaterWin32())
 		return true;
 
-	Utils::DisplayError(Utils::ErrorCode::WindowsVersionOlderThanWindows7);
+	Utils::DisplayError(Utils::ErrorCode::WindowsVersionOlderThanWindows10);
 	return false;
 }
 
@@ -1372,20 +1372,10 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScaleWin32(HMONITOR handle, 
 
 	UINT xDPI = 0, yDPI = 0;
 
-	if (Utils::IsWindows8Point1OrGreaterWin32())
+	if(s_Data.SHCore.GetDPIForMonitor(handle, Monitor_DPI_Type::MDT_Effective_DPI, &xDPI, &yDPI) != S_OK)
 	{
-		if(s_Data.SHCore.GetDPIForMonitor(handle, Monitor_DPI_Type::MDT_Effective_DPI, &xDPI, &yDPI) != S_OK)
-		{
-			InputError(Error::Platform_Error, "[WinAPI] Failed to query monitor DPI");
-			return;
-		}
-	}
-	else
-	{
-		const HDC dc = GetDC(nullptr);
-		xDPI = GetDeviceCaps(dc, LOGPIXELSX);
-		yDPI = GetDeviceCaps(dc, LOGPIXELSY);
-		ReleaseDC(nullptr, dc);
+		InputError(Error::Platform_Error, "[WinAPI] Failed to query monitor DPI");
+		return;
 	}
 
 	xScale = NumericCast<float>(xDPI) / NumericCast<float>(USER_DEFAULT_SCREEN_DPI);
@@ -1507,20 +1497,17 @@ void TRAP::INTERNAL::WindowingAPI::UpdateTheme(HWND hWnd)
 
 	SetPropW(window.Handle, L"TRAP", static_cast<void*>(&window));
 
-	if (Utils::IsWindows7OrGreaterWin32())
-	{
-		s_Data.User32.ChangeWindowMessageFilterEx(window.Handle,
-			WM_DROPFILES, MSGFLT_ALLOW, nullptr);
-		s_Data.User32.ChangeWindowMessageFilterEx(window.Handle,
-			WM_COPYDATA, MSGFLT_ALLOW, nullptr);
-		s_Data.User32.ChangeWindowMessageFilterEx(window.Handle,
-			WM_COPYGLOBALDATA, MSGFLT_ALLOW, nullptr);
+	s_Data.User32.ChangeWindowMessageFilterEx(window.Handle,
+		WM_DROPFILES, MSGFLT_ALLOW, nullptr);
+	s_Data.User32.ChangeWindowMessageFilterEx(window.Handle,
+		WM_COPYDATA, MSGFLT_ALLOW, nullptr);
+	s_Data.User32.ChangeWindowMessageFilterEx(window.Handle,
+		WM_COPYGLOBALDATA, MSGFLT_ALLOW, nullptr);
 
-		//TaskbarList stuff
-		window.TaskbarListMsgID = RegisterWindowMessageW(L"TaskbarButtonCreated");
-		if(window.TaskbarListMsgID)
-			s_Data.User32.ChangeWindowMessageFilterEx(window.Handle, window.TaskbarListMsgID, MSGFLT_ALLOW, nullptr);
-	}
+	//TaskbarList stuff
+	window.TaskbarListMsgID = RegisterWindowMessageW(L"TaskbarButtonCreated");
+	if(window.TaskbarListMsgID)
+		s_Data.User32.ChangeWindowMessageFilterEx(window.Handle, window.TaskbarListMsgID, MSGFLT_ALLOW, nullptr);
 
 	if (!window.Monitor)
 	{
@@ -2343,7 +2330,7 @@ void TRAP::INTERNAL::WindowingAPI::SetAccessibilityShortcutKeys(const bool allow
 
 	if (Utils::IsWindows10Version1703OrGreaterWin32())
 		s_Data.User32.SetProcessDPIAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-	else if (Utils::IsWindows8Point1OrGreaterWin32())
+	else
 		s_Data.SHCore.SetProcessDPIAwareness(Process_DPI_Awareness::Process_Per_Monitor_DPI_Aware); //Process per monitor DPI aware
 
 	s_Data.User32.SetProcessDPIAware();
