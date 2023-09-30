@@ -10,7 +10,7 @@
 
 template<typename T>
 requires std::floating_point<T>
-consteval void RunYawCompileTimeTests()
+consteval void RunPitchCompileTimeTests()
 {
     constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -48,7 +48,7 @@ consteval void RunYawCompileTimeTests()
 
 template<typename T>
 requires std::floating_point<T>
-void RunYawRunTimeTests()
+void RunPitchRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -86,7 +86,7 @@ void RunYawRunTimeTests()
 
 template<typename T>
 requires std::floating_point<T>
-void RunYawEdgeTests()
+void RunPitchEdgeTests()
 {
     static constexpr T inf = std::numeric_limits<T>::infinity();
     static constexpr T ninf = -std::numeric_limits<T>::infinity();
@@ -116,14 +116,14 @@ TEST_CASE("TRAP::Math::Pitch()", "[math][generic][pitch]")
 {
     SECTION("Quat - double")
     {
-        RunYawRunTimeTests<double>();
-        RunYawCompileTimeTests<double>();
-        RunYawEdgeTests<double>();
+        RunPitchRunTimeTests<double>();
+        RunPitchCompileTimeTests<double>();
+        RunPitchEdgeTests<double>();
     }
     SECTION("Quat - float")
     {
-        RunYawRunTimeTests<float>();
-        RunYawCompileTimeTests<float>();
-        RunYawEdgeTests<float>();
+        RunPitchRunTimeTests<float>();
+        RunPitchCompileTimeTests<float>();
+        RunPitchEdgeTests<float>();
     }
 }

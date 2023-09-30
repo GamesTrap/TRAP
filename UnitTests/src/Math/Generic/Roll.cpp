@@ -10,7 +10,7 @@
 
 template<typename T>
 requires std::floating_point<T>
-consteval void RunPitchCompileTimeTests()
+consteval void RunRollCompileTimeTests()
 {
     constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -48,7 +48,7 @@ consteval void RunPitchCompileTimeTests()
 
 template<typename T>
 requires std::floating_point<T>
-void RunPitchRunTimeTests()
+void RunRollRunTimeTests()
 {
     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
@@ -86,7 +86,7 @@ void RunPitchRunTimeTests()
 
 template<typename T>
 requires std::floating_point<T>
-void RunPitchEdgeTests()
+void RunRollEdgeTests()
 {
     static constexpr T inf = std::numeric_limits<T>::infinity();
     static constexpr T ninf = -std::numeric_limits<T>::infinity();
@@ -116,14 +116,14 @@ TEST_CASE("TRAP::Math::Roll()", "[math][generic][roll]")
 {
     SECTION("Quat - double")
     {
-        RunPitchRunTimeTests<double>();
-        RunPitchCompileTimeTests<double>();
-        RunPitchEdgeTests<double>();
+        RunRollRunTimeTests<double>();
+        RunRollCompileTimeTests<double>();
+        RunRollEdgeTests<double>();
     }
     SECTION("Quat - float")
     {
-        RunPitchRunTimeTests<float>();
-        RunPitchCompileTimeTests<float>();
-        RunPitchEdgeTests<float>();
+        RunRollRunTimeTests<float>();
+        RunRollCompileTimeTests<float>();
+        RunRollEdgeTests<float>();
     }
 }

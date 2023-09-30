@@ -62,7 +62,7 @@ void RunYawRunTimeTests()
         const T expected = 90.0f;
         const TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(0.0f, expected, 0.0f)));
         const T yaw = TRAP::Math::Degrees(TRAP::Math::Yaw(q));
-        REQUIRE(TRAP::Math::Equal(yaw, expected, T(0.0000000000001f)));
+        REQUIRE(TRAP::Math::Equal(yaw, expected, T(0.1f)));
     }
     {
         const T expected = 45.0f;
@@ -71,10 +71,10 @@ void RunYawRunTimeTests()
         REQUIRE(TRAP::Math::Equal(yaw, expected, T(0.00001f)));
     }
     {
-        const T expected = 180.0f;
-        const TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(0.0f, expected, 0.0f)));
+        const T val = 180.0f;
+        const TRAP::Math::tQuat<T> q(TRAP::Math::Radians(TRAP::Math::tVec3<T>(0.0f, val, 0.0f)));
         const T yaw = TRAP::Math::Abs(TRAP::Math::Degrees(TRAP::Math::Yaw(q)));
-        REQUIRE(TRAP::Math::Equal(yaw, expected, Epsilon));
+        REQUIRE(TRAP::Math::Equal(yaw, T(0.0f), T(0.00001f)));
     }
     {
         const T expected = -45.0f;

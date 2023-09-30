@@ -4453,3 +4453,7 @@ SITREP 09/28/2023|23w39a3
 SITREP 09/29/2023|23w39b1
     - Changed TRAP Engine version to 23w39b1(0.9.102)
     - Refactored Update-Dependencies using composite action ~>45 mins
+
+SITREP 09/30/2023|23w39b2
+    - Changed TRAP Engine version to 23w39b2(0.9.103)
+    - Unittests Roll, Yaw and ATan2 now run the correct functions ~<5 mins
