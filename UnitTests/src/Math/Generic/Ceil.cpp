@@ -7,132 +7,135 @@
 
 #include "TRAP/src/Maths/Math.h"
 
-template<typename T>
-requires std::floating_point<T>
-consteval void RunCeilCompileTimeTests()
+namespace
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
-
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(   0.0f)), T(    0.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  0.0f)), T(    0.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(   0.1f)), T(    1.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  0.1f)), T(    0.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(   0.5f)), T(    1.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  0.5f)), T(    0.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(   0.9f)), T(    1.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  0.9f)), T(    0.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(   1.0f)), T(    1.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  1.0f)), T(-   1.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(   1.5f)), T(    2.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  1.5f)), T(-   1.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(   1.9f)), T(    2.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  1.9f)), T(-   1.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(   4.2f)), T(    5.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(   4.5f)), T(    5.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(   4.7f)), T(    5.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(   5.0f)), T(    5.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  4.2f)), T(-   4.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  4.5f)), T(-   4.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  4.7f)), T(-   4.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  5.0f)), T(-   5.0f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T( 42e32f)), T( 4.2e+33f), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-42e32f)), T(-4.2e+33f), Epsilon));
-}
-
-template<typename T>
-requires (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
-consteval void RunCeilVecCompileTimeTests()
-{
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
-
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(   0.0f)), T(    0.0f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  0.0f)), T(    0.0f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(   0.1f)), T(    1.0f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  0.1f)), T(    0.0f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(   0.5f)), T(    1.0f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  0.5f)), T(    0.0f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(   0.9f)), T(    1.0f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  0.9f)), T(    0.0f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(   1.0f)), T(    1.0f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  1.0f)), T(-   1.0f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(   1.5f)), T(    2.0f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  1.5f)), T(-   1.0f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(   1.9f)), T(    2.0f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  1.9f)), T(-   1.0f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(   4.2f)), T(    5.0f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(   4.5f)), T(    5.0f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(   4.7f)), T(    5.0f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(   5.0f)), T(    5.0f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  4.2f)), T(-   4.0f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  4.5f)), T(-   4.0f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  4.7f)), T(-   4.0f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  5.0f)), T(-   5.0f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T( 42e32f)), T( 4.2e+33f), Epsilon)));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-42e32f)), T(-4.2e+33f), Epsilon)));
-}
-
-template<typename T>
-requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
-void RunCeilRunTimeTests()
-{
-    static constexpr std::array<T, 24> values
+    template<typename T>
+    requires std::floating_point<T>
+    consteval void RunCeilCompileTimeTests()
     {
-        static_cast<T>(0.0f), static_cast<T>(-0.0f), static_cast<T>(0.1f), static_cast<T>(-0.1f),
-        static_cast<T>(0.5f), static_cast<T>(-0.5f), static_cast<T>(0.9f), static_cast<T>(-0.9f),
-        static_cast<T>(1.0f), static_cast<T>(-1.0f), static_cast<T>(1.5f), static_cast<T>(-1.5f),
-        static_cast<T>(1.9f), static_cast<T>(-1.9f), static_cast<T>(4.2f), static_cast<T>(4.5f),
-        static_cast<T>(4.7f), static_cast<T>(5.0f), static_cast<T>(-4.2f), static_cast<T>(-4.5f),
-        static_cast<T>(-4.7f), static_cast<T>(-5.0f), static_cast<T>(42e32f), static_cast<T>(-42e32f)
-    };
+        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
-    for(const T val : values)
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(   0.0f)), T(    0.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  0.0f)), T(    0.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(   0.1f)), T(    1.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  0.1f)), T(    0.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(   0.5f)), T(    1.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  0.5f)), T(    0.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(   0.9f)), T(    1.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  0.9f)), T(    0.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(   1.0f)), T(    1.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  1.0f)), T(-   1.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(   1.5f)), T(    2.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  1.5f)), T(-   1.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(   1.9f)), T(    2.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  1.9f)), T(-   1.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(   4.2f)), T(    5.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(   4.5f)), T(    5.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(   4.7f)), T(    5.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(   5.0f)), T(    5.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  4.2f)), T(-   4.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  4.5f)), T(-   4.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  4.7f)), T(-   4.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  5.0f)), T(-   5.0f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T( 42e32f)), T( 4.2e+33f), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(T(-42e32f)), T(-4.2e+33f), Epsilon));
+    }
+
+    template<typename T>
+    requires (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
+    consteval void RunCeilVecCompileTimeTests()
     {
-        if constexpr(std::floating_point<T>)
+        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(   0.0f)), T(    0.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  0.0f)), T(    0.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(   0.1f)), T(    1.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  0.1f)), T(    0.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(   0.5f)), T(    1.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  0.5f)), T(    0.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(   0.9f)), T(    1.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  0.9f)), T(    0.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(   1.0f)), T(    1.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  1.0f)), T(-   1.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(   1.5f)), T(    2.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  1.5f)), T(-   1.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(   1.9f)), T(    2.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  1.9f)), T(-   1.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(   4.2f)), T(    5.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(   4.5f)), T(    5.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(   4.7f)), T(    5.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(   5.0f)), T(    5.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  4.2f)), T(-   4.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  4.5f)), T(-   4.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  4.7f)), T(-   4.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-  5.0f)), T(-   5.0f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T( 42e32f)), T( 4.2e+33f), Epsilon)));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(T(-42e32f)), T(-4.2e+33f), Epsilon)));
+    }
+
+    template<typename T>
+    requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
+    void RunCeilRunTimeTests()
+    {
+        static constexpr std::array<T, 24> values
         {
-            REQUIRE_THAT(TRAP::Math::Ceil(val), Catch::Matchers::WithinRel(std::ceil(val), Epsilon));
-        }
-        else if constexpr(TRAP::Math::IsVec<T>)
+            static_cast<T>(0.0f), static_cast<T>(-0.0f), static_cast<T>(0.1f), static_cast<T>(-0.1f),
+            static_cast<T>(0.5f), static_cast<T>(-0.5f), static_cast<T>(0.9f), static_cast<T>(-0.9f),
+            static_cast<T>(1.0f), static_cast<T>(-1.0f), static_cast<T>(1.5f), static_cast<T>(-1.5f),
+            static_cast<T>(1.9f), static_cast<T>(-1.9f), static_cast<T>(4.2f), static_cast<T>(4.5f),
+            static_cast<T>(4.7f), static_cast<T>(5.0f), static_cast<T>(-4.2f), static_cast<T>(-4.5f),
+            static_cast<T>(-4.7f), static_cast<T>(-5.0f), static_cast<T>(42e32f), static_cast<T>(-42e32f)
+        };
+
+        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        for(const T val : values)
         {
-            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(val), T(std::ceil(std::get<0>(val))), Epsilon)));
+            if constexpr(std::floating_point<T>)
+            {
+                REQUIRE_THAT(TRAP::Math::Ceil(val), Catch::Matchers::WithinRel(std::ceil(val), Epsilon));
+            }
+            else if constexpr(TRAP::Math::IsVec<T>)
+            {
+                REQUIRE(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Ceil(val), T(std::ceil(std::get<0>(val))), Epsilon)));
+            }
         }
     }
-}
 
-template<typename T>
-requires std::floating_point<T>
-consteval void RunCeilEdgeCompileTimeTests()
-{
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    template<typename T>
+    requires std::floating_point<T>
+    consteval void RunCeilEdgeCompileTimeTests()
+    {
+        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    constexpr T max = std::numeric_limits<T>::max();
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(max), max, Epsilon));
-    constexpr T min = std::numeric_limits<T>::lowest();
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(min), min, Epsilon));
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-    static_assert(TRAP::Math::IsNaN(TRAP::Math::Ceil(nan)));
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(inf), inf));
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
-    static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(ninf), ninf));
-}
+        constexpr T max = std::numeric_limits<T>::max();
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(max), max, Epsilon));
+        constexpr T min = std::numeric_limits<T>::lowest();
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(min), min, Epsilon));
+        constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+        static_assert(TRAP::Math::IsNaN(TRAP::Math::Ceil(nan)));
+        constexpr T inf = std::numeric_limits<T>::infinity();
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(inf), inf));
+        constexpr T ninf = -std::numeric_limits<T>::infinity();
+        static_assert(TRAP::Math::Equal(TRAP::Math::Ceil(ninf), ninf));
+    }
 
-template<typename T>
-requires std::floating_point<T>
-void RunCeilEdgeRunTimeTests()
-{
-    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+    template<typename T>
+    requires std::floating_point<T>
+    void RunCeilEdgeRunTimeTests()
+    {
+        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-    static constexpr T max = std::numeric_limits<T>::max();
-    REQUIRE_THAT(TRAP::Math::Ceil(max), Catch::Matchers::WithinRel(max, Epsilon));
-    static constexpr T min = std::numeric_limits<T>::lowest();
-    REQUIRE_THAT(TRAP::Math::Ceil(min), Catch::Matchers::WithinRel(min, Epsilon));
-    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-    REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Ceil(nan)));
-    static constexpr T inf = std::numeric_limits<T>::infinity();
-    REQUIRE_THAT(TRAP::Math::Ceil(inf), Catch::Matchers::WithinRel(inf, Epsilon));
-    static constexpr T ninf = -std::numeric_limits<T>::infinity();
-    REQUIRE_THAT(TRAP::Math::Ceil(ninf), Catch::Matchers::WithinRel(ninf, Epsilon));
+        static constexpr T max = std::numeric_limits<T>::max();
+        REQUIRE_THAT(TRAP::Math::Ceil(max), Catch::Matchers::WithinRel(max, Epsilon));
+        static constexpr T min = std::numeric_limits<T>::lowest();
+        REQUIRE_THAT(TRAP::Math::Ceil(min), Catch::Matchers::WithinRel(min, Epsilon));
+        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Ceil(nan)));
+        static constexpr T inf = std::numeric_limits<T>::infinity();
+        REQUIRE_THAT(TRAP::Math::Ceil(inf), Catch::Matchers::WithinRel(inf, Epsilon));
+        static constexpr T ninf = -std::numeric_limits<T>::infinity();
+        REQUIRE_THAT(TRAP::Math::Ceil(ninf), Catch::Matchers::WithinRel(ninf, Epsilon));
+    }
 }
 
 TEST_CASE("TRAP::Math::Ceil()", "[math][generic][ceil]")

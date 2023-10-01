@@ -8,60 +8,63 @@
 
 #include "TRAP/src/Maths/Math.h"
 
-template<typename T>
-requires std::unsigned_integral<T>
-consteval void RunCompileTimeIsPowerOfTwoTests()
+namespace
 {
-    static_assert(!TRAP::Math::IsPowerOfTwo(T(0x00)));
-    static_assert( TRAP::Math::IsPowerOfTwo(T(0x01)));
-    static_assert( TRAP::Math::IsPowerOfTwo(T(0x02)));
-    static_assert(!TRAP::Math::IsPowerOfTwo(T(0x03)));
-    static_assert( TRAP::Math::IsPowerOfTwo(T(0x04)));
-    static_assert(!TRAP::Math::IsPowerOfTwo(T(0x0F)));
-
-    if constexpr(sizeof(T) > 32 || std::same_as<T, uint32_t>)
+    template<typename T>
+    requires std::unsigned_integral<T>
+    consteval void RunCompileTimeIsPowerOfTwoTests()
     {
-        static_assert( TRAP::Math::IsPowerOfTwo(T(0x80)));
-        static_assert( TRAP::Math::IsPowerOfTwo(T(0x80000000)));
+        static_assert(!TRAP::Math::IsPowerOfTwo(T(0x00)));
+        static_assert( TRAP::Math::IsPowerOfTwo(T(0x01)));
+        static_assert( TRAP::Math::IsPowerOfTwo(T(0x02)));
+        static_assert(!TRAP::Math::IsPowerOfTwo(T(0x03)));
+        static_assert( TRAP::Math::IsPowerOfTwo(T(0x04)));
+        static_assert(!TRAP::Math::IsPowerOfTwo(T(0x0F)));
+
+        if constexpr(sizeof(T) > 32 || std::same_as<T, uint32_t>)
+        {
+            static_assert( TRAP::Math::IsPowerOfTwo(T(0x80)));
+            static_assert( TRAP::Math::IsPowerOfTwo(T(0x80000000)));
+        }
+        else if constexpr(sizeof(T) > 8 || std::same_as<T, uint8_t>)
+        {
+            static_assert( TRAP::Math::IsPowerOfTwo(T(0x80)));
+        }
     }
-    else if constexpr(sizeof(T) > 8 || std::same_as<T, uint8_t>)
+
+    template<typename T>
+    requires TRAP::Math::IsVec<T> && std::unsigned_integral<typename T::value_type>
+    consteval void RunCompileTimeIsPowerOfTwoVecTests()
     {
-        static_assert( TRAP::Math::IsPowerOfTwo(T(0x80)));
+        static_assert(!TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x00))));
+        static_assert( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x01))));
+        static_assert( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x02))));
+        static_assert(!TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x03))));
+        static_assert( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x04))));
+        static_assert(!TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x0F))));
+
+        if constexpr(sizeof(T) > 32 || std::same_as<T, uint32_t>)
+        {
+            static_assert( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x80))));
+            static_assert( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x80000000))));
+        }
+        else if constexpr(sizeof(T) > 8 || std::same_as<T, uint8_t>)
+        {
+            static_assert( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x80))));
+        }
     }
-}
 
-template<typename T>
-requires TRAP::Math::IsVec<T> && std::unsigned_integral<typename T::value_type>
-consteval void RunCompileTimeIsPowerOfTwoVecTests()
-{
-    static_assert(!TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x00))));
-    static_assert( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x01))));
-    static_assert( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x02))));
-    static_assert(!TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x03))));
-    static_assert( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x04))));
-    static_assert(!TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x0F))));
-
-    if constexpr(sizeof(T) > 32 || std::same_as<T, uint32_t>)
+    template<typename T>
+    requires std::unsigned_integral<T>
+    consteval void RunCompileTimeIsPowerOfTwoEdgeTests()
     {
-        static_assert( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x80))));
-        static_assert( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x80000000))));
-    }
-    else if constexpr(sizeof(T) > 8 || std::same_as<T, uint8_t>)
-    {
-        static_assert( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x80))));
-    }
-}
+        constexpr T max = std::numeric_limits<T>::max();
+        constexpr T min = std::numeric_limits<T>::min();
 
-template<typename T>
-requires std::unsigned_integral<T>
-consteval void RunCompileTimeIsPowerOfTwoEdgeTests()
-{
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T min = std::numeric_limits<T>::min();
-
-    static_assert(!TRAP::Math::IsPowerOfTwo(0u));
-    static_assert(!TRAP::Math::IsPowerOfTwo(max));
-    static_assert(!TRAP::Math::IsPowerOfTwo(min));
+        static_assert(!TRAP::Math::IsPowerOfTwo(0u));
+        static_assert(!TRAP::Math::IsPowerOfTwo(max));
+        static_assert(!TRAP::Math::IsPowerOfTwo(min));
+    }
 }
 
 TEST_CASE("TRAP::Math::IsPowerOfTwo()", "[math][generic][ispoweroftwo]")

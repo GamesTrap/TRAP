@@ -8,116 +8,119 @@
 
 #include "TRAP/src/Maths/Math.h"
 
-template<typename T>
-requires std::integral<T>
-consteval void RunCompileTimeIsOddTests()
+namespace
 {
-    if constexpr(std::unsigned_integral<T>)
+    template<typename T>
+    requires std::integral<T>
+    consteval void RunCompileTimeIsOddTests()
     {
-        static_assert( TRAP::Math::IsOdd(T(1)));
-        static_assert(!TRAP::Math::IsOdd(T(2)));
-        static_assert( TRAP::Math::IsOdd(T(37)));
+        if constexpr(std::unsigned_integral<T>)
+        {
+            static_assert( TRAP::Math::IsOdd(T(1)));
+            static_assert(!TRAP::Math::IsOdd(T(2)));
+            static_assert( TRAP::Math::IsOdd(T(37)));
 
-        if constexpr(sizeof(T) >= 4)
-        {
-            static_assert(!TRAP::Math::IsOdd(T(888)));
-            static_assert( TRAP::Math::IsOdd(T(1001)));
-            static_assert( TRAP::Math::IsOdd(T(123456789)));
-            static_assert( TRAP::Math::IsOdd(T(987654321)));
-            static_assert(!TRAP::Math::IsOdd(T(1234567890)));
+            if constexpr(sizeof(T) >= 4)
+            {
+                static_assert(!TRAP::Math::IsOdd(T(888)));
+                static_assert( TRAP::Math::IsOdd(T(1001)));
+                static_assert( TRAP::Math::IsOdd(T(123456789)));
+                static_assert( TRAP::Math::IsOdd(T(987654321)));
+                static_assert(!TRAP::Math::IsOdd(T(1234567890)));
+            }
+            else if constexpr(sizeof(T) >= 2)
+            {
+                static_assert(!TRAP::Math::IsOdd(T(888)));
+                static_assert( TRAP::Math::IsOdd(T(1001)));
+            }
         }
-        else if constexpr(sizeof(T) >= 2)
+        else if constexpr(std::signed_integral<T>)
         {
-            static_assert(!TRAP::Math::IsOdd(T(888)));
-            static_assert( TRAP::Math::IsOdd(T(1001)));
+            static_assert(!TRAP::Math::IsOdd(T(-2)));
+            static_assert( TRAP::Math::IsOdd(T(-1)));
+            static_assert( TRAP::Math::IsOdd(T(1)));
+            static_assert(!TRAP::Math::IsOdd(T(2)));
+            static_assert( TRAP::Math::IsOdd(T(37)));
+
+            if constexpr(sizeof(T) >= 4)
+            {
+                static_assert( TRAP::Math::IsOdd(T(-123456789)));
+                static_assert( TRAP::Math::IsOdd(T(-999)));
+                static_assert(!TRAP::Math::IsOdd(T(888)));
+                static_assert( TRAP::Math::IsOdd(T(1001)));
+                static_assert( TRAP::Math::IsOdd(T(123456789)));
+                static_assert( TRAP::Math::IsOdd(T(987654321)));
+                static_assert(!TRAP::Math::IsOdd(T(1234567890)));
+            }
+            else if constexpr(sizeof(T) >= 2)
+            {
+                static_assert( TRAP::Math::IsOdd(T(-999)));
+                static_assert(!TRAP::Math::IsOdd(T(888)));
+                static_assert( TRAP::Math::IsOdd(T(1001)));
+            }
         }
     }
-    else if constexpr(std::signed_integral<T>)
-    {
-        static_assert(!TRAP::Math::IsOdd(T(-2)));
-        static_assert( TRAP::Math::IsOdd(T(-1)));
-        static_assert( TRAP::Math::IsOdd(T(1)));
-        static_assert(!TRAP::Math::IsOdd(T(2)));
-        static_assert( TRAP::Math::IsOdd(T(37)));
 
-        if constexpr(sizeof(T) >= 4)
-        {
-            static_assert( TRAP::Math::IsOdd(T(-123456789)));
-            static_assert( TRAP::Math::IsOdd(T(-999)));
-            static_assert(!TRAP::Math::IsOdd(T(888)));
-            static_assert( TRAP::Math::IsOdd(T(1001)));
-            static_assert( TRAP::Math::IsOdd(T(123456789)));
-            static_assert( TRAP::Math::IsOdd(T(987654321)));
-            static_assert(!TRAP::Math::IsOdd(T(1234567890)));
-        }
-        else if constexpr(sizeof(T) >= 2)
-        {
-            static_assert( TRAP::Math::IsOdd(T(-999)));
-            static_assert(!TRAP::Math::IsOdd(T(888)));
-            static_assert( TRAP::Math::IsOdd(T(1001)));
-        }
+    template<typename T>
+    requires std::integral<T>
+    consteval void RunCompileTimeIsOddEdgeTests()
+    {
+        constexpr T min = std::numeric_limits<T>::min();
+        constexpr T max = std::numeric_limits<T>::max();
+
+        static_assert(!TRAP::Math::IsOdd(min));
+        static_assert( TRAP::Math::IsOdd(max));
+        static_assert(!TRAP::Math::IsOdd(T(0)));
     }
-}
 
-template<typename T>
-requires std::integral<T>
-consteval void RunCompileTimeIsOddEdgeTests()
-{
-    constexpr T min = std::numeric_limits<T>::min();
-    constexpr T max = std::numeric_limits<T>::max();
-
-    static_assert(!TRAP::Math::IsOdd(min));
-    static_assert( TRAP::Math::IsOdd(max));
-    static_assert(!TRAP::Math::IsOdd(T(0)));
-}
-
-template<typename T>
-requires TRAP::Math::IsVec<T> && std::integral<typename T::value_type>
-consteval void RunCompileTimeIsOddVecTests()
-{
-    if constexpr(std::unsigned_integral<typename T::value_type>)
+    template<typename T>
+    requires TRAP::Math::IsVec<T> && std::integral<typename T::value_type>
+    consteval void RunCompileTimeIsOddVecTests()
     {
-        static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(1))));
-        static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(2))));
-        static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(37))));
+        if constexpr(std::unsigned_integral<typename T::value_type>)
+        {
+            static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(1))));
+            static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(2))));
+            static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(37))));
 
-        if constexpr(sizeof(typename T::value_type) >= 4)
-        {
-            static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(888))));
-            static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(1001))));
-            static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(123456789))));
-            static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(987654321))));
-            static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(1234567890))));
+            if constexpr(sizeof(typename T::value_type) >= 4)
+            {
+                static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(888))));
+                static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(1001))));
+                static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(123456789))));
+                static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(987654321))));
+                static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(1234567890))));
+            }
+            else if constexpr(sizeof(typename T::value_type) >= 2)
+            {
+                static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(888))));
+                static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(1001))));
+            }
         }
-        else if constexpr(sizeof(typename T::value_type) >= 2)
+        else if constexpr(std::signed_integral<typename T::value_type>)
         {
-            static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(888))));
-            static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(1001))));
-        }
-    }
-    else if constexpr(std::signed_integral<typename T::value_type>)
-    {
-        static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(-2))));
-        static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(-1))));
-        static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(1))));
-        static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(2))));
-        static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(37))));
+            static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(-2))));
+            static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(-1))));
+            static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(1))));
+            static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(2))));
+            static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(37))));
 
-        if constexpr(sizeof(typename T::value_type) >= 4)
-        {
-            static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(-123456789))));
-            static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(-999))));
-            static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(888))));
-            static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(1001))));
-            static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(123456789))));
-            static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(987654321))));
-            static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(1234567890))));
-        }
-        else if constexpr(sizeof(typename T::value_type) >= 2)
-        {
-            static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(-999))));
-            static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(888))));
-            static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(1001))));
+            if constexpr(sizeof(typename T::value_type) >= 4)
+            {
+                static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(-123456789))));
+                static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(-999))));
+                static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(888))));
+                static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(1001))));
+                static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(123456789))));
+                static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(987654321))));
+                static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(1234567890))));
+            }
+            else if constexpr(sizeof(typename T::value_type) >= 2)
+            {
+                static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(-999))));
+                static_assert(!TRAP::Math::All(TRAP::Math::IsOdd(T(888))));
+                static_assert( TRAP::Math::All(TRAP::Math::IsOdd(T(1001))));
+            }
         }
     }
 }

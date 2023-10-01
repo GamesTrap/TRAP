@@ -7,58 +7,61 @@
 
 #include "TRAP/src/Maths/Math.h"
 
-template<typename T>
-requires std::is_arithmetic_v<T>
-consteval void RunCompileTimeClampScalarTest()
+namespace
 {
-    constexpr T N = static_cast<T>(1);
-    constexpr T B = static_cast<T>(10);
-
-    static_assert(TRAP::Math::Equal(TRAP::Math::Clamp(T(5), N, B), T(5), TRAP::Math::Epsilon<T>()));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Clamp(T(0), N, B), T(1), TRAP::Math::Epsilon<T>()));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Clamp(T(11), N, B), T(10), TRAP::Math::Epsilon<T>()));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Clamp(T(1), N, B), T(1), TRAP::Math::Epsilon<T>()));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Clamp(T(10), N, B), T(10), TRAP::Math::Epsilon<T>()));
-}
-
-template<typename T>
-requires TRAP::Math::IsVec<T>
-consteval void RunCompileTimeClampVecTest()
-{
-    constexpr T N = static_cast<T>(1);
-    constexpr T B = static_cast<T>(10);
-
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(5), N, B), T(5), TRAP::Math::Epsilon<T>())));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(0), N, B), T(1), TRAP::Math::Epsilon<T>())));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(11), N, B), T(10), TRAP::Math::Epsilon<T>())));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(1), N, B), T(1), TRAP::Math::Epsilon<T>())));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(10), N, B), T(10), TRAP::Math::Epsilon<T>())));
-
-    constexpr typename T::value_type N1 = static_cast<T::value_type>(1);
-    constexpr typename T::value_type B1 = static_cast<T::value_type>(10);
-
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(5), N1, B1), T(5), TRAP::Math::Epsilon<T>())));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(0), N1, B1), T(1), TRAP::Math::Epsilon<T>())));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(11), N1, B1), T(10), TRAP::Math::Epsilon<T>())));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(1), N1, B1), T(1), TRAP::Math::Epsilon<T>())));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(10), N1, B1), T(10), TRAP::Math::Epsilon<T>())));
-}
-
-template<typename T>
-requires std::is_arithmetic_v<T>
-void RunClampEdgeTests()
-{
-    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
-
-    static constexpr T max = std::numeric_limits<T>::max();
-    static constexpr T min = std::numeric_limits<T>::lowest();
-    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-
-    static_assert(TRAP::Math::Equal(TRAP::Math::Clamp(max, min, max), max, Epsilon));
-    if constexpr(std::floating_point<T>)
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    consteval void RunCompileTimeClampScalarTest()
     {
-        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Clamp(nan, T(0.0), T(1.0))));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Clamp(T(5.0), nan, nan), T(5.0), Epsilon));
+        constexpr T N = static_cast<T>(1);
+        constexpr T B = static_cast<T>(10);
+
+        static_assert(TRAP::Math::Equal(TRAP::Math::Clamp(T(5), N, B), T(5), TRAP::Math::Epsilon<T>()));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Clamp(T(0), N, B), T(1), TRAP::Math::Epsilon<T>()));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Clamp(T(11), N, B), T(10), TRAP::Math::Epsilon<T>()));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Clamp(T(1), N, B), T(1), TRAP::Math::Epsilon<T>()));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Clamp(T(10), N, B), T(10), TRAP::Math::Epsilon<T>()));
+    }
+
+    template<typename T>
+    requires TRAP::Math::IsVec<T>
+    consteval void RunCompileTimeClampVecTest()
+    {
+        constexpr T N = static_cast<T>(1);
+        constexpr T B = static_cast<T>(10);
+
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(5), N, B), T(5), TRAP::Math::Epsilon<T>())));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(0), N, B), T(1), TRAP::Math::Epsilon<T>())));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(11), N, B), T(10), TRAP::Math::Epsilon<T>())));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(1), N, B), T(1), TRAP::Math::Epsilon<T>())));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(10), N, B), T(10), TRAP::Math::Epsilon<T>())));
+
+        constexpr typename T::value_type N1 = static_cast<T::value_type>(1);
+        constexpr typename T::value_type B1 = static_cast<T::value_type>(10);
+
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(5), N1, B1), T(5), TRAP::Math::Epsilon<T>())));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(0), N1, B1), T(1), TRAP::Math::Epsilon<T>())));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(11), N1, B1), T(10), TRAP::Math::Epsilon<T>())));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(1), N1, B1), T(1), TRAP::Math::Epsilon<T>())));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Clamp(T(10), N1, B1), T(10), TRAP::Math::Epsilon<T>())));
+    }
+
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    void RunClampEdgeTests()
+    {
+        static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+        static constexpr T max = std::numeric_limits<T>::max();
+        static constexpr T min = std::numeric_limits<T>::lowest();
+        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+
+        static_assert(TRAP::Math::Equal(TRAP::Math::Clamp(max, min, max), max, Epsilon));
+        if constexpr(std::floating_point<T>)
+        {
+            REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Clamp(nan, T(0.0), T(1.0))));
+            static_assert(TRAP::Math::Equal(TRAP::Math::Clamp(T(5.0), nan, nan), T(5.0), Epsilon));
+        }
     }
 }
 

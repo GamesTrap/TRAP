@@ -8,98 +8,101 @@
 
 #include "TRAP/src/Maths/Math.h"
 
-template<typename T>
-requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
-void RunFrExpTests()
+namespace
 {
-    if constexpr(std::floating_point<T>)
+    template<typename T>
+    requires std::floating_point<T> || (TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
+    void RunFrExpTests()
+    {
+        if constexpr(std::floating_point<T>)
+        {
+            static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+
+            static constexpr std::array<std::tuple<T, T, int32_t>, 4> values
+            {
+                std::tuple(T(1024.0f), T(0.5f), 11),
+                std::tuple(T(0.24f), T(0.96f), -2),
+                std::tuple(T(0.0f), T(0.0f), 0),
+                std::tuple(T(-1.33f), T(-0.665f), 1),
+            };
+
+            for(const auto& [x, expectedRes, expectedExp] : values)
+            {
+                int32_t exp{};
+                const T res = TRAP::Math::FrExp(x, exp);
+                REQUIRE(TRAP::Math::Equal(res, expectedRes, Epsilon));
+                REQUIRE(exp == expectedExp);
+            }
+        }
+        else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
+        {
+            static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+
+            static constexpr T x(TRAP::Math::Vec<4, typename T::value_type>(1024.0f, 0.24f, 0.0f, -1.33f));
+            TRAP::Math::Vec<T::Length(), int32_t> exp{};
+            const T res = TRAP::Math::FrExp(x, exp);
+            REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, T(TRAP::Math::Vec<4, typename T::value_type>(0.5f, 0.96f, 0.0f, -0.665f)), Epsilon)));
+            REQUIRE(exp == TRAP::Math::Vec<T::Length(), int32_t>(TRAP::Math::Vec<4, int32_t>(11, -2, 0, 1)));
+        }
+    }
+
+    template<typename T>
+    requires std::floating_point<T>
+    void RunFrExpEdgeTests()
     {
         static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-        static constexpr std::array<std::tuple<T, T, int32_t>, 4> values
-        {
-            std::tuple(T(1024.0f), T(0.5f), 11),
-            std::tuple(T(0.24f), T(0.96f), -2),
-            std::tuple(T(0.0f), T(0.0f), 0),
-            std::tuple(T(-1.33f), T(-0.665f), 1),
-        };
+        static constexpr T inf = std::numeric_limits<T>::infinity();
+        static constexpr T ninf = -std::numeric_limits<T>::infinity();
+        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+        static constexpr T max = std::numeric_limits<T>::max();
+        static constexpr T min = std::numeric_limits<T>::denorm_min();
+        static constexpr T nmin = -std::numeric_limits<T>::denorm_min();
 
-        for(const auto& [x, expectedRes, expectedExp] : values)
+        int32_t exp{};
+        T res{};
+
+        res = TRAP::Math::FrExp(T(0.0f), exp);
+        REQUIRE(TRAP::Math::Equal(res, T(0.0f), Epsilon));
+        REQUIRE(exp == 0);
+
+        res = TRAP::Math::FrExp(inf, exp);
+        REQUIRE(TRAP::Math::IsInf(res));
+
+        res = TRAP::Math::FrExp(ninf, exp);
+        REQUIRE(TRAP::Math::IsInf(res));
+
+        res = TRAP::Math::FrExp(nan, exp);
+        REQUIRE(TRAP::Math::IsNaN(res));
+
+        if constexpr(std::same_as<T, double>)
         {
-            int32_t exp{};
-            const T res = TRAP::Math::FrExp(x, exp);
-            REQUIRE(TRAP::Math::Equal(res, expectedRes, Epsilon));
-            REQUIRE(exp == expectedExp);
+            res = TRAP::Math::FrExp(max, exp);
+            REQUIRE(TRAP::Math::Equal(res, T(0.99999999999999989f), Epsilon));
+            REQUIRE(exp == 1024);
+
+            res = TRAP::Math::FrExp(min, exp);
+            REQUIRE(TRAP::Math::Equal(res, T(0.5f), Epsilon));
+            REQUIRE(exp == -1073);
+
+            res = TRAP::Math::FrExp(nmin, exp);
+            REQUIRE(TRAP::Math::Equal(res, T(-0.5f), Epsilon));
+            REQUIRE(exp == -1073);
         }
-    }
-    else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
-    {
-        static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+        else if constexpr(std::same_as<T, float>)
+        {
+            res = TRAP::Math::FrExp(max, exp);
+            REQUIRE(TRAP::Math::Equal(res, T(0.99999999999999989f), Epsilon));
+            REQUIRE(exp == 128);
 
-        static constexpr T x(TRAP::Math::Vec<4, typename T::value_type>(1024.0f, 0.24f, 0.0f, -1.33f));
-        TRAP::Math::Vec<T::Length(), int32_t> exp{};
-        const T res = TRAP::Math::FrExp(x, exp);
-        REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, T(TRAP::Math::Vec<4, typename T::value_type>(0.5f, 0.96f, 0.0f, -0.665f)), Epsilon)));
-        REQUIRE(exp == TRAP::Math::Vec<T::Length(), int32_t>(TRAP::Math::Vec<4, int32_t>(11, -2, 0, 1)));
-    }
-}
+            res = TRAP::Math::FrExp(min, exp);
+            REQUIRE(TRAP::Math::Equal(res, T(0.5f), Epsilon));
+            REQUIRE(exp == -148);
 
-template<typename T>
-requires std::floating_point<T>
-void RunFrExpEdgeTests()
-{
-    static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
-
-    static constexpr T inf = std::numeric_limits<T>::infinity();
-    static constexpr T ninf = -std::numeric_limits<T>::infinity();
-    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-    static constexpr T max = std::numeric_limits<T>::max();
-    static constexpr T min = std::numeric_limits<T>::denorm_min();
-    static constexpr T nmin = -std::numeric_limits<T>::denorm_min();
-
-    int32_t exp{};
-    T res{};
-
-    res = TRAP::Math::FrExp(T(0.0f), exp);
-    REQUIRE(TRAP::Math::Equal(res, T(0.0f), Epsilon));
-    REQUIRE(exp == 0);
-
-    res = TRAP::Math::FrExp(inf, exp);
-    REQUIRE(TRAP::Math::IsInf(res));
-
-    res = TRAP::Math::FrExp(ninf, exp);
-    REQUIRE(TRAP::Math::IsInf(res));
-
-    res = TRAP::Math::FrExp(nan, exp);
-    REQUIRE(TRAP::Math::IsNaN(res));
-
-    if constexpr(std::same_as<T, double>)
-    {
-        res = TRAP::Math::FrExp(max, exp);
-        REQUIRE(TRAP::Math::Equal(res, T(0.99999999999999989f), Epsilon));
-        REQUIRE(exp == 1024);
-
-        res = TRAP::Math::FrExp(min, exp);
-        REQUIRE(TRAP::Math::Equal(res, T(0.5f), Epsilon));
-        REQUIRE(exp == -1073);
-
-        res = TRAP::Math::FrExp(nmin, exp);
-        REQUIRE(TRAP::Math::Equal(res, T(-0.5f), Epsilon));
-        REQUIRE(exp == -1073);
-    }
-    else if constexpr(std::same_as<T, float>)
-    {
-        res = TRAP::Math::FrExp(max, exp);
-        REQUIRE(TRAP::Math::Equal(res, T(0.99999999999999989f), Epsilon));
-        REQUIRE(exp == 128);
-
-        res = TRAP::Math::FrExp(min, exp);
-        REQUIRE(TRAP::Math::Equal(res, T(0.5f), Epsilon));
-        REQUIRE(exp == -148);
-
-        res = TRAP::Math::FrExp(nmin, exp);
-        REQUIRE(TRAP::Math::Equal(res, T(-0.5f), Epsilon));
-        REQUIRE(exp == -148);
+            res = TRAP::Math::FrExp(nmin, exp);
+            REQUIRE(TRAP::Math::Equal(res, T(-0.5f), Epsilon));
+            REQUIRE(exp == -148);
+        }
     }
 }
 

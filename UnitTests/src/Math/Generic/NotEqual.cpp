@@ -7,164 +7,167 @@
 
 #include "TRAP/src/Maths/Math.h"
 
-template<typename T>
-requires std::is_arithmetic_v<T>
-consteval void RunCompileTimeNotEqualTests()
+namespace
 {
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
-
-    constexpr T A(T(0.0f));
-    constexpr T B(T(5.0f));
-
-    static_assert(!TRAP::Math::NotEqual(A, A));
-    static_assert(!TRAP::Math::NotEqual(B, B));
-    static_assert( TRAP::Math::NotEqual(A, B));
-    static_assert( TRAP::Math::NotEqual(B, A));
-
-    static_assert(!TRAP::Math::NotEqual(A, A, Epsilon));
-    static_assert(!TRAP::Math::NotEqual(B, B, Epsilon));
-    static_assert( TRAP::Math::NotEqual(A, B, Epsilon));
-    static_assert( TRAP::Math::NotEqual(B, A, Epsilon));
-
-    if constexpr(std::floating_point<T> || std::signed_integral<T>)
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    consteval void RunCompileTimeNotEqualTests()
     {
-        constexpr T C(T(-1.0f));
-        constexpr T D(T(-5.0f));
+        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-        static_assert(!TRAP::Math::NotEqual(C, C));
-        static_assert(!TRAP::Math::NotEqual(D, D));
-        static_assert( TRAP::Math::NotEqual(C, D));
-        static_assert( TRAP::Math::NotEqual(D, C));
+        constexpr T A(T(0.0f));
+        constexpr T B(T(5.0f));
 
-        static_assert(!TRAP::Math::NotEqual(C, C, Epsilon));
-        static_assert(!TRAP::Math::NotEqual(D, D, Epsilon));
-        static_assert( TRAP::Math::NotEqual(C, D, Epsilon));
-        static_assert( TRAP::Math::NotEqual(D, C, Epsilon));
+        static_assert(!TRAP::Math::NotEqual(A, A));
+        static_assert(!TRAP::Math::NotEqual(B, B));
+        static_assert( TRAP::Math::NotEqual(A, B));
+        static_assert( TRAP::Math::NotEqual(B, A));
+
+        static_assert(!TRAP::Math::NotEqual(A, A, Epsilon));
+        static_assert(!TRAP::Math::NotEqual(B, B, Epsilon));
+        static_assert( TRAP::Math::NotEqual(A, B, Epsilon));
+        static_assert( TRAP::Math::NotEqual(B, A, Epsilon));
+
+        if constexpr(std::floating_point<T> || std::signed_integral<T>)
+        {
+            constexpr T C(T(-1.0f));
+            constexpr T D(T(-5.0f));
+
+            static_assert(!TRAP::Math::NotEqual(C, C));
+            static_assert(!TRAP::Math::NotEqual(D, D));
+            static_assert( TRAP::Math::NotEqual(C, D));
+            static_assert( TRAP::Math::NotEqual(D, C));
+
+            static_assert(!TRAP::Math::NotEqual(C, C, Epsilon));
+            static_assert(!TRAP::Math::NotEqual(D, D, Epsilon));
+            static_assert( TRAP::Math::NotEqual(C, D, Epsilon));
+            static_assert( TRAP::Math::NotEqual(D, C, Epsilon));
+        }
     }
-}
 
-template<typename T>
-requires TRAP::Math::IsVec<T>
-consteval void RunCompileTimeNotEqualVecTests()
-{
-    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
-
-    constexpr T A(T(0));
-    constexpr T B(T(5));
-
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(A, A)));
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(B, B)));
-    static_assert( TRAP::Math::All(TRAP::Math::NotEqual(A, B)));
-    static_assert( TRAP::Math::All(TRAP::Math::NotEqual(B, A)));
-
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(A, A, Epsilon)));
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(B, B, Epsilon)));
-    static_assert( TRAP::Math::All(TRAP::Math::NotEqual(A, B, Epsilon)));
-    static_assert( TRAP::Math::All(TRAP::Math::NotEqual(B, A, Epsilon)));
-
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(A, A, T(Epsilon))));
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(B, B, T(Epsilon))));
-    static_assert( TRAP::Math::All(TRAP::Math::NotEqual(A, B, T(Epsilon))));
-    static_assert( TRAP::Math::All(TRAP::Math::NotEqual(B, A, T(Epsilon))));
-
-    if constexpr(std::floating_point<typename T::value_type> || std::signed_integral<typename T::value_type>)
+    template<typename T>
+    requires TRAP::Math::IsVec<T>
+    consteval void RunCompileTimeNotEqualVecTests()
     {
-        constexpr T C(T(-1));
-        constexpr T D(T(-5));
+        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
+        constexpr T A(T(0));
+        constexpr T B(T(5));
+
+        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(A, A)));
+        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(B, B)));
+        static_assert( TRAP::Math::All(TRAP::Math::NotEqual(A, B)));
+        static_assert( TRAP::Math::All(TRAP::Math::NotEqual(B, A)));
+
+        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(A, A, Epsilon)));
+        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(B, B, Epsilon)));
+        static_assert( TRAP::Math::All(TRAP::Math::NotEqual(A, B, Epsilon)));
+        static_assert( TRAP::Math::All(TRAP::Math::NotEqual(B, A, Epsilon)));
+
+        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(A, A, T(Epsilon))));
+        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(B, B, T(Epsilon))));
+        static_assert( TRAP::Math::All(TRAP::Math::NotEqual(A, B, T(Epsilon))));
+        static_assert( TRAP::Math::All(TRAP::Math::NotEqual(B, A, T(Epsilon))));
+
+        if constexpr(std::floating_point<typename T::value_type> || std::signed_integral<typename T::value_type>)
+        {
+            constexpr T C(T(-1));
+            constexpr T D(T(-5));
+
+            static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(C, C)));
+            static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(D, D)));
+            static_assert( TRAP::Math::All(TRAP::Math::NotEqual(C, D)));
+            static_assert( TRAP::Math::All(TRAP::Math::NotEqual(D, C)));
+
+            static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(C, C, Epsilon)));
+            static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(D, D, Epsilon)));
+            static_assert( TRAP::Math::All(TRAP::Math::NotEqual(C, D, Epsilon)));
+            static_assert( TRAP::Math::All(TRAP::Math::NotEqual(D, C, Epsilon)));
+
+            static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(C, C, T(Epsilon))));
+            static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(D, D, T(Epsilon))));
+            static_assert( TRAP::Math::All(TRAP::Math::NotEqual(C, D, T(Epsilon))));
+            static_assert( TRAP::Math::All(TRAP::Math::NotEqual(D, C, T(Epsilon))));
+        }
+    }
+
+    template<typename T>
+    requires TRAP::Math::IsMat<T>
+    consteval void RunCompileTimeNotEqualMatTests()
+    {
+        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+
+        constexpr T A(0.0f);
+        constexpr T B(5.0f);
+        constexpr T C(-1.0f);
+        constexpr T D(-5.0f);
+
+        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(A, A)));
+        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(B, B)));
         static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(C, C)));
         static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(D, D)));
-        static_assert( TRAP::Math::All(TRAP::Math::NotEqual(C, D)));
-        static_assert( TRAP::Math::All(TRAP::Math::NotEqual(D, C)));
+        static_assert( TRAP::Math::All(TRAP::Math::NotEqual(A, B)));
+        static_assert( TRAP::Math::All(TRAP::Math::NotEqual(B, A)));
 
+        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(A, A, Epsilon)));
+        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(B, B, Epsilon)));
         static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(C, C, Epsilon)));
         static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(D, D, Epsilon)));
-        static_assert( TRAP::Math::All(TRAP::Math::NotEqual(C, D, Epsilon)));
-        static_assert( TRAP::Math::All(TRAP::Math::NotEqual(D, C, Epsilon)));
+        static_assert( TRAP::Math::All(TRAP::Math::NotEqual(A, B, Epsilon)));
+        static_assert( TRAP::Math::All(TRAP::Math::NotEqual(B, A, Epsilon)));
 
-        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(C, C, T(Epsilon))));
-        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(D, D, T(Epsilon))));
-        static_assert( TRAP::Math::All(TRAP::Math::NotEqual(C, D, T(Epsilon))));
-        static_assert( TRAP::Math::All(TRAP::Math::NotEqual(D, C, T(Epsilon))));
+        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(A, A, typename T::col_type(Epsilon))));
+        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(B, B, typename T::col_type(Epsilon))));
+        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(C, C, typename T::col_type(Epsilon))));
+        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(D, D, typename T::col_type(Epsilon))));
+        static_assert( TRAP::Math::All(TRAP::Math::NotEqual(A, B, typename T::col_type(Epsilon))));
+        static_assert( TRAP::Math::All(TRAP::Math::NotEqual(B, A, typename T::col_type(Epsilon))));
     }
-}
 
-template<typename T>
-requires TRAP::Math::IsMat<T>
-consteval void RunCompileTimeNotEqualMatTests()
-{
-    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
+    template<typename T>
+    requires TRAP::Math::IsQuat<T>
+    consteval void RunCompileTimeNotEqualQuatTests()
+    {
+        constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
-    constexpr T A(0.0f);
-    constexpr T B(5.0f);
-    constexpr T C(-1.0f);
-    constexpr T D(-5.0f);
+        constexpr T A(0.0f, 0.0f, 0.0f, 0.0f);
+        constexpr T B(5.0f, 5.0f, 5.0f, 5.0f);
+        constexpr T C(-1.0f, -1.0f, -1.0f, -1.0f);
+        constexpr T D(-5.0f, -5.0f, -5.0f, -5.0f);
 
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(A, A)));
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(B, B)));
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(C, C)));
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(D, D)));
-    static_assert( TRAP::Math::All(TRAP::Math::NotEqual(A, B)));
-    static_assert( TRAP::Math::All(TRAP::Math::NotEqual(B, A)));
+        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(A, A)));
+        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(B, B)));
+        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(C, C)));
+        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(D, D)));
+        static_assert( TRAP::Math::All(TRAP::Math::NotEqual(A, B)));
+        static_assert( TRAP::Math::All(TRAP::Math::NotEqual(B, A)));
 
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(A, A, Epsilon)));
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(B, B, Epsilon)));
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(C, C, Epsilon)));
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(D, D, Epsilon)));
-    static_assert( TRAP::Math::All(TRAP::Math::NotEqual(A, B, Epsilon)));
-    static_assert( TRAP::Math::All(TRAP::Math::NotEqual(B, A, Epsilon)));
+        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(A, A, Epsilon)));
+        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(B, B, Epsilon)));
+        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(C, C, Epsilon)));
+        static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(D, D, Epsilon)));
+        static_assert( TRAP::Math::All(TRAP::Math::NotEqual(A, B, Epsilon)));
+        static_assert( TRAP::Math::All(TRAP::Math::NotEqual(B, A, Epsilon)));
+    }
 
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(A, A, typename T::col_type(Epsilon))));
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(B, B, typename T::col_type(Epsilon))));
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(C, C, typename T::col_type(Epsilon))));
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(D, D, typename T::col_type(Epsilon))));
-    static_assert( TRAP::Math::All(TRAP::Math::NotEqual(A, B, typename T::col_type(Epsilon))));
-    static_assert( TRAP::Math::All(TRAP::Math::NotEqual(B, A, typename T::col_type(Epsilon))));
-}
+    template<typename T>
+    requires std::floating_point<T>
+    consteval void RunCompileTimeNotEqualEdgeTests()
+    {
+        constexpr T max = std::numeric_limits<T>::max();
+        constexpr T min = std::numeric_limits<T>::lowest();
+        constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+        constexpr T inf = std::numeric_limits<T>::infinity();
+        constexpr T ninf = -std::numeric_limits<T>::infinity();
 
-template<typename T>
-requires TRAP::Math::IsQuat<T>
-consteval void RunCompileTimeNotEqualQuatTests()
-{
-    constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
-
-    constexpr T A(0.0f, 0.0f, 0.0f, 0.0f);
-    constexpr T B(5.0f, 5.0f, 5.0f, 5.0f);
-    constexpr T C(-1.0f, -1.0f, -1.0f, -1.0f);
-    constexpr T D(-5.0f, -5.0f, -5.0f, -5.0f);
-
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(A, A)));
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(B, B)));
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(C, C)));
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(D, D)));
-    static_assert( TRAP::Math::All(TRAP::Math::NotEqual(A, B)));
-    static_assert( TRAP::Math::All(TRAP::Math::NotEqual(B, A)));
-
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(A, A, Epsilon)));
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(B, B, Epsilon)));
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(C, C, Epsilon)));
-    static_assert(!TRAP::Math::All(TRAP::Math::NotEqual(D, D, Epsilon)));
-    static_assert( TRAP::Math::All(TRAP::Math::NotEqual(A, B, Epsilon)));
-    static_assert( TRAP::Math::All(TRAP::Math::NotEqual(B, A, Epsilon)));
-}
-
-template<typename T>
-requires std::floating_point<T>
-consteval void RunCompileTimeNotEqualEdgeTests()
-{
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T min = std::numeric_limits<T>::lowest();
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
-
-    static_assert(!TRAP::Math::NotEqual(max, max));
-    static_assert(!TRAP::Math::NotEqual(min, min));
-    static_assert( TRAP::Math::NotEqual(max, min));
-    static_assert( TRAP::Math::NotEqual(min, max));
-    static_assert( TRAP::Math::NotEqual(nan, nan));
-    static_assert(!TRAP::Math::NotEqual(inf, inf));
-    static_assert(!TRAP::Math::NotEqual(ninf, ninf));
+        static_assert(!TRAP::Math::NotEqual(max, max));
+        static_assert(!TRAP::Math::NotEqual(min, min));
+        static_assert( TRAP::Math::NotEqual(max, min));
+        static_assert( TRAP::Math::NotEqual(min, max));
+        static_assert( TRAP::Math::NotEqual(nan, nan));
+        static_assert(!TRAP::Math::NotEqual(inf, inf));
+        static_assert(!TRAP::Math::NotEqual(ninf, ninf));
+    }
 }
 
 TEST_CASE("TRAP::Math::NotEqual()", "[math][generic][notequal]")

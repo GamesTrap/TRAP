@@ -4461,3 +4461,7 @@ SITREP 09/30/2023|23w39b2
 SITREP 09/31/2023|23w39b3
     - Changed TRAP Engine version to 23w39b3(0.9.104)
     - Engine now requires Windows 10 or newer ~<10 mins
+
+SITREP 10/01/2023|23w39b4
+    - Changed TRAP Engine version to 23w39b4(0.9.105)
+    - UnitTests Moved all functions into anonymous namespaces ~<10 mins

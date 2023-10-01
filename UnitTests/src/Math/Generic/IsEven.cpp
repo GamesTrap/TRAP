@@ -8,116 +8,119 @@
 
 #include "TRAP/src/Maths/Math.h"
 
-template<typename T>
-requires std::integral<T>
-consteval void RunCompileTimeIsEvenTests()
+namespace
 {
-    if constexpr(std::unsigned_integral<T>)
+    template<typename T>
+    requires std::integral<T>
+    consteval void RunCompileTimeIsEvenTests()
     {
-        static_assert(!TRAP::Math::IsEven(T(1)));
-        static_assert( TRAP::Math::IsEven(T(2)));
-        static_assert(!TRAP::Math::IsEven(T(37)));
+        if constexpr(std::unsigned_integral<T>)
+        {
+            static_assert(!TRAP::Math::IsEven(T(1)));
+            static_assert( TRAP::Math::IsEven(T(2)));
+            static_assert(!TRAP::Math::IsEven(T(37)));
 
-        if constexpr(sizeof(T) >= 4)
-        {
-            static_assert( TRAP::Math::IsEven(T(888)));
-            static_assert(!TRAP::Math::IsEven(T(1001)));
-            static_assert(!TRAP::Math::IsEven(T(123456789)));
-            static_assert(!TRAP::Math::IsEven(T(987654321)));
-            static_assert( TRAP::Math::IsEven(T(1234567890)));
+            if constexpr(sizeof(T) >= 4)
+            {
+                static_assert( TRAP::Math::IsEven(T(888)));
+                static_assert(!TRAP::Math::IsEven(T(1001)));
+                static_assert(!TRAP::Math::IsEven(T(123456789)));
+                static_assert(!TRAP::Math::IsEven(T(987654321)));
+                static_assert( TRAP::Math::IsEven(T(1234567890)));
+            }
+            else if constexpr(sizeof(T) >= 2)
+            {
+                static_assert( TRAP::Math::IsEven(T(888)));
+                static_assert(!TRAP::Math::IsEven(T(1001)));
+            }
         }
-        else if constexpr(sizeof(T) >= 2)
+        else if constexpr(std::signed_integral<T>)
         {
-            static_assert( TRAP::Math::IsEven(T(888)));
-            static_assert(!TRAP::Math::IsEven(T(1001)));
+            static_assert( TRAP::Math::IsEven(T(-2)));
+            static_assert(!TRAP::Math::IsEven(T(-1)));
+            static_assert(!TRAP::Math::IsEven(T(1)));
+            static_assert( TRAP::Math::IsEven(T(2)));
+            static_assert(!TRAP::Math::IsEven(T(37)));
+
+            if constexpr(sizeof(T) >= 4)
+            {
+                static_assert(!TRAP::Math::IsEven(T(-123456789)));
+                static_assert(!TRAP::Math::IsEven(T(-999)));
+                static_assert( TRAP::Math::IsEven(T(888)));
+                static_assert(!TRAP::Math::IsEven(T(1001)));
+                static_assert(!TRAP::Math::IsEven(T(123456789)));
+                static_assert(!TRAP::Math::IsEven(T(987654321)));
+                static_assert( TRAP::Math::IsEven(T(1234567890)));
+            }
+            else if constexpr(sizeof(T) >= 2)
+            {
+                static_assert(!TRAP::Math::IsEven(T(-999)));
+                static_assert( TRAP::Math::IsEven(T(888)));
+                static_assert(!TRAP::Math::IsEven(T(1001)));
+            }
         }
     }
-    else if constexpr(std::signed_integral<T>)
-    {
-        static_assert( TRAP::Math::IsEven(T(-2)));
-        static_assert(!TRAP::Math::IsEven(T(-1)));
-        static_assert(!TRAP::Math::IsEven(T(1)));
-        static_assert( TRAP::Math::IsEven(T(2)));
-        static_assert(!TRAP::Math::IsEven(T(37)));
 
-        if constexpr(sizeof(T) >= 4)
-        {
-            static_assert(!TRAP::Math::IsEven(T(-123456789)));
-            static_assert(!TRAP::Math::IsEven(T(-999)));
-            static_assert( TRAP::Math::IsEven(T(888)));
-            static_assert(!TRAP::Math::IsEven(T(1001)));
-            static_assert(!TRAP::Math::IsEven(T(123456789)));
-            static_assert(!TRAP::Math::IsEven(T(987654321)));
-            static_assert( TRAP::Math::IsEven(T(1234567890)));
-        }
-        else if constexpr(sizeof(T) >= 2)
-        {
-            static_assert(!TRAP::Math::IsEven(T(-999)));
-            static_assert( TRAP::Math::IsEven(T(888)));
-            static_assert(!TRAP::Math::IsEven(T(1001)));
-        }
+    template<typename T>
+    requires std::integral<T>
+    consteval void RunCompileTimeIsEvenEdgeTests()
+    {
+        constexpr T min = std::numeric_limits<T>::min();
+        constexpr T max = std::numeric_limits<T>::max();
+
+        static_assert( TRAP::Math::IsEven(min));
+        static_assert(!TRAP::Math::IsEven(max));
+        static_assert( TRAP::Math::IsEven(T(0)));
     }
-}
 
-template<typename T>
-requires std::integral<T>
-consteval void RunCompileTimeIsEvenEdgeTests()
-{
-    constexpr T min = std::numeric_limits<T>::min();
-    constexpr T max = std::numeric_limits<T>::max();
-
-    static_assert( TRAP::Math::IsEven(min));
-    static_assert(!TRAP::Math::IsEven(max));
-    static_assert( TRAP::Math::IsEven(T(0)));
-}
-
-template<typename T>
-requires TRAP::Math::IsVec<T> && std::integral<typename T::value_type>
-consteval void RunCompileTimeIsEvenVecTests()
-{
-    if constexpr(std::unsigned_integral<typename T::value_type>)
+    template<typename T>
+    requires TRAP::Math::IsVec<T> && std::integral<typename T::value_type>
+    consteval void RunCompileTimeIsEvenVecTests()
     {
-        static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(1))));
-        static_assert( TRAP::Math::All(TRAP::Math::IsEven(T(2))));
-        static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(37))));
+        if constexpr(std::unsigned_integral<typename T::value_type>)
+        {
+            static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(1))));
+            static_assert( TRAP::Math::All(TRAP::Math::IsEven(T(2))));
+            static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(37))));
 
-        if constexpr(sizeof(typename T::value_type) >= 4)
-        {
-            static_assert( TRAP::Math::All(TRAP::Math::IsEven(T(888))));
-            static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(1001))));
-            static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(123456789))));
-            static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(987654321))));
-            static_assert( TRAP::Math::All(TRAP::Math::IsEven(T(1234567890))));
+            if constexpr(sizeof(typename T::value_type) >= 4)
+            {
+                static_assert( TRAP::Math::All(TRAP::Math::IsEven(T(888))));
+                static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(1001))));
+                static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(123456789))));
+                static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(987654321))));
+                static_assert( TRAP::Math::All(TRAP::Math::IsEven(T(1234567890))));
+            }
+            else if constexpr(sizeof(typename T::value_type) >= 2)
+            {
+                static_assert( TRAP::Math::All(TRAP::Math::IsEven(T(888))));
+                static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(1001))));
+            }
         }
-        else if constexpr(sizeof(typename T::value_type) >= 2)
+        else if constexpr(std::signed_integral<typename T::value_type>)
         {
-            static_assert( TRAP::Math::All(TRAP::Math::IsEven(T(888))));
-            static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(1001))));
-        }
-    }
-    else if constexpr(std::signed_integral<typename T::value_type>)
-    {
-        static_assert( TRAP::Math::All(TRAP::Math::IsEven(T(-2))));
-        static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(-1))));
-        static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(1))));
-        static_assert( TRAP::Math::All(TRAP::Math::IsEven(T(2))));
-        static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(37))));
+            static_assert( TRAP::Math::All(TRAP::Math::IsEven(T(-2))));
+            static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(-1))));
+            static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(1))));
+            static_assert( TRAP::Math::All(TRAP::Math::IsEven(T(2))));
+            static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(37))));
 
-        if constexpr(sizeof(typename T::value_type) >= 4)
-        {
-            static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(-123456789))));
-            static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(-999))));
-            static_assert( TRAP::Math::All(TRAP::Math::IsEven(T(888))));
-            static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(1001))));
-            static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(123456789))));
-            static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(987654321))));
-            static_assert( TRAP::Math::All(TRAP::Math::IsEven(T(1234567890))));
-        }
-        else if constexpr(sizeof(typename T::value_type) >= 2)
-        {
-            static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(-999))));
-            static_assert( TRAP::Math::All(TRAP::Math::IsEven(T(888))));
-            static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(1001))));
+            if constexpr(sizeof(typename T::value_type) >= 4)
+            {
+                static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(-123456789))));
+                static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(-999))));
+                static_assert( TRAP::Math::All(TRAP::Math::IsEven(T(888))));
+                static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(1001))));
+                static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(123456789))));
+                static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(987654321))));
+                static_assert( TRAP::Math::All(TRAP::Math::IsEven(T(1234567890))));
+            }
+            else if constexpr(sizeof(typename T::value_type) >= 2)
+            {
+                static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(-999))));
+                static_assert( TRAP::Math::All(TRAP::Math::IsEven(T(888))));
+                static_assert(!TRAP::Math::All(TRAP::Math::IsEven(T(1001))));
+            }
         }
     }
 }

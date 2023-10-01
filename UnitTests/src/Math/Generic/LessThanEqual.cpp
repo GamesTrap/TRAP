@@ -7,84 +7,87 @@
 
 #include "TRAP/src/Maths/Math.h"
 
-template<typename T>
-requires std::is_arithmetic_v<T>
-consteval void RunCompileTimeLessThanEqualTests()
+namespace
 {
-    constexpr T A(T(1.0f));
-    constexpr T B(T(0.0f));
-
-    static_assert(!TRAP::Math::LessThanEqual(A, B));
-    static_assert( TRAP::Math::LessThanEqual(B, A));
-    static_assert( TRAP::Math::LessThanEqual(A, A));
-    static_assert( TRAP::Math::LessThanEqual(B, B));
-
-    if constexpr(std::floating_point<T> || std::signed_integral<T>)
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    consteval void RunCompileTimeLessThanEqualTests()
     {
-        constexpr T C(T(-1.0f));
+        constexpr T A(T(1.0f));
+        constexpr T B(T(0.0f));
 
-        static_assert(!TRAP::Math::LessThanEqual(B, C));
-        static_assert( TRAP::Math::LessThanEqual(C, B));
-        static_assert( TRAP::Math::LessThanEqual(C, C));
+        static_assert(!TRAP::Math::LessThanEqual(A, B));
+        static_assert( TRAP::Math::LessThanEqual(B, A));
+        static_assert( TRAP::Math::LessThanEqual(A, A));
+        static_assert( TRAP::Math::LessThanEqual(B, B));
+
+        if constexpr(std::floating_point<T> || std::signed_integral<T>)
+        {
+            constexpr T C(T(-1.0f));
+
+            static_assert(!TRAP::Math::LessThanEqual(B, C));
+            static_assert( TRAP::Math::LessThanEqual(C, B));
+            static_assert( TRAP::Math::LessThanEqual(C, C));
+        }
     }
-}
 
-template<typename T>
-requires TRAP::Math::IsVec<T>
-consteval void RunCompileTimeLessThanEqualVecTests()
-{
-    constexpr T A(TRAP::Math::Vec<4, typename T::value_type>(2, 3, 4, 5));
-    constexpr T B(TRAP::Math::Vec<4, typename T::value_type>(1, 2, 3, 4));
-
-    static_assert(!TRAP::Math::All(TRAP::Math::LessThanEqual(A, B)));
-    static_assert( TRAP::Math::All(TRAP::Math::LessThanEqual(B, A)));
-    static_assert( TRAP::Math::All(TRAP::Math::LessThanEqual(A, A)));
-    static_assert( TRAP::Math::All(TRAP::Math::LessThanEqual(B, B)));
-
-    if constexpr(std::floating_point<typename T::value_type> || std::signed_integral<typename T::value_type>)
+    template<typename T>
+    requires TRAP::Math::IsVec<T>
+    consteval void RunCompileTimeLessThanEqualVecTests()
     {
-        constexpr T C(TRAP::Math::Vec<4, typename T::value_type>(-2, -3, -4, -5));
+        constexpr T A(TRAP::Math::Vec<4, typename T::value_type>(2, 3, 4, 5));
+        constexpr T B(TRAP::Math::Vec<4, typename T::value_type>(1, 2, 3, 4));
 
+        static_assert(!TRAP::Math::All(TRAP::Math::LessThanEqual(A, B)));
+        static_assert( TRAP::Math::All(TRAP::Math::LessThanEqual(B, A)));
+        static_assert( TRAP::Math::All(TRAP::Math::LessThanEqual(A, A)));
+        static_assert( TRAP::Math::All(TRAP::Math::LessThanEqual(B, B)));
+
+        if constexpr(std::floating_point<typename T::value_type> || std::signed_integral<typename T::value_type>)
+        {
+            constexpr T C(TRAP::Math::Vec<4, typename T::value_type>(-2, -3, -4, -5));
+
+            static_assert(!TRAP::Math::All(TRAP::Math::LessThanEqual(A, C)));
+            static_assert( TRAP::Math::All(TRAP::Math::LessThanEqual(C, A)));
+            static_assert( TRAP::Math::All(TRAP::Math::LessThanEqual(C, C)));
+        }
+    }
+
+    template<typename T>
+    requires TRAP::Math::IsQuat<T>
+    consteval void RunCompileTimeLessThanEqualQuatTests()
+    {
+        constexpr T A(5.0f, 5.0f, 5.0f, 5.0f);
+        constexpr T B(0.0f, 0.0f, 0.0f, 0.0f);
+        constexpr T C(-1.0f, -1.0f, -1.0f, -1.0f);
+
+        static_assert(!TRAP::Math::All(TRAP::Math::LessThanEqual(A, B)));
+        static_assert( TRAP::Math::All(TRAP::Math::LessThanEqual(B, A)));
         static_assert(!TRAP::Math::All(TRAP::Math::LessThanEqual(A, C)));
         static_assert( TRAP::Math::All(TRAP::Math::LessThanEqual(C, A)));
+        static_assert( TRAP::Math::All(TRAP::Math::LessThanEqual(A, A)));
+        static_assert( TRAP::Math::All(TRAP::Math::LessThanEqual(B, B)));
         static_assert( TRAP::Math::All(TRAP::Math::LessThanEqual(C, C)));
     }
-}
 
-template<typename T>
-requires TRAP::Math::IsQuat<T>
-consteval void RunCompileTimeLessThanEqualQuatTests()
-{
-    constexpr T A(5.0f, 5.0f, 5.0f, 5.0f);
-    constexpr T B(0.0f, 0.0f, 0.0f, 0.0f);
-    constexpr T C(-1.0f, -1.0f, -1.0f, -1.0f);
+    template<typename T>
+    requires std::floating_point<T>
+    void RunLessThanEqualEdgeTests()
+    {
+        static constexpr T max = std::numeric_limits<T>::max();
+        static constexpr T min = std::numeric_limits<T>::lowest();
+        static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+        static constexpr T inf = std::numeric_limits<T>::infinity();
+        static constexpr T ninf = -std::numeric_limits<T>::infinity();
 
-    static_assert(!TRAP::Math::All(TRAP::Math::LessThanEqual(A, B)));
-    static_assert( TRAP::Math::All(TRAP::Math::LessThanEqual(B, A)));
-    static_assert(!TRAP::Math::All(TRAP::Math::LessThanEqual(A, C)));
-    static_assert( TRAP::Math::All(TRAP::Math::LessThanEqual(C, A)));
-    static_assert( TRAP::Math::All(TRAP::Math::LessThanEqual(A, A)));
-    static_assert( TRAP::Math::All(TRAP::Math::LessThanEqual(B, B)));
-    static_assert( TRAP::Math::All(TRAP::Math::LessThanEqual(C, C)));
-}
-
-template<typename T>
-requires std::floating_point<T>
-void RunLessThanEqualEdgeTests()
-{
-    static constexpr T max = std::numeric_limits<T>::max();
-    static constexpr T min = std::numeric_limits<T>::lowest();
-    static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-    static constexpr T inf = std::numeric_limits<T>::infinity();
-    static constexpr T ninf = -std::numeric_limits<T>::infinity();
-
-    static_assert( TRAP::Math::LessThanEqual(max, max));
-    static_assert( TRAP::Math::LessThanEqual(min, min));
-    static_assert(!TRAP::Math::LessThanEqual(max, min));
-    static_assert( TRAP::Math::LessThanEqual(min, max));
-    REQUIRE(!TRAP::Math::LessThanEqual(nan, nan));
-    static_assert( TRAP::Math::LessThanEqual(inf, inf));
-    static_assert( TRAP::Math::LessThanEqual(ninf, ninf));
+        static_assert( TRAP::Math::LessThanEqual(max, max));
+        static_assert( TRAP::Math::LessThanEqual(min, min));
+        static_assert(!TRAP::Math::LessThanEqual(max, min));
+        static_assert( TRAP::Math::LessThanEqual(min, max));
+        REQUIRE(!TRAP::Math::LessThanEqual(nan, nan));
+        static_assert( TRAP::Math::LessThanEqual(inf, inf));
+        static_assert( TRAP::Math::LessThanEqual(ninf, ninf));
+    }
 }
 
 TEST_CASE("TRAP::Math::LessThanEqual()", "[math][generic][lessthanequal]")

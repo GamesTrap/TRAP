@@ -7,85 +7,88 @@
 
 #include "TRAP/src/Maths/Math.h"
 
-template<typename T>
-requires std::is_arithmetic_v<T>
-consteval void RunCompileTimeMinScalarTest()
+namespace
 {
-    constexpr T N = static_cast<T>(0);
-    constexpr T B = static_cast<T>(1);
-    static_assert(TRAP::Math::Equal(TRAP::Math::Min(N, B), N, TRAP::Math::Epsilon<T>()));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Min(B, N), N, TRAP::Math::Epsilon<T>()));
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    consteval void RunCompileTimeMinScalarTest()
+    {
+        constexpr T N = static_cast<T>(0);
+        constexpr T B = static_cast<T>(1);
+        static_assert(TRAP::Math::Equal(TRAP::Math::Min(N, B), N, TRAP::Math::Epsilon<T>()));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Min(B, N), N, TRAP::Math::Epsilon<T>()));
 
-    constexpr T C = static_cast<T>(2);
-    static_assert(TRAP::Math::Equal(TRAP::Math::Min(N, B, C), N, TRAP::Math::Epsilon<T>()));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Min(B, N, C), N, TRAP::Math::Epsilon<T>()));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Min(C, N, B), N, TRAP::Math::Epsilon<T>()));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Min(C, B, N), N, TRAP::Math::Epsilon<T>()));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Min(B, C, N), N, TRAP::Math::Epsilon<T>()));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Min(N, C, B), N, TRAP::Math::Epsilon<T>()));
+        constexpr T C = static_cast<T>(2);
+        static_assert(TRAP::Math::Equal(TRAP::Math::Min(N, B, C), N, TRAP::Math::Epsilon<T>()));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Min(B, N, C), N, TRAP::Math::Epsilon<T>()));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Min(C, N, B), N, TRAP::Math::Epsilon<T>()));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Min(C, B, N), N, TRAP::Math::Epsilon<T>()));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Min(B, C, N), N, TRAP::Math::Epsilon<T>()));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Min(N, C, B), N, TRAP::Math::Epsilon<T>()));
 
-    constexpr T D = static_cast<T>(3);
-    static_assert(TRAP::Math::Equal(TRAP::Math::Min(D, N, B, C), N, TRAP::Math::Epsilon<T>()));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Min(B, D, N, C), N, TRAP::Math::Epsilon<T>()));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Min(C, N, D, B), N, TRAP::Math::Epsilon<T>()));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Min(C, B, D, N), N, TRAP::Math::Epsilon<T>()));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Min(B, C, N, D), N, TRAP::Math::Epsilon<T>()));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Min(N, C, B, D), N, TRAP::Math::Epsilon<T>()));
-}
+        constexpr T D = static_cast<T>(3);
+        static_assert(TRAP::Math::Equal(TRAP::Math::Min(D, N, B, C), N, TRAP::Math::Epsilon<T>()));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Min(B, D, N, C), N, TRAP::Math::Epsilon<T>()));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Min(C, N, D, B), N, TRAP::Math::Epsilon<T>()));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Min(C, B, D, N), N, TRAP::Math::Epsilon<T>()));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Min(B, C, N, D), N, TRAP::Math::Epsilon<T>()));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Min(N, C, B, D), N, TRAP::Math::Epsilon<T>()));
+    }
 
-template<typename T>
-requires std::floating_point<T>
-void RunMinNaNTest()
-{
-    static constexpr T NaN = std::numeric_limits<T>::quiet_NaN();
-    static constexpr T B = static_cast<T>(1);
-    REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Min(NaN, B)));
-    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(B, NaN)));
+    template<typename T>
+    requires std::floating_point<T>
+    void RunMinNaNTest()
+    {
+        static constexpr T NaN = std::numeric_limits<T>::quiet_NaN();
+        static constexpr T B = static_cast<T>(1);
+        REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Min(NaN, B)));
+        REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(B, NaN)));
 
-    static constexpr T C = static_cast<T>(2);
-    REQUIRE( TRAP::Math::IsNaN(TRAP::Math::Min(NaN, B, C)));
-    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(B, NaN, C)));
-    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(C, NaN, B)));
-    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(C, B, NaN)));
-    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(B, C, NaN)));
-    REQUIRE( TRAP::Math::IsNaN(TRAP::Math::Min(NaN, C, B)));
+        static constexpr T C = static_cast<T>(2);
+        REQUIRE( TRAP::Math::IsNaN(TRAP::Math::Min(NaN, B, C)));
+        REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(B, NaN, C)));
+        REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(C, NaN, B)));
+        REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(C, B, NaN)));
+        REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(B, C, NaN)));
+        REQUIRE( TRAP::Math::IsNaN(TRAP::Math::Min(NaN, C, B)));
 
-    static constexpr T D = static_cast<T>(3);
-    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(D, NaN, B, C)));
-    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(B, D, NaN, C)));
-    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(C, NaN, D, B)));
-    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(C, B, D, NaN)));
-    REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(B, C, NaN, D)));
-    REQUIRE( TRAP::Math::IsNaN(TRAP::Math::Min(NaN, C, B, D)));
-}
+        static constexpr T D = static_cast<T>(3);
+        REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(D, NaN, B, C)));
+        REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(B, D, NaN, C)));
+        REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(C, NaN, D, B)));
+        REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(C, B, D, NaN)));
+        REQUIRE(!TRAP::Math::IsNaN(TRAP::Math::Min(B, C, NaN, D)));
+        REQUIRE( TRAP::Math::IsNaN(TRAP::Math::Min(NaN, C, B, D)));
+    }
 
-template<typename T>
-requires TRAP::Math::IsVec<T>
-consteval void RunCompileTimeMinVecTest()
-{
-    constexpr T N = static_cast<T>(0);
-    constexpr T B = static_cast<T>(1);
+    template<typename T>
+    requires TRAP::Math::IsVec<T>
+    consteval void RunCompileTimeMinVecTest()
+    {
+        constexpr T N = static_cast<T>(0);
+        constexpr T B = static_cast<T>(1);
 
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(B, static_cast<T::value_type>(N.x())), N, TRAP::Math::Epsilon<typename T::value_type>())));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(B, static_cast<T::value_type>(N.x())), N, TRAP::Math::Epsilon<typename T::value_type>())));
 
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(N, B), N, TRAP::Math::Epsilon<T>())));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(B, N), N, TRAP::Math::Epsilon<T>())));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(N, B), N, TRAP::Math::Epsilon<T>())));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(B, N), N, TRAP::Math::Epsilon<T>())));
 
-    constexpr T C = static_cast<T>(2);
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(N, B, C), N, TRAP::Math::Epsilon<T>())));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(B, N, C), N, TRAP::Math::Epsilon<T>())));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(C, N, B), N, TRAP::Math::Epsilon<T>())));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(C, B, N), N, TRAP::Math::Epsilon<T>())));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(B, C, N), N, TRAP::Math::Epsilon<T>())));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(N, C, B), N, TRAP::Math::Epsilon<T>())));
+        constexpr T C = static_cast<T>(2);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(N, B, C), N, TRAP::Math::Epsilon<T>())));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(B, N, C), N, TRAP::Math::Epsilon<T>())));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(C, N, B), N, TRAP::Math::Epsilon<T>())));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(C, B, N), N, TRAP::Math::Epsilon<T>())));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(B, C, N), N, TRAP::Math::Epsilon<T>())));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(N, C, B), N, TRAP::Math::Epsilon<T>())));
 
-    constexpr T D = static_cast<T>(3);
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(D, N, B, C), N, TRAP::Math::Epsilon<T>())));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(B, D, N, C), N, TRAP::Math::Epsilon<T>())));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(C, N, D, B), N, TRAP::Math::Epsilon<T>())));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(C, B, D, N), N, TRAP::Math::Epsilon<T>())));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(B, C, N, D), N, TRAP::Math::Epsilon<T>())));
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(N, C, B, D), N, TRAP::Math::Epsilon<T>())));
+        constexpr T D = static_cast<T>(3);
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(D, N, B, C), N, TRAP::Math::Epsilon<T>())));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(B, D, N, C), N, TRAP::Math::Epsilon<T>())));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(C, N, D, B), N, TRAP::Math::Epsilon<T>())));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(C, B, D, N), N, TRAP::Math::Epsilon<T>())));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(B, C, N, D), N, TRAP::Math::Epsilon<T>())));
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Min(N, C, B, D), N, TRAP::Math::Epsilon<T>())));
+    }
 }
 
 TEST_CASE("TRAP::Math::Min()", "[math][generic][min]")

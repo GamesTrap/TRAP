@@ -8,37 +8,40 @@
 
 #include "TRAP/src/Maths/Math.h"
 
-template<typename T>
-requires std::floating_point<T>
-consteval void RunCompileTimeIsFiniteTests()
+namespace
 {
-    static_assert(TRAP::Math::IsFinite(T(1.0)));
-    static_assert(TRAP::Math::IsFinite(T(-1.0)));
-}
+    template<typename T>
+    requires std::floating_point<T>
+    consteval void RunCompileTimeIsFiniteTests()
+    {
+        static_assert(TRAP::Math::IsFinite(T(1.0)));
+        static_assert(TRAP::Math::IsFinite(T(-1.0)));
+    }
 
-template<typename T>
-requires std::floating_point<T>
-consteval void RunCompileTimeIsEvenEdgeTests()
-{
-    constexpr T min = std::numeric_limits<T>::min();
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
-    constexpr T nan = -std::numeric_limits<T>::quiet_NaN();
+    template<typename T>
+    requires std::floating_point<T>
+    consteval void RunCompileTimeIsEvenEdgeTests()
+    {
+        constexpr T min = std::numeric_limits<T>::min();
+        constexpr T max = std::numeric_limits<T>::max();
+        constexpr T inf = std::numeric_limits<T>::infinity();
+        constexpr T ninf = -std::numeric_limits<T>::infinity();
+        constexpr T nan = -std::numeric_limits<T>::quiet_NaN();
 
-    static_assert( TRAP::Math::IsFinite(min));
-    static_assert( TRAP::Math::IsFinite(max));
-    static_assert(!TRAP::Math::IsFinite(inf));
-    static_assert(!TRAP::Math::IsFinite(ninf));
-    static_assert(!TRAP::Math::IsFinite(nan));
-}
+        static_assert( TRAP::Math::IsFinite(min));
+        static_assert( TRAP::Math::IsFinite(max));
+        static_assert(!TRAP::Math::IsFinite(inf));
+        static_assert(!TRAP::Math::IsFinite(ninf));
+        static_assert(!TRAP::Math::IsFinite(nan));
+    }
 
-template<typename T>
-requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
-consteval void RunCompileTimeIsFiniteVecTests()
-{
-    static_assert(TRAP::Math::All(TRAP::Math::IsFinite(T(typename T::value_type(1.0)))));
-    static_assert(TRAP::Math::All(TRAP::Math::IsFinite(T(typename T::value_type(-1.0)))));
+    template<typename T>
+    requires TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>
+    consteval void RunCompileTimeIsFiniteVecTests()
+    {
+        static_assert(TRAP::Math::All(TRAP::Math::IsFinite(T(typename T::value_type(1.0)))));
+        static_assert(TRAP::Math::All(TRAP::Math::IsFinite(T(typename T::value_type(-1.0)))));
+    }
 }
 
 TEST_CASE("TRAP::Math::IsFinite()", "[math][generic][isfinite]")

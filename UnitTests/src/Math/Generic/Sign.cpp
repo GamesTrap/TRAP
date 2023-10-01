@@ -7,68 +7,71 @@
 
 #include "TRAP/src/Maths/Math.h"
 
-template<typename T>
-requires std::signed_integral<T> || std::floating_point<T> || TRAP::Math::IsVec<T>
-consteval void RunCompileTimeSignTests()
+namespace
 {
-    if constexpr(std::signed_integral<T> || std::floating_point<T>)
+    template<typename T>
+    requires std::signed_integral<T> || std::floating_point<T> || TRAP::Math::IsVec<T>
+    consteval void RunCompileTimeSignTests()
     {
-        if constexpr (std::floating_point<T>)
+        if constexpr(std::signed_integral<T> || std::floating_point<T>)
         {
-            constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+            if constexpr (std::floating_point<T>)
+            {
+                constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-            static_assert(TRAP::Math::Equal(TRAP::Math::Sign(T( 0)), T( 0), Epsilon));
-            static_assert(TRAP::Math::Equal(TRAP::Math::Sign(T( 1)), T( 1), Epsilon));
-            static_assert(TRAP::Math::Equal(TRAP::Math::Sign(T( 2)), T( 1), Epsilon));
-            static_assert(TRAP::Math::Equal(TRAP::Math::Sign(T( 3)), T( 1), Epsilon));
-            static_assert(TRAP::Math::Equal(TRAP::Math::Sign(T(-1)), T(-1), Epsilon));
-            static_assert(TRAP::Math::Equal(TRAP::Math::Sign(T(-2)), T(-1), Epsilon));
-            static_assert(TRAP::Math::Equal(TRAP::Math::Sign(T(-3)), T(-1), Epsilon));
+                static_assert(TRAP::Math::Equal(TRAP::Math::Sign(T( 0)), T( 0), Epsilon));
+                static_assert(TRAP::Math::Equal(TRAP::Math::Sign(T( 1)), T( 1), Epsilon));
+                static_assert(TRAP::Math::Equal(TRAP::Math::Sign(T( 2)), T( 1), Epsilon));
+                static_assert(TRAP::Math::Equal(TRAP::Math::Sign(T( 3)), T( 1), Epsilon));
+                static_assert(TRAP::Math::Equal(TRAP::Math::Sign(T(-1)), T(-1), Epsilon));
+                static_assert(TRAP::Math::Equal(TRAP::Math::Sign(T(-2)), T(-1), Epsilon));
+                static_assert(TRAP::Math::Equal(TRAP::Math::Sign(T(-3)), T(-1), Epsilon));
+            }
+            else
+            {
+                static_assert(TRAP::Math::Sign(std::numeric_limits<T>::max()) == T(1));
+                static_assert(TRAP::Math::Sign(std::numeric_limits<T>::min()) == T(-1));
+                static_assert(TRAP::Math::Sign(T( 0)) == T( 0));
+                static_assert(TRAP::Math::Sign(T( 1)) == T( 1));
+                static_assert(TRAP::Math::Sign(T( 2)) == T( 1));
+                static_assert(TRAP::Math::Sign(T( 3)) == T( 1));
+                static_assert(TRAP::Math::Sign(T(-1)) == T(-1));
+                static_assert(TRAP::Math::Sign(T(-2)) == T(-1));
+                static_assert(TRAP::Math::Sign(T(-3)) == T(-1));
+            }
         }
-        else
+        else if constexpr(TRAP::Math::IsVec<T>)
         {
-            static_assert(TRAP::Math::Sign(std::numeric_limits<T>::max()) == T(1));
-            static_assert(TRAP::Math::Sign(std::numeric_limits<T>::min()) == T(-1));
-            static_assert(TRAP::Math::Sign(T( 0)) == T( 0));
-            static_assert(TRAP::Math::Sign(T( 1)) == T( 1));
-            static_assert(TRAP::Math::Sign(T( 2)) == T( 1));
-            static_assert(TRAP::Math::Sign(T( 3)) == T( 1));
-            static_assert(TRAP::Math::Sign(T(-1)) == T(-1));
-            static_assert(TRAP::Math::Sign(T(-2)) == T(-1));
-            static_assert(TRAP::Math::Sign(T(-3)) == T(-1));
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sign(T( 1)), T( 1))));
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sign(T( 0)), T( 0))));
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sign(T( 2)), T( 1))));
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sign(T( 3)), T( 1))));
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sign(T(-1)), T(-1))));
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sign(T(-2)), T(-1))));
+            static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sign(T(-3)), T(-1))));
         }
     }
-    else if constexpr(TRAP::Math::IsVec<T>)
+
+    template<typename T>
+    requires std::signed_integral<T> || std::floating_point<T>
+    consteval void RunCompileTimeSignEdgeTests()
     {
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sign(T( 1)), T( 1))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sign(T( 0)), T( 0))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sign(T( 2)), T( 1))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sign(T( 3)), T( 1))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sign(T(-1)), T(-1))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sign(T(-2)), T(-1))));
-        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::Sign(T(-3)), T(-1))));
-    }
-}
+        constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-template<typename T>
-requires std::signed_integral<T> || std::floating_point<T>
-consteval void RunCompileTimeSignEdgeTests()
-{
-    constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+        constexpr T max = std::numeric_limits<T>::max();
+        constexpr T min = std::numeric_limits<T>::lowest();
+        constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+        constexpr T inf = std::numeric_limits<T>::infinity();
+        constexpr T ninf = -std::numeric_limits<T>::infinity();
 
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T min = std::numeric_limits<T>::lowest();
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
-
-    static_assert(TRAP::Math::Equal(TRAP::Math::Sign(max), T(1.0), Epsilon));
-    static_assert(TRAP::Math::Equal(TRAP::Math::Sign(min), T(-1.0), Epsilon));
-    if constexpr(std::floating_point<T>)
-    {
-        static_assert(TRAP::Math::Equal(TRAP::Math::Sign(nan), T(0.0), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Sign(inf), T(1.0), Epsilon));
-        static_assert(TRAP::Math::Equal(TRAP::Math::Sign(ninf), T(-1.0), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Sign(max), T(1.0), Epsilon));
+        static_assert(TRAP::Math::Equal(TRAP::Math::Sign(min), T(-1.0), Epsilon));
+        if constexpr(std::floating_point<T>)
+        {
+            static_assert(TRAP::Math::Equal(TRAP::Math::Sign(nan), T(0.0), Epsilon));
+            static_assert(TRAP::Math::Equal(TRAP::Math::Sign(inf), T(1.0), Epsilon));
+            static_assert(TRAP::Math::Equal(TRAP::Math::Sign(ninf), T(-1.0), Epsilon));
+        }
     }
 }
 

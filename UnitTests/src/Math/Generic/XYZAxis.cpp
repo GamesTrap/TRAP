@@ -8,23 +8,26 @@
 
 #include "TRAP/src/Maths/Math.h"
 
-template<typename T>
-requires std::is_arithmetic_v<T>
-consteval void RunXAxisTest()
+namespace
 {
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::XAxis<T>(), TRAP::Math::tVec3<T>(1.0f, 0.0f, 0.0f))));
-}
-template<typename T>
-requires std::is_arithmetic_v<T>
-consteval void RunYAxisTest()
-{
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::YAxis<T>(), TRAP::Math::tVec3<T>(0.0f, 1.0f, 0.0f))));
-}
-template<typename T>
-requires std::is_arithmetic_v<T>
-consteval void RunZAxisTest()
-{
-    static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ZAxis<T>(), TRAP::Math::tVec3<T>(0.0f, 0.0f, 1.0f))));
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    consteval void RunXAxisTest()
+    {
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::XAxis<T>(), TRAP::Math::tVec3<T>(1.0f, 0.0f, 0.0f))));
+    }
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    consteval void RunYAxisTest()
+    {
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::YAxis<T>(), TRAP::Math::tVec3<T>(0.0f, 1.0f, 0.0f))));
+    }
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    consteval void RunZAxisTest()
+    {
+        static_assert(TRAP::Math::All(TRAP::Math::Equal(TRAP::Math::ZAxis<T>(), TRAP::Math::tVec3<T>(0.0f, 0.0f, 1.0f))));
+    }
 }
 
 TEST_CASE("TRAP::Math::XAxis()", "[math][generic][xaxis]")

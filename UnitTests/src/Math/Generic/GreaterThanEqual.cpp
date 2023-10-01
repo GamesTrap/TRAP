@@ -7,84 +7,87 @@
 
 #include "TRAP/src/Maths/Math.h"
 
-template<typename T>
-requires std::is_arithmetic_v<T>
-consteval void RunCompileTimeGreaterThanEqualTests()
+namespace
 {
-    constexpr T A(T(1.0f));
-    constexpr T B(T(0.0f));
-
-    static_assert( TRAP::Math::GreaterThanEqual(A, B));
-    static_assert(!TRAP::Math::GreaterThanEqual(B, A));
-    static_assert( TRAP::Math::GreaterThanEqual(A, A));
-    static_assert( TRAP::Math::GreaterThanEqual(B, B));
-
-    if constexpr(std::floating_point<T> || std::signed_integral<T>)
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    consteval void RunCompileTimeGreaterThanEqualTests()
     {
-        constexpr T C(T(-1.0f));
+        constexpr T A(T(1.0f));
+        constexpr T B(T(0.0f));
 
-        static_assert( TRAP::Math::GreaterThanEqual(B, C));
-        static_assert(!TRAP::Math::GreaterThanEqual(C, B));
-        static_assert( TRAP::Math::GreaterThanEqual(C, C));
+        static_assert( TRAP::Math::GreaterThanEqual(A, B));
+        static_assert(!TRAP::Math::GreaterThanEqual(B, A));
+        static_assert( TRAP::Math::GreaterThanEqual(A, A));
+        static_assert( TRAP::Math::GreaterThanEqual(B, B));
+
+        if constexpr(std::floating_point<T> || std::signed_integral<T>)
+        {
+            constexpr T C(T(-1.0f));
+
+            static_assert( TRAP::Math::GreaterThanEqual(B, C));
+            static_assert(!TRAP::Math::GreaterThanEqual(C, B));
+            static_assert( TRAP::Math::GreaterThanEqual(C, C));
+        }
     }
-}
 
-template<typename T>
-requires TRAP::Math::IsVec<T>
-consteval void RunCompileTimeGreaterThanEqualVecTests()
-{
-    constexpr T A(TRAP::Math::Vec<4, typename T::value_type>(2, 3, 4, 5));
-    constexpr T B(TRAP::Math::Vec<4, typename T::value_type>(1, 2, 3, 4));
-
-    static_assert( TRAP::Math::All(TRAP::Math::GreaterThanEqual(A, B)));
-    static_assert(!TRAP::Math::All(TRAP::Math::GreaterThanEqual(B, A)));
-    static_assert( TRAP::Math::All(TRAP::Math::GreaterThanEqual(A, A)));
-    static_assert( TRAP::Math::All(TRAP::Math::GreaterThanEqual(B, B)));
-
-    if constexpr(std::floating_point<typename T::value_type> || std::signed_integral<typename T::value_type>)
+    template<typename T>
+    requires TRAP::Math::IsVec<T>
+    consteval void RunCompileTimeGreaterThanEqualVecTests()
     {
-        constexpr T C(TRAP::Math::Vec<4, typename T::value_type>(-2, -3, -4, -5));
+        constexpr T A(TRAP::Math::Vec<4, typename T::value_type>(2, 3, 4, 5));
+        constexpr T B(TRAP::Math::Vec<4, typename T::value_type>(1, 2, 3, 4));
 
+        static_assert( TRAP::Math::All(TRAP::Math::GreaterThanEqual(A, B)));
+        static_assert(!TRAP::Math::All(TRAP::Math::GreaterThanEqual(B, A)));
+        static_assert( TRAP::Math::All(TRAP::Math::GreaterThanEqual(A, A)));
+        static_assert( TRAP::Math::All(TRAP::Math::GreaterThanEqual(B, B)));
+
+        if constexpr(std::floating_point<typename T::value_type> || std::signed_integral<typename T::value_type>)
+        {
+            constexpr T C(TRAP::Math::Vec<4, typename T::value_type>(-2, -3, -4, -5));
+
+            static_assert( TRAP::Math::All(TRAP::Math::GreaterThanEqual(A, C)));
+            static_assert(!TRAP::Math::All(TRAP::Math::GreaterThanEqual(C, A)));
+            static_assert( TRAP::Math::All(TRAP::Math::GreaterThanEqual(C, C)));
+        }
+    }
+
+    template<typename T>
+    requires TRAP::Math::IsQuat<T>
+    consteval void RunCompileTimeGreaterThanEqualQuatTests()
+    {
+        constexpr T A(5.0f, 5.0f, 5.0f, 5.0f);
+        constexpr T B(0.0f, 0.0f, 0.0f, 0.0f);
+        constexpr T C(-1.0f, -1.0f, -1.0f, -1.0f);
+
+        static_assert( TRAP::Math::All(TRAP::Math::GreaterThanEqual(A, B)));
+        static_assert(!TRAP::Math::All(TRAP::Math::GreaterThanEqual(B, A)));
         static_assert( TRAP::Math::All(TRAP::Math::GreaterThanEqual(A, C)));
         static_assert(!TRAP::Math::All(TRAP::Math::GreaterThanEqual(C, A)));
+        static_assert( TRAP::Math::All(TRAP::Math::GreaterThanEqual(A, A)));
+        static_assert( TRAP::Math::All(TRAP::Math::GreaterThanEqual(B, B)));
         static_assert( TRAP::Math::All(TRAP::Math::GreaterThanEqual(C, C)));
     }
-}
 
-template<typename T>
-requires TRAP::Math::IsQuat<T>
-consteval void RunCompileTimeGreaterThanEqualQuatTests()
-{
-    constexpr T A(5.0f, 5.0f, 5.0f, 5.0f);
-    constexpr T B(0.0f, 0.0f, 0.0f, 0.0f);
-    constexpr T C(-1.0f, -1.0f, -1.0f, -1.0f);
+    template<typename T>
+    requires std::floating_point<T>
+    consteval void RunCompileTimeGreaterThanEqualEdgeTests()
+    {
+        constexpr T max = std::numeric_limits<T>::max();
+        constexpr T min = std::numeric_limits<T>::lowest();
+        constexpr T nan = std::numeric_limits<T>::quiet_NaN();
+        constexpr T inf = std::numeric_limits<T>::infinity();
+        constexpr T ninf = -std::numeric_limits<T>::infinity();
 
-    static_assert( TRAP::Math::All(TRAP::Math::GreaterThanEqual(A, B)));
-    static_assert(!TRAP::Math::All(TRAP::Math::GreaterThanEqual(B, A)));
-    static_assert( TRAP::Math::All(TRAP::Math::GreaterThanEqual(A, C)));
-    static_assert(!TRAP::Math::All(TRAP::Math::GreaterThanEqual(C, A)));
-    static_assert( TRAP::Math::All(TRAP::Math::GreaterThanEqual(A, A)));
-    static_assert( TRAP::Math::All(TRAP::Math::GreaterThanEqual(B, B)));
-    static_assert( TRAP::Math::All(TRAP::Math::GreaterThanEqual(C, C)));
-}
-
-template<typename T>
-requires std::floating_point<T>
-consteval void RunCompileTimeGreaterThanEqualEdgeTests()
-{
-    constexpr T max = std::numeric_limits<T>::max();
-    constexpr T min = std::numeric_limits<T>::lowest();
-    constexpr T nan = std::numeric_limits<T>::quiet_NaN();
-    constexpr T inf = std::numeric_limits<T>::infinity();
-    constexpr T ninf = -std::numeric_limits<T>::infinity();
-
-    static_assert( TRAP::Math::GreaterThanEqual(max, max));
-    static_assert( TRAP::Math::GreaterThanEqual(min, min));
-    static_assert( TRAP::Math::GreaterThanEqual(max, min));
-    static_assert(!TRAP::Math::GreaterThanEqual(min, max));
-    static_assert(!TRAP::Math::GreaterThanEqual(nan, nan));
-    static_assert( TRAP::Math::GreaterThanEqual(inf, inf));
-    static_assert( TRAP::Math::GreaterThanEqual(ninf, ninf));
+        static_assert( TRAP::Math::GreaterThanEqual(max, max));
+        static_assert( TRAP::Math::GreaterThanEqual(min, min));
+        static_assert( TRAP::Math::GreaterThanEqual(max, min));
+        static_assert(!TRAP::Math::GreaterThanEqual(min, max));
+        static_assert(!TRAP::Math::GreaterThanEqual(nan, nan));
+        static_assert( TRAP::Math::GreaterThanEqual(inf, inf));
+        static_assert( TRAP::Math::GreaterThanEqual(ninf, ninf));
+    }
 }
 
 TEST_CASE("TRAP::Math::GreaterThanEqual()", "[math][generic][greaterthanequal]")
