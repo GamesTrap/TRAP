@@ -16,7 +16,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 265
+#define VULKANLOADER_HEADER_VERSION 266
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -788,6 +788,13 @@ struct VkDeviceTable
 #if defined(VK_NV_fragment_shading_rate_enums)
 	PFN_vkCmdSetFragmentShadingRateEnumNV vkCmdSetFragmentShadingRateEnumNV;
 #endif /* defined(VK_NV_fragment_shading_rate_enums) */
+#if defined(VK_NV_low_latency2)
+	PFN_vkGetLatencyTimingsNV vkGetLatencyTimingsNV;
+	PFN_vkLatencySleepNV vkLatencySleepNV;
+	PFN_vkQueueNotifyOutOfBandNV vkQueueNotifyOutOfBandNV;
+	PFN_vkSetLatencyMarkerNV vkSetLatencyMarkerNV;
+	PFN_vkSetLatencySleepModeNV vkSetLatencySleepModeNV;
+#endif /* defined(VK_NV_low_latency2) */
 #if defined(VK_NV_memory_decompression)
 	PFN_vkCmdDecompressMemoryIndirectCountNV vkCmdDecompressMemoryIndirectCountNV;
 	PFN_vkCmdDecompressMemoryNV vkCmdDecompressMemoryNV;
@@ -1768,6 +1775,13 @@ extern PFN_vkGetMemoryWin32HandleNV vkGetMemoryWin32HandleNV;
 #if defined(VK_NV_fragment_shading_rate_enums)
 extern PFN_vkCmdSetFragmentShadingRateEnumNV vkCmdSetFragmentShadingRateEnumNV;
 #endif /* defined(VK_NV_fragment_shading_rate_enums) */
+#if defined(VK_NV_low_latency2)
+extern PFN_vkGetLatencyTimingsNV vkGetLatencyTimingsNV;
+extern PFN_vkLatencySleepNV vkLatencySleepNV;
+extern PFN_vkQueueNotifyOutOfBandNV vkQueueNotifyOutOfBandNV;
+extern PFN_vkSetLatencyMarkerNV vkSetLatencyMarkerNV;
+extern PFN_vkSetLatencySleepModeNV vkSetLatencySleepModeNV;
+#endif /* defined(VK_NV_low_latency2) */
 #if defined(VK_NV_memory_decompression)
 extern PFN_vkCmdDecompressMemoryIndirectCountNV vkCmdDecompressMemoryIndirectCountNV;
 extern PFN_vkCmdDecompressMemoryNV vkCmdDecompressMemoryNV;
@@ -2936,6 +2950,13 @@ static void VkGenLoadDevice(void* context, PFN_vkVoidFunction (*load)(void*, con
 #if defined(VK_NV_fragment_shading_rate_enums)
 	vkCmdSetFragmentShadingRateEnumNV = (PFN_vkCmdSetFragmentShadingRateEnumNV)load(context, "vkCmdSetFragmentShadingRateEnumNV");
 #endif /* defined(VK_NV_fragment_shading_rate_enums) */
+#if defined(VK_NV_low_latency2)
+	vkGetLatencyTimingsNV = (PFN_vkGetLatencyTimingsNV)load(context, "vkGetLatencyTimingsNV");
+	vkLatencySleepNV = (PFN_vkLatencySleepNV)load(context, "vkLatencySleepNV");
+	vkQueueNotifyOutOfBandNV = (PFN_vkQueueNotifyOutOfBandNV)load(context, "vkQueueNotifyOutOfBandNV");
+	vkSetLatencyMarkerNV = (PFN_vkSetLatencyMarkerNV)load(context, "vkSetLatencyMarkerNV");
+	vkSetLatencySleepModeNV = (PFN_vkSetLatencySleepModeNV)load(context, "vkSetLatencySleepModeNV");
+#endif /* defined(VK_NV_low_latency2) */
 #if defined(VK_NV_memory_decompression)
 	vkCmdDecompressMemoryIndirectCountNV = (PFN_vkCmdDecompressMemoryIndirectCountNV)load(context, "vkCmdDecompressMemoryIndirectCountNV");
 	vkCmdDecompressMemoryNV = (PFN_vkCmdDecompressMemoryNV)load(context, "vkCmdDecompressMemoryNV");
@@ -3737,6 +3758,13 @@ static void VkGenLoadDeviceTable(struct VkDeviceTable* table, void* context, PFN
 #if defined(VK_NV_fragment_shading_rate_enums)
 	table->vkCmdSetFragmentShadingRateEnumNV = (PFN_vkCmdSetFragmentShadingRateEnumNV)load(context, "vkCmdSetFragmentShadingRateEnumNV");
 #endif /* defined(VK_NV_fragment_shading_rate_enums) */
+#if defined(VK_NV_low_latency2)
+	table->vkGetLatencyTimingsNV = (PFN_vkGetLatencyTimingsNV)load(context, "vkGetLatencyTimingsNV");
+	table->vkLatencySleepNV = (PFN_vkLatencySleepNV)load(context, "vkLatencySleepNV");
+	table->vkQueueNotifyOutOfBandNV = (PFN_vkQueueNotifyOutOfBandNV)load(context, "vkQueueNotifyOutOfBandNV");
+	table->vkSetLatencyMarkerNV = (PFN_vkSetLatencyMarkerNV)load(context, "vkSetLatencyMarkerNV");
+	table->vkSetLatencySleepModeNV = (PFN_vkSetLatencySleepModeNV)load(context, "vkSetLatencySleepModeNV");
+#endif /* defined(VK_NV_low_latency2) */
 #if defined(VK_NV_memory_decompression)
 	table->vkCmdDecompressMemoryIndirectCountNV = (PFN_vkCmdDecompressMemoryIndirectCountNV)load(context, "vkCmdDecompressMemoryIndirectCountNV");
 	table->vkCmdDecompressMemoryNV = (PFN_vkCmdDecompressMemoryNV)load(context, "vkCmdDecompressMemoryNV");
@@ -4725,6 +4753,13 @@ inline PFN_vkGetMemoryWin32HandleNV vkGetMemoryWin32HandleNV;
 #if defined(VK_NV_fragment_shading_rate_enums)
 inline PFN_vkCmdSetFragmentShadingRateEnumNV vkCmdSetFragmentShadingRateEnumNV;
 #endif /* defined(VK_NV_fragment_shading_rate_enums) */
+#if defined(VK_NV_low_latency2)
+inline PFN_vkGetLatencyTimingsNV vkGetLatencyTimingsNV;
+inline PFN_vkLatencySleepNV vkLatencySleepNV;
+inline PFN_vkQueueNotifyOutOfBandNV vkQueueNotifyOutOfBandNV;
+inline PFN_vkSetLatencyMarkerNV vkSetLatencyMarkerNV;
+inline PFN_vkSetLatencySleepModeNV vkSetLatencySleepModeNV;
+#endif /* defined(VK_NV_low_latency2) */
 #if defined(VK_NV_memory_decompression)
 inline PFN_vkCmdDecompressMemoryIndirectCountNV vkCmdDecompressMemoryIndirectCountNV;
 inline PFN_vkCmdDecompressMemoryNV vkCmdDecompressMemoryNV;
