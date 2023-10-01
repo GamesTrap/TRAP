@@ -137,7 +137,7 @@ jobs:
         with:
           dependency-path: "Dependencies/Vulkan-Headers"
           update-method: "latest-tag"
-          tag-regex: '^sdk-[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' #sdk-X.X.X.X SemVer
+          tag-regex: '^v[0-9]+\.[0-9]+\.[0-9]+$' #vX.X.X SemVer
           pr-title: "Vulkan-Headers"
           pr-branch-name: "vulkan-headers-update"
           pr-token: ${{steps.generate-token.outputs.token}}
