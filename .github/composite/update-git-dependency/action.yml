@@ -1,0 +1,62 @@
+name: "Update Git Dependency"
+author: Jan Schürkamp <gamestrap@trappedgames.de>
+description: ""
+inputs:
+  dependency-path:
+    description: ""
+    required: true
+  branch:
+    description: ""
+    required: false
+    default: "main"
+  tag-regex:
+    description: ""
+    required: false
+    default: ""
+  update-method:
+    description: ""
+    required: true
+    default: "latest-commit"
+  pr-title:
+    description: ""
+    required: true
+  pr-branch-name:
+    description: ""
+    required: true
+  pr-token:
+    description: 'GITHUB_TOKEN or a `repo` scoped Personal Access Token (PAT)'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Update Dependency
+      shell: bash
+      id: dependency
+      run: |
+          homePath=$(pwd)
+          cd ${{inputs.dependency-path}}
+          if [[ ${{inputs.update-method}} == "latest-commit" ]]; then
+            git checkout ${{inputs.branch}}
+            git pull origin ${{inputs.branch}}
+            echo "DEPENDENCY_VERSION=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          elif [[ ${{inputs.update-method}} == "latest-tag" ]]; then
+            git fetch --tags
+            git checkout $(git tag --sort=-v:refname | grep -E ${{inputs.tag-regex}} | head -n 1)
+            echo "DEPENDENCY_VERSION=$(git tag --sort=-v:refname | grep -E ${{inputs.tag-regex}} | head -n 1)" >> "$GITHUB_OUTPUT"
+          fi
+          cd $homePath
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+          base: dev
+          add-paths: ${{inputs.dependency-path}}
+          branch: ${{inputs.pr-branch-name}}/${{steps.dependency.outputs.DEPENDENCY_VERSION}}
+          delete-branch: true
+          commit-message: "Update ${{inputs.pr-title}} to ${{steps.dependency.outputs.DEPENDENCY_VERSION}}"
+          title: "Update ${{inputs.pr-title}} to ${{steps.dependency.outputs.DEPENDENCY_VERSION}}"
+          labels: "CI/CD, External, Update"
+          assignees: "GamesTrap"
+          milestone: 5
+          token: ${{inputs.pr-token}}
+          author: "TRAP CI/CD <gamestrap@web.de>"
+          committer: "TRAP CI/CD <gamestrap@web.de>"

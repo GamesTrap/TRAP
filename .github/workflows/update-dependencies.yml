@@ -6,176 +6,188 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-box2d:
-    name: Update Box2D
+  update-dependencies:
+    name: Update Dependencies
     if: github.repository == 'GamesTrap/TRAP'
     runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
     steps:
       - name: Cleanup workspace
         if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@v1.2.3
+        uses: gamestrap/gha-workspace-cleanup@v1.2.4
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: 'true'
           ref: dev
-      - uses: crazy-max/ghaction-import-gpg@v5
+      - uses: crazy-max/ghaction-import-gpg@v6
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
           git_user_signingkey: true
           git_commit_gpgsign: true
           git_committer_name: TRAP CI/CD
-      - uses: tibdex/github-app-token@v1
+      - uses: tibdex/github-app-token@v2
         id: generate-token
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Update Box2D
-        id: box2d
-        run: |
-          cd Dependencies/Box2D/
-          git fetch origin main
-          git pull origin main
-          echo "BOX2D_VERSION=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-          cd ../..
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          base: dev
-          branch: box2d-update/${{steps.box2d.outputs.BOX2D_VERSION}}
-          delete-branch: true
-          commit-message: "Update Box2D to ${{steps.box2d.outputs.BOX2D_VERSION}}"
-          title: "Update Box2D to ${{steps.box2d.outputs.BOX2D_VERSION}}"
-          labels: "CI/CD, External, Update"
-          assignees: "GamesTrap"
-          milestone: 5
-          token: ${{steps.generate-token.outputs.token}}
-          author: "TRAP CI/CD <gamestrap@web.de>"
-          committer: "TRAP CI/CD <gamestrap@web.de>"
-
-  update-entt:
-    name: Update EnTT
-    if: github.repository == 'GamesTrap/TRAP'
-    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
-    steps:
-      - name: Cleanup workspace
         if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@v1.2.3
-      - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: ./.github/composite/update-git-dependency
         with:
-          submodules: 'true'
-          ref: dev
-      - uses: crazy-max/ghaction-import-gpg@v5
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-          git_committer_name: TRAP CI/CD
-      - uses: tibdex/github-app-token@v1
-        id: generate-token
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+          dependency-path: "Dependencies/Box2D"
+          update-method: "latest-commit"
+          branch: "main"
+          pr-title: "Box2D"
+          pr-branch-name: "box2d-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
+
       - name: Update EnTT
-        id: entt
-        run: |
-            cd Dependencies/EnTT/
-            git fetch --tags
-            git checkout $(git rev-list --tags --max-count=1)
-            echo "ENTT_VERSION=$(git describe --tags --exact-match)" >> "$GITHUB_OUTPUT"
-            cd ../..
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-            base: dev
-            branch: entt-update/${{steps.entt.outputs.ENTT_VERSION}}
-            delete-branch: true
-            commit-message: "Update EnTT to ${{steps.entt.outputs.ENTT_VERSION}}"
-            title: "Update EnTT to ${{steps.entt.outputs.ENTT_VERSION}}"
-            labels: "CI/CD, External, Update"
-            assignees: "GamesTrap"
-            milestone: 5
-            token: ${{steps.generate-token.outputs.token}}
-            author: "TRAP CI/CD <gamestrap@web.de>"
-            committer: "TRAP CI/CD <gamestrap@web.de>"
-
-  update-glslang:
-    name: Update GLSLang
-    if: github.repository == 'GamesTrap/TRAP'
-    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
-    steps:
-      - name: Cleanup workspace
         if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@v1.2.3
-      - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: ./.github/composite/update-git-dependency
         with:
-          submodules: 'true'
-          ref: dev
-      - uses: crazy-max/ghaction-import-gpg@v5
+          dependency-path: "Dependencies/EnTT"
+          update-method: "latest-tag"
+          tag-regex: '^v[0-9]+\.[0-9]+\.[0-9]+$' #vX.X.X SemVer
+          pr-title: "EnTT"
+          pr-branch-name: "entt-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
+
+      - name: Update ImGuizmo
+        if: ${{ always() }}
+        uses: ./.github/composite/update-git-dependency
         with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-          git_committer_name: TRAP CI/CD
-      - uses: tibdex/github-app-token@v1
-        id: generate-token
+          dependency-path: "Dependencies/ImGuizmo"
+          update-method: "latest-commit"
+          branch: "master"
+          pr-title: "ImGuizmo"
+          pr-branch-name: "imguizmo-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
+
+      - name: Update ModernDialogs
+        if: ${{ always() }}
+        uses: ./.github/composite/update-git-dependency
         with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+          dependency-path: "Dependencies/ModernDialogs"
+          update-method: "latest-tag"
+          tag-regex: '^v[0-9]+\.[0-9]+\.[0-9]+$' #vX.X.X SemVer
+          pr-title: "ModernDialogs"
+          pr-branch-name: "moderndialogs-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
+
+      - name: Update Tracy
+        if: ${{ always() }}
+        uses: ./.github/composite/update-git-dependency
+        with:
+          dependency-path: "Dependencies/Tracy"
+          update-method: "latest-tag"
+          tag-regex: '^v[0-9]+\.[0-9]+\.[0-9]+$' #vX.X.X SemVer
+          pr-title: "Tracy"
+          pr-branch-name: "tracy-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
+
+      - name: Update VulkanMemoryAllocator
+        if: ${{ always() }}
+        uses: ./.github/composite/update-git-dependency
+        with:
+          dependency-path: "Dependencies/VulkanMemoryAllocator"
+          update-method: "latest-commit"
+          branch: "master"
+          pr-title: "VulkanMemoryAllocator"
+          pr-branch-name: "vma-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
+
+      - name: Update YAMLCpp
+        if: ${{ always() }}
+        uses: ./.github/composite/update-git-dependency
+        with:
+          dependency-path: "Dependencies/YAMLCpp"
+          update-method: "latest-commit"
+          branch: "master"
+          pr-title: "YAMLCpp"
+          pr-branch-name: "yamlcpp-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
+
+      - name: Update {fmt}
+        if: ${{ always() }}
+        uses: ./.github/composite/update-git-dependency
+        with:
+          dependency-path: "Dependencies/fmt"
+          update-method: "latest-tag"
+          tag-regex: '^[0-9]+\.[0-9]+\.[0-9]+$' #X.X.X SemVer
+          pr-title: "{fmt}"
+          pr-branch-name: "fmt-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
+
+      - name: Update Catch2
+        if: ${{ always() }}
+        uses: ./.github/composite/update-git-dependency
+        with:
+          dependency-path: "Dependencies/Catch2"
+          update-method: "latest-tag"
+          tag-regex: '^v[0-9]+\.[0-9]+\.[0-9]+$' #vX.X.X SemVer
+          pr-title: "Catch2"
+          pr-branch-name: "catch2-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
+
+      - name: Update Vulkan-Headers
+        if: ${{ always() }}
+        uses: ./.github/composite/update-git-dependency
+        with:
+          dependency-path: "Dependencies/Vulkan-Headers"
+          update-method: "latest-tag"
+          tag-regex: '^sdk-[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' #sdk-X.X.X.X SemVer
+          pr-title: "Vulkan-Headers"
+          pr-branch-name: "vulkan-headers-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
+
+      - name: Update GCEM
+        if: ${{ always() }}
+        uses: ./.github/composite/update-git-dependency
+        with:
+          dependency-path: "Dependencies/GCEM"
+          update-method: "latest-commit"
+          branch: "master"
+          pr-title: "GCEM"
+          pr-branch-name: "gcem-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
+
+      - name: Update Premake-VSCodeGen
+        if: ${{ always() }}
+        uses: ./.github/composite/update-git-dependency
+        with:
+          dependency-path: ".modules/vscode"
+          update-method: "latest-commit"
+          branch: "main"
+          pr-title: "Premake-VSCodeGen"
+          pr-branch-name: "premake-vscodegen-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
+
       - name: Update GLSLang
-        id: glslang
-        run: |
-            cd Dependencies/GLSLang/
-            git fetch --tags
-            git checkout $(git tag -l "sdk-*" --sort=-v:refname | head -n 1)
-            echo "GLSLANG_VERSION=$(git tag -l "sdk-*" --sort=-v:refname | head -n 1)" >> "$GITHUB_OUTPUT"
-            cd ../..
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-            base: dev
-            branch: glslang-update/${{steps.glslang.outputs.GLSLANG_VERSION}}
-            delete-branch: true
-            commit-message: "Update GLSLang to ${{steps.glslang.outputs.GLSLANG_VERSION}}"
-            title: "Update GLSLang to ${{steps.glslang.outputs.GLSLANG_VERSION}}"
-            labels: "CI/CD, External, Update"
-            assignees: "GamesTrap"
-            milestone: 5
-            token: ${{steps.generate-token.outputs.token}}
-            author: "TRAP CI/CD <gamestrap@web.de>"
-            committer: "TRAP CI/CD <gamestrap@web.de>"
-
-  update-imgui:
-    name: Update ImGui
-    if: github.repository == 'GamesTrap/TRAP'
-    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
-    steps:
-      - name: Cleanup workspace
         if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@v1.2.3
-      - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: ./.github/composite/update-git-dependency
         with:
-          submodules: 'true'
-          ref: dev
-      - uses: crazy-max/ghaction-import-gpg@v5
+          dependency-path: "Dependencies/GLSLang"
+          update-method: "latest-tag"
+          tag-regex: '^sdk-[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' #sdk-X.X.X.X SemVer
+          pr-title: "GLSLang"
+          pr-branch-name: "glslang-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
+
+      - name: Update SPIRV-Cross
+        if: ${{ always() }}
+        uses: ./.github/composite/update-git-dependency
         with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-          git_committer_name: TRAP CI/CD
-      - uses: tibdex/github-app-token@v1
-        id: generate-token
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+          dependency-path: "Dependencies/SPIRV-Cross"
+          update-method: "latest-tag"
+          tag-regex: '^sdk-[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' #sdk-X.X.X.X SemVer
+          pr-title: "SPIRV-Cross"
+          pr-branch-name: "spirvcross-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
+
       - name: Update ImGui
+        if: ${{ always() }}
         id: imgui
         run: |
             cd Dependencies/ImGui/
@@ -189,442 +201,11 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
             base: dev
+            add-paths: Dependencies/ImGui
             branch: imgui-update/${{steps.imgui.outputs.IMGUI_VERSION}}
             delete-branch: true
             commit-message: "Update ImGui to ${{steps.imgui.outputs.IMGUI_VERSION}}"
             title: "Update ImGui to ${{steps.imgui.outputs.IMGUI_VERSION}}"
-            labels: "CI/CD, External, Update"
-            assignees: "GamesTrap"
-            milestone: 5
-            token: ${{steps.generate-token.outputs.token}}
-            author: "TRAP CI/CD <gamestrap@web.de>"
-            committer: "TRAP CI/CD <gamestrap@web.de>"
-
-  update-imguizmo:
-    name: Update ImGuizmo
-    if: github.repository == 'GamesTrap/TRAP'
-    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
-    steps:
-      - name: Cleanup workspace
-        if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@v1.2.3
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          submodules: 'true'
-          ref: dev
-      - uses: crazy-max/ghaction-import-gpg@v5
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-          git_committer_name: TRAP CI/CD
-      - uses: tibdex/github-app-token@v1
-        id: generate-token
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
-      - name: Update ImGuizmo
-        id: imguizmo
-        run: |
-            cd Dependencies/ImGuizmo/
-            git fetch origin master
-            git pull origin master
-            echo "IMGUIZMO_VERSION=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-            cd ../..
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-            base: dev
-            branch: imguizmo-update/${{steps.imguizmo.outputs.IMGUIZMO_VERSION}}
-            delete-branch: true
-            commit-message: "Update ImGuizmo to ${{steps.imguizmo.outputs.IMGUIZMO_VERSION}}"
-            title: "Update ImGuizmo to ${{steps.imguizmo.outputs.IMGUIZMO_VERSION}}"
-            labels: "CI/CD, External, Update"
-            assignees: "GamesTrap"
-            milestone: 5
-            token: ${{steps.generate-token.outputs.token}}
-            author: "TRAP CI/CD <gamestrap@web.de>"
-            committer: "TRAP CI/CD <gamestrap@web.de>"
-
-  update-moderndialogs:
-    name: Update ModernDialogs
-    if: github.repository == 'GamesTrap/TRAP'
-    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
-    steps:
-      - name: Cleanup workspace
-        if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@v1.2.3
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          submodules: 'true'
-          ref: dev
-      - uses: crazy-max/ghaction-import-gpg@v5
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-          git_committer_name: TRAP CI/CD
-      - uses: tibdex/github-app-token@v1
-        id: generate-token
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
-      - name: Update ModernDialogs
-        id: moderndialogs
-        run: |
-            cd Dependencies/ModernDialogs/
-            git fetch --tags
-            git checkout $(git rev-list --tags --max-count=1)
-            echo "MODERNDIALOGS_VERSION=$(git describe --tags --exact-match)" >> "$GITHUB_OUTPUT"
-            cd ../..
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-            base: dev
-            branch: moderndialogs-update/${{steps.moderndialogs.outputs.MODERNDIALOGS_VERSION}}
-            delete-branch: true
-            commit-message: "Update ModernDialogs to ${{steps.moderndialogs.outputs.MODERNDIALOGS_VERSION}}"
-            title: "Update ModernDialogs to ${{steps.moderndialogs.outputs.MODERNDIALOGS_VERSION}}"
-            labels: "CI/CD, External, Update"
-            assignees: "GamesTrap"
-            milestone: 5
-            token: ${{steps.generate-token.outputs.token}}
-            author: "TRAP CI/CD <gamestrap@web.de>"
-            committer: "TRAP CI/CD <gamestrap@web.de>"
-
-  update-spirvcross:
-    name: Update SPIRV-Cross
-    if: github.repository == 'GamesTrap/TRAP'
-    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
-    steps:
-      - name: Cleanup workspace
-        if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@v1.2.3
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          submodules: 'true'
-          ref: dev
-      - uses: crazy-max/ghaction-import-gpg@v5
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-          git_committer_name: TRAP CI/CD
-      - uses: tibdex/github-app-token@v1
-        id: generate-token
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
-      - name: Update SPIRV-Cross
-        id: spirvcross
-        run: |
-            cd Dependencies/SPIRV-Cross/
-            git fetch --tags
-            git checkout $(git tag -l "sdk-*" --sort=-v:refname | head -n 1)
-            echo "SPIRVCROSS_VERSION=$(git tag -l "sdk-*" --sort=-v:refname | head -n 1)" >> "$GITHUB_OUTPUT"
-            cd ../..
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-            base: dev
-            branch: spirvcross-update/${{steps.spirvcross.outputs.SPIRVCROSS_VERSION}}
-            delete-branch: true
-            commit-message: "Update SPIRV-Cross to ${{steps.spirvcross.outputs.SPIRVCROSS_VERSION}}"
-            title: "Update SPIRV-Cross to ${{steps.spirvcross.outputs.SPIRVCROSS_VERSION}}"
-            labels: "CI/CD, External, Update"
-            assignees: "GamesTrap"
-            milestone: 5
-            token: ${{steps.generate-token.outputs.token}}
-            author: "TRAP CI/CD <gamestrap@web.de>"
-            committer: "TRAP CI/CD <gamestrap@web.de>"
-
-  update-tracy:
-    name: Update Tracy
-    if: github.repository == 'GamesTrap/TRAP'
-    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
-    steps:
-      - name: Cleanup workspace
-        if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@v1.2.3
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          submodules: 'true'
-          ref: dev
-      - uses: crazy-max/ghaction-import-gpg@v5
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-          git_committer_name: TRAP CI/CD
-      - uses: tibdex/github-app-token@v1
-        id: generate-token
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
-      - name: Update Tracy
-        id: tracy
-        run: |
-            cd Dependencies/Tracy/
-            git fetch --tags
-            git checkout $(git rev-list --tags --max-count=1)
-            echo "TRACY_VERSION=$(git describe --tags --exact-match)" >> "$GITHUB_OUTPUT"
-            cd ../..
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-            base: dev
-            branch: tracy-update/${{steps.tracy.outputs.TRACY_VERSION}}
-            delete-branch: true
-            commit-message: "Update Tracy to ${{steps.tracy.outputs.TRACY_VERSION}}"
-            title: "Update Tracy to ${{steps.tracy.outputs.TRACY_VERSION}}"
-            labels: "CI/CD, External, Update"
-            assignees: "GamesTrap"
-            milestone: 5
-            token: ${{steps.generate-token.outputs.token}}
-            author: "TRAP CI/CD <gamestrap@web.de>"
-            committer: "TRAP CI/CD <gamestrap@web.de>"
-
-  update-vma:
-    name: Update VulkanMemoryAllocator
-    if: github.repository == 'GamesTrap/TRAP'
-    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
-    steps:
-      - name: Cleanup workspace
-        if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@v1.2.3
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          submodules: 'true'
-          ref: dev
-      - uses: crazy-max/ghaction-import-gpg@v5
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-          git_committer_name: TRAP CI/CD
-      - uses: tibdex/github-app-token@v1
-        id: generate-token
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
-      - name: Update VulkanMemoryAllocator
-        id: vma
-        run: |
-            cd Dependencies/VulkanMemoryAllocator/
-            git checkout master
-            git pull origin master
-            echo "VMA_VERSION=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-            cd ../..
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-            base: dev
-            branch: vma-update/${{steps.vma.outputs.VMA_VERSION}}
-            delete-branch: true
-            commit-message: "Update VulkanMemoryAllocator to ${{steps.vma.outputs.VMA_VERSION}}"
-            title: "Update VulkanMemoryAllocator to ${{steps.vma.outputs.VMA_VERSION}}"
-            labels: "CI/CD, External, Update"
-            assignees: "GamesTrap"
-            milestone: 5
-            token: ${{steps.generate-token.outputs.token}}
-            author: "TRAP CI/CD <gamestrap@web.de>"
-            committer: "TRAP CI/CD <gamestrap@web.de>"
-
-  update-yamlcpp:
-    name: Update YAMLCpp
-    if: github.repository == 'GamesTrap/TRAP'
-    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
-    steps:
-      - name: Cleanup workspace
-        if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@v1.2.3
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          submodules: 'true'
-          ref: dev
-      - uses: crazy-max/ghaction-import-gpg@v5
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-          git_committer_name: TRAP CI/CD
-      - uses: tibdex/github-app-token@v1
-        id: generate-token
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
-      - name: Update YAMLCpp
-        id: yamlcpp
-        run: |
-            cd Dependencies/YAMLCpp/
-            git checkout master
-            git pull origin master
-            echo "YAMLCPP_VERSION=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-            cd ../..
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-            base: dev
-            branch: yamlcpp-update/${{steps.yamlcpp.outputs.YAMLCPP_VERSION}}
-            delete-branch: true
-            commit-message: "Update YAMLCpp to ${{steps.yamlcpp.outputs.YAMLCPP_VERSION}}"
-            title: "Update YAMLCpp to ${{steps.yamlcpp.outputs.YAMLCPP_VERSION}}"
-            labels: "CI/CD, External, Update"
-            assignees: "GamesTrap"
-            milestone: 5
-            token: ${{steps.generate-token.outputs.token}}
-            author: "TRAP CI/CD <gamestrap@web.de>"
-            committer: "TRAP CI/CD <gamestrap@web.de>"
-
-  update-fmt:
-    name: Update {fmt}
-    if: github.repository == 'GamesTrap/TRAP'
-    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
-    steps:
-      - name: Cleanup workspace
-        if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@v1.2.3
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          submodules: 'true'
-          ref: dev
-      - uses: crazy-max/ghaction-import-gpg@v5
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-          git_committer_name: TRAP CI/CD
-      - uses: tibdex/github-app-token@v1
-        id: generate-token
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
-      - name: Update {fmt}
-        id: fmt
-        run: |
-            cd Dependencies/fmt/
-            git fetch --tags
-            git checkout $(git rev-list --tags --max-count=1)
-            echo "FMT_VERSION=$(git describe --tags --exact-match)" >> "$GITHUB_OUTPUT"
-            cd ../..
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-            base: dev
-            branch: fmt-update/${{steps.fmt.outputs.FMT_VERSION}}
-            delete-branch: true
-            commit-message: "Update {fmt} to ${{steps.fmt.outputs.FMT_VERSION}}"
-            title: "Update {fmt} to ${{steps.fmt.outputs.FMT_VERSION}}"
-            labels: "CI/CD, External, Update"
-            assignees: "GamesTrap"
-            milestone: 5
-            token: ${{steps.generate-token.outputs.token}}
-            author: "TRAP CI/CD <gamestrap@web.de>"
-            committer: "TRAP CI/CD <gamestrap@web.de>"
-
-  update-catch2:
-    name: Update Catch2
-    if: github.repository == 'GamesTrap/TRAP'
-    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
-    steps:
-      - name: Cleanup workspace
-        if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@v1.2.3
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          submodules: 'true'
-          ref: dev
-      - uses: crazy-max/ghaction-import-gpg@v5
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-          git_committer_name: TRAP CI/CD
-      - uses: tibdex/github-app-token@v1
-        id: generate-token
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
-      - name: Update Catch2
-        id: catch2
-        run: |
-            cd Dependencies/Catch2/
-            git fetch --tags
-            git checkout $(git rev-list --tags --max-count=1)
-            echo "CATCH2_VERSION=$(git describe --tags --exact-match)" >> "$GITHUB_OUTPUT"
-            cd ../..
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-            base: dev
-            branch: catch2-update/${{steps.catch2.outputs.CATCH2_VERSION}}
-            delete-branch: true
-            commit-message: "Update Catch2 to ${{steps.catch2.outputs.CATCH2_VERSION}}"
-            title: "Update Catch2 to ${{steps.catch2.outputs.CATCH2_VERSION}}"
-            labels: "CI/CD, External, Update"
-            assignees: "GamesTrap"
-            milestone: 5
-            token: ${{steps.generate-token.outputs.token}}
-            author: "TRAP CI/CD <gamestrap@web.de>"
-            committer: "TRAP CI/CD <gamestrap@web.de>"
-
-  update-vulkan-headers:
-    name: Update Vulkan-Headers
-    if: github.repository == 'GamesTrap/TRAP'
-    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
-    steps:
-      - name: Cleanup workspace
-        if: ${{ always() }}
-        uses: gamestrap/gha-workspace-cleanup@v1.2.3
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          submodules: 'true'
-          ref: dev
-      - uses: crazy-max/ghaction-import-gpg@v5
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-          git_committer_name: TRAP CI/CD
-      - uses: tibdex/github-app-token@v1
-        id: generate-token
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
-      - name: Update Vulkan-Headers
-        id: vulkan-headers
-        run: |
-            cd Dependencies/Vulkan-Headers/
-            git fetch --tags
-            git checkout $(git rev-list --tags --max-count=1)
-            echo "VULKAN_HEADERS_VERSION=$(git describe --tags --exact-match)" >> "$GITHUB_OUTPUT"
-            cd ../..
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-            base: dev
-            branch: vulkan-headers-update/${{steps.vulkan-headers.outputs.VULKAN_HEADERS_VERSION}}
-            delete-branch: true
-            commit-message: "Update Vulkan-Headers to ${{steps.vulkan-headers.outputs.VULKAN_HEADERS_VERSION}}"
-            title: "Update Vulkan-Headers to ${{steps.vulkan-headers.outputs.VULKAN_HEADERS_VERSION}}"
             labels: "CI/CD, External, Update"
             assignees: "GamesTrap"
             milestone: 5
