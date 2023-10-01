@@ -304,7 +304,8 @@ void TRAP::Window::SetFullscreen(const Monitor::VideoMode& videoMode)
 	        videoMode.Width, 'x', videoMode.Height, '@', videoMode.RefreshRate, "Hz");
 
 	INTERNAL::WindowingAPI::SetWindowMonitor(*m_window, static_cast<INTERNAL::WindowingAPI::InternalMonitor*>(m_data.Monitor.GetInternalMonitor()),
-	                                         0, 0, videoMode.Width, videoMode.Height, videoMode.RefreshRate);
+	                                         0, 0, NumericCast<int32_t>(videoMode.Width),
+											 NumericCast<int32_t>(videoMode.Height), videoMode.RefreshRate);
 
 	m_data.displayMode = DisplayMode::Fullscreen;
 }
@@ -866,7 +867,7 @@ void TRAP::Window::Init(const WindowProps& props)
 												m_data.MaxWidth, m_data.MaxHeight);
 
 	if(props.DisplayMode == DisplayMode::Fullscreen)
-		SetFullscreen(Monitor::VideoMode(NumericCast<int32_t>(width), NumericCast<int32_t>(height), props.RefreshRate));
+		SetFullscreen(Monitor::VideoMode(width, height, props.RefreshRate));
 	else if(props.DisplayMode == DisplayMode::Borderless)
 		SetFullscreenBorderless();
 

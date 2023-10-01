@@ -21,7 +21,8 @@ TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
 	const std::vector<INTERNAL::WindowingAPI::InternalVideoMode>& internalModes = INTERNAL::WindowingAPI::GetVideoModes(*m_handle);
 
 	for(const auto& internalMode : std::ranges::reverse_view(internalModes))
-		modes.emplace_back(internalMode.Width, internalMode.Height, internalMode.RefreshRate);
+		modes.emplace_back(NumericCast<uint32_t>(internalMode.Width), NumericCast<uint32_t>(internalMode.Height),
+	                       internalMode.RefreshRate);
 
 	return modes;
 }
@@ -34,7 +35,8 @@ TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
 	if(!nativeVideoMode)
 		return std::nullopt;
 
-	return VideoMode{ nativeVideoMode->Width, nativeVideoMode->Height, nativeVideoMode->RefreshRate };
+	return VideoMode{ NumericCast<uint32_t>(nativeVideoMode->Width), NumericCast<uint32_t>(nativeVideoMode->Height),
+	                  nativeVideoMode->RefreshRate };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -45,7 +47,8 @@ TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
 	if(!currVideoMode)
 		return std::nullopt;
 
-	return VideoMode{ currVideoMode->Width, currVideoMode->Height, currVideoMode->RefreshRate };
+	return VideoMode{ static_cast<uint32_t>(currVideoMode->Width), static_cast<uint32_t>(currVideoMode->Height),
+	                  currVideoMode->RefreshRate };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

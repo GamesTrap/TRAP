@@ -28,10 +28,10 @@ namespace TRAP
 			/// <param name="width">Width.</param>
 			/// <param name="height">Height.</param>
 			/// <param name="refreshRate">Refresh rate.</param>
-			constexpr VideoMode(int32_t width, int32_t height, double refreshRate) noexcept;
+			constexpr VideoMode(uint32_t width, uint32_t height, double refreshRate) noexcept;
 
-			int32_t Width = 0;
-			int32_t Height = 0;
+			uint32_t Width = 0;
+			uint32_t Height = 0;
 			double RefreshRate = 0;
 
 			[[nodiscard]] constexpr auto operator<=>(const VideoMode& mode) const = default;
@@ -179,7 +179,7 @@ namespace TRAP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Monitor::VideoMode::VideoMode(const int32_t width, const int32_t height, const double refreshRate) noexcept
+constexpr TRAP::Monitor::VideoMode::VideoMode(const uint32_t width, const uint32_t height, const double refreshRate) noexcept
 	: Width(width), Height(height), RefreshRate(refreshRate)
 {}
 

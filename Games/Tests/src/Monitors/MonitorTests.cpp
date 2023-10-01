@@ -78,7 +78,7 @@ bool MonitorTests::OnMonitorDisconnect(const TRAP::Events::MonitorDisconnectEven
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t MonitorTests::Euclid(const int32_t a, const int32_t b)
+uint32_t MonitorTests::Euclid(const uint32_t a, const uint32_t b)
 {
 	return b != 0 ? Euclid(b, a % b) : a;
 }
@@ -87,7 +87,7 @@ int32_t MonitorTests::Euclid(const int32_t a, const int32_t b)
 
 std::string MonitorTests::FormatMode(const TRAP::Monitor::VideoMode& mode)
 {
-	const int32_t gcd = Euclid(mode.Width, mode.Height);
+	const uint32_t gcd = Euclid(mode.Width, mode.Height);
 
 	return fmt::format("{}x{}({}:{}) {}Hz", mode.Width, mode.Height, (mode.Width / gcd), (mode.Height / gcd),
 	                   mode.RefreshRate);
