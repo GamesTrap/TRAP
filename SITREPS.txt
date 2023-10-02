@@ -4473,3 +4473,4 @@ SITREP 10/02/2023|23w40a1
     - VulkanPhysicalDevice RatePhysicalDevices() Greatly reduced score impact of maxImageDimension2D and maxImageDimensionCube ~<5 mins
     - VulkanDevice now always requests all available queues ~<5 mins
     - VulkanRenderer InternalRenderTargets is now dynamically resized when needed (fixes crash on Wayland when minImageCount is > RendererAPI::ImageCount) ~<10 mins
+    - VulkanSwapChain Changed assert to warning when more images are returned than requested by vkCreateSwapchainKHR ~<5 mins

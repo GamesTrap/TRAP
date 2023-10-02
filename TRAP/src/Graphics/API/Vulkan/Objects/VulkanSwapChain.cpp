@@ -281,7 +281,8 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	uint32_t imageCount = 0;
 	VkCall(vkGetSwapchainImagesKHR(m_device->GetVkDevice(), swapChain, &imageCount, nullptr));
 
-	TRAP_ASSERT(desc.ImageCount == imageCount, "VulkanSwapChain::InitSwapchain(): ImageCount does not match!");
+	if(desc.ImageCount != imageCount)
+		TP_WARN(Log::RendererVulkanSwapChainPrefix, "vkGetSwapchainImagesKHR returned more images than were requested by vkCreateSwapchainKHR (", imageCount, " instead of ", desc.ImageCount, ")!");
 
 	std::vector<VkImage> images(imageCount);
 	VkCall(vkGetSwapchainImagesKHR(m_device->GetVkDevice(), swapChain, &imageCount, images.data()));
@@ -298,10 +299,11 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	descColor.StartState = RendererAPI::ResourceState::Present;
 
 	//Populate the vk_image field and add the Vulkan texture objects
+	m_renderTargets.resize(imageCount);
 	for (uint32_t i = 0; i < imageCount; ++i)
 	{
 		descColor.NativeHandle = images[i];
-		m_renderTargets.push_back(TRAP::MakeRef<VulkanRenderTarget>(descColor));
+		m_renderTargets[i] = TRAP::MakeRef<VulkanRenderTarget>(descColor);
 	}
 
 	//////////////
