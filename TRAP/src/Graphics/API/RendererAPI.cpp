@@ -371,7 +371,7 @@ void TRAP::Graphics::RendererAPI::StartRenderPass(const Window* window)
 	TRAP::Ref<Graphics::RenderTarget> renderTarget = nullptr;
 
 	//Get correct RenderTarget
-	if((viewportData->RenderScale != 1.0f || s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) && viewportData->State == PerWindowState::PreUpdate)
+	if((viewportData->RenderScale != 1.0f || viewportData->CurrentAntiAliasing == RendererAPI::AntiAliasing::MSAA) && viewportData->State == PerWindowState::PreUpdate)
 		renderTarget = viewportData->InternalRenderTargets[viewportData->CurrentSwapChainImageIndex];
 	else
 		renderTarget = viewportData->SwapChain->GetRenderTargets()[viewportData->CurrentSwapChainImageIndex];
@@ -388,7 +388,7 @@ void TRAP::Graphics::RendererAPI::StartRenderPass()
 	TRAP::Ref<Graphics::RenderTarget> renderTarget = nullptr;
 
 	//Get correct RenderTarget
-	if((s_perViewportData->RenderScale != 1.0f || s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) && s_perViewportData->State == PerWindowState::PreUpdate)
+	if((s_perViewportData->RenderScale != 1.0f || viewportData->CurrentAntiAliasing == RendererAPI::AntiAliasing::MSAA) && s_perViewportData->State == PerWindowState::PreUpdate)
 		renderTarget = s_perViewportData->InternalRenderTargets[s_perViewportData->ImageIndex];
 	else
 		renderTarget = s_perViewportData->RenderTargets[s_perViewportData->ImageIndex];
@@ -480,16 +480,22 @@ void TRAP::Graphics::RendererAPI::Transition(const Ref<TRAP::Graphics::Texture>&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RendererAPI::GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount) noexcept
+void TRAP::Graphics::RendererAPI::GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount,
+                                                  const Window* window) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	outAntiAliasing = s_currentAntiAliasing;
+	if (window == nullptr)
+		window = TRAP::Application::GetWindow();
 
-	if(s_currentAntiAliasing == TRAP::Graphics::RendererAPI::AntiAliasing::Off)
+	const PerViewportData& data = *s_perViewportDataMap.at(window);
+
+	outAntiAliasing = data.CurrentAntiAliasing;
+
+	if(outAntiAliasing == TRAP::Graphics::RendererAPI::AntiAliasing::Off)
 		outSampleCount = TRAP::Graphics::SampleCount::One;
 	else
-		outSampleCount = s_currentSampleCount;
+		outSampleCount = data.CurrentSampleCount;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -4476,3 +4476,4 @@ SITREP 10/02/2023|23w40a1
     - VulkanSwapChain Changed assert to warning when more images are returned than requested by vkCreateSwapchainKHR ~<5 mins
     - ImGuiVulkanBackend SetMSAASamples() now waits for device idle before destroying old pipeline ~<5 mins
     - FrameBufferTests Fixed Vulkan errors when MSAA is enabled ~<10 mins
+    - RendererAPI Updating of AntiAliasing state now happens per window instead of globally ~<15 mins

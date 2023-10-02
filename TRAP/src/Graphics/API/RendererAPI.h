@@ -1314,7 +1314,8 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="outAntiAliasing">Output: Used anti aliasing method.</param>
 		/// <param name="outSampleCount">Output: Used sample count.</param>
-		static void GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount) noexcept;
+		/// <param name="window">Window to get anti aliasing from.</param>
+		static void GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount, const Window* window) noexcept;
 
 		/// <summary>
 		/// Set the anti aliasing method and the sample count.
@@ -3236,8 +3237,6 @@ namespace TRAP::Graphics
 		static TRAP::Ref<Queue> s_computeQueue;
 		static TRAP::Ref<Queue> s_transferQueue;
 
-		inline constinit static RendererAPI::SampleCount s_currentSampleCount = RendererAPI::SampleCount::Two;
-		inline constinit static RendererAPI::AntiAliasing s_currentAntiAliasing = RendererAPI::AntiAliasing::Off;
 		inline constinit static RendererAPI::SampleCount s_newSampleCount = RendererAPI::SampleCount::Two;
 		inline constinit static RendererAPI::AntiAliasing s_newAntiAliasing = RendererAPI::AntiAliasing::Off;
 		inline constinit static RendererAPI::SampleCount s_Anisotropy = RendererAPI::SampleCount::Sixteen;
@@ -3310,6 +3309,8 @@ namespace TRAP::Graphics
 			uint32_t NewWidth = 1920, NewHeight = 1080; //Default RenderTargets to use Full HD
 #endif /*TRAP_HEADLESS_MODE*/
 			uint32_t CurrentSwapChainImageIndex{};
+			RendererAPI::AntiAliasing CurrentAntiAliasing = RendererAPI::AntiAliasing::Off;
+			RendererAPI::SampleCount CurrentSampleCount = RendererAPI::SampleCount::One;
 
 			RendererAPI::Color ClearColor{0.1, 0.1, 0.1, 1.0};
 			RendererAPI::DepthStencil ClearDepthStencil{0.0, 0};

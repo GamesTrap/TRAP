@@ -346,9 +346,10 @@ void TRAP::Graphics::RenderCommand::SetAntiAliasing(const AntiAliasing antiAlias
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount) noexcept
+void TRAP::Graphics::RenderCommand::GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount,
+                                                    const Window* const window) noexcept
 {
-	RendererAPI::GetAntiAliasing(outAntiAliasing, outSampleCount);
+	RendererAPI::GetAntiAliasing(outAntiAliasing, outSampleCount, window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

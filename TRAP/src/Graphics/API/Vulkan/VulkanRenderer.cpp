@@ -146,7 +146,7 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData*
 		renderCompleteFence->Wait();
 
 	TRAP::Ref<RenderTarget> bindRenderTarget{};
-	if(p->RenderScale != 1.0f || s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
+	if(p->RenderScale != 1.0f || p->CurrentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
 		bindRenderTarget = p->InternalRenderTargets[p->CurrentSwapChainImageIndex];
 	else
 	{
@@ -215,7 +215,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerViewportData* c
 	if(!p->Recording)
 		return;
 
-	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA && p->RenderScale == 1.0f) //Inject MSAA resolve pass
+	if(p->CurrentAntiAliasing == RendererAPI::AntiAliasing::MSAA && p->RenderScale == 1.0f) //Inject MSAA resolve pass
 	{
 #ifndef TRAP_HEADLESS_MODE
 		const TRAP::Ref<RenderTarget> presentRenderTarget = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
@@ -1308,7 +1308,7 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType)
 #endif /*TRAP_HEADLESS_MODE*/
 
 	TRAP::Ref<RenderTarget> renderTarget;
-	if(data->RenderScale != 1.0f || s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
+	if(data->RenderScale != 1.0f || data->CurrentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
 		renderTarget = data->InternalRenderTargets[data->CurrentSwapChainImageIndex];
 	else
 	{
@@ -2453,24 +2453,24 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 #else
 	const auto newInternalRes = GetInternalRenderResolution();
 #endif /*TRAP_HEADLESS_MODE*/
-	if(viewportData->RenderScale != 1.0f && !viewportData->InternalRenderTargets[0])
+	if(viewportData->InternalRenderTargets.empty())
 		rebuild = true;
-	else if(viewportData->InternalRenderTargets.empty() ||
-	        (viewportData->InternalRenderTargets[0] &&
+	else if(viewportData->InternalRenderTargets[0] &&
 	        (viewportData->InternalRenderTargets[0]->GetWidth() != newInternalRes.x() ||
-	         viewportData->InternalRenderTargets[0]->GetHeight() != newInternalRes.y())))
+	         viewportData->InternalRenderTargets[0]->GetHeight() != newInternalRes.y() ||
+			 viewportData->InternalRenderTargets[0]->GetSampleCount() != s_newSampleCount))
 	{
 		rebuild = true;
 	}
 
-	if (s_newAntiAliasing != s_currentAntiAliasing ||
-	    s_newSampleCount != s_currentSampleCount) //Change sample count only between frames!
+	if (viewportData->CurrentAntiAliasing != s_newAntiAliasing ||
+	    viewportData->CurrentSampleCount != s_newSampleCount) //Change sample count only between frames!
 	{
-		s_currentAntiAliasing = s_newAntiAliasing;
-		s_currentSampleCount = s_newSampleCount;
+		viewportData->CurrentAntiAliasing = s_newAntiAliasing;
+		viewportData->CurrentSampleCount = s_newSampleCount;
 
-		if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
-			std::get<GraphicsPipelineDesc>(viewportData->GraphicsPipelineDesc.Pipeline).SampleCount = s_currentSampleCount;
+		if(viewportData->CurrentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
+			std::get<GraphicsPipelineDesc>(viewportData->GraphicsPipelineDesc.Pipeline).SampleCount = viewportData->CurrentSampleCount;
 		else
 			std::get<GraphicsPipelineDesc>(viewportData->GraphicsPipelineDesc.Pipeline).SampleCount = SampleCount::One;
 
@@ -2491,7 +2491,7 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 		rTDesc.MipLevels = 1;
 		rTDesc.Format = SwapChain::GetRecommendedSwapchainFormat(true, false);
 		rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
-		rTDesc.SampleCount = (s_currentAntiAliasing == AntiAliasing::MSAA) ? s_currentSampleCount : SampleCount::One;
+		rTDesc.SampleCount = (viewportData->CurrentAntiAliasing == AntiAliasing::MSAA) ? viewportData->CurrentSampleCount : SampleCount::One;
 
 #ifndef TRAP_HEADLESS_MODE
 		const uint32_t imageCount = NumericCast<uint32_t>(viewportData->SwapChain->GetRenderTargets().size());
@@ -2800,7 +2800,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const uint32_t wid
 		Utils::DisplayError(Utils::ErrorCode::VulkanSwapchainCreationFailed);
 
 	//Create MSAA RenderTargets if needed
-	if(s_currentAntiAliasing == AntiAliasing::MSAA)
+	if(p->CurrentAntiAliasing == AntiAliasing::MSAA)
 	{
 		RendererAPI::RenderTargetDesc rTMSAADesc{};
 		rTMSAADesc.Width = window->GetFrameBufferSize().x();
@@ -2810,7 +2810,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const uint32_t wid
 		rTMSAADesc.MipLevels = 1;
 		rTMSAADesc.Format = SwapChain::GetRecommendedSwapchainFormat(true, false);
 		rTMSAADesc.StartState = RendererAPI::ResourceState::RenderTarget;
-		rTMSAADesc.SampleCount = s_currentSampleCount;
+		rTMSAADesc.SampleCount = p->CurrentSampleCount;
 		for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
 			p->InternalRenderTargets[i] = RenderTarget::Create(rTMSAADesc);
 	}
@@ -2826,7 +2826,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const uint32_t wid
 	rTDesc.SampleCount = SampleCount::One;
 	for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
 		p->RenderTargets[i] = RenderTarget::Create(rTDesc);
-	if(s_currentAntiAliasing == AntiAliasing::MSAA)
+	if(p->CurrentAntiAliasing == AntiAliasing::MSAA)
 	{
 		rTDesc.SampleCount = s_currentSampleCount;
 		for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
@@ -2836,11 +2836,11 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const uint32_t wid
 
 	//Graphics Pipeline
 #ifndef TRAP_HEADLESS_MODE
-	TRAP::Ref<RenderTarget> rT = s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA ?
+	TRAP::Ref<RenderTarget> rT = p->CurrentAntiAliasing == RendererAPI::AntiAliasing::MSAA ?
 	                             p->InternalRenderTargets[0] :
 								 p->SwapChain->GetRenderTargets()[0];
 #else
-	const auto& rT = s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA ? p->InternalRenderTargets[0] : std::get<0>(p->RenderTargets);
+	const auto& rT = p->CurrentAntiAliasing == RendererAPI::AntiAliasing::MSAA ? p->InternalRenderTargets[0] : std::get<0>(p->RenderTargets);
 #endif
 	p->GraphicsPipelineDesc = {};
 	p->GraphicsPipelineDesc.Type = PipelineType::Graphics;

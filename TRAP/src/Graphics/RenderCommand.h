@@ -482,7 +482,8 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="outAntiAliasing">Output: Used anti aliasing method.</param>
 		/// <param name="outSampleCount">Output: Used sample count.</param>
-		static void GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount) noexcept;
+		/// <param name="window">Window to get anti aliasing from. Default: Main Window.</param>
+		static void GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount, const Window* window = TRAP::Application::GetWindow()) noexcept;
 		/// <summary>
 		/// Retrieve the currently used anisotropy level.
 		/// </summary>
