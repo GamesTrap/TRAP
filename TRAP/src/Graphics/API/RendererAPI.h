@@ -1308,7 +1308,7 @@ namespace TRAP::Graphics
 							   TRAP::Graphics::RendererAPI::ResourceState oldLayout,
 							   TRAP::Graphics::RendererAPI::ResourceState newLayout,
 							   TRAP::Graphics::RendererAPI::QueueType queueType = QueueType::Graphics);
-
+#ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Retrieve the currently used anti aliasing method and the sample count.
 		/// </summary>
@@ -1316,6 +1316,14 @@ namespace TRAP::Graphics
 		/// <param name="outSampleCount">Output: Used sample count.</param>
 		/// <param name="window">Window to get anti aliasing from.</param>
 		static void GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount, const Window* window) noexcept;
+#else
+		/// <summary>
+		/// Retrieve the currently used anti aliasing method and the sample count.
+		/// </summary>
+		/// <param name="outAntiAliasing">Output: Used anti aliasing method.</param>
+		/// <param name="outSampleCount">Output: Used sample count.</param>
+		static void GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount) noexcept;
+#endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Set the anti aliasing method and the sample count.

@@ -346,11 +346,18 @@ void TRAP::Graphics::RenderCommand::SetAntiAliasing(const AntiAliasing antiAlias
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::RenderCommand::GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount,
                                                     const Window* const window) noexcept
 {
 	RendererAPI::GetAntiAliasing(outAntiAliasing, outSampleCount, window);
 }
+#else
+void TRAP::Graphics::RenderCommand::GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount) noexcept
+{
+	RendererAPI::GetAntiAliasing(outAntiAliasing, outSampleCount);
+}
+#endif /*TRAP_HEADLESS_MODE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
