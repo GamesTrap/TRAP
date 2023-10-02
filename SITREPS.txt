@@ -4474,3 +4474,4 @@ SITREP 10/02/2023|23w40a1
     - VulkanDevice now always requests all available queues ~<5 mins
     - VulkanRenderer InternalRenderTargets is now dynamically resized when needed (fixes crash on Wayland when minImageCount is > RendererAPI::ImageCount) ~<10 mins
     - VulkanSwapChain Changed assert to warning when more images are returned than requested by vkCreateSwapchainKHR ~<5 mins
+    - ImGuiVulkanBackend SetMSAASamples() now waits for device idle before destroying old pipeline ~<5 mins

@@ -1998,6 +1998,7 @@ void ImGui::INTERNAL::Vulkan::SetMSAASamples(const VkSampleCountFlagBits sampleC
     //Delete old pipeline
     if (bd->Pipeline != nullptr)
     {
+        v.Device->WaitIdle();
         vkDestroyPipeline(v.Device->GetVkDevice(), bd->Pipeline, v.Allocator);
         bd->Pipeline = VK_NULL_HANDLE;
     }
