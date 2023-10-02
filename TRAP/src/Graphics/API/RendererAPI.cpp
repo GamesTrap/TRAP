@@ -485,7 +485,11 @@ void TRAP::Graphics::RendererAPI::GetAntiAliasing(AntiAliasing& outAntiAliasing,
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	outAntiAliasing = s_currentAntiAliasing;
-	outSampleCount = s_currentSampleCount;
+
+	if(s_currentAntiAliasing == TRAP::Graphics::RendererAPI::AntiAliasing::Off)
+		outSampleCount = TRAP::Graphics::SampleCount::One;
+	else
+		outSampleCount = s_currentSampleCount;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

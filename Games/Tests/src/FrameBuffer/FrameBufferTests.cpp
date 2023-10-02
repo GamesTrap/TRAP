@@ -1,6 +1,27 @@
 #include "FrameBufferTests.h"
 #include "Graphics/RenderCommand.h"
 
+namespace
+{
+    TRAP::Ref<TRAP::Graphics::RenderTarget> BuildRenderTarget(const uint32_t width, const uint32_t height,
+                                                              const TRAP::Graphics::SampleCount sampleCount)
+    {
+        TRAP::Graphics::RendererAPI::RenderTargetDesc desc{};
+        desc.Width = width;
+        desc.Height = height;
+        desc.Depth = 1;
+        desc.ArraySize = 1;
+        desc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture;
+        desc.ClearValue = TRAP::Graphics::RendererAPI::Color{0.0, 0.0, 0.0, 1.0};
+        desc.Format = TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM;
+        desc.StartState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
+        desc.SampleCount = sampleCount;
+        desc.SampleQuality = 0;
+        desc.Name = "Test Framebuffer";
+        return TRAP::Graphics::RenderTarget::Create(desc);
+    }
+}
+
 FrameBufferTests::FrameBufferTests()
     : Layer("FrameBuffer")
 {
@@ -57,28 +78,21 @@ void FrameBufferTests::OnAttach()
     TRAP::Graphics::RenderCommand::GetAntiAliasing(aaMethod, aaSamples);
     m_MSAAEnabled = aaMethod == TRAP::Graphics::AntiAliasing::MSAA;
 
-    TRAP::Graphics::RendererAPI::RenderTargetDesc desc{};
-    desc.Width = m_texture->GetWidth() / 2;
-    desc.Height = m_texture->GetHeight() / 2;
-    desc.Depth = 1;
-    desc.ArraySize = 1;
-    desc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture;
-    desc.ClearValue = TRAP::Graphics::RendererAPI::Color{0.0, 0.0, 0.0, 1.0};
-    desc.Format = TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM;
-    desc.StartState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
-    desc.SampleCount = m_MSAAEnabled ? aaSamples : TRAP::Graphics::SampleCount::One;
-    desc.SampleQuality = 0;
-    desc.Name = "Test Framebuffer";
-    m_renderTarget = TRAP::Graphics::RenderTarget::Create(desc);
-
-    desc.SampleCount = TRAP::Graphics::SampleCount::One;
-    m_resolveTarget = TRAP::Graphics::RenderTarget::Create(desc);
+    m_renderTarget = BuildRenderTarget(m_texture->GetWidth() / 2, m_texture->GetHeight() / 2, aaSamples);
+    m_resolveTarget = BuildRenderTarget(m_texture->GetWidth() / 2, m_texture->GetHeight() / 2, TRAP::Graphics::SampleCount::One);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void FrameBufferTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 {
+    TRAP::Graphics::AntiAliasing aaMethod = TRAP::Graphics::AntiAliasing::Off;
+    TRAP::Graphics::SampleCount aaSamples = TRAP::Graphics::SampleCount::One;
+    TRAP::Graphics::RenderCommand::GetAntiAliasing(aaMethod, aaSamples);
+    if(m_MSAAEnabled != (aaMethod == TRAP::Graphics::AntiAliasing::MSAA))
+        m_renderTarget = BuildRenderTarget(m_texture->GetWidth() / 2, m_texture->GetHeight() / 2, aaSamples);
+    m_MSAAEnabled = aaMethod == TRAP::Graphics::AntiAliasing::MSAA;
+
     m_shader->UseSampler(0, 1, m_textureSampler.get());
 
     //Stop RenderPass (necessary for transition)
