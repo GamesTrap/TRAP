@@ -18,13 +18,8 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="physicalDevice">Vulkan physical device.</param>
 		/// <param name="deviceExtensions">Device extensions to use.</param>
-		/// <param name="requestAllAvailableQueues">
-		/// Request all available queues.
-		/// Default: false (only 1 queue for each type).
-		/// </param>
 		VulkanDevice(TRAP::Scope<VulkanPhysicalDevice> physicalDevice,
-		             std::vector<std::string> deviceExtensions,
-		             bool requestAllAvailableQueues = false);
+		             std::vector<std::string> deviceExtensions);
 		/// <summary>
 		/// Destructor.
 		/// </summary>

@@ -3303,7 +3303,7 @@ namespace TRAP::Graphics
 			bool ResizeSwapChain = false;
 #endif /*TRAP_HEADLESS_MODE*/
 			std::array<TRAP::Ref<RenderTarget>, ImageCount> TemporaryResolveRenderTargets; //Used to resolve MSAA RenderTarget before applying RenderScale
-			std::array<TRAP::Ref<RenderTarget>, ImageCount> InternalRenderTargets; //Used when RenderScale is not 1.0f
+			std::vector<TRAP::Ref<RenderTarget>> InternalRenderTargets{}; //Used when RenderScale is not 1.0f
 #ifdef TRAP_HEADLESS_MODE
 			std::array<TRAP::Ref<RenderTarget>, ImageCount> RenderTargets;
 			bool Resize = false;

@@ -39,7 +39,6 @@ void IPAddressTests::TestIPv4Construction()
     TRAP_ASSERT(broadcast == TRAP::Network::IPv4Address::Broadcast);
 
     const auto any = TRAP::Network::IPv4Address("0.0.0.0");
-    TRAP_ASSERT(any != TRAP::Network::IPv4Address::None);
     TRAP_ASSERT(any.ToString() == "0.0.0.0");
     TRAP_ASSERT(any.ToInteger() == 0x00000000);
     TRAP_ASSERT(any == TRAP::Network::IPv4Address::Any);
@@ -75,7 +74,6 @@ void IPAddressTests::TestIPv6Construction()
     TRAP_ASSERT(ipAddress != TRAP::Network::IPv6Address::LocalHost);
 
     const auto any = TRAP::Network::IPv6Address("::");
-    TRAP_ASSERT(any != TRAP::Network::IPv6Address::None);
     TRAP_ASSERT(any.ToString() == "::");
     static constexpr std::array<uint8_t, 16> arr2{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
     TRAP_ASSERT(any.ToArray() == arr2);

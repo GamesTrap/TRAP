@@ -11,8 +11,7 @@
 #include "Application.h"
 
 TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice> physicalDevice,
-                                                std::vector<std::string> deviceExtensions,
-                                                const bool requestAllAvailableQueues)
+                                                std::vector<std::string> deviceExtensions)
 	: m_physicalDevice(std::move(physicalDevice)),
       m_deviceExtensions(std::move(deviceExtensions))
 {
@@ -146,10 +145,6 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 		if(queueCount > 0)
 		{
 			queueFamilyPriorities[i].resize(queueCount);
-
-			//Request only one queue of each type if RequestAllAvailableQueues is not set to true
-			if (queueCount > 1 && !requestAllAvailableQueues)
-				queueCount = 1;
 
 			VkDeviceQueueCreateInfo info;
 			info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;

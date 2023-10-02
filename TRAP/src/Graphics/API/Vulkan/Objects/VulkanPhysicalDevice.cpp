@@ -432,23 +432,23 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		}
 
 		// Get all PhysicalDevice Extensions
-		uint32_t extensionsCount = 0;
-		std::vector<VkExtensionProperties> extensions;
-		VkCall(vkEnumerateDeviceExtensionProperties(dev, nullptr, &extensionsCount, nullptr));
-		extensions.resize(extensionsCount);
-		VkCall(vkEnumerateDeviceExtensionProperties(dev, nullptr, &extensionsCount, extensions.data()));
-		score += extensionsCount * 50;
+		uint32_t supportedExtensionsCount = 0;
+		std::vector<VkExtensionProperties> supportedExtensions;
+		VkCall(vkEnumerateDeviceExtensionProperties(dev, nullptr, &supportedExtensionsCount, nullptr));
+		supportedExtensions.resize(supportedExtensionsCount);
+		VkCall(vkEnumerateDeviceExtensionProperties(dev, nullptr, &supportedExtensionsCount, supportedExtensions.data()));
+		score += supportedExtensionsCount * 50;
 
 		// Required: Check if PhysicalDevice supports SPIRV 1.4
-		const auto spirv1_4Result = std::ranges::find_if(extensions, [](const VkExtensionProperties& props)
+		const auto spirv1_4Result = std::ranges::find_if(supportedExtensions, [](const VkExtensionProperties& props)
 		{
 			return std::string_view(VK_KHR_SPIRV_1_4_EXTENSION_NAME) == props.extensionName;
 		});
-		const auto shaderFloatControlsResult = std::ranges::find_if(extensions, [](const VkExtensionProperties& props)
+		const auto shaderFloatControlsResult = std::ranges::find_if(supportedExtensions, [](const VkExtensionProperties& props)
 		{
 			return std::string_view(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME) == props.extensionName;
 		});
-		if(spirv1_4Result == extensions.end() || shaderFloatControlsResult == extensions.end())
+		if(spirv1_4Result == supportedExtensions.end() || shaderFloatControlsResult == supportedExtensions.end())
 		{
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
 					 "\" Failed Required PhysicalDevice SPIRV 1.4 Extensions Test!");
@@ -458,12 +458,12 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		// Required: Check if PhysicalDevice supports swapchains
 		// Disabled in Headless mode.
 #ifndef TRAP_HEADLESS_MODE
-		const auto swapChainResult = std::ranges::find_if(extensions, [](const VkExtensionProperties& props)
+		const auto swapChainResult = std::ranges::find_if(supportedExtensions, [](const VkExtensionProperties& props)
         {
 			return std::string_view(VK_KHR_SWAPCHAIN_EXTENSION_NAME) == props.extensionName;
 		});
 
-		if (swapChainResult == extensions.end())
+		if (swapChainResult == supportedExtensions.end())
 		{
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
 					 "\" Failed Required PhysicalDevice Extensions Test!");
@@ -633,7 +633,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Transfer Queue Test!");
 
 		// Big Optionally: Check if Raytracing extensions are supported
-		bool raytracing = false;
+		bool raytracing = true;
 		static constexpr std::array<std::string_view, 8> raytracingExt =
 		{
 			VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
@@ -646,16 +646,15 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			VK_KHR_RAY_QUERY_EXTENSION_NAME
 		};
 
-
 		for (const std::string_view str : raytracingExt)
 		{
-			const auto extRes = std::ranges::find_if(extensions,
+			const auto extRes = std::ranges::find_if(supportedExtensions,
 											 [str](const VkExtensionProperties &props)
 											 {
 												 return str == props.extensionName;
 											 });
 
-			if (extRes == extensions.end())
+			if (extRes == supportedExtensions.end())
 			{
 				raytracing = false;
 				break;
@@ -693,13 +692,13 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		};
 		for (const std::string_view str : VRSExt)
 		{
-			const auto extRes = std::ranges::find_if(extensions,
+			const auto extRes = std::ranges::find_if(supportedExtensions,
 											 [str](const VkExtensionProperties &props)
 											 {
 												 return str == props.extensionName;
 											 });
 
-			if (extRes == extensions.end())
+			if (extRes == supportedExtensions.end())
 			{
 				VRS = false;
 				break;
@@ -774,8 +773,8 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		}
 
 		// Optionally: Check 2D & Cube Image Max Size
-		score += devProps.limits.maxImageDimension2D;
-		score += devProps.limits.maxImageDimensionCube;
+		score += devProps.limits.maxImageDimension2D / 32;
+		score += devProps.limits.maxImageDimensionCube / 32;
 
 		// Optionally: Check max supported MSAA sample count
 		VkSampleCountFlags sampleCounts = TRAP::Math::Min(devProps.limits.framebufferColorSampleCounts,
