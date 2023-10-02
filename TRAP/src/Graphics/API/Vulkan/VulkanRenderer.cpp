@@ -2828,7 +2828,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const uint32_t wid
 		p->RenderTargets[i] = RenderTarget::Create(rTDesc);
 	if(p->CurrentAntiAliasing == AntiAliasing::MSAA)
 	{
-		rTDesc.SampleCount = s_currentSampleCount;
+		rTDesc.SampleCount = p->CurrentSampleCount;
 		for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
 			p->InternalRenderTargets[i] = RenderTarget::Create(rTDesc);
 	}
