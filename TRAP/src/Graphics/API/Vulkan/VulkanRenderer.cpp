@@ -2498,7 +2498,7 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 		if(viewportData->InternalRenderTargets.size() < imageCount)
 			viewportData->InternalRenderTargets.resize(imageCount);
 #else
-		static constexpr imageCount = RendererAPI::ImageCount;
+		static constexpr uint32_t imageCount = RendererAPI::ImageCount;
 #endif /*TRAP_HEADLESS_MODE*/
 		for(uint32_t i = 0; i < imageCount; ++i)
 			viewportData->InternalRenderTargets[i] = RenderTarget::Create(rTDesc);
