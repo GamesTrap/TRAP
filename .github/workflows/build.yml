@@ -27,6 +27,34 @@ jobs:
       uses: actions/checkout@v4
       with:
         submodules: 'true'
+    - name: Checkout DiscordGameSDK
+      uses: actions/checkout@v4
+      with:
+        github-server-url: ${{ secrets.GIT_NDA_DEPS }}
+        token: ${{ secrets.GIT_NDA_DEPS_PAT }}
+        repository: ${{ secrets.GIT_NDA_DEPS_DISCORDGAMESDK }}
+        path: "Dependencies/DiscordGameSDK"
+    - name: Checkout NVIDIA Nsight Aftermath SDK
+      uses: actions/checkout@v4
+      with:
+        github-server-url: ${{ secrets.GIT_NDA_DEPS }}
+        token: ${{ secrets.GIT_NDA_DEPS_PAT }}
+        repository: ${{ secrets.GIT_NDA_DEPS_NSIGHTAFTERMATH }}
+        path: "Dependencies/Nsight-Aftermath"
+    - name: Checkout NVIDIA Reflex SDK
+      uses: actions/checkout@v4
+      with:
+        github-server-url: ${{ secrets.GIT_NDA_DEPS }}
+        token: ${{ secrets.GIT_NDA_DEPS_PAT }}
+        repository: ${{ secrets.GIT_NDA_DEPS_NVIDIAREFLEX }}
+        path: "Dependencies/NVIDIA-Reflex"
+    - name: Checkout Steamworks SDK
+      uses: actions/checkout@v4
+      with:
+        github-server-url: ${{ secrets.GIT_NDA_DEPS }}
+        token: ${{ secrets.GIT_NDA_DEPS_PAT }}
+        repository: ${{ secrets.GIT_NDA_DEPS_STEAMWORKSSDK }}
+        path: "Dependencies/SteamworksSDK"
     - name: Add toolchain ppa
       run: sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/ppa
     - name: Update package list

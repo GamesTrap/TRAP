@@ -4482,3 +4482,4 @@ SITREP 10/03/2023|23w40a2
     - Changed TRAP Engine version to 23w40a2(0.9.107)
     - Cleaned up destructors ~<10 mins
     - Removed unnecessary reset() calls ~<10 mins
+    - Build-CI GCC-13 Job Added experimental checkout of non-public dependencies ~<15 mins
