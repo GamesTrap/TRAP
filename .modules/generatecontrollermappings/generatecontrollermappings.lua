@@ -65,6 +65,9 @@ newaction
         local instr = infile:read("*a")
         infile:close()
 
+        local mappingCountWin32 = 0 + 7 --7 = Predefined XInput mappings
+        local mappingCountLinux = 0
+
         -- Loop for each line in mapping File
         for line in io.lines(sourcePath) do
             local ioscheck = string.contains(line, "platform:iOS")
@@ -76,11 +79,18 @@ newaction
                 -- instr = instr:gsub("@TRAP_CONTROLLER_MAPPINGS@", "\t\t\"" .. line .. "\",\n@TRAP_CONTROLLER_MAPPINGS@")
                 if (string.contains(line, "platform:Windows")) then
                     instr = instr:gsub("@TRAP_WIN32_MAPPINGS@", "\t\t\"" .. line .. "\",\n@TRAP_WIN32_MAPPINGS@")
+                    mappingCountWin32 = mappingCountWin32 + 1
                 elseif (string.contains(line, "platform:Linux")) then
                     instr = instr:gsub("@TRAP_LINUX_MAPPINGS@", "\t\t\"" .. line .. "\",\n@TRAP_LINUX_MAPPINGS@")
+                    mappingCountLinux = mappingCountLinux + 1
                 end
             end
         end
+
+
+        -- Set Mapping counts for @TRAP_WIN32_MAPPINGS_SIZE@ & @TRAP_LINUX_MAPPINGS_SIZE@
+        instr = instr:gsub("@TRAP_WIN32_MAPPINGS_SIZE@", mappingCountWin32)
+        instr = instr:gsub("@TRAP_LINUX_MAPPINGS_SIZE@", mappingCountLinux)
 
         -- Remove SDL mapping file
         os.remove(sourcePath)

@@ -3,8 +3,8 @@
 
 #ifndef TRAP_HEADLESS_MODE
 
-#include <vector>
-#include <string>
+#include <array>
+#include <string_view>
 
 /*
 Copyright (C) 1997-2022 Sam Lantinga <slouken@libsdl.org>
@@ -31,9 +31,17 @@ freely, subject to the following restrictions:
 
 namespace TRAP::Embed
 {
-	inline const std::vector<std::string> ControllerMappings =
+#ifdef TRAP_BUILD_WIN32_MAPPINGS
+	inline constexpr std::size_t ControllerMappingsSize = 786;
+#endif /*TRAP_BUILD_WIN32_MAPPINGS*/
+
+#ifdef TRAP_BUILD_LINUX_MAPPINGS
+	inline constexpr std::size_t ControllerMappingsSize = 593;
+#endif /*TRAP_BUILD_LINUX_MAPPINGS*/
+
+	inline constexpr std::array<std::string_view, ControllerMappingsSize> ControllerMappings =
 	{
-#if defined(TRAP_BUILD_WIN32_MAPPINGS)
+#ifdef TRAP_BUILD_WIN32_MAPPINGS
 		"03000000300f00000a01000000000000,3 In 1 Conversion Box,a:b2,b:b1,back:b9,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftshoulder:b6,leftstick:b10,lefttrigger:b4,leftx:a0,lefty:a1,rightshoulder:b7,rightstick:b11,righttrigger:b5,rightx:a3,righty:a2,start:b8,x:b3,y:b0,platform:Windows,",
 		"03000000fa2d00000100000000000000,3dRudder Foot Motion Controller,leftx:a0,lefty:a1,rightx:a5,righty:a2,platform:Windows,",
 		"03000000d0160000040d000000000000,4Play Adapter,a:b1,b:b3,back:b4,dpdown:b11,dpleft:b12,dpright:b13,dpup:b10,leftshoulder:b6,leftstick:b14,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b7,rightstick:b15,righttrigger:b9,rightx:a3,righty:a4,start:b5,x:b0,y:b2,platform:Windows,",
@@ -823,7 +831,7 @@ namespace TRAP::Embed
 		"78696e70757408000000000000000000,XInput Drum Kit,platform:Windows,a:b0,b:b1,x:b2,y:b3,leftshoulder:b4,rightshoulder:b5,back:b6,start:b7,leftstick:b8,rightstick:b9,guide:b10,leftx:a0,lefty:a1,rightx:a2,righty:a3,lefttrigger:a4,righttrigger:a5,dpup:h0.1,dpright:h0.2,dpdown:h0.4,dpleft:h0.8,",
 #endif /*TRAP_BUILD_WIN32_MAPPINGS*/
 
-#if defined(TRAP_BUILD_LINUX_MAPPINGS)
+#ifdef TRAP_BUILD_LINUX_MAPPINGS
 		"030000005e0400008e02000020010000,8BitDo Adapter,a:b0,b:b1,back:b6,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b8,leftshoulder:b4,leftstick:b9,lefttrigger:a2,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b10,righttrigger:a5,rightx:a3,righty:a4,start:b7,x:b2,y:b3,platform:Linux,",
 		"03000000c82d00000031000011010000,8BitDo Adapter,a:b0,b:b1,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b2,leftshoulder:b6,leftstick:b13,lefttrigger:b8,leftx:a0,lefty:a1,rightshoulder:b7,rightstick:b14,righttrigger:b9,rightx:a2,righty:a3,start:b11,x:b3,y:b4,platform:Linux,",
 		"03000000c82d00000951000000010000,8BitDo Dogbone,a:b1,b:b0,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,leftx:a0,lefty:a1,rightx:a2,righty:a3,start:b11,platform:Linux,",

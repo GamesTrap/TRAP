@@ -4483,3 +4483,7 @@ SITREP 10/03/2023|23w40a2
     - Cleaned up destructors ~<10 mins
     - Removed unnecessary reset() calls ~<10 mins
     - Build-CI Added checkouts of non-public dependencies ~<30 mins
+
+SITREP 10/04/2023|23w40a3
+    - Changed TRAP Engine version to 23w40a3(0.9.108)
+    - ControllerMappings is now a constexpr array of string_views ~<5 mins

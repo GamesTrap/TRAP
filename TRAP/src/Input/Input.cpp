@@ -694,7 +694,7 @@ void TRAP::Input::SetEventCallback(const EventCallbackFn &callback) noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::UpdateControllerMappings(const std::string& map)
+void TRAP::Input::UpdateControllerMappings(const std::string_view map)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
@@ -765,7 +765,7 @@ TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(std::string 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Parse an SDL_GameControllerDB line and adds it to the mapping list
-bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
+bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
@@ -802,7 +802,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 		}
 	};
 
-	const std::vector<std::string> splittedString = Utils::String::SplitString(str, ',');
+	const std::vector<std::string_view> splittedString = Utils::String::SplitStringView(str, ',');
 
 	if(splittedString.empty())
 	{
@@ -827,7 +827,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 		TP_ERROR(Log::InputControllerPrefix, "Mapping GUID can't be empty!");
 		return false;
 	}
-	mapping.guid = Utils::String::ToLower(splittedString[0]);
+	mapping.guid = Utils::String::ToLower(std::string(splittedString[0]));
 
 	if(splittedString[1].empty())
 	{
@@ -838,7 +838,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 
 	for (uint8_t i = 2; i < splittedString.size();) //Start after Mapping Name
 	{
-		const std::vector<std::string> splittedField = Utils::String::SplitString(splittedString[i] + ':', ':');
+		const std::vector<std::string_view> splittedField = Utils::String::SplitStringView(splittedString[i], ':');
 		if (splittedField.empty())
 		{
 			TP_ERROR(Log::InputControllerPrefix, "Field can't be empty! Mapping: ", splittedString[1]);
