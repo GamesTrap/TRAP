@@ -36,21 +36,21 @@ jobs:
         cd ../..
     - name: Checkout NVIDIA Nsight Aftermath SDK
       run: |
-        cd Dependencies/Nsight-Aftermath"
+        cd Dependencies/Nsight-Aftermath
         git init
         git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_NSIGHTAFTERMATH }}
         git pull origin main
         cd ../..
     - name: Checkout NVIDIA Reflex SDK
       run: |
-        cd Dependencies/NVIDIA-Reflex"
+        cd Dependencies/NVIDIA-Reflex
         git init
         git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_NVIDIAREFLEX }}
         git pull origin main
         cd ../..
     - name: Checkout Steamworks SDK
       run: |
-        cd Dependencies/SteamworksSDK"
+        cd Dependencies/SteamworksSDK
         git init
         git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_STEAMWORKSSDK }}
         git pull origin main
