@@ -104,6 +104,34 @@ jobs:
       uses: actions/checkout@v4
       with:
         submodules: 'true'
+    - name: Checkout DiscordGameSDK
+      run: |
+        cd Dependencies/DiscordGameSDK
+        git init
+        git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_DISCORDGAMESDK }}
+        git pull origin main
+        cd ../..
+    - name: Checkout NVIDIA Nsight Aftermath SDK
+      run: |
+        cd Dependencies/Nsight-Aftermath
+        git init
+        git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_NSIGHTAFTERMATH }}
+        git pull origin main
+        cd ../..
+    - name: Checkout NVIDIA Reflex SDK
+      run: |
+        cd Dependencies/NVIDIA-Reflex
+        git init
+        git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_NVIDIAREFLEX }}
+        git pull origin main
+        cd ../..
+    - name: Checkout Steamworks SDK
+      run: |
+        cd Dependencies/SteamworksSDK
+        git init
+        git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_STEAMWORKSSDK }}
+        git pull origin main
+        cd ../..
     - name: Add toolchain ppa
       run: sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/ppa
     - name: Update package list
@@ -150,6 +178,34 @@ jobs:
       uses: actions/checkout@v4
       with:
         submodules: 'true'
+    - name: Checkout DiscordGameSDK
+      run: |
+        cd Dependencies/DiscordGameSDK
+        git init
+        git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_DISCORDGAMESDK }}
+        git pull origin main
+        cd ../..
+    - name: Checkout NVIDIA Nsight Aftermath SDK
+      run: |
+        cd Dependencies/Nsight-Aftermath
+        git init
+        git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_NSIGHTAFTERMATH }}
+        git pull origin main
+        cd ../..
+    - name: Checkout NVIDIA Reflex SDK
+      run: |
+        cd Dependencies/NVIDIA-Reflex
+        git init
+        git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_NVIDIAREFLEX }}
+        git pull origin main
+        cd ../..
+    - name: Checkout Steamworks SDK
+      run: |
+        cd Dependencies/SteamworksSDK
+        git init
+        git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_STEAMWORKSSDK }}
+        git pull origin main
+        cd ../..
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.3.1
     - name: Generate Visual Studio 2022 Project files
