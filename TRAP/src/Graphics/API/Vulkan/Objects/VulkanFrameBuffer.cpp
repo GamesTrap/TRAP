@@ -137,6 +137,6 @@ TRAP::Graphics::API::VulkanFrameBuffer::~VulkanFrameBuffer()
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanFrameBufferPrefix, "Destroying FrameBuffer");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
+
 	vkDestroyFramebuffer(m_device->GetVkDevice(), m_framebuffer, nullptr);
-	m_framebuffer = nullptr;
 }

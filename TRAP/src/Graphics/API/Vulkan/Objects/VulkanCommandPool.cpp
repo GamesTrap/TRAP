@@ -36,8 +36,6 @@ TRAP::Graphics::API::VulkanCommandPool::~VulkanCommandPool()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	for (auto& m_commandBuffer : m_commandBuffers)
-		m_commandBuffer.reset();
 	m_commandBuffers.clear();
 
 #ifdef VERBOSE_GRAPHICS_DEBUG

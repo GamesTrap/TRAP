@@ -121,16 +121,10 @@ TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	if(m_vkUniformTexelView != nullptr)
-	{
 		vkDestroyBufferView(m_device->GetVkDevice(), m_vkUniformTexelView, nullptr);
-		m_vkUniformTexelView = VK_NULL_HANDLE;
-	}
 
 	if(m_vkStorageTexelView != nullptr)
-	{
 		vkDestroyBufferView(m_device->GetVkDevice(), m_vkStorageTexelView, nullptr);
-		m_vkStorageTexelView = VK_NULL_HANDLE;
-	}
 
 	if(m_allocation != nullptr)
 		vmaDestroyBuffer(m_VMA->GetVMAAllocator(), m_vkBuffer, m_allocation);

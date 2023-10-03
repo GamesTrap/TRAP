@@ -54,7 +54,7 @@ namespace TRAP::Network
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		~SocketSelector();
+		~SocketSelector() = default;
 
 		/// <summary>
 		/// Copy constructor.

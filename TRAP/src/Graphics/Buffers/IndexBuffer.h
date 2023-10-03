@@ -37,7 +37,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		~IndexBuffer();
+		~IndexBuffer() = default;
 
 		/// <summary>
 		/// Retrieve the count of indices inside this buffer.

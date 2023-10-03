@@ -92,6 +92,6 @@ TRAP::Graphics::API::VulkanMemoryAllocator::~VulkanMemoryAllocator()
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanVMAPrefix, "Destroying Allocator");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
+
 	vmaDestroyAllocator(m_allocator);
-	m_allocator = nullptr;
 }

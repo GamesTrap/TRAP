@@ -4477,3 +4477,7 @@ SITREP 10/02/2023|23w40a1
     - ImGuiVulkanBackend SetMSAASamples() now waits for device idle before destroying old pipeline ~<5 mins
     - FrameBufferTests Fixed Vulkan errors when MSAA is enabled ~<10 mins
     - RendererAPI Updating of AntiAliasing state now happens per window instead of globally ~<15 mins
+
+SITREP 10/03/2023|23w40a2
+    - Changed TRAP Engine version to 23w40a2(0.9.107)
+    - Cleaned up destructors ~<10 mins

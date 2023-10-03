@@ -58,7 +58,6 @@ TRAP::Graphics::API::VulkanSurface::~VulkanSurface()
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	vkDestroySurfaceKHR(m_instance->GetVkInstance(), m_surface, nullptr);
-	m_surface = nullptr;
 }
 
 #endif /*TRAP_HEADLESS_MODE*/

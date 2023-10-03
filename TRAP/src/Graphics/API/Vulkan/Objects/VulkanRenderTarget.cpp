@@ -153,8 +153,6 @@ TRAP::Graphics::API::VulkanRenderTarget::~VulkanRenderTarget()
 	TP_DEBUG(Log::RendererVulkanRenderTargetPrefix, "Destroying RenderTarget");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	m_texture.reset();
-
 	vkDestroyImageView(m_device->GetVkDevice(), m_vkDescriptor, nullptr);
 
 	const uint32_t depthOrArraySize = m_arraySize * m_depth;

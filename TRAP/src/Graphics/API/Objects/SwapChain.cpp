@@ -46,8 +46,6 @@ TRAP::Graphics::SwapChain::~SwapChain()
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererSwapChainPrefix, "Destroying SwapChain");
 #endif /*ENABLE_GRAPHICS_DEBUG*/
-
-	m_renderTargets.clear();
 }
 #endif /*TRAP_HEADLESS_MODE*/
 

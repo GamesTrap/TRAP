@@ -38,7 +38,6 @@ TRAP::Graphics::API::VulkanFence::~VulkanFence()
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	vkDestroyFence(m_device->GetVkDevice(), m_fence, nullptr);
-	m_fence = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

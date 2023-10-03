@@ -2457,8 +2457,7 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 		rebuild = true;
 	else if(viewportData->InternalRenderTargets[0] &&
 	        (viewportData->InternalRenderTargets[0]->GetWidth() != newInternalRes.x() ||
-	         viewportData->InternalRenderTargets[0]->GetHeight() != newInternalRes.y() ||
-			 viewportData->InternalRenderTargets[0]->GetSampleCount() != s_newSampleCount))
+	         viewportData->InternalRenderTargets[0]->GetHeight() != newInternalRes.y()))
 	{
 		rebuild = true;
 	}

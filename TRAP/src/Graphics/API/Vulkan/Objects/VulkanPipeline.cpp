@@ -63,8 +63,6 @@ TRAP::Graphics::API::VulkanPipeline::~VulkanPipeline()
 	TP_DEBUG(Log::RendererVulkanPipelinePrefix, "Destroying Pipeline");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	m_shaderStageNames.clear();
-
 	vkDestroyPipeline(m_device->GetVkDevice(), m_vkPipeline, nullptr);
 }
 

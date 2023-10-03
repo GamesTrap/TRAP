@@ -465,11 +465,7 @@ TRAP::Graphics::API::VulkanRootSignature::~VulkanRootSignature()
 		vkDestroyDescriptorSetLayout(m_device->GetVkDevice(), m_vkDescriptorSetLayouts[i], nullptr);
 		if (m_updateTemplates[i] != VK_NULL_HANDLE)
 			vkDestroyDescriptorUpdateTemplate(m_device->GetVkDevice(), m_updateTemplates[i], nullptr);
-
-		m_updateTemplateData = {};
 	}
-
-	m_descriptorNameToIndexMap.clear();
 
 	vkDestroyPipelineLayout(m_device->GetVkDevice(), m_pipelineLayout, nullptr);
 }

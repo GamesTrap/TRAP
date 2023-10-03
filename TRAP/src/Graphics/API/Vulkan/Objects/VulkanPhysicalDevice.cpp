@@ -197,7 +197,6 @@ TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPhysicalDevicePrefix, "Destroying PhysicalDevice");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
-	m_physicalDevice = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

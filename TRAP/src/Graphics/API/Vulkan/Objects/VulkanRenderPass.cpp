@@ -41,8 +41,8 @@ TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRenderPassPrefix, "Destroying RenderPass");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
+
 	vkDestroyRenderPass(m_device->GetVkDevice(), m_renderPass, nullptr);
-	m_renderPass = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

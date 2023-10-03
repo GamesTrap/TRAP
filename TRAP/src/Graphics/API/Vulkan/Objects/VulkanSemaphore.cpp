@@ -32,5 +32,4 @@ TRAP::Graphics::API::VulkanSemaphore::~VulkanSemaphore()
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
 	vkDestroySemaphore(m_device->GetVkDevice(), m_semaphore, nullptr);
-	m_semaphore = nullptr;
 }

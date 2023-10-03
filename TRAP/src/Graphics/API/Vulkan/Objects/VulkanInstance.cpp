@@ -98,8 +98,8 @@ TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanInstancePrefix, "Destroying Instance");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
+
 	vkDestroyInstance(m_instance, nullptr);
-	m_instance = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

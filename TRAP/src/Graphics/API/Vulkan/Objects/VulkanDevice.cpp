@@ -229,7 +229,6 @@ TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 	vkDestroyDevice(m_device, nullptr);
-	m_device = nullptr;
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
 	if(RendererAPI::s_aftermathSupport)

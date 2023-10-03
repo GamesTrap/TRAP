@@ -42,10 +42,7 @@ TRAP::Graphics::API::VulkanSwapChain::~VulkanSwapChain()
 
 	m_device->WaitIdle();
 
-	m_renderTargets.clear();
-
 	vkDestroySwapchainKHR(m_device->GetVkDevice(), m_swapChain, nullptr);
-	m_surface.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

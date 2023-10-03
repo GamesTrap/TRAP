@@ -25,15 +25,6 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::VertexBuffer::~VertexBuffer()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-	m_vertexBuffer.reset();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] uint64_t TRAP::Graphics::VertexBuffer::GetSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

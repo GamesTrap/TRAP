@@ -37,7 +37,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		~VertexBuffer();
+		~VertexBuffer() = default;
 
 		/// <summary>
 		/// Retrieve the vertex buffer layout of this buffer.

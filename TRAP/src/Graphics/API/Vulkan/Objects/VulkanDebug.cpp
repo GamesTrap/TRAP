@@ -50,9 +50,7 @@ TRAP::Graphics::API::VulkanDebug::~VulkanDebug()
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	vkDestroyDebugUtilsMessengerEXT(m_instance->GetVkInstance(), m_debugUtils, nullptr);
-	m_debugUtils = nullptr;
 #else
 	vkDestroyDebugReportCallbackEXT(m_instance->GetVkInstance(), m_debugReport, nullptr);
-	m_debugReport = nullptr;
 #endif
 }

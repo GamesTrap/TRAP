@@ -45,9 +45,9 @@ TRAP::Graphics::API::VulkanDescriptorPool::~VulkanDescriptorPool()
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDescriptorPoolPrefix, "Destroying DescriptorPool");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
+
 	for(VkDescriptorPool& pool : m_descriptorPools)
 		vkDestroyDescriptorPool(m_device->GetVkDevice(), pool, nullptr);
-	m_descriptorPools.clear();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

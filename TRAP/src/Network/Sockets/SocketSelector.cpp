@@ -62,15 +62,6 @@ TRAP::Network::SocketSelector::SocketSelector()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::SocketSelector::~SocketSelector()
-{
-	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
-
-	m_impl.reset();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Network::SocketSelector::SocketSelector(const SocketSelector& copy)
 	: m_impl(TRAP::MakeScope<SocketSelectorImpl>(*copy.m_impl))
 {
