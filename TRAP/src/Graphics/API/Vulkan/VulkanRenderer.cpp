@@ -98,7 +98,6 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 				continue;
 
 			cache->Save(*tempFolder / fmt::format("{}.cache", hash));
-			cache.reset();
 		}
 	}
 
@@ -383,10 +382,7 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData* const p)
 			rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
 			rTDesc.SampleCount = SampleCount::One;
 			for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
-			{
-				p->RenderTargets[i].reset();
 				p->RenderTargets[i] = RenderTarget::Create(rTDesc);
-			}
 
 			p->CurrentSwapChainImageIndex = 0;
 			p->ImageIndex = 0;
@@ -2280,8 +2276,6 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 
 	//Cleanup
 	cmdPool->FreeCommandBuffer(cmd);
-	cmdPool.reset();
-	buffer.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -60,7 +60,7 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* con
 			}
 		}
 
-		loader->m_nextSet = (loader->m_nextSet + 1) % loader->m_desc.BufferCount;
+		loader->m_nextSet = (loader->m_nextSet + 1u) % NumericCast<uint32_t>(loader->m_copyEngine.ResourceSets.size());
 		loader->WaitCopyEngineSet(loader->m_nextSet);
 		loader->ResetCopyEngineSet(loader->m_nextSet);
 
@@ -798,10 +798,8 @@ void TRAP::Graphics::API::ResourceLoader::SetupCopyEngine()
 	const uint64_t size = Math::Max(m_desc.BufferSize, maxBlockSize);
 
 	m_copyEngine.ResourceSets.resize(m_desc.BufferCount);
-	for(uint32_t i = 0; i < m_desc.BufferCount; ++i)
+	for(auto& cpyResSet : m_copyEngine.ResourceSets)
 	{
-		auto& cpyResSet = m_copyEngine.ResourceSets[i];
-
 		cpyResSet.Fence = Fence::Create();
 		RendererAPI::CommandPoolDesc cmdPoolDesc{};
 		cmdPoolDesc.Queue = m_copyEngine.Queue;
@@ -815,7 +813,6 @@ void TRAP::Graphics::API::ResourceLoader::SetupCopyEngine()
 	}
 
 	m_copyEngine.BufferSize = size;
-	m_copyEngine.BufferCount = m_desc.BufferCount;
 	m_copyEngine.IsRecording = false;
 	m_copyEngine.LastCompletedSemaphore = nullptr;
 }
@@ -826,29 +823,17 @@ void TRAP::Graphics::API::ResourceLoader::CleanupCopyEngine()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	for(uint32_t i = 0; i < m_copyEngine.BufferCount; ++i)
+	for(uint32_t i = 0; i < m_copyEngine.ResourceSets.size(); ++i)
 	{
 		CopyEngine::CopyResourceSet& resourceSet = m_copyEngine.ResourceSets[i];
-		resourceSet.Buffer.reset();
-
-		resourceSet.CopyCompletedSemaphore.reset();
 
 		resourceSet.CommandPool->FreeCommandBuffer(resourceSet.Cmd);
-		resourceSet.Cmd = nullptr;
-		resourceSet.CommandPool.reset();
-
-		resourceSet.Fence.reset();
 
 		if (!resourceSet.TempBuffers.empty())
 			TP_WARN(Log::RendererBufferPrefix, "A temporary buffer was not cleaned up ", i);
-
-		resourceSet.TempBuffers.clear();
 	}
 
-	m_copyEngine.ResourceSets.clear();
-	m_copyEngine.WaitSemaphores.clear();
-
-	m_copyEngine.Queue.reset();
+	m_copyEngine = {};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

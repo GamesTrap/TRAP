@@ -266,7 +266,6 @@ void TRAP::Graphics::Renderer2DData::QuadData::Init()
 										MaxQuadIndices * sizeof(uint32_t),
 										UpdateFrequency::Dynamic);
 	IndexBuffer->AwaitLoading();
-	IndicesData.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -466,7 +465,6 @@ void TRAP::Graphics::Renderer2DData::CircleData::Init()
 										MaxCircleIndices * sizeof(uint32_t),
 										UpdateFrequency::Dynamic);
 	IndexBuffer->AwaitLoading();
-	IndicesData.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

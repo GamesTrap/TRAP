@@ -366,8 +366,6 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 
 		VkCall(vkCreateGraphicsPipelines(m_device->GetVkDevice(), psoCache, 1, &info, nullptr, &m_vkPipeline));
 		TRAP_ASSERT(m_vkPipeline, "VulkanPipeline::InitComputePipeline(): Vulkan Pipeline is nullptr!");
-
-		renderPass.reset();
 	}
 }
 

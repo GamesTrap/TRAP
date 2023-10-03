@@ -506,7 +506,6 @@ namespace TRAP::Graphics::API
 			};
 			std::vector<CopyResourceSet> ResourceSets{};
 			uint64_t BufferSize{};
-			uint32_t BufferCount{};
 			bool IsRecording{};
 			TRAP::Ref<TRAP::Graphics::Semaphore> LastCompletedSemaphore;
 

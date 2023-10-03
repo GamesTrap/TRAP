@@ -87,14 +87,13 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 	TRAP::Graphics::Sampler::ClearCache();
 
 	s_Renderer->s_graphicQueue->WaitQueueIdle();
-	s_Renderer->s_computeQueue->WaitQueueIdle();
-	s_Renderer->s_transferQueue->WaitQueueIdle();
 	s_Renderer->s_graphicQueue.reset();
+	s_Renderer->s_computeQueue->WaitQueueIdle();
 	s_Renderer->s_computeQueue.reset();
+	s_Renderer->s_transferQueue->WaitQueueIdle();
 	s_Renderer->s_transferQueue.reset();
 
 	s_Renderer.reset();
-	s_Renderer = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -475,7 +474,6 @@ void TRAP::Graphics::RendererAPI::Transition(const Ref<TRAP::Graphics::Texture>&
 
 	//Cleanup
 	cmdPool->FreeCommandBuffer(cmd);
-	cmdPool.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

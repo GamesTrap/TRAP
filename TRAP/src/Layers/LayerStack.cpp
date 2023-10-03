@@ -11,7 +11,6 @@ void TRAP::LayerStack::Shutdown()
 	{
 		TP_DEBUG(Log::LayerStackPrefix, "Destroying layer: ", layer->GetName());
 		layer->OnDetach();
-		layer.reset();
 	}
 
 	m_layers.clear();
