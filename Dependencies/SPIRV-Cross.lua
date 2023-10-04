@@ -1,4 +1,4 @@
-project "SPIRV-Cross-Core"
+project "SPIRV-Cross"
     kind "StaticLib"
     language "C++"
     warnings "off"
@@ -19,47 +19,14 @@ project "SPIRV-Cross-Core"
         "SPIRV-Cross/spirv_cross.cpp",
         "SPIRV-Cross/spirv_parser.cpp",
         "SPIRV-Cross/spirv_cross_parsed_ir.cpp",
-        "SPIRV-Cross/spirv_cfg.cpp"
-    }
+        "SPIRV-Cross/spirv_cfg.cpp",
 
-project "SPIRV-Cross-Reflect"
-    kind "StaticLib"
-    language "C++"
-    warnings "off"
-
-    targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-    objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-
-    files
-    {
         "SPIRV-Cross/spirv_reflect.cpp",
-        "SPIRV-Cross/spirv_reflect.hpp"
-    }
+        "SPIRV-Cross/spirv_reflect.hpp",
 
-project "SPIRV-Cross-GLSL"
-    kind "StaticLib"
-    language "C++"
-    warnings "off"
-
-    targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-    objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-
-    files
-    {
         "SPIRV-Cross/spirv_glsl.cpp",
-        "SPIRV-Cross/spirv_glsl.hpp"
-    }
+        "SPIRV-Cross/spirv_glsl.hpp",
 
-project "SPIRV-Cross-HLSL"
-    kind "StaticLib"
-    language "C++"
-    warnings "off"
-
-    targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-    objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-
-    files
-    {
         "SPIRV-Cross/spirv_hlsl.cpp",
         "SPIRV-Cross/spirv_hlsl.hpp"
     }

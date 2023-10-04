@@ -89,16 +89,44 @@ project "GLSLang"
         "GLSLang/OGLCompilersDLL/InitializeDll.h",
         "GLSLang/StandAlone/DirStackFileIncluder.h",
         "GLSLang/glslang/OSDependent/osinclude.h",
-        "GLSLang/glslang/Public/ShaderLang.h"
+        "GLSLang/glslang/Public/ShaderLang.h",
+
+        "GLSLang/SPIRV/*.cpp",
+
+        "GLSLang/SPIRV/GlslangToSpv.h",
+        "GLSLang/SPIRV/Logger.h",
+        "GLSLang/SPIRV/SPVRemapper.h",
+        "GLSLang/SPIRV/SpvBuilder.h",
+        "GLSLang/SPIRV/SpvTools.h",
+        "GLSLang/SPIRV/bitutils.h",
+        "GLSLang/SPIRV/disassemble.h",
+        "GLSLang/SPIRV/doc.h",
+        "GLSLang/SPIRV/hex_float.h",
+        "GLSLang/SPIRV/spvIR.h",
+
+        "GLSLang/SPIRV/GLSL.ext.AMD.h",
+        "GLSLang/SPIRV/GLSL.ext.EXT.h",
+        "GLSLang/SPIRV/GLSL.ext.KHR.h",
+        "GLSLang/SPIRV/GLSL.ext.NV.h",
+        "GLSLang/SPIRV/GLSL.ext.450.h",
+        "GLSLang/SPIRV/NonSemanticDebugPrintf.h",
+        "GLSLang/SPIRV/spirv.hpp",
+
+        "GLSLang/glslang/ResourceLimits/ResourceLimits.cpp"
     }
 
     removefiles
     {
         "GLSLang/glslang/HLSL/pch.h",
-        "GLSLang/glslang/MachineIndependent/pch.h"
+        "GLSLang/glslang/MachineIndependent/pch.h",
+        "GLSLang/SPIRV/SpvTools.cpp"
     }
 
-    includedirs "%{IncludeDir.GLSLANG}"
+    includedirs
+    {
+        "%{IncludeDir.GLSLANG}",
+        "%{IncludeDir.GLSLANG}/SPIRV"
+    }
 
     defines
     {
@@ -121,86 +149,6 @@ project "GLSLang"
     filter "system:linux"
         files "GLSLang/glslang/OSDependent/Unix/ossource.cpp"
 
-        defines
-        {
-            "GLSLANG_OSINCLUDE_WIN32=false",
-            "GLSLANG_OSINCLUDE_UNIX=true"
-        }
-
-project "SPIRV"
-    kind "StaticLib"
-    language "C++"
-    warnings "off"
-
-    targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-    objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-
-    files
-    {
-        "GLSLang/SPIRV/*.cpp",
-
-        "GLSLang/SPIRV/GlslangToSpv.h",
-        "GLSLang/SPIRV/Logger.h",
-        "GLSLang/SPIRV/SPVRemapper.h",
-        "GLSLang/SPIRV/SpvBuilder.h",
-        "GLSLang/SPIRV/SpvTools.h",
-        "GLSLang/SPIRV/bitutils.h",
-        "GLSLang/SPIRV/disassemble.h",
-        "GLSLang/SPIRV/doc.h",
-        "GLSLang/SPIRV/hex_float.h",
-        "GLSLang/SPIRV/spvIR.h",
-
-        "GLSLang/SPIRV/GLSL.ext.AMD.h",
-        "GLSLang/SPIRV/GLSL.ext.EXT.h",
-        "GLSLang/SPIRV/GLSL.ext.KHR.h",
-        "GLSLang/SPIRV/GLSL.ext.NV.h",
-        "GLSLang/SPIRV/GLSL.ext.450.h",
-        "GLSLang/SPIRV/NonSemanticDebugPrintf.h",
-        "GLSLang/SPIRV/spirv.hpp"
-    }
-
-    removefiles "GLSLang/SPIRV/SpvTools.cpp"
-
-    includedirs
-    {
-        "%{IncludeDir.GLSLANG}",
-        "%{IncludeDir.GLSLANG}/SPIRV",
-    }
-
-    filter "system:windows"
-        defines
-        {
-            "GLSLANG_OSINCLUDE_WIN32=true",
-            "GLSLANG_OSINCLUDE_UNIX=false"
-        }
-
-    filter "system:linux"
-        defines
-        {
-            "GLSLANG_OSINCLUDE_WIN32=false",
-            "GLSLANG_OSINCLUDE_UNIX=true"
-        }
-
-project "GLSLang-Default-Resource-Limits"
-    kind "StaticLib"
-    language "C++"
-    warnings "off"
-
-    targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-    objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-
-    files "GLSLang/glslang/ResourceLimits/ResourceLimits.cpp"
-
-    includedirs "%{IncludeDir.GLSLANG}"
-
-    filter "system:windows"
-        defines
-        {
-            "GLSLANG_OSINCLUDE_WIN32=true",
-            "GLSLANG_OSINCLUDE_UNIX=false"
-        }
-
-    filter "system:linux"
         defines
         {
             "GLSLANG_OSINCLUDE_WIN32=false",

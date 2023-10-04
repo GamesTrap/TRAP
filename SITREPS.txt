@@ -4488,3 +4488,5 @@ SITREP 10/04/2023|23w40a3
     - Changed TRAP Engine version to 23w40a3(0.9.108)
     - ControllerMappings is now a constexpr array of string_views ~<5 mins
     - Removed unnecessary linking in static libs ~<10 mins
+    - SPIRV-Cross now only compiles to a single static lib ~<5 mins
+    - GLSLang now only compiles to a single static lib ~<5 mins

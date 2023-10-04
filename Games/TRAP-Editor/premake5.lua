@@ -46,14 +46,10 @@ project "TRAP-Editor"
 		"YAMLCpp",
 		"ModernDialogs",
 		"GLSLang",
-		"SPIRV",
-		"GLSLang-Default-Resource-Limits",
 		"Box2D",
 		"TracyClient",
 		"fmt",
-		"SPIRV-Cross-Core",
-		"SPIRV-Cross-GLSL",
-		"SPIRV-Cross-HLSL"
+		"SPIRV-Cross"
 	}
 
 	defines

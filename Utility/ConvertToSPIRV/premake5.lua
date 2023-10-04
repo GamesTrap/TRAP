@@ -23,8 +23,6 @@ project "ConvertToSPIRV"
 	links
 	{
 		"GLSLang",
-		"SPIRV",
-		"GLSLang-Default-Resource-Limits",
 		"fmt"
 	}
 
