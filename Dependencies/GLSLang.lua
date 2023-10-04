@@ -167,8 +167,6 @@ project "SPIRV"
         "%{IncludeDir.GLSLANG}/SPIRV",
     }
 
-    links "GLSLang"
-
     filter "system:windows"
         defines
         {
@@ -192,8 +190,6 @@ project "GLSLang-Default-Resource-Limits"
     objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 
     files "GLSLang/glslang/ResourceLimits/ResourceLimits.cpp"
-
-    links "GLSLang"
 
     includedirs "%{IncludeDir.GLSLANG}"
 

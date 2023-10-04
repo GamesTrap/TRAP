@@ -59,23 +59,6 @@ project "TRAP"
 		"%{IncludeDir.GCEM}"
 	}
 
-	links
-	{
-		"ImGui",
-		"ImGuizmo",
-		"YAMLCpp",
-		"ModernDialogs",
-		"GLSLang",
-		"SPIRV",
-		"SPIRV-Cross-Core",
-		"SPIRV-Cross-GLSL",
-		"SPIRV-Cross-HLSL",
-		"Box2D",
-		"TracyClient",
-		"GLSLang-Default-Resource-Limits",
-		"fmt"
-	}
-
 	defines
 	{
 		"YAML_CPP_STATIC_DEFINE",
@@ -230,23 +213,6 @@ project "TRAP-UnitTests"
 		"%{IncludeDir.TRACY}",
 		"%{IncludeDir.FMT}",
 		"%{IncludeDir.GCEM}"
-	}
-
-	links
-	{
-		"ImGui",
-		"ImGuizmo",
-		"YAMLCpp",
-		"ModernDialogs",
-		"GLSLang",
-		"SPIRV",
-		"SPIRV-Cross-Core",
-		"SPIRV-Cross-GLSL",
-		"SPIRV-Cross-HLSL",
-		"Box2D",
-		"TracyClient",
-		"GLSLang-Default-Resource-Limits",
-		"fmt"
 	}
 
 	defines
@@ -410,21 +376,6 @@ project "TRAP-Headless"
 		"%{IncludeDir.TRACY}",
 		"%{IncludeDir.FMT}",
 		"%{IncludeDir.GCEM}"
-	}
-
-	links
-	{
-		"YAMLCpp",
-		"ModernDialogs",
-		"GLSLang",
-		"SPIRV",
-		"SPIRV-Cross-Core",
-		"SPIRV-Cross-GLSL",
-		"SPIRV-Cross-HLSL",
-		"Box2D",
-		"TracyClient",
-		"GLSLang-Default-Resource-Limits",
-		"fmt"
 	}
 
 	defines

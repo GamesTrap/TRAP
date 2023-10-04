@@ -35,7 +35,22 @@ project "Headless-Tests"
 		"%{IncludeDir.GCEM}"
 	}
 
-	links "TRAP-Headless"
+	links
+	{
+		"TRAP-Headless",
+
+		"YAMLCpp",
+		"ModernDialogs",
+		"GLSLang",
+		"SPIRV",
+		"GLSLang-Default-Resource-Limits",
+		"Box2D",
+		"TracyClient",
+		"fmt",
+		"SPIRV-Cross-Core",
+		"SPIRV-Cross-GLSL",
+		"SPIRV-Cross-HLSL"
+	}
 
 	defines "TRAP_HEADLESS_MODE"
 
@@ -47,20 +62,8 @@ project "Headless-Tests"
 	filter "system:linux"
 		links
 		{
-			"YAMLCpp",
-			"ModernDialogs",
-			"GLSLang",
-			"SPIRV",
-			"GLSLang-Default-Resource-Limits",
-			"Box2D",
-			"TracyClient",
-			"fmt",
-
 			"dl",
 			"pthread",
-			"SPIRV-Cross-Core",
-			"SPIRV-Cross-GLSL",
-			"SPIRV-Cross-HLSL",
 
 			"wayland-client",
 			"wayland-cursor",

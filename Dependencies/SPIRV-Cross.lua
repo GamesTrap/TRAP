@@ -50,8 +50,6 @@ project "SPIRV-Cross-GLSL"
         "SPIRV-Cross/spirv_glsl.hpp"
     }
 
-    links "SPIRV-Cross-Core"
-
 project "SPIRV-Cross-HLSL"
     kind "StaticLib"
     language "C++"
@@ -65,5 +63,3 @@ project "SPIRV-Cross-HLSL"
         "SPIRV-Cross/spirv_hlsl.cpp",
         "SPIRV-Cross/spirv_hlsl.hpp"
     }
-
-    links "SPIRV-Cross-GLSL"

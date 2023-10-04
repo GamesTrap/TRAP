@@ -62,7 +62,21 @@ project "UnitTests"
 
 	links
 	{
-		"TRAP-UnitTests"
+		"TRAP-UnitTests",
+
+		"ImGui",
+		"ImGuizmo",
+		"YAMLCpp",
+		"ModernDialogs",
+		"GLSLang",
+		"SPIRV",
+		"GLSLang-Default-Resource-Limits",
+		"Box2D",
+		"TracyClient",
+		"fmt",
+		"SPIRV-Cross-Core",
+		"SPIRV-Cross-GLSL",
+		"SPIRV-Cross-HLSL"
 	}
 
 	-- Discord Game SDK stuff
@@ -77,22 +91,8 @@ project "UnitTests"
 	filter "system:linux"
 		links
 		{
-			"ImGui",
-			"ImGuizmo",
-			"YAMLCpp",
-			"ModernDialogs",
-			"GLSLang",
-			"SPIRV",
-			"GLSLang-Default-Resource-Limits",
-			"Box2D",
-			"TracyClient",
-			"fmt",
-
 			"dl",
 			"pthread",
-			"SPIRV-Cross-Core",
-			"SPIRV-Cross-GLSL",
-			"SPIRV-Cross-HLSL",
 
 			"wayland-client",
 			"wayland-cursor",

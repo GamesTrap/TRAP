@@ -37,7 +37,24 @@ project "Sandbox"
 		"%{IncludeDir.GCEM}"
 	}
 
-	links "TRAP"
+	links
+	{
+		"TRAP",
+
+		"ImGui",
+		"ImGuizmo",
+		"YAMLCpp",
+		"ModernDialogs",
+		"GLSLang",
+		"SPIRV",
+		"GLSLang-Default-Resource-Limits",
+		"Box2D",
+		"TracyClient",
+		"fmt",
+		"SPIRV-Cross-Core",
+		"SPIRV-Cross-GLSL",
+		"SPIRV-Cross-HLSL"
+	}
 
 	defines
 	{
@@ -58,22 +75,8 @@ project "Sandbox"
 	filter "system:linux"
 		links
 		{
-			"ImGui",
-			"ImGuizmo",
-			"YAMLCpp",
-			"ModernDialogs",
-			"GLSLang",
-			"SPIRV",
-			"GLSLang-Default-Resource-Limits",
-			"Box2D",
-			"TracyClient",
-			"fmt",
-
 			"dl",
 			"pthread",
-			"SPIRV-Cross-Core",
-			"SPIRV-Cross-GLSL",
-			"SPIRV-Cross-HLSL",
 
 			"wayland-client",
 			"wayland-cursor",

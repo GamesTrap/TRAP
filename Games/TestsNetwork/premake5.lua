@@ -37,7 +37,24 @@ project "TestsNetwork"
 		"%{IncludeDir.GCEM}"
 	}
 
-	links "TRAP-Headless"
+	links
+	{
+		"TRAP-Headless",
+
+		"ImGui",
+		"ImGuizmo",
+		"YAMLCpp",
+		"ModernDialogs",
+		"GLSLang",
+		"SPIRV",
+		"GLSLang-Default-Resource-Limits",
+		"Box2D",
+		"TracyClient",
+		"fmt",
+		"SPIRV-Cross-Core",
+		"SPIRV-Cross-GLSL",
+		"SPIRV-Cross-HLSL"
+	}
 
 	defines "TRAP_HEADLESS_MODE"
 
@@ -49,22 +66,8 @@ project "TestsNetwork"
 	filter "system:linux"
 		links
 		{
-			"ImGui",
-			"ImGuizmo",
-			"YAMLCpp",
-			"ModernDialogs",
-			"GLSLang",
-			"SPIRV",
-			"GLSLang-Default-Resource-Limits",
-			"Box2D",
-			"TracyClient",
-			"fmt",
-
 			"dl",
 			"pthread",
-			"SPIRV-Cross-Core",
-			"SPIRV-Cross-GLSL",
-			"SPIRV-Cross-HLSL",
 
 			"wayland-client",
 			"wayland-cursor",
