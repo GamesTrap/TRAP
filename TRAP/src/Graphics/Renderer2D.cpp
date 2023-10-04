@@ -248,7 +248,7 @@ void TRAP::Graphics::Renderer2DData::QuadData::Init()
 	TextureSampler = Sampler::Create({});
 
 	//Initialize quad indices
-	auto IndicesData = MakeScope<std::array<uint32_t, MaxQuadIndices>>();
+	const auto IndicesData = MakeScope<std::array<uint32_t, MaxQuadIndices>>();
 	for(uint32_t offset = 0, i = 0; i < MaxQuadIndices; i += 6)
 	{
 		(*IndicesData)[i + 0] = offset + 0;
@@ -446,7 +446,7 @@ void TRAP::Graphics::Renderer2DData::CircleData::Init()
 	Shader = Shader::CreateFromSource("Renderer2D_Circle", std::string(Embed::Renderer2DCircleShader));
 
 	//Initialize circle indices (actually quad indices)
-	auto IndicesData = MakeScope<std::array<uint32_t, MaxCircleIndices>>();
+	const auto IndicesData = MakeScope<std::array<uint32_t, MaxCircleIndices>>();
 	for(uint32_t offset = 0, i = 0; i < MaxCircleIndices; i += 6)
 	{
 		(*IndicesData)[i + 0] = offset + 0;

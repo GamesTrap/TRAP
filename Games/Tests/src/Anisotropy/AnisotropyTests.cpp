@@ -1,6 +1,9 @@
 #include "AnisotropyTests.h"
 
-constexpr std::array<const char*, 5> anisotropyLevels{"Off", "2x", "4x", "8x", "16x"};
+namespace
+{
+	constexpr std::array<const char*, 5> anisotropyLevels{"Off", "2x", "4x", "8x", "16x"};
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
