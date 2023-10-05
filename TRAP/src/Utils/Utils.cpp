@@ -9,7 +9,7 @@
 #include "Utils/DynamicLoading/DynamicLoading.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 
-[[nodiscard]] std::string TRAP::Utils::UUIDToString(const std::array<uint8_t, 16>& uuid)
+[[nodiscard]] std::string TRAP::Utils::UUIDToString(const UUID& uuid)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -42,11 +42,11 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::array<uint8_t, 16> TRAP::Utils::UUIDFromString(const std::string_view uuid)
+[[nodiscard]] UUID TRAP::Utils::UUIDFromString(const std::string_view uuid)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	std::array<uint8_t, 16> result{};
+	UUID result{};
 
 	if(uuid.empty())
 		return {};

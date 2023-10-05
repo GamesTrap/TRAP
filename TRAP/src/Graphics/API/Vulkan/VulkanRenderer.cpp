@@ -402,18 +402,18 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 	m_debug = TRAP::MakeScope<VulkanDebug>(m_instance);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
-	const std::multimap<uint32_t, std::array<uint8_t, 16>> physicalDevices = VulkanPhysicalDevice::GetAllRatedPhysicalDevices(m_instance);
+	const std::multimap<uint32_t, UUID> physicalDevices = VulkanPhysicalDevice::GetAllRatedPhysicalDevices(m_instance);
 	TRAP::Scope<VulkanPhysicalDevice> physicalDevice;
 
 	//Get Vulkan GPU UUID
-	std::array<uint8_t, 16> UUID{};
+	UUID gpuUUID{};
 	const std::optional<std::string> UUIDstr = TRAP::Application::GetConfig().Get<std::string>("VulkanGPU");
 	if(UUIDstr)
-		UUID = TRAP::Utils::UUIDFromString(*UUIDstr);
+		gpuUUID = TRAP::Utils::UUIDFromString(*UUIDstr);
 
-	if(UUID == std::array<uint8_t, 16>{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0})
+	if(gpuUUID == UUID{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0})
 	{
-		TP_ERROR(Log::RendererVulkanPrefix, "Invalid GPU UUID: \"", Utils::UUIDToString(UUID), "\"!");
+		TP_ERROR(Log::RendererVulkanPrefix, "Invalid GPU UUID: \"", Utils::UUIDToString(gpuUUID), "\"!");
 		TP_ERROR(Log::RendererVulkanPrefix, "Falling back to score based system");
 		physicalDevice = TRAP::MakeScope<VulkanPhysicalDevice>(m_instance, (--physicalDevices.end())->second);
 	}
@@ -421,7 +421,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 	{
 		for (const auto& [score, devUUID] : physicalDevices)
 		{
-			if(UUID != devUUID)
+			if(gpuUUID != devUUID)
 				continue;
 
 			physicalDevice = TRAP::MakeScope<VulkanPhysicalDevice>(m_instance, devUUID);
@@ -430,7 +430,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 
 		if(!physicalDevice)
 		{
-			TP_ERROR(Log::RendererVulkanPrefix, "Could not find a GPU with UUID: \"", Utils::UUIDToString(UUID), "\"!");
+			TP_ERROR(Log::RendererVulkanPrefix, "Could not find a GPU with UUID: \"", Utils::UUIDToString(gpuUUID), "\"!");
 			TP_ERROR(Log::RendererVulkanPrefix, "Falling back to score based system");
 			physicalDevice = TRAP::MakeScope<VulkanPhysicalDevice>(m_instance, (--physicalDevices.end())->second);
 		}
@@ -2151,7 +2151,7 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::array<uint8_t, 16> TRAP::Graphics::API::VulkanRenderer::GetCurrentGPUUUID() const noexcept
+[[nodiscard]] UUID TRAP::Graphics::API::VulkanRenderer::GetCurrentGPUUUID() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -2178,7 +2178,7 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API::VulkanRenderer::GetAllGPUs() const
+[[nodiscard]] std::vector<std::pair<std::string, UUID>> TRAP::Graphics::API::VulkanRenderer::GetAllGPUs() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

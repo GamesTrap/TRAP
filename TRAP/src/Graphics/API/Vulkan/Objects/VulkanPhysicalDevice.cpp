@@ -11,12 +11,12 @@
 #include "Utils/Dialogs/Dialogs.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 
-std::multimap<uint32_t, std::array<uint8_t, 16>> TRAP::Graphics::API::VulkanPhysicalDevice::s_availablePhysicalDeviceUUIDs{};
+std::multimap<uint32_t, UUID> TRAP::Graphics::API::VulkanPhysicalDevice::s_availablePhysicalDeviceUUIDs{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<VulkanInstance> &instance,
-																const std::array<uint8_t, 16> &physicalDeviceUUID)
+TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<VulkanInstance>& instance,
+																const UUID& physicalDeviceUUID)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -289,7 +289,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const std::multimap<uint32_t, std::array<uint8_t, 16>> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(const TRAP::Ref<VulkanInstance> &instance)
+[[nodiscard]] const std::multimap<uint32_t, UUID> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(const TRAP::Ref<VulkanInstance> &instance)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -310,8 +310,8 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::FindPhysicalDeviceViaUUID(const TRAP::Ref<VulkanInstance> &instance,
-																					                const std::array<uint8_t, 16> &physicalDeviceUUID)
+[[nodiscard]] VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::FindPhysicalDeviceViaUUID(const TRAP::Ref<VulkanInstance>& instance,
+																					                const UUID& physicalDeviceUUID)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -321,7 +321,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 
 	for (const auto &device : physicalDevices)
 	{
-		std::array<uint8_t, 16> testUUID{};
+		UUID testUUID{};
 
 		VkPhysicalDeviceIDPropertiesKHR physicalDeviceIDProperties;
 		VkPhysicalDeviceProperties2 props2;
@@ -353,7 +353,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const std::multimap<uint32_t, std::array<uint8_t, 16>> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(const VkInstance &instance)
+[[nodiscard]] const std::multimap<uint32_t, UUID> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(const VkInstance &instance)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -789,7 +789,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 					"\" Failed Anisotropic Filtering Test!");
 
 		// Get PhysicalDevice UUID
-		std::array<uint8_t, 16> physicalDeviceUUID{};
+		UUID physicalDeviceUUID{};
 
 		VkPhysicalDeviceIDPropertiesKHR physicalDeviceIDProperties;
 		VkPhysicalDeviceProperties2 props2;

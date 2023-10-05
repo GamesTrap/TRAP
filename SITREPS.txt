@@ -4494,3 +4494,4 @@ SITREP 10/04/2023|23w40a3
 SITREP 10/05/2023|23w40b1
     - Changed TRAP Engine version to 23w40b1(0.9.109)
     - Simplified CreatePipelineReflection() ~<20 mins
+    - Added typedef for UUID (std::array<uint8_t, 16>) ~<5 mins

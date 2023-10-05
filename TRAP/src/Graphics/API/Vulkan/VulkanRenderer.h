@@ -1016,7 +1016,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the currently used GPUs UUID.
 		/// </summary>
 		/// <returns>GPU's UUID.</returns>
-		[[nodiscard]] std::array<uint8_t, 16> GetCurrentGPUUUID() const noexcept override;
+		[[nodiscard]] UUID GetCurrentGPUUUID() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the currently used GPU.
 		/// </summary>
@@ -1032,7 +1032,7 @@ namespace TRAP::Graphics::API
 		/// The list contains the GPUs name and UUID.
 		/// </summary>
 		/// <returns>List of all supported GPUs.</returns>
-		[[nodiscard]] std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() const override;
+		[[nodiscard]] std::vector<std::pair<std::string, UUID>> GetAllGPUs() const override;
 
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -1440,7 +1440,7 @@ namespace TRAP::Graphics::API
 		static std::unordered_map<std::thread::id, FrameBufferMap> s_frameBufferMap;
 		inline static TracyLockable(std::mutex, s_renderPassMutex);
 
-		inline static std::vector<std::pair<std::string, std::array<uint8_t, 16>>> s_usableGPUs{};
+		inline static std::vector<std::pair<std::string, UUID>> s_usableGPUs{};
 		static std::unordered_map<uint64_t, TRAP::Ref<Pipeline>> s_pipelines;
 		static std::unordered_map<uint64_t, TRAP::Ref<PipelineCache>> s_pipelineCaches;
 
