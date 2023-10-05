@@ -165,7 +165,7 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] UUID TRAP::Graphics::RendererAPI::GetNewGPU() noexcept
+[[nodiscard]] TRAP::Utils::UUID TRAP::Graphics::RendererAPI::GetNewGPU() noexcept
 {
 	return s_newGPUUUID;
 }

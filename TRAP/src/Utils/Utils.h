@@ -6,22 +6,23 @@
 #include <string>
 #include <type_traits>
 
-using UUID = std::array<uint8_t, 16>;
 
 namespace TRAP::Utils
 {
+	using UUID = std::array<uint8_t, 16>;
+
 	/// <summary>
 	/// Convert a 16 byte long UUID to a string.
 	/// </summary>
 	/// <param name="uuid">UUID.</param>
 	/// <returns>String representation of UUID.</returns>
-	[[nodiscard]] std::string UUIDToString(const UUID& uuid);
+	[[nodiscard]] std::string UUIDToString(const TRAP::Utils::UUID& uuid);
 	/// <summary>
 	/// Convert a string to a 16 byte long UUID.
 	/// </summary>
 	/// <param name="uuid">String representation of a 16 byte long UUID.</param>
 	/// <returns>16 byte long UUID.</returns>
-	[[nodiscard]] UUID UUIDFromString(std::string_view uuid);
+	[[nodiscard]] TRAP::Utils::UUID UUIDFromString(std::string_view uuid);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 

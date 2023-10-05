@@ -402,16 +402,16 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 	m_debug = TRAP::MakeScope<VulkanDebug>(m_instance);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
-	const std::multimap<uint32_t, UUID> physicalDevices = VulkanPhysicalDevice::GetAllRatedPhysicalDevices(m_instance);
+	const std::multimap<uint32_t, TRAP::Utils::UUID> physicalDevices = VulkanPhysicalDevice::GetAllRatedPhysicalDevices(m_instance);
 	TRAP::Scope<VulkanPhysicalDevice> physicalDevice;
 
 	//Get Vulkan GPU UUID
-	UUID gpuUUID{};
+	TRAP::Utils::UUID gpuUUID{};
 	const std::optional<std::string> UUIDstr = TRAP::Application::GetConfig().Get<std::string>("VulkanGPU");
 	if(UUIDstr)
 		gpuUUID = TRAP::Utils::UUIDFromString(*UUIDstr);
 
-	if(gpuUUID == UUID{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0})
+	if(gpuUUID == TRAP::Utils::UUID{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0})
 	{
 		TP_ERROR(Log::RendererVulkanPrefix, "Invalid GPU UUID: \"", Utils::UUIDToString(gpuUUID), "\"!");
 		TP_ERROR(Log::RendererVulkanPrefix, "Falling back to score based system");
@@ -2151,7 +2151,7 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] UUID TRAP::Graphics::API::VulkanRenderer::GetCurrentGPUUUID() const noexcept
+[[nodiscard]] TRAP::Utils::UUID TRAP::Graphics::API::VulkanRenderer::GetCurrentGPUUUID() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -2178,7 +2178,7 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::vector<std::pair<std::string, UUID>> TRAP::Graphics::API::VulkanRenderer::GetAllGPUs() const
+[[nodiscard]] std::vector<std::pair<std::string, TRAP::Utils::UUID>> TRAP::Graphics::API::VulkanRenderer::GetAllGPUs() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

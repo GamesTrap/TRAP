@@ -163,14 +163,14 @@ namespace TRAP::Graphics
 		/// Note: This only takes effect after a restart of the engine.
 		/// </summary>
 		/// <param name="GPUUUID">UUID of the GPU to use.</param>
-		static constexpr void SetNewGPU(const UUID& GPUUUID) noexcept;
+		static constexpr void SetNewGPU(const TRAP::Utils::UUID& GPUUUID) noexcept;
 		/// <summary>
 		/// Get the UUID of the new GPU to use.
 		///
 		/// Note: This will return an empty UUID if no new GPU was set.
 		/// </summary>
 		/// <returns>UUID of the new GPU to use.</returns>
-		[[nodiscard]] static UUID GetNewGPU() noexcept;
+		[[nodiscard]] static TRAP::Utils::UUID GetNewGPU() noexcept;
 
 		/// <summary>
 		/// On post update function.
@@ -1120,7 +1120,7 @@ namespace TRAP::Graphics
 		/// Retrieve the currently used GPUs UUID.
 		/// </summary>
 		/// <returns>GPU's UUID.</returns>
-		[[nodiscard]] virtual UUID GetCurrentGPUUUID() const noexcept = 0;
+		[[nodiscard]] virtual TRAP::Utils::UUID GetCurrentGPUUUID() const noexcept = 0;
 		/// <summary>
 		/// Retrieve the name of the currently used GPU.
 		/// </summary>
@@ -1136,7 +1136,7 @@ namespace TRAP::Graphics
 		/// The list contains the GPUs name and UUID.
 		/// </summary>
 		/// <returns>List of all supported GPUs.</returns>
-		[[nodiscard]] virtual std::vector<std::pair<std::string, UUID>> GetAllGPUs() const = 0;
+		[[nodiscard]] virtual std::vector<std::pair<std::string, TRAP::Utils::UUID>> GetAllGPUs() const = 0;
 
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -3249,7 +3249,7 @@ namespace TRAP::Graphics
 		inline constinit static RendererAPI::AntiAliasing s_newAntiAliasing = RendererAPI::AntiAliasing::Off;
 		inline constinit static RendererAPI::SampleCount s_Anisotropy = RendererAPI::SampleCount::Sixteen;
 
-		inline constinit static UUID s_newGPUUUID{};
+		inline constinit static TRAP::Utils::UUID s_newGPUUUID{};
 
 	public:
 		enum class PerWindowState
@@ -3417,7 +3417,7 @@ MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::LatencyMode)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr void TRAP::Graphics::RendererAPI::SetNewGPU(const UUID& GPUUUID) noexcept
+constexpr void TRAP::Graphics::RendererAPI::SetNewGPU(const TRAP::Utils::UUID& GPUUUID) noexcept
 {
 	s_newGPUUUID = GPUUUID;
 }

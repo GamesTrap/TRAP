@@ -15,7 +15,7 @@ void RendererAPIInfo::OnAttach()
 void RendererAPIInfo::OnImGuiRender()
 {
     const std::string GPUName = TRAP::Graphics::RenderCommand::GetGPUName();
-    const UUID GPUUUID = TRAP::Graphics::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
+    const TRAP::Utils::UUID GPUUUID = TRAP::Graphics::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
     const std::string GPUUUIDStr = TRAP::Utils::UUIDToString(GPUUUID);
     const std::string renderAPI = TRAP::Utils::String::ConvertToString(TRAP::Graphics::RendererAPI::GetRenderAPI());
 

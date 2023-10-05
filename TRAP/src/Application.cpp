@@ -892,8 +892,8 @@ void TRAP::Application::UpdateTRAPConfig(Utils::Config& config, const uint32_t f
 #endif /*TRAP_HEADLESS_MODE*/
 
 		//GPU UUID
-		UUID GPUUUID{};
-		if(Graphics::RendererAPI::GetNewGPU() != UUID{}) //Only if UUID is not empty
+		TRAP::Utils::UUID GPUUUID{};
+		if(Graphics::RendererAPI::GetNewGPU() != TRAP::Utils::UUID{}) //Only if UUID is not empty
 			GPUUUID = Graphics::RendererAPI::GetNewGPU();
 		else
 			GPUUUID = Graphics::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
