@@ -59,25 +59,17 @@
 		//Loop through all shader resources
 		for (auto& ShaderResource : srcRef.ShaderResources)
 		{
-			bool unique = true;
-
 			//Go through all already added shader resources to see if this shader
 			//resource was already added from a different shader stage.
 			//If we find a duplicate shader resource, we add the shader stage
 			//to the shader stage mask of that resource instead.
-			//TODO Replace with std::find_if ?
-			for(std::size_t k = 0; k < uniqueResources.size(); ++k)
+			const auto it = std::ranges::find_if(uniqueResources, [&ShaderResource](const auto* const r){return *r == ShaderResource;});
+			if(it != uniqueResources.end()) //Not unique
 			{
-				unique = ShaderResource != *uniqueResources[k];
-				if(!unique)
-				{
-					shaderUsage[k] |= ShaderResource.UsedStages;
-					break;
-				}
+				const std::size_t sharedIndex = it - uniqueResources.begin();
+				shaderUsage[sharedIndex] |= ShaderResource.UsedStages;
 			}
-
-			//If it's unique, we add it to the list of shader resources
-			if(unique)
+			else //Unique, Add it to the list of shader resources
 			{
 				shaderUsage.push_back(ShaderResource.UsedStages);
 				uniqueResources.push_back(&ShaderResource);
@@ -87,22 +79,14 @@
 		//Loop through all shader variables (constant/uniform buffer members)
 		for(std::size_t j = 0; j < srcRef.Variables.size(); ++j)
 		{
-			bool unique = true;
-
 			//Go through all already added shader variables to see if this shader
 			//variable was already added from a different shader stage.
 			//If we find a duplicate shader variable, we don't add it.
-			//TODO Replace with std::find_if ?
-			for(const ShaderVariable* const k : uniqueVariable)
-			{
-				unique = srcRef.Variables[j] != *k;
-				if (!unique)
-					break;
-			}
 
-			//If it's unique we add it to the list of shader variables
-			if(unique)
+			const auto it = std::ranges::find_if(uniqueVariable, [&srcRef, j](const ShaderVariable* const v){return *v == srcRef.Variables[j];});
+			if(it == uniqueVariable.end()) //Unique
 			{
+				//Add it to the list of shader variables
 				uniqueVariableParent.push_back(&srcRef.ShaderResources[srcRef.Variables[j].ParentIndex]);
 				uniqueVariable.push_back(&srcRef.Variables[j]);
 			}
@@ -124,14 +108,10 @@
 		out->Variables[i] = *uniqueVariable[i];
 		const ShaderResource* const parentResource = uniqueVariableParent[i];
 		//Look for parent
-		//TODO std::find_if?
-		for(std::size_t j = 0; j < out->ShaderResources.size(); ++j)
+		const auto it = std::ranges::find_if(out->ShaderResources, [parentResource](const ShaderResource& r){return r == *parentResource; });
+		if(it != out->ShaderResources.end())
 		{
-			if(out->ShaderResources[j] == *parentResource)
-			{
-				out->Variables[i].ParentIndex = j;
-				break;
-			}
+			out->Variables[i].ParentIndex = it - out->ShaderResources.begin();
 		}
 	}
 
