@@ -80,7 +80,10 @@ void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI:
 	TRAP_ASSERT(computeDesc.ShaderProgram, "VulkanPipeline::InitComputePipeline(): ShaderProgram is nullptr!");
 	TRAP_ASSERT(computeDesc.RootSignature, "VulkanPipeline::InitComputePipeline(): RootSignature is nullptr!");
 	const VulkanShader* const vShader = dynamic_cast<VulkanShader*>(computeDesc.ShaderProgram);
+	TRAP_ASSERT(!vShader->GetVkShaderModules().empty(), "VulkanPipeline::InitComputePipeline(): ShaderModules is empty!");
 	TRAP_ASSERT(vShader->GetVkShaderModules()[0] != VK_NULL_HANDLE, "VulkanPipeline::InitComputePipeline(): ShaderModule is nullptr!");
+	TRAP_ASSERT(vShader->GetReflection() != nullptr, "VulkanPipeline::InitComputePipeline(): ShaderReflection is nullptr!");
+	TRAP_ASSERT(!vShader->GetReflection()->StageReflections.empty(), "VulkanPipeline::InitComputePipeline(): StageReflections is empty!");
 
 	m_type = RendererAPI::PipelineType::Compute;
 
@@ -90,7 +93,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI:
 		(
 			 VK_SHADER_STAGE_COMPUTE_BIT,
 			 vShader->GetVkShaderModules()[0],
-			 std::get<0>(vShader->GetReflection()->StageReflections).EntryPoint
+			 vShader->GetReflection()->StageReflections[0].EntryPoint
 		);
 
 		const VkComputePipelineCreateInfo info = VulkanInits::ComputePipelineCreateInfo
@@ -117,6 +120,10 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 
 	TRAP_ASSERT(graphicsDesc.ShaderProgram, "VulkanPipeline::InitGraphicsPipeline(): ShaderProgram is nullptr!");
 	TRAP_ASSERT(graphicsDesc.RootSignature, "VulkanPipeline::InitGraphicsPipeline(): RootSignature is nullptr!");
+	const VulkanShader* const vShader = dynamic_cast<VulkanShader*>(graphicsDesc.ShaderProgram);
+	TRAP_ASSERT(!vShader->GetVkShaderModules().empty(), "VulkanPipeline::InitGraphicsPipeline(): ShaderModules is empty!");
+	TRAP_ASSERT(vShader->GetReflection() != nullptr, "VulkanPipeline::InitGraphicsPipeline(): ShaderReflection is nullptr!");
+	TRAP_ASSERT(!vShader->GetReflection()->StageReflections.empty(), "VulkanPipeline::InitGraphicsPipeline(): StageReflections is empty!");
 
 	const auto& shaderProgram = graphicsDesc.ShaderProgram;
 	const auto& vertexLayout = graphicsDesc.VertexLayout;
@@ -132,8 +139,8 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 	renderPassDesc.ShadingRateFormat = graphicsDesc.ShadingRateTexture ? graphicsDesc.ShadingRateTexture->GetImageFormat() : Graphics::API::ImageFormat::Undefined;
 	TRAP::Scope<VulkanRenderPass> renderPass = TRAP::MakeScope<VulkanRenderPass>(m_device, renderPassDesc);
 
-	const VulkanShader* const vShader = dynamic_cast<VulkanShader*>(shaderProgram);
-	for(uint32_t i = 0; i < vShader->GetReflection()->StageReflectionCount; ++i)
+	TRAP_ASSERT(vShader->GetReflection()->StageReflections.size() == vShader->GetVkShaderModules().size(), "VulkanPipeline::InitGraphicsPipeline(): ShaderModule count doesn't match with reflection!");
+	for(uint32_t i = 0; i < vShader->GetReflection()->StageReflections.size(); ++i)
 	{
 		TRAP_ASSERT(vShader->GetVkShaderModules()[i] != VK_NULL_HANDLE, "VulkanPipeline::InitGraphicsPipeline(): ShaderModule is nullptr!");
 	}
@@ -155,41 +162,41 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 				{
 				case RendererAPI::ShaderStage::Vertex:
 				{
-					stages[stageCount].pName = vShader->GetReflection()->StageReflections[vShader->GetReflection()->VertexStageIndex].EntryPoint.data();
+					stages[stageCount].pName = vShader->GetReflection()->StageReflections[vShader->GetReflection()->VertexStageIndex.value()].EntryPoint.data();
 					stages[stageCount].stage = VK_SHADER_STAGE_VERTEX_BIT;
-					stages[stageCount].module = vShader->GetVkShaderModules()[vShader->GetReflection()->VertexStageIndex];
+					stages[stageCount].module = vShader->GetVkShaderModules()[vShader->GetReflection()->VertexStageIndex.value()];
 					break;
 				}
 
 				case RendererAPI::ShaderStage::TessellationControl:
 				{
-					stages[stageCount].pName = vShader->GetReflection()->StageReflections[vShader->GetReflection()->TessellationControlStageIndex].EntryPoint.data();
+					stages[stageCount].pName = vShader->GetReflection()->StageReflections[vShader->GetReflection()->TessellationControlStageIndex.value()].EntryPoint.data();
 					stages[stageCount].stage = VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
-					stages[stageCount].module = vShader->GetVkShaderModules()[vShader->GetReflection()->TessellationControlStageIndex];
+					stages[stageCount].module = vShader->GetVkShaderModules()[vShader->GetReflection()->TessellationControlStageIndex.value()];
 					break;
 				}
 
 				case RendererAPI::ShaderStage::TessellationEvaluation:
 				{
-					stages[stageCount].pName = vShader->GetReflection()->StageReflections[vShader->GetReflection()->TessellationEvaluationStageIndex].EntryPoint.data();
+					stages[stageCount].pName = vShader->GetReflection()->StageReflections[vShader->GetReflection()->TessellationEvaluationStageIndex.value()].EntryPoint.data();
 					stages[stageCount].stage = VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
-					stages[stageCount].module = vShader->GetVkShaderModules()[vShader->GetReflection()->TessellationEvaluationStageIndex];
+					stages[stageCount].module = vShader->GetVkShaderModules()[vShader->GetReflection()->TessellationEvaluationStageIndex.value()];
 					break;
 				}
 
 				case RendererAPI::ShaderStage::Geometry:
 				{
-					stages[stageCount].pName = vShader->GetReflection()->StageReflections[vShader->GetReflection()->GeometryStageIndex].EntryPoint.data();
+					stages[stageCount].pName = vShader->GetReflection()->StageReflections[vShader->GetReflection()->GeometryStageIndex.value()].EntryPoint.data();
 					stages[stageCount].stage = VK_SHADER_STAGE_GEOMETRY_BIT;
-					stages[stageCount].module = vShader->GetVkShaderModules()[vShader->GetReflection()->GeometryStageIndex];
+					stages[stageCount].module = vShader->GetVkShaderModules()[vShader->GetReflection()->GeometryStageIndex.value()];
 					break;
 				}
 
 				case RendererAPI::ShaderStage::Fragment:
 				{
-					stages[stageCount].pName = vShader->GetReflection()->StageReflections[vShader->GetReflection()->FragmentStageIndex].EntryPoint.data();
+					stages[stageCount].pName = vShader->GetReflection()->StageReflections[vShader->GetReflection()->FragmentStageIndex.value()].EntryPoint.data();
 					stages[stageCount].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-					stages[stageCount].module = vShader->GetVkShaderModules()[vShader->GetReflection()->FragmentStageIndex];
+					stages[stageCount].module = vShader->GetVkShaderModules()[vShader->GetReflection()->FragmentStageIndex.value()];
 					break;
 				}
 
@@ -288,7 +295,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 		{
 			ts = VulkanInits::PipelineTessellationStateCreateInfo
 			(
-				vShader->GetReflection()->StageReflections[vShader->GetReflection()->TessellationControlStageIndex].NumControlPoint
+				vShader->GetReflection()->StageReflections[vShader->GetReflection()->TessellationControlStageIndex.value()].NumControlPoint
 			);
 		}
 

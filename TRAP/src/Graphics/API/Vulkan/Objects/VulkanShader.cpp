@@ -21,9 +21,7 @@
 TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesystem::path filepath,
 												const RendererAPI::BinaryShaderDesc& desc,
                                                 const std::vector<Macro>* const userMacros, const bool valid)
-	: Shader(name, valid, desc.Stages, userMacros, filepath),
-	  m_shaderModules(std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
-	  m_entryNames(std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT))
+	: Shader(name, valid, desc.Stages, userMacros, filepath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -39,9 +37,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesyste
 
 TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const RendererAPI::BinaryShaderDesc& desc,
                                                 const std::vector<Macro>* const userMacros, const bool valid)
-	: Shader(name, valid, desc.Stages, userMacros),
-	  m_shaderModules(std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
-	  m_entryNames(std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT))
+	: Shader(name, valid, desc.Stages, userMacros)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -58,9 +54,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const Renderer
 TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesystem::path filepath,
                                                 const std::vector<Macro>* const userMacros,
 												const RendererAPI::ShaderStage stages)
-	: Shader(name, false, stages, userMacros, filepath),
-	  m_shaderModules(std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
-	  m_entryNames(std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT))
+	: Shader(name, false, stages, userMacros, filepath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -445,12 +439,9 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 	TP_DEBUG(Log::RendererVulkanShaderPrefix, "Creating Shader: \"", m_name, "\"");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	uint32_t counter = 0;
+	std::vector<ShaderReflection::ShaderReflection> stageReflections{};
 
-	std::array<ShaderReflection::ShaderReflection,
-	           std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> stageReflections{};
-
-	for(std::size_t i = 0; i < stageReflections.size(); i++)
+	for(std::size_t i = 0; i < std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT); i++)
 	{
 		const RendererAPI::ShaderStage stageMask = static_cast<RendererAPI::ShaderStage>(BIT(i));
 		if(stageMask == (m_shaderStages & stageMask))
@@ -467,82 +458,87 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 			{
 				case RendererAPI::ShaderStage::Vertex:
 				{
-					stageReflections[counter] = VkCreateShaderReflection(desc.Vertex.ByteCode, stageMask);
+					stageReflections.push_back(VkCreateShaderReflection(desc.Vertex.ByteCode, stageMask));
 
 					createInfo.codeSize = desc.Vertex.ByteCode.size() * sizeof(uint32_t);
 					createInfo.pCode = desc.Vertex.ByteCode.data();
 					stageDesc = &desc.Vertex;
+					m_shaderModules.emplace_back(VK_NULL_HANDLE);
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
-					                            &m_shaderModules[counter]));
+					                            &m_shaderModules.back()));
 #ifdef ENABLE_GRAPHICS_DEBUG
 					if (!m_name.empty())
-						SetShaderStageName(m_name + "_Vertex", m_shaderModules[counter]);
+						SetShaderStageName(m_name + "_Vertex", m_shaderModules.back());
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 					break;
 				}
 
 				case RendererAPI::ShaderStage::TessellationControl:
 				{
-					stageReflections[counter] = VkCreateShaderReflection(desc.TessellationControl.ByteCode,
-					                                                     stageMask);
+					stageReflections.push_back(VkCreateShaderReflection(desc.TessellationControl.ByteCode,
+					                                                    stageMask));
 
 					createInfo.codeSize = desc.TessellationControl.ByteCode.size() * sizeof(uint32_t);
 					createInfo.pCode = desc.TessellationControl.ByteCode.data();
 					stageDesc = &desc.TessellationControl;
+					m_shaderModules.emplace_back(VK_NULL_HANDLE);
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
-					                            &m_shaderModules[counter]));
+					                            &m_shaderModules.back()));
 #ifdef ENABLE_GRAPHICS_DEBUG
 					if (!m_name.empty())
-						SetShaderStageName(m_name + "_TessellationControl", m_shaderModules[counter]);
+						SetShaderStageName(m_name + "_TessellationControl", m_shaderModules.back());
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 					break;
 				}
 
 				case RendererAPI::ShaderStage::TessellationEvaluation:
 				{
-					stageReflections[counter] = VkCreateShaderReflection(desc.TessellationEvaluation.ByteCode,
-					                                                     stageMask);
+					stageReflections.push_back(VkCreateShaderReflection(desc.TessellationEvaluation.ByteCode,
+					                                                    stageMask));
 
 					createInfo.codeSize = desc.TessellationEvaluation.ByteCode.size() * sizeof(uint32_t);
 					createInfo.pCode = desc.TessellationEvaluation.ByteCode.data();
 					stageDesc = &desc.TessellationEvaluation;
+					m_shaderModules.emplace_back(VK_NULL_HANDLE);
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
-					                            &m_shaderModules[counter]));
+					                            &m_shaderModules.back()));
 #ifdef ENABLE_GRAPHICS_DEBUG
 					if (!m_name.empty())
-						SetShaderStageName(m_name + "_TessellationEvaluation", m_shaderModules[counter]);
+						SetShaderStageName(m_name + "_TessellationEvaluation", m_shaderModules.back());
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 					break;
 				}
 
 				case RendererAPI::ShaderStage::Geometry:
 				{
-					stageReflections[counter] = VkCreateShaderReflection(desc.Geometry.ByteCode, stageMask);
+					stageReflections.push_back(VkCreateShaderReflection(desc.Geometry.ByteCode, stageMask));
 
 					createInfo.codeSize = desc.Geometry.ByteCode.size() * sizeof(uint32_t);
 					createInfo.pCode = desc.Geometry.ByteCode.data();
 					stageDesc = &desc.Geometry;
+					m_shaderModules.emplace_back(VK_NULL_HANDLE);
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
-					                            &m_shaderModules[counter]));
+					                            &m_shaderModules.back()));
 #ifdef ENABLE_GRAPHICS_DEBUG
 					if (!m_name.empty())
-						SetShaderStageName(m_name + "_Geometry", m_shaderModules[counter]);
+						SetShaderStageName(m_name + "_Geometry", m_shaderModules.back());
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 					break;
 				}
 
 				case RendererAPI::ShaderStage::Fragment:
 				{
-					stageReflections[counter] = VkCreateShaderReflection(desc.Fragment.ByteCode, stageMask);
+					stageReflections.push_back(VkCreateShaderReflection(desc.Fragment.ByteCode, stageMask));
 
 					createInfo.codeSize = desc.Fragment.ByteCode.size() * sizeof(uint32_t);
 					createInfo.pCode = desc.Fragment.ByteCode.data();
 					stageDesc = &desc.Fragment;
+					m_shaderModules.emplace_back(VK_NULL_HANDLE);
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
-					                            &m_shaderModules[counter]));
+					                            &m_shaderModules.back()));
 #ifdef ENABLE_GRAPHICS_DEBUG
 					if (!m_name.empty())
-						SetShaderStageName(m_name + "_Fragment", m_shaderModules[counter]);
+						SetShaderStageName(m_name + "_Fragment", m_shaderModules.back());
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 					break;
 				}
@@ -551,16 +547,17 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 					[[fallthrough]];
 				case RendererAPI::ShaderStage::RayTracing:
 				{
-					stageReflections[counter] = VkCreateShaderReflection(desc.Compute.ByteCode, stageMask);
+					stageReflections.push_back(VkCreateShaderReflection(desc.Compute.ByteCode, stageMask));
 
 					createInfo.codeSize = desc.Compute.ByteCode.size() * sizeof(uint32_t);
 					createInfo.pCode = desc.Compute.ByteCode.data();
 					stageDesc = &desc.Compute;
+					m_shaderModules.emplace_back(VK_NULL_HANDLE);
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
-					                            &m_shaderModules[counter]));
+					                            &m_shaderModules.back()));
 #ifdef ENABLE_GRAPHICS_DEBUG
 					if (!m_name.empty())
-						SetShaderStageName(m_name + "_Compute/RayTracing", m_shaderModules[counter]);
+						SetShaderStageName(m_name + "_Compute/RayTracing", m_shaderModules.back());
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 					break;
 				}
@@ -569,12 +566,11 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 					TRAP_ASSERT(false, "VulkanShader::Init(): Shader Stage not supported!");
 					break;
 			}
-			m_entryNames[counter] = stageDesc->EntryPoint;
-			++counter;
+			m_entryNames.push_back(stageDesc->EntryPoint);
 		}
 	}
 
-	m_reflection = CreatePipelineReflection(stageReflections, counter);
+	m_reflection = CreatePipelineReflection(stageReflections);
 
 	RendererAPI::RootSignatureDesc rootDesc{};
 	rootDesc.Shaders.push_back(this);
@@ -582,7 +578,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 
 	//Set work group sizes if compute shader
 	if(m_reflection->ShaderStages == RendererAPI::ShaderStage::Compute)
-		m_numThreadsPerGroup = std::get<0>(m_reflection->StageReflections).NumThreadsPerGroup;
+		m_numThreadsPerGroup = m_reflection->StageReflections[0].NumThreadsPerGroup;
 
 	//Create DescriptorSets
 	for(std::size_t i = 0; i < m_descriptorSets.size(); ++i)
@@ -615,21 +611,21 @@ void TRAP::Graphics::API::VulkanShader::Shutdown()
 	}
 
 	if ((m_shaderStages & RendererAPI::ShaderStage::Vertex) != RendererAPI::ShaderStage::None)
-		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[m_reflection->VertexStageIndex], nullptr);
+		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[m_reflection->VertexStageIndex.value()], nullptr);
 
 	if ((m_shaderStages & RendererAPI::ShaderStage::TessellationControl) != RendererAPI::ShaderStage::None)
-		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[m_reflection->TessellationControlStageIndex],
+		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[m_reflection->TessellationControlStageIndex.value()],
 		                      nullptr);
 
 	if ((m_shaderStages & RendererAPI::ShaderStage::TessellationEvaluation) != RendererAPI::ShaderStage::None)
 		vkDestroyShaderModule(m_device->GetVkDevice(),
-		                      m_shaderModules[m_reflection->TessellationEvaluationStageIndex], nullptr);
+		                      m_shaderModules[m_reflection->TessellationEvaluationStageIndex.value()], nullptr);
 
 	if ((m_shaderStages & RendererAPI::ShaderStage::Geometry) != RendererAPI::ShaderStage::None)
-		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[m_reflection->GeometryStageIndex], nullptr);
+		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[m_reflection->GeometryStageIndex.value()], nullptr);
 
 	if ((m_shaderStages & RendererAPI::ShaderStage::Fragment) != RendererAPI::ShaderStage::None)
-		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[m_reflection->FragmentStageIndex], nullptr);
+		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[m_reflection->FragmentStageIndex.value()], nullptr);
 
 	if ((m_shaderStages & RendererAPI::ShaderStage::Compute) != RendererAPI::ShaderStage::None)
 		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[0], nullptr);

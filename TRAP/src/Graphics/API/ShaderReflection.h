@@ -55,7 +55,17 @@ namespace TRAP::Graphics::API::ShaderReflection
 
 		//1D / 2D / Array / MSAA / ...
 		TextureDimension Dim;
+
 	};
+
+	[[nodiscard]] constexpr bool operator==(const ShaderResource& lhs, const ShaderResource& rhs)
+	{
+		return lhs.Type == rhs.Type && lhs.Set == rhs.Set && lhs.Reg == rhs.Reg;
+	}
+	[[nodiscard]] constexpr bool operator!=(const ShaderResource& lhs, const ShaderResource& rhs)
+	{
+		return !(lhs == rhs);
+	}
 
 	struct ShaderVariable
 	{
@@ -71,6 +81,15 @@ namespace TRAP::Graphics::API::ShaderReflection
 		//Variable name
 		std::string Name;
 	};
+
+	[[nodiscard]] constexpr bool operator==(const ShaderVariable& lhs, const ShaderVariable& rhs)
+	{
+		return lhs.Offset == rhs.Offset && lhs.Size == rhs.Size && lhs.Name.size() == rhs.Name.size() && lhs.Name == rhs.Name;
+	}
+	[[nodiscard]] constexpr bool operator!=(const ShaderVariable& lhs, const ShaderVariable& rhs)
+	{
+		return !(lhs == rhs);
+	}
 
 	struct ShaderReflection
 	{
@@ -95,15 +114,13 @@ namespace TRAP::Graphics::API::ShaderReflection
 	{
 		RendererAPI::ShaderStage ShaderStages;
 		//The individual stages reflection data
-		std::array<ShaderReflection,
-		           std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> StageReflections;
-		uint32_t StageReflectionCount{};
+		std::vector<ShaderReflection> StageReflections;
 
-		uint32_t VertexStageIndex{};
-		uint32_t TessellationControlStageIndex{};
-		uint32_t TessellationEvaluationStageIndex{};
-		uint32_t GeometryStageIndex{};
-		uint32_t FragmentStageIndex{};
+		std::optional<uint32_t> VertexStageIndex = std::nullopt;
+		std::optional<uint32_t> TessellationControlStageIndex = std::nullopt;
+		std::optional<uint32_t> TessellationEvaluationStageIndex = std::nullopt;
+		std::optional<uint32_t> GeometryStageIndex = std::nullopt;
+		std::optional<uint32_t> FragmentStageIndex = std::nullopt;
 
 		std::vector<ShaderResource> ShaderResources;
 
@@ -114,11 +131,8 @@ namespace TRAP::Graphics::API::ShaderReflection
 	/// Create a pipeline reflection from shader reflection data.
 	/// </summary>
 	/// <param name="reflection">Shader reflection data.</param>
-	/// <param name="stageCount">Number of used shader stages.</param>
 	/// <returns>Pipeline reflection.</returns>
-	[[nodiscard]] TRAP::Ref<PipelineReflection> CreatePipelineReflection(const std::array<ShaderReflection,
-	                                                                     std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& reflection,
-														                 uint32_t stageCount);
+	[[nodiscard]] TRAP::Ref<PipelineReflection> CreatePipelineReflection(const std::vector<ShaderReflection>& reflection);
 }
 
 #endif /*TRAP_SHADERREFLECTION_H*/
