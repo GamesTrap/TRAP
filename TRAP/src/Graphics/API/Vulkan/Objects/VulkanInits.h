@@ -636,7 +636,9 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="surfaceFormat">Vulkan surface format to use.</param>
 	/// <param name="imageExtent">Vulkan image extent to use.</param>
 	/// <param name="sharingMode">Vulkan sharing mode to use.</param>
-	/// <param name="queueFamilyIndexCount">Number of queue family indices to use.</param>
+	/// <param name="queueFamilyIndices">
+	/// Queue families that have access to the image(s) of the swapchain when sharingMode is VK_SHARING_MODE_CONCURRENT.
+	/// </param>
 	/// <param name="preTransform">Vulkan pre-transform to use.</param>
 	/// <param name="compositeAlpha">Vulkan composite alpha to use.</param>
 	/// <param name="presentMode">Vulkan present mode to use.</param>
@@ -644,8 +646,8 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <returns>VkSwapchainCreateInfoKHR.</returns>
 	[[nodiscard]] VkSwapchainCreateInfoKHR SwapchainCreateInfoKHR(VkSurfaceKHR surface, uint32_t imageCount,
 	                                                              VkSurfaceFormatKHR surfaceFormat, VkExtent2D imageExtent,
-	                                                              VkSharingMode sharingMode, uint32_t queueFamilyIndexCount,
-	                                                              const std::array<uint32_t, 2>& queueFamilyIndices,
+	                                                              VkSharingMode sharingMode,
+	                                                              const std::vector<uint32_t>& queueFamilyIndices,
 	                                                              VkSurfaceTransformFlagBitsKHR preTransform,
 													              VkCompositeAlphaFlagBitsKHR compositeAlpha,
 													              VkPresentModeKHR presentMode,

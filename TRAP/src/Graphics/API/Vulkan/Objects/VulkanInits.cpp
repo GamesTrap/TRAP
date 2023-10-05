@@ -589,8 +589,7 @@
 	                                                                                            const VkSurfaceFormatKHR surfaceFormat,
 	                                                                                            const VkExtent2D imageExtent,
 	                                                                                            const VkSharingMode sharingMode,
-	                                                                                            const uint32_t queueFamilyIndexCount,
-	                                                                                            const std::array<uint32_t, 2>& queueFamilyIndices,
+	                                                                                            const std::vector<uint32_t>& queueFamilyIndices,
 	                                                                                            const VkSurfaceTransformFlagBitsKHR preTransform,
 	                                                                                            const VkCompositeAlphaFlagBitsKHR compositeAlpha,
 	                                                                                            const VkPresentModeKHR presentMode,
@@ -613,7 +612,7 @@
 		              static_cast<uint32_t>(VK_IMAGE_USAGE_TRANSFER_SRC_BIT) |
 					  static_cast<uint32_t>(VK_IMAGE_USAGE_TRANSFER_DST_BIT),
 		.imageSharingMode = sharingMode,
-		.queueFamilyIndexCount = queueFamilyIndexCount,
+		.queueFamilyIndexCount = NumericCast<uint32_t>(queueFamilyIndices.size()),
 		.pQueueFamilyIndices = queueFamilyIndices.data(),
 		.preTransform = preTransform,
 		.compositeAlpha = compositeAlpha,

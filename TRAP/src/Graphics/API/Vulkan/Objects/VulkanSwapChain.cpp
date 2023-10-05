@@ -161,11 +161,9 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	desc.Height = extent.height;
 
 	const VkSharingMode sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-	uint32_t queueFamilyIndexCount = 0;
-	std::array<uint32_t, 2> queueFamilyIndices =
+	std::vector<uint32_t> queueFamilyIndices
 	{
-		NumericCast<uint32_t>(std::dynamic_pointer_cast<VulkanQueue>(desc.PresentQueues[0])->GetQueueFamilyIndex()),
-		0
+		NumericCast<uint32_t>(std::dynamic_pointer_cast<VulkanQueue>(desc.PresentQueues[0])->GetQueueFamilyIndex())
 	};
 	uint32_t presentQueueFamilyIndex = std::numeric_limits<uint32_t>::max();
 
@@ -213,16 +211,15 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	VkQueue presentQueue = VK_NULL_HANDLE;
 	uint32_t finalPresentQueueFamilyIndex = 0;
 	if (presentQueueFamilyIndex != std::numeric_limits<uint32_t>::max() &&
-	    std::get<0>(queueFamilyIndices) != presentQueueFamilyIndex)
+	    queueFamilyIndices[0] != presentQueueFamilyIndex)
 	{
-		std::get<0>(queueFamilyIndices) = presentQueueFamilyIndex;
-		vkGetDeviceQueue(m_device->GetVkDevice(), std::get<0>(queueFamilyIndices), 0, &presentQueue);
-		queueFamilyIndexCount = 1;
+		queueFamilyIndices[0] = presentQueueFamilyIndex;
+		vkGetDeviceQueue(m_device->GetVkDevice(), queueFamilyIndices[0], 0, &presentQueue);
 		finalPresentQueueFamilyIndex = presentQueueFamilyIndex;
 	}
 	else
 	{
-		finalPresentQueueFamilyIndex = std::get<0>(queueFamilyIndices);
+		finalPresentQueueFamilyIndex = queueFamilyIndices[0];
 		presentQueue = VK_NULL_HANDLE;
 	}
 
@@ -260,7 +257,6 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 		                                                                                     surfaceFormat,
 		                                                                                     extent,
 		                                                                                     sharingMode,
-		                                                                                     queueFamilyIndexCount,
 		                                                                                     queueFamilyIndices,
 		                                                                                     preTransform,
 		                                                                                     compositeAlpha,

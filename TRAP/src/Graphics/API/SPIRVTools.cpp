@@ -317,15 +317,9 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderVariables()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	std::array<uint32_t, 3> res{};
-
 	const spirv_cross::SPIREntryPoint& entryPoint = m_compiler.get_entry_point(m_entryPoint, m_compiler.get_execution_model());
 
-	std::get<0>(res) = entryPoint.workgroup_size.x;
-	std::get<1>(res) = entryPoint.workgroup_size.y;
-	std::get<2>(res) = entryPoint.workgroup_size.z;
-
-	return res;
+	return {entryPoint.workgroup_size.x, entryPoint.workgroup_size.y, entryPoint.workgroup_size.z};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -1016,7 +1016,7 @@ namespace
 
         // Create Swapchain
         {
-            VkSwapchainCreateInfoKHR info = TRAP::Graphics::API::VulkanInits::SwapchainCreateInfoKHR(wd.Surface, min_image_count, wd.SurfaceFormat, {}, VK_SHARING_MODE_EXCLUSIVE, 0, {}, VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR, VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR, wd.PresentMode);
+            VkSwapchainCreateInfoKHR info = TRAP::Graphics::API::VulkanInits::SwapchainCreateInfoKHR(wd.Surface, min_image_count, wd.SurfaceFormat, {}, VK_SHARING_MODE_EXCLUSIVE, {}, VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR, VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR, wd.PresentMode);
             info.oldSwapchain = old_swapchain;
 
             VkSurfaceCapabilitiesKHR cap;
