@@ -216,11 +216,9 @@ namespace TRAP::INTERNAL
 		/// Decompress PNG data.
 		/// </summary>
 		/// <param name="source">Source data.</param>
-		/// <param name="sourceLength">Source data length.</param>
 		/// <param name="destination">Destination for uncompressed data.</param>
-		/// <param name="destinationLength">Destination size.</param>
 		/// <returns>True if the data was decompressed successfully, false otherwise.</returns>
-		[[nodiscard]] static bool DecompressData(const uint8_t* source, std::size_t sourceLength, uint8_t* destination, std::size_t destinationLength);
+		[[nodiscard]] static bool DecompressData(std::span<const uint8_t> source, std::span<uint8_t> destination);
 		/// <summary>
 		/// Unfilter scanline depending on given filter type.
 		/// </summary>

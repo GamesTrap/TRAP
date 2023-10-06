@@ -5,8 +5,7 @@ void VulkanTextureTests::OnAttach()
     TRAP::Application::GetWindow()->SetTitle("Vulkan Texture Test");
 
     //Load Quad vertices
-    m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(QuadVerticesIndexed.data(),
-                                                          QuadVerticesIndexed.size() * sizeof(float),
+    m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(QuadVerticesIndexed,
                                                           TRAP::Graphics::UpdateFrequency::Static);
     const TRAP::Graphics::VertexBufferLayout layout =
     {
@@ -17,9 +16,7 @@ void VulkanTextureTests::OnAttach()
     m_vertexBuffer->AwaitLoading();
 
     //Load Quad indices
-    m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(QuadIndices.data(),
-                                                        QuadIndices.size() * sizeof(uint16_t),
-                                                        TRAP::Graphics::UpdateFrequency::Static);
+    m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(QuadIndices, TRAP::Graphics::UpdateFrequency::Static);
     m_indexBuffer->AwaitLoading();
 
     //Load Images

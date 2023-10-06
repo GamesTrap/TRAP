@@ -47,8 +47,8 @@ public:
 		// PushLayer(std::make_unique<FrameBufferTests>());
 		// PushLayer(std::make_unique<IconTests>());
 		// PushLayer(std::make_unique<IcoSphereTests>());
-		// PushLayer(std::make_unique<ImageLoaderTests>());
-		PushLayer(std::make_unique<InputLagTests>());
+		PushLayer(std::make_unique<ImageLoaderTests>());
+		// PushLayer(std::make_unique<InputLagTests>());
 		// PushLayer(std::make_unique<MonitorTests>());
 		// PushLayer(std::make_unique<MultiWindowTests>());
 		// PushLayer(std::make_unique<OpacityTests>());
@@ -66,7 +66,7 @@ public:
 	}
 };
 
-std::unique_ptr<TRAP::Application> TRAP::CreateApplication([[maybe_unused]] const std::vector<std::string_view>& args)
+std::unique_ptr<TRAP::Application> TRAP::CreateApplication([[maybe_unused]] const std::span<const std::string_view> args)
 {
 	return std::make_unique<Tests>("Tests");
 }

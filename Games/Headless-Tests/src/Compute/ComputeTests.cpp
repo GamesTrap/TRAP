@@ -9,9 +9,7 @@ void ComputeTests::OnAttach()
         return;
 
     //Load Quad vertices
-    m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_quadVerticesIndexed.data(),
-                                                          m_quadVerticesIndexed.size() *
-                                                          sizeof(float), TRAP::Graphics::UpdateFrequency::Static);
+    m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_quadVerticesIndexed, TRAP::Graphics::UpdateFrequency::Static);
     const TRAP::Graphics::VertexBufferLayout layout =
     {
         { TRAP::Graphics::ShaderDataType::Float3, "Pos" },
@@ -21,9 +19,7 @@ void ComputeTests::OnAttach()
     m_vertexBuffer->AwaitLoading();
 
     //Load Quad indices
-    m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_quadIndices.data(),
-                                                        m_quadIndices.size() *
-                                                        sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::Static);
+    m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_quadIndices, TRAP::Graphics::UpdateFrequency::Static);
     m_indexBuffer->AwaitLoading();
 
     //Load Texture

@@ -16,7 +16,7 @@ public:
 	}
 };
 
-std::unique_ptr<TRAP::Application> TRAP::CreateApplication([[maybe_unused]] const std::vector<std::string_view>& args)
+std::unique_ptr<TRAP::Application> TRAP::CreateApplication([[maybe_unused]] const std::span<const std::string_view> args)
 {
 	return std::make_unique<Sandbox>("Sandbox");
 }

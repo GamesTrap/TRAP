@@ -4497,3 +4497,11 @@ SITREP 10/05/2023|23w40b1
     - Added typedef for UUID (std::array<uint8_t, 16>) ~<5 mins
     - Resolved TODOs in CreatePipelineReflection() ~<10 mins
     - VulkanInits::SwapchainCreateInfoKHR() Removed unnecessary queueFamilyIndexCount parameter ~<5 mins
+
+SITREP 10/06/2023|23w40b2
+    - Changed TRAP Engine version to 23w40b2(0.9.110)
+    - Application CreateApplication() now uses std::span ~<5 mins
+    - VulkanInits PipelineCacheCreateInfo() now uses std::span ~<5 mins
+    - VertexBuffer Create() and SetData() now use std::span ~<10 mins
+    - IndexBuffer Create() and SetData() now use std::span ~<15 mins
+    - ImGuiLayer AddFontFromMemoryTTF() now uses std::span ~<5 mins

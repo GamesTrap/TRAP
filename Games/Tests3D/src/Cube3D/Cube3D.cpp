@@ -79,11 +79,9 @@ void Cube3D::OnAttach()
         20, 21, 22,
         22, 23, 20
     };
-    m_cubeVertexBuffer = TRAP::Graphics::VertexBuffer::Create(cubeVertices.data(),
-                                                              cubeVertices.size() * sizeof(float),
+    m_cubeVertexBuffer = TRAP::Graphics::VertexBuffer::Create(cubeVertices,
                                                               TRAP::Graphics::UpdateFrequency::Static);
-    m_cubeIndexBuffer = TRAP::Graphics::IndexBuffer::Create(cubeIndices.data(),
-                                                            cubeIndices.size() * sizeof(uint16_t),
+    m_cubeIndexBuffer = TRAP::Graphics::IndexBuffer::Create(cubeIndices,
                                                             TRAP::Graphics::UpdateFrequency::Static);
     const TRAP::Graphics::VertexBufferLayout cubeLayout =
     {
@@ -138,8 +136,7 @@ void Cube3D::OnAttach()
         -1.0f, -1.0f,  1.0f,
          1.0f, -1.0f,  1.0f
     };
-    m_skyBoxVertexBuffer = TRAP::Graphics::VertexBuffer::Create(skyBoxVertices.data(),
-                                                                skyBoxVertices.size() * sizeof(float),
+    m_skyBoxVertexBuffer = TRAP::Graphics::VertexBuffer::Create(skyBoxVertices,
                                                                 TRAP::Graphics::UpdateFrequency::Static);
     const TRAP::Graphics::VertexBufferLayout skyBoxLayout =
     {

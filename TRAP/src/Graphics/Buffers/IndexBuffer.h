@@ -72,16 +72,14 @@ namespace TRAP::Graphics
 		/// Update the buffers index data.
 		/// </summary>
 		/// <param name="indices">Pointer to the updated data.</param>
-		/// <param name="size">Size of the updated data.</param>
 		/// <param name="offset">Byte offset into the currently used index data.</param>
-		void SetData(const uint16_t* indices, uint64_t size, uint64_t offset = 0);
+		void SetData(std::span<const uint16_t> indices, uint64_t offset = 0);
 		/// <summary>
 		/// Update the buffers index data.
 		/// </summary>
 		/// <param name="indices">Pointer to the updated data.</param>
-		/// <param name="size">Size of the updated data.</param>
 		/// <param name="offset">Byte offset into the currently used index data.</param>
-		void SetData(const uint32_t* indices, uint64_t size, uint64_t offset = 0);
+		void SetData(std::span<const uint32_t> indices, uint64_t offset = 0);
 
 		/// <summary>
 		/// Check whether uploading data to the GPU has finished.
@@ -97,18 +95,16 @@ namespace TRAP::Graphics
 		/// Create a new index buffer and set its data.
 		/// </summary>
 		/// <param name="indices">Pointer to the data to upload.</param>
-		/// <param name="size">Byte size of the data to upload.</param>
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New index buffer.</returns>
-		[[nodiscard]] static Scope<IndexBuffer> Create(const uint16_t* indices, uint64_t size, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<IndexBuffer> Create(std::span<const uint16_t> indices, UpdateFrequency updateFrequency);
 		/// <summary>
 		/// Create a new index buffer and set its data.
 		/// </summary>
 		/// <param name="indices">Pointer to the data to upload.</param>
-		/// <param name="size">Byte size of the data to upload.</param>
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New index buffer.</returns>
-		[[nodiscard]] static Scope<IndexBuffer> Create(const uint32_t* indices, uint64_t size, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<IndexBuffer> Create(std::span<const uint32_t> indices, UpdateFrequency updateFrequency);
 		/// <summary>
 		/// Create a new index buffer and set its size.
 		/// </summary>
@@ -133,11 +129,10 @@ namespace TRAP::Graphics
 		/// Set new index buffer data.
 		/// </summary>
 		/// <param name="indices">Pointer to the data to upload.</param>
-		/// <param name="size">Byte size of the data to upload.</param>
 		/// <param name="offset">Byte offset into the currently used index data.</param>
-		template<typename T>
+		template<typename T, std::size_t Size = std::dynamic_extent>
 		requires std::same_as<T, std::uint16_t> || std::same_as<T, std::uint32_t>
-		void SetDataInternal(const T* indices, uint64_t size, uint64_t offset = 0);
+		void SetDataInternal(std::span<const T, Size> indices, uint64_t offset = 0);
 
 		TRAP::Ref<TRAP::Graphics::Buffer> m_indexBuffer = nullptr;
 
@@ -199,21 +194,21 @@ requires std::same_as<T, std::uint16_t> || std::same_as<T, std::uint32_t>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<typename T>
+template<typename T, std::size_t Size>
 requires std::same_as<T, std::uint16_t> || std::same_as<T, std::uint32_t>
-void TRAP::Graphics::IndexBuffer::SetDataInternal(const T* const indices, const uint64_t size,
+void TRAP::Graphics::IndexBuffer::SetDataInternal(const std::span<const T, Size> indices,
                                                   const uint64_t offset)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(indices, "IndexBuffer::SetDataInternal(): Indices is nullptr!");
-	TRAP_ASSERT(size + offset <= m_indexBuffer->GetSize(), "IndexBuffer::SetDataInternal(): Out of bounds!");
+	TRAP_ASSERT(!indices.empty(), "IndexBuffer::SetDataInternal(): Indices is empty!");
+	TRAP_ASSERT(indices.size_bytes() + offset <= m_indexBuffer->GetSize(), "IndexBuffer::SetDataInternal(): Out of bounds!");
 
 	RendererAPI::BufferUpdateDesc desc{};
 	desc.Buffer = m_indexBuffer;
 	desc.DstOffset = offset;
 	API::ResourceLoader::BeginUpdateResource(desc);
-	std::copy_n(indices, size / sizeof(T), static_cast<T*>(desc.MappedData));
+	std::copy_n(indices.data(), indices.size(), static_cast<T*>(desc.MappedData));
 	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_token);
 
 	if constexpr(std::same_as<T, uint16_t>)

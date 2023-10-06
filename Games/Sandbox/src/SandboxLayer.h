@@ -62,9 +62,7 @@ public:
 			 0.5f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f,    1.0f, 0.0f,
 			-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f,    0.0f, 0.0f
 		};
-		m_indexedVertexBuffer = TRAP::Graphics::VertexBuffer::Create(indexedVertices.data(),
-																	 indexedVertices.size() *
-																	 sizeof(uint32_t),
+		m_indexedVertexBuffer = TRAP::Graphics::VertexBuffer::Create(indexedVertices,
 																	 TRAP::Graphics::UpdateFrequency::Static);
 		m_indexedVertexBuffer->AwaitLoading();
 
@@ -80,10 +78,7 @@ public:
 		{
 			0, 1, 2, 2, 3, 0
 		};
-		m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(indices.data(),
-		                                                    indices.size() *
-															sizeof(uint16_t),
-															TRAP::Graphics::UpdateFrequency::Static);
+		m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(indices, TRAP::Graphics::UpdateFrequency::Static);
 		m_indexBuffer->AwaitLoading();
 
 		//Non-Indexed
@@ -100,9 +95,7 @@ public:
 			-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f,    0.0f, 0.0f,
 			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,    0.0f, 1.0f
 		};
-		m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(vertices.data(),
-		 													  vertices.size() *
-															  sizeof(uint32_t),
+		m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(vertices,
 															  TRAP::Graphics::UpdateFrequency::Static);
 		m_vertexBuffer->AwaitLoading();
 		m_vertexBuffer->SetLayout(layout);

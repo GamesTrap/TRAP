@@ -45,11 +45,9 @@ namespace TRAP::Utils::Decompress
 			/// BitReader reads byte data bit by bit.
 			/// </summary>
 			/// <param name="data">Data to read in bytes.</param>
-			/// <param name="size">Size of data in bytes.</param>
-			constexpr BitReader(const uint8_t* data, std::size_t size);
+			constexpr explicit BitReader(std::span<const uint8_t> data);
 
-			const uint8_t* Data;
-			std::size_t Size; //Size of data in bytes
+			std::span<const uint8_t> Data;
 			std::size_t BitSize{}; // Size of data in bits, end of valid BP values, should be 8 * size
 			std::size_t BP{};
 			uint32_t Buffer{}; //Buffer for reading bits.
@@ -267,8 +265,8 @@ namespace TRAP::Utils::Decompress
 		static constexpr uint16_t FirstLengthCodeIndex = 257;
 		static constexpr uint16_t LastLengthCodeIndex = 285;
 
-		[[nodiscard]] constexpr bool InflateNoCompression(std::vector<uint8_t>& out, std::size_t& pos, BitReader& reader);
-		[[nodiscard]] constexpr bool InflateHuffmanBlock(std::vector<uint8_t>& out, std::size_t& pos, BitReader& reader,
+		[[nodiscard]] constexpr bool InflateNoCompression(std::span<uint8_t> out, std::size_t& pos, BitReader& reader);
+		[[nodiscard]] constexpr bool InflateHuffmanBlock(std::span<uint8_t> out, std::size_t& pos, BitReader& reader,
 		                                                 uint32_t btype);
 	}
 
@@ -276,21 +274,18 @@ namespace TRAP::Utils::Decompress
 	/// Inflate algorithm.
 	/// </summary>
 	/// <param name="source">Source data in bytes.</param>
-	/// <param name="sourceLength">Source data length in bytes.</param>
 	/// <param name="destination">Destination where to put inflated data to.</param>
-	/// <param name="destinationLength">Destination data length in bytes.</param>
 	/// <returns>True on success, false otherwise.</returns>
-	[[nodiscard]] constexpr bool Inflate(const uint8_t* source, std::size_t sourceLength, uint8_t* destination,
-	                                     std::size_t destinationLength);
+	[[nodiscard]] constexpr bool Inflate(std::span<const uint8_t> source, std::span<uint8_t> destination);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Utils::Decompress::INTERNAL::BitReader::BitReader(const uint8_t* const data, const std::size_t size)
-	: Data(data), Size(size)
+constexpr TRAP::Utils::Decompress::INTERNAL::BitReader::BitReader(const std::span<const uint8_t> data)
+	: Data(data)
 {
 	std::size_t temp = 0;
-	if (MultiplyOverflow(size, 8u, BitSize))
+	if (MultiplyOverflow(data.size_bytes(), 8u, BitSize))
 		Error = true;
 	if (AddOverflow(BitSize, 64u, temp))
 		Error = true;
@@ -301,7 +296,7 @@ constexpr TRAP::Utils::Decompress::INTERNAL::BitReader::BitReader(const uint8_t*
 constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits9()
 {
 	const std::size_t start = BP >> 3u;
-	const std::size_t size = Size;
+	const std::size_t size = Data.size_bytes();
 	if (start + 1u < size)
 	{
 		Buffer = static_cast<uint32_t>(Data[start + 0]) | (static_cast<uint32_t>(Data[start + 1] << 8u));
@@ -321,7 +316,7 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits9()
 constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits17()
 {
 	const std::size_t start = BP >> 3u;
-	const std::size_t size = Size;
+	const std::size_t size = Data.size_bytes();
 	if (start + 2u < size)
 	{
 		Buffer = static_cast<uint32_t>(Data[start + 0]) | (static_cast<uint32_t>(Data[start + 1]) << 8u) |
@@ -344,7 +339,7 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits17()
 constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits25()
 {
 	const std::size_t start = BP >> 3u;
-	const std::size_t size = Size;
+	const std::size_t size = Data.size_bytes();
 	if (start + 3u < size)
 	{
 		Buffer = static_cast<uint32_t>(Data[start + 0]) | (static_cast<uint32_t>(Data[start + 1]) << 8u) |
@@ -369,7 +364,7 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits25()
 constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits32()
 {
 	const std::size_t start = BP >> 3u;
-	const std::size_t size = Size;
+	const std::size_t size = Data.size_bytes();
 	if (start + 4u < size)
 	{
 		Buffer = static_cast<uint32_t>(Data[start + 0]) | (static_cast<uint32_t>(Data[start + 1]) << 8u) |
@@ -899,10 +894,10 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr bool TRAP::Utils::Decompress::INTERNAL::InflateNoCompression(std::vector<uint8_t>& out, std::size_t& pos,
+[[nodiscard]] constexpr bool TRAP::Utils::Decompress::INTERNAL::InflateNoCompression(const std::span<uint8_t> out, std::size_t& pos,
                                                                                      BitReader& reader)
 {
-	const std::size_t size = reader.Size;
+	const std::size_t size = reader.Data.size_bytes();
 
 	//Go to first boundary of byte
 	std::size_t bytePos = (reader.BP + 7u) >> 3u;
@@ -921,13 +916,13 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 	if (LEN + NLEN != 65535)
 		return false; //Error: NLEN is not ones complement of LEN
 
-	out.resize(pos + LEN);
+	// out.resize(pos + LEN);
 
 	//Read the literal data: LEN bytes are now stored in the out buffer
 	if (bytePos + LEN > size)
 		return false; //Error: Reading outside of in buffer
 
-	std::copy_n(reader.Data + bytePos, LEN, out.data() + pos);
+	std::copy_n(reader.Data.data() + bytePos, LEN, out.data() + pos);
 	pos += LEN;
 	bytePos += LEN;
 
@@ -938,7 +933,7 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>& out, std::size_t& pos,
+[[nodiscard]] constexpr bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(const std::span<uint8_t> out, std::size_t& pos,
                                                                                     BitReader& reader, const uint32_t btype)
 {
 	HuffmanTree treeLL; //The Huffman tree for literal and length codes
@@ -966,7 +961,7 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 		if(codeLL <= 255)
 		{
 			//Slightly faster code path if multiple literals in a row
-			out.resize(pos + 1);
+			// out.resize(pos + 1);
 			out[pos] = static_cast<uint8_t>(codeLL);
 			++(pos);
 			codeLL = treeLL.DecodeSymbol(reader);
@@ -974,7 +969,7 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 
 		if(codeLL <= 255) //Literal symbol
 		{
-			out.resize(pos + 1);
+			// out.resize(pos + 1);
 			out[pos] = static_cast<uint8_t>(codeLL);
 			++(pos);
 		}
@@ -1023,7 +1018,7 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 			}
 			std::size_t backward = start - distance;
 
-			out.resize(pos + length);
+			// out.resize(pos + length);
 			if(distance < length)
 			{
 				std::copy_n(out.data() + backward, distance, out.data() + pos);
@@ -1057,14 +1052,12 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr bool TRAP::Utils::Decompress::Inflate(const uint8_t* const source, const std::size_t sourceLength, uint8_t* const destination,
-                                                              const std::size_t destinationLength)
+[[nodiscard]] constexpr bool TRAP::Utils::Decompress::Inflate(const std::span<const uint8_t> source,
+                                                              const std::span<uint8_t> destination)
 {
-	std::vector<uint8_t> result(destinationLength, 0);
-
 	uint32_t BFINAL = 0;
 	std::size_t pos = 0; //Byte position in the destination buffer
-	INTERNAL::BitReader reader(source, sourceLength);
+	INTERNAL::BitReader reader(source);
 	if (reader.Error)
 		return false;
 
@@ -1080,18 +1073,16 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 			return false; //Invalid BTYPE
 		if (BTYPE == 0)
 		{
-			if (!TRAP::Utils::Decompress::INTERNAL::InflateNoCompression(result, pos, reader))
+			if (!TRAP::Utils::Decompress::INTERNAL::InflateNoCompression(destination, pos, reader))
 				return false;
 		}
 		else
 		{
 			//Compression, BTYPE 01 or 10
-			if (!TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(result, pos, reader, BTYPE))
+			if (!TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(destination, pos, reader, BTYPE))
 				return false;
 		}
 	}
-
-	std::ranges::copy(result, destination);
 
 	return true;
 }

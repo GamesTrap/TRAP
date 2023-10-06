@@ -557,13 +557,15 @@ ImFont* ImGui::AddFontFromFileTTF(const std::string_view filename, const float s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ImFont* ImGui::AddFontFromMemoryTTF(void* const fontData, const int32_t fontSize, const float sizePixels,
+ImFont* ImGui::AddFontFromMemoryTTF(const std::span<const uint8_t> fontData, const float sizePixels,
 								    const ImFontConfig* const fontCfg, const ImWchar* const glyphRanges)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
 	//Add font like normally
-	ImFont* const font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(fontData, fontSize, sizePixels, fontCfg, glyphRanges);
+	ImFont* const font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(const_cast<uint8_t*>(fontData.data()),
+	                                                                NumericCast<int32_t>(fontData.size_bytes()),
+																	sizePixels, fontCfg, glyphRanges);
 
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 		ImGui::INTERNAL::Vulkan::UploadFontsTexture();

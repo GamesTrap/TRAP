@@ -262,9 +262,7 @@ void TRAP::Graphics::Renderer2DData::QuadData::Init()
 		offset += 4;
 	}
 
-	IndexBuffer = IndexBuffer::Create((*IndicesData).data(),
-										MaxQuadIndices * sizeof(uint32_t),
-										UpdateFrequency::Dynamic);
+	IndexBuffer = IndexBuffer::Create({IndicesData->data(), MaxQuadIndices}, UpdateFrequency::Dynamic);
 	IndexBuffer->AwaitLoading();
 }
 
@@ -378,11 +376,11 @@ uint32_t TRAP::Graphics::Renderer2DData::QuadData::DrawBuffers(UniformBuffer* ca
 		if(buffers.QuadCount == 0)
 			continue;
 
-		const uint32_t verticesSize = buffers.QuadCount * sizeof(TRAP::Graphics::Renderer2DData::QuadData::QuadVertex) * 4;
+		const uint32_t verticesSize = buffers.QuadCount * sizeof(TRAP::Graphics::Renderer2DData::QuadData::QuadVertex);
 		const uint32_t indicesCount = buffers.QuadCount * 6;
 
 		//Update Vertices
-		buffers.VertexBuffer->SetData(reinterpret_cast<float*>(buffers.Vertices.data()), verticesSize);
+		buffers.VertexBuffer->SetData({reinterpret_cast<const float*>(buffers.Vertices.data()), verticesSize});
 
 		//Use dynamic shader resources
 		Shader->UseTextures(1, 1, buffers.TextureSlots);
@@ -461,9 +459,7 @@ void TRAP::Graphics::Renderer2DData::CircleData::Init()
 	}
 
 	//This uses the same indices as for quads
-	IndexBuffer = IndexBuffer::Create((*IndicesData).data(),
-										MaxCircleIndices * sizeof(uint32_t),
-										UpdateFrequency::Dynamic);
+	IndexBuffer = IndexBuffer::Create({IndicesData->data(), MaxCircleIndices}, UpdateFrequency::Dynamic);
 	IndexBuffer->AwaitLoading();
 }
 
@@ -564,11 +560,11 @@ uint32_t TRAP::Graphics::Renderer2DData::CircleData::DrawBuffers(UniformBuffer* 
 		if(buffers.CircleCount == 0)
 			continue;
 
-		const uint32_t verticesSize = buffers.CircleCount * sizeof(TRAP::Graphics::Renderer2DData::CircleData::CircleVertex) * 4;
+		const uint32_t verticesSize = buffers.CircleCount * sizeof(TRAP::Graphics::Renderer2DData::CircleData::CircleVertex);
 		const uint32_t indicesCount = buffers.CircleCount * 6;
 
 		//Update Vertices
-		buffers.VertexBuffer->SetData(reinterpret_cast<float*>(buffers.Vertices.data()), verticesSize);
+		buffers.VertexBuffer->SetData({reinterpret_cast<const float*>(buffers.Vertices.data()), verticesSize});
 
 		//Use dynamic shader resources
 		Shader->UseUBO(1, 0, camera);
@@ -700,12 +696,12 @@ uint32_t TRAP::Graphics::Renderer2DData::LineData::DrawBuffers(UniformBuffer* ca
 		if(buffers.LineCount == 0)
 			continue;
 
-		const uint32_t verticesSize = buffers.LineCount * sizeof(TRAP::Graphics::Renderer2DData::LineData::LineVertex) * 2;
+		const uint32_t verticesSize = buffers.LineCount * sizeof(TRAP::Graphics::Renderer2DData::LineData::LineVertex);
 
 		TRAP::Graphics::RenderCommand::SetPrimitiveTopology(TRAP::Graphics::PrimitiveTopology::LineList);
 
 		//Update Vertices
-		buffers.VertexBuffer->SetData(reinterpret_cast<float*>(buffers.Vertices.data()), verticesSize);
+		buffers.VertexBuffer->SetData({reinterpret_cast<const float*>(buffers.Vertices.data()), verticesSize});
 
 		//Use dynamic shader resources
 		Shader->UseUBO(1, 0, camera);

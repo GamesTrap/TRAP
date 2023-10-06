@@ -144,7 +144,7 @@ namespace TRAP::Network
 		{
 			uint32_t Size = 0; //Data of packet size
 			std::size_t SizeReceived = 0; //Number of size bytes received so far
-			std::vector<char> Data{}; //Data of the packet
+			std::vector<uint8_t> Data{}; //Data of the packet
 		};
 
 		PendingPacket m_pendingPacket; //Temporary data of the packet currently being received

@@ -5,12 +5,12 @@
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Buffer.h"
 
-[[nodiscard]] TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(const float* const vertices, const uint64_t size,
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(const std::span<const float> vertices,
                                                                                              const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	return Init(vertices, size, updateFrequency);
+	return Init(vertices.data(), vertices.size_bytes(), updateFrequency);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -71,18 +71,18 @@ void TRAP::Graphics::VertexBuffer::Use() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VertexBuffer::SetData(const float* const data, const uint64_t size, const uint64_t offset)
+void TRAP::Graphics::VertexBuffer::SetData(const std::span<const float> data, const uint64_t offset)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(data, "VertexBuffer::SetData(): Data is nullptr!");
-	TRAP_ASSERT(size + offset <= m_vertexBuffer->GetSize(), "VertexBuffer::SetData(): Out of bounds!");
+	TRAP_ASSERT(!data.empty(), "VertexBuffer::SetData(): Data is nullptr!");
+	TRAP_ASSERT(data.size_bytes() + offset <= m_vertexBuffer->GetSize(), "VertexBuffer::SetData(): Out of bounds!");
 
 	RendererAPI::BufferUpdateDesc desc{};
 	desc.Buffer = m_vertexBuffer;
 	desc.DstOffset = offset;
 	API::ResourceLoader::BeginUpdateResource(desc);
-	std::copy_n(data, size / sizeof(float), static_cast<float*>(desc.MappedData));
+	std::copy_n(data.data(), data.size(), static_cast<float*>(desc.MappedData));
 	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_token);
 }
 

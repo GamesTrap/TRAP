@@ -120,7 +120,7 @@ namespace TRAP::Network
 		[[nodiscard]] Status Receive(Packet& packet, IPv6Address& remoteAddress, uint16_t& remotePort);
 
 	private:
-		std::vector<char> m_buffer; //Temporary buffer holding the received data in Receive(Packet)
+		std::vector<uint8_t> m_buffer; //Temporary buffer holding the received data in Receive(Packet)
 	};
 }
 

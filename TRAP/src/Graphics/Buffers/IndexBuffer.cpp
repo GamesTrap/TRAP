@@ -4,22 +4,22 @@
 #include "Graphics/API/Objects/Buffer.h"
 #include "VertexBufferLayout.h"
 
-[[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const uint32_t* const indices, const uint64_t size,
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const std::span<const uint32_t> indices,
                                                                                            const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	return Init<uint32_t>(indices, size, updateFrequency);
+	return Init<uint32_t>(indices.data(), indices.size_bytes(), updateFrequency);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const uint16_t* const indices, const uint64_t size,
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const std::span<const uint16_t> indices,
                                                                                            const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	return Init<uint16_t>(indices, size, updateFrequency);
+	return Init<uint16_t>(indices.data(), indices.size_bytes(), updateFrequency);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -64,20 +64,20 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::IndexBuffer::SetData(const uint16_t* const indices, const uint64_t size, const uint64_t offset)
+void TRAP::Graphics::IndexBuffer::SetData(const std::span<const uint16_t> indices, const uint64_t offset)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	SetDataInternal(indices, size, offset);
+	SetDataInternal(indices, offset);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::IndexBuffer::SetData(const uint32_t* const indices, const uint64_t size, const uint64_t offset)
+void TRAP::Graphics::IndexBuffer::SetData(const std::span<const uint32_t> indices, const uint64_t offset)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	SetDataInternal(indices, size, offset);
+	SetDataInternal(indices, offset);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

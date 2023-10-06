@@ -486,7 +486,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="data">Vulkan pipeline cache data.</param>
 	/// <param name="flags">Vulkan pipeline cache create flags.</param>
 	/// <returns>VkPipelineCacheCreateInfo.</returns>
-	[[nodiscard]] constexpr VkPipelineCacheCreateInfo PipelineCacheCreateInfo(const std::vector<uint8_t>& data,
+	[[nodiscard]] constexpr VkPipelineCacheCreateInfo PipelineCacheCreateInfo(std::span<const uint8_t> data,
 	                                                                          VkPipelineCacheCreateFlags flags) noexcept;
 
 	/// <summary>
@@ -996,7 +996,7 @@ namespace TRAP::Graphics::API::VulkanInits
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkPipelineCacheCreateInfo TRAP::Graphics::API::VulkanInits::PipelineCacheCreateInfo(const std::vector<uint8_t>& data,
+[[nodiscard]] constexpr VkPipelineCacheCreateInfo TRAP::Graphics::API::VulkanInits::PipelineCacheCreateInfo(const std::span<const uint8_t> data,
 	                                                                                                        const VkPipelineCacheCreateFlags flags) noexcept
 {
 	return VkPipelineCacheCreateInfo

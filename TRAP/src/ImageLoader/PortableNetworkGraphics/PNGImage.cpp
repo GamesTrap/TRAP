@@ -232,9 +232,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 		decompressedData.resize(expectedSize);
 	}
 
-	if (!DecompressData(data.CompressedData.data(),
-	                    data.CompressedData.size(), decompressedData.data(),
-						decompressedData.size()))
+	if (!DecompressData(data.CompressedData, decompressedData))
 	{
 		decompressedData.clear();
 		return;
@@ -842,14 +840,12 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::INTERNAL::PNGImage::DecompressData(const uint8_t* const source,
-                                                            const std::size_t sourceLength,
-															uint8_t* const destination,
-										                    const std::size_t destinationLength)
+[[nodiscard]] bool TRAP::INTERNAL::PNGImage::DecompressData(const std::span<const uint8_t> source,
+															const std::span<uint8_t> destination)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
-	if (sourceLength < 2)
+	if (source.size_bytes() < 2)
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "Compressed zlib data is too small!");
 		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
@@ -884,14 +880,14 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 		return false; //Error: The PNG specification says that the zlib stream should not specify a preset dictionary in the additional flags!
 	}
 
-	if (!Utils::Decompress::Inflate(source + 2, sourceLength - 2, destination, destinationLength))
+	if (!Utils::Decompress::Inflate(source.subspan<2>(), destination))
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "Decompression failed! Inflate error!");
 		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
 		return false;
 	}
 
-	const uint8_t* const buf = &source[sourceLength - 4];
+	const uint8_t* const buf = &source[source.size_bytes() - 4];
 	const std::array<uint8_t, 4> adler32 =
 	{
 		buf[0],
@@ -899,7 +895,7 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 		buf[2],
 		buf[3]
 	};
-	const std::array<uint8_t, 4> checksum = Utils::Hash::Adler32(destination, destinationLength);
+	const std::array<uint8_t, 4> checksum = Utils::Hash::Adler32(destination.data(), destination.size_bytes());
 
 	if(checksum != adler32)
 	{

@@ -501,7 +501,7 @@ namespace TRAP
 	/// IT MUST BE IMPLEMENTED BY ANY CLIENT!
 	/// </summary>
 	/// <returns>A unique pointer containing a TRAP::Application</returns>
-	extern std::unique_ptr<Application> CreateApplication(const std::vector<std::string_view>& args);
+	extern std::unique_ptr<Application> CreateApplication(std::span<const std::string_view> args);
 }
 
 #endif /*TRAP_APPLICATION_H*/

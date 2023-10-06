@@ -240,7 +240,7 @@ namespace TRAP::Network
 		/// <returns>True if size bytes can be read from the packet.</returns>
 		[[nodiscard]] constexpr bool CheckSize(std::size_t size) noexcept;
 
-		std::vector<char> m_data{}; //Data stored in the packet
+		std::vector<uint8_t> m_data{}; //Data stored in the packet
 		std::size_t m_readPos = 0;  //Current reading position in the packet
 		std::size_t m_sendPos = 0;  //Current send position in the packet (for handling partial sends)
 		bool m_isValid = true;      //Reading state of the packet
@@ -256,7 +256,7 @@ constexpr void TRAP::Network::Packet::Append(const void* const data, const std::
 
 	const auto start = std::ssize(m_data);
 	m_data.resize(m_data.size() + sizeInBytes);
-	std::copy_n(static_cast<const char*>(data), sizeInBytes, std::next(m_data.begin(), start));
+	std::copy_n(static_cast<const uint8_t*>(data), sizeInBytes, std::next(m_data.begin(), start));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -509,7 +509,7 @@ constexpr TRAP::Network::Packet& TRAP::Network::Packet::operator>>(std::string& 
 	if((length > 0) && CheckSize(length))
 	{
 		//Then extract characters
-		data.assign(&m_data[m_readPos], length);
+		data.assign(reinterpret_cast<const char*>(&m_data[m_readPos]), length);
 
 		//Update reading position
 		m_readPos += length;

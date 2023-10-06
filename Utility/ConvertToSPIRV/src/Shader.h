@@ -10,6 +10,7 @@
 
 #include <array>
 #include <string>
+#include <span>
 
 #include "Utils.h"
 
@@ -451,7 +452,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline constexpr bool CheckShaderMagicNumber(const std::vector<uint8_t>& shaderData)
+[[nodiscard]] inline constexpr bool CheckShaderMagicNumber(const std::span<const uint8_t> shaderData)
 {
 	return (shaderData.size() >= MagicNumber.size() &&
 	        std::string_view(reinterpret_cast<const char*>(shaderData.data()), MagicNumber.size()) == MagicNumber);
@@ -459,7 +460,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline bool ParseTPSPVShader(const std::vector<uint8_t>& shaderData, Shader& outShader, uint32_t& outVersion)
+[[nodiscard]] inline bool ParseTPSPVShader(const std::span<const uint8_t> shaderData, Shader& outShader, uint32_t& outVersion)
 {
 	if(shaderData.size() <= (MagicNumber.size() + sizeof(VersionNumber) + sizeof(uint8_t)))
 	{

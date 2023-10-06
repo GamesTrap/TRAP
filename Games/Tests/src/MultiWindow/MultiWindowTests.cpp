@@ -34,9 +34,7 @@ void MultiWindowTests::OnAttach()
 	}
 
 	//Load Triangle vertices
-	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(TriangleVertices.data(),
-	                                                      TriangleVertices.size() *
-														  sizeof(float), TRAP::Graphics::UpdateFrequency::Static);
+	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(TriangleVertices, TRAP::Graphics::UpdateFrequency::Static);
 	const TRAP::Graphics::VertexBufferLayout layout =
 	{
 		{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
@@ -47,9 +45,7 @@ void MultiWindowTests::OnAttach()
 	m_vertexBuffer->Use();
 
 	//Load Triangle indices
-	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(TriangleIndices.data(),
-	                                                    TriangleIndices.size() *
-														sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::Static);
+	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(TriangleIndices, TRAP::Graphics::UpdateFrequency::Static);
 	m_indexBuffer->AwaitLoading();
 	m_indexBuffer->Use();
 

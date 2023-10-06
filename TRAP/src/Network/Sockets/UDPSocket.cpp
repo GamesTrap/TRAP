@@ -119,7 +119,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(const void* const d
 	const sockaddr finalAddress = std::bit_cast<sockaddr>(address);
 
 	//Send the data (unlike TCP, all the data is always sent in one call)
-	const int64_t sent = sendto(GetHandle(), static_cast<const char*>(data), size, 0,
+	const int64_t sent = sendto(GetHandle(), static_cast<const uint8_t*>(data), size, 0,
 	                            &finalAddress, sizeof(sockaddr_in));
 
 	//Check for errors
@@ -156,7 +156,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* const data
 
 	//Receive a chunk of bytes
 	INTERNAL::Network::SocketImpl::AddressLength addressSize = sizeof(sockaddr_in);
-	const int64_t sizeReceived = recvfrom(GetHandle(), static_cast<char*>(data), size, 0,
+	const int64_t sizeReceived = recvfrom(GetHandle(), static_cast<uint8_t*>(data), size, 0,
 	                                      &convertedAddress, &addressSize);
 
 	//Check for errors

@@ -12,9 +12,7 @@ void IcoSphereTests::OnAttach()
 	TRAP::Application::GetWindow()->SetTitle("IcoSphere");
 
 	//Load Icosphere vertices
-	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_icoSphereVerticesIndexed.data(),
-		                                                  m_icoSphereVerticesIndexed.size() *
-														  sizeof(float), TRAP::Graphics::UpdateFrequency::Static);
+	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_icoSphereVerticesIndexed, TRAP::Graphics::UpdateFrequency::Static);
 	const TRAP::Graphics::VertexBufferLayout layout =
 	{
 		{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
@@ -25,9 +23,7 @@ void IcoSphereTests::OnAttach()
 	m_vertexBuffer->Use();
 
 	//Load Icosphere indices
-	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(IcosphereIndices.data(),
-	                                                    IcosphereIndices.size() *
-														sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::Static);
+	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(IcosphereIndices, TRAP::Graphics::UpdateFrequency::Static);
 	m_indexBuffer->AwaitLoading();
 	m_indexBuffer->Use();
 

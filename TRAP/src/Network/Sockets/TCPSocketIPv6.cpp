@@ -230,7 +230,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(const void* con
 	for(sent = 0; sent < size; sent += NumericCast<std::size_t>(result))
 	{
 		//Send a chunk of data
-		result = ::send(GetHandle(), static_cast<const char*>(data) + sent, size - sent, flags);
+		result = ::send(GetHandle(), static_cast<const uint8_t*>(data) + sent, size - sent, flags);
 
 		//Check for errors
 		if(result < 0)
@@ -266,7 +266,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(void* const 
 	}
 
 	//Receive a chunk of bytes
-	const int64_t sizeReceived = recv(GetHandle(), static_cast<char*>(data), size, flags);
+	const int64_t sizeReceived = recv(GetHandle(), static_cast<uint8_t*>(data), size, flags);
 
 	//Check the number of bytes received
 	if (sizeReceived > 0)
@@ -306,7 +306,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(Packet& packet)
 		TRAP::Utils::Memory::SwapBytes(packetSize);
 
 	//Allocate memory for the data block to send
-	std::vector<char> blockToSend(sizeof(packetSize) + size);
+	std::vector<uint8_t> blockToSend(sizeof(packetSize) + size);
 
 	//Copy the packet size and data into the block to send
 	std::copy_n(reinterpret_cast<const uint8_t*>(&packetSize), sizeof(packetSize), blockToSend.data());
@@ -344,7 +344,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(Packet& pack
 		//(event a 4 byte variable may be received in more than one call)
 		while(m_pendingPacket.SizeReceived < sizeof(m_pendingPacket.Size))
 		{
-			char* const data = reinterpret_cast<char*>(&m_pendingPacket.Size) + m_pendingPacket.SizeReceived;
+			uint8_t* const data = reinterpret_cast<uint8_t*>(&m_pendingPacket.Size) + m_pendingPacket.SizeReceived;
 			const Status status = Receive(data, sizeof(m_pendingPacket.Size) - m_pendingPacket.SizeReceived,
 			                              received);
 			m_pendingPacket.SizeReceived += received;
@@ -367,7 +367,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(Packet& pack
 	}
 
 	//Loop until we receive all the packet data
-	std::array<char, 1024> buffer{};
+	std::array<uint8_t, 1024> buffer{};
 	while(m_pendingPacket.Data.size() < packetSize)
 	{
 		//Receive a chunk of data
@@ -381,7 +381,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(Packet& pack
 		if(received > 0)
 		{
 			m_pendingPacket.Data.resize(m_pendingPacket.Data.size() + received);
-			char* const begin = m_pendingPacket.Data.data() + m_pendingPacket.Data.size() - received;
+			uint8_t* const begin = m_pendingPacket.Data.data() + m_pendingPacket.Data.size() - received;
 			std::copy_n(buffer.data(), received, begin);
 		}
 	}

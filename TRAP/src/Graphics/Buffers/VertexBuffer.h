@@ -69,9 +69,8 @@ namespace TRAP::Graphics
 		/// Update the buffers vertex data.
 		/// </summary>
 		/// <param name="data">Pointer to the updated data.</param>
-		/// <param name="size">Size of the updated data.</param>
 		/// <param name="offset">Byte offset into the currently used vertex data.</param>
-		void SetData(const float* data, uint64_t size, uint64_t offset = 0);
+		void SetData(std::span<const float> data, uint64_t offset = 0);
 
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -100,10 +99,9 @@ namespace TRAP::Graphics
 		/// Create a new vertex buffer and set its data.
 		/// </summary>
 		/// <param name="vertices">Pointer to the data to upload.</param>
-		/// <param name="size">Byte size of the data to upload.</param>
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New vertex buffer.</returns>
-		[[nodiscard]] static Scope<VertexBuffer> Create(const float* vertices, uint64_t size, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<VertexBuffer> Create(std::span<const float> vertices, UpdateFrequency updateFrequency);
 		/// <summary>
 		/// Create a new vertex buffer and set its size.
 		/// </summary>

@@ -12,9 +12,8 @@ void RendererAPITests::OnAttach()
 	TRAP::Application::GetWindow()->SetTitle("RendererAPI Test");
 
 	//Load Triangle vertices (with enough space for a quad)
-	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(TriangleVertices.data(),
-	                                                      QuadVertices.size() *
-														  sizeof(float), TRAP::Graphics::UpdateFrequency::Dynamic);
+	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create({TriangleVertices.data(), QuadVertices.size()},
+	                                                      TRAP::Graphics::UpdateFrequency::Dynamic);
 	const TRAP::Graphics::VertexBufferLayout layout =
 	{
 		{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
@@ -25,9 +24,8 @@ void RendererAPITests::OnAttach()
 	m_vertexBuffer->Use();
 
 	//Load Triangle indices (with enough space for a quad)
-	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(TriangleIndices.data(),
-	                                                    QuadIndices.size() *
-														sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::Dynamic);
+	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create({TriangleIndices.data(), QuadIndices.size()},
+	                                                    TRAP::Graphics::UpdateFrequency::Dynamic);
 	m_indexBuffer->AwaitLoading();
 	m_indexBuffer->Use();
 
@@ -66,19 +64,18 @@ void RendererAPITests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 
 	if(!m_quad)
 	{
-		m_vertexBuffer->SetData(TriangleVertices.data(), TriangleVertices.size() * sizeof(float));
+		m_vertexBuffer->SetData(TriangleVertices);
 		if (m_indexed)
-			m_indexBuffer->SetData(TriangleIndices.data(), TriangleIndices.size() * sizeof(uint16_t));
+			m_indexBuffer->SetData(TriangleIndices);
 	}
 	else
 	{
 		if(!m_indexed)
-			m_vertexBuffer->SetData(QuadVertices.data(), QuadVertices.size() * sizeof(float));
+			m_vertexBuffer->SetData(QuadVertices);
 		else
 		{
-			m_vertexBuffer->SetData(QuadVerticesIndexed.data(),
-			                        QuadVerticesIndexed.size() * sizeof(float));
-			m_indexBuffer->SetData(QuadIndices.data(), QuadIndices.size() * sizeof(uint16_t));
+			m_vertexBuffer->SetData(QuadVerticesIndexed);
+			m_indexBuffer->SetData(QuadIndices);
 			const TRAP::Graphics::VertexBufferLayout layoutUV =
 			{
 				{TRAP::Graphics::ShaderDataType::Float3, "Pos"},

@@ -173,12 +173,11 @@ namespace ImGui
 	/// Add a TTF font to ImGui from memory.
 	/// </summary>
 	/// <param name="fontData">Pointer to TTF data.</param>
-	/// <param name="fontSize">Size of the TTF data.</param>
 	/// <param name="sizePixels">Font size in pixels.</param>
 	/// <param name="fontCfg">Font configuration.</param>
 	/// <param name="glyphRanges">Glyph ranges.</param>
 	/// <returns>Pointer to the new font.</returns>
-	ImFont* AddFontFromMemoryTTF(void* fontData, int32_t fontSize, float sizePixels,
+	ImFont* AddFontFromMemoryTTF(std::span<const uint8_t> fontData, float sizePixels,
 							     const ImFontConfig* fontCfg = nullptr,
 							     const ImWchar* glyphRanges = nullptr);
 
