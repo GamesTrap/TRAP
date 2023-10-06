@@ -4505,3 +4505,7 @@ SITREP 10/06/2023|23w40b2
     - VertexBuffer Create() and SetData() now use std::span ~<10 mins
     - IndexBuffer Create() and SetData() now use std::span ~<15 mins
     - ImGuiLayer AddFontFromMemoryTTF() now uses std::span ~<5 mins
+
+SITREP 10/07/2023|23w40b3
+    - Changed TRAP Engine version to 23w40b3(0.9.111)
+    - Updated DBus implementation ~<30 mins

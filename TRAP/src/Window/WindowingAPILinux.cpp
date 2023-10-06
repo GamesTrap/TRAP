@@ -40,96 +40,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Utils/Time/TimeStep.h"
 #include "Utils/DynamicLoading/DynamicLoading.h"
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::LoadDBus()
-{
-    s_Data.DBUS.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libdbus-1.so.3");
-    if(s_Data.DBUS.Handle == nullptr)
-        InputError(Error::Platform_Error, "[DBus] Failed to load DBus");
-    else
-    {
-        s_Data.DBUS.ErrorInit = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_DBusErrorInit>(s_Data.DBUS.Handle, "dbus_error_init");
-        s_Data.DBUS.ErrorIsSet = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_DBusErrorIsSet>(s_Data.DBUS.Handle, "dbus_error_is_set");
-        s_Data.DBUS.ErrorFree = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_DBusErrorFree>(s_Data.DBUS.Handle, "dbus_error_free");
-        s_Data.DBUS.ConnectionUnref = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_DBusConnectionUnref>(s_Data.DBUS.Handle, "dbus_connection_unref");
-        s_Data.DBUS.ConnectionSend = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_DBusConnectionSend>(s_Data.DBUS.Handle, "dbus_connection_send");
-        s_Data.DBUS.ConnectionFlush = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_DBusConnectionFlush>(s_Data.DBUS.Handle, "dbus_connection_flush");
-        s_Data.DBUS.BusRequestName = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_DBusBusRequestName>(s_Data.DBUS.Handle, "dbus_bus_request_name");
-        s_Data.DBUS.BusGet = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_DBusBusGet>(s_Data.DBUS.Handle, "dbus_bus_get");
-        s_Data.DBUS.MessageUnref = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_DBusMessageUnref>(s_Data.DBUS.Handle, "dbus_message_unref");
-        s_Data.DBUS.MessageNewSignal = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_DBusMessageNewSignal>(s_Data.DBUS.Handle, "dbus_message_new_signal");
-        s_Data.DBUS.MessageIterInitAppend = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_DBusMessageIterInitAppend>(s_Data.DBUS.Handle, "dbus_message_iter_init_append");
-        s_Data.DBUS.MessageIterAppendBasic = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_DBusMessageIterAppendBasic>(s_Data.DBUS.Handle, "dbus_message_iter_append_basic");
-        s_Data.DBUS.MessageIterOpenContainer = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_DBusMessageIterOpenContainer>(s_Data.DBUS.Handle, "dbus_message_iter_open_container");
-        s_Data.DBUS.MessageIterCloseContainer = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_DBusMessageIterCloseContainer>(s_Data.DBUS.Handle, "dbus_message_iter_close_container");
-
-        //Connect to session bus
-        s_Data.DBUS.ErrorInit(&s_Data.DBUS.Error);
-        s_Data.DBUS.Connection = s_Data.DBUS.BusGet(DBusBusType::DBUS_BUS_SESSION, &s_Data.DBUS.Error);
-
-        if((s_Data.DBUS.ErrorIsSet(&s_Data.DBUS.Error) != 0u) || (s_Data.DBUS.Connection == nullptr)) //Check for errors
-        {
-            if(s_Data.DBUS.ErrorIsSet(&s_Data.DBUS.Error) != 0u)
-            {
-                InputError(Error::Platform_Error, fmt::format("[DBus] Failed to connect to D-Bus: {}", s_Data.DBUS.Error.message));
-                s_Data.DBUS.ErrorFree(&s_Data.DBUS.Error);
-            }
-            else
-                InputError(Error::Platform_Error, "[DBus] Failed to connect to D-Bus");
-
-            // ::dbus_connection_close() //Do not do this for shared connection
-            s_Data.DBUS.ConnectionUnref(s_Data.DBUS.Connection); //Just unref the connection
-            s_Data.DBUS.Connection = nullptr;
-        }
-        else
-        {
-            //Request name on bus
-            const int32_t ret = s_Data.DBUS.BusRequestName(s_Data.DBUS.Connection, "com.trap", DBUS_NAME_FLAG_REPLACE_EXISTING, &s_Data.DBUS.Error);
-
-            if((s_Data.DBUS.ErrorIsSet(&s_Data.DBUS.Error) != 0u) || ret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER)
-            {
-                if(s_Data.DBUS.ErrorIsSet(&s_Data.DBUS.Error) != 0u)
-                {
-                    InputError(Error::Platform_Error, fmt::format("[DBus] Failed to request D-Bus name: {}", s_Data.DBUS.Error.message));
-                    s_Data.DBUS.ErrorFree(&s_Data.DBUS.Error);
-                }
-                else
-                    InputError(Error::Platform_Error, "[DBus] Failed to request D-Bus name");
-
-                // ::dbus_connection_close() //Do not do this for shared connection
-                s_Data.DBUS.ConnectionUnref(s_Data.DBUS.Connection); //Just unref the connection
-                s_Data.DBUS.Connection = nullptr;
-            }
-        }
-
-        //Clear existing progress from bus
-        if(s_Data.DBUS.Connection != nullptr)
-            SetProgressIndicator(ProgressState::Disabled, 0.0);
-    }
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::UnloadDBus()
-{
-    if(s_Data.DBUS.Handle == nullptr)
-        return;
-
-    if(s_Data.DBUS.Connection != nullptr)
-    {
-        // ::dbus_connection_close() //Do not do this for shared connection
-        s_Data.DBUS.ConnectionUnref(s_Data.DBUS.Connection); //Just unref the connection
-        s_Data.DBUS.Connection = nullptr;
-    }
-
-    TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.DBUS.Handle);
-    s_Data.DBUS.Handle = nullptr;
-    s_Data.DBUS = {};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 std::optional<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::PlatformGetVideoMode(const InternalMonitor& monitor)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
@@ -217,7 +127,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
-    LoadDBus();
+    InitDBusPOSIX();
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         return PlatformInitX11();
@@ -245,7 +155,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdown()
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
-    UnloadDBus();
+    TerminateDBusPOSIX();
 
     if(Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
         PlatformShutdownX11();

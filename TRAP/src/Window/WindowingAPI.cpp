@@ -367,6 +367,8 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 		return nullptr;
 	}
 
+	const bool shouldResetProgressIndicator = s_Data.WindowList.empty();
+
 	if(width <= 0 || height <= 0)
 	{
 		InputError(Error::Invalid_Value, fmt::format(" Invalid window size: {}x{}", width, height));
@@ -409,6 +411,9 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 		DestroyWindow(window);
 		return nullptr;
 	}
+
+	if(shouldResetProgressIndicator)
+		PlatformSetWindowProgressIndicator(*window, ProgressState::Disabled, 0.0);
 
 	return window;
 }
@@ -1574,7 +1579,7 @@ void TRAP::INTERNAL::WindowingAPI::SetRawMouseMotionMode(InternalWindow& window,
 
 void TRAP::INTERNAL::WindowingAPI::SetWindowProgressIndicator(const InternalWindow& window,
                                                               const ProgressState state,
-											                  const double progress)
+											                  double progress)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -1582,6 +1587,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowProgressIndicator(const InternalWind
 	            "WindowingAPI::SetWindowProgressIndicator(): must only be called from main thread");
 	TRAP_ASSERT(progress >= 0.0, "WindowingAPI::SetWindowProgressIndicator(): Progress must be between 0.0 and 1.0");
 	TRAP_ASSERT(progress <= 1.0, "WindowingAPI::SetWindowProgressIndicator(): Progress must be between 0.0 and 1.0");
+
+	progress = TRAP::Math::Clamp(progress, 0.0, 1.0);
 
 	PlatformSetWindowProgressIndicator(window, state, progress);
 }

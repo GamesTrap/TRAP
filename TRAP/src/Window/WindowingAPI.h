@@ -643,10 +643,10 @@ namespace TRAP::INTERNAL
 		enum class ProgressState
 		{
 			Disabled = 0,
-			Indeterminate,
-			Normal,
-			Error,
-			Paused
+			Indeterminate = 0x1,
+			Normal = 0x2,
+			Error = 0x4,
+			Paused = 0x8
 		};
 	private:
 		//-------//
@@ -735,12 +735,23 @@ namespace TRAP::INTERNAL
 #ifdef TRAP_PLATFORM_LINUX
 		inline static constexpr uint32_t DBUS_NAME_FLAG_REPLACE_EXISTING = 0x2;
 		inline static constexpr uint32_t DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER = 1;
-		inline static constexpr uint32_t DBUS_TYPE_STRING = NumericCast<uint32_t>('s');
-		inline static constexpr uint32_t DBUS_TYPE_ARRAY = NumericCast<uint32_t>('a');
-		inline static constexpr uint32_t DBUS_TYPE_DICT_ENTRY = NumericCast<uint32_t>('e');
-		inline static constexpr uint32_t DBUS_TYPE_VARIANT = NumericCast<uint32_t>('v');
-		inline static constexpr uint32_t DBUS_TYPE_BOOLEAN = NumericCast<uint32_t>('b');
-		inline static constexpr uint32_t DBUS_TYPE_DOUBLE = NumericCast<uint32_t>('d');
+		inline static constexpr int32_t DBUS_TYPE_STRING = NumericCast<int32_t>('s');
+		inline static constexpr int32_t DBUS_TYPE_ARRAY = NumericCast<int32_t>('a');
+		inline static constexpr int32_t DBUS_TYPE_DICT_ENTRY = NumericCast<int32_t>('e');
+		inline static constexpr int32_t DBUS_TYPE_VARIANT = NumericCast<int32_t>('v');
+		inline static constexpr int32_t DBUS_TYPE_BOOLEAN = NumericCast<int32_t>('b');
+		inline static constexpr int32_t DBUS_TYPE_DOUBLE = NumericCast<int32_t>('d');
+		inline static constexpr int32_t DBUS_TYPE_INT16 = NumericCast<int32_t>('n');
+		inline static constexpr int32_t DBUS_TYPE_UINT16 = NumericCast<int32_t>('q');
+		inline static constexpr int32_t DBUS_TYPE_INT32 = NumericCast<int32_t>('i');
+		inline static constexpr int32_t DBUS_TYPE_UINT32 = NumericCast<int32_t>('u');
+		inline static constexpr int32_t DBUS_TYPE_INT64 = NumericCast<int32_t>('x');
+		inline static constexpr int32_t DBUS_TYPE_UINT64 = NumericCast<int32_t>('t');
+		inline static constexpr int32_t DBUS_TYPE_STRUCT_OPEN = NumericCast<int32_t>('(');
+		inline static constexpr int32_t DBUS_TYPE_STRUCT_CLOSE = NumericCast<int32_t>(')');
+		inline static constexpr int32_t DBUS_TYPE_BYTE = NumericCast<int32_t>('y');
+		inline static constexpr int32_t DBUS_TYPE_OBJECT_PATH = NumericCast<int32_t>('o');
+		inline static constexpr int32_t DBUS_TYPE_SIGNATURE = NumericCast<int32_t>('g');
 #endif /*TRAP_PLATFORM_LINUX*/
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Structs------------------------------------------------------------------------------------------------------------//
@@ -1508,6 +1519,11 @@ namespace TRAP::INTERNAL
 
 				DBusConnection* Connection = nullptr;
 				DBusError Error{};
+
+				std::string DesktopFilePath{};
+				std::string FullExecutableName{};
+				std::string LegalExecutableName{};
+				std::string SignalName{};
 			} DBUS;
 #endif
 		};
@@ -4733,14 +4749,21 @@ namespace TRAP::INTERNAL
 		//Linux(X11/Wayland)//
 		//------------------//
 #elif defined(TRAP_PLATFORM_LINUX)
-		/// <summary>
-		/// Load the DBus shared library functions.
-		/// </summary>
-		static void LoadDBus();
-		/// <summary>
-		/// Unload the DBus shared library functions.
-		/// </summary>
-		static void UnloadDBus();
+		static void InitDBusPOSIX();
+		static void CacheSignalNameDBusPOSIX();
+		static void CacheFullExecutableNameDBusPOSIX();
+		static void CacheLegalExecutableNameDBusPOSIX();
+		static void CacheDesktopFilePathDBusPOSIX();
+		static void TerminateDBusPOSIX();
+		static void UpdateTaskbarProgressDBusPOSIX(dbus_bool_t progressVisible, double progressValue);
+
+		static dbus_bool_t NewMessageSignalDBusPOSIX(std::string_view objectPath, std::string_view interfaceName, std::string_view signalName, DBusMessage** outMessage);
+		static dbus_bool_t OpenContainerDBusPOSIX(DBusMessageIter& iterator, int32_t DBusType, std::string_view signature, DBusMessageIter& subIterator);
+		static dbus_bool_t CloseContainerDBusPOSIX(DBusMessageIter& iterator, DBusMessageIter& subIterator);
+		static dbus_bool_t AppendDataDBusPOSIX(DBusMessageIter& iterator, int32_t DBusType, const void* data);
+		static dbus_bool_t AppendDictDataDBusPOSIX(DBusMessageIter& iterator, int32_t keyType, const void* keyData, int32_t valueType, const void* valueData);
+		static dbus_bool_t SendMessageDBusPOSIX(DBusMessage& message);
+
 		/// <summary>
 		/// Calculates the refresh rate, in Hz, from the specified RandR mode info.
 		/// </summary>
