@@ -258,7 +258,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* const d
 	for(sent = 0; sent < size; sent += NumericCast<std::size_t>(result))
 	{
 		//Send a chunk of data
-		result = ::send(GetHandle(), static_cast<const uint8_t*>(data) + sent, NumericCast<size_t>(size - sent), flags);
+		result = ::send(GetHandle(), static_cast<const char*>(data) + sent, NumericCast<size_t>(size - sent), flags);
 
 		//Check for errors
 		if(result < 0)
@@ -294,7 +294,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(void* const data
 	}
 
 	//Receive a chunk of bytes
-	const int64_t sizeReceived = recv(GetHandle(), static_cast<uint8_t*>(data), NumericCast<size_t>(size), flags);
+	const int64_t sizeReceived = recv(GetHandle(), static_cast<char*>(data), NumericCast<size_t>(size), flags);
 
 	//Check the number of bytes received
 	if (sizeReceived > 0)
