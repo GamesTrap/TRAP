@@ -4509,3 +4509,4 @@ SITREP 10/06/2023|23w40b2
 SITREP 10/07/2023|23w40b3
     - Changed TRAP Engine version to 23w40b3(0.9.111)
     - Updated DBus implementation ~<30 mins
+    - GenerateWayland Added fractional-scale-v1 protocol ~<5 mins
