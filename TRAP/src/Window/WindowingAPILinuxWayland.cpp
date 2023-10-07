@@ -79,6 +79,10 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "wayland-content-type-v1-client-protocol-code.h"
 #undef types
 
+#define types _TRAP_fractional_scale_types
+#include "wayland-fractional-scale-v1-client-protocol-code.h"
+#undef types
+
 using namespace std::string_view_literals;
 
 static constexpr int32_t TRAP_BORDER_SIZE = 4;
@@ -1435,6 +1439,13 @@ void TRAP::INTERNAL::WindowingAPI::RegistryHandleGlobal([[maybe_unused]] void* c
         s_Data.Wayland.ContentTypeManager = static_cast<wp_content_type_manager_v1*>(wl_registry_bind(registry, name,
                                                                                                       &wp_content_type_manager_v1_interface,
                                                                                                       1));
+    }
+    else if(interface == "wp_fractional_scale_manager_v1"sv)
+    {
+        s_Data.Wayland.FractionalScaleManager = static_cast<wp_fractional_scale_manager_v1*>(wl_registry_bind(registry,
+                                                                                                              name,
+                                                                                                              &wp_fractional_scale_manager_v1_interface,
+                                                                                                              1));
     }
 }
 

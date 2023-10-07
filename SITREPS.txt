@@ -4510,3 +4510,4 @@ SITREP 10/07/2023|23w40b3
     - Changed TRAP Engine version to 23w40b3(0.9.111)
     - Updated DBus implementation ~<30 mins
     - GenerateWayland Added fractional-scale-v1 protocol ~<5 mins
+    - WindowingAPILinuxWayland Added initialization of fractional_scale_manager ~<5 mins

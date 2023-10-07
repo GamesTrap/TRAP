@@ -1358,6 +1358,7 @@ namespace TRAP::INTERNAL
 				zwp_idle_inhibit_manager_v1* IdleInhibitManager;
 				xdg_activation_v1* ActivationManager;
 				wp_content_type_manager_v1* ContentTypeManager;
+				wp_fractional_scale_manager_v1* FractionalScaleManager;
 
 				std::vector<TRAPOfferWayland> Offers;
 
