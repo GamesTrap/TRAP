@@ -3,7 +3,7 @@
 
 #include "Core/PlatformDetection.h"
 
-#ifdef TRAP_PLATFORM_LINUX
+#if defined(TRAP_PLATFORM_LINUX) && !defined(TRAP_HEADLESS_MODE)
 
 #include "Utils/DynamicLoading/DynamicLoading.h"
 
@@ -376,4 +376,4 @@ TRAP::INTERNAL::WindowingAPI::dbus_bool_t TRAP::INTERNAL::WindowingAPI::SendMess
     return 1u;
 }
 
-#endif /*TRAP_PLATFORM_LINUX*/
+#endif /*defined(TRAP_PLATFORM_LINUX) && !defined(TRAP_HEADLESS_MODE)*/
