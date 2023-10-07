@@ -3184,6 +3184,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdownWayland()
         xdg_activation_v1_destroy(s_Data.Wayland.ActivationManager);
     if(s_Data.Wayland.ContentTypeManager != nullptr)
         wp_content_type_manager_v1_destroy(s_Data.Wayland.ContentTypeManager);
+    if(s_Data.Wayland.FractionalScaleManager != nullptr)
+        wp_fractional_scale_manager_v1_destroy(s_Data.Wayland.FractionalScaleManager);
     if(s_Data.Wayland.Registry != nullptr)
         wl_registry_destroy(s_Data.Wayland.Registry);
     if(s_Data.Wayland.DisplayWL != nullptr)

@@ -4511,3 +4511,4 @@ SITREP 10/07/2023|23w40b3
     - Updated DBus implementation ~<30 mins
     - GenerateWayland Added fractional-scale-v1 protocol ~<5 mins
     - WindowingAPILinuxWayland Added initialization of fractional_scale_manager ~<5 mins
+    - WindowingAPILinuxWayland Added deinitialization of fractional_scale_manager ~<5 mins
