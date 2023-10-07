@@ -162,6 +162,29 @@ void TRAP::INTERNAL::WindowingAPI::DataSourceHandleCancelled([[maybe_unused]] vo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::INTERNAL::WindowingAPI::FractionalScaleHandleScaleFactor(void* const userData,
+                                                                    [[maybe_unused]] wp_fractional_scale_v1* const fractionalScale,
+                                                                    const uint32_t preferredScale_8_24)
+{
+    ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+
+	TRAP_ASSERT(userData, "WindowingAPI::FractionalScaleHandleScaleFactor(): User data pointer is nullptr!");
+
+    InternalWindow* const window = static_cast<InternalWindow*>(userData);
+    if(window == nullptr)
+        return;
+
+    window->Wayland.OldFractionalContentScale = window->Wayland.FractionalContentScale.value_or(1.0);
+    window->Wayland.FractionalContentScale = preferredScale_8_24 / 120.0;
+
+    if(TRAP::Math::NotEqual(*window->Wayland.FractionalContentScale, window->Wayland.OldFractionalContentScale, TRAP::Math::Epsilon<double>()))
+    {
+        UpdateContentScaleWayland(*window);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::INTERNAL::WindowingAPI::RelativePointerHandleRelativeMotion(void* const userData,
                                                                        [[maybe_unused]] zwp_relative_pointer_v1* const relPointer,
                                                                        [[maybe_unused]] const uint32_t timeHi,
@@ -186,13 +209,13 @@ void TRAP::INTERNAL::WindowingAPI::RelativePointerHandleRelativeMotion(void* con
 
     if(window->RawMouseMotion)
     {
-        xPos += wl_fixed_to_double(dxUnaccel);
-        yPos += wl_fixed_to_double(dyUnaccel);
+        xPos += wl_fixed_to_double(dxUnaccel) / window->Wayland.FractionalContentScale.value_or(1.0);
+        yPos += wl_fixed_to_double(dyUnaccel) / window->Wayland.FractionalContentScale.value_or(1.0);
     }
     else
     {
-        xPos += wl_fixed_to_double(dx);
-        yPos += wl_fixed_to_double(dy);
+        xPos += wl_fixed_to_double(dx) / window->Wayland.FractionalContentScale.value_or(1.0);
+        yPos += wl_fixed_to_double(dy) / window->Wayland.FractionalContentScale.value_or(1.0);
     }
 
     InputCursorPos(*window, xPos, yPos);
@@ -216,7 +239,7 @@ void TRAP::INTERNAL::WindowingAPI::SurfaceHandleEnter(void* const userData,
     if((window == nullptr) || (monitor == nullptr))
         return;
 
-    window->Wayland.Scales.emplace_back(TRAPScaleWayland{output, monitor->Wayland.ContentScale});
+    window->Wayland.Scales.emplace_back(output, monitor->Wayland.IntegerContentScale);
 
     UpdateContentScaleWayland(*window);
 }
@@ -777,7 +800,7 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleScale(void* const userData, [[may
     if(monitor == nullptr)
         return;
 
-    monitor->Wayland.ContentScale = factor;
+    monitor->Wayland.IntegerContentScale = factor;
 
     for(const TRAP::Scope<InternalWindow>& window : s_Data.WindowList)
     {
@@ -785,7 +808,7 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleScale(void* const userData, [[may
         {
             if(scale.output == monitor->Wayland.Output)
             {
-                scale.factor = monitor->Wayland.ContentScale;
+                scale.factor = monitor->Wayland.IntegerContentScale;
                 UpdateContentScaleWayland(*window);
                 break;
             }
@@ -1367,7 +1390,8 @@ void TRAP::INTERNAL::WindowingAPI::RegistryHandleGlobal([[maybe_unused]] void* c
         //The actual name of this output will be set in the geometry handler
         //Note this pointer will be acquired by a TRAP::Scope in OutputHandleDone()
         InternalMonitor* monitor = new InternalMonitor();
-        monitor->Wayland.ContentScale = 1;
+        monitor->Wayland.IntegerContentScale = 1;
+        monitor->Wayland.FractionalContentScale = std::nullopt;
         monitor->Wayland.Output = output;
         monitor->Wayland.Name = name;
 
@@ -1739,7 +1763,7 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorWayland(const InternalWindow& window
     wl_cursor_theme* theme = s_Data.Wayland.CursorTheme;
     int32_t scale = 1;
 
-    if(window.Wayland.ContentScale > 1 && (s_Data.Wayland.CursorThemeHiDPI != nullptr))
+    if(window.Wayland.IntegerContentScale > 1 && (s_Data.Wayland.CursorThemeHiDPI != nullptr))
     {
         //We only support up to scale=2 for now, since libwayland-cursor
         //requires us to load a different theme for each size.
@@ -1821,21 +1845,43 @@ void TRAP::INTERNAL::WindowingAPI::UpdateContentScaleWayland(InternalWindow& win
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-    if(wl_compositor_get_version(s_Data.Wayland.Compositor) < WL_SURFACE_SET_BUFFER_SCALE_SINCE_VERSION)
+    if(wl_compositor_get_version(s_Data.Wayland.Compositor) < WL_SURFACE_SET_BUFFER_SCALE_SINCE_VERSION || (window.Wayland.Surface == nullptr))
         return;
 
-    //Get the scale factor from the highest scale monitor.
-    int32_t maxScale = 1;
-    for(const TRAPScaleWayland& scale : window.Wayland.Scales)
-        maxScale = TRAP::Math::Max(scale.factor, maxScale);
+    double& oldFractScale = window.Wayland.OldFractionalContentScale;
+    std::optional<double>& newFractScale = window.Wayland.FractionalContentScale;
 
-    //Only change the framebuffer size if the scale changed.
-    if(window.Wayland.ContentScale != maxScale)
+    if(newFractScale && TRAP::Math::NotEqual(*newFractScale, oldFractScale, TRAP::Math::Epsilon<double>())) //Only change the framebuffer size if the scale changed.
     {
-        window.Wayland.ContentScale = maxScale;
-        wl_surface_set_buffer_scale(window.Wayland.Surface, maxScale);
-        InputWindowContentScale(window, NumericCast<float>(maxScale), NumericCast<float>(maxScale));
+        //wl_surface_set_buffer_scale(window.Wayland.Surface, NumericCast<int32_t>(*newFractScale)); //TODO Remove this line?
+        for(const TRAPScaleWayland& scale : window.Wayland.Scales)
+        {
+            InternalMonitor* const monitor = static_cast<InternalMonitor*>(wl_output_get_user_data(scale.output));
+            monitor->Wayland.FractionalContentScale = *newFractScale;
+        }
+
+        InputWindowContentScale(window, NumericCast<float>(*newFractScale), NumericCast<float>(*newFractScale));
+        //Keep the effective size of the window the same
+        window.Width = NumericCast<int32_t>(TRAP::Math::Round(window.Width * *newFractScale / oldFractScale));
+        window.Height = NumericCast<int32_t>(TRAP::Math::Round(window.Height * *newFractScale / oldFractScale));
         ResizeWindowWayland(window);
+        window.Wayland.OldFractionalContentScale = *window.Wayland.FractionalContentScale;
+    }
+    else if(!newFractScale) //Fallback to integer scaling
+    {
+        //Get the scale factor from the highest scale monitor.
+        int32_t maxScale = 1;
+        for(const TRAPScaleWayland& scale : window.Wayland.Scales)
+            maxScale = TRAP::Math::Max(scale.factor, maxScale);
+
+        //Only change the framebuffer size if the scale changed.
+        if(window.Wayland.IntegerContentScale != maxScale)
+        {
+            window.Wayland.IntegerContentScale = maxScale;
+            wl_surface_set_buffer_scale(window.Wayland.Surface, maxScale);
+            InputWindowContentScale(window, NumericCast<float>(maxScale), NumericCast<float>(maxScale));
+            ResizeWindowWayland(window);
+        }
     }
 }
 
@@ -1845,7 +1891,7 @@ void TRAP::INTERNAL::WindowingAPI::ResizeWindowWayland(const InternalWindow& win
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-    const int32_t scale = window.Wayland.ContentScale;
+    const int32_t scale = window.Wayland.IntegerContentScale;
     const int32_t scaledWidth = window.Width * scale;
     const int32_t scaledHeight = window.Height * scale;
 
@@ -2503,7 +2549,10 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeSurfaceWayland(InternalWindow& wi
 
     window.Width = NumericCast<int32_t>(WNDConfig.Width);
     window.Height = NumericCast<int32_t>(WNDConfig.Height);
-    window.Wayland.ContentScale = 1;
+    window.Wayland.IntegerContentScale = 1;
+    window.Wayland.FractionalContentScale = std::nullopt;
+    window.Wayland.OldFractionalContentScale = 1.0;
+    window.Wayland.Scales = {};
     window.Wayland.Title = WNDConfig.Title;
     window.Wayland.AppID = WNDConfig.Wayland.AppID;
 
@@ -2512,6 +2561,13 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeSurfaceWayland(InternalWindow& wi
     window.Transparent = false;
     if(!window.Transparent)
         SetContentAreaOpaqueWayland(window);
+
+    if(s_Data.Wayland.FractionalScaleManager != nullptr)
+    {
+        window.Wayland.FractionalScaling = wp_fractional_scale_manager_v1_get_fractional_scale(s_Data.Wayland.FractionalScaleManager,
+                                                                                               window.Wayland.Surface);
+        wp_fractional_scale_v1_add_listener(window.Wayland.FractionalScaling, &FractionalScaleListener, &window);
+    }
 
     return true;
 }
@@ -2594,7 +2650,7 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorImageWayland(const InternalWindow& w
         buffer = cursorWayland.Buffer;
     else
     {
-        if(window.Wayland.ContentScale > 1 && (cursorWayland.CursorHiDPI != nullptr))
+        if(window.Wayland.IntegerContentScale > 1 && (cursorWayland.CursorHiDPI != nullptr))
         {
             wlCursor = cursorWayland.CursorHiDPI;
             scale = 2;
@@ -3069,6 +3125,9 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindowWayland(InternalWindow& 
 
     if(&window == s_Data.Wayland.KeyboardFocus)
         s_Data.Wayland.KeyboardFocus = nullptr;
+
+    if(window.Wayland.FractionalScaling != nullptr)
+        wp_fractional_scale_v1_destroy(window.Wayland.FractionalScaling);
 
     if(window.Wayland.ContentType != nullptr)
         wp_content_type_v1_destroy(window.Wayland.ContentType);

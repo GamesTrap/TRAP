@@ -890,8 +890,8 @@ namespace TRAP::INTERNAL
 
 		struct TRAPScaleWayland
 		{
-			wl_output* output;
-			int32_t factor;
+			wl_output* output = nullptr;
+			int32_t factor = 1;
 		};
 #endif
 
@@ -1589,7 +1589,8 @@ namespace TRAP::INTERNAL
 				uint32_t Name;
 				int32_t X;
 				int32_t Y;
-				int32_t ContentScale;
+				int32_t IntegerContentScale;
+				std::optional<double> FractionalContentScale = std::nullopt;
 			} Wayland;
 #endif
 		};
@@ -1666,7 +1667,7 @@ namespace TRAP::INTERNAL
 				KeyFunc Key = nullptr;
 				CharFunc Character = nullptr;
 				DropFunc Drop = nullptr;
-			} Callbacks;
+			} Callbacks{};
 
 			bool Minimized = false;
 			bool Maximized = false;
@@ -1754,8 +1755,10 @@ namespace TRAP::INTERNAL
 				std::string Title;
 				std::string AppID;
 
-				int32_t ContentScale;
-				std::vector<TRAPScaleWayland> Scales;
+				int32_t IntegerContentScale;
+				std::optional<double> FractionalContentScale = std::nullopt;
+				double OldFractionalContentScale = 1.0;
+				std::vector<TRAPScaleWayland> Scales{};
 
 				zwp_relative_pointer_v1* RelativePointer;
 				zwp_locked_pointer_v1* LockedPointer;
@@ -1766,6 +1769,8 @@ namespace TRAP::INTERNAL
 				xdg_activation_token_v1* ActivationToken;
 
 				wp_content_type_v1* ContentType;
+
+				wp_fractional_scale_v1* FractionalScaling;
 
 				struct
 				{
@@ -5624,6 +5629,18 @@ namespace TRAP::INTERNAL
 		};
 
 		/// <summary>
+		/// Callback function for Wayland notifying that a new preferred scale exists.
+		/// </summary>
+		/// <param name="userData">Pointer to user provided data.</param>
+		/// <param name="fractionalScale"></param>
+		/// <param name="preferredScale_8_24">New preferred scale numerator of a fraction with a denominator of 120.</param>
+		static void FractionalScaleHandleScaleFactor(void* userData, wp_fractional_scale_v1* fractionalScale, uint32_t preferredScale_8_24);
+		inline static constexpr wp_fractional_scale_v1_listener FractionalScaleListener =
+		{
+			FractionalScaleHandleScaleFactor
+		};
+
+		/// <summary>
 		/// Callback function for Wayland notifying that a new configuration was received.
 		/// </summary>
 		/// <param name="frame">LibDecor frame object.</param>
@@ -6611,8 +6628,16 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSizeWayland
 inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorContentScaleWayland(const InternalMonitor& monitor,
                                                                                           float& xScale, float& yScale)
 {
-    xScale = NumericCast<float>(monitor.Wayland.ContentScale);
-    yScale = NumericCast<float>(monitor.Wayland.ContentScale);
+	if(monitor.Wayland.FractionalContentScale)
+	{
+		xScale = NumericCast<float>(*monitor.Wayland.FractionalContentScale);
+		yScale = NumericCast<float>(*monitor.Wayland.FractionalContentScale);
+	}
+	else
+	{
+		xScale = NumericCast<float>(monitor.Wayland.IntegerContentScale);
+		yScale = NumericCast<float>(monitor.Wayland.IntegerContentScale);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -6646,8 +6671,11 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSizeWa
                                                                                       int32_t& width, int32_t& height)
 {
     PlatformGetWindowSizeWayland(window, width, height);
-    width *= window.Wayland.ContentScale;
-    height *= window.Wayland.ContentScale;
+	if(!window.Wayland.FractionalContentScale)
+	{
+		width *= window.Wayland.IntegerContentScale;
+		height *= window.Wayland.IntegerContentScale;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -6655,8 +6683,16 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSizeWa
 inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScaleWayland(const InternalWindow& window,
                                                                                          float& xScale, float& yScale)
 {
-    xScale = NumericCast<float>(window.Wayland.ContentScale);
-    yScale = NumericCast<float>(window.Wayland.ContentScale);
+	if(window.Wayland.FractionalContentScale)
+	{
+		xScale = NumericCast<float>(*window.Wayland.FractionalContentScale);
+		yScale = NumericCast<float>(*window.Wayland.FractionalContentScale);
+	}
+	else
+	{
+		xScale = NumericCast<float>(window.Wayland.IntegerContentScale);
+		yScale = NumericCast<float>(window.Wayland.IntegerContentScale);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
