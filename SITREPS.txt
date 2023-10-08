@@ -4517,3 +4517,4 @@ SITREP 10/07/2023|23w40b3
 SITREP 10/08/2023|23w40c1
     - Changed TRAP Engine version to 23w40c1(0.9.112)
     - WindowingAPI Fixed Fullscreen Borderless using wrong window size ~<5 mins
+    - WindowingAPILinuxWayland Added second iteration of fractional scaling support ~>90 mins

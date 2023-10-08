@@ -1589,8 +1589,7 @@ namespace TRAP::INTERNAL
 				uint32_t Name;
 				int32_t X;
 				int32_t Y;
-				int32_t IntegerContentScale;
-				std::optional<double> FractionalContentScale = std::nullopt;
+				float ContentScale;
 			} Wayland;
 #endif
 		};
@@ -1755,22 +1754,17 @@ namespace TRAP::INTERNAL
 				std::string Title;
 				std::string AppID;
 
-				int32_t IntegerContentScale;
-				std::optional<double> FractionalContentScale = std::nullopt;
-				double OldFractionalContentScale = 1.0;
+				float ContentScale;
 				std::vector<TRAPScaleWayland> Scales{};
 
 				zwp_relative_pointer_v1* RelativePointer;
 				zwp_locked_pointer_v1* LockedPointer;
 				zwp_confined_pointer_v1* ConfinedPointer;
-
 				zwp_idle_inhibitor_v1* IdleInhibitor;
-
 				xdg_activation_token_v1* ActivationToken;
-
 				wp_content_type_v1* ContentType;
-
 				wp_fractional_scale_v1* FractionalScaling;
+				wp_viewport* DrawViewport;
 
 				struct
 				{
@@ -5723,6 +5717,27 @@ namespace TRAP::INTERNAL
 		/// <returns>Composed XBK key symbol.</returns>
 		[[nodiscard]] static xkb_keysym_t ComposeSymbol(xkb_keysym_t sym);
 		/// <summary>
+		/// Set the draw surface viewport for the window.
+		/// This scale the surface from the source resolution the the destination resolution.
+		/// </summary>
+		/// <param name="window">Window to set surface viewport for.</param>
+		/// <param name="srcWidth">Source width.</param>
+		/// <param name="srcHeight">Source height.</param>
+		/// <param name="dstWidth">Destination width.</param>
+		/// <param name="dstHeight">Destination height.</param>
+		static void SetDrawSurfaceViewportWayland(InternalWindow& window, int32_t srcWidth, int32_t srcHeight, int32_t dstWidth, int32_t dstHeight);
+		/// <summary>
+		/// Unset the draw surface viewport for the window.
+		/// </summary>
+		/// <param name="window">Window to unset surface viewport for.</param>
+		static void UnsetDrawSurfaceViewport(InternalWindow& window);
+		/// <summary>
+		/// Retrieve whether the given window needs a surface viewport or not.
+		/// </summary>
+		/// <param name="window">Window to check for.</param>
+		/// <returns>True if the window needs a surface viewport.</returns>
+		[[nodiscard]] static bool WindowNeedsViewport(const InternalWindow& window);
+		/// <summary>
 		/// Update the content scaling of the given window.
 		/// </summary>
 		/// <param name="window">Window to update content scaling for.</param>
@@ -5731,7 +5746,7 @@ namespace TRAP::INTERNAL
 		/// Resize the given window to the current framebuffer size.
 		/// </summary>
 		/// <param name="window">Window to resize.</param>
-		static void ResizeWindowWayland(const InternalWindow& window);
+		static void ResizeWindowWayland(InternalWindow& window);
 		/// <summary>
 		/// Make the content area (surface) of the given window opaque.
 		/// </summary>
@@ -6619,8 +6634,8 @@ inline constexpr std::optional<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> 
 inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSizeWayland(const InternalWindow& window,
                                                                                  int32_t& width, int32_t& height)
 {
-    width = window.Width;
-    height = window.Height;
+	width = window.Width;
+	height = window.Height;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -6628,16 +6643,8 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSizeWayland
 inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorContentScaleWayland(const InternalMonitor& monitor,
                                                                                           float& xScale, float& yScale)
 {
-	if(monitor.Wayland.FractionalContentScale)
-	{
-		xScale = NumericCast<float>(*monitor.Wayland.FractionalContentScale);
-		yScale = NumericCast<float>(*monitor.Wayland.FractionalContentScale);
-	}
-	else
-	{
-		xScale = NumericCast<float>(monitor.Wayland.IntegerContentScale);
-		yScale = NumericCast<float>(monitor.Wayland.IntegerContentScale);
-	}
+	xScale = monitor.Wayland.ContentScale;
+	yScale = monitor.Wayland.ContentScale;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -6670,12 +6677,8 @@ inline constexpr std::optional<float> TRAP::INTERNAL::WindowingAPI::PlatformGetW
 inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSizeWayland(const InternalWindow& window,
                                                                                       int32_t& width, int32_t& height)
 {
-    PlatformGetWindowSizeWayland(window, width, height);
-	if(!window.Wayland.FractionalContentScale)
-	{
-		width *= window.Wayland.IntegerContentScale;
-		height *= window.Wayland.IntegerContentScale;
-	}
+	width = NumericCast<int32_t>(TRAP::Math::Round(NumericCast<float>(window.Width) * window.Wayland.ContentScale));
+	height = NumericCast<int32_t>(TRAP::Math::Round(NumericCast<float>(window.Height) * window.Wayland.ContentScale));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -6683,16 +6686,8 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSizeWa
 inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScaleWayland(const InternalWindow& window,
                                                                                          float& xScale, float& yScale)
 {
-	if(window.Wayland.FractionalContentScale)
-	{
-		xScale = NumericCast<float>(*window.Wayland.FractionalContentScale);
-		yScale = NumericCast<float>(*window.Wayland.FractionalContentScale);
-	}
-	else
-	{
-		xScale = NumericCast<float>(window.Wayland.IntegerContentScale);
-		yScale = NumericCast<float>(window.Wayland.IntegerContentScale);
-	}
+	xScale = window.Wayland.ContentScale;
+	yScale = window.Wayland.ContentScale;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
