@@ -1726,6 +1726,7 @@ namespace TRAP::INTERNAL
 				wl_callback* Callback;
 
 				double CursorPosX, CursorPosY;
+				uint32_t PointerAxisTime = 0;
 
 				struct
 				{
