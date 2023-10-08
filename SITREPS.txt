@@ -4513,3 +4513,7 @@ SITREP 10/07/2023|23w40b3
     - WindowingAPILinuxWayland Added initialization of fractional_scale_manager ~<5 mins
     - WindowingAPILinuxWayland Added deinitialization of fractional_scale_manager ~<5 mins
     - WindowingAPILinuxWayland Added initial support for fractional scaling ~>45 mins
+
+SITREP 10/08/2023|23w40c1
+    - Changed TRAP Engine version to 23w40c1(0.9.112)
+    - WindowingAPI Fixed Fullscreen Borderless using wrong window size ~<5 mins

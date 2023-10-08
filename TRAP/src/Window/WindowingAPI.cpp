@@ -1081,7 +1081,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitorBorderless(InternalWindow& wi
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowMonitorBorderless(): must only be called from main thread");
 
-	window.videoMode = monitor.NativeMode.value_or(monitor.CurrentMode);
+	window.videoMode = monitor.CurrentMode;
+	PlatformSetWindowSize(window, window.videoMode.Width, window.videoMode.Height);
 
 	PlatformSetWindowMonitorBorderless(window, monitor);
 }
