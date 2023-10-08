@@ -1756,6 +1756,7 @@ namespace TRAP::INTERNAL
 
 				float ContentScale;
 				std::vector<TRAPScaleWayland> Scales{};
+				InternalMonitor* AssociatedMonitor = nullptr;
 
 				zwp_relative_pointer_v1* RelativePointer;
 				zwp_locked_pointer_v1* LockedPointer;

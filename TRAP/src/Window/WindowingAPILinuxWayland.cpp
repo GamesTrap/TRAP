@@ -237,12 +237,16 @@ void TRAP::INTERNAL::WindowingAPI::SurfaceHandleEnter(void* const userData,
         return;
 
     InternalWindow* const window = static_cast<InternalWindow*>(userData);
-    const InternalMonitor* const monitor = static_cast<InternalMonitor*>(wl_output_get_user_data(output));
+    InternalMonitor* const monitor = static_cast<InternalMonitor*>(wl_output_get_user_data(output));
     if((window == nullptr) || (monitor == nullptr))
         return;
 
     if(window->Wayland.FractionalScaling != nullptr && s_Data.Wayland.Viewporter != nullptr)
+    {
+        window->Wayland.AssociatedMonitor = monitor;
+        window->Wayland.AssociatedMonitor->Wayland.ContentScale = window->Wayland.ContentScale;
         return;
+    }
 
     window->Wayland.Scales.emplace_back(output, monitor->Wayland.ContentScale);
 
@@ -268,7 +272,10 @@ void TRAP::INTERNAL::WindowingAPI::SurfaceHandleLeave(void* const userData,
         return;
 
     if(window->Wayland.FractionalScaling != nullptr && s_Data.Wayland.Viewporter != nullptr)
+    {
+        window->Wayland.AssociatedMonitor = nullptr;
         return;
+    }
 
     for(auto& scale : window->Wayland.Scales)
     {
@@ -1909,13 +1916,9 @@ void TRAP::INTERNAL::WindowingAPI::UpdateContentScaleWayland(InternalWindow& win
 
     if(window.Wayland.FractionalScaling != nullptr && s_Data.Wayland.Viewporter != nullptr)
     {
-        //From the fractional_scale protocol we only get the preferred scale for the current wl_surface.
-        //We don't know which monitor the scale blongs to. For now set all monitors equal to the new scale.
-        //TODO Can this be fixed or should we deprecate/remove ContentScale from monitor?
-        for(const auto& mon : s_Data.Monitors)
-            mon->Wayland.ContentScale = window.Wayland.ContentScale;
-
         InputWindowContentScale(window, window.Wayland.ContentScale, window.Wayland.ContentScale);
+        if(window.Wayland.AssociatedMonitor != nullptr)
+            window.Wayland.AssociatedMonitor->Wayland.ContentScale = window.Wayland.ContentScale;
         ResizeWindowWayland(window);
     }
     else if(window.Wayland.FractionalScaling == nullptr) //Fallback to integer scaling
@@ -1953,7 +1956,7 @@ void TRAP::INTERNAL::WindowingAPI::ResizeWindowWayland(InternalWindow& window)
     else
     {
         UnsetDrawSurfaceViewport(window);
-        wl_surface_set_buffer_scale(window.Wayland.Surface, NumericCast<int32_t>(window.Wayland.ContentScale));
+        wl_surface_set_buffer_scale(window.Wayland.Surface, NumericCast<int32_t>(scale));
     }
 
     if(!window.Transparent)
@@ -3667,7 +3670,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeWayland(InternalWindow& 
     {
         //Video mode settings is not available on Wayland
 
-        //Still have to handle fractional scaling though
+        //Still have to handle (fractional) scaling though
         window.Width = NumericCast<int32_t>(TRAP::Math::Round(NumericCast<float>(width) / window.Wayland.ContentScale));
         window.Height = NumericCast<int32_t>(TRAP::Math::Round(NumericCast<float>(height) / window.Wayland.ContentScale));
         ResizeWindowWayland(window);
