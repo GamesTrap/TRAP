@@ -18,7 +18,9 @@ workspace "TRAP"
 	}
 
 	flags "MultiProcessorCompile"
-	-- flags "LinkTimeOptimization"
+
+	filter {"language:C or C++", "configurations:Release or configurations:Profiling" }
+		flags "LinkTimeOptimization"
 
 	filter {"language:C or C++", "configurations:Debug" }
 		runtime "Debug"
@@ -119,12 +121,6 @@ workspace "TRAP"
 		if moldInstalled then
 			linkoptions "-fuse-ld=mold"
 		end
-
-	-- filter { "toolset:gcc" }
-	-- 	if moldInstalled then
-	-- 		linkoptions "-flto=auto"
-	-- 		buildoptions "-flto=auto"
-	-- 	end
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 

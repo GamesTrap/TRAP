@@ -1303,9 +1303,14 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleAxis([[maybe_unused]] void* cons
     TRAP_ASSERT(axis == WL_POINTER_AXIS_HORIZONTAL_SCROLL || axis == WL_POINTER_AXIS_VERTICAL_SCROLL,
                 "WindowingAPI::PointerHandleAxis(): Unknown pointer axis");
 
-    const InternalWindow* const window = s_Data.Wayland.PointerFocus;
+    InternalWindow* const window = s_Data.Wayland.PointerFocus;
     if(window == nullptr)
         return;
+
+    //On newer GNOME, there is a bug where scroll events are invoked twice.
+    if(window->Wayland.PointerAxisTime == time)
+        return;
+    window->Wayland.PointerAxisTime = time;
 
     double x = 0.0, y = 0.0;
 
@@ -3687,6 +3692,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeWayland(InternalWindow& 
             s_Data.Wayland.LibDecor.FrameCommit(window.Wayland.LibDecor.Frame, frameState, nullptr);
             s_Data.Wayland.LibDecor.StateFree(frameState);
         }
+
+        InputWindowSize(window, width, height);
     }
 }
 
