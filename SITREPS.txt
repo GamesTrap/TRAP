@@ -4513,3 +4513,8 @@ SITREP 10/07/2023|23w40b3
 SITREP 10/08/2023|23w40c1
     - Changed TRAP Engine version to 23w40c1(0.9.112)
     - WindowingAPI Fixed Fullscreen Borderless using wrong window size ~<5 mins
+
+SITREP 10/09/2023|23w40c2
+    - Changed TRAP Engine version to 23w40c2(0.9.113)
+    - Re-enabled LTO for Profiling and Release builds ~<5 mins
+    - Fixed an ODR violation in spirv.hpp between SPIRV-Cross and GLSLang ~<5 mins
