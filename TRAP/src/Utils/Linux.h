@@ -38,6 +38,7 @@
 #include "wayland-idle-inhibit-unstable-v1-client-protocol.h"
 #include "wayland-xdg-activation-v1-client-protocol.h"
 #include "wayland-content-type-v1-client-protocol.h"
+#include "wayland-fractional-scale-v1-client-protocol.h"
 #include <xkbcommon/xkbcommon.h>
 #include <xkbcommon/xkbcommon-compose.h>
 
