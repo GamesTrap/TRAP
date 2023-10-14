@@ -83,6 +83,7 @@ function m.GenerateWayland()
 	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/unstable/idle-inhibit/idle-inhibit-unstable-v1.xml"] = "../Dependencies/Wayland/wayland-idle-inhibit-unstable-v1-client-protocol"
 	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/staging/xdg-activation/xdg-activation-v1.xml"] = "../Dependencies/Wayland/wayland-xdg-activation-v1-client-protocol"
 	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/staging/content-type/content-type-v1.xml"] = "../Dependencies/Wayland/wayland-content-type-v1-client-protocol"
+	files["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/staging/fractional-scale/fractional-scale-v1.xml"] = "../Dependencies/Wayland/wayland-fractional-scale-v1-client-protocol"
 
 	local mirrorURLs = {};
 	mirrorURLs["https://gitlab.freedesktop.org/wayland/wayland/-/raw/main/protocol/wayland.xml"] = "https://cgit.freedesktop.org/wayland/wayland/plain/protocol/wayland.xml"
@@ -94,6 +95,7 @@ function m.GenerateWayland()
 	mirrorURLs["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/unstable/idle-inhibit/idle-inhibit-unstable-v1.xml"] = "https://cgit.freedesktop.org/wayland/wayland-protocols/plain/unstable/idle-inhibit/idle-inhibit-unstable-v1.xml"
 	mirrorURLs["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/staging/xdg-activation/xdg-activation-v1.xml"] = "https://cgit.freedesktop.org/wayland/wayland-protocols/plain/staging/xdg-activation/xdg-activation-v1.xml"
 	mirrorURLs["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/staging/content-type/content-type-v1.xml"] = "https://cgit.freedesktop.org/wayland/wayland-protocols/plain/staging/content-type/content-type-v1.xml"
+	mirrorURLs["https://gitlab.freedesktop.org/wayland/wayland-protocols/-/raw/main/staging/fractional-scale/fractional-scale-v1.xml"] = "https://cgit.freedesktop.org/wayland/wayland-protocols/plain/staging/fractional-scale/fractional-scale-v1.xml"
 
 	local result, errorCode = os.outputof("wayland-scanner --version")
 	if errorCode ~= 0 then

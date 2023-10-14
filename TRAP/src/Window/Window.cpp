@@ -273,9 +273,12 @@ void TRAP::Window::SetTitle(const std::string& title)
 
 void TRAP::Window::SetFullscreen()
 {
-	const auto nativeMode = m_data.Monitor.GetNativeVideoMode();
-	if(nativeMode)
+	if(const auto currentMode = m_data.Monitor.GetCurrentVideoMode())
+		SetFullscreen(*currentMode);
+	else if (const auto nativeMode = m_data.Monitor.GetNativeVideoMode())
 		SetFullscreen(*nativeMode);
+	else
+		TP_ERROR(Log::WindowPrefix, "Failed to set fullscreen mode, unable to retrieve monitor video mode!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

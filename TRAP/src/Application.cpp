@@ -860,10 +860,24 @@ void TRAP::Application::UpdateTRAPConfig(Utils::Config& config, const uint32_t f
 
 	if(window != nullptr)
 	{
-		if(window->GetWidth() > 0)
-			config.Set("Width", window->GetWidth());
-		if(window->GetHeight() > 0)
-			config.Set("Height", window->GetHeight());
+		if(const auto displayMode = window->GetDisplayMode(); displayMode == Window::DisplayMode::Fullscreen || displayMode == Window::DisplayMode::Borderless)
+		{
+			//Save the unscaled pixel size
+			const auto videoMode = window->GetMonitor().GetCurrentVideoMode();
+			if(videoMode && videoMode->Width > 0 && videoMode->Height > 0)
+			{
+				config.Set("Width", videoMode->Width);
+				config.Set("Height", videoMode->Height);
+			}
+		}
+		else
+		{
+			//Save the possibly scaled logical window size
+			if(window->GetWidth() > 0)
+				config.Set("Width", window->GetWidth());
+			if(window->GetHeight() > 0)
+				config.Set("Height", window->GetHeight());
+		}
 		config.Set("RefreshRate", window->GetRefreshRate());
 		config.Set("VSync", window->GetVSync());
 		config.Set("DisplayMode", window->GetDisplayMode());
