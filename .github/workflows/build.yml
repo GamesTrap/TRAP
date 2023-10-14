@@ -86,6 +86,8 @@ jobs:
        cd GeneratorScripts/
        ./GenerateProjectMake.sh
        cd ..
+    - name: Setup problem matchers
+      uses: ./.github/composite/problem-matchers
     - name: Compile code
       run: config=release make all -j$(nproc)
     - name: Finalize data for artifact
@@ -179,6 +181,8 @@ jobs:
         cd GeneratorScripts/
         ./GenerateProjectMake.sh
         cd ..
+    - name: Setup problem matchers
+      uses: ./.github/composite/problem-matchers
     - name: Compile code
       run: config=release make all -j$(nproc)
     - name: Finalize data for artifact
@@ -261,6 +265,8 @@ jobs:
         cd GeneratorScripts
         .\GenerateProjectVS2022.bat
         cd ..
+    - name: Setup problem matchers
+      uses: ./.github/composite/problem-matchers
     - name: Compile code
       run: msbuild /m TRAP.sln /property:Configuration=Release
     - name: Finalize data for artifact

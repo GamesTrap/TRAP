@@ -4528,3 +4528,4 @@ SITREP 10/09/2023|23w40c2
 SITREP 10/14/2023|23w41a1
     - Changed TRAP Engine version to 23w41a1(0.9.114)
     - Build-CI Added checks if secrets for NDA repos are set ~<10 mins
+    - Build-CI Added problem matchers for warnings and errors ~<10 mins

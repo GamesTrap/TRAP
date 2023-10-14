@@ -1,0 +1,9 @@
+name: Problem Matcher
+description: Attaches a problem matcher that looks for errors during compilation
+author: Jan "GamesTrap" Schürkamp
+branding:
+  icon: check-square
+  color: yellow
+runs:
+  using: 'node20'
+  main: 'index.js'
