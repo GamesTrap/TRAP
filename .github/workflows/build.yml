@@ -28,6 +28,10 @@ jobs:
       with:
         submodules: 'true'
     - name: Checkout DiscordGameSDK
+      if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_DISCORDGAMESDK
+      env:
+        HAS_GIT_NDA_DEPS: ${{ secrets.GIT_NDA_DEPS }}
+        HAS_GIT_NDA_DEPS_DISCORDGAMESDK: ${{ secrets.GIT_NDA_DEPS_DISCORDGAMESDK }}
       run: |
         cd Dependencies/DiscordGameSDK
         git init
@@ -35,6 +39,10 @@ jobs:
         git pull origin main
         cd ../..
     - name: Checkout NVIDIA Nsight Aftermath SDK
+      if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_NSIGHTAFTERMATH
+      env:
+        HAS_GIT_NDA_DEPS: ${{ secrets.GIT_NDA_DEPS }}
+        HAS_GIT_NDA_DEPS_NSIGHTAFTERMATH: ${{ secrets.GIT_NDA_DEPS_NSIGHTAFTERMATH }}
       run: |
         cd Dependencies/Nsight-Aftermath
         git init
@@ -42,6 +50,10 @@ jobs:
         git pull origin main
         cd ../..
     - name: Checkout NVIDIA Reflex SDK
+      if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_NVIDIAREFLEX
+      env:
+        HAS_GIT_NDA_DEPS: ${{ secrets.GIT_NDA_DEPS }}
+        HAS_GIT_NDA_DEPS_NVIDIAREFLEX: ${{ secrets.GIT_NDA_DEPS_NVIDIAREFLEX }}
       run: |
         cd Dependencies/NVIDIA-Reflex
         git init
@@ -49,6 +61,10 @@ jobs:
         git pull origin main
         cd ../..
     - name: Checkout Steamworks SDK
+      if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_STEAMWORKSSDK
+      env:
+        HAS_GIT_NDA_DEPS: ${{ secrets.GIT_NDA_DEPS }}
+        HAS_GIT_NDA_DEPS_STEAMWORKSSDK: ${{ secrets.GIT_NDA_DEPS_STEAMWORKSSDK }}
       run: |
         cd Dependencies/SteamworksSDK
         git init
@@ -105,6 +121,10 @@ jobs:
       with:
         submodules: 'true'
     - name: Checkout DiscordGameSDK
+      if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_DISCORDGAMESDK
+      env:
+        HAS_GIT_NDA_DEPS: ${{ secrets.GIT_NDA_DEPS }}
+        HAS_GIT_NDA_DEPS_DISCORDGAMESDK: ${{ secrets.GIT_NDA_DEPS_DISCORDGAMESDK }}
       run: |
         cd Dependencies/DiscordGameSDK
         git init
@@ -112,6 +132,10 @@ jobs:
         git pull origin main
         cd ../..
     - name: Checkout NVIDIA Nsight Aftermath SDK
+      if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_NSIGHTAFTERMATH
+      env:
+        HAS_GIT_NDA_DEPS: ${{ secrets.GIT_NDA_DEPS }}
+        HAS_GIT_NDA_DEPS_NSIGHTAFTERMATH: ${{ secrets.GIT_NDA_DEPS_NSIGHTAFTERMATH }}
       run: |
         cd Dependencies/Nsight-Aftermath
         git init
@@ -119,6 +143,10 @@ jobs:
         git pull origin main
         cd ../..
     - name: Checkout NVIDIA Reflex SDK
+      if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_NVIDIAREFLEX
+      env:
+        HAS_GIT_NDA_DEPS: ${{ secrets.GIT_NDA_DEPS }}
+        HAS_GIT_NDA_DEPS_NVIDIAREFLEX: ${{ secrets.GIT_NDA_DEPS_NVIDIAREFLEX }}
       run: |
         cd Dependencies/NVIDIA-Reflex
         git init
@@ -126,6 +154,10 @@ jobs:
         git pull origin main
         cd ../..
     - name: Checkout Steamworks SDK
+      if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_STEAMWORKSSDK
+      env:
+        HAS_GIT_NDA_DEPS: ${{ secrets.GIT_NDA_DEPS }}
+        HAS_GIT_NDA_DEPS_STEAMWORKSSDK: ${{ secrets.GIT_NDA_DEPS_STEAMWORKSSDK }}
       run: |
         cd Dependencies/SteamworksSDK
         git init
@@ -179,6 +211,10 @@ jobs:
       with:
         submodules: 'true'
     - name: Checkout DiscordGameSDK
+      if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_DISCORDGAMESDK
+      env:
+        HAS_GIT_NDA_DEPS: ${{ secrets.GIT_NDA_DEPS }}
+        HAS_GIT_NDA_DEPS_DISCORDGAMESDK: ${{ secrets.GIT_NDA_DEPS_DISCORDGAMESDK }}
       run: |
         cd Dependencies/DiscordGameSDK
         git init
@@ -186,6 +222,10 @@ jobs:
         git pull origin main
         cd ../..
     - name: Checkout NVIDIA Nsight Aftermath SDK
+      if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_NSIGHTAFTERMATH
+      env:
+        HAS_GIT_NDA_DEPS: ${{ secrets.GIT_NDA_DEPS }}
+        HAS_GIT_NDA_DEPS_NSIGHTAFTERMATH: ${{ secrets.GIT_NDA_DEPS_NSIGHTAFTERMATH }}
       run: |
         cd Dependencies/Nsight-Aftermath
         git init
@@ -193,6 +233,10 @@ jobs:
         git pull origin main
         cd ../..
     - name: Checkout NVIDIA Reflex SDK
+      if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_NVIDIAREFLEX
+      env:
+        HAS_GIT_NDA_DEPS: ${{ secrets.GIT_NDA_DEPS }}
+        HAS_GIT_NDA_DEPS_NVIDIAREFLEX: ${{ secrets.GIT_NDA_DEPS_NVIDIAREFLEX }}
       run: |
         cd Dependencies/NVIDIA-Reflex
         git init
@@ -200,6 +244,10 @@ jobs:
         git pull origin main
         cd ../..
     - name: Checkout Steamworks SDK
+      if: env.HAS_GIT_NDA_DEPS && env.HAS_GIT_NDA_DEPS_STEAMWORKSSDK
+      env:
+        HAS_GIT_NDA_DEPS: ${{ secrets.GIT_NDA_DEPS }}
+        HAS_GIT_NDA_DEPS_STEAMWORKSSDK: ${{ secrets.GIT_NDA_DEPS_STEAMWORKSSDK }}
       run: |
         cd Dependencies/SteamworksSDK
         git init
