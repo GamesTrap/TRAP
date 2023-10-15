@@ -3,7 +3,7 @@
 #include <numeric>
 #include <limits>
 
-#include <catch_amalgamated.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
@@ -92,7 +92,7 @@ namespace
         {
             if constexpr(std::floating_point<T>)
             {
-                REQUIRE_THAT(TRAP::Math::Floor(val), Catch::Matchers::WithinRel(std::floor(val), Epsilon));
+                REQUIRE(TRAP::Math::Equal(TRAP::Math::Floor(val), std::floor(val), Epsilon));
             }
             else if constexpr(TRAP::Math::IsVec<T>)
             {
@@ -126,15 +126,15 @@ namespace
         static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
         static constexpr T max = std::numeric_limits<T>::max();
-        REQUIRE_THAT(TRAP::Math::Floor(max), Catch::Matchers::WithinRel(max, Epsilon));
+        REQUIRE(TRAP::Math::Equal(TRAP::Math::Floor(max), max, Epsilon));
         static constexpr T min = std::numeric_limits<T>::lowest();
-        REQUIRE_THAT(TRAP::Math::Floor(min), Catch::Matchers::WithinRel(min, Epsilon));
+        REQUIRE(TRAP::Math::Equal(TRAP::Math::Floor(min), min, Epsilon));
         static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
         REQUIRE(TRAP::Math::IsNaN(TRAP::Math::Floor(nan)));
         static constexpr T inf = std::numeric_limits<T>::infinity();
-        REQUIRE_THAT(TRAP::Math::Floor(inf), Catch::Matchers::WithinRel(inf, Epsilon));
+        REQUIRE(TRAP::Math::IsInf(TRAP::Math::Floor(inf)));
         static constexpr T ninf = -std::numeric_limits<T>::infinity();
-        REQUIRE_THAT(TRAP::Math::Floor(ninf), Catch::Matchers::WithinRel(ninf, Epsilon));
+        REQUIRE(TRAP::Math::IsInf(TRAP::Math::Floor(ninf)));
     }
 }
 

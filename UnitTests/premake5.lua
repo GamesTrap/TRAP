@@ -14,9 +14,7 @@ project "UnitTests"
 	{
 		"src/**.h",
 		"src/**.hpp",
-		"src/**.cpp",
-
-		"%{IncludeDir.CATCH2}/catch_amalgamated.cpp",
+		"src/**.cpp"
 	}
 
 	--Exclude all folders in Platform, since not all platforms need all of these
@@ -41,7 +39,6 @@ project "UnitTests"
 
 	externalincludedirs
 	{
-		"%{IncludeDir.CATCH2}",
 		"%{wks.location}/TRAP/src",
 
 		"%{IncludeDir.IMGUI}",
@@ -57,7 +54,8 @@ project "UnitTests"
 		"%{IncludeDir.BOX2D}",
 		"%{IncludeDir.TRACY}",
 		"%{IncludeDir.FMT}",
-		"%{IncludeDir.GCEM}"
+		"%{IncludeDir.GCEM}",
+		"%{IncludeDir.CATCH2}"
 	}
 
 	links
@@ -72,7 +70,8 @@ project "UnitTests"
 		"Box2D",
 		"TracyClient",
 		"fmt",
-		"SPIRV-Cross"
+		"SPIRV-Cross",
+		"Catch2"
 	}
 
 	-- Discord Game SDK stuff

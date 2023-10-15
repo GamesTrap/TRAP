@@ -3,7 +3,7 @@
 #include <limits>
 #include <cmath>
 
-#include <catch_amalgamated.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
@@ -55,7 +55,7 @@ namespace
 
         for(const T val : values)
         {
-            REQUIRE_THAT(TRAP::Math::ATan(val), Catch::Matchers::WithinRel(std::atan(val), Epsilon));
+            REQUIRE(TRAP::Math::Equal(TRAP::Math::ATan(val), std::atan(val), Epsilon));
         }
     }
 

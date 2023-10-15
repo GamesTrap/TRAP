@@ -3,7 +3,7 @@
 #include <numeric>
 #include <limits>
 
-#include <catch_amalgamated.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
@@ -169,7 +169,7 @@ namespace
         {
             if constexpr(std::floating_point<T>)
             {
-                REQUIRE_THAT(TRAP::Math::RoundEven(val), Catch::Matchers::WithinRel(expected, Epsilon));
+                REQUIRE(TRAP::Math::Equal(TRAP::Math::RoundEven(val), expected, Epsilon));
             }
             else if constexpr(TRAP::Math::IsVec<T>)
             {

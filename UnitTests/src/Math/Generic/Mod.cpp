@@ -3,7 +3,7 @@
 #include <numeric>
 #include <limits>
 
-#include <catch_amalgamated.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
@@ -65,7 +65,7 @@ namespace
                 if constexpr(std::floating_point<T>)
                 {
                     static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
-                    REQUIRE_THAT(TRAP::Math::Mod(val1, val2), Catch::Matchers::WithinRel(expected, Epsilon));
+                    REQUIRE(TRAP::Math::Equal(TRAP::Math::Mod(val1, val2), expected, Epsilon));
                 }
                 else if constexpr(std::integral<T>)
                 {

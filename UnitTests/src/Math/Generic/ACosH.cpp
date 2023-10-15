@@ -3,7 +3,7 @@
 #include <limits>
 #include <cmath>
 
-#include <catch_amalgamated.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
@@ -32,7 +32,7 @@ namespace
 
         for(const T val : values)
         {
-            REQUIRE_THAT(TRAP::Math::ACosH(val), Catch::Matchers::WithinRel(std::acosh(val), Epsilon));
+            REQUIRE(TRAP::Math::Equal(TRAP::Math::ACosH(val), std::acosh(val), Epsilon));
         }
     }
 

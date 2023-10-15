@@ -3,7 +3,7 @@
 #include <numeric>
 #include <limits>
 
-#include <catch_amalgamated.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"
 
@@ -42,7 +42,7 @@ namespace
 
             for(const auto& [val, expected] : values)
             {
-                REQUIRE_THAT(TRAP::Math::Fract(val), Catch::Matchers::WithinRel(expected, Epsilon));
+                REQUIRE(TRAP::Math::Equal(TRAP::Math::Fract(val), expected, Epsilon));
             }
         }
         else if constexpr(TRAP::Math::IsVec<T> && std::floating_point<typename T::value_type>)
