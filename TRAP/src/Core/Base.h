@@ -183,7 +183,7 @@ template<uint32_t major, uint32_t minor, uint32_t patch>
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-inline constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION<0, 9, 115>();
+inline constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION<0, 9, 116>();
 
 //-------------------------------------------------------------------------------------------------------------------//
 

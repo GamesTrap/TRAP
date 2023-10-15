@@ -296,6 +296,18 @@ namespace
 		case TRAP::Input::Key::F10: return ImGuiKey_F10;
 		case TRAP::Input::Key::F11: return ImGuiKey_F11;
 		case TRAP::Input::Key::F12: return ImGuiKey_F12;
+		case TRAP::Input::Key::F13: return ImGuiKey_F13;
+		case TRAP::Input::Key::F14: return ImGuiKey_F14;
+		case TRAP::Input::Key::F15: return ImGuiKey_F15;
+		case TRAP::Input::Key::F16: return ImGuiKey_F16;
+		case TRAP::Input::Key::F17: return ImGuiKey_F17;
+		case TRAP::Input::Key::F18: return ImGuiKey_F18;
+		case TRAP::Input::Key::F19: return ImGuiKey_F19;
+		case TRAP::Input::Key::F20: return ImGuiKey_F20;
+		case TRAP::Input::Key::F21: return ImGuiKey_F21;
+		case TRAP::Input::Key::F22: return ImGuiKey_F22;
+		case TRAP::Input::Key::F23: return ImGuiKey_F23;
+		case TRAP::Input::Key::F24: return ImGuiKey_F24;
 
 		default:
 			return ImGuiKey_None;
