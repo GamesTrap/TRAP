@@ -67,7 +67,7 @@
 			if(it != uniqueResources.end()) //Not unique
 			{
 				const auto sharedIndex = it - uniqueResources.begin();
-				shaderUsage[sharedIndex] |= ShaderResource.UsedStages;
+				shaderUsage[NumericCast<std::size_t>(sharedIndex)] |= ShaderResource.UsedStages;
 			}
 			else //Unique, Add it to the list of shader resources
 			{

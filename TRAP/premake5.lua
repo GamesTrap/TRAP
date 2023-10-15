@@ -399,12 +399,6 @@ project "TRAP-Headless"
 			"src/Network/Sockets/Platform/SocketImplWinAPI.cpp"
 		}
 
-		links
-		{
-			"Imm32",
-			"ws2_32"
-		}
-
 	filter "system:linux"
 		-- Add Linux-specific files
 		files
