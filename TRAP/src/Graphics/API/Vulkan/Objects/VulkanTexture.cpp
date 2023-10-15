@@ -498,5 +498,5 @@ void TRAP::Graphics::API::VulkanTexture::PreInit()
 	}
 
 	TRAP::Utils::DisplayError(TRAP::Utils::ErrorCode::VulkanNoMatchingMemoryTypeFound);
-	return 0;
+	std::unreachable();
 }

@@ -106,4 +106,20 @@ namespace std::ranges
 
 #endif /*__cpp_lib_ranges_contains*/
 
+#ifndef __cpp_lib_unreachable
+
+namespace std
+{
+    [[noreturn]] inline void unreachable()
+    {
+    #ifdef __GNUC__
+        __builtin_unreachable();
+    #elif defined(_MSC_VER)
+        __assume(false);
+    #endif
+    }
+}
+
+#endif /*__cpp_lib_unreachable*/
+
 #endif /*TRAP_BACKPORTS_H*/
