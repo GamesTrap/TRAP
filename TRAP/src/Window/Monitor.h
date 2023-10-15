@@ -6,8 +6,9 @@
 #include <cstdint>
 #include <string>
 #include <vector>
-#include <Maths/Math.h>
-#include <Window/WindowingAPI.h>
+
+#include "Maths/Math.h"
+#include "Window/WindowingAPI.h"
 
 namespace TRAP
 {
