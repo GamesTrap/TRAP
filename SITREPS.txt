@@ -4536,3 +4536,4 @@ SITREP 10/15/2023|23w41a2
     - UnitTests Replaced Catch2 amalgamated with normal Catch2 ~<15 mins
     - Fixed Build-CI Clang warnings ~<5 mins
     - Clangd Disabled IWYU warnings for TRAPPCH.h ~<5 mins
+    - MSVC Resolved SteamworksSDK warnings ~<5 mins

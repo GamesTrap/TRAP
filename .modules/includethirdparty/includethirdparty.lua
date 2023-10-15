@@ -118,7 +118,6 @@ function m.IncludeSteamworksSDK()
 
     filter {}
     externalincludedirs "%{IncludeDir.STEAMWORKSSDK}"
-    files "%{IncludeDir.STEAMWORKSSDK}/**.h"
     defines "USE_STEAMWORKS_SDK"
 
     return true

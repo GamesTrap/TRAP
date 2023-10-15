@@ -416,7 +416,7 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] ISteamGameServer* GetSteamGameServer()
+[[nodiscard]] ISteamGameServer* TRAP::Utils::Steam::GetSteamGameServer()
 {
     TRAP_ASSERT(steamServerInitialized, "Steam::GetSteamGameServer(): SteamGameServer is not initialized!");
 
@@ -425,7 +425,7 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] ISteamGameServerStats* GetSteamGameServerStats()
+[[nodiscard]] ISteamGameServerStats* TRAP::Utils::Steam::GetSteamGameServerStats()
 {
     TRAP_ASSERT(steamServerInitialized, "Steam::GetSteamGameServerStats(): SteamGameServer is not initialized!");
 

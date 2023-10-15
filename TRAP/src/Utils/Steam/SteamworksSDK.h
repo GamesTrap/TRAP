@@ -8,12 +8,12 @@
 #ifdef USE_STEAMWORKS_SDK
 
 #ifdef _MSC_VER
-	#pragma warning(push, 0)
+    #pragma warning(disable: 4996)
 #endif /*_MSC_VER*/
 #include <steam_api.h>
 #include <steam_gameserver.h>
 #ifdef _MSC_VER
-	#pragma warning(pop)
+    #pragma warning(default: 4996)
 #endif /*_MSC_VER*/
 
 #endif /*USE_STEAMWORKS_SDK*/
