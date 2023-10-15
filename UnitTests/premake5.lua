@@ -4,7 +4,7 @@ project "UnitTests"
 	location "."
 	kind "ConsoleApp"
 	language "C++"
-	warnings "Extra"
+	warnings "off"
 
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
