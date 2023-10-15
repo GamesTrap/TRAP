@@ -28,7 +28,6 @@ Modified by Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 #include "PNGImage.h"
 
-#include "Utils/String/String.h"
 #include "FileSystem/FileSystem.h"
 #include "Maths/Math.h"
 #include "Utils/Memory.h"

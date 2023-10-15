@@ -1,13 +1,9 @@
 #ifndef TRAP_CONVERTHASHTOSTRING_H
 #define TRAP_CONVERTHASHTOSTRING_H
 
-#include "Core/Base.h"
-
 #include <array>
 #include <cstdint>
-#include <iomanip>
 #include <string>
-#include <sstream>
 
 #ifdef _MSC_VER
 	#pragma warning(push, 0)

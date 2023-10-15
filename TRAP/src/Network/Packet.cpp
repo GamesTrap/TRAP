@@ -29,9 +29,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 #include "Packet.h"
 
-#include "Utils/Utils.h"
-#include "Utils/Memory.h"
-
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] const void* TRAP::Network::Packet::OnSend(std::size_t& size)

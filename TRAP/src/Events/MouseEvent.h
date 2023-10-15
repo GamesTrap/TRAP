@@ -5,6 +5,8 @@
 
 #include "Input/Input.h"
 #include "Event.h"
+#include "Maths/Types.h"
+#include "Maths/Vec2.h"
 
 namespace TRAP::Events
 {

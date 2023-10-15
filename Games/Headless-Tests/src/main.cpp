@@ -1,11 +1,11 @@
 #include <TRAP.h>
 
-#include "AntiAliasing/AntiAliasingTests.h"
-#include "Compute/ComputeTests.h"
-#include "FileSystem/FileSystemTests.h"
-#include "Hash/HashTests.h"
-#include "Headless/HeadlessTests.h"
-#include "IPAddress/IPAddressTests.h"
+#include "AntiAliasing/AntiAliasingTests.h" // IWYU pragma: keep
+#include "Compute/ComputeTests.h" // IWYU pragma: keep
+#include "FileSystem/FileSystemTests.h" // IWYU pragma: keep
+#include "Hash/HashTests.h" // IWYU pragma: keep
+#include "Headless/HeadlessTests.h" // IWYU pragma: keep
+#include "IPAddress/IPAddressTests.h" // IWYU pragma: keep
 
 class HeadlessTestsApp final : public TRAP::Application
 {

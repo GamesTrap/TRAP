@@ -4,6 +4,7 @@
 #ifndef TRAP_HEADLESS_MODE
 
 #include "Graphics/Cameras/Camera.h"
+#include "Maths/Math.h"
 
 class TRAPEditorLayer;
 

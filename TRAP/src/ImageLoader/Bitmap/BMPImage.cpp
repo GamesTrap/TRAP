@@ -1,7 +1,6 @@
 #include "TRAPPCH.h"
 #include "BMPImage.h"
 
-#include "Utils/String/String.h"
 #include "FileSystem/FileSystem.h"
 #include "Maths/Math.h"
 #include "Utils/Memory.h"

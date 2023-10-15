@@ -10,13 +10,11 @@
 #include "Buffers/IndexBuffer.h"
 #include "Buffers/VertexBuffer.h"
 #include "Cameras/Camera.h"
-#include "Shaders/ShaderManager.h"
-#include "Textures/TextureManager.h"
 #include "Graphics/Cameras/Editor/EditorCamera.h"
 #include "Scene/Components.h"
 #include "Graphics/Cameras/Orthographic/OrthographicCamera.h"
+#include "Graphics/Textures/Texture.h"
 #include "Graphics/Textures/SubTexture2D.h"
-#include <cstdint>
 
 namespace TRAP::Graphics
 {

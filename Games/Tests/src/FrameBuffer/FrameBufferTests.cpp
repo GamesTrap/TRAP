@@ -1,5 +1,4 @@
 #include "FrameBufferTests.h"
-#include "Graphics/RenderCommand.h"
 
 namespace
 {

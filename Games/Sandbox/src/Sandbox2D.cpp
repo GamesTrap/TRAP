@@ -1,7 +1,4 @@
 #include "Sandbox2D.h"
-#include "Application.h"
-#include "Events/FileEvent.h"
-#include "FileSystem/FileWatcher.h"
 
 Sandbox2D::Sandbox2D()
 	: Layer("Sandbox2D")

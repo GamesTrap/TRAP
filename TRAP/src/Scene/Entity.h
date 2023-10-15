@@ -1,8 +1,6 @@
 #ifndef TRAP_ENTITY_H
 #define TRAP_ENTITY_H
 
-#include "Core/PlatformDetection.h"
-#include "Core/Base.h"
 #include "TRAP_Assert.h"
 #include "Scene.h"
 

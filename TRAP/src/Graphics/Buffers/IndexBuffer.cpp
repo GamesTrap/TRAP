@@ -1,9 +1,6 @@
 #include "TRAPPCH.h"
 #include "IndexBuffer.h"
 
-#include "Graphics/API/Objects/Buffer.h"
-#include "VertexBufferLayout.h"
-
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const std::span<const uint32_t> indices,
                                                                                            const UpdateFrequency updateFrequency)
 {

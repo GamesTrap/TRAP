@@ -1,7 +1,8 @@
 #ifndef TRAP_RENDERER_H
 #define TRAP_RENDERER_H
 
-#include "Maths/Math.h"
+#include "Maths/Types.h"
+#include "Maths/Mat4.h"
 
 namespace TRAP::Graphics
 {

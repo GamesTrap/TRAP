@@ -1,10 +1,7 @@
 #include "TRAPPCH.h"
 #include "VulkanTexture.h"
 
-#include "VulkanQueue.h"
-#include "VulkanBuffer.h"
 #include "VulkanCommandBuffer.h"
-#include "VulkanMemoryAllocator.h"
 #include "VulkanPhysicalDevice.h"
 #include "VulkanDevice.h"
 #include "VulkanInits.h"

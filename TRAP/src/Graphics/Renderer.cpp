@@ -1,7 +1,6 @@
 #include "TRAPPCH.h"
 #include "Renderer.h"
 
-#include "Buffers/VertexBufferLayout.h"
 #include "Buffers/VertexBuffer.h"
 #include "Buffers/IndexBuffer.h"
 #include "Buffers/StorageBuffer.h"

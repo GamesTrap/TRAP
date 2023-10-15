@@ -2,12 +2,10 @@
 #include "VulkanFence.h"
 
 #include "VulkanInits.h"
-#include "VulkanDevice.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/API/Objects/AftermathTracker.h"
-#include "Utils/Dialogs/Dialogs.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 
 TRAP::Graphics::API::VulkanFence::VulkanFence(const bool signalled)

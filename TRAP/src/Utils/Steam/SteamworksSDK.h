@@ -3,7 +3,6 @@
 
 #include <cstdint>
 #include <string>
-#include <optional>
 
 #ifdef USE_STEAMWORKS_SDK
 

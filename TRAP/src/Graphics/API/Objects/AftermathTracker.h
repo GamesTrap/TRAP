@@ -9,8 +9,6 @@
 #include <GFSDK_Aftermath_GpuCrashDump.h>
 #endif /*ENABLE_NSIGHT_AFTERMATH*/
 
-#include <string>
-
 namespace TRAP::Graphics::AftermathTracker
 {
 	/// <summary>

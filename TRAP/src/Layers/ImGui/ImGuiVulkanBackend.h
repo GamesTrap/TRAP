@@ -29,7 +29,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifndef TRAP_HEADLESS_MODE
 
-#include <optional>
 #include <vector>
 
 // dear imgui: Renderer Backend for Vulkan

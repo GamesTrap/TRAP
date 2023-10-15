@@ -34,10 +34,10 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include <array>
 
-#include "Vec3.h"
-#include "Core/PlatformDetection.h"
 #include "Core/Base.h"
 #include "TRAP_Assert.h"
+#include "Utils/Utils.h"
+#include "Vec3.h"
 
 template<typename T>
 requires std::floating_point<T>

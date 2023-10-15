@@ -2,7 +2,6 @@
 #define TRAP_VERTEXBUFFERLAYOUT_H
 
 #include "Graphics/API/RendererAPI.h"
-#include "Graphics/RenderCommand.h"
 
 namespace TRAP::Graphics
 {

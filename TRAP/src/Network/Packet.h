@@ -29,7 +29,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_NETWORK_PACKET_H
 #define TRAP_NETWORK_PACKET_H
 
-#include "Core/Base.h"
 #include "Utils/Utils.h"
 #include "Utils/Memory.h"
 

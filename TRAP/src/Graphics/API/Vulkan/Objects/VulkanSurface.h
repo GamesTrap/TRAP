@@ -3,7 +3,9 @@
 
 #ifndef TRAP_HEADLESS_MODE
 
-#include "Window/WindowingAPI.h"
+#include "Core/Base.h"
+#include "Window/Window.h"
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 
 namespace TRAP::Graphics::API
 {

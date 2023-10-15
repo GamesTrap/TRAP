@@ -2,7 +2,6 @@
 #include "VulkanDescriptorSet.h"
 
 #include "VulkanBuffer.h"
-#include "VulkanPhysicalDevice.h"
 #include "VulkanDevice.h"
 #include "VulkanSampler.h"
 #include "VulkanRootSignature.h"

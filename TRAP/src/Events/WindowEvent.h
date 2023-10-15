@@ -4,7 +4,6 @@
 #ifndef TRAP_HEADLESS_MODE
 
 #include "Event.h"
-#include "Maths/Vec2.h"
 #include "Window/Window.h"
 
 namespace TRAP::Events

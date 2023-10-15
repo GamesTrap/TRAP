@@ -31,7 +31,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include <imgui.h>
 
-#include "Core/PlatformDetection.h"
 #include "Window/WindowingAPI.h"
 
 namespace TRAP::Graphics

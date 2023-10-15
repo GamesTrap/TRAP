@@ -3,7 +3,6 @@
 
 #include "VulkanInits.h"
 #include "VulkanInstance.h"
-#include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)

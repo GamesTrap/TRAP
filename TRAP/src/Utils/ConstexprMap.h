@@ -1,7 +1,6 @@
 #ifndef TRAP_CONSTEXPRMAP_H
 #define TRAP_CONSTEXPRMAP_H
 
-#include <cstdint>
 #include <array>
 #include <algorithm>
 #include <optional>

@@ -7,7 +7,6 @@
 #include <optional>
 #include <iostream>
 #include <fstream>
-#include <algorithm>
 
 #include <fmt/format.h>
 #include <fmt/color.h>

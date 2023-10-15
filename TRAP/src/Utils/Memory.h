@@ -1,10 +1,6 @@
 #ifndef TRAP_BYTESWAP_H
 #define TRAP_BYTESWAP_H
 
-#include <bitset>
-#include <type_traits>
-#include <algorithm>
-
 #include "Core/Base.h"
 #include "TRAP_Assert.h"
 

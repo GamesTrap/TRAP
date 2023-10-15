@@ -1,22 +1,19 @@
 #include "TRAPPCH.h"
 #include "VulkanShader.h"
 
-#include "VulkanDevice.h"
 #include "Graphics/API/ShaderReflection.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/API/Vulkan/VulkanShaderReflection.h"
+#include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
 #include "Graphics/API/Vulkan/Objects/VulkanRootSignature.h"
 #include "Graphics/API/Objects/RootSignature.h"
-#include "Graphics/API/Objects/DescriptorPool.h"
 #include "Graphics/API/Objects/DescriptorSet.h"
+#include "Graphics/API/Objects/DescriptorPool.h"
 #include "Graphics/API/Objects/Buffer.h"
-#include "Graphics/Buffers/VertexBufferLayout.h"
-#include "Graphics/Textures/TextureManager.h"
 #include "Graphics/Textures/Texture.h"
 #include "Graphics/Buffers/UniformBuffer.h"
 #include "Graphics/Buffers/StorageBuffer.h"
-#include "Application.h"
 
 TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesystem::path filepath,
 												const RendererAPI::BinaryShaderDesc& desc,

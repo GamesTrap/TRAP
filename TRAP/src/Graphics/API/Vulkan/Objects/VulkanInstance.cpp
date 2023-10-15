@@ -1,11 +1,9 @@
 #include "TRAPPCH.h"
 #include "VulkanInstance.h"
 
-#include "Application.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
-#include "Utils/Dialogs/Dialogs.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 
 TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appName,

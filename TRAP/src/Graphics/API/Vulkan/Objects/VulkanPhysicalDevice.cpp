@@ -1,14 +1,11 @@
 #include "TRAPPCH.h"
 #include "VulkanPhysicalDevice.h"
 
-#include "Application.h"
-#include "VulkanInits.h"
 #include "VulkanInstance.h"
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
-#include "Utils/Dialogs/Dialogs.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 
 std::multimap<uint32_t, TRAP::Utils::UUID> TRAP::Graphics::API::VulkanPhysicalDevice::s_availablePhysicalDeviceUUIDs{};

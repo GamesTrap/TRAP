@@ -1,10 +1,7 @@
 #ifndef TRAPEDITOR_SCENEGRAPHPANEL_H
 #define TRAPEDITOR_SCENEGRAPHPANEL_H
 
-#include <Scene/Components.h>
-#include <Scene/Scene.h>
-#include <Core/Base.h>
-#include <Scene/Entity.h>
+#include <TRAP.h>
 
 namespace TRAP
 {

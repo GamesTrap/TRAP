@@ -35,9 +35,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifndef TRAP_HEADLESS_MODE
 
-#include "Application.h"
-#include "Utils/Utils.h"
 #include "Utils/DynamicLoading/DynamicLoading.h"
+#include "Utils/String/String.h"
 
 //Note: Versions of wayland-scanner prior to 1.17.91 named every global array of
 //      wl_interface pointers "types", making it impossible to combine several unmodified

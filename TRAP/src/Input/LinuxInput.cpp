@@ -38,8 +38,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "Events/ControllerEvent.h"
 #include "Window/WindowingAPI.h"
-#include "ControllerMappings.h"
-#include "Utils/Utils.h"
 #include "Utils/String/String.h"
 
 TRAP::Input::ControllerLinuxLibrary TRAP::Input::s_linuxController{};

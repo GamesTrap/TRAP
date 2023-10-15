@@ -1,7 +1,6 @@
 #include "TRAPPCH.h"
 #include "VulkanPipeline.h"
 
-#include "Utils/Utils.h"
 #include "VulkanRenderPass.h"
 #include "VulkanRootSignature.h"
 #include "VulkanShader.h"

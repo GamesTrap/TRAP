@@ -3,8 +3,12 @@
 
 #include <algorithm>
 #include <vector>
+#include <filesystem>
 
-#include "Maths/Math.h"
+#include "Core/Base.h"
+
+#include "Maths/Types.h"
+#include "Maths/Vec2.h"
 
 namespace TRAP
 {

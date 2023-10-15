@@ -6,6 +6,7 @@
 #if defined(TRAP_PLATFORM_LINUX) && !defined(TRAP_HEADLESS_MODE)
 
 #include "Utils/DynamicLoading/DynamicLoading.h"
+#include "Utils/String/String.h"
 
 void TRAP::INTERNAL::WindowingAPI::InitDBusPOSIX()
 {

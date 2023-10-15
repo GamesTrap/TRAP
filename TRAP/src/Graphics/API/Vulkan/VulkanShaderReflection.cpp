@@ -4,7 +4,6 @@
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/ShaderReflection.h"
 #include "Graphics/API/SPIRVTools.h"
-#include "Utils/String/String.h"
 
 constexpr std::array<TRAP::Graphics::RendererAPI::DescriptorType,
                      std::to_underlying(TRAP::Graphics::API::SPIRVTools::ResourceType::RESOURCE_TYPE_COUNT)> SPIRVToDescriptorType =

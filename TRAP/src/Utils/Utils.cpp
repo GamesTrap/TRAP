@@ -2,12 +2,10 @@
 #include "Utils.h"
 
 #include "Core/PlatformDetection.h"
-#include "Utils/Memory.h"
 #include "Utils/String/String.h"
-#include "Utils/Dialogs/Dialogs.h"
-#include "Application.h"
-#include "Utils/DynamicLoading/DynamicLoading.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
+#include "Utils/DynamicLoading/DynamicLoading.h"
+#include "Application.h"
 
 [[nodiscard]] std::string TRAP::Utils::UUIDToString(const TRAP::Utils::UUID& uuid)
 {

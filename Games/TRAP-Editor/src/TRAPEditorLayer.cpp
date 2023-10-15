@@ -1,12 +1,6 @@
 #include "TRAPEditorLayer.h"
 
-#include "Graphics/RenderCommand.h"
-#include "Scene/SceneSerializer.h"
-
-#include <imgui.h>
 #include <imgui_internal.h>
-
-#include <utility>
 
 TRAPEditorLayer::TRAPEditorLayer()
 	: Layer("TRAPEditorLayer")

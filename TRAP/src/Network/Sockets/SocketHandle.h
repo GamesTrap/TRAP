@@ -31,8 +31,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include <cstdint>
 
-#include "Core/PlatformDetection.h"
-
 namespace TRAP::Network
 {
 #ifdef TRAP_PLATFORM_WINDOWS

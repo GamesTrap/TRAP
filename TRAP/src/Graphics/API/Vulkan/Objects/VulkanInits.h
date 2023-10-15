@@ -2,10 +2,10 @@
 #define TRAP_VULKANINITS_H
 
 #include "Graphics/API/RendererAPI.h"
-#include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "VulkanMemoryAllocator.h"
 
 #include "Graphics/API/ImageFormat.h"
+#include "Maths/Math.h"
 
 namespace TRAP::Graphics::API::VulkanInits
 {

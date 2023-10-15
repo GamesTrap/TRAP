@@ -5,7 +5,6 @@
 #include "Graphics/Renderer2D.h"
 #include "Utils/Time/TimeStep.h"
 #include "Entity.h"
-#include "ScriptableEntity.h"
 #include "Graphics/Cameras/Editor/EditorCamera.h"
 #include "Utils/Hash/UID.h"
 

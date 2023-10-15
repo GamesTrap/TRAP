@@ -1,7 +1,6 @@
 #include "TRAPPCH.h"
 
 #include "Application.h"
-#include "Core/PlatformDetection.h"
 #include "Utils/CrashHandler/CrashHandler.h"
 
 #ifndef TRAP_UNITTESTS

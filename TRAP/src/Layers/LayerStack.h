@@ -1,7 +1,9 @@
 #ifndef TRAP_LAYERSTACK_H
 #define TRAP_LAYERSTACK_H
 
-#include "Core/Base.h"
+#include <memory>
+#include <vector>
+
 #include "Layers/Layer.h"
 
 namespace TRAP

@@ -3,7 +3,6 @@
 
 #include "Application.h"
 #include "Vulkan/VulkanRenderer.h"
-#include "Utils/Dialogs/Dialogs.h"
 #include "Vulkan/VulkanCommon.h"
 #include "Vulkan/Objects/VulkanInits.h"
 #include "Vulkan/Objects/VulkanInstance.h"
@@ -14,7 +13,6 @@
 #include "Objects/Queue.h"
 #include "Objects/Sampler.h"
 #include "Objects/SwapChain.h"
-#include "ImageLoader/Image.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -1,8 +1,3 @@
-#include <cmath>
-#include <numeric>
-#include <limits>
-#include <concepts>
-
 #include <catch2/catch_test_macros.hpp>
 
 #include "TRAP/src/Maths/Math.h"

@@ -1,5 +1,3 @@
-#include <concepts>
-#include <numeric>
 #include <limits>
 #include <cmath>
 

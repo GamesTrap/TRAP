@@ -4,7 +4,6 @@
 #include "FileSystem.h"
 #include "Events/FileEvent.h"
 #include "Utils/String/String.h"
-#include "Utils/Utils.h"
 
 TRAP::FileSystem::FileWatcher::FileWatcher(std::string name, const bool recursive)
     : m_recursive(recursive), m_name(std::move(name))

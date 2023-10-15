@@ -38,7 +38,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Mat3.h"
 #include "Mat4.h"
 #include "Quaternion.h"
-#include "Core/PlatformDetection.h"
 #include "Core/Base.h"
 #include "TRAP_Assert.h"
 

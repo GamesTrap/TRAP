@@ -1,7 +1,9 @@
 #ifndef TRAP_RENDERER2D_H
 #define TRAP_RENDERER2D_H
 
-#include "Maths/Math.h"
+#include "Maths/Types.h"
+#include "Maths/Mat4.h"
+#include "Maths/Vec3.h"
 
 namespace TRAP
 {

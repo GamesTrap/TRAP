@@ -3,7 +3,6 @@
 
 #include <cstdint>
 #include <iterator>
-#include <type_traits>
 
 namespace TRAP::Utils::INTERNAL
 {

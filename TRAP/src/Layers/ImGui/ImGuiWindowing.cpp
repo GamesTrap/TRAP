@@ -24,14 +24,12 @@ Modified by: Jan "GamesTrap" Schuerkamp
 */
 
 #include "TRAPPCH.h"
-#include "Core/PlatformDetection.h"
 #include "ImGuiWindowing.h"
 
 #ifndef TRAP_HEADLESS_MODE
 
 #include "Application.h"
 #include "Maths/Math.h"
-#include "Utils/Time/TimeStep.h"
 
 namespace
 {

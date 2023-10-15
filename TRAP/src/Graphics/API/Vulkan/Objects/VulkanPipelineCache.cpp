@@ -1,11 +1,9 @@
 #include "TRAPPCH.h"
 #include "VulkanPipelineCache.h"
 
-#include "VulkanDevice.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
-#include "Graphics/API/Vulkan/VulkanRenderer.h"
-#include "FileSystem/FileSystem.h"
+#include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
 
 TRAP::Graphics::API::VulkanPipelineCache::VulkanPipelineCache(const RendererAPI::PipelineCacheDesc& desc)
 {

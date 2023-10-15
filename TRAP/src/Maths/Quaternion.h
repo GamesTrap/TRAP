@@ -32,11 +32,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_QUATERNION_H
 #define TRAP_QUATERNION_H
 
-#include <cmath>
-#include <concepts>
-#include <type_traits>
-
-#include "Core/PlatformDetection.h"
 #include "Core/Base.h"
 #include "TRAP_Assert.h"
 #include "Utils/Utils.h"

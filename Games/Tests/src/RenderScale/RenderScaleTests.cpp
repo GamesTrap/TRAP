@@ -1,6 +1,4 @@
 #include "RenderScaleTests.h"
-#include "Application.h"
-#include <imgui.h>
 
 RenderScaleTests::RenderScaleTests()
 	: Layer("Render Scaling")

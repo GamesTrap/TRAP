@@ -3,7 +3,6 @@
 
 #include "Core/PlatformDetection.h"
 #include "Log/Log.h"
-#include <filesystem>
 #include <source_location>
 
 #if (defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)) && !defined(TRAP_UNITTESTS)
@@ -27,7 +26,7 @@
 		/// Sets a cross platform debug break.
 		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
 		/// </summary>
-		#include <signal.h>
+		#include <csignal>
 		inline void TRAP_DEBUG_BREAK()
 		{
 			raise(SIGTRAP);

@@ -1,8 +1,5 @@
 #include "FTPTests.h"
 
-#include <fmt/format.h>
-#include <fmt/ostream.h>
-
 void FTPTests::OnAttach()
 {
 	m_ftpThread = std::make_unique<std::thread>(FTP);

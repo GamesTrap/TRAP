@@ -3,7 +3,8 @@
 
 #include <array>
 
-#include "Maths/Math.h"
+#include "Maths/Types.h"
+#include "Maths/Vec2.h"
 
 namespace TRAP::Graphics
 {

@@ -1,6 +1,5 @@
 #include "AntiAliasingTests.h"
 
-#include <Graphics/API/Objects/Queue.h>
 #include <ImageLoader/PortableMaps/PPMImage.h>
 
 void AntiAliasingTests::OnAttach()

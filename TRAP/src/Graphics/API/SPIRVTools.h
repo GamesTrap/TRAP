@@ -18,8 +18,6 @@
 	#pragma warning(pop)
 #endif /*_MSC_VER*/
 
-#include "Core/Base.h"
-
 namespace TRAP::Graphics::API::SPIRVTools
 {
 	struct Type

@@ -1,7 +1,12 @@
 #ifndef TRAP_VULKANINSTANCE_H
 #define TRAP_VULKANINSTANCE_H
 
-#include "Graphics/API/RendererAPI.h"
+#include <string>
+#include <string_view>
+#include <vector>
+#include <optional>
+
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 
 namespace TRAP::Graphics::API
 {

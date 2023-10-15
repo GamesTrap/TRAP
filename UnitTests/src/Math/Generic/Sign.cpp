@@ -1,6 +1,4 @@
 #include <cstdint>
-#include <cmath>
-#include <numeric>
 #include <limits>
 
 #include <catch2/catch_test_macros.hpp>

@@ -33,8 +33,6 @@
 #include <vector>
 #include <filesystem>
 
-#include "Log/Log.h"
-
 namespace TRAP::FileSystem
 {
 	/// <summary>

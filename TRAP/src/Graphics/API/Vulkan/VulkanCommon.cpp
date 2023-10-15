@@ -3,9 +3,7 @@
 
 #include "Core/Base.h"
 
-#include "Objects/VulkanQueue.h"
 #include "VulkanRenderer.h"
-#include "Graphics/RenderCommand.h"
 #include "Objects/VulkanInits.h"
 
 //-------------------------------------------------------------------------------------------------------------------//

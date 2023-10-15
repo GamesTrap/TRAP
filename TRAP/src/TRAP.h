@@ -134,6 +134,7 @@
 //-----------------------
 
 //----SCENE & COMPONENTS-
+#include "../src/Scene/SceneSerializer.h"
 #include "../src/Scene/Scene.h"
 #include "../src/Scene/Components.h"
 #include "../src/Scene/Entity.h"

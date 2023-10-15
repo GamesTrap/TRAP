@@ -2,6 +2,7 @@
 #define TRAP_SCENECAMERA_H
 
 #include "Graphics/Cameras/Camera.h"
+#include "Maths/Math.h"
 
 namespace TRAP
 {

@@ -4,12 +4,10 @@
 #include "VulkanFence.h"
 #include "VulkanSemaphore.h"
 #include "VulkanCommandBuffer.h"
-#include "VulkanPhysicalDevice.h"
 #include "VulkanDevice.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
-#include <memory>
 
 TRAP::Graphics::API::VulkanQueue::VulkanQueue(const RendererAPI::QueueDesc& desc)
 	: Queue(desc.Type)

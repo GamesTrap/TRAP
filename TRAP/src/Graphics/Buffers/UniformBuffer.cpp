@@ -1,11 +1,8 @@
 #include "TRAPPCH.h"
 #include "UniformBuffer.h"
 
-#include "Application.h"
-#include "VertexBufferLayout.h"
-#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Buffer.h"
-#include "Graphics/API/Objects/DescriptorSet.h"
+#include "Graphics/API/RendererAPI.h"
 #include "Graphics/Shaders/Shader.h"
 
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const uint64_t size,

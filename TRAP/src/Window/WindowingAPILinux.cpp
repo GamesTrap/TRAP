@@ -37,8 +37,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "Application.h"
 #include "Utils/Utils.h"
-#include "Utils/Time/TimeStep.h"
-#include "Utils/DynamicLoading/DynamicLoading.h"
 
 std::optional<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::PlatformGetVideoMode(const InternalMonitor& monitor)
 {

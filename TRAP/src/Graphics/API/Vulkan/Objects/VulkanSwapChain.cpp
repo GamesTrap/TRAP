@@ -5,7 +5,6 @@
 
 #include "VulkanSemaphore.h"
 #include "VulkanFence.h"
-#include "VulkanCommandBuffer.h"
 #include "VulkanCommandPool.h"
 #include "VulkanInits.h"
 #include "VulkanPhysicalDevice.h"

@@ -2,7 +2,6 @@
 
 #include <TRAP.h>
 
-#include <imgui.h>
 #include <imgui_internal.h>
 
 TRAP::SceneGraphPanel::SceneGraphPanel(const Ref<Scene>& context)

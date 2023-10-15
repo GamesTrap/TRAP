@@ -2,8 +2,8 @@
 #include "AftermathTracker.h"
 
 #include "FileSystem/FileSystem.h"
-#include "Application.h"
 #include "Utils/DynamicLoading/DynamicLoading.h"
+#include "Utils/String/String.h"
 
 namespace
 {

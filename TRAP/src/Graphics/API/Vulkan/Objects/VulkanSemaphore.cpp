@@ -2,9 +2,7 @@
 #include "VulkanSemaphore.h"
 
 #include "VulkanInits.h"
-#include "VulkanDevice.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
-#include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore()
 {

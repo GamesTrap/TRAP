@@ -29,6 +29,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_NETWORK_SOCKET_H
 #define TRAP_NETWORK_SOCKET_H
 
+#include "Core/PlatformDetection.h"
+
 #include "SocketHandle.h"
 
 namespace TRAP::Network

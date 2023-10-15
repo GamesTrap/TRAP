@@ -11,7 +11,6 @@ Modified by Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 #include "QOIImage.h"
 
-#include "Utils/String/String.h"
 #include "FileSystem/FileSystem.h"
 #include "Utils/Memory.h"
 #include "Utils/Utils.h"

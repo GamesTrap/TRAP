@@ -1,8 +1,6 @@
 #include "TRAPPCH.h"
 #include "DynamicLoading.h"
 
-#include "Utils/String/String.h"
-
 [[nodiscard]] void* TRAP::Utils::DynamicLoading::LoadLibrary(const std::string_view path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);

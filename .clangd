@@ -1,5 +1,3 @@
-If:
-  PathMatch: [.*\.cpp, .*\.c]
 Diagnostics:
   UnusedIncludes: None
   MissingIncludes: None

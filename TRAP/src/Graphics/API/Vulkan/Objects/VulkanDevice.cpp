@@ -1,14 +1,13 @@
 #include "TRAPPCH.h"
 #include "VulkanDevice.h"
 
+#include "Utils/String/String.h"
 #include "VulkanPhysicalDevice.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/API/Objects/AftermathTracker.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/Objects/VulkanSemaphore.h"
-#include "Graphics/API/Objects/Semaphore.h"
-#include "Application.h"
 
 TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice> physicalDevice,
                                                 std::vector<std::string> deviceExtensions)

@@ -16,7 +16,6 @@
 #include "Vulkan/Objects/VulkanPhysicalDevice.h"
 #include "Vulkan/Objects/VulkanCommandBuffer.h"
 #include "Vulkan/Objects/VulkanTexture.h"
-#include <memory>
 
 TRAP::Graphics::RendererAPI::ResourceLoaderDesc TRAP::Graphics::API::ResourceLoader::DefaultResourceLoaderDesc{8ull << 20u, 2u};
 

@@ -1,8 +1,6 @@
 #include "TRAPPCH.h"
 #include "ThreadPool.h"
 
-#include "BlockingQueue.h"
-
 TRAP::ThreadPool::ThreadPool(const uint32_t threads)
 	: m_queues(threads), m_maxThreadsCount(threads)
 {

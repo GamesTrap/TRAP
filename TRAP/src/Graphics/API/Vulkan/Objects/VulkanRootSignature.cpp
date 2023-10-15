@@ -4,7 +4,6 @@
 #include "Utils/String/String.h"
 #include "VulkanBuffer.h"
 #include "VulkanSampler.h"
-#include "VulkanDescriptorSet.h"
 #include "VulkanDescriptorPool.h"
 #include "VulkanShader.h"
 #include "Graphics/API/ShaderReflection.h"

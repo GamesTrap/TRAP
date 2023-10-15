@@ -44,6 +44,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 #include "ImageLoader/Image.h"
 #include "Input/Input.h"
+#include "Maths/Math.h"
 
 namespace TRAP::INTERNAL
 {

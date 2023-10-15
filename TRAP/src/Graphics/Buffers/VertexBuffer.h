@@ -2,6 +2,7 @@
 #define TRAP_VERTEXBUFFER_H
 
 #include "Application.h"
+#include "Graphics/RenderCommand.h"
 #include "VertexBufferLayout.h"
 #include "Graphics/API/ResourceLoader.h"
 

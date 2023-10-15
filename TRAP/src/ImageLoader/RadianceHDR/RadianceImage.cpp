@@ -1,7 +1,6 @@
 #include "TRAPPCH.h"
 #include "RadianceImage.h"
 
-#include "Application.h"
 #include "Utils/String/String.h"
 #include "FileSystem/FileSystem.h"
 

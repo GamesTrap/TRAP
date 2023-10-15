@@ -31,12 +31,13 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include <array>
 
-#include "Utils/Linux.h"
 #include "Core/PlatformDetection.h"
 
 #include "Network/Sockets/Socket.h"
 
 #ifdef TRAP_PLATFORM_LINUX
+
+#include "Utils/Linux.h"
 
 namespace TRAP::INTERNAL::Network
 {

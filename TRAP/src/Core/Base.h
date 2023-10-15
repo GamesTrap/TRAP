@@ -3,7 +3,6 @@
 
 #include <memory>
 #include <type_traits>
-#include <limits>
 
 #ifdef _MSC_VER
 	#pragma warning(push, 0)

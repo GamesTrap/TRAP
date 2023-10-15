@@ -6,8 +6,10 @@
 
 #include "Window/Window.h"
 #include "ImageFormat.h"
-#include "Maths/Math.h"
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
+#include "Utils/Utils.h"
+#include "Maths/Types.h"
+#include "Maths/Vec3.h"
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 #include <NvLowLatencyVk.h>

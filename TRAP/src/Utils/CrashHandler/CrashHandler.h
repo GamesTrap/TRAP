@@ -1,7 +1,6 @@
 #include <cstdint>
 #include <fmt/format.h>
 #include <type_traits>
-#include <string>
 
 #include "Core/PlatformDetection.h"
 #include "Utils/Linux.h"

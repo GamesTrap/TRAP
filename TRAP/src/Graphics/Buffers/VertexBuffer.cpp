@@ -1,7 +1,6 @@
 #include "TRAPPCH.h"
 #include "VertexBuffer.h"
 
-#include "Application.h"
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Buffer.h"
 

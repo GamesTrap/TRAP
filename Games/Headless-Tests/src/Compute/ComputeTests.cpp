@@ -1,6 +1,5 @@
 #include "ComputeTests.h"
 
-#include <Graphics/API/Objects/Queue.h>
 #include <ImageLoader/PortableMaps/PPMImage.h>
 
 void ComputeTests::OnAttach()

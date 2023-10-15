@@ -4,6 +4,7 @@
 #include <map>
 
 #include "Graphics/API/RendererAPI.h"
+#include "Maths/Math.h"
 
 namespace TRAP::Graphics::API
 {

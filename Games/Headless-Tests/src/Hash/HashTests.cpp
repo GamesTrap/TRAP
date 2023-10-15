@@ -1,7 +1,4 @@
 #include "HashTests.h"
-#include "Utils/Hash/Adler32.h"
-#include "Utils/Hash/CRC32.h"
-#include "Utils/Hash/SHA-2.h"
 
 void HashTests::OnAttach()
 {

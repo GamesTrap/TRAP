@@ -1,8 +1,6 @@
 #ifndef TRAP_VULKANSHADER_H
 #define TRAP_VULKANSHADER_H
 
-#include <memory>
-
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/ShaderReflection.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"

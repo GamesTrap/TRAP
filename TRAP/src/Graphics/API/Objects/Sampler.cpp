@@ -2,7 +2,6 @@
 #include "Sampler.h"
 
 #include "Graphics/API/Vulkan/Objects/VulkanSampler.h"
-#include "Utils/Utils.h"
 
 std::unordered_map<TRAP::Graphics::RendererAPI::SamplerDesc, TRAP::Ref<TRAP::Graphics::Sampler>> TRAP::Graphics::Sampler::s_cachedSamplers;
 

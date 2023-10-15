@@ -4,7 +4,8 @@
 #include <unordered_map>
 
 #include "Core/Base.h"
-#include "Maths/Math.h"
+#include "Maths/Types.h"
+#include "Maths/Vec2.h"
 
 namespace TRAP::Graphics
 {

@@ -1,5 +1,4 @@
 #include "SpriteSheetTests.h"
-#include "Graphics/Textures/SpriteManager.h"
 
 SpriteSheetTests::SpriteSheetTests()
 	: Layer("Sprite Sheet Tests")

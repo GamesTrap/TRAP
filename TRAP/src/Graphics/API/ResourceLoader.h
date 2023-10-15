@@ -7,6 +7,7 @@
 
 #include "RendererAPI.h"
 #include "ImageLoader/Image.h"
+#include "Maths/Math.h"
 
 namespace TRAP::Graphics
 {
