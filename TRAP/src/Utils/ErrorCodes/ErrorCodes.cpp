@@ -50,6 +50,10 @@ static constexpr TRAP::Utils::ConstexprMap<TRAP::Utils::ErrorCode, ErrorData, 24
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifdef _MSC_VER
+#pragma warning(disable: 4702)
+#endif /*_MSC_VER*/
+
 void TRAP::Utils::DisplayError(const ErrorCode error)
 {
     const auto errorData = s_errorMap.at(error);
@@ -80,3 +84,7 @@ void TRAP::Utils::DisplayError(const ErrorCode error)
     throw std::runtime_error(errorData->LogMessage.data());
     std::terminate(); //Make sure we exit program even when using try/catch
 }
+
+#ifdef _MSC_VER
+#pragma warning(default: 4702)
+#endif /*_MSC_VER*/
