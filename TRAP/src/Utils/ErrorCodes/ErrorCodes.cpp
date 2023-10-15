@@ -57,8 +57,10 @@ void TRAP::Utils::DisplayError(const ErrorCode error)
     {
         TRAP_ASSERT(false, Log::ApplicationPrefix, "Unknown error occurred!");
 
+#if !defined(TRAP_HEADLESS_MODE) && !defined(TRAP_UNITTESTS)
         Utils::Dialogs::ShowMsgBox("Unknown error occurred!", "An unknown error has occurred!\nExiting TRAP Engine",
                                    Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
+#endif /*!defined(TRAP_HEADLESS_MODE) && !defined(TRAP_UNITTESTS)*/
 
         TP_CRITICAL(Log::ApplicationPrefix, "Unknown error occurred!");
 
@@ -66,8 +68,10 @@ void TRAP::Utils::DisplayError(const ErrorCode error)
         std::terminate(); //Make sure we exit program even when using try/catch
     }
 
+#if !defined(TRAP_HEADLESS_MODE) && !defined(TRAP_UNITTESTS)
     Utils::Dialogs::ShowMsgBox(std::string(errorData->Title), std::string(errorData->Description),
                                Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
+#endif /*!defined(TRAP_HEADLESS_MODE) && !defined(TRAP_UNITTESTS)*/
 
     TP_CRITICAL(errorData->LogPrefix, errorData->LogMessage);
 
