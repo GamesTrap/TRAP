@@ -66,7 +66,7 @@
 			const auto it = std::ranges::find_if(uniqueResources, [&ShaderResource](const auto* const r){return *r == ShaderResource;});
 			if(it != uniqueResources.end()) //Not unique
 			{
-				const std::size_t sharedIndex = it - uniqueResources.begin();
+				const auto sharedIndex = it - uniqueResources.begin();
 				shaderUsage[sharedIndex] |= ShaderResource.UsedStages;
 			}
 			else //Unique, Add it to the list of shader resources
@@ -111,7 +111,7 @@
 		const auto it = std::ranges::find_if(out->ShaderResources, [parentResource](const ShaderResource& r){return r == *parentResource; });
 		if(it != out->ShaderResources.end())
 		{
-			out->Variables[i].ParentIndex = it - out->ShaderResources.begin();
+			out->Variables[i].ParentIndex = NumericCast<uint64_t>(it - out->ShaderResources.begin());
 		}
 	}
 

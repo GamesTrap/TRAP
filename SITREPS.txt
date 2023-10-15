@@ -4534,3 +4534,5 @@ SITREP 10/15/2023|23w41a2
     - Changed TRAP Engine version to 23w41a2(0.9.115)
     - Added missing Catch2 license to Licenses directory ~<5 mins
     - UnitTests Replaced Catch2 amalgamated with normal Catch2 ~<15 mins
+    - Fixed Build-CI Clang warnings ~<5 mins
+    - Clangd Disabled IWYU warnings for TRAPPCH.h ~<5 mins
