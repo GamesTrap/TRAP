@@ -3,9 +3,6 @@ project "fmt"
     language "C++"
     warnings "off"
 
-    targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-    objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-
     files
     {
         "fmt/src/**.cc",
@@ -14,15 +11,10 @@ project "fmt"
 
     removefiles
     {
-        "fmt/src/fmt.cc"
+        "fmt/src/fmt.cc" --We dont support C++ modules
     }
 
     includedirs
     {
         "fmt/include"
-    }
-
-    defines
-    {
-        "FMT_OS"
     }

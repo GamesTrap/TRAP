@@ -67,9 +67,6 @@ project "GLSLang"
     language "C++"
     warnings "off"
 
-    targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-    objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-
     GenerateBuildInfoH() --Generate build_info.h
 
     files
@@ -130,10 +127,6 @@ project "GLSLang"
 
     defines
     {
-        -- "AMD_EXTENSIONS",
-        -- "NV_EXTENSIONS",
-        "ENABLE_OPT=0",
-        "ENABLE_HLSL=0",
         "_CRT_SECURE_NO_WARNINGS"
     }
 

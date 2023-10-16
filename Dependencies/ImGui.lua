@@ -3,9 +3,6 @@ project "ImGui"
     language "C++"
     warnings "off"
 
-    targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-    objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-
     files
     {
         "ImGui/imconfig.h",
@@ -19,10 +16,4 @@ project "ImGui"
         "ImGui/imstb_textedit.h",
         "ImGui/imstb_truetype.h",
         "ImGui/imgui_demo.cpp"
-    }
-
-    defines
-    {
-        "IMGUI_DISABLE_OBSOLETE_FUNCTIONS",
-		"IMGUI_DISABLE_OBSOLETE_KEYIO",
     }

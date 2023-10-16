@@ -324,6 +324,10 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
     spvOptions.disableOptimizer = false;
     spvOptions.optimizeSize = true;
 
+#ifdef TRAP_PLATFORM_DEBUG
+	spvOptions.validate = true;
+#endif /*TRAP_PLATFORM_DEBUG*/
+
     glslang::GlslangToSpv(*program.getIntermediate(ShaderStageToEShLanguage(stage)), SPIRV, &logger, &spvOptions);
     if (logger.getAllMessages().length() > 0)
 		fmt::println("{}{} Shader: {}", SPIRVPrefix, ShaderStageToString(stage), logger.getAllMessages());

@@ -5,9 +5,34 @@ workspace "TRAP"
 	startproject "Sandbox"
 	architecture "x86_64"
 	cppdialect "C++20"
+	cdialect "C17"
 	staticruntime "off"
 	systemversion "latest"
 	vectorextensions "AVX2"
+	warnings "Extra"
+
+	flags "MultiProcessorCompile"
+
+	outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+
+	runpathdirs
+	{
+		".",
+		"%{cfg.targetdir}",
+		"$ORIGIN"
+	}
+
+	defines
+	{
+		"YAML_CPP_STATIC_DEFINE",
+		"IMGUI_DISABLE_OBSOLETE_FUNCTIONS",
+		"IMGUI_DISABLE_OBSOLETE_KEYIO",
+        "FMT_OS",
+        "ENABLE_OPT=0",
+        "ENABLE_HLSL=0",
+	}
 
 	configurations
 	{
@@ -17,7 +42,14 @@ workspace "TRAP"
 		"Profiling"
 	}
 
-	flags "MultiProcessorCompile"
+	filter "system:linux"
+		configurations
+		{
+			"ASan",
+			"UBSan",
+			"LSan",
+			"TSan"
+		}
 
 	filter {"language:C or C++", "configurations:Release or configurations:Profiling" }
 		flags "LinkTimeOptimization"
@@ -25,33 +57,38 @@ workspace "TRAP"
 	filter {"language:C or C++", "configurations:Debug" }
 		runtime "Debug"
 		symbols "On"
+		defines "TRAP_DEBUG"
 
 	filter {"language:C or C++", "configurations:Release"}
 		runtime "Release"
 		optimize "Full"
+		defines "TRAP_RELEASE"
+		entrypoint "mainCRTStartup"
+		kind "WindowedApp"
 
 	filter {"language:C or C++", "configurations:RelWithDebInfo"}
 		runtime "Release"
 		optimize "Debug"
 		symbols "On"
+		defines "TRAP_RELWITHDEBINFO"
 
 	filter {"language:C or C++", "configurations:Profiling"}
-		defines "TRACY_ENABLE"
+		defines
+		{
+			"TRAP_RELEASE",
+			"TRACY_ENABLE"
+		}
 		editandcontinue "Off"
 		runtime "Release"
 		optimize "Full"
 		symbols "On"
 
-	filter "system:linux"
-		configurations
-		{
-			"ASan",
-			"UBSan",
-			"LSan",
-			"TSan" -- Works using RADV, crashes with libnvidia-glcore.so
-		}
-
 	filter {"language:C or C++", "configurations:ASAN"}
+		defines
+		{
+			"TRAP_RELWITHDEBINFO",
+			"TRAP_ASAN"
+		}
 		runtime "Release"
 		optimize "Debug"
 		symbols "On"
@@ -68,6 +105,11 @@ workspace "TRAP"
 		}
 
 	filter {"language:C or C++", "configurations:UBSAN"}
+		defines
+		{
+			"TRAP_RELWITHDEBINFO",
+			"TRAP_UBSAN"
+		}
 		runtime "Release"
 		optimize "Debug"
 		symbols "On"
@@ -84,6 +126,11 @@ workspace "TRAP"
 		}
 
 	filter {"language:C or C++", "configurations:LSAN"}
+		defines
+		{
+			"TRAP_RELWITHDEBINFO",
+			"TRAP_LSAN"
+		}
 		runtime "Release"
 		optimize "Debug"
 		symbols "On"
@@ -96,6 +143,11 @@ workspace "TRAP"
 		linkoptions "-fsanitize=leak"
 
 	filter {"language:C or C++", "configurations:TSAN"}
+		defines
+		{
+			"TRAP_RELWITHDEBINFO",
+			"TRAP_TSAN"
+		}
 		runtime "Release"
 		optimize "Debug"
 		symbols "On"
@@ -111,7 +163,7 @@ workspace "TRAP"
 			"-static-libtsan"
 		}
 
-	filter { "toolset:gcc" or "toolset:clang"}
+	filter { "language:C or C++", "toolset:gcc or clang"}
 		local result, errorCode = os.outputof("mold -v")
 		local moldInstalled = false
 		if errorCode == 0 and string.len(result) > 0 then
@@ -121,8 +173,6 @@ workspace "TRAP"
 		if moldInstalled then
 			linkoptions "-fuse-ld=mold"
 		end
-
-outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 --Include directories relative to root folder(solution folder)
 IncludeDir = {}

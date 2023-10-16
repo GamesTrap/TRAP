@@ -2,10 +2,6 @@ project "ConvertToSPIRV"
 	location "."
 	kind "ConsoleApp"
 	language "C++"
-	warnings "Extra"
-
-	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 
 	files
 	{
@@ -38,15 +34,3 @@ project "ConvertToSPIRV"
 		{
 			"-Wpedantic", "-Wconversion", "-Wshadow"
 		}
-
-	filter "configurations:ASAN"
-		defines "TRAP_ASAN"
-
-	filter "configurations:UBSAN"
-		defines "TRAP_UBSAN"
-
-	filter "configurations:LSAN"
-		defines "TRAP_LSAN"
-
-	filter "configurations:TSAN"
-		defines "TRAP_TSAN"
