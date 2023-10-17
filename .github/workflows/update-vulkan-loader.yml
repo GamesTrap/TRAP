@@ -9,7 +9,7 @@ jobs:
   update-vulkan-loader:
     name: Update Vulkan Loader
     if: github.repository == 'GamesTrap/TRAP'
-    runs-on: [self-hosted, Linux, X64, ubuntu, 23.10, cpu]
+    runs-on: [self-hosted, Linux, X64, ubuntu, "23.10", cpu]
     steps:
       - name: Cleanup workspace
         if: ${{ always() }}
