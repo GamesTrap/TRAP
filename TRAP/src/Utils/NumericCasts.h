@@ -106,9 +106,10 @@ requires (sizeof(T) < sizeof(U) && //Destination type must be samller than the s
 /// </summary>
 /// <returns>Widened value.</returns>
 template<typename T, typename U>
-requires (sizeof(T) > sizeof(U) && //Destination type must be bigger than the source type
+requires ((sizeof(T) > sizeof(U) && //Destination type must be bigger than the source type
           std::is_arithmetic_v<T> && std::is_arithmetic_v<U> && //Both types must be arithmetic
-          std::is_signed_v<T> == std::is_signed_v<U>) //Both types must have the same signedness
+          std::is_signed_v<T> == std::is_signed_v<U>) || //Both types must have the same signedness
+          (sizeof(T) >= sizeof(U) && std::floating_point<T> && std::signed_integral<U> && std::is_signed_v<T>))
 [[nodiscard]] constexpr T WideCast(const U u) noexcept
 {
     return static_cast<T>(u);

@@ -138,12 +138,23 @@ consteval void CheckValidWideCastsCompileTime()
     if constexpr(std::is_signed_v<T>)
     {
         constexpr int8_t test = 120;
-        static_assert(WideCast<T>(test));
+        static_assert(WideCast<T>(test) == T(120));
+
+        if constexpr(std::same_as<T, float>)
+        {
+            constexpr int32_t test1 = 50;
+            static_assert(WideCast<T>(test1) == T(50));
+        }
+        else if constexpr(std::same_as<T, double>)
+        {
+            constexpr int64_t test1 = 50;
+            static_assert(WideCast<T>(test1) == T(50));
+        }
     }
     else
     {
         constexpr uint8_t test = 120;
-        static_assert(WideCast<T>(test));
+        static_assert(WideCast<T>(test) == T(120));
     }
 }
 
@@ -153,12 +164,23 @@ void CheckValidWideCastsRunTime()
     if constexpr(std::is_signed_v<T>)
     {
         const int8_t test = 120;
-        REQUIRE(WideCast<T>(test));
+        REQUIRE(WideCast<T>(test) == T(120));
+
+        if constexpr(std::same_as<T, float>)
+        {
+            const int32_t test1 = 50;
+            REQUIRE(WideCast<T>(test1) == T(50));
+        }
+        else if constexpr(std::same_as<T, double>)
+        {
+            const int64_t test1 = 50;
+            REQUIRE(WideCast<T>(test1) == T(50));
+        }
     }
     else
     {
         const uint8_t test = 120;
-        REQUIRE(WideCast<T>(test));
+        REQUIRE(WideCast<T>(test) == T(120));
     }
 }
 
