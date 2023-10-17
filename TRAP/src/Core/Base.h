@@ -183,7 +183,7 @@ template<uint32_t major, uint32_t minor, uint32_t patch>
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-inline constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION<0, 9, 116>();
+inline constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION<0, 9, 117>();
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -226,6 +226,7 @@ inline constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION<0, 9, 116>();
 /// <param name="value">Value to convert.</param>
 /// <returns>Converted value.</returns>
 template<typename To, typename From>
+// [[deprecated("Use NarrowCast(), WideCast(), SignCast() instead. See NumericCasts.h for more info")]] //TODO
 [[nodiscard]] inline constexpr To NumericCast(const From& value)
 {
 	static_assert(!std::is_enum_v<To> && !std::is_enum_v<From>, "NumericCast(): Casting to/from enum is not allowed!");
