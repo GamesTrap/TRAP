@@ -266,6 +266,5 @@ TEST_CASE("SignCast()", "[utils][numericcasts][signcast]")
         CheckInvalidSignCastsRunTime<int32_t, uint32_t>();
         CheckInvalidSignCastsRunTime<int16_t, uint16_t>();
         CheckInvalidSignCastsRunTime<int8_t, uint8_t>();
-
     }
 }

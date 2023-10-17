@@ -84,7 +84,8 @@ private:
 /// <returns>Narrowed value on success.</returns>
 template<typename T, typename U>
 requires (sizeof(T) < sizeof(U) && //Destination type must be samller than the source type
-          std::is_arithmetic_v<T> && std::is_arithmetic_v<U>) //Both types must be arithmetic
+          std::is_arithmetic_v<T> && std::is_arithmetic_v<U> && //Both types must be arithmetic
+          std::is_signed_v<T> == std::is_signed_v<U>) //Both types must have the same signedness
 [[nodiscard]] constexpr T NarrowCast(const U u)
 {
     const T t = static_cast<T>(u);
@@ -92,14 +93,6 @@ requires (sizeof(T) < sizeof(U) && //Destination type must be samller than the s
     if(static_cast<U>(t) != u)
     {
         throw NarrowingError<T, U>(u);
-    }
-
-    if constexpr(std::is_signed_v<T> != std::is_signed_v<U>)
-    {
-        if((t < T()) != (u < U()))
-        {
-            throw NarrowingError<T, U>(u);
-        }
     }
 
     return t;
@@ -130,24 +123,18 @@ requires (sizeof(T) > sizeof(U) && //Destination type must be bigger than the so
 /// <returns>Unsigned/Signed value on success.</returns>
 template<typename T, typename U>
 requires (std::integral<T> && std::integral<U> &&
-          (sizeof(T) == sizeof(U)) &&
-          (std::is_signed_v<T> != std::is_signed_v<U>))
+          sizeof(T) == sizeof(U) &&
+          std::is_signed_v<T> != std::is_signed_v<U>)
 [[nodiscard]] constexpr T SignCast(const U u)
 {
-    if constexpr(std::is_signed_v<U>)
-    {
-        if(u < U(0))
-            throw NarrowingError<T, U>(u);
-    }
-    else
-    {
-        if(u > std::numeric_limits<T>::max())
-            throw NarrowingError<T, U>(u);
-    }
-
     const T t = static_cast<T>(u);
 
     if(static_cast<U>(t) != u)
+    {
+        throw NarrowingError<T, U>(u);
+    }
+
+    if((t < T()) != (u < U()))
     {
         throw NarrowingError<T, U>(u);
     }
