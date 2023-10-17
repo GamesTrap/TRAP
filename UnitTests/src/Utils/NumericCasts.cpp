@@ -52,9 +52,18 @@ void CheckInvalidNarrowCastsRunTime()
 {
     if constexpr(std::is_signed_v<T>)
     {
-        const int64_t test = std::numeric_limits<int64_t>::max();
-        using ErrorType = NarrowingError<T, int64_t>;
-        REQUIRE_THROWS_AS(NarrowCast<T>(test), ErrorType);
+        if constexpr(std::floating_point<T>)
+        {
+            const double test = std::numeric_limits<double>::max();
+            using ErrorType = NarrowingError<T, double>;
+            REQUIRE_THROWS_AS(NarrowCast<T>(test), ErrorType);
+        }
+        else
+        {
+            const int64_t test = std::numeric_limits<int64_t>::max();
+            using ErrorType = NarrowingError<T, int64_t>;
+            REQUIRE_THROWS_AS(NarrowCast<T>(test), ErrorType);
+        }
     }
     else
     {
