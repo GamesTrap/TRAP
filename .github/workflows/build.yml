@@ -15,7 +15,7 @@ on:
 jobs:
   build-linux-gcc-13:
     name: Build Linux GCC 13
-    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
+    runs-on: [self-hosted, Linux, X64, ubuntu, 23.10, cpu]
     env:
       CC: gcc-13
       CXX: g++-13
@@ -108,12 +108,12 @@ jobs:
           bin/Release-linux-x86_64/Games
           bin/Release-linux-x86_64/Utility
           bin/Release-linux-x86_64/UnitTests
-  build-linux-clang-16:
-    name: Build Linux Clang 16
-    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
+  build-linux-clang-17:
+    name: Build Linux Clang 17
+    runs-on: [self-hosted, Linux, X64, ubuntu, 23.10, cpu]
     env:
-      CC: clang-16
-      CXX: clang++-16
+      CC: clang-17
+      CXX: clang++-17
     steps:
     - name: Cleanup workspace
       if: ${{ always() }}
@@ -171,7 +171,7 @@ jobs:
     - name: Update package list
       run: sudo apt update
     - name: Install dependencies
-      run: sudo apt install -y cmake jq clang-16 mold xorg-dev libwayland-dev libxkbcommon-dev wayland-protocols
+      run: sudo apt install -y cmake jq clang-17 mold xorg-dev libwayland-dev libxkbcommon-dev wayland-protocols
     - name: Make scripts and premake executable
       run: |
         chmod +x libs/premake5/linux/premake5
@@ -306,8 +306,8 @@ jobs:
           $env:TRACY_NO_INVARIANT_CHECK=1; .\UnitTests.exe; Remove-Item Env:\TRACY_NO_INVARIANT_CHECK
   test-linux:
     name: Unit-Test Linux
-    runs-on: [self-hosted, Linux, X64, ubuntu, 23.04, cpu]
-    needs: [build-linux-clang-16]
+    runs-on: [self-hosted, Linux, X64, ubuntu, 23.10, cpu]
+    needs: [build-linux-clang-17]
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v3

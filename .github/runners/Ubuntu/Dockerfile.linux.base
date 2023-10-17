@@ -1,6 +1,6 @@
 # Shared basis for all linux based action runner images
 
-FROM ubuntu:lunar
+FROM ubuntu:mantic
 LABEL maintainer="gamestrap@trappedgames.de"
 
 ENV LANG=en_US.UTF-8
@@ -43,11 +43,8 @@ RUN echo en_US.UTF-8 UTF-8 >> /etc/locale.gen \
     git \
     git-man \
     git-lfs \
-  && curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash \
-  && export NVM_DIR="$HOME/.nvm" \
-  && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
-  && nvm install 12.22.12 \
-  && update-alternatives --install /usr/bin/node12 node12 /root/.nvm/versions/node/v12.22.12/bin/node 10 \
+    nodejs \
+    btop \
   && DPKG_ARCH="$(dpkg --print-architecture)" \
   && LSB_RELEASE_CODENAME="$(lsb_release --codename | cut -f2)" \
   && sed -e 's/Defaults.*env_reset/Defaults env_keep = "HTTP_PROXY HTTPS_PROXY NO_PROXY FTP_PROXY http_proxy https_proxy no_proxy ftp_proxy"/' -i /etc/sudoers \

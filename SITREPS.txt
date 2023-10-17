@@ -4552,3 +4552,6 @@ SITREP 10/17/2023|23w42a2
     - Changed TRAP Engine version to 23w42a2(0.9.117)
     - Added NarrowCast(), WideCast() and SignCast() as a replacement for NumericCast() ~<30 mins
     - SignCast() now automatically deduces destination type from source type ~<10 mins
+    - GitHub Action Runners updated Ubuntu runner to 23.10 (Mantic) ~<5 mins
+    - Rebuild and deployed Ubuntu GitHub Action Runner images ~<10 mins
+    - Build CI Replaced Clang 16 with Clang 17 ~<5 mins
