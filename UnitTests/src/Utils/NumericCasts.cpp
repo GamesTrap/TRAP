@@ -194,48 +194,35 @@ TEST_CASE("WideCast()", "[utils][numericcasts][widecast]")
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<typename T, typename U>
+template<typename ExpectedType, typename U>
 consteval void CheckValidSignCastsCompileTime()
 {
-    if constexpr(std::is_signed_v<U>)
-    {
-        static_assert(SignCast<T, U>(U(120)) == T(120));
-    }
-    else
-    {
-        static_assert(SignCast<T, U>(120) == T(120));
-    }
+    static_assert(SignCast(U(120)) == ExpectedType(120));
+    static_assert(std::same_as<decltype(SignCast(U(120))), ExpectedType>);
 }
 
-template<typename T, typename U>
+template<typename ExpectedType, typename U>
 void CheckValidSignCastsRunTime()
 {
-    if constexpr(std::is_signed_v<T>)
-    {
-        const U test(120);
-        REQUIRE(SignCast<T>(test));
-    }
-    else
-    {
-        const U test(120);
-        REQUIRE(SignCast<T>(test));
-    }
+    const U test(120);
+    REQUIRE(SignCast(test) == ExpectedType(120));
+    REQUIRE(std::same_as<decltype(SignCast(test)), ExpectedType>);
 }
 
-template<typename T, typename U>
+template<typename ExpectedType, typename U>
 void CheckInvalidSignCastsRunTime()
 {
     if constexpr(std::is_signed_v<U>)
     {
         const U test = -120;
-        using ErrorType = NarrowingError<T, U>;
-        REQUIRE_THROWS_AS(SignCast<T>(test), ErrorType);
+        using ErrorType = NarrowingError<ExpectedType, U>;
+        REQUIRE_THROWS_AS(SignCast(test), ErrorType);
     }
     else
     {
         const U test = std::numeric_limits<U>::max();
-        using ErrorType = NarrowingError<T, U>;
-        REQUIRE_THROWS_AS(SignCast<T>(test), ErrorType);
+        using ErrorType = NarrowingError<ExpectedType, U>;
+        REQUIRE_THROWS_AS(SignCast(test), ErrorType);
     }
 }
 

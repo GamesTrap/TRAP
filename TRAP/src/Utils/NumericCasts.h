@@ -116,27 +116,31 @@ requires (sizeof(T) > sizeof(U) && //Destination type must be bigger than the so
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+namespace INTERNAL
+{
+    template<typename T>
+    using InvertedType = std::conditional_t<std::is_signed_v<T>, std::make_unsigned_t<T>, std::make_signed_t<T>>;
+}
+
 /// <summary>
 /// Sign cast an integral type to/from unsigned to signed or vice versa.
 /// If the argument u cannot be represented in the target type T, then the function throws a NarrowingError.
 /// </summary>
 /// <returns>Unsigned/Signed value on success.</returns>
-template<typename T, typename U>
-requires (std::integral<T> && std::integral<U> &&
-          sizeof(T) == sizeof(U) &&
-          std::is_signed_v<T> != std::is_signed_v<U>)
-[[nodiscard]] constexpr T SignCast(const U u)
+template<typename U>
+requires (std::integral<U>)
+[[nodiscard]] constexpr INTERNAL::InvertedType<U> SignCast(const U u)
 {
-    const T t = static_cast<T>(u);
+    const auto t = static_cast<INTERNAL::InvertedType<U>>(u);
 
     if(static_cast<U>(t) != u)
     {
-        throw NarrowingError<T, U>(u);
+        throw NarrowingError<INTERNAL::InvertedType<U>, U>(u);
     }
 
-    if((t < T()) != (u < U()))
+    if((t < INTERNAL::InvertedType<U>()) != (u < U()))
     {
-        throw NarrowingError<T, U>(u);
+        throw NarrowingError<INTERNAL::InvertedType<U>, U>(u);
     }
 
     return t;

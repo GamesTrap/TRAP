@@ -61,6 +61,7 @@
 #include "../src/Utils/Hash/SHA-3.h"
 #include "../src/Utils/Hash/UID.h"
 #include "../src/Utils/Hash/ConvertHashToString.h"
+#include "../src/Utils/NumericCasts.h"
 #ifndef TRAP_HEADLESS_MODE
 #include "../src/Utils/Discord/DiscordGameSDK.h"
 #endif /*TRAP_HEADLESS_MODE*/
