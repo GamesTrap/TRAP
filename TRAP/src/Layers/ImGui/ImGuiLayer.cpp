@@ -490,7 +490,7 @@ bool ImGui::ImageButton(const TRAP::Ref<TRAP::Graphics::Texture>& image, const I
 		VkImageView imgView = vkImage->GetSRVVkImageView();
 		std::size_t imgViewHash = 0;
 		TRAP::Utils::HashCombine(imgViewHash, imgView);
-		const ImGuiID imgViewID = NumericCast<uint32_t>(imgViewHash);
+		const ImGuiID imgViewID = static_cast<ImGuiID>(imgViewHash); //Intended narrowing
 
 		return ImGui::ImageButtonEx(imgViewID, texID, size, uv0, uv1, bg_col, tint_col);
 	}

@@ -6,6 +6,7 @@
 #include <filesystem>
 
 #include "Core/Base.h"
+#include "Utils/NumericCasts.h"
 
 #include "Maths/Types.h"
 #include "Maths/Vec2.h"

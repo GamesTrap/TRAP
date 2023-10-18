@@ -38,6 +38,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Utils/Utils.h"
 #include "Utils/Memory.h"
 #include "Utils/Time/TimeStep.h"
+#include "Utils/NumericCasts.h"
 
 namespace TRAP::Network
 {
@@ -191,7 +192,8 @@ namespace TRAP::Network
 
 constexpr TRAP::Network::IPv4Address::IPv4Address(const uint8_t byte0, const uint8_t byte1, const uint8_t byte2,
                                                   const uint8_t byte3)
-	: m_address(NumericCast<uint32_t>((byte0 << 24u) | (byte1 << 16u) | (byte2 << 8u) | byte3)), m_valid(true)
+	: m_address((NumericCast<uint32_t>(byte0) << 24u) | (NumericCast<uint32_t>(byte1) << 16u) |
+	             (NumericCast<uint32_t>(byte2) << 8u) | NumericCast<uint32_t>(byte3)), m_valid(true)
 {
 	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(m_address);

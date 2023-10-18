@@ -195,7 +195,7 @@ void TRAP::INTERNAL::QOIImage::DecodeImage(std::ifstream& file, const std::size_
                 else if((tag & QOI_MASK_2) == QOI_OP_LUMA)
                 {
                     const uint8_t data = NumericCast<uint8_t>(file.get());
-                    const uint8_t vg = NumericCast<uint8_t>((tag & 0x3Fu) - 32);
+                    const uint8_t vg = static_cast<uint8_t>((tag & 0x3Fu) - 32); //Intended narrowing
                     prevPixel.Red   += NumericCast<uint8_t>(vg - 8u + ((data >> 4u) & 0xFu));
                     prevPixel.Green += vg;
                     prevPixel.Blue  += NumericCast<uint8_t>(vg - 8u + ((data >> 0u) & 0xFu));

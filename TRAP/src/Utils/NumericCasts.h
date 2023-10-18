@@ -77,75 +77,135 @@ private:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/// <summary>
-/// Narrow cast (demote) an arithmetic type to another smaller one without signedness promotions.
-/// If the argument u cannot be represented in the target type T, then the function throws a NarrowingError.
-/// </summary>
-/// <returns>Narrowed value on success.</returns>
-template<typename T, typename U>
-requires ((sizeof(T) < sizeof(U) && //Destination type must be samller than the source type
-          std::is_arithmetic_v<T> && std::is_arithmetic_v<U> && //Both types must be arithmetic
-          std::is_signed_v<T> == std::is_signed_v<U>) ||  //Both types must have the same signedness
-          (sizeof(T) <= sizeof(U) && std::floating_point<U> && std::signed_integral<T> && std::is_signed_v<U>))
-[[nodiscard]] constexpr T NarrowCast(const U u)
+template<typename To, typename From>
+requires std::is_arithmetic_v<To> && std::is_arithmetic_v<From>
+[[nodiscard]] constexpr To NumericCast(const From value)
 {
-    const T t = static_cast<T>(u);
+	static_assert(!std::is_enum_v<To> && !std::is_enum_v<From>, "CheckedCast(): Casting to/from enum is not allowed!");
+	static_assert(!std::is_scoped_enum_v<To> && !std::is_scoped_enum_v<From>, "CheckedCast(): Casting to/from enum is not allowed!");
+	static_assert(!std::same_as<To, From>, "CheckedCast(): Casting to the same type is not allowed!");
 
-    if(static_cast<U>(t) != u)
+    //TODO Function local concepts to make the ifs simpler
+    //     Only check problematic cases, safe cases should use the else branch!
+
+    if constexpr(std::floating_point<To>)
     {
-        throw NarrowingError<T, U>(u);
+        if constexpr(std::floating_point<From>)
+        {
+            //Floating point -> floating point
+
+            if constexpr(sizeof(To) > sizeof(From)) //Widening
+            {
+                //Casting floating point -> floating point with increased byte size is always considered safe
+                return static_cast<To>(value);
+            }
+            else //Narrowing
+            {
+                //Casting floating point -> floating point with decreased byte size is considered unsafe
+                //Note: Only bounds checks are done here, we ignore truncation caused by loss of precision
+                if(value <= static_cast<From>(std::numeric_limits<To>::max()) &&
+                   value >= static_cast<From>(std::numeric_limits<To>::lowest()))
+                {
+                    return static_cast<To>(value);
+                }
+
+                throw NarrowingError<To, From>(value);
+            }
+        }
+        else
+        {
+             //Integral to floating point
+
+             //Casting integral -> floating point is always considered safe
+             //Note: We ignore truncation caused by loss of precision
+
+             return static_cast<To>(value);
+        }
     }
-
-    return t;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-/// <summary>
-/// Wide cast (promote) an arithmetic type to another bigger one without signedness promotions.
-/// This function is guaranteed to never fail at runtime
-/// </summary>
-/// <returns>Widened value.</returns>
-template<typename T, typename U>
-requires ((sizeof(T) > sizeof(U) && //Destination type must be bigger than the source type
-          std::is_arithmetic_v<T> && std::is_arithmetic_v<U> && //Both types must be arithmetic
-          std::is_signed_v<T> == std::is_signed_v<U>) || //Both types must have the same signedness
-          (sizeof(T) >= sizeof(U) && std::floating_point<T> && std::signed_integral<U> && std::is_signed_v<T>))
-[[nodiscard]] constexpr T WideCast(const U u) noexcept
-{
-    return static_cast<T>(u);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-namespace INTERNAL
-{
-    template<typename T>
-    using InvertedType = std::conditional_t<std::is_signed_v<T>, std::make_unsigned_t<T>, std::make_signed_t<T>>;
-}
-
-/// <summary>
-/// Sign cast an integral type to/from unsigned to signed or vice versa.
-/// If the argument u cannot be represented in the target type T, then the function throws a NarrowingError.
-/// </summary>
-/// <returns>Unsigned/Signed value on success.</returns>
-template<typename U>
-requires (std::integral<U>)
-[[nodiscard]] constexpr INTERNAL::InvertedType<U> SignCast(const U u)
-{
-    const auto t = static_cast<INTERNAL::InvertedType<U>>(u);
-
-    if(static_cast<U>(t) != u)
+    else /*if constexpr(std::integral<To>)*/
     {
-        throw NarrowingError<INTERNAL::InvertedType<U>, U>(u);
-    }
+        if constexpr(std::floating_point<From>)
+        {
+            //Floating point to integral
 
-    if((t < INTERNAL::InvertedType<U>()) != (u < U()))
-    {
-        throw NarrowingError<INTERNAL::InvertedType<U>, U>(u);
-    }
+            //Casting floating point -> integral is considered unsafe
+            //Note: Only bounds checks are done here, we ignore truncation to integer values
+            if(value <= static_cast<From>(std::numeric_limits<To>::max()) &&
+               value >= static_cast<From>(std::numeric_limits<To>::lowest()))
+            {
+                return static_cast<To>(value);
+            }
 
-    return t;
+            throw NarrowingError<To, From>(value);
+        }
+        else
+        {
+            //Integral to integral
+
+            if constexpr(sizeof(To) > sizeof(From)) //Widening
+            {
+                if constexpr(std::is_signed_v<To> == std::is_signed_v<From>) //Same signedness
+                {
+                    //Casting integral -> integral with increased byte size and same signedness is always considered safe
+                    return static_cast<To>(value);
+                }
+                else //Different signedness
+                {
+                    if constexpr(std::is_signed_v<To> && std::is_unsigned_v<From>)
+                    {
+                        //Casting unsigned integral -> signed integral with increased byte size is always considered safe
+                        return static_cast<To>(value);
+                    }
+                    else
+                    {
+                        //Casting integral -> unsigned integral with increased byte size is considered unsafe
+                        if(value >= static_cast<From>(0))
+                            return static_cast<To>(value);
+
+                        throw NarrowingError<To, From>(value);
+                    }
+                }
+            }
+            else //Narrowing
+            {
+                if constexpr(std::is_signed_v<To> == std::is_signed_v<From>) //Same signedness
+                {
+                    //Casting integral -> integral with decreased byte size and same signedness is considered unsafe
+                    if(value <= static_cast<From>(std::numeric_limits<To>::max()) &&
+                       value >= static_cast<From>(std::numeric_limits<To>::lowest()))
+                    {
+                        return static_cast<To>(value);
+                    }
+
+                    throw NarrowingError<To, From>(value);
+                }
+                else //Different signedness
+                {
+                    if constexpr(std::is_signed_v<To> && std::is_unsigned_v<From>)
+                    {
+                        //Casting unsigned integral -> signed integral with decreased byte size is considered unsafe
+                        if(value <= static_cast<From>(std::numeric_limits<To>::max()))
+                        {
+                            return static_cast<To>(value);
+                        }
+
+                        throw NarrowingError<To, From>(value);
+                    }
+                    else
+                    {
+                        //Casting integral -> unsigned integral with decreased byte size is considered unsafe
+                        if(value >= static_cast<From>(0) &&
+                           static_cast<To>(value) <= static_cast<To>(std::numeric_limits<From>::max()))
+                        {
+                            return static_cast<To>(value);
+                        }
+
+                        throw NarrowingError<To, From>(value);
+                    }
+                }
+            }
+        }
+    }
 }
 
 #endif /*TRAP_NUMERICCASTS_H*/

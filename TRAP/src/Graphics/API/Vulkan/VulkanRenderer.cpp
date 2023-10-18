@@ -2484,11 +2484,10 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 
 #ifndef TRAP_HEADLESS_MODE
 		const uint32_t imageCount = NumericCast<uint32_t>(viewportData->SwapChain->GetRenderTargets().size());
-		if(viewportData->InternalRenderTargets.size() < imageCount)
-			viewportData->InternalRenderTargets.resize(imageCount);
 #else
 		static constexpr uint32_t imageCount = RendererAPI::ImageCount;
 #endif /*TRAP_HEADLESS_MODE*/
+		viewportData->InternalRenderTargets.resize(imageCount);
 		for(uint32_t i = 0; i < imageCount; ++i)
 			viewportData->InternalRenderTargets[i] = RenderTarget::Create(rTDesc);
 	}

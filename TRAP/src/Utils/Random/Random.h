@@ -7,6 +7,7 @@
 #include "RandomInternal.h"
 #include "Core/Base.h"
 #include "TRAP_Assert.h"
+#include "Utils/NumericCasts.h"
 
 namespace TRAP::Utils
 {

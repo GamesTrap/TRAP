@@ -254,10 +254,10 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 
 		const std::array<uint32_t, 4> hashValues =
 		{
-			NumericCast<uint32_t>(std::to_underlying(renderTargets[i]->GetImageFormat())),
+			std::to_underlying(renderTargets[i]->GetImageFormat()),
 			NumericCast<uint32_t>(std::to_underlying(renderTargets[i]->GetSampleCount())),
-			loadActions != nullptr ? NumericCast<uint32_t>(std::to_underlying(loadActions->LoadActionsColor[i])) : 0u,
-			NumericCast<uint32_t>(std::to_underlying(colorStoreActions[i]))
+			loadActions != nullptr ? std::to_underlying(loadActions->LoadActionsColor[i]) : 0u,
+			std::to_underlying(colorStoreActions[i])
 		};
 
 		renderPassHash = HashAlg<uint32_t>(hashValues.data(), 4, renderPassHash);
@@ -282,12 +282,12 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 
 		const std::array<uint32_t, 6> hashValues =
 		{
-			NumericCast<uint32_t>(std::to_underlying(dStencil->GetImageFormat())),
+			std::to_underlying(dStencil->GetImageFormat()),
 			NumericCast<uint32_t>(std::to_underlying(dStencil->GetSampleCount())),
-			loadActions != nullptr ? NumericCast<uint32_t>(std::to_underlying(loadActions->LoadActionDepth)) : 0u,
-			loadActions != nullptr ? NumericCast<uint32_t>(std::to_underlying(loadActions->LoadActionStencil)) : 0u,
-			NumericCast<uint32_t>(std::to_underlying(depthStoreAction)),
-			NumericCast<uint32_t>(std::to_underlying(stencilStoreAction))
+			loadActions != nullptr ? std::to_underlying(loadActions->LoadActionDepth) : 0u,
+			loadActions != nullptr ? std::to_underlying(loadActions->LoadActionStencil) : 0u,
+			std::to_underlying(depthStoreAction),
+			std::to_underlying(stencilStoreAction)
 		};
 		renderPassHash = HashAlg<uint32_t>(hashValues.data(), 6, renderPassHash);
 		const uint64_t ID = dStencil->GetID();
@@ -305,7 +305,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 	{
 		const Ref<VulkanTexture> vkTex = std::dynamic_pointer_cast<VulkanTexture>(shadingRate);
 
-		const uint32_t hashValue = NumericCast<uint32_t>(std::to_underlying(shadingRate->GetImageFormat()));
+		const uint32_t hashValue = std::to_underlying(shadingRate->GetImageFormat());
 		renderPassHash = HashAlg<uint32_t>(&hashValue, 1, renderPassHash);
 		const uint64_t ID = std::dynamic_pointer_cast<VulkanRenderTarget>(shadingRate)->GetID();
 		frameBufferHash = HashAlg<uint64_t>(&ID, 1, frameBufferHash);

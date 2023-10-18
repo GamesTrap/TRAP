@@ -815,7 +815,11 @@ void TRAP::Graphics::RenderCommand::MSAAResolvePass(TRAP::Ref<RenderTarget> sour
 
 [[nodiscard]] uint32_t TRAP::Graphics::RenderCommand::GetCPUFPS()
 {
-	return NumericCast<uint32_t>(1000.0f / Application::GetCPUFrameTime());
+	const float cpuFrameTime = Application::GetCPUFrameTime();
+	if(cpuFrameTime == 0.0f)
+		return 0;
+
+	return NumericCast<uint32_t>(1000.0f / cpuFrameTime);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -825,6 +829,8 @@ void TRAP::Graphics::RenderCommand::MSAAResolvePass(TRAP::Ref<RenderTarget> sour
 {
 	const float maxGPUFrameTime = TRAP::Math::Max(RendererAPI::GetGPUGraphicsFrameTime(window),
 	                                              RendererAPI::GetGPUComputeFrameTime(window));
+	if(maxGPUFrameTime == 0.0f)
+		return 0;
 
 	return NumericCast<uint32_t>(1000.0f / maxGPUFrameTime);
 }
@@ -833,6 +839,8 @@ void TRAP::Graphics::RenderCommand::MSAAResolvePass(TRAP::Ref<RenderTarget> sour
 {
 	const float maxGPUFrameTime = TRAP::Math::Max(RendererAPI::GetGPUGraphicsFrameTime(),
 	                                              RendererAPI::GetGPUComputeFrameTime());
+	if(maxGPUFrameTime == 0.0f)
+		return 0;
 
 	return NumericCast<uint32_t>(1000.0f / maxGPUFrameTime);
 }

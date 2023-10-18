@@ -636,7 +636,7 @@ void TRAP::Network::FTP::DataChannel::Send(std::istream& stream)
 			break;
 		}
 
-		const int64_t count = NumericCast<int64_t>(stream.gcount());
+		const int64_t count = stream.gcount();
 
 		if(count > 0)
 		{

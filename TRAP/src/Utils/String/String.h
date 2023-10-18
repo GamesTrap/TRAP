@@ -5,6 +5,7 @@
 #include "Graphics/API/RendererAPI.h"
 #include "FileSystem/FileWatcher.h"
 #include "Scene/Components.h"
+#include "Utils/NumericCasts.h"
 
 namespace TRAP::Utils::String
 {

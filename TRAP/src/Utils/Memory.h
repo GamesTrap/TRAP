@@ -96,6 +96,20 @@ namespace TRAP::Utils::Memory
 		for(; begin != end; begin += sizeof(output_type), ++output)
 			*output = ConvertByte<output_type>(&(*begin));
 	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// <summary>
+	/// Retrieve a specific byte from the given integral.
+	/// </summary>
+	/// <typeparam name="Byte">Byte to retrieve.</typeparam>
+	/// <returns>Requested byte from the given integral.</returns>
+	template<uint8_t Byte>
+	[[nodiscard]] inline constexpr uint8_t GetByteFromInteger(const std::integral auto value)
+	requires (Byte < sizeof(decltype(value)))
+	{
+		return NumericCast<uint8_t>((value >> (Byte * 8u)) & 0xFFu);
+	}
 }
 
 #endif /*TRAP_BYTESWAP_H*/

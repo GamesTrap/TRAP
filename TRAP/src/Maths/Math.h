@@ -3615,11 +3615,11 @@ requires std::is_arithmetic_v<T>
 {
 	if constexpr(std::signed_integral<T> || std::floating_point<T>)
 	{
-		return Abs(NumericCast<T>(x - y)) <= epsilon;
+		return Abs(static_cast<T>(x - y)) <= epsilon;
 	}
 	else if constexpr(std::unsigned_integral<T>)
 	{
-		return NumericCast<T>(x - y) <= epsilon;
+		return static_cast<T>(x - y) <= epsilon;
 	}
 }
 
@@ -3640,11 +3640,11 @@ requires std::is_arithmetic_v<T>
 {
 	if constexpr(std::signed_integral<T> || std::floating_point<T>)
 	{
-		return Abs(NumericCast<T>(x - y)) > epsilon;
+		return Abs(static_cast<T>(x - y)) > epsilon;
 	}
 	else if constexpr(std::unsigned_integral<T>)
 	{
-		return NumericCast<T>(x - y) > epsilon;
+		return static_cast<T>(x - y) > epsilon;
 	}
 }
 

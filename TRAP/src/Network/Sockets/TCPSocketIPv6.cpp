@@ -165,7 +165,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Connect(const IPv6Ad
 		time.tv_usec = static_cast<time_t>(timeout.GetSeconds());
 
 		//Wait for something to write on our socket (which means that the connection request has returned)
-		if(select(NumericCast<int32_t>(GetHandle() + 1), nullptr, &selector, nullptr, &time) > 0)
+		if(select(static_cast<int32_t>(GetHandle() + 1), nullptr, &selector, nullptr, &time) > 0)
 		{
 			//At this point the connection may have been either accepted or refused.
 			//To know whether it's a success or a failure, we must check the address of the connected peer

@@ -420,10 +420,14 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 	const std::array<uint8_t, 17> CRCData
 	{
 		'I', 'H', 'D', 'R',
-		NumericCast<uint8_t>(ihdrChunk.Width >> 24u), NumericCast<uint8_t>(ihdrChunk.Width >> 16u),
-		NumericCast<uint8_t>(ihdrChunk.Width >> 8u), NumericCast<uint8_t>(ihdrChunk.Width),
-		NumericCast<uint8_t>(ihdrChunk.Height >> 24u), NumericCast<uint8_t>(ihdrChunk.Height >> 16u),
-		NumericCast<uint8_t>(ihdrChunk.Height >> 8u), NumericCast<uint8_t>(ihdrChunk.Height),
+		Utils::Memory::GetByteFromInteger<3>(ihdrChunk.Width),
+		Utils::Memory::GetByteFromInteger<2>(ihdrChunk.Width),
+		Utils::Memory::GetByteFromInteger<1>(ihdrChunk.Width),
+		Utils::Memory::GetByteFromInteger<0>(ihdrChunk.Width),
+		Utils::Memory::GetByteFromInteger<3>(ihdrChunk.Height),
+		Utils::Memory::GetByteFromInteger<2>(ihdrChunk.Height),
+		Utils::Memory::GetByteFromInteger<1>(ihdrChunk.Height),
+		Utils::Memory::GetByteFromInteger<0>(ihdrChunk.Height),
 		ihdrChunk.BitDepth, ihdrChunk.ColorType, ihdrChunk.CompressionMethod, ihdrChunk.FilterMethod,
 		ihdrChunk.InterlaceMethod
 	};
@@ -497,7 +501,7 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 
 	//TODO Treat image as sRGB
 	std::array<uint8_t, 4> CRC{};
-	const uint8_t renderingIntent = NumericCast<uint8_t>(file.get());
+	const uint8_t renderingIntent = static_cast<uint8_t>(file.get());
 	file.read(reinterpret_cast<char*>(CRC.data()), CRC.size());
 
 	const std::array<uint8_t, 5> CRCData{ 's', 'R', 'G', 'B', renderingIntent };
@@ -560,8 +564,8 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 	case 0:
 	{
 		std::array<uint8_t, 4> CRC{};
-		const uint8_t grayAlpha1 = NumericCast<uint8_t>(file.get());
-		const uint8_t grayAlpha2 = NumericCast<uint8_t>(file.get());
+		const uint8_t grayAlpha1 = static_cast<uint8_t>(file.get());
+		const uint8_t grayAlpha2 = static_cast<uint8_t>(file.get());
 		file.read(reinterpret_cast<char*>(CRC.data()), CRC.size());
 
 		const std::array<uint8_t, 6> CRCData{ 't', 'R', 'N', 'S', grayAlpha1, grayAlpha2 };
@@ -580,12 +584,12 @@ inline constexpr std::array<std::string_view, 11> UnusedChunks
 	case 2:
 	{
 		std::array<uint8_t, 4> CRC{};
-		const uint8_t redAlpha1 = NumericCast<uint8_t>(file.get());
-		const uint8_t redAlpha2 = NumericCast<uint8_t>(file.get());
-		const uint8_t greenAlpha1 = NumericCast<uint8_t>(file.get());
-		const uint8_t greenAlpha2 = NumericCast<uint8_t>(file.get());
-		const uint8_t blueAlpha1 = NumericCast<uint8_t>(file.get());
-		const uint8_t blueAlpha2 = NumericCast<uint8_t>(file.get());
+		const uint8_t redAlpha1 = static_cast<uint8_t>(file.get());
+		const uint8_t redAlpha2 = static_cast<uint8_t>(file.get());
+		const uint8_t greenAlpha1 = static_cast<uint8_t>(file.get());
+		const uint8_t greenAlpha2 = static_cast<uint8_t>(file.get());
+		const uint8_t blueAlpha1 = static_cast<uint8_t>(file.get());
+		const uint8_t blueAlpha2 = static_cast<uint8_t>(file.get());
 		file.read(reinterpret_cast<char*>(CRC.data()), CRC.size());
 
 		const std::array<uint8_t, 10> CRCData

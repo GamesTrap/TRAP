@@ -4560,3 +4560,9 @@ SITREP 10/18/2023|23w42a3
     - Changed TRAP Engine version to 23w42a3(0.9.118)
     - WideCast() Added support for widening signed integral to floating point conversions ~<5 mins
     - NarrowCast() Added support for narrowing floating point to signed integral conversion ~<5 mins
+
+SITREP 10/19/2023|23w42b1
+    - Changed TRAP Engine version to 23w42b1(0.9.119)
+    - Headless Fixed a crash in VulkanRenderer::UpdateInternalRenderTargets() ~<5 mins
+    - Again replaced NarrowCast(), WideCast() and SignCast() with a improved NumericCast() ~>30 mins
+    - Fixed various NarrowingErrors ~>15 mins

@@ -183,7 +183,7 @@ template<uint32_t major, uint32_t minor, uint32_t patch>
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-inline constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION<0, 9, 118>();
+inline constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION<0, 9, 119>();
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -212,77 +212,6 @@ inline constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION<0, 9, 118>();
 [[nodiscard]] inline constexpr std::unsigned_integral auto BIT(const std::unsigned_integral auto x) noexcept
 {
 	return decltype(x)(1) << x;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-/// <summary>
-/// Convert given value from data type To to data type From.
-/// This behaves mostly like static_cast.
-/// With TRAP_DEBUG enabled additional checks are done.
-/// </summary>
-/// <typeparam name="To">Data type of value.</typeparam>
-/// <typeparam name="From">Data type to convert value to.</typeparam>
-/// <param name="value">Value to convert.</param>
-/// <returns>Converted value.</returns>
-template<typename To, typename From>
-// [[deprecated("Use NarrowCast(), WideCast(), SignCast() instead. See NumericCasts.h for more info")]] //TODO
-[[nodiscard]] inline constexpr To NumericCast(const From& value)
-{
-	static_assert(!std::is_enum_v<To> && !std::is_enum_v<From>, "NumericCast(): Casting to/from enum is not allowed!");
-	static_assert(!std::is_pointer_v<To> && !std::is_pointer_v<From>, "NumericCast(): Casting to/from pointer is not allowed!");
-
-// #ifdef TRAP_DEBUG
-// 	constexpr bool ToIsSigned = std::numeric_limits<To>::is_signed;
-// 	constexpr To ToMax = std::numeric_limits<To>::max();
-// 	constexpr To ToLowest = std::numeric_limits<To>::lowest();
-
-// 	constexpr bool FromIsSigned = std::numeric_limits<From>::is_signed;
-// 	constexpr From FromMax = std::numeric_limits<From>::max();
-// 	constexpr From FromLowest = std::numeric_limits<From>::lowest();
-
-// 	constexpr bool positiveOverflowPossible = ToMax < static_cast<To>(FromMax);
-// 	constexpr bool negativeOverflowPossible = FromIsSigned || (ToLowest > static_cast<To>(FromLowest));
-
-// 	if constexpr ((!ToIsSigned) && (!FromIsSigned) && positiveOverflowPossible)
-// 	{
-// 		if(static_cast<To>(value) > ToMax)
-// 			TRAP_ASSERT(false, "NumericCast(): Positive overflow");
-// 	}
-// 	else if constexpr((!ToIsSigned) && FromIsSigned)
-// 	{
-// 		if constexpr (positiveOverflowPossible)
-// 		{
-// 			if((static_cast<To>(value) > ToMax))
-// 				TRAP_ASSERT(false, "NumericCast(): Positive overflow");
-// 		}
-// 		else if constexpr (negativeOverflowPossible)
-// 		{
-// 			if((static_cast<To>(value) < To(0)))
-// 				TRAP_ASSERT(false, "NumericCast(): Negative overflow");
-// 		}
-// 	}
-// 	else if constexpr(ToIsSigned && (!FromIsSigned) && positiveOverflowPossible)
-// 	{
-// 		if((static_cast<To>(value) > ToMax))
-// 			TRAP_ASSERT(false, "NumericCast(): Positive overflow");
-// 	}
-// 	else if constexpr(ToIsSigned && FromIsSigned)
-// 	{
-// 		if constexpr (positiveOverflowPossible)
-// 		{
-// 			if((static_cast<To>(value) > ToMax))
-// 				TRAP_ASSERT(false, "NumericCast(): Positive overflow");
-// 		}
-// 		else if constexpr (negativeOverflowPossible)
-// 		{
-// 			if((static_cast<To>(value) < ToLowest))
-// 				TRAP_ASSERT(false, "NumericCast(): Negative overflow");
-// 		}
-// 	}
-// #endif /*TRAP_DEBUG*/
-
-	return static_cast<To>(value);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

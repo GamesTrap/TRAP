@@ -233,9 +233,9 @@ bool TRAP::Input::OpenControllerDeviceLinux(std::filesystem::path path)
 		return false;
 	}
 
-	const std::array<char, (EV_CNT + 7) / 8> EVBits{};
-	const std::array<char, (KEY_CNT + 7) / 8> keyBits{};
-	const std::array<char, (ABS_CNT + 7) / 8> ABSBits{};
+	const std::array<uint8_t, (EV_CNT + 7) / 8> EVBits{};
+	const std::array<uint8_t, (KEY_CNT + 7) / 8> keyBits{};
+	const std::array<uint8_t, (ABS_CNT + 7) / 8> ABSBits{};
 	input_id ID{};
 
 	if (ioctl(LinuxCon.FD, EVIOCGBIT(0, EVBits.size()), EVBits.data()) < 0 ||
@@ -300,7 +300,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(std::filesystem::path path)
 	int axisCount = 0, buttonCount = 0, dpadCount = 0;
 	for(uint32_t code = BTN_MISC; code < KEY_CNT; code++)
 	{
-		if((NumericCast<uint8_t>(keyBits[code / 8u]) & (1u << (code % 8u))) == 0u)
+		if((keyBits[code / 8u] & (1u << (code % 8u))) == 0u)
 			continue;
 
 		LinuxCon.KeyMap[code - BTN_MISC] = buttonCount;
@@ -310,7 +310,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(std::filesystem::path path)
 	for(uint32_t code = 0; code < ABS_CNT; code++)
 	{
 		LinuxCon.ABSMap[code] = -1;
-		if((NumericCast<uint8_t>(ABSBits[code / 8u]) & (1u << (code % 8u))) == 0u)
+		if((ABSBits[code / 8u] & (1u << (code % 8u))) == 0u)
 			continue;
 
 		if(code >= ABS_HAT0X && code <= ABS_HAT3Y)

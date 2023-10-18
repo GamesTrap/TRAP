@@ -8,18 +8,18 @@ consteval void CheckValidNarrowCastsCompileTime()
     if constexpr(std::is_signed_v<T>)
     {
         constexpr int64_t test = 120;
-        static_assert(NarrowCast<T>(test) == T(120));
+        static_assert(NumericCast<T>(test) == T(120));
 
         if constexpr(std::floating_point<T>)
         {
             constexpr T test1(T(50));
-            static_assert(NarrowCast<int32_t>(test1) == int32_t(50));
+            static_assert(NumericCast<int32_t>(test1) == int32_t(50));
         }
     }
     else
     {
         constexpr uint64_t test = 120;
-        static_assert(NarrowCast<T>(test) == T(120));
+        static_assert(NumericCast<T>(test) == T(120));
     }
 }
 
@@ -29,12 +29,12 @@ void CheckValidNarrowCastsRunTime()
     if constexpr(std::is_signed_v<T>)
     {
         const int64_t test = 120;
-        REQUIRE(NarrowCast<T>(test) == T(120));
+        REQUIRE(NumericCast<T>(test) == T(120));
     }
     else
     {
         const uint64_t test = 120;
-        REQUIRE(NarrowCast<T>(test) == T(120));
+        REQUIRE(NumericCast<T>(test) == T(120));
     }
 }
 
@@ -43,13 +43,21 @@ template<typename T>
 {
     if constexpr(std::is_signed_v<T>)
     {
-        constexpr int64_t test = std::numeric_limits<int64_t>::max();
-        static_assert(NarrowCast<T>(test));
+        if constexpr(std::floating_point<T>)
+        {
+            const double test = std::numeric_limits<double>::max();
+            static_assert(NumericCast<T>(test));
+        }
+        else
+        {
+            const int64_t test = std::numeric_limits<int64_t>::max();
+            static_assert(NumericCast<T>(test));
+        }
     }
     else
     {
         constexpr uint64_t test = std::numeric_limits<uint64_t>::max();
-        static_assert(NarrowCast<T>(test));
+        static_assert(NumericCast<T>(test));
     }
 }
 
@@ -62,26 +70,129 @@ void CheckInvalidNarrowCastsRunTime()
         {
             const double test = std::numeric_limits<double>::max();
             using ErrorType = NarrowingError<T, double>;
-            REQUIRE_THROWS_AS(NarrowCast<T>(test), ErrorType);
+            REQUIRE_THROWS_AS(NumericCast<T>(test), ErrorType);
         }
         else
         {
             const int64_t test = std::numeric_limits<int64_t>::max();
             using ErrorType = NarrowingError<T, int64_t>;
-            REQUIRE_THROWS_AS(NarrowCast<T>(test), ErrorType);
+            REQUIRE_THROWS_AS(NumericCast<T>(test), ErrorType);
         }
     }
     else
     {
         const uint64_t test = std::numeric_limits<uint64_t>::max();
         using ErrorType = NarrowingError<T, uint64_t>;
-        REQUIRE_THROWS_AS(NarrowCast<T>(test), ErrorType);
+        REQUIRE_THROWS_AS(NumericCast<T>(test), ErrorType);
     }
 }
 
-TEST_CASE("NarrowCast()", "[utils][numericcasts][narrowcast]")
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+consteval void CheckValidWideCastsCompileTime()
 {
-    SECTION("Valid casts")
+    if constexpr(std::is_signed_v<T>)
+    {
+        constexpr int8_t test = 120;
+        static_assert(NumericCast<T>(test) == T(120));
+
+        if constexpr(std::same_as<T, float>)
+        {
+            constexpr int32_t test1 = 50;
+            static_assert(NumericCast<T>(test1) == T(50));
+        }
+        else if constexpr(std::same_as<T, double>)
+        {
+            constexpr int64_t test1 = 50;
+            static_assert(NumericCast<T>(test1) == T(50));
+        }
+    }
+    else
+    {
+        constexpr uint8_t test = 120;
+        static_assert(NumericCast<T>(test) == T(120));
+    }
+}
+
+template<typename T>
+void CheckValidWideCastsRunTime()
+{
+    if constexpr(std::is_signed_v<T>)
+    {
+        const int8_t test = 120;
+        REQUIRE(NumericCast<T>(test) == T(120));
+
+        if constexpr(std::same_as<T, float>)
+        {
+            const int32_t test1 = 50;
+            REQUIRE(NumericCast<T>(test1) == T(50));
+        }
+        else if constexpr(std::same_as<T, double>)
+        {
+            const int64_t test1 = 50;
+            REQUIRE(NumericCast<T>(test1) == T(50));
+        }
+    }
+    else
+    {
+        const uint8_t test = 120;
+        REQUIRE(NumericCast<T>(test) == T(120));
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename ExpectedType, typename U>
+consteval void CheckValidSignCastsCompileTime()
+{
+    static_assert(NumericCast<ExpectedType>(U(120)) == ExpectedType(120));
+    static_assert(std::same_as<decltype(NumericCast<ExpectedType>(U(120))), ExpectedType>);
+}
+
+template<typename ExpectedType, typename U>
+void CheckValidSignCastsRunTime()
+{
+    const U test(120);
+    REQUIRE(NumericCast<ExpectedType>(test) == ExpectedType(120));
+    REQUIRE(std::same_as<decltype(NumericCast<ExpectedType>(test)), ExpectedType>);
+}
+
+template<typename ExpectedType, typename U>
+[[maybe_unused]] consteval void CheckInvalidSignCastsCompileTime()
+{
+    if constexpr(std::is_signed_v<U>)
+    {
+        constexpr U test = -120;
+        static_assert(NumericCast<ExpectedType>(test));
+    }
+    else
+    {
+        constexpr U test = std::numeric_limits<U>::max();
+        static_assert(NumericCast<ExpectedType>(test));
+    }
+}
+
+template<typename ExpectedType, typename U>
+void CheckInvalidSignCastsRunTime()
+{
+    if constexpr(std::is_signed_v<U>)
+    {
+        const U test = -120;
+        using ErrorType = NarrowingError<ExpectedType, U>;
+        REQUIRE_THROWS_AS(NumericCast<ExpectedType>(test), ErrorType);
+    }
+    else
+    {
+        const U test = std::numeric_limits<U>::max();
+        using ErrorType = NarrowingError<ExpectedType, U>;
+        REQUIRE_THROWS_AS(NumericCast<ExpectedType>(test), ErrorType);
+    }
+}
+
+TEST_CASE("NumericCast()", "[utils][numericcast]")
+{
+    SECTION("Valid narowing casts")
     {
         // CheckValidNarrowCastsCompileTime<uint64_t>();
         CheckValidNarrowCastsCompileTime<uint32_t>();
@@ -92,7 +203,7 @@ TEST_CASE("NarrowCast()", "[utils][numericcasts][narrowcast]")
         CheckValidNarrowCastsCompileTime<int32_t>();
         CheckValidNarrowCastsCompileTime<int16_t>();
         CheckValidNarrowCastsCompileTime<int8_t>();
-        // CheckValidNarrowCastsCompileTime<double>();
+        CheckValidNarrowCastsCompileTime<double>();
         CheckValidNarrowCastsCompileTime<float>();
 
         // CheckValidNarrowCastsRunTime<uint64_t>();
@@ -104,11 +215,11 @@ TEST_CASE("NarrowCast()", "[utils][numericcasts][narrowcast]")
         CheckValidNarrowCastsRunTime<int32_t>();
         CheckValidNarrowCastsRunTime<int16_t>();
         CheckValidNarrowCastsRunTime<int8_t>();
-        // CheckValidNarrowCastsRunTime<double>();
+        CheckValidNarrowCastsRunTime<double>();
         CheckValidNarrowCastsRunTime<float>();
     }
 
-    SECTION("Invalid casts")
+    SECTION("Invalid narrowing casts")
     {
         // CheckInvalidNarrowCastsCompileTime<uint64_t>();
         // CheckInvalidNarrowCastsCompileTime<uint32_t>();
@@ -134,65 +245,8 @@ TEST_CASE("NarrowCast()", "[utils][numericcasts][narrowcast]")
         // CheckInvalidNarrowCastsRunTime<double>();
         CheckInvalidNarrowCastsRunTime<float>();
     }
-}
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-template<typename T>
-consteval void CheckValidWideCastsCompileTime()
-{
-    if constexpr(std::is_signed_v<T>)
-    {
-        constexpr int8_t test = 120;
-        static_assert(WideCast<T>(test) == T(120));
-
-        if constexpr(std::same_as<T, float>)
-        {
-            constexpr int32_t test1 = 50;
-            static_assert(WideCast<T>(test1) == T(50));
-        }
-        else if constexpr(std::same_as<T, double>)
-        {
-            constexpr int64_t test1 = 50;
-            static_assert(WideCast<T>(test1) == T(50));
-        }
-    }
-    else
-    {
-        constexpr uint8_t test = 120;
-        static_assert(WideCast<T>(test) == T(120));
-    }
-}
-
-template<typename T>
-void CheckValidWideCastsRunTime()
-{
-    if constexpr(std::is_signed_v<T>)
-    {
-        const int8_t test = 120;
-        REQUIRE(WideCast<T>(test) == T(120));
-
-        if constexpr(std::same_as<T, float>)
-        {
-            const int32_t test1 = 50;
-            REQUIRE(WideCast<T>(test1) == T(50));
-        }
-        else if constexpr(std::same_as<T, double>)
-        {
-            const int64_t test1 = 50;
-            REQUIRE(WideCast<T>(test1) == T(50));
-        }
-    }
-    else
-    {
-        const uint8_t test = 120;
-        REQUIRE(WideCast<T>(test) == T(120));
-    }
-}
-
-TEST_CASE("WideCast()", "[utils][numericcasts][widecast]")
-{
-    SECTION("Valid casts")
+    SECTION("Valid widening casts")
     {
         CheckValidWideCastsCompileTime<uint64_t>();
         CheckValidWideCastsCompileTime<uint32_t>();
@@ -218,45 +272,8 @@ TEST_CASE("WideCast()", "[utils][numericcasts][widecast]")
         CheckValidWideCastsRunTime<double>();
         CheckValidWideCastsRunTime<float>();
     }
-}
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-template<typename ExpectedType, typename U>
-consteval void CheckValidSignCastsCompileTime()
-{
-    static_assert(SignCast(U(120)) == ExpectedType(120));
-    static_assert(std::same_as<decltype(SignCast(U(120))), ExpectedType>);
-}
-
-template<typename ExpectedType, typename U>
-void CheckValidSignCastsRunTime()
-{
-    const U test(120);
-    REQUIRE(SignCast(test) == ExpectedType(120));
-    REQUIRE(std::same_as<decltype(SignCast(test)), ExpectedType>);
-}
-
-template<typename ExpectedType, typename U>
-void CheckInvalidSignCastsRunTime()
-{
-    if constexpr(std::is_signed_v<U>)
-    {
-        const U test = -120;
-        using ErrorType = NarrowingError<ExpectedType, U>;
-        REQUIRE_THROWS_AS(SignCast(test), ErrorType);
-    }
-    else
-    {
-        const U test = std::numeric_limits<U>::max();
-        using ErrorType = NarrowingError<ExpectedType, U>;
-        REQUIRE_THROWS_AS(SignCast(test), ErrorType);
-    }
-}
-
-TEST_CASE("SignCast()", "[utils][numericcasts][signcast]")
-{
-    SECTION("Valid casts")
+    SECTION("Valid sign casts")
     {
         CheckValidSignCastsCompileTime<uint64_t, int64_t>();
         CheckValidSignCastsCompileTime<uint32_t, int32_t>();
@@ -279,8 +296,18 @@ TEST_CASE("SignCast()", "[utils][numericcasts][signcast]")
         CheckValidSignCastsRunTime<int8_t, uint8_t>();
     }
 
-    SECTION("Invalid casts")
+    SECTION("Invalid sign casts")
     {
+        // CheckInvalidSignCastsCompileTime<uint64_t, int64_t>();
+        // CheckInvalidSignCastsCompileTime<uint32_t, int32_t>();
+        // CheckInvalidSignCastsCompileTime<uint16_t, int16_t>();
+        // CheckInvalidSignCastsCompileTime<uint8_t, int8_t>();
+
+        // CheckInvalidSignCastsCompileTime<int64_t, uint64_t>();
+        // CheckInvalidSignCastsCompileTime<int32_t, uint32_t>();
+        // CheckInvalidSignCastsCompileTime<int16_t, uint16_t>();
+        // CheckInvalidSignCastsCompileTime<int8_t, uint8_t>();
+
         CheckInvalidSignCastsRunTime<uint64_t, int64_t>();
         CheckInvalidSignCastsRunTime<uint32_t, int32_t>();
         CheckInvalidSignCastsRunTime<uint16_t, int16_t>();
