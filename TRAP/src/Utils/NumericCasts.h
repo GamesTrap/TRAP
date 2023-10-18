@@ -2,31 +2,21 @@
 #define TRAP_NUMERICCASTS_H
 
 #include <concepts>
-#include <exception>
 #include <limits>
 #include <string>
 
 #include <fmt/format.h>
 
+//Tracy - Profiler
+#include <tracy/Tracy.hpp>
+
 #include "Core/Backports.h"
+#include "TRAP_Assert.h"
 
-template<typename T, typename U>
-requires (std::is_arithmetic_v<T> && std::is_arithmetic_v<U>)
-struct NarrowingError : public std::exception
+namespace INTERNAL
 {
-    inline constexpr explicit NarrowingError(const U val)
-        : Error(fmt::format("NarrowingError: Failed to cast {} to type {}, result got truncated!", val, TypeNameToString<T>()))
-    {
-    }
-
-    [[nodiscard]] const char* what() const noexcept override
-    {
-        return Error.c_str();
-    }
-
-private:
     template<typename X>
-    inline constexpr std::string TypeNameToString()
+    constexpr std::string_view TypeNameToString()
     {
         if constexpr(std::same_as<X, int8_t>)
         {
@@ -72,8 +62,27 @@ private:
         std::unreachable();
     }
 
-    std::string Error;
-};
+    template<typename To, typename From>
+    concept NarrowFloatingPointToFloatingPoint = (std::floating_point<To> && std::floating_point<From> && (sizeof(To) <= sizeof(From)));
+
+    template<typename To, typename From>
+    concept NarrowFloatingPointToIntegral = (std::integral<To> && std::floating_point<From>);
+
+    template<typename To, typename From>
+    concept WidenSignedIntegralToUnsignedIntegral = (std::unsigned_integral<To> && std::signed_integral<From> && (sizeof(To) > sizeof(From)));
+
+    template<typename To, typename From>
+    concept NarrowIntegralToIntegral = (std::integral<To> && std::integral<From> && (std::is_signed_v<To> == std::is_signed_v<From>) && (sizeof(To) <= sizeof(From)));
+
+    template<typename To, typename From>
+    concept NarrowUnsignedIntegralToSignedIntegral = (std::signed_integral<To> && std::unsigned_integral<From> && (sizeof(To) <= sizeof(From)));
+
+    template<typename To, typename From>
+    concept NarrowSignedIntegralToUnsignedIntegral = (std::unsigned_integral<To> && std::signed_integral<From> && (sizeof(To) <= sizeof(From)));
+
+    template<typename To, typename From>
+    concept NarrowUnsignedIntegralToUnsignedIntegral = (std::unsigned_integral<To> && std::unsigned_integral<From> && (sizeof(To) <= sizeof(From)));
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -85,127 +94,57 @@ requires std::is_arithmetic_v<To> && std::is_arithmetic_v<From>
 	static_assert(!std::is_scoped_enum_v<To> && !std::is_scoped_enum_v<From>, "CheckedCast(): Casting to/from enum is not allowed!");
 	static_assert(!std::same_as<To, From>, "CheckedCast(): Casting to the same type is not allowed!");
 
-    //TODO Function local concepts to make the ifs simpler
-    //     Only check problematic cases, safe cases should use the else branch!
-
-    if constexpr(std::floating_point<To>)
+#ifndef TRAP_DEBUG
+    return static_cast<To>(value);
+#else
+    if constexpr(INTERNAL::NarrowFloatingPointToFloatingPoint<To, From> ||
+                 INTERNAL::NarrowFloatingPointToIntegral<To, From> ||
+                 INTERNAL::NarrowIntegralToIntegral<To, From>)
     {
-        if constexpr(std::floating_point<From>)
+        if(value > static_cast<From>(std::numeric_limits<To>::max()) ||
+            value < static_cast<From>(std::numeric_limits<To>::lowest()))
         {
-            //Floating point -> floating point
-
-            if constexpr(sizeof(To) > sizeof(From)) //Widening
-            {
-                //Casting floating point -> floating point with increased byte size is always considered safe
-                return static_cast<To>(value);
-            }
-            else //Narrowing
-            {
-                //Casting floating point -> floating point with decreased byte size is considered unsafe
-                //Note: Only bounds checks are done here, we ignore truncation caused by loss of precision
-                if(value <= static_cast<From>(std::numeric_limits<To>::max()) &&
-                   value >= static_cast<From>(std::numeric_limits<To>::lowest()))
-                {
-                    return static_cast<To>(value);
-                }
-
-                throw NarrowingError<To, From>(value);
-            }
+            TRAP_ASSERT(false, fmt::format("NumericCastError: Failed to cast {}() to type {}!", INTERNAL::TypeNameToString<From>(), value, INTERNAL::TypeNameToString<To>()));
         }
-        else
-        {
-             //Integral to floating point
 
-             //Casting integral -> floating point is always considered safe
-             //Note: We ignore truncation caused by loss of precision
-
-             return static_cast<To>(value);
-        }
+        return static_cast<To>(value);
     }
-    else /*if constexpr(std::integral<To>)*/
+    else if constexpr(INTERNAL::WidenSignedIntegralToUnsignedIntegral<To, From>)
     {
-        if constexpr(std::floating_point<From>)
+        //Casting integral -> unsigned integral with increased byte size is considered unsafe
+        if(value < static_cast<From>(0))
         {
-            //Floating point to integral
-
-            //Casting floating point -> integral is considered unsafe
-            //Note: Only bounds checks are done here, we ignore truncation to integer values
-            if(value <= static_cast<From>(std::numeric_limits<To>::max()) &&
-               value >= static_cast<From>(std::numeric_limits<To>::lowest()))
-            {
-                return static_cast<To>(value);
-            }
-
-            throw NarrowingError<To, From>(value);
+            TRAP_ASSERT(false, fmt::format("NumericCastError: Failed to cast {}() to type {}!", INTERNAL::TypeNameToString<From>(), value, INTERNAL::TypeNameToString<To>()));
         }
-        else
-        {
-            //Integral to integral
 
-            if constexpr(sizeof(To) > sizeof(From)) //Widening
-            {
-                if constexpr(std::is_signed_v<To> == std::is_signed_v<From>) //Same signedness
-                {
-                    //Casting integral -> integral with increased byte size and same signedness is always considered safe
-                    return static_cast<To>(value);
-                }
-                else //Different signedness
-                {
-                    if constexpr(std::is_signed_v<To> && std::is_unsigned_v<From>)
-                    {
-                        //Casting unsigned integral -> signed integral with increased byte size is always considered safe
-                        return static_cast<To>(value);
-                    }
-                    else
-                    {
-                        //Casting integral -> unsigned integral with increased byte size is considered unsafe
-                        if(value >= static_cast<From>(0))
-                            return static_cast<To>(value);
-
-                        throw NarrowingError<To, From>(value);
-                    }
-                }
-            }
-            else //Narrowing
-            {
-                if constexpr(std::is_signed_v<To> == std::is_signed_v<From>) //Same signedness
-                {
-                    //Casting integral -> integral with decreased byte size and same signedness is considered unsafe
-                    if(value <= static_cast<From>(std::numeric_limits<To>::max()) &&
-                       value >= static_cast<From>(std::numeric_limits<To>::lowest()))
-                    {
-                        return static_cast<To>(value);
-                    }
-
-                    throw NarrowingError<To, From>(value);
-                }
-                else //Different signedness
-                {
-                    if constexpr(std::is_signed_v<To> && std::is_unsigned_v<From>)
-                    {
-                        //Casting unsigned integral -> signed integral with decreased byte size is considered unsafe
-                        if(value <= static_cast<From>(std::numeric_limits<To>::max()))
-                        {
-                            return static_cast<To>(value);
-                        }
-
-                        throw NarrowingError<To, From>(value);
-                    }
-                    else
-                    {
-                        //Casting integral -> unsigned integral with decreased byte size is considered unsafe
-                        if(value >= static_cast<From>(0) &&
-                           static_cast<To>(value) <= static_cast<To>(std::numeric_limits<From>::max()))
-                        {
-                            return static_cast<To>(value);
-                        }
-
-                        throw NarrowingError<To, From>(value);
-                    }
-                }
-            }
-        }
+        return static_cast<To>(value);
     }
+    else if constexpr(INTERNAL::NarrowUnsignedIntegralToSignedIntegral<To, From>)
+    {
+        //Casting unsigned integral -> signed integral with decreased byte size is considered unsafe
+        if(value > static_cast<From>(std::numeric_limits<To>::max()))
+        {
+            TRAP_ASSERT(false, fmt::format("NumericCastError: Failed to cast {}() to type {}!", INTERNAL::TypeNameToString<From>(), value, INTERNAL::TypeNameToString<To>()));
+        }
+
+        return static_cast<To>(value);
+    }
+    else if constexpr(INTERNAL::NarrowSignedIntegralToUnsignedIntegral<To, From>)
+    {
+        //Casting integral -> unsigned integral with decreased byte size is considered unsafe
+        if(value < static_cast<From>(0) ||
+            static_cast<To>(value) > static_cast<To>(std::numeric_limits<From>::max()))
+        {
+            TRAP_ASSERT(false, fmt::format("NumericCastError: Failed to cast {}() to type {}!", INTERNAL::TypeNameToString<From>(), value, INTERNAL::TypeNameToString<To>()));
+        }
+
+        return static_cast<To>(value);
+    }
+    else
+    {
+        return static_cast<To>(value);
+    }
+#endif
 }
 
 #endif /*TRAP_NUMERICCASTS_H*/
