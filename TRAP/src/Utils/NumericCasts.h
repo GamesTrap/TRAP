@@ -83,9 +83,10 @@ private:
 /// </summary>
 /// <returns>Narrowed value on success.</returns>
 template<typename T, typename U>
-requires (sizeof(T) < sizeof(U) && //Destination type must be samller than the source type
+requires ((sizeof(T) < sizeof(U) && //Destination type must be samller than the source type
           std::is_arithmetic_v<T> && std::is_arithmetic_v<U> && //Both types must be arithmetic
-          std::is_signed_v<T> == std::is_signed_v<U>) //Both types must have the same signedness
+          std::is_signed_v<T> == std::is_signed_v<U>) ||  //Both types must have the same signedness
+          (sizeof(T) <= sizeof(U) && std::floating_point<U> && std::signed_integral<T> && std::is_signed_v<U>))
 [[nodiscard]] constexpr T NarrowCast(const U u)
 {
     const T t = static_cast<T>(u);

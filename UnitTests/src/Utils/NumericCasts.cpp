@@ -8,12 +8,18 @@ consteval void CheckValidNarrowCastsCompileTime()
     if constexpr(std::is_signed_v<T>)
     {
         constexpr int64_t test = 120;
-        static_assert(NarrowCast<T>(test));
+        static_assert(NarrowCast<T>(test) == T(120));
+
+        if constexpr(std::floating_point<T>)
+        {
+            constexpr T test1(T(50));
+            static_assert(NarrowCast<int32_t>(test1) == int32_t(50));
+        }
     }
     else
     {
         constexpr uint64_t test = 120;
-        static_assert(NarrowCast<T>(test));
+        static_assert(NarrowCast<T>(test) == T(120));
     }
 }
 
@@ -23,12 +29,12 @@ void CheckValidNarrowCastsRunTime()
     if constexpr(std::is_signed_v<T>)
     {
         const int64_t test = 120;
-        REQUIRE(NarrowCast<T>(test));
+        REQUIRE(NarrowCast<T>(test) == T(120));
     }
     else
     {
         const uint64_t test = 120;
-        REQUIRE(NarrowCast<T>(test));
+        REQUIRE(NarrowCast<T>(test) == T(120));
     }
 }
 

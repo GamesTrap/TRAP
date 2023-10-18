@@ -4558,4 +4558,5 @@ SITREP 10/17/2023|23w42a2
 
 SITREP 10/18/2023|23w42a3
     - Changed TRAP Engine version to 23w42a3(0.9.118)
-    - WideCast() Added support for integral to floating point conversions ~<5 mins
+    - WideCast() Added support for widening signed integral to floating point conversions ~<5 mins
+    - NarrowCast() Added support for narrowing floating point to signed integral conversion ~<5 mins
