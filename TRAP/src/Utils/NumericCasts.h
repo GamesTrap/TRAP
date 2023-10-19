@@ -3,7 +3,7 @@
 
 #include <concepts>
 #include <limits>
-#include <string>
+#include <string_view>
 
 #include <fmt/format.h>
 
@@ -16,6 +16,7 @@
 namespace INTERNAL
 {
     template<typename X>
+    requires std::is_arithmetic_v<X>
     constexpr std::string_view TypeNameToString()
     {
         if constexpr(std::same_as<X, int8_t>)
@@ -58,8 +59,10 @@ namespace INTERNAL
         {
             return "double";
         }
-
-        std::unreachable();
+        else
+        {
+            std::unreachable();
+        }
     }
 
     template<typename To, typename From>
@@ -90,9 +93,9 @@ template<typename To, typename From>
 requires std::is_arithmetic_v<To> && std::is_arithmetic_v<From>
 [[nodiscard]] constexpr To NumericCast(const From value)
 {
-	static_assert(!std::is_enum_v<To> && !std::is_enum_v<From>, "CheckedCast(): Casting to/from enum is not allowed!");
-	static_assert(!std::is_scoped_enum_v<To> && !std::is_scoped_enum_v<From>, "CheckedCast(): Casting to/from enum is not allowed!");
-	static_assert(!std::same_as<To, From>, "CheckedCast(): Casting to the same type is not allowed!");
+	static_assert(!std::is_enum_v<To> && !std::is_enum_v<From>, "NumericCast(): Casting to/from enum is not allowed!");
+	static_assert(!std::is_scoped_enum_v<To> && !std::is_scoped_enum_v<From>, "NumericCast(): Casting to/from enum is not allowed!");
+	static_assert(!std::same_as<To, From>, "NumericCast(): Casting to the same type is not allowed!");
 
 #ifndef TRAP_DEBUG
     return static_cast<To>(value);

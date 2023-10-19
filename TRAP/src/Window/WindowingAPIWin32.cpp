@@ -1997,7 +1997,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowStyles(const InternalWindow& wind
 	case 119:
 		[[fallthrough]];
 	case 143:
-		refreshRate = NumericCast<double>(refreshRate + 1) / 1.001;
+		refreshRate = (refreshRate + 1.0) / 1.001;
 		break;
 
 	default:
@@ -2229,7 +2229,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 		case 119:
 			[[fallthrough]];
 		case 143:
-			refreshRate = NumericCast<double>(refreshRate + 1) / 1.001;
+			refreshRate = (refreshRate + 1.0) / 1.001;
 			break;
 
 		default:
