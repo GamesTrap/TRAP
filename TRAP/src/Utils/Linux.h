@@ -5,6 +5,8 @@
 
 #ifdef TRAP_PLATFORM_LINUX
 
+#include <cpuid.h>
+
 #include <linux/input.h>
 #include <linux/limits.h>
 #include <regex.h>

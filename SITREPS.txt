@@ -4569,3 +4569,7 @@ SITREP 10/19/2023|23w42b1
     - Simplified NumericCast() ~<15 mins
     - NumericCast() Replaced NumericCastError exception with TRAP_ASSERTs ~<5 mins
     - NumericCast() only do check in debug more ~<5 mins
+
+SITREP 10/21/2023|23w42b2
+    - Changed TRAP Engine version to 23w42b2(0.9.120)
+    - Utils GetCPUInfo() Linux Replaced inline assembly with cpuid compiler intrinsic ~<5 mins

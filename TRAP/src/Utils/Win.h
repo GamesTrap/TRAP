@@ -5,6 +5,8 @@
 
 #ifdef TRAP_PLATFORM_WINDOWS
 
+#include <intrin.h>
+
 #ifndef NOMINMAX
 	#define NOMINMAX
 #endif /*NOMINMAX*/

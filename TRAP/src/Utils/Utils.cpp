@@ -84,13 +84,12 @@
 
 	static constexpr auto CPUID = [](const uint32_t funcID, const uint32_t subFuncID)
 	{
-		std::array<int32_t, 4> regs{};
 	#ifdef TRAP_PLATFORM_WINDOWS
+		std::array<int32_t, 4> regs{};
 		__cpuidex(regs.data(), static_cast<int32_t>(funcID), static_cast<int32_t>(subFuncID));
 	#else
-		asm volatile
-			("cpuid" : "=a" (std::get<0>(regs)), "=b" (std::get<1>(regs)), "=c" (std::get<2>(regs)), "=d" (std::get<3>(regs))
-				: "a" (funcID), "c" (subFuncID));
+		std::array<uint32_t, 4> regs{};
+		__get_cpuid_count(funcID, subFuncID, &std::get<0>(regs), &std::get<1>(regs), &std::get<2>(regs), &std::get<3>(regs));
 	#endif
 
 		return std::bit_cast<std::array<uint32_t, 4>>(regs);
