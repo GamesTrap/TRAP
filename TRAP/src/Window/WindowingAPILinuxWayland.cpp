@@ -1903,10 +1903,17 @@ void TRAP::INTERNAL::WindowingAPI::UnsetDrawSurfaceViewport(InternalWindow& wind
     if(s_Data.Wayland.Viewporter == nullptr)
         return false;
 
-    if(TRAP::Math::NotEqual(TRAP::Math::Round(window.Wayland.ContentScale), window.Wayland.ContentScale, TRAP::Math::Epsilon<float>()))
-        return true;
+    //Note:
+    //While this would be more correct, using this results in a glitching window that rapidly switches between
+    //scaling modes when the window is positioned exactly halfway on at least two monitors with different scalings applied.
+    //As a workaround always use wp_viewporter when supported by compositor.
 
-    return false;
+    // if(TRAP::Math::NotEqual(TRAP::Math::Round(window.Wayland.ContentScale), window.Wayland.ContentScale, TRAP::Math::Epsilon<float>()))
+    //     return true;
+
+    // return false;
+
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
