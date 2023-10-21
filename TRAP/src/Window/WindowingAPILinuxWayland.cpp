@@ -1190,7 +1190,7 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleMotion([[maybe_unused]] void* co
     {
     case TRAPDecorationSideWayland::MainWindow:
         s_Data.Wayland.CursorPreviousName = "";
-        InputCursorPos(*window, x, y);
+        InputCursorPos(*window, window->Wayland.CursorPosX, window->Wayland.CursorPosY);
         break;
 
     case TRAPDecorationSideWayland::TopDecoration:
