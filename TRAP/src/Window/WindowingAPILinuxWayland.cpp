@@ -208,7 +208,7 @@ void TRAP::INTERNAL::WindowingAPI::RelativePointerHandleRelativeMotion(void* con
     const wl_fixed_t deltaX = window->RawMouseMotion ? dxUnaccel : dx;
     const wl_fixed_t deltaY = window->RawMouseMotion ? dyUnaccel : dy;
 
-    if(window->Wayland.FractionalScaling != nullptr && s_Data.Wayland.Viewporter != nullptr)
+    if(s_Data.Wayland.Viewporter != nullptr && window->Wayland.FractionalScaling != nullptr)
     {
         xPos += wl_fixed_to_double(deltaX) / window->Wayland.ContentScale;
         yPos += wl_fixed_to_double(deltaY) / window->Wayland.ContentScale;
@@ -1166,6 +1166,12 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleMotion([[maybe_unused]] void* co
     window->Wayland.CursorPosX = x;
     window->Wayland.CursorPosY = y;
 
+    if(window->Wayland.Fullscreen && window->Wayland.EmulatedVideoModeActive)
+    {
+        window->Wayland.CursorPosX *= NumericCast<double>(window->Width) / NumericCast<double>(window->Monitor->NativeMode->Width);
+        window->Wayland.CursorPosY *= NumericCast<double>(window->Height) / NumericCast<double>(window->Monitor->NativeMode->Height);
+    }
+
     switch(window->Wayland.Decorations.Focus)
     {
     case TRAPDecorationSideWayland::MainWindow:
@@ -1971,7 +1977,7 @@ void TRAP::INTERNAL::WindowingAPI::ResizeWindowWayland(InternalWindow& window)
         wl_surface_set_buffer_scale(window.Wayland.Surface, 1);
         if(window.Wayland.Fullscreen && window.Wayland.EmulatedVideoModeActive)
         {
-            SetDrawSurfaceViewportWayland(window, scaledWidth, scaledHeight, window.Monitor->CurrentMode.Width, window.Monitor->CurrentMode.Height);
+            SetDrawSurfaceViewportWayland(window, scaledWidth, scaledHeight, window.Monitor->NativeMode->Width, window.Monitor->NativeMode->Height);
         }
         else
             SetDrawSurfaceViewportWayland(window, scaledWidth, scaledHeight, window.Width, window.Height);
@@ -2917,7 +2923,10 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorWayland(InternalWindo
     }
 
     if(window.Monitor != nullptr)
+    {
         ReleaseMonitorWayland(window);
+        window.Monitor->CurrentMode = *window.Monitor->NativeMode;
+    }
 
     window.Monitor = monitor;
     if(window.BorderlessFullscreen)
@@ -2926,6 +2935,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorWayland(InternalWindo
     if(window.Monitor != nullptr)
     {
         window.Wayland.Fullscreen = true;
+        window.Monitor->CurrentMode.Width = width;
+        window.Monitor->CurrentMode.Height = height;
         PlatformSetWindowSizeWayland(window, width, height);
         AcquireMonitorWayland(window);
     }
@@ -3694,7 +3705,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeWayland(InternalWindow& 
     if(window.Monitor != nullptr)
     {
         //Video mode settings is not available on Wayland
-        if(window.Wayland.Fullscreen && (width != window.Monitor->CurrentMode.Width || height != window.Monitor->CurrentMode.Height))
+        if(window.Wayland.Fullscreen && (width != window.Monitor->NativeMode->Width || height != window.Monitor->NativeMode->Height))
             window.Wayland.EmulatedVideoModeActive = true;
 
         //Still have to handle (fractional) scaling though
