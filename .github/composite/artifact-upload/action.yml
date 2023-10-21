@@ -40,7 +40,7 @@ runs:
       run: |
           7z a -t7z -m0=LZMA2 -mmt=$(nproc) -mx9 -md=64m -mfb=64 -ms=16g -mqs=on -sccUTF-8 -bb0 -bse0 -bsp2 -w -mtc=on -mta=on '${{inputs.target-filename}}.7z' ${{inputs.folder-to-upload}}
     - name: Upload artifact (Windows)
-      shell: pwsh
+      shell: powershell
       if: runner.os == 'Windows'
       run: |
           New-PSDrive -Name "X" -PSProvider FileSystem -Root "\\${{inputs.server-hostname}}\${{inputs.server-share}}" -Persist -Credential (New-Object System.Management.Automation.PSCredential (${{inputs.server-username}}, (ConvertTo-SecureString ${{inputs.server-password}} -AsPlainText -Force)))
