@@ -107,7 +107,7 @@ jobs:
         server-hostname: ${{ secrets.ARTIFACT_HOST }}
         server-username: ${{ secrets.ARTIFACT_USERNAME }}
         server-password: ${{ secrets.ARTIFACT_PASSWORD }}
-        folder-to-upload: |
+        folder-to-upload: >
           bin/Release-linux-x86_64/./Games
           bin/Release-linux-x86_64/./Utility
           bin/Release-linux-x86_64/./UnitTests

@@ -35,7 +35,7 @@ runs:
       shell: bash
       id: archive-artifact
       run: |
-          7z a -t7z -m0=LZMA2 -mmt=$(nproc) -mx9 -md=64m -mfb=64 -ms=16g -mqs=on -sccUTF-8 -bb0 -bse0 -bsp2 -w -mtc=on -mta=on '${{inputs.target-filename}}.7z' '${{inputs.folder-to-upload}}/.'
+          7z a -t7z -m0=LZMA2 -mmt=$(nproc) -mx9 -md=64m -mfb=64 -ms=16g -mqs=on -sccUTF-8 -bb0 -bse0 -bsp2 -w -mtc=on -mta=on '${{inputs.target-filename}}.7z' ${{inputs.folder-to-upload}}
     - name: Upload artifact (Windows)
       shell: pwsh
       if: runner.os == 'Windows'
