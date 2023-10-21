@@ -350,7 +350,7 @@ jobs:
       #   with:
       #     name: Windows MSVC 2022 Release Executables
       - name: Download artifact (TrappedGames)
-        uses: gamestrap/gha-download-artifact@v1.0.2
+        uses: gamestrap/gha-download-artifact@v1.0.3
         with:
           server-hostname: ${{ secrets.ARTIFACT_HOST }}
           server-share: "artifacts"
@@ -374,7 +374,7 @@ jobs:
       #   with:
       #     name: Linux Clang Release Executables
       - name: Download artifact (TrappedGames)
-        uses: gamestrap/gha-download-artifact@v1.0.2
+        uses: gamestrap/gha-download-artifact@v1.0.3
         with:
           server-hostname: ${{ secrets.ARTIFACT_HOST }}
           server-share: "artifacts"
