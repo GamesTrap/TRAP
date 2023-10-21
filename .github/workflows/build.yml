@@ -99,6 +99,7 @@ jobs:
         cp -r Games/TRAP-Editor/Assets bin/Release-linux-x86_64/Games/TRAP-Editor/
         cp -r Games/TRAP-Editor/Resources bin/Release-linux-x86_64/Games/TRAP-Editor/
         cp -r Utility/QOIConv bin/Release-linux-x86_64/Utility/
+        cp -r Licenses bin/Release-linux-x86_64/Licenses
         rm bin/Release-linux-x86_64/Utility/QOIConv/QOIConv.exe
     - name: Upload artifacts (TrappedGames)
       uses: ./.github/composite/artifact-upload
@@ -112,6 +113,7 @@ jobs:
           bin/Release-linux-x86_64/./Games
           bin/Release-linux-x86_64/./Utility
           bin/Release-linux-x86_64/./UnitTests
+          bin/Release-linux-x86_64/./Licenses
     # - name: Upload artifacts
     #   uses: actions/upload-artifact@v3
     #   with:
@@ -120,6 +122,7 @@ jobs:
     #       bin/Release-linux-x86_64/Games
     #       bin/Release-linux-x86_64/Utility
     #       bin/Release-linux-x86_64/UnitTests
+    #       bin/Release-linux-x86_64/Licenses
   build-linux-clang-17:
     name: Build Linux Clang 17
     runs-on: [self-hosted, Linux, X64, ubuntu, "23.10", cpu]
@@ -206,6 +209,7 @@ jobs:
         cp -r Games/TRAP-Editor/Assets bin/Release-linux-x86_64/Games/TRAP-Editor/
         cp -r Games/TRAP-Editor/Resources bin/Release-linux-x86_64/Games/TRAP-Editor/
         cp -r Utility/QOIConv bin/Release-linux-x86_64/Utility/
+        cp -r Licenses bin/Release-linux-x86_64/Licenses
         rm bin/Release-linux-x86_64/Utility/QOIConv/QOIConv.exe
     - name: Upload artifacts (TrappedGames)
       uses: ./.github/composite/artifact-upload
@@ -219,6 +223,7 @@ jobs:
           bin/Release-linux-x86_64/./Games
           bin/Release-linux-x86_64/./Utility
           bin/Release-linux-x86_64/./UnitTests
+          bin/Release-linux-x86_64/./Licenses
     # - name: Upload artifacts
     #   uses: actions/upload-artifact@v3
     #   with:
@@ -227,6 +232,7 @@ jobs:
     #       bin/Release-linux-x86_64/Games
     #       bin/Release-linux-x86_64/Utility
     #       bin/Release-linux-x86_64/UnitTests
+    #       bin/Release-linux-x86_64/Licenses
   build-windows-msvc-2022:
     name: Build Windows MSVC 2022
     runs-on: [self-hosted, windows, X64, cpu]
@@ -301,6 +307,7 @@ jobs:
         Xcopy Games\Tests3D\Assets bin\Release-windows-x86_64\Games\Tests3D\Assets /I /H /E /C
         Xcopy Games\TRAP-Editor\Assets bin\Release-windows-x86_64\Games\TRAP-Editor\Assets /I /H /E /C
         Xcopy Games\TRAP-Editor\Resources bin\Release-windows-x86_64\Games\TRAP-Editor\Resources /I /H /E /C
+        Xcopy Licenses bin\Release-windows-x86_64\Licenses /I /H /E /C
         Xcopy Utility\QOIConv bin\Release-windows-x86_64\Utility\QOIConv /I /H /E /C
         Xcopy Redists bin\Release-windows-x86_64\Redists /I /H /E /C
         Get-ChildItem -Path "bin" -Filter "*.pdb" -Recurse | Remove-Item -Force
@@ -317,6 +324,7 @@ jobs:
           bin/Release-windows-x86_64/./Games
           bin/Release-windows-x86_64/./Utility
           bin/Release-windows-x86_64/./UnitTests
+          bin/Release-windows-x86_64/./Licenses
           bin/Release-windows-x86_64/./Redists
     # - name: Upload artifacts
     #   uses: actions/upload-artifact@v3
@@ -325,8 +333,9 @@ jobs:
     #     path: |
     #       bin/Release-windows-x86_64/Games
     #       bin/Release-windows-x86_64/Utility
-    #       bin/Release-windows-x86_64/Redists
     #       bin/Release-windows-x86_64/UnitTests
+    #       bin/Release-windows-x86_64/Licenses
+    #       bin/Release-windows-x86_64/Redists
 
   test-windows:
     name: Unit-Test Windows
