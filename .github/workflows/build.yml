@@ -333,10 +333,21 @@ jobs:
     runs-on: [self-hosted, windows, X64, cpu]
     needs: [build-windows-msvc-2022]
     steps:
+      - name: Cleanup workspace
+        if: ${{ always() }}
+        uses: gamestrap/gha-workspace-cleanup@v1.2.4
       # - name: Download artifact
       #   uses: actions/download-artifact@v3
       #   with:
       #     name: Windows MSVC 2022 Release Executables
+      - name: Download artifact (TrappedGames)
+        uses: gamestrap/gha-download-artifact@v1.0.1
+        with:
+          server-hostname: ${{ secrets.ARTIFACT_HOST }}
+          server-share: "artifacts"
+          server-username: ${{ secrets.ARTIFACT_USERNAME }}
+          server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+          artifact-name: "Windows MSVC Release Executables"
       - name: Run Tests
         run: |
           cd UnitTests
@@ -346,10 +357,21 @@ jobs:
     runs-on: [self-hosted, Linux, X64, ubuntu, "23.10", cpu]
     needs: [build-linux-clang-17]
     steps:
+      - name: Cleanup workspace
+        if: ${{ always() }}
+        uses: gamestrap/gha-workspace-cleanup@v1.2.4
       # - name: Download artifact
       #   uses: actions/download-artifact@v3
       #   with:
       #     name: Linux Clang Release Executables
+      - name: Download artifact (TrappedGames)
+        uses: gamestrap/gha-download-artifact@v1.0.1
+        with:
+          server-hostname: ${{ secrets.ARTIFACT_HOST }}
+          server-share: "artifacts"
+          server-username: ${{ secrets.ARTIFACT_USERNAME }}
+          server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+          artifact-name: "Linux Clang Release Executables"
       - name: Run Tests
         run: |
           cd UnitTests
