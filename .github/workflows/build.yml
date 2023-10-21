@@ -333,10 +333,10 @@ jobs:
     runs-on: [self-hosted, windows, X64, cpu]
     needs: [build-windows-msvc-2022]
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: Windows MSVC 2022 Release Executables
+      # - name: Download artifact
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: Windows MSVC 2022 Release Executables
       - name: Run Tests
         run: |
           cd UnitTests
@@ -346,10 +346,10 @@ jobs:
     runs-on: [self-hosted, Linux, X64, ubuntu, "23.10", cpu]
     needs: [build-linux-clang-17]
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: Linux Clang Release Executables
+      # - name: Download artifact
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: Linux Clang Release Executables
       - name: Run Tests
         run: |
           cd UnitTests
