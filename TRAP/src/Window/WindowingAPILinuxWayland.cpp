@@ -416,7 +416,8 @@ void TRAP::INTERNAL::WindowingAPI::XDGSurfaceHandleConfigure(void* const userDat
         InputWindowMaximize(*window, window->Maximized);
     }
 
-    window->Wayland.Fullscreen = window->Wayland.Pending.Fullscreen;
+    if(!window->BorderlessFullscreen)
+        window->Wayland.Fullscreen = window->Wayland.Pending.Fullscreen;
 
     const int32_t width = window->Wayland.Pending.Width;
     const int32_t height = window->Wayland.Pending.Height;
@@ -1168,8 +1169,21 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleMotion([[maybe_unused]] void* co
 
     if(window->Wayland.Fullscreen && window->Wayland.EmulatedVideoModeActive)
     {
-        window->Wayland.CursorPosX *= NumericCast<double>(window->Width) / NumericCast<double>(window->Monitor->NativeMode->Width);
-        window->Wayland.CursorPosY *= NumericCast<double>(window->Height) / NumericCast<double>(window->Monitor->NativeMode->Height);
+        if(window->Wayland.FractionalScaling == nullptr)
+        {
+            window->Wayland.CursorPosX *= NumericCast<double>(window->Width) / NumericCast<double>(window->Monitor->NativeMode->Width);
+            window->Wayland.CursorPosY *= NumericCast<double>(window->Height) / NumericCast<double>(window->Monitor->NativeMode->Height);
+        }
+        else
+        {
+            const double contentScale = NumericCast<double>(window->Wayland.ContentScale);
+            const TRAP::Math::Vec2d scaledBackBuffer = TRAP::Math::Vec2d(NumericCast<double>(window->Width), NumericCast<double>(window->Height)) * contentScale;
+            const TRAP::Math::Vec2d outputSize = TRAP::Math::Vec2d(NumericCast<double>(window->Monitor->NativeMode->Width), NumericCast<double>(window->Monitor->NativeMode->Height));
+            const TRAP::Math::Vec2d pointerScale = scaledBackBuffer / outputSize;
+
+            window->Wayland.CursorPosX *= pointerScale.x();
+            window->Wayland.CursorPosY *= pointerScale.y();
+        }
     }
 
     switch(window->Wayland.Decorations.Focus)
@@ -1977,7 +1991,9 @@ void TRAP::INTERNAL::WindowingAPI::ResizeWindowWayland(InternalWindow& window)
         wl_surface_set_buffer_scale(window.Wayland.Surface, 1);
         if(window.Wayland.Fullscreen && window.Wayland.EmulatedVideoModeActive)
         {
-            SetDrawSurfaceViewportWayland(window, scaledWidth, scaledHeight, window.Monitor->NativeMode->Width, window.Monitor->NativeMode->Height);
+            const auto nativeScaled = TRAP::Math::Round(TRAP::Math::Vec2(NumericCast<float>(window.Monitor->NativeMode->Width),
+                                                                         NumericCast<float>(window.Monitor->NativeMode->Height)) / scale);
+            SetDrawSurfaceViewportWayland(window, scaledWidth, scaledHeight, NumericCast<int32_t>(nativeScaled.x()), NumericCast<int32_t>(nativeScaled.y()));
         }
         else
             SetDrawSurfaceViewportWayland(window, scaledWidth, scaledHeight, window.Width, window.Height);
@@ -2350,7 +2366,7 @@ void TRAP::INTERNAL::WindowingAPI::LibDecorFrameHandleConfigure(libdecor_frame* 
     }
     else
     {
-        fullscreen = window->Wayland.Fullscreen || window->BorderlessFullscreen;
+        fullscreen = window->Wayland.Fullscreen;
         activated = window->Wayland.Activated;
         maximized = window->Maximized;
     }
@@ -2397,7 +2413,8 @@ void TRAP::INTERNAL::WindowingAPI::LibDecorFrameHandleConfigure(libdecor_frame* 
         InputWindowMaximize(*window, window->Maximized);
     }
 
-    window->Wayland.Fullscreen = fullscreen;
+    if(!window->BorderlessFullscreen)
+        window->Wayland.Fullscreen = fullscreen;
 
     bool damaged = false;
 
@@ -2951,6 +2968,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessWayland(Int
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
+    window.Wayland.Fullscreen = false;
     window.BorderlessFullscreen = true;
 
     if(window.Monitor != nullptr)
