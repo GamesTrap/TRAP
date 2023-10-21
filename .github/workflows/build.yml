@@ -100,6 +100,17 @@ jobs:
         cp -r Games/TRAP-Editor/Resources bin/Release-linux-x86_64/Games/TRAP-Editor/
         cp -r Utility/QOIConv bin/Release-linux-x86_64/Utility/
         rm bin/Release-linux-x86_64/Utility/QOIConv/QOIConv.exe
+    - name: Upload artifacts (TrappedGames)
+      uses: ./.github/composite/artifact-upload
+      with:
+        target-filename: Linux GCC Release Executables
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        folder-to-upload: |
+          bin/Release-linux-x86_64/./Games
+          bin/Release-linux-x86_64/./Utility
+          bin/Release-linux-x86_64/./UnitTests
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
