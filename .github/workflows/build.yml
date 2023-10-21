@@ -105,21 +105,21 @@ jobs:
       with:
         target-filename: Linux GCC Release Executables
         server-hostname: ${{ secrets.ARTIFACT_HOST }}
-        server-share: ${{ secrets.ARTIFACT_SHARE }}
+        server-share: "artifacts"
         server-username: ${{ secrets.ARTIFACT_USERNAME }}
         server-password: ${{ secrets.ARTIFACT_PASSWORD }}
         folder-to-upload: >
           bin/Release-linux-x86_64/./Games
           bin/Release-linux-x86_64/./Utility
           bin/Release-linux-x86_64/./UnitTests
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: Linux GCC Release Executables
-        path: |
-          bin/Release-linux-x86_64/Games
-          bin/Release-linux-x86_64/Utility
-          bin/Release-linux-x86_64/UnitTests
+    # - name: Upload artifacts
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: Linux GCC Release Executables
+    #     path: |
+    #       bin/Release-linux-x86_64/Games
+    #       bin/Release-linux-x86_64/Utility
+    #       bin/Release-linux-x86_64/UnitTests
   build-linux-clang-17:
     name: Build Linux Clang 17
     runs-on: [self-hosted, Linux, X64, ubuntu, "23.10", cpu]
@@ -212,21 +212,21 @@ jobs:
       with:
         target-filename: Linux Clang Release Executables
         server-hostname: ${{ secrets.ARTIFACT_HOST }}
-        server-share: ${{ secrets.ARTIFACT_SHARE }}
+        server-share: "artifacts"
         server-username: ${{ secrets.ARTIFACT_USERNAME }}
         server-password: ${{ secrets.ARTIFACT_PASSWORD }}
         folder-to-upload: >
           bin/Release-linux-x86_64/./Games
           bin/Release-linux-x86_64/./Utility
           bin/Release-linux-x86_64/./UnitTests
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: Linux Clang Release Executables
-        path: |
-          bin/Release-linux-x86_64/Games
-          bin/Release-linux-x86_64/Utility
-          bin/Release-linux-x86_64/UnitTests
+    # - name: Upload artifacts
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: Linux Clang Release Executables
+    #     path: |
+    #       bin/Release-linux-x86_64/Games
+    #       bin/Release-linux-x86_64/Utility
+    #       bin/Release-linux-x86_64/UnitTests
   build-windows-msvc-2022:
     name: Build Windows MSVC 2022
     runs-on: [self-hosted, windows, X64, cpu]
@@ -310,7 +310,7 @@ jobs:
       with:
         target-filename: Windows MSVC Release Executables
         server-hostname: ${{ secrets.ARTIFACT_HOST }}
-        server-share: ${{ secrets.ARTIFACT_SHARE }}
+        server-share: "artifacts"
         server-username: ${{ secrets.ARTIFACT_USERNAME }}
         server-password: ${{ secrets.ARTIFACT_PASSWORD }}
         folder-to-upload: >
@@ -318,15 +318,15 @@ jobs:
           bin/Release-windows-x86_64/./Utility
           bin/Release-windows-x86_64/./UnitTests
           bin/Release-windows-x86_64/./Redists
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: Windows MSVC 2022 Release Executables
-        path: |
-          bin/Release-windows-x86_64/Games
-          bin/Release-windows-x86_64/Utility
-          bin/Release-windows-x86_64/Redists
-          bin/Release-windows-x86_64/UnitTests
+    # - name: Upload artifacts
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: Windows MSVC 2022 Release Executables
+    #     path: |
+    #       bin/Release-windows-x86_64/Games
+    #       bin/Release-windows-x86_64/Utility
+    #       bin/Release-windows-x86_64/Redists
+    #       bin/Release-windows-x86_64/UnitTests
 
   test-windows:
     name: Unit-Test Windows
