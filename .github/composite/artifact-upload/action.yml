@@ -43,8 +43,8 @@ runs:
       shell: powershell
       if: runner.os == 'Windows'
       run: |
-          New-PSDrive -Name "X" -PSProvider FileSystem -Root "\\${{inputs.server-hostname}}\${{inputs.server-share}}" -Persist -Credential (New-Object System.Management.Automation.PSCredential (${{inputs.server-username}}, (ConvertTo-SecureString ${{inputs.server-password}} -AsPlainText -Force)))
-          Copy-Item -Path ${{inputs.target-filename}}.7z -Destination (New-Item -type directory -force "X:\${{steps.build-dest-path.outputs.TARGET_PATH}}") -force -ea 0
+          New-PSDrive -Name "X" -PSProvider FileSystem -Root "\\${{inputs.server-hostname}}\${{inputs.server-share}}" -Persist -Credential (New-Object System.Management.Automation.PSCredential ("${{inputs.server-username}}", (ConvertTo-SecureString "${{inputs.server-password}}" -AsPlainText -Force)))
+          Copy-Item -Path "${{inputs.target-filename}}.7z" -Destination (New-Item -type directory -force "X:\${{steps.build-dest-path.outputs.TARGET_PATH}}") -force -ea 0
           Remove-PSDrive -Name "X"
     - name: Upload artifact (Linux)
       shell: bash
