@@ -667,6 +667,10 @@ void TRAP::INTERNAL::WindowingAPI::AddEmulatedVideoModes(InternalMonitor& monito
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
+    //Emulated video modes are only supported when compositor has wp_viewporter protocol support
+    if(s_Data.Wayland.Viewporter == nullptr)
+        return;
+
     const InternalVideoMode& nativeMode = monitor.NativeMode.value_or(monitor.CurrentMode);
     std::vector<InternalVideoMode>& modes = monitor.Modes;
 
@@ -1895,7 +1899,7 @@ void TRAP::INTERNAL::WindowingAPI::UnsetDrawSurfaceViewport(InternalWindow& wind
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::WindowNeedsViewport(const InternalWindow& window)
+[[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::WindowNeedsViewport([[maybe_unused]] const InternalWindow& window)
 {
     //A viewport is only required when scaling is enabled and:
     //    - The surface scale is fractional.
@@ -1909,6 +1913,9 @@ void TRAP::INTERNAL::WindowingAPI::UnsetDrawSurfaceViewport(InternalWindow& wind
     //As a workaround always use wp_viewporter when supported by compositor.
 
     // if(TRAP::Math::NotEqual(TRAP::Math::Round(window.Wayland.ContentScale), window.Wayland.ContentScale, TRAP::Math::Epsilon<float>()))
+    //     return true;
+
+    // if(window.Monitor != nullptr && window.Wayland.EmulatedVideoModeActive)
     //     return true;
 
     // return false;
@@ -1962,7 +1969,12 @@ void TRAP::INTERNAL::WindowingAPI::ResizeWindowWayland(InternalWindow& window)
     if(WindowNeedsViewport(window))
     {
         wl_surface_set_buffer_scale(window.Wayland.Surface, 1);
-        SetDrawSurfaceViewportWayland(window, scaledWidth, scaledHeight, window.Width, window.Height);
+        if(window.Wayland.Fullscreen && window.Wayland.EmulatedVideoModeActive)
+        {
+            SetDrawSurfaceViewportWayland(window, scaledWidth, scaledHeight, window.Monitor->CurrentMode.Width, window.Monitor->CurrentMode.Height);
+        }
+        else
+            SetDrawSurfaceViewportWayland(window, scaledWidth, scaledHeight, window.Width, window.Height);
     }
     else
     {
@@ -2389,7 +2401,7 @@ void TRAP::INTERNAL::WindowingAPI::LibDecorFrameHandleConfigure(libdecor_frame* 
         damaged = true;
     }
 
-    if((width != window->Width || height != window->Height) && !window->BorderlessFullscreen)
+    if((width != window->Width || height != window->Height) && !window->BorderlessFullscreen && !window->Wayland.EmulatedVideoModeActive)
     {
         window->Width = width;
         window->Height = height;
@@ -2908,9 +2920,12 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorWayland(InternalWindo
         ReleaseMonitorWayland(window);
 
     window.Monitor = monitor;
+    if(window.BorderlessFullscreen)
+        window.BorderlessFullscreen = false;
 
     if(window.Monitor != nullptr)
     {
+        window.Wayland.Fullscreen = true;
         PlatformSetWindowSizeWayland(window, width, height);
         AcquireMonitorWayland(window);
     }
@@ -2929,7 +2944,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessWayland(Int
 
     if(window.Monitor != nullptr)
         ReleaseMonitorWayland(window);
-
 
     window.Monitor = &monitor;
 
@@ -3680,6 +3694,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeWayland(InternalWindow& 
     if(window.Monitor != nullptr)
     {
         //Video mode settings is not available on Wayland
+        if(window.Wayland.Fullscreen && (width != window.Monitor->CurrentMode.Width || height != window.Monitor->CurrentMode.Height))
+            window.Wayland.EmulatedVideoModeActive = true;
 
         //Still have to handle (fractional) scaling though
         window.Width = NumericCast<int32_t>(TRAP::Math::Round(NumericCast<float>(width) / window.Wayland.ContentScale));
@@ -3688,6 +3704,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeWayland(InternalWindow& 
     }
     else
     {
+        window.Wayland.EmulatedVideoModeActive = false;
+
         window.Width = width;
         window.Height = height;
         ResizeWindowWayland(window);
