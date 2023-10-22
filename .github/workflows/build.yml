@@ -102,6 +102,9 @@ jobs:
         cp -r Licenses bin/Release-linux-x86_64/Licenses
         rm bin/Release-linux-x86_64/Utility/QOIConv/QOIConv.exe
     - name: Upload artifacts (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
       uses: ./.github/composite/artifact-upload
       with:
         target-filename: Linux GCC Release Executables
@@ -114,15 +117,18 @@ jobs:
           bin/Release-linux-x86_64/./Utility
           bin/Release-linux-x86_64/./UnitTests
           bin/Release-linux-x86_64/./Licenses
-    # - name: Upload artifacts
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: Linux GCC Release Executables
-    #     path: |
-    #       bin/Release-linux-x86_64/Games
-    #       bin/Release-linux-x86_64/Utility
-    #       bin/Release-linux-x86_64/UnitTests
-    #       bin/Release-linux-x86_64/Licenses
+    - name: Upload artifacts (GitHub)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname == null
+      uses: actions/upload-artifact@v3
+      with:
+        name: Linux GCC Release Executables
+        path: |
+          bin/Release-linux-x86_64/Games
+          bin/Release-linux-x86_64/Utility
+          bin/Release-linux-x86_64/UnitTests
+          bin/Release-linux-x86_64/Licenses
   build-linux-clang-17:
     name: Build Linux Clang 17
     runs-on: [self-hosted, Linux, X64, ubuntu, "23.10", cpu]
@@ -212,6 +218,9 @@ jobs:
         cp -r Licenses bin/Release-linux-x86_64/Licenses
         rm bin/Release-linux-x86_64/Utility/QOIConv/QOIConv.exe
     - name: Upload artifacts (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
       uses: ./.github/composite/artifact-upload
       with:
         target-filename: Linux Clang Release Executables
@@ -224,15 +233,18 @@ jobs:
           bin/Release-linux-x86_64/./Utility
           bin/Release-linux-x86_64/./UnitTests
           bin/Release-linux-x86_64/./Licenses
-    # - name: Upload artifacts
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: Linux Clang Release Executables
-    #     path: |
-    #       bin/Release-linux-x86_64/Games
-    #       bin/Release-linux-x86_64/Utility
-    #       bin/Release-linux-x86_64/UnitTests
-    #       bin/Release-linux-x86_64/Licenses
+    - name: Upload artifacts (GitHub)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname == null
+      uses: actions/upload-artifact@v3
+      with:
+        name: Linux Clang Release Executables
+        path: |
+          bin/Release-linux-x86_64/Games
+          bin/Release-linux-x86_64/Utility
+          bin/Release-linux-x86_64/UnitTests
+          bin/Release-linux-x86_64/Licenses
   build-windows-msvc-2022:
     name: Build Windows MSVC 2022
     runs-on: [self-hosted, windows, X64, cpu]
@@ -313,6 +325,9 @@ jobs:
         Get-ChildItem -Path "bin" -Filter "*.pdb" -Recurse | Remove-Item -Force
         Remove-Item bin\Release-windows-x86_64\Utility\QOIConv\QOIConv
     - name: Upload artifacts (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
       uses: ./.github/composite/artifact-upload
       with:
         target-filename: Windows MSVC Release Executables
@@ -326,16 +341,19 @@ jobs:
           bin/Release-windows-x86_64/./UnitTests
           bin/Release-windows-x86_64/./Licenses
           bin/Release-windows-x86_64/./Redists
-    # - name: Upload artifacts
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: Windows MSVC 2022 Release Executables
-    #     path: |
-    #       bin/Release-windows-x86_64/Games
-    #       bin/Release-windows-x86_64/Utility
-    #       bin/Release-windows-x86_64/UnitTests
-    #       bin/Release-windows-x86_64/Licenses
-    #       bin/Release-windows-x86_64/Redists
+    - name: Upload artifacts (GitHub)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname == null
+      uses: actions/upload-artifact@v3
+      with:
+        name: Windows MSVC 2022 Release Executables
+        path: |
+          bin/Release-windows-x86_64/Games
+          bin/Release-windows-x86_64/Utility
+          bin/Release-windows-x86_64/UnitTests
+          bin/Release-windows-x86_64/Licenses
+          bin/Release-windows-x86_64/Redists
 
   test-windows:
     name: Unit-Test Windows
@@ -345,11 +363,10 @@ jobs:
       - name: Cleanup workspace
         if: ${{ always() }}
         uses: gamestrap/gha-workspace-cleanup@v1.2.4
-      # - name: Download artifact
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: Windows MSVC 2022 Release Executables
       - name: Download artifact (TrappedGames)
+        env:
+          artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+        if: env.artifact_hostname != null
         uses: gamestrap/gha-download-artifact@v1.0.3
         with:
           server-hostname: ${{ secrets.ARTIFACT_HOST }}
@@ -357,6 +374,13 @@ jobs:
           server-username: ${{ secrets.ARTIFACT_USERNAME }}
           server-password: ${{ secrets.ARTIFACT_PASSWORD }}
           artifact-name: "Windows MSVC Release Executables"
+      - name: Download artifact (GitHub)
+        env:
+          artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+        if: env.artifact_hostname == null
+        uses: actions/download-artifact@v3
+        with:
+          name: Windows MSVC 2022 Release Executables
       - name: Run Tests
         run: |
           cd UnitTests
@@ -369,11 +393,10 @@ jobs:
       - name: Cleanup workspace
         if: ${{ always() }}
         uses: gamestrap/gha-workspace-cleanup@v1.2.4
-      # - name: Download artifact
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: Linux Clang Release Executables
       - name: Download artifact (TrappedGames)
+        env:
+          artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+        if: env.artifact_hostname != null
         uses: gamestrap/gha-download-artifact@v1.0.3
         with:
           server-hostname: ${{ secrets.ARTIFACT_HOST }}
@@ -381,6 +404,13 @@ jobs:
           server-username: ${{ secrets.ARTIFACT_USERNAME }}
           server-password: ${{ secrets.ARTIFACT_PASSWORD }}
           artifact-name: "Linux Clang Release Executables"
+      - name: Download artifact (GitHub)
+        env:
+          artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+        if: env.artifact_hostname == null
+        uses: actions/download-artifact@v3
+        with:
+          name: Linux Clang Release Executables
       - name: Run Tests
         run: |
           cd UnitTests
