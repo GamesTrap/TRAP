@@ -1723,6 +1723,7 @@ namespace TRAP::INTERNAL
 				bool Visible;
 				bool Activated;
 				bool Fullscreen;
+				bool EmulatedVideoModeActive = false;
 				bool Hovered;
 				wl_surface* Surface;
 				wl_callback* Callback;

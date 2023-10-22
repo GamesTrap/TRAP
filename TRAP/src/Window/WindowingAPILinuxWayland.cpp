@@ -208,7 +208,7 @@ void TRAP::INTERNAL::WindowingAPI::RelativePointerHandleRelativeMotion(void* con
     const wl_fixed_t deltaX = window->RawMouseMotion ? dxUnaccel : dx;
     const wl_fixed_t deltaY = window->RawMouseMotion ? dyUnaccel : dy;
 
-    if(window->Wayland.FractionalScaling != nullptr && s_Data.Wayland.Viewporter != nullptr)
+    if(s_Data.Wayland.Viewporter != nullptr && window->Wayland.FractionalScaling != nullptr)
     {
         xPos += wl_fixed_to_double(deltaX) / window->Wayland.ContentScale;
         yPos += wl_fixed_to_double(deltaY) / window->Wayland.ContentScale;
@@ -416,7 +416,8 @@ void TRAP::INTERNAL::WindowingAPI::XDGSurfaceHandleConfigure(void* const userDat
         InputWindowMaximize(*window, window->Maximized);
     }
 
-    window->Wayland.Fullscreen = window->Wayland.Pending.Fullscreen;
+    if(!window->BorderlessFullscreen)
+        window->Wayland.Fullscreen = window->Wayland.Pending.Fullscreen;
 
     const int32_t width = window->Wayland.Pending.Width;
     const int32_t height = window->Wayland.Pending.Height;
@@ -666,6 +667,10 @@ constexpr std::array<std::pair<int32_t, int32_t>, 31> EmulatedVideoModes
 void TRAP::INTERNAL::WindowingAPI::AddEmulatedVideoModes(InternalMonitor& monitor)
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+
+    //Emulated video modes are only supported when compositor has wp_viewporter protocol support
+    if(s_Data.Wayland.Viewporter == nullptr)
+        return;
 
     const InternalVideoMode& nativeMode = monitor.NativeMode.value_or(monitor.CurrentMode);
     std::vector<InternalVideoMode>& modes = monitor.Modes;
@@ -1162,11 +1167,30 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleMotion([[maybe_unused]] void* co
     window->Wayland.CursorPosX = x;
     window->Wayland.CursorPosY = y;
 
+    if(window->Wayland.Fullscreen && window->Wayland.EmulatedVideoModeActive)
+    {
+        if(window->Wayland.FractionalScaling == nullptr)
+        {
+            window->Wayland.CursorPosX *= NumericCast<double>(window->Width) / NumericCast<double>(window->Monitor->NativeMode->Width);
+            window->Wayland.CursorPosY *= NumericCast<double>(window->Height) / NumericCast<double>(window->Monitor->NativeMode->Height);
+        }
+        else
+        {
+            const double contentScale = NumericCast<double>(window->Wayland.ContentScale);
+            const TRAP::Math::Vec2d scaledBackBuffer = TRAP::Math::Vec2d(NumericCast<double>(window->Width), NumericCast<double>(window->Height)) * contentScale;
+            const TRAP::Math::Vec2d outputSize = TRAP::Math::Vec2d(NumericCast<double>(window->Monitor->NativeMode->Width), NumericCast<double>(window->Monitor->NativeMode->Height));
+            const TRAP::Math::Vec2d pointerScale = scaledBackBuffer / outputSize;
+
+            window->Wayland.CursorPosX *= pointerScale.x();
+            window->Wayland.CursorPosY *= pointerScale.y();
+        }
+    }
+
     switch(window->Wayland.Decorations.Focus)
     {
     case TRAPDecorationSideWayland::MainWindow:
         s_Data.Wayland.CursorPreviousName = "";
-        InputCursorPos(*window, x, y);
+        InputCursorPos(*window, window->Wayland.CursorPosX, window->Wayland.CursorPosY);
         break;
 
     case TRAPDecorationSideWayland::TopDecoration:
@@ -1895,7 +1919,7 @@ void TRAP::INTERNAL::WindowingAPI::UnsetDrawSurfaceViewport(InternalWindow& wind
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::WindowNeedsViewport(const InternalWindow& window)
+[[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::WindowNeedsViewport([[maybe_unused]] const InternalWindow& window)
 {
     //A viewport is only required when scaling is enabled and:
     //    - The surface scale is fractional.
@@ -1909,6 +1933,9 @@ void TRAP::INTERNAL::WindowingAPI::UnsetDrawSurfaceViewport(InternalWindow& wind
     //As a workaround always use wp_viewporter when supported by compositor.
 
     // if(TRAP::Math::NotEqual(TRAP::Math::Round(window.Wayland.ContentScale), window.Wayland.ContentScale, TRAP::Math::Epsilon<float>()))
+    //     return true;
+
+    // if(window.Monitor != nullptr && window.Wayland.EmulatedVideoModeActive)
     //     return true;
 
     // return false;
@@ -1962,7 +1989,14 @@ void TRAP::INTERNAL::WindowingAPI::ResizeWindowWayland(InternalWindow& window)
     if(WindowNeedsViewport(window))
     {
         wl_surface_set_buffer_scale(window.Wayland.Surface, 1);
-        SetDrawSurfaceViewportWayland(window, scaledWidth, scaledHeight, window.Width, window.Height);
+        if(window.Wayland.Fullscreen && window.Wayland.EmulatedVideoModeActive)
+        {
+            const auto nativeScaled = TRAP::Math::Round(TRAP::Math::Vec2(NumericCast<float>(window.Monitor->NativeMode->Width),
+                                                                         NumericCast<float>(window.Monitor->NativeMode->Height)) / scale);
+            SetDrawSurfaceViewportWayland(window, scaledWidth, scaledHeight, NumericCast<int32_t>(nativeScaled.x()), NumericCast<int32_t>(nativeScaled.y()));
+        }
+        else
+            SetDrawSurfaceViewportWayland(window, scaledWidth, scaledHeight, window.Width, window.Height);
     }
     else
     {
@@ -2332,7 +2366,7 @@ void TRAP::INTERNAL::WindowingAPI::LibDecorFrameHandleConfigure(libdecor_frame* 
     }
     else
     {
-        fullscreen = window->Wayland.Fullscreen || window->BorderlessFullscreen;
+        fullscreen = window->Wayland.Fullscreen;
         activated = window->Wayland.Activated;
         maximized = window->Maximized;
     }
@@ -2379,7 +2413,8 @@ void TRAP::INTERNAL::WindowingAPI::LibDecorFrameHandleConfigure(libdecor_frame* 
         InputWindowMaximize(*window, window->Maximized);
     }
 
-    window->Wayland.Fullscreen = fullscreen;
+    if(!window->BorderlessFullscreen)
+        window->Wayland.Fullscreen = fullscreen;
 
     bool damaged = false;
 
@@ -2389,7 +2424,7 @@ void TRAP::INTERNAL::WindowingAPI::LibDecorFrameHandleConfigure(libdecor_frame* 
         damaged = true;
     }
 
-    if((width != window->Width || height != window->Height) && !window->BorderlessFullscreen)
+    if((width != window->Width || height != window->Height) && !window->BorderlessFullscreen && !window->Wayland.EmulatedVideoModeActive)
     {
         window->Width = width;
         window->Height = height;
@@ -2905,12 +2940,20 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorWayland(InternalWindo
     }
 
     if(window.Monitor != nullptr)
+    {
         ReleaseMonitorWayland(window);
+        window.Monitor->CurrentMode = *window.Monitor->NativeMode;
+    }
 
     window.Monitor = monitor;
+    if(window.BorderlessFullscreen)
+        window.BorderlessFullscreen = false;
 
     if(window.Monitor != nullptr)
     {
+        window.Wayland.Fullscreen = true;
+        window.Monitor->CurrentMode.Width = width;
+        window.Monitor->CurrentMode.Height = height;
         PlatformSetWindowSizeWayland(window, width, height);
         AcquireMonitorWayland(window);
     }
@@ -2925,11 +2968,11 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessWayland(Int
 {
     ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
+    window.Wayland.Fullscreen = false;
     window.BorderlessFullscreen = true;
 
     if(window.Monitor != nullptr)
         ReleaseMonitorWayland(window);
-
 
     window.Monitor = &monitor;
 
@@ -3680,6 +3723,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeWayland(InternalWindow& 
     if(window.Monitor != nullptr)
     {
         //Video mode settings is not available on Wayland
+        if(window.Wayland.Fullscreen && (width != window.Monitor->NativeMode->Width || height != window.Monitor->NativeMode->Height))
+            window.Wayland.EmulatedVideoModeActive = true;
 
         //Still have to handle (fractional) scaling though
         window.Width = NumericCast<int32_t>(TRAP::Math::Round(NumericCast<float>(width) / window.Wayland.ContentScale));
@@ -3688,6 +3733,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeWayland(InternalWindow& 
     }
     else
     {
+        window.Wayland.EmulatedVideoModeActive = false;
+
         window.Width = width;
         window.Height = height;
         ResizeWindowWayland(window);
