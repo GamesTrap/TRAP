@@ -4574,3 +4574,7 @@ SITREP 10/21/2023|23w42b2
     - Changed TRAP Engine version to 23w42b2(0.9.120)
     - Utils GetCPUInfo() Linux Replaced inline assembly with cpuid compiler intrinsic ~<5 mins
     - WindowingAPILinuxWayland Fixed glitching when windows change between fractional and non-fractional scaling code paths ~<5 mins
+    - WindowingAPILinuxWayland Only add emulated video modes if wp_viewporter protocol is supported ~<5 mins
+    - WindowingAPILinuxWayland Fixed PointerHandleMotion() using wrong cursor position for InputCursorPos() call ~<5 mins
+    - WindowingAPILinuxWayland Added support for arbitrary (emulated) video modes ~<30 mins
+    - WindowingAPILinuxWayland Added support for using arbitrary video mode and fractional scaling at the same time ~<30 mins
