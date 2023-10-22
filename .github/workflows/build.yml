@@ -99,8 +99,28 @@ jobs:
         cp -r Games/TRAP-Editor/Assets bin/Release-linux-x86_64/Games/TRAP-Editor/
         cp -r Games/TRAP-Editor/Resources bin/Release-linux-x86_64/Games/TRAP-Editor/
         cp -r Utility/QOIConv bin/Release-linux-x86_64/Utility/
+        cp -r Licenses bin/Release-linux-x86_64/Licenses
         rm bin/Release-linux-x86_64/Utility/QOIConv/QOIConv.exe
-    - name: Upload artifacts
+    - name: Upload artifacts (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/artifact-upload
+      with:
+        target-filename: Linux GCC Release Executables
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        folder-to-upload: >
+          bin/Release-linux-x86_64/./Games
+          bin/Release-linux-x86_64/./Utility
+          bin/Release-linux-x86_64/./UnitTests
+          bin/Release-linux-x86_64/./Licenses
+    - name: Upload artifacts (GitHub)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname == null
       uses: actions/upload-artifact@v3
       with:
         name: Linux GCC Release Executables
@@ -108,6 +128,7 @@ jobs:
           bin/Release-linux-x86_64/Games
           bin/Release-linux-x86_64/Utility
           bin/Release-linux-x86_64/UnitTests
+          bin/Release-linux-x86_64/Licenses
   build-linux-clang-17:
     name: Build Linux Clang 17
     runs-on: [self-hosted, Linux, X64, ubuntu, "23.10", cpu]
@@ -194,8 +215,28 @@ jobs:
         cp -r Games/TRAP-Editor/Assets bin/Release-linux-x86_64/Games/TRAP-Editor/
         cp -r Games/TRAP-Editor/Resources bin/Release-linux-x86_64/Games/TRAP-Editor/
         cp -r Utility/QOIConv bin/Release-linux-x86_64/Utility/
+        cp -r Licenses bin/Release-linux-x86_64/Licenses
         rm bin/Release-linux-x86_64/Utility/QOIConv/QOIConv.exe
-    - name: Upload artifacts
+    - name: Upload artifacts (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/artifact-upload
+      with:
+        target-filename: Linux Clang Release Executables
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        folder-to-upload: >
+          bin/Release-linux-x86_64/./Games
+          bin/Release-linux-x86_64/./Utility
+          bin/Release-linux-x86_64/./UnitTests
+          bin/Release-linux-x86_64/./Licenses
+    - name: Upload artifacts (GitHub)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname == null
       uses: actions/upload-artifact@v3
       with:
         name: Linux Clang Release Executables
@@ -203,6 +244,7 @@ jobs:
           bin/Release-linux-x86_64/Games
           bin/Release-linux-x86_64/Utility
           bin/Release-linux-x86_64/UnitTests
+          bin/Release-linux-x86_64/Licenses
   build-windows-msvc-2022:
     name: Build Windows MSVC 2022
     runs-on: [self-hosted, windows, X64, cpu]
@@ -277,26 +319,65 @@ jobs:
         Xcopy Games\Tests3D\Assets bin\Release-windows-x86_64\Games\Tests3D\Assets /I /H /E /C
         Xcopy Games\TRAP-Editor\Assets bin\Release-windows-x86_64\Games\TRAP-Editor\Assets /I /H /E /C
         Xcopy Games\TRAP-Editor\Resources bin\Release-windows-x86_64\Games\TRAP-Editor\Resources /I /H /E /C
+        Xcopy Licenses bin\Release-windows-x86_64\Licenses /I /H /E /C
         Xcopy Utility\QOIConv bin\Release-windows-x86_64\Utility\QOIConv /I /H /E /C
         Xcopy Redists bin\Release-windows-x86_64\Redists /I /H /E /C
         Get-ChildItem -Path "bin" -Filter "*.pdb" -Recurse | Remove-Item -Force
         Remove-Item bin\Release-windows-x86_64\Utility\QOIConv\QOIConv
-    - name: Upload artifacts
+    - name: Upload artifacts (TrappedGames)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname != null
+      uses: ./.github/composite/artifact-upload
+      with:
+        target-filename: Windows MSVC Release Executables
+        server-hostname: ${{ secrets.ARTIFACT_HOST }}
+        server-share: "artifacts"
+        server-username: ${{ secrets.ARTIFACT_USERNAME }}
+        server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+        folder-to-upload: >
+          bin/Release-windows-x86_64/./Games
+          bin/Release-windows-x86_64/./Utility
+          bin/Release-windows-x86_64/./UnitTests
+          bin/Release-windows-x86_64/./Licenses
+          bin/Release-windows-x86_64/./Redists
+    - name: Upload artifacts (GitHub)
+      env:
+        artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+      if: env.artifact_hostname == null
       uses: actions/upload-artifact@v3
       with:
         name: Windows MSVC 2022 Release Executables
         path: |
           bin/Release-windows-x86_64/Games
           bin/Release-windows-x86_64/Utility
-          bin/Release-windows-x86_64/Redists
           bin/Release-windows-x86_64/UnitTests
+          bin/Release-windows-x86_64/Licenses
+          bin/Release-windows-x86_64/Redists
 
   test-windows:
     name: Unit-Test Windows
     runs-on: [self-hosted, windows, X64, cpu]
     needs: [build-windows-msvc-2022]
     steps:
-      - name: Download artifact
+      - name: Cleanup workspace
+        if: ${{ always() }}
+        uses: gamestrap/gha-workspace-cleanup@v1.2.4
+      - name: Download artifact (TrappedGames)
+        env:
+          artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+        if: env.artifact_hostname != null
+        uses: gamestrap/gha-download-artifact@v1.0.3
+        with:
+          server-hostname: ${{ secrets.ARTIFACT_HOST }}
+          server-share: "artifacts"
+          server-username: ${{ secrets.ARTIFACT_USERNAME }}
+          server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+          artifact-name: "Windows MSVC Release Executables"
+      - name: Download artifact (GitHub)
+        env:
+          artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+        if: env.artifact_hostname == null
         uses: actions/download-artifact@v3
         with:
           name: Windows MSVC 2022 Release Executables
@@ -309,7 +390,24 @@ jobs:
     runs-on: [self-hosted, Linux, X64, ubuntu, "23.10", cpu]
     needs: [build-linux-clang-17]
     steps:
-      - name: Download artifact
+      - name: Cleanup workspace
+        if: ${{ always() }}
+        uses: gamestrap/gha-workspace-cleanup@v1.2.4
+      - name: Download artifact (TrappedGames)
+        env:
+          artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+        if: env.artifact_hostname != null
+        uses: gamestrap/gha-download-artifact@v1.0.3
+        with:
+          server-hostname: ${{ secrets.ARTIFACT_HOST }}
+          server-share: "artifacts"
+          server-username: ${{ secrets.ARTIFACT_USERNAME }}
+          server-password: ${{ secrets.ARTIFACT_PASSWORD }}
+          artifact-name: "Linux Clang Release Executables"
+      - name: Download artifact (GitHub)
+        env:
+          artifact_hostname: ${{secrets.ARTIFACT_HOST}}
+        if: env.artifact_hostname == null
         uses: actions/download-artifact@v3
         with:
           name: Linux Clang Release Executables

@@ -6,8 +6,10 @@ Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
 refreshenv
 $GitBashPath = "C:\Program Files\git\bin"
 $CMakePath = "C:\Program Files\CMake\bin"
+$7zPath = "C:\Program Files\7-Zip"
 [Environment]::SetEnvironmentVariable("PATH", $env:PATH + $GitBashPath, "Machine") #Add bash.exe to PATH
 [Environment]::SetEnvironmentVariable("PATH", $env:PATH + $CMakePath, "Machine") #Add cmake.exe to PATH
+[Environment]::SetEnvironmentVariable("PATH", $env:PATH + $7zPath, "Machine") #Add 7z.exe to PATH
 
 #Create alias for node12
 if (!(Test-Path $PROFILE))

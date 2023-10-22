@@ -4578,3 +4578,13 @@ SITREP 10/21/2023|23w42b2
     - WindowingAPILinuxWayland Fixed PointerHandleMotion() using wrong cursor position for InputCursorPos() call ~<5 mins
     - WindowingAPILinuxWayland Added support for arbitrary (emulated) video modes ~<30 mins
     - WindowingAPILinuxWayland Added support for using arbitrary video mode and fractional scaling at the same time ~<30 mins
+
+SITREP 10/22/2023|23w42b3
+    - Changed TRAP Engine version to 23w42b3(0.9.121)
+    - Added new artifact-upload composite action (allows storing build artifacts on a custom Samba share) ~<30 mins
+    - GitHub Action Windows Runner Added 7z to PATH ~<5 mins
+    - GitHub Action Linux Runner Added p7zip-full package ~<5 mins
+    - Build-CI Replaced GitHub upload-artifact action with our own ~<10 mins
+    - Build-CI Replaced GitHub download-artifact action with our own (gamestrap/gha-download-artifact) ~<5 mins
+    - Build-CI Use GitHub artifact actions when ARTIFACT_HOST secret is not set ~<5 mins
+    - Build-CI Added Licenses folder to artifacts ~<5 mins
