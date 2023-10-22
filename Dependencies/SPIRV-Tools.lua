@@ -13,7 +13,23 @@ local OpenCLDebugInfoGrammarJSONFile = path.join(ConfigVersionPath, "extinst.ope
 local VulkanDebugInfoGrammarJSONFile = path.join(ConfigVersionPath, "extinst.nonsemantic.shader.debuginfo.100.grammar.json")
 local SPIRVXMLRegistryFile = "SPIRV-Headers/include/spirv/spir-v.xml"
 
+function CheckPython()
+    local out, errorCode = os.outputof("python --version")
+    if(errorCode ~= 0) then
+        term.setTextColor(term.errorColor)
+        print("Unable to find Python 3. Make sure it is installed and accessible via console as 'python'")
+        term.setTextColor(nil)
+        return false
+    end
+
+    return true
+end
+
 function GenerateLangHeader(grammarFilePath, outputName)
+    if not CheckPython() then
+        return
+    end
+
     local outputPath = "SPIRV-Tools/source/" .. outputName .. ".h"
 
     if os.isfile(outputPath) then
@@ -28,6 +44,10 @@ function GenerateLangHeader(grammarFilePath, outputName)
 end
 
 function GenerateEnumStringMapping()
+    if not CheckPython() then
+        return
+    end
+
     local grammarExtensionEnumIncFile = "SPIRV-Tools/source/extension_enum.inc"
     local grammarEnumStringMappingIncFile = "SPIRV-Tools/source/enum_string_mapping.inc"
 
@@ -49,6 +69,10 @@ function GenerateEnumStringMapping()
 end
 
 function GenerateVendorTable(vendorTable, shortName, operandKindPrefix)
+    if not CheckPython() then
+        return
+    end
+
     local instsFile = "SPIRV-Tools/source/" .. vendorTable .. ".insts.inc"
     local grammarFile = path.join(ConfigVersionPath,  "extinst." .. vendorTable .. ".grammar.json")
 
@@ -71,6 +95,10 @@ function GenerateVendorTable(vendorTable, shortName, operandKindPrefix)
 end
 
 function GenerateGLSLTable()
+    if not CheckPython() then
+        return
+    end
+
     local grammarIncFile = "SPIRV-Tools/source/glsl.std.450.insts.inc"
 
     if os.isfile(grammarIncFile) then
@@ -88,6 +116,10 @@ function GenerateGLSLTable()
 end
 
 function GenerateOpenCLTable()
+    if not CheckPython() then
+        return
+    end
+
     local grammarIncFile = "SPIRV-Tools/source/opencl.std.insts.inc"
 
     if os.isfile(grammarIncFile) then
@@ -104,6 +136,10 @@ function GenerateOpenCLTable()
 end
 
 function GenerateCoreTable()
+    if not CheckPython() then
+        return
+    end
+
     local grammarInstsIncFile = "SPIRV-Tools/source/core.insts-" .. ConfigVersion .. ".inc"
     local grammarKindsIncFile = "SPIRV-Tools/source/operand.kinds-" .. ConfigVersion .. ".inc"
 
@@ -125,6 +161,10 @@ function GenerateCoreTable()
 end
 
 function GenerateGeneratorTables()
+    if not CheckPython() then
+        return
+    end
+
     local generatorIncFile = "SPIRV-Tools/source/generators.inc"
 
     if os.isfile(generatorIncFile) then
@@ -141,6 +181,10 @@ function GenerateGeneratorTables()
 end
 
 function GenerateBuildVersion()
+    if not CheckPython() then
+        return
+    end
+
     local buildVersionInc = "SPIRV-Tools/source/build-version.inc"
 
     term.setTextColor(term.infoColor)

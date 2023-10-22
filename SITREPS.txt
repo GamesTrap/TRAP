@@ -4594,3 +4594,4 @@ SITREP 10/22/2023|23w42b3
     - Added SPIRV-Tools and SPIRV-Headers as submodules ~<5 mins
     - GLSLang Enabled SPIR-V optimization ~>60 mins
     - Update-Git-Dependency Fixed regex error ~<5 mins
+    - GitHub Action Runners Added Python 3 ~<5 mins
