@@ -1,4 +1,4 @@
-choco install -y git gh 7zip jq vcredist-all
+choco install -y git gh 7zip jq vcredist-all python
 choco install -y nodejs-lts --version=12.22.12
 choco install -y cmake.install --installargs "ADD_CMAKE_TO_PATH=System"
 choco install -y visualstudio2022buildtools --package-parameters "--includeRecommended --add Microsoft.VisualStudio.Workload.VCTools --locale en-US" #Install Visual Studio 2022 Build Tools (C++ Workload)
