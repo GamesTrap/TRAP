@@ -1,0 +1,59 @@
+name: "Artifact upload"
+author: Jan Schürkamp <gamestrap@trappedgames.de>
+description: ""
+inputs:
+  folder-to-upload:
+    description: ""
+    required: true
+  target-filename:
+    description: ""
+    required: true
+  server-hostname:
+    description: ""
+    required: true
+  server-share:
+    description: ""
+    required: true
+  server-username:
+    description: ""
+    required: true
+  server-password:
+    description: ""
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Build destination path
+      shell: bash
+      id: build-dest-path
+      run: |
+          if [[ "${{ github.event_name }}" == 'push' ]]; then
+            echo "TARGET_PATH=${{ github.event.repository.name }}/branch/${{ github.ref_name }}/${{github.run_number}}_${{github.run_attempt}}_${{github.sha}}" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ github.event_name }}" == 'pull_request' ]]; then
+            echo "TARGET_PATH=${{ github.event.repository.name }}/pull_request/${{github.event.pull_request.number}}/${{github.run_number}}_${{github.run_attempt}}_${{github.sha}}" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ github.event_name }}" == 'workflow_dispatch' ]]; then
+            echo "TARGET_PATH=${{ github.event.repository.name }}/workflow_dispatch/${{github.run_number}}_${{github.run_attempt}}_${{github.sha}}" >> "$GITHUB_OUTPUT"
+          fi
+    - name: Archive artifact (7z)
+      shell: bash
+      id: archive-artifact
+      run: |
+          7z a -t7z -m0=LZMA2 -mmt=$(nproc) -mx9 -md=64m -mfb=64 -ms=16g -mqs=on -sccUTF-8 -bb0 -bse0 -bsp2 -w -mtc=on -mta=on '${{inputs.target-filename}}.7z' ${{inputs.folder-to-upload}}
+    - name: Upload artifact (Windows)
+      shell: powershell
+      if: runner.os == 'Windows'
+      run: |
+          New-PSDrive -Name "X" -PSProvider FileSystem -Root "\\${{inputs.server-hostname}}\${{inputs.server-share}}" -Persist -Credential (New-Object System.Management.Automation.PSCredential ("${{inputs.server-username}}", (ConvertTo-SecureString "${{inputs.server-password}}" -AsPlainText -Force)))
+          Copy-Item -Path "${{inputs.target-filename}}.7z" -Destination (New-Item -type directory -force "X:\${{steps.build-dest-path.outputs.TARGET_PATH}}") -force -ea 0
+          Remove-PSDrive -Name "X"
+    - name: Upload artifact (Linux)
+      shell: bash
+      if: runner.os == 'Linux'
+      run: |
+          sudo apt install -y smbclient
+          smbclient //${{inputs.server-hostname}}/${{inputs.server-share}} -U ${{inputs.server-username}}%${{inputs.server-password}} -c 'prompt; recurse; mkdir "${{steps.build-dest-path.outputs.TARGET_PATH}}"; put "${{inputs.target-filename}}.7z" "${{steps.build-dest-path.outputs.TARGET_PATH}}/${{inputs.target-filename}}.7z"'
+    - name: Cleanup artifact
+      shell: bash
+      id: cleanup-artifact
+      run: |
+          rm '${{inputs.target-filename}}.7z'
