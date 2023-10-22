@@ -2366,12 +2366,12 @@ namespace TRAP::Graphics
 				//Explicitly force the reconstruction
 				bool ForceExplicitReconstruction;
 
-				constexpr bool operator==(const SamplerConversionDesc& s) const noexcept;
-				constexpr bool operator!=(const SamplerConversionDesc& s) const noexcept;
+				[[nodiscard]] constexpr bool operator==(const SamplerConversionDesc& other) const noexcept = default;
+				[[nodiscard]] constexpr bool operator!=(const SamplerConversionDesc& other) const noexcept = default;
 			} SamplerConversionDesc{};
 
-			constexpr bool operator==(const SamplerDesc& s) const noexcept;
-			constexpr bool operator!=(const SamplerDesc& s) const noexcept;
+			[[nodiscard]] constexpr bool operator==(const SamplerDesc& other) const noexcept = default;
+			[[nodiscard]] constexpr bool operator!=(const SamplerDesc& other) const noexcept = default;
 		};
 
 		/// <summary>
@@ -3360,43 +3360,6 @@ namespace TRAP::Graphics
 		inline constinit static bool s_isVulkanCapable = true;
 		inline constinit static bool s_isVulkanCapableFirstTest = true;
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-constexpr bool TRAP::Graphics::RendererAPI::SamplerDesc::operator==(const SamplerDesc& s) const noexcept
-{
-	//Deep equality
-	return this->MinFilter == s.MinFilter && this->MagFilter == s.MagFilter && this->MipMapMode == s.MipMapMode &&
-		   this->AddressU == s.AddressU && this->AddressV == s.AddressV && this->AddressW == s.AddressW &&
-		   this->MipLodBias == s.MipLodBias && this->EnableAnisotropy == s.EnableAnisotropy &&
-		   this->OverrideAnisotropyLevel == s.OverrideAnisotropyLevel && this->CompareFunc == s.CompareFunc &&
-		   this->SamplerConversionDesc == s.SamplerConversionDesc;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-constexpr bool TRAP::Graphics::RendererAPI::SamplerDesc::operator!=(const SamplerDesc& s) const noexcept
-{
-	return !(*this == s);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-constexpr bool TRAP::Graphics::RendererAPI::SamplerDesc::SamplerConversionDesc::operator==(const SamplerConversionDesc& s) const noexcept
-{
-	//Deep equality
-	return this->Format == s.Format && this->Model == s.Model && this->Range == s.Range &&
-	       this->ChromaOffsetX == s.ChromaOffsetX && this->ChromaOffsetY == s.ChromaOffsetY &&
-		   this->ChromaFilter == s.ChromaFilter &&
-		   this->ForceExplicitReconstruction == s.ForceExplicitReconstruction;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-constexpr bool TRAP::Graphics::RendererAPI::SamplerDesc::SamplerConversionDesc::operator!=(const SamplerConversionDesc& s) const noexcept
-{
-	return !(*this == s);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

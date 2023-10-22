@@ -214,9 +214,9 @@ public:
 		requires std::is_arithmetic_v<U>
 		constexpr Vec<4, T>& operator>>=(const Vec<4, U> & v) noexcept;
 
-		[[nodiscard]] constexpr auto operator<=>(const Vec<4, T>& rhs) const = default;
-		[[nodiscard]] constexpr bool operator==(const Vec<4, T>& rhs) const = default;
-		[[nodiscard]] constexpr bool operator!=(const Vec<4, T>& rhs) const = default;
+		[[nodiscard]] constexpr auto operator<=>(const Vec<4, T>& rhs) const noexcept = default;
+		[[nodiscard]] constexpr bool operator==(const Vec<4, T>& rhs) const noexcept = default;
+		[[nodiscard]] constexpr bool operator!=(const Vec<4, T>& rhs) const noexcept = default;
 
 		[[nodiscard]] std::string ToString() const;
 	};

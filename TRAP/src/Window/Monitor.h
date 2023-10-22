@@ -35,7 +35,7 @@ namespace TRAP
 			uint32_t Height = 0;
 			double RefreshRate = 0;
 
-			[[nodiscard]] constexpr auto operator<=>(const VideoMode& mode) const = default;
+			[[nodiscard]] constexpr auto operator<=>(const VideoMode& mode) const noexcept = default;
 		};
 
 

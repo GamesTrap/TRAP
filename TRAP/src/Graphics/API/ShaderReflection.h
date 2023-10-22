@@ -56,16 +56,12 @@ namespace TRAP::Graphics::API::ShaderReflection
 		//1D / 2D / Array / MSAA / ...
 		TextureDimension Dim;
 
+		[[nodiscard]] constexpr bool operator==(const ShaderResource& other) const noexcept
+		{
+			return this->Type == other.Type && this->Set == other.Set && this->Reg == other.Reg;
+		}
+		[[nodiscard]] constexpr bool operator!=(const ShaderResource& other) const noexcept = default;
 	};
-
-	[[nodiscard]] constexpr bool operator==(const ShaderResource& lhs, const ShaderResource& rhs)
-	{
-		return lhs.Type == rhs.Type && lhs.Set == rhs.Set && lhs.Reg == rhs.Reg;
-	}
-	[[nodiscard]] constexpr bool operator!=(const ShaderResource& lhs, const ShaderResource& rhs)
-	{
-		return !(lhs == rhs);
-	}
 
 	struct ShaderVariable
 	{
@@ -80,16 +76,15 @@ namespace TRAP::Graphics::API::ShaderReflection
 
 		//Variable name
 		std::string Name;
+
+		[[nodiscard]] constexpr bool operator==(const ShaderVariable& other) const noexcept
+		{
+			return this->Offset == other.Offset && this->Size == other.Size &&
+			       this->Name.size() == other.Name.size() && this->Name == other.Name;
+		}
+		[[nodiscard]] constexpr bool operator!=(const ShaderVariable& other) const noexcept = default;
 	};
 
-	[[nodiscard]] constexpr bool operator==(const ShaderVariable& lhs, const ShaderVariable& rhs)
-	{
-		return lhs.Offset == rhs.Offset && lhs.Size == rhs.Size && lhs.Name.size() == rhs.Name.size() && lhs.Name == rhs.Name;
-	}
-	[[nodiscard]] constexpr bool operator!=(const ShaderVariable& lhs, const ShaderVariable& rhs)
-	{
-		return !(lhs == rhs);
-	}
 
 	struct ShaderReflection
 	{

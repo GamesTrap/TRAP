@@ -86,12 +86,12 @@ namespace TRAP
 		[[nodiscard]] Utils::UID GetUID();
 		[[nodiscard]] const std::string& GetName();
 
-		constexpr operator bool() const noexcept;
-		constexpr operator uint32_t() const noexcept;
-		constexpr operator entt::entity() const noexcept;
+		[[nodiscard]] constexpr operator bool() const noexcept;
+		[[nodiscard]] constexpr operator uint32_t() const noexcept;
+		[[nodiscard]] constexpr operator entt::entity() const noexcept;
 
-		constexpr bool operator==(Entity other) const noexcept;
-		constexpr bool operator!=(Entity other) const noexcept;
+		[[nodiscard]] constexpr bool operator==(const Entity& other) const noexcept = default;
+		[[nodiscard]] constexpr bool operator!=(const Entity& other) const noexcept = default;
 
 	private:
 		entt::entity m_entityHandle{ entt::null };
@@ -110,37 +110,23 @@ constexpr TRAP::Entity::Entity(const entt::entity handle, Scene* const scene) no
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Entity::operator bool() const noexcept
+[[nodiscard]] constexpr TRAP::Entity::operator bool() const noexcept
 {
 	return m_entityHandle != entt::null;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Entity::operator uint32_t() const noexcept
+[[nodiscard]] constexpr TRAP::Entity::operator uint32_t() const noexcept
 {
 	return static_cast<uint32_t>(m_entityHandle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Entity::operator entt::entity() const noexcept
+[[nodiscard]] constexpr TRAP::Entity::operator entt::entity() const noexcept
 {
 	return m_entityHandle;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline constexpr bool TRAP::Entity::operator==(Entity other) const noexcept
-{
-	return m_entityHandle == other.m_entityHandle && m_scene == other.m_scene;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline constexpr bool TRAP::Entity::operator!=(Entity other) const noexcept
-{
-	return !(*this == other);
 }
 
 #endif /*TRAP_ENTITY_H*/

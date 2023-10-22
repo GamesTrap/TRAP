@@ -223,11 +223,11 @@ namespace TRAP::Network
 		/// <summary>
 		/// Disallow comparisons between packets.
 		/// </summary>
-		constexpr bool operator==(const Packet& right) const = delete;
+		[[nodiscard]] constexpr bool operator==(const Packet& right) const noexcept = delete;
 		/// <summary>
 		/// Disallow comparisons between packets.
 		/// </summary>
-		constexpr bool operator!=(const Packet & right) const = delete;
+		[[nodiscard]] constexpr bool operator!=(const Packet& right) const noexcept = delete;
 
 	private:
 		/// <summary>

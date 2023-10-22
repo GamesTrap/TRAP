@@ -19,7 +19,7 @@ namespace TRAP::Utils
 		/// Same as GetSeconds();
 		/// </summary>
 		/// <returns>Time of the time step in seconds.</returns>
-		constexpr operator float() const noexcept;
+		[[nodiscard]] constexpr operator float() const noexcept;
 
 		/// <summary>
 		/// Get time of the time step in seconds.
@@ -45,7 +45,7 @@ constexpr TRAP::Utils::TimeStep::TimeStep(const float time) noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Utils::TimeStep::operator float() const noexcept
+[[nodiscard]] constexpr TRAP::Utils::TimeStep::operator float() const noexcept
 {
 	return m_time;
 }

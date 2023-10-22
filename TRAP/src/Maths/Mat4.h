@@ -236,9 +236,9 @@ namespace TRAP::Math
 		constexpr const Mat<4, 4, T> operator++(int32_t) noexcept;
 		constexpr const Mat<4, 4, T> operator--(int32_t) noexcept;
 
-		[[nodiscard]] constexpr auto operator<=>(const Mat<4, 4, T>& rhs) const = default;
-		[[nodiscard]] constexpr bool operator==(const Mat<4, 4, T>& rhs) const = default;
-		[[nodiscard]] constexpr bool operator!=(const Mat<4, 4, T>& rhs) const = default;
+		[[nodiscard]] constexpr auto operator<=>(const Mat<4, 4, T>& rhs) const noexcept = default;
+		[[nodiscard]] constexpr bool operator==(const Mat<4, 4, T>& rhs) const noexcept = default;
+		[[nodiscard]] constexpr bool operator!=(const Mat<4, 4, T>& rhs) const noexcept = default;
 
 		[[nodiscard]] std::string ToString() const;
 	};

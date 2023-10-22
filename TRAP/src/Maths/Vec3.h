@@ -200,9 +200,9 @@ public:
 		requires std::is_arithmetic_v<U>
 		constexpr Vec<3, T>& operator>>=(const Vec<3, U> & v) noexcept;
 
-		[[nodiscard]] constexpr auto operator<=>(const Vec<3, T>& rhs) const = default;
-		[[nodiscard]] constexpr bool operator==(const Vec<3, T>& rhs) const = default;
-		[[nodiscard]] constexpr bool operator!=(const Vec<3, T>& rhs) const = default;
+		[[nodiscard]] constexpr auto operator<=>(const Vec<3, T>& rhs) const noexcept = default;
+		[[nodiscard]] constexpr bool operator==(const Vec<3, T>& rhs) const noexcept = default;
+		[[nodiscard]] constexpr bool operator!=(const Vec<3, T>& rhs) const noexcept = default;
 
 		[[nodiscard]] std::string ToString() const;
 	};

@@ -4588,3 +4588,5 @@ SITREP 10/22/2023|23w42b3
     - Build-CI Replaced GitHub download-artifact action with our own (gamestrap/gha-download-artifact) ~<5 mins
     - Build-CI Use GitHub artifact actions when ARTIFACT_HOST secret is not set ~<5 mins
     - Build-CI Added Licenses folder to artifacts ~<5 mins
+    - Replaced manual equality operators with defaulted ones where possible ~<5 mins
+    - Replaced manual comparison operators with defaulted ones where possible ~<5 mins

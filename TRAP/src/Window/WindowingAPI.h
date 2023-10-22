@@ -1548,7 +1548,7 @@ namespace TRAP::INTERNAL
 			//The refresh rate, in Hz, of the video mode.
 			double RefreshRate = 0;
 
-			[[nodiscard]] constexpr auto operator<=>(const InternalVideoMode& other) const = default;
+			[[nodiscard]] constexpr auto operator<=>(const InternalVideoMode& other) const noexcept = default;
 		};
 
 		/// <summary>

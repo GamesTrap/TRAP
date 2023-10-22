@@ -86,11 +86,11 @@ enum class ShaderStage : uint32_t
 	SHADER_STAGE_COUNT = 7
 };
 
-static inline ShaderStage operator|(ShaderStage a, ShaderStage b) noexcept { return static_cast<ShaderStage>(std::to_underlying(a) |
-																		                                     std::to_underlying(b)); }
-static inline ShaderStage operator&(ShaderStage a, ShaderStage b) noexcept { return static_cast<ShaderStage>(std::to_underlying(a) &
-																		                                     std::to_underlying(b)); }
-static inline ShaderStage operator|=(ShaderStage& a, ShaderStage b) noexcept { return a = (a | b); }
+[[nodiscard]] static inline constexpr ShaderStage operator|(ShaderStage a, ShaderStage b) noexcept { return static_cast<ShaderStage>(std::to_underlying(a) |
+																		                                                             std::to_underlying(b)); }
+[[nodiscard]] static inline constexpr ShaderStage operator&(ShaderStage a, ShaderStage b) noexcept { return static_cast<ShaderStage>(std::to_underlying(a) &
+																		                                                             std::to_underlying(b)); }
+[[nodiscard]] static inline constexpr ShaderStage operator|=(ShaderStage& a, ShaderStage b) noexcept { return a = (a | b); }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -102,8 +102,8 @@ struct Shader
 
     struct SubShader
     {
-		ShaderStage Stage;
-        std::string Source;
+		ShaderStage Stage = ShaderStage::None;
+        std::string Source{};
         std::vector<uint32_t> SPIRV{};
     };
 
