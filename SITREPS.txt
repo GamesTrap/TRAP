@@ -4593,3 +4593,4 @@ SITREP 10/22/2023|23w42b3
     - Update-Dependencies Changed regex for semver ~<5 mins
     - Added SPIRV-Tools and SPIRV-Headers as submodules ~<5 mins
     - GLSLang Enabled SPIR-V optimization ~>60 mins
+    - Update-Git-Dependency Fixed regex error ~<5 mins
