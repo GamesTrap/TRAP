@@ -4595,3 +4595,4 @@ SITREP 10/22/2023|23w42b3
     - GLSLang Enabled SPIR-V optimization ~>60 mins
     - Update-Git-Dependency Fixed regex error ~<5 mins
     - GitHub Action Runners Added Python 3 ~<5 mins
+    - SPIRV-Tools Added missing SPIRV-Headers include dir ~<5 mins

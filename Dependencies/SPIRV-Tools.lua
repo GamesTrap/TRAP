@@ -243,5 +243,7 @@ project "SPIRV-Tools"
     {
         "%{IncludeDir.SPIRVTOOLS}",
         "%{IncludeDir.SPIRVTOOLS}/..",
-        "%{IncludeDir.SPIRVTOOLS}/../source"
+        "%{IncludeDir.SPIRVTOOLS}/../source",
+
+        "%{IncludeDir.SPIRVHEADERS}",
     }

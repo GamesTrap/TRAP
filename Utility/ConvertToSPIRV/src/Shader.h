@@ -90,7 +90,7 @@ enum class ShaderStage : uint32_t
 																		                                                             std::to_underlying(b)); }
 [[nodiscard]] static inline constexpr ShaderStage operator&(ShaderStage a, ShaderStage b) noexcept { return static_cast<ShaderStage>(std::to_underlying(a) &
 																		                                                             std::to_underlying(b)); }
-[[nodiscard]] static inline constexpr ShaderStage operator|=(ShaderStage& a, ShaderStage b) noexcept { return a = (a | b); }
+static inline constexpr ShaderStage operator|=(ShaderStage& a, ShaderStage b) noexcept { return a = (a | b); }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
