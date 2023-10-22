@@ -186,6 +186,28 @@ jobs:
           pr-branch-name: "spirvcross-update"
           pr-token: ${{steps.generate-token.outputs.token}}
 
+      - name: Update SPIRV-Headers
+        if: ${{ always() }}
+        uses: ./.github/composite/update-git-dependency
+        with:
+          dependency-path: "Dependencies/SPIRV-Headers"
+          update-method: "latest-tag"
+          tag-regex: '^sdk-[0-9]+(\.[0-9]+)*$' #sdk-X.X.X.X SemVer
+          pr-title: "SPIRV-Headers"
+          pr-branch-name: "spirvheaders-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
+
+      - name: Update SPIRV-Tools
+        if: ${{ always() }}
+        uses: ./.github/composite/update-git-dependency
+        with:
+          dependency-path: "Dependencies/SPIRV-Tools"
+          update-method: "latest-tag"
+          tag-regex: '^sdk-[0-9]+(\.[0-9]+)*$' #sdk-X.X.X.X SemVer
+          pr-title: "SPIRV-Tools"
+          pr-branch-name: "spirvtools-update"
+          pr-token: ${{steps.generate-token.outputs.token}}
+
       - name: Update ImGui
         if: ${{ always() }}
         id: imgui

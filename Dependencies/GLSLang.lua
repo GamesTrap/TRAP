@@ -115,14 +115,14 @@ project "GLSLang"
     removefiles
     {
         "GLSLang/glslang/HLSL/pch.h",
-        "GLSLang/glslang/MachineIndependent/pch.h",
-        "GLSLang/SPIRV/SpvTools.cpp"
+        "GLSLang/glslang/MachineIndependent/pch.h"
     }
 
     includedirs
     {
         "%{IncludeDir.GLSLANG}",
-        "%{IncludeDir.GLSLANG}/SPIRV"
+        "%{IncludeDir.GLSLANG}/SPIRV",
+        "%{IncludeDir.SPIRVTOOLS}"
     }
 
     defines

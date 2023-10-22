@@ -44,3 +44,9 @@
 [submodule "Dependencies/GCEM"]
 	path = Dependencies/GCEM
 	url = https://github.com/GamesTrap/gcem
+[submodule "Dependencies/SPIRV-Tools"]
+	path = Dependencies/SPIRV-Tools
+	url = https://github.com/KhronosGroup/SPIRV-Tools
+[submodule "Dependencies/SPIRV-Headers"]
+	path = Dependencies/SPIRV-Headers
+	url = https://github.com/KhronosGroup/SPIRV-Headers

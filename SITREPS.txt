@@ -4591,3 +4591,5 @@ SITREP 10/22/2023|23w42b3
     - Replaced manual equality operators with defaulted ones where possible ~<5 mins
     - Replaced manual comparison operators with defaulted ones where possible ~<5 mins
     - Update-Dependencies Changed regex for semver ~<5 mins
+    - Added SPIRV-Tools and SPIRV-Headers as submodules ~<5 mins
+    - GLSLang Enabled SPIR-V optimization ~>60 mins

@@ -13,11 +13,13 @@ project "ConvertToSPIRV"
 	{
 		"%{IncludeDir.GLSLANG}",
 		"%{IncludeDir.SPIRV}",
+		"%{IncludeDir.SPIRVTOOLS}",
 		"%{IncludeDir.FMT}"
 	}
 
 	links
 	{
+		"SPIRV-Tools",
 		"GLSLang",
 		"fmt"
 	}
