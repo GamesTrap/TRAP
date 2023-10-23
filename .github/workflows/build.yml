@@ -308,6 +308,12 @@ jobs:
         git remote add origin ${{ secrets.GIT_NDA_DEPS }}/${{ secrets.GIT_NDA_DEPS_STEAMWORKSSDK }}
         git pull origin main
         cd ../..
+    - name: Configure Pagefile
+      uses: al-cheb/configure-pagefile-action@v1.3
+      with:
+        minimum-size: 8GB
+        maximum-size: 16GB
+        disk-root: "C:"
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.3.1
       with:
