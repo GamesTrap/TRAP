@@ -13,4 +13,3 @@ services:
       resources:
         limits:
           cpus: "4.0"
-          memory: "8G"
