@@ -4596,3 +4596,7 @@ SITREP 10/22/2023|23w42b3
     - Update-Git-Dependency Fixed regex error ~<5 mins
     - GitHub Action Runners Added Python 3 ~<5 mins
     - SPIRV-Tools Added missing SPIRV-Headers include dir ~<5 mins
+
+SITREP 10/25/2023|23w43a1
+    - Changed TRAP Engine version to 23w43a1(0.9.122)
+    - Fixed ODR violation between SPIRV-Cross, GLSLang and SPIRV-Headers ~<5 mins
