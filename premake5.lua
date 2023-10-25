@@ -30,7 +30,7 @@ workspace "TRAP"
 		"IMGUI_DISABLE_OBSOLETE_FUNCTIONS",
 		"IMGUI_DISABLE_OBSOLETE_KEYIO",
         "FMT_OS",
-        "ENABLE_OPT=1",
+        "ENABLE_OPT=0",
         "ENABLE_HLSL=0",
 	}
 
@@ -182,8 +182,6 @@ IncludeDir["VULKAN"] = "%{wks.location}/Dependencies/Vulkan-Headers"
 IncludeDir["GLSLANG"] = "%{wks.location}/Dependencies/GLSLang"
 IncludeDir["SPIRV"] = "%{wks.location}/Dependencies/GLSLang/SPIRV"
 IncludeDir["SPIRVCROSS"] = "%{wks.location}/Dependencies/SPIRV-Cross"
-IncludeDir["SPIRVTOOLS"] = "%{wks.location}/Dependencies/SPIRV-Tools/include"
-IncludeDir["SPIRVHEADERS"] = "%{wks.location}/Dependencies/SPIRV-Headers/include"
 IncludeDir["ENTT"] = "%{wks.location}/Dependencies/EnTT/src/entt"
 IncludeDir["YAMLCPP"] = "%{wks.location}/Dependencies/YAMLCpp/include"
 IncludeDir["MODERNDIALOGS"] = "%{wks.location}/Dependencies/ModernDialogs/ModernDialogs"
@@ -218,7 +216,6 @@ group "Dependencies"
 	include "Dependencies/Tracy.lua"
 	include "Dependencies/fmt.lua"
 	include "Dependencies/SPIRV-Cross.lua"
-	include "Dependencies/SPIRV-Tools.lua"
 	include "Dependencies/GLSLang.lua"
 	include "Dependencies/Catch2.lua"
 

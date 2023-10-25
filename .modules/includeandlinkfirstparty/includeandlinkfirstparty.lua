@@ -12,7 +12,6 @@ function LinkTRAPShared()
 	{
 		"YAMLCpp",
 		"ModernDialogs",
-        "SPIRV-Tools",
 		"GLSLang",
 		"Box2D",
 		"TracyClient",
@@ -57,7 +56,6 @@ function IncludeTRAPShared()
 		"%{IncludeDir.GLSLANG}",
 		"%{IncludeDir.SPIRV}",
 		"%{IncludeDir.SPIRVCROSS}",
-		"%{IncludeDir.SPIRVTOOLS}",
 		"%{IncludeDir.VULKAN}/include/",
 		"%{IncludeDir.ENTT}",
 		"%{IncludeDir.YAMLCPP}",

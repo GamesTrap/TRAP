@@ -530,12 +530,7 @@ TRAP::Graphics::Shader::Shader(std::string name, const bool valid, const Rendere
 
 #ifdef TRAP_DEBUG
 	spvOptions.validate = true;
-	spvOptions.disableOptimizer = true;
-	spvOptions.optimizeSize = false;
-#else
-	spvOptions.disableOptimizer = false;
-	spvOptions.optimizeSize = true;
-#endif
+#endif /*TRAP_DEBUG*/
 
 	glslang::GlslangToSpv(*program.getIntermediate(ShaderStageToEShLanguage(stage)), SPIRV, &logger, &spvOptions);
 	if (logger.getAllMessages().length() > 0)

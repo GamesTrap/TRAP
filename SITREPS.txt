@@ -4600,3 +4600,4 @@ SITREP 10/22/2023|23w42b3
 SITREP 10/25/2023|23w43a1
     - Changed TRAP Engine version to 23w43a1(0.9.122)
     - Update-Dependencies Updated tags for Vulkan related dependencies ~<5 mins
+    - Reverted: GLSLang Enabled SPIR-V optimization, Removed SPIRV-Tools, SPIRV-Headers submodules ~<10 mins
