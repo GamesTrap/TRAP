@@ -310,6 +310,8 @@ jobs:
         cd ../..
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.3.1
+      with:
+        msbuild-architecture: x64
     - name: Generate Visual Studio 2022 Project files
       run: |
         cd GeneratorScripts
