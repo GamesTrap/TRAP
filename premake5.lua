@@ -219,7 +219,6 @@ group "Dependencies"
 	include "Dependencies/fmt.lua"
 	include "Dependencies/SPIRV-Cross.lua"
 	include "Dependencies/SPIRV-Tools.lua"
-	include "Dependencies/SPIRV-Headers.lua"
 	include "Dependencies/GLSLang.lua"
 	include "Dependencies/Catch2.lua"
 
