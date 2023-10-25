@@ -137,7 +137,7 @@ jobs:
         with:
           dependency-path: "Dependencies/Vulkan-Headers"
           update-method: "latest-tag"
-          tag-regex: '^v[0-9]+(\.[0-9]+)*$' #vX.X.X SemVer
+          tag-regex: '^vulkan-sdk-[0-9]+(\.[0-9]+)*$' #vulkan-sdk-X.X.X SemVer
           pr-title: "Vulkan-Headers"
           pr-branch-name: "vulkan-headers-update"
           pr-token: ${{steps.generate-token.outputs.token}}
@@ -170,7 +170,7 @@ jobs:
         with:
           dependency-path: "Dependencies/GLSLang"
           update-method: "latest-tag"
-          tag-regex: '^sdk-[0-9]+(\.[0-9]+)*$' #sdk-X.X.X.X SemVer
+          tag-regex: '^vulkan-sdk-[0-9]+(\.[0-9]+)*$' #vulkan-sdk-X.X.X SemVer
           pr-title: "GLSLang"
           pr-branch-name: "glslang-update"
           pr-token: ${{steps.generate-token.outputs.token}}
@@ -181,7 +181,7 @@ jobs:
         with:
           dependency-path: "Dependencies/SPIRV-Cross"
           update-method: "latest-tag"
-          tag-regex: '^sdk-[0-9]+(\.[0-9]+)*$' #sdk-X.X.X.X SemVer
+          tag-regex: '^vulkan-sdk-[0-9]+(\.[0-9]+)*$' #vulkan-sdk-X.X.X SemVer
           pr-title: "SPIRV-Cross"
           pr-branch-name: "spirvcross-update"
           pr-token: ${{steps.generate-token.outputs.token}}
@@ -192,7 +192,7 @@ jobs:
         with:
           dependency-path: "Dependencies/SPIRV-Headers"
           update-method: "latest-tag"
-          tag-regex: '^sdk-[0-9]+(\.[0-9]+)*$' #sdk-X.X.X.X SemVer
+          tag-regex: '^vulkan-sdk-[0-9]+(\.[0-9]+)*$' #vulkan-sdk-X.X.X SemVer
           pr-title: "SPIRV-Headers"
           pr-branch-name: "spirvheaders-update"
           pr-token: ${{steps.generate-token.outputs.token}}
@@ -203,7 +203,7 @@ jobs:
         with:
           dependency-path: "Dependencies/SPIRV-Tools"
           update-method: "latest-tag"
-          tag-regex: '^sdk-[0-9]+(\.[0-9]+)*$' #sdk-X.X.X.X SemVer
+          tag-regex: '^vulkan-sdk-[0-9]+(\.[0-9]+)*$' #vulkan-sdk-X.X.X SemVer
           pr-title: "SPIRV-Tools"
           pr-branch-name: "spirvtools-update"
           pr-token: ${{steps.generate-token.outputs.token}}
