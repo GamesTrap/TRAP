@@ -20,7 +20,7 @@ void Sandbox2D::OnImGuiRender()
     ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
     ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
     ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
-	ImGui::PlotLines("", m_frameTimeHistory.data(), NumericCast<int32_t>(m_frameTimeHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+	ImGui::PlotLines("", m_frameTimeHistory.data(), NumericCast<i32>(m_frameTimeHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
 	ImGui::NewLine();
 	ImGui::Image(TRAP::Graphics::TextureManager::Get2D("TRAP"), ImVec2(100, 100));
 	ImGui::End();
@@ -77,10 +77,10 @@ void Sandbox2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	TRAP::Graphics::Renderer2D::ResetStats();
 	TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());
 	{
-		float size = 5.0f;
-		for(float y = -size; y < size; y += 0.5f)
+		f32 size = 5.0f;
+		for(f32 y = -size; y < size; y += 0.5f)
 		{
-			for(float x = -size; x < size; x += 0.5f)
+			for(f32 x = -size; x < size; x += 0.5f)
 			{
 				TRAP::Math::Vec4 color = { (x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.7f };
 
@@ -108,7 +108,7 @@ void Sandbox2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	if (m_updateFPSTimer.Elapsed() >= 0.025f)
 	{
 		m_updateFPSTimer.Reset();
-		constinit static std::size_t frameTimeIndex = 0;
+		constinit static usize frameTimeIndex = 0;
 		if (frameTimeIndex < m_frameTimeHistory.size() - 1)
 		{
 			m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();

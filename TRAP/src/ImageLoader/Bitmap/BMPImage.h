@@ -43,35 +43,35 @@ namespace TRAP::INTERNAL
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		[[nodiscard]] constexpr uint64_t GetPixelDataSize() const noexcept override;
+		[[nodiscard]] constexpr u64 GetPixelDataSize() const noexcept override;
 
 	private:
 		struct BitField
 		{
-			uint32_t Start;
-			uint32_t Span;
+			u32 Start;
+			u32 Span;
 		};
 
 		struct Header
 		{
-			uint16_t MagicNumber = 0; //Used to check format
-			uint32_t Size = 0; //File size in bytes
-			uint32_t DataOffset = 0; //Offset from file start - first pixel data
+			u16 MagicNumber = 0; //Used to check format
+			u32 Size = 0; //File size in bytes
+			u32 DataOffset = 0; //Offset from file start - first pixel data
 		};
 
 		struct InfoHeader
 		{
-			uint32_t Size = 0; //Size of this header in bytes
-			uint32_t Width = 0;
-			int32_t Height = 0;
-			//uint16_t Planes = 0; //Always 1
-			uint16_t BitsPerPixel = 0; //1, 4, 8, 16, 24, 32
-			uint32_t Compression = 0; //0 = Uncompressed | 1 = RLE 8BPP | 2 = RLE 4BPP | 3 = BitFields
-			uint32_t SizeImage = 0; //Size of the image in bytes
-			//int32_t XPixelsPerMeter = 0;
-			//int32_t YPixelsPerMeter = 0;
-			uint32_t CLRUsed = 0; //Amount of colors in palette
-			//uint32_t CLRImportant = 0; //Amount of important colors in palette
+			u32 Size = 0; //Size of this header in bytes
+			u32 Width = 0;
+			i32 Height = 0;
+			//u16 Planes = 0; //Always 1
+			u16 BitsPerPixel = 0; //1, 4, 8, 16, 24, 32
+			u32 Compression = 0; //0 = Uncompressed | 1 = RLE 8BPP | 2 = RLE 4BPP | 3 = BitFields
+			u32 SizeImage = 0; //Size of the image in bytes
+			//i32 XPixelsPerMeter = 0;
+			//i32 YPixelsPerMeter = 0;
+			u32 CLRUsed = 0; //Amount of colors in palette
+			//u32 CLRImportant = 0; //Amount of important colors in palette
 		};
 
 		/// <summary>
@@ -80,43 +80,43 @@ namespace TRAP::INTERNAL
 		/// <param name="bitFields">Bit fields to validate.</param>
 		/// <param name="masks">Mask to validate the bit fields against.</param>
 		/// <returns>True if the bit fields are valid, false otherwise.</returns>
-		[[nodiscard]] constexpr bool ValidateBitFields(std::array<BitField, 4>& bitFields, std::array<uint32_t, 4>& masks) const noexcept;
+		[[nodiscard]] constexpr bool ValidateBitFields(std::array<BitField, 4>& bitFields, std::array<u32, 4>& masks) const noexcept;
 		/// <summary>
 		/// Parse a bit field.
 		/// </summary>
 		/// <param name="field">Bit field to parse.</param>
 		/// <param name="mask">Mask.</param>
 		/// <returns>True if the bit field was parsed successfully, false otherwise.</returns>
-		[[nodiscard]] static constexpr bool ParseBitfield(BitField& field, uint32_t mask) noexcept;
+		[[nodiscard]] static constexpr bool ParseBitfield(BitField& field, u32 mask) noexcept;
 		/// <summary>
 		/// Convert given value to 8 bits.
 		/// </summary>
 		/// <param name="value">Value to convert.</param>
 		/// <param name="bitSpan">Bit span.</param>
 		/// <returns>Value as 8 bits.</returns>
-		[[nodiscard]] static constexpr uint8_t Make8Bits(uint32_t value, uint32_t bitSpan) noexcept;
+		[[nodiscard]] static constexpr u8 Make8Bits(u32 value, u32 bitSpan) noexcept;
 		/// <summary>
 		/// Applies a bit field on the given value.
 		/// </summary>
 		/// <param name="x">Value to apply bit field to.</param>
 		/// <param name="bitField">Bit field to apply.</param>
 		/// <returns>Value with bit field applied.</returns>
-		[[nodiscard]] static constexpr uint32_t ApplyBitField(uint32_t x, BitField& bitField) noexcept;
+		[[nodiscard]] static constexpr u32 ApplyBitField(u32 x, BitField& bitField) noexcept;
 		/// <summary>
 		/// Applies a bit field on the given value.
 		/// </summary>
 		/// <param name="x">Value to apply bit field to.</param>
 		/// <param name="bitField">Bit field to apply.</param>
 		/// <returns>Value with bit field applied.</returns>
-		[[nodiscard]] static constexpr uint32_t ApplyBitField(uint16_t x, BitField& bitField) noexcept;
+		[[nodiscard]] static constexpr u32 ApplyBitField(u16 x, BitField& bitField) noexcept;
 		/// <summary>
 		/// Decode run length encoded 8-bit BMP data.
 		/// </summary>
 		/// <param name="compressedImageData">Compressed image data.</param>
 		/// <param name="colorTable">Color table.</param>
-		constexpr void DecodeRLE8(std::vector<uint8_t>& compressedImageData, const std::vector<uint8_t>* colorTable);
+		constexpr void DecodeRLE8(std::vector<u8>& compressedImageData, const std::vector<u8>* colorTable);
 
-		std::vector<uint8_t> m_data;
+		std::vector<u8> m_data;
 	};
 }
 
@@ -129,7 +129,7 @@ namespace TRAP::INTERNAL
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint64_t TRAP::INTERNAL::BMPImage::GetPixelDataSize() const noexcept
+[[nodiscard]] constexpr u64 TRAP::INTERNAL::BMPImage::GetPixelDataSize() const noexcept
 {
 	return m_data.size();
 }
@@ -137,14 +137,14 @@ namespace TRAP::INTERNAL
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr bool TRAP::INTERNAL::BMPImage::ValidateBitFields(std::array<BitField, 4>& bitFields,
-	                                                                     std::array<uint32_t, 4>& masks) const noexcept
+	                                                                     std::array<u32, 4>& masks) const noexcept
 {
 	BitField* const bf = bitFields.data();
 
-	uint32_t totalMask = 0;
+	u32 totalMask = 0;
 	BitField totalField{};
 
-	for(std::size_t i = 0; i < bitFields.size(); i++)
+	for(usize i = 0; i < bitFields.size(); i++)
 	{
 		//No overlapping masks.
 		if ((totalMask & masks[i]) != 0u)
@@ -172,9 +172,9 @@ namespace TRAP::INTERNAL
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr bool TRAP::INTERNAL::BMPImage::ParseBitfield(BitField& field, const uint32_t mask) noexcept
+[[nodiscard]] constexpr bool TRAP::INTERNAL::BMPImage::ParseBitfield(BitField& field, const u32 mask) noexcept
 {
-	uint32_t bit = 0;
+	u32 bit = 0;
 	for (; bit < 32 && ((mask & BIT(bit)) == 0u); bit++);
 
 	if(bit >= 32)
@@ -194,14 +194,14 @@ namespace TRAP::INTERNAL
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint8_t TRAP::INTERNAL::BMPImage::Make8Bits(uint32_t value, const uint32_t bitSpan) noexcept
+[[nodiscard]] constexpr u8 TRAP::INTERNAL::BMPImage::Make8Bits(u32 value, const u32 bitSpan) noexcept
 {
-	uint32_t output = 0;
+	u32 output = 0;
 
 	if (bitSpan == 8)
-		return NumericCast<uint8_t>(value);
+		return NumericCast<u8>(value);
 	if (bitSpan > 8)
-		return NumericCast<uint8_t>(value >> (bitSpan - 8));
+		return NumericCast<u8>(value >> (bitSpan - 8));
 
 	value <<= (8 - bitSpan); //Shift it up into the most significant bits.
 	while(value != 0u)
@@ -210,39 +210,39 @@ namespace TRAP::INTERNAL
 		value >>= bitSpan;
 	}
 
-	return NumericCast<uint8_t>(output);
+	return NumericCast<u8>(output);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::INTERNAL::BMPImage::ApplyBitField(const uint16_t x, BitField& bitField) noexcept
+[[nodiscard]] constexpr u32 TRAP::INTERNAL::BMPImage::ApplyBitField(const u16 x, BitField& bitField) noexcept
 {
 	return x >> bitField.Start & (BIT(bitField.Span) - 1u);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::INTERNAL::BMPImage::ApplyBitField(const uint32_t x, BitField& bitField) noexcept
+[[nodiscard]] constexpr u32 TRAP::INTERNAL::BMPImage::ApplyBitField(const u32 x, BitField& bitField) noexcept
 {
 	return x >> bitField.Start & (BIT(bitField.Span) - 1);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr void TRAP::INTERNAL::BMPImage::DecodeRLE8(std::vector<uint8_t>& compressedImageData,
-	                                                const std::vector<uint8_t>* const colorTable)
+constexpr void TRAP::INTERNAL::BMPImage::DecodeRLE8(std::vector<u8>& compressedImageData,
+	                                                const std::vector<u8>* const colorTable)
 {
-	uint32_t x = 0, y = 0;
-	uint8_t t = 0, r = 0;
+	u32 x = 0, y = 0;
+	u8 t = 0, r = 0;
 
-	uint32_t dataIndex = 0;
+	u32 dataIndex = 0;
 
 	if(colorTable != nullptr)
 	{
 		//Compressed RGBA
 		while (true)
 		{
-			uint8_t color = compressedImageData[dataIndex++];
+			u8 color = compressedImageData[dataIndex++];
 
 			if (color != 0)
 			{
@@ -297,7 +297,7 @@ constexpr void TRAP::INTERNAL::BMPImage::DecodeRLE8(std::vector<uint8_t>& compre
 	//Compressed Grayscale
 	while (true)
 	{
-		uint8_t color = compressedImageData[dataIndex++];
+		u8 color = compressedImageData[dataIndex++];
 
 		if (color != 0)
 		{

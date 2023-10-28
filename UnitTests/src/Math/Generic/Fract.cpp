@@ -80,47 +80,47 @@ namespace
 
 TEST_CASE("TRAP::Math::Fract()", "[math][generic][fract]")
 {
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunFractRunTimeTests<double>();
-        RunFractEdgeRunTimeTests<double>();
-        RunFractCompileTimeTests<double>();
+        RunFractRunTimeTests<f64>();
+        RunFractEdgeRunTimeTests<f64>();
+        RunFractCompileTimeTests<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunFractRunTimeTests<float>();
-        RunFractEdgeRunTimeTests<float>();
-        RunFractCompileTimeTests<float>();
+        RunFractRunTimeTests<f32>();
+        RunFractEdgeRunTimeTests<f32>();
+        RunFractCompileTimeTests<f32>();
     }
 
-    SECTION("Vec2 - double")
+    SECTION("Vec2 - f64")
     {
         RunFractRunTimeTests<TRAP::Math::Vec2d>();
         RunFractVecCompileTimeTests<TRAP::Math::Vec2d>();
     }
-    SECTION("Vec2 - float")
+    SECTION("Vec2 - f32")
     {
         RunFractRunTimeTests<TRAP::Math::Vec2f>();
         RunFractVecCompileTimeTests<TRAP::Math::Vec2f>();
     }
 
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunFractRunTimeTests<TRAP::Math::Vec3d>();
         RunFractVecCompileTimeTests<TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunFractRunTimeTests<TRAP::Math::Vec3f>();
         RunFractVecCompileTimeTests<TRAP::Math::Vec3f>();
     }
 
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunFractRunTimeTests<TRAP::Math::Vec4d>();
         RunFractVecCompileTimeTests<TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunFractRunTimeTests<TRAP::Math::Vec4f>();
         RunFractVecCompileTimeTests<TRAP::Math::Vec4f>();

@@ -113,7 +113,7 @@ void TRAP::Network::Socket::Create(const SocketHandle handle)
 	if(m_type == Type::TCP)
 	{
 		//Disable the Nagle algorithm (i.e. removes buffering of TCP packets)
-		int32_t yes = 1;
+		i32 yes = 1;
 		if (setsockopt(m_socket, IPPROTO_TCP, TCP_NODELAY, reinterpret_cast<const char*>(&yes), sizeof(yes)) == -1)
 		{
 			TP_ERROR(Log::NetworkSocketPrefix,
@@ -123,7 +123,7 @@ void TRAP::Network::Socket::Create(const SocketHandle handle)
 	else
 	{
 		//Enable broadcast by default for UDP sockets
-		int32_t yes = 1;
+		i32 yes = 1;
 		if (setsockopt(m_socket, SOL_SOCKET, SO_BROADCAST, reinterpret_cast<const char*>(&yes), sizeof(yes)) == -1)
 		{
 			TP_ERROR(Log::NetworkSocketPrefix, "Failed to enable broadcast on UDP socket");

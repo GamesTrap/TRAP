@@ -3,7 +3,7 @@
 
 #include "Utils/Memory.h"
 
-static constexpr std::array<uint32_t, 64> SHA256_K =
+static constexpr std::array<u32, 64> SHA256_K =
 {
 	0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
 	0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
@@ -17,7 +17,7 @@ static constexpr std::array<uint32_t, 64> SHA256_K =
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-static constexpr std::array<uint64_t, 80> SHA512_K =
+static constexpr std::array<u64, 80> SHA512_K =
 {
 	0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
 	0x3956c25bf348b538, 0x59f111f1b605d019, 0x923f82a4af194f9b, 0xab1c5ed5da6d8118,
@@ -43,151 +43,151 @@ static constexpr std::array<uint64_t, 80> SHA512_K =
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t Rotr(const uint32_t x, const uint32_t n) noexcept
+[[nodiscard]] constexpr u32 Rotr(const u32 x, const u32 n) noexcept
 {
 	return (x >> n) | (x << (32u - n));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint64_t Rotr(const uint64_t x, const uint32_t n) noexcept
+[[nodiscard]] constexpr u64 Rotr(const u64 x, const u32 n) noexcept
 {
 	return (x >> n) | (x << (64u - n));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t Shr(const uint32_t x, const uint32_t n) noexcept
+[[nodiscard]] constexpr u32 Shr(const u32 x, const u32 n) noexcept
 {
 	return x >> n;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint64_t Shr(const uint64_t x, const uint32_t n) noexcept
+[[nodiscard]] constexpr u64 Shr(const u64 x, const u32 n) noexcept
 {
 	return x >> n;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t Ch(const uint32_t x, const uint32_t y, const uint32_t z) noexcept
+[[nodiscard]] constexpr u32 Ch(const u32 x, const u32 y, const u32 z) noexcept
 {
 	return (x & y) ^ (~x & z);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint64_t Ch(const uint64_t x, const uint64_t y, const uint64_t z) noexcept
+[[nodiscard]] constexpr u64 Ch(const u64 x, const u64 y, const u64 z) noexcept
 {
 	return (x & y) ^ (~x & z);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t Maj(const uint32_t x, const uint32_t y, const uint32_t z) noexcept
+[[nodiscard]] constexpr u32 Maj(const u32 x, const u32 y, const u32 z) noexcept
 {
 	return (x & y) ^ (x & z) ^ (y & z);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint64_t Maj(const uint64_t x, const uint64_t y, const uint64_t z) noexcept
+[[nodiscard]] constexpr u64 Maj(const u64 x, const u64 y, const u64 z) noexcept
 {
 	return (x & y) ^ (x & z) ^ (y & z);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t Sum0(const uint32_t x) noexcept
+[[nodiscard]] constexpr u32 Sum0(const u32 x) noexcept
 {
 	return Rotr(x, 2) ^ Rotr(x, 13) ^ Rotr(x, 22);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint64_t Sum0(const uint64_t x) noexcept
+[[nodiscard]] constexpr u64 Sum0(const u64 x) noexcept
 {
 	return Rotr(x, 28) ^ Rotr(x, 34) ^ Rotr(x, 39);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t Sum1(const uint32_t x) noexcept
+[[nodiscard]] constexpr u32 Sum1(const u32 x) noexcept
 {
 	return Rotr(x, 6) ^ Rotr(x, 11) ^ Rotr(x, 25);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint64_t Sum1(const uint64_t x) noexcept
+[[nodiscard]] constexpr u64 Sum1(const u64 x) noexcept
 {
 	return Rotr(x, 14) ^ Rotr(x, 18) ^ Rotr(x, 41);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t Sigma0(const uint32_t x) noexcept
+[[nodiscard]] constexpr u32 Sigma0(const u32 x) noexcept
 {
 	return Rotr(x, 7) ^ Rotr(x, 18) ^ Shr(x, 3);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint64_t Sigma0(const uint64_t x) noexcept
+[[nodiscard]] constexpr u64 Sigma0(const u64 x) noexcept
 {
 	return Rotr(x, 1) ^ Rotr(x, 8) ^ Shr(x, 7);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t Sigma1(const uint32_t x) noexcept
+[[nodiscard]] constexpr u32 Sigma1(const u32 x) noexcept
 {
 	return Rotr(x, 17) ^ Rotr(x, 19) ^ Shr(x, 10);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint64_t Sigma1(const uint64_t x) noexcept
+[[nodiscard]] constexpr u64 Sigma1(const u64 x) noexcept
 {
 	return Rotr(x, 19) ^ Rotr(x, 61) ^ Shr(x, 6);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void Transform(const void* const mp, const uint64_t numBlks, std::array<uint32_t, 8>& hash)
+void Transform(const void* const mp, const u64 numBlks, std::array<u32, 8>& hash)
 {
     ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	for(uint64_t blk = 0; blk < numBlks; blk++)
+	for(u64 blk = 0; blk < numBlks; blk++)
 	{
-		std::array<uint32_t, 16> M{};
-		for (uint32_t i = 0; i < 64 / 4; i++)
+		std::array<u32, 16> M{};
+		for (u32 i = 0; i < 64 / 4; i++)
 		{
-			uint32_t tmp = static_cast<const uint32_t*>(mp)[blk * 16 + i];
-			TRAP::Utils::Memory::SwapBytes<uint32_t>(tmp);
+			u32 tmp = static_cast<const u32*>(mp)[blk * 16 + i];
+			TRAP::Utils::Memory::SwapBytes<u32>(tmp);
 			M[i] = tmp;
 		}
 
-		std::array<uint32_t, 64> W{};
-		for (uint32_t t = 0; t <= 15; t++)
+		std::array<u32, 64> W{};
+		for (u32 t = 0; t <= 15; t++)
 			W[t] = M[t];
-		for (uint32_t t = 16; t <= 63; t++)
+		for (u32 t = 16; t <= 63; t++)
 			W[t] = Sigma1(W[t - 2]) + W[t - 7] + Sigma0(W[t - 15]) + W[t - 16];
 
-		uint32_t a = std::get<0>(hash);
-		uint32_t b = std::get<1>(hash);
-		uint32_t c = std::get<2>(hash);
-		uint32_t d = std::get<3>(hash);
-		uint32_t e = std::get<4>(hash);
-		uint32_t f = std::get<5>(hash);
-		uint32_t g = std::get<6>(hash);
-		uint32_t h = std::get<7>(hash);
+		u32 a = std::get<0>(hash);
+		u32 b = std::get<1>(hash);
+		u32 c = std::get<2>(hash);
+		u32 d = std::get<3>(hash);
+		u32 e = std::get<4>(hash);
+		u32 f = std::get<5>(hash);
+		u32 g = std::get<6>(hash);
+		u32 h = std::get<7>(hash);
 
-		for (uint32_t t = 0; t <= 63; t++)
+		for (u32 t = 0; t <= 63; t++)
 		{
-			const uint32_t t1 = h + Sum1(e) + Ch(e, f, g) + SHA256_K[t] + W[t];
-			const uint32_t t2 = Sum0(a) + Maj(a, b, c);
+			const u32 t1 = h + Sum1(e) + Ch(e, f, g) + SHA256_K[t] + W[t];
+			const u32 t2 = Sum0(a) + Maj(a, b, c);
 			h = g;
 			g = f;
 			f = e;
@@ -211,38 +211,38 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint32_t
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t, 8>& hash)
+void Transform(const void* const mp, const u64 numBlks, std::array<u64, 8>& hash)
 {
     ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	for(uint64_t blk = 0; blk < numBlks; blk++)
+	for(u64 blk = 0; blk < numBlks; blk++)
 	{
-		std::array<uint64_t, 16> M{};
-		for (uint64_t i = 0; i < 128 / 8; i++)
+		std::array<u64, 16> M{};
+		for (u64 i = 0; i < 128 / 8; i++)
 		{
-			M[i] = (static_cast<const uint64_t*>(mp)[blk * 16 + i]);
-			TRAP::Utils::Memory::SwapBytes<uint64_t>(M[i]);
+			M[i] = (static_cast<const u64*>(mp)[blk * 16 + i]);
+			TRAP::Utils::Memory::SwapBytes<u64>(M[i]);
 		}
 
-		std::array<uint64_t, 80> W{};
-		for (uint32_t t = 0; t <= 15; t++)
+		std::array<u64, 80> W{};
+		for (u32 t = 0; t <= 15; t++)
 			W[t] = M[t];
-		for (uint32_t t = 16; t <= 79; t++)
+		for (u32 t = 16; t <= 79; t++)
 			W[t] = Sigma1(W[t - 2]) + W[t - 7] + Sigma0(W[t - 15]) + W[t - 16];
 
-		uint64_t a = std::get<0>(hash);
-		uint64_t b = std::get<1>(hash);
-		uint64_t c = std::get<2>(hash);
-		uint64_t d = std::get<3>(hash);
-		uint64_t e = std::get<4>(hash);
-		uint64_t f = std::get<5>(hash);
-		uint64_t g = std::get<6>(hash);
-		uint64_t h = std::get<7>(hash);
+		u64 a = std::get<0>(hash);
+		u64 b = std::get<1>(hash);
+		u64 c = std::get<2>(hash);
+		u64 d = std::get<3>(hash);
+		u64 e = std::get<4>(hash);
+		u64 f = std::get<5>(hash);
+		u64 g = std::get<6>(hash);
+		u64 h = std::get<7>(hash);
 
-		for(uint32_t t = 0; t <= 79; t++)
+		for(u32 t = 0; t <= 79; t++)
 		{
-			const uint64_t t1 = h + Sum1(e) + Ch(e, f, g) + SHA512_K[t] + W[t];
-			const uint64_t t2 = Sum0(a) + Maj(a, b, c);
+			const u64 t1 = h + Sum1(e) + Ch(e, f, g) + SHA512_K[t] + W[t];
+			const u64 t2 = Sum0(a) + Maj(a, b, c);
 			h = g;
 			g = f;
 			f = e;
@@ -266,11 +266,11 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::array<uint8_t, 32> TRAP::Utils::Hash::SHA2_256(const void* const data, uint64_t length)
+[[nodiscard]] std::array<u8, 32> TRAP::Utils::Hash::SHA2_256(const void* const data, u64 length)
 {
     ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	std::array<uint32_t, 8> hash =
+	std::array<u32, 8> hash =
 	{
 		0x6a09e667u,
 		0xbb67ae85u,
@@ -281,15 +281,15 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 		0x1f83d9abu,
 		0x5be0cd19u
 	};
-	std::size_t pos = 0;
-	uint64_t total = 0;
-	std::array<uint8_t, 64> m{};
-	const uint8_t* dataPtr = static_cast<const uint8_t*>(data);
+	usize pos = 0;
+	u64 total = 0;
+	std::array<u8, 64> m{};
+	const u8* dataPtr = static_cast<const u8*>(data);
 
 	if(length >= 64)
 	{
-		const std::size_t blocks = length / 64;
-		const std::size_t bytes = blocks * 64;
+		const usize blocks = length / 64;
+		const usize bytes = blocks * 64;
 		Transform(static_cast<const void*>(dataPtr), blocks, hash);
 		length -= bytes;
 		total += bytes * 8;
@@ -302,27 +302,27 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 	m[pos++] = 0x80;
 	if(pos > 56)
 	{
-		std::fill_n(m.data() + pos, 64 - pos, NumericCast<uint8_t>(0u));
+		std::fill_n(m.data() + pos, 64 - pos, NumericCast<u8>(0u));
 		Transform(&std::get<0>(m), 1, hash);
 		pos = 0;
 	}
-	std::fill_n(m.data() + pos, 56 - pos, NumericCast<uint8_t>(0u));
-	uint64_t mLength = total;
-	TRAP::Utils::Memory::SwapBytes<uint64_t>(mLength);
-	std::copy_n(reinterpret_cast<uint8_t*>(&mLength), 64 / 8, &std::get<0>(m) + (64 - 8));
+	std::fill_n(m.data() + pos, 56 - pos, NumericCast<u8>(0u));
+	u64 mLength = total;
+	TRAP::Utils::Memory::SwapBytes<u64>(mLength);
+	std::copy_n(reinterpret_cast<u8*>(&mLength), 64 / 8, &std::get<0>(m) + (64 - 8));
 	Transform(&std::get<0>(m), 1, hash);
-	for(uint32_t i = 0; i < 8; i++)
-		TRAP::Utils::Memory::SwapBytes<uint32_t>(hash[i]);
+	for(u32 i = 0; i < 8; i++)
+		TRAP::Utils::Memory::SwapBytes<u32>(hash[i]);
 
-	std::array<uint8_t, 32> result{};
-	std::copy_n(reinterpret_cast<const uint8_t*>(hash.data()), result.size(), result.data());
+	std::array<u8, 32> result{};
+	std::copy_n(reinterpret_cast<const u8*>(hash.data()), result.size(), result.data());
 
 	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::array<uint8_t, 32> TRAP::Utils::Hash::SHA2_256(const std::string_view str)
+[[nodiscard]] std::array<u8, 32> TRAP::Utils::Hash::SHA2_256(const std::string_view str)
 {
     ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -331,13 +331,13 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::array<uint8_t, 64> TRAP::Utils::Hash::SHA2_512(const void* const data, uint64_t length)
+[[nodiscard]] std::array<u8, 64> TRAP::Utils::Hash::SHA2_512(const void* const data, u64 length)
 {
     ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	std::size_t pos = 0;
-	uint64_t total = 0;
-	std::array<uint64_t, 8> hash =
+	usize pos = 0;
+	u64 total = 0;
+	std::array<u64, 8> hash =
 	{
 		0x6a09e667f3bcc908u,
 		0xbb67ae8584caa73bu,
@@ -348,13 +348,13 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 		0x1f83d9abfb41bd6bu,
 		0x5be0cd19137e2179u
 	};
-	std::array<uint8_t, 128> m{};
-	const uint8_t* dataPtr = static_cast<const uint8_t*>(data);
+	std::array<u8, 128> m{};
+	const u8* dataPtr = static_cast<const u8*>(data);
 
 	if(length >= 128)
 	{
-		const std::size_t blocks = length / 128;
-		const std::size_t bytes = blocks * 128;
+		const usize blocks = length / 128;
+		const usize bytes = blocks * 128;
 		Transform(static_cast<const void*>(dataPtr), blocks, hash);
 		length -= bytes;
 		total += bytes * 8;
@@ -367,27 +367,27 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 	m[pos++] = 0x80;
 	if(pos > 112)
 	{
-		std::fill_n(m.data() + pos, 128 - pos, NumericCast<uint8_t>(0u));
+		std::fill_n(m.data() + pos, 128 - pos, NumericCast<u8>(0u));
 		Transform(&std::get<0>(m), 1, hash);
 		pos = 0;
 	}
-	std::fill_n(m.data() + pos, 128 - pos, NumericCast<uint8_t>(0u));
-	uint64_t mLength = total;
-	TRAP::Utils::Memory::SwapBytes<uint64_t>(mLength);
-	std::copy_n(reinterpret_cast<const uint8_t*>(&mLength), 64 / 8, &std::get<0>(m) + (128 - 8));
+	std::fill_n(m.data() + pos, 128 - pos, NumericCast<u8>(0u));
+	u64 mLength = total;
+	TRAP::Utils::Memory::SwapBytes<u64>(mLength);
+	std::copy_n(reinterpret_cast<const u8*>(&mLength), 64 / 8, &std::get<0>(m) + (128 - 8));
 	Transform(&std::get<0>(m), 1, hash);
-	for (uint32_t i = 0; i < 8; i++)
-		TRAP::Utils::Memory::SwapBytes<uint64_t>(hash[i]);
+	for (u32 i = 0; i < 8; i++)
+		TRAP::Utils::Memory::SwapBytes<u64>(hash[i]);
 
-	std::array<uint8_t, 64> result{};
-	std::copy_n(reinterpret_cast<const uint8_t*>(hash.data()), result.size(), result.data());
+	std::array<u8, 64> result{};
+	std::copy_n(reinterpret_cast<const u8*>(hash.data()), result.size(), result.data());
 
 	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::array<uint8_t, 64> TRAP::Utils::Hash::SHA2_512(const std::string_view str)
+[[nodiscard]] std::array<u8, 64> TRAP::Utils::Hash::SHA2_512(const std::string_view str)
 {
     ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

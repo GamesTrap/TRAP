@@ -9,11 +9,11 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 constexpr TRAP::Network::IPv6Address TRAP::Network::IPv6Address::None{};
-constexpr TRAP::Network::IPv6Address TRAP::Network::IPv6Address::Any(std::array<uint8_t, 16>
+constexpr TRAP::Network::IPv6Address TRAP::Network::IPv6Address::Any(std::array<u8, 16>
 	{
 		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 	});
-constexpr TRAP::Network::IPv6Address TRAP::Network::IPv6Address::LocalHost(std::array<uint8_t, 16>
+constexpr TRAP::Network::IPv6Address TRAP::Network::IPv6Address::LocalHost(std::array<u8, 16>
     {
 		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01
 	});
@@ -53,7 +53,7 @@ TRAP::Network::IPv6Address::IPv6Address(const char* const address)
 
 	//8 * 4 = 8 Blocks 4 Values each | 7 = 7 times ':'
 	std::string str(8 * 4 + 7, 0);
-	inet_ntop(AF_INET6, &address, str.data(), NumericCast<uint32_t>(str.size()));
+	inet_ntop(AF_INET6, &address, str.data(), NumericCast<u32>(str.size()));
 	std::erase(str, '\0');
 	return str;
 }
@@ -74,7 +74,7 @@ TRAP::Network::IPv6Address::IPv6Address(const char* const address)
 		return {};
 
 	//Connect the socket to localhost on any port
-	std::array<uint8_t, 16> loopback{};
+	std::array<u8, 16> loopback{};
 #ifdef TRAP_PLATFORM_WINDOWS
 	std::copy_n(in6addr_loopback.u.Byte, loopback.size(), loopback.data());
 #else
@@ -99,7 +99,7 @@ TRAP::Network::IPv6Address::IPv6Address(const char* const address)
 	INTERNAL::Network::SocketImpl::Close(sock);
 
 	//Finally build the IP address
-	std::array<uint8_t, 16> addr{};
+	std::array<u8, 16> addr{};
 #ifdef TRAP_PLATFORM_WINDOWS
 	std::copy_n(address.sin6_addr.u.Byte, addr.size(), addr.data());
 #else
@@ -152,7 +152,7 @@ void TRAP::Network::IPv6Address::Resolve(const std::string& address)
 	else
 	{
 		//Try to convert the address as a hex representation ("XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX")
-		std::array<uint8_t, 16> ip{};
+		std::array<u8, 16> ip{};
 		if(inet_pton(AF_INET6, lowerAddress.c_str(), ip.data()) != 0)
 		{
 			m_address = ip;

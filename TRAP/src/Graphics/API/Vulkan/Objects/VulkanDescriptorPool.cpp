@@ -9,7 +9,7 @@
 #include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 
-TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const uint32_t numDescriptorSets)
+TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const u32 numDescriptorSets)
 	: DescriptorPool(numDescriptorSets), m_descriptorPoolSizes(DescriptorTypeRangeSize)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -24,7 +24,7 @@ TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const uint32_t n
 		std::get<DESCRIPTOR_TYPE_RANGE_SIZE - 1>(s_descriptorPoolSizes) = { VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR,
 		                                                                    1024 };
 
-	for(uint32_t i = 0; i < DescriptorTypeRangeSize; i++)
+	for(u32 i = 0; i < DescriptorTypeRangeSize; i++)
 		m_descriptorPoolSizes[i] = s_descriptorPoolSizes[i];
 
 	const VkDescriptorPoolCreateInfo info = VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes,
@@ -72,9 +72,9 @@ void TRAP::Graphics::API::VulkanDescriptorPool::Reset()
 		(
 			desc.RootSignature
 		);
-	const uint32_t updateFreq = desc.Set;
-	const uint8_t dynamicOffsetCount = rootSignature->GetVkDynamicDescriptorCounts()[updateFreq];
-	const uint32_t maxSets = desc.MaxSets;
+	const u32 updateFreq = desc.Set;
+	const u8 dynamicOffsetCount = rootSignature->GetVkDynamicDescriptorCounts()[updateFreq];
+	const u32 maxSets = desc.MaxSets;
 	std::vector<std::vector<VulkanRenderer::DescriptorUpdateData>> updateData{};
 	std::vector<VkDescriptorSetLayout> layouts{};
 	std::vector<VkDescriptorSet> handles{};
@@ -85,13 +85,13 @@ void TRAP::Graphics::API::VulkanDescriptorPool::Reset()
 		layouts.resize(maxSets);
 		handles.resize(maxSets);
 
-		for(uint32_t i = 0; i < maxSets; ++i)
+		for(u32 i = 0; i < maxSets; ++i)
 		{
 			layouts[i] = rootSignature->GetVkDescriptorSetLayouts()[updateFreq];
 			updateData[i] = rootSignature->GetUpdateTemplateData()[updateFreq];
 		}
 
-		for(std::size_t i = 0; i < handles.size(); ++i)
+		for(usize i = 0; i < handles.size(); ++i)
 			handles[i] = RetrieveVkDescriptorSet(layouts[i]);
 	}
 	else

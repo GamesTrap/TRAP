@@ -36,7 +36,7 @@ void RendererAPIInfo::OnImGuiRender()
     ImGui::Text("Geometry Shader: %s", TRAP::Graphics::RendererAPI::GPUSettings.GeometryShaderSupported ? "Supported" : "Not Supported");
     ImGui::Text("Surface: %s", TRAP::Graphics::RendererAPI::GPUSettings.SurfaceSupported ? "Supported" : "Not Supported");
     ImGui::Text("Present: %s", TRAP::Graphics::RendererAPI::GPUSettings.PresentSupported ? "Supported" : "Not Supported");
-    ImGui::Text("Max Anisotropy: %u", NumericCast<uint32_t>(TRAP::Graphics::RendererAPI::GPUSettings.MaxAnisotropy));
+    ImGui::Text("Max Anisotropy: %u", NumericCast<u32>(TRAP::Graphics::RendererAPI::GPUSettings.MaxAnisotropy));
     bool vrsPerDraw = (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerDraw) != TRAP::Graphics::RendererAPI::ShadingRateCaps::NotSupported;
     bool vrsPerTile = (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerTile) != TRAP::Graphics::RendererAPI::ShadingRateCaps::NotSupported;
     bool vrsMin = static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCombiner & TRAP::Graphics::RendererAPI::ShadingRateCombiner::Min);

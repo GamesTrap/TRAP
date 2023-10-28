@@ -19,7 +19,7 @@ namespace TRAP::Graphics
 		/// <param name="top">Top screen coordinate.</param>
 		/// <param name="near">Near distance.</param>
 		/// <param name="far">Far distance.</param>
-		constexpr OrthographicCamera(float left, float right, float bottom, float top, float near, float far);
+		constexpr OrthographicCamera(f32 left, f32 right, f32 bottom, f32 top, f32 near, f32 far);
 
 		/// <summary>
 		/// Set the projection matrix via screen coordinates.
@@ -30,7 +30,7 @@ namespace TRAP::Graphics
 		/// <param name="top">Top screen coordinate.</param>
 		/// <param name="near">Near distance.</param>
 		/// <param name="far">Far distance.</param>
-		constexpr void SetProjection(float left, float right, float bottom, float top, float near, float far);
+		constexpr void SetProjection(f32 left, f32 right, f32 bottom, f32 top, f32 near, f32 far);
 
 		/// <summary>
 		/// Retrieve the current camera position.
@@ -82,16 +82,16 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::OrthographicCamera::OrthographicCamera(const float left, const float right, const float bottom,
-                                                                 const float top, const float near, const float far)
+constexpr TRAP::Graphics::OrthographicCamera::OrthographicCamera(const f32 left, const f32 right, const f32 bottom,
+                                                                 const f32 top, const f32 near, const f32 far)
 	: m_projectionMatrix(Math::OrthographicReverseZ(left, right, bottom, top, near, far))
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr void TRAP::Graphics::OrthographicCamera::SetProjection(const float left, const float right, const float bottom,
-                                                                 const float top, const float near, const float far)
+constexpr void TRAP::Graphics::OrthographicCamera::SetProjection(const f32 left, const f32 right, const f32 bottom,
+                                                                 const f32 top, const f32 near, const f32 far)
 {
 	m_projectionMatrix = Math::OrthographicReverseZ(left, right, bottom, top, near, far);
 }

@@ -45,19 +45,19 @@ struct TRAP::Math::Mat<3, 3, T>;
 
 namespace std
 {
-	template<std::size_t I, typename T>
+	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr static typename TRAP::Math::Mat<3, 3, T>::col_type& get(TRAP::Math::Mat<3, 3, T>& m) noexcept;
 
-	template<std::size_t I, typename T>
+	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr static typename TRAP::Math::Mat<3, 3, T>::col_type&& get(TRAP::Math::Mat<3, 3, T>&& m) noexcept;
 
-	template<std::size_t I, typename T>
+	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr static const typename TRAP::Math::Mat<3, 3, T>::col_type& get(const TRAP::Math::Mat<3, 3, T>& m) noexcept;
 
-	template<std::size_t I, typename T>
+	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr static const typename TRAP::Math::Mat<3, 3, T>::col_type&& get(const TRAP::Math::Mat<3, 3, T>&& m) noexcept;
 }
@@ -91,8 +91,8 @@ namespace TRAP::Math
 		using col_type = Vec<3, T>;
 		using row_type = Vec<3, T>;
 		using value_type = T;
-		using size_type = uint32_t;
-		using difference_type = std::ptrdiff_t;
+		using size_type = u32;
+		using difference_type = isize;
 		using iterator = std::array<col_type, 3>::iterator;
 		using const_iterator = std::array<col_type, 3>::const_iterator;
 		using reverse_iterator = std::array<col_type, 3>::reverse_iterator;
@@ -162,30 +162,30 @@ namespace TRAP::Math
 		/// Retrieve the length of the matrix.
 		/// </summary>
 		/// <returns>Length.</returns>
-		[[nodiscard]] static constexpr std::size_t Length() noexcept;
+		[[nodiscard]] static constexpr usize Length() noexcept;
 
 		/// <summary>
 		/// Retrieve a column of the matrix.
 		/// </summary>
 		/// <param name="i">Column to retrieve.</param>
-		[[nodiscard]] constexpr col_type& operator[](std::size_t i);
+		[[nodiscard]] constexpr col_type& operator[](usize i);
 		/// <summary>
 		/// Retrieve a column of the matrix.
 		/// </summary>
 		/// <param name="i">Column to retrieve.</param>
-		[[nodiscard]] constexpr const col_type& operator[](std::size_t i) const;
+		[[nodiscard]] constexpr const col_type& operator[](usize i) const;
 
 
 		/// <summary>
 		/// Retrieve a column of the matrix.
 		/// </summary>
 		/// <param name="i">Column to retrieve.</param>
-		[[nodiscard]] col_type& at(std::size_t i);
+		[[nodiscard]] col_type& at(usize i);
 		/// <summary>
 		/// Retrieve a column of the matrix.
 		/// </summary>
 		/// <param name="i">Column to retrieve.</param>
-		[[nodiscard]] const col_type& at(std::size_t i) const;
+		[[nodiscard]] const col_type& at(usize i) const;
 
 		//Iterator
 		[[nodiscard]] constexpr const_iterator begin() const noexcept;
@@ -229,8 +229,8 @@ namespace TRAP::Math
 		//Increment and decrement operators
 		constexpr Mat<3, 3, T>& operator++() noexcept;
 		constexpr Mat<3, 3, T>& operator--() noexcept;
-		constexpr const Mat<3, 3, T> operator++(int32_t) noexcept;
-		constexpr const Mat<3, 3, T> operator--(int32_t) noexcept;
+		constexpr const Mat<3, 3, T> operator++(i32) noexcept;
+		constexpr const Mat<3, 3, T> operator--(i32) noexcept;
 
 		[[nodiscard]] constexpr auto operator<=>(const Mat<3, 3, T>& rhs) const noexcept = default;
 		[[nodiscard]] constexpr bool operator==(const Mat<3, 3, T>& rhs) const noexcept = default;
@@ -333,9 +333,9 @@ namespace std
 	requires std::floating_point<T>
 	struct hash<TRAP::Math::Mat<3, 3, T>>
 	{
-		[[nodiscard]] constexpr std::size_t operator()(const TRAP::Math::Mat<3, 3, T>& m) const noexcept
+		[[nodiscard]] constexpr usize operator()(const TRAP::Math::Mat<3, 3, T>& m) const noexcept
 		{
-			std::size_t seed = 0;
+			usize seed = 0;
 			hash<TRAP::Math::Vec<3, T>> hasher;
 			TRAP::Utils::HashCombine(seed, hasher(std::get<0>(m)), hasher(std::get<1>(m)), hasher(std::get<2>(m)));
 			return seed;
@@ -414,7 +414,7 @@ constexpr TRAP::Math::Mat<3, 3, T>::Mat(const Mat<4, 4, T>& x) noexcept
 
 template <typename T>
 requires std::floating_point<T>
-[[nodiscard]] constexpr std::size_t TRAP::Math::Mat<3, 3, T>::Length() noexcept
+[[nodiscard]] constexpr usize TRAP::Math::Mat<3, 3, T>::Length() noexcept
 {
 	return 3;
 }
@@ -424,21 +424,21 @@ requires std::floating_point<T>
 
 template<typename T>
 requires std::floating_point<T>
-[[nodiscard]] constexpr typename TRAP::Math::Mat<3, 3, T>::col_type& TRAP::Math::Mat<3, 3, T>::operator[](const std::size_t i)
+[[nodiscard]] constexpr typename TRAP::Math::Mat<3, 3, T>::col_type& TRAP::Math::Mat<3, 3, T>::operator[](const usize i)
 {
 	return this->value[i];
 }
 
 template<typename T>
 requires std::floating_point<T>
-[[nodiscard]] constexpr const typename TRAP::Math::Mat<3, 3, T>::col_type& TRAP::Math::Mat<3, 3, T>::operator[](const std::size_t i) const
+[[nodiscard]] constexpr const typename TRAP::Math::Mat<3, 3, T>::col_type& TRAP::Math::Mat<3, 3, T>::operator[](const usize i) const
 {
 	return this->value[i];
 }
 
 template<typename T>
 requires std::floating_point<T>
-[[nodiscard]] typename TRAP::Math::Mat<3, 3, T>::col_type& TRAP::Math::Mat<3, 3, T>::at(const std::size_t i)
+[[nodiscard]] typename TRAP::Math::Mat<3, 3, T>::col_type& TRAP::Math::Mat<3, 3, T>::at(const usize i)
 {
 	TRAP_ASSERT(i < this->Length(), "Math::Mat<3, 3, T>::at(): index out of range");
 
@@ -447,7 +447,7 @@ requires std::floating_point<T>
 
 template<typename T>
 requires std::floating_point<T>
-[[nodiscard]] const typename TRAP::Math::Mat<3, 3, T>::col_type& TRAP::Math::Mat<3, 3, T>::at(const std::size_t i) const
+[[nodiscard]] const typename TRAP::Math::Mat<3, 3, T>::col_type& TRAP::Math::Mat<3, 3, T>::at(const usize i) const
 {
 	TRAP_ASSERT(i < this->Length(), "Math::Mat<3, 3, T>::at(): index out of range");
 
@@ -675,7 +675,7 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator--() noexc
 
 template<typename T>
 requires std::floating_point<T>
-constexpr const TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator++(const int32_t) noexcept
+constexpr const TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator++(const i32) noexcept
 {
 	const Mat<3, 3, T> result(*this);
 	++*this;
@@ -685,7 +685,7 @@ constexpr const TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator++(co
 
 template<typename T>
 requires std::floating_point<T>
-constexpr const TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator--(const int32_t) noexcept
+constexpr const TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator--(const i32) noexcept
 {
 	const Mat<3, 3, T> result(*this);
 	--*this;
@@ -702,9 +702,9 @@ requires std::floating_point<T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	std::string postfix;
-	if constexpr(std::same_as<T, float>)
+	if constexpr(std::same_as<T, f32>)
 		postfix = "f";
-	else if constexpr(std::same_as<T, double>)
+	else if constexpr(std::same_as<T, f64>)
 		postfix = "d";
 	else
 		return "Unknown type";
@@ -917,7 +917,7 @@ namespace std
 	/// </summary>
 	/// <param name="v">Vector whose contents to extract.</param>
 	/// <returns>A reference to the Ith element of v.</returns>
-	template<std::size_t I, typename T>
+	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr typename TRAP::Math::Mat<3, 3, T>::col_type& get(TRAP::Math::Mat<3, 3, T>& m) noexcept
 	{
@@ -933,7 +933,7 @@ namespace std
 	/// </summary>
 	/// <param name="v">Vector whose contents to extract.</param>
 	/// <returns>A reference to the Ith element of v.</returns>
-	template<std::size_t I, typename T>
+	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr typename TRAP::Math::Mat<3, 3, T>::col_type&& get(TRAP::Math::Mat<3, 3, T>&& m) noexcept
 	{
@@ -949,7 +949,7 @@ namespace std
 	/// </summary>
 	/// <param name="v">Vector whose contents to extract.</param>
 	/// <returns>A reference to the Ith element of v.</returns>
-	template<std::size_t I, typename T>
+	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr const typename TRAP::Math::Mat<3, 3, T>::col_type& get(const TRAP::Math::Mat<3, 3, T>& m) noexcept
 	{
@@ -965,7 +965,7 @@ namespace std
 	/// </summary>
 	/// <param name="v">Vector whose contents to extract.</param>
 	/// <returns>A reference to the Ith element of v.</returns>
-	template<std::size_t I, typename T>
+	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr const typename TRAP::Math::Mat<3, 3, T>::col_type&& get(const TRAP::Math::Mat<3, 3, T>&& m) noexcept
 	{

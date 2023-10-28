@@ -41,7 +41,7 @@
 	uniqueVariable.reserve(512);
 	uniqueVariableParent.reserve(512);
 
-	for(uint32_t i = 0; i < out->StageReflections.size(); ++i)
+	for(u32 i = 0; i < out->StageReflections.size(); ++i)
 	{
 		ShaderReflection& srcRef = out->StageReflections[i];
 
@@ -67,7 +67,7 @@
 			if(it != uniqueResources.end()) //Not unique
 			{
 				const auto sharedIndex = it - uniqueResources.begin();
-				shaderUsage[NumericCast<std::size_t>(sharedIndex)] |= ShaderResource.UsedStages;
+				shaderUsage[NumericCast<usize>(sharedIndex)] |= ShaderResource.UsedStages;
 			}
 			else //Unique, Add it to the list of shader resources
 			{
@@ -77,7 +77,7 @@
 		}
 
 		//Loop through all shader variables (constant/uniform buffer members)
-		for(std::size_t j = 0; j < srcRef.Variables.size(); ++j)
+		for(usize j = 0; j < srcRef.Variables.size(); ++j)
 		{
 			//Go through all already added shader variables to see if this shader
 			//variable was already added from a different shader stage.
@@ -95,7 +95,7 @@
 
 	//Copy over the shader resources in a dynamic array of the correct size
 	out->ShaderResources.resize(uniqueResources.size());
-	for(std::size_t i = 0; i < uniqueResources.size(); ++i)
+	for(usize i = 0; i < uniqueResources.size(); ++i)
 	{
 		out->ShaderResources[i] = *uniqueResources[i];
 		out->ShaderResources[i].UsedStages = shaderUsage[i];
@@ -103,7 +103,7 @@
 
 	//Copy over the shader variables in a dynamic array of the correct size
 	out->Variables.resize(uniqueVariable.size());
-	for(std::size_t i = 0; i < out->Variables.size(); ++i)
+	for(usize i = 0; i < out->Variables.size(); ++i)
 	{
 		out->Variables[i] = *uniqueVariable[i];
 		const ShaderResource* const parentResource = uniqueVariableParent[i];
@@ -111,7 +111,7 @@
 		const auto it = std::ranges::find_if(out->ShaderResources, [parentResource](const ShaderResource& r){return r == *parentResource; });
 		if(it != out->ShaderResources.end())
 		{
-			out->Variables[i].ParentIndex = NumericCast<uint64_t>(it - out->ShaderResources.begin());
+			out->Variables[i].ParentIndex = NumericCast<u64>(it - out->ShaderResources.begin());
 		}
 	}
 

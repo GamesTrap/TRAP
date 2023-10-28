@@ -85,7 +85,7 @@
 
 //Settings for Profiling (with Tracy)
 
-enum class ProfileSystems : uint32_t
+enum class ProfileSystems : u32
 {
 	Events = 1u << 0u,
 	FileSystem = 1u << 1u,
@@ -131,9 +131,9 @@ enum class ProfileSystems : uint32_t
 /// <param name="major">Major version number.</param>
 /// <param name="minor">Minor version number.</param>
 /// <param name="patch">Patch version number.</param>
-/// <returns>Version number packed into a single uint32_t.</returns>
-template<uint32_t major, uint32_t minor, uint32_t patch>
-[[nodiscard]] consteval uint32_t TRAP_MAKE_VERSION()
+/// <returns>Version number packed into a single u32.</returns>
+template<u32 major, u32 minor, u32 patch>
+[[nodiscard]] consteval u32 TRAP_MAKE_VERSION()
 {
 	static_assert(major < 1024, "Major version number must be less than 1024.");
 	static_assert(minor < 1024,"Minor version number must be less than 1024.");
@@ -149,7 +149,7 @@ template<uint32_t major, uint32_t minor, uint32_t patch>
 /// </summary>
 /// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
 /// <returns>Major version number.</returns>
-[[nodiscard]] inline consteval uint32_t TRAP_VERSION_MAJOR(const uint32_t version) noexcept
+[[nodiscard]] inline consteval u32 TRAP_VERSION_MAJOR(const u32 version) noexcept
 {
 	return version >> 22u;
 }
@@ -161,7 +161,7 @@ template<uint32_t major, uint32_t minor, uint32_t patch>
 /// </summary>
 /// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
 /// <returns>Minor version number.</returns>
-[[nodiscard]] inline consteval uint32_t TRAP_VERSION_MINOR(const uint32_t version) noexcept
+[[nodiscard]] inline consteval u32 TRAP_VERSION_MINOR(const u32 version) noexcept
 {
 	return version >> 12u;
 }
@@ -173,7 +173,7 @@ template<uint32_t major, uint32_t minor, uint32_t patch>
 /// </summary>
 /// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
 /// <returns>Patch version number.</returns>
-[[nodiscard]] inline consteval uint32_t TRAP_VERSION_PATCH(const uint32_t version) noexcept
+[[nodiscard]] inline consteval u32 TRAP_VERSION_PATCH(const u32 version) noexcept
 {
 	return version & 0xFFFu;
 }
@@ -183,7 +183,7 @@ template<uint32_t major, uint32_t minor, uint32_t patch>
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-inline constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION<0, 9, 123>();
+inline constexpr u32 TRAP_VERSION = TRAP_MAKE_VERSION<0, 9, 123>();
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -218,12 +218,12 @@ inline constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION<0, 9, 123>();
 
 #ifdef TRACY_ENABLE
 //Overloads for new and delete (only used for profiling)
-[[nodiscard]] void* operator new(const std::size_t count);
-[[nodiscard]] void* operator new[](const std::size_t count);
+[[nodiscard]] void* operator new(const usize count);
+[[nodiscard]] void* operator new[](const usize count);
 void operator delete(void* ptr) noexcept;
 void operator delete[](void* ptr) noexcept;
-void operator delete(void* ptr, std::size_t count) noexcept;
-void operator delete[](void* ptr, std::size_t count) noexcept;
+void operator delete(void* ptr, usize count) noexcept;
+void operator delete[](void* ptr, usize count) noexcept;
 #endif /*TRACY_ENABLE*/
 
 //-------------------------------------------------------------------------------------------------------------------//

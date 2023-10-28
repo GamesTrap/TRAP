@@ -21,7 +21,7 @@ private:
     TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer = nullptr;
     TRAP::Ref<TRAP::Graphics::Sampler> m_textureSampler = nullptr;
 
-    inline static constexpr std::array<float, 5ull * 4> QuadVerticesIndexed
+    inline static constexpr std::array<f32, 5ull * 4> QuadVerticesIndexed
 	{
 		//XYZ UV
 		-1.0f, -1.0f, 0.0f,    0.0f, 1.0f,
@@ -29,7 +29,7 @@ private:
 		 1.0f,  1.0f, 0.0f,    1.0f, 0.0f,
 		-1.0f,  1.0f, 0.0f,    0.0f, 0.0f
 	};
-    inline static constexpr std::array<uint16_t, 6> QuadIndices
+    inline static constexpr std::array<u16, 6> QuadIndices
 	{
 		0, 1, 2, 2, 3, 0
 	};
@@ -41,7 +41,7 @@ private:
     TRAP::Ref<TRAP::Graphics::RenderTarget> m_resolveTarget = nullptr;
     bool m_MSAAEnabled = false;
 
-    std::array<float, 50> m_frameTimeHistory{};
+    std::array<f32, 50> m_frameTimeHistory{};
 	TRAP::Utils::Timer m_fpsTimer{};
 	TRAP::Utils::Timer m_titleTimer{};
 };

@@ -16,7 +16,7 @@ namespace
         {
             static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-            static constexpr std::array<std::tuple<T, T, int32_t>, 4> values
+            static constexpr std::array<std::tuple<T, T, i32>, 4> values
             {
                 std::tuple(T(1024.0f), T(0.5f), 11),
                 std::tuple(T(0.24f), T(0.96f), -2),
@@ -26,7 +26,7 @@ namespace
 
             for(const auto& [x, expectedRes, expectedExp] : values)
             {
-                int32_t exp{};
+                i32 exp{};
                 const T res = TRAP::Math::FrExp(x, exp);
                 REQUIRE(TRAP::Math::Equal(res, expectedRes, Epsilon));
                 REQUIRE(exp == expectedExp);
@@ -37,10 +37,10 @@ namespace
             static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
             static constexpr T x(TRAP::Math::Vec<4, typename T::value_type>(1024.0f, 0.24f, 0.0f, -1.33f));
-            TRAP::Math::Vec<T::Length(), int32_t> exp{};
+            TRAP::Math::Vec<T::Length(), i32> exp{};
             const T res = TRAP::Math::FrExp(x, exp);
             REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, T(TRAP::Math::Vec<4, typename T::value_type>(0.5f, 0.96f, 0.0f, -0.665f)), Epsilon)));
-            REQUIRE(exp == TRAP::Math::Vec<T::Length(), int32_t>(TRAP::Math::Vec<4, int32_t>(11, -2, 0, 1)));
+            REQUIRE(exp == TRAP::Math::Vec<T::Length(), i32>(TRAP::Math::Vec<4, i32>(11, -2, 0, 1)));
         }
     }
 
@@ -57,7 +57,7 @@ namespace
         static constexpr T min = std::numeric_limits<T>::denorm_min();
         static constexpr T nmin = -std::numeric_limits<T>::denorm_min();
 
-        int32_t exp{};
+        i32 exp{};
         T res{};
 
         res = TRAP::Math::FrExp(T(0.0f), exp);
@@ -73,7 +73,7 @@ namespace
         res = TRAP::Math::FrExp(nan, exp);
         REQUIRE(TRAP::Math::IsNaN(res));
 
-        if constexpr(std::same_as<T, double>)
+        if constexpr(std::same_as<T, f64>)
         {
             res = TRAP::Math::FrExp(max, exp);
             REQUIRE(TRAP::Math::Equal(res, T(0.99999999999999989f), Epsilon));
@@ -87,7 +87,7 @@ namespace
             REQUIRE(TRAP::Math::Equal(res, T(-0.5f), Epsilon));
             REQUIRE(exp == -1073);
         }
-        else if constexpr(std::same_as<T, float>)
+        else if constexpr(std::same_as<T, f32>)
         {
             res = TRAP::Math::FrExp(max, exp);
             REQUIRE(TRAP::Math::Equal(res, T(0.99999999999999989f), Epsilon));
@@ -106,40 +106,40 @@ namespace
 
 TEST_CASE("TRAP::Math::FrExp()", "[math][generic][frexp]")
 {
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunFrExpTests<double>();
-        RunFrExpEdgeTests<double>();
+        RunFrExpTests<f64>();
+        RunFrExpEdgeTests<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunFrExpTests<float>();
-        RunFrExpEdgeTests<float>();
+        RunFrExpTests<f32>();
+        RunFrExpEdgeTests<f32>();
     }
 
-    SECTION("Vec2 - double")
+    SECTION("Vec2 - f64")
     {
         RunFrExpTests<TRAP::Math::Vec2d>();
     }
-    SECTION("Vec2 - float")
+    SECTION("Vec2 - f32")
     {
         RunFrExpTests<TRAP::Math::Vec2f>();
     }
 
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunFrExpTests<TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunFrExpTests<TRAP::Math::Vec3f>();
     }
 
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunFrExpTests<TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunFrExpTests<TRAP::Math::Vec4f>();
     }

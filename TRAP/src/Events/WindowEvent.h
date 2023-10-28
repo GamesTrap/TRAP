@@ -20,7 +20,7 @@ namespace TRAP::Events
 		/// <param name="width">New Window width.</param>
 		/// <param name="height">New Window height.</param>
 		/// <param name="window">Pointer to the affected window.</param>
-		WindowResizeEvent(uint32_t width, uint32_t height, TRAP::Window* window);
+		WindowResizeEvent(u32 width, u32 height, TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -46,12 +46,12 @@ namespace TRAP::Events
 		/// Retrieve the new window width.
 		/// </summary>
 		/// <returns>Width.</returns>
-		[[nodiscard]] constexpr uint32_t GetWidth() const noexcept;
+		[[nodiscard]] constexpr u32 GetWidth() const noexcept;
 		/// <summary>
 		/// Retrieve the new window height.
 		/// </summary>
 		/// <returns>Height.</returns>
-		[[nodiscard]] constexpr uint32_t GetHeight() const noexcept;
+		[[nodiscard]] constexpr u32 GetHeight() const noexcept;
 		/// <summary>
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
@@ -86,7 +86,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
-		uint32_t m_width, m_height;
+		u32 m_width, m_height;
 		TRAP::Window* m_window;
 	};
 
@@ -377,7 +377,7 @@ namespace TRAP::Events
 		/// <param name="x">New x position.</param>
 		/// <param name="y">New y position.</param>
 		/// <param name="window">Pointer to the affected window.</param>
-		WindowMoveEvent(int32_t x, int32_t y, TRAP::Window* window);
+		WindowMoveEvent(i32 x, i32 y, TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -403,12 +403,12 @@ namespace TRAP::Events
 		/// Retrieve the new window x position.
 		/// </summary>
 		/// <returns>Window x position.</returns>
-		[[nodiscard]] constexpr int32_t GetX() const noexcept;
+		[[nodiscard]] constexpr i32 GetX() const noexcept;
 		/// <summary>
 		/// Retrieve the new window y position.
 		/// </summary>
 		/// <returns>Window y position.</returns>
-		[[nodiscard]] constexpr int32_t GetY() const noexcept;
+		[[nodiscard]] constexpr i32 GetY() const noexcept;
 		/// <summary>
 		/// Retrieve the new window position.
 		/// </summary>
@@ -448,7 +448,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
-		int32_t m_x, m_y;
+		i32 m_x, m_y;
 		TRAP::Window* m_window;
 	};
 
@@ -678,7 +678,7 @@ namespace TRAP::Events
 		/// <param name="xScale">New x content scale.</param>
 		/// <param name="yScale">New y content scale.</param>
 		/// <param name="window">Pointer to the affected window.</param>
-		explicit WindowContentScaleEvent(float xScale, float yScale, TRAP::Window* window);
+		explicit WindowContentScaleEvent(f32 xScale, f32 yScale, TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -704,12 +704,12 @@ namespace TRAP::Events
 		/// Retrieve the new x content scale.
 		/// </summary>
 		/// <returns>Window x content scale.</returns>
-		[[nodiscard]] constexpr float GetXScale() const noexcept;
+		[[nodiscard]] constexpr f32 GetXScale() const noexcept;
 		/// <summary>
 		/// Retrieve the new y content scale.
 		/// </summary>
 		/// <returns>Window y content scale.</returns>
-		[[nodiscard]] constexpr float GetYScale() const noexcept;
+		[[nodiscard]] constexpr f32 GetYScale() const noexcept;
 		/// <summary>
 		/// Retrieve the new content scale.
 		/// </summary>
@@ -749,8 +749,8 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
-		float m_XScale;
-		float m_YScale;
+		f32 m_XScale;
+		f32 m_YScale;
 		TRAP::Window* m_window;
 	};
 
@@ -766,7 +766,7 @@ namespace TRAP::Events
 		/// <param name="width">New framebuffer width.</param>
 		/// <param name="height">New framebuffer height.</param>
 		/// <param name="window">Pointer to the affected window.</param>
-		FrameBufferResizeEvent(uint32_t width, uint32_t height, TRAP::Window* window);
+		FrameBufferResizeEvent(u32 width, u32 height, TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -792,12 +792,12 @@ namespace TRAP::Events
 		/// Retrieve the new framebuffer width.
 		/// </summary>
 		/// <returns>Framebuffer width.</returns>
-		[[nodiscard]] constexpr uint32_t GetWidth() const noexcept;
+		[[nodiscard]] constexpr u32 GetWidth() const noexcept;
 		/// <summary>
 		/// Retrieve the new framebuffer height.
 		/// </summary>
 		/// <returns>Framebuffer height.</returns>
-		[[nodiscard]] constexpr uint32_t GetHeight() const noexcept;
+		[[nodiscard]] constexpr u32 GetHeight() const noexcept;
 		/// <summary>
 		/// Retrieve the new framebuffer size.
 		/// </summary>
@@ -807,7 +807,7 @@ namespace TRAP::Events
 		/// Retrieve the aspect ratio of the framebuffer.
 		/// </summary>
 		/// <returns>Aspect ratio.</returns>
-		[[nodiscard]] constexpr float GetAspectRatio() const noexcept;
+		[[nodiscard]] constexpr f32 GetAspectRatio() const noexcept;
 		/// <summary>
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
@@ -842,19 +842,19 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
-		uint32_t m_width, m_height;
+		u32 m_width, m_height;
 		TRAP::Window* m_window;
 	};
 }
 
-[[nodiscard]] constexpr uint32_t TRAP::Events::WindowResizeEvent::GetWidth() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Events::WindowResizeEvent::GetWidth() const noexcept
 {
 	return m_width;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Events::WindowResizeEvent::GetHeight() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Events::WindowResizeEvent::GetHeight() const noexcept
 {
 	return m_height;
 }
@@ -1074,14 +1074,14 @@ namespace TRAP::Events
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr int32_t TRAP::Events::WindowMoveEvent::GetX() const noexcept
+[[nodiscard]] constexpr i32 TRAP::Events::WindowMoveEvent::GetX() const noexcept
 {
 	return m_x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr int32_t TRAP::Events::WindowMoveEvent::GetY() const noexcept
+[[nodiscard]] constexpr i32 TRAP::Events::WindowMoveEvent::GetY() const noexcept
 {
 	return m_y;
 }
@@ -1283,14 +1283,14 @@ namespace TRAP::Events
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::Events::WindowContentScaleEvent::GetXScale() const noexcept
+[[nodiscard]] constexpr f32 TRAP::Events::WindowContentScaleEvent::GetXScale() const noexcept
 {
 	return m_XScale;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::Events::WindowContentScaleEvent::GetYScale() const noexcept
+[[nodiscard]] constexpr f32 TRAP::Events::WindowContentScaleEvent::GetYScale() const noexcept
 {
 	return m_YScale;
 }
@@ -1341,14 +1341,14 @@ namespace TRAP::Events
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Events::FrameBufferResizeEvent::GetWidth() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Events::FrameBufferResizeEvent::GetWidth() const noexcept
 {
 	return m_width;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Events::FrameBufferResizeEvent::GetHeight() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Events::FrameBufferResizeEvent::GetHeight() const noexcept
 {
 	return m_height;
 }
@@ -1362,9 +1362,9 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::Events::FrameBufferResizeEvent::GetAspectRatio() const noexcept
+[[nodiscard]] constexpr f32 TRAP::Events::FrameBufferResizeEvent::GetAspectRatio() const noexcept
 {
-	return NumericCast<float>(m_width) / NumericCast<float>(m_height);
+	return NumericCast<f32>(m_width) / NumericCast<f32>(m_height);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

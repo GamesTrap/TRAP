@@ -18,9 +18,9 @@ void PrintInfo(const std::filesystem::path& filePath);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int main(const int argc, const char* const* const argv)
+i32 main(const i32 argc, const char* const* const argv)
 {
-	const std::vector<std::string_view> args(argv, std::next(argv, static_cast<std::ptrdiff_t>(argc)));
+	const std::vector<std::string_view> args(argv, std::next(argv, static_cast<isize>(argc)));
 
 	std::optional<std::filesystem::path> outputPath{};
 	std::vector<Macro> customMacros{};
@@ -114,7 +114,7 @@ int main(const int argc, const char* const* const argv)
 
 [[nodiscard]] std::optional<Macro> SplitMacro(const std::string_view macro)
 {
-	const std::size_t equalSign = macro.find('=');
+	const usize equalSign = macro.find('=');
 	if(equalSign == std::string::npos)
 	{
 		fmt::print(fg(fmt::color::red), "Invalid macro:\"{}\"\n", macro);
@@ -213,13 +213,13 @@ void PrintVersion()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void PrintTPSPVShaderInfo(const std::filesystem::path& filePath, const Shader& shader, const uint32_t versionNumber)
+void PrintTPSPVShaderInfo(const std::filesystem::path& filePath, const Shader& shader, const u32 versionNumber)
 {
 	fmt::println("File: {}", filePath.string());
 	fmt::println("Format: TRAP-SPIRV v{}", versionNumber);
 	fmt::println("Number of contained Shaders: {}\n", shader.SubShaderSources.size());
 
-	for(std::size_t i = 0; i < shader.SubShaderSources.size(); ++i)
+	for(usize i = 0; i < shader.SubShaderSources.size(); ++i)
 	{
 		fmt::println("{}. Shader:", (i + 1));
 		fmt::println("    Stage: {}", ShaderStageToString(shader.SubShaderSources[i].Stage));
@@ -248,7 +248,7 @@ void PrintInfo(const std::filesystem::path& filePath)
 		return;
 
 	Shader shader;
-	uint32_t shaderVersion = 0;
+	u32 shaderVersion = 0;
 	const bool res = ParseTPSPVShader(*fileData, shader, shaderVersion);
 	if(!res)
 	{

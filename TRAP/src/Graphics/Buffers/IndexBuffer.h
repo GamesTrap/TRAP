@@ -43,12 +43,12 @@ namespace TRAP::Graphics
 		/// Retrieve the count of indices inside this buffer.
 		/// </summary>
 		/// <returns>Count of indices.</returns>
-		[[nodiscard]] uint32_t GetCount() const noexcept;
+		[[nodiscard]] u32 GetCount() const noexcept;
 		/// <summary>
 		/// Retrieve the total byte size of the buffer.
 		/// </summary>
 		/// <returns>Total buffer byte size.</returns>
-		[[nodiscard]] uint64_t GetSize() const noexcept;
+		[[nodiscard]] u64 GetSize() const noexcept;
 		/// <summary>
 		/// Retrieve the update frequency used by this buffer.
 		/// </summary>
@@ -73,13 +73,13 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="indices">Pointer to the updated data.</param>
 		/// <param name="offset">Byte offset into the currently used index data.</param>
-		void SetData(std::span<const uint16_t> indices, uint64_t offset = 0);
+		void SetData(std::span<const u16> indices, u64 offset = 0);
 		/// <summary>
 		/// Update the buffers index data.
 		/// </summary>
 		/// <param name="indices">Pointer to the updated data.</param>
 		/// <param name="offset">Byte offset into the currently used index data.</param>
-		void SetData(std::span<const uint32_t> indices, uint64_t offset = 0);
+		void SetData(std::span<const u32> indices, u64 offset = 0);
 
 		/// <summary>
 		/// Check whether uploading data to the GPU has finished.
@@ -97,21 +97,21 @@ namespace TRAP::Graphics
 		/// <param name="indices">Pointer to the data to upload.</param>
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New index buffer.</returns>
-		[[nodiscard]] static Scope<IndexBuffer> Create(std::span<const uint16_t> indices, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<IndexBuffer> Create(std::span<const u16> indices, UpdateFrequency updateFrequency);
 		/// <summary>
 		/// Create a new index buffer and set its data.
 		/// </summary>
 		/// <param name="indices">Pointer to the data to upload.</param>
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New index buffer.</returns>
-		[[nodiscard]] static Scope<IndexBuffer> Create(std::span<const uint32_t> indices, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<IndexBuffer> Create(std::span<const u32> indices, UpdateFrequency updateFrequency);
 		/// <summary>
 		/// Create a new index buffer and set its size.
 		/// </summary>
 		/// <param name="size">Byte size for the index buffer.</param>
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New index buffer.</returns>
-		[[nodiscard]] static Scope<IndexBuffer> Create(uint64_t size, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<IndexBuffer> Create(u64 size, UpdateFrequency updateFrequency);
 
 	private:
 		/// <summary>
@@ -122,17 +122,17 @@ namespace TRAP::Graphics
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New index buffer.</returns>
 		template<typename T>
-		requires std::same_as<T, std::uint16_t> || std::same_as<T, std::uint32_t>
-		[[nodiscard]] static TRAP::Scope<IndexBuffer> Init(const T* indices, uint64_t size, UpdateFrequency updateFrequency);
+		requires std::same_as<T, u16> || std::same_as<T, u32>
+		[[nodiscard]] static TRAP::Scope<IndexBuffer> Init(const T* indices, u64 size, UpdateFrequency updateFrequency);
 
 		/// <summary>
 		/// Set new index buffer data.
 		/// </summary>
 		/// <param name="indices">Pointer to the data to upload.</param>
 		/// <param name="offset">Byte offset into the currently used index data.</param>
-		template<typename T, std::size_t Size = std::dynamic_extent>
-		requires std::same_as<T, std::uint16_t> || std::same_as<T, std::uint32_t>
-		void SetDataInternal(std::span<const T, Size> indices, uint64_t offset = 0);
+		template<typename T, usize Size = std::dynamic_extent>
+		requires std::same_as<T, u16> || std::same_as<T, u32>
+		void SetDataInternal(std::span<const T, Size> indices, u64 offset = 0);
 
 		TRAP::Ref<TRAP::Graphics::Buffer> m_indexBuffer = nullptr;
 
@@ -152,8 +152,8 @@ constexpr TRAP::Graphics::IndexBuffer::IndexBuffer(const RendererAPI::IndexType 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-requires std::same_as<T, std::uint16_t> || std::same_as<T, std::uint32_t>
-[[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Init(const T* const indices, const uint64_t size,
+requires std::same_as<T, u16> || std::same_as<T, u32>
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Init(const T* const indices, const u64 size,
                                                                                          const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
@@ -161,14 +161,14 @@ requires std::same_as<T, std::uint16_t> || std::same_as<T, std::uint32_t>
 	RendererAPI::IndexType indexType = {};
 	if(indices)
 	{
-		if constexpr(std::same_as<T, uint16_t>)
+		if constexpr(std::same_as<T, u16>)
 			indexType = RendererAPI::IndexType::UInt16;
-		else if constexpr(std::same_as<T, uint32_t>)
+		else if constexpr(std::same_as<T, u32>)
 			indexType = RendererAPI::IndexType::UInt32;
 	}
 	else
 	{
-		if(size / sizeof(uint16_t) < std::numeric_limits<uint16_t>::max())
+		if(size / sizeof(u16) < std::numeric_limits<u16>::max())
 			indexType = RendererAPI::IndexType::UInt16;
 		else
 			indexType = RendererAPI::IndexType::UInt32;
@@ -194,10 +194,10 @@ requires std::same_as<T, std::uint16_t> || std::same_as<T, std::uint32_t>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<typename T, std::size_t Size>
-requires std::same_as<T, std::uint16_t> || std::same_as<T, std::uint32_t>
+template<typename T, usize Size>
+requires std::same_as<T, u16> || std::same_as<T, u32>
 void TRAP::Graphics::IndexBuffer::SetDataInternal(const std::span<const T, Size> indices,
-                                                  const uint64_t offset)
+                                                  const u64 offset)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -211,9 +211,9 @@ void TRAP::Graphics::IndexBuffer::SetDataInternal(const std::span<const T, Size>
 	std::copy_n(indices.data(), indices.size(), static_cast<T*>(desc.MappedData));
 	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_token);
 
-	if constexpr(std::same_as<T, uint16_t>)
+	if constexpr(std::same_as<T, u16>)
 		m_indexType = RendererAPI::IndexType::UInt16;
-	else if constexpr(std::same_as<T, uint32_t>)
+	else if constexpr(std::same_as<T, u32>)
 		m_indexType = RendererAPI::IndexType::UInt32;
 }
 

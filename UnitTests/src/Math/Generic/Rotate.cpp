@@ -246,7 +246,7 @@ namespace
         static constexpr T ninf = -std::numeric_limits<T>::infinity();
         static constexpr T nan = std::numeric_limits<T>::quiet_NaN();
 
-        if constexpr(std::same_as<T, float>)
+        if constexpr(std::same_as<T, f32>)
         {
             {
                 const TRAP::Math::tQuat<T> q = TRAP::Math::AngleAxis(TRAP::Math::Radians(T(45.0f)), TRAP::Math::tVec3<T>(1.0f, 0.0f, 0.0f));
@@ -284,22 +284,22 @@ namespace
 
 TEST_CASE("TRAP::Math::Rotate()", "[math][generic][rotate]")
 {
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunRotateRunTimeTests<double>();
-        RunRotateCompileTimeTests<double>();
-        RunRotateEdgeTests<double>();
-        RunRotateQuatRunTimeTests<double>();
-        RunRotateQuatCompileTimeTests<double>();
-        RunRotateQuatEdgeTests<double>();
+        RunRotateRunTimeTests<f64>();
+        RunRotateCompileTimeTests<f64>();
+        RunRotateEdgeTests<f64>();
+        RunRotateQuatRunTimeTests<f64>();
+        RunRotateQuatCompileTimeTests<f64>();
+        RunRotateQuatEdgeTests<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunRotateRunTimeTests<float>();
-        RunRotateCompileTimeTests<float>();
-        RunRotateEdgeTests<float>();
-        RunRotateQuatRunTimeTests<float>();
-        RunRotateQuatCompileTimeTests<float>();
-        RunRotateQuatEdgeTests<float>();
+        RunRotateRunTimeTests<f32>();
+        RunRotateCompileTimeTests<f32>();
+        RunRotateEdgeTests<f32>();
+        RunRotateQuatRunTimeTests<f32>();
+        RunRotateQuatCompileTimeTests<f32>();
+        RunRotateQuatEdgeTests<f32>();
     }
 }

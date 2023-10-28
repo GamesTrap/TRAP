@@ -43,27 +43,27 @@ namespace TRAP::Graphics
 		/// Retrieve the width of the render target.
 		/// </summary>
 		/// <returns>Render target width.</returns>
-		[[nodiscard]] constexpr uint32_t GetWidth() const noexcept;
+		[[nodiscard]] constexpr u32 GetWidth() const noexcept;
 		/// <summary>
 		/// Retrieve the height of the render target.
 		/// </summary>
 		/// <returns>Render target height.</returns>
-		[[nodiscard]] constexpr uint32_t GetHeight() const noexcept;
+		[[nodiscard]] constexpr u32 GetHeight() const noexcept;
 		/// <summary>
 		/// Retrieve the depth of the render target.
 		/// </summary>
 		/// <returns>Render target depth.</returns>
-		[[nodiscard]] constexpr uint32_t GetDepth() const noexcept;
+		[[nodiscard]] constexpr u32 GetDepth() const noexcept;
 		/// <summary>
 		/// Retrieve the array size of the render target.
 		/// </summary>
 		/// <returns>Render target array size.</returns>
-		[[nodiscard]] constexpr uint32_t GetArraySize() const noexcept;
+		[[nodiscard]] constexpr u32 GetArraySize() const noexcept;
 		/// <summary>
 		/// Retrieve the mip levels of the render target.
 		/// </summary>
 		/// <returns>Render target mip levels.</returns>
-		[[nodiscard]] constexpr uint32_t GetMipLevels() const noexcept;
+		[[nodiscard]] constexpr u32 GetMipLevels() const noexcept;
 		/// <summary>
 		/// Retrieve the sample count of the render target.
 		/// </summary>
@@ -73,7 +73,7 @@ namespace TRAP::Graphics
 		/// Retrieve the sample quality of the render target.
 		/// </summary>
 		/// <returns>Render target sample quality.</returns>
-		[[nodiscard]] constexpr uint32_t GetSampleQuality() const noexcept;
+		[[nodiscard]] constexpr u32 GetSampleQuality() const noexcept;
 		/// <summary>
 		/// Retrieve the image format of the render target.
 		/// </summary>
@@ -105,13 +105,13 @@ namespace TRAP::Graphics
 		TRAP::Ref<TRAP::Graphics::Texture> m_texture = nullptr;
 
 		RendererAPI::ClearValue m_clearValue = RendererAPI::Color{1.0, 1.0, 1.0, 1.0};
-		uint32_t m_arraySize = 0;
-		uint32_t m_depth = 0;
-		uint32_t m_width = 0;
-		uint32_t m_height = 0;
+		u32 m_arraySize = 0;
+		u32 m_depth = 0;
+		u32 m_width = 0;
+		u32 m_height = 0;
 		RendererAPI::DescriptorType m_descriptors = RendererAPI::DescriptorType::Undefined;
-		uint32_t m_mipLevels = 0;
-		uint32_t m_sampleQuality = 0;
+		u32 m_mipLevels = 0;
+		u32 m_sampleQuality = 0;
 		TRAP::Graphics::API::ImageFormat m_format = TRAP::Graphics::API::ImageFormat::Undefined;
 		RendererAPI::SampleCount m_sampleCount = RendererAPI::SampleCount::One;
 	};
@@ -119,35 +119,35 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::RenderTarget::GetWidth() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::RenderTarget::GetWidth() const noexcept
 {
 	return m_width;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::RenderTarget::GetHeight() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::RenderTarget::GetHeight() const noexcept
 {
 	return m_height;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::RenderTarget::GetDepth() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::RenderTarget::GetDepth() const noexcept
 {
 	return m_depth;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::RenderTarget::GetArraySize() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::RenderTarget::GetArraySize() const noexcept
 {
 	return m_arraySize;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::RenderTarget::GetMipLevels() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::RenderTarget::GetMipLevels() const noexcept
 {
 	return m_mipLevels;
 }
@@ -161,7 +161,7 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::RenderTarget::GetSampleQuality() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::RenderTarget::GetSampleQuality() const noexcept
 {
 	return m_sampleQuality;
 }

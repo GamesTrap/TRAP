@@ -8,7 +8,7 @@
 #include "Utils/Utils.h"
 #include "Utils/Memory.h"
 
-[[nodiscard]] uint16_t TRAP::Network::TCPListenerIPv6::GetLocalPort() const
+[[nodiscard]] u16 TRAP::Network::TCPListenerIPv6::GetLocalPort() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -20,7 +20,7 @@
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in6);
 	if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
 	{
-		uint16_t res = address.sin6_port;
+		u16 res = address.sin6_port;
 
 		if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(res);
@@ -33,7 +33,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Network::Socket::Status TRAP::Network::TCPListenerIPv6::Listen(const uint16_t port, const IPv6Address& address)
+[[nodiscard]] TRAP::Network::Socket::Status TRAP::Network::TCPListenerIPv6::Listen(const u16 port, const IPv6Address& address)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 

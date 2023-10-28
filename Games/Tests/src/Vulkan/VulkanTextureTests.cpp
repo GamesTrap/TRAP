@@ -59,7 +59,7 @@ void VulkanTextureTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
     if(m_cycleMips)
     {
-        constinit static float time = 0.0f;
+        constinit static f32 time = 0.0f;
         time += deltaTime.GetMilliseconds();
         if(time > 1000.0f)
         {
@@ -76,9 +76,9 @@ void VulkanTextureTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
         m_currentTexture = (m_currentTexture + 1) % 2;
 
         if(m_currentTexture == 0)
-            m_texture->Update(m_vulkanLogo->GetPixelData(), NumericCast<uint32_t>(m_vulkanLogo->GetPixelDataSize()));
+            m_texture->Update(m_vulkanLogo->GetPixelData(), NumericCast<u32>(m_vulkanLogo->GetPixelDataSize()));
         else if(m_currentTexture == 1)
-            m_texture->Update(m_vulkanLogoTransparent->GetPixelData(), NumericCast<uint32_t>(m_vulkanLogoTransparent->GetPixelDataSize()));
+            m_texture->Update(m_vulkanLogoTransparent->GetPixelData(), NumericCast<u32>(m_vulkanLogoTransparent->GetPixelDataSize()));
     }
 
 	//Use shader

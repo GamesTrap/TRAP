@@ -2,7 +2,7 @@
 
 namespace
 {
-    TRAP::Ref<TRAP::Graphics::RenderTarget> BuildRenderTarget(const uint32_t width, const uint32_t height,
+    TRAP::Ref<TRAP::Graphics::RenderTarget> BuildRenderTarget(const u32 width, const u32 height,
                                                               const TRAP::Graphics::SampleCount sampleCount)
     {
         TRAP::Graphics::RendererAPI::RenderTargetDesc desc{};
@@ -139,7 +139,7 @@ void FrameBufferTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
     if (m_titleTimer.Elapsed() >= 0.025f)
     {
         m_titleTimer.Reset();
-        constinit static std::size_t frameTimeIndex = 0;
+        constinit static usize frameTimeIndex = 0;
         if (frameTimeIndex < m_frameTimeHistory.size() - 1)
         {
             m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
@@ -167,7 +167,7 @@ void FrameBufferTests::OnImGuiRender()
     ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
     ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
     ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
-    ImGui::PlotLines("", m_frameTimeHistory.data(), NumericCast<int32_t>(m_frameTimeHistory.size()), 0, nullptr, 0,
+    ImGui::PlotLines("", m_frameTimeHistory.data(), NumericCast<i32>(m_frameTimeHistory.size()), 0, nullptr, 0,
                         33, ImVec2(200, 50));
     ImGui::End();
 
@@ -176,13 +176,13 @@ void FrameBufferTests::OnImGuiRender()
                                                                 ImGuiWindowFlags_NoResize);
     if(m_MSAAEnabled)
     {
-        ImGui::Image(m_resolveTarget->GetTexture(), ImVec2(NumericCast<float>(m_resolveTarget->GetWidth()),
-                     NumericCast<float>(m_resolveTarget->GetHeight())), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f));
+        ImGui::Image(m_resolveTarget->GetTexture(), ImVec2(NumericCast<f32>(m_resolveTarget->GetWidth()),
+                     NumericCast<f32>(m_resolveTarget->GetHeight())), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f));
     }
     else
     {
-        ImGui::Image(m_renderTarget->GetTexture(), ImVec2(NumericCast<float>(m_renderTarget->GetWidth()),
-                     NumericCast<float>(m_renderTarget->GetHeight())), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f));
+        ImGui::Image(m_renderTarget->GetTexture(), ImVec2(NumericCast<f32>(m_renderTarget->GetWidth()),
+                     NumericCast<f32>(m_renderTarget->GetHeight())), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f));
     }
     ImGui::Text("Vulkan and the Vulkan logo are registered trademarks of the Khronos Group Inc.");
     ImGui::End();

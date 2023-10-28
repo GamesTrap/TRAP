@@ -9,7 +9,7 @@ TRAP::Graphics::VertexBufferElement::VertexBufferElement(const ShaderDataType ty
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint32_t TRAP::Graphics::ShaderDataTypeSize(const ShaderDataType type)
+[[nodiscard]] u32 TRAP::Graphics::ShaderDataTypeSize(const ShaderDataType type)
 {
 	switch (type)
 	{
@@ -36,7 +36,7 @@ TRAP::Graphics::VertexBufferElement::VertexBufferElement(const ShaderDataType ty
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint32_t TRAP::Graphics::VertexBufferElement::GetComponentCount() const
+[[nodiscard]] u32 TRAP::Graphics::VertexBufferElement::GetComponentCount() const
 {
 	switch (Type)
 	{

@@ -135,23 +135,23 @@ namespace
 
 TEST_CASE("TRAP::Math::Row()", "[math][generic][row]")
 {
-    SECTION("Mat4 - double")
+    SECTION("Mat4 - f64")
     {
         RunRowRunTimeTests<TRAP::Math::Mat4d>();
         RunRowCompileTimeTests<TRAP::Math::Mat4d>();
     }
-    SECTION("Mat4 - float")
+    SECTION("Mat4 - f32")
     {
         RunRowRunTimeTests<TRAP::Math::Mat4f>();
         RunRowCompileTimeTests<TRAP::Math::Mat4f>();
     }
 
-    SECTION("Mat3 - double")
+    SECTION("Mat3 - f64")
     {
         RunRowRunTimeTests<TRAP::Math::Mat3d>();
         RunRowCompileTimeTests<TRAP::Math::Mat3d>();
     }
-    SECTION("Mat3 - float")
+    SECTION("Mat3 - f32")
     {
         RunRowRunTimeTests<TRAP::Math::Mat3f>();
         RunRowCompileTimeTests<TRAP::Math::Mat3f>();

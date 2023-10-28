@@ -87,7 +87,7 @@ namespace TRAP
 
 	private:
 		std::vector<std::unique_ptr<Layer>> m_layers;
-		uint32_t m_layerInsertIndex = 0;
+		u32 m_layerInsertIndex = 0;
 	};
 }
 

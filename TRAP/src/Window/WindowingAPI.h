@@ -116,8 +116,8 @@ namespace TRAP::INTERNAL
 		struct DBusConnection;
 		struct DBusMessage;
 		enum class DBusBusType;
-		using dbus_bool_t = uint32_t;
-		using dbus_uint32_t = uint32_t;
+		using dbus_bool_t = u32;
+		using dbus_uint32_t = u32;
 
 		struct libdecor;
 		struct libdecor_frame;
@@ -126,7 +126,7 @@ namespace TRAP::INTERNAL
 		struct libdecor_interface;
 		struct libdecor_frame_interface;
 		enum class libdecor_capabilities;
-		enum class libdecor_window_state : uint32_t;
+		enum class libdecor_window_state : u32;
 #endif
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Typedefs-----------------------------------------------------------------------------------------------------------//
@@ -145,14 +145,14 @@ namespace TRAP::INTERNAL
 		/// <param name="yPos">
 		/// The new y-coordinate, in screen coordinates, of the upper-left corner of the content area.
 		/// </param>
-		using WindowPositionFunc = void(*)(const InternalWindow& window, int32_t xPos, int32_t yPos);
+		using WindowPositionFunc = void(*)(const InternalWindow& window, i32 xPos, i32 yPos);
 		/// <summary>
 		/// The function pointer type for window size callbacks.
 		/// </summary>
 		/// <param name="window">The window that was resized.</param>
 		/// <param name="width">The new width, in screen coordinates.</param>
 		/// <param name="height">The new height, in screen coordinates.</param>
-		using WindowSizeFunc = void(*)(const InternalWindow& window, int32_t width, int32_t height);
+		using WindowSizeFunc = void(*)(const InternalWindow& window, i32 width, i32 height);
 		/// <summary>
 		/// The function pointer type for window minimize/iconfiy callbacks.
 		/// </summary>
@@ -184,14 +184,14 @@ namespace TRAP::INTERNAL
 		/// <param name="window">The window whose framebuffer was resized.</param>
 		/// <param name="width">The new width, in pixels, of the framebuffer.</param>
 		/// <param name="height">The new height, in pixels, of the framebuffer.</param>
-		using FrameBufferSizeFunc = void(*)(const InternalWindow& window, int32_t width, int32_t height);
+		using FrameBufferSizeFunc = void(*)(const InternalWindow& window, i32 width, i32 height);
 		/// <summary>
 		/// The function pointer type for window content scale callbacks.
 		/// </summary>
 		/// <param name="window">The window whose content scale changed.</param>
 		/// <param name="xScale">The new x-axis content scale of the window.</param>
 		/// <param name="yScale">The new y-axis content scale of the window.</param>
-		using WindowContentScaleFunc = void(*)(const InternalWindow& window, float xScale, float yScale);
+		using WindowContentScaleFunc = void(*)(const InternalWindow& window, f32 xScale, f32 yScale);
 		/// <summary>
 		/// The function pointer type for mouse button callbacks.
 		/// </summary>
@@ -205,7 +205,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window>The window that received the event.</param>
 		/// <param name="xPos">The new cursor x-coordinate, relative to the left edge of the content area.</param>
 		/// <param name="yPos">The new cursor y-coordinate, relative to the top edge of the content area.</param>
-		using CursorPositionFunc = void(*)(const InternalWindow& window, double xPos, double yPos);
+		using CursorPositionFunc = void(*)(const InternalWindow& window, f64 xPos, f64 yPos);
 		/// <summary>
 		/// The function pointer type for cursor enter callbacks.
 		/// </summary>
@@ -218,7 +218,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">The window that received the event.</param>
 		/// <param name="xOffset">The scroll offset along the x-axis.</param>
 		/// <param name="yOffset">The scroll offset along the y-axis.</param>
-		using ScrollFunc = void(*)(const InternalWindow& window, double xOffset, double yOffset);
+		using ScrollFunc = void(*)(const InternalWindow& window, f64 xOffset, f64 yOffset);
 		/// <summary>
 		/// The function pointer type for keyboard key callbacks.
 		/// </summary>
@@ -231,7 +231,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">The window that received the event.</param>
 		/// <param name="codePoint">The Unicode code point of the character.</param>
-		using CharFunc = void(*)(const InternalWindow& window, uint32_t codePoint);
+		using CharFunc = void(*)(const InternalWindow& window, u32 codePoint);
 		/// <summary>
 		/// The function pointer type for path drop callbacks.
 		/// </summary>
@@ -255,15 +255,15 @@ namespace TRAP::INTERNAL
 #elif defined(TRAP_PLATFORM_LINUX)
 		using PFN_vkCreateXlibSurfaceKHR = VkResult(*)(VkInstance, const VkXlibSurfaceCreateInfoKHR*,
 		                                               const VkAllocationCallbacks*, VkSurfaceKHR*);
-		using PFN_vkGetPhysicalDeviceXlibPresentationSupportKHR = VkBool32(*)(VkPhysicalDevice, uint32_t,
+		using PFN_vkGetPhysicalDeviceXlibPresentationSupportKHR = VkBool32(*)(VkPhysicalDevice, u32,
 		                                                                      Display*, VisualID);
 		using PFN_vkCreateXcbSurfaceKHR = VkResult(*)(VkInstance, const VkXcbSurfaceCreateInfoKHR*,
 		                                              const VkAllocationCallbacks*, VkSurfaceKHR*);
-		using PFN_vkGetPhysicalDeviceXcbPresentationSupportKHR = VkBool32(*)(VkPhysicalDevice, uint32_t,
+		using PFN_vkGetPhysicalDeviceXcbPresentationSupportKHR = VkBool32(*)(VkPhysicalDevice, u32,
 		                                                                     xcb_connection_t*, xcb_visualid_t);
 		using PFN_vkCreateWaylandSurfaceKHR = VkResult(*)(VkInstance, const VkWaylandSurfaceCreateInfoKHR*,
 		                                              const VkAllocationCallbacks*, VkSurfaceKHR*);
-		using PFN_vkGetPhysicalDeviceWaylandPresentationSupportKHR = VkBool32(*)(VkPhysicalDevice, uint32_t,
+		using PFN_vkGetPhysicalDeviceWaylandPresentationSupportKHR = VkBool32(*)(VkPhysicalDevice, u32,
 		                                                                         wl_display*);
 #endif
 		//-------//
@@ -277,7 +277,7 @@ namespace TRAP::INTERNAL
 		using PFN_SetProcessDPIAwarenessContext = BOOL(WINAPI*)(HANDLE);
 		using PFN_GetDPIForWindow = UINT(WINAPI*)(HWND);
 		using PFN_AdjustWindowRectExForDPI = BOOL(WINAPI*)(LPRECT, DWORD, BOOL, DWORD, UINT);
-		using PFN_GetSystemMetricsForDPI = int(WINAPI*)(int, UINT);
+		using PFN_GetSystemMetricsForDPI = i32(WINAPI*)(i32, UINT);
 		using PFN_GetDisplayConfigBufferSizes = LONG(WINAPI*)(UINT32, UINT32*, UINT32*);
 		using PFN_QueryDisplayConfig = LONG(WINAPI*)(UINT32, UINT32*, DISPLAYCONFIG_PATH_INFO*, UINT32*, DISPLAYCONFIG_MODE_INFO*, DISPLAYCONFIG_TOPOLOGY_ID*);
 		using PFN_DisplayConfigGetDeviceInfo = LONG(WINAPI*)(DISPLAYCONFIG_DEVICE_INFO_HEADER*);
@@ -308,36 +308,36 @@ namespace TRAP::INTERNAL
 		using PFN_XRRGetOutputInfo = XRROutputInfo*(*)(Display*, XRRScreenResources*, RROutput);
 		using PFN_XRRGetOutputPrimary = RROutput(*)(Display*, ::Window);
 		using PFN_XRRGetScreenResourcesCurrent = XRRScreenResources*(*)(Display*, ::Window);
-		using PFN_XRRQueryExtension = int32_t(*)(Display*, int32_t*, int32_t*);
-		using PFN_XRRQueryVersion = int32_t(*)(Display*, int32_t*, int32_t*);
-		using PFN_XRRSelectInput = void(*)(Display*, ::Window, int32_t);
-		using PFN_XRRSetCrtcConfig = int32_t(*)(Display*, XRRScreenResources*, RRCrtc, Time, int32_t, int32_t,
-		                                        RRMode, Rotation, RROutput*, int32_t);
-		using PFN_XRRUpdateConfiguration = int32_t(*)(XEvent*);
+		using PFN_XRRQueryExtension = i32(*)(Display*, i32*, i32*);
+		using PFN_XRRQueryVersion = i32(*)(Display*, i32*, i32*);
+		using PFN_XRRSelectInput = void(*)(Display*, ::Window, i32);
+		using PFN_XRRSetCrtcConfig = i32(*)(Display*, XRRScreenResources*, RRCrtc, Time, i32, i32,
+		                                        RRMode, Rotation, RROutput*, i32);
+		using PFN_XRRUpdateConfiguration = i32(*)(XEvent*);
 
 		//XCursor
-		using PFN_XcursorImageCreate = XcursorImage*(*)(int32_t, int32_t);
+		using PFN_XcursorImageCreate = XcursorImage*(*)(i32, i32);
 		using PFN_XcursorImageDestroy = void(*)(XcursorImage*);
 		using PFN_XcursorImageLoadCursor = Cursor(*)(Display*, const XcursorImage*);
 		using PFN_XcursorGetTheme = char*(*)(Display*);
-		using PFN_XcursorGetDefaultSize = int32_t(*)(Display*);
-		using PFN_XcursorLibraryLoadImage = XcursorImage*(*)(const char*, const char*, int32_t);
+		using PFN_XcursorGetDefaultSize = i32(*)(Display*);
+		using PFN_XcursorLibraryLoadImage = XcursorImage*(*)(const char*, const char*, i32);
 
 		//Xinerama
-		using PFN_XineramaIsActive = int32_t (*)(Display*);
-		using PFN_XineramaQueryExtension = int32_t(*)(Display*, int32_t*, int32_t*);
-		using PFN_XineramaQueryScreens = XineramaScreenInfo*(*)(Display*, int32_t*);
+		using PFN_XineramaIsActive = i32 (*)(Display*);
+		using PFN_XineramaQueryExtension = i32(*)(Display*, i32*, i32*);
+		using PFN_XineramaQueryScreens = XineramaScreenInfo*(*)(Display*, i32*);
 
 		//XCB
 		using PFN_XGetXCBConnection = xcb_connection_t*(*)(Display*);
 
 		//XI
-		using PFN_XIQueryVersion = int32_t(*)(Display*, int32_t*, int32_t*);
-		using PFN_XISelectEvents = int32_t(*)(Display*, ::Window, XIEventMask*, int32_t);
+		using PFN_XIQueryVersion = i32(*)(Display*, i32*, i32*);
+		using PFN_XISelectEvents = i32(*)(Display*, ::Window, XIEventMask*, i32);
 
 		//XRender
-		using PFN_XRenderQueryExtension = int32_t(*)(Display*,int32_t*, int32_t*);
-		using PFN_XRenderQueryVersion = int32_t(*)(Display* dpy, int32_t*, int32_t*);
+		using PFN_XRenderQueryExtension = i32(*)(Display*,i32*, i32*);
+		using PFN_XRenderQueryVersion = i32(*)(Display* dpy, i32*, i32*);
 		using PFN_XRenderFindVisualFormat = XRenderPictFormat*(*)(Display*, Visual const*);
 
 		//Vulkan
@@ -346,123 +346,123 @@ namespace TRAP::INTERNAL
 		using VkWaylandSurfaceCreateFlagsKHR = VkFlags;
 
 		//XShape
-		using PFN_XShapeQueryExtension = int32_t(*)(Display*, int32_t*, int32_t*);
-		using PFN_XShapeQueryVersion = int32_t(*)(Display* dpy, int32_t*, int32_t*);
-		using PFN_XShapeCombineRegion = void(*)(Display*, ::Window, int32_t, int32_t, int32_t, Region, int32_t);
-		using PFN_XShapeCombineMask = void(*)(Display*, XID, int32_t, int32_t, int32_t, Pixmap, int32_t);
+		using PFN_XShapeQueryExtension = i32(*)(Display*, i32*, i32*);
+		using PFN_XShapeQueryVersion = i32(*)(Display* dpy, i32*, i32*);
+		using PFN_XShapeCombineRegion = void(*)(Display*, ::Window, i32, i32, i32, Region, i32);
+		using PFN_XShapeCombineMask = void(*)(Display*, XID, i32, i32, i32, Pixmap, i32);
 
 		//XLib
 		using PFN_XAllocClassHint = XClassHint*(*)();
 		using PFN_XAllocSizeHints = XSizeHints*(*)();
 		using PFN_XAllocWMHints = XWMHints*(*)();
-		using PFN_XChangeProperty = int(*)(Display*, ::Window, Atom, Atom, int, int, const unsigned char*, int);
-		using PFN_XChangeWindowAttributes = int(*)(Display*, ::Window, unsigned long, XSetWindowAttributes*);
-		using PFN_XCheckIfEvent = int(*)(Display*, XEvent*, int(*)(Display*, XEvent*, XPointer), XPointer);
-		using PFN_XCheckTypedWindowEvent = int(*)(Display*, ::Window, int, XEvent*);
-		using PFN_XCloseDisplay = int(*)(Display*);
-		using PFN_XCloseIM = int32_t(*)(XIM);
-		using PFN_XConvertSelection = int(*)(Display*, Atom, Atom, Atom, ::Window, Time);
-		using PFN_XCreateColormap = Colormap(*)(Display*, ::Window, Visual*, int);
-		using PFN_XCreateFontCursor = Cursor(*)(Display*, unsigned int);
+		using PFN_XChangeProperty = i32(*)(Display*, ::Window, Atom, Atom, i32, i32, const unsigned char*, i32);
+		using PFN_XChangeWindowAttributes = i32(*)(Display*, ::Window, u64, XSetWindowAttributes*);
+		using PFN_XCheckIfEvent = i32(*)(Display*, XEvent*, i32(*)(Display*, XEvent*, XPointer), XPointer);
+		using PFN_XCheckTypedWindowEvent = i32(*)(Display*, ::Window, i32, XEvent*);
+		using PFN_XCloseDisplay = i32(*)(Display*);
+		using PFN_XCloseIM = i32(*)(XIM);
+		using PFN_XConvertSelection = i32(*)(Display*, Atom, Atom, Atom, ::Window, Time);
+		using PFN_XCreateColormap = Colormap(*)(Display*, ::Window, Visual*, i32);
+		using PFN_XCreateFontCursor = Cursor(*)(Display*, u32);
 		using PFN_XCreateIC = XIC(*)(XIM, ...);
-		using PFN_XCreateWindow = ::Window(*)(Display*, ::Window, int, int, unsigned int, unsigned int, unsigned int, int,
-		                                      unsigned int, Visual*, unsigned long, XSetWindowAttributes*);
-		using PFN_XDefineCursor = int(*)(Display*, ::Window, Cursor);
-		using PFN_XDeleteContext = int(*)(Display*, XID, XContext);
-		using PFN_XDeleteProperty = int(*)(Display*, ::Window, Atom);
+		using PFN_XCreateWindow = ::Window(*)(Display*, ::Window, i32, i32, u32, u32, u32, i32,
+		                                      u32, Visual*, u64, XSetWindowAttributes*);
+		using PFN_XDefineCursor = i32(*)(Display*, ::Window, Cursor);
+		using PFN_XDeleteContext = i32(*)(Display*, XID, XContext);
+		using PFN_XDeleteProperty = i32(*)(Display*, ::Window, Atom);
 		using PFN_XDestroyIC = void(*)(XIC);
-		using PFN_XDestroyWindow = int(*)(Display*, ::Window);
-		using PFN_XDisplayKeycodes = int(*)(Display*, int*, int*);
-		using PFN_XEventsQueued = int(*)(Display*, int);
-		using PFN_XFilterEvent = int(*)(XEvent*, ::Window);
-		using PFN_XFindContext = int(*)(Display*, XID, XContext, XPointer*);
-		using PFN_XFlush = int(*)(Display*);
-		using PFN_XFree = int(*)(void*);
-		using PFN_XFreeColormap = int(*)(Display*, Colormap);
-		using PFN_XFreeCursor = int(*)(Display*, Cursor);
+		using PFN_XDestroyWindow = i32(*)(Display*, ::Window);
+		using PFN_XDisplayKeycodes = i32(*)(Display*, i32*, i32*);
+		using PFN_XEventsQueued = i32(*)(Display*, i32);
+		using PFN_XFilterEvent = i32(*)(XEvent*, ::Window);
+		using PFN_XFindContext = i32(*)(Display*, XID, XContext, XPointer*);
+		using PFN_XFlush = i32(*)(Display*);
+		using PFN_XFree = i32(*)(void*);
+		using PFN_XFreeColormap = i32(*)(Display*, Colormap);
+		using PFN_XFreeCursor = i32(*)(Display*, Cursor);
 		using PFN_XFreeEventData = void(*)(Display*, XGenericEventCookie*);
 		using PFN_XGetAtomName = char*(*)(Display*, Atom);
-		using PFN_XGetErrorText = int(*)(Display*, int, char*, int);
-		using PFN_XGetEventData = int(*)(Display*, XGenericEventCookie*);
+		using PFN_XGetErrorText = i32(*)(Display*, i32, char*, i32);
+		using PFN_XGetEventData = i32(*)(Display*, XGenericEventCookie*);
 		using PFN_XGetICValues = char*(*)(XIC, ...);
 		using PFN_XGetIMValues = char*(*)(XIM, ...);
-		using PFN_XGetInputFocus = int(*)(Display*, ::Window*, int*);
-		using PFN_XGetKeyboardMapping = KeySym*(*)(Display*, KeyCode, int, int*);
-		using PFN_XGetScreenSaver = int(*)(Display*, int*, int*, int*, int*);
+		using PFN_XGetInputFocus = i32(*)(Display*, ::Window*, i32*);
+		using PFN_XGetKeyboardMapping = KeySym*(*)(Display*, KeyCode, i32, i32*);
+		using PFN_XGetScreenSaver = i32(*)(Display*, i32*, i32*, i32*, i32*);
 		using PFN_XGetSelectionOwner = ::Window(*)(Display*, Atom);
-		using PFN_XGetVisualInfo = XVisualInfo*(*)(Display*, long, XVisualInfo*, int*);
-		using PFN_XGetWMNormalHints = int32_t(*)(Display*, ::Window, XSizeHints*, long*);
-		using PFN_XGetWindowAttributes = int32_t(*)(Display*, ::Window, XWindowAttributes*);
-		using PFN_XGetWindowProperty = int(*)(Display*, ::Window, Atom, long, long, int, Atom, Atom*, int*, unsigned long*,
-		                                      unsigned long*, unsigned char**);
-		using PFN_XGrabPointer = int(*)(Display*, ::Window, int, unsigned int, int, int, ::Window, Cursor, Time);
-		using PFN_XIconifyWindow = int32_t(*)(Display*, ::Window, int);
-		using PFN_XInitThreads = int32_t(*)();
-		using PFN_XInternAtom = Atom(*)(Display*, const char*, int);
-		using PFN_XLookupString = int(*)(XKeyEvent*, char*, int, KeySym*, XComposeStatus*);
-		using PFN_XMapRaised = int(*)(Display*, ::Window);
-		using PFN_XMapWindow = int(*)(Display*, ::Window);
-		using PFN_XMoveResizeWindow = int(*)(Display*, ::Window, int, int, unsigned int, unsigned int);
-		using PFN_XMoveWindow = int(*)(Display*, ::Window, int, int);
-		using PFN_XNextEvent = int(*)(Display*, XEvent*);
+		using PFN_XGetVisualInfo = XVisualInfo*(*)(Display*, i64, XVisualInfo*, i32*);
+		using PFN_XGetWMNormalHints = i32(*)(Display*, ::Window, XSizeHints*, i64*);
+		using PFN_XGetWindowAttributes = i32(*)(Display*, ::Window, XWindowAttributes*);
+		using PFN_XGetWindowProperty = i32(*)(Display*, ::Window, Atom, i64, i64, i32, Atom, Atom*, i32*, u64*,
+		                                      u64*, unsigned char**);
+		using PFN_XGrabPointer = i32(*)(Display*, ::Window, i32, u32, i32, i32, ::Window, Cursor, Time);
+		using PFN_XIconifyWindow = i32(*)(Display*, ::Window, i32);
+		using PFN_XInitThreads = i32(*)();
+		using PFN_XInternAtom = Atom(*)(Display*, const char*, i32);
+		using PFN_XLookupString = i32(*)(XKeyEvent*, char*, i32, KeySym*, XComposeStatus*);
+		using PFN_XMapRaised = i32(*)(Display*, ::Window);
+		using PFN_XMapWindow = i32(*)(Display*, ::Window);
+		using PFN_XMoveResizeWindow = i32(*)(Display*, ::Window, i32, i32, u32, u32);
+		using PFN_XMoveWindow = i32(*)(Display*, ::Window, i32, i32);
+		using PFN_XNextEvent = i32(*)(Display*, XEvent*);
 		using PFN_XOpenDisplay = Display*(*)(const char*);
 		using PFN_XOpenIM = XIM(*)(Display*, XrmDatabase*, char*, char*);
-		using PFN_XPeekEvent = int(*)(Display*, XEvent*);
-		using PFN_XPending = int(*)(Display*);
-		using PFN_XQueryExtension = int(*)(Display*, const char*, int*, int*, int*);
-		using PFN_XQueryPointer = int(*)(Display*, ::Window, ::Window*, ::Window*, int*, int*, int*, int*, unsigned int*);
-		using PFN_XRaiseWindow = int(*)(Display*, ::Window);
-		using PFN_XRegisterIMInstantiateCallback = int(*)(Display*, void*, char*, char*, XIDProc, XPointer);
-		using PFN_XResizeWindow = int(*)(Display*, ::Window, unsigned int, unsigned int);
+		using PFN_XPeekEvent = i32(*)(Display*, XEvent*);
+		using PFN_XPending = i32(*)(Display*);
+		using PFN_XQueryExtension = i32(*)(Display*, const char*, i32*, i32*, i32*);
+		using PFN_XQueryPointer = i32(*)(Display*, ::Window, ::Window*, ::Window*, i32*, i32*, i32*, i32*, u32*);
+		using PFN_XRaiseWindow = i32(*)(Display*, ::Window);
+		using PFN_XRegisterIMInstantiateCallback = i32(*)(Display*, void*, char*, char*, XIDProc, XPointer);
+		using PFN_XResizeWindow = i32(*)(Display*, ::Window, u32, u32);
 		using PFN_XResourceManagerString = char*(*)(Display*);
-		using PFN_XSaveContext = int(*)(Display*, XID, XContext, const char*);
-		using PFN_XSelectInput = int(*)(Display*, ::Window, long);
-		using PFN_XSendEvent = int32_t(*)(Display*, ::Window, int, long, XEvent*);
-		using PFN_XSetClassHint = int(*)(Display*, ::Window, XClassHint*);
+		using PFN_XSaveContext = i32(*)(Display*, XID, XContext, const char*);
+		using PFN_XSelectInput = i32(*)(Display*, ::Window, i64);
+		using PFN_XSendEvent = i32(*)(Display*, ::Window, i32, i64, XEvent*);
+		using PFN_XSetClassHint = i32(*)(Display*, ::Window, XClassHint*);
 		using PFN_XSetErrorHandler = XErrorHandler(*)(XErrorHandler);
 		using PFN_XSetICFocus = void(*)(XIC);
 		using PFN_XSetIMValues = char*(*)(XIM, ...);
-		using PFN_XSetInputFocus = int(*)(Display*, ::Window, int, Time);
+		using PFN_XSetInputFocus = i32(*)(Display*, ::Window, i32, Time);
 		using PFN_XSetLocaleModifiers = char*(*)(const char*);
-		using PFN_XSetScreenSaver = int(*)(Display*, int, int, int, int);
-		using PFN_XSetSelectionOwner = int(*)(Display*, Atom, ::Window, Time);
-		using PFN_XSetWMHints = int(*)(Display*, ::Window, XWMHints*);
+		using PFN_XSetScreenSaver = i32(*)(Display*, i32, i32, i32, i32);
+		using PFN_XSetSelectionOwner = i32(*)(Display*, Atom, ::Window, Time);
+		using PFN_XSetWMHints = i32(*)(Display*, ::Window, XWMHints*);
 		using PFN_XSetWMNormalHints = void(*)(Display*, ::Window, XSizeHints*);
-		using PFN_XSetWMProtocols = int32_t(*)(Display*, ::Window, Atom*, int);
-		using PFN_XSupportsLocale = int(*)();
-		using PFN_XSync = int(*)(Display*, int);
-		using PFN_XTranslateCoordinates = int(*)(Display*, ::Window, ::Window, int, int, int*, int*, ::Window*);
-		using PFN_XUndefineCursor = int(*)(Display*, ::Window);
-		using PFN_XUngrabPointer = int(*)(Display*, Time);
-		using PFN_XUnmapWindow = int(*)(Display*, ::Window);
+		using PFN_XSetWMProtocols = i32(*)(Display*, ::Window, Atom*, i32);
+		using PFN_XSupportsLocale = i32(*)();
+		using PFN_XSync = i32(*)(Display*, i32);
+		using PFN_XTranslateCoordinates = i32(*)(Display*, ::Window, ::Window, i32, i32, i32*, i32*, ::Window*);
+		using PFN_XUndefineCursor = i32(*)(Display*, ::Window);
+		using PFN_XUngrabPointer = i32(*)(Display*, Time);
+		using PFN_XUnmapWindow = i32(*)(Display*, ::Window);
 		using PFN_XUnsetICFocus = void(*)(XIC);
 		using PFN_XVisualIDFromVisual = VisualID(*)(Visual*);
-		using PFN_XWarpPointer = int(*)(Display*, ::Window, ::Window, int, int, unsigned int, unsigned int, int, int);
+		using PFN_XWarpPointer = i32(*)(Display*, ::Window, ::Window, i32, i32, u32, u32, i32, i32);
 		using PFN_XCreateRegion = Region(*)();
-		using PFN_XDestroyRegion = int32_t(*)(Region);
+		using PFN_XDestroyRegion = i32(*)(Region);
 
 		//XKB
 		using PFN_XkbAllocKeyboard = XkbDescPtr(*)();
-		using PFN_XkbFreeKeyboard = void(*)(XkbDescPtr, unsigned int, int);
-		using PFN_XkbFreeNames = void(*)(XkbDescPtr, unsigned int, int);
-		using PFN_XkbGetMap = XkbDescPtr(*)(Display*, unsigned int, unsigned int);
-		using PFN_XkbGetNames = int32_t(*)(Display*, unsigned int, XkbDescPtr);
-		using PFN_XkbGetState = int32_t(*)(Display*, unsigned int, XkbStatePtr);
-		using PFN_XkbKeycodeToKeysym = KeySym(*)(Display*, KeyCode, int, int);
-		using PFN_XkbQueryExtension = int(*)(Display*, int*, int*, int*, int*, int*);
-		using PFN_XkbSelectEventDetails = int(*)(Display*, unsigned int, unsigned int, unsigned long, unsigned long);
-		using PFN_XkbSetDetectableAutoRepeat = int(*)(Display*, int, int*);
-		using PFN_Xutf8LookupString = int(*)(XIC, XKeyPressedEvent*, char*, int, KeySym*, int32_t*);
-		using PFN_Xutf8SetWMProperties = void(*)(Display*, ::Window, const char*, const char*, char**, int, XSizeHints*,
+		using PFN_XkbFreeKeyboard = void(*)(XkbDescPtr, u32, i32);
+		using PFN_XkbFreeNames = void(*)(XkbDescPtr, u32, i32);
+		using PFN_XkbGetMap = XkbDescPtr(*)(Display*, u32, u32);
+		using PFN_XkbGetNames = i32(*)(Display*, u32, XkbDescPtr);
+		using PFN_XkbGetState = i32(*)(Display*, u32, XkbStatePtr);
+		using PFN_XkbKeycodeToKeysym = KeySym(*)(Display*, KeyCode, i32, i32);
+		using PFN_XkbQueryExtension = i32(*)(Display*, i32*, i32*, i32*, i32*, i32*);
+		using PFN_XkbSelectEventDetails = i32(*)(Display*, u32, u32, u64, u64);
+		using PFN_XkbSetDetectableAutoRepeat = i32(*)(Display*, i32, i32*);
+		using PFN_Xutf8LookupString = i32(*)(XIC, XKeyPressedEvent*, char*, i32, KeySym*, i32*);
+		using PFN_Xutf8SetWMProperties = void(*)(Display*, ::Window, const char*, const char*, char**, i32, XSizeHints*,
 		                                         XWMHints*, XClassHint*);
 
 		//XRM
 		using PFN_XrmDestroyDatabase = void(*)(XrmDatabase);
-		using PFN_XrmGetResource = int(*)(XrmDatabase, const char*, const char*, char**, XrmValue*);
+		using PFN_XrmGetResource = i32(*)(XrmDatabase, const char*, const char*, char**, XrmValue*);
 		using PFN_XrmGetStringDatabase = XrmDatabase(*)(const char*);
 		using PFN_XrmInitialize = void(*)();
 		using PFN_XrmUniqueQuark = XrmQuark(*)();
-		using PFN_XUnregisterIMInstantiateCallback = int(*)(Display*, void*, char*, char*, XIDProc, XPointer);
+		using PFN_XUnregisterIMInstantiateCallback = i32(*)(Display*, void*, char*, char*, XIDProc, XPointer);
 
 		//DBus
 		using PFN_DBusErrorInit = void(*)(DBusError*);
@@ -471,13 +471,13 @@ namespace TRAP::INTERNAL
 		using PFN_DBusConnectionUnref = void(*)(DBusConnection*);
 		using PFN_DBusConnectionSend = dbus_bool_t(*)(DBusConnection*, DBusMessage*, dbus_uint32_t*);
 		using PFN_DBusConnectionFlush = void(*)(DBusConnection*);
-		using PFN_DBusBusRequestName = int32_t(*)(DBusConnection*, const char*, uint32_t, DBusError*);
+		using PFN_DBusBusRequestName = i32(*)(DBusConnection*, const char*, u32, DBusError*);
 		using PFN_DBusBusGet = DBusConnection*(*)(DBusBusType, DBusError*);
 		using PFN_DBusMessageUnref = void(*)(DBusMessage*);
 		using PFN_DBusMessageNewSignal = DBusMessage*(*)(const char*, const char*, const char*);
 		using PFN_DBusMessageIterInitAppend = void(*)(DBusMessage*, DBusMessageIter*);
-		using PFN_DBusMessageIterAppendBasic = dbus_bool_t(*)(DBusMessageIter*, int32_t, const void*);
-		using PFN_DBusMessageIterOpenContainer = dbus_bool_t(*)(DBusMessageIter*, int32_t, const char*, DBusMessageIter*);
+		using PFN_DBusMessageIterAppendBasic = dbus_bool_t(*)(DBusMessageIter*, i32, const void*);
+		using PFN_DBusMessageIterOpenContainer = dbus_bool_t(*)(DBusMessageIter*, i32, const char*, DBusMessageIter*);
 		using PFN_DBusMessageIterCloseContainer = dbus_bool_t(*)(DBusMessageIter*, DBusMessageIter*);
 
 		//--------------//
@@ -485,31 +485,31 @@ namespace TRAP::INTERNAL
 		//--------------//
 
 		//Display
-		using PFN_wl_display_flush = int(*)(wl_display*);
+		using PFN_wl_display_flush = i32(*)(wl_display*);
 		using PFN_wl_display_cancel_read = void(*)(wl_display*);
-		using PFN_wl_display_dispatch_pending = int(*)(wl_display*);
-		using PFN_wl_display_read_events = int(*)(wl_display*);
+		using PFN_wl_display_dispatch_pending = i32(*)(wl_display*);
+		using PFN_wl_display_read_events = i32(*)(wl_display*);
 		using PFN_wl_display_connect = wl_display*(*)(const char*);
 		using PFN_wl_display_disconnect = void(*)(wl_display*);
-		using PFN_wl_display_roundtrip = int(*)(wl_display*);
-		using PFN_wl_display_get_fd = int(*)(wl_display*);
-		using PFN_wl_display_prepare_read = int(*)(wl_display*);
+		using PFN_wl_display_roundtrip = i32(*)(wl_display*);
+		using PFN_wl_display_get_fd = i32(*)(wl_display*);
+		using PFN_wl_display_prepare_read = i32(*)(wl_display*);
 
 		//Proxy
-		using PFN_wl_proxy_marshal = void(*)(wl_proxy*, uint32_t, ...);
-		using PFN_wl_proxy_add_listener = int(*)(wl_proxy*, void(**)(void), void*);
+		using PFN_wl_proxy_marshal = void(*)(wl_proxy*, u32, ...);
+		using PFN_wl_proxy_add_listener = i32(*)(wl_proxy*, void(**)(void), void*);
 		using PFN_wl_proxy_destroy = void(*)(wl_proxy*);
-		using PFN_wl_proxy_marshal_constructor = wl_proxy*(*)(wl_proxy*, uint32_t, const wl_interface*, ...);
-		using PFN_wl_proxy_marshal_constructor_versioned = wl_proxy*(*)(wl_proxy*, uint32_t, const wl_interface*, uint32_t, ...);
+		using PFN_wl_proxy_marshal_constructor = wl_proxy*(*)(wl_proxy*, u32, const wl_interface*, ...);
+		using PFN_wl_proxy_marshal_constructor_versioned = wl_proxy*(*)(wl_proxy*, u32, const wl_interface*, u32, ...);
 		using PFN_wl_proxy_get_user_data = void*(*)(wl_proxy*);
 		using PFN_wl_proxy_set_user_data = void(*)(wl_proxy*, void*);
 		using PFN_wl_proxy_set_tag = void(*)(wl_proxy*, const char* const*);
 		using PFN_wl_proxy_get_tag = const char* const*(*)(wl_proxy*);
-		using PFN_wl_proxy_get_version = uint32_t(*)(wl_proxy*);
-		using PFN_wl_proxy_marshal_flags = wl_proxy*(*)(wl_proxy*, uint32_t, const wl_interface*, uint32_t, uint32_t, ...);
+		using PFN_wl_proxy_get_version = u32(*)(wl_proxy*);
+		using PFN_wl_proxy_marshal_flags = wl_proxy*(*)(wl_proxy*, u32, const wl_interface*, u32, u32, ...);
 
 		//Cursor
-		using PFN_wl_cursor_theme_load = wl_cursor_theme*(*)(const char*, int, wl_shm*);
+		using PFN_wl_cursor_theme_load = wl_cursor_theme*(*)(const char*, i32, wl_shm*);
 		using PFN_wl_cursor_theme_destroy = void(*)(wl_cursor_theme*);
 		using PFN_wl_cursor_theme_get_cursor = wl_cursor*(*)(wl_cursor_theme*, const char*);
 		using PFN_wl_cursor_image_get_buffer = wl_buffer*(*)(wl_cursor_image*);
@@ -520,15 +520,15 @@ namespace TRAP::INTERNAL
 		using PFN_xkb_keymap_new_from_string = xkb_keymap*(*)(xkb_context*, const char*, xkb_keymap_format, xkb_keymap_compile_flags);
 		using PFN_xkb_keymap_unref = void(*)(xkb_keymap*);
 		using PFN_xkb_keymap_mod_get_index = xkb_mod_index_t(*)(xkb_keymap*, const char*);
-		using PFN_xkb_keymap_key_repeats = int(*)(xkb_keymap*, xkb_keycode_t);
-		using PFN_xkb_keymap_key_get_syms_by_level = int(*)(xkb_keymap*, xkb_keycode_t, xkb_layout_index_t, xkb_level_index_t, const xkb_keysym_t**);
+		using PFN_xkb_keymap_key_repeats = i32(*)(xkb_keymap*, xkb_keycode_t);
+		using PFN_xkb_keymap_key_get_syms_by_level = i32(*)(xkb_keymap*, xkb_keycode_t, xkb_layout_index_t, xkb_level_index_t, const xkb_keysym_t**);
 		using PFN_xkb_state_new = xkb_state*(*)(xkb_keymap*);
 		using PFN_xkb_state_unref = void(*)(xkb_state*);
-		using PFN_xkb_state_key_get_syms = int(*)(xkb_state*, xkb_keycode_t, const xkb_keysym_t**);
+		using PFN_xkb_state_key_get_syms = i32(*)(xkb_state*, xkb_keycode_t, const xkb_keysym_t**);
 		using PFN_xkb_state_update_mask = xkb_state_component(*)(xkb_state*, xkb_mod_mask_t, xkb_mod_mask_t, xkb_mod_mask_t, xkb_layout_index_t, xkb_layout_index_t, xkb_layout_index_t);
 		using PFN_xkb_keymap_layout_get_name = const char*(*)(xkb_keymap*, xkb_layout_index_t);
 		using PFN_xkb_state_key_get_layout = xkb_layout_index_t(*)(xkb_state*, xkb_keycode_t);
-		using PFN_xkb_state_mod_index_is_active = int(*)(xkb_state*, xkb_mod_index_t, xkb_state_component);
+		using PFN_xkb_state_mod_index_is_active = i32(*)(xkb_state*, xkb_mod_index_t, xkb_state_component);
 
 		//XKB Compose
 		using PFN_xkb_compose_table_new_from_locale = xkb_compose_table*(*)(xkb_context*, const char*, xkb_compose_compile_flags);
@@ -542,8 +542,8 @@ namespace TRAP::INTERNAL
 		//LibDecor
 		using PFN_libdecor_new = libdecor*(*)(wl_display*, const libdecor_interface*);
 		using PFN_libdecor_unref = void(*)(libdecor*);
-		using PFN_libdecor_get_fd = int32_t(*)(libdecor*);
-		using PFN_libdecor_dispatch = int32_t(*)(libdecor*, int32_t);
+		using PFN_libdecor_get_fd = i32(*)(libdecor*);
+		using PFN_libdecor_dispatch = i32(*)(libdecor*, i32);
 		using PFN_libdecor_decorate = libdecor_frame*(*)(libdecor*, wl_surface*, const libdecor_frame_interface*, void*);
 		using PFN_libdecor_frame_unref = void(*)(libdecor_frame*);
 		using PFN_libdecor_frame_set_app_id = void(*)(libdecor_frame*, const char*);
@@ -553,17 +553,17 @@ namespace TRAP::INTERNAL
 		using PFN_libdecor_frame_unset_fullscreen = void(*)(libdecor_frame*);
 		using PFN_libdecor_frame_map = void(*)(libdecor_frame*);
 		using PFN_libdecor_frame_commit = void(*)(libdecor_frame*, libdecor_state*, libdecor_configuration*);
-		using PFN_libdecor_frame_set_min_content_size = void(*)(libdecor_frame*, int32_t, int32_t);
-		using PFN_libdecor_frame_set_max_content_size = void(*)(libdecor_frame*, int32_t, int32_t);
+		using PFN_libdecor_frame_set_min_content_size = void(*)(libdecor_frame*, i32, i32);
+		using PFN_libdecor_frame_set_max_content_size = void(*)(libdecor_frame*, i32, i32);
 		using PFN_libdecor_frame_set_maximized = void(*)(libdecor_frame*);
 		using PFN_libdecor_frame_unset_maximized = void(*)(libdecor_frame*);
 		using PFN_libdecor_frame_set_capabilities = void(*)(libdecor_frame*, libdecor_capabilities);
 		using PFN_libdecor_frame_unset_capabilities = void(*)(libdecor_frame*, libdecor_capabilities);
 		using PFN_libdecor_frame_set_visibility = void(*)(libdecor_frame*, bool visible);
 		using PFN_libdecor_frame_get_xdg_toplevel = xdg_toplevel*(*)(libdecor_frame*);
-		using PFN_libdecor_configuration_get_content_size = bool(*)(libdecor_configuration*, libdecor_frame*, int32_t*, int32_t*);
+		using PFN_libdecor_configuration_get_content_size = bool(*)(libdecor_configuration*, libdecor_frame*, i32*, i32*);
 		using PFN_libdecor_configuration_get_window_state = bool(*)(libdecor_configuration*, libdecor_window_state*);
-		using PFN_libdecor_state_new = libdecor_state*(*)(int32_t, int32_t);
+		using PFN_libdecor_state_new = libdecor_state*(*)(i32, i32);
 		using PFN_libdecor_state_free = void(*)(libdecor_state*);
 #endif
 		//-------------------------------------------------------------------------------------------------------------------//
@@ -624,7 +624,7 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Cursor types that can be used.
 		/// </summary>
-		enum class CursorType : uint32_t
+		enum class CursorType : u32
 		{
 			Arrow = 0, //Regular arrow cursor shape.
 			Input = 1, //Text input I-beasm cursor shape.
@@ -697,7 +697,7 @@ namespace TRAP::INTERNAL
 			InvalidFrameConfiguration,
 		};
 
-		enum class libdecor_window_state : uint32_t
+		enum class libdecor_window_state : u32
 		{
 			None = 0,
 			Active = BIT(0u),
@@ -730,29 +730,29 @@ namespace TRAP::INTERNAL
 	#endif /*DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2*/
 		//HACK: Define macros that some windows.h variants don't
 	#ifndef WM_COPYGLOBALDATA
-		inline static constexpr uint32_t WM_COPYGLOBALDATA = 0x0049;
+		inline static constexpr u32 WM_COPYGLOBALDATA = 0x0049;
 	#endif /*WM_COPYGLOBALDATA*/
 #endif /*TRAP_PLATFORM_WINDOWS*/
 #ifdef TRAP_PLATFORM_LINUX
-		inline static constexpr uint32_t DBUS_NAME_FLAG_REPLACE_EXISTING = 0x2;
-		inline static constexpr uint32_t DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER = 1;
-		inline static constexpr int32_t DBUS_TYPE_STRING = NumericCast<int32_t>('s');
-		inline static constexpr int32_t DBUS_TYPE_ARRAY = NumericCast<int32_t>('a');
-		inline static constexpr int32_t DBUS_TYPE_DICT_ENTRY = NumericCast<int32_t>('e');
-		inline static constexpr int32_t DBUS_TYPE_VARIANT = NumericCast<int32_t>('v');
-		inline static constexpr int32_t DBUS_TYPE_BOOLEAN = NumericCast<int32_t>('b');
-		inline static constexpr int32_t DBUS_TYPE_DOUBLE = NumericCast<int32_t>('d');
-		inline static constexpr int32_t DBUS_TYPE_INT16 = NumericCast<int32_t>('n');
-		inline static constexpr int32_t DBUS_TYPE_UINT16 = NumericCast<int32_t>('q');
-		inline static constexpr int32_t DBUS_TYPE_INT32 = NumericCast<int32_t>('i');
-		inline static constexpr int32_t DBUS_TYPE_UINT32 = NumericCast<int32_t>('u');
-		inline static constexpr int32_t DBUS_TYPE_INT64 = NumericCast<int32_t>('x');
-		inline static constexpr int32_t DBUS_TYPE_UINT64 = NumericCast<int32_t>('t');
-		inline static constexpr int32_t DBUS_TYPE_STRUCT_OPEN = NumericCast<int32_t>('(');
-		inline static constexpr int32_t DBUS_TYPE_STRUCT_CLOSE = NumericCast<int32_t>(')');
-		inline static constexpr int32_t DBUS_TYPE_BYTE = NumericCast<int32_t>('y');
-		inline static constexpr int32_t DBUS_TYPE_OBJECT_PATH = NumericCast<int32_t>('o');
-		inline static constexpr int32_t DBUS_TYPE_SIGNATURE = NumericCast<int32_t>('g');
+		inline static constexpr u32 DBUS_NAME_FLAG_REPLACE_EXISTING = 0x2;
+		inline static constexpr u32 DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER = 1;
+		inline static constexpr i32 DBUS_TYPE_STRING = NumericCast<i32>('s');
+		inline static constexpr i32 DBUS_TYPE_ARRAY = NumericCast<i32>('a');
+		inline static constexpr i32 DBUS_TYPE_DICT_ENTRY = NumericCast<i32>('e');
+		inline static constexpr i32 DBUS_TYPE_VARIANT = NumericCast<i32>('v');
+		inline static constexpr i32 DBUS_TYPE_BOOLEAN = NumericCast<i32>('b');
+		inline static constexpr i32 DBUS_TYPE_DOUBLE = NumericCast<i32>('d');
+		inline static constexpr i32 DBUS_TYPE_INT16 = NumericCast<i32>('n');
+		inline static constexpr i32 DBUS_TYPE_UINT16 = NumericCast<i32>('q');
+		inline static constexpr i32 DBUS_TYPE_INT32 = NumericCast<i32>('i');
+		inline static constexpr i32 DBUS_TYPE_UINT32 = NumericCast<i32>('u');
+		inline static constexpr i32 DBUS_TYPE_INT64 = NumericCast<i32>('x');
+		inline static constexpr i32 DBUS_TYPE_UINT64 = NumericCast<i32>('t');
+		inline static constexpr i32 DBUS_TYPE_STRUCT_OPEN = NumericCast<i32>('(');
+		inline static constexpr i32 DBUS_TYPE_STRUCT_CLOSE = NumericCast<i32>(')');
+		inline static constexpr i32 DBUS_TYPE_BYTE = NumericCast<i32>('y');
+		inline static constexpr i32 DBUS_TYPE_OBJECT_PATH = NumericCast<i32>('o');
+		inline static constexpr i32 DBUS_TYPE_SIGNATURE = NumericCast<i32>('g');
 #endif /*TRAP_PLATFORM_LINUX*/
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Structs------------------------------------------------------------------------------------------------------------//
@@ -771,11 +771,11 @@ namespace TRAP::INTERNAL
 		{
 			const char* name;
 			const char* message;
-			uint32_t dummy1 : 1;
-			uint32_t dummy2 : 1;
-			uint32_t dummy3 : 1;
-			uint32_t dummy4 : 1;
-			uint32_t dummy5 : 1;
+			u32 dummy1 : 1;
+			u32 dummy2 : 1;
+			u32 dummy3 : 1;
+			u32 dummy4 : 1;
+			u32 dummy5 : 1;
 			void* padding1;
 		};
 
@@ -784,8 +784,8 @@ namespace TRAP::INTERNAL
 			void* dummy1;
 			void* dummy2;
 			dbus_uint32_t dummy3;
-			int32_t dummy4, dummy5, dummy6, dummy7, dummy8, dummy9, dummy10, dummy11;
-			int32_t pad1;
+			i32 dummy4, dummy5, dummy6, dummy7, dummy8, dummy9, dummy10, dummy11;
+			i32 pad1;
 			void* pad2;
 			void* pad3;
 		};
@@ -852,16 +852,16 @@ namespace TRAP::INTERNAL
 
 		struct wl_cursor_image
 		{
-			uint32_t width;
-			uint32_t height;
-			uint32_t hotspot_x;
-			uint32_t hotspot_y;
-			uint32_t delay;
+			u32 width;
+			u32 height;
+			u32 hotspot_x;
+			u32 hotspot_y;
+			u32 delay;
 		};
 
 		struct wl_cursor
 		{
-			uint32_t image_count;
+			u32 image_count;
 			wl_cursor_image** images;
 			char* name;
 		};
@@ -892,7 +892,7 @@ namespace TRAP::INTERNAL
 		struct TRAPScaleWayland
 		{
 			wl_output* output = nullptr;
-			int32_t factor = 1;
+			i32 factor = 1;
 		};
 #endif
 
@@ -901,8 +901,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		struct WindowConfig
 		{
-			uint32_t Width = 0;
-			uint32_t Height = 0;
+			u32 Width = 0;
+			u32 Height = 0;
 			std::string Title{};
 			bool Resizable = false;
 			bool Visible = false;
@@ -958,12 +958,12 @@ namespace TRAP::INTERNAL
 
 			std::string ClipboardString{};
 			std::array<std::string, std::to_underlying(Input::Key::Menu) + 1> KeyNames{};
-			std::array<int16_t, std::to_underlying(Input::Key::Menu) + 1> ScanCodes{};
+			std::array<i16, std::to_underlying(Input::Key::Menu) + 1> ScanCodes{};
 			//Where to place the cursor when re-enabled
-			double RestoreCursorPosX = 0.0, RestoreCursorPosY = 0.0;
+			f64 RestoreCursorPosX = 0.0, RestoreCursorPosY = 0.0;
 			//The window whose disabled cursor mode is active
 			InternalWindow* DisabledCursorWindow = nullptr;
-			std::array<int, 2> EmptyEventPipe{};
+			std::array<i32, 2> EmptyEventPipe{};
 			//The window the cursor is captured in
 			InternalWindow* CapturedCursorWindow = nullptr;
 
@@ -974,9 +974,9 @@ namespace TRAP::INTERNAL
 			ATOM HelperWindowClass{};
 			ATOM MainWindowClass{};
 			HDEVNOTIFY DeviceNotificationHandle = nullptr;
-			int32_t AcquiredMonitorCount = 0;
+			i32 AcquiredMonitorCount = 0;
 			std::vector<RAWINPUT> RawInput{};
-			int32_t RawInputSize = 0;
+			i32 RawInputSize = 0;
 			UINT MouseTrailSize = 0;
 			LPVOID MessageFiber;
 			LPVOID MainFiber;
@@ -1029,11 +1029,11 @@ namespace TRAP::INTERNAL
 			struct x11
 			{
 				Display* display = nullptr;
-				int32_t Screen = 0;
+				i32 Screen = 0;
 				::Window Root{};
 
 				//System content scale
-				float ContentScaleX = 0, ContentScaleY = 0;
+				f32 ContentScaleX = 0, ContentScaleY = 0;
 				//Helper window for IPC
 				::Window HelperWindowHandle{};
 				//Invisible cursor for hidden cursor mode
@@ -1045,7 +1045,7 @@ namespace TRAP::INTERNAL
 				//The previous X error handler, to be restored later
 				XErrorHandler PrevErrorHandler{};
 				//Most recent error code received by X error handler
-				int32_t ErrorCode = 0;
+				i32 ErrorCode = 0;
 				//Primary selection string (while the primary selection is owned)
 				std::string PrimarySelectionString{};
 
@@ -1107,10 +1107,10 @@ namespace TRAP::INTERNAL
 				{
 					bool Available = false;
 					void* Handle = nullptr;
-					int32_t Major = 0;
-					int32_t Minor = 0;
-					int32_t EventBase = 0;
-					int32_t ErrorBase = 0;
+					i32 Major = 0;
+					i32 Minor = 0;
+					i32 EventBase = 0;
+					i32 ErrorBase = 0;
 					PFN_XShapeQueryExtension QueryExtension;
 					PFN_XShapeCombineRegion CombineRegion;
 					PFN_XShapeCombineMask CombineMask;
@@ -1122,10 +1122,10 @@ namespace TRAP::INTERNAL
 					bool Available = false;
 					void* Handle = nullptr;
 					bool MonitorBroken = false;
-					int32_t EventBase = 0;
-					int32_t ErrorBase = 0;
-					int32_t Major = 0;
-					int32_t Minor = 0;
+					i32 EventBase = 0;
+					i32 ErrorBase = 0;
+					i32 Major = 0;
+					i32 Minor = 0;
 					PFN_XRRFreeCrtcInfo FreeCrtcInfo{};
 					PFN_XRRFreeOutputInfo FreeOutputInfo{};
 					PFN_XRRFreeScreenResources FreeScreenResources{};
@@ -1144,12 +1144,12 @@ namespace TRAP::INTERNAL
 				{
 					bool Available = false;
 					bool Detectable = false;
-					int32_t MajorOPCode = 0;
-					int32_t EventBase = 0;
-					int32_t ErrorBase = 0;
-					int32_t Major = 0;
-					int32_t Minor = 0;
-					uint32_t Group = 0;
+					i32 MajorOPCode = 0;
+					i32 EventBase = 0;
+					i32 ErrorBase = 0;
+					i32 Major = 0;
+					i32 Minor = 0;
+					u32 Group = 0;
 					PFN_XkbAllocKeyboard AllocKeyboard{};
 					PFN_XkbFreeKeyboard FreeKeyboard{};
 					PFN_XkbFreeNames FreeNames{};
@@ -1164,16 +1164,16 @@ namespace TRAP::INTERNAL
 
 				struct SAVER
 				{
-					int32_t Count = 0;
-					int32_t Timeout = 0;
-					int32_t Interval = 0;
-					int32_t Blanking = 0;
-					int32_t Exposure = 0;
+					i32 Count = 0;
+					i32 Timeout = 0;
+					i32 Interval = 0;
+					i32 Blanking = 0;
+					i32 Exposure = 0;
 				} Saver{};
 
 				struct xdnd
 				{
-					int32_t Version = 0;
+					i32 Version = 0;
 					::Window Source{};
 					Atom Format{};
 				} XDND{};
@@ -1193,8 +1193,8 @@ namespace TRAP::INTERNAL
 				{
 					bool Available = false;
 					void* Handle = nullptr;
-					int32_t Major = 0;
-					int32_t Minor = 0;
+					i32 Major = 0;
+					i32 Minor = 0;
 					PFN_XineramaIsActive IsActive{};
 					PFN_XineramaQueryExtension QueryExtension{};
 					PFN_XineramaQueryScreens QueryScreens{};
@@ -1210,11 +1210,11 @@ namespace TRAP::INTERNAL
 				{
 					bool Available = false;
 					void* Handle = nullptr;
-					int32_t MajorOPCode = 0;
-					int32_t EventBase = 0;
-					int32_t ErrorBase = 0;
-					int32_t Major = 0;
-					int32_t Minor = 0;
+					i32 MajorOPCode = 0;
+					i32 EventBase = 0;
+					i32 ErrorBase = 0;
+					i32 Major = 0;
+					i32 Minor = 0;
 					PFN_XIQueryVersion QueryVersion{};
 					PFN_XISelectEvents SelectEvents{};
 				} XI{};
@@ -1223,10 +1223,10 @@ namespace TRAP::INTERNAL
 				{
 					bool Available = false;
 					void* Handle = nullptr;
-					int32_t Major = 0;
-					int32_t Minor = 0;
-					int32_t EventBase = 0;
-					int32_t ErrorBase = 0;
+					i32 Major = 0;
+					i32 Minor = 0;
+					i32 EventBase = 0;
+					i32 ErrorBase = 0;
 					PFN_XRenderQueryExtension QueryExtension{};
 					PFN_XRenderQueryVersion QueryVersion{};
 					PFN_XRenderFindVisualFormat FindVisualFormat{};
@@ -1368,7 +1368,7 @@ namespace TRAP::INTERNAL
 
 				wl_data_offer* DragOffer;
 				InternalWindow* DragFocus;
-				uint32_t DragSerial;
+				u32 DragSerial;
 
 				std::string Tag;
 				const char* TagCStr;
@@ -1377,14 +1377,14 @@ namespace TRAP::INTERNAL
 				wl_cursor_theme* CursorThemeHiDPI;
 				wl_surface* CursorSurface;
 				std::string CursorPreviousName;
-				int32_t CursorTimerFD;
-				uint32_t Serial;
-				uint32_t PointerEnterSerial;
+				i32 CursorTimerFD;
+				u32 Serial;
+				u32 PointerEnterSerial;
 
-				int32_t KeyRepeatTimerFD;
-				int32_t KeyRepeatRate;
-				int32_t KeyRepeatDelay;
-				int32_t KeyRepeatScancode;
+				i32 KeyRepeatTimerFD;
+				i32 KeyRepeatRate;
+				i32 KeyRepeatDelay;
+				i32 KeyRepeatScancode;
 
 				struct
 				{
@@ -1401,7 +1401,7 @@ namespace TRAP::INTERNAL
 					xkb_mod_index_t SuperIndex;
 					xkb_mod_index_t CapsLockIndex;
 					xkb_mod_index_t NumLockIndex;
-					uint32_t Modifiers;
+					u32 Modifiers;
 					xkb_layout_index_t Group;
 
 					PFN_xkb_context_new ContextNew;
@@ -1536,17 +1536,17 @@ namespace TRAP::INTERNAL
 		struct InternalVideoMode
 		{
 			//The width, in screen coordinates, of the video mode.
-			int32_t Width = 0;
+			i32 Width = 0;
 			//The height, in screen coordinates, of the video mode.
-			int32_t Height = 0;
+			i32 Height = 0;
 			//The bit depth of the red channel of the video mode.
-			int32_t RedBits = 0;
+			i32 RedBits = 0;
 			//The bit depth of the green channel of the video mode.
-			int32_t GreenBits = 0;
+			i32 GreenBits = 0;
 			//The bit depth of the blue channel of the video mode.
-			int32_t BlueBits = 0;
+			i32 BlueBits = 0;
 			//The refresh rate, in Hz, of the video mode.
-			double RefreshRate = 0;
+			f64 RefreshRate = 0;
 
 			[[nodiscard]] constexpr auto operator<=>(const InternalVideoMode& other) const noexcept = default;
 		};
@@ -1581,16 +1581,16 @@ namespace TRAP::INTERNAL
 				RRMode OldMode = 0;
 
 				//Index of corresponding Xinerama screen, for EWMH full screen window placement
-				int32_t Index = 0;
+				i32 Index = 0;
 			} X11;
 
 			struct wayland
 			{
 				wl_output* Output;
-				uint32_t Name;
-				int32_t X;
-				int32_t Y;
-				float ContentScale;
+				u32 Name;
+				i32 X;
+				i32 Y;
+				f32 ContentScale;
 			} Wayland;
 #endif
 		};
@@ -1613,9 +1613,9 @@ namespace TRAP::INTERNAL
 				wl_cursor* CursorWL;
 				wl_cursor* CursorHiDPI;
 				wl_buffer* Buffer;
-				int32_t Width, Height;
-				int32_t XHotspot, YHotspot;
-				int32_t CurrentImage;
+				i32 Width, Height;
+				i32 XHotspot, YHotspot;
+				i32 CurrentImage;
 			} Wayland{};
 #endif
 		};
@@ -1639,15 +1639,15 @@ namespace TRAP::INTERNAL
 			InternalMonitor* Monitor = nullptr;
 			InternalCursor* Cursor = nullptr;
 
-			int32_t MinWidth = -1, MinHeight = -1;
-			int32_t MaxWidth = -1, MaxHeight = -1;
-			int32_t Numerator = -1, Denominator = -1;
+			i32 MinWidth = -1, MinHeight = -1;
+			i32 MaxWidth = -1, MaxHeight = -1;
+			i32 Numerator = -1, Denominator = -1;
 
 			CursorMode cursorMode = CursorMode::Normal;
 			std::array<TRAP::Input::KeyState, std::to_underlying(TRAP::Input::MouseButton::Eight) + 1> MouseButtons{};
 			std::array<TRAP::Input::KeyState, std::to_underlying(TRAP::Input::Key::Menu) + 1> Keys{};
 			//Virtual cursor position when cursor is disabled
-			double VirtualCursorPosX = 0.0, VirtualCursorPosY = 0.0;
+			f64 VirtualCursorPosX = 0.0, VirtualCursorPosY = 0.0;
 			bool RawMouseMotion = false;
 
 			struct
@@ -1673,9 +1673,9 @@ namespace TRAP::INTERNAL
 			bool Maximized = false;
 
 			//The last received cursor position, regardless of source
-			int32_t LastCursorPosX = 0, LastCursorPosY = 0;
+			i32 LastCursorPosX = 0, LastCursorPosY = 0;
 
-			int32_t Width = 0, Height = 0;
+			i32 Width = 0, Height = 0;
 
 #ifdef TRAP_PLATFORM_WINDOWS
 			HWND Handle = nullptr;
@@ -1708,9 +1708,9 @@ namespace TRAP::INTERNAL
 				bool OverrideRedirect = false;
 
 				//Cached position and size used to filter out duplicate events
-				int32_t XPos = 0, YPos = 0;
+				i32 XPos = 0, YPos = 0;
 				//The last position the cursor was warped to by TRAP
-				int32_t WarpCursorPosX = 0, WarpCursorPosY = 0;
+				i32 WarpCursorPosX = 0, WarpCursorPosY = 0;
 
 				//The time of the last KeyPress event per keycode, for discarding
 				//duplicate key events generated from some keys by ibus
@@ -1728,12 +1728,12 @@ namespace TRAP::INTERNAL
 				wl_surface* Surface;
 				wl_callback* Callback;
 
-				double CursorPosX, CursorPosY;
-				uint32_t PointerAxisTime = 0;
+				f64 CursorPosX, CursorPosY;
+				u32 PointerAxisTime = 0;
 
 				struct
 				{
-					int32_t Width, Height;
+					i32 Width, Height;
 					bool Maximized;
 					bool Minimized;
 					bool Activated;
@@ -1745,19 +1745,19 @@ namespace TRAP::INTERNAL
 					xdg_surface* Surface;
 					xdg_toplevel* TopLevel;
 					zxdg_toplevel_decoration_v1* Decoration;
-					uint32_t DecorationMode;
+					u32 DecorationMode;
 				} XDG;
 
 				struct
 				{
 					libdecor_frame* Frame;
-					int32_t Mode;
+					i32 Mode;
 				} LibDecor;
 
 				std::string Title;
 				std::string AppID;
 
-				float ContentScale;
+				f32 ContentScale;
 				std::vector<TRAPScaleWayland> Scales{};
 				InternalMonitor* AssociatedMonitor = nullptr;
 
@@ -1997,7 +1997,7 @@ namespace TRAP::INTERNAL
 		/// <param name="title">UTF-8 encoded title for the new window.</param>
 		/// <param name="monitor">Optional monitor to use for the new window.</param>
 		/// <returns>On success a new internal window, or nullptr if an error occurred.</returns>
-		[[nodiscard]] static InternalWindow* CreateWindow(uint32_t width, uint32_t height, std::string title,
+		[[nodiscard]] static InternalWindow* CreateWindow(u32 width, u32 height, std::string title,
 		                                                  InternalMonitor* monitor);
 		/// <summary>
 		/// This function sets the value of the close flag of the specified window. This can be used
@@ -2036,7 +2036,7 @@ namespace TRAP::INTERNAL
 		/// <param name="monitor">Internal monitor.</param>
 		/// <param name="xScale">Output variable for the X scale of the provided monitor.</param>
 		/// <param name="yScale">Output variable for the Y scale of the provided monitor.</param>
-		static void GetMonitorContentScale(const InternalMonitor& monitor, float& xScale, float& yScale);
+		static void GetMonitorContentScale(const InternalMonitor& monitor, f32& xScale, f32& yScale);
 		/// <summary>
 		/// This function destroys a cursor previously created with CreateCursor. Any remaining cursors
 		/// will be destroyed by WindowingAPI::Shutdown.
@@ -2065,7 +2065,7 @@ namespace TRAP::INTERNAL
 		/// <param name="xHotspot">Center x coordinate of the image.</param>
 		/// <param name="yHotspot">Center y coordinate of the image.</param>
 		/// <returns>On success new internal cursor, nullptr otherwise.</returns>
-		[[nodiscard]] static InternalCursor* CreateCursor(const Image& image, uint32_t xHotspot, uint32_t yHotspot);
+		[[nodiscard]] static InternalCursor* CreateCursor(const Image& image, u32 xHotspot, u32 yHotspot);
 		/// <summary>
 		/// Creates a cursor with a standard shape.
 		///
@@ -2130,7 +2130,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set the position for.</param>
 		/// <param name="xPos">X position to be set.</param>
 		/// <param name="yPos">Y position to be set.</param>
-		static void SetWindowPos(const InternalWindow& window, int32_t xPos, int32_t yPos);
+		static void SetWindowPos(const InternalWindow& window, i32 xPos, i32 yPos);
 		/// <summary>
 		/// This function retrieves the position, in screen coordinates, of the upper-left corner of the
 		/// content area of the specified window.
@@ -2146,7 +2146,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get the current position from.</param>
 		/// <param name="xPos">Output variable for the current x position of the internal window.</param>
 		/// <param name="yPos">Output variable for the current y position of the internal window.</param>
-		static void GetWindowPos(const InternalWindow& window, int32_t& xPos, int32_t& yPos);
+		static void GetWindowPos(const InternalWindow& window, i32& xPos, i32& yPos);
 		/// <summary>
 		/// This function sets the size, in screen coordinates, of the content area of the specified window.
 		///
@@ -2168,7 +2168,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set the size for.</param>
 		/// <param name="width">New width for the internal window.</param>
 		/// <param name="height">New height for the internal window.</param>
-		static void SetWindowSize(InternalWindow& window, int32_t width, int32_t height);
+		static void SetWindowSize(InternalWindow& window, i32 width, i32 height);
 		/// <summary>
 		/// This function retrieves the size, in screen coordinates, of the content area of
 		/// the specified window. If you wish to retrieve the size of the framebuffer of the window
@@ -2182,7 +2182,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get the size from.</param>
 		/// <param name="width">Output variable for the internal windows current width.</param>
 		/// <param name="height">Output variable for the internal windows current height.</param>
-		static void GetWindowSize(const InternalWindow& window, int32_t& width, int32_t& height);
+		static void GetWindowSize(const InternalWindow& window, i32& width, i32& height);
 		/// <summary>
 		/// This function retrieves the size, in pixels, of the framebuffer of the specified window.
 		/// If you wish to retrieve the size of the window in screen coordinates, see
@@ -2196,7 +2196,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get the framebuffer size from.</param>
 		/// <param name="width">Output variable for the internal windows current framebuffer width.</param>
 		/// <param name="height">Output variable for the internal windows current framebuffer height.</param>
-		static void GetFrameBufferSize(const InternalWindow& window, int32_t& width, int32_t& height);
+		static void GetFrameBufferSize(const InternalWindow& window, i32& width, i32& height);
 		/// <summary>
 		/// This function sets the opacity of the window, including any decorations.
 		///
@@ -2213,7 +2213,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to set opacity for.</param>
 		/// <param name="opacity">Opacity ranging from 0.0f-1.0f.</param>
-		static void SetWindowOpacity(const InternalWindow& window, float opacity);
+		static void SetWindowOpacity(const InternalWindow& window, f32 opacity);
 		/// <summary>
 		/// This function returns the opacity of the window, including any decorations.
 		///
@@ -2228,7 +2228,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to get the opacity from.</param>
 		/// <returns>Opacity of the given internal window on success, empty optional otherwise.</returns>
-		[[nodiscard]] static std::optional<float> GetWindowOpacity(const InternalWindow& window);
+		[[nodiscard]] static std::optional<f32> GetWindowOpacity(const InternalWindow& window);
 		/// <summary>
 		/// This function retrieves the content scale for the specified window.
 		/// The content scale is the reatio between the current DPI and the platform's
@@ -2248,7 +2248,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get the content scale from.</param>
 		/// <param name="xScale">Output variable for the internal windows content scale x.</param>
 		/// <param name="yScale">Output variable for the internal windows content scale y.</param>
-		static void GetWindowContentScale(const InternalWindow& window, float& xScale, float& yScale);
+		static void GetWindowContentScale(const InternalWindow& window, f32& xScale, f32& yScale);
 		/// <summary>
 		/// This function sets the value of a hint of the specified window.
 		///
@@ -2314,11 +2314,11 @@ namespace TRAP::INTERNAL
 		/// <param name="refreshRate">New refresh rate for the window.</param>
 		static void SetWindowMonitor(InternalWindow& window,
 		                             InternalMonitor* monitor,
-		                             int32_t xPos,
-		                             int32_t yPos,
-		                             int32_t width,
-		                             int32_t height,
-		                             double refreshRate);
+		                             i32 xPos,
+		                             i32 yPos,
+		                             i32 width,
+		                             i32 height,
+		                             f64 refreshRate);
 		/// <summary>
 		/// This function sets the monitor that the window uses for borderless full screen mode.
 		///
@@ -2718,7 +2718,7 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="timeout">Optional: Maximum amount of time, in seconds, to wait.</param>
-		static void WaitEvents(double timeout = 0.0);
+		static void WaitEvents(f64 timeout = 0.0);
 		/// <summary>
 		/// This function posts an empty event from the current thread to the event queue,
 		/// causing WaitEvents to return.
@@ -2811,7 +2811,7 @@ namespace TRAP::INTERNAL
 		/// Valid range is [0.0-1.0].
 		/// This parameter is ignored if state is ProgressState::Disabled
 		/// </param>
-		static void SetWindowProgressIndicator(const InternalWindow& window, ProgressState state, double progress);
+		static void SetWindowProgressIndicator(const InternalWindow& window, ProgressState state, f64 progress);
 		/// <summary>
 		/// This function returns the name of the specified printable key, encoded as UTF-8.
 		/// This is typically the character that key would produce without any modifier
@@ -2866,7 +2866,7 @@ namespace TRAP::INTERNAL
 		/// <param name="key">Key to get layout-specific name from.</param>
 		/// <param name="scanCode">Optional scan code to get layout-specific name from.</param>
 		/// <returns>UTF-8 encoded, layout-specific name of the given key or nullptr.</returns>
-		[[nodiscard]] static std::optional<std::string> GetKeyName(Input::Key key, int32_t scanCode);
+		[[nodiscard]] static std::optional<std::string> GetKeyName(Input::Key key, i32 scanCode);
 		/// <summary>
 		/// This function returns the last state reported for the specified key to the
 		/// specified window. The returned state is KeyState::Pressed or KeyState::Released.
@@ -2906,7 +2906,7 @@ namespace TRAP::INTERNAL
 		/// provides unconstrained cursor motion. See SetCursorMode for more information.
 		///
 		/// If the cursor mode is CursorMode::Disabled then the cursor position is unconstrained and
-		/// limited only by the minimum and maximum values of a double.
+		/// limited only by the minimum and maximum values of a f64.
 		///
 		/// Errors: Possible errors include Error::Not_Initialized and Error::Platform_Error.
 		/// Remarks:
@@ -2917,13 +2917,13 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set the cursor position for.</param>
 		/// <param name="xPos">New x position, relative to the left edge of the content area, for the cursor.</param>
 		/// <param name="yPos">New y position, relative to the top edge of the content area, for the cursor.</param>
-		static void SetCursorPos(InternalWindow& window, double xPos, double yPos);
+		static void SetCursorPos(InternalWindow& window, f64 xPos, f64 yPos);
 		/// <summary>
 		/// This function returns the position of the cursor, in screen coordinates, relative
 		/// to the upper-left corner of the content area of the specified window.
 		///
 		/// If the cursor is disabled (with CursorMode::Disabled) then the cursor position is unbounded and limited
-		/// only by the minimum and maximum values of a double.
+		/// only by the minimum and maximum values of a f64.
 		///
 		/// The coordinate can be converted to their integer equivalents with the TRAP::Math::Floor function.
 		/// Casting directly to an integer type works for positive coordinates, but fails for negative ones.
@@ -2940,7 +2940,7 @@ namespace TRAP::INTERNAL
 		/// <param name="yPos">
 		/// Output variable for the current y position, relative to the top edge of the content area, of the cursor.
 		/// </param>
-		static void GetCursorPos(const InternalWindow& window, double& xPos, double& yPos);
+		static void GetCursorPos(const InternalWindow& window, f64& xPos, f64& yPos);
 		/// <summary>
 		/// Returns the position of the monitor's viewport on the virtual screen.
 		/// This function returns the position, in screen coordinates, of the upper-left corner
@@ -2954,7 +2954,7 @@ namespace TRAP::INTERNAL
 		/// <param name="monitor">Internal monitor to query.</param>
 		/// <param name="xPos">Output variable for the x position of the monitor.</param>
 		/// <param name="yPos">Output variable for the y position of the monitor.</param>
-		static void GetMonitorPos(const InternalMonitor& monitor, int32_t& xPos, int32_t& yPos);
+		static void GetMonitorPos(const InternalMonitor& monitor, i32& xPos, i32& yPos);
 		/// <summary>
 		/// This function returns the position, in screen coordinates, of the upper-left corner
 		/// of the work area of the specified monitor along with the work area size in screen
@@ -2972,8 +2972,8 @@ namespace TRAP::INTERNAL
 		/// <param name="yPos">Output variable for the y position of the monitor.</param>
 		/// <param name="width">Output variable for the width of the monitor.</param>
 		/// <param name="height">Output variable for the height of the monitor.</param>
-		static void GetMonitorWorkArea(const InternalMonitor& monitor, int32_t& xPos, int32_t& yPos,
-		                               int32_t& width, int32_t& height);
+		static void GetMonitorWorkArea(const InternalMonitor& monitor, i32& xPos, i32& yPos,
+		                               i32& width, i32& height);
 		/// <summary>
 		/// This function makes the specified window visible if it was previously
 		/// hidden. If the window is already visible or is in full screen mode,
@@ -3112,8 +3112,8 @@ namespace TRAP::INTERNAL
 		/// <param name="minHeight">New minimum window height.</param>
 		/// <param name="maxWidth">New maximum window width.</param>
 		/// <param name="maxHeight">New maximum window height.</param>
-		static void SetWindowSizeLimits(InternalWindow& window, int32_t minWidth, int32_t minHeight,
-		                                int32_t maxWidth, int32_t maxHeight);
+		static void SetWindowSizeLimits(InternalWindow& window, i32 minWidth, i32 minHeight,
+		                                i32 maxWidth, i32 maxHeight);
 		/// <summary>
 		/// Sets the aspect ratio of the specified window.
 		///
@@ -3143,7 +3143,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set aspect ratio for.</param>
 		/// <param name="numerator">Numerator of the desired aspect ratio, or -1.</param>
 		/// <param name="denominator">Denominator of the desired aspect ratio, or -1.</param>
-		static void SetWindowAspectRatio(InternalWindow& window, int32_t numerator, int32_t denominator);
+		static void SetWindowAspectRatio(InternalWindow& window, i32 numerator, i32 denominator);
 		/// <summary>
 		/// This function sets the system clipboard to the specified, UTF-8 encoded string.
 		///
@@ -3315,9 +3315,9 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get the size from.</param>
 		/// <param name="width">Output variable for the internal windows current width.</param>
 		/// <param name="height">Output variable for the internal windows current height.</param>
-		static void PlatformGetWindowSize(const InternalWindow& window, int32_t& width, int32_t& height);
-		static void PlatformGetWindowSizeX11(const InternalWindow& window, int32_t& width, int32_t& height);
-		static constexpr void PlatformGetWindowSizeWayland(const InternalWindow& window, int32_t& width, int32_t& height);
+		static void PlatformGetWindowSize(const InternalWindow& window, i32& width, i32& height);
+		static void PlatformGetWindowSizeX11(const InternalWindow& window, i32& width, i32& height);
+		static constexpr void PlatformGetWindowSizeWayland(const InternalWindow& window, i32& width, i32& height);
 		/// <summary>
 		/// This function sets the position, in screen coordinates, of the upper-left corner of the
 		/// content area of the specifed windowed mode window. If the window is a full screen window,
@@ -3335,9 +3335,9 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set the position for.</param>
 		/// <param name="xPos">X position to be set.</param>
 		/// <param name="yPos">Y position to be set.</param>
-		static void PlatformSetWindowPos(const InternalWindow& window, int32_t xPos, int32_t yPos);
-		static void PlatformSetWindowPosX11(const InternalWindow& window, int32_t xPos, int32_t yPos);
-		static void PlatformSetWindowPosWayland(const InternalWindow& window, int32_t xPos, int32_t yPos);
+		static void PlatformSetWindowPos(const InternalWindow& window, i32 xPos, i32 yPos);
+		static void PlatformSetWindowPosX11(const InternalWindow& window, i32 xPos, i32 yPos);
+		static void PlatformSetWindowPosWayland(const InternalWindow& window, i32 xPos, i32 yPos);
 		/// <summary>
 		/// This function sets the monitor that the window uses for full screen mode or,
 		/// if the monitor is nullptr, makes it windowed mode.
@@ -3367,14 +3367,14 @@ namespace TRAP::INTERNAL
 		/// <param name="height">New height for the window.</param>
 		/// <param name="refreshRate">New refresh rate for the window.</param>
 		static void PlatformSetWindowMonitor(InternalWindow& window, InternalMonitor* monitor,
-			                                 int32_t xPos, int32_t yPos, int32_t width, int32_t height,
-											 double refreshRate);
+			                                 i32 xPos, i32 yPos, i32 width, i32 height,
+											 f64 refreshRate);
 		static void PlatformSetWindowMonitorX11(InternalWindow& window, InternalMonitor* monitor,
-			                                    int32_t xPos, int32_t yPos, int32_t width, int32_t height,
-											    double refreshRate);
+			                                    i32 xPos, i32 yPos, i32 width, i32 height,
+											    f64 refreshRate);
 		static void PlatformSetWindowMonitorWayland(InternalWindow& window, InternalMonitor* monitor,
-			                                        int32_t xPos, int32_t yPos, int32_t width, int32_t height,
-											        double refreshRate);
+			                                        i32 xPos, i32 yPos, i32 width, i32 height,
+											        f64 refreshRate);
 		/// <summary>
 		/// This function sets the monitor that the window uses for borderless full screen mode.
 		///
@@ -3475,9 +3475,9 @@ namespace TRAP::INTERNAL
 		/// <param name="monitor">Internal monitor.</param>
 		/// <param name="xScale">Output variable for the X scale of the provided monitor.</param>
 		/// <param name="yScale">Output variable for the Y scale of the provided monitor.</param>
-		static void PlatformGetMonitorContentScale(const InternalMonitor& monitor, float& xScale, float& yScale);
-		static void PlatformGetMonitorContentScaleX11(const InternalMonitor& monitor, float& xScale, float& yScale);
-		static constexpr void PlatformGetMonitorContentScaleWayland(const InternalMonitor& monitor, float& xScale, float& yScale);
+		static void PlatformGetMonitorContentScale(const InternalMonitor& monitor, f32& xScale, f32& yScale);
+		static void PlatformGetMonitorContentScaleX11(const InternalMonitor& monitor, f32& xScale, f32& yScale);
+		static constexpr void PlatformGetMonitorContentScaleWayland(const InternalMonitor& monitor, f32& xScale, f32& yScale);
 		/// <summary>
 		/// Returns the position of the monitor's viewport on the virtual screen.
 		/// This function returns the position, in screen coordinates, of the upper-left corner
@@ -3491,9 +3491,9 @@ namespace TRAP::INTERNAL
 		/// <param name="monitor">Internal monitor to query.</param>
 		/// <param name="xPos">Output variable for the x position of the monitor.</param>
 		/// <param name="yPos">Output variable for the y position of the monitor.</param>
-		static void PlatformGetMonitorPos(const InternalMonitor& monitor, int32_t& xPos, int32_t& yPos);
-		static void PlatformGetMonitorPosX11(const InternalMonitor& monitor, int32_t& xPos, int32_t& yPos);
-		static constexpr void PlatformGetMonitorPosWayland(const InternalMonitor& monitor, int32_t& xPos, int32_t& yPos);
+		static void PlatformGetMonitorPos(const InternalMonitor& monitor, i32& xPos, i32& yPos);
+		static void PlatformGetMonitorPosX11(const InternalMonitor& monitor, i32& xPos, i32& yPos);
+		static constexpr void PlatformGetMonitorPosWayland(const InternalMonitor& monitor, i32& xPos, i32& yPos);
 		/// <summary>
 		/// This function makes the specified window visible if it was previously
 		/// hidden. If the window is already visible or is in full screen mode,
@@ -3619,12 +3619,12 @@ namespace TRAP::INTERNAL
 		/// <param name="xHotspot">Center x coordinate of the image.</param>
 		/// <param name="yHotspot">Center y coordinate of the image.</param>
 		/// <returns>True if the cursor was created successfully.</returns>
-		[[nodiscard]] static bool PlatformCreateCursor(InternalCursor& cursor, const Image& image, uint32_t xHotspot,
-		                                               uint32_t yHotspot);
-		[[nodiscard]] static bool PlatformCreateCursorX11(InternalCursor& cursor, const Image& image, uint32_t xHotspot,
-		                                                  uint32_t yHotspot);
-		[[nodiscard]] static bool PlatformCreateCursorWayland(InternalCursor& cursor, const Image& image, uint32_t xHotspot,
-		                                                      uint32_t yHotspot);
+		[[nodiscard]] static bool PlatformCreateCursor(InternalCursor& cursor, const Image& image, u32 xHotspot,
+		                                               u32 yHotspot);
+		[[nodiscard]] static bool PlatformCreateCursorX11(InternalCursor& cursor, const Image& image, u32 xHotspot,
+		                                                  u32 yHotspot);
+		[[nodiscard]] static bool PlatformCreateCursorWayland(InternalCursor& cursor, const Image& image, u32 xHotspot,
+		                                                      u32 yHotspot);
 		/// <summary>
 		/// Creates a cursor with a standard shape.
 		///
@@ -3698,7 +3698,7 @@ namespace TRAP::INTERNAL
 		/// provides unconstrained cursor motion. See SetCursorMode for more information.
 		///
 		/// If the cursor mode is CursorMode::Disabled then the cursor position is unconstrained and
-		/// limited only by the minimum and maximum values of a double.
+		/// limited only by the minimum and maximum values of a f64.
 		///
 		/// Errors: Possible errors include Error::Platform_Error.
 		/// Thread safety: This function must only be called from the main thread.
@@ -3706,15 +3706,15 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set the cursor position for.</param>
 		/// <param name="xPos">New x position, relative to the left edge of the content area, for the cursor.</param>
 		/// <param name="yPos">New y position, relative to the top edge of the content area, for the cursor.</param>
-		static void PlatformSetCursorPos(InternalWindow& window, double xPos, double yPos);
-		static void PlatformSetCursorPosX11(InternalWindow& window, double xPos, double yPos);
-		static void PlatformSetCursorPosWayland(InternalWindow& window, double xPos, double yPos);
+		static void PlatformSetCursorPos(InternalWindow& window, f64 xPos, f64 yPos);
+		static void PlatformSetCursorPosX11(InternalWindow& window, f64 xPos, f64 yPos);
+		static void PlatformSetCursorPosWayland(InternalWindow& window, f64 xPos, f64 yPos);
 		/// <summary>
 		/// This function returns the position of the cursor, in screen coordinates, relative
 		/// to the upper-left corner of the content area of the specified window.
 		///
 		/// If the cursor is disabled (with CursorMode::Disabled) then the cursor position is unbounded and limited
-		/// only by the minimum and maximum values of a double.
+		/// only by the minimum and maximum values of a f64.
 		///
 		/// The coordinate can be converted to their integer equivalents with the TRAP::Math::Floor function.
 		/// Casting directly to an integer type works for positive coordinates, but fails for negative ones.
@@ -3731,9 +3731,9 @@ namespace TRAP::INTERNAL
 		/// <param name="yPos">
 		/// Output variable for the current y position, relative to the top edge of the content area, of the cursor.
 		/// </param>
-		static void PlatformGetCursorPos(const InternalWindow& window, double& xPos, double& yPos);
-		static void PlatformGetCursorPosX11(const InternalWindow& window, double& xPos, double& yPos);
-		static constexpr void PlatformGetCursorPosWayland(const InternalWindow& window, double& xPos, double& yPos);
+		static void PlatformGetCursorPos(const InternalWindow& window, f64& xPos, f64& yPos);
+		static void PlatformGetCursorPosX11(const InternalWindow& window, f64& xPos, f64& yPos);
+		static constexpr void PlatformGetCursorPosWayland(const InternalWindow& window, f64& xPos, f64& yPos);
 		/// <summary>
 		/// This function sets the icon of the specified window. If no image is specified, the window
 		/// reverts to its default icon.
@@ -3765,9 +3765,9 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get the current position from.</param>
 		/// <param name="xPos">Output variable for the current x position of the internal window.</param>
 		/// <param name="yPos">Output variable for the current y position of the internal window.</param>
-		static void PlatformGetWindowPos(const InternalWindow& window, int32_t& xPos, int32_t& yPos);
-		static void PlatformGetWindowPosX11(const InternalWindow& window, int32_t& xPos, int32_t& yPos);
-		static void PlatformGetWindowPosWayland(const InternalWindow& window, int32_t& xPos, int32_t& yPos);
+		static void PlatformGetWindowPos(const InternalWindow& window, i32& xPos, i32& yPos);
+		static void PlatformGetWindowPosX11(const InternalWindow& window, i32& xPos, i32& yPos);
+		static void PlatformGetWindowPosWayland(const InternalWindow& window, i32& xPos, i32& yPos);
 		/// <summary>
 		/// This function sets the size, in screen coordinates, of the content area of the specified window.
 		///
@@ -3786,9 +3786,9 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set the size for.</param>
 		/// <param name="width">New width for the internal window.</param>
 		/// <param name="height">New height for the internal window.</param>
-		static void PlatformSetWindowSize(InternalWindow& window, int32_t width, int32_t height);
-		static void PlatformSetWindowSizeX11(InternalWindow& window, int32_t width, int32_t height);
-		static void PlatformSetWindowSizeWayland(InternalWindow& window, int32_t width, int32_t height);
+		static void PlatformSetWindowSize(InternalWindow& window, i32 width, i32 height);
+		static void PlatformSetWindowSizeX11(InternalWindow& window, i32 width, i32 height);
+		static void PlatformSetWindowSizeWayland(InternalWindow& window, i32 width, i32 height);
 		/// <summary>
 		/// This function toggles the resizeability of the specified window.
 		///
@@ -3835,9 +3835,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to set opacity for.</param>
 		/// <param name="opacity">Opacity ranging from 0.0f-1.0f.</param>
-		static void PlatformSetWindowOpacity(const InternalWindow& window, float opacity);
-		static void PlatformSetWindowOpacityX11(const InternalWindow& window, float opacity);
-		static void PlatformSetWindowOpacityWayland(const InternalWindow& window, float opacity);
+		static void PlatformSetWindowOpacity(const InternalWindow& window, f32 opacity);
+		static void PlatformSetWindowOpacityX11(const InternalWindow& window, f32 opacity);
+		static void PlatformSetWindowOpacityWayland(const InternalWindow& window, f32 opacity);
 		/// <summary>
 		/// This function toggles mouse passthrough for the specified window.
 		///
@@ -3870,9 +3870,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to get the opacity from.</param>
 		/// <returns>Opacity of the given internal window on success, empty optional otherwise.</returns>
-		[[nodiscard]] static std::optional<float> PlatformGetWindowOpacity(const InternalWindow& window);
-		[[nodiscard]] static std::optional<float> PlatformGetWindowOpacityX11(const InternalWindow& window);
-		[[nodiscard]] static constexpr std::optional<float> PlatformGetWindowOpacityWayland(const InternalWindow& window);
+		[[nodiscard]] static std::optional<f32> PlatformGetWindowOpacity(const InternalWindow& window);
+		[[nodiscard]] static std::optional<f32> PlatformGetWindowOpacityX11(const InternalWindow& window);
+		[[nodiscard]] static constexpr std::optional<f32> PlatformGetWindowOpacityWayland(const InternalWindow& window);
 		/// <summary>
 		/// This function retrieves the size, in pixels, of the framebuffer of the specified window.
 		/// If you wish to retrieve the size of the window in screen coordinates, see
@@ -3886,9 +3886,9 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get the framebuffer size from.</param>
 		/// <param name="width">Output variable for the internal windows current framebuffer width.</param>
 		/// <param name="height">Output variable for the internal windows current framebuffer height.</param>
-		static void PlatformGetFrameBufferSize(const InternalWindow& window, int32_t& width, int32_t& height);
-		static void PlatformGetFrameBufferSizeX11(const InternalWindow& window, int32_t& width, int32_t& height);
-		static constexpr void PlatformGetFrameBufferSizeWayland(const InternalWindow& window, int32_t& width, int32_t& height);
+		static void PlatformGetFrameBufferSize(const InternalWindow& window, i32& width, i32& height);
+		static void PlatformGetFrameBufferSizeX11(const InternalWindow& window, i32& width, i32& height);
+		static constexpr void PlatformGetFrameBufferSizeWayland(const InternalWindow& window, i32& width, i32& height);
 		/// <summary>
 		/// This function retrieves the content scale for the specified window.
 		/// The content scale is the reatio between the current DPI and the platform's
@@ -3908,9 +3908,9 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get the content scale from.</param>
 		/// <param name="xScale">Output variable for the internal windows content scale x.</param>
 		/// <param name="yScale">Output variable for the internal windows content scale y.</param>
-		static void PlatformGetWindowContentScale(const InternalWindow& window, float& xScale, float& yScale);
-		static void PlatformGetWindowContentScaleX11(const InternalWindow& window, float& xScale, float& yScale);
-		static constexpr void PlatformGetWindowContentScaleWayland(const InternalWindow& window, float& xScale, float& yScale);
+		static void PlatformGetWindowContentScale(const InternalWindow& window, f32& xScale, f32& yScale);
+		static void PlatformGetWindowContentScaleX11(const InternalWindow& window, f32& xScale, f32& yScale);
+		static constexpr void PlatformGetWindowContentScaleWayland(const InternalWindow& window, f32& xScale, f32& yScale);
 		/// <summary>
 		/// This function returns the position, in screen coordinates, of the upper-left corner
 		/// of the work area of the specified monitor along with the work area size in screen
@@ -3928,12 +3928,12 @@ namespace TRAP::INTERNAL
 		/// <param name="yPos">Output variable for the y position of the monitor.</param>
 		/// <param name="width">Output variable for the width of the monitor.</param>
 		/// <param name="height">Output variable for the height of the monitor.</param>
-		static void PlatformGetMonitorWorkArea(const InternalMonitor& monitor, int32_t& xPos, int32_t& yPos,
-		                                       int32_t& width, int32_t& height);
-		static void PlatformGetMonitorWorkAreaX11(const InternalMonitor& monitor, int32_t& xPos, int32_t& yPos,
-		                                       int32_t& width, int32_t& height);
-		static constexpr void PlatformGetMonitorWorkAreaWayland(const InternalMonitor& monitor, int32_t& xPos, int32_t& yPos,
-		                                                        int32_t& width, int32_t& height);
+		static void PlatformGetMonitorWorkArea(const InternalMonitor& monitor, i32& xPos, i32& yPos,
+		                                       i32& width, i32& height);
+		static void PlatformGetMonitorWorkAreaX11(const InternalMonitor& monitor, i32& xPos, i32& yPos,
+		                                       i32& width, i32& height);
+		static constexpr void PlatformGetMonitorWorkAreaWayland(const InternalMonitor& monitor, i32& xPos, i32& yPos,
+		                                                        i32& width, i32& height);
 		/// <summary>
 		/// This function returns whether the window is visible or not.
 		///
@@ -4016,9 +4016,9 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="timeout">Maximum amount of time, in seconds, to wait.</param>
-		static void PlatformWaitEvents(double timeout);
-		static void PlatformWaitEventsX11(double timeout);
-		static void PlatformWaitEventsWayland(double timeout);
+		static void PlatformWaitEvents(f64 timeout);
+		static void PlatformWaitEventsX11(f64 timeout);
+		static void PlatformWaitEventsWayland(f64 timeout);
 		/// <summary>
 		/// This function posts an empty event from the current thread to the event queue,
 		/// causing WaitEvents to return.
@@ -4110,7 +4110,7 @@ namespace TRAP::INTERNAL
 		/// Valid range is [0.0-1.0].
 		/// This parameter is ignored if state is ProgressState::Disabled
 		/// </param>
-		static void PlatformSetWindowProgressIndicator(const InternalWindow& window, ProgressState state, double progress);
+		static void PlatformSetWindowProgressIndicator(const InternalWindow& window, ProgressState state, f64 progress);
 		/// <summary>
 		/// This function returns the platform-specific scancode of the specified key.
 		///
@@ -4122,9 +4122,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="key">Key to get scancode for.</param>
 		/// <returns>The platform-specific scancode of the specified key or -1 if an error occured.</returns>
-		[[nodiscard]] static int32_t PlatformGetKeyScanCode(Input::Key key);
-		[[nodiscard]] static int32_t PlatformGetKeyScanCodeX11(Input::Key key);
-		[[nodiscard]] static int32_t PlatformGetKeyScanCodeWayland(Input::Key key);
+		[[nodiscard]] static i32 PlatformGetKeyScanCode(Input::Key key);
+		[[nodiscard]] static i32 PlatformGetKeyScanCodeX11(Input::Key key);
+		[[nodiscard]] static i32 PlatformGetKeyScanCodeWayland(Input::Key key);
 		/// <summary>
 		/// This function returns a string representation for the platform-specific scancode.
 		///
@@ -4133,9 +4133,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="scanCode">Scancode to get string representation for.</param>
 		/// <returns>String representation of scancode or nullptr if an error occured.</returns>
-		[[nodiscard]] static std::optional<std::string> PlatformGetScanCodeName(int32_t scanCode);
-		[[nodiscard]] static std::optional<std::string> PlatformGetScanCodeNameX11(int32_t scanCode);
-		[[nodiscard]] static std::optional<std::string> PlatformGetScanCodeNameWayland(int32_t scanCode);
+		[[nodiscard]] static std::optional<std::string> PlatformGetScanCodeName(i32 scanCode);
+		[[nodiscard]] static std::optional<std::string> PlatformGetScanCodeNameX11(i32 scanCode);
+		[[nodiscard]] static std::optional<std::string> PlatformGetScanCodeNameWayland(i32 scanCode);
 		/// <summary>
 		/// This function sets the system clipboard to the specified, UTF-8 encoded string.
 		///
@@ -4323,12 +4323,12 @@ namespace TRAP::INTERNAL
 		/// <param name="minHeight">New minimum window height.</param>
 		/// <param name="maxWidth">New maximum window width.</param>
 		/// <param name="maxHeight">New maximum window height.</param>
-		static void PlatformSetWindowSizeLimits(InternalWindow& window, int32_t minWidth, int32_t minHeight,
-		                                        int32_t maxWidth, int32_t maxHeight);
-		static void PlatformSetWindowSizeLimitsX11(InternalWindow& window, int32_t minWidth, int32_t minHeight,
-		                                        int32_t maxWidth, int32_t maxHeight);
-		static void PlatformSetWindowSizeLimitsWayland(InternalWindow& window, int32_t minWidth, int32_t minHeight,
-		                                        int32_t maxWidth, int32_t maxHeight);
+		static void PlatformSetWindowSizeLimits(InternalWindow& window, i32 minWidth, i32 minHeight,
+		                                        i32 maxWidth, i32 maxHeight);
+		static void PlatformSetWindowSizeLimitsX11(InternalWindow& window, i32 minWidth, i32 minHeight,
+		                                        i32 maxWidth, i32 maxHeight);
+		static void PlatformSetWindowSizeLimitsWayland(InternalWindow& window, i32 minWidth, i32 minHeight,
+		                                        i32 maxWidth, i32 maxHeight);
 		/// <summary>
 		/// Sets the aspect ratio of the specified window.
 		///
@@ -4355,9 +4355,9 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set aspect ratio for.</param>
 		/// <param name="numerator">Numerator of the desired aspect ratio, or -1.</param>
 		/// <param name="denominator">Denominator of the desired aspect ratio, or -1.</param>
-		static void PlatformSetWindowAspectRatio(InternalWindow& window, int32_t numerator, int32_t denominator);
-		static void PlatformSetWindowAspectRatioX11(InternalWindow& window, int32_t numerator, int32_t denominator);
-		static void PlatformSetWindowAspectRatioWayland(InternalWindow& window, int32_t numerator, int32_t denominator);
+		static void PlatformSetWindowAspectRatio(InternalWindow& window, i32 numerator, i32 denominator);
+		static void PlatformSetWindowAspectRatioX11(InternalWindow& window, i32 numerator, i32 denominator);
+		static void PlatformSetWindowAspectRatioWayland(InternalWindow& window, i32 numerator, i32 denominator);
 		/// <summary>
 		/// Enable/Disable drag and drop feature for the specified window.
 		/// </summary>
@@ -4383,7 +4383,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="mode">Mode to use.</param>
 		/// <returns>True when successfully initialized, false otherwise.</returns>
-		[[nodiscard]] static bool InitVulkan(uint32_t mode);
+		[[nodiscard]] static bool InitVulkan(u32 mode);
 		/// <summary>
 		/// Splits a color depth into red, green and blue bit depths.
 		/// </summary>
@@ -4391,7 +4391,7 @@ namespace TRAP::INTERNAL
 		/// <param name="red">Output variable for the red channel.</param>
 		/// <param name="green">Output variable for the green channel.</param>
 		/// <param name="blue">Output variable for the blue channel.</param>
-		static constexpr void SplitBPP(int32_t bpp, int32_t& red, int32_t& green, int32_t& blue);
+		static constexpr void SplitBPP(i32 bpp, i32& red, i32& green, i32& blue);
 		/// <summary>
 		/// Make the specified window and its video mode active on its monitor.
 		/// </summary>
@@ -4452,7 +4452,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="xPos">X position of the cursor.</param>
 		/// <param name="yPos">Y position of the cursor.</param>
-		static void InputCursorPos(InternalWindow& window, double xPos, double yPos);
+		static void InputCursorPos(InternalWindow& window, f64 xPos, f64 yPos);
 		/// <summary>
 		/// Notifies shared code of a physical key event.
 		/// </summary>
@@ -4460,14 +4460,14 @@ namespace TRAP::INTERNAL
 		/// <param name="key">Key that is pressed or released.</param>
 		/// <param name="scancode">Scan code of the key which is pressed or released.</param>
 		/// <param name="state">State of the key (pressed, repeated or released).</param>
-		static void InputKey(InternalWindow& window, Input::Key key, int32_t scancode, Input::KeyState state);
+		static void InputKey(InternalWindow& window, Input::Key key, i32 scancode, Input::KeyState state);
 		/// <summary>
 		/// Notifies shared code of a Unicode codepoint input event.
 		/// The 'plain' parameter determines whether to emit a regular character event.
 		/// </summary>
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="codePoint">Code point of the typed char.</param>
-		static constexpr void InputChar(const InternalWindow& window, uint32_t codePoint);
+		static constexpr void InputChar(const InternalWindow& window, u32 codePoint);
 		/// <summary>
 		/// Notifies shared code of a mouse button click event.
 		/// </summary>
@@ -4481,7 +4481,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="xOffset">X offset of the scroll wheel.</param>
 		/// <param name="yOffset">Y offset of the scroll wheel.</param>
-		static void InputScroll(const InternalWindow& window, double xOffset, double yOffset);
+		static void InputScroll(const InternalWindow& window, f64 xOffset, f64 yOffset);
 		/// <summary>
 		/// Notified shared code of a cursor enter/leave event.
 		/// </summary>
@@ -4495,7 +4495,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="width">New framebuffer width.</param>
 		/// <param name="height">New framebuffer height.</param>
-		static void InputFrameBufferSize(const InternalWindow& window, int32_t width, int32_t height);
+		static void InputFrameBufferSize(const InternalWindow& window, i32 width, i32 height);
 		/// <summary>
 		/// Notifies shared code that a window has been resized.
 		/// The size is specified in screen coordinates.
@@ -4503,7 +4503,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="width">New window width.</param>
 		/// <param name="height">New window height.</param>
-		static void InputWindowSize(const InternalWindow& window, int32_t width, int32_t height);
+		static void InputWindowSize(const InternalWindow& window, i32 width, i32 height);
 		/// <summary>
 		/// Notifies shared code that a window has been minimized.
 		/// </summary>
@@ -4523,7 +4523,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="xPos">X position of the window.</param>
 		/// <param name="yPos">Y position of the window.</param>
-		static constexpr void InputWindowPos(const InternalWindow& window, int32_t xPos, int32_t yPos);
+		static constexpr void InputWindowPos(const InternalWindow& window, i32 xPos, i32 yPos);
 		/// <summary>
 		/// Notifies shared code that the user wishes to close a window.
 		/// </summary>
@@ -4558,13 +4558,13 @@ namespace TRAP::INTERNAL
 		/// <param name="monitor">Internal monitor that was connected or disconnected.</param>
 		/// <param name="connected">Whether the monitor was connected or disconnected.</param>
 		/// <param name="placement">Placement of the monitor.</param>
-		static void InputMonitor(Scope<InternalMonitor> monitor, bool connected, uint32_t placement);
+		static void InputMonitor(Scope<InternalMonitor> monitor, bool connected, u32 placement);
 		/// <summary>
 		/// Notifies shared code of a monitor connection or disconnection.
 		/// </summary>
 		/// <param name="monitorIndex">Index of the monitor which got disconnected.</param>
 		/// <param name="placement">Placement of the monitor.</param>
-		static void InputMonitorDisconnect(uint32_t monitorIndex, uint32_t placement);
+		static void InputMonitorDisconnect(u32 monitorIndex, u32 placement);
 		/// <summary>
 		/// Sets the cursor clip rect to the window content area.
 		/// </summary>
@@ -4581,7 +4581,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="xScale">New x content scale.</param>
 		/// <param name="yScale">New y content scale.</param>
-		static void InputWindowContentScale(const InternalWindow& window, float xScale, float yScale);
+		static void InputWindowContentScale(const InternalWindow& window, f32 xScale, f32 yScale);
 
 		//-------//
 		//Windows//
@@ -4668,7 +4668,7 @@ namespace TRAP::INTERNAL
 		/// <param name="handle">Monitor handle.</param>
 		/// <param name="xScale">X monitor content scale.</param>
 		/// <param name="yScale">Y monitor content scale.</param>
-		static void GetMonitorContentScaleWin32(HMONITOR handle, float& xScale, float& yScale);
+		static void GetMonitorContentScaleWin32(HMONITOR handle, f32& xScale, f32& yScale);
 		/// <summary>
 		/// Update the theme of the given window.
 		/// </summary>
@@ -4700,14 +4700,14 @@ namespace TRAP::INTERNAL
 		/// <param name="yHot">Center y coordinate of the image.</param>
 		/// <param name="icon">Whether it is an icon or a cursor.</param>
 		/// <returns>Handle to the icon.</returns>
-		[[nodiscard]] static HICON CreateIcon(const Image& image, uint32_t xHot, uint32_t yHot, bool icon);
+		[[nodiscard]] static HICON CreateIcon(const Image& image, u32 xHot, u32 yHot, bool icon);
 		/// <summary>
 		/// Enfore the content area aspect ratio based on which edge is being dragged.
 		/// </summary>
 		/// <param name="window">Internal window to enforce aspect ratio for.</param>
 		/// <param name="edge">Window edge being dragged.</param>
 		/// <param name="area">Content area.</param>
-		static void ApplyAspectRatio(const InternalWindow& window, int32_t edge, RECT& area);
+		static void ApplyAspectRatio(const InternalWindow& window, i32 edge, RECT& area);
 		/// <summary>
 		/// Update native window styles to match attributes.
 		/// </summary>
@@ -4759,13 +4759,13 @@ namespace TRAP::INTERNAL
 		static void CacheLegalExecutableNameDBusPOSIX();
 		static void CacheDesktopFilePathDBusPOSIX();
 		static void TerminateDBusPOSIX();
-		static void UpdateTaskbarProgressDBusPOSIX(dbus_bool_t progressVisible, double progressValue);
+		static void UpdateTaskbarProgressDBusPOSIX(dbus_bool_t progressVisible, f64 progressValue);
 
 		static dbus_bool_t NewMessageSignalDBusPOSIX(std::string_view objectPath, std::string_view interfaceName, std::string_view signalName, DBusMessage** outMessage);
-		static dbus_bool_t OpenContainerDBusPOSIX(DBusMessageIter& iterator, int32_t DBusType, std::string_view signature, DBusMessageIter& subIterator);
+		static dbus_bool_t OpenContainerDBusPOSIX(DBusMessageIter& iterator, i32 DBusType, std::string_view signature, DBusMessageIter& subIterator);
 		static dbus_bool_t CloseContainerDBusPOSIX(DBusMessageIter& iterator, DBusMessageIter& subIterator);
-		static dbus_bool_t AppendDataDBusPOSIX(DBusMessageIter& iterator, int32_t DBusType, const void* data);
-		static dbus_bool_t AppendDictDataDBusPOSIX(DBusMessageIter& iterator, int32_t keyType, const void* keyData, int32_t valueType, const void* valueData);
+		static dbus_bool_t AppendDataDBusPOSIX(DBusMessageIter& iterator, i32 DBusType, const void* data);
+		static dbus_bool_t AppendDictDataDBusPOSIX(DBusMessageIter& iterator, i32 keyType, const void* keyData, i32 valueType, const void* valueData);
 		static dbus_bool_t SendMessageDBusPOSIX(DBusMessage& message);
 
 		/// <summary>
@@ -4773,7 +4773,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="mi">RandR mode info.</param>
 		/// <returns>Refresh rate on success, empty optional otherwise.</returns>
-		[[nodiscard]] static constexpr std::optional<double> CalculateRefreshRate(const XRRModeInfo& mi);
+		[[nodiscard]] static constexpr std::optional<f64> CalculateRefreshRate(const XRRModeInfo& mi);
 		/// <summary>
 		/// Create InternalVideoMode from RandR mode info.
 		/// </summary>
@@ -4791,8 +4791,8 @@ namespace TRAP::INTERNAL
 		/// <param name="c">Event data c.</param>
 		/// <param name="d">Event data d.</param>
 		/// <param name="e">Event data e.</param>
-		static void SendEventToWM(const InternalWindow& window, Atom type, int64_t a, int64_t b, int64_t c,
-		                          int64_t d, int64_t e);
+		static void SendEventToWM(const InternalWindow& window, Atom type, i64 a, i64 b, i64 c,
+		                          i64 d, i64 e);
 		/// <summary>
 		/// Wait for data to arrive on any of the specified file descriptors
 		/// </summary>
@@ -4800,14 +4800,14 @@ namespace TRAP::INTERNAL
 		/// <param name="count">Number of file descriptors to wait for.</param>
 		/// <param name="timeout">Time out in seconds.</param>
 		/// <returns>Number of file descriptors with data.</returns>
-		[[nodiscard]] static bool PollPOSIX(pollfd* fds, nfds_t count, double* timeout);
+		[[nodiscard]] static bool PollPOSIX(pollfd* fds, nfds_t count, f64* timeout);
 		/// <summary>
 		/// Wait for event data to arrive on the X11 display socket.
 		/// This avoids blocking other threads via the per-display Xlib lock.
 		/// </summary>
 		/// <param name="timeout">Time out in seconds.</param>
 		/// <returns>True if data was received, false otherwise.</returns>
-		static bool WaitForX11Event(double* timeout);
+		static bool WaitForX11Event(f64* timeout);
 		/// <summary>
 		/// Wait for event data to arrive on any event file descriptor
 		/// This avoids blocking other threads via the per-display Xlib lock
@@ -4815,7 +4815,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="timeout">Optional: Max time in seconds to wait for.</param>
 		/// <returns>True on success, false otherwise.</returns>
-		static bool WaitForAnyEvent(double* timeout);
+		static bool WaitForAnyEvent(f64* timeout);
 		/// <summary>
 		/// Writes a byte to the empty event pipe
 		/// </summary>
@@ -4829,7 +4829,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="fileDescriptor">File descriptor to set flags for.</param>
 		/// <returns>True on success, false otherwise.</returns>
-		[[nodiscard]] static bool SetEventFlags(int32_t& fileDescriptor);
+		[[nodiscard]] static bool SetEventFlags(i32& fileDescriptor);
 		/// <summary>
 		/// Create the pipe for empty events without assuming the OS has pipe2(2)
 		/// </summary>
@@ -4843,14 +4843,14 @@ namespace TRAP::INTERNAL
 		/// <param name="type">Property type.</param>
 		/// <param name="value">Output property value.</param>
 		/// <returns>Amount of bytes retrieved.</returns>
-		[[nodiscard]] static uint64_t GetWindowPropertyX11(::Window window, Atom property, Atom type, uint8_t** value);
+		[[nodiscard]] static u64 GetWindowPropertyX11(::Window window, Atom property, Atom type, u8** value);
 		/// <summary>
 		/// Updates the normal hints according to the window settings.
 		/// </summary>
 		/// <param name="window">Internal window to update hints for.</param>
 		/// <param name="width">Width of the window.</param>
 		/// <param name="height">Height of the window.</param>
-		static void UpdateNormalHints(const InternalWindow& window, int32_t width, int32_t height);
+		static void UpdateNormalHints(const InternalWindow& window, i32 width, i32 height);
 		/// <summary>
 		/// Waits until a VisibilityNotify event arrives for the specified window or the timeout period elapses.
 		/// </summary>
@@ -4874,7 +4874,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="xScale">Output variable for x system content scale.</param>
 		/// <param name="yScale">Output variable for y system content scale.</param>
-		static void GetSystemContentScale(float& xScale, float& yScale);
+		static void GetSystemContentScale(f32& xScale, f32& yScale);
 		/// <summary>
 		/// Look for and initialize supported X11 extensions.
 		/// </summary>
@@ -4894,7 +4894,7 @@ namespace TRAP::INTERNAL
 		/// <param name="display">X11 display.</param>
 		/// <param name="event">X11 error event.</param>
 		/// <returns>True if the error was handled, false otherwise.</returns>
-		[[nodiscard]] static int32_t ErrorHandler(Display* display, XErrorEvent* event);
+		[[nodiscard]] static i32 ErrorHandler(Display* display, XErrorEvent* event);
 		/// <summary>
 		/// Clears the X error handler callback.
 		/// </summary>
@@ -4941,7 +4941,7 @@ namespace TRAP::INTERNAL
 		/// <param name="event">X11 event.</param>
 		/// <param name="ptr">Pointer to the event.</param>
 		/// <returns>True if the event is a selection event, false otherwise.</returns>
-		[[nodiscard]] static int32_t IsSelectionEvent(Display* display, XEvent* event, XPointer ptr);
+		[[nodiscard]] static i32 IsSelectionEvent(Display* display, XEvent* event, XPointer ptr);
 		/// <summary>
 		/// Set the specified property to the selection converted to the requested target.
 		/// </summary>
@@ -4977,7 +4977,7 @@ namespace TRAP::INTERNAL
 		/// <param name="depth">Window depth.</param>
 		/// <returns>True on success, false otherwise.</returns>
 		[[nodiscard]] static bool CreateNativeWindow(InternalWindow& window, WindowConfig& WNDConfig, Visual& visual,
-		                                             int32_t depth);
+		                                             i32 depth);
 		/// <summary>
 		/// Creates a native cursor object from the specified image and hotspot.
 		/// </summary>
@@ -4985,19 +4985,19 @@ namespace TRAP::INTERNAL
 		/// <param name="xHotSpot">X center coordinate of the given image.</param>
 		/// <param name="yHotSpot">Y center coordinate of the given image.</param>
 		/// <returns>Newly created cursor on success, empty optional otherwise.</returns>
-		[[nodiscard]] static std::optional<Cursor> CreateCursorX11(const TRAP::Image& image, uint32_t xHotSpot, uint32_t yHotSpot);
+		[[nodiscard]] static std::optional<Cursor> CreateCursorX11(const TRAP::Image& image, u32 xHotSpot, u32 yHotSpot);
 		/// <summary>
 		/// Returns whether the window is iconified/minimized
 		/// </summary>
 		/// <param name="window">Internal window to check.</param>
 		/// <returns>Window state.</returns>
-		[[nodiscard]] static int32_t GetWindowState(const InternalWindow& window);
+		[[nodiscard]] static i32 GetWindowState(const InternalWindow& window);
 		/// <summary>
 		/// Convert XKB KeySym to Unicode.
 		/// </summary>
 		/// <param name="keysym">XKB KeySym.</param>
 		/// <returns>Unicode character on success, empty optional otherwise.</returns>
-		[[nodiscard]] static constexpr std::optional<uint32_t> KeySymToUnicode(uint32_t keySym);
+		[[nodiscard]] static constexpr std::optional<u32> KeySymToUnicode(u32 keySym);
 		/// <summary>
 		/// Return selection string from specified selection.
 		/// </summary>
@@ -5011,7 +5011,7 @@ namespace TRAP::INTERNAL
 		/// <param name="event">X11 event.</param>
 		/// <param name="ptr">Pointer to the event.</param>
 		/// <returns>True if the event is a property new value event for the specified selection, false otherwise.</returns>
-		[[nodiscard]] static int32_t IsSelPropNewValueNotify(Display* display, XEvent* event, XPointer ptr);
+		[[nodiscard]] static i32 IsSelPropNewValueNotify(Display* display, XEvent* event, XPointer ptr);
 		/// <summary>
 		/// Convert the specified Latin-1 string to UTF-8.
 		/// </summary>
@@ -5034,14 +5034,14 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="scanCode">X11 key code.</param>
 		/// <returns>Translated TRAP::Input::Key.</returns>
-		[[nodiscard]] static Input::Key TranslateKey(int32_t scanCode);
+		[[nodiscard]] static Input::Key TranslateKey(i32 scanCode);
 #ifdef X_HAVE_UTF8_STRING
 		/// <summary>
 		/// Decode a Unicode code point from a UTF-8 stream.
 		/// </summary>
 		/// <param name="s">UTF-8 stream.</param>
 		/// <returns>Unicode code point.</returns>
-		[[nodiscard]] static uint32_t DecodeUTF8(const char** str);
+		[[nodiscard]] static u32 DecodeUTF8(const char** str);
 #endif /*X_HAVE_UTF8_STRING*/
 		/// <summary>
 		/// Splits and translates a text/uri-list into separate file paths.
@@ -5098,7 +5098,7 @@ namespace TRAP::INTERNAL
 		/// <param name="userData">Pointer to user provided data.</param>
 		/// <param name="registry">Affected registry object.</param>
 		/// <param name="name">Unique numeric name of the object.</param>
-		static void RegistryHandleGlobalRemove(void* userData, wl_registry* registry, uint32_t name);
+		static void RegistryHandleGlobalRemove(void* userData, wl_registry* registry, u32 name);
 		/// <summary>
 		/// Callback function for Wayland registry notifying the creation of global objects.
 		/// </summary>
@@ -5107,7 +5107,7 @@ namespace TRAP::INTERNAL
 		/// <param name="name">Unique numeric name of the object.</param>
 		/// <param name="interface">Interface implemented by the object.</param>
 		/// <param name="version">Interface version.</param>
-		static void RegistryHandleGlobal(void* userData, wl_registry* registry, uint32_t name, const char* interface, uint32_t version);
+		static void RegistryHandleGlobal(void* userData, wl_registry* registry, u32 name, const char* interface, u32 version);
 		inline static constexpr wl_registry_listener RegistryListener
 		{
 			RegistryHandleGlobal,
@@ -5142,7 +5142,7 @@ namespace TRAP::INTERNAL
 		/// <param name="userData">Pointer to user provided data.</param>
 		/// <param name="wmBase">Affected xdg_wm_base object.</param>
 		/// <param name="serial">Serial to pass back to the compositor via "pong" request.</param>
-		static void WMBaseHandlePing(void* userData, xdg_wm_base* wmBase, uint32_t serial);
+		static void WMBaseHandlePing(void* userData, xdg_wm_base* wmBase, u32 serial);
 		inline static constexpr xdg_wm_base_listener WMBaseListener
 		{
 			WMBaseHandlePing
@@ -5155,7 +5155,7 @@ namespace TRAP::INTERNAL
 		/// <param name="userData">Pointer to user provided data.</param>
 		/// <param name="seat">Affected wl_seat object.</param>
 		/// <param name="caps">Capabilities of the wl_seat object.</param>
-		static void SeatHandleCapabilities(void* userData, wl_seat* seat, uint32_t caps);
+		static void SeatHandleCapabilities(void* userData, wl_seat* seat, u32 caps);
 		/// <summary>
 		/// Callback function for Wayland to retrieve the unique identifier of
 		/// a "seat" (a group of keyboards, pointers and touch devices).
@@ -5180,7 +5180,7 @@ namespace TRAP::INTERNAL
 		/// <param name="surface">Surface that got focused.</param>
 		/// <param name="sXPos">X position of the pointer on the surface.</param>
 		/// <param name="sYPos">Y position of the pointer on the surface.</param>
-		static void PointerHandleEnter(void* userData, wl_pointer* pointer, uint32_t serial, wl_surface* surface, wl_fixed_t sXPos, wl_fixed_t sYPos);
+		static void PointerHandleEnter(void* userData, wl_pointer* pointer, u32 serial, wl_surface* surface, wl_fixed_t sXPos, wl_fixed_t sYPos);
 		/// <summary>
 		/// Callback function for Wayland notifying that the pointer
 		/// is unfocused on a certain surface.
@@ -5189,7 +5189,7 @@ namespace TRAP::INTERNAL
 		/// <param name="pointer">Affected wl_pointer.</param>
 		/// <param name="serial">Unique identifier of the pointer leave event.</param>
 		/// <param name="surface">Surface that got unfocused.</param>
-		static void PointerHandleLeave(void* userData, wl_pointer* pointer, uint32_t serial, wl_surface* surface);
+		static void PointerHandleLeave(void* userData, wl_pointer* pointer, u32 serial, wl_surface* surface);
 		/// <summary>
 		/// Callback function for Wayland notifying that the pointer
 		/// has changed position.
@@ -5199,7 +5199,7 @@ namespace TRAP::INTERNAL
 		/// <param name="time">Timestamp of the event.</param>
 		/// <param name="sXPos">New X position on the surface.</param>
 		/// <param name="sYPos">New Y position on the surface.</param>
-		static void PointerHandleMotion(void* userData, wl_pointer* pointer, uint32_t time, wl_fixed_t sXPos, wl_fixed_t sYPos);
+		static void PointerHandleMotion(void* userData, wl_pointer* pointer, u32 time, wl_fixed_t sXPos, wl_fixed_t sYPos);
 		/// <summary>
 		/// Callback function for Wayland notifying that the pointer
 		/// button has been clicked or released.
@@ -5210,7 +5210,7 @@ namespace TRAP::INTERNAL
 		/// <param name="time">Timestammp of the event.</param>
 		/// <param name="button">Affected button.</param>
 		/// <param name="state">State of the affected button</param>
-		static void PointerHandleButton(void* userData, wl_pointer* pointer, uint32_t serial, uint32_t time, uint32_t button, uint32_t state);
+		static void PointerHandleButton(void* userData, wl_pointer* pointer, u32 serial, u32 time, u32 button, u32 state);
 		/// <summary>
 		/// Callback function for Wayland notifying that the pointer
 		/// axis has changed.
@@ -5220,7 +5220,7 @@ namespace TRAP::INTERNAL
 		/// <param name="time">Timestamp of the event.</param>
 		/// <param name="axis">Affected axis</param>
 		/// <param name="value">Amount of relative movement on the axis.</param>
-		static void PointerHandleAxis(void* userData, wl_pointer* pointer, uint32_t time, uint32_t axis, wl_fixed_t value);
+		static void PointerHandleAxis(void* userData, wl_pointer* pointer, u32 time, u32 axis, wl_fixed_t value);
 		inline static constexpr wl_pointer_listener PointerListener
 		{
 			PointerHandleEnter,
@@ -5244,7 +5244,7 @@ namespace TRAP::INTERNAL
 		/// <param name="format">Format of the keyboard mapping.</param>
 		/// <param name="fd">Keyboard map file descriptor.</param>
 		/// <param name="size">Keyboard map size in bytes.</param>
-		static void KeyboardHandleKeymap(void* userData, wl_keyboard* keyboard, uint32_t format, int32_t fd, uint32_t size);
+		static void KeyboardHandleKeymap(void* userData, wl_keyboard* keyboard, u32 format, i32 fd, u32 size);
 		/// <summary>
 		/// Callback function for Wayland notifying that the keyboard has
 		/// been focused on a certain surface.
@@ -5254,7 +5254,7 @@ namespace TRAP::INTERNAL
 		/// <param name="serial">Unique identifier of the keyboard enter event.</param>
 		/// <param name="surface">Surface that got focused.</param>
 		/// <param name="keys">Currently pressed keys.</param>
-		static void KeyboardHandleEnter(void* userData, wl_keyboard* keyboard, uint32_t serial, wl_surface* surface, wl_array* keys);
+		static void KeyboardHandleEnter(void* userData, wl_keyboard* keyboard, u32 serial, wl_surface* surface, wl_array* keys);
 		/// <summary>
 		/// Callback function for Wayland notifying that the keyboard has
 		/// been unfocused on a certain surface.
@@ -5263,7 +5263,7 @@ namespace TRAP::INTERNAL
 		/// <param name="keyboard">Affected wl_keyboard.</param>
 		/// <param name="serial">Unique identifier of the keyboard leave event.</param>
 		/// <param name="surface">Surface that got unfocused.</param>
-		static void KeyboardHandleLeave(void* userData, wl_keyboard* keyboard, uint32_t serial, wl_surface* surface);
+		static void KeyboardHandleLeave(void* userData, wl_keyboard* keyboard, u32 serial, wl_surface* surface);
 		/// <summary>
 		/// Callback function for Wayland notifying that
 		/// a key on the keyboard has changed its state.
@@ -5274,7 +5274,7 @@ namespace TRAP::INTERNAL
 		/// <param name="time">Timestamp of the event.</param>
 		/// <param name="scanCode">Affected key.</param>
 		/// <param name="state">State of the key.</param>
-		static void KeyboardHandleKey(void* userData, wl_keyboard* keyboard, uint32_t serial, uint32_t time, uint32_t scanCode, uint32_t state);
+		static void KeyboardHandleKey(void* userData, wl_keyboard* keyboard, u32 serial, u32 time, u32 scanCode, u32 state);
 		/// <summary>
 		/// Callback function for Wayland notifying that
 		/// the keyboard modifiers have changed.
@@ -5286,7 +5286,7 @@ namespace TRAP::INTERNAL
 		/// <param name="modsLatched">Latched modifiers.</param>
 		/// <param name="modsLocked">Locked modifiers.</param>
 		/// <param name="group">Keyboard layout.</param>
-		static void KeyboardHandleModifiers(void* userData, wl_keyboard* keyboard, uint32_t serial, uint32_t modsDepressed, uint32_t modsLatched, uint32_t modsLocked, uint32_t group);
+		static void KeyboardHandleModifiers(void* userData, wl_keyboard* keyboard, u32 serial, u32 modsDepressed, u32 modsLatched, u32 modsLocked, u32 group);
 #ifdef WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION
 		/// <summary>
 		/// Callback function for Wayland notifying about
@@ -5296,7 +5296,7 @@ namespace TRAP::INTERNAL
 		/// <param name="keyboard">Affected wl_keyboard.</param>
 		/// <param name="rate">Rate of repeating keys in characters per second.</param>
 		/// <param name="delay">Delay in milliseconds since key down until repeating starts.</param>
-		static void KeyboardHandleRepeatInfo(void* userData, wl_keyboard* keyboard, int32_t rate, int32_t delay);
+		static void KeyboardHandleRepeatInfo(void* userData, wl_keyboard* keyboard, i32 rate, i32 delay);
 #endif /*WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION*/
 		inline static constexpr wl_keyboard_listener KeyboardListener
 		{
@@ -5332,7 +5332,7 @@ namespace TRAP::INTERNAL
 		/// <param name="make">Description of the manufacturer.</param>
 		/// <param name="model">Description of the model.</param>
 		/// <param name="transform">Transform that maps framebuffer to output.</param>
-		static void OutputHandleGeometry(void* userData, wl_output* output, int32_t xPos, int32_t yPos, int32_t physicalWidth, int32_t physicalHeight, int32_t subpixel, const char* make, const char* model, int32_t transform);
+		static void OutputHandleGeometry(void* userData, wl_output* output, i32 xPos, i32 yPos, i32 physicalWidth, i32 physicalHeight, i32 subpixel, const char* make, const char* model, i32 transform);
 		/// <summary>
 		/// Callback function for Wayland notifying about an available video mode
 		/// for the output.
@@ -5343,7 +5343,7 @@ namespace TRAP::INTERNAL
 		/// <param name="width">Width of the mode.</param>
 		/// <param name="height">Height of the mode.</param>
 		/// <param name="refresh">Refresh rate of the mode.</param>
-		static void OutputHandleMode(void* userData, wl_output* output, uint32_t flags, int32_t width, int32_t height, int32_t refresh);
+		static void OutputHandleMode(void* userData, wl_output* output, u32 flags, i32 width, i32 height, i32 refresh);
 		/// <summary>
 		/// Callback function for Wayland notifying that the
 		/// output has finished sending events.
@@ -5358,7 +5358,7 @@ namespace TRAP::INTERNAL
 		/// <param name="userData">Pointer to user provided data.</param>
 		/// <param name="output">Affected output.</param>
 		/// <param name="factor">New scaling factor.</param>
-		static void OutputHandleScale(void* userData, wl_output* output, int32_t factor);
+		static void OutputHandleScale(void* userData, wl_output* output, i32 factor);
 #ifdef WL_OUTPUT_NAME_SINCE_VERSION
 		/// <summary>
 		/// Callback function for Wayland notifying about the name of the output.
@@ -5404,7 +5404,7 @@ namespace TRAP::INTERNAL
 		/// <param name="xPos">X position on the surface.</param>
 		/// <param name="yPos">Y position on the surface.</param>
 		/// <param name="offer">Wayland data offer object.</param>
-		static void DataDeviceHandleEnter(void* userData, wl_data_device* device, uint32_t serial, wl_surface* surface, wl_fixed_t xPos, wl_fixed_t yPos, wl_data_offer* offer);
+		static void DataDeviceHandleEnter(void* userData, wl_data_device* device, u32 serial, wl_surface* surface, wl_fixed_t xPos, wl_fixed_t yPos, wl_data_offer* offer);
 		/// <summary>
 		/// Callback function for Wayland ending a drag-and-drop session.
 		/// </summary>
@@ -5419,7 +5419,7 @@ namespace TRAP::INTERNAL
 		/// <param name="time">Timestamp of the event.</param>
 		/// <param name="xPos">New X position on the surface.</param>
 		/// <param name="yPos">New Y position on the surface.</param>
-		static constexpr void DataDeviceHandleMotion(void* userData, wl_data_device* device, uint32_t time, wl_fixed_t xPos, wl_fixed_t yPos);
+		static constexpr void DataDeviceHandleMotion(void* userData, wl_data_device* device, u32 time, wl_fixed_t xPos, wl_fixed_t yPos);
 		/// <summary>
 		/// Callback function for Wayland notifying about a successful drag-and-drop operation.
 		/// </summary>
@@ -5463,7 +5463,7 @@ namespace TRAP::INTERNAL
 		/// <param name="userData">Pointer to user provided data.</param>
 		/// <param name="surface">Affected surface.</param>
 		/// <param name="serial">Unique identifier of the XDG surface configure event.</param>
-		static void XDGSurfaceHandleConfigure(void* userData, xdg_surface* surface, uint32_t serial);
+		static void XDGSurfaceHandleConfigure(void* userData, xdg_surface* surface, u32 serial);
 		inline static constexpr xdg_surface_listener XDGSurfaceListener
 		{
 			XDGSurfaceHandleConfigure
@@ -5478,7 +5478,7 @@ namespace TRAP::INTERNAL
 		/// <param name="width">Suggested width.</param>
 		/// <param name="height">Suggested height.</param>
 		/// <param name="states">How to interpret the width and height arguments.</param>
-		static void XDGTopLevelHandleConfigure(void* userData, xdg_toplevel* topLevel, int32_t width, int32_t height, wl_array* states);
+		static void XDGTopLevelHandleConfigure(void* userData, xdg_toplevel* topLevel, i32 width, i32 height, wl_array* states);
 		/// <summary>
 		/// Callback function for Wayland notifying that the toplevel surface wants to be closed.
 		/// </summary>
@@ -5511,7 +5511,7 @@ namespace TRAP::INTERNAL
 		/// <param name="userData">Pointer to user provided data.</param>
 		/// <param name="decoration">XDG toplevel decoration object.</param>
 		/// <param name="mode">Decoration mode.</param>
-		static void XDGDecorationHandleConfigure(void* userData, zxdg_toplevel_decoration_v1* decoration, uint32_t mode);
+		static void XDGDecorationHandleConfigure(void* userData, zxdg_toplevel_decoration_v1* decoration, u32 mode);
 		inline static constexpr zxdg_toplevel_decoration_v1_listener XDGDecorationListener
 		{
 			XDGDecorationHandleConfigure
@@ -5570,8 +5570,8 @@ namespace TRAP::INTERNAL
 		/// <param name="dy">Y component of the motion vector.</param>
 		/// <param name="dxUnaccel">X component of the unaccelerated motion vector.</param>
 		/// <param name="dyUnaccel">Y component of the unaccelerated motion vector.</param>
-		static void RelativePointerHandleRelativeMotion(void* userData, zwp_relative_pointer_v1* pointer, uint32_t timeHi,
-		                                                uint32_t timeLo, wl_fixed_t dx, wl_fixed_t dy, wl_fixed_t dxUnaccel, wl_fixed_t dyUnaccel);
+		static void RelativePointerHandleRelativeMotion(void* userData, zwp_relative_pointer_v1* pointer, u32 timeHi,
+		                                                u32 timeLo, wl_fixed_t dx, wl_fixed_t dy, wl_fixed_t dxUnaccel, wl_fixed_t dyUnaccel);
 		inline static constexpr zwp_relative_pointer_v1_listener RelativePointerListener
 		{
 			RelativePointerHandleRelativeMotion
@@ -5609,7 +5609,7 @@ namespace TRAP::INTERNAL
 		/// <param name="source">Wayland data source object.</param>
 		/// <param name="mimeType">Mime type.</param>
 		/// <param name="fd">File descriptor for data transfer.</param>
-		static void DataSourceHandleSend(void* userData, wl_data_source* source, const char* mimeType, int32_t fd);
+		static void DataSourceHandleSend(void* userData, wl_data_source* source, const char* mimeType, i32 fd);
 		/// <summary>
 		/// Callback function for Wayland notifying that a data request got cancelled.
 		/// </summary>
@@ -5632,7 +5632,7 @@ namespace TRAP::INTERNAL
 		/// <param name="userData">Pointer to user provided data.</param>
 		/// <param name="fractionalScale"></param>
 		/// <param name="preferredScale_8_24">New preferred scale numerator of a fraction with a denominator of 120.</param>
-		static void FractionalScaleHandleScaleFactor(void* userData, wp_fractional_scale_v1* fractionalScale, uint32_t preferredScale_8_24);
+		static void FractionalScaleHandleScaleFactor(void* userData, wp_fractional_scale_v1* fractionalScale, u32 preferredScale_8_24);
 		inline static constexpr wp_fractional_scale_v1_listener FractionalScaleListener =
 		{
 			FractionalScaleHandleScaleFactor
@@ -5713,7 +5713,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Window to input text on.</param>
 		/// <param name="scanCode">Wayland key.</param>
-		static void InputTextWayland(const InternalWindow& window, uint32_t scanCode);
+		static void InputTextWayland(const InternalWindow& window, u32 scanCode);
 		/// <summary>
 		/// Compose an XKB key symbol.
 		/// </summary>
@@ -5729,7 +5729,7 @@ namespace TRAP::INTERNAL
 		/// <param name="srcHeight">Source height.</param>
 		/// <param name="dstWidth">Destination width.</param>
 		/// <param name="dstHeight">Destination height.</param>
-		static void SetDrawSurfaceViewportWayland(InternalWindow& window, int32_t srcWidth, int32_t srcHeight, int32_t dstWidth, int32_t dstHeight);
+		static void SetDrawSurfaceViewportWayland(InternalWindow& window, i32 srcWidth, i32 srcHeight, i32 dstWidth, i32 dstHeight);
 		/// <summary>
 		/// Unset the draw surface viewport for the window.
 		/// </summary>
@@ -5785,13 +5785,13 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="size">Size in bytes for the file handle.</param>
 		/// <returns>File descriptor on success, empty optional otherwise.</returns>
-		[[nodiscard]] static std::optional<int32_t> CreateAnonymousFileWayland(off_t size);
+		[[nodiscard]] static std::optional<i32> CreateAnonymousFileWayland(off_t size);
 		/// <summary>
 		/// Create a unique temporary file
 		/// </summary>
 		/// <param name="tmpName">Template filename.</param>
 		/// <returns>File descriptor on success, empty optional otherwise.</returns>
-		[[nodiscard]] static std::optional<int32_t> CreateTmpFileCloexec(std::string tmpName);
+		[[nodiscard]] static std::optional<i32> CreateTmpFileCloexec(std::string tmpName);
 		/// <summary>
 		/// Create a fallback decoration for the given window.
 		/// </summary>
@@ -5803,7 +5803,7 @@ namespace TRAP::INTERNAL
 		/// <param name="yPos">Y position for the decoration surface.</param>
 		/// <param name="width">Width for the decoration surface.</param>
 		/// <param name="height">Height for the decoration surface.</param>
-		static void CreateFallbackDecorationWayland(InternalWindow& window, TRAPDecorationWayland& decoration, wl_surface& parent, wl_buffer& buffer, int32_t xPos, int32_t yPos, int32_t width, int32_t height);
+		static void CreateFallbackDecorationWayland(InternalWindow& window, TRAPDecorationWayland& decoration, wl_surface& parent, wl_buffer& buffer, i32 xPos, i32 yPos, i32 width, i32 height);
 		/// <summary>
 		/// Acquire monitor on the given window.
 		/// This also enables fullscreen mode for the window.
@@ -5889,7 +5889,7 @@ namespace TRAP::INTERNAL
 		/// Amount of time to wait for events before timing out.
 		/// Using nullptr disabled the timeout functionality.
 		/// </param>
-		static void HandleEventsWayland(double* timeout);
+		static void HandleEventsWayland(f64* timeout);
 		/// <summary>
 		/// Increment the cursor image counter of the given window.
 		/// This is needed for animated cursor to display the animation.
@@ -5921,14 +5921,14 @@ namespace TRAP::INTERNAL
 		/// Valid range is [0.0-1.0].
 		/// This parameter is ignored if state is ProgressState::Disabled
 		/// </param>
-		static void SetProgressIndicator(ProgressState state, double progress);
+		static void SetProgressIndicator(ProgressState state, f64 progress);
 
 		friend std::optional<std::string> TRAP::Input::GetKeyboardLayoutName();
 
 		struct CodePair
 		{
-			uint16_t keySym;
-			uint16_t UCS;
+			u16 keySym;
+			u16 UCS;
 		};
 
 		static constexpr std::array<CodePair, 828> KeySymTab
@@ -6182,10 +6182,10 @@ namespace TRAP::INTERNAL
 
 [[nodiscard]] inline constexpr bool TRAP::INTERNAL::WindowingAPI::CompareVideoModes(const InternalVideoMode& fm, const InternalVideoMode& sm)
 {
-	const int32_t fbpp = fm.RedBits + fm.GreenBits + fm.BlueBits;
-	const int32_t sbpp = sm.RedBits + sm.GreenBits + sm.BlueBits;
-	const int32_t farea = fm.Width * fm.Height;
-	const int32_t sarea = sm.Width * sm.Height;
+	const i32 fbpp = fm.RedBits + fm.GreenBits + fm.BlueBits;
+	const i32 sbpp = sm.RedBits + sm.GreenBits + sm.BlueBits;
+	const i32 farea = fm.Width * fm.Height;
+	const i32 sarea = sm.Width * sm.Height;
 
 	//First sort on color bits per pixel
 	if (fbpp != sbpp)
@@ -6205,7 +6205,7 @@ namespace TRAP::INTERNAL
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline constexpr void TRAP::INTERNAL::WindowingAPI::SplitBPP(int32_t bpp, int32_t& red, int32_t& green, int32_t& blue)
+inline constexpr void TRAP::INTERNAL::WindowingAPI::SplitBPP(i32 bpp, i32& red, i32& green, i32& blue)
 {
 	//We assume that by 32 the user really meant 24
 	if (bpp == 32)
@@ -6214,7 +6214,7 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::SplitBPP(int32_t bpp, int32_
 	//Convert "bits per pixel" to red, green & blue sizes
 
 	red = green = blue = bpp / 3;
-	const int32_t delta = bpp - (red * 3);
+	const i32 delta = bpp - (red * 3);
 	if (delta >= 1)
 		green = green + 1;
 
@@ -6330,7 +6330,7 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::SplitBPP(int32_t bpp, int32_
 
 //Notifies shared code of a Unicode codepoint input event
 //The 'plain' parameter determines whether to emit a regular character event
-inline constexpr void TRAP::INTERNAL::WindowingAPI::InputChar(const InternalWindow& window, const uint32_t codePoint)
+inline constexpr void TRAP::INTERNAL::WindowingAPI::InputChar(const InternalWindow& window, const u32 codePoint)
 {
 	if (codePoint < 32 || (codePoint > 126 && codePoint < 160))
 		return;
@@ -6370,7 +6370,7 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::InputWindowMaximize(const In
 
 //Notifies shared code that a window has moved
 //The position is specified in content area relative screen coordinates
-inline constexpr void TRAP::INTERNAL::WindowingAPI::InputWindowPos(const InternalWindow& window, const int32_t xPos, const int32_t yPos)
+inline constexpr void TRAP::INTERNAL::WindowingAPI::InputWindowPos(const InternalWindow& window, const i32 xPos, const i32 yPos)
 {
 	if (window.Callbacks.Pos != nullptr)
 		window.Callbacks.Pos(window, xPos, yPos);
@@ -6516,10 +6516,10 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::InputDrop(const InternalWind
 #ifdef TRAP_PLATFORM_LINUX
 
 //Calculates the refresh rate, in Hz, from the specified RandR mode info
-[[nodiscard]] inline constexpr std::optional<double> TRAP::INTERNAL::WindowingAPI::CalculateRefreshRate(const XRRModeInfo& mi)
+[[nodiscard]] inline constexpr std::optional<f64> TRAP::INTERNAL::WindowingAPI::CalculateRefreshRate(const XRRModeInfo& mi)
 {
 	if((mi.hTotal != 0u) && (mi.vTotal != 0u))
-		return NumericCast<double>(mi.dotClock) / (NumericCast<double>(mi.hTotal) * NumericCast<double>(mi.vTotal));
+		return NumericCast<f64>(mi.dotClock) / (NumericCast<f64>(mi.hTotal) * NumericCast<f64>(mi.vTotal));
 
 	return std::nullopt;
 }
@@ -6531,13 +6531,13 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::InputDrop(const InternalWind
 {
 	InternalVideoMode mode{};
 
-	mode.Width = NumericCast<int32_t>(mi.width);
-	mode.Height = NumericCast<int32_t>(mi.height);
+	mode.Width = NumericCast<i32>(mi.width);
+	mode.Height = NumericCast<i32>(mi.height);
 
 	if(ci.rotation == RR_Rotate_90 || ci.rotation == RR_Rotate_270)
 		std::swap(mode.Width, mode.Height);
 
-	const std::optional<double> refreshRate = CalculateRefreshRate(mi);
+	const std::optional<f64> refreshRate = CalculateRefreshRate(mi);
 	if(refreshRate)
 		mode.RefreshRate = *refreshRate;
 	else
@@ -6553,7 +6553,7 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::InputDrop(const InternalWind
 //Returns the mode info for a RandR mode XID
 [[nodiscard]] inline constexpr const XRRModeInfo* TRAP::INTERNAL::WindowingAPI::GetModeInfo(const XRRScreenResources& sr, const RRMode id)
 {
-	for(int32_t i = 0; i < sr.nmode; i++)
+	for(i32 i = 0; i < sr.nmode; i++)
 	{
 		if(sr.modes[i].id == id)
 			return sr.modes + i;
@@ -6594,7 +6594,7 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::ConfinedPointerHandleUnconfi
 
 inline constexpr void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleMotion([[maybe_unused]] void* const userData,
                                                                           [[maybe_unused]] wl_data_device* const device,
-                                                                          [[maybe_unused]] const uint32_t time,
+                                                                          [[maybe_unused]] const u32 time,
                                                                           [[maybe_unused]] const wl_fixed_t xPos,
                                                                           [[maybe_unused]] const wl_fixed_t yPos)
 {
@@ -6636,7 +6636,7 @@ inline constexpr std::optional<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> 
 //-------------------------------------------------------------------------------------------------------------------//
 
 inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSizeWayland(const InternalWindow& window,
-                                                                                 int32_t& width, int32_t& height)
+                                                                                 i32& width, i32& height)
 {
 	width = window.Width;
 	height = window.Height;
@@ -6645,7 +6645,7 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSizeWayland
 //-------------------------------------------------------------------------------------------------------------------//
 
 inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorContentScaleWayland(const InternalMonitor& monitor,
-                                                                                          float& xScale, float& yScale)
+                                                                                          f32& xScale, f32& yScale)
 {
 	xScale = monitor.Wayland.ContentScale;
 	yScale = monitor.Wayland.ContentScale;
@@ -6654,7 +6654,7 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorContentSca
 //-------------------------------------------------------------------------------------------------------------------//
 
 inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorPosWayland(const InternalMonitor& monitor,
-                                                                                 int32_t& xPos, int32_t& yPos)
+                                                                                 i32& xPos, i32& yPos)
 {
     xPos = monitor.Wayland.X;
     yPos = monitor.Wayland.Y;
@@ -6663,7 +6663,7 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorPosWayland
 //-------------------------------------------------------------------------------------------------------------------//
 
 inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetCursorPosWayland(const InternalWindow& window,
-                                                                                double& xPos, double& yPos)
+                                                                                f64& xPos, f64& yPos)
 {
     xPos = window.Wayland.CursorPosX;
     yPos = window.Wayland.CursorPosY;
@@ -6671,7 +6671,7 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetCursorPosWayland(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline constexpr std::optional<float> TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacityWayland([[maybe_unused]] const InternalWindow& window)
+inline constexpr std::optional<f32> TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacityWayland([[maybe_unused]] const InternalWindow& window)
 {
     return 1.0f;
 }
@@ -6679,16 +6679,16 @@ inline constexpr std::optional<float> TRAP::INTERNAL::WindowingAPI::PlatformGetW
 //-------------------------------------------------------------------------------------------------------------------//
 
 inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSizeWayland(const InternalWindow& window,
-                                                                                      int32_t& width, int32_t& height)
+                                                                                      i32& width, i32& height)
 {
-	width = NumericCast<int32_t>(TRAP::Math::Round(NumericCast<float>(window.Width) * window.Wayland.ContentScale));
-	height = NumericCast<int32_t>(TRAP::Math::Round(NumericCast<float>(window.Height) * window.Wayland.ContentScale));
+	width = NumericCast<i32>(TRAP::Math::Round(NumericCast<f32>(window.Width) * window.Wayland.ContentScale));
+	height = NumericCast<i32>(TRAP::Math::Round(NumericCast<f32>(window.Height) * window.Wayland.ContentScale));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScaleWayland(const InternalWindow& window,
-                                                                                         float& xScale, float& yScale)
+                                                                                         f32& xScale, f32& yScale)
 {
 	xScale = window.Wayland.ContentScale;
 	yScale = window.Wayland.ContentScale;
@@ -6697,8 +6697,8 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScal
 //-------------------------------------------------------------------------------------------------------------------//
 
 inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkAreaWayland(const InternalMonitor& monitor,
-                                                                                      int32_t& xPos, int32_t& yPos,
-                                                                                      int32_t& width, int32_t& height)
+                                                                                      i32& xPos, i32& yPos,
+                                                                                      i32& width, i32& height)
 {
     xPos = monitor.Wayland.X;
     yPos = monitor.Wayland.Y;
@@ -6753,7 +6753,7 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionWay
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Convert XKB KeySym to Unicode
-[[nodiscard]] inline constexpr std::optional<uint32_t> TRAP::INTERNAL::WindowingAPI::KeySymToUnicode(const uint32_t keySym)
+[[nodiscard]] inline constexpr std::optional<u32> TRAP::INTERNAL::WindowingAPI::KeySymToUnicode(const u32 keySym)
 {
 	//First check for Latin-1 characters (1:1 mapping)
 	if((keySym >= 0x0020u && keySym <= 0x007Eu) ||
@@ -6766,10 +6766,10 @@ inline constexpr void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionWay
 	if((keySym & 0xFF000000u) == 0x01000000u)
 		return keySym & 0x00FFFFFFu;
 
-	if(std::ranges::binary_search(KeySymTab, CodePair{static_cast<uint16_t>(keySym), 0u},
+	if(std::ranges::binary_search(KeySymTab, CodePair{static_cast<u16>(keySym), 0u},
 	                      [](const CodePair& lhs, const CodePair& rhs){ return lhs.keySym < rhs.keySym; }))
 	{
-		const auto *const it = std::ranges::lower_bound(KeySymTab, CodePair{static_cast<uint16_t>(keySym), 0u},
+		const auto *const it = std::ranges::lower_bound(KeySymTab, CodePair{static_cast<u16>(keySym), 0u},
 		                                                [](const CodePair& lhs, const CodePair& rhs){ return lhs.keySym < rhs.keySym; });
 		return it->UCS;
 	}

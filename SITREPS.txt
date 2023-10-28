@@ -4605,3 +4605,4 @@ SITREP 10/25/2023|23w43a1
 SITREP 10/28/2023|23w43a2
     - Changed TRAP Engine version to 23w43a2(0.9.123)
     - Core Added typedefs for fixed width primitive data types to make them shorter ~<5 mins
+    - Use new primitive typedefs everywhere ~>45 mins

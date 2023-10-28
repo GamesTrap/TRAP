@@ -58,7 +58,7 @@ void TRAP::FileSystem::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::optional<std::vector<uint8_t>> TRAP::FileSystem::ReadFile(const std::filesystem::path& path)
+[[nodiscard]] std::optional<std::vector<u8>> TRAP::FileSystem::ReadFile(const std::filesystem::path& path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -80,7 +80,7 @@ void TRAP::FileSystem::Shutdown()
         file.seekg(0);
     }
 
-    std::vector<uint8_t> buffer(*fileSize);
+    std::vector<u8> buffer(*fileSize);
 
     file.read(reinterpret_cast<char*>(buffer.data()), NumericCast<std::streamsize>(buffer.size()));
     file.close();
@@ -124,7 +124,7 @@ void TRAP::FileSystem::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::WriteFile(const std::filesystem::path& path, const std::vector<uint8_t>& buffer, const WriteMode mode)
+bool TRAP::FileSystem::WriteFile(const std::filesystem::path& path, const std::vector<u8>& buffer, const WriteMode mode)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -1117,11 +1117,11 @@ bool OpenFileInFileBrowser(const std::filesystem::path& p)
     //Root user way
     passwd* pw = nullptr;
     passwd pwd{};
-    int64_t bufSize = sysconf(_SC_GETPW_R_SIZE_MAX);
+    i64 bufSize = sysconf(_SC_GETPW_R_SIZE_MAX);
     if(bufSize <= 0)
         bufSize = 16384;
-    std::vector<char> buffer(NumericCast<std::size_t>(bufSize), '\0');
-    const int32_t errorCode = getpwuid_r(uid, &pwd, buffer.data(), buffer.size(), &pw);
+    std::vector<char> buffer(NumericCast<usize>(bufSize), '\0');
+    const i32 errorCode = getpwuid_r(uid, &pwd, buffer.data(), buffer.size(), &pw);
     if(errorCode != 0)
     {
         TP_ERROR(TRAP::Log::FileSystemPrefix, "Failed to get home folder path (", errorCode, ")!");
@@ -1192,16 +1192,16 @@ bool OpenFileInFileBrowser(const std::filesystem::path& p)
             //Skip invalid entries and comments
             if(line.empty() || line.starts_with('#') || line.starts_with("XDG_") || !TRAP::Utils::String::Contains(line, "_DIR"))
                 continue;
-            const std::size_t splitPos = line.find('=');
+            const usize splitPos = line.find('=');
             if(splitPos == std::string::npos)
                 continue;
             const std::string key = line.substr(0, splitPos);
             if(key != "XDG_DOCUMENTS_DIR") //Only interested in documents folder
                 continue;
-            const std::size_t valueStart = line.find('"', splitPos);
+            const usize valueStart = line.find('"', splitPos);
             if(valueStart == std::string::npos)
                 continue;
-            const std::size_t valueEnd = line.find('"', valueStart + 1);
+            const usize valueEnd = line.find('"', valueStart + 1);
             if(valueEnd == std::string::npos)
                 continue;
             documentsDir = line.substr(valueStart + 1, valueEnd - valueStart - 1);

@@ -270,8 +270,8 @@ void TRAP::Scene::OnTickRuntime(const Utils::TimeStep& deltaTime)
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
 	//Physics
-	const int32_t velocityIterations = 6;
-	const int32_t positionIterations = 2;
+	const i32 velocityIterations = 6;
+	const i32 positionIterations = 2;
 	m_physicsWorld->Step(deltaTime, velocityIterations, positionIterations);
 
 	//Retrieve transform from Box2D
@@ -343,7 +343,7 @@ void TRAP::Scene::OnUpdateRuntime(const Utils::TimeStep deltaTime)
 		{
 			auto [transform, sprite] = spriteGroup.get<TransformComponent, SpriteRendererComponent>(entity);
 
-			Graphics::Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int32_t>(entity));
+			Graphics::Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<i32>(entity));
 		}
 
 		//Render circles
@@ -353,7 +353,7 @@ void TRAP::Scene::OnUpdateRuntime(const Utils::TimeStep deltaTime)
 			auto [transform, circle] = circleGroup.get<TransformComponent, CircleRendererComponent>(entity);
 
 			Graphics::Renderer2D::DrawCircle(transform.GetTransform(), circle.Color,
-											circle.Thickness, circle.Fade, static_cast<int32_t>(entity));
+											circle.Thickness, circle.Fade, static_cast<i32>(entity));
 		}
 
 		Graphics::Renderer2D::EndScene();
@@ -375,7 +375,7 @@ void TRAP::Scene::OnUpdateEditor([[maybe_unused]] const Utils::TimeStep deltaTim
 	{
 		auto [transform, sprite] = spriteGroup.get<TransformComponent, SpriteRendererComponent>(entity);
 
-		Graphics::Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int32_t>(entity));
+		Graphics::Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<i32>(entity));
 	}
 
 	//Render circles
@@ -385,7 +385,7 @@ void TRAP::Scene::OnUpdateEditor([[maybe_unused]] const Utils::TimeStep deltaTim
 		auto [transform, circle] = circleGroup.get<TransformComponent, CircleRendererComponent>(entity);
 
 		Graphics::Renderer2D::DrawCircle(transform.GetTransform(), circle.Color,
-		                                 circle.Thickness, circle.Fade, static_cast<int32_t>(entity));
+		                                 circle.Thickness, circle.Fade, static_cast<i32>(entity));
 	}
 
 	Graphics::Renderer2D::EndScene();
@@ -418,7 +418,7 @@ void TRAP::Scene::OnTick(const TRAP::Utils::TimeStep& deltaTime)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Scene::OnViewportResize(const uint32_t width, const uint32_t height)
+void TRAP::Scene::OnViewportResize(const u32 width, const u32 height)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 

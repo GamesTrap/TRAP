@@ -61,16 +61,16 @@ namespace
 
 TEST_CASE("TRAP::Math::AngleAxis()", "[math][generic][angleaxis]")
 {
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunAngleAxisRunTimeTests<double>();
-        RunAngleAxisCompileTimeTests<double>();
-        RunAngleAxisEdgeTests<double>();
+        RunAngleAxisRunTimeTests<f64>();
+        RunAngleAxisCompileTimeTests<f64>();
+        RunAngleAxisEdgeTests<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunAngleAxisRunTimeTests<float>();
-        RunAngleAxisCompileTimeTests<float>();
-        RunAngleAxisEdgeTests<float>();
+        RunAngleAxisRunTimeTests<f32>();
+        RunAngleAxisCompileTimeTests<f32>();
+        RunAngleAxisEdgeTests<f32>();
     }
 }

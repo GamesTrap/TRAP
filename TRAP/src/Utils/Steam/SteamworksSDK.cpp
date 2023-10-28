@@ -10,7 +10,7 @@ bool steamServerInitialized = false;
 
 //-------------------------------------------------------------------------------------------------------------------//
 #ifdef USE_STEAMWORKS_SDK
-void SteamLogCallback(const int32_t severity, const char* const msg)
+void SteamLogCallback(const i32 severity, const char* const msg)
 {
     if(severity == 0)
         TP_INFO(TRAP::Log::SteamworksSDKPrefix, msg);
@@ -20,7 +20,7 @@ void SteamLogCallback(const int32_t severity, const char* const msg)
 #endif /*USE_STEAMWORKS_SDK*/
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Utils::Steam::InitializeClient([[maybe_unused]] const uint32_t appID)
+void TRAP::Utils::Steam::InitializeClient([[maybe_unused]] const u32 appID)
 {
 #ifdef USE_STEAMWORKS_SDK
     if(steamClientInitialized)
@@ -60,8 +60,8 @@ void TRAP::Utils::Steam::InitializeClient([[maybe_unused]] const uint32_t appID)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef USE_STEAMWORKS_SDK
-bool TRAP::Utils::Steam::InitializeServer(const uint32_t bindIPv4, const uint16_t gamePort,
-                                          const uint16_t queryPort, const EServerMode authenticationMethod,
+bool TRAP::Utils::Steam::InitializeServer(const u32 bindIPv4, const u16 gamePort,
+                                          const u16 queryPort, const EServerMode authenticationMethod,
                                           const std::string& version)
 {
     if(steamServerInitialized)

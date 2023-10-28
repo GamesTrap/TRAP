@@ -11,6 +11,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_VULKANLOADER_H
 #define TRAP_VULKANLOADER_H
 
+#include "Core/Types.h"
+
 #if defined(VULKAN_H_) && !defined(VK_NO_PROTOTYPES)
     #error To use VulkanLoader, you need to define VK_NO_PROTOTYPES before including vulkan.h
 #endif /*VULKAN_H_ && !VK_NO_PROTOTYPES*/
@@ -85,7 +87,7 @@ void VkInitializeCustom(PFN_vkGetInstanceProcAddr handler);
 /// Get Vulkan instance version supported by the Vulkan loader, or 0 if Vulkan isn't supported
 /// </summary>
 /// <returns>0 if VkInitialize wasn't called or failed.</returns>
-uint32_t VkGetInstanceVersion();
+u32 VkGetInstanceVersion();
 
 /// <summary>
 /// Load global function pointers using application-created VkInstance; call this function after creating the Vulkan instance.
@@ -1967,7 +1969,7 @@ extern PFN_vkAcquireNextImage2KHR vkAcquireNextImage2KHR;
 	#elif defined(_WIN64)
 		typedef __int64 (__stdcall* FARPROC)(void);
 	#else
-		typedef int (__stdcall* FARPROC)(void);
+		typedef i32 (__stdcall* FARPROC)(void);
 	#endif
 #else
     #include <dlfcn.h>
@@ -2032,10 +2034,10 @@ void VkInitializeCustom(PFN_vkGetInstanceProcAddr handler)
 	VkGenLoadLoader(NULL, vkGetInstanceProcAddrStub);
 }
 
-uint32_t VkGetInstanceVersion()
+u32 VkGetInstanceVersion()
 {
 #if defined(VK_VERSION_1_1)
-	uint32_t apiVersion = 0;
+	u32 apiVersion = 0;
 	if (vkEnumerateInstanceVersion && vkEnumerateInstanceVersion(&apiVersion) == VK_SUCCESS)
 		return apiVersion;
 #endif /*VK_VERSION_1_1*/

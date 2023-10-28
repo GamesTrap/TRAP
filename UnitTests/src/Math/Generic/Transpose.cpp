@@ -77,23 +77,23 @@ namespace
 
 TEST_CASE("TRAP::Math::Transpose()", "[math][generic][transpose]")
 {
-    SECTION("Mat3 - double")
+    SECTION("Mat3 - f64")
     {
         RunCompileTimeTransposeTests<TRAP::Math::Mat3d>();
         RunTransposeEdgeTests<TRAP::Math::Mat3d>();
     }
-    SECTION("Mat3 - float")
+    SECTION("Mat3 - f32")
     {
         RunCompileTimeTransposeTests<TRAP::Math::Mat3f>();
         RunTransposeEdgeTests<TRAP::Math::Mat3f>();
     }
 
-    SECTION("Mat4 - double")
+    SECTION("Mat4 - f64")
     {
         RunCompileTimeTransposeTests<TRAP::Math::Mat4d>();
         RunTransposeEdgeTests<TRAP::Math::Mat4d>();
     }
-    SECTION("Mat4 - float")
+    SECTION("Mat4 - f32")
     {
         RunCompileTimeTransposeTests<TRAP::Math::Mat4f>();
         RunTransposeEdgeTests<TRAP::Math::Mat4f>();

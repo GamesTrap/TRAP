@@ -107,16 +107,16 @@ namespace
 
 TEST_CASE("TRAP::Math::PerspectiveFoV()", "[math][generic][perspectivefov]")
 {
-    SECTION("Mat4 - double")
+    SECTION("Mat4 - f64")
     {
-        RunPerspectiveFoVRunTimeTests<double>();
-        RunPerspectiveFoVCompileTimeTests<double>();
-        RunPerspectiveFoVEdgeTests<double>();
+        RunPerspectiveFoVRunTimeTests<f64>();
+        RunPerspectiveFoVCompileTimeTests<f64>();
+        RunPerspectiveFoVEdgeTests<f64>();
     }
-    SECTION("Mat4 - float")
+    SECTION("Mat4 - f32")
     {
-        RunPerspectiveFoVRunTimeTests<float>();
-        RunPerspectiveFoVCompileTimeTests<float>();
-        RunPerspectiveFoVEdgeTests<float>();
+        RunPerspectiveFoVRunTimeTests<f32>();
+        RunPerspectiveFoVCompileTimeTests<f32>();
+        RunPerspectiveFoVEdgeTests<f32>();
     }
 }

@@ -191,52 +191,52 @@ namespace
 
 TEST_CASE("TRAP::Math::Normalize()", "[math][generic][normalize]")
 {
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunNormalizeVecRunTimeTests<TRAP::Math::Vec4d>();
         RunNormalizeVecCompileTimeTests<TRAP::Math::Vec4d>();
         RunNormalizeVecEdgeTests<TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunNormalizeVecRunTimeTests<TRAP::Math::Vec4f>();
         RunNormalizeVecCompileTimeTests<TRAP::Math::Vec4f>();
         RunNormalizeVecEdgeTests<TRAP::Math::Vec4f>();
     }
 
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunNormalizeVecRunTimeTests<TRAP::Math::Vec3d>();
         RunNormalizeVecCompileTimeTests<TRAP::Math::Vec3d>();
         RunNormalizeVecEdgeTests<TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunNormalizeVecRunTimeTests<TRAP::Math::Vec3f>();
         RunNormalizeVecCompileTimeTests<TRAP::Math::Vec3f>();
         RunNormalizeVecEdgeTests<TRAP::Math::Vec3f>();
     }
 
-    SECTION("Vec2 - double")
+    SECTION("Vec2 - f64")
     {
         RunNormalizeVecRunTimeTests<TRAP::Math::Vec2d>();
         RunNormalizeVecCompileTimeTests<TRAP::Math::Vec2d>();
         RunNormalizeVecEdgeTests<TRAP::Math::Vec2d>();
     }
-    SECTION("Vec2 - float")
+    SECTION("Vec2 - f32")
     {
         RunNormalizeVecRunTimeTests<TRAP::Math::Vec2f>();
         RunNormalizeVecCompileTimeTests<TRAP::Math::Vec2f>();
         RunNormalizeVecEdgeTests<TRAP::Math::Vec2f>();
     }
 
-    SECTION("Quat - double")
+    SECTION("Quat - f64")
     {
         RunNormalizeQuatRunTimeTests<TRAP::Math::Quatd>();
         RunNormalizeQuatCompileTimeTests<TRAP::Math::Quatd>();
         RunNormalizeQuatEdgeTests<TRAP::Math::Quatd>();
     }
-    SECTION("Quat - float")
+    SECTION("Quat - f32")
     {
         RunNormalizeQuatRunTimeTests<TRAP::Math::Quatf>();
         RunNormalizeQuatCompileTimeTests<TRAP::Math::Quatf>();

@@ -3,7 +3,7 @@
 
 #include "Graphics/API/Vulkan/Objects/VulkanDescriptorPool.h"
 
-[[nodiscard]] TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::DescriptorPool::Create(const uint32_t numDescriptorSets)
+[[nodiscard]] TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::DescriptorPool::Create(const u32 numDescriptorSets)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -34,7 +34,7 @@ TRAP::Graphics::DescriptorPool::~DescriptorPool()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::DescriptorPool::DescriptorPool(const uint32_t numDescriptorSets)
+TRAP::Graphics::DescriptorPool::DescriptorPool(const u32 numDescriptorSets)
 	: m_numDescriptorSets(numDescriptorSets)
 {
 	TRAP_ASSERT(numDescriptorSets > 0, "DescriptorPool::DescriptorPool(): m_numDescriptorSets is 0");

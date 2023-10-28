@@ -53,7 +53,7 @@ namespace TRAP::Network
 		/// If the socket is not listening to a port, this function returns 0.
 		/// </summary>
 		/// <returns>Port to which the socket is bound.</returns>
-		[[nodiscard]] uint16_t GetLocalPort() const;
+		[[nodiscard]] u16 GetLocalPort() const;
 
 		/// <summary>
 		/// Start listening for incoming connection attempts.
@@ -72,7 +72,7 @@ namespace TRAP::Network
 		/// <param name="port">Port to listen on for incoming connection attempts.</param>
 		/// <param name="address">Address of the interface to listen on.</param>
 		/// <returns>Status code.</returns>
-		[[nodiscard]] Status Listen(uint16_t port, const IPv4Address& address = IPv4Address::Any);
+		[[nodiscard]] Status Listen(u16 port, const IPv4Address& address = IPv4Address::Any);
 
 		/// <summary>
 		/// Stop listening and close the socket.

@@ -115,7 +115,7 @@ namespace
         for(const auto& [y, x] : values)
         {
             const T s = TRAP::Math::ATan(y, x);
-            for(uint32_t l = 0; l < T::Length(); ++l)
+            for(u32 l = 0; l < T::Length(); ++l)
                 REQUIRE(TRAP::Math::Equal(s[l], std::atan2(y[l], x[l]), Epsilon));
         }
     }
@@ -134,52 +134,52 @@ namespace
 
 TEST_CASE("TRAP::Math::ATan(y, x)", "[math][generic][atan2]")
 {
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunATan2RunTimeTests<double>();
-        RunATan2CompileTimeTests<double>();
-        RunATan2EdgeTests<double>();
+        RunATan2RunTimeTests<f64>();
+        RunATan2CompileTimeTests<f64>();
+        RunATan2EdgeTests<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunATan2RunTimeTests<float>();
-        RunATan2CompileTimeTests<float>();
-        RunATan2EdgeTests<float>();
+        RunATan2RunTimeTests<f32>();
+        RunATan2CompileTimeTests<f32>();
+        RunATan2EdgeTests<f32>();
     }
 
-    SECTION("Vec2 - double")
+    SECTION("Vec2 - f64")
     {
         RunATan2VecRunTimeTests<TRAP::Math::Vec2d>();
         RunATan2VecCompileTimeTests<TRAP::Math::Vec2d>();
         RunATan2VecEdgeTests<TRAP::Math::Vec2d>();
     }
-    SECTION("Vec2 - float")
+    SECTION("Vec2 - f32")
     {
         RunATan2VecRunTimeTests<TRAP::Math::Vec2f>();
         RunATan2VecCompileTimeTests<TRAP::Math::Vec2f>();
         RunATan2VecEdgeTests<TRAP::Math::Vec2f>();
     }
 
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunATan2VecRunTimeTests<TRAP::Math::Vec3d>();
         RunATan2VecCompileTimeTests<TRAP::Math::Vec3d>();
         RunATan2VecEdgeTests<TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunATan2VecRunTimeTests<TRAP::Math::Vec3f>();
         RunATan2VecCompileTimeTests<TRAP::Math::Vec3f>();
         RunATan2VecEdgeTests<TRAP::Math::Vec3f>();
     }
 
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunATan2VecRunTimeTests<TRAP::Math::Vec4d>();
         RunATan2VecCompileTimeTests<TRAP::Math::Vec4d>();
         RunATan2VecEdgeTests<TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunATan2VecRunTimeTests<TRAP::Math::Vec4f>();
         RunATan2VecCompileTimeTests<TRAP::Math::Vec4f>();

@@ -62,7 +62,7 @@ void TRAP::Graphics::API::VulkanCommandPool::FreeCommandBuffer(const CommandBuff
 
 	TRAP_ASSERT(cmdBuffer, "VulkanCommandPool::FreeCommandBuffer(): CommandBuffer is nullptr");
 
-	for(std::size_t i = 0; i < m_commandBuffers.size(); i++)
+	for(usize i = 0; i < m_commandBuffers.size(); i++)
 	{
 		if(m_commandBuffers[i].get() != cmdBuffer)
 			continue;

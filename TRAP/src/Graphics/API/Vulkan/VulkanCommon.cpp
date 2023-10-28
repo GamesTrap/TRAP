@@ -127,7 +127,7 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
-void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[maybe_unused]] const uint64_t handle,
+void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[maybe_unused]] const u64 handle,
 										  [[maybe_unused]] const VkObjectType type, [[maybe_unused]] const std::string_view name)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -141,7 +141,7 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 }
 #else
-void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[maybe_unused]] const uint64_t handle,
+void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[maybe_unused]] const u64 handle,
 										  [[maybe_unused]] const VkDebugReportObjectTypeEXT type,
                                           [[maybe_unused]] const std::string_view name)
 {
@@ -267,10 +267,10 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 [[nodiscard]] VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc,
 	                                                                                   std::vector<VkPipelineColorBlendAttachmentState>& attachments)
 {
-	uint32_t blendDescIndex = 0;
+	u32 blendDescIndex = 0;
 
 #ifdef ENABLE_GRAPHICS_DEBUG
-	for(uint32_t i = 0; i < 8; ++i)
+	for(u32 i = 0; i < 8; ++i)
 	{
 		if((std::to_underlying(desc.RenderTargetMask) & BIT(i)) != 0u)
 		{
@@ -289,7 +289,7 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 	blendDescIndex = 0;
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
-	for(uint32_t i = 0; i < 8; ++i)
+	for(u32 i = 0; i < 8; ++i)
 	{
 		const VkBool32 blendEnable = VkBool32
 		(
@@ -378,7 +378,7 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 	rs.cullMode = VkCullModeTranslator[std::to_underlying(desc.CullMode)];
 	rs.frontFace = VkFrontFaceTranslator[std::to_underlying(desc.FrontFace)];
 	rs.depthBiasEnable = (desc.DepthBias != 0) ? VK_TRUE : VK_FALSE;
-	rs.depthBiasConstantFactor = NumericCast<float>(desc.DepthBias);
+	rs.depthBiasConstantFactor = NumericCast<f32>(desc.DepthBias);
 	rs.depthBiasClamp = 0.0f;
 	rs.depthBiasSlopeFactor = desc.SlopeScaledDepthBias;
 	rs.lineWidth = 1.0f;
@@ -389,9 +389,9 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::UtilGetPlanarVkImageMemoryRequirement(VkDevice device, VkImage image,
-																const uint32_t planesCount,
+																const u32 planesCount,
                                                                 VkMemoryRequirements& memReq,
-                                                                std::vector<uint64_t>& planesOffsets)
+                                                                std::vector<u64>& planesOffsets)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -413,7 +413,7 @@ void TRAP::Graphics::API::UtilGetPlanarVkImageMemoryRequirement(VkDevice device,
 	memReq2.sType = VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2;
 	memReq2.pNext = &memDedicatedReq;
 
-	for(uint32_t i = 0; i < planesCount; ++i)
+	for(u32 i = 0; i < planesCount; ++i)
 	{
 		imagePlaneMemReqInfo.planeAspect = static_cast<VkImageAspectFlagBits>(VK_IMAGE_ASPECT_PLANE_0_BIT << i);
 		vkGetImageMemoryRequirements2(device, &imagePlaneMemReqInfo2, &memReq2);

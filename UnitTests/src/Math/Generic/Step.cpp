@@ -67,45 +67,45 @@ namespace
 
 TEST_CASE("TRAP::Math::Step()", "[math][generic][step]")
 {
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunCompileTimeStepTests<double>();
-        RunCompileTimeStepEdgeTests<double>();
+        RunCompileTimeStepTests<f64>();
+        RunCompileTimeStepEdgeTests<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunCompileTimeStepTests<float>();
-        RunCompileTimeStepEdgeTests<float>();
+        RunCompileTimeStepTests<f32>();
+        RunCompileTimeStepEdgeTests<f32>();
     }
 
-    SECTION("Vec2 - double")
+    SECTION("Vec2 - f64")
     {
-        RunStepVecTests<double, TRAP::Math::Vec2d>();
+        RunStepVecTests<f64, TRAP::Math::Vec2d>();
         RunStepVecTests<TRAP::Math::Vec2d, TRAP::Math::Vec2d>();
     }
-    SECTION("Vec2 - float")
+    SECTION("Vec2 - f32")
     {
-        RunStepVecTests<float, TRAP::Math::Vec2f>();
+        RunStepVecTests<f32, TRAP::Math::Vec2f>();
         RunStepVecTests<TRAP::Math::Vec2f, TRAP::Math::Vec2f>();
     }
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
-        RunStepVecTests<double, TRAP::Math::Vec3d>();
+        RunStepVecTests<f64, TRAP::Math::Vec3d>();
         RunStepVecTests<TRAP::Math::Vec3d, TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
-        RunStepVecTests<float, TRAP::Math::Vec3f>();
+        RunStepVecTests<f32, TRAP::Math::Vec3f>();
         RunStepVecTests<TRAP::Math::Vec3f, TRAP::Math::Vec3f>();
     }
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
-        RunStepVecTests<double, TRAP::Math::Vec4d>();
+        RunStepVecTests<f64, TRAP::Math::Vec4d>();
         RunStepVecTests<TRAP::Math::Vec4d, TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
-        RunStepVecTests<float, TRAP::Math::Vec4f>();
+        RunStepVecTests<f32, TRAP::Math::Vec4f>();
         RunStepVecTests<TRAP::Math::Vec4f, TRAP::Math::Vec4f>();
     }
 }

@@ -36,7 +36,7 @@ void ScreenshotTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	}
 	TRAP::Graphics::Renderer2D::EndScene();
 
-	constinit static float time = 0.0f;
+	constinit static f32 time = 0.0f;
 	constinit static bool done = false;
 	time += deltaTime.GetSeconds();
 	if(time >= 3.0f && !done)

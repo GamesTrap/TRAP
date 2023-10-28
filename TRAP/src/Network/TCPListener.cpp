@@ -36,7 +36,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Utils/Utils.h"
 #include "Utils/Memory.h"
 
-[[nodiscard]] uint16_t TRAP::Network::TCPListener::GetLocalPort() const
+[[nodiscard]] u16 TRAP::Network::TCPListener::GetLocalPort() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -48,7 +48,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in);
 	if (getsockname(GetHandle(), &address, &size) != -1)
 	{
-		uint16_t res = std::bit_cast<sockaddr_in>(address).sin_port;
+		u16 res = std::bit_cast<sockaddr_in>(address).sin_port;
 
 		if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(res);
@@ -61,7 +61,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Network::Socket::Status TRAP::Network::TCPListener::Listen(const uint16_t port, const IPv4Address& address)
+[[nodiscard]] TRAP::Network::Socket::Status TRAP::Network::TCPListener::Listen(const u16 port, const IPv4Address& address)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 

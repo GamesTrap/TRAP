@@ -95,7 +95,7 @@ TRAP::Network::FTP::~FTP()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::FTP::Response TRAP::Network::FTP::Connect(const IPv4Address& server, const uint16_t port,
+TRAP::Network::FTP::Response TRAP::Network::FTP::Connect(const IPv4Address& server, const u16 port,
                                                          const Utils::TimeStep timeout)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
@@ -382,7 +382,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::SendCommand(const std::string& 
 	//We'll use a variable to keep track of the last valid code.
 	//It is useful in case of multi-lines responses, because the end of such a response
 	//will start by the same code
-	uint32_t lastCode = 0;
+	u32 lastCode = 0;
 	bool isInsideMultiline = false;
 	std::string message;
 
@@ -390,7 +390,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::SendCommand(const std::string& 
 	{
 		//Receive the response from the server
 		std::array<char, 1024> buffer{};
-		std::size_t length = 0;
+		usize length = 0;
 
 		if(m_receiveBuffer.empty())
 		{
@@ -409,7 +409,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::SendCommand(const std::string& 
 		while(in)
 		{
 			//Try to extract the code
-			uint32_t code = 0;
+			u32 code = 0;
 			if(in >> code)
 			{
 				//Extract the separator
@@ -457,8 +457,8 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::SendCommand(const std::string& 
 							message = separator + line;
 
 						//Save the remaining data for the next time GetResponse() is called
-						m_receiveBuffer.assign(buffer.data() + static_cast<std::size_t>(in.tellg()),
-						                       length - static_cast<std::size_t>(in.tellg()));
+						m_receiveBuffer.assign(buffer.data() + static_cast<usize>(in.tellg()),
+						                       length - static_cast<usize>(in.tellg()));
 
 						//Return the response code and message
 						return Response(static_cast<Response::Status>(code), message);
@@ -534,15 +534,15 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::DataChannel::Open(const Transfe
 		const std::string::size_type begin = response.GetMessage().find_first_of("0123456789");
 		if(begin != std::string::npos)
 		{
-			std::array<uint8_t, 6> data{};
+			std::array<u8, 6> data{};
 			const std::string str = response.GetMessage().substr(begin);
-			std::size_t index = 0;
-			for (uint8_t& i : data)
+			usize index = 0;
+			for (u8& i : data)
 			{
 				//Extract the current number
 				while(Utils::String::IsDigit(str[index]))
 				{
-					i = NumericCast<uint8_t>(NumericCast<uint8_t>(i * 10u) + NumericCast<uint8_t>(str[index] - '0'));
+					i = NumericCast<u8>(NumericCast<u8>(i * 10u) + NumericCast<u8>(str[index] - '0'));
 					index++;
 				}
 
@@ -551,7 +551,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::DataChannel::Open(const Transfe
 			}
 
 			//Reconstruct connection port and address
-			const uint16_t port = NumericCast<uint16_t>(std::get<4>(data) * 256) + std::get<5>(data);
+			const u16 port = NumericCast<u16>(std::get<4>(data) * 256) + std::get<5>(data);
 			const IPv4Address address(std::get<0>(data), std::get<1>(data), std::get<2>(data), std::get<3>(data));
 
 			//Connect the data channel to the server
@@ -600,7 +600,7 @@ void TRAP::Network::FTP::DataChannel::Receive(std::ostream& stream)
 
 	//Receive data
 	std::array<char, 1024> buffer{};
-	std::size_t received = 0;
+	usize received = 0;
 	while(m_dataSocket.Receive(buffer.data(), buffer.size(), received) == Socket::Status::Done)
 	{
 		stream.write(buffer.data(), NumericCast<std::streamsize>(received));
@@ -636,12 +636,12 @@ void TRAP::Network::FTP::DataChannel::Send(std::istream& stream)
 			break;
 		}
 
-		const int64_t count = stream.gcount();
+		const i64 count = stream.gcount();
 
 		if(count > 0)
 		{
 			//We could read mode data from the stream: send them
-			if (m_dataSocket.Send(buffer.data(), NumericCast<std::size_t>(count)) != Socket::Status::Done)
+			if (m_dataSocket.Send(buffer.data(), NumericCast<usize>(count)) != Socket::Status::Done)
 				break;
 		}
 		else

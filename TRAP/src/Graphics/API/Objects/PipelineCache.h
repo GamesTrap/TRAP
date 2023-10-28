@@ -50,7 +50,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="size">Output: Size of the data.</param>
 		/// <param name="data">Output: Pointer to store the data.</param>
-		virtual void GetPipelineCacheData(std::size_t* size, void* data) const = 0;
+		virtual void GetPipelineCacheData(usize* size, void* data) const = 0;
 
 		/// <summary>
 		/// Save a pipeline to disk.

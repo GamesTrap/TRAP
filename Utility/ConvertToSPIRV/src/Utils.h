@@ -82,7 +82,7 @@ requires ( std::is_unsigned_v<T> && std::is_integral_v<T>)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline std::optional<std::vector<uint8_t>> ReadFile(const std::filesystem::path& filePath)
+[[nodiscard]] inline std::optional<std::vector<u8>> ReadFile(const std::filesystem::path& filePath)
 {
     if(!FileOrFolderExists(filePath))
         return std::nullopt;
@@ -94,12 +94,12 @@ requires ( std::is_unsigned_v<T> && std::is_integral_v<T>)
         return std::nullopt;
     }
 
-    const std::size_t fileSize = static_cast<std::size_t>(file.tellg());
+    const usize fileSize = static_cast<usize>(file.tellg());
 
     file.seekg(std::ios::beg);
 
-    std::vector<uint8_t> data(fileSize);
-    file.read(reinterpret_cast<char*>(data.data()), static_cast<std::streamsize>(data.size() * sizeof(uint8_t)));
+    std::vector<u8> data(fileSize);
+    file.read(reinterpret_cast<char*>(data.data()), static_cast<std::streamsize>(data.size() * sizeof(u8)));
 
     return data;
 }
@@ -108,8 +108,8 @@ requires ( std::is_unsigned_v<T> && std::is_integral_v<T>)
 
 [[nodiscard]] inline constexpr std::vector<std::string> SplitString(const std::string& string, const std::string& delimiters)
 {
-	std::size_t start = 0;
-	std::size_t end = string.find_first_of(delimiters);
+	usize start = 0;
+	usize end = string.find_first_of(delimiters);
 
 	std::vector<std::string> result;
 
@@ -148,7 +148,7 @@ requires ( std::is_unsigned_v<T> && std::is_integral_v<T>)
 
 [[nodiscard]] inline constexpr std::string GetSuffix(const std::string& name)
 {
-	const std::size_t pos = name.rfind('.');
+	const usize pos = name.rfind('.');
 
 	return (pos == std::string::npos) ? "" : name.substr(pos + 1);
 }
@@ -230,8 +230,8 @@ namespace std
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-requires (std::unsigned_integral<T> && !std::same_as<T, uint8_t>)
-[[nodiscard]] inline constexpr T ConvertByte(const uint8_t* const source)
+requires (std::unsigned_integral<T> && !std::same_as<T, u8>)
+[[nodiscard]] inline constexpr T ConvertByte(const u8* const source)
 {
     if constexpr (sizeof(T) == 2)
     {

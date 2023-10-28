@@ -1,8 +1,9 @@
 #ifndef TRAP_STEAMWORKSSDK_H
 #define TRAP_STEAMWORKSSDK_H
 
-#include <cstdint>
 #include <string>
+
+#include "Core/Types.h"
 
 #ifdef USE_STEAMWORKS_SDK
 
@@ -27,7 +28,7 @@ namespace TRAP::Utils::Steam
     /// Note: This function stops the engine if it fails to initialize.
     /// </summary>
     /// <param name="appID">Steam AppID for this application.</param>
-    void InitializeClient(uint32_t appID);
+    void InitializeClient(u32 appID);
 
 #ifdef USE_STEAMWORKS_SDK
     /// <summary>
@@ -42,8 +43,8 @@ namespace TRAP::Utils::Steam
     /// It is used by the master server to detect out of date servers.
     /// </param>
     /// <returns>True if Steamworks SDK for servers is initialized, false otherwise.</returns>
-    bool InitializeServer(uint32_t bindIPv4, uint16_t gamePort,
-                          uint16_t queryPort, EServerMode authenticationMethod,
+    bool InitializeServer(u32 bindIPv4, u16 gamePort,
+                          u16 queryPort, EServerMode authenticationMethod,
                           const std::string& version);
 #endif /*USE_STEAMWORKS_SDK*/
 

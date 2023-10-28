@@ -27,7 +27,7 @@ namespace
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	inline constexpr std::array<std::array<uint8_t, 4>, 5> IconColors
+	inline constexpr std::array<std::array<u8, 4>, 5> IconColors
 	{
 		{
 			{  0,   0,   0, 255}, //Black
@@ -71,14 +71,14 @@ void IconTests::OnEvent(TRAP::Events::Event& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void IconTests::SetIcon(const TRAP::Window& window, const uint32_t iconColor)
+void IconTests::SetIcon(const TRAP::Window& window, const u32 iconColor)
 {
-	std::vector<uint8_t> pixels(16ull * 16ull * 4ull, 0);
-	std::size_t target = 0;
+	std::vector<u8> pixels(16ull * 16ull * 4ull, 0);
+	usize target = 0;
 
-	for(uint32_t y = 0; y < 16u; y++)
+	for(u32 y = 0; y < 16u; y++)
 	{
-		for(uint32_t x = 0; x < 16u; x++)
+		for(u32 x = 0; x < 16u; x++)
 		{
 			if (IconStrings[y][x] == '0')
 				memcpy(&pixels[target], IconColors[iconColor].data(), 4);

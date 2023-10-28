@@ -41,7 +41,7 @@ void WindowFeaturesTests::OnImGuiRender()
 	ImGui::SameLine();
 	if(ImGui::Button("Hide (briefly)"))
 	{
-		const float time = TRAP::Application::GetTime().GetSeconds() + 3.0f;
+		const f32 time = TRAP::Application::GetTime().GetSeconds() + 3.0f;
 
 		TRAP::Application::GetWindow()->Hide();
 
@@ -55,30 +55,30 @@ void WindowFeaturesTests::OnImGuiRender()
 	//Window Position
 	{
 		TRAP::Math::Vec2i winPos = TRAP::Application::GetWindow()->GetPosition();
-		uint32_t changed = 0;
+		u32 changed = 0;
 
 		ImGui::Text("Position");
 		ImGui::SameLine();
-		changed += NumericCast<uint32_t>(ImGui::InputInt("##PosX", &winPos.x(), 0, ImGuiInputTextFlags_EnterReturnsTrue));
+		changed += NumericCast<u32>(ImGui::InputInt("##PosX", &winPos.x(), 0, ImGuiInputTextFlags_EnterReturnsTrue));
 		ImGui::SameLine();
-		changed += NumericCast<uint32_t>(ImGui::InputInt("##PosY", &winPos.y(), 0, ImGuiInputTextFlags_EnterReturnsTrue));
+		changed += NumericCast<u32>(ImGui::InputInt("##PosY", &winPos.y(), 0, ImGuiInputTextFlags_EnterReturnsTrue));
 
 		if(changed != 0)
 		{
-			TRAP::Application::GetWindow()->SetPosition(NumericCast<uint32_t>(winPos.x()), NumericCast<uint32_t>(winPos.y()));
+			TRAP::Application::GetWindow()->SetPosition(NumericCast<u32>(winPos.x()), NumericCast<u32>(winPos.y()));
 			m_lastWindowPos = winPos;
 		}
 	}
 	//Window Size
 	{
 		TRAP::Math::Vec2ui winSize = TRAP::Application::GetWindow()->GetSize();
-		uint32_t changed = 0;
+		u32 changed = 0;
 
 		ImGui::Text("Size");
 		ImGui::SameLine();
-		changed += NumericCast<uint32_t>(ImGui::InputScalar("##SizeX", ImGuiDataType_U32, &winSize.x(), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
+		changed += NumericCast<u32>(ImGui::InputScalar("##SizeX", ImGuiDataType_U32, &winSize.x(), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
 		ImGui::SameLine();
-		changed += NumericCast<uint32_t>(ImGui::InputScalar("##SizeY", ImGuiDataType_U32, &winSize.y(), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
+		changed += NumericCast<u32>(ImGui::InputScalar("##SizeY", ImGuiDataType_U32, &winSize.y(), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
 
 		if(changed != 0)
 		{
@@ -88,15 +88,15 @@ void WindowFeaturesTests::OnImGuiRender()
 	}
 	//Minimum Size
 	{
-		uint32_t changed = 0;
+		u32 changed = 0;
 		bool updateSizeLimit = false;
 		if(ImGui::Checkbox("Minimum Size", &m_limitMinSize))
 			updateSizeLimit = true;
 
 		ImGui::SameLine();
-		changed += NumericCast<uint32_t>(ImGui::InputScalar("##MinSizeX", ImGuiDataType_U32, &m_minWindowSize.x(), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
+		changed += NumericCast<u32>(ImGui::InputScalar("##MinSizeX", ImGuiDataType_U32, &m_minWindowSize.x(), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
 		ImGui::SameLine();
-		changed += NumericCast<uint32_t>(ImGui::InputScalar("##MinSizeY", ImGuiDataType_U32, &m_minWindowSize.y(), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
+		changed += NumericCast<u32>(ImGui::InputScalar("##MinSizeY", ImGuiDataType_U32, &m_minWindowSize.y(), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
 
 		if(changed != 0)
 			updateSizeLimit = true;
@@ -111,15 +111,15 @@ void WindowFeaturesTests::OnImGuiRender()
 	}
 	//Maximum Size
 	{
-		uint32_t changed = 0;
+		u32 changed = 0;
 		bool updateSizeLimit = false;
 		if(ImGui::Checkbox("Maximum Size", &m_limitMaxSize))
 			updateSizeLimit = true;
 
 		ImGui::SameLine();
-		changed += NumericCast<uint32_t>(ImGui::InputScalar("##MaxSizeX", ImGuiDataType_U32, &m_maxWindowSize.x(), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
+		changed += NumericCast<u32>(ImGui::InputScalar("##MaxSizeX", ImGuiDataType_U32, &m_maxWindowSize.x(), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
 		ImGui::SameLine();
-		changed += NumericCast<uint32_t>(ImGui::InputScalar("##MaxSizeY", ImGuiDataType_U32, &m_maxWindowSize.y(), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
+		changed += NumericCast<u32>(ImGui::InputScalar("##MaxSizeY", ImGuiDataType_U32, &m_maxWindowSize.y(), nullptr, nullptr, nullptr, ImGuiInputTextFlags_EnterReturnsTrue));
 
 		if(changed != 0)
 			updateSizeLimit = true;
@@ -139,7 +139,7 @@ void WindowFeaturesTests::OnImGuiRender()
 	TRAP::Math::Vec2 contentScale = TRAP::Application::GetWindow()->GetMonitor().GetContentScale();
 	ImGui::Text("Content Scale: %f %f", contentScale.x(), contentScale.y());
 
-	float opacity = TRAP::Application::GetWindow()->GetOpacity().value_or(1.0f);
+	f32 opacity = TRAP::Application::GetWindow()->GetOpacity().value_or(1.0f);
 	if(ImGui::SliderFloat("Opacity", &opacity, 0.001f, 1.0f))
 		TRAP::Application::GetWindow()->SetOpacity(opacity);
 

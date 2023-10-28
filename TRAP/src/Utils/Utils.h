@@ -1,13 +1,14 @@
 #ifndef TRAP_UTILS_H
 #define TRAP_UTILS_H
 
-#include <cstdint>
 #include <array>
 #include <string>
 
+#include "Core/Types.h"
+
 namespace TRAP::Utils
 {
-	using UUID = std::array<uint8_t, 16>;
+	using UUID = std::array<u8, 16>;
 
 	/// <summary>
 	/// Convert a 16 byte long UUID to a string.
@@ -25,7 +26,7 @@ namespace TRAP::Utils
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	template<typename T>
-	concept Hashable = requires(T obj) { {std::hash<T>{}(obj) } -> std::convertible_to<std::size_t>; };
+	concept Hashable = requires(T obj) { {std::hash<T>{}(obj) } -> std::convertible_to<usize>; };
 
 	/// <summary>
 	/// Called repeatedly to incrementally create a hash value from several variables.
@@ -36,7 +37,7 @@ namespace TRAP::Utils
 	/// <param name="rest">Optional variadic for more values.</param>
 	template<typename T, typename... Rest>
 	requires (Hashable<T> && ... && Hashable<Rest>)
-	constexpr void HashCombine(std::size_t& seed, const T& v, Rest... rest) noexcept
+	constexpr void HashCombine(usize& seed, const T& v, Rest... rest) noexcept
 	{
 		seed ^= std::hash<T>()(v) + 0x9E3779B9u + (seed << 6u) + (seed >> 2u);
     	((seed ^= std::hash<Rest>()(rest) + 0x9E3779B9u + (seed << 6u) + (seed >> 2u)), ...);
@@ -67,8 +68,8 @@ namespace TRAP::Utils
 	struct CPUInfo
 	{
 		std::string Model{};
-		uint32_t Cores = 0;
-		uint32_t LogicalCores = 0;
+		u32 Cores = 0;
+		u32 LogicalCores = 0;
 		bool HyperThreaded = false;
 	};
 

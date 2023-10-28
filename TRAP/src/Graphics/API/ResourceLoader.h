@@ -17,7 +17,7 @@ namespace TRAP::Graphics
 
 namespace TRAP::Graphics::API
 {
-	using SyncToken = uint64_t;
+	using SyncToken = u64;
 
 	/// <summary>
 	/// Resource loader.
@@ -191,10 +191,10 @@ namespace TRAP::Graphics::API
 		{
 			TRAP::Graphics::Texture* Texture = nullptr;
 			RendererAPI::MappedMemoryRange Range{};
-			uint32_t BaseMipLevel = 0;
-			uint32_t MipLevels = 0;
-			uint32_t BaseArrayLayer = 0;
-			uint32_t LayerCount = 0;
+			u32 BaseMipLevel = 0;
+			u32 MipLevels = 0;
+			u32 BaseArrayLayer = 0;
+			u32 LayerCount = 0;
 			bool MipsAfterSlice = false;
 		};
 		struct UpdateRequest;
@@ -210,13 +210,13 @@ namespace TRAP::Graphics::API
 		/// Retrieve the row alignment for textures used by the GPU.
 		/// </summary>
 		/// <returns>Row alignment used by the GPU.</returns>
-		[[nodiscard]] static uint32_t UtilGetTextureRowAlignment() noexcept;
+		[[nodiscard]] static u32 UtilGetTextureRowAlignment() noexcept;
 		/// <summary>
 		/// Retrieve the subresource alignment for textures used by the GPU.
 		/// </summary>
 		/// <param name="fmt">Format of the texture. Default: ImageFormat::Undefined.</param>
 		/// <returns>Subresource alignment used by the GPU.</returns>
-		[[nodiscard]] static uint32_t UtilGetTextureSubresourceAlignment(TRAP::Graphics::API::ImageFormat fmt = TRAP::Graphics::API::ImageFormat::Undefined) noexcept;
+		[[nodiscard]] static u32 UtilGetTextureSubresourceAlignment(TRAP::Graphics::API::ImageFormat fmt = TRAP::Graphics::API::ImageFormat::Undefined) noexcept;
 		/// <summary>
 		///	Retrieve the total surface size of a texture.
 		/// </summary>
@@ -231,10 +231,10 @@ namespace TRAP::Graphics::API
 		/// <param name="baseArrayLayer">Base array layer of the texture.</param>
 		/// <param name="arrayLayers">Number of array layers of the texture.</param>
 		/// <returns>Total surface size of the texture.</returns>
-		[[nodiscard]] static constexpr uint32_t UtilGetSurfaceSize(TRAP::Graphics::API::ImageFormat fmt, uint32_t width, uint32_t height,
-		                                                           uint32_t depth, uint32_t rowStride, uint32_t sliceStride,
-										                           uint32_t baseMipLevel, uint32_t mipLevels, uint32_t baseArrayLayer,
-										                           uint32_t arrayLayers) noexcept;
+		[[nodiscard]] static constexpr u32 UtilGetSurfaceSize(TRAP::Graphics::API::ImageFormat fmt, u32 width, u32 height,
+		                                                           u32 depth, u32 rowStride, u32 sliceStride,
+										                           u32 baseMipLevel, u32 mipLevels, u32 baseArrayLayer,
+										                           u32 arrayLayers) noexcept;
 		/// <summary>
 		/// Retrieve information about a texture.
 		/// </summary>
@@ -245,15 +245,15 @@ namespace TRAP::Graphics::API
 		/// <param name="outRowBytes">Optional output for the number of bytes in a row of the texture.</param>
 		/// <param name="outNumRows">Optional output for the number of rows in the texture.</param>
 		/// <returns>True on successful retrieval, false otherwise.</returns>
-		[[nodiscard]] static constexpr bool UtilGetSurfaceInfo(uint32_t width, uint32_t height, TRAP::Graphics::API::ImageFormat fmt,
-		                                                       uint32_t* outNumBytes, uint32_t* outRowBytes, uint32_t* outNumRows);
+		[[nodiscard]] static constexpr bool UtilGetSurfaceInfo(u32 width, u32 height, TRAP::Graphics::API::ImageFormat fmt,
+		                                                       u32* outNumBytes, u32* outRowBytes, u32* outNumRows);
 		/// <summary>
 		/// Allocate a new staging buffer.
 		/// </summary>
 		/// <param name="memoryRequirement">Required memory size.</param>
 		/// <param name="alignment">Memory alignment.</param>
 		/// <returns>Staging buffer information.</returns>
-		[[nodiscard]] static RendererAPI::MappedMemoryRange AllocateUploadMemory(uint64_t memoryRequirement, uint32_t alignment);
+		[[nodiscard]] static RendererAPI::MappedMemoryRange AllocateUploadMemory(u64 memoryRequirement, u32 alignment);
 		/// <summary>
 		/// Queue a buffer barrier.
 		/// </summary>
@@ -301,7 +301,7 @@ namespace TRAP::Graphics::API
 		/// <param name="memoryRequirement">Required memory size.</param>
 		/// <param name="alignment">Memory alignment.</param>
 		/// <returns>Memory from pre-allocated staging buffer or temporary buffer.</returns>
-		[[nodiscard]] RendererAPI::MappedMemoryRange AllocateStagingMemory(uint64_t memoryRequirement, uint32_t alignment);
+		[[nodiscard]] RendererAPI::MappedMemoryRange AllocateStagingMemory(u64 memoryRequirement, u32 alignment);
 		/// <summary>
 		/// Free all upload memory and temporary buffers.
 		/// </summary>
@@ -319,19 +319,19 @@ namespace TRAP::Graphics::API
 		/// Wait for a copy engine resource set to complete its work.
 		/// </summary>
 		/// <param name="activeSet">Copy engine resource set to wait for.</param>
-		void WaitCopyEngineSet(std::size_t activeSet) const;
+		void WaitCopyEngineSet(usize activeSet) const;
 		/// <summary>
 		/// Reset a copy engine resource set.
 		/// </summary>
 		/// <param name="activeSet">Copy engine resource set to reset.</param>
-		void ResetCopyEngineSet(std::size_t activeSet);
+		void ResetCopyEngineSet(usize activeSet);
 		/// <summary>
 		/// Acquire a command buffer for a copy engine resource set.
 		/// Note: If not already recording, this functions also starts command buffer recording.
 		/// </summary>
 		/// <param name="activeSet">Copy engine resource set to acquire command buffer for.</param>
 		/// <returns>Acquired command buffer.</returns>
-		[[nodiscard]] CommandBuffer* AcquireCmd(std::size_t activeSet);
+		[[nodiscard]] CommandBuffer* AcquireCmd(usize activeSet);
 		/// <summary>
 		/// Resource loader thread.
 		/// Flush a copy engine resource set.
@@ -340,7 +340,7 @@ namespace TRAP::Graphics::API
 		/// 2. Submits command buffer to queue.
 		/// </summary>
 		/// <param name="loader">Copy engine resource set to flush.</param>
-		void StreamerFlush(std::size_t activeSet);
+		void StreamerFlush(usize activeSet);
 		/// <summary>
 		/// Check whether there are tasks pending for the resource loader.
 		/// </summary>
@@ -378,7 +378,7 @@ namespace TRAP::Graphics::API
 			InvalidRequest
 		};
 
-		enum class MappedRangeFlag : uint32_t
+		enum class MappedRangeFlag : u32
 		{
 			UnMapBuffer = BIT(0u),
 			TempBuffer = BIT(1u)
@@ -390,7 +390,7 @@ namespace TRAP::Graphics::API
 		/// <param name="activeSet">Resource set to use.</param>
 		/// <param name="bufferUpdateDesc">Description of buffer update.</param>
 		/// <return>Result of upload.</return>
-		[[nodiscard]] UploadFunctionResult UpdateBuffer(std::size_t activeSet,
+		[[nodiscard]] UploadFunctionResult UpdateBuffer(usize activeSet,
 		                                                const RendererAPI::BufferUpdateDesc& bufferUpdateDesc);
 		/// <summary>
 		/// Update a texture with the specified resource set.
@@ -399,7 +399,7 @@ namespace TRAP::Graphics::API
 		/// <param name="textureUpdateDesc">Description of texture update.</param>
 		/// <param name="images">Images to update.</param>
 		/// <return>Result of upload.</return>
-		[[nodiscard]] UploadFunctionResult UpdateTexture(std::size_t activeSet, const TextureUpdateDescInternal& textureUpdateDesc,
+		[[nodiscard]] UploadFunctionResult UpdateTexture(usize activeSet, const TextureUpdateDescInternal& textureUpdateDesc,
 		                                                 const std::array<const TRAP::Image*, 6>* images);
 		/// <summary>
 		/// Load a texture with the specified resource set.
@@ -407,7 +407,7 @@ namespace TRAP::Graphics::API
 		/// <param name="activeSet">Resource set to use.</param>
 		/// <param name="textureUpdate">Texture update request.</param>
 		/// <return>Result of upload.</return>
-		[[nodiscard]] UploadFunctionResult LoadTexture(std::size_t activeSet, UpdateRequest& textureUpdate);
+		[[nodiscard]] UploadFunctionResult LoadTexture(usize activeSet, UpdateRequest& textureUpdate);
 
 		/// <summary>
 		/// Copy a texture to a buffer with the specified resource set.
@@ -415,7 +415,7 @@ namespace TRAP::Graphics::API
 		/// <param name="activeSet">Resource set to use.</param>
 		/// <param name="textureCopy">Texture copy request.</param>
 		/// <returns>Result of copy.</returns>
-		[[nodiscard]] UploadFunctionResult CopyTexture(std::size_t activeSet, RendererAPI::TextureCopyDesc& textureCopy);
+		[[nodiscard]] UploadFunctionResult CopyTexture(usize activeSet, RendererAPI::TextureCopyDesc& textureCopy);
 
 		RendererAPI::ResourceLoaderDesc m_desc;
 
@@ -470,7 +470,7 @@ namespace TRAP::Graphics::API
 			constexpr explicit UpdateRequest(const RendererAPI::TextureBarrier& barrier) noexcept;
 
 			UpdateRequestType Type = UpdateRequestType::Invalid;
-			uint64_t WaitIndex = 0;
+			u64 WaitIndex = 0;
 			TRAP::Ref<Buffer> UploadBuffer = nullptr;
 			TRAP::Scope<TRAP::Image> Image = nullptr;
 			std::variant<RendererAPI::BufferUpdateDesc,
@@ -480,9 +480,9 @@ namespace TRAP::Graphics::API
 		};
 		std::vector<UpdateRequest> m_requestQueue{};
 
-		std::atomic<uint64_t> m_tokenCompleted = 0;
-		std::atomic<uint64_t> m_tokenSubmitted = 0;
-		std::atomic<uint64_t> m_tokenCounter = 0;
+		std::atomic<u64> m_tokenCompleted = 0;
+		std::atomic<u64> m_tokenSubmitted = 0;
+		std::atomic<u64> m_tokenCounter = 0;
 
 		TracyLockable(std::mutex, m_semaphoreMutex);
 
@@ -497,7 +497,7 @@ namespace TRAP::Graphics::API
 				CommandBuffer* Cmd;
 				TRAP::Ref<TRAP::Graphics::CommandPool> CommandPool;
 				TRAP::Ref<TRAP::Graphics::Buffer> Buffer;
-				uint64_t AllocatedSpace;
+				u64 AllocatedSpace;
 
 				//Buffers created in case we ran out of space in the original staging buffer
 				//Will be cleaned up after the fence for this set is complete
@@ -506,14 +506,14 @@ namespace TRAP::Graphics::API
 				TRAP::Ref<TRAP::Graphics::Semaphore> CopyCompletedSemaphore;
 			};
 			std::vector<CopyResourceSet> ResourceSets{};
-			uint64_t BufferSize{};
+			u64 BufferSize{};
 			bool IsRecording{};
 			TRAP::Ref<TRAP::Graphics::Semaphore> LastCompletedSemaphore;
 
 			//For reading back GPU generated textures, we need to ensure writes have completed before performing the copy.
 			std::vector<TRAP::Ref<Semaphore>> WaitSemaphores;
 		} m_copyEngine;
-		uint32_t m_nextSet = 0;
+		u32 m_nextSet = 0;
 	};
 }
 
@@ -561,32 +561,32 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceSize(const TRAP::Graphics::API::ImageFormat fmt,
-                                                                                         const uint32_t width, const uint32_t height,
-																                         const uint32_t depth, const uint32_t rowStride,
-																                         const uint32_t sliceStride,
-																                         const uint32_t baseMipLevel,
-																                         const uint32_t mipLevels,
-																                         const uint32_t baseArrayLayer,
-																                         const uint32_t arrayLayers) noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceSize(const TRAP::Graphics::API::ImageFormat fmt,
+                                                                                         const u32 width, const u32 height,
+																                         const u32 depth, const u32 rowStride,
+																                         const u32 sliceStride,
+																                         const u32 baseMipLevel,
+																                         const u32 mipLevels,
+																                         const u32 baseArrayLayer,
+																                         const u32 arrayLayers) noexcept
 {
-	uint32_t requiredSize = 0;
+	u32 requiredSize = 0;
 
-	for(uint32_t s = baseArrayLayer; s < baseArrayLayer + arrayLayers; ++s)
+	for(u32 s = baseArrayLayer; s < baseArrayLayer + arrayLayers; ++s)
 	{
-		uint32_t w = width;
-		uint32_t h = height;
-		uint32_t d = depth;
+		u32 w = width;
+		u32 h = height;
+		u32 d = depth;
 
-		for(uint32_t m = baseMipLevel; m < (baseMipLevel + mipLevels); ++m)
+		for(u32 m = baseMipLevel; m < (baseMipLevel + mipLevels); ++m)
 		{
-			uint32_t rowBytes = 0;
-			uint32_t numRows = 0;
+			u32 rowBytes = 0;
+			u32 numRows = 0;
 
 			if(!UtilGetSurfaceInfo(w, h, fmt, nullptr, &rowBytes, &numRows))
 				return 0u;
 
-			const uint32_t temp = ((rowBytes + rowStride - 1) / rowStride) * rowStride;
+			const u32 temp = ((rowBytes + rowStride - 1) / rowStride) * rowStride;
 			requiredSize += (((d * temp * numRows) + sliceStride - 1) / sliceStride) * sliceStride;
 
 			w = w >> 1u;
@@ -606,16 +606,16 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr bool TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceInfo(const uint32_t width, const uint32_t height,
+[[nodiscard]] constexpr bool TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceInfo(const u32 width, const u32 height,
 	                                                                                 const TRAP::Graphics::API::ImageFormat fmt,
-															                         uint32_t* const outNumBytes, uint32_t* const outRowBytes,
-															                         uint32_t* const outNumRows)
+															                         u32* const outNumBytes, u32* const outRowBytes,
+															                         u32* const outNumRows)
 {
-	uint64_t numBytes = 0;
-	uint64_t rowBytes = 0;
-	uint64_t numRows = 0;
+	u64 numBytes = 0;
+	u64 rowBytes = 0;
+	u64 numRows = 0;
 
-	const uint32_t bpp = TRAP::Graphics::API::ImageFormatBitSizeOfBlock(fmt);
+	const u32 bpp = TRAP::Graphics::API::ImageFormatBitSizeOfBlock(fmt);
 	const bool compressed = TRAP::Graphics::API::ImageFormatIsCompressed(fmt);
 	const bool planar = TRAP::Graphics::API::ImageFormatIsPlanar(fmt);
 
@@ -623,16 +623,16 @@ namespace TRAP::Graphics::API
 
 	if(compressed)
 	{
-		const uint32_t blockWidth = TRAP::Graphics::API::ImageFormatWidthOfBlock(fmt);
-		const uint32_t blockHeight = TRAP::Graphics::API::ImageFormatHeightOfBlock(fmt);
-		uint32_t numBlocksWide = 0;
-		uint32_t numBlocksHigh = 0;
+		const u32 blockWidth = TRAP::Graphics::API::ImageFormatWidthOfBlock(fmt);
+		const u32 blockHeight = TRAP::Graphics::API::ImageFormatHeightOfBlock(fmt);
+		u32 numBlocksWide = 0;
+		u32 numBlocksHigh = 0;
 		if(width > 0)
 			numBlocksWide = Math::Max(1u, (width + (blockWidth - 1)) / blockWidth);
 		if(height > 0)
 			numBlocksHigh = Math::Max(1u, (height + (blockHeight - 1)) / blockHeight);
 
-		rowBytes = NumericCast<uint64_t>(numBlocksWide) * (bpp >> 3u);
+		rowBytes = NumericCast<u64>(numBlocksWide) * (bpp >> 3u);
 		numRows = numBlocksHigh;
 		numBytes = rowBytes * numBlocksHigh;
 	}
@@ -643,11 +643,11 @@ namespace TRAP::Graphics::API
 	}
 	else if(planar)
 	{
-		const uint32_t numOfPlanes = TRAP::Graphics::API::ImageFormatNumOfPlanes(fmt);
+		const u32 numOfPlanes = TRAP::Graphics::API::ImageFormatNumOfPlanes(fmt);
 
-		for(uint32_t i = 0; i < numOfPlanes; ++i)
+		for(u32 i = 0; i < numOfPlanes; ++i)
 		{
-			numBytes += NumericCast<uint64_t>(TRAP::Graphics::API::ImageFormatPlaneWidth(fmt, i, width)) *
+			numBytes += NumericCast<u64>(TRAP::Graphics::API::ImageFormatPlaneWidth(fmt, i, width)) *
 			            TRAP::Graphics::API::ImageFormatPlaneHeight(fmt, i, height) *
 						TRAP::Graphics::API::ImageFormatPlaneSizeOfBlock(fmt, i);
 		}
@@ -660,24 +660,24 @@ namespace TRAP::Graphics::API
 		if(bpp == 0u)
 			return false;
 
-		rowBytes = (NumericCast<uint64_t>(width) * bpp + 7u) / 8u; //Round up to nearest byte
-		numRows = NumericCast<uint64_t>(height);
+		rowBytes = (NumericCast<u64>(width) * bpp + 7u) / 8u; //Round up to nearest byte
+		numRows = NumericCast<u64>(height);
 		numBytes = rowBytes * height;
 	}
 
-	if(numBytes > std::numeric_limits<uint32_t>::max() ||
-	   rowBytes > std::numeric_limits<uint32_t>::max() ||
-	   numRows > std::numeric_limits<uint32_t>::max())
+	if(numBytes > std::numeric_limits<u32>::max() ||
+	   rowBytes > std::numeric_limits<u32>::max() ||
+	   numRows > std::numeric_limits<u32>::max())
 	{
 		return false;
 	}
 
 	if(outNumBytes != nullptr)
-		*outNumBytes = NumericCast<uint32_t>(numBytes);
+		*outNumBytes = NumericCast<u32>(numBytes);
 	if(outRowBytes != nullptr)
-		*outRowBytes = NumericCast<uint32_t>(rowBytes);
+		*outRowBytes = NumericCast<u32>(rowBytes);
 	if(outNumRows != nullptr)
-		*outNumRows = NumericCast<uint32_t>(numRows);
+		*outNumRows = NumericCast<u32>(numRows);
 
 	return true;
 }

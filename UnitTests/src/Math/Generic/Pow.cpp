@@ -117,58 +117,58 @@ namespace
 
 TEST_CASE("TRAP::Math::Pow()", "[math][generic][pow]")
 {
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunPowTests<double>();
-        RunPowCompileTimeTests<double>();
-        RunPowEdgeTests<double>();
+        RunPowTests<f64>();
+        RunPowCompileTimeTests<f64>();
+        RunPowEdgeTests<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunPowTests<float>();
-        RunPowCompileTimeTests<float>();
-        RunPowEdgeTests<float>();
+        RunPowTests<f32>();
+        RunPowCompileTimeTests<f32>();
+        RunPowEdgeTests<f32>();
     }
 
-    SECTION("Vec2 - double")
+    SECTION("Vec2 - f64")
     {
         RunPowVecRunTimeTests<TRAP::Math::Vec2d>();
         RunPowVecCompileTimeTests<TRAP::Math::Vec2d>();
     }
-    SECTION("Vec2 - float")
+    SECTION("Vec2 - f32")
     {
         RunPowVecRunTimeTests<TRAP::Math::Vec2f>();
         RunPowVecCompileTimeTests<TRAP::Math::Vec2f>();
     }
 
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunPowVecRunTimeTests<TRAP::Math::Vec3d>();
         RunPowVecCompileTimeTests<TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunPowVecRunTimeTests<TRAP::Math::Vec3f>();
         RunPowVecCompileTimeTests<TRAP::Math::Vec3f>();
     }
 
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunPowVecRunTimeTests<TRAP::Math::Vec4d>();
         RunPowVecCompileTimeTests<TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunPowVecRunTimeTests<TRAP::Math::Vec4f>();
         RunPowVecCompileTimeTests<TRAP::Math::Vec4f>();
     }
 
-    SECTION("Quat - double")
+    SECTION("Quat - f64")
     {
         RunPowQuatRunTimeTests<TRAP::Math::Quatd>();
         RunPowQuatCompileTimeTests<TRAP::Math::Quatd>();
     }
-    SECTION("Quat - float")
+    SECTION("Quat - f32")
     {
         RunPowQuatRunTimeTests<TRAP::Math::Quatf>();
         RunPowQuatCompileTimeTests<TRAP::Math::Quatf>();

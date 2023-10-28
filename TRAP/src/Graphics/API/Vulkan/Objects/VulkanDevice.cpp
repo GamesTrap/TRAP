@@ -26,7 +26,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	std::erase_if(m_deviceExtensions, [this](const std::string_view extension){return !m_physicalDevice->IsExtensionSupported(extension);});
 
 	std::vector<const char*> extensions(m_deviceExtensions.size());
-	for(std::size_t i = 0; i < m_deviceExtensions.size(); ++i)
+	for(usize i = 0; i < m_deviceExtensions.size(); ++i)
 		extensions[i] = m_deviceExtensions[i].c_str();
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -135,12 +135,12 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 
 	//Need a queuePriority for each queue in the queue family we create
 	const std::vector<VkQueueFamilyProperties>& queueFamilyProperties = m_physicalDevice->GetQueueFamilyProperties();
-	std::vector<std::vector<float>> queueFamilyPriorities(queueFamilyProperties.size());
+	std::vector<std::vector<f32>> queueFamilyPriorities(queueFamilyProperties.size());
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos{};
 
-	for(std::size_t i = 0; i < queueFamilyProperties.size(); i++)
+	for(usize i = 0; i < queueFamilyProperties.size(); i++)
 	{
-		uint32_t queueCount = queueFamilyProperties[i].queueCount;
+		u32 queueCount = queueFamilyProperties[i].queueCount;
 		if(queueCount > 0)
 		{
 			queueFamilyPriorities[i].resize(queueCount);
@@ -149,7 +149,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 			info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 			info.pNext = nullptr;
 			info.flags = 0;
-			info.queueFamilyIndex = NumericCast<uint32_t>(i);
+			info.queueFamilyIndex = NumericCast<u32>(i);
 			info.queueCount = queueCount;
 			info.pQueuePriorities = queueFamilyPriorities[i].data();
 			queueCreateInfos.push_back(info);
@@ -253,17 +253,17 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndices()
 	FindQueueFamilyIndex(RendererAPI::QueueType::Graphics, m_graphicsQueueFamilyIndex, m_graphicsQueueIndex);
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Graphics Queue Family Index ",
-	         NumericCast<uint32_t>(m_graphicsQueueFamilyIndex));
+	         NumericCast<u32>(m_graphicsQueueFamilyIndex));
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 	FindQueueFamilyIndex(RendererAPI::QueueType::Compute, m_computeQueueFamilyIndex, m_computeQueueIndex);
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Compute Queue Family Index ",
-	         NumericCast<uint32_t>(m_computeQueueFamilyIndex));
+	         NumericCast<u32>(m_computeQueueFamilyIndex));
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 	FindQueueFamilyIndex(RendererAPI::QueueType::Transfer, m_transferQueueFamilyIndex, m_transferQueueIndex);
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Transfer Queue Family Index ",
-	         NumericCast<uint32_t>(m_transferQueueFamilyIndex));
+	         NumericCast<u32>(m_transferQueueFamilyIndex));
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 }
 
@@ -279,29 +279,29 @@ void TRAP::Graphics::API::VulkanDevice::WaitIdle() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::QueueType queueType,
-                                                             uint8_t& queueFamilyIndex, uint8_t& queueIndex)
+                                                             u8& queueFamilyIndex, u8& queueIndex)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	uint32_t qfi = std::numeric_limits<uint32_t>::max();
-	uint32_t qi = std::numeric_limits<uint32_t>::max();
+	u32 qfi = std::numeric_limits<u32>::max();
+	u32 qi = std::numeric_limits<u32>::max();
 	const VkQueueFlags requiredFlags = QueueTypeToVkQueueFlags(queueType);
 	bool found = false;
 
 	const std::vector<VkQueueFamilyProperties>& props = m_physicalDevice->GetQueueFamilyProperties();
 
-	uint32_t minQueueFlag = std::numeric_limits<uint32_t>::max();
+	u32 minQueueFlag = std::numeric_limits<u32>::max();
 
 	//Try to find a dedicated queue of this type
-	for(std::size_t index = 0; index < props.size(); ++index)
+	for(usize index = 0; index < props.size(); ++index)
 	{
 		const VkQueueFlags queueFlags = props[index].queueFlags;
 		const bool graphicsQueue = (queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0;
-		const uint32_t flagAnd = (queueFlags & requiredFlags);
+		const u32 flagAnd = (queueFlags & requiredFlags);
 		if(queueType == RendererAPI::QueueType::Graphics && graphicsQueue)
 		{
 			found = true;
-			qfi = NumericCast<uint32_t>(index);
+			qfi = NumericCast<u32>(index);
 			qi = 0u;
 			break;
 		}
@@ -309,7 +309,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 			m_usedQueueCount[queueFlags] < m_availableQueueCount[queueFlags])
 		{
 			found = true;
-			qfi = NumericCast<uint32_t>(index);
+			qfi = NumericCast<u32>(index);
 			qi = m_usedQueueCount[queueFlags];
 			break;
 		}
@@ -318,7 +318,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 		{
 			found = true;
 			minQueueFlag = (queueFlags - flagAnd);
-			qfi = NumericCast<uint32_t>(index);
+			qfi = NumericCast<u32>(index);
 			qi = m_usedQueueCount[queueFlags];
 			break;
 		}
@@ -327,13 +327,13 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 	//If hardware doesn't provide a dedicated queue try to find a non-dedicated one
 	if(!found)
 	{
-		for(std::size_t index = 0; index < props.size(); ++index)
+		for(usize index = 0; index < props.size(); ++index)
 		{
 			const VkQueueFlags queueFlags = props[index].queueFlags;
 			if(((queueFlags & requiredFlags) != 0u) && m_usedQueueCount[queueFlags] < m_availableQueueCount[queueFlags])
 			{
 				found = true;
-				qfi = NumericCast<uint32_t>(index);
+				qfi = NumericCast<u32>(index);
 				qi = m_usedQueueCount[queueFlags];
 				break;
 			}
@@ -349,33 +349,33 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 		        Utils::String::ConvertToString(queueType), '(', std::to_underlying(queueType), "). Using default queue");
 	}
 
-	queueFamilyIndex = NumericCast<uint8_t>(qfi);
-	queueIndex = NumericCast<uint8_t>(qi);
+	queueFamilyIndex = NumericCast<u8>(qfi);
+	queueIndex = NumericCast<u8>(qi);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::QueueType queueType,
                                                              VkQueueFamilyProperties& queueFamilyProperties,
-															 uint8_t& queueFamilyIndex, uint8_t& queueIndex)
+															 u8& queueFamilyIndex, u8& queueIndex)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	uint32_t qfi = std::numeric_limits<uint32_t>::max();
-	uint32_t qi = std::numeric_limits<uint32_t>::max();
+	u32 qfi = std::numeric_limits<u32>::max();
+	u32 qi = std::numeric_limits<u32>::max();
 	const VkQueueFlags requiredFlags = QueueTypeToVkQueueFlags(queueType);
 	bool found = false;
 
 	const std::vector<VkQueueFamilyProperties>& props = m_physicalDevice->GetQueueFamilyProperties();
 
-	uint32_t minQueueFlag = std::numeric_limits<uint32_t>::max();
+	u32 minQueueFlag = std::numeric_limits<u32>::max();
 
 	//Try to find a dedicated queue of this type
-	for (uint32_t index = 0; index < props.size(); ++index)
+	for (u32 index = 0; index < props.size(); ++index)
 	{
 		const VkQueueFlags queueFlags = props[index].queueFlags;
 		const bool graphicsQueue = (queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0;
-		const uint32_t flagAnd = (queueFlags & requiredFlags);
+		const u32 flagAnd = (queueFlags & requiredFlags);
 		if (queueType == RendererAPI::QueueType::Graphics && graphicsQueue)
 		{
 			found = true;
@@ -405,7 +405,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 	//If hardware doesn't provide a dedicated queue try to find a non-dedicated one
 	if (!found)
 	{
-		for (uint32_t index = 0; index < props.size(); ++index)
+		for (u32 index = 0; index < props.size(); ++index)
 		{
 			const VkQueueFlags queueFlags = props[index].queueFlags;
 			if (((queueFlags & requiredFlags) != 0u) && m_usedQueueCount[queueFlags] < m_availableQueueCount[queueFlags])
@@ -428,8 +428,8 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 	}
 
 	queueFamilyProperties = props[qfi];
-	queueFamilyIndex = NumericCast<uint8_t>(qfi);
-	queueIndex = NumericCast<uint8_t>(qi);
+	queueFamilyIndex = NumericCast<u8>(qfi);
+	queueIndex = NumericCast<u8>(qi);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -442,9 +442,9 @@ void TRAP::Graphics::API::VulkanDevice::SetDeviceName(const std::string_view nam
 		return;
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	VkSetObjectName(m_device, std::bit_cast<uint64_t>(m_device), VK_OBJECT_TYPE_DEVICE, name);
+	VkSetObjectName(m_device, std::bit_cast<u64>(m_device), VK_OBJECT_TYPE_DEVICE, name);
 #else
-	VkSetObjectName(m_device, std::bit_cast<uint64_t>(m_device), VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_EXT, name);
+	VkSetObjectName(m_device, std::bit_cast<u64>(m_device), VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_EXT, name);
 #endif
 }
 
@@ -486,7 +486,7 @@ void TRAP::Graphics::API::VulkanDevice::LoadShadingRateCaps(const VkPhysicalDevi
 		RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Sum;
 	}
 
-	uint32_t fragmentShadingRatesCount = 0;
+	u32 fragmentShadingRatesCount = 0;
 	vkGetPhysicalDeviceFragmentShadingRatesKHR(m_physicalDevice->GetVkPhysicalDevice(), &fragmentShadingRatesCount, nullptr);
 	std::vector<VkPhysicalDeviceFragmentShadingRateKHR> fragmentShadingRates(fragmentShadingRatesCount);
 	for(auto& rate : fragmentShadingRates)

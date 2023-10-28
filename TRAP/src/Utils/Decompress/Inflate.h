@@ -45,12 +45,12 @@ namespace TRAP::Utils::Decompress
 			/// BitReader reads byte data bit by bit.
 			/// </summary>
 			/// <param name="data">Data to read in bytes.</param>
-			constexpr explicit BitReader(std::span<const uint8_t> data);
+			constexpr explicit BitReader(std::span<const u8> data);
 
-			std::span<const uint8_t> Data;
-			std::size_t BitSize{}; // Size of data in bits, end of valid BP values, should be 8 * size
-			std::size_t BP{};
-			uint32_t Buffer{}; //Buffer for reading bits.
+			std::span<const u8> Data;
+			usize BitSize{}; // Size of data in bits, end of valid BP values, should be 8 * size
+			usize BP{};
+			u32 Buffer{}; //Buffer for reading bits.
 			bool Error = false;
 
 			/// <summary>
@@ -79,25 +79,25 @@ namespace TRAP::Utils::Decompress
 			/// </summary>
 			/// <param name="nBits">How many bits.</param>
 			/// <returns>N bits read.</returns>
-			[[nodiscard]] constexpr uint32_t ReadBits(std::size_t nBits);
+			[[nodiscard]] constexpr u32 ReadBits(usize nBits);
 			/// <summary>
 			/// Safely check if a + b > c, even if overflow could happen.
 			/// </summary>
 			/// <returns>True if no overflow will happen, false otherwise.</returns>
-			[[nodiscard]] static constexpr bool GreaterOverflow(std::size_t a, std::size_t b, std::size_t c);
+			[[nodiscard]] static constexpr bool GreaterOverflow(usize a, usize b, usize c);
 			/// <summary>
 			/// Get bits without advancing the bit pointer.
 			/// Note: Must have enough bits available with EnsureBits.
 			/// </summary>
 			/// <param name="nBits">How many bits up to 31.</param>
 			/// <returns>N bits read.</returns>
-			[[nodiscard]] constexpr uint32_t PeekBits(std::size_t nBits) const noexcept;
+			[[nodiscard]] constexpr u32 PeekBits(usize nBits) const noexcept;
 			/// <summary>
 			/// Advance n amount of bits in the reader.
 			/// Note: Must have enough bits available with EnsureBits.
 			/// </summary>
 			/// <param name="nBits">How many bits.</param>
-			void constexpr AdvanceBits(std::size_t nBits) noexcept;
+			void constexpr AdvanceBits(usize nBits) noexcept;
 
 		private:
 			/// <summary>
@@ -106,14 +106,14 @@ namespace TRAP::Utils::Decompress
 			/// </summary>
 			/// <param name="result">Output variable for the result of the multiplication.</param>
 			/// <returns>True if no overflow happens, false otherwise.</returns>
-			[[nodiscard]] static constexpr bool MultiplyOverflow(std::size_t a, std::size_t b, std::size_t& result) noexcept;
+			[[nodiscard]] static constexpr bool MultiplyOverflow(usize a, usize b, usize& result) noexcept;
 			/// <summary>
 			/// Safely check if adding two integers will overflow(no undefined behavior,
 			/// compiler removing the code, etc...) and output result.
 			/// </summary>
 			/// <param name="result">Output variable for the result of the sum.</param>
 			/// <returns>True if no overflow happens, false otherwise.</returns>
-			[[nodiscard]] static constexpr bool AddOverflow(std::size_t a, std::size_t b, std::size_t& result) noexcept;
+			[[nodiscard]] static constexpr bool AddOverflow(usize a, usize b, usize& result) noexcept;
 		};
 
 		/// <summary>
@@ -126,10 +126,10 @@ namespace TRAP::Utils::Decompress
 			/// </summary>
 			constexpr HuffmanTree() noexcept = default;
 
-			std::vector<uint32_t> Codes; //The Huffman codes(bit patterns representing the symbols)
-			std::vector<uint32_t> Lengths; //The lengths of the huffman codes
-			uint32_t MaxBitLength{}; //Maximum number of bits a single code can get
-			uint32_t NumCodes{}; //Number of symbols in the alphabet = number of codes
+			std::vector<u32> Codes; //The Huffman codes(bit patterns representing the symbols)
+			std::vector<u32> Lengths; //The lengths of the huffman codes
+			u32 MaxBitLength{}; //Maximum number of bits a single code can get
+			u32 NumCodes{}; //Number of symbols in the alphabet = number of codes
 
 			/// <summary>
 			/// Get the tree of a deflated block with fixed tree, as specified in the deflate specification.
@@ -153,10 +153,10 @@ namespace TRAP::Utils::Decompress
 			/// </summary>
 			/// <param name="reader">BitReader to decode symbol from.</param>
 			/// <returns>Code.</returns>
-			[[nodiscard]] constexpr uint32_t DecodeSymbol(BitReader& reader) const;
+			[[nodiscard]] constexpr u32 DecodeSymbol(BitReader& reader) const;
 
 			//The base lengths represented by codes 257-285
-			static constexpr std::array<uint32_t, 29> LengthBase
+			static constexpr std::array<u32, 29> LengthBase
 			{
 				3, 4, 5, 6,
 				7, 8, 9, 10,
@@ -168,7 +168,7 @@ namespace TRAP::Utils::Decompress
 				258
 			};
 			//The Extra bits used by codes 257-285(added to base length)
-			static constexpr std::array<uint32_t, 29> LengthExtra
+			static constexpr std::array<u32, 29> LengthExtra
 			{
 				0, 0, 0, 0,
 				0, 0, 0, 0,
@@ -181,7 +181,7 @@ namespace TRAP::Utils::Decompress
 			};
 			//The base backwards distances(the bits of distance codes appear after length codes
 			//and use their own Huffman Tree)
-			static constexpr std::array<uint32_t, 30> DistanceBase
+			static constexpr std::array<u32, 30> DistanceBase
 			{
 				1, 2, 3, 4,
 				5, 7, 9, 13,
@@ -193,7 +193,7 @@ namespace TRAP::Utils::Decompress
 				16385, 24577
 			};
 			//The extra bits of backwards distances(added to base)
-			static constexpr std::array<uint32_t, 30> DistanceExtra
+			static constexpr std::array<u32, 30> DistanceExtra
 			{
 				0, 0, 0, 0,
 				1, 1, 2, 2,
@@ -206,8 +206,8 @@ namespace TRAP::Utils::Decompress
 			};
 
 		private:
-			std::vector<uint8_t> TableLength; //Length of symbol from lookup table, or max length if secondary lookup needed
-			std::vector<uint16_t> TableValue; //Value of symbol from lookup table, or pointer to secondary table if needed
+			std::vector<u8> TableLength; //Length of symbol from lookup table, or max length if secondary lookup needed
+			std::vector<u16> TableValue; //Value of symbol from lookup table, or pointer to secondary table if needed
 
 			/// <summary>
 			/// Get the literal and length code tree of a deflated block with fixed tree,
@@ -230,7 +230,7 @@ namespace TRAP::Utils::Decompress
 			/// <param name="numCodes">Amount of codes.</param>
 			/// <param name="maxBitLength">Maximum bits that a code in the tree can have.</param>
 			/// <returns>True on success, false otherwise.</returns>
-			[[nodiscard]] constexpr bool MakeFromLengths(const uint32_t* bitLength, std::size_t numCodes, uint32_t maxBitLength);
+			[[nodiscard]] constexpr bool MakeFromLengths(const u32* bitLength, usize numCodes, u32 maxBitLength);
 
 			/// <summary>
 			/// Second step for the ...MakeFromLengths and ...MakeFromFrequencies functions.
@@ -247,27 +247,27 @@ namespace TRAP::Utils::Decompress
 			/// <summary>
 			/// Reverse bits.
 			/// </summary>
-			[[nodiscard]] static constexpr uint32_t ReverseBits(uint32_t bits, uint32_t num) noexcept;
+			[[nodiscard]] static constexpr u32 ReverseBits(u32 bits, u32 num) noexcept;
 
-			static constexpr uint16_t NumDeflateCodeSymbols = 288;
-			static constexpr uint8_t NumDistanceSymbols = 32;
-			static constexpr uint8_t NumCodeLengthCodes = 19;
-			static constexpr uint8_t FirstBits = 9u;
-			static constexpr uint16_t InvalidSymbol = 65535u;
+			static constexpr u16 NumDeflateCodeSymbols = 288;
+			static constexpr u8 NumDistanceSymbols = 32;
+			static constexpr u8 NumCodeLengthCodes = 19;
+			static constexpr u8 FirstBits = 9u;
+			static constexpr u16 InvalidSymbol = 65535u;
 			//The order in which "code length alphabet code lengths" are stored, out of this the
 			//Huffman Tree of the dynamic Huffman Tree lengths is generated
-			static constexpr std::array<uint32_t, 19> CLCLOrder
+			static constexpr std::array<u32, 19> CLCLOrder
 			{
 				16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15
 			};
 		};
 
-		static constexpr uint16_t FirstLengthCodeIndex = 257;
-		static constexpr uint16_t LastLengthCodeIndex = 285;
+		static constexpr u16 FirstLengthCodeIndex = 257;
+		static constexpr u16 LastLengthCodeIndex = 285;
 
-		[[nodiscard]] constexpr bool InflateNoCompression(std::span<uint8_t> out, std::size_t& pos, BitReader& reader);
-		[[nodiscard]] constexpr bool InflateHuffmanBlock(std::span<uint8_t> out, std::size_t& pos, BitReader& reader,
-		                                                 uint32_t btype);
+		[[nodiscard]] constexpr bool InflateNoCompression(std::span<u8> out, usize& pos, BitReader& reader);
+		[[nodiscard]] constexpr bool InflateHuffmanBlock(std::span<u8> out, usize& pos, BitReader& reader,
+		                                                 u32 btype);
 	}
 
 	/// <summary>
@@ -276,15 +276,15 @@ namespace TRAP::Utils::Decompress
 	/// <param name="source">Source data in bytes.</param>
 	/// <param name="destination">Destination where to put inflated data to.</param>
 	/// <returns>True on success, false otherwise.</returns>
-	[[nodiscard]] constexpr bool Inflate(std::span<const uint8_t> source, std::span<uint8_t> destination);
+	[[nodiscard]] constexpr bool Inflate(std::span<const u8> source, std::span<u8> destination);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Utils::Decompress::INTERNAL::BitReader::BitReader(const std::span<const uint8_t> data)
+constexpr TRAP::Utils::Decompress::INTERNAL::BitReader::BitReader(const std::span<const u8> data)
 	: Data(data)
 {
-	std::size_t temp = 0;
+	usize temp = 0;
 	if (MultiplyOverflow(data.size_bytes(), 8u, BitSize))
 		Error = true;
 	if (AddOverflow(BitSize, 64u, temp))
@@ -295,11 +295,11 @@ constexpr TRAP::Utils::Decompress::INTERNAL::BitReader::BitReader(const std::spa
 
 constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits9()
 {
-	const std::size_t start = BP >> 3u;
-	const std::size_t size = Data.size_bytes();
+	const usize start = BP >> 3u;
+	const usize size = Data.size_bytes();
 	if (start + 1u < size)
 	{
-		Buffer = static_cast<uint32_t>(Data[start + 0]) | (static_cast<uint32_t>(Data[start + 1] << 8u));
+		Buffer = static_cast<u32>(Data[start + 0]) | (static_cast<u32>(Data[start + 1] << 8u));
 		Buffer >>= (BP & 7u);
 	}
 	else
@@ -315,12 +315,12 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits9()
 
 constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits17()
 {
-	const std::size_t start = BP >> 3u;
-	const std::size_t size = Data.size_bytes();
+	const usize start = BP >> 3u;
+	const usize size = Data.size_bytes();
 	if (start + 2u < size)
 	{
-		Buffer = static_cast<uint32_t>(Data[start + 0]) | (static_cast<uint32_t>(Data[start + 1]) << 8u) |
-		         (static_cast<uint32_t>(Data[start + 2]) << 16u);
+		Buffer = static_cast<u32>(Data[start + 0]) | (static_cast<u32>(Data[start + 1]) << 8u) |
+		         (static_cast<u32>(Data[start + 2]) << 16u);
 		Buffer >>= (BP & 7u);
 	}
 	else
@@ -329,7 +329,7 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits17()
 		if (start + 0u < size)
 			Buffer |= Data[start + 0];
 		if (start + 1u < size)
-			Buffer |= (static_cast<uint32_t>(Data[start + 1]) << 8u);
+			Buffer |= (static_cast<u32>(Data[start + 1]) << 8u);
 		Buffer >>= (BP & 7u);
 	}
 }
@@ -338,12 +338,12 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits17()
 
 constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits25()
 {
-	const std::size_t start = BP >> 3u;
-	const std::size_t size = Data.size_bytes();
+	const usize start = BP >> 3u;
+	const usize size = Data.size_bytes();
 	if (start + 3u < size)
 	{
-		Buffer = static_cast<uint32_t>(Data[start + 0]) | (static_cast<uint32_t>(Data[start + 1]) << 8u) |
-		         (static_cast<uint32_t>(Data[start + 2]) << 16u) | (static_cast<uint32_t>(Data[start + 3]) << 24u);
+		Buffer = static_cast<u32>(Data[start + 0]) | (static_cast<u32>(Data[start + 1]) << 8u) |
+		         (static_cast<u32>(Data[start + 2]) << 16u) | (static_cast<u32>(Data[start + 3]) << 24u);
 		Buffer >>= (BP & 7u);
 	}
 	else
@@ -352,9 +352,9 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits25()
 		if (start + 0u < size)
 			Buffer |= Data[start + 0];
 		if (start + 1u < size)
-			Buffer |= (static_cast<uint32_t>(Data[start + 1]) << 8u);
+			Buffer |= (static_cast<u32>(Data[start + 1]) << 8u);
 		if (start + 2u < size)
-			Buffer |= (static_cast<uint32_t>(Data[start + 2]) << 16u);
+			Buffer |= (static_cast<u32>(Data[start + 2]) << 16u);
 		Buffer >>= (BP & 7u);
 	}
 }
@@ -363,14 +363,14 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits25()
 
 constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits32()
 {
-	const std::size_t start = BP >> 3u;
-	const std::size_t size = Data.size_bytes();
+	const usize start = BP >> 3u;
+	const usize size = Data.size_bytes();
 	if (start + 4u < size)
 	{
-		Buffer = static_cast<uint32_t>(Data[start + 0]) | (static_cast<uint32_t>(Data[start + 1]) << 8u) |
-		         (static_cast<uint32_t>(Data[start + 2]) << 16u) | (static_cast<uint32_t>(Data[start + 3]) << 24u);
+		Buffer = static_cast<u32>(Data[start + 0]) | (static_cast<u32>(Data[start + 1]) << 8u) |
+		         (static_cast<u32>(Data[start + 2]) << 16u) | (static_cast<u32>(Data[start + 3]) << 24u);
 		Buffer >>= (BP & 7u);
-		Buffer |= ((static_cast<uint32_t>(Data[start + 4]) << 24u) << (8u - (BP & 7u)));
+		Buffer |= ((static_cast<u32>(Data[start + 4]) << 24u) << (8u - (BP & 7u)));
 	}
 	else
 	{
@@ -378,11 +378,11 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits32()
 		if (start + 0u < size)
 			Buffer |= Data[start + 0];
 		if (start + 1u < size)
-			Buffer |= (static_cast<uint32_t>(Data[start + 1]) << 8u);
+			Buffer |= (static_cast<u32>(Data[start + 1]) << 8u);
 		if (start + 2u < size)
-			Buffer |= (static_cast<uint32_t>(Data[start + 2]) << 16u);
+			Buffer |= (static_cast<u32>(Data[start + 2]) << 16u);
 		if (start + 3u < size)
-			Buffer |= (static_cast<uint32_t>(Data[start + 3]) << 24u);
+			Buffer |= (static_cast<u32>(Data[start + 3]) << 24u);
 		Buffer >>= (BP & 7u);
 	}
 }
@@ -390,9 +390,9 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits32()
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Must have enough bits available with EnsureBits
-[[nodiscard]] constexpr uint32_t TRAP::Utils::Decompress::INTERNAL::BitReader::ReadBits(const std::size_t nBits)
+[[nodiscard]] constexpr u32 TRAP::Utils::Decompress::INTERNAL::BitReader::ReadBits(const usize nBits)
 {
-	const uint32_t result = PeekBits(nBits);
+	const u32 result = PeekBits(nBits);
 	AdvanceBits(nBits);
 
 	return result;
@@ -400,10 +400,10 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits32()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr bool TRAP::Utils::Decompress::INTERNAL::BitReader::GreaterOverflow(const std::size_t a, const std::size_t b,
-                                                                                           const std::size_t c)
+[[nodiscard]] constexpr bool TRAP::Utils::Decompress::INTERNAL::BitReader::GreaterOverflow(const usize a, const usize b,
+                                                                                           const usize c)
 {
-	std::size_t d = 0;
+	usize d = 0;
 	if (AddOverflow(a, b, d))
 		return true;
 
@@ -413,7 +413,7 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits32()
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Get bits without advancing the bit pointer. Must have enough bits available with EnsureBits
-[[nodiscard]] constexpr uint32_t TRAP::Utils::Decompress::INTERNAL::BitReader::PeekBits(const std::size_t nBits) const noexcept
+[[nodiscard]] constexpr u32 TRAP::Utils::Decompress::INTERNAL::BitReader::PeekBits(const usize nBits) const noexcept
 {
 	return Buffer & ((1u << nBits) - 1u);
 }
@@ -421,7 +421,7 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits32()
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Must have enough bits available with EnsureBits
-constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const std::size_t nBits) noexcept
+constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const usize nBits) noexcept
 {
 	Buffer >>= nBits;
 	BP += nBits;
@@ -431,8 +431,8 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 
 //Safely check if multiplying two integers will overflow(no undefined behavior, compiler removing the code, etc...)
 //and output result
-[[nodiscard]] constexpr bool TRAP::Utils::Decompress::INTERNAL::BitReader::MultiplyOverflow(const std::size_t a, const std::size_t b,
-                                                                                            std::size_t& result) noexcept
+[[nodiscard]] constexpr bool TRAP::Utils::Decompress::INTERNAL::BitReader::MultiplyOverflow(const usize a, const usize b,
+                                                                                            usize& result) noexcept
 {
 	result = a * b; //Unsigned multiplication is well defined and safe
 
@@ -441,8 +441,8 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr bool TRAP::Utils::Decompress::INTERNAL::BitReader::AddOverflow(const std::size_t a, const std::size_t b,
-                                                                                       std::size_t& result) noexcept
+[[nodiscard]] constexpr bool TRAP::Utils::Decompress::INTERNAL::BitReader::AddOverflow(const usize a, const usize b,
+                                                                                       usize& result) noexcept
 {
 	result = a + b; //Unsigned addition is well defined and safe
 
@@ -470,7 +470,7 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
                                                                                                    BitReader& reader)
 {
 	//Make sure that length values that arent filled in will be 0, or a wrong tree will be generated
-	uint32_t n = 0, i = 0;
+	u32 n = 0, i = 0;
 
 	//See comments in deflateDynamic for explanation of the context and these variables, it is analogous
 	HuffmanTree treeCL; //The code tree for code length codes(the Huffman Tree for compressed Huffman Trees)
@@ -481,23 +481,23 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 
 	//Number of literal/length codes + 257.
 	//Unlike the spec, the value 257 is added to it here already
-	const uint32_t HLIT = reader.ReadBits(5) + 257;
+	const u32 HLIT = reader.ReadBits(5) + 257;
 	//Number of distance codes.
 	//Unlike the spec, the value 1 is added to it here already
-	const uint32_t HDIST = reader.ReadBits(5) + 1;
+	const u32 HDIST = reader.ReadBits(5) + 1;
 	//Number of code length codes.
 	//Unlike the spec, the value 4 is added to it here already
-	const uint32_t HCLEN = reader.ReadBits(4) + 4;
+	const u32 HCLEN = reader.ReadBits(4) + 4;
 
 	//Code length code lengths ("clcl"), the bit lengths of the Huffman Tree used to compress
 	//bitLengthLL and bitLengthD
-	std::array<uint32_t, NumCodeLengthCodes> bitLengthCL{};
+	std::array<u32, NumCodeLengthCodes> bitLengthCL{};
 
 	bool error = false;
 	while(!error)
 	{
 		//Read the code length codes out of 3 * (amount of code length codes) bits
-		if (BitReader::GreaterOverflow(reader.BP, static_cast<std::size_t>(HCLEN) * 3, reader.BitSize))
+		if (BitReader::GreaterOverflow(reader.BP, static_cast<usize>(HCLEN) * 3, reader.BitSize))
 		{
 			error = true; //Error: the bit pointer is or will go past the memory
 			break;
@@ -515,8 +515,8 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 			break;
 
 		//Now we can use this tree to read the lengths for the tree that this function will return
-		std::array<uint32_t, NumDeflateCodeSymbols> bitLengthLL{};
-		std::array<uint32_t, NumDistanceSymbols> bitLengthD{};
+		std::array<u32, NumDeflateCodeSymbols> bitLengthLL{};
+		std::array<u32, NumDistanceSymbols> bitLengthD{};
 
 		//i is the current symbol we are reading in the part that contains the code lengths of
 		//literal/length and distance codes
@@ -524,7 +524,7 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 		while(i < HLIT + HDIST)
 		{
 			reader.EnsureBits25(); //Up to 15bits for Huffman code, up to 7 extra bits below
-			const uint32_t code = treeCL.DecodeSymbol(reader);
+			const u32 code = treeCL.DecodeSymbol(reader);
 			if(code <= 15) //A length code
 			{
 				if (i < HLIT)
@@ -535,8 +535,8 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 			}
 			else if(code == 16) //Repeat previous
 			{
-				uint32_t repeatLength = 3; //Read in the 2 bits that indicate repeat length (3-6)
-				uint32_t value = 0; //Set value to the previous code
+				u32 repeatLength = 3; //Read in the 2 bits that indicate repeat length (3-6)
+				u32 value = 0; //Set value to the previous code
 
 				if(i == 0)
 				{
@@ -568,7 +568,7 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 			}
 			else if(code == 17) //Repeat "0" 3-10 times
 			{
-				uint32_t repeatLength = 3; //Read in the bits that indicate repeat length
+				u32 repeatLength = 3; //Read in the bits that indicate repeat length
 				repeatLength += reader.ReadBits(3);
 
 				//Repeat this value in the next lengths
@@ -589,7 +589,7 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 			}
 			else if(code == 18) //Repeat "0" 11-138 times
 			{
-				uint32_t repeatLength = 11; //Read in the bits that indicate repeat length
+				u32 repeatLength = 11; //Read in the bits that indicate repeat length
 				repeatLength += reader.ReadBits(7);
 
 				//Repeat this value in the next lengths
@@ -644,11 +644,11 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the code. The bit reader must already have been ensured at least 15bits
-[[nodiscard]] constexpr uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::DecodeSymbol(BitReader& reader) const
+[[nodiscard]] constexpr u32 TRAP::Utils::Decompress::INTERNAL::HuffmanTree::DecodeSymbol(BitReader& reader) const
 {
-	const uint16_t code = static_cast<uint16_t>(reader.PeekBits(FirstBits));
-	const uint16_t l = TableLength[code];
-	uint16_t value = TableValue[code];
+	const u16 code = static_cast<u16>(reader.PeekBits(FirstBits));
+	const u16 l = TableLength[code];
+	u16 value = TableValue[code];
 	if(l <= FirstBits)
 	{
 		reader.AdvanceBits(l);
@@ -657,7 +657,7 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 	}
 
 	reader.AdvanceBits(FirstBits);
-	value += static_cast<uint16_t>(reader.PeekBits(l - FirstBits));
+	value += static_cast<u16>(reader.PeekBits(l - FirstBits));
 	reader.AdvanceBits(TableLength[value] - FirstBits);
 
 	return TableValue[value];
@@ -668,9 +668,9 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 //Get the literal and length code of a deflated block with fixed tree, as per the deflate specification
 [[nodiscard]] constexpr bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedLiteralLengthTree()
 {
-	uint32_t i = 0;
+	u32 i = 0;
 	//256 literals, the end code, some length codes, and 2 unused codes
-	std::array<uint32_t, NumDeflateCodeSymbols> bitLength{};
+	std::array<u32, NumDeflateCodeSymbols> bitLength{};
 
 	//288 possible codes: 0-255 = Literals, 256 = EndCode, 257-285 = LengthCodes, 286-287 = Unused
 	for (i = 0; i <= 143; ++i)
@@ -693,10 +693,10 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 [[nodiscard]] constexpr bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedDistanceTree()
 {
 	//The distance codes have their own symbols, 30 used, 2 unused
-	std::array<uint32_t, NumDistanceSymbols> bitLength{};
+	std::array<u32, NumDistanceSymbols> bitLength{};
 
 	//There are 32 distance codes, but 30-31 are unused
-	for (uint32_t i = 0; i != NumDistanceSymbols; ++i)
+	for (u32 i = 0; i != NumDistanceSymbols; ++i)
 		bitLength[i] = 5;
 
 	return MakeFromLengths(bitLength.data(), NumDistanceSymbols, 15);
@@ -706,14 +706,14 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 
 //Given the code lengths(as stored in the PNG file), generate the tree as defined by Deflate.
 //MaxBitLength is the maximum bits that a code in the tree can have.
-[[nodiscard]] constexpr  bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths(const uint32_t* const bitLength,
-                                                                                              const std::size_t numCodes,
-																	                          const uint32_t maxBitLength)
+[[nodiscard]] constexpr  bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths(const u32* const bitLength,
+                                                                                              const usize numCodes,
+																	                          const u32 maxBitLength)
 {
 	Lengths.resize(numCodes);
-	for (uint32_t i = 0; i != numCodes; ++i)
+	for (u32 i = 0; i != numCodes; ++i)
 		Lengths[i] = bitLength[i];
-	NumCodes = static_cast<uint32_t>(numCodes); //Number of symbols
+	NumCodes = static_cast<u32>(numCodes); //Number of symbols
 	MaxBitLength = maxBitLength;
 
 	return MakeFromLengths2();
@@ -723,11 +723,11 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 
 [[nodiscard]] constexpr bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths2()
 {
-	uint32_t bits = 0;
+	u32 bits = 0;
 
 	Codes.resize(NumCodes);
-	std::vector<uint32_t> bitLengthCount((MaxBitLength + 1), 0);
-	std::vector<uint32_t> nextCode((MaxBitLength + 1), 0);
+	std::vector<u32> bitLengthCount((MaxBitLength + 1), 0);
+	std::vector<u32> nextCode((MaxBitLength + 1), 0);
 
 	//Step 1: Count number of instances of each code length
 	for (bits = 0; bits != NumCodes; ++bits)
@@ -736,7 +736,7 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 	for (bits = 1; bits <= MaxBitLength; ++bits)
 		nextCode[bits] = (nextCode[bits - 1] + bitLengthCount[bits - 1]) << 1u;
 	//Step 3: Generate all the codes
-	for(uint32_t n = 0; n != NumCodes; ++n)
+	for(u32 n = 0; n != NumCodes; ++n)
 	{
 		if(Lengths[n] != 0)
 		{
@@ -753,94 +753,94 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 
 [[nodiscard]] constexpr bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 {
-	constexpr uint32_t headSize = 1u << FirstBits; //Size of the first table
-	constexpr uint32_t mask = (1u << FirstBits) /*headSize*/ - 1u;
-	std::size_t i = 0; //Total table size
-	std::vector<uint32_t> maxLengths(headSize, 0);
+	constexpr u32 headSize = 1u << FirstBits; //Size of the first table
+	constexpr u32 mask = (1u << FirstBits) /*headSize*/ - 1u;
+	usize i = 0; //Total table size
+	std::vector<u32> maxLengths(headSize, 0);
 
 	//Compute maxLengths: Max total bit length of symbols sharing prefix in the first table
 	for(i = 0; i < NumCodes; i++)
 	{
-		const uint32_t symbol = Codes[i];
-		const uint32_t l = Lengths[i];
+		const u32 symbol = Codes[i];
+		const u32 l = Lengths[i];
 		if (l <= FirstBits)
 			continue; //Symbols that fit in first table dont increase secondary table size
 		//Get the FIRSTBITS(9u) MSBs, the MSBs of the symbol are encoded first.
 		//See later comment about the reversing
-		const uint32_t index = ReverseBits(symbol >> (l - FirstBits), FirstBits);
+		const u32 index = ReverseBits(symbol >> (l - FirstBits), FirstBits);
 		maxLengths[index] = Math::Max(maxLengths[index], l);
 	}
 	//Compute total table size: Size of first table plus all secondary tables for symbols longer than FIRSTBITS(9u)
-	std::size_t size = headSize;
+	usize size = headSize;
 	for(i = 0; i < headSize; ++i)
 	{
-		const uint32_t l = maxLengths[i];
+		const u32 l = maxLengths[i];
 		if (l > FirstBits)
-			size += static_cast<std::size_t>(1u) << (l - FirstBits);
+			size += static_cast<usize>(1u) << (l - FirstBits);
 	}
 	TableLength.resize(size, 16); //Initialize with an invalid length to indicate unused entries
 	TableValue.resize(size);
 
 	//Fill in the first table for long symbols: Max prefix size and pointer to secondary tables
-	std::size_t ptr = headSize;
+	usize ptr = headSize;
 	for(i = 0; i < headSize; ++i)
 	{
-		const uint32_t l = maxLengths[i];
+		const u32 l = maxLengths[i];
 		if (l <= FirstBits)
 			continue;
-		TableLength[i] = static_cast<uint8_t>(l);
-		TableValue[i] = static_cast<uint16_t>(ptr);
-		ptr += static_cast<std::size_t>(1u) << (l - FirstBits);
+		TableLength[i] = static_cast<u8>(l);
+		TableValue[i] = static_cast<u16>(ptr);
+		ptr += static_cast<usize>(1u) << (l - FirstBits);
 	}
 
 	//Fill in the first table for short symbols, or secondary table for long symbols
-	std::size_t numPresent = 0;
+	usize numPresent = 0;
 	for(i = 0; i < NumCodes; ++i)
 	{
-		const uint32_t l = Lengths[i];
+		const u32 l = Lengths[i];
 		if (l == 0)
 			continue;
 
-		const uint32_t symbol = Codes[i]; //The Huffman bit pattern. i itself is the value
+		const u32 symbol = Codes[i]; //The Huffman bit pattern. i itself is the value
 		//Reverse bits, because the Huffman bits are given in MSB first order but the bit reader reads LSB first
-		const uint32_t reverse = ReverseBits(symbol, l);
+		const u32 reverse = ReverseBits(symbol, l);
 
 		numPresent++;
 
 		if(l <= FirstBits)
 		{
 			//Short symbol, fully in first table, replicated num times if l < FIRSTBITS(9u)
-			const uint32_t num = 1u << (FirstBits - l);
-			for(uint32_t j = 0; j < num; ++j)
+			const u32 num = 1u << (FirstBits - l);
+			for(u32 j = 0; j < num; ++j)
 			{
 				//Bit reader will read the 1 bits of symbol first, the remaining FIRSTBITS(9u) - l bits
 				//go to the MSBs
-				const uint32_t index = reverse | (j << l);
+				const u32 index = reverse | (j << l);
 				if (TableLength[index] != 16)
 					return false; //Invalid tree: Long symbol shares prefix with short symbol
-				TableLength[index] = static_cast<uint8_t>(l);
-				TableValue[index] = static_cast<uint16_t>(i);
+				TableLength[index] = static_cast<u8>(l);
+				TableValue[index] = static_cast<u16>(i);
 			}
 		}
 		else
 		{
 			//Long symbol, shares prefix with other long symbols in first lookup table, needs second lookup
 			//The FIRSTBITS(9u) MSBs of the symbol are the first table index
-			const uint32_t index = reverse & mask;
-			const uint32_t maxLength = TableLength[index];
+			const u32 index = reverse & mask;
+			const u32 maxLength = TableLength[index];
 			//log2 of secondary table length, should be >= l - FIRSTBITS(9u)
-			const uint32_t tableLength = maxLength - FirstBits;
-			const uint32_t start = TableValue[index]; //Starting index in secondary table
+			const u32 tableLength = maxLength - FirstBits;
+			const u32 start = TableValue[index]; //Starting index in secondary table
 			//Amount of entries of this symbol in secondary table
-			const uint32_t num = 1u << (tableLength - (l - FirstBits));
+			const u32 num = 1u << (tableLength - (l - FirstBits));
 			if (maxLength < l)
 				return false; //Invalid tree: Long symbol shares prefix with short symbol
-			for(uint32_t j = 0; j < num; ++j)
+			for(u32 j = 0; j < num; ++j)
 			{
-				const uint32_t reverse2 = reverse >> FirstBits; //l - FIRSTBITS(9u) bits
-				const uint32_t index2 = start + (reverse2 | (j << (l - FirstBits)));
-				TableLength[index2] = static_cast<uint8_t>(l);
-				TableValue[index2] = static_cast<uint16_t>(i);
+				const u32 reverse2 = reverse >> FirstBits; //l - FIRSTBITS(9u) bits
+				const u32 index2 = start + (reverse2 | (j << (l - FirstBits)));
+				TableLength[index2] = static_cast<u8>(l);
+				TableValue[index2] = static_cast<u16>(i);
 			}
 		}
 	}
@@ -883,10 +883,10 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::ReverseBits(const uint32_t bits, const uint32_t num) noexcept
+[[nodiscard]] constexpr u32 TRAP::Utils::Decompress::INTERNAL::HuffmanTree::ReverseBits(const u32 bits, const u32 num) noexcept
 {
-	uint32_t result = 0;
-	for (uint32_t i = 0; i < num; i++)
+	u32 result = 0;
+	for (u32 i = 0; i < num; i++)
 		result |= ((bits >> (num - i - 1u)) & 1u) << i;
 
 	return result;
@@ -894,22 +894,22 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr bool TRAP::Utils::Decompress::INTERNAL::InflateNoCompression(const std::span<uint8_t> out, std::size_t& pos,
+[[nodiscard]] constexpr bool TRAP::Utils::Decompress::INTERNAL::InflateNoCompression(const std::span<u8> out, usize& pos,
                                                                                      BitReader& reader)
 {
-	const std::size_t size = reader.Data.size_bytes();
+	const usize size = reader.Data.size_bytes();
 
 	//Go to first boundary of byte
-	std::size_t bytePos = (reader.BP + 7u) >> 3u;
+	usize bytePos = (reader.BP + 7u) >> 3u;
 
 	//Read LEN(2Bytes) and NLEN(2Bytes)
 	if (bytePos + 4 >= size)
 		return false; //Error, bit pointer will jump past memory
-	const uint32_t LEN = static_cast<uint32_t>(reader.Data[bytePos]) +
-	                     (static_cast<uint32_t>(reader.Data[bytePos + 1]) << 8u);
+	const u32 LEN = static_cast<u32>(reader.Data[bytePos]) +
+	                     (static_cast<u32>(reader.Data[bytePos + 1]) << 8u);
 	bytePos += 2;
-	const uint32_t NLEN = static_cast<uint32_t>(reader.Data[bytePos]) +
-	                      (static_cast<uint32_t>(reader.Data[bytePos + 1]) << 8u);
+	const u32 NLEN = static_cast<u32>(reader.Data[bytePos]) +
+	                      (static_cast<u32>(reader.Data[bytePos + 1]) << 8u);
 	bytePos += 2;
 
 	//Check if 16-bit NLEN is really the ones complement of LEN
@@ -933,8 +933,8 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(const std::span<uint8_t> out, std::size_t& pos,
-                                                                                    BitReader& reader, const uint32_t btype)
+[[nodiscard]] constexpr bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(const std::span<u8> out, usize& pos,
+                                                                                    BitReader& reader, const u32 btype)
 {
 	HuffmanTree treeLL; //The Huffman tree for literal and length codes
 	HuffmanTree treeD; //The Huffman tree for distance codes
@@ -957,12 +957,12 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 		//a second literal is read at once. This appears to be slightly faster, than ensuring 20
 		//bits here for 1 huffman symbol and the potential 5 extra bits for the length symbol.
 		reader.EnsureBits32();
-		uint32_t codeLL = treeLL.DecodeSymbol(reader);
+		u32 codeLL = treeLL.DecodeSymbol(reader);
 		if(codeLL <= 255)
 		{
 			//Slightly faster code path if multiple literals in a row
 			// out.resize(pos + 1);
-			out[pos] = static_cast<uint8_t>(codeLL);
+			out[pos] = static_cast<u8>(codeLL);
 			++(pos);
 			codeLL = treeLL.DecodeSymbol(reader);
 		}
@@ -970,16 +970,16 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 		if(codeLL <= 255) //Literal symbol
 		{
 			// out.resize(pos + 1);
-			out[pos] = static_cast<uint8_t>(codeLL);
+			out[pos] = static_cast<u8>(codeLL);
 			++(pos);
 		}
 		else if(codeLL >= FirstLengthCodeIndex && codeLL <= LastLengthCodeIndex) //Length code
 		{
 			//Part 1: Get Length base
-			std::size_t length = HuffmanTree::LengthBase[codeLL - FirstLengthCodeIndex];
+			usize length = HuffmanTree::LengthBase[codeLL - FirstLengthCodeIndex];
 
 			//Part 2: Get Extra bits and add the value of that to length
-			const uint32_t numExtraBitsL = HuffmanTree::LengthExtra[codeLL - FirstLengthCodeIndex];
+			const u32 numExtraBitsL = HuffmanTree::LengthExtra[codeLL - FirstLengthCodeIndex];
 			if (numExtraBitsL != 0)
 			{
 				//Bits already ensured above
@@ -989,7 +989,7 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 
 			//Part 3: Get Distance code
 			reader.EnsureBits32(); //Up to 15 for the Huffman symbol, up to 13 for the extra bits
-			const uint32_t codeD = treeD.DecodeSymbol(reader);
+			const u32 codeD = treeD.DecodeSymbol(reader);
 			if(codeD > 29)
 			{
 				if(codeD <= 31)
@@ -1001,29 +1001,29 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 				error = true; //Error: Tried to read disallowed Huffman symbol
 				break;
 			}
-			uint32_t distance = HuffmanTree::DistanceBase[codeD];
+			u32 distance = HuffmanTree::DistanceBase[codeD];
 
 			//Part 4: Get Extra bits from distance
-			const uint32_t numExtraBitsD = HuffmanTree::DistanceExtra[codeD];
+			const u32 numExtraBitsD = HuffmanTree::DistanceExtra[codeD];
 			if(numExtraBitsD != 0)
 				//Bits already ensured above
 				distance += reader.ReadBits(numExtraBitsD);
 
 			//Part 5: Fill in all the out[n] values based on the length and distance
-			const std::size_t start = pos;
+			const usize start = pos;
 			if(distance > start)
 			{
 				error = true; //Error: Too long backward distance
 				break;
 			}
-			std::size_t backward = start - distance;
+			usize backward = start - distance;
 
 			// out.resize(pos + length);
 			if(distance < length)
 			{
 				std::copy_n(out.data() + backward, distance, out.data() + pos);
 				pos += distance;
-				for (std::size_t forward = distance; forward < length; ++forward)
+				for (usize forward = distance; forward < length; ++forward)
 					out[pos++] = out[backward++];
 			}
 			else
@@ -1052,11 +1052,11 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr bool TRAP::Utils::Decompress::Inflate(const std::span<const uint8_t> source,
-                                                              const std::span<uint8_t> destination)
+[[nodiscard]] constexpr bool TRAP::Utils::Decompress::Inflate(const std::span<const u8> source,
+                                                              const std::span<u8> destination)
 {
-	uint32_t BFINAL = 0;
-	std::size_t pos = 0; //Byte position in the destination buffer
+	u32 BFINAL = 0;
+	usize pos = 0; //Byte position in the destination buffer
 	INTERNAL::BitReader reader(source);
 	if (reader.Error)
 		return false;
@@ -1067,7 +1067,7 @@ constexpr void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const s
 			return false;
 		reader.EnsureBits9();
 		BFINAL = reader.ReadBits(1);
-		const uint32_t BTYPE = reader.ReadBits(2);
+		const u32 BTYPE = reader.ReadBits(2);
 
 		if (BTYPE == 3)
 			return false; //Invalid BTYPE

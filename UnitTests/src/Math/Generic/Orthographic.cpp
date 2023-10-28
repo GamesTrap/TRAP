@@ -85,14 +85,14 @@ namespace
 
 TEST_CASE("TRAP::Math::Orthographic()", "[math][generic][orthographic]")
 {
-    SECTION("Mat4 - double")
+    SECTION("Mat4 - f64")
     {
-        RunCompileTimeOrthographicTests<double>();
-        RunOrthographicEdgeTests<double>();
+        RunCompileTimeOrthographicTests<f64>();
+        RunOrthographicEdgeTests<f64>();
     }
-    SECTION("Mat4 - float")
+    SECTION("Mat4 - f32")
     {
-        RunCompileTimeOrthographicTests<float>();
-        RunOrthographicEdgeTests<float>();
+        RunCompileTimeOrthographicTests<f32>();
+        RunOrthographicEdgeTests<f32>();
     }
 }

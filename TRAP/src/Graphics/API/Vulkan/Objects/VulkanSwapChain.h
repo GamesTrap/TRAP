@@ -50,7 +50,7 @@ namespace TRAP::Graphics::API
 		/// <param name="signalSemaphore">Semaphore to signal when the image is ready to be presented.</param>
 		/// <param name="fence">Fence to wait for the image to be ready to be presented.</param>
 		/// <returns>Acuired image index.</returns>
-		[[nodiscard]] std::optional<uint32_t> AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
+		[[nodiscard]] std::optional<u32> AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
 		                                                       const TRAP::Ref<Fence>& fence) const override;
 
 		/// <summary>
@@ -99,8 +99,8 @@ namespace TRAP::Graphics::API
 		VkQueue m_presentQueue = VK_NULL_HANDLE;
 		VkSwapchainKHR m_swapChain = VK_NULL_HANDLE;
 		TRAP::Ref<VulkanSurface> m_surface = nullptr;
-		uint32_t m_presentQueueFamilyIndex = 0;
-		uint32_t m_imageCount = 0;
+		u32 m_presentQueueFamilyIndex = 0;
+		u32 m_imageCount = 0;
 		bool m_enableVSync = false;
 
 		RendererAPI::SwapChainDesc m_desc{};

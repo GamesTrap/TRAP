@@ -21,7 +21,7 @@ TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
 	const std::vector<INTERNAL::WindowingAPI::InternalVideoMode>& internalModes = INTERNAL::WindowingAPI::GetVideoModes(*m_handle);
 
 	for(const auto& internalMode : std::ranges::reverse_view(internalModes))
-		modes.emplace_back(NumericCast<uint32_t>(internalMode.Width), NumericCast<uint32_t>(internalMode.Height),
+		modes.emplace_back(NumericCast<u32>(internalMode.Width), NumericCast<u32>(internalMode.Height),
 	                       internalMode.RefreshRate);
 
 	return modes;
@@ -35,7 +35,7 @@ TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
 	if(!nativeVideoMode)
 		return std::nullopt;
 
-	return VideoMode{ NumericCast<uint32_t>(nativeVideoMode->Width), NumericCast<uint32_t>(nativeVideoMode->Height),
+	return VideoMode{ NumericCast<u32>(nativeVideoMode->Width), NumericCast<u32>(nativeVideoMode->Height),
 	                  nativeVideoMode->RefreshRate };
 }
 
@@ -47,7 +47,7 @@ TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
 	if(!currVideoMode)
 		return std::nullopt;
 
-	return VideoMode{ static_cast<uint32_t>(currVideoMode->Width), static_cast<uint32_t>(currVideoMode->Height),
+	return VideoMode{ static_cast<u32>(currVideoMode->Width), static_cast<u32>(currVideoMode->Height),
 	                  currVideoMode->RefreshRate };
 }
 
@@ -65,7 +65,7 @@ TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] float TRAP::Monitor::GetContentScaleX() const
+[[nodiscard]] f32 TRAP::Monitor::GetContentScaleX() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -74,7 +74,7 @@ TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] float TRAP::Monitor::GetContentScaleY() const
+[[nodiscard]] f32 TRAP::Monitor::GetContentScaleY() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -95,7 +95,7 @@ TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] int32_t TRAP::Monitor::GetPositionX() const
+[[nodiscard]] i32 TRAP::Monitor::GetPositionX() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -104,7 +104,7 @@ TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] int32_t TRAP::Monitor::GetPositionY() const
+[[nodiscard]] i32 TRAP::Monitor::GetPositionY() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -126,7 +126,7 @@ TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] int32_t TRAP::Monitor::GetWorkAreaWidth() const
+[[nodiscard]] i32 TRAP::Monitor::GetWorkAreaWidth() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -135,7 +135,7 @@ TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] int32_t TRAP::Monitor::GetWorkAreaHeight() const
+[[nodiscard]] i32 TRAP::Monitor::GetWorkAreaHeight() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -144,7 +144,7 @@ TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] int32_t TRAP::Monitor::GetWorkAreaX() const
+[[nodiscard]] i32 TRAP::Monitor::GetWorkAreaX() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -153,7 +153,7 @@ TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] int32_t TRAP::Monitor::GetWorkAreaY() const
+[[nodiscard]] i32 TRAP::Monitor::GetWorkAreaY() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -162,15 +162,15 @@ TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* const monitor)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint32_t TRAP::Monitor::GetID() const
+[[nodiscard]] u32 TRAP::Monitor::GetID() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
 	const std::vector<INTERNAL::WindowingAPI::InternalMonitor*> monitors = INTERNAL::WindowingAPI::GetMonitors();
-	for(std::size_t i = 0; i < monitors.size(); i++)
+	for(usize i = 0; i < monitors.size(); i++)
 	{
 		if (monitors[i] == m_handle)
-			return NumericCast<uint32_t>(i);
+			return NumericCast<u32>(i);
 	}
 
 	return 0; //Primary Monitor as fallback

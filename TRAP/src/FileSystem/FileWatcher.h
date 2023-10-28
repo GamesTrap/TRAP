@@ -121,7 +121,7 @@ namespace TRAP::FileSystem
 #ifdef TRAP_PLATFORM_WINDOWS
         HANDLE m_killEvent = nullptr;
 #elif defined(TRAP_PLATFORM_LINUX)
-        int32_t m_killEvent = 0;
+        i32 m_killEvent = 0;
 #endif
     };
 }

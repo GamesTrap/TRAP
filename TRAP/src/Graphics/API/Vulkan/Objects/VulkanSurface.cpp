@@ -32,14 +32,14 @@ TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> inst
 	VkCall(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device->GetPhysicalDevice()->GetVkPhysicalDevice(), m_surface,
 	                                                 &m_surfaceCapabilities));
 
-	uint32_t surfaceFormatCount = 0;
+	u32 surfaceFormatCount = 0;
 	VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(device->GetPhysicalDevice()->GetVkPhysicalDevice(), m_surface,
 	                                            &surfaceFormatCount, nullptr));
 	m_surfaceFormats.resize(surfaceFormatCount);
 	VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(device->GetPhysicalDevice()->GetVkPhysicalDevice(), m_surface,
 	                                            &surfaceFormatCount, m_surfaceFormats.data()));
 
-	uint32_t surfacePresentCount = 0;
+	u32 surfacePresentCount = 0;
 	VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(device->GetPhysicalDevice()->GetVkPhysicalDevice(), m_surface,
 	                                                 &surfacePresentCount, nullptr));
 	m_surfacePresentModes.resize(surfacePresentCount);

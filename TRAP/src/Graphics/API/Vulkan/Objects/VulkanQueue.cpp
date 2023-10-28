@@ -80,12 +80,12 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 	TRAP_ASSERT(!desc.Cmds.empty(), "VulkanQueue::Submit(): No CommandBuffers to submit!");
 
 	std::vector<VkCommandBuffer> cmds(desc.Cmds.size());
-	for (uint32_t i = 0; i < desc.Cmds.size(); ++i)
+	for (u32 i = 0; i < desc.Cmds.size(); ++i)
 		cmds[i] = dynamic_cast<VulkanCommandBuffer*>(desc.Cmds[i])->GetVkCommandBuffer();
 
 	std::vector<VkSemaphore> waitSemaphores(desc.WaitSemaphores.size());
 	std::vector<VkPipelineStageFlags> waitMasks(desc.WaitSemaphores.size());
-	uint32_t waitCount = 0;
+	u32 waitCount = 0;
 	for (const auto& waitSemaphore : desc.WaitSemaphores)
 	{
 		if(!waitSemaphore->IsSignaled())
@@ -99,7 +99,7 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 	}
 
 	std::vector<VkSemaphore> signalSemaphores(desc.SignalSemaphores.size());
-	uint32_t signalCount = 0;
+	u32 signalCount = 0;
 
 	for(const auto& signalSemaphore : desc.SignalSemaphores)
 	{
@@ -153,7 +153,7 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 		}
 	}
 
-	uint32_t presentIndex = desc.Index;
+	u32 presentIndex = desc.Index;
 
 	const Ref<VulkanSwapChain> sChain = std::dynamic_pointer_cast<VulkanSwapChain>(desc.SwapChain);
 	VkSwapchainKHR sc = sChain->GetVkSwapChain();
@@ -189,8 +189,8 @@ void TRAP::Graphics::API::VulkanQueue::SetQueueName(const std::string_view name)
 		return;
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<uint64_t>(m_vkQueue), VK_OBJECT_TYPE_QUEUE, name);
+	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkQueue), VK_OBJECT_TYPE_QUEUE, name);
 #else
-	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<uint64_t>(m_vkQueue), VK_DEBUG_REPORT_OBJECT_TYPE_QUEUE_EXT, name);
+	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkQueue), VK_DEBUG_REPORT_OBJECT_TYPE_QUEUE_EXT, name);
 #endif
 }

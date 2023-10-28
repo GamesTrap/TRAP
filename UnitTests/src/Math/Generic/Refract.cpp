@@ -147,39 +147,39 @@ namespace
 
 TEST_CASE("TRAP::Math::Refract()", "[math][generic][refract]")
 {
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunRefractVecRunTimeTests<TRAP::Math::Vec4d>();
         RunRefractVecCompileTimeTests<TRAP::Math::Vec4d>();
         RunRefractVecEdgeTests<TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunRefractVecRunTimeTests<TRAP::Math::Vec4f>();
         RunRefractVecCompileTimeTests<TRAP::Math::Vec4f>();
         RunRefractVecEdgeTests<TRAP::Math::Vec4f>();
     }
 
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunRefractVecRunTimeTests<TRAP::Math::Vec3d>();
         RunRefractVecCompileTimeTests<TRAP::Math::Vec3d>();
         RunRefractVecEdgeTests<TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunRefractVecRunTimeTests<TRAP::Math::Vec3f>();
         RunRefractVecCompileTimeTests<TRAP::Math::Vec3f>();
         RunRefractVecEdgeTests<TRAP::Math::Vec3f>();
     }
 
-    SECTION("Vec2 - double")
+    SECTION("Vec2 - f64")
     {
         RunRefractVecRunTimeTests<TRAP::Math::Vec2d>();
         RunRefractVecCompileTimeTests<TRAP::Math::Vec2d>();
         RunRefractVecEdgeTests<TRAP::Math::Vec2d>();
     }
-    SECTION("Vec2 - float")
+    SECTION("Vec2 - f32")
     {
         RunRefractVecRunTimeTests<TRAP::Math::Vec2f>();
         RunRefractVecCompileTimeTests<TRAP::Math::Vec2f>();

@@ -1,48 +1,48 @@
 #include "TRAPPCH.h"
 #include "IndexBuffer.h"
 
-[[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const std::span<const uint32_t> indices,
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const std::span<const u32> indices,
                                                                                            const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	return Init<uint32_t>(indices.data(), indices.size_bytes(), updateFrequency);
+	return Init<u32>(indices.data(), indices.size_bytes(), updateFrequency);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const std::span<const uint16_t> indices,
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const std::span<const u16> indices,
                                                                                            const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	return Init<uint16_t>(indices.data(), indices.size_bytes(), updateFrequency);
+	return Init<u16>(indices.data(), indices.size_bytes(), updateFrequency);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const uint64_t size,
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const u64 size,
                                                                                            const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	return Init<uint16_t>(nullptr, size, updateFrequency); //uint16_t gets ignored
+	return Init<u16>(nullptr, size, updateFrequency); //u16 gets ignored
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint32_t TRAP::Graphics::IndexBuffer::GetCount() const noexcept
+[[nodiscard]] u32 TRAP::Graphics::IndexBuffer::GetCount() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return NumericCast<uint32_t>(m_indexBuffer->GetSize() /
-	                             ((m_indexType == RendererAPI::IndexType::UInt16) ? sizeof(uint16_t) :
-	                                                                                sizeof(uint32_t)));
+	return NumericCast<u32>(m_indexBuffer->GetSize() /
+	                             ((m_indexType == RendererAPI::IndexType::UInt16) ? sizeof(u16) :
+	                                                                                sizeof(u32)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint64_t TRAP::Graphics::IndexBuffer::GetSize() const noexcept
+[[nodiscard]] u64 TRAP::Graphics::IndexBuffer::GetSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -61,7 +61,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::IndexBuffer::SetData(const std::span<const uint16_t> indices, const uint64_t offset)
+void TRAP::Graphics::IndexBuffer::SetData(const std::span<const u16> indices, const u64 offset)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -70,7 +70,7 @@ void TRAP::Graphics::IndexBuffer::SetData(const std::span<const uint16_t> indice
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::IndexBuffer::SetData(const std::span<const uint32_t> indices, const uint64_t offset)
+void TRAP::Graphics::IndexBuffer::SetData(const std::span<const u32> indices, const u64 offset)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 

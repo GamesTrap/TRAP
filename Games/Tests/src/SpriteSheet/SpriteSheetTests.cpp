@@ -132,24 +132,24 @@ void SpriteSheetTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());
 	{
         //Render background sprites
-        for(std::size_t y = 0; y < m_backgroundMap.size(); ++y)
+        for(usize y = 0; y < m_backgroundMap.size(); ++y)
         {
-            for(std::size_t x = 0; x < m_backgroundMap[y].size(); ++x)
+            for(usize x = 0; x < m_backgroundMap[y].size(); ++x)
             {
                 if(m_backgroundMap[y][x].empty())
                     continue;
-		        TRAP::Graphics::Renderer2D::DrawQuad({ {NumericCast<float>(x), -NumericCast<float>(y), 0.0f}, {}, {1.0f, 1.0f, 1.0f} }, TRAP::Graphics::SpriteManager::Get(m_backgroundMap[y][x]));
+		        TRAP::Graphics::Renderer2D::DrawQuad({ {NumericCast<f32>(x), -NumericCast<f32>(y), 0.0f}, {}, {1.0f, 1.0f, 1.0f} }, TRAP::Graphics::SpriteManager::Get(m_backgroundMap[y][x]));
             }
         }
 
         //Render foreground sprites
-        for(std::size_t y = 0; y < m_foregroundMap.size(); ++y)
+        for(usize y = 0; y < m_foregroundMap.size(); ++y)
         {
-            for(std::size_t x = 0; x < m_foregroundMap[y].size(); ++x)
+            for(usize x = 0; x < m_foregroundMap[y].size(); ++x)
             {
                 if(m_foregroundMap[y][x].empty())
                     continue;
-		        TRAP::Graphics::Renderer2D::DrawQuad({ {NumericCast<float>(x), -NumericCast<float>(y), 0.0f}, {}, {1.0f, 1.0f, 1.0f} }, TRAP::Graphics::SpriteManager::Get(m_foregroundMap[y][x]));
+		        TRAP::Graphics::Renderer2D::DrawQuad({ {NumericCast<f32>(x), -NumericCast<f32>(y), 0.0f}, {}, {1.0f, 1.0f, 1.0f} }, TRAP::Graphics::SpriteManager::Get(m_foregroundMap[y][x]));
             }
         }
 	}

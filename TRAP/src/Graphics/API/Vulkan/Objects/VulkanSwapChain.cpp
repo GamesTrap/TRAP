@@ -133,12 +133,12 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 		VK_PRESENT_MODE_FIFO_RELAXED_KHR,
 		VK_PRESENT_MODE_FIFO_KHR
 	};
-	const uint32_t preferredModeStartIndex = desc.EnableVSync ? 2 : 0;
+	const u32 preferredModeStartIndex = desc.EnableVSync ? 2 : 0;
 
-	for (uint32_t j = preferredModeStartIndex; j < preferredModeList.size(); ++j)
+	for (u32 j = preferredModeStartIndex; j < preferredModeList.size(); ++j)
 	{
 		const VkPresentModeKHR mode = preferredModeList[j];
-		uint32_t i = 0;
+		u32 i = 0;
 		for (; i < modes.size(); ++i)
 		{
 			if (modes[i] == mode)
@@ -160,18 +160,18 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	desc.Height = extent.height;
 
 	const VkSharingMode sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-	std::vector<uint32_t> queueFamilyIndices
+	std::vector<u32> queueFamilyIndices
 	{
-		NumericCast<uint32_t>(std::dynamic_pointer_cast<VulkanQueue>(desc.PresentQueues[0])->GetQueueFamilyIndex())
+		NumericCast<u32>(std::dynamic_pointer_cast<VulkanQueue>(desc.PresentQueues[0])->GetQueueFamilyIndex())
 	};
-	uint32_t presentQueueFamilyIndex = std::numeric_limits<uint32_t>::max();
+	u32 presentQueueFamilyIndex = std::numeric_limits<u32>::max();
 
 	const std::vector<VkQueueFamilyProperties>& queueFamilyProperties = m_device->GetPhysicalDevice()->GetQueueFamilyProperties();
 
 	//Check if hardware provides dedicated present queue
 	if (!queueFamilyProperties.empty())
 	{
-		for (uint32_t index = 0; index < queueFamilyProperties.size(); ++index)
+		for (u32 index = 0; index < queueFamilyProperties.size(); ++index)
 		{
 			VkBool32 supportsPresent = VK_FALSE;
 			const VkResult res = vkGetPhysicalDeviceSurfaceSupportKHR(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(),
@@ -186,9 +186,9 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 		}
 
 		//If there is no dedicated present queue, just find the first available queue which supports present
-		if (presentQueueFamilyIndex == std::numeric_limits<uint32_t>::max())
+		if (presentQueueFamilyIndex == std::numeric_limits<u32>::max())
 		{
-			for (uint32_t index = 0; index < queueFamilyProperties.size(); ++index)
+			for (u32 index = 0; index < queueFamilyProperties.size(); ++index)
 			{
 				VkBool32 supportsPresent = VK_FALSE;
 				const VkResult res = vkGetPhysicalDeviceSurfaceSupportKHR(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(),
@@ -208,8 +208,8 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 
 	//Find if GPU has a dedicated present queue
 	VkQueue presentQueue = VK_NULL_HANDLE;
-	uint32_t finalPresentQueueFamilyIndex = 0;
-	if (presentQueueFamilyIndex != std::numeric_limits<uint32_t>::max() &&
+	u32 finalPresentQueueFamilyIndex = 0;
+	if (presentQueueFamilyIndex != std::numeric_limits<u32>::max() &&
 	    queueFamilyIndices[0] != presentQueueFamilyIndex)
 	{
 		queueFamilyIndices[0] = presentQueueFamilyIndex;
@@ -270,7 +270,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	desc.ColorFormat = ImageFormatFromVkFormat(surfaceFormat.format);
 
 	//Create RenderTargets from SwapChain
-	uint32_t imageCount = 0;
+	u32 imageCount = 0;
 	VkCall(vkGetSwapchainImagesKHR(m_device->GetVkDevice(), swapChain, &imageCount, nullptr));
 
 	if(desc.ImageCount != imageCount)
@@ -292,7 +292,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 
 	//Populate the vk_image field and add the Vulkan texture objects
 	m_renderTargets.resize(imageCount);
-	for (uint32_t i = 0; i < imageCount; ++i)
+	for (u32 i = 0; i < imageCount; ++i)
 	{
 		descColor.NativeHandle = images[i];
 		m_renderTargets[i] = TRAP::MakeRef<VulkanRenderTarget>(descColor);
@@ -339,7 +339,7 @@ void TRAP::Graphics::API::VulkanSwapChain::ReInitSwapChain()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::optional<uint32_t> TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
+[[nodiscard]] std::optional<u32> TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
                                                                                              const TRAP::Ref<Fence>& fence) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -347,13 +347,13 @@ void TRAP::Graphics::API::VulkanSwapChain::ReInitSwapChain()
 	TRAP_ASSERT(m_swapChain != VK_NULL_HANDLE, "VulkanSwapChain::AcquireNextImage(): Vulkan SwapChain is nullptr!");
 	TRAP_ASSERT(signalSemaphore || fence, "VulkanSwapChain::AcquireNextImage(): Semaphore and Fence are nullptr!");
 
-	uint32_t imageIndex = std::numeric_limits<uint32_t>::max();
+	u32 imageIndex = std::numeric_limits<u32>::max();
 	VkResult res{};
 
 	if(fence != nullptr)
 	{
 		Ref<VulkanFence> fen = std::dynamic_pointer_cast<VulkanFence>(fence);
-		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<uint64_t>::max(),
+		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<u64>::max(),
 		                            VK_NULL_HANDLE, fen->GetVkFence(), &imageIndex);
 
 		if(res == VK_ERROR_OUT_OF_DATE_KHR || res == VK_SUBOPTIMAL_KHR)
@@ -369,7 +369,7 @@ void TRAP::Graphics::API::VulkanSwapChain::ReInitSwapChain()
 	else
 	{
 		Ref<VulkanSemaphore> sema = std::dynamic_pointer_cast<VulkanSemaphore>(signalSemaphore);
-		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<uint64_t>::max(),
+		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<u64>::max(),
 		                            sema->GetVkSemaphore(), VK_NULL_HANDLE, &imageIndex);
 
 		if(res == VK_ERROR_OUT_OF_DATE_KHR || res == VK_SUBOPTIMAL_KHR)
@@ -382,7 +382,7 @@ void TRAP::Graphics::API::VulkanSwapChain::ReInitSwapChain()
 		sema->m_signaled = true;
 	}
 
-	if(imageIndex == std::numeric_limits<uint32_t>::max())
+	if(imageIndex == std::numeric_limits<u32>::max())
 		return std::nullopt;
 
 	return imageIndex;

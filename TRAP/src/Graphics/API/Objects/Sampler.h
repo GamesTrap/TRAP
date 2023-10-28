@@ -71,12 +71,12 @@ namespace TRAP::Graphics
 		/// Retrieve the mip lod bias of the sampler.
 		/// </summary>
 		/// <returns>Address mode.</returns>
-		[[nodiscard]] constexpr float GetMipLodBias() const noexcept;
+		[[nodiscard]] constexpr f32 GetMipLodBias() const noexcept;
 		/// <summary>
 		/// Retrieve the max anisotropy of the sampler.
 		/// </summary>
 		/// <returns>Max anisotropy.</returns>
-		[[nodiscard]] constexpr float GetAnisotropyLevel() const noexcept;
+		[[nodiscard]] constexpr f32 GetAnisotropyLevel() const noexcept;
 		/// <summary>
 		/// Retrieve the compare function of the sampler.
 		/// </summary>
@@ -105,7 +105,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		explicit Sampler(const RendererAPI::SamplerDesc& desc);
 
-		virtual void UpdateAnisotropy(float anisotropy) = 0;
+		virtual void UpdateAnisotropy(f32 anisotropy) = 0;
 
 		RendererAPI::SamplerDesc m_samplerDesc{};
 		bool m_usesEngineAnisotropyLevel = false;
@@ -159,14 +159,14 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::Graphics::Sampler::GetMipLodBias() const noexcept
+[[nodiscard]] constexpr f32 TRAP::Graphics::Sampler::GetMipLodBias() const noexcept
 {
 	return m_samplerDesc.MipLodBias;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::Graphics::Sampler::GetAnisotropyLevel() const noexcept
+[[nodiscard]] constexpr f32 TRAP::Graphics::Sampler::GetAnisotropyLevel() const noexcept
 {
 	if(!m_samplerDesc.EnableAnisotropy)
 		return 0.0f;
@@ -195,9 +195,9 @@ namespace std
 	template <>
  	struct hash<TRAP::Graphics::RendererAPI::SamplerDesc>
 	{
-		[[nodiscard]] constexpr std::size_t operator()(const TRAP::Graphics::RendererAPI::SamplerDesc& desc) const noexcept
+		[[nodiscard]] constexpr usize operator()(const TRAP::Graphics::RendererAPI::SamplerDesc& desc) const noexcept
 		{
-			std::size_t res = 0;
+			usize res = 0;
 
 			TRAP::Utils::HashCombine
 			(

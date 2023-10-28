@@ -5,7 +5,7 @@
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/Shaders/Shader.h"
 
-[[nodiscard]] TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const uint64_t size,
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const u64 size,
 																				               const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
@@ -16,7 +16,7 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const void* const data,
-																				               const uint64_t size,
+																				               const u64 size,
 																				               const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
@@ -26,7 +26,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint64_t TRAP::Graphics::UniformBuffer::GetSize() const noexcept
+[[nodiscard]] u64 TRAP::Graphics::UniformBuffer::GetSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -35,20 +35,20 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::UniformBuffer::SetData(const void* const data, const uint64_t size, const uint64_t offset)
+void TRAP::Graphics::UniformBuffer::SetData(const void* const data, const u64 size, const u64 offset)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	TRAP_ASSERT(data, "UniformBuffer::SetData(): Data is nullptr!");
 	TRAP_ASSERT(size + offset <= m_uniformBuffers[0]->GetSize(), "UniformBuffer::SetData(): Out of bounds!");
 
-	for(std::size_t i = 0; i < m_uniformBuffers.size(); ++i)
+	for(usize i = 0; i < m_uniformBuffers.size(); ++i)
 	{
 		RendererAPI::BufferUpdateDesc desc{};
 		desc.Buffer = m_uniformBuffers[i];
 		desc.DstOffset = offset;
 		API::ResourceLoader::BeginUpdateResource(desc);
-		std::copy_n(static_cast<const uint8_t*>(data), size, static_cast<uint8_t*>(desc.MappedData));
+		std::copy_n(static_cast<const u8*>(data), size, static_cast<u8*>(desc.MappedData));
 		RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_tokens[i]);
 	}
 	AwaitLoading();
@@ -60,7 +60,7 @@ void TRAP::Graphics::UniformBuffer::SetData(const void* const data, const uint64
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	for(std::size_t i = 0; i < m_uniformBuffers.size(); ++i)
+	for(usize i = 0; i < m_uniformBuffers.size(); ++i)
 	{
 	   if(!RendererAPI::GetResourceLoader()->IsTokenCompleted(&m_tokens[i]))
 			return false;
@@ -75,18 +75,18 @@ void TRAP::Graphics::UniformBuffer::AwaitLoading() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	for(std::size_t i = 0; i < m_uniformBuffers.size(); ++i)
+	for(usize i = 0; i < m_uniformBuffers.size(); ++i)
 		RendererAPI::GetResourceLoader()->WaitForToken(&m_tokens[i]);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint64_t TRAP::Graphics::UniformBuffer::CalculateAlignedSize(const uint64_t byteSize) noexcept
+[[nodiscard]] u64 TRAP::Graphics::UniformBuffer::CalculateAlignedSize(const u64 byteSize) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	const uint64_t minUBOAlignment = RendererAPI::GPUSettings.UniformBufferAlignment;
-	uint64_t alignedSize = byteSize;
+	const u64 minUBOAlignment = RendererAPI::GPUSettings.UniformBufferAlignment;
+	u64 alignedSize = byteSize;
 
 	if(minUBOAlignment > 0)
 		alignedSize = (alignedSize + minUBOAlignment - 1) & ~(minUBOAlignment - 1);
@@ -96,7 +96,7 @@ void TRAP::Graphics::UniformBuffer::AwaitLoading() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Init(const void* const data, const uint64_t size,
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Init(const void* const data, const u64 size,
 																			                 const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
@@ -112,7 +112,7 @@ void TRAP::Graphics::UniformBuffer::AwaitLoading() const
 	desc.Desc.Size = size;
 	desc.Data = data;
 
-	for(std::size_t i = 0; i < buffer->m_uniformBuffers.size(); ++i)
+	for(usize i = 0; i < buffer->m_uniformBuffers.size(); ++i)
 	{
 		RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_tokens[i]);
 		buffer->m_uniformBuffers[i] = desc.Buffer;

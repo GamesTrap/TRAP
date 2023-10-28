@@ -62,7 +62,7 @@ bool TRAP::Graphics::Shader::Reload()
 	std::string glslSource;
 	bool isSPIRV = false;
 	RendererAPI::BinaryShaderDesc desc;
-	std::vector<uint8_t> SPIRVSource{};
+	std::vector<u8> SPIRVSource{};
 
 	if(!IsFileEndingSupported(m_filepath))
 		return false;
@@ -316,7 +316,7 @@ TRAP::Graphics::Shader::Shader(std::string name, const bool valid, const Rendere
 	const std::vector<std::string> lines = Utils::String::GetLines(glslSource);
 
 	//Go through every line of the shader source
-	for(std::size_t i = 0; i < lines.size(); ++i)
+	for(usize i = 0; i < lines.size(); ++i)
 	{
 		//Optimization lines converted to lower case
 		const std::string lowerLine = Utils::String::ToLower(lines[i]);
@@ -497,7 +497,7 @@ TRAP::Graphics::Shader::Shader(std::string name, const bool valid, const Rendere
 #ifdef ENABLE_GRAPHICS_DEBUG
 		TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
 #endif /*ENABLE_GRAPHICS_DEBUG*/
-		const std::vector<uint32_t> SPIRV = ConvertToSPIRV(stage, program);
+		const std::vector<u32> SPIRV = ConvertToSPIRV(stage, program);
 
 		if((stage & RendererAPI::ShaderStage::Vertex) != RendererAPI::ShaderStage::None)
 			desc.Vertex = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
@@ -518,12 +518,12 @@ TRAP::Graphics::Shader::Shader(std::string name, const bool valid, const Rendere
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::vector<uint32_t> TRAP::Graphics::Shader::ConvertToSPIRV(const RendererAPI::ShaderStage stage,
+[[nodiscard]] std::vector<u32> TRAP::Graphics::Shader::ConvertToSPIRV(const RendererAPI::ShaderStage stage,
 															               glslang::TProgram& program)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	std::vector<uint32_t> SPIRV{};
+	std::vector<u32> SPIRV{};
 
 	spv::SpvBuildLogger logger{};
 	glslang::SpvOptions spvOptions{};
@@ -582,7 +582,7 @@ TRAP::Graphics::Shader::Shader(std::string name, const bool valid, const Rendere
 
 	std::string glslSource;
 	bool isSPIRV = false;
-	std::vector<uint8_t> SPIRVSource{};
+	std::vector<u8> SPIRVSource{};
 	if (!filePath.empty())
 	{
 		if(!IsFileEndingSupported(filePath))
@@ -659,7 +659,7 @@ TRAP::Graphics::Shader::Shader(std::string name, const bool valid, const Rendere
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::LoadSPIRV(std::vector<uint8_t>& SPIRV)
+[[nodiscard]] TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::LoadSPIRV(std::vector<u8>& SPIRV)
 {
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::ShaderSPIRVPrefix, "Loading SPIRV");
@@ -668,7 +668,7 @@ TRAP::Graphics::Shader::Shader(std::string name, const bool valid, const Rendere
 	if(SPIRV.empty() || SPIRV.size() < (ShaderHeaderOffset + sizeof(SPIRVMagicNumber)))
 		return {};
 
-	const uint32_t magicNumber = Utils::Memory::ConvertByte<uint32_t>(SPIRV.data() + ShaderHeaderOffset);
+	const u32 magicNumber = Utils::Memory::ConvertByte<u32>(SPIRV.data() + ShaderHeaderOffset);
 
 	//Check endianness of byte stream
 	if (magicNumber != SPIRVMagicNumber)
@@ -679,18 +679,18 @@ TRAP::Graphics::Shader::Shader(std::string name, const bool valid, const Rendere
 	}
 
 	RendererAPI::BinaryShaderDesc desc{};
-	std::size_t index = ShaderMagicNumber.size() + sizeof(uint32_t);
-	const uint8_t SPIRVSubShaderCount = SPIRV[index++];
+	usize index = ShaderMagicNumber.size() + sizeof(u32);
+	const u8 SPIRVSubShaderCount = SPIRV[index++];
 
-	for(uint32_t i = 0; i < SPIRVSubShaderCount; ++i)
+	for(u32 i = 0; i < SPIRVSubShaderCount; ++i)
 	{
-		std::size_t SPIRVSize = Utils::Memory::ConvertByte<std::size_t>(SPIRV.data() + NumericCast<std::ptrdiff_t>(index));
-		index += sizeof(std::size_t);
+		usize SPIRVSize = Utils::Memory::ConvertByte<usize>(SPIRV.data() + NumericCast<isize>(index));
+		index += sizeof(usize);
 
 		const RendererAPI::ShaderStage stage = static_cast<RendererAPI::ShaderStage>(SPIRV[index++]);
 		desc.Stages |= stage;
 
-		const uint32_t spvMagicNumber  = Utils::Memory::ConvertByte<uint32_t>(SPIRV.data() + NumericCast<std::ptrdiff_t>(index));
+		const u32 spvMagicNumber  = Utils::Memory::ConvertByte<u32>(SPIRV.data() + NumericCast<isize>(index));
 		if(spvMagicNumber != SPIRVMagicNumber || (SPIRV.size() - index) < SPIRVSize)
 			return {};
 
@@ -698,38 +698,38 @@ TRAP::Graphics::Shader::Shader(std::string name, const bool valid, const Rendere
 		{
 		case RendererAPI::ShaderStage::Vertex:
 			desc.Vertex.ByteCode.resize(SPIRVSize);
-			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.Vertex.ByteCode.begin());
-			index += SPIRVSize * sizeof(uint32_t);
+			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<isize>(index), SPIRV.begin() + NumericCast<isize>(index) + NumericCast<isize>(SPIRVSize * sizeof(u32)), desc.Vertex.ByteCode.begin());
+			index += SPIRVSize * sizeof(u32);
 			break;
 
 		case RendererAPI::ShaderStage::TessellationControl:
 			desc.TessellationControl.ByteCode.resize(SPIRVSize);
-			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.TessellationControl.ByteCode.begin());
-			index += SPIRVSize * sizeof(uint32_t);
+			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<isize>(index), SPIRV.begin() + NumericCast<isize>(index) + NumericCast<isize>(SPIRVSize * sizeof(u32)), desc.TessellationControl.ByteCode.begin());
+			index += SPIRVSize * sizeof(u32);
 			break;
 
 		case RendererAPI::ShaderStage::TessellationEvaluation:
 			desc.TessellationEvaluation.ByteCode.resize(SPIRVSize);
-			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.TessellationEvaluation.ByteCode.begin());
-			index += SPIRVSize * sizeof(uint32_t);
+			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<isize>(index), SPIRV.begin() + NumericCast<isize>(index) + NumericCast<isize>(SPIRVSize * sizeof(u32)), desc.TessellationEvaluation.ByteCode.begin());
+			index += SPIRVSize * sizeof(u32);
 			break;
 
 		case RendererAPI::ShaderStage::Geometry:
 			desc.Geometry.ByteCode.resize(SPIRVSize);
-			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.Geometry.ByteCode.begin());
-			index += SPIRVSize * sizeof(uint32_t);
+			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<isize>(index), SPIRV.begin() + NumericCast<isize>(index) + NumericCast<isize>(SPIRVSize * sizeof(u32)), desc.Geometry.ByteCode.begin());
+			index += SPIRVSize * sizeof(u32);
 			break;
 
 		case RendererAPI::ShaderStage::Fragment:
 			desc.Fragment.ByteCode.resize(SPIRVSize);
-			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.Fragment.ByteCode.begin());
-			index += SPIRVSize * sizeof(uint32_t);
+			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<isize>(index), SPIRV.begin() + NumericCast<isize>(index) + NumericCast<isize>(SPIRVSize * sizeof(u32)), desc.Fragment.ByteCode.begin());
+			index += SPIRVSize * sizeof(u32);
 			break;
 
 		case RendererAPI::ShaderStage::Compute:
 			desc.Compute.ByteCode.resize(SPIRVSize);
-			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<std::ptrdiff_t>(index), SPIRV.begin() + NumericCast<std::ptrdiff_t>(index) + NumericCast<std::ptrdiff_t>(SPIRVSize * sizeof(uint32_t)), desc.Compute.ByteCode.begin());
-			index += SPIRVSize * sizeof(uint32_t);
+			Utils::Memory::ConvertBytes(SPIRV.begin() + NumericCast<isize>(index), SPIRV.begin() + NumericCast<isize>(index) + NumericCast<isize>(SPIRVSize * sizeof(u32)), desc.Compute.ByteCode.begin());
+			index += SPIRVSize * sizeof(u32);
 			break;
 
 		//case RendererAPI::ShaderStage::RayTracing:

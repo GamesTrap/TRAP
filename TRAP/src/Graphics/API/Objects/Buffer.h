@@ -41,7 +41,7 @@ namespace TRAP::Graphics
 		/// Retrieve the size of the buffer in bytes.
 		/// </summary>
 		/// <returns>Size of the buffer in bytes.</returns>
-		[[nodiscard]] constexpr uint64_t GetSize() const noexcept;
+		[[nodiscard]] constexpr u64 GetSize() const noexcept;
 		/// <summary>
 		/// Retrieve the type of descriptor.
 		/// </summary>
@@ -79,13 +79,13 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		Buffer(uint64_t size, RendererAPI::DescriptorType descriptorType, RendererAPI::ResourceMemoryUsage memoryUsage);
+		Buffer(u64 size, RendererAPI::DescriptorType descriptorType, RendererAPI::ResourceMemoryUsage memoryUsage);
 
 		//CPU address of the mapped buffer (applicable to buffers created in CPU accessible heaps
 		//(CPU, CPUToGPU, GPUToCPU))
 		void* m_CPUMappedAddress = nullptr;
 
-		uint64_t m_size = 0;
+		u64 m_size = 0;
 		RendererAPI::DescriptorType m_descriptors = RendererAPI::DescriptorType::Undefined;
 		RendererAPI::ResourceMemoryUsage m_memoryUsage = RendererAPI::ResourceMemoryUsage::Unknown;
 	};
@@ -93,7 +93,7 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint64_t TRAP::Graphics::Buffer::GetSize() const noexcept
+[[nodiscard]] constexpr u64 TRAP::Graphics::Buffer::GetSize() const noexcept
 {
 	return m_size;
 }

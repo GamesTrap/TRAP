@@ -30,13 +30,14 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #define TRAP_NETWORK_SOCKETHANDLE_H
 
 #include <cstdint>
+#include "Core/Types.h"
 
 namespace TRAP::Network
 {
 #ifdef TRAP_PLATFORM_WINDOWS
 	using SocketHandle = UINT_PTR;
 #else
-	using SocketHandle = int32_t;
+	using SocketHandle = i32;
 #endif
 }
 

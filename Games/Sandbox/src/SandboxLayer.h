@@ -25,7 +25,7 @@ public:
 		ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
 		ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
 		ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
-		ImGui::PlotLines("", m_frameTimeHistory.data(), NumericCast<int32_t>(m_frameTimeHistory.size()), 0, nullptr, 0,
+		ImGui::PlotLines("", m_frameTimeHistory.data(), NumericCast<i32>(m_frameTimeHistory.size()), 0, nullptr, 0,
 		                 33, ImVec2(200, 50));
 		ImGui::End();
 
@@ -55,7 +55,7 @@ public:
 		//    Quad   //
 		///////////////
 		//XYZ RGBA
-		constexpr std::array<float, 9ull * 4> indexedVertices //Quad
+		constexpr std::array<f32, 9ull * 4> indexedVertices //Quad
 		{
 			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,    0.0f, 1.0f,
 			 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,    1.0f, 1.0f,
@@ -74,7 +74,7 @@ public:
 		};
 		m_indexedVertexBuffer->SetLayout(layout);
 
-		constexpr std::array<uint16_t, 6> indices //Quad
+		constexpr std::array<u16, 6> indices //Quad
 		{
 			0, 1, 2, 2, 3, 0
 		};
@@ -86,7 +86,7 @@ public:
 		//    Quad   //
 		///////////////
 		//XYZ RGBA
-		constexpr std::array<float, 9ull * 6> vertices //Quad
+		constexpr std::array<f32, 9ull * 6> vertices //Quad
 		{
 			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,    0.0f, 1.0f,
 			 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,    1.0f, 1.0f,
@@ -137,7 +137,7 @@ public:
 
 		TRAP::Graphics::Renderer::BeginScene(m_cameraController.GetCamera());
 		{
-			float time = TRAP::Application::GetTime();
+			f32 time = TRAP::Application::GetTime();
 			m_shader->UseTexture(0, 0, m_texture);
 			m_shader->UseSampler(0, 1, m_sampler.get());
 			if (m_indexedDrawing)
@@ -157,7 +157,7 @@ public:
 		if (m_titleTimer.Elapsed() >= 0.025f)
 		{
 			m_titleTimer.Reset();
-			constinit static std::size_t frameTimeIndex = 0;
+			constinit static usize frameTimeIndex = 0;
 			if (frameTimeIndex < m_frameTimeHistory.size() - 1)
 			{
 				m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
@@ -235,7 +235,7 @@ public:
 	}
 
 private:
-	std::array<float, 50> m_frameTimeHistory{};
+	std::array<f32, 50> m_frameTimeHistory{};
 	TRAP::Utils::Timer m_fpsTimer{};
 	TRAP::Utils::Timer m_titleTimer{};
 	bool m_wireFrame = false;

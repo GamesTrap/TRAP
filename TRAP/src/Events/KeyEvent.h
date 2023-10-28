@@ -263,7 +263,7 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="codePoint">Unicode code point entered.</param>
 		/// <param name="window">Pointer to the affected window.</param>
-		explicit KeyTypeEvent(uint32_t codePoint, TRAP::Window* window);
+		explicit KeyTypeEvent(u32 codePoint, TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -294,7 +294,7 @@ namespace TRAP::Events
 		/// Retrieve the entered Unicode code point.
 		/// </summary>
 		/// <returns>Unicode code point.</returns>
-		[[nodiscard]] constexpr uint32_t GetCodePoint() const noexcept;
+		[[nodiscard]] constexpr u32 GetCodePoint() const noexcept;
 
 		/// <summary>
 		/// Get a string representation of the KeyTypeEvent.
@@ -325,7 +325,7 @@ namespace TRAP::Events
 
 	private:
 		TRAP::Window* m_window;
-		uint32_t m_codePoint;
+		u32 m_codePoint;
 	};
 
 	/// <summary>
@@ -519,7 +519,7 @@ constexpr TRAP::Events::KeyEvent::KeyEvent(const Input::Key key) noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Events::KeyTypeEvent::GetCodePoint() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Events::KeyTypeEvent::GetCodePoint() const noexcept
 {
 	return m_codePoint;
 }

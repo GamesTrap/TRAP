@@ -55,7 +55,7 @@ private:
 	bool m_viewportHovered = false;
 
 	//Gizmo
-	int32_t m_gizmoType = ImGuizmo::OPERATION::TRANSLATE;
+	i32 m_gizmoType = ImGuizmo::OPERATION::TRANSLATE;
 	bool m_enableGizmo = false;
 	bool m_allowViewportCameraEvents = false;
 
@@ -64,7 +64,7 @@ private:
 	bool m_startedCameraMovement = false;
 
 	//Mouse picking
-	uint32_t m_leftMouseBtnRepeatCount = 0;
+	u32 m_leftMouseBtnRepeatCount = 0;
 	bool m_entityChanged = false;
 	TRAP::Graphics::RendererAPI::BufferDesc m_mousePickBufferDesc{};
 	TRAP::Ref<TRAP::Graphics::Buffer> m_mousePickBuffer = nullptr;

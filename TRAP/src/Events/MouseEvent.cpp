@@ -5,7 +5,7 @@
 
 #include "Utils/String/String.h"
 
-TRAP::Events::MouseMoveEvent::MouseMoveEvent(const float x, const float y, TRAP::Window* window)
+TRAP::Events::MouseMoveEvent::MouseMoveEvent(const f32 x, const f32 y, TRAP::Window* window)
 	: m_mouseX(x), m_mouseY(y), m_window(window)
 {
 	TRAP_ASSERT(window, "Events::MouseMoveEvent(): Window is nullptr!");
@@ -24,7 +24,7 @@ TRAP::Events::MouseMoveEvent::MouseMoveEvent(const float x, const float y, TRAP:
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::MouseScrollEvent::MouseScrollEvent(const float xOffset, const float yOffset,
+TRAP::Events::MouseScrollEvent::MouseScrollEvent(const f32 xOffset, const f32 yOffset,
                                                  TRAP::Window* const window)
 	: m_xOffset(xOffset), m_yOffset(yOffset), m_window(window)
 {

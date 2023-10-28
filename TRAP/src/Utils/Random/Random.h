@@ -131,7 +131,7 @@ namespace TRAP::Utils
         /// Advances the internal state by z times.
         /// </summary>
         /// <param name="z">How many times to advance.</param>
-        static void Discard(const uint64_t z)
+        static void Discard(const u64 z)
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -276,9 +276,9 @@ namespace TRAP::Utils
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-            //Choose between short and unsigned short for byte conversion
+            //Choose between i16 and u16 for byte conversion
             using short_t = typename std::conditional<std::is_signed<T>::value,
-                                                      int16_t, uint16_t>::type;
+                                                      i16, u16>::type;
 
             return static_cast<T>(Get<short_t>(from, to));
         }
@@ -318,11 +318,11 @@ namespace TRAP::Utils
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
             if (from < to) //Allow range from higher to lower
-                return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(from),
-                                                                 static_cast<std::int64_t>(to) }(EngineInstance()));
+                return static_cast<T>(IntegerDist<i64>{ static_cast<i64>(from),
+                                                                 static_cast<i64>(to) }(EngineInstance()));
 
-            return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(to),
-                                                             static_cast<std::int64_t>(from) }(EngineInstance()));
+            return static_cast<T>(IntegerDist<i64>{ static_cast<i64>(to),
+                                                             static_cast<i64>(from) }(EngineInstance()));
         }
 
         /// <summary>
@@ -334,7 +334,7 @@ namespace TRAP::Utils
         /// <returns>'true' with 'probability' probability ('false' otherwise).</returns>
         template<typename T>
         requires std::same_as<T, bool>
-        [[nodiscard]] static bool Get(const double probability = 0.5)
+        [[nodiscard]] static bool Get(const f64 probability = 0.5)
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -396,12 +396,12 @@ namespace TRAP::Utils
         /// </summary>
         /// <param name="array">Built-in array with elements.</param>
         /// <returns>Pointer to random element in array.</returns>
-        template<typename T, std::size_t N>
+        template<typename T, usize N>
         [[nodiscard]] static T* Get(T(&array)[N])
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-            return std::addressof(array[Get<std::size_t>(0, N - 1)]);
+            return std::addressof(array[Get<usize>(0, N - 1)]);
         }
 
         /// <summary>
@@ -588,7 +588,7 @@ namespace TRAP::Utils
         /// Advances the internal state by z times.
         /// </summary>
         /// <param name="z">How many times to advance.</param>
-        static void Discard(const uint64_t z)
+        static void Discard(const u64 z)
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -731,9 +731,9 @@ namespace TRAP::Utils
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-            //Choose between short and unsigned short for byte conversion
+            //Choose between i16 and u16 for byte conversion
             using short_t = typename std::conditional<std::is_signed<T>::value,
-                int16_t, uint16_t>::type;
+                i16, u16>::type;
 
             return static_cast<T>(Get<short_t>(from, to));
         }
@@ -773,11 +773,11 @@ namespace TRAP::Utils
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
             if (from < to) //Allow range from higher to lower
-                return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(from),
-                                                                 static_cast<std::int64_t>(to) }(EngineInstance()));
+                return static_cast<T>(IntegerDist<i64>{ static_cast<i64>(from),
+                                                                 static_cast<i64>(to) }(EngineInstance()));
 
-            return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(to),
-                                                             static_cast<std::int64_t>(from) }(EngineInstance()));
+            return static_cast<T>(IntegerDist<i64>{ static_cast<i64>(to),
+                                                             static_cast<i64>(from) }(EngineInstance()));
         }
 
         /// <summary>
@@ -789,7 +789,7 @@ namespace TRAP::Utils
         /// <returns>'True' with 'probability' probability ('False' otherwise).</returns>
         template<typename T>
         requires std::same_as<T, bool>
-        [[nodiscard]] static bool Get(const double probability = 0.5)
+        [[nodiscard]] static bool Get(const f64 probability = 0.5)
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -849,12 +849,12 @@ namespace TRAP::Utils
         /// </summary>
         /// <param name="array">Built-in array with elements</param>
         /// <returns>Pointer to random element in array.</returns>
-        template<typename T, std::size_t N>
+        template<typename T, usize N>
         [[nodiscard]] static T* Get(T(&array)[N])
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-            return std::addressof(array[Get<std::size_t>(0, N - 1)]);
+            return std::addressof(array[Get<usize>(0, N - 1)]);
         }
 
         /// <summary>
@@ -1016,7 +1016,7 @@ namespace TRAP::Utils
         /// Advances the internal state by z times
         /// </summary>
         /// <param name="z">How many times to advance.</param>
-        void Discard(const uint64_t z)
+        void Discard(const u64 z)
         {
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -1159,9 +1159,9 @@ namespace TRAP::Utils
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-            //Choose between short and unsigned short for byte conversion
+            //Choose between i16 and u16 for byte conversion
             using short_t = typename std::conditional<std::is_signed<T>::value,
-                int16_t, uint16_t>::type;
+                i16, u16>::type;
 
             return static_cast<T>(Get<short_t>(from, to));
         }
@@ -1202,11 +1202,11 @@ namespace TRAP::Utils
 
             //Allow range from higher to lower
             if (from < to)
-                return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(from),
-                                                                 static_cast<std::int64_t>(to) }(m_engine));
+                return static_cast<T>(IntegerDist<i64>{ static_cast<i64>(from),
+                                                                 static_cast<i64>(to) }(m_engine));
 
-            return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(to),
-                                                             static_cast<std::int64_t>(from) }(m_engine));
+            return static_cast<T>(IntegerDist<i64>{ static_cast<i64>(to),
+                                                             static_cast<i64>(from) }(m_engine));
         }
 
         /// <summary>
@@ -1218,7 +1218,7 @@ namespace TRAP::Utils
         /// <returns>'true' with 'probability' probability ('false' otherwise).</returns>
         template<typename T>
         requires std::same_as<T, bool>
-        [[nodiscard]] bool Get(const double probability = 0.5)
+        [[nodiscard]] bool Get(const f64 probability = 0.5)
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -1279,12 +1279,12 @@ namespace TRAP::Utils
         /// </summary>
         /// <param name="array">Built-in array with elements.</param>
         /// <returns>Pointer to random element in array.</returns>
-        template<typename T, std::size_t N>
+        template<typename T, usize N>
         [[nodiscard]] T* Get(T(&array)[N])
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-            return std::addressof(array[Get<std::size_t>(0, N - 1)]);
+            return std::addressof(array[Get<usize>(0, N - 1)]);
         }
 
         /// <summary>

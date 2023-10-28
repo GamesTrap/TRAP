@@ -101,12 +101,12 @@ void TRAP::Graphics::API::VulkanShader::Use()
 		//Following some descriptor set allocation and reusing logic
 
 #ifndef TRAP_HEADLESS_MODE
-		const uint32_t currImageIndex = RendererAPI::GetCurrentImageIndex(window);
+		const u32 currImageIndex = RendererAPI::GetCurrentImageIndex(window);
 #else
-		const uint32_t currImageIndex = RendererAPI::GetCurrentImageIndex();
+		const u32 currImageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
 
-		if(m_lastImageIndex != std::numeric_limits<uint32_t>::max())
+		if(m_lastImageIndex != std::numeric_limits<u32>::max())
 		{
 			//Move last dirty descriptor sets to cleaned descriptor sets
 			if(currImageIndex != m_lastImageIndex && !m_dirtyDescriptorSets[m_lastImageIndex].empty())
@@ -118,19 +118,19 @@ void TRAP::Graphics::API::VulkanShader::Use()
 		}
 
 		//Get a clean descriptor set
-		if(m_lastImageIndex == std::numeric_limits<uint32_t>::max() ||
+		if(m_lastImageIndex == std::numeric_limits<u32>::max() ||
 		m_cleanedDescriptorSets[currImageIndex].empty()) //Slow path
 		{
 			//Descriptor sets are now dirty, so we need new ones
 			const Ref<VulkanRootSignature> root = std::dynamic_pointer_cast<VulkanRootSignature>(m_rootSignature);
 			RendererAPI::DescriptorSetDesc setDesc{};
 			setDesc.RootSignature = m_rootSignature;
-			for(std::size_t i = 0; i < m_descriptorSets.size(); ++i)
+			for(usize i = 0; i < m_descriptorSets.size(); ++i)
 			{
 				if(root->GetVkDescriptorSetLayouts()[i] != VK_NULL_HANDLE)
 				{
 					setDesc.MaxSets = (i == 0) ? 1 : RendererAPI::ImageCount;
-					setDesc.Set = NumericCast<uint32_t>(i);
+					setDesc.Set = NumericCast<u32>(i);
 					m_descriptorSets[i] = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(setDesc);
 				}
 			}
@@ -151,10 +151,10 @@ void TRAP::Graphics::API::VulkanShader::Use()
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uint32_t binding,
+void TRAP::Graphics::API::VulkanShader::UseTexture(const u32 set, const u32 binding,
                                                    Ref<TRAP::Graphics::Texture> const texture, const Window* const window) const
 #else
-void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uint32_t binding,
+void TRAP::Graphics::API::VulkanShader::UseTexture(const u32 set, const u32 binding,
                                                    Ref<TRAP::Graphics::Texture> const texture) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
@@ -192,9 +192,9 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uin
 	else
 	{
 #ifndef TRAP_HEADLESS_MODE
-		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
+		const u32 imageIndex = RendererAPI::GetCurrentImageIndex(window);
 #else
-		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex();
+		const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
 		GetDescriptorSets()[set]->Update(imageIndex, params);
 	}
@@ -203,11 +203,11 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uin
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const uint32_t binding,
+void TRAP::Graphics::API::VulkanShader::UseTextures(const u32 set, const u32 binding,
 													const std::vector<Ref<TRAP::Graphics::Texture>>& textures,
 													const Window* const window) const
 #else
-void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const uint32_t binding,
+void TRAP::Graphics::API::VulkanShader::UseTextures(const u32 set, const u32 binding,
 													const std::vector<Ref<TRAP::Graphics::Texture>>& textures) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
@@ -237,7 +237,7 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
 	params[0].Name = name;
 	params[0].Resource = textures;
-	params[0].Count = NumericCast<uint32_t>(textures.size());
+	params[0].Count = NumericCast<u32>(textures.size());
 
 	if(shaderUAV && (textures[0]->GetDescriptorTypes() & RendererAPI::DescriptorType::RWTexture) != RendererAPI::DescriptorType::Undefined)
 		params[0].Offset = RendererAPI::DescriptorData::TextureSlice{};
@@ -247,9 +247,9 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 	else
 	{
 #ifndef TRAP_HEADLESS_MODE
-		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
+		const u32 imageIndex = RendererAPI::GetCurrentImageIndex(window);
 #else
-		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex();
+		const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
 		GetDescriptorSets()[set]->Update(imageIndex, params);
 	}
@@ -258,10 +258,10 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uint32_t binding,
+void TRAP::Graphics::API::VulkanShader::UseSampler(const u32 set, const u32 binding,
 	                                               TRAP::Graphics::Sampler* const sampler, const Window* const window) const
 #else
-void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uint32_t binding,
+void TRAP::Graphics::API::VulkanShader::UseSampler(const u32 set, const u32 binding,
 	                                               TRAP::Graphics::Sampler* const sampler) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
@@ -292,9 +292,9 @@ void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uin
 	else
 	{
 #ifndef TRAP_HEADLESS_MODE
-		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
+		const u32 imageIndex = RendererAPI::GetCurrentImageIndex(window);
 #else
-		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex();
+		const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
 		GetDescriptorSets()[set]->Update(imageIndex, params);
 	}
@@ -303,11 +303,11 @@ void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uin
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const uint32_t binding,
+void TRAP::Graphics::API::VulkanShader::UseSamplers(const u32 set, const u32 binding,
 	                                                const std::vector<TRAP::Graphics::Sampler*>& samplers,
 													const Window* const window) const
 #else
-void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const uint32_t binding,
+void TRAP::Graphics::API::VulkanShader::UseSamplers(const u32 set, const u32 binding,
 	                                                const std::vector<TRAP::Graphics::Sampler*>& samplers) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
@@ -334,15 +334,15 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const ui
 	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
 	params[0].Name = name;
 	params[0].Resource = samplers;
-	params[0].Count = NumericCast<uint32_t>(samplers.size());
+	params[0].Count = NumericCast<u32>(samplers.size());
 	if(set == std::to_underlying(RendererAPI::DescriptorUpdateFrequency::Static))
 		GetDescriptorSets()[set]->Update(0, params);
 	else
 	{
 #ifndef TRAP_HEADLESS_MODE
-		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
+		const u32 imageIndex = RendererAPI::GetCurrentImageIndex(window);
 #else
-		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex();
+		const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
 		GetDescriptorSets()[set]->Update(imageIndex, params);
 	}
@@ -351,9 +351,9 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const ui
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_t binding,
+void TRAP::Graphics::API::VulkanShader::UseUBO(const u32 set, const u32 binding,
                                                const TRAP::Graphics::UniformBuffer* const uniformBuffer,
-											   const uint64_t size, const uint64_t offset, const Window* const window) const
+											   const u64 size, const u64 offset, const Window* const window) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -363,15 +363,15 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_
 	if(!m_valid)
 		return;
 
-	const uint32_t UBOIndex = (uniformBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
+	const u32 UBOIndex = (uniformBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
 		                          0 : RendererAPI::GetCurrentImageIndex(window);
 
 	UseBuffer(set, binding, uniformBuffer->GetUBOs()[UBOIndex].get(), size != 0u ? size : uniformBuffer->GetSize(), offset, window);
 }
 #else
-void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_t binding,
+void TRAP::Graphics::API::VulkanShader::UseUBO(const u32 set, const u32 binding,
                                                const TRAP::Graphics::UniformBuffer* const uniformBuffer,
-											   const uint64_t size, const uint64_t offset) const
+											   const u64 size, const u64 offset) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -380,7 +380,7 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_
 	if(!m_valid)
 		return;
 
-	const uint32_t UBOIndex = (uniformBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
+	const u32 UBOIndex = (uniformBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
 		                          0 : RendererAPI::GetCurrentImageIndex();
 
 	UseBuffer(set, binding, uniformBuffer->GetUBOs()[UBOIndex].get(), size != 0u ? size : uniformBuffer->GetSize(), offset);
@@ -390,9 +390,9 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanShader::UseSSBO(const uint32_t set, const uint32_t binding,
+void TRAP::Graphics::API::VulkanShader::UseSSBO(const u32 set, const u32 binding,
                                                 const TRAP::Graphics::StorageBuffer* const storageBuffer,
-											    const uint64_t size, const Window* const window) const
+											    const u64 size, const Window* const window) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -402,15 +402,15 @@ void TRAP::Graphics::API::VulkanShader::UseSSBO(const uint32_t set, const uint32
 	if(!m_valid)
 		return;
 
-	const uint32_t SSBOIndex = (storageBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
+	const u32 SSBOIndex = (storageBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
 		                           0 : RendererAPI::GetCurrentImageIndex(window);
 
 	UseBuffer(set, binding, storageBuffer->GetSSBOs()[SSBOIndex].get(), size != 0u ? size : storageBuffer->GetSize(), 0, window);
 }
 #else
-void TRAP::Graphics::API::VulkanShader::UseSSBO(const uint32_t set, const uint32_t binding,
+void TRAP::Graphics::API::VulkanShader::UseSSBO(const u32 set, const u32 binding,
                                                 const TRAP::Graphics::StorageBuffer* const storageBuffer,
-											    const uint64_t size) const
+											    const u64 size) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -419,7 +419,7 @@ void TRAP::Graphics::API::VulkanShader::UseSSBO(const uint32_t set, const uint32
 	if(!m_valid)
 		return;
 
-	const uint32_t SSBOIndex = (storageBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
+	const u32 SSBOIndex = (storageBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
 		                           0 : RendererAPI::GetCurrentImageIndex();
 
 	UseBuffer(set, binding, storageBuffer->GetSSBOs()[SSBOIndex].get(), size != 0u ? size : storageBuffer->GetSize(), 0);
@@ -438,7 +438,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 
 	std::vector<ShaderReflection::ShaderReflection> stageReflections{};
 
-	for(std::size_t i = 0; i < std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT); i++)
+	for(usize i = 0; i < std::to_underlying(RendererAPI::ShaderStage::SHADER_STAGE_COUNT); i++)
 	{
 		const RendererAPI::ShaderStage stageMask = static_cast<RendererAPI::ShaderStage>(BIT(i));
 		if(stageMask == (m_shaderStages & stageMask))
@@ -457,7 +457,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 				{
 					stageReflections.push_back(VkCreateShaderReflection(desc.Vertex.ByteCode, stageMask));
 
-					createInfo.codeSize = desc.Vertex.ByteCode.size() * sizeof(uint32_t);
+					createInfo.codeSize = desc.Vertex.ByteCode.size() * sizeof(u32);
 					createInfo.pCode = desc.Vertex.ByteCode.data();
 					stageDesc = &desc.Vertex;
 					m_shaderModules.emplace_back(VK_NULL_HANDLE);
@@ -475,7 +475,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 					stageReflections.push_back(VkCreateShaderReflection(desc.TessellationControl.ByteCode,
 					                                                    stageMask));
 
-					createInfo.codeSize = desc.TessellationControl.ByteCode.size() * sizeof(uint32_t);
+					createInfo.codeSize = desc.TessellationControl.ByteCode.size() * sizeof(u32);
 					createInfo.pCode = desc.TessellationControl.ByteCode.data();
 					stageDesc = &desc.TessellationControl;
 					m_shaderModules.emplace_back(VK_NULL_HANDLE);
@@ -493,7 +493,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 					stageReflections.push_back(VkCreateShaderReflection(desc.TessellationEvaluation.ByteCode,
 					                                                    stageMask));
 
-					createInfo.codeSize = desc.TessellationEvaluation.ByteCode.size() * sizeof(uint32_t);
+					createInfo.codeSize = desc.TessellationEvaluation.ByteCode.size() * sizeof(u32);
 					createInfo.pCode = desc.TessellationEvaluation.ByteCode.data();
 					stageDesc = &desc.TessellationEvaluation;
 					m_shaderModules.emplace_back(VK_NULL_HANDLE);
@@ -510,7 +510,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 				{
 					stageReflections.push_back(VkCreateShaderReflection(desc.Geometry.ByteCode, stageMask));
 
-					createInfo.codeSize = desc.Geometry.ByteCode.size() * sizeof(uint32_t);
+					createInfo.codeSize = desc.Geometry.ByteCode.size() * sizeof(u32);
 					createInfo.pCode = desc.Geometry.ByteCode.data();
 					stageDesc = &desc.Geometry;
 					m_shaderModules.emplace_back(VK_NULL_HANDLE);
@@ -527,7 +527,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 				{
 					stageReflections.push_back(VkCreateShaderReflection(desc.Fragment.ByteCode, stageMask));
 
-					createInfo.codeSize = desc.Fragment.ByteCode.size() * sizeof(uint32_t);
+					createInfo.codeSize = desc.Fragment.ByteCode.size() * sizeof(u32);
 					createInfo.pCode = desc.Fragment.ByteCode.data();
 					stageDesc = &desc.Fragment;
 					m_shaderModules.emplace_back(VK_NULL_HANDLE);
@@ -546,7 +546,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 				{
 					stageReflections.push_back(VkCreateShaderReflection(desc.Compute.ByteCode, stageMask));
 
-					createInfo.codeSize = desc.Compute.ByteCode.size() * sizeof(uint32_t);
+					createInfo.codeSize = desc.Compute.ByteCode.size() * sizeof(u32);
 					createInfo.pCode = desc.Compute.ByteCode.data();
 					stageDesc = &desc.Compute;
 					m_shaderModules.emplace_back(VK_NULL_HANDLE);
@@ -578,14 +578,14 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 		m_numThreadsPerGroup = m_reflection->StageReflections[0].NumThreadsPerGroup;
 
 	//Create DescriptorSets
-	for(std::size_t i = 0; i < m_descriptorSets.size(); ++i)
+	for(usize i = 0; i < m_descriptorSets.size(); ++i)
 	{
 		if(std::dynamic_pointer_cast<VulkanRootSignature>(m_rootSignature)->GetVkDescriptorSetLayouts()[i] != VK_NULL_HANDLE)
 		{
 			RendererAPI::DescriptorSetDesc setDesc{};
 			setDesc.MaxSets = (i == 0) ? 1 : RendererAPI::ImageCount;
 			setDesc.RootSignature = m_rootSignature;
-			setDesc.Set = NumericCast<uint32_t>(i);
+			setDesc.Set = NumericCast<u32>(i);
 			m_descriptorSets[i] = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(setDesc);
 		}
 	}
@@ -648,21 +648,21 @@ void TRAP::Graphics::API::VulkanShader::SetShaderStageName(const std::string_vie
 		return;
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<uint64_t>(stage), VK_OBJECT_TYPE_SHADER_MODULE, name);
+	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(stage), VK_OBJECT_TYPE_SHADER_MODULE, name);
 #else
-	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<uint64_t>(stage), VK_DEBUG_REPORT_OBJECT_TYPE_SHADER_MODULE_EXT, name);
+	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(stage), VK_DEBUG_REPORT_OBJECT_TYPE_SHADER_MODULE_EXT, name);
 #endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanShader::UseBuffer(const uint32_t set, const uint32_t binding,
-												  TRAP::Graphics::Buffer* const buffer, uint64_t size, uint64_t offset,
+void TRAP::Graphics::API::VulkanShader::UseBuffer(const u32 set, const u32 binding,
+												  TRAP::Graphics::Buffer* const buffer, u64 size, u64 offset,
 												  const Window* const window) const
 #else
-void TRAP::Graphics::API::VulkanShader::UseBuffer(const uint32_t set, const uint32_t binding,
-												  TRAP::Graphics::Buffer* const buffer, uint64_t size, uint64_t offset) const
+void TRAP::Graphics::API::VulkanShader::UseBuffer(const u32 set, const u32 binding,
+												  TRAP::Graphics::Buffer* const buffer, u64 size, u64 offset) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -709,9 +709,9 @@ void TRAP::Graphics::API::VulkanShader::UseBuffer(const uint32_t set, const uint
 	else
 	{
 #ifndef TRAP_HEADLESS_MODE
-		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
+		const u32 imageIndex = RendererAPI::GetCurrentImageIndex(window);
 #else
-		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex();
+		const u32 imageIndex = RendererAPI::GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
 		params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{buffer};
 		GetDescriptorSets()[set]->Update(imageIndex, params);
@@ -720,10 +720,10 @@ void TRAP::Graphics::API::VulkanShader::UseBuffer(const uint32_t set, const uint
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::string TRAP::Graphics::API::VulkanShader::RetrieveDescriptorName(const uint32_t set, const uint32_t binding,
+[[nodiscard]] std::string TRAP::Graphics::API::VulkanShader::RetrieveDescriptorName(const u32 set, const u32 binding,
                                                                                     const RendererAPI::DescriptorType type,
 																	                bool* const outUAV,
-																	                const uint64_t size) const
+																	                const u64 size) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

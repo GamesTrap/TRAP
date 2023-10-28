@@ -55,7 +55,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the render target's ID.
 		/// </summary>
 		/// <returns>Render target ID.</returns>
-		[[nodiscard]] constexpr uint64_t GetID() const noexcept;
+		[[nodiscard]] constexpr u64 GetID() const noexcept;
 
 	private:
 		friend void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector<RendererAPI::BufferBarrier>* bufferBarriers,
@@ -67,10 +67,10 @@ namespace TRAP::Graphics::API
 		friend void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vector<TRAP::Ref<RenderTarget>>& renderTargets,
 			                                                                    const TRAP::Ref<RenderTarget>& depthStencil,
 			                                                                    const RendererAPI::LoadActionsDesc* loadActions,
-			                                                                    const std::vector<uint32_t>* colorArraySlices,
-			                                                                    const std::vector<uint32_t>* colorMipSlices,
-			                                                                    uint32_t depthArraySlice,
-			                                                                    uint32_t depthMipSlice,
+			                                                                    const std::vector<u32>* colorArraySlices,
+			                                                                    const std::vector<u32>* colorMipSlices,
+			                                                                    u32 depthArraySlice,
+			                                                                    u32 depthMipSlice,
 							   												    const TRAP::Ref<RenderTarget>& shadingRate);
 
 		/// <summary>
@@ -83,11 +83,11 @@ namespace TRAP::Graphics::API
 
 		VkImageView m_vkDescriptor = VK_NULL_HANDLE;
 		std::vector<VkImageView> m_vkSliceDescriptors{};
-		volatile uint32_t m_used = 0;
+		volatile u32 m_used = 0;
 
-		uint64_t m_ID = s_RenderTargetIDs++;
+		u64 m_ID = s_RenderTargetIDs++;
 
-		inline constinit static std::atomic<uint64_t> s_RenderTargetIDs = 1;
+		inline constinit static std::atomic<u64> s_RenderTargetIDs = 1;
 	};
 }
 
@@ -107,7 +107,7 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint64_t TRAP::Graphics::API::VulkanRenderTarget::GetID() const noexcept
+[[nodiscard]] constexpr u64 TRAP::Graphics::API::VulkanRenderTarget::GetID() const noexcept
 {
 	return m_ID;
 }

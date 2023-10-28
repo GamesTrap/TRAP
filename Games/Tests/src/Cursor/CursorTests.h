@@ -17,11 +17,11 @@ public:
 	bool OnMouseMove(const TRAP::Events::MouseMoveEvent& event);
 
 private:
-	static float Star(uint32_t x, uint32_t y, float t);
-	static TRAP::Scope<TRAP::Image> CreateCursorFrame(float t);
+	static f32 Star(u32 x, u32 y, f32 t);
+	static TRAP::Scope<TRAP::Image> CreateCursorFrame(f32 t);
 
-	float m_cursorX = 0.0f;
-	float m_cursorY = 0.0f;
+	f32 m_cursorX = 0.0f;
+	f32 m_cursorY = 0.0f;
 	bool m_animateCursor = false;
 	std::vector<TRAP::Scope<TRAP::Image>> m_starCursors{};
 	TRAP::Image* m_currentFrame = nullptr;

@@ -3,7 +3,7 @@
 
 #include "TRAP_Assert.h"
 
-static constexpr std::array<uint64_t, 24> RC =
+static constexpr std::array<u64, 24> RC =
 {
 	0x0000000000000001, 0x0000000000008082, 0x800000000000808A, 0x8000000080008000,
 	0x000000000000808B, 0x0000000080000001, 0x8000000080008081, 0x8000000000008009,
@@ -15,12 +15,12 @@ static constexpr std::array<uint64_t, 24> RC =
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint64_t Rotatel64(const uint64_t x, const int64_t y)
+[[nodiscard]] u64 Rotatel64(const u64 x, const i64 y)
 {
     ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	static constexpr uint32_t thisSize = sizeof(uint64_t) * 8;
-	static constexpr uint32_t mask = thisSize - 1;
+	static constexpr u32 thisSize = sizeof(u64) * 8;
+	static constexpr u32 mask = thisSize - 1;
 	TRAP_ASSERT(y < thisSize, "Rotatel64(): y must be less than the size of the type!");
 
 	return (x << y) | (x >> (-y & mask));
@@ -28,14 +28,14 @@ static constexpr std::array<uint64_t, 24> RC =
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void DoTransform(std::array<uint64_t, 25>& A)
+void DoTransform(std::array<u64, 25>& A)
 {
     ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	for (uint32_t round = 0; round < 24; round++)
+	for (u32 round = 0; round < 24; round++)
 	{
-		std::array<uint64_t, 5> c{};
-		std::array<uint64_t, 5> d{};
+		std::array<u64, 5> c{};
+		std::array<u64, 5> d{};
 		std::get<0>(c) = std::get<0 * 5 + 0>(A) ^ std::get<1 * 5 + 0>(A) ^ std::get<2 * 5 + 0>(A) ^ std::get<3 * 5 + 0>(A) ^ std::get<4 * 5 + 0>(A);
 		std::get<1>(c) = std::get<0 * 5 + 1>(A) ^ std::get<1 * 5 + 1>(A) ^ std::get<2 * 5 + 1>(A) ^ std::get<3 * 5 + 1>(A) ^ std::get<4 * 5 + 1>(A);
 		std::get<2>(c) = std::get<0 * 5 + 2>(A) ^ std::get<1 * 5 + 2>(A) ^ std::get<2 * 5 + 2>(A) ^ std::get<3 * 5 + 2>(A) ^ std::get<4 * 5 + 2>(A);
@@ -48,35 +48,35 @@ void DoTransform(std::array<uint64_t, 25>& A)
 		std::get<3>(d) = std::get<2>(c) ^ Rotatel64(std::get<4>(c), 1);
 		std::get<4>(d) = std::get<3>(c) ^ Rotatel64(std::get<0>(c), 1);
 
-		const uint64_t b0  = std::get<0 * 5 + 0>(A) ^ std::get<0>(d);
-		const uint64_t b10 = Rotatel64(std::get<0 * 5 + 1>(A) ^ std::get<1>(d), 1);
-		const uint64_t b20 = Rotatel64(std::get<0 * 5 + 2>(A) ^ std::get<2>(d), 62);
-		const uint64_t b5  = Rotatel64(std::get<0 * 5 + 3>(A) ^ std::get<3>(d), 28);
-		const uint64_t b15 = Rotatel64(std::get<0 * 5 + 4>(A) ^ std::get<4>(d), 27);
+		const u64 b0  = std::get<0 * 5 + 0>(A) ^ std::get<0>(d);
+		const u64 b10 = Rotatel64(std::get<0 * 5 + 1>(A) ^ std::get<1>(d), 1);
+		const u64 b20 = Rotatel64(std::get<0 * 5 + 2>(A) ^ std::get<2>(d), 62);
+		const u64 b5  = Rotatel64(std::get<0 * 5 + 3>(A) ^ std::get<3>(d), 28);
+		const u64 b15 = Rotatel64(std::get<0 * 5 + 4>(A) ^ std::get<4>(d), 27);
 
-		const uint64_t b16 = Rotatel64(std::get<1 * 5 + 0>(A) ^ std::get<0>(d), 36);
-		const uint64_t b1  = Rotatel64(std::get<1 * 5 + 1>(A) ^ std::get<1>(d), 44);
-		const uint64_t b11 = Rotatel64(std::get<1 * 5 + 2>(A) ^ std::get<2>(d), 6);
-		const uint64_t b21 = Rotatel64(std::get<1 * 5 + 3>(A) ^ std::get<3>(d), 55);
-		const uint64_t b6  = Rotatel64(std::get<1 * 5 + 4>(A) ^ std::get<4>(d), 20);
+		const u64 b16 = Rotatel64(std::get<1 * 5 + 0>(A) ^ std::get<0>(d), 36);
+		const u64 b1  = Rotatel64(std::get<1 * 5 + 1>(A) ^ std::get<1>(d), 44);
+		const u64 b11 = Rotatel64(std::get<1 * 5 + 2>(A) ^ std::get<2>(d), 6);
+		const u64 b21 = Rotatel64(std::get<1 * 5 + 3>(A) ^ std::get<3>(d), 55);
+		const u64 b6  = Rotatel64(std::get<1 * 5 + 4>(A) ^ std::get<4>(d), 20);
 
-		const uint64_t b7  = Rotatel64(std::get<2 * 5 + 0>(A) ^ std::get<0>(d), 3);
-		const uint64_t b17 = Rotatel64(std::get<2 * 5 + 1>(A) ^ std::get<1>(d), 10);
-		const uint64_t b2  = Rotatel64(std::get<2 * 5 + 2>(A) ^ std::get<2>(d), 43);
-		const uint64_t b12 = Rotatel64(std::get<2 * 5 + 3>(A) ^ std::get<3>(d), 25);
-		const uint64_t b22 = Rotatel64(std::get<2 * 5 + 4>(A) ^ std::get<4>(d), 39);
+		const u64 b7  = Rotatel64(std::get<2 * 5 + 0>(A) ^ std::get<0>(d), 3);
+		const u64 b17 = Rotatel64(std::get<2 * 5 + 1>(A) ^ std::get<1>(d), 10);
+		const u64 b2  = Rotatel64(std::get<2 * 5 + 2>(A) ^ std::get<2>(d), 43);
+		const u64 b12 = Rotatel64(std::get<2 * 5 + 3>(A) ^ std::get<3>(d), 25);
+		const u64 b22 = Rotatel64(std::get<2 * 5 + 4>(A) ^ std::get<4>(d), 39);
 
-		const uint64_t b23 = Rotatel64(std::get<3 * 5 + 0>(A) ^ std::get<0>(d), 41);
-		const uint64_t b8  = Rotatel64(std::get<3 * 5 + 1>(A) ^ std::get<1>(d), 45);
-		const uint64_t b18 = Rotatel64(std::get<3 * 5 + 2>(A) ^ std::get<2>(d), 15);
-		const uint64_t b3  = Rotatel64(std::get<3 * 5 + 3>(A) ^ std::get<3>(d), 21);
-		const uint64_t b13 = Rotatel64(std::get<3 * 5 + 4>(A) ^ std::get<4>(d), 8);
+		const u64 b23 = Rotatel64(std::get<3 * 5 + 0>(A) ^ std::get<0>(d), 41);
+		const u64 b8  = Rotatel64(std::get<3 * 5 + 1>(A) ^ std::get<1>(d), 45);
+		const u64 b18 = Rotatel64(std::get<3 * 5 + 2>(A) ^ std::get<2>(d), 15);
+		const u64 b3  = Rotatel64(std::get<3 * 5 + 3>(A) ^ std::get<3>(d), 21);
+		const u64 b13 = Rotatel64(std::get<3 * 5 + 4>(A) ^ std::get<4>(d), 8);
 
-		const uint64_t b14 = Rotatel64(std::get<4 * 5 + 0>(A) ^ std::get<0>(d), 18);
-		const uint64_t b24 = Rotatel64(std::get<4 * 5 + 1>(A) ^ std::get<1>(d), 2);
-		const uint64_t b9  = Rotatel64(std::get<4 * 5 + 2>(A) ^ std::get<2>(d), 61);
-		const uint64_t b19 = Rotatel64(std::get<4 * 5 + 3>(A) ^ std::get<3>(d), 56);
-		const uint64_t b4  = Rotatel64(std::get<4 * 5 + 4>(A) ^ std::get<4>(d), 14);
+		const u64 b14 = Rotatel64(std::get<4 * 5 + 0>(A) ^ std::get<0>(d), 18);
+		const u64 b24 = Rotatel64(std::get<4 * 5 + 1>(A) ^ std::get<1>(d), 2);
+		const u64 b9  = Rotatel64(std::get<4 * 5 + 2>(A) ^ std::get<2>(d), 61);
+		const u64 b19 = Rotatel64(std::get<4 * 5 + 3>(A) ^ std::get<3>(d), 56);
+		const u64 b4  = Rotatel64(std::get<4 * 5 + 4>(A) ^ std::get<4>(d), 14);
 
 		std::get<0 * 5 + 0>(A) = b0 ^ ((~b1) & b2);
 		std::get<0 * 5 + 1>(A) = b1 ^ ((~b2) & b3);
@@ -114,16 +114,16 @@ void DoTransform(std::array<uint64_t, 25>& A)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t, 25>& A, const std::size_t rate)
+void Transform(const void* const mp, const u64 numBlks, std::array<u64, 25>& A, const usize rate)
 {
     ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	const std::size_t r = rate / 8;
-	const std::size_t r64 = rate / 64;
-	for(uint64_t blk = 0; blk < numBlks; blk++)
+	const usize r = rate / 8;
+	const usize r64 = rate / 64;
+	for(u64 blk = 0; blk < numBlks; blk++)
 	{
-		for (std::size_t i = 0; i < r64; i++)
-			A[i] ^= reinterpret_cast<const uint64_t*>(static_cast<const char*>(mp) + blk * r)[i];
+		for (usize i = 0; i < r64; i++)
+			A[i] ^= reinterpret_cast<const u64*>(static_cast<const char*>(mp) + blk * r)[i];
 
 		DoTransform(A);
 	}
@@ -131,22 +131,22 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const void* const data, uint64_t length)
+[[nodiscard]] std::array<u8, 32> TRAP::Utils::Hash::SHA3_256(const void* const data, u64 length)
 {
     ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	static constexpr std::size_t hs = 256;
-	static constexpr std::size_t rate = 1600U - hs * 2;
-	std::array<uint8_t, rate / 8> m{};
-	std::size_t pos = 0;
-	std::array<uint64_t, 25> A{};
+	static constexpr usize hs = 256;
+	static constexpr usize rate = 1600U - hs * 2;
+	std::array<u8, rate / 8> m{};
+	usize pos = 0;
+	std::array<u64, 25> A{};
 
-	const uint8_t* dataPtr = static_cast<const uint8_t*>(data);
-	static constexpr std::size_t r = rate / 8;
+	const u8* dataPtr = static_cast<const u8*>(data);
+	static constexpr usize r = rate / 8;
 	if(length >= r)
 	{
-		const std::size_t blocks = length / r;
-		const std::size_t bytes = blocks * r;
+		const usize blocks = length / r;
+		const usize bytes = blocks * r;
 		Transform(dataPtr, blocks, A, rate);
 		length -= bytes;
 		dataPtr += bytes;
@@ -155,19 +155,19 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 	pos += length;
 
 	m[pos++] = 0x06;
-	std::fill_n(m.data() + pos, r - pos, NumericCast<uint8_t>(0u));
+	std::fill_n(m.data() + pos, r - pos, NumericCast<u8>(0u));
 	m[r - 1] |= 0x80;
 	Transform(m.data(), 1, A, rate);
 
-	std::array<uint8_t, hs / 8> result{};
-	std::copy_n(reinterpret_cast<const uint8_t*>(A.data()), result.size(), result.data());
+	std::array<u8, hs / 8> result{};
+	std::copy_n(reinterpret_cast<const u8*>(A.data()), result.size(), result.data());
 
 	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const std::string_view str)
+[[nodiscard]] std::array<u8, 32> TRAP::Utils::Hash::SHA3_256(const std::string_view str)
 {
     ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -176,22 +176,22 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const void* const data, uint64_t length)
+[[nodiscard]] std::array<u8, 64> TRAP::Utils::Hash::SHA3_512(const void* const data, u64 length)
 {
     ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	static constexpr std::size_t hs = 512;
-	static constexpr std::size_t rate = 1600U - hs * 2;
-	std::array<uint8_t, rate / 8> m{};
-	std::size_t pos = 0;
-	std::array<uint64_t, 25> A{};
+	static constexpr usize hs = 512;
+	static constexpr usize rate = 1600U - hs * 2;
+	std::array<u8, rate / 8> m{};
+	usize pos = 0;
+	std::array<u64, 25> A{};
 
-	const uint8_t* dataPtr = static_cast<const uint8_t*>(data);
-	static constexpr std::size_t r = rate / 8;
+	const u8* dataPtr = static_cast<const u8*>(data);
+	static constexpr usize r = rate / 8;
 	if (length >= r)
 	{
-		const std::size_t blocks = length / r;
-		const std::size_t bytes = blocks * r;
+		const usize blocks = length / r;
+		const usize bytes = blocks * r;
 		Transform(dataPtr, blocks, A, rate);
 		length -= bytes;
 		dataPtr += bytes;
@@ -200,19 +200,19 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 	pos += length;
 
 	m[pos++] = 0x06;
-	std::fill_n(m.data() + pos, r - pos, NumericCast<uint8_t>(0u));
+	std::fill_n(m.data() + pos, r - pos, NumericCast<u8>(0u));
 	m[r - 1] |= 0x80;
 	Transform(m.data(), 1, A, rate);
 
-	std::array<uint8_t, hs / 8> result{};
-	std::copy_n(reinterpret_cast<const uint8_t*>(A.data()), result.size(), result.data());
+	std::array<u8, hs / 8> result{};
+	std::copy_n(reinterpret_cast<const u8*>(A.data()), result.size(), result.data());
 
 	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const std::string_view str)
+[[nodiscard]] std::array<u8, 64> TRAP::Utils::Hash::SHA3_512(const std::string_view str)
 {
     ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

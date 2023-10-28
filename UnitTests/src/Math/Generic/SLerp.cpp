@@ -30,7 +30,7 @@ namespace
 
 
         constexpr T sqrt2 = TRAP::Math::Sqrt(T(2.0f)) / T(2.0f);
-        constexpr TRAP::Math::tQuat<T> id(static_cast<T>(1.0f), static_cast<T>(0.0f), static_cast<T>(0.0f), static_cast<float>(0.0f));
+        constexpr TRAP::Math::tQuat<T> id(static_cast<T>(1.0f), static_cast<T>(0.0f), static_cast<T>(0.0f), static_cast<f32>(0.0f));
         constexpr TRAP::Math::tQuat<T> y90rot(sqrt2, 0.0f, sqrt2, 0.0f);
         [[maybe_unused]] constexpr TRAP::Math::tQuat<T> y180rot(0.0f, 0.0f, 1.0f, 0.0f);
 
@@ -95,7 +95,7 @@ namespace
 
 
         const T sqrt2 = TRAP::Math::Sqrt(T(2.0f)) / T(2.0f);
-        static constexpr TRAP::Math::tQuat<T> id(static_cast<T>(1.0f), static_cast<T>(0.0f), static_cast<T>(0.0f), static_cast<float>(0.0f));
+        static constexpr TRAP::Math::tQuat<T> id(static_cast<T>(1.0f), static_cast<T>(0.0f), static_cast<T>(0.0f), static_cast<f32>(0.0f));
         const TRAP::Math::tQuat<T> y90rot(sqrt2, 0.0f, sqrt2, 0.0f);
         [[maybe_unused]] static constexpr TRAP::Math::tQuat<T> y180rot(0.0f, 0.0f, 1.0f, 0.0f);
 
@@ -190,7 +190,7 @@ namespace
             constexpr TRAP::Math::tQuat<T> y45rot4 = TRAP::Math::SLerp(-y90rot, id, T(0.5f), S(0));
             static_assert(TRAP::Math::All(TRAP::Math::Equal(ym45rot2, y45rot4, Epsilon)));
         }
-        if constexpr(std::same_as<T, float>)
+        if constexpr(std::same_as<T, f32>)
         {
             constexpr TRAP::Math::tQuat<T> y90rot5 = TRAP::Math::SLerp(y90rot, y90rot, T(0.5f), S(2));
             static_assert(TRAP::Math::All(TRAP::Math::Equal(y90rot, y90rot5, Epsilon)));
@@ -256,7 +256,7 @@ namespace
             const TRAP::Math::tQuat<T> y45rot4 = TRAP::Math::SLerp(-y90rot, id, T(0.5f), S(0));
             REQUIRE(TRAP::Math::All(TRAP::Math::Equal(ym45rot2, y45rot4, Epsilon)));
         }
-        if constexpr(std::same_as<T, float>)
+        if constexpr(std::same_as<T, f32>)
         {
             const TRAP::Math::tQuat<T> y90rot5 = TRAP::Math::SLerp(y90rot, y90rot, T(0.5f), S(2));
             REQUIRE(TRAP::Math::All(TRAP::Math::Equal(y90rot, y90rot5, Epsilon)));
@@ -333,149 +333,149 @@ namespace
 
 TEST_CASE("TRAP::Math::SLerp()", "[math][generic][slerp]")
 {
-    SECTION("Scalar - double, int8_t")
+    SECTION("Scalar - f64, i8")
     {
-        RunSLerpRunTimeTests<double>();
-        RunSLerpCompileTimeTests<double>();
-        RunSLerpSpinRunTimeTests<double, int8_t>();
-        RunSLerpSpinCompileTimeTests<double, int8_t>();
-        RunSLerpEdgeTests<double>();
-        RunSLerpSpinEdgeTests<double, int8_t>();
+        RunSLerpRunTimeTests<f64>();
+        RunSLerpCompileTimeTests<f64>();
+        RunSLerpSpinRunTimeTests<f64, i8>();
+        RunSLerpSpinCompileTimeTests<f64, i8>();
+        RunSLerpEdgeTests<f64>();
+        RunSLerpSpinEdgeTests<f64, i8>();
     }
-    SECTION("Scalar - double, uint8_t")
+    SECTION("Scalar - f64, u8")
     {
-        RunSLerpRunTimeTests<double>();
-        RunSLerpCompileTimeTests<double>();
-        RunSLerpSpinRunTimeTests<double, uint8_t>();
-        RunSLerpSpinCompileTimeTests<double, uint8_t>();
-        RunSLerpEdgeTests<double>();
-        RunSLerpSpinEdgeTests<double, uint8_t>();
+        RunSLerpRunTimeTests<f64>();
+        RunSLerpCompileTimeTests<f64>();
+        RunSLerpSpinRunTimeTests<f64, u8>();
+        RunSLerpSpinCompileTimeTests<f64, u8>();
+        RunSLerpEdgeTests<f64>();
+        RunSLerpSpinEdgeTests<f64, u8>();
     }
-    SECTION("Scalar - double, int16_t")
+    SECTION("Scalar - f64, i16")
     {
-        RunSLerpRunTimeTests<double>();
-        RunSLerpCompileTimeTests<double>();
-        RunSLerpSpinRunTimeTests<double, int16_t>();
-        RunSLerpSpinCompileTimeTests<double, int16_t>();
-        RunSLerpEdgeTests<double>();
-        RunSLerpSpinEdgeTests<double, int16_t>();
+        RunSLerpRunTimeTests<f64>();
+        RunSLerpCompileTimeTests<f64>();
+        RunSLerpSpinRunTimeTests<f64, i16>();
+        RunSLerpSpinCompileTimeTests<f64, i16>();
+        RunSLerpEdgeTests<f64>();
+        RunSLerpSpinEdgeTests<f64, i16>();
     }
-    SECTION("Scalar - double, uint16_t")
+    SECTION("Scalar - f64, u16")
     {
-        RunSLerpRunTimeTests<double>();
-        RunSLerpCompileTimeTests<double>();
-        RunSLerpSpinRunTimeTests<double, uint16_t>();
-        RunSLerpSpinCompileTimeTests<double, uint16_t>();
-        RunSLerpEdgeTests<double>();
-        RunSLerpSpinEdgeTests<double, uint16_t>();
+        RunSLerpRunTimeTests<f64>();
+        RunSLerpCompileTimeTests<f64>();
+        RunSLerpSpinRunTimeTests<f64, u16>();
+        RunSLerpSpinCompileTimeTests<f64, u16>();
+        RunSLerpEdgeTests<f64>();
+        RunSLerpSpinEdgeTests<f64, u16>();
     }
-    SECTION("Scalar - double, int32_t")
+    SECTION("Scalar - f64, i32")
     {
-        RunSLerpRunTimeTests<double>();
-        RunSLerpCompileTimeTests<double>();
-        RunSLerpSpinRunTimeTests<double, int32_t>();
-        RunSLerpSpinCompileTimeTests<double, int32_t>();
-        RunSLerpEdgeTests<double>();
-        RunSLerpSpinEdgeTests<double, int32_t>();
+        RunSLerpRunTimeTests<f64>();
+        RunSLerpCompileTimeTests<f64>();
+        RunSLerpSpinRunTimeTests<f64, i32>();
+        RunSLerpSpinCompileTimeTests<f64, i32>();
+        RunSLerpEdgeTests<f64>();
+        RunSLerpSpinEdgeTests<f64, i32>();
     }
-    SECTION("Scalar - double, uint32_t")
+    SECTION("Scalar - f64, u32")
     {
-        RunSLerpRunTimeTests<double>();
-        RunSLerpCompileTimeTests<double>();
-        RunSLerpSpinRunTimeTests<double, uint32_t>();
-        RunSLerpSpinCompileTimeTests<double, uint32_t>();
-        RunSLerpEdgeTests<double>();
-        RunSLerpSpinEdgeTests<double, uint32_t>();
+        RunSLerpRunTimeTests<f64>();
+        RunSLerpCompileTimeTests<f64>();
+        RunSLerpSpinRunTimeTests<f64, u32>();
+        RunSLerpSpinCompileTimeTests<f64, u32>();
+        RunSLerpEdgeTests<f64>();
+        RunSLerpSpinEdgeTests<f64, u32>();
     }
-    SECTION("Scalar - double, int64_t")
+    SECTION("Scalar - f64, i64")
     {
-        RunSLerpRunTimeTests<double>();
-        RunSLerpCompileTimeTests<double>();
-        RunSLerpSpinRunTimeTests<double, int64_t>();
-        RunSLerpSpinCompileTimeTests<double, int64_t>();
-        RunSLerpEdgeTests<double>();
-        RunSLerpSpinEdgeTests<double, int64_t>();
+        RunSLerpRunTimeTests<f64>();
+        RunSLerpCompileTimeTests<f64>();
+        RunSLerpSpinRunTimeTests<f64, i64>();
+        RunSLerpSpinCompileTimeTests<f64, i64>();
+        RunSLerpEdgeTests<f64>();
+        RunSLerpSpinEdgeTests<f64, i64>();
     }
-    SECTION("Scalar - double, uint64_t")
+    SECTION("Scalar - f64, u64")
     {
-        RunSLerpRunTimeTests<double>();
-        RunSLerpCompileTimeTests<double>();
-        RunSLerpSpinRunTimeTests<double, uint64_t>();
-        RunSLerpSpinCompileTimeTests<double, uint64_t>();
-        RunSLerpEdgeTests<double>();
-        RunSLerpSpinEdgeTests<double, uint64_t>();
+        RunSLerpRunTimeTests<f64>();
+        RunSLerpCompileTimeTests<f64>();
+        RunSLerpSpinRunTimeTests<f64, u64>();
+        RunSLerpSpinCompileTimeTests<f64, u64>();
+        RunSLerpEdgeTests<f64>();
+        RunSLerpSpinEdgeTests<f64, u64>();
     }
 
-    SECTION("Scalar - float, int8_t")
+    SECTION("Scalar - f32, i8")
     {
-        RunSLerpRunTimeTests<float>();
-        RunSLerpCompileTimeTests<float>();
-        RunSLerpSpinRunTimeTests<float, int8_t>();
-        RunSLerpSpinCompileTimeTests<float, int8_t>();
-        RunSLerpEdgeTests<float>();
-        RunSLerpSpinEdgeTests<float, int8_t>();
+        RunSLerpRunTimeTests<f32>();
+        RunSLerpCompileTimeTests<f32>();
+        RunSLerpSpinRunTimeTests<f32, i8>();
+        RunSLerpSpinCompileTimeTests<f32, i8>();
+        RunSLerpEdgeTests<f32>();
+        RunSLerpSpinEdgeTests<f32, i8>();
     }
-    SECTION("Scalar - float, uint8_t")
+    SECTION("Scalar - f32, u8")
     {
-        RunSLerpRunTimeTests<float>();
-        RunSLerpCompileTimeTests<float>();
-        RunSLerpSpinRunTimeTests<float, uint8_t>();
-        RunSLerpSpinCompileTimeTests<float, uint8_t>();
-        RunSLerpEdgeTests<float>();
-        RunSLerpSpinEdgeTests<float, uint8_t>();
+        RunSLerpRunTimeTests<f32>();
+        RunSLerpCompileTimeTests<f32>();
+        RunSLerpSpinRunTimeTests<f32, u8>();
+        RunSLerpSpinCompileTimeTests<f32, u8>();
+        RunSLerpEdgeTests<f32>();
+        RunSLerpSpinEdgeTests<f32, u8>();
     }
-    SECTION("Scalar - float, int16_t")
+    SECTION("Scalar - f32, i16")
     {
-        RunSLerpRunTimeTests<float>();
-        RunSLerpCompileTimeTests<float>();
-        RunSLerpSpinRunTimeTests<float, int16_t>();
-        RunSLerpSpinCompileTimeTests<float, int16_t>();
-        RunSLerpEdgeTests<float>();
-        RunSLerpSpinEdgeTests<float, int16_t>();
+        RunSLerpRunTimeTests<f32>();
+        RunSLerpCompileTimeTests<f32>();
+        RunSLerpSpinRunTimeTests<f32, i16>();
+        RunSLerpSpinCompileTimeTests<f32, i16>();
+        RunSLerpEdgeTests<f32>();
+        RunSLerpSpinEdgeTests<f32, i16>();
     }
-    SECTION("Scalar - float, uint16_t")
+    SECTION("Scalar - f32, u16")
     {
-        RunSLerpRunTimeTests<float>();
-        RunSLerpCompileTimeTests<float>();
-        RunSLerpSpinRunTimeTests<float, uint16_t>();
-        RunSLerpSpinCompileTimeTests<float, uint16_t>();
-        RunSLerpEdgeTests<float>();
-        RunSLerpSpinEdgeTests<float, uint16_t>();
+        RunSLerpRunTimeTests<f32>();
+        RunSLerpCompileTimeTests<f32>();
+        RunSLerpSpinRunTimeTests<f32, u16>();
+        RunSLerpSpinCompileTimeTests<f32, u16>();
+        RunSLerpEdgeTests<f32>();
+        RunSLerpSpinEdgeTests<f32, u16>();
     }
-    SECTION("Scalar - float, int32_t")
+    SECTION("Scalar - f32, i32")
     {
-        RunSLerpRunTimeTests<float>();
-        RunSLerpCompileTimeTests<float>();
-        RunSLerpSpinRunTimeTests<float, int32_t>();
-        RunSLerpSpinCompileTimeTests<float, int32_t>();
-        RunSLerpEdgeTests<float>();
-        RunSLerpSpinEdgeTests<float, int32_t>();
+        RunSLerpRunTimeTests<f32>();
+        RunSLerpCompileTimeTests<f32>();
+        RunSLerpSpinRunTimeTests<f32, i32>();
+        RunSLerpSpinCompileTimeTests<f32, i32>();
+        RunSLerpEdgeTests<f32>();
+        RunSLerpSpinEdgeTests<f32, i32>();
     }
-    SECTION("Scalar - float, uint32_t")
+    SECTION("Scalar - f32, u32")
     {
-        RunSLerpRunTimeTests<float>();
-        RunSLerpCompileTimeTests<float>();
-        RunSLerpSpinRunTimeTests<float, uint32_t>();
-        RunSLerpSpinCompileTimeTests<float, uint32_t>();
-        RunSLerpEdgeTests<float>();
-        RunSLerpSpinEdgeTests<float, uint32_t>();
+        RunSLerpRunTimeTests<f32>();
+        RunSLerpCompileTimeTests<f32>();
+        RunSLerpSpinRunTimeTests<f32, u32>();
+        RunSLerpSpinCompileTimeTests<f32, u32>();
+        RunSLerpEdgeTests<f32>();
+        RunSLerpSpinEdgeTests<f32, u32>();
     }
-    SECTION("Scalar - float, int64_t")
+    SECTION("Scalar - f32, i64")
     {
-        RunSLerpRunTimeTests<float>();
-        RunSLerpCompileTimeTests<float>();
-        RunSLerpSpinRunTimeTests<float, int64_t>();
-        RunSLerpSpinCompileTimeTests<float, int64_t>();
-        RunSLerpEdgeTests<float>();
-        RunSLerpSpinEdgeTests<float, int64_t>();
+        RunSLerpRunTimeTests<f32>();
+        RunSLerpCompileTimeTests<f32>();
+        RunSLerpSpinRunTimeTests<f32, i64>();
+        RunSLerpSpinCompileTimeTests<f32, i64>();
+        RunSLerpEdgeTests<f32>();
+        RunSLerpSpinEdgeTests<f32, i64>();
     }
-    SECTION("Scalar - float, uint64_t")
+    SECTION("Scalar - f32, u64")
     {
-        RunSLerpRunTimeTests<float>();
-        RunSLerpCompileTimeTests<float>();
-        RunSLerpSpinRunTimeTests<float, uint64_t>();
-        RunSLerpSpinCompileTimeTests<float, uint64_t>();
-        RunSLerpEdgeTests<float>();
-        RunSLerpSpinEdgeTests<float, uint64_t>();
+        RunSLerpRunTimeTests<f32>();
+        RunSLerpCompileTimeTests<f32>();
+        RunSLerpSpinRunTimeTests<f32, u64>();
+        RunSLerpSpinCompileTimeTests<f32, u64>();
+        RunSLerpEdgeTests<f32>();
+        RunSLerpSpinEdgeTests<f32, u64>();
     }
 }

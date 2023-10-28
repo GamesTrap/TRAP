@@ -8,8 +8,8 @@ struct ParticleProps
 	TRAP::Math::Vec2 Position{};
 	TRAP::Math::Vec2 Velocity{}, VelocityVariation{};
 	TRAP::Math::Vec4 ColorBegin{}, ColorEnd{};
-	float SizeBegin{}, SizeEnd{}, SizeVariation{};
-	float LifeTime = 1.0f;
+	f32 SizeBegin{}, SizeEnd{}, SizeVariation{};
+	f32 LifeTime = 1.0f;
 };
 
 class ParticleSystem2D
@@ -22,7 +22,7 @@ public:
 
 	void Emit(const ParticleProps& particleProps);
 
-	void SetMaxParticles(uint32_t maxParticles);
+	void SetMaxParticles(u32 maxParticles);
 
 private:
 	struct Particle
@@ -30,17 +30,17 @@ private:
 		TRAP::Math::Vec2 Position{};
 		TRAP::Math::Vec2 Velocity{};
 		TRAP::Math::Vec4 ColorBegin{}, ColorEnd{};
-		float Rotation = 0.0f;
-		float SizeBegin{}, SizeEnd{};
+		f32 Rotation = 0.0f;
+		f32 SizeBegin{}, SizeEnd{};
 
-		float LifeTime = 1.0f;
-		float LifeRemaining = 0.0f;
+		f32 LifeTime = 1.0f;
+		f32 LifeRemaining = 0.0f;
 
 		bool Active = false;
 	};
 
-	uint32_t m_poolIndex = 999;
-	uint32_t m_maxParticles = 1000;
+	u32 m_poolIndex = 999;
+	u32 m_maxParticles = 1000;
 	std::vector<Particle> m_particlePool = std::vector<Particle>(m_maxParticles);
 };
 

@@ -48,24 +48,24 @@ namespace TRAP::Graphics::API
 		/// Retrieve the width of the framebuffer.
 		/// </summary>
 		/// <returns>Framebuffer width.</returns>
-		[[nodiscard]] constexpr uint32_t GetWidth() const noexcept;
+		[[nodiscard]] constexpr u32 GetWidth() const noexcept;
 		/// <summary>
 		/// Retrieve the height of the framebuffer.
 		/// </summary>
 		/// <returns>Framebuffer height.</returns>
-		[[nodiscard]] constexpr uint32_t GetHeight() const noexcept;
+		[[nodiscard]] constexpr u32 GetHeight() const noexcept;
 		/// <summary>
 		/// Retrieve the array size of the framebuffer.
 		/// </summary>
 		/// <returns>Framebuffer array size.</returns>
-		[[nodiscard]] constexpr uint32_t GetArraySize() const noexcept;
+		[[nodiscard]] constexpr u32 GetArraySize() const noexcept;
 
 	private:
 		VkFramebuffer m_framebuffer = VK_NULL_HANDLE;
 
-		uint32_t      m_width = 0;
-		uint32_t      m_height = 0;
-		uint32_t      m_arraySize = 0;
+		u32      m_width = 0;
+		u32      m_height = 0;
+		u32      m_arraySize = 0;
 
 		TRAP::Ref<VulkanDevice> m_device;
 	};
@@ -80,21 +80,21 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetWidth() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::API::VulkanFrameBuffer::GetWidth() const noexcept
 {
 	return m_width;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetHeight() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::API::VulkanFrameBuffer::GetHeight() const noexcept
 {
 	return m_height;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetArraySize() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::API::VulkanFrameBuffer::GetArraySize() const noexcept
 {
 	return m_arraySize;
 }

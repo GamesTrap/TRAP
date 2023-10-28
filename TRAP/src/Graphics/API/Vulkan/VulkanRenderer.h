@@ -95,7 +95,7 @@ namespace TRAP::Graphics::API
 		/// The elements are automatically divided by the number of threads in the work group and rounded up.
 		/// </param>
 		/// <param name="window">Window to Dispatch.</param>
-		void Dispatch(std::array<uint32_t, 3> workGroupElements, const Window* window) const override;
+		void Dispatch(std::array<u32, 3> workGroupElements, const Window* window) const override;
 #else
 		/// <summary>
 		/// Dispatch.
@@ -104,7 +104,7 @@ namespace TRAP::Graphics::API
 		/// Number of elements to dispatch for each dimension.
 		/// The elements are automatically divided by the number of threads in the work group and rounded up.
 		/// </param>
-		void Dispatch(std::array<uint32_t, 3> workGroupElements) const override;
+		void Dispatch(std::array<u32, 3> workGroupElements) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 		//TODO DispatchIndirect
 
@@ -125,7 +125,7 @@ namespace TRAP::Graphics::API
 		///       This function is only used internally for NVIDIA-Reflex.
 		/// </summary>
 		/// <param name="limit">FPS target to limit to.</param>
-		void SetReflexFPSLimit(uint32_t limit) override;
+		void SetReflexFPSLimit(u32 limit) override;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -135,14 +135,14 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="scale">Render scale value (valid range: 0.5f-1.0f inclusive).</param>
 		/// <param name="window">Window to set render scale for.</param>
-		void SetRenderScale(float scale, const Window* window) const override;
+		void SetRenderScale(f32 scale, const Window* window) const override;
 #else
 		/// <summary>
 		/// Set the render scale.
 		/// Note: This functon takes effect on the next frame.
 		/// </summary>
 		/// <param name="scale">Render scale value (valid range: 0.5f-1.0f inclusive).</param>
-		void SetRenderScale(float scale) const override;
+		void SetRenderScale(f32 scale) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -150,13 +150,13 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="window">Window to retrieve render scale from.</param>
 		/// <returns>Render scale (between 0.5f and 2.0f inclusive).</returns>
-		[[nodiscard]] float GetRenderScale(const Window* window) const override;
+		[[nodiscard]] f32 GetRenderScale(const Window* window) const override;
 #else
 		/// <summary>
 		/// Retrieve the used render scale value.
 		/// </summary>
 		/// <returns>Render scale (between 0.5f and 2.0f inclusive).</returns>
-		[[nodiscard]] float GetRenderScale() const override;
+		[[nodiscard]] f32 GetRenderScale() const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -179,13 +179,13 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="depth">New clear depth value. Must be between 0.0f and 1.0f</param>
 		/// <param name="window">Window to set clear depth value for.</param>
-		void SetClearDepth(float depth /*= 0.0f*/, const Window* window) const override;
+		void SetClearDepth(f32 depth /*= 0.0f*/, const Window* window) const override;
 #else
 		/// <summary>
 		/// Set the clear depth value.
 		/// </summary>
 		/// <param name="depth">New clear depth value. Must be between 0.0f and 1.0f</param>
-		void SetClearDepth(float depth /*= 0.0f*/) const override;
+		void SetClearDepth(f32 depth /*= 0.0f*/) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -193,13 +193,13 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="stencil">New clear stencil value.</param>
 		/// <param name="window">Window to set clear stencil value for.</param>
-		void SetClearStencil(uint32_t stencil /*= 0*/, const Window* window) const override;
+		void SetClearStencil(u32 stencil /*= 0*/, const Window* window) const override;
 #else
 		/// <summary>
 		/// Set the clear stencil value.
 		/// </summary>
 		/// <param name="stencil">New clear stencil value.</param>
-		void SetClearStencil(uint32_t stencil /*= 0*/) const override;
+		void SetClearStencil(u32 stencil /*= 0*/) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifdef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -207,7 +207,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="width">New width.</param>
 		/// <param name="height">New height.</param>
-		void SetResolution(uint32_t width, uint32_t height) const override;
+		void SetResolution(u32 width, u32 height) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifdef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -215,7 +215,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="width">Output: Width.</param>
 		/// <param name="height">Output: Height.</param>
-		void GetResolution(uint32_t& width, uint32_t& height) const override;
+		void GetResolution(u32& width, u32& height) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -281,13 +281,13 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="depthBias">Depth bias.</param>
 		/// <param name="window">Window to set the depth bias for.</param>
-		void SetDepthBias(int32_t depthBias, const Window* window) const override;
+		void SetDepthBias(i32 depthBias, const Window* window) const override;
 #else
 		/// <summary>
 		/// Set the depth bias (scalar factor to add to each fragments depth value).
 		/// </summary>
 		/// <param name="depthBias">Depth bias.</param>
-		void SetDepthBias(int32_t depthBias) const override;
+		void SetDepthBias(i32 depthBias) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -295,13 +295,13 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="factor">Depth bias slope factor.</param>
 		/// <param name="window">Window to set the depth bias slope factor for.</param>
-		void SetDepthBiasSlopeFactor(float factor, const Window* window) const override;
+		void SetDepthBiasSlopeFactor(f32 factor, const Window* window) const override;
 #else
 		/// <summary>
 		/// Set the depth bias slope factor (scalar factor applied to fragment's slope in depth bias calculation).
 		/// </summary>
 		/// <param name="factor">Depth bias slope factor.</param>
-		void SetDepthBiasSlopeFactor(float factor) const override;
+		void SetDepthBiasSlopeFactor(f32 factor) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -372,14 +372,14 @@ namespace TRAP::Graphics::API
 		/// <param name="read">Select the bits of the stencil values to test.</param>
 		/// <param name="write">Select the bits of the stencil values updated by the stencil test.</param>
 		/// <param name="window">Window to set stencil mask for.</param>
-		void SetStencilMask(uint8_t read, uint8_t write, const Window* window) const override;
+		void SetStencilMask(u8 read, u8 write, const Window* window) const override;
 #else
 		/// <summary>
 		/// Set the stencil mask.
 		/// </summary>
 		/// <param name="read">Select the bits of the stencil values to test.</param>
 		/// <param name="write">Select the bits of the stencil values updated by the stencil test.</param>
-		void SetStencilMask(uint8_t read, uint8_t write) const override;
+		void SetStencilMask(u8 read, u8 write) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -546,8 +546,8 @@ namespace TRAP::Graphics::API
 		/// <param name="minDepth">New min depth value. Default: 0.0f.</param>
 		/// <param name="maxDepth">New max depth value. Default: 1.0f.</param>
 		/// <param name="window">Window to set viewport for.</param>
-		void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height, float minDepth /*= 0.0f*/,
-		                 float maxDepth /*= 1.0f*/, const Window* window) const override;
+		void SetViewport(u32 x, u32 y, u32 width, u32 height, f32 minDepth /*= 0.0f*/,
+		                 f32 maxDepth /*= 1.0f*/, const Window* window) const override;
 #else
 		/// <summary>
 		/// Set viewport size.
@@ -558,8 +558,8 @@ namespace TRAP::Graphics::API
 		/// <param name="height">New viewport height.</param>
 		/// <param name="minDepth">New min depth value. Default: 0.0f.</param>
 		/// <param name="maxDepth">New max depth value. Default: 1.0f.</param>
-		void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height, float minDepth /*= 0.0f*/,
-		                 float maxDepth /*= 1.0f*/) const override;
+		void SetViewport(u32 x, u32 y, u32 width, u32 height, f32 minDepth /*= 0.0f*/,
+		                 f32 maxDepth /*= 1.0f*/) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -570,7 +570,7 @@ namespace TRAP::Graphics::API
 		/// <param name="width">New scissor width.</param>
 		/// <param name="height">New scissor height.</param>
 		/// <param name="window">Window to set scissor size for.</param>
-		void SetScissor(uint32_t x, uint32_t y, uint32_t width, uint32_t height,
+		void SetScissor(u32 x, u32 y, u32 width, u32 height,
 		                const Window* window) const override;
 #else
 		/// <summary>
@@ -580,7 +580,7 @@ namespace TRAP::Graphics::API
 		/// <param name="y">Upper left corner.</param>
 		/// <param name="width">New scissor width.</param>
 		/// <param name="height">New scissor height.</param>
-		void SetScissor(uint32_t x, uint32_t y, uint32_t width, uint32_t height) const override;
+		void SetScissor(u32 x, u32 y, u32 width, u32 height) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -590,14 +590,14 @@ namespace TRAP::Graphics::API
 		/// <param name="vertexCount">Number of vertices to draw.</param>
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
 		/// <param name="window">Window to draw for.</param>
-		void Draw(uint32_t vertexCount, uint32_t firstVertex /*= 0*/, const Window* window) const override;
+		void Draw(u32 vertexCount, u32 firstVertex /*= 0*/, const Window* window) const override;
 #else
 		/// <summary>
 		/// Draw non-indexed, non-instanced geometry.
 		/// </summary>
 		/// <param name="vertexCount">Number of vertices to draw.</param>
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
-		void Draw(uint32_t vertexCount, uint32_t firstVertex /*= 0*/) const override;
+		void Draw(u32 vertexCount, u32 firstVertex /*= 0*/) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -607,7 +607,7 @@ namespace TRAP::Graphics::API
 		/// <param name="firstIndex">Index of the first indice to draw. Default: 0.</param>
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
 		/// <param name="window">Window to draw for.</param>
-		void DrawIndexed(uint32_t indexCount, uint32_t firstIndex /*= 0*/, int32_t firstVertex /*= 0*/,
+		void DrawIndexed(u32 indexCount, u32 firstIndex /*= 0*/, i32 firstVertex /*= 0*/,
 		                 const Window* window) const override;
 #else
 		/// <summary>
@@ -616,7 +616,7 @@ namespace TRAP::Graphics::API
 		/// <param name="indexCount">Number of indices to draw.</param>
 		/// <param name="firstIndex">Index of the first indice to draw. Default: 0.</param>
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
-		void DrawIndexed(uint32_t indexCount, uint32_t firstIndex /*= 0*/, int32_t firstVertex /*= 0*/) const override;
+		void DrawIndexed(u32 indexCount, u32 firstIndex /*= 0*/, i32 firstVertex /*= 0*/) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -627,8 +627,8 @@ namespace TRAP::Graphics::API
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
 		/// <param name="firstInstance">Index of the first instance to draw. Default: 0.</param>
 		/// <param name="window">Window to draw for.</param>
-		void DrawInstanced(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex /*= 0*/,
-		                   uint32_t firstInstance /*= 0*/, const Window* window) const override;
+		void DrawInstanced(u32 vertexCount, u32 instanceCount, u32 firstVertex /*= 0*/,
+		                   u32 firstInstance /*= 0*/, const Window* window) const override;
 #else
 		/// <summary>
 		/// Draw non-indexed, instanced geometry.
@@ -637,8 +637,8 @@ namespace TRAP::Graphics::API
 		/// <param name="instanceCount">Number of instances to draw.</param>
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
 		/// <param name="firstInstance">Index of the first instance to draw. Default: 0.</param>
-		void DrawInstanced(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex /*= 0*/,
-		                   uint32_t firstInstance /*= 0*/) const override;
+		void DrawInstanced(u32 vertexCount, u32 instanceCount, u32 firstVertex /*= 0*/,
+		                   u32 firstInstance /*= 0*/) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -650,9 +650,9 @@ namespace TRAP::Graphics::API
 		/// <param name="firstInstance">Index of the first instance to draw. Default: 0.</param>
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
 		/// <param name="window">Window to draw for.</param>
-		void DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount,
-		                          uint32_t firstIndex /*= 0*/, uint32_t firstInstance /*= 0*/,
-								  int32_t firstVertex /*= 0*/, const Window* window) const override;
+		void DrawIndexedInstanced(u32 indexCount, u32 instanceCount,
+		                          u32 firstIndex /*= 0*/, u32 firstInstance /*= 0*/,
+								  i32 firstVertex /*= 0*/, const Window* window) const override;
 #else
 		/// <summary>
 		/// Draw indexed, instanced geometry.
@@ -662,9 +662,9 @@ namespace TRAP::Graphics::API
 		/// <param name="firstIndex">Index of the first indice to draw. Default: 0.</param>
 		/// <param name="firstInstance">Index of the first instance to draw. Default: 0.</param>
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
-		void DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount,
-		                          uint32_t firstIndex /*= 0*/, uint32_t firstInstance /*= 0*/,
-								  int32_t firstVertex /*= 0*/) const override;
+		void DrawIndexedInstanced(u32 indexCount, u32 instanceCount,
+		                          u32 firstIndex /*= 0*/, u32 firstInstance /*= 0*/,
+								  i32 firstVertex /*= 0*/) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -723,7 +723,7 @@ namespace TRAP::Graphics::API
 		/// <param name="index">Index for which descriptor set to bind.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		/// <param name="window">Window to bind the descriptor set for.</param>
-		void BindDescriptorSet(DescriptorSet& dSet, uint32_t index,
+		void BindDescriptorSet(DescriptorSet& dSet, u32 index,
 		                       QueueType queueType /*= QueueType::Graphics*/,
 							   const Window* window) const override;
 #else
@@ -733,7 +733,7 @@ namespace TRAP::Graphics::API
 		/// <param name="dSet">Descriptor set to bind.</param>
 		/// <param name="index">Index for which descriptor set to bind.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
-		void BindDescriptorSet(DescriptorSet& dSet, uint32_t index,
+		void BindDescriptorSet(DescriptorSet& dSet, u32 index,
 		                       QueueType queueType /*= QueueType::Graphics*/) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
@@ -748,7 +748,7 @@ namespace TRAP::Graphics::API
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		/// <param name="window">Window to bind the push constants for.</param>
 		void BindPushConstants(std::string_view name, const void* constantsData,
-		                       std::size_t constantsLength, QueueType queueType /*= QueueType::Graphics*/,
+		                       usize constantsLength, QueueType queueType /*= QueueType::Graphics*/,
 							   const Window* window) const override;
 #else
 		/// <summary>
@@ -761,7 +761,7 @@ namespace TRAP::Graphics::API
 		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		void BindPushConstants(std::string_view name, const void* constantsData,
-		                       std::size_t constantsLength, QueueType queueType /*= QueueType::Graphics*/) const override;
+		                       usize constantsLength, QueueType queueType /*= QueueType::Graphics*/) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -772,8 +772,8 @@ namespace TRAP::Graphics::API
 		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		/// <param name="window">Window to bind the push constants for.</param>
-		void BindPushConstantsByIndex(uint32_t paramIndex, const void* constantsData,
-		                              std::size_t constantsLength, QueueType queueType /*= QueueType::Graphics*/,
+		void BindPushConstantsByIndex(u32 paramIndex, const void* constantsData,
+		                              usize constantsLength, QueueType queueType /*= QueueType::Graphics*/,
 									  const Window* window) const override;
 #else
 		/// <summary>
@@ -783,8 +783,8 @@ namespace TRAP::Graphics::API
 		/// <param name="constantsData">Pointer to the constant buffer data.</param>
 		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
-		void BindPushConstantsByIndex(uint32_t paramIndex, const void* constantsData,
-		                              std::size_t constantsLength, QueueType queueType /*= QueueType::Graphics*/) const override;
+		void BindPushConstantsByIndex(u32 paramIndex, const void* constantsData,
+		                              usize constantsLength, QueueType queueType /*= QueueType::Graphics*/) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -803,9 +803,9 @@ namespace TRAP::Graphics::API
 		void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		                      const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
 							  const RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
-							  std::vector<uint32_t>* colorArraySlices /*= nullptr*/,
-							  std::vector<uint32_t>* colorMipSlices /*= nullptr*/,
-							  uint32_t depthArraySlice /*= -1*/, uint32_t depthMipSlice /*= -1*/,
+							  std::vector<u32>* colorArraySlices /*= nullptr*/,
+							  std::vector<u32>* colorMipSlices /*= nullptr*/,
+							  u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/,
 							  const Window* window) const override;
 #else
 		/// <summary>
@@ -823,9 +823,9 @@ namespace TRAP::Graphics::API
 		void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		                      const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
 							  const RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
-							  std::vector<uint32_t>* colorArraySlices /*= nullptr*/,
-							  std::vector<uint32_t>* colorMipSlices /*= nullptr*/,
-							  uint32_t depthArraySlice /*= -1*/, uint32_t depthMipSlice /*= -1*/) const override;
+							  std::vector<u32>* colorArraySlices /*= nullptr*/,
+							  std::vector<u32>* colorMipSlices /*= nullptr*/,
+							  u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -844,9 +844,9 @@ namespace TRAP::Graphics::API
 		void BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
 		                       const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
 							   const RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
-							   std::vector<uint32_t>* colorArraySlices /*= nullptr*/,
-							   std::vector<uint32_t>* colorMipSlices /*= nullptr*/,
-							   uint32_t depthArraySlice /*= -1*/, uint32_t depthMipSlice /*= -1*/,
+							   std::vector<u32>* colorArraySlices /*= nullptr*/,
+							   std::vector<u32>* colorMipSlices /*= nullptr*/,
+							   u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/,
 							   const Window* window) const override;
 #else
 		/// <summary>
@@ -864,9 +864,9 @@ namespace TRAP::Graphics::API
 		void BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
 		                       const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
 							   const RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
-							   std::vector<uint32_t>* colorArraySlices /*= nullptr*/,
-							   std::vector<uint32_t>* colorMipSlices /*= nullptr*/,
-							   uint32_t depthArraySlice /*= -1*/, uint32_t depthMipSlice /*= -1*/) const override;
+							   std::vector<u32>* colorArraySlices /*= nullptr*/,
+							   std::vector<u32>* colorMipSlices /*= nullptr*/,
+							   u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -986,7 +986,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="frame">Frame to set marker for. Must be unique for each frame!</param>
 		/// <param name="marker">Enum value of the marker to set.</param>
-		void ReflexMarker(uint32_t frame, uint32_t marker) const override;
+		void ReflexMarker(u32 frame, u32 marker) const override;
 #ifdef NVIDIA_REFLEX_AVAILABLE
 		/// <summary>
 		/// Retrieve the latency report from NVIDIA-Reflex.
@@ -1124,7 +1124,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="width">Width for the viewport.</param>
 		/// <param name="height">Height for the viewport.</param>
-		void InitPerViewportData(uint32_t width, uint32_t height) const override;
+		void InitPerViewportData(u32 width, u32 height) const override;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -1179,8 +1179,8 @@ namespace TRAP::Graphics::API
 
 		struct SizeOffset
 		{
-			uint32_t Size;
-			uint32_t Offset;
+			u32 Size;
+			u32 Offset;
 		};
 
 		union DescriptorUpdateData
@@ -1204,13 +1204,13 @@ namespace TRAP::Graphics::API
 			//Shading rate texture to use
 			TRAP::Ref<RenderTarget> ShadingRate;
 			//Array layer to use from color render targets
-			std::vector<uint32_t> ColorArraySlices;
+			std::vector<u32> ColorArraySlices;
 			//Mip level to use from color render targets
-			std::vector<uint32_t> ColorMipSlices;
+			std::vector<u32> ColorMipSlices;
 			//Array layer of depth/stencil render target to use
-			uint32_t DepthArraySlice;
+			u32 DepthArraySlice;
 			//Mip level of depth/stencil render target to use
-			uint32_t DepthMipSlice;
+			u32 DepthMipSlice;
 		};
 
 		/// <summary>
@@ -1221,7 +1221,7 @@ namespace TRAP::Graphics::API
 			std::vector<ImageFormat> ColorFormats;
 			std::vector<LoadActionType> LoadActionsColor;
 			std::vector<StoreActionType> StoreActionsColor;
-			uint32_t RenderTargetCount;
+			u32 RenderTargetCount;
 			TRAP::Graphics::RendererAPI::SampleCount SampleCount;
 			ImageFormat DepthStencilFormat;
 			ImageFormat ShadingRateFormat;
@@ -1244,7 +1244,7 @@ namespace TRAP::Graphics::API
 			//(applicable to DescriptorType::UniformBuffer)
 			std::vector<DescriptorInfo*> DynamicDescriptors{};
 			//Hash map to get index of the descriptor in the root signature
-			std::unordered_map<DescriptorInfo*, uint64_t> DescriptorIndexMap{};
+			std::unordered_map<DescriptorInfo*, u64> DescriptorIndexMap{};
 		};
 
 		/// <summary>
@@ -1287,10 +1287,10 @@ namespace TRAP::Graphics::API
 		//Render-passes are not exposed to the engine code since they are not available on all APIs
 		//This map takes care of hashing a render pass based on the render targets passed to
 		//CommandBuffer::Begin()
-		using RenderPassMap = std::unordered_map<uint64_t, TRAP::Ref<VulkanRenderPass>>;
+		using RenderPassMap = std::unordered_map<u64, TRAP::Ref<VulkanRenderPass>>;
 		using RenderPassMapNode = RenderPassMap::value_type;
 		using RenderPassMapIt = RenderPassMap::iterator;
-		using FrameBufferMap = std::unordered_map<uint64_t, TRAP::Ref<VulkanFrameBuffer>>;
+		using FrameBufferMap = std::unordered_map<u64, TRAP::Ref<VulkanFrameBuffer>>;
 		using FrameBufferMapNode = FrameBufferMap::value_type;
 		using FrameBufferMapIt = FrameBufferMap::iterator;
 
@@ -1423,7 +1423,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="type">Queue type to profile.</param>
 		/// <param name="p">Per window data to profile for.</param>
-		[[nodiscard]] static float ResolveGPUFrameProfile(QueueType type, const PerViewportData* p);
+		[[nodiscard]] static f32 ResolveGPUFrameProfile(QueueType type, const PerViewportData* p);
 
 		std::string m_rendererTitle;
 
@@ -1441,8 +1441,8 @@ namespace TRAP::Graphics::API
 		inline static TracyLockable(std::mutex, s_renderPassMutex);
 
 		inline static std::vector<std::pair<std::string, TRAP::Utils::UUID>> s_usableGPUs{};
-		static std::unordered_map<uint64_t, TRAP::Ref<Pipeline>> s_pipelines;
-		static std::unordered_map<uint64_t, TRAP::Ref<PipelineCache>> s_pipelineCaches;
+		static std::unordered_map<u64, TRAP::Ref<Pipeline>> s_pipelines;
+		static std::unordered_map<u64, TRAP::Ref<PipelineCache>> s_pipelineCaches;
 
 		inline constinit static VulkanRenderer* s_renderer = nullptr;
 	};

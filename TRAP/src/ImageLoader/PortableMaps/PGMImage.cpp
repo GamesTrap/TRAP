@@ -65,10 +65,10 @@ TRAP::INTERNAL::PGMImage::PGMImage(std::filesystem::path filepath)
 	if(header.MaxValue > 255)
 	{
 		m_bitsPerPixel = 16;
-		m_data2Byte.resize(NumericCast<std::size_t>(m_width) * m_height);
+		m_data2Byte.resize(NumericCast<usize>(m_width) * m_height);
 		if(!file.read(reinterpret_cast<char*>(m_data2Byte.data()),
 		              NumericCast<std::streamsize>(m_width) * m_height *
-					  NumericCast<std::streamsize>(sizeof(uint16_t))))
+					  NumericCast<std::streamsize>(sizeof(u16))))
 		{
 			file.close();
 			m_data.clear();
@@ -83,14 +83,14 @@ TRAP::INTERNAL::PGMImage::PGMImage(std::filesystem::path filepath)
 		//Convert to machines endian
 		if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 		{
-			for (uint16_t& element : m_data2Byte)
+			for (u16& element : m_data2Byte)
 				Utils::Memory::SwapBytes(element);
 		}
 	}
 	else
 	{
 		m_bitsPerPixel = 8;
-		m_data.resize(NumericCast<std::size_t>(m_width) * m_height);
+		m_data.resize(NumericCast<usize>(m_width) * m_height);
 		if(!file.read(reinterpret_cast<char*>(m_data.data()), NumericCast<std::streamsize>(m_width) * m_height))
 		{
 			file.close();

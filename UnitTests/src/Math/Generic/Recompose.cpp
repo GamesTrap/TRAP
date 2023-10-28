@@ -91,14 +91,14 @@ namespace
 
 TEST_CASE("TRAP::Math::Recompose()", "[math][generic][recompose]")
 {
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunRecomposeRunTimeTests<double>();
-        RunRecomposeCompileTimeTests<double>();
+        RunRecomposeRunTimeTests<f64>();
+        RunRecomposeCompileTimeTests<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunRecomposeRunTimeTests<float>();
-        RunRecomposeCompileTimeTests<float>();
+        RunRecomposeRunTimeTests<f32>();
+        RunRecomposeCompileTimeTests<f32>();
     }
 }

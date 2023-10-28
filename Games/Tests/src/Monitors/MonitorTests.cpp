@@ -9,13 +9,13 @@ void MonitorTests::OnAttach()
 
 void MonitorTests::OnImGuiRender()
 {
-	const uint32_t primaryID = TRAP::Monitor::GetPrimaryMonitor().GetID();
+	const u32 primaryID = TRAP::Monitor::GetPrimaryMonitor().GetID();
 
 	for(const TRAP::Monitor& monitor : TRAP::Monitor::GetAllMonitors())
 	{
 		const std::string name = monitor.GetName();
 		const std::string uniqueName = fmt::format("{} ({})", name, monitor.GetID());
-		const uint32_t ID = monitor.GetID();
+		const u32 ID = monitor.GetID();
 		const auto nativeMode = monitor.GetNativeVideoMode();
 		const auto currentMode = monitor.GetCurrentVideoMode();
 		const auto position = monitor.GetPosition();
@@ -78,7 +78,7 @@ bool MonitorTests::OnMonitorDisconnect(const TRAP::Events::MonitorDisconnectEven
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t MonitorTests::Euclid(const uint32_t a, const uint32_t b)
+u32 MonitorTests::Euclid(const u32 a, const u32 b)
 {
 	return b != 0 ? Euclid(b, a % b) : a;
 }
@@ -87,7 +87,7 @@ uint32_t MonitorTests::Euclid(const uint32_t a, const uint32_t b)
 
 std::string MonitorTests::FormatMode(const TRAP::Monitor::VideoMode& mode)
 {
-	const uint32_t gcd = Euclid(mode.Width, mode.Height);
+	const u32 gcd = Euclid(mode.Width, mode.Height);
 
 	return fmt::format("{}x{}({}:{}) {}Hz", mode.Width, mode.Height, (mode.Width / gcd), (mode.Height / gcd),
 	                   mode.RefreshRate);

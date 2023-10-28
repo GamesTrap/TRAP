@@ -30,6 +30,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #define TRAP_NETWORK_SOCKETIMPLWINAPI_H
 
 #include "Core/PlatformDetection.h"
+#include "Core/Types.h"
 #include "Network/Sockets/Socket.h"
 #include "Network/Sockets/SocketHandle.h"
 
@@ -47,7 +48,7 @@ namespace TRAP::INTERNAL::Network
 		/// <summary>
 		/// Types.
 		/// </summary>
-		using AddressLength = int32_t;
+		using AddressLength = i32;
 
 		/// <summary>
 		/// Create an internal sockaddr_in address.
@@ -55,7 +56,7 @@ namespace TRAP::INTERNAL::Network
 		/// <param name="address">Target address.</param>
 		/// <param name="port">Target port.</param>
 		/// <returns>sockaddr_in ready to be used by socket functions.</returns>
-		[[nodiscard]] static sockaddr_in CreateAddress(uint32_t address, uint16_t port);
+		[[nodiscard]] static sockaddr_in CreateAddress(u32 address, u16 port);
 
 		/// <summary>
 		/// Create an internal sockaddr_in address.
@@ -63,7 +64,7 @@ namespace TRAP::INTERNAL::Network
 		/// <param name="address">Target address.</param>
 		/// <param name="port">Target port.</param>
 		/// <returns>sockaddr_in6 ready to be used by socket functions.</returns>
-		[[nodiscard]] static sockaddr_in6 CreateAddress(const std::array<uint8_t, 16>& address, uint16_t port);
+		[[nodiscard]] static sockaddr_in6 CreateAddress(const std::array<u8, 16>& address, u16 port);
 
 		/// <summary>
 		/// Return the value of the invalid socket.

@@ -57,7 +57,7 @@ namespace TRAP::Network
 		/// If the socket is not connected, this function returns 0.
 		/// </summary>
 		/// <returns>Port to which the socket is bound.</returns>
-		[[nodiscard]] uint16_t GetLocalPort() const;
+		[[nodiscard]] u16 GetLocalPort() const;
 
 		/// <summary>
 		/// Get the address of the connected peer.
@@ -75,7 +75,7 @@ namespace TRAP::Network
 		/// If the socket is not connected, this function returns 0.
 		/// </summary>
 		/// <returns>Remote port to which the socket is connected.</returns>
-		[[nodiscard]] uint16_t GetRemotePort() const;
+		[[nodiscard]] u16 GetRemotePort() const;
 
 		/// <summary>
 		/// Connect the socket to a remote peer.
@@ -90,7 +90,7 @@ namespace TRAP::Network
 		/// <param name="remotePort">Port of the remote peer.</param>
 		/// <param name="timeout">Optional maximum time to wait.</param>
 		/// <returns>Status code.</returns>
-		[[nodiscard]] Status Connect(const IPv4Address& remoteAddress, uint16_t remotePort,
+		[[nodiscard]] Status Connect(const IPv4Address& remoteAddress, u16 remotePort,
 		                             Utils::TimeStep timeout = Utils::TimeStep(0.0f));
 
 		/// <summary>
@@ -105,14 +105,14 @@ namespace TRAP::Network
 		/// Send raw data to the remote peer.
 		///
 		/// To be able to handle partial sends over non-blocking
-		/// sockets, use the Send(const void*, std::size_t, std::size_t&)
+		/// sockets, use the Send(const void*, usize, usize&)
 		/// overload instead.
 		/// This function will fail if the socket is not connected
 		/// </summary>
 		/// <param name="data">Pointer to the sequence of bytes to send.</param>
 		/// <param name="size">Number of bytes to send.</param>
 		/// <returns>Status code.</returns>
-		[[nodiscard]] Status Send(const void* data, std::size_t size) const;
+		[[nodiscard]] Status Send(const void* data, usize size) const;
 
 		/// <summary>
 		/// Send raw data to the remote peer.
@@ -123,7 +123,7 @@ namespace TRAP::Network
 		/// <param name="size">Number of bytes to send.</param>
 		/// <param name="sent">The number of bytes sent will be written here.</param>
 		/// <returns>Status code.</returns>
-		[[nodiscard]] Status Send(const void* data, std::size_t size, std::size_t& sent) const;
+		[[nodiscard]] Status Send(const void* data, usize size, usize& sent) const;
 
 		/// <summary>
 		/// Receive raw data from the remote peer.
@@ -136,7 +136,7 @@ namespace TRAP::Network
 		/// <param name="size">Maximum number of bytes that can be received.</param>
 		/// <param name="received">This variable is filled with the actual number of bytes received.</param>
 		/// <returns>Status code.</returns>
-		[[nodiscard]] Status Receive(void* data, std::size_t size, std::size_t& received) const;
+		[[nodiscard]] Status Receive(void* data, usize size, usize& received) const;
 
 		/// <summary>
 		/// Send a formatted packet of adata to the remote peer.
@@ -170,9 +170,9 @@ namespace TRAP::Network
 		/// </summary>
 		struct PendingPacket
 		{
-			uint32_t Size = 0;            //Data of packet size
-			std::size_t SizeReceived = 0; //Number of size bytes received so far
-			std::vector<uint8_t> Data{};   //Data of the packet
+			u32 Size = 0;            //Data of packet size
+			usize SizeReceived = 0; //Number of size bytes received so far
+			std::vector<u8> Data{};   //Data of the packet
 		};
 
 		PendingPacket m_pendingPacket; //Temporary data of the packet currently being received

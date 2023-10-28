@@ -74,38 +74,38 @@ namespace TRAP::Graphics::API
 		/// Retrieve the graphics queue family index.
 		/// </summary>
 		/// <returns>Graphics queue family index.</returns>
-		[[nodiscard]] constexpr uint8_t GetGraphicsQueueFamilyIndex() const noexcept;
+		[[nodiscard]] constexpr u8 GetGraphicsQueueFamilyIndex() const noexcept;
 		/// <summary>
 		/// Retrieve the transfer queue family index.
 		/// </summary>
 		/// <returns>Transfer queue family index.</returns>
-		[[nodiscard]] constexpr uint8_t GetTransferQueueFamilyIndex() const noexcept;
+		[[nodiscard]] constexpr u8 GetTransferQueueFamilyIndex() const noexcept;
 		/// <summary>
 		/// Retrieve the compute queue family index.
 		/// </summary>
 		/// <returns>Compute queue family index.</returns>
-		[[nodiscard]] constexpr uint8_t GetComputeQueueFamilyIndex() const noexcept;
+		[[nodiscard]] constexpr u8 GetComputeQueueFamilyIndex() const noexcept;
 		/// <summary>
 		/// Retrieve the all queue family (graphics, transfer, compute) indices.
 		/// </summary>
 		/// <returns>All queue family indices.</returns>
-		[[nodiscard]] constexpr std::array<uint8_t, 3> GetQueueFamilyIndices() const noexcept;
+		[[nodiscard]] constexpr std::array<u8, 3> GetQueueFamilyIndices() const noexcept;
 
 		/// <summary>
 		/// Retrieve the graphics queue index.
 		/// </summary>
 		/// <returns>Graphics queue index.</returns>
-		[[nodiscard]] constexpr uint8_t GetGraphicsQueueIndex() const noexcept;
+		[[nodiscard]] constexpr u8 GetGraphicsQueueIndex() const noexcept;
 		/// <summary>
 		/// Retrieve the transfer queue index.
 		/// </summary>
 		/// <returns>Transfer queue index.</returns>
-		[[nodiscard]] constexpr uint8_t GetTransferQueueIndex() const noexcept;
+		[[nodiscard]] constexpr u8 GetTransferQueueIndex() const noexcept;
 		/// <summary>
 		/// Retrieve the compute queue index.
 		/// </summary>
 		/// <returns>Compute queue index.</returns>
-		[[nodiscard]] constexpr uint8_t GetComputeQueueIndex() const noexcept;
+		[[nodiscard]] constexpr u8 GetComputeQueueIndex() const noexcept;
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 		/// <summary>
@@ -124,7 +124,7 @@ namespace TRAP::Graphics::API
 		/// <param name="queueType">Queue type to search for.</param>
 		/// <param name="queueFamilyIndex">Output queue family index.</param>
 		/// <param name="queueIndex">Output queue index.</param>
-		void FindQueueFamilyIndex(RendererAPI::QueueType queueType, uint8_t& queueFamilyIndex, uint8_t& queueIndex);
+		void FindQueueFamilyIndex(RendererAPI::QueueType queueType, u8& queueFamilyIndex, u8& queueIndex);
 		/// <summary>
 		/// Find the queue family index for a given queue type from the given queue family properties.
 		/// </summary>
@@ -133,7 +133,7 @@ namespace TRAP::Graphics::API
 		/// <param name="queueFamilyIndex">Output queue family index.</param>
 		/// <param name="queueIndex">Output queue index.</param>
 		void FindQueueFamilyIndex(RendererAPI::QueueType queueType, VkQueueFamilyProperties& queueFamilyProperties,
-		                          uint8_t& queueFamilyIndex, uint8_t& queueIndex);
+		                          u8& queueFamilyIndex, u8& queueIndex);
 
 		/// <summary>
 		/// Set a name for the device device.
@@ -150,16 +150,16 @@ namespace TRAP::Graphics::API
 
 		std::vector<std::string> m_deviceExtensions;
 
-		std::unordered_map<VkQueueFlags, uint32_t> m_availableQueueCount;
-		std::unordered_map<VkQueueFlags, uint32_t> m_usedQueueCount;
+		std::unordered_map<VkQueueFlags, u32> m_availableQueueCount;
+		std::unordered_map<VkQueueFlags, u32> m_usedQueueCount;
 
-		uint8_t m_graphicsQueueFamilyIndex = 0;
-		uint8_t m_transferQueueFamilyIndex = 0;
-		uint8_t m_computeQueueFamilyIndex = 0;
+		u8 m_graphicsQueueFamilyIndex = 0;
+		u8 m_transferQueueFamilyIndex = 0;
+		u8 m_computeQueueFamilyIndex = 0;
 
-		uint8_t m_graphicsQueueIndex = 0;
-		uint8_t m_transferQueueIndex = 0;
-		uint8_t m_computeQueueIndex = 0;
+		u8 m_graphicsQueueIndex = 0;
+		u8 m_transferQueueIndex = 0;
+		u8 m_computeQueueIndex = 0;
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 		VkSemaphore m_reflexSemaphore;
@@ -185,49 +185,49 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint8_t TRAP::Graphics::API::VulkanDevice::GetGraphicsQueueFamilyIndex() const noexcept
+[[nodiscard]] constexpr u8 TRAP::Graphics::API::VulkanDevice::GetGraphicsQueueFamilyIndex() const noexcept
 {
 	return m_graphicsQueueFamilyIndex;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint8_t TRAP::Graphics::API::VulkanDevice::GetTransferQueueFamilyIndex() const noexcept
+[[nodiscard]] constexpr u8 TRAP::Graphics::API::VulkanDevice::GetTransferQueueFamilyIndex() const noexcept
 {
 	return m_transferQueueFamilyIndex;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueFamilyIndex() const noexcept
+[[nodiscard]] constexpr u8 TRAP::Graphics::API::VulkanDevice::GetComputeQueueFamilyIndex() const noexcept
 {
 	return m_computeQueueFamilyIndex;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::array<uint8_t, 3> TRAP::Graphics::API::VulkanDevice::GetQueueFamilyIndices() const noexcept
+[[nodiscard]] constexpr std::array<u8, 3> TRAP::Graphics::API::VulkanDevice::GetQueueFamilyIndices() const noexcept
 {
 	return { m_graphicsQueueFamilyIndex, m_transferQueueFamilyIndex, m_computeQueueFamilyIndex };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint8_t TRAP::Graphics::API::VulkanDevice::GetGraphicsQueueIndex() const noexcept
+[[nodiscard]] constexpr u8 TRAP::Graphics::API::VulkanDevice::GetGraphicsQueueIndex() const noexcept
 {
 	return m_graphicsQueueIndex;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint8_t TRAP::Graphics::API::VulkanDevice::GetTransferQueueIndex() const noexcept
+[[nodiscard]] constexpr u8 TRAP::Graphics::API::VulkanDevice::GetTransferQueueIndex() const noexcept
 {
 	return m_transferQueueIndex;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueIndex() const noexcept
+[[nodiscard]] constexpr u8 TRAP::Graphics::API::VulkanDevice::GetComputeQueueIndex() const noexcept
 {
 	return m_computeQueueIndex;
 }

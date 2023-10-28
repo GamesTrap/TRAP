@@ -435,7 +435,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="x">Specify the value of which to return the absolute.</param>
 	/// <returns>x if x >= 0; otherwise it returns -x.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::signed_integral<T> || std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Abs(Vec<L, T> x);
 
@@ -444,7 +444,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="x">Specify the value of which to return the absolute.</param>
 	/// <returns>x if x >= 0; otherwise it returns -x.</returns>
-	template<uint32_t C, uint32_t R, typename T>
+	template<u32 C, u32 R, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Mat<C, R, T> Abs(Mat<C, R, T> x);
 
@@ -466,7 +466,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="x">Specify the value from which to extract the sign.</param>
 	/// <returns>1.0f if x > 0, 0.0 if x == 0, or -1.0 if x < 0.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T> || std::signed_integral<T>
 	[[nodiscard]] constexpr Vec<L, T> Sign(const Vec<L, T>& x);
 
@@ -486,7 +486,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>Value equal to the nearest integer that is less then or equal to x.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Floor(Vec<L, T> x);
 
@@ -499,7 +499,7 @@ namespace TRAP::Math
 	/// <returns>
 	/// Value equal to the nearest integer to x whose absolute value is not larger than the absolute value of x.
 	/// </returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Trunc(Vec<L, T> x);
 
@@ -514,7 +514,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Round(Vec<L, T> x);
 
@@ -540,7 +540,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> RoundEven(Vec<L, T> x);
 
@@ -560,7 +560,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>Value equal to the nearest integer that is greater than or equal to x.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Ceil(Vec<L, T> x);
 
@@ -580,7 +580,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>x - Floor(x).</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Fract(const Vec<L, T>& x);
 
@@ -618,7 +618,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>x - y * Floor(x / y) for each component in x using the floating point value y.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Mod(Vec<L, T> x, T y);
 
@@ -627,7 +627,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="x">Specify the value to evaluate.</param>
 	/// <returns>x - y * Floor(x / y) for each component in x using the floating point value y.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Mod(Vec<L, T> x, const Vec<L, T>& y);
 
@@ -657,7 +657,7 @@ namespace TRAP::Math
 	/// <returns>
 	/// Fractional part of x and sets i to the integer part (as a whole number floating point value).
 	/// </returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Modf(Vec<L, T> x, Vec<L, T>& i);
 
@@ -669,7 +669,7 @@ namespace TRAP::Math
 	/// <param name="a">Specify the first value to compare.</param>
 	/// <param name="b">Specify the second value to compare.</param>
 	/// <returns>y if y < x; otherwise it returns x.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, T> Min(Vec<L, T> a, T b);
 
@@ -679,7 +679,7 @@ namespace TRAP::Math
 	/// <param name="a">Specify the first value to compare.</param>
 	/// <param name="b">Specify the second value to compare.</param>
 	/// <returns>y if y < x; otherwise it returns x.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, T> Min(Vec<L, T> a, const Vec<L, T>& b);
 
@@ -692,7 +692,7 @@ namespace TRAP::Math
 	/// <param name="b">Specify the second value to compare.</param>
 	/// <param name="c">Specify the third value to compare.</param>
 	/// <returns>Returns the minimum component-wise values of 3 inputs</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, T> Min(const Vec<L, T>& a, const Vec<L, T>& b, const Vec<L, T>& c);
 
@@ -706,7 +706,7 @@ namespace TRAP::Math
 	/// <param name="c">Specify the third value to compare.</param>
 	/// <param name="d">Specify the fourth value to compare.</param>
 	/// <returns>Returns the minimum component-wise values of 4 inputs</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, T> Min(const Vec<L, T>& a, const Vec<L, T>& b, const Vec<L, T>& c, const Vec<L, T>& d);
 
@@ -718,7 +718,7 @@ namespace TRAP::Math
 	/// <param name="a">Specify the first value to compare.</param>
 	/// <param name="b">Specify the second value to compare.</param>
 	/// <returns>y if x < y; otherwise it returns x.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, T> Max(Vec<L, T> a, T b);
 
@@ -728,7 +728,7 @@ namespace TRAP::Math
 	/// <param name="a">Specify the first value to compare.</param>
 	/// <param name="b">Specify the second value to compare.</param>
 	/// <returns>y if x < y; otherwise it returns x.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, T> Max(Vec<L, T> a, const Vec<L, T>& b);
 
@@ -738,7 +738,7 @@ namespace TRAP::Math
 	/// <param name="b">Specify the second value to compare.</param>
 	/// <param name="c">Specify the third value to compare.</param>
 	/// <returns>Returns the maximum component-wise values of 3 inputs</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, T> Max(const Vec<L, T>& a, const Vec<L, T>& b, const Vec<L, T>& c);
 
@@ -749,7 +749,7 @@ namespace TRAP::Math
 	/// <param name="c">Specify the third value to compare.</param>
 	/// <param name="d">Specify the fourth value to compare.</param>
 	/// <returns>Returns the maximum component-wise values of 4 inputs</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, T> Max(const Vec<L, T>& a, const Vec<L, T>& b, const Vec<L, T>& c, const Vec<L, T>& d);
 
@@ -781,7 +781,7 @@ namespace TRAP::Math
 	/// <returns>
 	/// Min(Max(x, minval), maxVal) for each component in x using the floating-point values minval and maxVal.
 	/// </returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]]
 #ifndef TRAP_ENABLE_ASSERTS
@@ -798,7 +798,7 @@ namespace TRAP::Math
 	/// <returns>
 	/// Min(Max(x, minval), maxVal) for each component in x using the floating-point values minval and maxVal.
 	/// </returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]]
 #ifndef TRAP_ENABLE_ASSERTS
@@ -848,7 +848,7 @@ namespace TRAP::Math
 	/// <param name="y">Specify the end of the range in which to interpolate.</param>
 	/// <param name="a">SPecify the value to use to interpolate between x and y.</param>
 	/// <returns>See description.</returns>
-	template<uint32_t L, typename T, typename U>
+	template<u32 L, typename T, typename U>
 	requires std::floating_point<U> || std::same_as<U, bool>
 	[[nodiscard]] constexpr Vec<L, T> Mix(const Vec<L, T>& x, const Vec<L, T>& y, U a);
 
@@ -870,7 +870,7 @@ namespace TRAP::Math
 	/// <param name="y">Specify the end of the range in which to interpolate.</param>
 	/// <param name="a">SPecify the value to use to interpolate between x and y.</param>
 	/// <returns>See description.</returns>
-	template<uint32_t L, typename T, typename U>
+	template<u32 L, typename T, typename U>
 	requires std::floating_point<U> || std::same_as<U, bool>
 	[[nodiscard]] constexpr Vec<L, T> Mix(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, U>& a);
 
@@ -1008,7 +1008,7 @@ namespace TRAP::Math
 	/// <param name="edge">Specifies the location of the edge of the step function.</param>
 	/// <param name="x">Specify the value to be used to generate the step function.</param>
 	/// <returns>0.0 if x < edge, otherwise it returns 1.0.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Step(T edge, const Vec<L, T>& x);
 
@@ -1018,7 +1018,7 @@ namespace TRAP::Math
 	/// <param name="edge">Specifies the location of the edge of the step function.</param>
 	/// <param name="x">Specify the value to be used to generate the step function.</param>
 	/// <returns>0.0 if x < edge, otherwise it returns 1.0.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Step(const Vec<L, T>& edge, const Vec<L, T>& x);
 
@@ -1054,7 +1054,7 @@ namespace TRAP::Math
 	/// <returns>
 	/// 0.0 if x <= edge0 and 1.0 if x >= edge1 and performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1.
 	/// </returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> SmoothStep(T edge0, T edge1, const Vec<L, T>& x);
 
@@ -1071,7 +1071,7 @@ namespace TRAP::Math
 	/// <returns>
 	/// 0.0 if x <= edge0 and 1.0 if x >= edge1 and performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1.
 	/// </returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> SmoothStep(const Vec<L, T>& edge0, const Vec<L, T>& edge1, const Vec<L, T>& x);
 
@@ -1103,7 +1103,7 @@ namespace TRAP::Math
 	/// set of floating-point representations.
 	/// False otherwise, including for implementations with no NaN representations.
 	/// </returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, bool> IsNaN(const Vec<L, T>& v);
 
@@ -1146,7 +1146,7 @@ namespace TRAP::Math
 	/// set of floating-point representations.
 	/// False otherwise, including for implementations with no infinity representations.
 	/// </returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, bool> IsInf(const Vec<L, T>& v);
 
@@ -1190,7 +1190,7 @@ namespace TRAP::Math
 	/// <returns>See description.</returns>
 	template<typename genType>
 	requires std::floating_point<genType>
-	[[nodiscard]] genType FrExp(genType x, int32_t& exp);
+	[[nodiscard]] genType FrExp(genType x, i32& exp);
 
 	/// <summary>
 	/// Splits x into a floating-point significant in the range [0.5, 1.0) and an integral exponent of two,
@@ -1202,9 +1202,9 @@ namespace TRAP::Math
 	/// <param name="v">Specifies the value from which significand and exponent are to be extracted.</param>
 	/// <param name="exp">Out specifies the variable into which to place the exponent.</param>
 	/// <returns>See description.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> FrExp(Vec<L, T> v, Vec<L, int32_t>& exp);
+	[[nodiscard]] Vec<L, T> FrExp(Vec<L, T> v, Vec<L, i32>& exp);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1218,7 +1218,7 @@ namespace TRAP::Math
 	/// <returns>See description.</returns>
 	template<typename genType>
 	requires std::floating_point<genType>
-	[[nodiscard]] genType LdExp(const genType& x, const int32_t& exp);
+	[[nodiscard]] genType LdExp(const genType& x, const i32& exp);
 
 	/// <summary>
 	/// Builds a floating-point number from x and the corresponding integral exponent of two in exp, returning:
@@ -1228,9 +1228,9 @@ namespace TRAP::Math
 	/// <param name="v">Specifies the value to be used as a source of significand.</param>
 	/// <param name="exp">Specifies the value to be used as a source of exponent.</param>
 	/// <returns>See description.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
-	[[nodiscard]] Vec<L, T> LdExp(Vec<L, T> v, const Vec<L, int32_t>& exp);
+	[[nodiscard]] Vec<L, T> LdExp(Vec<L, T> v, const Vec<L, i32>& exp);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1248,7 +1248,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="v">Specify the value to evaluate.</param>
 	/// <returns>True if the value is a power of two number.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::unsigned_integral<T>
 	[[nodiscard]] constexpr Vec<L, bool> IsPowerOfTwo(const Vec<L, T>& v);
 
@@ -1266,7 +1266,7 @@ namespace TRAP::Math
 	/// Similar to 'Mod' but with a different rounding and integer support.
 	/// </summary>
 	/// <returns>'x - y * Trunc(x / y)' instead of 'x - y * Floor(x / y)'.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> FMod(Vec<L, T> x, T y);
 
@@ -1274,7 +1274,7 @@ namespace TRAP::Math
 	/// Similar to 'Mod' but with a different rounding and integer support.
 	/// </summary>
 	/// <returns>'x - y * Trunc(x / y)' instead of 'x - y * Floor(x / y)'.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> FMod(Vec<L, T> x, const Vec<L, T>& y);
 
@@ -1292,7 +1292,7 @@ namespace TRAP::Math
 	/// Linear interpolation.
 	/// </summary>
 	/// <returns>Linear interpolation.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Lerp(const Vec<L, T>& x, const Vec<L, T>& y, T a);
 
@@ -1300,7 +1300,7 @@ namespace TRAP::Math
 	/// Linear interpolation.
 	/// </summary>
 	/// <returns>Linear interpolation.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Lerp(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, T>& a);
 
@@ -1343,7 +1343,7 @@ namespace TRAP::Math
 	/// </param>
 	/// <param name="exponent">Floating-point value representing the 'exponent'.</param>
 	/// <returns>'base' raised to the power 'exponent'.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Pow(Vec<L, T> base, const Vec<L, T>& exponent);
 
@@ -1377,7 +1377,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="x">Specify the value to exponentiate.</param>
 	/// <returns>Natural exponentiation of x. i.e., e^x.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Exp(Vec<L, T> x);
 
@@ -1415,7 +1415,7 @@ namespace TRAP::Math
 	/// Natural logarithm of x, i.e., returns the value y which satisfies the equation x = e^y.
 	/// Note: Results are undefined if x <= 0!
 	/// </returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Log(Vec<L, T> x);
 
@@ -1450,7 +1450,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="x">Specify the value of the power to which 2 will be raised.</param>
 	/// <returns>2 raised to the x power.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] Vec<L, T> Exp2(Vec<L, T> x);
 
@@ -1476,7 +1476,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="x">Specify the value of which to take the base 2 logarithm.</param>
 	/// <returns>Base 2 log of x, i.e., returns the value y, which satisfies the equation x = 2^y.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Log2(Vec<L, T> x);
 
@@ -1502,7 +1502,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="x">Specify the value of which to take the square root.</param>
 	/// <returns>Positive square root of x.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Sqrt(Vec<L, T> x);
 
@@ -1537,7 +1537,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="x">Specify the value of which to take the inverse of the square root.</param>
 	/// <returns>Inverse of the square root of x.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> InverseSqrt(Vec<L, T> x);
 
@@ -1550,7 +1550,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="v">Specifies a vector of which to calculate the length.</param>
 	/// <returns>Length of x, i.e., Sqrt(x * x).</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr T Length(const Vec<L, T>& v);
 
@@ -1571,7 +1571,7 @@ namespace TRAP::Math
 	/// <param name="p0">Specifies the first of two points.</param>
 	/// <param name="p1">Specifies the second of two points.</param>
 	/// <returns>Distance between p0 and p1, i.e., Length(p0 - p1).</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr T Distance(const Vec<L, T>& p0, const Vec<L, T>& p1);
 
@@ -1583,7 +1583,7 @@ namespace TRAP::Math
 	/// <param name="x">Specifies the first of two vectors.</param>
 	/// <param name="y">Specifies the second of two vectors.</param>
 	/// <returns>Dot product of x and y, i.e., result = x * y.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr T Dot(const Vec<L, T>& x, const Vec<L, T>& y);
 
@@ -1627,7 +1627,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="x">Specifies the vector to normalize.</param>
 	/// <returns>Vector in the same direction as x but with a length of 1.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Normalize(const Vec<L, T>& x);
 
@@ -1649,7 +1649,7 @@ namespace TRAP::Math
 	/// <param name="I">Specifies the incident vector.</param>
 	/// <param name="NRef">Specifies the reference vector.</param>
 	/// <returns>If Dot(NRef, I) < 0.0, returns N, otherwise; returns -N.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> FaceForward(const Vec<L, T>& N, const Vec<L, T>& I, const Vec<L, T>& NRef);
 
@@ -1664,7 +1664,7 @@ namespace TRAP::Math
 	/// For the incident vector I and surface orientation N,
 	/// returns the reflection direction: result = I - 2.0 * Dot(N, I) * N.
 	/// </returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Reflect(const Vec<L, T>& I, const Vec<L, T>& N);
 
@@ -1680,7 +1680,7 @@ namespace TRAP::Math
 	/// For the incident vector I and surface normal N,
 	/// and the ratio of indices of refraction eta, returns the refraction vector.
 	/// </returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Refract(const Vec<L, T>& I, const Vec<L, T>& N, T eta);
 
@@ -1694,7 +1694,7 @@ namespace TRAP::Math
 	/// <returns>
 	/// Boolean vector which components value is true if this expression is satisfied per column of the matrices.
 	/// </returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 	[[nodiscard]] constexpr Vec<L, bool> Equal(const Mat<L, L, T>& x, const Mat<L, L, T>& y);
 
@@ -1705,7 +1705,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second matrix to be used in the comparison operation.</param>
 	/// <param name="epsilon">Specifies the epsilon to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison of |x - y| < epsilon. True if this expression is satisfied.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 	[[nodiscard]] constexpr Vec<L, bool> Equal(const Mat<L, L, T>& x, const Mat<L, L, T>& y, T epsilon);
 
@@ -1716,7 +1716,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second matrix to be used in the comparison operation.</param>
 	/// <param name="epsilon">Specifies the epsilon to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison of |x - y| < epsilon. True if this expression is satisfied.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 	[[nodiscard]] constexpr Vec<L, bool> Equal(const Mat<L, L, T>& x, const Mat<L, L, T>& y, const Vec<L, T>& epsilon);
 
@@ -1730,7 +1730,7 @@ namespace TRAP::Math
 	/// <returns>
 	/// Boolean vector which components value is true if this expression is satisfied per column of the matrices.
 	/// </returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 	[[nodiscard]] constexpr Vec<L, bool> NotEqual(const Mat<L, L, T>& x, const Mat<L, L, T>& y);
 
@@ -1741,7 +1741,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second matrix to be used in the comparison operation.</param>
 	/// <param name="epsilon">Specifies the epsilon to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison of |x - y| >= epsilon. True if this expression is not satisfied.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 	[[nodiscard]] constexpr Vec<L, bool> NotEqual(const Mat<L, L, T>& x, const Mat<L, L, T>& y, T epsilon);
 
@@ -1752,7 +1752,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second matrix to be used in the comparison operation.</param>
 	/// <param name="epsilon">Specifies the epsilon to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison of |x - y| >= epsilon. True if this expression is not satisfied.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 	[[nodiscard]] constexpr Vec<L, bool> NotEqual(const Mat<L, L, T>& x, const Mat<L, L, T>& y, const Vec<L, T>& epsilon);
 
@@ -1766,7 +1766,7 @@ namespace TRAP::Math
 	/// <param name="x">Specifies the first matrix multiplicand.</param>
 	/// <param name="y">Specifies the second matrix multiplicand.</param>
 	/// <returns>Multiplied matrix.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires (std::floating_point<T> && L > 2)
 	[[nodiscard]] constexpr Mat<L, L, T> MatrixCompMult(Mat<L, L, T> x, const Mat<L, L, T>& y);
 
@@ -1781,7 +1781,7 @@ namespace TRAP::Math
 	/// <param name="c">Specifies the parameter to be treated as a column matrix.</param>
 	/// <param name="r">Specifies the parameter to be treated as a row matrix.</param>
 	/// <returns>Multiplied matrix.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires (std::floating_point<T> && L > 2)
 	[[nodiscard]] constexpr Mat<L, L, T> OuterProduct(const Vec<L, T>& c, const Vec<L, T>& r);
 
@@ -1991,7 +1991,7 @@ namespace TRAP::Math
 	/// <param name="y">Specify the end of the range in which to interpolate.</param>
 	/// <param name="a">Specify the value to use to interpolate between x and y.</param>
 	/// <returns>See description.</returns>
-	template<uint32_t L, typename T, typename U>
+	template<u32 L, typename T, typename U>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Mat<L, L, T> Mix(const Mat<L, L, T>& x, const Mat<L, L, T>& y, const Mat<L, L, U>& a);
 
@@ -2013,7 +2013,7 @@ namespace TRAP::Math
 	/// <param name="y">Specify the end of the range in which to interpolate.</param>
 	/// <param name="a">Specify the value to use to interpolate between x and y.</param>
 	/// <returns>See description.</returns>
-	template<uint32_t L, typename T, typename U>
+	template<u32 L, typename T, typename U>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Mat<L, L, T> Mix(const Mat<L, L, T>& x, const Mat<L, L, T>& y, U a);
 
@@ -2105,7 +2105,7 @@ namespace TRAP::Math
 	/// <returns>Row vector.</returns>
 	template<typename T>
 	requires IsMat<T>
-	[[nodiscard]] constexpr typename T::row_type Row(const T& m, std::size_t index);
+	[[nodiscard]] constexpr typename T::row_type Row(const T& m, usize index);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2118,7 +2118,7 @@ namespace TRAP::Math
 	/// <returns>Matrix with new row data.</returns>
 	template<typename T>
 	requires IsMat<T>
-	[[nodiscard]] constexpr T Row(const T& m, std::size_t index, const typename T::row_type& x);
+	[[nodiscard]] constexpr T Row(const T& m, usize index, const typename T::row_type& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2130,7 +2130,7 @@ namespace TRAP::Math
 	/// <returns>Column vector.</returns>
 	template<typename T>
 	requires IsMat<T>
-	[[nodiscard]] constexpr typename T::col_type Column(const T& m, std::size_t index);
+	[[nodiscard]] constexpr typename T::col_type Column(const T& m, usize index);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2143,7 +2143,7 @@ namespace TRAP::Math
 	/// <returns>Matrix with new column data.</returns>
 	template<typename T>
 	requires IsMat<T>
-	[[nodiscard]] constexpr T Column(T m, std::size_t index, const typename T::col_type& x);
+	[[nodiscard]] constexpr T Column(T m, usize index, const typename T::col_type& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2518,7 +2518,7 @@ namespace TRAP::Math
 	/// <param name="x">Specifies the first vector to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x < y.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, bool> LessThan(const Vec<L, T>& x, const Vec<L, T>& y) noexcept;
 
@@ -2530,7 +2530,7 @@ namespace TRAP::Math
 	/// <param name="x">Specifies the first vector to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x <= y.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, bool> LessThanEqual(const Vec<L, T>& x, const Vec<L, T>& y) noexcept;
 
@@ -2542,7 +2542,7 @@ namespace TRAP::Math
 	/// <param name="x">Specifies the first vector to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x > y.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, bool> GreaterThan(const Vec<L, T>& x, const Vec<L, T>& y) noexcept;
 
@@ -2554,7 +2554,7 @@ namespace TRAP::Math
 	/// <param name="x">Specifies the first vector to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x >= y.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, bool> GreaterThanEqual(const Vec<L, T>& x, const Vec<L, T>& y) noexcept;
 
@@ -2566,7 +2566,7 @@ namespace TRAP::Math
 	/// <param name="x">Specifies the first vector to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x == y.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, bool> Equal(const Vec<L, T>& x, const Vec<L, T>& y) noexcept;
 
@@ -2577,7 +2577,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <param name="epsilon"></param>
 	/// <returns>Component-wise comparison of |x - y| < epsilon. True if this expression is satisfied.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, bool> Equal(const Vec<L, T>& x, const Vec<L, T>& y, T epsilon);
 
@@ -2588,7 +2588,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <param name="epsilon"></param>
 	/// <returns>Component-wise comparison of |x - y| < epsilon. True if this expression is satisfied.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, bool> Equal(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, T>& epsilon);
 
@@ -2600,7 +2600,7 @@ namespace TRAP::Math
 	/// <param name="x">Specifies the first vector to be used in the comparison operation.</param>
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x != y.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, bool> NotEqual(const Vec<L, T>& x, const Vec<L, T>& y) noexcept;
 
@@ -2611,7 +2611,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <param name="epsilon"></param>
 	/// <returns>Component-wise comparison result of x != y.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, bool> NotEqual(const Vec<L, T>& x, const Vec<L, T>& y, T epsilon);
 
@@ -2622,7 +2622,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second vector to be used in the comparison operation.</param>
 	/// <param name="epsilon"></param>
 	/// <returns>Component-wise comparison result of x != y.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr Vec<L, bool> NotEqual(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, T>& epsilon);
 
@@ -2633,7 +2633,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="v">Specifies the vector to be tested for truth.</param>
 	/// <returns>True if any component of v is true.</returns>
-	template<uint32_t L>
+	template<u32 L>
 	[[nodiscard]] constexpr bool Any(const Vec<L, bool>& v) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2643,7 +2643,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="v">Specifies the vector to be tested for truth.</param>
 	/// <returns>True if all component of v are true.</returns>
-	template<uint32_t L>
+	template<u32 L>
 	[[nodiscard]] constexpr bool All(const Vec<L, bool>& v) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2653,7 +2653,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="v">Specifies the vector to be inverted.</param>
 	/// <returns>Component-wise logical complement of x.</returns>
-	template<uint32_t L>
+	template<u32 L>
 	[[nodiscard]] constexpr Vec<L, bool> Not(Vec<L, bool> v) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -2674,7 +2674,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="v">Specify the quantity, in degrees, to be converted to radians.</param>
 	/// <returns>Radians.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Radians(Vec<L, T> v);
 
@@ -2694,7 +2694,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="v">Specify the quantity, in radians, to be converted to degrees.</param>
 	/// <returns>Degrees.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Degrees(Vec<L, T> v);
 
@@ -2716,7 +2716,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="v">Specify the quantity, in radians, of which to return the sine.</param>
 	/// <returns>Sine.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Sin(Vec<L, T> v);
 
@@ -2738,7 +2738,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="v">Specify the quantity, in radians, of which to return the cosine.</param>
 	/// <returns>Cosine.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Cos(Vec<L, T> v);
 
@@ -2758,7 +2758,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="v">Specify the quantity, in radians, of which to return the tangent.</param>
 	/// <returns>Tangent.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> Tan(Vec<L, T> v);
 
@@ -2784,7 +2784,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="x">Specify the value whose arcsine to return.</param>
 	/// <returns>Angle whose sine is x.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> ASin(Vec<L, T> v);
 
@@ -2810,7 +2810,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="x">Specify the value whose arccosine to return.</param>
 	/// <returns>Angle whose cosine is x.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> ACos(Vec<L, T> v);
 
@@ -2844,7 +2844,7 @@ namespace TRAP::Math
 	/// Angle whose tangent is y / x.
 	/// The signs of x and y are used to determine what quadrant the angle is in.
 	/// </returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> ATan(Vec<L, T> y, const Vec<L, T>& x);
 
@@ -2864,7 +2864,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="x">Specify the fraction whose arctangent to return.</param>
 	/// <returns>Angle whose tangent is y over x.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> ATan(Vec<L, T> v);
 
@@ -2884,7 +2884,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="v">Specify the value whose hyperbolic sine to return.</param>
 	/// <returns>Hyperbolic sine function, (Exp(x) - Exp(-x)) / 2.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> SinH(Vec<L, T> v);
 
@@ -2904,7 +2904,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="v">Specify the value whose hyperbolic cosine to return.</param>
 	/// <returns>Hyperbolic cosine function, (Exp(x) + Exp(-x)) / 2.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> CosH(Vec<L, T> v);
 
@@ -2924,7 +2924,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="v">Specify the value whose hyperbolic tangent to return.</param>
 	/// <returns>Hyperbolic tangent function, SinH(angle) / CosH(angle).</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> TanH(Vec<L, T> v);
 
@@ -2944,7 +2944,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="v">Specify the value whose arc hyperbolic sine to return.</param>
 	/// <returns>Inverse of SinH.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> ASinH(Vec<L, T> v);
 
@@ -2964,7 +2964,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="v">Specify the value whose arc hyperbolic cosine to return.</param>
 	/// <returns>Non-negative inverse of CosH.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> ACosH(Vec<L, T> v);
 
@@ -2984,7 +2984,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="v">Specify the value whose arc hyperbolic tangent to return.</param>
 	/// <returns>Inverse of TanH. Note: Results are undefined if Abs(x) >= 1!</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> ATanH(Vec<L, T> v);
 
@@ -2998,7 +2998,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="colorLinear">Color in linear space.</param>
 	/// <returns>Color in sRGB space.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires (L == 3 || L == 4) && std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> ConvertLinearToSRGB(const Vec<L, T>& colorLinear);
 
@@ -3008,7 +3008,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="colorLinear">Color in linear space.</param>
 	/// <returns>Color in sRGB space.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires (L == 3 || L == 4) && std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> ConvertLinearToSRGB(const Vec<L, T>& colorLinear, T gamma);
 
@@ -3018,7 +3018,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="colorSRGB">Color in sRGB space.</param>
 	/// <returns>Color in linear space.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires (L == 3 || L == 4) && std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> ConvertSRGBToLinear(const Vec<L, T>& colorSRGB);
 
@@ -3028,7 +3028,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="colorSRGB">Color in sRGB space.</param>
 	/// <returns>Color in linear space.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires (L == 3 || L == 4) && std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, T> ConvertSRGBToLinear(const Vec<L, T>& colorSRGB, T gamma);
 
@@ -3050,7 +3050,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="x">Integers to check.</param>
 	/// <returns>Vector containing True if a given integer is odd, false otherwise.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::integral<T>
 	[[nodiscard]] constexpr Vec<L, bool> IsOdd(const Vec<L, T>& x) noexcept;
 
@@ -3070,7 +3070,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="x">Integers to check.</param>
 	/// <returns>Vector containing True if a given integer is even, false otherwise.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::integral<T>
 	[[nodiscard]] constexpr Vec<L, bool> IsEven(const Vec<L, T>& x) noexcept;
 
@@ -3090,7 +3090,7 @@ namespace TRAP::Math
 	/// </summary>
 	/// <param name="x">Numbers to check.</param>
 	/// <returns>True if a given number is finite, false otherwise.</returns>
-	template<uint32_t L, typename T>
+	template<u32 L, typename T>
 	requires std::floating_point<T>
 	[[nodiscard]] constexpr Vec<L, bool> IsFinite(const Vec<L, T>& x) noexcept;
 }
@@ -3192,7 +3192,7 @@ requires std::signed_integral<genFIType> || std::floating_point<genFIType>
 	}
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::signed_integral<T> || std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Abs(Vec<L, T> x)
 {
@@ -3202,7 +3202,7 @@ requires std::signed_integral<T> || std::floating_point<T>
 	return x;
 }
 
-template<uint32_t C, uint32_t R, typename T>
+template<u32 C, u32 R, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<C, R, T> TRAP::Math::Abs(Mat<C, R, T> x)
 {
@@ -3225,7 +3225,7 @@ requires std::floating_point<genFIType> || std::signed_integral<genFIType>
 	                              static_cast<genFIType>(x < static_cast<genFIType>(0)));
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T> || std::signed_integral<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Sign(const Vec<L, T>& x)
 {
@@ -3245,7 +3245,7 @@ requires std::floating_point<T>
 	return std::floor(x);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Floor(Vec<L, T> x)
 {
@@ -3257,7 +3257,7 @@ requires std::floating_point<T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Trunc(Vec<L, T> x)
 {
@@ -3269,7 +3269,7 @@ requires std::floating_point<T>
 
 //-------------------------------------------------------------------------------------------------------------------/
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Round(Vec<L, T> x)
 {
@@ -3288,7 +3288,7 @@ requires std::floating_point<genType>
 	TRAP_ASSERT(!IsNaN(x), "Math::RoundEven(): x is NaN!");
 	TRAP_ASSERT(!IsInf(x), "Math::RoundEven(): x is Inf!");
 
-	const int32_t integer = static_cast<int32_t>(x);
+	const i32 integer = static_cast<i32>(x);
 	const genType integerPart = static_cast<genType>(integer);
 	const genType fractionalPart = Fract(x);
 
@@ -3302,7 +3302,7 @@ requires std::floating_point<genType>
 	return integerPart + static_cast<genType>(1);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::RoundEven(Vec<L, T> x)
 {
@@ -3324,7 +3324,7 @@ requires std::floating_point<T>
 	return std::ceil(x);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Ceil(Vec<L, T> x)
 {
@@ -3343,7 +3343,7 @@ requires std::floating_point<genType>
 	return x - Floor(x);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Fract(const Vec<L, T>& x)
 {
@@ -3376,7 +3376,7 @@ requires std::unsigned_integral<genType>
 	return static_cast<genType>(x - y * (x / y));
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Mod(Vec<L, T> x, const T y)
 {
@@ -3386,11 +3386,11 @@ requires std::floating_point<T>
 	return x;
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Mod(Vec<L, T> x, const Vec<L, T>& y)
 {
-	for(uint32_t i = 0; i < L; ++i)
+	for(u32 i = 0; i < L; ++i)
 		x[i] = Mod(x[i], y[i]);
 
 	return x;
@@ -3407,13 +3407,13 @@ requires std::floating_point<genType>
 	return std::modf(x, &i);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Modf(Vec<L, T> x, Vec<L, T>& i)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t j = 0u; j < L; j++)
+	for (u32 j = 0u; j < L; j++)
 		x[j] = std::modf(x[j], &i[j]);
 
 	return x;
@@ -3421,7 +3421,7 @@ requires std::floating_point<T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Min(Vec<L, T> a, const T b)
 {
@@ -3431,24 +3431,24 @@ requires std::is_arithmetic_v<T>
 	return a;
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Min(Vec<L, T> a, const Vec<L, T>& b)
 {
-	for (uint32_t i = 0u; i < L; i++)
+	for (u32 i = 0u; i < L; i++)
 		a[i] = Min(a[i], b[i]);
 
 	return a;
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Min(const Vec<L, T>&a, const Vec<L, T>& b, const Vec<L, T>& c)
 {
 	return Min(Min(a, b), c);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Min(const Vec<L, T>&a, const Vec<L, T>& b, const Vec<L, T>& c,
                                                               const Vec<L, T>& d)
@@ -3458,7 +3458,7 @@ requires std::is_arithmetic_v<T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Max(Vec<L, T> a, const T b)
 {
@@ -3468,24 +3468,24 @@ requires std::is_arithmetic_v<T>
 	return a;
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Max(Vec<L, T> a, const Vec<L, T>& b)
 {
-	for (uint32_t i = 0u; i < L; i++)
+	for (u32 i = 0u; i < L; i++)
 		a[i] = Max(a[i], b[i]);
 
 	return a;
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Max(const Vec<L, T>& a, const Vec<L, T>& b, const Vec<L, T>& c)
 {
 	return Max(Max(a, b), c);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Max(const Vec<L, T>& a, const Vec<L, T>& b, const Vec<L, T>& c,
                                                               const Vec<L, T>& d)
@@ -3508,7 +3508,7 @@ genType TRAP::Math::Clamp(const genType x, const genType minVal, const genType m
 	return Min(Max(x, minVal), maxVal);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]]
 #ifndef TRAP_ENABLE_ASSERTS
@@ -3521,7 +3521,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::Clamp(const Vec<L, T>& x, const T minVal, cons
 	return Vec<L, T>(Min(Max(x, Vec<L, T>(minVal)), Vec<L, T>(maxVal)));
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]]
 #ifndef TRAP_ENABLE_ASSERTS
@@ -3551,7 +3551,7 @@ requires std::floating_point<genTypeU> || std::same_as<genTypeU, bool>
 	}
 }
 
-template<uint32_t L, typename T, typename U>
+template<u32 L, typename T, typename U>
 requires std::floating_point<U> || std::same_as<U, bool>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Mix(const Vec<L, T>& x, const Vec<L, T>& y, U a)
 {
@@ -3563,14 +3563,14 @@ requires std::floating_point<U> || std::same_as<U, bool>
 	}
 }
 
-template<uint32_t L, typename T, typename U>
+template<u32 L, typename T, typename U>
 requires std::floating_point<U> || std::same_as<U, bool>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Mix(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, U>& a)
 {
 	if constexpr (std::same_as<U, bool>)
 	{
 		Vec<L, T> result{};
-		for (uint32_t i = 0; i < L; ++i)
+		for (u32 i = 0; i < L; ++i)
 			result[i] = a[i] ? y[i] : x[i];
 		return result;
 	}
@@ -3700,14 +3700,14 @@ requires std::floating_point<genType>
 	return Mix(static_cast<genType>(1), static_cast<genType>(0), x < edge);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Step(const T edge, const Vec<L, T>& x)
 {
 	return Mix(Vec<L, T>(static_cast<T>(1)), Vec<L, T>(static_cast<T>(0)), LessThan(x, Vec<L, T>(edge)));
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Step(const Vec<L, T>& edge, const Vec<L, T>& x)
 {
@@ -3725,7 +3725,7 @@ requires std::floating_point<genType>
 	return tmp * tmp * (static_cast<genType>(3) - static_cast<genType>(2) * tmp);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::SmoothStep(const T edge0, const T edge1, const Vec<L, T>& x)
 {
@@ -3735,7 +3735,7 @@ requires std::floating_point<T>
 	return tmp * tmp * (static_cast<T>(3) - static_cast<T>(2) * tmp);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::SmoothStep(const Vec<L, T>& edge0, const Vec<L, T>& edge1, const Vec<L, T>& x)
 {
@@ -3753,12 +3753,12 @@ requires std::floating_point<genType>
 	return x != x;
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::IsNaN(const Vec<L, T>& v)
 {
 	Vec<L, bool> result;
-	for (uint32_t i = 0u; i < L; ++i)
+	for (u32 i = 0u; i < L; ++i)
 		result[i] = TRAP::Math::IsNaN(v[i]);
 	return result;
 }
@@ -3779,12 +3779,12 @@ requires std::floating_point<genType>
 	return x == std::numeric_limits<decltype(x)>::infinity() || x == -std::numeric_limits<decltype(x)>::infinity();
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::IsInf(const Vec<L, T>& v)
 {
 	Vec<L, bool> result;
-	for (uint32_t i = 0u; i < L; ++i)
+	for (u32 i = 0u; i < L; ++i)
 		result[i] = TRAP::Math::IsInf(v[i]);
 	return result;
 }
@@ -3811,20 +3811,20 @@ requires std::floating_point<genType>
 
 template<typename genType>
 requires std::floating_point<genType>
-[[nodiscard]] genType TRAP::Math::FrExp(const genType x, int32_t& exp)
+[[nodiscard]] genType TRAP::Math::FrExp(const genType x, i32& exp)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return std::frexp(x, &exp);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::FrExp(Vec<L, T> v, Vec<L, int32_t>& exp)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::FrExp(Vec<L, T> v, Vec<L, i32>& exp)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; ++i)
+	for (u32 i = 0u; i < L; ++i)
 		v[i] = std::frexp(v[i], &exp[i]);
 
 	return v;
@@ -3834,20 +3834,20 @@ requires std::floating_point<T>
 
 template<typename genType>
 requires std::floating_point<genType>
-[[nodiscard]] genType TRAP::Math::LdExp(const genType& x, const int32_t& exp)
+[[nodiscard]] genType TRAP::Math::LdExp(const genType& x, const i32& exp)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return std::ldexp(x, exp);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
-[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::LdExp(Vec<L, T> v, const Vec<L, int32_t>& exp)
+[[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::LdExp(Vec<L, T> v, const Vec<L, i32>& exp)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	for (uint32_t i = 0u; i < L; ++i)
+	for (u32 i = 0u; i < L; ++i)
 		v[i] = std::ldexp(v[i], exp[i]);
 
 	return v;
@@ -3862,12 +3862,12 @@ requires std::unsigned_integral<genType>
 	return std::has_single_bit(value);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::unsigned_integral<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::IsPowerOfTwo(const Vec<L, T>& v)
 {
 	TRAP::Math::Vec<L, bool> res{};
-	for(uint32_t i = 0; i < L; ++i)
+	for(u32 i = 0; i < L; ++i)
 		res[i] = std::has_single_bit(v[i]);
 
 	return res;
@@ -3885,7 +3885,7 @@ requires std::floating_point<T>
 	return std::fmod(x, y);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::FMod(Vec<L, T> x, const T y)
 {
@@ -3895,11 +3895,11 @@ requires std::floating_point<T>
 	return x;
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::FMod(Vec<L, T> x, const Vec<L, T>& y)
 {
-	for (uint32_t i = 0u; i < L; i++)
+	for (u32 i = 0u; i < L; i++)
 		x[i] = FMod(x[i], y[i]);
 
 	return x;
@@ -3914,14 +3914,14 @@ requires std::floating_point<T>
 	return Mix(x, y, a);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Lerp(const Vec<L, T>& x, const Vec<L, T>& y, T a)
 {
 	return Mix(x, y, a);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Lerp(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, T>& a)
 {
@@ -3949,11 +3949,11 @@ requires std::floating_point<T>
 	return static_cast<T>(std::pow(base, exponent));
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Pow(Vec<L, T> base, const Vec<L, T>& exponent)
 {
-	for (uint32_t i = 0u; i < L; i++)
+	for (u32 i = 0u; i < L; i++)
 		base[i] = static_cast<T>(Pow(base[i], exponent[i]));
 
 	return base;
@@ -4014,7 +4014,7 @@ requires std::floating_point<T>
 	return std::exp(x);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Exp(Vec<L, T> x)
 {
@@ -4049,7 +4049,7 @@ requires std::floating_point<T>
 	return std::log(x);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Log(Vec<L, T> x)
 {
@@ -4092,7 +4092,7 @@ requires std::floating_point<genType>
 	return std::exp2(x);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] TRAP::Math::Vec<L, T> TRAP::Math::Exp2(Vec<L, T> x)
 {
@@ -4116,7 +4116,7 @@ requires std::floating_point<genType>
 	return static_cast<genType>(std::log2(x));
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Log2(Vec<L, T> x)
 {
@@ -4138,7 +4138,7 @@ requires std::floating_point<T>
 	return std::sqrt(x);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Sqrt(Vec<L, T> x)
 {
@@ -4164,7 +4164,7 @@ requires std::floating_point<genType>
 	return static_cast<genType>(1) / Sqrt(x);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::InverseSqrt(Vec<L, T> x)
 {
@@ -4178,7 +4178,7 @@ requires std::floating_point<T>
 //Geometric----------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr T TRAP::Math::Length(const Vec<L, T>& v)
 {
@@ -4194,7 +4194,7 @@ requires std::floating_point<T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr T TRAP::Math::Distance(const Vec<L, T>& p0, const Vec<L, T>& p1)
 {
@@ -4203,7 +4203,7 @@ requires std::floating_point<T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr T TRAP::Math::Dot(const Vec<L, T>& x, const Vec<L, T>& y)
 {
@@ -4244,7 +4244,7 @@ requires std::floating_point<T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Normalize(const Vec<L, T>& x)
 {
@@ -4265,7 +4265,7 @@ requires std::floating_point<T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::FaceForward(const Vec<L, T>& N, const Vec<L, T>& I, const Vec<L, T>& NRef)
 {
@@ -4274,7 +4274,7 @@ requires std::floating_point<T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Reflect(const Vec<L, T>& I, const Vec<L, T>& N)
 {
@@ -4283,7 +4283,7 @@ requires std::floating_point<T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Refract(const Vec<L, T>& I, const Vec<L, T>& N, T eta)
 {
@@ -4296,60 +4296,60 @@ requires std::floating_point<T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <uint32_t L, typename T>
+template <u32 L, typename T>
 requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Mat<L, L, T>& x, const Mat<L, L, T>& y)
 {
 	Vec<L, bool> result(true);
-	for(uint32_t i = 0u; i < L; ++i)
+	for(u32 i = 0u; i < L; ++i)
 		result[i] = All(Equal(x[i], y[i]));
 	return result;
 }
 
-template <uint32_t L, typename T>
+template <u32 L, typename T>
 requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Mat<L, L, T>& x, const Mat<L, L, T>& y, T epsilon)
 {
 	return Equal(x, y, Vec<L, T>(epsilon));
 }
 
-template <uint32_t L, typename T>
+template <u32 L, typename T>
 requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Mat<L, L, T>& x, const Mat<L, L, T>& y,
                                                                    const Vec<L, T>& epsilon)
 {
 	Vec<L, bool> result(true);
-	for (uint32_t i = 0u; i < L; ++i)
+	for (u32 i = 0u; i < L; ++i)
 		result[i] = All(Equal(x[i], y[i], epsilon[i]));
 	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <uint32_t L, typename T>
+template <u32 L, typename T>
 requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Mat<L, L, T>& x, const Mat<L, L, T>& y)
 {
 	Vec<L, bool> result(true);
-	for(uint32_t i = 0u; i < L; ++i)
+	for(u32 i = 0u; i < L; ++i)
 		result[i] = Any(NotEqual(x[i], y[i]));
 	return result;
 }
 
-template <uint32_t L, typename T>
+template <u32 L, typename T>
 requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Mat<L, L, T>& x, const Mat<L, L, T>& y, T epsilon)
 {
 	return NotEqual(x, y, Vec<L, T>(epsilon));
 }
 
-template <uint32_t L, typename T>
+template <u32 L, typename T>
 requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Mat<L, L, T>& x, const Mat<L, L, T>& y,
                                                                       const Vec<L, T>& epsilon)
 {
 	Vec<L, bool> result(true);
-	for (uint32_t i = 0u; i < L; ++i)
+	for (u32 i = 0u; i < L; ++i)
 		result[i] = Any(NotEqual(x[i], y[i], epsilon[i]));
 	return result;
 }
@@ -4358,11 +4358,11 @@ requires std::is_arithmetic_v<T> || std::same_as<T, bool>
 //Matrix-------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires (std::floating_point<T> && L > 2)
 [[nodiscard]] constexpr TRAP::Math::Mat<L, L, T> TRAP::Math::MatrixCompMult(Mat<L, L, T> x, const Mat<L, L, T>& y)
 {
-	for (std::size_t i = 0u; i < x.Length(); ++i)
+	for (usize i = 0u; i < x.Length(); ++i)
 		x[i] *= y[i];
 
 	return x;
@@ -4370,12 +4370,12 @@ requires (std::floating_point<T> && L > 2)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires (std::floating_point<T> && L > 2)
 [[nodiscard]] constexpr TRAP::Math::Mat<L, L, T> TRAP::Math::OuterProduct(const Vec<L, T>& c, const Vec<L, T>& r)
 {
 	Mat<L, L, T> m;
-	for (std::size_t i = 0u; i < m.Length(); ++i)
+	for (usize i = 0u; i < m.Length(); ++i)
 		m[i] = c * r[i];
 	return m;
 }
@@ -4700,14 +4700,14 @@ requires std::floating_point<T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<uint32_t L, typename T, typename U>
+template<u32 L, typename T, typename U>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<L, L, T> TRAP::Math::Mix(const Mat<L, L, T>& x, const Mat<L, L, T>& y, U a)
 {
 	return Mat<L, L, U>(x) * (static_cast<U>(1) - a) + Mat<L, L, U>(y) * a;
 }
 
-template<uint32_t L, typename T, typename U>
+template<u32 L, typename T, typename U>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<L, L, T> TRAP::Math::Mix(const Mat<L, L, T>& x, const Mat<L, L, T>& y, const Mat<L, L, U>& a)
 {
@@ -4873,13 +4873,13 @@ requires std::floating_point<T>
 
 template<typename T>
 requires TRAP::Math::IsMat<T>
-[[nodiscard]] constexpr T TRAP::Math::Row(const T& m, const std::size_t index, const typename T::row_type& x)
+[[nodiscard]] constexpr T TRAP::Math::Row(const T& m, const usize index, const typename T::row_type& x)
 {
 	TRAP_ASSERT(index < std::get<0>(m).Length(), "Math::Row(): Index out of range!");
 
 	T result = m;
 
-	for(std::size_t i = 0u; i < m.Length(); ++i)
+	for(usize i = 0u; i < m.Length(); ++i)
 		result[i][index] = x[i];
 
 	return result;
@@ -4889,13 +4889,13 @@ requires TRAP::Math::IsMat<T>
 
 template<typename T>
 requires TRAP::Math::IsMat<T>
-[[nodiscard]] constexpr typename T::row_type TRAP::Math::Row(const T& m, const std::size_t index)
+[[nodiscard]] constexpr typename T::row_type TRAP::Math::Row(const T& m, const usize index)
 {
 	TRAP_ASSERT(index < std::get<0>(m).Length(), "Math::Row(): Index out of range!");
 
 	typename T::row_type result(0);
 
-	for(std::size_t i = 0u; i < m.Length(); ++i)
+	for(usize i = 0u; i < m.Length(); ++i)
 		result[i] = m[i][index];
 
 	return result;
@@ -4905,7 +4905,7 @@ requires TRAP::Math::IsMat<T>
 
 template<typename T>
 requires TRAP::Math::IsMat<T>
-[[nodiscard]] constexpr T TRAP::Math::Column(T m, const std::size_t index, const typename T::col_type& x)
+[[nodiscard]] constexpr T TRAP::Math::Column(T m, const usize index, const typename T::col_type& x)
 {
 	TRAP_ASSERT(index < m.Length(), "Math::Column(): Index out of range!");
 
@@ -4918,7 +4918,7 @@ requires TRAP::Math::IsMat<T>
 
 template<typename T>
 requires TRAP::Math::IsMat<T>
-[[nodiscard]] constexpr typename T::col_type TRAP::Math::Column(const T& m, const std::size_t index)
+[[nodiscard]] constexpr typename T::col_type TRAP::Math::Column(const T& m, const usize index)
 {
 	TRAP_ASSERT(index < m.Length(), "Math::Column(): Index out of range!");
 
@@ -4954,7 +4954,7 @@ requires std::floating_point<T>
 	//an easy way to test for singulariy of the upper 3x3 component.
 	Mat<4, 4, T> perspectiveMatrix(m);
 
-	for(uint32_t i = 0; i < 3; ++i)
+	for(u32 i = 0; i < 3; ++i)
 		std::get<3>(perspectiveMatrix[i]) = static_cast<T>(0.0f);
 	std::get<3>(std::get<3>(perspectiveMatrix)) = static_cast<T>(1.0f);
 
@@ -4978,9 +4978,9 @@ requires std::floating_point<T>
 	std::array<Vec<3, T>, 3> row{};
 
 	//Now get scale and shear.
-	for(uint32_t i = 0; i < row.size(); ++i)
+	for(u32 i = 0; i < row.size(); ++i)
 	{
-		for(uint32_t j = 0; j < row[i].Length(); ++j)
+		for(u32 j = 0; j < row[i].Length(); ++j)
 			row[i][j] = m[i][j];
 	}
 
@@ -5032,14 +5032,14 @@ requires std::floating_point<T>
 	}
 	else
 	{
-		constexpr std::array<uint32_t, 3> next{1, 2, 0};
-		uint8_t i = 0;
+		constexpr std::array<u32, 3> next{1, 2, 0};
+		u8 i = 0;
 		if(std::get<2>(row).z() > row[i][i])
 			i = 2;
 		else if(std::get<1>(row).y() > std::get<0>(row).x())
 			i = 1;
-		const uint32_t j = next[i];
-		const uint32_t k = next[j];
+		const u32 j = next[i];
+		const u32 k = next[j];
 
 		T root = Sqrt(row[i][i] - row[j][j] - row[k][k] + static_cast<T>(1.0f));
 
@@ -5082,7 +5082,7 @@ requires std::floating_point<T>
 	//an easy way to test for singulariy of the upper 3x3 component.
 	Mat<4, 4, T> perspectiveMatrix(m);
 
-	for(uint32_t i = 0; i < 3; ++i)
+	for(u32 i = 0; i < 3; ++i)
 		std::get<3>(perspectiveMatrix[i]) = static_cast<T>(0.0f);
 	std::get<3>(std::get<3>(perspectiveMatrix)) = static_cast<T>(1.0f);
 
@@ -5106,9 +5106,9 @@ requires std::floating_point<T>
 	std::array<Vec<3, T>, 3> row{};
 
 	//Now get scale and shear.
-	for(uint32_t i = 0; i < 3; ++i)
+	for(u32 i = 0; i < 3; ++i)
 	{
-		for(uint32_t j = 0; j < 3; ++j)
+		for(u32 j = 0; j < 3; ++j)
 			row[i][j] = m[i][j];
 	}
 
@@ -5359,7 +5359,7 @@ requires std::floating_point<T>
 	const T fourZSquaredMinus1 = std::get<2>(std::get<2>(m)) - std::get<0>(std::get<0>(m)) - std::get<1>(std::get<1>(m));
 	const T fourWSquaredMinus1 = std::get<0>(std::get<0>(m)) + std::get<1>(std::get<1>(m)) + std::get<2>(std::get<2>(m));
 
-	uint32_t biggestIndex = 0;
+	u32 biggestIndex = 0;
 	T fourBiggestSquaredMinus1 = fourWSquaredMinus1;
 	if (fourXSquaredMinus1 > fourBiggestSquaredMinus1)
 	{
@@ -5423,7 +5423,7 @@ requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::LessThan(const tQuat<T>& x, const tQuat<T>& y) noexcept
 {
 	Vec<4, bool> result(false, false, false, false);
-	for (std::size_t i = 0u; i < x.Length(); ++i)
+	for (usize i = 0u; i < x.Length(); ++i)
 		result[i] = x[i] < y[i];
 
 	return result;
@@ -5436,7 +5436,7 @@ requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::LessThanEqual(const tQuat<T>& x, const tQuat<T>& y) noexcept
 {
 	Vec<4, bool> result(false, false, false, false);
-	for (std::size_t i = 0u; i < x.Length(); ++i)
+	for (usize i = 0u; i < x.Length(); ++i)
 		result[i] = x[i] <= y[i];
 
 	return result;
@@ -5449,7 +5449,7 @@ requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::GreaterThan(const tQuat<T>& x, const tQuat<T>& y) noexcept
 {
 	Vec<4, bool> result(false, false, false, false);
-	for (std::size_t i = 0u; i < x.Length(); ++i)
+	for (usize i = 0u; i < x.Length(); ++i)
 		result[i] = x[i] > y[i];
 
 	return result;
@@ -5462,7 +5462,7 @@ requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::GreaterThanEqual(const tQuat<T>& x, const tQuat<T>& y) noexcept
 {
 	Vec<4, bool> result(false, false, false, false);
-	for (std::size_t i = 0u; i < x.Length(); ++i)
+	for (usize i = 0u; i < x.Length(); ++i)
 		result[i] = x[i] >= y[i];
 
 	return result;
@@ -5492,7 +5492,7 @@ requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const tQuat<T>& x, const tQuat<T>& y) noexcept
 {
 	Vec<4, bool> result{};
-	for (std::size_t i = 0u; i < x.Length(); ++i)
+	for (usize i = 0u; i < x.Length(); ++i)
 		result[i] = x[i] == y[i];
 
 	return result;
@@ -5513,7 +5513,7 @@ requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const tQuat<T>& x, const tQuat<T>& y) noexcept
 {
 	Vec<4, bool> result{};
-	for (std::size_t i = 0u; i < x.Length(); ++i)
+	for (usize i = 0u; i < x.Length(); ++i)
 		result[i] = x[i] != y[i];
 
 	return result;
@@ -5623,67 +5623,67 @@ requires std::is_arithmetic_v<T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::LessThan(const Vec<L, T>& x, const Vec<L, T>& y) noexcept
 {
 	Vec<L, bool> result(true);
-	for (uint32_t i = 0u; i < L; ++i)
+	for (u32 i = 0u; i < L; ++i)
 		result[i] = x[i] < y[i];
 	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <uint32_t L, typename T>
+template <u32 L, typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::LessThanEqual(const Vec<L, T>& x, const Vec<L, T>& y) noexcept
 {
 	Vec<L, bool> result(true);
-	for (uint32_t i = 0u; i < L; ++i)
+	for (u32 i = 0u; i < L; ++i)
 		result[i] = x[i] <= y[i];
 	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <uint32_t L, typename T>
+template <u32 L, typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::GreaterThan(const Vec<L, T>& x, const Vec<L, T>& y) noexcept
 {
 	Vec<L, bool> result(true);
-	for (uint32_t i = 0u; i < L; ++i)
+	for (u32 i = 0u; i < L; ++i)
 		result[i] = x[i] > y[i];
 	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <uint32_t L, typename T>
+template <u32 L, typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::GreaterThanEqual(const Vec<L, T>& x, const Vec<L, T>& y) noexcept
 {
 	Vec<L, bool> result(true);
-	for (uint32_t i = 0u; i < L; ++i)
+	for (u32 i = 0u; i < L; ++i)
 		result[i] = x[i] >= y[i];
 	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <uint32_t L, typename T>
+template <u32 L, typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Vec<L, T>& x, const Vec<L, T>& y) noexcept
 {
 	Vec<L, bool> result(true);
-	for (uint32_t i = 0u; i < L; ++i)
+	for (u32 i = 0u; i < L; ++i)
 		result[i] = x[i] == y[i];
 	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <uint32_t L, typename T>
+template <u32 L, typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Vec<L, T>& x, const Vec<L, T>& y, const T epsilon)
 {
@@ -5692,7 +5692,7 @@ requires std::is_arithmetic_v<T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <uint32_t L, typename T>
+template <u32 L, typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Vec<L, T>& x, const Vec<L, T>& y,
                                                                    const Vec<L, T>& epsilon)
@@ -5709,19 +5709,19 @@ requires std::is_arithmetic_v<T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <uint32_t L, typename T>
+template <u32 L, typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Vec<L, T>& x, const Vec<L, T>& y) noexcept
 {
 	Vec<L, bool> result(true);
-	for (uint32_t i = 0u; i < L; ++i)
+	for (u32 i = 0u; i < L; ++i)
 		result[i] = x[i] != y[i];
 	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Vec<L, T>& x, const Vec<L, T>& y, const T epsilon)
 {
@@ -5730,7 +5730,7 @@ requires std::is_arithmetic_v<T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::is_arithmetic_v<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Vec<L, T>& x, const Vec<L, T>& y,
                                                                       const Vec<L, T>& epsilon)
@@ -5747,7 +5747,7 @@ requires std::is_arithmetic_v<T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<uint32_t L>
+template<u32 L>
 [[nodiscard]] constexpr bool TRAP::Math::Any(const Vec<L, bool>& v) noexcept
 {
 	bool result = false;
@@ -5758,7 +5758,7 @@ template<uint32_t L>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<uint32_t L>
+template<u32 L>
 [[nodiscard]] constexpr bool TRAP::Math::All(const Vec<L, bool>& v) noexcept
 {
 	bool result = true;
@@ -5769,7 +5769,7 @@ template<uint32_t L>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<uint32_t L>
+template<u32 L>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Not(Vec<L, bool> v) noexcept
 {
 	for(bool& n : v)
@@ -5789,7 +5789,7 @@ requires std::floating_point<genType>
 	return degrees * static_cast<genType>(0.01745329251994329576923690768489);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Radians(Vec<L, T> v)
 {
@@ -5808,7 +5808,7 @@ requires std::floating_point<genType>
 	return radians * static_cast<genType>(57.295779513082320876798154814105);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Degrees(Vec<L, T> v)
 {
@@ -5830,7 +5830,7 @@ requires std::floating_point<T>
 	return std::sin(x);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Sin(Vec<L, T> v)
 {
@@ -5852,7 +5852,7 @@ requires std::floating_point<T>
 	return std::cos(x);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Cos(Vec<L, T> v)
 {
@@ -5874,7 +5874,7 @@ requires std::floating_point<T>
 	return std::tan(x);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::Tan(Vec<L, T> v)
 {
@@ -5896,7 +5896,7 @@ requires std::floating_point<T>
 	return std::asin(x);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::ASin(Vec<L, T> v)
 {
@@ -5918,7 +5918,7 @@ requires std::floating_point<T>
 	return std::acos(x);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::ACos(Vec<L, T> v)
 {
@@ -5940,11 +5940,11 @@ requires std::floating_point<genType>
 	return std::atan2(y, x);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::ATan(Vec<L, T> y, const Vec<L, T>& x)
 {
-	for (uint32_t i = 0u; i < L; i++)
+	for (u32 i = 0u; i < L; i++)
 		y[i] = ATan(y[i], x[i]);
 
 	return y;
@@ -5960,7 +5960,7 @@ requires std::floating_point<T>
 	return std::atan(x);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::ATan(Vec<L, T> v)
 {
@@ -5982,7 +5982,7 @@ requires std::floating_point<T>
 	return std::sinh(x);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::SinH(Vec<L, T> v)
 {
@@ -6004,7 +6004,7 @@ requires std::floating_point<T>
 	return std::cosh(x);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::CosH(Vec<L, T> v)
 {
@@ -6026,7 +6026,7 @@ requires std::floating_point<T>
 	return std::tanh(x);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::TanH(Vec<L, T> v)
 {
@@ -6048,7 +6048,7 @@ requires std::floating_point<T>
 	return std::asinh(x);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::ASinH(Vec<L, T> v)
 {
@@ -6070,7 +6070,7 @@ requires std::floating_point<T>
 	return std::acosh(x);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::ACosH(Vec<L, T> v)
 {
@@ -6092,7 +6092,7 @@ requires std::floating_point<T>
 	return std::atanh(x);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::ATanH(Vec<L, T> v)
 {
@@ -6106,7 +6106,7 @@ requires std::floating_point<T>
 //Color space--------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires (L == 3 || L == 4) && std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::ConvertLinearToSRGB(const Vec<L, T>& colorLinear)
 {
@@ -6130,7 +6130,7 @@ requires (L == 3 || L == 4) && std::floating_point<T>
 	}
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires (L == 3 || L == 4) && std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::ConvertLinearToSRGB(const Vec<L, T>& colorLinear, const T gamma)
 {
@@ -6156,7 +6156,7 @@ requires (L == 3 || L == 4) && std::floating_point<T>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires (L == 3 || L == 4) && std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::ConvertSRGBToLinear(const Vec<L, T>& colorSRGB)
 {
@@ -6178,7 +6178,7 @@ requires (L == 3 || L == 4) && std::floating_point<T>
 	}
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires (L == 3 || L == 4) && std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, T> TRAP::Math::ConvertSRGBToLinear(const Vec<L, T>& colorSRGB, const T gamma)
 {
@@ -6207,13 +6207,13 @@ requires std::integral<T>
 	return (x & static_cast<T>(1u)) != 0;
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::integral<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::IsOdd(const Vec<L, T>& x) noexcept
 {
 	Vec<L, bool> result{};
 
-	for(uint32_t i = 0u; i < L; ++i)
+	for(u32 i = 0u; i < L; ++i)
 		result[i] = (x[i] & static_cast<T>(1u)) != 0;
 
 	return result;
@@ -6228,13 +6228,13 @@ requires std::integral<T>
 	return !IsOdd(x);
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::integral<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::IsEven(const Vec<L, T>& x) noexcept
 {
 	Vec<L, bool> result{};
 
-	for(uint32_t i = 0u; i < L; ++i)
+	for(u32 i = 0u; i < L; ++i)
 		result[i] = !IsOdd(x[i]);
 
 	return result;
@@ -6249,13 +6249,13 @@ requires std::floating_point<T>
 	return (!IsNaN(x)) && (!IsInf(x));
 }
 
-template<uint32_t L, typename T>
+template<u32 L, typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Vec<L, bool> TRAP::Math::IsFinite(const Vec<L, T>& x) noexcept
 {
 	Vec<L, bool> result{};
 
-	for(uint32_t i = 0u; i < L; ++i)
+	for(u32 i = 0u; i < L; ++i)
 		result[i] = TRAP::Math::IsFinite(x[i]);
 
 	return result;

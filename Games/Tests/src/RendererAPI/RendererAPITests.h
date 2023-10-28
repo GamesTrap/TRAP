@@ -20,14 +20,14 @@ private:
 	TRAP::Utils::Timer m_fpsTimer{};
 
 	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer = nullptr;
-	inline static constexpr std::array<float, 18> TriangleVertices
+	inline static constexpr std::array<f32, 18> TriangleVertices
 	{
 		//XYZ RGB
 		 0.0f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f,
 		-0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f,
 		 0.5f, -0.5f, 0.0f,    0.0f, 0.0f, 1.0f,
 	};
-	inline static constexpr std::array<float, 36> QuadVertices
+	inline static constexpr std::array<f32, 36> QuadVertices
 	{
 		//XYZ RGB
 		-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f,
@@ -37,7 +37,7 @@ private:
 		-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f,
 		-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f
 	};
-	inline static constexpr std::array<float, 32> QuadVerticesIndexed
+	inline static constexpr std::array<f32, 32> QuadVerticesIndexed
 	{
 		//XYZ RGB UV
 		-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f,    0.0f, 1.0f,
@@ -47,11 +47,11 @@ private:
 	};
 
 	TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer = nullptr;
-	inline static constexpr std::array<uint16_t, 3> TriangleIndices
+	inline static constexpr std::array<u16, 3> TriangleIndices
 	{
 		0, 1, 2
 	};
-	inline static constexpr std::array<uint16_t, 6> QuadIndices
+	inline static constexpr std::array<u16, 6> QuadIndices
 	{
 		0, 1, 2, 2, 3, 0
 	};
@@ -60,7 +60,7 @@ private:
 	bool m_quad = false;
 	bool m_indexed = false;
 	bool m_vsync = TRAP::Application::GetWindow()->GetVSync();
-	uint8_t m_pushConstantOrUBO = 0;
+	u8 m_pushConstantOrUBO = 0;
 
 	struct ColorData
 	{

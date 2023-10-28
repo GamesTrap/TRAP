@@ -59,7 +59,7 @@ namespace TRAP::Graphics
 		/// <param name="signalSemaphore">Semaphore to signal when the image is ready to be presented.</param>
 		/// <param name="fence">Fence to wait for the image to be ready to be presented.</param>
 		/// <returns>Acuired image index.</returns>
-		[[nodiscard]] virtual std::optional<uint32_t> AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
+		[[nodiscard]] virtual std::optional<u32> AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
 		                                                               const TRAP::Ref<Fence>& fence) const = 0;
 
 		/// <summary>

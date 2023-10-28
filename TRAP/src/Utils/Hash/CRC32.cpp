@@ -4,7 +4,7 @@
 #include "Utils/Utils.h"
 #include "Utils/Memory.h"
 
-static constexpr std::array<std::array<uint32_t, 256>, 16> CRC32Lookup =
+static constexpr std::array<std::array<u32, 256>, 16> CRC32Lookup =
 {
 	{
 		{
@@ -556,28 +556,28 @@ static constexpr std::array<std::array<uint32_t, 256>, 16> CRC32Lookup =
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::array<uint8_t, 4> TRAP::Utils::Hash::CRC32(const void* const data, uint64_t length)
+[[nodiscard]] std::array<u8, 4> TRAP::Utils::Hash::CRC32(const void* const data, u64 length)
 {
     ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	uint32_t crc = std::numeric_limits<uint32_t>::max(); //Same as previousCRC32 ^ 0xFFFFFFFF
-	const uint32_t* current = static_cast<const uint32_t*>(data);
+	u32 crc = std::numeric_limits<u32>::max(); //Same as previousCRC32 ^ 0xFFFFFFFF
+	const u32* current = static_cast<const u32*>(data);
 
 	//Enabling optimization (at least -O2) automatically unrolls the inner for-loop
-	const std::size_t Unroll = 4;
-	const std::size_t BytesAtOnce = 16 * Unroll;
+	const usize Unroll = 4;
+	const usize BytesAtOnce = 16 * Unroll;
 
 	while (length >= BytesAtOnce)
 	{
-		for (std::size_t unrolling = 0; unrolling < Unroll; unrolling++)
+		for (usize unrolling = 0; unrolling < Unroll; unrolling++)
 		{
 			if constexpr (Utils::GetEndian() == Utils::Endian::Big)
 			{
 				Memory::SwapBytes(crc);
-				const uint32_t one = *current++ ^ crc;
-				const uint32_t two = *current++;
-				const uint32_t three = *current++;
-				const uint32_t four = *current++;
+				const u32 one = *current++ ^ crc;
+				const u32 two = *current++;
+				const u32 three = *current++;
+				const u32 four = *current++;
 				crc = std::get<0>(CRC32Lookup)[four & 0xFFu] ^
 					  std::get<1>(CRC32Lookup)[(four >> 8u) & 0xFFu] ^
 					  std::get<2>(CRC32Lookup)[(four >> 16u) & 0xFFu] ^
@@ -597,10 +597,10 @@ static constexpr std::array<std::array<uint32_t, 256>, 16> CRC32Lookup =
 			}
 			else
 			{
-				const uint32_t one = *current++ ^ crc;
-				const uint32_t two = *current++;
-				const uint32_t three = *current++;
-				const uint32_t four = *current++;
+				const u32 one = *current++ ^ crc;
+				const u32 two = *current++;
+				const u32 three = *current++;
+				const u32 four = *current++;
 				crc = std::get<0>(CRC32Lookup)[(four >> 24u) & 0xFFu] ^
 					  std::get<1>(CRC32Lookup)[(four >> 16u) & 0xFFu] ^
 					  std::get<2>(CRC32Lookup)[(four >> 8u) & 0xFFu] ^
@@ -623,7 +623,7 @@ static constexpr std::array<std::array<uint32_t, 256>, 16> CRC32Lookup =
 		length -= BytesAtOnce;
 	}
 
-	const uint8_t* currentChar = reinterpret_cast<const uint8_t*>(current);
+	const u8* currentChar = reinterpret_cast<const u8*>(current);
 	//Remaining 1 to 63 bytes (standard algorithm)
 	while (length-- != 0)
 		crc = (crc >> 8u) ^ std::get<0>(CRC32Lookup)[(crc & 0xFFu) ^ *currentChar++];
@@ -631,15 +631,15 @@ static constexpr std::array<std::array<uint32_t, 256>, 16> CRC32Lookup =
 	crc = ~crc; //Same as crc ^ 0xFFFFFFFF
 	Memory::SwapBytes(crc);
 
-	std::array<uint8_t, 4> result{};
-	std::copy_n(reinterpret_cast<const uint8_t*>(&crc), result.size(), result.data());
+	std::array<u8, 4> result{};
+	std::copy_n(reinterpret_cast<const u8*>(&crc), result.size(), result.data());
 
 	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::array<uint8_t, 4> TRAP::Utils::Hash::CRC32(const std::string_view str)
+[[nodiscard]] std::array<u8, 4> TRAP::Utils::Hash::CRC32(const std::string_view str)
 {
     ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

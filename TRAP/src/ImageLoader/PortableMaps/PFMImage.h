@@ -43,17 +43,17 @@ namespace TRAP::INTERNAL
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		[[nodiscard]] constexpr uint64_t GetPixelDataSize() const noexcept override;
+		[[nodiscard]] constexpr u64 GetPixelDataSize() const noexcept override;
 
 	private:
-		std::vector<float> m_data;
+		std::vector<f32> m_data;
 
 		struct Header
 		{
 			std::string MagicNumber;
-			uint32_t Width = 0;
-			uint32_t Height = 0;
-			float ByteOrder = 0.0f;
+			u32 Width = 0;
+			u32 Height = 0;
+			f32 ByteOrder = 0.0f;
 		};
 	};
 }
@@ -67,9 +67,9 @@ namespace TRAP::INTERNAL
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint64_t TRAP::INTERNAL::PFMImage::GetPixelDataSize() const noexcept
+[[nodiscard]] constexpr u64 TRAP::INTERNAL::PFMImage::GetPixelDataSize() const noexcept
 {
-	return m_data.size() * sizeof(float);
+	return m_data.size() * sizeof(f32);
 }
 
 #endif /*TRAP_PFMIMAGE_H*/

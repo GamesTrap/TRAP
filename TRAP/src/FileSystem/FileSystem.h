@@ -33,6 +33,8 @@
 #include <vector>
 #include <filesystem>
 
+#include "Core/Types.h"
+
 namespace TRAP::FileSystem
 {
 	/// <summary>
@@ -64,8 +66,8 @@ namespace TRAP::FileSystem
 	/// Note: This will read the whole file into memory.
 	/// </summary>
 	/// <param name="path">File path.</param>
-	/// <returns>File content as std::vector<uint8_t> on success, empty std::optional otherwise.</returns>
-	[[nodiscard]] std::optional<std::vector<uint8_t>> ReadFile(const std::filesystem::path& path);
+	/// <returns>File content as std::vector<u8> on success, empty std::optional otherwise.</returns>
+	[[nodiscard]] std::optional<std::vector<u8>> ReadFile(const std::filesystem::path& path);
 	/// <summary>
 	/// Read the given text file.
 	///
@@ -82,7 +84,7 @@ namespace TRAP::FileSystem
 	/// <param name="buffer">Data to be written.</param>
 	/// <param name="mode">Write mode to use. Default: WriteMode::Overwrite.</param>
 	/// <returns>True if file has been written successfully, false otherwise.</returns>
-	bool WriteFile(const std::filesystem::path& path, const std::vector<uint8_t>& buffer,
+	bool WriteFile(const std::filesystem::path& path, const std::vector<u8>& buffer,
 					WriteMode mode = WriteMode::Overwrite);
 	/// <summary>
 	/// Write the given text to the given file path.

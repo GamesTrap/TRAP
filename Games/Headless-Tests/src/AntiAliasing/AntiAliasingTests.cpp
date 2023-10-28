@@ -18,7 +18,7 @@ void AntiAliasingTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& d
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::NONE)
 		return;
 
-	constinit static uint32_t frames = 0;
+	constinit static u32 frames = 0;
     if(frames == 3)
     {
         //Screenshot
@@ -31,7 +31,7 @@ void AntiAliasingTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& d
     }
 	++frames;
 
-	const float angle = 22.8f;
+	const f32 angle = 22.8f;
 
 	TRAP::Graphics::Renderer2D::BeginScene(s_camera);
 	TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, angle}, {1.0f, 1.0f, 1.0f} }, {1.0f, 1.0f, 1.0f, 1.0f});

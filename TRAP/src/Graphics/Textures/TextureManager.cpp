@@ -303,7 +303,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Reload(const 
 			}
 			else if (texture->GetType() == TextureType::TextureCube)
 			{
-				for (uint32_t i = 0; i < texture->GetFilePaths().size(); i++)
+				for (u32 i = 0; i < texture->GetFilePaths().size(); i++)
 				{
 					if (texture->GetFilePaths()[i].empty())
 						continue;

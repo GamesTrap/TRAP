@@ -237,7 +237,7 @@
 	TRAP::Ref<Texture> texture = nullptr;
 
 	std::array<std::filesystem::path, 6> filePaths{};
-	for(std::size_t i = 0; i < filePaths.size(); ++i)
+	for(usize i = 0; i < filePaths.size(); ++i)
 		filePaths[i] = imgs[i]->GetFilePath();
 
 	switch (RendererAPI::GetRenderAPI())
@@ -368,9 +368,9 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateEmpty(std::string name,
-																		              const uint32_t width,
-																		              const uint32_t height,
-																		              const uint32_t bitsPerPixel,
+																		              const u32 width,
+																		              const u32 height,
+																		              const u32 bitsPerPixel,
 																		              const Image::ColorFormat format,
 																		              const TextureType type,
 																		              const TextureCreationFlags flags)
@@ -497,7 +497,7 @@
 
 	std::array<TRAP::Scope<TRAP::Image>, 6> imgs{};
 	std::array<const TRAP::Image*, 6> imgPtrs{};
-	for(std::size_t i = 0; i < imgs.size(); ++i)
+	for(usize i = 0; i < imgs.size(); ++i)
 	{
 		imgs[i] = TRAP::Image::LoadFallback();
 		imgPtrs[i] = imgs[i].get();
@@ -567,8 +567,8 @@ bool TRAP::Graphics::Texture::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Texture::Update(const void* const data, const uint32_t sizeInBytes, const uint32_t mipLevel,
-                                     const uint32_t arrayLayer)
+void TRAP::Graphics::Texture::Update(const void* const data, const u32 sizeInBytes, const u32 mipLevel,
+                                     const u32 arrayLayer)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -595,15 +595,15 @@ void TRAP::Graphics::Texture::Update(const void* const data, const uint32_t size
 	updateDesc.ArrayLayer = arrayLayer;
 	TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(updateDesc);
 	if(updateDesc.DstRowStride == updateDesc.SrcRowStride) //Single copy is enough
-		std::copy_n(static_cast<const uint8_t*>(data), updateDesc.RowCount * updateDesc.SrcRowStride,
-		            static_cast<uint8_t*>(updateDesc.MappedData));
+		std::copy_n(static_cast<const u8*>(data), updateDesc.RowCount * updateDesc.SrcRowStride,
+		            static_cast<u8*>(updateDesc.MappedData));
 	else //Needs row by row copy
 	{
-		for(std::size_t r = 0; r < updateDesc.RowCount; ++r)
+		for(usize r = 0; r < updateDesc.RowCount; ++r)
 		{
-			std::copy_n(static_cast<const uint8_t*>(data) + r * updateDesc.SrcRowStride,
+			std::copy_n(static_cast<const u8*>(data) + r * updateDesc.SrcRowStride,
 			            updateDesc.SrcRowStride,
-						static_cast<uint8_t*>(updateDesc.MappedData) + r * updateDesc.DstRowStride);
+						static_cast<u8*>(updateDesc.MappedData) + r * updateDesc.DstRowStride);
 		}
 	}
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(updateDesc, &m_syncToken);
@@ -635,11 +635,11 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint32_t TRAP::Graphics::Texture::CalculateMipLevels(const uint32_t width, const uint32_t height)
+[[nodiscard]] u32 TRAP::Graphics::Texture::CalculateMipLevels(const u32 width, const u32 height)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return Math::Max(1u, NumericCast<uint32_t>(Math::Floor(Math::Log2(NumericCast<float>(Math::Max(width, height))))) + 1u);
+	return Math::Max(1u, NumericCast<u32>(Math::Floor(Math::Log2(NumericCast<f32>(Math::Max(width, height))))) + 1u);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -697,7 +697,7 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::ColorFormatBitsPerPixelToImageFormat(const Image::ColorFormat colorFormat,
-	                             											                                 const uint32_t bpp)
+	                             											                                 const u32 bpp)
 {
 	if(colorFormat == Image::ColorFormat::GrayScale)
 	{

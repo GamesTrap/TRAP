@@ -14,14 +14,14 @@ namespace TRAP::Graphics::API
 	class VulkanDescriptorPool final : public DescriptorPool
 	{
 	private:
-		inline static constexpr uint32_t DESCRIPTOR_TYPE_RANGE_SIZE = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT + 2;
+		inline static constexpr u32 DESCRIPTOR_TYPE_RANGE_SIZE = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT + 2;
 
 	public:
 		/// <summary>
 		/// Constructor.
 		/// </summary>
 		/// <param name="numDescriptorSets">Max number of descriptor sets that can be allocated from the pool.</param>
-		explicit VulkanDescriptorPool(uint32_t numDescriptorSets);
+		explicit VulkanDescriptorPool(u32 numDescriptorSets);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -64,7 +64,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the count of used descriptor sets.
 		/// </summary>
 		/// <returns>Count of used descriptor sets.</returns>
-		[[nodiscard]] constexpr uint32_t GetUsedDescriptorSetsCount() const noexcept;
+		[[nodiscard]] constexpr u32 GetUsedDescriptorSetsCount() const noexcept;
 
 		/// <summary>
 		/// Retrieve a new descriptor set from description.
@@ -73,7 +73,7 @@ namespace TRAP::Graphics::API
 		/// <returns>New descriptor set.</returns>
 		[[nodiscard]] TRAP::Scope<DescriptorSet> RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc) override;
 
-		inline static constexpr uint32_t DescriptorTypeRangeSize = DESCRIPTOR_TYPE_RANGE_SIZE - 1;
+		inline static constexpr u32 DescriptorTypeRangeSize = DESCRIPTOR_TYPE_RANGE_SIZE - 1;
 	private:
 		/// <summary>
 		/// Retrieve a new VkDescriptorSet with the given layout.
@@ -85,7 +85,7 @@ namespace TRAP::Graphics::API
 		VkDescriptorPool m_currentPool = VK_NULL_HANDLE;
 		std::vector<VkDescriptorPool> m_descriptorPools{};
 		std::vector<VkDescriptorPoolSize> m_descriptorPoolSizes;
-		uint32_t m_usedDescriptorSetCount = 0;
+		u32 m_usedDescriptorSetCount = 0;
 		TracyLockable(std::mutex, m_mutex);
 
 		TRAP::Ref<VulkanDevice> m_device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
@@ -128,7 +128,7 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::API::VulkanDescriptorPool::GetUsedDescriptorSetsCount() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::API::VulkanDescriptorPool::GetUsedDescriptorSetsCount() const noexcept
 {
 	return m_usedDescriptorSetCount;
 }

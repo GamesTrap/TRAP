@@ -18,29 +18,31 @@
 	#pragma warning(pop)
 #endif /*_MSC_VER*/
 
+#include "Core/Types.h"
+
 namespace TRAP::Graphics::API::SPIRVTools
 {
 	struct Type
 	{
 		//Resources are identifier with their SPIR-V ID.
 		//This is the ID of the OpVariable.
-		uint32_t ID;
+		u32 ID;
 
 		//The type ID of the variable which includes arrays and all type modifications.
 		//This type ID is not suitable for parsing OpMemberDecoration of a struct and other decorations in general
 		//since these modifications typically happen n the BaseTypeId.
-		uint32_t TypeID;
+		u32 TypeID;
 
 		//The base type of the declared resource.
 		//This type is the ase type which ignores pointers and arrays of the TypeID.
 		//This is mostly useful to parse decorations of the underlying type.
-		uint32_t BaseTypeID;
+		u32 BaseTypeID;
 	};
 
 	/// <summary>
 	/// Type of resource.
 	/// </summary>
-	enum class ResourceType : uint32_t
+	enum class ResourceType : u32
 	{
 		Inputs = 0,
 		Outputs,
@@ -62,7 +64,7 @@ namespace TRAP::Graphics::API::SPIRVTools
 	/// <summary>
 	/// Texture dimension.
 	/// </summary>
-	enum class ResourceTextureDimension : uint32_t
+	enum class ResourceTextureDimension : u32
 	{
 		Undefined = 0,
 		Buffer = 1,
@@ -98,14 +100,14 @@ namespace TRAP::Graphics::API::SPIRVTools
 		bool IsUsed;
 
 		//The resource set if it has one
-		uint32_t Set;
+		u32 Set;
 
 		//The resource binding locations
-		uint32_t Binding;
+		u32 Binding;
 
 		//The size of the resource.
 		//This will be the descriptor array size for textures
-		uint64_t Size;
+		u64 Size;
 
 		//The declared name (OpName) of the resource.
 		//For Buffer blocks, the name actually reflects the externally
@@ -119,22 +121,22 @@ namespace TRAP::Graphics::API::SPIRVTools
 	struct Variable
 	{
 		//SPIRV data type
-		uint32_t SPIRVTypeID;
+		u32 SPIRVTypeID;
 
 		//Parents SPIRV code
 		Type ParentSPIRVCode;
 
 		//Parents resource index
-		uint64_t ParentIndex;
+		u64 ParentIndex;
 
 		//If the data was used
 		bool IsUsed;
 
 		//The offset of the Variable.
-		uint32_t Offset;
+		u32 Offset;
 
 		//The size of the Variable.
-		uint64_t Size;
+		u64 Size;
 
 		//Variable name
 		std::string Name;
@@ -151,7 +153,7 @@ namespace TRAP::Graphics::API::SPIRVTools
 		/// </summary>
 		/// <param name="SPIRVBinary">SPIRV binary data.</param>
 		/// <param name="binarySize">Size of the SPIRV binary data.</param>
-		CrossCompiler(const uint32_t* SPIRVBinary, std::size_t binarySize);
+		CrossCompiler(const u32* SPIRVBinary, usize binarySize);
 
 		/// <summary>
 		/// Reflect the shaders entry point.
@@ -169,12 +171,12 @@ namespace TRAP::Graphics::API::SPIRVTools
 		/// Reflect the compute shader work group size.
 		/// </summary>
 		/// <returns>Compute shader work group size.</returns>
-		[[nodiscard]] std::array<uint32_t, 3> ReflectComputeShaderWorkGroupSize() const;
+		[[nodiscard]] std::array<u32, 3> ReflectComputeShaderWorkGroupSize() const;
 		/// <summary>
 		/// Reflect tessellation control shader control point count.
 		/// </summary>
 		/// <returns>Tessellation control shader control point count.</returns>
-		[[nodiscard]] uint32_t ReflectTessellationControlShaderControlPoint() const;
+		[[nodiscard]] u32 ReflectTessellationControlShaderControlPoint() const;
 
 		/// <summary>
 		/// Retrieve the shader resources.

@@ -46,7 +46,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="size">Output: Size of the data.</param>
 		/// <param name="data">Output: Pointer to store the data.</param>
-		void GetPipelineCacheData(std::size_t* size, void* data) const override;
+		void GetPipelineCacheData(usize* size, void* data) const override;
 
 		/// <summary>
 		/// Retrieve the Vulkan pipeline cache handle.

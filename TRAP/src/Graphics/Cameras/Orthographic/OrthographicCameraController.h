@@ -12,19 +12,19 @@ namespace TRAP::Graphics
 {
 	struct OrthographicCameraBounds
 	{
-		float Left, Right;
-		float Bottom, Top;
+		f32 Left, Right;
+		f32 Bottom, Top;
 
 		/// <summary>
 		/// Retrieve the width of the camera bounds.
 		/// </summary>
 		/// <returns>Width of the camera bounds.</returns>
-		[[nodiscard]] constexpr float GetWidth() const noexcept;
+		[[nodiscard]] constexpr f32 GetWidth() const noexcept;
 		/// <summary>
 		/// Retrieve the height of the camera bounds.
 		/// </summary>
 		/// <returns>Height of the camera bounds.</returns>
-		[[nodiscard]] constexpr float GetHeight() const noexcept;
+		[[nodiscard]] constexpr f32 GetHeight() const noexcept;
 	};
 
 	class OrthographicCameraController
@@ -38,7 +38,7 @@ namespace TRAP::Graphics
 		/// <param name="rotation">Enabled or disable rotation controls.</param>
 		/// <param name="useController">Use the mouse and keyboard to control the camera or a controller.</param>
 		/// <param name="controller">Which controller slot to use when useController is set to true.</param>
-		constexpr explicit OrthographicCameraController(float aspectRatio, bool rotation = false, bool useController = false,
+		constexpr explicit OrthographicCameraController(f32 aspectRatio, bool rotation = false, bool useController = false,
 		                                                Input::Controller controller = Input::Controller::One) noexcept; //TODO Could be split into 2 constructors, one containing controller.
 		/// <summary>
 		/// Destructor.
@@ -84,7 +84,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="width">New width of the camera.</param>
 		/// <param name="height">New height of the camera.</param>
-		constexpr void OnResize(float width, float height);
+		constexpr void OnResize(f32 width, f32 height);
 
 		/// <summary>
 		/// Retrieve the Orthographic/2D camera.
@@ -101,34 +101,34 @@ namespace TRAP::Graphics
 		/// Retrieve the currently used translation/movement speed.
 		/// </summary>
 		/// <returns>Translation/movement speed.</returns>
-		[[nodiscard]] constexpr float GetTranslationSpeed() const noexcept;
+		[[nodiscard]] constexpr f32 GetTranslationSpeed() const noexcept;
 		/// <summary>
 		/// Set the translation/movement speed.
 		/// </summary>
 		/// <param name="translationSpeed">New translation/movement speed.</param>
-		constexpr void SetTranslationSpeed(float translationSpeed) noexcept;
+		constexpr void SetTranslationSpeed(f32 translationSpeed) noexcept;
 
 		/// <summary>
 		/// Retrieve the currently used rotation speed.
 		/// </summary>
 		/// <returns>Rotation speed.</returns>
-		[[nodiscard]] constexpr float GetRotationSpeed() const noexcept;
+		[[nodiscard]] constexpr f32 GetRotationSpeed() const noexcept;
 		/// <summary>
 		/// Set the rotation speed.
 		/// </summary>
 		/// <param name="rotationSpeed">New rotation speed.</param>
-		constexpr void SetRotationSpeed(float rotationSpeed) noexcept;
+		constexpr void SetRotationSpeed(f32 rotationSpeed) noexcept;
 
 		/// <summary>
 		/// Retrieve the current zoom level.
 		/// </summary>
 		/// <returns>Zoom level.</returns>
-		[[nodiscard]] constexpr float GetZoomLevel() const noexcept;
+		[[nodiscard]] constexpr f32 GetZoomLevel() const noexcept;
 		/// <summary>
 		/// Set the zoom level.
 		/// </summary>
 		/// <param name="zoomLevel">New zoom level.</param>
-		constexpr void SetZoomLevel(float zoomLevel);
+		constexpr void SetZoomLevel(f32 zoomLevel);
 
 		/// <summary>
 		/// Retrieve the current camera bounds.
@@ -154,8 +154,8 @@ namespace TRAP::Graphics
 		/// <returns>False.</returns>
 		constexpr bool OnFrameBufferResize(const Events::FrameBufferResizeEvent& e);
 
-		float m_aspectRatio;
-		float m_zoomLevel = 1.0f;
+		f32 m_aspectRatio;
+		f32 m_zoomLevel = 1.0f;
 
 		OrthographicCameraBounds m_bounds;
 		OrthographicCamera m_camera;
@@ -166,27 +166,27 @@ namespace TRAP::Graphics
 
 		Math::Vec3 m_cameraPosition{ 0.0f };
 		Math::Vec3 m_cameraRotation{ 0.0f };
-		float m_cameraTranslationSpeed = 1.0f, m_cameraRotationSpeed = 180.0f;
+		f32 m_cameraTranslationSpeed = 1.0f, m_cameraRotationSpeed = 180.0f;
 	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::Graphics::OrthographicCameraBounds::GetWidth() const noexcept
+[[nodiscard]] constexpr f32 TRAP::Graphics::OrthographicCameraBounds::GetWidth() const noexcept
 {
 	return Right - Left;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::Graphics::OrthographicCameraBounds::GetHeight() const noexcept
+[[nodiscard]] constexpr f32 TRAP::Graphics::OrthographicCameraBounds::GetHeight() const noexcept
 {
 	return Top - Bottom;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::OrthographicCameraController::OrthographicCameraController(const float aspectRatio,
+constexpr TRAP::Graphics::OrthographicCameraController::OrthographicCameraController(const f32 aspectRatio,
 																		             const bool rotation,
 																		             const bool useController,
 																		             const Input::Controller controller) noexcept
@@ -201,7 +201,7 @@ constexpr TRAP::Graphics::OrthographicCameraController::OrthographicCameraContro
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr void TRAP::Graphics::OrthographicCameraController::OnResize(const float width, const float height)
+constexpr void TRAP::Graphics::OrthographicCameraController::OnResize(const f32 width, const f32 height)
 {
 	m_aspectRatio = width / height;
 	m_bounds = { -m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel };
@@ -224,42 +224,42 @@ constexpr void TRAP::Graphics::OrthographicCameraController::OnResize(const floa
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::Graphics::OrthographicCameraController::GetTranslationSpeed() const noexcept
+[[nodiscard]] constexpr f32 TRAP::Graphics::OrthographicCameraController::GetTranslationSpeed() const noexcept
 {
 	return m_cameraTranslationSpeed;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr void TRAP::Graphics::OrthographicCameraController::SetTranslationSpeed(const float translationSpeed) noexcept
+constexpr void TRAP::Graphics::OrthographicCameraController::SetTranslationSpeed(const f32 translationSpeed) noexcept
 {
 	m_cameraTranslationSpeed = translationSpeed;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::Graphics::OrthographicCameraController::GetRotationSpeed() const noexcept
+[[nodiscard]] constexpr f32 TRAP::Graphics::OrthographicCameraController::GetRotationSpeed() const noexcept
 {
 	return m_cameraRotationSpeed;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr void TRAP::Graphics::OrthographicCameraController::SetRotationSpeed(const float rotationSpeed) noexcept
+constexpr void TRAP::Graphics::OrthographicCameraController::SetRotationSpeed(const f32 rotationSpeed) noexcept
 {
 	m_cameraRotationSpeed = rotationSpeed;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::Graphics::OrthographicCameraController::GetZoomLevel() const noexcept
+[[nodiscard]] constexpr f32 TRAP::Graphics::OrthographicCameraController::GetZoomLevel() const noexcept
 {
 	return m_zoomLevel;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr void TRAP::Graphics::OrthographicCameraController::SetZoomLevel(const float zoomLevel)
+constexpr void TRAP::Graphics::OrthographicCameraController::SetZoomLevel(const f32 zoomLevel)
 {
 	m_zoomLevel = zoomLevel;
 	m_zoomLevel = Math::Max(m_zoomLevel, 0.25f);
@@ -293,7 +293,7 @@ constexpr bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(const
 constexpr bool TRAP::Graphics::OrthographicCameraController::OnFrameBufferResize(const Events::FrameBufferResizeEvent& e)
 {
 	if (e.GetWidth() > 0 && e.GetHeight() > 0)
-		OnResize(NumericCast<float>(e.GetWidth()), NumericCast<float>(e.GetHeight()));
+		OnResize(NumericCast<f32>(e.GetWidth()), NumericCast<f32>(e.GetHeight()));
 
 	return false;
 }

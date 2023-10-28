@@ -257,7 +257,7 @@ namespace TRAP::Network
 		/// <param name="port">Port used for the connection.</param>
 		/// <param name="timeout">Maximum time to wait.</param>
 		/// <returns>Server response to the request.</returns>
-		[[nodiscard]] Response Connect(const IPv4Address& server, uint16_t port = 21,
+		[[nodiscard]] Response Connect(const IPv4Address& server, u16 port = 21,
 		                               Utils::TimeStep timeout = Utils::TimeStep(0.0f));
 
 		/// <summary>

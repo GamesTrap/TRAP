@@ -131,16 +131,16 @@ namespace
 
 TEST_CASE("TRAP::Math::LookAt()", "[math][generic][lookat]")
 {
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunLookAtRunTimeTests<double>();
-        RunLookAtCompileTimeTests<double>();
-        RunLookAtEdgeTests<double>();
+        RunLookAtRunTimeTests<f64>();
+        RunLookAtCompileTimeTests<f64>();
+        RunLookAtEdgeTests<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunLookAtRunTimeTests<float>();
-        RunLookAtCompileTimeTests<float>();
-        RunLookAtEdgeTests<float>();
+        RunLookAtRunTimeTests<f32>();
+        RunLookAtCompileTimeTests<f32>();
+        RunLookAtEdgeTests<f32>();
     }
 }

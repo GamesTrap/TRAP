@@ -79,23 +79,23 @@ namespace
 
 TEST_CASE("TRAP::Math::ConvertLinearToSRGB()", "[math][generic][convertlineartosrgb]")
 {
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunConvertLinearToSRGBRunTimeTests<TRAP::Math::Vec3d>();
         RunConvertLinearToSRGBCompileTimeTests<TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunConvertLinearToSRGBRunTimeTests<TRAP::Math::Vec3f>();
         RunConvertLinearToSRGBCompileTimeTests<TRAP::Math::Vec3f>();
     }
 
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunConvertLinearToSRGBRunTimeTests<TRAP::Math::Vec4d>();
         RunConvertLinearToSRGBCompileTimeTests<TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunConvertLinearToSRGBRunTimeTests<TRAP::Math::Vec4f>();
         RunConvertLinearToSRGBCompileTimeTests<TRAP::Math::Vec4f>();
@@ -104,23 +104,23 @@ TEST_CASE("TRAP::Math::ConvertLinearToSRGB()", "[math][generic][convertlineartos
 
 TEST_CASE("TRAP::Math::ConvertSRGBToLinear()", "[math][generic][convertsrgbtolinear]")
 {
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunConvertSRGBToLinearRunTimeTests<TRAP::Math::Vec3d>();
         RunConvertSRGBToLinearCompileTimeTests<TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunConvertSRGBToLinearRunTimeTests<TRAP::Math::Vec3f>();
         RunConvertSRGBToLinearCompileTimeTests<TRAP::Math::Vec3f>();
     }
 
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunConvertSRGBToLinearRunTimeTests<TRAP::Math::Vec4d>();
         RunConvertSRGBToLinearCompileTimeTests<TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunConvertSRGBToLinearRunTimeTests<TRAP::Math::Vec4f>();
         RunConvertSRGBToLinearCompileTimeTests<TRAP::Math::Vec4f>();

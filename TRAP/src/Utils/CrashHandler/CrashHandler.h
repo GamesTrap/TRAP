@@ -3,6 +3,7 @@
 #include <type_traits>
 
 #include "Core/PlatformDetection.h"
+#include "Core/Types.h"
 #include "Utils/Linux.h"
 #include "Utils/Win.h"
 
@@ -21,7 +22,7 @@ namespace TRAP::Utils
         /// <param name="crashHandler">Exception handler function to use. Note: The function signature differs between operating systems.</param>
         template <typename F>
 #ifdef TRAP_PLATFORM_LINUX
-        requires std::is_invocable_r_v<void, F, int32_t, siginfo_t*, void*>
+        requires std::is_invocable_r_v<void, F, i32, siginfo_t*, void*>
 #elif defined(TRAP_PLATFORM_WINDOWS)
         requires std::is_invocable_r_v<LONG, F, PEXCEPTION_POINTERS>
 #endif
@@ -74,7 +75,7 @@ namespace TRAP::Utils
 
 template<typename F>
 #ifdef TRAP_PLATFORM_LINUX
-requires std::is_invocable_r_v<void, F, int32_t, siginfo_t*, void*>
+requires std::is_invocable_r_v<void, F, i32, siginfo_t*, void*>
 #elif defined(TRAP_PLATFORM_WINDOWS)
 requires std::is_invocable_r_v<LONG, F, PEXCEPTION_POINTERS>
 #endif

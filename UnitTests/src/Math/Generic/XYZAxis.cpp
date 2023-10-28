@@ -28,132 +28,132 @@ namespace
 
 TEST_CASE("TRAP::Math::XAxis()", "[math][generic][xaxis]")
 {
-    SECTION("Scalar - int8_t")
+    SECTION("Scalar - i8")
     {
-        RunXAxisTest<int8_t>();
+        RunXAxisTest<i8>();
     }
-    SECTION("Scalar - uint8_t")
+    SECTION("Scalar - u8")
     {
-        RunXAxisTest<uint8_t>();
+        RunXAxisTest<u8>();
     }
-    SECTION("Scalar - int16_t")
+    SECTION("Scalar - i16")
     {
-        RunXAxisTest<int16_t>();
+        RunXAxisTest<i16>();
     }
-    SECTION("Scalar - uint16_t")
+    SECTION("Scalar - u16")
     {
-        RunXAxisTest<uint16_t>();
+        RunXAxisTest<u16>();
     }
-    SECTION("Scalar - int32_t")
+    SECTION("Scalar - i32")
     {
-        RunXAxisTest<int32_t>();
+        RunXAxisTest<i32>();
     }
-    SECTION("Scalar - uint32_t")
+    SECTION("Scalar - u32")
     {
-        RunXAxisTest<uint32_t>();
+        RunXAxisTest<u32>();
     }
-    SECTION("Scalar - int64_t")
+    SECTION("Scalar - i64")
     {
-        RunXAxisTest<int64_t>();
+        RunXAxisTest<i64>();
     }
-    SECTION("Scalar - uint64_t")
+    SECTION("Scalar - u64")
     {
-        RunXAxisTest<uint64_t>();
+        RunXAxisTest<u64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunXAxisTest<float>();
+        RunXAxisTest<f32>();
     }
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunXAxisTest<double>();
+        RunXAxisTest<f64>();
     }
 }
 
 TEST_CASE("TRAP::Math::YAxis()", "[math][generic][yaxis]")
 {
-    SECTION("Scalar - int8_t")
+    SECTION("Scalar - i8")
     {
-        RunYAxisTest<int8_t>();
+        RunYAxisTest<i8>();
     }
-    SECTION("Scalar - uint8_t")
+    SECTION("Scalar - u8")
     {
-        RunYAxisTest<uint8_t>();
+        RunYAxisTest<u8>();
     }
-    SECTION("Scalar - int16_t")
+    SECTION("Scalar - i16")
     {
-        RunYAxisTest<int16_t>();
+        RunYAxisTest<i16>();
     }
-    SECTION("Scalar - uint16_t")
+    SECTION("Scalar - u16")
     {
-        RunYAxisTest<uint16_t>();
+        RunYAxisTest<u16>();
     }
-    SECTION("Scalar - int32_t")
+    SECTION("Scalar - i32")
     {
-        RunYAxisTest<int32_t>();
+        RunYAxisTest<i32>();
     }
-    SECTION("Scalar - uint32_t")
+    SECTION("Scalar - u32")
     {
-        RunYAxisTest<uint32_t>();
+        RunYAxisTest<u32>();
     }
-    SECTION("Scalar - int64_t")
+    SECTION("Scalar - i64")
     {
-        RunYAxisTest<int64_t>();
+        RunYAxisTest<i64>();
     }
-    SECTION("Scalar - uint64_t")
+    SECTION("Scalar - u64")
     {
-        RunYAxisTest<uint64_t>();
+        RunYAxisTest<u64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunYAxisTest<float>();
+        RunYAxisTest<f32>();
     }
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunYAxisTest<double>();
+        RunYAxisTest<f64>();
     }
 }
 
 TEST_CASE("TRAP::Math::ZAxis()", "[math][generic][zaxis]")
 {
-    SECTION("Scalar - int8_t")
+    SECTION("Scalar - i8")
     {
-        RunZAxisTest<int8_t>();
+        RunZAxisTest<i8>();
     }
-    SECTION("Scalar - uint8_t")
+    SECTION("Scalar - u8")
     {
-        RunZAxisTest<uint8_t>();
+        RunZAxisTest<u8>();
     }
-    SECTION("Scalar - int16_t")
+    SECTION("Scalar - i16")
     {
-        RunZAxisTest<int16_t>();
+        RunZAxisTest<i16>();
     }
-    SECTION("Scalar - uint16_t")
+    SECTION("Scalar - u16")
     {
-        RunZAxisTest<uint16_t>();
+        RunZAxisTest<u16>();
     }
-    SECTION("Scalar - int32_t")
+    SECTION("Scalar - i32")
     {
-        RunZAxisTest<int32_t>();
+        RunZAxisTest<i32>();
     }
-    SECTION("Scalar - uint32_t")
+    SECTION("Scalar - u32")
     {
-        RunZAxisTest<uint32_t>();
+        RunZAxisTest<u32>();
     }
-    SECTION("Scalar - int64_t")
+    SECTION("Scalar - i64")
     {
-        RunZAxisTest<int64_t>();
+        RunZAxisTest<i64>();
     }
-    SECTION("Scalar - uint64_t")
+    SECTION("Scalar - u64")
     {
-        RunZAxisTest<uint64_t>();
+        RunZAxisTest<u64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunZAxisTest<float>();
+        RunZAxisTest<f32>();
     }
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunZAxisTest<double>();
+        RunZAxisTest<f64>();
     }
 }

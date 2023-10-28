@@ -5,6 +5,8 @@
 
 #include <string>
 
+#include "Core/Types.h"
+
 namespace discord
 {
     class Core;
@@ -12,7 +14,7 @@ namespace discord
 
 namespace TRAP::Utils::Discord
 {
-    constexpr int64_t TRAPDiscordAppID = 639903785971613728;
+    constexpr i64 TRAPDiscordAppID = 639903785971613728;
 
     /// <summary>
     /// Activity used by Discord Game SDK.
@@ -34,7 +36,7 @@ namespace TRAP::Utils::Discord
     /// </summary>
     /// <param name="appID">Discord App ID. Default TRAP™'s App ID.</param>
     /// <returns>True on success, false otherwise</returns>
-    bool Create(int64_t appID = TRAPDiscordAppID);
+    bool Create(i64 appID = TRAPDiscordAppID);
     /// <summary>
     /// Destroy/Shutdown Discord Game SDK.
     /// </summary>

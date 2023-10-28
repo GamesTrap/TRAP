@@ -69,22 +69,22 @@ namespace
 
 TEST_CASE("TRAP::Math::Cross()", "[math][generic][cross]")
 {
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunCompileTimeCrossVec3Tests<TRAP::Math::Vec3d>();
         RunCrossVec3EdgeTests<TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunCompileTimeCrossVec3Tests<TRAP::Math::Vec3f>();
         RunCrossVec3EdgeTests<TRAP::Math::Vec3f>();
     }
 
-    SECTION("Quat - double")
+    SECTION("Quat - f64")
     {
         RunCompileTimeCrossQuatTests<TRAP::Math::Quatd>();
     }
-    SECTION("Quat - float")
+    SECTION("Quat - f32")
     {
         RunCompileTimeCrossQuatTests<TRAP::Math::Quatf>();
     }

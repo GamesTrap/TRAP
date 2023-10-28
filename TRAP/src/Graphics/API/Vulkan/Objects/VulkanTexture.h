@@ -123,7 +123,7 @@ namespace TRAP::Graphics::API
 		/// <param name="props">Vulkan memory property flags.</param>
 		/// <param name="memTypeFound">Output: True if memory type found, false otherwise.</param>
 		/// <returns>Index of memory type.</returns>
-		[[nodiscard]] static uint32_t GetMemoryType(uint32_t typeBits, const VkPhysicalDeviceMemoryProperties& memProps,
+		[[nodiscard]] static u32 GetMemoryType(u32 typeBits, const VkPhysicalDeviceMemoryProperties& memProps,
 		                                            VkMemoryPropertyFlags props, VkBool32* memTypeFound = nullptr);
 
 		TRAP::Ref<VulkanDevice> m_device = nullptr;

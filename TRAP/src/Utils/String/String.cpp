@@ -107,7 +107,7 @@
 
 	std::string result{};
 
-	const int32_t size = WideCharToMultiByte(CP_UTF8, 0, wStr.data(), -1, nullptr, 0, nullptr, nullptr);
+	const i32 size = WideCharToMultiByte(CP_UTF8, 0, wStr.data(), -1, nullptr, 0, nullptr, nullptr);
 	if (!size)
 	{
 		TP_ERROR(TRAP::Log::EngineWindowsPrefix, "Failed to convert string to UTF-8");
@@ -134,7 +134,7 @@
 
 	std::wstring result{};
 
-	const int32_t count = MultiByteToWideChar(CP_UTF8, 0, str.data(), -1, nullptr, 0);
+	const i32 count = MultiByteToWideChar(CP_UTF8, 0, str.data(), -1, nullptr, 0);
 	if (!count)
 	{
 		TP_ERROR(TRAP::Log::EngineWindowsPrefix, "Failed to convert string from UTF-8");

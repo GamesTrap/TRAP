@@ -23,12 +23,12 @@
 //Format Specification as of 03.05.2023:
 
 //1. Magic Number ("TRAP_SPV")
-//2. Version number (uint32_t)
-//2. Number of contained shader stages (uint8_t)
+//2. Version number (u32)
+//2. Number of contained shader stages (u8)
 //For each SPIRV shader:
-//    3. Size of SPIRV bytecode in bytes (std::size_t)
-//    4. Shader type (ShaderStage/uint32_t)
-//    5. SPIRV bytecode (std::size_t)
+//    3. Size of SPIRV bytecode in bytes (usize)
+//    4. Shader type (ShaderStage/u32)
+//    5. SPIRV bytecode (usize)
 
 //The TRAP_SPV file may not contain:
 //    - Multiple SPIRV shaders of the same type (i.e. 2 Vertex shaders in a single file).
@@ -61,14 +61,14 @@ inline constinit static bool s_glslangInitialized = false;
 //-------------------------------------------------------------------------------------------------------------------//
 
 inline constexpr std::string_view MagicNumber = "TRAP_SPV";
-inline constexpr uint32_t VersionNumber = 1u;
-inline constexpr int32_t GLSLVersion = 460;
+inline constexpr u32 VersionNumber = 1u;
+inline constexpr i32 GLSLVersion = 460;
 inline constexpr std::string_view ShaderFileEnding = "tp-spv";
-inline constexpr uint32_t SPIRVMagicNumber = 0x07230203u;
+inline constexpr u32 SPIRVMagicNumber = 0x07230203u;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-enum class ShaderStage : uint32_t
+enum class ShaderStage : u32
 {
 	None                   = 0,
 	Vertex                 = BIT(0u),
@@ -79,9 +79,9 @@ enum class ShaderStage : uint32_t
 	Compute                = BIT(5u),
 	// RayTracing             = BIT(6u),
 
-	AllGraphics = (static_cast<uint32_t>(Vertex) | static_cast<uint32_t>(TessellationControl) |
-	               static_cast<uint32_t>(TessellationEvaluation) | static_cast<uint32_t>(Geometry) |
-		           static_cast<uint32_t>(Fragment)),
+	AllGraphics = (static_cast<u32>(Vertex) | static_cast<u32>(TessellationControl) |
+	               static_cast<u32>(TessellationEvaluation) | static_cast<u32>(Geometry) |
+		           static_cast<u32>(Fragment)),
 	Hull = TessellationControl,
 	Domain = TessellationEvaluation,
 
@@ -106,7 +106,7 @@ struct Shader
     {
 		ShaderStage Stage = ShaderStage::None;
         std::string Source{};
-        std::vector<uint32_t> SPIRV{};
+        std::vector<u32> SPIRV{};
     };
 
 	std::vector<SubShader> SubShaderSources{};
@@ -220,7 +220,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 	const std::vector<std::string> lines = GetLines(shader.Source);
 
 	//Go through every line of the shader source
-	for (std::size_t i = 0; i < lines.size(); ++i)
+	for (usize i = 0; i < lines.size(); ++i)
 	{
 		//Make it easier to parse
 		const std::string lowerLine = ToLower(lines[i]);
@@ -240,7 +240,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 			fmt::println("{}Adding Shader to \"{}\"", GLSLPrefix, ShaderStageToString(*currentShaderStage), shader.FilePath);
 
 			//Check for duplicate "#shader XXX" defines
-			if (static_cast<uint32_t>(shader.Stages & *currentShaderStage) != 0u)
+			if (static_cast<u32>(shader.Stages & *currentShaderStage) != 0u)
 			{
 				fmt::print(fg(fmt::color::yellow), "{}Found duplicate \"#shader\" define: {}\n", GLSLPrefix, lines[i]);
 				fmt::println("{}Skipping duplicated shader stage", GLSLPrefix);
@@ -249,7 +249,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 			}
 
 			shader.Stages |= *currentShaderStage;
-			shader.SubShaderSources.push_back(Shader::SubShader{*currentShaderStage, "", std::vector<uint32_t>{}});
+			shader.SubShaderSources.push_back(Shader::SubShader{*currentShaderStage, "", std::vector<u32>{}});
 		}
 		else if (Contains(lowerLine, "#version")) //Check for unnecessary "#version" define
 			fmt::println("{}Found Tag: \"{}\" this is unnecessary! Skipping Line: {}", GLSLPrefix, lines[i], i);
@@ -317,9 +317,9 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline std::vector<uint32_t> ConvertToSPIRV(const ShaderStage stage, glslang::TProgram& program)
+[[nodiscard]] inline std::vector<u32> ConvertToSPIRV(const ShaderStage stage, glslang::TProgram& program)
 {
-	std::vector<uint32_t> SPIRV{};
+	std::vector<u32> SPIRV{};
 
     spv::SpvBuildLogger logger{};
     glslang::SpvOptions spvOptions{};
@@ -417,13 +417,13 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 	file.write(MagicNumber.data(), MagicNumber.size());
 	file.write(reinterpret_cast<const char*>(&VersionNumber), sizeof(VersionNumber));
 
-    const uint8_t SPIRVSubShadersCount = static_cast<uint8_t>(shader.SubShaderSources.size());
+    const u8 SPIRVSubShadersCount = static_cast<u8>(shader.SubShaderSources.size());
     file.write(reinterpret_cast<const char*>(&SPIRVSubShadersCount), sizeof(SPIRVSubShadersCount));
 
     for(const auto& subShader : shader.SubShaderSources)
     {
-		const std::size_t SPIRVSize = subShader.SPIRV.size();
-		const uint8_t type = static_cast<uint8_t>(std::to_underlying(subShader.Stage));
+		const usize SPIRVSize = subShader.SPIRV.size();
+		const u8 type = static_cast<u8>(std::to_underlying(subShader.Stage));
 
 		file.write(reinterpret_cast<const char*>(&SPIRVSize), sizeof(SPIRVSize));
 		file.write(reinterpret_cast<const char*>(&type), sizeof(type));
@@ -458,7 +458,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline constexpr bool CheckShaderMagicNumber(const std::span<const uint8_t> shaderData)
+[[nodiscard]] inline constexpr bool CheckShaderMagicNumber(const std::span<const u8> shaderData)
 {
 	return (shaderData.size() >= MagicNumber.size() &&
 	        std::string_view(reinterpret_cast<const char*>(shaderData.data()), MagicNumber.size()) == MagicNumber);
@@ -466,9 +466,9 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline bool ParseTPSPVShader(const std::span<const uint8_t> shaderData, Shader& outShader, uint32_t& outVersion)
+[[nodiscard]] inline bool ParseTPSPVShader(const std::span<const u8> shaderData, Shader& outShader, u32& outVersion)
 {
-	if(shaderData.size() <= (MagicNumber.size() + sizeof(VersionNumber) + sizeof(uint8_t)))
+	if(shaderData.size() <= (MagicNumber.size() + sizeof(VersionNumber) + sizeof(u8)))
 	{
 		fmt::print(fg(fmt::color::red), "Invalid or corrupted shader!\n");
 		return false;
@@ -479,23 +479,23 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 		return false;
 	}
 
-	std::size_t currIndex = MagicNumber.size();
+	usize currIndex = MagicNumber.size();
 
-	outVersion = ConvertByte<uint32_t>(&shaderData[currIndex]);
+	outVersion = ConvertByte<u32>(&shaderData[currIndex]);
 	currIndex += sizeof(VersionNumber);
 
-	const uint8_t shaderCount = shaderData[currIndex++];
+	const u8 shaderCount = shaderData[currIndex++];
 
 	outShader.SubShaderSources.resize(shaderCount);
 
-	for(uint8_t i = 0; i < shaderCount; ++i)
+	for(u8 i = 0; i < shaderCount; ++i)
 	{
-		if(shaderData.size() <= (currIndex + sizeof(std::size_t) + sizeof(uint8_t)))
+		if(shaderData.size() <= (currIndex + sizeof(usize) + sizeof(u8)))
 			break;
 
 		Shader::SubShader& subShader = outShader.SubShaderSources[i];
 
-		const std::size_t SPIRVSize = ConvertByte<std::size_t>(&shaderData[currIndex]);
+		const usize SPIRVSize = ConvertByte<usize>(&shaderData[currIndex]);
 		currIndex += sizeof(SPIRVSize);
 
 		subShader.SPIRV.resize(SPIRVSize);
@@ -506,7 +506,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 		if(shaderData.size() < (currIndex + (subShader.SPIRV.size() * sizeof(decltype(subShader.SPIRV)::value_type))))
 			break;
 
-		const uint32_t SPIRVMagic = ConvertByte<uint32_t>(&shaderData[currIndex]);
+		const u32 SPIRVMagic = ConvertByte<u32>(&shaderData[currIndex]);
 		if(SPIRVMagic != SPIRVMagicNumber)
 			fmt::print(fg(fmt::color::yellow), "{}shader stage {} contains invalid magic number!", SPIRVPrefix, ShaderStageToString(subShader.Stage));
 

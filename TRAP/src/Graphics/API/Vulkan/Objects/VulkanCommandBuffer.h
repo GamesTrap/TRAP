@@ -76,7 +76,7 @@ namespace TRAP::Graphics::API
 		/// <param name="constants">Pointer to the constant buffer data.</param>
 		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
 		void BindPushConstants(const TRAP::Ref<RootSignature>& rootSignature, std::string_view name,
-		                       const void* constants, std::size_t constantsLength) const override;
+		                       const void* constants, usize constantsLength) const override;
 		/// <summary>
 		/// Bind push constant buffer data to the command buffer.
 		/// </summary>
@@ -84,14 +84,14 @@ namespace TRAP::Graphics::API
 		/// <param name="paramIndex">Index of the push constant block in the RootSignatures descriptors array.</param>
 		/// <param name="constants">Pointer to the constant buffer data.</param>
 		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
-		void BindPushConstantsByIndex(const TRAP::Ref<RootSignature>& rootSignature, uint32_t paramIndex,
-		                              const void* constants, std::size_t constantsLength) const override;
+		void BindPushConstantsByIndex(const TRAP::Ref<RootSignature>& rootSignature, u32 paramIndex,
+		                              const void* constants, usize constantsLength) const override;
 		/// <summary>
 		/// Bind a descriptor set to the command buffer.
 		/// </summary>
 		/// <param name="index">Index for which descriptor set to bind.</param>
 		/// <param name="descriptorSet">Descriptor set to bind.</param>
-		void BindDescriptorSet(uint32_t index, DescriptorSet& descriptorSet) override;
+		void BindDescriptorSet(u32 index, DescriptorSet& descriptorSet) override;
 		/// <summary>
 		/// Bind an index buffer to the command buffer.
 		/// </summary>
@@ -99,15 +99,15 @@ namespace TRAP::Graphics::API
 		/// <param name="indexType">Data type used by the index buffer.</param>
 		/// <param name="offset">Starting offset in bytes to use for index buffer.</param>
 		void BindIndexBuffer(const TRAP::Ref<Buffer>& buffer, RendererAPI::IndexType indexType,
-		                     uint64_t offset) const override;
+		                     u64 offset) const override;
 		/// <summary>
 		/// Bind vertex buffer(s) to the command buffer.
 		/// </summary>
 		/// <param name="buffers">Vertex buffer(s) to bind.</param>
 		/// <param name="strides">Stride in bytes of each vertex buffer.</param>
 		/// <param name="offsets">Starting offsets in bytes to use for each vertex buffer.</param>
-		void BindVertexBuffer(const std::vector<TRAP::Ref<Buffer>>& buffers, const std::vector<uint32_t>& strides,
-		                      const std::vector<uint64_t>& offsets) const override;
+		void BindVertexBuffer(const std::vector<TRAP::Ref<Buffer>>& buffers, const std::vector<u32>& strides,
+		                      const std::vector<u64>& offsets) const override;
 		/// <summary>
 		/// Bind a pipeline to the command buffer.
 		/// </summary>
@@ -129,10 +129,10 @@ namespace TRAP::Graphics::API
 		void BindRenderTargets(const std::vector<TRAP::Ref<RenderTarget>>& renderTargets,
 		                       const TRAP::Ref<RenderTarget>& depthStencil,
 							   const RendererAPI::LoadActionsDesc* loadActions,
-							   const std::vector<uint32_t>* colorArraySlices,
-		                       const std::vector<uint32_t>* colorMipSlices,
-							   uint32_t depthArraySlice,
-							   uint32_t depthMipSlice,
+							   const std::vector<u32>* colorArraySlices,
+		                       const std::vector<u32>* colorMipSlices,
+							   u32 depthArraySlice,
+							   u32 depthMipSlice,
 							   const TRAP::Ref<RenderTarget>& shadingRate = nullptr) override;
 
 		/// <summary>
@@ -172,7 +172,7 @@ namespace TRAP::Graphics::API
 		/// <param name="height">New viewport height.</param>
 		/// <param name="minDepth">Min depth value.</param>
 		/// <param name="maxDepth">Max depth value.</param>
-		void SetViewport(float x, float y, float width, float height, float minDepth, float maxDepth) const override;
+		void SetViewport(f32 x, f32 y, f32 width, f32 height, f32 minDepth, f32 maxDepth) const override;
 		/// <summary>
 		/// Set a new scissor region.
 		/// </summary>
@@ -180,14 +180,14 @@ namespace TRAP::Graphics::API
 		/// <param name="y">Y offset for the scissor region.</param>
 		/// <param name="width">Width for the scissor region.</param>
 		/// <param name="height">Height for the scissor region.</param>
-		void SetScissor(uint32_t x, uint32_t y, uint32_t width, uint32_t height) const override;
+		void SetScissor(u32 x, u32 y, u32 width, u32 height) const override;
 
 		/// <summary>
 		/// Draw a number of primitives.
 		/// </summary>
 		/// <param name="vertexCount">How many vertices to draw.</param>
 		/// <param name="firstVertex">Offset to the first vertex to draw.</param>
-		void Draw(uint32_t vertexCount, uint32_t firstVertex) const override;
+		void Draw(u32 vertexCount, u32 firstVertex) const override;
 		/// <summary>
 		/// Draw multiple instances of primitives.
 		/// </summary>
@@ -195,15 +195,15 @@ namespace TRAP::Graphics::API
 		/// <param name="firstVertex">Offset to the first vertex to draw.</param>
 		/// <param name="instanceCount">How many instances to draw.</param>
 		/// <param name="firstInstance">Offset to the first instance to draw.</param>
-		void DrawInstanced(uint32_t vertexCount, uint32_t firstVertex, uint32_t instanceCount,
-		                   uint32_t firstInstance) const override;
+		void DrawInstanced(u32 vertexCount, u32 firstVertex, u32 instanceCount,
+		                   u32 firstInstance) const override;
 		/// <summary>
 		/// Draw indexed primitives.
 		/// </summary>
 		/// <param name="indexCount">How many indices to draw.</param>
 		/// <param name="firstIndex">Offset to the first index to draw.</param>
 		/// <param name="vertexOffset">Offset to the first vertex to draw.</param>
-		void DrawIndexed(uint32_t indexCount, uint32_t firstIndex, int32_t vertexOffset) const override;
+		void DrawIndexed(u32 indexCount, u32 firstIndex, i32 vertexOffset) const override;
 		/// <summary>
 		/// Draw multiple instances of indexed primitives.
 		/// </summary>
@@ -212,8 +212,8 @@ namespace TRAP::Graphics::API
 		/// <param name="instanceCount">How many instances to draw.</param>
 		/// <param name="firstInstance">Offset to the first instance to draw.</param>
 		/// <param name="vertexOffset">Offset to the first vertex to draw.</param>
-		void DrawIndexedInstanced(uint32_t indexCount, uint32_t firstIndex, uint32_t instanceCount,
-		                          uint32_t firstInstance, int32_t vertexOffset) const override;
+		void DrawIndexedInstanced(u32 indexCount, u32 firstIndex, u32 instanceCount,
+		                          u32 firstInstance, i32 vertexOffset) const override;
 		/// <summary>
 		/// Draw primitives.
 		/// Draw data is provided by the indirect buffer.
@@ -226,9 +226,9 @@ namespace TRAP::Graphics::API
 		/// <param name="bufferOffset">Byte offset into indirect buffer to start reading from.</param>
 		/// <param name="counterBuffer">Buffer containing the draw count.</param>
 		/// <param name="counterBufferOffset">Byte offset into counter buffer to start reading from.</param>
-		void ExecuteIndirect(const TRAP::Ref<CommandSignature>& cmdSignature, uint32_t maxCommandCount,
-		                     const TRAP::Ref<Buffer>& indirectBuffer, uint64_t bufferOffset,
-		                     const TRAP::Ref<Buffer>& counterBuffer, uint64_t counterBufferOffset) const override;
+		void ExecuteIndirect(const TRAP::Ref<CommandSignature>& cmdSignature, u32 maxCommandCount,
+		                     const TRAP::Ref<Buffer>& indirectBuffer, u64 bufferOffset,
+		                     const TRAP::Ref<Buffer>& counterBuffer, u64 counterBufferOffset) const override;
 
 		/// <summary>
 		/// Dispatch compute work.
@@ -236,7 +236,7 @@ namespace TRAP::Graphics::API
 		/// <param name="groupCountX">Number of local work groups to dispatch in the X dimension.</param>
 		/// <param name="groupCountY">Number of local work groups to dispatch in the Y dimension.</param>
 		/// <param name="groupCountZ">Number of local work groups to dispatch in the Z dimension.</param>
-		void Dispatch(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) const override;
+		void Dispatch(u32 groupCountX, u32 groupCountY, u32 groupCountZ) const override;
 
 		/// <summary>
 		/// Update a buffer with new data.
@@ -246,8 +246,8 @@ namespace TRAP::Graphics::API
 		/// <param name="srcBuffer">Source buffer to read data from.</param>
 		/// <param name="srcOffset">Offset in the source buffer to start reading from.</param>
 		/// <param name="size">Size of the data to copy.</param>
-		void UpdateBuffer(const TRAP::Ref<Buffer>& buffer, uint64_t dstOffset, const TRAP::Ref<Buffer>& srcBuffer,
-		                  uint64_t srcOffset, uint64_t size) const override;
+		void UpdateBuffer(const TRAP::Ref<Buffer>& buffer, u64 dstOffset, const TRAP::Ref<Buffer>& srcBuffer,
+		                  u64 srcOffset, u64 size) const override;
 		/// <summary>
 		/// Update a texture partially with new data.
 		/// </summary>
@@ -271,8 +271,8 @@ namespace TRAP::Graphics::API
 		/// <param name="queryPool">Query pool to reset.</param>
 		/// <param name="startQuery">Initial query index to reset.</param>
 		/// <param name="queryCount">Number of queries to reset.</param>
-		void ResetQueryPool(const TRAP::Ref<QueryPool>& queryPool, uint32_t startQuery,
-		                    uint32_t queryCount) const override;
+		void ResetQueryPool(const TRAP::Ref<QueryPool>& queryPool, u32 startQuery,
+		                    u32 queryCount) const override;
 		/// <summary>
 		/// Begin a new query.
 		/// </summary>
@@ -293,7 +293,7 @@ namespace TRAP::Graphics::API
 		/// <param name="startQuery">Initial query index.</param>
 		/// <param name="queryCount">Number of queries to read.</param>
 		void ResolveQuery(const TRAP::Ref<QueryPool>& queryPool, const TRAP::Ref<Buffer>& readBackBuffer,
-		                  uint32_t startQuery, uint32_t queryCount) const override;
+		                  u32 startQuery, u32 queryCount) const override;
 
 		/// <summary>
 		/// Add resource barriers (memory dependency) to the command buffer.
@@ -318,7 +318,7 @@ namespace TRAP::Graphics::API
 		/// Set the stencil reference value for the command buffer.
 		/// </summary>
 		/// <param name="val">New value to use as stencil reference.</param>
-		void SetStencilReferenceValue(uint32_t val) const override;
+		void SetStencilReferenceValue(u32 val) const override;
 
 		/// <summary>
 		/// Set the pipeline fragment shading rate and combiner operation for the command buffer.
@@ -336,7 +336,7 @@ namespace TRAP::Graphics::API
 		/// <param name="color">Color to clear the color attachment with.</param>
 		/// <param name="width">Width of the area to clear.</param>
 		/// <param name="height">Height of the area to clear.</param>
-		void Clear(const RendererAPI::Color& color, uint32_t width, uint32_t height) const override;
+		void Clear(const RendererAPI::Color& color, u32 width, u32 height) const override;
 		/// <summary>
 		/// Clear the currently used depth and stencil attachment.
 		/// </summary>
@@ -344,21 +344,21 @@ namespace TRAP::Graphics::API
 		/// <param name="stencil">Stencil value to clear the stencil attachment with.</param>
 		/// <param name="width">Width of the area to clear.</param>
 		/// <param name="height">Height of the area to clear.</param>
-		void Clear(float depth, uint32_t stencil, uint32_t width, uint32_t height) const override;
+		void Clear(f32 depth, u32 stencil, u32 width, u32 height) const override;
 		/// <summary>
 		/// Clear the currently used depth attachment.
 		/// </summary>
 		/// <param name="depth">Depth value to clear the depth attachment with.</param>
 		/// <param name="width">Width of the area to clear.</param>
 		/// <param name="height">Height of the area to clear.</param>
-		void Clear(float depth, uint32_t width, uint32_t height) const override;
+		void Clear(f32 depth, u32 width, u32 height) const override;
 		/// <summary>
 		/// Clear the currently used stencil attachment.
 		/// </summary>
 		/// <param name="stencil">Stencil value to clear the stencil attachment with.</param>
 		/// <param name="width">Width of the area to clear.</param>
 		/// <param name="height">Height of the area to clear.</param>
-		void Clear(uint32_t stencil, uint32_t width, uint32_t height) const override;
+		void Clear(u32 stencil, u32 width, u32 height) const override;
 
 		/// <summary>
 		/// Resolve a multisample color texture to a non-multisample color texture.
@@ -383,20 +383,20 @@ namespace TRAP::Graphics::API
 		/// <param name="mem">Pointer to data to hash.</param>
 		/// <param name="size">Size of data to hash.</param>
 		/// <param name="prev">Previous hash value.</param>
-		static std::size_t HashAlg(const auto* mem, std::size_t size, const std::size_t prev = 2166136261U)
+		static usize HashAlg(const auto* mem, usize size, const usize prev = 2166136261U)
 		{
 			ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 			TRAP_ASSERT(mem, "VulkanCommandBuffer::HashAlg(): mem is nullptr!");
 			TRAP_ASSERT(size, "VulkanCommandBuffer::HashAlg(): size is 0!");
 
-			//Intentionally uint32_t instead of std::size_t, so the behavior is the same regardless of size.
-			uint32_t result = static_cast<uint32_t>(prev);
+			//Intentionally u32 instead of usize, so the behavior is the same regardless of size.
+			u32 result = static_cast<u32>(prev);
 
 			while (size--)
-				result = static_cast<uint32_t>((result * 16777619) ^ *mem++);
+				result = static_cast<u32>((result * 16777619) ^ *mem++);
 
-			return NumericCast<std::size_t>(result);
+			return NumericCast<usize>(result);
 		}
 
 		TRAP::Ref<API::VulkanDevice> m_device;

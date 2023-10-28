@@ -50,7 +50,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="handle">Vulkan handle.</param>
 	/// <param name="name">Debug object name to set.</param>
 	/// <returns>VkDebugUtilsObjectNameInfoEXT.</returns>
-	[[nodiscard]] VkDebugUtilsObjectNameInfoEXT DebugUtilsObjectNameInfo(VkObjectType type, uint64_t handle,
+	[[nodiscard]] VkDebugUtilsObjectNameInfoEXT DebugUtilsObjectNameInfo(VkObjectType type, u64 handle,
 	                                                                     std::string_view name);
 
 	/// <summary>
@@ -60,7 +60,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="handle">Vulkan handle.</param>
 	/// <param name="name">Debug object name to set.</param>
 	/// <returns>VkDebugMarkerObjectNameInfoEXT.</returns>
-	[[nodiscard]] VkDebugMarkerObjectNameInfoEXT DebugMarkerObjectNameInfo(VkDebugReportObjectTypeEXT type, uint64_t handle,
+	[[nodiscard]] VkDebugMarkerObjectNameInfoEXT DebugMarkerObjectNameInfo(VkDebugReportObjectTypeEXT type, u64 handle,
 	                                                                       std::string_view name);
 
 	/// <summary>
@@ -71,7 +71,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="b">Blue color.</param>
 	/// <param name="name">Name for the label.</param>
 	/// <returns>VkDebugUtilsLabelEXT.</returns>
-	[[nodiscard]] VkDebugUtilsLabelEXT DebugUtilsLabelExt(float r, float g, float b, std::string_view name);
+	[[nodiscard]] VkDebugUtilsLabelEXT DebugUtilsLabelExt(f32 r, f32 g, f32 b, std::string_view name);
 
 	/// <summary>
 	/// Create a Vulkan debug marker.
@@ -81,7 +81,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="b">Blue color.</param>
 	/// <param name="name">Name for the label.</param>
 	/// <returns>VkDebugMarkerMarkerInfoEXT.</returns>
-	[[nodiscard]] VkDebugMarkerMarkerInfoEXT DebugMarkerMarkerInfo(float r, float g, float b, std::string_view name);
+	[[nodiscard]] VkDebugMarkerMarkerInfoEXT DebugMarkerMarkerInfo(f32 r, f32 g, f32 b, std::string_view name);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -118,7 +118,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="numDescriptorSets">Max number of descriptor sets which should be allocated from the pool.</param>
 	/// <returns>VkDescriptorPoolCreateInfo.</returns>
 	[[nodiscard]] VkDescriptorPoolCreateInfo DescriptorPoolCreateInfo(const std::vector<VkDescriptorPoolSize>& descriptorPoolSizes,
-	                                                                  uint32_t numDescriptorSets);
+	                                                                  u32 numDescriptorSets);
 
 	/// <summary>
 	/// Create a Vulkan descriptor set allocation info.
@@ -147,11 +147,11 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="setIndex">Set index of the Descriptor set.</param>
 	/// <returns>VkDescriptorUpdateTemplateCreateInfo.</returns>
 	[[nodiscard]] VkDescriptorUpdateTemplateCreateInfo DescriptorUpdateTemplateCreateInfo(VkDescriptorSetLayout descriptorSetLayout,
-		                                                                                  uint32_t entryCount,
+		                                                                                  u32 entryCount,
 		                                                                                  const VkDescriptorUpdateTemplateEntry* entries,
 		                                                                                  VkPipelineBindPoint bindPoint,
 		                                                                                  VkPipelineLayout pipelineLayout,
-		                                                                                  uint32_t setIndex);
+		                                                                                  u32 setIndex);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -173,7 +173,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="semaphore">Semaphore to wait on.</param>
 	/// <param name="value">Signal value to set.</param>
 	/// <returns>VkSemaphoreWaitInfoKHR</returns>
-	[[nodiscard]] VkSemaphoreWaitInfoKHR SemaphoreWaitInfo(VkSemaphore& semaphore, uint64_t& value);
+	[[nodiscard]] VkSemaphoreWaitInfoKHR SemaphoreWaitInfo(VkSemaphore& semaphore, u64& value);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -317,8 +317,8 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="layerCount">Number of layers in the frame buffer.</param>
 	/// <returns>VkFramebufferCreateInfo.</returns>
 	[[nodiscard]] VkFramebufferCreateInfo FramebufferCreateInfo(VkRenderPass renderPass,
-	                                                            const std::vector<VkImageView>& attachments, uint32_t width,
-		                                                        uint32_t height, uint32_t layerCount);
+	                                                            const std::vector<VkImageView>& attachments, u32 width,
+		                                                        u32 height, u32 layerCount);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -332,7 +332,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="layerCount">Number of layers.</param>
 	/// <returns>VkImageViewCreateInfo.</returns>
 	[[nodiscard]] VkImageViewCreateInfo ImageViewCreateInfo(VkImage image, VkImageViewType imageViewType, VkFormat format,
-		                                                    uint32_t levelCount, uint32_t layerCount);
+		                                                    u32 levelCount, u32 layerCount);
 
 	/// <summary>
 	/// Create a Vulkan image create info.
@@ -348,8 +348,8 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="tiling">Vulkan image tiling.</param>
 	/// <param name="usage">Vulkan image usage.</param>
 	/// <returns>VkImageCreateInfo.</returns>
-	[[nodiscard]] VkImageCreateInfo ImageCreateInfo(VkImageType imageType, VkFormat imageFormat, uint32_t width, uint32_t height,
-		                                            uint32_t depth, uint32_t mipLevels, uint32_t arrayLayers,
+	[[nodiscard]] VkImageCreateInfo ImageCreateInfo(VkImageType imageType, VkFormat imageFormat, u32 width, u32 height,
+		                                            u32 depth, u32 mipLevels, u32 arrayLayers,
 		                                            VkSampleCountFlagBits sampleCount, VkImageTiling tiling,
 									                VkImageUsageFlags usage);
 
@@ -361,7 +361,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="height">Height of the image.</param>
 	/// <param name="depth">Depth of the image.</param>
 	/// <param name="layers">Number of Vulkan image subresource layers.</param>
-	[[nodiscard]] VkBufferImageCopy ImageCopy(uint32_t bufferRowLength, uint32_t width, uint32_t height, uint32_t depth,
+	[[nodiscard]] VkBufferImageCopy ImageCopy(u32 bufferRowLength, u32 width, u32 height, u32 depth,
 							                  VkImageSubresourceLayers layers);
 
 	/// <summary>
@@ -374,8 +374,8 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="height">Height of the image.</param>
 	/// <param name="depth">Depth of the image.</param>
 	/// <param name="layers">Number of Vulkan image subresource layers.</param>
-	[[nodiscard]] VkBufferImageCopy ImageCopy(uint64_t bufferOffset, uint32_t bufferRowLength, uint32_t bufferImageHeight,
-							                  uint32_t width, uint32_t height, uint32_t depth, VkImageSubresourceLayers layers);
+	[[nodiscard]] VkBufferImageCopy ImageCopy(u64 bufferOffset, u32 bufferRowLength, u32 bufferImageHeight,
+							                  u32 width, u32 height, u32 depth, VkImageSubresourceLayers layers);
 
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -386,7 +386,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="allocationSize">Size of the buffer.</param>
 	/// <param name="usageFlags">Vulkan buffer usage flags.</param>
 	/// <returns>VkBufferCreateInfo.</returns>
-	[[nodiscard]] VkBufferCreateInfo BufferCreateInfo(uint64_t allocationSize, VkBufferUsageFlags usageFlags);
+	[[nodiscard]] VkBufferCreateInfo BufferCreateInfo(u64 allocationSize, VkBufferUsageFlags usageFlags);
 
 	/// <summary>
 	/// Create a Vulkan buffer view create info.
@@ -396,7 +396,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="offset">Offset of the buffer.</param>
 	/// <param name="range">Range of the buffer.</param>
 	/// <returns>VkBufferViewCreateInfo.</returns>
-	[[nodiscard]] VkBufferViewCreateInfo BufferViewCreateInfo(VkBuffer buffer, VkFormat format, uint64_t offset, uint64_t range);
+	[[nodiscard]] VkBufferViewCreateInfo BufferViewCreateInfo(VkBuffer buffer, VkFormat format, u64 offset, u64 range);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -405,7 +405,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// </summary>
 	/// <param name="queueFamilyIndex">Queue family index.</param>
 	/// <returns>VkCommandPoolCreateInfo.</returns>
-	[[nodiscard]] constexpr VkCommandPoolCreateInfo CommandPoolCreateInfo(uint32_t queueFamilyIndex) noexcept;
+	[[nodiscard]] constexpr VkCommandPoolCreateInfo CommandPoolCreateInfo(u32 queueFamilyIndex) noexcept;
 
 	/// <summary>
 	/// Create a Vulkan command buffer allocate info.
@@ -441,8 +441,8 @@ namespace TRAP::Graphics::API::VulkanInits
 	[[nodiscard]] constexpr VkSamplerCreateInfo SamplerCreateInfo(VkFilter magFilter, VkFilter minFilter,
 	                                                              VkSamplerMipmapMode mipMapMode, VkSamplerAddressMode u,
 																  VkSamplerAddressMode v, VkSamplerAddressMode w,
-																  float mipLodBias, float minLod, float maxLod,
-																  float maxAnisotropy, VkCompareOp compareOp);
+																  f32 mipLodBias, f32 minLod, f32 maxLod,
+																  f32 maxAnisotropy, VkCompareOp compareOp);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -454,8 +454,8 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="pushConstantRangeCount">Number of push constant ranges.</param>
 	/// <param name="pushConstants">Vulkan push constant ranges.</param>
 	/// <returns>VkPipelineLayoutCreateInfo.</returns>
-	[[nodiscard]] constexpr VkPipelineLayoutCreateInfo PipelineLayoutCreateInfo(uint32_t layoutCount, const VkDescriptorSetLayout* layouts,
-	                                                                            uint32_t pushConstantRangeCount,
+	[[nodiscard]] constexpr VkPipelineLayoutCreateInfo PipelineLayoutCreateInfo(u32 layoutCount, const VkDescriptorSetLayout* layouts,
+	                                                                            u32 pushConstantRangeCount,
 														                        const VkPushConstantRange* pushConstants) noexcept;
 
 	/// <summary>
@@ -477,8 +477,8 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <returns>VkPipelineColorBlendStateCreateInfo.</returns>
 	[[nodiscard]] constexpr VkPipelineColorBlendStateCreateInfo PipelineColorBlendStateCreateInfo(VkLogicOp logicOp,
 		                                                                                          const std::vector<VkPipelineColorBlendAttachmentState>& attachments,
-		                                                                                          float blendConstR, float blendConstG,
-		                                                                                          float blendConstB, float blendConstA) noexcept;
+		                                                                                          f32 blendConstR, f32 blendConstG,
+		                                                                                          f32 blendConstB, f32 blendConstA) noexcept;
 
 	/// <summary>
 	/// Create a Vulkan pipeline cache create info.
@@ -486,7 +486,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="data">Vulkan pipeline cache data.</param>
 	/// <param name="flags">Vulkan pipeline cache create flags.</param>
 	/// <returns>VkPipelineCacheCreateInfo.</returns>
-	[[nodiscard]] constexpr VkPipelineCacheCreateInfo PipelineCacheCreateInfo(std::span<const uint8_t> data,
+	[[nodiscard]] constexpr VkPipelineCacheCreateInfo PipelineCacheCreateInfo(std::span<const u8> data,
 	                                                                          VkPipelineCacheCreateFlags flags) noexcept;
 
 	/// <summary>
@@ -507,9 +507,9 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="inputAttributeCount">Number of vertex input attributes.</param>
 	/// <param name="inputAttributes">Vulkan vertex input attribute descriptions.</param>
 	/// <returns>VkPipelineVertexInputStateCreateInfo.</returns>
-	[[nodiscard]] constexpr VkPipelineVertexInputStateCreateInfo PipelineVertexInputStateCreateInfo(uint32_t inputBindingCount,
+	[[nodiscard]] constexpr VkPipelineVertexInputStateCreateInfo PipelineVertexInputStateCreateInfo(u32 inputBindingCount,
 		                                                                                            const VkVertexInputBindingDescription* inputBindings,
-		                                                                                            uint32_t inputAttributeCount,
+		                                                                                            u32 inputAttributeCount,
 		                                                                                            const VkVertexInputAttributeDescription* inputAttributes) noexcept;
 
 	/// <summary>
@@ -526,7 +526,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// </summary>
 	/// <param name="patchControlPoints">Number of patch control points.</param>
 	/// <returns>VkPipelineTessellationStateCreateInfo.</returns>
-	[[nodiscard]] constexpr VkPipelineTessellationStateCreateInfo PipelineTessellationStateCreateInfo(uint32_t patchControlPoints) noexcept;
+	[[nodiscard]] constexpr VkPipelineTessellationStateCreateInfo PipelineTessellationStateCreateInfo(u32 patchControlPoints) noexcept;
 
 	/// <summary>
 	/// Create a Vulkan pipeline viewport state create info.
@@ -543,7 +543,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <returns>VkPipelineMultisampleStateCreateInfo.</returns>
 	[[nodiscard]] constexpr VkPipelineMultisampleStateCreateInfo PipelineMultisampleStateCreateInfo(VkSampleCountFlagBits sampleCount,
 	                                                                                                bool sampleShading,
-																			                        float sampleShadingRate) noexcept;
+																			                        f32 sampleShadingRate) noexcept;
 
 	/// <summary>
 	/// Create a Vulkan fragment shading rate state create info.
@@ -586,7 +586,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="layout">Vulkan pipeline layout.</param>
 	/// <param name="renderPass">Vulkan render pass.</param>
 	/// <returns>VkGraphicsPipelineCreateInfo.</returns>
-	[[nodiscard]] constexpr VkGraphicsPipelineCreateInfo GraphicsPipelineCreateInfo(uint32_t stageCount,
+	[[nodiscard]] constexpr VkGraphicsPipelineCreateInfo GraphicsPipelineCreateInfo(u32 stageCount,
 															                        const VkPipelineShaderStageCreateInfo* stages,
 															                        const VkPipelineVertexInputStateCreateInfo& vi,
 															                        const VkPipelineInputAssemblyStateCreateInfo& ia,
@@ -610,11 +610,11 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="signalSemaphore">Vulkan semaphore to signal.</param>
 	/// <returns>VkSubmitInfo.</returns>
 	[[nodiscard]] constexpr VkSubmitInfo SubmitInfo(const std::vector<VkSemaphore>& waitSemaphores,
-							                        uint32_t waitCount,
+							                        u32 waitCount,
 	                                                const std::vector<VkPipelineStageFlags>& waitMasks,
 	                                                const std::vector<VkCommandBuffer>& cmds,
 	                                                const std::vector<VkSemaphore>& signalSemaphore,
-							                        uint32_t signalCount) noexcept;
+							                        u32 signalCount) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -624,7 +624,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="count">Number of queries to manage by the pool.</param>
 	/// <param name="type">Vulkan query type.</param>
 	/// <returns>VkQueryPoolCreateInfo.</returns>
-	[[nodiscard]] constexpr VkQueryPoolCreateInfo QueryPoolCreateInfo(uint32_t count, VkQueryType queryType) noexcept;
+	[[nodiscard]] constexpr VkQueryPoolCreateInfo QueryPoolCreateInfo(u32 count, VkQueryType queryType) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -644,10 +644,10 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="presentMode">Vulkan present mode to use.</param>
 	/// <param name="oldSwapchain">Old Vulkan swapchain to aid in resource reusage. Default. VK_NULL_HANDLE</param>
 	/// <returns>VkSwapchainCreateInfoKHR.</returns>
-	[[nodiscard]] VkSwapchainCreateInfoKHR SwapchainCreateInfoKHR(VkSurfaceKHR surface, uint32_t imageCount,
+	[[nodiscard]] VkSwapchainCreateInfoKHR SwapchainCreateInfoKHR(VkSurfaceKHR surface, u32 imageCount,
 	                                                              VkSurfaceFormatKHR surfaceFormat, VkExtent2D imageExtent,
 	                                                              VkSharingMode sharingMode,
-	                                                              const std::vector<uint32_t>& queueFamilyIndices,
+	                                                              const std::vector<u32>& queueFamilyIndices,
 	                                                              VkSurfaceTransformFlagBitsKHR preTransform,
 													              VkCompositeAlphaFlagBitsKHR compositeAlpha,
 													              VkPresentModeKHR presentMode,
@@ -663,7 +663,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="presentIndex">Vulkan swapchain image index to present.</param>
 	/// <returns>VkPresentInfoKHR.</returns>
 	[[nodiscard]] constexpr VkPresentInfoKHR PresentInfo(const std::vector<VkSemaphore>& waitSemaphores, const VkSwapchainKHR& swapChain,
-	                                                     uint32_t& presentIndex) noexcept;
+	                                                     u32& presentIndex) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -673,7 +673,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="allocSize">Size of the allocation in bytes.</param>
 	/// <param name="memoryTypeIndex">Index of the memory type to allocate.</param>
 	/// <returns>VkMemoryAllocateInfo.</returns>
-	[[nodiscard]] constexpr VkMemoryAllocateInfo MemoryAllocateInfo(VkDeviceSize allocSize, uint32_t memoryTypeIndex) noexcept;
+	[[nodiscard]] constexpr VkMemoryAllocateInfo MemoryAllocateInfo(VkDeviceSize allocSize, u32 memoryTypeIndex) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -692,9 +692,9 @@ namespace TRAP::Graphics::API::VulkanInits
 		.pNext = nullptr,
 		.flags = 0,
 		.pApplicationInfo = &appInfo,
-		.enabledLayerCount = NumericCast<uint32_t>(instanceLayers.size()),
+		.enabledLayerCount = NumericCast<u32>(instanceLayers.size()),
 		.ppEnabledLayerNames = instanceLayers.data(),
-		.enabledExtensionCount = NumericCast<uint32_t>(instanceExtensions.size()),
+		.enabledExtensionCount = NumericCast<u32>(instanceExtensions.size()),
 		.ppEnabledExtensionNames = instanceExtensions.data()
 	};
 }
@@ -708,7 +708,7 @@ namespace TRAP::Graphics::API::VulkanInits
 		.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
 		.pNext = nullptr,
 		.flags = 0,
-		.bindingCount = NumericCast<uint32_t>(bindings.size()),
+		.bindingCount = NumericCast<u32>(bindings.size()),
 		.pBindings = bindings.data()
 	};
 }
@@ -748,9 +748,9 @@ namespace TRAP::Graphics::API::VulkanInits
 	{
 		.flags = 0,
 		.pipelineBindPoint = bindPoint,
-		.inputAttachmentCount = NumericCast<uint32_t>(inputAttachments.size()),
+		.inputAttachmentCount = NumericCast<u32>(inputAttachments.size()),
 		.pInputAttachments = inputAttachments.data(),
-		.colorAttachmentCount = NumericCast<uint32_t>(colorAttachments.size()),
+		.colorAttachmentCount = NumericCast<u32>(colorAttachments.size()),
 		.pColorAttachments = colorAttachments.data(),
 		.pResolveAttachments = nullptr,
 		.pDepthStencilAttachment = &depthStencilAttachment,
@@ -769,9 +769,9 @@ namespace TRAP::Graphics::API::VulkanInits
 	{
 		.flags = 0,
 		.pipelineBindPoint = bindPoint,
-		.inputAttachmentCount = NumericCast<uint32_t>(inputAttachments.size()),
+		.inputAttachmentCount = NumericCast<u32>(inputAttachments.size()),
 		.pInputAttachments = inputAttachments.data(),
-		.colorAttachmentCount = NumericCast<uint32_t>(colorAttachments.size()),
+		.colorAttachmentCount = NumericCast<u32>(colorAttachments.size()),
 		.pColorAttachments = colorAttachments.data(),
 		.pResolveAttachments = nullptr,
 		.pDepthStencilAttachment = nullptr,
@@ -795,9 +795,9 @@ namespace TRAP::Graphics::API::VulkanInits
 		.flags = 0,
 		.pipelineBindPoint = bindPoint,
 		.viewMask = 0,
-		.inputAttachmentCount = NumericCast<uint32_t>(inputAttachments.size()),
+		.inputAttachmentCount = NumericCast<u32>(inputAttachments.size()),
 		.pInputAttachments = inputAttachments.data(),
-		.colorAttachmentCount = NumericCast<uint32_t>(colorAttachments.size()),
+		.colorAttachmentCount = NumericCast<u32>(colorAttachments.size()),
 		.pColorAttachments = colorAttachments.data(),
 		.pResolveAttachments = nullptr,
 		.pDepthStencilAttachment = &depthStencilAttachment,
@@ -820,9 +820,9 @@ namespace TRAP::Graphics::API::VulkanInits
 		.flags = 0,
 		.pipelineBindPoint = bindPoint,
 		.viewMask = 0,
-		.inputAttachmentCount = NumericCast<uint32_t>(inputAttachments.size()),
+		.inputAttachmentCount = NumericCast<u32>(inputAttachments.size()),
 		.pInputAttachments = inputAttachments.data(),
-		.colorAttachmentCount = NumericCast<uint32_t>(colorAttachments.size()),
+		.colorAttachmentCount = NumericCast<u32>(colorAttachments.size()),
 		.pColorAttachments = colorAttachments.data(),
 		.pResolveAttachments = nullptr,
 		.pDepthStencilAttachment = nullptr,
@@ -841,7 +841,7 @@ namespace TRAP::Graphics::API::VulkanInits
 		.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
 		.pNext = nullptr,
 		.flags = 0,
-		.attachmentCount = NumericCast<uint32_t>(attachmentDescriptions.size()),
+		.attachmentCount = NumericCast<u32>(attachmentDescriptions.size()),
 		.pAttachments = attachmentDescriptions.data(),
 		.subpassCount = 1,
 		.pSubpasses = &subpassDescription,
@@ -860,7 +860,7 @@ namespace TRAP::Graphics::API::VulkanInits
 		.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2_KHR,
 		.pNext = nullptr,
 		.flags = 0,
-		.attachmentCount = NumericCast<uint32_t>(attachmentDescriptions.size()),
+		.attachmentCount = NumericCast<u32>(attachmentDescriptions.size()),
 		.pAttachments = attachmentDescriptions.data(),
 		.subpassCount = 1,
 		.pSubpasses = &subpassDescription,
@@ -873,7 +873,7 @@ namespace TRAP::Graphics::API::VulkanInits
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkCommandPoolCreateInfo TRAP::Graphics::API::VulkanInits::CommandPoolCreateInfo(const uint32_t queueFamilyIndex) noexcept
+[[nodiscard]] constexpr VkCommandPoolCreateInfo TRAP::Graphics::API::VulkanInits::CommandPoolCreateInfo(const u32 queueFamilyIndex) noexcept
 {
 	return VkCommandPoolCreateInfo
 	{
@@ -905,10 +905,10 @@ namespace TRAP::Graphics::API::VulkanInits
 	                                                                                            const VkSamplerAddressMode u,
 	                                                                                            const VkSamplerAddressMode v,
 	                                                                                            const VkSamplerAddressMode w,
-	                                                                                            const float mipLodBias,
-																		                        const float minLod,
-																		                        const float maxLod,
-	                                                                                            const float maxAnisotropy,
+	                                                                                            const f32 mipLodBias,
+																		                        const f32 minLod,
+																		                        const f32 maxLod,
+	                                                                                            const f32 maxAnisotropy,
 	                                                                                            const VkCompareOp compareOp)
 {
 	TRAP_ASSERT(minLod <= maxLod, "VulkanInits::SamplerCreateInfo(): minLod can't be greater than maxLod!");
@@ -938,9 +938,9 @@ namespace TRAP::Graphics::API::VulkanInits
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkPipelineLayoutCreateInfo TRAP::Graphics::API::VulkanInits::PipelineLayoutCreateInfo(const uint32_t layoutCount,
+[[nodiscard]] constexpr VkPipelineLayoutCreateInfo TRAP::Graphics::API::VulkanInits::PipelineLayoutCreateInfo(const u32 layoutCount,
 	                                                                                                          const VkDescriptorSetLayout* const layouts,
-	                                                                                                          const uint32_t pushConstantRangeCount,
+	                                                                                                          const u32 pushConstantRangeCount,
 	                                                                                                          const VkPushConstantRange* const pushConstants) noexcept
 {
 	return VkPipelineLayoutCreateInfo
@@ -966,7 +966,7 @@ namespace TRAP::Graphics::API::VulkanInits
 		.flags = 0,
 		.logicOpEnable = VK_FALSE,
 		.logicOp = VK_LOGIC_OP_CLEAR,
-		.attachmentCount = NumericCast<uint32_t>(attachments.size()),
+		.attachmentCount = NumericCast<u32>(attachments.size()),
 		.pAttachments = attachments.data(),
 		.blendConstants = {0.0f, 0.0f, 0.0f, 0.0f}
 	};
@@ -976,10 +976,10 @@ namespace TRAP::Graphics::API::VulkanInits
 
 [[nodiscard]] constexpr VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineColorBlendStateCreateInfo(const VkLogicOp logicOp,
 	                                                                                                                            const std::vector<VkPipelineColorBlendAttachmentState>& attachments,
-	                                                                                                                            const float blendConstR,
-	                                                                                                                            const float blendConstG,
-	                                                                                                                            const float blendConstB,
-	                                                                                                                            const float blendConstA) noexcept
+	                                                                                                                            const f32 blendConstR,
+	                                                                                                                            const f32 blendConstG,
+	                                                                                                                            const f32 blendConstB,
+	                                                                                                                            const f32 blendConstA) noexcept
 {
 	return VkPipelineColorBlendStateCreateInfo
 	{
@@ -988,7 +988,7 @@ namespace TRAP::Graphics::API::VulkanInits
 		.flags = 0,
 		.logicOpEnable = VK_TRUE,
 		.logicOp = logicOp,
-		.attachmentCount = NumericCast<uint32_t>(attachments.size()),
+		.attachmentCount = NumericCast<u32>(attachments.size()),
 		.pAttachments = attachments.data(),
 		.blendConstants = {blendConstR, blendConstG, blendConstB, blendConstA}
 	};
@@ -996,7 +996,7 @@ namespace TRAP::Graphics::API::VulkanInits
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkPipelineCacheCreateInfo TRAP::Graphics::API::VulkanInits::PipelineCacheCreateInfo(const std::span<const uint8_t> data,
+[[nodiscard]] constexpr VkPipelineCacheCreateInfo TRAP::Graphics::API::VulkanInits::PipelineCacheCreateInfo(const std::span<const u8> data,
 	                                                                                                        const VkPipelineCacheCreateFlags flags) noexcept
 {
 	return VkPipelineCacheCreateInfo
@@ -1018,14 +1018,14 @@ namespace TRAP::Graphics::API::VulkanInits
 		.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,
 		.pNext = nullptr,
 		.flags = 0,
-		.dynamicStateCount = NumericCast<uint32_t>(dynamicStates.size()),
+		.dynamicStateCount = NumericCast<u32>(dynamicStates.size()),
 		.pDynamicStates = dynamicStates.data(),
 	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkGraphicsPipelineCreateInfo TRAP::Graphics::API::VulkanInits::GraphicsPipelineCreateInfo(const uint32_t stageCount,
+[[nodiscard]] constexpr VkGraphicsPipelineCreateInfo TRAP::Graphics::API::VulkanInits::GraphicsPipelineCreateInfo(const u32 stageCount,
 	                                                                                                              const VkPipelineShaderStageCreateInfo* const stages,
 	                                                                                                              const VkPipelineVertexInputStateCreateInfo& vi,
 	                                                                                                              const VkPipelineInputAssemblyStateCreateInfo& ia,
@@ -1065,11 +1065,11 @@ namespace TRAP::Graphics::API::VulkanInits
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr VkSubmitInfo TRAP::Graphics::API::VulkanInits::SubmitInfo(const std::vector<VkSemaphore>& waitSemaphores,
-														                          const uint32_t waitCount,
+														                          const u32 waitCount,
                                                                                   const std::vector<VkPipelineStageFlags>& waitMasks,
                                                                                   const std::vector<VkCommandBuffer>& cmds,
                                                                                   const std::vector<VkSemaphore>& signalSemaphores,
-														                          const uint32_t signalCount) noexcept
+														                          const u32 signalCount) noexcept
 {
 	return VkSubmitInfo
 	{
@@ -1078,7 +1078,7 @@ namespace TRAP::Graphics::API::VulkanInits
 		.waitSemaphoreCount = waitCount,
 		.pWaitSemaphores = waitSemaphores.data(),
 		.pWaitDstStageMask = waitMasks.data(),
-		.commandBufferCount = NumericCast<uint32_t>(cmds.size()),
+		.commandBufferCount = NumericCast<u32>(cmds.size()),
 		.pCommandBuffers = cmds.data(),
 		.signalSemaphoreCount = signalCount,
 		.pSignalSemaphores = signalSemaphores.data()
@@ -1087,7 +1087,7 @@ namespace TRAP::Graphics::API::VulkanInits
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkQueryPoolCreateInfo TRAP::Graphics::API::VulkanInits::QueryPoolCreateInfo(const uint32_t count,
+[[nodiscard]] constexpr VkQueryPoolCreateInfo TRAP::Graphics::API::VulkanInits::QueryPoolCreateInfo(const u32 count,
                                                                                                     const VkQueryType queryType) noexcept
 {
 	return VkQueryPoolCreateInfo
@@ -1105,13 +1105,13 @@ namespace TRAP::Graphics::API::VulkanInits
 
 [[nodiscard]] constexpr VkPresentInfoKHR TRAP::Graphics::API::VulkanInits::PresentInfo(const std::vector<VkSemaphore>& waitSemaphores,
                                                                                        const VkSwapchainKHR& swapChain,
-															                           uint32_t& presentIndex) noexcept
+															                           u32& presentIndex) noexcept
 {
 	return VkPresentInfoKHR
 	{
 		.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
 		.pNext = nullptr,
-		.waitSemaphoreCount = NumericCast<uint32_t>(waitSemaphores.size()),
+		.waitSemaphoreCount = NumericCast<u32>(waitSemaphores.size()),
 		.pWaitSemaphores = !waitSemaphores.empty() ? waitSemaphores.data() : nullptr,
 		.swapchainCount = 1,
 		.pSwapchains = &swapChain,
@@ -1123,7 +1123,7 @@ namespace TRAP::Graphics::API::VulkanInits
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr VkMemoryAllocateInfo TRAP::Graphics::API::VulkanInits::MemoryAllocateInfo(const VkDeviceSize allocSize,
-                                                                                                  const uint32_t memoryTypeIndex) noexcept
+                                                                                                  const u32 memoryTypeIndex) noexcept
 {
 	return VkMemoryAllocateInfo
 	{
@@ -1145,17 +1145,17 @@ namespace TRAP::Graphics::API::VulkanInits
 	{
 		if(!ImageFormatIsSigned(format))
 		{
-			clearColor.float32[0] = TRAP::Math::Clamp(NumericCast<float>(color.Red), 0.0f, 1.0f);
-			clearColor.float32[1] = TRAP::Math::Clamp(NumericCast<float>(color.Green), 0.0f, 1.0f);
-			clearColor.float32[2] = TRAP::Math::Clamp(NumericCast<float>(color.Blue), 0.0f, 1.0f);
-			clearColor.float32[3] = TRAP::Math::Clamp(NumericCast<float>(color.Alpha), 0.0f, 1.0f);
+			clearColor.float32[0] = TRAP::Math::Clamp(NumericCast<f32>(color.Red), 0.0f, 1.0f);
+			clearColor.float32[1] = TRAP::Math::Clamp(NumericCast<f32>(color.Green), 0.0f, 1.0f);
+			clearColor.float32[2] = TRAP::Math::Clamp(NumericCast<f32>(color.Blue), 0.0f, 1.0f);
+			clearColor.float32[3] = TRAP::Math::Clamp(NumericCast<f32>(color.Alpha), 0.0f, 1.0f);
 		}
 		else /*if(ImageFormatIsSigned(format))*/
 		{
-			clearColor.float32[0] = TRAP::Math::Clamp(NumericCast<float>(color.Red), -1.0f, 1.0f);
-			clearColor.float32[1] = TRAP::Math::Clamp(NumericCast<float>(color.Green), -1.0f, 1.0f);
-			clearColor.float32[2] = TRAP::Math::Clamp(NumericCast<float>(color.Blue), -1.0f, 1.0f);
-			clearColor.float32[3] = TRAP::Math::Clamp(NumericCast<float>(color.Alpha), -1.0f, 1.0f);
+			clearColor.float32[0] = TRAP::Math::Clamp(NumericCast<f32>(color.Red), -1.0f, 1.0f);
+			clearColor.float32[1] = TRAP::Math::Clamp(NumericCast<f32>(color.Green), -1.0f, 1.0f);
+			clearColor.float32[2] = TRAP::Math::Clamp(NumericCast<f32>(color.Blue), -1.0f, 1.0f);
+			clearColor.float32[3] = TRAP::Math::Clamp(NumericCast<f32>(color.Alpha), -1.0f, 1.0f);
 		}
 	}
 	else /*if(!ImageFormatIsNormalized(format))*/
@@ -1164,25 +1164,25 @@ namespace TRAP::Graphics::API::VulkanInits
 		{
 			if(!ImageFormatIsSigned(format))
 			{
-				clearColor.uint32[0] = NumericCast<uint32_t>(TRAP::Math::Round(color.Red));
-				clearColor.uint32[1] = NumericCast<uint32_t>(TRAP::Math::Round(color.Green));
-				clearColor.uint32[2] = NumericCast<uint32_t>(TRAP::Math::Round(color.Blue));
-				clearColor.uint32[3] = NumericCast<uint32_t>(TRAP::Math::Round(color.Alpha));
+				clearColor.uint32[0] = NumericCast<u32>(TRAP::Math::Round(color.Red));
+				clearColor.uint32[1] = NumericCast<u32>(TRAP::Math::Round(color.Green));
+				clearColor.uint32[2] = NumericCast<u32>(TRAP::Math::Round(color.Blue));
+				clearColor.uint32[3] = NumericCast<u32>(TRAP::Math::Round(color.Alpha));
 			}
 			else /*if(ImageFormatIsSigned(format))*/
 			{
-				clearColor.int32[0] = NumericCast<int32_t>(TRAP::Math::Round(color.Red));
-				clearColor.int32[1] = NumericCast<int32_t>(TRAP::Math::Round(color.Green));
-				clearColor.int32[2] = NumericCast<int32_t>(TRAP::Math::Round(color.Blue));
-				clearColor.int32[3] = NumericCast<int32_t>(TRAP::Math::Round(color.Alpha));
+				clearColor.int32[0] = NumericCast<i32>(TRAP::Math::Round(color.Red));
+				clearColor.int32[1] = NumericCast<i32>(TRAP::Math::Round(color.Green));
+				clearColor.int32[2] = NumericCast<i32>(TRAP::Math::Round(color.Blue));
+				clearColor.int32[3] = NumericCast<i32>(TRAP::Math::Round(color.Alpha));
 			}
 		}
 		else
 		{
-			clearColor.float32[0] = NumericCast<float>(color.Red);
-			clearColor.float32[1] = NumericCast<float>(color.Green);
-			clearColor.float32[2] = NumericCast<float>(color.Blue);
-			clearColor.float32[3] = NumericCast<float>(color.Alpha);
+			clearColor.float32[0] = NumericCast<f32>(color.Red);
+			clearColor.float32[1] = NumericCast<f32>(color.Green);
+			clearColor.float32[2] = NumericCast<f32>(color.Blue);
+			clearColor.float32[3] = NumericCast<f32>(color.Alpha);
 		}
 	}
 
@@ -1191,9 +1191,9 @@ namespace TRAP::Graphics::API::VulkanInits
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkPipelineVertexInputStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineVertexInputStateCreateInfo(const uint32_t inputBindingCount,
+[[nodiscard]] constexpr VkPipelineVertexInputStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineVertexInputStateCreateInfo(const u32 inputBindingCount,
 	                                                                                                                              const VkVertexInputBindingDescription* const inputBindings,
-	                                                                                                                              const uint32_t inputAttributeCount,
+	                                                                                                                              const u32 inputAttributeCount,
 	                                                                                                                              const VkVertexInputAttributeDescription* const inputAttributes) noexcept
 {
 	return VkPipelineVertexInputStateCreateInfo
@@ -1225,7 +1225,7 @@ namespace TRAP::Graphics::API::VulkanInits
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr VkPipelineTessellationStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineTessellationStateCreateInfo(const uint32_t patchControlPoints) noexcept
+[[nodiscard]] constexpr VkPipelineTessellationStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineTessellationStateCreateInfo(const u32 patchControlPoints) noexcept
 {
 	return VkPipelineTessellationStateCreateInfo
 	{
@@ -1256,7 +1256,7 @@ namespace TRAP::Graphics::API::VulkanInits
 
 [[nodiscard]] constexpr VkPipelineMultisampleStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineMultisampleStateCreateInfo(const VkSampleCountFlagBits sampleCount,
 	                                                                                                                              const bool sampleShading,
-																										                          const float sampleShadingRate) noexcept
+																										                          const f32 sampleShadingRate) noexcept
 {
 	return VkPipelineMultisampleStateCreateInfo
 	{

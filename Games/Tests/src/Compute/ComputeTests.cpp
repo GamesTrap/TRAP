@@ -98,7 +98,7 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
         shader->Use();
 
         //Set push constants
-        static constexpr float brightness = 1.0f;
+        static constexpr f32 brightness = 1.0f;
         TRAP::Graphics::RenderCommand::SetPushConstants("BrightnessRootConstant", &brightness, sizeof(brightness),
                                                         TRAP::Graphics::QueueType::Compute);
 
@@ -137,7 +137,7 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
     if (m_titleTimer.Elapsed() >= 0.025f)
     {
         m_titleTimer.Reset();
-        constinit static std::size_t frameTimeIndex = 0;
+        constinit static usize frameTimeIndex = 0;
         if (frameTimeIndex < m_frameTimeHistory.size() - 1)
         {
             m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
@@ -165,13 +165,13 @@ void ComputeTests::OnImGuiRender()
     ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
     ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
     ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
-    ImGui::PlotLines("", m_frameTimeHistory.data(), NumericCast<int32_t>(m_frameTimeHistory.size()), 0, nullptr, 0,
+    ImGui::PlotLines("", m_frameTimeHistory.data(), NumericCast<i32>(m_frameTimeHistory.size()), 0, nullptr, 0,
                      33, ImVec2(200, 50));
     ImGui::Separator();
     static constexpr std::array<std::string_view, 4> shaders{"Disabled", "Sharpen", "Emboss", "Edge Detection"};
     static constexpr std::array<const char*, 4> shadersC{std::get<0>(shaders).data(), std::get<1>(shaders).data(), std::get<2>(shaders).data(), std::get<3>(shaders).data()};
-    constinit static int32_t currentItem = 0;
-    int32_t oldItem = currentItem;
+    constinit static i32 currentItem = 0;
+    i32 oldItem = currentItem;
     ImGui::Combo("##Compute shader", &currentItem, shadersC.data(), shadersC.size());
     if(currentItem != oldItem)
     {

@@ -68,10 +68,10 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::filesystem::path filepath)
 			//GrayScale
 			m_colorFormat = ColorFormat::GrayScale;
 			m_bitsPerPixel = 16;
-			m_data2Byte.resize(NumericCast<std::size_t>(m_width) * m_height);
+			m_data2Byte.resize(NumericCast<usize>(m_width) * m_height);
 			if(!file.read(reinterpret_cast<char*>(m_data2Byte.data()),
 			              NumericCast<std::streamsize>(m_width) * m_height *
-						  NumericCast<std::streamsize>(sizeof(uint16_t))))
+						  NumericCast<std::streamsize>(sizeof(u16))))
 			{
 				file.close();
 				TP_ERROR(Log::ImagePNMPrefix, "Couldn't load pixel data!");
@@ -84,10 +84,10 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::filesystem::path filepath)
 			//RGB
 			m_colorFormat = ColorFormat::RGB;
 			m_bitsPerPixel = 48;
-			m_data2Byte.resize(NumericCast<std::size_t>(m_width) * m_height * 3);
+			m_data2Byte.resize(NumericCast<usize>(m_width) * m_height * 3);
 			if (!file.read(reinterpret_cast<char*>(m_data2Byte.data()),
 						   NumericCast<std::streamsize>(m_width) * m_height * 3 *
-						   NumericCast<std::streamsize>(sizeof(uint16_t))))
+						   NumericCast<std::streamsize>(sizeof(u16))))
 			{
 				file.close();
 				TP_ERROR(Log::ImagePNMPrefix, "Couldn't load pixel data!");
@@ -102,7 +102,7 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::filesystem::path filepath)
 		//Convert to machines endian
 		if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 		{
-			for (uint16_t& element : m_data2Byte)
+			for (u16& element : m_data2Byte)
 				Utils::Memory::SwapBytes(element);
 		}
 	}
@@ -113,7 +113,7 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::filesystem::path filepath)
 			//GrayScale
 			m_colorFormat = ColorFormat::GrayScale;
 			m_bitsPerPixel = 8;
-			m_data.resize(NumericCast<std::size_t>(m_width) * m_height);
+			m_data.resize(NumericCast<usize>(m_width) * m_height);
 			if(!file.read(reinterpret_cast<char*>(m_data.data()),
 						  NumericCast<std::streamsize>(m_width) * m_height))
 			{
@@ -128,7 +128,7 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::filesystem::path filepath)
 			//RGB
 			m_colorFormat = ColorFormat::RGB;
 			m_bitsPerPixel = 24;
-			m_data.resize(NumericCast<std::size_t>(m_width) * m_height * 3);
+			m_data.resize(NumericCast<usize>(m_width) * m_height * 3);
 			if (!file.read(reinterpret_cast<char*>(m_data.data()),
 						   NumericCast<std::streamsize>(m_width) * m_height * 3))
 			{

@@ -115,7 +115,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 	bool arrayRequired = false;
 
 	const bool isPlanarFormat = TRAP::Graphics::API::ImageFormatIsPlanar(desc.Format);
-	const uint32_t numOfPlanes = TRAP::Graphics::API::ImageFormatNumOfPlanes(desc.Format);
+	const u32 numOfPlanes = TRAP::Graphics::API::ImageFormatNumOfPlanes(desc.Format);
 	const bool isSinglePlane = TRAP::Graphics::API::ImageFormatIsSinglePlane(desc.Format);
 	TRAP_ASSERT(((isSinglePlane && numOfPlanes == 1) || (!isSinglePlane && numOfPlanes > 1 && numOfPlanes <= 3)),
 				"VulkanTexture::Init(): Number of planes for multi-planar formats must be 2 or 3 and for single-planar "
@@ -223,11 +223,11 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 		const bool lazyAllocation = (desc.Flags & RendererAPI::TextureCreationFlags::OnTile) != RendererAPI::TextureCreationFlags::None;
 		if (lazyAllocation)
 		{
-			uint32_t memoryTypeIndex = 0;
+			u32 memoryTypeIndex = 0;
 			VmaAllocationCreateInfo lazyMemReqs = memReqs;
 			lazyMemReqs.usage = VMA_MEMORY_USAGE_GPU_LAZILY_ALLOCATED;
 			const VkResult result = vmaFindMemoryTypeIndex(m_vma->GetVMAAllocator(),
-													       std::numeric_limits<uint32_t>::max(),
+													       std::numeric_limits<u32>::max(),
 													       &lazyMemReqs, &memoryTypeIndex);
 			if (result == VK_SUCCESS)
 			{
@@ -270,7 +270,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 			VkCall(vkCreateImage(m_device->GetVkDevice(), &info, nullptr, &m_vkImage));
 
 			VkMemoryRequirements memReq{};
-			std::vector<uint64_t> planeOffsets(3);
+			std::vector<u64> planeOffsets(3);
 			UtilGetPlanarVkImageMemoryRequirement(m_device->GetVkDevice(), m_vkImage, numOfPlanes, memReq,
 												  planeOffsets);
 
@@ -286,7 +286,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 			// Bind planes to their memories
 			std::vector<VkBindImageMemoryInfo> bindImagesMemoryInfo(3);
 			std::vector<VkBindImagePlaneMemoryInfo> bindImagePlanesMemoryInfo(3);
-			for (uint32_t i = 0; i < numOfPlanes; ++i)
+			for (u32 i = 0; i < numOfPlanes; ++i)
 			{
 				VkBindImagePlaneMemoryInfo &bindImagePlaneMemoryInfo = bindImagePlanesMemoryInfo[i];
 				bindImagePlaneMemoryInfo.sType = VK_STRUCTURE_TYPE_BIND_IMAGE_PLANE_MEMORY_INFO;
@@ -365,7 +365,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 		if (uavDesc.viewType == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY || uavDesc.viewType == VK_IMAGE_VIEW_TYPE_CUBE)
 			uavDesc.viewType = VK_IMAGE_VIEW_TYPE_2D_ARRAY;
 		uavDesc.subresourceRange.levelCount = 1;
-		for (uint32_t i = 0; i < desc.MipLevels; ++i)
+		for (u32 i = 0; i < desc.MipLevels; ++i)
 		{
 			uavDesc.subresourceRange.baseMipLevel = i;
 			VkCall(vkCreateImageView(m_device->GetVkDevice(), &uavDesc, nullptr, &m_vkUAVDescriptors[i]));
@@ -402,9 +402,9 @@ void TRAP::Graphics::API::VulkanTexture::SetTextureName(const std::string_view n
 		return;
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<uint64_t>(m_vkImage), VK_OBJECT_TYPE_IMAGE, name);
+	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkImage), VK_OBJECT_TYPE_IMAGE, name);
 #else
-	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<uint64_t>(m_vkImage), VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_EXT, name);
+	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkImage), VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_EXT, name);
 #endif
 }
 
@@ -437,7 +437,7 @@ void TRAP::Graphics::API::VulkanTexture::Shutdown()
 
 	if (!m_vkUAVDescriptors.empty())
 	{
-		for (uint32_t i = 0; i < m_mipLevels; ++i)
+		for (u32 i = 0; i < m_mipLevels; ++i)
 			vkDestroyImageView(m_device->GetVkDevice(), m_vkUAVDescriptors[i], nullptr);
 
 		m_vkUAVDescriptors.clear();
@@ -469,11 +469,11 @@ void TRAP::Graphics::API::VulkanTexture::PreInit()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanTexture::GetMemoryType(uint32_t typeBits,
+[[nodiscard]] u32 TRAP::Graphics::API::VulkanTexture::GetMemoryType(u32 typeBits,
 														                 const VkPhysicalDeviceMemoryProperties &memProps,
 														                 const VkMemoryPropertyFlags props, VkBool32* const memTypeFound)
 {
-	for (uint32_t i = 0; i < memProps.memoryTypeCount; i++)
+	for (u32 i = 0; i < memProps.memoryTypeCount; i++)
 	{
 		if ((typeBits & 1u) == 1)
 		{

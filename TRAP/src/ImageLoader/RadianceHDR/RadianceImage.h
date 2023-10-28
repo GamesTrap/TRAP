@@ -45,10 +45,10 @@ namespace TRAP::INTERNAL
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		[[nodiscard]] constexpr uint64_t GetPixelDataSize() const noexcept override;
+		[[nodiscard]] constexpr u64 GetPixelDataSize() const noexcept override;
 
 	private:
-		using RGBE = std::array<uint8_t, 4>;
+		using RGBE = std::array<u8, 4>;
 
 		/// <summary>
 		/// Convert exponent and value to floating point.
@@ -57,7 +57,7 @@ namespace TRAP::INTERNAL
 		/// <param name="exponent">Exponent.</param>
 		/// <param name="value">Value.</param>
 		/// <returns>Floating point value.</returns>
-		[[nodiscard]] static float ConvertComponent(int8_t exponent, int32_t value);
+		[[nodiscard]] static f32 ConvertComponent(i8 exponent, i32 value);
 		/// <summary>
 		/// Decode the given scanline.
 		/// Used for RLE encoding and uncompressed data.
@@ -66,7 +66,7 @@ namespace TRAP::INTERNAL
 		/// <param name="length">Scanline length.</param>
 		/// <param name="file">Open Radiance HDR file.</param>
 		/// <returns>True if successful, false otherwise.</returns>
-		[[nodiscard]] static bool Decrunch(std::vector<RGBE>& scanline, uint32_t length, std::ifstream& file);
+		[[nodiscard]] static bool Decrunch(std::vector<RGBE>& scanline, u32 length, std::ifstream& file);
 		/// <summary>
 		/// Decode the given scanline.
 		/// Used for old RLE encoding.
@@ -76,15 +76,15 @@ namespace TRAP::INTERNAL
 		/// <param name="length">Scanline length.</param>
 		/// <param name="file">Open Radiance HDR file.</param>
 		/// <returns>True if successful, false otherwise.</returns>
-		[[nodiscard]] static bool OldDecrunch(std::vector<RGBE>& scanline, uint32_t scanlineIndex,
-		                                      uint32_t length, std::ifstream& file);
+		[[nodiscard]] static bool OldDecrunch(std::vector<RGBE>& scanline, u32 scanlineIndex,
+		                                      u32 length, std::ifstream& file);
 		/// <summary>
 		/// Extract color values from the scanlines.
 		/// </summary>
 		/// <param name="scanline">Scanlines.</param>
 		/// <param name="data">Output storage for color data.</param>
 		/// <param name="dataIndex">Index in the output storage to store data at.</param>
-		void WorkOnRGBE(std::vector<RGBE>& scanline, std::vector<float>& data, uint64_t dataIndex);
+		void WorkOnRGBE(std::vector<RGBE>& scanline, std::vector<f32>& data, u64 dataIndex);
 
 		/// <summary>
 		/// Check if file contains the magic number "#?".
@@ -119,14 +119,14 @@ namespace TRAP::INTERNAL
 		[[nodiscard]] static std::optional<TRAP::Math::Vec2ui> RetrieveImageResolution(std::ifstream& file, bool& outNeedXFlip, bool& outNeedYFlip,
 		                                                                               bool& outNeedRotateClockwise, bool& outNeedRotateCounterClockwise);
 
-		std::vector<float> m_data;
+		std::vector<f32> m_data;
 
-		inline static constexpr uint32_t MinEncodingLength = 8; //Minimum scanline length for encoding
-		inline static constexpr uint32_t MaxEncodingLength = 0x7FFF; //Maximum scanline length for encoding
-		inline static constexpr uint32_t R = 0;
-		inline static constexpr uint32_t G = 1;
-		inline static constexpr uint32_t B = 2;
-		inline static constexpr uint32_t E = 3;
+		inline static constexpr u32 MinEncodingLength = 8; //Minimum scanline length for encoding
+		inline static constexpr u32 MaxEncodingLength = 0x7FFF; //Maximum scanline length for encoding
+		inline static constexpr u32 R = 0;
+		inline static constexpr u32 G = 1;
+		inline static constexpr u32 B = 2;
+		inline static constexpr u32 E = 3;
 	};
 }
 
@@ -139,9 +139,9 @@ namespace TRAP::INTERNAL
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint64_t TRAP::INTERNAL::RadianceImage::GetPixelDataSize() const noexcept
+[[nodiscard]] constexpr u64 TRAP::INTERNAL::RadianceImage::GetPixelDataSize() const noexcept
 {
-	return m_data.size() * sizeof(float);
+	return m_data.size() * sizeof(f32);
 }
 
 #endif /*TRAP_IMAGE_RADIANCE_H*/

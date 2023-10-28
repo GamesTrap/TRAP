@@ -68,7 +68,7 @@ TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, TRAP::Windo
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::KeyTypeEvent::KeyTypeEvent(const uint32_t codePoint, TRAP::Window* window)
+TRAP::Events::KeyTypeEvent::KeyTypeEvent(const u32 codePoint, TRAP::Window* window)
 	: m_window(window), m_codePoint(codePoint)
 {
 	TRAP_ASSERT(window, "Events::KeyTypeEvent(): Window is nullptr!");

@@ -1,6 +1,7 @@
 #ifndef TRAP_STRING_H
 #define TRAP_STRING_H
 
+#include "Core/Types.h"
 #include "Window/Window.h"
 #include "Graphics/API/RendererAPI.h"
 #include "FileSystem/FileWatcher.h"
@@ -231,7 +232,7 @@ namespace TRAP::Utils::String
 	/// <param name="string">String to count occurrences.</param>
 	/// <param name="delimiter">Delimiter to find.</param>
 	/// <returns>Number of occurrences of the delimiter inside the given string.</returns>
-	[[nodiscard]] constexpr int64_t GetCount(std::string_view str, char delimiter);
+	[[nodiscard]] constexpr i64 GetCount(std::string_view str, char delimiter);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -292,7 +293,7 @@ namespace TRAP::Utils::String
 	/// </summary>
 	/// <param name="codePoint">Unicode code point</param>
 	/// <returns>UTF-8 chars.</returns>
-	[[nodiscard]] constexpr std::string EncodeUTF8(uint32_t codePoint);
+	[[nodiscard]] constexpr std::string EncodeUTF8(u32 codePoint);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -317,8 +318,8 @@ namespace TRAP::Utils::String
 [[nodiscard]] constexpr std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::string_view str,
                                                                                            const std::string_view delimiters)
 {
-	std::size_t start = 0;
-	std::size_t end = str.find_first_of(delimiters);
+	usize start = 0;
+	usize end = str.find_first_of(delimiters);
 
 	std::vector<std::string_view> result;
 
@@ -356,8 +357,8 @@ namespace TRAP::Utils::String
 [[nodiscard]] constexpr std::vector<std::string> TRAP::Utils::String::SplitString(const std::string& str,
                                                                                   const std::string_view delimiters)
 {
-	std::size_t start = 0;
-	std::size_t end = str.find_first_of(delimiters);
+	usize start = 0;
+	usize end = str.find_first_of(delimiters);
 
 	std::vector<std::string> result;
 
@@ -466,7 +467,7 @@ namespace TRAP::Utils::String
 
 [[nodiscard]] constexpr std::string_view TRAP::Utils::String::GetSuffixStringView(const std::string_view name)
 {
-	const std::size_t pos = name.rfind('.');
+	const usize pos = name.rfind('.');
 
 	return (pos == std::string::npos) ? std::string_view() : name.substr(pos + 1);
 }
@@ -475,7 +476,7 @@ namespace TRAP::Utils::String
 
 [[nodiscard]] constexpr std::string TRAP::Utils::String::GetSuffix(const std::string& name)
 {
-	const std::size_t pos = name.rfind('.');
+	const usize pos = name.rfind('.');
 
 	return (pos == std::string::npos) ? "" : name.substr(pos + 1);
 }
@@ -551,7 +552,7 @@ namespace TRAP::Utils::String
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr int64_t TRAP::Utils::String::GetCount(const std::string_view str, const char delimiter)
+[[nodiscard]] constexpr i64 TRAP::Utils::String::GetCount(const std::string_view str, const char delimiter)
 {
 	return std::ranges::count(str, delimiter);
 }
@@ -574,7 +575,7 @@ namespace TRAP::Utils::String
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::string TRAP::Utils::String::EncodeUTF8(const uint32_t codePoint)
+[[nodiscard]] constexpr std::string TRAP::Utils::String::EncodeUTF8(const u32 codePoint)
 {
 	std::string result{};
 	result.reserve(4);

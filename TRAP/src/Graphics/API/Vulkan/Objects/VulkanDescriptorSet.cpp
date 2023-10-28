@@ -12,12 +12,12 @@ TRAP::Graphics::API::VulkanDescriptorSet::VulkanDescriptorSet(TRAP::Ref<VulkanDe
 	                                                          std::vector<VkDescriptorSet> vkDescriptorSetHandles,
 	                                                          TRAP::Ref<VulkanRootSignature> rootSignature,
 	                                                          std::vector<std::vector<VulkanRenderer::DescriptorUpdateData>> updateData,
-	                                                          const uint32_t maxSets, const uint8_t dynamicOffsetCount,
-	                                                          const uint32_t set)
+	                                                          const u32 maxSets, const u8 dynamicOffsetCount,
+	                                                          const u32 set)
 		: m_vkDescriptorSetHandles(std::move(vkDescriptorSetHandles)),
 		  m_rootSignature(std::move(rootSignature)),
 		  m_updateData(std::move(updateData)),
-		  m_dynamicSizeOffsets(NumericCast<std::size_t>(dynamicOffsetCount) * maxSets),
+		  m_dynamicSizeOffsets(NumericCast<usize>(dynamicOffsetCount) * maxSets),
 		  m_maxSets(maxSets),
 		  m_dynamicOffsetCount(dynamicOffsetCount),
 		  m_set(set),
@@ -41,7 +41,7 @@ TRAP::Graphics::API::VulkanDescriptorSet::VulkanDescriptorSet(TRAP::Ref<VulkanDe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
+void TRAP::Graphics::API::VulkanDescriptorSet::Update(const u32 index,
                                                       const std::vector<RendererAPI::DescriptorData>& params)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -68,7 +68,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 
 	std::vector<VkWriteDescriptorSet> rayTracingWrites;
 	std::vector<VkWriteDescriptorSetAccelerationStructureKHR> rayTracingWritesKHR;
-	const uint32_t rayTracingWriteCount = 0; //TODO Use
+	const u32 rayTracingWriteCount = 0; //TODO Use
 
 	if(rootSignature->GetVkRayTracingDescriptorCounts()[m_set] != 0u)
 	{
@@ -78,15 +78,15 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 
 	for (const auto& param : params)
 	{
-		const uint32_t paramIndex = param.Index;
+		const u32 paramIndex = param.Index;
 
-		VALIDATE_DESCRIPTOR(!param.Name.empty() || (paramIndex != std::numeric_limits<uint32_t>::max()),
+		VALIDATE_DESCRIPTOR(!param.Name.empty() || (paramIndex != std::numeric_limits<u32>::max()),
 		                    "DescriptorData has nullptr name and invalid index");
 
-		const RendererAPI::DescriptorInfo* const desc = (paramIndex != std::numeric_limits<uint32_t>::max()) ?
+		const RendererAPI::DescriptorInfo* const desc = (paramIndex != std::numeric_limits<u32>::max()) ?
 		                                                (&rootSignature->GetDescriptors()[paramIndex]) :
 												        rootSignature->GetDescriptor(param.Name.c_str());
-		if(paramIndex != std::numeric_limits<uint32_t>::max())
+		if(paramIndex != std::numeric_limits<u32>::max())
 		{
 			VALIDATE_DESCRIPTOR(desc, "Invalid descriptor with param index ", paramIndex);
 		}
@@ -96,7 +96,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 		}
 
 		const RendererAPI::DescriptorType type = desc->Type;
-		const uint32_t arrayCount = TRAP::Math::Max(1U, param.Count);
+		const u32 arrayCount = TRAP::Math::Max(1U, param.Count);
 
 		VALIDATE_DESCRIPTOR(desc->Set == m_set, fmt::format("Descriptor {} - Mismatching set index", desc->Name));
 
@@ -105,18 +105,18 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 		case RendererAPI::DescriptorType::Sampler:
 		{
 			//Index is invalid when descriptor is a static sampler
-			VALIDATE_DESCRIPTOR(desc->IndexInParent != std::numeric_limits<uint32_t>::max(),
+			VALIDATE_DESCRIPTOR(desc->IndexInParent != std::numeric_limits<u32>::max(),
 			                    fmt::format("Trying to update a static sampler ({}). All static samplers must be "
 								            "set in RootSignature constructor and cannot be updated later", desc->Name));
 
 			const std::vector<Sampler*>& samplers = std::get<std::vector<Sampler*>>(param.Resource);
 			VALIDATE_DESCRIPTOR(!samplers.empty(), fmt::format("Empty Sampler ({})", desc->Name));
 
-			for(uint32_t arr = 0; arr < arrayCount; ++arr)
+			for(u32 arr = 0; arr < arrayCount; ++arr)
 			{
 				VALIDATE_DESCRIPTOR(samplers[arr], fmt::format("nullptr Sampler ({} [{}])", desc->Name, arr));
 
-				updateData[NumericCast<std::size_t>(desc->HandleIndex) + arr].ImageInfo =
+				updateData[NumericCast<usize>(desc->HandleIndex) + arr].ImageInfo =
 				{
 					dynamic_cast<VulkanSampler*>(samplers[arr])->GetVkSampler(),
 					VK_NULL_HANDLE,
@@ -138,11 +138,11 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 				TRAP_ASSERT(false, "VulkanDescriptorSet::Update(): No Static Sampler called (" + desc->Name + ")");
 			}
 
-			for(uint32_t arr = 0; arr < arrayCount; ++arr)
+			for(u32 arr = 0; arr < arrayCount; ++arr)
 			{
 				VALIDATE_DESCRIPTOR(textures[arr], fmt::format("nullptr Texture ({} [{}])", desc->Name, arr));
 
-				updateData[NumericCast<std::size_t>(desc->HandleIndex) + arr].ImageInfo =
+				updateData[NumericCast<usize>(desc->HandleIndex) + arr].ImageInfo =
 				{
 					nullptr, //Sampler
 					std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(textures[arr])->GetSRVVkImageView(), //Image View
@@ -161,11 +161,11 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 
 			if(!std::get<bool>(param.Offset))
 			{
-				for(uint32_t arr = 0; arr < arrayCount; ++arr)
+				for(u32 arr = 0; arr < arrayCount; ++arr)
 				{
 					VALIDATE_DESCRIPTOR(textures[arr], fmt::format("nullptr Texture ({} [{}])", desc->Name, arr));
 
-					updateData[NumericCast<std::size_t>(desc->HandleIndex) + arr].ImageInfo =
+					updateData[NumericCast<usize>(desc->HandleIndex) + arr].ImageInfo =
 					{
 						VK_NULL_HANDLE, //Sampler
 						std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(textures[arr])->GetSRVVkImageView(), //Image View
@@ -177,11 +177,11 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 			}
 			else
 			{
-				for(uint32_t arr = 0; arr < arrayCount; ++arr)
+				for(u32 arr = 0; arr < arrayCount; ++arr)
 				{
 					VALIDATE_DESCRIPTOR(textures[arr], fmt::format("nullptr Texture ({} [{}])", desc->Name, arr));
 
-					updateData[NumericCast<std::size_t>(desc->HandleIndex) + arr].ImageInfo =
+					updateData[NumericCast<usize>(desc->HandleIndex) + arr].ImageInfo =
 					{
 						VK_NULL_HANDLE, //Sampler
 						std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(textures[arr])->GetSRVStencilVkImageView(), //Image View
@@ -203,9 +203,9 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 			{
 				VALIDATE_DESCRIPTOR(textures[0], fmt::format("nullptr RW Texture ({})", desc->Name));
 
-				for (uint32_t arr = 0; arr < arrayCount; ++arr)
+				for (u32 arr = 0; arr < arrayCount; ++arr)
 				{
-					updateData[NumericCast<std::size_t>(desc->HandleIndex) + arr].ImageInfo =
+					updateData[NumericCast<usize>(desc->HandleIndex) + arr].ImageInfo =
 					{
 						VK_NULL_HANDLE, //Sampler
 						std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(textures[0])->GetUAVVkImageViews()[arr], //Image View
@@ -217,19 +217,19 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 			}
 			else
 			{
-				const uint32_t mipSlice = std::get<TRAP::Graphics::RendererAPI::DescriptorData::TextureSlice>
+				const u32 mipSlice = std::get<TRAP::Graphics::RendererAPI::DescriptorData::TextureSlice>
 					(
 						param.Offset
 					).UAVMipSlice;
 
-				for(uint32_t arr = 0; arr < arrayCount; ++arr)
+				for(u32 arr = 0; arr < arrayCount; ++arr)
 				{
 					VALIDATE_DESCRIPTOR(textures[arr], fmt::format("nullptr RW Texture ({} [{}])", desc->Name, arr));
 					VALIDATE_DESCRIPTOR(mipSlice < textures[arr]->GetMipLevels(),
 					                    fmt::format("Descriptor: ({} [{}]) Mip Slice ({}) exceeds mip levels ({})",
 										desc->Name, arr, mipSlice, textures[arr]->GetMipLevels()));
 
-					updateData[NumericCast<std::size_t>(desc->HandleIndex) + arr].ImageInfo =
+					updateData[NumericCast<usize>(desc->HandleIndex) + arr].ImageInfo =
 					{
 						VK_NULL_HANDLE, //Sampler
 						std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(textures[arr])->GetUAVVkImageViews()[mipSlice], //Image View
@@ -257,9 +257,9 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 					                fmt::format("Descriptor ({}) - Sizes[0] is {} which exceeds max size {}",
 									            desc->Name, off.Sizes[0], RendererAPI::GPUSettings.MaxUniformBufferRange));
 
-				m_dynamicSizeOffsets[index].Offset = !off.Offsets.empty() ? NumericCast<uint32_t>(off.Offsets[0]) : 0u;
+				m_dynamicSizeOffsets[index].Offset = !off.Offsets.empty() ? NumericCast<u32>(off.Offsets[0]) : 0u;
 				const VulkanBuffer* const buf = dynamic_cast<VulkanBuffer*>(buffers[0]);
-				updateData[NumericCast<std::size_t>(desc->HandleIndex) + 0u].BufferInfo =
+				updateData[NumericCast<usize>(desc->HandleIndex) + 0u].BufferInfo =
 				{
 					buf->GetVkBuffer(),
 					buf->GetOffset(),
@@ -270,7 +270,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 				//vkUpdateDescriptorSet is necessary
 				if (off.Sizes[0] != m_dynamicSizeOffsets[index].Size)
 				{
-					m_dynamicSizeOffsets[index].Size = NumericCast<uint32_t>(off.Sizes[0]);
+					m_dynamicSizeOffsets[index].Size = NumericCast<u32>(off.Sizes[0]);
 					update = true;
 				}
 				break;
@@ -287,12 +287,12 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 			const std::vector<Buffer*>& buffers = std::get<std::vector<Buffer*>>(param.Resource);
 			VALIDATE_DESCRIPTOR(!buffers.empty(), fmt::format("Empty Buffer ({})", desc->Name));
 
-			for (uint32_t arr = 0; arr < arrayCount; ++arr)
+			for (u32 arr = 0; arr < arrayCount; ++arr)
 			{
 				VALIDATE_DESCRIPTOR(buffers[arr], fmt::format("nullptr Buffer ({} [{}])", desc->Name, arr));
 
 				const VulkanBuffer* const buf = dynamic_cast<VulkanBuffer*>(buffers[arr]);
-				updateData[NumericCast<std::size_t>(desc->HandleIndex) + arr].BufferInfo =
+				updateData[NumericCast<usize>(desc->HandleIndex) + arr].BufferInfo =
 				{
 					buf->GetVkBuffer(),
 					buf->GetOffset(),
@@ -308,8 +308,8 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 						                fmt::format("Descriptor ({}) - Sizes[{}] is {} which exceeds max size {}",
 										            desc->Name, arr, off.Sizes[arr], RendererAPI::GPUSettings.MaxStorageBufferRange));
 
-					updateData[NumericCast<std::size_t>(desc->HandleIndex) + arr].BufferInfo.offset = off.Offsets[arr];
-					updateData[NumericCast<std::size_t>(desc->HandleIndex) + arr].BufferInfo.range = off.Sizes[arr];
+					updateData[NumericCast<usize>(desc->HandleIndex) + arr].BufferInfo.offset = off.Offsets[arr];
+					updateData[NumericCast<usize>(desc->HandleIndex) + arr].BufferInfo.range = off.Sizes[arr];
 				}
 
 				update = true;
@@ -324,10 +324,10 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 			const std::vector<Buffer*>& buffers = std::get<std::vector<Buffer*>>(param.Resource);
 			VALIDATE_DESCRIPTOR(!buffers.empty(), fmt::format("Empty Texel Buffer ({})", desc->Name));
 
-			for(uint32_t arr = 0; arr < arrayCount; ++arr)
+			for(u32 arr = 0; arr < arrayCount; ++arr)
 			{
 				VALIDATE_DESCRIPTOR(buffers[arr], fmt::format("nullptr Texel Buffer ({} [{}])", desc->Name, arr));
-				updateData[NumericCast<std::size_t>(desc->HandleIndex) + arr].BufferView = dynamic_cast<VulkanBuffer*>
+				updateData[NumericCast<usize>(desc->HandleIndex) + arr].BufferView = dynamic_cast<VulkanBuffer*>
 					(
 						buffers[arr]
 					)->GetUniformTexelView();
@@ -342,10 +342,10 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 			const std::vector<Buffer*>& buffers = std::get<std::vector<Buffer*>>(param.Resource);
 			VALIDATE_DESCRIPTOR(!buffers.empty(), fmt::format("Empty RW Texel Buffer ({})", desc->Name));
 
-			for (uint32_t arr = 0; arr < arrayCount; ++arr)
+			for (u32 arr = 0; arr < arrayCount; ++arr)
 			{
 				VALIDATE_DESCRIPTOR(buffers[arr], fmt::format("nullptr RW Texel Buffer ({} [{}])", desc->Name, arr));
-				updateData[NumericCast<std::size_t>(desc->HandleIndex) + arr].BufferView = dynamic_cast<VulkanBuffer*>
+				updateData[NumericCast<usize>(desc->HandleIndex) + arr].BufferView = dynamic_cast<VulkanBuffer*>
 					(
 						buffers[arr]
 					)->GetStorageTexelView();

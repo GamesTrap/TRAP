@@ -28,7 +28,7 @@ TRAP::Graphics::API::VulkanSampler::~VulkanSampler()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanSampler::UpdateAnisotropy(const float anisotropy)
+void TRAP::Graphics::API::VulkanSampler::UpdateAnisotropy(const f32 anisotropy)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -48,8 +48,8 @@ void TRAP::Graphics::API::VulkanSampler::Init()
 
 	//Default sampler lod values
 	//Used if not overriden by SetLogRange or not Linear mipmaps
-	float minSamplerLod = 0;
-	float maxSampledLod = m_samplerDesc.MipMapMode == RendererAPI::MipMapMode::Linear ? VK_LOD_CLAMP_NONE : 0;
+	f32 minSamplerLod = 0;
+	f32 maxSampledLod = m_samplerDesc.MipMapMode == RendererAPI::MipMapMode::Linear ? VK_LOD_CLAMP_NONE : 0;
 
 	//User provided lods
 	if(m_samplerDesc.SetLodRange)

@@ -88,7 +88,7 @@ void TRAP::Input::ShutdownController()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	for(uint32_t cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
+	for(u32 cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
 	{
 		if(s_controllerInternal[cID].LinuxCon.CurrentVibration)
 			SetControllerVibration(static_cast<Controller>(cID), 0.0f, 0.0f);
@@ -119,7 +119,7 @@ void TRAP::Input::ShutdownController()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::SetControllerVibrationInternal(Controller controller, const float leftMotor, const float rightMotor)
+void TRAP::Input::SetControllerVibrationInternal(Controller controller, const f32 leftMotor, const f32 rightMotor)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
@@ -164,14 +164,14 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 		//Define an effect for this vibration setting
 		ff.type = FF_RUMBLE;
 		ff.id = -1;
-		ff.u.rumble.strong_magnitude = NumericCast<uint16_t>(leftMotor * std::numeric_limits<uint16_t>::max());
-		ff.u.rumble.weak_magnitude = NumericCast<uint16_t>(rightMotor * std::numeric_limits<uint16_t>::max());
-		ff.replay.length = std::numeric_limits<uint16_t>::max();
+		ff.u.rumble.strong_magnitude = NumericCast<u16>(leftMotor * std::numeric_limits<u16>::max());
+		ff.u.rumble.weak_magnitude = NumericCast<u16>(rightMotor * std::numeric_limits<u16>::max());
+		ff.replay.length = std::numeric_limits<u16>::max();
 		ff.replay.delay = 0;
 
 		//Upload the effect
 		if(ioctl(con->LinuxCon.FD, EVIOCSFF, &ff) >= 0)
-			con->LinuxCon.CurrentVibration = NumericCast<uint16_t>(ff.id);
+			con->LinuxCon.CurrentVibration = NumericCast<u16>(ff.id);
 		else
 		{
 			con->LinuxCon.CurrentVibration = std::nullopt;
@@ -210,7 +210,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(std::filesystem::path path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	for(uint32_t cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
+	for(u32 cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
 	{
 		if (!s_controllerInternal[cID].Connected)
 			continue;
@@ -233,9 +233,9 @@ bool TRAP::Input::OpenControllerDeviceLinux(std::filesystem::path path)
 		return false;
 	}
 
-	const std::array<uint8_t, (EV_CNT + 7) / 8> EVBits{};
-	const std::array<uint8_t, (KEY_CNT + 7) / 8> keyBits{};
-	const std::array<uint8_t, (ABS_CNT + 7) / 8> ABSBits{};
+	const std::array<u8, (EV_CNT + 7) / 8> EVBits{};
+	const std::array<u8, (KEY_CNT + 7) / 8> keyBits{};
+	const std::array<u8, (ABS_CNT + 7) / 8> ABSBits{};
 	input_id ID{};
 
 	if (ioctl(LinuxCon.FD, EVIOCGBIT(0, EVBits.size()), EVBits.data()) < 0 ||
@@ -297,8 +297,8 @@ bool TRAP::Input::OpenControllerDeviceLinux(std::filesystem::path path)
 
 	std::erase(name, '\0');
 
-	int axisCount = 0, buttonCount = 0, dpadCount = 0;
-	for(uint32_t code = BTN_MISC; code < KEY_CNT; code++)
+	i32 axisCount = 0, buttonCount = 0, dpadCount = 0;
+	for(u32 code = BTN_MISC; code < KEY_CNT; code++)
 	{
 		if((keyBits[code / 8u] & (1u << (code % 8u))) == 0u)
 			continue;
@@ -307,7 +307,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(std::filesystem::path path)
 		buttonCount++;
 	}
 
-	for(uint32_t code = 0; code < ABS_CNT; code++)
+	for(u32 code = 0; code < ABS_CNT; code++)
 	{
 		LinuxCon.ABSMap[code] = -1;
 		if((ABSBits[code / 8u] & (1u << (code % 8u))) == 0u)
@@ -330,9 +330,9 @@ bool TRAP::Input::OpenControllerDeviceLinux(std::filesystem::path path)
 		}
 	}
 
-	ControllerInternal* const con = AddInternalController(name, guid, NumericCast<uint32_t>(axisCount),
-	                                                      NumericCast<uint32_t>(buttonCount),
-														  NumericCast<uint32_t>(dpadCount));
+	ControllerInternal* const con = AddInternalController(name, guid, NumericCast<u32>(axisCount),
+	                                                      NumericCast<u32>(buttonCount),
+														  NumericCast<u32>(dpadCount));
 	if(con == nullptr)
 	{
 		if(close(LinuxCon.FD) < 0)
@@ -352,7 +352,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(std::filesystem::path path)
 		return false;
 
 	//Get index of our ControllerInternal
-	uint32_t index = 0;
+	u32 index = 0;
 	for (index = 0; index <= std::to_underlying(Controller::Sixteen); index++)
 	{
 		if (&s_controllerInternal[index] == con)
@@ -418,7 +418,7 @@ void TRAP::Input::DetectControllerConnectionLinux()
 
 	while(size > offset)
 	{
-		const inotify_event* const e = reinterpret_cast<const inotify_event*>(&buffer[NumericCast<std::size_t>(offset)]); //Must use reinterpret_cast because of flexible array member
+		const inotify_event* const e = reinterpret_cast<const inotify_event*>(&buffer[NumericCast<usize>(offset)]); //Must use reinterpret_cast because of flexible array member
 
 		offset += NumericCast<ssize_t>(sizeof(inotify_event)) + e->len;
 
@@ -431,7 +431,7 @@ void TRAP::Input::DetectControllerConnectionLinux()
 			OpenControllerDeviceLinux(path);
 		else if((e->mask & IN_DELETE) != 0u)
 		{
-			for(uint32_t cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
+			for(u32 cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
 			{
 				if(s_controllerInternal[cID].LinuxCon.Path == path)
 				{
@@ -499,7 +499,7 @@ void TRAP::Input::PollABSStateLinux(ControllerInternal* const con)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	for (uint32_t code = 0; code < ABS_CNT; code++)
+	for (u32 code = 0; code < ABS_CNT; code++)
 	{
 		if (con->LinuxCon.ABSMap[code] < 0)
 			continue;
@@ -516,38 +516,38 @@ void TRAP::Input::PollABSStateLinux(ControllerInternal* const con)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Apply an EV_ABS event to the specified controller
-void TRAP::Input::HandleABSEventLinux(ControllerInternal* const con, uint32_t code, int32_t value)
+void TRAP::Input::HandleABSEventLinux(ControllerInternal* const con, u32 code, i32 value)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	const int32_t index = con->LinuxCon.ABSMap[code];
+	const i32 index = con->LinuxCon.ABSMap[code];
 
 	if (code >= ABS_HAT0X && code <= ABS_HAT3Y)
 	{
-		static constexpr std::array<std::array<uint8_t, 3>, 3> stateMap =
+		static constexpr std::array<std::array<u8, 3>, 3> stateMap =
 		{
 			{
 				{
-					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Centered)),
-					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Up)),
-					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Down))
+					NumericCast<u8>(std::to_underlying(ControllerDPad::Centered)),
+					NumericCast<u8>(std::to_underlying(ControllerDPad::Up)),
+					NumericCast<u8>(std::to_underlying(ControllerDPad::Down))
 				},
 				{
-					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Left)),
-					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Left_Up)),
-					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Left_Down))
+					NumericCast<u8>(std::to_underlying(ControllerDPad::Left)),
+					NumericCast<u8>(std::to_underlying(ControllerDPad::Left_Up)),
+					NumericCast<u8>(std::to_underlying(ControllerDPad::Left_Down))
 				},
 				{
-					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Right)),
-					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Right_Up)),
-					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Right_Down))
+					NumericCast<u8>(std::to_underlying(ControllerDPad::Right)),
+					NumericCast<u8>(std::to_underlying(ControllerDPad::Right_Up)),
+					NumericCast<u8>(std::to_underlying(ControllerDPad::Right_Down))
 				}
 			}
 		};
 
-		const uint32_t dpad = (code - ABS_HAT0X) / 2u;
-		const uint32_t axis = (code - ABS_HAT0X) % 2u;
-		int32_t* const state = con->LinuxCon.DPads[dpad].data();
+		const u32 dpad = (code - ABS_HAT0X) / 2u;
+		const u32 axis = (code - ABS_HAT0X) % 2u;
+		i32* const state = con->LinuxCon.DPads[dpad].data();
 
 		//NOTE: Looking at several input drivers, it seems all DPad events use
 		//-1 for left / up, 0 for centered and 1 for right / down
@@ -558,18 +558,18 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* const con, uint32_t co
 		else if (value > 0)
 			state[axis] = 2;
 
-		InternalInputControllerDPad(con, index, stateMap[NumericCast<std::size_t>(state[0u])][NumericCast<std::size_t>(state[1u])]);
+		InternalInputControllerDPad(con, index, stateMap[NumericCast<usize>(state[0u])][NumericCast<usize>(state[1u])]);
 	}
 	else
 	{
 		const input_absinfo* const info = &con->LinuxCon.ABSInfo[code];
-		float normalized = NumericCast<float>(value);
+		f32 normalized = NumericCast<f32>(value);
 
-		const int range = info->maximum - info->minimum;
+		const i32 range = info->maximum - info->minimum;
 		if (range != 0)
 		{
 			//Normalize to 0.0f -> 1.0f
-			normalized = (normalized - NumericCast<float>(info->minimum)) / NumericCast<float>(range);
+			normalized = (normalized - NumericCast<f32>(info->minimum)) / NumericCast<f32>(range);
 			//Normalize to -1.0f -> 1.0f
 			normalized = normalized * 2.0f - 1.0f;
 		}
@@ -580,7 +580,7 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* const con, uint32_t co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::HandleKeyEventLinux(ControllerInternal* const con, uint32_t code, int32_t value)
+void TRAP::Input::HandleKeyEventLinux(ControllerInternal* const con, u32 code, i32 value)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 

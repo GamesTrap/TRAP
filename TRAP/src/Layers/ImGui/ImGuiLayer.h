@@ -166,7 +166,7 @@ namespace ImGui
 	/// <param name="fontCfgTemplate">Font configuration template.</param>
 	/// <param name="glyphRanges">Glyph ranges.</param>
 	/// <returns>Pointer to the new font.</returns>
-	ImFont* AddFontFromFileTTF(std::string_view filename, float sizePixels,
+	ImFont* AddFontFromFileTTF(std::string_view filename, f32 sizePixels,
 		                       const ImFontConfig* fontCfgTemplate = nullptr,
 						       const ImWchar* glyphRanges = nullptr);
 	/// <summary>
@@ -177,7 +177,7 @@ namespace ImGui
 	/// <param name="fontCfg">Font configuration.</param>
 	/// <param name="glyphRanges">Glyph ranges.</param>
 	/// <returns>Pointer to the new font.</returns>
-	ImFont* AddFontFromMemoryTTF(std::span<const uint8_t> fontData, float sizePixels,
+	ImFont* AddFontFromMemoryTTF(std::span<const u8> fontData, f32 sizePixels,
 							     const ImFontConfig* fontCfg = nullptr,
 							     const ImWchar* glyphRanges = nullptr);
 

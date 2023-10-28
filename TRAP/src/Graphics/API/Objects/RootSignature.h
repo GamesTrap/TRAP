@@ -45,7 +45,7 @@ namespace TRAP::Graphics
 		/// Retrieve the amount of descriptors contained in the root signature.
 		/// </summary>
 		/// <returns>Amount of descriptors.</returns>
-		[[nodiscard]] constexpr uint64_t GetDescriptorCount() const noexcept;
+		[[nodiscard]] constexpr u64 GetDescriptorCount() const noexcept;
 		/// <summary>
 		/// Retrieve the list of descriptors contained in the root signature.
 		/// </summary>
@@ -81,7 +81,7 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint64_t TRAP::Graphics::RootSignature::GetDescriptorCount() const noexcept
+[[nodiscard]] constexpr u64 TRAP::Graphics::RootSignature::GetDescriptorCount() const noexcept
 {
 	return m_descriptors.size();
 }

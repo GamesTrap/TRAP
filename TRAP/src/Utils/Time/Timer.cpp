@@ -19,11 +19,11 @@ void TRAP::Utils::Timer::Reset() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] float TRAP::Utils::Timer::Elapsed() const
+[[nodiscard]] f32 TRAP::Utils::Timer::Elapsed() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	return std::chrono::duration_cast<std::chrono::duration<float, std::milli>>
+	return std::chrono::duration_cast<std::chrono::duration<f32, std::milli>>
 		(
 			std::chrono::high_resolution_clock::now() - m_start
 		).count() / 1000.0f;
@@ -31,11 +31,11 @@ void TRAP::Utils::Timer::Reset() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] float TRAP::Utils::Timer::ElapsedMilliseconds() const
+[[nodiscard]] f32 TRAP::Utils::Timer::ElapsedMilliseconds() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	return std::chrono::duration_cast<std::chrono::duration<float, std::milli>>
+	return std::chrono::duration_cast<std::chrono::duration<f32, std::milli>>
 		(
 			std::chrono::high_resolution_clock::now() - m_start
 		).count();

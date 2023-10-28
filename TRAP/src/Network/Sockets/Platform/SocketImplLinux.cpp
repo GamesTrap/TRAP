@@ -36,7 +36,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifdef TRAP_PLATFORM_LINUX
 
-[[nodiscard]] sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(uint32_t address, uint16_t port)
+[[nodiscard]] sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(u32 address, u16 port)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -57,8 +57,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array<uint8_t, 16>& address,
-                                                                              uint16_t port)
+[[nodiscard]] sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array<u8, 16>& address,
+                                                                              u16 port)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -93,7 +93,7 @@ void TRAP::INTERNAL::Network::SocketImpl::SetBlocking(const TRAP::Network::Socke
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
-	const int32_t status = fcntl(sock, F_GETFL);
+	const i32 status = fcntl(sock, F_GETFL);
 	if(status < 0)
 	{
 		TP_ERROR(Log::NetworkSocketUnixPrefix, "Failed to get socket status!");
@@ -127,7 +127,7 @@ void TRAP::INTERNAL::Network::SocketImpl::SetBlocking(const TRAP::Network::Socke
 
 	//The followings are sometimes equal to EWOULDBLOCK,
 	//so we have to make a special case for them in order
-	//to avoid having double values in the switch case
+	//to avoid having f64 values in the switch case
 	if ((errno == EAGAIN) || (errno == EINPROGRESS))
 		return TRAP::Network::Socket::Status::NotReady;
 

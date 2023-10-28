@@ -174,13 +174,13 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="depth">New clear depth value (range [0,1]). Default: 1.</param>
 		/// <param name="window">Window to set clear depth value for. Default: Main Window.</param>
-		static void SetClearDepth(float depth = 0.0f, const Window* window = TRAP::Application::GetWindow());
+		static void SetClearDepth(f32 depth = 0.0f, const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
 		/// Set the clear depth value.
 		/// </summary>
 		/// <param name="depth">New clear depth value. Must be between 0.0f and 1.0f</param>
-		static void SetClearDepth(float depth = 0.0f);
+		static void SetClearDepth(f32 depth = 0.0f);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -188,13 +188,13 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="stencil">New clear stencil value. Default: 0.</param>
 		/// <param name="window">Window to set clear stencil value for. Default: Main Window.</param>
-		static void SetClearStencil(uint32_t stencil = 0, const Window* window = TRAP::Application::GetWindow());
+		static void SetClearStencil(u32 stencil = 0, const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
 		/// Set the clear stencil value.
 		/// </summary>
 		/// <param name="stencil">New clear stencil value.</param>
-		static void SetClearStencil(uint32_t stencil = 0);
+		static void SetClearStencil(u32 stencil = 0);
 #endif /*TRAP_HEADLESS_MODE*/
 
 		//Depth functions
@@ -263,13 +263,13 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="bias">Depth bias constant factor.</param>
 		/// <param name="window">Window to set depth bias for. Default: Main Window.</param>
-		static void SetDepthBias(int32_t bias, const Window* window = TRAP::Application::GetWindow());
+		static void SetDepthBias(i32 bias, const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
 		/// Set the depth bias (scalar factor to add to each fragments depth value).
 		/// </summary>
 		/// <param name="bias">Depth bias constant factor.</param>
-		static void SetDepthBias(int32_t bias);
+		static void SetDepthBias(i32 bias);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -277,13 +277,13 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="slopeFactor">Depth bias slope factor.</param>
 		/// <param name="window">Window to set depth bias for. Default: Main Window.</param>
-		static void SetDepthBiasSlopeFactor(float slopeFactor, const Window* window = TRAP::Application::GetWindow());
+		static void SetDepthBiasSlopeFactor(f32 slopeFactor, const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
 		/// Set the depth bias slope factor (scalar factor applied to fragment's slope in depth bias calculation).
 		/// </summary>
 		/// <param name="slopeFactor">Depth bias slope factor.</param>
-		static void SetDepthBiasSlopeFactor(float slopeFactor);
+		static void SetDepthBiasSlopeFactor(f32 slopeFactor);
 #endif /*TRAP_HEADLESS_MODE*/
 
 		//Stencil functions
@@ -357,14 +357,14 @@ namespace TRAP::Graphics
 		/// <param name="read">Bits to read/compare.</param>
 		/// <param name="write">Bits to write/update.</param>
 		/// <param name="window">Window to set stencil mask for. Default: Main Window.</param>
-		static void SetStencilMask(uint8_t read, uint8_t write, const Window* window = TRAP::Application::GetWindow());
+		static void SetStencilMask(u8 read, u8 write, const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
 		/// Set the stencil mask.
 		/// </summary>
 		/// <param name="read">Select the bits of the stencil values to test.</param>
 		/// <param name="write">Select the bits of the stencil values updated by the stencil test.</param>
-		static void SetStencilMask(uint8_t read, uint8_t write);
+		static void SetStencilMask(u8 read, u8 write);
 #endif /*TRAP_HEADLESS_MODE*/
 
 		//Miscellaneous functions
@@ -578,7 +578,7 @@ namespace TRAP::Graphics
 		/// <param name="width">Viewport width.</param>
 		/// <param name="height">Viewport height.</param>
 		/// <param name="window">Window to set viewport size for. Default: Main Window.</param>
-		static void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height, const Window* window = TRAP::Application::GetWindow());
+		static void SetViewport(u32 x, u32 y, u32 width, u32 height, const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
 		/// Set viewport size.
@@ -587,7 +587,7 @@ namespace TRAP::Graphics
 		/// <param name="y">Y coordinate of the top left corner of the viewport. Default: 0.</param>
 		/// <param name="width">Viewport width.</param>
 		/// <param name="height">Viewport height.</param>
-		static void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
+		static void SetViewport(u32 x, u32 y, u32 width, u32 height);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -598,7 +598,7 @@ namespace TRAP::Graphics
 		/// <param name="width">Scissor width.</param>
 		/// <param name="height">Scissor height.</param>
 		/// <param name="window">Window to set scissor size for. Default: Main Window.</param>
-		static void SetScissor(uint32_t x, uint32_t y, uint32_t width, uint32_t height, const Window* window = TRAP::Application::GetWindow());
+		static void SetScissor(u32 x, u32 y, u32 width, u32 height, const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
 		/// Set scissor size.
@@ -607,7 +607,7 @@ namespace TRAP::Graphics
 		/// <param name="y">Upper left corner. Default: 0.</param>
 		/// <param name="width">Scissor width.</param>
 		/// <param name="height">Scissor height.</param>
-		static void SetScissor(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
+		static void SetScissor(u32 x, u32 y, u32 width, u32 height);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifdef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -615,7 +615,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="width">Width.</param>
 		/// <param name="height">Height.</param>
-		static void SetResolution(uint32_t width, uint32_t height);
+		static void SetResolution(u32 width, u32 height);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifdef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -623,7 +623,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="width">Output: Width.</param>
 		/// <param name="height">Output: Height.</param>
-		static void GetResolution(uint32_t& width, uint32_t& height);
+		static void GetResolution(u32& width, u32& height);
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -634,14 +634,14 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="scale">Render scale value (valid range: 0.5f-1.0f inclusive).</param>
 		/// <param name="window">Window to set render scale for. Default: Main Window.</param>
-		static void SetRenderScale(float scale, const Window* window = TRAP::Application::GetWindow());
+		static void SetRenderScale(f32 scale, const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
 		/// Set the render scale.
 		/// Note: This functon takes effect on the next frame.
 		/// </summary>
 		/// <param name="scale">Render scale value (valid range: 0.5f-1.0f inclusive).</param>
-		static void SetRenderScale(float scale);
+		static void SetRenderScale(f32 scale);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -650,13 +650,13 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="window">Window to retrieve render scale from. Default: Main Window.</param>
 		/// <returns>Render scale (between 0.5f and 2.0f inclusive).</returns>
-		[[nodiscard]] static float GetRenderScale(const Window* window = TRAP::Application::GetWindow());
+		[[nodiscard]] static f32 GetRenderScale(const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
 		/// Retrieve the used render scale value.
 		/// </summary>
 		/// <returns>Render scale (between 0.5f and 2.0f inclusive).</returns>
-		[[nodiscard]] static float GetRenderScale();
+		[[nodiscard]] static f32 GetRenderScale();
 #endif /*TRAP_HEADLESS_MODE*/
 
 		//Drawing functions
@@ -668,14 +668,14 @@ namespace TRAP::Graphics
 		/// <param name="vertexCount">Number of vertices to draw.</param>
 		/// <param name="firstVertex">Index of the first vertex to draw.</param>
 		/// <param name="window">Window to draw for. Default: Main Window.</param>
-		static void Draw(uint32_t vertexCount, uint32_t firstVertex = 0, const Window* window = TRAP::Application::GetWindow());
+		static void Draw(u32 vertexCount, u32 firstVertex = 0, const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
 		/// Draw non-indexed, non-instanced geometry.
 		/// </summary>
 		/// <param name="vertexCount">Number of vertices to draw.</param>
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
-		static void Draw(uint32_t vertexCount, uint32_t firstVertex = 0);
+		static void Draw(u32 vertexCount, u32 firstVertex = 0);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -685,7 +685,7 @@ namespace TRAP::Graphics
 		/// <param name="firstIndex">Index of the first indice to draw.</param>
 		/// <param name="vertexOffset">Index of the first vertex to draw.</param>
 		/// <param name="window">Window to draw for. Default: Main Window.</param>
-		static void DrawIndexed(uint32_t indexCount, uint32_t firstIndex = 0, int32_t vertexOffset = 0,
+		static void DrawIndexed(u32 indexCount, u32 firstIndex = 0, i32 vertexOffset = 0,
 		                        const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
@@ -694,7 +694,7 @@ namespace TRAP::Graphics
 		/// <param name="indexCount">Number of indices to draw.</param>
 		/// <param name="firstIndex">Index of the first indice to draw. Default: 0.</param>
 		/// <param name="vertexOffset">Index of the first vertex to draw. Default: 0.</param>
-		static void DrawIndexed(uint32_t indexCount, uint32_t firstIndex = 0, int32_t vertexOffset = 0);
+		static void DrawIndexed(u32 indexCount, u32 firstIndex = 0, i32 vertexOffset = 0);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -705,8 +705,8 @@ namespace TRAP::Graphics
 		/// <param name="firstVertex">Index of the first vertex to draw.</param>
 		/// <param name="firstInstance">Index of the first instance to draw.</param>
 		/// <param name="window">Window to draw for. Default: Main Window.</param>
-		static void DrawInstanced(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex = 0,
-		                          uint32_t firstInstance = 0, const Window* window = TRAP::Application::GetWindow());
+		static void DrawInstanced(u32 vertexCount, u32 instanceCount, u32 firstVertex = 0,
+		                          u32 firstInstance = 0, const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
 		/// Draw non-indexed, instanced geometry.
@@ -715,8 +715,8 @@ namespace TRAP::Graphics
 		/// <param name="instanceCount">Number of instances to draw.</param>
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
 		/// <param name="firstInstance">Index of the first instance to draw. Default: 0.</param>
-		static void DrawInstanced(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex = 0,
-		                          uint32_t firstInstance = 0);
+		static void DrawInstanced(u32 vertexCount, u32 instanceCount, u32 firstVertex = 0,
+		                          u32 firstInstance = 0);
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -728,8 +728,8 @@ namespace TRAP::Graphics
 		/// <param name="firstInstance">Index of the first instance to draw.</param>
 		/// <param name="vertexOffset">Index of the first vertex to draw.</param>
 		/// <param name="window">Window to draw for. Default: Main Window.</param>
-		static void DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex = 0,
-		                                 uint32_t firstInstance = 0, int32_t vertexOffset = 0,
+		static void DrawIndexedInstanced(u32 indexCount, u32 instanceCount, u32 firstIndex = 0,
+		                                 u32 firstInstance = 0, i32 vertexOffset = 0,
 										 const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
@@ -740,9 +740,9 @@ namespace TRAP::Graphics
 		/// <param name="firstIndex">Index of the first indice to draw. Default: 0.</param>
 		/// <param name="firstInstance">Index of the first instance to draw. Default: 0.</param>
 		/// <param name="vertexOffset">Index of the first vertex to draw. Default: 0.</param>
-		static void DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount,
-		                                 uint32_t firstIndex = 0, uint32_t firstInstance = 0,
-										 int32_t vertexOffset = 0);
+		static void DrawIndexedInstanced(u32 indexCount, u32 instanceCount,
+		                                 u32 firstIndex = 0, u32 firstInstance = 0,
+										 i32 vertexOffset = 0);
 #endif /*TRAP_HEADLESS_MODE*/
 
 		//Compute functions
@@ -756,7 +756,7 @@ namespace TRAP::Graphics
 		/// The elements are automatically divided by the number of threads in the work group and rounded up.
 		/// </param>
 		/// <param name="window">Window to draw for. Default: Main Window.</param>
-		static void Dispatch(const std::array<uint32_t, 3>& workGroupElementSizes, const Window* window = TRAP::Application::GetWindow());
+		static void Dispatch(const std::array<u32, 3>& workGroupElementSizes, const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
 		/// Dispatch.
@@ -765,7 +765,7 @@ namespace TRAP::Graphics
 		/// Number of elements to dispatch for each dimension.
 		/// The elements are automatically divided by the number of threads in the work group and rounded up.
 		/// </param>
-		static void Dispatch(const std::array<uint32_t, 3>& workGroupElements);
+		static void Dispatch(const std::array<u32, 3>& workGroupElements);
 #endif /*TRAP_HEADLESS_MODE*/
 
 		//TODO DispatchIndirect
@@ -782,7 +782,7 @@ namespace TRAP::Graphics
 		/// <param name="length">Length in bytes of the provided data to set push constant to.</param>
 		/// <param name="queueType">Queue type on which to perform the operation. Default: Graphics.</param>
 		/// <param name="window">Window to set push constant for. Default: Main Window.</param>
-		static void SetPushConstants(std::string_view name, const void* data, std::size_t length,
+		static void SetPushConstants(std::string_view name, const void* data, usize length,
 		                             QueueType queueType = QueueType::Graphics, const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
@@ -793,7 +793,7 @@ namespace TRAP::Graphics
 		/// <param name="data">Data to set push constant to.</param>
 		/// <param name="length">Length in bytes of the provided data to set push constant to.</param>
 		/// <param name="queueType">Queue type on which to perform the operation. Default: Graphics.</param>
-		static void SetPushConstants(std::string_view name, const void* data, std::size_t length,
+		static void SetPushConstants(std::string_view name, const void* data, usize length,
 		                             QueueType queueType = QueueType::Graphics);
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -1029,39 +1029,39 @@ namespace TRAP::Graphics
 		/// Retrieve the CPU side frames per second.
 		/// </summary>
 		/// <returns>CPU frames per second.</returns>
-		[[nodiscard]] static uint32_t GetCPUFPS();
+		[[nodiscard]] static u32 GetCPUFPS();
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Retrieve the GPU side frames per second.
 		/// </summary>
 		/// <param name="window">Window to get frames per second from.</param>
 		/// <returns>GPU frames per second.</returns>
-		[[nodiscard]] static uint32_t GetGPUFPS(const Window* window = TRAP::Application::GetWindow());
+		[[nodiscard]] static u32 GetGPUFPS(const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
 		/// Retrieve the GPU side frames per second.
 		/// </summary>
 		/// <returns>GPU frames per second.</returns>
-		[[nodiscard]] static uint32_t GetGPUFPS();
+		[[nodiscard]] static u32 GetGPUFPS();
 #endif /*TRAP_HEADLESS_MODE*/
 		/// <summary>
 		/// Retrieve the CPU side frame time.
 		/// </summary>
 		/// <returns>CPU frame time in milliseconds.</returns>
-		[[nodiscard]] static float GetCPUFrameTime();
+		[[nodiscard]] static f32 GetCPUFrameTime();
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Retrieve the GPU side frame time for the graphics queue.
 		/// </summary>
 		/// <param name="window">Window to get frame time from.</param>
 		/// <returns>GPU Graphics frame time in milliseconds.</returns>
-		[[nodiscard]] static float GetGPUGraphicsFrameTime(const Window* window = TRAP::Application::GetWindow());
+		[[nodiscard]] static f32 GetGPUGraphicsFrameTime(const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
 		/// Retrieve the GPU side frame time for the graphics queue.
 		/// </summary>
 		/// <returns>GPU Graphics frame time in milliseconds.</returns>
-		[[nodiscard]] static float GetGPUGraphicsFrameTime();
+		[[nodiscard]] static f32 GetGPUGraphicsFrameTime();
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -1069,13 +1069,13 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="window">Window to get frame time from.</param>
 		/// <returns>GPU Compute frame time in milliseconds.</returns>
-		[[nodiscard]] static float GetGPUComputeFrameTime(const Window* window = TRAP::Application::GetWindow());
+		[[nodiscard]] static f32 GetGPUComputeFrameTime(const Window* window = TRAP::Application::GetWindow());
 #else
 		/// <summary>
 		/// Retrieve the GPU side frame time for the compute queue.
 		/// </summary>
 		/// <returns>GPU Compute frame time in milliseconds.</returns>
-		[[nodiscard]] static float GetGPUComputeFrameTime();
+		[[nodiscard]] static f32 GetGPUComputeFrameTime();
 #endif /*TRAP_HEADLESS_MODE*/
 		/// <summary>
 		/// Retrieve the name of the GPU that is currently used by the RendererAPI.

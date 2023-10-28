@@ -57,12 +57,12 @@ namespace
         {
             static constexpr auto t = TRAP::Math::Translate(TRAP::Math::tMat4<T>(1.0f), TRAP::Math::tVec3<T>(min, 1.0f, 1.0f));
             static constexpr auto t2 = TRAP::Math::Translate(TRAP::Math::tVec3<T>(min, 1.0f, 1.0f));
-            if constexpr(std::same_as<T, double>)
+            if constexpr(std::same_as<T, f64>)
             {
                 static constexpr TRAP::Math::tMat4<T> expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, -1.7976931348623157e+308, 1.0f, 1.0f, 1.0f);
                 REQUIRE(TRAP::Math::All(TRAP::Math::Equal(t, expected, Epsilon)));
             }
-            else if constexpr(std::same_as<T, float>)
+            else if constexpr(std::same_as<T, f32>)
             {
                 static constexpr TRAP::Math::tMat4<T> expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, -3.40282347e+38f, 1.0f, 1.0f, 1.0f);
                 REQUIRE(TRAP::Math::All(TRAP::Math::Equal(t, expected, Epsilon)));
@@ -72,12 +72,12 @@ namespace
         {
             static constexpr auto t = TRAP::Math::Translate(TRAP::Math::tMat4<T>(1.0f), TRAP::Math::tVec3<T>(max, 1.0f, 1.0f));
             static constexpr auto t2 = TRAP::Math::Translate(TRAP::Math::tVec3<T>(max, 1.0f, 1.0f));
-            if constexpr(std::same_as<T, double>)
+            if constexpr(std::same_as<T, f64>)
             {
                 static constexpr TRAP::Math::tMat4<T> expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.7976931348623157e+308, 1.0f, 1.0f, 1.0f);
                 REQUIRE(TRAP::Math::All(TRAP::Math::Equal(t, expected, Epsilon)));
             }
-            else if constexpr(std::same_as<T, float>)
+            else if constexpr(std::same_as<T, f32>)
             {
                 static constexpr TRAP::Math::tMat4<T> expected(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 3.40282347e+38f, 1.0f, 1.0f, 1.0f);
                 REQUIRE(TRAP::Math::All(TRAP::Math::Equal(t, expected, Epsilon)));
@@ -107,14 +107,14 @@ namespace
 
 TEST_CASE("TRAP::Math::Translate()", "[math][generic][translate]")
 {
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunCompileTimeTranslateTests<double>();
-        RunTranslateEdgeTests<double>();
+        RunCompileTimeTranslateTests<f64>();
+        RunTranslateEdgeTests<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunCompileTimeTranslateTests<float>();
-        RunTranslateEdgeTests<float>();
+        RunCompileTimeTranslateTests<f32>();
+        RunTranslateEdgeTests<f32>();
     }
 }

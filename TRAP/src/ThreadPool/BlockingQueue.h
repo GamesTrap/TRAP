@@ -14,6 +14,8 @@
 	#pragma warning(pop)
 #endif /*_MSC_VER*/
 
+#include "Core/Types.h"
+
 namespace TRAP
 {
 	template<typename T>
@@ -103,7 +105,7 @@ namespace TRAP
 		/// Retrieve the size of the queue.
 		/// </summary>
 		/// <returns>Queue size.</returns>
-		[[nodiscard]] uint32_t Size() const noexcept;
+		[[nodiscard]] u32 Size() const noexcept;
 
 	private:
 		std::queue<T> m_queue{};
@@ -309,7 +311,7 @@ template <typename T>
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-[[nodiscard]] uint32_t TRAP::BlockingQueue<T>::Size() const noexcept
+[[nodiscard]] u32 TRAP::BlockingQueue<T>::Size() const noexcept
 {
 	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 

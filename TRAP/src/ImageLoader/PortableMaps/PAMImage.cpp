@@ -98,10 +98,10 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::filesystem::path filepath)
 			m_colorFormat = ColorFormat::RGBA;
 		}
 
-		m_data2Byte.resize(NumericCast<std::size_t>(m_width) * m_height * header.Depth);
+		m_data2Byte.resize(NumericCast<usize>(m_width) * m_height * header.Depth);
 		if (!file.read(reinterpret_cast<char*>(m_data2Byte.data()),
 			           NumericCast<std::streamsize>(m_width) * m_height * header.Depth *
-					   NumericCast<std::streamsize>(sizeof(uint16_t))))
+					   NumericCast<std::streamsize>(sizeof(u16))))
 		{
 			file.close();
 			m_data2Byte.clear();
@@ -116,7 +116,7 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::filesystem::path filepath)
 		//Convert to machines endian
 		if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 		{
-			for (uint16_t& element : m_data2Byte)
+			for (u16& element : m_data2Byte)
 				Utils::Memory::SwapBytes(element);
 		}
 	}
@@ -147,7 +147,7 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::filesystem::path filepath)
 			m_colorFormat = ColorFormat::RGBA;
 		}
 
-		m_data.resize(NumericCast<std::size_t>(m_width) * m_height * header.Depth);
+		m_data.resize(NumericCast<usize>(m_width) * m_height * header.Depth);
 		if(!file.read(reinterpret_cast<char*>(m_data.data()), NumericCast<std::streamsize>(m_width) * m_height * header.Depth))
 		{
 			file.close();

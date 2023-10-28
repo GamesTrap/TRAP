@@ -82,7 +82,7 @@ void TRAP::INTERNAL::WindowingAPI::InitDBusPOSIX()
     const pid_t pid = getpid();
     const std::string busName = fmt::format("com.trap.{}_{}", s_Data.DBUS.LegalExecutableName, pid);
 
-    const int32_t res = s_Data.DBUS.BusRequestName(s_Data.DBUS.Connection, busName.c_str(), DBUS_NAME_FLAG_REPLACE_EXISTING, &s_Data.DBUS.Error);
+    const i32 res = s_Data.DBUS.BusRequestName(s_Data.DBUS.Connection, busName.c_str(), DBUS_NAME_FLAG_REPLACE_EXISTING, &s_Data.DBUS.Error);
 
     //Check for errors
     if((s_Data.DBUS.ErrorIsSet(&s_Data.DBUS.Error) != 0u) || res != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER)
@@ -212,7 +212,7 @@ void TRAP::INTERNAL::WindowingAPI::TerminateDBusPOSIX()
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::UpdateTaskbarProgressDBusPOSIX(const dbus_bool_t progressVisible,
-                                                                  const double progressValue)
+                                                                  const f64 progressValue)
 {
     DBusMessage* msg = nullptr;
 
@@ -283,7 +283,7 @@ TRAP::INTERNAL::WindowingAPI::dbus_bool_t TRAP::INTERNAL::WindowingAPI::NewMessa
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::INTERNAL::WindowingAPI::dbus_bool_t TRAP::INTERNAL::WindowingAPI::OpenContainerDBusPOSIX(DBusMessageIter& iterator,
-                                                                                               const int32_t DBusType,
+                                                                                               const i32 DBusType,
                                                                                                const std::string_view signature,
                                                                                                DBusMessageIter& subIterator)
 {
@@ -309,7 +309,7 @@ TRAP::INTERNAL::WindowingAPI::dbus_bool_t TRAP::INTERNAL::WindowingAPI::CloseCon
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::INTERNAL::WindowingAPI::dbus_bool_t TRAP::INTERNAL::WindowingAPI::AppendDataDBusPOSIX(DBusMessageIter& iterator,
-                                                                                            const int32_t DBusType,
+                                                                                            const i32 DBusType,
                                                                                             const void* const data)
 {
     if(DBusType == DBUS_TYPE_ARRAY || DBusType == DBUS_TYPE_VARIANT || DBusType == DBUS_TYPE_DICT_ENTRY ||
@@ -330,9 +330,9 @@ TRAP::INTERNAL::WindowingAPI::dbus_bool_t TRAP::INTERNAL::WindowingAPI::AppendDa
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::INTERNAL::WindowingAPI::dbus_bool_t TRAP::INTERNAL::WindowingAPI::AppendDictDataDBusPOSIX(DBusMessageIter& iterator,
-                                                                                                const int32_t keyType,
+                                                                                                const i32 keyType,
                                                                                                 const void* const keyData,
-                                                                                                const int32_t valueType,
+                                                                                                const i32 valueType,
                                                                                                 const void* const valueData)
 {
     DBusMessageIter keyIterator{};
@@ -365,7 +365,7 @@ TRAP::INTERNAL::WindowingAPI::dbus_bool_t TRAP::INTERNAL::WindowingAPI::AppendDi
 
 TRAP::INTERNAL::WindowingAPI::dbus_bool_t TRAP::INTERNAL::WindowingAPI::SendMessageDBusPOSIX(DBusMessage& message)
 {
-    uint32_t serial = 0;
+    u32 serial = 0;
     if(s_Data.DBUS.ConnectionSend(s_Data.DBUS.Connection, &message, &serial) == 0u)
     {
         InputError(Error::Platform_Error, "[DBus] Failed to send DBus message");

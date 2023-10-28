@@ -34,7 +34,7 @@ void RunValidTests()
         std::ifstream file("Assets/Textures/vulkanlogo.png", std::ios::binary | std::ios::ate);
         TRAP_ASSERT(file.is_open() && file.good(), "ReadFile() failed! (ifstream failed)");
         const std::streamsize fileSize = static_cast<std::streamsize>(file.tellg());
-        std::vector<uint8_t> validRes(NumericCast<std::size_t>(fileSize));
+        std::vector<u8> validRes(NumericCast<usize>(fileSize));
         file.seekg(0, std::ios::beg);
         file.read(reinterpret_cast<char*>(validRes.data()), fileSize);
         file.close();
@@ -53,7 +53,7 @@ void RunValidTests()
         std::ifstream file("Assets/Shaders/emboss.compute.shader", std::ios::ate);
         TRAP_ASSERT(file.is_open() && file.good(), "ReadTextFile() failed! (ifstream failed)");
         const std::streamsize fileSize = static_cast<std::streamsize>(file.tellg());
-        std::string validRes(NumericCast<std::size_t>(fileSize), '\0');
+        std::string validRes(NumericCast<usize>(fileSize), '\0');
         file.seekg(0, std::ios::beg);
         file.read(reinterpret_cast<char*>(validRes.data()), fileSize);
 
@@ -64,8 +64,8 @@ void RunValidTests()
     TP_INFO("WriteFile (overwrite mode)...");
     {
         //Setup
-        std::vector<uint8_t> data{};
-        for(uint32_t i = 0; i < 100; ++i)
+        std::vector<u8> data{};
+        for(u32 i = 0; i < 100; ++i)
             data.insert(data.end(), {1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
 
         //Test
@@ -85,8 +85,8 @@ void RunValidTests()
     TP_INFO("WriteFile (append mode)...");
     {
         //Setup
-        std::vector<uint8_t> data{};
-        for(uint32_t i = 0; i < 100; ++i)
+        std::vector<u8> data{};
+        for(u32 i = 0; i < 100; ++i)
             data.insert(data.end(), {1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         const auto res = TRAP::FileSystem::WriteFile("test.bin", data, TRAP::FileSystem::WriteMode::Overwrite);
         TRAP_ASSERT(res, "WriteFile() failed!");
@@ -97,7 +97,7 @@ void RunValidTests()
         TRAP_ASSERT(res1, "WriteFile() failed!");
 
         //Check
-        for(uint32_t i = 0; i < 100; ++i)
+        for(u32 i = 0; i < 100; ++i)
             data.insert(data.end(), {1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         const auto readContents = TRAP::FileSystem::ReadFile("test.bin");
         TRAP_ASSERT(readContents, "WriteFile() failed!");
@@ -112,7 +112,7 @@ void RunValidTests()
     {
         //Setup
         std::string data{};
-        for(uint32_t i = 0; i < 100; ++i)
+        for(u32 i = 0; i < 100; ++i)
             data += "Some long string to test the filesystem api. ";
 
         //Test
@@ -133,7 +133,7 @@ void RunValidTests()
     {
         //Setup
         std::string data{};
-        for(uint32_t i = 0; i < 100; ++i)
+        for(u32 i = 0; i < 100; ++i)
             data += "Some long string to test the filesystem api. ";
         const auto res = TRAP::FileSystem::WriteTextFile("test.txt", data, TRAP::FileSystem::WriteMode::Overwrite);
         TRAP_ASSERT(res, "WriteTextFile() failed!");
@@ -144,7 +144,7 @@ void RunValidTests()
         TRAP_ASSERT(res1, "WriteTextFile() failed!");
 
         //Check
-        for(uint32_t i = 0; i < 100; ++i)
+        for(u32 i = 0; i < 100; ++i)
             data += "Some long string to test the filesystem api. ";
         const auto readContents = TRAP::FileSystem::ReadTextFile("test.txt");
         TRAP_ASSERT(readContents, "WriteTextFile() failed!");

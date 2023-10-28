@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <optional>
 
+#include "Core/Types.h"
+
 namespace TRAP::Utils
 {
     /// <summary>
@@ -13,14 +15,14 @@ namespace TRAP::Utils
     /// <typeparam name="Key">Key type for the map.</typeparam>
     /// <typeparam name="Value">Value type for the map.</typeparam>
     /// <typeparam name="Size">Size for the map.</typeparam>
-    template<typename Key, typename Value, std::size_t Size>
+    template<typename Key, typename Value, usize Size>
     struct ConstexprMap
     {
         using key_type = Key;
         using mapped_type = Value;
         using value_type = std::pair<const Key, Value>;
-        using size_type = std::size_t;
-        using difference_type = std::ptrdiff_t;
+        using size_type = usize;
+        using difference_type = isize;
 
         std::array<value_type, Size> data;
 

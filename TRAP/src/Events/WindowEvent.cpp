@@ -7,7 +7,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::WindowResizeEvent::WindowResizeEvent(const uint32_t width, const uint32_t height,
+TRAP::Events::WindowResizeEvent::WindowResizeEvent(const u32 width, const u32 height,
    												   TRAP::Window* const window)
 	: m_width(width), m_height(height), m_window(window)
 {
@@ -57,7 +57,7 @@ TRAP::Events::WindowRestoreEvent::WindowRestoreEvent(TRAP::Window* const window)
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::WindowMoveEvent::WindowMoveEvent(const int32_t x, const int32_t y, TRAP::Window* const window)
+TRAP::Events::WindowMoveEvent::WindowMoveEvent(const i32 x, const i32 y, TRAP::Window* const window)
 	: m_x(x), m_y(y), m_window(window)
 {
 	TRAP_ASSERT(window, "Events::WindowMoveEvent(): Window is nullptr!");
@@ -116,7 +116,7 @@ TRAP::Events::WindowCloseEvent::WindowCloseEvent(TRAP::Window* const window)
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::WindowContentScaleEvent::WindowContentScaleEvent(const float xScale, const float yScale,
+TRAP::Events::WindowContentScaleEvent::WindowContentScaleEvent(const f32 xScale, const f32 yScale,
 	                                                           TRAP::Window* const window)
 	: m_XScale(xScale), m_YScale(yScale), m_window(window)
 {
@@ -136,7 +136,7 @@ TRAP::Events::WindowContentScaleEvent::WindowContentScaleEvent(const float xScal
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::FrameBufferResizeEvent::FrameBufferResizeEvent(const uint32_t width, const uint32_t height,
+TRAP::Events::FrameBufferResizeEvent::FrameBufferResizeEvent(const u32 width, const u32 height,
                                                              TRAP::Window* const window)
 	: m_width(width), m_height(height), m_window(window)
 {

@@ -116,49 +116,49 @@ namespace
 
 TEST_CASE("TRAP::Math::Lerp()", "[math][generic][lerp]")
 {
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunCompileTimeLerpTests<double>();
-        RunLerpEdgeTests<double>();
+        RunCompileTimeLerpTests<f64>();
+        RunLerpEdgeTests<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunCompileTimeLerpTests<float>();
-        RunLerpEdgeTests<float>();
+        RunCompileTimeLerpTests<f32>();
+        RunLerpEdgeTests<f32>();
     }
 
-    SECTION("Vec2 - double")
+    SECTION("Vec2 - f64")
     {
         RunCompileTimeLerpVecTests<TRAP::Math::Vec2d>();
     }
-    SECTION("Vec2 - float")
+    SECTION("Vec2 - f32")
     {
         RunCompileTimeLerpVecTests<TRAP::Math::Vec2f>();
     }
 
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunCompileTimeLerpVecTests<TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunCompileTimeLerpVecTests<TRAP::Math::Vec3f>();
     }
 
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunCompileTimeLerpVecTests<TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunCompileTimeLerpVecTests<TRAP::Math::Vec4f>();
     }
 
-    SECTION("Quat - double")
+    SECTION("Quat - f64")
     {
         RunCompileTimeLerpQuatTests<TRAP::Math::Quatd>();
     }
-    SECTION("Quat - float")
+    SECTION("Quat - f32")
     {
         RunCompileTimeLerpQuatTests<TRAP::Math::Quatf>();
     }

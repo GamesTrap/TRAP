@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "ThreadPool.h"
 
-TRAP::ThreadPool::ThreadPool(const uint32_t threads)
+TRAP::ThreadPool::ThreadPool(const u32 threads)
 	: m_queues(threads), m_maxThreadsCount(threads)
 {
 	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
@@ -12,7 +12,7 @@ TRAP::ThreadPool::ThreadPool(const uint32_t threads)
 		m_queues = Queues(3);
 	}
 
-	auto worker = [&](const uint32_t i)
+	auto worker = [&](const u32 i)
 	{
 #ifdef TRACY_ENABLE
 		//Set Thread name for profiler
@@ -22,7 +22,7 @@ TRAP::ThreadPool::ThreadPool(const uint32_t threads)
 		while (true)
 		{
 			Proc f;
-			for (uint32_t n = 0; n < m_maxThreadsCount; ++n)
+			for (u32 n = 0; n < m_maxThreadsCount; ++n)
 			{
 				if (m_queues[(i + n) % m_maxThreadsCount].TryPop(f))
 					break;
@@ -35,7 +35,7 @@ TRAP::ThreadPool::ThreadPool(const uint32_t threads)
 		}
 	};
 
-	for (uint32_t i = 0; i < m_maxThreadsCount; ++i)
+	for (u32 i = 0; i < m_maxThreadsCount; ++i)
 		m_threads.emplace_back(worker, i);
 }
 

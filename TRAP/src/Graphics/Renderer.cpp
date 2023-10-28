@@ -23,7 +23,7 @@ void TRAP::Graphics::Renderer::Init()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	s_maxDrawCalls = NumericCast<uint32_t>(RendererAPI::GPUSettings.MaxStorageBufferRange /
+	s_maxDrawCalls = NumericCast<u32>(RendererAPI::GPUSettings.MaxStorageBufferRange /
 	                                       StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
 	s_maxDrawCalls = TRAP::Math::Min(s_maxDrawCalls, 1000000u); //Max 1 million draw calls (so we don't exceed heap sizes)
 
@@ -90,7 +90,7 @@ void TRAP::Graphics::Renderer::Submit(const Ref<Shader>& shader, const VertexBuf
 		return;
 
 	s_modelStorageBuffer->SetData(&transform, sizeof(Math::Mat4),
-	                              NumericCast<uint64_t>(s_currentDrawCalls) * StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
+	                              NumericCast<u64>(s_currentDrawCalls) * StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
 	s_modelStorageBuffer->AwaitLoading();
 
 	vertexBuffer->Use();
@@ -119,7 +119,7 @@ void TRAP::Graphics::Renderer::Submit(const Ref<Shader>& shader, const VertexBuf
 		return;
 
 	s_modelStorageBuffer->SetData(&transform, sizeof(Math::Mat4),
-	                              NumericCast<uint64_t>(s_currentDrawCalls) * StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
+	                              NumericCast<u64>(s_currentDrawCalls) * StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
 	s_modelStorageBuffer->AwaitLoading();
 
 	vertexBuffer->Use();

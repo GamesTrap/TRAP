@@ -19,45 +19,45 @@ namespace INTERNAL
     requires std::is_arithmetic_v<X>
     constexpr std::string_view TypeNameToString()
     {
-        if constexpr(std::same_as<X, int8_t>)
+        if constexpr(std::same_as<X, i8>)
         {
-            return "int8_t";
+            return "i8";
         }
-        else if constexpr(std::same_as<X, uint8_t>)
+        else if constexpr(std::same_as<X, u8>)
         {
-            return "uint8_t";
+            return "u8";
         }
-        else if constexpr(std::same_as<X, int16_t>)
+        else if constexpr(std::same_as<X, i16>)
         {
-            return "int16_t";
+            return "i16";
         }
-        else if constexpr(std::same_as<X, uint16_t>)
+        else if constexpr(std::same_as<X, u16>)
         {
-            return "uint16_t";
+            return "u16";
         }
-        else if constexpr(std::same_as<X, int32_t>)
+        else if constexpr(std::same_as<X, i32>)
         {
-            return "int32_t";
+            return "i32";
         }
-        else if constexpr(std::same_as<X, uint32_t>)
+        else if constexpr(std::same_as<X, u32>)
         {
-            return "uint32_t";
+            return "u32";
         }
-        else if constexpr(std::same_as<X, int64_t>)
+        else if constexpr(std::same_as<X, i64>)
         {
-            return "int64_t";
+            return "i64";
         }
-        else if constexpr(std::same_as<X, uint64_t>)
+        else if constexpr(std::same_as<X, u64>)
         {
-            return "uint64_t";
+            return "u64";
         }
-        else if constexpr(std::same_as<X, float>)
+        else if constexpr(std::same_as<X, f32>)
         {
-            return "float";
+            return "f32";
         }
-        else if constexpr(std::same_as<X, double>)
+        else if constexpr(std::same_as<X, f64>)
         {
-            return "double";
+            return "f64";
         }
         else
         {

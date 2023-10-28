@@ -49,7 +49,7 @@ namespace TRAP::Network
 		/// Construct the address from 16 bytes array.
 		/// </summary>
 		/// <param name="addressBytes">Array containing 16 bytes address.</param>
-		explicit constexpr IPv6Address(const std::array<uint8_t, 16>& addressBytes) noexcept;
+		explicit constexpr IPv6Address(const std::array<u8, 16>& addressBytes) noexcept;
 
 		/// <summary>
 		/// Get a string representation of the address.
@@ -69,7 +69,7 @@ namespace TRAP::Network
 		/// from a host name.
 		/// </summary>
 		/// <returns>Byte representation of the address.</returns>
-		[[nodiscard]] constexpr std::array<uint8_t, 16> ToArray() const noexcept;
+		[[nodiscard]] constexpr std::array<u8, 16> ToArray() const noexcept;
 
 		/// <summary>
 		/// Get the computer's local address.
@@ -122,7 +122,7 @@ namespace TRAP::Network
 		/// <param name="address">Address string.</param>
 		void Resolve(const std::string& address);
 
-		std::array<uint8_t, 16> m_address; //Address stored as an 128 bit array
+		std::array<u8, 16> m_address; //Address stored as an 128 bit array
 		bool m_valid; //Is the address valid?
 	};
 
@@ -155,14 +155,14 @@ struct fmt::formatter<TRAP::Network::IPv6Address> : fmt::ostream_formatter
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline constexpr TRAP::Network::IPv6Address::IPv6Address(const std::array<uint8_t, 16>& addressBytes) noexcept
+inline constexpr TRAP::Network::IPv6Address::IPv6Address(const std::array<u8, 16>& addressBytes) noexcept
 	: m_address(addressBytes), m_valid(true)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::array<uint8_t, 16> TRAP::Network::IPv6Address::ToArray() const noexcept
+[[nodiscard]] constexpr std::array<u8, 16> TRAP::Network::IPv6Address::ToArray() const noexcept
 {
 	return m_address;
 }
