@@ -3,6 +3,8 @@
 
 #include <cstdint>
 
+#include "Types.h"
+
 /// <summary>
 /// Construct a version number.
 /// </summary>

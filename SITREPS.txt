@@ -4601,3 +4601,7 @@ SITREP 10/25/2023|23w43a1
     - Changed TRAP Engine version to 23w43a1(0.9.122)
     - Update-Dependencies Updated tags for Vulkan related dependencies ~<5 mins
     - Reverted: GLSLang Enabled SPIR-V optimization, Removed SPIRV-Tools, SPIRV-Headers submodules ~<10 mins
+
+SITREP 10/28/2023|23w43a2
+    - Changed TRAP Engine version to 23w43a2(0.9.123)
+    - Core Added typedefs for fixed width primitive data types to make them shorter ~<5 mins

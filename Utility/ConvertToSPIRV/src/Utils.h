@@ -11,6 +11,8 @@
 #include <fmt/format.h>
 #include <fmt/color.h>
 
+#include "Types.h"
+
 template <typename T>
 requires ( std::is_unsigned_v<T> && std::is_integral_v<T>)
 [[nodiscard]] constexpr T BIT(const T x) noexcept

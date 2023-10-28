@@ -44,6 +44,7 @@
 #include <source_location>
 
 #include "Core/Backports.h"
+#include "Core/Types.h"
 
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
