@@ -102,11 +102,11 @@ TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] u32 TRAP::Graphics::API::VulkanInstance::GetInstanceVersion()
+[[nodiscard]] std::optional<u32> TRAP::Graphics::API::VulkanInstance::GetInstanceVersion()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if(s_instanceVersion == 0u)
+	if(!s_instanceVersion)
 		s_instanceVersion = VkGetInstanceVersion();
 
 	return s_instanceVersion;

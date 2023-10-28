@@ -632,9 +632,11 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 	if(initRes == VK_SUCCESS)
 #endif /*TRAP_HEADLESS_MODE*/
 	{
-		if(VkGetInstanceVersion() < VK_API_VERSION_1_1)
+		if(const auto instanceVersion = API::VulkanInstance::GetInstanceVersion();
+		   !instanceVersion || instanceVersion < VK_API_VERSION_1_1)
 		{
-			TP_WARN(Log::RendererVulkanPrefix, "Failed instance version test!");
+			TP_WARN(Log::RendererVulkanPrefix, "Failed instance version test",
+			        (!instanceVersion ? " (unable to retrieve Vulkan instance version)" : ""), '!');
 			TP_WARN(Log::RendererVulkanPrefix, "Failed Vulkan capability tester!");
 			TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
 			s_isVulkanCapable = false;
