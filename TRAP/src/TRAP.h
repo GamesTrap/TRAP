@@ -3,6 +3,7 @@
 
 //----BASE---------------
 #include "../src/Core/Base.h"
+#include "../src/Core/Types.h"
 //-----------------------
 
 //----ASSERT-------------
