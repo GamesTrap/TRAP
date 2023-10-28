@@ -11,6 +11,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_VULKANLOADER_H
 #define TRAP_VULKANLOADER_H
 
+#include <optional>
+
 #include "Core/Types.h"
 
 #if defined(VULKAN_H_) && !defined(VK_NO_PROTOTYPES)
@@ -72,7 +74,7 @@ struct VkDeviceTable;
 /// Initialize library by loading Vulkan loader; call this function before creating the Vulkan instance.
 /// </summary>
 /// <returns>VK_SUCCESS on success and VK_ERROR_INITIALIZATION_FAILED otherwise.</returns>
-VkResult VkInitialize();
+[[nodiscard]] VkResult VkInitialize();
 
 /// <summary>
 /// Initialize library by providing a custom handler to load global symbols.
@@ -84,10 +86,10 @@ VkResult VkInitialize();
 void VkInitializeCustom(PFN_vkGetInstanceProcAddr handler);
 
 /// <summary>
-/// Get Vulkan instance version supported by the Vulkan loader, or 0 if Vulkan isn't supported
+/// Get Vulkan instance version supported by the Vulkan loader, or an empty optional if Vulkan isn't supported
 /// </summary>
-/// <returns>0 if VkInitialize wasn't called or failed.</returns>
-u32 VkGetInstanceVersion();
+/// <returns>Empty optional if VkInitialize wasn't called or failed.</returns>
+[[nodiscard]] std::optional<u32> VkGetInstanceVersion();
 
 /// <summary>
 /// Load global function pointers using application-created VkInstance; call this function after creating the Vulkan instance.
@@ -113,13 +115,13 @@ void VkLoadDevice(VkDevice device);
 /// Retrieve the last VkInstance for which global function pointers have been loaded via VkLoadInstance().
 /// </summary>
 /// <returns>VkInstance, or VK_NULL_HANDLE if VkLoadInstance() has not been called.</returns>
-VkInstance VkGetLoadedInstance();
+[[nodiscard]] VkInstance VkGetLoadedInstance();
 
 /// <summary>
 /// Retrieve the last VkDevice for which global function pointers have been loaded via VkLoadDevice().
 /// </summary>
 /// <returns>VkDevice, or VK_NULL_HANDLE if VkLoadDevice() has not been called.</returns>
-VkDevice VkGetLoadedDevice();
+[[nodiscard]] VkDevice VkGetLoadedDevice();
 
 /// <summary>
 /// Load function pointers using application-created VkDevice into a table.
@@ -2003,7 +2005,7 @@ static PFN_vkVoidFunction vkGetDeviceProcAddrStub(void* context, const char* nam
 	return vkGetDeviceProcAddr((VkDevice)context, name);
 }
 
-VkResult VkInitialize()
+[[nodiscard]] VkResult VkInitialize()
 {
 #if defined(_WIN32)
 	HMODULE module = LoadLibraryA("vulkan-1.dll");
@@ -2034,7 +2036,7 @@ void VkInitializeCustom(PFN_vkGetInstanceProcAddr handler)
 	VkGenLoadLoader(NULL, vkGetInstanceProcAddrStub);
 }
 
-u32 VkGetInstanceVersion()
+[[nodiscard]] std::optional<u32> VkGetInstanceVersion()
 {
 #if defined(VK_VERSION_1_1)
 	u32 apiVersion = 0;
@@ -2045,7 +2047,7 @@ u32 VkGetInstanceVersion()
 	if (vkCreateInstance)
 		return VK_API_VERSION_1_0;
 
-	return 0;
+	return std::nullopt;
 }
 
 void VkLoadInstance(VkInstance instance)
@@ -2061,7 +2063,7 @@ void VkLoadInstanceOnly(VkInstance instance)
     VkGenLoadInstance(instance, vkGetInstanceProcAddrStub);
 }
 
-VkInstance VkGetLoadedInstance()
+[[nodiscard]] VkInstance VkGetLoadedInstance()
 {
 	return loadedInstance;
 }
@@ -2072,7 +2074,7 @@ void VkLoadDevice(VkDevice device)
 	VkGenLoadDevice(device, vkGetDeviceProcAddrStub);
 }
 
-VkDevice VkGetLoadedDevice()
+[[nodiscard]] VkDevice VkGetLoadedDevice()
 {
 	return loadedDevice;
 }
