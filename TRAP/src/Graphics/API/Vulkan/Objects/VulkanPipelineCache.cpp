@@ -36,7 +36,7 @@ TRAP::Graphics::API::VulkanPipelineCache::~VulkanPipelineCache()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanPipelineCache::GetPipelineCacheData(std::size_t* const size, void* const data) const
+void TRAP::Graphics::API::VulkanPipelineCache::GetPipelineCacheData(usize* const size, void* const data) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 

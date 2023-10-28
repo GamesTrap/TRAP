@@ -33,6 +33,9 @@ The above license only applies to some of the Controller specific parts of this 
 
 #include "Core/PlatformDetection.h" //Needed for OS dependent includes
 
+#include "Core/Types.h"
+#include "Utils/NumericCasts.h"
+
 #include <functional>
 #include <array>
 #include <string_view>
@@ -219,7 +222,7 @@ namespace TRAP
 		/// <summary>
 		/// Key state.
 		/// </summary>
-		enum class KeyState : uint32_t
+		enum class KeyState : u32
 		{
 			Released,
 			Pressed,
@@ -229,7 +232,7 @@ namespace TRAP
 		/// <summary>
 		/// Mouse buttons.
 		/// </summary>
-		enum class MouseButton : uint32_t
+		enum class MouseButton : u32
 		{
 			One = 0,
 			Two = 1,
@@ -247,7 +250,7 @@ namespace TRAP
 		/// <summary>
 		/// Controllers
 		/// </summary>
-		enum class Controller : uint32_t
+		enum class Controller : u32
 		{
 			One      = 0,
 			Two      = 1,
@@ -270,7 +273,7 @@ namespace TRAP
 		/// <summary>
 		/// Controller axes.
 		/// </summary>
-		enum class ControllerAxis : uint32_t
+		enum class ControllerAxis : u32
 		{
 			Left_X        = 0,
 			Left_Y        = 1,
@@ -283,7 +286,7 @@ namespace TRAP
 		/// <summary>
 		/// Controller buttons.
 		/// </summary>
-		enum class ControllerButton : uint32_t
+		enum class ControllerButton : u32
 		{
 			A            = 0,
 			B            = 1,
@@ -309,7 +312,7 @@ namespace TRAP
 		/// <summary>
 		/// Controller DPad.
 		/// </summary>
-		enum class ControllerDPad : uint32_t
+		enum class ControllerDPad : u32
 		{
 			Centered   = 0,
 			Up         = BIT(0u),
@@ -325,7 +328,7 @@ namespace TRAP
 		/// <summary>
 		/// Controller Battery status.
 		/// </summary>
-		enum class ControllerBatteryStatus : uint32_t
+		enum class ControllerBatteryStatus : u32
 		{
 			Wired = 0,
 			Empty,
@@ -393,24 +396,24 @@ namespace TRAP
 		/// Retrieve the current mouse position on the x axis.
 		/// </summary>
 		/// <returns>X mouse position.</returns>
-		[[nodiscard]] static float GetMouseX();
+		[[nodiscard]] static f32 GetMouseX();
 		/// <summary>
 		/// Retrieve the current mouse position on the y axis.
 		/// </summary>
 		/// <returns>Y mouse position.</returns>
-		[[nodiscard]] static float GetMouseY();
+		[[nodiscard]] static f32 GetMouseY();
 		/// <summary>
 		/// Retrieve the current mouse position on the x axis for the provided window.
 		/// </summary>
 		/// <param name="window">Window to check.</param>
 		/// <returns>X mouse position.</returns>
-		[[nodiscard]] static float GetMouseX(const Window* window);
+		[[nodiscard]] static f32 GetMouseX(const Window* window);
 		/// <summary>
 		/// Retrieve the current mouse position on the y axis for the provided window.
 		/// </summary>
 		/// <param name="window">Window to check.</param>
 		/// <returns>Y mouse position.</returns>
-		[[nodiscard]] static float GetMouseY(const Window* window);
+		[[nodiscard]] static f32 GetMouseY(const Window* window);
 		/// <summary>
 		/// Retrieve the string representation of a key.
 		/// </summary>
@@ -423,14 +426,14 @@ namespace TRAP
 		/// <param name="controller">Controller to query.</param>
 		/// <param name="axis">Controller axis to check.</param>
 		/// <returns>Value of the axis.</returns>
-		[[nodiscard]] static float GetControllerAxis(Controller controller, ControllerAxis axis);
+		[[nodiscard]] static f32 GetControllerAxis(Controller controller, ControllerAxis axis);
 		/// <summary>
 		/// Retrieve the state of the specified DPad from the provided controller.
 		/// </summary>
 		/// <param name="controller">Controller to query.</param>
 		/// <param name="dpad">DPad to check.</param>
 		/// <returns>State of the DPad.</returns>
-		[[nodiscard]] static ControllerDPad GetControllerDPad(Controller controller, uint32_t dpad);
+		[[nodiscard]] static ControllerDPad GetControllerDPad(Controller controller, u32 dpad);
 		/// <summary>
 		/// Retrieve the battery status of the specified controller.
 		/// Note: This function is only available on Windows using XInput.
@@ -464,7 +467,7 @@ namespace TRAP
 		/// </summary>
 		/// <param name="controller">Controller to query.</param>
 		/// <returns>Vector with axes state.</returns>
-		[[nodiscard]] static std::vector<float> GetAllControllerAxes(Controller controller);
+		[[nodiscard]] static std::vector<f32> GetAllControllerAxes(Controller controller);
 		/// <summary>
 		/// Retrieve all states of every button from the provided controller.
 		/// </summary>
@@ -492,7 +495,7 @@ namespace TRAP
 		/// <param name="controller">Controller to affect.</param>
 		/// <param name="leftMotor">Normalized intensity for the left motor.</param>
 		/// <param name="rightMotor">Normalized intensity for the right motor.</param>
-		static void SetControllerVibration(Controller controller, float leftMotor, float rightMotor);
+		static void SetControllerVibration(Controller controller, f32 leftMotor, f32 rightMotor);
 		/// <summary>
 		/// Set the vibration level(s) for the specified controller.
 		/// Intensity values are normalized and range from 0-1.
@@ -507,14 +510,14 @@ namespace TRAP
 		/// </summary>
 		/// <param name="x">New x position.</param>
 		/// <param name="y">New y position.</param>
-		static void SetMousePosition(float x, float y);
+		static void SetMousePosition(f32 x, f32 y);
 		/// <summary>
 		/// Set the mouse position for the provided Window.
 		/// </summary>
 		/// <param name="x">New x position.</param>
 		/// <param name="y">New y position.</param>
 		/// <param name="window">Window to affect.</param>
-		static void SetMousePosition(float x, float y, const Window* window);
+		static void SetMousePosition(f32 x, f32 y, const Window* window);
 		/// <summary>
 		/// Set the mouse position.
 		/// </summary>
@@ -628,7 +631,7 @@ namespace TRAP
 		/// <summary>
 		/// Modes for polling.
 		/// </summary>
-		enum class PollMode : uint32_t
+		enum class PollMode : u32
 		{
 			Presence = 0,
 			Axes = 1,
@@ -650,7 +653,7 @@ namespace TRAP
 		/// <summary>
 		/// OS-dependent function for controller vibrations.
 		/// </summary>
-		static void SetControllerVibrationInternal(Controller controller, float leftMotor, float rightMotor);
+		static void SetControllerVibrationInternal(Controller controller, f32 leftMotor, f32 rightMotor);
 		/// <summary>
 		/// OS-dependent function for controller battery status.
 		/// </summary>
@@ -680,10 +683,10 @@ namespace TRAP
 		//DirectInput//
 		///////////////
 		//dinput8.dll function pointer typedefs
-		static constexpr uint32_t TRAP_TYPE_AXIS = 0;
-		static constexpr uint32_t TRAP_TYPE_SLIDER = 1;
-		static constexpr uint32_t TRAP_TYPE_BUTTON = 2;
-		static constexpr uint32_t TRAP_TYPE_DPAD = 3;
+		static constexpr u32 TRAP_TYPE_AXIS = 0;
+		static constexpr u32 TRAP_TYPE_SLIDER = 1;
+		static constexpr u32 TRAP_TYPE_BUTTON = 2;
+		static constexpr u32 TRAP_TYPE_DPAD = 3;
 		//Define local copies of the necessary GUIDs
 		static constexpr GUID TRAP_IID_IDirectInput8W =
 		{ 0xbf798031,0x483a,0x4da2,{0xaa,0x99,0x5d,0x64,0xed,0x36,0x97,0x00} };
@@ -779,41 +782,41 @@ namespace TRAP
 		//XInput//
 		//////////
 		//xinput.dll function pointer typedefs
-		static constexpr uint32_t TRAP_XINPUT_CAPS_WIRELESS = 0x0002;
-		static constexpr uint32_t TRAP_XINPUT_DEVSUBTYPE_GAMEPAD = 0x01;
-		static constexpr uint32_t TRAP_XINPUT_DEVSUBTYPE_WHEEL = 0x02;
-		static constexpr uint32_t TRAP_XINPUT_DEVSUBTYPE_ARCADE_STICK = 0x03;
-		static constexpr uint32_t TRAP_XINPUT_DEVSUBTYPE_FLIGHT_STICK = 0x04;
-		static constexpr uint32_t TRAP_XINPUT_DEVSUBTYPE_DANCE_PAD = 0x05;
-		static constexpr uint32_t TRAP_XINPUT_DEVSUBTYPE_GUITAR = 0x06;
-		static constexpr uint32_t TRAP_XINPUT_DEVSUBTYPE_DRUM_KIT = 0x08;
-		static constexpr uint32_t TRAP_XINPUT_DEVSUBTYPE_ARCADE_PAD = 0x13;
-		static constexpr uint32_t TRAP_XUSER_MAX_COUNT = 4;
-		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_DPAD_UP = 0x0001;
-		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_DPAD_DOWN = 0x0002;
-		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_DPAD_LEFT = 0x0004;
-		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_DPAD_RIGHT = 0x0008;
-		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_START = 0x0010;
-		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_BACK = 0x0020;
-		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_LEFT_THUMB = 0x0040;
-		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_RIGHT_THUMB = 0x0080;
-		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_LEFT_SHOULDER = 0x0100;
-		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_RIGHT_SHOULDER = 0x0200;
-		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_A = 0x1000;
-		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_B = 0x2000;
-		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_X = 0x4000;
-		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_Y = 0x8000;
-		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_GUIDE = 0x0400;
-		static constexpr uint32_t TRAP_XINPUT_DEVTYPE_GAMEPAD = 0x00;
-		static constexpr uint32_t TRAP_XINPUT_BATTERY_TYPE_DISCONNECTED = 0x00;
-		static constexpr uint32_t TRAP_XINPUT_BATTERY_TYPE_WIRED = 0x01;
-		static constexpr uint32_t TRAP_XINPUT_BATTERY_TYPE_ALKALINE = 0x02;
-		static constexpr uint32_t TRAP_XINPUT_BATTERY_TYPE_NIMH = 0x03;
-		static constexpr uint32_t TRAP_XINPUT_BATTERY_TYPE_UNKNOWN = 0xFF;
-		static constexpr uint32_t TRAP_XINPUT_BATTERY_LEVEL_EMPTY = 0x00;
-		static constexpr uint32_t TRAP_XINPUT_BATTERY_LEVEL_LOW = 0x01;
-		static constexpr uint32_t TRAP_XINPUT_BATTERY_LEVEL_MEDIUM = 0x02;
-		static constexpr uint32_t TRAP_XINPUT_BATTERY_LEVEL_FULL = 0x03;
+		static constexpr u32 TRAP_XINPUT_CAPS_WIRELESS = 0x0002;
+		static constexpr u32 TRAP_XINPUT_DEVSUBTYPE_GAMEPAD = 0x01;
+		static constexpr u32 TRAP_XINPUT_DEVSUBTYPE_WHEEL = 0x02;
+		static constexpr u32 TRAP_XINPUT_DEVSUBTYPE_ARCADE_STICK = 0x03;
+		static constexpr u32 TRAP_XINPUT_DEVSUBTYPE_FLIGHT_STICK = 0x04;
+		static constexpr u32 TRAP_XINPUT_DEVSUBTYPE_DANCE_PAD = 0x05;
+		static constexpr u32 TRAP_XINPUT_DEVSUBTYPE_GUITAR = 0x06;
+		static constexpr u32 TRAP_XINPUT_DEVSUBTYPE_DRUM_KIT = 0x08;
+		static constexpr u32 TRAP_XINPUT_DEVSUBTYPE_ARCADE_PAD = 0x13;
+		static constexpr u32 TRAP_XUSER_MAX_COUNT = 4;
+		static constexpr u32 TRAP_XINPUT_GAMEPAD_DPAD_UP = 0x0001;
+		static constexpr u32 TRAP_XINPUT_GAMEPAD_DPAD_DOWN = 0x0002;
+		static constexpr u32 TRAP_XINPUT_GAMEPAD_DPAD_LEFT = 0x0004;
+		static constexpr u32 TRAP_XINPUT_GAMEPAD_DPAD_RIGHT = 0x0008;
+		static constexpr u32 TRAP_XINPUT_GAMEPAD_START = 0x0010;
+		static constexpr u32 TRAP_XINPUT_GAMEPAD_BACK = 0x0020;
+		static constexpr u32 TRAP_XINPUT_GAMEPAD_LEFT_THUMB = 0x0040;
+		static constexpr u32 TRAP_XINPUT_GAMEPAD_RIGHT_THUMB = 0x0080;
+		static constexpr u32 TRAP_XINPUT_GAMEPAD_LEFT_SHOULDER = 0x0100;
+		static constexpr u32 TRAP_XINPUT_GAMEPAD_RIGHT_SHOULDER = 0x0200;
+		static constexpr u32 TRAP_XINPUT_GAMEPAD_A = 0x1000;
+		static constexpr u32 TRAP_XINPUT_GAMEPAD_B = 0x2000;
+		static constexpr u32 TRAP_XINPUT_GAMEPAD_X = 0x4000;
+		static constexpr u32 TRAP_XINPUT_GAMEPAD_Y = 0x8000;
+		static constexpr u32 TRAP_XINPUT_GAMEPAD_GUIDE = 0x0400;
+		static constexpr u32 TRAP_XINPUT_DEVTYPE_GAMEPAD = 0x00;
+		static constexpr u32 TRAP_XINPUT_BATTERY_TYPE_DISCONNECTED = 0x00;
+		static constexpr u32 TRAP_XINPUT_BATTERY_TYPE_WIRED = 0x01;
+		static constexpr u32 TRAP_XINPUT_BATTERY_TYPE_ALKALINE = 0x02;
+		static constexpr u32 TRAP_XINPUT_BATTERY_TYPE_NIMH = 0x03;
+		static constexpr u32 TRAP_XINPUT_BATTERY_TYPE_UNKNOWN = 0xFF;
+		static constexpr u32 TRAP_XINPUT_BATTERY_LEVEL_EMPTY = 0x00;
+		static constexpr u32 TRAP_XINPUT_BATTERY_LEVEL_LOW = 0x01;
+		static constexpr u32 TRAP_XINPUT_BATTERY_LEVEL_MEDIUM = 0x02;
+		static constexpr u32 TRAP_XINPUT_BATTERY_LEVEL_FULL = 0x03;
 		using PFN_XInputGetCapabilities = DWORD(WINAPI*)(DWORD, DWORD, XINPUT_CAPABILITIES*);
 		using PFN_XInputGetState = DWORD(WINAPI*)(DWORD, XINPUT_STATE*);
 		using PFN_XInputGetStateSecret = DWORD(WINAPI*)(DWORD, XINPUT_STATE*);
@@ -865,13 +868,13 @@ namespace TRAP
 
 		struct Object
 		{
-			int32_t Offset = 0;
-			int32_t Type = 0;
+			i32 Offset = 0;
+			i32 Type = 0;
 		};
 		struct ControllerWindows
 		{
 			std::vector<Object> Objects{};
-			int32_t ObjectCount = 0;
+			i32 ObjectCount = 0;
 			IDirectInputDevice8W* Device = nullptr;
 			DWORD Index = 0;
 			GUID guid{};
@@ -882,11 +885,11 @@ namespace TRAP
 		{
 			IDirectInputDevice8W* Device = nullptr;
 			std::vector<Object> Objects;
-			int32_t ObjectCount = 0;
-			int32_t AxisCount = 0;
-			int32_t SliderCount = 0;
-			int32_t ButtonCount = 0;
-			int32_t PoVCount = 0;
+			i32 ObjectCount = 0;
+			i32 AxisCount = 0;
+			i32 SliderCount = 0;
+			i32 ButtonCount = 0;
+			i32 PoVCount = 0;
 		};
 #elif defined(TRAP_PLATFORM_LINUX)
 #define TRAP_BUILD_LINUX_MAPPINGS
@@ -909,32 +912,32 @@ namespace TRAP
 		/// <param name="con">Controller to handle event.</param>
 		/// <param name="code">Event code.</param>
 		/// <param name="value">Event value.</param>
-		static void HandleABSEventLinux(ControllerInternal* con, uint32_t code, int32_t value);
+		static void HandleABSEventLinux(ControllerInternal* con, u32 code, i32 value);
 		/// <summary>
 		/// Handle key event for the specified controller.
 		/// </summary>
 		/// <param name="con">Controller to handle event.</param>
 		/// <param name="code">Event code.</param>
 		/// <param name="value">Event value.</param>
-		static void HandleKeyEventLinux(ControllerInternal* con, uint32_t code, int32_t value);
+		static void HandleKeyEventLinux(ControllerInternal* con, u32 code, i32 value);
 		struct ControllerLinuxLibrary
 		{
-			int32_t INotify = 0;
-			int32_t Watch = 0;
+			i32 INotify = 0;
+			i32 Watch = 0;
 			std::regex Regex{};
 			bool Dropped = false;
 		};
 		static ControllerLinuxLibrary s_linuxController;
 		struct ControllerLinux
 		{
-			int32_t FD = 0;
+			i32 FD = 0;
 			bool VibrationSupported = false;
-			std::optional<uint16_t> CurrentVibration = std::nullopt;
+			std::optional<u16> CurrentVibration = std::nullopt;
 			std::filesystem::path Path{};
-			std::array<int32_t, KEY_CNT - BTN_MISC> KeyMap{};
-			std::array<int32_t, ABS_CNT> ABSMap{};
+			std::array<i32, KEY_CNT - BTN_MISC> KeyMap{};
+			std::array<i32, ABS_CNT> ABSMap{};
 			std::array<input_absinfo, ABS_CNT> ABSInfo{};
-			std::array<std::array<int32_t, 4>, 2> DPads{};
+			std::array<std::array<i32, 4>, 2> DPads{};
 		};
 #endif
 
@@ -943,10 +946,10 @@ namespace TRAP
 		//Controller mapping element
 		struct MapElement
 		{
-			uint8_t Type = 0;
-			uint8_t Index = 0;
-			int8_t AxisScale = 0;
-			int8_t AxisOffset = 0;
+			u8 Type = 0;
+			u8 Index = 0;
+			i8 AxisScale = 0;
+			i8 AxisOffset = 0;
 		};
 
 		//Controller mapping
@@ -960,17 +963,17 @@ namespace TRAP
 
 		struct ControllerInternal
 		{
-			std::vector<float> Axes{};
+			std::vector<f32> Axes{};
 			std::vector<bool> Buttons{};
-			int32_t ButtonCount = 0;
+			i32 ButtonCount = 0;
 			std::vector<ControllerDPad> DPads{};
 			std::string Name{};
 			void* UserPointer = nullptr;
 			std::string guid{};
 			Mapping* mapping = nullptr;
 			bool Connected = false;
-			float LeftMotor = 0.0f;
-			float RightMotor = 0.0f;
+			f32 LeftMotor = 0.0f;
+			f32 RightMotor = 0.0f;
 
 #ifdef TRAP_PLATFORM_WINDOWS
 			ControllerWindows WinCon;
@@ -989,28 +992,28 @@ namespace TRAP
 		/// <param name="dpadCount">Amount of DPads.</param>
 		/// <returns>Pointer to the new controller internal or nullptr if there are already 16 controllers connected.</returns>
 		static ControllerInternal* AddInternalController(std::string name, std::string guid,
-		                                                 uint32_t axisCount, uint32_t buttonCount, uint32_t dpadCount);
+		                                                 u32 axisCount, u32 buttonCount, u32 dpadCount);
 		/// <summary>
 		/// Internally DPad input processing.
 		/// </summary>
 		/// <param name="con">Which controller.</param>
 		/// <param name="dpad">Which DPad.</param>
 		/// <param name="value">New state.</param>
-		static constexpr void InternalInputControllerDPad(ControllerInternal* con, int32_t dpad, uint8_t value);
+		static constexpr void InternalInputControllerDPad(ControllerInternal* con, i32 dpad, u8 value);
 		/// <summary>
 		/// Internally axis input processing.
 		/// </summary>
 		/// <param name="con">Which controller</param>
 		/// <param name="axis">Which axis.</param>
 		/// <param name="value">New axis value.</param>
-		static constexpr void InternalInputControllerAxis(ControllerInternal* con, int32_t axis, float value);
+		static constexpr void InternalInputControllerAxis(ControllerInternal* con, i32 axis, f32 value);
 		/// <summary>
 		/// Internally button input processing.
 		/// </summary>
 		/// <param name="con">Which controller.</param>
 		/// <param name="button">Which button.</param>
 		/// <param name="pressed">New state, pressed or not pressed.</param>
-		static constexpr void InternalInputControllerButton(ControllerInternal* con, int32_t button, bool pressed);
+		static constexpr void InternalInputControllerButton(ControllerInternal* con, i32 button, bool pressed);
 
 		///////////
 		//Mapping//
@@ -1060,14 +1063,14 @@ namespace TRAP
 		/// <param name="controller">Controller to query.</param>
 		/// <param name="axis">Axis to get state from.</param>
 		/// <returns>On success axis state, 0.0f otherwise.</returns>
-		[[nodiscard]] static float GetMappedControllerAxis(Controller controller, ControllerAxis axis);
+		[[nodiscard]] static f32 GetMappedControllerAxis(Controller controller, ControllerAxis axis);
 		/// <summary>
 		/// Retrieve state of a specific DPad from a controller.
 		/// </summary>
 		/// <param name="controller">Controller to query.</param>
 		/// <param name="dpad">DPad to get state from.</param>
 		/// <returns>On success DPad state, ControllerDPad::Centered otherwise.</returns>
-		[[nodiscard]] static ControllerDPad GetMappedControllerDPad(Controller controller, uint32_t dpad);
+		[[nodiscard]] static ControllerDPad GetMappedControllerDPad(Controller controller, u32 dpad);
 	};
 }
 
@@ -1081,9 +1084,9 @@ namespace TRAP
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of the new value of a controller DPad
-constexpr void TRAP::Input::InternalInputControllerDPad(ControllerInternal* const con, const int32_t dpad, const uint8_t value)
+constexpr void TRAP::Input::InternalInputControllerDPad(ControllerInternal* const con, const i32 dpad, const u8 value)
 {
-	const uint32_t base = NumericCast<uint32_t>(con->ButtonCount) + NumericCast<uint32_t>(dpad) * 4u;
+	const u32 base = NumericCast<u32>(con->ButtonCount) + NumericCast<u32>(dpad) * 4u;
 
 	con->Buttons[base + 0u] = ((value & BIT(0u)) != 0u); //Up
 	con->Buttons[base + 1u] = ((value & BIT(1u)) != 0u); //Right
@@ -1091,39 +1094,39 @@ constexpr void TRAP::Input::InternalInputControllerDPad(ControllerInternal* cons
 	con->Buttons[base + 3u] = ((value & BIT(3u)) != 0u); //Left
 
 	if (con->Buttons[base + 1u] && con->Buttons[base + 0u])
-		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Right_Up;
+		con->DPads[NumericCast<usize>(dpad)] = ControllerDPad::Right_Up;
 	else if (con->Buttons[base + 1u] && con->Buttons[base + 2u])
-		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Right_Down;
+		con->DPads[NumericCast<usize>(dpad)] = ControllerDPad::Right_Down;
 	else if (con->Buttons[base + 3u] && con->Buttons[base + 0u])
-		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Left_Up;
+		con->DPads[NumericCast<usize>(dpad)] = ControllerDPad::Left_Up;
 	else if (con->Buttons[base + 3u] && con->Buttons[base + 2u])
-		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Left_Down;
+		con->DPads[NumericCast<usize>(dpad)] = ControllerDPad::Left_Down;
 	else if (con->Buttons[base + 0u])
-		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Up;
+		con->DPads[NumericCast<usize>(dpad)] = ControllerDPad::Up;
 	else if (con->Buttons[base + 1u])
-		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Right;
+		con->DPads[NumericCast<usize>(dpad)] = ControllerDPad::Right;
 	else if (con->Buttons[base + 2u])
-		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Down;
+		con->DPads[NumericCast<usize>(dpad)] = ControllerDPad::Down;
 	else if (con->Buttons[base + 3u])
-		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Left;
+		con->DPads[NumericCast<usize>(dpad)] = ControllerDPad::Left;
 	else
-		con->DPads[NumericCast<std::size_t>(dpad)] = ControllerDPad::Centered;
+		con->DPads[NumericCast<usize>(dpad)] = ControllerDPad::Centered;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of the new value of a controller axis
-constexpr void TRAP::Input::InternalInputControllerAxis(ControllerInternal* const con, const int32_t axis, const float value)
+constexpr void TRAP::Input::InternalInputControllerAxis(ControllerInternal* const con, const i32 axis, const f32 value)
 {
-	con->Axes[NumericCast<std::size_t>(axis)] = value;
+	con->Axes[NumericCast<usize>(axis)] = value;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of the new value of a controller button
-constexpr void TRAP::Input::InternalInputControllerButton(ControllerInternal* const con, const int32_t button, const bool pressed)
+constexpr void TRAP::Input::InternalInputControllerButton(ControllerInternal* const con, const i32 button, const bool pressed)
 {
-	con->Buttons[NumericCast<std::size_t>(button)] = pressed;
+	con->Buttons[NumericCast<usize>(button)] = pressed;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1150,7 +1153,7 @@ constexpr void TRAP::Input::InternalInputControllerButton(ControllerInternal* co
 	if(mapping == nullptr)
 		return nullptr;
 
-	uint32_t i = 0;
+	u32 i = 0;
 
 	for(i = 0; i <= std::to_underlying(ControllerButton::DPad_Left); i++)
 	{
@@ -1180,7 +1183,7 @@ constexpr void TRAP::Input::InternalInputControllerButton(ControllerInternal* co
 //Checks whether a controller mapping element is present in the hardware
 [[nodiscard]] constexpr bool TRAP::Input::IsValidElementForController(const MapElement* const e, const ControllerInternal* const con)
 {
-	if(e->Type == 3 && (e->Index >> 4u) >= NumericCast<int32_t>(con->DPads.size() + 1))
+	if(e->Type == 3 && (e->Index >> 4u) >= NumericCast<i32>(con->DPads.size() + 1))
 		return false;
 	if(e->Type == 2 && e->Index >= (con->Buttons.size() + 1))
 		return false;

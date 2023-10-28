@@ -10,7 +10,7 @@ namespace TRAP
 	class SceneCamera : public Graphics::Camera
 	{
 	public:
-		enum class ProjectionType : uint32_t
+		enum class ProjectionType : u32
 		{
 			Perspective = 0,
 			Orthographic = 1
@@ -24,24 +24,24 @@ namespace TRAP
 		SceneCamera& operator=(const SceneCamera&) noexcept = default;
 		SceneCamera& operator=(SceneCamera&&) noexcept = default;
 
-		void SetPerspective(float verticalFOV, float nearClip);
-		void SetOrthographic(float size, float nearClip, float farClip);
+		void SetPerspective(f32 verticalFOV, f32 nearClip);
+		void SetOrthographic(f32 size, f32 nearClip, f32 farClip);
 
-		void SetViewportSize(uint32_t width, uint32_t height);
+		void SetViewportSize(u32 width, u32 height);
 
-		[[nodiscard]] constexpr float GetPerspectiveVerticalFOV() const noexcept;
-		void SetPerspectiveVerticalFOV(float verticalFov);
-		[[nodiscard]] constexpr float GetPerspectiveNearClip() const noexcept;
-		void SetPerspectiveNearClip(float nearClip);
+		[[nodiscard]] constexpr f32 GetPerspectiveVerticalFOV() const noexcept;
+		void SetPerspectiveVerticalFOV(f32 verticalFov);
+		[[nodiscard]] constexpr f32 GetPerspectiveNearClip() const noexcept;
+		void SetPerspectiveNearClip(f32 nearClip);
 
-		[[nodiscard]] constexpr float GetOrthographicSize() const noexcept;
-		void SetOrthographicSize(float size);
+		[[nodiscard]] constexpr f32 GetOrthographicSize() const noexcept;
+		void SetOrthographicSize(f32 size);
 		[[nodiscard]] constexpr Math::Vec2 GetOrthographicClip() const noexcept;
 		void SetOrthographicClip(Math::Vec2 clip);
-		[[nodiscard]] constexpr float GetOrthographicNearClip() const noexcept;
-		void SetOrthographicNearClip(float nearClip);
-		[[nodiscard]] constexpr float GetOrthographicFarClip() const noexcept;
-		void SetOrthographicFarClip(float farClip);
+		[[nodiscard]] constexpr f32 GetOrthographicNearClip() const noexcept;
+		void SetOrthographicNearClip(f32 nearClip);
+		[[nodiscard]] constexpr f32 GetOrthographicFarClip() const noexcept;
+		void SetOrthographicFarClip(f32 farClip);
 
 		[[nodiscard]] constexpr ProjectionType GetProjectionType() const noexcept;
 		void SetProjectionType(ProjectionType type);
@@ -50,33 +50,33 @@ namespace TRAP
 
 		ProjectionType m_projectionType = ProjectionType::Orthographic;
 
-		float m_perspectiveFOV = Math::Radians(45.0f);
-		float m_perspectiveNear = 0.01f;
+		f32 m_perspectiveFOV = Math::Radians(45.0f);
+		f32 m_perspectiveNear = 0.01f;
 
-		float m_orthographicSize = 10.0f;
-		float m_orthographicNear = -1.0f, m_orthographicFar = 1.0f;
+		f32 m_orthographicSize = 10.0f;
+		f32 m_orthographicNear = -1.0f, m_orthographicFar = 1.0f;
 
-		float m_aspectRatio = 0.0f;
+		f32 m_aspectRatio = 0.0f;
 	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::SceneCamera::GetPerspectiveVerticalFOV() const noexcept
+[[nodiscard]] constexpr f32 TRAP::SceneCamera::GetPerspectiveVerticalFOV() const noexcept
 {
 	return m_perspectiveFOV;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::SceneCamera::GetPerspectiveNearClip() const noexcept
+[[nodiscard]] constexpr f32 TRAP::SceneCamera::GetPerspectiveNearClip() const noexcept
 {
 	return m_perspectiveNear;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::SceneCamera::GetOrthographicSize() const noexcept
+[[nodiscard]] constexpr f32 TRAP::SceneCamera::GetOrthographicSize() const noexcept
 {
 	return m_orthographicSize;
 }
@@ -90,14 +90,14 @@ namespace TRAP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::SceneCamera::GetOrthographicNearClip() const noexcept
+[[nodiscard]] constexpr f32 TRAP::SceneCamera::GetOrthographicNearClip() const noexcept
 {
 	return m_orthographicNear;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::SceneCamera::GetOrthographicFarClip() const noexcept
+[[nodiscard]] constexpr f32 TRAP::SceneCamera::GetOrthographicFarClip() const noexcept
 {
 	return m_orthographicFar;
 }

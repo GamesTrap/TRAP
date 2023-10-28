@@ -14,26 +14,26 @@
 	std::stringstream s;
 
 	s << std::hex << std::setfill('0')
-	  << std::setw(2) << NumericCast<uint32_t>(std::get<0>(uuid))
-	  << std::setw(2) << NumericCast<uint32_t>(std::get<1>(uuid))
-	  << std::setw(2) << NumericCast<uint32_t>(std::get<2>(uuid))
-	  << std::setw(2) << NumericCast<uint32_t>(std::get<3>(uuid))
+	  << std::setw(2) << NumericCast<u32>(std::get<0>(uuid))
+	  << std::setw(2) << NumericCast<u32>(std::get<1>(uuid))
+	  << std::setw(2) << NumericCast<u32>(std::get<2>(uuid))
+	  << std::setw(2) << NumericCast<u32>(std::get<3>(uuid))
 	  << '-'
-	  << std::setw(2) << NumericCast<uint32_t>(std::get<4>(uuid))
-	  << std::setw(2) << NumericCast<uint32_t>(std::get<5>(uuid))
+	  << std::setw(2) << NumericCast<u32>(std::get<4>(uuid))
+	  << std::setw(2) << NumericCast<u32>(std::get<5>(uuid))
 	  << '-'
-	  << std::setw(2) << NumericCast<uint32_t>(std::get<6>(uuid))
-	  << std::setw(2) << NumericCast<uint32_t>(std::get<7>(uuid))
+	  << std::setw(2) << NumericCast<u32>(std::get<6>(uuid))
+	  << std::setw(2) << NumericCast<u32>(std::get<7>(uuid))
 	  << '-'
-	  << std::setw(2) << NumericCast<uint32_t>(std::get<8>(uuid))
-	  << std::setw(2) << NumericCast<uint32_t>(std::get<9>(uuid))
+	  << std::setw(2) << NumericCast<u32>(std::get<8>(uuid))
+	  << std::setw(2) << NumericCast<u32>(std::get<9>(uuid))
 	  << '-'
-	  << std::setw(2) << NumericCast<uint32_t>(std::get<10>(uuid))
-	  << std::setw(2) << NumericCast<uint32_t>(std::get<11>(uuid))
-	  << std::setw(2) << NumericCast<uint32_t>(std::get<12>(uuid))
-	  << std::setw(2) << NumericCast<uint32_t>(std::get<13>(uuid))
-	  << std::setw(2) << NumericCast<uint32_t>(std::get<14>(uuid))
-	  << std::setw(2) << NumericCast<uint32_t>(std::get<15>(uuid));
+	  << std::setw(2) << NumericCast<u32>(std::get<10>(uuid))
+	  << std::setw(2) << NumericCast<u32>(std::get<11>(uuid))
+	  << std::setw(2) << NumericCast<u32>(std::get<12>(uuid))
+	  << std::setw(2) << NumericCast<u32>(std::get<13>(uuid))
+	  << std::setw(2) << NumericCast<u32>(std::get<14>(uuid))
+	  << std::setw(2) << NumericCast<u32>(std::get<15>(uuid));
 
 	return s.str();
 }
@@ -49,7 +49,7 @@
 	if(uuid.empty())
 		return {};
 
-	std::size_t index = 0;
+	usize index = 0;
 	for(const char c : uuid)
 	{
 		if(!String::IsHexDigit(c)) //Ignore non hex characters
@@ -58,10 +58,10 @@
 		if(index >= 32) //Out of bounds
 			return {};
 
-		const uint8_t convertedCharacter = String::IsDigit(c) ? NumericCast<uint8_t>(c - '0') :
-		                                                        NumericCast<uint8_t>(String::ToLower(c) - 'a' + 10);
+		const u8 convertedCharacter = String::IsDigit(c) ? NumericCast<u8>(c - '0') :
+		                                                        NumericCast<u8>(String::ToLower(c) - 'a' + 10);
 		if(index % 2 == 0)
-			result[index / 2] = NumericCast<uint8_t>(convertedCharacter << 4u);
+			result[index / 2] = NumericCast<u8>(convertedCharacter << 4u);
 		else
 			result[index / 2] |= convertedCharacter;
 
@@ -82,42 +82,42 @@
 	if(!cpu.Model.empty())
 		return cpu;
 
-	static constexpr auto CPUID = [](const uint32_t funcID, const uint32_t subFuncID)
+	static constexpr auto CPUID = [](const u32 funcID, const u32 subFuncID)
 	{
 	#ifdef TRAP_PLATFORM_WINDOWS
-		std::array<int32_t, 4> regs{};
-		__cpuidex(regs.data(), static_cast<int32_t>(funcID), static_cast<int32_t>(subFuncID));
+		std::array<i32, 4> regs{};
+		__cpuidex(regs.data(), static_cast<i32>(funcID), static_cast<i32>(subFuncID));
 	#else
-		std::array<uint32_t, 4> regs{};
+		std::array<u32, 4> regs{};
 		__get_cpuid_count(funcID, subFuncID, &std::get<0>(regs), &std::get<1>(regs), &std::get<2>(regs), &std::get<3>(regs));
 	#endif
 
-		return std::bit_cast<std::array<uint32_t, 4>>(regs);
+		return std::bit_cast<std::array<u32, 4>>(regs);
 	};
 
-	std::array<uint32_t, 4> regs = CPUID(0, 0);
-	const uint32_t HFS = std::get<0>(regs);
+	std::array<u32, 4> regs = CPUID(0, 0);
+	const u32 HFS = std::get<0>(regs);
 	//Get Vendor
-	const std::string vendorID = std::string(reinterpret_cast<char*>(&std::get<1>(regs)), sizeof(uint32_t)) +
-		                         std::string(reinterpret_cast<char*>(&std::get<2>(regs)), sizeof(uint32_t)) +
-		                         std::string(reinterpret_cast<char*>(&std::get<3>(regs)), sizeof(uint32_t));
+	const std::string vendorID = std::string(reinterpret_cast<char*>(&std::get<1>(regs)), sizeof(u32)) +
+		                         std::string(reinterpret_cast<char*>(&std::get<2>(regs)), sizeof(u32)) +
+		                         std::string(reinterpret_cast<char*>(&std::get<3>(regs)), sizeof(u32));
 	regs = CPUID(1, 0);
 	cpu.HyperThreaded = ((std::get<3>(regs) & 0x10000000u) != 0u); //Get Hyper-threading
 
 	const std::string upVendorID = Utils::String::ToUpper(vendorID);
 	//Get Number of cores
-	static constexpr int32_t MAX_INTEL_TOP_LVL = 4;
-	static constexpr uint32_t LVL_TYPE = 0x0000FF00;
-	static constexpr uint32_t LVL_CORES = 0x0000FFFF;
+	static constexpr i32 MAX_INTEL_TOP_LVL = 4;
+	static constexpr u32 LVL_TYPE = 0x0000FF00;
+	static constexpr u32 LVL_CORES = 0x0000FFFF;
 	if (Utils::String::Contains(upVendorID, "INTEL"))
 	{
 		if (HFS >= 11u)
 		{
-			uint32_t numSMT = 0;
-			for (uint32_t lvl = 0; lvl < MAX_INTEL_TOP_LVL; ++lvl)
+			u32 numSMT = 0;
+			for (u32 lvl = 0; lvl < MAX_INTEL_TOP_LVL; ++lvl)
 			{
-				const std::array<uint32_t, 4> regs1 = CPUID(0x0Bu, lvl);
-				const uint32_t currentLevel = (LVL_TYPE & std::get<2>(regs1)) >> 8u;
+				const std::array<u32, 4> regs1 = CPUID(0x0Bu, lvl);
+				const u32 currentLevel = (LVL_TYPE & std::get<2>(regs1)) >> 8u;
 				switch (currentLevel)
 				{
 				case BIT(0u):
@@ -141,7 +141,7 @@
 				cpu.LogicalCores = (std::get<1>(regs) >> 16u) & 0xFFu;
 				if (HFS >= 4)
 				{
-					const std::array<uint32_t, 4> regs1 = CPUID(4, 0);
+					const std::array<u32, 4> regs1 = CPUID(4, 0);
 					cpu.Cores = (1 + (std::get<0>(regs1) >> 26u)) & 0x3Fu;
 				}
 			}
@@ -159,7 +159,7 @@
 	}
 	else if (Utils::String::Contains(upVendorID, "AMD"))
 	{
-		uint32_t extFamily = 0;
+		u32 extFamily = 0;
 		if (((std::get<0>(regs) >> 8u) & 0xFu) < 0xFu)
 			extFamily = (std::get<0>(regs) >> 8u) & 0xFu;
 		else
@@ -168,7 +168,7 @@
 		if (HFS >= 1)
 		{
 			cpu.LogicalCores = (std::get<1>(regs) >> 16u) & 0xFFu;
-			std::array<uint32_t, 4> regs1 = CPUID(0x80000000u, 0u);
+			std::array<u32, 4> regs1 = CPUID(0x80000000u, 0u);
 			if (std::get<0>(regs1) >= 8u)
 			{
 				regs1 = CPUID(0x80000008u, 0u);
@@ -189,7 +189,7 @@
 				//On PPR 17h, page 82:
 				//CPUID_Fn8000001E_EBX [Core Identifiers][15:8] is ThreadsPerCore
 				//ThreadsPerCore: [...] The number of threads per core is ThreadsPerCore + 1
-				std::array<uint32_t, 4> regs1 = CPUID(0x80000000u, 0u);
+				std::array<u32, 4> regs1 = CPUID(0x80000000u, 0u);
 				if ((extFamily >= 23u) && (std::get<0>(regs1) >= 30u))
 				{
 					regs1 = CPUID(0x8000001Eu, 0u);
@@ -202,20 +202,20 @@
 	}
 
 	//Get CPU brand string
-	for (uint32_t i = 0x80000002u; i < 0x80000005u; ++i)
+	for (u32 i = 0x80000002u; i < 0x80000005u; ++i)
 	{
-		std::array<uint32_t, 4> regs1 = CPUID(i, 0);
+		std::array<u32, 4> regs1 = CPUID(i, 0);
 		cpu.Model += fmt::format("{}{}{}{}",
-		                         std::string(reinterpret_cast<char*>(&std::get<0>(regs1)), sizeof(uint32_t)),
-		                         std::string(reinterpret_cast<char*>(&std::get<1>(regs1)), sizeof(uint32_t)),
-		                         std::string(reinterpret_cast<char*>(&std::get<2>(regs1)), sizeof(uint32_t)),
-		                         std::string(reinterpret_cast<char*>(&std::get<3>(regs1)), sizeof(uint32_t)));
+		                         std::string(reinterpret_cast<char*>(&std::get<0>(regs1)), sizeof(u32)),
+		                         std::string(reinterpret_cast<char*>(&std::get<1>(regs1)), sizeof(u32)),
+		                         std::string(reinterpret_cast<char*>(&std::get<2>(regs1)), sizeof(u32)),
+		                         std::string(reinterpret_cast<char*>(&std::get<3>(regs1)), sizeof(u32)));
 	}
 
-	std::size_t lastAlphaChar = 0;
+	usize lastAlphaChar = 0;
 	const auto it = std::ranges::find_if(std::ranges::reverse_view(cpu.Model), Utils::String::IsAlphaNumeric);
 	if(it != cpu.Model.rend())
-		lastAlphaChar = NumericCast<std::size_t>(it - cpu.Model.rbegin());
+		lastAlphaChar = NumericCast<usize>(it - cpu.Model.rbegin());
 
 	cpu.Model.erase(cpu.Model.end() - NumericCast<std::string::difference_type>(lastAlphaChar), cpu.Model.end());
 
@@ -430,9 +430,9 @@ static TRAP::Utils::NTDLL s_ntdll;
 {
 	ZoneScoped;
 
-	constinit static int32_t socketFD = -1;
-	constinit static int32_t rc = 1;
-	static constexpr uint16_t port = 49420; //Just a free (hopefully) random port
+	constinit static i32 socketFD = -1;
+	constinit static i32 rc = 1;
+	static constexpr u16 port = 49420; //Just a free (hopefully) random port
 
 	if(socketFD == -1 || (rc != 0))
 	{
@@ -516,7 +516,7 @@ static BOOL WINAPI SIGINTHandlerRoutine(_In_ DWORD dwCtrlType)
 void TRAP::Utils::RegisterSIGINTCallback()
 {
 #ifdef TRAP_PLATFORM_LINUX
-	if(signal(SIGINT, [](int) {TRAP::Application::Shutdown(); }) == SIG_ERR)
+	if(signal(SIGINT, [](i32) {TRAP::Application::Shutdown(); }) == SIG_ERR)
 #elif defined(TRAP_PLATFORM_WINDOWS)
 	if(!SetConsoleCtrlHandler(SIGINTHandlerRoutine, TRUE))
 #endif

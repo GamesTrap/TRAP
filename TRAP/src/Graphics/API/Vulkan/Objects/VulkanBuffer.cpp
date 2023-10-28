@@ -19,11 +19,11 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 	TP_DEBUG(Log::RendererVulkanBufferPrefix, "Creating Buffer");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	uint64_t allocationSize = desc.Size;
+	u64 allocationSize = desc.Size;
 	//Align the buffer size to multiples of the dynamic uniform buffer minimum size
 	if((desc.Descriptors & RendererAPI::DescriptorType::UniformBuffer) != RendererAPI::DescriptorType::Undefined)
 	{
-		const uint64_t minAlignment = RendererAPI::GPUSettings.UniformBufferAlignment;
+		const u64 minAlignment = RendererAPI::GPUSettings.UniformBufferAlignment;
 		allocationSize = ((allocationSize + minAlignment - 1) / minAlignment) * minAlignment;
 	}
 
@@ -142,7 +142,7 @@ TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint64_t TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemoryOffset() const
+[[nodiscard]] u64 TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemoryOffset() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -165,7 +165,7 @@ void TRAP::Graphics::API::VulkanBuffer::MapBuffer(const RendererAPI::ReadRange* 
 	TRAP_ASSERT(res == VK_SUCCESS);
 
 	if (range != nullptr)
-		m_CPUMappedAddress = (static_cast<uint8_t*>(m_CPUMappedAddress) + range->Offset);
+		m_CPUMappedAddress = (static_cast<u8*>(m_CPUMappedAddress) + range->Offset);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -194,8 +194,8 @@ void TRAP::Graphics::API::VulkanBuffer::SetBufferName(const std::string_view nam
 		return;
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<uint64_t>(m_vkBuffer), VK_OBJECT_TYPE_BUFFER, name);
+	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkBuffer), VK_OBJECT_TYPE_BUFFER, name);
 #else
-	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<uint64_t>(m_vkBuffer), VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_EXT, name);
+	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkBuffer), VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_EXT, name);
 #endif
 }

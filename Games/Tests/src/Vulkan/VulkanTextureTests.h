@@ -22,12 +22,12 @@ private:
     TRAP::Ref<TRAP::Graphics::Sampler> m_textureSampler = nullptr;
 
     bool m_cycleMips = false;
-    uint32_t m_currentMipLevel = 0;
-    uint32_t m_maxMipLevel = 0;
+    u32 m_currentMipLevel = 0;
+    u32 m_maxMipLevel = 0;
     bool m_updateTexture = false;
-    uint32_t m_currentTexture = 0;
+    u32 m_currentTexture = 0;
 
-    inline static constexpr std::array<float, 5ull * 4> QuadVerticesIndexed
+    inline static constexpr std::array<f32, 5ull * 4> QuadVerticesIndexed
 	{
 		//XYZ UV
 		-0.5f, -0.5f, 0.0f,    0.0f, 1.0f,
@@ -35,7 +35,7 @@ private:
 		 0.5f,  0.5f, 0.0f,    1.0f, 0.0f,
 		-0.5f,  0.5f, 0.0f,    0.0f, 0.0f
 	};
-    inline static constexpr std::array<uint16_t, 6> QuadIndices
+    inline static constexpr std::array<u16, 6> QuadIndices
 	{
 		0, 1, 2, 2, 3, 0
 	};

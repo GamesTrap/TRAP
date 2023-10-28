@@ -110,16 +110,16 @@ namespace
 
 TEST_CASE("TRAP::Math::EulerAngles()", "[math][generic][eulerangles]")
 {
-    SECTION("Quat - double")
+    SECTION("Quat - f64")
     {
-        RunEulerAnglesRunTimeTests<double>();
-        RunEulerAnglesCompileTimeTests<double>();
-        RunEulerAnglesEdgeTests<double>();
+        RunEulerAnglesRunTimeTests<f64>();
+        RunEulerAnglesCompileTimeTests<f64>();
+        RunEulerAnglesEdgeTests<f64>();
     }
-    SECTION("Quat - float")
+    SECTION("Quat - f32")
     {
-        RunEulerAnglesRunTimeTests<float>();
-        RunEulerAnglesCompileTimeTests<float>();
-        RunEulerAnglesEdgeTests<float>();
+        RunEulerAnglesRunTimeTests<f32>();
+        RunEulerAnglesCompileTimeTests<f32>();
+        RunEulerAnglesEdgeTests<f32>();
     }
 }

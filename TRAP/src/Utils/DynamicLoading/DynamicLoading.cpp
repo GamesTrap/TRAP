@@ -17,9 +17,9 @@
 
 #if defined(__SANITIZE_LEAK__) || __has_feature(leak_sanitizer) || defined(TRAP_LSAN)
 	//Workaround: This fixes false positives in LeakSanitizer
-	static constexpr int32_t mode = RTLD_LAZY | RTLD_LOCAL | RTLD_NODELETE;
+	static constexpr i32 mode = RTLD_LAZY | RTLD_LOCAL | RTLD_NODELETE;
 #else
-	static constexpr int32_t mode = RTLD_LAZY | RTLD_LOCAL;
+	static constexpr i32 mode = RTLD_LAZY | RTLD_LOCAL;
 #endif
 
 	void* handle = dlopen(path.data(), mode);

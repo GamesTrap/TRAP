@@ -15,7 +15,7 @@ void AntiAliasingTests::OnAttach()
 
 	TRAP::Graphics::RenderCommand::GetAntiAliasing(m_antiAliasing, m_sampleCount);
 
-	for(uint32_t i = std::to_underlying(TRAP::Graphics::AntiAliasing::Off); i < (std::to_underlying(TRAP::Graphics::AntiAliasing::MSAA) + 1); ++i)
+	for(u32 i = std::to_underlying(TRAP::Graphics::AntiAliasing::Off); i < (std::to_underlying(TRAP::Graphics::AntiAliasing::MSAA) + 1); ++i)
 		m_antiAliasingMethods.emplace_back(static_cast<TRAP::Graphics::AntiAliasing>(i));
 }
 
@@ -23,7 +23,7 @@ void AntiAliasingTests::OnAttach()
 
 void AntiAliasingTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 {
-	const float angle = TRAP::Application::GetTime().GetSeconds() * TRAP::Math::PI<float>();
+	const f32 angle = TRAP::Application::GetTime().GetSeconds() * TRAP::Math::PI<f32>();
 
 	TRAP::Graphics::Renderer2D::BeginScene(m_camera);
 	TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, angle}, {0.25f, 0.25f, 1.0f} }, {1.0f, 1.0f, 1.0f, 1.0f});
@@ -52,9 +52,9 @@ void AntiAliasingTests::OnImGuiRender()
 	bool updateAA = false;
 	if(ImGui::BeginCombo("Anti aliasing", TRAP::Utils::String::ConvertToString(m_antiAliasing).c_str()))
 	{
-		for(std::size_t i = 0; i < m_antiAliasingMethods.size(); ++i)
+		for(usize i = 0; i < m_antiAliasingMethods.size(); ++i)
 		{
-			const bool isSelected = (NumericCast<std::size_t>(std::to_underlying(m_antiAliasing)) == i);
+			const bool isSelected = (NumericCast<usize>(std::to_underlying(m_antiAliasing)) == i);
 			if(ImGui::Selectable(TRAP::Utils::String::ConvertToString(m_antiAliasingMethods[i]).c_str(), isSelected))
 			{
 				updateAA = true;
@@ -69,8 +69,8 @@ void AntiAliasingTests::OnImGuiRender()
 
 	if(m_antiAliasing != TRAP::Graphics::AntiAliasing::Off)
 	{
-		uint32_t currSample = 0;
-		for(uint32_t i = 0; i < Samples.size(); ++i)
+		u32 currSample = 0;
+		for(u32 i = 0; i < Samples.size(); ++i)
 		{
 			if(Samples[i].Samples == m_sampleCount)
 			{

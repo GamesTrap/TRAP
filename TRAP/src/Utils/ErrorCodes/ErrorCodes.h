@@ -1,11 +1,11 @@
 #ifndef TRAP_ERRORCODES_H
 #define TRAP_ERRORCODES_H
 
-#include <cstdint>
+#include "Core/Types.h"
 
 namespace TRAP::Utils
 {
-    enum class ErrorCode : int32_t
+    enum class ErrorCode : i32
     {
         // LinuxUsingWayland = 0x0001, //REMOVED
         RenderAPIInvalid = 0x0002,

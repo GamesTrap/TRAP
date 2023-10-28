@@ -59,7 +59,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the number of used render targets.
 		/// </summary>
 		/// <returns>Number of used render targets.</returns>
-		[[nodiscard]] constexpr uint32_t GetRenderTargetCount() const noexcept;
+		[[nodiscard]] constexpr u32 GetRenderTargetCount() const noexcept;
 		/// <summary>
 		/// Retrieve the used sample count.
 		/// </summary>
@@ -89,7 +89,7 @@ namespace TRAP::Graphics::API
 
 		std::vector<TRAP::Graphics::API::ImageFormat> m_colorFormats;
 		std::vector<RendererAPI::LoadActionType> m_loadActionsColor;
-		uint32_t m_renderTargetCount;
+		u32 m_renderTargetCount;
 		RendererAPI::SampleCount m_sampleCount;
 		TRAP::Graphics::API::ImageFormat m_depthStencilFormat;
 		RendererAPI::LoadActionType m_loadActionDepth;
@@ -122,7 +122,7 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::API::VulkanRenderPass::GetRenderTargetCount() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::API::VulkanRenderPass::GetRenderTargetCount() const noexcept
 {
 	return m_renderTargetCount;
 }

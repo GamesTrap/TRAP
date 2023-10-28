@@ -113,16 +113,16 @@ namespace
 
 TEST_CASE("TRAP::Math::Yaw()", "[math][generic][yaw]")
 {
-    SECTION("Quat - double")
+    SECTION("Quat - f64")
     {
-        RunYawRunTimeTests<double>();
-        RunYawCompileTimeTests<double>();
-        RunYawEdgeTests<double>();
+        RunYawRunTimeTests<f64>();
+        RunYawCompileTimeTests<f64>();
+        RunYawEdgeTests<f64>();
     }
-    SECTION("Quat - float")
+    SECTION("Quat - f32")
     {
-        RunYawRunTimeTests<float>();
-        RunYawCompileTimeTests<float>();
-        RunYawEdgeTests<float>();
+        RunYawRunTimeTests<f32>();
+        RunYawCompileTimeTests<f32>();
+        RunYawEdgeTests<f32>();
     }
 }

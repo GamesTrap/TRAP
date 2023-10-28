@@ -22,7 +22,7 @@ namespace TRAP::Events
 		/// <param name="x">New mouse x position.</param>
 		/// <param name="y">New mouse y position.</param>
 		/// <param name="window">Pointer to the affected window.</param>
-		MouseMoveEvent(float x, float y, TRAP::Window* window);
+		MouseMoveEvent(f32 x, f32 y, TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -48,12 +48,12 @@ namespace TRAP::Events
 		/// Retrieve the new mouse x position.
 		/// </summary>
 		/// <returns>Mouse x position.</returns>
-		[[nodiscard]] constexpr float GetX() const noexcept;
+		[[nodiscard]] constexpr f32 GetX() const noexcept;
 		/// <summary>
 		/// Retrieve the new mouse y position.
 		/// </summary>
 		/// <returns>Mouse y position.</returns>
-		[[nodiscard]] constexpr float GetY() const noexcept;
+		[[nodiscard]] constexpr f32 GetY() const noexcept;
 		/// <summary>
 		/// Retrieve the new mouse position.
 		/// </summary>
@@ -93,7 +93,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
-		float m_mouseX, m_mouseY;
+		f32 m_mouseX, m_mouseY;
 		TRAP::Window* m_window;
 	};
 
@@ -109,7 +109,7 @@ namespace TRAP::Events
 		/// <param name="xOffset">New mouse scroll wheel x offset.</param>
 		/// <param name="yOffset">New mouse scroll wheel y offset.</param>
 		/// <param name="window">Pointer to the affected window.</param>
-		MouseScrollEvent(float xOffset, float yOffset, TRAP::Window* window);
+		MouseScrollEvent(f32 xOffset, f32 yOffset, TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -135,12 +135,12 @@ namespace TRAP::Events
 		/// Retrieve the new mouse scroll wheel x offset.
 		/// </summary>
 		/// <returns>Mouse scroll wheel x offset.</returns>
-		[[nodiscard]] constexpr float GetXOffset() const noexcept;
+		[[nodiscard]] constexpr f32 GetXOffset() const noexcept;
 		/// <summary>
 		/// Retrieve the new mouse scroll wheel y offset.
 		/// </summary>
 		/// <returns>Mouse scroll wheel y offset.</returns>
-		[[nodiscard]] constexpr float GetYOffset() const noexcept;
+		[[nodiscard]] constexpr f32 GetYOffset() const noexcept;
 		/// <summary>
 		/// Retrieve the new mouse scroll wheel offset.
 		/// </summary>
@@ -180,7 +180,7 @@ namespace TRAP::Events
 		[[nodiscard]] constexpr EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
-		float m_xOffset, m_yOffset;
+		f32 m_xOffset, m_yOffset;
 		TRAP::Window* m_window;
 	};
 
@@ -492,14 +492,14 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::Events::MouseMoveEvent::GetX() const noexcept
+[[nodiscard]] constexpr f32 TRAP::Events::MouseMoveEvent::GetX() const noexcept
 {
 	return m_mouseX;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::Events::MouseMoveEvent::GetY() const noexcept
+[[nodiscard]] constexpr f32 TRAP::Events::MouseMoveEvent::GetY() const noexcept
 {
 	return m_mouseY;
 }
@@ -550,14 +550,14 @@ namespace TRAP::Events
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::Events::MouseScrollEvent::GetXOffset() const noexcept
+[[nodiscard]] constexpr f32 TRAP::Events::MouseScrollEvent::GetXOffset() const noexcept
 {
 	return m_xOffset;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::Events::MouseScrollEvent::GetYOffset() const noexcept
+[[nodiscard]] constexpr f32 TRAP::Events::MouseScrollEvent::GetYOffset() const noexcept
 {
 	return m_yOffset;
 }

@@ -16,7 +16,7 @@ namespace
         {
             static constexpr T Epsilon = std::numeric_limits<T>::epsilon();
 
-            static constexpr std::array<std::tuple<T, int32_t, T>, 4> values
+            static constexpr std::array<std::tuple<T, i32, T>, 4> values
             {
                 std::tuple(T(0.5f), 11, T(1024.0f)),
                 std::tuple(T(0.96f), -2, T(0.24f)),
@@ -35,7 +35,7 @@ namespace
             static constexpr typename T::value_type Epsilon = std::numeric_limits<typename T::value_type>::epsilon();
 
             static constexpr T x(TRAP::Math::Vec<4, typename T::value_type>(0.5f, 0.96f, 0.0f, -0.665f));
-            static constexpr TRAP::Math::Vec<T::Length(), int32_t> exp(TRAP::Math::Vec<4, int32_t>(11, -2, 0, 1));
+            static constexpr TRAP::Math::Vec<T::Length(), i32> exp(TRAP::Math::Vec<4, i32>(11, -2, 0, 1));
             const T res = TRAP::Math::LdExp(x, exp);
             REQUIRE(TRAP::Math::All(TRAP::Math::Equal(res, T(TRAP::Math::Vec<4, typename T::value_type>(1024.0f, 0.24f, 0.0f, -1.33f)), Epsilon)));
         }
@@ -68,7 +68,7 @@ namespace
         res = TRAP::Math::LdExp(nan, 0);
         REQUIRE(TRAP::Math::IsNaN(res));
 
-        if constexpr(std::same_as<T, double>)
+        if constexpr(std::same_as<T, f64>)
         {
             res = TRAP::Math::LdExp(max, 1);
             REQUIRE(TRAP::Math::IsInf(res));
@@ -79,7 +79,7 @@ namespace
             res = TRAP::Math::LdExp(nmin, -0);
             REQUIRE(TRAP::Math::Equal(res, nmin, Epsilon));
         }
-        else if constexpr(std::same_as<T, float>)
+        else if constexpr(std::same_as<T, f32>)
         {
             res = TRAP::Math::LdExp(max, 1);
             REQUIRE(TRAP::Math::IsInf(res));
@@ -95,40 +95,40 @@ namespace
 
 TEST_CASE("TRAP::Math::LdExp()", "[math][generic][ldexp]")
 {
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunLdExpTests<double>();
-        RunLdExpEdgeTests<double>();
+        RunLdExpTests<f64>();
+        RunLdExpEdgeTests<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunLdExpTests<float>();
-        RunLdExpEdgeTests<float>();
+        RunLdExpTests<f32>();
+        RunLdExpEdgeTests<f32>();
     }
 
-    SECTION("Vec2 - double")
+    SECTION("Vec2 - f64")
     {
         RunLdExpTests<TRAP::Math::Vec2d>();
     }
-    SECTION("Vec2 - float")
+    SECTION("Vec2 - f32")
     {
         RunLdExpTests<TRAP::Math::Vec2f>();
     }
 
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunLdExpTests<TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunLdExpTests<TRAP::Math::Vec3f>();
     }
 
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunLdExpTests<TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunLdExpTests<TRAP::Math::Vec4f>();
     }

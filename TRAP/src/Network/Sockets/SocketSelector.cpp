@@ -44,8 +44,8 @@ namespace TRAP::Network
 	{
 		fd_set AllSockets;   //Set containing all the sockets handles
 		fd_set SocketsReady; //Set containing handles of the sockets that are ready
-		int32_t MaxSockets;  //Maximum socket handle
-		int32_t SocketCount; //Number of socket handles
+		i32 MaxSockets;  //Maximum socket handle
+		i32 SocketCount; //Number of socket handles
 	};
 }
 
@@ -114,7 +114,7 @@ void TRAP::Network::SocketSelector::Add(Socket& socket)
 			return;
 		}
 
-		//SocketHandle is an int in POSIX
+		//SocketHandle is an i32 in POSIX
 		m_impl->MaxSockets = std::max(m_impl->MaxSockets, handle);
 #endif
 
@@ -175,7 +175,7 @@ bool TRAP::Network::SocketSelector::Wait(const Utils::TimeStep timeout) const
 
 	//Wait until one of the sockets is ready for reading, or timeout is reached
 	//The first parameter is ignored on Windows
-	const int32_t count = select(m_impl->MaxSockets + 1, &m_impl->SocketsReady, nullptr, nullptr,
+	const i32 count = select(m_impl->MaxSockets + 1, &m_impl->SocketsReady, nullptr, nullptr,
 	                             timeout != Utils::TimeStep(0.0f) ? &time : nullptr);
 
 	return count > 0;

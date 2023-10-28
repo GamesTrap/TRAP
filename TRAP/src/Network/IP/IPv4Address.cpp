@@ -59,7 +59,7 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string_view address)
 	address.s_addr = m_address;
 
 	std::string str(16, '\0');
-	inet_ntop(AF_INET, &address, str.data(), NumericCast<uint32_t>(str.size()));
+	inet_ntop(AF_INET, &address, str.data(), NumericCast<u32>(str.size()));
 	std::erase(str, '\0');
 	return str;
 }
@@ -80,7 +80,7 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string_view address)
 		return {};
 
 	//Connect the socket to localhost on any port
-	uint32_t loopback = INADDR_LOOPBACK;
+	u32 loopback = INADDR_LOOPBACK;
 
 	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(loopback);
@@ -105,7 +105,7 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string_view address)
 	INTERNAL::Network::SocketImpl::Close(sock);
 
 	//Finally build the IP address
-	uint32_t addr = std::bit_cast<sockaddr_in>(convertedAddress).sin_addr.s_addr;
+	u32 addr = std::bit_cast<sockaddr_in>(convertedAddress).sin_addr.s_addr;
 
 	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(addr);
@@ -159,7 +159,7 @@ void TRAP::Network::IPv4Address::Resolve(const std::string_view address)
 	else
 	{
 		//Try to convert the address as a byte representation ("xxx.xxx.xxx.xxx")
-		uint32_t ip{};
+		u32 ip{};
 		if((inet_pton(AF_INET, address.data(), &ip) != 0) && ip != INADDR_NONE)
 		{
 			m_address = ip;

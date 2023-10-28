@@ -78,7 +78,7 @@ void IcoSphereTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& delt
 	m_vertexBuffer->Use();
 	m_indexBuffer->Use();
 	m_shader->Use();
-	TRAP::Graphics::RenderCommand::DrawIndexed(NumericCast<uint32_t>(IcosphereIndices.size()));
+	TRAP::Graphics::RenderCommand::DrawIndexed(NumericCast<u32>(IcosphereIndices.size()));
 
 	//Simple performance metrics
 	if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
@@ -93,7 +93,7 @@ void IcoSphereTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& delt
 
 void IcoSphereTests::OnImGuiRender()
 {
-	float fov = TRAP::Math::Degrees(m_camera.GetPerspectiveVerticalFOV());
+	f32 fov = TRAP::Math::Degrees(m_camera.GetPerspectiveVerticalFOV());
 	TRAP::Math::Vec3 pos = m_cameraTransform.Position;
 
 	ImGui::Begin("IcoSphere", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |

@@ -60,7 +60,7 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
 
     TRAP::Graphics::ShaderManager::Get("Texture")->UseSampler(0, 1, m_textureSampler.get());
 
-    constinit static uint32_t frames = 0;
+    constinit static u32 frames = 0;
     if(frames == 3)
     {
 
@@ -90,7 +90,7 @@ void ComputeTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaT
         //Bind compute shader
         shader->Use();
 
-        static constexpr float brightness = 1.0f;
+        static constexpr f32 brightness = 1.0f;
         TRAP::Graphics::RenderCommand::SetPushConstants("BrightnessRootConstant", &brightness, sizeof(brightness),
                                                         TRAP::Graphics::QueueType::Compute);
 

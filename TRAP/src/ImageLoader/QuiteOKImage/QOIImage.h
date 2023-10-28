@@ -53,24 +53,24 @@ namespace TRAP::INTERNAL
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		[[nodiscard]] constexpr uint64_t GetPixelDataSize() const noexcept override;
+		[[nodiscard]] constexpr u64 GetPixelDataSize() const noexcept override;
 
 	private:
         /// <summary>
         /// Decode the image QOI pixel data.
         /// </summary>
         /// <param name="file">Open file stream of the image.</param>
-        void DecodeImage(std::ifstream& file, const std::size_t& fileSize);
+        void DecodeImage(std::ifstream& file, const usize& fileSize);
 
-		std::vector<uint8_t> m_data;
+		std::vector<u8> m_data;
 
 		struct Header
 		{
             std::string MagicNumber = std::string(4, '\0');
-			uint32_t Width = 0;
-			uint32_t Height = 0;
-            uint8_t Channels = 0;
-            uint8_t ColorSpace = 0;
+			u32 Width = 0;
+			u32 Height = 0;
+            u8 Channels = 0;
+            u8 ColorSpace = 0;
 		};
 	};
 }
@@ -84,7 +84,7 @@ namespace TRAP::INTERNAL
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint64_t TRAP::INTERNAL::QOIImage::GetPixelDataSize() const noexcept
+[[nodiscard]] constexpr u64 TRAP::INTERNAL::QOIImage::GetPixelDataSize() const noexcept
 {
 	return m_data.size();
 }

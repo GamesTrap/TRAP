@@ -95,7 +95,7 @@ void RendererAPITests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& de
 	{
 		if(m_colorTimer.Elapsed() > 2.5f)
 		{
-			for(float& color : m_colorData.Color)
+			for(f32& color : m_colorData.Color)
 				color = TRAP::Utils::Random::Get(0.0f, 1.0f);
 
 			m_colorTimer.Reset();
@@ -205,7 +205,7 @@ bool RendererAPITests::OnKeyPress(const TRAP::Events::KeyPressEvent& e)
 	}
 	if(e.GetKey() == TRAP::Input::Key::F4)
 	{
-		m_pushConstantOrUBO = NumericCast<uint8_t>((m_pushConstantOrUBO + 1) % 3);
+		m_pushConstantOrUBO = NumericCast<u8>((m_pushConstantOrUBO + 1) % 3);
 		TP_TRACE("[RendererAPITests] Push Constant / Uniform Buffer: ", m_pushConstantOrUBO != 0u ? "On" : "Off");
 	}
 	if(e.GetKey() == TRAP::Input::Key::V)

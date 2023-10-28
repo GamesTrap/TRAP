@@ -25,7 +25,7 @@ namespace TRAP::Graphics
 		/// <param name="sprites">Sprites to be used by the animation.</param>
 		/// <param name="speed">Speed of the animation in seconds.</param>
 		/// <returns>Created SpriteAnimation.</returns>
-		[[nodiscard]] static TRAP::Ref<SpriteAnimation> Create(std::string name, std::vector<TRAP::Ref<SubTexture2D>> sprites, float speed);
+		[[nodiscard]] static TRAP::Ref<SpriteAnimation> Create(std::string name, std::vector<TRAP::Ref<SubTexture2D>> sprites, f32 speed);
 
 		/// <summary>
 		/// Constructor.
@@ -34,7 +34,7 @@ namespace TRAP::Graphics
 		/// <param name="name">Name for the animation.</param>
 		/// <param name="sprites">Sprites used by the animation.</param>
 		/// <param name="speed">Speed of the animation in seconds.</param>
-		constexpr SpriteAnimation(std::string name, std::vector<TRAP::Ref<SubTexture2D>> sprites, float speed) noexcept;
+		constexpr SpriteAnimation(std::string name, std::vector<TRAP::Ref<SubTexture2D>> sprites, f32 speed) noexcept;
 		/// <summary>
 		/// Copy Constructor.
 		/// </summary>
@@ -79,13 +79,13 @@ namespace TRAP::Graphics
 		/// Set the animation speed.
 		/// </summary>
 		/// <param name="speed">Speed in seconds.</param>
-		constexpr void SetSpeed(float speed) noexcept;
+		constexpr void SetSpeed(f32 speed) noexcept;
 
 		/// <summary>
 		/// Retrieve the animation speed.
 		/// </summary>
 		/// <returns>Animation speed:</returns>
-		[[nodiscard]] constexpr float GetSpeed() const noexcept;
+		[[nodiscard]] constexpr f32 GetSpeed() const noexcept;
 
 		/// <summary>
 		/// Play the animation.
@@ -103,16 +103,16 @@ namespace TRAP::Graphics
 	private:
 		std::string m_name;
 		std::vector<TRAP::Ref<SubTexture2D>> m_sprites;
-		float m_speed;
-		float m_currentTime = 0;
-		uint64_t m_currentSpriteIndex = 0;
+		f32 m_speed;
+		f32 m_currentTime = 0;
+		u64 m_currentSpriteIndex = 0;
 		bool m_stopped = false;
 	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::SpriteAnimation::SpriteAnimation(std::string name, std::vector<TRAP::Ref<SubTexture2D>> sprites, float speed) noexcept
+constexpr TRAP::Graphics::SpriteAnimation::SpriteAnimation(std::string name, std::vector<TRAP::Ref<SubTexture2D>> sprites, f32 speed) noexcept
 	: m_name(std::move(name)), m_sprites(std::move(sprites)), m_speed(speed)
 {
 }
@@ -142,14 +142,14 @@ constexpr void TRAP::Graphics::SpriteAnimation::OnUpdate(const Utils::TimeStep& 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr void TRAP::Graphics::SpriteAnimation::SetSpeed(const float speed) noexcept
+constexpr void TRAP::Graphics::SpriteAnimation::SetSpeed(const f32 speed) noexcept
 {
 	m_speed = speed;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::Graphics::SpriteAnimation::GetSpeed() const noexcept
+[[nodiscard]] constexpr f32 TRAP::Graphics::SpriteAnimation::GetSpeed() const noexcept
 {
 	return m_speed;
 }

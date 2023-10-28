@@ -17,7 +17,7 @@ private:
 	static bool OnMonitorConnect(const TRAP::Events::MonitorConnectEvent& event);
 	static bool OnMonitorDisconnect(const TRAP::Events::MonitorDisconnectEvent& event);
 
-	static uint32_t Euclid(uint32_t a, uint32_t b);
+	static u32 Euclid(u32 a, u32 b);
 	static std::string FormatMode(const TRAP::Monitor::VideoMode& mode);
 };
 

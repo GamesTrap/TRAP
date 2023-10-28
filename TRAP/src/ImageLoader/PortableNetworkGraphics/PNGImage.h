@@ -72,27 +72,27 @@ namespace TRAP::INTERNAL
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		[[nodiscard]] constexpr uint64_t GetPixelDataSize() const noexcept override;
+		[[nodiscard]] constexpr u64 GetPixelDataSize() const noexcept override;
 
 	private:
 		struct RGBA
 		{
-			uint8_t Red = 0;
-			uint8_t Green = 0;
-			uint8_t Blue = 0;
-			uint8_t Alpha = 255;
+			u8 Red = 0;
+			u8 Green = 0;
+			u8 Blue = 0;
+			u8 Alpha = 255;
 		};
 		struct Data
 		{
-			uint32_t Width = 0;
-			uint32_t Height = 0;
-			uint8_t BitDepth = 0;
-			uint8_t ColorType = 0;
-			uint8_t CompressionMethod = 0; //Always 0 others are unsupported extensions!
-			uint8_t FilterMethod = 0; //Always 0 others are unsupported extensions!
-			uint8_t InterlaceMethod = 0; //Always 0 or 1 others are unsupported extensions!
+			u32 Width = 0;
+			u32 Height = 0;
+			u8 BitDepth = 0;
+			u8 ColorType = 0;
+			u8 CompressionMethod = 0; //Always 0 others are unsupported extensions!
+			u8 FilterMethod = 0; //Always 0 others are unsupported extensions!
+			u8 InterlaceMethod = 0; //Always 0 or 1 others are unsupported extensions!
 			std::vector<RGBA> Palette{};
-			std::vector<uint8_t> CompressedData{};
+			std::vector<u8> CompressedData{};
 		};
 		struct AlreadyLoaded
 		{
@@ -105,7 +105,7 @@ namespace TRAP::INTERNAL
 
 		struct NextChunk
 		{
-			uint32_t Length = 0;
+			u32 Length = 0;
 			std::string MagicNumber{};
 		};
 
@@ -121,23 +121,23 @@ namespace TRAP::INTERNAL
 
 		struct IHDRChunk
 		{
-			uint32_t Width = 0;
-			uint32_t Height = 0;
-			uint8_t BitDepth = 0;
-			uint8_t ColorType = 0;
-			uint8_t CompressionMethod = 0;
-			uint8_t FilterMethod = 0;
-			uint8_t InterlaceMethod = 0;
-			std::array<uint8_t, 4> CRC{};
+			u32 Width = 0;
+			u32 Height = 0;
+			u8 BitDepth = 0;
+			u8 ColorType = 0;
+			u8 CompressionMethod = 0;
+			u8 FilterMethod = 0;
+			u8 InterlaceMethod = 0;
+			std::array<u8, 4> CRC{};
 		};
 		struct tIMEChunk
 		{
-			uint16_t Year = 0;
-			uint8_t Month = 0;
-			uint8_t Day = 0;
-			uint8_t Hour = 0;
-			uint8_t Minute = 0;
-			uint8_t Second = 0;
+			u16 Year = 0;
+			u8 Month = 0;
+			u8 Day = 0;
+			u8 Hour = 0;
+			u8 Minute = 0;
+			u8 Second = 0;
 		};
 
 		//Mandatory PNG chunks are IHDR, IDAT(s), IEND.
@@ -182,7 +182,7 @@ namespace TRAP::INTERNAL
 		/// <param name="length">Chunk length.</param>
 		/// <param name="data">Data containing information about the image.</param>
 		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
-		[[nodiscard]] static bool ProcesstRNS(std::ifstream& file, uint32_t length, Data& data);
+		[[nodiscard]] static bool ProcesstRNS(std::ifstream& file, u32 length, Data& data);
 		/// <summary>
 		/// Process the optional PLTE chunk.
 		/// PLTE contains the palette.
@@ -191,7 +191,7 @@ namespace TRAP::INTERNAL
 		/// <param name="data">Data containing information about the image.</param>
 		/// <param name="length">Chunk length.</param>
 		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
-		[[nodiscard]] static bool ProcessPLTE(std::ifstream& file, Data& data, uint32_t length);
+		[[nodiscard]] static bool ProcessPLTE(std::ifstream& file, Data& data, u32 length);
 		/// <summary>
 		/// Process the IDAT chunk.
 		/// IDAT contains the image data.
@@ -200,7 +200,7 @@ namespace TRAP::INTERNAL
 		/// <param name="data">Data containing information about the image.</param>
 		/// <param name="length">Chunk length.</param>
 		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
-		[[nodiscard]] static bool ProcessIDAT(std::ifstream& file, Data& data, uint32_t length);
+		[[nodiscard]] static bool ProcessIDAT(std::ifstream& file, Data& data, u32 length);
 
 		/// <summary>
 		/// Check IHDR validity.
@@ -209,8 +209,8 @@ namespace TRAP::INTERNAL
 		/// <returns>True if the IHDR chunk is valid, false otherwise.</returns>
 		[[nodiscard]] static bool IHDRCheck(const IHDRChunk& ihdrChunk);
 
-		std::vector<uint8_t> m_data;
-		std::vector<uint16_t> m_data2Byte;
+		std::vector<u8> m_data;
+		std::vector<u16> m_data2Byte;
 
 		/// <summary>
 		/// Decompress PNG data.
@@ -218,7 +218,7 @@ namespace TRAP::INTERNAL
 		/// <param name="source">Source data.</param>
 		/// <param name="destination">Destination for uncompressed data.</param>
 		/// <returns>True if the data was decompressed successfully, false otherwise.</returns>
-		[[nodiscard]] static bool DecompressData(std::span<const uint8_t> source, std::span<uint8_t> destination);
+		[[nodiscard]] static bool DecompressData(std::span<const u8> source, std::span<u8> destination);
 		/// <summary>
 		/// Unfilter scanline depending on given filter type.
 		/// </summary>
@@ -229,8 +229,8 @@ namespace TRAP::INTERNAL
 		/// <param name="filterType">Filter type.</param>
 		/// <param name="length">Length of the scanline in bytes.</param>
 		/// <returns>True if the scanline was unfiltered successfully, false otherwise.</returns>
-		[[nodiscard]] static bool UnFilterScanline(uint8_t* recon, const uint8_t* scanline, const uint8_t* precon,
-		                                           std::size_t byteWidth, uint8_t filterType, std::size_t length);
+		[[nodiscard]] static bool UnFilterScanline(u8* recon, const u8* scanline, const u8* precon,
+		                                           usize byteWidth, u8 filterType, usize length);
 		/// <summary>
 		/// Unfilter decompressed image data.
 		/// </summary>
@@ -240,7 +240,7 @@ namespace TRAP::INTERNAL
 		/// <param name="height">Image height.</param>
 		/// <param name="bitsPerPixel">Image bits per pixel.</param>
 		/// <returns>True on successful unfiltering, false otherwise.</returns>
-		[[nodiscard]] static bool UnFilter(uint8_t* out, const uint8_t* in, uint32_t width, uint32_t height, uint32_t bitsPerPixel);
+		[[nodiscard]] static bool UnFilter(u8* out, const u8* in, u32 width, u32 height, u32 bitsPerPixel);
 		/// <summary>
 		/// Paeth predictor used by PNG filter type 4.
 		/// </summary>
@@ -248,7 +248,7 @@ namespace TRAP::INTERNAL
 		/// <param name="b">Above pixel.</param>
 		/// <param name="c">Above-left pixel.</param>
 		/// <returns>Predicted pixel.</returns>
-		[[nodiscard]] static uint8_t PaethPredictor(uint16_t a, uint16_t b, uint16_t c);
+		[[nodiscard]] static u8 PaethPredictor(u16 a, u16 b, u16 c);
 		/// <summary>
 		/// Retrieve the raw/decompressed IDAT byte size.
 		/// </summary>
@@ -256,7 +256,7 @@ namespace TRAP::INTERNAL
 		/// <param name="height">Image height.</param>
 		/// <param name="bitsPerPixel">Image bits per pixel.</param>
 		/// <returns>Raw IDAT size.</returns>
-		[[nodiscard]] static std::size_t GetRawSizeIDAT(uint32_t width, uint32_t height, uint32_t bitsPerPixel);
+		[[nodiscard]] static usize GetRawSizeIDAT(u32 width, u32 height, u32 bitsPerPixel);
 		/// <summary>
 		/// Retrieve the raw/expected pixel data byte size.
 		/// </summary>
@@ -264,7 +264,7 @@ namespace TRAP::INTERNAL
 		/// <param name="height">Image height.</param>
 		/// <param name="bitsPerPixel">Image bits per pixel.</param>
 		/// <returns>Raw pixel data byte size.</returns>
-		[[nodiscard]] static std::size_t GetRawSize(uint32_t width, uint32_t height, uint32_t bitsPerPixel);
+		[[nodiscard]] static usize GetRawSize(u32 width, u32 height, u32 bitsPerPixel);
 		/// <summary>
 		/// Post process scanlines
 		/// This function converts filtered-padded-interlaced data into pure 2D image buffer data.
@@ -277,8 +277,8 @@ namespace TRAP::INTERNAL
 		/// <param name="bitsPerPixel">Image bits per pixel.</param>
 		/// <param name="interlaceMethdo">Interlace method.</param>
 		/// <returns>True on successful post processing, false otherwise.</returns>
-		[[nodiscard]] static bool PostProcessScanlines(uint8_t* out, uint8_t* in, uint32_t width, uint32_t height,
-		                                               uint32_t bitsPerPixel, uint8_t interlaceMethod);
+		[[nodiscard]] static bool PostProcessScanlines(u8* out, u8* in, u32 width, u32 height,
+		                                               u32 bitsPerPixel, u8 interlaceMethod);
 		/// <summary>
 		/// Outputs various dimensions and positions in the image related to the Adam7 reduced images.
 		/// </summary>
@@ -298,14 +298,14 @@ namespace TRAP::INTERNAL
 		/// <param name="width">Image width (non-interlaced).</param>
 		/// <param name="height">Image height (non-interlaced).</param>
 		/// <param name="bitsPerPixel">Image bits per pixel.</param>
-		static void Adam7GetPassValues(std::array<uint32_t, 7>& passW,
-		                               std::array<uint32_t, 7>& passH,
-		                               std::array<std::size_t, 8>& filterPassStart,
-		                               std::array<std::size_t, 8>& paddedPassStart,
-		                               std::array<std::size_t, 8>& passStart,
-		                               uint32_t width,
-		                               uint32_t height,
-		                               uint32_t bitsPerPixel);
+		static void Adam7GetPassValues(std::array<u32, 7>& passW,
+		                               std::array<u32, 7>& passH,
+		                               std::array<usize, 8>& filterPassStart,
+		                               std::array<usize, 8>& paddedPassStart,
+		                               std::array<usize, 8>& passStart,
+		                               u32 width,
+		                               u32 height,
+		                               u32 bitsPerPixel);
 		/// <summary>
 		/// Deinterlace an Adam7 interlaced image.
 		/// </summary>
@@ -314,14 +314,14 @@ namespace TRAP::INTERNAL
 		/// <param name="width">Image width.</param>
 		/// <param name="height">Image height.</param>
 		/// <param name="bitsPerPixel">Image bits per pixel.</param>
-		static void Adam7DeInterlace(uint8_t* out, const uint8_t* in, uint32_t width, uint32_t height,
-		                             uint32_t bitsPerPixel);
+		static void Adam7DeInterlace(u8* out, const u8* in, u32 width, u32 height,
+		                             u32 bitsPerPixel);
 		/// <summary>
 		/// Convert pixel data to 16 bits per channel with endianness correction.
 		/// </summary>
 		/// <param name="raw">Raw pixel data.</param>
 		/// <returns>Converted 16 bpc pixel data.</returns>
-		[[nodiscard]] static std::vector<uint16_t> ConvertTo2Byte(std::vector<uint8_t>& raw);
+		[[nodiscard]] static std::vector<u16> ConvertTo2Byte(std::vector<u8>& raw);
 		/// <summary>
 		/// Resolves indexed pixel data to RGBA.
 		/// </summary>
@@ -330,7 +330,7 @@ namespace TRAP::INTERNAL
 		/// <param name="height">Image height.</param>
 		/// <param name="data">Data containing information about the image.</param>
 		/// <returns>Raw pixel data.</returns>
-		[[nodiscard]] static std::vector<uint8_t> ResolveIndexed(std::vector<uint8_t>& raw, uint32_t width, uint32_t height,
+		[[nodiscard]] static std::vector<u8> ResolveIndexed(std::vector<u8>& raw, u32 width, u32 height,
 		                                                         const Data& data);
 	};
 }
@@ -347,10 +347,10 @@ namespace TRAP::INTERNAL
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint64_t TRAP::INTERNAL::PNGImage::GetPixelDataSize() const noexcept
+[[nodiscard]] constexpr u64 TRAP::INTERNAL::PNGImage::GetPixelDataSize() const noexcept
 {
 	if (!m_data2Byte.empty())
-		return m_data2Byte.size() * sizeof(uint16_t);
+		return m_data2Byte.size() * sizeof(u16);
 
 	return m_data.size();
 }

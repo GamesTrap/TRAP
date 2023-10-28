@@ -83,7 +83,7 @@ namespace TRAP
 		/// Get the amount of all active windows.
 		/// </summary>
 		/// <returns>Total amount of active windows.</returns>
-		[[nodiscard]] static uint32_t GetActiveWindows() noexcept;
+		[[nodiscard]] static u32 GetActiveWindows() noexcept;
 
 		/// <summary>
 		/// Get the current title of the window.
@@ -94,12 +94,12 @@ namespace TRAP
 		/// Get the current width of the window.
 		/// </summary>
 		/// <returns>Width of the window.</returns>
-		[[nodiscard]] uint32_t GetWidth() const noexcept;
+		[[nodiscard]] u32 GetWidth() const noexcept;
 		/// <summary>
 		/// Get the current height of the window.
 		/// </summary>
 		/// <returns>Height of the window.</returns>
-		[[nodiscard]] uint32_t GetHeight() const noexcept;
+		[[nodiscard]] u32 GetHeight() const noexcept;
 		/// <summary>
 		/// Get the current width and height of the window.
 		/// </summary>
@@ -109,12 +109,12 @@ namespace TRAP
 		/// Get the current framebuffer width of the window.
 		/// </summary>
 		/// <returns>Framebuffer width of the window.</returns>
-		[[nodiscard]] uint32_t GetFrameBufferWidth() const;
+		[[nodiscard]] u32 GetFrameBufferWidth() const;
 		/// <summary>
 		/// Get the current framebuffer height of the window.
 		/// </summary>
 		/// <returns>Framebuffer height of the window.</returns>
-		[[nodiscard]] uint32_t GetFrameBufferHeight() const;
+		[[nodiscard]] u32 GetFrameBufferHeight() const;
 		/// <summary>
 		/// Get the current framebuffer width and height of the window.
 		/// </summary>
@@ -130,7 +130,7 @@ namespace TRAP
 		/// Get the current refresh rate of the window.
 		/// </summary>
 		/// <returns>Refresh rate of the window.</returns>
-		[[nodiscard]] double GetRefreshRate() const noexcept;
+		[[nodiscard]] f64 GetRefreshRate() const noexcept;
 		/// <summary>
 		/// Get the current display mode of the window.
 		/// </summary>
@@ -161,7 +161,7 @@ namespace TRAP
 		/// Get the current opacity of the window.
 		/// </summary>
 		/// <returns>Opacity of the window on success, empty optional otherwise.</returns>
-		[[nodiscard]] std::optional<float> GetOpacity() const;
+		[[nodiscard]] std::optional<f32> GetOpacity() const;
 		/// <summary>
 		/// Get whether VSync is enabled or disabled.
 		///
@@ -173,7 +173,7 @@ namespace TRAP
 		/// Get the aspect ratio of the window.
 		/// </summary>
 		/// <returns>Aspect ratio of window framebuffer.</returns>
-		[[nodiscard]] float GetAspectRatio() const;
+		[[nodiscard]] f32 GetAspectRatio() const;
 
 		/// <summary>
 		/// Get the internal handle of the window.
@@ -212,7 +212,7 @@ namespace TRAP
 		/// </summary>
 		/// <param name="width">New window width.</param>
 		/// <param name="height">New window height.</param>
-		void SetWindowed(uint32_t width, uint32_t height);
+		void SetWindowed(u32 width, u32 height);
 		/// <summary>
 		/// Set a new monitor for the window.
 		///
@@ -237,7 +237,7 @@ namespace TRAP
 		/// <param name="image">Image to be used as a cursor.</param>
 		/// <param name="xHotspot">X hotspot of the image.</param>
 		/// <param name="yHotspot">Y hotspot of the image.</param>
-		void SetCursorIcon(const Image* image, uint32_t xHotspot = 0, uint32_t yHotspot = 0) const;
+		void SetCursorIcon(const Image* image, u32 xHotspot = 0, u32 yHotspot = 0) const;
 		/// <summary>
 		/// Set if raw mouse input should be used.
 		/// </summary>
@@ -251,7 +251,7 @@ namespace TRAP
 		/// </summary>
 		/// <param name="state">State of progress.</param>
 		/// <param name="progress">How much has been completed. Valid range [0.0-1.0].</param>
-		void SetProgress(ProgressState state, double progress) const;
+		void SetProgress(ProgressState state, f64 progress) const;
 		/// <summary>
 		/// Resets the window icon to the TRAP logo.
 		/// </summary>
@@ -278,14 +278,14 @@ namespace TRAP
 		/// </summary>
 		/// <param name="minWidth">Min width.</param>
 		/// <param name="minHeight">Min height.</param>
-		void SetMinimumSize(uint32_t minWidth, uint32_t minHeight);
+		void SetMinimumSize(u32 minWidth, u32 minHeight);
 		/// <summary>
 		/// Limit the maximum size of the window.
 		/// Setting any of the two parameters to 0 will disable the maximum size restriction.
 		/// </summary>
 		/// <param name="maxWidth">Max width.</param>
 		/// <param name="maxHeight">Max height.</param>
-		void SetMaximumSize(uint32_t maxWidth, uint32_t maxHeight);
+		void SetMaximumSize(u32 maxWidth, u32 maxHeight);
 		/// <summary>
 		/// Set the aspect ratio of the window.
 		/// This makes sure that the window size always matches the specified aspect ratio.
@@ -299,18 +299,18 @@ namespace TRAP
 		/// </summary>
 		/// <param name="numerator">Numerator of the desired aspect ratio, or 0.</param>
 		/// <param name="denominator">Denominator of the desired aspect ratio, or 0.</param>
-		void SetAspectRatio(uint32_t numerator, uint32_t denominator);
+		void SetAspectRatio(u32 numerator, u32 denominator);
 		/// <summary>
 		/// Set the position of the window.
 		/// </summary>
 		/// <param name="x">New x position.</param>
 		/// <param name="y">New x position.</param>
-		void SetPosition(uint32_t x, uint32_t y);
+		void SetPosition(u32 x, u32 y);
 		/// <summary>
 		/// Set the opacity of the window (1.0f = fully opaque, 0.0f = fully transparent).
 		/// </summary>
 		/// <param name="opacity">Opacity strength.</param>
-		void SetOpacity(float opacity) const;
+		void SetOpacity(f32 opacity) const;
 		/// <summary>
 		/// Enable or disable drag and drop feature for the window.
 		/// </summary>
@@ -413,15 +413,15 @@ namespace TRAP
 		/// </summary>
 		struct WindowedModeParams
 		{
-			int32_t Width = 800, Height = 600;
-			int32_t XPos = 0, YPos = 0;
+			i32 Width = 800, Height = 600;
+			i32 XPos = 0, YPos = 0;
 		};
 
 		struct WindowData
 		{
 			std::string Title = "TRAP™";
-			int32_t MinWidth = -1, MinHeight = -1;
-			int32_t MaxWidth = -1, MaxHeight = -1;
+			i32 MinWidth = -1, MinHeight = -1;
+			i32 MaxWidth = -1, MaxHeight = -1;
 			DisplayMode displayMode = DisplayMode::Windowed;
 			TRAP::Monitor Monitor = TRAP::Monitor::GetPrimaryMonitor();
 
@@ -431,10 +431,10 @@ namespace TRAP
 			Window* Win = nullptr;
 		} m_data;
 
-		inline constinit static uint32_t s_windows = 0;
+		inline constinit static u32 s_windows = 0;
 
-		inline static constexpr int32_t MinimumSupportedWindowWidth = 2;
-		inline static constexpr int32_t MinimumSupportedWindowHeight = 2;
+		inline static constexpr i32 MinimumSupportedWindowWidth = 2;
+		inline static constexpr i32 MinimumSupportedWindowHeight = 2;
 	};
 
 	/// <summary>
@@ -443,9 +443,9 @@ namespace TRAP
 	struct WindowProps
 	{
 		std::string Title;
-		uint32_t Width;
-		uint32_t Height;
-		double RefreshRate;
+		u32 Width;
+		u32 Height;
+		f64 RefreshRate;
 		bool VSync;
 		Window::DisplayMode DisplayMode;
 		TRAP::Monitor Monitor;
@@ -497,9 +497,9 @@ namespace TRAP
 		/// <param name="advanced">Optional advanced properties to be used for the new window.</param>
 		/// <param name="monitor">Monitor to be used by the new window.</param>
 		explicit WindowProps(std::string title = "TRAP™",
-							 uint32_t width = 1280u,
-							 uint32_t height = 720u,
-							 double refreshRate = 60.0,
+							 u32 width = 1280u,
+							 u32 height = 720u,
+							 f64 refreshRate = 60.0,
 							 bool vsync = false,
 							 Window::DisplayMode displayMode = Window::DisplayMode::Windowed,
 							 AdvancedProps advanced = AdvancedProps{},

@@ -70,13 +70,13 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 		return;
 	}
 
-	m_data.resize(NumericCast<std::size_t>(m_width) * m_height * std::to_underlying(m_colorFormat), 0.0f);
-	uint64_t dataIndex = 0;
+	m_data.resize(NumericCast<usize>(m_width) * m_height * std::to_underlying(m_colorFormat), 0.0f);
+	u64 dataIndex = 0;
 
 	std::vector<RGBE> scanline(m_width);
 
 	//Convert image
-	for(int64_t y = m_height - 1; y >= 0; y--)
+	for(i64 y = m_height - 1; y >= 0; y--)
 	{
 		if (!Decrunch(scanline, m_width, file))
 		{
@@ -86,7 +86,7 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 			return;
 		}
 		WorkOnRGBE(scanline, m_data, dataIndex);
-		dataIndex += NumericCast<uint64_t>(m_width) * std::to_underlying(m_colorFormat);
+		dataIndex += NumericCast<u64>(m_width) * std::to_underlying(m_colorFormat);
 	}
 
 	file.close();
@@ -104,59 +104,59 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] float TRAP::INTERNAL::RadianceImage::ConvertComponent(const int8_t exponent, const int32_t value)
+[[nodiscard]] f32 TRAP::INTERNAL::RadianceImage::ConvertComponent(const i8 exponent, const i32 value)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	const float v = NumericCast<float>(value) / 256.0f;
-	const float d = Math::Pow(2.0f, NumericCast<float>(exponent));
+	const f32 v = NumericCast<f32>(value) / 256.0f;
+	const f32 d = Math::Pow(2.0f, NumericCast<f32>(exponent));
 
 	return v * d;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::INTERNAL::RadianceImage::Decrunch(std::vector<RGBE>& scanline, const uint32_t length,
+[[nodiscard]] bool TRAP::INTERNAL::RadianceImage::Decrunch(std::vector<RGBE>& scanline, const u32 length,
                                                            std::ifstream& file)
 {
 	if (length < MinEncodingLength || length > MaxEncodingLength)
 		return OldDecrunch(scanline, 0u, length, file);
 
-	int32_t i = file.get();
+	i32 i = file.get();
 	if (i != 2)
 	{
 		file.seekg(-1, std::ios::cur);
 		return OldDecrunch(scanline, 0u, length, file);
 	}
 
-	scanline[0u][G] = NumericCast<uint8_t>(file.get());
-	scanline[0u][B] = NumericCast<uint8_t>(file.get());
+	scanline[0u][G] = NumericCast<u8>(file.get());
+	scanline[0u][B] = NumericCast<u8>(file.get());
 	i = file.get();
 
 	if (scanline[0u][G] != 2u || (scanline[0][B] & 128u) != 0u)
 	{
 		scanline[0u][R] = 2u;
-		scanline[0u][E] = NumericCast<uint8_t>(i);
+		scanline[0u][E] = NumericCast<u8>(i);
 		return OldDecrunch(scanline, 1u, length - 1u, file);
 	}
 
 	// read each component
 	for (i = 0; i < 4; i++)
 	{
-	    for (uint32_t j = 0; j < length; )
+	    for (u32 j = 0; j < length; )
 		{
-			uint8_t code = NumericCast<uint8_t>(file.get());
+			u8 code = NumericCast<u8>(file.get());
 			if (code > 128u) //RLE
 			{
 			    code &= 127u;
-			    const uint8_t value = NumericCast<uint8_t>(file.get());
+			    const u8 value = NumericCast<u8>(file.get());
 			    while ((code--) != 0u)
-					scanline[j++][NumericCast<std::size_t>(i)] = value;
+					scanline[j++][NumericCast<usize>(i)] = value;
 			}
 			else //Dump
 			{
 			    while((code--) != 0u)
-					scanline[j++][NumericCast<std::size_t>(i)] = NumericCast<uint8_t>(file.get());
+					scanline[j++][NumericCast<usize>(i)] = NumericCast<u8>(file.get());
 			}
 		}
     }
@@ -167,19 +167,19 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Old RLE
-[[nodiscard]] bool TRAP::INTERNAL::RadianceImage::OldDecrunch(std::vector<RGBE>& scanline, uint32_t scanlineIndex,
-                                                              uint32_t length, std::ifstream& file)
+[[nodiscard]] bool TRAP::INTERNAL::RadianceImage::OldDecrunch(std::vector<RGBE>& scanline, u32 scanlineIndex,
+                                                              u32 length, std::ifstream& file)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
-	uint32_t rshift = 0u;
+	u32 rshift = 0u;
 
 	while (length > 0u)
 	{
-		scanline[scanlineIndex][R] = NumericCast<uint8_t>(file.get());
-		scanline[scanlineIndex][G] = NumericCast<uint8_t>(file.get());
-		scanline[scanlineIndex][B] = NumericCast<uint8_t>(file.get());
-		scanline[scanlineIndex][E] = NumericCast<uint8_t>(file.get());
+		scanline[scanlineIndex][R] = NumericCast<u8>(file.get());
+		scanline[scanlineIndex][G] = NumericCast<u8>(file.get());
+		scanline[scanlineIndex][B] = NumericCast<u8>(file.get());
+		scanline[scanlineIndex][E] = NumericCast<u8>(file.get());
 		if (file.eof())
 			return false;
 
@@ -187,9 +187,9 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 			scanline[scanlineIndex][G] == 1u &&
 			scanline[scanlineIndex][B] == 1u)
 		{
-			for (uint32_t i = NumericCast<uint32_t>(scanline[scanlineIndex][E] << rshift); i > 0u; i--)
+			for (u32 i = NumericCast<u32>(scanline[scanlineIndex][E] << rshift); i > 0u; i--)
 			{
-				memcpy(scanline[scanlineIndex].data(), scanline[scanlineIndex - 1].data(), 4u * sizeof(uint8_t));
+				memcpy(scanline[scanlineIndex].data(), scanline[scanlineIndex - 1].data(), 4u * sizeof(u8));
 				scanlineIndex++;
 				length--;
 			}
@@ -206,17 +206,17 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::RadianceImage::WorkOnRGBE(std::vector<RGBE>& scanline, std::vector<float>& data,
-                                               uint64_t dataIndex)
+void TRAP::INTERNAL::RadianceImage::WorkOnRGBE(std::vector<RGBE>& scanline, std::vector<f32>& data,
+                                               u64 dataIndex)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
-	uint32_t length = m_width;
-	uint32_t scanlineIndex = 0;
+	u32 length = m_width;
+	u32 scanlineIndex = 0;
 
 	while (length-- > 0u)
 	{
-		const int8_t exponent = NumericCast<int8_t>(scanline[scanlineIndex][E] - 128);
+		const i8 exponent = NumericCast<i8>(scanline[scanlineIndex][E] - 128);
 		data[0 + dataIndex] = ConvertComponent(exponent, scanline[scanlineIndex][R]);
 		data[1 + dataIndex] = ConvertComponent(exponent, scanline[scanlineIndex][G]);
 		data[2 + dataIndex] = ConvertComponent(exponent, scanline[scanlineIndex][B]);
@@ -293,11 +293,11 @@ void TRAP::INTERNAL::RadianceImage::SkipUnusedLines(std::ifstream& file)
 	std::string resStr{};
 	std::getline(file, resStr);
 
-	std::size_t yIndex = resStr.find("Y ");
-	std::size_t xIndex = resStr.find("X ");
+	usize yIndex = resStr.find("Y ");
+	usize xIndex = resStr.find("X ");
 
 	if(yIndex == std::string::npos || xIndex == std::string::npos ||
-	   NumericCast<int64_t>(yIndex - 1) < 0 || NumericCast<int64_t>(xIndex - 1) < 0)
+	   NumericCast<i64>(yIndex - 1) < 0 || NumericCast<i64>(xIndex - 1) < 0)
 	{
 		TP_ERROR(Log::ImageRadiancePrefix, "Failed to retrieve image resolution!");
 		return std::nullopt;
@@ -355,18 +355,18 @@ void TRAP::INTERNAL::RadianceImage::SkipUnusedLines(std::ifstream& file)
 	yIndex += 2;
 	xIndex += 2;
 
-	std::size_t yEnd = yIndex;
+	usize yEnd = yIndex;
 	while(yEnd < resStr.size() && Utils::String::IsDigit(resStr[yEnd]))
 		++yEnd;
 
-	std::size_t xEnd = xIndex;
+	usize xEnd = xIndex;
 	while(xEnd < resStr.size() && Utils::String::IsDigit(resStr[xEnd]))
 		++xEnd;
 
 	try
 	{
-		return TRAP::Math::Vec2ui(std::stoul(std::string(resStr.begin() + NumericCast<std::ptrdiff_t>(xIndex), resStr.begin() + NumericCast<std::ptrdiff_t>(xEnd))),
-		                          std::stoul(std::string(resStr.begin() + NumericCast<std::ptrdiff_t>(yIndex), resStr.begin() + NumericCast<std::ptrdiff_t>(yEnd))));
+		return TRAP::Math::Vec2ui(std::stoul(std::string(resStr.begin() + NumericCast<isize>(xIndex), resStr.begin() + NumericCast<isize>(xEnd))),
+		                          std::stoul(std::string(resStr.begin() + NumericCast<isize>(yIndex), resStr.begin() + NumericCast<isize>(yEnd))));
 	}
 	catch(...)
 	{

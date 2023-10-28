@@ -138,49 +138,49 @@ namespace
 
 TEST_CASE("TRAP::Math::Trunc()", "[math][generic][trunc]")
 {
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunTruncRunTimeTests<double>();
-        RunTruncCompileTimeTests<double>();
-        RunTruncEdgeCompileTimeTests<double>();
-        RunTruncEdgeRunTimeTests<double>();
+        RunTruncRunTimeTests<f64>();
+        RunTruncCompileTimeTests<f64>();
+        RunTruncEdgeCompileTimeTests<f64>();
+        RunTruncEdgeRunTimeTests<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunTruncRunTimeTests<float>();
-        RunTruncCompileTimeTests<float>();
-        RunTruncEdgeCompileTimeTests<float>();
-        RunTruncEdgeRunTimeTests<float>();
+        RunTruncRunTimeTests<f32>();
+        RunTruncCompileTimeTests<f32>();
+        RunTruncEdgeCompileTimeTests<f32>();
+        RunTruncEdgeRunTimeTests<f32>();
     }
 
-    SECTION("Vec2 - double")
+    SECTION("Vec2 - f64")
     {
         RunTruncRunTimeTests<TRAP::Math::Vec2d>();
         RunTruncVecCompileTimeTests<TRAP::Math::Vec2d>();
     }
-    SECTION("Vec2 - float")
+    SECTION("Vec2 - f32")
     {
         RunTruncRunTimeTests<TRAP::Math::Vec2f>();
         RunTruncVecCompileTimeTests<TRAP::Math::Vec2f>();
     }
 
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunTruncRunTimeTests<TRAP::Math::Vec3d>();
         RunTruncVecCompileTimeTests<TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunTruncRunTimeTests<TRAP::Math::Vec3f>();
         RunTruncVecCompileTimeTests<TRAP::Math::Vec3f>();
     }
 
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunTruncRunTimeTests<TRAP::Math::Vec4d>();
         RunTruncVecCompileTimeTests<TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunTruncRunTimeTests<TRAP::Math::Vec4f>();
         RunTruncVecCompileTimeTests<TRAP::Math::Vec4f>();

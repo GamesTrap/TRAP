@@ -21,7 +21,7 @@ namespace TRAP
 		/// Constructor.
 		/// </summary>
 		/// <param name="threads">Max amount of threads to use for tasks.</param>
-		explicit ThreadPool(uint32_t threads = (std::thread::hardware_concurrency() - 1));
+		explicit ThreadPool(u32 threads = (std::thread::hardware_concurrency() - 1));
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -76,10 +76,10 @@ namespace TRAP
 		using Threads = std::vector<std::jthread>;
 		Threads m_threads;
 
-		uint32_t m_maxThreadsCount;
-		std::atomic<uint32_t> m_index = 0;
+		u32 m_maxThreadsCount;
+		std::atomic<u32> m_index = 0;
 
-		inline static constexpr uint32_t K = 3;
+		inline static constexpr u32 K = 3;
 	};
 }
 
@@ -95,9 +95,9 @@ void TRAP::ThreadPool::EnqueueWork(F&& f, Args&&... args)
 	{
 		std::apply(p, t);
 	};
-	const uint32_t i = m_index++;
+	const u32 i = m_index++;
 
-	for (uint32_t n = 0; n < m_maxThreadsCount * K; ++n)
+	for (u32 n = 0; n < m_maxThreadsCount * K; ++n)
 	{
 		if (m_queues[(i + n) % m_maxThreadsCount].TryPush(std::move(work)))
 			return;
@@ -124,9 +124,9 @@ requires std::invocable<F, Args...>
 	{
 		(*task)();
 	};
-	const uint32_t i = m_index++;
+	const u32 i = m_index++;
 
-	for (uint32_t n = 0; n < m_maxThreadsCount * K; ++n)
+	for (u32 n = 0; n < m_maxThreadsCount * K; ++n)
 	{
 		if (m_queues[(i + n) % m_maxThreadsCount].TryPush(work))
 			return result;

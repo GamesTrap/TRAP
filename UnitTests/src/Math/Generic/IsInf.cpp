@@ -35,47 +35,47 @@ namespace
 
 TEST_CASE("TRAP::Math::IsInf()", "[math][generic][isinf]")
 {
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunCompileTimeIsInfTest<double>();
+        RunCompileTimeIsInfTest<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunCompileTimeIsInfTest<float>();
+        RunCompileTimeIsInfTest<f32>();
     }
 
-    SECTION("Vec2 - double")
+    SECTION("Vec2 - f64")
     {
         RunCompileTimeIsInfTest<TRAP::Math::Vec2d>();
     }
-    SECTION("Vec2 - float")
+    SECTION("Vec2 - f32")
     {
         RunCompileTimeIsInfTest<TRAP::Math::Vec2f>();
     }
 
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunCompileTimeIsInfTest<TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunCompileTimeIsInfTest<TRAP::Math::Vec3f>();
     }
 
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunCompileTimeIsInfTest<TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunCompileTimeIsInfTest<TRAP::Math::Vec4f>();
     }
 
-    SECTION("Quat - double")
+    SECTION("Quat - f64")
     {
         RunCompileTimeIsInfTest<TRAP::Math::Quatd>();
     }
-    SECTION("Quat - float")
+    SECTION("Quat - f32")
     {
         RunCompileTimeIsInfTest<TRAP::Math::Quatf>();
     }

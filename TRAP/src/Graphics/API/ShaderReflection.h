@@ -5,9 +5,9 @@
 
 namespace TRAP::Graphics::API::ShaderReflection
 {
-	inline constexpr uint32_t MaxShaderStageCount = 5;
+	inline constexpr u32 MaxShaderStageCount = 5;
 
-	enum class TextureDimension : uint32_t
+	enum class TextureDimension : u32
 	{
 		TextureDim1D,
 		TextureDim2D,
@@ -26,7 +26,7 @@ namespace TRAP::Graphics::API::ShaderReflection
 	struct VertexInput
 	{
 		//The size of the attribute
-		uint64_t Size;
+		u64 Size;
 
 		//Resource name
 		std::string Name;
@@ -38,14 +38,14 @@ namespace TRAP::Graphics::API::ShaderReflection
 		RendererAPI::DescriptorType Type;
 
 		//The resource set for binding frequency
-		uint32_t Set{};
+		u32 Set{};
 
 		//The resource binding location
-		uint32_t Reg{};
+		u32 Reg{};
 
 		//The size of the resource.
 		//This will be the DescriptorInfo array size for textures
-		uint64_t Size{};
+		u64 Size{};
 
 		//What stages use this resource
 		RendererAPI::ShaderStage UsedStages;
@@ -66,13 +66,13 @@ namespace TRAP::Graphics::API::ShaderReflection
 	struct ShaderVariable
 	{
 		//Parents resource index
-		uint64_t ParentIndex{};
+		u64 ParentIndex{};
 
 		//The offset of the Variable.
-		uint32_t Offset{};
+		u32 Offset{};
 
 		//The size of the Variable.
-		uint64_t Size{};
+		u64 Size{};
 
 		//Variable name
 		std::string Name;
@@ -97,10 +97,10 @@ namespace TRAP::Graphics::API::ShaderReflection
 		std::vector<ShaderVariable> Variables;
 
 		//Thread group size for compute shader
-		std::array<uint32_t, 3> NumThreadsPerGroup{};
+		std::array<u32, 3> NumThreadsPerGroup{};
 
 		//Number of tessellation control points
-		uint32_t NumControlPoint{};
+		u32 NumControlPoint{};
 
 		std::string EntryPoint;
 	};
@@ -111,11 +111,11 @@ namespace TRAP::Graphics::API::ShaderReflection
 		//The individual stages reflection data
 		std::vector<ShaderReflection> StageReflections;
 
-		std::optional<uint32_t> VertexStageIndex = std::nullopt;
-		std::optional<uint32_t> TessellationControlStageIndex = std::nullopt;
-		std::optional<uint32_t> TessellationEvaluationStageIndex = std::nullopt;
-		std::optional<uint32_t> GeometryStageIndex = std::nullopt;
-		std::optional<uint32_t> FragmentStageIndex = std::nullopt;
+		std::optional<u32> VertexStageIndex = std::nullopt;
+		std::optional<u32> TessellationControlStageIndex = std::nullopt;
+		std::optional<u32> TessellationEvaluationStageIndex = std::nullopt;
+		std::optional<u32> GeometryStageIndex = std::nullopt;
+		std::optional<u32> FragmentStageIndex = std::nullopt;
 
 		std::vector<ShaderResource> ShaderResources;
 

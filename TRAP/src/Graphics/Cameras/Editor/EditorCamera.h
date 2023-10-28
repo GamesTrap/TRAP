@@ -40,7 +40,7 @@ namespace TRAP::Graphics
         /// <param name="fov">Field of view in degrees.</param>
         /// <param name="aspectRatio">Viewport aspect ratio.</param>
         /// <param name="nearClip">Near clip plane.</param>
-        constexpr EditorCamera(float fov, float aspectRatio, float nearClip);
+        constexpr EditorCamera(f32 fov, f32 aspectRatio, f32 nearClip);
         /// <summary>
         /// Destructor
         /// </summary>
@@ -107,12 +107,12 @@ namespace TRAP::Graphics
         /// Retrieve the distance between the camera and the focal point.
         /// </summary>
         /// <returns>Distance.</returns>
-        [[nodiscard]] constexpr float GetDistance() const noexcept;
+        [[nodiscard]] constexpr f32 GetDistance() const noexcept;
         /// <summary>
         /// Set the distance between the camera and the focal point.
         /// </summary>
         /// <param name="distance">Distance to set.</param>
-        constexpr void SetDistance(float distance) noexcept;
+        constexpr void SetDistance(f32 distance) noexcept;
 
         /// <summary>
         /// Retrieve the current focal point of the camera.
@@ -126,7 +126,7 @@ namespace TRAP::Graphics
         /// </summary>
         /// <param name="width">Viewport width.</param>
         /// <param name="height">Viewport height.</param>
-        constexpr void SetViewportSize(float width, float height);
+        constexpr void SetViewportSize(f32 width, f32 height);
 
         /// <summary>
         /// Retrieve the view matrix.
@@ -166,32 +166,32 @@ namespace TRAP::Graphics
         /// Retrieve the current field of view in degrees.
         /// </summary>
         /// <returns>Field of view in degrees.</returns>
-        [[nodiscard]] constexpr float GetFOV() const noexcept;
+        [[nodiscard]] constexpr f32 GetFOV() const noexcept;
         /// <summary>
         /// Retrieve the current aspect ration.
         /// </summary>
         /// <returns>Aspect ratio.</returns>
-        [[nodiscard]] constexpr float GetAspectRatio() const noexcept;
+        [[nodiscard]] constexpr f32 GetAspectRatio() const noexcept;
         /// <summary>
         /// Retrieve the nera clip plane.
         /// </summary>
         /// <returns>Near clip plane.</returns>
-        [[nodiscard]] constexpr float GetNearClip() const noexcept;
+        [[nodiscard]] constexpr f32 GetNearClip() const noexcept;
         /// <summary>
         /// Retrieve the camera pitch.
         /// </summary>
         /// <returns>Pitch.</returns>
-        [[nodiscard]] constexpr float GetPitch() const noexcept;
+        [[nodiscard]] constexpr f32 GetPitch() const noexcept;
         /// <summary>
         /// Retrieve the camera yaw.
         /// </summary>
         /// <returns>Yaw.</returns>
-        [[nodiscard]] constexpr float GetYaw() const noexcept;
+        [[nodiscard]] constexpr f32 GetYaw() const noexcept;
         /// <summary>
         /// Retrieve the current camera speed.
         /// </summary>
         /// <returns>Camera speed.</returns>
-        [[nodiscard]] float GetCameraSpeed() const;
+        [[nodiscard]] f32 GetCameraSpeed() const;
 
     private:
         /// <summary>
@@ -225,7 +225,7 @@ namespace TRAP::Graphics
         /// Zoom the camera with the given mouse delta.
         /// </summary>
         /// <param name="delta">Mouse delta.</param>
-        void MouseZoom(float delta);
+        void MouseZoom(f32 delta);
 
         /// <summary>
         /// Calculate the current camera position.
@@ -242,12 +242,12 @@ namespace TRAP::Graphics
         /// Retrieve the rotation speed to use.
         /// </summary>
         /// <returns>Rotation speed.</returns>
-        [[nodiscard]] constexpr float RotationSpeed() const noexcept;
+        [[nodiscard]] constexpr f32 RotationSpeed() const noexcept;
         /// <summary>
         /// Retrieve the zoom speed to use.
         /// </summary>
         /// <returns>Zoom speed.</returns>
-        [[nodiscard]] float ZoomSpeed() const;
+        [[nodiscard]] f32 ZoomSpeed() const;
 
         /// <summary>
         /// Disable the mouse and ImGui mouse handling.
@@ -265,9 +265,9 @@ namespace TRAP::Graphics
         TRAP::Math::Vec3 m_direction{};
         TRAP::Math::Vec3 m_focalPoint{};
 
-        float m_fov;
-        float m_aspectRatio;
-        float m_nearClip;
+        f32 m_fov;
+        f32 m_aspectRatio;
+        f32 m_nearClip;
 
         bool m_isActive = false;
         bool m_panning = false;
@@ -276,25 +276,25 @@ namespace TRAP::Graphics
         TRAP::Math::Vec3 m_initialFocalPoint{};
         TRAP::Math::Vec3 m_initialRotation{};
 
-        float m_distance = 0.0f;
-        float m_normalSpeed = 0.002f;
+        f32 m_distance = 0.0f;
+        f32 m_normalSpeed = 0.002f;
 
-        float m_pitch = 0.0f;
-        float m_yaw = 0.0f;
-        float m_pitchDelta = 0.0f;
-        float m_yawDelta = 0.0f;
+        f32 m_pitch = 0.0f;
+        f32 m_yaw = 0.0f;
+        f32 m_pitchDelta = 0.0f;
+        f32 m_yawDelta = 0.0f;
         TRAP::Math::Vec3 m_positionDelta{};
         TRAP::Math::Vec3 m_rightDirection{};
 
         CameraMode m_cameraMode = CameraMode::ArcBall;
 
-        float m_minFocusDistance = 100.0f;
+        f32 m_minFocusDistance = 100.0f;
 
-        float m_viewportWidth = 1280.0f;
-        float m_viewportHeight = 720.0f;
+        f32 m_viewportWidth = 1280.0f;
+        f32 m_viewportHeight = 720.0f;
 
-        constexpr static float MinSpeed = 0.002f;
-        constexpr static float MaxSpeed = 2.5f;
+        constexpr static f32 MinSpeed = 0.002f;
+        constexpr static f32 MaxSpeed = 2.5f;
 
         friend class ::TRAPEditorLayer;
     };
@@ -302,7 +302,7 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::EditorCamera::EditorCamera(const float fov, const float aspectRatio, float nearClip)
+constexpr TRAP::Graphics::EditorCamera::EditorCamera(const f32 fov, const f32 aspectRatio, f32 nearClip)
     : Camera(TRAP::Math::InfinitePerspective(TRAP::Math::Radians(fov), aspectRatio, nearClip)),
       m_fov(fov), m_aspectRatio(aspectRatio), m_nearClip(nearClip)
 {
@@ -321,7 +321,7 @@ constexpr void TRAP::Graphics::EditorCamera::Init()
 
     m_position = CalculatePosition();
     const TRAP::Math::Quat orientation = GetOrientation();
-    m_direction = TRAP::Math::EulerAngles(orientation) * (180.0f / TRAP::Math::PI<float>());
+    m_direction = TRAP::Math::EulerAngles(orientation) * (180.0f / TRAP::Math::PI<f32>());
     m_viewMatrix = TRAP::Math::Translate(TRAP::Math::Mat4(1.0f), m_position) * TRAP::Math::Mat4Cast(orientation);
     m_viewMatrix = TRAP::Math::Inverse(m_viewMatrix);
 }
@@ -364,14 +364,14 @@ constexpr void TRAP::Graphics::EditorCamera::SetActive(const bool active) noexce
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::Graphics::EditorCamera::GetDistance() const noexcept
+[[nodiscard]] constexpr f32 TRAP::Graphics::EditorCamera::GetDistance() const noexcept
 {
     return m_distance;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr void TRAP::Graphics::EditorCamera::SetDistance(const float distance) noexcept
+constexpr void TRAP::Graphics::EditorCamera::SetDistance(const f32 distance) noexcept
 {
     m_distance = distance;
 }
@@ -385,7 +385,7 @@ constexpr void TRAP::Graphics::EditorCamera::SetDistance(const float distance) n
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr void TRAP::Graphics::EditorCamera::SetViewportSize(const float width, const float height)
+constexpr void TRAP::Graphics::EditorCamera::SetViewportSize(const f32 width, const f32 height)
 {
     if(m_viewportWidth == width && m_viewportHeight == height)
         return;
@@ -407,21 +407,21 @@ constexpr void TRAP::Graphics::EditorCamera::SetViewportSize(const float width, 
 
 [[nodiscard]] constexpr TRAP::Math::Vec3 TRAP::Graphics::EditorCamera::GetUpDirection() const
 {
-    return GetOrientation() * TRAP::Math::YAxis<float>();
+    return GetOrientation() * TRAP::Math::YAxis<f32>();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr TRAP::Math::Vec3 TRAP::Graphics::EditorCamera::GetRightDirection() const
 {
-    return GetOrientation() * TRAP::Math::XAxis<float>();
+    return GetOrientation() * TRAP::Math::XAxis<f32>();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 [[nodiscard]] constexpr TRAP::Math::Vec3 TRAP::Graphics::EditorCamera::GetForwardDirection() const
 {
-    return GetOrientation() * -TRAP::Math::ZAxis<float>();
+    return GetOrientation() * -TRAP::Math::ZAxis<f32>();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -440,35 +440,35 @@ constexpr void TRAP::Graphics::EditorCamera::SetViewportSize(const float width, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::Graphics::EditorCamera::GetFOV() const noexcept
+[[nodiscard]] constexpr f32 TRAP::Graphics::EditorCamera::GetFOV() const noexcept
 {
     return m_fov;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::Graphics::EditorCamera::GetAspectRatio() const noexcept
+[[nodiscard]] constexpr f32 TRAP::Graphics::EditorCamera::GetAspectRatio() const noexcept
 {
     return m_aspectRatio;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::Graphics::EditorCamera::GetNearClip() const noexcept
+[[nodiscard]] constexpr f32 TRAP::Graphics::EditorCamera::GetNearClip() const noexcept
 {
     return m_nearClip;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::Graphics::EditorCamera::GetPitch() const noexcept
+[[nodiscard]] constexpr f32 TRAP::Graphics::EditorCamera::GetPitch() const noexcept
 {
     return m_pitch;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::Graphics::EditorCamera::GetYaw() const noexcept
+[[nodiscard]] constexpr f32 TRAP::Graphics::EditorCamera::GetYaw() const noexcept
 {
     return m_yaw;
 }
@@ -477,10 +477,10 @@ constexpr void TRAP::Graphics::EditorCamera::SetViewportSize(const float width, 
 
 constexpr void TRAP::Graphics::EditorCamera::UpdateView()
 {
-    const float yawSign = GetUpDirection().y() < 0.0f ? -1.0f : 1.0f;
+    const f32 yawSign = GetUpDirection().y() < 0.0f ? -1.0f : 1.0f;
 
     //Extra step to handle the problem when the camera direction is the same as the up vector
-    const float cosAngle = TRAP::Math::Dot(GetForwardDirection(), GetUpDirection());
+    const f32 cosAngle = TRAP::Math::Dot(GetForwardDirection(), GetUpDirection());
     if(cosAngle * yawSign > 0.99f)
         m_pitchDelta = 0.0f;
 
@@ -515,7 +515,7 @@ constexpr void TRAP::Graphics::EditorCamera::MousePan(const TRAP::Math::Vec2& de
 
 constexpr void TRAP::Graphics::EditorCamera::MouseRotate(const TRAP::Math::Vec2& delta)
 {
-    const float yawSign = GetUpDirection().y() < 0.0f ? -1.0f : 1.0f;
+    const f32 yawSign = GetUpDirection().y() < 0.0f ? -1.0f : 1.0f;
     m_yawDelta += yawSign * delta.x() * RotationSpeed();
     m_pitchDelta += delta.y() * RotationSpeed();
 }
@@ -531,18 +531,18 @@ constexpr void TRAP::Graphics::EditorCamera::MouseRotate(const TRAP::Math::Vec2&
 
 [[nodiscard]] constexpr TRAP::Math::Vec2 TRAP::Graphics::EditorCamera::PanSpeed() const
 {
-    const float x = TRAP::Math::Min(m_viewportWidth / 1000.0f, 2.4f); //Max = 2.4f
-    const float xFactor = 0.0366f * (x * x) - 0.1778f * x + 0.3021f;
+    const f32 x = TRAP::Math::Min(m_viewportWidth / 1000.0f, 2.4f); //Max = 2.4f
+    const f32 xFactor = 0.0366f * (x * x) - 0.1778f * x + 0.3021f;
 
-    const float y = TRAP::Math::Min(m_viewportHeight / 1000.0f, 2.4f); //Max = 2.4f
-    const float yFactor = 0.0366f * (y * y) - 0.1778f * y + 0.3021f;
+    const f32 y = TRAP::Math::Min(m_viewportHeight / 1000.0f, 2.4f); //Max = 2.4f
+    const f32 yFactor = 0.0366f * (y * y) - 0.1778f * y + 0.3021f;
 
     return {xFactor, yFactor};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr float TRAP::Graphics::EditorCamera::RotationSpeed() const noexcept
+[[nodiscard]] constexpr f32 TRAP::Graphics::EditorCamera::RotationSpeed() const noexcept
 {
     return 0.3f;
 }

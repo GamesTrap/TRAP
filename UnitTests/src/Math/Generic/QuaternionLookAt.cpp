@@ -85,16 +85,16 @@ namespace
 
 TEST_CASE("TRAP::Math::QuaternionLookAt()", "[math][generic][quaternionlookat]")
 {
-    SECTION("Quat - double")
+    SECTION("Quat - f64")
     {
-        RunQuaternionLookAtRunTimeTests<double>();
-        RunQuaternionLookAtCompileTimeTests<double>();
-        RunQuaternionLookAtEdgeTests<double>();
+        RunQuaternionLookAtRunTimeTests<f64>();
+        RunQuaternionLookAtCompileTimeTests<f64>();
+        RunQuaternionLookAtEdgeTests<f64>();
     }
-    SECTION("Quat - float")
+    SECTION("Quat - f32")
     {
-        RunQuaternionLookAtRunTimeTests<float>();
-        RunQuaternionLookAtCompileTimeTests<float>();
-        RunQuaternionLookAtEdgeTests<float>();
+        RunQuaternionLookAtRunTimeTests<f32>();
+        RunQuaternionLookAtCompileTimeTests<f32>();
+        RunQuaternionLookAtEdgeTests<f32>();
     }
 }

@@ -49,43 +49,43 @@ namespace
 
 TEST_CASE("TRAP::Math::SmoothStep()", "[math][generic][smoothstep]")
 {
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunCompileTimeSmoothStepTests<double>();
+        RunCompileTimeSmoothStepTests<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunCompileTimeSmoothStepTests<float>();
+        RunCompileTimeSmoothStepTests<f32>();
     }
 
-    SECTION("Vec2 - double")
+    SECTION("Vec2 - f64")
     {
-        RunCompileTimeSmoothStepVecTests<double, TRAP::Math::Vec2d>();
+        RunCompileTimeSmoothStepVecTests<f64, TRAP::Math::Vec2d>();
         RunCompileTimeSmoothStepVecTests<TRAP::Math::Vec2d, TRAP::Math::Vec2d>();
     }
-    SECTION("Vec2 - float")
+    SECTION("Vec2 - f32")
     {
-        RunCompileTimeSmoothStepVecTests<float, TRAP::Math::Vec2f>();
+        RunCompileTimeSmoothStepVecTests<f32, TRAP::Math::Vec2f>();
         RunCompileTimeSmoothStepVecTests<TRAP::Math::Vec2f, TRAP::Math::Vec2f>();
     }
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
-        RunCompileTimeSmoothStepVecTests<double, TRAP::Math::Vec3d>();
+        RunCompileTimeSmoothStepVecTests<f64, TRAP::Math::Vec3d>();
         RunCompileTimeSmoothStepVecTests<TRAP::Math::Vec3d, TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
-        RunCompileTimeSmoothStepVecTests<float, TRAP::Math::Vec3f>();
+        RunCompileTimeSmoothStepVecTests<f32, TRAP::Math::Vec3f>();
         RunCompileTimeSmoothStepVecTests<TRAP::Math::Vec3f, TRAP::Math::Vec3f>();
     }
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
-        RunCompileTimeSmoothStepVecTests<double, TRAP::Math::Vec4d>();
+        RunCompileTimeSmoothStepVecTests<f64, TRAP::Math::Vec4d>();
         RunCompileTimeSmoothStepVecTests<TRAP::Math::Vec4d, TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
-        RunCompileTimeSmoothStepVecTests<float, TRAP::Math::Vec4f>();
+        RunCompileTimeSmoothStepVecTests<f32, TRAP::Math::Vec4f>();
         RunCompileTimeSmoothStepVecTests<TRAP::Math::Vec4f, TRAP::Math::Vec4f>();
     }
 }

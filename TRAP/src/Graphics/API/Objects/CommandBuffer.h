@@ -55,7 +55,7 @@ namespace TRAP::Graphics
 		/// <param name="constants">Pointer to the constant buffer data.</param>
 		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
 		virtual void BindPushConstants(const TRAP::Ref<RootSignature>& rootSignature, std::string_view name,
-		                               const void* constants, std::size_t constantsLength) const = 0;
+		                               const void* constants, usize constantsLength) const = 0;
 		/// <summary>
 		/// Bind push constant buffer data to the command buffer.
 		/// </summary>
@@ -63,14 +63,14 @@ namespace TRAP::Graphics
 		/// <param name="paramIndex">Index of the push constant block in the RootSignatures descriptors array.</param>
 		/// <param name="constants">Pointer to the constant buffer data.</param>
 		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
-		virtual void BindPushConstantsByIndex(const TRAP::Ref<RootSignature>& rootSignature, uint32_t paramIndex,
-		                                      const void* constants, std::size_t constantsLength) const = 0;
+		virtual void BindPushConstantsByIndex(const TRAP::Ref<RootSignature>& rootSignature, u32 paramIndex,
+		                                      const void* constants, usize constantsLength) const = 0;
 		/// <summary>
 		/// Bind a descriptor set to the command buffer.
 		/// </summary>
 		/// <param name="index">Index for which descriptor set to bind.</param>
 		/// <param name="descriptorSet">Descriptor set to bind.</param>
-		virtual void BindDescriptorSet(uint32_t index, DescriptorSet& descriptorSet) = 0;
+		virtual void BindDescriptorSet(u32 index, DescriptorSet& descriptorSet) = 0;
 		/// <summary>
 		/// Bind an index buffer to the command buffer.
 		/// </summary>
@@ -78,7 +78,7 @@ namespace TRAP::Graphics
 		/// <param name="indexType">Data type used by the index buffer.</param>
 		/// <param name="offset">Starting offset in bytes to use for index buffer.</param>
 		virtual void BindIndexBuffer(const TRAP::Ref<Buffer>& buffer, RendererAPI::IndexType indexType,
-		                             uint64_t offset) const = 0;
+		                             u64 offset) const = 0;
 		/// <summary>
 		/// Bind vertex buffer(s) to the command buffer.
 		/// </summary>
@@ -86,8 +86,8 @@ namespace TRAP::Graphics
 		/// <param name="strides">Stride in bytes of each vertex buffer.</param>
 		/// <param name="offsets">Starting offsets in bytes to use for each vertex buffer.</param>
 		virtual void BindVertexBuffer(const std::vector<TRAP::Ref<Buffer>>& buffers,
-		                              const std::vector<uint32_t>& strides,
-									  const std::vector<uint64_t>& offsets) const = 0;
+		                              const std::vector<u32>& strides,
+									  const std::vector<u64>& offsets) const = 0;
 		/// <summary>
 		/// Bind a pipeline to the command buffer.
 		/// </summary>
@@ -108,9 +108,9 @@ namespace TRAP::Graphics
 		virtual void BindRenderTargets(const std::vector<TRAP::Ref<RenderTarget>>& renderTargets,
 			                           const TRAP::Ref<RenderTarget>& depthStencil,
 			                           const RendererAPI::LoadActionsDesc* loadActions,
-			                           const std::vector<uint32_t>* colorArraySlices,
-			                           const std::vector<uint32_t>* colorMipSlices,
-			                           uint32_t depthArraySlice, uint32_t depthMipSlice,
+			                           const std::vector<u32>* colorArraySlices,
+			                           const std::vector<u32>* colorMipSlices,
+			                           u32 depthArraySlice, u32 depthMipSlice,
 									   const TRAP::Ref<RenderTarget>& shadingRate = nullptr) = 0;
 
 		/// <summary>
@@ -150,8 +150,8 @@ namespace TRAP::Graphics
 		/// <param name="height">New viewport height.</param>
 		/// <param name="minDepth">Min depth value.</param>
 		/// <param name="maxDepth">Max depth value.</param>
-		virtual void SetViewport(float x, float y, float width, float height,
-		                         float minDepth, float maxDepth) const = 0;
+		virtual void SetViewport(f32 x, f32 y, f32 width, f32 height,
+		                         f32 minDepth, f32 maxDepth) const = 0;
 		/// <summary>
 		/// Set a new scissor region.
 		/// </summary>
@@ -159,14 +159,14 @@ namespace TRAP::Graphics
 		/// <param name="y">Y offset for the scissor region.</param>
 		/// <param name="width">Width for the scissor region.</param>
 		/// <param name="height">Height for the scissor region.</param>
-		virtual void SetScissor(uint32_t x, uint32_t y, uint32_t width, uint32_t height) const = 0;
+		virtual void SetScissor(u32 x, u32 y, u32 width, u32 height) const = 0;
 
 		/// <summary>
 		/// Draw a number of primitives.
 		/// </summary>
 		/// <param name="vertexCount">How many vertices to draw.</param>
 		/// <param name="firstVertex">Offset to the first vertex to draw.</param>
-		virtual void Draw(uint32_t vertexCount, uint32_t firstVertex) const = 0;
+		virtual void Draw(u32 vertexCount, u32 firstVertex) const = 0;
 		/// <summary>
 		/// Draw multiple instances of primitives.
 		/// </summary>
@@ -174,15 +174,15 @@ namespace TRAP::Graphics
 		/// <param name="firstVertex">Offset to the first vertex to draw.</param>
 		/// <param name="instanceCount">How many instances to draw.</param>
 		/// <param name="firstInstance">Offset to the first instance to draw.</param>
-		virtual void DrawInstanced(uint32_t vertexCount, uint32_t firstVertex, uint32_t instanceCount,
-		                           uint32_t firstInstance) const = 0;
+		virtual void DrawInstanced(u32 vertexCount, u32 firstVertex, u32 instanceCount,
+		                           u32 firstInstance) const = 0;
 		/// <summary>
 		/// Draw indexed primitives.
 		/// </summary>
 		/// <param name="indexCount">How many indices to draw.</param>
 		/// <param name="firstIndex">Offset to the first index to draw.</param>
 		/// <param name="firstVertex">Offset to the first vertex to draw.</param>
-		virtual void DrawIndexed(uint32_t indexCount, uint32_t firstIndex, int32_t firstVertex) const = 0;
+		virtual void DrawIndexed(u32 indexCount, u32 firstIndex, i32 firstVertex) const = 0;
 		/// <summary>
 		/// Draw multiple instances of indexed primitives.
 		/// </summary>
@@ -191,8 +191,8 @@ namespace TRAP::Graphics
 		/// <param name="instanceCount">How many instances to draw.</param>
 		/// <param name="firstInstance">Offset to the first instance to draw.</param>
 		/// <param name="firstVertex">Offset to the first vertex to draw.</param>
-		virtual void DrawIndexedInstanced(uint32_t indexCount, uint32_t firstIndex, uint32_t instanceCount,
-		                                  uint32_t firstInstance, int32_t firstVertex) const = 0;
+		virtual void DrawIndexedInstanced(u32 indexCount, u32 firstIndex, u32 instanceCount,
+		                                  u32 firstInstance, i32 firstVertex) const = 0;
 		/// <summary>
 		/// Draw primitives.
 		/// Draw data is provided by the indirect buffer.
@@ -205,9 +205,9 @@ namespace TRAP::Graphics
 		/// <param name="bufferOffset">Byte offset into indirect buffer to start reading from.</param>
 		/// <param name="counterBuffer">Buffer containing the draw count.</param>
 		/// <param name="counterBufferOffset">Byte offset into counter buffer to start reading from.</param>
-		virtual void ExecuteIndirect(const TRAP::Ref<CommandSignature>& cmdSignature, uint32_t maxCommandCount,
-			                         const TRAP::Ref<Buffer>& indirectBuffer, uint64_t bufferOffset,
-			                         const TRAP::Ref<Buffer>& counterBuffer, uint64_t counterBufferOffset) const = 0;
+		virtual void ExecuteIndirect(const TRAP::Ref<CommandSignature>& cmdSignature, u32 maxCommandCount,
+			                         const TRAP::Ref<Buffer>& indirectBuffer, u64 bufferOffset,
+			                         const TRAP::Ref<Buffer>& counterBuffer, u64 counterBufferOffset) const = 0;
 
 		/// <summary>
 		/// Dispatch compute work.
@@ -215,7 +215,7 @@ namespace TRAP::Graphics
 		/// <param name="groupCountX">Number of local work groups to dispatch in the X dimension.</param>
 		/// <param name="groupCountY">Number of local work groups to dispatch in the Y dimension.</param>
 		/// <param name="groupCountZ">Number of local work groups to dispatch in the Z dimension.</param>
-		virtual void Dispatch(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) const = 0;
+		virtual void Dispatch(u32 groupCountX, u32 groupCountY, u32 groupCountZ) const = 0;
 
 		/// <summary>
 		/// Update a buffer with new data.
@@ -225,8 +225,8 @@ namespace TRAP::Graphics
 		/// <param name="srcBuffer">Source buffer to read data from.</param>
 		/// <param name="srcOffset">Offset in the source buffer to start reading from.</param>
 		/// <param name="size">Size of the data to copy.</param>
-		virtual void UpdateBuffer(const TRAP::Ref<Buffer>& buffer, uint64_t dstOffset,
-		                          const TRAP::Ref<Buffer>& srcBuffer, uint64_t srcOffset, uint64_t size) const = 0;
+		virtual void UpdateBuffer(const TRAP::Ref<Buffer>& buffer, u64 dstOffset,
+		                          const TRAP::Ref<Buffer>& srcBuffer, u64 srcOffset, u64 size) const = 0;
 		/// <summary>
 		/// Update a texture partially with new data.
 		/// </summary>
@@ -251,8 +251,8 @@ namespace TRAP::Graphics
 		/// <param name="queryPool">Query pool to reset.</param>
 		/// <param name="startQuery">Initial query index to reset.</param>
 		/// <param name="queryCount">Number of queries to reset.</param>
-		virtual void ResetQueryPool(const TRAP::Ref<QueryPool>& queryPool, uint32_t startQuery,
-		                            uint32_t queryCount) const = 0;
+		virtual void ResetQueryPool(const TRAP::Ref<QueryPool>& queryPool, u32 startQuery,
+		                            u32 queryCount) const = 0;
 		/// <summary>
 		/// Begin a new query.
 		/// </summary>
@@ -273,7 +273,7 @@ namespace TRAP::Graphics
 		/// <param name="startQuery">Initial query index.</param>
 		/// <param name="queryCount">Number of queries to read.</param>
 		virtual void ResolveQuery(const TRAP::Ref<QueryPool>& queryPool, const TRAP::Ref<Buffer>& readBackBuffer,
-		                          uint32_t startQuery, uint32_t queryCount) const = 0;
+		                          u32 startQuery, u32 queryCount) const = 0;
 
 		/// <summary>
 		/// Add resource barriers (memory dependency) to the command buffer.
@@ -298,7 +298,7 @@ namespace TRAP::Graphics
 		/// Set the stencil reference value for the command buffer.
 		/// </summary>
 		/// <param name="val">New value to use as stencil reference.</param>
-		virtual void SetStencilReferenceValue(uint32_t val) const = 0;
+		virtual void SetStencilReferenceValue(u32 val) const = 0;
 
 		/// <summary>
 		/// Set the pipeline fragment shading rate and combiner operation for the command buffer.
@@ -316,7 +316,7 @@ namespace TRAP::Graphics
 		/// <param name="color">Color to clear the color attachment with.</param>
 		/// <param name="width">Width of the area to clear.</param>
 		/// <param name="height">Height of the area to clear.</param>
-		virtual void Clear(const RendererAPI::Color& color, uint32_t width, uint32_t height) const = 0;
+		virtual void Clear(const RendererAPI::Color& color, u32 width, u32 height) const = 0;
 		/// <summary>
 		/// Clear the currently used depth and stencil attachment.
 		/// </summary>
@@ -324,21 +324,21 @@ namespace TRAP::Graphics
 		/// <param name="stencil">Stencil value to clear the stencil attachment with.</param>
 		/// <param name="width">Width of the area to clear.</param>
 		/// <param name="height">Height of the area to clear.</param>
-		virtual void Clear(float depth, uint32_t stencil, uint32_t width, uint32_t height) const = 0;
+		virtual void Clear(f32 depth, u32 stencil, u32 width, u32 height) const = 0;
 		/// <summary>
 		/// Clear the currently used depth attachment.
 		/// </summary>
 		/// <param name="depth">Depth value to clear the depth attachment with.</param>
 		/// <param name="width">Width of the area to clear.</param>
 		/// <param name="height">Height of the area to clear.</param>
-		virtual void Clear(float depth, uint32_t width, uint32_t height) const = 0;
+		virtual void Clear(f32 depth, u32 width, u32 height) const = 0;
 		/// <summary>
 		/// Clear the currently used stencil attachment.
 		/// </summary>
 		/// <param name="stencil">Stencil value to clear the stencil attachment with.</param>
 		/// <param name="width">Width of the area to clear.</param>
 		/// <param name="height">Height of the area to clear.</param>
-		virtual void Clear(uint32_t stencil, uint32_t width, uint32_t height) const = 0;
+		virtual void Clear(u32 stencil, u32 width, u32 height) const = 0;
 
 	protected:
 		/// <summary>

@@ -59,8 +59,8 @@ VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanRenderer::Default
 std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::RenderPassMap> TRAP::Graphics::API::VulkanRenderer::s_renderPassMap{};
 std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::FrameBufferMap> TRAP::Graphics::API::VulkanRenderer::s_frameBufferMap{};
 
-std::unordered_map<uint64_t, TRAP::Ref<TRAP::Graphics::Pipeline>> TRAP::Graphics::API::VulkanRenderer::s_pipelines{};
-std::unordered_map<uint64_t,
+std::unordered_map<u64, TRAP::Ref<TRAP::Graphics::Pipeline>> TRAP::Graphics::API::VulkanRenderer::s_pipelines{};
+std::unordered_map<u64,
                    TRAP::Ref<TRAP::Graphics::PipelineCache>> TRAP::Graphics::API::VulkanRenderer::s_pipelineCaches{};
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -116,7 +116,7 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData*
 
 	//Start Recording
 #ifndef TRAP_HEADLESS_MODE
-	std::optional<uint32_t> acquiredImage = p->SwapChain->AcquireNextImage(p->ImageAcquiredSemaphore, nullptr);
+	std::optional<u32> acquiredImage = p->SwapChain->AcquireNextImage(p->ImageAcquiredSemaphore, nullptr);
 
 	if(!acquiredImage)
 	{
@@ -159,8 +159,8 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData*
 	const auto internalRes = GetInternalRenderResolution();
 #endif /*TRAP_HEADLESS_MODE*/
 	if(p->NewShadingRateTexture &&
-	   p->NewShadingRateTexture->GetWidth() >= NumericCast<uint32_t>(TRAP::Math::Ceil(NumericCast<float>(internalRes.x()) / NumericCast<float>(GPUSettings.ShadingRateTexelWidth))) &&
-	   p->NewShadingRateTexture->GetHeight() >= NumericCast<uint32_t>(TRAP::Math::Ceil(NumericCast<float>(internalRes.y()) / NumericCast<float>(GPUSettings.ShadingRateTexelHeight))))
+	   p->NewShadingRateTexture->GetWidth() >= NumericCast<u32>(TRAP::Math::Ceil(NumericCast<f32>(internalRes.x()) / NumericCast<f32>(GPUSettings.ShadingRateTexelWidth))) &&
+	   p->NewShadingRateTexture->GetHeight() >= NumericCast<u32>(TRAP::Math::Ceil(NumericCast<f32>(internalRes.y()) / NumericCast<f32>(GPUSettings.ShadingRateTexelHeight))))
 	{
 		p->CachedShadingRateTextures[p->ImageIndex] = p->NewShadingRateTexture;
 		std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).ShadingRateTexture = p->NewShadingRateTexture;
@@ -185,15 +185,15 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerViewportData*
 	std::get<0>(loadActions.ClearColorValues) = p->ClearColor;
 	loadActions.ClearDepthStencil = p->ClearDepthStencil;
 	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({ bindRenderTarget }, nullptr, &loadActions, nullptr, nullptr,
-	                                                           std::numeric_limits<uint32_t>::max(),
-															   std::numeric_limits<uint32_t>::max(), std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).ShadingRateTexture);
+	                                                           std::numeric_limits<u32>::max(),
+															   std::numeric_limits<u32>::max(), std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).ShadingRateTexture);
 
 	//Set Default Dynamic Viewport & Scissor
-	const uint32_t width = bindRenderTarget->GetWidth();
-	const uint32_t height = bindRenderTarget->GetHeight();
+	const u32 width = bindRenderTarget->GetWidth();
+	const u32 height = bindRenderTarget->GetHeight();
 
-	p->GraphicCommandBuffers[p->ImageIndex]->SetViewport(0.0f, 0.0f, NumericCast<float>(width),
-														 NumericCast<float>(height), 0.0f, 1.0f);
+	p->GraphicCommandBuffers[p->ImageIndex]->SetViewport(0.0f, 0.0f, NumericCast<f32>(width),
+														 NumericCast<f32>(height), 0.0f, 1.0f);
 	p->GraphicCommandBuffers[p->ImageIndex]->SetScissor(0, 0, width, height);
 	if(p->CurrentGraphicsPipeline)
 		p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicsPipeline);
@@ -225,15 +225,15 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerViewportData* c
 #ifndef TRAP_HEADLESS_MODE
 	//Transition RenderTarget to Present
 	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
-																std::numeric_limits<uint32_t>::max(),
-																std::numeric_limits<uint32_t>::max(), nullptr);
+																std::numeric_limits<u32>::max(),
+																std::numeric_limits<u32>::max(), nullptr);
 	const TRAP::Ref<RenderTarget> presentRenderTarget = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
 	RenderTargetBarrier barrier{presentRenderTarget, ResourceState::RenderTarget, ResourceState::Present};
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
 #else
 	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
-																std::numeric_limits<uint32_t>::max(),
-																std::numeric_limits<uint32_t>::max(), nullptr);
+																std::numeric_limits<u32>::max(),
+																std::numeric_limits<u32>::max(), nullptr);
 #endif
 
 	EndGPUFrameProfile(QueueType::Graphics, p);
@@ -377,7 +377,7 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData* const p)
 			rTDesc.Format = SwapChain::GetRecommendedSwapchainFormat(true, false);
 			rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
 			rTDesc.SampleCount = SampleCount::One;
-			for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
+			for(u32 i = 0; i < RendererAPI::ImageCount; ++i)
 				p->RenderTargets[i] = RenderTarget::Create(rTDesc);
 
 			p->CurrentSwapChainImageIndex = 0;
@@ -398,7 +398,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 	m_debug = TRAP::MakeScope<VulkanDebug>(m_instance);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
 
-	const std::multimap<uint32_t, TRAP::Utils::UUID> physicalDevices = VulkanPhysicalDevice::GetAllRatedPhysicalDevices(m_instance);
+	const std::multimap<u32, TRAP::Utils::UUID> physicalDevices = VulkanPhysicalDevice::GetAllRatedPhysicalDevices(m_instance);
 	TRAP::Scope<VulkanPhysicalDevice> physicalDevice;
 
 	//Get Vulkan GPU UUID
@@ -519,9 +519,9 @@ void TRAP::Graphics::API::VulkanRenderer::Flush() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<uint32_t, 3> workGroupElements, const Window* const window) const
+void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<u32, 3> workGroupElements, const Window* const window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<uint32_t, 3> workGroupElements) const
+void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<u32, 3> workGroupElements) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -549,8 +549,8 @@ void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<uint32_t, 3> workG
 	}
 
 	//Calculate used work group sizes
-	for(std::size_t i = 0; i < workGroupElements.size(); ++i)
-		workGroupElements[i] = NumericCast<uint32_t>(TRAP::Math::Round(NumericCast<float>(workGroupElements[i]) / NumericCast<float>(p->CurrentComputeWorkGroupSize[i])));
+	for(usize i = 0; i < workGroupElements.size(); ++i)
+		workGroupElements[i] = NumericCast<u32>(TRAP::Math::Round(NumericCast<f32>(workGroupElements[i]) / NumericCast<f32>(p->CurrentComputeWorkGroupSize[i])));
 
 	p->ComputeCommandBuffers[p->ImageIndex]->Dispatch(std::get<0>(workGroupElements), std::get<1>(workGroupElements), std::get<2>(workGroupElements));
 }
@@ -572,7 +572,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetVSync([[maybe_unused]] const bool v
 //------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::SetReflexFPSLimit([[maybe_unused]] const uint32_t limit)
+void TRAP::Graphics::API::VulkanRenderer::SetReflexFPSLimit([[maybe_unused]] const u32 limit)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -585,7 +585,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetReflexFPSLimit([[maybe_unused]] con
 		if(limit == 0)
 			viewportData->SleepModeParams.minimumIntervalUs = 0;
 		else
-			viewportData->SleepModeParams.minimumIntervalUs = NumericCast<uint32_t>((1000.0f / NumericCast<float>(limit)) * 1000.0f);
+			viewportData->SleepModeParams.minimumIntervalUs = NumericCast<u32>((1000.0f / NumericCast<f32>(limit)) * 1000.0f);
 
 		if(viewportData->SleepModeParams.bLowLatencyMode && viewportData->SleepModeParams.bLowLatencyBoost)
 			SetLatencyMode(LatencyMode::EnabledBoost, win);
@@ -601,9 +601,9 @@ void TRAP::Graphics::API::VulkanRenderer::SetReflexFPSLimit([[maybe_unused]] con
 //------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::SetRenderScale(float scale, const Window* const window) const
+void TRAP::Graphics::API::VulkanRenderer::SetRenderScale(f32 scale, const Window* const window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::SetRenderScale(float scale) const
+void TRAP::Graphics::API::VulkanRenderer::SetRenderScale(f32 scale) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -625,9 +625,9 @@ void TRAP::Graphics::API::VulkanRenderer::SetRenderScale(float scale) const
 //------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-float TRAP::Graphics::API::VulkanRenderer::GetRenderScale(const Window* const window) const
+f32 TRAP::Graphics::API::VulkanRenderer::GetRenderScale(const Window* const window) const
 #else
-float TRAP::Graphics::API::VulkanRenderer::GetRenderScale() const
+f32 TRAP::Graphics::API::VulkanRenderer::GetRenderScale() const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -663,9 +663,9 @@ void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const RendererAPI::Color
 //------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::SetClearDepth(const float depth, const Window* const window) const
+void TRAP::Graphics::API::VulkanRenderer::SetClearDepth(const f32 depth, const Window* const window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::SetClearDepth(const float depth) const
+void TRAP::Graphics::API::VulkanRenderer::SetClearDepth(const f32 depth) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -682,9 +682,9 @@ void TRAP::Graphics::API::VulkanRenderer::SetClearDepth(const float depth) const
 //------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::SetClearStencil(const uint32_t stencil, const Window* const window) const
+void TRAP::Graphics::API::VulkanRenderer::SetClearStencil(const u32 stencil, const Window* const window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::SetClearStencil(const uint32_t stencil) const
+void TRAP::Graphics::API::VulkanRenderer::SetClearStencil(const u32 stencil) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -701,7 +701,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetClearStencil(const uint32_t stencil
 //------------------------------------------------------------------------------------------------------------------//
 
 #ifdef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::SetResolution(const uint32_t width, const uint32_t height) const
+void TRAP::Graphics::API::VulkanRenderer::SetResolution(const u32 width, const u32 height) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -716,7 +716,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetResolution(const uint32_t width, co
 //------------------------------------------------------------------------------------------------------------------//
 
 #ifdef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::GetResolution(uint32_t& width, uint32_t& height) const
+void TRAP::Graphics::API::VulkanRenderer::GetResolution(u32& width, u32& height) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -831,9 +831,9 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthFail(const StencilOp front, co
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::SetDepthBias(const int32_t depthBias, const Window* const window) const
+void TRAP::Graphics::API::VulkanRenderer::SetDepthBias(const i32 depthBias, const Window* const window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::SetDepthBias(const int32_t depthBias) const
+void TRAP::Graphics::API::VulkanRenderer::SetDepthBias(const i32 depthBias) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -856,9 +856,9 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthBias(const int32_t depthBias) 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::SetDepthBiasSlopeFactor(const float factor, const Window* const window) const
+void TRAP::Graphics::API::VulkanRenderer::SetDepthBiasSlopeFactor(const f32 factor, const Window* const window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::SetDepthBiasSlopeFactor(const float factor) const
+void TRAP::Graphics::API::VulkanRenderer::SetDepthBiasSlopeFactor(const f32 factor) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -992,9 +992,9 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilFunction(const CompareMode f
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::SetStencilMask(const uint8_t read, const uint8_t write, const Window* const window) const
+void TRAP::Graphics::API::VulkanRenderer::SetStencilMask(const u8 read, const u8 write, const Window* const window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::SetStencilMask(const uint8_t read, const uint8_t write) const
+void TRAP::Graphics::API::VulkanRenderer::SetStencilMask(const u8 read, const u8 write) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -1338,13 +1338,13 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::SetViewport(const uint32_t x, const uint32_t y, const uint32_t width,
-                                                      const uint32_t height, const float minDepth,
-                                                      const float maxDepth, const Window* const window) const
+void TRAP::Graphics::API::VulkanRenderer::SetViewport(const u32 x, const u32 y, const u32 width,
+                                                      const u32 height, const f32 minDepth,
+                                                      const f32 maxDepth, const Window* const window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::SetViewport(const uint32_t x, const uint32_t y, const uint32_t width,
-                                                      const uint32_t height, const float minDepth,
-                                                      const float maxDepth) const
+void TRAP::Graphics::API::VulkanRenderer::SetViewport(const u32 x, const u32 y, const u32 width,
+                                                      const u32 height, const f32 minDepth,
+                                                      const f32 maxDepth) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -1362,19 +1362,19 @@ void TRAP::Graphics::API::VulkanRenderer::SetViewport(const uint32_t x, const ui
 	const PerViewportData* const data = s_perViewportData.get();
 #endif /*TRAP_HEADLESS_MODE*/
 
-	data->GraphicCommandBuffers[data->ImageIndex]->SetViewport(NumericCast<float>(x), NumericCast<float>(y),
-	                                                           NumericCast<float>(width), NumericCast<float>(height),
+	data->GraphicCommandBuffers[data->ImageIndex]->SetViewport(NumericCast<f32>(x), NumericCast<f32>(y),
+	                                                           NumericCast<f32>(width), NumericCast<f32>(height),
 	                                                           minDepth, maxDepth);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::SetScissor(const uint32_t x, const uint32_t y, const uint32_t width,
-                                                     const uint32_t height, const Window* const window) const
+void TRAP::Graphics::API::VulkanRenderer::SetScissor(const u32 x, const u32 y, const u32 width,
+                                                     const u32 height, const Window* const window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::SetScissor(const uint32_t x, const uint32_t y, const uint32_t width,
-                                                     const uint32_t height) const
+void TRAP::Graphics::API::VulkanRenderer::SetScissor(const u32 x, const u32 y, const u32 width,
+                                                     const u32 height) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -1393,10 +1393,10 @@ void TRAP::Graphics::API::VulkanRenderer::SetScissor(const uint32_t x, const uin
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::Draw(const uint32_t vertexCount, const uint32_t firstVertex,
+void TRAP::Graphics::API::VulkanRenderer::Draw(const u32 vertexCount, const u32 firstVertex,
                                                const Window* const window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::Draw(const uint32_t vertexCount, const uint32_t firstVertex) const
+void TRAP::Graphics::API::VulkanRenderer::Draw(const u32 vertexCount, const u32 firstVertex) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -1415,11 +1415,11 @@ void TRAP::Graphics::API::VulkanRenderer::Draw(const uint32_t vertexCount, const
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const uint32_t indexCount, const uint32_t firstIndex,
-                                                      const int32_t firstVertex, const Window* const window) const
+void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const u32 indexCount, const u32 firstIndex,
+                                                      const i32 firstVertex, const Window* const window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const uint32_t indexCount, const uint32_t firstIndex,
-                                                      const int32_t firstVertex) const
+void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const u32 indexCount, const u32 firstIndex,
+                                                      const i32 firstVertex) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -1438,12 +1438,12 @@ void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const uint32_t indexCount,
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::DrawInstanced(const uint32_t vertexCount, const uint32_t instanceCount,
-                                                        const uint32_t firstVertex, const uint32_t firstInstance,
+void TRAP::Graphics::API::VulkanRenderer::DrawInstanced(const u32 vertexCount, const u32 instanceCount,
+                                                        const u32 firstVertex, const u32 firstInstance,
                                                         const Window* const window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::DrawInstanced(const uint32_t vertexCount, const uint32_t instanceCount,
-                                                        const uint32_t firstVertex, const uint32_t firstInstance) const
+void TRAP::Graphics::API::VulkanRenderer::DrawInstanced(const u32 vertexCount, const u32 instanceCount,
+                                                        const u32 firstVertex, const u32 firstInstance) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -1463,13 +1463,13 @@ void TRAP::Graphics::API::VulkanRenderer::DrawInstanced(const uint32_t vertexCou
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::DrawIndexedInstanced(const uint32_t indexCount, const uint32_t instanceCount,
-                                                               const uint32_t firstIndex, const uint32_t firstInstance,
-						                                       const int32_t firstVertex, const Window* const window) const
+void TRAP::Graphics::API::VulkanRenderer::DrawIndexedInstanced(const u32 indexCount, const u32 instanceCount,
+                                                               const u32 firstIndex, const u32 firstInstance,
+						                                       const i32 firstVertex, const Window* const window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::DrawIndexedInstanced(const uint32_t indexCount, const uint32_t instanceCount,
-                                                               const uint32_t firstIndex, const uint32_t firstInstance,
-						                                       const int32_t firstVertex) const
+void TRAP::Graphics::API::VulkanRenderer::DrawIndexedInstanced(const u32 indexCount, const u32 instanceCount,
+                                                               const u32 firstIndex, const u32 firstInstance,
+						                                       const i32 firstVertex) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -1537,7 +1537,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader) const
 		data->ComputeCommandBuffers[data->ImageIndex]->BindPipeline(data->CurrentComputePipeline);
 
 		//Bind Descriptors
-		for(uint32_t i = 0; i < RendererAPI::MaxDescriptorSets; ++i)
+		for(u32 i = 0; i < RendererAPI::MaxDescriptorSets; ++i)
 		{
 			if(shader->GetDescriptorSets()[i])
 			{
@@ -1568,7 +1568,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader) const
 		data->GraphicCommandBuffers[data->ImageIndex]->BindPipeline(data->CurrentGraphicsPipeline);
 
 		//Bind Descriptors
-		for(uint32_t i = 0; i < RendererAPI::MaxDescriptorSets; ++i)
+		for(u32 i = 0; i < RendererAPI::MaxDescriptorSets; ++i)
 		{
 			if(shader->GetDescriptorSets()[i])
 			{
@@ -1650,11 +1650,11 @@ void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffe
 
 	const TRAP::Ref<VertexLayout> lay = TRAP::MakeRef<VertexLayout>();
 	const std::vector<VertexBufferElement>& elements = layout.GetElements();
-	lay->AttributeCount = NumericCast<uint32_t>(elements.size());
-	for(std::size_t i = 0; i < elements.size(); ++i)
+	lay->AttributeCount = NumericCast<u32>(elements.size());
+	for(usize i = 0; i < elements.size(); ++i)
 	{
 		lay->Attributes[i].Binding = 0;
-		lay->Attributes[i].Location = NumericCast<uint32_t>(i);
+		lay->Attributes[i].Location = NumericCast<u32>(i);
 		lay->Attributes[i].Format = ShaderDataTypeToImageFormat(elements[i].Type);
 		lay->Attributes[i].Rate = VertexAttributeRate::Vertex;
 		lay->Attributes[i].Offset = elements[i].Offset;
@@ -1688,10 +1688,10 @@ void TRAP::Graphics::API::VulkanRenderer::BindIndexBuffer(const TRAP::Ref<Buffer
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::BindDescriptorSet(DescriptorSet& dSet, const uint32_t index,
+void TRAP::Graphics::API::VulkanRenderer::BindDescriptorSet(DescriptorSet& dSet, const u32 index,
 															const QueueType queueType, const Window* const window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::BindDescriptorSet(DescriptorSet& dSet, const uint32_t index,
+void TRAP::Graphics::API::VulkanRenderer::BindDescriptorSet(DescriptorSet& dSet, const u32 index,
 															const QueueType queueType) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
@@ -1717,11 +1717,11 @@ void TRAP::Graphics::API::VulkanRenderer::BindDescriptorSet(DescriptorSet& dSet,
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::BindPushConstants(const std::string_view name, const void* constantsData,
-		                                                    const std::size_t constantsLength,
+		                                                    const usize constantsLength,
 															const QueueType queueType, const Window* const window) const
 #else
 void TRAP::Graphics::API::VulkanRenderer::BindPushConstants(const std::string_view name, const void* constantsData,
-		                                                    const std::size_t constantsLength,
+		                                                    const usize constantsLength,
 															const QueueType queueType) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
@@ -1758,15 +1758,15 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstants(const std::string_vi
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const uint32_t paramIndex,
+void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const u32 paramIndex,
                                                                    const void* constantsData,
-		                                                           const std::size_t constantsLength,
+		                                                           const usize constantsLength,
 																   const QueueType queueType,
 																   const Window* const window) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const uint32_t paramIndex,
+void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const u32 paramIndex,
                                                                    const void* constantsData,
-		                                                           std::size_t constantsLength,
+		                                                           usize constantsLength,
 																   const QueueType queueType) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
@@ -1806,18 +1806,18 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const uint32_
 void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		                                                   const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
 							                               const RendererAPI::LoadActionsDesc* const loadActions,
-							                               std::vector<uint32_t>* const colorArraySlices,
-							                               std::vector<uint32_t>* const colorMipSlices,
-							                               const uint32_t depthArraySlice,
-														   const uint32_t depthMipSlice, const Window* const window) const
+							                               std::vector<u32>* const colorArraySlices,
+							                               std::vector<u32>* const colorMipSlices,
+							                               const u32 depthArraySlice,
+														   const u32 depthMipSlice, const Window* const window) const
 #else
 void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		                                                   const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
 							                               const RendererAPI::LoadActionsDesc* const loadActions,
-							                               std::vector<uint32_t>* const colorArraySlices,
-							                               std::vector<uint32_t>* const colorMipSlices,
-							                               const uint32_t depthArraySlice,
-														   const uint32_t depthMipSlice) const
+							                               std::vector<u32>* const colorArraySlices,
+							                               std::vector<u32>* const colorMipSlices,
+							                               const u32 depthArraySlice,
+														   const u32 depthMipSlice) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -1862,18 +1862,18 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graph
 void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
 		                                                    const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
 							                                const RendererAPI::LoadActionsDesc* const loadActions,
-							                                std::vector<uint32_t>* const colorArraySlices,
-							                                std::vector<uint32_t>* const colorMipSlices,
-							                                const uint32_t depthArraySlice,
-														    const uint32_t depthMipSlice, const Window* const window) const
+							                                std::vector<u32>* const colorArraySlices,
+							                                std::vector<u32>* const colorMipSlices,
+							                                const u32 depthArraySlice,
+														    const u32 depthMipSlice, const Window* const window) const
 #else
 void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
 		                                                    const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
 							                                const RendererAPI::LoadActionsDesc* const loadActions,
-							                                std::vector<uint32_t>* const colorArraySlices,
-							                                std::vector<uint32_t>* const colorMipSlices,
-							                                const uint32_t depthArraySlice,
-														    const uint32_t depthMipSlice) const
+							                                std::vector<u32>* const colorArraySlices,
+							                                std::vector<u32>* const colorMipSlices,
+							                                const u32 depthArraySlice,
+														    const u32 depthMipSlice) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -1894,9 +1894,9 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TR
 		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
 		shadingRateTex = gpd.ShadingRateTexture;
 
-		gpd.RenderTargetCount = NumericCast<uint32_t>(colorTargets.size());
+		gpd.RenderTargetCount = NumericCast<u32>(colorTargets.size());
 		gpd.ColorFormats.resize(colorTargets.size());
-		for(std::size_t i = 0; i < colorTargets.size(); ++i)
+		for(usize i = 0; i < colorTargets.size(); ++i)
 			gpd.ColorFormats[i] = colorTargets[i]->GetImageFormat();
 #ifndef TRAP_HEADLESS_MODE
 		BindShader(gpd.ShaderProgram, window);
@@ -2078,13 +2078,13 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexSleep() const
 	if(!GPUSettings.ReflexSupported)
 		return;
 
-	uint64_t signalValue = 0;
+	u64 signalValue = 0;
 	VkCall(vkGetSemaphoreCounterValueKHR(m_device->GetVkDevice(), m_device->GetReflexSemaphore(), &signalValue));
 	++signalValue;
 
 	VkSemaphoreWaitInfoKHR waitInfo = VulkanInits::SemaphoreWaitInfo(m_device->GetReflexSemaphore(), signalValue);
 	VkReflexCall(NvLL_VK_Sleep(m_device->GetVkDevice(), signalValue));
-	VkCall(vkWaitSemaphoresKHR(m_device->GetVkDevice(), &waitInfo, std::numeric_limits<uint64_t>::max()));
+	VkCall(vkWaitSemaphoresKHR(m_device->GetVkDevice(), &waitInfo, std::numeric_limits<u64>::max()));
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
 }
 #endif /*TRAP_HEADLESS_MODE*/
@@ -2092,8 +2092,8 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexSleep() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const uint32_t frame,
-                                                       [[maybe_unused]] const uint32_t marker) const
+void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const u32 frame,
+                                                       [[maybe_unused]] const u32 marker) const
 {
 #ifdef NVIDIA_REFLEX_AVAILABLE
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -2209,11 +2209,11 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	CommandBuffer* const cmd = cmdPool->AllocateCommandBuffer(false);
 
 	//Add a staging buffer
-	const uint32_t formatByteWidth = ImageFormatBitSizeOfBlock(renderTarget->GetImageFormat()) / 8u;
+	const u32 formatByteWidth = ImageFormatBitSizeOfBlock(renderTarget->GetImageFormat()) / 8u;
 	BufferDesc bufferDesc{};
 	bufferDesc.Descriptors = DescriptorType::RWBuffer;
 	bufferDesc.MemoryUsage = ResourceMemoryUsage::GPUToCPU;
-	bufferDesc.Size = NumericCast<uint64_t>(renderTarget->GetWidth()) * renderTarget->GetHeight() * formatByteWidth;
+	bufferDesc.Size = NumericCast<u64>(renderTarget->GetWidth()) * renderTarget->GetHeight() * formatByteWidth;
 	bufferDesc.Flags = BufferCreationFlags::PersistentMap | BufferCreationFlags::NoDescriptorViewCreation;
 	bufferDesc.StartState = ResourceState::CopyDestination;
 	bufferDesc.QueueType = QueueType::Graphics;
@@ -2227,15 +2227,15 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	cmd->ResourceBarrier(nullptr, nullptr, &srcBarrier);
 
 	//TODO Replace with CommandBuffer::CopySubresource()
-	const uint32_t rowPitch = renderTarget->GetWidth() * formatByteWidth;
-	const uint32_t width = renderTarget->GetTexture()->GetWidth();
-	const uint32_t height = renderTarget->GetTexture()->GetHeight();
-	const uint32_t depth = Math::Max(1u, renderTarget->GetTexture()->GetDepth());
+	const u32 rowPitch = renderTarget->GetWidth() * formatByteWidth;
+	const u32 width = renderTarget->GetTexture()->GetWidth();
+	const u32 height = renderTarget->GetTexture()->GetHeight();
+	const u32 depth = Math::Max(1u, renderTarget->GetTexture()->GetDepth());
 	const ImageFormat fmt = renderTarget->GetTexture()->GetImageFormat();
-	const uint32_t numBlocksWide = rowPitch / (ImageFormatBitSizeOfBlock(fmt) >> 3u);
+	const u32 numBlocksWide = rowPitch / (ImageFormatBitSizeOfBlock(fmt) >> 3u);
 
 	//Copy the render target to the staging buffer
-	const uint32_t bufferRowLength = numBlocksWide * ImageFormatWidthOfBlock(fmt);
+	const u32 bufferRowLength = numBlocksWide * ImageFormatWidthOfBlock(fmt);
 	VkImageSubresourceLayers layers{};
 	layers.aspectMask = static_cast<VkImageAspectFlags>(renderTarget->GetTexture()->GetAspectMask());
 	layers.mipLevel = 0;
@@ -2266,9 +2266,9 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	s_graphicQueue->WaitQueueIdle();
 
 	//Copy to CPU memory.
-	std::copy_n(static_cast<uint8_t*>(buffer->GetCPUMappedAddress()),
-	            NumericCast<std::size_t>(renderTarget->GetWidth()) * renderTarget->GetHeight() * formatByteWidth,
-				static_cast<uint8_t*>(outPixelData));
+	std::copy_n(static_cast<u8*>(buffer->GetCPUMappedAddress()),
+	            NumericCast<usize>(renderTarget->GetWidth()) * renderTarget->GetHeight() * formatByteWidth,
+				static_cast<u8*>(outPixelData));
 
 	//Cleanup
 	cmdPool->FreeCommandBuffer(cmd);
@@ -2291,7 +2291,7 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 #else
 	const auto* const viewportData = s_perViewportData.get();
 #endif /*TRAP_HEADLESS_MODE*/
-	const uint32_t lastFrame = (viewportData->ImageIndex - 1) % RendererAPI::ImageCount;
+	const u32 lastFrame = (viewportData->ImageIndex - 1) % RendererAPI::ImageCount;
 
 	//Wait for queues to finish
 	s_computeQueue->WaitQueueIdle();
@@ -2303,9 +2303,9 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	const TRAP::Ref<RenderTarget> rT = viewportData->SwapChain->GetRenderTargets()[lastFrame];
 #endif
 
-	const uint32_t channelCount = ImageFormatChannelCount(rT->GetImageFormat());
+	const u32 channelCount = ImageFormatChannelCount(rT->GetImageFormat());
 	const bool hdr = ImageFormatIsFloat(rT->GetImageFormat());
-	const bool u16 = ImageFormatIsU16(rT->GetImageFormat());
+	const bool isUnsigned16 = ImageFormatIsU16(rT->GetImageFormat());
 	const bool flipRedBlue = rT->GetImageFormat() != ImageFormat::R8G8B8A8_UNORM;
 
 #ifdef TRAP_HEADLESS_MODE
@@ -2314,32 +2314,32 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	static constexpr ResourceState resState = ResourceState::Present;
 #endif
 
-	std::vector<uint8_t> pixelDatau8{};
-	std::vector<float> pixelDataf32{};
-	std::vector<uint16_t> pixelDatau16{};
-	if(!hdr && u16)
+	std::vector<u8> pixelDatau8{};
+	std::vector<f32> pixelDataf32{};
+	std::vector<u16> pixelDatau16{};
+	if(!hdr && isUnsigned16)
 	{
-		pixelDatau16.resize(NumericCast<std::size_t>(rT->GetWidth()) *
-						    NumericCast<std::size_t>(rT->GetHeight()) *
-						    NumericCast<std::size_t>(channelCount));
+		pixelDatau16.resize(NumericCast<usize>(rT->GetWidth()) *
+						    NumericCast<usize>(rT->GetHeight()) *
+						    NumericCast<usize>(channelCount));
 
 		//Generate image data buffer
 		MapRenderTarget(rT, resState, pixelDatau16.data());
 	}
 	else if(!hdr)
 	{
-		pixelDatau8.resize(NumericCast<std::size_t>(rT->GetWidth()) *
-						   NumericCast<std::size_t>(rT->GetHeight()) *
-						   NumericCast<std::size_t>(channelCount));
+		pixelDatau8.resize(NumericCast<usize>(rT->GetWidth()) *
+						   NumericCast<usize>(rT->GetHeight()) *
+						   NumericCast<usize>(channelCount));
 
 		//Generate image data buffer
 		MapRenderTarget(rT, resState, pixelDatau8.data());
 	}
 	else
 	{
-		pixelDataf32.resize(NumericCast<std::size_t>(rT->GetWidth()) *
-							NumericCast<std::size_t>(rT->GetHeight()) *
-							NumericCast<std::size_t>(channelCount));
+		pixelDataf32.resize(NumericCast<usize>(rT->GetWidth()) *
+							NumericCast<usize>(rT->GetHeight()) *
+							NumericCast<usize>(channelCount));
 
 		//Generate image data buffer
 		MapRenderTarget(rT, resState, pixelDataf32.data());
@@ -2348,28 +2348,28 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	//Flip the BGRA to RGBA
 	if(flipRedBlue)
 	{
-		for(uint32_t y = 0; y < rT->GetHeight(); ++y)
+		for(u32 y = 0; y < rT->GetHeight(); ++y)
 		{
-			for(uint32_t x = 0; x < rT->GetWidth(); ++x)
+			for(u32 x = 0; x < rT->GetWidth(); ++x)
 			{
-				const uint32_t pixelIndex = (y * rT->GetWidth() + x) * channelCount;
+				const u32 pixelIndex = (y * rT->GetWidth() + x) * channelCount;
 
 				//Swap blue and red
-				if(!hdr && u16)
+				if(!hdr && isUnsigned16)
 				{
-					const uint16_t red = pixelDatau8[pixelIndex];
+					const u16 red = pixelDatau8[pixelIndex];
 					pixelDatau16[pixelIndex] = pixelDatau8[pixelIndex + 2];
 					pixelDatau16[pixelIndex + 2] = red;
 				}
 				else if(!hdr)
 				{
-					const uint8_t red = pixelDatau8[pixelIndex];
+					const u8 red = pixelDatau8[pixelIndex];
 					pixelDatau8[pixelIndex] = pixelDatau8[pixelIndex + 2];
 					pixelDatau8[pixelIndex + 2] = red;
 				}
 				else
 				{
-					const float red = pixelDataf32[pixelIndex];
+					const f32 red = pixelDataf32[pixelIndex];
 					pixelDataf32[pixelIndex] = pixelDataf32[pixelIndex + 2];
 					pixelDataf32[pixelIndex + 2] = red;
 				}
@@ -2408,8 +2408,8 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(const TRAP::Ref<Render
 
 	//Stop running render pass
 	cmd->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
-						   std::numeric_limits<uint32_t>::max(),
-						   std::numeric_limits<uint32_t>::max(), nullptr);
+						   std::numeric_limits<u32>::max(),
+						   std::numeric_limits<u32>::max(), nullptr);
 
 	//Transition source from RenderTarget to CopySource
 	RenderTargetBarrier barrier = {source, ResourceState::RenderTarget, ResourceState::CopySource};
@@ -2483,12 +2483,12 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 		rTDesc.SampleCount = (viewportData->CurrentAntiAliasing == AntiAliasing::MSAA) ? viewportData->CurrentSampleCount : SampleCount::One;
 
 #ifndef TRAP_HEADLESS_MODE
-		const uint32_t imageCount = NumericCast<uint32_t>(viewportData->SwapChain->GetRenderTargets().size());
+		const u32 imageCount = NumericCast<u32>(viewportData->SwapChain->GetRenderTargets().size());
 #else
-		static constexpr uint32_t imageCount = RendererAPI::ImageCount;
+		static constexpr u32 imageCount = RendererAPI::ImageCount;
 #endif /*TRAP_HEADLESS_MODE*/
 		viewportData->InternalRenderTargets.resize(imageCount);
-		for(uint32_t i = 0; i < imageCount; ++i)
+		for(u32 i = 0; i < imageCount; ++i)
 			viewportData->InternalRenderTargets[i] = RenderTarget::Create(rTDesc);
 	}
 }
@@ -2520,8 +2520,8 @@ void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(TRAP::Ref<RenderTarget
 
 	//Stop running render pass
 	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
-															   std::numeric_limits<uint32_t>::max(),
-															   std::numeric_limits<uint32_t>::max());
+															   std::numeric_limits<u32>::max(),
+															   std::numeric_limits<u32>::max());
 
 	if(source->GetSampleCount() != SampleCount::One) //Extra work to resolve MSAA
 	{
@@ -2586,13 +2586,13 @@ void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(TRAP::Ref<RenderTarget
 
 	VkImageBlit region{};
 	region.srcOffsets[0] = {0, 0, 0};
-	region.srcOffsets[1] = { NumericCast<int32_t>(texInternal->GetWidth()), NumericCast<int32_t>(texInternal->GetHeight()), 1};
+	region.srcOffsets[1] = { NumericCast<i32>(texInternal->GetWidth()), NumericCast<i32>(texInternal->GetHeight()), 1};
 	region.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 	region.srcSubresource.mipLevel = 0;
 	region.srcSubresource.baseArrayLayer = 0;
 	region.srcSubresource.layerCount = 1;
 	region.dstOffsets[0] = {0, 0, 0};
-	region.dstOffsets[1] = {NumericCast<int32_t>(texOutput->GetWidth()), NumericCast<int32_t>(texOutput->GetHeight()), 1};
+	region.dstOffsets[1] = {NumericCast<i32>(texOutput->GetWidth()), NumericCast<i32>(texOutput->GetHeight()), 1};
 	region.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 	region.dstSubresource.mipLevel = 0;
 	region.dstSubresource.baseArrayLayer = 0;
@@ -2621,10 +2621,10 @@ void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(TRAP::Ref<RenderTarget
 
 	//Start render pass
 	cmd->BindRenderTargets({destination}, nullptr, nullptr, nullptr, nullptr,
-							std::numeric_limits<uint32_t>::max(),
-							std::numeric_limits<uint32_t>::max());
+							std::numeric_limits<u32>::max(),
+							std::numeric_limits<u32>::max());
 
-	cmd->SetViewport(0.0f, 0.0f, NumericCast<float>(destination->GetWidth()), NumericCast<float>(destination->GetHeight()), 0.0f, 1.0f);
+	cmd->SetViewport(0.0f, 0.0f, NumericCast<f32>(destination->GetWidth()), NumericCast<f32>(destination->GetHeight()), 0.0f, 1.0f);
 	cmd->SetScissor(0, 0, destination->GetWidth(), destination->GetHeight());
 }
 
@@ -2692,7 +2692,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetLatencyMode([[maybe_unused]] const 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(Window* const window, const bool VSyncEnabled) const
 #else
-void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const uint32_t width, const uint32_t height) const
+void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, const u32 height) const
 #endif /*TRAP_HEADLESS_MODE*/
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -2709,7 +2709,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const uint32_t wid
 	if(Application::GetFPSLimit() == 0)
 		p->SleepModeParams.minimumIntervalUs = 0;
 	else
-		p->SleepModeParams.minimumIntervalUs = NumericCast<uint32_t>(((1000.0f / NumericCast<float>(Application::GetFPSLimit())) * 1000.0f));
+		p->SleepModeParams.minimumIntervalUs = NumericCast<u32>(((1000.0f / NumericCast<f32>(Application::GetFPSLimit())) * 1000.0f));
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -2726,11 +2726,11 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const uint32_t wid
 	RendererAPI::BufferDesc bufferDesc{};
 	bufferDesc.MemoryUsage = RendererAPI::ResourceMemoryUsage::GPUToCPU;
 	bufferDesc.Flags = RendererAPI::BufferCreationFlags::OwnMemory;
-	bufferDesc.Size = sizeof(uint64_t) * 1 * 2;
+	bufferDesc.Size = sizeof(u64) * 1 * 2;
 	bufferDesc.StartState = RendererAPI::ResourceState::CopyDestination;
 
 	//For each buffered image
-	for (uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
+	for (u32 i = 0; i < RendererAPI::ImageCount; ++i)
 	{
 		//Graphics
 		//Create Graphic Command Pool
@@ -2799,7 +2799,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const uint32_t wid
 		rTMSAADesc.Format = SwapChain::GetRecommendedSwapchainFormat(true, false);
 		rTMSAADesc.StartState = RendererAPI::ResourceState::RenderTarget;
 		rTMSAADesc.SampleCount = p->CurrentSampleCount;
-		for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
+		for(u32 i = 0; i < RendererAPI::ImageCount; ++i)
 			p->InternalRenderTargets[i] = RenderTarget::Create(rTMSAADesc);
 	}
 #else
@@ -2812,12 +2812,12 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const uint32_t wid
 	rTDesc.Format = SwapChain::GetRecommendedSwapchainFormat(true, false);
 	rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
 	rTDesc.SampleCount = SampleCount::One;
-	for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
+	for(u32 i = 0; i < RendererAPI::ImageCount; ++i)
 		p->RenderTargets[i] = RenderTarget::Create(rTDesc);
 	if(p->CurrentAntiAliasing == AntiAliasing::MSAA)
 	{
 		rTDesc.SampleCount = p->CurrentSampleCount;
-		for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
+		for(u32 i = 0; i < RendererAPI::ImageCount; ++i)
 			p->InternalRenderTargets[i] = RenderTarget::Create(rTDesc);
 	}
 #endif
@@ -3293,10 +3293,10 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	bufferDesc.Descriptors = DescriptorType::Buffer | DescriptorType::UniformBuffer;
 	bufferDesc.MemoryUsage = ResourceMemoryUsage::GPUOnly;
 	bufferDesc.StartState = ResourceState::Common;
-	bufferDesc.Size = sizeof(uint32_t);
+	bufferDesc.Size = sizeof(u32);
 	bufferDesc.FirstElement = 0;
 	bufferDesc.ElementCount = 1;
-	bufferDesc.StructStride = sizeof(uint32_t);
+	bufferDesc.StructStride = sizeof(u32);
 	bufferDesc.Format = ImageFormat::R32_UINT;
 	s_NullDescriptors->DefaultBufferSRV = TRAP::MakeRef<VulkanBuffer>(bufferDesc);
 	bufferDesc.Descriptors = DescriptorType::RWBuffer;
@@ -3353,7 +3353,7 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	s_NullDescriptors->InitialTransitionFence = fence;
 
 	//Transition resources
-	for (uint32_t dim = 0; dim < std::to_underlying(ShaderReflection::TextureDimension::TextureDimCount); ++dim)
+	for (u32 dim = 0; dim < std::to_underlying(ShaderReflection::TextureDimension::TextureDimCount); ++dim)
 	{
 		if (s_NullDescriptors->DefaultTextureSRV[dim])
 			UtilInitialTransition(s_NullDescriptors->DefaultTextureSRV[dim], ResourceState::ShaderResource);
@@ -3376,7 +3376,7 @@ void TRAP::Graphics::API::VulkanRenderer::RemoveDefaultResources()
 	TP_DEBUG(Log::RendererVulkanPrefix, "Destroying DefaultResources");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	for(uint32_t dim = 0; dim < std::to_underlying(ShaderReflection::TextureDimension::TextureDimCount); ++dim)
+	for(u32 dim = 0; dim < std::to_underlying(ShaderReflection::TextureDimension::TextureDimCount); ++dim)
 	{
 		if (s_NullDescriptors->DefaultTextureSRV[dim])
 			s_NullDescriptors->DefaultTextureSRV[dim].reset();
@@ -3492,7 +3492,7 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	const std::size_t hash = std::hash<PipelineDesc>{}(desc);
+	const usize hash = std::hash<PipelineDesc>{}(desc);
 	const auto pipelineIt = s_pipelines.find(hash);
 
 	if(pipelineIt != s_pipelines.end())
@@ -3501,7 +3501,7 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(const Ref<TRAP::
 	const auto tempFolder = TRAP::FileSystem::GetGameTempFolderPath();
 	if(tempFolder)
 	{
-		std::pair<std::unordered_map<uint64_t, TRAP::Ref<PipelineCache>>::iterator, bool> res;
+		std::pair<std::unordered_map<u64, TRAP::Ref<PipelineCache>>::iterator, bool> res;
 		if (!s_pipelineCaches.contains(hash))
 		{
 			PipelineCacheLoadDesc cacheDesc{};
@@ -3576,13 +3576,13 @@ void TRAP::Graphics::API::VulkanRenderer::EndGPUFrameProfile(const QueueType typ
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] float TRAP::Graphics::API::VulkanRenderer::ResolveGPUFrameProfile(const QueueType type, const PerViewportData* const p)
+[[nodiscard]] f32 TRAP::Graphics::API::VulkanRenderer::ResolveGPUFrameProfile(const QueueType type, const PerViewportData* const p)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	float time = 0.0f;
+	f32 time = 0.0f;
 
-	RendererAPI::ReadRange readRange{0, sizeof(uint64_t) * 1 * 2};
+	RendererAPI::ReadRange readRange{0, sizeof(u64) * 1 * 2};
 	TRAP::Ref<Buffer> buffer = nullptr;
 	if(type == QueueType::Graphics)
 		buffer = p->GraphicsTimestampReadbackBuffers[p->ImageIndex];
@@ -3591,21 +3591,21 @@ void TRAP::Graphics::API::VulkanRenderer::EndGPUFrameProfile(const QueueType typ
 	buffer->MapBuffer(&readRange);
 	if(buffer->GetCPUMappedAddress() != nullptr)
 	{
-		const uint64_t startTime = *(static_cast<uint64_t*>(buffer->GetCPUMappedAddress()) + 0);
-		const uint64_t endTime = *(static_cast<uint64_t*>(buffer->GetCPUMappedAddress()) + 1);
+		const u64 startTime = *(static_cast<u64*>(buffer->GetCPUMappedAddress()) + 0);
+		const u64 endTime = *(static_cast<u64*>(buffer->GetCPUMappedAddress()) + 1);
 
 		if(endTime > startTime)
 		{
-			const double nsTime = NumericCast<double>(endTime - startTime);
+			const f64 nsTime = NumericCast<f64>(endTime - startTime);
 			if(type == QueueType::Graphics)
 			{
 				const Ref<VulkanQueue> graphicsQueue = std::dynamic_pointer_cast<VulkanQueue>(s_graphicQueue);
-				time = NumericCast<float>(nsTime / graphicsQueue->GetTimestampFrequency()) * 1000.0f;
+				time = NumericCast<f32>(nsTime / graphicsQueue->GetTimestampFrequency()) * 1000.0f;
 			}
 			else if(type == QueueType::Compute)
 			{
 				const Ref<VulkanQueue> computeQueue = std::dynamic_pointer_cast<VulkanQueue>(s_computeQueue);
-				time = NumericCast<float>(nsTime / computeQueue->GetTimestampFrequency()) * 1000.0f;
+				time = NumericCast<f32>(nsTime / computeQueue->GetTimestampFrequency()) * 1000.0f;
 			}
 		}
 

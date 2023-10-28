@@ -63,7 +63,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan instance version packed by VK_MAKE_API_VERSION.
 		/// </summary>
 		/// <returns>Vulkan instance version.</returns>
-		[[nodiscard]] static uint32_t GetInstanceVersion();
+		[[nodiscard]] static u32 GetInstanceVersion();
 		/// <summary>
 		/// Retrieve a list of available instance layers.
 		/// </summary>
@@ -109,7 +109,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		static void LoadAllInstanceExtensions();
 
-		inline constinit static uint32_t s_instanceVersion = 0;
+		inline constinit static u32 s_instanceVersion = 0;
 
 		VkInstance m_instance = VK_NULL_HANDLE;
 

@@ -46,7 +46,7 @@ namespace TRAP::Graphics::API
 		[[nodiscard]] constexpr VkSampler GetVkSampler() const noexcept;
 
 	private:
-		void UpdateAnisotropy(float anisotropy) override;
+		void UpdateAnisotropy(f32 anisotropy) override;
 
 		void Init();
 		void Shutdown();

@@ -20,7 +20,7 @@ private:
 	TRAP::Utils::Timer m_fpsTimer{};
 
 	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer = nullptr;
-	inline static constexpr std::array<float, 12ull * 6> m_icoSphereVerticesIndexed
+	inline static constexpr std::array<f32, 12ull * 6> m_icoSphereVerticesIndexed
 	{
 		//XYZ RGB
 		-1.0f,                                     (1.0f + TRAP::Math::Sqrt(5.0f)) / 2.0f,    0.0f,                                        1.0f, 0.0f, 0.0f,
@@ -40,7 +40,7 @@ private:
 	};
 
 	TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer = nullptr;
-	inline static constexpr std::array<uint16_t, 20ull * 3> IcosphereIndices
+	inline static constexpr std::array<u16, 20ull * 3> IcosphereIndices
 	{
 		0, 11, 5,
 		0, 5, 1,
@@ -78,8 +78,8 @@ private:
 		TRAP::Math::Mat4 View;
 		TRAP::Math::Mat4 Model;
 	};
-	float m_FOV = 45.0f;
-	float m_rotationSpeed = 20.0f;
+	f32 m_FOV = 45.0f;
+	f32 m_rotationSpeed = 20.0f;
 	TRAP::SceneCamera m_camera{};
 	TRAP::TransformComponent m_cameraTransform{};
 

@@ -10,7 +10,7 @@ TRAP::SceneCamera::SceneCamera()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::SceneCamera::SetPerspective(const float verticalFOV, const float nearClip)
+void TRAP::SceneCamera::SetPerspective(const f32 verticalFOV, const f32 nearClip)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -22,7 +22,7 @@ void TRAP::SceneCamera::SetPerspective(const float verticalFOV, const float near
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::SceneCamera::SetOrthographic(const float size, const float nearClip, const float farClip)
+void TRAP::SceneCamera::SetOrthographic(const f32 size, const f32 nearClip, const f32 farClip)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -35,17 +35,17 @@ void TRAP::SceneCamera::SetOrthographic(const float size, const float nearClip, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::SceneCamera::SetViewportSize(const uint32_t width, const uint32_t height)
+void TRAP::SceneCamera::SetViewportSize(const u32 width, const u32 height)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
-	m_aspectRatio = NumericCast<float>(width) / NumericCast<float>(height);
+	m_aspectRatio = NumericCast<f32>(width) / NumericCast<f32>(height);
 	RecalculateProjection();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::SceneCamera::SetPerspectiveVerticalFOV(const float verticalFov)
+void TRAP::SceneCamera::SetPerspectiveVerticalFOV(const f32 verticalFov)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -55,7 +55,7 @@ void TRAP::SceneCamera::SetPerspectiveVerticalFOV(const float verticalFov)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::SceneCamera::SetPerspectiveNearClip(const float nearClip)
+void TRAP::SceneCamera::SetPerspectiveNearClip(const f32 nearClip)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -65,7 +65,7 @@ void TRAP::SceneCamera::SetPerspectiveNearClip(const float nearClip)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::SceneCamera::SetOrthographicSize(const float size)
+void TRAP::SceneCamera::SetOrthographicSize(const f32 size)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -86,7 +86,7 @@ void TRAP::SceneCamera::SetOrthographicClip(const Math::Vec2 clip)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::SceneCamera::SetOrthographicNearClip(const float nearClip)
+void TRAP::SceneCamera::SetOrthographicNearClip(const f32 nearClip)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -96,7 +96,7 @@ void TRAP::SceneCamera::SetOrthographicNearClip(const float nearClip)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::SceneCamera::SetOrthographicFarClip(const float farClip)
+void TRAP::SceneCamera::SetOrthographicFarClip(const f32 farClip)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
@@ -124,10 +124,10 @@ void TRAP::SceneCamera::RecalculateProjection()
 		m_projection = Math::InfinitePerspective(m_perspectiveFOV, m_aspectRatio, m_perspectiveNear);
 	else //if (m_projectionType == ProjectionType::Orthographic)
 	{
-		const float orthographicLeft = -m_orthographicSize * m_aspectRatio * 0.5f;
-		const float orthographicRight = m_orthographicSize * m_aspectRatio * 0.5f;
-		const float orthographicBottom = -m_orthographicSize * 0.5f;
-		const float orthographicTop = m_orthographicSize * 0.5f;
+		const f32 orthographicLeft = -m_orthographicSize * m_aspectRatio * 0.5f;
+		const f32 orthographicRight = m_orthographicSize * m_aspectRatio * 0.5f;
+		const f32 orthographicBottom = -m_orthographicSize * 0.5f;
+		const f32 orthographicTop = m_orthographicSize * 0.5f;
 
 		m_projection = Math::OrthographicReverseZ(orthographicLeft,
 			                                      orthographicRight,

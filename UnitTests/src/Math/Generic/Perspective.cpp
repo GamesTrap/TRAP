@@ -125,12 +125,12 @@ namespace
         }
         {
             const auto p = TRAP::Math::Perspective<T>(min, 1.0f, 1.0f, 100.0f);
-            if constexpr(std::same_as<T, float>)
+            if constexpr(std::same_as<T, f32>)
             {
                 static constexpr TRAP::Math::tMat4<T> expected(3.550689f, 0.0f, 0.0f, 0.0f, 0.0f, 3.550689f, 0.0f, 0.0f, 0.0f, 0.0f, -1.010101f, -1.0f, 0.0f, 0.0f, -1.010101f, 0.0f);
                 REQUIRE(TRAP::Math::All(TRAP::Math::Equal(p, expected, T(0.000001f))));
             }
-            else if constexpr(std::same_as<T, double>)
+            else if constexpr(std::same_as<T, f64>)
             {
                 static constexpr TRAP::Math::tMat4<T> expected(-0.002481f, 0.0f, 0.0f, 0.0f, 0.0f, -0.002481f, 0.0f, 0.0f, 0.0f, 0.0f, -1.010101f, -1.0f, 0.0f, 0.0f, -1.010101f, 0.0f);
                 REQUIRE(TRAP::Math::All(TRAP::Math::Equal(p, expected, T(0.000001f))));
@@ -139,12 +139,12 @@ namespace
         }
         {
             const auto p = TRAP::Math::Perspective<T>(max, 1.0f, 1.0f, 100.0f);
-            if constexpr(std::same_as<T, float>)
+            if constexpr(std::same_as<T, f32>)
             {
                 static constexpr TRAP::Math::tMat4<T> expected(-3.550689f, 0.0f, 0.0f, 0.0f, 0.0f, -3.550689f, 0.0f, 0.0f, 0.0f, 0.0f, -1.010101f, -1.0f, 0.0f, 0.0f, -1.010101f, 0.0f);
                 REQUIRE(TRAP::Math::All(TRAP::Math::Equal(p, expected, T(0.000001f))));
             }
-            else if constexpr(std::same_as<T, double>)
+            else if constexpr(std::same_as<T, f64>)
             {
                 static constexpr TRAP::Math::tMat4<T> expected(0.002481f, 0.0f, 0.0f, 0.0f, 0.0f, 0.002481f, 0.0f, 0.0f, 0.0f, 0.0f, -1.010101f, -1.0f, 0.0f, 0.0f, -1.010101f, 0.0f);
                 REQUIRE(TRAP::Math::All(TRAP::Math::Equal(p, expected, T(0.000001f))));
@@ -168,16 +168,16 @@ namespace
 
 TEST_CASE("TRAP::Math::Perspective()", "[math][generic][perspective]")
 {
-    SECTION("Mat4 - double")
+    SECTION("Mat4 - f64")
     {
-        RunPerspectiveRunTimeTests<double>();
-        RunPerspectiveCompileTimeTests<double>();
-        RunPerspectiveEdgeTests<double>();
+        RunPerspectiveRunTimeTests<f64>();
+        RunPerspectiveCompileTimeTests<f64>();
+        RunPerspectiveEdgeTests<f64>();
     }
-    SECTION("Mat4 - float")
+    SECTION("Mat4 - f32")
     {
-        RunPerspectiveRunTimeTests<float>();
-        RunPerspectiveCompileTimeTests<float>();
-        RunPerspectiveEdgeTests<float>();
+        RunPerspectiveRunTimeTests<f32>();
+        RunPerspectiveCompileTimeTests<f32>();
+        RunPerspectiveEdgeTests<f32>();
     }
 }

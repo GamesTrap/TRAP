@@ -8,8 +8,8 @@ void TRAP::Graphics::PipelineCache::Save(const std::filesystem::path& path) cons
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	std::vector<uint8_t> data{};
-	std::size_t dataSize = 0;
+	std::vector<u8> data{};
+	usize dataSize = 0;
 
 	GetPipelineCacheData(&dataSize, nullptr);
 	if (dataSize == 0)

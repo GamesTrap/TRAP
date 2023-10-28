@@ -150,8 +150,8 @@ void TRAP::Network::HTTP::Response::Parse(const std::string& data)
 		   (Utils::String::ToLower(version.substr(0, 5)) == "http/") &&
 		   Utils::String::IsDigit(version[5]) && Utils::String::IsDigit(version[7]))
 		{
-			m_majorVersion = NumericCast<uint32_t>(version[5] - '0');
-			m_minorVersion = NumericCast<uint32_t>(version[7] - '0');
+			m_majorVersion = NumericCast<u32>(version[5] - '0');
+			m_minorVersion = NumericCast<u32>(version[7] - '0');
 		}
 		else
 		{
@@ -162,7 +162,7 @@ void TRAP::Network::HTTP::Response::Parse(const std::string& data)
 	}
 
 	//Extract the status code from the first line
-	int32_t status = 0;
+	i32 status = 0;
 	if (in >> status)
 		m_status = static_cast<Status>(status);
 	else
@@ -189,7 +189,7 @@ void TRAP::Network::HTTP::Response::Parse(const std::string& data)
 	else
 	{
 		//Chunked - have to read chunk by chunk
-		std::size_t length = 0;
+		usize length = 0;
 
 		//Read all chunks, identified by a chunk-size not being 0
 		while(in >> std::hex >> length)
@@ -200,7 +200,7 @@ void TRAP::Network::HTTP::Response::Parse(const std::string& data)
 			//Copy the actual content data
 			std::istreambuf_iterator<char> it(in);
 			const std::istreambuf_iterator<char> itEnd;
-			for (std::size_t i = 0; ((i < length) && (it != itEnd)); i++)
+			for (usize i = 0; ((i < length) && (it != itEnd)); i++)
 				m_body.push_back(*it++);
 		}
 
@@ -248,7 +248,7 @@ TRAP::Network::HTTP::HTTP() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::HTTP::HTTP(const std::string& host, const uint16_t port)
+TRAP::Network::HTTP::HTTP(const std::string& host, const u16 port)
 	: m_host(), m_hostIPv6(), m_port(0)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
@@ -258,7 +258,7 @@ TRAP::Network::HTTP::HTTP(const std::string& host, const uint16_t port)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Network::HTTP::SetHost(const std::string& host, const uint16_t port)
+void TRAP::Network::HTTP::SetHost(const std::string& host, const u16 port)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -335,7 +335,7 @@ TRAP::Network::HTTP::Response TRAP::Network::HTTP::SendRequest(const Request& re
 			{
 				//Wait for the server's response
 				std::string receivedStr;
-				std::size_t size = 0;
+				usize size = 0;
 				std::array<char, 1024> buffer{};
 				while (m_connectionIPv6.Receive(buffer.data(), buffer.size(), size) == Socket::Status::Done)
 					receivedStr.append(buffer.data(), buffer.data() + size);
@@ -361,7 +361,7 @@ TRAP::Network::HTTP::Response TRAP::Network::HTTP::SendRequest(const Request& re
 			{
 				//Wait for the server's response
 				std::string receivedStr;
-				std::size_t size = 0;
+				usize size = 0;
 				std::array<char, 1024> buffer{};
 				while (m_connection.Receive(buffer.data(), buffer.size(), size) == Socket::Status::Done)
 					receivedStr.append(buffer.data(), buffer.data() + size);

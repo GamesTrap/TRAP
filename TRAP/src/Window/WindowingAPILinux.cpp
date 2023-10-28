@@ -52,8 +52,8 @@ std::optional<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::W
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSize(const InternalWindow& window, int32_t& width,
-                                                         int32_t& height)
+void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSize(const InternalWindow& window, i32& width,
+                                                         i32& height)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -65,8 +65,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSize(const InternalWindow& w
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPos(const InternalWindow& window, const int32_t xPos,
-                                                        const int32_t yPos)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPos(const InternalWindow& window, const i32 xPos,
+                                                        const i32 yPos)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -80,9 +80,9 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPos(const InternalWindow& wi
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow& window,
                                                             InternalMonitor* const monitor,
-														    const int32_t xPos, const int32_t yPos,
-                                                            const int32_t width, const int32_t height,
-                                                            const double refreshRate)
+														    const i32 xPos, const i32 yPos,
+                                                            const i32 width, const i32 height,
+                                                            const f64 refreshRate)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -164,7 +164,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdown()
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorContentScale(const InternalMonitor& monitor,
-                                                                  float& xScale, float& yScale)
+                                                                  f32& xScale, f32& yScale)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -176,8 +176,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorContentScale(const Internal
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorPos(const InternalMonitor& monitor, int32_t& xPos,
-                                                         int32_t& yPos)
+void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorPos(const InternalMonitor& monitor, i32& xPos,
+                                                         i32& yPos)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -241,7 +241,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(InternalWindow& window
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformCreateCursor(InternalCursor& cursor, const Image& image,
-                                                        const uint32_t xHotspot, const uint32_t yHotspot)
+                                                        const u32 xHotspot, const u32 yHotspot)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -307,7 +307,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorMode(InternalWindow& window,
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPos(InternalWindow& window,
-                                                        const double xPos, const double yPos)
+                                                        const f64 xPos, const f64 yPos)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -320,7 +320,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPos(InternalWindow& window,
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetCursorPos(const InternalWindow& window,
-                                                        double& xPos, double& yPos)
+                                                        f64& xPos, f64& yPos)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -345,7 +345,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIcon(InternalWindow& window,
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowPos(const InternalWindow& window,
-                                                        int32_t& xPos, int32_t& yPos)
+                                                        i32& xPos, i32& yPos)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -358,7 +358,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowPos(const InternalWindow& wi
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSize(InternalWindow& window,
-                                                         const int32_t width, const int32_t height)
+                                                         const i32 width, const i32 height)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -406,7 +406,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloating(const InternalWindo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacity(const InternalWindow& window, const float opacity)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacity(const InternalWindow& window, const f32 opacity)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -443,7 +443,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbar(InternalWindow&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<float> TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacity(const InternalWindow& window)
+std::optional<f32> TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacity(const InternalWindow& window)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -458,7 +458,7 @@ std::optional<float> TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacity(cons
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSize(const InternalWindow& window,
-                                                              int32_t& width, int32_t& height)
+                                                              i32& width, i32& height)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -471,7 +471,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSize(const InternalWind
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScale(const InternalWindow& window,
-                                                                 float& xScale, float& yScale)
+                                                                 f32& xScale, f32& yScale)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -483,8 +483,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScale(const InternalW
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkArea(const InternalMonitor& monitor, int32_t& xPos,
-                                                              int32_t& yPos, int32_t& width, int32_t& height)
+void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkArea(const InternalMonitor& monitor, i32& xPos,
+                                                              i32& yPos, i32& width, i32& height)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -550,7 +550,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformWaitEvents(const double timeout)
+void TRAP::INTERNAL::WindowingAPI::PlatformWaitEvents(const f64 timeout)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -628,7 +628,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotion(const InternalWindo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::SetProgressIndicator(const ProgressState state, const double progress)
+void TRAP::INTERNAL::WindowingAPI::SetProgressIndicator(const ProgressState state, const f64 progress)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -680,7 +680,7 @@ void TRAP::INTERNAL::WindowingAPI::SetProgressIndicator(const ProgressState stat
 	s_Data.DBUS.MessageIterCloseContainer(&args, &sub1);
 
 	//Finally send the signal
-	uint32_t serial = 0;
+	u32 serial = 0;
 	if(s_Data.DBUS.ConnectionSend(s_Data.DBUS.Connection, msg, &serial) == 0u)
 		InputError(Error::Platform_Error, "Failed to send D-Bus signal");
 	else
@@ -692,7 +692,7 @@ void TRAP::INTERNAL::WindowingAPI::SetProgressIndicator(const ProgressState stat
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowProgressIndicator([[maybe_unused]] const InternalWindow& window,
-                                                                      const ProgressState state, const double progress)
+                                                                      const ProgressState state, const f64 progress)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -701,7 +701,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowProgressIndicator([[maybe_un
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::INTERNAL::WindowingAPI::PlatformGetKeyScanCode(const Input::Key key)
+i32 TRAP::INTERNAL::WindowingAPI::PlatformGetKeyScanCode(const Input::Key key)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -715,7 +715,7 @@ int32_t TRAP::INTERNAL::WindowingAPI::PlatformGetKeyScanCode(const Input::Key ke
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::string> TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeName(const int32_t scanCode)
+std::optional<std::string> TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeName(const i32 scanCode)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -845,8 +845,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindow(InternalWindow& window)
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(InternalWindow& window,
-                                                               int32_t minWidth, int32_t minHeight,
-                                                               int32_t maxWidth, int32_t maxHeight)
+                                                               i32 minWidth, i32 minHeight,
+                                                               i32 maxWidth, i32 maxHeight)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -859,7 +859,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(InternalWindow& w
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowAspectRatio(InternalWindow& window,
-                                                                const int32_t numerator, const int32_t denominator)
+                                                                const i32 numerator, const i32 denominator)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -915,7 +915,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow& window
         if(line.empty() || line[0] == '#') //Ignore empty lines and comments
             continue;
 
-        std::size_t prefixOffset = 0;
+        usize prefixOffset = 0;
         if(line.starts_with(prefix))
             prefixOffset = line.find_first_of('/', prefix.size());
 
@@ -923,7 +923,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow& window
         path.reserve(line.size() - prefixOffset);
 
         //Copy path without prefix and the "%<hex><hex>" stuff
-        for(std::size_t i = prefixOffset; i < line.size(); ++i)
+        for(usize i = prefixOffset; i < line.size(); ++i)
         {
             if(line[i] == '%' && Utils::String::IsHexDigit(line[i + 1]) && Utils::String::IsHexDigit(line[i + 2]))
             {
@@ -943,44 +943,44 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow& window
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Translates an X11 or Wayland key code to a TRAP key token
-TRAP::Input::Key TRAP::INTERNAL::WindowingAPI::TranslateKey(const int32_t scanCode)
+TRAP::Input::Key TRAP::INTERNAL::WindowingAPI::TranslateKey(const i32 scanCode)
 {
 	//Use the pre-filled LUT (see CreateKeyTables())
-	if(scanCode < 0 || scanCode >= NumericCast<int32_t>(s_Data.KeyCodes.size()))
+	if(scanCode < 0 || scanCode >= NumericCast<i32>(s_Data.KeyCodes.size()))
 		return Input::Key::Unknown;
 
-	return s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)];
+	return s_Data.KeyCodes[NumericCast<u32>(scanCode)];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Wait for data to arrive on any of the specified file descriptors
-bool TRAP::INTERNAL::WindowingAPI::PollPOSIX(pollfd* const fds, const nfds_t count, double* const timeout)
+bool TRAP::INTERNAL::WindowingAPI::PollPOSIX(pollfd* const fds, const nfds_t count, f64* const timeout)
 {
 	while(true)
 	{
 		if(timeout != nullptr)
 		{
-			const uint64_t base = static_cast<uint64_t>(TRAP::Application::GetTime());
+			const u64 base = static_cast<u64>(TRAP::Application::GetTime());
 
 #if defined(__linux__) || defined(__FreeBDS__) || defined(__OpenBSD__) || defined(__CYGWIN__)
 			const time_t seconds = static_cast<time_t>(*timeout);
-			const int64_t nanoseconds = static_cast<int64_t>((*timeout - static_cast<double>(seconds)) * 1e9);
+			const i64 nanoseconds = static_cast<i64>((*timeout - static_cast<f64>(seconds)) * 1e9);
 			const timespec ts = {seconds, nanoseconds};
-			const int32_t result = ppoll(fds, count, &ts, nullptr);
+			const i32 result = ppoll(fds, count, &ts, nullptr);
 #elif defined(__NetBSD__)
 			const time_t seconds = static_cast<time_t>(*timeout);
-			const long nanoseconds = static_cast<long>((*timeout - seconds) * 1e9);
+			const i64 nanoseconds = static_cast<i64>((*timeout - seconds) * 1e9);
 			const timespec ts = {seconds, nanoseconds};
-			const int32_t result = pollts(fds, count, &ts, nullptr);
+			const i32 result = pollts(fds, count, &ts, nullptr);
 #else
-			const int milliseconds = static_cast<int>(*timeout * 1e3);
-			const int32_t result = poll(fds, count, milliseconds);
+			const i32 milliseconds = static_cast<i32>(*timeout * 1e3);
+			const i32 result = poll(fds, count, milliseconds);
 #endif
 
-			const int32_t error = errno;
+			const i32 error = errno;
 
-			*timeout -= (TRAP::Application::GetTime() - static_cast<float>(base)) / 60.0;
+			*timeout -= (TRAP::Application::GetTime() - static_cast<f32>(base)) / 60.0;
 
 			if(result > 0)
 				return true;
@@ -989,7 +989,7 @@ bool TRAP::INTERNAL::WindowingAPI::PollPOSIX(pollfd* const fds, const nfds_t cou
 		}
 		else
 		{
-			const int result = poll(fds, count, -1);
+			const i32 result = poll(fds, count, -1);
 			if(result > 0)
 				return true;
 			if(result == -1 && errno != EINTR && errno != EAGAIN)

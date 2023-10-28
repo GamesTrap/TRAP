@@ -71,47 +71,47 @@ namespace
 
 TEST_CASE("TRAP::Math::InverseSqrt()", "[math][generic][inversesqrt]")
 {
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunInverseSqrtRunTimeTests<double>();
-        RunInverseSqrtCompileTimeTests<double>();
-        RunInverseSqrtEdgeTests<double>();
+        RunInverseSqrtRunTimeTests<f64>();
+        RunInverseSqrtCompileTimeTests<f64>();
+        RunInverseSqrtEdgeTests<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunInverseSqrtRunTimeTests<float>();
-        RunInverseSqrtCompileTimeTests<float>();
-        RunInverseSqrtEdgeTests<float>();
+        RunInverseSqrtRunTimeTests<f32>();
+        RunInverseSqrtCompileTimeTests<f32>();
+        RunInverseSqrtEdgeTests<f32>();
     }
 
-    SECTION("Vec2 - double")
+    SECTION("Vec2 - f64")
     {
         RunInverseSqrtVecRunTimeTests<TRAP::Math::Vec2d>();
         RunInverseSqrtVecCompileTimeTests<TRAP::Math::Vec2d>();
     }
-    SECTION("Vec2 - float")
+    SECTION("Vec2 - f32")
     {
         RunInverseSqrtVecRunTimeTests<TRAP::Math::Vec2f>();
         RunInverseSqrtVecCompileTimeTests<TRAP::Math::Vec2f>();
     }
 
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunInverseSqrtVecRunTimeTests<TRAP::Math::Vec3d>();
         RunInverseSqrtVecCompileTimeTests<TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunInverseSqrtVecRunTimeTests<TRAP::Math::Vec3f>();
         RunInverseSqrtVecCompileTimeTests<TRAP::Math::Vec3f>();
     }
 
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunInverseSqrtVecRunTimeTests<TRAP::Math::Vec4d>();
         RunInverseSqrtVecCompileTimeTests<TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunInverseSqrtVecRunTimeTests<TRAP::Math::Vec4f>();
         RunInverseSqrtVecCompileTimeTests<TRAP::Math::Vec4f>();

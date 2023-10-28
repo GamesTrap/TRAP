@@ -20,10 +20,10 @@ namespace
             constexpr T a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
             static_assert(TRAP::Math::Equal(a, T(90.0f), T(0.0000000000001f)));
         }
-        if constexpr(std::same_as<T, float>)
+        if constexpr(std::same_as<T, f32>)
         {
             constexpr TRAP::Math::tQuat<T> q = TRAP::Math::AngleAxis(TRAP::Math::TwoPI<T>() - T(1.0f), TRAP::Math::tVec3<T>(1.0f, 0.0f, 0.0f));
-            constexpr float a = TRAP::Math::Angle(q);
+            constexpr f32 a = TRAP::Math::Angle(q);
             static_assert(TRAP::Math::Equal(a, 5.28f, 0.01f));
         }
 
@@ -67,7 +67,7 @@ namespace
             const T a = TRAP::Math::Degrees(TRAP::Math::Angle(q));
             REQUIRE(TRAP::Math::Equal(a, T(90.0f), T(0.0000000000001f)));
         }
-        if constexpr(std::same_as<T, float>)
+        if constexpr(std::same_as<T, f32>)
         {
             const TRAP::Math::tQuat<T> q = TRAP::Math::AngleAxis(TRAP::Math::TwoPI<T>() - T(1.0f), TRAP::Math::tVec3<T>(1.0f, 0.0f, 0.0f));
             const T a = TRAP::Math::Angle(q);
@@ -140,16 +140,16 @@ namespace
 
 TEST_CASE("TRAP::Math::Angle()", "[math][generic][angle]")
 {
-    SECTION("Quat - double")
+    SECTION("Quat - f64")
     {
-        RunAngleRunTimeTests<double>();
-        RunAngleCompileTimeTests<double>();
-        RunAngleEdgeTests<double>();
+        RunAngleRunTimeTests<f64>();
+        RunAngleCompileTimeTests<f64>();
+        RunAngleEdgeTests<f64>();
     }
-    SECTION("Quat - float")
+    SECTION("Quat - f32")
     {
-        RunAngleRunTimeTests<float>();
-        RunAngleCompileTimeTests<float>();
-        RunAngleEdgeTests<float>();
+        RunAngleRunTimeTests<f32>();
+        RunAngleCompileTimeTests<f32>();
+        RunAngleEdgeTests<f32>();
     }
 }

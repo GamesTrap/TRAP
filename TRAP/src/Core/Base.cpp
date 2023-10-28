@@ -2,7 +2,7 @@
 #include "Base.h"
 
 #ifdef TRACY_ENABLE
-[[nodiscard]] void* operator new(const std::size_t count)
+[[nodiscard]] void* operator new(const usize count)
 {
     auto ptr = malloc(count);
 
@@ -15,7 +15,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] void* operator new[](const std::size_t count)
+[[nodiscard]] void* operator new[](const usize count)
 {
     auto ptr = malloc(count);
 
@@ -44,7 +44,7 @@ void operator delete[](void* ptr) noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void operator delete(void* ptr, [[maybe_unused]] const std::size_t count) noexcept
+void operator delete(void* ptr, [[maybe_unused]] const usize count) noexcept
 {
     TracyFreeS(ptr, 10);
     free(ptr);
@@ -52,7 +52,7 @@ void operator delete(void* ptr, [[maybe_unused]] const std::size_t count) noexce
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void operator delete[](void* ptr, [[maybe_unused]] const std::size_t count) noexcept
+void operator delete[](void* ptr, [[maybe_unused]] const usize count) noexcept
 {
     TracyFreeS(ptr, 10);
     free(ptr);

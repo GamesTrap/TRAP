@@ -45,7 +45,7 @@ void FTPTests::FTP()
 		return;
 
 	//Main menu
-	int32_t choice = 0;
+	i32 choice = 0;
 	do
 	{
 		//Main FTP menu

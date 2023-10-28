@@ -294,25 +294,25 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 	if (window == nullptr)
 		window = TRAP::Application::GetWindow();
 
-	const float renderScale = s_perViewportDataMap.at(window)->RenderScale;
+	const f32 renderScale = s_perViewportDataMap.at(window)->RenderScale;
 
 	if(renderScale == 1.0f)
 		return window->GetFrameBufferSize();
 
 	const Math::Vec2 frameBufferSize
 	{
-		NumericCast<float>(window->GetFrameBufferSize().x()),
-		NumericCast<float>(window->GetFrameBufferSize().y())
+		NumericCast<f32>(window->GetFrameBufferSize().x()),
+		NumericCast<f32>(window->GetFrameBufferSize().y())
 	};
-	const float aspectRatio = frameBufferSize.x() / frameBufferSize.y();
+	const f32 aspectRatio = frameBufferSize.x() / frameBufferSize.y();
 
 	Math::Vec2ui finalRes = static_cast<Math::Vec2ui>(frameBufferSize * renderScale);
 
 	//Make sure the resolution is an integer scale of the framebuffer size.
 	//This is done to avoid scaling artifacts (like blurriness).
-	while((NumericCast<float>(finalRes.x()) / NumericCast<float>(finalRes.y())) != aspectRatio)
+	while((NumericCast<f32>(finalRes.x()) / NumericCast<f32>(finalRes.y())) != aspectRatio)
 	{
-		if((NumericCast<float>(finalRes.x()) / NumericCast<float>(finalRes.y())) <= aspectRatio)
+		if((NumericCast<f32>(finalRes.x()) / NumericCast<f32>(finalRes.y())) <= aspectRatio)
 			++finalRes.x();
 		else
 			++finalRes.y();
@@ -325,25 +325,25 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	const float renderScale = s_perViewportData->RenderScale;
+	const f32 renderScale = s_perViewportData->RenderScale;
 
 	if(renderScale == 1.0f)
 		return {s_perViewportData->NewWidth, s_perViewportData->NewHeight};
 
 	const Math::Vec2 frameBufferSize
 	{
-		NumericCast<float>(s_perViewportData->NewWidth),
-		NumericCast<float>(s_perViewportData->NewHeight),
+		NumericCast<f32>(s_perViewportData->NewWidth),
+		NumericCast<f32>(s_perViewportData->NewHeight),
 	};
-	const float aspectRatio = frameBufferSize.x() / frameBufferSize.y();
+	const f32 aspectRatio = frameBufferSize.x() / frameBufferSize.y();
 
 	Math::Vec2ui finalRes = static_cast<Math::Vec2ui>(frameBufferSize * renderScale);
 
 	//Make sure the resolution is an integer scale of the framebuffer size.
 	//This is done to avoid scaling artifacts (like blurriness).
-	while((NumericCast<float>(finalRes.x()) / NumericCast<float>(finalRes.y())) != aspectRatio)
+	while((NumericCast<f32>(finalRes.x()) / NumericCast<f32>(finalRes.y())) != aspectRatio)
 	{
-		if((NumericCast<float>(finalRes.x()) / NumericCast<float>(finalRes.y())) <= aspectRatio)
+		if((NumericCast<f32>(finalRes.x()) / NumericCast<f32>(finalRes.y())) <= aspectRatio)
 			++finalRes.x();
 		else
 			++finalRes.y();
@@ -374,8 +374,8 @@ void TRAP::Graphics::RendererAPI::StartRenderPass(const Window* window)
 		renderTarget = viewportData->SwapChain->GetRenderTargets()[viewportData->CurrentSwapChainImageIndex];
 
 	GetRenderer()->BindRenderTarget(renderTarget, nullptr, nullptr,
-									nullptr, nullptr, std::numeric_limits<uint32_t>::max(),
-									std::numeric_limits<uint32_t>::max(), window);
+									nullptr, nullptr, std::numeric_limits<u32>::max(),
+									std::numeric_limits<u32>::max(), window);
 }
 #else
 void TRAP::Graphics::RendererAPI::StartRenderPass()
@@ -391,8 +391,8 @@ void TRAP::Graphics::RendererAPI::StartRenderPass()
 		renderTarget = s_perViewportData->RenderTargets[s_perViewportData->ImageIndex];
 
 	GetRenderer()->BindRenderTarget(renderTarget, nullptr, nullptr,
-	                                nullptr, nullptr, std::numeric_limits<uint32_t>::max(),
-									std::numeric_limits<uint32_t>::max());
+	                                nullptr, nullptr, std::numeric_limits<u32>::max(),
+									std::numeric_limits<u32>::max());
 }
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -407,7 +407,7 @@ void TRAP::Graphics::RendererAPI::StopRenderPass(const Window* window)
 		window = TRAP::Application::GetWindow();
 
 	GetRenderer()->BindRenderTarget(nullptr, nullptr, nullptr, nullptr, nullptr,
-	                                std::numeric_limits<uint32_t>::max(), std::numeric_limits<uint32_t>::max(),
+	                                std::numeric_limits<u32>::max(), std::numeric_limits<u32>::max(),
 									window);
 }
 #else
@@ -416,7 +416,7 @@ void TRAP::Graphics::RendererAPI::StopRenderPass()
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	GetRenderer()->BindRenderTarget(nullptr, nullptr, nullptr, nullptr, nullptr,
-	                                std::numeric_limits<uint32_t>::max(), std::numeric_limits<uint32_t>::max());
+	                                std::numeric_limits<u32>::max(), std::numeric_limits<u32>::max());
 }
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -545,9 +545,9 @@ void TRAP::Graphics::RendererAPI::SetAnisotropyLevel(const SampleCount anisotrop
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(GPUSettings.MaxAnisotropy >= static_cast<float>(anisotropyLevel), "RendererAPI::SetAnisotropyLevel(): Anisotropy level is higher than max supported by GPU");
+	TRAP_ASSERT(GPUSettings.MaxAnisotropy >= static_cast<f32>(anisotropyLevel), "RendererAPI::SetAnisotropyLevel(): Anisotropy level is higher than max supported by GPU");
 
-	s_Anisotropy = static_cast<SampleCount>(TRAP::Math::Clamp(static_cast<float>(anisotropyLevel), 1.0f, GPUSettings.MaxAnisotropy));
+	s_Anisotropy = static_cast<SampleCount>(TRAP::Math::Clamp(static_cast<f32>(anisotropyLevel), 1.0f, GPUSettings.MaxAnisotropy));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -567,7 +567,7 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-[[nodiscard]] float TRAP::Graphics::RendererAPI::GetGPUGraphicsFrameTime(const Window* window)
+[[nodiscard]] f32 TRAP::Graphics::RendererAPI::GetGPUGraphicsFrameTime(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -577,7 +577,7 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 	return s_perViewportDataMap.at(window)->GraphicsFrameTime;
 }
 #else
-[[nodiscard]] float TRAP::Graphics::RendererAPI::GetGPUGraphicsFrameTime()
+[[nodiscard]] f32 TRAP::Graphics::RendererAPI::GetGPUGraphicsFrameTime()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -588,7 +588,7 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-[[nodiscard]] float TRAP::Graphics::RendererAPI::GetGPUComputeFrameTime(const Window* window)
+[[nodiscard]] f32 TRAP::Graphics::RendererAPI::GetGPUComputeFrameTime(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -598,7 +598,7 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 	return s_perViewportDataMap.at(window)->ComputeFrameTime;
 }
 #else
-[[nodiscard]] float TRAP::Graphics::RendererAPI::GetGPUComputeFrameTime()
+[[nodiscard]] f32 TRAP::Graphics::RendererAPI::GetGPUComputeFrameTime()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -679,7 +679,7 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 		//Create Instance
 		VkInstance instance = VK_NULL_HANDLE;
 		std::vector<const char*> extensions(instanceExtensions.size());
-		for (uint32_t i = 0; i < instanceExtensions.size(); i++)
+		for (u32 i = 0; i < instanceExtensions.size(); i++)
 			extensions[i] = instanceExtensions[i].c_str();
 		const VkApplicationInfo appInfo = API::VulkanInits::ApplicationInfo("Vulkan Capability Tester");
 		const VkInstanceCreateInfo instanceCreateInfo = API::VulkanInits::InstanceCreateInfo(appInfo, {}, extensions);
@@ -737,7 +737,7 @@ TRAP::Graphics::RendererAPI::PerViewportData::~PerViewportData()
 	RenderCompleteSemaphores = {};
 	RenderCompleteFences = {};
 
-	for(uint32_t i = 0u; i < ImageCount; ++i)
+	for(u32 i = 0u; i < ImageCount; ++i)
 		GraphicCommandPools[i]->FreeCommandBuffer(GraphicCommandBuffers[i]);
 	GraphicCommandBuffers = {};
 	GraphicCommandPools = {};
@@ -748,7 +748,7 @@ TRAP::Graphics::RendererAPI::PerViewportData::~PerViewportData()
 	ComputeCompleteSemaphores = {};
 	ComputeCompleteFences = {};
 
-	for(uint32_t i = 0u; i < ImageCount; ++i)
+	for(u32 i = 0u; i < ImageCount; ++i)
 		ComputeCommandPools[i]->FreeCommandBuffer(ComputeCommandBuffers[i]);
 	ComputeCommandBuffers = {};
 	ComputeCommandPools = {};
@@ -760,7 +760,7 @@ TRAP::Graphics::RendererAPI::PerViewportData::~PerViewportData()
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef TRAP_HEADLESS_MODE
-[[nodiscard]] uint32_t TRAP::Graphics::RendererAPI::GetCurrentImageIndex(const TRAP::Window* const window)
+[[nodiscard]] u32 TRAP::Graphics::RendererAPI::GetCurrentImageIndex(const TRAP::Window* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -769,7 +769,7 @@ TRAP::Graphics::RendererAPI::PerViewportData::~PerViewportData()
 	return s_perViewportDataMap.at(window)->ImageIndex;
 }
 #else
-[[nodiscard]] uint32_t TRAP::Graphics::RendererAPI::GetCurrentImageIndex()
+[[nodiscard]] u32 TRAP::Graphics::RendererAPI::GetCurrentImageIndex()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

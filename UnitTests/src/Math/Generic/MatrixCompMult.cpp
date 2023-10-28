@@ -74,23 +74,23 @@ namespace
 
 TEST_CASE("TRAP::Math::MatrixCompMult()", "[math][generic][matrixcompmult]")
 {
-    SECTION("Mat3 - double")
+    SECTION("Mat3 - f64")
     {
         RunCompileTimeMatrixCompMultTests<TRAP::Math::Mat3d>();
         RunMatrixCompMultEdgeTests<TRAP::Math::Mat3d>();
     }
-    SECTION("Mat3 - float")
+    SECTION("Mat3 - f32")
     {
         RunCompileTimeMatrixCompMultTests<TRAP::Math::Mat3f>();
         RunMatrixCompMultEdgeTests<TRAP::Math::Mat3f>();
     }
 
-    SECTION("Mat4 - double")
+    SECTION("Mat4 - f64")
     {
         RunCompileTimeMatrixCompMultTests<TRAP::Math::Mat4d>();
         RunMatrixCompMultEdgeTests<TRAP::Math::Mat4d>();
     }
-    SECTION("Mat4 - float")
+    SECTION("Mat4 - f32")
     {
         RunCompileTimeMatrixCompMultTests<TRAP::Math::Mat4f>();
         RunMatrixCompMultEdgeTests<TRAP::Math::Mat4f>();

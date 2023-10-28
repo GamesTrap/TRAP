@@ -202,8 +202,8 @@ namespace TRAP::Graphics::API
 	/// <param name="planesCount">Number of planes.</param>
 	/// <param name="memReq">Output Vulkan memory requirement.</param>
 	/// <param name="planesOffsets">Output plane offsets.</param>
-	void UtilGetPlanarVkImageMemoryRequirement(VkDevice device, VkImage image, uint32_t planesCount,
-	                                           VkMemoryRequirements& memReq, std::vector<uint64_t>& planesOffsets);
+	void UtilGetPlanarVkImageMemoryRequirement(VkDevice device, VkImage image, u32 planesCount,
+	                                           VkMemoryRequirements& memReq, std::vector<u64>& planesOffsets);
 	/// <summary>
 	/// Utility to create the VkFragmentShadingRateCombinerOpKHR from
 	/// a RendererAPI::ShadingRateCombiner.
@@ -242,7 +242,7 @@ namespace TRAP::Graphics::API
 	/// <param name="handle">Vulkan object.</param>
 	/// <param name="type">Vulkan object type.</param>
 	/// <param name="name">Name to set.</param>
-	void VkSetObjectName([[maybe_unused]] VkDevice device, [[maybe_unused]] uint64_t handle,
+	void VkSetObjectName([[maybe_unused]] VkDevice device, [[maybe_unused]] u64 handle,
 				         [[maybe_unused]] VkObjectType type, [[maybe_unused]] std::string_view name);
 #else
 	/// <summary>
@@ -252,7 +252,7 @@ namespace TRAP::Graphics::API
 	/// <param name="handle">Vulkan object.</param>
 	/// <param name="type">Vulkan object type.</param>
 	/// <param name="name">Name to set.</param>
-	void VkSetObjectName([[maybe_unused]] VkDevice device, [[maybe_unused]] uint64_t handle,
+	void VkSetObjectName([[maybe_unused]] VkDevice device, [[maybe_unused]] u64 handle,
 	                     [[maybe_unused]] VkDebugReportObjectTypeEXT type, [[maybe_unused]] std::string_view name);
 #endif
 

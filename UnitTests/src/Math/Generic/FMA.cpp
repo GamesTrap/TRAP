@@ -70,14 +70,14 @@ namespace
 
 TEST_CASE("TRAP::Math::FMA()", "[math][generic][fma]")
 {
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunFMATest<double>();
-        RunFMAEdgeTest<double>();
+        RunFMATest<f64>();
+        RunFMAEdgeTest<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunFMATest<float>();
-        RunFMAEdgeTest<float>();
+        RunFMATest<f32>();
+        RunFMAEdgeTest<f32>();
     }
 }

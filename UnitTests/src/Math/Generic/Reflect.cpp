@@ -91,34 +91,34 @@ namespace
 
 TEST_CASE("TRAP::Math::Reflect()", "[math][generic][reflect]")
 {
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunCompileTimeReflectVecTests<TRAP::Math::Vec4d>();
         RunReflectVecEdgeTests<TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunCompileTimeReflectVecTests<TRAP::Math::Vec4f>();
         RunReflectVecEdgeTests<TRAP::Math::Vec4f>();
     }
 
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunCompileTimeReflectVecTests<TRAP::Math::Vec3d>();
         RunReflectVecEdgeTests<TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunCompileTimeReflectVecTests<TRAP::Math::Vec3f>();
         RunReflectVecEdgeTests<TRAP::Math::Vec3f>();
     }
 
-    SECTION("Vec2 - double")
+    SECTION("Vec2 - f64")
     {
         RunCompileTimeReflectVecTests<TRAP::Math::Vec2d>();
         RunReflectVecEdgeTests<TRAP::Math::Vec2d>();
     }
-    SECTION("Vec2 - float")
+    SECTION("Vec2 - f32")
     {
         RunCompileTimeReflectVecTests<TRAP::Math::Vec2f>();
         RunReflectVecEdgeTests<TRAP::Math::Vec2f>();

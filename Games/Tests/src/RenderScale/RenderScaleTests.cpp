@@ -14,7 +14,7 @@ void RenderScaleTests::OnImGuiRender()
 	ImGui::Text("Press ESC to close");
     ImGui::Separator();
 
-    float renderScale = TRAP::Graphics::RenderCommand::GetRenderScale();
+    f32 renderScale = TRAP::Graphics::RenderCommand::GetRenderScale();
     if(ImGui::SliderFloat("Render Scale", &renderScale, 0.5f, 2.0f, "%.2f", ImGuiSliderFlags_NoInput))
         TRAP::Graphics::RenderCommand::SetRenderScale(renderScale);
 

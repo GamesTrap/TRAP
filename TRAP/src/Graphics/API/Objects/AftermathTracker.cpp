@@ -23,7 +23,7 @@ namespace
 //-------------------------------------------------------------------------------------------------------------------//
 
 void OnGPUCrashDump([[maybe_unused]] const void* gpuCrashDump,
-                    [[maybe_unused]] const uint32_t gpuCrashDumpSize,
+                    [[maybe_unused]] const u32 gpuCrashDumpSize,
                     [[maybe_unused]] void* userData)
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
@@ -48,8 +48,8 @@ void OnGPUCrashDump([[maybe_unused]] const void* gpuCrashDump,
     std::lock_guard lock(AftermathMutex);
     LockMark(AftermathMutex);
 
-    const std::vector<uint8_t> buffer(static_cast<const uint8_t*>(gpuCrashDump),
-                                      static_cast<const uint8_t*>(gpuCrashDump) + gpuCrashDumpSize);
+    const std::vector<u8> buffer(static_cast<const u8*>(gpuCrashDump),
+                                      static_cast<const u8*>(gpuCrashDump) + gpuCrashDumpSize);
     if(!TRAP::FileSystem::Exists(folderPath))
         TRAP::FileSystem::CreateFolder(folderPath);
     TRAP::FileSystem::WriteFile(filePath, buffer);

@@ -50,7 +50,7 @@ namespace TRAP::Graphics::API
 
 	namespace ShaderReflection
 	{
-		enum class TextureDimension : uint32_t;
+		enum class TextureDimension : u32;
 	}
 }
 
@@ -68,24 +68,24 @@ namespace TRAP::Graphics
 	class RendererAPI
 	{
 	public:
-		enum class CompareMode : uint32_t;
-		enum class StencilOp : uint32_t;
-		enum class CullMode : uint32_t;
-		enum class FillMode : uint32_t;
+		enum class CompareMode : u32;
+		enum class StencilOp : u32;
+		enum class CullMode : u32;
+		enum class FillMode : u32;
 		enum class PrimitiveTopology;
-		enum class FrontFace : uint32_t;
-		enum class BlendMode : uint32_t;
-		enum class BlendConstant : uint32_t;
+		enum class FrontFace : u32;
+		enum class BlendMode : u32;
+		enum class BlendConstant : u32;
 		enum class IndexType;
-		enum class ClearBufferType : uint32_t;
-		enum class ShadingRate : uint32_t;
-		enum class ShadingRateCombiner : uint32_t;
-		enum class ResourceState : uint32_t;
+		enum class ClearBufferType : u32;
+		enum class ShadingRate : u32;
+		enum class ShadingRateCombiner : u32;
+		enum class ResourceState : u32;
 		enum class AntiAliasing;
 		enum class SampleCount;
-		enum class QueueType : uint32_t;
+		enum class QueueType : u32;
 		enum class GPUVendor;
-		enum class LatencyMode : uint32_t;
+		enum class LatencyMode : u32;
 		struct Color;
 		struct LoadActionsDesc;
 		struct BufferBarrier;
@@ -218,7 +218,7 @@ namespace TRAP::Graphics
 		/// The elements are automatically divided by the number of threads in the work group and rounded up.
 		/// </param>
 		/// <param name="window">Window to Dispatch.</param>
-		virtual void Dispatch(std::array<uint32_t, 3> workGroupElements, const Window* window) const = 0;
+		virtual void Dispatch(std::array<u32, 3> workGroupElements, const Window* window) const = 0;
 #else
 		/// <summary>
 		/// Dispatch.
@@ -227,7 +227,7 @@ namespace TRAP::Graphics
 		/// Number of elements to dispatch for each dimension.
 		/// The elements are automatically divided by the number of threads in the work group and rounded up.
 		/// </param>
-		virtual void Dispatch(std::array<uint32_t, 3> workGroupElements) const = 0;
+		virtual void Dispatch(std::array<u32, 3> workGroupElements) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -253,7 +253,7 @@ namespace TRAP::Graphics
 		///       This function is only used internally for NVIDIA-Reflex.
 		/// </summary>
 		/// <param name="limit">FPS target to limit to.</param>
-		virtual void SetReflexFPSLimit(uint32_t limit) = 0;
+		virtual void SetReflexFPSLimit(u32 limit) = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 		//RenderTarget Stuff
@@ -265,14 +265,14 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="scale">Render scale value (valid range: 0.5f-1.0f inclusive).</param>
 		/// <param name="window">Window to set render scale for.</param>
-		virtual void SetRenderScale(float scale, const Window* window) const = 0;
+		virtual void SetRenderScale(f32 scale, const Window* window) const = 0;
 #else
 		/// <summary>
 		/// Set the render scale.
 		/// Note: This functon takes effect on the next frame.
 		/// </summary>
 		/// <param name="scale">Render scale value (valid range: 0.5f-1.0f inclusive).</param>
-		virtual void SetRenderScale(float scale) const = 0;
+		virtual void SetRenderScale(f32 scale) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -280,13 +280,13 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="window">Window to retrieve render scale from.</param>
 		/// <returns>Render scale (between 0.5f and 2.0f inclusive).</returns>
-		[[nodiscard]] virtual float GetRenderScale(const Window* window) const = 0;
+		[[nodiscard]] virtual f32 GetRenderScale(const Window* window) const = 0;
 #else
 		/// <summary>
 		/// Retrieve the used render scale value.
 		/// </summary>
 		/// <returns>Render scale (between 0.5f and 2.0f inclusive).</returns>
-		[[nodiscard]] virtual float GetRenderScale() const = 0;
+		[[nodiscard]] virtual f32 GetRenderScale() const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -310,13 +310,13 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="depth">New clear depth value. Must be between 0.0f and 1.0f</param>
 		/// <param name="window">Window to set clear depth value for.</param>
-		virtual void SetClearDepth(float depth /*= 0.0f*/, const Window* window) const = 0;
+		virtual void SetClearDepth(f32 depth /*= 0.0f*/, const Window* window) const = 0;
 #else
 		/// <summary>
 		/// Set the clear depth value.
 		/// </summary>
 		/// <param name="depth">New clear depth value. Must be between 0.0f and 1.0f</param>
-		virtual void SetClearDepth(float depth /*= 0.0f*/) const = 0;
+		virtual void SetClearDepth(f32 depth /*= 0.0f*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -324,13 +324,13 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="stencil">New clear stencil value.</param>
 		/// <param name="window">Window to set clear stencil value for.</param>
-		virtual void SetClearStencil(uint32_t stencil /*= 0*/, const Window* window) const = 0;
+		virtual void SetClearStencil(u32 stencil /*= 0*/, const Window* window) const = 0;
 #else
 		/// <summary>
 		/// Set the clear stencil value.
 		/// </summary>
 		/// <param name="stencil">New clear stencil value.</param>
-		virtual void SetClearStencil(uint32_t stencil /*= 0*/) const = 0;
+		virtual void SetClearStencil(u32 stencil /*= 0*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifdef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -338,7 +338,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="width">New width.</param>
 		/// <param name="height">New height.</param>
-		virtual void SetResolution(uint32_t width, uint32_t height) const = 0;
+		virtual void SetResolution(u32 width, u32 height) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 		//Pipeline Stuff
@@ -407,13 +407,13 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="depthBias">Depth bias.</param>
 		/// <param name="window">Window to set the depth bias for.</param>
-		virtual void SetDepthBias(int32_t depthBias, const Window* window) const = 0;
+		virtual void SetDepthBias(i32 depthBias, const Window* window) const = 0;
 #else
 		/// <summary>
 		/// Set the depth bias (scalar factor to add to each fragments depth value).
 		/// </summary>
 		/// <param name="depthBias">Depth bias.</param>
-		virtual void SetDepthBias(int32_t depthBias) const = 0;
+		virtual void SetDepthBias(i32 depthBias) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -421,13 +421,13 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="factor">Depth bias slope factor.</param>
 		/// <param name="window">Window to set the depth bias slope factor for.</param>
-		virtual void SetDepthBiasSlopeFactor(float factor, const Window* window) const = 0;
+		virtual void SetDepthBiasSlopeFactor(f32 factor, const Window* window) const = 0;
 #else
 		/// <summary>
 		/// Set the depth bias slope factor (scalar factor applied to fragment's slope in depth bias calculation).
 		/// </summary>
 		/// <param name="factor">Depth bias slope factor.</param>
-		virtual void SetDepthBiasSlopeFactor(float factor) const = 0;
+		virtual void SetDepthBiasSlopeFactor(f32 factor) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -498,14 +498,14 @@ namespace TRAP::Graphics
 		/// <param name="read">Select the bits of the stencil values to test.</param>
 		/// <param name="write">Select the bits of the stencil values updated by the stencil test.</param>
 		/// <param name="window">Window to set stencil mask for.</param>
-		virtual void SetStencilMask(uint8_t read, uint8_t write, const Window* window) const = 0;
+		virtual void SetStencilMask(u8 read, u8 write, const Window* window) const = 0;
 #else
 		/// <summary>
 		/// Set the stencil mask.
 		/// </summary>
 		/// <param name="read">Select the bits of the stencil values to test.</param>
 		/// <param name="write">Select the bits of the stencil values updated by the stencil test.</param>
-		virtual void SetStencilMask(uint8_t read, uint8_t write) const = 0;
+		virtual void SetStencilMask(u8 read, u8 write) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -673,8 +673,8 @@ namespace TRAP::Graphics
 		/// <param name="minDepth">New min depth value. Default: 0.0f.</param>
 		/// <param name="maxDepth">New max depth value. Default: 1.0f.</param>
 		/// <param name="window">Window to set viewport for.</param>
-		virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height, float minDepth /*= 0.0f*/,
-		                         float maxDepth /*= 1.0f*/, const Window* window) const = 0;
+		virtual void SetViewport(u32 x, u32 y, u32 width, u32 height, f32 minDepth /*= 0.0f*/,
+		                         f32 maxDepth /*= 1.0f*/, const Window* window) const = 0;
 #else
 		/// <summary>
 		/// Set viewport size.
@@ -685,8 +685,8 @@ namespace TRAP::Graphics
 		/// <param name="height">New viewport height.</param>
 		/// <param name="minDepth">New min depth value. Default: 0.0f.</param>
 		/// <param name="maxDepth">New max depth value. Default: 1.0f.</param>
-		virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height, float minDepth /*= 0.0f*/,
-		                         float maxDepth /*= 1.0f*/) const = 0;
+		virtual void SetViewport(u32 x, u32 y, u32 width, u32 height, f32 minDepth /*= 0.0f*/,
+		                         f32 maxDepth /*= 1.0f*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -697,7 +697,7 @@ namespace TRAP::Graphics
 		/// <param name="width">New scissor width.</param>
 		/// <param name="height">New scissor height.</param>
 		/// <param name="window">Window to set scissor size for.</param>
-		virtual void SetScissor(uint32_t x, uint32_t y, uint32_t width, uint32_t height,
+		virtual void SetScissor(u32 x, u32 y, u32 width, u32 height,
 		                        const Window* window) const = 0;
 #else
 		/// <summary>
@@ -707,7 +707,7 @@ namespace TRAP::Graphics
 		/// <param name="y">Upper left corner.</param>
 		/// <param name="width">New scissor width.</param>
 		/// <param name="height">New scissor height.</param>
-		virtual void SetScissor(uint32_t x, uint32_t y, uint32_t width, uint32_t height) const = 0;
+		virtual void SetScissor(u32 x, u32 y, u32 width, u32 height) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -717,14 +717,14 @@ namespace TRAP::Graphics
 		/// <param name="vertexCount">Number of vertices to draw.</param>
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
 		/// <param name="window">Window to draw for.</param>
-		virtual void Draw(uint32_t vertexCount, uint32_t firstVertex /*= 0*/, const Window* window) const = 0;
+		virtual void Draw(u32 vertexCount, u32 firstVertex /*= 0*/, const Window* window) const = 0;
 #else
 		/// <summary>
 		/// Draw non-indexed, non-instanced geometry.
 		/// </summary>
 		/// <param name="vertexCount">Number of vertices to draw.</param>
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
-		virtual void Draw(uint32_t vertexCount, uint32_t firstVertex /*= 0*/) const = 0;
+		virtual void Draw(u32 vertexCount, u32 firstVertex /*= 0*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -734,7 +734,7 @@ namespace TRAP::Graphics
 		/// <param name="firstIndex">Index of the first indice to draw. Default: 0.</param>
 		/// <param name="vertexOffset">Index of the first vertex to draw. Default: 0.</param>
 		/// <param name="window">Window to draw for.</param>
-		virtual void DrawIndexed(uint32_t indexCount, uint32_t firstIndex /*= 0*/, int32_t vertexOffset /*= 0*/,
+		virtual void DrawIndexed(u32 indexCount, u32 firstIndex /*= 0*/, i32 vertexOffset /*= 0*/,
 		                         const Window* window) const = 0;
 #else
 		/// <summary>
@@ -743,7 +743,7 @@ namespace TRAP::Graphics
 		/// <param name="indexCount">Number of indices to draw.</param>
 		/// <param name="firstIndex">Index of the first indice to draw. Default: 0.</param>
 		/// <param name="vertexOffset">Index of the first vertex to draw. Default: 0.</param>
-		virtual void DrawIndexed(uint32_t indexCount, uint32_t firstIndex /*= 0*/, int32_t vertexOffset /*= 0*/) const = 0;
+		virtual void DrawIndexed(u32 indexCount, u32 firstIndex /*= 0*/, i32 vertexOffset /*= 0*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -754,8 +754,8 @@ namespace TRAP::Graphics
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
 		/// <param name="firstInstance">Index of the first instance to draw. Default: 0.</param>
 		/// <param name="window">Window to draw for.</param>
-		virtual void DrawInstanced(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex /*= 0*/,
-		                           uint32_t firstInstance /*= 0*/, const Window* window) const = 0;
+		virtual void DrawInstanced(u32 vertexCount, u32 instanceCount, u32 firstVertex /*= 0*/,
+		                           u32 firstInstance /*= 0*/, const Window* window) const = 0;
 #else
 		/// <summary>
 		/// Draw non-indexed, instanced geometry.
@@ -764,8 +764,8 @@ namespace TRAP::Graphics
 		/// <param name="instanceCount">Number of instances to draw.</param>
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
 		/// <param name="firstInstance">Index of the first instance to draw. Default: 0.</param>
-		virtual void DrawInstanced(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex /*= 0*/,
-		                           uint32_t firstInstance /*= 0*/) const = 0;
+		virtual void DrawInstanced(u32 vertexCount, u32 instanceCount, u32 firstVertex /*= 0*/,
+		                           u32 firstInstance /*= 0*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -777,9 +777,9 @@ namespace TRAP::Graphics
 		/// <param name="firstInstance">Index of the first instance to draw. Default: 0.</param>
 		/// <param name="vertexOffset">Index of the first vertex to draw. Default: 0.</param>
 		/// <param name="window">Window to draw for.</param>
-		virtual void DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount,
-		                                  uint32_t firstIndex /*= 0*/, uint32_t firstInstance /*= 0*/,
-										  int32_t vertexOffset /*= 0*/, const Window* window) const = 0;
+		virtual void DrawIndexedInstanced(u32 indexCount, u32 instanceCount,
+		                                  u32 firstIndex /*= 0*/, u32 firstInstance /*= 0*/,
+										  i32 vertexOffset /*= 0*/, const Window* window) const = 0;
 #else
 		/// <summary>
 		/// Draw indexed, instanced geometry.
@@ -789,9 +789,9 @@ namespace TRAP::Graphics
 		/// <param name="firstIndex">Index of the first indice to draw. Default: 0.</param>
 		/// <param name="firstInstance">Index of the first instance to draw. Default: 0.</param>
 		/// <param name="vertexOffset">Index of the first vertex to draw. Default: 0.</param>
-		virtual void DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount,
-		                                  uint32_t firstIndex /*= 0*/, uint32_t firstInstance /*= 0*/,
-										  int32_t vertexOffset /*= 0*/) const = 0;
+		virtual void DrawIndexedInstanced(u32 indexCount, u32 instanceCount,
+		                                  u32 firstIndex /*= 0*/, u32 firstInstance /*= 0*/,
+										  i32 vertexOffset /*= 0*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -836,7 +836,7 @@ namespace TRAP::Graphics
 		/// <param name="index">Index for which descriptor set to bind.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		/// <param name="window">Window to bind the descriptor set for.</param>
-		virtual void BindDescriptorSet(DescriptorSet& dSet, uint32_t index,
+		virtual void BindDescriptorSet(DescriptorSet& dSet, u32 index,
 		                               QueueType queueType /*= QueueType::Graphics*/,
 									   const Window* window) const = 0;
 #else
@@ -846,7 +846,7 @@ namespace TRAP::Graphics
 		/// <param name="dSet">Descriptor set to bind.</param>
 		/// <param name="index">Index for which descriptor set to bind.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
-		virtual void BindDescriptorSet(DescriptorSet& dSet, uint32_t index,
+		virtual void BindDescriptorSet(DescriptorSet& dSet, u32 index,
 		                               QueueType queueType /*= QueueType::Graphics*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
@@ -861,7 +861,7 @@ namespace TRAP::Graphics
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		/// <param name="window">Window to bind the push constants for.</param>
 		virtual void BindPushConstants(std::string_view name, const void* constantsData,
-							           std::size_t constantsLength, QueueType queueType /*= QueueType::Graphics*/,
+							           usize constantsLength, QueueType queueType /*= QueueType::Graphics*/,
 									   const Window* window) const = 0;
 #else
 		/// <summary>
@@ -874,7 +874,7 @@ namespace TRAP::Graphics
 		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		virtual void BindPushConstants(std::string_view name, const void* constantsData,
-		                               std::size_t constantsLength,
+		                               usize constantsLength,
 		                               QueueType queueType /*= QueueType::Graphics*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
@@ -886,8 +886,8 @@ namespace TRAP::Graphics
 		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		/// <param name="window">Window to bind the push constants for.</param>
-		virtual void BindPushConstantsByIndex(uint32_t paramIndex, const void* constantsData,
-										      std::size_t constantsLength, QueueType queueType /*= QueueType::Graphics*/,
+		virtual void BindPushConstantsByIndex(u32 paramIndex, const void* constantsData,
+										      usize constantsLength, QueueType queueType /*= QueueType::Graphics*/,
 											  const Window* window) const = 0;
 #else
 		/// <summary>
@@ -897,8 +897,8 @@ namespace TRAP::Graphics
 		/// <param name="constantsData">Pointer to the constant buffer data.</param>
 		/// <param name="constantsLength">Length in bytes of the constant buffer data.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
-		virtual void BindPushConstantsByIndex(uint32_t paramIndex, const void* constantsData,
-		                                      std::size_t constantsLength,
+		virtual void BindPushConstantsByIndex(u32 paramIndex, const void* constantsData,
+		                                      usize constantsLength,
 											  QueueType queueType /*= QueueType::Graphics*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
@@ -918,9 +918,9 @@ namespace TRAP::Graphics
 		virtual void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		                              const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
 									  const RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
-									  std::vector<uint32_t>* colorArraySlices /*= nullptr*/,
-									  std::vector<uint32_t>* colorMipSlices /*= nullptr*/,
-									  uint32_t depthArraySlice /*= -1*/, uint32_t depthMipSlice /*= -1*/,
+									  std::vector<u32>* colorArraySlices /*= nullptr*/,
+									  std::vector<u32>* colorMipSlices /*= nullptr*/,
+									  u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/,
 									  const Window* window) const = 0;
 #else
 		/// <summary>
@@ -938,9 +938,9 @@ namespace TRAP::Graphics
 		virtual void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		                              const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
 									  const RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
-									  std::vector<uint32_t>* colorArraySlices /*= nullptr*/,
-									  std::vector<uint32_t>* colorMipSlices /*= nullptr*/,
-									  uint32_t depthArraySlice /*= -1*/, uint32_t depthMipSlice /*= -1*/) const = 0;
+									  std::vector<u32>* colorArraySlices /*= nullptr*/,
+									  std::vector<u32>* colorMipSlices /*= nullptr*/,
+									  u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -959,9 +959,9 @@ namespace TRAP::Graphics
 		virtual void BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
 		                               const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
 									   const RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
-									   std::vector<uint32_t>* colorArraySlices /*= nullptr*/,
-									   std::vector<uint32_t>* colorMipSlices /*= nullptr*/,
-									   uint32_t depthArraySlice /*= -1*/, uint32_t depthMipSlice /*= -1*/,
+									   std::vector<u32>* colorArraySlices /*= nullptr*/,
+									   std::vector<u32>* colorMipSlices /*= nullptr*/,
+									   u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/,
 									   const Window* window) const = 0;
 #else
 		/// <summary>
@@ -979,9 +979,9 @@ namespace TRAP::Graphics
 		virtual void BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
 		                               const TRAP::Ref<Graphics::RenderTarget>& depthStencil /*= nullptr*/,
 									   const RendererAPI::LoadActionsDesc* loadActions /*= nullptr*/,
-									   std::vector<uint32_t>* colorArraySlices /*= nullptr*/,
-									   std::vector<uint32_t>* colorMipSlices /*= nullptr*/,
-									   uint32_t depthArraySlice /*= -1*/, uint32_t depthMipSlice /*= -1*/) const = 0;
+									   std::vector<u32>* colorArraySlices /*= nullptr*/,
+									   std::vector<u32>* colorMipSlices /*= nullptr*/,
+									   u32 depthArraySlice /*= -1*/, u32 depthMipSlice /*= -1*/) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -1101,7 +1101,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="frame">Frame to set marker for. Must be unique for each frame!</param>
 		/// <param name="marker">Enum value of the marker to set.</param>
-		virtual void ReflexMarker(uint32_t frame, uint32_t marker) const = 0;
+		virtual void ReflexMarker(u32 frame, u32 marker) const = 0;
 #ifdef NVIDIA_REFLEX_AVAILABLE
 		/// <summary>
 		/// Retrieve the latency report from NVIDIA-Reflex.
@@ -1266,7 +1266,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="width">Output: Width.</param>
 		/// <param name="height">Output: Height.</param>
-		virtual void GetResolution(uint32_t& width, uint32_t& height) const = 0;
+		virtual void GetResolution(u32& width, u32& height) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -1368,13 +1368,13 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="window">Window to get frame time from.</param>
 		/// <returns>GPU Graphics frame time in milliseconds.</returns>
-		[[nodiscard]] static float GetGPUGraphicsFrameTime(const Window* window);
+		[[nodiscard]] static f32 GetGPUGraphicsFrameTime(const Window* window);
 #else
 		/// <summary>
 		/// Retrieve the GPU side frame time for the graphics queue.
 		/// </summary>
 		/// <returns>GPU Graphics frame time in milliseconds.</returns>
-		[[nodiscard]] static float GetGPUGraphicsFrameTime();
+		[[nodiscard]] static f32 GetGPUGraphicsFrameTime();
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -1382,13 +1382,13 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="window">Window to get frame time from.</param>
 		/// <returns>GPU Compute frame time in milliseconds.</returns>
-		[[nodiscard]] static float GetGPUComputeFrameTime(const Window* window);
+		[[nodiscard]] static f32 GetGPUComputeFrameTime(const Window* window);
 #else
 		/// <summary>
 		/// Retrieve the GPU side frame time for the compute queue.
 		/// </summary>
 		/// <returns>GPU Compute frame time in milliseconds.</returns>
-		[[nodiscard]] static float GetGPUComputeFrameTime();
+		[[nodiscard]] static f32 GetGPUComputeFrameTime();
 #endif /*TRAP_HEADLESS_MODE*/
 
 	//protected:
@@ -1420,7 +1420,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="width">Width for the viewport.</param>
 		/// <param name="height">Height for the viewport.</param>
-		virtual void InitPerViewportData(uint32_t width, uint32_t height) const = 0;
+		virtual void InitPerViewportData(u32 width, u32 height) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -1451,7 +1451,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum bit flag for the different wave operations.
 		/// </summary>
-		enum class WaveOpsSupportFlags : uint32_t
+		enum class WaveOpsSupportFlags : u32
 		{
 			None = 0x0,
 			Basic = BIT(0u),
@@ -1470,7 +1470,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different types of queues.
 		/// </summary>
-		enum class QueueType : uint32_t
+		enum class QueueType : u32
 		{
 			Graphics = 0,
 			Transfer,
@@ -1482,7 +1482,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing queue flags.
 		/// </summary>
-		enum class QueueFlag : uint32_t
+		enum class QueueFlag : u32
 		{
 			None = 0x0,
 			DisableGPUTimeout = BIT(0u), //Disable the GPU timeout for this command queue (DirectX 12)
@@ -1515,7 +1515,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different types of load actions.
 		/// </summary>
-		enum class LoadActionType : uint32_t
+		enum class LoadActionType : u32
 		{
 			DontCare,
 			Load,
@@ -1527,7 +1527,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different types of store actions.
 		/// </summary>
-		enum class StoreActionType : uint32_t
+		enum class StoreActionType : u32
 		{
 			//Store is the most common use case so keep that as default
 			Store,
@@ -1574,7 +1574,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different GPU vendors.
 		/// </summary>
-		enum class GPUVendor : int32_t
+		enum class GPUVendor : i32
 		{
 			Unknown     = -1,
 			AMD         = 0x1002,
@@ -1595,7 +1595,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum bit flags used by texture creation.
 		/// </summary>
-		enum class TextureCreationFlags : uint32_t
+		enum class TextureCreationFlags : u32
 		{
 			//Default flag (Texture will use default allocation strategy decided by the API specific allocator)
 			None = 0x0,
@@ -1632,7 +1632,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the state of a resource.
 		/// </summary>
-		enum class ResourceState : uint32_t
+		enum class ResourceState : u32
 		{
 			Undefined = 0x0,
 			VertexAndConstantBuffer = BIT(0u),
@@ -1658,7 +1658,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the type of a descriptor.
 		/// </summary>
-		enum class DescriptorType : uint32_t
+		enum class DescriptorType : u32
 		{
 			Undefined = 0,
 			Sampler = BIT(0u),
@@ -1730,7 +1730,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing flags for the buffer creation.
 		/// </summary>
-		enum class BufferCreationFlags : uint32_t
+		enum class BufferCreationFlags : u32
 		{
 			//Default flag (Buffer will use aliased memory, buffer will not be CPU accessible until MapBuffer
 			//is called)
@@ -1752,7 +1752,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different types of buffers for clearing.
 		/// </summary>
-		enum class ClearBufferType : uint32_t
+		enum class ClearBufferType : u32
 		{
 			NONE = 0,
 			Color = BIT(0u),
@@ -1768,7 +1768,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different latency modes.
 		/// </summary>
-		enum class LatencyMode : uint32_t
+		enum class LatencyMode : u32
 		{
 			Disabled,
 			Enabled,
@@ -1795,7 +1795,7 @@ namespace TRAP::Graphics
 		/// Enum describing the update frequency of a descriptor.
 		/// Note: The same update frequency order should be used by shaders.
 		/// </summary>
-		enum class DescriptorUpdateFrequency : uint32_t
+		enum class DescriptorUpdateFrequency : u32
 		{
 			Static = 0,
 			Dynamic
@@ -1804,7 +1804,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// The maximum amount of descriptor sets that can be used.
 		/// </summary>
-		inline static constexpr uint32_t MaxDescriptorSets = 4;
+		inline static constexpr u32 MaxDescriptorSets = 4;
 
 		/// <summary>
 		/// Enum describing the different types of filtering used by samplers.
@@ -1838,7 +1838,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different compare modes used by depth/stencil testing and samplers.
 		/// </summary>
-		enum class CompareMode : uint32_t
+		enum class CompareMode : u32
 		{
 			Never,
 			Less,
@@ -1855,7 +1855,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different shader stages making up a shader.
 		/// </summary>
-		enum class ShaderStage : uint32_t
+		enum class ShaderStage : u32
 		{
 			None = 0,
 			Vertex = BIT(0u),
@@ -1866,9 +1866,9 @@ namespace TRAP::Graphics
 			Compute = BIT(5u),
 			RayTracing = BIT(6u),
 
-			AllGraphics = (static_cast<uint32_t>(Vertex) | static_cast<uint32_t>(TessellationControl) |
-			               static_cast<uint32_t>(TessellationEvaluation) | static_cast<uint32_t>(Geometry) |
-				           static_cast<uint32_t>(Fragment)),
+			AllGraphics = (static_cast<u32>(Vertex) | static_cast<u32>(TessellationControl) |
+			               static_cast<u32>(TessellationEvaluation) | static_cast<u32>(Geometry) |
+				           static_cast<u32>(Fragment)),
 			Hull = TessellationControl,
 			Domain = TessellationEvaluation,
 
@@ -1878,7 +1878,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different flags for root signature creation.
 		/// </summary>
-		enum class RootSignatureFlags : uint32_t
+		enum class RootSignatureFlags : u32
 		{
 			//Default flag
 			None = 0,
@@ -1889,7 +1889,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different pipeline types.
 		/// </summary>
-		enum class PipelineType : uint32_t
+		enum class PipelineType : u32
 		{
 			Undefined = 0,
 			Compute,
@@ -1911,7 +1911,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different blend constants used for blending.
 		/// </summary>
-		enum class BlendConstant : uint32_t
+		enum class BlendConstant : u32
 		{
 			Zero = 0,
 			One,
@@ -1933,7 +1933,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different blend modes/functions used for blending.
 		/// </summary>
-		enum class BlendMode : uint32_t
+		enum class BlendMode : u32
 		{
 			Add,
 			Subtract,
@@ -1947,7 +1947,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing which render target to affect with the blend state.
 		/// </summary>
-		enum class BlendStateTargets : uint32_t
+		enum class BlendStateTargets : u32
 		{
 			BlendStateTarget0 = BIT(0u),
 			BlendStateTarget1 = BIT(1u),
@@ -1964,7 +1964,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different stencil/depth operations.
 		/// </summary>
-		enum class StencilOp : uint32_t
+		enum class StencilOp : u32
 		{
 			Keep,
 			SetZero,
@@ -1981,7 +1981,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different cull modes.
 		/// </summary>
-		enum class CullMode : uint32_t
+		enum class CullMode : u32
 		{
 			None = 0,
 			Back,
@@ -1994,7 +1994,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different front face winding orders.
 		/// </summary>
-		enum class FrontFace : uint32_t
+		enum class FrontFace : u32
 		{
 			CounterClockwise = 0,
 			Clockwise
@@ -2003,7 +2003,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the different fill modes.
 		/// </summary>
-		enum class FillMode : uint32_t
+		enum class FillMode : u32
 		{
 			Solid,
 			Line,
@@ -2015,7 +2015,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing flags for pipeline cache creation.
 		/// </summary>
-		enum class PipelineCacheFlags : uint32_t
+		enum class PipelineCacheFlags : u32
 		{
 			None = 0x0,
 			ExternallySynchronized = BIT(0u)
@@ -2103,7 +2103,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the shading rates used by fragment/pixel shaders.
 		/// </summary>
-		enum class ShadingRate : uint32_t
+		enum class ShadingRate : u32
 		{
 			NotSupported = 0x0,
 			Full = BIT(0u),
@@ -2119,7 +2119,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing how to combine different shading rates.
 		/// </summary>
-		enum class ShadingRateCombiner : uint32_t
+		enum class ShadingRateCombiner : u32
 		{
 			Passthrough = BIT(0u),
 			Override = BIT(1u),
@@ -2131,7 +2131,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Enum describing the shading rate capabilities supported by the GPU.
 		/// </summary>
-		enum class ShadingRateCaps : uint32_t
+		enum class ShadingRateCaps : u32
 		{
 			NotSupported = 0x0,
 			PerDraw = BIT(0u),
@@ -2147,16 +2147,16 @@ namespace TRAP::Graphics
 			//Doubles are used because they are large enough to precisely
 			//hold 32-bit signed/unsigned integers and single-precision floats.
 
-			double Red;
-			double Green;
-			double Blue;
-			double Alpha;
+			f64 Red;
+			f64 Green;
+			f64 Blue;
+			f64 Alpha;
 		};
 
 		struct DepthStencil
 		{
-			float Depth;
-			uint32_t Stencil;
+			f32 Depth;
+			u32 Stencil;
 		};
 
 		using ClearValue = std::variant<Color, DepthStencil>;
@@ -2167,12 +2167,12 @@ namespace TRAP::Graphics
 		/// </summary>
 		struct SubresourceDataDesc
 		{
-			uint64_t SrcOffset;
-			uint32_t MipLevel;
-			uint32_t ArrayLayer;
+			u64 SrcOffset;
+			u32 MipLevel;
+			u32 ArrayLayer;
 
-			uint32_t RowPitch;
-			uint32_t SlicePitch;
+			u32 RowPitch;
+			u32 SlicePitch;
 		};
 
 		/// <summary>
@@ -2183,15 +2183,15 @@ namespace TRAP::Graphics
 			//Texture creation flags (decides memory allocation strategy, sharing access, ...)
 			TextureCreationFlags Flags{};
 			//Width
-			uint32_t Width{};
+			u32 Width{};
 			//Height
-			uint32_t Height{};
+			u32 Height{};
 			//Depth (should be 1 if type is not TextureType::TextureCube)
-			uint32_t Depth{};
+			u32 Depth{};
 			//Texture array size (should be 1 if texture is not a texture array or cubemap)
-			uint32_t ArraySize{};
+			u32 ArraySize{};
 			//Number of mip levels
-			uint32_t MipLevels{};
+			u32 MipLevels{};
 			//Multisample anti-aliasing (MSAA)
 			TRAP::Graphics::RendererAPI::SampleCount SampleCount{};
 			//Internal image format
@@ -2203,7 +2203,7 @@ namespace TRAP::Graphics
 			//The image quality level.
 			//The higher the quality, the lower the performance.
 			//The valid range is between 0 and the value appropriate for SampleCount
-			uint32_t SampleQuality{};
+			u32 SampleQuality{};
 			//Descriptor creation
 			DescriptorType Descriptors{};
 			//Debug name used in GPU profile
@@ -2220,22 +2220,22 @@ namespace TRAP::Graphics
 			//Texture creation flags (decides memory allocation strategy, sharing access, ...)
 			TextureCreationFlags Flags{};
 			//Width
-			uint32_t Width = 1;
+			u32 Width = 1;
 			//Height;
-			uint32_t Height = 1;
+			u32 Height = 1;
 			//Depth (should be 1 if Type is not TextureType::TextureCube)
-			uint32_t Depth = 1;
+			u32 Depth = 1;
 			//Texture array size (should be 1 if texture is not a texture array or cubemap)
-			uint32_t ArraySize = 1;
+			u32 ArraySize = 1;
 			//Number of mip levels
-			uint32_t MipLevels = 1;
+			u32 MipLevels = 1;
 			//Number of multisamples per pixel (currently Textures created with Usage TextureUsage::SampledImage
 			//only support One).
 			TRAP::Graphics::RendererAPI::SampleCount SampleCount{};
 			//The image quality level.
 			//The higher the quality, the lower the performance.
 			//The valid range is between 0 and the value appropriate for SampleCount.
-			uint32_t SampleQuality{};
+			u32 SampleQuality{};
 			//Image format
 			TRAP::Graphics::API::ImageFormat Format{};
 			//Optimized clear value (recommended to use the same value when clearing the renderTarget)
@@ -2281,9 +2281,9 @@ namespace TRAP::Graphics
 		struct BufferDesc
 		{
 			//Size of the buffer (in bytes)
-			uint64_t Size{};
+			u64 Size{};
 			//Alignment
-			uint32_t Alignment{};
+			u32 Alignment{};
 			//Decides which heap buffer will be used (default, upload, readback)
 			ResourceMemoryUsage MemoryUsage{};
 			//Creation flags of the buffer
@@ -2293,17 +2293,17 @@ namespace TRAP::Graphics
 			//What state will the buffer get created in
 			ResourceState StartState{};
 			//Index of the first element accessible by the SRV/UAV
-			uint64_t FirstElement{};
+			u64 FirstElement{};
 			//Number of elements in the buffer
-			uint64_t ElementCount{};
+			u64 ElementCount{};
 			//Size of each element (in bytes) in the buffer
-			uint64_t StructStride{};
+			u64 StructStride{};
 			//ICB draw type
 			IndirectArgumentType ICBDrawType{};
 			//ICB max vertex buffers slots count
-			uint32_t ICBMaxVertexBufferBind{};
+			u32 ICBMaxVertexBufferBind{};
 			//ICB max fragment buffers slots count
-			uint32_t ICBMaxFragmentBufferBind{};
+			u32 ICBMaxFragmentBufferBind{};
 			//Set this to specify a counter buffer for this buffer
 			//Buffer* CounterBuffer;
 			//Format of the buffer
@@ -2332,17 +2332,17 @@ namespace TRAP::Graphics
 			//Address mode for W coordinate
 			AddressMode AddressW{};
 			//Mip lod bias (offset from the calculated mip map level)
-			float MipLodBias{};
+			f32 MipLodBias{};
 			//Whether to use the given lod range or not
 			bool SetLodRange{};
 			//Minimum lod value
-			float MinLod{};
+			f32 MinLod{};
 			//Maximum lod value
-			float MaxLod{};
+			f32 MaxLod{};
 			//Enable/Disable Anisotropic filtering
 			bool EnableAnisotropy = true;
 			//Override Anisotropic filtering level (0.0f = auto)
-			float OverrideAnisotropyLevel{};
+			f32 OverrideAnisotropyLevel{};
 			//Comparison function compares sampled data against existing sampled data
 			CompareMode CompareFunc{};
 
@@ -2380,7 +2380,7 @@ namespace TRAP::Graphics
 		struct BinaryShaderStageDesc
 		{
 			//Shader data
-			std::vector<uint32_t> ByteCode{};
+			std::vector<u32> ByteCode{};
 			//Entry point of shader
 			std::string EntryPoint{};
 		};
@@ -2414,7 +2414,7 @@ namespace TRAP::Graphics
 			//Shaders to manage
 			std::vector<Shader*> Shaders{};
 			//Max number of bindless texture (DirectX 12)
-			uint32_t MaxBindlessTextures{};
+			u32 MaxBindlessTextures{};
 			//Static sampler names
 			std::vector<const char*> StaticSamplerNames{};
 			//Static samplers
@@ -2437,22 +2437,22 @@ namespace TRAP::Graphics
 			//Is root descriptor?
 			bool RootDescriptor{};
 			//Descriptor set
-			uint32_t Set{};
+			u32 Set{};
 			//Size of descriptor
-			uint32_t Size{};
+			u32 Size{};
 			//Index in the descriptor set
-			uint32_t IndexInParent{};
+			u32 IndexInParent{};
 			//Index of the handle in the root signature
-			uint32_t HandleIndex{};
+			u32 HandleIndex{};
 
 			//Descriptor type (Vulkan)
 			VkDescriptorType VkType{};
 			//Resource binding location
-			uint32_t Reg{};
+			u32 Reg{};
 			//Index into the root descriptor.
-			uint32_t RootDescriptorIndex{};
+			u32 RootDescriptorIndex{};
 			//Shader stages using the descriptor (Vulkan)
-			uint32_t VkStages{};
+			u32 VkStages{};
 		};
 
 		/// <summary>
@@ -2463,9 +2463,9 @@ namespace TRAP::Graphics
 			//Root signature to use
 			TRAP::Ref<TRAP::Graphics::RootSignature> RootSignature{};
 			//Descriptor set index
-			uint32_t Set;
+			u32 Set;
 			//Max amount of sets to allocate
-			uint32_t MaxSets{};
+			u32 MaxSets{};
 		};
 
 		/// <summary>
@@ -2498,9 +2498,9 @@ namespace TRAP::Graphics
 		struct ReadRange
 		{
 			//Offset from the start of the buffer
-			uint64_t Offset{};
+			u64 Offset{};
 			//Range to read (DirectX 12)
-			uint64_t Range{};
+			u64 Range{};
 		};
 
 		/// <summary>
@@ -2536,7 +2536,7 @@ namespace TRAP::Graphics
 			//Alpha blend mode per render target.
 			std::array<BlendMode, 8> BlendAlphaModes{};
 			//Write mask per render target.
-			std::array<int32_t, 8> Masks{};
+			std::array<i32, 8> Masks{};
 			//Mask that identifies the render targets affected by the blend state.
 			BlendStateTargets RenderTargetMask{};
 			//Set whether each render target has an unique blend function.
@@ -2558,9 +2558,9 @@ namespace TRAP::Graphics
 			//Enable stencil testing?
 			bool StencilTest{};
 			//Stencil read mask
-			uint8_t StencilReadMask{};
+			u8 StencilReadMask{};
 			//Stencil write mask
-			uint8_t StencilWriteMask{};
+			u8 StencilWriteMask{};
 			//Function to use on the front for stencil testing
 			CompareMode StencilFrontFunc{};
 			//Stencil action to perform when stencil testing fails
@@ -2587,9 +2587,9 @@ namespace TRAP::Graphics
 			//Cull mode
 			TRAP::Graphics::RendererAPI::CullMode CullMode{};
 			//Depth bias
-			int32_t DepthBias{};
+			i32 DepthBias{};
 			//Depth bias slope factor.
-			float SlopeScaledDepthBias{};
+			f32 SlopeScaledDepthBias{};
 			//Fill mode
 			TRAP::Graphics::RendererAPI::FillMode FillMode{};
 			//Front face winding order
@@ -2604,7 +2604,7 @@ namespace TRAP::Graphics
 		struct PipelineCacheDesc
 		{
 			//Pipeline data
-			std::vector<uint8_t> Data{};
+			std::vector<u8> Data{};
 			//Pipeline cache creation flags
 			PipelineCacheFlags Flags{};
 		};
@@ -2639,11 +2639,11 @@ namespace TRAP::Graphics
 			//Attribute format
 			TRAP::Graphics::API::ImageFormat Format{};
 			//Attribute binding
-			uint32_t Binding{};
+			u32 Binding{};
 			//Attribute location
-			uint32_t Location{};
+			u32 Location{};
 			//Attribute offset
-			uint32_t Offset{};
+			u32 Offset{};
 			//Attribute rate
 			VertexAttributeRate Rate{};
 		};
@@ -2654,7 +2654,7 @@ namespace TRAP::Graphics
 		struct VertexLayout
 		{
 			//Amount of attributes in the layout
-			uint32_t AttributeCount{};
+			u32 AttributeCount{};
 			//Attributes
 			std::array<VertexAttribute, 15> Attributes{};
 		};
@@ -2679,11 +2679,11 @@ namespace TRAP::Graphics
 			//Color formats for the render targets
 			std::vector<TRAP::Graphics::API::ImageFormat> ColorFormats{};
 			//How many render targets to use
-			uint32_t RenderTargetCount{};
+			u32 RenderTargetCount{};
 			//Sample count to use by render targets
 			TRAP::Graphics::RendererAPI::SampleCount SampleCount{};
 			//Sample quality to use by render targets (DirectX 12)
-			uint32_t SampleQuality{};
+			u32 SampleQuality{};
 			//Depth/Stencil image format to use
 			TRAP::Graphics::API::ImageFormat DepthStencilFormat{};
 			//Primitive topology to use
@@ -2719,7 +2719,7 @@ namespace TRAP::Graphics
 			//Pipeline extensions (DirectX 12)
 			void* PipelineExtensions{};
 			//Pipeline extensions count (DirectX 12)
-			uint32_t PipelineExtensionCount{};
+			u32 PipelineExtensionCount{};
 
 			//Name for the pipeline
 			std::string Name{};
@@ -2733,7 +2733,7 @@ namespace TRAP::Graphics
 			//Type of query to hold
 			QueryType Type{};
 			//Max amount of queries to manage
-			uint32_t QueryCount{};
+			u32 QueryCount{};
 		};
 
 		/// <summary>
@@ -2742,7 +2742,7 @@ namespace TRAP::Graphics
 		struct QueryDesc
 		{
 			//Index of the query into the query pool
-			uint32_t Index{};
+			u32 Index{};
 		};
 
 		/// <summary>
@@ -2751,13 +2751,13 @@ namespace TRAP::Graphics
 		struct IndirectDrawArguments
 		{
 			//How many vertices to draw
-			uint32_t VertexCount{};
+			u32 VertexCount{};
 			//How many instances to draw
-			uint32_t InstanceCount{};
+			u32 InstanceCount{};
 			//Vertex offset to start at
-			uint32_t StartVertex{};
+			u32 StartVertex{};
 			//Instance offset to start at
-			uint32_t StartInstance{};
+			u32 StartInstance{};
 		};
 
 		/// <summary>
@@ -2766,15 +2766,15 @@ namespace TRAP::Graphics
 		struct IndirectDrawIndexArguments
 		{
 			//How many indices to draw
-			uint32_t IndexCount{};
+			u32 IndexCount{};
 			//How many instances to draw
-			uint32_t InstanceCount{};
+			u32 InstanceCount{};
 			//Index buffer offset to start at
-			uint32_t StartIndex{};
+			u32 StartIndex{};
 			//Vertex offset to start at
-			uint32_t VertexOffset{};
+			u32 VertexOffset{};
 			//Instance offset to start at
-			uint32_t StartInstance{};
+			u32 StartInstance{};
 		};
 
 		/// <summary>
@@ -2783,11 +2783,11 @@ namespace TRAP::Graphics
 		struct IndirectDispatchArguments
 		{
 			//X work group size
-			uint32_t GroupCountX{};
+			u32 GroupCountX{};
 			//Y work group size
-			uint32_t GroupCountY{};
+			u32 GroupCountY{};
 			//Z work group size
-			uint32_t GroupCountZ{};
+			u32 GroupCountZ{};
 		};
 
 		/// <summary>
@@ -2800,7 +2800,7 @@ namespace TRAP::Graphics
 			//Name of descriptor
 			std::string Name{};
 			//Index of descriptor
-			uint32_t Index{};
+			u32 Index{};
 		};
 
 		/// <summary>
@@ -2826,11 +2826,11 @@ namespace TRAP::Graphics
 			//Queues which should be allowed to present
 			std::vector<TRAP::Ref<Queue>> PresentQueues{};
 			//Number of back buffers in this swapchain
-			uint32_t ImageCount{};
+			u32 ImageCount{};
 			//Width of the swapchain
-			uint32_t Width{};
+			u32 Width{};
 			//Height of the swapchain
-			uint32_t Height{};
+			u32 Height{};
 			//Color format of the swapchain
 			TRAP::Graphics::API::ImageFormat ColorFormat{};
 			//Clear value
@@ -2871,9 +2871,9 @@ namespace TRAP::Graphics
 			//Following values are ignored if SubresourceBarrier is false
 
 			//Mip level
-			uint8_t MipLevel{};
+			u8 MipLevel{};
 			//Array layer
-			uint16_t ArrayLayer{};
+			u16 ArrayLayer{};
 		};
 
 		/// <summary>
@@ -2926,9 +2926,9 @@ namespace TRAP::Graphics
 			//Following values are ignored if SubresourceBarrier is false
 
 			//Mip level
-			uint8_t MipLevel{};
+			u8 MipLevel{};
 			//Array layer
-			uint16_t ArrayLayer{};
+			u16 ArrayLayer{};
 		};
 
 		/// <summary>
@@ -2945,9 +2945,9 @@ namespace TRAP::Graphics
 			struct BufferOffset
 			{
 				//Offset to bind the buffer descriptor
-				std::vector<uint64_t> Offsets{};
+				std::vector<u64> Offsets{};
 				//Size of the buffer to bind
-				std::vector<uint64_t> Sizes{};
+				std::vector<u64> Sizes{};
 			};
 
 			/// <summary>
@@ -2956,7 +2956,7 @@ namespace TRAP::Graphics
 			struct DescriptorSetExtraction
 			{
 				//Index of the descriptor set to extract
-				uint32_t DescriptorSetBufferIndex{};
+				u32 DescriptorSetBufferIndex{};
 				Ref<Shader> DescriptorSetShader{};
 				ShaderStage DescriptorSetShaderStage{};
 			};
@@ -2964,7 +2964,7 @@ namespace TRAP::Graphics
 			struct TextureSlice
 			{
 				//When binding UAV, control the mip slice to bind for UAV (example - generating mipmaps in a compute shader)
-				uint32_t UAVMipSlice{};
+				u32 UAVMipSlice{};
 				//Binds entire mip chain as array of UAV
 				bool BindMipChain{};
 			};
@@ -2983,9 +2983,9 @@ namespace TRAP::Graphics
 				std::vector<DescriptorSet*>> Resource{std::vector<Ref<TRAP::Graphics::Texture>>()}; //TODO RayTracing acceleration structure
 
 			//Number of resources in the descriptor(applies to array of textures, buffers, ...)
-			uint32_t Count{};
+			u32 Count{};
 			//Index into RootSignature->Descriptors array
-			uint32_t Index = std::numeric_limits<uint32_t>::max();
+			u32 Index = std::numeric_limits<u32>::max();
 		};
 
 		/// <summary>
@@ -2998,7 +2998,7 @@ namespace TRAP::Graphics
 			//Semaphores to wait on before presenting
 			std::vector<TRAP::Ref<Semaphore>> WaitSemaphores{};
 			//Render target of the swapchain to present
-			uint32_t Index{};
+			u32 Index{};
 		};
 
 		/// <summary>
@@ -3027,7 +3027,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Map resolving a name to its descriptor index in a root signature.
 		/// </summary>
-		using DescriptorIndexMap = std::unordered_map<std::string, uint32_t>;
+		using DescriptorIndexMap = std::unordered_map<std::string, u32>;
 
 		/// <summary>
 		/// Struct holding data about a mapped memory range.
@@ -3035,14 +3035,14 @@ namespace TRAP::Graphics
 		struct MappedMemoryRange
 		{
 			//Pointer to mapped buffer data with offset already applied to
-			uint8_t* Data = nullptr;
+			u8* Data = nullptr;
 			//Mapped buffer
 			TRAP::Ref<TRAP::Graphics::Buffer> Buffer = nullptr;
 			//Offset in the buffer to start at
-			uint64_t Offset = 0;
+			u64 Offset = 0;
 			//Mapped size
-			uint64_t Size = 0;
-			uint32_t Flags = 0;
+			u64 Size = 0;
+			u32 Flags = 0;
 		};
 
 		/// <summary>
@@ -3054,9 +3054,9 @@ namespace TRAP::Graphics
 			//Texture to update
 			TRAP::Graphics::Texture* Texture = nullptr;
 			//Mip level to update
-			uint32_t MipLevel = 0;
+			u32 MipLevel = 0;
 			//Array layer to update
-			uint32_t ArrayLayer = 0;
+			u32 ArrayLayer = 0;
 
 			//To be filled by the caller
 			//Example:
@@ -3065,29 +3065,29 @@ namespace TRAP::Graphics
 			//Row by row copy is required if DstRowStride > SrcRowStride.
 			//Single memcpy will work if DstRowStride == SrcRowStride.
 			//2D:
-			//for (uint32_t r = 0; r < update.RowCount; ++r)
+			//for (u32 r = 0; r < update.RowCount; ++r)
 			//    memcpy(update.MappedData + r * update.DstRowStride, srcPixels + r * update.SrcRowStride, update.SrcRowStride);
 			//3D:
-			//for (uint32_t z = 0; z < depth; ++z)
+			//for (u32 z = 0; z < depth; ++z)
 			//{
-			//    uint8_t* dstData = update.MappedData + update.DstSliceStride * z;
-			//    uint8_t* srcData = srcPixels + update.SrcSliceStride * z;
-			//    for (uint32_t r = 0; r < update.RowCount; ++r)
+			//    u8* dstData = update.MappedData + update.DstSliceStride * z;
+			//    u8* srcData = srcPixels + update.SrcSliceStride * z;
+			//    for (u32 r = 0; r < update.RowCount; ++r)
 			//        memcpy(dstData + r * update.DstRowStride, srcData + r * update.SrcRowStride, update.SrcRowStride);
 			//}
 			//TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(update, &token);
-			uint8_t* MappedData{};
+			u8* MappedData{};
 			//Size of each row in destination including padding - Needs to be respected
 			//otherwise texture data will be corrupted if dst row stride is not the same as src row stride
-			uint32_t DstRowStride{};
+			u32 DstRowStride{};
 			//Number of rows in this slice of the texture
-			uint32_t RowCount{};
+			u32 RowCount{};
 			//Src row stride for convenience (RowCount * width * texture format size)
-			uint32_t SrcRowStride{};
+			u32 SrcRowStride{};
 			//Size of each slice in destination including padding - Use for offsetting dst data updating 3D textures
-			uint32_t DstSliceStride{};
+			u32 DstSliceStride{};
 			//Size of each slice in src - Use for offsetting src data when updating 3D textures
-			uint32_t SrcSliceStride{};
+			u32 SrcSliceStride{};
 
 			//Internal
 			struct
@@ -3106,15 +3106,15 @@ namespace TRAP::Graphics
 			//to the textures with the texture -> buffer copy.
 			TRAP::Ref<Semaphore> WaitSemaphore;
 			//Mip level to copy from
-			uint32_t MipLevel;
+			u32 MipLevel;
 			//Array layer to copy from
-			uint32_t ArrayLayer;
+			u32 ArrayLayer;
 			//Current texture state
 			ResourceState TextureState;
 			//Queue the texture is copied from
 			RendererAPI::QueueType QueueType;
 			//Offset into the destination buffer to start at
-			uint64_t BufferOffset;
+			u64 BufferOffset;
 		};
 
 		/// <summary>
@@ -3123,9 +3123,9 @@ namespace TRAP::Graphics
 		struct ResourceLoaderDesc
 		{
 			//Size for each staging buffer
-			uint64_t BufferSize;
+			u64 BufferSize;
 			//Amount of staging buffers to create
-			uint32_t BufferCount;
+			u32 BufferCount;
 		};
 
 		/// <summary>
@@ -3152,9 +3152,9 @@ namespace TRAP::Graphics
 			//Buffer to update
 			TRAP::Ref<TRAP::Graphics::Buffer> Buffer;
 			//Offset into buffer to update data at
-			uint64_t DstOffset;
+			u64 DstOffset;
 			//Size of data to update
-			uint64_t Size;
+			u64 Size;
 
 			//To be filled by the caller
 			void* MappedData;
@@ -3171,27 +3171,27 @@ namespace TRAP::Graphics
 		/// </summary>
 		inline static struct GPUSettings
 		{
-			uint64_t UniformBufferAlignment;
-			uint32_t MaxUniformBufferRange;
-			uint64_t StorageBufferAlignment;
-			uint64_t MaxStorageBufferRange;
-			uint32_t UploadBufferTextureAlignment;
-			uint32_t UploadBufferTextureRowAlignment;
-			uint32_t MaxVertexInputBindings;
-			uint32_t MaxVertexInputAttributes;
-			uint32_t MaxRootSignatureDWORDS;
-			uint32_t MaxImageDimension2D;
-			uint32_t MaxImageDimensionCube;
-			uint32_t MaxPushConstantSize;
-			uint32_t MaxSamplerAllocationCount;
-			uint32_t MaxTessellationControlPoints;
+			u64 UniformBufferAlignment;
+			u32 MaxUniformBufferRange;
+			u64 StorageBufferAlignment;
+			u64 MaxStorageBufferRange;
+			u32 UploadBufferTextureAlignment;
+			u32 UploadBufferTextureRowAlignment;
+			u32 MaxVertexInputBindings;
+			u32 MaxVertexInputAttributes;
+			u32 MaxRootSignatureDWORDS;
+			u32 MaxImageDimension2D;
+			u32 MaxImageDimensionCube;
+			u32 MaxPushConstantSize;
+			u32 MaxSamplerAllocationCount;
+			u32 MaxTessellationControlPoints;
 			SampleCount MaxMSAASampleCount;
-			float MaxAnisotropy;
+			f32 MaxAnisotropy;
 
-			uint32_t WaveLaneCount;
+			u32 WaveLaneCount;
 			TRAP::Graphics::RendererAPI::WaveOpsSupportFlags WaveOpsSupportFlags;
 
-			uint32_t ROVsSupported;
+			u32 ROVsSupported;
 			bool MultiDrawIndirectSupported;
 			bool TessellationSupported;
 			bool GeometryShaderSupported;
@@ -3204,8 +3204,8 @@ namespace TRAP::Graphics
 			TRAP::Graphics::RendererAPI::ShadingRate ShadingRates;
 			TRAP::Graphics::RendererAPI::ShadingRateCaps ShadingRateCaps;
 			TRAP::Graphics::RendererAPI::ShadingRateCombiner ShadingRateCombiner;
-			uint32_t ShadingRateTexelWidth;
-			uint32_t ShadingRateTexelHeight;
+			u32 ShadingRateTexelWidth;
+			u32 ShadingRateTexelHeight;
 
 #ifndef TRAP_HEADLESS_MODE
 			//NVIDIA Reflex
@@ -3213,7 +3213,7 @@ namespace TRAP::Graphics
 #endif /*TRAP_HEADLESS_MODE*/
 		} GPUSettings{};
 
-		inline static constexpr uint32_t ImageCount = 3; //Triple Buffered
+		inline static constexpr u32 ImageCount = 3; //Triple Buffered
 
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -3221,13 +3221,13 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="window">Window to retrieve image index from.</param>
 		/// <returns>Image index.</returns>
-		[[nodiscard]] static uint32_t GetCurrentImageIndex(const TRAP::Window* window);
+		[[nodiscard]] static u32 GetCurrentImageIndex(const TRAP::Window* window);
 #else
 		/// <summary>
 		/// Retrieve the image index currently used for rendering.
 		/// </summary>
 		/// <returns>Image index.</returns>
-		[[nodiscard]] static uint32_t GetCurrentImageIndex();
+		[[nodiscard]] static u32 GetCurrentImageIndex();
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
@@ -3287,7 +3287,7 @@ namespace TRAP::Graphics
 			PerWindowState State{};
 
 			//Swapchain/Graphics stuff
-			uint32_t ImageIndex = 0;
+			u32 ImageIndex = 0;
 			std::array<TRAP::Ref<CommandPool>, ImageCount> GraphicCommandPools;
 			std::array<CommandBuffer*, ImageCount> GraphicCommandBuffers{};
 			std::array<TRAP::Ref<Fence>, ImageCount> RenderCompleteFences;
@@ -3300,13 +3300,13 @@ namespace TRAP::Graphics
 			std::array<TRAP::Ref<Buffer>, ImageCount> GraphicsTimestampReadbackBuffers;
 			PipelineDesc GraphicsPipelineDesc;
 			TRAP::Ref<Pipeline> CurrentGraphicsPipeline;
-			float GraphicsFrameTime{};
+			f32 GraphicsFrameTime{};
 			bool Recording{};
 			TRAP::Ref<RenderTarget> NewShadingRateTexture;
 			std::array<TRAP::Ref<TRAP::Graphics::RenderTarget>, 3> CachedShadingRateTextures{};
 
-			float NewRenderScale = 1.0f;
-			float RenderScale = 1.0f;
+			f32 NewRenderScale = 1.0f;
+			f32 RenderScale = 1.0f;
 #ifndef TRAP_HEADLESS_MODE
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;
 			bool ResizeSwapChain = false;
@@ -3316,9 +3316,9 @@ namespace TRAP::Graphics
 #ifdef TRAP_HEADLESS_MODE
 			std::array<TRAP::Ref<RenderTarget>, ImageCount> RenderTargets;
 			bool Resize = false;
-			uint32_t NewWidth = 1920, NewHeight = 1080; //Default RenderTargets to use Full HD
+			u32 NewWidth = 1920, NewHeight = 1080; //Default RenderTargets to use Full HD
 #endif /*TRAP_HEADLESS_MODE*/
-			uint32_t CurrentSwapChainImageIndex{};
+			u32 CurrentSwapChainImageIndex{};
 			RendererAPI::AntiAliasing CurrentAntiAliasing = RendererAPI::AntiAliasing::Off;
 			RendererAPI::SampleCount CurrentSampleCount = RendererAPI::SampleCount::One;
 
@@ -3340,7 +3340,7 @@ namespace TRAP::Graphics
 			TRAP::Math::Vec3ui CurrentComputeWorkGroupSize{};
 			PipelineDesc ComputePipelineDesc;
 			TRAP::Ref<Pipeline> CurrentComputePipeline;
-			float ComputeFrameTime{};
+			f32 ComputeFrameTime{};
 			bool RecordingCompute{};
 
 			//NVIDIA Reflex

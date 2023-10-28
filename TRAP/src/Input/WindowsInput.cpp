@@ -130,7 +130,7 @@ void TRAP::Input::ShutdownController()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	for (uint32_t cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
+	for (u32 cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
 			CloseController(static_cast<Controller>(cID));
 
 	if (s_dinput8.API)
@@ -162,7 +162,7 @@ void TRAP::Input::DetectControllerConnectionWin32()
 	{
 		for(DWORD index = 0; index < TRAP_XUSER_MAX_COUNT; index++)
 		{
-			uint32_t cID;
+			u32 cID;
 			std::string guid;
 			guid.resize(33);
 			XINPUT_CAPABILITIES xic;
@@ -215,7 +215,7 @@ void TRAP::Input::DetectControllerDisconnectionWin32()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	for (uint32_t cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
+	for (u32 cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
 	{
 		if (s_controllerInternal[cID].Connected)
 			PollController(static_cast<Controller>(cID), PollMode::Presence);
@@ -224,18 +224,18 @@ void TRAP::Input::DetectControllerDisconnectionWin32()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::SetControllerVibrationInternal(Controller controller, const float leftMotor,
-                                                 const float rightMotor)
+void TRAP::Input::SetControllerVibrationInternal(Controller controller, const f32 leftMotor,
+                                                 const f32 rightMotor)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if(!s_controllerInternal[std::to_underlying(controller)].WinCon.XInput)
 		return;
 
-	const uint16_t left = NumericCast<uint16_t>(NumericCast<float>(std::numeric_limits<uint16_t>::max()) * leftMotor);
-	const uint16_t right = NumericCast<uint16_t>(NumericCast<float>(std::numeric_limits<uint16_t>::max()) * rightMotor);
+	const u16 left = NumericCast<u16>(NumericCast<f32>(std::numeric_limits<u16>::max()) * leftMotor);
+	const u16 right = NumericCast<u16>(NumericCast<f32>(std::numeric_limits<u16>::max()) * rightMotor);
 	XINPUT_VIBRATION vibration{ left, right };
-	const uint32_t result = s_xinput.SetState(NumericCast<DWORD>(std::to_underlying(controller)), &vibration);
+	const u32 result = s_xinput.SetState(NumericCast<DWORD>(std::to_underlying(controller)), &vibration);
 	if (result != ERROR_SUCCESS)
 	{
 		TP_ERROR(Log::InputControllerXInputPrefix, "ID: ", std::to_underlying(controller), " Error: ",
@@ -282,7 +282,7 @@ bool TRAP::Input::PollController(const Controller controller, const PollMode mod
 	ControllerInternal* con = &s_controllerInternal[std::to_underlying(controller)];
 	if (con->WinCon.Device)
 	{
-		int ai = 0, bi = 0, pi = 0;
+		i32 ai = 0, bi = 0, pi = 0;
 		DIJOYSTATE state{};
 
 		IDirectInputDevice8_Poll(con->WinCon.Device);
@@ -304,7 +304,7 @@ bool TRAP::Input::PollController(const Controller controller, const PollMode mod
 		if (mode == PollMode::Presence)
 			return true;
 
-		for (int32_t i = 0; i < con->WinCon.ObjectCount; i++)
+		for (i32 i = 0; i < con->WinCon.ObjectCount; i++)
 		{
 			void* data = reinterpret_cast<char*>(&state) + con->WinCon.Objects[i].Offset;
 
@@ -314,7 +314,7 @@ bool TRAP::Input::PollController(const Controller controller, const PollMode mod
 				[[fallthrough]];
 			case TRAP_TYPE_SLIDER:
 			{
-				const float value = (*static_cast<LONG*>(data) + 0.5f) / 32767.5f;
+				const f32 value = (*static_cast<LONG*>(data) + 0.5f) / 32767.5f;
 				InternalInputControllerAxis(con, ai, value);
 				ai++;
 				break;
@@ -330,21 +330,21 @@ bool TRAP::Input::PollController(const Controller controller, const PollMode mod
 
 			case TRAP_TYPE_DPAD:
 			{
-				static constexpr std::array<uint8_t, 9> states =
+				static constexpr std::array<u8, 9> states =
 				{
-					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Up)),
-					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Right_Up)),
-					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Right)),
-					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Right_Down)),
-					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Down)),
-					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Left_Down)),
-					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Left)),
-					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Left_Up)),
-					NumericCast<uint8_t>(std::to_underlying(ControllerDPad::Centered))
+					NumericCast<u8>(std::to_underlying(ControllerDPad::Up)),
+					NumericCast<u8>(std::to_underlying(ControllerDPad::Right_Up)),
+					NumericCast<u8>(std::to_underlying(ControllerDPad::Right)),
+					NumericCast<u8>(std::to_underlying(ControllerDPad::Right_Down)),
+					NumericCast<u8>(std::to_underlying(ControllerDPad::Down)),
+					NumericCast<u8>(std::to_underlying(ControllerDPad::Left_Down)),
+					NumericCast<u8>(std::to_underlying(ControllerDPad::Left)),
+					NumericCast<u8>(std::to_underlying(ControllerDPad::Left_Up)),
+					NumericCast<u8>(std::to_underlying(ControllerDPad::Centered))
 				};
 
 				//Screams of horror are appropriate at this point
-				int32_t status = LOWORD(*static_cast<DWORD*>(data)) / (45 * DI_DEGREES);
+				i32 status = LOWORD(*static_cast<DWORD*>(data)) / (45 * DI_DEGREES);
 				if (status < 0 || status > 8)
 					status = 8;
 
@@ -360,7 +360,7 @@ bool TRAP::Input::PollController(const Controller controller, const PollMode mod
 	}
 	else
 	{
-		uint32_t dpad = 0;
+		u32 dpad = 0;
 		XINPUT_STATE xis;
 		static constexpr std::array<WORD, 10> buttons =
 		{
@@ -395,7 +395,7 @@ bool TRAP::Input::PollController(const Controller controller, const PollMode mod
 		InternalInputControllerAxis(con, 4, xis.Gamepad.bLeftTrigger / 127.5f - 1.f);
 		InternalInputControllerAxis(con, 5, xis.Gamepad.bRightTrigger / 127.5f - 1.f);
 
-		for(std::size_t i = 0; i < buttons.size(); i++)
+		for(usize i = 0; i < buttons.size(); i++)
 		{
 			const bool value = (xis.Gamepad.wButtons & buttons[i]) ? true : false;
 			InternalInputControllerButton(con, i, value);
@@ -422,7 +422,7 @@ bool TRAP::Input::PollController(const Controller controller, const PollMode mod
 		if (xis.Gamepad.wButtons & TRAP_XINPUT_GAMEPAD_DPAD_LEFT)
 			dpad |= std::to_underlying(ControllerDPad::Left);
 
-		InternalInputControllerDPad(con, 0, NumericCast<uint8_t>(dpad));
+		InternalInputControllerDPad(con, 0, NumericCast<u8>(dpad));
 	}
 
 	return true;
@@ -539,7 +539,7 @@ bool TRAP::Input::SupportsXInput(const GUID* guid)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	uint32_t count = 0;
+	u32 count = 0;
 	std::vector<RAWINPUTDEVICELIST> ridl{};
 	bool result = false;
 
@@ -548,14 +548,14 @@ bool TRAP::Input::SupportsXInput(const GUID* guid)
 
 	ridl.resize(count);
 
-	if (GetRawInputDeviceList(ridl.data(), &count, sizeof(RAWINPUTDEVICELIST)) == std::numeric_limits<uint32_t>::max())
+	if (GetRawInputDeviceList(ridl.data(), &count, sizeof(RAWINPUTDEVICELIST)) == std::numeric_limits<u32>::max())
 		return false;
 
-	for (uint32_t i = 0; i < count; i++)
+	for (u32 i = 0; i < count; i++)
 	{
 		RID_DEVICE_INFO rdi;
 		std::array<char, 256> name{};
-		uint32_t size;
+		u32 size;
 
 		if (ridl[i].dwType != RIM_TYPEHID)
 			continue;
@@ -563,15 +563,15 @@ bool TRAP::Input::SupportsXInput(const GUID* guid)
 		rdi.cbSize = sizeof(rdi);
 		size = sizeof(rdi);
 
-		if (GetRawInputDeviceInfoA(ridl[i].hDevice, RIDI_DEVICEINFO, &rdi, &size) == std::numeric_limits<uint32_t>::max())
+		if (GetRawInputDeviceInfoA(ridl[i].hDevice, RIDI_DEVICEINFO, &rdi, &size) == std::numeric_limits<u32>::max())
 			continue;
 
-		if (MAKELONG(rdi.hid.dwVendorId, rdi.hid.dwProductId) != NumericCast<int64_t>(guid->Data1))
+		if (MAKELONG(rdi.hid.dwVendorId, rdi.hid.dwProductId) != NumericCast<i64>(guid->Data1))
 			continue;
 
-		size = NumericCast<uint32_t>(name.size());
+		size = NumericCast<u32>(name.size());
 
-		if (GetRawInputDeviceInfoA(ridl[i].hDevice, RIDI_DEVICENAME, name.data(), &size) == std::numeric_limits<uint32_t>::max())
+		if (GetRawInputDeviceInfoA(ridl[i].hDevice, RIDI_DEVICENAME, name.data(), &size) == std::numeric_limits<u32>::max())
 			break;
 
 		std::get<name.size() - 1>(name) = '\0';
@@ -649,7 +649,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 	std::string name;
 	name.resize(256);
 
-	for (uint32_t cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
+	for (u32 cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
 	{
 		controller = &s_controllerInternal[cID];
 		if (s_controllerInternal[cID].Connected)
@@ -744,7 +744,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 	std::ranges::sort(data.Objects, CompareControllerObjects);
 
 	if (!WideCharToMultiByte(CP_UTF8, 0, deviceInstance->tszInstanceName, -1, name.data(),
-	                         NumericCast<int32_t>(name.size()), nullptr, nullptr))
+	                         NumericCast<i32>(name.size()), nullptr, nullptr))
 	{
 		TP_ERROR(Log::InputControllerDirectInputPrefix, "Failed to convert controller name to UTF-8");
 		IDirectInputDevice8_Release(device);
@@ -755,10 +755,10 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 	if (std::memcmp(&deviceInstance->guidProduct.Data4[2], "PIDVID", 6) == 0)
 	{
 		sprintf_s(guid.data(), guid.size(), "03000000%02x%02x0000%02x%02x000000000000",
-			NumericCast<uint8_t>(deviceInstance->guidProduct.Data1),
-			NumericCast<uint8_t>(deviceInstance->guidProduct.Data1 >> 8u),
-			NumericCast<uint8_t>(deviceInstance->guidProduct.Data1 >> 16u),
-			NumericCast<uint8_t>(deviceInstance->guidProduct.Data1 >> 24u)
+			NumericCast<u8>(deviceInstance->guidProduct.Data1),
+			NumericCast<u8>(deviceInstance->guidProduct.Data1 >> 8u),
+			NumericCast<u8>(deviceInstance->guidProduct.Data1 >> 16u),
+			NumericCast<u8>(deviceInstance->guidProduct.Data1 >> 24u)
 		);
 	}
 	else
@@ -772,9 +772,9 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 
 	std::erase(name, '\0');
 
-	controller = AddInternalController(name, guid, NumericCast<uint32_t>(data.AxisCount + data.SliderCount),
-	                                   NumericCast<uint32_t>(data.ButtonCount),
-	                                   NumericCast<uint32_t>(data.PoVCount));
+	controller = AddInternalController(name, guid, NumericCast<u32>(data.AxisCount + data.SliderCount),
+	                                   NumericCast<u32>(data.ButtonCount),
+	                                   NumericCast<u32>(data.PoVCount));
 
 	if (!controller)
 	{
@@ -793,7 +793,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 		return DIENUM_STOP;
 
 	//Get index of our ControllerInternal
-	uint32_t index;
+	u32 index;
 	for (index = 0; index <= std::to_underlying(Controller::Sixteen); index++)
 		if (&s_controllerInternal[index] == controller)
 			break;
@@ -821,7 +821,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 	//NOTE: Only care about the language part of the keyboard layout ID
 	const LCID lcID = MAKELCID(LANGIDFROMLCID(wcstoul(keyboardLayoutID.data(), nullptr, 16)), 0);
 
-	const uint32_t size = GetLocaleInfoW(lcID, LOCALE_SLANGUAGE, nullptr, 0);
+	const u32 size = GetLocaleInfoW(lcID, LOCALE_SLANGUAGE, nullptr, 0);
 	if(!size)
 	{
 		TP_ERROR(Log::InputWinAPIPrefix, "Failed to retrieve keyboard layout name length (", Utils::String::GetStrError(), ")");

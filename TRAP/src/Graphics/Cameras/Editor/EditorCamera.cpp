@@ -28,8 +28,8 @@ void TRAP::Graphics::EditorCamera::OnUpdate(const Utils::TimeStep& deltaTime)
         m_cameraMode = CameraMode::FlyCam;
         DisableMouse();
 
-        const float yawSign = GetUpDirection().y() < 0.0f ? -1.0f : 1.0f;
-        const float speed = GetCameraSpeed();
+        const f32 yawSign = GetUpDirection().y() < 0.0f ? -1.0f : 1.0f;
+        const f32 speed = GetCameraSpeed();
 
         if(Input::IsKeyPressed(Input::Key::S))
             m_positionDelta -= deltaTime.GetMilliseconds() * speed * m_direction;
@@ -40,7 +40,7 @@ void TRAP::Graphics::EditorCamera::OnUpdate(const Utils::TimeStep& deltaTime)
         if(Input::IsKeyPressed(Input::Key::D))
             m_positionDelta += deltaTime.GetMilliseconds() * speed * m_rightDirection;
 
-        static constexpr float maxRate = 0.12f;
+        static constexpr f32 maxRate = 0.12f;
         m_yawDelta += TRAP::Math::Clamp(yawSign * delta.x() * RotationSpeed(), -maxRate, maxRate);
         m_pitchDelta += TRAP::Math::Clamp(delta.y() * RotationSpeed(), -maxRate, maxRate);
 
@@ -49,7 +49,7 @@ void TRAP::Graphics::EditorCamera::OnUpdate(const Utils::TimeStep& deltaTime)
         m_direction = TRAP::Math::Normalize(TRAP::Math::Cross(TRAP::Math::AngleAxis(-m_pitchDelta, m_rightDirection),
                                                              TRAP::Math::AngleAxis(-m_yawDelta, TRAP::Math::Vec3(0.0f, yawSign, 0.0f)))) * m_direction;
 
-        const float distance = TRAP::Math::Distance(m_focalPoint, m_position);
+        const f32 distance = TRAP::Math::Distance(m_focalPoint, m_position);
         m_focalPoint = m_position + GetForwardDirection() * distance;
         m_distance = distance;
     }
@@ -103,11 +103,11 @@ void TRAP::Graphics::EditorCamera::OnEvent(Events::Event& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] float TRAP::Graphics::EditorCamera::GetCameraSpeed() const
+[[nodiscard]] f32 TRAP::Graphics::EditorCamera::GetCameraSpeed() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-    float speed = m_normalSpeed;
+    f32 speed = m_normalSpeed;
     if(Input::IsKeyPressed(Input::Key::Left_Control) ||
        Input::IsKeyPressed(Input::Key::Right_Control))
     {
@@ -144,7 +144,7 @@ bool TRAP::Graphics::EditorCamera::OnMouseScroll(Events::MouseScrollEvent& event
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::EditorCamera::MouseZoom(const float delta)
+void TRAP::Graphics::EditorCamera::MouseZoom(const f32 delta)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -162,12 +162,12 @@ void TRAP::Graphics::EditorCamera::MouseZoom(const float delta)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] float TRAP::Graphics::EditorCamera::ZoomSpeed() const
+[[nodiscard]] f32 TRAP::Graphics::EditorCamera::ZoomSpeed() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-    const float distance = TRAP::Math::Max(m_distance * 0.3f, 0.0f);
-    float speed = TRAP::Math::Min(distance * distance, 50.0f); //Max speed = 50.0f
+    const f32 distance = TRAP::Math::Max(m_distance * 0.3f, 0.0f);
+    f32 speed = TRAP::Math::Min(distance * distance, 50.0f); //Max speed = 50.0f
 
     if (Input::IsKeyPressed(Input::Key::Left_Shift) ||
         Input::IsKeyPressed(Input::Key::Right_Shift) ||

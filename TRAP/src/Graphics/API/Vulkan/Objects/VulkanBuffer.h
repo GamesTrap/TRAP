@@ -60,7 +60,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the byte offset to the first element in the buffer.
 		/// </summary>
 		/// <returns>Byte offset to the first element in the buffer.</returns>
-		[[nodiscard]] constexpr uint64_t GetOffset() const noexcept;
+		[[nodiscard]] constexpr u64 GetOffset() const noexcept;
 		/// <summary>
 		/// Retrieve the VkDeviceMemory handle.
 		/// </summary>
@@ -70,7 +70,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the VkDeviceMemory offset to the start of the buffer.
 		/// </summary>
 		/// <returns>VkDeviceMemory offset.</returns>
-		[[nodiscard]] uint64_t GetVkDeviceMemoryOffset() const;
+		[[nodiscard]] u64 GetVkDeviceMemoryOffset() const;
 
 		/// <summary>
 		/// Map a region of the buffer to the CPU.
@@ -103,7 +103,7 @@ namespace TRAP::Graphics::API
 		VkBufferView m_vkUniformTexelView = VK_NULL_HANDLE;
 		//Contains resource allocation info such as parent heap, offset in heap
 		VmaAllocation m_allocation = VK_NULL_HANDLE;
-		uint64_t m_offset = 0;
+		u64 m_offset = 0;
 	};
 }
 
@@ -130,7 +130,7 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint64_t TRAP::Graphics::API::VulkanBuffer::GetOffset() const noexcept
+[[nodiscard]] constexpr u64 TRAP::Graphics::API::VulkanBuffer::GetOffset() const noexcept
 {
 	return m_offset;
 }

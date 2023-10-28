@@ -104,23 +104,23 @@ namespace
 
 TEST_CASE("TRAP::Math::OuterProduct()", "[math][generic][outerproduct]")
 {
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunCompileTimeOuterProductTests<TRAP::Math::Vec3d>();
         RunOuterProductEdgeTests<TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunCompileTimeOuterProductTests<TRAP::Math::Vec3f>();
         RunOuterProductEdgeTests<TRAP::Math::Vec3f>();
     }
 
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunCompileTimeOuterProductTests<TRAP::Math::Vec4d>();
         RunOuterProductEdgeTests<TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunCompileTimeOuterProductTests<TRAP::Math::Vec4f>();
         RunOuterProductEdgeTests<TRAP::Math::Vec4f>();

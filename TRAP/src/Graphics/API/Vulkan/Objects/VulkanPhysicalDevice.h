@@ -136,7 +136,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="instance">Vulkan instance.</param>
 		/// <returns>List of rated physical devices.</returns>
-		[[nodiscard]] static const std::multimap<uint32_t, TRAP::Utils::UUID>& GetAllRatedPhysicalDevices(const TRAP::Ref<VulkanInstance>& instance);
+		[[nodiscard]] static const std::multimap<u32, TRAP::Utils::UUID>& GetAllRatedPhysicalDevices(const TRAP::Ref<VulkanInstance>& instance);
 
 		/// <summary>
 		/// Retrieve a phyiscal device via its UUID.
@@ -155,7 +155,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="instance">Vulkan instance handle.</param>
 		/// <returns>List of rated physical devices.</returns>
-		[[nodiscard]] static const std::multimap<uint32_t, TRAP::Utils::UUID>& GetAllRatedPhysicalDevices(const VkInstance& instance);
+		[[nodiscard]] static const std::multimap<u32, TRAP::Utils::UUID>& GetAllRatedPhysicalDevices(const VkInstance& instance);
 
 		/// <summary>
 		/// Retrieve a list of all Vulkan physical device handles.
@@ -206,7 +206,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the max usable MSAA sample count for the GPU.
 		/// </summary>
 		/// <returns>Max usable MSAA sample count.</returns>
-		[[nodiscard]] constexpr uint32_t GetMaxUsableMSAASampleCount() const noexcept;
+		[[nodiscard]] constexpr u32 GetMaxUsableMSAASampleCount() const noexcept;
 
 		VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
 		VkPhysicalDeviceProperties m_physicalDeviceProperties{};
@@ -222,7 +222,7 @@ namespace TRAP::Graphics::API
 
 		std::vector<VkExtensionProperties> m_availablePhysicalDeviceExtensions{};
 
-		static std::multimap<uint32_t, TRAP::Utils::UUID> s_availablePhysicalDeviceUUIDs;
+		static std::multimap<u32, TRAP::Utils::UUID> s_availablePhysicalDeviceUUIDs;
 	};
 }
 
@@ -336,7 +336,7 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::API::VulkanPhysicalDevice::GetMaxUsableMSAASampleCount() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::API::VulkanPhysicalDevice::GetMaxUsableMSAASampleCount() const noexcept
 {
 	VkSampleCountFlags sampleCounts = TRAP::Math::Min(m_physicalDeviceProperties.limits.framebufferColorSampleCounts,
 	                                                  m_physicalDeviceProperties.limits.framebufferDepthSampleCounts);

@@ -26,18 +26,18 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 	//Start TGA Loading here
 	Header header{};
 
-	header.IDLength = NumericCast<uint8_t>(file.get());
-	header.ColorMapType = NumericCast<uint8_t>(file.get());
-	header.ImageType = NumericCast<uint8_t>(file.get());
-	file.read(reinterpret_cast<char*>(&header.ColorMapOffset), sizeof(uint16_t));
-	file.read(reinterpret_cast<char*>(&header.NumOfColorMaps), sizeof(uint16_t));
-	header.ColorMapDepth = NumericCast<uint8_t>(file.get());
-	file.read(reinterpret_cast<char*>(&header.XOffset), sizeof(uint16_t));
-	file.read(reinterpret_cast<char*>(&header.YOffset), sizeof(uint16_t));
-	file.read(reinterpret_cast<char*>(&header.Width), sizeof(uint16_t));
-	file.read(reinterpret_cast<char*>(&header.Height), sizeof(uint16_t));
-	header.BitsPerPixel = NumericCast<uint8_t>(file.get());
-	header.ImageDescriptor = NumericCast<uint8_t>(file.get());
+	header.IDLength = NumericCast<u8>(file.get());
+	header.ColorMapType = NumericCast<u8>(file.get());
+	header.ImageType = NumericCast<u8>(file.get());
+	file.read(reinterpret_cast<char*>(&header.ColorMapOffset), sizeof(u16));
+	file.read(reinterpret_cast<char*>(&header.NumOfColorMaps), sizeof(u16));
+	header.ColorMapDepth = NumericCast<u8>(file.get());
+	file.read(reinterpret_cast<char*>(&header.XOffset), sizeof(u16));
+	file.read(reinterpret_cast<char*>(&header.YOffset), sizeof(u16));
+	file.read(reinterpret_cast<char*>(&header.Width), sizeof(u16));
+	file.read(reinterpret_cast<char*>(&header.Height), sizeof(u16));
+	header.BitsPerPixel = NumericCast<u8>(file.get());
+	header.ImageDescriptor = NumericCast<u8>(file.get());
 
 	//File uses little-endian
 	//Convert to machines endian
@@ -67,7 +67,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 	}
 	if (header.ColorMapType == 1)
 	{
-		colorMapData.ColorMap.resize(NumericCast<std::size_t>(header.ColorMapDepth / 8) * header.NumOfColorMaps);
+		colorMapData.ColorMap.resize(NumericCast<usize>(header.ColorMapDepth / 8) * header.NumOfColorMaps);
 		if(!file.read(reinterpret_cast<char*>(colorMapData.ColorMap.data()),
 		              NumericCast<std::streamsize>(header.ColorMapDepth / 8) * header.NumOfColorMaps))
 		{
@@ -108,9 +108,9 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 	}
 	if(header.ImageType == 9 || header.ImageType == 11 || header.ImageType == 10) //All RLE formats
 	{
-		const uint32_t currentPosition = static_cast<uint32_t>(file.tellg()); //Store current position in file
+		const u32 currentPosition = static_cast<u32>(file.tellg()); //Store current position in file
 		file.seekg(0, std::ios::end); //Go to the end of file
-		uint32_t pixelDataSize = static_cast<uint32_t>(file.tellg()) - currentPosition;
+		u32 pixelDataSize = static_cast<u32>(file.tellg()) - currentPosition;
 		file.seekg(-18, std::ios::end); //Check if there is a footer
 		std::string offsetCheck(16, '\0');
 		file.read(offsetCheck.data(), 16);
@@ -129,7 +129,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 	}
 	else
 	{
-		colorMapData.ImageData.resize(NumericCast<std::size_t>(header.Width) * header.Height *
+		colorMapData.ImageData.resize(NumericCast<usize>(header.Width) * header.Height *
 		                              (header.BitsPerPixel / 8));
 		if (!file.read(reinterpret_cast<char*>(colorMapData.ImageData.data()),
 		                                       NumericCast<std::streamsize>(header.Width) *

@@ -4,7 +4,7 @@
 namespace
 {
 	#ifdef TRAP_PLATFORM_LINUX
-	void LinuxCrashHandler(const int32_t signal, siginfo_t* const info, [[maybe_unused]] void* const ucontext)
+	void LinuxCrashHandler(const i32 signal, siginfo_t* const info, [[maybe_unused]] void* const ucontext)
 	{
 		struct sigaction act{};
 		act.sa_handler = SIG_DFL;
@@ -139,7 +139,7 @@ namespace
 		}
 
 		if(signal != SIGPIPE)
-			crashText += fmt::format("Fault address: {:#x} ", uint64_t(info->si_addr));
+			crashText += fmt::format("Fault address: {:#x} ", u64(info->si_addr));
 
 		if(!crashText.empty())
 			TP_CRITICAL(' ', crashText);

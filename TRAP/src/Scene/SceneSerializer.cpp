@@ -37,8 +37,8 @@ namespace YAML
 			if (!node.IsSequence() || node.size() != 2)
 				return false;
 
-			rhs.x() = node[0].as<float>();
-			rhs.y() = node[1].as<float>();
+			rhs.x() = node[0].as<f32>();
+			rhs.y() = node[1].as<f32>();
 			return true;
 		}
 	};
@@ -65,9 +65,9 @@ namespace YAML
 			if (!node.IsSequence() || node.size() != 3)
 				return false;
 
-			rhs.x() = node[0].as<float>();
-			rhs.y() = node[1].as<float>();
-			rhs.z() = node[2].as<float>();
+			rhs.x() = node[0].as<f32>();
+			rhs.y() = node[1].as<f32>();
+			rhs.z() = node[2].as<f32>();
 			return true;
 		}
 	};
@@ -95,10 +95,10 @@ namespace YAML
 			if (!node.IsSequence() || node.size() != 4)
 				return false;
 
-			rhs.x() = node[0].as<float>();
-			rhs.y() = node[1].as<float>();
-			rhs.z() = node[2].as<float>();
-			rhs.w() = node[3].as<float>();
+			rhs.x() = node[0].as<f32>();
+			rhs.y() = node[1].as<f32>();
+			rhs.z() = node[2].as<f32>();
+			rhs.w() = node[3].as<f32>();
 			return true;
 		}
 	};
@@ -339,7 +339,7 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 	{
 		for (auto entity : entities)
 		{
-			const uint64_t uid = entity["Entity"].as<uint64_t>();
+			const u64 uid = entity["Entity"].as<u64>();
 
 			std::string name;
 			auto tagComponent = entity["TagComponent"];
@@ -368,15 +368,15 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 				auto cameraProps = cameraComponent["Camera"];
 				cc.Camera.SetProjectionType(static_cast<SceneCamera::ProjectionType>
 					(
-						cameraProps["ProjectionType"].as<int32_t>()
+						cameraProps["ProjectionType"].as<i32>()
 					));
 
-				cc.Camera.SetPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<float>());
-				cc.Camera.SetPerspectiveNearClip(cameraProps["PerspectiveNear"].as<float>());
+				cc.Camera.SetPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<f32>());
+				cc.Camera.SetPerspectiveNearClip(cameraProps["PerspectiveNear"].as<f32>());
 
-				cc.Camera.SetOrthographicSize(cameraProps["OrthographicSize"].as<float>());
-				cc.Camera.SetOrthographicNearClip(cameraProps["OrthographicNear"].as<float>());
-				cc.Camera.SetOrthographicFarClip(cameraProps["OrthographicFar"].as<float>());
+				cc.Camera.SetOrthographicSize(cameraProps["OrthographicSize"].as<f32>());
+				cc.Camera.SetOrthographicNearClip(cameraProps["OrthographicNear"].as<f32>());
+				cc.Camera.SetOrthographicFarClip(cameraProps["OrthographicFar"].as<f32>());
 
 				cc.Primary = cameraComponent["Primary"].as<bool>();
 				cc.FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
@@ -394,8 +394,8 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 			{
 				auto& src = deserializedEntity.AddComponent<CircleRendererComponent>();
 				src.Color = circleRendererComponent["Color"].as<Math::Vec4>();
-				src.Thickness = circleRendererComponent["Thickness"].as<float>();
-				src.Fade = circleRendererComponent["Fade"].as<float>();
+				src.Thickness = circleRendererComponent["Thickness"].as<f32>();
+				src.Fade = circleRendererComponent["Fade"].as<f32>();
 			}
 
 			auto rigidbody2DComponent = entity["Rigidbody2DComponent"];
@@ -412,10 +412,10 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 				auto& bc2d = deserializedEntity.AddComponent<BoxCollider2DComponent>();
 				bc2d.Offset = boxCollider2DComponent["Offset"].as<Math::Vec2>();
 				bc2d.Size = boxCollider2DComponent["Size"].as<Math::Vec2>();
-				bc2d.Density = boxCollider2DComponent["Density"].as<float>();
-				bc2d.Friction = boxCollider2DComponent["Friction"].as<float>();
-				bc2d.Restitution = boxCollider2DComponent["Restitution"].as<float>();
-				bc2d.RestitutionThreshold = boxCollider2DComponent["RestitutionThreshold"].as<float>();
+				bc2d.Density = boxCollider2DComponent["Density"].as<f32>();
+				bc2d.Friction = boxCollider2DComponent["Friction"].as<f32>();
+				bc2d.Restitution = boxCollider2DComponent["Restitution"].as<f32>();
+				bc2d.RestitutionThreshold = boxCollider2DComponent["RestitutionThreshold"].as<f32>();
 			}
 
 			auto circleCollider2DComponent = entity["CircleCollider2DComponent"];
@@ -423,11 +423,11 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 			{
 				auto& cc2d = deserializedEntity.AddComponent<CircleCollider2DComponent>();
 				cc2d.Offset = circleCollider2DComponent["Offset"].as<Math::Vec2>();
-				cc2d.Radius = circleCollider2DComponent["Radius"].as<float>();
-				cc2d.Density = circleCollider2DComponent["Density"].as<float>();
-				cc2d.Friction = circleCollider2DComponent["Friction"].as<float>();
-				cc2d.Restitution = circleCollider2DComponent["Restitution"].as<float>();
-				cc2d.RestitutionThreshold = circleCollider2DComponent["RestitutionThreshold"].as<float>();
+				cc2d.Radius = circleCollider2DComponent["Radius"].as<f32>();
+				cc2d.Density = circleCollider2DComponent["Density"].as<f32>();
+				cc2d.Friction = circleCollider2DComponent["Friction"].as<f32>();
+				cc2d.Restitution = circleCollider2DComponent["Restitution"].as<f32>();
+				cc2d.RestitutionThreshold = circleCollider2DComponent["RestitutionThreshold"].as<f32>();
 			}
 		}
 	}

@@ -16,7 +16,7 @@ private:
     TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer = nullptr;
     TRAP::Ref<TRAP::Graphics::Sampler> m_textureSampler = nullptr;
 
-    inline static constexpr std::array<float, 5ull * 4> m_quadVerticesIndexed
+    inline static constexpr std::array<f32, 5ull * 4> m_quadVerticesIndexed
 	{
 		//XYZ UV
 		-0.5f, -0.5f, 0.0f,    0.0f, 1.0f,
@@ -24,7 +24,7 @@ private:
 		 0.5f,  0.5f, 0.0f,    1.0f, 0.0f,
 		-0.5f,  0.5f, 0.0f,    0.0f, 0.0f
 	};
-    inline static constexpr std::array<uint16_t, 6> m_quadIndices
+    inline static constexpr std::array<u16, 6> m_quadIndices
 	{
 		0, 1, 2, 2, 3, 0
 	};

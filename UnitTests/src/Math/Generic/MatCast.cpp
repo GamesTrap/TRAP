@@ -135,28 +135,28 @@ namespace
 
 TEST_CASE("TRAP::Math::Mat3Cast()", "[math][generic][mat3cast]")
 {
-    SECTION("Quat - double")
+    SECTION("Quat - f64")
     {
-        RunMat3CastTests<double>();
-        RunMat3CastEdgeTests<double>();
+        RunMat3CastTests<f64>();
+        RunMat3CastEdgeTests<f64>();
     }
-    SECTION("Quat - float")
+    SECTION("Quat - f32")
     {
-        RunMat3CastTests<float>();
-        RunMat3CastEdgeTests<float>();
+        RunMat3CastTests<f32>();
+        RunMat3CastEdgeTests<f32>();
     }
 }
 
 TEST_CASE("TRAP::Math::Mat4Cast()", "[math][generic][mat4cast]")
 {
-    SECTION("Quat - double")
+    SECTION("Quat - f64")
     {
-        RunMat4CastTests<double>();
-        RunMat4CastEdgeTests<double>();
+        RunMat4CastTests<f64>();
+        RunMat4CastEdgeTests<f64>();
     }
-    SECTION("Quat - float")
+    SECTION("Quat - f32")
     {
-        RunMat4CastTests<float>();
-        RunMat4CastEdgeTests<float>();
+        RunMat4CastTests<f32>();
+        RunMat4CastEdgeTests<f32>();
     }
 }

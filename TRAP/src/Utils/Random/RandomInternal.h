@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <iterator>
 
+#include "Core/Types.h"
+
 namespace TRAP::Utils::INTERNAL
 {
     /// <summary>
@@ -16,20 +18,20 @@ namespace TRAP::Utils::INTERNAL
     /// </summary>
     /// <typeparam name="T">Type applicable by std::uniform_int_distribution.</typeparam>
     template<typename T>
-    concept IsUniformInt = std::same_as<T,  int16_t> ||
-                           std::same_as<T,  int32_t> ||
-                           std::same_as<T,  int64_t> ||
-                           std::same_as<T, uint16_t> ||
-                           std::same_as<T, uint32_t> ||
-                           std::same_as<T, uint64_t>;
+    concept IsUniformInt = std::same_as<T,  i16> ||
+                           std::same_as<T,  i32> ||
+                           std::same_as<T,  i64> ||
+                           std::same_as<T, u16> ||
+                           std::same_as<T, u32> ||
+                           std::same_as<T, u64>;
 
     /// <summary>
     /// True if type T is applicable by a std::uniform_real_distribution.
     /// </summary>
     /// <typeparam name="T">Type applicable by std::uniform_real_distribution.</typeparam>
     template<typename T>
-    concept IsUniformReal = std::same_as<T,       float> ||
-                            std::same_as<T,      double> ||
+    concept IsUniformReal = std::same_as<T,       f32> ||
+                            std::same_as<T,      f64> ||
                             std::same_as<T, long double>;
 
     /// <summary>
@@ -37,8 +39,8 @@ namespace TRAP::Utils::INTERNAL
     /// </summary>
     /// <typeparam name="T">Byte type.</typeparam>
     template<typename T>
-    concept IsByte = std::same_as<T,  int8_t> ||
-                     std::same_as<T, uint8_t>;
+    concept IsByte = std::same_as<T,  i8> ||
+                     std::same_as<T, u8>;
 
     /// <summary>
     /// True if type T is plain number type.
@@ -72,9 +74,9 @@ namespace TRAP::Utils::INTERNAL
                               typename = typename std::iterator_traits<U>::reference,
                               typename = typename std::iterator_traits<U>::value_type,
                               typename = typename std::iterator_traits<U>::iterator_category>
-        static long Test([[maybe_unused]] U&& other) noexcept { return 0; }
+        static i64 Test([[maybe_unused]] U&& other) noexcept { return 0; }
     public:
-        static constexpr bool value = std::same_as<decltype(Test(std::declval<T>())), long>;
+        static constexpr bool value = std::same_as<decltype(Test(std::declval<T>())), i64>;
     };
 }
 

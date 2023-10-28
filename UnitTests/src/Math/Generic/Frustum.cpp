@@ -75,14 +75,14 @@ namespace
 
 TEST_CASE("TRAP::Math::Frustum()", "[math][generic][frustum]")
 {
-    SECTION("Mat4 - double")
+    SECTION("Mat4 - f64")
     {
-        RunCompileTimeFrustumTests<double>();
-        RunFrustumEdgeTests<double>();
+        RunCompileTimeFrustumTests<f64>();
+        RunFrustumEdgeTests<f64>();
     }
-    SECTION("Mat4 - float")
+    SECTION("Mat4 - f32")
     {
-        RunCompileTimeFrustumTests<float>();
-        RunFrustumEdgeTests<float>();
+        RunCompileTimeFrustumTests<f32>();
+        RunFrustumEdgeTests<f32>();
     }
 }

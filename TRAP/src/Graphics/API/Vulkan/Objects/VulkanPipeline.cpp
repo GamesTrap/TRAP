@@ -139,18 +139,18 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 	TRAP::Scope<VulkanRenderPass> renderPass = TRAP::MakeScope<VulkanRenderPass>(m_device, renderPassDesc);
 
 	TRAP_ASSERT(vShader->GetReflection()->StageReflections.size() == vShader->GetVkShaderModules().size(), "VulkanPipeline::InitGraphicsPipeline(): ShaderModule count doesn't match with reflection!");
-	for(uint32_t i = 0; i < vShader->GetReflection()->StageReflections.size(); ++i)
+	for(u32 i = 0; i < vShader->GetReflection()->StageReflections.size(); ++i)
 	{
 		TRAP_ASSERT(vShader->GetVkShaderModules()[i] != VK_NULL_HANDLE, "VulkanPipeline::InitGraphicsPipeline(): ShaderModule is nullptr!");
 	}
 
 	//Pipeline
 	{
-		std::size_t stageCount = 0;
+		usize stageCount = 0;
 		std::array<VkPipelineShaderStageCreateInfo, 5> stages{};
-		for(std::size_t i = 0; i < stages.size(); ++i)
+		for(usize i = 0; i < stages.size(); ++i)
 		{
-			const RendererAPI::ShaderStage stageMask = static_cast<RendererAPI::ShaderStage>(BIT(NumericCast<uint32_t>(i)));
+			const RendererAPI::ShaderStage stageMask = static_cast<RendererAPI::ShaderStage>(BIT(NumericCast<u32>(i)));
 			if (stageMask == (shaderProgram->GetShaderStages() & stageMask))
 			{
 				stages[stageCount].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -210,20 +210,20 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 		//Make sure there's a shader
 		TRAP_ASSERT(stageCount != 0, "VulkanPipeline::InitGraphicsPipeline(): No Shader stage found!");
 
-		uint32_t inputBindingCount = 0;
+		u32 inputBindingCount = 0;
 		std::vector<VkVertexInputBindingDescription> inputBindings(RendererAPI::GPUSettings.MaxVertexInputBindings);
-		uint32_t inputAttributeCount = 0;
+		u32 inputAttributeCount = 0;
 		std::vector<VkVertexInputAttributeDescription> inputAttributes(RendererAPI::GPUSettings.MaxVertexInputAttributes);
 
 		//Make sure there's attributes
 		if(vertexLayout != nullptr)
 		{
 			//Ignore everything that's beyond Max Vertex Attributes limit
-			const uint32_t attribCount = TRAP::Math::Min(vertexLayout->AttributeCount, RendererAPI::GPUSettings.MaxVertexInputAttributes);
-			uint32_t bindingValue = std::numeric_limits<uint32_t>::max();
+			const u32 attribCount = TRAP::Math::Min(vertexLayout->AttributeCount, RendererAPI::GPUSettings.MaxVertexInputAttributes);
+			u32 bindingValue = std::numeric_limits<u32>::max();
 
 			//Initial values
-			for(uint32_t i = 0; i < attribCount; ++i)
+			for(u32 i = 0; i < attribCount; ++i)
 			{
 				const RendererAPI::VertexAttribute& attribute = vertexLayout->Attributes[i];
 
@@ -318,12 +318,12 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 		if(graphicsDesc.BlendState) //Set affected render target mask for blending (only enable blending for supported formats)
 		{
 			graphicsDesc.BlendState->RenderTargetMask = {};
-			for(std::size_t i = 0; i < graphicsDesc.ColorFormats.size(); ++i)
+			for(usize i = 0; i < graphicsDesc.ColorFormats.size(); ++i)
 			{
 				const ImageFormat fmt = graphicsDesc.ColorFormats[i];
 				const auto formatProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(ImageFormatToVkFormat(fmt));
 				if((formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT) != 0u)
-					graphicsDesc.BlendState->RenderTargetMask |= static_cast<RendererAPI::BlendStateTargets>(BIT(NumericCast<uint32_t>(i)));
+					graphicsDesc.BlendState->RenderTargetMask |= static_cast<RendererAPI::BlendStateTargets>(BIT(NumericCast<u32>(i)));
 			}
 		}
 
@@ -358,7 +358,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 			dynamicStates.emplace_back(VK_DYNAMIC_STATE_FRAGMENT_SHADING_RATE_KHR);
 		const VkPipelineDynamicStateCreateInfo dy = VulkanInits::PipelineDynamicStateCreateInfo(dynamicStates);
 
-		VkGraphicsPipelineCreateInfo info = VulkanInits::GraphicsPipelineCreateInfo(NumericCast<uint32_t>(stageCount), stages.data(),
+		VkGraphicsPipelineCreateInfo info = VulkanInits::GraphicsPipelineCreateInfo(NumericCast<u32>(stageCount), stages.data(),
 																					vi, ia, vs, rs, ms, ds, cb, dy,
 																					std::dynamic_pointer_cast<VulkanRootSignature>(graphicsDesc.RootSignature)->GetVkPipelineLayout(),
 																					renderPass->GetVkRenderPass()
@@ -385,8 +385,8 @@ void TRAP::Graphics::API::VulkanPipeline::SetPipelineName(const std::string_view
 		return;
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<uint64_t>(m_vkPipeline), VK_OBJECT_TYPE_PIPELINE, name);
+	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkPipeline), VK_OBJECT_TYPE_PIPELINE, name);
 #else
-	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<uint64_t>(m_vkPipeline), VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_EXT, name);
+	VkSetObjectName(m_device->GetVkDevice(), std::bit_cast<u64>(m_vkPipeline), VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_EXT, name);
 #endif
 }

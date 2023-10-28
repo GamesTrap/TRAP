@@ -19,7 +19,7 @@
 
 discord::Core* core{};
 discord::Result lastRes = discord::Result::Ok;
-int64_t CurrentAppID = TRAP::Utils::Discord::TRAPDiscordAppID;
+i64 CurrentAppID = TRAP::Utils::Discord::TRAPDiscordAppID;
 TRAP::Utils::Discord::Activity CurrentActivity{};
 
 //Forward declares
@@ -29,7 +29,7 @@ void DiscordLogResult(discord::Result res);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Discord::Create([[maybe_unused]] const int64_t appID)
+bool TRAP::Utils::Discord::Create([[maybe_unused]] const i64 appID)
 {
 #ifdef USE_DISCORD_GAME_SDK
     TP_INFO(TRAP::Log::DiscordGameSDKPrefix, "Creating Discord");

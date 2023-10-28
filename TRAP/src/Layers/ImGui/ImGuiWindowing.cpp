@@ -40,8 +40,8 @@ namespace
 	{
 		TRAP::INTERNAL::WindowingAPI::InternalWindow* Window{};
 		bool WindowOwned{};
-		std::optional<int32_t> IgnoreWindowPosEventFrame = std::nullopt;
-		std::optional<int32_t> IgnoreWindowSizeEventFrame = std::nullopt;
+		std::optional<i32> IgnoreWindowPosEventFrame = std::nullopt;
+		std::optional<i32> IgnoreWindowSizeEventFrame = std::nullopt;
 
 		/// <summary>
 		/// Constructor.
@@ -72,7 +72,7 @@ namespace
 	{
 		TRAP::INTERNAL::WindowingAPI::InternalWindow* Window{};
 		TRAP::Graphics::RenderAPI ClientAPI{};
-		double Time{};
+		f64 Time{};
 		const TRAP::INTERNAL::WindowingAPI::InternalWindow* MouseWindow{};
 		std::array<TRAP::INTERNAL::WindowingAPI::InternalCursor*, ImGuiMouseCursor_COUNT> MouseCursors{};
 		ImVec2 LastValidMousePos = ImVec2(0.0f, 0.0f);
@@ -174,7 +174,7 @@ namespace
 			else if(keyName[0] >= 'a' && keyName[0] <= 'z')
 				key = static_cast<TRAP::Input::Key>(std::to_underlying(TRAP::Input::Key::A) + (keyName[0] - 'a'));
 			else if(it != charNames.cend())
-				key = charKeys[NumericCast<std::size_t>(it - charNames.cbegin())];
+				key = charKeys[NumericCast<usize>(it - charNames.cbegin())];
 		}
 
 		return key;
@@ -361,7 +361,7 @@ namespace
 		{
 			bd->LastValidMousePos = io.MousePos;
 			bd->MouseWindow = nullptr;
-			io.AddMousePosEvent(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
+			io.AddMousePosEvent(-std::numeric_limits<f32>::max(), -std::numeric_limits<f32>::max());
 		}
 	}
 
@@ -373,7 +373,7 @@ namespace
 	/// <param name="window">Affected window.</param>
 	/// <param name="xPos">Cursor x position of the window.</param>
 	/// <param name="yPos">Cursor y position of the window.</param>
-	void CursorPosCallback(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window, double xPos, double yPos)
+	void CursorPosCallback(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window, f64 xPos, f64 yPos)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -384,12 +384,12 @@ namespace
 		ImGuiIO& io = ImGui::GetIO();
 		if((io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) != 0)
 		{
-			int32_t windowX = 0, windowY = 0;
+			i32 windowX = 0, windowY = 0;
 			TRAP::INTERNAL::WindowingAPI::GetWindowPos(window, windowX, windowY);
 			xPos += windowX;
 			yPos += windowY;
 		}
-		bd->LastValidMousePos = ImVec2(NumericCast<float>(xPos), NumericCast<float>(yPos));
+		bd->LastValidMousePos = ImVec2(NumericCast<f32>(xPos), NumericCast<f32>(yPos));
 		io.AddMousePosEvent(bd->LastValidMousePos.x, bd->LastValidMousePos.y);
 	}
 
@@ -415,7 +415,7 @@ namespace
 
 		ImGuiIO& io = ImGui::GetIO();
 		if(std::to_underlying(mouseButton) < ImGuiMouseButton_COUNT)
-			io.AddMouseButtonEvent(NumericCast<int32_t>(std::to_underlying(mouseButton)), (state == TRAP::Input::KeyState::Pressed));
+			io.AddMouseButtonEvent(NumericCast<i32>(std::to_underlying(mouseButton)), (state == TRAP::Input::KeyState::Pressed));
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -426,8 +426,8 @@ namespace
 	/// <param name="window">Affected window.</param>
 	/// <param name="xOffset">Horizontal mouse wheel offset.</param>
 	/// <param name="yOffset">Vertical mouse wheel offset.</param>
-	void ScrollCallback(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window, const double xOffset,
-	                    const double yOffset)
+	void ScrollCallback(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window, const f64 xOffset,
+	                    const f64 yOffset)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -436,7 +436,7 @@ namespace
 			bd->PrevUserCallbackScroll(window, xOffset, yOffset);
 
 		ImGuiIO& io = ImGui::GetIO();
-		io.AddMouseWheelEvent(NumericCast<float>(xOffset), NumericCast<float>(yOffset));
+		io.AddMouseWheelEvent(NumericCast<f32>(xOffset), NumericCast<f32>(yOffset));
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -462,8 +462,8 @@ namespace
 		TRAP_ASSERT(bd->Window != nullptr, "ImGuiWindowing::KeyCallback(): bd->Window is nullptr!");
 		UpdateKeyModifiers(*bd->Window);
 
-		if(std::to_underlying(key) >= 0 && std::to_underlying(key) < NumericCast<int32_t>(bd->KeyOwnerWindows.size()))
-			bd->KeyOwnerWindows[NumericCast<std::size_t>(std::to_underlying(key))] = (state == TRAP::Input::KeyState::Pressed) ? &window : nullptr;
+		if(std::to_underlying(key) >= 0 && std::to_underlying(key) < NumericCast<i32>(bd->KeyOwnerWindows.size()))
+			bd->KeyOwnerWindows[NumericCast<usize>(std::to_underlying(key))] = (state == TRAP::Input::KeyState::Pressed) ? &window : nullptr;
 
 		key = TranslateUntranslateKey(key);
 
@@ -479,7 +479,7 @@ namespace
 	/// </summary>
 	/// <param name="window">Affected window.</param>
 	/// <param name="codePoint">UTF-32 code point.</param>
-	void CharCallback(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window, const uint32_t codePoint)
+	void CharCallback(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window, const u32 codePoint)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -572,13 +572,13 @@ namespace
 				//(rarely used, only when ImGuiConfigFlags_NavEnableSetMousePos is enabled by used)
 				//When multi-viewports are enabled, all Dear ImGui positions are same as OS positions.
 				if(io.WantSetMousePos)
-					TRAP::INTERNAL::WindowingAPI::SetCursorPos(*window, NumericCast<double>(mousePosPrev.x - viewport->Pos.x),
-														       NumericCast<double>(mousePosPrev.y - viewport->Pos.y));
+					TRAP::INTERNAL::WindowingAPI::SetCursorPos(*window, NumericCast<f64>(mousePosPrev.x - viewport->Pos.x),
+														       NumericCast<f64>(mousePosPrev.y - viewport->Pos.y));
 
 				//(Optional) Fallback to provide mouse position when focused (CursorPosCallback already provides this when hovered or captured)
 				if(bd->MouseWindow == nullptr)
 				{
-					double mouseX = 0.0, mouseY = 0.0;
+					f64 mouseX = 0.0, mouseY = 0.0;
 					TRAP::INTERNAL::WindowingAPI::GetCursorPos(*window, mouseX, mouseY);
 					if((io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) != 0)
 					{
@@ -586,13 +586,13 @@ namespace
 						//(io.MousePos is (0, 0) when the mouse is on the upper-left corner of the app window)
 						//Multi-viewport mode: mouse position in OS absolute coordinates
 						//(io.MousePos is (0, 0) when the mouse is on the upper-left of the primary monitor)
-						int32_t windowX = 0, windowY = 0;
+						i32 windowX = 0, windowY = 0;
 						TRAP::INTERNAL::WindowingAPI::GetWindowPos(*window, windowX, windowY);
 						mouseX += windowX;
 						mouseY += windowY;
 					}
 
-					bd->LastValidMousePos = ImVec2(NumericCast<float>(mouseX), NumericCast<float>(mouseY));
+					bd->LastValidMousePos = ImVec2(NumericCast<f32>(mouseX), NumericCast<f32>(mouseY));
 					io.AddMousePosEvent(bd->LastValidMousePos.x, bd->LastValidMousePos.y);
 				}
 			}
@@ -652,8 +652,8 @@ namespace
 				if(imguiCursor != ImGuiMouseCursor_Arrow)
 				{
 					//Show OS mouse cursor
-					TRAP::INTERNAL::WindowingAPI::SetCursor(*windowPtr, bd->MouseCursors[NumericCast<std::size_t>(imguiCursor)] != nullptr ?
-														    bd->MouseCursors[NumericCast<std::size_t>(imguiCursor)] :
+					TRAP::INTERNAL::WindowingAPI::SetCursor(*windowPtr, bd->MouseCursors[NumericCast<usize>(imguiCursor)] != nullptr ?
+														    bd->MouseCursors[NumericCast<usize>(imguiCursor)] :
 														    std::get<ImGuiMouseCursor_Arrow>(bd->MouseCursors));
 					TRAP::INTERNAL::WindowingAPI::SetCursorMode(*windowPtr, TRAP::INTERNAL::WindowingAPI::CursorMode::Normal);
 				}
@@ -687,7 +687,7 @@ namespace
 
 		#define MAP_BUTTON(KEY_NO, BUTTON_NO, _UNUSED) { io.AddKeyEvent(KEY_NO, TRAP::Input::IsControllerButtonPressed(TRAP::Input::Controller::One, BUTTON_NO)); }
 		#define MAP_DPAD(KEY_NO, DPAD_NO, _UNUSED) { io.AddKeyEvent(KEY_NO, static_cast<bool>(TRAP::Input::GetControllerDPad(TRAP::Input::Controller::One, 0) & (DPAD_NO))); }
-		#define MAP_ANALOG(KEY_NO, AXIS_NO, _UNUSED, V0, V1) { float v = TRAP::Input::GetControllerAxis(TRAP::Input::Controller::One, AXIS_NO); v = (v - (V0)) / ((V1) - (V0)); io.AddKeyAnalogEvent(KEY_NO, v > 0.10f, TRAP::Math::Clamp(v, 0.0f, 1.0f)); }
+		#define MAP_ANALOG(KEY_NO, AXIS_NO, _UNUSED, V0, V1) { f32 v = TRAP::Input::GetControllerAxis(TRAP::Input::Controller::One, AXIS_NO); v = (v - (V0)) / ((V1) - (V0)); io.AddKeyAnalogEvent(KEY_NO, v > 0.10f, TRAP::Math::Clamp(v, 0.0f, 1.0f)); }
 
 		io.BackendFlags |= ImGuiBackendFlags_HasGamepad;
 		MAP_BUTTON(ImGuiKey_GamepadStart, TRAP::Input::ControllerButton::Start, 7);
@@ -740,25 +740,25 @@ namespace
 				continue;
 
 			ImGuiPlatformMonitor monitor;
-			int32_t x = 0, y = 0;
+			i32 x = 0, y = 0;
 			TRAP::INTERNAL::WindowingAPI::GetMonitorPos(*n, x, y);
 			const std::optional<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> videoMode = TRAP::INTERNAL::WindowingAPI::GetVideoMode(*n);
 			if(!videoMode)
 				continue; // Failed to get Video mode
-			monitor.MainPos = monitor.WorkPos = ImVec2(NumericCast<float>(x), NumericCast<float>(y));
-			monitor.MainSize = monitor.WorkSize = ImVec2(NumericCast<float>(videoMode->Width), NumericCast<float>(videoMode->Height));
-			int32_t width = 0, height = 0;
+			monitor.MainPos = monitor.WorkPos = ImVec2(NumericCast<f32>(x), NumericCast<f32>(y));
+			monitor.MainSize = monitor.WorkSize = ImVec2(NumericCast<f32>(videoMode->Width), NumericCast<f32>(videoMode->Height));
+			i32 width = 0, height = 0;
 			TRAP::INTERNAL::WindowingAPI::GetMonitorWorkArea(*n, x, y, width, height);
 			if(width > 0 && height > 0)
 			{
-				monitor.WorkPos = ImVec2(NumericCast<float>(x), NumericCast<float>(y));
-				monitor.WorkSize = ImVec2(NumericCast<float>(width), NumericCast<float>(height));
+				monitor.WorkPos = ImVec2(NumericCast<f32>(x), NumericCast<f32>(y));
+				monitor.WorkSize = ImVec2(NumericCast<f32>(width), NumericCast<f32>(height));
 			}
 
 			//Warning: The validity of monitor DPI information on Windows depends on the application
 			//DPI awareness settings,
 			//which generally needs to be set in the manifest or at runtime.
-			float xScale = 0.0f, yScale = 0.0f;
+			f32 xScale = 0.0f, yScale = 0.0f;
 			TRAP::INTERNAL::WindowingAPI::GetMonitorContentScale(*n, xScale, yScale);
 			monitor.DpiScale = xScale;
 
@@ -808,7 +808,7 @@ namespace
 	/// <param name="xPos">New x position.</param>
 	/// <param name="yPos">New y position.</param>
 	void WindowPosCallback(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window,
-	                       [[maybe_unused]] const int32_t xPos, [[maybe_unused]] const int32_t yPos)
+	                       [[maybe_unused]] const i32 xPos, [[maybe_unused]] const i32 yPos)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -841,7 +841,7 @@ namespace
 	/// <param name="width">New width.</param>
 	/// <param name="height">New height.</param>
 	void WindowSizeCallback(const TRAP::INTERNAL::WindowingAPI::InternalWindow& window,
-	                        [[maybe_unused]] const int32_t width, [[maybe_unused]] const int32_t height)
+	                        [[maybe_unused]] const i32 width, [[maybe_unused]] const i32 height)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -884,15 +884,15 @@ namespace
 		TRAP::INTERNAL::WindowingAPI::WindowHint(TRAP::INTERNAL::WindowingAPI::Hint::FocusOnShow, false);
 		TRAP::INTERNAL::WindowingAPI::WindowHint(TRAP::INTERNAL::WindowingAPI::Hint::Decorated, (viewport->Flags & ImGuiViewportFlags_NoDecoration) == 0);
 		TRAP::INTERNAL::WindowingAPI::WindowHint(TRAP::INTERNAL::WindowingAPI::Hint::Floating, (viewport->Flags & ImGuiViewportFlags_TopMost) != 0);
-		vd->Window = TRAP::INTERNAL::WindowingAPI::CreateWindow(NumericCast<uint32_t>(viewport->Size.x),
-												                NumericCast<uint32_t>(viewport->Size.y), "No Title Yet", nullptr);
+		vd->Window = TRAP::INTERNAL::WindowingAPI::CreateWindow(NumericCast<u32>(viewport->Size.x),
+												                NumericCast<u32>(viewport->Size.y), "No Title Yet", nullptr);
 		vd->WindowOwned = true;
 		viewport->PlatformHandle = static_cast<void*>(vd->Window);
 	#ifdef TRAP_PLATFORM_WINDOWS
 		viewport->PlatformHandleRaw = TRAP::INTERNAL::WindowingAPI::GetWin32Window(*vd->Window);
 	#endif /*TRAP_PLATFORM_WINDOWS*/
-		TRAP::INTERNAL::WindowingAPI::SetWindowPos(*vd->Window, NumericCast<int32_t>(viewport->Pos.x),
-								                   NumericCast<int32_t>(viewport->Pos.y));
+		TRAP::INTERNAL::WindowingAPI::SetWindowPos(*vd->Window, NumericCast<i32>(viewport->Pos.x),
+								                   NumericCast<i32>(viewport->Pos.y));
 
 		//Install callbacks for secondary viewports
 		TRAP::INTERNAL::WindowingAPI::SetWindowFocusCallback(*vd->Window, WindowFocusCallback);
@@ -926,7 +926,7 @@ namespace
 				//Release any keys that were pressed in the window being destroyed and are still held down,
 				//because we will not receive any release events after window is destroyed.
 				const ImGuiTRAPData* const bd = GetBackendData();
-				for(std::size_t i = 0; i < bd->KeyOwnerWindows.size(); ++i)
+				for(usize i = 0; i < bd->KeyOwnerWindows.size(); ++i)
 				{
 					if(bd->KeyOwnerWindows[i] == vd->Window)
 						KeyCallback(*vd->Window, static_cast<TRAP::Input::Key>(i), TRAP::Input::KeyState::Released); //Later params are only used for main viewport, on which this function is never called.
@@ -978,10 +978,10 @@ namespace
 		const ImGuiViewportDataTRAP* const vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 		TRAP_ASSERT(vd != nullptr, "ImGuiWindowing::GetWindowPos(): vd is nullptr!");
 
-		int32_t x = 0, y = 0;
+		i32 x = 0, y = 0;
 		TRAP::INTERNAL::WindowingAPI::GetWindowPos(*vd->Window, x, y);
 
-		return ImVec2(NumericCast<float>(x), NumericCast<float>(y));
+		return ImVec2(NumericCast<f32>(x), NumericCast<f32>(y));
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1001,7 +1001,7 @@ namespace
 		TRAP_ASSERT(vd != nullptr, "ImGuiWindowing::SetWindowPos(): vd is nullptr!");
 
 		vd->IgnoreWindowPosEventFrame = ImGui::GetFrameCount();
-		TRAP::INTERNAL::WindowingAPI::SetWindowPos(*vd->Window, NumericCast<int32_t>(pos.x), NumericCast<int32_t>(pos.y));
+		TRAP::INTERNAL::WindowingAPI::SetWindowPos(*vd->Window, NumericCast<i32>(pos.x), NumericCast<i32>(pos.y));
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1020,10 +1020,10 @@ namespace
 		const ImGuiViewportDataTRAP* const vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 		TRAP_ASSERT(vd != nullptr, "ImGuiWindowing::GetWindowSize(): vd is nullptr!");
 
-		int32_t width = 0, height = 0;
+		i32 width = 0, height = 0;
 		TRAP::INTERNAL::WindowingAPI::GetWindowSize(*vd->Window, width, height);
 
-		return ImVec2(NumericCast<float>(width), NumericCast<float>(height));
+		return ImVec2(NumericCast<f32>(width), NumericCast<f32>(height));
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1044,7 +1044,7 @@ namespace
 
 		vd->IgnoreWindowSizeEventFrame = ImGui::GetFrameCount();
 
-		TRAP::INTERNAL::WindowingAPI::SetWindowSize(*vd->Window, NumericCast<int32_t>(size.x), NumericCast<int32_t>(size.y));
+		TRAP::INTERNAL::WindowingAPI::SetWindowSize(*vd->Window, NumericCast<i32>(size.x), NumericCast<i32>(size.y));
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1129,7 +1129,7 @@ namespace
 	/// </summary>
 	/// <param name="viewport">Viewport to set alpha value on.</param>
 	/// <param name="alpha">Alpha value.</param>
-	void SetWindowAlpha(ImGuiViewport* const viewport, float alpha)
+	void SetWindowAlpha(ImGuiViewport* const viewport, f32 alpha)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -1153,7 +1153,7 @@ namespace
 	/// <param name="vkAllocator">Vulkan allocator.</param>
 	/// <param name="outVkSurface">Output for Vulkan surface.</param>
 	/// <returns>Vulkan error code.</returns>
-	[[nodiscard]] int32_t CreateVkSurface(ImGuiViewport* const viewport, const ImU64 vkInstance,
+	[[nodiscard]] i32 CreateVkSurface(ImGuiViewport* const viewport, const ImU64 vkInstance,
 	                                      const void* const vkAllocator, ImU64* const outVkSurface)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -1169,7 +1169,7 @@ namespace
 															                   static_cast<const VkAllocationCallbacks*>(vkAllocator),
 															                   *reinterpret_cast<VkSurfaceKHR*>(outVkSurface));
 
-		return static_cast<int32_t>(err);
+		return static_cast<i32>(err);
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -1326,8 +1326,8 @@ void TRAP::INTERNAL::ImGuiWindowing::Shutdown()
 
 	for (ImGuiMouseCursor cursorN = 0; cursorN < ImGuiMouseCursor_COUNT; cursorN++)
 	{
-		WindowingAPI::DestroyCursor(bd->MouseCursors[NumericCast<std::size_t>(cursorN)]);
-		bd->MouseCursors[NumericCast<std::size_t>(cursorN)] = nullptr;
+		WindowingAPI::DestroyCursor(bd->MouseCursors[NumericCast<usize>(cursorN)]);
+		bd->MouseCursors[NumericCast<usize>(cursorN)] = nullptr;
 	}
 
 	io.BackendPlatformName = nullptr;
@@ -1346,22 +1346,22 @@ void TRAP::INTERNAL::ImGuiWindowing::NewFrame()
 	TRAP_ASSERT(bd != nullptr, "ImGuiWindowing::NewFrame(): Did you call ImGuiWindowing::Init()?");
 
 	//Setup display size (every frame to accommodate for window resizing)
-	int32_t width = 0, height = 0;
-	int32_t displayWidth = 0, displayHeight = 0;
+	i32 width = 0, height = 0;
+	i32 displayWidth = 0, displayHeight = 0;
 	WindowingAPI::GetWindowSize(*bd->Window, width, height);
 	WindowingAPI::GetFrameBufferSize(*bd->Window, displayWidth, displayHeight);
-	io.DisplaySize = ImVec2(NumericCast<float>(width), NumericCast<float>(height));
+	io.DisplaySize = ImVec2(NumericCast<f32>(width), NumericCast<f32>(height));
 	if (width > 0 && height > 0)
-		io.DisplayFramebufferScale = ImVec2(NumericCast<float>(displayWidth) / io.DisplaySize.x,
-		                                    NumericCast<float>(displayHeight) / io.DisplaySize.y);
+		io.DisplayFramebufferScale = ImVec2(NumericCast<f32>(displayWidth) / io.DisplaySize.x,
+		                                    NumericCast<f32>(displayHeight) / io.DisplaySize.y);
 	if (bd->WantUpdateMonitors)
 		UpdateMonitors();
 
 	//Setup time step
-	double currentTime = static_cast<double>(Application::GetTime());
+	f64 currentTime = static_cast<f64>(Application::GetTime());
 	if(currentTime <= bd->Time)
 		currentTime = bd->Time + 0.00001f;
-	io.DeltaTime = bd->Time > 0.0 ? NumericCast<float>(currentTime - bd->Time) : (1.0f / 60.0f);
+	io.DeltaTime = bd->Time > 0.0 ? NumericCast<f32>(currentTime - bd->Time) : (1.0f / 60.0f);
 	bd->Time = currentTime;
 
 	UpdateMouseData();

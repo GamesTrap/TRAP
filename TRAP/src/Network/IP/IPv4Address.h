@@ -75,7 +75,7 @@ namespace TRAP::Network
 		/// <param name="byte1">Second byte of the address.</param>
 		/// <param name="byte2">Third byte of the address.</param>
 		/// <param name="byte3">Fourth byte of the address.</param>
-		constexpr IPv4Address(uint8_t byte0, uint8_t byte1, uint8_t byte2, uint8_t byte3);
+		constexpr IPv4Address(u8 byte0, u8 byte1, u8 byte2, u8 byte3);
 
 		/// <summary>
 		/// Construct the address from a 32 bit integer.
@@ -86,7 +86,7 @@ namespace TRAP::Network
 		/// get that representation from IPv4Address::ToInteger().
 		/// </summary>
 		/// <param name="address">4 Bytes of the address packed into a 32 bit integer.</param>
-		constexpr explicit IPv4Address(uint32_t address);
+		constexpr explicit IPv4Address(u32 address);
 
 		/// <summary>
 		/// Get a string representation of the address.
@@ -108,7 +108,7 @@ namespace TRAP::Network
 		/// back to a TRAP::Network::IPv4Address with the proper constructor.
 		/// </summary>
 		/// <returns>32 bit unsigned integer representation of the address.</returns>
-		[[nodiscard]] constexpr uint32_t ToInteger() const;
+		[[nodiscard]] constexpr u32 ToInteger() const;
 
 		/// <summary>
 		/// Get the computer's local address.
@@ -163,7 +163,7 @@ namespace TRAP::Network
 		/// <param name="address">Address string.</param>
 		void Resolve(std::string_view address);
 
-		uint32_t m_address; //Address stored as an unsigned 32 bit integer
+		u32 m_address; //Address stored as an unsigned 32 bit integer
 		bool m_valid; //Is the address valid?
 	};
 
@@ -190,10 +190,10 @@ namespace TRAP::Network
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Network::IPv4Address::IPv4Address(const uint8_t byte0, const uint8_t byte1, const uint8_t byte2,
-                                                  const uint8_t byte3)
-	: m_address((NumericCast<uint32_t>(byte0) << 24u) | (NumericCast<uint32_t>(byte1) << 16u) |
-	             (NumericCast<uint32_t>(byte2) << 8u) | NumericCast<uint32_t>(byte3)), m_valid(true)
+constexpr TRAP::Network::IPv4Address::IPv4Address(const u8 byte0, const u8 byte1, const u8 byte2,
+                                                  const u8 byte3)
+	: m_address((NumericCast<u32>(byte0) << 24u) | (NumericCast<u32>(byte1) << 16u) |
+	             (NumericCast<u32>(byte2) << 8u) | NumericCast<u32>(byte3)), m_valid(true)
 {
 	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(m_address);
@@ -201,7 +201,7 @@ constexpr TRAP::Network::IPv4Address::IPv4Address(const uint8_t byte0, const uin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Network::IPv4Address::IPv4Address(const uint32_t address)
+constexpr TRAP::Network::IPv4Address::IPv4Address(const u32 address)
 	: m_address(address), m_valid(true)
 {
 	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
@@ -210,9 +210,9 @@ constexpr TRAP::Network::IPv4Address::IPv4Address(const uint32_t address)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Network::IPv4Address::ToInteger() const
+[[nodiscard]] constexpr u32 TRAP::Network::IPv4Address::ToInteger() const
 {
-	uint32_t address = m_address;
+	u32 address = m_address;
 
 	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(address);

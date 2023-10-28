@@ -22,8 +22,8 @@ private:
 
 	TRAP::SceneCamera m_camera{};
 
-	uint32_t m_maxAnisotropyLevelIdx = 0;
-	uint32_t m_currAnisotropyLevelIdx = 0;
+	u32 m_maxAnisotropyLevelIdx = 0;
+	u32 m_currAnisotropyLevelIdx = 0;
 };
 
 #endif /*GAMESTRAP_ANISOTROPYESTS_H*/

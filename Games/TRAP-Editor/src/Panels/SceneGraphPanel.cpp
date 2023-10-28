@@ -59,7 +59,7 @@ void TRAP::SceneGraphPanel::DrawEntityNode(Entity entity)
 	auto& tag = entity.GetComponent<TagComponent>().Tag;
 
 	const ImGuiTreeNodeFlags flags = ((m_selectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-	const bool opened = ImGui::TreeNodeEx(reinterpret_cast<void*>(NumericCast<uint64_t>(static_cast<uint32_t>(entity))), flags, "%s", tag.c_str());
+	const bool opened = ImGui::TreeNodeEx(reinterpret_cast<void*>(NumericCast<u64>(static_cast<u32>(entity))), flags, "%s", tag.c_str());
 	if(ImGui::IsItemClicked())
 		m_selectionContext = entity;
 
@@ -87,8 +87,8 @@ void TRAP::SceneGraphPanel::DrawEntityNode(Entity entity)
 
 static void DrawVec3Control(const std::string& label, //TODO can be replaced with std::string_view?!
                             TRAP::Math::Vec3& values,
-                            const float resetValues = 0.0f,
-                            const float columnWidth = 100.0f)
+                            const f32 resetValues = 0.0f,
+                            const f32 columnWidth = 100.0f)
 {
 	ImGuiIO& io = ImGui::GetIO();
 	auto* const boldFont = io.Fonts->Fonts[0];
@@ -103,7 +103,7 @@ static void DrawVec3Control(const std::string& label, //TODO can be replaced wit
 	ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 
-	const float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+	const f32 lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 	const ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
 
 	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.1f, 0.15f, 1.0f));
@@ -169,7 +169,7 @@ void DrawComponent(const std::string& name, TRAP::Entity& entity, UIFunction fun
 		const ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4.0f, 4.0f });
-		const float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+		const f32 lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 		ImGui::Separator();
 		const bool open = ImGui::TreeNodeEx(reinterpret_cast<void*>(typeid(T).hash_code()), treeNodeFlags, "%s", name.c_str());
 		ImGui::PopStyleVar();
@@ -218,7 +218,7 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 		if(ImGui::IsItemHovered(/*ImGuiHoveredFlags_DelayShort*/)) //TODO
 		{
 			ImGui::BeginTooltip();
-			ImGui::Text("UID: %lu", static_cast<uint64_t>(uid));
+			ImGui::Text("UID: %lu", static_cast<u64>(uid));
 			ImGui::EndTooltip();
 		}
 	}
@@ -262,7 +262,7 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 		const char* currentProjectionTypeString = projectionTypeStrings[std::to_underlying(camera.GetProjectionType())].data();
 		if (ImGui::BeginCombo("Projection", currentProjectionTypeString))
 		{
-			for (uint32_t i = 0; i < projectionTypeStrings.size(); i++)
+			for (u32 i = 0; i < projectionTypeStrings.size(); i++)
 			{
 				const bool isSelected = std::string_view(currentProjectionTypeString) == projectionTypeStrings[i];
 				if (ImGui::Selectable(projectionTypeStrings[i].data(), isSelected))
@@ -280,26 +280,26 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 
 		if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
 		{
-			float perspectiveVerticalFOV = Math::Degrees(camera.GetPerspectiveVerticalFOV());
+			f32 perspectiveVerticalFOV = Math::Degrees(camera.GetPerspectiveVerticalFOV());
 			if (ImGui::DragFloat("Vertical FOV", &perspectiveVerticalFOV, 0.25f, 0.0f, 120.0f))
 				camera.SetPerspectiveVerticalFOV(Math::Radians(perspectiveVerticalFOV));
 
-			float perspectiveNear = camera.GetPerspectiveNearClip();
+			f32 perspectiveNear = camera.GetPerspectiveNearClip();
 			if (ImGui::DragFloat("Near", &perspectiveNear))
 				camera.SetPerspectiveNearClip(perspectiveNear);
 		}
 
 		if (camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
 		{
-			float orthoSize = camera.GetOrthographicSize();
+			f32 orthoSize = camera.GetOrthographicSize();
 			if (ImGui::DragFloat("Size", &orthoSize))
 				camera.SetOrthographicSize(orthoSize);
 
-			float orthoNear = camera.GetOrthographicNearClip();
+			f32 orthoNear = camera.GetOrthographicNearClip();
 			if (ImGui::DragFloat("Near", &orthoNear))
 				camera.SetOrthographicNearClip(orthoNear);
 
-			float orthoFar = camera.GetOrthographicFarClip();
+			f32 orthoFar = camera.GetOrthographicFarClip();
 			if (ImGui::DragFloat("Far", &orthoFar))
 				camera.SetOrthographicFarClip(orthoFar);
 
@@ -325,7 +325,7 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 		const char* currentBodyTypeString = bodyTypeStrings[std::to_underlying(component.Type)].data();
 		if(ImGui::BeginCombo("Body Type", currentBodyTypeString))
 		{
-			for(uint32_t i = 0; i < bodyTypeStrings.size(); ++i)
+			for(u32 i = 0; i < bodyTypeStrings.size(); ++i)
 			{
 				const bool isSelected = std::string_view(currentBodyTypeString) == bodyTypeStrings[i];
 				if(ImGui::Selectable(bodyTypeStrings[i].data(), isSelected))

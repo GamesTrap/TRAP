@@ -4,7 +4,7 @@
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Buffer.h"
 
-[[nodiscard]] TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(const std::span<const float> vertices,
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(const std::span<const f32> vertices,
                                                                                              const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
@@ -14,7 +14,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(const uint64_t size,
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(const u64 size,
                                                                                              const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
@@ -24,7 +24,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint64_t TRAP::Graphics::VertexBuffer::GetSize() const noexcept
+[[nodiscard]] u64 TRAP::Graphics::VertexBuffer::GetSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -33,11 +33,11 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint32_t TRAP::Graphics::VertexBuffer::GetCount() const noexcept
+[[nodiscard]] u32 TRAP::Graphics::VertexBuffer::GetCount() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return NumericCast<uint32_t>(m_vertexBuffer->GetSize() / NumericCast<uint64_t>(m_bufferLayout.GetStride()));
+	return NumericCast<u32>(m_vertexBuffer->GetSize() / NumericCast<u64>(m_bufferLayout.GetStride()));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -70,7 +70,7 @@ void TRAP::Graphics::VertexBuffer::Use() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VertexBuffer::SetData(const std::span<const float> data, const uint64_t offset)
+void TRAP::Graphics::VertexBuffer::SetData(const std::span<const f32> data, const u64 offset)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -81,7 +81,7 @@ void TRAP::Graphics::VertexBuffer::SetData(const std::span<const float> data, co
 	desc.Buffer = m_vertexBuffer;
 	desc.DstOffset = offset;
 	API::ResourceLoader::BeginUpdateResource(desc);
-	std::copy_n(data.data(), data.size(), static_cast<float*>(desc.MappedData));
+	std::copy_n(data.data(), data.size(), static_cast<f32*>(desc.MappedData));
 	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_token);
 }
 
@@ -105,7 +105,7 @@ void TRAP::Graphics::VertexBuffer::AwaitLoading() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Init(const float* const vertices, const uint64_t size,
+[[nodiscard]] TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Init(const f32* const vertices, const u64 size,
  																		                   const UpdateFrequency updateFrequency)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);

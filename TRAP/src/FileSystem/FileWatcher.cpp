@@ -209,7 +209,7 @@ void TRAP::FileSystem::FileWatcher::Shutdown()
         return;
     }
 #elif defined(TRAP_PLATFORM_LINUX)
-    const uint64_t value = 1;
+    const u64 value = 1;
     ssize_t toSend = sizeof(value);
     do
     {
@@ -245,7 +245,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
     //Thread init
     std::vector<Events::FileChangeEvent> events;
 
-    std::vector<uintptr_t> dirHandles{}; //Don't use void* as type for vector.
+    std::vector<uptr> dirHandles{}; //Don't use void* as type for vector.
     dirHandles.reserve(m_paths.size());
     for(const auto& path : m_paths)
     {
@@ -259,7 +259,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
             continue;
         }
 
-        dirHandles.push_back(reinterpret_cast<uintptr_t>(handle));
+        dirHandles.push_back(reinterpret_cast<uptr>(handle));
     }
 
     OVERLAPPED pollingOverlap;
@@ -277,7 +277,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
     //Thread work loop
     while(m_run)
     {
-        for(std::size_t i = 0; i < bufs.size(); ++i)
+        for(usize i = 0; i < bufs.size(); ++i)
         {
             const BOOL result = ReadDirectoryChangesW(reinterpret_cast<HANDLE>(dirHandles[i]), bufs[i].data(), NumericCast<DWORD>(bufs[i].size()),
                                                       m_recursive, FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME |
@@ -286,7 +286,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
             if(!result)
             {
                 TP_ERROR(Log::FileWatcherWindowsPrefix, "Failed to read directory changes (", Utils::String::GetStrError(), ")");
-                for(uintptr_t& handle : dirHandles)
+                for(uptr& handle : dirHandles)
                 {
                     if(!CloseHandle(reinterpret_cast<HANDLE>(handle)))
                         TP_ERROR(Log::FileWatcherWindowsPrefix, "Failed to close directory handle (", Utils::String::GetStrError(), ")");
@@ -305,9 +305,9 @@ void TRAP::FileSystem::FileWatcher::Watch()
 
         std::wstring oldName;
 
-        for(std::size_t i = 0; i < bufs.size(); ++i)
+        for(usize i = 0; i < bufs.size(); ++i)
         {
-            uint32_t offset = 0;
+            u32 offset = 0;
             const FILE_NOTIFY_INFORMATION* notify;
 
             do
@@ -318,7 +318,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
                     offset += notify->NextEntryOffset;
                     continue;
                 }
-                const std::size_t filenameLength = notify->FileNameLength / sizeof(wchar_t);
+                const usize filenameLength = notify->FileNameLength / sizeof(wchar_t);
 
                 const std::filesystem::path filePath = (m_paths[i] / std::filesystem::path(std::wstring(notify->FileName, filenameLength)));
                 FileStatus status;
@@ -373,7 +373,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
     }
 
     //Thread cleanup
-    for(uintptr_t& handle : dirHandles)
+    for(uptr& handle : dirHandles)
     {
         if(!CloseHandle(reinterpret_cast<HANDLE>(handle)))
             TP_ERROR(Log::FileWatcherWindowsPrefix, "Failed to close directory handle (", Utils::String::GetStrError(), ")");
@@ -413,7 +413,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
     }
 
     //Storing watch descriptor and the according path
-    std::unordered_map<int32_t, std::filesystem::path> watchDescriptors;
+    std::unordered_map<i32, std::filesystem::path> watchDescriptors;
 
     //Lambda function for shutting down when an error has occurred
     const auto ErrorShutdown = [this, &watchDescriptors, &fileDescriptors]()
@@ -432,7 +432,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
 
     for(const auto& path : m_paths)
     {
-        const int32_t wd = inotify_add_watch(std::get<0>(fileDescriptors).fd, path.string().c_str(),
+        const i32 wd = inotify_add_watch(std::get<0>(fileDescriptors).fd, path.string().c_str(),
                                              IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO);
 
         if(wd < 0)
@@ -453,7 +453,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
 
             for(const auto& p : it)
             {
-                const int32_t wd1 = inotify_add_watch(std::get<0>(fileDescriptors).fd, p.path().string().c_str(),
+                const i32 wd1 = inotify_add_watch(std::get<0>(fileDescriptors).fd, p.path().string().c_str(),
                                                       IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO);
 
                 if(wd1 < 0)
@@ -473,7 +473,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
     //Thread work loop
     while(m_run)
     {
-        const int32_t ready = poll(fileDescriptors.data(), fileDescriptors.size(), -1);
+        const i32 ready = poll(fileDescriptors.data(), fileDescriptors.size(), -1);
         if(ready < 0)
         {
             TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to poll events (", Utils::String::GetStrError(), ")");
@@ -490,7 +490,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
         }
         if((std::get<1>(fileDescriptors).revents & POLLIN) != 0)
         {
-            uint64_t value = 0;
+            u64 value = 0;
             const ssize_t len = read(std::get<1>(fileDescriptors).fd, &value, sizeof(value));
             if(len < 0)
             {
@@ -526,8 +526,8 @@ void TRAP::FileSystem::FileWatcher::Watch()
             return;
         }
 
-        std::size_t offset = 0;
-        while(offset < NumericCast<std::size_t>(len)) //Process events
+        usize offset = 0;
+        while(offset < NumericCast<usize>(len)) //Process events
         {
             const inotify_event* const event = reinterpret_cast<const inotify_event*>(buf.data() + offset); //Must use reinterpret_cast because of flexible array member
             if(event->len == 0u)
@@ -545,7 +545,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
             {
                 if(isDir && m_recursive) //Add to tracking list
                 {
-                    const int32_t wd = inotify_add_watch(std::get<0>(fileDescriptors).fd, filePath.string().c_str(),
+                    const i32 wd = inotify_add_watch(std::get<0>(fileDescriptors).fd, filePath.string().c_str(),
                                                             IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO);
 
                     if(wd < 0)

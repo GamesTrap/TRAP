@@ -83,7 +83,7 @@ struct InputTextCallbackUserData
 
 namespace
 {
-	[[nodiscard]] int32_t InputTextCallback(ImGuiInputTextCallbackData* const data)
+	[[nodiscard]] i32 InputTextCallback(ImGuiInputTextCallbackData* const data)
 	{
 		TRAP_ASSERT(data != nullptr, "ImGuiLayer::InputTextCallback(): data is nullptr!");
 		if(data == nullptr)
@@ -101,7 +101,7 @@ namespace
 			TRAP_ASSERT(userData->Str != nullptr, "ImGuiLayer::InputTextCallback(): userData->Str is nullptr!");
 			std::string& str = *userData->Str;
 			TRAP_ASSERT(data->Buf == str.c_str(), "ImGuiLayer::InputTextCallback(): String pointers data->Buf and str.c_str() aren't the same!");
-			str.resize(NumericCast<std::size_t>(data->BufTextLen));
+			str.resize(NumericCast<usize>(data->BufTextLen));
 			data->Buf = str.data();
 		}
 		else if(userData->ChainCallback != nullptr)
@@ -142,17 +142,17 @@ void TRAP::ImGuiLayer::OnAttach()
 	io.IniFilename = m_imguiIniPath.c_str();
 
 	const auto contentScale = Application::GetWindow()->GetContentScale();
-	float scaleFactor = 1.0f;
+	f32 scaleFactor = 1.0f;
 	if (contentScale.x() > 1.0f || contentScale.y() > 1.0f)
 		scaleFactor = contentScale.x();
 
 	ImFontConfig fontConfig;
 	fontConfig.FontDataOwnedByAtlas = false; //This makes the const_cast below safe.
-	io.Fonts->AddFontFromMemoryTTF(const_cast<uint8_t*>(Embed::OpenSansBoldTTFData.data()),
-	                               NumericCast<int32_t>(Embed::OpenSansBoldTTFData.size()),
+	io.Fonts->AddFontFromMemoryTTF(const_cast<u8*>(Embed::OpenSansBoldTTFData.data()),
+	                               NumericCast<i32>(Embed::OpenSansBoldTTFData.size()),
 								   scaleFactor * 18.0f, &fontConfig);
-	io.FontDefault = io.Fonts->AddFontFromMemoryTTF(const_cast<uint8_t*>(Embed::OpenSansTTFData.data()),
-	                                                NumericCast<int32_t>(Embed::OpenSansTTFData.size()),
+	io.FontDefault = io.Fonts->AddFontFromMemoryTTF(const_cast<u8*>(Embed::OpenSansTTFData.data()),
+	                                                NumericCast<i32>(Embed::OpenSansTTFData.size()),
 													scaleFactor * 18.0f, &fontConfig);
 
 	//Setup Dear ImGui style
@@ -314,7 +314,7 @@ void TRAP::ImGuiLayer::Begin()
 
 		//Cant use TRAP::Graphics::RenderCommand::StartRenderPass() here, because it would also bind the shading rate image
 		vkCmdBuffer->BindRenderTargets({ rT }, nullptr, nullptr, nullptr, nullptr,
-		                               std::numeric_limits<uint32_t>::max(), std::numeric_limits<uint32_t>::max());
+		                               std::numeric_limits<u32>::max(), std::numeric_limits<u32>::max());
 
 		//Only apply MSAA if no RenderScale is used (else it got already resolved to a non-MSAA texture)
 		if(aaMethod == TRAP::Graphics::AntiAliasing::MSAA && viewportData.RenderScale == 1.0f)
@@ -338,8 +338,8 @@ void TRAP::ImGuiLayer::End()
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
 	ImGuiIO& io = ImGui::GetIO();
-	io.DisplaySize = ImVec2(NumericCast<float>(Application::GetWindow()->GetFrameBufferSize().x()),
-	                        NumericCast<float>(Application::GetWindow()->GetFrameBufferSize().y()));
+	io.DisplaySize = ImVec2(NumericCast<f32>(Application::GetWindow()->GetFrameBufferSize().x()),
+	                        NumericCast<f32>(Application::GetWindow()->GetFrameBufferSize().y()));
 
 	//Rendering
 	ImGui::Render();
@@ -412,7 +412,7 @@ void TRAP::ImGuiLayer::SetImGuizmoStyle()
 
 	ImGuizmo::Style& style = ImGuizmo::GetStyle();
 
-	static constexpr float ScaleFactor = 2.0f;
+	static constexpr f32 ScaleFactor = 2.0f;
 
 	style.TranslationLineThickness *= ScaleFactor;
 	style.TranslationLineArrowSize *= ScaleFactor;
@@ -488,7 +488,7 @@ bool ImGui::ImageButton(const TRAP::Ref<TRAP::Graphics::Texture>& image, const I
 												                vkImage, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 		VkImageView imgView = vkImage->GetSRVVkImageView();
-		std::size_t imgViewHash = 0;
+		usize imgViewHash = 0;
 		TRAP::Utils::HashCombine(imgViewHash, imgView);
 		const ImGuiID imgViewID = static_cast<ImGuiID>(imgViewHash); //Intended narrowing
 
@@ -540,7 +540,7 @@ bool ImGui::InputTextWithHint(const std::string_view label, const std::string_vi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ImFont* ImGui::AddFontFromFileTTF(const std::string_view filename, const float sizePixels,
+ImFont* ImGui::AddFontFromFileTTF(const std::string_view filename, const f32 sizePixels,
 							      const ImFontConfig* const fontCfgTemplate, const ImWchar* const glyphRanges)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -559,14 +559,14 @@ ImFont* ImGui::AddFontFromFileTTF(const std::string_view filename, const float s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ImFont* ImGui::AddFontFromMemoryTTF(const std::span<const uint8_t> fontData, const float sizePixels,
+ImFont* ImGui::AddFontFromMemoryTTF(const std::span<const u8> fontData, const f32 sizePixels,
 								    const ImFontConfig* const fontCfg, const ImWchar* const glyphRanges)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
 	//Add font like normally
-	ImFont* const font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(const_cast<uint8_t*>(fontData.data()),
-	                                                                NumericCast<int32_t>(fontData.size_bytes()),
+	ImFont* const font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(const_cast<u8*>(fontData.data()),
+	                                                                NumericCast<i32>(fontData.size_bytes()),
 																	sizePixels, fontCfg, glyphRanges);
 
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)

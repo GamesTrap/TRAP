@@ -113,16 +113,16 @@ namespace
 
 TEST_CASE("TRAP::Math::Pitch()", "[math][generic][pitch]")
 {
-    SECTION("Quat - double")
+    SECTION("Quat - f64")
     {
-        RunPitchRunTimeTests<double>();
-        RunPitchCompileTimeTests<double>();
-        RunPitchEdgeTests<double>();
+        RunPitchRunTimeTests<f64>();
+        RunPitchCompileTimeTests<f64>();
+        RunPitchEdgeTests<f64>();
     }
-    SECTION("Quat - float")
+    SECTION("Quat - f32")
     {
-        RunPitchRunTimeTests<float>();
-        RunPitchCompileTimeTests<float>();
-        RunPitchEdgeTests<float>();
+        RunPitchRunTimeTests<f32>();
+        RunPitchCompileTimeTests<f32>();
+        RunPitchEdgeTests<f32>();
     }
 }

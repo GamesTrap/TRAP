@@ -17,8 +17,8 @@ namespace TRAP::INTERNAL
 		/// <param name="format">Color format of the pixel data.</param>
 		/// <param name="pixelData">Raw pixel data.</param>
 		template<typename T>
-		requires std::same_as<T, std::uint8_t> || std::same_as<T, std::uint16_t> || std::same_as<T, float>
-		CustomImage(std::filesystem::path filepath, uint32_t width, uint32_t height, ColorFormat format,
+		requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
+		CustomImage(std::filesystem::path filepath, u32 width, u32 height, ColorFormat format,
 		            std::vector<T> pixelData);
 		/// <summary>
 		/// Copy constructor.
@@ -50,18 +50,18 @@ namespace TRAP::INTERNAL
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		[[nodiscard]] constexpr uint64_t GetPixelDataSize() const noexcept override;
+		[[nodiscard]] constexpr u64 GetPixelDataSize() const noexcept override;
 
 	private:
-		std::vector<uint8_t> m_data;
-		std::vector<uint16_t> m_data2Byte;
-		std::vector<float> m_dataHDR;
+		std::vector<u8> m_data;
+		std::vector<u16> m_data2Byte;
+		std::vector<f32> m_dataHDR;
 	};
 }
 
 template<typename T>
-requires std::same_as<T, std::uint8_t> || std::same_as<T, std::uint16_t> || std::same_as<T, float>
-TRAP::INTERNAL::CustomImage::CustomImage(std::filesystem::path filepath, const uint32_t width, const uint32_t height,
+requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
+TRAP::INTERNAL::CustomImage::CustomImage(std::filesystem::path filepath, const u32 width, const u32 height,
                                          const ColorFormat format, std::vector<T> pixelData)
 	: Image(std::move(filepath), width, height, format)
 {
@@ -80,12 +80,12 @@ TRAP::INTERNAL::CustomImage::CustomImage(std::filesystem::path filepath, const u
 
 	m_bitsPerPixel = sizeof(T) * 8u * std::to_underlying(m_colorFormat);
 
-	if constexpr(std::same_as<T, float>)
+	if constexpr(std::same_as<T, f32>)
 	{
 		m_isHDR = true;
 		m_dataHDR = std::move(pixelData);
 	}
-	else if constexpr (std::same_as<T, uint16_t>)
+	else if constexpr (std::same_as<T, u16>)
 	{
 		m_isHDR = false;
 		m_data2Byte = std::move(pixelData);
@@ -112,13 +112,13 @@ TRAP::INTERNAL::CustomImage::CustomImage(std::filesystem::path filepath, const u
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint64_t TRAP::INTERNAL::CustomImage::GetPixelDataSize() const noexcept
+[[nodiscard]] constexpr u64 TRAP::INTERNAL::CustomImage::GetPixelDataSize() const noexcept
 {
 	if(!m_dataHDR.empty())
-		return m_dataHDR.size() * sizeof(float);
+		return m_dataHDR.size() * sizeof(f32);
 
 	if(!m_data2Byte.empty())
-		return m_data2Byte.size() * sizeof(uint16_t);
+		return m_data2Byte.size() * sizeof(u16);
 
 	return m_data.size();
 }

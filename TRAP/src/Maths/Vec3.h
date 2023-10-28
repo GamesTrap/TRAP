@@ -54,8 +54,8 @@ namespace TRAP::Math
 		using const_reference = const value_type&;
 		using iterator = std::array<T, 3>::iterator;
 		using const_iterator = std::array<T, 3>::const_iterator;
-		using size_type = uint32_t;
-		using difference_type = std::ptrdiff_t;
+		using size_type = u32;
+		using difference_type = isize;
 		using reverse_iterator = std::array<T, 3>::reverse_iterator;
 		using const_reverse_iterator = std::array<T, 3>::const_reverse_iterator;
 
@@ -105,7 +105,7 @@ public:
 		/// Retrieve the count of components of the vector.
 		/// </summary>
 		/// <returns>Count of components.</returns>
-		[[nodiscard]] static constexpr std::size_t Length() noexcept;
+		[[nodiscard]] static constexpr usize Length() noexcept;
 
 		//Component accesses
 		[[nodiscard]] constexpr T& x() noexcept;
@@ -115,11 +115,11 @@ public:
 		[[nodiscard]] constexpr T& z() noexcept;
 		[[nodiscard]] constexpr const T& z() const noexcept;
 
-		[[nodiscard]] constexpr T& operator[](std::size_t i) noexcept;
-		[[nodiscard]] constexpr const T& operator[](std::size_t i) const noexcept;
+		[[nodiscard]] constexpr T& operator[](usize i) noexcept;
+		[[nodiscard]] constexpr const T& operator[](usize i) const noexcept;
 
-		[[nodiscard]] T& at(std::size_t i);
-		[[nodiscard]] const T& at(std::size_t i) const;
+		[[nodiscard]] T& at(usize i);
+		[[nodiscard]] const T& at(usize i) const;
 
 		//Iterator
 		[[nodiscard]] constexpr const_iterator begin() const noexcept;
@@ -165,8 +165,8 @@ public:
 		//Increment and decrement operators
 		constexpr Vec<3, T>& operator++() noexcept;
 		constexpr Vec<3, T>& operator--() noexcept;
-		constexpr const Vec<3, T> operator++(int32_t) noexcept;
-		constexpr const Vec<3, T> operator--(int32_t) noexcept;
+		constexpr const Vec<3, T> operator++(i32) noexcept;
+		constexpr const Vec<3, T> operator--(i32) noexcept;
 
 		//Unary bit operators
 		template<typename U>
@@ -365,9 +365,9 @@ namespace std
 	requires std::is_arithmetic_v<T>
 	struct hash<TRAP::Math::Vec<3, T>>
 	{
-		[[nodiscard]] constexpr std::size_t operator()(const TRAP::Math::Vec<3, T>& v) const noexcept
+		[[nodiscard]] constexpr usize operator()(const TRAP::Math::Vec<3, T>& v) const noexcept
 		{
-			std::size_t seed = 0;
+			usize seed = 0;
 			hash<T> hasher;
 			TRAP::Utils::HashCombine(seed, hasher(v.x()), hasher(v.y()), hasher(v.z()));
 			return seed;
@@ -442,7 +442,7 @@ constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<4, U>& v) noexcept
 
 template <class T>
 requires std::is_arithmetic_v<T>
-[[nodiscard]] constexpr std::size_t TRAP::Math::Vec<3, T>::Length() noexcept
+[[nodiscard]] constexpr usize TRAP::Math::Vec<3, T>::Length() noexcept
 {
 	return 3;
 }
@@ -494,21 +494,21 @@ requires std::is_arithmetic_v<T>
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-[[nodiscard]] constexpr T& TRAP::Math::Vec<3, T>::operator[](const std::size_t i) noexcept
+[[nodiscard]] constexpr T& TRAP::Math::Vec<3, T>::operator[](const usize i) noexcept
 {
 	return data[i];
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-[[nodiscard]] constexpr const T& TRAP::Math::Vec<3, T>::operator[](const std::size_t i) const noexcept
+[[nodiscard]] constexpr const T& TRAP::Math::Vec<3, T>::operator[](const usize i) const noexcept
 {
 	return data[i];
 }
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-[[nodiscard]] T& TRAP::Math::Vec<3, T>::at(const std::size_t i)
+[[nodiscard]] T& TRAP::Math::Vec<3, T>::at(const usize i)
 {
 	TRAP_ASSERT(i < this->Length(), "Math::Vec<3, T>::at(): Index out of range!");
 
@@ -517,7 +517,7 @@ requires std::is_arithmetic_v<T>
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-[[nodiscard]] const T& TRAP::Math::Vec<3, T>::at(const std::size_t i) const
+[[nodiscard]] const T& TRAP::Math::Vec<3, T>::at(const usize i) const
 {
 	TRAP_ASSERT(i < this->Length(), "Math::Vec<3, T>::at(): Index out of range!");
 
@@ -753,7 +753,7 @@ constexpr TRAP::Math::Vec<3, T>& TRAP::Math::Vec<3, T>::operator--() noexcept
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr const TRAP::Math::Vec<3, T> TRAP::Math::Vec<3, T>::operator++(const int32_t) noexcept
+constexpr const TRAP::Math::Vec<3, T> TRAP::Math::Vec<3, T>::operator++(const i32) noexcept
 {
 	const Vec<3, T> result(*this);
 	++*this;
@@ -763,7 +763,7 @@ constexpr const TRAP::Math::Vec<3, T> TRAP::Math::Vec<3, T>::operator++(const in
 
 template<typename T>
 requires std::is_arithmetic_v<T>
-constexpr const TRAP::Math::Vec<3, T> TRAP::Math::Vec<3, T>::operator--(const int32_t) noexcept
+constexpr const TRAP::Math::Vec<3, T> TRAP::Math::Vec<3, T>::operator--(const i32) noexcept
 {
 	const Vec<3, T> result(*this);
 	--*this;
@@ -932,27 +932,27 @@ requires std::is_arithmetic_v<T>
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	if constexpr(std::same_as<T, float>)
+	if constexpr(std::same_as<T, f32>)
 		return fmt::format("Vec3f({}, {}, {})", x(), y(), z());
-	else if constexpr(std::same_as<T, double>)
+	else if constexpr(std::same_as<T, f64>)
 		return fmt::format("Vec3d({}, {}, {})", x(), y(), z());
 	else if constexpr(std::same_as<T, bool>)
 		return fmt::format("Vec3b({}, {}, {})", (x() ? "true" : "false"), (y() ? "true" : "false"), (z() ? "true" : "false"));
-	else if constexpr(std::same_as<T, int8_t>)
+	else if constexpr(std::same_as<T, i8>)
 		return fmt::format("Vec3i8({}, {}, {})", x(), y(), z());
-	else if constexpr(std::same_as<T, int16_t>)
+	else if constexpr(std::same_as<T, i16>)
 		return fmt::format("Vec3i16({}, {}, {})", x(), y(), z());
-	else if constexpr(std::same_as<T, int32_t>)
+	else if constexpr(std::same_as<T, i32>)
 		return fmt::format("Vec3i32({}, {}, {})", x(), y(), z());
-	else if constexpr(std::same_as<T, int64_t>)
+	else if constexpr(std::same_as<T, i64>)
 		return fmt::format("Vec3i64({}, {}, {})", x(), y(), z());
-	else if constexpr(std::same_as<T, uint8_t>)
+	else if constexpr(std::same_as<T, u8>)
 		return fmt::format("Vec3ui8({}, {}, {})", x(), y(), z());
-	else if constexpr(std::same_as<T, uint16_t>)
+	else if constexpr(std::same_as<T, u16>)
 		return fmt::format("Vec3ui16({}, {}, {})", x(), y(), z());
-	else if constexpr(std::same_as<T, uint32_t>)
+	else if constexpr(std::same_as<T, u32>)
 		return fmt::format("Vec3ui32({}, {}, {})", x(), y(), z());
-	else if constexpr(std::same_as<T, uint64_t>)
+	else if constexpr(std::same_as<T, u64>)
 		return fmt::format("Vec3ui64({}, {}, {})", x(), y(), z());
 	else
 		return "Unknown type";
@@ -1237,7 +1237,7 @@ namespace std
 	/// </summary>
 	/// <param name="v">Vector whose contents to extract.</param>
 	/// <returns>A reference to the Ith element of v.</returns>
-	template<std::size_t I, typename T>
+	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr T& get(TRAP::Math::Vec<3, T>& v) noexcept
 	{
@@ -1270,7 +1270,7 @@ namespace std
 	/// </summary>
 	/// <param name="v">Vector whose contents to extract.</param>
 	/// <returns>A reference to the Ith element of v.</returns>
-	template<std::size_t I, typename T>
+	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr T&& get(TRAP::Math::Vec<3, T>&& v) noexcept
 	{
@@ -1303,7 +1303,7 @@ namespace std
 	/// </summary>
 	/// <param name="v">Vector whose contents to extract.</param>
 	/// <returns>A reference to the Ith element of v.</returns>
-	template<std::size_t I, typename T>
+	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr const T& get(const TRAP::Math::Vec<3, T>& v) noexcept
 	{
@@ -1336,7 +1336,7 @@ namespace std
 	/// </summary>
 	/// <param name="v">Vector whose contents to extract.</param>
 	/// <returns>A reference to the Ith element of v.</returns>
-	template<std::size_t I, typename T>
+	template<usize I, typename T>
 	requires std::is_arithmetic_v<T>
 	[[nodiscard]] constexpr const T&& get(const TRAP::Math::Vec<3, T>&& v) noexcept
 	{

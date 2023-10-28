@@ -83,12 +83,12 @@ namespace
 
 TEST_CASE("TRAP::Math::Decompose()", "[math][generic][decompose]")
 {
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunDecomposeRunTimeTests<double>();
+        RunDecomposeRunTimeTests<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunDecomposeRunTimeTests<float>();
+        RunDecomposeRunTimeTests<f32>();
     }
 }

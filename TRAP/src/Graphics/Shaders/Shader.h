@@ -129,7 +129,7 @@ namespace TRAP::Graphics
 		/// <param name="binding">Binding point of the texture.</param>
 		/// <param name="texture">Texture to use.</param>
 		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
-		virtual void UseTexture(uint32_t set, uint32_t binding, Ref<TRAP::Graphics::Texture> texture,
+		virtual void UseTexture(u32 set, u32 binding, Ref<TRAP::Graphics::Texture> texture,
 		                        const Window* window = TRAP::Application::GetWindow()) const = 0;
 #else
 		/// <summary>
@@ -138,7 +138,7 @@ namespace TRAP::Graphics
 		/// <param name="set">Descriptor set to use the texture with.</param>
 		/// <param name="binding">Binding point of the texture.</param>
 		/// <param name="texture">Texture to use.</param>
-		virtual void UseTexture(uint32_t set, uint32_t binding, Ref<TRAP::Graphics::Texture> texture) const = 0;
+		virtual void UseTexture(u32 set, u32 binding, Ref<TRAP::Graphics::Texture> texture) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -149,7 +149,7 @@ namespace TRAP::Graphics
 		/// <param name="binding">Binding point of the textures.</param>
 		/// <param name="textures">Textures to use.</param>
 		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
-		virtual void UseTextures(uint32_t set, uint32_t binding,
+		virtual void UseTextures(u32 set, u32 binding,
 		                         const std::vector<Ref<TRAP::Graphics::Texture>>& textures,
 								 const Window* window = TRAP::Application::GetWindow()) const = 0;
 #else
@@ -159,7 +159,7 @@ namespace TRAP::Graphics
 		/// <param name="set">Descriptor set to use the textures with.</param>
 		/// <param name="binding">Binding point of the textures.</param>
 		/// <param name="textures">Textures to use.</param>
-		virtual void UseTextures(uint32_t set, uint32_t binding,
+		virtual void UseTextures(u32 set, u32 binding,
 		                         const std::vector<Ref<TRAP::Graphics::Texture>>& textures) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -171,7 +171,7 @@ namespace TRAP::Graphics
 		/// <param name="binding">Binding point of the sampler.</param>
 		/// <param name="sampler">Sampler to use.</param>
 		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
-		virtual void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* sampler,
+		virtual void UseSampler(u32 set, u32 binding, TRAP::Graphics::Sampler* sampler,
 		                        const Window* window = TRAP::Application::GetWindow()) const = 0;
 #else
 		/// <summary>
@@ -180,7 +180,7 @@ namespace TRAP::Graphics
 		/// <param name="set">Descriptor set to use the sampler with.</param>
 		/// <param name="binding">Binding point of the sampler.</param>
 		/// <param name="sampler">Sampler to use.</param>
-		virtual void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* sampler) const = 0;
+		virtual void UseSampler(u32 set, u32 binding, TRAP::Graphics::Sampler* sampler) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -190,7 +190,7 @@ namespace TRAP::Graphics
 		/// <param name="binding">Binding point of the samplers.</param>
 		/// <param name="samplers">Samplers to use.</param>
 		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
-		virtual void UseSamplers(uint32_t set, uint32_t binding,
+		virtual void UseSamplers(u32 set, u32 binding,
 		                         const std::vector<TRAP::Graphics::Sampler*>& samplers,
 								 const Window* window = TRAP::Application::GetWindow()) const = 0;
 #else
@@ -200,7 +200,7 @@ namespace TRAP::Graphics
 		/// <param name="set">Descriptor set to use the samplers with.</param>
 		/// <param name="binding">Binding point of the samplers.</param>
 		/// <param name="samplers">Samplers to use.</param>
-		virtual void UseSamplers(uint32_t set, uint32_t binding,
+		virtual void UseSamplers(u32 set, u32 binding,
 		                         const std::vector<TRAP::Graphics::Sampler*>& samplers) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -214,8 +214,8 @@ namespace TRAP::Graphics
 		/// <param name="size">Size of the UBO.</param>
 		/// <param name="offset">Offset of the UBO.</param>
 		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
-		virtual void UseUBO(uint32_t set, uint32_t binding, const TRAP::Graphics::UniformBuffer* uniformBuffer,
-							uint64_t size = 0, uint64_t offset = 0, const Window* window = TRAP::Application::GetWindow()) const = 0;
+		virtual void UseUBO(u32 set, u32 binding, const TRAP::Graphics::UniformBuffer* uniformBuffer,
+							u64 size = 0, u64 offset = 0, const Window* window = TRAP::Application::GetWindow()) const = 0;
 #else
 		/// <summary>
 		/// Use uniform buffer object with this shader.
@@ -225,8 +225,8 @@ namespace TRAP::Graphics
 		/// <param name="uniformBuffer">Uniform buffer to use.</param>
 		/// <param name="size">Size of the UBO.</param>
 		/// <param name="offset">Offset of the UBO.</param>
-		virtual void UseUBO(uint32_t set, uint32_t binding, const TRAP::Graphics::UniformBuffer* uniformBuffer,
-							uint64_t size = 0, uint64_t offset = 0) const = 0;
+		virtual void UseUBO(u32 set, u32 binding, const TRAP::Graphics::UniformBuffer* uniformBuffer,
+							u64 size = 0, u64 offset = 0) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 #ifndef TRAP_HEADLESS_MODE
@@ -238,8 +238,8 @@ namespace TRAP::Graphics
 		/// <param name="storageBuffer">Storage buffer to use.</param>
 		/// <param name="size">Size of the SSBO.</param>
 		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
-		virtual void UseSSBO(uint32_t set, uint32_t binding, const TRAP::Graphics::StorageBuffer* storageBuffer,
-							 uint64_t size = 0, const Window* window = TRAP::Application::GetWindow()) const = 0;
+		virtual void UseSSBO(u32 set, u32 binding, const TRAP::Graphics::StorageBuffer* storageBuffer,
+							 u64 size = 0, const Window* window = TRAP::Application::GetWindow()) const = 0;
 #else
 		/// <summary>
 		/// Use shader storage buffer object with this shader.
@@ -248,15 +248,15 @@ namespace TRAP::Graphics
 		/// <param name="binding">Binding point of the SSBO.</param>
 		/// <param name="storageBuffer">Storage buffer to use.</param>
 		/// <param name="size">Size of the SSBO.</param>
-		virtual void UseSSBO(uint32_t set, uint32_t binding, const TRAP::Graphics::StorageBuffer* storageBuffer,
-							 uint64_t size = 0) const = 0;
+		virtual void UseSSBO(u32 set, u32 binding, const TRAP::Graphics::StorageBuffer* storageBuffer,
+							 u64 size = 0) const = 0;
 #endif /*TRAP_HEADLESS_MODE*/
 
 		/// <summary>
 		/// Retrieve the shaders thread count per work group.
 		/// </summary>
 		/// <returns>Shaders thread count per work group.</returns>
-		[[nodiscard]] virtual constexpr std::array<uint32_t, 3> GetNumThreadsPerGroup() const noexcept = 0;
+		[[nodiscard]] virtual constexpr std::array<u32, 3> GetNumThreadsPerGroup() const noexcept = 0;
 
 		/// <summary>
 		/// Create a shader from file.
@@ -287,10 +287,10 @@ namespace TRAP::Graphics
 		                                                  const std::vector<Macro>* userMacros = nullptr);
 
 		inline static constexpr std::array<std::string_view, 3> SupportedShaderFormatSuffixes{".shader", ".glsl", ".tp-spv"};
-		inline static constexpr uint32_t SPIRVMagicNumber = 0x07230203u;
+		inline static constexpr u32 SPIRVMagicNumber = 0x07230203u;
 		inline static constexpr std::string_view ShaderMagicNumber = "TRAP_SPV";
-		inline static constexpr std::size_t ShaderHeaderOffset = ShaderMagicNumber.size() + sizeof(uint32_t) +
-		                                                         sizeof(uint8_t) + sizeof(std::size_t) + sizeof(uint8_t);
+		inline static constexpr usize ShaderHeaderOffset = ShaderMagicNumber.size() + sizeof(u32) +
+		                                                         sizeof(u8) + sizeof(usize) + sizeof(u8);
 
 	protected:
 		/// <summary>
@@ -371,14 +371,14 @@ namespace TRAP::Graphics
 		/// <param name="stage">Shader stage to convert.</param>
 		/// <param name="program">glslang::TProgram object to convert.</param>
 		/// <returns>SPIRV binary data on success, empty vector otherwise.</returns>
-		[[nodiscard]] static std::vector<uint32_t> ConvertToSPIRV(RendererAPI::ShaderStage stage,
+		[[nodiscard]] static std::vector<u32> ConvertToSPIRV(RendererAPI::ShaderStage stage,
 		                                                          glslang::TProgram& program);
 		/// <summary>
 		/// Load SPIRV binary data into RendererAPI::BinaryShaderDesc.
 		/// </summary>
 		/// <param name="SPIRV">SPIRV binary data.</param>
 		/// <returns>RendererAPI::BinaryShaderDesc containing loaded SPIRV binary data.</returns>
-		[[nodiscard]] static RendererAPI::BinaryShaderDesc LoadSPIRV(std::vector<uint8_t>& SPIRV);
+		[[nodiscard]] static RendererAPI::BinaryShaderDesc LoadSPIRV(std::vector<u8>& SPIRV);
 		/// <summary>
 		/// Check if the ending of the given path is a supported shader file ending.
 		/// </summary>

@@ -2,7 +2,6 @@
 #define TRAP_CONVERTHASHTOSTRING_H
 
 #include <array>
-#include <cstdint>
 #include <string>
 
 #ifdef _MSC_VER
@@ -14,6 +13,8 @@
 	#pragma warning(pop)
 #endif /*_MSC_VER*/
 
+#include "Core/Types.h"
+
 namespace TRAP::Utils::Hash
 {
 	/// <summary>
@@ -21,13 +22,13 @@ namespace TRAP::Utils::Hash
 	/// </summary>
 	/// <param name="hash">N-sized array of bytes.</param>
 	/// <returns>String representation of given hash.</returns>
-	template<std::size_t N>
-	[[nodiscard]] constexpr std::string ConvertHashToString(const std::array<uint8_t, N>& hash)
+	template<usize N>
+	[[nodiscard]] constexpr std::string ConvertHashToString(const std::array<u8, N>& hash)
 	{
 		constexpr std::array<char, 16> hexDigits{'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
 		std::string result(hash.size() * 2, '\0');
 
-		for(std::size_t i = 0; i < hash.size(); ++i)
+		for(usize i = 0; i < hash.size(); ++i)
 		{
 			result[i * 2] = hexDigits[hash[i] >> 4u];
 			result[i * 2 + 1] = hexDigits[hash[i] & 0xF];

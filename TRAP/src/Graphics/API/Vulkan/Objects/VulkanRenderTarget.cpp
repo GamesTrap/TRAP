@@ -25,8 +25,8 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	TRAP_ASSERT(!((isDepth) && (m_descriptors & RendererAPI::DescriptorType::RWTexture) != RendererAPI::DescriptorType::Undefined),
 	            "VulkanRenderTarget(): Cannot use depth stencil as UAV");
 
-	const uint32_t depthOrArraySize = m_arraySize * m_depth;
-	uint32_t numRTVs = m_mipLevels;
+	const u32 depthOrArraySize = m_arraySize * m_depth;
+	u32 numRTVs = m_mipLevels;
 	if(((m_descriptors & RendererAPI::DescriptorType::RenderTargetArraySlices) != RendererAPI::DescriptorType::Undefined) ||
 	   ((m_descriptors & RendererAPI::DescriptorType::RenderTargetDepthSlices) != RendererAPI::DescriptorType::Undefined))
 	{
@@ -116,13 +116,13 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	VkCall(vkCreateImageView(m_device->GetVkDevice(), &rtvDesc, nullptr, &m_vkDescriptor));
 	TRAP_ASSERT(m_vkDescriptor, "VulkanRenderTarget(): Vulkan Descriptor is nullptr!");
 
-	for(uint32_t i = 0; i < m_mipLevels; ++i)
+	for(u32 i = 0; i < m_mipLevels; ++i)
 	{
 		rtvDesc.subresourceRange.baseMipLevel = i;
 		if (((m_descriptors & RendererAPI::DescriptorType::RenderTargetArraySlices) != RendererAPI::DescriptorType::Undefined) ||
 			((m_descriptors & RendererAPI::DescriptorType::RenderTargetDepthSlices) != RendererAPI::DescriptorType::Undefined))
 		{
-			for (uint32_t j = 0; j < depthOrArraySize; ++j)
+			for (u32 j = 0; j < depthOrArraySize; ++j)
 			{
 				rtvDesc.subresourceRange.layerCount = 1;
 				rtvDesc.subresourceRange.baseArrayLayer = j;
@@ -153,13 +153,13 @@ TRAP::Graphics::API::VulkanRenderTarget::~VulkanRenderTarget()
 
 	vkDestroyImageView(m_device->GetVkDevice(), m_vkDescriptor, nullptr);
 
-	const uint32_t depthOrArraySize = m_arraySize * m_depth;
+	const u32 depthOrArraySize = m_arraySize * m_depth;
 	if (((m_descriptors & RendererAPI::DescriptorType::RenderTargetArraySlices) != RendererAPI::DescriptorType::Undefined) ||
 		((m_descriptors & RendererAPI::DescriptorType::RenderTargetDepthSlices) != RendererAPI::DescriptorType::Undefined))
 	{
-		for(uint32_t i = 0; i < m_mipLevels; ++i)
+		for(u32 i = 0; i < m_mipLevels; ++i)
 		{
-			for (uint32_t j = 0; j < depthOrArraySize; ++j)
+			for (u32 j = 0; j < depthOrArraySize; ++j)
 			{
 				if(m_vkSliceDescriptors[i * depthOrArraySize + j] != nullptr)
 					vkDestroyImageView(m_device->GetVkDevice(), m_vkSliceDescriptors[i * depthOrArraySize + j],
@@ -169,7 +169,7 @@ TRAP::Graphics::API::VulkanRenderTarget::~VulkanRenderTarget()
 	}
 	else
 	{
-		for (uint32_t i = 0; i < m_mipLevels; ++i)
+		for (u32 i = 0; i < m_mipLevels; ++i)
 		{
 			if(m_vkSliceDescriptors[i] != nullptr)
 				vkDestroyImageView(m_device->GetVkDevice(), m_vkSliceDescriptors[i], nullptr);

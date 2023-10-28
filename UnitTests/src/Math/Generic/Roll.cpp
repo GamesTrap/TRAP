@@ -113,16 +113,16 @@ namespace
 
 TEST_CASE("TRAP::Math::Roll()", "[math][generic][roll]")
 {
-    SECTION("Quat - double")
+    SECTION("Quat - f64")
     {
-        RunRollRunTimeTests<double>();
-        RunRollCompileTimeTests<double>();
-        RunRollEdgeTests<double>();
+        RunRollRunTimeTests<f64>();
+        RunRollCompileTimeTests<f64>();
+        RunRollEdgeTests<f64>();
     }
-    SECTION("Quat - float")
+    SECTION("Quat - f32")
     {
-        RunRollRunTimeTests<float>();
-        RunRollCompileTimeTests<float>();
-        RunRollEdgeTests<float>();
+        RunRollRunTimeTests<f32>();
+        RunRollCompileTimeTests<f32>();
+        RunRollEdgeTests<f32>();
     }
 }

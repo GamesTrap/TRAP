@@ -26,7 +26,7 @@ void Cube3D::OnAttach()
 
 	//Cube
 	//XYZ
-    static constexpr std::array<float, 11ull * 24ull> cubeVertices
+    static constexpr std::array<f32, 11ull * 24ull> cubeVertices
     {
         //Positions             //Colors             //Textures      //Normals
         -1.0f, -1.0f, -1.0f,    0.0f, 0.0f, 0.0f,    1.0f, 1.0f,     0.0f,  0.0f, -1.0f,
@@ -59,7 +59,7 @@ void Cube3D::OnAttach()
         -1.0f,  1.0f,  1.0f,    0.0f, 1.0f, 1.0f,    0.0f, 1.0f,     0.0f,  1.0f,  0.0f,
          1.0f,  1.0f,  1.0f,    1.0f, 1.0f, 1.0f,    1.0f, 1.0f,     0.0f,  1.0f,  0.0f
     };
-    static constexpr std::array<uint16_t, 36> cubeIndices
+    static constexpr std::array<u16, 36> cubeIndices
     {
          0,  3,  2,
          2,  1,  0,
@@ -92,7 +92,7 @@ void Cube3D::OnAttach()
     };
     m_cubeVertexBuffer->SetLayout(cubeLayout);
 
-    static constexpr std::array<float, 3ull * 36ull> skyBoxVertices
+    static constexpr std::array<f32, 3ull * 36ull> skyBoxVertices
     {
         -1.0f,  1.0f, -1.0f,
         -1.0f, -1.0f, -1.0f,
@@ -195,9 +195,9 @@ void Cube3D::OnImGuiRender()
 {
     const TRAP::Math::Vec3 pos = m_cameraTransform.Position;
     const TRAP::Math::Vec3 rot = TRAP::Math::Degrees(m_cameraTransform.Rotation);
-    float fov = TRAP::Math::Degrees(m_camera.GetPerspectiveVerticalFOV());
-    float sensitivity = m_mouseSensitivity;
-    float movement = m_translationSpeed;
+    f32 fov = TRAP::Math::Degrees(m_camera.GetPerspectiveVerticalFOV());
+    f32 sensitivity = m_mouseSensitivity;
+    f32 movement = m_translationSpeed;
 
     ImGuiWindowFlags flags = ImGuiWindowFlags_None;
 
@@ -216,7 +216,7 @@ void Cube3D::OnImGuiRender()
     ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetCPUFrameTime());
     ImGui::Text("GPU Graphics FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime());
     ImGui::Text("GPU Compute FrameTime: %.3fms", TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime());
-    ImGui::PlotLines("", m_frameTimeHistory.data(), NumericCast<int32_t>(m_frameTimeHistory.size()), 0, nullptr, 0, 33,
+    ImGui::PlotLines("", m_frameTimeHistory.data(), NumericCast<i32>(m_frameTimeHistory.size()), 0, nullptr, 0, 33,
                      ImVec2(200, 50));
     ImGui::Separator();
     ImGui::Text("Camera");
@@ -302,7 +302,7 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
     //Update sampler
 	if(m_textureSampler->UsesEngineAnisotropyLevel() &&
-	   static_cast<float>(TRAP::Graphics::RenderCommand::GetAnisotropyLevel()) != m_textureSampler->GetAnisotropyLevel())
+	   static_cast<f32>(TRAP::Graphics::RenderCommand::GetAnisotropyLevel()) != m_textureSampler->GetAnisotropyLevel())
 	{
 		m_textureSampler = TRAP::Graphics::Sampler::Create(m_textureSamplerDesc);
 	}
@@ -380,7 +380,7 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
                                       TRAP::Math::Conjugate(orientation);
     const TRAP::Math::Vec3 front = { qF.x(), qF.y(), qF.z() };
     const TRAP::Math::Vec3 right = TRAP::Math::Normalize(TRAP::Math::Cross(front,
-                                                                           TRAP::Math::YAxis<float>()));
+                                                                           TRAP::Math::YAxis<f32>()));
 
     //Keyboard Position
     if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::A))
@@ -400,7 +400,7 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     if (m_titleTimer.Elapsed() >= 0.025f)
     {
         m_titleTimer.Reset();
-        constinit static std::size_t frameTimeIndex = 0;
+        constinit static usize frameTimeIndex = 0;
         if (frameTimeIndex < m_frameTimeHistory.size() - 1)
         {
             m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::RenderCommand::GetCPUFrameTime();
@@ -431,8 +431,8 @@ bool Cube3D::OnMouseMove(const TRAP::Events::MouseMoveEvent& event)
     if(!m_ignoreImGui)
         return false;
 
-    constinit static float lastX = 0.0f;
-    constinit static float lastY = 0.0f;
+    constinit static f32 lastX = 0.0f;
+    constinit static f32 lastY = 0.0f;
     if (m_firstMouse)
     {
         lastX = event.GetX();
@@ -440,8 +440,8 @@ bool Cube3D::OnMouseMove(const TRAP::Events::MouseMoveEvent& event)
         m_firstMouse = false;
     }
 
-    float pitch = event.GetX() - lastX;
-    float yaw = lastY - event.GetY();
+    f32 pitch = event.GetX() - lastX;
+    f32 yaw = lastY - event.GetY();
     lastX = event.GetX();
     lastY = event.GetY();
 
@@ -472,7 +472,7 @@ bool Cube3D::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 
     if(event.GetKey() == TRAP::Input::Key::F1)
 	{
-        m_currentShader = (m_currentShader + 1) % NumericCast<uint32_t>(m_shaderNames.size());
+        m_currentShader = (m_currentShader + 1) % NumericCast<u32>(m_shaderNames.size());
         return true;
 	}
 

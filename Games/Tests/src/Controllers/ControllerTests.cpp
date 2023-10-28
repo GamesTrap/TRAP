@@ -4,7 +4,7 @@ void ControllerTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Controllers");
 
-	for(uint32_t controller = std::to_underlying(TRAP::Input::Controller::One);
+	for(u32 controller = std::to_underlying(TRAP::Input::Controller::One);
 	    controller <= std::to_underlying(TRAP::Input::Controller::Sixteen); controller++)
 	{
 		if (TRAP::Input::IsControllerConnected(static_cast<TRAP::Input::Controller>(controller)))
@@ -35,7 +35,7 @@ void ControllerTests::OnImGuiRender()
 
 	for(const TRAP::Input::Controller& controller : s_controllers)
 	{
-		const std::vector<float> axes = TRAP::Input::GetAllControllerAxes(controller);
+		const std::vector<f32> axes = TRAP::Input::GetAllControllerAxes(controller);
 		const std::vector<bool> buttons = TRAP::Input::GetAllControllerButtons(controller);
 		const std::vector<TRAP::Input::ControllerDPad> dpads = TRAP::Input::GetAllControllerDPads(controller);
 
@@ -46,12 +46,12 @@ void ControllerTests::OnImGuiRender()
 		ImGui::NewLine();
 		ImGui::Text("Controller Battery Status: %s", GetBatteryStatus(controller).c_str());
 		ImGui::Text("Controller State");
-		for(const float axis : axes)
+		for(const f32 axis : axes)
 		{
-			float axisCpy = axis;
+			f32 axisCpy = axis;
 			ImGui::SliderFloat("##", &axisCpy, -1.0f, 1.0f);
 		}
-		for(std::size_t i = 0; i < (s_dpadButtons ? buttons.size() : buttons.size() - dpads.size() * 4); i++)
+		for(usize i = 0; i < (s_dpadButtons ? buttons.size() : buttons.size() - dpads.size() * 4); i++)
 		{
 			bool cpy = buttons[i];
 			ImGui::Checkbox(std::to_string(i + 1).c_str(), &cpy);
@@ -59,7 +59,7 @@ void ControllerTests::OnImGuiRender()
 				ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2.0f);
 		}
 
-		for(std::size_t i = 0; i < dpads.size(); i++)
+		for(usize i = 0; i < dpads.size(); i++)
 		{
 			const std::string dpadText = fmt::format("DPad {}: {}", i, GetDPadDirection(dpads[i]));
 
@@ -77,13 +77,13 @@ void ControllerTests::OnImGuiRender()
 			ImGui::NewLine();
 			ImGui::Text("Mapped State: %s", TRAP::Input::GetControllerName(controller).c_str());
 
-			float leftX = TRAP::Input::GetControllerAxis(controller, TRAP::Input::ControllerAxis::Left_X);
-			float leftY = TRAP::Input::GetControllerAxis(controller, TRAP::Input::ControllerAxis::Left_Y);
-			float rightX = TRAP::Input::GetControllerAxis(controller, TRAP::Input::ControllerAxis::Right_X);
-			float rightY = TRAP::Input::GetControllerAxis(controller, TRAP::Input::ControllerAxis::Right_Y);
-			float leftTrigger = TRAP::Input::GetControllerAxis(controller,
+			f32 leftX = TRAP::Input::GetControllerAxis(controller, TRAP::Input::ControllerAxis::Left_X);
+			f32 leftY = TRAP::Input::GetControllerAxis(controller, TRAP::Input::ControllerAxis::Left_Y);
+			f32 rightX = TRAP::Input::GetControllerAxis(controller, TRAP::Input::ControllerAxis::Right_X);
+			f32 rightY = TRAP::Input::GetControllerAxis(controller, TRAP::Input::ControllerAxis::Right_Y);
+			f32 leftTrigger = TRAP::Input::GetControllerAxis(controller,
 															   TRAP::Input::ControllerAxis::Left_Trigger);
-			float rightTrigger = TRAP::Input::GetControllerAxis(controller,
+			f32 rightTrigger = TRAP::Input::GetControllerAxis(controller,
 			                                                    TRAP::Input::ControllerAxis::Right_Trigger);
 
 			ImGui::SliderFloat("Left X", &leftX, -1.0f, 1.0f);

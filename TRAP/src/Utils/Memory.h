@@ -41,8 +41,8 @@ namespace TRAP::Utils::Memory
 	/// <param name="source">Bytes to convert.</param>
 	/// <returns>Converted bytes.</returns>
 	template<typename T>
-	requires (std::unsigned_integral<T> && !std::same_as<T, uint8_t>)
-	[[nodiscard]] inline constexpr T ConvertByte(const uint8_t* const source)
+	requires (std::unsigned_integral<T> && !std::same_as<T, u8>)
+	[[nodiscard]] inline constexpr T ConvertByte(const u8* const source)
 	{
 		if constexpr (sizeof(T) == 2)
 		{
@@ -80,14 +80,14 @@ namespace TRAP::Utils::Memory
 	/// <param name="end">End of the input container.</param>
 	/// <param name="output">Type to convert to and store the converted data.</param>
 	template<typename InputIt, typename OutputIt>
-	requires std::same_as<typename std::iterator_traits<InputIt>::value_type, uint8_t>
+	requires std::same_as<typename std::iterator_traits<InputIt>::value_type, u8>
 	inline static void ConvertBytes(InputIt begin, InputIt end, OutputIt output)
 	{
 		using output_type = typename std::iterator_traits<OutputIt>::value_type;
 
 		//Is size a multiple of OutputIts type
 		const auto size = std::distance(begin, end);
-		if(NumericCast<uint64_t>(size) % sizeof(output_type) != 0)
+		if(NumericCast<u64>(size) % sizeof(output_type) != 0)
 		{
 			TRAP_ASSERT(false, "Memory::ConvertBytes(): Size of input type is not a multiple of output type");
 			return;
@@ -104,11 +104,11 @@ namespace TRAP::Utils::Memory
 	/// </summary>
 	/// <typeparam name="Byte">Byte to retrieve.</typeparam>
 	/// <returns>Requested byte from the given integral.</returns>
-	template<uint8_t Byte>
-	[[nodiscard]] inline constexpr uint8_t GetByteFromInteger(const std::integral auto value)
+	template<u8 Byte>
+	[[nodiscard]] inline constexpr u8 GetByteFromInteger(const std::integral auto value)
 	requires (Byte < sizeof(decltype(value)))
 	{
-		return NumericCast<uint8_t>((value >> (Byte * 8u)) & 0xFFu);
+		return NumericCast<u8>((value >> (Byte * 8u)) & 0xFFu);
 	}
 }
 

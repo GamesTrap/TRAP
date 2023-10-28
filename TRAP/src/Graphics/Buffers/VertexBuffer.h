@@ -54,12 +54,12 @@ namespace TRAP::Graphics
 		/// Retrieve the total byte size of the buffer.
 		/// </summary>
 		/// <returns>Total buffer byte size.</returns>
-		[[nodiscard]] uint64_t GetSize() const noexcept;
+		[[nodiscard]] u64 GetSize() const noexcept;
 		/// <summary>
 		/// Retrieve the count of vertex elements inside this buffer.
 		/// </summary>
 		/// <returns>Count of vertex elements.</returns>
-		[[nodiscard]] uint32_t GetCount() const noexcept;
+		[[nodiscard]] u32 GetCount() const noexcept;
 		/// <summary>
 		/// Retrieve the update frequency used by this buffer.
 		/// </summary>
@@ -71,7 +71,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="data">Pointer to the updated data.</param>
 		/// <param name="offset">Byte offset into the currently used vertex data.</param>
-		void SetData(std::span<const float> data, uint64_t offset = 0);
+		void SetData(std::span<const f32> data, u64 offset = 0);
 
 #ifndef TRAP_HEADLESS_MODE
 		/// <summary>
@@ -102,14 +102,14 @@ namespace TRAP::Graphics
 		/// <param name="vertices">Pointer to the data to upload.</param>
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New vertex buffer.</returns>
-		[[nodiscard]] static Scope<VertexBuffer> Create(std::span<const float> vertices, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<VertexBuffer> Create(std::span<const f32> vertices, UpdateFrequency updateFrequency);
 		/// <summary>
 		/// Create a new vertex buffer and set its size.
 		/// </summary>
 		/// <param name="size">Byte size for the vertex buffer.</param>
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New vertex buffer.</returns>
-		[[nodiscard]] static Scope<VertexBuffer> Create(uint64_t size, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<VertexBuffer> Create(u64 size, UpdateFrequency updateFrequency);
 
 	private:
 		/// <summary>
@@ -119,7 +119,7 @@ namespace TRAP::Graphics
 		/// <param name="size">Byte size of the data to upload.</param>
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New vertex buffer.</returns>
-		[[nodiscard]] static Scope<VertexBuffer> Init(const float* vertices, uint64_t size, UpdateFrequency updateFrequency);
+		[[nodiscard]] static Scope<VertexBuffer> Init(const f32* vertices, u64 size, UpdateFrequency updateFrequency);
 
 		TRAP::Ref<TRAP::Graphics::Buffer> m_vertexBuffer = nullptr;
 

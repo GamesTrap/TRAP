@@ -150,60 +150,60 @@ namespace
 
 TEST_CASE("TRAP::Math::Exp()", "[math][generic][exp]")
 {
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunExpRunTimeTests<double>();
-        RunExpCompileTimeTests<double>();
-        RunExpEdgeRunTimeTests<double>();
-        RunExpEdgeCompileTimeTests<double>();
+        RunExpRunTimeTests<f64>();
+        RunExpCompileTimeTests<f64>();
+        RunExpEdgeRunTimeTests<f64>();
+        RunExpEdgeCompileTimeTests<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunExpRunTimeTests<float>();
-        RunExpCompileTimeTests<float>();
-        RunExpEdgeRunTimeTests<float>();
-        RunExpEdgeCompileTimeTests<float>();
+        RunExpRunTimeTests<f32>();
+        RunExpCompileTimeTests<f32>();
+        RunExpEdgeRunTimeTests<f32>();
+        RunExpEdgeCompileTimeTests<f32>();
     }
 
-    SECTION("Vec2 - double")
+    SECTION("Vec2 - f64")
     {
         RunExpVecRunTimeTests<TRAP::Math::Vec2d>();
         RunExpVecCompileTimeTests<TRAP::Math::Vec2d>();
     }
-    SECTION("Vec2 - float")
+    SECTION("Vec2 - f32")
     {
         RunExpVecRunTimeTests<TRAP::Math::Vec2f>();
         RunExpVecCompileTimeTests<TRAP::Math::Vec2f>();
     }
 
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunExpVecRunTimeTests<TRAP::Math::Vec3d>();
         RunExpVecCompileTimeTests<TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunExpVecRunTimeTests<TRAP::Math::Vec3f>();
         RunExpVecCompileTimeTests<TRAP::Math::Vec3f>();
     }
 
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunExpVecRunTimeTests<TRAP::Math::Vec4d>();
         RunExpVecCompileTimeTests<TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunExpVecRunTimeTests<TRAP::Math::Vec4f>();
         RunExpVecCompileTimeTests<TRAP::Math::Vec4f>();
     }
 
-    SECTION("Quat - double")
+    SECTION("Quat - f64")
     {
         RunExpQuatRunTimeTests<TRAP::Math::Quatd>();
         RunExpQuatCompileTimeTests<TRAP::Math::Quatd>();
     }
-    SECTION("Quat - float")
+    SECTION("Quat - f32")
     {
         RunExpQuatRunTimeTests<TRAP::Math::Quatf>();
         RunExpQuatCompileTimeTests<TRAP::Math::Quatf>();

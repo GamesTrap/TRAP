@@ -43,7 +43,7 @@ namespace TRAP::INTERNAL
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		[[nodiscard]] constexpr uint64_t GetPixelDataSize() const noexcept override;
+		[[nodiscard]] constexpr u64 GetPixelDataSize() const noexcept override;
 
 		/// <summary>
 		/// Save an TRAP::Image as a Portable Pixmap (PPM) file.
@@ -53,15 +53,15 @@ namespace TRAP::INTERNAL
 		static void Save(const Image* img, const std::filesystem::path& filepath);
 
 	private:
-		std::vector<uint8_t> m_data;
-		std::vector<uint16_t> m_data2Byte;
+		std::vector<u8> m_data;
+		std::vector<u16> m_data2Byte;
 
 		struct Header
 		{
 			std::string MagicNumber;
-			std::uint32_t Width = 0;
-			std::uint32_t Height = 0;
-			std::uint32_t MaxValue = 255;
+			u32 Width = 0;
+			u32 Height = 0;
+			u32 MaxValue = 255;
 		};
 	};
 }
@@ -78,10 +78,10 @@ namespace TRAP::INTERNAL
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint64_t TRAP::INTERNAL::PPMImage::GetPixelDataSize() const noexcept
+[[nodiscard]] constexpr u64 TRAP::INTERNAL::PPMImage::GetPixelDataSize() const noexcept
 {
 	if (!m_data2Byte.empty())
-		return m_data2Byte.size() * sizeof(uint16_t);
+		return m_data2Byte.size() * sizeof(u16);
 
 	return m_data.size();
 }

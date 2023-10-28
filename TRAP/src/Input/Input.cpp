@@ -174,7 +174,7 @@ void TRAP::Input::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	double xPos = 0.0, yPos = 0.0;
+	f64 xPos = 0.0, yPos = 0.0;
 	INTERNAL::WindowingAPI::GetCursorPos(*static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
 	                                     (Application::GetWindow()->GetInternalWindow()), xPos, yPos);
 
@@ -184,7 +184,7 @@ void TRAP::Input::Shutdown()
 	yPos += windowPos.y();
 #endif /*TRAP_PLATFORM_WINDOWS*/
 
-	return {NumericCast<float>(xPos), NumericCast<float>(yPos)};
+	return {NumericCast<f32>(xPos), NumericCast<f32>(yPos)};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -199,7 +199,7 @@ void TRAP::Input::Shutdown()
 		return TRAP::Math::Vec2{};
 	}
 
-	double xPos = 0.0, yPos = 0.0;
+	f64 xPos = 0.0, yPos = 0.0;
 	INTERNAL::WindowingAPI::GetCursorPos(*static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
 	                                     (window->GetInternalWindow()), xPos, yPos);
 
@@ -209,12 +209,12 @@ void TRAP::Input::Shutdown()
 	yPos += windowPos.y();
 #endif /*TRAP_PLATFORM_WINDOWS*/
 
-	return TRAP::Math::Vec2{ NumericCast<float>(xPos), NumericCast<float>(yPos) };
+	return TRAP::Math::Vec2{ NumericCast<f32>(xPos), NumericCast<f32>(yPos) };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] float TRAP::Input::GetMouseX()
+[[nodiscard]] f32 TRAP::Input::GetMouseX()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -223,7 +223,7 @@ void TRAP::Input::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] float TRAP::Input::GetMouseY()
+[[nodiscard]] f32 TRAP::Input::GetMouseY()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -232,7 +232,7 @@ void TRAP::Input::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] float TRAP::Input::GetMouseX(const Window* const window)
+[[nodiscard]] f32 TRAP::Input::GetMouseX(const Window* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -241,7 +241,7 @@ void TRAP::Input::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] float TRAP::Input::GetMouseY(const Window* const window)
+[[nodiscard]] f32 TRAP::Input::GetMouseY(const Window* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -444,7 +444,7 @@ void TRAP::Input::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] float TRAP::Input::GetControllerAxis(const Controller controller, const ControllerAxis axis)
+[[nodiscard]] f32 TRAP::Input::GetControllerAxis(const Controller controller, const ControllerAxis axis)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
@@ -456,7 +456,7 @@ void TRAP::Input::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPad(const Controller controller, const uint32_t dpad)
+[[nodiscard]] TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPad(const Controller controller, const u32 dpad)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
@@ -513,7 +513,7 @@ void TRAP::Input::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::vector<float> TRAP::Input::GetAllControllerAxes(const Controller controller)
+[[nodiscard]] std::vector<f32> TRAP::Input::GetAllControllerAxes(const Controller controller)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
@@ -558,7 +558,7 @@ void TRAP::Input::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::SetControllerVibration(const Controller controller, const float leftMotor, const float rightMotor)
+void TRAP::Input::SetControllerVibration(const Controller controller, const f32 leftMotor, const f32 rightMotor)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
@@ -615,7 +615,7 @@ void TRAP::Input::SetControllerVibration(const Controller controller, const Math
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::SetMousePosition(const float x, const float y)
+void TRAP::Input::SetMousePosition(const f32 x, const f32 y)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
@@ -625,7 +625,7 @@ void TRAP::Input::SetMousePosition(const float x, const float y)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::SetMousePosition(const float x, const float y, const Window* const window)
+void TRAP::Input::SetMousePosition(const f32 x, const f32 y, const Window* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
@@ -709,7 +709,7 @@ void TRAP::Input::UpdateControllerMappings(const std::string_view map)
 			s_mappings.push_back(mapping);
 	}
 
-	for(uint32_t cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
+	for(u32 cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
 	{
 		ControllerInternal* const con = &s_controllerInternal[cID];
 		if(s_controllerInternal[cID].Connected)
@@ -730,13 +730,13 @@ void TRAP::Input::UpdateControllerMappings(const std::string_view map)
 
 TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(std::string name,
                                                                     std::string guid,
-																	const uint32_t axisCount,
-																	const uint32_t buttonCount,
-																	const uint32_t dpadCount)
+																	const u32 axisCount,
+																	const u32 buttonCount,
+																	const u32 dpadCount)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	uint32_t cID = 0;
+	u32 cID = 0;
 	for(cID = 0; cID <= std::to_underlying(Controller::Sixteen); cID++)
 	{
 		if (!s_controllerInternal[cID].Connected)
@@ -753,7 +753,7 @@ TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(std::string 
 	con->Axes.resize(axisCount);
 	con->Buttons.resize(buttonCount + dpadCount * 4);
 	con->DPads.resize(dpadCount);
-	con->ButtonCount = NumericCast<int32_t>(buttonCount);
+	con->ButtonCount = NumericCast<i32>(buttonCount);
 	con->mapping = FindValidMapping(con);
 
 	TP_INFO(Log::InputControllerPrefix, "Controller: ", (con->mapping != nullptr ? con->mapping->Name : con->Name),
@@ -836,7 +836,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 	}
 	mapping.Name = splittedString[1];
 
-	for (uint8_t i = 2; i < splittedString.size();) //Start after Mapping Name
+	for (u8 i = 2; i < splittedString.size();) //Start after Mapping Name
 	{
 		const std::vector<std::string_view> splittedField = Utils::String::SplitStringView(splittedString[i], ':');
 		if (splittedField.empty())
@@ -846,13 +846,13 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 		}
 		if (splittedField.size() < 2)
 		{
-			TP_ERROR(Log::InputControllerPrefix, "Too few elements inside field: ", NumericCast<uint32_t>(i),
+			TP_ERROR(Log::InputControllerPrefix, "Too few elements inside field: ", NumericCast<u32>(i),
 			         "! Mapping: ", splittedString[1]);
 			return false;
 		}
 		if (splittedField.size() > 2)
 		{
-			TP_ERROR(Log::InputControllerPrefix, "Too many elements inside field: ", NumericCast<uint32_t>(i),
+			TP_ERROR(Log::InputControllerPrefix, "Too many elements inside field: ", NumericCast<u32>(i),
 			         "! Mapping: ", splittedString[1]);
 			return false;
 		}
@@ -867,15 +867,15 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 			}
 			if (!Utils::String::IsAlphaNumeric(c))
 			{
-				TP_ERROR(Log::InputControllerPrefix, "Invalid char inside field: ", NumericCast<uint32_t>(i),
+				TP_ERROR(Log::InputControllerPrefix, "Invalid char inside field: ", NumericCast<u32>(i),
 				         "! Mapping: ", splittedString[1]);
 				return false;
 			}
 		}
 
 		bool found = false;
-		uint8_t j = 0;
-		for (j = 0; j < NumericCast<uint8_t>(fields.size()); j++)
+		u8 j = 0;
+		for (j = 0; j < NumericCast<u8>(fields.size()); j++)
 		{
 			if (fields[j].Name == splittedField[0])
 			{
@@ -887,9 +887,9 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 		if(found && (fields[j].Element != nullptr))
 		{
 			MapElement* const e = fields[j].Element;
-			int8_t minimum = -1;
-			int8_t maximum = 1;
-			uint32_t charOffset = 0;
+			i8 minimum = -1;
+			i8 maximum = 1;
+			u32 charOffset = 0;
 
 			//Input modifiers
 			if (splittedField[1][0] == '+')
@@ -916,23 +916,23 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 
 			if (e->Type == 3) //DPad
 			{
-				const uint64_t hat = std::stoul(splittedField[1].data() + charOffset);
-				const uint64_t bit = std::stoul(splittedField[1].data() + charOffset);
-				e->Index = NumericCast<uint8_t>((hat << 4u) | bit);
+				const u64 hat = std::stoul(splittedField[1].data() + charOffset);
+				const u64 bit = std::stoul(splittedField[1].data() + charOffset);
+				e->Index = NumericCast<u8>((hat << 4u) | bit);
 			}
 			else
-				e->Index = NumericCast<uint8_t>(std::stoul(splittedField[1].data() + charOffset));
+				e->Index = NumericCast<u8>(std::stoul(splittedField[1].data() + charOffset));
 
 			if (e->Type == 1) //Axis
 			{
-				e->AxisScale = NumericCast<int8_t>(2 / (maximum - minimum));
-				e->AxisOffset = NumericCast<int8_t>(-(maximum + minimum));
+				e->AxisScale = NumericCast<i8>(2 / (maximum - minimum));
+				e->AxisOffset = NumericCast<i8>(-(maximum + minimum));
 
 				//Invert axis input modifier
 				if (splittedField[1][charOffset] == '~')
 				{
-					e->AxisScale = NumericCast<int8_t>(-e->AxisScale);
-					e->AxisOffset = NumericCast<int8_t>(-e->AxisOffset);
+					e->AxisScale = NumericCast<i8>(-e->AxisScale);
+					e->AxisOffset = NumericCast<i8>(-e->AxisOffset);
 				}
 			}
 		}
@@ -953,7 +953,7 @@ void TRAP::Input::InitControllerMappings()
 
 	s_mappings.resize(Embed::ControllerMappings.size());
 
-	for(std::size_t i = 0; i < Embed::ControllerMappings.size(); ++i)
+	for(usize i = 0; i < Embed::ControllerMappings.size(); ++i)
 		ParseMapping(s_mappings[i], Embed::ControllerMappings[i]);
 }
 
@@ -979,8 +979,8 @@ void TRAP::Input::InitControllerMappings()
 	}
 	if (e->Type == 1) //Axis
 	{
-		const float value = con->Axes[e->Index] * NumericCast<float>(e->AxisScale) +
-		                    NumericCast<float>(e->AxisOffset);
+		const f32 value = con->Axes[e->Index] * NumericCast<f32>(e->AxisScale) +
+		                    NumericCast<f32>(e->AxisOffset);
 		if (e->AxisOffset < 0 || (e->AxisOffset == 0 && e->AxisScale > 0))
 		{
 			if (value >= 0.0f)
@@ -1003,7 +1003,7 @@ void TRAP::Input::InitControllerMappings()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] float TRAP::Input::GetMappedControllerAxis(const Controller controller, const ControllerAxis axis)
+[[nodiscard]] f32 TRAP::Input::GetMappedControllerAxis(const Controller controller, const ControllerAxis axis)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
@@ -1018,8 +1018,8 @@ void TRAP::Input::InitControllerMappings()
 	const MapElement* const e = &con->mapping->Axes[std::to_underlying(axis)];
 	if(e->Type == 1) //Axis
 	{
-		const float value = con->Axes[e->Index] * NumericCast<float>(e->AxisScale) +
-		                    NumericCast<float>(e->AxisOffset);
+		const f32 value = con->Axes[e->Index] * NumericCast<f32>(e->AxisScale) +
+		                    NumericCast<f32>(e->AxisOffset);
 		return Math::Clamp(value, -1.0f, 1.0f);
 	}
 	if(e->Type == 2) //Button
@@ -1037,7 +1037,7 @@ void TRAP::Input::InitControllerMappings()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Input::ControllerDPad TRAP::Input::GetMappedControllerDPad(const Controller controller, const uint32_t dpad)
+[[nodiscard]] TRAP::Input::ControllerDPad TRAP::Input::GetMappedControllerDPad(const Controller controller, const u32 dpad)
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 

@@ -16,15 +16,15 @@ namespace
 {
 	//Define the low-level send/receive flags, which depend on the OS
 #ifdef TRAP_PLATFORM_LINUX
-	const int32_t flags = MSG_NOSIGNAL;
+	const i32 flags = MSG_NOSIGNAL;
 #else
-	const int32_t flags = 0;
+	const i32 flags = 0;
 #endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint16_t TRAP::Network::TCPSocketIPv6::GetLocalPort() const
+[[nodiscard]] u16 TRAP::Network::TCPSocketIPv6::GetLocalPort() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -36,7 +36,7 @@ namespace
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
 	if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
 	{
-		uint16_t port = address.sin6_port;
+		u16 port = address.sin6_port;
 
 		if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(port);
@@ -61,7 +61,7 @@ namespace
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
 	if (getpeername(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
 	{
-		std::array<uint8_t, 16> addr{};
+		std::array<u8, 16> addr{};
 #ifdef TRAP_PLATFORM_WINDOWS
 		std::copy_n(address.sin6_addr.u.Byte, addr.size(), addr.data());
 #else
@@ -75,7 +75,7 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint16_t TRAP::Network::TCPSocketIPv6::GetRemotePort() const
+[[nodiscard]] u16 TRAP::Network::TCPSocketIPv6::GetRemotePort() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -87,7 +87,7 @@ namespace
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
 	if (getpeername(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
 	{
-		uint16_t port = address.sin6_port;
+		u16 port = address.sin6_port;
 
 		if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(port);
@@ -101,7 +101,7 @@ namespace
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Connect(const IPv6Address& remoteAddress,
-                                                                    const uint16_t remotePort,
+                                                                    const u16 remotePort,
 																	const Utils::TimeStep timeout)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
@@ -165,7 +165,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Connect(const IPv6Ad
 		time.tv_usec = static_cast<time_t>(timeout.GetSeconds());
 
 		//Wait for something to write on our socket (which means that the connection request has returned)
-		if(select(static_cast<int32_t>(GetHandle() + 1), nullptr, &selector, nullptr, &time) > 0)
+		if(select(static_cast<i32>(GetHandle() + 1), nullptr, &selector, nullptr, &time) > 0)
 		{
 			//At this point the connection may have been either accepted or refused.
 			//To know whether it's a success or a failure, we must check the address of the connected peer
@@ -199,22 +199,22 @@ void TRAP::Network::TCPSocketIPv6::Disconnect()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(const void* const data, const std::size_t size) const
+TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(const void* const data, const usize size) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
 	if (!IsBlocking())
 		TP_WARN(Log::NetworkTCPSocketPrefix, "Partial sends might not be handled properly.");
 
-	std::size_t sent = 0;
+	usize sent = 0;
 
 	return Send(data, size, sent);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(const void* const data, const std::size_t size,
-                                                                 std::size_t& sent) const
+TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(const void* const data, const usize size,
+                                                                 usize& sent) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -226,8 +226,8 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(const void* con
 	}
 
 	//Loop until every byte has been sent
-	int64_t result = 0;
-	for(sent = 0; sent < size; sent += NumericCast<std::size_t>(result))
+	i64 result = 0;
+	for(sent = 0; sent < size; sent += NumericCast<usize>(result))
 	{
 		//Send a chunk of data
 		result = ::send(GetHandle(), static_cast<const char*>(data) + sent, size - sent, flags);
@@ -249,8 +249,8 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(const void* con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(void* const data, const std::size_t size,
-                                                                    std::size_t& received) const
+TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(void* const data, const usize size,
+                                                                    usize& received) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -266,12 +266,12 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(void* const 
 	}
 
 	//Receive a chunk of bytes
-	const int64_t sizeReceived = recv(GetHandle(), static_cast<char*>(data), size, flags);
+	const i64 sizeReceived = recv(GetHandle(), static_cast<char*>(data), size, flags);
 
 	//Check the number of bytes received
 	if (sizeReceived > 0)
 	{
-		received = NumericCast<std::size_t>(sizeReceived);
+		received = NumericCast<usize>(sizeReceived);
 		return Status::Done;
 	}
 	if (sizeReceived == 0)
@@ -296,25 +296,25 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(Packet& packet)
 	//partial send, which could cause data corruption on the receiving end.
 
 	//Get the data to send from the packet
-	std::size_t size = 0;
+	usize size = 0;
 	const void* const data = packet.OnSend(size);
 
 	//First convert the packet size to network byte order
-	std::size_t packetSize = size;
+	usize packetSize = size;
 
 	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(packetSize);
 
 	//Allocate memory for the data block to send
-	std::vector<uint8_t> blockToSend(sizeof(packetSize) + size);
+	std::vector<u8> blockToSend(sizeof(packetSize) + size);
 
 	//Copy the packet size and data into the block to send
-	std::copy_n(reinterpret_cast<const uint8_t*>(&packetSize), sizeof(packetSize), blockToSend.data());
+	std::copy_n(reinterpret_cast<const u8*>(&packetSize), sizeof(packetSize), blockToSend.data());
 	if (size > 0)
-		std::copy_n(static_cast<const uint8_t*>(data), size, blockToSend.data() + sizeof(packetSize));
+		std::copy_n(static_cast<const u8*>(data), size, blockToSend.data() + sizeof(packetSize));
 
 	//Send the data block
-	std::size_t sent = 0;
+	usize sent = 0;
 	const Status status = Send(blockToSend.data() + packet.m_sendPos, blockToSend.size() - packet.m_sendPos, sent);
 
 	//In the case of a partial send, record the location to resume from
@@ -336,15 +336,15 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(Packet& pack
 	packet.Clear();
 
 	//We start by getting the size of the incoming packet
-	uint32_t packetSize = 0;
-	std::size_t received = 0;
+	u32 packetSize = 0;
+	usize received = 0;
 	if(m_pendingPacket.SizeReceived < sizeof(m_pendingPacket.Size))
 	{
 		//Loop until we've received the entire size of the packet
 		//(event a 4 byte variable may be received in more than one call)
 		while(m_pendingPacket.SizeReceived < sizeof(m_pendingPacket.Size))
 		{
-			uint8_t* const data = reinterpret_cast<uint8_t*>(&m_pendingPacket.Size) + m_pendingPacket.SizeReceived;
+			u8* const data = reinterpret_cast<u8*>(&m_pendingPacket.Size) + m_pendingPacket.SizeReceived;
 			const Status status = Receive(data, sizeof(m_pendingPacket.Size) - m_pendingPacket.SizeReceived,
 			                              received);
 			m_pendingPacket.SizeReceived += received;
@@ -367,11 +367,11 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(Packet& pack
 	}
 
 	//Loop until we receive all the packet data
-	std::array<uint8_t, 1024> buffer{};
+	std::array<u8, 1024> buffer{};
 	while(m_pendingPacket.Data.size() < packetSize)
 	{
 		//Receive a chunk of data
-		const std::size_t sizeToGet = std::min(static_cast<std::size_t>(packetSize) - m_pendingPacket.Data.size(),
+		const usize sizeToGet = std::min(static_cast<usize>(packetSize) - m_pendingPacket.Data.size(),
 		                                       buffer.size());
 		const Status status = Receive(buffer.data(), sizeToGet, received);
 		if (status != Status::Done)
@@ -381,7 +381,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(Packet& pack
 		if(received > 0)
 		{
 			m_pendingPacket.Data.resize(m_pendingPacket.Data.size() + received);
-			uint8_t* const begin = m_pendingPacket.Data.data() + m_pendingPacket.Data.size() - received;
+			u8* const begin = m_pendingPacket.Data.data() + m_pendingPacket.Data.size() - received;
 			std::copy_n(buffer.data(), received, begin);
 		}
 	}

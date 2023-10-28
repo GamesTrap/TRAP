@@ -76,45 +76,45 @@ namespace
 
 TEST_CASE("TRAP::Math::Radians()", "[math][generic][radians]")
 {
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunCompileTimeRadiansScalarTests<double>();
-        RunCompileTimeRadiansScalarEdgeTests<double>();
+        RunCompileTimeRadiansScalarTests<f64>();
+        RunCompileTimeRadiansScalarEdgeTests<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunCompileTimeRadiansScalarTests<float>();
-        RunCompileTimeRadiansScalarEdgeTests<float>();
+        RunCompileTimeRadiansScalarTests<f32>();
+        RunCompileTimeRadiansScalarEdgeTests<f32>();
     }
 
-    SECTION("Vec2 - double")
+    SECTION("Vec2 - f64")
     {
         RunCompileTimeRadiansVecTests<TRAP::Math::Vec2d>();
         RunCompileTimeRadiansVecEdgeTests<TRAP::Math::Vec2d>();
     }
-    SECTION("Vec2 - float")
+    SECTION("Vec2 - f32")
     {
         RunCompileTimeRadiansVecTests<TRAP::Math::Vec2f>();
         RunCompileTimeRadiansVecEdgeTests<TRAP::Math::Vec2f>();
     }
 
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunCompileTimeRadiansVecTests<TRAP::Math::Vec3d>();
         RunCompileTimeRadiansVecEdgeTests<TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunCompileTimeRadiansVecTests<TRAP::Math::Vec3f>();
         RunCompileTimeRadiansVecEdgeTests<TRAP::Math::Vec3f>();
     }
 
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunCompileTimeRadiansVecTests<TRAP::Math::Vec4d>();
         RunCompileTimeRadiansVecEdgeTests<TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunCompileTimeRadiansVecTests<TRAP::Math::Vec4f>();
         RunCompileTimeRadiansVecEdgeTests<TRAP::Math::Vec4f>();

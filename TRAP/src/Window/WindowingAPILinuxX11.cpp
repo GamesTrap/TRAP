@@ -39,28 +39,28 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Utils/DynamicLoading/DynamicLoading.h"
 
 //Action for EWMH client messages
-static constexpr int32_t _NET_WM_STATE_REMOVE = 0;
-static constexpr int32_t _NET_WM_STATE_ADD = 1;
+static constexpr i32 _NET_WM_STATE_REMOVE = 0;
+static constexpr i32 _NET_WM_STATE_ADD = 1;
 
 //Additional mouse button names for XButtonEvent
-static constexpr int32_t Button6 = 6;
-static constexpr int32_t Button7 = 7;
+static constexpr i32 Button6 = 6;
+static constexpr i32 Button7 = 7;
 
 //Motif WM hints flags
-static constexpr int32_t MWM_HINTS_DECORATIONS = 2;
-static constexpr int32_t MWM_DECOR_ALL = 1;
+static constexpr i32 MWM_HINTS_DECORATIONS = 2;
+static constexpr i32 MWM_DECOR_ALL = 1;
 
-static constexpr int32_t TRAP_XDND_VERSION = 5;
+static constexpr i32 TRAP_XDND_VERSION = 5;
 
 //Atom values
-static constexpr int32_t None = 0;
+static constexpr i32 None = 0;
 
-static constexpr int32_t KeyPress = 2;
-static constexpr int32_t KeyRelease = 3;
+static constexpr i32 KeyPress = 2;
+static constexpr i32 KeyRelease = 3;
 
 //Sends an EWMH or ICCCM event to the window manager
-void TRAP::INTERNAL::WindowingAPI::SendEventToWM(const InternalWindow& window, const Atom type, const int64_t a,
-												 const int64_t b, const int64_t c, const int64_t d, const int64_t e)
+void TRAP::INTERNAL::WindowingAPI::SendEventToWM(const InternalWindow& window, const Atom type, const i64 a,
+												 const i64 b, const i64 c, const i64 d, const i64 e)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -80,7 +80,7 @@ void TRAP::INTERNAL::WindowingAPI::SendEventToWM(const InternalWindow& window, c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::WaitForX11Event(double* const timeout)
+bool TRAP::INTERNAL::WindowingAPI::WaitForX11Event(f64* const timeout)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -97,7 +97,7 @@ bool TRAP::INTERNAL::WindowingAPI::WaitForX11Event(double* const timeout)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::WaitForAnyEvent(double* const timeout)
+bool TRAP::INTERNAL::WindowingAPI::WaitForAnyEvent(f64* const timeout)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -115,7 +115,7 @@ bool TRAP::INTERNAL::WindowingAPI::WaitForAnyEvent(double* const timeout)
 		if(!PollPOSIX(fds.data(), fds.size(), timeout))
 			return false;
 
-		for(std::size_t i = 1; i < fds.size(); ++i)
+		for(usize i = 1; i < fds.size(); ++i)
 		{
 			if((fds[i].revents & POLLIN) != 0)
 				return true;
@@ -157,10 +157,10 @@ void TRAP::INTERNAL::WindowingAPI::DrainEmptyEvents()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::SetEventFlags(int32_t& fileDescriptor)
+[[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::SetEventFlags(i32& fileDescriptor)
 {
-	const int sf = fcntl(fileDescriptor, F_GETFL, 0);
-	const int df = fcntl(fileDescriptor, F_GETFD, 0);
+	const i32 sf = fcntl(fileDescriptor, F_GETFL, 0);
+	const i32 df = fcntl(fileDescriptor, F_GETFD, 0);
 
 	if(sf == -1 || df == -1 ||
 	   fcntl(fileDescriptor, F_SETFL, sf | O_NONBLOCK) == -1 ||
@@ -194,18 +194,18 @@ void TRAP::INTERNAL::WindowingAPI::DrainEmptyEvents()
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Retrieve a single window property of the specified type
-[[nodiscard]] uint64_t TRAP::INTERNAL::WindowingAPI::GetWindowPropertyX11(::Window window, const Atom property, const Atom type,
-                                                                          uint8_t** const value)
+[[nodiscard]] u64 TRAP::INTERNAL::WindowingAPI::GetWindowPropertyX11(::Window window, const Atom property, const Atom type,
+                                                                          u8** const value)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(value, "WindowingAPI::GetWindowPropertyX11(): value is nullptr!");
 
 	Atom actualType{};
-	int32_t actualFormat{};
-	uint64_t itemCount{}, bytesAfter{};
+	i32 actualFormat{};
+	u64 itemCount{}, bytesAfter{};
 
-	s_Data.X11.XLIB.GetWindowProperty(s_Data.X11.display, window, property, 0, std::numeric_limits<long>::max(),
+	s_Data.X11.XLIB.GetWindowProperty(s_Data.X11.display, window, property, 0, std::numeric_limits<i64>::max(),
 	                                  0, type, &actualType, &actualFormat, &itemCount, &bytesAfter, value);
 
 	return itemCount;
@@ -214,8 +214,8 @@ void TRAP::INTERNAL::WindowingAPI::DrainEmptyEvents()
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Updates the normal hints according to the window settings
-void TRAP::INTERNAL::WindowingAPI::UpdateNormalHints(const InternalWindow& window, const int32_t width,
-                                                     const int32_t height)
+void TRAP::INTERNAL::WindowingAPI::UpdateNormalHints(const InternalWindow& window, const i32 width,
+                                                     const i32 height)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -226,7 +226,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateNormalHints(const InternalWindow& windo
 		return;
 	}
 
-	long supplied = 0;
+	i64 supplied = 0;
 	s_Data.X11.XLIB.GetWMNormalHints(s_Data.X11.display, window.X11.Handle, hints, &supplied);
 	hints->flags &= ~(PMinSize | PMaxSize | PAspect);
 
@@ -277,7 +277,7 @@ bool TRAP::INTERNAL::WindowingAPI::WaitForVisibilityNotify(const InternalWindow&
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	XEvent dummy;
-	double timeout = 0.1;
+	f64 timeout = 0.1;
 
 	while(s_Data.X11.XLIB.CheckTypedWindowEvent(s_Data.X11.display, window.X11.Handle, VisibilityNotify, &dummy) == 0)
 	{
@@ -313,7 +313,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowMode(InternalWindow& window)
 			SendEventToWM(window,
 						  s_Data.X11.NET_WM_STATE,
 						  _NET_WM_STATE_ADD,
-						  static_cast<int64_t>(s_Data.X11.NET_WM_STATE_FULLSCREEN),
+						  static_cast<i64>(s_Data.X11.NET_WM_STATE_FULLSCREEN),
 						  0, 1, 0);
 		}
 		else
@@ -336,11 +336,11 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowMode(InternalWindow& window)
 		//Enable compositor bypass
 		if(!window.Transparent)
 		{
-			const uint64_t value = 1;
+			const u64 value = 1;
 
 			s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, window.X11.Handle,
 			                               s_Data.X11.NET_WM_BYPASS_COMPOSITOR, XA_CARDINAL, 32,
-										   PropModeReplace, reinterpret_cast<const uint8_t*>(&value), 1);
+										   PropModeReplace, reinterpret_cast<const u8*>(&value), 1);
 		}
 	}
 	else
@@ -356,7 +356,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowMode(InternalWindow& window)
 			SendEventToWM(window,
 						  s_Data.X11.NET_WM_STATE,
 						  _NET_WM_STATE_REMOVE,
-						  static_cast<int64_t>(s_Data.X11.NET_WM_STATE_FULLSCREEN),
+						  static_cast<i64>(s_Data.X11.NET_WM_STATE_FULLSCREEN),
 						  0, 1, 0);
 		}
 		else
@@ -380,14 +380,14 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowMode(InternalWindow& window)
 using namespace std::string_view_literals;
 
 //Retrieve system content scale via folklore heuristics
-void TRAP::INTERNAL::WindowingAPI::GetSystemContentScale(float& xScale, float& yScale)
+void TRAP::INTERNAL::WindowingAPI::GetSystemContentScale(f32& xScale, f32& yScale)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	//Start by assuming the default X11 DPI
 	//NOTE: Some desktop environments (KDE) may remove the Xft.dpi field when it would be set to 96, so assume
 	//      that is the case if we cannot find it
-	float xDPI = 96.0f, yDPI = 96.0f;
+	f32 xDPI = 96.0f, yDPI = 96.0f;
 
 	//NOTE: Basing the scale on Xft.dpi where available should provide the most consistent user experience
 	//      (matches Qt, Gtk, etc), although not always the most accurate one
@@ -405,7 +405,7 @@ void TRAP::INTERNAL::WindowingAPI::GetSystemContentScale(float& xScale, float& y
 				if((type != nullptr) && "String"sv == type)
 				{
 					char* strEnd = nullptr;
-					xDPI = yDPI = NumericCast<float>(std::strtod(value.addr, &strEnd));
+					xDPI = yDPI = NumericCast<f32>(std::strtod(value.addr, &strEnd));
 				}
 			}
 
@@ -571,7 +571,7 @@ void TRAP::INTERNAL::WindowingAPI::GetSystemContentScale(float& xScale, float& y
 
 	if(s_Data.X11.XKB.Available)
 	{
-		int32_t supported = 0;
+		i32 supported = 0;
 
 		if(s_Data.X11.XKB.SetDetectableAutoRepeat(s_Data.X11.display, 1, &supported) != 0)
 		{
@@ -582,7 +582,7 @@ void TRAP::INTERNAL::WindowingAPI::GetSystemContentScale(float& xScale, float& y
 		s_Data.X11.XKB.Group = 0;
 		XkbStateRec state;
 		if(s_Data.X11.XKB.GetState(s_Data.X11.display, XkbUseCoreKbd, &state) == 0) //0 = Success
-			s_Data.X11.XKB.Group = NumericCast<uint32_t>(state.group);
+			s_Data.X11.XKB.Group = NumericCast<u32>(state.group);
 
 		s_Data.X11.XKB.SelectEventDetails(s_Data.X11.display, XkbUseCoreKbd, XkbStateNotify,
 										  XkbGroupStateMask, XkbGroupStateMask);
@@ -719,7 +719,7 @@ void TRAP::INTERNAL::WindowingAPI::DetectEWMH()
 	//First we read the _NET_SUPPORTING_WM_CHECK property on the root window
 	::Window* windowFromRoot = nullptr;
 	if(GetWindowPropertyX11(s_Data.X11.Root, s_Data.X11.NET_SUPPORTING_WM_CHECK, XA_WINDOW,
-	                        reinterpret_cast<uint8_t**>(&windowFromRoot)) == 0u)
+	                        reinterpret_cast<u8**>(&windowFromRoot)) == 0u)
 		return;
 
 	GrabErrorHandlerX11();
@@ -728,7 +728,7 @@ void TRAP::INTERNAL::WindowingAPI::DetectEWMH()
 	//Then we look for the same property on that window
 	::Window* windowFromChild = nullptr;
 	if(GetWindowPropertyX11(*windowFromRoot, s_Data.X11.NET_SUPPORTING_WM_CHECK, XA_WINDOW,
-	                        reinterpret_cast<uint8_t**>(&windowFromChild)) == 0u)
+	                        reinterpret_cast<u8**>(&windowFromChild)) == 0u)
 	{
 		s_Data.X11.XLIB.Free(windowFromRoot);
 		return;
@@ -753,8 +753,8 @@ void TRAP::INTERNAL::WindowingAPI::DetectEWMH()
 	//It should contain a list of supported EWMH protocl and state atoms
 
 	Atom* supportedAtoms = nullptr;
-	const uint64_t atomCount = GetWindowPropertyX11(s_Data.X11.Root, s_Data.X11.NET_SUPPORTED, XA_ATOM,
-	                                                reinterpret_cast<uint8_t**>(&supportedAtoms));
+	const u64 atomCount = GetWindowPropertyX11(s_Data.X11.Root, s_Data.X11.NET_SUPPORTED, XA_ATOM,
+	                                                reinterpret_cast<u8**>(&supportedAtoms));
 	if(supportedAtoms == nullptr)
 		return;
 
@@ -795,7 +795,7 @@ void TRAP::INTERNAL::WindowingAPI::GrabErrorHandlerX11()
 //-------------------------------------------------------------------------------------------------------------------//
 
 //X error handler
-[[nodiscard]] int32_t TRAP::INTERNAL::WindowingAPI::ErrorHandler(Display* const display, XErrorEvent* const event)
+[[nodiscard]] i32 TRAP::INTERNAL::WindowingAPI::ErrorHandler(Display* const display, XErrorEvent* const event)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -846,9 +846,9 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseErrorHandlerX11()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	const std::array<uint8_t, NumericCast<std::size_t>(16) * 16 * 4> pixels{0};
+	const std::array<u8, NumericCast<usize>(16) * 16 * 4> pixels{0};
 	const Scope<Image> cursorImage = TRAP::Image::LoadFromMemory(16, 16, TRAP::Image::ColorFormat::RGBA,
-	                                                             std::vector<uint8_t>(pixels.begin(), pixels.end()));
+	                                                             std::vector<u8>(pixels.begin(), pixels.end()));
 	if(!cursorImage)
 		return std::nullopt;
 
@@ -867,7 +867,7 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseErrorHandlerX11()
 	if(s_Data.X11.XLIB.GetIMValues(s_Data.X11.IM, XNQueryInputStyle, &styles, nullptr) != nullptr || (styles == nullptr))
 		return false;
 
-	for(uint16_t i = 0; i < styles->count_styles; i++)
+	for(u16 i = 0; i < styles->count_styles; i++)
 	{
 		if(styles->supported_styles[i] == (XIMPreeditNothing | XIMStatusNothing))
 		{
@@ -934,8 +934,8 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 		return;
 	}
 
-	std::size_t disconnectedCount = 0;
-	int32_t screenCount = 0;
+	usize disconnectedCount = 0;
+	i32 screenCount = 0;
 	std::vector<InternalMonitor*> disconnected{};
 	XineramaScreenInfo* screens = nullptr;
 	XRRScreenResources* const sr = s_Data.X11.RandR.GetScreenResourcesCurrent(s_Data.X11.display, s_Data.X11.Root);
@@ -954,14 +954,14 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 	if(disconnectedCount != 0)
 	{
 		disconnected.resize(s_Data.Monitors.size());
-		for(std::size_t i = 0; i < s_Data.Monitors.size(); i++)
+		for(usize i = 0; i < s_Data.Monitors.size(); i++)
 			disconnected[i] = s_Data.Monitors[i].get();
 	}
 
-	for(int32_t i = 0; i < sr->noutput; i++)
+	for(i32 i = 0; i < sr->noutput; i++)
 	{
-		std::size_t j = 0;
-		uint32_t type = 0;
+		usize j = 0;
+		u32 type = 0;
 
 		XRROutputInfo* const oi = s_Data.X11.RandR.GetOutputInfo(s_Data.X11.display, sr, sr->outputs[i]);
 		if((oi == nullptr) || oi->connection != RR_Connected || oi->crtc == 0)
@@ -1001,13 +1001,13 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 
 		if(screens != nullptr)
 		{
-			for(j = 0; j < NumericCast<std::size_t>(screenCount); j++)
+			for(j = 0; j < NumericCast<usize>(screenCount); j++)
 			{
 				if(screens[j].x_org == ci->x && screens[j].y_org == ci->y &&
-				   NumericCast<uint32_t>(screens[j].width) == ci->width &&
-				   NumericCast<uint32_t>(screens[j].height) == ci->height)
+				   NumericCast<u32>(screens[j].width) == ci->width &&
+				   NumericCast<u32>(screens[j].height) == ci->height)
 				{
-					monitor->X11.Index = NumericCast<int32_t>(j);
+					monitor->X11.Index = NumericCast<i32>(j);
 					break;
 				}
 			}
@@ -1030,17 +1030,17 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 	if(screens != nullptr)
 		s_Data.X11.XLIB.Free(screens);
 
-	for(std::size_t i = 0; i < disconnectedCount; i++)
+	for(usize i = 0; i < disconnectedCount; i++)
 	{
 		if(disconnected[i] != nullptr)
-			InputMonitorDisconnect(NumericCast<uint32_t>(i), 0);
+			InputMonitorDisconnect(NumericCast<u32>(i), 0);
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns whether the event is a selection event
-[[nodiscard]] int32_t TRAP::INTERNAL::WindowingAPI::IsSelectionEvent([[maybe_unused]] Display* const display,
+[[nodiscard]] i32 TRAP::INTERNAL::WindowingAPI::IsSelectionEvent([[maybe_unused]] Display* const display,
                                                                       XEvent* const event,
 																	  [[maybe_unused]] XPointer ptr)
 {
@@ -1051,7 +1051,7 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 	if(event->xany.window != s_Data.X11.HelperWindowHandle)
 		return 0;
 
-	return NumericCast<int32_t>(event->type == SelectionRequest ||
+	return NumericCast<i32>(event->type == SelectionRequest ||
 	                            event->type == SelectionNotify ||
 		                        event->type == SelectionClear);
 }
@@ -1084,7 +1084,7 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 		const std::array<Atom, 4> targets{s_Data.X11.TARGETS, s_Data.X11.MULTIPLE, s_Data.X11.UTF8_STRING, XA_STRING};
 
 		s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, request.requestor, request.property, XA_ATOM, 32,
-		                               PropModeReplace, reinterpret_cast<const uint8_t*>(targets.data()),
+		                               PropModeReplace, reinterpret_cast<const u8*>(targets.data()),
 								       targets.size());
 
 		return request.property;
@@ -1095,26 +1095,26 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 		//Multiple conversions were requested
 
 		Atom* targets = nullptr;
-		const uint64_t count = GetWindowPropertyX11(request.requestor, request.property, s_Data.X11.ATOM_PAIR,
-		                                            reinterpret_cast<uint8_t**>(&targets));
+		const u64 count = GetWindowPropertyX11(request.requestor, request.property, s_Data.X11.ATOM_PAIR,
+		                                            reinterpret_cast<u8**>(&targets));
 
 		if(targets == nullptr)
 			return None;
 
-		for(uint64_t i = 0; i < count; i += 2)
+		for(u64 i = 0; i < count; i += 2)
 		{
 			if(std::ranges::contains(formats, targets[i]))
 			{
 				s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, request.requestor, targets[i + 1], targets[i], 8,
-				                               PropModeReplace, reinterpret_cast<uint8_t*>(selectionString.data()),
-										       NumericCast<int32_t>(selectionString.size()));
+				                               PropModeReplace, reinterpret_cast<u8*>(selectionString.data()),
+										       NumericCast<i32>(selectionString.size()));
 			}
 			else
 				targets[i + 1] = None;
 		}
 
 		s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, request.requestor, request.property, s_Data.X11.ATOM_PAIR, 32,
-                                       PropModeReplace, reinterpret_cast<uint8_t*>(targets), NumericCast<int32_t>(count));
+                                       PropModeReplace, reinterpret_cast<u8*>(targets), NumericCast<i32>(count));
 
 		s_Data.X11.XLIB.Free(targets);
 
@@ -1139,8 +1139,8 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 		//The requested target is one we support
 
 		s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, request.requestor, request.property, request.target, 8,
-									   PropModeReplace, reinterpret_cast<uint8_t*>(selectionString.data()),
-									   NumericCast<int32_t>(selectionString.size()));
+									   PropModeReplace, reinterpret_cast<u8*>(selectionString.data()),
+									   NumericCast<i32>(selectionString.size()));
 
 		return request.property;
 	}
@@ -1238,10 +1238,10 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 	XWindowAttributes attribs;
 	s_Data.X11.XLIB.GetWindowAttributes(s_Data.X11.display, window.X11.Handle, &attribs);
 
-	uint64_t filter = 0;
+	u64 filter = 0;
 	if(s_Data.X11.XLIB.GetICValues(window.X11.IC, XNFilterEvents, &filter, nullptr) == nullptr)
 		s_Data.X11.XLIB.SelectInput(s_Data.X11.display, window.X11.Handle,
-		                            NumericCast<int64_t>(NumericCast<uint64_t>(attribs.your_event_mask) | filter));
+		                            NumericCast<i64>(NumericCast<u64>(attribs.your_event_mask) | filter));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1261,12 +1261,12 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 
 //Create the X11 window (and its colormap)
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow& window, WindowConfig& WNDConfig,
-                                                                    Visual& visual, int32_t depth)
+                                                                    Visual& visual, i32 depth)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	const uint32_t width = WNDConfig.Width;
-	const uint32_t height = WNDConfig.Height;
+	const u32 width = WNDConfig.Width;
+	const u32 height = WNDConfig.Height;
 
 	//Create a colormap based on the visual used by the current context
 	window.X11.colormap = s_Data.X11.XLIB.CreateColormap(s_Data.X11.display, s_Data.X11.Root, &visual, AllocNone);
@@ -1309,7 +1309,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 	if((s_Data.X11.NET_WM_STATE != 0u) && (window.Monitor == nullptr))
 	{
 		std::array<Atom, 3> states{};
-		uint32_t count = 0;
+		u32 count = 0;
 
 		if(WNDConfig.Floating)
 		{
@@ -1331,8 +1331,8 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 		if(count != 0)
 		{
 			s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, window.X11.Handle, s_Data.X11.NET_WM_STATE, XA_ATOM, 32,
-							               PropModeReplace, reinterpret_cast<const uint8_t*>(states.data()),
-										   NumericCast<int32_t>(count));
+							               PropModeReplace, reinterpret_cast<const u8*>(states.data()),
+										   NumericCast<i32>(count));
 		}
 	}
 
@@ -1345,16 +1345,16 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 
 	//Declare our PID
 	{
-		const int64_t pid = getpid();
+		const i64 pid = getpid();
 		s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, window.X11.Handle, s_Data.X11.NET_WM_PID, XA_CARDINAL, 32,
-		                               PropModeReplace, reinterpret_cast<const uint8_t*>(&pid), 1);
+		                               PropModeReplace, reinterpret_cast<const u8*>(&pid), 1);
 	}
 
 	if((s_Data.X11.NET_WM_WINDOW_TYPE != 0u) && (s_Data.X11.NET_WM_WINDOW_TYPE_NORMAL != 0u))
 	{
 		const Atom type = s_Data.X11.NET_WM_WINDOW_TYPE_NORMAL;
 		s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, window.X11.Handle, s_Data.X11.NET_WM_WINDOW_TYPE, XA_ATOM, 32,
-		                               PropModeReplace, reinterpret_cast<const uint8_t*>(&type), 1);
+		                               PropModeReplace, reinterpret_cast<const u8*>(&type), 1);
 	}
 
 	//Set ICCCM WM_HINTS property
@@ -1385,8 +1385,8 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 		if(!WNDConfig.Resizable)
 		{
 			hints->flags |= (PMinSize | PMaxSize);
-			hints->min_width = hints->max_width = NumericCast<int32_t>(width);
-			hints->min_height = hints->max_height = NumericCast<int32_t>(height);
+			hints->min_width = hints->max_width = NumericCast<i32>(width);
+			hints->min_height = hints->max_height = NumericCast<i32>(height);
 		}
 
 		hints->flags |= PWinGravity;
@@ -1435,33 +1435,33 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 
 //Creates a native cursor object from the specified image and hotspot
 [[nodiscard]] std::optional<Cursor> TRAP::INTERNAL::WindowingAPI::CreateCursorX11(const TRAP::Image& image,
-                                                                                  const uint32_t xHotSpot,
-                                                                                  const uint32_t yHotSpot)
+                                                                                  const u32 xHotSpot,
+                                                                                  const u32 yHotSpot)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	if(s_Data.X11.XCursor.Handle == nullptr)
 		return std::nullopt;
 
-	XcursorImage* const native = s_Data.X11.XCursor.ImageCreate(NumericCast<int32_t>(image.GetWidth()),
-	                                                            NumericCast<int32_t>(image.GetHeight()));
+	XcursorImage* const native = s_Data.X11.XCursor.ImageCreate(NumericCast<i32>(image.GetWidth()),
+	                                                            NumericCast<i32>(image.GetHeight()));
 	if(native == nullptr)
 		return std::nullopt;
 
 	native->xhot = xHotSpot;
 	native->yhot = yHotSpot;
 
-	const uint8_t* source = static_cast<const uint8_t*>(image.GetPixelData());
+	const u8* source = static_cast<const u8*>(image.GetPixelData());
 	XcursorPixel* target = native->pixels;
 
-	for(uint64_t i = 0; i < NumericCast<uint64_t>(image.GetWidth()) * NumericCast<uint64_t>(image.GetHeight()); i++, target++, source += 4)
+	for(u64 i = 0; i < NumericCast<u64>(image.GetWidth()) * NumericCast<u64>(image.GetHeight()); i++, target++, source += 4)
 	{
-		const uint32_t alpha = source[3];
+		const u32 alpha = source[3];
 
 		*target = (alpha << 24u) |
-		          NumericCast<uint8_t>(((source[0] * alpha) / 255u) << 16u) |
-				  NumericCast<uint8_t>(((source[1] * alpha) / 255u) <<  8u) |
-				  NumericCast<uint8_t>(((source[2] * alpha) / 255u) <<  0u);
+		          NumericCast<u8>(((source[0] * alpha) / 255u) << 16u) |
+				  NumericCast<u8>(((source[1] * alpha) / 255u) <<  8u) |
+				  NumericCast<u8>(((source[2] * alpha) / 255u) <<  0u);
 	}
 
 	const Cursor cursor = s_Data.X11.XCursor.ImageLoadCursor(s_Data.X11.display, native);
@@ -1473,11 +1473,11 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns whether the window is iconified
-[[nodiscard]] int32_t TRAP::INTERNAL::WindowingAPI::GetWindowState(const InternalWindow& window)
+[[nodiscard]] i32 TRAP::INTERNAL::WindowingAPI::GetWindowState(const InternalWindow& window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	int32_t result = WithdrawnState;
+	i32 result = WithdrawnState;
 	struct State
 	{
 		CARD32 State{};
@@ -1485,8 +1485,8 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 	} *state = nullptr;
 
 	if(GetWindowPropertyX11(window.X11.Handle, s_Data.X11.WM_STATE, s_Data.X11.WM_STATE,
-	                        reinterpret_cast<uint8_t**>(&state)) >= 2 && (state != nullptr))
-		result = NumericCast<int32_t>(state->State);
+	                        reinterpret_cast<u8**>(&state)) >= 2 && (state != nullptr))
+		result = NumericCast<i32>(state->State);
 
 	if(state != nullptr)
 		s_Data.X11.XLIB.Free(state);
@@ -1516,8 +1516,8 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 	{
 		char* data = nullptr;
 		Atom actualType = 0;
-		int32_t actualFormat = 0;
-		uint64_t itemCount = 0, bytesAfter = 0;
+		i32 actualFormat = 0;
+		u64 itemCount = 0, bytesAfter = 0;
 		XEvent notification, dummy;
 
 		s_Data.X11.XLIB.ConvertSelection(s_Data.X11.display, selection, target, s_Data.X11.TRAP_SELECTION,
@@ -1534,9 +1534,9 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 		                             reinterpret_cast<XPointer>(&notification));
 
 		s_Data.X11.XLIB.GetWindowProperty(s_Data.X11.display, notification.xselection.requestor,
-		                                  notification.xselection.property, 0, std::numeric_limits<long>::max(), 1, AnyPropertyType,
+		                                  notification.xselection.property, 0, std::numeric_limits<i64>::max(), 1, AnyPropertyType,
 									      &actualType, &actualFormat, &itemCount, &bytesAfter,
-									      reinterpret_cast<uint8_t**>(&data));
+									      reinterpret_cast<u8**>(&data));
 
 		if(actualType == s_Data.X11.INCR)
 		{
@@ -1550,9 +1550,9 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 
 				s_Data.X11.XLIB.Free(data);
 				s_Data.X11.XLIB.GetWindowProperty(s_Data.X11.display, notification.xselection.requestor,
-				                                  notification.xselection.property, 0, std::numeric_limits<long>::max(), 1, AnyPropertyType,
+				                                  notification.xselection.property, 0, std::numeric_limits<i64>::max(), 1, AnyPropertyType,
 											      &actualType, &actualFormat, &itemCount, &bytesAfter,
-											      reinterpret_cast<uint8_t**>(&data));
+											      reinterpret_cast<u8**>(&data));
 
 				if(itemCount != 0u)
 					string = data;
@@ -1597,7 +1597,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns whether it is a property event for the specified selection transfer
-[[nodiscard]] int32_t TRAP::INTERNAL::WindowingAPI::IsSelPropNewValueNotify([[maybe_unused]] Display* const display,
+[[nodiscard]] i32 TRAP::INTERNAL::WindowingAPI::IsSelPropNewValueNotify([[maybe_unused]] Display* const display,
                                                                             XEvent* const event, XPointer ptr)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -1607,7 +1607,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 
 	const XEvent* const notification = reinterpret_cast<XEvent*>(ptr);
 
-	return NumericCast<int32_t>(event->type == PropertyNotify &&
+	return NumericCast<i32>(event->type == PropertyNotify &&
 	                            event->xproperty.state == PropertyNewValue &&
 		                        event->xproperty.window == notification->xselection.requestor &&
 		                        event->xproperty.atom == notification->xselection.property);
@@ -1620,16 +1620,16 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	std::size_t size = 1;
+	usize size = 1;
 
 	for(const char c : source)
-		size += (NumericCast<uint8_t>(c) & 0x80u) != 0 ? 2 : 1;
+		size += (NumericCast<u8>(c) & 0x80u) != 0 ? 2 : 1;
 
 	std::string target{};
 	target.reserve(size);
 
 	for(const char c : source)
-		target += Utils::String::EncodeUTF8(NumericCast<uint32_t>(c));
+		target += Utils::String::EncodeUTF8(NumericCast<u32>(c));
 
 	return target;
 }
@@ -1676,8 +1676,8 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow& window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSizeX11(const InternalWindow& window, int32_t& width,
-                                                            int32_t& height)
+void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSizeX11(const InternalWindow& window, i32& width,
+                                                            i32& height)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -1690,8 +1690,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSizeX11(const InternalWindow
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPosX11(const InternalWindow& window, const int32_t xPos,
-                                                           const int32_t yPos)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPosX11(const InternalWindow& window, const i32 xPos,
+                                                           const i32 yPos)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -1699,7 +1699,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPosX11(const InternalWindow&
 	//      the position of unmapped windows
 	if(!PlatformWindowVisibleX11(window))
 	{
-		int64_t supplied = 0;
+		i64 supplied = 0;
 		XSizeHints* const hints = s_Data.X11.XLIB.AllocSizeHints();
 
 		if(s_Data.X11.XLIB.GetWMNormalHints(s_Data.X11.display, window.X11.Handle, hints, &supplied) != 0)
@@ -1720,10 +1720,10 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPosX11(const InternalWindow&
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorX11(InternalWindow& window,
-                                                               InternalMonitor* const monitor, const int32_t xPos,
-															   const int32_t yPos, const int32_t width,
-															   const int32_t height,
-															   [[maybe_unused]] const double refreshRate)
+                                                               InternalMonitor* const monitor, const i32 xPos,
+															   const i32 yPos, const i32 width,
+															   const i32 height,
+															   [[maybe_unused]] const f64 refreshRate)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -1740,7 +1740,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorX11(InternalWindow& w
 				UpdateNormalHints(window, width, height);
 
 			s_Data.X11.XLIB.MoveResizeWindow(s_Data.X11.display, window.X11.Handle, xPos, yPos,
-			                                 NumericCast<uint32_t>(width), NumericCast<uint32_t>(height));
+			                                 NumericCast<u32>(width), NumericCast<u32>(height));
 		}
 
 		s_Data.X11.XLIB.Flush(s_Data.X11.display);
@@ -1774,7 +1774,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorX11(InternalWindow& w
 	{
 		UpdateWindowMode(window);
 		s_Data.X11.XLIB.MoveResizeWindow(s_Data.X11.display, window.X11.Handle, xPos, yPos,
-		                                 NumericCast<uint32_t>(width), NumericCast<uint32_t>(height));
+		                                 NumericCast<u32>(width), NumericCast<u32>(height));
 	}
 
 	s_Data.X11.XLIB.Flush(s_Data.X11.display);
@@ -1811,7 +1811,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessX11(Interna
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	std::vector<InternalVideoMode> result{};
-	uint32_t count = 0;
+	u32 count = 0;
 
 	if(s_Data.X11.RandR.Available && !s_Data.X11.RandR.MonitorBroken)
 	{
@@ -1821,9 +1821,9 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessX11(Interna
 
 		if((sr != nullptr) && (ci != nullptr) && (oi != nullptr))
 		{
-			result.reserve(NumericCast<uint32_t>(oi->nmode));
+			result.reserve(NumericCast<u32>(oi->nmode));
 
-			for(int32_t i = 0; i < oi->nmode; i++)
+			for(i32 i = 0; i < oi->nmode; i++)
 			{
 				const XRRModeInfo* const mi = GetModeInfo(*sr, oi->modes[i]);
 				if((mi == nullptr) || (mi->modeFlags & RR_Interlace) != 0)
@@ -2172,7 +2172,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdownX11()
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorContentScaleX11([[maybe_unused]] const InternalMonitor& monitor,
-                                                                      float& xScale, float& yScale)
+                                                                      f32& xScale, f32& yScale)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -2182,8 +2182,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorContentScaleX11([[maybe_unu
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorPosX11(const InternalMonitor& monitor, int32_t& xPos,
-                                                            int32_t& yPos)
+void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorPosX11(const InternalMonitor& monitor, i32& xPos,
+                                                            i32& yPos)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2244,7 +2244,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindowX11(const InternalWindow& 
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	Visual* const visual = DefaultVisual(s_Data.X11.display, s_Data.X11.Screen);
-	const int32_t depth = DefaultDepth(s_Data.X11.display, s_Data.X11.Screen);
+	const i32 depth = DefaultDepth(s_Data.X11.display, s_Data.X11.Screen);
 
 	if(!CreateNativeWindow(window, WNDConfig, *visual, depth))
 		return false;
@@ -2300,8 +2300,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitleX11(const InternalWindo
 					               s_Data.X11.UTF8_STRING,
 					               8,
 					               PropModeReplace,
-					               reinterpret_cast<const uint8_t*>(title.data()),
-					               NumericCast<int32_t>(title.size()));
+					               reinterpret_cast<const u8*>(title.data()),
+					               NumericCast<i32>(title.size()));
 
 	s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display,
 	                               window.X11.Handle,
@@ -2309,8 +2309,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitleX11(const InternalWindo
 					               s_Data.X11.UTF8_STRING,
 					               8,
 					               PropModeReplace,
-					               reinterpret_cast<const uint8_t*>(title.data()),
-					               NumericCast<int32_t>(title.size()));
+					               reinterpret_cast<const u8*>(title.data()),
+					               NumericCast<i32>(title.size()));
 
 	s_Data.X11.XLIB.Flush(s_Data.X11.display);
 }
@@ -2319,8 +2319,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitleX11(const InternalWindo
 
 [[nodiscard]] bool TRAP::INTERNAL::WindowingAPI::PlatformCreateCursorX11(InternalCursor& cursor,
                                                                          const Image& image,
-																		 const uint32_t xHotspot,
-																		 const uint32_t yHotspot)
+																		 const u32 xHotspot,
+																		 const u32 yHotspot)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2343,7 +2343,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitleX11(const InternalWindo
 		const char* const theme = s_Data.X11.XCursor.GetTheme(s_Data.X11.display);
 		if(theme != nullptr)
 		{
-			const int32_t size = s_Data.X11.XCursor.GetDefaultSize(s_Data.X11.display);
+			const i32 size = s_Data.X11.XCursor.GetDefaultSize(s_Data.X11.display);
 			std::string name = "default";
 
 			if(type == CursorType::Arrow)
@@ -2378,7 +2378,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitleX11(const InternalWindo
 
 	if(cursor.X11.Handle == 0u)
 	{
-		uint32_t native = 0;
+		u32 native = 0;
 
 		if(type == CursorType::Arrow)
 			native = XC_left_ptr;
@@ -2482,28 +2482,28 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorModeX11(InternalWindow& wind
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPosX11(InternalWindow& window, const double xPos, const double yPos)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPosX11(InternalWindow& window, const f64 xPos, const f64 yPos)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	//Store the new position so it can be recognized later
-	window.X11.WarpCursorPosX = NumericCast<int32_t>(xPos);
-	window.X11.WarpCursorPosY = NumericCast<int32_t>(yPos);
+	window.X11.WarpCursorPosX = NumericCast<i32>(xPos);
+	window.X11.WarpCursorPosY = NumericCast<i32>(yPos);
 
-	s_Data.X11.XLIB.WarpPointer(s_Data.X11.display, None, window.X11.Handle, 0, 0, 0, 0, NumericCast<int32_t>(xPos),
-	                            NumericCast<int32_t>(yPos));
+	s_Data.X11.XLIB.WarpPointer(s_Data.X11.display, None, window.X11.Handle, 0, 0, 0, 0, NumericCast<i32>(xPos),
+	                            NumericCast<i32>(yPos));
 	s_Data.X11.XLIB.Flush(s_Data.X11.display);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetCursorPosX11(const InternalWindow& window, double& xPos, double& yPos)
+void TRAP::INTERNAL::WindowingAPI::PlatformGetCursorPosX11(const InternalWindow& window, f64& xPos, f64& yPos)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	::Window root = 0, child = 0;
-	int32_t rootX = 0, rootY = 0, childX = 0, childY = 0;
-	uint32_t mask = 0;
+	i32 rootX = 0, rootY = 0, childX = 0, childY = 0;
+	u32 mask = 0;
 
 	s_Data.X11.XLIB.QueryPointer(s_Data.X11.display, window.X11.Handle, &root, &child, &rootX, &rootY, &childX, &childY,
 	                             &mask);
@@ -2520,35 +2520,35 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIconX11(InternalWindow& wind
 
 	if(image != nullptr)
 	{
-		const uint32_t longCount = 2 + image->GetWidth() * image->GetHeight();
+		const u32 longCount = 2 + image->GetWidth() * image->GetHeight();
 
-		std::vector<uint64_t> icon{};
+		std::vector<u64> icon{};
 		icon.resize(longCount);
-		uint64_t* target = icon.data();
-		const std::vector<uint8_t> imgData(static_cast<const uint8_t*>(image->GetPixelData()),
-		                                   static_cast<const uint8_t*>(image->GetPixelData()) +
+		u64* target = icon.data();
+		const std::vector<u8> imgData(static_cast<const u8*>(image->GetPixelData()),
+		                                   static_cast<const u8*>(image->GetPixelData()) +
 									       image->GetPixelDataSize());
 
 		*target++ = image->GetWidth();
 		*target++ = image->GetHeight();
 
-		for(uint64_t j = 0; j < NumericCast<uint64_t>(image->GetWidth()) * NumericCast<uint64_t>(image->GetHeight()); j++)
+		for(u64 j = 0; j < NumericCast<u64>(image->GetWidth()) * NumericCast<u64>(image->GetHeight()); j++)
 		{
-			*target++ = (static_cast<uint64_t>(imgData[j * 4 + 0]) << 16u) |
-						(static_cast<uint64_t>(imgData[j * 4 + 1]) <<  8u) |
-						(static_cast<uint64_t>(imgData[j * 4 + 2]) <<  0u) |
-						(static_cast<uint64_t>(imgData[j * 4 + 3]) << 24u);
+			*target++ = (static_cast<u64>(imgData[j * 4 + 0]) << 16u) |
+						(static_cast<u64>(imgData[j * 4 + 1]) <<  8u) |
+						(static_cast<u64>(imgData[j * 4 + 2]) <<  0u) |
+						(static_cast<u64>(imgData[j * 4 + 3]) << 24u);
 		}
 
 		//NOTE: XChangeProperty expects 32-bit values like the image data above to be
 		//      places in the 32 least significant bits of individual longs. This is true
-		//      even if long is 64-bit and a WM protocol calls for "packed" data.
+		//      even if i64(long) is 64-bit and a WM protocol calls for "packed" data.
 		//      This is because of a historical mistake that then became part of the Xlib ABI.
 		//      Xlib will pack these values into a regular array of 32-bit values before
 		//      sending it over the wire.
 		s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, window.X11.Handle, s_Data.X11.NET_WM_ICON, XA_CARDINAL, 32,
-		                               PropModeReplace,	reinterpret_cast<uint8_t*>(icon.data()),
-								       NumericCast<int32_t>(longCount));
+		                               PropModeReplace,	reinterpret_cast<u8*>(icon.data()),
+								       NumericCast<i32>(longCount));
 	}
 	else
 		s_Data.X11.XLIB.DeleteProperty(s_Data.X11.display, window.X11.Handle, s_Data.X11.NET_WM_ICON);
@@ -2558,12 +2558,12 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIconX11(InternalWindow& wind
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowPosX11(const InternalWindow& window, int32_t& xPos, int32_t& yPos)
+void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowPosX11(const InternalWindow& window, i32& xPos, i32& yPos)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	::Window dummy = 0;
-	int32_t x = 0, y = 0;
+	i32 x = 0, y = 0;
 
 	s_Data.X11.XLIB.TranslateCoordinates(s_Data.X11.display, window.X11.Handle, s_Data.X11.Root, 0, 0, &x, &y, &dummy);
 
@@ -2573,7 +2573,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowPosX11(const InternalWindow&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeX11(InternalWindow& window, const int32_t width, const int32_t height)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeX11(InternalWindow& window, const i32 width, const i32 height)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2590,7 +2590,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeX11(InternalWindow& wind
 			UpdateNormalHints(window, width, height);
 
 		s_Data.X11.XLIB.ResizeWindow(s_Data.X11.display, window.X11.Handle,
-		                             NumericCast<uint32_t>(width), NumericCast<uint32_t>(height));
+		                             NumericCast<u32>(width), NumericCast<u32>(height));
 	}
 
 	s_Data.X11.XLIB.Flush(s_Data.X11.display);
@@ -2603,7 +2603,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizableX11(InternalWindow&
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	int32_t width = 0, height = 0;
+	i32 width = 0, height = 0;
 
 	PlatformGetWindowSizeX11(window, width, height);
 	UpdateNormalHints(window, width, height);
@@ -2617,18 +2617,18 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecoratedX11(InternalWindow&
 
 	struct Hints
 	{
-		uint64_t Flags = 0;
-		uint64_t Functions = 0;
-		uint64_t Decorations = 0;
-		int64_t InputMode = 0;
-		uint64_t status = 0;
+		u64 Flags = 0;
+		u64 Functions = 0;
+		u64 Decorations = 0;
+		i64 InputMode = 0;
+		u64 status = 0;
 	} hints{};
 
 	hints.Flags = MWM_HINTS_DECORATIONS; //MWM_HINTS_DECORATIONS
 	hints.Decorations = enabled ? MWM_DECOR_ALL : 0; //1 = MWM_DECOR_ALL
 
 	s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, window.X11.Handle, s_Data.X11.MOTIF_WM_HINTS, s_Data.X11.MOTIF_WM_HINTS, 32,
-	                               PropModeReplace, reinterpret_cast<uint8_t*>(&hints), sizeof(hints) / sizeof(int64_t));
+	                               PropModeReplace, reinterpret_cast<u8*>(&hints), sizeof(hints) / sizeof(i64));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2642,21 +2642,21 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloatingX11(const InternalWi
 
 	if(PlatformWindowVisibleX11(window))
 	{
-		const int64_t action = NumericCast<int64_t>(enabled ? _NET_WM_STATE_ADD : _NET_WM_STATE_REMOVE);
-		SendEventToWM(window, s_Data.X11.NET_WM_STATE, action, static_cast<int64_t>(s_Data.X11.NET_WM_STATE_ABOVE), 0, 1, 0);
+		const i64 action = NumericCast<i64>(enabled ? _NET_WM_STATE_ADD : _NET_WM_STATE_REMOVE);
+		SendEventToWM(window, s_Data.X11.NET_WM_STATE, action, static_cast<i64>(s_Data.X11.NET_WM_STATE_ABOVE), 0, 1, 0);
 	}
 	else
 	{
 		Atom* states = nullptr;
 
-		const uint64_t count = GetWindowPropertyX11(window.X11.Handle, s_Data.X11.NET_WM_STATE, XA_ATOM,
-		                                                 reinterpret_cast<uint8_t**>(&states));
+		const u64 count = GetWindowPropertyX11(window.X11.Handle, s_Data.X11.NET_WM_STATE, XA_ATOM,
+		                                                 reinterpret_cast<u8**>(&states));
 
 		//NOTE: We don't check for failure as this property may not exist yet and that's fine (and we'll create
 		//      it implicitly with append)
 		if(enabled)
 		{
-			uint64_t i = 0;
+			u64 i = 0;
 
 			for(i = 0; i < count; i++)
 			{
@@ -2667,19 +2667,19 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloatingX11(const InternalWi
 			if(i == count)
 			{
 				s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, window.X11.Handle, s_Data.X11.NET_WM_STATE, XA_ATOM, 32,
-										       PropModeAppend, reinterpret_cast<uint8_t*>(&s_Data.X11.NET_WM_STATE_ABOVE), 1);
+										       PropModeAppend, reinterpret_cast<u8*>(&s_Data.X11.NET_WM_STATE_ABOVE), 1);
 			}
 		}
 		else if(states != nullptr)
 		{
-			for(uint64_t i = 0; i < count; ++i)
+			for(u64 i = 0; i < count; ++i)
 			{
 				if(states[i] == s_Data.X11.NET_WM_STATE_ABOVE)
 				{
 					states[i] = states[count - 1];
 					s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, window.X11.Handle, s_Data.X11.NET_WM_STATE, XA_ATOM, 32,
-											       PropModeReplace, reinterpret_cast<uint8_t*>(states),
-											       NumericCast<int32_t>(count) - 1);
+											       PropModeReplace, reinterpret_cast<u8*>(states),
+											       NumericCast<i32>(count) - 1);
 					break;
 				}
 			}
@@ -2694,13 +2694,13 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloatingX11(const InternalWi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacityX11(const InternalWindow& window, const float opacity)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacityX11(const InternalWindow& window, const f32 opacity)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	const CARD32 value = static_cast<CARD32>(0xFFFFFFFFu * NumericCast<double>(opacity));
+	const CARD32 value = static_cast<CARD32>(0xFFFFFFFFu * NumericCast<f64>(opacity));
 	s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, window.X11.Handle, s_Data.X11.NET_WM_WINDOW_OPACITY, XA_CARDINAL, 32,
-	                               PropModeReplace, reinterpret_cast<const uint8_t*>(&value), 1);
+	                               PropModeReplace, reinterpret_cast<const u8*>(&value), 1);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2733,20 +2733,20 @@ void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbarX11([[maybe_unus
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::optional<float> TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacityX11(const InternalWindow& window)
+[[nodiscard]] std::optional<f32> TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacityX11(const InternalWindow& window)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	std::optional<float> opacity = std::nullopt;
+	std::optional<f32> opacity = std::nullopt;
 
 	if(s_Data.X11.XLIB.GetSelectionOwner(s_Data.X11.display, s_Data.X11.NET_WM_CM_Sx) != 0u)
 	{
 		CARD32* value = nullptr;
 
 		if(GetWindowPropertyX11(window.X11.Handle, s_Data.X11.NET_WM_WINDOW_OPACITY, XA_CARDINAL,
-		                        reinterpret_cast<uint8_t**>(&value)) != 0u)
+		                        reinterpret_cast<u8**>(&value)) != 0u)
 		{
-			opacity = NumericCast<float>(*value / NumericCast<double>(0xFFFFFFFFu));
+			opacity = NumericCast<f32>(*value / NumericCast<f64>(0xFFFFFFFFu));
 		}
 
 		if(value != nullptr)
@@ -2758,8 +2758,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbarX11([[maybe_unus
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSizeX11(const InternalWindow& window, int32_t& width,
-                                                                 int32_t& height)
+void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSizeX11(const InternalWindow& window, i32& width,
+                                                                 i32& height)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2769,7 +2769,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSizeX11(const InternalW
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScaleX11([[maybe_unused]] const InternalWindow& window,
-                                                                    float& xScale, float& yScale)
+                                                                    f32& xScale, f32& yScale)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -2779,12 +2779,12 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScaleX11([[maybe_unus
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkAreaX11(const InternalMonitor& monitor, int32_t& xPos,
-                                                                 int32_t& yPos, int32_t& width, int32_t& height)
+void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkAreaX11(const InternalMonitor& monitor, i32& xPos,
+                                                                 i32& yPos, i32& width, i32& height)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	int32_t areaX = 0, areaY = 0, areaWidth = 0, areaHeight = 0;
+	i32 areaX = 0, areaY = 0, areaWidth = 0, areaHeight = 0;
 
 	if(s_Data.X11.RandR.Available && !s_Data.X11.RandR.MonitorBroken)
 	{
@@ -2798,8 +2798,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkAreaX11(const InternalM
 
 			const XRRModeInfo* const mi = GetModeInfo(*sr, ci->mode);
 
-			areaWidth = NumericCast<int32_t>(mi->width);
-			areaHeight = NumericCast<int32_t>(mi->height);
+			areaWidth = NumericCast<i32>(mi->width);
+			areaHeight = NumericCast<i32>(mi->height);
 
 			if(ci->rotation == RR_Rotate_90 || ci->rotation == RR_Rotate_270)
 				std::swap(areaWidth, areaHeight);
@@ -2825,18 +2825,18 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkAreaX11(const InternalM
 	{
 		Atom* extents = nullptr;
 		Atom* desktop = nullptr;
-		const uint64_t extentCount = GetWindowPropertyX11(s_Data.X11.Root, s_Data.X11.NET_WORKAREA, XA_CARDINAL,
-		                                                  reinterpret_cast<uint8_t**>(&extents));
+		const u64 extentCount = GetWindowPropertyX11(s_Data.X11.Root, s_Data.X11.NET_WORKAREA, XA_CARDINAL,
+		                                                  reinterpret_cast<u8**>(&extents));
 
 		if(GetWindowPropertyX11(s_Data.X11.Root, s_Data.X11.NET_CURRENT_DESKTOP, XA_CARDINAL,
-		                        reinterpret_cast<uint8_t**>(&desktop)) > 0)
+		                        reinterpret_cast<u8**>(&desktop)) > 0)
 		{
 			if(extentCount >= 4 && *desktop < extentCount / 4)
 			{
-				const int32_t globalX = static_cast<int32_t>(extents[*desktop * 4 + 0]);
-				const int32_t globalY = static_cast<int32_t>(extents[*desktop * 4 + 1]);
-				const int32_t globalWidth = static_cast<int32_t>(extents[*desktop * 4 + 2]);
-				const int32_t globalHeight = static_cast<int32_t>(extents[*desktop * 4 + 3]);
+				const i32 globalX = static_cast<i32>(extents[*desktop * 4 + 0]);
+				const i32 globalY = static_cast<i32>(extents[*desktop * 4 + 1]);
+				const i32 globalWidth = static_cast<i32>(extents[*desktop * 4 + 2]);
+				const i32 globalHeight = static_cast<i32>(extents[*desktop * 4 + 3]);
 
 				if(areaX < globalX)
 				{
@@ -2894,10 +2894,10 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkAreaX11(const InternalM
 	   (s_Data.X11.NET_WM_STATE_MAXIMIZED_HORZ == 0u))
 		return maximized;
 
-	const uint64_t count = GetWindowPropertyX11(window.X11.Handle, s_Data.X11.NET_WM_STATE, XA_ATOM,
-	                                            reinterpret_cast<uint8_t**>(&states));
+	const u64 count = GetWindowPropertyX11(window.X11.Handle, s_Data.X11.NET_WM_STATE, XA_ATOM,
+	                                            reinterpret_cast<u8**>(&states));
 
-	for(uint64_t i = 0; i < count; i++)
+	for(u64 i = 0; i < count; i++)
 	{
 		if(states[i] == s_Data.X11.NET_WM_STATE_MAXIMIZED_VERT || states[i] == s_Data.X11.NET_WM_STATE_MAXIMIZED_HORZ)
 		{
@@ -2943,11 +2943,11 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEventsX11()
 	InternalWindow* const window = s_Data.DisabledCursorWindow;
 	if(window != nullptr)
 	{
-		int32_t width = 0, height = 0;
+		i32 width = 0, height = 0;
 		PlatformGetWindowSizeX11(*window, width, height);
 
 		if(window->LastCursorPosX != width / 2 || window->LastCursorPosY != height / 2)
-			PlatformSetCursorPosX11(*window, NumericCast<double>(width) / 2, NumericCast<double>(height) / 2);
+			PlatformSetCursorPosX11(*window, NumericCast<f64>(width) / 2, NumericCast<f64>(height) / 2);
 	}
 
 	s_Data.X11.XLIB.Flush(s_Data.X11.display);
@@ -2955,7 +2955,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEventsX11()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformWaitEventsX11(double timeout)
+void TRAP::INTERNAL::WindowingAPI::PlatformWaitEventsX11(f64 timeout)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2983,7 +2983,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPostEmptyEventX11()
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	::Window focused = 0;
-	int32_t state = 0;
+	i32 state = 0;
 
 	s_Data.X11.XLIB.GetInputFocus(s_Data.X11.display, &focused, &state);
 
@@ -3000,12 +3000,12 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPostEmptyEventX11()
 	while(w != 0u)
 	{
 		::Window root = 0;
-		int32_t rootX = 0, rootY = 0, childX = 0, childY = 0;
-		uint32_t mask = 0;
+		i32 rootX = 0, rootY = 0, childX = 0, childY = 0;
+		u32 mask = 0;
 
 		GrabErrorHandlerX11();
 
-		const int32_t result = s_Data.X11.XLIB.QueryPointer(s_Data.X11.display, w, &root, &w, &rootX, &rootY, &childX,
+		const i32 result = s_Data.X11.XLIB.QueryPointer(s_Data.X11.display, w, &root, &w, &rootX, &rootY, &childX,
 		                                                    &childY, &mask);
 
 		ReleaseErrorHandlerX11();
@@ -3050,35 +3050,35 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionX11(const InternalWi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] int32_t TRAP::INTERNAL::WindowingAPI::PlatformGetKeyScanCodeX11(const Input::Key key)
+[[nodiscard]] i32 TRAP::INTERNAL::WindowingAPI::PlatformGetKeyScanCodeX11(const Input::Key key)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return s_Data.ScanCodes[NumericCast<std::size_t>(std::to_underlying(key))];
+	return s_Data.ScanCodes[NumericCast<usize>(std::to_underlying(key))];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] std::optional<std::string> TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeNameX11(const int32_t scanCode)
+[[nodiscard]] std::optional<std::string> TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeNameX11(const i32 scanCode)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	if(!s_Data.X11.XKB.Available)
 		return std::nullopt;
 
-	if(scanCode < 0 || scanCode > 0xFF || s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)] == Input::Key::Unknown)
+	if(scanCode < 0 || scanCode > 0xFF || s_Data.KeyCodes[NumericCast<u32>(scanCode)] == Input::Key::Unknown)
 	{
 		InputError(Error::Invalid_Value, fmt::format("Invalid scancode {}", scanCode));
 		return std::nullopt;
 	}
 
-	const TRAP::Input::Key key = s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)];
+	const TRAP::Input::Key key = s_Data.KeyCodes[NumericCast<u32>(scanCode)];
 	const KeySym keySym = s_Data.X11.XKB.KeycodeToKeysym(s_Data.X11.display, static_cast<KeyCode>(scanCode),
-											             NumericCast<int32_t>(s_Data.X11.XKB.Group), 0);
+											             NumericCast<i32>(s_Data.X11.XKB.Group), 0);
 	if(keySym == NoSymbol)
 		return std::nullopt;
 
-	const std::optional<uint32_t> ch = KeySymToUnicode(static_cast<uint32_t>(keySym));
+	const std::optional<u32> ch = KeySymToUnicode(static_cast<u32>(keySym));
 	if(!ch)
 		return std::nullopt;
 
@@ -3087,7 +3087,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionX11(const InternalWi
 		return std::nullopt;
 
 
-	std::string& keyStr = s_Data.KeyNames[NumericCast<uint32_t>(std::to_underlying(key))];
+	std::string& keyStr = s_Data.KeyNames[NumericCast<u32>(std::to_underlying(key))];
 	keyStr = utf8Str;
 
 	return keyStr;
@@ -3220,14 +3220,14 @@ void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindowX11(const InternalWindo
 	if(PlatformWindowVisibleX11(window))
 	{
 		SendEventToWM(window, s_Data.X11.NET_WM_STATE, _NET_WM_STATE_ADD,
-		              static_cast<int64_t>(s_Data.X11.NET_WM_STATE_MAXIMIZED_VERT),
-		              static_cast<int64_t>(s_Data.X11.NET_WM_STATE_MAXIMIZED_HORZ), 1, 0);
+		              static_cast<i64>(s_Data.X11.NET_WM_STATE_MAXIMIZED_VERT),
+		              static_cast<i64>(s_Data.X11.NET_WM_STATE_MAXIMIZED_HORZ), 1, 0);
 	}
 	else
 	{
 		Atom* states = nullptr;
-		const uint64_t count = GetWindowPropertyX11(window.X11.Handle, s_Data.X11.NET_WM_STATE, XA_ATOM,
-		                                            reinterpret_cast<uint8_t**>(&states));
+		const u64 count = GetWindowPropertyX11(window.X11.Handle, s_Data.X11.NET_WM_STATE, XA_ATOM,
+		                                            reinterpret_cast<u8**>(&states));
 
 		//NOTE: We don't check for failure as this property may not exist yet and that's fine (and we'll create it
 		//      implicitly with append)
@@ -3236,11 +3236,11 @@ void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindowX11(const InternalWindo
 			s_Data.X11.NET_WM_STATE_MAXIMIZED_VERT,
 			s_Data.X11.NET_WM_STATE_MAXIMIZED_HORZ
 		};
-		uint64_t missingCount = 2;
+		u64 missingCount = 2;
 
-		for(uint64_t i = 0; i < count; i++)
+		for(u64 i = 0; i < count; i++)
 		{
-			for(uint64_t j = 0; j < missingCount; j++)
+			for(u64 j = 0; j < missingCount; j++)
 			{
 				if(states[i] == missing[j])
 				{
@@ -3257,7 +3257,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindowX11(const InternalWindo
 			return;
 
 		s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, window.X11.Handle, s_Data.X11.NET_WM_STATE, XA_ATOM, 32, PropModeAppend,
-		                               reinterpret_cast<uint8_t*>(missing.data()), NumericCast<int32_t>(missingCount));
+		                               reinterpret_cast<u8*>(missing.data()), NumericCast<i32>(missingCount));
 	}
 
 	s_Data.X11.XLIB.Flush(s_Data.X11.display);
@@ -3292,7 +3292,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformRequestWindowAttentionX11(InternalWin
 		return;
 
 	SendEventToWM(window, s_Data.X11.NET_WM_STATE, _NET_WM_STATE_ADD,
-	              static_cast<int64_t>(s_Data.X11.NET_WM_STATE_DEMANDS_ATTENTION), 0, 1, 0);
+	              static_cast<i64>(s_Data.X11.NET_WM_STATE_DEMANDS_ATTENTION), 0, 1, 0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3331,8 +3331,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindowX11(InternalWindow& wind
 		   (s_Data.X11.NET_WM_STATE_MAXIMIZED_HORZ != 0u))
 		{
 			SendEventToWM(window, s_Data.X11.NET_WM_STATE, _NET_WM_STATE_REMOVE,
-			              static_cast<int64_t>(s_Data.X11.NET_WM_STATE_MAXIMIZED_VERT),
-			              static_cast<int64_t>(s_Data.X11.NET_WM_STATE_MAXIMIZED_HORZ), 1, 0);
+			              static_cast<i64>(s_Data.X11.NET_WM_STATE_MAXIMIZED_VERT),
+			              static_cast<i64>(s_Data.X11.NET_WM_STATE_MAXIMIZED_HORZ), 1, 0);
 		}
 	}
 
@@ -3342,14 +3342,14 @@ void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindowX11(InternalWindow& wind
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimitsX11(InternalWindow& window,
-                                                                  [[maybe_unused]] const int32_t minWidth,
-                                                                  [[maybe_unused]] const int32_t minHeight,
-															      [[maybe_unused]] const int32_t maxWidth,
-                                                                  [[maybe_unused]] const int32_t maxHeight)
+                                                                  [[maybe_unused]] const i32 minWidth,
+                                                                  [[maybe_unused]] const i32 minHeight,
+															      [[maybe_unused]] const i32 maxWidth,
+                                                                  [[maybe_unused]] const i32 maxHeight)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	int32_t width = 0, height = 0;
+	i32 width = 0, height = 0;
 	PlatformGetWindowSizeX11(window, width, height);
 	UpdateNormalHints(window, width, height);
 	s_Data.X11.XLIB.Flush(s_Data.X11.display);
@@ -3358,12 +3358,12 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimitsX11(InternalWindow
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowAspectRatioX11(InternalWindow& window,
-                                                                   [[maybe_unused]] const int32_t numerator,
-                                                                   [[maybe_unused]] const int32_t denominator)
+                                                                   [[maybe_unused]] const i32 numerator,
+                                                                   [[maybe_unused]] const i32 denominator)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	int32_t width = 0, height = 0;
+	i32 width = 0, height = 0;
 	PlatformGetWindowSizeX11(window, width, height);
 	UpdateNormalHints(window, width, height);
 	s_Data.X11.XLIB.Flush(s_Data.X11.display);
@@ -3376,7 +3376,7 @@ void TRAP::INTERNAL::WindowingAPI::EnableRawMouseMotion([[maybe_unused]] const I
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	std::array<uint8_t, XIMaskLen(XI_RawMotion)> mask{};
+	std::array<u8, XIMaskLen(XI_RawMotion)> mask{};
 
 	XIEventMask em{};
 	em.deviceid = XIAllMasterDevices;
@@ -3394,7 +3394,7 @@ void TRAP::INTERNAL::WindowingAPI::DisableRawMouseMotion([[maybe_unused]] const 
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	std::array<uint8_t, 1> mask{};
+	std::array<u8, 1> mask{};
 
 	XIEventMask em{};
 	em.deviceid = XIAllMasterDevices;
@@ -3412,7 +3412,7 @@ void TRAP::INTERNAL::WindowingAPI::InputErrorX11(const Error error, const std::s
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	std::vector<char> buffer(1024, '\0');
-	s_Data.X11.XLIB.GetErrorText(s_Data.X11.display, s_Data.X11.ErrorCode, buffer.data(), NumericCast<int32_t>(buffer.size()));
+	s_Data.X11.XLIB.GetErrorText(s_Data.X11.display, s_Data.X11.ErrorCode, buffer.data(), NumericCast<i32>(buffer.size()));
 
 	std::erase(buffer, '\0');
 
@@ -3426,12 +3426,12 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	int32_t keyCode = 0;
+	i32 keyCode = 0;
 	bool filtered = false;
 
 	//HACK: Save scanCode as some IMs clear the field in s_Data.XLIB.FilterEvent
 	if(event.type == KeyPress || event.type == KeyRelease)
-		keyCode = NumericCast<int32_t>(event.xkey.keycode);
+		keyCode = NumericCast<i32>(event.xkey.keycode);
 
 	filtered = (s_Data.X11.XLIB.FilterEvent(&event, 0) != 0);
 
@@ -3452,7 +3452,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			if(reinterpret_cast<XkbEvent*>(&event)->any.xkb_type == XkbStateNotify &&
 			   (reinterpret_cast<XkbEvent*>(&event)->state.changed & XkbGroupStateMask))
 			{
-				s_Data.X11.XKB.Group = NumericCast<uint32_t>(reinterpret_cast<XkbEvent*>(&event)->state.group);
+				s_Data.X11.XKB.Group = NumericCast<u32>(reinterpret_cast<XkbEvent*>(&event)->state.group);
 				InputKeyboardLayout();
 			}
 
@@ -3472,9 +3472,9 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 				const XIRawEvent* const re = reinterpret_cast<XIRawEvent*>(event.xcookie.data);
 				if(re->valuators.mask_len != 0)
 				{
-					const double* values = re->raw_values;
-					double xPos = window->VirtualCursorPosX;
-					double yPos = window->VirtualCursorPosY;
+					const f64* values = re->raw_values;
+					f64 xPos = window->VirtualCursorPosX;
+					f64 yPos = window->VirtualCursorPosY;
 
 					if(XIMaskIsSet(re->valuators.mask, 0))
 					{
@@ -3528,29 +3528,29 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			//NOTE: Always allow the first event for each key through
 			//      (the server never sends a timestamp of zero)
 			//NOTE: Timestamp difference is compared to handle wrap-around
-			const Time diff = event.xkey.time - window->X11.KeyPressTimes[NumericCast<uint32_t>(keyCode)];
+			const Time diff = event.xkey.time - window->X11.KeyPressTimes[NumericCast<u32>(keyCode)];
 			if(diff == event.xkey.time || (diff > 0 && diff < (static_cast<Time>(1u) << 31u)))
 			{
 				if(keyCode != 0)
 					InputKey(*window, key, keyCode, Input::KeyState::Pressed);
 
-				window->X11.KeyPressTimes[NumericCast<uint32_t>(keyCode)] = event.xkey.time;
+				window->X11.KeyPressTimes[NumericCast<u32>(keyCode)] = event.xkey.time;
 			}
 
 			if(!filtered)
 			{
-				int32_t count = 0;
-				int32_t status = 0;
+				i32 count = 0;
+				i32 status = 0;
 
 				std::string buffer(100, '\0');
 				char* chars = buffer.data();
 
 				count = s_Data.X11.XLIB.UTF8LookupString(window->X11.IC, &event.xkey, buffer.data(),
-				                                         NumericCast<int32_t>(buffer.size()) - 1, nullptr, &status);
+				                                         NumericCast<i32>(buffer.size()) - 1, nullptr, &status);
 
 				if(status == XBufferOverflow)
 				{
-					buffer.resize(NumericCast<uint32_t>(count) + 1u);
+					buffer.resize(NumericCast<u32>(count) + 1u);
 					chars = buffer.data();
 					count = s_Data.X11.XLIB.UTF8LookupString(window->X11.IC, &event.xkey, chars, count, nullptr, &status);
 				}
@@ -3570,7 +3570,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 
 			InputKey(*window, key, keyCode, Input::KeyState::Pressed);
 
-			const std::optional<uint32_t> character = KeySymToUnicode(static_cast<uint32_t>(keySym));
+			const std::optional<u32> character = KeySymToUnicode(static_cast<u32>(keySym));
 			if(character)
 				InputChar(*window, *character);
 		}
@@ -3593,7 +3593,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 
 				if(next.type == KeyPress &&
 					next.xkey.window == event.xkey.window &&
-					next.xkey.keycode == NumericCast<uint32_t>(keyCode))
+					next.xkey.keycode == NumericCast<u32>(keyCode))
 				{
 					//HACK: The time of repeat events sometimes doesn't match that of the press event, so add an epsilon
 					if((next.xkey.time - event.xkey.time) < 20)
@@ -3658,8 +3658,8 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 	case EnterNotify:
 	{
 		//XEnterWindowEvent is XCrossingEvent
-		const int32_t x = event.xcrossing.x;
-		const int32_t y = event.xcrossing.y;
+		const i32 x = event.xcrossing.x;
+		const i32 y = event.xcrossing.y;
 
 		//HACK: This is a workaround for WMs (KWM, Fluxbox) that otherwise ignore the defined cursor
 		//      for hidden cursor mode
@@ -3682,8 +3682,8 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 
 	case MotionNotify:
 	{
-		const int32_t x = event.xmotion.x;
-		const int32_t y = event.xmotion.y;
+		const i32 x = event.xmotion.x;
+		const i32 y = event.xmotion.y;
 
 		if(x != window->X11.WarpCursorPosX || y != window->X11.WarpCursorPosY)
 		{
@@ -3695,8 +3695,8 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 				if(window->RawMouseMotion)
 					return;
 
-				const int32_t dx = x - window->LastCursorPosX;
-				const int32_t dy = y - window->LastCursorPosY;
+				const i32 dx = x - window->LastCursorPosX;
+				const i32 dy = y - window->LastCursorPosY;
 
 				InputCursorPos(*window, window->VirtualCursorPosX + dx, window->VirtualCursorPosY + dy);
 			}
@@ -3721,8 +3721,8 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			window->Height = event.xconfigure.height;
 		}
 
-		int32_t xPos = event.xconfigure.x;
-		int32_t yPos = event.xconfigure.y;
+		i32 xPos = event.xconfigure.x;
+		i32 yPos = event.xconfigure.y;
 
 		//NOTE: ConfigureNotify events from the server are in local
 		//      coordinates, so if any reparented we need to translate
@@ -3784,12 +3784,12 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 		else if(event.xclient.message_type == s_Data.X11.XDNDEnter)
 		{
 			//A drag operation has entered the window
-			uint64_t count = 0;
+			u64 count = 0;
 			Atom* formats = nullptr;
 			const bool list = (event.xclient.data.l[1] & 1) != 0;
 
 			s_Data.X11.XDND.Source = static_cast<::Window>(event.xclient.data.l[0]);
-			s_Data.X11.XDND.Version = NumericCast<int32_t>(event.xclient.data.l[1] >> 24u);
+			s_Data.X11.XDND.Version = NumericCast<i32>(event.xclient.data.l[1] >> 24u);
 			s_Data.X11.XDND.Format = None;
 
 			if(s_Data.X11.XDND.Version > TRAP_XDND_VERSION)
@@ -3798,7 +3798,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			if(list)
 			{
 				count = GetWindowPropertyX11(s_Data.X11.XDND.Source, s_Data.X11.XDNDTypeList, XA_ATOM,
-				                             reinterpret_cast<uint8_t**>(&formats));
+				                             reinterpret_cast<u8**>(&formats));
 			}
 			else
 			{
@@ -3806,7 +3806,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 				formats = reinterpret_cast<Atom*>(event.xclient.data.l) + 2;
 			}
 
-			for(uint64_t i = 0; i < count; i++)
+			for(u64 i = 0; i < count; i++)
 			{
 				if(formats[i] == s_Data.X11.text_uri_list)
 				{
@@ -3841,7 +3841,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 				reply.xclient.window = s_Data.X11.XDND.Source;
 				reply.xclient.message_type = s_Data.X11.XDNDFinished;
 				reply.xclient.format = 32;
-				reply.xclient.data.l[0] = static_cast<int64_t>(window->X11.Handle);
+				reply.xclient.data.l[0] = static_cast<i64>(window->X11.Handle);
 				reply.xclient.data.l[1] = 0; //The drag was rejected
 				reply.xclient.data.l[2] = None;
 
@@ -3852,10 +3852,10 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 		else if(event.xclient.message_type == s_Data.X11.XDNDPosition)
 		{
 			//The drag operation has moved over the window
-			const int32_t xAbs = NumericCast<int32_t>((event.xclient.data.l[2] >> 16) & 0xFFFFu);
-			const int32_t yAbs = NumericCast<int32_t>((event.xclient.data.l[2]) & 0xFFFFu);
+			const i32 xAbs = NumericCast<i32>((event.xclient.data.l[2] >> 16) & 0xFFFFu);
+			const i32 yAbs = NumericCast<i32>((event.xclient.data.l[2]) & 0xFFFFu);
 			::Window dummy = 0;
-			int32_t xPos = 0, yPos = 0;
+			i32 xPos = 0, yPos = 0;
 
 			if(s_Data.X11.XDND.Version > TRAP_XDND_VERSION)
 				return;
@@ -3869,7 +3869,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			reply.xclient.window = s_Data.X11.XDND.Source;
 			reply.xclient.message_type = s_Data.X11.XDNDStatus;
 			reply.xclient.format = 32;
-			reply.xclient.data.l[0] = static_cast<int64_t>(window->X11.Handle);
+			reply.xclient.data.l[0] = static_cast<i64>(window->X11.Handle);
 			reply.xclient.data.l[2] = 0; //Specify an empty rectangle
 			reply.xclient.data.l[3] = 0;
 
@@ -3878,7 +3878,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 				//Reply that we are ready to copy the dragged data
 				reply.xclient.data.l[1] = 1; //Accept with no rectangle
 				if(s_Data.X11.XDND.Version >= 2)
-					reply.xclient.data.l[4] = static_cast<int64_t>(s_Data.X11.XDNDActionCopy);
+					reply.xclient.data.l[4] = static_cast<i64>(s_Data.X11.XDNDActionCopy);
 			}
 
 			s_Data.X11.XLIB.SendEvent(s_Data.X11.display, s_Data.X11.XDND.Source, 0, NoEventMask, &reply);
@@ -3894,10 +3894,10 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 		{
 			//The converted data from the drag operation has arrived
 			char* data = nullptr;
-			const uint64_t result = GetWindowPropertyX11(event.xselection.requestor,
+			const u64 result = GetWindowPropertyX11(event.xselection.requestor,
 														 event.xselection.property,
 			                                             event.xselection.target,
-														 reinterpret_cast<uint8_t**>(&data));
+														 reinterpret_cast<u8**>(&data));
 
 			if(result != 0u)
 			{
@@ -3915,9 +3915,9 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 				reply.xclient.window = s_Data.X11.XDND.Source;
 				reply.xclient.message_type = s_Data.X11.XDNDFinished;
 				reply.xclient.format = 32;
-				reply.xclient.data.l[0] = static_cast<int64_t>(window->X11.Handle);
-				reply.xclient.data.l[1] = static_cast<int64_t>(result);
-				reply.xclient.data.l[2] = static_cast<int64_t>(s_Data.X11.XDNDActionCopy);
+				reply.xclient.data.l[0] = static_cast<i64>(window->X11.Handle);
+				reply.xclient.data.l[1] = static_cast<i64>(result);
+				reply.xclient.data.l[2] = static_cast<i64>(s_Data.X11.XDNDActionCopy);
 
 				s_Data.X11.XLIB.SendEvent(s_Data.X11.display, s_Data.X11.XDND.Source, 0, NoEventMask, &reply);
 				s_Data.X11.XLIB.Flush(s_Data.X11.display);
@@ -3982,7 +3982,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 
 		if(event.xproperty.atom == s_Data.X11.WM_STATE)
 		{
-			const int32_t state = GetWindowState(*window);
+			const i32 state = GetWindowState(*window);
 			if(state != IconicState && state != NormalState)
 				return;
 
@@ -4032,14 +4032,14 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Decode a Unicode code point from a UTF-8 stream
-[[nodiscard]] uint32_t TRAP::INTERNAL::WindowingAPI::DecodeUTF8(const char** const str)
+[[nodiscard]] u32 TRAP::INTERNAL::WindowingAPI::DecodeUTF8(const char** const str)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(str, "WindowingAPI::DecodeUTF8(): Unicode codepoint is nullptr!");
 
-	uint32_t ch = 0, count = 0;
-	static constexpr std::array<uint32_t, 6> offsets =
+	u32 ch = 0, count = 0;
+	static constexpr std::array<u32, 6> offsets =
 	{
 		0x00000000u, 0x00003080u, 0x000E2080u,
 		0x03C82080u, 0xFA082080u, 0x82082080u
@@ -4047,10 +4047,10 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 
 	do
 	{
-		ch = (ch << 6u) + static_cast<uint8_t>(**str);
+		ch = (ch << 6u) + static_cast<u8>(**str);
 		(*str)++;
 		count++;
-	} while((NumericCast<uint8_t>(**str) & 0xC0u) == 0x80u);
+	} while((NumericCast<u8>(**str) & 0xC0u) == 0x80u);
 
 	TRAP_ASSERT(count <= 6, "WindowingAPI::DecodeUTF8(): Invalid UTF-8 sequence!");
 
@@ -4081,7 +4081,7 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitor(InternalWindow& window)
 
 	if(window.X11.OverrideRedirect)
 	{
-		int32_t xPos = 0, yPos = 0;
+		i32 xPos = 0, yPos = 0;
 
 		//Manually position the window over its monitor
 		if(window.Monitor != nullptr)
@@ -4090,8 +4090,8 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitor(InternalWindow& window)
 			const std::optional<InternalVideoMode> mode = PlatformGetVideoModeX11(*window.Monitor);
 			if(mode)
 				s_Data.X11.XLIB.MoveResizeWindow(s_Data.X11.display, window.X11.Handle, xPos, yPos,
-				                                 NumericCast<uint32_t>(mode->Width),
-												 NumericCast<uint32_t>(mode->Height));
+				                                 NumericCast<u32>(mode->Width),
+												 NumericCast<u32>(mode->Height));
 		}
 	}
 
@@ -4144,7 +4144,7 @@ void TRAP::INTERNAL::WindowingAPI::SetVideoModeX11(InternalMonitor& monitor, con
 
 	if((sr != nullptr) && (ci != nullptr) && (oi != nullptr))
 	{
-		for(int32_t i = 0; i < oi->nmode; i++)
+		for(i32 i = 0; i < oi->nmode; i++)
 		{
 			const XRRModeInfo* const mi = GetModeInfo(*sr, oi->modes[i]);
 			if((mi == nullptr) || (ci == nullptr) || !((mi->modeFlags & RR_Interlace) == 0))
@@ -4228,7 +4228,7 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitorBorderless(InternalWindow& wind
 
 	if(window.X11.OverrideRedirect)
 	{
-		int32_t xPos = 0, yPos = 0;
+		i32 xPos = 0, yPos = 0;
 
 		//Manually position the window over its monitor
 		if(window.Monitor != nullptr)
@@ -4237,8 +4237,8 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitorBorderless(InternalWindow& wind
 			const std::optional<InternalVideoMode> mode = window.Monitor->NativeMode;
 			if(mode)
 				s_Data.X11.XLIB.MoveResizeWindow(s_Data.X11.display, window.X11.Handle, xPos, yPos,
-				                                 NumericCast<uint32_t>(mode->Width),
-												 NumericCast<uint32_t>(mode->Height));
+				                                 NumericCast<u32>(mode->Width),
+												 NumericCast<u32>(mode->Height));
 		}
 	}
 
@@ -4346,7 +4346,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesX11()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	int32_t scanCode = 0, scanCodeMin = 0, scanCodeMax = 0;
+	i32 scanCode = 0, scanCodeMin = 0, scanCodeMax = 0;
 
 	std::ranges::fill(s_Data.KeyCodes, Input::Key::Unknown);
 	std::ranges::fill(s_Data.ScanCodes, -1);
@@ -4453,7 +4453,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesX11()
 			}
 
 			//Fall back to key aliases in case the key name did not match
-			for(uint8_t i = 0; i < desc->names->num_key_aliases; i++)
+			for(u8 i = 0; i < desc->names->num_key_aliases; i++)
 			{
 				if(key != TRAP::Input::Key::Unknown)
 					break;
@@ -4471,7 +4471,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesX11()
 				}
 			}
 
-			s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)] = key;
+			s_Data.KeyCodes[NumericCast<u32>(scanCode)] = key;
 		}
 
 		s_Data.X11.XKB.FreeNames(desc, XkbKeyNamesMask, 1);
@@ -4480,23 +4480,23 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesX11()
 	else
 		s_Data.X11.XLIB.DisplayKeycodes(s_Data.X11.display, &scanCodeMin, &scanCodeMax);
 
-	int32_t width = 0;
-	KeySym* const keySyms = s_Data.X11.XLIB.GetKeyboardMapping(s_Data.X11.display, NumericCast<uint8_t>(scanCodeMin), scanCodeMax - scanCodeMin + 1,
+	i32 width = 0;
+	KeySym* const keySyms = s_Data.X11.XLIB.GetKeyboardMapping(s_Data.X11.display, NumericCast<u8>(scanCodeMin), scanCodeMax - scanCodeMin + 1,
 	                                                           &width);
 
 	for(scanCode = scanCodeMin; scanCode <= scanCodeMax; scanCode++)
 	{
 		//Translate the un-translated key codes using traditional X11 KeySym lookups
-		if(std::to_underlying(s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)]) < 0)
+		if(std::to_underlying(s_Data.KeyCodes[NumericCast<u32>(scanCode)]) < 0)
 		{
-			const std::size_t base = NumericCast<std::size_t>((scanCode - scanCodeMin)) * NumericCast<std::size_t>(width);
+			const usize base = NumericCast<usize>((scanCode - scanCodeMin)) * NumericCast<usize>(width);
 			const std::vector<KeySym> keySymsVec(&keySyms[base], &keySyms[base] + width);
-			s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)] = TranslateKeySyms(keySymsVec).value_or(TRAP::Input::Key::Unknown);
+			s_Data.KeyCodes[NumericCast<u32>(scanCode)] = TranslateKeySyms(keySymsVec).value_or(TRAP::Input::Key::Unknown);
 		}
 
 		//Store the reverse translation for faster key name lookup
-		if(std::to_underlying(s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)]) > 0)
-			s_Data.ScanCodes[NumericCast<uint32_t>(std::to_underlying(s_Data.KeyCodes[NumericCast<uint32_t>(scanCode)]))] = NumericCast<int16_t>(scanCode);
+		if(std::to_underlying(s_Data.KeyCodes[NumericCast<u32>(scanCode)]) > 0)
+			s_Data.ScanCodes[NumericCast<u32>(std::to_underlying(s_Data.KeyCodes[NumericCast<u32>(scanCode)]))] = NumericCast<i16>(scanCode);
 	}
 
 	s_Data.X11.XLIB.Free(keySyms);
@@ -5012,7 +5012,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDropX11(InternalWindow& win
 		//Announce support for Xdnd (drag and drop)
 		const Atom version = 5;
 		s_Data.X11.XLIB.ChangeProperty(s_Data.X11.display, window.X11.Handle, s_Data.X11.XDNDAware, XA_ATOM, 32,
-			                       PropModeReplace, reinterpret_cast<const uint8_t*>(&version), 1);
+			                       PropModeReplace, reinterpret_cast<const u8*>(&version), 1);
 	}
 	else
 		s_Data.X11.XLIB.DeleteProperty(s_Data.X11.display, window.X11.Handle, s_Data.X11.XDNDAware);

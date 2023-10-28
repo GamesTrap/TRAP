@@ -29,7 +29,7 @@ private:
 	{
 		TRAP::Math::Vec4 LightPosition;
 		TRAP::Math::Vec3 LightSourceIntensity;
-		float UNUSED;
+		f32 UNUSED;
 		TRAP::Math::Vec3 DiffuseReflectivity;
 	} m_diffuseReflectionDataBuffer{};
 	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_diffuseReflectionUniformBuffer = nullptr;
@@ -38,17 +38,17 @@ private:
 	{
 		TRAP::Math::Vec4 LightPosition;
 		TRAP::Math::Vec3 LightLa;
-		float UNUSED;
+		f32 UNUSED;
 		TRAP::Math::Vec3 LightLd;
-		float UNUSED1;
+		f32 UNUSED1;
 		TRAP::Math::Vec3 LightLs;
-		float UNUSED2;
+		f32 UNUSED2;
 		TRAP::Math::Vec3 MaterialKa;
-		float UNUSED3;
+		f32 UNUSED3;
 		TRAP::Math::Vec3 MaterialKd;
-		float UNUSED4;
+		f32 UNUSED4;
 		TRAP::Math::Vec3 MaterialKs;
-		float MaterialShininess;
+		f32 MaterialShininess;
 	} m_phongLightningDataBuffer{};
 	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_phongLightningUniformBuffer = nullptr;
 	TRAP::Math::Vec4 m_lightPosition = TRAP::Math::Vec4(5.0f, 5.0f, 2.0f, 1.0f);
@@ -57,20 +57,20 @@ private:
 	TRAP::Math::Vec3 m_cubeRotation{0.0f, 0.0f, 0.0f};
 	TRAP::Math::Vec3 m_cubeScale{1.0f, 1.0f, 1.0f};
 
-	std::array<float, 50> m_frameTimeHistory{};
+	std::array<f32, 50> m_frameTimeHistory{};
 	TRAP::Utils::Timer m_titleTimer{};
 
 	bool m_ignoreImGui = false;
 
 	std::vector<std::string> m_shaderNames{"Base", "Color", "Texture", "Diffuse Reflection", "Phong Lightning"};
-	uint32_t m_currentShader = 0;
+	u32 m_currentShader = 0;
 	bool m_wireFrame = false;
 	bool m_drawSkyBox = true;
 
 	TRAP::SceneCamera m_camera{};
 	TRAP::TransformComponent m_cameraTransform{};
-	float m_mouseSensitivity = 5.0f;
-	float m_translationSpeed = 2.5f;
+	f32 m_mouseSensitivity = 5.0f;
+	f32 m_translationSpeed = 2.5f;
 	bool m_firstMouse = true; //Camera Controls
 };
 

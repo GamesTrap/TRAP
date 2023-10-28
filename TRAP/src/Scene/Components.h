@@ -106,8 +106,8 @@ namespace TRAP
 	struct CircleRendererComponent
 	{
 		Math::Vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
-		float Thickness = 1.0f;
-		float Fade = 0.005f;
+		f32 Thickness = 1.0f;
+		f32 Fade = 0.005f;
 
 		constexpr CircleRendererComponent() noexcept = default;
 	};
@@ -153,7 +153,7 @@ namespace TRAP
 
 	struct Rigidbody2DComponent
 	{
-		enum class BodyType : uint32_t {Static, Dynamic, Kinematic};
+		enum class BodyType : u32 {Static, Dynamic, Kinematic};
 		BodyType Type = BodyType::Static;
 		bool FixedRotation = false;
 
@@ -169,10 +169,10 @@ namespace TRAP
 		TRAP::Math::Vec2 Size{0.5f, 0.5f};
 
 		//TODO Move into Physics Material in future
-		float Density = 1.0f;
-		float Friction = 0.5f;
-		float Restitution = 0.0f;
-		float RestitutionThreshold = 0.5f;
+		f32 Density = 1.0f;
+		f32 Friction = 0.5f;
+		f32 Restitution = 0.0f;
+		f32 RestitutionThreshold = 0.5f;
 
 		//Storage for runtime data
 		b2Fixture* RuntimeFixture = nullptr;
@@ -183,13 +183,13 @@ namespace TRAP
 	struct CircleCollider2DComponent
 	{
 		TRAP::Math::Vec2 Offset{0.0f, 0.0f};
-		float Radius = 0.5f;
+		f32 Radius = 0.5f;
 
 		//TODO Move into Physics Material in future
-		float Density = 1.0f;
-		float Friction = 0.5f;
-		float Restitution = 0.0f;
-		float RestitutionThreshold = 0.5f;
+		f32 Density = 1.0f;
+		f32 Friction = 0.5f;
+		f32 Restitution = 0.0f;
+		f32 RestitutionThreshold = 0.5f;
 
 		//Storage for runtime data
 		b2Fixture* RuntimeFixture = nullptr;

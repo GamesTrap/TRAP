@@ -35,7 +35,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="index">Index of the set to update.</param>
 		/// <param name="params">Data to update.</param>
-		virtual void Update(uint32_t index, const std::vector<RendererAPI::DescriptorData>& params) = 0;
+		virtual void Update(u32 index, const std::vector<RendererAPI::DescriptorData>& params) = 0;
 
 	protected:
 		/// <summary>

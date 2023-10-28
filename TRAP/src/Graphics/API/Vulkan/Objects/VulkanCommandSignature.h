@@ -45,11 +45,11 @@ namespace TRAP::Graphics::API
 		/// Retrieve the byte stride between successive sets of draw parameters.
 		/// </summary>
 		/// <returns>Byte stride.</returns>
-		[[nodiscard]] constexpr uint32_t GetStride() const noexcept;
+		[[nodiscard]] constexpr u32 GetStride() const noexcept;
 
 	private:
 		RendererAPI::IndirectArgumentType m_drawType{};
-		uint32_t m_stride{};
+		u32 m_stride{};
 	};
 }
 
@@ -62,7 +62,7 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::API::VulkanCommandSignature::GetStride() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::API::VulkanCommandSignature::GetStride() const noexcept
 {
 	return m_stride;
 }

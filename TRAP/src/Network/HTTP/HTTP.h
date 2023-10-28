@@ -114,7 +114,7 @@ namespace TRAP::Network
 			/// </summary>
 			/// <param name="major">Major HTTP version number.</param>
 			/// <param name="minor">Minor HTTP version number.</param>
-			constexpr void SetHTTPVersion(uint32_t major, uint32_t minor) noexcept;
+			constexpr void SetHTTPVersion(u32 major, u32 minor) noexcept;
 
 			/// <summary>
 			/// Set the body of the request.
@@ -153,8 +153,8 @@ namespace TRAP::Network
 			FieldTable m_fields;     //Fields of the header associated to their value
 			Method m_method;         //Method to use for the request
 			std::string m_uri;       //Target URI of the request
-			uint32_t m_majorVersion; //Major HTTP version
-			uint32_t m_minorVersion; //Minor HTTP version
+			u32 m_majorVersion; //Major HTTP version
+			u32 m_minorVersion; //Minor HTTP version
 			std::string m_body;      //Body of the request
 		};
 
@@ -234,13 +234,13 @@ namespace TRAP::Network
 			/// Get the major HTTP version number of the response.
 			/// </summary>
 			/// <returns>Major HTTP version number.</returns>
-			[[nodiscard]] constexpr uint32_t GetMajorHTTPVersion() const noexcept;
+			[[nodiscard]] constexpr u32 GetMajorHTTPVersion() const noexcept;
 
 			/// <summary>
 			/// Get the minor HTTP version number of the response.
 			/// </summary>
 			/// <returns>Minor HTTP version number.</returns>
-			[[nodiscard]] constexpr uint32_t GetMinorHTTPVersion() const noexcept;
+			[[nodiscard]] constexpr u32 GetMinorHTTPVersion() const noexcept;
 
 			/// <summary>
 			/// Get the body of the response.
@@ -279,8 +279,8 @@ namespace TRAP::Network
 
 			FieldTable m_fields;     //Fields of the header
 			Status m_status;         //Status code
-			uint32_t m_majorVersion; //Major HTTP version
-			uint32_t m_minorVersion; //Minor HTTP version
+			u32 m_majorVersion; //Major HTTP version
+			u32 m_minorVersion; //Minor HTTP version
 			std::string m_body;      //Body of the response
 		};
 
@@ -301,7 +301,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="host">Web server to connect to.</param>
 		/// <param name="port">Port to use for connection.</param>
-		explicit HTTP(const std::string& host, uint16_t port = 0);
+		explicit HTTP(const std::string& host, u16 port = 0);
 
 		/// <summary>
 		/// Move constructor.
@@ -337,7 +337,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="host">Web server to connect to.</param>
 		/// <param name="port">Port to use for connection.</param>
-		void SetHost(const std::string& host, uint16_t port = 0);
+		void SetHost(const std::string& host, u16 port = 0);
 
 		/// <summary>
 		/// Send a HTTP request and return the server's response.
@@ -362,7 +362,7 @@ namespace TRAP::Network
 		IPv4Address m_host;             //Web host address
 		IPv6Address m_hostIPv6;         //Web host address
 		std::string m_hostName;         //Web host name
-		uint16_t m_port;                //Port used for connection with host
+		u16 m_port;                //Port used for connection with host
 	};
 }
 
@@ -386,7 +386,7 @@ constexpr void TRAP::Network::HTTP::Request::SetURI(std::string uri)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr void TRAP::Network::HTTP::Request::SetHTTPVersion(const uint32_t major, const uint32_t minor) noexcept
+constexpr void TRAP::Network::HTTP::Request::SetHTTPVersion(const u32 major, const u32 minor) noexcept
 {
 	m_majorVersion = major;
 	m_minorVersion = minor;
@@ -408,14 +408,14 @@ constexpr void TRAP::Network::HTTP::Request::SetBody(std::string body)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Network::HTTP::Response::GetMajorHTTPVersion() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Network::HTTP::Response::GetMajorHTTPVersion() const noexcept
 {
 	return m_majorVersion;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Network::HTTP::Response::GetMinorHTTPVersion() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Network::HTTP::Response::GetMinorHTTPVersion() const noexcept
 {
 	return m_minorVersion;
 }

@@ -66,7 +66,7 @@ void TRAP::Graphics::API::VulkanFence::Wait()
 	if(m_submitted)
 	{
 #ifdef ENABLE_NSIGHT_AFTERMATH
-		const VkResult result = vkWaitForFences(m_device->GetVkDevice(), 1, &m_fence, VK_TRUE, std::numeric_limits<uint32_t>::max());
+		const VkResult result = vkWaitForFences(m_device->GetVkDevice(), 1, &m_fence, VK_TRUE, std::numeric_limits<u32>::max());
 		if(RendererAPI::s_aftermathSupport)
 		{
 			if(result == VK_ERROR_DEVICE_LOST)
@@ -96,7 +96,7 @@ void TRAP::Graphics::API::VulkanFence::Wait()
 			}
 		}
 #else
-	VkCall(vkWaitForFences(m_device->GetVkDevice(), 1, &m_fence, VK_TRUE, std::numeric_limits<uint32_t>::max()));
+	VkCall(vkWaitForFences(m_device->GetVkDevice(), 1, &m_fence, VK_TRUE, std::numeric_limits<u32>::max()));
 #endif
 	}
 

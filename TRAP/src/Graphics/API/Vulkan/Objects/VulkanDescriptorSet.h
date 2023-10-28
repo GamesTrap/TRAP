@@ -23,8 +23,8 @@ namespace TRAP::Graphics::API
 		VulkanDescriptorSet(TRAP::Ref<VulkanDevice> device, std::vector<VkDescriptorSet> vkDescriptorSetHandles,
 		                    TRAP::Ref<VulkanRootSignature> rootSignature,
 		                    std::vector<std::vector<VulkanRenderer::DescriptorUpdateData>> updateData,
-		                    uint32_t maxSets, uint8_t dynamicOffsetCount,
-							uint32_t set);
+		                    u32 maxSets, u8 dynamicOffsetCount,
+							u32 set);
 
 		/// <summary>
 		/// Copy constructor.
@@ -67,7 +67,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the amount of dynamic offsets used by the descriptor set.
 		/// </summary>
 		/// <returns>Amount of dynamic offsets.</returns>
-		[[nodiscard]] constexpr uint8_t GetDynamicOffsetCount() const noexcept;
+		[[nodiscard]] constexpr u8 GetDynamicOffsetCount() const noexcept;
 		/// <summary>
 		/// Retrieve the dynamic size offsets used by the descriptor set.
 		/// </summary>
@@ -77,19 +77,19 @@ namespace TRAP::Graphics::API
 		/// Retrieve the max number of sets for the descriptor set.
 		/// </summary>
 		/// <returns>Max number of sets.</returns>
-		[[nodiscard]] constexpr uint32_t GetMaxSets() const noexcept;
+		[[nodiscard]] constexpr u32 GetMaxSets() const noexcept;
 		/// <summary>
 		/// Retrieve the index of the set for the descriptor set.
 		/// </summary>
 		/// <returns>Index of the set.</returns>
-		[[nodiscard]] constexpr uint32_t GetSet() const noexcept;
+		[[nodiscard]] constexpr u32 GetSet() const noexcept;
 
 		/// <summary>
 		/// Update the descriptor set.
 		/// </summary>
 		/// <param name="index">Index of the set to update.</param>
 		/// <param name="params">Data to update.</param>
-		void Update(uint32_t index, const std::vector<RendererAPI::DescriptorData>& params) override;
+		void Update(u32 index, const std::vector<RendererAPI::DescriptorData>& params) override;
 
 	private:
 		std::vector<VkDescriptorSet> m_vkDescriptorSetHandles;
@@ -98,9 +98,9 @@ namespace TRAP::Graphics::API
 		//Initialized to default descriptor values.
 		std::vector<std::vector<union VulkanRenderer::DescriptorUpdateData>> m_updateData;
 		std::vector<VulkanRenderer::SizeOffset> m_dynamicSizeOffsets;
-		uint32_t m_maxSets;
-		uint8_t m_dynamicOffsetCount;
-		uint32_t m_set;
+		u32 m_maxSets;
+		u8 m_dynamicOffsetCount;
+		u32 m_set;
 
 		TRAP::Ref<VulkanDevice> m_device;
 	};
@@ -130,21 +130,21 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint8_t TRAP::Graphics::API::VulkanDescriptorSet::GetDynamicOffsetCount() const noexcept
+[[nodiscard]] constexpr u8 TRAP::Graphics::API::VulkanDescriptorSet::GetDynamicOffsetCount() const noexcept
 {
 	return m_dynamicOffsetCount;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::API::VulkanDescriptorSet::GetMaxSets() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::API::VulkanDescriptorSet::GetMaxSets() const noexcept
 {
 	return m_maxSets;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::API::VulkanDescriptorSet::GetSet() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::API::VulkanDescriptorSet::GetSet() const noexcept
 {
 	return m_set;
 }

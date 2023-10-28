@@ -124,142 +124,142 @@ namespace
 
 TEST_CASE("TRAP::Math::IsEven()", "[math][generic][iseven]")
 {
-    SECTION("Scalar - int8_t")
+    SECTION("Scalar - i8")
     {
-        RunCompileTimeIsEvenEdgeTests<int8_t>();
-        RunCompileTimeIsEvenTests<int8_t>();
+        RunCompileTimeIsEvenEdgeTests<i8>();
+        RunCompileTimeIsEvenTests<i8>();
     }
-    SECTION("Scalar - uint8_t")
+    SECTION("Scalar - u8")
     {
-        RunCompileTimeIsEvenEdgeTests<uint8_t>();
-        RunCompileTimeIsEvenTests<uint8_t>();
+        RunCompileTimeIsEvenEdgeTests<u8>();
+        RunCompileTimeIsEvenTests<u8>();
     }
-    SECTION("Scalar - int16_t")
+    SECTION("Scalar - i16")
     {
-        RunCompileTimeIsEvenEdgeTests<int16_t>();
-        RunCompileTimeIsEvenTests<int16_t>();
+        RunCompileTimeIsEvenEdgeTests<i16>();
+        RunCompileTimeIsEvenTests<i16>();
     }
-    SECTION("Scalar - uint16_t")
+    SECTION("Scalar - u16")
     {
-        RunCompileTimeIsEvenEdgeTests<uint16_t>();
-        RunCompileTimeIsEvenTests<uint16_t>();
+        RunCompileTimeIsEvenEdgeTests<u16>();
+        RunCompileTimeIsEvenTests<u16>();
     }
-    SECTION("Scalar - int32_t")
+    SECTION("Scalar - i32")
     {
-        RunCompileTimeIsEvenEdgeTests<int32_t>();
-        RunCompileTimeIsEvenTests<int32_t>();
+        RunCompileTimeIsEvenEdgeTests<i32>();
+        RunCompileTimeIsEvenTests<i32>();
     }
-    SECTION("Scalar - uint32_t")
+    SECTION("Scalar - u32")
     {
-        RunCompileTimeIsEvenEdgeTests<uint32_t>();
-        RunCompileTimeIsEvenTests<uint32_t>();
+        RunCompileTimeIsEvenEdgeTests<u32>();
+        RunCompileTimeIsEvenTests<u32>();
     }
-    SECTION("Scalar - int64_t")
+    SECTION("Scalar - i64")
     {
-        RunCompileTimeIsEvenEdgeTests<int64_t>();
-        RunCompileTimeIsEvenTests<int64_t>();
+        RunCompileTimeIsEvenEdgeTests<i64>();
+        RunCompileTimeIsEvenTests<i64>();
     }
-    SECTION("Scalar - uint64_t")
+    SECTION("Scalar - u64")
     {
-        RunCompileTimeIsEvenEdgeTests<uint64_t>();
-        RunCompileTimeIsEvenTests<uint64_t>();
+        RunCompileTimeIsEvenEdgeTests<u64>();
+        RunCompileTimeIsEvenTests<u64>();
     }
 
-    SECTION("Vec2 - int8_t")
+    SECTION("Vec2 - i8")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec2i8>();
     }
-    SECTION("Vec2 - uint8_t")
+    SECTION("Vec2 - u8")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec2ui8>();
     }
-    SECTION("Vec2 - int16_t")
+    SECTION("Vec2 - i16")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec2i16>();
     }
-    SECTION("Vec2 - uint16_t")
+    SECTION("Vec2 - u16")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec2ui16>();
     }
-    SECTION("Vec2 - int32_t")
+    SECTION("Vec2 - i32")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec2i32>();
     }
-    SECTION("Vec2 - uint32_t")
+    SECTION("Vec2 - u32")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec2ui32>();
     }
-    SECTION("Vec2 - int64_t")
+    SECTION("Vec2 - i64")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec2i64>();
     }
-    SECTION("Vec2 - uint64_t")
+    SECTION("Vec2 - u64")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec2ui64>();
     }
 
-    SECTION("Vec3 - int8_t")
+    SECTION("Vec3 - i8")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec3i8>();
     }
-    SECTION("Vec3 - uint8_t")
+    SECTION("Vec3 - u8")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec3ui8>();
     }
-    SECTION("Vec3 - int16_t")
+    SECTION("Vec3 - i16")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec3i16>();
     }
-    SECTION("Vec3 - uint16_t")
+    SECTION("Vec3 - u16")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec3ui16>();
     }
-    SECTION("Vec3 - int32_t")
+    SECTION("Vec3 - i32")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec3i32>();
     }
-    SECTION("Vec3 - uint32_t")
+    SECTION("Vec3 - u32")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec3ui32>();
     }
-    SECTION("Vec3 - int64_t")
+    SECTION("Vec3 - i64")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec3i64>();
     }
-    SECTION("Vec3 - uint64_t")
+    SECTION("Vec3 - u64")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec3ui64>();
     }
 
-    SECTION("Vec4 - int8_t")
+    SECTION("Vec4 - i8")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec4i8>();
     }
-    SECTION("Vec4 - uint8_t")
+    SECTION("Vec4 - u8")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec4ui8>();
     }
-    SECTION("Vec4 - int16_t")
+    SECTION("Vec4 - i16")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec4i16>();
     }
-    SECTION("Vec4 - uint16_t")
+    SECTION("Vec4 - u16")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec4ui16>();
     }
-    SECTION("Vec4 - int32_t")
+    SECTION("Vec4 - i32")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec4i32>();
     }
-    SECTION("Vec4 - uint32_t")
+    SECTION("Vec4 - u32")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec4ui32>();
     }
-    SECTION("Vec4 - int64_t")
+    SECTION("Vec4 - i64")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec4i64>();
     }
-    SECTION("Vec4 - uint64_t")
+    SECTION("Vec4 - u64")
     {
         RunCompileTimeIsEvenVecTests<TRAP::Math::Vec4ui64>();
     }

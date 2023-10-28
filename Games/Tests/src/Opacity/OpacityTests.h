@@ -15,7 +15,7 @@ public:
 	static bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
 
 private:
-	float m_opacity = 1.0f;
+	f32 m_opacity = 1.0f;
 };
 
 //-------------------------------------------------------------------------------------------------------------------//

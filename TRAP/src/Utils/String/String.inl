@@ -10,7 +10,7 @@ template<typename T>
 	{
 		try
 		{
-			const int64_t value = std::stoll(input);
+			const i64 value = std::stoll(input);
 			if (value > std::numeric_limits<T>::max() ||
 				value < std::numeric_limits<T>::min())
 				return 0;
@@ -27,7 +27,7 @@ template<typename T>
 	{
 		try
 		{
-			const uint64_t value = std::stoull(input);
+			const u64 value = std::stoull(input);
 			if (value > std::numeric_limits<T>::max() ||
 				value < std::numeric_limits<T>::min())
 				return 0;
@@ -40,7 +40,7 @@ template<typename T>
 			return 0;
 		}
 	}
-	else if constexpr(std::same_as<T, float>) //Float
+	else if constexpr(std::same_as<T, f32>) //Float
 	{
 		try
 		{
@@ -48,11 +48,11 @@ template<typename T>
 		}
 		catch (std::exception&)
 		{
-			TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to float!");
+			TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to f32!");
 			return 0.0f;
 		}
 	}
-	else if constexpr(std::same_as<T, double>) //Double
+	else if constexpr(std::same_as<T, f64>) //Double
 	{
 		try
 		{
@@ -60,7 +60,7 @@ template<typename T>
 		}
 		catch(std::exception&)
 		{
-			TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to double!");
+			TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to f64!");
 			return 0.0;
 		}
 	}

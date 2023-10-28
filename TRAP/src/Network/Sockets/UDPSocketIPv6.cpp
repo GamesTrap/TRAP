@@ -6,7 +6,7 @@
 #include "Utils/Utils.h"
 #include "Utils/Memory.h"
 
-[[nodiscard]] uint16_t TRAP::Network::UDPSocketIPv6::GetLocalPort() const
+[[nodiscard]] u16 TRAP::Network::UDPSocketIPv6::GetLocalPort() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -18,7 +18,7 @@
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
 	if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
 	{
-		uint16_t port = address.sin6_port;
+		u16 port = address.sin6_port;
 
 		if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(port);
@@ -31,7 +31,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Bind(const uint16_t port, const IPv6Address& address)
+TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Bind(const u16 port, const IPv6Address& address)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -68,9 +68,9 @@ void TRAP::Network::UDPSocketIPv6::Unbind()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(const void* const data, const std::size_t size,
+TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(const void* const data, const usize size,
                                                                  const IPv6Address& remoteAddress,
-																 const uint16_t remotePort)
+																 const u16 remotePort)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -89,7 +89,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(const void* con
 	const sockaddr_in6 address = INTERNAL::Network::SocketImpl::CreateAddress(remoteAddress.ToArray(), remotePort);
 
 	//Send the data (unlike TCP, all the data is always sent in one call)
-	const int64_t sent = sendto(GetHandle(), static_cast<const char*>(data), size, 0,
+	const i64 sent = sendto(GetHandle(), static_cast<const char*>(data), size, 0,
 	                            reinterpret_cast<const sockaddr*>(&address), sizeof(address));
 
 	//Check for errors
@@ -101,10 +101,10 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(const void* con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(void* const data, const std::size_t size,
-                                                                    std::size_t& received,
+TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(void* const data, const usize size,
+                                                                    usize& received,
 																	IPv6Address& remoteAddress,
-																	uint16_t& remotePort) const
+																	u16& remotePort) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -122,7 +122,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(void* const 
 	}
 
 	//Data that will be filled with the other computer's address
-	std::array<uint8_t, 16> addr{};
+	std::array<u8, 16> addr{};
 #ifdef TRAP_PLATFORM_WINDOWS
 	std::copy_n(in6addr_any.u.Byte, addr.size(), addr.data());
 #else
@@ -132,7 +132,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(void* const 
 
 	//Receive a chunk of bytes
 	INTERNAL::Network::SocketImpl::AddressLength addressSize = sizeof(address);
-	const int64_t sizeReceived = recvfrom(GetHandle(), static_cast<char*>(data), size, 0,
+	const i64 sizeReceived = recvfrom(GetHandle(), static_cast<char*>(data), size, 0,
 	                                      reinterpret_cast<sockaddr*>(&address), &addressSize);
 
 	//Check for errors
@@ -140,7 +140,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(void* const 
 		return INTERNAL::Network::SocketImpl::GetErrorStatus();
 
 	//Fill the sender information
-	received = NumericCast<std::size_t>(sizeReceived);
+	received = NumericCast<usize>(sizeReceived);
 	addr = {};
 #ifdef TRAP_PLATFORM_WINDOWS
 	std::copy_n(address.sin6_addr.u.Byte, addr.size(), addr.data());
@@ -149,7 +149,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(void* const 
 #endif
 	remoteAddress = IPv6Address(addr);
 
-	uint16_t port = address.sin6_port;
+	u16 port = address.sin6_port;
 
 	if constexpr (Utils::GetEndian() != Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(port);
@@ -162,7 +162,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(void* const 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(Packet& packet, const IPv6Address& remoteAddress,
-                                                                 const uint16_t remotePort)
+                                                                 const u16 remotePort)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
@@ -176,7 +176,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(Packet& packet,
 	//to the packet's data.
 
 	//Get the data to send from the packet
-	std::size_t size = 0;
+	usize size = 0;
 	const void* const data = packet.OnSend(size);
 
 	//Send it
@@ -186,14 +186,14 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(Packet& packet,
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(Packet& packet, IPv6Address& remoteAddress,
-                                                                    uint16_t& remotePort)
+                                                                    u16& remotePort)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
 	//See the detailed comment in Send(Packet) above.
 
 	//Receive the datagram
-	std::size_t received = 0;
+	usize received = 0;
 	const Status status = Receive(m_buffer.data(), m_buffer.size(), received, remoteAddress, remotePort);
 
 	//If we received valid data, we can copy it to the user packet

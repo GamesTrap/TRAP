@@ -88,16 +88,16 @@ namespace
 
 TEST_CASE("TRAP::Math::InfinitePerspective()", "[math][generic][infiniteperspective]")
 {
-    SECTION("Mat4 - double")
+    SECTION("Mat4 - f64")
     {
-        RunInfinitePerspectiveRunTimeTests<double>();
-        RunInfinitePerspectiveCompileTimeTests<double>();
-        RunInfinitePerspectiveEdgeTests<double>();
+        RunInfinitePerspectiveRunTimeTests<f64>();
+        RunInfinitePerspectiveCompileTimeTests<f64>();
+        RunInfinitePerspectiveEdgeTests<f64>();
     }
-    SECTION("Mat4 - float")
+    SECTION("Mat4 - f32")
     {
-        RunInfinitePerspectiveRunTimeTests<float>();
-        RunInfinitePerspectiveCompileTimeTests<float>();
-        RunInfinitePerspectiveEdgeTests<float>();
+        RunInfinitePerspectiveRunTimeTests<f32>();
+        RunInfinitePerspectiveCompileTimeTests<f32>();
+        RunInfinitePerspectiveEdgeTests<f32>();
     }
 }

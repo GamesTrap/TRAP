@@ -136,7 +136,7 @@ namespace
         gl_Position = vec4(aPos * pc.uScale + pc.uTranslate, 0, 1);
     }
     */
-    constexpr std::array<uint32_t, 324> glsl_shader_vert_spv =
+    constexpr std::array<u32, 324> glsl_shader_vert_spv =
     {
         0x07230203,0x00010000,0x00080001,0x0000002e,0x00000000,0x00020011,0x00000001,0x0006000b,
         0x00000001,0x4c534c47,0x6474732e,0x3035342e,0x00000000,0x0003000e,0x00000000,0x00000001,
@@ -195,7 +195,7 @@ namespace
         fColor = In.Color * texture(sTexture, In.UV.st);
     }
     */
-    constexpr std::array<uint32_t, 193> glsl_shader_frag_spv =
+    constexpr std::array<u32, 193> glsl_shader_frag_spv =
     {
         0x07230203,0x00010000,0x00080001,0x0000001e,0x00000000,0x00020011,0x00000001,0x0006000b,
         0x00000001,0x4c534c47,0x6474732e,0x3035342e,0x00000000,0x0003000e,0x00000000,0x00000001,
@@ -250,8 +250,8 @@ namespace
     // (Used by multi-viewport features.)
     struct ImGui_ImplVulkanH_Window
     {
-        int32_t             Width{};
-        int32_t             Height{};
+        i32             Width{};
+        i32             Height{};
         VkSwapchainKHR      Swapchain = VK_NULL_HANDLE;
         VkSurfaceKHR        Surface = VK_NULL_HANDLE;
         VkSurfaceFormatKHR  SurfaceFormat{};
@@ -261,9 +261,9 @@ namespace
         bool                UseDynamicRendering = false;
         bool                ClearEnable = true;
         VkClearValue        ClearValue{};
-        uint32_t            FrameIndex{}; // Current frame being rendered to (0 <= FrameIndex < FrameInFlightCount)
-        uint32_t            ImageCount{}; // Number of simultaneous in-flight frames (returned by vkGetSwapchainImagesKHR, usually derived from min_image_count)
-        uint32_t            SemaphoreIndex{}; // Current set of swapchain wait semaphores we're using (needs to be distinct from per frame data)
+        u32            FrameIndex{}; // Current frame being rendered to (0 <= FrameIndex < FrameInFlightCount)
+        u32            ImageCount{}; // Number of simultaneous in-flight frames (returned by vkGetSwapchainImagesKHR, usually derived from min_image_count)
+        u32            SemaphoreIndex{}; // Current set of swapchain wait semaphores we're using (needs to be distinct from per frame data)
         std::vector<ImGui_ImplVulkanH_Frame>            Frames{};
         std::vector<ImGui_ImplVulkanH_FrameSemaphores>  FrameSemaphores{};
     };
@@ -296,8 +296,8 @@ namespace
     // Each viewport will hold 1 ImGui_ImplVulkanH_WindowRenderBuffers
     struct ImGui_ImplVulkanH_WindowRenderBuffers
     {
-        uint32_t            Index = 0;
-        uint32_t            Count = 0;
+        u32            Index = 0;
+        u32            Count = 0;
         std::vector<ImGui_ImplVulkanH_FrameRenderBuffers> FrameRenderBuffers{};
     };
 
@@ -347,7 +347,7 @@ namespace
     void CheckVkResult(VkResult err);
     void SetupRenderState(const ImDrawData& draw_data, VkPipeline pipeline,
                           const TRAP::Graphics::API::VulkanCommandBuffer& command_buffer,
-                          const ImGui_ImplVulkanH_FrameRenderBuffers& rb, int32_t fb_width, int32_t fb_height);
+                          const ImGui_ImplVulkanH_FrameRenderBuffers& rb, i32 fb_width, i32 fb_height);
     void CreateShaderModules(const TRAP::Graphics::API::VulkanDevice& device,
                              const VkAllocationCallbacks* allocator);
     void CreatePipeline(const TRAP::Graphics::API::VulkanDevice& device, const VkAllocationCallbacks* allocator,
@@ -364,13 +364,13 @@ namespace
     [[nodiscard]] VkPresentModeKHR SelectPresentMode(const TRAP::Graphics::API::VulkanPhysicalDevice& physical_device,
                                                      VkSurfaceKHR surface, std::span<const VkPresentModeKHR> request_modes);
     void CreateWindowCommandBuffers(ImGui_ImplVulkanH_Window& wd, const TRAP::Ref<TRAP::Graphics::API::VulkanQueue>& queue);
-    [[nodiscard]] std::optional<int32_t> GetMinImageCountFromPresentMode(VkPresentModeKHR present_mode);
+    [[nodiscard]] std::optional<i32> GetMinImageCountFromPresentMode(VkPresentModeKHR present_mode);
     void CreateWindowSwapChain(const TRAP::Graphics::API::VulkanDevice& device,
                                ImGui_ImplVulkanH_Window& wd, const VkAllocationCallbacks* allocator,
-                               int32_t w, int32_t h, uint32_t min_image_count);
+                               i32 w, i32 h, u32 min_image_count);
     void CreateOrResizeWindow(const TRAP::Graphics::API::VulkanDevice& device,
                               ImGui_ImplVulkanH_Window& wnd, const TRAP::Ref<TRAP::Graphics::API::VulkanQueue>& queue_family,
-                              const VkAllocationCallbacks* allocator, int32_t w, int32_t h, uint32_t min_image_count);
+                              const VkAllocationCallbacks* allocator, i32 w, i32 h, u32 min_image_count);
     void DestroyWindow(const TRAP::Graphics::API::VulkanInstance& instance,
                        const TRAP::Graphics::API::VulkanDevice& device, ImGui_ImplVulkanH_Window& wnd,
                        const VkAllocationCallbacks* allocator);
@@ -423,8 +423,8 @@ namespace
 
     void SetupRenderState(const ImDrawData& draw_data, VkPipeline pipeline,
                           const TRAP::Graphics::API::VulkanCommandBuffer& command_buffer,
-                          const ImGui_ImplVulkanH_FrameRenderBuffers& rb, const int32_t fb_width,
-                          const int32_t fb_height)
+                          const ImGui_ImplVulkanH_FrameRenderBuffers& rb, const i32 fb_width,
+                          const i32 fb_height)
     {
         ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -444,15 +444,15 @@ namespace
         }
 
         // Setup viewport:
-        command_buffer.SetViewport(0.0f, 0.0f, NumericCast<float>(fb_width), NumericCast<float>(-fb_height), 0.0f, 1.0f);
+        command_buffer.SetViewport(0.0f, 0.0f, NumericCast<f32>(fb_width), NumericCast<f32>(-fb_height), 0.0f, 1.0f);
 
         // Setup scale and translation:
         // Our visible imgui space lies from draw_data->DisplayPps (top left) to draw_data->DisplayPos+data_data->DisplaySize (bottom right). DisplayPos is (0,0) for single viewport apps.
         {
-            const std::array<float, 2> scale{2.0f / draw_data.DisplaySize.x, 2.0f / draw_data.DisplaySize.y};
-            const std::array<float, 2> translate{-1.0f - draw_data.DisplayPos.x * std::get<0>(scale), -1.0f - draw_data.DisplayPos.y * std::get<1>(scale)};
-            vkCmdPushConstants(command_buffer.GetVkCommandBuffer(), bd->PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, sizeof(float) * 0, sizeof(float) * 2, scale.data());
-            vkCmdPushConstants(command_buffer.GetVkCommandBuffer(), bd->PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, sizeof(float) * 2, sizeof(float) * 2, translate.data());
+            const std::array<f32, 2> scale{2.0f / draw_data.DisplaySize.x, 2.0f / draw_data.DisplaySize.y};
+            const std::array<f32, 2> translate{-1.0f - draw_data.DisplayPos.x * std::get<0>(scale), -1.0f - draw_data.DisplayPos.y * std::get<1>(scale)};
+            vkCmdPushConstants(command_buffer.GetVkCommandBuffer(), bd->PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, sizeof(f32) * 0, sizeof(f32) * 2, scale.data());
+            vkCmdPushConstants(command_buffer.GetVkCommandBuffer(), bd->PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, sizeof(f32) * 2, sizeof(f32) * 2, translate.data());
         }
     }
 
@@ -575,8 +575,8 @@ namespace
             .srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE,
             .dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,
             .alphaBlendOp = VK_BLEND_OP_ADD,
-            .colorWriteMask = static_cast<uint32_t>(VK_COLOR_COMPONENT_R_BIT) | static_cast<uint32_t>(VK_COLOR_COMPONENT_G_BIT) |
-                              static_cast<uint32_t>(VK_COLOR_COMPONENT_B_BIT) | static_cast<uint32_t>(VK_COLOR_COMPONENT_A_BIT)
+            .colorWriteMask = static_cast<u32>(VK_COLOR_COMPONENT_R_BIT) | static_cast<u32>(VK_COLOR_COMPONENT_G_BIT) |
+                              static_cast<u32>(VK_COLOR_COMPONENT_B_BIT) | static_cast<u32>(VK_COLOR_COMPONENT_A_BIT)
         };
 
         static constexpr VkPipelineDepthStencilStateCreateInfo depth_info
@@ -638,18 +638,18 @@ namespace
         const ImGuiIO& io = ImGui::GetIO();
         ImGui_ImplVulkan_Data* const bd = GetBackendData();
 
-        uint8_t* pixels = nullptr;
-        int width = 0, height = 0;
+        u8* pixels = nullptr;
+        i32 width = 0, height = 0;
         io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
-        const std::size_t upload_size = NumericCast<std::size_t>(width) * NumericCast<std::size_t>(height) * 4u * sizeof(char);
+        const usize upload_size = NumericCast<usize>(width) * NumericCast<usize>(height) * 4u * sizeof(char);
 
         // Create the Image:
         bd->FontImage = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>(TRAP::Graphics::TextureType::Texture2D);
         const TRAP::Graphics::RendererAPI::TextureDesc fontDesc
         {
             .Flags = TRAP::Graphics::RendererAPI::TextureCreationFlags::None,
-            .Width = NumericCast<uint32_t>(width),
-            .Height = NumericCast<uint32_t>(height),
+            .Width = NumericCast<u32>(width),
+            .Height = NumericCast<u32>(height),
             .Depth = 1,
             .ArraySize = 1,
             .SampleCount = TRAP::Graphics::RendererAPI::SampleCount::One,
@@ -692,10 +692,10 @@ namespace
 
         // Upload to Buffer:
         {
-            uint8_t* map = nullptr;
+            u8* map = nullptr;
             const TRAP::Graphics::RendererAPI::ReadRange readRange{.Offset = 0, .Range = upload_size};
             bd->UploadBuffer->MapBuffer(&readRange);
-            map = reinterpret_cast<uint8_t*>(bd->UploadBuffer->GetCPUMappedAddress());
+            map = reinterpret_cast<u8*>(bd->UploadBuffer->GetCPUMappedAddress());
             std::copy_n(pixels, upload_size, map);
             bd->UploadBuffer->UnMapBuffer();
         }
@@ -727,7 +727,7 @@ namespace
                 .SrcOffset = 0,
                 .MipLevel = 0,
                 .ArrayLayer = 0,
-                .RowPitch = NumericCast<uint32_t>(width) * bd->FontImage->GetBytesPerPixel(),
+                .RowPitch = NumericCast<u32>(width) * bd->FontImage->GetBytesPerPixel(),
                 .SlicePitch = 0
             };
             command_buffer.UpdateSubresource(bd->FontImage.get(), dynamic_pointer_cast<TRAP::Graphics::Buffer>(bd->UploadBuffer), subresourceDesc);
@@ -813,8 +813,8 @@ namespace
             static constexpr VkPushConstantRange push_constants
             {
                 .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
-                .offset = sizeof(float) * 0,
-                .size = sizeof(float) * 4
+                .offset = sizeof(f32) * 0,
+                .size = sizeof(f32) * 4
             };
             VkDescriptorSetLayout set_layout = bd->DescriptorSetLayout;
             const VkPipelineLayoutCreateInfo layout_info = TRAP::Graphics::API::VulkanInits::PipelineLayoutCreateInfo(1, &set_layout, 1, &push_constants);
@@ -873,10 +873,10 @@ namespace
         // Assuming that the default behavior is without setting this bit, there is no need for separate Swapchain image and image view format
         // Additionally several new color spaces were introduced with Vulkan Spec v1.0.40,
         // hence we must make sure that a format with the mostly available color space, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR, is found and used.
-        uint32_t avail_count = 0;
+        u32 avail_count = 0;
         CheckVkResult(vkGetPhysicalDeviceSurfaceFormatsKHR(physical_device.GetVkPhysicalDevice(), surface, &avail_count, nullptr));
         ImVector<VkSurfaceFormatKHR> avail_format;
-        avail_format.resize(NumericCast<int32_t>(avail_count));
+        avail_format.resize(NumericCast<i32>(avail_count));
         CheckVkResult(vkGetPhysicalDeviceSurfaceFormatsKHR(physical_device.GetVkPhysicalDevice(), surface, &avail_count, avail_format.Data));
 
         // First check if only one format, VK_FORMAT_UNDEFINED, is available, which would imply that any format is available
@@ -920,10 +920,10 @@ namespace
         TRAP_ASSERT(!request_modes.empty(), "ImGuiVulkanBackend::SelectPresentMode(): request_modes is empty!");
 
         // Request a certain mode and confirm that it is available. If not use VK_PRESENT_MODE_FIFO_KHR which is mandatory
-        uint32_t avail_count = 0;
+        u32 avail_count = 0;
         CheckVkResult(vkGetPhysicalDeviceSurfacePresentModesKHR(physical_device.GetVkPhysicalDevice(), surface, &avail_count, nullptr));
         ImVector<VkPresentModeKHR> avail_modes;
-        avail_modes.resize(NumericCast<int32_t>(avail_count));
+        avail_modes.resize(NumericCast<i32>(avail_count));
         CheckVkResult(vkGetPhysicalDeviceSurfacePresentModesKHR(physical_device.GetVkPhysicalDevice(), surface, &avail_count, avail_modes.Data));
 
         for (const VkPresentModeKHR request_mode : request_modes)
@@ -946,7 +946,7 @@ namespace
         ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
         // Create Command Buffers
-        for (uint32_t i = 0; i < wd.ImageCount; i++)
+        for (u32 i = 0; i < wd.ImageCount; i++)
         {
             ImGui_ImplVulkanH_Frame& fd = wd.Frames[i];
             ImGui_ImplVulkanH_FrameSemaphores& fsd = wd.FrameSemaphores[i];
@@ -967,7 +967,7 @@ namespace
 
     //-------------------------------------------------------------------------------------------------------------------//
 
-    [[nodiscard]] std::optional<int32_t> GetMinImageCountFromPresentMode(const VkPresentModeKHR present_mode)
+    [[nodiscard]] std::optional<i32> GetMinImageCountFromPresentMode(const VkPresentModeKHR present_mode)
     {
         ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -986,8 +986,8 @@ namespace
 
     // Also destroy old swap chain and in-flight frames data, if any.
     void CreateWindowSwapChain(const TRAP::Graphics::API::VulkanDevice& device, ImGui_ImplVulkanH_Window& wd,
-                               const VkAllocationCallbacks* const allocator, const int32_t w, const int32_t h,
-                               uint32_t min_image_count)
+                               const VkAllocationCallbacks* const allocator, const i32 w, const i32 h,
+                               u32 min_image_count)
     {
         ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -999,7 +999,7 @@ namespace
 
         // We don't use DestroyWindow() because we want to preserve the old swapchain to create the new one.
         // Destroy old Framebuffer
-        for (uint32_t i = 0; i < wd.ImageCount; i++)
+        for (u32 i = 0; i < wd.ImageCount; i++)
             DestroyFrame(device, wd.Frames[i], allocator);
         wd.Frames.clear();
         wd.FrameSemaphores.clear();
@@ -1011,7 +1011,7 @@ namespace
 
         // If min image count was not specified, request different count of images dependent on selected present mode
         if (min_image_count == 0)
-            min_image_count = NumericCast<uint32_t>(GetMinImageCountFromPresentMode(wd.PresentMode).value_or(1u));
+            min_image_count = NumericCast<u32>(GetMinImageCountFromPresentMode(wd.PresentMode).value_or(1u));
 
         // Create Swapchain
         {
@@ -1031,13 +1031,13 @@ namespace
                 wd.Width = w;
                 wd.Height = h;
 
-                info.imageExtent.width = NumericCast<uint32_t>(w);
-                info.imageExtent.height = NumericCast<uint32_t>(h);
+                info.imageExtent.width = NumericCast<u32>(w);
+                info.imageExtent.height = NumericCast<u32>(h);
             }
             else
             {
-                wd.Width = NumericCast<int32_t>(cap.currentExtent.width);
-                wd.Height = NumericCast<int32_t>(cap.currentExtent.height);
+                wd.Width = NumericCast<i32>(cap.currentExtent.width);
+                wd.Height = NumericCast<i32>(cap.currentExtent.height);
 
                 info.imageExtent.width = cap.currentExtent.width;
                 info.imageExtent.height = cap.currentExtent.height;
@@ -1055,13 +1055,13 @@ namespace
             TRAP_ASSERT(wd.FrameSemaphores.empty(), "ImGuiVulkanBackend::CreateWindowSwapChain(): wd.FrameSemaphores is not empty!");
             wd.Frames.resize(wd.ImageCount);
             wd.FrameSemaphores.resize(wd.ImageCount);
-            for (uint32_t i = 0; i < wd.ImageCount; i++)
+            for (u32 i = 0; i < wd.ImageCount; i++)
             {
                 const TRAP::Graphics::RendererAPI::RenderTargetDesc rtDesc
                 {
                     .Flags = TRAP::Graphics::RendererAPI::TextureCreationFlags::None,
-                    .Width = NumericCast<uint32_t>(wd.Width),
-                    .Height = NumericCast<uint32_t>(wd.Height),
+                    .Width = NumericCast<u32>(wd.Width),
+                    .Height = NumericCast<u32>(wd.Height),
                     .Depth = 1,
                     .ArraySize = 1,
                     .MipLevels = 0,
@@ -1110,9 +1110,9 @@ namespace
         // Create Framebuffer
         if(!wd.UseDynamicRendering)
         {
-            VkFramebufferCreateInfo info = TRAP::Graphics::API::VulkanInits::FramebufferCreateInfo(wd.RenderPass, {}, NumericCast<uint32_t>(wd.Width), NumericCast<uint32_t>(wd.Height), 1);
+            VkFramebufferCreateInfo info = TRAP::Graphics::API::VulkanInits::FramebufferCreateInfo(wd.RenderPass, {}, NumericCast<u32>(wd.Width), NumericCast<u32>(wd.Height), 1);
             info.attachmentCount = 1;
-            for (uint32_t i = 0; i < wd.ImageCount; i++)
+            for (u32 i = 0; i < wd.ImageCount; i++)
             {
                 ImGui_ImplVulkanH_Frame& fd = wd.Frames[i];
                 VkImageView backbufferView = fd.Backbuffer->GetVkImageView();
@@ -1129,8 +1129,8 @@ namespace
     void CreateOrResizeWindow(const TRAP::Graphics::API::VulkanDevice& device,
                               ImGui_ImplVulkanH_Window& wnd,
                               const TRAP::Ref<TRAP::Graphics::API::VulkanQueue>& queue,
-                              const VkAllocationCallbacks* const allocator, const int32_t w, const int32_t h,
-                              const uint32_t min_image_count)
+                              const VkAllocationCallbacks* const allocator, const i32 w, const i32 h,
+                              const u32 min_image_count)
     {
         ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
@@ -1151,7 +1151,7 @@ namespace
         device.WaitIdle(); // FIXME: We could wait on the Queue if we had the queue in wd-> (otherwise VulkanH functions can't use globals)
         //vkQueueWaitIdle(bd.Queue);
 
-        for (uint32_t i = 0; i < wnd.ImageCount; i++)
+        for (u32 i = 0; i < wnd.ImageCount; i++)
             DestroyFrame(device, wnd.Frames[i], allocator);
         wnd.Frames.clear();
         wnd.FrameSemaphores.clear();
@@ -1260,7 +1260,7 @@ namespace
         // Create SwapChain, RenderPass, Framebuffer, etc.
         wd.ClearEnable = (viewport->Flags & ImGuiViewportFlags_NoRendererClear) == 0;
         wd.UseDynamicRendering = v.UseDynamicRendering;
-        CreateOrResizeWindow(*v.Device, wd, v.Queue, v.Allocator, NumericCast<int32_t>(viewport->Size.x), NumericCast<int32_t>(viewport->Size.y), v.MinImageCount);
+        CreateOrResizeWindow(*v.Device, wd, v.Queue, v.Allocator, NumericCast<i32>(viewport->Size.x), NumericCast<i32>(viewport->Size.y), v.MinImageCount);
         vd->WindowOwned = true;
     }
 
@@ -1302,7 +1302,7 @@ namespace
         {
             const InitInfo& v = bd->VulkanInitInfo;
             vd->Window.ClearEnable = (viewport->Flags & ImGuiViewportFlags_NoRendererClear) == 0;
-            CreateOrResizeWindow(*v.Device, vd->Window, v.Queue, v.Allocator, NumericCast<int32_t>(size.x), NumericCast<int32_t>(size.y), v.MinImageCount);
+            CreateOrResizeWindow(*v.Device, vd->Window, v.Queue, v.Allocator, NumericCast<i32>(size.x), NumericCast<i32>(size.y), v.MinImageCount);
         }
     }
 
@@ -1329,7 +1329,7 @@ namespace
         const ImGui_ImplVulkanH_FrameSemaphores& fsd = wd.FrameSemaphores[wd.SemaphoreIndex];
         {
             {
-                err = vkAcquireNextImageKHR(v.Device->GetVkDevice(), wd.Swapchain, std::numeric_limits<uint64_t>::max(), fsd.ImageAcquiredSemaphore->GetVkSemaphore(), VK_NULL_HANDLE, &wd.FrameIndex);
+                err = vkAcquireNextImageKHR(v.Device->GetVkDevice(), wd.Swapchain, std::numeric_limits<u64>::max(), fsd.ImageAcquiredSemaphore->GetVkSemaphore(), VK_NULL_HANDLE, &wd.FrameIndex);
                 CheckVkResult(err);
             }
 
@@ -1387,7 +1387,7 @@ namespace
                     .pNext = nullptr,
                     .flags = 0,
                     .renderArea = VkRect2D{.offset = VkOffset2D{.x = 0, .y = 0},
-                                           .extent = VkExtent2D{.width = NumericCast<uint32_t>(wd.Width), .height = NumericCast<uint32_t>(wd.Height)}},
+                                           .extent = VkExtent2D{.width = NumericCast<u32>(wd.Width), .height = NumericCast<u32>(wd.Height)}},
                     .layerCount = 1,
                     .viewMask = 0,
                     .colorAttachmentCount = 1,
@@ -1404,7 +1404,7 @@ namespace
                 const VkRect2D renderArea
                 {
                     .offset{.x = 0, .y = 0},
-                    .extent{.width = NumericCast<uint32_t>(wd.Width), .height = NumericCast<uint32_t>(wd.Height)}
+                    .extent{.width = NumericCast<u32>(wd.Width), .height = NumericCast<u32>(wd.Height)}
                 };
                 const VkRenderPassBeginInfo info = TRAP::Graphics::API::VulkanInits::RenderPassBeginInfo(wd.RenderPass, fd.Framebuffer,
                                                                                                         renderArea, (viewport->Flags & ImGuiViewportFlags_NoRendererClear) != 0 ? std::vector<VkClearValue>{} : std::vector<VkClearValue>{wd.ClearValue});
@@ -1500,7 +1500,7 @@ namespace
         const InitInfo& v = bd->VulkanInitInfo;
 
         VkResult err = VK_SUCCESS;
-        uint32_t present_index = wd.FrameIndex;
+        u32 present_index = wd.FrameIndex;
 
         const ImGui_ImplVulkanH_FrameSemaphores& fsd = wd.FrameSemaphores[wd.SemaphoreIndex];
         const std::vector<VkSemaphore> waitSemaphores{fsd.RenderCompleteSemaphore->GetVkSemaphore()};
@@ -1508,7 +1508,7 @@ namespace
 
         err = vkQueuePresentKHR(v.Queue->GetVkQueue(), &info);
         if (err == VK_ERROR_OUT_OF_DATE_KHR || err == VK_SUBOPTIMAL_KHR)
-            CreateOrResizeWindow(*v.Device, vd->Window, v.Queue, v.Allocator, NumericCast<int32_t>(viewport->Size.x), NumericCast<int32_t>(viewport->Size.y), v.MinImageCount);
+            CreateOrResizeWindow(*v.Device, vd->Window, v.Queue, v.Allocator, NumericCast<i32>(viewport->Size.x), NumericCast<i32>(viewport->Size.y), v.MinImageCount);
         else
             CheckVkResult(err);
 
@@ -1554,8 +1554,8 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
     ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
     // Avoid rendering when minimized, scale coordinates for retina displays (screen coordinates != framebuffer coordinates)
-    const int32_t fb_width = NumericCast<int32_t>(draw_data.DisplaySize.x * draw_data.FramebufferScale.x);
-    const int32_t fb_height = NumericCast<int32_t>(draw_data.DisplaySize.y * draw_data.FramebufferScale.y);
+    const i32 fb_width = NumericCast<i32>(draw_data.DisplaySize.x * draw_data.FramebufferScale.x);
+    const i32 fb_height = NumericCast<i32>(draw_data.DisplaySize.y * draw_data.FramebufferScale.y);
     if (fb_width <= 0 || fb_height <= 0)
         return;
 
@@ -1584,8 +1584,8 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
     if (draw_data.TotalVtxCount > 0)
     {
         // Create or resize the vertex/index buffers
-        const std::size_t vertex_size = NumericCast<std::size_t>(draw_data.TotalVtxCount) * sizeof(ImDrawVert);
-        const std::size_t index_size = NumericCast<std::size_t>(draw_data.TotalIdxCount) * sizeof(ImDrawIdx);
+        const usize vertex_size = NumericCast<usize>(draw_data.TotalVtxCount) * sizeof(ImDrawVert);
+        const usize index_size = NumericCast<usize>(draw_data.TotalIdxCount) * sizeof(ImDrawIdx);
         if (rb.VertexBuffer == nullptr || rb.VertexBuffer->GetSize() < vertex_size)
         {
             const TRAP::Graphics::RendererAPI::BufferDesc bufferDesc
@@ -1638,7 +1638,7 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
         rb.IndexBuffer->MapBuffer(&idxReadRange);
         ImDrawVert* vtx_dst = reinterpret_cast<ImDrawVert*>(rb.VertexBuffer->GetCPUMappedAddress());
         ImDrawIdx* idx_dst = reinterpret_cast<ImDrawIdx*>(rb.IndexBuffer->GetCPUMappedAddress());
-        for (int n = 0; n < draw_data.CmdListsCount; n++)
+        for (i32 n = 0; n < draw_data.CmdListsCount; n++)
         {
             if(const ImDrawList* const cmd_list = draw_data.CmdLists[n]; cmd_list)
             {
@@ -1661,15 +1661,15 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
 
     // Render command lists
     // (Because we merged all buffers into a single one, we maintain our own offset into them)
-    int32_t global_vtx_offset = 0;
-    uint32_t global_idx_offset = 0;
-    for (int n = 0; n < draw_data.CmdListsCount; n++)
+    i32 global_vtx_offset = 0;
+    u32 global_idx_offset = 0;
+    for (i32 n = 0; n < draw_data.CmdListsCount; n++)
     {
         const ImDrawList* const cmd_list = draw_data.CmdLists[n];
         if(cmd_list == nullptr)
             continue;
 
-        for (int cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; cmd_i++)
+        for (i32 cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; cmd_i++)
         {
             const ImDrawCmd& pcmd = cmd_list->CmdBuffer[cmd_i];
             if (pcmd.UserCallback != nullptr)
@@ -1692,15 +1692,15 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
                     clip_min.x = 0.0f;
                 if (clip_min.y < 0.0f)
                     clip_min.y = 0.0f;
-                if (clip_max.x > NumericCast<float>(fb_width))
-                    clip_max.x = NumericCast<float>(fb_width);
-                if (clip_max.y > NumericCast<float>(fb_height))
-                    clip_max.y = NumericCast<float>(fb_height);
+                if (clip_max.x > NumericCast<f32>(fb_width))
+                    clip_max.x = NumericCast<f32>(fb_width);
+                if (clip_max.y > NumericCast<f32>(fb_height))
+                    clip_max.y = NumericCast<f32>(fb_height);
                 if (clip_max.x <= clip_min.x || clip_max.y <= clip_min.y)
                     continue;
 
                 // Apply scissor/clipping rectangle
-                command_buffer.SetScissor(NumericCast<uint32_t>(clip_min.x), NumericCast<uint32_t>(clip_min.y), NumericCast<uint32_t>(TRAP::Math::Abs(clip_max.x - clip_min.x)), NumericCast<uint32_t>(TRAP::Math::Abs(clip_max.y - clip_min.y)));
+                command_buffer.SetScissor(NumericCast<u32>(clip_min.x), NumericCast<u32>(clip_min.y), NumericCast<u32>(TRAP::Math::Abs(clip_max.x - clip_min.x)), NumericCast<u32>(TRAP::Math::Abs(clip_max.y - clip_min.y)));
 
                 // Bind descriptorset with font or user texture
                 VkDescriptorSet descSet = static_cast<VkDescriptorSet>(pcmd.TextureId);
@@ -1714,10 +1714,10 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
                 vkCmdBindDescriptorSets(command_buffer.GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, bd->PipelineLayout, 0, 1, &descSet, 0, nullptr);
 
                 // Draw
-                command_buffer.DrawIndexed(pcmd.ElemCount, pcmd.IdxOffset + global_idx_offset, NumericCast<int32_t>(pcmd.VtxOffset) + global_vtx_offset);
+                command_buffer.DrawIndexed(pcmd.ElemCount, pcmd.IdxOffset + global_idx_offset, NumericCast<i32>(pcmd.VtxOffset) + global_vtx_offset);
             }
         }
-        global_idx_offset += NumericCast<uint32_t>(cmd_list->IdxBuffer.Size);
+        global_idx_offset += NumericCast<u32>(cmd_list->IdxBuffer.Size);
         global_vtx_offset += cmd_list->VtxBuffer.Size;
     }
 
@@ -1728,7 +1728,7 @@ void ImGui::INTERNAL::Vulkan::RenderDrawData(const ImDrawData& draw_data,
     // If you use VK_DYNAMIC_STATE_VIEWPORT or VK_DYNAMIC_STATE_SCISSOR you are responsible for setting the values before rendering.
     // In theory we should aim to backup/restore those values but I am not sure this is possible.
     // We perform a call to vkCmdSetScissor() to set back a full viewport which is likely to fix things for 99% users but technically this is not perfect. (See github #4644)
-    command_buffer.SetScissor(0, 0, NumericCast<uint32_t>(fb_width), NumericCast<uint32_t>(fb_height));
+    command_buffer.SetScissor(0, 0, NumericCast<u32>(fb_width), NumericCast<u32>(fb_height));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

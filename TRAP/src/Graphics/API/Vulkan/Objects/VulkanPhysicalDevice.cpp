@@ -8,7 +8,7 @@
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 #include "Utils/ErrorCodes/ErrorCodes.h"
 
-std::multimap<uint32_t, TRAP::Utils::UUID> TRAP::Graphics::API::VulkanPhysicalDevice::s_availablePhysicalDeviceUUIDs{};
+std::multimap<u32, TRAP::Utils::UUID> TRAP::Graphics::API::VulkanPhysicalDevice::s_availablePhysicalDeviceUUIDs{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -54,7 +54,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	m_physicalDeviceDriverProperties.pNext = nullptr;
 	vkGetPhysicalDeviceProperties2(m_physicalDevice, &propsDriver);
 
-	uint32_t queueFamilyPropertyCount = 0;
+	u32 queueFamilyPropertyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevice, &queueFamilyPropertyCount, nullptr);
 	m_queueFamilyProperties.resize(queueFamilyPropertyCount);
 	vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevice, &queueFamilyPropertyCount,
@@ -64,7 +64,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	std::ranges::copy(m_physicalDeviceIDProperties.deviceUUID, m_deviceUUID.begin());
 
 	// Capabilities for VulkanRenderer
-	for (uint32_t i = 0; i < std::to_underlying(TRAP::Graphics::API::ImageFormat::IMAGE_FORMAT_COUNT); ++i)
+	for (u32 i = 0; i < std::to_underlying(TRAP::Graphics::API::ImageFormat::IMAGE_FORMAT_COUNT); ++i)
 	{
 		const VkFormat fmt = ImageFormatToVkFormat(static_cast<TRAP::Graphics::API::ImageFormat>(i));
 		if (fmt == VK_FORMAT_UNDEFINED)
@@ -85,8 +85,8 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	RendererAPI::GPUSettings.MaxUniformBufferRange = m_physicalDeviceProperties.limits.maxUniformBufferRange;
 	RendererAPI::GPUSettings.StorageBufferAlignment = m_physicalDeviceProperties.limits.minStorageBufferOffsetAlignment;
 	RendererAPI::GPUSettings.MaxStorageBufferRange = m_physicalDeviceProperties.limits.maxStorageBufferRange;
-	RendererAPI::GPUSettings.UploadBufferTextureAlignment = NumericCast<uint32_t>(m_physicalDeviceProperties.limits.optimalBufferCopyOffsetAlignment);
-	RendererAPI::GPUSettings.UploadBufferTextureRowAlignment = NumericCast<uint32_t>(m_physicalDeviceProperties.limits.optimalBufferCopyRowPitchAlignment);
+	RendererAPI::GPUSettings.UploadBufferTextureAlignment = NumericCast<u32>(m_physicalDeviceProperties.limits.optimalBufferCopyOffsetAlignment);
+	RendererAPI::GPUSettings.UploadBufferTextureRowAlignment = NumericCast<u32>(m_physicalDeviceProperties.limits.optimalBufferCopyRowPitchAlignment);
 	RendererAPI::GPUSettings.MaxVertexInputBindings = m_physicalDeviceProperties.limits.maxVertexInputBindings;
 	RendererAPI::GPUSettings.MaxVertexInputAttributes = m_physicalDeviceProperties.limits.maxVertexInputAttributes;
 	RendererAPI::GPUSettings.MultiDrawIndirectSupported = m_physicalDeviceProperties.limits.maxDrawIndirectCount > 1u;
@@ -97,7 +97,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	RendererAPI::GPUSettings.MaxPushConstantSize = m_physicalDeviceProperties.limits.maxPushConstantsSize;
 	RendererAPI::GPUSettings.MaxSamplerAllocationCount = m_physicalDeviceProperties.limits.maxSamplerAllocationCount;
 	RendererAPI::GPUSettings.MaxTessellationControlPoints = m_physicalDeviceProperties.limits.maxTessellationPatchSize;
-	RendererAPI::GPUSettings.MaxMSAASampleCount = static_cast<RendererAPI::SampleCount>(TRAP::Math::Min(GetMaxUsableMSAASampleCount(), static_cast<uint32_t>(VK_SAMPLE_COUNT_16_BIT)));
+	RendererAPI::GPUSettings.MaxMSAASampleCount = static_cast<RendererAPI::SampleCount>(TRAP::Math::Min(GetMaxUsableMSAASampleCount(), static_cast<u32>(VK_SAMPLE_COUNT_16_BIT)));
 
 	// maxBoundDescriptorSets not needed because engine is always limited to 4 descriptor sets
 
@@ -142,7 +142,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 			{
 				// Passed Surface creation
 				// Check if Surface contains present modes
-				uint32_t surfPresModeCount = 0;
+				u32 surfPresModeCount = 0;
 				VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(m_physicalDevice, surface, &surfPresModeCount, nullptr));
 				std::vector<VkPresentModeKHR> presModes(surfPresModeCount);
 				VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(m_physicalDevice, surface, &surfPresModeCount, presModes.data()));
@@ -150,7 +150,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 				{
 					// Passed present mode check
 					// Check if Surface contains formats
-					uint32_t surfFormatCount = 0;
+					u32 surfFormatCount = 0;
 					VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(m_physicalDevice, surface, &surfFormatCount, nullptr));
 					std::vector<VkSurfaceFormatKHR> surfFormats(surfFormatCount);
 					VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(m_physicalDevice, surface, &surfFormatCount, surfFormats.data()));
@@ -162,9 +162,9 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 				// Present test
 				VkBool32 presentSupport = VK_FALSE;
 				const auto &queueFam = GetQueueFamilyProperties();
-				for (std::size_t i = 0; i < queueFam.size(); ++i)
+				for (usize i = 0; i < queueFam.size(); ++i)
 				{
-					VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(m_physicalDevice, NumericCast<uint32_t>(i), surface, &presentSupport));
+					VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(m_physicalDevice, NumericCast<u32>(i), surface, &presentSupport));
 					if (presentSupport != 0u)
 					{
 						RendererAPI::GPUSettings.PresentSupported = true;
@@ -286,7 +286,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const std::multimap<uint32_t, TRAP::Utils::UUID> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(const TRAP::Ref<VulkanInstance> &instance)
+[[nodiscard]] const std::multimap<u32, TRAP::Utils::UUID> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(const TRAP::Ref<VulkanInstance> &instance)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -332,7 +332,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 		std::ranges::copy(physicalDeviceIDProperties.deviceUUID, testUUID.begin());
 
 		bool same = true;
-		for (uint32_t i = 0; i < physicalDeviceUUID.size(); i++)
+		for (u32 i = 0; i < physicalDeviceUUID.size(); i++)
 		{
 			if (physicalDeviceUUID[i] != testUUID[i])
 			{
@@ -350,7 +350,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const std::multimap<uint32_t, TRAP::Utils::UUID> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(const VkInstance &instance)
+[[nodiscard]] const std::multimap<u32, TRAP::Utils::UUID> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(const VkInstance &instance)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -373,7 +373,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	uint32_t physicalDeviceCount = 0;
+	u32 physicalDeviceCount = 0;
 	VkCall(vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, nullptr));
 
 	std::vector<VkPhysicalDevice> physicalDevices(physicalDeviceCount);
@@ -389,7 +389,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	// Score each Physical Device and insert into multimap
-	uint32_t score = 0;
+	u32 score = 0;
 	for (VkPhysicalDevice dev : physicalDevices)
 	{
 		// Get PhysicalDeviceProperties
@@ -428,7 +428,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		}
 
 		// Get all PhysicalDevice Extensions
-		uint32_t supportedExtensionsCount = 0;
+		u32 supportedExtensionsCount = 0;
 		std::vector<VkExtensionProperties> supportedExtensions;
 		VkCall(vkEnumerateDeviceExtensionProperties(dev, nullptr, &supportedExtensionsCount, nullptr));
 		supportedExtensions.resize(supportedExtensionsCount);
@@ -508,7 +508,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 #endif /*TRAP_HEADLESS_MODE*/
 
 		// Required: Get Queue Families
-		uint32_t queueFamilyPropertyCount = 0;
+		u32 queueFamilyPropertyCount = 0;
 		vkGetPhysicalDeviceQueueFamilyProperties(dev, &queueFamilyPropertyCount, nullptr);
 		std::vector<VkQueueFamilyProperties> queueFamilyProperties(queueFamilyPropertyCount);
 		vkGetPhysicalDeviceQueueFamilyProperties(dev, &queueFamilyPropertyCount, queueFamilyProperties.data());
@@ -549,9 +549,9 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		// Disabled in Headless mode.
 #ifndef TRAP_HEADLESS_MODE
 		VkBool32 foundPresentSupport = VK_FALSE;
-		for (std::size_t i = 0; i < queueFamilyProperties.size(); i++)
+		for (usize i = 0; i < queueFamilyProperties.size(); i++)
 		{
-			VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(dev, NumericCast<uint32_t>(i), surface, &foundPresentSupport));
+			VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(dev, NumericCast<u32>(i), surface, &foundPresentSupport));
 			if (foundPresentSupport != 0u)
 				break;
 		}
@@ -568,7 +568,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		// Required: Check if Surface contains present modes
 		// Disabled in Headless mode.
 
-		uint32_t surfacePresentModeCount = 0;
+		u32 surfacePresentModeCount = 0;
 		VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(dev, surface, &surfacePresentModeCount, nullptr));
 		std::vector<VkPresentModeKHR> presentModes(surfacePresentModeCount);
 		VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(dev, surface, &surfacePresentModeCount,
@@ -585,7 +585,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		// Required: Check if Surface contains formats
 		// Disabled in Headless mode.
 
-		uint32_t surfaceFormatCount = 0;
+		u32 surfaceFormatCount = 0;
 		VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(dev, surface, &surfaceFormatCount, nullptr));
 		std::vector<VkSurfaceFormatKHR> surfaceFormats(surfaceFormatCount);
 		VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(dev, surface, &surfaceFormatCount, surfaceFormats.data()));
@@ -759,12 +759,12 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		// Get PhysicalDevice Memory Properties
 		VkPhysicalDeviceMemoryProperties memProps;
 		vkGetPhysicalDeviceMemoryProperties(dev, &memProps);
-		for (uint32_t i = 0; i < memProps.memoryHeapCount; i++)
+		for (u32 i = 0; i < memProps.memoryHeapCount; i++)
 		{
 			if ((VK_MEMORY_HEAP_DEVICE_LOCAL_BIT & memProps.memoryHeaps[i].flags) != 0u)
 			{
-				static constexpr uint64_t ByteToGigabyte = 1e+9;
-				score += NumericCast<uint32_t>(memProps.memoryHeaps[i].size / ByteToGigabyte * 100u);
+				static constexpr u64 ByteToGigabyte = 1e+9;
+				score += NumericCast<u32>(memProps.memoryHeaps[i].size / ByteToGigabyte * 100u);
 			}
 		}
 
@@ -776,7 +776,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		VkSampleCountFlags sampleCounts = TRAP::Math::Min(devProps.limits.framebufferColorSampleCounts,
 														  devProps.limits.framebufferDepthSampleCounts);
 		sampleCounts = TRAP::Math::Min(sampleCounts, devProps.limits.framebufferStencilSampleCounts);
-		score += static_cast<uint32_t>(sampleCounts) * 10;
+		score += static_cast<u32>(sampleCounts) * 10;
 
 		// Optionally: Check if Anisotropic Filtering is supported
 		if (devFeatures.samplerAnisotropy != 0u)
@@ -811,7 +811,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::LoadAllPhysicalDeviceExtensions(
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	uint32_t extensionsCount = 0;
+	u32 extensionsCount = 0;
 	VkCall(vkEnumerateDeviceExtensionProperties(m_physicalDevice, nullptr, &extensionsCount, nullptr));
 	m_availablePhysicalDeviceExtensions.resize(extensionsCount);
 	VkCall(vkEnumerateDeviceExtensionProperties(m_physicalDevice, nullptr, &extensionsCount,

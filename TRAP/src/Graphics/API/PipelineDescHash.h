@@ -8,9 +8,9 @@ namespace std
 	template<>
     struct hash<TRAP::Graphics::RendererAPI::PipelineDesc>
 	{
-		[[nodiscard]] constexpr std::size_t operator()(const TRAP::Graphics::RendererAPI::PipelineDesc& p) const noexcept
+		[[nodiscard]] constexpr usize operator()(const TRAP::Graphics::RendererAPI::PipelineDesc& p) const noexcept
 		{
-			std::size_t res = 0;
+			usize res = 0;
 
 			TRAP::Utils::HashCombine
             (
@@ -60,7 +60,7 @@ namespace std
                         g.VertexLayout->AttributeCount
                     );
 
-					for(uint32_t i = 0; i < g.VertexLayout->AttributeCount; ++i)
+					for(u32 i = 0; i < g.VertexLayout->AttributeCount; ++i)
 					{
 						TRAP::Utils::HashCombine
                         (
@@ -80,7 +80,7 @@ namespace std
                     g.BlendState->RenderTargetMask,
                     g.BlendState->IndependentBlend
                 );
-				for(uint32_t i = 0; i < 8; ++i)
+				for(u32 i = 0; i < 8; ++i)
 				{
 					TRAP::Utils::HashCombine
                     (

@@ -13,10 +13,10 @@ public:
 	void OnEvent(TRAP::Events::Event& event) override;
 
 private:
-	static void SetIcon(const TRAP::Window& window, uint32_t iconColor);
+	static void SetIcon(const TRAP::Window& window, u32 iconColor);
 	static bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
 
-	inline constinit static uint32_t s_cursorIconColor = 0;
+	inline constinit static u32 s_cursorIconColor = 0;
 };
 
 //-------------------------------------------------------------------------------------------------------------------//

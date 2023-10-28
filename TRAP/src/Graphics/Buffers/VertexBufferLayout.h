@@ -23,7 +23,7 @@ namespace TRAP::Graphics
 	/// </summary>
 	/// <param name="type">Shader data type.</param>
 	/// <returns>Byte size of the shader data type.</returns>
-	[[nodiscard]] uint32_t ShaderDataTypeSize(ShaderDataType type);
+	[[nodiscard]] u32 ShaderDataTypeSize(ShaderDataType type);
 
 	/// <summary>
 	/// Struct used to describe a single vertex attribute.
@@ -32,8 +32,8 @@ namespace TRAP::Graphics
 	{
 		std::string Name;
 		ShaderDataType Type{ShaderDataType::None};
-		uint32_t Size{};
-		uint32_t Offset{};
+		u32 Size{};
+		u32 Offset{};
 		bool Normalized{};
 
 		/// <summary>
@@ -53,7 +53,7 @@ namespace TRAP::Graphics
 		/// Retrieve the component count of this vertex attribute.
 		/// </summary>
 		/// <returns>Component count of this vertex attribute.</returns>
-		[[nodiscard]] uint32_t GetComponentCount() const;
+		[[nodiscard]] u32 GetComponentCount() const;
 	};
 
 	/// <summary>
@@ -76,7 +76,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Retrieve the total byte size of all vertex buffer elements used in this layout.
 		/// </summary>
-		[[nodiscard]] constexpr uint32_t GetStride() const noexcept;
+		[[nodiscard]] constexpr u32 GetStride() const noexcept;
 		/// <summary>
 		/// Retrieve the vertex buffer elements described by this layout.
 		/// </summary>
@@ -95,7 +95,7 @@ namespace TRAP::Graphics
 		constexpr void CalculateOffsetsAndStride() noexcept;
 
 		std::vector<VertexBufferElement> m_elements;
-		uint32_t m_stride = 0;
+		u32 m_stride = 0;
 	};
 }
 
@@ -109,7 +109,7 @@ constexpr TRAP::Graphics::VertexBufferLayout::VertexBufferLayout(const std::init
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::VertexBufferLayout::GetStride() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::VertexBufferLayout::GetStride() const noexcept
 {
 	return m_stride;
 }
@@ -153,7 +153,7 @@ constexpr TRAP::Graphics::VertexBufferLayout::VertexBufferLayout(const std::init
 
 constexpr void TRAP::Graphics::VertexBufferLayout::CalculateOffsetsAndStride() noexcept
 {
-	uint32_t offset = 0;
+	u32 offset = 0;
 	m_stride = 0;
 
 	for (auto& element : m_elements)

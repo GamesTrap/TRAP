@@ -100,16 +100,16 @@ namespace
 
 TEST_CASE("TRAP::Math::Axis()", "[math][generic][axis]")
 {
-    SECTION("Quat - double")
+    SECTION("Quat - f64")
     {
-        RunAxisRunTimeTests<double>();
-        RunAxisCompileTimeTests<double>();
-        RunAxisEdgeTests<double>();
+        RunAxisRunTimeTests<f64>();
+        RunAxisCompileTimeTests<f64>();
+        RunAxisEdgeTests<f64>();
     }
-    SECTION("Quat - float")
+    SECTION("Quat - f32")
     {
-        RunAxisRunTimeTests<float>();
-        RunAxisCompileTimeTests<float>();
-        RunAxisEdgeTests<float>();
+        RunAxisRunTimeTests<f32>();
+        RunAxisCompileTimeTests<f32>();
+        RunAxisEdgeTests<f32>();
     }
 }

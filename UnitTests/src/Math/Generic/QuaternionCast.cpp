@@ -136,26 +136,26 @@ namespace
 
 TEST_CASE("TRAP::Math::QuaternionCast()", "[math][generic][quaternioncast]")
 {
-    SECTION("Mat3 - double")
+    SECTION("Mat3 - f64")
     {
         RunQuaternionCastRunTimeTests<TRAP::Math::Mat3d>();
         RunQuaternionCastCompileTimeTests<TRAP::Math::Mat3d>();
         RunQuaternionCastEdgeTests<TRAP::Math::Mat3d>();
     }
-    SECTION("Mat3 - float")
+    SECTION("Mat3 - f32")
     {
         RunQuaternionCastRunTimeTests<TRAP::Math::Mat3f>();
         RunQuaternionCastCompileTimeTests<TRAP::Math::Mat3f>();
         RunQuaternionCastEdgeTests<TRAP::Math::Mat3f>();
     }
 
-    SECTION("Mat4 - double")
+    SECTION("Mat4 - f64")
     {
         RunQuaternionCastRunTimeTests<TRAP::Math::Mat4d>();
         RunQuaternionCastCompileTimeTests<TRAP::Math::Mat4d>();
         RunQuaternionCastEdgeTests<TRAP::Math::Mat4d>();
     }
-    SECTION("Mat4 - float")
+    SECTION("Mat4 - f32")
     {
         RunQuaternionCastRunTimeTests<TRAP::Math::Mat4f>();
         RunQuaternionCastCompileTimeTests<TRAP::Math::Mat4f>();

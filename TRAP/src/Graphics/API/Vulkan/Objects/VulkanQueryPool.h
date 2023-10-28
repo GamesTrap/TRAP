@@ -52,12 +52,12 @@ namespace TRAP::Graphics::API
 		/// Retrieve the number of queries managed by the pool.
 		/// </summary>
 		/// <returns>Number of queries</returns>
-		[[nodiscard]] constexpr uint32_t GetCount() const noexcept;
+		[[nodiscard]] constexpr u32 GetCount() const noexcept;
 
 	private:
 		VkQueryPool m_vkQueryPool = VK_NULL_HANDLE;
 		VkQueryType m_type;
-		uint32_t m_count;
+		u32 m_count;
 	};
 }
 
@@ -77,7 +77,7 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::API::VulkanQueryPool::GetCount() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::API::VulkanQueryPool::GetCount() const noexcept
 {
 	return m_count;
 }

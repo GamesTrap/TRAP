@@ -75,125 +75,125 @@ namespace
 
 TEST_CASE("TRAP::Math::Sign()", "[math][generic][sign]")
 {
-    SECTION("Scalar - int8_t")
+    SECTION("Scalar - i8")
     {
-        RunCompileTimeSignTests<int8_t>();
-        RunCompileTimeSignEdgeTests<int8_t>();
+        RunCompileTimeSignTests<i8>();
+        RunCompileTimeSignEdgeTests<i8>();
     }
-    SECTION("Scalar - int16_t")
+    SECTION("Scalar - i16")
     {
-        RunCompileTimeSignTests<int16_t>();
-        RunCompileTimeSignEdgeTests<int16_t>();
+        RunCompileTimeSignTests<i16>();
+        RunCompileTimeSignEdgeTests<i16>();
     }
-    SECTION("Scalar - int32_t")
+    SECTION("Scalar - i32")
     {
-        RunCompileTimeSignTests<int32_t>();
-        RunCompileTimeSignEdgeTests<int32_t>();
+        RunCompileTimeSignTests<i32>();
+        RunCompileTimeSignEdgeTests<i32>();
     }
-    SECTION("Scalar - int64_t")
+    SECTION("Scalar - i64")
     {
-        RunCompileTimeSignTests<int64_t>();
-        RunCompileTimeSignEdgeTests<int64_t>();
+        RunCompileTimeSignTests<i64>();
+        RunCompileTimeSignEdgeTests<i64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunCompileTimeSignTests<float>();
-        RunCompileTimeSignEdgeTests<float>();
+        RunCompileTimeSignTests<f32>();
+        RunCompileTimeSignEdgeTests<f32>();
     }
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunCompileTimeSignTests<double>();
-        RunCompileTimeSignEdgeTests<double>();
+        RunCompileTimeSignTests<f64>();
+        RunCompileTimeSignEdgeTests<f64>();
     }
 
-    SECTION("Vec2 - int8_t")
+    SECTION("Vec2 - i8")
     {
         RunCompileTimeSignTests<TRAP::Math::Vec2i8>();
         RunCompileTimeSignTests<TRAP::Math::Vec2i8>();
     }
-    SECTION("Vec2 - int16_t")
+    SECTION("Vec2 - i16")
     {
         RunCompileTimeSignTests<TRAP::Math::Vec2i16>();
         RunCompileTimeSignTests<TRAP::Math::Vec2i16>();
     }
-    SECTION("Vec2 - int32_t")
+    SECTION("Vec2 - i32")
     {
         RunCompileTimeSignTests<TRAP::Math::Vec2i32>();
         RunCompileTimeSignTests<TRAP::Math::Vec2i32>();
     }
-    SECTION("Vec2 - int64_t")
+    SECTION("Vec2 - i64")
     {
         RunCompileTimeSignTests<TRAP::Math::Vec2i64>();
         RunCompileTimeSignTests<TRAP::Math::Vec2i64>();
     }
-    SECTION("Vec2 - double")
+    SECTION("Vec2 - f64")
     {
         RunCompileTimeSignTests<TRAP::Math::Vec2d>();
         RunCompileTimeSignTests<TRAP::Math::Vec2d>();
     }
-    SECTION("Vec2 - float")
+    SECTION("Vec2 - f32")
     {
         RunCompileTimeSignTests<TRAP::Math::Vec2f>();
         RunCompileTimeSignTests<TRAP::Math::Vec2f>();
     }
 
-    SECTION("Vec3 - int8_t")
+    SECTION("Vec3 - i8")
     {
         RunCompileTimeSignTests<TRAP::Math::Vec3i8>();
         RunCompileTimeSignTests<TRAP::Math::Vec3i8>();
     }
-    SECTION("Vec3 - int16_t")
+    SECTION("Vec3 - i16")
     {
         RunCompileTimeSignTests<TRAP::Math::Vec3i16>();
         RunCompileTimeSignTests<TRAP::Math::Vec3i16>();
     }
-    SECTION("Vec3 - int32_t")
+    SECTION("Vec3 - i32")
     {
         RunCompileTimeSignTests<TRAP::Math::Vec3i32>();
         RunCompileTimeSignTests<TRAP::Math::Vec3i32>();
     }
-    SECTION("Vec3 - int64_t")
+    SECTION("Vec3 - i64")
     {
         RunCompileTimeSignTests<TRAP::Math::Vec3i64>();
         RunCompileTimeSignTests<TRAP::Math::Vec3i64>();
     }
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunCompileTimeSignTests<TRAP::Math::Vec3d>();
         RunCompileTimeSignTests<TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunCompileTimeSignTests<TRAP::Math::Vec3f>();
         RunCompileTimeSignTests<TRAP::Math::Vec3f>();
     }
 
-    SECTION("Vec4 - int8_t")
+    SECTION("Vec4 - i8")
     {
         RunCompileTimeSignTests<TRAP::Math::Vec4i8>();
         RunCompileTimeSignTests<TRAP::Math::Vec4i8>();
     }
-    SECTION("Vec4 - int16_t")
+    SECTION("Vec4 - i16")
     {
         RunCompileTimeSignTests<TRAP::Math::Vec4i16>();
         RunCompileTimeSignTests<TRAP::Math::Vec4i16>();
     }
-    SECTION("Vec4 - int32_t")
+    SECTION("Vec4 - i32")
     {
         RunCompileTimeSignTests<TRAP::Math::Vec4i32>();
         RunCompileTimeSignTests<TRAP::Math::Vec4i32>();
     }
-    SECTION("Vec4 - int64_t")
+    SECTION("Vec4 - i64")
     {
         RunCompileTimeSignTests<TRAP::Math::Vec4i64>();
         RunCompileTimeSignTests<TRAP::Math::Vec4i64>();
     }
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunCompileTimeSignTests<TRAP::Math::Vec4d>();
         RunCompileTimeSignTests<TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunCompileTimeSignTests<TRAP::Math::Vec4f>();
         RunCompileTimeSignTests<TRAP::Math::Vec4f>();

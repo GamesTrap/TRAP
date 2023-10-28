@@ -23,7 +23,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Buffer::Buffer(const uint64_t size, const RendererAPI::DescriptorType descriptorType,
+TRAP::Graphics::Buffer::Buffer(const u64 size, const RendererAPI::DescriptorType descriptorType,
                                const RendererAPI::ResourceMemoryUsage memoryUsage)
 	: m_size(size), m_descriptors(descriptorType), m_memoryUsage(memoryUsage)
 {

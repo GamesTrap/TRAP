@@ -31,7 +31,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] const void* TRAP::Network::Packet::OnSend(std::size_t& size)
+[[nodiscard]] const void* TRAP::Network::Packet::OnSend(usize& size)
 {
 	size = GetDataSize();
 	return GetData();

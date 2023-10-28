@@ -65,8 +65,8 @@ namespace TRAP::Graphics::API
 		/// <returns>VK_FALSE (as defined in Vulkan spec).</returns>
 		static constexpr VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebugReportCallback(VkDebugReportFlagsEXT flags,
 																	              VkDebugReportObjectTypeEXT objectType,
-																	              uint64_t object, size_t location,
-																	              int32_t messageCode,
+																	              u64 object, usize location,
+																	              i32 messageCode,
 																	              std::string_view layerPrefix,
 																	              std::string_view message, void* userData);
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
@@ -106,9 +106,9 @@ constexpr VkBool32 TRAP::Graphics::API::VulkanDebug::VulkanDebugUtilsCallback(co
 
 constexpr VkBool32 TRAP::Graphics::API::VulkanDebug::VulkanDebugReportCallback(const VkDebugReportFlagsEXT flags,
 																	           [[maybe_unused]] const VkDebugReportObjectTypeEXT objectType,
-																	           [[maybe_unused]] const uint64_t object,
-																	           [[maybe_unused]] const size_t location,
-																	           const int32_t messageCode,
+																	           [[maybe_unused]] const u64 object,
+																	           [[maybe_unused]] const usize location,
+																	           const i32 messageCode,
 																	           const std::string_view layerPrefix,
 																	           const std::string_view message,
 																	           [[maybe_unused]] void* const userData)

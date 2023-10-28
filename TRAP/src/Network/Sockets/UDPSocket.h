@@ -44,7 +44,7 @@ namespace TRAP::Network
 		/// <summary>
 		/// Constants.
 		/// </summary>
-		static constinit const uint32_t MaxDatagramSize = 65507; //The maximum number of bytes that can be sent in a single UDP datagram
+		static constinit const u32 MaxDatagramSize = 65507; //The maximum number of bytes that can be sent in a single UDP datagram
 
 		/// <summary>
 		/// Constructor.
@@ -57,7 +57,7 @@ namespace TRAP::Network
 		/// If the socket is not bound to a port, this function returns 0.
 		/// </summary>
 		/// <returns>Port to which the socket is bound.</returns>
-		[[nodiscard]] uint16_t GetLocalPort() const;
+		[[nodiscard]] u16 GetLocalPort() const;
 
 		/// <summary>
 		/// Bind the socket to a specific port.
@@ -76,7 +76,7 @@ namespace TRAP::Network
 		/// <param name="port">Port to bind the socket to.</param>
 		/// <param name="address">Address of the interface to bind to.</param>
 		/// <returns>Status code.</returns>
-		[[nodiscard]] Status Bind(uint16_t port, const IPv4Address& address = IPv4Address::Any);
+		[[nodiscard]] Status Bind(u16 port, const IPv4Address& address = IPv4Address::Any);
 
 		/// <summary>
 		/// Unbind the socket from the local port to which it is bound.
@@ -101,7 +101,7 @@ namespace TRAP::Network
 		/// <param name="remoteAddress">Address of the receiver.</param>
 		/// <param name="remotePort">Port of the receiver to send the data to.</param>
 		/// <returns>Status code.</returns>
-		[[nodiscard]] Status Send(const void* data, std::size_t size, const IPv4Address& remoteAddress, uint16_t remotePort);
+		[[nodiscard]] Status Send(const void* data, usize size, const IPv4Address& remoteAddress, u16 remotePort);
 
 		/// <summary>
 		/// Receive raw data from a remote peer.
@@ -119,8 +119,8 @@ namespace TRAP::Network
 		/// <param name="remoteAddress">Address of the peer that sent the data.</param>
 		/// <param name="remotePort">Port of the peer that sent the data.</param>
 		/// <returns>Status code.</returns>
-		[[nodiscard]] Status Receive(void* data, std::size_t size, std::size_t& received, IPv4Address& remoteAddress,
-		                             uint16_t& remotePort) const;
+		[[nodiscard]] Status Receive(void* data, usize size, usize& received, IPv4Address& remoteAddress,
+		                             u16& remotePort) const;
 
 		/// <summary>
 		/// Send a formatted packet of data to a remote peer.
@@ -133,7 +133,7 @@ namespace TRAP::Network
 		/// <param name="remoteAddress">Address of the received.</param>
 		/// <param name="remotePort">Port of the receiver to send the data to.</param>
 		/// <returns>Status code.</returns>
-		[[nodiscard]] Status Send(Packet& packet, const IPv4Address& remoteAddress, uint16_t remotePort);
+		[[nodiscard]] Status Send(Packet& packet, const IPv4Address& remoteAddress, u16 remotePort);
 
 		/// <summary>
 		/// Receive a formatted packet of data from a remote peer.
@@ -145,10 +145,10 @@ namespace TRAP::Network
 		/// <param name="remoteAddress">Address of the peer that sent the data.</param>
 		/// <param name="remotePort">Port of the peer that sent the data.</param>
 		/// <returns>Status code.</returns>
-		[[nodiscard]] Status Receive(Packet& packet, IPv4Address& remoteAddress, uint16_t& remotePort);
+		[[nodiscard]] Status Receive(Packet& packet, IPv4Address& remoteAddress, u16& remotePort);
 
 	private:
-		std::vector<uint8_t> m_buffer; //Temporary buffer holding the received data in Receive(Packet)
+		std::vector<u8> m_buffer; //Temporary buffer holding the received data in Receive(Packet)
 	};
 }
 

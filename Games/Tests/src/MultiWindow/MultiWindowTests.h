@@ -21,7 +21,7 @@ private:
 	TRAP::Utils::Timer m_fpsTimer{};
 
 	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer = nullptr;
-	inline static constexpr std::array<float, 18> TriangleVertices
+	inline static constexpr std::array<f32, 18> TriangleVertices
 	{
 		//XYZ RGB
 		 0.0f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f,
@@ -30,7 +30,7 @@ private:
 	};
 
 	TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer = nullptr;
-	inline static constexpr std::array<uint16_t, 3> TriangleIndices
+	inline static constexpr std::array<u16, 3> TriangleIndices
 	{
 		0, 1, 2
 	};

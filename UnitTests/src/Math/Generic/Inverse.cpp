@@ -129,34 +129,34 @@ namespace
 
 TEST_CASE("TRAP::Math::Inverse()", "[math][generic][inverse]")
 {
-    SECTION("Mat3 - double")
+    SECTION("Mat3 - f64")
     {
         RunCompileTimeInverseTests<TRAP::Math::Mat3d>();
         RunInverseEdgeTests<TRAP::Math::Mat3d>();
     }
-    SECTION("Mat3 - float")
+    SECTION("Mat3 - f32")
     {
         RunCompileTimeInverseTests<TRAP::Math::Mat3f>();
         RunInverseEdgeTests<TRAP::Math::Mat3f>();
     }
 
-    SECTION("Mat4 - double")
+    SECTION("Mat4 - f64")
     {
         RunCompileTimeInverseTests<TRAP::Math::Mat4d>();
         RunInverseEdgeTests<TRAP::Math::Mat4d>();
     }
-    SECTION("Mat4 - float")
+    SECTION("Mat4 - f32")
     {
         RunCompileTimeInverseTests<TRAP::Math::Mat4f>();
         RunInverseEdgeTests<TRAP::Math::Mat4f>();
     }
 
-    SECTION("Quat - double")
+    SECTION("Quat - f64")
     {
         RunCompileTimeInverseTests<TRAP::Math::Quatd>();
         RunInverseEdgeTests<TRAP::Math::Quatd>();
     }
-    SECTION("Quat - float")
+    SECTION("Quat - f32")
     {
         RunCompileTimeInverseTests<TRAP::Math::Quatf>();
         RunInverseEdgeTests<TRAP::Math::Quatf>();

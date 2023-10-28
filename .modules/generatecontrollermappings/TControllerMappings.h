@@ -6,6 +6,8 @@
 #include <array>
 #include <string_view>
 
+#include "Core/Types.h"
+
 /*
 Copyright (C) 1997-2022 Sam Lantinga <slouken@libsdl.org>
 
@@ -32,11 +34,11 @@ freely, subject to the following restrictions:
 namespace TRAP::Embed
 {
 #ifdef TRAP_BUILD_WIN32_MAPPINGS
-	inline constexpr std::size_t ControllerMappingsSize = @TRAP_WIN32_MAPPINGS_SIZE@;
+	inline constexpr usize ControllerMappingsSize = @TRAP_WIN32_MAPPINGS_SIZE@;
 #endif /*TRAP_BUILD_WIN32_MAPPINGS*/
 
 #ifdef TRAP_BUILD_LINUX_MAPPINGS
-	inline constexpr std::size_t ControllerMappingsSize = @TRAP_LINUX_MAPPINGS_SIZE@;
+	inline constexpr usize ControllerMappingsSize = @TRAP_LINUX_MAPPINGS_SIZE@;
 #endif /*TRAP_BUILD_LINUX_MAPPINGS*/
 
 	inline constexpr std::array<std::string_view, ControllerMappingsSize> ControllerMappings =

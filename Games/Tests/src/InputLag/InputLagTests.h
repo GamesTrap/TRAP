@@ -24,7 +24,7 @@ private:
 	bool OnMouseMove(const TRAP::Events::MouseMoveEvent& event);
 
 	void SampleInput();
-	void DrawMarker(uint32_t lead, TRAP::Math::Vec2 pos);
+	void DrawMarker(u32 lead, TRAP::Math::Vec2 pos);
 
 	CursorMethod m_cursorMethod = CursorMethod::SyncQuery;
 	bool m_vsync = TRAP::Application::GetWindow()->GetVSync();
@@ -37,13 +37,13 @@ private:
 	TRAP::Graphics::LatencyMode m_latencyMode = TRAP::Graphics::LatencyMode::Disabled;
 
 #ifdef NVIDIA_REFLEX_AVAILABLE
-	std::array<float, 50> m_totalHistory{};
-	std::array<float, 50> m_simulationDeltaHistory{};
-	std::array<float, 50> m_renderDeltaHistory{};
-	std::array<float, 50> m_presentDeltaHistory{};
-	std::array<float, 50> m_driverDeltaHistory{};
-	std::array<float, 50> m_OSRenderQueueDeltaHistory{};
-	std::array<float, 50> m_GPURenderDeltaHistory{};
+	std::array<f32, 50> m_totalHistory{};
+	std::array<f32, 50> m_simulationDeltaHistory{};
+	std::array<f32, 50> m_renderDeltaHistory{};
+	std::array<f32, 50> m_presentDeltaHistory{};
+	std::array<f32, 50> m_driverDeltaHistory{};
+	std::array<f32, 50> m_OSRenderQueueDeltaHistory{};
+	std::array<f32, 50> m_GPURenderDeltaHistory{};
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
 
 	TRAP::Utils::Timer m_updateLatencyTimer{};

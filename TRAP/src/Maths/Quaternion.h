@@ -140,7 +140,7 @@ public:
 		/// Retrieve the count of components of a quaternion.
 		/// </summary>
 		/// <returns>Count.</returns>
-		[[nodiscard]] static constexpr std::size_t Length() noexcept;
+		[[nodiscard]] static constexpr usize Length() noexcept;
 
 		//Component Access
 		[[nodiscard]] constexpr T& w() noexcept;
@@ -152,11 +152,11 @@ public:
 		[[nodiscard]] constexpr T& z() noexcept;
 		[[nodiscard]] constexpr const T& z() const noexcept;
 
-		[[nodiscard]] constexpr T& operator[](std::size_t i);
-		[[nodiscard]] constexpr const T& operator[](std::size_t i) const;
+		[[nodiscard]] constexpr T& operator[](usize i);
+		[[nodiscard]] constexpr const T& operator[](usize i) const;
 
-		[[nodiscard]] T& at(std::size_t i);
-		[[nodiscard]] const T& at(std::size_t i) const;
+		[[nodiscard]] T& at(usize i);
+		[[nodiscard]] const T& at(usize i) const;
 
 		[[nodiscard]] constexpr auto operator<=>(const tQuat<T>& rhs) const noexcept = default;
 		[[nodiscard]] constexpr bool operator==(const tQuat<T>& rhs) const noexcept = default;
@@ -241,9 +241,9 @@ namespace std
 	requires std::floating_point<T>
 	struct hash<TRAP::Math::tQuat<T>>
 	{
-		[[nodiscard]] constexpr std::size_t operator()(const TRAP::Math::tQuat<T>& q) const noexcept
+		[[nodiscard]] constexpr usize operator()(const TRAP::Math::tQuat<T>& q) const noexcept
 		{
-			std::size_t seed = 0;
+			usize seed = 0;
 			hash<T> hasher;
 			TRAP::Utils::HashCombine(seed, hasher(q.x()), hasher(q.y()), hasher(q.z()), hasher(q.w()));
 			return seed;
@@ -427,7 +427,7 @@ constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator/=(const U s) noex
 
 template <typename T>
 requires std::floating_point<T>
-[[nodiscard]] constexpr std::size_t TRAP::Math::tQuat<T>::Length() noexcept
+[[nodiscard]] constexpr usize TRAP::Math::tQuat<T>::Length() noexcept
 {
 	return 4;
 }
@@ -493,7 +493,7 @@ requires std::floating_point<T>
 
 template <typename T>
 requires std::floating_point<T>
-[[nodiscard]] constexpr T& TRAP::Math::tQuat<T>::operator[](const std::size_t i)
+[[nodiscard]] constexpr T& TRAP::Math::tQuat<T>::operator[](const usize i)
 {
 	return data[i];
 }
@@ -502,14 +502,14 @@ requires std::floating_point<T>
 
 template <typename T>
 requires std::floating_point<T>
-[[nodiscard]] constexpr const T& TRAP::Math::tQuat<T>::operator[](const std::size_t i) const
+[[nodiscard]] constexpr const T& TRAP::Math::tQuat<T>::operator[](const usize i) const
 {
 	return data[i];
 }
 
 template <typename T>
 requires std::floating_point<T>
-[[nodiscard]] T& TRAP::Math::tQuat<T>::at(const std::size_t i)
+[[nodiscard]] T& TRAP::Math::tQuat<T>::at(const usize i)
 {
 	TRAP_ASSERT(i < this->Length(), "Math::tQuat<T>::operator[]: Index out of range!");
 
@@ -520,7 +520,7 @@ requires std::floating_point<T>
 
 template <typename T>
 requires std::floating_point<T>
-[[nodiscard]] const T& TRAP::Math::tQuat<T>::at(const std::size_t i) const
+[[nodiscard]] const T& TRAP::Math::tQuat<T>::at(const usize i) const
 {
 	TRAP_ASSERT(i < this->Length(), "Math::tQuat<T>::operator[]: Index out of range!");
 
@@ -536,9 +536,9 @@ requires std::floating_point<T>
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	std::string postfix;
-	if constexpr(std::same_as<T, float>)
+	if constexpr(std::same_as<T, f32>)
 		postfix = "f";
-	else if constexpr(std::same_as<T, double>)
+	else if constexpr(std::same_as<T, f64>)
 		postfix = "d";
 	else
 		return "Unknown type";

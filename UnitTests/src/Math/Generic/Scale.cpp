@@ -95,14 +95,14 @@ namespace
 
 TEST_CASE("TRAP::Math::Scale()", "[math][generic][scale]")
 {
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunCompileTimeScaleTests<double>();
-        RunScaleEdgeTests<double>();
+        RunCompileTimeScaleTests<f64>();
+        RunScaleEdgeTests<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunCompileTimeScaleTests<float>();
-        RunScaleEdgeTests<float>();
+        RunCompileTimeScaleTests<f32>();
+        RunScaleEdgeTests<f32>();
     }
 }

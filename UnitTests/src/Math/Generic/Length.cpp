@@ -98,51 +98,51 @@ namespace
 
 TEST_CASE("TRAP::Math::Length()", "[math][generic][length]")
 {
-    SECTION("Vec2 - double")
+    SECTION("Vec2 - f64")
     {
         RunLengthVec2RunTimeTests<TRAP::Math::Vec2d>();
         RunLengthVec2CompileTimeTests<TRAP::Math::Vec2d>();
         RunLengthVecEdgeTests<TRAP::Math::Vec2d>();
     }
-    SECTION("Vec2 - float")
+    SECTION("Vec2 - f32")
     {
         RunLengthVec2RunTimeTests<TRAP::Math::Vec2f>();
         RunLengthVec2CompileTimeTests<TRAP::Math::Vec2f>();
         RunLengthVecEdgeTests<TRAP::Math::Vec2f>();
     }
 
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunLengthVec3RunTimeTests<TRAP::Math::Vec3d>();
         RunLengthVec3CompileTimeTests<TRAP::Math::Vec3d>();
         RunLengthVecEdgeTests<TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunLengthVec3RunTimeTests<TRAP::Math::Vec3f>();
         RunLengthVec3CompileTimeTests<TRAP::Math::Vec3f>();
         RunLengthVecEdgeTests<TRAP::Math::Vec3f>();
     }
 
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunLengthVec4RunTimeTests<TRAP::Math::Vec4d>();
         RunLengthVec4CompileTimeTests<TRAP::Math::Vec4d>();
         RunLengthVecEdgeTests<TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunLengthVec4RunTimeTests<TRAP::Math::Vec4f>();
         RunLengthVec4CompileTimeTests<TRAP::Math::Vec4f>();
         RunLengthVecEdgeTests<TRAP::Math::Vec4f>();
     }
 
-    SECTION("Quat - double")
+    SECTION("Quat - f64")
     {
         RunLengthQuatRunTimeTests<TRAP::Math::Quatd>();
         RunLengthQuatCompileTimeTests<TRAP::Math::Quatd>();
     }
-    SECTION("Quat - float")
+    SECTION("Quat - f32")
     {
         RunLengthQuatRunTimeTests<TRAP::Math::Quatf>();
         RunLengthQuatCompileTimeTests<TRAP::Math::Quatf>();

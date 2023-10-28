@@ -14,7 +14,7 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 	{
 		if (Input::IsControllerConnected(m_controller)) //Controller
 		{
-			const float leftXAxis = Input::GetControllerAxis(m_controller, Input::ControllerAxis::Left_X);
+			const f32 leftXAxis = Input::GetControllerAxis(m_controller, Input::ControllerAxis::Left_X);
 			if (leftXAxis < -0.1f || leftXAxis > 0.1f) //Dead zone
 			{
 				m_cameraPosition.x() += leftXAxis * Math::Cos(Math::Radians(m_cameraRotation.z())) *
@@ -22,7 +22,7 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 				m_cameraPosition.y() += leftXAxis * Math::Sin(Math::Radians(m_cameraRotation.z())) *
 				                      m_cameraTranslationSpeed * deltaTime;
 			}
-			const float leftYAxis = Input::GetControllerAxis(m_controller, Input::ControllerAxis::Left_Y);
+			const f32 leftYAxis = Input::GetControllerAxis(m_controller, Input::ControllerAxis::Left_Y);
 			if (leftYAxis < -0.1f || leftYAxis > 0.1f) //Dead zone
 			{
 				m_cameraPosition.x() -= leftYAxis * -Math::Sin(Math::Radians(m_cameraRotation.z())) *
@@ -31,7 +31,7 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 				                      m_cameraTranslationSpeed * deltaTime;
 			}
 
-			const float rightTrigger = (Input::GetControllerAxis(m_controller, Input::ControllerAxis::Right_Trigger) +
+			const f32 rightTrigger = (Input::GetControllerAxis(m_controller, Input::ControllerAxis::Right_Trigger) +
 			                            1) / 2;
 			if (rightTrigger > 0.0f)
 			{
@@ -41,7 +41,7 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 				m_camera.SetProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel,
 				                       m_zoomLevel, 1.0f, -1.0f);
 			}
-			const float leftTrigger = (Input::GetControllerAxis(m_controller, Input::ControllerAxis::Left_Trigger) +
+			const f32 leftTrigger = (Input::GetControllerAxis(m_controller, Input::ControllerAxis::Left_Trigger) +
 			                           1) / 2;
 			if (leftTrigger > 0.0f)
 			{
@@ -54,7 +54,7 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 
 			if (m_rotation)
 			{
-				const float rightXAxis = Input::GetControllerAxis(m_controller, Input::ControllerAxis::Right_X);
+				const f32 rightXAxis = Input::GetControllerAxis(m_controller, Input::ControllerAxis::Right_X);
 				if (rightXAxis < -0.1f || rightXAxis > 0.1f) //Dead zone
 					m_cameraRotation.z() += rightXAxis * m_cameraRotationSpeed * deltaTime;
 			}

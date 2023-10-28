@@ -53,7 +53,7 @@ namespace TRAP
 		void OnUpdateEditor(Utils::TimeStep deltaTime, Graphics::EditorCamera& camera);
 #endif /*TRAP_HEADLESS_MODE*/
 		void OnTick(const TRAP::Utils::TimeStep& deltaTime);
-		void OnViewportResize(uint32_t width, uint32_t height);
+		void OnViewportResize(u32 width, u32 height);
 
 		void DuplicateEntity(Entity entity);
 
@@ -73,7 +73,7 @@ namespace TRAP
 		TRAP::Scope<b2World> m_physicsWorld = nullptr;
 
 		entt::registry m_registry;
-		uint32_t m_viewportWidth = 0, m_viewportHeight = 0;
+		u32 m_viewportWidth = 0, m_viewportHeight = 0;
 	};
 }
 

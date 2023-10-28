@@ -16,7 +16,7 @@ Modified by Jan "GamesTrap" Schuerkamp
 #include "Utils/Utils.h"
 #include "ImageLoader/Image.h"
 
-constexpr std::array<uint8_t, 8> EndMarker{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01};
+constexpr std::array<u8, 8> EndMarker{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -39,13 +39,13 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
 	}
 
     const auto size = FileSystem::GetSize(m_filepath);
-    std::size_t fileSize = 0;
+    usize fileSize = 0;
     if(size)
         fileSize = *size;
     else //Fallback
     {
         file.seekg(0, std::ios::end);
-        fileSize = static_cast<std::size_t>(file.tellg());
+        fileSize = static_cast<usize>(file.tellg());
         file.seekg(0);
     }
 
@@ -57,9 +57,9 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
     }
 
     Header header{};
-    file.read(header.MagicNumber.data(), NumericCast<uint32_t>(header.MagicNumber.size()));
-    file.read(reinterpret_cast<char*>(&header.Width), sizeof(uint32_t));
-    file.read(reinterpret_cast<char*>(&header.Height), sizeof(uint32_t));
+    file.read(header.MagicNumber.data(), NumericCast<u32>(header.MagicNumber.size()));
+    file.read(reinterpret_cast<char*>(&header.Width), sizeof(u32));
+    file.read(reinterpret_cast<char*>(&header.Height), sizeof(u32));
     file >> header.Channels >> header.ColorSpace;
 
     //Magic number must be "qoif"
@@ -110,7 +110,7 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
 	m_width = header.Width;
 	m_height = header.Height;
 
-    m_data.resize(NumericCast<std::size_t>(header.Width) * header.Height * header.Channels);
+    m_data.resize(NumericCast<usize>(header.Width) * header.Height * header.Channels);
     m_bitsPerPixel = header.Channels * 8;
     m_colorFormat = header.Channels == 3 ? ColorFormat::RGB : ColorFormat::RGBA;
 
@@ -133,54 +133,54 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
 
 struct Pixel
 {
-    uint8_t Red;
-    uint8_t Green;
-    uint8_t Blue;
-    uint8_t Alpha;
+    u8 Red;
+    u8 Green;
+    u8 Blue;
+    u8 Alpha;
 };
 
-constexpr uint8_t QOI_OP_INDEX = 0x00;
-constexpr uint8_t QOI_OP_DIFF  = 0x40;
-constexpr uint8_t QOI_OP_LUMA  = 0x80;
-constexpr uint8_t QOI_OP_RUN   = 0xC0;
-constexpr uint8_t QOI_OP_RGB   = 0xFE;
-constexpr uint8_t QOI_OP_RGBA  = 0xFF;
+constexpr u8 QOI_OP_INDEX = 0x00;
+constexpr u8 QOI_OP_DIFF  = 0x40;
+constexpr u8 QOI_OP_LUMA  = 0x80;
+constexpr u8 QOI_OP_RUN   = 0xC0;
+constexpr u8 QOI_OP_RGB   = 0xFE;
+constexpr u8 QOI_OP_RGBA  = 0xFF;
 
-constexpr uint8_t QOI_MASK_2   = 0xC0;
+constexpr u8 QOI_MASK_2   = 0xC0;
 
-[[nodiscard]] constexpr uint32_t QOI_COLOR_HASH(const Pixel& p) noexcept
+[[nodiscard]] constexpr u32 QOI_COLOR_HASH(const Pixel& p) noexcept
 {
     return p.Red * 3 + p.Green * 5 + p.Blue * 7 + p.Alpha * 11;
 }
 
-void TRAP::INTERNAL::QOIImage::DecodeImage(std::ifstream& file, const std::size_t& fileSize)
+void TRAP::INTERNAL::QOIImage::DecodeImage(std::ifstream& file, const usize& fileSize)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
     Pixel prevPixel{0, 0, 0, 255};
     std::array<Pixel, 64> prevPixels{};
 
-    const std::size_t size = NumericCast<std::size_t>(m_width) * m_height * (m_bitsPerPixel / 8);
-    std::size_t index = sizeof(Header);
+    const usize size = NumericCast<usize>(m_width) * m_height * (m_bitsPerPixel / 8);
+    usize index = sizeof(Header);
 
-    for(std::size_t pixelIndex = 0; pixelIndex < size;)
+    for(usize pixelIndex = 0; pixelIndex < size;)
     {
         if(index < (fileSize - EndMarker.size()))
         {
-            const uint8_t tag = NumericCast<uint8_t>(file.get());
+            const u8 tag = NumericCast<u8>(file.get());
 
             if(tag == QOI_OP_RGB)
             {
-                prevPixel.Red = NumericCast<uint8_t>(file.get());
-                prevPixel.Green = NumericCast<uint8_t>(file.get());
-                prevPixel.Blue = NumericCast<uint8_t>(file.get());
+                prevPixel.Red = NumericCast<u8>(file.get());
+                prevPixel.Green = NumericCast<u8>(file.get());
+                prevPixel.Blue = NumericCast<u8>(file.get());
             }
             else if(tag == QOI_OP_RGBA)
             {
-                prevPixel.Red = NumericCast<uint8_t>(file.get());
-                prevPixel.Green = NumericCast<uint8_t>(file.get());
-                prevPixel.Blue = NumericCast<uint8_t>(file.get());
-                prevPixel.Alpha = NumericCast<uint8_t>(file.get());
+                prevPixel.Red = NumericCast<u8>(file.get());
+                prevPixel.Green = NumericCast<u8>(file.get());
+                prevPixel.Blue = NumericCast<u8>(file.get());
+                prevPixel.Alpha = NumericCast<u8>(file.get());
             }
             else
             {
@@ -188,22 +188,22 @@ void TRAP::INTERNAL::QOIImage::DecodeImage(std::ifstream& file, const std::size_
                     prevPixel = prevPixels[tag & 0x3F];
                 else if((tag & QOI_MASK_2) == QOI_OP_DIFF)
                 {
-                    prevPixel.Red   += NumericCast<uint8_t>((((tag & 0x30u) >> 4u) & 0x03u) - 2);
-                    prevPixel.Green += NumericCast<uint8_t>((((tag & 0x0Cu) >> 2u) & 0x03u) - 2);
-                    prevPixel.Blue  += NumericCast<uint8_t>((((tag & 0x03u) >> 0u) & 0x03u) - 2);
+                    prevPixel.Red   += NumericCast<u8>((((tag & 0x30u) >> 4u) & 0x03u) - 2);
+                    prevPixel.Green += NumericCast<u8>((((tag & 0x0Cu) >> 2u) & 0x03u) - 2);
+                    prevPixel.Blue  += NumericCast<u8>((((tag & 0x03u) >> 0u) & 0x03u) - 2);
                 }
                 else if((tag & QOI_MASK_2) == QOI_OP_LUMA)
                 {
-                    const uint8_t data = NumericCast<uint8_t>(file.get());
-                    const uint8_t vg = static_cast<uint8_t>((tag & 0x3Fu) - 32); //Intended narrowing
-                    prevPixel.Red   += NumericCast<uint8_t>(vg - 8u + ((data >> 4u) & 0xFu));
+                    const u8 data = NumericCast<u8>(file.get());
+                    const u8 vg = static_cast<u8>((tag & 0x3Fu) - 32); //Intended narrowing
+                    prevPixel.Red   += NumericCast<u8>(vg - 8u + ((data >> 4u) & 0xFu));
                     prevPixel.Green += vg;
-                    prevPixel.Blue  += NumericCast<uint8_t>(vg - 8u + ((data >> 0u) & 0xFu));
+                    prevPixel.Blue  += NumericCast<u8>(vg - 8u + ((data >> 0u) & 0xFu));
                 }
                 else if((tag & QOI_MASK_2) == QOI_OP_RUN)
                 {
-                    const uint8_t run = tag & 0x3Fu;
-                    for(std::size_t j = 0; j < run; ++j)
+                    const u8 run = tag & 0x3Fu;
+                    for(usize j = 0; j < run; ++j)
                     {
                         m_data[pixelIndex++] = prevPixel.Red;
                         m_data[pixelIndex++] = prevPixel.Green;
@@ -215,8 +215,8 @@ void TRAP::INTERNAL::QOIImage::DecodeImage(std::ifstream& file, const std::size_
                 }
             }
 
-            const uint32_t pixelHashIndex = (QOI_COLOR_HASH(prevPixel) % 64);
-            prevPixels[NumericCast<std::size_t>(pixelHashIndex)] = prevPixel;
+            const u32 pixelHashIndex = (QOI_COLOR_HASH(prevPixel) % 64);
+            prevPixels[NumericCast<usize>(pixelHashIndex)] = prevPixel;
         }
 
         m_data[pixelIndex++] = prevPixel.Red;

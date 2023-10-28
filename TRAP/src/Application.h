@@ -4,13 +4,14 @@
 #include <thread>
 #include <optional>
 
+#include "Core/Types.h"
 #include "Utils/Config/Config.h"
 #include "Layers/LayerStack.h"
 #include "ThreadPool/ThreadPool.h"
 #include "Utils/Time/Timer.h"
 
 #if !defined(DOXYGEN_DOCUMENTATION_BUILD) && !defined(TRAP_UNITTESTS)
-int main(int32_t argc, const char* const* argv);
+int main(i32 argc, const char* const* argv);
 #endif /*!DOXYGEN_DOCUMENTATION_BUILD && !TRAP_UNITTESTS*/
 
 namespace TRAP
@@ -53,7 +54,7 @@ namespace TRAP
 		/// If appID is a valid Steam AppID then the SteamAPI for clients will be initialized.
 		/// Headless mode: SteamAPI won't be initialized, users should manually initialize using TRAP::Utils::Steam::InitializeServer().
 		/// </param>
-		explicit Application(std::string gameName, std::optional<uint32_t> appID = std::nullopt);
+		explicit Application(std::string gameName, std::optional<u32> appID = std::nullopt);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -109,56 +110,56 @@ namespace TRAP
 		/// Get the current frames per second.
 		/// </summary>
 		/// <returns>Current frames per second.</returns>
-		[[nodiscard]] static uint32_t GetFPS();
+		[[nodiscard]] static u32 GetFPS();
 		/// <summary>
 		/// Set a FPS limit.
 		/// Note: Valid FPS range is 25 - 500. 0 sets unlimited FPS.
 		/// </summary>
 		/// <param name="targetFPS">FPS to limit to.</param>
-		static void SetFPSLimit(uint32_t targetFPS);
+		static void SetFPSLimit(u32 targetFPS);
 		/// <summary>
 		/// Retrieve the current FPS limit.
 		/// Note: 0 means unlimited FPS.
 		/// </summary>
 		/// <returns>Current FPS limit.</returns>
-		[[nodiscard]] static uint32_t GetFPSLimit();
+		[[nodiscard]] static u32 GetFPSLimit();
 		/// <summary>
 		/// Set a FPS limit when not focused.
 		/// Note: Valid FPS range is 10 - 500. 0 sets unlimited FPS.
 		/// </summary>
 		/// <param name="targetFPS">FPS to limit to.</param>
-		static void SetUnfocusedFPSLimit(uint32_t targetFPS);
+		static void SetUnfocusedFPSLimit(u32 targetFPS);
 		/// <summary>
 		/// Retrieve the current FPS limit when unfocused.
 		/// Note: 0 means unlimited FPS.
 		/// </summary>
 		/// <returns>Current FPS limit.</returns>
-		[[nodiscard]] static uint32_t GetUnfocusedFPSLimit();
+		[[nodiscard]] static u32 GetUnfocusedFPSLimit();
 		/// <summary>
 		/// Get the current CPU frame time.
 		/// </summary>
 		/// <returns>Current CPU frame time.</returns>
-		[[nodiscard]] static float GetCPUFrameTime();
+		[[nodiscard]] static f32 GetCPUFrameTime();
 		/// <summary>
 		/// Get the current time scale.
 		/// </summary>
 		/// <returns>Current time scale.</returns>
-		[[nodiscard]] static float GetTimeScale();
+		[[nodiscard]] static f32 GetTimeScale();
 		/// <summary>
 		/// Get the current tick rate (Default: 64).
 		/// </summary>
 		/// <returns>Current tick rate.</returns>
-		[[nodiscard]] static uint32_t GetTickRate();
+		[[nodiscard]] static u32 GetTickRate();
 		/// <summary>
 		/// Set the tick rate (fixed update interval for OnTick()).
 		/// </summary>
 		/// <param name="tickRate">New Tick rate.</param>
-		static void SetTickRate(uint32_t tickRate);
+		static void SetTickRate(u32 tickRate);
 		/// <summary>
 		/// Set the time scale.
 		/// </summary>
 		/// <param name="timeScale">Time scale.</param>
-		static void SetTimeScale(float timeScale);
+		static void SetTimeScale(f32 timeScale);
 
 		/// <summary>
 		/// Sets the RenderAPI to be used on the next start of the engine.
@@ -222,7 +223,7 @@ namespace TRAP
 		/// Note: This is mainly used for NVIDIA-Reflex support.
 		/// </summary>
 		/// <returns>Global counter value.</returns>
-		[[nodiscard]] static uint64_t GetGlobalCounter();
+		[[nodiscard]] static u64 GetGlobalCounter();
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 		/// <summary>
@@ -251,7 +252,7 @@ namespace TRAP
 		/// </summary>
 		/// <param name="deltaTime">Delta time.</param>
 		/// <param name="tickTimerSeconds">Tick timer in seconds.</param>
-		void RunWork(const Utils::TimeStep& deltaTime, float& tickTimerSeconds);
+		void RunWork(const Utils::TimeStep& deltaTime, f32& tickTimerSeconds);
 
 		/// <summary>
 		/// Handles all events for the main render window and the layer stack.
@@ -304,15 +305,15 @@ namespace TRAP
 		/// <param name="tickTimerSeconds"></param>
 		/// <param name="timeScale">Scaling for time.</param>
 		/// <returns>Delta time between start of the last frame to the current time.</returns>
-		static Utils::TimeStep UpdateNewFrameTimeData(const Utils::Timer& time, float& lastFrameTime,
-		                                              float& tickTimerSeconds, float timeScale);
+		static Utils::TimeStep UpdateNewFrameTimeData(const Utils::Timer& time, f32& lastFrameTime,
+		                                              f32& tickTimerSeconds, f32 timeScale);
 
 		/// <summary>
 		/// Limit the FPS to fpsLimit.
 		/// </summary>
 		/// <param name="fpsLimit">Target FPS to limit to.</param>
 		/// <param name="limitTimer">Limiter timer.</param>
-		static void LimitFPS(uint32_t fpsLimit, Utils::Timer& limitTimer);
+		static void LimitFPS(u32 fpsLimit, Utils::Timer& limitTimer);
 		/// <summary>
 		/// Limit the FPS to fpsLimit.
 		///
@@ -320,7 +321,7 @@ namespace TRAP
 		/// </summary>
 		/// <param name="fpsLimit">Target FPS to limit to.</param>
 		/// <param name="limitTimer">Limiter timer.</param>
-		static void UnfocusedLimitFPS(uint32_t fpsLimit, Utils::Timer& limitTimer);
+		static void UnfocusedLimitFPS(u32 fpsLimit, Utils::Timer& limitTimer);
 
 		/// <summary>
 		/// Retrieve the filepath of the engine.cfg file.
@@ -343,8 +344,8 @@ namespace TRAP
 		/// <param name="fpsLimit">FPS limit to save.</param>
 		/// <param name="unfocusedFPSLimit">Unfocused FPS limit to save.</param>
 		/// <param name="renderAPI">RenderAPI to save.</param>
-		static void UpdateTRAPConfig(Utils::Config& config, const Window* window, uint32_t fpsLimit,
-		                             uint32_t unfocusedFPSLimit, Graphics::RenderAPI renderAPI);
+		static void UpdateTRAPConfig(Utils::Config& config, const Window* window, u32 fpsLimit,
+		                             u32 unfocusedFPSLimit, Graphics::RenderAPI renderAPI);
 #else
 		/// <summary>
 		/// Update the engine.cfg file.
@@ -353,7 +354,7 @@ namespace TRAP
 		/// <param name="fpsLimit">FPS limit to save.</param>
 		/// <param name="unfocusedFPSLimit">Unfocused FPS limit to save.</param>
 		/// <param name="renderAPI">RenderAPI to save.</param>
-		static void UpdateTRAPConfig(Utils::Config& config, uint32_t fpsLimit, uint32_t unfocusedFPSLimit,
+		static void UpdateTRAPConfig(Utils::Config& config, u32 fpsLimit, u32 unfocusedFPSLimit,
 		                             Graphics::RenderAPI renderAPI);
 #endif /*TRAP_HEADLESS_MODE*/
 
@@ -468,7 +469,7 @@ namespace TRAP
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
 		//NVIDIA-Reflex
-		uint64_t m_globalCounter = 0;
+		u64 m_globalCounter = 0;
 #endif /*NVIDIA_REFLEX_AVAILABLE && !TRAP_HEADLESS_MODE*/
 
 		//Multithreading
@@ -479,11 +480,11 @@ namespace TRAP
 		//Other data
 		Utils::Config m_config{};
 		Utils::Timer m_timer{};
-		float m_FrameTime = 0.0f;
-		uint32_t m_fpsLimit = 0;
-		uint32_t m_unfocusedFPSLimit = 0;
-		uint32_t m_tickRate = 64;
-		float m_timeScale = 1.0f;
+		f32 m_FrameTime = 0.0f;
+		u32 m_fpsLimit = 0;
+		u32 m_unfocusedFPSLimit = 0;
+		u32 m_tickRate = 64;
+		f32 m_timeScale = 1.0f;
 		std::string m_gameName = "TRAP™";
 		bool m_running = true;
 		Graphics::RenderAPI m_newRenderAPI = Graphics::RenderAPI::NONE;
@@ -492,7 +493,7 @@ namespace TRAP
 		inline constinit static Application* s_Instance = nullptr;
 
 #ifndef TRAP_UNITTESTS
-		friend int ::main(int32_t argc, const char* const*  argv);
+		friend int ::main(i32 argc, const char* const* argv);
 #endif /*TRAP_UNITTESTS*/
 	};
 

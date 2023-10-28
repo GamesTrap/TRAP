@@ -87,7 +87,7 @@ namespace TRAP
 		[[nodiscard]] const std::string& GetName();
 
 		[[nodiscard]] constexpr operator bool() const noexcept;
-		[[nodiscard]] constexpr operator uint32_t() const noexcept;
+		[[nodiscard]] constexpr operator u32() const noexcept;
 		[[nodiscard]] constexpr operator entt::entity() const noexcept;
 
 		[[nodiscard]] constexpr bool operator==(const Entity& other) const noexcept = default;
@@ -117,9 +117,9 @@ constexpr TRAP::Entity::Entity(const entt::entity handle, Scene* const scene) no
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Entity::operator uint32_t() const noexcept
+[[nodiscard]] constexpr TRAP::Entity::operator u32() const noexcept
 {
-	return static_cast<uint32_t>(m_entityHandle);
+	return static_cast<u32>(m_entityHandle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

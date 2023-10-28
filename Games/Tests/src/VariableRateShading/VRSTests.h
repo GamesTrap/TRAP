@@ -24,7 +24,7 @@ private:
 	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
 	bool OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& event);
 
-	TRAP::Ref<TRAP::Graphics::RenderTarget> CreateShadingRateTexture(uint32_t framebufferWidth, uint32_t framebufferHeight);
+	TRAP::Ref<TRAP::Graphics::RenderTarget> CreateShadingRateTexture(u32 framebufferWidth, u32 framebufferHeight);
 
 	TRAP::Graphics::OrthographicCameraController m_cameraController{TRAP::Application::GetWindow()->GetAspectRatio(), true};
 
@@ -32,7 +32,7 @@ private:
 
     TRAP::Graphics::ShadingRate m_shadingRate = TRAP::Graphics::ShadingRate::NotSupported;
     std::vector<RateData> m_shadingRates{};
-    float m_currRenderScale = 1.0f;
+    f32 m_currRenderScale = 1.0f;
 
 	bool m_supportsPerDrawVRS = (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerDraw) != TRAP::Graphics::RendererAPI::ShadingRateCaps::NotSupported;
 	bool m_supportsPerTileVRS = (TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerTile) != TRAP::Graphics::RendererAPI::ShadingRateCaps::NotSupported;

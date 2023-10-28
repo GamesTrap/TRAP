@@ -64,7 +64,7 @@ constexpr std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkCreateShaderReflection(const std::vector<uint32_t>& shaderCode,
+[[nodiscard]] TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkCreateShaderReflection(const std::vector<u32>& shaderCode,
                                                                                                                     const RendererAPI::ShaderStage shaderStage)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -82,9 +82,9 @@ constexpr std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
 	else if (shaderStage == RendererAPI::ShaderStage::TessellationControl)
 		out.NumControlPoint = cc.ReflectTessellationControlShaderControlPoint();
 
-	std::size_t vertexInputCount = 0;
-	std::size_t resourceCount = 0;
-	std::size_t variablesCount = 0;
+	usize vertexInputCount = 0;
+	usize resourceCount = 0;
+	usize variablesCount = 0;
 
 	for(const auto& resource : cc.GetShaderResources())
 	{
@@ -129,7 +129,7 @@ constexpr std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
 	{
 		vertexInputs.resize(vertexInputCount);
 
-		std::size_t j = 0;
+		usize j = 0;
 		for(const auto& resource : cc.GetShaderResources())
 		{
 			//Filter out what we don't use
@@ -144,7 +144,7 @@ constexpr std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
 		}
 	}
 
-	std::vector<uint32_t> indexRemap{};
+	std::vector<u32> indexRemap{};
 	std::vector<ShaderReflection::ShaderResource> resources{};
 	//Continue with resources
 	if(resourceCount != 0u)
@@ -152,11 +152,11 @@ constexpr std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
 		indexRemap.resize(cc.GetShaderResources().size());
 		resources.resize(resourceCount);
 
-		std::size_t j = 0;
-		for(std::size_t i = 0; i < cc.GetShaderResources().size(); ++i)
+		usize j = 0;
+		for(usize i = 0; i < cc.GetShaderResources().size(); ++i)
 		{
 			//Set index remap
-			indexRemap[i] = std::numeric_limits<uint32_t>::max();
+			indexRemap[i] = std::numeric_limits<u32>::max();
 
 			const SPIRVTools::Resource& resource = cc.GetShaderResources()[i];
 
@@ -164,7 +164,7 @@ constexpr std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
 			if(!FilterResource(resource, shaderStage) && resource.Type != SPIRVTools::ResourceType::Inputs)
 			{
 				//Set new index
-				indexRemap[i] = NumericCast<uint32_t>(j);
+				indexRemap[i] = NumericCast<u32>(j);
 
 				resources[j].Type = SPIRVToDescriptorType[std::to_underlying(resource.Type)];
 				resources[j].Set = resource.Set;
@@ -186,7 +186,7 @@ constexpr std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
 	{
 		variables.resize(variablesCount);
 
-		std::size_t j = 0;
+		usize j = 0;
 		for(const auto& variable : cc.GetUniformVariables())
 		{
 			//Check if parent buffer was filtered out

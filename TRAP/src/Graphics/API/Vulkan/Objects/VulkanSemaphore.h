@@ -46,7 +46,7 @@ namespace TRAP::Graphics::API
 
 	private:
 #ifndef TRAP_HEADLESS_MODE
-		friend std::optional<uint32_t> TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
+		friend std::optional<u32> TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
 		                                                                                      const TRAP::Ref<Fence>& fence) const;
 #endif /*TRAP_HEADLESS_MODE*/
 

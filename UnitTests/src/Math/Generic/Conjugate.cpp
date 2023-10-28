@@ -94,14 +94,14 @@ namespace
 
 TEST_CASE("TRAP::Math::Conjugate()", "[math][generic][conjugate]")
 {
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunConjugateTests<double>();
-        RunCompileTimeConjugateEdgeTests<double>();
+        RunConjugateTests<f64>();
+        RunCompileTimeConjugateEdgeTests<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunConjugateTests<float>();
-        RunCompileTimeConjugateEdgeTests<float>();
+        RunConjugateTests<f32>();
+        RunCompileTimeConjugateEdgeTests<f32>();
     }
 }

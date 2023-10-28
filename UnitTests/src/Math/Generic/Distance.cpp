@@ -229,39 +229,39 @@ namespace
 
 TEST_CASE("TRAP::Math::Distance()", "[math][generic][distance]")
 {
-    SECTION("Vec2 - double")
+    SECTION("Vec2 - f64")
     {
         RunDistanceVec2RunTimeTests<TRAP::Math::Vec2d>();
         RunDistanceVec2CompileTimeTests<TRAP::Math::Vec2d>();
         RunDistanceVecEdgeRunTimeTests<TRAP::Math::Vec2d>();
     }
-    SECTION("Vec2 - float")
+    SECTION("Vec2 - f32")
     {
         RunDistanceVec2RunTimeTests<TRAP::Math::Vec2f>();
         RunDistanceVec2CompileTimeTests<TRAP::Math::Vec2f>();
         RunDistanceVecEdgeRunTimeTests<TRAP::Math::Vec2f>();
     }
 
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunDistanceVec3RunTimeTests<TRAP::Math::Vec3d>();
         RunDistanceVec3CompileTimeTests<TRAP::Math::Vec3d>();
         RunDistanceVecEdgeRunTimeTests<TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunDistanceVec3RunTimeTests<TRAP::Math::Vec3f>();
         RunDistanceVec3CompileTimeTests<TRAP::Math::Vec3f>();
         RunDistanceVecEdgeRunTimeTests<TRAP::Math::Vec3f>();
     }
 
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunDistanceVec4RunTimeTests<TRAP::Math::Vec4d>();
         RunDistanceVec4CompileTimeTests<TRAP::Math::Vec4d>();
         RunDistanceVecEdgeRunTimeTests<TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunDistanceVec4RunTimeTests<TRAP::Math::Vec4f>();
         RunDistanceVec4CompileTimeTests<TRAP::Math::Vec4f>();

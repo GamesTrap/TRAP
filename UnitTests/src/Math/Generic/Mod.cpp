@@ -116,109 +116,109 @@ namespace
 
 TEST_CASE("TRAP::Math::Mod()", "[math][generic][mod]")
 {
-    SECTION("Scalar - int8_t")
+    SECTION("Scalar - i8")
     {
-        RunModRunTimeTests<int8_t>();
-        RunModCompileTimeTests<int8_t>();
-        RunModEdgeRunTimeTests<int8_t>();
+        RunModRunTimeTests<i8>();
+        RunModCompileTimeTests<i8>();
+        RunModEdgeRunTimeTests<i8>();
     }
-    SECTION("Scalar - uint8_t")
+    SECTION("Scalar - u8")
     {
-        RunModRunTimeTests<uint8_t>();
-        RunModCompileTimeTests<uint8_t>();
-        RunModEdgeRunTimeTests<uint8_t>();
+        RunModRunTimeTests<u8>();
+        RunModCompileTimeTests<u8>();
+        RunModEdgeRunTimeTests<u8>();
     }
-    SECTION("Scalar - int16_t")
+    SECTION("Scalar - i16")
     {
-        RunModRunTimeTests<int16_t>();
-        RunModCompileTimeTests<int16_t>();
-        RunModEdgeRunTimeTests<int16_t>();
+        RunModRunTimeTests<i16>();
+        RunModCompileTimeTests<i16>();
+        RunModEdgeRunTimeTests<i16>();
     }
-    SECTION("Scalar - uint16_t")
+    SECTION("Scalar - u16")
     {
-        RunModRunTimeTests<uint16_t>();
-        RunModCompileTimeTests<uint16_t>();
-        RunModEdgeRunTimeTests<uint16_t>();
+        RunModRunTimeTests<u16>();
+        RunModCompileTimeTests<u16>();
+        RunModEdgeRunTimeTests<u16>();
     }
-    SECTION("Scalar - int32_t")
+    SECTION("Scalar - i32")
     {
-        RunModRunTimeTests<int32_t>();
-        RunModCompileTimeTests<int32_t>();
-        RunModEdgeRunTimeTests<int32_t>();
+        RunModRunTimeTests<i32>();
+        RunModCompileTimeTests<i32>();
+        RunModEdgeRunTimeTests<i32>();
     }
-    SECTION("Scalar - uint32_t")
+    SECTION("Scalar - u32")
     {
-        RunModRunTimeTests<uint32_t>();
-        RunModCompileTimeTests<uint32_t>();
-        RunModEdgeRunTimeTests<uint32_t>();
+        RunModRunTimeTests<u32>();
+        RunModCompileTimeTests<u32>();
+        RunModEdgeRunTimeTests<u32>();
     }
-    SECTION("Scalar - int64_t")
+    SECTION("Scalar - i64")
     {
-        RunModRunTimeTests<int64_t>();
-        RunModCompileTimeTests<int64_t>();
-        RunModEdgeRunTimeTests<int64_t>();
+        RunModRunTimeTests<i64>();
+        RunModCompileTimeTests<i64>();
+        RunModEdgeRunTimeTests<i64>();
     }
-    SECTION("Scalar - uint64_t")
+    SECTION("Scalar - u64")
     {
-        RunModRunTimeTests<uint64_t>();
-        RunModCompileTimeTests<uint64_t>();
-        RunModEdgeRunTimeTests<uint64_t>();
+        RunModRunTimeTests<u64>();
+        RunModCompileTimeTests<u64>();
+        RunModEdgeRunTimeTests<u64>();
     }
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunModRunTimeTests<double>();
-        RunModCompileTimeTests<double>();
-        RunModEdgeRunTimeTests<double>();
+        RunModRunTimeTests<f64>();
+        RunModCompileTimeTests<f64>();
+        RunModEdgeRunTimeTests<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunModRunTimeTests<float>();
-        RunModCompileTimeTests<float>();
-        RunModEdgeRunTimeTests<float>();
+        RunModRunTimeTests<f32>();
+        RunModCompileTimeTests<f32>();
+        RunModEdgeRunTimeTests<f32>();
     }
 
-    SECTION("Vec2 - double")
+    SECTION("Vec2 - f64")
     {
         RunModRunTimeTests<TRAP::Math::Vec2d>();
         RunModCompileTimeTests<TRAP::Math::Vec2d>();
-        RunModRunTimeTests<TRAP::Math::Vec2d, double>();
-        RunModCompileTimeTests<TRAP::Math::Vec2d, double>();
+        RunModRunTimeTests<TRAP::Math::Vec2d, f64>();
+        RunModCompileTimeTests<TRAP::Math::Vec2d, f64>();
     }
-    SECTION("Vec2 - float")
+    SECTION("Vec2 - f32")
     {
         RunModRunTimeTests<TRAP::Math::Vec2f>();
         RunModCompileTimeTests<TRAP::Math::Vec2f>();
-        RunModRunTimeTests<TRAP::Math::Vec2f, float>();
-        RunModCompileTimeTests<TRAP::Math::Vec2f, float>();
+        RunModRunTimeTests<TRAP::Math::Vec2f, f32>();
+        RunModCompileTimeTests<TRAP::Math::Vec2f, f32>();
     }
 
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunModRunTimeTests<TRAP::Math::Vec3d>();
         RunModCompileTimeTests<TRAP::Math::Vec3d>();
-        RunModRunTimeTests<TRAP::Math::Vec3d, double>();
-        RunModCompileTimeTests<TRAP::Math::Vec3d, double>();
+        RunModRunTimeTests<TRAP::Math::Vec3d, f64>();
+        RunModCompileTimeTests<TRAP::Math::Vec3d, f64>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunModRunTimeTests<TRAP::Math::Vec3f>();
         RunModCompileTimeTests<TRAP::Math::Vec3f>();
-        RunModRunTimeTests<TRAP::Math::Vec3f, float>();
-        RunModCompileTimeTests<TRAP::Math::Vec3f, float>();
+        RunModRunTimeTests<TRAP::Math::Vec3f, f32>();
+        RunModCompileTimeTests<TRAP::Math::Vec3f, f32>();
     }
 
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunModRunTimeTests<TRAP::Math::Vec4d>();
         RunModCompileTimeTests<TRAP::Math::Vec4d>();
-        RunModRunTimeTests<TRAP::Math::Vec4d, double>();
-        RunModCompileTimeTests<TRAP::Math::Vec4d, double>();
+        RunModRunTimeTests<TRAP::Math::Vec4d, f64>();
+        RunModCompileTimeTests<TRAP::Math::Vec4d, f64>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunModRunTimeTests<TRAP::Math::Vec4f>();
         RunModCompileTimeTests<TRAP::Math::Vec4f>();
-        RunModRunTimeTests<TRAP::Math::Vec4f, float>();
-        RunModCompileTimeTests<TRAP::Math::Vec4f, float>();
+        RunModRunTimeTests<TRAP::Math::Vec4f, f32>();
+        RunModCompileTimeTests<TRAP::Math::Vec4f, f32>();
     }
 }

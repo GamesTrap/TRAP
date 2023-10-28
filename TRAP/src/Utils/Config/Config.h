@@ -192,7 +192,7 @@ void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T>& valu
 
 	//Transform the vector into a string that separates the elements with a comma
 	std::string valueAsString;
-	for (std::size_t i = 0; i < value.size() - 1; ++i)
+	for (usize i = 0; i < value.size() - 1; ++i)
 		valueAsString += String::ConvertToString<T>(value[i]) + ',';
 	valueAsString += String::ConvertToString<T>(value.back());
 
@@ -230,12 +230,12 @@ void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T>& valu
 	if(line.empty() || line[0] == '#')
 		return { "", "" };
 
-	std::size_t index = 0;
+	usize index = 0;
 	//Trim leading whitespace
 	while (Utils::String::IsSpace(line[index]))
 		index++;
 	//Get the key string
-	const std::size_t beginKeyString = index;
+	const usize beginKeyString = index;
 	while (!Utils::String::IsSpace(line[index]) && line[index] != '=')
 		index++;
 	const std::string key(line.data() + beginKeyString, index - beginKeyString);

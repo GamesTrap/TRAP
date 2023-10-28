@@ -20,9 +20,9 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	TP_DEBUG(Log::RendererVulkanFrameBufferPrefix, "Creating FrameBuffer");
 #endif /*VERBOSE_GRAPHICS_DEBUG*/
 
-	const uint32_t colorAttachmentCount = NumericCast<uint32_t>(desc.RenderTargets.size());
-	const uint32_t depthAttachmentCount = desc.DepthStencil ? 1 : 0;
-	const uint32_t shadingRateAttachmentCount = desc.ShadingRate ? 1 : 0;
+	const u32 colorAttachmentCount = NumericCast<u32>(desc.RenderTargets.size());
+	const u32 depthAttachmentCount = desc.DepthStencil ? 1 : 0;
+	const u32 shadingRateAttachmentCount = desc.ShadingRate ? 1 : 0;
 
 	if(colorAttachmentCount != 0u)
 	{
@@ -38,7 +38,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	{
 		m_width = desc.DepthStencil->GetWidth();
 		m_height = desc.DepthStencil->GetHeight();
-		if (desc.DepthArraySlice != std::numeric_limits<uint32_t>::max())
+		if (desc.DepthArraySlice != std::numeric_limits<u32>::max())
 			m_arraySize = 1;
 		else
 			m_arraySize = desc.DepthStencil->GetArraySize();
@@ -51,13 +51,13 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	if ((colorAttachmentCount != 0u) && desc.RenderTargets[0]->GetDepth() > 1)
 		m_arraySize = desc.RenderTargets[0]->GetDepth();
 
-	const uint32_t attachmentCount = colorAttachmentCount + depthAttachmentCount + shadingRateAttachmentCount;
+	const u32 attachmentCount = colorAttachmentCount + depthAttachmentCount + shadingRateAttachmentCount;
 
 	std::vector<VkImageView> imageViews(attachmentCount);
 	auto iterAttachments = imageViews.begin();
 
 	//Color
-	for(std::size_t i = 0; i < desc.RenderTargets.size(); i++)
+	for(usize i = 0; i < desc.RenderTargets.size(); i++)
 	{
 		const Ref<VulkanRenderTarget> rTarget = std::dynamic_pointer_cast<VulkanRenderTarget>(desc.RenderTargets[i]);
 		if(desc.ColorMipSlices.empty() && desc.ColorArraySlices.empty())
@@ -67,7 +67,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 		}
 		else
 		{
-			uint32_t handle = 0;
+			u32 handle = 0;
 			if (!desc.ColorMipSlices.empty())
 			{
 				if (!desc.ColorArraySlices.empty())
@@ -88,23 +88,23 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	if(desc.DepthStencil)
 	{
 		const Ref<VulkanRenderTarget> rTarget = std::dynamic_pointer_cast<VulkanRenderTarget>(desc.DepthStencil);
-		if(desc.DepthMipSlice == std::numeric_limits<uint32_t>::max() &&
-		   desc.DepthArraySlice == std::numeric_limits<uint32_t>::max())
+		if(desc.DepthMipSlice == std::numeric_limits<u32>::max() &&
+		   desc.DepthArraySlice == std::numeric_limits<u32>::max())
 		{
 			*iterAttachments = rTarget->GetVkImageView();
 			++iterAttachments;
 		}
 		else
 		{
-			uint32_t handle = 0;
-			if (desc.DepthMipSlice != std::numeric_limits<uint32_t>::max())
+			u32 handle = 0;
+			if (desc.DepthMipSlice != std::numeric_limits<u32>::max())
 			{
-				if (desc.DepthArraySlice != std::numeric_limits<uint32_t>::max())
+				if (desc.DepthArraySlice != std::numeric_limits<u32>::max())
 					handle = desc.DepthMipSlice * desc.DepthStencil->GetArraySize() + desc.DepthArraySlice;
 				else
 					handle = desc.DepthMipSlice;
 			}
-			else if (desc.DepthArraySlice != std::numeric_limits<uint32_t>::max())
+			else if (desc.DepthArraySlice != std::numeric_limits<u32>::max())
 				handle = desc.DepthArraySlice;
 
 			*iterAttachments = rTarget->GetVkImageViewSlices()[handle];

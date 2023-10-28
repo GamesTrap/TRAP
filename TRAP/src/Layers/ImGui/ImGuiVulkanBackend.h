@@ -89,8 +89,8 @@ namespace ImGui::INTERNAL::Vulkan
         TRAP::Ref<TRAP::Graphics::API::VulkanPipelineCache> PipelineCache = nullptr;
         std::vector<VkDescriptorPoolSize> DescriptorPoolSizes{};
         VkDescriptorPool                  DescriptorPool = VK_NULL_HANDLE;
-        uint32_t                          MinImageCount = 2;                   // >= 2
-        uint32_t                          ImageCount = 2;                      // >= MinImageCount
+        u32                          MinImageCount = 2;                   // >= 2
+        u32                          ImageCount = 2;                      // >= MinImageCount
         VkSampleCountFlagBits             MSAASamples = VK_SAMPLE_COUNT_1_BIT; // >= VK_SAMPLE_COUNT_1_BIT (0 -> default to VK_SAMPLE_COUNT_1_BIT)
 
         //Dynamic Rendering (Optional)

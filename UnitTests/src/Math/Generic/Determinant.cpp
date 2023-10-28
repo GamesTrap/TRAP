@@ -71,23 +71,23 @@ namespace
 
 TEST_CASE("TRAP::Math::Determinant()", "[math][generic][determinant]")
 {
-    SECTION("Mat3 - double")
+    SECTION("Mat3 - f64")
     {
         RunCompileTimeDeterminantTests<TRAP::Math::Mat3d>();
         RunDeterminantEdgeTests<TRAP::Math::Mat3d>();
     }
-    SECTION("Mat3 - float")
+    SECTION("Mat3 - f32")
     {
         RunCompileTimeDeterminantTests<TRAP::Math::Mat3f>();
         RunDeterminantEdgeTests<TRAP::Math::Mat3f>();
     }
 
-    SECTION("Mat4 - double")
+    SECTION("Mat4 - f64")
     {
         RunCompileTimeDeterminantTests<TRAP::Math::Mat4d>();
         RunDeterminantEdgeTests<TRAP::Math::Mat4d>();
     }
-    SECTION("Mat4 - float")
+    SECTION("Mat4 - f32")
     {
         RunCompileTimeDeterminantTests<TRAP::Math::Mat4f>();
         RunDeterminantEdgeTests<TRAP::Math::Mat4f>();

@@ -27,7 +27,7 @@
 #include "Utils/Time/TimeStep.h"
 #include "Layers/ImGui/ImGuiLayer.h"
 
-TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std::optional<uint32_t> appID)
+TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std::optional<u32> appID)
 	: m_gameName(std::move(gameName))
 {
 	ZoneScoped;
@@ -80,8 +80,8 @@ TRAP::Application::Application(std::string gameName, [[maybe_unused]] const std:
 		Graphics::Renderer::Init();
 	}
 
-	SetFPSLimit(m_config.Get<uint32_t>("FPSLimit").value_or(0u));
-	SetUnfocusedFPSLimit(m_config.Get<uint32_t>("UnfocusedFPSLimit").value_or(30u));
+	SetFPSLimit(m_config.Get<u32>("FPSLimit").value_or(0u));
+	SetUnfocusedFPSLimit(m_config.Get<u32>("UnfocusedFPSLimit").value_or(30u));
 
 #ifndef TRAP_HEADLESS_MODE
 	InitializeInput();
@@ -145,8 +145,8 @@ void TRAP::Application::Run()
 {
 	ZoneScoped;
 
-	float lastFrameTime = 0.0f;
-	float tickTimerSeconds = 0.0f;
+	f32 lastFrameTime = 0.0f;
+	f32 tickTimerSeconds = 0.0f;
 	Utils::Timer limiterTimer{};
 
 	while (m_running)
@@ -211,25 +211,25 @@ void TRAP::Application::Run()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Application::RunWork(const Utils::TimeStep& deltaTime, float& tickTimerSeconds)
+void TRAP::Application::RunWork(const Utils::TimeStep& deltaTime, f32& tickTimerSeconds)
 {
 	for (const auto& layer : m_layerStack)
 		layer->OnUpdate(deltaTime);
 
 	//Timestep of a single tick
-	const Utils::TimeStep tickRateTimeStep{1000.0f / NumericCast<float>(m_tickRate) / 1000.0f}; //Tickrate in seconds
+	const Utils::TimeStep tickRateTimeStep{1000.0f / NumericCast<f32>(m_tickRate) / 1000.0f}; //Tickrate in seconds
 	//If we reached at least one fixed time step update
 	if (tickTimerSeconds >= tickRateTimeStep)
 	{
-		static constexpr uint32_t MAX_TICKS_PER_FRAME = 8;
+		static constexpr u32 MAX_TICKS_PER_FRAME = 8;
 
 		//Count how many ticks we need to run (this is limited to a maximum of MAX_TICKS_PER_FRAME)
-		const uint32_t fixedTimeSteps = TRAP::Math::Min(NumericCast<uint32_t>(tickTimerSeconds / tickRateTimeStep), MAX_TICKS_PER_FRAME);
+		const u32 fixedTimeSteps = TRAP::Math::Min(NumericCast<u32>(tickTimerSeconds / tickRateTimeStep), MAX_TICKS_PER_FRAME);
 		// TP_TRACE("Ticks: ", fixedTimeSteps);
 
 		// TP_TRACE("Before: ", tickTimerSeconds, "s of tick time remaining");
 		//Call OnTick() fixedTimeSteps times.
-		for(uint32_t i = 0; i < fixedTimeSteps; ++i)
+		for(u32 i = 0; i < fixedTimeSteps; ++i)
 		{
 			for (const auto& layer : m_layerStack)
 				layer->OnTick(tickRateTimeStep);
@@ -341,10 +341,10 @@ void TRAP::Application::PushOverlay(std::unique_ptr<Layer> overlay)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-static constexpr uint32_t MinLimitedFPS = 25u;
-static constexpr uint32_t MaxLimitedFPS = 500u;
+static constexpr u32 MinLimitedFPS = 25u;
+static constexpr u32 MaxLimitedFPS = 500u;
 
-void TRAP::Application::SetFPSLimit(const uint32_t targetFPS)
+void TRAP::Application::SetFPSLimit(const u32 targetFPS)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -363,7 +363,7 @@ void TRAP::Application::SetFPSLimit(const uint32_t targetFPS)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint32_t TRAP::Application::GetFPSLimit()
+[[nodiscard]] u32 TRAP::Application::GetFPSLimit()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -374,9 +374,9 @@ void TRAP::Application::SetFPSLimit(const uint32_t targetFPS)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-static constexpr uint32_t MinUnfocusedFPS = 10u;
+static constexpr u32 MinUnfocusedFPS = 10u;
 
-void TRAP::Application::SetUnfocusedFPSLimit(const uint32_t targetFPS)
+void TRAP::Application::SetUnfocusedFPSLimit(const u32 targetFPS)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -387,7 +387,7 @@ void TRAP::Application::SetUnfocusedFPSLimit(const uint32_t targetFPS)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint32_t TRAP::Application::GetUnfocusedFPSLimit()
+[[nodiscard]] u32 TRAP::Application::GetUnfocusedFPSLimit()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -398,7 +398,7 @@ void TRAP::Application::SetUnfocusedFPSLimit(const uint32_t targetFPS)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] float TRAP::Application::GetCPUFrameTime()
+[[nodiscard]] f32 TRAP::Application::GetCPUFrameTime()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -409,7 +409,7 @@ void TRAP::Application::SetUnfocusedFPSLimit(const uint32_t targetFPS)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] float TRAP::Application::GetTimeScale()
+[[nodiscard]] f32 TRAP::Application::GetTimeScale()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -420,7 +420,7 @@ void TRAP::Application::SetUnfocusedFPSLimit(const uint32_t targetFPS)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint32_t TRAP::Application::GetTickRate()
+[[nodiscard]] u32 TRAP::Application::GetTickRate()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -431,7 +431,7 @@ void TRAP::Application::SetUnfocusedFPSLimit(const uint32_t targetFPS)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Application::SetTickRate(const uint32_t tickRate)
+void TRAP::Application::SetTickRate(const u32 tickRate)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -442,7 +442,7 @@ void TRAP::Application::SetTickRate(const uint32_t tickRate)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Application::SetTimeScale(const float timeScale)
+void TRAP::Application::SetTimeScale(const f32 timeScale)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -556,7 +556,7 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #if defined(NVIDIA_REFLEX_AVAILABLE) && !defined(TRAP_HEADLESS_MODE)
-[[nodiscard]] uint64_t TRAP::Application::GetGlobalCounter()
+[[nodiscard]] u64 TRAP::Application::GetGlobalCounter()
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -727,10 +727,10 @@ void TRAP::Application::UpdateHotReloading()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::TimeStep TRAP::Application::UpdateNewFrameTimeData(const Utils::Timer& time, float& lastFrameTime,
-                                                                float& tickTimerSeconds, const float timeScale)
+TRAP::Utils::TimeStep TRAP::Application::UpdateNewFrameTimeData(const Utils::Timer& time, f32& lastFrameTime,
+                                                                f32& tickTimerSeconds, const f32 timeScale)
 {
-	const float elapsedTime = time.Elapsed();
+	const f32 elapsedTime = time.Elapsed();
 
 	const Utils::TimeStep deltaTime{ (elapsedTime - lastFrameTime) * timeScale };
 
@@ -742,7 +742,7 @@ TRAP::Utils::TimeStep TRAP::Application::UpdateNewFrameTimeData(const Utils::Tim
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Application::LimitFPS(const uint32_t fpsLimit, Utils::Timer& limitTimer)
+void TRAP::Application::LimitFPS(const u32 fpsLimit, Utils::Timer& limitTimer)
 {
 	if(fpsLimit == 0u)
 		return;
@@ -755,18 +755,18 @@ void TRAP::Application::LimitFPS(const uint32_t fpsLimit, Utils::Timer& limitTim
 	}
 #endif /*TRAP_HEADLESS_MODE*/
 
-	const std::chrono::duration<float, std::milli> limitMs =
-		std::chrono::duration<float, std::milli>(1000.0f / NumericCast<float>(fpsLimit) - limitTimer.ElapsedMilliseconds());
+	const std::chrono::duration<f32, std::milli> limitMs =
+		std::chrono::duration<f32, std::milli>(1000.0f / NumericCast<f32>(fpsLimit) - limitTimer.ElapsedMilliseconds());
 	std::this_thread::sleep_for(limitMs); //If this is too inaccurate, resort to using nanosleep
 	limitTimer.Reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Application::UnfocusedLimitFPS(const uint32_t fpsLimit, Utils::Timer& limitTimer)
+void TRAP::Application::UnfocusedLimitFPS(const u32 fpsLimit, Utils::Timer& limitTimer)
 {
-	const std::chrono::duration<float, std::milli> limitMs =
-		std::chrono::duration<float, std::milli>(1000.0f / NumericCast<float>(fpsLimit) - limitTimer.ElapsedMilliseconds());
+	const std::chrono::duration<f32, std::milli> limitMs =
+		std::chrono::duration<f32, std::milli>(1000.0f / NumericCast<f32>(fpsLimit) - limitTimer.ElapsedMilliseconds());
 	std::this_thread::sleep_for(limitMs); //If this is too inaccurate, resort to using nanosleep
 	limitTimer.Reset();
 }
@@ -845,11 +845,11 @@ TRAP::Utils::Config TRAP::Application::LoadTRAPConfig()
 
 #ifndef TRAP_HEADLESS_MODE
 void TRAP::Application::UpdateTRAPConfig(Utils::Config& config, const TRAP::Window* const window,
-                                         const uint32_t fpsLimit, const uint32_t unfocusedFPSLimit,
+                                         const u32 fpsLimit, const u32 unfocusedFPSLimit,
 										 const Graphics::RenderAPI renderAPI)
 #else
-void TRAP::Application::UpdateTRAPConfig(Utils::Config& config, const uint32_t fpsLimit,
-                                         const uint32_t unfocusedFPSLimit,
+void TRAP::Application::UpdateTRAPConfig(Utils::Config& config, const u32 fpsLimit,
+                                         const u32 unfocusedFPSLimit,
                                          const Graphics::RenderAPI renderAPI)
 #endif /*TRAP_HEADLESS_MODE*/
 {
@@ -895,8 +895,8 @@ void TRAP::Application::UpdateTRAPConfig(Utils::Config& config, const uint32_t f
 	if (Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
 	{
 #ifdef TRAP_HEADLESS_MODE
-		uint32_t width = 1920;
-		uint32_t height = 1080;
+		u32 width = 1920;
+		u32 height = 1080;
 		Graphics::RendererAPI::GetRenderer()->GetResolution(width, height);
 
 		config.Set("Width", width);
@@ -955,24 +955,24 @@ TRAP::WindowProps::AdvancedProps TRAP::Application::LoadAdvancedWindowProps(cons
 #ifndef TRAP_HEADLESS_MODE
 TRAP::WindowProps TRAP::Application::LoadWindowProps(const TRAP::Utils::Config& config)
 {
-	static constexpr uint32_t DefaultWindowWidth = 1280;
-	static constexpr uint32_t DefaultWindowHeight = 720;
-	static constexpr uint32_t DefaultWindowRefreshRate = 60;
+	static constexpr u32 DefaultWindowWidth = 1280;
+	static constexpr u32 DefaultWindowHeight = 720;
+	static constexpr u32 DefaultWindowRefreshRate = 60;
 
 	TRAP::WindowProps props{};
 
 	props.Title = "TRAP™";
-	props.Width = config.Get<uint32_t>("Width").value_or(DefaultWindowWidth);
-	props.Height = config.Get<uint32_t>("Height").value_or(DefaultWindowHeight);
-	props.RefreshRate = config.Get<double>("RefreshRate").value_or(DefaultWindowRefreshRate);
+	props.Width = config.Get<u32>("Width").value_or(DefaultWindowWidth);
+	props.Height = config.Get<u32>("Height").value_or(DefaultWindowHeight);
+	props.RefreshRate = config.Get<f64>("RefreshRate").value_or(DefaultWindowRefreshRate);
 	props.VSync = config.Get<bool>("VSync").value_or(false);
 	props.DisplayMode = config.Get<TRAP::Window::DisplayMode>("DisplayMode").value_or(TRAP::Window::DisplayMode::Windowed);
 	const auto monitors = TRAP::Monitor::GetAllMonitors();
-	const uint32_t monitorIdx = config.Get<uint32_t>("Monitor").value_or(0u);
+	const u32 monitorIdx = config.Get<u32>("Monitor").value_or(0u);
 	if(monitors.empty())
 		Utils::DisplayError(Utils::ErrorCode::MonitorNoneFound);
 	else if(monitorIdx < monitors.size())
-		props.Monitor = TRAP::Monitor::GetAllMonitors()[config.Get<uint32_t>("Monitor").value_or(0u)];
+		props.Monitor = TRAP::Monitor::GetAllMonitors()[config.Get<u32>("Monitor").value_or(0u)];
 	else //Fallback to primary monitor
 		props.Monitor = TRAP::Monitor::GetAllMonitors()[0];
 
@@ -1052,8 +1052,8 @@ std::unique_ptr<TRAP::Window> TRAP::Application::CreateMainWindow(const TRAP::Wi
 #ifdef TRAP_HEADLESS_MODE
 void TRAP::Application::CreateMainViewport(const TRAP::Utils::Config& config)
 {
-	const uint32_t width = config.Get<uint32_t>("Width").value_or(1920u);
-	const uint32_t height = config.Get<uint32_t>("Height").value_or(1080u);
+	const u32 width = config.Get<u32>("Width").value_or(1920u);
+	const u32 height = config.Get<u32>("Height").value_or(1080u);
 
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
 		TRAP::Graphics::RendererAPI::GetRenderer()->InitPerViewportData(width, height);
@@ -1118,7 +1118,7 @@ void TRAP::Application::ApplyRendererAPISettings(const TRAP::Utils::Config& conf
 	PCLSTATS_INIT(0);
 #endif /*!TRAP_HEADLESS_MODE && NVIDIA_REFLEX_AVAILABLE*/
 
-	const float renderScale = config.Get<float>("RenderScale").value_or(1.0f);
+	const f32 renderScale = config.Get<f32>("RenderScale").value_or(1.0f);
 	Graphics::RenderCommand::SetRenderScale(renderScale);
 }
 

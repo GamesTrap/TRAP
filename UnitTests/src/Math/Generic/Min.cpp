@@ -90,168 +90,168 @@ namespace
 
 TEST_CASE("TRAP::Math::Min()", "[math][generic][min]")
 {
-    SECTION("Scalar - int8_t")
+    SECTION("Scalar - i8")
     {
-        RunCompileTimeMinScalarTest<int8_t>();
+        RunCompileTimeMinScalarTest<i8>();
     }
-    SECTION("Scalar - uint8_t")
+    SECTION("Scalar - u8")
     {
-        RunCompileTimeMinScalarTest<uint8_t>();
+        RunCompileTimeMinScalarTest<u8>();
     }
-    SECTION("Scalar - int16_t")
+    SECTION("Scalar - i16")
     {
-        RunCompileTimeMinScalarTest<int16_t>();
+        RunCompileTimeMinScalarTest<i16>();
     }
-    SECTION("Scalar - uint16_t")
+    SECTION("Scalar - u16")
     {
-        RunCompileTimeMinScalarTest<uint16_t>();
+        RunCompileTimeMinScalarTest<u16>();
     }
-    SECTION("Scalar - int32_t")
+    SECTION("Scalar - i32")
     {
-        RunCompileTimeMinScalarTest<int32_t>();
+        RunCompileTimeMinScalarTest<i32>();
     }
-    SECTION("Scalar - uint32_t")
+    SECTION("Scalar - u32")
     {
-        RunCompileTimeMinScalarTest<uint32_t>();
+        RunCompileTimeMinScalarTest<u32>();
     }
-    SECTION("Scalar - int64_t")
+    SECTION("Scalar - i64")
     {
-        RunCompileTimeMinScalarTest<int64_t>();
+        RunCompileTimeMinScalarTest<i64>();
     }
-    SECTION("Scalar - uint64_t")
+    SECTION("Scalar - u64")
     {
-        RunCompileTimeMinScalarTest<uint64_t>();
+        RunCompileTimeMinScalarTest<u64>();
     }
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunCompileTimeMinScalarTest<double>();
-        RunMinNaNTest<double>();
+        RunCompileTimeMinScalarTest<f64>();
+        RunMinNaNTest<f64>();
     }
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunCompileTimeMinScalarTest<float>();
-        RunMinNaNTest<float>();
+        RunCompileTimeMinScalarTest<f32>();
+        RunMinNaNTest<f32>();
     }
 
-    SECTION("Vec2 - int8_t")
+    SECTION("Vec2 - i8")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec2i8>();
     }
-    SECTION("Vec2 - uint8_t")
+    SECTION("Vec2 - u8")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec2ui8>();
     }
-    SECTION("Vec2 - int16_t")
+    SECTION("Vec2 - i16")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec2i16>();
     }
-    SECTION("Vec2 - uint16_t")
+    SECTION("Vec2 - u16")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec2ui16>();
     }
-    SECTION("Vec2 - int32_t")
+    SECTION("Vec2 - i32")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec2i32>();
     }
-    SECTION("Vec2 - uint32_t")
+    SECTION("Vec2 - u32")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec2ui32>();
     }
-    SECTION("Vec2 - int64_t")
+    SECTION("Vec2 - i64")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec2i64>();
     }
-    SECTION("Vec2 - uint64_t")
+    SECTION("Vec2 - u64")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec2ui64>();
     }
-    SECTION("Vec2 - double")
+    SECTION("Vec2 - f64")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec2d>();
     }
-    SECTION("Vec2 - float")
+    SECTION("Vec2 - f32")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec2f>();
     }
 
-    SECTION("Vec3 - int8_t")
+    SECTION("Vec3 - i8")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec3i8>();
     }
-    SECTION("Vec3 - uint8_t")
+    SECTION("Vec3 - u8")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec3ui8>();
     }
-    SECTION("Vec3 - int16_t")
+    SECTION("Vec3 - i16")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec3i16>();
     }
-    SECTION("Vec3 - uint16_t")
+    SECTION("Vec3 - u16")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec3ui16>();
     }
-    SECTION("Vec3 - int32_t")
+    SECTION("Vec3 - i32")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec3i32>();
     }
-    SECTION("Vec3 - uint32_t")
+    SECTION("Vec3 - u32")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec3ui32>();
     }
-    SECTION("Vec3 - int64_t")
+    SECTION("Vec3 - i64")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec3i64>();
     }
-    SECTION("Vec3 - uint64_t")
+    SECTION("Vec3 - u64")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec3ui64>();
     }
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec3d>();
     }
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec3f>();
     }
 
-    SECTION("Vec4 - int8_t")
+    SECTION("Vec4 - i8")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec4i8>();
     }
-    SECTION("Vec4 - uint8_t")
+    SECTION("Vec4 - u8")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec4ui8>();
     }
-    SECTION("Vec4 - int16_t")
+    SECTION("Vec4 - i16")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec4i16>();
     }
-    SECTION("Vec4 - uint16_t")
+    SECTION("Vec4 - u16")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec4ui16>();
     }
-    SECTION("Vec4 - int32_t")
+    SECTION("Vec4 - i32")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec4i32>();
     }
-    SECTION("Vec4 - uint32_t")
+    SECTION("Vec4 - u32")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec4ui32>();
     }
-    SECTION("Vec4 - int64_t")
+    SECTION("Vec4 - i64")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec4i64>();
     }
-    SECTION("Vec4 - uint64_t")
+    SECTION("Vec4 - u64")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec4ui64>();
     }
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec4d>();
     }
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunCompileTimeMinVecTest<TRAP::Math::Vec4f>();
     }

@@ -52,8 +52,8 @@ TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 {
 	VkRenderPass renderPass = VK_NULL_HANDLE;
 
-	const uint32_t colorAttachmentCount = desc.RenderTargetCount;
-	const uint32_t depthAttachmentCount = desc.DepthStencilFormat != TRAP::Graphics::API::ImageFormat::Undefined ? 1 : 0;
+	const u32 colorAttachmentCount = desc.RenderTargetCount;
+	const u32 depthAttachmentCount = desc.DepthStencilFormat != TRAP::Graphics::API::ImageFormat::Undefined ? 1 : 0;
 
 	std::vector<VkAttachmentDescription> attachments{};
 	std::vector<VkAttachmentReference> colorAttachmentRefs{};
@@ -75,9 +75,9 @@ TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 			depthStencilAttachmentRefs.resize(1);
 
 		//Color
-		for(uint32_t i = 0; i < colorAttachmentCount; ++i)
+		for(u32 i = 0; i < colorAttachmentCount; ++i)
 		{
-			const uint32_t ssidx = i;
+			const u32 ssidx = i;
 
 			//Descriptions
 			attachments[ssidx] = VulkanInits::AttachmentDescription(ImageFormatToVkFormat(desc.ColorFormats[i]),
@@ -103,7 +103,7 @@ TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 	//Depth stencil
 	if(depthAttachmentCount > 0)
 	{
-		const uint32_t idx = colorAttachmentCount;
+		const u32 idx = colorAttachmentCount;
 		attachments[idx] = VulkanInits::AttachmentDescription(ImageFormatToVkFormat(desc.DepthStencilFormat),
 															  sampleCount,
 															  VkAttachmentLoadOpTranslator[std::to_underlying(desc.LoadActionDepth)],
@@ -139,9 +139,9 @@ TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 {
 	VkRenderPass renderPass = VK_NULL_HANDLE;
 
-	const uint32_t colorAttachmentCount = desc.RenderTargetCount;
-	const uint32_t depthAttachmentCount = desc.DepthStencilFormat != TRAP::Graphics::API::ImageFormat::Undefined ? 1 : 0;
-	const uint32_t shadingRateAttachmentCount = desc.ShadingRateFormat != TRAP::Graphics::API::ImageFormat::Undefined ? 1 : 0;
+	const u32 colorAttachmentCount = desc.RenderTargetCount;
+	const u32 depthAttachmentCount = desc.DepthStencilFormat != TRAP::Graphics::API::ImageFormat::Undefined ? 1 : 0;
+	const u32 shadingRateAttachmentCount = desc.ShadingRateFormat != TRAP::Graphics::API::ImageFormat::Undefined ? 1 : 0;
 
 	std::vector<VkAttachmentDescription2KHR> attachments{};
 	std::vector<VkAttachmentReference2KHR> colorAttachmentRefs{};
@@ -163,9 +163,9 @@ TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 			depthStencilAttachmentRefs.resize(1);
 
 		//Color
-		for(uint32_t i = 0; i < colorAttachmentCount; ++i)
+		for(u32 i = 0; i < colorAttachmentCount; ++i)
 		{
-			const uint32_t ssidx = i;
+			const u32 ssidx = i;
 
 			//Descriptions
 			attachments[ssidx] = VulkanInits::AttachmentDescription2(ImageFormatToVkFormat(desc.ColorFormats[i]),
@@ -193,7 +193,7 @@ TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 	//Depth stencil
 	if(depthAttachmentCount > 0)
 	{
-		const uint32_t idx = colorAttachmentCount;
+		const u32 idx = colorAttachmentCount;
 		attachments[idx] = VulkanInits::AttachmentDescription2(ImageFormatToVkFormat(desc.DepthStencilFormat),
 															   sampleCount,
 															   VkAttachmentLoadOpTranslator[std::to_underlying(desc.LoadActionDepth)],
@@ -214,7 +214,7 @@ TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 	VkAttachmentReference2KHR shadingRateAttachmentRef{};
 	if((RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerTile) != RendererAPI::ShadingRateCaps::NotSupported && (shadingRateAttachmentCount != 0u))
 	{
-		const uint32_t idx = colorAttachmentCount + depthAttachmentCount;
+		const u32 idx = colorAttachmentCount + depthAttachmentCount;
 		attachments[idx] = VulkanInits::AttachmentDescription2(ImageFormatToVkFormat(desc.ShadingRateFormat),
 															   VK_SAMPLE_COUNT_1_BIT,
 															   VK_ATTACHMENT_LOAD_OP_LOAD,

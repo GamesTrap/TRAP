@@ -3,6 +3,8 @@
 
 #include <chrono>
 
+#include "Core/Types.h"
+
 namespace TRAP::Utils
 {
 	/// <summary>
@@ -25,12 +27,12 @@ namespace TRAP::Utils
 		/// Retrieve elapsed time in seconds.
 		/// </summary>
 		/// <returns>Elapsed time in seconds.</returns>
-		[[nodiscard]] float Elapsed() const;
+		[[nodiscard]] f32 Elapsed() const;
 		/// <summary>
 		/// Retrieve elapsed time in milliseconds.
 		/// </summary>
 		/// <returns>Elapsed time in milliseconds.</returns>
-		[[nodiscard]] float ElapsedMilliseconds() const;
+		[[nodiscard]] f32 ElapsedMilliseconds() const;
 
 	private:
 		std::chrono::time_point<std::chrono::high_resolution_clock> m_start;

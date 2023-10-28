@@ -97,7 +97,7 @@ namespace TRAP::Graphics
 		/// <param name="type">Type of texture.</param>
 		/// <param name="flags">Additional flags. Default: None.</param>
 		/// <returns>Empty texture on success, nullptr otherwise.</returns>
-		[[nodiscard]] static Ref<Texture> CreateEmpty(std::string name, uint32_t width, uint32_t height, uint32_t bitsPerPixel,
+		[[nodiscard]] static Ref<Texture> CreateEmpty(std::string name, u32 width, u32 height, u32 bitsPerPixel,
 		                                              Image::ColorFormat format, TextureType type,
 										              TextureCreationFlags flags = TextureCreationFlags::None);
 		/// <summary>
@@ -164,12 +164,12 @@ namespace TRAP::Graphics
 		/// Retrieve the texture width.
 		/// </summary>
 		/// <returns>Texture width.</returns>
-		[[nodiscard]] constexpr uint32_t GetWidth() const noexcept;
+		[[nodiscard]] constexpr u32 GetWidth() const noexcept;
 		/// <summary>
 		/// Retrieve the texture height.
 		/// </summary>
 		/// <returns>Texture height.</returns>
-		[[nodiscard]] constexpr uint32_t GetHeight() const noexcept;
+		[[nodiscard]] constexpr u32 GetHeight() const noexcept;
 		/// <summary>
 		/// Retrieve the texture size.
 		/// </summary>
@@ -179,23 +179,23 @@ namespace TRAP::Graphics
 		/// Retrieve the texture depth.
 		/// </summary>
 		/// <returns>Texture depth.</returns>
-		[[nodiscard]] constexpr uint32_t GetDepth() const noexcept;
+		[[nodiscard]] constexpr u32 GetDepth() const noexcept;
 		/// <summary>
 		/// Retrieve the texture array size.
 		/// </summary>
 		/// <returns>Texture array size.</returns>
-		[[nodiscard]] constexpr uint32_t GetArraySize() const noexcept;
+		[[nodiscard]] constexpr u32 GetArraySize() const noexcept;
 		/// <summary>
 		/// Retrieve the textures mip level count.
 		/// </summary>
 		/// <returns>Textures mip level count.</returns>
-		[[nodiscard]] constexpr uint32_t GetMipLevels() const noexcept;
+		[[nodiscard]] constexpr u32 GetMipLevels() const noexcept;
 		/// <summary>
 		/// Retrieve the textures aspect mask.
 		/// Aspect mask specifies which aspects (Color, Depth, Stencil) are included in the texture.
 		/// </summary>
 		/// <returns>Aspect mask.</returns>
-		[[nodiscard]] constexpr uint32_t GetAspectMask() const noexcept;
+		[[nodiscard]] constexpr u32 GetAspectMask() const noexcept;
 		/// <summary>
 		/// Retrieve the textures color format.
 		/// </summary>
@@ -216,40 +216,40 @@ namespace TRAP::Graphics
 		/// Retrieve the textures bits per channel.
 		/// </summary>
 		/// <returns>Textures bits per channel.</returns>
-		[[nodiscard]] constexpr uint32_t GetBitsPerChannel() const noexcept;
+		[[nodiscard]] constexpr u32 GetBitsPerChannel() const noexcept;
 		/// <summary>
 		/// Retrieve the textures bytes per channel.
 		/// </summary>
 		/// <returns>Textures bytes per channel.</returns>
-		[[nodiscard]] constexpr uint32_t GetBytesPerChannel() const noexcept;
+		[[nodiscard]] constexpr u32 GetBytesPerChannel() const noexcept;
 		/// <summary>
 		/// Retrieve the textures bits per pixel.
 		/// </summary>
 		/// <returns>Textures bits per pixel.</returns>
-		[[nodiscard]] constexpr uint32_t GetBitsPerPixel() const noexcept;
+		[[nodiscard]] constexpr u32 GetBitsPerPixel() const noexcept;
 		/// <summary>
 		/// Retrieve the textures bytes per pixel.
 		/// </summary>
 		/// <returns>Textures bytes per pixel.</returns>
-		[[nodiscard]] constexpr uint32_t GetBytesPerPixel() const noexcept;
+		[[nodiscard]] constexpr u32 GetBytesPerPixel() const noexcept;
 		/// <summary>
 		/// Retrieve the textures mip width of a specific level.
 		/// </summary>
 		/// <param name="mipLevel">Mip level.</param>
 		/// <returns>Mip width.</returns>
-		[[nodiscard]] constexpr uint32_t GetMipWidth(uint32_t mipLevel) const;
+		[[nodiscard]] constexpr u32 GetMipWidth(u32 mipLevel) const;
 		/// <summary>
 		/// Retrieve the textures mip height of a specific level.
 		/// </summary>
 		/// <param name="mipLevel">Mip level.</param>
 		/// <returns>Mip height.</returns>
-		[[nodiscard]] constexpr uint32_t GetMipHeight(uint32_t mipLevel) const;
+		[[nodiscard]] constexpr u32 GetMipHeight(u32 mipLevel) const;
 		/// <summary>
 		/// Retrieve the textures mip size of a specific level.
 		/// </summary>
 		/// <param name="mipLevel">Mip level.</param>
 		/// <returns>Mip size.</returns>
-		[[nodiscard]] constexpr Math::Vec2ui GetMipSize(uint32_t mipLevel) const;
+		[[nodiscard]] constexpr Math::Vec2ui GetMipSize(u32 mipLevel) const;
 		/// <summary>
 		/// Retrieve the file path of the texture.
 		/// </summary>
@@ -275,7 +275,7 @@ namespace TRAP::Graphics
 		/// <param name="sizeInBytes">Size of the data array in bytes.</param>
 		/// <param name="mipLevel">Mip level to update. Default: 0</param>
 		/// <param name="arrayLayer">Array layer to update. Default: 0</param>
-		void Update(const void* data, uint32_t sizeInBytes, uint32_t mipLevel = 0, uint32_t arrayLayer = 0);
+		void Update(const void* data, u32 sizeInBytes, u32 mipLevel = 0, u32 arrayLayer = 0);
 
 		/// <summary>
 		/// Set the texture name.
@@ -305,14 +305,14 @@ namespace TRAP::Graphics
 		/// <param name="width">Width of the texture.</param>
 		/// <param name="height">Height of the texture.</param>
 		/// <returns>Size of the mip level.</returns>
-		[[nodiscard]] static uint32_t CalculateMipLevels(uint32_t width, uint32_t height);
+		[[nodiscard]] static u32 CalculateMipLevels(u32 width, u32 height);
 		/// <summary>
 		/// Split a horizontal or vertical cross texture into multiple textures.
 		/// </summary>
 		/// <param name="image">Image to split.</param>
 		/// <returns>Array of splitted textures.</returns>
 		template<typename T>
-		requires std::same_as<T, std::uint8_t> || std::same_as<T, std::uint16_t> || std::same_as<T, float>
+		requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 		[[nodiscard]] static std::array<TRAP::Scope<TRAP::Image>, 6> SplitImageFromCross(const TRAP::Image* image);
 
 	protected:
@@ -334,7 +334,7 @@ namespace TRAP::Graphics
 		/// <param name="colorFormat">Color format.</param>
 		/// <param name="bpp">Bits per pixel.</param>
 		/// <returns>Image format.</returns>
-		[[nodiscard]] static API::ImageFormat ColorFormatBitsPerPixelToImageFormat(Image::ColorFormat colorFormat, uint32_t bpp);
+		[[nodiscard]] static API::ImageFormat ColorFormatBitsPerPixelToImageFormat(Image::ColorFormat colorFormat, u32 bpp);
 		/// <summary>
 		/// Convert image format to color format.
 		/// </summary>
@@ -346,7 +346,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="imageFormat">Image format.</param>
 		/// <returns>Bits per channel.</returns>
-		[[nodiscard]] static constexpr uint32_t GetBitsPerChannelFromImageFormat(API::ImageFormat imageFormat) noexcept;
+		[[nodiscard]] static constexpr u32 GetBitsPerChannelFromImageFormat(API::ImageFormat imageFormat) noexcept;
 
 		/// <summary>
 		/// Constructor.
@@ -369,14 +369,14 @@ namespace TRAP::Graphics
 		std::string m_name{};
 		API::SyncToken m_syncToken = 0;
 		TextureType m_textureType = TextureType::Texture2D;
-		uint32_t m_width = 2;
-		uint32_t m_height = 2;
-		uint32_t m_depth = 1;
-		uint32_t m_arraySize = 1;
-		uint32_t m_mipLevels = 1;
+		u32 m_width = 2;
+		u32 m_height = 2;
+		u32 m_depth = 1;
+		u32 m_arraySize = 1;
+		u32 m_mipLevels = 1;
 		Image::ColorFormat m_colorFormat = Image::ColorFormat::RGBA;
 		Graphics::API::ImageFormat m_imageFormat = Graphics::API::ImageFormat::R8G8B8A8_UNORM;
-		uint32_t m_aspectMask = 0;
+		u32 m_aspectMask = 0;
 		RendererAPI::DescriptorType m_descriptorTypes = RendererAPI::DescriptorType::Texture;
 		bool m_ownsImage = true;
 		std::array<std::filesystem::path, 6> m_filepaths{};
@@ -400,14 +400,14 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetWidth() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::Texture::GetWidth() const noexcept
 {
 	return m_width;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetHeight() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::Texture::GetHeight() const noexcept
 {
 	return m_height;
 }
@@ -421,28 +421,28 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetDepth() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::Texture::GetDepth() const noexcept
 {
 	return m_depth;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetArraySize() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::Texture::GetArraySize() const noexcept
 {
 	return m_arraySize;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetMipLevels() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::Texture::GetMipLevels() const noexcept
 {
 	return m_mipLevels;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetAspectMask() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::Texture::GetAspectMask() const noexcept
 {
 	return m_aspectMask;
 }
@@ -470,35 +470,35 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetBitsPerChannel() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::Texture::GetBitsPerChannel() const noexcept
 {
 	return GetBitsPerChannelFromImageFormat(m_imageFormat);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetBytesPerChannel() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::Texture::GetBytesPerChannel() const noexcept
 {
 	return GetBitsPerChannel() / 8;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetBitsPerPixel() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::Texture::GetBitsPerPixel() const noexcept
 {
 	return GetBitsPerChannel() * std::to_underlying(m_colorFormat);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetBytesPerPixel() const noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::Texture::GetBytesPerPixel() const noexcept
 {
 	return GetBitsPerPixel() / 8u;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetMipWidth(const uint32_t mipLevel) const
+[[nodiscard]] constexpr u32 TRAP::Graphics::Texture::GetMipWidth(const u32 mipLevel) const
 {
 	if(mipLevel >= m_mipLevels)
 		TP_ERROR(Log::TexturePrefix, "GetMipWidth: Invalid mip level provided!");
@@ -508,7 +508,7 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetMipHeight(const uint32_t mipLevel) const
+[[nodiscard]] constexpr u32 TRAP::Graphics::Texture::GetMipHeight(const u32 mipLevel) const
 {
 	if(mipLevel >= m_mipLevels)
 		TP_ERROR(Log::TexturePrefix, "GetMipHeight: Invalid mip level provided!");
@@ -518,7 +518,7 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr TRAP::Math::Vec2ui TRAP::Graphics::Texture::GetMipSize(const uint32_t mipLevel) const
+[[nodiscard]] constexpr TRAP::Math::Vec2ui TRAP::Graphics::Texture::GetMipSize(const u32 mipLevel) const
 {
 	return TRAP::Math::Vec2ui{GetMipWidth(mipLevel), GetMipHeight(mipLevel)};
 }
@@ -547,48 +547,48 @@ namespace TRAP::Graphics
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-requires std::same_as<T, std::uint8_t> || std::same_as<T, std::uint16_t> || std::same_as<T, float>
+requires std::same_as<T, u8> || std::same_as<T, u16> || std::same_as<T, f32>
 [[nodiscard]] std::array<TRAP::Scope<TRAP::Image>, 6> TRAP::Graphics::Texture::SplitImageFromCross(const TRAP::Image* const image)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	const bool isHorizontal = image->GetWidth() > image->GetHeight();
 
-	const uint32_t stride = image->GetBytesPerPixel();
-	uint32_t face = 0;
-	uint32_t cxLimit = 4, cyLimit = 3;
+	const u32 stride = image->GetBytesPerPixel();
+	u32 face = 0;
+	u32 cxLimit = 4, cyLimit = 3;
 	if(!isHorizontal)
 	{
 		cxLimit = 3;
 		cyLimit = 4;
 	}
-	const uint32_t faceWidth = image->GetWidth() / cxLimit;
-	const uint32_t faceHeight = image->GetHeight() / cyLimit;
+	const u32 faceWidth = image->GetWidth() / cxLimit;
+	const u32 faceHeight = image->GetHeight() / cyLimit;
 
 	std::array<std::vector<T>, 6> cubeTextureData;
 	for(auto& i : cubeTextureData)
 		i.resize(faceWidth * faceHeight * stride);
 
-	for(uint32_t cy = 0; cy < cyLimit; ++cy)
+	for(u32 cy = 0; cy < cyLimit; ++cy)
 	{
-		for(uint32_t cx = 0; cx < cxLimit; ++cx)
+		for(u32 cx = 0; cx < cxLimit; ++cx)
 		{
 			if((cy == 0 || cy == 2 || cy == 3) && cx != 1)
 				continue;
 
-			for(uint32_t y = 0; y < faceHeight; ++y)
+			for(u32 y = 0; y < faceHeight; ++y)
 			{
-				uint32_t offset = y;
+				u32 offset = y;
 				if(!isHorizontal && face == 5)
 					offset = faceHeight - (y + 1);
-				const uint32_t yp = cy * faceHeight + offset;
+				const u32 yp = cy * faceHeight + offset;
 
-				for(uint32_t x = 0; x < faceWidth; ++x)
+				for(u32 x = 0; x < faceWidth; ++x)
 				{
 					offset = x;
 					if(!isHorizontal && face == 5)
 						offset = faceWidth - (x + 1);
-					const uint32_t xp = cx * faceWidth + offset;
+					const u32 xp = cx * faceWidth + offset;
 
 					if(stride == 1)
 					{
@@ -775,7 +775,7 @@ requires std::same_as<T, std::uint8_t> || std::same_as<T, std::uint16_t> || std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint32_t TRAP::Graphics::Texture::GetBitsPerChannelFromImageFormat(const API::ImageFormat imageFormat) noexcept
+[[nodiscard]] constexpr u32 TRAP::Graphics::Texture::GetBitsPerChannelFromImageFormat(const API::ImageFormat imageFormat) noexcept
 {
 	switch(imageFormat)
 	{

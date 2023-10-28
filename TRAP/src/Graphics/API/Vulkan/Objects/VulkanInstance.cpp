@@ -18,11 +18,11 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appNa
 	std::erase_if(m_instanceExtensions, [](const std::string_view extension){return !IsExtensionSupported(extension);});
 
 	std::vector<const char*> layers(m_instanceLayers.size());
-	for (std::size_t i = 0; i < m_instanceLayers.size(); i++)
+	for (usize i = 0; i < m_instanceLayers.size(); i++)
 		layers[i] = m_instanceLayers[i].c_str();
 
 	std::vector<const char*> extensions(m_instanceExtensions.size());
-	for (std::size_t i = 0; i < m_instanceExtensions.size(); i++)
+	for (usize i = 0; i < m_instanceExtensions.size(); i++)
 		extensions[i] = m_instanceExtensions[i].c_str();
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -102,7 +102,7 @@ TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint32_t TRAP::Graphics::API::VulkanInstance::GetInstanceVersion()
+[[nodiscard]] u32 TRAP::Graphics::API::VulkanInstance::GetInstanceVersion()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -224,7 +224,7 @@ void TRAP::Graphics::API::VulkanInstance::LoadAllInstanceLayers()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	uint32_t layersCount = 0;
+	u32 layersCount = 0;
 	VkCall(vkEnumerateInstanceLayerProperties(&layersCount, nullptr));
 	s_availableInstanceLayers.resize(layersCount);
 	VkCall(vkEnumerateInstanceLayerProperties(&layersCount, s_availableInstanceLayers.data()));
@@ -236,7 +236,7 @@ void TRAP::Graphics::API::VulkanInstance::LoadAllInstanceExtensions()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	uint32_t extensionsCount = 0;
+	u32 extensionsCount = 0;
 	VkCall(vkEnumerateInstanceExtensionProperties(nullptr, &extensionsCount, nullptr));
 	s_availableInstanceExtensions.resize(extensionsCount);
 	VkCall(vkEnumerateInstanceExtensionProperties(nullptr, &extensionsCount, s_availableInstanceExtensions.data()));

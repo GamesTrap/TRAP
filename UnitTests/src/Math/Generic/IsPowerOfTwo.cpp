@@ -18,12 +18,12 @@ namespace
         static_assert( TRAP::Math::IsPowerOfTwo(T(0x04)));
         static_assert(!TRAP::Math::IsPowerOfTwo(T(0x0F)));
 
-        if constexpr(sizeof(T) > 32 || std::same_as<T, uint32_t>)
+        if constexpr(sizeof(T) > 32 || std::same_as<T, u32>)
         {
             static_assert( TRAP::Math::IsPowerOfTwo(T(0x80)));
             static_assert( TRAP::Math::IsPowerOfTwo(T(0x80000000)));
         }
-        else if constexpr(sizeof(T) > 8 || std::same_as<T, uint8_t>)
+        else if constexpr(sizeof(T) > 8 || std::same_as<T, u8>)
         {
             static_assert( TRAP::Math::IsPowerOfTwo(T(0x80)));
         }
@@ -40,12 +40,12 @@ namespace
         static_assert( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x04))));
         static_assert(!TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x0F))));
 
-        if constexpr(sizeof(T) > 32 || std::same_as<T, uint32_t>)
+        if constexpr(sizeof(T) > 32 || std::same_as<T, u32>)
         {
             static_assert( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x80))));
             static_assert( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x80000000))));
         }
-        else if constexpr(sizeof(T) > 8 || std::same_as<T, uint8_t>)
+        else if constexpr(sizeof(T) > 8 || std::same_as<T, u8>)
         {
             static_assert( TRAP::Math::All(TRAP::Math::IsPowerOfTwo(T(0x80))));
         }
@@ -66,74 +66,74 @@ namespace
 
 TEST_CASE("TRAP::Math::IsPowerOfTwo()", "[math][generic][ispoweroftwo]")
 {
-    SECTION("Scalar - uint8_t")
+    SECTION("Scalar - u8")
     {
-        RunCompileTimeIsPowerOfTwoTests<uint8_t>();
-        RunCompileTimeIsPowerOfTwoEdgeTests<uint8_t>();
+        RunCompileTimeIsPowerOfTwoTests<u8>();
+        RunCompileTimeIsPowerOfTwoEdgeTests<u8>();
     }
-    SECTION("Scalar - uint16_t")
+    SECTION("Scalar - u16")
     {
-        RunCompileTimeIsPowerOfTwoTests<uint16_t>();
-        RunCompileTimeIsPowerOfTwoEdgeTests<uint16_t>();
+        RunCompileTimeIsPowerOfTwoTests<u16>();
+        RunCompileTimeIsPowerOfTwoEdgeTests<u16>();
     }
-    SECTION("Scalar - uint32_t")
+    SECTION("Scalar - u32")
     {
-        RunCompileTimeIsPowerOfTwoTests<uint32_t>();
-        RunCompileTimeIsPowerOfTwoEdgeTests<uint32_t>();
+        RunCompileTimeIsPowerOfTwoTests<u32>();
+        RunCompileTimeIsPowerOfTwoEdgeTests<u32>();
     }
-    SECTION("Scalar - uint64_t")
+    SECTION("Scalar - u64")
     {
-        RunCompileTimeIsPowerOfTwoTests<uint64_t>();
-        RunCompileTimeIsPowerOfTwoEdgeTests<uint64_t>();
+        RunCompileTimeIsPowerOfTwoTests<u64>();
+        RunCompileTimeIsPowerOfTwoEdgeTests<u64>();
     }
 
-    SECTION("Vec2 - uint8_t")
+    SECTION("Vec2 - u8")
     {
         RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec2ui8>();
     }
-    SECTION("Vec2 - uint16_t")
+    SECTION("Vec2 - u16")
     {
         RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec2ui16>();
     }
-    SECTION("Vec2 - uint32_t")
+    SECTION("Vec2 - u32")
     {
         RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec2ui32>();
     }
-    SECTION("Vec2 - uint64_t")
+    SECTION("Vec2 - u64")
     {
         RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec2ui64>();
     }
 
-    SECTION("Vec3 - uint8_t")
+    SECTION("Vec3 - u8")
     {
         RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec3ui8>();
     }
-    SECTION("Vec3 - uint16_t")
+    SECTION("Vec3 - u16")
     {
         RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec3ui16>();
     }
-    SECTION("Vec3 - uint32_t")
+    SECTION("Vec3 - u32")
     {
         RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec3ui32>();
     }
-    SECTION("Vec3 - uint64_t")
+    SECTION("Vec3 - u64")
     {
         RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec3ui64>();
     }
 
-    SECTION("Vec4 - uint8_t")
+    SECTION("Vec4 - u8")
     {
         RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec4ui8>();
     }
-    SECTION("Vec4 - uint16_t")
+    SECTION("Vec4 - u16")
     {
         RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec4ui16>();
     }
-    SECTION("Vec4 - uint32_t")
+    SECTION("Vec4 - u32")
     {
         RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec4ui32>();
     }
-    SECTION("Vec4 - uint64_t")
+    SECTION("Vec4 - u64")
     {
         RunCompileTimeIsPowerOfTwoVecTests<TRAP::Math::Vec4ui64>();
     }

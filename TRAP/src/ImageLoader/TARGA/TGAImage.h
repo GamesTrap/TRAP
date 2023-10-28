@@ -43,7 +43,7 @@ namespace TRAP::INTERNAL
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		[[nodiscard]] constexpr uint64_t GetPixelDataSize() const noexcept override;
+		[[nodiscard]] constexpr u64 GetPixelDataSize() const noexcept override;
 	private:
 		/// <summary>
 		/// Decode run length encoded indexed BGRA data.
@@ -55,8 +55,8 @@ namespace TRAP::INTERNAL
 		/// <param name="channels">Amount of channels, i.e. 4 = RGBA, 3 = RGB and so on.</param>
 		/// <param name="colorMap">Color table.</param>
 		/// <returns>Decoded pixel data.</returns>
-		[[nodiscard]] static constexpr std::vector<uint8_t> DecodeRLEBGRAMap(std::vector<uint8_t>& source, uint32_t width, uint32_t height,
-		                                                                     uint32_t channels, std::vector<uint8_t>& colorMap);
+		[[nodiscard]] static constexpr std::vector<u8> DecodeRLEBGRAMap(std::vector<u8>& source, u32 width, u32 height,
+		                                                                     u32 channels, std::vector<u8>& colorMap);
 		/// <summary>
 		/// Decode run length encoded grayscale data.
 		/// </summary>
@@ -64,8 +64,8 @@ namespace TRAP::INTERNAL
 		/// <param name="width">Width of the image.</param>
 		/// <param name="height">Height of the image.</param>
 		/// <returns>Decoded grayscale pixel data.</returns>
-		[[nodiscard]] static constexpr std::vector<uint8_t> DecodeRLEGrayScale(std::vector<uint8_t>& source,
-		                                                                       uint32_t width, uint32_t height);
+		[[nodiscard]] static constexpr std::vector<u8> DecodeRLEGrayScale(std::vector<u8>& source,
+		                                                                       u32 width, u32 height);
 		/// <summary>
 		/// Convert run length encoded BGR16 data to RGB24.
 		/// </summary>
@@ -73,8 +73,8 @@ namespace TRAP::INTERNAL
 		/// <param name="width">Width of the image.</param>
 		/// <param name="height">Height of the image.</param>
 		/// <returns>Decoded RGB24 pixel data.</returns>
-		[[nodiscard]] static constexpr std::vector<uint8_t> ConvertRLEBGR16ToRGB24(std::vector<uint8_t>& source,
-		                                                                           uint32_t width, uint32_t height);
+		[[nodiscard]] static constexpr std::vector<u8> ConvertRLEBGR16ToRGB24(std::vector<u8>& source,
+		                                                                           u32 width, u32 height);
 		/// <summary>
 		/// Convert run length encoded BGR24 data to RGB24.
 		/// </summary>
@@ -82,8 +82,8 @@ namespace TRAP::INTERNAL
 		/// <param name="width">Width of the image.</param>
 		/// <param name="height">Height of the image.</param>
 		/// <returns>Decoded RGB24 pixel data.</returns>
-		[[nodiscard]] static constexpr std::vector<uint8_t> ConvertRLEBGR24ToRGB24(std::vector<uint8_t>& source,
-		                                                                           uint32_t width, uint32_t height);
+		[[nodiscard]] static constexpr std::vector<u8> ConvertRLEBGR24ToRGB24(std::vector<u8>& source,
+		                                                                           u32 width, u32 height);
 		/// <summary>
 		/// Convert run length encoded BGRA32 data to RGBA32.
 		/// </summary>
@@ -91,36 +91,36 @@ namespace TRAP::INTERNAL
 		/// <param name="width">Width of the image.</param>
 		/// <param name="height">Height of the image.</param>
 		/// <returns>Decoded RGBA32 pixel data.</returns>
-		[[nodiscard]] static constexpr std::vector<uint8_t> ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>& source,
-		                                                                           uint32_t width, uint32_t height);
+		[[nodiscard]] static constexpr std::vector<u8> ConvertRLEBGRA32ToRGBA(std::vector<u8>& source,
+		                                                                           u32 width, u32 height);
 
-		std::vector<uint8_t> m_data;
+		std::vector<u8> m_data;
 
 		struct Header
 		{
-			uint8_t IDLength = 0; //0 = No ImageID
-			uint8_t ColorMapType = 0; //0 = No Color Map | 1 = Has Color Map
-			uint8_t ImageType = 0; //0 = No Data | 1 = Uncompressed ColorMapped | 2 = Uncompressed TrueColor |
+			u8 IDLength = 0; //0 = No ImageID
+			u8 ColorMapType = 0; //0 = No Color Map | 1 = Has Color Map
+			u8 ImageType = 0; //0 = No Data | 1 = Uncompressed ColorMapped | 2 = Uncompressed TrueColor |
 			                       //3 = Uncompressed BlackWhite | 9 = RunLengthEncoded ColorMapped |
 								   //10 = RunLengthEncoded TrueColor | 11 = RunLengthEncoded BlackWhite
 			//ColorMap spec
-			uint16_t ColorMapOffset = 0;
-			uint16_t NumOfColorMaps = 0;
-			uint8_t ColorMapDepth = 0;
+			u16 ColorMapOffset = 0;
+			u16 NumOfColorMaps = 0;
+			u8 ColorMapDepth = 0;
 			//Image spec
-			uint16_t XOffset = 0;
-			uint16_t YOffset = 0;
-			uint16_t Width = 0;
-			uint16_t Height = 0;
-			uint8_t BitsPerPixel = 0;
-			uint8_t ImageDescriptor = 0;
+			u16 XOffset = 0;
+			u16 YOffset = 0;
+			u16 Width = 0;
+			u16 Height = 0;
+			u8 BitsPerPixel = 0;
+			u8 ImageDescriptor = 0;
 		};
 
 		struct ColorMapData
 		{
 			std::string ImageID;
-			std::vector<uint8_t> ColorMap{};
-			std::vector<uint8_t> ImageData{};
+			std::vector<u8> ColorMap{};
+			std::vector<u8> ImageData{};
 		};
 	};
 }
@@ -134,22 +134,22 @@ namespace TRAP::INTERNAL
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr uint64_t TRAP::INTERNAL::TGAImage::GetPixelDataSize() const noexcept
+[[nodiscard]] constexpr u64 TRAP::INTERNAL::TGAImage::GetPixelDataSize() const noexcept
 {
 	return m_data.size();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEBGRAMap(std::vector<uint8_t>& source, const uint32_t width,
-                                                                                        const uint32_t height, const uint32_t channels,
-																                        std::vector<uint8_t>& colorMap)
+[[nodiscard]] constexpr std::vector<u8> TRAP::INTERNAL::TGAImage::DecodeRLEBGRAMap(std::vector<u8>& source, const u32 width,
+                                                                                        const u32 height, const u32 channels,
+																                        std::vector<u8>& colorMap)
 {
-	std::vector<uint8_t> data{};
-	data.resize(NumericCast<std::size_t>(width) * height * channels);
+	std::vector<u8> data{};
+	data.resize(NumericCast<usize>(width) * height * channels);
 
-	uint32_t index = 0;
-	for (uint32_t i = 0, l = 0; i < source.size();)
+	u32 index = 0;
+	for (u32 i = 0, l = 0; i < source.size();)
 	{
 		//Pixels encoded in "packets"
 
@@ -158,26 +158,26 @@ namespace TRAP::INTERNAL
 		//If RLE, the next single channels-byte color value speaks for the next count pixels
 
 		const bool raw = (source[i] & 0x80u) == 0; //Is this packet RAW pixels or a repeating color
-		uint32_t count = (source[i] & 0x7Fu) + 1u; //How many RAW pixels or color repeats
+		u32 count = (source[i] & 0x7Fu) + 1u; //How many RAW pixels or color repeats
 		i++;
 
 		//Prevent from writing out of data range
 		if ((count * channels + l) > (width * height * channels))
 			count = (width * height * channels - l) / channels;
 
-		for (uint32_t j = 0; j < count; j++)
+		for (u32 j = 0; j < count; j++)
 		{
 			if (channels == 1)
 			{
-				data[index++] = colorMap[NumericCast<std::size_t>(source[i]) * channels];
+				data[index++] = colorMap[NumericCast<usize>(source[i]) * channels];
 				l++;
 			}
 			else if (channels == 2)
 			{
-				data[index++] = NumericCast<uint8_t>(colorMap[source[i] * channels + 1u] << 1u) & 0xF8u;
-				data[index++] = NumericCast<uint8_t>(NumericCast<uint8_t>((colorMap[source[i] * channels + 1u]) << 6u) |
-				                                     NumericCast<uint8_t>(colorMap[NumericCast<std::size_t>(source[i]) * channels] >> 2u)) & 0xF8u;
-				data[index++] = NumericCast<uint8_t>(colorMap[NumericCast<std::size_t>(source[i]) * channels] << 3u) & 0xF8u;
+				data[index++] = NumericCast<u8>(colorMap[source[i] * channels + 1u] << 1u) & 0xF8u;
+				data[index++] = NumericCast<u8>(NumericCast<u8>((colorMap[source[i] * channels + 1u]) << 6u) |
+				                                     NumericCast<u8>(colorMap[NumericCast<usize>(source[i]) * channels] >> 2u)) & 0xF8u;
+				data[index++] = NumericCast<u8>(colorMap[NumericCast<usize>(source[i]) * channels] << 3u) & 0xF8u;
 			}
 			else if (channels == 3)
 			{
@@ -207,14 +207,14 @@ namespace TRAP::INTERNAL
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEGrayScale(std::vector<uint8_t>& source,
-                                                                                          const uint32_t width, const uint32_t height)
+[[nodiscard]] constexpr std::vector<u8> TRAP::INTERNAL::TGAImage::DecodeRLEGrayScale(std::vector<u8>& source,
+                                                                                          const u32 width, const u32 height)
 {
-	std::vector<uint8_t> data{};
-	data.resize(NumericCast<std::size_t>(width) * height);
+	std::vector<u8> data{};
+	data.resize(NumericCast<usize>(width) * height);
 
-	uint32_t index = 0;
-	for (uint32_t i = 0, l = 0; i < source.size();)
+	u32 index = 0;
+	for (u32 i = 0, l = 0; i < source.size();)
 	{
 		//Pixels encoded in "packets"
 
@@ -223,14 +223,14 @@ namespace TRAP::INTERNAL
 		//If RLE, the next single byte color value speaks for the next count pixels
 
 		const bool raw = (source[i] & 0x80u) == 0; //Is this packet RAW pixels or a repeating color
-		uint32_t count = (source[i] & 0x7Fu) + 1u; //How many RAW pixels or color repeats
+		u32 count = (source[i] & 0x7Fu) + 1u; //How many RAW pixels or color repeats
 		i++;
 
 		//Prevent from writing out of data range
 		if ((count + l) > (width * height))
 			count = width * height - l;
 
-		for (uint32_t j = 0; j < count; j++)
+		for (u32 j = 0; j < count; j++)
 		{
 			data[index++] = source[i];
 
@@ -247,14 +247,14 @@ namespace TRAP::INTERNAL
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR16ToRGB24(std::vector<uint8_t>& source,
-                                                                                              const uint32_t width, const uint32_t height)
+[[nodiscard]] constexpr std::vector<u8> TRAP::INTERNAL::TGAImage::ConvertRLEBGR16ToRGB24(std::vector<u8>& source,
+                                                                                              const u32 width, const u32 height)
 {
-	std::vector<uint8_t> data{};
-	data.resize(NumericCast<std::size_t>(width) * height * 3);
+	std::vector<u8> data{};
+	data.resize(NumericCast<usize>(width) * height * 3);
 
-	uint32_t index = 0;
-	for (uint32_t i = 0, l = 0; i < source.size();)
+	u32 index = 0;
+	for (u32 i = 0, l = 0; i < source.size();)
 	{
 		//Pixels encoded in "packets"
 		//First byte is RAW/RLE flags(upper bit) and count(1-128 as 0-127 in lower 7 bits)
@@ -262,18 +262,18 @@ namespace TRAP::INTERNAL
 		//If RLE, the next single channel-byte color value speaks for the next count pixels
 
 		const bool raw = (source[i] & 0x80u) == 0; //Is this packet RAW pixels or a repeating color
-		uint32_t count = (source[i] & 0x7Fu) + 1u; //How many RAW pixels or color repeats
+		u32 count = (source[i] & 0x7Fu) + 1u; //How many RAW pixels or color repeats
 		i++;
 
 		//Prevent from writing out of data range
 		if ((count * 3 + l) > (width * height * 3))
 			count = (width * height * 3 - l) / 3;
 
-		for (uint32_t j = 0; j < count; j++)
+		for (u32 j = 0; j < count; j++)
 		{
-			data[index++] = NumericCast<uint8_t>(source[i + 1u] << 1u) & 0xF8u;
-			data[index++] = NumericCast<uint8_t>(NumericCast<uint8_t>(source[i + 1u] << 6u) | NumericCast<uint8_t>(source[i] >> 2u)) & 0xF8u;
-			data[index++] = NumericCast<uint8_t>(source[i] << 3u) & 0xF8u;
+			data[index++] = NumericCast<u8>(source[i + 1u] << 1u) & 0xF8u;
+			data[index++] = NumericCast<u8>(NumericCast<u8>(source[i + 1u] << 6u) | NumericCast<u8>(source[i] >> 2u)) & 0xF8u;
+			data[index++] = NumericCast<u8>(source[i] << 3u) & 0xF8u;
 
 			if (raw) //In RAW mode, keep advancing to subsequent values
 				i += 2; //IN RLE mode, just repeat the packet[1] RGB color
@@ -288,14 +288,14 @@ namespace TRAP::INTERNAL
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR24ToRGB24(std::vector<uint8_t>& source,
-                                                                                              const uint32_t width, const uint32_t height)
+[[nodiscard]] constexpr std::vector<u8> TRAP::INTERNAL::TGAImage::ConvertRLEBGR24ToRGB24(std::vector<u8>& source,
+                                                                                              const u32 width, const u32 height)
 {
-	std::vector<uint8_t> data{};
-	data.resize(NumericCast<std::size_t>(width) * height * 3);
+	std::vector<u8> data{};
+	data.resize(NumericCast<usize>(width) * height * 3);
 
-	uint32_t index = 0;
-	for (uint32_t i = 0, l = 0; i < source.size();)
+	u32 index = 0;
+	for (u32 i = 0, l = 0; i < source.size();)
 	{
 		//Pixels encoded in "packets"
 		//First byte is RAW/RLE flags(upper bit) and count(1-128 as 0-127 in lower 7 bits)
@@ -303,14 +303,14 @@ namespace TRAP::INTERNAL
 		//If RLE, the next single channel-byte color value speaks for the next count pixels
 
 		const bool raw = (source[i] & 0x80u) == 0; //Is this packet RAW pixels or a repeating color
-		uint32_t count = (source[i] & 0x7Fu) + 1u; //How many RAW pixels or color repeats
+		u32 count = (source[i] & 0x7Fu) + 1u; //How many RAW pixels or color repeats
 		i++;
 
 		//Prevent from writing out of data range
 		if ((count * 3 + l) > (width * height * 3))
 			count = (width * height * 3 - l) / 3;
 
-		for (uint32_t j = 0; j < count; j++)
+		for (u32 j = 0; j < count; j++)
 		{
 			data[index++] = source[i + 2]; //Red
 			data[index++] = source[i + 1]; //Green
@@ -329,14 +329,14 @@ namespace TRAP::INTERNAL
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] constexpr std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>& source,
-                                                                                              const uint32_t width, const uint32_t height)
+[[nodiscard]] constexpr std::vector<u8> TRAP::INTERNAL::TGAImage::ConvertRLEBGRA32ToRGBA(std::vector<u8>& source,
+                                                                                              const u32 width, const u32 height)
 {
-	std::vector<uint8_t> data{};
-	data.resize(NumericCast<std::size_t>(width) * height * 4);
+	std::vector<u8> data{};
+	data.resize(NumericCast<usize>(width) * height * 4);
 
-	uint32_t index = 0;
-	for (uint32_t i = 0, l = 0; i < source.size();)
+	u32 index = 0;
+	for (u32 i = 0, l = 0; i < source.size();)
 	{
 		//Pixels encoded in "packets"
 		//First byte is RAW/RLE flags(upper bit) and count(1-128 as 0-127 in lower 7 bits)
@@ -344,14 +344,14 @@ namespace TRAP::INTERNAL
 		//If RLE, the next single channel-byte color value speaks for the next count pixels
 
 		const bool raw = (source[i] & 0x80u) == 0; //Is this packet RAW pixels or a repeating color
-		uint32_t count = (source[i] & 0x7Fu) + 1u; //How many RAW pixels or color repeats
+		u32 count = (source[i] & 0x7Fu) + 1u; //How many RAW pixels or color repeats
 		i++;
 
 		//Prevent from writing out of data range
 		if ((count * 4 + l) > (width * height * 4))
 			count = (width * height * 4 - l) / 4;
 
-		for (uint32_t j = 0; j < count; j++)
+		for (u32 j = 0; j < count; j++)
 		{
 			data[index++] = source[i + 2]; //Red
 			data[index++] = source[i + 1]; //Green

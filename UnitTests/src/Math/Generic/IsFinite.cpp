@@ -42,40 +42,40 @@ namespace
 
 TEST_CASE("TRAP::Math::IsFinite()", "[math][generic][isfinite]")
 {
-    SECTION("Scalar - float")
+    SECTION("Scalar - f32")
     {
-        RunCompileTimeIsEvenEdgeTests<float>();
-        RunCompileTimeIsFiniteTests<float>();
+        RunCompileTimeIsEvenEdgeTests<f32>();
+        RunCompileTimeIsFiniteTests<f32>();
     }
-    SECTION("Scalar - double")
+    SECTION("Scalar - f64")
     {
-        RunCompileTimeIsEvenEdgeTests<double>();
-        RunCompileTimeIsFiniteTests<double>();
+        RunCompileTimeIsEvenEdgeTests<f64>();
+        RunCompileTimeIsFiniteTests<f64>();
     }
 
-    SECTION("Vec2 - float")
+    SECTION("Vec2 - f32")
     {
         RunCompileTimeIsFiniteVecTests<TRAP::Math::Vec2f>();
     }
-    SECTION("Vec2 - double")
+    SECTION("Vec2 - f64")
     {
         RunCompileTimeIsFiniteVecTests<TRAP::Math::Vec2d>();
     }
 
-    SECTION("Vec3 - float")
+    SECTION("Vec3 - f32")
     {
         RunCompileTimeIsFiniteVecTests<TRAP::Math::Vec3f>();
     }
-    SECTION("Vec3 - double")
+    SECTION("Vec3 - f64")
     {
         RunCompileTimeIsFiniteVecTests<TRAP::Math::Vec3d>();
     }
 
-    SECTION("Vec4 - float")
+    SECTION("Vec4 - f32")
     {
         RunCompileTimeIsFiniteVecTests<TRAP::Math::Vec4f>();
     }
-    SECTION("Vec4 - double")
+    SECTION("Vec4 - f64")
     {
         RunCompileTimeIsFiniteVecTests<TRAP::Math::Vec4d>();
     }

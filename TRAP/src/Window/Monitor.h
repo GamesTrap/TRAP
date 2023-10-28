@@ -29,11 +29,11 @@ namespace TRAP
 			/// <param name="width">Width.</param>
 			/// <param name="height">Height.</param>
 			/// <param name="refreshRate">Refresh rate.</param>
-			constexpr VideoMode(uint32_t width, uint32_t height, double refreshRate) noexcept;
+			constexpr VideoMode(u32 width, u32 height, f64 refreshRate) noexcept;
 
-			uint32_t Width = 0;
-			uint32_t Height = 0;
-			double RefreshRate = 0;
+			u32 Width = 0;
+			u32 Height = 0;
+			f64 RefreshRate = 0;
 
 			[[nodiscard]] constexpr auto operator<=>(const VideoMode& mode) const noexcept = default;
 		};
@@ -89,12 +89,12 @@ namespace TRAP
 		/// Retrieve the monitors X content scale.
 		/// </summary>
 		/// <returns>Monitors X content scale.</returns>
-		[[nodiscard]] float GetContentScaleX() const;
+		[[nodiscard]] f32 GetContentScaleX() const;
 		/// <summary>
 		/// Retrieve the monitors Y content scale.
 		/// </summary>
 		/// <returns>Monitors Y content scale.</returns>
-		[[nodiscard]] float GetContentScaleY() const;
+		[[nodiscard]] f32 GetContentScaleY() const;
 		/// <summary>
 		/// Retrieve the monitors viewport position.
 		/// </summary>
@@ -104,12 +104,12 @@ namespace TRAP
 		/// Retrieve the monitors X viewport position.
 		/// </summary>
 		/// <returns>Monitors X viewport position.</returns>
-		[[nodiscard]] int32_t GetPositionX() const;
+		[[nodiscard]] i32 GetPositionX() const;
 		/// <summary>
 		/// Retrieve the monitors Y viewport position.
 		/// </summary>
 		/// <returns>Monitors Y viewport position.</returns>
-		[[nodiscard]] int32_t GetPositionY() const;
+		[[nodiscard]] i32 GetPositionY() const;
 		/// <summary>
 		/// Retrieve the monitors work area.
 		///
@@ -121,22 +121,22 @@ namespace TRAP
 		/// Retrieve the monitors X work area.
 		/// </summary>
 		/// <returns>Monitors X work area.</returns>
-		[[nodiscard]] int32_t GetWorkAreaX() const;
+		[[nodiscard]] i32 GetWorkAreaX() const;
 		/// <summary>
 		/// Retrieve the monitors Y work area.
 		/// </summary>
 		/// <returns>Monitors Y work area.</returns>
-		[[nodiscard]] int32_t GetWorkAreaY() const;
+		[[nodiscard]] i32 GetWorkAreaY() const;
 		/// <summary>
 		/// Retrieve the monitors work area width.
 		/// </summary>
 		/// <returns>Monitors work area width.</returns>
-		[[nodiscard]] int32_t GetWorkAreaWidth() const;
+		[[nodiscard]] i32 GetWorkAreaWidth() const;
 		/// <summary>
 		/// Retrieve the monitors work area height.
 		/// </summary>
 		/// <returns>Monitors work area height.</returns>
-		[[nodiscard]] int32_t GetWorkAreaHeight() const;
+		[[nodiscard]] i32 GetWorkAreaHeight() const;
 		/// <summary>
 		/// Check whether the monitor is currently used by a window.
 		/// </summary>
@@ -148,7 +148,7 @@ namespace TRAP
 		/// Note: ID 0 is always the primary monitor!
 		/// </summary>
 		/// <returns>Monitors ID.</returns>
-		[[nodiscard]] uint32_t GetID() const;
+		[[nodiscard]] u32 GetID() const;
 
 		/// <summary>
 		/// Retrieve a pointer to the internal monitor.
@@ -180,7 +180,7 @@ namespace TRAP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Monitor::VideoMode::VideoMode(const uint32_t width, const uint32_t height, const double refreshRate) noexcept
+constexpr TRAP::Monitor::VideoMode::VideoMode(const u32 width, const u32 height, const f64 refreshRate) noexcept
 	: Width(width), Height(height), RefreshRate(refreshRate)
 {}
 
