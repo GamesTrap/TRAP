@@ -183,7 +183,7 @@ template<u32 major, u32 minor, u32 patch>
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-inline constexpr u32 TRAP_VERSION = TRAP_MAKE_VERSION<0, 9, 123>();
+inline constexpr u32 TRAP_VERSION = TRAP_MAKE_VERSION<0, 9, 124>();
 
 //-------------------------------------------------------------------------------------------------------------------//
 

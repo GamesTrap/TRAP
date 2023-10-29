@@ -63,10 +63,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
 #endif /*_MSC_VER*/
-#ifdef __cplusplus
-extern "C"
-{
-#endif /*__cplusplus*/
 
 struct VkDeviceTable;
 
@@ -1948,10 +1944,6 @@ extern PFN_vkAcquireNextImage2KHR vkAcquireNextImage2KHR;
 #endif /* (defined(VK_KHR_device_group) && defined(VK_KHR_swapchain)) || (defined(VK_KHR_swapchain) && defined(VK_VERSION_1_1)) */
 /* VULKANLOADER_GENERATE_PROTOTYPES_H */
 
-#ifdef __cplusplus
-}
-#endif /*__cplusplus*/
-
 #endif /*TRAP_VULKANLOADER_H*/
 
 // For Visual Studio IntelliSense.
@@ -1976,11 +1968,6 @@ extern PFN_vkAcquireNextImage2KHR vkAcquireNextImage2KHR;
 #else
     #include <dlfcn.h>
 #endif
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif /*__cplusplus*/
 
 #ifdef _WIN32
     __declspec(dllimport) HMODULE __stdcall LoadLibraryA(LPCSTR);
@@ -4954,9 +4941,6 @@ inline PFN_vkAcquireNextImage2KHR vkAcquireNextImage2KHR;
     #pragma GCC visibility pop
 #endif /*__GNUC__*/
 
-#ifdef __cplusplus
-}
-#endif /*__cplusplus*/
 #ifdef _MSC_VER
 	#pragma warning(pop)
 #endif /*_MSC_VER*/

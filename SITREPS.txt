@@ -4607,3 +4607,7 @@ SITREP 10/28/2023|23w43a2
     - Core Added typedefs for fixed width primitive data types to make them shorter ~<5 mins
     - Use new primitive typedefs everywhere ~>45 mins
     - VulkanLoader/VulkanInstance VkGetInstanceVersion()/GetInstanceVersion() now returns std::optional<u32> ~<5 mins
+
+SITREP 10/29/2023|23w43a3
+    - Changed TRAP Engine version to 23w43a3(0.9.124)
+    - VulkanLoader Removed external C ~<5 mins
