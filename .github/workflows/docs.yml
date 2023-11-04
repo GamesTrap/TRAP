@@ -55,8 +55,6 @@ jobs:
       with:
         app_id: ${{ secrets.APP_ID }}
         private_key: ${{ secrets.APP_PRIVATE_KEY }}
-        repositories: >-
-          ["GamesTrap/TRAP-Docs"]
     - name: Retrieve new docs version
       id: get-docs-version
       run: echo "DOCS_VERSION=$(grep -oP -m 1 '\d+w\d+[a-zA-Z]+\d+' .modules/generatedocs/pages/changelog.md)" >> "$GITHUB_OUTPUT"
