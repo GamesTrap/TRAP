@@ -37,6 +37,11 @@ jobs:
         cd GeneratorScripts/
         ./GenerateDocumentation.sh
         cd ..
+    - name: Check-out TRAP-Docs repository
+      uses: actions/checkout@v4
+      with:
+        repository: 'GamesTrap/TRAP-Docs'
+        path: 'TRAP-Docs'
     - uses: crazy-max/ghaction-import-gpg@v6
       with:
         gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -55,11 +60,6 @@ jobs:
     - name: Retrieve new docs version
       id: get-docs-version
       run: echo "DOCS_VERSION=$(grep -oP -m 1 '\d+w\d+[a-zA-Z]+\d+' .modules/generatedocs/pages/changelog.md)" >> "$GITHUB_OUTPUT"
-    - name: Check-out TRAP-Docs repository
-      uses: actions/checkout@v4
-      with:
-        repository: 'GamesTrap/TRAP-Docs'
-        path: 'TRAP-Docs'
     - name: Move documentation to TRAP-Docs
       run: |
         rm -rf TRAP-Docs/docs/
