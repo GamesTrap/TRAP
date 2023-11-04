@@ -22,13 +22,6 @@ jobs:
       uses: actions/checkout@v4
       with:
         submodules: 'true'
-    - uses: crazy-max/ghaction-import-gpg@v6
-      with:
-        gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-        passphrase: ${{ secrets.GPG_PASSPHRASE }}
-        git_user_signingkey: true
-        git_commit_gpgsign: true
-        git_committer_name: TRAP CI/CD
     - name: Install dependencies
       run: sudo apt install -y doxygen python3 python3-pip python3-venv graphviz
     - name: Make python3 available as python
@@ -44,11 +37,21 @@ jobs:
         cd GeneratorScripts/
         ./GenerateDocumentation.sh
         cd ..
+    - uses: crazy-max/ghaction-import-gpg@v6
+      with:
+        gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+        passphrase: ${{ secrets.GPG_PASSPHRASE }}
+        git_user_signingkey: true
+        git_commit_gpgsign: true
+        git_committer_name: TRAP CI/CD
+        workdir: 'TRAP-Docs'
     - uses: tibdex/github-app-token@v2
       id: generate-token
       with:
         app_id: ${{ secrets.APP_ID }}
         private_key: ${{ secrets.APP_PRIVATE_KEY }}
+        repositories: >-
+          ["GamesTrap/TRAP-Docs"]
     - name: Retrieve new docs version
       id: get-docs-version
       run: echo "DOCS_VERSION=$(grep -oP -m 1 '\d+w\d+[a-zA-Z]+\d+' .modules/generatedocs/pages/changelog.md)" >> "$GITHUB_OUTPUT"
