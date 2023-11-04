@@ -4679,7 +4679,7 @@ template <typename T>
 requires std::floating_point<T>
 [[nodiscard]] constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::InfinitePerspective(const T fovY, const T aspect, const T zNear)
 {
-	//RH
+	//RH_ZO
 
 	const T range = Tan(fovY / static_cast<T>(2)) * zNear;
 	const T left = -range * aspect;
@@ -4693,7 +4693,7 @@ requires std::floating_point<T>
 	std::get<1>(std::get<1>(result)) = (static_cast<T>(2) * zNear) / (top - bottom);
 	std::get<2>(std::get<2>(result)) = -static_cast<T>(1);
 	std::get<3>(std::get<2>(result)) = -static_cast<T>(1);
-	std::get<2>(std::get<3>(result)) = -static_cast<T>(2) * zNear;
+	std::get<2>(std::get<3>(result)) = -zNear;
 
 	return result;
 }

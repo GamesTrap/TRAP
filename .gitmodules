@@ -31,7 +31,7 @@
 	url = https://github.com/GamesTrap/Premake-VSCodeGen
 [submodule "Dependencies/ImGuizmo"]
 	path = Dependencies/ImGuizmo
-	url = https://github.com/CedricGuillemet/ImGuizmo.git
+	url = https://github.com/GamesTrap/ImGuizmo.git
 [submodule "Dependencies/fmt"]
 	path = Dependencies/fmt
 	url = https://github.com/fmtlib/fmt
