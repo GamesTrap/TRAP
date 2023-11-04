@@ -14,12 +14,12 @@
 [![GitHub All Releases](https://img.shields.io/github/downloads/GamesTrap/TRAP/total)](https://github.com/GamesTrap/TRAP/releases)
 [![GitHub issues](https://img.shields.io/github/issues/GamesTrap/TRAP)](https://github.com/GamesTrap/TRAP/issues?q=is%3Aopen+is%3Aissue)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/GamesTrap/TRAP)](https://github.com/GamesTrap/TRAP/pulls?q=is%3Aopen+is%3Apr)
-[![GitHub](https://img.shields.io/badge/license-TRAP%E2%84%A2%20Engine%20EULA-lightgrey)](https://gamestrap.github.io/TRAP/pages/eula.html)
+[![GitHub](https://img.shields.io/badge/license-TRAP%E2%84%A2%20Engine%20EULA-lightgrey)](https://gamestrap.github.io/TRAP-Docs/pages/eula.html)
 
 TRAP™ is a cross-platform, high performance game engine currently in development.  
 
-For information like system requirements, build guide, API reference and other stuff please visit [https://gamestrap.github.io/TRAP](https://gamestrap.github.io/TRAP)
+For information like system requirements, build guide, API reference and other stuff please visit [https://gamestrap.github.io/TRAP-Docs/](https://gamestrap.github.io/TRAP-Docs/)
 
 ## License
 
-This repository uses the [TRAP™ Engine End User License Agreement](https://gamestrap.github.io/TRAP/pages/eula.html)
+This repository uses the [TRAP™ Engine End User License Agreement](https://gamestrap.github.io/TRAP-Docs/pages/eula.html)
