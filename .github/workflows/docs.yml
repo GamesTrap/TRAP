@@ -60,7 +60,7 @@ jobs:
     - name: Move documentation to TRAP-Docs
       run: |
         rm -rf TRAP-Docs/docs/
-        mv -r docs/ TRAP-Docs/
+        mv docs/ TRAP-Docs/
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5
       with:
