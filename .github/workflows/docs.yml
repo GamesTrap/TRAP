@@ -52,9 +52,19 @@ jobs:
     - name: Retrieve new docs version
       id: get-docs-version
       run: echo "DOCS_VERSION=$(grep -oP -m 1 '\d+w\d+[a-zA-Z]+\d+' .modules/generatedocs/pages/changelog.md)" >> "$GITHUB_OUTPUT"
+    - name: Check-out TRAP-Docs repository
+      uses: actions/checkout@v4
+      with:
+        repository: 'GamesTrap/TRAP-Docs'
+        path: 'TRAP-Docs'
+    - name: Move documentation to TRAP-Docs
+      run: |
+        rm -rf TRAP-Docs/docs/
+        mv -r docs/ TRAP-Docs/
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5
       with:
+        path: 'TRAP-Docs'
         branch: docs-update/${{steps.get-docs-version.outputs.DOCS_VERSION}}
         delete-branch: true
         add-paths: docs/**
@@ -62,7 +72,7 @@ jobs:
         title: "Update Documentation to ${{steps.get-docs-version.outputs.DOCS_VERSION}} [skip ci]"
         labels: "CI/CD, Documentation, Update"
         assignees: "GamesTrap"
-        milestone: 5
+        milestone: 1
         token: ${{steps.generate-token.outputs.token}}
         author: "TRAP CI/CD <gamestrap@web.de>"
         committer: "TRAP CI/CD <gamestrap@web.de>"

@@ -4615,3 +4615,4 @@ SITREP 10/29/2023|23w43a3
 SITREP 11/04/2023|23w44a1
     - Changed TRAP Engine version to 23w44a1(0.9.125)
     - Fixed glichting of gizmos when using infinite far plane projection matrix (now using forked ImGuizmo) ~<10 mins
+    - Moved generated documentation to TRAP-Docs repository ~<10 mins
