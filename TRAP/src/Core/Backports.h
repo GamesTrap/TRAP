@@ -35,7 +35,13 @@ namespace std
     inline constexpr bool is_scoped_enum_v = is_scoped_enum<T>::value;
 }
 
-#endif
+#else
+
+#if __cplusplus >= 202302L
+#warning "Backported std::is_scoped_enum and std::is_scoped_enum_v should be removed!"
+#endif /*__cplusplus >= 202302L*/
+
+#endif /*__cpp_lib_is_scoped_enum*/
 
 #ifndef __cpp_lib_to_underlying
 
@@ -54,6 +60,12 @@ namespace std
         return static_cast<std::underlying_type_t<Enum>>(e);
     }
 }
+
+#else
+
+#if __cplusplus >= 202302L
+#warning "Backported std::to_underlying() should be removed!"
+#endif /*__cplusplus >= 202302L*/
 
 #endif /*__cpp_lib_to_underlying*/
 
@@ -77,6 +89,12 @@ namespace std
         return std::bit_cast<decltype(n)>(valueRepresentation);
     }
 }
+
+#else
+
+#if __cplusplus >= 202302L
+#warning "Backported std::byteswap() should be removed!"
+#endif /*__cplusplus >= 202302L*/
 
 #endif /*__cpp_lib_byteswap*/
 
@@ -104,6 +122,12 @@ namespace std::ranges
     inline constexpr __contains_fn contains{};
 }
 
+#else
+
+#if __cplusplus >= 202302L
+#warning "Backported std::ranges::contains() should be removed!"
+#endif /*__cplusplus >= 202302L*/
+
 #endif /*__cpp_lib_ranges_contains*/
 
 #ifndef __cpp_lib_unreachable
@@ -119,6 +143,12 @@ namespace std
     #endif
     }
 }
+
+#else
+
+#if __cplusplus >= 202302L
+#warning "Backported std::unreachable() should be removed!"
+#endif /*__cplusplus >= 202302L*/
 
 #endif /*__cpp_lib_unreachable*/
 

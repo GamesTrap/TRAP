@@ -62,6 +62,7 @@ namespace TRAP::Utils::String
 	/// <param name="string">String to check.</param>
 	/// <param name="start">Prefix to check.</param>
 	/// <returns>True if the string begins with the provided prefix, false otherwise.</returns>
+	[[deprecated("Use std::string_view::starts_with() instead!")]]
 	[[nodiscard]] constexpr bool StartsWith(std::string_view str, std::string_view start);
 
 	/// <summary>
@@ -70,6 +71,7 @@ namespace TRAP::Utils::String
 	/// <param name="string">String to check.</param>
 	/// <param name="c">Prefix to check.</param>
 	/// <returns>True if the string begins with the provided prefix, false otherwise.</returns>
+	[[deprecated("Use std::string_view::starts_with() instead!")]]
 	[[nodiscard]] constexpr bool StartsWith(std::string_view str, char c);
 
 	/// <summary>
@@ -78,6 +80,7 @@ namespace TRAP::Utils::String
 	/// <param name="string">String to check.</param>
 	/// <param name="cstr">Prefix to check.</param>
 	/// <returns>True if the string begins with the provided prefix, false otherwise.</returns>
+	[[deprecated("Use std::string_view::starts_with() instead!")]]
 	[[nodiscard]] constexpr bool StartsWith(std::string_view str, const char* cstr);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -88,6 +91,7 @@ namespace TRAP::Utils::String
 	/// <param name="string">String to check.</param>
 	/// <param name="end">Suffix to check.</param>
 	/// <returns>True if the string ends with the provided suffix, false otherwise.</returns>
+	[[deprecated("Use std::string_view::ends_with() instead!")]]
 	[[nodiscard]] constexpr bool EndsWith(std::string_view str, std::string_view end);
 
 	/// <summary>
@@ -96,6 +100,7 @@ namespace TRAP::Utils::String
 	/// <param name="string">String to check.</param>
 	/// <param name="c">Suffix to check.</param>
 	/// <returns>True if the string ends with the provided suffix, false otherwise.</returns>
+	[[deprecated("Use std::string_view::ends_with() instead!")]]
 	[[nodiscard]] constexpr bool EndsWith(std::string_view str, char c);
 
 	/// <summary>
@@ -104,6 +109,7 @@ namespace TRAP::Utils::String
 	/// <param name="string">String to check.</param>
 	/// <param name="cstr">Suffix to check.</param>
 	/// <returns>True if the string ends with the provided suffix, false otherwise.</returns>
+	[[deprecated("Use std::string_view::ends_with() instead!")]]
 	[[nodiscard]] constexpr bool EndsWith(std::string_view str, const char* cstr);
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -114,6 +120,9 @@ namespace TRAP::Utils::String
 	/// <param name="str">String to check.</param>
 	/// <param name="substr">Substring to check if inside string.</param>
 	/// <returns>True if the string contains the provided substring, false otherwise.</returns>
+#if __cplusplus >= 202302L
+	[[deprecated("Use std::string::contains() instead!")]]
+#endif /*__cplusplus >= 202302L*/
 	[[nodiscard]] constexpr bool Contains(std::string_view str, std::string_view substr) noexcept;
 
 	/// <summary>
@@ -122,6 +131,9 @@ namespace TRAP::Utils::String
 	/// <param name="str">String to check.</param>
 	/// <param name="c">Substring to check if inside string.</param>
 	/// <returns>True if the string contains the provided substring, false otherwise.</returns>
+#if __cplusplus >= 202302L
+	[[deprecated("Use std::string::contains() instead!")]]
+#endif /*__cplusplus >= 202302L*/
 	[[nodiscard]] constexpr bool Contains(std::string_view str, char c) noexcept;
 
 	/// <summary>
@@ -130,6 +142,9 @@ namespace TRAP::Utils::String
 	/// <param name="str">String to check.</param>
 	/// <param name="substr">Substring to check if inside string.</param>
 	/// <returns>True if the string contains the provided substring, false otherwise.</returns>
+#if __cplusplus >= 202302L
+	[[deprecated("Use std::string::contains() instead!")]]
+#endif /*__cplusplus >= 202302L*/
 	[[nodiscard]] constexpr bool Contains(std::string_view str, const char* substr);
 
 	//-------------------------------------------------------------------------------------------------------------------//
