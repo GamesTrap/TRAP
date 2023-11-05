@@ -57,64 +57,6 @@ namespace TRAP::Utils::String
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
-	/// Check if a string begins with the given prefix.
-	/// </summary>
-	/// <param name="string">String to check.</param>
-	/// <param name="start">Prefix to check.</param>
-	/// <returns>True if the string begins with the provided prefix, false otherwise.</returns>
-	[[deprecated("Use std::string_view::starts_with() instead!")]]
-	[[nodiscard]] constexpr bool StartsWith(std::string_view str, std::string_view start);
-
-	/// <summary>
-	/// Check if a string begins with the given prefix.
-	/// </summary>
-	/// <param name="string">String to check.</param>
-	/// <param name="c">Prefix to check.</param>
-	/// <returns>True if the string begins with the provided prefix, false otherwise.</returns>
-	[[deprecated("Use std::string_view::starts_with() instead!")]]
-	[[nodiscard]] constexpr bool StartsWith(std::string_view str, char c);
-
-	/// <summary>
-	/// Check if a string begins with the given prefix.
-	/// </summary>
-	/// <param name="string">String to check.</param>
-	/// <param name="cstr">Prefix to check.</param>
-	/// <returns>True if the string begins with the provided prefix, false otherwise.</returns>
-	[[deprecated("Use std::string_view::starts_with() instead!")]]
-	[[nodiscard]] constexpr bool StartsWith(std::string_view str, const char* cstr);
-
-	//-------------------------------------------------------------------------------------------------------------------//
-
-	/// <summary>
-	/// Check if a string ends with the given suffix.
-	/// </summary>
-	/// <param name="string">String to check.</param>
-	/// <param name="end">Suffix to check.</param>
-	/// <returns>True if the string ends with the provided suffix, false otherwise.</returns>
-	[[deprecated("Use std::string_view::ends_with() instead!")]]
-	[[nodiscard]] constexpr bool EndsWith(std::string_view str, std::string_view end);
-
-	/// <summary>
-	/// Check if a string ends with the given suffix.
-	/// </summary>
-	/// <param name="string">String to check.</param>
-	/// <param name="c">Suffix to check.</param>
-	/// <returns>True if the string ends with the provided suffix, false otherwise.</returns>
-	[[deprecated("Use std::string_view::ends_with() instead!")]]
-	[[nodiscard]] constexpr bool EndsWith(std::string_view str, char c);
-
-	/// <summary>
-	/// Check if a string ends with the given suffix.
-	/// </summary>
-	/// <param name="string">String to check.</param>
-	/// <param name="cstr">Suffix to check.</param>
-	/// <returns>True if the string ends with the provided suffix, false otherwise.</returns>
-	[[deprecated("Use std::string_view::ends_with() instead!")]]
-	[[nodiscard]] constexpr bool EndsWith(std::string_view str, const char* cstr);
-
-	//-------------------------------------------------------------------------------------------------------------------//
-
-	/// <summary>
 	/// Checks if the string contains the given substring.
 	/// </summary>
 	/// <param name="str">String to check.</param>
@@ -413,48 +355,6 @@ namespace TRAP::Utils::String
 [[nodiscard]] constexpr std::vector<std::string> TRAP::Utils::String::GetLines(const std::string& str)
 {
 	return SplitString(str, "\n");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr bool TRAP::Utils::String::StartsWith(const std::string_view str, const std::string_view start)
-{
-	return str.starts_with(start);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr bool TRAP::Utils::String::StartsWith(const std::string_view str, const char c)
-{
-	return str.starts_with(c);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr bool TRAP::Utils::String::StartsWith(const std::string_view str, const char* cstr)
-{
-	return str.starts_with(cstr);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr bool TRAP::Utils::String::EndsWith(const std::string_view str, const std::string_view end)
-{
-	return str.ends_with(end);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr bool TRAP::Utils::String::EndsWith(const std::string_view str, const char c)
-{
-	return str.ends_with(c);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] constexpr bool TRAP::Utils::String::EndsWith(const std::string_view str, const char* cstr)
-{
-	return str.ends_with(cstr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

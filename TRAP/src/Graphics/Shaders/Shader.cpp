@@ -322,7 +322,7 @@ TRAP::Graphics::Shader::Shader(std::string name, const bool valid, const Rendere
 		const std::string lowerLine = Utils::String::ToLower(lines[i]);
 
 		//Search for a shader type tag
-		if(Utils::String::StartsWith(lowerLine, "#shader"))
+		if(lowerLine.starts_with("#shader"))
 		{
 			//Detect shader type
 			if (Utils::String::Contains(lowerLine, "vertex"))

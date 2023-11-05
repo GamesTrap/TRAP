@@ -139,13 +139,6 @@ requires ( std::is_unsigned_v<T> && std::is_integral_v<T>)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] inline constexpr bool StartsWith(const std::string_view string, const std::string_view start)
-{
-	return string.substr(0, start.size()) == start;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] inline constexpr std::string GetSuffix(const std::string& name)
 {
 	const usize pos = name.rfind('.');

@@ -4622,3 +4622,4 @@ SITREP 11/05/2023|23w44b1
     - Changed TRAP Engine version to 23w44b1(0.10.0)
     - GitHub workflows Replaced tibdex/github-app-token with actions/create-github-app-token ~<5 mins
     - Added deprecation attributes and compiler warnings which should trigger when project switches to C++23 ~<5 mins
+    - Utils::String Removed StartsWith() and EndsWith() ~<5 mins

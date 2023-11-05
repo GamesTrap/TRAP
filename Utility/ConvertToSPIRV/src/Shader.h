@@ -226,7 +226,7 @@ inline EShLanguage ShaderStageToEShLanguage(const ShaderStage stage)
 		const std::string lowerLine = ToLower(lines[i]);
 
 		//Search for a shader type tag
-		if (StartsWith(lowerLine, "#shader"))
+		if (lowerLine.starts_with("#shader"))
 		{
             //Get Shader stage type
             currentShaderStage = DetectShaderStage(lowerLine);
