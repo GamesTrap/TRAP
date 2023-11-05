@@ -32,11 +32,11 @@ jobs:
         run: sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
       - name: Make pip3 available as pip
         run: sudo update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10
-      - uses: tibdex/github-app-token@v2
+      - uses: actions/create-github-app-token@v1
         id: generate-token
         with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Make scripts and premake executable
         run: |
           chmod +x libs/premake5/linux/premake5

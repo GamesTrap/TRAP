@@ -4616,3 +4616,8 @@ SITREP 11/04/2023|23w44a1
     - Changed TRAP Engine version to 23w44a1(0.9.125)
     - Fixed glichting of gizmos when using infinite far plane projection matrix (now using forked ImGuizmo) ~<10 mins
     - Moved generated documentation to TRAP-Docs repository ~<10 mins
+    - Removed documentation contained in TRAP repository ~<5 mins
+
+SITREP 11/05/2023|23w44b1
+    - Changed TRAP Engine version to 23w44b1(0.10.0)
+    - GitHub workflows Replaced tibdex/github-app-token with actions/create-github-app-token ~<5 mins
