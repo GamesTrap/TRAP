@@ -28,7 +28,7 @@ TRAP::Graphics::RendererAPI::ResourceLoaderDesc TRAP::Graphics::API::ResourceLoa
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* const loader)
+void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(const std::stop_token stopToken, ResourceLoader* const loader)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -41,151 +41,156 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* con
 
 	SyncToken maxToken{};
 
-	while(loader->m_run)
+	while(!stopToken.stop_requested())
 	{
+		bool stopWaiting = true;
+
 		{
 			std::unique_lock lock(loader->m_queueMutex);
 			auto& mutex = loader->m_queueMutex;
 			LockMark(mutex);
 
-			//Check for pending tokens
-			//Safe to use m_tokenCounter as we are inside critical section
-			const bool allTokensSignaled = (loader->m_tokenCompleted == loader->m_tokenCounter);
-
-			while(!loader->AreTasksAvailable() && allTokensSignaled && loader->m_run)
-			{
-				//Sleep until someone adds an update request to the queue
-				loader->m_queueCond.wait(lock);
-			}
+			//Sleep until someone adds an update request to the queue or a stop was requested
+			stopWaiting = loader->m_queueCond.wait(lock, stopToken,
+				[&loader]()
+				{
+					return loader->AreTasksAvailable() || (loader->m_tokenCompleted != loader->m_tokenCounter);
+				});
 		}
 
-		loader->m_nextSet = (loader->m_nextSet + 1u) % NumericCast<u32>(loader->m_copyEngine.ResourceSets.size());
-		loader->WaitCopyEngineSet(loader->m_nextSet);
-		loader->ResetCopyEngineSet(loader->m_nextSet);
+		if(stopToken.stop_requested())
+			break;
 
-		//Signal pending tokens from previous frames
+		if(!stopToken.stop_requested() && stopWaiting)
 		{
-			std::lock_guard lock(loader->m_tokenMutex);
-			auto& mutex = loader->m_tokenMutex;
-			LockMark(mutex);
-			loader->m_tokenCompleted = loader->m_currentTokenState[loader->m_nextSet];
-		}
-		loader->m_tokenCond.notify_all();
+			loader->m_nextSet = (loader->m_nextSet + 1u) % NumericCast<u32>(loader->m_copyEngine.ResourceSets.size());
+			loader->WaitCopyEngineSet(loader->m_nextSet);
+			loader->ResetCopyEngineSet(loader->m_nextSet);
 
-		bool completionMask = false;
-
-		std::vector<UpdateRequest> activeQueue;
-		{
-			std::lock_guard lock(loader->m_queueMutex);
-			auto& mutex = loader->m_queueMutex;
-			LockMark(mutex);
-
-			std::vector<UpdateRequest>& requestQueue = loader->m_requestQueue;
-
-			if(!requestQueue.empty())
-				std::swap(requestQueue, activeQueue);
-		}
-
-		const usize requestCount = activeQueue.size();
-
-		for(usize j = 0; j < requestCount; ++j)
-		{
-			UpdateRequest& updateState = activeQueue[j];
-
-			UploadFunctionResult result = UploadFunctionResult::Completed;
-			switch(updateState.Type)
+			//Signal pending tokens from previous frames
 			{
-			case UpdateRequestType::UpdateBuffer:
-			{
-				result = loader->UpdateBuffer(loader->m_nextSet,
-				                              std::get<RendererAPI::BufferUpdateDesc>(updateState.Desc));
-				break;
+				std::lock_guard lock(loader->m_tokenMutex);
+				auto& mutex = loader->m_tokenMutex;
+				LockMark(mutex);
+				loader->m_tokenCompleted = loader->m_currentTokenState[loader->m_nextSet];
 			}
+			loader->m_tokenCond.notify_all();
 
-			case UpdateRequestType::UpdateTexture:
+			bool completionMask = false;
+
+			std::vector<UpdateRequest> activeQueue;
 			{
-				result = loader->UpdateTexture(loader->m_nextSet,
-				                               std::get<TextureUpdateDescInternal>(updateState.Desc), nullptr);
-				break;
-			}
-
-			case UpdateRequestType::BufferBarrier:
-			{
-				const RendererAPI::BufferBarrier barrier = std::get<RendererAPI::BufferBarrier>(updateState.Desc);
-				loader->AcquireCmd(loader->m_nextSet)->ResourceBarrier(&barrier, nullptr, nullptr);
-				result = UploadFunctionResult::Completed;
-				break;
-			}
-
-			case UpdateRequestType::TextureBarrier:
-			{
-				const RendererAPI::TextureBarrier barrier = std::get<RendererAPI::TextureBarrier>(updateState.Desc);
-				loader->AcquireCmd(loader->m_nextSet)->ResourceBarrier(nullptr, &barrier, nullptr);
-				result = UploadFunctionResult::Completed;
-				break;
-			}
-
-			case UpdateRequestType::LoadTexture:
-			{
-				result = loader->LoadTexture(loader->m_nextSet, updateState);
-				break;
-			}
-
-			case UpdateRequestType::CopyTexture:
-			{
-				result = loader->CopyTexture(loader->m_nextSet, std::get<RendererAPI::TextureCopyDesc>(updateState.Desc));
-				break;
-			}
-
-			case UpdateRequestType::Invalid:
-            	[[fallthrough]];
-			default:
-				break;
-			}
-
-			if(updateState.UploadBuffer)
-			{
-				CopyEngine::CopyResourceSet& resSet = loader->m_copyEngine.ResourceSets[loader->m_nextSet];
-				resSet.TempBuffers.push_back(updateState.UploadBuffer);
-			}
-
-			const bool completed = result == UploadFunctionResult::Completed ||
-			                       result == UploadFunctionResult::InvalidRequest;
-
-			completionMask |= completed;
-
-			if((updateState.WaitIndex != 0u) && completed)
-			{
-				TRAP_ASSERT(maxToken < updateState.WaitIndex, "ResourceLoader::StreamerThreadFunc(): Max sync token is smaller than current sync token!");
-				maxToken = updateState.WaitIndex;
-			}
-
-			TRAP_ASSERT(result != UploadFunctionResult::StagingBufferFull, "ResourceLoader::StreamerThreadFunc() Staging buffer is full!");
-		}
-
-		if(completionMask)
-		{
-			loader->StreamerFlush(loader->m_nextSet);
-			{
-				std::lock_guard lock(loader->m_semaphoreMutex);
-				auto& mutex = loader->m_semaphoreMutex;
+				std::lock_guard lock(loader->m_queueMutex);
+				auto& mutex = loader->m_queueMutex;
 				LockMark(mutex);
 
-				loader->m_copyEngine.LastCompletedSemaphore = loader->m_copyEngine.ResourceSets[loader->m_nextSet].CopyCompletedSemaphore;
+				std::vector<UpdateRequest>& requestQueue = loader->m_requestQueue;
+
+				if(!requestQueue.empty())
+					std::swap(requestQueue, activeQueue);
 			}
-		}
 
-		const SyncToken nextToken = Math::Max<SyncToken>(maxToken, loader->GetLastTokenCompleted());
-		loader->m_currentTokenState[loader->m_nextSet] = nextToken;
+			const usize requestCount = activeQueue.size();
 
-		//Signal submitted tokens
-		{
-			std::lock_guard lock(loader->m_tokenMutex);
-			auto& mutex = loader->m_tokenMutex;
-			LockMark(mutex);
+			for(usize j = 0; j < requestCount; ++j)
+			{
+				UpdateRequest& updateState = activeQueue[j];
 
-			loader->m_tokenSubmitted = loader->m_currentTokenState[loader->m_nextSet];
-			loader->m_tokenCond.notify_all();
+				UploadFunctionResult result = UploadFunctionResult::Completed;
+				switch(updateState.Type)
+				{
+				case UpdateRequestType::UpdateBuffer:
+				{
+					result = loader->UpdateBuffer(loader->m_nextSet,
+												std::get<RendererAPI::BufferUpdateDesc>(updateState.Desc));
+					break;
+				}
+
+				case UpdateRequestType::UpdateTexture:
+				{
+					result = loader->UpdateTexture(loader->m_nextSet,
+												std::get<TextureUpdateDescInternal>(updateState.Desc), nullptr);
+					break;
+				}
+
+				case UpdateRequestType::BufferBarrier:
+				{
+					const RendererAPI::BufferBarrier barrier = std::get<RendererAPI::BufferBarrier>(updateState.Desc);
+					loader->AcquireCmd(loader->m_nextSet)->ResourceBarrier(&barrier, nullptr, nullptr);
+					result = UploadFunctionResult::Completed;
+					break;
+				}
+
+				case UpdateRequestType::TextureBarrier:
+				{
+					const RendererAPI::TextureBarrier barrier = std::get<RendererAPI::TextureBarrier>(updateState.Desc);
+					loader->AcquireCmd(loader->m_nextSet)->ResourceBarrier(nullptr, &barrier, nullptr);
+					result = UploadFunctionResult::Completed;
+					break;
+				}
+
+				case UpdateRequestType::LoadTexture:
+				{
+					result = loader->LoadTexture(loader->m_nextSet, updateState);
+					break;
+				}
+
+				case UpdateRequestType::CopyTexture:
+				{
+					result = loader->CopyTexture(loader->m_nextSet, std::get<RendererAPI::TextureCopyDesc>(updateState.Desc));
+					break;
+				}
+
+				case UpdateRequestType::Invalid:
+					[[fallthrough]];
+				default:
+					break;
+				}
+
+				if(updateState.UploadBuffer)
+				{
+					CopyEngine::CopyResourceSet& resSet = loader->m_copyEngine.ResourceSets[loader->m_nextSet];
+					resSet.TempBuffers.push_back(updateState.UploadBuffer);
+				}
+
+				const bool completed = result == UploadFunctionResult::Completed ||
+									result == UploadFunctionResult::InvalidRequest;
+
+				completionMask |= completed;
+
+				if((updateState.WaitIndex != 0u) && completed)
+				{
+					TRAP_ASSERT(maxToken < updateState.WaitIndex, "ResourceLoader::StreamerThreadFunc(): Max sync token is smaller than current sync token!");
+					maxToken = updateState.WaitIndex;
+				}
+
+				TRAP_ASSERT(result != UploadFunctionResult::StagingBufferFull, "ResourceLoader::StreamerThreadFunc() Staging buffer is full!");
+			}
+
+			if(completionMask)
+			{
+				loader->StreamerFlush(loader->m_nextSet);
+				{
+					std::lock_guard lock(loader->m_semaphoreMutex);
+					auto& mutex = loader->m_semaphoreMutex;
+					LockMark(mutex);
+
+					loader->m_copyEngine.LastCompletedSemaphore = loader->m_copyEngine.ResourceSets[loader->m_nextSet].CopyCompletedSemaphore;
+				}
+			}
+
+			const SyncToken nextToken = Math::Max<SyncToken>(maxToken, loader->GetLastTokenCompleted());
+			loader->m_currentTokenState[loader->m_nextSet] = nextToken;
+
+			//Signal submitted tokens
+			{
+				std::lock_guard lock(loader->m_tokenMutex);
+				auto& mutex = loader->m_tokenMutex;
+				LockMark(mutex);
+
+				loader->m_tokenSubmitted = loader->m_currentTokenState[loader->m_nextSet];
+				loader->m_tokenCond.notify_all();
+			}
 		}
 	}
 
@@ -230,19 +235,6 @@ TRAP::Graphics::API::ResourceLoader::ResourceLoader(const RendererAPI::ResourceL
 
 	//Create dedicated resource loader thread.
 	m_thread = std::jthread(StreamerThreadFunc, this);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::API::ResourceLoader::~ResourceLoader()
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
-
-	m_run = false;
-
-	m_queueCond.notify_one();
-	if(m_thread.joinable())
-		m_thread.join();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

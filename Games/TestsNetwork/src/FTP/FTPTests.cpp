@@ -2,9 +2,8 @@
 
 void FTPTests::OnAttach()
 {
-	m_ftpThread = std::make_unique<std::thread>(FTP);
-	if(m_ftpThread)
-		m_ftpThread->detach();
+	std::thread ftpThread(FTP);
+	ftpThread.detach();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

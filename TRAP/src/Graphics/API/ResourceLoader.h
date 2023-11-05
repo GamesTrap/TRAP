@@ -34,7 +34,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		~ResourceLoader();
+		~ResourceLoader() = default;
 
 		/// <summary>
 		/// Copy constructor.
@@ -204,8 +204,9 @@ namespace TRAP::Graphics::API
 		/// Resource loader thread.
 		/// Used to async load and update queued resources.
 		/// </summary>
+		/// <param name="stopToken">Token to use for stop request of the thread.</param>
 		/// <param name="loader">Pointer to the ResourceLoader instance.</param>
-		static void StreamerThreadFunc(ResourceLoader* loader);
+		static void StreamerThreadFunc(std::stop_token stopToken, ResourceLoader* loader);
 		/// <summary>
 		/// Retrieve the row alignment for textures used by the GPU.
 		/// </summary>
@@ -419,13 +420,11 @@ namespace TRAP::Graphics::API
 
 		RendererAPI::ResourceLoaderDesc m_desc;
 
-		std::atomic<bool> m_run = true;
-		std::jthread m_thread{};
-
 		TracyLockable(std::mutex, m_queueMutex);
 		std::condition_variable_any m_queueCond;
 		TracyLockable(std::mutex, m_tokenMutex);
 		std::condition_variable_any m_tokenCond;
+
 		enum class UpdateRequestType
 		{
 			UpdateBuffer,
@@ -514,6 +513,8 @@ namespace TRAP::Graphics::API
 			std::vector<TRAP::Ref<Semaphore>> WaitSemaphores;
 		} m_copyEngine;
 		u32 m_nextSet = 0;
+
+		std::jthread m_thread{}; //Stay at the bottom so stop requests can join thread without hitting exceptions or deadlock
 	};
 }
 

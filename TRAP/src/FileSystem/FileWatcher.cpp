@@ -23,15 +23,6 @@ TRAP::FileSystem::FileWatcher::FileWatcher(std::string name, const bool recursiv
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::FileSystem::FileWatcher::~FileWatcher()
-{
-	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
-
-    Shutdown();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::FileSystem::FileWatcher::SetEventCallback(const EventCallbackFn& callback) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -177,8 +168,6 @@ void TRAP::FileSystem::FileWatcher::Init()
     if(m_paths.empty())
         return;
 
-    m_run = true;
-
 #ifdef TRAP_PLATFORM_WINDOWS
     m_killEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
     if(!m_killEvent)
@@ -188,7 +177,7 @@ void TRAP::FileSystem::FileWatcher::Init()
     if(m_killEvent < 0)
         TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to create kill event (", Utils::String::GetStrError(), ")!");
 #endif
-    m_thread = std::jthread(&TRAP::FileSystem::FileWatcher::Watch, this);
+    m_thread = std::jthread(std::bind_front(&TRAP::FileSystem::FileWatcher::Watch, this));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -197,11 +186,15 @@ void TRAP::FileSystem::FileWatcher::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
-    if(!m_run)
-        return;
+    m_thread.request_stop();
+    if (m_thread.joinable())
+        m_thread.join();
+}
 
-    m_run = false;
+//-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::FileSystem::FileWatcher::StopCallback() const
+{
 #ifdef TRAP_PLATFORM_WINDOWS
     if(!SetEvent(m_killEvent))
     {
@@ -210,10 +203,10 @@ void TRAP::FileSystem::FileWatcher::Shutdown()
     }
 #elif defined(TRAP_PLATFORM_LINUX)
     const u64 value = 1;
-    ssize_t toSend = sizeof(value);
+    isize toSend = sizeof(value);
     do
     {
-        const ssize_t res = write(m_killEvent, &value, sizeof(value));
+        const isize res = write(m_killEvent, &value, sizeof(value));
         if(res < 0)
         {
             TP_ERROR(Log::FileWatcherLinuxPrefix, "Error writing to eventfd (", Utils::String::GetStrError(), ")");
@@ -222,15 +215,12 @@ void TRAP::FileSystem::FileWatcher::Shutdown()
         toSend -= res;
     } while (toSend > 0);
 #endif
-
-    if (m_thread.joinable())
-        m_thread.join();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef TRAP_PLATFORM_WINDOWS
-void TRAP::FileSystem::FileWatcher::Watch()
+void TRAP::FileSystem::FileWatcher::Watch(const std::stop_token& stopToken)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -241,6 +231,8 @@ void TRAP::FileSystem::FileWatcher::Watch()
     else
 	    tracy::SetThreadName((m_name + " (FileWatcher)").c_str());
 #endif /*TRACY_ENABLE*/
+
+    const std::stop_callback stopCallback(stopToken, [this] { StopCallback(); });
 
     //Thread init
     std::vector<Events::FileChangeEvent> events;
@@ -268,14 +260,14 @@ void TRAP::FileSystem::FileWatcher::Watch()
     if(!pollingOverlap.hEvent)
     {
         TP_ERROR(Log::FileWatcherWindowsPrefix, "Failed to create polling overlap event (", Utils::String::GetStrError(), ")!");
-        m_run = false; //Fatal error, thread wont wait for the event so just let it cleanup
+        return; //Fatal error, thread wont wait for the event so just let it cleanup
     }
 
     std::vector<std::array<char, 2048>> bufs(dirHandles.size());
     std::vector<DWORD> bytesReturned(dirHandles.size());
 
     //Thread work loop
-    while(m_run)
+    while(!stopToken.stop_requested())
     {
         for(usize i = 0; i < bufs.size(); ++i)
         {
@@ -383,7 +375,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
 //-------------------------------------------------------------------------------------------------------------------//
 
 #elif defined(TRAP_PLATFORM_LINUX)
-void TRAP::FileSystem::FileWatcher::Watch()
+void TRAP::FileSystem::FileWatcher::Watch(const std::stop_token& stopToken)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -394,6 +386,8 @@ void TRAP::FileSystem::FileWatcher::Watch()
     else
 	    tracy::SetThreadName((m_name + " (FileWatcher)").c_str());
 #endif /*TRACY_ENABLE*/
+
+    const std::stop_callback stopCallback(stopToken, [this] { StopCallback(); });
 
     //Thread init
     std::vector<Events::FileChangeEvent> events;
@@ -471,7 +465,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
     std::filesystem::path oldName;
 
     //Thread work loop
-    while(m_run)
+    while(!stopToken.stop_requested())
     {
         const i32 ready = poll(fileDescriptors.data(), fileDescriptors.size(), -1);
         if(ready < 0)

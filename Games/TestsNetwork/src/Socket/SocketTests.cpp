@@ -2,9 +2,8 @@
 
 void SocketTests::OnAttach()
 {
-	m_socketThread = std::make_unique<std::thread>(Sockets);
-	if(m_socketThread)
-		m_socketThread->detach();
+	std::thread socketThread(Sockets);
+	socketThread.detach();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

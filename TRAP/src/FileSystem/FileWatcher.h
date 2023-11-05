@@ -47,7 +47,7 @@ namespace TRAP::FileSystem
         /// <summary>
 		/// Destructor.
 		/// </summary>
-		~FileWatcher();
+		~FileWatcher() = default;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
@@ -55,7 +55,7 @@ namespace TRAP::FileSystem
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		FileWatcher(FileWatcher&&) = delete;
+		FileWatcher(FileWatcher&&) = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -63,7 +63,7 @@ namespace TRAP::FileSystem
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		FileWatcher& operator=(FileWatcher&&) = delete;
+		FileWatcher& operator=(FileWatcher&&) = default;
 
         /// <summary>
         /// Sets the callback function that is called when a file event occurs.
@@ -109,13 +109,17 @@ namespace TRAP::FileSystem
         /// <summary>
         /// Watch over files.
         /// </summary>
-        void Watch();
+        /// <param name="stopToken">Token to use for stop request.</param>
+        void Watch(const std::stop_token& stopToken);
 
-        std::jthread m_thread{};
+        /// <summary>
+        /// Callback to stop the running file watcher thread.
+        /// </summary>
+        void StopCallback() const;
+
         EventCallbackFn m_callback = nullptr;
         std::vector<std::filesystem::path> m_paths{}; //No synchronization needed since it's only changed when m_thread is not running.
         bool m_recursive = true;
-        std::atomic<bool> m_run = false;
         std::string m_name; //Doesn't need to be synced because it won't change after construction
 
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -123,6 +127,8 @@ namespace TRAP::FileSystem
 #elif defined(TRAP_PLATFORM_LINUX)
         i32 m_killEvent = 0;
 #endif
+
+        std::jthread m_thread{}; //Stay at the bottom so stop requests can join thread without hitting exceptions or deadlock
     };
 }
 

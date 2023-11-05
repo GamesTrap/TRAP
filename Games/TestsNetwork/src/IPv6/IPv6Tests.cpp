@@ -2,9 +2,8 @@
 
 void IPv6Tests::OnAttach()
 {
-	m_ipv6Thread = std::make_unique<std::thread>(IPv6);
-	if(m_ipv6Thread)
-		m_ipv6Thread->detach();
+	std::thread ipv6Thread(IPv6);
+	ipv6Thread.detach();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
