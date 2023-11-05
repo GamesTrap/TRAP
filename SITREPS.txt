@@ -4624,3 +4624,4 @@ SITREP 11/05/2023|23w44b1
     - Added deprecation attributes and compiler warnings which should trigger when project switches to C++23 ~<5 mins
     - Utils::String Removed StartsWith() and EndsWith() ~<5 mins
     - ResourceLoader/FileWatcher Replaced manual thread destruction with std::stop_token and std::stop_callback ~<15 mins
+    - Doxyfile Added threadsafety, threadsafe, reentrancy, experimental and callback_signature alias tags ~<5 mins

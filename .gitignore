@@ -206,3 +206,4 @@ Dependencies/Wayland/**.h
 **steam_appid.txt**
 .penv/**
 Coverage/
+docs/
