@@ -562,7 +562,7 @@ void TRAPEditorLayer::SaveScene()
 	if (!path.empty())
 		m_lastScenePath = path;
 
-	SerializeScene(m_activeScene, m_lastScenePath);
+	SerializeScene(m_editorScene, m_lastScenePath);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -574,7 +574,7 @@ void TRAPEditorLayer::SaveSceneAs()
 	if (!path.empty())
 	{
 		m_lastScenePath = path;
-		SerializeScene(m_activeScene, m_lastScenePath);
+		SerializeScene(m_editorScene, m_lastScenePath);
 	}
 }
 
