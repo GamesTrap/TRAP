@@ -7,30 +7,29 @@
 
 namespace TRAP::Graphics
 {
+	/// @brief Retrieve the recommended swap chain image format.
+	/// @param HDR Use HDR?
+	/// @param SRGB Use SRGB?
+	/// @return Recommended swap chain image format.
+	[[nodiscard]] TRAP::Graphics::API::ImageFormat GetRecommendedSwapchainFormat(bool HDR, bool SRGB) noexcept;
+
+#ifndef TRAP_HEADLESS_MODE
+
 	class Semaphore;
 	class Fence;
 
 	class SwapChain
 	{
 	public:
-#ifndef TRAP_HEADLESS_MODE
 		/// @brief Create a new swap chain from the given description.
 		/// @param desc Swap chain description.
 		/// @return Created swap chain.
 		/// @remark @headless This function is not available in headless mode.
 		[[nodiscard]] static TRAP::Ref<SwapChain> Create(RendererAPI::SwapChainDesc& desc);
-#endif /*TRAP_HEADLESS_MODE*/
-
-		/// @brief Retrieve the recommended swap chain image format.
-		/// @param HDR Use HDR?
-		/// @param SRGB Use SRGB?
-		/// @return Recommended swap chain image format.
-		[[nodiscard]] static TRAP::Graphics::API::ImageFormat GetRecommendedSwapchainFormat(bool HDR, bool SRGB) noexcept;
 
 		/// @brief Destructor.
 		virtual ~SwapChain();
 
-#ifndef TRAP_HEADLESS_MODE
 		/// @brief Copy constructor.
 		constexpr SwapChain(const SwapChain&) noexcept = default;
 		/// @brief Copy assignment operator.
@@ -63,8 +62,8 @@ namespace TRAP::Graphics
 
 		//Render targets created from the swapchain back buffers
 		std::vector<TRAP::Ref<RenderTarget>> m_renderTargets{};
-#endif /*TRAP_HEADLESS_MODE*/
 	};
+#endif /*TRAP_HEADLESS_MODE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

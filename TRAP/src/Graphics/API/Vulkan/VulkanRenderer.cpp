@@ -374,7 +374,7 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerViewportData* const p)
 			rTDesc.Depth = 1;
 			rTDesc.ArraySize = 1;
 			rTDesc.MipLevels = 1;
-			rTDesc.Format = SwapChain::GetRecommendedSwapchainFormat(true, false);
+			rTDesc.Format = GetRecommendedSwapchainFormat(true, false);
 			rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
 			rTDesc.SampleCount = SampleCount::One;
 			for(u32 i = 0; i < RendererAPI::ImageCount; ++i)
@@ -2478,7 +2478,7 @@ void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerViewpor
 		rTDesc.Depth = 1;
 		rTDesc.ArraySize = 1;
 		rTDesc.MipLevels = 1;
-		rTDesc.Format = SwapChain::GetRecommendedSwapchainFormat(true, false);
+		rTDesc.Format = GetRecommendedSwapchainFormat(true, false);
 		rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
 		rTDesc.SampleCount = (viewportData->CurrentAntiAliasing == AntiAliasing::MSAA) ? viewportData->CurrentSampleCount : SampleCount::One;
 
@@ -2544,7 +2544,7 @@ void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(TRAP::Ref<RenderTarget
 			rTDesc.Depth = 1;
 			rTDesc.ArraySize = 1;
 			rTDesc.MipLevels = 1;
-			rTDesc.Format = SwapChain::GetRecommendedSwapchainFormat(true, false);
+			rTDesc.Format = GetRecommendedSwapchainFormat(true, false);
 			rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
 			rTDesc.SampleCount = SampleCount::One;
 			tempTarget = RenderTarget::Create(rTDesc);
@@ -2777,7 +2777,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 	swapChainDesc.Width = window->GetFrameBufferSize().x();
 	swapChainDesc.Height = window->GetFrameBufferSize().y();
 	swapChainDesc.ImageCount = RendererAPI::ImageCount;
-	swapChainDesc.ColorFormat = SwapChain::GetRecommendedSwapchainFormat(true, false);
+	swapChainDesc.ColorFormat = GetRecommendedSwapchainFormat(true, false);
 	swapChainDesc.EnableVSync = p->CurrentVSync;
 	swapChainDesc.ClearValue = p->ClearColor;
 	swapChainDesc.SampleCount = SampleCount::One;
@@ -2796,7 +2796,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 		rTMSAADesc.Depth = 1;
 		rTMSAADesc.ArraySize = 1;
 		rTMSAADesc.MipLevels = 1;
-		rTMSAADesc.Format = SwapChain::GetRecommendedSwapchainFormat(true, false);
+		rTMSAADesc.Format = GetRecommendedSwapchainFormat(true, false);
 		rTMSAADesc.StartState = RendererAPI::ResourceState::RenderTarget;
 		rTMSAADesc.SampleCount = p->CurrentSampleCount;
 		for(u32 i = 0; i < RendererAPI::ImageCount; ++i)
@@ -2809,7 +2809,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerViewportData(const u32 width, c
 	rTDesc.Depth = 1;
 	rTDesc.ArraySize = 1;
 	rTDesc.MipLevels = 1;
-	rTDesc.Format = SwapChain::GetRecommendedSwapchainFormat(true, false);
+	rTDesc.Format = GetRecommendedSwapchainFormat(true, false);
 	rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
 	rTDesc.SampleCount = SampleCount::One;
 	for(u32 i = 0; i < RendererAPI::ImageCount; ++i)

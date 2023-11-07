@@ -4632,3 +4632,4 @@ SITREP 11/07/2023|23w44b2
     - Doxygen Removed hard coded STRIP_FROM_PATH values ~<5 mins
     - TRAPEditorLayer SaveScene() and SaveSceneAs() now use the editor scene instead of the active scene ~<5 mins
     - Application SetTimeScale() guard against negative values ~<5 mins
+    - Fully removed SwapChain from Headless mode ~<5 mins
